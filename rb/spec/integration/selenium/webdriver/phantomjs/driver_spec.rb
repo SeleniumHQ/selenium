@@ -17,30 +17,16 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require_relative '../spec_helper'
+require File.expand_path("../../spec_helper", __FILE__)
 
 module Selenium
   module WebDriver
-    module Firefox
+    module PhantomJS
 
-      compliant_on :driver => :firefox do
-        describe Driver do
-          describe ".new" do
-            it "should take a Firefox::Profile instance as argument" do
-              begin
-                profile = Selenium::WebDriver::Firefox::Profile.new
-                driver = Selenium::WebDriver.for :firefox, :profile => profile
-              ensure
-                driver.quit if driver
-              end
-            end
-          end
-
-          it_behaves_like "driver that can be started concurrently", :firefox
-        end
-
+      describe Driver do
+        it_behaves_like "driver that can be started concurrently", :phantomjs
       end
 
-    end # Firefox
+    end # PhantomJS
   end # WebDriver
 end # Selenium

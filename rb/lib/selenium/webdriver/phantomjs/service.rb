@@ -49,6 +49,7 @@ module Selenium
         def initialize(executable_path, port)
           @host       = Platform.localhost
           @executable = executable_path
+          @port       = Integer(port)
         end
 
         def start(args = [])

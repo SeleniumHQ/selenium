@@ -25,7 +25,6 @@ module Selenium
 
       compliant_on :browser => :chrome do
         describe Driver do
-
           it "should accept an array of custom command line arguments" do
             begin
               driver = Selenium::WebDriver.for :chrome, :args => ["--user-agent=foo;bar"]
@@ -43,9 +42,11 @@ module Selenium
               Selenium::WebDriver.for(:chrome, :args => "--foo")
             }.to raise_error(ArgumentError)
           end
-        end
 
-      end # Chrome
-    end # WebDriver
-  end # Selenium
-end
+          it_behaves_like "driver that can be started concurrently", :chrome
+        end
+      end
+
+    end # Chrome
+  end # WebDriver
+end # Selenium
