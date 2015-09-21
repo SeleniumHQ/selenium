@@ -86,8 +86,10 @@
     <Compile Include="Edge\EdgeDriverService.cs" />
     <Compile Include="Edge\EdgeOptions.cs" />
     <Compile Include="Edge\EdgeWebElement.cs" />
+    <Compile Include="Firefox\FirefoxDriverService.cs" />
     <Compile Include="Firefox\FirefoxDriverCommandExecutor.cs" />
     <Compile Include="Firefox\FirefoxDriverServer.cs" />
+    <Compile Include="Firefox\FirefoxOptions.cs" />
     <Compile Include="IAllowsFileDetection.cs" />
     <Compile Include="IE\InternetExplorerDriverEngine.cs" />
     <Compile Include="IFileDetector.cs" />
@@ -115,6 +117,9 @@
     <Compile Include="PhantomJS\PhantomJSDriverService.cs" />
     <Compile Include="PhantomJS\PhantomJSOptions.cs" />
     <Compile Include="PhantomJS\PhantomJSWebElement.cs" />
+    <Compile Include="Remote\W3CWireProtocolCommandInfoRepository.cs" />
+    <Compile Include="Remote\WebDriverError.cs" />
+    <Compile Include="Remote\WebDriverWireProtocolCommandInfoRepository.cs" />
     <Compile Include="Remote\ICommandServer.cs" />
     <Compile Include="Remote\JsonConverters\ResponseValueJsonConverter.cs" />
     <Compile Include="Remote\LocalFileDetector.cs" />

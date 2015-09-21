@@ -48,6 +48,14 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
+        /// Gets the repository of objects containin information about commands.
+        /// </summary>
+        public CommandInfoRepository CommandInfoRepository
+        {
+            get { return this.internalExecutor.CommandInfoRepository; }
+        }
+
+        /// <summary>
         /// Executes a command
         /// </summary>
         /// <param name="commandToExecute">The command you wish to execute</param>

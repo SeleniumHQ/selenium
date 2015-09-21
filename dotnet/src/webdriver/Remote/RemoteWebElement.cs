@@ -143,9 +143,15 @@ namespace OpenQA.Selenium.Remote
         {
             get
             {
+                string getLocationCommand = DriverCommand.GetElementLocation;
+                if (this.driver.IsSpecificationCompliant)
+                {
+                    getLocationCommand = DriverCommand.GetElementRect;
+                }
+
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("id", this.Id);
-                Response commandResponse = this.Execute(DriverCommand.GetElementLocation, parameters);
+                Response commandResponse = this.Execute(getLocationCommand, parameters);
                 Dictionary<string, object> rawPoint = (Dictionary<string, object>)commandResponse.Value;
                 int x = Convert.ToInt32(rawPoint["x"], CultureInfo.InvariantCulture);
                 int y = Convert.ToInt32(rawPoint["y"], CultureInfo.InvariantCulture);
@@ -161,9 +167,15 @@ namespace OpenQA.Selenium.Remote
         {
             get
             {
+                string getSizeCommand = DriverCommand.GetElementSize;
+                if (this.driver.IsSpecificationCompliant)
+                {
+                    getSizeCommand = DriverCommand.GetElementRect;
+                }
+
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("id", this.Id);
-                Response commandResponse = this.Execute(DriverCommand.GetElementSize, parameters);
+                Response commandResponse = this.Execute(getSizeCommand, parameters);
                 Dictionary<string, object> rawSize = (Dictionary<string, object>)commandResponse.Value;
                 int width = Convert.ToInt32(rawSize["width"], CultureInfo.InvariantCulture);
                 int height = Convert.ToInt32(rawSize["height"], CultureInfo.InvariantCulture);
@@ -298,8 +310,15 @@ namespace OpenQA.Selenium.Remote
             // appropriate one for spec compliance.
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", this.elementId);
-            parameters.Add("value", new object[] { text });
-            parameters.Add("keysToSend", text.ToCharArray());
+            if (this.driver.IsSpecificationCompliant)
+            {
+                parameters.Add("value", text.ToCharArray());
+            }
+            else
+            {
+                parameters.Add("value", new object[] { text });
+            }
+
             this.Execute(DriverCommand.SendKeysToElement, parameters);
         }
 
@@ -313,9 +332,19 @@ namespace OpenQA.Selenium.Remote
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         public void Submit()
         {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", this.elementId);
-            this.Execute(DriverCommand.SubmitElement, parameters);
+            if (this.driver.IsSpecificationCompliant)
+            {
+                IWebElement form = this.FindElement(By.XPath("./ancestor-or-self::form"));
+                this.driver.ExecuteScript("var e = arguments[0].ownerDocument.createEvent('Event');" +
+                                           "e.initEvent('submit', true, true);" +
+                                           "if (arguments[0].dispatchEvent(e)) { arguments[0].submit(); }", form);
+            }
+            else
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters.Add("id", this.elementId);
+                this.Execute(DriverCommand.SubmitElement, parameters);
+            }
         }
 
         /// <summary>
@@ -413,7 +442,15 @@ namespace OpenQA.Selenium.Remote
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", this.Id);
-            parameters.Add("propertyName", propertyName);
+            if (this.driver.IsSpecificationCompliant)
+            {
+                parameters.Add("name", propertyName);
+            }
+            else
+            {
+                parameters.Add("propertyName", propertyName);
+            }
+
             Response commandResponse = this.Execute(DriverCommand.GetElementValueOfCssProperty, parameters);
             return commandResponse.Value.ToString();
         }
@@ -501,6 +538,11 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public IWebElement FindElementById(string id)
         {
+            if (this.driver.IsSpecificationCompliant)
+            {
+                return this.FindElement("css selector", "#" + this.driver.EscapeCssSelector(id));
+            }
+
             return this.FindElement("id", id);
         }
 
@@ -517,6 +559,11 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public ReadOnlyCollection<IWebElement> FindElementsById(string id)
         {
+            if (this.driver.IsSpecificationCompliant)
+            {
+                return this.FindElements("css selector", "#" + this.driver.EscapeCssSelector(id));
+            }
+
             return this.FindElements("id", id);
         }
 
@@ -542,6 +589,11 @@ namespace OpenQA.Selenium.Remote
             // Implementation after spec reaches recommendation should be as
             // follows:
             // return this.FindElement("css selector", "*[name=\"" + name + "\"]");
+            if (this.driver.IsSpecificationCompliant)
+            {
+                return this.FindElement("css selector", "*[name=\"" + name + "\"]");
+            }
+
             return this.FindElement("name", name);
         }
 
@@ -564,6 +616,11 @@ namespace OpenQA.Selenium.Remote
             // Implementation after spec reaches recommendation should be as
             // follows:
             // return this.FindElements("css selector", "*[name=\"" + name + "\"]");
+            if (this.driver.IsSpecificationCompliant)
+            {
+                return this.FindElements("css selector", "*[name=\"" + name + "\"]");
+            }
+
             return this.FindElements("name", name);
         }
 
@@ -589,6 +646,11 @@ namespace OpenQA.Selenium.Remote
             // Implementation after spec reaches recommendation should be as
             // follows:
             // return this.FindElement("css selector", tagName);
+            if (this.driver.IsSpecificationCompliant)
+            {
+                return this.FindElement("css selector", tagName);
+            }
+
             return this.FindElement("tag name", tagName);
         }
 
@@ -611,6 +673,11 @@ namespace OpenQA.Selenium.Remote
             // Implementation after spec reaches recommendation should be as
             // follows:
             // return this.FindElements("css selector", tagName);
+            if (this.driver.IsSpecificationCompliant)
+            {
+                return this.FindElements("css selector", tagName);
+            }
+
             return this.FindElements("tag name", tagName);
         }
         #endregion
@@ -635,6 +702,11 @@ namespace OpenQA.Selenium.Remote
             // Implementation after spec reaches recommendation should be as
             // follows:
             // return this.FindElement("css selector", "." + className);
+            if (this.driver.IsSpecificationCompliant)
+            {
+                return this.FindElement("css selector", "." + this.driver.EscapeCssSelector(className));
+            }
+
             return this.FindElement("class name", className);
         }
 
@@ -657,6 +729,11 @@ namespace OpenQA.Selenium.Remote
             // Implementation after spec reaches recommendation should be as
             // follows:
             // return this.FindElements("css selector", "." + className);
+            if (this.driver.IsSpecificationCompliant)
+            {
+                return this.FindElements("css selector", "." + this.driver.EscapeCssSelector(className));
+            }
+
             return this.FindElements("class name", className);
         }
         #endregion
