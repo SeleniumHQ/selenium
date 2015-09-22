@@ -26,6 +26,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.testing.Ignore.Driver.ALL;
+import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
@@ -720,7 +721,7 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(editable.getText(), equalTo("cheese"));
   }
 
-  @Ignore(value = {ALL}, reason = "Untested except in Firefox", issues = {2825})
+  @Ignore(value = {CHROME, IE, SAFARI, HTMLUNIT, MARIONETTE})
   @Test
   public void testShouldBeAbleToTypeIntoContentEditableElementWithExistingValue() {
     driver.get(pages.readOnlyPage);

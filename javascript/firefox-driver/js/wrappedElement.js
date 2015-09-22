@@ -145,11 +145,34 @@ WebElement.sendKeysToElement = function(respond, parameters) {
 
   // We may need a beat for firefox to hand over focus.
   this.jsTimer.setTimeout(function() {
-    // Unless the element already had focus, set the cursor location to the end of the line
-    // TODO(simon): This seems a little arbitrary.
     if (!alreadyFocused && bot.dom.isEditable(element)) {
-        var length = element.value ? element.value.length : goog.dom.getTextContent(element).length;
+      var length = element.value ? element.value.length : goog.dom.getTextContent(element).length;
+
+      if (bot.dom.isContentEditable(element)) {
+        var doc = element.ownerDocument || element.document;
+        var rng = doc.createRange();
+        var walker = doc.createTreeWalker(element, 4/*NodeFilter.SHOW_TEXT*/, null, null);
+        var start = length;
+        var end = length;
+        var n,pos = 0;
+        while (n = walker.nextNode()) {
+          pos += n.nodeValue.length;
+          if (pos >= start) {
+            rng.setStart(n, n.nodeValue.length + start - pos);
+            start = Infinity;
+          }
+          if (pos >= end) {
+            rng.setEnd(n, n.nodeValue.length + end - pos);
+            break;
+          }
+        }
+        var sel = doc.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(rng);
+
+      } else {
         goog.dom.selection.setCursorPosition(element, length);
+      }
     }
 
     try {
