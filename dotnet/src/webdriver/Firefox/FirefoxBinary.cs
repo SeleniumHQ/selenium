@@ -26,6 +26,7 @@ using System.Security.Permissions;
 using System.Text;
 using System.Threading;
 using OpenQA.Selenium.Firefox.Internal;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -67,16 +68,6 @@ namespace OpenQA.Selenium.Firefox
         #endregion
 
         #region Public properties
-        /// <summary>
-        /// Gets or sets the timeout (in milliseconds) to wait for command execution.
-        /// </summary>
-        [Obsolete("Timeouts should be expressed as a TimeSpan. Use the Timeout property instead")]
-        public long TimeoutInMilliseconds
-        {
-            get { return Convert.ToInt64(this.Timeout.TotalMilliseconds); }
-            set { this.Timeout = TimeSpan.FromMilliseconds(value); }
-        }
-
         /// <summary>
         /// Gets or sets the timeout to wait for Firefox to be available for command execution.
         /// </summary>
@@ -299,28 +290,23 @@ namespace OpenQA.Selenium.Firefox
             {
                 string outSoPath = Path.Combine(profile.ProfileDirectory, path);
                 string file = Path.Combine(outSoPath, noFocusSoName);
-
                 string resourceName = string.Format(CultureInfo.InvariantCulture, "WebDriver.FirefoxNoFocus.{0}.dll", path);
-                Assembly executingAssembly = Assembly.GetExecutingAssembly();
-
-                List<string> resourceNames = new List<string>(executingAssembly.GetManifestResourceNames());
-                if (resourceNames.Contains(resourceName))
+                if (ResourceUtilities.IsValidResourceName(resourceName))
                 {
-                    Stream libraryStream = executingAssembly.GetManifestResourceStream(resourceName);
-
-                    Directory.CreateDirectory(outSoPath);
-                    using (FileStream outputStream = File.Create(file))
+                    using (Stream libraryStream = ResourceUtilities.GetResourceStream(noFocusSoName, resourceName))
                     {
-                        byte[] buffer = new byte[1000];
-                        int bytesRead = libraryStream.Read(buffer, 0, buffer.Length);
-                        while (bytesRead > 0)
+                        Directory.CreateDirectory(outSoPath);
+                        using (FileStream outputStream = File.Create(file))
                         {
-                            outputStream.Write(buffer, 0, bytesRead);
-                            bytesRead = libraryStream.Read(buffer, 0, buffer.Length);
+                            byte[] buffer = new byte[1000];
+                            int bytesRead = libraryStream.Read(buffer, 0, buffer.Length);
+                            while (bytesRead > 0)
+                            {
+                                outputStream.Write(buffer, 0, bytesRead);
+                                bytesRead = libraryStream.Read(buffer, 0, buffer.Length);
+                            }
                         }
                     }
-
-                    libraryStream.Close();
                 }
 
                 if (!File.Exists(file))
@@ -343,7 +329,7 @@ namespace OpenQA.Selenium.Firefox
             string existingLdLibPath = Environment.GetEnvironmentVariable("LD_LIBRARY_PATH");
 
             // The returned new ld lib path is terminated with ':'
-            string newLdLibPath = ExtractAndCheck(profile, NoFocusLibraryName, "x86", "amd64");
+            string newLdLibPath = ExtractAndCheck(profile, NoFocusLibraryName, "x86", "x64");
             if (!string.IsNullOrEmpty(existingLdLibPath))
             {
                 newLdLibPath += existingLdLibPath;
