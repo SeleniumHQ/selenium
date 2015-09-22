@@ -79,5 +79,17 @@ namespace OpenQA.Selenium.Internal
 
             return resourceStream;
         }
+
+        /// <summary>
+        /// Returns a value indicating whether a resource exists with the specified ID.
+        /// </summary>
+        /// <param name="resourceId">ID of the embedded resource to check for.</param>
+        /// <returns><see langword="true"/> if the resource exists in the calling assembly; otherwise <see langword="false"/>.</returns>
+        public static bool IsValidResourceName(string resourceId)
+        {
+            Assembly executingAssembly = Assembly.GetCallingAssembly();
+            List<string> resourceNames = new List<string>(executingAssembly.GetManifestResourceNames());
+            return resourceNames.Contains(resourceId);
+        }
     }
 }
