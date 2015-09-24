@@ -1,3 +1,8 @@
+## v2.48.0-dev
+
+* FIXED: Surfaced the `loopback` option to `remote/SeleniumServer`. When set,
+    the server will be accessed using the current host's loopback address.
+
 ## v2.47.0
 
 ### Notice
