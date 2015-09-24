@@ -28,8 +28,8 @@ public interface Prioritizer {
    * <p/>
    * a and b have the same priority : compare(a,b) = 0
    *
-   * @param a
-   * @param b
+   * @param a first item
+   * @param b second item
    * @return a negative number is a is less important than b, a positive number is a is more
    *         important than b, 0 if a and b are equally as important.
    */

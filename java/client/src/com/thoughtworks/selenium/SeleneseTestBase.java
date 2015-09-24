@@ -214,8 +214,8 @@ public class SeleneseTestBase {
   /**
    * Compares two strings, but handles "regexp:" strings like HTML Selenese
    *
-   * @param expectedPattern
-   * @param actual
+   * @param expectedPattern expression of expected
+   * @param actual expresssion of actual
    * @return true if actual matches the expectedPattern, or false otherwise
    */
   public static boolean seleniumEquals(String expectedPattern, String actual) {

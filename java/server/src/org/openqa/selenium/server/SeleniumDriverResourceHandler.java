@@ -259,9 +259,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
   /**
    * extract the posted data from an incoming request, stripping away a piggybacked data
    *
-   * @param req
-   * @param sessionId
-   * @param uniqueId
+   * @param req request
+   * @param sessionId session id
+   * @param uniqueId unique id
    * @return a string containing the posted data (with piggybacked log info stripped)
    * @throws IOException
    */

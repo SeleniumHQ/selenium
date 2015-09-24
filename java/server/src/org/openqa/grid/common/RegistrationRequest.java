@@ -251,7 +251,7 @@ public class RegistrationRequest {
   /**
    * Create an object from a registration request formatted as a json string.
    *
-   * @param json
+   * @param json JSON
    * @return create a request from the JSON request received.
    */
   @SuppressWarnings("unchecked")
@@ -543,7 +543,7 @@ public class RegistrationRequest {
   /**
    * add config, but overwrite capabilities.
    *
-   * @param resource
+   * @param resource resource
    */
   public void loadFromJSON(String resource) {
     try {

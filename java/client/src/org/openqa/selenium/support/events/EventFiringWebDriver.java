@@ -131,6 +131,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   }
 
   /**
+   * @param eventListener the event listener to register
    * @return this for method chaining.
    */
   public EventFiringWebDriver register(WebDriverEventListener eventListener) {
@@ -139,6 +140,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   }
 
   /**
+   * @param eventListener the event listener to unregister
    * @return this for method chaining.
    */
   public EventFiringWebDriver unregister(WebDriverEventListener eventListener) {

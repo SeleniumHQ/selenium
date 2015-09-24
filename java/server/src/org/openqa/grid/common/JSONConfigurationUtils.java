@@ -35,7 +35,7 @@ public class JSONConfigurationUtils {
   /**
    * load a JSON file from the resource or file system.
    *
-   * @param resource
+   * @param resource file or jar resource location
    * @return A JsonObject representing the passed resource argument.
    */
   public static JsonObject loadJSON(String resource) {

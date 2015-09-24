@@ -200,7 +200,9 @@ public class ChromeDriver extends RemoteWebDriver
   }
 
   /**
-   * Launches Chome app specified by id.
+   * Launches Chrome app specified by id.
+   *
+   * @param id chrome app id
    */
   public void launchApp(String id) {
     execute(ChromeDriverCommand.LAUNCH_APP, ImmutableMap.of("id", id));

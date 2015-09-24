@@ -42,6 +42,9 @@ public interface HttpClient {
 
     /**
      * Creates a HTTP client that will send requests to the given URL.
+     *
+     * @param url URL
+     * @return HttpClient
      */
     HttpClient createClient(URL url);
   }

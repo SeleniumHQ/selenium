@@ -33,9 +33,9 @@ public interface CommandListener {
    * <p/>
    * Throwing an exception will prevent the forward to the remote.
    *
-   * @param session
-   * @param request
-   * @param response
+   * @param session session
+   * @param request request
+   * @param response response
    */
   public void beforeCommand(TestSession session, HttpServletRequest request,
       HttpServletResponse response);
@@ -45,9 +45,9 @@ public interface CommandListener {
    * <p/>
    * Throwing an exception will result in an error for the client.
    *
-   * @param session
-   * @param request
-   * @param response
+   * @param session session
+   * @param request request
+   * @param response response
    */
   public void afterCommand(TestSession session, HttpServletRequest request,
       HttpServletResponse response);

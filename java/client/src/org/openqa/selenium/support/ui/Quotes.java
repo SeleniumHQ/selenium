@@ -37,6 +37,7 @@ public class Quotes {
    * @param toEscape a text to escape quotes in, e.g. {@code "f'oo"}
    * @return the same text with escaped quoted, e.g. {@code "\"f'oo\""}
    */
+  @SuppressWarnings("JavaDoc")
   public static String escape(String toEscape) {
     if (toEscape.contains("\"") && toEscape.contains("'")) {
       boolean quoteIsLast = false;

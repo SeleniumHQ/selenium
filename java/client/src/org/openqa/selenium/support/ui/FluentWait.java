@@ -165,6 +165,7 @@ public class FluentWait<T> implements Wait<T> {
    * Any exceptions not whitelisted will be allowed to propagate, terminating the wait.
    *
    * @param types The types of exceptions to ignore.
+   * @param <K> an Exception that extends Throwable
    * @return A self reference.
    */
   public <K extends Throwable> FluentWait<T> ignoreAll(Collection<Class<? extends K>> types) {
@@ -174,6 +175,8 @@ public class FluentWait<T> implements Wait<T> {
 
   /**
    * @see #ignoreAll(Collection)
+   * @param exceptionType exception to ignore
+   * @return a self reference
    */
   public FluentWait<T> ignoring(Class<? extends Throwable> exceptionType) {
     return this.ignoreAll(ImmutableList.<Class<? extends Throwable>>of(exceptionType));
@@ -181,6 +184,9 @@ public class FluentWait<T> implements Wait<T> {
 
   /**
    * @see #ignoreAll(Collection)
+   * @param firstType exception to ignore
+   * @param secondType another exception to ignore
+   * @return a self reference
    */
   public FluentWait<T> ignoring(Class<? extends Throwable> firstType,
                                 Class<? extends Throwable> secondType) {

@@ -39,6 +39,7 @@ public interface Wait<F> {
    *
    * @param <T> the return type of the method, which must not be Void
    * @param isTrue the parameter to pass to the {@link ExpectedCondition}
+   * @return truthy value from the isTrue condition
    */
   <T> T until(Function<? super F, T> isTrue);
 }

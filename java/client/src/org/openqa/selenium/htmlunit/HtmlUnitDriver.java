@@ -241,6 +241,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
    *       "chrome" for Chrome, "firefox-38" for Firefox 38 or "internet explorer-11" for IE 11.</li>
    * </ol>
    * <p>The Remote WebDriver uses the second mode - the first mode is deprecated and should not be used.
+   *
+   * @param capabilities desired capabilities requested for the htmlunit driver session
    */
   public HtmlUnitDriver(Capabilities capabilities) {
     this(determineBrowserVersion(capabilities));

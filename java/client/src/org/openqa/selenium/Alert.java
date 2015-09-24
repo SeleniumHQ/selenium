@@ -36,7 +36,7 @@ public interface Alert {
    *
    * Usage: driver.switchTo().alert().authenticateUsing(new UsernamePasswordCredentials("cheese",
    *        "secretGouda"));
-   * @param credentials
+   * @param credentials - the credentials that will be passed to the Authentication prompt
    */
   @Beta
   void authenticateUsing(Credentials credentials);

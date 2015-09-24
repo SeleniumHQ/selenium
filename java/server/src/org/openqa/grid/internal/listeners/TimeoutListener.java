@@ -31,7 +31,7 @@ public interface TimeoutListener {
    * the browser is in the process of being started. During that state, you can't really clean the
    * resources properly.
    *
-   * @param session
+   * @param session session
    */
   public void beforeRelease(TestSession session);
 

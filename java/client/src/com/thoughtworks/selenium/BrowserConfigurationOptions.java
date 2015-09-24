@@ -185,7 +185,7 @@ public class BrowserConfigurationOptions {
    * Note that absolutely no publication nor synchronization of these hard-coded strings such as
    * "HTA" has yet been done. Use at your own risk until this is rectified.
    *
-   * @param mode
+   * @param mode - examples "HTA" or "PROXY"
    */
   public BrowserConfigurationOptions setBrowserMode(String mode) {
     put(BROWSER_MODE, mode);

@@ -4,7 +4,7 @@
 // ------------------------------------------------------------------------
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at 
+// You may obtain a copy of the License at
 // http://www.apache.org/licenses/LICENSE-2.0
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -50,7 +50,7 @@ import java.util.logging.Logger;
  * <p/>
  * If alias checking is turned on, then aliased resources are treated as if they do not exist, nor
  * can they be created.
- * 
+ *
  * @author Greg Wilkins (gregw)
  * @version $Revision: 1.31 $
  */
@@ -76,7 +76,7 @@ public class FutureFileResource extends URLResource {
 
   /**
    * setCheckAliases.
-   * 
+   *
    * @param checkAliases True of resource aliases are to be checked for (eg case insensitivity or
    *        8.3 short names) and treated as not found.
    */
@@ -88,7 +88,7 @@ public class FutureFileResource extends URLResource {
 
   /**
    * getCheckAliases.
-   * 
+   *
    * @return True of resource aliases are to be checked for (eg case insensitivity or 8.3 short
    *         names) and treated as not found.
    */
@@ -323,7 +323,7 @@ public class FutureFileResource extends URLResource {
 
   /**
    * Encode according to this resource type. File URIs are encoded.
-   * 
+   *
    * @param uri URI to encode.
    * @return The uri unchanged.
    */
@@ -335,7 +335,7 @@ public class FutureFileResource extends URLResource {
   /* ------------------------------------------------------------ */
 
   /**
-   * @param o
+   * @param o other object
    * @return <code>true</code> if passed object uses the same File object as
    *         this instance or if the path to both files are equal.
    */

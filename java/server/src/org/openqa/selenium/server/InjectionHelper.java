@@ -313,9 +313,9 @@ public class InjectionHelper {
   /**
    * read bufLen bytes into buf (unless EOF is seen first) from in.
    *
-   * @param in
-   * @param buf
-   * @param bufLen
+   * @param in input stream
+   * @param buf buffer to read into
+   * @param bufLen max size to read
    * @return number of bytes read
    * @throws IOException
    */
