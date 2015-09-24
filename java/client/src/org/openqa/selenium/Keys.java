@@ -142,6 +142,9 @@ public enum Keys implements CharSequence {
    * (CTRL/ALT/SHIFT/etc) release via a keyup event.
    *
    * Issue: http://code.google.com/p/webdriver/issues/detail?id=79
+   *
+   * @param value characters to send
+   * @return String representation of the char sequence
    */
   public static String chord(CharSequence... value) {
     return chord(Arrays.asList(value));
@@ -149,6 +152,8 @@ public enum Keys implements CharSequence {
 
   /**
    * @see #chord(CharSequence...)
+   * @param value characters to send
+   * @return String representation of the char sequence
    */
   public static String chord(Iterable<CharSequence> value) {
     StringBuilder builder = new StringBuilder();

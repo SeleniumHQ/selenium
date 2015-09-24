@@ -41,7 +41,7 @@ public interface TestSessionListener {
    * WARNING : beforeSession should NOT throw exception. If an exception is thrown, the session is
    * considered invalid and the resources will be freed.
    *
-   * @param session
+   * @param session session
    * @see RegistrationListener if the setup applies to all the tests.
    */
   public void beforeSession(TestSession session);

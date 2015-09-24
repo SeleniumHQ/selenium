@@ -61,6 +61,9 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
   /**
    * Creates an {@link HttpCommandExecutor} that supports non-standard
    * {@code additionalCommands} in addition to the standard.
+   *
+   * @param additionalCommands additional commands to allow the command executor to process
+   * @param addressOfRemoteServer URL of remote end Selenium server
    */
   public HttpCommandExecutor(
       Map<String, CommandInfo> additionalCommands, URL addressOfRemoteServer) {
@@ -101,6 +104,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
    * for subclasses only to call this.
    *
    * @param commandName The name of the command to use.
+   * @param info CommandInfo for the command name provided
    */
   protected void defineCommand(String commandName, CommandInfo info) {
     checkNotNull(commandName);

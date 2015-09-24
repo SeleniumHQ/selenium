@@ -106,6 +106,7 @@ public class Proxy {
   /**
    * Explicitly sets the proxy type, useful for forcing direct connection on Linux.
    *
+   * @param proxyType type of proxy being used
    * @return reference to self
    */
   public Proxy setProxyType(ProxyType proxyType) {

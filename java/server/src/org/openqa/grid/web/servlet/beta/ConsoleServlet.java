@@ -211,7 +211,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
   /**
    * retracing how the hub config was built to help debugging.
    *
-   * @return
+   * @return html representation of the hub config
    */
   private String getConfigInfo(boolean verbose) {
 

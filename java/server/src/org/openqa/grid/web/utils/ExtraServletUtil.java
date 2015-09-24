@@ -29,7 +29,7 @@ public class ExtraServletUtil {
    * Reflexion to create the servlet based on the class name. Returns null if the class cannot be
    * instantiated.
    *
-   * @param className
+   * @param className class name to be created
    * @return Class object for passed className argument, or <i/null</i> if no
    *         matching class name can be found.
    */

@@ -277,7 +277,7 @@ public class SelfRegisteringRemote {
 
   /**
    * uses the hub API to get some of its configuration.
-   * @return
+   * @return json object of the current hub configuration
    * @throws Exception
    */
   private JsonObject getHubConfiguration() throws Exception {

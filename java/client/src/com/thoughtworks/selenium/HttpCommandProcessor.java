@@ -249,7 +249,7 @@ public class HttpCommandProcessor implements CommandProcessor {
    * Wraps the version of start() that takes a String parameter, sending it the result of calling
    * toString() on optionsObject, which will likely be a BrowserConfigurationOptions instance.
    *
-   * @param optionsObject
+   * @param optionsObject start options
    */
   public void start(Object optionsObject) {
     start(optionsObject.toString());

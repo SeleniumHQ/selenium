@@ -54,6 +54,7 @@ public class PageFactory {
    *
    * @param driver           The driver that will be used to look up the elements
    * @param pageClassToProxy A class which will be initialised.
+   * @param <T>              Class of the PageObject
    * @return An instantiated instance of the class with WebElement and List&lt;WebElement&gt;
    * fields proxied
    * @see FindBy

@@ -155,8 +155,8 @@ public class DesiredCapabilities implements Serializable, Capabilities {
    * extraCapabilities object.
    *
    * @param extraCapabilities Additional capabilities to be added.
+   * @return DesiredCapabilities after the merge
    */
-
   public DesiredCapabilities merge(
       org.openqa.selenium.Capabilities extraCapabilities) {
     if (extraCapabilities != null) {
@@ -239,6 +239,7 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   /**
+   * @return DesiredCapabilities for opera
    * @deprecated Use #operaBlink
    */
   @Deprecated

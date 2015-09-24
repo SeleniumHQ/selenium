@@ -74,6 +74,7 @@ public class SafariOptions {
    * When the {@link #CAPABILITY} capability is set, all other capabilities will be ignored!
    *
    * @param capabilities Desired capabilities from which the options are derived.
+   * @return SafariOptions
    * @throws WebDriverException If an error occurred during the reconstruction of the options
    */
   public static SafariOptions fromCapabilities(Capabilities capabilities)

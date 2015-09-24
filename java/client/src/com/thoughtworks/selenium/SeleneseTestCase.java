@@ -212,8 +212,8 @@ public class SeleneseTestCase extends TestCase {
   /**
    * Compares two strings, but handles "regexp:" strings like HTML Selenese
    *
-   * @param expected
-   * @param actual
+   * @param expected expression of expected
+   * @param actual expression of actual
    * @return true if actual matches the expectedPattern, or false otherwise
    */
   public static boolean seleniumEquals(String expected, String actual) {

@@ -124,7 +124,7 @@ public class GridHubConfiguration {
   /**
    * builds a grid configuration from the parameters passed command line.
    *
-   * @param args
+   * @param args command line arguments
    * @return A GridHubConfiguration object with options from the grid1 and/or
    *         grid2 config file(s), plus any command line option overrides.
    */

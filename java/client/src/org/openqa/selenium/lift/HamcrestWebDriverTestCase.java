@@ -80,7 +80,7 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
   /**
    * Cause the browser to navigate to the given URL
    *
-   * @param url
+   * @param url URL
    */
   protected void goTo(String url) {
     context.goTo(url);
@@ -97,8 +97,11 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
   }
 
   /**
-   * Syntactic sugar to use with {@link org.openqa.selenium.lift.HamcrestWebDriverTestCase},
-   * e.g. type("cheese", into(textbox())); The into() method simply returns its argument.
+   * Syntactic sugar to use with {@link org.openqa.selenium.lift.HamcrestWebDriverTestCase}, e.g.
+   * type("cheese", into(textbox())); The into() method simply returns its argument.
+   *
+   * @param input finder input
+   * @return the finder
    */
   protected Finder<WebElement, WebDriver> into(Finder<WebElement, WebDriver> input) {
     return input;
@@ -106,27 +109,29 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
 
   /**
    * replace the default {@link TestContext}
+   *
+   * @param context context to set
    */
   void setContext(TestContext context) {
     this.context = context;
   }
 
   /**
-   * Returns the current page source
+   * @return  the current page source
    */
   public String getPageSource() {
     return getWebDriver().getPageSource();
   }
 
   /**
-   * Returns the current page title
+   * @return  the current page title
    */
   public String getTitle() {
     return getWebDriver().getTitle();
   }
 
   /**
-   * Returns the current URL
+   * @return  the current URL
    */
   public String getCurrentUrl() {
     return getWebDriver().getCurrentUrl();

@@ -91,8 +91,8 @@ public class BrowserSessionFactory {
   /**
    * Gets a new browser session, using the SeleniumServer static fields to populate parameters.
    *
-   * @param browserString
-   * @param startURL
+   * @param browserString browser name string
+   * @param startURL starting url
    * @param extensionJs per-session user extension Javascript
    * @param configuration Remote Control configuration. Cannot be null.
    * @return the BrowserSessionInfo for the new browser session.
@@ -111,8 +111,8 @@ public class BrowserSessionFactory {
   /**
    * Gets a new browser session
    *
-   * @param browserString
-   * @param startURL
+   * @param browserString browser name string
+   * @param startURL starting url
    * @param extensionJs per-session user extension Javascript
    * @param configuration Remote Control configuration. Cannot be null.
    * @param useCached if a cached session should be used if one is available
@@ -328,9 +328,9 @@ public class BrowserSessionFactory {
   /**
    * Isolated dependency
    *
-   * @param sessionId
-   * @param port
-   * @param configuration
+   * @param sessionId session id
+   * @param port port
+   * @param configuration Remote Control Configuration
    * @return a new FrameGroupCommandQueueSet instance
    */
   protected FrameGroupCommandQueueSet makeQueueSet(String sessionId, int port,
@@ -342,7 +342,7 @@ public class BrowserSessionFactory {
   /**
    * Isolated dependency
    *
-   * @param sessionId
+   * @param sessionId session id
    * @return an existing FrameGroupCommandQueueSet instance
    */
   protected FrameGroupCommandQueueSet getQueueSet(String sessionId) {
@@ -352,9 +352,9 @@ public class BrowserSessionFactory {
   /**
    * Creates and tries to open a new session.
    *
-   * @param browserString
-   * @param startURL
-   * @param extensionJs
+   * @param browserString browser name string
+   * @param startURL starting url
+   * @param extensionJs per-session user extension javascript
    * @param configuration Remote Control configuration. Cannot be null.
    * @param ensureClean if a clean session is required
    * @return the BrowserSessionInfo of the new session.

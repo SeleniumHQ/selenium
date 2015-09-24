@@ -50,6 +50,9 @@ public class LogLevelMapping {
 
   /**
    * Normalizes the given level to one of those supported by Selenium.
+   *
+   * @param level log level to normalize
+   * @return the selenium supported corresponding log level
    */
   public static Level normalize(Level level) {
     if (levelMap.containsKey(level.intValue())) {
@@ -67,6 +70,9 @@ public class LogLevelMapping {
 
   /**
    * Converts the JDK level to a name supported by Selenium.
+   *
+   * @param level log level to get the string name of
+   * @return string name representation of the level selenium supports
    */
   public static String getName(Level level) {
     Level normalized = normalize(level);

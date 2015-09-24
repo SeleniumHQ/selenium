@@ -119,6 +119,9 @@ public class Finders {
   /**
    * A finder which returns the first element matched - such as if you have multiple elements which
    * match the finder (such as multiple links with the same text on a page etc)
+   *
+   * @param finder finder from which context to search
+   * @return finder that will return the first match
    */
   public static Finder<WebElement, WebDriver> first(final Finder<WebElement, WebDriver> finder) {
     return new BaseFinder<WebElement, WebDriver>() {

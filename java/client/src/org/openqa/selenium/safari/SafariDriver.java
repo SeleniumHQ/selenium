@@ -46,6 +46,8 @@ public class SafariDriver extends RemoteWebDriver {
    * Converts the specified {@link DesiredCapabilities} to a {@link SafariOptions}
    * instance and initializes a new SafariDriver using these options.
    * @see SafariOptions#fromCapabilities(org.openqa.selenium.Capabilities)
+   *
+   * @param desiredCapabilities capabilities requested of the driver
    */
   public SafariDriver(Capabilities desiredCapabilities) {
     this(SafariOptions.fromCapabilities(desiredCapabilities));
@@ -53,6 +55,8 @@ public class SafariDriver extends RemoteWebDriver {
 
   /**
    * Initializes a new SafariDriver using the specified {@link SafariOptions}.
+   *
+   * @param safariOptions safari specific options / capabilities for the driver
    */
   public SafariDriver(SafariOptions safariOptions) {
     super(new SafariDriverCommandExecutor(safariOptions), safariOptions.toCapabilities());

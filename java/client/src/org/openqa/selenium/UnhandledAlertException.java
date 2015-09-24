@@ -31,7 +31,7 @@ public class UnhandledAlertException extends WebDriverException {
   }
 
   /**
-   * Returns the text of the unhandled alert.
+   * @return the text of the unhandled alert.
    */
   public String getAlertText() {
     return alertText;
