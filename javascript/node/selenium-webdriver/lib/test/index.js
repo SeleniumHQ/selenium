@@ -44,6 +44,7 @@ var NATIVE_BROWSERS = [
 
 var serverJar = process.env['SELENIUM_SERVER_JAR'];
 var remoteUrl = process.env['SELENIUM_REMOTE_URL'];
+var useLoopback = process.env['SELENIUM_USE_LOOP_BACK'] == '1';
 var startServer = !!serverJar && !remoteUrl;
 var nativeRun = !serverJar && !remoteUrl;
 
@@ -91,6 +92,9 @@ var browsersToTest = (function() {
     console.log('Using remote server ' + remoteUrl);
   } else if (serverJar) {
     console.log('Using standalone Selenium server ' + serverJar);
+    if (useLoopback) {
+      console.log('Running tests using loopback address')
+    }
   }
 
   return browsers;
@@ -208,7 +212,8 @@ function suite(fn, opt_options) {
 
         if (!!serverJar && !remoteUrl) {
           if (!(serverToUse = seleniumServer)) {
-            serverToUse = seleniumServer = new remote.SeleniumServer(serverJar);
+            serverToUse = seleniumServer = new remote.SeleniumServer(
+                serverJar, {loopback: useLoopback});
           }
 
           testing.before(function() {
