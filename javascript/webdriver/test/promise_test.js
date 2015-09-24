@@ -1862,7 +1862,7 @@ function testLongStackTraces_appendsInitialPromiseCreation_resolverThrows() {
   webdriver.promise.LONG_STACK_TRACES = true;
 
   var error = Error('hello');
-  var originalStack = error.stack;
+  var originalStack = '(placeholder; will be overwritten later)';
 
   var pair = callbackPair(null, function(e) {
     assertEquals(error, e);
@@ -1876,7 +1876,12 @@ function testLongStackTraces_appendsInitialPromiseCreation_resolverThrows() {
   });
 
   new webdriver.promise.Promise(function() {
-    throw error;
+    try {
+      throw error;
+    } catch (e) {
+      originalStack = e.stack;
+      throw e;
+    }
   }).then(pair.callback, pair.errback);
 
   clock.tick();
@@ -1914,7 +1919,7 @@ function testLongStackTraces_appendsEachStepToRejectionError() {
   webdriver.promise.LONG_STACK_TRACES = true;
 
   var error = Error('hello');
-  var originalStack = error.stack;
+  var originalStack = '(placeholder; will be overwritten later)';
 
   var pair = callbackPair(null, function(e) {
     assertEquals(error, e);
@@ -1934,7 +1939,12 @@ function testLongStackTraces_appendsEachStepToRejectionError() {
   });
 
   new webdriver.promise.Promise(function() {
-    throw error;
+    try {
+      throw error;
+    } catch (e) {
+      originalStack = e.stack;
+      throw e;
+    }
   }).
   then(fail).
   thenCatch(function(e) { throw e; }).
@@ -1951,7 +1961,7 @@ function testLongStackTraces_errorOccursInCallbackChain() {
   webdriver.promise.LONG_STACK_TRACES = true;
 
   var error = Error('hello');
-  var originalStack = error.stack;
+  var originalStack = '(placeholder; will be overwritten later)';
 
   var pair = callbackPair(null, function(e) {
     assertEquals(error, e);
@@ -1971,7 +1981,12 @@ function testLongStackTraces_errorOccursInCallbackChain() {
       then(goog.nullFunction).
       then(goog.nullFunction).
       then(function() {
-        throw error;
+        try {
+          throw error;
+        } catch (e) {
+          originalStack = e.stack;
+          throw e;
+        }
       }).
       thenCatch(function(e) { throw e; }).
       then(pair.callback, pair.errback);
