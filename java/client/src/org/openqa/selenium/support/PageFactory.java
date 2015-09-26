@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.support;
 
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.support.pagefactory.DefaultElementLocatorFactory;
 import org.openqa.selenium.support.pagefactory.DefaultFieldDecorator;
 import org.openqa.selenium.support.pagefactory.ElementLocatorFactory;
@@ -52,31 +52,27 @@ public class PageFactory {
    * which takes a WebDriver instance as its only argument or falling back on a no-arg constructor.
    * An exception will be thrown if the class cannot be instantiated.
    *
-   * @param driver           The driver that will be used to look up the elements
-   * @param pageClassToProxy A class which will be initialised.
    * @param <T>              Class of the PageObject
+   * @param searchContext    The context that will be used to look up the elements
+   * @param pageClassToProxy A class which will be initialised.
    * @return An instantiated instance of the class with WebElement and List&lt;WebElement&gt;
    * fields proxied
    * @see FindBy
    * @see CacheLookup
    */
-  public static <T> T initElements(WebDriver driver, Class<T> pageClassToProxy) {
-    T page = instantiatePage(driver, pageClassToProxy);
-    initElements(driver, page);
+  public static <T> T initElements(SearchContext searchContext, Class<T> pageClassToProxy) {
+    T page = instantiatePage(searchContext, pageClassToProxy);
+    initElements(searchContext, page);
     return page;
   }
 
   /**
-   * As {@link org.openqa.selenium.support.PageFactory#initElements(org.openqa.selenium.WebDriver,
-   * Class)} but will only replace the fields of an already instantiated Page Object.
-   *
-   * @param driver The driver that will be used to look up the elements
+   * As {@link PageFactory#initElements(SearchContext, Class)} but will only replace the fields of an already instantiated Page Object.
+   *  @param searchContext The context that will be used to look up the elements
    * @param page   The object with WebElement and List&lt;WebElement&gt; fields that
-   *               should be proxied.
    */
-  public static void initElements(WebDriver driver, Object page) {
-    final WebDriver driverRef = driver;
-    initElements(new DefaultElementLocatorFactory(driverRef), page);
+  public static void initElements(SearchContext searchContext, Object page) {
+    initElements(new DefaultElementLocatorFactory(searchContext), page);
   }
 
   /**
@@ -122,11 +118,11 @@ public class PageFactory {
     }
   }
 
-  private static <T> T instantiatePage(WebDriver driver, Class<T> pageClassToProxy) {
+  private static <T> T instantiatePage(SearchContext searchContext, Class<T> pageClassToProxy) {
     try {
       try {
-        Constructor<T> constructor = pageClassToProxy.getConstructor(WebDriver.class);
-        return constructor.newInstance(driver);
+        Constructor<T> constructor = pageClassToProxy.getConstructor(SearchContext.class);
+        return constructor.newInstance(searchContext);
       } catch (NoSuchMethodException e) {
         return pageClassToProxy.newInstance();
       }

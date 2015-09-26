@@ -30,6 +30,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -96,12 +97,12 @@ public class PageFactoryTest {
   }
 
   @Test
-  public void shouldUseAConstructorThatTakesAWebDriverAsAnArgument() {
+  public void shouldUseAConstructorThatTakesASearchContextAsAnArgument() {
     driver = mock(WebDriver.class);
 
     ConstructedPage page = PageFactory.initElements(driver, ConstructedPage.class);
 
-    assertThat(driver, equalTo(page.driver));
+    assertThat(driver, equalTo(page.searchContext));
   }
 
   @Test
@@ -218,10 +219,10 @@ public class PageFactoryTest {
 
   public static class ConstructedPage {
 
-    public WebDriver driver;
+    public SearchContext searchContext;
 
-    public ConstructedPage(WebDriver driver) {
-      this.driver = driver;
+    public ConstructedPage(SearchContext searchContext) {
+      this.searchContext = searchContext;
     }
   }
 
