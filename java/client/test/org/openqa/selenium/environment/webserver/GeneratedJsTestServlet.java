@@ -45,10 +45,13 @@ public class GeneratedJsTestServlet extends HttpServlet {
          + "<script src=\"/third_party/closure/goog/base.js\"></script>\n"
          + "<script src=\"/javascript/deps.js\"></script>\n"
          + "<script>\n"
-         + "  goog.addDependency('../../.." + req.getPathInfo() + "',\n"
-         + "      ['" + symbol + "'],\n"
-         + "      goog.dependencies_.requires['../../.." + req.getPathInfo() + "'] || []);\n"
-         + "  goog.require('" + symbol + "');\n"
+         + "  (function() {\n"
+         + "    var path = '../../.." + req.getPathInfo() + "';\n"
+         + "    goog.addDependency(path, ['" + symbol + "'],\n"
+         + "        goog.dependencies_.requires['../../.." + req.getPathInfo() + "'] || [],\n"
+         + "        !!goog.dependencies_.pathIsModule[path]);\n"
+         + "    goog.require('" + symbol + "');\n"
+         + "  })()\n"
          + "</script></head><body></body></html>").getBytes(Charsets.UTF_8);
 
     resp.setStatus(HttpServletResponse.SC_OK);
