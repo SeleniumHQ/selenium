@@ -18,6 +18,9 @@
 
 package org.openqa.selenium.remote;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -31,15 +34,13 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-
 @RunWith(JUnit4.class)
 public class DesiredCapabilitiesTest {
+
   @Test
   public void testAddingTheSameCapabilityToAMapTwiceShouldResultInOneEntry() {
     Map<org.openqa.selenium.Capabilities, Class<? extends WebDriver>> capabilitiesToDriver =
-        new ConcurrentHashMap<>();
+      new ConcurrentHashMap<>();
 
     capabilitiesToDriver.put(DesiredCapabilities.firefox(), WebDriver.class);
     capabilitiesToDriver.put(DesiredCapabilities.firefox(), WebDriver.class);
@@ -90,7 +91,7 @@ public class DesiredCapabilitiesTest {
 
     DesiredCapabilities caps = new DesiredCapabilities(capabilitiesMap);
     LoggingPreferences prefs =
-        (LoggingPreferences) caps.getCapability(CapabilityType.LOGGING_PREFS);
+      (LoggingPreferences) caps.getCapability(CapabilityType.LOGGING_PREFS);
     assertSame(Level.FINE, prefs.getLevel("browser"));
   }
 
@@ -120,4 +121,23 @@ public class DesiredCapabilitiesTest {
     assertEquals(caps.getCapability(CapabilityType.PLATFORM), "FreeBSD");
   }
 
+  @Test
+  public void builder() throws Exception {
+    DesiredCapabilities caps = DesiredCapabilities.builder()
+      .browser("the-browser")
+      .version("the-version")
+      .platform(Platform.ANDROID)
+      .javascriptEnabled(true)
+      .capability("the-capability", "the-value")
+      .build();
+
+    DesiredCapabilities
+      expectedCaps =
+      new DesiredCapabilities("the-browser", "the-version", Platform.ANDROID);
+    expectedCaps.setJavascriptEnabled(true);
+    expectedCaps.setCapability("the-capability", "the-value");
+
+    assertEquals(expectedCaps, caps);
+
+  }
 }
