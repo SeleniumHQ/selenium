@@ -167,9 +167,6 @@ public class CommandQueue {
     }
   }
 
-  /**
-   * Get, and remove from the command holder, the next command to run
-   */
   protected String getResult() {
     return resultHolder.getResult();
   }
@@ -252,6 +249,7 @@ public class CommandQueue {
 
   /**
    * Get, and remove from the command holder, the next command to run
+   * @return next command to run
    */
   protected RemoteCommand getNextCommand() {
     return commandHolder.getCommand();

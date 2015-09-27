@@ -27,8 +27,7 @@ import java.util.logging.Logger;
 /**
  * <p>
  * Holds the command to be next run in the browser
- * </p>
- * <p/>
+ * <p>
  * This class uses reentrant locks in order to allow the same thread to populate the queue as is
  * waiting for it, which is what currently happens on during browser startup.
  *

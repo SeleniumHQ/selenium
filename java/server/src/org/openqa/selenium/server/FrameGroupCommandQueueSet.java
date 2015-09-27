@@ -212,7 +212,7 @@ public class FrameGroupCommandQueueSet {
   }
 
 
-  /**
+  /*
    * Retrieves a FrameGroupCommandQueueSet for the specified sessionId
    */
   static public FrameGroupCommandQueueSet getQueueSet(String sessionId) {
@@ -228,7 +228,7 @@ public class FrameGroupCommandQueueSet {
     return queueSet;
   }
 
-  /**
+  /*
    * Creates a FrameGroupCommandQueueSet for the specifed sessionId
    */
   static public FrameGroupCommandQueueSet makeQueueSet(String sessionId,
@@ -244,7 +244,7 @@ public class FrameGroupCommandQueueSet {
     }
   }
 
-  /**
+  /*
    * Deletes the specified FrameGroupCommandQueueSet
    */
   static public void clearQueueSet(String sessionId) {
@@ -439,6 +439,7 @@ public class FrameGroupCommandQueueSet {
    * Generates a CSV string from the given string array.
    *
    * @param stringArray Array of strings to generate a CSV.
+   * @return CSV formatted string
    */
   public String getStringArrayAccessorCSV(String[] stringArray) {
     StringBuffer sb = new StringBuffer();
@@ -584,6 +585,7 @@ public class FrameGroupCommandQueueSet {
    *
    * @param condition the condition to wait upon
    * @param numSeconds timeout to wait for the condition
+   * @return result of the condition evaluated otherwise false if numSeconds reached
    */
   protected static boolean waitUntilSignalOrNumSecondsPassed(Condition condition, int numSeconds) {
     boolean result = false;

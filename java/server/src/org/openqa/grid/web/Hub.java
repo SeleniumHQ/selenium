@@ -46,7 +46,7 @@ import java.util.logging.Logger;
 import javax.servlet.Servlet;
 
 /**
- * Jetty server. Main entry point for everything about the grid. <p/> Except for unit tests, this
+ * Jetty server. Main entry point for everything about the grid. <p> Except for unit tests, this
  * should be a singleton.
  */
 public class Hub {

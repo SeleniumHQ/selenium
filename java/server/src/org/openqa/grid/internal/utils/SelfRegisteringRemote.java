@@ -180,9 +180,9 @@ public class SelfRegisteringRemote {
 
   /**
    * register the hub following the configuration :
-   * <p/>
+   * <p>
    * - check if the proxy is already registered before sending a reg request.
-   * <p/>
+   * <p>
    * - register again every X ms is specified in the config of the node.
    */
   public void startRegistrationProcess() {

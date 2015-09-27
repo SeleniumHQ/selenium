@@ -37,7 +37,7 @@ import java.util.logging.Logger;
  * The entity on a proxy that can host a test session. A test slot has only 1 desired capabilities (
  * firefox or chrome for instance, but if a remoteproxy needs to support both, the remoteproxy will
  * need 2 TestSlots ) A TestSlot can host 1 TestSession max at a time.
- * <p/>
+ * <p>
  * The listener ({@link TestSessionListener} attached to the test session of this test slot is
  * thread safe. If 2 threads are trying to execute the before / after session, only 1 will be
  * executed.The other one will be discarded.
@@ -93,7 +93,7 @@ public class TestSlot {
    * Try to get a new session for the test slot for the desired capability. To define if the
    * test slot can host the desired capabilities, {@link CapabilityMatcher#matches(Map, Map)} is
    * invoked.
-   * <p/>
+   * <p>
    * Use {@link GridHubConfiguration#setCapabilityMatcher(CapabilityMatcher)}
    * on the proxy hosting the test slot to modify the definition of match
    *
@@ -164,7 +164,7 @@ public class TestSlot {
    * Starts the release process for the TestSlot. Once the release process has started, the clients
    * can't access the test slot any more, but the slot can't be reserved for another test until
    * finishReleaseProcess is called.
-   * <p/>
+   * <p>
    * That gives time to run exactly once the cleanup operation needed using @see
    * {@link TestSessionListener#afterSession(TestSession)}
    *

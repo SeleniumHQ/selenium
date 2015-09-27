@@ -22,7 +22,7 @@ import org.openqa.selenium.server.browserlaunchers.BrowserInstallationCache;
 
 /**
  * Application Registry. Global object to find common objects and services.
- * <p/>
+ * <p>
  * See http://martinfowler.com/eaaCatalog/registry.html
  */
 public class ApplicationRegistry {

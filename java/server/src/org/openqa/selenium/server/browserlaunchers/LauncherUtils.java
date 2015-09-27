@@ -46,7 +46,7 @@ public class LauncherUtils {
 
   static Logger log = Logger.getLogger(LauncherUtils.class.getName());
 
-  /**
+  /*
    * creates an empty temp directory for managing a browser profile
    */
   // TODO(simon): Change this back to protected once moved into browserlaunchers
@@ -82,6 +82,8 @@ public class LauncherUtils {
 
   /**
    * Try several times to recursively delete a directory
+   * @param dir directory to delete
+   * @param tries number of retries to attempt
    */
   public static void deleteTryTryAgain(File dir, int tries) {
     try {
@@ -218,13 +220,14 @@ public class LauncherUtils {
 
   /**
    * Copies all files matching the suffix to the destination directory.
-   * <p/>
+   * <p>
    * If no files match, and the destination directory did not already exist, the destination
    * directory is still created, if possible.
    *
    * @param source the source directory
    * @param suffix the suffix for all files to be copied.
    * @param dest the destination directory
+   * @return true if successful
    */
   protected static boolean copyDirectory(File source, String suffix, File dest) {
     try {

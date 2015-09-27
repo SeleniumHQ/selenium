@@ -49,9 +49,14 @@ public class Proxies {
 
   /**
    * Generate a proxy.pac file, configuring a dynamic proxy.
-   * <p/>
+   * <p>
    * If proxySeleniumTrafficOnly is true, then the proxy applies only to URLs containing
    * "/selenium-server/". Otherwise the proxy applies to all URLs.
+   *
+   * @param parentDir parent directory
+   * @param port port
+   * @param capabilities capabilities
+   * @return File
    */
   public static File makeProxyPAC(File parentDir, int port, Capabilities capabilities) {
     return makeProxyPAC(parentDir, port,
@@ -83,6 +88,8 @@ public class Proxies {
 
   /**
    * @deprecated Use Proxy.extractFrom(Capabilities)
+   * @param capabilities capabilities
+   * @return Proxy
    */
   @Deprecated
   @SuppressWarnings({"unchecked"})
