@@ -379,6 +379,9 @@ task :javadocs => [:common, :firefox, :htmlunit, :ie, :remote, :support, :chrome
    [File.join(%w(java client src))].each do |m|
      sourcepath += File::PATH_SEPARATOR + m
    end
+   [File.join(%w(java server src))].each do |m|
+     sourcepath += File::PATH_SEPARATOR + m
+   end
    p sourcepath
    cmd = "javadoc -notimestamp -d build/javadoc -sourcepath #{sourcepath} -classpath #{classpath} -subpackages org.openqa.selenium -subpackages com.thoughtworks "
    cmd << " -exclude org.openqa.selenium.internal.selenesedriver:org.openqa.selenium.internal.seleniumemulation:org.openqa.selenium.remote.internal"
