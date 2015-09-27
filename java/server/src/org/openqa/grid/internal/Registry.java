@@ -186,6 +186,8 @@ public class Registry {
 
   /**
    * Releases the test slot, WITHOUT running any listener.
+   * @param testSlot test slot to be released
+   * @param reason reason for termination
    */
   public void forceRelease(TestSlot testSlot, SessionTerminationReason reason) {
     if (testSlot.getSession() == null) {
@@ -378,7 +380,7 @@ public class Registry {
   /**
    * If throwOnCapabilityNotPresent is set to true, the hub will reject test request for a
    * capability that is not on the grid. No exception will be thrown if the capability is present
-   * but busy. <p/> If set to false, the test will be queued hoping a new proxy will register later
+   * but busy. <p> If set to false, the test will be queued hoping a new proxy will register later
    * offering that capability.
    *
    * @param throwOnCapabilityNotPresent true to throw if capability not present

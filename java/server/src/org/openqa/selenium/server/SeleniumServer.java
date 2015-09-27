@@ -572,6 +572,7 @@ public class SeleniumServer implements SslCertificateGenerator {
 
   /**
    * Registers a running browser session
+   * @param sessionInfo session info
    */
   public void registerBrowserSession(BrowserSessionInfo sessionInfo) {
     driver.registerBrowserSession(sessionInfo);
@@ -579,6 +580,7 @@ public class SeleniumServer implements SslCertificateGenerator {
 
   /**
    * De-registers a previously registered running browser session
+   * @param sessionInfo session info
    */
   public void deregisterBrowserSession(BrowserSessionInfo sessionInfo) {
     driver.deregisterBrowserSession(sessionInfo);

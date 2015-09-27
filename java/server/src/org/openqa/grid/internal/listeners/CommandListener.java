@@ -30,7 +30,7 @@ public interface CommandListener {
   /**
    * Executed before the hub forwards the request. reading the content of the request stream will
    * prevent the content from being forwarded.
-   * <p/>
+   * <p>
    * Throwing an exception will prevent the forward to the remote.
    *
    * @param session session
@@ -42,7 +42,7 @@ public interface CommandListener {
 
   /**
    * Executed just before the forwards returns.
-   * <p/>
+   * <p>
    * Throwing an exception will result in an error for the client.
    *
    * @param session session

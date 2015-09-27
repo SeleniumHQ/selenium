@@ -46,6 +46,7 @@ public class CertificateCreator {
    * @throws NoSuchProviderException provider is invalid
    * @throws NoSuchAlgorithmException algorithm exception
    * @throws CertificateException a problem with the certificate
+   * @throws SignatureException signature exception
    * @param keyPair keyPair for the certificate
    * @return a X509 Certificate
    */

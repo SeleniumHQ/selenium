@@ -38,16 +38,16 @@ import java.util.logging.Logger;
 
 /**
  * Future File Resource.
- * <p/>
+ * <p>
  * DGF This is as per the standard Jetty FileResource, but its constructor is private, so I've
  * copied-and-pasted it rather than extending it. It's just like the regular FileResource, but it
  * always claims its lastModified date is in the future, to prevent caching.
- * <p/>
+ * <p>
  * Handle resources of implied or explicit file type. This class can check for aliasing in the
  * filesystem (eg case insensitivity). By default this is turned on if the platform does not have
  * the "/" path separator, or it can be controlled with the
  * "org.openqa.jetty.util.FileResource.checkAliases" system parameter.
- * <p/>
+ * <p>
  * If alias checking is turned on, then aliased resources are treated as if they do not exist, nor
  * can they be created.
  *

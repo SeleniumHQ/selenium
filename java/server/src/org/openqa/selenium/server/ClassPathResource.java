@@ -40,6 +40,7 @@ public class ClassPathResource extends Resource {
 
   /**
    * Specifies the classpath path containing the resource
+   * @param path resource location
    */
   public ClassPathResource(String path) {
     this.path = path;

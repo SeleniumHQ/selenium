@@ -67,7 +67,7 @@ import javax.net.ssl.SSLHandshakeException;
 /**
  * Proxy request handler. A HTTP/1.1 Proxy. This implementation uses the JVMs URL implementation to
  * make proxy requests.
- * <p/>
+ * <p>
  * The HttpTunnel mechanism is also used to implement the CONNECT method.
  *
  * @author Greg Wilkins (gregw)
@@ -676,6 +676,7 @@ public class ProxyHandler extends AbstractHttpHandler {
    * @param uri The requested URI, which should include a scheme, host and port.
    * @return The URL to proxy to, or null if the passed URI should not be proxied. The default
    *         implementation returns the passed uri if isForbidden() returns true.
+   * @throws MalformedURLException malformed URL
    */
   protected URL isProxied(URI uri) throws MalformedURLException {
     // Is this a proxy request?
@@ -691,6 +692,7 @@ public class ProxyHandler extends AbstractHttpHandler {
   /**
    * Is URL Forbidden.
    *
+   * @param uri URI
    * @return True if the URL is not forbidden. Calls isForbidden(scheme,host,port,true);
    */
   protected boolean isForbidden(URI uri) {
@@ -703,7 +705,7 @@ public class ProxyHandler extends AbstractHttpHandler {
   /* ------------------------------------------------------------ */
 
   /**
-   * Is scheme,host & port Forbidden.
+   * Is scheme,host &amp; port Forbidden.
    *
    * @param scheme A scheme that mast be in the proxySchemes StringMap.
    * @param host A host that must pass the white and black lists
@@ -727,6 +729,9 @@ public class ProxyHandler extends AbstractHttpHandler {
   /**
    * Send Forbidden. Method called to send forbidden response. Default implementation calls
    * sendError(403)
+   *
+   * @param response http response
+   * @throws IOException i/o exception
    */
   protected void sendForbid(HttpResponse response) throws IOException {
     response.sendError(HttpResponse.__403_Forbidden, "Forbidden for Proxy");
@@ -735,6 +740,9 @@ public class ProxyHandler extends AbstractHttpHandler {
   /**
    * Send not found. Method called to send not found response. Default implementation calls
    * sendError(404)
+   *
+   * @param response http response
+   * @throws IOException i/o exception
    */
   protected void sendNotFound(HttpResponse response) throws IOException {
     response.sendError(HttpResponse.__404_Not_Found, "Not found");

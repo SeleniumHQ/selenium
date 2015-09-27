@@ -489,6 +489,7 @@ public class KeyStoreManager {
    * Gets the authority root signing cert.
    *
    * @throws KeyStoreException keystore
+   * @return certificate
    */
   public synchronized X509Certificate getSigningCert() throws KeyStoreException {
     return _caCert;
@@ -497,7 +498,7 @@ public class KeyStoreManager {
   /**
    * Gets the authority private signing key.
    *
-   * @@throws KeyStoreException key store exception
+   * @throws KeyStoreException key store exception
    * @throws UnrecoverableKeyException unrecoverable key
    * @throws NoSuchAlgorithmException no such algorithm
    * @return private key
@@ -519,6 +520,7 @@ public class KeyStoreManager {
    * @throws CertificateException certificate
    * @throws SignatureException signature
    * @throws InvalidKeyException invalid key
+   * @param hostname host name
    * @return mapped certificate
    */
   public X509Certificate getMappedCertificateForHostname(String hostname)
@@ -568,7 +570,7 @@ public class KeyStoreManager {
   }
 
   /**
-   * Generate an RSA Key Pair
+   * @return Generated RSA Key Pair
    */
   public KeyPair getRSAKeyPair()
   {

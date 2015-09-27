@@ -22,10 +22,10 @@ import java.util.Map;
 public interface Prioritizer {
 
   /**
-   * priority of a is lower than b : compare(a,b) > 0
-   * <p/>
-   * priority of b is lower than a : compare(a,b) < 0
-   * <p/>
+   * priority of a is lower than b : compare(a,b) &gt; 0
+   * <p>
+   * priority of b is lower than a : compare(a,b) &lt; 0
+   * <p>
    * a and b have the same priority : compare(a,b) = 0
    *
    * @param a first item
