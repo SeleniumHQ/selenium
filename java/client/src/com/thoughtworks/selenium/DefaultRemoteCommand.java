@@ -66,7 +66,10 @@ public class DefaultRemoteCommand implements RemoteCommand {
     return getCommandURLString();
   }
 
-  /** Factory method to create a RemoteCommand from a wiki-style input string */
+  /** Factory method to create a RemoteCommand from a wiki-style input string
+   * @param inputLine wiki-style input string
+   * @return RemoteCommand
+   */
   public static RemoteCommand parse(String inputLine) {
     if (null == inputLine) throw new NullPointerException("inputLine can't be null");
     String[] values = inputLine.split("\\|");

@@ -603,7 +603,7 @@ public class RegistrationRequest {
   /**
    * Validate the current setting and throw a config exception is an invalid setup is detected.
    *
-   * @throws GridConfigurationException
+   * @throws GridConfigurationException grid configuration
    */
   public void validate() throws GridConfigurationException {
     String hub = (String) configuration.get(HUB_HOST);

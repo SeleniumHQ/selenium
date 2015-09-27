@@ -23,6 +23,6 @@ package com.thoughtworks.selenium;
  * @version $Id: $
  */
 public interface RemoteCommand {
-  /** Return the URL query string which will be sent to the browser */
+  /** @return the URL query string which will be sent to the browser */
   String getCommandURLString();
 }

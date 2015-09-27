@@ -111,7 +111,10 @@ public class HttpCommandProcessor implements CommandProcessor {
     throw new SeleniumException(message);
   }
 
-  /** Sends the specified command string to the bridge servlet */
+  /** Sends the specified command string to the bridge servlet
+   * @param command command to execute
+   * @return response from the command execution
+   */
   public String executeCommandOnServlet(String command) {
     try {
       return getCommandResponseAsString(command);

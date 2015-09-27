@@ -164,16 +164,22 @@ package com.thoughtworks.selenium;
 @Deprecated
 public interface Selenium {
 
-  /** Sets the per-session extension Javascript */
+  /** Sets the per-session extension Javascript
+   * @param extensionJs javascript extension
+   */
   void setExtensionJs(String extensionJs);
 
   /** Launches the browser with a new Selenium session */
   void start();
 
-  /** Starts a new Selenium testing session with a String, representing a configuration */
+  /** Starts a new Selenium testing session with a String, representing a configuration
+   * @param optionsString option string
+   */
   public void start(String optionsString);
 
-  /** Starts a new Selenium testing session with a configuration options object */
+  /** Starts a new Selenium testing session with a configuration options object
+   * @param optionsObject options object
+   */
   void start(Object optionsObject);
 
   /** Ends the test session, killing the browser */
@@ -189,6 +195,9 @@ public interface Selenium {
   /**
    * Shows in the RemoteRunner a banner for the current test The banner is 'classname : methodname'
    * The method name will be unCamelCased with the insertion of spaces at word boundaries
+   *
+   * @param className class name
+   * @param methodName method name
    */
   void showContextualBanner(String className, String methodName);
 

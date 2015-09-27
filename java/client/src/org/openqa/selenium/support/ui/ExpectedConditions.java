@@ -750,6 +750,7 @@ public class ExpectedConditions {
    * thrown when the second part of the condition is checked.
    *
    * @param condition ExpectedCondition to wrap
+   * @param <T> return type of the condition provided
    * @return the result of the provided condition
    */
   public static <T> ExpectedCondition<T> refreshed(

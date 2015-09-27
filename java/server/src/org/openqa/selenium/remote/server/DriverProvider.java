@@ -40,6 +40,7 @@ public interface DriverProvider {
    * The provider "promices" that created driver instances will have (at least) this set of
    * capabilities. The grid uses this information to match the capabilites requested by the client
    * against the capabilities provided by all registered providers to pick the "best" one.
+   * @return capabilities provided
    */
   Capabilities getProvidedCapabilities();
 
@@ -53,6 +54,7 @@ public interface DriverProvider {
   /**
    * Checks if the provider can create driver instance with the desired capabilities.
    *
+   * @param capabilities desired capabiilities to check if the provider can create a driver instance
    * @return true if the provider can create driver instance with the desired capabilities.
    */
   boolean canCreateDriverInstanceFor(Capabilities capabilities);

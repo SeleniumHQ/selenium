@@ -405,6 +405,7 @@ public class BaseRemoteProxy implements RemoteProxy {
    *
    * @param request  The request
    * @param registry The registry to use
+   * @param <T> RemoteProxy subclass
    * @return a new instance built from the request.
    */
   @SuppressWarnings("unchecked")

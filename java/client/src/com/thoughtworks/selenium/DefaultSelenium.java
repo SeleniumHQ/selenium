@@ -79,7 +79,9 @@ public class DefaultSelenium implements Selenium {
     return new HttpCommandProcessor(serverHost, serverPort, browserStartCommand, browserURL);
   }
 
-  /** Uses an arbitrary CommandProcessor */
+  /** Uses an arbitrary CommandProcessor
+   *  @param processor Command Processor to use
+   */
   public DefaultSelenium(CommandProcessor processor) {
     this.commandProcessor = processor;
   }
