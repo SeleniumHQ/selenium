@@ -296,8 +296,6 @@ public class InjectionHelper {
       // (int) 187
       // (int)(new String(buf)).charAt(2)
       // (int) 191
-      // (new String(buf)).charAt(2)
-      // (char) ¿
       // (int)(new String(buf)).charAt(3)
       // (int) 10
       //
