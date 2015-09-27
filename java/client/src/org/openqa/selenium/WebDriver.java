@@ -41,14 +41,10 @@ import java.util.concurrent.TimeUnit;
  * <p>
  * Currently, you will need to instantiate implementations of this class directly. It is hoped that
  * you write your tests against this interface so that you may "swap in" a more fully featured
- * browser when there is a requirement for one. Given this approach to testing, it is best to start
- * writing your tests using the {@link org.openqa.selenium.htmlunit.HtmlUnitDriver} implementation.
+ * browser when there is a requirement for one.
  * <p>
  * Note that all methods that use XPath to locate elements will throw a {@link RuntimeException}
  * should there be an error thrown by the underlying XPath engine.
- *
- * @see org.openqa.selenium.ie.InternetExplorerDriver
- * @see org.openqa.selenium.htmlunit.HtmlUnitDriver
  */
 public interface WebDriver extends SearchContext {
   // Navigation

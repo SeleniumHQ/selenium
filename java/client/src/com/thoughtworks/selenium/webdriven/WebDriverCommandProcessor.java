@@ -185,6 +185,8 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
    * Sets whether to enable emulation of Selenium's alert handling functions or
    * to preserve WebDriver's alert handling. This has no affect after calling
    * {@link #start()}.
+   *
+   * @param enableAlertOverrides boolean to enable overrides
    */
   public void setEnableAlertOverrides(boolean enableAlertOverrides) {
     this.enableAlertOverrides = enableAlertOverrides;

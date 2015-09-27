@@ -25,7 +25,7 @@ public class ThumbprintUtil {
    *
    * @param cert certificate
    * @return String with base64 encoded digest bytes.
-   * @throws CertificateEncodingException
+   * @throws CertificateEncodingException certificate encoding
    */
   public static String getThumbprint(final X509Certificate cert)
       throws CertificateEncodingException {
