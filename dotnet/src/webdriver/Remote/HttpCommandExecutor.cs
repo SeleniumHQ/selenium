@@ -111,7 +111,8 @@ namespace OpenQA.Selenium.Remote
                 requestStream.Close();
             }
 
-            return this.CreateResponse(request);
+            Response toReturn = this.CreateResponse(request);
+            return toReturn;
         }
 
         private static string GetTextOfWebResponse(HttpWebResponse webResponse)
