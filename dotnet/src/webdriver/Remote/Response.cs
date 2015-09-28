@@ -55,7 +55,10 @@ namespace OpenQA.Selenium.Remote
         {
             if (rawResponse.ContainsKey("sessionId"))
             {
-                this.responseSessionId = rawResponse["sessionId"].ToString();
+                if (rawResponse["sessionId"] != null)
+                {
+                    this.responseSessionId = rawResponse["sessionId"].ToString();
+                }
             }
 
             if (rawResponse.ContainsKey("status"))
