@@ -20,6 +20,10 @@
 require_relative 'spec_helper'
 
 describe "Selenium::WebDriver::TargetLocator" do
+  after do
+    reset_driver!
+  end
+
   let(:wait) { Selenium::WebDriver::Wait.new }
   let(:new_window) { driver.window_handles.find {|handle| handle != driver.window_handle} }
 
@@ -59,10 +63,6 @@ describe "Selenium::WebDriver::TargetLocator" do
   end
 
   not_compliant_on :browser => [:ie, :iphone, :safari] do
-    before do
-      reset_driver!
-    end
-
     it "should switch to a window and back when given a block" do
       driver.navigate.to url_for("xhtmlTest.html")
 
@@ -100,7 +100,7 @@ describe "Selenium::WebDriver::TargetLocator" do
       expect(driver.title).to eq("We Arrive Here")
     end
 
-    # TODO - File bug with Microsoft; closing 2nd window hangs
+    # TODO - File Edge bug; closing 2nd window hangs
     not_compliant_on :browser => :edge do
       it "should use the original window if the block closes the popup" do
         driver.navigate.to url_for("xhtmlTest.html")
@@ -174,7 +174,7 @@ describe "Selenium::WebDriver::TargetLocator" do
       expect(driver.title).to eq("We Arrive Here")
     end
 
-    # TODO - File bug with Microsoft; closing 2nd window hangs
+    # TODO - File Edge  bug; closing 2nd window hangs
     not_compliant_on :browser => :edge do
       it "should switch to a window and execute a block when current window is closed" do
         driver.navigate.to url_for("xhtmlTest.html")
@@ -237,21 +237,18 @@ describe "Selenium::WebDriver::TargetLocator" do
       end
     end
 
-    not_compliant_on :browser => [:iphone, :safari, :phantomjs] do
+    # TODO - File Edge bug; clicking for alert causes driver to hang
+    not_compliant_on :browser => [:iphone, :safari, :phantomjs, :edge] do
+       it "allows the user to set the value of a prompt" do
+        driver.navigate.to url_for("alerts.html")
+        driver.find_element(:id => "prompt").click
 
-      # Edge has not yet implemented {POST} /session/{sessionId}/alert/text
-      not_compliant_on :browser => [:edge] do
-        it "allows the user to set the value of a prompt" do
-          driver.navigate.to url_for("alerts.html")
-          driver.find_element(:id => "prompt").click
+        alert = wait_for_alert
+        alert.send_keys "cheese"
+        alert.accept
 
-          alert = wait_for_alert
-          alert.send_keys "cheese"
-          alert.accept
-
-          text = driver.find_element(:id => "text").text
-          expect(text).to eq("cheese")
-        end
+        text = driver.find_element(:id => "text").text
+        expect(text).to eq("cheese")
       end
 
       it "allows the user to get the text of an alert" do
@@ -284,7 +281,8 @@ describe "Selenium::WebDriver::TargetLocator" do
       end
     end
 
-    compliant_on :browser => [:firefox, :ie] do
+    # TODO - File Edge bug; clicking for alert causes driver to hang
+    compliant_on :browser => [:firefox, :ie, :edge] do
       it "raises an UnhandledAlertError if an alert has not been dealt with" do
         driver.navigate.to url_for("alerts.html")
         driver.find_element(:id => "alert").click
@@ -298,4 +296,3 @@ describe "Selenium::WebDriver::TargetLocator" do
 
   end
 end
-

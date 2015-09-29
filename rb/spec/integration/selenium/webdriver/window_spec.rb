@@ -24,7 +24,7 @@ module Selenium
     describe Window do
       let(:window) { driver.manage.window }
 
-      compliant_on :browser => [:firefox, :chrome] do
+      compliant_on :browser => [:firefox, :chrome, :edge] do
         it "gets the size of the current window" do
           size = window.size
 
@@ -71,6 +71,7 @@ module Selenium
       end
 
       compliant_on({:browser => :ie},
+                   {:browser => :edge},
                    {:browser => :firefox, :platform => [:windows, :macosx]},
                    {:browser => :firefox, :platform => :linux, :window_manager => true}) do
         it "can maximize the current window" do

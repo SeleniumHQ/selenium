@@ -26,8 +26,6 @@ describe "Element" do
     driver.find_element(:id, "imageButton").click
   end
 
-  # TODO: File bug with Microsoft Edge documentation says this isn't supported, but it is
-  # {POST} /session/{sessionId}/element/{id}/submit
   it "should submit" do
     driver.navigate.to url_for("formPage.html")
     driver.find_element(:id, "submitButton").submit
@@ -71,7 +69,7 @@ describe "Element" do
     expect(driver.find_element(:id, "withText").attribute("rows")).to eq("5")
   end
 
-  # TODO - File bug with Microsoft, this should return nil, but throws an error
+  # TODO - File Edge bug, this should return nil, but throws an error
   # Selenium::WebDriver::Error::UnknownError: unknown error
   it "should return nil for non-existent attributes" do
     driver.navigate.to url_for("formPage.html")
@@ -135,19 +133,15 @@ describe "Element" do
     end
   end
 
-  # TODO - File bug with Microsoft, this command hangs
-  # GET session/22A56752-2F60-45FB-B721-0CEB42CA77DF/element/4c3ee8d6-4ed4-492d-98c7-d8538366f7be/size
-  not_compliant_on :browser => :edge do
-    it "should get size" do
-      driver.navigate.to url_for("xhtmlTest.html")
-      size = driver.find_element(:class, "header").size
+  it "should get size" do
+    driver.navigate.to url_for("xhtmlTest.html")
+    size = driver.find_element(:class, "header").size
 
-      expect(size.width).to be > 0
-      expect(size.height).to be > 0
-    end
+    expect(size.width).to be > 0
+    expect(size.height).to be > 0
   end
 
-  compliant_on :driver => [:ie, :chrome] do # Firefox w/native events: issue 1771
+  compliant_on :driver => [:ie, :chrome, :edge] do # Firefox w/native events: issue 1771
     it "should drag and drop" do
       driver.navigate.to url_for("dragAndDropTest.html")
 
@@ -207,16 +201,13 @@ describe "Element" do
     expect(body.hash).to eq(xbody.hash)
   end
 
-  # Edge does not yet support xpath location for {POST} /session/{sessionId}/elements
-  not_compliant_on :browser => :edge do
-    it "should return the same #hash for equal elements when found by Driver#find_elements" do
-      driver.navigate.to url_for("simpleTest.html")
+  it "should return the same #hash for equal elements when found by Driver#find_elements" do
+    driver.navigate.to url_for("simpleTest.html")
 
-      body = driver.find_elements(:tag_name, 'body').fetch(0)
-      xbody = driver.find_elements(:xpath, "//body").fetch(0)
+    body = driver.find_elements(:tag_name, 'body').fetch(0)
+    xbody = driver.find_elements(:xpath, "//body").fetch(0)
 
-      expect(body.hash).to eq(xbody.hash)
-    end
+    expect(body.hash).to eq(xbody.hash)
   end
 
 end
