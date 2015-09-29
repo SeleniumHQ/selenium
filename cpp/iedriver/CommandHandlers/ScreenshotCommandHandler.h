@@ -132,8 +132,8 @@ class ScreenshotCommandHandler : public IECommandHandler {
     int target_window_height = document_info.height + chrome_height;
 
     // For some reason, this technique does not allow the user to resize
-    // the browser window to greater than SIZE_LIMIT x SIZE_LIMIT. This is pretty
-    // big, so we'll cap the allowable screenshot size to that.
+    // the browser window to greater than SIZE_LIMIT x SIZE_LIMIT. This is
+    // pretty big, so we'll cap the allowable screenshot size to that.
     //
     // GDI+ limit after which it may report Generic error for some image types
     int SIZE_LIMIT = 65534; 
@@ -153,6 +153,30 @@ class ScreenshotCommandHandler : public IECommandHandler {
     LOG(DEBUG) << "Initial browser window sizes are (w, h): "
                << original_width << ", " << original_height;
 
+    // If the window is already wide enough to accomodate
+    // the document, don't resize that dimension. Otherwise,
+    // the window will display a horizontal scroll bar, and
+    // we need to take the scroll bar height into account when
+    // we size resulting image.
+    int horizontal_scrollbar_height = 0;
+    if (original_width > target_window_width) {
+      target_window_width = original_width;
+    } else {
+      horizontal_scrollbar_height = ::GetSystemMetrics(SM_CYHSCROLL);
+    }
+
+    // If the window is already tall enough to accomodate
+    // the document, don't resize that dimension. Otherwise,
+    // the window will display a vertical scroll bar, and
+    // we need to take the scrollbar width into account when
+    // we size the resulting image.
+    int vertical_scrollbar_width = 0;
+    if (original_height > target_window_height) {
+      target_window_height = original_height;
+    } else {
+      vertical_scrollbar_width = ::GetSystemMetrics(SM_CXVSCROLL);
+    }
+
     BOOL is_maximized = ::IsZoomed(ie_window_handle);
     bool requires_resize = original_width < target_window_width ||
                            original_height < target_window_height;
@@ -168,6 +192,13 @@ class ScreenshotCommandHandler : public IECommandHandler {
         ::ShowWindow(ie_window_handle, SW_SHOWNORMAL);
       }
 
+      // NOTE: There is a *very* slight chance that resizing the window
+      // so there are no longer scroll bars to be displayed *might* cause
+      // layout redraws such that the screenshot does not show the entire
+      // DOM after the resize. Since we should always be expanding the
+      // window size, never contracting it, this is a corner case that
+      // explicitly will *not* be fixed. Any issue reports describing this
+      // corner case will be closed without action.
       RECT ie_window_rect;
       ::GetWindowRect(ie_window_handle, &ie_window_rect);
       ::SetWindowPos(ie_window_handle,
@@ -180,9 +211,10 @@ class ScreenshotCommandHandler : public IECommandHandler {
     }
 
     // Capture the window's canvas to a DIB.
-    BOOL created = this->image_->Create(document_info.width,
-                                        document_info.height,
-                                        /*numbers of bits per pixel = */ 32);
+    BOOL created = this->image_->Create(
+        document_info.width + vertical_scrollbar_width,
+        document_info.height + horizontal_scrollbar_height,
+        /*numbers of bits per pixel = */ 32);
     if (!created) {
       LOG(WARN) << "Unable to initialize image object";
     }
