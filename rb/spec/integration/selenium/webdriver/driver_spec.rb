@@ -25,12 +25,9 @@ describe "Driver" do
     expect(driver.title).to eq("XHTML Test Page")
   end
 
-  # Edge does not yet support {GET} /session/{sessionId}/Source
-  not_compliant_on :browser => :edge do
-    it "should get the page source" do
-      driver.navigate.to url_for("xhtmlTest.html")
-      expect(driver.page_source).to match(%r[<title>XHTML Test Page</title>]i)
-    end
+  it "should get the page source" do
+    driver.navigate.to url_for("xhtmlTest.html")
+    expect(driver.page_source).to match(%r[<title>XHTML Test Page</title>]i)
   end
 
   not_compliant_on :browser => :safari do
@@ -108,28 +105,22 @@ describe "Driver" do
       expect(driver.find_element(:tag_name, 'div').attribute("class")).to eq("navigation")
     end
 
-    # Edge does not yet support {POST} /session/{sessionId}/element/{elementId}/element
-    not_compliant_on :browser => :edge do
-      it "should find child element" do
-        driver.navigate.to url_for("nestedElements.html")
+    it "should find child element" do
+      driver.navigate.to url_for("nestedElements.html")
 
-        element = driver.find_element(:name, "form2")
-        child   = element.find_element(:name, "selectomatic")
+      element = driver.find_element(:name, "form2")
+      child   = element.find_element(:name, "selectomatic")
 
-        expect(child.attribute("id")).to eq("2")
-      end
+      expect(child.attribute("id")).to eq("2")
     end
 
-    # Edge does not yet support {POST} /session/{sessionId}/element/{elementId}/elements
-    not_compliant_on :browser => :edge do
-      it "should find child element by tag name" do
-        driver.navigate.to url_for("nestedElements.html")
+    it "should find child element by tag name" do
+      driver.navigate.to url_for("nestedElements.html")
 
-        element = driver.find_element(:name, "form2")
-        child   = element.find_element(:tag_name, "select")
+      element = driver.find_element(:name, "form2")
+      child   = element.find_element(:tag_name, "select")
 
-        expect(child.attribute("id")).to eq("2")
-      end
+      expect(child.attribute("id")).to eq("2")
     end
 
     it "should raise on nonexistant element" do
@@ -161,109 +152,106 @@ describe "Driver" do
       driver.find_elements(:css, 'p')
     end
 
-    # Edge does not yet support {POST} /session/{sessionId}/element/{elementId}/elements
-    not_compliant_on :browser => :edge do
-      it "should find children by field name" do
-        driver.navigate.to url_for("nestedElements.html")
-        element = driver.find_element(:name, "form2")
-        children = element.find_elements(:name, "selectomatic")
-        expect(children.size).to eq(2)
-      end
+    it "should find children by field name" do
+      driver.navigate.to url_for("nestedElements.html")
+      element = driver.find_element(:name, "form2")
+      children = element.find_elements(:name, "selectomatic")
+      expect(children.size).to eq(2)
     end
   end
 
-    describe "execute script" do
-      it "should return strings" do
+  describe "execute script" do
+    it "should return strings" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      expect(driver.execute_script("return document.title;")).to eq("XHTML Test Page")
+    end
+
+    it "should return numbers" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      expect(driver.execute_script("return document.title.length;")).to eq("XHTML Test Page".length)
+    end
+
+    it "should return elements" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      element = driver.execute_script("return document.getElementById('id1');")
+      expect(element).to be_kind_of(WebDriver::Element)
+      expect(element.text).to eq("Foo")
+    end
+
+    not_compliant_on :browser => [:android] do
+      it "should unwrap elements in deep objects" do
         driver.navigate.to url_for("xhtmlTest.html")
-        expect(driver.execute_script("return document.title;")).to eq("XHTML Test Page")
+        result = driver.execute_script(<<-SCRIPT)
+        var e1 = document.getElementById('id1');
+        var body = document.body;
+
+        return {
+          elements: {'body' : body, other: [e1] }
+        };
+        SCRIPT
+
+        expect(result).to be_kind_of(Hash)
+        expect(result['elements']['body']).to be_kind_of(WebDriver::Element)
+        expect(result['elements']['other'].first).to be_kind_of(WebDriver::Element)
       end
+    end
 
-      it "should return numbers" do
-        driver.navigate.to url_for("xhtmlTest.html")
-        expect(driver.execute_script("return document.title.length;")).to eq("XHTML Test Page".length)
-      end
+    it "should return booleans" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      expect(driver.execute_script("return true;")).to eq(true)
+    end
 
-      it "should return elements" do
-        driver.navigate.to url_for("xhtmlTest.html")
-        element = driver.execute_script("return document.getElementById('id1');")
-        expect(element).to be_kind_of(WebDriver::Element)
-        expect(element.text).to eq("Foo")
-      end
+    it "should raise if the script is bad" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      expect { driver.execute_script("return squiggle();") }.to raise_error
+    end
 
-      not_compliant_on :browser => [:android] do
-        it "should unwrap elements in deep objects" do
-          driver.navigate.to url_for("xhtmlTest.html")
-          result = driver.execute_script(<<-SCRIPT)
-          var e1 = document.getElementById('id1');
-          var body = document.body;
+    it "should return arrays" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      expect(driver.execute_script('return ["zero", "one", "two"];')).to eq(%w[zero one two])
+    end
 
-          return {
-            elements: {'body' : body, other: [e1] }
-          };
-          SCRIPT
+    it "should be able to call functions on the page" do
+      driver.navigate.to url_for("javascriptPage.html")
+      driver.execute_script("displayMessage('I like cheese');")
+      expect(driver.find_element(:id, "result").text.strip).to eq("I like cheese")
+    end
 
-          expect(result).to be_kind_of(Hash)
-          expect(result['elements']['body']).to be_kind_of(WebDriver::Element)
-          expect(result['elements']['other'].first).to be_kind_of(WebDriver::Element)
-        end
-      end
+    it "should be able to pass string arguments" do
+      driver.navigate.to url_for("javascriptPage.html")
+      expect(driver.execute_script("return arguments[0] == 'fish' ? 'fish' : 'not fish';", "fish")).to eq("fish")
+    end
 
-      it "should return booleans" do
-        driver.navigate.to url_for("xhtmlTest.html")
-        expect(driver.execute_script("return true;")).to eq(true)
-      end
+    it "should be able to pass boolean arguments" do
+      driver.navigate.to url_for("javascriptPage.html")
+      expect(driver.execute_script("return arguments[0] == true;", true)).to eq(true)
+    end
 
-      it "should raise if the script is bad" do
-        driver.navigate.to url_for("xhtmlTest.html")
-        expect { driver.execute_script("return squiggle();") }.to raise_error
-      end
+    it "should be able to pass numeric arguments" do
+      driver.navigate.to url_for("javascriptPage.html")
+      expect(driver.execute_script("return arguments[0] == 1 ? 1 : 0;", 1)).to eq(1)
+    end
 
-      it "should return arrays" do
-        driver.navigate.to url_for("xhtmlTest.html")
-        expect(driver.execute_script('return ["zero", "one", "two"];')).to eq(%w[zero one two])
-      end
+    it "should be able to pass null arguments" do
+      driver.navigate.to url_for("javascriptPage.html")
+      expect(driver.execute_script("return arguments[0];", nil)).to eq(nil)
+    end
 
-      it "should be able to call functions on the page" do
-        driver.navigate.to url_for("javascriptPage.html")
-        driver.execute_script("displayMessage('I like cheese');")
-        expect(driver.find_element(:id, "result").text.strip).to eq("I like cheese")
-      end
+    it "should be able to pass array arguments" do
+      driver.navigate.to url_for("javascriptPage.html")
+      expect(driver.execute_script("return arguments[0];", [1, '2', 3])).to eq([1, '2', 3])
+    end
 
-      it "should be able to pass string arguments" do
-        driver.navigate.to url_for("javascriptPage.html")
-        expect(driver.execute_script("return arguments[0] == 'fish' ? 'fish' : 'not fish';", "fish")).to eq("fish")
-      end
+    it "should be able to pass element arguments" do
+      driver.navigate.to url_for("javascriptPage.html")
+      button = driver.find_element(:id, "plainButton")
+      expect(driver.execute_script("arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'];", button)).to eq("plainButton")
+    end
 
-      it "should be able to pass boolean arguments" do
-        driver.navigate.to url_for("javascriptPage.html")
-        expect(driver.execute_script("return arguments[0] == true;", true)).to eq(true)
-      end
-
-      it "should be able to pass numeric arguments" do
-        driver.navigate.to url_for("javascriptPage.html")
-        expect(driver.execute_script("return arguments[0] == 1 ? 1 : 0;", 1)).to eq(1)
-      end
-
-      it "should be able to pass null arguments" do
-        driver.navigate.to url_for("javascriptPage.html")
-        expect(driver.execute_script("return arguments[0];", nil)).to eq(nil)
-      end
-
-      it "should be able to pass array arguments" do
-        driver.navigate.to url_for("javascriptPage.html")
-        expect(driver.execute_script("return arguments[0];", [1, '2', 3])).to eq([1, '2', 3])
-      end
-
-      it "should be able to pass element arguments" do
-        driver.navigate.to url_for("javascriptPage.html")
-        button = driver.find_element(:id, "plainButton")
-        expect(driver.execute_script("arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'];", button)).to eq("plainButton")
-      end
-
-      it "should be able to pass in multiple arguments" do
-        driver.navigate.to url_for("javascriptPage.html")
-        expect(driver.execute_script("return arguments[0] + arguments[1];", "one", "two")).to eq("onetwo")
-      end
+    it "should be able to pass in multiple arguments" do
+      driver.navigate.to url_for("javascriptPage.html")
+      expect(driver.execute_script("return arguments[0] + arguments[1];", "one", "two")).to eq("onetwo")
+    end
   end
 
   not_compliant_on :browser => [:iphone, :android, :phantomjs] do
@@ -283,7 +271,7 @@ describe "Driver" do
         expect(result).to eq(3)
       end
 
-      # TODO - File bug with Microsoft; this command returns status 21, should return status 28
+      # TODO - File Edge bug; this command returns status 21, should return status 28
       it "times out if the callback is not invoked" do
         expect {
           # Script is expected to be async and explicitly callback, so this should timeout.
