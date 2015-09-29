@@ -69,11 +69,20 @@ describe "Element" do
     expect(driver.find_element(:id, "withText").attribute("rows")).to eq("5")
   end
 
-  # TODO - File Edge bug, this should return nil, but throws an error
-  # Selenium::WebDriver::Error::UnknownError: unknown error
-  it "should return nil for non-existent attributes" do
-    driver.navigate.to url_for("formPage.html")
-    expect(driver.find_element(:id, "withText").attribute("nonexistent")).to be_nil
+  not_compliant_on :edge do
+    it "should return nil for non-existent attributes" do
+      driver.navigate.to url_for("formPage.html")
+      expect(driver.find_element(:id, "withText").attribute("nonexistent")).to be_nil
+    end
+  end
+
+  # Per W3C spec this should return Invalid Argument not Unknown Error, but there is no comparable error code
+  compliant_on :edge do
+    it "should return nil for non-existent attributes" do
+      driver.navigate.to url_for("formPage.html")
+      element = driver.find_element(:id, "withText")
+      expect {element.attribute("nonexistent")}.to raise_error(Selenium::WebDriver::Error::UnknownError)
+    end
   end
 
   it "should clear" do
