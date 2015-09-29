@@ -16,6 +16,7 @@
  * @fileoverview Date range data structure. Based loosely on
  * com.google.common.util.DateRange.
  *
+ * @author dpb@google.com (David P. Baker)
  */
 
 goog.provide('goog.date.DateRange');
@@ -97,7 +98,7 @@ goog.date.DateRange.prototype.contains = function(date) {
 
 
 /**
- * @return {!goog.iter.Iterator} An iterator over the date range.
+ * @return {!goog.date.DateRange.Iterator} An iterator over the date range.
  */
 goog.date.DateRange.prototype.iterator = function() {
   return new goog.date.DateRange.Iterator(this);
@@ -181,7 +182,7 @@ goog.date.DateRange.offsetInMonths_ = function(date, offset) {
 goog.date.DateRange.yesterday = function(opt_today) {
   var today = goog.date.DateRange.cloneOrCreate_(opt_today);
   var yesterday = goog.date.DateRange.offsetInDays_(today, -1);
-  return new goog.date.DateRange(yesterday, yesterday);
+  return new goog.date.DateRange(yesterday, yesterday.clone());
 };
 
 
@@ -193,7 +194,7 @@ goog.date.DateRange.yesterday = function(opt_today) {
  */
 goog.date.DateRange.today = function(opt_today) {
   var today = goog.date.DateRange.cloneOrCreate_(opt_today);
-  return new goog.date.DateRange(today, today);
+  return new goog.date.DateRange(today, today.clone());
 };
 
 
@@ -395,8 +396,7 @@ goog.date.DateRange.cloneOrCreate_ = function(opt_today) {
  * Creates an iterator over the dates in a {@link goog.date.DateRange}.
  * @constructor
  * @struct
- * @suppress {checkStructDictInheritance}
- * @extends {goog.iter.Iterator}
+ * @extends {goog.iter.Iterator<goog.date.Date>}
  * @param {goog.date.DateRange} dateRange The date range to iterate.
  * @final
  */

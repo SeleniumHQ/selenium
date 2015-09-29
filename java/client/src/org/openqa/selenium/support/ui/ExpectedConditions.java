@@ -473,6 +473,7 @@ public class ExpectedConditions {
    * specified frame.
    *
    * @param frameLocator used to find the frame (id or name)
+   * @return WebDriver instance after frame has been switched
    */
   public static ExpectedCondition<WebDriver> frameToBeAvailableAndSwitchToIt(
       final String frameLocator) {
@@ -499,6 +500,7 @@ public class ExpectedConditions {
    * specified frame.
    *
    * @param locator used to find the frame
+   * @return WebDriver instance after frame has been switched
    */
   public static ExpectedCondition<WebDriver> frameToBeAvailableAndSwitchToIt(
       final By locator) {
@@ -525,6 +527,7 @@ public class ExpectedConditions {
    * specified frameIndex.
    *
    * @param frameLocator used to find the frame (index)
+   * @return WebDriver instance after frame has been switched
    */
   public static ExpectedCondition<WebDriver> frameToBeAvailableAndSwitchToIt(
       final int frameLocator) {
@@ -544,13 +547,14 @@ public class ExpectedConditions {
       }
     };
   }
-  
+
   /**
    * An expectation for checking whether the given frame is available to switch
    * to. <p> If the frame is available it switches the given driver to the
    * specified webelement.
    *
    * @param frameLocator used to find the frame (webelement)
+   * @return WebDriver instance after frame has been switched
    */
   public static ExpectedCondition<WebDriver> frameToBeAvailableAndSwitchToIt(
       final WebElement frameLocator) {
@@ -576,6 +580,7 @@ public class ExpectedConditions {
    * present on the DOM.
    *
    * @param locator used to find the element
+   * @return true if the element is not displayed or the element doesn't exist or stale element
    */
   public static ExpectedCondition<Boolean> invisibilityOfElementLocated(
       final By locator) {
@@ -608,6 +613,7 @@ public class ExpectedConditions {
    *
    * @param locator used to find the element
    * @param text of the element
+   * @return true if no such element, stale element or displayed text not equal that provided
    */
   public static ExpectedCondition<Boolean> invisibilityOfElementWithText(
       final By locator, final String text) {
@@ -742,6 +748,10 @@ public class ExpectedConditions {
    * possible that an element is located and then subsequently it is redrawn on
    * the client. When this happens a {@link StaleElementReferenceException} is
    * thrown when the second part of the condition is checked.
+   *
+   * @param condition ExpectedCondition to wrap
+   * @param <T> return type of the condition provided
+   * @return the result of the provided condition
    */
   public static <T> ExpectedCondition<T> refreshed(
       final ExpectedCondition<T> condition) {
@@ -764,6 +774,9 @@ public class ExpectedConditions {
 
   /**
    * An expectation for checking if the given element is selected.
+   *
+   * @param element WebElement to be selected
+   * @return true once the element is selected
    */
   public static ExpectedCondition<Boolean> elementToBeSelected(final WebElement element) {
     return elementSelectionStateToBe(element, true);
@@ -771,6 +784,10 @@ public class ExpectedConditions {
 
   /**
    * An expectation for checking if the given element is selected.
+   *
+   * @param element WebElement to be selected
+   * @param selected boolean state of the selection state of the element
+   * @return true once the element's selection stated is that of selected
    */
   public static ExpectedCondition<Boolean> elementSelectionStateToBe(final WebElement element,
                                                                      final boolean selected) {
@@ -836,6 +853,9 @@ public class ExpectedConditions {
    * Note that if the Condition your are inverting throws an exception that is
    * caught by the Ignored Exceptions, the inversion will not take place and lead
    * to confusing results.
+   *
+   * @param condition ExpectedCondition to be inverted
+   * @return true once the condition is satisfied
    */
   public static ExpectedCondition<Boolean> not(final ExpectedCondition<?> condition) {
     return new ExpectedCondition<Boolean>() {
@@ -855,6 +875,10 @@ public class ExpectedConditions {
   /**
    * Looks up an element. Logs and re-throws WebDriverException if thrown. <p/>
    * Method exists to gather data for http://code.google.com/p/selenium/issues/detail?id=1800
+   *
+   * @param driver WebDriver
+   * @param by locator
+   * @return WebElement found
    */
   private static WebElement findElement(By by, WebDriver driver) {
     try {
@@ -870,6 +894,9 @@ public class ExpectedConditions {
 
   /**
    * @see #findElement(By, WebDriver)
+   * @param driver WebDriver
+   * @param by locator
+   * @return List of WebElements found
    */
   private static List<WebElement> findElements(By by, WebDriver driver) {
     try {

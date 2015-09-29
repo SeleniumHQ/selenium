@@ -29,7 +29,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * The main interface to use for testing, which represents an idealised web browser. The methods in
  * this class fall into three categories:
- * <p>
  * <ul>
  * <li>Control of the browser itself</li>
  * <li>Selection of {@link WebElement}s</li>
@@ -42,14 +41,10 @@ import java.util.concurrent.TimeUnit;
  * <p>
  * Currently, you will need to instantiate implementations of this class directly. It is hoped that
  * you write your tests against this interface so that you may "swap in" a more fully featured
- * browser when there is a requirement for one. Given this approach to testing, it is best to start
- * writing your tests using the {@link org.openqa.selenium.htmlunit.HtmlUnitDriver} implementation.
+ * browser when there is a requirement for one.
  * <p>
  * Note that all methods that use XPath to locate elements will throw a {@link RuntimeException}
  * should there be an error thrown by the underlying XPath engine.
- *
- * @see org.openqa.selenium.ie.InternetExplorerDriver
- * @see org.openqa.selenium.htmlunit.HtmlUnitDriver
  */
 public interface WebDriver extends SearchContext {
   // Navigation
@@ -151,6 +146,8 @@ public interface WebDriver extends SearchContext {
   /**
    * Return an opaque handle to this window that uniquely identifies it within this driver instance.
    * This can be used to switch to this window at a later date
+   *
+   * @return the current window handle
    */
   String getWindowHandle();
 
@@ -203,7 +200,7 @@ public interface WebDriver extends SearchContext {
     /**
      * Delete a cookie from the browser's "cookie jar". The domain of the cookie will be ignored.
      *
-     * @param cookie
+     * @param cookie nom nom nom
      */
     void deleteCookie(Cookie cookie);
 
@@ -229,17 +226,17 @@ public interface WebDriver extends SearchContext {
     Cookie getCookieNamed(String name);
 
     /**
-     * Returns the interface for managing driver timeouts.
+     * @return the interface for managing driver timeouts.
      */
     Timeouts timeouts();
 
     /**
-     * Returns the interface for controlling IME engines to generate complex-script input.
+     * @return the interface for controlling IME engines to generate complex-script input.
      */
     ImeHandler ime();
 
     /**
-     * Returns the interface for managing the current window.
+     * @return the interface for managing the current window.
      */
     @Beta
     Window window();
@@ -412,7 +409,7 @@ public interface WebDriver extends SearchContext {
     /**
      * Overloaded version of {@link #to(String)} that makes it easy to pass in a URL.
      *
-     * @param url
+     * @param url URL
      */
     void to(URL url);
 

@@ -142,11 +142,12 @@ bot.Device.prototype.fireKeyboardEvent = function(type, args) {
  *     element is not interactable, such as the case of a mousemove or
  *     mouseover event that immediately follows a mouseout.
  * @param {?number=} opt_pointerId The pointerId associated with the event.
+ * @param {?number=} opt_count Number of clicks that have been performed.
  * @return {boolean} Whether the event fired successfully; false if cancelled.
  * @protected
  */
 bot.Device.prototype.fireMouseEvent = function(type, coord, button,
-    opt_related, opt_wheelDelta, opt_force, opt_pointerId)  {
+    opt_related, opt_wheelDelta, opt_force, opt_pointerId, opt_count)  {
   if (!opt_force && !bot.dom.isInteractable(this.element_)) {
     return false;
   }
@@ -167,7 +168,8 @@ bot.Device.prototype.fireMouseEvent = function(type, coord, button,
     shiftKey: this.modifiersState.isShiftPressed(),
     metaKey: this.modifiersState.isMetaPressed(),
     wheelDelta: opt_wheelDelta || 0,
-    relatedTarget: opt_related || null
+    relatedTarget: opt_related || null,
+    count: opt_count || 1
   };
 
   var pointerId = opt_pointerId || bot.Device.MOUSE_MS_POINTER_ID;

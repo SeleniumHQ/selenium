@@ -52,7 +52,6 @@ goog.provide('goog.uri.utils.StandardQueryParam');
 
 goog.require('goog.asserts');
 goog.require('goog.string');
-goog.require('goog.userAgent');
 
 
 /**
@@ -235,63 +234,9 @@ goog.uri.utils.ComponentIndex = {
  *     arbitrary strings may still look like path names.
  */
 goog.uri.utils.split = function(uri) {
-  goog.uri.utils.phishingProtection_();
-
   // See @return comment -- never null.
   return /** @type {!Array<string|undefined>} */ (
       uri.match(goog.uri.utils.splitRe_));
-};
-
-
-/**
- * Safari has a nasty bug where if you have an http URL with a username, e.g.,
- * http://evil.com%2F@google.com/
- * Safari will report that window.location.href is
- * http://evil.com/google.com/
- * so that anyone who tries to parse the domain of that URL will get
- * the wrong domain. We've seen exploits where people use this to trick
- * Safari into loading resources from evil domains.
- *
- * To work around this, we run a little "Safari phishing check", and throw
- * an exception if we see this happening.
- *
- * There is no convenient place to put this check. We apply it to
- * anyone doing URI parsing on Webkit. We're not happy about this, but
- * it fixes the problem.
- *
- * This should be removed once Safari fixes their bug.
- *
- * Exploit reported by Masato Kinugawa.
- *
- * @type {boolean}
- * @private
- */
-goog.uri.utils.needsPhishingProtection_ = goog.userAgent.WEBKIT;
-
-
-/**
- * Check to see if the user is being phished.
- * @private
- */
-goog.uri.utils.phishingProtection_ = function() {
-  if (goog.uri.utils.needsPhishingProtection_) {
-    // Turn protection off, so that we don't recurse.
-    goog.uri.utils.needsPhishingProtection_ = false;
-
-    // Use quoted access, just in case the user isn't using location externs.
-    var location = goog.global['location'];
-    if (location) {
-      var href = location['href'];
-      if (href) {
-        var domain = goog.uri.utils.getDomain(href);
-        if (domain && domain != location['hostname']) {
-          // Phishing attack
-          goog.uri.utils.needsPhishingProtection_ = true;
-          throw Error();
-        }
-      }
-    }
-  }
 };
 
 
@@ -348,8 +293,8 @@ goog.uri.utils.getScheme = function(uri) {
  */
 goog.uri.utils.getEffectiveScheme = function(uri) {
   var scheme = goog.uri.utils.getScheme(uri);
-  if (!scheme && self.location) {
-    var protocol = self.location.protocol;
+  if (!scheme && goog.global.self && goog.global.self.location) {
+    var protocol = goog.global.self.location.protocol;
     scheme = protocol.substr(0, protocol.length - 1);
   }
   // NOTE: When called from a web worker in Firefox 3.5, location maybe null.
@@ -613,6 +558,9 @@ goog.uri.utils.QueryArray;
  *     the second argument (value) will be an empty string.
  */
 goog.uri.utils.parseQueryData = function(encodedQuery, callback) {
+  if (!encodedQuery) {
+    return;
+  }
   var pairs = encodedQuery.split('&');
   for (var i = 0; i < pairs.length; i++) {
     var indexOfEquals = pairs[i].indexOf('=');

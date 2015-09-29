@@ -33,7 +33,7 @@ public interface NetworkConnection {
 
   /**
    * ConnectionType is a bitmask to represent a device's network connection
-   * <p><pre>
+   * <pre>
    * Data  | WIFI | Airplane
    * 0       0      1         == 1
    * 1       1      0         == 6

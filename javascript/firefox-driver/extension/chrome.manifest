@@ -1,4 +1,4 @@
-resource fxdriver resource/ 
+resource fxdriver resource/
 
 content fxdriver content/
 
@@ -7,14 +7,11 @@ overlay chrome://browser/content/browser.xul chrome://fxdriver/content/fx4driver
 
 interfaces components/nsICommandProcessor.xpt
 interfaces components/nsIHttpServer.xpt
-interfaces components/nsINativeEvents.xpt
 interfaces components/nsIResponseHandler.xpt
 interfaces components/wdICoordinate.xpt
 interfaces components/wdIModifierKeys.xpt
 interfaces components/wdIMouse.xpt
 interfaces components/wdIStatus.xpt
-interfaces components/nsINativeMouse.xpt
-interfaces components/nsINativeKeyboard.xpt
 interfaces components/nsINativeIME.xpt
 
 component {c8fffaba-9b7a-41aa-872d-7e7366c16715} components/bad-cert-listener.js
@@ -47,19 +44,4 @@ contract @googlecode.com/webdriver/modifierkeys;1 {2E4B69B9-21FE-48ad-A2F6-AB355
 
 contract @googlecode.com/webdriver/syntheticmouse;1 {E8F9FEFE-C513-4097-98BE-BE00A41D3645}
 
-binary-component platform/WINNT_x86-msvc/components/webdriver-firefox-latest.dll ABI=WINNT_x86-msvc appversion>=34
-binary-component platform/WINNT_x86-msvc/components/webdriver-firefox-previous.dll ABI=WINNT_x86-msvc appversion>=33 platformversion<34
-binary-component platform/WINNT_x86-msvc/components/webdriver-firefox-esr-latest.dll ABI=WINNT_x86-msvc appversion>=31 platformversion<32
-binary-component platform/WINNT_x86-msvc/components/webdriver-firefox-esr-previous.dll ABI=WINNT_x86-msvc appversion>=24 platformversion<25
-
 binary-component platform/WINNT_x86-msvc/components/imehandler.dll ABI=WINNT_x86-msvc
-
-binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-latest.so ABI=Linux_x86_64-gcc3 appversion>=34
-binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-previous.so ABI=Linux_x86_64-gcc3 appversion>=33 platformversion<34
-binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-esr-latest.so ABI=Linux_x86_64-gcc3 appversion>=31 platformversion<32
-binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-esr-previous.so ABI=Linux_x86_64-gcc3 appversion>=24 platformversion<25
-
-binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-latest.so ABI=Linux_x86-gcc3 appversion>=34
-binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-previous.so ABI=Linux_x86-gcc3 appversion>=33 platformversion<34
-binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-esr-latest.so ABI=Linux_x86-gcc3 appversion>=31 platformversion<32
-binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-esr-previous.so ABI=Linux_x86-gcc3 appversion>=24 platformversion<25

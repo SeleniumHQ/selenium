@@ -61,6 +61,8 @@ public interface WebElement extends SearchContext, TakesScreenshot {
 
   /**
    * Use this method to simulate typing into an element, which may set its value.
+   *
+   * @param keysToSend character sequence to send to the element
    */
   void sendKeys(CharSequence... keysToSend);
 
@@ -205,6 +207,7 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    * - you should directly access the longhand properties (e.g. background-color) to access the
    * desired values.
    *
+   * @param propertyName the css property name of the element
    * @return The current, computed value of the property.
    */
   String getCssValue(String propertyName);

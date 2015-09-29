@@ -51,7 +51,7 @@ goog.async.run.initializeRunner_ = function() {
   // on a fulfilled promise, which is specified to be async, but as fast as
   // possible.
   if (goog.global.Promise && goog.global.Promise.resolve) {
-    var promise = goog.global.Promise.resolve();
+    var promise = goog.global.Promise.resolve(undefined);
     goog.async.run.schedule_ = function() {
       promise.then(goog.async.run.processWorkQueue);
     };

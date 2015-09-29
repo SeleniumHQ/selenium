@@ -117,7 +117,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
    * does not pass through the Selenium server in HTA mode, thus the specialized extension js
    * resource handler is of no use.
    *
-   * @param coreDir
+   * @param coreDir to the core
    * @throws IOException
    */
   private void writeSessionExtensionJs(File coreDir) throws IOException {

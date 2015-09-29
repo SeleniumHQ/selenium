@@ -21,6 +21,8 @@
  */
 
 goog.provide('goog.crypt.base64');
+
+goog.require('goog.asserts');
 goog.require('goog.crypt');
 goog.require('goog.userAgent');
 
@@ -110,9 +112,10 @@ goog.crypt.base64.HAS_NATIVE_SUPPORT = goog.userAgent.GECKO ||
  * @return {string} The base64 encoded string.
  */
 goog.crypt.base64.encodeByteArray = function(input, opt_webSafe) {
-  if (!goog.isArrayLike(input)) {
-    throw Error('encodeByteArray takes an array as a parameter');
-  }
+  // Assert avoids runtime dependency on goog.isArrayLike, which helps reduce
+  // size of jscompiler output, and which yields slight performance increase.
+  goog.asserts.assert(goog.isArrayLike(input),
+                      'encodeByteArray takes an array as a parameter');
 
   goog.crypt.base64.init_();
 

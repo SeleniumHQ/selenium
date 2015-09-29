@@ -109,7 +109,6 @@ goog.crypt.hexToByteArray = function(hexString) {
  */
 goog.crypt.stringToUtf8ByteArray = function(str) {
   // TODO(user): Use native implementations if/when available
-  str = str.replace(/\r\n/g, '\n');
   var out = [], p = 0;
   for (var i = 0; i < str.length; i++) {
     var c = str.charCodeAt(i);

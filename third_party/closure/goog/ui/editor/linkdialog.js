@@ -913,8 +913,9 @@ goog.ui.editor.LinkDialog.prototype.onChangeTab_ = function(e) {
   var tab = /** @type {goog.ui.Tab} */ (e.target);
 
   // Focus on the input field in the selected tab.
-  var input = this.dom.getElement(tab.getId() +
-      goog.ui.editor.LinkDialog.Id_.TAB_INPUT_SUFFIX);
+  var input = /** @type {!HTMLElement} */ (
+      this.dom.getElement(tab.getId() +
+          goog.ui.editor.LinkDialog.Id_.TAB_INPUT_SUFFIX));
   goog.editor.focus.focusInputField(input);
 
   // For some reason, IE does not fire onpropertychange events when the width

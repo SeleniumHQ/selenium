@@ -17,11 +17,12 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path("../spec_helper", __FILE__)
+require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
 
+    # Edge does not yet support {GET} /session/{sessionId}/moveTo
     not_compliant_on :browser => :edge do
       describe Mouse do
 
@@ -45,7 +46,7 @@ module Selenium
             driver.mouse.up droppable
 
             text = droppable.find_element(:tag_name => "p").text
-            text.should == "Dropped!"
+            expect(text).to eq("Dropped!")
           end
 
           it "double clicks an element" do

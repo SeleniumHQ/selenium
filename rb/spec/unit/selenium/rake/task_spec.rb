@@ -24,9 +24,9 @@ describe Selenium::Rake::ServerTask do
   let(:mock_server) { double(Selenium::Server).as_null_object }
 
   it "raises an error if no jar file is specified" do
-    lambda {
+    expect {
       Selenium::Rake::ServerTask.new
-    }.should raise_error(Selenium::Rake::MissingJarFileError)
+    }.to raise_error(Selenium::Rake::MissingJarFileError)
   end
 
   it "launches the server with default options" do
@@ -37,17 +37,17 @@ describe Selenium::Rake::ServerTask do
       :log        => true,
     }
 
-    Selenium::Server.should_receive(:new).
+    expect(Selenium::Server).to receive(:new).
                      with("selenium-server.jar", expected_opts).
                      and_return(mock_server)
 
     task = Selenium::Rake::ServerTask.new { |t| t.jar = "selenium-server.jar" }
 
-    task.port.should == 4444
-    task.timeout.should == 30
-    task.background.should be true
-    task.log.should be true
-    task.opts.should == []
+    expect(task.port).to eq(4444)
+    expect(task.timeout).to eq(30)
+    expect(task.background).to be true
+    expect(task.log).to be true
+    expect(task.opts).to eq([])
   end
 
   it "lets the user override the default options" do
@@ -58,7 +58,7 @@ describe Selenium::Rake::ServerTask do
       :log        => false,
     }
 
-    Selenium::Server.should_receive(:new).
+    expect(Selenium::Server).to receive(:new).
                      with("selenium-server.jar", expected_opts).
                      and_return(mock_server)
 
@@ -72,22 +72,22 @@ describe Selenium::Rake::ServerTask do
       t.opts << "-some" << "args"
     }
 
-    task.port.should == 5555
-    task.timeout.should == 120
-    task.background.should be false
-    task.log.should be false
-    task.opts.should == ["-some", "args"]
+    expect(task.port).to eq(5555)
+    expect(task.timeout).to eq(120)
+    expect(task.background).to be false
+    expect(task.log).to be false
+    expect(task.opts).to eq(["-some", "args"])
   end
 
   it "lets the user specify a version to use which it will automatically download" do
     required_version = '10.2.0'
     jar_file = "selenium-server-standalone-#{required_version}.jar"
 
-    Selenium::Server.should_receive(:new).
+    expect(Selenium::Server).to receive(:new).
                      with(jar_file, anything()).
                      and_return(mock_server)
 
-    Selenium::Server.should_receive(:download).
+    expect(Selenium::Server).to receive(:download).
                      with(required_version).
                      and_return(jar_file)
 

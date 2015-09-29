@@ -116,8 +116,6 @@
     <Compile Include="PhantomJS\PhantomJSOptions.cs" />
     <Compile Include="PhantomJS\PhantomJSWebElement.cs" />
     <Compile Include="Remote\ICommandServer.cs" />
-    <Compile Include="Remote\JsonConverters\DesiredCapabilitiesJsonConverter.cs" />
-    <Compile Include="Remote\JsonConverters\PlatformJsonConverter.cs" />
     <Compile Include="Remote\JsonConverters\ResponseValueJsonConverter.cs" />
     <Compile Include="Remote\LocalFileDetector.cs" />
     <Compile Include="Remote\RemoteTouchScreen.cs" />

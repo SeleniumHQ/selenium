@@ -67,6 +67,8 @@ goog.require('goog.uri.utils.StandardQueryParam');
  * @param {boolean=} opt_ignoreCase If true, #getParameterValue will ignore
  * the case of the parameter name.
  *
+ * @throws URIError If opt_uri is provided and URI is malformed (that is,
+ *     if decodeURIComponent fails on any of the URI components).
  * @constructor
  * @struct
  */
@@ -195,7 +197,7 @@ goog.Uri.prototype.toString = function() {
   }
 
   var domain = this.getDomain();
-  if (domain) {
+  if (domain || scheme == 'file') {
     out.push('//');
 
     var userInfo = this.getUserInfo();
@@ -346,6 +348,8 @@ goog.Uri.prototype.getScheme = function() {
 
 /**
  * Sets the scheme/protocol.
+ * @throws URIError If opt_decode is true and newScheme is malformed (that is,
+ *     if decodeURIComponent fails).
  * @param {string} newScheme New scheme value.
  * @param {boolean=} opt_decode Optional param for whether to decode new value.
  * @return {!goog.Uri} Reference to this URI object.
@@ -382,6 +386,8 @@ goog.Uri.prototype.getUserInfo = function() {
 
 /**
  * Sets the userInfo.
+ * @throws URIError If opt_decode is true and newUserInfo is malformed (that is,
+ *     if decodeURIComponent fails).
  * @param {string} newUserInfo New userInfo value.
  * @param {boolean=} opt_decode Optional param for whether to decode new value.
  * @return {!goog.Uri} Reference to this URI object.
@@ -412,6 +418,8 @@ goog.Uri.prototype.getDomain = function() {
 
 /**
  * Sets the domain.
+ * @throws URIError If opt_decode is true and newDomain is malformed (that is,
+ *     if decodeURIComponent fails).
  * @param {string} newDomain New domain value.
  * @param {boolean=} opt_decode Optional param for whether to decode new value.
  * @return {!goog.Uri} Reference to this URI object.
@@ -480,6 +488,8 @@ goog.Uri.prototype.getPath = function() {
 
 /**
  * Sets the path.
+ * @throws URIError If opt_decode is true and newPath is malformed (that is,
+ *     if decodeURIComponent fails).
  * @param {string} newPath New path value.
  * @param {boolean=} opt_decode Optional param for whether to decode new value.
  * @return {!goog.Uri} Reference to this URI object.
@@ -660,6 +670,8 @@ goog.Uri.prototype.getFragment = function() {
 
 /**
  * Sets the URI fragment.
+ * @throws URIError If opt_decode is true and newFragment is malformed (that is,
+ *     if decodeURIComponent fails).
  * @param {string} newFragment New fragment value.
  * @param {boolean=} opt_decode Optional param for whether to decode new value.
  * @return {!goog.Uri} Reference to this URI object.
@@ -783,6 +795,8 @@ goog.Uri.prototype.getIgnoreCase = function() {
  * Creates a uri from the string form.  Basically an alias of new goog.Uri().
  * If a Uri object is passed to parse then it will return a clone of the object.
  *
+ * @throws URIError If parsing the URI is malformed. The passed URI components
+ *     should all be parseable by decodeURIComponent.
  * @param {*} uri Raw URI string or instance of Uri
  *     object.
  * @param {boolean=} opt_ignoreCase Whether to ignore the case of parameter
@@ -898,6 +912,7 @@ goog.Uri.removeDotSegments = function(path) {
 
 /**
  * Decodes a value or returns the empty string if it isn't defined or empty.
+ * @throws URIError If decodeURIComponent fails to decode val.
  * @param {string|undefined} val Value to decode.
  * @param {boolean=} opt_preserveReserved If true, restricted characters will
  *     not be decoded.
@@ -1400,6 +1415,8 @@ goog.Uri.QueryData.prototype.toString = function() {
 
 
 /**
+ * @throws URIError If URI is malformed (that is, if decodeURIComponent fails on
+ *     any of the URI components).
  * @return {string} Decoded query string.
  */
 goog.Uri.QueryData.prototype.toDecodedString = function() {

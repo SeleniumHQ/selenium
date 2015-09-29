@@ -253,14 +253,16 @@ bot.action.moveMouse = function(element, opt_coords, opt_mouse) {
  * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
  *   element.
  * @param {bot.Mouse=} opt_mouse Mouse to use; if not provided, constructs one.
+ * @param {boolean=} opt_force Whether the release event should be fired even if the
+ *     element is not interactable.
  * @throws {bot.Error} If the element cannot be interacted with.
  */
-bot.action.click = function(element, opt_coords, opt_mouse) {
+bot.action.click = function(element, opt_coords, opt_mouse, opt_force) {
   var coords = bot.action.prepareToInteractWith_(element, opt_coords);
   var mouse = opt_mouse || new bot.Mouse();
   mouse.move(element, coords);
   mouse.pressButton(bot.Mouse.Button.LEFT);
-  mouse.releaseButton();
+  mouse.releaseButton(opt_force);
 };
 
 
@@ -299,6 +301,24 @@ bot.action.doubleClick = function(element, opt_coords, opt_mouse) {
   mouse.releaseButton();
   mouse.pressButton(bot.Mouse.Button.LEFT);
   mouse.releaseButton();
+};
+
+
+/**
+ * Double-clicks on the given {@code element} with a virtual mouse.
+ *
+ * @param {!Element} element The element to click.
+ * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
+ *   element.
+ * @param {bot.Mouse=} opt_mouse Mouse to use; if not provided, constructs one.
+ * @throws {bot.Error} If the element cannot be interacted with.
+ */
+bot.action.doubleClick2 = function(element, opt_coords, opt_mouse) {
+  var coords = bot.action.prepareToInteractWith_(element, opt_coords);
+  var mouse = opt_mouse || new bot.Mouse();
+  mouse.move(element, coords);
+  mouse.pressButton(bot.Mouse.Button.LEFT, 2);
+  mouse.releaseButton(true, 2);
 };
 
 

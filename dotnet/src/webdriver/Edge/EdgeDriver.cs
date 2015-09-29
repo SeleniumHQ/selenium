@@ -60,9 +60,9 @@ namespace OpenQA.Selenium.Edge
         /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified path 
         /// to the directory containing EdgeDriver.exe.
         /// </summary>
-        /// <param name="EdgeDriverDirectory">The full path to the directory containing EdgeDriver.exe.</param>
-        public EdgeDriver(string EdgeDriverDirectory)
-            : this(EdgeDriverDirectory, new EdgeOptions())
+        /// <param name="edgeDriverDirectory">The full path to the directory containing EdgeDriver.exe.</param>
+        public EdgeDriver(string edgeDriverDirectory)
+            : this(edgeDriverDirectory, new EdgeOptions())
         {
         }
 
@@ -70,10 +70,10 @@ namespace OpenQA.Selenium.Edge
         /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified path
         /// to the directory containing EdgeDriver.exe and options.
         /// </summary>
-        /// <param name="EdgeDriverDirectory">The full path to the directory containing EdgeDriver.exe.</param>
+        /// <param name="edgeDriverDirectory">The full path to the directory containing EdgeDriver.exe.</param>
         /// <param name="options">The <see cref="EdgeOptions"/> to be used with the Edge driver.</param>
-        public EdgeDriver(string EdgeDriverDirectory, EdgeOptions options)
-            : this(EdgeDriverDirectory, options, RemoteWebDriver.DefaultCommandTimeout)
+        public EdgeDriver(string edgeDriverDirectory, EdgeOptions options)
+            : this(edgeDriverDirectory, options, RemoteWebDriver.DefaultCommandTimeout)
         {
         }
 
@@ -81,11 +81,11 @@ namespace OpenQA.Selenium.Edge
         /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified path
         /// to the directory containing EdgeDriver.exe, options, and command timeout.
         /// </summary>
-        /// <param name="EdgeDriverDirectory">The full path to the directory containing EdgeDriver.exe.</param>
+        /// <param name="edgeDriverDirectory">The full path to the directory containing EdgeDriver.exe.</param>
         /// <param name="options">The <see cref="EdgeOptions"/> to be used with the Edge driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
-        public EdgeDriver(string EdgeDriverDirectory, EdgeOptions options, TimeSpan commandTimeout)
-            : this(EdgeDriverService.CreateDefaultService(EdgeDriverDirectory), options, commandTimeout)
+        public EdgeDriver(string edgeDriverDirectory, EdgeOptions options, TimeSpan commandTimeout)
+            : this(EdgeDriverService.CreateDefaultService(edgeDriverDirectory), options, commandTimeout)
         {
         }
 

@@ -44,7 +44,6 @@ goog.require('goog.log');
  * @param {number=} opt_blockSize Processing block size.
  * @constructor
  * @struct
- * @suppress {checkStructDictInheritance}
  * @extends {goog.events.EventTarget}
  * @final
  */

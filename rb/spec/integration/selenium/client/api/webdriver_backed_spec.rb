@@ -35,6 +35,6 @@ describe "WebDriver-backed Selenium::Client" do
     selenium.start :driver => webdriver
 
     selenium.open '/'
-    selenium.title.should == webdriver.title
+    expect(selenium.title).to eq(webdriver.title)
   end
 end

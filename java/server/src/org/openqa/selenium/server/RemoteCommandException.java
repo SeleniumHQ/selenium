@@ -40,7 +40,7 @@ public class RemoteCommandException extends Exception {
   }
 
   /**
-   * Get the result of the remote command that caused the exception.
+   * @return the result of the remote command that caused the exception.
    */
   public String getResult() {
     return result;

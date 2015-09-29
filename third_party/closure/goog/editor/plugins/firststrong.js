@@ -317,7 +317,7 @@ goog.editor.plugins.FirstStrong.prototype.getTextAround_ = function(root,
  */
 goog.editor.plugins.FirstStrong.isBlock_ = function(node) {
   return !!node && goog.editor.node.isBlockTag(node) &&
-      node.tagName != goog.dom.TagName.LI;
+      /** @type {!Element} */ (node).tagName != goog.dom.TagName.LI;
 };
 
 
@@ -329,6 +329,7 @@ goog.editor.plugins.FirstStrong.isBlock_ = function(node) {
  * @private
  */
 goog.editor.plugins.FirstStrong.isGeckoBlock_ = function(node) {
-  return !!node && (node.tagName == goog.dom.TagName.BR ||
+  return !!node &&
+      (/** @type {!Element} */ (node).tagName == goog.dom.TagName.BR ||
       goog.editor.plugins.FirstStrong.isBlock_(node));
 };

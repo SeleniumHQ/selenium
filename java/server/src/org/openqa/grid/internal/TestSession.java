@@ -66,7 +66,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Represent a running test for the hub/registry. A test session is created when a TestSlot becomes
- * available for a test. <p/> The session is destroyed when the test ends ( ended by the client or
+ * available for a test. <p> The session is destroyed when the test ends ( ended by the client or
  * timed out)
  */
 @SuppressWarnings("JavaDoc")
@@ -91,7 +91,7 @@ public class TestSession {
     return internalKey;
   }
 
-  /**
+  /*
    * Creates a test session on the specified testSlot.
    */
   public TestSession(TestSlot slot, Map<String, Object> requestedCapabilities,
@@ -104,7 +104,7 @@ public class TestSession {
   }
 
   /**
-   * the capabilities the client requested. It will match the TestSlot capabilities, but is not
+   * @return the capabilities the client requested. It will match the TestSlot capabilities, but is not
    * equals.
    */
   public Map<String, Object> getRequestedCapabilities() {
@@ -123,6 +123,7 @@ public class TestSession {
 
   /**
    * associate this session to the session provided by the remote.
+   * @param externalKey external session key
    */
   public void setExternalKey(ExternalSessionKey externalKey) {
     this.externalKey = externalKey;
@@ -203,7 +204,7 @@ public class TestSession {
     return slot.getProxy().getHttpClientFactory().getGridHttpClient(browserTimeout, browserTimeout);
   }
 
-  /**
+  /*
    * forwards the request to the node.
    */
   public String forward(SeleniumBasedRequest request, HttpServletResponse response,
@@ -508,6 +509,7 @@ public class TestSession {
   /**
    * Allow you to retrieve an object previously stored on the test session.
    *
+   * @param key key
    * @return the object you stored
    */
   public Object get(String key) {
@@ -518,6 +520,7 @@ public class TestSession {
    * Allows you to store an object on the test session.
    *
    * @param key a non-null string
+   * @param value value object
    */
   public void put(String key, Object value) {
     objects.put(key, value);
@@ -574,8 +577,10 @@ public class TestSession {
 
 
   /**
-   * allow to bypass time out for this session. ignore = true => the session will not time out.
+   * allow to bypass time out for this session. ignore = true =&gt; the session will not time out.
    * setIgnoreTimeout(true) also update the lastActivity to now.
+   *
+   * @param ignore true to ignore the timeout
    */
   public void setIgnoreTimeout(boolean ignore) {
     if (!ignore) {

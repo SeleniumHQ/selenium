@@ -386,9 +386,12 @@ public class KeyStoreManager {
   /**
    * Stores a new certificate and its associated private key in the keystore.
    *
-   * @throws KeyStoreException
-   * @throws CertificateException
-   * @throws NoSuchAlgorithmException
+   * @param hostname host name
+   * @param cert certificate
+   * @param privKey private key
+   * @throws KeyStoreException key store exception
+   * @throws CertificateException certificate exception
+   * @throws NoSuchAlgorithmException no such algorithm
    */
   public synchronized void addCertAndPrivateKey(String hostname, final X509Certificate cert,
       final PrivateKey privKey)
@@ -411,9 +414,9 @@ public class KeyStoreManager {
   /**
    * Writes the keystore and certificate/keypair mappings to disk.
    *
-   * @throws KeyStoreException
-   * @throws NoSuchAlgorithmException
-   * @throws CertificateException
+   * @throws KeyStoreException key store exception
+   * @throws CertificateException certificate exception
+   * @throws NoSuchAlgorithmException no such algorithm
    */
   public synchronized void persist() throws KeyStoreException, NoSuchAlgorithmException,
       CertificateException {
@@ -444,7 +447,9 @@ public class KeyStoreManager {
    * Returns the aliased certificate. Certificates are aliased by their SHA1 digest.
    *
    * @see ThumbprintUtil
-   * @throws KeyStoreException
+   * @param alias alias
+   * @throws KeyStoreException keystore exception
+   * @return certificate
    */
   public synchronized X509Certificate getCertificateByAlias(final String alias)
       throws KeyStoreException {
@@ -455,16 +460,18 @@ public class KeyStoreManager {
    * Returns the aliased certificate. Certificates are aliased by their hostname.
    *
    * @see ThumbprintUtil
-   * @throws KeyStoreException
-   * @throws UnrecoverableKeyException
-   * @throws NoSuchProviderException
-   * @throws NoSuchAlgorithmException
-   * @throws CertificateException
-   * @throws SignatureException
-   * @throws CertificateNotYetValidException
-   * @throws CertificateExpiredException
-   * @throws InvalidKeyException
-   * @throws CertificateParsingException
+   * @param hostname host name
+   * @throws KeyStoreException keystore
+   * @throws UnrecoverableKeyException unrecoverable key
+   * @throws NoSuchProviderException no such provider
+   * @throws NoSuchAlgorithmException no such algorithm
+   * @throws CertificateException certificate
+   * @throws SignatureException signature
+   * @throws CertificateNotYetValidException certificate not yet valid
+   * @throws CertificateExpiredException certificate expired
+   * @throws InvalidKeyException invalid key
+   * @throws CertificateParsingException certificate parsing
+   * @return certificate
    */
   public synchronized X509Certificate getCertificateByHostname(final String hostname)
       throws KeyStoreException, InvalidKeyException, SignatureException, CertificateException,
@@ -481,7 +488,8 @@ public class KeyStoreManager {
   /**
    * Gets the authority root signing cert.
    *
-   * @throws KeyStoreException
+   * @throws KeyStoreException keystore
+   * @return certificate
    */
   public synchronized X509Certificate getSigningCert() throws KeyStoreException {
     return _caCert;
@@ -490,9 +498,10 @@ public class KeyStoreManager {
   /**
    * Gets the authority private signing key.
    *
-   * @throws KeyStoreException
-   * @throws NoSuchAlgorithmException
-   * @throws UnrecoverableKeyException
+   * @throws KeyStoreException key store exception
+   * @throws UnrecoverableKeyException unrecoverable key
+   * @throws NoSuchAlgorithmException no such algorithm
+   * @return private key
    */
   public synchronized PrivateKey getSigningPrivateKey() throws KeyStoreException,
       NoSuchAlgorithmException, UnrecoverableKeyException {
@@ -504,16 +513,15 @@ public class KeyStoreManager {
    * certificate issued by the CA to the supplied subject if no mapping has been created. This is
    * not a true duplication, just a shortcut method that is adequate for web browsers.
    *
-   * @throws CertificateParsingException
-   * @throws InvalidKeyException
-   * @throws CertificateExpiredException
-   * @throws CertificateNotYetValidException
-   * @throws SignatureException
-   * @throws CertificateException
-   * @throws NoSuchAlgorithmException
-   * @throws NoSuchProviderException
-   * @throws KeyStoreException
-   * @throws UnrecoverableKeyException
+   * @throws KeyStoreException keystore
+   * @throws UnrecoverableKeyException unrecoverable key
+   * @throws NoSuchProviderException no such provider
+   * @throws NoSuchAlgorithmException no such algorithm
+   * @throws CertificateException certificate
+   * @throws SignatureException signature
+   * @throws InvalidKeyException invalid key
+   * @param hostname host name
+   * @return mapped certificate
    */
   public X509Certificate getMappedCertificateForHostname(String hostname)
       throws InvalidKeyException, SignatureException, CertificateException,
@@ -562,7 +570,7 @@ public class KeyStoreManager {
   }
 
   /**
-   * Generate an RSA Key Pair
+   * @return Generated RSA Key Pair
    */
   public KeyPair getRSAKeyPair()
   {

@@ -24,15 +24,17 @@ import java.lang.reflect.Method;
  * {@link org.openqa.selenium.remote.Augmenter}.
  */
 public interface InterfaceImplementation {
+
   /**
    * Called when it has become apparent that this is the right interface to implement a particular
    * method.
    *
    * @param executeMethod Call this to actually call the remote instance
-   * @param self
-   * @param method The method invoked by the user
-   * @param args The arguments to the method @return The return value, which will be passed to the
-   *        user directly.
+   * @param self          aka this
+   * @param method        The method invoked by the user
+   * @param args          The arguments to the method @return The return value, which will be passed
+   *                      to the user directly.
+   * @return object returned from the method invoked
    */
   Object invoke(ExecuteMethod executeMethod, Object self, Method method, Object... args);
 }

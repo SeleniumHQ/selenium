@@ -278,13 +278,13 @@ goog.testing.dom.assertHtmlContentsMatch = function(htmlPattern, actual,
   var advanceActualNode = function() {
     // If the iterator has already been advanced, don't advance it again.
     if (!preIterated) {
-      actualNode = /** @type {Node} */ (goog.iter.nextOrValue(actualIt, null));
+      actualNode = goog.iter.nextOrValue(actualIt, null);
     }
     preIterated = false;
 
     // Advance the iterator so long as it is return end tags.
     while (actualNode == goog.testing.dom.END_TAG_MARKER_) {
-      actualNode = /** @type {Node} */ (goog.iter.nextOrValue(actualIt, null));
+      actualNode = goog.iter.nextOrValue(actualIt, null);
     }
   };
 
@@ -302,8 +302,6 @@ goog.testing.dom.assertHtmlContentsMatch = function(htmlPattern, actual,
 
   var number = 0;
   goog.iter.forEach(expectedIt, function(expectedNode) {
-    expectedNode = /** @type {Node} */ (expectedNode);
-
     advanceActualNode();
     assertNotNull('Finished actual HTML before finishing expected HTML at ' +
                   'node number ' + number + ': ' +
@@ -341,9 +339,8 @@ goog.testing.dom.assertHtmlContentsMatch = function(htmlPattern, actual,
       // Concatenate text nodes until we reach a non text node.
       var actualText = actualNode.nodeValue;
       preIterated = true;
-      while ((actualNode = /** @type {Node} */
-              (goog.iter.nextOrValue(actualIt, null))) &&
-          actualNode.nodeType == goog.dom.NodeType.TEXT) {
+      while ((actualNode = goog.iter.nextOrValue(actualIt, null)) &&
+             actualNode.nodeType == goog.dom.NodeType.TEXT) {
         actualText += actualNode.nodeValue;
       }
 
@@ -409,7 +406,7 @@ goog.testing.dom.assertHtmlMatches = function(htmlPattern, actual,
  * @param {string|RegExp} textOrRegexp The text to find, or a regular
  *     expression to find a match of.
  * @param {Element} root The element to search in.
- * @return {Node} The first text node that matches, or null if none is found.
+ * @return {?Node} The first text node that matches, or null if none is found.
  */
 goog.testing.dom.findTextNode = function(textOrRegexp, root) {
   var it = new goog.dom.NodeIterator(root);
@@ -424,7 +421,7 @@ goog.testing.dom.findTextNode = function(textOrRegexp, root) {
       return false;
     }
   }), null);
-  return /** @type {Node} */ (ret);
+  return ret;
 };
 
 

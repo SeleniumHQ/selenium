@@ -30,6 +30,7 @@ goog.require('goog.net.XhrIo');
 goog.require('goog.net.XmlHttp');
 goog.require('goog.object');
 goog.require('goog.structs.Map');
+goog.require('goog.uri.utils');
 
 
 
@@ -66,6 +67,13 @@ goog.inherits(goog.testing.net.XhrIo, goog.events.EventTarget);
  * @enum {string}
  */
 goog.testing.net.XhrIo.ResponseType = goog.net.XhrIo.ResponseType;
+
+
+/**
+ * The pattern matching the 'http' and 'https' URI schemes.
+ * @private {!RegExp}
+ */
+goog.testing.net.XhrIo.HTTP_SCHEME_PATTERN_ = /^https?$/i;
 
 
 /**
@@ -278,6 +286,15 @@ goog.testing.net.XhrIo.prototype.withCredentials_ = false;
 
 
 /**
+ * Whether progress events shall be sent for this request.
+ *
+ * @type {boolean}
+ * @private
+ */
+goog.testing.net.XhrIo.prototype.progressEventsEnabled_ = false;
+
+
+/**
  * Whether there's currently an underlying XHR object.
  * @type {boolean}
  * @private
@@ -359,6 +376,27 @@ goog.testing.net.XhrIo.prototype.setWithCredentials =
  */
 goog.testing.net.XhrIo.prototype.getWithCredentials = function() {
   return this.withCredentials_;
+};
+
+
+/**
+ * Sets whether progress events are enabled for this request. Note
+ * that progress events require pre-flight OPTIONS request handling
+ * for CORS requests, and may cause trouble with older browsers. See
+ * goog.net.XhrIo.progressEventsEnabled_ for details.
+ * @param {boolean} enabled Whether progress events should be enabled.
+ */
+goog.testing.net.XhrIo.prototype.setProgressEventsEnabled = function(enabled) {
+  this.progressEventsEnabled_ = enabled;
+};
+
+
+/**
+ * Gets whether progress events are enabled.
+ * @return {boolean} Whether progress events are enabled for this request.
+ */
+goog.testing.net.XhrIo.prototype.getProgressEventsEnabled = function() {
+  return this.progressEventsEnabled_;
 };
 
 
@@ -505,6 +543,24 @@ goog.testing.net.XhrIo.prototype.simulateReady = function() {
 
 
 /**
+ * Simulates the Xhr progress event.
+ * @param {!boolean} lengthComputable Whether progress is measurable.
+ * @param {!number} loaded Amount of work already performed.
+ * @param {!number} total Total amount of work to perform.
+ */
+goog.testing.net.XhrIo.prototype.simulateProgress = function(
+    lengthComputable, loaded, total) {
+  var progressEvent = {
+    type: goog.net.EventType.PROGRESS,
+    lengthComputable: lengthComputable,
+    loaded: loaded,
+    total: total
+  };
+  this.dispatchEvent(progressEvent);
+};
+
+
+/**
  * @return {boolean} Whether there is an active request.
  */
 goog.testing.net.XhrIo.prototype.isActive = function() {
@@ -526,15 +582,21 @@ goog.testing.net.XhrIo.prototype.isComplete = function() {
  * @return {boolean} Whether the request compeleted successfully.
  */
 goog.testing.net.XhrIo.prototype.isSuccess = function() {
-  switch (this.getStatus()) {
-    case goog.net.HttpStatus.OK:
-    case goog.net.HttpStatus.NO_CONTENT:
-    case goog.net.HttpStatus.NOT_MODIFIED:
-      return true;
+  var status = this.getStatus();
+  // A zero status code is considered successful for local files.
+  return goog.net.HttpStatus.isSuccess(status) ||
+      status === 0 && !this.isLastUriEffectiveSchemeHttp_();
+};
 
-    default:
-      return false;
-  }
+
+/**
+ * @return {boolean} whether the effective scheme of the last URI that was
+ *     fetched was 'http' or 'https'.
+ * @private
+ */
+goog.testing.net.XhrIo.prototype.isLastUriEffectiveSchemeHttp_ = function() {
+  var scheme = goog.uri.utils.getEffectiveScheme(String(this.lastUri_));
+  return goog.testing.net.XhrIo.HTTP_SCHEME_PATTERN_.test(scheme);
 };
 
 

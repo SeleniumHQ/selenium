@@ -400,6 +400,12 @@ goog.ui.SubMenu.prototype.performActionInternal = function(e) {
  * @private
  */
 goog.ui.SubMenu.prototype.setSubMenuVisible_ = function(visible) {
+  // Unhighlighting the menuitems if closing the menu so the event handlers can
+  // determine the correct state.
+  if (!visible && this.getMenu()) {
+    this.getMenu().setHighlightedIndex(-1);
+  }
+
   // Dispatch OPEN event before calling getMenu(), so we can create the menu
   // lazily on first access.
   this.dispatchEvent(goog.ui.Component.getStateTransitionEvent(

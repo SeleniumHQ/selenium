@@ -20,13 +20,3 @@ java_test(name = "test_synthesized",
   deps = [
     ":tests_common",
   ])
-
-java_test(name = "test_native",
-  srcs = [ "NativeEventsFirefoxDriverTests.java" ],
-  sysproperties = [
-    { "selenium.browser" : "ff" },
-    { "selenium.browser.native_events" : "true" },
-  ],
-  deps = [
-    ":tests_common",
-  ])

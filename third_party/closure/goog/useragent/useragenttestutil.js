@@ -44,6 +44,7 @@ goog.userAgentTestUtil.reinitializeUserAgent = function() {
   // to do that when the setting is done inside a function that's inlined.
   goog.userAgent.OPERA = goog.labs.userAgent.browser.isOpera();
   goog.userAgent.IE = goog.labs.userAgent.browser.isIE();
+  goog.userAgent.EDGE = goog.labs.userAgent.engine.isEdge();
   goog.userAgent.GECKO = goog.labs.userAgent.engine.isGecko();
   goog.userAgent.WEBKIT = goog.labs.userAgent.engine.isWebKit();
   goog.userAgent.MOBILE = goog.userAgent.isMobile_();
@@ -95,7 +96,8 @@ goog.userAgentTestUtil.UserAgents = {
   GECKO: 'GECKO',
   IE: 'IE',
   OPERA: 'OPERA',
-  WEBKIT: 'WEBKIT'
+  WEBKIT: 'WEBKIT',
+  EDGE: 'EDGE'
 };
 
 
@@ -110,6 +112,8 @@ goog.userAgentTestUtil.getUserAgentDetected = function(agent) {
       return goog.userAgent.GECKO;
     case goog.userAgentTestUtil.UserAgents.IE:
       return goog.userAgent.IE;
+    case goog.userAgentTestUtil.UserAgents.EDGE:
+      return goog.userAgent.EDGE;
     case goog.userAgentTestUtil.UserAgents.OPERA:
       return goog.userAgent.OPERA;
     case goog.userAgentTestUtil.UserAgents.WEBKIT:

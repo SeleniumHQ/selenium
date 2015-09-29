@@ -76,6 +76,14 @@ goog.math.Long.IntCache_ = {};
 
 
 /**
+ * A cache of the Long representations of common values.
+ * @type {!Object}
+ * @private
+ */
+goog.math.Long.valueCache_ = {};
+
+
+/**
  * Returns a Long representing the given (32-bit) integer value.
  * @param {number} value The 32-bit integer in question.
  * @return {!goog.math.Long} The corresponding Long value.
@@ -234,24 +242,17 @@ goog.math.Long.TWO_PWR_63_DBL_ =
     goog.math.Long.TWO_PWR_64_DBL_ / 2;
 
 
-/** @private {!goog.math.Long} */
-goog.math.Long.ZERO_;
-
-
 /**
  * @return {!goog.math.Long}
  * @public
  */
 goog.math.Long.getZero = function() {
-  if (!goog.math.Long.ZERO_) {
-    goog.math.Long.ZERO_ = goog.math.Long.fromInt(0);
+  var idZero = goog.math.Long.ValueCacheId_.ZERO;
+  if (!goog.math.Long.valueCache_[idZero]) {
+    goog.math.Long.valueCache_[idZero] = goog.math.Long.fromInt(0);
   }
-  return goog.math.Long.ZERO_;
+  return goog.math.Long.valueCache_[idZero];
 };
-
-
-/** @private {!goog.math.Long} */
-goog.math.Long.ONE_;
 
 
 /**
@@ -259,15 +260,12 @@ goog.math.Long.ONE_;
  * @public
  */
 goog.math.Long.getOne = function() {
-  if (!goog.math.Long.ONE_) {
-    goog.math.Long.ONE_ = goog.math.Long.fromInt(1);
+  var idOne = goog.math.Long.ValueCacheId_.ONE;
+  if (!goog.math.Long.valueCache_[idOne]) {
+    goog.math.Long.valueCache_[idOne] = goog.math.Long.fromInt(1);
   }
-  return goog.math.Long.ONE_;
+  return goog.math.Long.valueCache_[idOne];
 };
-
-
-/** @private {!goog.math.Long} */
-goog.math.Long.NEG_ONE_;
 
 
 /**
@@ -275,15 +273,12 @@ goog.math.Long.NEG_ONE_;
  * @public
  */
 goog.math.Long.getNegOne = function() {
-  if (!goog.math.Long.NEG_ONE_) {
-    goog.math.Long.NEG_ONE_ = goog.math.Long.fromInt(-1);
+  var idNegOne = goog.math.Long.ValueCacheId_.NEG_ONE;
+  if (!goog.math.Long.valueCache_[idNegOne]) {
+    goog.math.Long.valueCache_[idNegOne] = goog.math.Long.fromInt(-1);
   }
-  return goog.math.Long.NEG_ONE_;
+  return goog.math.Long.valueCache_[idNegOne];
 };
-
-
-/** @private {!goog.math.Long} */
-goog.math.Long.MAX_VALUE_;
 
 
 /**
@@ -291,16 +286,13 @@ goog.math.Long.MAX_VALUE_;
  * @public
  */
 goog.math.Long.getMaxValue = function() {
-  if (!goog.math.Long.MAX_VALUE_) {
-    goog.math.Long.MAX_VALUE_ = goog.math.Long.fromBits(
+  var idMaxValue = goog.math.Long.ValueCacheId_.MAX_VALUE;
+  if (!goog.math.Long.valueCache_[idMaxValue]) {
+    goog.math.Long.valueCache_[idMaxValue] = goog.math.Long.fromBits(
         0xFFFFFFFF | 0, 0x7FFFFFFF | 0);
   }
-  return goog.math.Long.MAX_VALUE_;
+  return goog.math.Long.valueCache_[idMaxValue];
 };
-
-
-/** @private {!goog.math.Long} */
-goog.math.Long.MIN_VALUE_;
 
 
 /**
@@ -308,15 +300,13 @@ goog.math.Long.MIN_VALUE_;
  * @public
  */
 goog.math.Long.getMinValue = function() {
-  if (!goog.math.Long.MIN_VALUE_) {
-    goog.math.Long.MIN_VALUE_ = goog.math.Long.fromBits(0, 0x80000000 | 0);
+  var idMinValue = goog.math.Long.ValueCacheId_.MIN_VALUE;
+  if (!goog.math.Long.valueCache_[idMinValue]) {
+    goog.math.Long.valueCache_[idMinValue] = goog.math.Long.fromBits(
+        0, 0x80000000 | 0);
   }
-  return goog.math.Long.MIN_VALUE_;
+  return goog.math.Long.valueCache_[idMinValue];
 };
-
-
-/** @private {!goog.math.Long} */
-goog.math.Long.TWO_PWR_24_;
 
 
 /**
@@ -324,10 +314,11 @@ goog.math.Long.TWO_PWR_24_;
  * @public
  */
 goog.math.Long.getTwoPwr24 = function() {
-  if (!goog.math.Long.TWO_PWR_24_) {
-    goog.math.Long.TWO_PWR_24_ = goog.math.Long.fromInt(1 << 24);
+  var idTwoPwr24 = goog.math.Long.ValueCacheId_.TWO_PWR_24;
+  if (!goog.math.Long.valueCache_[idTwoPwr24]) {
+    goog.math.Long.valueCache_[idTwoPwr24] = goog.math.Long.fromInt(1 << 24);
   }
-  return goog.math.Long.TWO_PWR_24_;
+  return goog.math.Long.valueCache_[idTwoPwr24];
 };
 
 
@@ -380,7 +371,10 @@ goog.math.Long.prototype.toString = function(opt_radix) {
   var result = '';
   while (true) {
     var remDiv = rem.div(radixToPower);
-    var intval = rem.subtract(remDiv.multiply(radixToPower)).toInt();
+    // The right shifting fixes negative values in the case when
+    // intval >= 2^31; for more details see
+    // https://github.com/google/closure-library/pull/498
+    var intval = rem.subtract(remDiv.multiply(radixToPower)).toInt() >>> 0;
     var digits = intval.toString(radix);
 
     rem = remDiv;
@@ -826,6 +820,7 @@ goog.math.Long.prototype.shiftLeft = function(numBits) {
 
 /**
  * Returns this Long with bits shifted to the right by the given amount.
+ * The new leading bits match the current sign bit.
  * @param {number} numBits The number of bits by which to shift.
  * @return {!goog.math.Long} This shifted to the right by the given amount.
  */
@@ -873,5 +868,19 @@ goog.math.Long.prototype.shiftRightUnsigned = function(numBits) {
       return goog.math.Long.fromBits(high >>> (numBits - 32), 0);
     }
   }
+};
+
+
+/**
+ * @enum {number} Ids of commonly requested Long instances.
+ * @private
+ */
+goog.math.Long.ValueCacheId_ = {
+  MAX_VALUE: 1,
+  MIN_VALUE: 2,
+  ZERO: 3,
+  ONE: 4,
+  NEG_ONE: 5,
+  TWO_PWR_24: 6
 };
 

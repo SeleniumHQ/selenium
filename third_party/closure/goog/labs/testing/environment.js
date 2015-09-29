@@ -107,10 +107,10 @@ goog.labs.testing.Environment = goog.defineClass(null, {
         this.mockControl.$verifyAll();
       } finally {
         this.mockControl.$resetAll();
-      }
-      if (this.shouldMakeMockControl_) {
-        // If we created the mockControl, we'll also tear it down.
-        this.mockControl.$tearDown();
+        if (this.shouldMakeMockControl_) {
+          // If we created the mockControl, we'll also tear it down.
+          this.mockControl.$tearDown();
+        }
       }
     }
     // Verifying the mockControl may throw, so if cleanup needs to happen,

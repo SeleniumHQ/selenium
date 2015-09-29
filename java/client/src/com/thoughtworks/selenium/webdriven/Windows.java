@@ -150,6 +150,7 @@ public class Windows {
    * If none of the windows have <code>window.name = null</code> the last selected one will be
    * re-selected and a {@link SeleniumException} will be thrown.
    *
+   * @param driver WebDriver
    * @throws NoSuchWindowException if no window with <code>window.name = null</code> is found.
    */
   public void selectBlankWindow(WebDriver driver) {

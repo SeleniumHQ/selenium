@@ -17,6 +17,7 @@
 // </copyright>
 
 using System;
+using System.Globalization;
 
 namespace OpenQA.Selenium
 {
@@ -168,6 +169,14 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Gets the value of the platform type for transmission using the JSON Wire Protocol.
+        /// </summary>
+        public string ProtocolPlatformType
+        {
+            get { return this.platformTypeValue.ToString("G").ToUpper(CultureInfo.InvariantCulture); }
+        }
+
+        /// <summary>
         /// Compares the platform to the specified type.
         /// </summary>
         /// <param name="compareTo">A <see cref="PlatformType"/> value to compare to.</param>
@@ -212,6 +221,27 @@ namespace OpenQA.Selenium
         public override string ToString()
         {
             return this.platformTypeValue.ToString();
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Platform"/> object from a string name of the platform.
+        /// </summary>
+        /// <param name="platformName">The name of the platform to create.</param>
+        /// <returns>The Platform object represented by the string name.</returns>
+        internal static Platform FromString(string platformName)
+        {
+            PlatformType platformTypeFromString = PlatformType.Any;
+            try
+            {
+                platformTypeFromString = (PlatformType)Enum.Parse(typeof(PlatformType), platformName, true);
+            }
+            catch (ArgumentException)
+            {
+                // If the requested platform string is not a valid platform type,
+                // ignore it and use PlatformType.Any.
+            }
+
+            return new Platform(platformTypeFromString);
         }
     }
 }

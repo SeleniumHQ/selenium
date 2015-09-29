@@ -40,39 +40,39 @@ module Selenium
           profile['foo.boolean'] = true
 
           new_profile = Profile.from_json(profile.to_json)
-          new_profile['foo.boolean'].should be true
+          expect(new_profile['foo.boolean']).to be true
         end
 
         it "adds an extension" do
           ext_path = "/some/path.crx"
 
-          File.should_receive(:file?).with(ext_path).and_return true
-          profile.add_extension(ext_path).should == [ext_path]
+          expect(File).to receive(:file?).with(ext_path).and_return true
+          expect(profile.add_extension(ext_path)).to eq([ext_path])
         end
 
         it "reads an extension as binary data" do
           ext_path = "/some/path.crx"
-          File.should_receive(:file?).with(ext_path).and_return true
+          expect(File).to receive(:file?).with(ext_path).and_return true
 
           profile.add_extension(ext_path)
 
           ext_file = double('file')
-          File.should_receive(:open).with(ext_path, "rb").and_yield ext_file
-          ext_file.should_receive(:read).and_return "test"
+          expect(File).to receive(:open).with(ext_path, "rb").and_yield ext_file
+          expect(ext_file).to receive(:read).and_return "test"
 
-          profile.should_receive(:layout_on_disk).and_return "ignored"
-          Zipper.should_receive(:zip).and_return "ignored"
+          expect(profile).to receive(:layout_on_disk).and_return "ignored"
+          expect(Zipper).to receive(:zip).and_return "ignored"
 
-          profile.as_json().should == {
+          expect(profile.as_json()).to eq({
             'zip' => "ignored",
             'extensions' => [Base64.strict_encode64("test")]
-          }
+          })
         end
 
         it "raises an error if the extension doesn't exist" do
-          lambda {
+          expect {
             profile.add_extension("/not/likely/to/exist.crx")
-          }.should raise_error
+          }.to raise_error
         end
       end
 

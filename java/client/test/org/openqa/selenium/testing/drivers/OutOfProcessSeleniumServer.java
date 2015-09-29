@@ -48,15 +48,15 @@ public class OutOfProcessSeleniumServer {
   private CommandLine command;
   private boolean captureLogs = false;
 
+  public void enableLogCapture() {
+    captureLogs = true;
+  }
+
   /**
    * Creates an out of process server with log capture enabled.
    *
    * @return The new server.
    */
-  public void enableLogCapture() {
-    captureLogs = true;
-  }
-
   public OutOfProcessSeleniumServer start() {
     log.info("Got a request to start a new selenium server");
     if (command != null) {

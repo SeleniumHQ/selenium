@@ -319,7 +319,7 @@ public class WindowsProxyManager {
     }
   }
 
-  /**
+  /*
    * Hides all previously existing user cookies, found in the WinXP directory structure, by moving
    * them to a different directory.
    */
@@ -360,7 +360,7 @@ public class WindowsProxyManager {
     }
   }
 
-  /**
+  /*
    * Restores previously hidden user cookies, if any.
    */
   protected static boolean restoreCookies(File cookieDir,

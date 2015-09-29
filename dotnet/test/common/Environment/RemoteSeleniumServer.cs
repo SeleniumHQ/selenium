@@ -23,9 +23,11 @@ namespace OpenQA.Selenium.Environment
         {
             if (autoStart && (webserverProcess == null || webserverProcess.HasExited))
             {
+                string currentDirectory = EnvironmentManager.Instance.CurrentDirectory;
+                string ieDriverExe = System.IO.Path.Combine(currentDirectory, "IEDriverServer.exe");
                 webserverProcess = new Process();
                 webserverProcess.StartInfo.FileName = "java.exe";
-                webserverProcess.StartInfo.Arguments = "-jar " + serverJarName + " -port 6000";
+                webserverProcess.StartInfo.Arguments = "-Dwebdriver.ie.driver=" + ieDriverExe + " -jar " + serverJarName + " -port 6000";
                 webserverProcess.StartInfo.WorkingDirectory = projectRootPath;
                 webserverProcess.Start();
                 DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(30));

@@ -146,6 +146,23 @@ goog.testing.fs.blobToString = function(blob, opt_encoding) {
 
 
 /**
+ * Slices the blob. The returned blob contains data from the start byte
+ * (inclusive) till the end byte (exclusive). Negative indices can be used
+ * to count bytes from the end of the blob (-1 == blob.size - 1). Indices
+ * are always clamped to blob range. If end is omitted, all the data till
+ * the end of the blob is taken.
+ *
+ * @param {!goog.testing.fs.Blob} testBlob The blob to slice.
+ * @param {number} start Index of the starting byte.
+ * @param {number=} opt_end Index of the ending byte.
+ * @return {goog.testing.fs.Blob} The new blob or null if not supported.
+ */
+goog.testing.fs.sliceBlob = function(testBlob, start, opt_end) {
+  return testBlob.slice(start, opt_end);
+};
+
+
+/**
  * Installs goog.testing.fs in place of the standard goog.fs. After calling
  * this, code that uses goog.fs should work without issue using goog.testing.fs.
  *

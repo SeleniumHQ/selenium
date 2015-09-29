@@ -214,10 +214,11 @@ bot.Mouse.MOUSE_EVENT_MAP_ = (function() {
  * Attempts to fire a mousedown event and then returns whether or not the
  * element should receive focus as a result of the mousedown.
  *
+ * @param {?number=} opt_count Number of clicks that have been performed.
  * @return {boolean} Whether to focus on the element after the mousedown.
  * @private
  */
-bot.Mouse.prototype.fireMousedown_ = function() {
+bot.Mouse.prototype.fireMousedown_ = function(opt_count) {
   // On some browsers, a mouse down event on an OPTION or SELECT element cause
   // the SELECT to open, blocking further JS execution. This is undesirable,
   // and so needs to be detected. We always focus in this case.
@@ -238,7 +239,7 @@ bot.Mouse.prototype.fireMousedown_ = function() {
   if (mousedownCanPreemptFocus) {
     beforeActiveElement = bot.dom.getActiveElement(this.getElement());
   }
-  var performFocus = this.fireMouseEvent_(bot.events.EventType.MOUSEDOWN);
+  var performFocus = this.fireMouseEvent_(bot.events.EventType.MOUSEDOWN, null, null, false, opt_count);
   if (performFocus && mousedownCanPreemptFocus &&
       beforeActiveElement != bot.dom.getActiveElement(this.getElement())) {
     return false;
@@ -251,8 +252,9 @@ bot.Mouse.prototype.fireMousedown_ = function() {
  * Press a mouse button on an element that the mouse is interacting with.
  *
  * @param {!bot.Mouse.Button} button Button.
+ * @param {?number=} opt_count Number of clicks that have been performed.
 */
-bot.Mouse.prototype.pressButton = function(button) {
+bot.Mouse.prototype.pressButton = function(button, opt_count) {
   if (!goog.isNull(this.buttonPressed_)) {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
         'Cannot press more then one button or an already pressed button.');
@@ -260,7 +262,7 @@ bot.Mouse.prototype.pressButton = function(button) {
   this.buttonPressed_ = button;
   this.elementPressed_ = this.getElement();
 
-  var performFocus = this.fireMousedown_();
+  var performFocus = this.fireMousedown_(opt_count);
   if (performFocus) {
     if (bot.userAgent.IE_DOC_10 &&
         this.buttonPressed_ == bot.Mouse.Button.LEFT &&
@@ -277,8 +279,11 @@ bot.Mouse.prototype.pressButton = function(button) {
 /**
  * Releases the pressed mouse button. Throws exception if no button pressed.
  *
+ * @param {boolean=} opt_force Whether the event should be fired even if the
+ *     element is not interactable.
+ * @param {?number=} opt_count Number of clicks that have been performed.
  */
-bot.Mouse.prototype.releaseButton = function() {
+bot.Mouse.prototype.releaseButton = function(opt_force, opt_count) {
   if (goog.isNull(this.buttonPressed_)) {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
         'Cannot release a button when no button is pressed.');
@@ -291,7 +296,7 @@ bot.Mouse.prototype.releaseButton = function() {
   // element becomes non-interactable after the mouseup.
   var elementInteractableBeforeMouseup =
       bot.dom.isInteractable(this.getElement());
-  this.fireMouseEvent_(bot.events.EventType.MOUSEUP);
+  this.fireMouseEvent_(bot.events.EventType.MOUSEUP, null, null, opt_force, opt_count);
 
   // TODO: Middle button can also trigger click.
   if (this.buttonPressed_ == bot.Mouse.Button.LEFT &&
@@ -437,11 +442,12 @@ bot.Mouse.prototype.scroll = function(ticks) {
  * @param {?number=} opt_wheelDelta The wheel delta value for the event.
  * @param {boolean=} opt_force Whether the event should be fired even if the
  *     element is not interactable.
+ * @param {?number=} opt_count Number of clicks that have been performed.
  * @return {boolean} Whether the event fired successfully or was cancelled.
  * @private
  */
 bot.Mouse.prototype.fireMouseEvent_ = function(type, opt_related,
-                                               opt_wheelDelta, opt_force) {
+                                               opt_wheelDelta, opt_force, opt_count) {
   this.hasEverInteracted_ = true;
   if (bot.userAgent.IE_DOC_10) {
     var msPointerEvent = bot.Mouse.MOUSE_EVENT_MAP_[type];
@@ -457,7 +463,7 @@ bot.Mouse.prototype.fireMouseEvent_ = function(type, opt_related,
     }
   }
   return this.fireMouseEvent(type, this.clientXY_,
-      this.getButtonValue_(type), opt_related, opt_wheelDelta, opt_force);
+      this.getButtonValue_(type), opt_related, opt_wheelDelta, opt_force, null, opt_count);
 };
 
 

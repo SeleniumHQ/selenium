@@ -1118,6 +1118,7 @@ goog.ui.SliderBase.prototype.animatedSetValue = function(v) {
 
   if (this.isAnimating_) {
     this.currentAnimation_.stop(true);
+    this.currentAnimation_.dispose();
   }
   var animations = new goog.fx.AnimationParallelQueue();
   var end;

@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Proxy to a remote server executing the tests. <p/> The proxy keeps a state of what is happening
+ * Proxy to a remote server executing the tests. <p> The proxy keeps a state of what is happening
  * on the remote server and knows if a new test can be run on the remote server. There are several
  * reasons why a test could not be run on the specified remote server, for instance: if the
  * RemoteProxy decides the remote server has reached the maximum number of concurrent sessions, or
@@ -98,7 +98,7 @@ public interface RemoteProxy extends Comparable<RemoteProxy> {
   /**
    * Returns the maximum number of concurrent tests that can run on this node.  NB: this number can be less than
    * the number of test slots because a test slot only indicates what type of test session can be run on the remote.
-   * I.e., a node may allow N different <em>types</em> of tests, but only allow M tests to run at once, for M <= N.
+   * I.e., a node may allow N different <em>types</em> of tests, but only allow M tests to run at once, for M &lt;= N.
    *
    * @return Maximum number of concurrent tests that can run on this node.
    */
@@ -163,9 +163,9 @@ public interface RemoteProxy extends Comparable<RemoteProxy> {
 
   /**
    * Checks if the node has the capability requested.
-   * <br /><br />
+   * <br>
    * The definition of "has" is defined by {@link CapabilityMatcher#matches(Map, Map)}
-   * <br /><br />
+   * <br>
    * <code>hasCapability = true</code> doesn't mean the test cast start just now, only that the proxy will be
    * able to run a test requiring that capability at some point.
    *

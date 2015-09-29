@@ -92,6 +92,7 @@ public class Actions {
    *
    * @param theKey Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}. If the
    * provided key is none of those, {@link IllegalArgumentException} is thrown.
+   * @param element WebElement to perform the action
    * @return A self reference.
    */
   public Actions keyDown(WebElement element, Keys theKey) {
@@ -116,6 +117,7 @@ public class Actions {
    * @see #keyUp(org.openqa.selenium.Keys) on behaviour regarding non-depressed modifier keys.
    *
    * @param theKey Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}.
+   * @param element WebElement to perform the action on
    * @return A self reference.
    */
   public Actions keyUp(WebElement element, Keys theKey) {

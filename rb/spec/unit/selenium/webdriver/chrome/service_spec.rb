@@ -33,11 +33,11 @@ module Selenium
 
         it "uses the user-provided path if set" do
           Platform.stub(:os => :unix)
-          Platform.stub(:assert_executable).with("/some/path")
+          allow(Platform).to receive(:assert_executable).with("/some/path")
           Chrome.driver_path = "/some/path"
 
           expect(ChildProcess).to receive(:build) do |*args|
-            args.first.should == "/some/path"
+            expect(args.first).to eq("/some/path")
             mock_process
           end
 
@@ -46,16 +46,16 @@ module Selenium
 
         it "finds the Chrome server binary by searching PATH" do
           Platform.stub(:os => :unix)
-          Platform.should_receive(:find_binary).once.and_return("/some/path")
-          Platform.should_receive(:assert_executable).with("/some/path")
+          expect(Platform).to receive(:find_binary).once.and_return("/some/path")
+          expect(Platform).to receive(:assert_executable).with("/some/path")
 
-          Service.executable_path.should == "/some/path"
+          expect(Service.executable_path).to eq("/some/path")
         end
 
         it "raises a nice error if the server binary can't be found" do
-          Platform.stub(:find_binary).and_return(nil)
+          allow(Platform).to receive(:find_binary).and_return(nil)
 
-          lambda { Service.executable_path }.should raise_error(Error::WebDriverError, /github.com\/SeleniumHQ/)
+          expect { Service.executable_path }.to raise_error(Error::WebDriverError, /github.com\/SeleniumHQ/)
         end
 
       end

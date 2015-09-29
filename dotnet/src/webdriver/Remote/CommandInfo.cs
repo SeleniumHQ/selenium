@@ -96,8 +96,9 @@ namespace OpenQA.Selenium.Remote
             }
 
             Uri fullUri;
-            string relativeUrl = string.Join("/", urlParts);
-            bool uriCreateSucceeded = Uri.TryCreate(baseUri, relativeUrl, out fullUri);
+            string relativeUrlString = string.Join("/", urlParts);
+            Uri relativeUri = new Uri(relativeUrlString, UriKind.Relative);
+            bool uriCreateSucceeded = Uri.TryCreate(baseUri, relativeUri, out fullUri);
             if (uriCreateSucceeded)
             {
                 request = HttpWebRequest.Create(fullUri) as HttpWebRequest;
@@ -105,7 +106,7 @@ namespace OpenQA.Selenium.Remote
             }
             else
             {
-                throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Unable to create URI from base {0} and relative path {1}", baseUri == null ? string.Empty : baseUri.ToString(), relativeUrl));
+                throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Unable to create URI from base {0} and relative path {1}", baseUri == null ? string.Empty : baseUri.ToString(), relativeUrlString));
             }
 
             return request;

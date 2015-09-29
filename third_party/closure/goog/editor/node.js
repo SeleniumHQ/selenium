@@ -271,6 +271,7 @@ goog.editor.node.isEmpty = function(node, opt_prohibitSingleNbsp) {
   var nodeData = goog.dom.getRawTextContent(node);
 
   if (node.getElementsByTagName) {
+    node = /** @type {!Element} */ (node);
     for (var tag in goog.editor.node.NON_EMPTY_TAGS_) {
       if (node.tagName == tag || node.getElementsByTagName(tag).length > 0) {
         return false;
@@ -340,7 +341,8 @@ goog.editor.node.findHighestMatchingAncestor = function(node, hasProperty) {
  * @return {boolean} Whether the node is a block-level node.
  */
 goog.editor.node.isBlockTag = function(node) {
-  return !!goog.editor.node.BLOCK_TAG_NAMES_[node.tagName];
+  return !!goog.editor.node.BLOCK_TAG_NAMES_[
+    /** @type {!Element} */ (node).tagName];
 };
 
 

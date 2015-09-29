@@ -27,6 +27,8 @@ public interface DriverFactory {
 
   /**
    * @deprecated This method is used in tests only and subject to be removed from the interface
+   * @param capabilities capabilities map
+   * @return true if the driver factory can provide a driver for the capabilities
    */
   @Deprecated
   boolean hasMappingFor(Capabilities capabilities);

@@ -1100,10 +1100,10 @@ proto2.TestAllTypes.prototype.addRepeatedInt32 = function(value) {
 
 /**
  * Returns the array of values in the repeated_int32 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedInt32Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(31));
+  return /** @type {!Array<number>} */ (this.array$Values(31));
 };
 
 
@@ -1162,10 +1162,10 @@ proto2.TestAllTypes.prototype.addRepeatedInt64 = function(value) {
 
 /**
  * Returns the array of values in the repeated_int64 field.
- * @return {!Array.<string>} The values in the field.
+ * @return {!Array<string>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedInt64Array = function() {
-  return /** @type {!Array.<string>} */ (this.array$Values(32));
+  return /** @type {!Array<string>} */ (this.array$Values(32));
 };
 
 
@@ -1224,10 +1224,10 @@ proto2.TestAllTypes.prototype.addRepeatedUint32 = function(value) {
 
 /**
  * Returns the array of values in the repeated_uint32 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedUint32Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(33));
+  return /** @type {!Array<number>} */ (this.array$Values(33));
 };
 
 
@@ -1286,10 +1286,10 @@ proto2.TestAllTypes.prototype.addRepeatedUint64 = function(value) {
 
 /**
  * Returns the array of values in the repeated_uint64 field.
- * @return {!Array.<string>} The values in the field.
+ * @return {!Array<string>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedUint64Array = function() {
-  return /** @type {!Array.<string>} */ (this.array$Values(34));
+  return /** @type {!Array<string>} */ (this.array$Values(34));
 };
 
 
@@ -1348,10 +1348,10 @@ proto2.TestAllTypes.prototype.addRepeatedSint32 = function(value) {
 
 /**
  * Returns the array of values in the repeated_sint32 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedSint32Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(35));
+  return /** @type {!Array<number>} */ (this.array$Values(35));
 };
 
 
@@ -1410,10 +1410,10 @@ proto2.TestAllTypes.prototype.addRepeatedSint64 = function(value) {
 
 /**
  * Returns the array of values in the repeated_sint64 field.
- * @return {!Array.<string>} The values in the field.
+ * @return {!Array<string>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedSint64Array = function() {
-  return /** @type {!Array.<string>} */ (this.array$Values(36));
+  return /** @type {!Array<string>} */ (this.array$Values(36));
 };
 
 
@@ -1472,10 +1472,10 @@ proto2.TestAllTypes.prototype.addRepeatedFixed32 = function(value) {
 
 /**
  * Returns the array of values in the repeated_fixed32 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedFixed32Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(37));
+  return /** @type {!Array<number>} */ (this.array$Values(37));
 };
 
 
@@ -1534,10 +1534,10 @@ proto2.TestAllTypes.prototype.addRepeatedFixed64 = function(value) {
 
 /**
  * Returns the array of values in the repeated_fixed64 field.
- * @return {!Array.<string>} The values in the field.
+ * @return {!Array<string>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedFixed64Array = function() {
-  return /** @type {!Array.<string>} */ (this.array$Values(38));
+  return /** @type {!Array<string>} */ (this.array$Values(38));
 };
 
 
@@ -1596,10 +1596,10 @@ proto2.TestAllTypes.prototype.addRepeatedSfixed32 = function(value) {
 
 /**
  * Returns the array of values in the repeated_sfixed32 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedSfixed32Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(39));
+  return /** @type {!Array<number>} */ (this.array$Values(39));
 };
 
 
@@ -1658,10 +1658,10 @@ proto2.TestAllTypes.prototype.addRepeatedSfixed64 = function(value) {
 
 /**
  * Returns the array of values in the repeated_sfixed64 field.
- * @return {!Array.<string>} The values in the field.
+ * @return {!Array<string>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedSfixed64Array = function() {
-  return /** @type {!Array.<string>} */ (this.array$Values(40));
+  return /** @type {!Array<string>} */ (this.array$Values(40));
 };
 
 
@@ -1720,10 +1720,10 @@ proto2.TestAllTypes.prototype.addRepeatedFloat = function(value) {
 
 /**
  * Returns the array of values in the repeated_float field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedFloatArray = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(41));
+  return /** @type {!Array<number>} */ (this.array$Values(41));
 };
 
 
@@ -1782,10 +1782,10 @@ proto2.TestAllTypes.prototype.addRepeatedDouble = function(value) {
 
 /**
  * Returns the array of values in the repeated_double field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedDoubleArray = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(42));
+  return /** @type {!Array<number>} */ (this.array$Values(42));
 };
 
 
@@ -1844,10 +1844,10 @@ proto2.TestAllTypes.prototype.addRepeatedBool = function(value) {
 
 /**
  * Returns the array of values in the repeated_bool field.
- * @return {!Array.<boolean>} The values in the field.
+ * @return {!Array<boolean>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedBoolArray = function() {
-  return /** @type {!Array.<boolean>} */ (this.array$Values(43));
+  return /** @type {!Array<boolean>} */ (this.array$Values(43));
 };
 
 
@@ -1906,10 +1906,10 @@ proto2.TestAllTypes.prototype.addRepeatedString = function(value) {
 
 /**
  * Returns the array of values in the repeated_string field.
- * @return {!Array.<string>} The values in the field.
+ * @return {!Array<string>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedStringArray = function() {
-  return /** @type {!Array.<string>} */ (this.array$Values(44));
+  return /** @type {!Array<string>} */ (this.array$Values(44));
 };
 
 
@@ -1968,10 +1968,10 @@ proto2.TestAllTypes.prototype.addRepeatedBytes = function(value) {
 
 /**
  * Returns the array of values in the repeated_bytes field.
- * @return {!Array.<string>} The values in the field.
+ * @return {!Array<string>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedBytesArray = function() {
-  return /** @type {!Array.<string>} */ (this.array$Values(45));
+  return /** @type {!Array<string>} */ (this.array$Values(45));
 };
 
 
@@ -2030,10 +2030,10 @@ proto2.TestAllTypes.prototype.addRepeatedgroup = function(value) {
 
 /**
  * Returns the array of values in the repeatedgroup field.
- * @return {!Array.<!proto2.TestAllTypes.RepeatedGroup>} The values in the field.
+ * @return {!Array<!proto2.TestAllTypes.RepeatedGroup>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedgroupArray = function() {
-  return /** @type {!Array.<!proto2.TestAllTypes.RepeatedGroup>} */ (this.array$Values(46));
+  return /** @type {!Array<!proto2.TestAllTypes.RepeatedGroup>} */ (this.array$Values(46));
 };
 
 
@@ -2092,10 +2092,10 @@ proto2.TestAllTypes.prototype.addRepeatedNestedMessage = function(value) {
 
 /**
  * Returns the array of values in the repeated_nested_message field.
- * @return {!Array.<!proto2.TestAllTypes.NestedMessage>} The values in the field.
+ * @return {!Array<!proto2.TestAllTypes.NestedMessage>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedNestedMessageArray = function() {
-  return /** @type {!Array.<!proto2.TestAllTypes.NestedMessage>} */ (this.array$Values(48));
+  return /** @type {!Array<!proto2.TestAllTypes.NestedMessage>} */ (this.array$Values(48));
 };
 
 
@@ -2154,10 +2154,10 @@ proto2.TestAllTypes.prototype.addRepeatedNestedEnum = function(value) {
 
 /**
  * Returns the array of values in the repeated_nested_enum field.
- * @return {!Array.<proto2.TestAllTypes.NestedEnum>} The values in the field.
+ * @return {!Array<proto2.TestAllTypes.NestedEnum>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedNestedEnumArray = function() {
-  return /** @type {!Array.<proto2.TestAllTypes.NestedEnum>} */ (this.array$Values(49));
+  return /** @type {!Array<proto2.TestAllTypes.NestedEnum>} */ (this.array$Values(49));
 };
 
 
@@ -2216,10 +2216,10 @@ proto2.TestAllTypes.prototype.addRepeatedInt64Number = function(value) {
 
 /**
  * Returns the array of values in the repeated_int64_number field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedInt64NumberArray = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(52));
+  return /** @type {!Array<number>} */ (this.array$Values(52));
 };
 
 
@@ -2278,10 +2278,10 @@ proto2.TestAllTypes.prototype.addRepeatedInt64String = function(value) {
 
 /**
  * Returns the array of values in the repeated_int64_string field.
- * @return {!Array.<string>} The values in the field.
+ * @return {!Array<string>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedInt64StringArray = function() {
-  return /** @type {!Array.<string>} */ (this.array$Values(53));
+  return /** @type {!Array<string>} */ (this.array$Values(53));
 };
 
 
@@ -2340,10 +2340,10 @@ proto2.TestAllTypes.prototype.addPackedInt32 = function(value) {
 
 /**
  * Returns the array of values in the packed_int32 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.packedInt32Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(54));
+  return /** @type {!Array<number>} */ (this.array$Values(54));
 };
 
 
@@ -2402,10 +2402,10 @@ proto2.TestAllTypes.prototype.addPackedInt64 = function(value) {
 
 /**
  * Returns the array of values in the packed_int64 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.packedInt64Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(55));
+  return /** @type {!Array<number>} */ (this.array$Values(55));
 };
 
 
@@ -2464,10 +2464,10 @@ proto2.TestAllTypes.prototype.addPackedUint32 = function(value) {
 
 /**
  * Returns the array of values in the packed_uint32 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.packedUint32Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(56));
+  return /** @type {!Array<number>} */ (this.array$Values(56));
 };
 
 
@@ -2526,10 +2526,10 @@ proto2.TestAllTypes.prototype.addPackedUint64 = function(value) {
 
 /**
  * Returns the array of values in the packed_uint64 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.packedUint64Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(57));
+  return /** @type {!Array<number>} */ (this.array$Values(57));
 };
 
 
@@ -2588,10 +2588,10 @@ proto2.TestAllTypes.prototype.addPackedSint32 = function(value) {
 
 /**
  * Returns the array of values in the packed_sint32 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.packedSint32Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(58));
+  return /** @type {!Array<number>} */ (this.array$Values(58));
 };
 
 
@@ -2650,10 +2650,10 @@ proto2.TestAllTypes.prototype.addPackedSint64 = function(value) {
 
 /**
  * Returns the array of values in the packed_sint64 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.packedSint64Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(59));
+  return /** @type {!Array<number>} */ (this.array$Values(59));
 };
 
 
@@ -2712,10 +2712,10 @@ proto2.TestAllTypes.prototype.addPackedFixed32 = function(value) {
 
 /**
  * Returns the array of values in the packed_fixed32 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.packedFixed32Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(60));
+  return /** @type {!Array<number>} */ (this.array$Values(60));
 };
 
 
@@ -2774,10 +2774,10 @@ proto2.TestAllTypes.prototype.addPackedFixed64 = function(value) {
 
 /**
  * Returns the array of values in the packed_fixed64 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.packedFixed64Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(61));
+  return /** @type {!Array<number>} */ (this.array$Values(61));
 };
 
 
@@ -2836,10 +2836,10 @@ proto2.TestAllTypes.prototype.addPackedSfixed32 = function(value) {
 
 /**
  * Returns the array of values in the packed_sfixed32 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.packedSfixed32Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(62));
+  return /** @type {!Array<number>} */ (this.array$Values(62));
 };
 
 
@@ -2898,10 +2898,10 @@ proto2.TestAllTypes.prototype.addPackedSfixed64 = function(value) {
 
 /**
  * Returns the array of values in the packed_sfixed64 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.packedSfixed64Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(63));
+  return /** @type {!Array<number>} */ (this.array$Values(63));
 };
 
 
@@ -2960,10 +2960,10 @@ proto2.TestAllTypes.prototype.addPackedFloat = function(value) {
 
 /**
  * Returns the array of values in the packed_float field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.packedFloatArray = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(64));
+  return /** @type {!Array<number>} */ (this.array$Values(64));
 };
 
 
@@ -3022,10 +3022,10 @@ proto2.TestAllTypes.prototype.addPackedDouble = function(value) {
 
 /**
  * Returns the array of values in the packed_double field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.packedDoubleArray = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(65));
+  return /** @type {!Array<number>} */ (this.array$Values(65));
 };
 
 
@@ -3084,10 +3084,10 @@ proto2.TestAllTypes.prototype.addPackedBool = function(value) {
 
 /**
  * Returns the array of values in the packed_bool field.
- * @return {!Array.<boolean>} The values in the field.
+ * @return {!Array<boolean>} The values in the field.
  */
 proto2.TestAllTypes.prototype.packedBoolArray = function() {
-  return /** @type {!Array.<boolean>} */ (this.array$Values(66));
+  return /** @type {!Array<boolean>} */ (this.array$Values(66));
 };
 
 
@@ -3370,10 +3370,10 @@ proto2.TestAllTypes.RepeatedGroup.prototype.addA = function(value) {
 
 /**
  * Returns the array of values in the a field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.RepeatedGroup.prototype.aArray = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(47));
+  return /** @type {!Array<number>} */ (this.array$Values(47));
 };
 
 

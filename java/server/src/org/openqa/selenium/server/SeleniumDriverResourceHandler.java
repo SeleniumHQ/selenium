@@ -76,7 +76,7 @@ import java.util.logging.Logger;
 
 /**
  * A Jetty handler that takes care of remote Selenium requests.
- * <p/>
+ * <p>
  * Remote Selenium requests are described in detail in the class description for
  * <code>SeleniumServer</code>
  *
@@ -259,9 +259,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
   /**
    * extract the posted data from an incoming request, stripping away a piggybacked data
    *
-   * @param req
-   * @param sessionId
-   * @param uniqueId
+   * @param req request
+   * @param sessionId session id
+   * @param uniqueId unique id
    * @return a string containing the posted data (with piggybacked log info stripped)
    * @throws IOException
    */
@@ -863,7 +863,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
   /**
    * Registers the given browser session among the active sessions to handle.
-   * <p/>
+   * <p>
    * Usually externally created browser sessions are managed themselves, but registering them allows
    * the shutdown procedures to be simpler.
    *
@@ -875,7 +875,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
   /**
    * De-registers the given browser session from among the active sessions.
-   * <p/>
+   * <p>
    * When an externally managed but registered session is closed, this method should be called to
    * keep the set of active sessions up to date.
    *

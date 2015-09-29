@@ -35,6 +35,8 @@ public class HttpResponse extends HttpMessage {
 
   /**
    * Sets the host this response was received from.
+   *
+   * @param host originating host
    */
   public void setTargetHost(String host) {
     setAttribute(HTTP_TARGET_HOST, host);
@@ -42,6 +44,8 @@ public class HttpResponse extends HttpMessage {
 
   /**
    * Returns the host this response was received from, or null if it was not set.
+   *
+   * @return originating host
    */
   public String getTargetHost() {
     return (String) getAttribute(HTTP_TARGET_HOST);

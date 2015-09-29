@@ -22,16 +22,16 @@ public interface TimeoutListener {
 
   /**
    * Gives a chance to clean the resources on the remote when the session has timed out.
-   * <p/>
+   * <p>
    * Is executed before the session is released to the hub. If an exception is thrown, the slot that
    * was associated with the session is considered corrupted and won't be released for future use.
-   * <p/>
+   * <p>
    * You can check session.getInternalKey before timing out. internalkey==null usually means the
    * initial POST /session hasn't been completed yet.For instance if you use web driver, that means
    * the browser is in the process of being started. During that state, you can't really clean the
    * resources properly.
    *
-   * @param session
+   * @param session session
    */
   public void beforeRelease(TestSession session);
 

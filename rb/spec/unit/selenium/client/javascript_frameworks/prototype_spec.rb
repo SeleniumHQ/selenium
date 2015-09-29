@@ -23,7 +23,7 @@ describe Selenium::Client::JavascriptFrameworks::Prototype do
 
   it "returns 'Ajax.activeRequestCount'" do
     art = Selenium::Client::JavascriptFrameworks::Prototype.ajax_request_tracker
-    art.should == "Ajax.activeRequestCount"
+    expect(art).to eq("Ajax.activeRequestCount")
   end
 
 end

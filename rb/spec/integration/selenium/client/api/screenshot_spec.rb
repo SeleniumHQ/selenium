@@ -22,7 +22,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe "Screenshot" do
   it "can capture html for current page" do
     page.open "http://localhost:4444/selenium-server/org/openqa/selenium/tests/html/test_click_page1.html"
-    page.get_html_source.should =~ /<head>/
+    expect(page.get_html_source).to match(/<head>/)
   end
 
   # Raising Java Error on Windows
@@ -32,10 +32,10 @@ describe "Screenshot" do
     page.open "http://localhost:4444/selenium-server/org/openqa/selenium/tests/html/test_click_page1.html"
     page.capture_screenshot tempfile
 
-    File.exists?(tempfile).should be true
+    expect(File.exists?(tempfile)).to be true
     File.open(tempfile, "rb") do |io|
       magic = io.read(4)
-      magic.should == "\211PNG"
+      expect(magic).to eq("\211PNG")
     end
   end
 
@@ -45,6 +45,6 @@ describe "Screenshot" do
     encodedImage = page.capture_screenshot_to_string
     pngImage = Base64.decode64(encodedImage)
 
-    pngImage.should =~ /^\211PNG/n
+    expect(pngImage).to match(/^\211PNG/n)
   end
 end

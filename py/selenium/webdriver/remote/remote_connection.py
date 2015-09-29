@@ -416,8 +416,8 @@ class RemoteConnection(object):
                        "Content-type": "application/json;charset=\"UTF-8\"",
                        "Accept": "application/json"}
             if parsed_url.username:
-                auth = base64.standard_b64encode('%s:%s' %
-                       (parsed_url.username, parsed_url.password)).replace('\n', '')
+                auth = base64.standard_b64encode(('%s:%s' %
+                       (parsed_url.username, parsed_url.password)).encode('ascii')).decode('ascii').replace('\n', '')
                 headers["Authorization"] = "Basic %s" % auth
             if body and method != 'POST' and method != 'PUT':
                 body = None

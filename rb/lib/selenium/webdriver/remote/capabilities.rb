@@ -82,7 +82,6 @@ module Selenium
             new({
               :browser_name       => "MicrosoftEdge",
               :platform           => :windows,
-              :javascript_enabled => true
             }.merge(opts))
           end
 

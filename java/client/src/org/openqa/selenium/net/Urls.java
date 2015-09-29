@@ -30,7 +30,10 @@ public class Urls {
   private static Logger log = Logger.getLogger(Urls.class.getName());
 
   /**
-   * Strips the specified URL so it only includes a protocal, hostname and port
+   * Strips the specified URL so it only includes a protocol, hostname and port
+   *
+   * @param url URL
+   * @return string of just protocol, host and port
    */
   public static String toProtocolHostAndPort(String url) {
     try {

@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path("../spec_helper", __FILE__)
+require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
@@ -41,55 +41,55 @@ module Selenium
       end
 
       it "raises ArgumentError if passed invalid options" do
-        lambda { Proxy.new(:invalid_options => 'invalid') }.should raise_error(ArgumentError)
+        expect { Proxy.new(:invalid_options => 'invalid') }.to raise_error(ArgumentError)
       end
 
       it "raises ArgumentError if passed an invalid proxy type" do
-        lambda { Proxy.new(:type => :invalid) }.should raise_error(ArgumentError)
+        expect { Proxy.new(:type => :invalid) }.to raise_error(ArgumentError)
       end
 
       it "raises ArgumentError if the proxy type is changed" do
         proxy = Proxy.new(:type => :direct)
-        lambda { proxy.type = :system }.should raise_error(ArgumentError)
+        expect { proxy.type = :system }.to raise_error(ArgumentError)
       end
 
       it "should allow valid options for a manual proxy" do
         proxy = Proxy.new(proxy_settings)
 
-        proxy.ftp.should            == proxy_settings[:ftp]
-        proxy.http.should           == proxy_settings[:http]
-        proxy.no_proxy.should       == proxy_settings[:no_proxy]
-        proxy.ssl.should            == proxy_settings[:ssl]
-        proxy.socks.should          == proxy_settings[:socks]
-        proxy.socks_username.should == proxy_settings[:socks_username]
-        proxy.socks_password.should == proxy_settings[:socks_password]
+        expect(proxy.ftp).to            eq(proxy_settings[:ftp])
+        expect(proxy.http).to           eq(proxy_settings[:http])
+        expect(proxy.no_proxy).to       eq(proxy_settings[:no_proxy])
+        expect(proxy.ssl).to            eq(proxy_settings[:ssl])
+        expect(proxy.socks).to          eq(proxy_settings[:socks])
+        expect(proxy.socks_username).to eq(proxy_settings[:socks_username])
+        expect(proxy.socks_password).to eq(proxy_settings[:socks_password])
       end
 
       it "should return a hash of the json properties to serialize" do
         proxy_json = Proxy.new(proxy_settings).as_json
 
-        proxy_json['proxyType'].should     == "MANUAL"
-        proxy_json['ftpProxy'].should      == proxy_settings[:ftp]
-        proxy_json['httpProxy'].should     == proxy_settings[:http]
-        proxy_json['noProxy'].should       == proxy_settings[:no_proxy]
-        proxy_json['sslProxy'].should      == proxy_settings[:ssl]
-        proxy_json['socksProxy'].should    == proxy_settings[:socks]
-        proxy_json['socksUsername'].should == proxy_settings[:socks_username]
-        proxy_json['socksPassword'].should == proxy_settings[:socks_password]
+        expect(proxy_json['proxyType']).to     eq("MANUAL")
+        expect(proxy_json['ftpProxy']).to      eq(proxy_settings[:ftp])
+        expect(proxy_json['httpProxy']).to     eq(proxy_settings[:http])
+        expect(proxy_json['noProxy']).to       eq(proxy_settings[:no_proxy])
+        expect(proxy_json['sslProxy']).to      eq(proxy_settings[:ssl])
+        expect(proxy_json['socksProxy']).to    eq(proxy_settings[:socks])
+        expect(proxy_json['socksUsername']).to eq(proxy_settings[:socks_username])
+        expect(proxy_json['socksPassword']).to eq(proxy_settings[:socks_password])
       end
 
       it "should configure a PAC proxy" do
         proxy_json = Proxy.new(pac_proxy_settings).as_json
 
-        proxy_json['proxyType'].should == "PAC"
-        proxy_json['proxyAutoconfigUrl'].should == pac_proxy_settings[:pac]
+        expect(proxy_json['proxyType']).to eq("PAC")
+        expect(proxy_json['proxyAutoconfigUrl']).to eq(pac_proxy_settings[:pac])
       end
 
       it "should configure an auto-detected proxy" do
         proxy_json = Proxy.new(:auto_detect => true).as_json
 
-        proxy_json['proxyType'].should == "AUTODETECT"
-        proxy_json['autodetect'].should be true
+        expect(proxy_json['proxyType']).to eq("AUTODETECT")
+        expect(proxy_json['autodetect']).to be true
       end
 
       it "should only add settings that are not nil" do
@@ -98,26 +98,26 @@ module Selenium
         proxy = Proxy.new(settings)
         proxy_json = proxy.as_json
 
-        proxy_json.delete('proxyType').should == settings[:type].to_s.upcase
-        proxy_json.delete('httpProxy').should == settings[:http]
+        expect(proxy_json.delete('proxyType')).to eq(settings[:type].to_s.upcase)
+        expect(proxy_json.delete('httpProxy')).to eq(settings[:http])
 
-        proxy_json.should be_empty
+        expect(proxy_json).to be_empty
       end
 
       it "returns a JSON string" do
         proxy = Proxy.new(proxy_settings)
-        proxy.to_json.should be_kind_of(String)
+        expect(proxy.to_json).to be_kind_of(String)
       end
 
       it "can be serialized and deserialized" do
         proxy = Proxy.new(proxy_settings)
         other = Proxy.json_create(proxy.as_json)
 
-        proxy.should == other
+        expect(proxy).to eq(other)
       end
 
       it 'deserializes to nil if proxyType is UNSPECIFIED' do
-        Proxy.json_create('proxyType' => 'UNSPECIFIED').should be_nil
+        expect(Proxy.json_create('proxyType' => 'UNSPECIFIED')).to be_nil
       end
     end
 

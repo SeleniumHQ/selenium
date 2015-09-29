@@ -227,7 +227,7 @@ goog.ui.CharPicker.prototype.stick_ = null;
  * The element representing the number of rows visible in the grid.
  * This along with goog.ui.CharPicker.stick_ would help to create a scrollbar
  * of right size.
- * @type {Element}
+ * @type {HTMLElement}
  * @private
  */
 goog.ui.CharPicker.prototype.stickwrap_ = null;
@@ -375,7 +375,7 @@ goog.ui.CharPicker.prototype.decorateInternal = function(element) {
 
   var stickwrap = new goog.ui.Component(this.getDomHelper());
   gridcontainer.addChild(stickwrap, true);
-  this.stickwrap_ = stickwrap.getElement();
+  this.stickwrap_ = /** @type {!HTMLElement} */ (stickwrap.getElement());
 
   var stick = new goog.ui.Component(this.getDomHelper());
   stickwrap.addChild(stick, true);

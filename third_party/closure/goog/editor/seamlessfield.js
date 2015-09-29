@@ -206,7 +206,7 @@ goog.editor.SeamlessField.prototype.sizeIframeToBodyHeightGecko_ = function() {
 goog.editor.SeamlessField.prototype.getIframeBodyHeightGecko_ = function() {
   var ifr = this.getEditableIframe();
   var body = ifr.contentDocument.body;
-  var htmlElement = body.parentNode;
+  var htmlElement = /** @type {!HTMLElement} */ (body.parentNode);
 
 
   // If the iframe's height is 0, then the offsetHeight/scrollHeight of the
@@ -272,7 +272,7 @@ goog.editor.SeamlessField.prototype.sizeIframeToWrapperGecko_ = function() {
     var resized = false;
     if (ifr && field) {
       var fieldPaddingBox;
-      var widthDiv = ifr.parentNode;
+      var widthDiv = /** @type {!HTMLElement} */ (ifr.parentNode);
 
       var width = widthDiv.offsetWidth;
       if (parseInt(goog.style.getStyle(ifr, 'width'), 10) != width) {
