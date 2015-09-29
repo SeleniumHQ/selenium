@@ -44,7 +44,7 @@ public class FirefoxCustomProfileLauncherIntegrationTest extends LauncherFunctio
   }
 
   public void testLaunchMultipleBrowsersConcurrentlyWithDefaultConfiguration() {
-    List<Thread>  threads = new ArrayList<Thread>();
+    List<Thread>  threads = new ArrayList<>();
     for(int i = 0; i < 20; i++){
       threads.add( new Thread(run)); // Thread safety reviewed
     }

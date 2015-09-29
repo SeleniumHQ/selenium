@@ -23,7 +23,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
@@ -34,24 +33,22 @@ import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
-import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
-
-import org.junit.Before;
-import org.junit.Test;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.util.Set;
 
-@Ignore({HTMLUNIT, PHANTOMJS, SAFARI})
+@Ignore({PHANTOMJS, SAFARI})
 public class AlertsTest extends JUnit4TestBase {
 
   private WebDriverWait wait;
@@ -64,6 +61,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @NoDriverAfterTest
   public void testShouldBeAbleToOverrideTheWindowAlertMethod() {
     ((JavascriptExecutor) driver).executeScript(
         "window.alert = function(msg) { document.getElementById('text').innerHTML = msg; }");
@@ -98,6 +96,7 @@ public class AlertsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @NeedsLocalEnvironment(reason = "Carefully timing based")
   @Test
+  @NotYetImplemented(HTMLUNIT)
   public void testShouldGetTextOfAlertOpenedInSetTimeout() throws Exception {
     driver.findElement(By.id("slow-alert")).click();
 
@@ -127,6 +126,8 @@ public class AlertsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @NotYetImplemented(value = HTMLUNIT,
+    reason = "HtmlUnit: click()/prompt need to run in different threads.")
   public void testShouldAllowAUserToAcceptAPrompt() {
     driver.findElement(By.id("prompt")).click();
 
@@ -139,6 +140,8 @@ public class AlertsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @NotYetImplemented(value = HTMLUNIT,
+    reason = "HtmlUnit: click()/prompt need to run in different threads.")
   public void testShouldAllowAUserToDismissAPrompt() {
     driver.findElement(By.id("prompt")).click();
 
@@ -149,9 +152,11 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, reason = "https://github.com/jgraham/wires/issues/17")
   @JavascriptEnabled
   @Test
+  @NotYetImplemented(value = {HTMLUNIT},
+    reason = "HtmlUnit: click()/prompt need to run in different threads")
   public void testShouldAllowAUserToSetTheValueOfAPrompt() {
     driver.findElement(By.id("prompt")).click();
 
@@ -162,7 +167,8 @@ public class AlertsTest extends JUnit4TestBase {
     wait.until(textInElementLocated(By.id("text"), "cheese"));
   }
 
-  @Ignore(CHROME)
+  @Ignore(value = {CHROME, MARIONETTE},
+    reason = "Marionette: https://github.com/jgraham/wires/issues/17")
   @JavascriptEnabled
   @Test
   public void testSettingTheValueOfAnAlertThrows() {
@@ -191,6 +197,8 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = HTMLUNIT,
+    reason = "HtmlUnit: click()/prompt need to run in different threads.")
   public void testShouldAllowTheUserToGetTheTextOfAPrompt() {
     driver.findElement(By.id("prompt")).click();
 
@@ -219,6 +227,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @Ignore(MARIONETTE)
   @JavascriptEnabled
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testShouldAllowUsersToAcceptAnAlertInAFrame() {
     driver.switchTo().frame("iframeWithAlert");
@@ -234,6 +243,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @Ignore(MARIONETTE)
   @JavascriptEnabled
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testShouldAllowUsersToAcceptAnAlertInANestedFrame() {
     driver.switchTo().frame("iframeWithIframe").switchTo().frame("iframeWithAlert");
@@ -262,11 +272,6 @@ public class AlertsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testSwitchingToMissingAlertInAClosedWindowThrows() throws Exception {
-    assumeFalse("This test does not fail on itself, but it causes the subsequent tests to fail",
-                isFirefox(driver) &&
-                isNativeEventsEnabled(driver) &&
-                getEffectivePlatform().is(Platform.LINUX));
-
     String mainWindow = driver.getWindowHandle();
     try {
       driver.findElement(By.id("open-new-window")).click();
@@ -289,6 +294,8 @@ public class AlertsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @NotYetImplemented(value = HTMLUNIT,
+    reason = "HtmlUnit: runs on the same test thread.")
   public void testPromptShouldUseDefaultValueIfNoKeysSent() {
     driver.findElement(By.id("prompt-with-default")).click();
 
@@ -300,6 +307,8 @@ public class AlertsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @NotYetImplemented(value = HTMLUNIT,
+    reason = "HtmlUnit: click()/prompt need to run in different threads.")
   public void testPromptShouldHaveNullValueIfDismissed() {
     driver.findElement(By.id("prompt-with-default")).click();
 
@@ -312,6 +321,8 @@ public class AlertsTest extends JUnit4TestBase {
   @Ignore(MARIONETTE)
   @JavascriptEnabled
   @Test
+  @NotYetImplemented(value = HTMLUNIT,
+    reason = "HtmlUnit: click()/prompt need to run in different threads.")
   public void testHandlesTwoAlertsFromOneInteraction() {
     wait.until(presenceOfElementLocated(By.id("double-prompt"))).click();
 
@@ -329,6 +340,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore({CHROME})
   public void testShouldHandleAlertOnPageLoad() {
     driver.findElement(By.id("open-page-with-onload-alert")).click();
 
@@ -357,6 +369,8 @@ public class AlertsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Ignore(value = {CHROME, FIREFOX, IE, MARIONETTE}, reason = "IE: fails in versions 6 and 7")
   @Test
+  @NotYetImplemented(value = HTMLUNIT,
+    reason = "HtmlUnit: runs on the same test thread, and .click() already changs the current window.")
   public void testShouldNotHandleAlertInAnotherWindow() {
     String mainWindow = driver.getWindowHandle();
     Set<String> currentWindowHandles = driver.getWindowHandles();
@@ -386,6 +400,8 @@ public class AlertsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Ignore(value = {CHROME})
   @Test
+  @NotYetImplemented(value = HTMLUNIT,
+    reason = "HtmlUnit: runs on the same test thread, and .back() already changs the current window.")
   public void testShouldHandleAlertOnPageUnload() {
     assumeFalse("Firefox 27 does not trigger alerts on unload",
         isFirefox(driver) && getFirefoxVersion(driver) >= 27);
@@ -402,6 +418,8 @@ public class AlertsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @NotYetImplemented(value = HTMLUNIT,
+    reason = "HtmlUnit: runs on the same test thread, and .click() already changs the current window.")
   public void testShouldHandleAlertOnPageBeforeUnload() {
     driver.get(appServer.whereIs("pageWithOnBeforeUnloadMessage.html"));
 
@@ -420,6 +438,8 @@ public class AlertsTest extends JUnit4TestBase {
 
   @NoDriverAfterTest
   @Test
+  @NotYetImplemented(value = HTMLUNIT,
+    reason = "HtmlUnit: runs on the same test thread.")
   public void testShouldHandleAlertOnPageBeforeUnloadAtQuit() {
     driver.get(appServer.whereIs("pageWithOnBeforeUnloadMessage.html"));
 
@@ -434,13 +454,9 @@ public class AlertsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Ignore(value = {CHROME})
   @Test
+  @NotYetImplemented(value = HTMLUNIT,
+    reason = "HtmlUnit: runs on the same test thread.")
   public void testShouldHandleAlertOnWindowClose() {
-    if (isFirefox(driver) &&
-        isNativeEventsEnabled(driver) &&
-        getEffectivePlatform().is(Platform.LINUX)) {
-      System.err.println("x_ignore_nofocus can cause a firefox crash here. Ignoring test. See issue 2987.");
-      assumeTrue(false);
-    }
     assumeFalse("Firefox 27 does not trigger alerts on unload",
         isFirefox(driver) && getFirefoxVersion(driver) >= 27);
     String mainWindow = driver.getWindowHandle();
@@ -463,8 +479,9 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, HTMLUNIT, MARIONETTE})
+  @Ignore(value = {CHROME})
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/jgraham/wires/issues/21")
   public void testIncludesAlertTextInUnhandledAlertException() {
     driver.findElement(By.id("alert")).click();
     wait.until(alertIsPresent());
@@ -479,6 +496,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @NoDriverAfterTest
   @Test
+  @Ignore(HTMLUNIT)
   public void testCanQuitWhenAnAlertIsPresent() {
     driver.get(pages.alertsPage);
     driver.findElement(By.id("alert")).click();

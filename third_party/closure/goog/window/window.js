@@ -19,7 +19,13 @@
 
 goog.provide('goog.window');
 
+goog.require('goog.dom.TagName');
+goog.require('goog.dom.safe');
+goog.require('goog.html.SafeUrl');
+goog.require('goog.html.uncheckedconversions');
+goog.require('goog.labs.userAgent.platform');
 goog.require('goog.string');
+goog.require('goog.string.Const');
 goog.require('goog.userAgent');
 
 
@@ -47,9 +53,11 @@ goog.window.DEFAULT_POPUP_TARGET = 'google_popup';
 /**
  * Opens a new window.
  *
- * @param {string|Object} linkRef A string or an object that supports toString,
- *     for example goog.Uri.  If this is an object with a 'href' attribute, such
- *     as HTMLAnchorElement, it will be used instead.
+ * @param {goog.html.SafeUrl|string|Object} linkRef If an Object with an 'href'
+ *     attribute (such as HTMLAnchorElement) is passed then the value of 'href'
+ *     is used, otherwise  otherwise its toString method is called. Note that
+ *     if a string|Object is used, an untrusted script execution might result
+ *     (e.g. from javascript: URLs).
  *
  * @param {Object=} opt_options supports the following options:
  *  'target': (string) target (window name). If null, linkRef.target will
@@ -73,7 +81,10 @@ goog.window.DEFAULT_POPUP_TARGET = 'google_popup';
  *
  * @return {Window} Returns the window object that was opened. This returns
  *                  null if a popup blocker prevented the window from being
- *                  opened.
+ *                  opened. In case when a new window is opened in a different
+ *                  browser sandbox (such as iOS standalone mode), the returned
+ *                  object is a emulated Window object that functions as if
+ *                  a cross-origin window has been opened.
  */
 goog.window.open = function(linkRef, opt_options, opt_parentWin) {
   if (!opt_options) {
@@ -81,12 +92,17 @@ goog.window.open = function(linkRef, opt_options, opt_parentWin) {
   }
   var parentWin = opt_parentWin || window;
 
-  // HTMLAnchorElement has a toString() method with the same behavior as
-  // goog.Uri in all browsers except for Safari, which returns
-  // '[object HTMLAnchorElement]'.  We check for the href first, then
-  // assume that it's a goog.Uri or String otherwise.
-  var href = typeof linkRef.href != 'undefined' ? linkRef.href :
-      String(linkRef);
+  var url;
+  if (linkRef instanceof goog.html.SafeUrl) {
+    url = goog.html.SafeUrl.unwrap(linkRef);
+  } else {
+    // HTMLAnchorElement has a toString() method with the same behavior as
+    // goog.Uri in all browsers except for Safari, which returns
+    // '[object HTMLAnchorElement]'.  We check for the href first, then
+    // assume that it's a goog.Uri or String otherwise.
+    url = typeof linkRef.href != 'undefined' ? linkRef.href : String(linkRef);
+  }
+
   var target = opt_options.target || linkRef.target;
 
   var sb = [];
@@ -108,9 +124,44 @@ goog.window.open = function(linkRef, opt_options, opt_parentWin) {
   var optionString = sb.join(',');
 
   var newWin;
-  if (opt_options['noreferrer']) {
+  if (goog.labs.userAgent.platform.isIos() &&
+          parentWin.navigator && parentWin.navigator['standalone'] &&
+          target && target != '_self') {
+    // iOS in standalone mode disregards "target" in window.open and always
+    // opens new URL in the same window. The workout around is to create an "A"
+    // element and send a click event to it.
+    // Notice that the "A" tag does NOT have to be added to the DOM.
+    var a = parentWin.document.createElement(goog.dom.TagName.A);
+    // TODO(user): Sanitize URL. See cl/89965465 for code and test which
+    // was reverted.
+    a.setAttribute('href', url);
+    a.setAttribute('target', target);
+    if (opt_options['noreferrer']) {
+      a.setAttribute('rel', 'noreferrer');
+    }
+    var click = document.createEvent('MouseEvent');
+    click.initMouseEvent('click',
+        true,  // canBubble
+        true,  // cancelable
+        parentWin,
+        1);  // detail = mousebutton
+    a.dispatchEvent(click);
+    // New window is not available in this case. Instead, a fake Window object
+    // is returned. In particular, it will have window.document undefined. In
+    // general, it will appear to most of clients as a Window for a different
+    // origin. Since iOS standalone web apps are run in their own sandbox, this
+    // is the most appropriate return value.
+    newWin = /** @type {!Window} */ ({});
+  } else if (opt_options['noreferrer']) {
     // Use a meta-refresh to stop the referrer from being included in the
-    // request headers.
+    // request headers. This seems to be the only cross-browser way to
+    // remove the referrer. It also allows for the opener to be set to null
+    // in the new window, thus disallowing the opened window from navigating
+    // its opener.
+    //
+    // Detecting user agent and then using a different strategy per browser
+    // would allow the referrer to leak in case of an incorrect/missing user
+    // agent.
     newWin = parentWin.open('', target, optionString);
     if (newWin) {
       if (goog.userAgent.IE) {
@@ -128,18 +179,22 @@ goog.window.open = function(linkRef, opt_options, opt_parentWin) {
         // in URIs, so this could do the wrong thing, but at least it will
         // do the wrong thing in only rare cases.
         // ugh.
-        if (href.indexOf(';') != -1) {
-          href = "'" + href.replace(/'/g, '%27') + "'";
+        if (goog.string.contains(url, ';')) {
+          url = "'" + url.replace(/'/g, '%27') + "'";
         }
       }
       newWin.opener = null;
-      href = goog.string.htmlEscape(href);
-      newWin.document.write('<META HTTP-EQUIV="refresh" content="0; url=' +
-                            href + '">');
+      var escapedUrl = goog.string.htmlEscape(url);
+      var safeHtml = goog.html.uncheckedconversions
+          .safeHtmlFromStringKnownToSatisfyTypeContract(
+              goog.string.Const.from('b/12014412, meta tag with sanitized URL'),
+              '<META HTTP-EQUIV="refresh" content="0; url=' +
+                  escapedUrl + '">');
+      goog.dom.safe.documentWrite(newWin.document, safeHtml);
       newWin.document.close();
     }
   } else {
-    newWin = parentWin.open(href, target, optionString);
+    newWin = parentWin.open(url, target, optionString);
   }
   // newWin is null if a popup blocker prevented the window open.
   return newWin;
@@ -172,14 +227,34 @@ goog.window.open = function(linkRef, opt_options, opt_parentWin) {
  *                  opened.
  */
 goog.window.openBlank = function(opt_message, opt_options, opt_parentWin) {
-
   // Open up a window with the loading message and nothing else.
   // This will be interpreted as HTML content type with a missing doctype
   // and html/body tags, but is otherwise acceptable.
-  var loadingMessage = opt_message ? goog.string.htmlEscape(opt_message) : '';
+  //
+  // IMPORTANT: The order of escaping is crucial here in order to avoid XSS.
+  // First, HTML-escaping is needed because the result of the JS expression
+  // is evaluated as HTML. Second, JS-string escaping is needed; this avoids
+  // \u escaping from inserting HTML tags and \ from escaping the final ".
+  // Finally, URL percent-encoding is done with encodeURI(); this
+  // avoids percent-encoding from bypassing HTML and JS escaping.
+  //
+  // Note: There are other ways the same result could be achieved but the
+  // current behavior was preserved when this code was refactored to use
+  // SafeUrl, in order to avoid breakage.
+  var loadingMessage;
+  if (!opt_message) {
+    loadingMessage = '';
+  } else {
+    loadingMessage =
+        goog.string.escapeString(goog.string.htmlEscape(opt_message));
+  }
+  var url = goog.html.uncheckedconversions
+      .safeUrlFromStringKnownToSatisfyTypeContract(
+          goog.string.Const.from(
+              'b/12014412, encoded string in javascript: URL'),
+          'javascript:"' + encodeURI(loadingMessage) + '"');
   return /** @type {Window} */ (goog.window.open(
-      'javascript:"' + encodeURI(loadingMessage) + '"',
-      opt_options, opt_parentWin));
+      url, opt_options, opt_parentWin));
 };
 
 
@@ -188,9 +263,11 @@ goog.window.openBlank = function(opt_message, opt_options, opt_parentWin) {
  *
  * (If your project is using GXPs, consider using {@link PopUpLink.gxp}.)
  *
- * @param {string|Object} linkRef if this is a string, it will be used as the
- * URL of the popped window; otherwise it's assumed to be an HTMLAnchorElement
- * (or some other object with "target" and "href" properties).
+* @param {goog.html.SafeUrl|string|Object} linkRef If an Object with an 'href'
+ *     attribute (such as HTMLAnchorElement) is passed then the value of 'href'
+ *     is used, otherwise  otherwise its toString method is called. Note that
+ *     if a string|Object is used, an untrusted script execution might result
+ *     (e.g. from javascript: URLs).
  *
  * @param {Object=} opt_options Options to open window with.
  *     {@see goog.window.open for exact option semantics}

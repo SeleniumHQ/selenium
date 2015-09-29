@@ -25,7 +25,7 @@ import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
 import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
 import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.mock.GridHelper;
@@ -38,19 +38,18 @@ import java.util.Map;
 
 public class RegistryStateTest {
 
-
-  static RegistrationRequest req = null;
-  static Map<String, Object> app1 = new HashMap<String, Object>();
-  static Map<String, Object> app2 = new HashMap<String, Object>();
+  private RegistrationRequest req = null;
+  private Map<String, Object> app1 = new HashMap<>();
+  private Map<String, Object> app2 = new HashMap<>();
 
   /**
    * create a proxy than can host up to 5 tests at the same time. - of type app1 ( max 5 tests at
    * the same time ) could be Firefox for instance - of type app2 ( max 1 test ) could be IE
    */
-  @BeforeClass
-  public static void prepareReqRequest() {
+  @Before
+  public void prepareReqRequest() {
 
-    Map<String, Object> config = new HashMap<String, Object>();
+    Map<String, Object> config = new HashMap<>();
     app1.put(APP, "app1");
     app1.put(MAX_INSTANCES, 5);
 
@@ -73,7 +72,6 @@ public class RegistryStateTest {
 
     RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
 
-
     try {
       registry.add(p1);
 
@@ -89,7 +87,7 @@ public class RegistryStateTest {
   }
 
   @Test(timeout = 5000)
-  public void basichecks() {
+  public void basiChecks() {
     Registry registry = Registry.newInstance();
     RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
 

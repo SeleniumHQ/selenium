@@ -62,7 +62,11 @@ goog.provide('goog.ui.DrilldownRow');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
+goog.require('goog.dom.safe');
+goog.require('goog.html.SafeHtml');
+goog.require('goog.html.legacyconversions');
 goog.require('goog.ui.Component');
 
 
@@ -71,16 +75,8 @@ goog.require('goog.ui.Component');
  * Builds a DrilldownRow component, which can overlay a tree
  * structure onto sections of an HTML table.
  *
- * @param {Object=} opt_properties This parameter can contain:
- *   contents:  if present, user data identifying
- *     the information loaded into the row and its children.
- *   loaded: initializes the isLoaded property, defaults to true.
- *   expanded: DrilldownRow expanded or not, default is true.
- *   html: String of HTML, relevant and required for DrilldownRows to be
- *     added as children.  Ignored when decorating an existing table row.
- *   decorator: Function that accepts one DrilldownRow argument, and
- *     should customize and style the row.  The default is to call
- *     goog.ui.DrilldownRow.decorator.
+ * @param {!goog.ui.DrilldownRow.DrilldownRowProperties=} opt_properties
+ *   Optional properties.
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
  * @constructor
  * @extends {goog.ui.Component}
@@ -92,13 +88,20 @@ goog.ui.DrilldownRow = function(opt_properties, opt_domHelper) {
 
   // Initialize instance variables.
 
+  var html;
+  if (!goog.isDefAndNotNull(properties.html)) {
+    html = goog.html.SafeHtml.EMPTY;
+  } else {
+    goog.asserts.assert(properties.html instanceof goog.html.SafeHtml);
+    html = properties.html;
+  }
   /**
    * String of HTML to initialize the DOM structure for the table row.
    * Should have the form '<tr attr="etc">Row contents here</tr>'.
-   * @type {string}
+   * @type {!goog.html.SafeHtml}
    * @private
    */
-  this.html_ = properties.html;
+  this.html_ = html;
 
   /**
    * Controls whether this component's children will show when it shows.
@@ -107,16 +110,6 @@ goog.ui.DrilldownRow = function(opt_properties, opt_domHelper) {
    */
   this.expanded_ = typeof properties.expanded != 'undefined' ?
       properties.expanded : true;
-
-  /**
-   * Is this component loaded? States are true, false, and null for
-   * 'loading in progress'.  For in-memory
-   * trees of components, this is always true.
-   * @type {boolean}
-   * @private
-   */
-  this.loaded_ = typeof properties.loaded != 'undefined' ?
-      properties.loaded : true;
 
   /**
    * If this component's DOM element is created from a string of
@@ -139,12 +132,72 @@ goog.inherits(goog.ui.DrilldownRow, goog.ui.Component);
 
 
 /**
+ * Used to define properties for a new DrilldownRow. Properties can contain:
+ *   loaded: initializes the isLoaded property, defaults to true.
+ *   expanded: DrilldownRow expanded or not, default is true.
+ *   html: Relevant and required for DrilldownRows to be added as
+ *     children.  Ignored when decorating an existing table row.
+ *   decorator: Function that accepts one DrilldownRow argument, and
+ *     should customize and style the row.  The default is to call
+ *     goog.ui.DrilldownRow.decorator.
+ * @typedef {{
+ *   loaded: (boolean|undefined),
+ *   expanded: (boolean|undefined),
+ *   html: (!goog.html.SafeHtml|undefined),
+ *   decorator: (Function|undefined)
+ * }}
+ */
+goog.ui.DrilldownRow.DrilldownRowProperties;
+
+
+/**
+ * See documentation for fields in goog.ui.DrilldownRow.DrilldownRowProperties.
+ * @typedef {{
+ *   loaded: (boolean|undefined),
+ *   expanded: (boolean|undefined),
+ *   html: (string|undefined),
+ *   decorator: (Function|undefined)
+ * }}
+ */
+goog.ui.DrilldownRow.DrilldownRowPropertiesUnsafe;
+
+
+/**
+ * Builds a DrilldownRow component.  This function exists for
+ * backwards-compatibility only and uses goog.html.legacyconversions.  For all
+ * new code use the goog.ui.DrilldownRow() constructor.
+ * @param {goog.ui.DrilldownRow.DrilldownRowPropertiesUnsafe=} opt_properties
+ *   Optional properties.
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
+ * @return {!goog.ui.DrilldownRow}
+ * @deprecated Use goog.ui.DrilldownRow constructor instead.
+ *
+ */
+goog.ui.DrilldownRow.unsafeCreate = function(opt_properties, opt_domHelper) {
+  var properties = {};
+  if (opt_properties) {
+    properties.loaded = opt_properties.loaded;
+    properties.expanded = opt_properties.expanded;
+    if (goog.isString(opt_properties.html)) {
+      properties.html = goog.html.legacyconversions.safeHtmlFromString(
+          opt_properties.html);
+    }
+    properties.decorator = opt_properties.decorator;
+  }
+  return new goog.ui.DrilldownRow(properties, opt_domHelper);
+};
+
+
+/**
  * Example object with properties of the form accepted by the class
  * constructor.  These are educational and show the compiler that
  * these properties can be set so it doesn't emit warnings.
  */
 goog.ui.DrilldownRow.sampleProperties = {
-  html: '<tr><td>Sample</td><td>Sample</td></tr>',
+  html: goog.html.SafeHtml.create(goog.dom.TagName.TR, {},
+      goog.html.SafeHtml.concat(
+          goog.html.SafeHtml.create(goog.dom.TagName.TD, {}, 'Sample'),
+          goog.html.SafeHtml.create(goog.dom.TagName.TD, {}, 'Sample'))),
   loaded: true,
   decorator: function(selfObj, handler) {
     // When the mouse is hovering, add CSS class goog-drilldown-hover.
@@ -191,7 +244,7 @@ goog.ui.DrilldownRow.prototype.createDom = function() {
  * @override
  */
 goog.ui.DrilldownRow.prototype.canDecorate = function(node) {
-  return node.tagName == 'TR';
+  return node.tagName == goog.dom.TagName.TR;
 };
 
 
@@ -367,13 +420,14 @@ goog.ui.DrilldownRow.decorate = function(selfObj) {
   var html = '<div style="float: left; width: ' + depth +
       'em;"><div class=toggle style="width: 1em; float: right;">' +
       '&nbsp;</div></div>';
-  var fragment = selfObj.getDomHelper().htmlToDocumentFragment(html);
+  var fragment = /** @type {!Element} */ (
+      selfObj.getDomHelper().htmlToDocumentFragment(html));
   cell.insertBefore(fragment, cell.firstChild);
   goog.dom.classlist.add(row, selfObj.isExpanded() ?
       goog.getCssName('goog-drilldown-expanded') :
       goog.getCssName('goog-drilldown-collapsed'));
   // Default mouse event handling:
-  var toggler = fragment.getElementsByTagName('div')[0];
+  var toggler = fragment.getElementsByTagName(goog.dom.TagName.DIV)[0];
   var key = selfObj.getHandler().listen(toggler, 'click', function(event) {
     selfObj.setExpanded(!selfObj.isExpanded());
   });
@@ -437,16 +491,16 @@ goog.ui.DrilldownRow.prototype.isVisible_ = function() {
  * Create and return a TR element from HTML that looks like
  * "<tr> ... </tr>".
  *
- * @param {string} html for one row.
+ * @param {!goog.html.SafeHtml} html for one row.
  * @param {Document} doc object to hold the Element.
  * @return {Element} table row node created from the HTML.
  * @private
  */
 goog.ui.DrilldownRow.createRowNode_ = function(html, doc) {
   // Note: this may be slow.
-  var tableHtml = '<table>' + html + '</table>';
-  var div = doc.createElement('div');
-  div.innerHTML = tableHtml;
+  var tableHtml = goog.html.SafeHtml.create(goog.dom.TagName.TABLE, {}, html);
+  var div = doc.createElement(goog.dom.TagName.DIV);
+  goog.dom.safe.setInnerHtml(div, tableHtml);
   return div.firstChild.rows[0];
 };
 

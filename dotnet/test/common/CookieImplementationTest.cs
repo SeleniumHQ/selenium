@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
+using System.Text;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium
 {
@@ -216,12 +218,20 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Ignore("Cannot run without creating subdomains in test environment")]
         public void ShouldBeAbleToAddToADomainWhichIsRelatedToTheCurrentDomain()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
             {
                 return;
+            }
+
+            // Cookies cannot be set on domain names with less than 2 dots, so
+            // localhost is out. If we are in that boat, bail the test.
+            string hostName = EnvironmentManager.Instance.UrlBuilder.HostName;
+            string[] hostNameParts = hostName.Split(new char[] { '.' });
+            if (hostNameParts.Length < 3)
+            {
+                Assert.Ignore("Skipping test: Cookies can only be set on fully-qualified domain names.");
             }
 
             AssertCookieIsNotPresentWithName("name");
@@ -275,7 +285,7 @@ namespace OpenQA.Selenium
 
             // Replace the first part of the name with a period
             Regex replaceRegex = new Regex(".*?\\.");
-            string shorter = replaceRegex.Replace(this.hostname, ".");
+            string shorter = replaceRegex.Replace(this.hostname, ".", 1);
             Cookie cookie = new Cookie("name", "value", shorter, "/", DateTime.Now.AddSeconds(100000));
 
             driver.Manage().Cookies.AddCookie(cookie);
@@ -284,12 +294,20 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "IE cookies do not conform to RFC, so setting cookie on domain fails.")]
         public void ShouldBeAbleToSetDomainToTheCurrentDomain()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
             {
                 return;
+            }
+
+            // Cookies cannot be set on domain names with less than 2 dots, so
+            // localhost is out. If we are in that boat, bail the test.
+            string hostName = EnvironmentManager.Instance.UrlBuilder.HostName;
+            string[] hostNameParts = hostName.Split(new char[] { '.' });
+            if (hostNameParts.Length < 3)
+            {
+                Assert.Ignore("Skipping test: Cookies can only be set on fully-qualified domain names.");
             }
 
             Uri url = new Uri(driver.Url);
@@ -345,12 +363,20 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "IE cookies do not conform to RFC, so setting cookie on domain fails.")]
         public void ShouldIgnoreThePortNumberOfTheHostWhenSettingTheCookie()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
             {
                 return;
+            }
+
+            // Cookies cannot be set on domain names with less than 2 dots, so
+            // localhost is out. If we are in that boat, bail the test.
+            string hostName = EnvironmentManager.Instance.UrlBuilder.HostName;
+            string[] hostNameParts = hostName.Split(new char[] { '.' });
+            if (hostNameParts.Length < 3)
+            {
+                Assert.Ignore("Skipping test: Cookies can only be set on fully-qualified domain names.");
             }
 
             Uri uri = new Uri(driver.Url);
@@ -398,8 +424,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "IE does not return expiry info")]
-        [IgnoreBrowser(Browser.Android, "Chrome and Selenium, which use JavaScript to retrieve cookies, cannot return expiry info;")]
         [IgnoreBrowser(Browser.Opera)]
         public void ShouldRetainCookieExpiry()
         {
@@ -425,6 +449,50 @@ namespace OpenQA.Selenium
             Cookie retrieved = options.Cookies.GetCookieNamed("fish");
             Assert.IsNotNull(retrieved);
             Assert.AreEqual(addCookie.Expiry, retrieved.Expiry, "Cookies are not equal");
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.IE, "Browser does not handle untrusted SSL certificates.")]
+        [IgnoreBrowser(Browser.PhantomJS, "Untested browser")]
+        [IgnoreBrowser(Browser.Safari, "Untested browser")]
+        public void ShouldRetainCookieSecure()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIsSecure("animals");
+
+            ReturnedCookie addedCookie = new ReturnedCookie("fish", "cod", string.Empty, "/common/animals", null, true, false);
+
+            driver.Manage().Cookies.AddCookie(addedCookie);
+
+            driver.Navigate().Refresh();
+
+            Cookie retrieved = driver.Manage().Cookies.GetCookieNamed("fish");
+            Assert.IsNotNull(retrieved);
+            Assert.IsTrue(retrieved.Secure);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.IE, "Test web server does not set HttpOnly cookies")]
+        [IgnoreBrowser(Browser.Chrome, "Test web server does not set HttpOnly cookies")]
+        [IgnoreBrowser(Browser.Firefox, "Test web server does not set HttpOnly cookies")]
+        [IgnoreBrowser(Browser.HtmlUnit, "Test web server does not set HttpOnly cookies")]
+        [IgnoreBrowser(Browser.PhantomJS, "Test web server does not set HttpOnly cookies")]
+        [IgnoreBrowser(Browser.Safari, "Test web server does not set HttpOnly cookies")]
+        public void ShouldRetainHttpOnlyFlag()
+        {
+            StringBuilder url = new StringBuilder(EnvironmentManager.Instance.UrlBuilder.WhereElseIs("cookie"));
+            url.Append("?action=add");
+            url.Append("&name=").Append("fish");
+            url.Append("&value=").Append("cod");
+            url.Append("&path=").Append("/common/animals");
+            url.Append("&httpOnly=").Append("true");
+
+            driver.Url = url.ToString();
+
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereElseIs("animals");
+
+            Cookie retrieved = driver.Manage().Cookies.GetCookieNamed("fish");
+            Assert.IsNotNull(retrieved);
+            Assert.IsTrue(retrieved.IsHttpOnly);
         }
 
         [Test]
@@ -561,7 +629,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Add cookie to unrelated domain silently fails for IE.")]
         [ExpectedException(typeof(WebDriverException))]
         public void ShouldNotShowCookieAddedToDifferentDomain()
         {
@@ -584,6 +651,15 @@ namespace OpenQA.Selenium
             if (!CheckIsOnValidHostNameForCookieTests())
             {
                 return;
+            }
+
+            // Cookies cannot be set on domain names with less than 2 dots, so
+            // localhost is out. If we are in that boat, bail the test.
+            string hostName = EnvironmentManager.Instance.UrlBuilder.HostName;
+            string[] hostNameParts = hostName.Split(new char[] { '.' });
+            if (hostNameParts.Length < 3)
+            {
+                Assert.Ignore("Skipping test: Cookies can only be set on fully-qualified domain names.");
             }
 
             driver.Url = macbethPage;
@@ -726,7 +802,13 @@ namespace OpenQA.Selenium
             // Reenable this when we have a better solution per DanielWagnerHall.
             // ChromeDriver2 has trouble with localhost. IE and Firefox don't.
             // return !IsIpv4Address(hostname) && "localhost" != hostname;
-            return !IsIpv4Address(hostname) && ("localhost" != hostname && TestUtilities.IsChrome(driver));
+            bool isLocalHostOkay = true;
+            if ("localhost" == hostname && TestUtilities.IsChrome(driver))
+            {
+                isLocalHostOkay = false;
+            }
+
+            return !IsIpv4Address(hostname) && isLocalHostOkay;
         }
 
         private static bool IsIpv4Address(string addrString)

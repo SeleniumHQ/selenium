@@ -1,5 +1,3 @@
-#!/usr/bin/python
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -21,6 +19,7 @@ import base64
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.common.exceptions import WebDriverException
+from .remote_connection import ChromeRemoteConnection
 from .service import Service
 from .options import Options
 
@@ -63,13 +62,17 @@ class WebDriver(RemoteWebDriver):
 
         try:
             RemoteWebDriver.__init__(self,
-                command_executor=self.service.service_url,
-                desired_capabilities=desired_capabilities,
-                keep_alive=True)
+                command_executor=ChromeRemoteConnection(
+                    remote_server_addr=self.service.service_url),
+                desired_capabilities=desired_capabilities)
         except:
             self.quit()
             raise
         self._is_remote = False
+
+    def launch_app(self, id):
+        """Launches Chrome app specified by id."""
+        return self.execute("launchApp", {'id': id})
 
     def quit(self):
         """

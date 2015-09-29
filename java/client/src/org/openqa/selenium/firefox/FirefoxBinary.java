@@ -150,7 +150,7 @@ public class FirefoxBinary {
     // 3. Create a new LD_LIB_PATH string to contain:
     // profile.getLibsDir32bit + ":" + profile.getLibsDir64bit
 
-    Set<String> pathsSet = new HashSet<String>();
+    Set<String> pathsSet = new HashSet<>();
     pathsSet.add(jarPath32Bit);
     pathsSet.add(jarPath64Bit);
 
@@ -227,7 +227,7 @@ public class FirefoxBinary {
    * Gets all console output of the binary. Output retrieval is non-destructive and non-blocking.
    *
    * @return the console output of the executed binary.
-   * @throws IOException
+   * @throws IOException IO exception reading from the output stream of the firefox process
    */
   public String getConsoleOutput() throws IOException {
     if (process == null) {

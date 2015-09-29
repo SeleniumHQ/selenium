@@ -35,7 +35,7 @@ public class DefaultRemoteProxyTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void invalidNodePollingValue() {
-    Map<String, Object> config = new HashMap<String, Object>();
+    Map<String, Object> config = new HashMap<>();
     config.put(ID, "abc");
     config.put(RegistrationRequest.NODE_POLLING, "abc");
 
@@ -47,7 +47,7 @@ public class DefaultRemoteProxyTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void invalidUnregisterIfStillDownValue() {
-    Map<String, Object> config = new HashMap<String, Object>();
+    Map<String, Object> config = new HashMap<>();
     config.put(ID, "abc");
     config.put(RegistrationRequest.NODE_POLLING, 100);
     config.put(RegistrationRequest.UNREGISTER_IF_STILL_DOWN_AFTER, "abc");

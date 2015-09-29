@@ -119,14 +119,15 @@
     <modules>
         <module>api</module>
         <module>chrome-driver</module>
+        <module>edge-driver</module>
         <module>firefox-driver</module>
-        <module>htmlunit-driver</module>
         <module>ie-driver</module>
         <module>java</module>
         <module>remote-driver</module>
         <module>safari-driver</module>
         <module>server</module>
         <module>support</module>
+        <module>htmlunit-driver</module>
         <module>leg-rc</module>
     </modules>
 
@@ -180,7 +181,7 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
-                <version>4.4.1</version>
+                <version>4.5</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>

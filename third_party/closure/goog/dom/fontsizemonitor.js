@@ -21,6 +21,7 @@ goog.provide('goog.dom.FontSizeMonitor');
 goog.provide('goog.dom.FontSizeMonitor.EventType');
 
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
@@ -56,19 +57,19 @@ goog.dom.FontSizeMonitor = function(opt_domHelper) {
 
   /**
    * Offscreen iframe which we use to detect resize events.
-   * @type {Element}
+   * @type {HTMLElement}
    * @private
    */
-  this.sizeElement_ = dom.createDom(
+  this.sizeElement_ = /** @type {!HTMLElement} */ (dom.createDom(
       // The size of the iframe is expressed in em, which are font size relative
       // which will cause the iframe to be resized when the font size changes.
       // The actual values are not relevant as long as we can ensure that the
       // iframe has a non zero size and is completely off screen.
-      goog.userAgent.IE ? 'div' : 'iframe', {
+      goog.userAgent.IE ? goog.dom.TagName.DIV : goog.dom.TagName.IFRAME, {
         'style': 'position:absolute;width:9em;height:9em;top:-99em',
         'tabIndex': -1,
         'aria-hidden': 'true'
-      });
+      }));
   var p = dom.getDocument().body;
   p.insertBefore(this.sizeElement_, p.firstChild);
 

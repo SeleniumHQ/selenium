@@ -33,6 +33,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
@@ -98,18 +99,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  public void testShouldBeAbleToDetermineTheLocationOfAnElement() {
-    driver.get(pages.xhtmlTestPage);
-
-    WebElement element = driver.findElement(By.id("username"));
-    Point location = element.getLocation();
-
-    assertThat(location.getX() > 0, is(true));
-    assertThat(location.getY() > 0, is(true));
-  }
-
-  @JavascriptEnabled
-  @Test
+  @Ignore(MARIONETTE)
   public void testShouldFireOnChangeEventWhenSettingAnElementsValue() {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("change")).sendKeys("foo");
@@ -162,6 +152,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToSwitchToFocusedElement() {
     driver.get(pages.javascriptPage);
 
@@ -173,6 +164,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testIfNoElementHasFocusTheActiveElementIsTheBody() {
     driver.get(pages.simpleTestPage);
 
@@ -191,14 +183,14 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
     input.sendKeys("test");
     moveFocus();
     assertThat(driver.findElement(By.id("result")).getText().trim(),
-               Matchers.<String>either(is("focus change blur")).or(is("focus blur change")));
+               Matchers.either(is("focus change blur")).or(is("focus blur change")));
 
     input.sendKeys(Keys.BACK_SPACE, "t");
     moveFocus();
 
     // I weep.
     assertThat(driver.findElement(By.id("result")).getText().trim(),
-               Matchers.<String>either(is("focus change blur focus blur"))
+               Matchers.either(is("focus change blur focus blur"))
                    .or(is("focus blur change focus blur"))
                    .or(is("focus blur change focus blur change"))
                    .or(is("focus change blur focus change blur"))); // What Chrome does
@@ -220,11 +212,12 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
     assertNotNull(text);
   }
 
-  @JavascriptEnabled
-  @Ignore({MARIONETTE})
   @Test
   public void testShouldBeAbleToGetTheLocationOfAnElement() {
     assumeTrue(driver instanceof JavascriptExecutor);
+    if (driver instanceof HtmlUnitDriver) {
+      assumeTrue(((HtmlUnitDriver) driver).isJavascriptEnabled());
+    }
 
     driver.get(pages.javascriptPage);
 

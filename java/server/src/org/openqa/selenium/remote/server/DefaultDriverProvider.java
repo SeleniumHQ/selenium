@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.server;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -38,12 +39,12 @@ public class DefaultDriverProvider implements DriverProvider {
   private String driverClassName;
 
   public DefaultDriverProvider(Capabilities capabilities, Class<? extends WebDriver> driverClass) {
-    this.capabilities = capabilities;
+    this.capabilities = new DesiredCapabilities(capabilities);
     this.driverClass = driverClass;
   }
 
   public DefaultDriverProvider(Capabilities capabilities, String driverClassName) {
-    this.capabilities = capabilities;
+    this.capabilities = new DesiredCapabilities(capabilities);
     this.driverClassName = driverClassName;
   }
 

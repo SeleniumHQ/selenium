@@ -44,6 +44,7 @@ goog.provide('webdriver.until');
 goog.require('bot.ErrorCode');
 goog.require('goog.array');
 goog.require('goog.string');
+goog.require('webdriver.Locator');
 
 
 
@@ -208,8 +209,9 @@ until.titleMatches = function(regex) {
  * @return {!until.Condition.<!webdriver.WebElement>} The new condition.
  */
 until.elementLocated = function(locator) {
-  var locatorStr = goog.isFunction(locator) ? 'function()' : locator + '';
-  return new until.Condition('element to be located by ' + locatorStr,
+  locator = webdriver.Locator.checkLocator(locator);
+  var locatorStr = goog.isFunction(locator) ? 'by function()' : locator + '';
+  return new until.Condition('for element to be located ' + locatorStr,
       function(driver) {
         return driver.findElements(locator).then(function(elements) {
           return elements[0];
@@ -228,9 +230,10 @@ until.elementLocated = function(locator) {
  *     condition.
  */
 until.elementsLocated = function(locator) {
-  var locatorStr = goog.isFunction(locator) ? 'function()' : locator + '';
+  locator = webdriver.Locator.checkLocator(locator);
+  var locatorStr = goog.isFunction(locator) ? 'by function()' : locator + '';
   return new until.Condition(
-      'at least one element to be located by ' + locatorStr,
+      'for at least one element to be located ' + locatorStr,
       function(driver) {
         return driver.findElements(locator).then(function(elements) {
           return elements.length > 0 ? elements : null;

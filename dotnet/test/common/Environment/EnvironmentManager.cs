@@ -31,18 +31,7 @@ namespace OpenQA.Selenium.Environment
 
             urlBuilder = new UrlBuilder();
 
-            Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            string assemblyLocation = executingAssembly.Location;
-
-            // If we're shadow copying,. fiddle with 
-            // the codebase instead 
-            if (AppDomain.CurrentDomain.ShadowCopyFiles)
-            {
-                Uri uri = new Uri(executingAssembly.CodeBase);
-                assemblyLocation = uri.LocalPath;
-            }
-
-            string currentDirectory = Path.GetDirectoryName(assemblyLocation);
+            string currentDirectory = this.CurrentDirectory;
             DirectoryInfo info = new DirectoryInfo(currentDirectory);
             while (info != info.Root && string.Compare(info.Name, "build", StringComparison.OrdinalIgnoreCase) != 0)
             {
@@ -80,6 +69,26 @@ namespace OpenQA.Selenium.Environment
             get { return browser; }
         }
 
+        public string CurrentDirectory
+        {
+            get
+            {
+                Assembly executingAssembly = Assembly.GetExecutingAssembly();
+                string assemblyLocation = executingAssembly.Location;
+
+                // If we're shadow copying,. fiddle with 
+                // the codebase instead 
+                if (AppDomain.CurrentDomain.ShadowCopyFiles)
+                {
+                    Uri uri = new Uri(executingAssembly.CodeBase);
+                    assemblyLocation = uri.LocalPath;
+                }
+
+                string currentDirectory = Path.GetDirectoryName(assemblyLocation);
+                return currentDirectory;
+            }
+        }
+        
         public TestWebServer WebServer
         {
             get { return webServer; }

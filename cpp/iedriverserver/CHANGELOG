@@ -9,6 +9,130 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.47.0.3
+=========
+ * Updates to JavaScript automation atoms.
+ * Removed use of Windows hooks for taking screenshots in IE. This will fix
+   the issue of taking full-page screenshots when using the 32-bit IE driver
+   on 64-bit Windows installations.
+
+v2.47.0.2
+=========
+ * Corrected build process to create executables runnable on Windows XP.
+
+v2.47.0.1
+=========
+ * Added logging messages for IE driver for bitness mismatches. This commit
+   adds logging messages at the warning level whenever a mismatch in bitness
+   is detected between the browser and driver. This is a particularly bad
+   problem in cases where users have 64-bit Windows, and (incorrectly) assume
+   they automatically should use the 64-bit IEDriverServer.exe when running
+   with IE 10 or 11. Since the process that actually renders content in IE 10
+   and 11 is almost always 32-bit, even on 64-bit Windows, it is almost always
+   the proper decision to use the 32-bit IE driver. It is now very clear from
+   log messages when this state of affairs exists.
+ * Enabled fast failure for cookie manipulation in IE. The refactor of cookie
+   handling for the IE driver introduces an incompatibility with the 64-bit IE
+   driver and IE 10 and 11 running on 64-bit Windows. As is the case with
+   sending keystrokes and creating screenshots, a Windows hook procedure is now
+   used for getting and settingcookies in IE. That means that in IE 10 and 11
+   on 64-bit Windows, where the content rendering process is still 32-bit, you
+   **must** use the 32-bit IEDriverServer.exe in order to manipulate cookies.
+   This commit will now cause exceptions to be thrown if you attempt to set
+   or get cookies using the 64-bit driver against a 32-bit version of IE (or
+   vice versa), but in particular, this will affect users who mistakenly try
+   to use the 64-bit executable with IE 10 or 11 in 64-bit Windows.
+
+v2.47.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+ * Updates to JavaScript automation atoms.
+
+v2.46.0.12
+==========
+ * Fixed handling of authentication dialogs for different Windows versions.
+
+v2.46.0.11
+==========
+ * Enabling handling of authentication dialogs in IE driver.
+ * Modified to resize IE window for screenshots using dimensions of top-level
+   document when focused on a frame. Fixes issue #703.
+
+v2.46.0.10
+==========
+ * Init last known mouse position with -1, -1. This avoids issues where the
+   first operation is to move the mouse to [0, 0]. Patch provided by Anton
+   Usmansky.
+
+v2.46.0.9
+=========
+ * Fixed bug in SOCKS proxy authentication settings retrieval.
+
+v2.46.0.8
+=========
+ * Fixed bug in screenshot handling due to Windows hook refactor.
+
+v2.46.0.7
+=========
+ * Fixed cookie delete bug for related domains.
+
+v2.46.0.6
+=========
+ * Corrected cookie add/delete logic with respect to HTTP-only cookies.
+
+v2.46.0.5
+=========
+ * Updates to JavaScript automation atoms.
+ * Updated delete cookie logic to no longer rely on JavaScript. This allows
+   HTTP-only cookies to be deleted by the driver.
+ * Added support for SOCKS proxy in the IE driver. Using a SOCKS proxy is not
+   quite as straightforward for IE as it is for other browser drivers. While
+   the driver is now able to set the proxy settings for a SOCKS proxy, using
+   the ie.usePerProcessProxy capability with a user name and password for a
+   SOCKS proxy is problematic for the driver. The Windows API does not provide
+   any ability to set the user name and password for a SOCKS proxy on a
+   per-process basis. The driver attempts to work around this limitation, but
+   this combination will be largely unsupported. Using the driver to temporarily
+   set the global proxy settings on the machine should work as normal.
+
+v2.46.0.4
+=========
+ * Corrected logic for http-only and secure cookies. Cookies now behave
+   in IE as expected. The driver will properly return 'secure' or
+   'httpOnly' flags as set on the cookie itself. Note carefully that
+   'secure' cookies will only be retrieved when browsing a page using
+   SSL (https), as this is the only environment where the cookies are
+   used by the browser. This behavior is consistent with the behavior
+   of the Chrome driver, and with the W3C specification behavior for
+   cookies. Firefox, it should be noted, returns secure cookies regardless
+   of whether the page in question is being browsed via SSL or not.
+   This is a bug in the Firefox driver.
+
+v2.46.0.3
+=========
+ * Fixed IE cookie handling for down-level operating systems.
+
+v2.46.0.2
+=========
+ * Updates to JavaScript automation atoms.
+ * Refactoring Windows Hooks. Windows hooks are now wrapped in a single class,
+   eliminating a fair amount of duplicate code.
+ * Rewrote cookie handling for IE. The IE driver should now be able to return
+   full information for most cookies, including expiration date and secure
+   status. Additionally, the driver will now return HTTP-only cookies from
+   IE. Note that some specific cookie information will still be incomplete.
+   In particular, session cookies that may have been set with domain, path,
+   or secure tokens in the cookie string will not have those tokens set in
+   the returned cookie, as that information is not available via any API.
+   Also note that this change introduces additional use of Windows APIs that
+   are not supported when run from a service process, making that more
+   completely unsupported. Fixes issue #391.
+
+v2.46.0.1
+=========
+ * Handles issue with alert text controls conatining no accText property in IE.
+   Fixes issue #651.
+
 v2.46.0.0
 =========
  * Release to synchronize with release of Selenium project.

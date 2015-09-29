@@ -69,6 +69,7 @@
 goog.provide('goog.ui.media.Youtube');
 goog.provide('goog.ui.media.YoutubeModel');
 
+goog.require('goog.dom.TagName');
 goog.require('goog.string');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.media.FlashObject');
@@ -170,14 +171,14 @@ goog.ui.media.Youtube.prototype.setState = function(c, state, enable) {
 
   if (!!(state & goog.ui.Component.State.SELECTED) && enable) {
     var flashEls = domHelper.getElementsByTagNameAndClass(
-        'div',
+        goog.dom.TagName.DIV,
         goog.ui.media.FlashObject.CSS_CLASS,
         control.getElement());
     if (flashEls.length > 0) {
       return;
     }
     var youtubeFlash = new goog.ui.media.FlashObject(
-        dataModel.getPlayer().getUrl() || '',
+        dataModel.getPlayer().getTrustedResourceUrl(),
         domHelper);
     control.addChild(youtubeFlash, true);
   }
@@ -248,10 +249,13 @@ goog.inherits(goog.ui.media.YoutubeModel, goog.ui.media.MediaModel);
 goog.ui.media.YoutubeModel.MATCHER_ = new RegExp(
     // Lead in.
     'https?://(?:[a-zA-Z]{1,3}\\.)?' +
+    // Watch short URL prefix. This should handle URLs of the form:
+    // https://youtu.be/jqxENMKaeCU?cgiparam=value
+    '(?:(?:youtu\\.be/([\\w-]+)(?:\\?[\\w=&-]+)?)|' +
     // Watch URL prefix.  This should handle new URLs of the form:
     // http://www.youtube.com/watch#!v=jqxENMKaeCU&feature=related
     // where the parameters appear after "#!" instead of "?".
-    '(?:youtube\\.com/watch|youtu\\.be/watch)' +
+    '(?:youtube\\.com/watch)' +
     // Get the video id:
     // The video ID is a parameter v=[videoid] either right after the "?"
     // or after some other parameters.
@@ -267,7 +271,7 @@ goog.ui.media.YoutubeModel.MATCHER_ = new RegExp(
     // Continue supporting "?" for the video ID
     // and "#" for other hash parameters.
     '(?:[\\w=&-]+)' +
-    '))?' +
+    '))?)' +
     // Should terminate with a non-word, non-dash (-) character.
     '[^\\w-]?', 'i');
 
@@ -290,7 +294,7 @@ goog.ui.media.YoutubeModel.newInstance = function(youtubeUrl,
                                                   opt_description) {
   var extract = goog.ui.media.YoutubeModel.MATCHER_.exec(youtubeUrl);
   if (extract) {
-    var videoId = extract[1] || extract[2];
+    var videoId = extract[1] || extract[2] || extract[3];
     return new goog.ui.media.YoutubeModel(
         videoId, opt_caption, opt_description);
   }

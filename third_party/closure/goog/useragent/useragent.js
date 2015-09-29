@@ -37,6 +37,12 @@ goog.define('goog.userAgent.ASSUME_IE', false);
 
 
 /**
+ * @define {boolean} Whether we know at compile-time that the browser is EDGE.
+ */
+goog.define('goog.userAgent.ASSUME_EDGE', false);
+
+
+/**
  * @define {boolean} Whether we know at compile-time that the browser is GECKO.
  */
 goog.define('goog.userAgent.ASSUME_GECKO', false);
@@ -76,6 +82,7 @@ goog.define('goog.userAgent.ASSUME_ANY_VERSION', false);
  */
 goog.userAgent.BROWSER_KNOWN_ =
     goog.userAgent.ASSUME_IE ||
+    goog.userAgent.ASSUME_EDGE ||
     goog.userAgent.ASSUME_GECKO ||
     goog.userAgent.ASSUME_MOBILE_WEBKIT ||
     goog.userAgent.ASSUME_WEBKIT ||
@@ -120,6 +127,22 @@ goog.userAgent.OPERA = goog.userAgent.BROWSER_KNOWN_ ?
 goog.userAgent.IE = goog.userAgent.BROWSER_KNOWN_ ?
     goog.userAgent.ASSUME_IE :
     goog.labs.userAgent.browser.isIE();
+
+
+/**
+ * Whether the user agent is Microsoft Edge.
+ * @type {boolean}
+ */
+goog.userAgent.EDGE = goog.userAgent.BROWSER_KNOWN_ ?
+    goog.userAgent.ASSUME_EDGE :
+    goog.labs.userAgent.engine.isEdge();
+
+
+/**
+ * Whether the user agent is MS Internet Explorer or MS Edge.
+ * @type {boolean}
+ */
+goog.userAgent.EDGE_OR_IE = goog.userAgent.EDGE || goog.userAgent.IE;
 
 
 /**
@@ -354,32 +377,37 @@ goog.userAgent.IPAD = goog.userAgent.PLATFORM_KNOWN_ ?
 /**
  * @return {string} The string that describes the version number of the user
  *     agent.
+ * Assumes user agent is opera.
+ * @private
+ */
+goog.userAgent.operaVersion_ = function() {
+  var version = goog.global.opera.version;
+  try {
+    return version();
+  } catch (e) {
+    return version;
+  }
+};
+
+
+/**
+ * @return {string} The string that describes the version number of the user
+ *     agent.
  * @private
  */
 goog.userAgent.determineVersion_ = function() {
   // All browsers have different ways to detect the version and they all have
   // different naming schemes.
 
+  if (goog.userAgent.OPERA && goog.global['opera']) {
+    return goog.userAgent.operaVersion_();
+  }
+
   // version is a string rather than a number because it may contain 'b', 'a',
   // and so on.
-  var version = '', re;
-
-  if (goog.userAgent.OPERA && goog.global['opera']) {
-    var operaVersion = goog.global['opera'].version;
-    return goog.isFunction(operaVersion) ? operaVersion() : operaVersion;
-  }
-
-  if (goog.userAgent.GECKO) {
-    re = /rv\:([^\);]+)(\)|;)/;
-  } else if (goog.userAgent.IE) {
-    re = /\b(?:MSIE|rv)[: ]([^\);]+)(\)|;)/;
-  } else if (goog.userAgent.WEBKIT) {
-    // WebKit/125.4
-    re = /WebKit\/(\S+)/;
-  }
-
-  if (re) {
-    var arr = re.exec(goog.userAgent.getUserAgentString());
+  var version = '';
+  var arr = goog.userAgent.getVersionRegexResult_();
+  if (arr) {
     version = arr ? arr[1] : '';
   }
 
@@ -396,6 +424,31 @@ goog.userAgent.determineVersion_ = function() {
   }
 
   return version;
+};
+
+
+/**
+ * @return {Array|undefined} The version regex matches from parsing the user
+ *     agent string. These regex statements must be executed inline so they can
+ *     be compiled out by the closure compiler with the rest of the useragent
+ *     detection logic when ASSUME_* is specified.
+ * @private
+ */
+goog.userAgent.getVersionRegexResult_ = function() {
+  var userAgent = goog.userAgent.getUserAgentString();
+  if (goog.userAgent.GECKO) {
+    return /rv\:([^\);]+)(\)|;)/.exec(userAgent);
+  }
+  if (goog.userAgent.EDGE) {
+    return /Edge\/([\d\.]+)/.exec(userAgent);
+  }
+  if (goog.userAgent.IE) {
+    return /\b(?:MSIE|rv)[: ]([^\);]+)(\)|;)/.exec(userAgent);
+  }
+  if (goog.userAgent.WEBKIT) {
+    // WebKit/125.4
+    return /WebKit\/(\S+)/.exec(userAgent);
+  }
 };
 
 
@@ -486,7 +539,7 @@ goog.userAgent.isVersion = goog.userAgent.isVersionOrHigher;
  *     same as the given version.
  */
 goog.userAgent.isDocumentModeOrHigher = function(documentMode) {
-  return goog.userAgent.IE && goog.userAgent.DOCUMENT_MODE >= documentMode;
+  return goog.userAgent.DOCUMENT_MODE >= documentMode;
 };
 
 
@@ -510,10 +563,10 @@ goog.userAgent.isDocumentMode = goog.userAgent.isDocumentModeOrHigher;
  */
 goog.userAgent.DOCUMENT_MODE = (function() {
   var doc = goog.global['document'];
+  var mode = goog.userAgent.getDocumentMode_();
   if (!doc || !goog.userAgent.IE) {
     return undefined;
   }
-  var mode = goog.userAgent.getDocumentMode_();
   return mode || (doc['compatMode'] == 'CSS1Compat' ?
       parseInt(goog.userAgent.VERSION, 10) : 5);
 })();

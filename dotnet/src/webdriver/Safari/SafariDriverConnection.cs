@@ -44,6 +44,11 @@ namespace OpenQA.Selenium.Safari
         /// connection using the WebSockets protocol.</param>
         public SafariDriverConnection(IWebSocketConnection connection)
         {
+            if (connection == null)
+            {
+                throw new ArgumentNullException("connection", "WebSocket connection must not be null");
+            }
+
             this.connection = connection;
             this.connection.MessageReceived += new EventHandler<TextMessageHandledEventArgs>(this.ConnectionMessageReceivedEventHandler);
             this.connection.Closed += new EventHandler<ConnectionEventArgs>(this.ConnectionClosedEventHandler);

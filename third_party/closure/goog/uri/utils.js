@@ -35,8 +35,8 @@
  *
  * One advantage of the limited functionality here is that this approach is
  * less sensitive to differences in URI encodings than goog.Uri, since these
- * functions modify the strings in place, rather than decoding and
- * re-encoding.
+ * functions operate on strings directly, rather than decoding them and
+ * then re-encoding.
  *
  * Uses features of RFC 3986 for parsing/formatting URIs:
  *   http://www.ietf.org/rfc/rfc3986.txt
@@ -52,7 +52,6 @@ goog.provide('goog.uri.utils.StandardQueryParam');
 
 goog.require('goog.asserts');
 goog.require('goog.string');
-goog.require('goog.userAgent');
 
 
 /**
@@ -235,63 +234,9 @@ goog.uri.utils.ComponentIndex = {
  *     arbitrary strings may still look like path names.
  */
 goog.uri.utils.split = function(uri) {
-  goog.uri.utils.phishingProtection_();
-
   // See @return comment -- never null.
   return /** @type {!Array<string|undefined>} */ (
       uri.match(goog.uri.utils.splitRe_));
-};
-
-
-/**
- * Safari has a nasty bug where if you have an http URL with a username, e.g.,
- * http://evil.com%2F@google.com/
- * Safari will report that window.location.href is
- * http://evil.com/google.com/
- * so that anyone who tries to parse the domain of that URL will get
- * the wrong domain. We've seen exploits where people use this to trick
- * Safari into loading resources from evil domains.
- *
- * To work around this, we run a little "Safari phishing check", and throw
- * an exception if we see this happening.
- *
- * There is no convenient place to put this check. We apply it to
- * anyone doing URI parsing on Webkit. We're not happy about this, but
- * it fixes the problem.
- *
- * This should be removed once Safari fixes their bug.
- *
- * Exploit reported by Masato Kinugawa.
- *
- * @type {boolean}
- * @private
- */
-goog.uri.utils.needsPhishingProtection_ = goog.userAgent.WEBKIT;
-
-
-/**
- * Check to see if the user is being phished.
- * @private
- */
-goog.uri.utils.phishingProtection_ = function() {
-  if (goog.uri.utils.needsPhishingProtection_) {
-    // Turn protection off, so that we don't recurse.
-    goog.uri.utils.needsPhishingProtection_ = false;
-
-    // Use quoted access, just in case the user isn't using location externs.
-    var location = goog.global['location'];
-    if (location) {
-      var href = location['href'];
-      if (href) {
-        var domain = goog.uri.utils.getDomain(href);
-        if (domain && domain != location['hostname']) {
-          // Phishing attack
-          goog.uri.utils.needsPhishingProtection_ = true;
-          throw Error();
-        }
-      }
-    }
-  }
 };
 
 
@@ -348,8 +293,8 @@ goog.uri.utils.getScheme = function(uri) {
  */
 goog.uri.utils.getEffectiveScheme = function(uri) {
   var scheme = goog.uri.utils.getScheme(uri);
-  if (!scheme && self.location) {
-    var protocol = self.location.protocol;
+  if (!scheme && goog.global.self && goog.global.self.location) {
+    var protocol = goog.global.self.location.protocol;
     scheme = protocol.substr(0, protocol.length - 1);
   }
   // NOTE: When called from a web worker in Firefox 3.5, location maybe null.
@@ -594,6 +539,42 @@ goog.uri.utils.QueryValue;
  * @typedef {!Array<string|goog.uri.utils.QueryValue>}
  */
 goog.uri.utils.QueryArray;
+
+
+/**
+ * Parses encoded query parameters and calls callback function for every
+ * parameter found in the string.
+ *
+ * Missing value of parameter (e.g. “…&key&…”) is treated as if the value was an
+ * empty string.  Keys may be empty strings (e.g. “…&=value&…”) which also means
+ * that “…&=&…” and “…&&…” will result in an empty key and value.
+ *
+ * @param {string} encodedQuery Encoded query string excluding question mark at
+ *     the beginning.
+ * @param {function(string, string)} callback Function called for every
+ *     parameter found in query string.  The first argument (name) will not be
+ *     urldecoded (so the function is consistent with buildQueryData), but the
+ *     second will.  If the parameter has no value (i.e. “=” was not present)
+ *     the second argument (value) will be an empty string.
+ */
+goog.uri.utils.parseQueryData = function(encodedQuery, callback) {
+  if (!encodedQuery) {
+    return;
+  }
+  var pairs = encodedQuery.split('&');
+  for (var i = 0; i < pairs.length; i++) {
+    var indexOfEquals = pairs[i].indexOf('=');
+    var name = null;
+    var value = null;
+    if (indexOfEquals >= 0) {
+      name = pairs[i].substring(0, indexOfEquals);
+      value = pairs[i].substring(indexOfEquals + 1);
+    } else {
+      name = pairs[i];
+    }
+    callback(name, value ? goog.string.urlDecode(value) : '');
+  }
+};
 
 
 /**
@@ -919,8 +900,8 @@ goog.uri.utils.getParamValue = function(uri, keyEncoded) {
 
 /**
  * Gets all values of a query parameter.
- * @param {string} uri The URI to process.  May contain a framgnet.
- * @param {string} keyEncoded The URI-encoded key.  Case-snsitive.
+ * @param {string} uri The URI to process.  May contain a fragment.
+ * @param {string} keyEncoded The URI-encoded key.  Case-sensitive.
  * @return {!Array<string>} All URI-decoded values with the given key.
  *     If the key is not found, this will have length 0, but never be null.
  */

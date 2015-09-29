@@ -38,6 +38,7 @@ import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
 import java.util.List;
@@ -77,7 +78,6 @@ public class VisibilityTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldModifyTheVisibilityOfAnElementDynamically() {
     driver.get(pages.javascriptPage);
 
@@ -115,7 +115,7 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldNotBeAbleToTypeAnElementThatIsNotDisplayed() {
+  public void testShouldNotBeAbleToTypeToAnElementThatIsNotDisplayed() {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("unclickable"));
 
@@ -130,7 +130,7 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled // element.getSize() requires Javascript in HtmlUnit
-  @Ignore({IE})
+  @Ignore(IE)
   @Test
   public void testZeroSizedDivIsShownIfDescendantHasSize() {
     driver.get(pages.javascriptPage);
@@ -152,7 +152,8 @@ public class VisibilityTest extends JUnit4TestBase {
     assertTrue(element.isDisplayed());
   }
 
-  @Ignore({IE, HTMLUNIT, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore({IE, PHANTOMJS, SAFARI})
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testElementHiddenByOverflowXIsNotVisible() {
     String[] pages = new String[]{
@@ -169,7 +170,8 @@ public class VisibilityTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({HTMLUNIT, PHANTOMJS})
+  @Ignore(PHANTOMJS)
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testElementHiddenByOverflowYIsNotVisible() {
     String[] pages = new String[]{
@@ -204,7 +206,7 @@ public class VisibilityTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({IE, SAFARI, MARIONETTE})
+  @Ignore({IE, SAFARI})
   @Test
   public void testElementScrollableByOverflowYIsVisible() {
     String[] pages = new String[]{
@@ -238,7 +240,6 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({MARIONETTE})
   public void tooSmallAWindowWithOverflowHiddenIsNotAProblem() {
     // Browser window cannot be resized on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -261,7 +262,8 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({IE, HTMLUNIT})
+  @Ignore(IE)
+  @NotYetImplemented(HTMLUNIT)
   public void shouldShowElementNotVisibleWithHiddenAttribute() {
     String url = appServer.whereIs("hidden.html");
     driver.get(url);
@@ -270,7 +272,8 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({IE, HTMLUNIT})
+  @Ignore(IE)
+  @NotYetImplemented(HTMLUNIT)
   public void testShouldShowElementNotVisibleWhenParentElementHasHiddenAttribute() {
     String url = appServer.whereIs("hidden.html");
     driver.get(url);
@@ -283,7 +286,8 @@ public class VisibilityTest extends JUnit4TestBase {
    * @see <a href="http://code.google.com/p/selenium/issues/detail?id=1610">
    *      http://code.google.com/p/selenium/issues/detail?id=1610</a>
    */
-  @Ignore({IE, HTMLUNIT, MARIONETTE})
+  @Ignore({IE, MARIONETTE})
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldBeAbleToClickOnElementsWithOpacityZero() {
     driver.get(pages.clickJacker);
@@ -295,7 +299,7 @@ public class VisibilityTest extends JUnit4TestBase {
     assertEquals("1", element.getCssValue("opacity"));
   }
 
-  @Ignore({MARIONETTE})
+  @Ignore(MARIONETTE)
   @Test
   public void testShouldBeAbleToSelectOptionsFromAnInvisibleSelect() {
     driver.get(pages.formPage);

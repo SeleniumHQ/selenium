@@ -19,13 +19,20 @@ package org.openqa.selenium;
 
 import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
+import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
+import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 import org.junit.Test;
+import org.openqa.selenium.security.Credentials;
 import org.openqa.selenium.security.UserAndPassword;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
-@Ignore
+@Ignore({CHROME, FIREFOX, HTMLUNIT, MARIONETTE, PHANTOMJS, SAFARI})
 public class AuthenticatedPageLoadingTest extends JUnit4TestBase {
 
   @Test
@@ -35,7 +42,7 @@ public class AuthenticatedPageLoadingTest extends JUnit4TestBase {
 
     Alert alert = wait.until(alertIsPresent());
 
-    UserAndPassword user = new UserAndPassword("test", "test");
+    Credentials user = new UserAndPassword("test", "test");
 
     alert.authenticateUsing(user);
 

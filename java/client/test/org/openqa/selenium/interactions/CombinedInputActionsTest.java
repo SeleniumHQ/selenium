@@ -22,10 +22,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
+import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
@@ -34,15 +35,13 @@ import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getIEVersion;
-import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
-import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
-import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WaitingConditions;
@@ -50,7 +49,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.TestUtilities;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.util.List;
 
@@ -64,11 +63,9 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore({CHROME, IE, PHANTOMJS})
+  @Ignore({CHROME, IE, FIREFOX, PHANTOMJS})
+  @NotYetImplemented(HTMLUNIT)
   public void testPlainClickingOnMultiSelectionList() {
-    assumeTrue("Only works with native events on Linux",
-               isNativeEventsEnabled(driver));
-
     driver.get(pages.formSelectionPage);
 
     List<WebElement> options = driver.findElements(By.tagName("option"));
@@ -89,14 +86,11 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
                  resultElement.getText());
   }
 
-  // TODO: Check if this could work in any browser without native events.
   @JavascriptEnabled
   @Test
-  @Ignore({CHROME, IE})
+  @Ignore({CHROME, IE, FIREFOX})
+  @NotYetImplemented(HTMLUNIT)
   public void testShiftClickingOnMultiSelectionList() {
-    assumeTrue("Only works with native events on Linux",
-               isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.LINUX));
-
     driver.get(pages.formSelectionPage);
 
     List<WebElement> options = driver.findElements(By.tagName("option"));
@@ -118,14 +112,11 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
         resultElement.getText());
   }
 
-  // TODO: Check if this could work in any browser without native events.
   @JavascriptEnabled
   @Test
-  @Ignore({CHROME, HTMLUNIT, IE, PHANTOMJS})
+  @Ignore({CHROME, IE, FIREFOX, PHANTOMJS})
+  @NotYetImplemented(HTMLUNIT)
   public void testControlClickingOnMultiSelectionList() {
-    assumeTrue("Only works with native events on Linux",
-               isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.LINUX));
-
     driver.get(pages.formSelectionPage);
 
     List<WebElement> options = driver.findElements(By.tagName("option"));
@@ -151,9 +142,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Ignore({IE, REMOTE, PHANTOMJS})
   @Test
   public void testControlClickingOnCustomMultiSelectionList() {
-    assumeFalse("Does not works with native events on Windows",
-                isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.WINDOWS));
-
     driver.get(pages.selectableItemsPage);
 
     WebElement reportingElement = driver.findElement(By.id("infodiv"));
@@ -194,6 +182,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @Ignore(value = {PHANTOMJS, SAFARI}, reason = "Not tested")
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void canMoveMouseToAnElementInAnIframeAndClick() {
     driver.get(appServer.whereIs("click_tests/click_in_iframe.html"));
@@ -216,9 +205,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     navigateToClicksPageAndClickLink();
   }
 
-  @Ignore(
-      value = {HTMLUNIT},
-      reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testCanClickOnLinksWithAnOffset() {
     driver.get(pages.clicksPage);
@@ -234,9 +221,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     wait.until(titleIs("XHTML Test Page"));
   }
 
-  @Ignore(
-      value = {HTMLUNIT},
-      reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testClickAfterMoveToAnElementWithAnOffsetShouldUseLastMousePosition() {
     driver.get(pages.clickEventPage);
@@ -276,7 +261,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
    * the mouse in the driver keeps the wrong state, mouse movement will end
    * up at the wrong coordinates.
    */
-  @Ignore({HTMLUNIT})
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testMouseMovementWorksWhenNavigatingToAnotherPage() {
     navigateToClicksPageAndClickLink();
@@ -290,17 +275,10 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     wait.until(titleIs("We Arrive Here"));
   }
 
-  @Ignore({HTMLUNIT})
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have CONRTROL key", getEffectivePlatform().is(Platform.MAC));
-    assumeFalse("Windows: native events library  does not support storing modifiers state yet",
-                isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.WINDOWS) &&
-                (isInternetExplorer(driver) || isFirefox(driver)));
-    assumeFalse("FIXME: Fails in Firefox on Linux with native events",
-                isFirefox(driver) &&
-                isNativeEventsEnabled(driver) &&
-                getEffectivePlatform().is(Platform.LINUX));
 
     driver.get(pages.javascriptPage);
 
@@ -333,12 +311,10 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     wait.until(elementValueToEqual(element, "abc defabc def"));
   }
 
-  @Ignore({HTMLUNIT, IE})
+  @Ignore(IE)
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testCombiningShiftAndClickResultsInANewWindow() {
-    assumeFalse("Does not works with native events on Windows",
-                isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.WINDOWS));
-
     driver.get(pages.linkedImage);
     WebElement link = driver.findElement(By.id("link"));
     String originalTitle = driver.getTitle();
@@ -356,12 +332,9 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     assertEquals("Should not have navigated away.", originalTitle, driver.getTitle());
   }
 
-  @Ignore({HTMLUNIT, IE})
+  @Ignore({IE, HTMLUNIT})
   @Test
   public void testHoldingDownShiftKeyWhileClicking() {
-    assumeFalse("Does not works with native events on Windows",
-               isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.WINDOWS));
-
     driver.get(pages.clickEventPage);
 
     WebElement toClick = driver.findElement(By.id("eventish"));
@@ -378,13 +351,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Ignore(value = {SAFARI, MARIONETTE}, issues = {4136})
   public void canClickOnASuckerFishStyleMenu() throws InterruptedException {
     driver.get(pages.javascriptPage);
-
-    // This test passes on IE. When running in Firefox on Windows, the test
-    // will fail if the mouse cursor is not in the window. Solution: Maximize.
-    if ((TestUtilities.getEffectivePlatform().is(Platform.WINDOWS)) &&
-        TestUtilities.isFirefox(driver) && TestUtilities.isNativeEventsEnabled(driver)) {
-      driver.manage().window().maximize();
-    }
 
     // Move to a different element to make sure the mouse is not over the
     // element with id 'item1' (from a previous test).

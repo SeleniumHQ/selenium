@@ -17,9 +17,9 @@
 
 goog.require('bot.ErrorCode');
 goog.require('goog.Uri');
-goog.require('goog.json');
 goog.require('goog.testing.MockControl');
 goog.require('goog.testing.jsunit');
+goog.require('goog.userAgent');
 goog.require('webdriver.Command');
 goog.require('webdriver.http.Client');
 goog.require('webdriver.http.Executor');
@@ -31,6 +31,10 @@ var callbackHelper = webdriver.test.testutil.callbackHelper;
 
 var control = new goog.testing.MockControl();
 var mockClient, executor, onCallback, onErrback;
+
+function shouldRunTests() {
+  return !goog.userAgent.IE || goog.userAgent.isVersionOrHigher(10);
+}
 
 function setUp() {
   mockClient = control.createStrictMock(webdriver.http.Client);
@@ -62,7 +66,7 @@ function headersToString(headers) {
 
 function expectRequest(method, path, data, headers) {
   var description = method + ' ' + path + '\n' + headersToString(headers) +
-                    '\n' + goog.json.serialize(data);
+                    '\n' + JSON.stringify(data);
 
   return mockClient.send(new goog.testing.mockmatchers.ArgumentMatcher(
       function(request) {
@@ -230,7 +234,7 @@ function testExecute_returnsParsedJsonResponse() {
     'Accept': 'application/json; charset=utf-8'
   }).$does(respondsWith(null,
       response(200, {'Content-Type': 'application/json'},
-          goog.json.serialize(responseObj))));
+          JSON.stringify(responseObj))));
   control.$replayAll();
 
   assertSendsSuccessfully(command, function(response) {
@@ -323,7 +327,7 @@ function testExecute_attemptsToParseBodyWhenNoContentTypeSpecified() {
   expectRequest('GET', '/session/s123/url', {}, {
     'Accept': 'application/json; charset=utf-8'
   }).$does(respondsWith(null,
-      response(200, {}, goog.json.serialize(responseObj))));
+      response(200, {}, JSON.stringify(responseObj))));
   control.$replayAll();
 
   assertSendsSuccessfully(command, function(response) {

@@ -23,6 +23,7 @@ goog.provide('goog.debug.ErrorReporter.ExceptionEvent');
 
 goog.require('goog.asserts');
 goog.require('goog.debug');
+goog.require('goog.debug.Error');
 goog.require('goog.debug.ErrorHandler');
 goog.require('goog.debug.entryPointRegistry');
 goog.require('goog.events');
@@ -323,9 +324,13 @@ goog.debug.ErrorReporter.prototype.handleException = function(e,
     }
   }
   // Truncate message to a reasonable length, since it will be sent in the URL.
-  var message = error.message.substring(0, 2000);
-  this.sendErrorReport(message, error.fileName, error.lineNumber, error.stack,
-      context);
+  // The entire URL length historically needed to be 2,083 or less, so leave
+  // some room for the rest of the URL.
+  var message = error.message.substring(0, 1900);
+  if (!(e instanceof goog.debug.Error) || e.reportErrorToServer) {
+    this.sendErrorReport(message, error.fileName, error.lineNumber, error.stack,
+        context);
+  }
 
   try {
     this.dispatchEvent(

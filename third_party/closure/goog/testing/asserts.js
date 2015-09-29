@@ -29,11 +29,24 @@ goog.testing.asserts.ArrayLike;
 var DOUBLE_EQUALITY_PREDICATE = function(var1, var2) {
   return var1 == var2;
 };
-var JSUNIT_UNDEFINED_VALUE;
+var JSUNIT_UNDEFINED_VALUE = void 0;
 var TO_STRING_EQUALITY_PREDICATE = function(var1, var2) {
   return var1.toString() === var2.toString();
 };
 
+/** @typedef {function(?, ?):boolean} */
+var PredicateFunctionType;
+
+/**
+ * @const {{
+ *   String : PredicateFunctionType,
+ *   Number : PredicateFunctionType,
+ *   Boolean : PredicateFunctionType,
+ *   Date : PredicateFunctionType,
+ *   RegExp : PredicateFunctionType,
+ *   Function : PredicateFunctionType
+ * }}
+ */
 var PRIMITIVE_EQUALITY_PREDICATES = {
   'String': DOUBLE_EQUALITY_PREDICATE,
   'Number': DOUBLE_EQUALITY_PREDICATE,
@@ -945,7 +958,7 @@ var assertEvaluatesToFalse = function(a, opt_b) {
  * comparisons erroneously fail:
  * <pre>
  * assertHTMLEquals('<a href="x" target="y">', '<a target="y" href="x">');
- * assertHTMLEquals('<div classname="a b">', '<div classname="b a">');
+ * assertHTMLEquals('<div class="a b">', '<div class="b a">');
  * assertHTMLEquals('<input disabled>', '<input disabled="disabled">');
  * </pre>
  *
@@ -1042,10 +1055,12 @@ var assertRoughlyEquals = function(a, b, c, opt_d) {
 
 
 /**
- * Checks if the given element is the member of the given container.
- * @param {*} a Failure message (3 arguments) or the contained element
+ * Checks if the test value is a member of the given container.  Uses
+ * container.indexOf as the underlying function, so this works for strings
+ * and arrays.
+ * @param {*} a Failure message (3 arguments) or the test value
  *     (2 arguments).
- * @param {*} b The contained element (3 arguments) or the container
+ * @param {*} b The test value (3 arguments) or the container
  *     (2 arguments).
  * @param {*=} opt_c The container.
  */

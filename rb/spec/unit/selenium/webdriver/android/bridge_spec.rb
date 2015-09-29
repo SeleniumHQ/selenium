@@ -29,17 +29,17 @@ module Selenium
         let(:http)        { double(Remote::Http::Default, :call => resp).as_null_object   }
 
         it "uses the default Android driver URL" do
-          http.should_receive(:server_url=).with default_url
+          expect(http).to receive(:server_url=).with default_url
           Bridge.new(:http_client => http)
         end
 
         it "uses the user-provided URL" do
-          http.should_receive(:server_url=).with URI.parse("http://example.com")
+          expect(http).to receive(:server_url=).with URI.parse("http://example.com")
           Bridge.new(:http_client => http, :url => "http://example.com")
         end
 
         it "uses the default HTTP client when none is specified" do
-          Remote::Http::Default.should_receive(:new).and_return http
+          expect(Remote::Http::Default).to receive(:new).and_return http
           Bridge.new
         end
 
@@ -48,7 +48,7 @@ module Selenium
           custom_caps['foo'] = 'bar'
 
           expect(http).to receive(:call) do |_, _, payload|
-            payload[:desiredCapabilities]['foo'].should == 'bar'
+            expect(payload[:desiredCapabilities]['foo']).to eq('bar')
             resp
           end
 

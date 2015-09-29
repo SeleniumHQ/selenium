@@ -18,6 +18,9 @@ java_library(name = 'classes',
     '//java/server/src/org/openqa/selenium/remote/server/log:log',
     '//java/server/src/org/openqa/selenium/server:server',
     '//third_party/java/gson:gson',
-    '//third_party/java/servlet-api:servlet-api',
+    '//third_party/java/servlet:servlet-api',
+  ],
+  visibility = [
+    '//java/server/test/org/openqa/grid/e2e:tests',
   ],
 )

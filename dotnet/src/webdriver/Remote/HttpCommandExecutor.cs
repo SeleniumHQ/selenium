@@ -111,7 +111,8 @@ namespace OpenQA.Selenium.Remote
                 requestStream.Close();
             }
 
-            return this.CreateResponse(request);
+            Response toReturn = this.CreateResponse(request);
+            return toReturn;
         }
 
         private static string GetTextOfWebResponse(HttpWebResponse webResponse)
@@ -135,7 +136,6 @@ namespace OpenQA.Selenium.Remote
         private Response CreateResponse(WebRequest request)
         {
             Response commandResponse = new Response();
-
             HttpWebResponse webResponse = null;
             try
             {
@@ -163,7 +163,6 @@ namespace OpenQA.Selenium.Remote
             else
             {
                 string responseString = GetTextOfWebResponse(webResponse);
-
                 if (webResponse.ContentType != null && webResponse.ContentType.StartsWith(JsonMimeType, StringComparison.OrdinalIgnoreCase))
                 {
                     commandResponse = Response.FromJson(responseString);

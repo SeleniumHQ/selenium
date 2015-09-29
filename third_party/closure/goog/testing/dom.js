@@ -23,6 +23,7 @@ goog.provide('goog.testing.dom');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
+goog.require('goog.dom.InputType');
 goog.require('goog.dom.NodeIterator');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagIterator');
@@ -205,7 +206,7 @@ goog.testing.dom.nodeFilter_ = function(node) {
     if (match) {
       return goog.testing.dom.checkUserAgents_(match[1]);
     }
-  } else if (node.className) {
+  } else if (node.className && goog.isString(node.className)) {
     return goog.testing.dom.checkUserAgents_(node.className);
   }
   return true;
@@ -221,7 +222,7 @@ goog.testing.dom.nodeFilter_ = function(node) {
  */
 goog.testing.dom.getExpectedText_ = function(node) {
   // Strip off the browser specifications.
-  return node.nodeValue.match(/^(\[\[.+\]\])?(.*)/)[2];
+  return node.nodeValue.match(/^(\[\[.+\]\])?([\s\S]*)/)[2];
 };
 
 
@@ -277,13 +278,13 @@ goog.testing.dom.assertHtmlContentsMatch = function(htmlPattern, actual,
   var advanceActualNode = function() {
     // If the iterator has already been advanced, don't advance it again.
     if (!preIterated) {
-      actualNode = /** @type {Node} */ (goog.iter.nextOrValue(actualIt, null));
+      actualNode = goog.iter.nextOrValue(actualIt, null);
     }
     preIterated = false;
 
     // Advance the iterator so long as it is return end tags.
     while (actualNode == goog.testing.dom.END_TAG_MARKER_) {
-      actualNode = /** @type {Node} */ (goog.iter.nextOrValue(actualIt, null));
+      actualNode = goog.iter.nextOrValue(actualIt, null);
     }
   };
 
@@ -301,8 +302,6 @@ goog.testing.dom.assertHtmlContentsMatch = function(htmlPattern, actual,
 
   var number = 0;
   goog.iter.forEach(expectedIt, function(expectedNode) {
-    expectedNode = /** @type {Node} */ (expectedNode);
-
     advanceActualNode();
     assertNotNull('Finished actual HTML before finishing expected HTML at ' +
                   'node number ' + number + ': ' +
@@ -340,9 +339,8 @@ goog.testing.dom.assertHtmlContentsMatch = function(htmlPattern, actual,
       // Concatenate text nodes until we reach a non text node.
       var actualText = actualNode.nodeValue;
       preIterated = true;
-      while ((actualNode = /** @type {Node} */
-              (goog.iter.nextOrValue(actualIt, null))) &&
-          actualNode.nodeType == goog.dom.NodeType.TEXT) {
+      while ((actualNode = goog.iter.nextOrValue(actualIt, null)) &&
+             actualNode.nodeType == goog.dom.NodeType.TEXT) {
         actualText += actualNode.nodeValue;
       }
 
@@ -386,12 +384,18 @@ goog.testing.dom.assertHtmlContentsMatch = function(htmlPattern, actual,
  * others.
  * @param {string} htmlPattern The pattern to match.
  * @param {string} actual The html to check.
+ * @param {boolean=} opt_strictAttributes If false, attributes that appear in
+ *     htmlPattern must be in actual, but actual can have attributes not
+ *     present in htmlPattern. If true, htmlPattern and actual must have the
+ *     same set of attributes. Default is false.
  */
-goog.testing.dom.assertHtmlMatches = function(htmlPattern, actual) {
+goog.testing.dom.assertHtmlMatches = function(htmlPattern, actual,
+    opt_strictAttributes) {
   var div = goog.dom.createDom(goog.dom.TagName.DIV);
   div.innerHTML = actual;
 
-  goog.testing.dom.assertHtmlContentsMatch(htmlPattern, div);
+  goog.testing.dom.assertHtmlContentsMatch(
+      htmlPattern, div, opt_strictAttributes);
 };
 
 
@@ -402,7 +406,7 @@ goog.testing.dom.assertHtmlMatches = function(htmlPattern, actual) {
  * @param {string|RegExp} textOrRegexp The text to find, or a regular
  *     expression to find a match of.
  * @param {Element} root The element to search in.
- * @return {Node} The first text node that matches, or null if none is found.
+ * @return {?Node} The first text node that matches, or null if none is found.
  */
 goog.testing.dom.findTextNode = function(textOrRegexp, root) {
   var it = new goog.dom.NodeIterator(root);
@@ -417,7 +421,7 @@ goog.testing.dom.findTextNode = function(textOrRegexp, root) {
       return false;
     }
   }), null);
-  return /** @type {Node} */ (ret);
+  return ret;
 };
 
 
@@ -453,13 +457,14 @@ goog.testing.dom.assertRangeEquals = function(start, startOffset, end,
  */
 goog.testing.dom.getAttributeValue_ = function(node, name) {
   // These hacks avoid nondetermistic results in the following cases:
-  // IE7: document.createElement('input').height returns a random number.
+  // IE7: document.createElement(goog.dom.TagName.INPUT).height returns
+  //      a random number.
   // FF3: getAttribute('disabled') returns different value for <div disabled="">
   //      and <div disabled="disabled">
   // WebKit: Two radio buttons with the same name can't be checked at the same
   //      time, even if only one of them is in the document.
-  if (goog.userAgent.WEBKIT && node.tagName == 'INPUT' &&
-      node['type'] == 'radio' && name == 'checked') {
+  if (goog.userAgent.WEBKIT && node.tagName == goog.dom.TagName.INPUT &&
+      node['type'] == goog.dom.InputType.RADIO && name == 'checked') {
     return false;
   }
   return goog.isDef(node[name]) &&
@@ -521,8 +526,9 @@ goog.testing.dom.assertAttributesEqual_ = function(errorSuffix,
         actualAttribute);
     assertEquals('Expected attribute ' + expectedName +
         ' has a different value ' + errorSuffix,
-        expectedValue,
-        goog.testing.dom.getAttributeValue_(actualElem, actualAttribute.name));
+        String(expectedValue),
+        String(goog.testing.dom.getAttributeValue_(
+            actualElem, actualAttribute.name)));
   }
 
   if (strictAttributes) {

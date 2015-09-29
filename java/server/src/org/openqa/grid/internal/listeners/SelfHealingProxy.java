@@ -43,7 +43,7 @@ public interface SelfHealingProxy {
   /**
    * Allow to record when something important about the remote state is detected.
    *
-   * @param event
+   * @param event RemoteException event to be called when something happens
    */
   public void addNewEvent(RemoteException event);
 
@@ -54,8 +54,8 @@ public interface SelfHealingProxy {
    * implementation of this method will be to put the proxy on hold if the network connection is
    * bad, or to restart the remote if the resources used are too important
    *
-   * @param events
-   * @param lastInserted
+   * @param events list of RemoteExceptions occurred
+   * @param lastInserted last event that occurred
    */
   public void onEvent(List<RemoteException> events, RemoteException lastInserted);
 

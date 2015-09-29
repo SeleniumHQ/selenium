@@ -56,6 +56,7 @@ public interface DriverCommand {
   String UPLOAD_FILE = "uploadFile";
 
   String GET_CURRENT_WINDOW_HANDLE = "getCurrentWindowHandle";
+  String GET_CURRENT_WINDOW_HANDLE_LEVEL_1 = "getCurrentWindowHandleLevel1";
   String GET_WINDOW_HANDLES = "getWindowHandles";
 
   String GET_CURRENT_CONTEXT_HANDLE = "getCurrentContextHandle";
@@ -79,6 +80,7 @@ public interface DriverCommand {
   String IS_ELEMENT_SELECTED = "isElementSelected";
   String IS_ELEMENT_ENABLED = "isElementEnabled";
   String IS_ELEMENT_DISPLAYED = "isElementDisplayed";
+  String GET_ELEMENT_RECT = "getElementRect";
   String GET_ELEMENT_LOCATION = "getElementLocation";
   String GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW = "getElementLocationOnceScrolledIntoView";
   String GET_ELEMENT_SIZE = "getElementSize";
@@ -87,11 +89,13 @@ public interface DriverCommand {
   String ELEMENT_EQUALS = "elementEquals";
 
   String SCREENSHOT = "screenshot";
+  String ELEMENT_SCREENSHOT = "elementScreenshot";
 
   String ACCEPT_ALERT = "acceptAlert";
   String DISMISS_ALERT = "dismissAlert";
   String GET_ALERT_TEXT = "getAlertText";
   String SET_ALERT_VALUE = "setAlertValue";
+  String SET_ALERT_CREDENTIALS = "setAlertCredentials";
 
   String SET_TIMEOUT = "setTimeout";
   String IMPLICITLY_WAIT = "implicitlyWait";
@@ -150,12 +154,17 @@ public interface DriverCommand {
   String TOUCH_LONG_PRESS = "touchLongPress";
   String TOUCH_FLICK = "touchFlick";
 
-  // Window API (beta)
+  // Window API
   String SET_WINDOW_SIZE = "setWindowSize";
   String SET_WINDOW_POSITION = "setWindowPosition";
   String GET_WINDOW_SIZE = "getWindowSize";
   String GET_WINDOW_POSITION = "getWindowPosition";
   String MAXIMIZE_WINDOW = "maximizeWindow";
+
+  // W3C compatible Window API
+  String SET_CURRENT_WINDOW_SIZE = "setCurrentWindowSize";
+  String GET_CURRENT_WINDOW_SIZE = "getCurrentWindowSize";
+  String MAXIMIZE_CURRENT_WINDOW = "maximizeCurrentWindow";
 
   // Logging API
   String GET_AVAILABLE_LOG_TYPES = "getAvailableLogTypes";

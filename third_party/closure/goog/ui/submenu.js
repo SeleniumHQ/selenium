@@ -382,8 +382,9 @@ goog.ui.SubMenu.prototype.handleMouseOver = function(e) {
  */
 goog.ui.SubMenu.prototype.performActionInternal = function(e) {
   this.clearTimers();
-  var shouldHandleClick = this.isSupportedState(
-      goog.ui.Component.State.SELECTED);
+  var shouldHandleClick =
+      this.isSupportedState(goog.ui.Component.State.SELECTED) ||
+      this.isSupportedState(goog.ui.Component.State.CHECKED);
   if (shouldHandleClick) {
     return goog.ui.SubMenu.superClass_.performActionInternal.call(this, e);
   } else {
@@ -399,6 +400,12 @@ goog.ui.SubMenu.prototype.performActionInternal = function(e) {
  * @private
  */
 goog.ui.SubMenu.prototype.setSubMenuVisible_ = function(visible) {
+  // Unhighlighting the menuitems if closing the menu so the event handlers can
+  // determine the correct state.
+  if (!visible && this.getMenu()) {
+    this.getMenu().setHighlightedIndex(-1);
+  }
+
   // Dispatch OPEN event before calling getMenu(), so we can create the menu
   // lazily on first access.
   this.dispatchEvent(goog.ui.Component.getStateTransitionEvent(

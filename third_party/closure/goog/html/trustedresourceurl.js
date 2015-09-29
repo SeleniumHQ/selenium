@@ -15,7 +15,7 @@
 /**
  * @fileoverview The TrustedResourceUrl type and its builders.
  *
- * TODO(user): Link to document stating type contract.
+ * TODO(xtof): Link to document stating type contract.
  */
 
 goog.provide('goog.html.TrustedResourceUrl');
@@ -200,7 +200,7 @@ goog.html.TrustedResourceUrl.fromConstant = function(url) {
 /**
  * Type marker for the TrustedResourceUrl type, used to implement additional
  * run-time type checking.
- * @const
+ * @const {!Object}
  * @private
  */
 goog.html.TrustedResourceUrl.TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ = {};

@@ -24,6 +24,7 @@
 #include <shlguid.h>
 #include <shlobj.h>
 #include <WinInet.h>
+#include "FileUtilities.h"
 #include "logging.h"
 #include "psapi.h"
 #include "RegistryUtilities.h"
@@ -34,7 +35,6 @@ BrowserFactory::BrowserFactory(void) {
   // Must be done in the constructor. Do not move to Initialize().
   this->GetExecutableLocation();
   this->GetIEVersion();
-  this->GetOSVersion();
 }
 
 BrowserFactory::~BrowserFactory(void) {
@@ -63,7 +63,7 @@ void BrowserFactory::Initialize(BrowserFactorySettings settings) {
 void BrowserFactory::ClearCache() {
   LOG(TRACE) << "Entering BrowserFactory::ClearCache";
   if (this->clear_cache_) {
-    if (this->windows_major_version_ >= 6) {
+    if (IsWindowsVistaOrGreater()) {
       LOG(DEBUG) << "Clearing cache with low mandatory integrity level as required on Windows Vista or later.";
       this->InvokeClearCacheUtility(true);
     }
@@ -634,7 +634,7 @@ IWebBrowser2* BrowserFactory::CreateBrowser() {
 
   IWebBrowser2* browser = NULL;
   DWORD context = CLSCTX_LOCAL_SERVER;
-  if (this->ie_major_version_ == 7 && this->windows_major_version_ >= 6) {
+  if (this->ie_major_version_ == 7 && IsWindowsVistaOrGreater()) {
     // ONLY for IE 7 on Windows Vista. XP and below do not have Protected Mode;
     // Windows 7 shipped with IE8.
     context = context | CLSCTX_ENABLE_CLOAKING;
@@ -972,15 +972,9 @@ void BrowserFactory::GetExecutableLocation() {
 void BrowserFactory::GetIEVersion() {
   LOG(TRACE) << "Entering BrowserFactory::GetIEVersion";
 
-  struct LANGANDCODEPAGE {
-    WORD language;
-    WORD code_page;
-    } *lpTranslate;
-
-  DWORD dummy = 0;
-  DWORD length = ::GetFileVersionInfoSize(this->ie_executable_location_.c_str(),
-                                          &dummy);
-  if (length == 0) {
+  std::string ie_version = FileUtilities::GetFileVersion(this->ie_executable_location_);
+  
+  if (ie_version.size() == 0) {
     // 64-bit Windows 8 has a bug where it does not return the executable location properly
     this->ie_major_version_ = -1;
     LOG(WARN) << "Couldn't find IE version for executable "
@@ -989,45 +983,9 @@ void BrowserFactory::GetIEVersion() {
                << this->ie_major_version_;
     return;
   }
-  std::vector<BYTE> version_buffer(length);
-  ::GetFileVersionInfo(this->ie_executable_location_.c_str(),
-                       0, /* ignored */
-                       length,
-                       &version_buffer[0]);
 
-  UINT page_count;
-  BOOL query_result = ::VerQueryValue(&version_buffer[0],
-                                      FILE_LANGUAGE_INFO,
-                                      reinterpret_cast<void**>(&lpTranslate),
-                                      &page_count);
-    
-  wchar_t sub_block[MAX_PATH];
-  _snwprintf_s(sub_block,
-               MAX_PATH,
-               MAX_PATH,
-               FILE_VERSION_INFO,
-               lpTranslate->language,
-               lpTranslate->code_page);
-  LPVOID value = NULL;
-  UINT size;
-  query_result = ::VerQueryValue(&version_buffer[0],
-                                 sub_block,
-                                 &value,
-                                 &size);
-  std::wstring ie_version;
-  ie_version.assign(static_cast<wchar_t*>(value));
-  std::wstringstream version_stream(ie_version);
+  std::stringstream version_stream(ie_version);
   version_stream >> this->ie_major_version_;
-}
-
-void BrowserFactory::GetOSVersion() {
-  LOG(TRACE) << "Entering BrowserFactory::GetOSVersion";
-
-  OSVERSIONINFO osVersion;
-  osVersion.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-  ::GetVersionEx(&osVersion);
-  this->windows_major_version_ = osVersion.dwMajorVersion;
-  this->windows_minor_version_ = osVersion.dwMinorVersion;
 }
 
 bool BrowserFactory::ProtectedModeSettingsAreValid() {
@@ -1035,14 +993,15 @@ bool BrowserFactory::ProtectedModeSettingsAreValid() {
 
   bool settings_are_valid = true;
   LOG(DEBUG) << "Detected IE version: " << this->ie_major_version_
-             << ", detected Windows version: " << this->windows_major_version_;
+             << ", Windows version supports Protected Mode: "
+	           << IsWindowsVistaOrGreater() ? "true" : "false";
   // Only need to check Protected Mode settings on IE 7 or higher
   // and on Windows Vista or higher. Otherwise, Protected Mode
   // doesn't come into play, and are valid.
   // Documentation of registry settings can be found at the following
   // Microsoft KnowledgeBase article:
   // http://support.microsoft.com/kb/182569
-  if (this->ie_major_version_ >= 7 && this->windows_major_version_ >= 6) {
+  if (this->ie_major_version_ >= 7 && IsWindowsVistaOrGreater()) {
     HKEY key_handle;
     if (ERROR_SUCCESS == ::RegOpenKeyEx(HKEY_CURRENT_USER,
                                         IE_SECURITY_ZONES_REGISTRY_KEY,
@@ -1152,5 +1111,30 @@ int BrowserFactory::GetZoneProtectedModeSetting(const HKEY key_handle,
   }
   return protected_mode_value;
 }
+
+bool BrowserFactory::IsWindowsVersionOrGreater(unsigned short major_version,
+                                               unsigned short minor_version,
+                                               unsigned short service_pack) {
+  OSVERSIONINFOEXW osvi = { sizeof(osvi), 0, 0, 0, 0,{ 0 }, 0, 0 };
+  DWORDLONG        const dwlConditionMask = VerSetConditionMask(
+    VerSetConditionMask(
+      VerSetConditionMask(
+        0, VER_MAJORVERSION, VER_GREATER_EQUAL),
+      VER_MINORVERSION, VER_GREATER_EQUAL),
+    VER_SERVICEPACKMAJOR, VER_GREATER_EQUAL);
+
+  osvi.dwMajorVersion = major_version;
+  osvi.dwMinorVersion = minor_version;
+  osvi.wServicePackMajor = service_pack;
+
+  return VerifyVersionInfoW(&osvi,
+                            VER_MAJORVERSION | VER_MINORVERSION | VER_SERVICEPACKMAJOR,
+                            dwlConditionMask) != FALSE;
+}
+ 
+bool BrowserFactory::IsWindowsVistaOrGreater() {
+  return IsWindowsVersionOrGreater(HIBYTE(_WIN32_WINNT_VISTA), LOBYTE(_WIN32_WINNT_VISTA), 0);
+}
+
 
 } // namespace webdriver

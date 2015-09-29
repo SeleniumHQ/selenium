@@ -33,7 +33,7 @@ public class CustomBrowserLauncher extends AbstractBrowserLauncher {
   protected CommandLine process;
   protected String commandPath;
 
-  /** Specifies a command path to run */
+  /* Specifies a command path to run */
   public CustomBrowserLauncher(String commandPath, String sessionId,
       RemoteControlConfiguration configuration, Capabilities browserOptions) {
     super(sessionId, configuration, browserOptions);

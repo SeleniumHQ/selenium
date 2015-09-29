@@ -140,7 +140,7 @@ if (document.__$webdriverPageId != '{1}') {{
                     if (timeoutFlag > 0)
                     {
                         throw new WebDriverTimeoutException("Timed out waiting for async script callback."
-                            + "\nElapsed time: " + elapsedTime.Milliseconds + "ms"
+                            + "\nElapsed time: " + elapsedTime.Milliseconds + "milliseconds"
                             + "\nScript: " + script);
                     }
                 }

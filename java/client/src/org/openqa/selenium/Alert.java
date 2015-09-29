@@ -29,5 +29,15 @@ public interface Alert {
   void sendKeys(String keysToSend);
 
   @Beta
+  void setCredentials(Credentials credentials);
+
+  /**
+   * Authenticate an HTTP Basic Auth dialog.
+   *
+   * Usage: driver.switchTo().alert().authenticateUsing(new UsernamePasswordCredentials("cheese",
+   *        "secretGouda"));
+   * @param credentials - the credentials that will be passed to the Authentication prompt
+   */
+  @Beta
   void authenticateUsing(Credentials credentials);
 }

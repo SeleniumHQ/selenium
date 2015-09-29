@@ -27,6 +27,7 @@ goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.RangeEndpoint');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.browserrange.AbstractRange');
 goog.require('goog.string');
 goog.require('goog.userAgent');
@@ -209,7 +210,8 @@ goog.dom.browserrange.W3cRange.prototype.getText = function() {
 
 /** @override */
 goog.dom.browserrange.W3cRange.prototype.getValidHtml = function() {
-  var div = goog.dom.getDomHelper(this.range_.startContainer).createDom('div');
+  var div = goog.dom.getDomHelper(this.range_.startContainer).createDom(
+      goog.dom.TagName.DIV);
   div.appendChild(this.range_.cloneContents());
   var result = div.innerHTML;
 

@@ -67,7 +67,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   private final WebDriver driver;
 
   private final List<WebDriverEventListener> eventListeners =
-      new ArrayList<WebDriverEventListener>();
+      new ArrayList<>();
   private final WebDriverEventListener dispatcher = (WebDriverEventListener) Proxy
       .newProxyInstance(
           WebDriverEventListener.class.getClassLoader(),
@@ -110,7 +110,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   }
 
   private Class<?>[] extractInterfaces(Object object) {
-    Set<Class<?>> allInterfaces = new HashSet<Class<?>>();
+    Set<Class<?>> allInterfaces = new HashSet<>();
     allInterfaces.add(WrapsDriver.class);
     if (object instanceof WebElement) {
       allInterfaces.add(WrapsElement.class);
@@ -131,6 +131,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   }
 
   /**
+   * @param eventListener the event listener to register
    * @return this for method chaining.
    */
   public EventFiringWebDriver register(WebDriverEventListener eventListener) {
@@ -139,6 +140,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   }
 
   /**
+   * @param eventListener the event listener to unregister
    * @return this for method chaining.
    */
   public EventFiringWebDriver unregister(WebDriverEventListener eventListener) {
@@ -173,7 +175,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     dispatcher.beforeFindBy(by, null, driver);
     List<WebElement> temp = driver.findElements(by);
     dispatcher.afterFindBy(by, null, driver);
-    List<WebElement> result = new ArrayList<WebElement>(temp.size());
+    List<WebElement> result = new ArrayList<>(temp.size());
     for (WebElement element : temp) {
       result.add(createWebElement(element));
     }
@@ -243,14 +245,14 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   private Object unpackWrappedElement(Object arg) {
     if (arg instanceof List<?>) {
       List<?> aList = (List<?>) arg;
-      List<Object> toReturn = new ArrayList<Object>();
+      List<Object> toReturn = new ArrayList<>();
       for (Object anAList : aList) {
         toReturn.add(unpackWrappedElement(anAList));
       }
       return toReturn;
     } else if (arg instanceof Map<?, ?>) {
       Map<?, ?> aMap = (Map<?, ?>) arg;
-      Map<Object, Object> toReturn = new HashMap<Object, Object>();
+      Map<Object, Object> toReturn = new HashMap<>();
       for (Object key : aMap.keySet()) {
         toReturn.put(key, unpackWrappedElement(aMap.get(key)));
       }
@@ -409,7 +411,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       dispatcher.beforeFindBy(by, element, driver);
       List<WebElement> temp = element.findElements(by);
       dispatcher.afterFindBy(by, element, driver);
-      List<WebElement> result = new ArrayList<WebElement>(temp.size());
+      List<WebElement> result = new ArrayList<>(temp.size());
       for (WebElement element : temp) {
         result.add(createWebElement(element));
       }
@@ -450,6 +452,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
 
     public Coordinates getCoordinates() {
       return ((Locatable) underlyingElement).getCoordinates();
+    }
+
+    public <X> X getScreenshotAs(OutputType<X> outputType) throws WebDriverException {
+      return element.getScreenshotAs(outputType);
     }
   }
 

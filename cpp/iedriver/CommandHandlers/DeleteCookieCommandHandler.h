@@ -48,7 +48,12 @@ class DeleteCookieCommandHandler : public IECommandHandler {
       response->SetErrorResponse(status_code, "Unable to get browser");
       return;
     }
-    status_code = browser_wrapper->DeleteCookie(cookie_name);
+
+    BrowserCookie cookie;
+    cookie.set_name(cookie_name);
+    browser_wrapper->cookie_manager()->DeleteCookie(
+        browser_wrapper->GetCurrentUrl(),
+        cookie);
     if (status_code != WD_SUCCESS) {
       response->SetErrorResponse(status_code, "Unable to delete cookie");
       return;

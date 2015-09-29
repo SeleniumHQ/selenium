@@ -131,6 +131,29 @@ goog.dom.fullscreen.isFullScreen = function(opt_domHelper) {
 
 
 /**
+ * Get the root element in full screen mode.
+ * @param {!goog.dom.DomHelper=} opt_domHelper The DomHelper for the DOM being
+ *     queried. If not provided, use the current DOM.
+ * @return {?Element} The root element in full screen mode.
+ */
+goog.dom.fullscreen.getFullScreenElement = function(opt_domHelper) {
+  var doc = goog.dom.fullscreen.getDocument_(opt_domHelper);
+  var element_list = [
+    doc.webkitFullscreenElement,
+    doc.mozFullScreenElement,
+    doc.msFullscreenElement,
+    doc.fullscreenElement
+  ];
+  for (var i = 0; i < element_list.length; i++) {
+    if (element_list[i] != null) {
+      return element_list[i];
+    }
+  }
+  return null;
+};
+
+
+/**
  * Gets the document object of the dom.
  * @param {!goog.dom.DomHelper=} opt_domHelper The DomHelper for the DOM being
  *     queried. If not provided, use the current DOM.

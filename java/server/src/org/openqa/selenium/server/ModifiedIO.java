@@ -27,7 +27,7 @@ import java.io.Reader;
 import java.io.Writer;
 
 public class ModifiedIO {
-  /**
+  /*
    * Copy Stream in to Stream out until EOF or exception.
    */
   public static long copy(InputStream in, OutputStream out)
@@ -43,7 +43,11 @@ public class ModifiedIO {
   /**
    * Copy Stream in to Stream for byteCount bytes or until EOF or exception.
    *
+   * @param in input stream
+   * @param out output stream
+   * @param byteCount buffer size to read
    * @return Copied bytes count or -1 if no bytes were read *and* EOF was reached
+   * @throws IOException i/o exception
    */
   public static long copy(InputStream in,
                           OutputStream out,
@@ -83,7 +87,7 @@ public class ModifiedIO {
     return returnVal;
   }
 
-  /**
+  /*
    * Copy Reader to Writer for byteCount bytes or until EOF or exception.
    */
   public static long copy(Reader in,

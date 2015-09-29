@@ -23,6 +23,7 @@
 
 goog.provide('goog.testing.jsunit');
 
+goog.require('goog.dom.TagName');
 goog.require('goog.testing.TestCase');
 goog.require('goog.testing.TestRunner');
 
@@ -59,6 +60,11 @@ goog.define('goog.testing.jsunit.AUTO_RUN_DELAY_IN_MS', 500);
 
 
 (function() {
+  // Only allow one global test runner to be created on a page.
+  if (goog.global['G_testRunner'] instanceof goog.testing.TestRunner) {
+    return;
+  }
+
   // Increases the maximum number of stack frames in Google Chrome from the
   // default 10 to 50 to get more useful stack traces.
   Error.stackTraceLimit = 50;
@@ -119,7 +125,7 @@ goog.define('goog.testing.jsunit.AUTO_RUN_DELAY_IN_MS', 500);
         // Webkit started passing an event object as the only argument to
         // window.onerror.  It doesn't contain an error message, url or line
         // number.  We therefore log as much info as we can.
-        if (error.target && error.target.tagName == 'SCRIPT') {
+        if (error.target && error.target.tagName == goog.dom.TagName.SCRIPT) {
           tr.logError('UNKNOWN ERROR: Script ' + error.target.src);
         } else {
           tr.logError('UNKNOWN ERROR: No error information available.');
@@ -144,9 +150,8 @@ goog.define('goog.testing.jsunit.AUTO_RUN_DELAY_IN_MS', 500);
         // Wait so that we don't interfere with WebDriver.
         realTimeout(function() {
           if (!tr.initialized) {
-            var test = new goog.testing.TestCase(document.title);
-            test.autoDiscoverTests();
-            tr.initialize(test);
+            var testCase = new goog.testing.TestCase(document.title);
+            goog.testing.TestCase.initializeTestRunner(testCase);
           }
           tr.execute();
         }, goog.testing.jsunit.AUTO_RUN_DELAY_IN_MS);

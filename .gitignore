@@ -25,10 +25,9 @@ out
 cpp/IEDriver/sizzle.h
 third_party/gecko-*
 cpp/iedriver/Generated/atoms.h
+cpp/iedriver/sizzle.h
 chromedriver.log
 junit*.properties
-WebDriver.suo
-WebDriver.sln.cache
 *.rbc
 .rbx
 .yardoc
@@ -38,6 +37,8 @@ maven/*/src
 maven/target
 maven/*/target
 java/client/build/
+java/client/log.txt
+java/client/iedriver.log
 java/server/build/
 *.pyc
 dist/
@@ -53,10 +54,12 @@ obj/
 *.opensdf
 *.suo
 *.sdf
+*.vs
 Generated/
 ipch/
 /iedriver.log
 /phantomjsdriver.log
+geckodriver.log
 .tags
 .ruby-version
 GPATH
@@ -69,3 +72,4 @@ Gemfile.lock
 .idea/sonarIssues.xml
 .idea/inspectionProfiles/profiles_settings.xml
 .idea/inspectionProfiles/Project_Default.xml
+.idea/misc.xml

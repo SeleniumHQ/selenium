@@ -30,7 +30,7 @@ public class GetAllButtons extends SeleneseCommand<String[]> {
   @Override
   protected String[] handleSeleneseCommand(WebDriver driver, String ignored, String alsoIgnored) {
     List<WebElement> allInputs = driver.findElements(By.xpath("//input"));
-    List<String> ids = new ArrayList<String>();
+    List<String> ids = new ArrayList<>();
 
     for (WebElement input : allInputs) {
       String type = input.getAttribute("type").toLowerCase();

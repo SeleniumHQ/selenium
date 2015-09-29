@@ -48,7 +48,7 @@ public class RemoteSessionStorage implements SessionStorage {
     @SuppressWarnings("unchecked")
     Collection<String> result = (Collection<String>)
         executeMethod.execute(DriverCommand.GET_SESSION_STORAGE_KEYS, null);
-    return new HashSet<String>(result);
+    return new HashSet<>(result);
   }
 
   @Override

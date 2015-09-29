@@ -21,6 +21,7 @@
 goog.provide('goog.testing.ui.rendererasserts');
 
 goog.require('goog.testing.asserts');
+goog.require('goog.ui.ControlRenderer');
 
 
 /**

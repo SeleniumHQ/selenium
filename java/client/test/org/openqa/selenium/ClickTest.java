@@ -29,10 +29,8 @@ import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.isChrome;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
-import static org.openqa.selenium.testing.TestUtilities.isFirefox;
-import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
+import static org.openqa.selenium.testing.TestUtilities.isChrome;
 
 import org.junit.After;
 import org.junit.Before;
@@ -85,7 +83,9 @@ public class ClickTest extends JUnit4TestBase {
     assertEquals("Latch was reset", Boolean.TRUE, samePage);
   }
 
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
+  @Ignore(value = {MARIONETTE}, reason = "getPageSource issue")
   public void testCanClickOnALinkThatUpdatesAnotherFrame() {
     driver.switchTo().frame("source");
 
@@ -96,7 +96,9 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
+  @Ignore(value = {MARIONETTE}, reason = "getPageSource issue")
   public void testElementsFoundByJsCanLoadUpdatesInAnotherFrame() {
     driver.switchTo().frame("source");
 
@@ -111,6 +113,7 @@ public class ClickTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(value = {MARIONETTE}, reason = "getPageSource issue")
   public void testJsLocatedElementsCanUpdateFramesIfFoundSomehowElse() {
     driver.switchTo().frame("source");
 
@@ -129,6 +132,7 @@ public class ClickTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(value = {MARIONETTE}, reason = "sendKeys is not standard compliant yet")
   public void testCanClickOnAnElementWithTopSetToANegativeNumber() {
     String page = appServer.whereIs("styledPage.html");
     driver.get(page);
@@ -157,19 +161,12 @@ public class ClickTest extends JUnit4TestBase {
 
     String log = driver.findElement(By.id("result")).getText();
 
-    // Note: It is not guaranteed that the relatedTarget property of the mouseover
-    // event will be the parent, when using native events. Only check that the mouse
-    // has moved to this element, not that the parent element was the related target.
-    if (isNativeEventsEnabled(driver)) {
-      assertTrue("Should have moved to this element.", log.startsWith("parent matches?"));
-    } else {
-      assertEquals("parent matches? true", log);
-    }
+    assertEquals("parent matches? true", log);
   }
 
   @JavascriptEnabled
   @NoDriverAfterTest
-  @Ignore(value = {SAFARI}, reason = "issue 3693")
+  @Ignore(value = {SAFARI}, reason = "Safari: issue 3693")
   @Test
   public void testShouldOnlyFollowHrefOnce() {
     driver.get(pages.clicksPage);
@@ -293,10 +290,8 @@ public class ClickTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = {CHROME, MARIONETTE},
-      reason = "Chrome: failed, Firefox: failed with native event")
+      reason = "Chrome: failed")
   public void testShouldBeAbleToClickOnAnElementInFrameGreaterThanTwoViewports() {
-    assumeFalse(isFirefox(driver) && isNativeEventsEnabled(driver));
-
     String url = appServer.whereIs("click_too_big_in_frame.html");
     driver.get(url);
 
@@ -368,7 +363,6 @@ public class ClickTest extends JUnit4TestBase {
   @Test
   @Ignore(value = {MARIONETTE})
   public void testShouldBeAbleToClickOnASpanThatWrapsToTheNextLine() {
-    assumeFalse(isFirefox(driver) && isNativeEventsEnabled(driver));
     driver.get(appServer.whereIs("click_tests/span_that_wraps.html"));
 
     driver.findElement(By.id("span")).click();

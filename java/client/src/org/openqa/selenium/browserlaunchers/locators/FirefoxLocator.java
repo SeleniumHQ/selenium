@@ -98,6 +98,8 @@ public class FirefoxLocator extends SingleBrowserLocator {
 
   /**
    * Dynamic because the directory version number keep changing.
+   *
+   * @return potential locations of firefox on Ubuntu
    */
   protected String[] firefoxDefaultLocationsOnUbuntu() {
     final File dir;

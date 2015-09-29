@@ -18,6 +18,7 @@
 goog.require('goog.testing.MockControl');
 goog.require('goog.testing.PropertyReplacer');
 goog.require('goog.testing.jsunit');
+goog.require('goog.userAgent');
 goog.require('webdriver.testing.Client');
 
 var FAKE_WINDOW = {
@@ -35,6 +36,10 @@ var control = new goog.testing.MockControl;
 var mockXhr;
 var client;
 
+function shouldRunTests() {
+  return !goog.userAgent.IE || goog.userAgent.isVersionOrHigher(10);
+}
+
 function setUp() {
   client = new webdriver.testing.Client(FAKE_WINDOW);
   mockXhr = control.createStrictMock(FakeXhr);
@@ -50,7 +55,7 @@ function tearDown() {
 
 function expectToSendEvent(type, data) {
   mockXhr.open('POST', '/testevent', true);
-  mockXhr.send(goog.json.serialize({
+  mockXhr.send(JSON.stringify({
     'id': '/foo/bar/baz',
     'type': type,
     'data': data

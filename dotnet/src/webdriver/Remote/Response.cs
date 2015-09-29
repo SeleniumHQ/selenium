@@ -18,6 +18,8 @@
 
 using System.Globalization;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -49,11 +51,30 @@ namespace OpenQA.Selenium.Remote
             }
         }
 
+        private Response(Dictionary<string, object> rawResponse)
+        {
+            if (rawResponse.ContainsKey("sessionId"))
+            {
+                if (rawResponse["sessionId"] != null)
+                {
+                    this.responseSessionId = rawResponse["sessionId"].ToString();
+                }
+            }
+
+            if (rawResponse.ContainsKey("status"))
+            {
+                this.responseStatus = (WebDriverResult)Convert.ToInt32(rawResponse["status"]);
+            }
+
+            if (rawResponse.ContainsKey("value"))
+            {
+                this.responseValue = rawResponse["value"];
+            }
+        }
+
         /// <summary>
         /// Gets or sets the value from JSON.
         /// </summary>
-        [JsonConverter(typeof(ResponseValueJsonConverter))]
-        [JsonProperty("value")]
         public object Value
         {
             get { return this.responseValue; }
@@ -63,7 +84,6 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets or sets the session ID.
         /// </summary>
-        [JsonProperty("sessionId")]
         public string SessionId
         {
             get { return this.responseSessionId; }
@@ -73,7 +93,6 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets or sets the status value of the response.
         /// </summary>
-        [JsonProperty("status")]
         public WebDriverResult Status
         {
             get { return this.responseStatus; }
@@ -87,9 +106,9 @@ namespace OpenQA.Selenium.Remote
         /// <returns>A <see cref="Response"/> object described by the JSON string.</returns>
         public static Response FromJson(string value)
         {
-            JsonSerializerSettings settings = new JsonSerializerSettings();
-            settings.DateParseHandling = DateParseHandling.None;
-            return JsonConvert.DeserializeObject<Response>(value, settings);
+            Dictionary<string, object> deserializedResponse = JsonConvert.DeserializeObject<Dictionary<string, object>>(value, new ResponseValueJsonConverter());
+            Response response = new Response(deserializedResponse);
+            return response;
         }
 
         /// <summary>

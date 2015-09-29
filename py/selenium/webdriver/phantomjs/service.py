@@ -1,5 +1,3 @@
-#!/usr/bin/python
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,12 +15,12 @@
 # specific language governing permissions and limitations
 # under the License.
 import platform
-import signal
 import subprocess
 import time
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
+
 
 class Service(object):
     """
@@ -67,7 +65,7 @@ class Service(object):
 
         :Exceptions:
          - WebDriverException : Raised either when it can't start the service
-           or when it can't connect to the service
+           or when it can't connect to the service.
         """
         try:
             self.process = subprocess.Popen(self.service_args, stdin=subprocess.PIPE,
@@ -81,7 +79,8 @@ class Service(object):
             count += 1
             time.sleep(1)
             if count == 30:
-                 raise WebDriverException("Can not connect to GhostDriver")
+                 raise WebDriverException(
+                     "Can not connect to GhostDriver on port {}".format(self.port))
 
     @property
     def service_url(self):
@@ -107,6 +106,7 @@ class Service(object):
                 self.process.stdin.close()
                 self.process.kill()
                 self.process.wait()
+                self.process = None
         except OSError:
             # kill may not be available under windows environment
             pass

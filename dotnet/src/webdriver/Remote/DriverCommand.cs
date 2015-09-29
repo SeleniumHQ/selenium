@@ -259,6 +259,11 @@ namespace OpenQA.Selenium.Remote
         public static readonly string Screenshot = "screenshot";
 
         /// <summary>
+        /// Represents the ElementScreenshot command
+        /// </summary>
+        public static readonly string ElementScreenshot = "elementScreenshot";
+
+        /// <summary>
         /// Represents GetOrientation command
         /// </summary>
         public static readonly string GetOrientation = "getOrientation";
@@ -312,6 +317,11 @@ namespace OpenQA.Selenium.Remote
         /// Represents the SetAlertValue command
         /// </summary>
         public static readonly string SetAlertValue = "setAlertValue";
+
+        /// <summary>
+        /// Represents the Authenticate command
+        /// </summary>
+        public static readonly string SetAlertCredentials = "setAlertCredentials";
 
         /// <summary>
         /// Represents the ImplicitlyWait command

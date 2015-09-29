@@ -41,6 +41,22 @@ goog.define('goog.soy.REQUIRE_STRICT_AUTOESCAPE', false);
 
 
 /**
+ * Sets the processed template as the innerHTML of an element. It is recommended
+ * to use this helper function instead of directly setting innerHTML in your
+ * hand-written code, so that it will be easier to audit the code for cross-site
+ * scripting vulnerabilities.
+ *
+ * @param {?Element} element The element whose content we are rendering into.
+ * @param {!goog.soy.data.SanitizedContent} templateResult The processed
+ *     template of kind HTML or TEXT (which will be escaped).
+ * @template ARG_TYPES
+ */
+goog.soy.renderHtml = function(element, templateResult) {
+  element.innerHTML = goog.soy.ensureTemplateOutputHtml_(templateResult);
+};
+
+
+/**
  * Renders a Soy template and then set the output string as
  * the innerHTML of an element. It is recommended to use this helper function
  * instead of directly setting innerHTML in your hand-written code, so that it
@@ -111,11 +127,43 @@ goog.soy.renderAsElement = function(template, opt_templateData,
                                     opt_injectedData, opt_domHelper) {
   // Soy template parameter is only nullable for historical reasons.
   goog.asserts.assert(template, 'Soy template may not be null.');
+  return goog.soy.convertToElement_(template(
+      opt_templateData || goog.soy.defaultTemplateData_,
+      undefined, opt_injectedData), opt_domHelper);
+};
+
+
+/**
+ * Converts a processed Soy template into a single node. If the rendered
+ * HTML string represents a single node, then that node is returned. Otherwise,
+ * a DIV element is returned containing the rendered nodes.
+ *
+ * @param {!goog.soy.data.SanitizedContent} templateResult The processed
+ *     template of kind HTML or TEXT (which will be escaped).
+ * @param {?goog.dom.DomHelper=} opt_domHelper The DOM helper used to
+ *     create DOM nodes; defaults to {@code goog.dom.getDomHelper}.
+ * @return {!Element} Rendered template contents, wrapped in a parent DIV
+ *     element if necessary.
+ */
+goog.soy.convertToElement = function(templateResult, opt_domHelper) {
+  return goog.soy.convertToElement_(templateResult, opt_domHelper);
+};
+
+
+/**
+ * Non-strict version of {@code goog.soy.convertToElement}.
+ *
+ * @param {*} templateResult The processed template.
+ * @param {?goog.dom.DomHelper=} opt_domHelper The DOM helper used to
+ *     create DOM nodes; defaults to {@code goog.dom.getDomHelper}.
+ * @return {!Element} Rendered template contents, wrapped in a parent DIV
+ *     element if necessary.
+ * @private
+ */
+goog.soy.convertToElement_ = function(templateResult, opt_domHelper) {
   var dom = opt_domHelper || goog.dom.getDomHelper();
   var wrapper = dom.createElement(goog.dom.TagName.DIV);
-  var html = goog.soy.ensureTemplateOutputHtml_(template(
-      opt_templateData || goog.soy.defaultTemplateData_,
-      undefined, opt_injectedData));
+  var html = goog.soy.ensureTemplateOutputHtml_(templateResult);
   goog.soy.assertFirstTagValid_(html);
   wrapper.innerHTML = html;
 
@@ -207,7 +255,7 @@ goog.soy.assertFirstTagValid_ = function(html) {
  * @private
  */
 goog.soy.INVALID_TAG_TO_RENDER_ =
-    /^<(body|caption|col|colgroup|head|html|tr|td|tbody|thead|tfoot)>/i;
+    /^<(body|caption|col|colgroup|head|html|tr|td|th|tbody|thead|tfoot)>/i;
 
 
 /**

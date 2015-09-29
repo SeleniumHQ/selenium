@@ -37,7 +37,7 @@ module Selenium
         end
 
         it "raises ArgumentError if passed invalid options" do
-          lambda { Bridge.new(:foo => 'bar') }.should raise_error(ArgumentError)
+          expect { Bridge.new(:foo => 'bar') }.to raise_error(ArgumentError)
         end
 
         it "accepts the :introduce_flakiness_by_ignoring_security_domains option" do
@@ -46,13 +46,13 @@ module Selenium
             :http_client => http
           )
 
-          caps['ignoreProtectedModeSettings'].should be true
+          expect(caps['ignoreProtectedModeSettings']).to be true
         end
 
         it "has native events enabled by default" do
           Bridge.new(:http_client => http)
 
-          caps['nativeEvents'].should be true
+          expect(caps['nativeEvents']).to be true
         end
 
         it "can disable native events" do
@@ -61,12 +61,12 @@ module Selenium
             :http_client => http
           )
 
-          caps['nativeEvents'].should be false
+          expect(caps['nativeEvents']).to be false
         end
 
         it 'sets the server log level and log file' do
-          server.should_receive(:log_level=).with :trace
-          server.should_receive(:log_file=).with '/foo/bar'
+          expect(server).to receive(:log_level=).with :trace
+          expect(server).to receive(:log_file=).with '/foo/bar'
 
           Bridge.new(
             :log_level   => :trace,
@@ -76,7 +76,7 @@ module Selenium
         end
 
         it 'should be able to set implementation' do
-          Server.should_receive(:get).with(:implementation => :vendor).and_return(server)
+          expect(Server).to receive(:get).with(:implementation => :vendor).and_return(server)
 
           Bridge.new(
             :implementation => :vendor,
@@ -89,7 +89,7 @@ module Selenium
           custom_caps['ignoreProtectedModeSettings'] = true
 
           expect(http).to receive(:call) do |_, _, payload|
-            payload[:desiredCapabilities]['ignoreProtectedModeSettings'].should be true
+            expect(payload[:desiredCapabilities]['ignoreProtectedModeSettings']).to be true
             resp
           end
 
@@ -101,7 +101,7 @@ module Selenium
           custom_caps['ignoreProtectedModeSettings'] = false
 
           expect(http).to receive(:call) do |_, _, payload|
-            payload[:desiredCapabilities]['ignoreProtectedModeSettings'].should be true
+            expect(payload[:desiredCapabilities]['ignoreProtectedModeSettings']).to be true
             resp
           end
 

@@ -72,6 +72,7 @@
 #include "CommandHandlers/SendKeysCommandHandler.h"
 #include "CommandHandlers/SendKeysToActiveElementCommandHandler.h"
 #include "CommandHandlers/SendKeysToAlertCommandHandler.h"
+#include "CommandHandlers/SetAlertCredentialsCommandHandler.h"
 #include "CommandHandlers/SetAsyncScriptTimeoutCommandHandler.h"
 #include "CommandHandlers/SetImplicitWaitTimeoutCommandHandler.h"
 #include "CommandHandlers/SetTimeoutCommandHandler.h"
@@ -495,7 +496,8 @@ void IECommandExecutor::DispatchCommand() {
           if (command_type == webdriver::CommandType::GetAlertText ||
               command_type == webdriver::CommandType::SendKeysToAlert ||
               command_type == webdriver::CommandType::AcceptAlert ||
-              command_type == webdriver::CommandType::DismissAlert) {
+              command_type == webdriver::CommandType::DismissAlert ||
+              command_type == webdriver::CommandType::SetAlertCredentials) {
             LOG(DEBUG) << "Alert is detected, and the sent command is valid";
           } else {
             LOG(DEBUG) << "Unexpected alert is detected, and the sent command is invalid when an alert is present";
@@ -508,7 +510,7 @@ void IECommandExecutor::DispatchCommand() {
               Json::Value response_value;
               response_value["message"] = "Modal dialog present";
               response_value["alert"]["text"] = alert_text;
-              response.SetResponse(EMODALDIALOGOPENED, response_value);
+              response.SetResponse(EUNEXPECTEDALERTOPEN, response_value);
               this->serialized_response_ = response.Serialize();
               return;
             } else {
@@ -575,7 +577,7 @@ std::string IECommandExecutor::HandleUnexpectedAlert(BrowserHandle browser,
     // If a quit command was issued, we should not ignore an unhandled
     // alert, even if the alert behavior is set to "ignore".
     LOG(DEBUG) << "Automatically dismissing the alert";
-    if (dialog.is_standard_alert()) {
+    if (dialog.is_standard_alert() || dialog.is_security_alert()) {
       dialog.Dismiss();
     } else {
       // The dialog was non-standard. The most common case of this is
@@ -833,6 +835,7 @@ void IECommandExecutor::PopulateCommandHandlers() {
   this->command_handlers_[webdriver::CommandType::DismissAlert] = CommandHandlerHandle(new DismissAlertCommandHandler);
   this->command_handlers_[webdriver::CommandType::GetAlertText] = CommandHandlerHandle(new GetAlertTextCommandHandler);
   this->command_handlers_[webdriver::CommandType::SendKeysToAlert] = CommandHandlerHandle(new SendKeysToAlertCommandHandler);
+  this->command_handlers_[webdriver::CommandType::SetAlertCredentials] = CommandHandlerHandle(new SetAlertCredentialsCommandHandler);
 
   this->command_handlers_[webdriver::CommandType::MouseMoveTo] = CommandHandlerHandle(new MouseMoveToCommandHandler);
   this->command_handlers_[webdriver::CommandType::MouseClick] = CommandHandlerHandle(new MouseClickCommandHandler);

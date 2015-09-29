@@ -29,6 +29,7 @@ import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBeGreaterThan;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
+import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
@@ -40,13 +41,15 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.Browser;
 
 import java.util.Set;
 
 public class WindowSwitchingTest extends JUnit4TestBase {
-  @Ignore({MARIONETTE})
+
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
     assumeFalse(Browser.detect() == Browser.opera &&
@@ -178,7 +181,9 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @Test
   public void testShouldBeAbleToIterateOverAllOpenWindows() {
     driver.get(pages.xhtmlTestPage);
+    String original = driver.getWindowHandle();
     driver.findElement(By.name("windowOne")).click();
+    driver.switchTo().window(original);
     driver.findElement(By.name("windowTwo")).click();
 
     wait.until(windowHandleCountToBeGreaterThan(2));
@@ -199,6 +204,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore(MARIONETTE)
+  @NotYetImplemented(HTMLUNIT)
   public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang()
       throws Exception {
     assumeFalse(Browser.detect() == Browser.opera &&
@@ -239,6 +245,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore(MARIONETTE)
+  @NotYetImplemented(HTMLUNIT)
   public void testCanCallGetWindowHandlesAfterClosingAWindow() throws Exception {
     assumeFalse(Browser.detect() == Browser.opera &&
                 TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));

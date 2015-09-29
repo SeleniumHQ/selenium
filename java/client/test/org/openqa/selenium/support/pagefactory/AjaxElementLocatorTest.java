@@ -72,7 +72,7 @@ public class AjaxElementLocatorTest {
     final WebDriver driver = mock(WebDriver.class);
     final By by = new ByIdOrName("first");
     final WebElement element = mock(WebElement.class);
-    final List<WebElement> elementList = new ArrayList<WebElement>();
+    final List<WebElement> elementList = new ArrayList<>();
     elementList.add(element);
 
     when(driver.findElements(by))

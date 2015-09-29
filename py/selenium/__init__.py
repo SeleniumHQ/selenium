@@ -1,5 +1,3 @@
-#!/usr/bin/python
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,4 +18,4 @@
 from selenium import selenium
 
 
-__version__ = "2.46.0"
+__version__ = "2.47.3"

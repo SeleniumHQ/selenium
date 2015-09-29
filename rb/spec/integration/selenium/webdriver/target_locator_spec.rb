@@ -17,32 +17,31 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path("../spec_helper", __FILE__)
+require_relative 'spec_helper'
 
 describe "Selenium::WebDriver::TargetLocator" do
   let(:wait) { Selenium::WebDriver::Wait.new }
+  let(:new_window) { driver.window_handles.find {|handle| handle != driver.window_handle} }
 
   it "should find the active element" do
     driver.navigate.to url_for("xhtmlTest.html")
-    driver.switch_to.active_element.should be_an_instance_of(WebDriver::Element)
+    expect(driver.switch_to.active_element).to be_an_instance_of(WebDriver::Element)
   end
 
-  not_compliant_on :browser => [:iphone] do
-    it "should switch to a frame" do
-      driver.navigate.to url_for("iframes.html")
-      driver.switch_to.frame("iframe1")
+  it "should switch to a frame" do
+    driver.navigate.to url_for("iframes.html")
+    driver.switch_to.frame("iframe1")
 
-      driver.find_element(:name, 'login').should be_kind_of(WebDriver::Element)
-    end
+    expect(driver.find_element(:name, 'login')).to be_kind_of(WebDriver::Element)
+  end
 
-    it "should switch to a frame by Element" do
-      driver.navigate.to url_for("iframes.html")
+  it "should switch to a frame by Element" do
+    driver.navigate.to url_for("iframes.html")
 
-      iframe = driver.find_element(:tag_name => "iframe")
-      driver.switch_to.frame(iframe)
+    iframe = driver.find_element(:tag_name => "iframe")
+    driver.switch_to.frame(iframe)
 
-      driver.find_element(:name, 'login').should be_kind_of(WebDriver::Element)
-    end
+    expect(driver.find_element(:name, 'login')).to be_kind_of(WebDriver::Element)
   end
 
   not_compliant_on :browser => [:safari, :phantomjs] do
@@ -52,16 +51,15 @@ describe "Selenium::WebDriver::TargetLocator" do
       iframe = driver.find_element(:tag_name => "iframe")
       driver.switch_to.frame(iframe)
 
-      driver.find_element(:name, 'login').should be_kind_of(WebDriver::Element)
+      expect(driver.find_element(:name, 'login')).to be_kind_of(WebDriver::Element)
 
       driver.switch_to.parent_frame
-      driver.find_element(:id, 'iframe_page_heading').should be_kind_of(WebDriver::Element)
+      expect(driver.find_element(:id, 'iframe_page_heading')).to be_kind_of(WebDriver::Element)
     end
   end
 
-  # switching by name not yet supported by safari
   not_compliant_on :browser => [:ie, :iphone, :safari] do
-    after do
+    before do
       reset_driver!
     end
 
@@ -69,9 +67,9 @@ describe "Selenium::WebDriver::TargetLocator" do
       driver.navigate.to url_for("xhtmlTest.html")
 
       driver.find_element(:link, "Open new window").click
-      driver.title.should == "XHTML Test Page"
+      expect(driver.title).to eq("XHTML Test Page")
 
-      driver.switch_to.window("result") do
+      driver.switch_to.window(new_window) do
         wait.until { driver.title == "We Arrive Here" }
       end
 
@@ -83,40 +81,41 @@ describe "Selenium::WebDriver::TargetLocator" do
       driver.navigate.to url_for("xhtmlTest.html")
 
       driver.find_element(:link, "Open new window").click
-      driver.title.should == "XHTML Test Page"
+      expect(driver.title).to eq("XHTML Test Page")
 
-      lambda {
-        driver.switch_to.window("result") { raise "foo" }
-      }.should raise_error(RuntimeError, "foo")
+      expect {
+        driver.switch_to.window(new_window) { raise "foo" }
+      }.to raise_error(RuntimeError, "foo")
 
-      driver.title.should == "XHTML Test Page"
-
+      expect(driver.title).to eq("XHTML Test Page")
     end
 
-    it "should switch to a window" do
+    it "should switch to a window without a block" do
       driver.navigate.to url_for("xhtmlTest.html")
 
       driver.find_element(:link, "Open new window").click
-      wait.until { driver.title == "XHTML Test Page" }
+      expect(driver.title).to eq("XHTML Test Page")
 
-      driver.switch_to.window("result")
-      wait.until { driver.title == "We Arrive Here" }
-
+      driver.switch_to.window(new_window)
+      expect(driver.title).to eq("We Arrive Here")
     end
 
-    it "should use the original window if the block closes the popup" do
-      driver.navigate.to url_for("xhtmlTest.html")
+    # TODO - File bug with Microsoft; closing 2nd window hangs
+    not_compliant_on :browser => :edge do
+      it "should use the original window if the block closes the popup" do
+        driver.navigate.to url_for("xhtmlTest.html")
 
-      driver.find_element(:link, "Open new window").click
-      driver.title.should == "XHTML Test Page"
+        driver.find_element(:link, "Open new window").click
+        expect(driver.title).to eq("XHTML Test Page")
 
-      driver.switch_to.window("result") do
-        wait.until { driver.title == "We Arrive Here" }
-        driver.close
+        driver.switch_to.window(new_window) do
+          wait.until { driver.title == "We Arrive Here" }
+          driver.close
+        end
+
+        expect(driver.current_url).to include("xhtmlTest.html")
+        expect(driver.title).to eq("XHTML Test Page")
       end
-
-      driver.current_url.should include("xhtmlTest.html")
-      driver.title.should == "XHTML Test Page"
     end
 
     it "should close current window when more than two windows exist" do
@@ -124,7 +123,7 @@ describe "Selenium::WebDriver::TargetLocator" do
       driver.find_element(:link, "Create a new anonymous window").click
       driver.find_element(:link, "Open new window").click
 
-      expect(driver.window_handles.size).to eq 3
+      wait.until { driver.window_handles.size == 3 }
 
       driver.switch_to.window(driver.window_handle) {driver.close}
       expect(driver.window_handles.size).to eq 2
@@ -135,11 +134,11 @@ describe "Selenium::WebDriver::TargetLocator" do
       driver.find_element(:link, "Create a new anonymous window").click
       driver.find_element(:link, "Open new window").click
 
-      expect(driver.window_handles.size).to eq 3
+      wait.until { driver.window_handles.size == 3 }
 
       window_to_close = driver.window_handles.last
 
-      driver.switch_to.window(window_to_close) {driver.close}
+      driver.switch_to.window(window_to_close) { driver.close }
       expect(driver.window_handles.size).to eq 2
     end
 
@@ -148,12 +147,14 @@ describe "Selenium::WebDriver::TargetLocator" do
       driver.find_element(:link, "Create a new anonymous window").click
       driver.find_element(:link, "Open new window").click
 
-      new_window = driver.window_handles.find do |wh|
+      wait.until { driver.window_handles.size == 3 }
+
+      matching_window = driver.window_handles.find do |wh|
         driver.switch_to.window(wh) { driver.title == "We Arrive Here" }
       end
 
-      driver.switch_to.window(new_window)
-      driver.title.should == "We Arrive Here"
+      driver.switch_to.window(matching_window)
+      expect(driver.title).to eq("We Arrive Here")
     end
 
     it "should iterate over open windows when current window is closed" do
@@ -161,30 +162,37 @@ describe "Selenium::WebDriver::TargetLocator" do
       driver.find_element(:link, "Create a new anonymous window").click
       driver.find_element(:link, "Open new window").click
 
+      wait.until { driver.window_handles.size == 3 }
+
       driver.close
 
-      new_window = driver.window_handles.find do |wh|
+      matching_window = driver.window_handles.find do |wh|
         driver.switch_to.window(wh) { driver.title == "We Arrive Here" }
       end
 
-      driver.switch_to.window(new_window)
-      driver.title.should == "We Arrive Here"
+      driver.switch_to.window(matching_window)
+      expect(driver.title).to eq("We Arrive Here")
     end
 
-    it "should switch to a window and execute a block when current window is closed" do
-      driver.navigate.to url_for("xhtmlTest.html")
-      driver.find_element(:link, "Open new window").click
+    # TODO - File bug with Microsoft; closing 2nd window hangs
+    not_compliant_on :browser => :edge do
+      it "should switch to a window and execute a block when current window is closed" do
+        driver.navigate.to url_for("xhtmlTest.html")
+        driver.find_element(:link, "Open new window").click
 
-      driver.switch_to.window("result")
-      wait.until { driver.title == "We Arrive Here" }
+        wait.until { driver.window_handles.size == 2 }
 
-      driver.close
+        driver.switch_to.window(new_window)
+        wait.until { driver.title == "We Arrive Here" }
 
-      driver.switch_to.window(driver.window_handles.first) do
-        wait.until { driver.title == "XHTML Test Page" }
+        driver.close
+
+        driver.switch_to.window(driver.window_handles.first) do
+          wait.until { driver.title == "XHTML Test Page" }
+        end
+
+        expect(driver.title).to eq("XHTML Test Page")
       end
-
-      driver.title.should == "XHTML Test Page"
     end
   end
 
@@ -205,9 +213,10 @@ describe "Selenium::WebDriver::TargetLocator" do
         driver.navigate.to url_for("alerts.html")
         driver.find_element(:id => "alert").click
 
-        driver.switch_to.alert.accept
+        alert = wait_for_alert
+        alert.accept
 
-        driver.title.should == "Testing Alerts"
+        expect(driver.title).to eq("Testing Alerts")
       end
     end
 
@@ -222,21 +231,27 @@ describe "Selenium::WebDriver::TargetLocator" do
         alert = wait_for_alert
         alert.dismiss
 
-        driver.title.should == "Testing Alerts"
+        wait_for_no_alert
+
+        expect(driver.title).to eq("Testing Alerts")
       end
     end
 
     not_compliant_on :browser => [:iphone, :safari, :phantomjs] do
-      it "allows the user to set the value of a prompt" do
-        driver.navigate.to url_for("alerts.html")
-        driver.find_element(:id => "prompt").click
 
-        alert = wait_for_alert
-        alert.send_keys "cheese"
-        alert.accept
+      # Edge has not yet implemented {POST} /session/{sessionId}/alert/text
+      not_compliant_on :browser => [:edge] do
+        it "allows the user to set the value of a prompt" do
+          driver.navigate.to url_for("alerts.html")
+          driver.find_element(:id => "prompt").click
 
-        text = driver.find_element(:id => "text").text
-        text.should == "cheese"
+          alert = wait_for_alert
+          alert.send_keys "cheese"
+          alert.accept
+
+          text = driver.find_element(:id => "text").text
+          expect(text).to eq("cheese")
+        end
       end
 
       it "allows the user to get the text of an alert" do
@@ -247,7 +262,7 @@ describe "Selenium::WebDriver::TargetLocator" do
         text = alert.text
         alert.accept
 
-        text.should == "cheese"
+        expect(text).to eq("cheese")
       end
 
       it "raises when calling #text on a closed alert" do
@@ -264,7 +279,7 @@ describe "Selenium::WebDriver::TargetLocator" do
 
     not_compliant_on :browser => [:ie, :iphone, :safari, :phantomjs] do
       it "raises NoAlertOpenError if no alert is present" do
-        lambda { driver.switch_to.alert }.should raise_error(
+        expect { driver.switch_to.alert }.to raise_error(
           Selenium::WebDriver::Error::NoAlertPresentError, /alert|modal dialog/i)
       end
     end
@@ -275,9 +290,9 @@ describe "Selenium::WebDriver::TargetLocator" do
         driver.find_element(:id => "alert").click
         wait_for_alert
 
-        lambda { driver.title }.should raise_error(Selenium::WebDriver::Error::UnhandledAlertError, /cheese/)
+        expect { driver.title }.to raise_error(Selenium::WebDriver::Error::UnhandledAlertError, /cheese/)
 
-        driver.title.should == "Testing Alerts" # :chrome does not auto-dismiss the alert
+        expect(driver.title).to eq("Testing Alerts") # :chrome does not auto-dismiss the alert
       end
     end
 

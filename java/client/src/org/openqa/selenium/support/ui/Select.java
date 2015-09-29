@@ -74,7 +74,7 @@ public class Select {
    * @return All selected options belonging to this select tag
    */
   public List<WebElement> getAllSelectedOptions() {
-    List<WebElement> toReturn = new ArrayList<WebElement>();
+    List<WebElement> toReturn = new ArrayList<>();
 
     for (WebElement option : getOptions()) {
       if (option.isSelected()) {

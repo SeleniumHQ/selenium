@@ -23,6 +23,8 @@ goog.provide('goog.events.KeyCodes');
 
 goog.require('goog.userAgent');
 
+goog.forwardDeclare('goog.events.BrowserEvent');
+
 
 /**
  * Key codes for common characters.
@@ -54,6 +56,7 @@ goog.events.KeyCodes = {
   UP: 38,          // also NUM_NORTH
   RIGHT: 39,       // also NUM_EAST
   DOWN: 40,        // also NUM_SOUTH
+  PLUS_SIGN: 43,   // NOT numpad plus
   PRINT_SCREEN: 44,
   INSERT: 45,      // also NUM_INSERT
   DELETE: 46,      // also NUM_DELETE
@@ -71,6 +74,7 @@ goog.events.KeyCodes = {
   FF_EQUALS: 61, // Firefox (Gecko) fires this for equals instead of 187
   FF_DASH: 173, // Firefox (Gecko) fires this for dash instead of 189
   QUESTION_MARK: 63, // needs localization
+  AT_SIGN: 64,
   A: 65,
   B: 66,
   C: 67,
@@ -152,6 +156,10 @@ goog.events.KeyCodes = {
   MAC_WK_CMD_RIGHT: 93, // WebKit Right Command key fired, different from META
   WIN_IME: 229,
 
+  // "Reserved for future use". Some programs (e.g. the SlingPlayer 2.4 ActiveX
+  // control) fire this as a hacky way to disable screensavers.
+  VK_NONAME: 252,
+
   // We've seen users whose machines fire this keycode at regular one
   // second intervals. The common thread among these users is that
   // they're all using Dell Inspiron laptops, so we suspect that this
@@ -201,6 +209,7 @@ goog.events.KeyCodes.isTextModifyingKeyEvent = function(e) {
     case goog.events.KeyCodes.SCROLL_LOCK:
     case goog.events.KeyCodes.SHIFT:
     case goog.events.KeyCodes.UP:
+    case goog.events.KeyCodes.VK_NONAME:
     case goog.events.KeyCodes.WIN_KEY:
     case goog.events.KeyCodes.WIN_KEY_RIGHT:
       return false;
@@ -242,7 +251,7 @@ goog.events.KeyCodes.isTextModifyingKeyEvent = function(e) {
  */
 goog.events.KeyCodes.firesKeyPressEvent = function(keyCode, opt_heldKeyCode,
     opt_shiftKey, opt_ctrlKey, opt_altKey) {
-  if (!goog.userAgent.IE &&
+  if (!goog.userAgent.IE && !goog.userAgent.EDGE &&
       !(goog.userAgent.WEBKIT && goog.userAgent.isVersionOrHigher('525'))) {
     return true;
   }
@@ -271,7 +280,8 @@ goog.events.KeyCodes.firesKeyPressEvent = function(keyCode, opt_heldKeyCode,
   }
 
   // Some keys with Ctrl/Shift do not issue keypress in WEBKIT.
-  if (goog.userAgent.WEBKIT && opt_ctrlKey && opt_shiftKey) {
+  if ((goog.userAgent.WEBKIT || goog.userAgent.EDGE) &&
+      opt_ctrlKey && opt_shiftKey) {
     switch (keyCode) {
       case goog.events.KeyCodes.BACKSLASH:
       case goog.events.KeyCodes.OPEN_SQUARE_BRACKET:
@@ -299,7 +309,7 @@ goog.events.KeyCodes.firesKeyPressEvent = function(keyCode, opt_heldKeyCode,
     case goog.events.KeyCodes.ENTER:
       return true;
     case goog.events.KeyCodes.ESC:
-      return !goog.userAgent.WEBKIT;
+      return !(goog.userAgent.WEBKIT || goog.userAgent.EDGE);
   }
 
   return goog.events.KeyCodes.isCharacterKey(keyCode);
@@ -330,13 +340,15 @@ goog.events.KeyCodes.isCharacterKey = function(keyCode) {
   }
 
   // Safari sends zero key code for non-latin characters.
-  if (goog.userAgent.WEBKIT && keyCode == 0) {
+  if ((goog.userAgent.WEBKIT || goog.userAgent.EDGE) && keyCode == 0) {
     return true;
   }
 
   switch (keyCode) {
     case goog.events.KeyCodes.SPACE:
+    case goog.events.KeyCodes.PLUS_SIGN:
     case goog.events.KeyCodes.QUESTION_MARK:
+    case goog.events.KeyCodes.AT_SIGN:
     case goog.events.KeyCodes.NUM_PLUS:
     case goog.events.KeyCodes.NUM_MINUS:
     case goog.events.KeyCodes.NUM_PERIOD:

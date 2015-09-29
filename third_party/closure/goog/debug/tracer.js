@@ -113,8 +113,7 @@ goog.debug.Trace_ = function() {
   /**
    * A pool for goog.debug.Trace_.Event_ objects so we don't keep creating and
    * garbage collecting these (which is very expensive in IE6).
-   * @type {goog.structs.SimplePool}
-   * @private
+   * @private {!goog.structs.SimplePool}
    */
   this.eventPool_ = new goog.structs.SimplePool(0, 4000);
   this.eventPool_.createObject = function() {
@@ -125,21 +124,22 @@ goog.debug.Trace_ = function() {
   /**
    * A pool for goog.debug.Trace_.Stat_ objects so we don't keep creating and
    * garbage collecting these (which is very expensive in IE6).
-   * @type {goog.structs.SimplePool}
-   * @private
+   * @private {!goog.structs.SimplePool}
    */
   this.statPool_ = new goog.structs.SimplePool(0, 50);
   this.statPool_.createObject = function() {
     return new goog.debug.Trace_.Stat_();
   };
 
-  var that = this;
+  var self = this;
+
+  /** @private {!goog.structs.SimplePool} */
   this.idPool_ = new goog.structs.SimplePool(0, 2000);
 
   // TODO(nicksantos): SimplePool is supposed to only return objects.
   // Reconcile this so that we don't have to cast to number below.
   this.idPool_.createObject = function() {
-    return String(that.nextId_++);
+    return String(self.nextId_++);
   };
   this.idPool_.disposeObject = function(obj) {};
 

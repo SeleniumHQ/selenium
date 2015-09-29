@@ -34,7 +34,7 @@ public class DefaultDriverFactory implements DriverFactory {
   private static final Logger LOG = Logger.getLogger(DefaultDriverFactory.class.getName());
 
   private Map<Capabilities, DriverProvider> capabilitiesToDriverProvider =
-      new ConcurrentHashMap<Capabilities, DriverProvider>();
+      new ConcurrentHashMap<>();
 
   public void registerDriverProvider(DriverProvider driverProvider) {
     if (driverProvider.canCreateDriverInstances()) {

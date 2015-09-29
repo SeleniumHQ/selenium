@@ -1,5 +1,3 @@
-#!/usr/bin/python
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -135,12 +133,40 @@ class RemoteConnection(object):
 
     Communicates with the server using the WebDriver wire protocol:
     https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol"""
-    def __init__(self, remote_server_addr, keep_alive=False):
+
+    _timeout = socket._GLOBAL_DEFAULT_TIMEOUT
+
+    @classmethod
+    def get_timeout(cls):
+        """
+        :Returns:
+        Timeout value in seconds for all http requests made to the Remote Connection
+        """
+        return None if cls._timeout == socket._GLOBAL_DEFAULT_TIMEOUT else cls._timeout
+
+    @classmethod
+    def set_timeout(cls, timeout):
+        """
+        Override the default timeout
+
+        :Args:
+        - timeout - timeout value for http requests in seconds
+        """
+        cls._timeout = timeout
+
+    @classmethod
+    def reset_timeout(cls):
+        """
+        Reset the http request timeout to socket._GLOBAL_DEFAULT_TIMEOUT
+        """
+        cls._timeout = socket._GLOBAL_DEFAULT_TIMEOUT
+
+    def __init__(self, remote_server_addr, keep_alive=False, resolve_ip=True):
         # Attempt to resolve the hostname and get an IP address.
         self.keep_alive = keep_alive
         parsed_url = parse.urlparse(remote_server_addr)
         addr = ""
-        if parsed_url.hostname:
+        if parsed_url.hostname and resolve_ip:
             try:
                 netloc = socket.gethostbyname(parsed_url.hostname)
                 addr = netloc
@@ -159,7 +185,9 @@ class RemoteConnection(object):
 
         self._url = remote_server_addr
         if keep_alive:
-            self._conn = httplib.HTTPConnection(str(addr), str(parsed_url.port))
+            self._conn = httplib.HTTPConnection(
+                str(addr), str(parsed_url.port), timeout=self._timeout)
+
         self._commands = {
             Command.STATUS: ('GET', '/status'),
             Command.NEW_SESSION: ('POST', '/session'),
@@ -178,6 +206,7 @@ class RemoteConnection(object):
             Command.GET_TITLE: ('GET', '/session/$sessionId/title'),
             Command.GET_PAGE_SOURCE: ('GET', '/session/$sessionId/source'),
             Command.SCREENSHOT: ('GET', '/session/$sessionId/screenshot'),
+            Command.ELEMENT_SCREENSHOT: ('GET', '/session/$sessionId/screenshot/$id'),
             Command.FIND_ELEMENT: ('POST', '/session/$sessionId/element'),
             Command.FIND_ELEMENTS: ('POST', '/session/$sessionId/elements'),
             Command.GET_ACTIVE_ELEMENT:
@@ -246,6 +275,8 @@ class RemoteConnection(object):
                 ('POST', '/session/$sessionId/alert_text'),
             Command.GET_ALERT_TEXT:
                 ('GET', '/session/$sessionId/alert_text'),
+            Command.SET_ALERT_CREDENTIALS:
+                ('POST', '/session/$sessionId/alert/credentials'),
             Command.CLICK:
                 ('POST', '/session/$sessionId/click'),
             Command.DOUBLE_CLICK:
@@ -258,14 +289,20 @@ class RemoteConnection(object):
                 ('POST', '/session/$sessionId/moveto'),
             Command.GET_WINDOW_SIZE:
                 ('GET', '/session/$sessionId/window/$windowHandle/size'),
+            Command.W3C_GET_WINDOW_SIZE:
+                ('GET', '/session/$sessionId/window/size'),
             Command.SET_WINDOW_SIZE:
                 ('POST', '/session/$sessionId/window/$windowHandle/size'),
+            Command.W3C_SET_WINDOW_SIZE:
+                ('POST', '/session/$sessionId/window/size'),
             Command.GET_WINDOW_POSITION:
                 ('GET', '/session/$sessionId/window/$windowHandle/position'),
             Command.SET_WINDOW_POSITION:
                 ('POST', '/session/$sessionId/window/$windowHandle/position'),
             Command.MAXIMIZE_WINDOW:
                 ('POST', '/session/$sessionId/window/$windowHandle/maximize'),
+            Command.W3C_MAXIMIZE_WINDOW:
+                ('POST', '/session/$sessionId/window/maximize'),
             Command.SET_SCREEN_ORIENTATION:
                 ('POST', '/session/$sessionId/orientation'),
             Command.GET_SCREEN_ORIENTATION:
@@ -379,15 +416,15 @@ class RemoteConnection(object):
                        "Content-type": "application/json;charset=\"UTF-8\"",
                        "Accept": "application/json"}
             if parsed_url.username:
-                auth = base64.standard_b64encode('%s:%s' %
-                       (parsed_url.username, parsed_url.password)).replace('\n', '')
+                auth = base64.standard_b64encode(('%s:%s' %
+                       (parsed_url.username, parsed_url.password)).encode('ascii')).decode('ascii').replace('\n', '')
                 headers["Authorization"] = "Basic %s" % auth
             if body and method != 'POST' and method != 'PUT':
                 body = None
             try:
                 self._conn.request(method, parsed_url.path, body, headers)
                 resp = self._conn.getresponse()
-            except httplib.HTTPException:
+            except (httplib.HTTPException, socket.error):
                 self._conn.close()
                 raise
 
@@ -423,7 +460,7 @@ class RemoteConnection(object):
             else:
                 opener = url_request.build_opener(url_request.HTTPRedirectHandler(),
                                                   HttpErrorHandler())
-            resp = opener.open(request)
+            resp = opener.open(request, timeout=self._timeout)
             statuscode = resp.code
             if not hasattr(resp, 'getheader'):
                 if hasattr(resp.headers, 'getheader'):
@@ -453,8 +490,6 @@ class RemoteConnection(object):
 
                 assert type(data) is dict, (
                     'Invalid server response body: %s' % body)
-                assert 'status' in data, (
-                    'Invalid server response; no status: %s' % body)
                 # Some of the drivers incorrectly return a response
                 # with no 'value' field when they should return null.
                 if 'value' not in data:

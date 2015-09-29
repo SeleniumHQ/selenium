@@ -1,5 +1,3 @@
-#!/usr/bin/python
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -22,6 +20,7 @@ from .firefox.firefox_profile import FirefoxProfile
 from .chrome.webdriver import WebDriver as Chrome
 from .chrome.options import Options as ChromeOptions
 from .ie.webdriver import WebDriver as Ie
+from .edge.webdriver import WebDriver as Edge
 from .opera.webdriver import WebDriver as Opera
 from .safari.webdriver import WebDriver as Safari
 from .blackberry.webdriver import WebDriver as BlackBerry
@@ -33,4 +32,4 @@ from .common.action_chains import ActionChains
 from .common.touch_actions import TouchActions
 from .common.proxy import Proxy
 
-__version__ = '2.46.0'
+__version__ = '2.47.3'

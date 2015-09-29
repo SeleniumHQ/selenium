@@ -30,6 +30,7 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
+goog.require('goog.dom.TagName');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.object');
@@ -545,7 +546,7 @@ goog.ui.Component.prototype.getRequiredElementByClass = function(className) {
  * this method is called.
  * @return {!goog.events.EventHandler<T>} Event handler for this component.
  * @protected
- * @this T
+ * @this {T}
  * @template T
  */
 goog.ui.Component.prototype.getHandler = function() {
@@ -632,7 +633,7 @@ goog.ui.Component.prototype.isInDocument = function() {
  * implementation is to set this.element_ = div.
  */
 goog.ui.Component.prototype.createDom = function() {
-  this.element_ = this.dom_.createElement('div');
+  this.element_ = this.dom_.createElement(goog.dom.TagName.DIV);
 };
 
 
@@ -1041,11 +1042,13 @@ goog.ui.Component.prototype.addChildAt = function(child, index, opt_render) {
   goog.array.insertAt(this.children_, child, index);
 
   if (child.inDocument_ && this.inDocument_ && child.getParent() == this) {
-    // Changing the position of an existing child, move the DOM node.
+    // Changing the position of an existing child, move the DOM node (if
+    // necessary).
     var contentElement = this.getContentElement();
-    contentElement.insertBefore(child.getElement(),
-        (contentElement.childNodes[index] || null));
-
+    var insertBeforeElement = contentElement.childNodes[index] || null;
+    if (insertBeforeElement != child.getElement()) {
+      contentElement.insertBefore(child.getElement(), insertBeforeElement);
+    }
   } else if (opt_render) {
     // If this (parent) component doesn't have a DOM yet, call createDom now
     // to make sure we render the child component's element into the correct
@@ -1100,7 +1103,7 @@ goog.ui.Component.prototype.isRightToLeft = function() {
     this.rightToLeft_ = goog.style.isRightToLeft(this.inDocument_ ?
         this.element_ : this.dom_.getDocument().body);
   }
-  return /** @type {boolean} */(this.rightToLeft_);
+  return this.rightToLeft_;
 };
 
 

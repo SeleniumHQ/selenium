@@ -29,7 +29,6 @@ public interface ConditionRunner {
   /**
    * This method will, every so often, evaluate the given {@code condition}'s
    * {@link Condition#isTrue(ConditionRunner.Context)} method, until:
-   * <p>
    * <ul>
    * <li>it becomes true, in which case it simply returns
    * <li>a certain amount of time is passed, in which case it fails by throwing an failure exception
@@ -41,12 +40,17 @@ public interface ConditionRunner {
    * <p>
    * How often if "every so often" and how long is the "certain amount of time" is left to the
    * specific implementations of this interface.
+   *
+   * @param condition condition
    */
   void waitFor(Condition condition);
 
   /**
    * As above but with an additional 'should' phrase narrative used in the event of the condition
    * failing to become true
+   *
+   * @param condition condition
+   * @param narrative narrative
    */
   void waitFor(String narrative, Condition condition);
 
@@ -57,14 +61,14 @@ public interface ConditionRunner {
   public interface Context {
 
     /**
-     * Returns the condition runner inside which this condition is being run.
+     * @return the condition runner inside which this condition is being run.
      * <p>
      * This allows for a condition to chain to other conditions.
      */
     ConditionRunner getConditionRunner();
 
     /**
-     * Returns the {@link Selenium} associated with this instance. This method will almost always be
+     * @return the {@link Selenium} associated with this instance. This method will almost always be
      * called by any {@link Condition#isTrue(ConditionRunner.Context)}.
      */
     Selenium getSelenium();
@@ -72,11 +76,13 @@ public interface ConditionRunner {
     /**
      * A {@link Condition#isTrue(ConditionRunner.Context)} can call this method to set extra
      * information to be displayed upon a failure.
+     *
+     * @param string extra info to be displayed upon failure
      */
     void info(String string);
 
     /**
-     * Returns the amount of time elapsed since the {@link #waitFor(Condition)} method for this
+     * @return the amount of time elapsed since the {@link #waitFor(Condition)} method for this
      * context was called.
      */
     long elapsed();

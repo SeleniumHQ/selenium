@@ -22,6 +22,7 @@
 goog.provide('goog.ui.AnimatedZippy');
 
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.fx.Animation');
 goog.require('goog.fx.Transition');
@@ -49,7 +50,8 @@ goog.ui.AnimatedZippy = function(header, content, opt_expanded, opt_domHelper) {
   var domHelper = opt_domHelper || goog.dom.getDomHelper();
 
   // Create wrapper element and move content into it.
-  var elWrapper = domHelper.createDom('div', {'style': 'overflow:hidden'});
+  var elWrapper = domHelper.createDom(goog.dom.TagName.DIV,
+                                      {'style': 'overflow:hidden'});
   var elContent = domHelper.getElement(content);
   elContent.parentNode.replaceChild(elWrapper, elContent);
   elWrapper.appendChild(elContent);

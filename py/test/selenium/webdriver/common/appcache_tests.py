@@ -1,5 +1,3 @@
-#!/usr/bin/python
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -25,6 +23,8 @@ class AppCacheTests(unittest.TestCase):
 
     @pytest.mark.ignore_firefox
     def testWeCanGetTheStatusOfTheAppCache(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not implement appcache")
         self._loadPage('html5Page')
         self.driver.implicitly_wait(2)
         app_cache = self.driver.application_cache

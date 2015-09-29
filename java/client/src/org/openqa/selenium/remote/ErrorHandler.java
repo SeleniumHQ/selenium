@@ -21,9 +21,11 @@ package org.openqa.selenium.remote;
 import static org.openqa.selenium.remote.ErrorCodes.SUCCESS;
 
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.base.Predicates;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Iterables;
+import com.google.common.primitives.Ints;
 
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriverException;
@@ -225,7 +227,7 @@ public class ErrorHandler {
 
     Throwable toReturn = null;
     String message = (String) rawErrorData.get(MESSAGE);
-    Class clazz = null;
+    Class<?> clazz = null;
 
     // First: allow Remote Driver to specify the Selenium Server internal exception
     if (rawErrorData.containsKey(CLASS)) {
@@ -293,12 +295,20 @@ public class ErrorHandler {
       if (frameInfo == null) {
         return null;
       }
-
-      Number lineNumber = (Number) frameInfo.get(LINE_NUMBER);
-      if (lineNumber == null) {
-        return null;
+      
+      Optional<Number> maybeLineNumberInteger = Optional.absent();
+      
+      final Object lineNumberObject = frameInfo.get(LINE_NUMBER);
+      if (lineNumberObject instanceof Number) {
+    	  maybeLineNumberInteger = Optional.of((Number) lineNumberObject);
+      } else if (lineNumberObject != null) {
+    	  // might be a Number as a String
+    	  maybeLineNumberInteger = Optional.fromNullable((Number) Ints.tryParse(lineNumberObject.toString()));
       }
-
+      
+      // default -1 for unknown, see StackTraceElement constructor javadoc
+      final int lineNumber = maybeLineNumberInteger.or(-1).intValue();
+      
       // Gracefully handle remote servers that don't (or can't) send back
       // complete stack trace info. At least some of this information should
       // be included...
@@ -310,7 +320,7 @@ public class ErrorHandler {
           ? toStringOrNull(frameInfo.get(FILE_NAME)) : UNKNOWN_FILE;
 
       return new StackTraceElement(className, methodName, fileName,
-          lineNumber.intValue());
+          lineNumber);
     }
 
     private static String toStringOrNull(Object o) {

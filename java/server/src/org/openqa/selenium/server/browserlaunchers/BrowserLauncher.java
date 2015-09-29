@@ -26,6 +26,7 @@ public interface BrowserLauncher {
   /**
    * Start the browser and navigate directly to the specified URL using the supplied browser
    * configurations
+   * @param url URL
    */
   void launchRemoteSession(String url);
 

@@ -56,7 +56,7 @@ public class SingleEntryAsyncQueueUnitTest {
   @Before
   public void setUp() throws Exception {
     configureLogging();
-    queue = new SingleEntryAsyncQueue<String>(timeout);
+    queue = new SingleEntryAsyncQueue<>(timeout);
     logger.info("Start test: " + name.getMethodName());
   }
 

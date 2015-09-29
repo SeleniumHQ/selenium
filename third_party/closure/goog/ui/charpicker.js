@@ -25,6 +25,7 @@ goog.require('goog.a11y.aria.State');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.events');
 goog.require('goog.events.Event');
@@ -226,7 +227,7 @@ goog.ui.CharPicker.prototype.stick_ = null;
  * The element representing the number of rows visible in the grid.
  * This along with goog.ui.CharPicker.stick_ would help to create a scrollbar
  * of right size.
- * @type {Element}
+ * @type {HTMLElement}
  * @private
  */
 goog.ui.CharPicker.prototype.stickwrap_ = null;
@@ -327,7 +328,8 @@ goog.ui.CharPicker.prototype.getRecentChars = function() {
 goog.ui.CharPicker.prototype.createDom = function() {
   goog.ui.CharPicker.superClass_.createDom.call(this);
 
-  this.decorateInternal(this.getDomHelper().createElement('div'));
+  this.decorateInternal(this.getDomHelper().createElement(
+      goog.dom.TagName.DIV));
 };
 
 
@@ -373,7 +375,7 @@ goog.ui.CharPicker.prototype.decorateInternal = function(element) {
 
   var stickwrap = new goog.ui.Component(this.getDomHelper());
   gridcontainer.addChild(stickwrap, true);
-  this.stickwrap_ = stickwrap.getElement();
+  this.stickwrap_ = /** @type {!HTMLElement} */ (stickwrap.getElement());
 
   var stick = new goog.ui.Component(this.getDomHelper());
   stickwrap.addChild(stick, true);
@@ -383,7 +385,8 @@ goog.ui.CharPicker.prototype.decorateInternal = function(element) {
   gridcontainer.addChild(this.grid_, true);
 
   this.notice_ = new goog.ui.Component(this.getDomHelper());
-  this.notice_.setElementInternal(this.getDomHelper().createDom('div'));
+  this.notice_.setElementInternal(this.getDomHelper().createDom(
+      goog.dom.TagName.DIV));
   this.addChild(this.notice_, true);
 
   // The component used for displaying 'Recent Selections' label.
@@ -392,8 +395,8 @@ goog.ui.CharPicker.prototype.decorateInternal = function(element) {
    */
   var MSG_CHAR_PICKER_RECENT_SELECTIONS = goog.getMsg('Recent Selections:');
   var recenttext = new goog.ui.Component(this.getDomHelper());
-  recenttext.setElementInternal(this.getDomHelper().createDom('span', null,
-      MSG_CHAR_PICKER_RECENT_SELECTIONS));
+  recenttext.setElementInternal(this.getDomHelper().createDom(
+      goog.dom.TagName.SPAN, null, MSG_CHAR_PICKER_RECENT_SELECTIONS));
   this.addChild(recenttext, true);
 
   this.recentgrid_ = new goog.ui.Component(this.getDomHelper());
@@ -401,7 +404,8 @@ goog.ui.CharPicker.prototype.decorateInternal = function(element) {
 
   // The component used for displaying 'U+'.
   var uplus = new goog.ui.Component(this.getDomHelper());
-  uplus.setElementInternal(this.getDomHelper().createDom('span', null, 'U+'));
+  uplus.setElementInternal(this.getDomHelper().createDom(
+      goog.dom.TagName.SPAN, null, 'U+'));
   this.addChild(uplus, true);
 
   /**
@@ -417,16 +421,16 @@ goog.ui.CharPicker.prototype.decorateInternal = function(element) {
   this.addChild(this.okbutton_, true);
   this.okbutton_.setEnabled(false);
 
-  this.zoomEl_ = this.getDomHelper().createDom('div',
+  this.zoomEl_ = this.getDomHelper().createDom(goog.dom.TagName.DIV,
       {id: 'zoom', className: goog.getCssName('goog-char-picker-char-zoom')});
 
-  this.charNameEl_ = this.getDomHelper().createDom('div',
+  this.charNameEl_ = this.getDomHelper().createDom(goog.dom.TagName.DIV,
       {id: 'charName', className: goog.getCssName('goog-char-picker-name')});
 
-  this.unicodeEl_ = this.getDomHelper().createDom('div',
+  this.unicodeEl_ = this.getDomHelper().createDom(goog.dom.TagName.DIV,
       {id: 'unicode', className: goog.getCssName('goog-char-picker-unicode')});
 
-  var card = this.getDomHelper().createDom('div',
+  var card = this.getDomHelper().createDom(goog.dom.TagName.DIV,
       {'id': 'preview'},
       this.zoomEl_, this.charNameEl_, this.unicodeEl_);
   goog.style.setElementShown(card, false);
@@ -740,7 +744,6 @@ goog.ui.CharPicker.prototype.setSelectedCategory_ = function(category,
   var subcategories = this.data_.subcategories[category];
   var charList = this.data_.charList[category];
   for (var i = 0; i < subcategories.length; i++) {
-    var subtitle = charList[i].length == 0;
     var item = this.createMenuItem_(i, subcategories[i]);
     this.submenu_.addChild(item, true);
   }

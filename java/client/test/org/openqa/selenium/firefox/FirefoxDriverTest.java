@@ -27,17 +27,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 
 import com.google.common.base.Throwables;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
@@ -47,7 +44,6 @@ import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.ParallelTestRunner;
 import org.openqa.selenium.ParallelTestRunner.Worker;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
@@ -59,8 +55,6 @@ import org.openqa.selenium.testing.DevMode;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.SeleniumTestRunner;
-import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 import org.openqa.selenium.testing.drivers.SynthesizedFirefoxDriver;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
@@ -105,10 +99,6 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
   @Test
   public void shouldGetMeaningfulExceptionOnBrowserDeath() {
-    assumeFalse("This test does not work on firefox 3.0, 3.5 on linux",
-                TestUtilities.getEffectivePlatform().is(Platform.LINUX) &&
-                (TestUtilities.isFirefox30(driver) || TestUtilities.isFirefox35(driver)));
-
     ConnectionCapturingDriver driver2 = new ConnectionCapturingDriver();
     driver2.get(pages.formPage);
 
@@ -205,7 +195,6 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(FIREFOX)
   public void shouldBeAbleToStartFromProfileWithLogFileSetToStdout() throws IOException {
     FirefoxProfile profile = new FirefoxProfile();
 
@@ -221,7 +210,6 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(FIREFOX)
   public void shouldBeAbleToStartANamedProfile() {
     FirefoxProfile profile = new ProfilesIni().getProfile("default");
 
@@ -496,9 +484,6 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
   @Test
   public void multipleFirefoxDriversRunningConcurrently() throws Exception {
-    assumeFalse("Unfortunately native events on linux mean mucking around with the window's focus",
-                TestUtilities.getEffectivePlatform().is(Platform.LINUX) && TestUtilities.isNativeEventsEnabled(driver));
-
     int numThreads;
     if (!SauceDriver.shouldUseSauce()) {
       numThreads = 6;
@@ -507,7 +492,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     }
     final int numRoundsPerThread = 5;
     WebDriver[] drivers = new WebDriver[numThreads];
-    List<Worker> workers = new ArrayList<Worker>(numThreads);
+    List<Worker> workers = new ArrayList<>(numThreads);
     try {
       for (int i = 0; i < numThreads; ++i) {
         final WebDriver driver = (i == 0 ? super.driver : newFirefoxDriver());

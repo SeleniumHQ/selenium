@@ -42,6 +42,8 @@ public abstract class LocalLogs implements Logs {
 
   /**
    * Logger which doesn't do anything.
+   *
+   * @return the null logger
    */
   public static LocalLogs getNullLogger() {
     return NULL_LOGGER;

@@ -43,6 +43,7 @@ goog.require('goog.log');
  * @param {!goog.crypt.Hash} hashFn The hash function to use.
  * @param {number=} opt_blockSize Processing block size.
  * @constructor
+ * @struct
  * @extends {goog.events.EventTarget}
  * @final
  */

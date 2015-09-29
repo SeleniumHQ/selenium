@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 
 /**
  * Default (naive) implementation of the capability matcher.
- * <p/>
+ * <p>
  * The default capability matcher will look at all the key from the request do not start with _ and
  * will try to find a node that has at least those capabilities.
  */
@@ -37,7 +37,7 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
   private static final String GRID_TOKEN = "_";
 
   // temporary fix to only check to most meaningful desiredCapability params
-  private final List<String> toConsider = new ArrayList<String>();
+  private final List<String> toConsider = new ArrayList<>();
 
   public DefaultCapabilityMatcher() {
     toConsider.add(CapabilityType.PLATFORM);

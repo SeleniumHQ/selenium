@@ -103,7 +103,7 @@ test.suite(function(env) {
     driver.manage().window().getSize().then(function(size) {
       driver.manage().window().setSize(size.width + dx, size.height + dy);
       driver.wait(forSizeToBe(size.width + dx, size.height + dy), 1000);
-    })
+    });
   }
 
   function forSizeToBe(w, h) {

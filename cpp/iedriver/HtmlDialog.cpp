@@ -54,9 +54,14 @@ void __stdcall HtmlDialog::OnLoad(IHTMLEventObj *pEvtObj) {
 }
 
 void HtmlDialog::GetDocument(IHTMLDocument2** doc) {
+  this->GetDocument(false, doc);
+}
+
+void HtmlDialog::GetDocument(const bool force_top_level_document,
+                             IHTMLDocument2** doc) {
   LOG(TRACE) << "Entering HtmlDialog::GetDocument";
   HRESULT hr = S_OK;
-  if (this->focused_frame_window() == NULL) {
+  if (this->focused_frame_window() == NULL || force_top_level_document) {
     hr = this->window_->get_document(doc);
   } else {
     hr = this->focused_frame_window()->get_document(doc);

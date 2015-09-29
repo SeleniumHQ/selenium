@@ -310,7 +310,7 @@ goog.testing.Mock.prototype.$initializeFunctions_ = function(objectToMock) {
 
 
 /**
- * Registers a verfifier function to use when verifying method argument lists.
+ * Registers a verifier function to use when verifying method argument lists.
  * @param {string} methodName The name of the method for which the verifierFn
  *     should be used.
  * @param {Function} fn Argument list verifier function.  Should take 2 argument

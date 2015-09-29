@@ -37,6 +37,7 @@ java_library(name = "junit_4",
     "JUnit4TestBase.java",
     "ParallelSuite.java",
     "SeleniumTestRunner.java",
+    "NotYetImplemented.java",
   ],
   deps = [
     "//java/client/test/org/openqa/selenium:base",

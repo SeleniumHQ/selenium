@@ -24,17 +24,25 @@
 goog.provide('goog.ui.Bubble');
 
 goog.require('goog.Timer');
+goog.require('goog.dom.safe');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('goog.html.SafeHtml');
+goog.require('goog.html.legacyconversions');
 goog.require('goog.math.Box');
 goog.require('goog.positioning');
 goog.require('goog.positioning.AbsolutePosition');
 goog.require('goog.positioning.AnchoredPosition');
 goog.require('goog.positioning.Corner');
 goog.require('goog.positioning.CornerBit');
+goog.require('goog.string.Const');
 goog.require('goog.style');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.Popup');
+
+
+goog.scope(function() {
+var SafeHtml = goog.html.SafeHtml;
 
 
 
@@ -42,8 +50,10 @@ goog.require('goog.ui.Popup');
  * The Bubble provides a general purpose bubble implementation that can be
  * anchored to a particular element and displayed for a period of time.
  *
- * @param {string|Element} message HTML string or an element to display inside
- *     the bubble.
+ * @param {string|!goog.html.SafeHtml|Element} message HTML or an element
+ *     to display inside the bubble. If possible pass a SafeHtml; string
+ *     is supported for backwards-compatibility only and uses
+ *     goog.html.legacyconversions.
  * @param {Object=} opt_config The configuration
  *     for the bubble. If not specified, the default configuration will be
  *     used. {@see goog.ui.Bubble.defaultConfig}.
@@ -54,10 +64,14 @@ goog.require('goog.ui.Popup');
 goog.ui.Bubble = function(message, opt_config, opt_domHelper) {
   goog.ui.Component.call(this, opt_domHelper);
 
+  if (goog.isString(message)) {
+    message = goog.html.legacyconversions.safeHtmlFromString(message);
+  }
+
   /**
    * The HTML string or element to display inside the bubble.
    *
-   * @type {string|Element}
+   * @type {!goog.html.SafeHtml|Element}
    * @private
    */
   this.message_ = message;
@@ -123,13 +137,6 @@ goog.ui.Bubble.prototype.timerId_ = 0;
  */
 goog.ui.Bubble.prototype.listener_ = null;
 
-
-/**
- * Key returned by the listen function for the close button.
- * @type {Element}
- * @private
- */
-goog.ui.Bubble.prototype.anchor_ = null;
 
 
 /** @override */
@@ -251,9 +258,10 @@ goog.ui.Bubble.prototype.configureElement_ = function() {
 
   var element = this.getElement();
   var corner = this.popup_.getPinnedCorner();
-  element.innerHTML = this.computeHtmlForCorner_(corner);
+  goog.dom.safe.setInnerHtml(/** @type {!Element} */ (element),
+      this.computeHtmlForCorner_(corner));
 
-  if (typeof this.message_ == 'object') {
+  if (!(this.message_ instanceof SafeHtml)) {
     var messageDiv = this.getDomHelper().getElement(this.messageId_);
     this.getDomHelper().appendChild(messageDiv, this.message_);
   }
@@ -285,7 +293,7 @@ goog.ui.Bubble.prototype.unconfigureElement_ = function() {
   var element = this.getElement();
   if (element) {
     this.getDomHelper().removeChildren(element);
-    element.innerHTML = '';
+    goog.dom.safe.setInnerHtml(element, goog.html.SafeHtml.EMPTY);
   }
 };
 
@@ -324,11 +332,11 @@ goog.ui.Bubble.prototype.hideBubble_ = function() {
  * given the position of the anchor element and the size of the viewport.
  *
  * @param {Element} anchorElement The element to which the bubble is attached.
- * @return {!goog.ui.Popup.AnchoredPosition} The AnchoredPosition to give to
- *     {@link #setPosition}.
+ * @return {!goog.positioning.AnchoredPosition} The AnchoredPosition
+ *     to give to {@link #setPosition}.
  */
 goog.ui.Bubble.prototype.getComputedAnchoredPosition = function(anchorElement) {
-  return new goog.ui.Popup.AnchoredPosition(
+  return new goog.positioning.AnchoredPosition(
       anchorElement, this.computePinnedCorner_(anchorElement));
 };
 
@@ -387,7 +395,8 @@ goog.ui.Bubble.prototype.createMarginForCorner_ = function(corner) {
  * Computes the HTML string for a given bubble orientation.
  *
  * @param {goog.positioning.Corner} corner The corner.
- * @return {string} The HTML string to place inside the bubble's popup.
+ * @return {!goog.html.SafeHtml} The HTML string to place inside the
+ *     bubble's popup.
  * @private
  */
 goog.ui.Bubble.prototype.computeHtmlForCorner_ = function(corner) {
@@ -414,26 +423,33 @@ goog.ui.Bubble.prototype.computeHtmlForCorner_ = function(corner) {
       throw Error('This corner type is not supported by bubble!');
   }
   var message = null;
-  if (typeof this.message_ == 'object') {
-    message = '<div id="' + this.messageId_ + '">';
-  } else {
+  if (this.message_ instanceof SafeHtml) {
     message = this.message_;
+  } else {
+    message = SafeHtml.create('div', {'id': this.messageId_});
   }
-  var html =
-      '<table border=0 cellspacing=0 cellpadding=0 style="z-index:1"' +
-      ' width=' + this.config_.bubbleWidth + '>' +
-      '<tr><td colspan=4 class="' + bubbleTopClass + '">' +
-      '<tr>' +
-      '<td class="' + this.config_.cssBubbleLeft + '">' +
-      '<td class="' + this.config_.cssBubbleFont + '"' +
-      ' style="padding:0 4px;background:white">' + message +
-      '<td id="' + this.closeButtonId_ + '"' +
-      ' class="' + this.config_.cssCloseButton + '"/>' +
-      '<td class="' + this.config_.cssBubbleRight + '">' +
-      '<tr>' +
-      '<td colspan=4 class="' + bubbleBottomClass + '">' +
-      '</table>';
-  return html;
+
+  var tableRows = goog.html.SafeHtml.concat(
+      SafeHtml.create('tr', {},
+          SafeHtml.create('td', {'colspan': 4, 'class': bubbleTopClass})),
+      SafeHtml.create('tr', {}, SafeHtml.concat(
+          SafeHtml.create('td', {'class': this.config_.cssBubbleLeft }),
+          SafeHtml.create('td',
+              {'class': this.config_.cssBubbleFont, 'style':
+                goog.string.Const.from('padding:0 4px;background:white')},
+              message),
+          SafeHtml.create('td',
+              {'id': this.closeButtonId_,
+                'class': this.config_.cssCloseButton }),
+          SafeHtml.create('td', {'class': this.config_.cssBubbleRight }))),
+      SafeHtml.create('tr', {},
+          SafeHtml.create('td', {'colspan': 4, 'class': bubbleBottomClass})));
+
+  return SafeHtml.create('table',
+      {'border': 0, 'cellspacing': 0, 'cellpadding': 0,
+        'width': this.config_.bubbleWidth,
+        'style': goog.string.Const.from('z-index:1')},
+      tableRows);
 };
 
 
@@ -471,3 +487,4 @@ goog.ui.Bubble.corners_ = [
   goog.positioning.Corner.TOP_RIGHT,
   goog.positioning.Corner.TOP_LEFT
 ];
+});  // goog.scope

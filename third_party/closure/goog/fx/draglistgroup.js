@@ -55,21 +55,111 @@ goog.require('goog.style');
  *
  * @extends {goog.events.EventTarget}
  * @constructor
+ * @struct
  */
 goog.fx.DragListGroup = function() {
-  goog.events.EventTarget.call(this);
+  goog.fx.DragListGroup.base(this, 'constructor');
+
+  /**
+   * The user-supplied CSS classes to add to a drag item on hover (not during a
+   * drag action).
+   * @private {Array|undefined}
+   */
+  this.dragItemHoverClasses_;
+
+  /**
+   * The user-supplied CSS classes to add to a drag item handle on hover (not
+   * during a drag action).
+   * @private {Array|undefined}
+   */
+  this.dragItemHandleHoverClasses_;
+
+  /**
+   * The user-supplied CSS classes to add to the current drag item (during a
+   * drag action).
+   * @private {Array|undefined}
+   */
+  this.currDragItemClasses_;
+
+  /**
+   * The user-supplied CSS classes to add to the clone of the current drag item
+   * that's actually being dragged around (during a drag action).
+   * @private {Array<string>|undefined}
+   */
+  this.draggerElClasses_;
+
+  /**
+   * The current drag item being moved.
+   * Note: This is only defined while a drag action is happening.
+   * @private {Element}
+   */
+  this.currDragItem_;
+
+  /**
+   * The drag list that {@code this.currDragItem_} is currently hovering over,
+   * or null if it is not hovering over a list.
+   * @private {Element}
+   */
+  this.currHoverList_;
+
+  /**
+   * The original drag list that the current drag item came from. We need to
+   * remember this in case the user drops the item outside of any lists, in
+   * which case we return the item to its original location.
+   * Note: This is only defined while a drag action is happening.
+   * @private {Element}
+   */
+  this.origList_;
+
+  /**
+   * The original next item in the original list that the current drag item came
+   * from. We need to remember this in case the user drops the item outside of
+   * any lists, in which case we return the item to its original location.
+   * Note: This is only defined while a drag action is happening.
+   * @private {Element}
+   */
+  this.origNextItem_;
+
+  /**
+   * The current item in the list we are hovering over. We need to remember
+   * this in case we do not update the position of the current drag item while
+   * dragging (see {@code updateWhileDragging_}). In this case the current drag
+   * item will be inserted into the list before this element when the drag ends.
+   * @private {Element}
+   */
+  this.currHoverItem_;
+
+  /**
+   * The clone of the current drag item that's actually being dragged around.
+   * Note: This is only defined while a drag action is happening.
+   * @private {HTMLElement}
+   */
+  this.draggerEl_;
+
+  /**
+   * The dragger object.
+   * Note: This is only defined while a drag action is happening.
+   * @private {goog.fx.Dragger}
+   */
+  this.dragger_;
+
+  /**
+   * The amount of distance, in pixels, after which a mousedown or touchstart is
+   * considered a drag.
+   * @private {number}
+   */
+  this.hysteresisDistance_ = 0;
+
 
   /**
    * The drag lists.
-   * @type {Array<Element>}
-   * @private
+   * @private {Array<Element>}
    */
   this.dragLists_ = [];
 
   /**
    * All the drag items. Set by init().
-   * @type {Array<Element>}
-   * @private
+   * @private {Array<Element>}
    */
   this.dragItems_ = [];
 
@@ -77,22 +167,19 @@ goog.fx.DragListGroup = function() {
    * Which drag item corresponds to a given handle.  Set by init().
    * Specifically, this maps from the unique ID (as given by goog.getUid)
    * of the handle to the drag item.
-   * @type {Object}
-   * @private
+   * @private {Object}
    */
   this.dragItemForHandle_ = {};
 
   /**
    * The event handler for this instance.
-   * @type {goog.events.EventHandler<!goog.fx.DragListGroup>}
-   * @private
+   * @private {goog.events.EventHandler<!goog.fx.DragListGroup>}
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
 
   /**
    * Whether the setup has been done to make all items in all lists draggable.
-   * @type {boolean}
-   * @private
+   * @private {boolean}
    */
   this.isInitialized_ = false;
 
@@ -100,8 +187,7 @@ goog.fx.DragListGroup = function() {
    * Whether the currDragItem is always displayed. By default the list
    * collapses, the currDragItem's display is set to none, when we do not
    * hover over a draglist.
-   * @type {boolean}
-   * @private
+   * @private {boolean}
    */
   this.isCurrDragItemAlwaysDisplayed_ = false;
 
@@ -109,8 +195,7 @@ goog.fx.DragListGroup = function() {
    * Whether to update the position of the currDragItem as we drag, i.e.,
    * insert the currDragItem each time to the position where it would land if
    * we were to end the drag at that point. Defaults to true.
-   * @type {boolean}
-   * @private
+   * @private {boolean}
    */
   this.updateWhileDragging_ = true;
 };
@@ -142,126 +227,6 @@ goog.fx.DragListGroup.EventType = {
   BEFOREDRAGEND: 'beforedragend',
   DRAGEND: 'dragend'
 };
-
-
-// The next 4 are user-supplied CSS classes.
-
-
-/**
- * The user-supplied CSS classes to add to a drag item on hover (not during a
- * drag action).
- * @type {Array|undefined}
- * @private
- */
-goog.fx.DragListGroup.prototype.dragItemHoverClasses_;
-
-
-/**
- * The user-supplied CSS classes to add to a drag item handle on hover (not
- * during a drag action).
- * @type {Array|undefined}
- * @private
- */
-goog.fx.DragListGroup.prototype.dragItemHandleHoverClasses_;
-
-
-/**
- * The user-supplied CSS classes to add to the current drag item (during a drag
- * action).
- * @type {Array|undefined}
- * @private
- */
-goog.fx.DragListGroup.prototype.currDragItemClasses_;
-
-
-/**
- * The user-supplied CSS classes to add to the clone of the current drag item
- * that's actually being dragged around (during a drag action).
- * @type {Array<string>|undefined}
- * @private
- */
-goog.fx.DragListGroup.prototype.draggerElClasses_;
-
-
-// The next 5 are info applicable during a drag action.
-
-
-/**
- * The current drag item being moved.
- * Note: This is only defined while a drag action is happening.
- * @type {Element}
- * @private
- */
-goog.fx.DragListGroup.prototype.currDragItem_;
-
-
-/**
- * The drag list that {@code this.currDragItem_} is currently hovering over, or
- * null if it is not hovering over a list.
- * @type {Element}
- * @private
- */
-goog.fx.DragListGroup.prototype.currHoverList_;
-
-
-/**
- * The original drag list that the current drag item came from. We need to
- * remember this in case the user drops the item outside of any lists, in which
- * case we return the item to its original location.
- * Note: This is only defined while a drag action is happening.
- * @type {Element}
- * @private
- */
-goog.fx.DragListGroup.prototype.origList_;
-
-
-/**
- * The original next item in the original list that the current drag item came
- * from. We need to remember this in case the user drops the item outside of
- * any lists, in which case we return the item to its original location.
- * Note: This is only defined while a drag action is happening.
- * @type {Element}
- * @private
- */
-goog.fx.DragListGroup.prototype.origNextItem_;
-
-
-/**
- * The current item in the list we are hovering over. We need to remember
- * this in case we do not update the position of the current drag item while
- * dragging (see {@code updateWhileDragging_}). In this case the current drag
- * item will be inserted into the list before this element when the drag ends.
- * @type {Element}
- * @private
- */
-goog.fx.DragListGroup.prototype.currHoverItem_;
-
-
-/**
- * The clone of the current drag item that's actually being dragged around.
- * Note: This is only defined while a drag action is happening.
- * @type {Element}
- * @private
- */
-goog.fx.DragListGroup.prototype.draggerEl_;
-
-
-/**
- * The dragger object.
- * Note: This is only defined while a drag action is happening.
- * @type {goog.fx.Dragger}
- * @private
- */
-goog.fx.DragListGroup.prototype.dragger_;
-
-
-/**
- * The amount of distance, in pixels, after which a mousedown or touchstart is
- * considered a drag.
- * @type {number}
- * @private
- */
-goog.fx.DragListGroup.prototype.hysteresisDistance_ = 0;
 
 
 /**
@@ -536,7 +501,8 @@ goog.fx.DragListGroup.prototype.handlePotentialDragStart_ = function(e) {
   var uid = goog.getUid(/** @type {Node} */ (e.currentTarget));
   this.currDragItem_ = /** @type {Element} */ (this.dragItemForHandle_[uid]);
 
-  this.draggerEl_ = this.createDragElementInternal(this.currDragItem_);
+  this.draggerEl_ = /** @type {!HTMLElement} */ (
+      this.createDragElementInternal(this.currDragItem_));
   if (this.draggerElClasses_) {
     // Add CSS class for the clone, if any.
     goog.dom.classlist.addAll(
@@ -844,7 +810,7 @@ goog.fx.DragListGroup.prototype.cleanupDragDom_ = function() {
         goog.asserts.assert(this.currDragItem_),
         this.currDragItemClasses_ || []);
   } else if (this.currDragItem_) {
-    this.currDragItem_.style.visibility = 'visible';
+    this.currDragItem_.style.visibility = '';
   }
 
   // Remove hover classes (if any) from all drag lists.
@@ -1249,6 +1215,7 @@ goog.fx.DragListGroup.prototype.insertCurrDragItem_ = function(
  *     location of currDragItem.) May be null if not applicable or if
  *     currDragItem would be added to the end of hoverList.
  * @constructor
+ * @struct
  * @extends {goog.events.Event}
  */
 goog.fx.DragListGroupEvent = function(

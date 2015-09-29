@@ -63,12 +63,12 @@ public class SessionListenerTest {
   }
 
   static RegistrationRequest req = null;
-  static Map<String, Object> app1 = new HashMap<String, Object>();
+  static Map<String, Object> app1 = new HashMap<>();
 
   @BeforeClass
   public static void prepare() {
     app1.put(APP, "app1");
-    Map<String, Object> config = new HashMap<String, Object>();
+    Map<String, Object> config = new HashMap<>();
     config.put(ID, "abc");
     req = new RegistrationRequest();
     req.addDesiredCapability(app1);
@@ -248,15 +248,15 @@ public class SessionListenerTest {
 
   /**
    * using a proxy that times out instantly and spends a long time in the after method. check
-   * aftermethod cannot be excecuted twice for a session.
+   * aftermethod cannot be executed twice for a session.
    */
   @Test
   public void doubleRelease() throws InterruptedException {
     RegistrationRequest req = new RegistrationRequest();
-    Map<String, Object> cap = new HashMap<String, Object>();
+    Map<String, Object> cap = new HashMap<>();
     cap.put(APP, "app1");
 
-    Map<String, Object> config = new HashMap<String, Object>();
+    Map<String, Object> config = new HashMap<>();
     config.put(TIME_OUT, 1);
     config.put(CLEAN_UP_CYCLE, 1);
     config.put(MAX_SESSION, 2);

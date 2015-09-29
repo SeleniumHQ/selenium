@@ -34,6 +34,7 @@ import junit.framework.TestCase;
  * @deprecated Please consider updating to junit 4 or above
  */
 @Deprecated
+@SuppressWarnings("JavaDoc")
 public class SeleneseTestCase extends TestCase {
 
   private SeleneseTestBase stb = new SeleneseTestBase();
@@ -63,12 +64,14 @@ public class SeleneseTestCase extends TestCase {
     stb.clearVerificationErrors();
   }
 
-  /** Returns the body text of the current page */
+  /** @return  the body text of the current page */
   public String getText() {
     return stb.getText();
   }
 
-  /** Sleeps for the specified number of milliseconds */
+  /** Sleeps for the specified number of milliseconds
+   * @param millisecs number of
+   */
   public void pause(int millisecs) {
     stb.pause(millisecs);
   }
@@ -90,7 +93,7 @@ public class SeleneseTestCase extends TestCase {
    *
    * @see #setUp(String, String)
    * @param url the baseUrl to use for your Selenium tests
-   * @throws Exception
+   * @throws Exception yep, generic Exception
    *
    */
   public void setUp(String url) throws Exception {
@@ -104,7 +107,7 @@ public class SeleneseTestCase extends TestCase {
    *
    * @param url the baseUrl for your tests
    * @param browserString the browser to use, e.g. *firefox
-   * @throws Exception
+   * @throws Exception yep, generic Exception
    */
   public void setUp(String url, String browserString) throws Exception {
     stb.setUp(url, browserString);
@@ -118,7 +121,7 @@ public class SeleneseTestCase extends TestCase {
    * @param url the baseUrl for your tests
    * @param browserString the browser to use, e.g. *firefox
    * @param port the port of Selenium RC
-   * @throws Exception
+   * @throws Exception yep, generic Exception
    */
   public void setUp(String url, String browserString, int port) throws Exception {
     stb.setUp(url, browserString, port);
@@ -131,47 +134,72 @@ public class SeleneseTestCase extends TestCase {
     stb.tearDown();
   }
 
-  /** Like assertEquals, but fails at the end of the test (during tearDown) */
+  /** Like assertEquals, but fails at the end of the test (during tearDown)
+   * @param arg1 to compare to arg2
+   * @param arg2 to compare to arg1
+   */
   public void verifyEquals(boolean arg1, boolean arg2) {
     stb.verifyEquals(arg1, arg2);
   }
 
-  /** Like assertEquals, but fails at the end of the test (during tearDown) */
+  /** Like assertEquals, but fails at the end of the test (during tearDown)
+   * @param s1 to compare to s2
+   * @param s2 to compare to s1
+   */
   public void verifyEquals(Object s1, Object s2) {
     stb.verifyEquals(s1, s2);
   }
 
-  /** Like assertEquals, but fails at the end of the test (during tearDown) */
+  /** Like assertEquals, but fails at the end of the test (during tearDown)
+   * @param s1 to compare to s2
+   * @param s2 to compare to s1
+   */
   public void verifyEquals(String[] s1, String[] s2) {
     stb.verifyEquals(s1, s2);
   }
 
-  /** Like assertFalse, but fails at the end of the test (during tearDown) */
+  /** Like assertFalse, but fails at the end of the test (during tearDown)
+   * @param b boolean to check is false
+   */
   public void verifyFalse(boolean b) {
     stb.verifyFalse(b);
   }
 
-  /** Like assertNotEquals, but fails at the end of the test (during tearDown) */
+  /** Like assertNotEquals, but fails at the end of the test (during tearDown)
+   * @param s1 to compare to s2
+   * @param s2 to compare to s1
+   */
   public void verifyNotEquals(boolean s1, boolean s2) {
     stb.verifyNotEquals(s1, s2);
   }
 
-  /** Like assertNotEquals, but fails at the end of the test (during tearDown) */
+  /** Like assertNotEquals, but fails at the end of the test (during tearDown)
+   * @param s1 to compare to s2
+   * @param s2 to compare to s1
+   */
   public void verifyNotEquals(Object s1, Object s2) {
     stb.verifyNotEquals(s1, s2);
   }
 
-  /** Like assertTrue, but fails at the end of the test (during tearDown) */
+  /** Like assertTrue, but fails at the end of the test (during tearDown)
+   * @param b boolean to verify is true
+   */
   public void verifyTrue(boolean b) {
     stb.verifyTrue(b);
   }
 
-  /** Like JUnit's Assert.assertEquals, but knows how to compare string arrays */
+  /** Like JUnit's Assert.assertEquals, but knows how to compare string arrays
+   * @param s1 to compare to s2
+   * @param s2 to compare to s1
+   */
   public static void assertEquals(Object s1, Object s2) {
     SeleneseTestBase.assertEquals(s1, s2);
   }
 
-  /** Like JUnit's Assert.assertEquals, but handles "regexp:" strings like HTML Selenese */
+  /** Like JUnit's Assert.assertEquals, but handles "regexp:" strings like HTML Selenese
+   * @param s1 to compare to s2
+   * @param s2 to compare to s1
+   */
   public static void assertEquals(String s1, String s2) {
     SeleneseTestBase.assertEquals(s1, s2);
   }
@@ -179,22 +207,33 @@ public class SeleneseTestCase extends TestCase {
   /**
    * Like JUnit's Assert.assertEquals, but joins the string array with commas, and handles "regexp:"
    * strings like HTML Selenese
+   * @param s1 to compare to s2
+   * @param s2 to compare to s1
    */
   public static void assertEquals(String s1, String[] s2) {
     SeleneseTestBase.assertEquals(s1, s2);
   }
 
-  /** Asserts that two string arrays have identical string contents */
+  /** Asserts that two string arrays have identical string contents
+   * @param s1 to compare to s2
+   * @param s2 to compare to s1
+   */
   public static void assertEquals(String[] s1, String[] s2) {
     SeleneseTestBase.assertEquals(s1, s2);
   }
 
-  /** Asserts that two booleans are not the same */
+  /** Asserts that two booleans are not the same
+   * @param b1 to compare to b2
+   * @param b2 to compare to b1
+   */
   public static void assertNotEquals(boolean b1, boolean b2) {
     SeleneseTestBase.assertNotEquals(b1, b2);
   }
 
-  /** Asserts that two objects are not the same (compares using .equals()) */
+  /** Asserts that two objects are not the same (compares using .equals())
+   * @param obj1 to compare to obj2
+   * @param obj2 to compare to obj1
+   */
   public static void assertNotEquals(Object obj1, Object obj2) {
     SeleneseTestBase.assertNotEquals(obj1, obj2);
   }
@@ -203,6 +242,8 @@ public class SeleneseTestCase extends TestCase {
    * Compares two objects, but handles "regexp:" strings like HTML Selenese
    *
    * @see #seleniumEquals(String, String)
+   * @param expected expression of expected
+   * @param actual expression of actual
    * @return true if actual matches the expectedPattern, or false otherwise
    */
   public static boolean seleniumEquals(Object expected, Object actual) {
@@ -212,8 +253,8 @@ public class SeleneseTestCase extends TestCase {
   /**
    * Compares two strings, but handles "regexp:" strings like HTML Selenese
    *
-   * @param expected
-   * @param actual
+   * @param expected expression of expected
+   * @param actual expression of actual
    * @return true if actual matches the expectedPattern, or false otherwise
    */
   public static boolean seleniumEquals(String expected, String actual) {

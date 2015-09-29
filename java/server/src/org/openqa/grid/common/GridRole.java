@@ -46,7 +46,7 @@ public enum GridRole {
   /**
    * finds the requested role from the parameters.
    *
-   * @param args
+   * @param args command line arguments
    * @return the role in the grid from the -role param
    */
   public static GridRole find(String[] args) {

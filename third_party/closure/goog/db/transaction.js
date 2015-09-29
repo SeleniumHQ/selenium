@@ -174,13 +174,16 @@ goog.db.Transaction.prototype.wait = function() {
   var d = new goog.async.Deferred();
   goog.events.listenOnce(
       this, goog.db.Transaction.EventTypes.COMPLETE, goog.bind(d.callback, d));
-  goog.events.listenOnce(
+  var errorKey;
+  var abortKey = goog.events.listenOnce(
       this, goog.db.Transaction.EventTypes.ABORT, function() {
+        goog.events.unlistenByKey(errorKey);
         d.errback(new goog.db.Error(goog.db.Error.ErrorCode.ABORT_ERR,
             'waiting for transaction to complete'));
       });
-  goog.events.listenOnce(
+  errorKey = goog.events.listenOnce(
       this, goog.db.Transaction.EventTypes.ERROR, function(e) {
+        goog.events.unlistenByKey(abortKey);
         d.errback(e.target);
       });
 

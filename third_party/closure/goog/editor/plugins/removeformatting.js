@@ -337,7 +337,7 @@ goog.editor.plugins.RemoveFormatting.prototype.pasteHtml_ = function(html) {
  * @private
  */
 goog.editor.plugins.RemoveFormatting.prototype.getHtmlText_ = function(range) {
-  var div = this.getFieldDomHelper().createDom('div');
+  var div = this.getFieldDomHelper().createDom(goog.dom.TagName.DIV);
   var textRange = range.getBrowserRangeObject();
 
   if (goog.editor.BrowserFeature.HAS_W3C_RANGES) {
@@ -582,7 +582,7 @@ goog.editor.plugins.RemoveFormatting.prototype.convertSelectedHtmlText_ =
  */
 goog.editor.plugins.RemoveFormatting.prototype.removeFormattingWorker_ =
     function(html) {
-  var el = goog.dom.createElement('div');
+  var el = goog.dom.createElement(goog.dom.TagName.DIV);
   el.innerHTML = html;
 
   // Put everything into a string buffer to avoid lots of expensive string

@@ -18,7 +18,6 @@
 package org.openqa.selenium;
 
 import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import static org.junit.Assert.assertEquals;

@@ -15,10 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-goog.require('goog.json');
 goog.require('goog.testing.MockControl');
 goog.require('goog.testing.PropertyReplacer');
 goog.require('goog.testing.jsunit');
+goog.require('goog.userAgent');
 goog.require('webdriver.http.CorsClient');
 goog.require('webdriver.http.Request');
 goog.require('webdriver.test.testutil');
@@ -40,6 +40,10 @@ var REQUEST = new webdriver.http.Request('GET', '/foo');
 var control = new goog.testing.MockControl();
 var stubs = new goog.testing.PropertyReplacer();
 var mockClient, mockXhr;
+
+function shouldRunTests() {
+  return !goog.userAgent.IE || goog.userAgent.isVersionOrHigher(10);
+}
 
 function setUp() {
   mockClient = control.createStrictMock(webdriver.http.Client);
@@ -68,7 +72,7 @@ function setXdr(opt_value) {
 
 function expectRequest(mockXhr) {
   mockXhr.open('POST', URL + '/xdrpc', true);
-  return mockXhr.send(goog.json.serialize({
+  return mockXhr.send(JSON.stringify({
     'method': REQUEST.method,
     'path': REQUEST.path,
     'data': REQUEST.data

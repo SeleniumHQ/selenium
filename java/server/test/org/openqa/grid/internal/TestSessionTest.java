@@ -34,13 +34,13 @@ public class TestSessionTest {
 
     Registry registry = Registry.newInstance();
     try {
-      Map<String, Object> ff = new HashMap<String, Object>();
+      Map<String, Object> ff = new HashMap<>();
       ff.put(APP, "FF");
       RemoteProxy p1 =
           RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);
       registry.add(p1);
 
-      final HashMap<String, Object> capabilities = new HashMap<String, Object>();
+      final HashMap<String, Object> capabilities = new HashMap<>();
       TestSlot testSlot = new TestSlot(p1, SeleniumProtocol.Selenium, "", capabilities);
       final TestTimeSource timeSource = new TestTimeSource();
       TestSession testSession = new TestSession(testSlot, capabilities, timeSource);
@@ -59,13 +59,13 @@ public class TestSessionTest {
 
     Registry registry = Registry.newInstance();
     try {
-      Map<String, Object> ff = new HashMap<String, Object>();
+      Map<String, Object> ff = new HashMap<>();
       ff.put(APP, "FF");
       RemoteProxy p1 =
           RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);
       registry.add(p1);
 
-      final HashMap<String, Object> capabilities = new HashMap<String, Object>();
+      final HashMap<String, Object> capabilities = new HashMap<>();
       TestSlot testSlot = new TestSlot(p1, SeleniumProtocol.WebDriver, "", capabilities
       );
       final TestTimeSource timeSource = new TestTimeSource();

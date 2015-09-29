@@ -46,6 +46,8 @@ public abstract class Condition {
   /**
    * Creates an instance of Condition with the given {@code message} and {@code args}, which are in
    * the {@link String#format(String, Object...)} modeal.
+   * @param message message
+   * @param args args
    */
   public Condition(String message, Object[] args) {
     if (null == message) {

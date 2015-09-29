@@ -126,7 +126,7 @@ public class MacProxyManager {
     // sometimes Tiger on PPC looks different from Tiger on Intel, so we'll leave it in,
     // just in case
 
-    Set<String> candidates = new HashSet<String>();
+    Set<String> candidates = new HashSet<>();
     for (String file : files) {
       if (file.startsWith("networksetup-")) {
         candidates.add(file);
@@ -294,7 +294,7 @@ public class MacProxyManager {
 
   }
 
-  /** Execute scutil and quit, returning the output */
+  /* Execute scutil and quit, returning the output */
   protected String runScutil(String arg) {
     CommandLine command = new CommandLine(findScutilBin());
     command.setInput(arg + "\nquit\n");
@@ -306,7 +306,7 @@ public class MacProxyManager {
     return output;
   }
 
-  /** Execute networksetup, returning the output */
+  /* Execute networksetup, returning the output */
   protected String runNetworkSetup(String... args) {
     CommandLine command = new CommandLine(findNetworkSetupBin(), args);
     command.execute();

@@ -76,7 +76,7 @@ function testGetStacktraceFromFile() {
   }
 
   var stacktrace = webdriver.test.testutil.getStackTrace();
-  assertFrame(stacktrace[0], 'testutil.js', 51);
+  assertFrame(stacktrace[0], 'testutil.js', 50);
   assertFrame(stacktrace[1], 'stacktrace_test.js', 78);
 }
 

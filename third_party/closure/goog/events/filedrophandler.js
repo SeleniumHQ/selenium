@@ -196,7 +196,14 @@ goog.events.FileDropHandler.prototype.onElemDragOver_ = function(e) {
     e.stopPropagation();
     // Allow the drop on the drop zone.
     var dt = e.getBrowserEvent().dataTransfer;
-    dt.effectAllowed = 'all';
+
+    // IE bug #811625 (https://goo.gl/UWuxX0) will throw error SCRIPT65535
+    // when attempting to set property effectAllowed on IE10+.
+    // See more: https://github.com/google/closure-library/issues/485.
+    try {
+      dt.effectAllowed = 'all';
+    } catch (err) {
+    }
     dt.dropEffect = 'copy';
   }
 };

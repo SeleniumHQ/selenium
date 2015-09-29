@@ -100,6 +100,8 @@ public class CommandLine {
   }
 
   /**
+   * @param executable executable name to be found
+   * @return string of the path of the executable
    * @deprecated Use the commandline itself to execute your command.
    */
   @Deprecated

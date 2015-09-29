@@ -34,7 +34,6 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.firefox.internal.MarionetteConnection;
 import org.openqa.selenium.firefox.internal.NewProfileExtensionConnection;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.internal.Killable;
@@ -55,6 +54,7 @@ import org.openqa.selenium.remote.SessionNotFoundException;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -105,10 +105,6 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
 
   // For now, only enable native events on Windows
   public static final boolean DEFAULT_ENABLE_NATIVE_EVENTS = Platform.getCurrent().is(WINDOWS);
-
-  // For now, only enable native events on Windows
-  public static final boolean USE_MARIONETTE = Boolean.parseBoolean(
-      System.getProperty(SystemProperty.DRIVER_USE_MARIONETTE));
 
   // Accept untrusted SSL certificates.
   @Deprecated
@@ -299,21 +295,13 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     Lock lock = obtainLock(profile);
     try {
       FirefoxBinary bin = binary == null ? new FirefoxBinary() : binary;
-
-      if (USE_MARIONETTE) {
-        System.out.println(String.format(
-          "*** Use MarionetteDriver class instead of setting %s property ***",
-          SystemProperty.DRIVER_USE_MARIONETTE));
-        return new MarionetteConnection(lock, bin, profile, host);
-      } else {
-        return new NewProfileExtensionConnection(lock, bin, profile, host);
-      }
+      return new NewProfileExtensionConnection(lock, bin, profile, host);
     } catch (Exception e) {
       throw new WebDriverException(e);
     }
   }
 
-  protected static Lock obtainLock(FirefoxProfile profile) {
+  protected Lock obtainLock(FirefoxProfile profile) {
     return new SocketLock();
   }
 
@@ -355,7 +343,7 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     return target.convertFromBase64Png(base64);
   }
 
-  private static class LazyCommandExecutor implements CommandExecutor, NeedsLocalLogs {
+  public static class LazyCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     private ExtensionConnection connection;
     private final FirefoxBinary binary;
     private final FirefoxProfile profile;
@@ -397,6 +385,10 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
       if (connection != null) {
         connection.setLocalLogs(logs);
       }
+    }
+
+    public URI getAddressOfRemoteServer() {
+      return connection.getAddressOfRemoteServer();
     }
   }
 }

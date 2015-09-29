@@ -78,6 +78,7 @@ namespace OpenQA.Selenium
         public string slowLoadingAlertPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("slowLoadingAlert.html");
         public string dragDropOverflowPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("dragDropOverflow.html");
         public string missedJsReferencePage = EnvironmentManager.Instance.UrlBuilder.WhereIs("missedJsReference.html");
+        public string authenticationPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("basicAuth");
 
         protected IWebDriver driver;
 

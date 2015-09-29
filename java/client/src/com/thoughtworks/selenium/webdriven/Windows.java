@@ -150,12 +150,13 @@ public class Windows {
    * If none of the windows have <code>window.name = null</code> the last selected one will be
    * re-selected and a {@link SeleniumException} will be thrown.
    *
+   * @param driver WebDriver
    * @throws NoSuchWindowException if no window with <code>window.name = null</code> is found.
    */
   public void selectBlankWindow(WebDriver driver) {
     String current = driver.getWindowHandle();
     // Find the first window without a "name" attribute
-    List<String> handles = new ArrayList<String>(driver.getWindowHandles());
+    List<String> handles = new ArrayList<>(driver.getWindowHandles());
     for (String handle : handles) {
       // the original window will never be a _blank window, so don't even look at it
       // this is also important to skip, because the original/root window won't have

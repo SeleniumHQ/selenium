@@ -96,7 +96,7 @@ public class CommandLineOptionHelper {
       String value = getParamValue(name);
       return Arrays.asList(value.split(","));
     } else {
-      return new ArrayList<String>();
+      return new ArrayList<>();
     }
 
   }
@@ -104,11 +104,11 @@ public class CommandLineOptionHelper {
   /**
    * get all occurrences of -name
    *
-   * @param name
+   * @param name parameter name
    * @return A List of Strings that have the passed name argument in them.
    */
   public List<String> getAll(String name) {
-    List<String> res = new ArrayList<String>();
+    List<String> res = new ArrayList<>();
     for (int i = 0; i < args.length; i++) {
       if (name.equals(args[i])) {
         res.add(args[i + 1]);
@@ -118,7 +118,7 @@ public class CommandLineOptionHelper {
   }
 
   public List<String> getKeys() {
-    List<String> keys = new ArrayList<String>();
+    List<String> keys = new ArrayList<>();
     for (String arg : args) {
       if (arg.startsWith("-")) {
         keys.add(arg);

@@ -1,5 +1,3 @@
-#!/usr/bin/python
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -198,6 +196,8 @@ class FrameSwitchingTest(unittest.TestCase):
         self.driver.find_element_by_id('iframe_page_heading')
 
     def testShouldBeAbleToSwitchToParentFrame(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not implement switch to parent frame")
         self._loadPage("iframes")
         self.driver.switch_to.frame(0)
         self.driver.switch_to.parent_frame()

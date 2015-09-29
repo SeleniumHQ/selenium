@@ -74,6 +74,7 @@ public class SafariOptions {
    * When the {@link #CAPABILITY} capability is set, all other capabilities will be ignored!
    *
    * @param capabilities Desired capabilities from which the options are derived.
+   * @return SafariOptions
    * @throws WebDriverException If an error occurred during the reconstruction of the options
    */
   public static SafariOptions fromCapabilities(Capabilities capabilities)
@@ -162,8 +163,7 @@ public class SafariOptions {
    * @throws IOException If an error occurred while writing the safari extensions to a
    *    temporary directory.
    */
-  @SuppressWarnings("unchecked")
-  private static SafariOptions fromJsonMap(Map options) throws IOException {
+  private static SafariOptions fromJsonMap(Map<?, ?> options) throws IOException {
     SafariOptions safariOptions = new SafariOptions();
 
     Number port = (Number) options.get(Option.PORT);

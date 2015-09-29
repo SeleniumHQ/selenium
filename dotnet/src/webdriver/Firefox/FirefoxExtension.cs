@@ -21,8 +21,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml;
-using Ionic.Zip;
 using OpenQA.Selenium.Internal;
+using System.IO.Compression;
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -69,10 +69,10 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Installs the extension into a profile directory.
         /// </summary>
-        /// <param name="profileDir">The Firefox profile directory into which to install the extension.</param>
-        public void Install(string profileDir)
+        /// <param name="profileDirectory">The Firefox profile directory into which to install the extension.</param>
+        public void Install(string profileDirectory)
         {
-            DirectoryInfo info = new DirectoryInfo(profileDir);
+            DirectoryInfo info = new DirectoryInfo(profileDirectory);
             string stagingDirectoryName = Path.Combine(Path.GetTempPath(), info.Name + ".staging");
             string tempFileName = Path.Combine(stagingDirectoryName, Path.GetFileName(this.extensionFileName));
             if (Directory.Exists(tempFileName))
@@ -83,16 +83,21 @@ namespace OpenQA.Selenium.Firefox
             // First, expand the .xpi archive into a temporary location.
             Directory.CreateDirectory(tempFileName);
             Stream zipFileStream = ResourceUtilities.GetResourceStream(this.extensionFileName, this.extensionResourceId);
-            using (ZipFile extensionZipFile = ZipFile.Read(zipFileStream))
+            using (ZipStorer extensionZipFile = ZipStorer.Open(zipFileStream, FileAccess.Read))
             {
-                extensionZipFile.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
-                extensionZipFile.ExtractAll(tempFileName);
+                List<ZipStorer.ZipFileEntry> entryList = extensionZipFile.ReadCentralDir();
+                foreach (ZipStorer.ZipFileEntry entry in entryList)
+                {
+                    string localFileName = entry.FilenameInZip.Replace('/', Path.DirectorySeparatorChar);
+                    string destinationFile = Path.Combine(tempFileName, localFileName);
+                    extensionZipFile.ExtractFile(entry, destinationFile);
+                }
             }
 
             // Then, copy the contents of the temporarly location into the
             // proper location in the Firefox profile directory.
             string id = ReadIdFromInstallRdf(tempFileName);
-            string extensionDirectory = Path.Combine(Path.Combine(profileDir, "extensions"), id);
+            string extensionDirectory = Path.Combine(Path.Combine(profileDirectory, "extensions"), id);
             if (Directory.Exists(extensionDirectory))
             {
                 Directory.Delete(extensionDirectory, true);
@@ -103,7 +108,7 @@ namespace OpenQA.Selenium.Firefox
 
             // By deleting the staging directory, we also delete the temporarily
             // expanded extension, which we copied into the profile.
-            Directory.Delete(stagingDirectoryName, true);
+            FileUtilities.DeleteDirectory(stagingDirectoryName);
         }
 
         private static string ReadIdFromInstallRdf(string root)

@@ -67,9 +67,8 @@ goog.tagUnsealableClass(goog.ui.Textarea);
  * @type {boolean}
  * @private
  */
-goog.ui.Textarea.NEEDS_HELP_SHRINKING_ = goog.userAgent.GECKO ||
-    goog.userAgent.WEBKIT ||
-    (goog.userAgent.IE && goog.userAgent.isDocumentModeOrHigher(11));
+goog.ui.Textarea.NEEDS_HELP_SHRINKING_ =
+    !(goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(11));
 
 
 /**
@@ -498,7 +497,7 @@ goog.ui.Textarea.prototype.setHeightToEstimate_ = function() {
  */
 goog.ui.Textarea.prototype.getHorizontalScrollBarHeight_ =
     function() {
-  var textarea = this.getElement();
+  var textarea = /** @type {!HTMLElement} */ (this.getElement());
   var height = textarea.offsetHeight - textarea.clientHeight;
   if (!this.scrollHeightIncludesPadding_) {
     var paddingBox = this.paddingBox_;
@@ -527,7 +526,8 @@ goog.ui.Textarea.prototype.getHorizontalScrollBarHeight_ =
  */
 goog.ui.Textarea.prototype.discoverTextareaCharacteristics_ = function() {
   if (!this.hasDiscoveredTextareaCharacteristics_) {
-    var textarea = /** @type {!Element} */ (this.getElement().cloneNode(false));
+    var textarea = /** @type {!HTMLElement} */ (
+        this.getElement().cloneNode(false));
     // We need to overwrite/write box model specific styles that might
     // affect height.
     goog.style.setStyle(textarea, {
@@ -600,7 +600,7 @@ goog.ui.Textarea.prototype.grow_ = function(opt_e) {
   if (this.isResizing_) {
     return;
   }
-  var textarea = this.getElement();
+  var textarea = /** @type {!HTMLElement} */ (this.getElement());
   // If the element is getting focus and we don't support placeholders
   // natively, then remove the placeholder class.
   if (!this.supportsNativePlaceholder_() && opt_e &&
@@ -680,7 +680,6 @@ goog.ui.Textarea.prototype.shrink_ = function() {
     } else {
       var currentHeight = this.getHeight_();
       var minHeight = this.getMinHeight_();
-      var maxHeight = this.getMaxHeight_();
       if (!(minHeight && currentHeight <= minHeight)) {
         // Nudge the padding by 1px.
         var paddingBox = this.paddingBox_;
@@ -716,7 +715,7 @@ goog.ui.Textarea.prototype.shrink_ = function() {
  * @private
  */
 goog.ui.Textarea.prototype.mouseUpListener_ = function(e) {
-  var textarea = this.getElement();
+  var textarea = /** @type {!HTMLElement} */ (this.getElement());
   var height = textarea.offsetHeight;
 
   // This solves for when the MSIE DropShadow filter is enabled,

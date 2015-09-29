@@ -695,7 +695,6 @@ goog.graphics.SvgGraphics.getSvgPath = function(path) {
         break;
       case goog.graphics.Path.Segment.ARCTO:
         var extent = args[3];
-        var toAngle = args[2] + extent;
         list.push('A', args[0], args[1],
             0, Math.abs(extent) > 180 ? 1 : 0, extent > 0 ? 1 : 0,
             args[4], args[5]);

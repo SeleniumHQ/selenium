@@ -2710,8 +2710,8 @@ goog.net.BrowserChannel.Handler.prototype.channelClosed =
  * Gets any parameters that should be added at the time another connection is
  * made to the server.
  * @param {goog.net.BrowserChannel} browserChannel The browser channel.
- * @return {Object} Extra parameter keys and values to add to the
- *                  requests.
+ * @return {!Object} Extra parameter keys and values to add to the
+ *     requests.
  */
 goog.net.BrowserChannel.Handler.prototype.getAdditionalParams =
     function(browserChannel) {

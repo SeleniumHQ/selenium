@@ -38,12 +38,16 @@ public abstract class AbstractAnnotations {
   /**
    * Defines how to transform given object (field, class, etc)
    * into {@link org.openqa.selenium.By} class used by webdriver to locate elements.
+   *
+   * @return By object
    */
   public abstract By buildBy();
 
   /**
    * Defines whether or not given element
    * should be returned from cache on further calls.
+   *
+   * @return boolean if lookup cached
    */
   public abstract boolean isLookupCached();
 
@@ -171,7 +175,7 @@ public abstract class AbstractAnnotations {
       }
     }
 
-    Set<String> finders = new HashSet<String>();
+    Set<String> finders = new HashSet<>();
     if (!"".equals(findBy.using())) finders.add("how: " + findBy.using());
     if (!"".equals(findBy.className())) finders.add("class name:" + findBy.className());
     if (!"".equals(findBy.css())) finders.add("css:" + findBy.css());

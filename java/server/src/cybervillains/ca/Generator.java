@@ -31,12 +31,12 @@ import java.util.Date;
  *
  * To use this class, do something like:
  * <pre>
- * $> cd SELENIUM_SOURCE_DIRECTORY_ROOT
- * $> ./go //java/server/src/cybervillains:cybervillains
- * $> java -cp build/java/server/src/cybervillains/cybervillains.jar:third_party/java/bouncycastle/bcprov-jdk15on-1.48.jar cybervillains.ca.Generator
- * $> cp -r new_certs/* java/server/src/org/openqa/selenium/server/sslSupport/
- * $> rm -r new_certs
- * $> COMMIT TO SELENIUM REPO
+ * $&gt; cd SELENIUM_SOURCE_DIRECTORY_ROOT
+ * $&gt; ./go //java/server/src/cybervillains:cybervillains
+ * $&gt; java -cp build/java/server/src/cybervillains/cybervillains.jar:third_party/java/bouncycastle/bcprov-jdk15on-1.48.jar cybervillains.ca.Generator
+ * $&gt; cp -r new_certs/* java/server/src/org/openqa/selenium/server/sslSupport/
+ * $&gt; rm -r new_certs
+ * $&gt; COMMIT TO SELENIUM REPO
  * </pre>
  *
  * *************************************************************************************** Copyright
@@ -44,7 +44,7 @@ import java.util.Date;
  *
  * In a special exception, Selenium/OpenQA is allowed to use this code under the Apache License 2.0.
  *
- * @author Mark Watson <watsonmw@gmail.com>, Ivan De Marino <ivan.de.marino@gmail.com>
+ * @author Mark Watson &lt;watsonmw@gmail.com&gt;, Ivan De Marino &lt;ivan.de.marino@gmail.com&gt;
  */
 public class Generator {
     private static final String NEW_CERTS_DIR_NAME = "new_certs";

@@ -30,6 +30,10 @@ goog.require('goog.object');
 goog.require('goog.string');
 
 
+// TODO(nnaze): Refactor to remove excessive exclusion logic in matching
+// functions.
+
+
 /**
  * @return {boolean} Whether the user's browser is Opera.
  * @private
@@ -51,6 +55,15 @@ goog.labs.userAgent.browser.matchIE_ = function() {
 
 
 /**
+ * @return {boolean} Whether the user's browser is Edge.
+ * @private
+ */
+goog.labs.userAgent.browser.matchEdge_ = function() {
+  return goog.labs.userAgent.util.matchUserAgent('Edge');
+};
+
+
+/**
  * @return {boolean} Whether the user's browser is Firefox.
  * @private
  */
@@ -65,9 +78,12 @@ goog.labs.userAgent.browser.matchFirefox_ = function() {
  */
 goog.labs.userAgent.browser.matchSafari_ = function() {
   return goog.labs.userAgent.util.matchUserAgent('Safari') &&
-      !goog.labs.userAgent.util.matchUserAgent('Chrome') &&
-      !goog.labs.userAgent.util.matchUserAgent('CriOS') &&
-      !goog.labs.userAgent.util.matchUserAgent('Android');
+      !(goog.labs.userAgent.browser.matchChrome_() ||
+        goog.labs.userAgent.browser.matchCoast_() ||
+        goog.labs.userAgent.browser.matchOpera_() ||
+        goog.labs.userAgent.browser.matchEdge_() ||
+        goog.labs.userAgent.browser.isSilk() ||
+        goog.labs.userAgent.util.matchUserAgent('Android'));
 };
 
 
@@ -102,8 +118,10 @@ goog.labs.userAgent.browser.matchIosWebview_ = function() {
  * @private
  */
 goog.labs.userAgent.browser.matchChrome_ = function() {
-  return goog.labs.userAgent.util.matchUserAgent('Chrome') ||
-      goog.labs.userAgent.util.matchUserAgent('CriOS');
+  return (goog.labs.userAgent.util.matchUserAgent('Chrome') ||
+      goog.labs.userAgent.util.matchUserAgent('CriOS')) &&
+      !goog.labs.userAgent.browser.matchOpera_() &&
+      !goog.labs.userAgent.browser.matchEdge_();
 };
 
 
@@ -114,9 +132,11 @@ goog.labs.userAgent.browser.matchChrome_ = function() {
 goog.labs.userAgent.browser.matchAndroidBrowser_ = function() {
   // Android can appear in the user agent string for Chrome on Android.
   // This is not the Android standalone browser if it does.
-  return !goog.labs.userAgent.browser.isChrome() &&
-      goog.labs.userAgent.util.matchUserAgent('Android');
-
+  return goog.labs.userAgent.util.matchUserAgent('Android') &&
+      !(goog.labs.userAgent.browser.isChrome() ||
+        goog.labs.userAgent.browser.isFirefox() ||
+        goog.labs.userAgent.browser.isOpera() ||
+        goog.labs.userAgent.browser.isSilk());
 };
 
 
@@ -130,6 +150,12 @@ goog.labs.userAgent.browser.isOpera = goog.labs.userAgent.browser.matchOpera_;
  * @return {boolean} Whether the user's browser is IE.
  */
 goog.labs.userAgent.browser.isIE = goog.labs.userAgent.browser.matchIE_;
+
+
+/**
+ * @return {boolean} Whether the user's browser is Edge.
+ */
+goog.labs.userAgent.browser.isEdge = goog.labs.userAgent.browser.matchEdge_;
 
 
 /**
@@ -230,6 +256,11 @@ goog.labs.userAgent.browser.getVersion = function() {
     // Opera 10 has Version/10.0 but Opera/9.8, so look for "Version" first.
     // Opera uses 'OPR' for more recent UAs.
     return lookUpValueWithKeys(['Version', 'Opera', 'OPR']);
+  }
+
+  // Check Edge before Chrome since it has Chrome in the string.
+  if (goog.labs.userAgent.browser.isEdge()) {
+    return lookUpValueWithKeys(['Edge']);
   }
 
   if (goog.labs.userAgent.browser.isChrome()) {

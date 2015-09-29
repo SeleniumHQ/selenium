@@ -50,7 +50,7 @@ end
 verbose($DEBUG)
 
 def version
-  "2.46.0"
+  "2.47.1"
 end
 ide_version = "2.8.0"
 
@@ -109,7 +109,6 @@ task :tests => [
   "//java/client/test/org/openqa/selenium/htmlunit:test_basic",
   "//java/client/test/org/openqa/selenium/htmlunit:test_js",
   "//java/client/test/org/openqa/selenium/firefox:test_synthesized",
-  "//java/client/test/org/openqa/selenium/firefox:test_native",
   "//java/client/test/org/openqa/selenium/ie:test",
   "//java/client/test/org/openqa/selenium/chrome:test",
   "//java/client/test/org/openqa/selenium/opera:test_blink",
@@ -126,7 +125,13 @@ task :common_core => [ "//common:core" ]
 task :grid => [ "//java/server/src/org/openqa/grid/selenium" ]
 task :htmlunit => [ "//java/client/src/org/openqa/selenium/htmlunit" ]
 task :ie => [ "//java/client/src/org/openqa/selenium/ie" ]
-task :firefox => [ "//java/client/src/org/openqa/selenium/firefox" ]
+task :firefox => [
+  "//cpp:noblur",
+  "//cpp:noblur64",
+  "//cpp:imehandler",
+  "//cpp:imehandler64",
+  "//java/client/src/org/openqa/selenium/firefox"
+]
 task :'debug-server' => "//java/client/test/org/openqa/selenium/environment/webserver:WebServer:run"
 task :remote => [:remote_common, :remote_server, :remote_client]
 task :remote_common => ["//java/client/src/org/openqa/selenium/remote:common"]
@@ -173,9 +178,6 @@ task :test_grid => [
 task :test_ie => [ "//java/client/test/org/openqa/selenium/ie:test:run" ]
 task :test_jobbie => [ :test_ie ]
 task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test_synthesized:run" ]
-if (!mac?)
-  task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test_native:run" ]
-end
 task :test_opera => [ "//java/client/test/org/openqa/selenium/opera:test_blink:run" ]
 task :test_remote_server => [ '//java/server/test/org/openqa/selenium/remote/server:small-tests:run' ]
 task :test_remote => [
@@ -248,8 +250,9 @@ task :test_rb => [
   "//rb:remote-test",
   "//rb:rc-client-integration-test",
  ("//rb:ie-test" if windows?),
+ ("//rb:edge-test" if windows?),
   "//rb:chrome-test",
-  "//rb:safari-test",
+ ("//rb:safari-test" if mac?),
   "//rb:phantomjs-test"
 ].compact
 
@@ -267,7 +270,7 @@ if (python?)
   task :test => [ :test_py ]
 end
 
-task :build => [:all, :remote, :selenium, :tests]
+task :build => [:all, :firefox, :remote, :selenium, :tests]
 
 desc 'Clean build artifacts.'
 task :clean do
@@ -376,6 +379,9 @@ task :javadocs => [:common, :firefox, :htmlunit, :ie, :remote, :support, :chrome
    [File.join(%w(java client src))].each do |m|
      sourcepath += File::PATH_SEPARATOR + m
    end
+   [File.join(%w(java server src))].each do |m|
+     sourcepath += File::PATH_SEPARATOR + m
+   end
    p sourcepath
    cmd = "javadoc -notimestamp -d build/javadoc -sourcepath #{sourcepath} -classpath #{classpath} -subpackages org.openqa.selenium -subpackages com.thoughtworks "
    cmd << " -exclude org.openqa.selenium.internal.selenesedriver:org.openqa.selenium.internal.seleniumemulation:org.openqa.selenium.remote.internal"
@@ -400,6 +406,7 @@ task :py_install =>  "//py:install"
 task :py_release => :py_prep_for_install_release do
     sh "grep -v test setup.py > setup_release.py; mv setup_release.py setup.py"
     sh "python setup.py sdist upload"
+    sh "python setup.py bdist_wheel upload"
     sh "git checkout setup.py"
 end
 
@@ -467,6 +474,7 @@ task :webdriverjs => [ "//javascript/webdriver:webdriver" ]
 
 task :release => [
     :clean,
+    :build,
     '//java/server/src/org/openqa/selenium/server:server:zip',
     '//java/server/src/org/openqa/grid/selenium:selenium:zip',
     '//java/client/src/org/openqa/selenium:client-combined:zip',
@@ -705,8 +713,7 @@ namespace :copyright do
             "javascript/selenium-core/xpath/**/*.js"))
     Copyright.Update(
         FileList["py/**/*.py"],
-        :style => "#",
-        :prefix => "#!/usr/bin/python\n#\n")
+        :style => "#")
     Copyright.Update(
       FileList["rb/**/*.rb"].exclude(
           "rb/spec/integration/selenium/client/api/screenshot_spec.rb"),

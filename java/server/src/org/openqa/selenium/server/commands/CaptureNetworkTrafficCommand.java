@@ -216,7 +216,7 @@ public class CaptureNetworkTrafficCommand extends Command {
   /**
    * Escape quotes, \, /, \r, \n, \b, \f, \t and other control characters (U+0000 through U+001F).
    * @param s - Must not be null.
-   * @param sb
+   * @param sb string buffer originating string is copied to
    */
   private static void escape(String s, StringBuffer sb) {
     final int len = s.length();
@@ -272,8 +272,8 @@ public class CaptureNetworkTrafficCommand extends Command {
     private Date start;
     private Date end;
     private long bytes;
-    private List<Header> requestHeaders = new ArrayList<Header>();
-    private List<Header> responseHeaders = new ArrayList<Header>();
+    private List<Header> requestHeaders = new ArrayList<>();
+    private List<Header> responseHeaders = new ArrayList<>();
 
     public Entry(String method, String url) {
       this.method = method;

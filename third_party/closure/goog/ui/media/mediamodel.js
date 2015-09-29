@@ -29,6 +29,8 @@ goog.provide('goog.ui.media.MediaModel.SubTitle');
 goog.provide('goog.ui.media.MediaModel.Thumbnail');
 
 goog.require('goog.array');
+goog.require('goog.html.TrustedResourceUrl');
+goog.require('goog.html.legacyconversions');
 
 
 
@@ -559,7 +561,7 @@ goog.ui.media.MediaModel.Thumbnail.prototype.setSize = function(size) {
 /**
  * Constructs a player containing details of the player's URL and
  * optionally its size.
- * @param {string} url The URL of the player.
+ * @param {string|!goog.html.TrustedResourceUrl} url The URL of the player.
  * @param {Object=} opt_vars Optional map of arguments to the player.
  * @param {goog.math.Size=} opt_size The size of the player if known.
  * @constructor
@@ -568,10 +570,11 @@ goog.ui.media.MediaModel.Thumbnail.prototype.setSize = function(size) {
 goog.ui.media.MediaModel.Player = function(url, opt_vars, opt_size) {
   /**
    * The player's URL.
-   * @type {string}
+   * @type {!goog.html.TrustedResourceUrl}
    * @private
    */
-  this.url_ = url;
+  this.trustedResourceUrl_ = url instanceof goog.html.TrustedResourceUrl ? url :
+      goog.html.legacyconversions.trustedResourceUrlFromString(url);
 
   /**
    * Player arguments, typically flash arguments.
@@ -590,22 +593,32 @@ goog.ui.media.MediaModel.Player = function(url, opt_vars, opt_size) {
 
 
 /**
- * Gets the player url.
- * @return {string} The thumbnail's image URL.
+ * Gets the player URL.
+ * @return {!goog.html.TrustedResourceUrl} The player's URL.
  */
-goog.ui.media.MediaModel.Player.prototype.getUrl = function() {
-  return this.url_;
+goog.ui.media.MediaModel.Player.prototype.getTrustedResourceUrl = function() {
+  return this.trustedResourceUrl_;
 };
 
 
 /**
- * Sets the player url.
- * @param {string} url The thumbnail's image URL.
+ * Gets the player URL.
+ * @return {string} The player's URL.
+ */
+goog.ui.media.MediaModel.Player.prototype.getUrl = function() {
+  return this.trustedResourceUrl_.getTypedStringValue();
+};
+
+
+/**
+ * Sets the player URL.
+ * @param {string|!goog.html.TrustedResourceUrl} url The player's URL.
  * @return {!goog.ui.media.MediaModel.Player} The object itself, used for
  *     chaining.
  */
 goog.ui.media.MediaModel.Player.prototype.setUrl = function(url) {
-  this.url_ = url;
+  this.trustedResourceUrl_ = url instanceof goog.html.TrustedResourceUrl ? url :
+      goog.html.legacyconversions.trustedResourceUrlFromString(url);
   return this;
 };
 

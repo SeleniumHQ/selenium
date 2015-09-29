@@ -15,14 +15,18 @@
 // specific language governing permissions and limitations
 // under the License.
 
-goog.require('goog.json');
 goog.require('goog.testing.MockControl');
 goog.require('goog.testing.PropertyReplacer');
 goog.require('goog.testing.jsunit');
+goog.require('goog.userAgent');
 goog.require('webdriver.http.Request');
 goog.require('webdriver.http.XhrClient');
 goog.require('webdriver.promise');
 goog.require('webdriver.test.testutil');
+
+function shouldRunTests() {
+  return !goog.userAgent.IE || goog.userAgent.isVersionOrHigher(10);
+}
 
 // Alias for readability.
 var callbackHelper = webdriver.test.testutil.callbackHelper;
@@ -64,7 +68,7 @@ function expectRequest(mockXhr) {
   for (var header in REQUEST.headers) {
     mockXhr.setRequestHeader(header, REQUEST.headers[header]);
   }
-  return mockXhr.send(goog.json.serialize(REQUEST.data));
+  return mockXhr.send(JSON.stringify(REQUEST.data));
 }
 
 function testXhrClient_whenUnableToSendARequest() {

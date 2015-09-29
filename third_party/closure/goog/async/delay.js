@@ -36,21 +36,23 @@ goog.require('goog.Timer');
  * each time the delay is started. Calling start on an active delay will reset
  * the timer.
  *
- * @param {Function} listener Function to call when the delay completes.
+ * @param {function(this:THIS)} listener Function to call when the
+ *     delay completes.
  * @param {number=} opt_interval The default length of the invocation delay (in
  *     milliseconds).
- * @param {Object=} opt_handler The object scope to invoke the function in.
+ * @param {THIS=} opt_handler The object scope to invoke the function in.
+ * @template THIS
  * @constructor
+ * @struct
  * @extends {goog.Disposable}
  * @final
  */
 goog.async.Delay = function(listener, opt_interval, opt_handler) {
-  goog.Disposable.call(this);
+  goog.async.Delay.base(this, 'constructor');
 
   /**
    * The function that will be invoked after a delay.
-   * @type {Function}
-   * @private
+   * @private {function(this:THIS)}
    */
   this.listener_ = listener;
 
@@ -104,7 +106,7 @@ goog.async.Delay.prototype.id_ = 0;
  * @protected
  */
 goog.async.Delay.prototype.disposeInternal = function() {
-  goog.async.Delay.superClass_.disposeInternal.call(this);
+  goog.async.Delay.base(this, 'disposeInternal');
   this.stop();
   delete this.listener_;
   delete this.handler_;
@@ -123,6 +125,19 @@ goog.async.Delay.prototype.start = function(opt_interval) {
   this.id_ = goog.Timer.callOnce(
       this.callback_,
       goog.isDef(opt_interval) ? opt_interval : this.interval_);
+};
+
+
+/**
+ * Starts the delay timer if it's not already active.
+ * @param {number=} opt_interval If specified and the timer is not already
+ *     active, overrides the object's default interval with this one (in
+ *     milliseconds).
+ */
+goog.async.Delay.prototype.startIfNotActive = function(opt_interval) {
+  if (!this.isActive()) {
+    this.start(opt_interval);
+  }
 };
 
 

@@ -1,5 +1,3 @@
-#!/usr/bin/python
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,12 +15,14 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import pytest
 import unittest
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.remote.webelement import WebElement
 
+@pytest.mark.ignore_phantomjs
 class ExecutingAsyncJavaScriptTests(unittest.TestCase):
 
     def testShouldNotTimeoutIfCallbackInvokedImmediately(self):

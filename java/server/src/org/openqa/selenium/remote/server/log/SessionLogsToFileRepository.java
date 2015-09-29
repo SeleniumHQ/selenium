@@ -36,7 +36,7 @@ public class SessionLogsToFileRepository {
   private Map<SessionId, LogFile> sessionToLogFileMap;
 
   public SessionLogsToFileRepository() {
-    sessionToLogFileMap = new HashMap<SessionId, LogFile>();
+    sessionToLogFileMap = new HashMap<>();
   }
 
   /**
@@ -45,7 +45,7 @@ public class SessionLogsToFileRepository {
    * read logRecords from the file.
    *
    * @param sessionId session-id for the log file entry needs to be created.
-   * @throws IOException
+   * @throws IOException file i/o exception can occur because of a temp file created
    */
   public void createLogFileAndAddToMap(SessionId sessionId) throws IOException {
     File rcLogFile;
@@ -63,7 +63,7 @@ public class SessionLogsToFileRepository {
    *
    * @param sessionId session-id to which the log records belong
    * @param records logRecords that need to be stored
-   * @throws IOException
+   * @throws IOException file i/o exception can occur because of a temp file created
    */
   synchronized public void flushRecordsToLogFile(SessionId sessionId,
       List<LogRecord> records) throws IOException {
@@ -87,15 +87,15 @@ public class SessionLogsToFileRepository {
    *
    * @param sessionId session-id for which the file logs needs to be returned.
    * @return A List of LogRecord objects, which can be <i>null</i>.
-   * @throws IOException
+   * @throws IOException IO exception can occur with reading the log file
    */
   public List<LogRecord> getLogRecords(SessionId sessionId) throws IOException {
     LogFile logFile = sessionToLogFileMap.get(sessionId);
     if (logFile == null) {
-      return new ArrayList<LogRecord>();
+      return new ArrayList<>();
     }
 
-    List<LogRecord> logRecords = new ArrayList<LogRecord>();
+    List<LogRecord> logRecords = new ArrayList<>();
     try {
       logFile.openLogReader();
       ObjectInputStream logObjInStream = logFile.getLogReader();

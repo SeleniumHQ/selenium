@@ -1,5 +1,3 @@
-#!/usr/bin/python
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -255,8 +253,9 @@ class FirefoxProfile(object):
             tmpdir = tempfile.mkdtemp(suffix='.' + os.path.split(addon)[-1])
             compressed_file = zipfile.ZipFile(addon, 'r')
             for name in compressed_file.namelist():
-                if name.endswith('/') and not os.path.isdir(os.path.join(tmpdir, name)):
-                    os.makedirs(os.path.join(tmpdir, name))
+                if name.endswith('/'):
+                    if not os.path.isdir(os.path.join(tmpdir, name)):
+                        os.makedirs(os.path.join(tmpdir, name))
                 else:
                     if not os.path.isdir(os.path.dirname(os.path.join(tmpdir, name))):
                         os.makedirs(os.path.dirname(os.path.join(tmpdir, name)))

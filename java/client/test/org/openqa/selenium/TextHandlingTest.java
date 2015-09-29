@@ -25,7 +25,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
@@ -42,6 +41,7 @@ import org.hamcrest.TypeSafeMatcher;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
 import java.util.regex.Pattern;
@@ -206,7 +206,6 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(seenText, equalTo(expectedText));
   }
 
-  @Ignore(value = {MARIONETTE})
   @Test
   public void testShouldBeAbleToEnterDatesAfterFillingInOtherValuesFirst() {
     driver.get(pages.formPage);
@@ -244,7 +243,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, equalTo(""));
   }
 
-  @Ignore({HTMLUNIT})
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldNotTrimSpacesWhenLineWraps() {
     driver.get(pages.simpleTestPage);
@@ -262,7 +261,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, is("Some text" + newLine + "Some more text"));
   }
 
-  @Ignore({HTMLUNIT})
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldHandleNestedBlockLevelElements() {
     driver.get(pages.simpleTestPage);
@@ -353,8 +352,8 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {IE, HTMLUNIT},
-          reason = "IE, HTMLUNIT: failed, other: untested")
+  @Ignore(value = {IE})
+  @NotYetImplemented(HTMLUNIT)
   public void testTextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterTyping() {
     driver.get(pages.formPage);
     WebElement area = driver.findElement(By.id("withText"));
@@ -365,8 +364,8 @@ public class TextHandlingTest extends JUnit4TestBase {
 
   @Test
   @JavascriptEnabled
-  @Ignore(value = {IE, HTMLUNIT},
-          reason = "IE, HTMLUNIT: failed, other: untested")
+  @Ignore(value = {IE})
+  @NotYetImplemented(HTMLUNIT)
   public void testTextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterChangingTheValue() {
     driver.get(pages.formPage);
     WebElement area = driver.findElement(By.id("withText"));

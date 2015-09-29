@@ -1,5 +1,3 @@
-#!/usr/bin/python
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import pytest
 import time
 import unittest
 from selenium import webdriver
@@ -315,6 +314,8 @@ class WebDriverWaitTest(unittest.TestCase):
         self.assertTrue(element.is_selected())
 
     def testExpectedConditionAlertIsPresent(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support alerts")
         self._loadPage('blank')
         try:
             WebDriverWait(self.driver, 0.7).until(EC.alert_is_present())

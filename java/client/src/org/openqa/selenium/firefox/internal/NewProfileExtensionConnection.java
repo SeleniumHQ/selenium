@@ -39,6 +39,8 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import static org.openqa.selenium.firefox.FirefoxProfile.PORT_PREFERENCE;
@@ -238,5 +240,13 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
       delegate.setLocalLogs(logs);
     }
     this.logs = logs;
+  }
+
+  public URI getAddressOfRemoteServer() {
+    try {
+      return delegate.getAddressOfRemoteServer().toURI();
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

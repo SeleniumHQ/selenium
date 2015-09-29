@@ -48,7 +48,7 @@ java_library(name = "server_core",
   deps = [
     ":server_very_core",
     "//third_party/java/guava-libraries",
-    "//third_party/java/servlet-api",
+    "//third_party/java/servlet:servlet-api",
   ],
   embedded = [
     ":client",

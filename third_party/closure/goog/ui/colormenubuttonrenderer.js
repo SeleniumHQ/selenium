@@ -23,6 +23,7 @@ goog.provide('goog.ui.ColorMenuButtonRenderer');
 
 goog.require('goog.asserts');
 goog.require('goog.color');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.ui.MenuButtonRenderer');
 goog.require('goog.userAgent');
@@ -80,7 +81,7 @@ goog.ui.ColorMenuButtonRenderer.prototype.createCaption = function(content,
  * @return {!Element} Caption element.
  */
 goog.ui.ColorMenuButtonRenderer.wrapCaption = function(content, dom) {
-  return dom.createDom('div',
+  return dom.createDom(goog.dom.TagName.DIV,
       goog.getCssName(goog.ui.ColorMenuButtonRenderer.CSS_CLASS, 'indicator'),
       content);
 };

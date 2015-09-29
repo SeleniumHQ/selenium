@@ -28,18 +28,18 @@ module Selenium
         @script = ""
       end
 
-	    def append(text)
-	      @script << text
-	      self
-	    end
+      def append(text)
+        @script << text
+        self
+      end
 
       def no_pending_ajax_requests
         append window_script("#{@framework.ajax_request_tracker} == 0")
       end
 
-			def no_pending_effects
-			  append window_script("Effect.Queue.size() == 0")
-			end
+      def no_pending_effects
+        append window_script("Effect.Queue.size() == 0")
+      end
 
       def visible(locator)
         append "selenium.isVisible('#{quote_escaped(locator)}')"

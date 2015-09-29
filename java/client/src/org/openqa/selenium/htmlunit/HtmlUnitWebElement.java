@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.htmlunit;
 
 import java.io.IOException;
@@ -33,6 +32,7 @@ import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.InvalidElementStateException;
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
@@ -47,10 +47,13 @@ import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.support.Color;
+import org.openqa.selenium.support.Colors;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 
 import com.gargoylesoftware.htmlunit.ScriptResult;
+import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.DomNode;
 import com.gargoylesoftware.htmlunit.html.DomText;
 import com.gargoylesoftware.htmlunit.html.HtmlButton;
@@ -76,7 +79,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     FindsByCssSelector, Locatable, WebElement {
 
   protected final HtmlUnitDriver parent;
-  protected final HtmlElement element;
+  protected final DomElement element;
   private static final char nbspChar = 160;
   private static final String[] blockLevelsTagNames =
   {"p", "h1", "h2", "h3", "h4", "h5", "h6", "dl", "div", "noscript",
@@ -127,7 +130,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
   private String toString;
 
-  public HtmlUnitWebElement(HtmlUnitDriver parent, HtmlElement element) {
+  public HtmlUnitWebElement(HtmlUnitDriver parent, DomElement element) {
     this.parent = parent;
     this.element = element;
   }
@@ -155,7 +158,6 @@ public class HtmlUnitWebElement implements WrapsDriver,
         new HtmlUnitWebElement(parent, referencedElement).click();
       }
     }
-
   }
 
   @Override
@@ -168,7 +170,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
         element.click();
         return;
       } else if (element instanceof HtmlInput) {
-        HtmlForm form = element.getEnclosingForm();
+        HtmlForm form = ((HtmlElement) element).getEnclosingForm();
         if (form == null) {
           throw new NoSuchElementException("Unable to find the containing form");
         }
@@ -189,7 +191,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
   private void submitForm(HtmlForm form) {
     assertElementNotStale();
 
-    List<String> names = new ArrayList<String>();
+    List<String> names = new ArrayList<>();
     names.add("input");
     names.add("button");
     List<? extends HtmlElement> allElements = form.getHtmlElementsByTagNames(names);
@@ -261,7 +263,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
         throw new InvalidElementStateException("You may only interact with enabled elements");
       }
       htmlTextArea.setText("");
-    } else if (element.getAttribute("contenteditable") != HtmlElement.ATTRIBUTE_NOT_DEFINED) {
+    } else if (!element.getAttribute("contenteditable").equals(DomElement.ATTRIBUTE_NOT_DEFINED)) {
       element.setTextContent("");
     }
   }
@@ -276,7 +278,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
       }
     });
 
-    if (displayed == null || !displayed.booleanValue()) {
+    if (displayed == null || !displayed) {
       throw new ElementNotVisibleException("You may only interact with visible elements");
     }
 
@@ -316,7 +318,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     verifyCanInteractWithElement();
     switchFocusToThisIfNeeded();
     HtmlUnitKeyboard keyboard = (HtmlUnitKeyboard) parent.getKeyboard();
-    keyboard.performSingleKeyAction(getElement(), modifierKey, eventDescription);
+    keyboard.performSingleKeyAction((HtmlElement) getElement(), modifierKey, eventDescription);
   }
 
   @Override
@@ -328,7 +330,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     switchFocusToThisIfNeeded();
 
     HtmlUnitKeyboard keyboard = (HtmlUnitKeyboard) parent.getKeyboard();
-    keyboard.sendKeys(element, getAttribute("value"), keysContainer);
+    keyboard.sendKeys((HtmlElement) element, getAttribute("value"), keysContainer);
 
     if (isInputElement() && keysContainer.wasSubmitKeyFound()) {
       submit();
@@ -539,7 +541,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     return parent;
   }
 
-  protected HtmlElement getElement() {
+  protected DomElement getElement() {
     return element;
   }
 
@@ -622,7 +624,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     assertElementNotStale();
 
     List<?> allChildren = element.getByXPath(".//" + tagName);
-    List<WebElement> elements = new ArrayList<WebElement>();
+    List<WebElement> elements = new ArrayList<>();
     for (Object o : allChildren) {
       if (!(o instanceof HtmlElement)) {
         continue;
@@ -681,10 +683,10 @@ public class HtmlUnitWebElement implements WrapsDriver,
   }
 
   private List<WebElement> findChildNodes(List<WebElement> allElements) {
-    List<WebElement> toReturn = new LinkedList<WebElement>();
+    List<WebElement> toReturn = new LinkedList<>();
 
     for (WebElement current : allElements) {
-      HtmlElement candidate = ((HtmlUnitWebElement) current).element;
+      DomElement candidate = ((HtmlUnitWebElement) current).element;
       if (element.isAncestorOf(candidate) && element != candidate) {
         toReturn.add(current);
       }
@@ -722,7 +724,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
   public List<WebElement> findElementsByXPath(String xpathExpr) {
     assertElementNotStale();
 
-    List<WebElement> webElements = new ArrayList<WebElement>();
+    List<WebElement> webElements = new ArrayList<>();
 
     List<?> htmlElements;
     try {
@@ -764,9 +766,9 @@ public class HtmlUnitWebElement implements WrapsDriver,
     assertElementNotStale();
 
     String expectedText = linkText.trim();
-    List<? extends HtmlElement> htmlElements = element.getHtmlElementsByTagName("a");
-    List<WebElement> webElements = new ArrayList<WebElement>();
-    for (HtmlElement e : htmlElements) {
+    List<? extends HtmlElement> htmlElements = ((HtmlElement) element).getHtmlElementsByTagName("a");
+    List<WebElement> webElements = new ArrayList<>();
+    for (DomElement e : htmlElements) {
       if (expectedText.equals(e.getTextContent().trim()) && e.getAttribute("href") != null) {
         webElements.add(getParent().newHtmlUnitWebElement(e));
       }
@@ -790,8 +792,8 @@ public class HtmlUnitWebElement implements WrapsDriver,
   public List<WebElement> findElementsByPartialLinkText(String linkText) {
     assertElementNotStale();
 
-    List<? extends HtmlElement> htmlElements = element.getHtmlElementsByTagName("a");
-    List<WebElement> webElements = new ArrayList<WebElement>();
+    List<? extends HtmlElement> htmlElements = ((HtmlElement) element).getHtmlElementsByTagName("a");
+    List<WebElement> webElements = new ArrayList<>();
     for (HtmlElement e : htmlElements) {
       if (e.getTextContent().contains(linkText)
           && e.getAttribute("href") != null) {
@@ -816,8 +818,8 @@ public class HtmlUnitWebElement implements WrapsDriver,
   public List<WebElement> findElementsByTagName(String name) {
     assertElementNotStale();
 
-    List<HtmlElement> elements = element.getHtmlElementsByTagName(name);
-    List<WebElement> toReturn = new ArrayList<WebElement>(elements.size());
+    List<HtmlElement> elements = ((HtmlElement) element).getHtmlElementsByTagName(name);
+    List<WebElement> toReturn = new ArrayList<>(elements.size());
     for (HtmlElement element : elements) {
       toReturn.add(parent.newHtmlUnitWebElement(element));
     }
@@ -863,7 +865,33 @@ public class HtmlUnitWebElement implements WrapsDriver,
   public String getCssValue(String propertyName) {
     assertElementNotStale();
 
-    return getEffectiveStyle(element, propertyName);
+    String style = getEffectiveStyle((HtmlElement) element, propertyName);
+    return getColor(style);
+  }
+
+  private static String getColor(String name) {
+    if ("null".equals(name)) {
+      return "transparent";
+    }
+    if (name.startsWith("rgb(")) {
+      return Color.fromString(name).asRgba();
+    }
+
+    Colors colors = getColorsOf(name);
+    if (colors != null) {
+      return colors.getColorValue().asRgba();
+    }
+    return name;
+  }
+
+  private static Colors getColorsOf(String name) {
+    name = name.toUpperCase();
+    for (Colors colors : Colors.values()) {
+      if (colors.name().equals(name)) {
+        return colors;
+      }
+    }
+    return null;
   }
 
   private String getEffectiveStyle(HtmlElement htmlElement, String propertyName) {
@@ -959,5 +987,10 @@ public class HtmlUnitWebElement implements WrapsDriver,
         return getElement();
       }
     };
+  }
+
+  public <X> X getScreenshotAs(OutputType<X> outputType) throws WebDriverException {
+    throw new UnsupportedOperationException(
+      "Screenshots are not enabled for HtmlUnitDriver");
   }
 }

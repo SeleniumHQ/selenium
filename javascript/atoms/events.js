@@ -652,7 +652,7 @@ bot.events.MSPointerEventFactory_.prototype.create = function(target,
  * http://en.wikipedia.org/wiki/DOM_events and
  * http://www.w3.org/Submission/pointer-events/#pointer-event-types
  *
- * @enum {!Object}
+ * @enum {!bot.events.EventFactory_}
  */
 bot.events.EventType = {
   BLUR: new bot.events.EventFactory_('blur', false, false),

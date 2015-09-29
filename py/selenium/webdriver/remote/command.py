@@ -1,5 +1,3 @@
-#!/usr/bin/python
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -59,8 +57,10 @@ class Command(object):
     GET_CURRENT_WINDOW_HANDLE = "getCurrentWindowHandle"
     GET_WINDOW_HANDLES = "getWindowHandles"
     GET_WINDOW_SIZE = "getWindowSize"
+    W3C_GET_WINDOW_SIZE = "w3cGetWindowSize"
     GET_WINDOW_POSITION = "getWindowPosition"
     SET_WINDOW_SIZE = "setWindowSize"
+    W3C_SET_WINDOW_SIZE = "w3cSetWindowSize"
     SET_WINDOW_POSITION = "setWindowPosition"
     SWITCH_TO_WINDOW = "switchToWindow"
     SWITCH_TO_FRAME = "switchToFrame"
@@ -85,11 +85,13 @@ class Command(object):
     GET_ELEMENT_VALUE_OF_CSS_PROPERTY = "getElementValueOfCssProperty"
     ELEMENT_EQUALS = "elementEquals"
     SCREENSHOT = "screenshot"
+    ELEMENT_SCREENSHOT = "elementScreenshot"
     IMPLICIT_WAIT = "implicitlyWait"
     EXECUTE_ASYNC_SCRIPT = "executeAsyncScript"
     SET_SCRIPT_TIMEOUT = "setScriptTimeout"
     SET_TIMEOUTS = "setTimeouts"
     MAXIMIZE_WINDOW = "windowMaximize"
+    W3C_MAXIMIZE_WINDOW = "w3cMaximizeWindow"
     GET_LOG = "getLog"
     GET_AVAILABLE_LOG_TYPES = "getAvailableLogTypes"
 
@@ -98,6 +100,7 @@ class Command(object):
     ACCEPT_ALERT = "acceptAlert"
     SET_ALERT_VALUE = "setAlertValue"
     GET_ALERT_TEXT = "getAlertText"
+    SET_ALERT_CREDENTIALS = "setAlertCredentials"
 
     # Advanced user interactions
     CLICK = "mouseClick"
@@ -143,7 +146,7 @@ class Command(object):
     SET_SESSION_STORAGE_ITEM = "setSessionStorageItem"
     CLEAR_SESSION_STORAGE = "clearSessionStorage"
     GET_SESSION_STORAGE_SIZE = "getSessionStorageSize"
-    
+
     # Mobile
     GET_NETWORK_CONNECTION = "getNetworkConnection"
     SET_NETWORK_CONNECTION = "setNetworkConnection"

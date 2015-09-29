@@ -25,13 +25,12 @@
 goog.provide('goog.storage.mechanism.mechanismSharingTester');
 
 goog.require('goog.iter.StopIteration');
+/** @suppress {extraRequire} */
+goog.require('goog.storage.mechanism.mechanismTestDefinition');
 goog.require('goog.testing.asserts');
+
+
 goog.setTestOnly('goog.storage.mechanism.mechanismSharingTester');
-
-
-var mechanism = null;
-var mechanism_shared = null;
-
 
 function testSharedSet() {
   if (!mechanism || !mechanism_shared) {

@@ -27,6 +27,7 @@
 goog.provide('goog.ui.HsvPalette');
 
 goog.require('goog.color');
+goog.require('goog.dom.InputType');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
@@ -83,7 +84,7 @@ goog.ui.HsvPalette.MSG_HSV_PALETTE_HEX_COLOR_ = goog.getMsg('Hex color');
 
 /**
  * DOM element representing the hue/saturation background image.
- * @type {Element}
+ * @type {HTMLElement}
  * @private
  */
 goog.ui.HsvPalette.prototype.hsImageEl_;
@@ -91,7 +92,7 @@ goog.ui.HsvPalette.prototype.hsImageEl_;
 
 /**
  * DOM element representing the hue/saturation handle.
- * @type {Element}
+ * @type {HTMLElement}
  * @private
  */
 goog.ui.HsvPalette.prototype.hsHandleEl_;
@@ -99,7 +100,7 @@ goog.ui.HsvPalette.prototype.hsHandleEl_;
 
 /**
  * DOM element representing the value background image.
- * @type {Element}
+ * @type {HTMLElement}
  * @protected
  */
 goog.ui.HsvPalette.prototype.valueBackgroundImageElement;
@@ -107,7 +108,7 @@ goog.ui.HsvPalette.prototype.valueBackgroundImageElement;
 
 /**
  * DOM element representing the value handle.
- * @type {Element}
+ * @type {HTMLElement}
  * @private
  */
 goog.ui.HsvPalette.prototype.vHandleEl_;
@@ -294,31 +295,36 @@ goog.ui.HsvPalette.prototype.createDom = function() {
   var backdrop = dom.createDom(goog.dom.TagName.DIV,
       goog.getCssName(this.className, 'hs-backdrop'));
 
-  this.hsHandleEl_ = dom.createDom(goog.dom.TagName.DIV,
-      goog.getCssName(this.className, 'hs-handle'));
+  this.hsHandleEl_ = /** @type {!HTMLElement} */ (dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName(this.className, 'hs-handle')));
 
-  this.hsImageEl_ = dom.createDom(goog.dom.TagName.DIV,
+  this.hsImageEl_ = /** @type {!HTMLElement} */ (dom.createDom(
+      goog.dom.TagName.DIV,
       goog.getCssName(this.className, 'hs-image'),
-      this.hsHandleEl_);
+      this.hsHandleEl_));
 
-  this.valueBackgroundImageElement = dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName(this.className, 'v-image'));
+  this.valueBackgroundImageElement = /** @type {!HTMLElement} */ (
+      dom.createDom(
+          goog.dom.TagName.DIV,
+          goog.getCssName(this.className, 'v-image')));
 
-  this.vHandleEl_ = dom.createDom(
+  this.vHandleEl_ = /** @type {!HTMLElement} */ (dom.createDom(
       goog.dom.TagName.DIV,
-      goog.getCssName(this.className, 'v-handle'));
+      goog.getCssName(this.className, 'v-handle')));
 
   this.swatchElement = dom.createDom(goog.dom.TagName.DIV,
       goog.getCssName(this.className, 'swatch'));
 
-  this.inputElement = dom.createDom('input', {
+  this.inputElement = dom.createDom(goog.dom.TagName.INPUT, {
     'class': goog.getCssName(this.className, 'input'),
     'aria-label': goog.ui.HsvPalette.MSG_HSV_PALETTE_HEX_COLOR_,
-    'type': 'text', 'dir': 'ltr'
+    'type': goog.dom.InputType.TEXT,
+    'dir': 'ltr'
   });
 
-  var labelElement = dom.createDom('label', null, this.inputElement);
+  var labelElement = dom.createDom(goog.dom.TagName.LABEL, null,
+                                   this.inputElement);
 
   var element = dom.createDom(goog.dom.TagName.DIV,
       this.className + noalpha,

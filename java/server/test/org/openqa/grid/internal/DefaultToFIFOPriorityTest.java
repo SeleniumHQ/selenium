@@ -21,8 +21,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.openqa.grid.common.RegistrationRequest.APP;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.mock.GridHelper;
@@ -40,43 +40,42 @@ public class DefaultToFIFOPriorityTest {
 
   private final static int MAX = 50;
 
-  private static Registry registry;
+  private Registry registry;
 
   // priority rule : nothing defined = FIFO
-  private static Prioritizer fifo = null;
+  private Prioritizer fifo = null;
 
-  private static Map<String, Object> ff = new HashMap<String, Object>();
-  private static RemoteProxy p1;
-  private static List<MockedRequestHandler> requests = Collections
-      .synchronizedList(new ArrayList<MockedRequestHandler>());
-  private static TestSession session = null;
+  private Map<String, Object> ff = new HashMap<>();
+  private List<MockedRequestHandler> requests =
+    Collections.synchronizedList(new ArrayList<MockedRequestHandler>());
 
   /**
    * create a hub with 1 FF
    *
    * @throws InterruptedException
    */
-  @BeforeClass
-  public static void setup() throws InterruptedException {
+  @Before
+  public void setup() throws InterruptedException {
     registry = Registry.newInstance();
     registry.setPrioritizer(fifo);
     ff.put(APP, "FF");
-    p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);
+    RemoteProxy p1 =
+      RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);
     registry.add(p1);
 
     for (int i = 1; i <= MAX; i++) {
-      Map<String, Object> cap = new HashMap<String, Object>();
+      Map<String, Object> cap = new HashMap<>();
       cap.put(APP, "FF");
       cap.put("_priority", i);
-      MockedRequestHandler req =GridHelper.createNewSessionHandler(registry, cap);
+      MockedRequestHandler req = GridHelper.createNewSessionHandler(registry, cap);
       requests.add(req);
     }
 
 
-    // use all the spots ( so 1 ) of the grid so that a queue buils up
+    // use all the spots ( so 1 ) of the grid so that a queue builds up
     MockedRequestHandler newSessionRequest =GridHelper.createNewSessionHandler(registry, ff);
     newSessionRequest.process();
-    session = newSessionRequest.getSession();
+    TestSession session = newSessionRequest.getSession();
 
     // fill the queue with MAX requests.
     for (MockedRequestHandler h : requests) {
@@ -98,7 +97,8 @@ public class DefaultToFIFOPriorityTest {
   }
 
 
-  @Test
+  // 20 second timeout in case we hang
+  @Test(timeout = 20000)
   public void validateRequestAreHandledFIFO() throws InterruptedException {
     int cpt = 0;
     while (cpt < 8) {
@@ -114,9 +114,10 @@ public class DefaultToFIFOPriorityTest {
     assertEquals(1, requests.get(0).getRequest().getDesiredCapabilities().get("_priority"));
   }
 
-  @AfterClass
-  public static void teardown() {
+  @After
+  public void teardown() {
     registry.stop();
+    requests.clear();  // Because it's static
   }
 
 }

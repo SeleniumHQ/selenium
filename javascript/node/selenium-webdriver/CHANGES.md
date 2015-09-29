@@ -1,3 +1,30 @@
+## v2.48.0-dev
+
+* FIXED: Surfaced the `loopback` option to `remote/SeleniumServer`. When set,
+    the server will be accessed using the current host's loopback address.
+
+## v2.47.0
+
+### Notice
+
+This is the last release for `selenium-webdriver` that will support ES5.
+Subsequent releases will depend on ES6 features that are enabled by
+[default](https://nodejs.org/en/docs/es6/) in Node v4.0.0. Node v0.12.x will
+continue to be supported, but will require setting the `--harmony` flag.
+
+### Change Summary
+
+* Add support for [Node v4.0.0](https://nodejs.org/en/blog/release/v4.0.0/)
+    * Updated `ws` dependency from `0.7.1` to `0.8.0`
+* Bumped the minimum supported version of Node from `0.10.x` to `0.12.x`. This
+    is in accordance with the Node support policy established in `v2.45.0`.
+
+## v2.46.1
+
+* Fixed internal module loading on Windows.
+* Fixed error message format on timeouts for `until.elementLocated()`
+    and `until.elementsLocated()`.
+
 ## v2.46.0
 
 * Exposed a new logging API via the `webdriver.logging` module. For usage, see

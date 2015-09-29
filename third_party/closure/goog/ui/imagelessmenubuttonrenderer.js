@@ -126,19 +126,22 @@ goog.ui.ImagelessMenuButtonRenderer.prototype.createButton = function(content,
                                                                       dom) {
   var baseClass = this.getCssClass();
   var inlineBlock = goog.ui.INLINE_BLOCK_CLASSNAME + ' ';
-  return dom.createDom('div',
+  return dom.createDom(goog.dom.TagName.DIV,
       inlineBlock + goog.getCssName(baseClass, 'outer-box'),
-      dom.createDom('div',
+      dom.createDom(goog.dom.TagName.DIV,
           inlineBlock + goog.getCssName(baseClass, 'inner-box'),
-          dom.createDom('div', goog.getCssName(baseClass, 'pos'),
-              dom.createDom('div', goog.getCssName(baseClass, 'top-shadow'),
-                  '\u00A0'),
-              dom.createDom('div', [goog.getCssName(baseClass, 'content'),
-                                    goog.getCssName(baseClass, 'caption'),
-                                    goog.getCssName('goog-inline-block')],
+          dom.createDom(goog.dom.TagName.DIV, goog.getCssName(baseClass, 'pos'),
+              dom.createDom(goog.dom.TagName.DIV, goog.getCssName(
+                  baseClass, 'top-shadow'), '\u00A0'),
+              dom.createDom(goog.dom.TagName.DIV, [
+                                 goog.getCssName(baseClass, 'content'),
+                                 goog.getCssName(baseClass, 'caption'),
+                                 goog.getCssName('goog-inline-block')
+                            ],
                             content),
-              dom.createDom('div', [goog.getCssName(baseClass, 'dropdown'),
-                                    goog.getCssName('goog-inline-block')]))));
+              dom.createDom(goog.dom.TagName.DIV, [
+                                 goog.getCssName(baseClass, 'dropdown'),
+                                 goog.getCssName('goog-inline-block')]))));
 };
 
 

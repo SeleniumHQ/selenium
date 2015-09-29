@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path("../spec_helper", __FILE__)
+require_relative 'spec_helper'
 
 describe Selenium::Client::SeleniumHelper do
   class SeleniumHelperClass
@@ -35,41 +35,41 @@ describe Selenium::Client::SeleniumHelper do
   end
 
   it "delegates open to @selenium" do
-    object.selenium.should_receive(:open).with(:the_url).and_return(:the_result)
+    expect(object.selenium).to receive(:open).with(:the_url).and_return(:the_result)
 
-    object.open(:the_url).should == :the_result
+    expect(object.open(:the_url)).to eq(:the_result)
   end
 
   it "delegates type to @selenium" do
-    object.selenium.should_receive(:type).with(:the_locator, :the_value) \
+    expect(object.selenium).to receive(:type).with(:the_locator, :the_value) \
                    .and_return(:the_result)
 
-    object.type(:the_locator, :the_value).should == :the_result
+    expect(object.type(:the_locator, :the_value)).to eq(:the_result)
   end
 
   it "delegates select to @selenium" do
-    object.selenium.should_receive(:type).with(:the_input_locator,
+    expect(object.selenium).to receive(:type).with(:the_input_locator,
                                         :the_option_locator) \
                                   .and_return(:the_result)
 
-    object.type(:the_input_locator, :the_option_locator).should == :the_result
+    expect(object.type(:the_input_locator, :the_option_locator)).to eq(:the_result)
   end
 
   it "delegates to any no-arg method defined on @selenium" do
-    object.selenium.should_receive(:a_noarg_method).with().and_return(:the_result)
+    expect(object.selenium).to receive(:a_noarg_method).with(no_args).and_return(:the_result)
 
-    object.a_noarg_method.should == :the_result
+    expect(object.a_noarg_method).to eq(:the_result)
   end
 
   it "delegates to any arg method defined on @selenium" do
-    object.selenium.should_receive(:a_method).with(:alpha, :beta)\
+    expect(object.selenium).to receive(:a_method).with(:alpha, :beta)\
                    .and_return(:the_result)
 
-    object.a_method(:alpha, :beta).should == :the_result
+    expect(object.a_method(:alpha, :beta)).to eq(:the_result)
   end
 
   it "calls default method_missing when a method is not defined on @selenium" do
-    lambda { object.a_method(:alpha, :beta) }.should raise_error(NoMethodError)
+    expect { object.a_method(:alpha, :beta) }.to raise_error(NoMethodError)
   end
 
 end

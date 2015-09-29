@@ -42,6 +42,46 @@ goog.require('goog.userAgent');
  * @final
  */
 goog.dom.TextRange = function() {
+  /**
+   * The browser specific range wrapper.  This can be null if one of the other
+   * representations of the range is specified.
+   * @private {goog.dom.browserrange.AbstractRange?}
+   */
+  this.browserRangeWrapper_ = null;
+
+  /**
+   * The start node of the range.  This can be null if one of the other
+   * representations of the range is specified.
+   * @private {Node}
+   */
+  this.startNode_ = null;
+
+  /**
+   * The start offset of the range.  This can be null if one of the other
+   * representations of the range is specified.
+   * @private {?number}
+   */
+  this.startOffset_ = null;
+
+  /**
+   * The end node of the range.  This can be null if one of the other
+   * representations of the range is specified.
+   * @private {Node}
+   */
+  this.endNode_ = null;
+
+  /**
+   * The end offset of the range.  This can be null if one of the other
+   * representations of the range is specified.
+   * @private {?number}
+   */
+  this.endOffset_ = null;
+
+  /**
+   * Whether the focus node is before the anchor node.
+   * @private {boolean}
+   */
+  this.isReversed_ = false;
 };
 goog.inherits(goog.dom.TextRange, goog.dom.AbstractRange);
 
@@ -141,65 +181,6 @@ goog.dom.TextRange.createFromNodes = function(anchorNode, anchorOffset,
 
   return range;
 };
-
-
-// Representation 1: a browser range wrapper.
-
-
-/**
- * The browser specific range wrapper.  This can be null if one of the other
- * representations of the range is specified.
- * @type {goog.dom.browserrange.AbstractRange?}
- * @private
- */
-goog.dom.TextRange.prototype.browserRangeWrapper_ = null;
-
-
-// Representation 2: two endpoints specified as nodes + offsets
-
-
-/**
- * The start node of the range.  This can be null if one of the other
- * representations of the range is specified.
- * @type {Node}
- * @private
- */
-goog.dom.TextRange.prototype.startNode_ = null;
-
-
-/**
- * The start offset of the range.  This can be null if one of the other
- * representations of the range is specified.
- * @type {?number}
- * @private
- */
-goog.dom.TextRange.prototype.startOffset_ = null;
-
-
-/**
- * The end node of the range.  This can be null if one of the other
- * representations of the range is specified.
- * @type {Node}
- * @private
- */
-goog.dom.TextRange.prototype.endNode_ = null;
-
-
-/**
- * The end offset of the range.  This can be null if one of the other
- * representations of the range is specified.
- * @type {?number}
- * @private
- */
-goog.dom.TextRange.prototype.endOffset_ = null;
-
-
-/**
- * Whether the focus node is before the anchor node.
- * @type {boolean}
- * @private
- */
-goog.dom.TextRange.prototype.isReversed_ = false;
 
 
 // Method implementations
@@ -304,9 +285,7 @@ goog.dom.TextRange.prototype.getStartOffset = function() {
 
 /** @override */
 goog.dom.TextRange.prototype.getStartPosition = function() {
-  return this.isReversed() ?
-      this.getBrowserRangeWrapper_().getEndPosition() :
-      this.getBrowserRangeWrapper_().getStartPosition();
+  return this.getBrowserRangeWrapper_().getStartPosition();
 };
 
 
@@ -326,9 +305,7 @@ goog.dom.TextRange.prototype.getEndOffset = function() {
 
 /** @override */
 goog.dom.TextRange.prototype.getEndPosition = function() {
-  return this.isReversed() ?
-      this.getBrowserRangeWrapper_().getStartPosition() :
-      this.getBrowserRangeWrapper_().getEndPosition();
+  return this.getBrowserRangeWrapper_().getEndPosition();
 };
 
 
@@ -368,7 +345,7 @@ goog.dom.TextRange.prototype.containsRange = function(otherRange,
   } else if (otherRangeType == goog.dom.RangeType.CONTROL) {
     var elements = otherRange.getElements();
     var fn = opt_allowPartial ? goog.array.some : goog.array.every;
-    return fn(elements, function(el) {
+    return fn(elements, /** @this {!goog.dom.TextRange} */ function(el) {
       return this.containsNode(el, opt_allowPartial);
     }, this);
   }
@@ -457,7 +434,7 @@ goog.dom.TextRange.prototype.getPastableHtml = function() {
     html = '<table>' + html + '</table>';
   } else if (html.match(/^\s*<li\b/i)) {
     // Match html starting with an LI.
-    var container = this.getContainer();
+    var container = /** @type {!Element} */ (this.getContainer());
     var tagType = goog.dom.TagName.UL;
     while (container) {
       if (container.tagName == goog.dom.TagName.OL) {

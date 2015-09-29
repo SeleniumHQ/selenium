@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * Mechanism used to locate elements within a document. In order to create your own locating
  * mechanisms, it is possible to subclass this class and override the protected methods as required,
- * though it is expected that that all subclasses rely on the basic finding mechanisms provided
+ * though it is expected that all subclasses rely on the basic finding mechanisms provided
  * through static methods of this class:
  *
  * <code>
@@ -136,6 +136,9 @@ public abstract class By {
    * Finds elements via the driver's underlying W3 Selector engine. If the browser does not
    * implement the Selector API, a best effort is made to emulate the API. In this case, we strive
    * for at least CSS2 support, but offer no guarantees.
+   *
+   * @param selector css expression
+   * @return a By which locates elements by CSS.
    */
   public static By cssSelector(final String selector) {
     if (selector == null)

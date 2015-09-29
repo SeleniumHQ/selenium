@@ -22,6 +22,7 @@
 goog.provide('goog.graphics.CanvasGraphics');
 
 
+goog.require('goog.dom.TagName');
 goog.require('goog.events.EventType');
 goog.require('goog.graphics.AbstractGraphics');
 goog.require('goog.graphics.CanvasEllipseElement');
@@ -163,11 +164,11 @@ goog.graphics.CanvasGraphics.prototype.popElementTransform = function() {
  * @override
  */
 goog.graphics.CanvasGraphics.prototype.createDom = function() {
-  var element = this.dom_.createDom('div',
+  var element = this.dom_.createDom(goog.dom.TagName.DIV,
       {'style': 'position:relative;overflow:hidden'});
   this.setElementInternal(element);
 
-  this.canvas_ = this.dom_.createDom('canvas');
+  this.canvas_ = this.dom_.createDom(goog.dom.TagName.CANVAS);
   element.appendChild(this.canvas_);
 
   /**
@@ -424,20 +425,6 @@ goog.graphics.CanvasGraphics.prototype.drawElement = function(element) {
  * Append an element.
  *
  * @param {goog.graphics.Element} element The element to draw.
- * @param {goog.graphics.CanvasGroupElement|undefined} group The group to draw
- *     it in. If null or undefined, defaults to the root group.
- * @private
- * @deprecated Use append instead.
- */
-goog.graphics.CanvasGraphics.prototype.append_ = function(element, group) {
-  this.append(element, group);
-};
-
-
-/**
- * Append an element.
- *
- * @param {goog.graphics.Element} element The element to draw.
  * @param {goog.graphics.GroupElement|undefined} group The group to draw
  *     it in. If null or undefined, defaults to the root group.
  * @protected
@@ -680,4 +667,18 @@ goog.graphics.CanvasGraphics.prototype.resume = function() {
     this.redraw();
     this.needsRedraw_ = false;
   }
+};
+
+
+/**
+ * Removes an element from the Canvas.
+ * @param {goog.graphics.Element} elem the element to remove.
+ * @override
+ */
+goog.graphics.CanvasGraphics.prototype.removeElement = function(elem) {
+  if (!elem) {
+    return;
+  }
+  this.canvasElement.removeElement(elem);
+  this.redraw();
 };

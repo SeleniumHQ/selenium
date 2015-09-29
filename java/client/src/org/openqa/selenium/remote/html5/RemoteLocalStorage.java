@@ -48,7 +48,7 @@ public class RemoteLocalStorage implements LocalStorage {
     @SuppressWarnings("unchecked")
     Collection<String> result = (Collection<String>)
         executeMethod.execute(DriverCommand.GET_LOCAL_STORAGE_KEYS, null);
-    return new HashSet<String>(result);
+    return new HashSet<>(result);
   }
 
   @Override

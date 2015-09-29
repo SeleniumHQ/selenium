@@ -28,6 +28,7 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.io.File;
 import java.io.IOException;
@@ -122,7 +123,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAStringsArray() {
     driver.get(pages.javascriptPage);
-    List<Object> expectedResult = new ArrayList<Object>();
+    List<Object> expectedResult = new ArrayList<>();
     expectedResult.add("zero");
     expectedResult.add("one");
     expectedResult.add("two");
@@ -137,9 +138,9 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnArray() {
     driver.get(pages.javascriptPage);
-    List<Object> expectedResult = new ArrayList<Object>();
+    List<Object> expectedResult = new ArrayList<>();
     expectedResult.add("zero");
-    List<Object> subList = new ArrayList<Object>();
+    List<Object> subList = new ArrayList<>();
     subList.add(true);
     subList.add(false);
     expectedResult.add(subList);
@@ -161,7 +162,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertTrue("result was: " + result + " (" + result.getClass() + ")", result instanceof Map);
     Map<String, Object> map = (Map<String, Object>) result;
 
-    Map<String, Object> expected = new HashMap<String, Object>();
+    Map<String, Object> expected = new HashMap<>();
     expected.put("abc", "123");
     expected.put("tired", false);
 
@@ -284,7 +285,8 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {CHROME, HTMLUNIT, IE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore(value = {CHROME, IE, PHANTOMJS, SAFARI, MARIONETTE})
+  @NotYetImplemented(HTMLUNIT)
   public void testShouldThrowAnExceptionWithMessageAndStacktraceWhenTheJavascriptIsBad() {
     driver.get(pages.xhtmlTestPage);
 
@@ -385,14 +387,14 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Test
   public void testShouldBeAbleToPassACollectionAsArgument() {
     driver.get(pages.javascriptPage);
-    Collection<Object> collection = new ArrayList<Object>();
+    Collection<Object> collection = new ArrayList<>();
     collection.add("Cheddar");
     collection.add("Brie");
     collection.add(7);
     long length = (Long) executeScript("return arguments[0].length", collection);
     assertEquals(collection.size(), length);
 
-    collection = new HashSet<Object>();
+    collection = new HashSet<>();
     collection.add("Gouda");
     collection.add("Stilton");
     collection.add("Stilton");
@@ -504,7 +506,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToCreateAPersistentValue() {
     driver.get(pages.formPage);
 
@@ -569,7 +570,8 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {CHROME, HTMLUNIT, IE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore(value = {CHROME, IE, PHANTOMJS, SAFARI, MARIONETTE})
+  @NotYetImplemented(HTMLUNIT)
   public void testShouldBeAbleToReturnADateObject() {
     driver.get(pages.simpleTestPage);
 

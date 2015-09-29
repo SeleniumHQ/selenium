@@ -667,7 +667,7 @@ webdriver.WebDriver.prototype.call = function(fn, opt_scope, var_args) {
  * *Example:* waiting up to 10 seconds for an element to be present and visible
  * on the page.
  *
- *     var button = driver.wait(until.elementLocated(By.id('foo'), 10000);
+ *     var button = driver.wait(until.elementLocated(By.id('foo')), 10000);
  *     button.click();
  *
  * This function may also be used to block the command flow on the resolution
@@ -2433,7 +2433,8 @@ goog.inherits(webdriver.AlertPromise, webdriver.Alert);
  * @extends {bot.Error}
  */
 webdriver.UnhandledAlertError = function(message, text, alert) {
-  goog.base(this, bot.ErrorCode.UNEXPECTED_ALERT_OPEN, message);
+  webdriver.UnhandledAlertError.base(
+      this, 'constructor', bot.ErrorCode.UNEXPECTED_ALERT_OPEN, message);
 
   /** @private {string} */
   this.text_ = text;

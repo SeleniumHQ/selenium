@@ -76,7 +76,8 @@ goog.dom.AbstractRange.getBrowserSelectionForWindow = function(win) {
           if (range.parentElement().document != doc) {
             return null;
           }
-        } else if (!range.length || range.item(0).document != doc) {
+        } else if (!range.length ||
+            /** @type {ControlRange} */ (range).item(0).document != doc) {
           // For ControlRanges, check that the range has items, and that
           // the first item in the range is in the correct document.
           return null;
@@ -348,7 +349,7 @@ goog.dom.AbstractRange.prototype.getText = goog.abstractMethod;
  * The HTML fragment may not be valid HTML, for instance if the user selects
  * from a to b inclusively in the following html:
  *
- * &gt;div&lt;a&gt;/div&lt;b
+ * &lt;div&gt;a&lt;/div&gt;b
  *
  * This method will return
  *

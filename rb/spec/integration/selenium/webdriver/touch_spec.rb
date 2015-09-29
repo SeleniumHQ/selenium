@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path("../spec_helper", __FILE__)
+require_relative 'spec_helper'
 
 module Selenium::WebDriver::DriverExtensions
   describe HasTouchScreen do
@@ -31,32 +31,32 @@ module Selenium::WebDriver::DriverExtensions
 
         it "can flick horizontally from element" do
           link = driver.find_element(:id => "link1")
-          link.location.x.should > 1500
+          expect(link.location.x).to be > 1500
 
           to_flick = driver.find_element(:id => "imagestart")
           driver.touch.flick(to_flick, -1000, 0, :normal).perform
 
-          link.location.x.should < 1500
+          expect(link.location.x).to be < 1500
         end
 
         it "can flick horizontally fast from element" do
           link = driver.find_element(:id => "link2")
-          link.location.x.should > 3500
+          expect(link.location.x).to be > 3500
 
           to_flick = driver.find_element(:id => "imagestart")
           driver.touch.flick(to_flick, -400, 0, :fast).perform
 
-          link.location.x.should < 3500
+          expect(link.location.x).to be < 3500
         end
 
         not_compliant_on :browser => :android do
           it "can flick horizontally" do
             link = driver.find_element(:id => "link1")
-            link.location.x.should > 1500
+            expect(link.location.x).to be > 1500
 
             driver.touch.flick(1000, 0).perform
 
-            link.location.x.should < 1500
+            expect(link.location.x).to be < 1500
           end
         end
 
@@ -67,41 +67,41 @@ module Selenium::WebDriver::DriverExtensions
 
         it "can flick vertically from element" do
           link = driver.find_element(:id => "link3")
-          link.location.y.should > 4200
+          expect(link.location.y).to be > 4200
 
           to_flick = driver.find_element(:id => "imagestart")
           driver.touch.flick(to_flick, 0, -600, :normal).perform
 
-          link.location.y.should < 4000
+          expect(link.location.y).to be < 4000
         end
 
         it "can flick vertically fast from element" do
           link = driver.find_element(:id => "link4")
-          link.location.y.should > 8700
+          expect(link.location.y).to be > 8700
 
           to_flick = driver.find_element(:id => "imagestart")
           driver.touch.flick(to_flick, 0, -600, :fast).perform
 
-          link.location.y.should < 8700
+          expect(link.location.y).to be < 8700
         end
 
         it "can flick vertically" do
           link = driver.find_element(:id => "link3")
-          link.location.y.should > 4200
+          expect(link.location.y).to be > 4200
 
           to_flick = driver.find_element(:id => "imagestart")
           driver.touch.flick(0, 750).perform
 
-          link.location.y.should < 4200
+          expect(link.location.y).to be < 4200
         end
 
         it "can flick vertically fast" do
           link = driver.find_element(:id => "link4")
-          link.location.y.should > 8700
+          expect(link.location.y).to be > 8700
 
           driver.touch.flick(0, 1500).perform
 
-          link.location.y.should < 4000
+          expect(link.location.y).to be < 4000
         end
       end
 
@@ -119,7 +119,7 @@ module Selenium::WebDriver::DriverExtensions
             to_scroll = driver.find_element(:id => "imagestart")
             driver.touch.scroll(to_scroll, 0, -800).perform
 
-            link.location.y.should < 3500
+            expect(link.location.y).to be < 3500
           end
         end
 
@@ -129,12 +129,12 @@ module Selenium::WebDriver::DriverExtensions
 
           driver.touch.scroll(0, 800).perform
 
-          link.location.y.should < 3500
+          expect(link.location.y).to be < 3500
         end
 
         it "can scroll horizontally from element" do
           link = driver.find_element(:id => "link1")
-          link.location.x.should > 1500
+          expect(link.location.x).to be > 1500
 
           to_scroll = driver.find_element(:id => "imagestart")
           driver.touch.scroll(to_scroll, -1000, 0).perform
@@ -144,7 +144,7 @@ module Selenium::WebDriver::DriverExtensions
 
         it "can scroll horizontally" do
           link = driver.find_element(:id => "link1")
-          link.location.x.should > 1500
+          expect(link.location.x).to be > 1500
 
           driver.touch.scroll(400, 0).perform
 
@@ -169,7 +169,7 @@ module Selenium::WebDriver::DriverExtensions
           driver.touch.single_tap(e).perform
 
           same_page = driver.execute_script "return document.latch"
-          same_page.should be true
+          expect(same_page).to be true
         end
       end
 
@@ -178,10 +178,10 @@ module Selenium::WebDriver::DriverExtensions
 
         it "can double tap an element" do
           image = driver.find_element(:id => "imagestart")
-          image.location.y.should > 100
+          expect(image.location.y).to be > 100
 
           driver.touch.double_tap(image).perform
-          image.location.y.should < 50
+          expect(image.location.y).to be < 50
         end
       end
 

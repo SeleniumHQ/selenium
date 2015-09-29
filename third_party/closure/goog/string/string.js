@@ -253,7 +253,7 @@ goog.string.isAlphaNumeric = function(str) {
 /**
  * Checks if a character is a space character.
  * @param {string} ch Character to check.
- * @return {boolean} True if {code ch} is a space.
+ * @return {boolean} True if {@code ch} is a space.
  */
 goog.string.isSpace = function(ch) {
   return ch == ' ';
@@ -263,7 +263,7 @@ goog.string.isSpace = function(ch) {
 /**
  * Checks if a character is a valid unicode character.
  * @param {string} ch Character to check.
- * @return {boolean} True if {code ch} is a valid unicode character.
+ * @return {boolean} True if {@code ch} is a valid unicode character.
  */
 goog.string.isUnicodeChar = function(ch) {
   return ch.length == 1 && ch >= ' ' && ch <= '~' ||
@@ -1112,9 +1112,14 @@ goog.string.regExpEscape = function(s) {
  * @return {string} A string containing {@code length} repetitions of
  *     {@code string}.
  */
-goog.string.repeat = function(string, length) {
-  return new Array(length + 1).join(string);
-};
+goog.string.repeat = (String.prototype.repeat) ?
+    function(string, length) {
+      // The native method is over 100 times faster than the alternative.
+      return string.repeat(length);
+    } :
+    function(string, length) {
+      return new Array(length + 1).join(string);
+    };
 
 
 /**
@@ -1266,14 +1271,6 @@ goog.string.compareElements_ = function(left, right) {
 
 
 /**
- * Maximum value of #goog.string.hashCode, exclusive. 2^32.
- * @type {number}
- * @private
- */
-goog.string.HASHCODE_MAX_ = 0x100000000;
-
-
-/**
  * String hash function similar to java.lang.String.hashCode().
  * The hash code for a string is computed as
  * s[0] * 31 ^ (n - 1) + s[1] * 31 ^ (n - 2) + ... + s[n - 1],
@@ -1287,9 +1284,8 @@ goog.string.HASHCODE_MAX_ = 0x100000000;
 goog.string.hashCode = function(str) {
   var result = 0;
   for (var i = 0; i < str.length; ++i) {
-    result = 31 * result + str.charCodeAt(i);
     // Normalize to 4 byte range, 0 ... 2^32.
-    result %= goog.string.HASHCODE_MAX_;
+    result = (31 * result + str.charCodeAt(i)) >>> 0;
   }
   return result;
 };

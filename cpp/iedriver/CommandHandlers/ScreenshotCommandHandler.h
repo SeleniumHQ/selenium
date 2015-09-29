@@ -24,17 +24,6 @@
 #include <atlimage.h>
 #include <atlenc.h>
 
-// Define a shared data segment.  Variables in this segment can be
-// shared across processes that load this DLL.
-#pragma data_seg("SHARED")
-HHOOK next_hook = NULL;
-HWND ie_window_handle = NULL;
-int max_width = 0;
-int max_height = 0;
-#pragma data_seg()
-
-#pragma comment(linker, "/section:SHARED,RWS")
-
 namespace webdriver {
 
 class ScreenshotCommandHandler : public IECommandHandler {
@@ -111,11 +100,11 @@ class ScreenshotCommandHandler : public IECommandHandler {
   HRESULT CaptureBrowser(BrowserHandle browser) {
     LOG(TRACE) << "Entering ScreenshotCommandHandler::CaptureBrowser";
 
-    ie_window_handle = browser->GetTopLevelWindowHandle();
+    HWND ie_window_handle = browser->GetTopLevelWindowHandle();
     HWND content_window_handle = browser->GetContentWindowHandle();
 
     CComPtr<IHTMLDocument2> document;
-    browser->GetDocument(&document);
+    browser->GetDocument(true, &document);
     if (!document) {
       LOG(WARN) << "Unable to get document from browser. Are you viewing a non-HTML document?";
       return E_ABORT;
@@ -139,8 +128,8 @@ class ScreenshotCommandHandler : public IECommandHandler {
     LOG(DEBUG) << "Initial chrome sizes are (w, h): "
                << chrome_width << ", " << chrome_height;
 
-    max_width = document_info.width + chrome_width;
-    max_height = document_info.height + chrome_height;
+    int target_window_width = document_info.width + chrome_width;
+    int target_window_height = document_info.height + chrome_height;
 
     // For some reason, this technique does not allow the user to resize
     // the browser window to greater than SIZE_LIMIT x SIZE_LIMIT. This is pretty
@@ -148,15 +137,15 @@ class ScreenshotCommandHandler : public IECommandHandler {
     //
     // GDI+ limit after which it may report Generic error for some image types
     int SIZE_LIMIT = 65534; 
-    if (max_height > SIZE_LIMIT) {
+    if (target_window_height > SIZE_LIMIT) {
       LOG(WARN) << "Required height is greater than limit. Truncating screenshot height.";
-      max_height = SIZE_LIMIT;
-      document_info.height = max_height - chrome_height;
+      target_window_height = SIZE_LIMIT;
+      document_info.height = target_window_height - chrome_height;
     }
-    if (max_width > SIZE_LIMIT) {
+    if (target_window_width > SIZE_LIMIT) {
       LOG(WARN) << "Required width is greater than limit. Truncating screenshot width.";
-      max_width = SIZE_LIMIT;
-      document_info.width = max_width - chrome_width;
+      target_window_width = SIZE_LIMIT;
+      document_info.width = target_window_width - chrome_width;
     }
 
     long original_width = browser->GetWidth();
@@ -164,21 +153,31 @@ class ScreenshotCommandHandler : public IECommandHandler {
     LOG(DEBUG) << "Initial browser window sizes are (w, h): "
                << original_width << ", " << original_height;
 
-    // The resize message is being ignored if the window appears to be
-    // maximized.  There's likely a way to bypass that. The kludgy way 
-    // is to unmaximize the window, then move on with setting the window
-    // to the dimensions we really want.  This is okay because we revert
-    // back to the original dimensions afterward.
     BOOL is_maximized = ::IsZoomed(ie_window_handle);
-    if (is_maximized) {
-      LOG(DEBUG) << "Window is maximized currently. Demaximizing.";
-      ::ShowWindow(ie_window_handle, SW_SHOWNORMAL);
+    bool requires_resize = original_width < target_window_width ||
+                           original_height < target_window_height;
+
+    if (requires_resize) {
+      // The resize message is being ignored if the window appears to be
+      // maximized.  There's likely a way to bypass that. The kludgy way 
+      // is to unmaximize the window, then move on with setting the window
+      // to the dimensions we really want.  This is okay because we revert
+      // back to the original dimensions afterward.
+      if (is_maximized) {
+        LOG(DEBUG) << "Window is maximized currently. Demaximizing.";
+        ::ShowWindow(ie_window_handle, SW_SHOWNORMAL);
+      }
+
+      RECT ie_window_rect;
+      ::GetWindowRect(ie_window_handle, &ie_window_rect);
+      ::SetWindowPos(ie_window_handle,
+                     NULL, 
+                     ie_window_rect.left,
+                     ie_window_rect.top,
+                     target_window_width,
+                     target_window_height,
+                     SWP_NOSENDCHANGING);
     }
-
-    this->InstallWindowsHook();
-
-    browser->SetWidth(max_width);
-    browser->SetHeight(max_height);
 
     // Capture the window's canvas to a DIB.
     BOOL created = this->image_->Create(document_info.width,
@@ -196,14 +195,14 @@ class ScreenshotCommandHandler : public IECommandHandler {
       LOG(WARN) << "PrintWindow API is not able to get content window screenshot";
     }
 
-    this->UninstallWindowsHook();
-
-    // Restore the browser to the original dimensions.
-    if (is_maximized) {
-      ::ShowWindow(ie_window_handle, SW_MAXIMIZE);
-    } else {
-      browser->SetHeight(original_height);
-      browser->SetWidth(original_width);
+    if (requires_resize) {
+      // Restore the browser to the original dimensions.
+      if (is_maximized) {
+        ::ShowWindow(ie_window_handle, SW_MAXIMIZE);
+      } else {
+        browser->SetHeight(original_height);
+        browser->SetWidth(original_width);
+      }
     }
 
     this->image_->ReleaseDC();
@@ -330,111 +329,9 @@ class ScreenshotCommandHandler : public IECommandHandler {
     *width = window_rect.right - window_rect.left;
     *height = window_rect.bottom - window_rect.top;
   }
-
-  void InstallWindowsHook() {
-    LOG(TRACE) << "Entering ScreenshotCommandHandler::InstallWindowsHook";
-
-    HINSTANCE instance_handle = _AtlBaseModule.GetModuleInstance();
-
-    FARPROC hook_procedure_address = ::GetProcAddress(instance_handle, "ScreenshotWndProc");
-    if (hook_procedure_address == NULL || hook_procedure_address == 0) {
-      LOGERR(WARN) << "Unable to get address of hook procedure to catch WM_GETMINMAXINFO";
-      return;
-    }
-    HOOKPROC hook_procedure = reinterpret_cast<HOOKPROC>(hook_procedure_address);
-
-    // Install the Windows hook.
-    DWORD thread_id = ::GetWindowThreadProcessId(ie_window_handle, NULL);
-    next_hook = ::SetWindowsHookEx(WH_CALLWNDPROC,
-                                   hook_procedure,
-                                   instance_handle,
-                                   thread_id);
-    if (next_hook == NULL) {      
-      LOGERR(WARN) << "Unable to set windows hook to catch WM_GETMINMAXINFO";
-    }
-  }
-
-  void UninstallWindowsHook() {
-    ::UnhookWindowsHookEx(next_hook);
-  }
 };
 
 } // namespace webdriver
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-// This function is our message processor that we inject into the IEFrame 
-// process.  Its sole purpose is to process WM_GETMINMAXINFO messages and 
-// modify the max tracking size so that we can resize the IEFrame window to 
-// greater than the virtual screen resolution.  All other messages are 
-// delegated to the original IEFrame message processor.  This function 
-// uninjects itself immediately upon execution.
-LRESULT CALLBACK MinMaxInfoHandler(HWND hwnd,
-                                   UINT message,
-                                   WPARAM wParam,
-                                   LPARAM lParam) {
-  // Grab a reference to the original message processor.
-  HANDLE original_message_proc = ::GetProp(hwnd,
-                                           L"__original_message_processor__");
-  ::RemoveProp(hwnd, L"__original_message_processor__");
-
-  // Uninject this method.
-  ::SetWindowLongPtr(hwnd,
-                     GWLP_WNDPROC,
-                     reinterpret_cast<LONG_PTR>(original_message_proc));
-
-  if (WM_GETMINMAXINFO == message) {
-    MINMAXINFO* minMaxInfo = reinterpret_cast<MINMAXINFO*>(lParam);
-
-    minMaxInfo->ptMaxTrackSize.x = max_width;
-    minMaxInfo->ptMaxTrackSize.y = max_height;
-
-    // We're not going to pass this message onto the original message
-    // processor, so we should return 0, per the documentation for
-    // the WM_GETMINMAXINFO message.
-    return 0;
-  }
-
-  // All other messages should be handled by the original message processor.
-  return ::CallWindowProc(reinterpret_cast<WNDPROC>(original_message_proc),
-                          hwnd,
-                          message,
-                          wParam,
-                          lParam);
-}
-
-// Many thanks to sunnyandy for helping out with this approach.  What we're 
-// doing here is setting up a Windows hook to see incoming messages to the
-// IEFrame's message processor.  Once we find one that's WM_GETMINMAXINFO,
-// we inject our own message processor into the IEFrame process to handle 
-// that one message. WM_GETMINMAXINFO is sent on a resize event so the process
-// can see how large a window can be. By modifying the max values, we can allow
-// a window to be sized greater than the (virtual) screen resolution would
-// otherwise allow.
-//
-// See the discussion here: http://www.codeguru.com/forum/showthread.php?p=1889928
-LRESULT CALLBACK ScreenshotWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
-  CWPSTRUCT* call_window_proc_struct = reinterpret_cast<CWPSTRUCT*>(lParam);
-  if (WM_GETMINMAXINFO == call_window_proc_struct->message) {
-    // Inject our own message processor into the process so we can modify
-    // the WM_GETMINMAXINFO message. It is not possible to modify the 
-    // message from this hook, so the best we can do is inject a function
-    // that can.
-    LONG_PTR proc = ::SetWindowLongPtr(call_window_proc_struct->hwnd,
-                                       GWLP_WNDPROC,
-                                       reinterpret_cast<LONG_PTR>(MinMaxInfoHandler));
-    ::SetProp(call_window_proc_struct->hwnd,
-              L"__original_message_processor__",
-              reinterpret_cast<HANDLE>(proc));
-  }
-
-  return ::CallNextHookEx(next_hook, nCode, wParam, lParam);
-}
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // WEBDRIVER_IE_SCREENSHOTCOMMANDHANDLER_H_

@@ -24,6 +24,7 @@ goog.require('goog.a11y.aria');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.string');
 goog.require('goog.style');
@@ -134,7 +135,7 @@ goog.ui.ContainerRenderer.prototype.enableTabIndex = function(element, enable) {
  * @return {Element} Root element for the container.
  */
 goog.ui.ContainerRenderer.prototype.createDom = function(container) {
-  return container.getDomHelper().createDom('div',
+  return container.getDomHelper().createDom(goog.dom.TagName.DIV,
       this.getClassNames(container).join(' '));
 };
 

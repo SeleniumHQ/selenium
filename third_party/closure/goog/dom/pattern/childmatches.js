@@ -38,48 +38,38 @@ goog.require('goog.dom.pattern.MatchType');
  * @final
  */
 goog.dom.pattern.ChildMatches = function(childPattern, opt_minimumMatches) {
+  /**
+   * The child pattern to collect matches from.
+   *
+   * @private {goog.dom.pattern.AbstractPattern}
+   */
   this.childPattern_ = childPattern;
+
+  /**
+   * Array of matched child nodes.
+   *
+   * @type {Array<Node>}
+   */
   this.matches = [];
+
+  /**
+   * Minimum number of matches.
+   *
+   * @private {number}
+   */
   this.minimumMatches_ = opt_minimumMatches || 0;
-  goog.dom.pattern.AllChildren.call(this);
+
+  /**
+   * Whether the pattern has recently matched or failed to match and will need
+   * to be reset when starting a new round of matches.
+   *
+   * @private {boolean}
+   */
+  this.needsReset_ = false;
+
+  goog.dom.pattern.ChildMatches.base(this, 'constructor');
 };
 goog.inherits(goog.dom.pattern.ChildMatches, goog.dom.pattern.AllChildren);
-
-
-/**
- * Array of matched child nodes.
- *
- * @type {Array<Node>}
- */
-goog.dom.pattern.ChildMatches.prototype.matches;
-
-
-/**
- * Minimum number of matches.
- *
- * @type {number}
- * @private
- */
-goog.dom.pattern.ChildMatches.prototype.minimumMatches_ = 0;
-
-
-/**
- * The child pattern to collect matches from.
- *
- * @type {goog.dom.pattern.AbstractPattern}
- * @private
- */
-goog.dom.pattern.ChildMatches.prototype.childPattern_;
-
-
-/**
- * Whether the pattern has recently matched or failed to match and will need to
- * be reset when starting a new round of matches.
- *
- * @type {boolean}
- * @private
- */
-goog.dom.pattern.ChildMatches.prototype.needsReset_ = false;
 
 
 /**

@@ -51,7 +51,7 @@ public abstract class JUnit4TestBase implements WrapsDriver {
   protected TestEnvironment environment;
   protected AppServer appServer;
   protected Pages pages;
-  private static ThreadLocal<WebDriver> storedDriver = new ThreadLocal<WebDriver>();
+  private static ThreadLocal<WebDriver> storedDriver = new ThreadLocal<>();
   protected WebDriver driver;
   protected Wait<WebDriver> wait;
   protected Wait<WebDriver> shortWait;

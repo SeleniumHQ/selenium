@@ -19,7 +19,7 @@
  * @fileoverview Defines a WebDriver client for Safari. Before using this
  * module, you must install the
  * [latest version](http://selenium-release.storage.googleapis.com/index.html)
- * of the SafariDriver browser extension; using Safari for normal browsign is
+ * of the SafariDriver browser extension; using Safari for normal browsing is
  * not recommended once the extension has been installed. You can, and should,
  * disable the extension when the browser is not being used with WebDriver.
  */

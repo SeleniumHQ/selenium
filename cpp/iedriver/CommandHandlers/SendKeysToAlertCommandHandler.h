@@ -54,7 +54,7 @@ class SendKeysToAlertCommandHandler : public IECommandHandler {
     ::Sleep(100);
     HWND alert_handle = browser_wrapper->GetActiveDialogWindowHandle();
     if (alert_handle == NULL) {
-      response->SetErrorResponse(EMODALDIALOGOPEN, "No alert is active");
+      response->SetErrorResponse(ENOSUCHALERT, "No alert is active");
     } else {
       Alert dialog(browser_wrapper, alert_handle);
       status_code = dialog.SendKeys(text_parameter_iterator->second.asString());

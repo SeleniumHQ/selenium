@@ -42,12 +42,7 @@ var Channel = goog.labs.net.webChannel.Channel;
  * a host prefix. This allows us to work around browser per-domain
  * connection limits.
  *
- * Currently, we  use secondary domains when using Trident's ActiveXObject,
- * because it supports cross-domain requests out of the box.  Note that in IE10
- * we no longer use ActiveX since it's not supported in Metro mode and IE10
- * supports XHR streaming.
- *
- * If you need to use secondary domains on other browsers and IE10,
+ * If you need to use secondary domains on different browsers and IE10,
  * you have two choices:
  *     1) If you only care about browsers that support CORS
  *        (https://developer.mozilla.org/en-US/docs/HTTP_access_control), you

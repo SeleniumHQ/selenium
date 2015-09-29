@@ -260,7 +260,7 @@ public class BrowserSessionFactoryUnitTest {
   }
 
   private Set<BrowserSessionInfo> getTestSessionSet() {
-    Set<BrowserSessionInfo> infos = new HashSet<BrowserSessionInfo>();
+    Set<BrowserSessionInfo> infos = new HashSet<>();
     BrowserSessionInfo info1 = getTestSession1();
     infos.add(info1);
     BrowserSessionInfo info2 = getTestSession2();

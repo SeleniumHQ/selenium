@@ -1,5 +1,3 @@
-#!/usr/bin/python
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -56,6 +54,10 @@ class WebDriverWait(object):
             except TypeError:  # ignored_exceptions is not iterable
                 exceptions.append(ignored_exceptions)
         self._ignored_exceptions = tuple(exceptions)
+
+    def __repr__(self):
+        return '<{0.__module__}.{0.__name__} (session="{1}")>'.format(
+            type(self), self._driver.session_id)
 
     def until(self, method, message=''):
         """Calls the method provided with the driver as an argument until the \

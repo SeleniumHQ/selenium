@@ -39,6 +39,7 @@ goog.require('goog.fx.DragDropItem');
  * @throws Error If no element argument is provided or if the type is invalid
  * @extends {goog.fx.AbstractDragDrop}
  * @constructor
+ * @struct
  */
 goog.fx.DragDrop = function(element, opt_data) {
   goog.fx.AbstractDragDrop.call(this);

@@ -26,15 +26,23 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
+import static org.openqa.selenium.Platform.LINUX;
+import static org.openqa.selenium.support.ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt;
+import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
+import static org.openqa.selenium.testing.TestUtilities.isChrome;
 
 import com.google.common.collect.Sets;
+import org.openqa.selenium.testing.drivers.SauceDriver;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
@@ -90,7 +98,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testGetScreenshotAsFile() throws Exception {
     driver.get(pages.simpleTestPage);
     tempFile = screenshoter.getScreenshotAs(OutputType.FILE);
@@ -114,6 +121,10 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   public void testShouldCaptureScreenshotOfCurrentViewport() throws Exception {
+    // Fails on Sauce for whatever reason; probably display or window manager.
+    assumeFalse(SauceDriver.shouldUseSauce()
+        && getEffectivePlatform(driver).is(LINUX)
+        && isChrome(driver));
     driver.get(appServer.whereIs("screen/screen.html"));
 
     BufferedImage screenshot = getImage();
@@ -246,19 +257,31 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   @Ignore(
-      value = {IE, MARIONETTE},
+      value = {IE},
       reason = " IE: v9 shows strange border which broke color comparison"
   )
   public void testShouldCaptureScreenshotAtFramePage() throws Exception {
+    // Fails on Sauce for whatever reason; probably display or window manager.
+    assumeFalse(SauceDriver.shouldUseSauce()
+        && getEffectivePlatform(driver).is(LINUX)
+        && isChrome(driver));
     driver.get(appServer.whereIs("screen/screen_frames.html"));
+    wait.until(frameToBeAvailableAndSwitchToIt(By.id("frame1")));
+    wait.until(visibilityOfAllElementsLocatedBy(By.id("content")));
 
+    driver.switchTo().defaultContent();
+    wait.until(frameToBeAvailableAndSwitchToIt(By.id("frame2")));
+    wait.until(visibilityOfAllElementsLocatedBy(By.id("content")));
+
+    driver.switchTo().defaultContent();
+    wait.until(titleIs("screen test"));
     BufferedImage screenshot = getImage();
 
     Set<String> actualColors = scanActualColors(screenshot,
                                                /* stepX in pixels */ 5,
                                                /* stepY in pixels */ 5);
 
-    Set<String> expectedColors = new HashSet<String>();
+    Set<String> expectedColors = new HashSet<>();
     expectedColors.addAll(generateExpectedColors( /* initial color */ 0x0F0F0F,
                                              /* color step*/ 1000,
                                              /* grid X size */ 6,
@@ -273,7 +296,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {CHROME, MARIONETTE},
+  @Ignore(value = {CHROME},
           reason = " CHROME: Unknown actual colors are presented at screenshot")
   public void testShouldCaptureScreenshotAtIFramePage() throws Exception {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));
@@ -284,7 +307,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
                                                /* stepX in pixels */ 5,
                                                /* stepY in pixels */ 5);
 
-    Set<String> expectedColors = new HashSet<String>();
+    Set<String> expectedColors = new HashSet<>();
     expectedColors.addAll(generateExpectedColors( /* initial color */ 0x0F0F0F,
                                              /* color step*/ 1000,
                                              /* grid X size */ 6,
@@ -298,12 +321,17 @@ public class TakesScreenshotTest extends JUnit4TestBase {
     compareColors(expectedColors, actualColors);
   }
 
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   @Ignore(
       value = {IE, MARIONETTE},
       reason = "IE: v9 shows strange border which broke color comparison"
   )
   public void testShouldCaptureScreenshotAtFramePageAfterSwitching() throws Exception {
+    // Fails on Sauce for whatever reason; probably display or window manager.
+    assumeFalse(SauceDriver.shouldUseSauce()
+        && getEffectivePlatform(driver).is(LINUX)
+        && isChrome(driver));
     driver.get(appServer.whereIs("screen/screen_frames.html"));
 
     driver.switchTo().frame(driver.findElement(By.id("frame2")));
@@ -314,7 +342,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
                                                /* stepX in pixels */ 5,
                                                /* stepY in pixels */ 5);
 
-    Set<String> expectedColors = new HashSet<String>();
+    Set<String> expectedColors = new HashSet<>();
     expectedColors.addAll(generateExpectedColors( /* initial color */ 0x0F0F0F,
                                              /* color step*/ 1000,
                                              /* grid X size */ 6,
@@ -329,6 +357,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
     compareColors(expectedColors, actualColors);
   }
 
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   @Ignore(
       value = {IE, CHROME, MARIONETTE},
@@ -346,7 +375,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
                                                /* stepX in pixels */ 5,
                                                /* stepY in pixels */ 5);
 
-    Set<String> expectedColors = new HashSet<String>();
+    Set<String> expectedColors = new HashSet<>();
     expectedColors.addAll(generateExpectedColors( /* initial color */ 0x0F0F0F,
                                              /* color step*/ 1000,
                                              /* grid X size */ 6,
@@ -393,7 +422,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
    */
   private Set<String> generateExpectedColors(final int initialColor, final int stepColor,
                                              final int nX, final int nY) {
-    Set<String> colors = new TreeSet<String>();
+    Set<String> colors = new TreeSet<>();
     int cnt = 1;
     for (int i = 1; i < nX; i++) {
       for (int j = 1; j < nY; j++) {
@@ -418,7 +447,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
    * @return set of colors in string hex presentation
    */
   private Set<String> scanActualColors(BufferedImage image, final int stepX, final int stepY) {
-    Set<String> colors = new TreeSet<String>();
+    Set<String> colors = new TreeSet<>();
 
     try {
       int height = image.getHeight();

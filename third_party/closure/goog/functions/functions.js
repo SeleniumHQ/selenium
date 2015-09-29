@@ -127,7 +127,7 @@ goog.functions.nth = function(n) {
  * and replaces it with a new one.
  * @param {Function} f A function.
  * @param {T} retValue A new return value.
- * @return {function(...[?]):T} A new function.
+ * @return {function(...?):T} A new function.
  * @template T
  */
 goog.functions.withReturnValue = function(f, retValue) {
@@ -156,9 +156,9 @@ goog.functions.equalTo = function(value, opt_useLooseComparison) {
 /**
  * Creates the composition of the functions passed in.
  * For example, (goog.functions.compose(f, g))(a) is equivalent to f(g(a)).
- * @param {function(...[?]):T} fn The final function.
+ * @param {function(...?):T} fn The final function.
  * @param {...Function} var_args A list of functions.
- * @return {function(...[?]):T} The composition of all inputs.
+ * @return {function(...?):T} The composition of all inputs.
  * @template T
  */
 goog.functions.compose = function(fn, var_args) {
@@ -204,7 +204,7 @@ goog.functions.sequence = function(var_args) {
  * short-circuited as soon as a function returns false.
  * For example, (goog.functions.and(f, g))(x) is equivalent to f(x) && g(x).
  * @param {...Function} var_args A list of functions.
- * @return {function(...[?]):boolean} A function that ANDs its component
+ * @return {function(...?):boolean} A function that ANDs its component
  *      functions.
  */
 goog.functions.and = function(var_args) {
@@ -227,7 +227,7 @@ goog.functions.and = function(var_args) {
  * short-circuited as soon as a function returns true.
  * For example, (goog.functions.or(f, g))(x) is equivalent to f(x) || g(x).
  * @param {...Function} var_args A list of functions.
- * @return {function(...[?]):boolean} A function that ORs its component
+ * @return {function(...?):boolean} A function that ORs its component
  *    functions.
  */
 goog.functions.or = function(var_args) {
@@ -248,7 +248,7 @@ goog.functions.or = function(var_args) {
  * Creates a function that returns the Boolean opposite of a provided function.
  * For example, (goog.functions.not(f))(x) is equivalent to !f(x).
  * @param {!Function} f The original function.
- * @return {function(...[?]):boolean} A function that delegates to f and returns
+ * @return {function(...?):boolean} A function that delegates to f and returns
  * opposite.
  */
 goog.functions.not = function(f) {
@@ -268,14 +268,14 @@ goog.functions.not = function(f) {
  *
  * @param {function(new:T, ...)} constructor The constructor for the Object.
  * @param {...*} var_args The arguments to be passed to the constructor.
- * @return {!T} A new instance of the class given in {@code constructor}.
+ * @return {T} A new instance of the class given in {@code constructor}.
  * @template T
  */
 goog.functions.create = function(constructor, var_args) {
   /**
- * @constructor
- * @final
- */
+   * @constructor
+   * @final
+   */
   var temp = function() {};
   temp.prototype = constructor.prototype;
 
@@ -329,4 +329,104 @@ goog.functions.cacheReturnValue = function(fn) {
 
     return value;
   }
+};
+
+
+/**
+ * Wraps a function to allow it to be called, at most, once. All
+ * additional calls are no-ops.
+ *
+ * This is particularly useful for initialization functions
+ * that should be called, at most, once.
+ *
+ * @param {function():*} f Function to call.
+ * @return {function():undefined} Wrapped function.
+ */
+goog.functions.once = function(f) {
+  // Keep a reference to the function that we null out when we're done with
+  // it -- that way, the function can be GC'd when we're done with it.
+  var inner = f;
+  return function() {
+    if (inner) {
+      var tmp = inner;
+      inner = null;
+      tmp();
+    }
+  };
+};
+
+
+/**
+ * Wraps a function to allow it to be called, at most, once for each sequence of
+ * calls fired repeatedly so long as they are fired less than a specified
+ * interval apart (in milliseconds). Whether it receives one signal or multiple,
+ * it will always wait until a full interval has elapsed since the last signal
+ * before performing the action.
+ *
+ * This is particularly useful for bulking up repeated user actions (e.g. only
+ * refreshing a view once a user finishes typing rather than updating with every
+ * keystroke). For more stateful debouncing with support for pausing, resuming,
+ * and canceling debounced actions, use {@code goog.async.Debouncer}.
+ *
+ * @param {function(this:SCOPE):*} f Function to call.
+ * @param {number} interval Interval over which to debounce. The function will
+ *     only be called after the full interval has elapsed since the last call.
+ * @param {SCOPE=} opt_scope Object in whose scope to call the function.
+ * @return {function():undefined} Wrapped function.
+ * @template SCOPE
+ */
+goog.functions.debounce = function(f, interval, opt_scope) {
+  if (opt_scope) {
+    f = goog.bind(f, opt_scope);
+  }
+  var timeout = null;
+  return function() {
+    goog.global.clearTimeout(timeout);
+    timeout = goog.global.setTimeout(f, interval);
+  };
+};
+
+
+/**
+ * Wraps a function to allow it to be called, at most, once per interval
+ * (specified in milliseconds). If it is called multiple times while it is
+ * waiting, it will only perform the action once at the end of the interval.
+ *
+ * This is particularly useful for limiting repeated user requests (e.g.
+ * preventing a user from spamming a server with frequent view refreshes). For
+ * more stateful throttling with support for pausing, resuming, and canceling
+ * throttled actions, use {@code goog.async.Throttle}.
+ *
+ * @param {function(this:SCOPE):*} f Function to call.
+ * @param {number} interval Interval over which to throttle. The function can
+ *     only be called once per interval.
+ * @param {SCOPE=} opt_scope Object in whose scope to call the function.
+ * @return {function():undefined} Wrapped function.
+ * @template SCOPE
+ */
+goog.functions.throttle = function(f, interval, opt_scope) {
+  if (opt_scope) {
+    f = goog.bind(f, opt_scope);
+  }
+  var timeout = null;
+  var shouldFire = false;
+  var fire = function() {
+    timeout = goog.global.setTimeout(handleTimeout, interval);
+    f();
+  };
+  var handleTimeout = function() {
+    timeout = null;
+    if (shouldFire) {
+      shouldFire = false;
+      fire();
+    }
+  };
+
+  return function() {
+    if (!timeout) {
+      fire();
+    } else {
+      shouldFire = true;
+    }
+  };
 };

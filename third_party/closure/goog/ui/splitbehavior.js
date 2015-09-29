@@ -24,7 +24,6 @@ goog.provide('goog.ui.SplitBehavior.DefaultHandlers');
 goog.require('goog.Disposable');
 goog.require('goog.asserts');
 goog.require('goog.dispose');
-goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.classlist');
 goog.require('goog.events.EventHandler');
@@ -43,7 +42,7 @@ goog.require('goog.ui.registry');
  *
  * @param {goog.ui.Control} first A ui control.
  * @param {goog.ui.Control} second A ui control.
- * @param {function(goog.ui.Control,Event)=} opt_behaviorHandler A handler
+ * @param {function(!goog.ui.Control, !Event)=} opt_behaviorHandler A handler
  *     to apply for the behavior.
  * @param {string=} opt_eventType The event type triggering the
  *     handler.
@@ -70,7 +69,7 @@ goog.ui.SplitBehavior = function(first, second, opt_behaviorHandler,
 
   /**
    * Handler for this behavior.
-   * @type {function(goog.ui.Control,Event)}
+   * @type {function(!goog.ui.Control, !Event)}
    * @private
    */
   this.behaviorHandler_ = opt_behaviorHandler ||
@@ -82,12 +81,6 @@ goog.ui.SplitBehavior = function(first, second, opt_behaviorHandler,
    * @private
    */
   this.eventType_ = opt_eventType || goog.ui.Component.EventType.ACTION;
-
-  /**
-   * @type {goog.dom.DomHelper}
-   * @private
-   */
-  this.dom_ = opt_domHelper || goog.dom.getDomHelper();
 
   /**
    * True iff the behavior is active.
@@ -130,7 +123,7 @@ goog.ui.SplitBehavior.CSS_CLASS = goog.getCssName('goog-split-behavior');
 
 /**
  * An emum of split behavior handlers.
- * @enum {function(goog.ui.Control,Event)}
+ * @enum {function(!goog.ui.Control, !Event)}
  */
 goog.ui.SplitBehavior.DefaultHandlers = {
   NONE: goog.nullFunction,
@@ -167,7 +160,7 @@ goog.ui.SplitBehavior.prototype.getElement = function() {
 
 
 /**
- * @return {function(goog.ui.Control,Event)} The behavior handler.
+ * @return {function(!goog.ui.Control,!Event)} The behavior handler.
  */
 goog.ui.SplitBehavior.prototype.getBehaviorHandler = function() {
   return this.behaviorHandler_;

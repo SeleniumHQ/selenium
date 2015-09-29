@@ -275,7 +275,6 @@
       expectChanges(radioButtons[0]);
 
       action(radioButtons[0]);
-
       assertChanges(0);
       assertTrue(bot.dom.isSelected(radioButtons[0]));
     }
@@ -361,11 +360,23 @@
 
       action(elem);
 
-      // WebKit and IE9 standards mode fire change events when the
-      // checkbox isn't toggled.
-      assertChanges(
-          goog.userAgent.WEBKIT || bot.userAgent.IE_DOC_9 ? 1 : 0);
+      // Some browsers fire change events when the checkbox isn't toggled.
+      assertChanges(firesChangeEventIfNotToggled() ? 1 : 0);
       assertFalse(bot.dom.isSelected(elem));
+    }
+
+    function firesChangeEventIfNotToggled() {
+      if (goog.userAgent.product.CHROME && bot.userAgent.isProductVersion(45)) {
+        // Chrome 45 and above do not fire the change event.
+        return false;
+      } else if (goog.userAgent.WEBKIT || bot.userAgent.IE_DOC_9) {
+        // Other browsers with goog.userAgent.WEBKIT fire the change event.
+        // IE 9 standards mode fires the change event.
+        return true;
+      }
+
+      // All other browsers do not fire the change event.
+      return false;
     }
 
     var testClickCannotSelectCheckboxWhenDefaultPrevented =
@@ -395,12 +406,8 @@
         assertChanges(1);
         assertTrue(bot.dom.isSelected(elem));
       } else {
-        // IE9 standards mode and Chrome still fire the change event.
-        if (bot.userAgent.IE_DOC_9 || goog.userAgent.product.CHROME) {
-          assertChanges(1);
-        } else {
-          assertChanges(0);
-        }
+        // Some browsers fire change events when the checkbox isn't toggled.
+        assertChanges(firesChangeEventIfNotToggled() ? 1 : 0);
         assertFalse(bot.dom.isSelected(elem));
       }
     }

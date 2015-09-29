@@ -38,6 +38,9 @@ public class TestUtilities {
   }
 
   public static String getUserAgent(WebDriver driver) {
+    if (driver instanceof HtmlUnitDriver) {
+      return ((HtmlUnitDriver) driver).getBrowserVersion().getUserAgent();
+    }
     try {
       return (String) ((JavascriptExecutor) driver).executeScript(
         "return navigator.userAgent;");
@@ -52,14 +55,12 @@ public class TestUtilities {
   }
 
   public static boolean isFirefox(WebDriver driver) {
-    return !(driver instanceof HtmlUnitDriver)
-        && getUserAgent(driver).contains("Firefox");
+    return getUserAgent(driver).contains("Firefox");
   }
 
   public static boolean isInternetExplorer(WebDriver driver) {
     String userAgent = getUserAgent(driver);
-    return !(driver instanceof HtmlUnitDriver)
-        && (userAgent.contains("MSIE") || userAgent.contains("Trident"));
+    return userAgent.contains("MSIE") || userAgent.contains("Trident");
   }
 
   public static boolean isIe6(WebDriver driver) {
@@ -76,6 +77,10 @@ public class TestUtilities {
     if (!isInternetExplorer(driver)) {
       return false;
     }
+    if (driver instanceof HtmlUnitDriver) {
+      String applicationVersion = ((HtmlUnitDriver) driver).getBrowserVersion().getApplicationVersion();
+      return Double.parseDouble(applicationVersion.split(" ")[0]) < 5;
+    }
     try {
       String jsToExecute = "return parseInt(window.navigator.appVersion.split(' ')[0]);";
       // IE9 is trident version 5.  IE9 is the start of new IE.
@@ -85,24 +90,8 @@ public class TestUtilities {
     }
   }
 
-  public  static boolean isFirefox30(WebDriver driver) {
-    return isFirefox(driver)
-        && getUserAgent(driver).contains("Firefox/3.0.");
-  }
-
-  public static boolean isFirefox35(WebDriver driver) {
-    return isFirefox(driver)
-        && getUserAgent(driver).contains("Firefox/3.5.");
-  }
-
-  public static boolean isFirefox9(WebDriver driver) {
-    return isFirefox(driver)
-        && getUserAgent(driver).contains("Firefox/9.0");
-  }
-
   public static boolean isChrome(WebDriver driver) {
-    return !(driver instanceof HtmlUnitDriver)
-        && getUserAgent(driver).contains("Chrome");
+    return getUserAgent(driver).contains("Chrome");
   }
 
   public static boolean isOldChromedriver(WebDriver driver) {

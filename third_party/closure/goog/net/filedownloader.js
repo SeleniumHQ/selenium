@@ -224,7 +224,7 @@ goog.net.FileDownloader.prototype.isDownloaded = function(url) {
     deferred.callback(true);
   });
   blobDeferred.addErrback(function(err) {
-    if (err.code == goog.fs.Error.ErrorCode.NOT_FOUND) {
+    if (err.name == goog.fs.Error.ErrorName.NOT_FOUND) {
       deferred.callback(false);
     } else {
       deferred.errback(err);

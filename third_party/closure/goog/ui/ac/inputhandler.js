@@ -444,7 +444,7 @@ goog.ui.ac.InputHandler.prototype.setCursorPosition = function(pos) {
  * should be a textarea, input box, or other focusable element with the
  * same interface.
  * @param {Element|goog.events.EventTarget} target An element to attach the
- *     input handler too.
+ *     input handler to.
  */
 goog.ui.ac.InputHandler.prototype.attachInput = function(target) {
   if (goog.dom.isElement(target)) {

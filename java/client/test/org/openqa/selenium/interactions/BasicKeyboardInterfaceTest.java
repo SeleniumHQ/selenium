@@ -17,16 +17,14 @@
 
 package org.openqa.selenium.interactions;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-
-import static org.hamcrest.Matchers.is;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -39,6 +37,7 @@ import org.openqa.selenium.support.Colors;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
 /**
@@ -115,7 +114,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, IE})
+  @Ignore({IE, HTMLUNIT})
   @Test
   public void testSendingKeysWithShiftPressed() {
     driver.get(pages.javascriptPage);
@@ -145,10 +144,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testSendingKeysToActiveElement() {
-    assumeFalse("This test fails due to a bug in Firefox 9. For more details, see: " +
-                "https://bugzilla.mozilla.org/show_bug.cgi?id=696020",
-                TestUtilities.isFirefox9(driver));
-
     driver.get(pages.bodyTypingPage);
 
     Action someKeys = getBuilder(driver).sendKeys("ab").build();
@@ -173,14 +168,11 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     assertThat(keyReporter.getAttribute("value"), is("abc def"));
   }
 
-  @Ignore(value = {IE, SAFARI, HTMLUNIT}, reason = "untested")
+  @Ignore(value = {IE, SAFARI}, reason = "untested")
+  @NotYetImplemented(HTMLUNIT)
   @JavascriptEnabled
   @Test
   public void canGenerateKeyboardShortcuts() {
-    assumeTrue(
-        "Test fails with native events enabled, likely due to issue 4385",
-        !TestUtilities.isFirefox(driver) || !TestUtilities.isNativeEventsEnabled(driver));
-
     driver.get(appServer.whereIs("keyboard_shortcut.html"));
 
     WebElement body = driver.findElement(By.xpath("//body"));
@@ -201,7 +193,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({HTMLUNIT})
+  @NotYetImplemented(HTMLUNIT)
   public void testSelectionSelectBySymbol() {
     driver.get(pages.javascriptPage);
 
@@ -222,11 +214,9 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({HTMLUNIT, IE})
+  @Ignore(IE)
+  @NotYetImplemented(HTMLUNIT)
   public void testSelectionSelectByWord() {
-    assumeTrue(
-        "Test fails with native events enabled, likely due to issue 4385",
-        !TestUtilities.isFirefox(driver) || !TestUtilities.isNativeEventsEnabled(driver));
     assumeFalse(
         "MacOS has alternative keyboard",
         TestUtilities.getEffectivePlatform().is(Platform.MAC));
@@ -251,11 +241,9 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({HTMLUNIT, IE})
+  @Ignore(IE)
+  @NotYetImplemented(HTMLUNIT)
   public void testSelectionSelectAll() {
-    assumeTrue(
-        "Test fails with native events enabled, likely due to issue 4385",
-        !TestUtilities.isFirefox(driver) || !TestUtilities.isNativeEventsEnabled(driver));
     assumeFalse(
         "MacOS has alternative keyboard",
         TestUtilities.getEffectivePlatform().is(Platform.MAC));

@@ -23,10 +23,10 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.XPath;
-using Ionic.Zip;
 using Newtonsoft.Json;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
+using System.IO.Compression;
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -195,10 +195,15 @@ namespace OpenQA.Selenium.Firefox
             byte[] zipContent = Convert.FromBase64String(base64);
             using (MemoryStream zipStream = new MemoryStream(zipContent))
             {
-                using (ZipFile profileZipArchive = ZipFile.Read(zipStream))
+                using (ZipStorer profileZipArchive = ZipStorer.Open(zipStream, FileAccess.Read))
                 {
-                    profileZipArchive.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
-                    profileZipArchive.ExtractAll(destinationDirectory);
+                    List<ZipStorer.ZipFileEntry> entryList = profileZipArchive.ReadCentralDir();
+                    foreach (ZipStorer.ZipFileEntry entry in entryList)
+                    {
+                        string fileName = entry.FilenameInZip.Replace('/', Path.DirectorySeparatorChar);
+                        string destinationFile = Path.Combine(destinationDirectory, fileName);
+                        profileZipArchive.ExtractFile(entry, destinationFile);
+                    }
                 }
             }
 
@@ -333,15 +338,20 @@ namespace OpenQA.Selenium.Firefox
         {
             string base64zip = string.Empty;
             this.WriteToDisk();
-            using (ZipFile profileZipFile = new ZipFile())
+
+            using (MemoryStream profileMemoryStream = new MemoryStream())
             {
-                profileZipFile.AddDirectory(this.profileDir);
-                using (MemoryStream profileMemoryStream = new MemoryStream())
+                using (ZipStorer profileZipArchive = ZipStorer.Create(profileMemoryStream, string.Empty))
                 {
-                    profileZipFile.Save(profileMemoryStream);
-                    base64zip = Convert.ToBase64String(profileMemoryStream.ToArray());
+                    string[] files = Directory.GetFiles(this.profileDir, "*.*", SearchOption.AllDirectories);
+                    foreach (string file in files)
+                    {
+                        string fileNameInZip = file.Substring(this.profileDir.Length).Replace(Path.DirectorySeparatorChar, '/');
+                        profileZipArchive.AddFile(ZipStorer.Compression.Deflate, file, fileNameInZip, string.Empty);
+                    }
                 }
 
+                base64zip = Convert.ToBase64String(profileMemoryStream.ToArray());
                 this.Clean();
             }
 
@@ -413,7 +423,7 @@ namespace OpenQA.Selenium.Firefox
         {
             if (this.profilePort == 0)
             {
-                throw new WebDriverException("You must set the port to listen on before updating user.js");
+                throw new WebDriverException("You must set the port to listen on before updating user preferences file");
             }
 
             string userPrefs = Path.Combine(this.profileDir, UserPreferencesFileName);

@@ -30,7 +30,7 @@ public class GetAllLinks extends SeleneseCommand<String[]> {
   @Override
   protected String[] handleSeleneseCommand(WebDriver driver, String locator, String value) {
     List<WebElement> allLinks = driver.findElements(By.xpath("//a"));
-    List<String> links = new ArrayList<String>();
+    List<String> links = new ArrayList<>();
     for (WebElement link : allLinks) {
       String id = link.getAttribute("id");
       links.add(id == null ? "" : id);

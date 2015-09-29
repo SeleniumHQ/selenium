@@ -155,6 +155,9 @@ public class DefaultRemoteCommand implements RemoteCommand {
 
   /**
    * Factory method to create a RemoteCommand from a wiki-style input string
+   *
+   * @param inputLine wiki-style input string
+   * @return RemoteCommand based on the input
    */
   public static RemoteCommand parse(String inputLine) {
     if (inputLine == null) throw new NullPointerException("inputLine must not be null");

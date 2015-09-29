@@ -38,7 +38,7 @@ import java.util.Map;
 
 @SuppressWarnings("serial")
 public class DesiredCapabilities implements Serializable, Capabilities {
-  private final Map<String, Object> capabilities = new HashMap<String, Object>();
+  private final Map<String, Object> capabilities = new HashMap<>();
 
   public DesiredCapabilities(String browser, String version, Platform platform) {
     setCapability(BROWSER_NAME, browser);
@@ -155,8 +155,8 @@ public class DesiredCapabilities implements Serializable, Capabilities {
    * extraCapabilities object.
    *
    * @param extraCapabilities Additional capabilities to be added.
+   * @return DesiredCapabilities after the merge
    */
-
   public DesiredCapabilities merge(
       org.openqa.selenium.Capabilities extraCapabilities) {
     if (extraCapabilities != null) {
@@ -220,6 +220,9 @@ public class DesiredCapabilities implements Serializable, Capabilities {
     return capabilities;
   }
 
+  public static DesiredCapabilities edge() {
+    return new DesiredCapabilities(BrowserType.EDGE, "", Platform.WINDOWS);
+  }
   public static DesiredCapabilities internetExplorer() {
     DesiredCapabilities capabilities = new DesiredCapabilities(
         BrowserType.IE, "", Platform.WINDOWS);
@@ -236,6 +239,7 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   /**
+   * @return DesiredCapabilities for opera
    * @deprecated Use #operaBlink
    */
   @Deprecated

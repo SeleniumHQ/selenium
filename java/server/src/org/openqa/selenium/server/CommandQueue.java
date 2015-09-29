@@ -63,7 +63,7 @@ public class CommandQueue {
     browserResponseSequencer = new BrowserResponseSequencer(newUniqueId);
     resultExpected = new AtomicBoolean(false);
     closed = new AtomicBoolean(false);
-    cachedJsVariableNamesPointingAtThisWindow = new ConcurrentHashMap<String, Boolean>();
+    cachedJsVariableNamesPointingAtThisWindow = new ConcurrentHashMap<>();
     idGenerator.incrementAndGet();
     commandHolder = new CommandHolder(uniqueId, retryTimeout.get());
     defaultTimeout = new AtomicLong(configuration.getTimeoutInSeconds());
@@ -167,9 +167,6 @@ public class CommandQueue {
     }
   }
 
-  /**
-   * Get, and remove from the command holder, the next command to run
-   */
   protected String getResult() {
     return resultHolder.getResult();
   }
@@ -252,6 +249,7 @@ public class CommandQueue {
 
   /**
    * Get, and remove from the command holder, the next command to run
+   * @return next command to run
    */
   protected RemoteCommand getNextCommand() {
     return commandHolder.getCommand();

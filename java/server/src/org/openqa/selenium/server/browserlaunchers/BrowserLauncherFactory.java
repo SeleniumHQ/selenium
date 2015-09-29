@@ -77,6 +77,7 @@ public class BrowserLauncherFactory {
    * @param browser a browser string like "*firefox"
    * @param sessionId the sessionId to launch
    * @param browserOptions TODO
+   * @param configuration remote control configuration
    * @return the BrowserLauncher ready to launch
    */
   public BrowserLauncher getBrowserLauncher(String browser, String sessionId,

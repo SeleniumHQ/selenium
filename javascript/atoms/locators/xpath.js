@@ -119,7 +119,7 @@ bot.locators.xpath.evaluate_ = function(node, path, resultType) {
         for (var i = 0; i < allNodes.length; ++i) {
           var n = allNodes[i];
           var ns = n.namespaceURI;
-          if (!reversedNamespaces[ns]) {
+          if (ns && !reversedNamespaces[ns]) {
             var prefix = n.lookupPrefix(ns);
             if (!prefix) {
               var m = ns.match('.*/(\\w+)/?$');

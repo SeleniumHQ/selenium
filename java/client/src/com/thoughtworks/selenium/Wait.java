@@ -44,7 +44,7 @@ public abstract class Wait {
     wait(messageToShowIfTimeout, DEFAULT_TIMEOUT, DEFAULT_INTERVAL);
   }
 
-  /** Returns true when it's time to stop waiting */
+  /** @return true when it's time to stop waiting */
   public abstract boolean until();
 
   /** The amount of time to wait before giving up; the default is 30 seconds */

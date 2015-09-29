@@ -37,6 +37,7 @@ import static org.openqa.selenium.testing.TestUtilities.isIe7;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
 import java.io.File;
@@ -129,7 +130,6 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertTrue(driver.getCurrentUrl().endsWith("?x=name"));
   }
 
-  @Ignore({MARIONETTE})
   @Test
   public void testShouldSubmitAFormUsingTheEnterKey() {
     driver.get(pages.formPage);
@@ -150,8 +150,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     element.clear();
     element.sendKeys("some text");
 
-    element = driver.findElement(By
-                                     .xpath("//form[@name='someForm']/input[@id='username']"));
+    element = driver.findElement(By.xpath("//form[@name='someForm']/input[@id='username']"));
     String newFormValue = element.getAttribute("value");
     assertThat(newFormValue, equalTo("some text"));
   }
@@ -263,8 +262,8 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {HTMLUNIT, PHANTOMJS, SAFARI, MARIONETTE},
-          reason = "untested")
+  @Ignore(value = {PHANTOMJS, SAFARI, HTMLUNIT, MARIONETTE},
+          reason = "HtmlUnit: error; others: untested")
   public void handleFormWithJavascriptAction() {
     String url = appServer.whereIs("form_handling_js_submit.html");
     driver.get(url);
@@ -290,15 +289,17 @@ public class FormHandlingTest extends JUnit4TestBase {
     checkSubmitButton("internal_implicit_submit");
   }
 
-  @Ignore(value = {HTMLUNIT, IE, SAFARI},
-          reason = "IE, HtmlUnit: failed; Others: untested")
+  @Ignore(value = {IE, SAFARI},
+          reason = "IE: failed; Others: untested")
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testCanClickOnAnExternalSubmitButton() {
     checkSubmitButton("external_explicit_submit");
   }
 
-  @Ignore(value = {HTMLUNIT, IE, SAFARI},
-      reason = "IE, HtmlUnit: failed; Others: untested")
+  @Ignore(value = {IE, SAFARI},
+      reason = "IE: failed; Others: untested")
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testCanClickOnAnExternalImplicitSubmitButton() {
     checkSubmitButton("external_implicit_submit");

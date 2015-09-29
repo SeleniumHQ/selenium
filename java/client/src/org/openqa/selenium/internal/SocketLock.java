@@ -133,7 +133,7 @@ public class SocketLock implements Lock {
 
   /**
    * Gets the port number that is being-locked.
-   * @return
+   * @return port locked
    */
   public int getLockPort(){
     return this.address.getPort();

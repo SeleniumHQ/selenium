@@ -280,6 +280,7 @@ goog.events.KeyHandler.keyIdentifier_ = {
  * @private
  */
 goog.events.KeyHandler.USES_KEYDOWN_ = goog.userAgent.IE ||
+    goog.userAgent.EDGE ||
     goog.userAgent.WEBKIT && goog.userAgent.isVersionOrHigher('525');
 
 
@@ -305,13 +306,12 @@ goog.events.KeyHandler.prototype.handleKeyDown_ = function(e) {
   // Ctrl-Tab and Alt-Tab can cause the focus to be moved to another window
   // before we've caught a key-up event.  If the last-key was one of these we
   // reset the state.
-  if (goog.userAgent.WEBKIT) {
+  if (goog.userAgent.WEBKIT || goog.userAgent.EDGE) {
     if (this.lastKey_ == goog.events.KeyCodes.CTRL && !e.ctrlKey ||
         this.lastKey_ == goog.events.KeyCodes.ALT && !e.altKey ||
         goog.userAgent.MAC &&
         this.lastKey_ == goog.events.KeyCodes.META && !e.metaKey) {
-      this.lastKey_ = -1;
-      this.keyCode_ = -1;
+      this.resetState();
     }
   }
 
@@ -382,7 +382,7 @@ goog.events.KeyHandler.prototype.handleEvent = function(e) {
 
   // Safari reports the character code in the keyCode field for keypress
   // events but also has a charCode field.
-  } else if (goog.userAgent.WEBKIT &&
+  } else if ((goog.userAgent.WEBKIT || goog.userAgent.EDGE) &&
       e.type == goog.events.EventType.KEYPRESS) {
     keyCode = this.keyCode_;
     charCode = be.charCode >= 0 && be.charCode < 63232 &&
@@ -390,7 +390,7 @@ goog.events.KeyHandler.prototype.handleEvent = function(e) {
             be.charCode : 0;
 
   // Opera reports the keycode or the character code in the keyCode field.
-  } else if (goog.userAgent.OPERA) {
+  } else if (goog.userAgent.OPERA && !goog.userAgent.WEBKIT) {
     keyCode = this.keyCode_;
     charCode = goog.events.KeyCodes.isCharacterKey(keyCode) ?
         be.keyCode : 0;

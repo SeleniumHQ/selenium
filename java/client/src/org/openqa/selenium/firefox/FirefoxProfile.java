@@ -120,6 +120,8 @@ public class FirefoxProfile {
 
   /**
    * <strong>Internal method. This is liable to change at a moment's notice.</strong>
+   *
+   * @return InputStreamReader of the default firefox profile preferences
    */
   @Beta
   protected Reader onlyOverrideThisIfYouKnowWhatYouAreDoing() {
@@ -202,8 +204,8 @@ public class FirefoxProfile {
   /**
    * Attempt to add an extension to install into this instance.
    *
-   * @param extensionToInstall
-   * @throws IOException
+   * @param extensionToInstall File pointing to the extension
+   * @throws IOException IO Exception if can't read the extension to install
    */
   public void addExtension(File extensionToInstall) throws IOException {
     addExtension(extensionToInstall.getName(), new FileExtension(extensionToInstall));

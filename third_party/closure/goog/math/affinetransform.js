@@ -51,6 +51,7 @@ goog.require('goog.math');
  * @param {number=} opt_m11 The m11 coordinate of the transform.
  * @param {number=} opt_m02 The m02 coordinate of the transform.
  * @param {number=} opt_m12 The m12 coordinate of the transform.
+ * @struct
  * @constructor
  * @final
  */

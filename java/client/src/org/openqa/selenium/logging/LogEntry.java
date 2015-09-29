@@ -85,7 +85,7 @@ public class LogEntry {
   }
 
   public Map<String, Object> toMap() {
-    Map<String, Object> map = new HashMap<String, Object>();
+    Map<String, Object> map = new HashMap<>();
     map.put("timestamp", timestamp);
     map.put("level", level);
     map.put("message", message);

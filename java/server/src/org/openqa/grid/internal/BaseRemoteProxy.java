@@ -103,10 +103,10 @@ public class BaseRemoteProxy implements RemoteProxy {
 
 
   /**
-   * Create the proxy from the info sent by the remote. <p/> If maxSession is not specified, default
-   * to 1 = max number of tests running at a given time will be 1. <p/> For each capability,
+   * Create the proxy from the info sent by the remote. <p> If maxSession is not specified, default
+   * to 1 = max number of tests running at a given time will be 1. <p> For each capability,
    * maxInstances is defaulted to 1 if not specified = max number of test of each capability running
-   * at a time will be 1. maxInstances for firefox can be > 1. IE won't support it.
+   * at a time will be 1. maxInstances for firefox can be &gt; 1. IE won't support it.
    *
    * @param request  The request
    * @param registry The registry to use
@@ -149,7 +149,7 @@ public class BaseRemoteProxy implements RemoteProxy {
 
     List<DesiredCapabilities> capabilities = request.getCapabilities();
 
-    List<TestSlot> slots = new ArrayList<TestSlot>();
+    List<TestSlot> slots = new ArrayList<>();
     for (DesiredCapabilities capability : capabilities) {
       Object maxInstance = capability.getCapability(MAX_INSTANCES);
 
@@ -163,7 +163,7 @@ public class BaseRemoteProxy implements RemoteProxy {
 
       int value = Integer.parseInt(maxInstance.toString());
       for (int i = 0; i < value; i++) {
-        Map<String, Object> c = new HashMap<String, Object>();
+        Map<String, Object> c = new HashMap<>();
         for (String k : capability.asMap().keySet()) {
           c.put(k, capability.getCapability(k));
         }
@@ -239,7 +239,7 @@ public class BaseRemoteProxy implements RemoteProxy {
    */
   private Map<String, Object> mergeConfig(Map<String, Object> configuration1,
                                           Map<String, Object> configuration2) {
-    Map<String, Object> res = new HashMap<String, Object>();
+    Map<String, Object> res = new HashMap<>();
     res.putAll(configuration1);
 
     for (String key : configuration2.keySet()) {
@@ -405,6 +405,7 @@ public class BaseRemoteProxy implements RemoteProxy {
    *
    * @param request  The request
    * @param registry The registry to use
+   * @param <T> RemoteProxy subclass
    * @return a new instance built from the request.
    */
   @SuppressWarnings("unchecked")

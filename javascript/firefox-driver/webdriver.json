@@ -9,6 +9,7 @@
     "browser.link.open_external": 2,
     "browser.link.open_newwindow": 2,
     "browser.offline": false,
+    "browser.reader.detectedFirstArticle": true,
     "browser.safebrowsing.enabled": false,
     "browser.safebrowsing.malware.enabled": false,
     "browser.search.update": false,
@@ -51,7 +52,8 @@
     "toolkit.networkmanager.disable": true,
     "toolkit.telemetry.prompted": 2,
     "toolkit.telemetry.enabled": false,
-    "toolkit.telemetry.rejected": true
+    "toolkit.telemetry.rejected": true,
+    "xpinstall.signatures.required": false
   },
   "mutable": {
     "browser.dom.window.dump.enabled": true,

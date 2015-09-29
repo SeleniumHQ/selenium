@@ -146,6 +146,11 @@ namespace OpenQA.Selenium
                 ThrowAlreadyDismissed();
             }
 
+            public void SetAuthenticationCredentials(string userName, string password)
+            {
+                ThrowAlreadyDismissed();
+            }
+
             private static void ThrowAlreadyDismissed()
             {
                 throw new InvalidOperationException("Alert was already dismissed");

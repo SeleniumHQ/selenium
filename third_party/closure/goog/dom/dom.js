@@ -38,10 +38,13 @@ goog.require('goog.asserts');
 goog.require('goog.dom.BrowserFeature');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
+goog.require('goog.dom.safe');
+goog.require('goog.html.SafeHtml');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
 goog.require('goog.object');
 goog.require('goog.string');
+goog.require('goog.string.Unicode');
 goog.require('goog.userAgent');
 
 
@@ -227,7 +230,9 @@ goog.dom.getElementsByClass = function(className, opt_el) {
 goog.dom.getElementByClass = function(className, opt_el) {
   var parent = opt_el || document;
   var retVal = null;
-  if (goog.dom.canUseQuerySelector_(parent)) {
+  if (parent.getElementsByClassName) {
+    retVal = parent.getElementsByClassName(className)[0];
+  } else if (goog.dom.canUseQuerySelector_(parent)) {
     retVal = parent.querySelector('.' + className);
   } else {
     retVal = goog.dom.getElementsByTagNameAndClass_(
@@ -357,7 +362,7 @@ goog.dom.setProperties = function(element, properties) {
       element.className = val;
     } else if (key == 'for') {
       element.htmlFor = val;
-    } else if (key in goog.dom.DIRECT_ATTRIBUTE_MAP_) {
+    } else if (goog.dom.DIRECT_ATTRIBUTE_MAP_.hasOwnProperty(key)) {
       element.setAttribute(goog.dom.DIRECT_ATTRIBUTE_MAP_[key], val);
     } else if (goog.string.startsWith(key, 'aria-') ||
         goog.string.startsWith(key, 'data-')) {
@@ -515,7 +520,7 @@ goog.dom.getDocumentHeight_ = function(win) {
     // to figure out.
 
     var body = doc.body;
-    var docEl = doc.documentElement;
+    var docEl = /** @type {!HTMLElement} */ (doc.documentElement);
     if (!(docEl && body)) {
       return 0;
     }
@@ -625,9 +630,14 @@ goog.dom.getDocumentScrollElement = function() {
  * @private
  */
 goog.dom.getDocumentScrollElement_ = function(doc) {
-  // WebKit needs body.scrollLeft in both quirks mode and strict mode. We also
-  // default to the documentElement if the document does not have a body (e.g.
-  // a SVG document).
+  // Old WebKit needs body.scrollLeft in both quirks mode and strict mode. We
+  // also default to the documentElement if the document does not have a body
+  // (e.g. a SVG document).
+  // Uses http://dev.w3.org/csswg/cssom-view/#dom-document-scrollingelement to
+  // avoid trying to guess about browser behavior from the UA string.
+  if (doc.scrollingElement) {
+    return doc.scrollingElement;
+  }
   if (!goog.userAgent.WEBKIT && goog.dom.isCss1CompatMode_(doc)) {
     return doc.documentElement;
   }
@@ -674,7 +684,7 @@ goog.dom.getWindow_ = function(doc) {
  *     className of the new element. If an array, the elements will be joined
  *     together as the className of the new element.
  * @param {...(Object|string|Array|NodeList)} var_args Further DOM nodes or
- *     strings for text nodes. If one of the var_args is an array or NodeList,i
+ *     strings for text nodes. If one of the var_args is an array or NodeList,
  *     its elements will be added as childNodes instead.
  * @return {!Element} Reference to a DOM node.
  */
@@ -695,19 +705,18 @@ goog.dom.createDom_ = function(doc, args) {
   var tagName = args[0];
   var attributes = args[1];
 
-  // Internet Explorer is dumb: http://msdn.microsoft.com/workshop/author/
-  //                            dhtml/reference/properties/name_2.asp
+  // Internet Explorer is dumb:
+  // name: https://msdn.microsoft.com/en-us/library/ms534184(v=vs.85).aspx
+  // type: https://msdn.microsoft.com/en-us/library/ms534700(v=vs.85).aspx
   // Also does not allow setting of 'type' attribute on 'input' or 'button'.
   if (!goog.dom.BrowserFeature.CAN_ADD_NAME_OR_TYPE_ATTRIBUTES && attributes &&
       (attributes.name || attributes.type)) {
     var tagNameArr = ['<', tagName];
     if (attributes.name) {
-      tagNameArr.push(' name="', goog.string.htmlEscape(attributes.name),
-                      '"');
+      tagNameArr.push(' name="', goog.string.htmlEscape(attributes.name), '"');
     }
     if (attributes.type) {
-      tagNameArr.push(' type="', goog.string.htmlEscape(attributes.type),
-                      '"');
+      tagNameArr.push(' type="', goog.string.htmlEscape(attributes.type), '"');
 
       // Clone attributes map to remove 'type' without mutating the input.
       var clone = {};
@@ -816,10 +825,13 @@ goog.dom.createTextNode = function(content) {
  * Create a table.
  * @param {number} rows The number of rows in the table.  Must be >= 1.
  * @param {number} columns The number of columns in the table.  Must be >= 1.
- * @param {boolean=} opt_fillWithNbsp If true, fills table entries with nsbps.
+ * @param {boolean=} opt_fillWithNbsp If true, fills table entries with
+ *     {@code goog.string.Unicode.NBSP} characters.
  * @return {!Element} The created table.
  */
 goog.dom.createTable = function(rows, columns, opt_fillWithNbsp) {
+  // TODO(user): Return HTMLTableElement, also in prototype function.
+  // Callers need to be updated to e.g. not assign numbers to table.cellSpacing.
   return goog.dom.createTable_(document, rows, columns, !!opt_fillWithNbsp);
 };
 
@@ -829,26 +841,60 @@ goog.dom.createTable = function(rows, columns, opt_fillWithNbsp) {
  * @param {!Document} doc Document object to use to create the table.
  * @param {number} rows The number of rows in the table.  Must be >= 1.
  * @param {number} columns The number of columns in the table.  Must be >= 1.
- * @param {boolean} fillWithNbsp If true, fills table entries with nsbps.
- * @return {!Element} The created table.
+ * @param {boolean} fillWithNbsp If true, fills table entries with
+ *     {@code goog.string.Unicode.NBSP} characters.
+ * @return {!HTMLTableElement} The created table.
  * @private
  */
 goog.dom.createTable_ = function(doc, rows, columns, fillWithNbsp) {
-  var rowHtml = ['<tr>'];
-  for (var i = 0; i < columns; i++) {
-    rowHtml.push(fillWithNbsp ? '<td>&nbsp;</td>' : '<td></td>');
+  var table = /** @type {!HTMLTableElement} */
+      (doc.createElement(goog.dom.TagName.TABLE));
+  var tbody = table.appendChild(doc.createElement(goog.dom.TagName.TBODY));
+  for (var i = 0; i < rows; i++) {
+    var tr = doc.createElement(goog.dom.TagName.TR);
+    for (var j = 0; j < columns; j++) {
+      var td = doc.createElement(goog.dom.TagName.TD);
+      // IE <= 9 will create a text node if we set text content to the empty
+      // string, so we avoid doing it unless necessary. This ensures that the
+      // same DOM tree is returned on all browsers.
+      if (fillWithNbsp) {
+        goog.dom.setTextContent(td, goog.string.Unicode.NBSP);
+      }
+      tr.appendChild(td);
+    }
+    tbody.appendChild(tr);
   }
-  rowHtml.push('</tr>');
-  rowHtml = rowHtml.join('');
-  var totalHtml = ['<table>'];
-  for (i = 0; i < rows; i++) {
-    totalHtml.push(rowHtml);
-  }
-  totalHtml.push('</table>');
+  return table;
+};
 
-  var elem = doc.createElement(goog.dom.TagName.DIV);
-  elem.innerHTML = totalHtml.join('');
-  return /** @type {!Element} */ (elem.removeChild(elem.firstChild));
+
+/**
+ * Converts HTML markup into a node.
+ * @param {!goog.html.SafeHtml} html The HTML markup to convert.
+ * @return {!Node} The resulting node.
+ */
+goog.dom.safeHtmlToNode = function(html) {
+  return goog.dom.safeHtmlToNode_(document, html);
+};
+
+
+/**
+ * Helper for {@code safeHtmlToNode}.
+ * @param {!Document} doc The document.
+ * @param {!goog.html.SafeHtml} html The HTML markup to convert.
+ * @return {!Node} The resulting node.
+ * @private
+ */
+goog.dom.safeHtmlToNode_ = function(doc, html) {
+  var tempDiv = doc.createElement(goog.dom.TagName.DIV);
+  if (goog.dom.BrowserFeature.INNER_HTML_NEEDS_SCOPED_ELEMENT) {
+    goog.dom.safe.setInnerHtml(tempDiv,
+        goog.html.SafeHtml.concat(goog.html.SafeHtml.create('br'), html));
+    tempDiv.removeChild(tempDiv.firstChild);
+  } else {
+    goog.dom.safe.setInnerHtml(tempDiv, html);
+  }
+  return goog.dom.childrenToNode_(doc, tempDiv);
 };
 
 
@@ -859,6 +905,9 @@ goog.dom.createTable_ = function(doc, rows, columns, fillWithNbsp) {
  * triggers an alert in all browsers, even if the returned document fragment
  * is thrown away immediately.
  *
+ * NOTE: This method doesn't work if your htmlString contains elements that
+ * can't be contained in a <div>. For example, <tr>.
+ *
  * @param {string} htmlString The HTML string to convert.
  * @return {!Node} The resulting document fragment.
  */
@@ -867,6 +916,7 @@ goog.dom.htmlToDocumentFragment = function(htmlString) {
 };
 
 
+// TODO(jakubvrana): Merge with {@code safeHtmlToNode_}.
 /**
  * Helper for {@code htmlToDocumentFragment}.
  *
@@ -876,15 +926,27 @@ goog.dom.htmlToDocumentFragment = function(htmlString) {
  * @private
  */
 goog.dom.htmlToDocumentFragment_ = function(doc, htmlString) {
-  var tempDiv = doc.createElement('div');
+  var tempDiv = doc.createElement(goog.dom.TagName.DIV);
   if (goog.dom.BrowserFeature.INNER_HTML_NEEDS_SCOPED_ELEMENT) {
     tempDiv.innerHTML = '<br>' + htmlString;
     tempDiv.removeChild(tempDiv.firstChild);
   } else {
     tempDiv.innerHTML = htmlString;
   }
+  return goog.dom.childrenToNode_(doc, tempDiv);
+};
+
+
+/**
+ * Helper for {@code htmlToDocumentFragment_}.
+ * @param {!Document} doc The document.
+ * @param {!Node} tempDiv The input node.
+ * @return {!Node} The resulting node.
+ * @private
+ */
+goog.dom.childrenToNode_ = function(doc, tempDiv) {
   if (tempDiv.childNodes.length == 1) {
-    return /** @type {!Node} */ (tempDiv.removeChild(tempDiv.firstChild));
+    return tempDiv.removeChild(tempDiv.firstChild);
   } else {
     var fragment = doc.createDocumentFragment();
     while (tempDiv.firstChild) {
@@ -933,7 +995,7 @@ goog.dom.isCss1CompatMode_ = function(doc) {
  * the behavior is inconsistent:
  *
  * <pre>
- *   var a = document.createElement('br');
+ *   var a = document.createElement(goog.dom.TagName.BR);
  *   a.appendChild(document.createTextNode('foo'));
  *   a.appendChild(document.createTextNode('bar'));
  *   console.log(a.childNodes.length);  // 2
@@ -952,7 +1014,7 @@ goog.dom.canHaveChildren = function(node) {
   if (node.nodeType != goog.dom.NodeType.ELEMENT) {
     return false;
   }
-  switch (node.tagName) {
+  switch (/** @type {!Element} */ (node).tagName) {
     case goog.dom.TagName.APPLET:
     case goog.dom.TagName.AREA:
     case goog.dom.TagName.BASE:
@@ -1141,7 +1203,7 @@ goog.dom.getChildren = function(element) {
  * @return {Element} The first child node of {@code node} that is an element.
  */
 goog.dom.getFirstElementChild = function(node) {
-  if (node.firstElementChild != undefined) {
+  if (goog.isDef(node.firstElementChild)) {
     return /** @type {!Element} */(node).firstElementChild;
   }
   return goog.dom.getNextElementNode_(node.firstChild, true);
@@ -1154,7 +1216,7 @@ goog.dom.getFirstElementChild = function(node) {
  * @return {Element} The last child node of {@code node} that is an element.
  */
 goog.dom.getLastElementChild = function(node) {
-  if (node.lastElementChild != undefined) {
+  if (goog.isDef(node.lastElementChild)) {
     return /** @type {!Element} */(node).lastElementChild;
   }
   return goog.dom.getNextElementNode_(node.lastChild, false);
@@ -1167,7 +1229,7 @@ goog.dom.getLastElementChild = function(node) {
  * @return {Element} The next sibling of {@code node} that is an element.
  */
 goog.dom.getNextElementSibling = function(node) {
-  if (node.nextElementSibling != undefined) {
+  if (goog.isDef(node.nextElementSibling)) {
     return /** @type {!Element} */(node).nextElementSibling;
   }
   return goog.dom.getNextElementNode_(node.nextSibling, true);
@@ -1181,7 +1243,7 @@ goog.dom.getNextElementSibling = function(node) {
  *     an element.
  */
 goog.dom.getPreviousElementSibling = function(node) {
-  if (node.previousElementSibling != undefined) {
+  if (goog.isDef(node.previousElementSibling)) {
     return /** @type {!Element} */(node).previousElementSibling;
   }
   return goog.dom.getNextElementNode_(node.previousSibling, false);
@@ -1586,7 +1648,7 @@ goog.dom.getOuterHtml = function(element) {
     return element.outerHTML;
   } else {
     var doc = goog.dom.getOwnerDocument(element);
-    var div = doc.createElement('div');
+    var div = doc.createElement(goog.dom.TagName.DIV);
     div.appendChild(element.cloneNode(true));
     return div.innerHTML;
   }
@@ -2070,6 +2132,7 @@ goog.dom.getAncestor = function(
   var ignoreSearchSteps = opt_maxSearchSteps == null;
   var steps = 0;
   while (element && (ignoreSearchSteps || steps <= opt_maxSearchSteps)) {
+    goog.asserts.assert(element.name != 'parentNode');
     if (matcher(element)) {
       return element;
     }
@@ -2119,13 +2182,7 @@ goog.dom.getActiveElement = function(doc) {
  */
 goog.dom.getPixelRatio = function() {
   var win = goog.dom.getWindow();
-
-  // devicePixelRatio does not work on Mobile firefox.
-  // TODO(user): Enable this check on a known working mobile Gecko version.
-  // Filed a bug: https://bugzilla.mozilla.org/show_bug.cgi?id=896804
-  var isFirefoxMobile = goog.userAgent.GECKO && goog.userAgent.MOBILE;
-
-  if (goog.isDef(win.devicePixelRatio) && !isFirefoxMobile) {
+  if (goog.isDef(win.devicePixelRatio)) {
     return win.devicePixelRatio;
   } else if (win.matchMedia) {
     return goog.dom.matchesPixelRatio_(.75) ||
@@ -2418,13 +2475,26 @@ goog.dom.DomHelper.prototype.createTextNode = function(content) {
  * Create a table.
  * @param {number} rows The number of rows in the table.  Must be >= 1.
  * @param {number} columns The number of columns in the table.  Must be >= 1.
- * @param {boolean=} opt_fillWithNbsp If true, fills table entries with nsbps.
- * @return {!Element} The created table.
+ * @param {boolean=} opt_fillWithNbsp If true, fills table entries with
+ *     {@code goog.string.Unicode.NBSP} characters.
+ * @return {!HTMLElement} The created table.
  */
 goog.dom.DomHelper.prototype.createTable = function(rows, columns,
     opt_fillWithNbsp) {
   return goog.dom.createTable_(this.document_, rows, columns,
       !!opt_fillWithNbsp);
+};
+
+
+/**
+ * Converts an HTML into a node or a document fragment. A single Node is used if
+ * {@code html} only generates a single node. If {@code html} generates multiple
+ * nodes then these are put inside a {@code DocumentFragment}.
+ * @param {!goog.html.SafeHtml} html The HTML markup to convert.
+ * @return {!Node} The resulting node.
+ */
+goog.dom.DomHelper.prototype.safeHtmlToNode = function(html) {
+  return goog.dom.safeHtmlToNode_(this.document_, html);
 };
 
 

@@ -23,6 +23,7 @@ goog.provide('goog.net.ImageLoader');
 
 goog.require('goog.array');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
@@ -245,7 +246,7 @@ goog.net.ImageLoader.prototype.loadImage_ = function(imageRequest, id) {
   var image;
   if (this.parent_) {
     var dom = goog.dom.getDomHelper(this.parent_);
-    image = dom.createDom('img');
+    image = dom.createDom(goog.dom.TagName.IMG);
   } else {
     image = new Image();
   }

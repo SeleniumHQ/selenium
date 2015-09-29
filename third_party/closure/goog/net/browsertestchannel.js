@@ -31,7 +31,6 @@ goog.require('goog.net.ChannelRequest');
 goog.require('goog.net.ChannelRequest.Error');
 goog.require('goog.net.tmpnetwork');
 goog.require('goog.string.Parser');
-goog.require('goog.userAgent');
 
 
 
@@ -354,8 +353,8 @@ goog.net.BrowserTestChannel.prototype.connectStage2_ = function() {
   var secondTestResults = this.channel_.getSecondTestResults();
   if (goog.isDefAndNotNull(secondTestResults)) {
     this.channelDebug_.debug(
-        'TestConnection: skipping stage 2, precomputed result is '
-        + secondTestResults ? 'Buffered' : 'Unbuffered');
+        'TestConnection: skipping stage 2, precomputed result is ' +
+        secondTestResults ? 'Buffered' : 'Unbuffered');
     goog.net.BrowserChannel.notifyStatEvent(
         goog.net.BrowserChannel.Stat.TEST_STAGE_TWO_START);
     if (secondTestResults) { // Buffered/Proxy connection

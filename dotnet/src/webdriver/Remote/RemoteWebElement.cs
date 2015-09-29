@@ -22,9 +22,9 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using Ionic.Zip;
 using OpenQA.Selenium.Interactions.Internal;
 using OpenQA.Selenium.Internal;
+using System.IO.Compression;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -33,7 +33,7 @@ namespace OpenQA.Selenium.Remote
     /// </summary>
     /// <seealso cref="IWebElement"/>
     /// <seealso cref="ILocatable"/>
-    public class RemoteWebElement : IWebElement, IFindsByLinkText, IFindsById, IFindsByName, IFindsByTagName, IFindsByClassName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, IWrapsDriver, ILocatable
+    public class RemoteWebElement : IWebElement, IFindsByLinkText, IFindsById, IFindsByName, IFindsByTagName, IFindsByClassName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, IWrapsDriver, ILocatable, ITakesScreenshot
     {
         #region Private members
         private RemoteWebDriver driver;
@@ -752,6 +752,24 @@ namespace OpenQA.Selenium.Remote
         }
         #endregion
 
+        #region ITakesScreenshot
+        /// <summary>
+        /// Gets a <see cref="Screenshot"/> object representing the image of this element on the screen.
+        /// </summary>
+        /// <returns>A <see cref="Screenshot"/> object containing the image.</returns>
+        public Screenshot GetScreenshot()
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("id", this.elementId);
+            // Get the screenshot as base64.
+            Response screenshotResponse = this.Execute(DriverCommand.ElementScreenshot, parameters);
+            string base64 = screenshotResponse.Value.ToString();
+
+            // ... and convert it.
+            return new Screenshot(base64);
+        }
+        #endregion
+
         #region Overrides
         /// <summary>
         /// Method to get the hash code of the element
@@ -855,13 +873,13 @@ namespace OpenQA.Selenium.Remote
             string base64zip = string.Empty;
             try
             {
-                using (ZipFile profileZipFile = new ZipFile())
+                using (MemoryStream fileUploadMemoryStream = new MemoryStream())
                 {
-                    profileZipFile.AddFile(localFile, "/");
-                    using (MemoryStream profileMemoryStream = new MemoryStream())
+                    using (ZipStorer zipArchive = ZipStorer.Create(fileUploadMemoryStream, string.Empty))
                     {
-                        profileZipFile.Save(profileMemoryStream);
-                        base64zip = Convert.ToBase64String(profileMemoryStream.ToArray());
+                        string fileName = Path.GetFileName(localFile);
+                        zipArchive.AddFile(ZipStorer.Compression.Deflate, localFile, fileName, string.Empty);
+                        base64zip = Convert.ToBase64String(fileUploadMemoryStream.ToArray());
                     }
                 }
 

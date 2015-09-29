@@ -98,6 +98,9 @@ function Context(opt_configureForTesting) {
     CLOSURE_BASE_PATH: path.dirname(CLOSURE_BASE_FILE_PATH) + '/',
     CLOSURE_IMPORT_SCRIPT: function(src, opt_srcText) {
       if (opt_srcText !== undefined) {
+        // Windows paths use backslashes, which must be properly escaped before
+        // evaluated with vm.runInContext.
+        opt_srcText = opt_srcText.replace(/\\/g, '/');
         vm.runInContext(opt_srcText, closure, src);
       } else {
         loadScript(src);
@@ -105,6 +108,7 @@ function Context(opt_configureForTesting) {
       return true;
     },
     CLOSURE_NO_DEPS: !isDevMode(),
+    CLOSURE_UNCOMPILED_DEFINES: {'goog.json.USE_NATIVE_JSON': true},
     goog: {}
   });
   closure.window = closure.top = closure;

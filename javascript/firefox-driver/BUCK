@@ -3,6 +3,7 @@ export_file(name = 'webdriver_prefs',
   src = 'webdriver.json',
   visibility = [
     '//java/client/src/org/openqa/selenium/firefox:prefs',
+	'//dotnet/src/webdriver:webdriver',
   ],
 )
 
@@ -29,21 +30,9 @@ mozilla_extension(name = 'webdriver',
     ':session-store',
     ':status-xpt',
     ':synthetic-mouse',
-    '//cpp/webdriver-firefox:native-events-xpt',
-    '//cpp/webdriver-firefox:native-mouse-xpt',
-    '//cpp/webdriver-firefox:native-keyboard-xpt',
-    '//cpp/webdriver-firefox:native-ime-xpt',
   ],
   platforms = [
     ':winnt-x86-msvc',
-#    { '//cpp:webdriver_firefox_esr_previous' : 'platform/Linux_x86-gcc3/components/libwebdriver-firefox-esr-previous.so' },
-#    { '//cpp:webdriver_firefox_esr_previous_64' : 'platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-esr-previous.so' },
-#    { '//cpp:webdriver_firefox_esr_latest' : 'platform/Linux_x86-gcc3/components/libwebdriver-firefox-esr-latest.so' },
-#    { '//cpp:webdriver_firefox_esr_latest_64' : 'platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-esr-latest.so' },
-#    { '//cpp:webdriver_firefox_previous' : 'platform/Linux_x86-gcc3/components/libwebdriver-firefox-previous.so' },
-#    { '//cpp:webdriver_firefox_latest' : 'platform/Linux_x86-gcc3/components/libwebdriver-firefox-latest.so' },
-#    { '//cpp:webdriver_firefox_previous_64' : 'platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-previous.so' },
-#    { '//cpp:webdriver_firefox_latest_64' : 'platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-latest.so' },
   ],
   resources = [
     ':js-resources',
@@ -56,7 +45,7 @@ mozilla_extension(name = 'webdriver',
 )
 
 # There has to be less attractive way of creating a zip. Ho hum.
-zip(name = 'js-resources',
+zip_file(name = 'js-resources',
   out = 'js-resources.src.zip',
   srcs = [
     ':evaluate.js',
@@ -86,10 +75,6 @@ folder(name = 'win-components',
   out = 'components',
   srcs = [
     '//cpp/prebuilt:imehandler-dll',
-    '//cpp/webdriver-firefox:previous-esr',
-    '//cpp/webdriver-firefox:latest-esr',
-    '//cpp/webdriver-firefox:previous',
-    '//cpp/webdriver-firefox:latest',
   ],
 )
 
@@ -369,6 +354,8 @@ js_library(name = 'files',
     'js/files.js',
   ],
   deps = [
+    ':error',
+    '//javascript/atoms:errors',
     '//third_party/closure:closure',
   ],
 )

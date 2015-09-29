@@ -55,8 +55,8 @@ public class WindowsUtils {
   private static Properties env = null;
 
   /**
-   * @param args
-   * @throws Exception
+   * @param args command line arguments
+   * @throws Exception possible IO exception
    */
   public static void main(String[] args) throws Exception {
     if (args.length == 0) {
@@ -73,6 +73,8 @@ public class WindowsUtils {
 
   /**
    * Kill processes by name
+   *
+   * @param name name of the process to kill
    */
   public static void killByName(String name) {
     executeCommand("taskkill", "/f", "/t", "/im", name);
@@ -80,6 +82,8 @@ public class WindowsUtils {
 
   /**
    * Kill processes by name, log and ignore errors
+   *
+   * @param name name of the process to kill
    */
   public static void tryToKillByName(String name) {
     if (!thisIsWindows()) {
@@ -167,6 +171,8 @@ public class WindowsUtils {
 
   /**
    * Kills the specified process ID
+   *
+   * @param processID PID to kill
    */
   public static void killPID(String processID) {
     CommandLine cmd = new CommandLine("taskkill", "/f", "/t", "/pid", processID);
@@ -200,11 +206,11 @@ public class WindowsUtils {
     Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
         .parse(new ByteArrayInputStream(output.getBytes()));
     NodeList procList = doc.getElementsByTagName("INSTANCE");
-    Map<String, String> processes = new HashMap<String, String>();
+    Map<String, String> processes = new HashMap<>();
     for (int i = 0; i < procList.getLength(); i++) {
       Element process = (Element) procList.item(i);
       NodeList propList = process.getElementsByTagName("PROPERTY");
-      Map<String, String> procProps = new HashMap<String, String>();
+      Map<String, String> procProps = new HashMap<>();
       for (int j = 0; j < propList.getLength(); j++) {
         Element property = (Element) propList.item(j);
         String propName = property.getAttribute("NAME");
@@ -304,6 +310,8 @@ public class WindowsUtils {
 
   /**
    * Finds the system root directory, e.g. "c:\windows" or "c:\winnt"
+   *
+   * @return location of system root
    */
   public static File findSystemRoot() {
     Properties p = loadEnvironment();
@@ -540,7 +548,7 @@ public class WindowsUtils {
 
   public static void writeStringRegistryValue(String key, String data)
       throws WindowsRegistryException {
-    List<String> args = new ArrayList<String>();
+    List<String> args = new ArrayList<>();
     if (isRegExeVersion1()) {
       if (doesRegistryValueExist(key)) {
         args.add("update");
@@ -574,7 +582,7 @@ public class WindowsUtils {
   }
 
   public static void writeIntRegistryValue(String key, int data) {
-    List<String> args = new ArrayList<String>();
+    List<String> args = new ArrayList<>();
     if (isRegExeVersion1()) {
       if (doesRegistryValueExist(key)) {
         args.add("update");
@@ -605,7 +613,7 @@ public class WindowsUtils {
   }
 
   public static void deleteRegistryValue(String key) {
-    List<String> args = new ArrayList<String>();
+    List<String> args = new ArrayList<>();
     if (isRegExeVersion1()) {
       args.add("delete");
       args.add(key);
@@ -626,7 +634,7 @@ public class WindowsUtils {
    * Executes reg.exe to query the registry
    */
   private static String runRegQuery(String key) {
-    List<String> args = new ArrayList<String>();
+    List<String> args = new ArrayList<>();
     args.add("query");
     if (isRegExeVersion1()) {
       args.add(key);

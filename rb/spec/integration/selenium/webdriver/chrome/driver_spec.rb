@@ -28,16 +28,16 @@ module Selenium
             driver.navigate.to url_for("click_jacker.html")
 
             ua = driver.execute_script "return window.navigator.userAgent"
-            ua.should == "foo;bar"
+            expect(ua).to eq("foo;bar")
           ensure
             driver.quit if driver
           end
         end
 
         it "should raise ArgumentError if :args is not an Array" do
-          lambda {
+          expect {
             Selenium::WebDriver.for(:chrome, :args => "--foo")
-          }.should raise_error(ArgumentError)
+          }.to raise_error(ArgumentError)
         end
       end
 

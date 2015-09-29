@@ -18,7 +18,6 @@
 goog.provide('webdriver.FirefoxDomExecutor');
 
 goog.require('bot.response');
-goog.require('goog.json');
 goog.require('goog.userAgent.product');
 goog.require('webdriver.Command');
 goog.require('webdriver.CommandExecutor');
@@ -117,7 +116,7 @@ webdriver.FirefoxDomExecutor.prototype.execute = function(command, callback) {
       command.getName() != webdriver.CommandName.SWITCH_TO_FRAME) {
     parameters['id'] = parameters['id']['ELEMENT'];
   }
-  var json = goog.json.serialize({
+  var json = JSON.stringify({
     'name': command.getName(),
     'sessionId': parameters['sessionId'],
     'parameters': parameters
@@ -156,7 +155,7 @@ webdriver.FirefoxDomExecutor.prototype.onResponse_ = function() {
 
   try {
     var response = bot.response.checkResponse(
-        /** @type {!bot.response.ResponseObject} */ (goog.json.parse(json)));
+        /** @type {!bot.response.ResponseObject} */ (JSON.parse(json)));
   } catch (ex) {
     command.callback(ex);
     return;

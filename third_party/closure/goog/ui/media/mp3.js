@@ -206,11 +206,8 @@ goog.ui.media.Mp3.prototype.createDom = function(c) {
 
   var dataModel =
       /** @type {goog.ui.media.MediaModel} */ (control.getDataModel());
-  var flashUrl = goog.ui.media.Mp3.flashUrl_ + '?' + goog.string.subs(
-      goog.ui.media.Mp3.PLAYER_ARGUMENTS_,
-      goog.string.urlEncode(dataModel.getUrl()));
   var flash = new goog.ui.media.FlashObject(
-      dataModel.getPlayer().getUrl(), control.getDomHelper());
+      dataModel.getPlayer().getTrustedResourceUrl(), control.getDomHelper());
   flash.setFlashVar('playerMode', 'embedded');
   flash.render(div);
 
