@@ -38,6 +38,7 @@ import org.seleniumhq.jetty9.server.HttpConnectionFactory;
 import org.seleniumhq.jetty9.server.Server;
 import org.seleniumhq.jetty9.server.ServerConnector;
 import org.seleniumhq.jetty9.servlet.ServletContextHandler;
+import org.seleniumhq.jetty9.util.thread.QueuedThreadPool;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -106,7 +107,13 @@ public class Hub {
 
   private void initServer() {
     try {
-      server = new Server();
+      if (maxThread>0){
+        QueuedThreadPool pool = new QueuedThreadPool();
+        pool.setMaxThreads(maxThread);
+        server = new Server(pool);
+      } else {
+        server = new Server();
+      }
 
       HttpConfiguration httpConfig = new HttpConfiguration();
       httpConfig.setSecureScheme("https");
@@ -182,11 +189,6 @@ public class Hub {
 
   public void start() throws Exception {
     initServer();
-//    if (maxThread>0){
-//      QueuedThreadPool pool = new QueuedThreadPool();
-//      pool.setMaxThreads(maxThread);
-//      server.setThreadPool(pool);
-//    }
     server.start();
   }
 
