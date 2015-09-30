@@ -117,7 +117,7 @@ public class JettyAppServer implements AppServer {
     addServlet(defaultContext, "/basicAuth", BasicAuth.class);
     addServlet(defaultContext, "/generated/*", GeneratedJsTestServlet.class);
 
-    addFilter(defaultContext, MultiPartFilter.class, "/upload", DispatcherType.REQUEST);
+    //addFilter(defaultContext, MultiPartFilter.class, "/upload", DispatcherType.REQUEST);
 
     listenOn(getHttpPort());
     listenSecurelyOn(getHttpsPort());
