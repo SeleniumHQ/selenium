@@ -17,15 +17,19 @@
 
 package org.openqa.selenium.environment.webserver;
 
+import org.seleniumhq.jetty9.server.Request;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 /**
  * A simple file upload servlet that just sends back the file contents to the client.
@@ -34,6 +38,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class UploadServlet extends HttpServlet {
 
+  private static final MultipartConfigElement MULTI_PART_CONFIG = new MultipartConfigElement(System.getProperty("java.io.tmpdir"));
+
   @Override
   protected void doPost(HttpServletRequest request,
       HttpServletResponse response)
@@ -41,16 +47,15 @@ public class UploadServlet extends HttpServlet {
     response.setContentType("text/html");
     response.setStatus(HttpServletResponse.SC_OK);
 
-    File file = (File) request.getAttribute("upload");
-    file.deleteOnExit();
+    request.setAttribute(Request.__MULTIPART_CONFIG_ELEMENT, MULTI_PART_CONFIG);
+    Part upload = request.getPart("upload");
 
-    int length = (int) file.length();
-    byte[] buffer = new byte[length];
+    byte[] buffer = new byte[(int) upload.getSize()];
     InputStream in = null;
     String content;
     try {
-      in = new FileInputStream(file);
-      in.read(buffer, 0, length);
+      in = upload.getInputStream();
+      in.read(buffer, 0, (int) upload.getSize());
       content = new String(buffer, "UTF-8");
     } finally {
       if (in != null) {
