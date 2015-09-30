@@ -27,7 +27,7 @@ class ChromeLauncherTests (unittest.TestCase):
         self.webdriver = webdriver.Chrome()
         self.webdriver.quit()
 
-    def test_we_can_launch_multiple_firefox_instances(self):
+    def test_we_can_launch_multiple_chrome_instances(self):
         self.webdriver1 = webdriver.Chrome()
         self.webdriver2 = webdriver.Chrome()
         self.webdriver3 = webdriver.Chrome()
