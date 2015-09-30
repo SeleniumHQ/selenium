@@ -9,6 +9,16 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.47.0.5
+=========
+ * Updating screenshot code to retain scroll bars in required directions.
+   When an IE window needs to be resized to obtain the full-DOM screenshot,
+   if it has scroll bars in either direction, those scroll bars need to be
+   present in the resized window, so that layout recalculation doesn't occur.
+   In practice, this means reducing the window size by 2 pixels in the
+   appropriate direction before taking the screenshot. The resulting scroll
+   bars are cropped from the image.
+
 v2.47.0.4
 =========
  * Updates to JavaScript automation atoms.

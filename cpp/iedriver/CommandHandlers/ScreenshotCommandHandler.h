@@ -156,25 +156,25 @@ class ScreenshotCommandHandler : public IECommandHandler {
     // If the window is already wide enough to accomodate
     // the document, don't resize that dimension. Otherwise,
     // the window will display a horizontal scroll bar, and
-    // we need to take the scroll bar height into account when
-    // we size resulting image.
-    int horizontal_scrollbar_height = 0;
+    // we need to retain the scrollbar to avoid rerendering
+    // during the resize, so reduce the target window width
+    // by two pixels.
     if (original_width > target_window_width) {
       target_window_width = original_width;
     } else {
-      horizontal_scrollbar_height = ::GetSystemMetrics(SM_CYHSCROLL);
+      target_window_width -= 2;
     }
 
     // If the window is already tall enough to accomodate
     // the document, don't resize that dimension. Otherwise,
     // the window will display a vertical scroll bar, and
-    // we need to take the scrollbar width into account when
-    // we size the resulting image.
-    int vertical_scrollbar_width = 0;
+    // we need to retain the scrollbar to avoid rerendering
+    // during the resize, so reduce the target window height
+    // by two pixels.
     if (original_height > target_window_height) {
       target_window_height = original_height;
     } else {
-      vertical_scrollbar_width = ::GetSystemMetrics(SM_CXVSCROLL);
+      target_window_height -= 2;
     }
 
     BOOL is_maximized = ::IsZoomed(ie_window_handle);
@@ -211,10 +211,12 @@ class ScreenshotCommandHandler : public IECommandHandler {
     }
 
     // Capture the window's canvas to a DIB.
-    BOOL created = this->image_->Create(
-        document_info.width + vertical_scrollbar_width,
-        document_info.height + horizontal_scrollbar_height,
-        /*numbers of bits per pixel = */ 32);
+    // If there are any scroll bars in the window, they should
+    // be explicitly cropped out of the image, because of the
+    // size of image we are creating..
+    BOOL created = this->image_->Create(document_info.width,
+                                        document_info.height,
+                                        /*numbers of bits per pixel = */ 32);
     if (!created) {
       LOG(WARN) << "Unable to initialize image object";
     }
