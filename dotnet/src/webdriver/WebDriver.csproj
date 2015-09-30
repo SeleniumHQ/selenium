@@ -282,6 +282,12 @@
     <Compile Include="UnhandledAlertException.cs" />
     <Compile Include="WebDriverException.cs" />
     <Compile Include="WebDriverResult.cs" />
+    <Compile Include="Winium\IWiniumOptions.cs" />
+    <Compile Include="Winium\SilverlightOptions.cs" />
+    <Compile Include="Winium\StoreAppsOptions.cs" />
+    <Compile Include="Winium\WiniumDriver.cs" />
+    <Compile Include="Winium\WiniumDriverService.cs" />
+    <Compile Include="Winium\DesktopOptions.cs" />
     <Compile Include="XPathLookupException.cs" />
   </ItemGroup>
   <ItemGroup>
