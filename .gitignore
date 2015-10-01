@@ -36,6 +36,9 @@ rb/.yardoc
 maven/*/src
 maven/target
 maven/*/target
+maven/.idea
+maven/*.iml
+maven/*/*.iml
 java/client/build/
 java/client/log.txt
 java/client/iedriver.log
