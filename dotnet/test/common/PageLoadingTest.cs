@@ -59,12 +59,29 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "IE happily will navigate to invalid URLs")]
+        [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
+        public void ShouldThrowIfUrlIsMalformed()
+        {
+            driver.Url = "www.test.com";
+        }
+
+        [Test]
         [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
         public void ShouldReturnWhenGettingAUrlThatDoesNotConnect()
         {
             // Here's hoping that there's nothing here. There shouldn't be
             driver.Url = "http://localhost:3001";
+        }
+
+        [Test]
+        public void ShouldReturnUrlOnNotExistedPage()
+        {
+            string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("not_existed_page.html");
+            driver.Url = url;
+            Assert.AreEqual(url, driver.Url);
         }
 
         [Test]
