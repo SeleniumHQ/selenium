@@ -222,17 +222,14 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
       throw new RuntimeException("not implemented");
     }
 
-    @Override
     public boolean isFinished() {
       return false;
     }
 
-    @Override
     public boolean isReady() {
       return true;
     }
 
-    @Override
     public void setReadListener(ReadListener readListener) {
       throw new RuntimeException("setReadListener");
     }
