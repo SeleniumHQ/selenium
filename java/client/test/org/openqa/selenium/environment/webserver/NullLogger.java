@@ -17,7 +17,8 @@
 
 package org.openqa.selenium.environment.webserver;
 
-import org.seleniumhq.jetty7.util.log.Logger;
+
+import org.seleniumhq.jetty9.util.log.Logger;
 
 public class NullLogger implements Logger {
   public void disableLogging() {
@@ -32,6 +33,10 @@ public class NullLogger implements Logger {
   }
 
   public void debug(String s, Object... o) {
+  }
+
+  @Override
+  public void debug(String s, long l) {
   }
 
   public void debug(String s, Throwable throwable) {

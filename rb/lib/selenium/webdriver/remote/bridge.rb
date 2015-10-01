@@ -158,12 +158,12 @@ module Selenium
         end
 
         def acceptAlert
-          command = capabilities.browser_name == 'MicrosoftEdge' ? :acceptAlertW3C : :acceptAlert
+          command = :acceptAlert
           execute command
         end
 
         def dismissAlert
-          command = capabilities.browser_name == 'MicrosoftEdge' ? :dismissAlertW3C : :dismissAlert
+          command = :dismissAlert
           execute command
         end
 
@@ -173,7 +173,7 @@ module Selenium
         end
 
         def getAlertText
-          command = capabilities.browser_name == 'MicrosoftEdge' ? :getAlertTextW3C : :getAlertText
+          command = :getAlertText
           execute command
         end
 

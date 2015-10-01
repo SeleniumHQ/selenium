@@ -51,12 +51,8 @@ class HeaderContainer {
     return values.isEmpty() ? null : values.iterator().next();
   }
 
-  public Enumeration getHeaders(String name) {
-    return Collections.enumeration(headers.get(name.toLowerCase()));
-  }
-
-  public Enumeration getHeaderNames() {
-    return Collections.enumeration(headers.keySet());
+  protected Multimap<String, String> getHeaders() {
+    return headers;
   }
 
   public boolean containsHeader(String name) {

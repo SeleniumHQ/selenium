@@ -33,8 +33,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicHttpRequest;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.mock.GridHelper;
@@ -55,19 +55,19 @@ import java.util.Map;
 
 public class StatusServletTests {
 
-  private static Hub hub;
+  private Hub hub;
 
-  private static RemoteProxy p1;
-  private static HttpClientFactory httpClientFactory;
+  private RemoteProxy p1;
+  private HttpClientFactory httpClientFactory;
 
-  private static URL proxyApi;
-  private static URL hubApi;
-  private static URL testSessionApi;
-  private static HttpHost host;
-  private static TestSession session;
+  private URL proxyApi;
+  private URL hubApi;
+  private URL testSessionApi;
+  private HttpHost host;
+  private TestSession session;
 
-  @BeforeClass
-  public static void setup() throws Exception {
+  @Before
+  public void setup() throws Exception {
     GridHubConfiguration c = new GridHubConfiguration();
     c.getAllParams().put(RegistrationRequest.TIME_OUT, 12345);
     c.setPort(PortProber.findFreePort());
@@ -388,8 +388,8 @@ public class StatusServletTests {
 
   }
 
-  @AfterClass
-  public static void teardown() throws Exception {
+  @After
+  public void teardown() throws Exception {
     hub.stop();
     httpClientFactory.close();
   }

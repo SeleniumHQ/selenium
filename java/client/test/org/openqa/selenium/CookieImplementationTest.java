@@ -210,7 +210,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertCookieIsPresentWithName(cookie1.getName());
     assertCookieIsPresentWithName(cookie2.getName());
 
-    driver.get(domainHelper.getUrlForFirstValidHostname("/common/simplePage.html"));
+    driver.get(domainHelper.getUrlForFirstValidHostname("/common/simpleTest.html"));
     assertCookieIsNotPresentWithName(cookie1.getName());
   }
 

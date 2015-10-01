@@ -36,6 +36,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
@@ -417,6 +418,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   @Ignore(value = {CHROME, MARIONETTE, SAFARI, HTMLUNIT})
   @Test
   public void testClickOverlappingElements() {
+    assumeFalse(isOldIe(driver));
     driver.get(appServer.whereIs("click_tests/overlapping_elements.html"));
     driver.findElement(By.id("under")).click();
     assertEquals(driver.findElement(By.id("log")).getText(),
@@ -433,6 +435,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   @Ignore(value = {MARIONETTE, SAFARI, HTMLUNIT})
   @Test
   public void testClickAnElementThatDisappear() {
+    assumeFalse(isOldIe(driver));
     driver.get(appServer.whereIs("click_tests/disappearing_element.html"));
     driver.findElement(By.id("over")).click();
     assertThat(driver.findElement(By.id("log")).getText(),

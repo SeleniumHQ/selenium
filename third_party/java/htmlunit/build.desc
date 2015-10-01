@@ -10,5 +10,5 @@ java_library(name = "htmlunit",
     "//third_party/java/nekohtml",
     "//third_party/java/serializer",
     "//third_party/java/xml",
-    "//third_party/java/jetty-websocket"
+    "//third_party/java/websocket:websocket-client",
   ])

@@ -36,45 +36,39 @@ module Selenium
         end
 
 
-        # Edge does not yet support {GET} /session/{sessionId}/moveTo
-        not_compliant_on :browser => :edge do
-          it "can send keys with shift pressed" do
-            driver.navigate.to url_for("javascriptPage.html")
+        it "can send keys with shift pressed" do
+          driver.navigate.to url_for("javascriptPage.html")
 
-            event_input = driver.find_element(:id => "theworks")
-            keylogger = driver.find_element(:id => "result")
+          event_input = driver.find_element(:id => "theworks")
+          keylogger = driver.find_element(:id => "result")
 
-            driver.mouse.click event_input
+          driver.mouse.click event_input
 
-            driver.keyboard.press :shift
-            driver.keyboard.send_keys "ab"
-            driver.keyboard.release :shift
+          driver.keyboard.press :shift
+          driver.keyboard.send_keys "ab"
+          driver.keyboard.release :shift
 
-            expect(event_input.attribute(:value)).to eq("AB")
-            expect(keylogger.text.strip).to match(/^(focus )?keydown keydown keypress keyup keydown keypress keyup keyup$/)
-          end
+          expect(event_input.attribute(:value)).to eq("AB")
+          expect(keylogger.text.strip).to match(/^(focus )?keydown keydown keypress keyup keydown keypress keyup keyup$/)
         end
 
         it "raises an ArgumentError if the pressed key is not a modifier key" do
           expect { driver.keyboard.press :return }.to raise_error(ArgumentError)
         end
 
-        # Edge does not yet support {GET} /session/{sessionId}/moveTo
-        not_compliant_on :browser => :edge do
-          it "can press and release modifier keys" do
-            driver.navigate.to url_for("javascriptPage.html")
+        it "can press and release modifier keys" do
+          driver.navigate.to url_for("javascriptPage.html")
 
-            event_input = driver.find_element(:id => "theworks")
-            keylogger = driver.find_element(:id => "result")
+          event_input = driver.find_element(:id => "theworks")
+          keylogger = driver.find_element(:id => "result")
 
-            driver.mouse.click event_input
+          driver.mouse.click event_input
 
-            driver.keyboard.press :shift
-            expect(keylogger.text).to match(/keydown$/)
+          driver.keyboard.press :shift
+          expect(keylogger.text).to match(/keydown *$/)
 
-            driver.keyboard.release :shift
-            expect(keylogger.text).to match(/keyup$/)
-          end
+          driver.keyboard.release :shift
+          expect(keylogger.text).to match(/keyup *$/)
         end
       end
 

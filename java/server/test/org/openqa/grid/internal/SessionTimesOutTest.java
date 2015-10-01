@@ -28,7 +28,7 @@ import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
 import static org.openqa.grid.common.RegistrationRequest.ID;
 import static org.openqa.grid.common.RegistrationRequest.TIME_OUT;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.listeners.TimeoutListener;
@@ -41,12 +41,12 @@ import java.util.Map;
 
 public class SessionTimesOutTest {
 
-  private static RegistrationRequest req = new RegistrationRequest();
-  private static Map<String, Object> app1 = new HashMap<>();
+  private RegistrationRequest req = new RegistrationRequest();
+  private Map<String, Object> app1 = new HashMap<>();
 
   // create a request for a proxy that times out after 0.5 sec.
-  @BeforeClass
-  public static void setup() {
+  @Before
+  public void setup() {
 
     app1.put(APP, "app1");
     req.addDesiredCapability(app1);
@@ -152,7 +152,6 @@ public class SessionTimesOutTest {
       newSessionRequest2.process();
       TestSession session2 = newSessionRequest2.getSession();
       assertNotNull(session2);
-      assertTrue(session.equals(session));
       assertFalse(session2.equals(session));
 
     } finally {

@@ -24,7 +24,7 @@ import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
 import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
 import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.mock.GridHelper;
@@ -40,16 +40,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ParallelTest {
 
-  static RegistrationRequest req = null;
-  static Map<String, Object> app1 = new HashMap<>();
-  static Map<String, Object> app2 = new HashMap<>();
+  private RegistrationRequest req = null;
+  private Map<String, Object> app1 = new HashMap<>();
+  private Map<String, Object> app2 = new HashMap<>();
 
   /**
    * a proxy than can host up to 5 tests at the same time. - of type app1 ( max 5 tests at the same
    * time ) could be Firefox for instance - of type app2 ( max 1 test ) could be IE
    */
-  @BeforeClass
-  public static void prepareReqRequest() {
+  @Before
+  public void prepareReqRequest() {
 
     Map<String, Object> config = new HashMap<>();
     app1.put(APP, "app1");
@@ -81,7 +81,7 @@ public class ParallelTest {
 
   }
 
-  static volatile boolean processed = false;
+  private volatile boolean processed = false;
 
   /**
    * cannot reserve 2 app2
@@ -162,13 +162,13 @@ public class ParallelTest {
   }
 
 
-  static volatile int cpt2 = 0;
+//  private volatile int cpt2 = 0;
+//
+//  private synchronized void inc2() {
+//    cpt2++;
+//  }
 
-  static synchronized void inc2() {
-    cpt2++;
-  }
-
-  static boolean app6Done = false;
+  private boolean app6Done = false;
 
   /**
    * cannot get app2 if 5 app1 are reserved.
@@ -211,8 +211,8 @@ public class ParallelTest {
   @Test(timeout = 10000)
   public void releaseAndReserve() {
     Registry registry = Registry.newInstance();
-    RemoteProxy p1 = null;
-    RegistrationRequest req = null;
+    RemoteProxy p1;
+    RegistrationRequest req;
     Map<String, Object> app1 = new HashMap<>();
     Map<String, Object> app2 = new HashMap<>();
     Map<String, Object> config = new HashMap<>();
