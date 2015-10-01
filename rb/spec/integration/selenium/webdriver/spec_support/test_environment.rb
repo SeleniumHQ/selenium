@@ -30,7 +30,7 @@ module Selenium
           @create_driver_error_count = 0
 
           # TODO: get rid of ENV
-          @driver = (ENV['WD_SPEC_DRIVER'] || raise("must set WD_SPEC_DRIVER")).to_sym
+          @driver = (ENV['WD_SPEC_DRIVER'] || raise("must set WD_SPEC_DRIVER")).strip.to_sym
         end
 
         def browser
