@@ -18,7 +18,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -64,10 +66,22 @@ namespace OpenQA.Selenium.Remote
                 throw new ArgumentNullException("frameName", "Frame name cannot be null");
             }
 
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", frameName);
-            this.driver.InternalExecute(DriverCommand.SwitchToFrame, parameters);
-            return this.driver;
+            //Dictionary<string, object> parameters = new Dictionary<string, object>();
+            //parameters.Add("id", frameName);
+            //this.driver.InternalExecute(DriverCommand.SwitchToFrame, parameters);
+            //return this.driver;
+            string name = Regex.Replace(frameName, @"(['""\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]\(\)])", @"\$1");
+            ReadOnlyCollection<IWebElement> frameElements = this.driver.FindElements(By.CssSelector("frame[name='" + name + "'],iframe[name='" + name + "']"));
+            if (frameElements.Count == 0)
+            {
+                frameElements = this.driver.FindElements(By.CssSelector("frame#" + name + ",iframe#" + name));
+                if (frameElements.Count == 0)
+                {
+                    throw new NoSuchFrameException("No frame element found with name or id " + frameName);
+                }
+            }
+
+            return this.Frame(frameElements[0]);
         }
 
         /// <summary>
