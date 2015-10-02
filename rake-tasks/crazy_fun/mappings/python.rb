@@ -12,9 +12,9 @@ class PythonMappings
     fun.add_mapping("py_env", Python::VirtualEnv.new)
 
     fun.add_mapping("py_docs", Python::GenerateDocs.new)
-    
+
     fun.add_mapping("py_install", Python::Install.new)
-    
+
     fun.add_mapping("py_prep", Python::Prep.new)
   end
 end
@@ -221,14 +221,14 @@ module Python
     def py_exe
       windows? ? "C:\\Python27\\python.exe" : "/usr/bin/python"
     end
-	
+
     def handle(fun, dir, args)
       task Tasks.new.task_name(dir, args[:name]) do
         sh py_exe + " setup.py install", :verbose => true
       end
     end
   end
-	
+
   class Prep < Tasks
     def handle(fun, dir, args)
 	    task Tasks.new.task_name(dir, args[:name]) do
@@ -236,24 +236,24 @@ module Python
 	      firefox_build_dir = 'build/javascript/firefox-driver/'
 	      x86 = firefox_py_home + "x86/"
 	      amd64 = firefox_py_home + "amd64/"
-        
+
 	      if (windows?) then
 		      firefox_build_dir = firefox_build_dir.gsub(/\//, "\\")
 		      firefox_py_home = firefox_py_home .gsub(/\//, "\\")
 		      x86 = x86.gsub(/\//,"\\")
 		      amd64 = amd64.gsub(/\//,"\\")
 	      end
-        
+
 	      mkdir_p x86 unless File.exists?(x86)
 	      mkdir_p amd64 unless File.exists?(amd64)
-        
+
 	      cp "cpp/prebuilt/i386/libnoblur.so", x86+"x_ignore_nofocus.so", :verbose => true
 	      cp "cpp/prebuilt/amd64/libnoblur64.so", amd64+"x_ignore_nofocus.so", :verbose => true
-        
+
 	      cp firefox_build_dir + "webdriver.xpi" , firefox_py_home, :verbose => true
         cp firefox_build_dir + "webdriver_prefs.json" , firefox_py_home, :verbose => true
       end
     end
   end
-	
+
 end
