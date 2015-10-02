@@ -252,7 +252,7 @@ fxdriver.modals.closeUnhandledAlert = function(response, driver, accept) {
         'wildly inconsistent state, and the alert may still be ' +
         'open. This is not good. If you can reliably reproduce this' +
         ', please report a new issue at ' +
-        'https://code.google.com/p/selenium/issues/entry ' +
+        'https://github.com/SeleniumHQ/selenium/issues ' +
         'with reproduction steps. Exception message: ' + e;
       }
     } else {
