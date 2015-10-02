@@ -18,6 +18,7 @@
 'use strict';
 
 var AdmZip = require('adm-zip'),
+    AdmConstants = require('adm-zip/util/constants'),
     fs = require('fs'),
     path = require('path'),
     url = require('url'),
@@ -351,6 +352,7 @@ FileDetector.prototype.handleFile = function(driver, filePath) {
 
     var zip = new AdmZip();
     zip.addLocalFile(filePath);
+    zip.getEntries()[0].header.method = AdmConstants.STORED;
 
     var command = new webdriver.Command(webdriver.CommandName.UPLOAD_FILE)
         .setParameter('file', zip.toBuffer().toString('base64'));

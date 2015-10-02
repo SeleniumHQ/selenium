@@ -1,5 +1,8 @@
 ## v2.48.0-dev
 
+* FIXED: zip files created for transfer to a remote WebDriver server are no
+    longer compressed. If the zip contained a file that was already compressed,
+    the server would return an "invalid code lengths set" error.
 * FIXED: Surfaced the `loopback` option to `remote/SeleniumServer`. When set,
     the server will be accessed using the current host's loopback address.
 
