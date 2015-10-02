@@ -38,6 +38,7 @@ singleSelectValuesWithSpaces = { 'name': 'select_with_spaces', 'values': ['One',
 multiSelectValues1  = { 'name': 'multi', 'values': ['Eggs', 'Ham', 'Sausages', 'Onion gravy']}
 multiSelectValues2  = { 'name': 'select_empty_multiple', 'values': ['select_1', 'select_2', 'select_3', 'select_4']}
 
+@pytest.mark.ignore_marionette
 class WebDriverSelectSupportTests(unittest.TestCase):
 
     def testSelectByIndexSingle(self):
@@ -312,4 +313,3 @@ class WebDriverSelectSupportTests(unittest.TestCase):
 
     def _loadPage(self, name):
         self.driver.get(self._pageURL(name))
-
