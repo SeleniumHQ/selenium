@@ -88,6 +88,12 @@
     <Compile Include="Edge\EdgeWebElement.cs" />
     <Compile Include="Firefox\FirefoxDriverCommandExecutor.cs" />
     <Compile Include="Firefox\FirefoxDriverServer.cs" />
+    <Compile Include="HTML5\AppCacheStatus.cs" />
+    <Compile Include="HTML5\IApplicationCache.cs" />
+    <Compile Include="HTML5\ILocalStorage.cs" />
+    <Compile Include="HTML5\ISessionStorage.cs" />
+    <Compile Include="HTML5\IWebStorage.cs" />
+    <Compile Include="HTML5\Location.cs" />
     <Compile Include="IAllowsFileDetection.cs" />
     <Compile Include="IE\InternetExplorerDriverEngine.cs" />
     <Compile Include="IFileDetector.cs" />
@@ -106,6 +112,7 @@
       <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
     </Compile>
     <Compile Include="ITouchScreen.cs" />
+    <Compile Include="HTML5\ILocationContext.cs" />
     <Compile Include="Opera\OperaDriver.cs" />
     <Compile Include="Opera\OperaDriverService.cs" />
     <Compile Include="Opera\OperaOptions.cs" />
@@ -116,9 +123,16 @@
     <Compile Include="PhantomJS\PhantomJSOptions.cs" />
     <Compile Include="PhantomJS\PhantomJSWebElement.cs" />
     <Compile Include="Remote\ICommandServer.cs" />
+    <Compile Include="Remote\JsonConverters\DesiredCapabilitiesJsonConverter.cs" />
+    <Compile Include="Remote\JsonConverters\PlatformJsonConverter.cs" />
     <Compile Include="Remote\JsonConverters\ResponseValueJsonConverter.cs" />
     <Compile Include="Remote\LocalFileDetector.cs" />
+    <Compile Include="Remote\RemoteApplicationCache.cs" />
+    <Compile Include="Remote\RemoteLocalStorage.cs" />
+    <Compile Include="Remote\RemoteLocationContext.cs" />
+    <Compile Include="Remote\RemoteSessionStorage.cs" />
     <Compile Include="Remote\RemoteTouchScreen.cs" />
+    <Compile Include="Remote\RemoteWebStorage.cs" />
     <Compile Include="Safari\SafariOptions.cs" />
     <Compile Include="WebDriverTimeoutException.cs" />
     <Compile Include="IE\InternetExplorerDriverLogLevel.cs" />
