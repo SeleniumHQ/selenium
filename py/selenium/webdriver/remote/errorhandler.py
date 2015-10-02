@@ -100,7 +100,7 @@ class ErrorHandler(object):
             if value_json and isinstance(value_json, basestring):
                 import json
                 value = json.loads(value_json)
-                status = value['status']
+                status = value['error']
                 message = value['message']
 
         exception_class = ErrorInResponseException
