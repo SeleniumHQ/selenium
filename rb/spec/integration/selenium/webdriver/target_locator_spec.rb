@@ -207,38 +207,33 @@ describe "Selenium::WebDriver::TargetLocator" do
     end
   end
 
-  describe "alerts" do
-    not_compliant_on :browser => [:iphone, :safari, :phantomjs] do
+  # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1850030
+  not_compliant_on :browser => [:iphone, :safari, :phantomjs, :edge] do
+    describe "alerts" do
       it "allows the user to accept an alert" do
-        driver.navigate.to url_for("alerts.html")
-        driver.find_element(:id => "alert").click
+          driver.navigate.to url_for("alerts.html")
+          driver.find_element(:id => "alert").click
 
-        alert = wait_for_alert
-        alert.accept
+          alert = wait_for_alert
+          alert.accept
 
-        expect(driver.title).to eq("Testing Alerts")
+          expect(driver.title).to eq("Testing Alerts")
+        end
+
+      not_compliant_on({:browser => :chrome, :platform => :macosx}) do
+        it "allows the user to dismiss an alert" do
+          driver.navigate.to url_for("alerts.html")
+          driver.find_element(:id => "alert").click
+
+          alert = wait_for_alert
+          alert.dismiss
+
+          wait_for_no_alert
+
+          expect(driver.title).to eq("Testing Alerts")
+        end
       end
-    end
 
-    not_compliant_on({:browser => :chrome, :platform => :macosx},
-                     {:browser => :iphone},
-                     {:browser => :safari},
-                     {:browser => :phantomjs}) do
-      it "allows the user to dismiss an alert" do
-        driver.navigate.to url_for("alerts.html")
-        driver.find_element(:id => "alert").click
-
-        alert = wait_for_alert
-        alert.dismiss
-
-        wait_for_no_alert
-
-        expect(driver.title).to eq("Testing Alerts")
-      end
-    end
-
-    # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1850030
-    not_compliant_on :browser => [:iphone, :safari, :phantomjs, :edge] do
        it "allows the user to set the value of a prompt" do
         driver.navigate.to url_for("alerts.html")
         driver.find_element(:id => "prompt").click
@@ -272,27 +267,24 @@ describe "Selenium::WebDriver::TargetLocator" do
         expect { alert.text }.to raise_error(Selenium::WebDriver::Error::NoAlertPresentError)
       end
 
-    end
+      not_compliant_on :browser => :ie do
+        it "raises NoAlertOpenError if no alert is present" do
+          expect { driver.switch_to.alert }.to raise_error(
+            Selenium::WebDriver::Error::NoAlertPresentError, /alert|modal dialog/i)
+        end
+      end
 
-    not_compliant_on :browser => [:ie, :iphone, :safari, :phantomjs] do
-      it "raises NoAlertOpenError if no alert is present" do
-        expect { driver.switch_to.alert }.to raise_error(
-          Selenium::WebDriver::Error::NoAlertPresentError, /alert|modal dialog/i)
+      compliant_on :browser => [:firefox, :ie] do
+        it "raises an UnhandledAlertError if an alert has not been dealt with" do
+          driver.navigate.to url_for("alerts.html")
+          driver.find_element(:id => "alert").click
+          wait_for_alert
+
+          expect { driver.title }.to raise_error(Selenium::WebDriver::Error::UnhandledAlertError, /cheese/)
+
+          expect(driver.title).to eq("Testing Alerts") # :chrome does not auto-dismiss the alert
+        end
       end
     end
-
-    # TODO - File Edge bug; clicking for alert causes driver to hang
-    compliant_on :browser => [:firefox, :ie, :edge] do
-      it "raises an UnhandledAlertError if an alert has not been dealt with" do
-        driver.navigate.to url_for("alerts.html")
-        driver.find_element(:id => "alert").click
-        wait_for_alert
-
-        expect { driver.title }.to raise_error(Selenium::WebDriver::Error::UnhandledAlertError, /cheese/)
-
-        expect(driver.title).to eq("Testing Alerts") # :chrome does not auto-dismiss the alert
-      end
-    end
-
   end
 end
