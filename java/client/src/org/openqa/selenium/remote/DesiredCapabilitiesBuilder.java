@@ -2,7 +2,7 @@ package org.openqa.selenium.remote;
 
 import org.openqa.selenium.Platform;
 
-class DesiredCapabilitiesBuilder {
+public class DesiredCapabilitiesBuilder {
 
   private final DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
 
