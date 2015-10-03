@@ -48,7 +48,7 @@ module Selenium
         end
 
         # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1850023
-        not_compliant_on :edge do
+        not_compliant_on :browser => :edge do
           it "double clicks an element" do
             driver.navigate.to url_for("javascriptPage.html")
             element = driver.find_element(:id, 'doubleClickField')
