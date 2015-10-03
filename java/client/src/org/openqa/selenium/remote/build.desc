@@ -12,6 +12,7 @@ java_library(name = "base",
   srcs = [
     "CapabilityType.java",
     "DesiredCapabilities.java",
+    "DesiredCapabilitiesBuilder.java",
     "BrowserType.java",
     "UnreachableBrowserException.java",
   ],
