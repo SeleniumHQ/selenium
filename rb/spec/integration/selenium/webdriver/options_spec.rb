@@ -60,13 +60,14 @@ module Selenium
             expect(cookies.first[:value]).to eq("bar")
           end
 
-          # TODO - File bug with Microsoft; This command returns unknown error:
-          # DELETE session/EC3D38BB-BF62-4224-BB6D-E6820EF7C519/cookie/foo
-          it "should delete one" do
-            driver.navigate.to url_for("xhtmlTest.html")
-            driver.manage.add_cookie :name => "foo", :value => "bar"
+          # Edge BUG - https://connect.microsoft.com/IE/feedbackdetail/view/1864122
+          not_compliant_on :browser => :edge do
+            it "should delete one" do
+              driver.navigate.to url_for("xhtmlTest.html")
+              driver.manage.add_cookie :name => "foo", :value => "bar"
 
-            driver.manage.delete_cookie("foo")
+              driver.manage.delete_cookie("foo")
+            end
           end
 
           # This is not a w3c supported spec
