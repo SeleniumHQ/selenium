@@ -47,16 +47,18 @@ module Selenium
           expect(text).to eq("Dropped!")
         end
 
-        # TODO - File Edge Bug; double click ends up being a single click to the element
-        it "double clicks an element" do
-          driver.navigate.to url_for("javascriptPage.html")
-          element = driver.find_element(:id, 'doubleClickField')
+        # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1850023
+        not_compliant_on :edge do
+          it "double clicks an element" do
+            driver.navigate.to url_for("javascriptPage.html")
+            element = driver.find_element(:id, 'doubleClickField')
 
-          driver.mouse.double_click element
+            driver.mouse.double_click element
 
-          wait(5).until {
-            element.attribute(:value) == 'DoubleClicked'
-          }
+            wait(5).until {
+              element.attribute(:value) == 'DoubleClicked'
+            }
+          end
         end
 
         not_compliant_on :browser => :phantomjs do

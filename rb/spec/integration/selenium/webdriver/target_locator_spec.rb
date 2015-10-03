@@ -100,7 +100,7 @@ describe "Selenium::WebDriver::TargetLocator" do
       expect(driver.title).to eq("We Arrive Here")
     end
 
-    # TODO - File Edge bug; closing 2nd window hangs
+    # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1850028
     not_compliant_on :browser => :edge do
       it "should use the original window if the block closes the popup" do
         driver.navigate.to url_for("xhtmlTest.html")
@@ -174,7 +174,7 @@ describe "Selenium::WebDriver::TargetLocator" do
       expect(driver.title).to eq("We Arrive Here")
     end
 
-    # TODO - File Edge  bug; closing 2nd window hangs
+    # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1850028
     not_compliant_on :browser => :edge do
       it "should switch to a window and execute a block when current window is closed" do
         driver.navigate.to url_for("xhtmlTest.html")
@@ -237,7 +237,7 @@ describe "Selenium::WebDriver::TargetLocator" do
       end
     end
 
-    # TODO - File Edge bug; clicking for alert causes driver to hang
+    # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1850030
     not_compliant_on :browser => [:iphone, :safari, :phantomjs, :edge] do
        it "allows the user to set the value of a prompt" do
         driver.navigate.to url_for("alerts.html")
