@@ -149,6 +149,10 @@ module Selenium
             @path
           end
 
+          def version
+            `#{path} -v`.strip[/[^\s]*$/][/^\d+/].to_i
+          end
+
           private
 
           def windows_path

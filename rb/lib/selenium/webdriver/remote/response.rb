@@ -52,13 +52,12 @@ module Selenium
             msg = val['message'] or return "unknown error"
             msg << ": #{val['alert']['text'].inspect}" if val['alert'].kind_of?(Hash) && val['alert']['text']
             msg << " (#{ val['class'] })" if val['class']
+            msg
           when String
-            msg = val
+            val
           else
-            msg = "unknown error, status=#{status}: #{val.inspect}"
+            "unknown error, status=#{status}: #{val.inspect}"
           end
-
-          msg
         end
 
         def [](key)
@@ -104,11 +103,11 @@ module Selenium
         end
 
         def status
-          @payload['status']
+          @payload['status'] || @payload['error']
         end
 
         def value
-          @payload['value']
+          @payload['value'] || @payload['message']
         end
 
       end # Response

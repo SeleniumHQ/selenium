@@ -27,7 +27,7 @@ module Selenium
       # @api private
       #
 
-      class Bridge
+      class W3CBridge
         include BridgeHelper
 
         COMMANDS = {}
@@ -37,11 +37,11 @@ module Selenium
         #
         # @param name [Symbol]
         #   name of the resulting method
+        # @param verb [Symbol]
+        #   the appropriate http verb, such as :get, :post, or :delete
         # @param url [String]
         #   a URL template, which can include some arguments, much like the definitions on the server.
         #   the :session_id parameter is implicitly handled, but the remainder will become required method arguments.
-        # @param verb [Symbol]
-        #   the appropriate http verb, such as :get, :post, or :delete
         #
 
         def self.command(name, verb, url)
@@ -138,11 +138,11 @@ module Selenium
         end
 
         def setImplicitWaitTimeout(milliseconds)
-          execute :implicitlyWait, {}, :ms => milliseconds
+          setTimeout('implicit', milliseconds)
         end
 
         def setScriptTimeout(milliseconds)
-          execute :setScriptTimeout, {}, :ms => milliseconds
+          setTimeout('script', milliseconds)
         end
 
         def setTimeout(type, milliseconds)
@@ -158,23 +158,19 @@ module Selenium
         end
 
         def acceptAlert
-          command = :acceptAlert
-          execute command
+          execute :acceptAlert
         end
 
         def dismissAlert
-          command = :dismissAlert
-          execute command
+          execute :dismissAlert
         end
 
         def setAlertValue(keys)
-          command = capabilities.browser_name == 'MicrosoftEdge' ? :setAlertValueW3C : :setAlertValue
-          execute command, {}, :text => keys.to_s
+          execute :sendAlertText, {}, {:handler => 'prompt', :message => keys}
         end
 
         def getAlertText
-          command = :getAlertText
-          execute command
+          execute :getAlertText
         end
 
         #
@@ -182,11 +178,11 @@ module Selenium
         #
 
         def goBack
-          execute :goBack
+          execute :back
         end
 
         def goForward
-          execute :goForward
+          execute :forward
         end
 
         def getCurrentUrl
@@ -210,15 +206,20 @@ module Selenium
         end
 
         def switchToWindow(name)
-          if capabilities.browser_name == 'MicrosoftEdge'
-            execute :switchToWindow, {}, :handle => name
-          else
-            execute :switchToWindow, {}, :name => name
-          end
+          execute :switchToWindow, {}, :handle => name
         end
 
         def switchToFrame(id)
-          execute :switchToFrame, {}, :id => id
+          locator  = case id
+                     when String
+                       find_element_by('id', id)
+                     when Hash
+                       find_element_by(id.keys.first.to_s, id.values.first)
+                     else
+                       id
+                     end
+
+          execute :switchToFrame, {}, :id => locator
         end
 
         def switchToParentFrame
@@ -226,19 +227,19 @@ module Selenium
         end
 
         def switchToDefaultContent
-          execute :switchToFrame, {}, :id => nil
+          switchToFrame nil
         end
 
         QUIT_ERRORS = [IOError]
 
         def quit
-          execute :quit
+          execute :deleteSession
           http.close
         rescue *QUIT_ERRORS
         end
 
         def close
-          execute :close
+          execute :closeWindow
         end
 
         def refresh
@@ -254,38 +255,38 @@ module Selenium
         end
 
         def getCurrentWindowHandle
-          execute :getCurrentWindowHandle
+          execute :getWindowHandle
         end
 
+        # TODO - These Commands might require checking for being
+        # current window before performing
         def setWindowSize(width, height, handle = :current)
-          execute :setWindowSize, {:window_handle => handle},
-                                   :width  => width,
-                                   :height => height
+          execute :setWindowSize, {}, {:width  => width,
+                                   :height => height}
         end
 
         def maximizeWindow(handle = :current)
-          execute :maximizeWindow, :window_handle => handle
+          execute :maximizeWindow
         end
 
         def getWindowSize(handle = :current)
-          data = execute :getWindowSize, :window_handle => handle
+          data = execute :getWindowSize
 
           Dimension.new data['width'], data['height']
         end
 
         def setWindowPosition(x, y, handle = :current)
-          execute :setWindowPosition, {:window_handle => handle},
-                                       :x => x, :y => y
+          execute :setWindowPosition, :x => x, :y => y
         end
 
         def getWindowPosition(handle = :current)
-          data = execute :getWindowPosition, :window_handle => handle
+          data = execute :getWindowPosition
 
           Point.new data['x'], data['y']
         end
 
         def getScreenshot
-          execute :screenshot
+          execute :takeScreenshot
         end
 
         #
@@ -363,15 +364,11 @@ module Selenium
         #
 
         def executeScript(script, *args)
-          assert_javascript_enabled
-
           result = execute :executeScript, {}, :script => script, :args => args
           unwrap_script_result result
         end
 
         def executeAsyncScript(script, *args)
-          assert_javascript_enabled
-
           result = execute :executeAsyncScript, {}, :script => script, :args => args
           unwrap_script_result result
         end
@@ -381,19 +378,24 @@ module Selenium
         #
 
         def addCookie(cookie)
-          execute :addCookie, {}, :cookie => cookie
+          execute :addCookie, {}, cookie
         end
 
         def deleteCookie(name)
           execute :deleteCookie, :name => name
         end
 
+        # TODO - write specs
+        def getCookie(name)
+          execute :getCookie, :name => name
+        end
+
         def getAllCookies
-          execute :getCookies
+          execute :getAllCookies
         end
 
         def deleteAllCookies
-          execute :deleteAllCookies
+          getAllCookies.each { |cookie| deleteCookie(cookie['name'])}
         end
 
         #
@@ -401,7 +403,7 @@ module Selenium
         #
 
         def clickElement(element)
-          execute :clickElement, :id => element
+          execute :elementClick, :id => element
         end
 
         def click
@@ -434,16 +436,12 @@ module Selenium
           execute :mouseMoveTo, {}, params
         end
 
-        def sendKeysToActiveElement(key)
-          execute :sendKeysToActiveElement, {}, :value => key
+        def sendKeysToActiveElement(keys)
+          sendKeysToElement(getActiveElement, keys)
         end
 
         def sendKeysToElement(element, keys)
-          if @file_detector && local_file = @file_detector.call(keys)
-            keys = upload(local_file)
-          end
-
-          execute :sendKeysToElement, {:id => element}, {:value => Array(keys)}
+          execute :elementSendKeys, {:id => element}, {:value => keys.join('').split(//)}
         end
 
         def upload(local_file)
@@ -455,12 +453,14 @@ module Selenium
         end
 
         def clearElement(element)
-          execute :clearElement, :id => element
+          execute :elementClear, :id => element
         end
 
 
         def submitElement(element)
-          execute :submitElement, :id => element
+          executeScript("var e = arguments[0].ownerDocument.createEvent('Event');" +
+                            "e.initEvent('submit', true, true);" +
+                            "if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }", element)
         end
 
         def dragElement(element, right_by, down_by)
@@ -522,23 +522,6 @@ module Selenium
         end
 
         #
-        # logs
-        #
-
-        def getAvailableLogTypes
-          types = execute :getAvailableLogTypes
-          Array(types).map { |e| e.to_sym }
-        end
-
-        def getLog(type)
-          data = execute :getLog, {}, :type => type.to_s
-
-          Array(data).map do |l|
-            LogEntry.new l.fetch('level'), l.fetch('timestamp'), l.fetch('message')
-          end
-        end
-
-        #
         # element properties
         #
 
@@ -551,7 +534,7 @@ module Selenium
         end
 
         def getElementValue(element)
-          execute :getElementValue, :id => element
+          execute :getElementProperty, :id => element, :name => 'value'
         end
 
         def getElementText(element)
@@ -588,7 +571,7 @@ module Selenium
           execute :isElementDisplayed, :id => element
         end
         def getElementValueOfCssProperty(element, prop)
-          execute :getElementValueOfCssProperty, :id => element, :property_name => prop
+          execute :getElementCssValue, :id => element, :property_name => prop
         end
 
         def elementEquals(element, other)
@@ -605,6 +588,8 @@ module Selenium
         alias_method :switchToActiveElement, :getActiveElement
 
         def find_element_by(how, what, parent = nil)
+          how, what = convert_locators(how, what)
+
           if parent
             id = execute :findChildElement, {:id => parent}, {:using => how, :value => what}
           else
@@ -615,6 +600,8 @@ module Selenium
         end
 
         def find_elements_by(how, what, parent = nil)
+          how, what = convert_locators(how, what)
+
           if parent
             ids = execute :findChildElements, {:id => parent}, {:using => how, :value => what}
           else
@@ -626,9 +613,21 @@ module Selenium
 
         private
 
-        def assert_javascript_enabled
-          return if capabilities.browser_name == 'MicrosoftEdge' || capabilities.javascript_enabled?
-          raise Error::UnsupportedOperationError, "underlying webdriver instance does not support javascript"
+        def convert_locators(how, what)
+          case how
+          when 'class name'
+            how = 'css selector'
+            what = ".#{what}"
+          when 'id'
+            how = 'css selector'
+            what = "##{what}"
+          when 'name'
+            how = 'css selector'
+            what = "*[name='#{what}']"
+          when 'tag name'
+            how = 'css selector'
+          end
+          return how, what
         end
 
         #
@@ -639,7 +638,8 @@ module Selenium
         #
 
         def execute(*args)
-          raw_execute(*args)['value']
+          result = raw_execute(*args)
+          result.payload.key?('value') ? result['value'] : result
         end
 
         #
@@ -655,7 +655,9 @@ module Selenium
           path[':session_id'] = @session_id if path.include?(":session_id")
 
           begin
-            opts.each { |key, value| path[key.inspect] = escaper.escape(value.to_s) }
+            opts.each { |key, value|
+              path[key.inspect] = escaper.escape(value.to_s)
+            }
           rescue IndexError
             raise ArgumentError, "#{opts.inspect} invalid for #{command.inspect}"
           end
@@ -668,7 +670,7 @@ module Selenium
           @escaper ||= defined?(URI::Parser) ? URI::Parser.new : URI
         end
 
-      end # Bridge
+      end # W3CBridge
     end # Remote
   end # WebDriver
 end # Selenium
