@@ -149,18 +149,30 @@ module Selenium
             @path
           end
 
-          def version
-            `#{path} -v`.strip[/[^\s]*$/][/^\d+/].to_i
-          end
-
           def nightly_path
             @path = case Platform.os
                     when :macosx
-                      nightly_path = "/Applications/FirefoxNightly.app/Contents/MacOS/firefox-bin"
-                      nightly_path if File.exist?(nightly_path)
+                      "/Applications/FirefoxNightly.app/Contents/MacOS/firefox-bin"
                     when :windows
-                      Platform.find_in_program_files("\\Nightly\\firefox.exe")
+                      "#{Platform.find_in_program_files("\\Nightly\\firefox.exe").gsub('m Files (x86)', '~2')}"
                     end
+
+            unless File.file?(@path.to_s) && version > 43
+              raise Error::WebDriverError, "Could not find Firefox Nightly binary. Make sure Firefox Nightly is installed or set the path manually with #{self}.path="
+            end
+
+            @path
+          end
+
+          def version
+            @version ||= case Platform.os
+                         when :macosx
+                           `#{path} -v`.strip[/[^\s]*$/][/^\d+/].to_i
+                         when :windows
+                           `\"#{path}\" -v | more`.strip[/[^\s]*$/][/^\d+/].to_i
+                         else
+                           0
+                         end
           end
 
           private

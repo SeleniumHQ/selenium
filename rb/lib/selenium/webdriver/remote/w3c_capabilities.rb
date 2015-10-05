@@ -27,14 +27,15 @@ module Selenium
       class W3CCapabilities
 
         DEFAULTS = {
-            :browser_version => '',
-            :platform_name => :any,
-            :platform_version => false,
-            :accept_ssl_certs => false,
-            :takes_screenshot => false,
-            :takes_element_screenshot => false,
-            :page_load_strategy => false,
-            :proxy => nil
+          :browser_name => '',
+          :browser_version => '',
+          :platform_name => :any,
+          :platform_version => false,
+          :accept_ssl_certs => false,
+          :takes_screenshot => false,
+          :takes_element_screenshot => false,
+          :page_load_strategy => false,
+          :proxy => nil
         }
 
         DEFAULTS.each_key do |key|
@@ -46,6 +47,8 @@ module Selenium
             @capabilities[key] = value
           end
         end
+
+        alias_method :version, :browser_version
 
         #
         # Convenience methods for the common choices.
@@ -67,6 +70,7 @@ module Selenium
           end
 
           def w3c?(opts={})
+            return true if opts[:browser_name] == :firefox_nightly
             intersect = Remote::W3CCapabilities::DEFAULTS.keys & opts.keys
             common = [:takes_screenshot, :proxy]
             !(intersect - common).empty? || Firefox::Binary.version > 43

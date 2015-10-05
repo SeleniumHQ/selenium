@@ -77,7 +77,7 @@ module Selenium
               :platform       => Platform.os,
               :native         => GlobalTestEnv.native_events?,
               :window_manager => !!ENV['DESKTOP_SESSION'],
-              :w3c            => GlobalTestEnv.w3c? || GlobalTestEnv.driver == :firefox_nightly
+              :w3c            => GlobalTestEnv.w3c?(:browser_name => GlobalTestEnv.driver)
             }
           end
 

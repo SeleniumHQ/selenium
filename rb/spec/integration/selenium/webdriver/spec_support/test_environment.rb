@@ -108,8 +108,8 @@ module Selenium
           @native_events ||= !!ENV['native']
         end
 
-        def w3c?
-          Remote::W3CCapabilities.w3c?
+        def w3c?(opt = {})
+          Remote::W3CCapabilities.w3c?(opt)
         end
 
         def url_for(filename)
