@@ -64,11 +64,11 @@ public class MarionetteDriver extends RemoteWebDriver {
   public MarionetteDriver(GeckoDriverService service, Capabilities capabilities,
                                 int port) {
     if (capabilities == null) {
-      capabilities = DesiredCapabilities.internetExplorer();
+      capabilities = DesiredCapabilities.firefox();
     }
 
     if (service == null) {
-      service = setupService(capabilities, port);
+      service = setupService(port);
     }
     run(service, capabilities);
   }
@@ -91,7 +91,7 @@ public class MarionetteDriver extends RemoteWebDriver {
       "via RemoteWebDriver");
   }
 
-  private GeckoDriverService setupService(Capabilities caps, int port) {
+  private GeckoDriverService setupService(int port) {
     try {
       GeckoDriverService.Builder builder = new GeckoDriverService.Builder();
       builder.usingPort(port);
