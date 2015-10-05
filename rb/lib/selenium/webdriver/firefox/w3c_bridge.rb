@@ -49,7 +49,6 @@ module Selenium
           }
 
           remote_opts.merge!(:http_client => http_client) if http_client
-
           super(remote_opts)
         end
 

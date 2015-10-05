@@ -63,7 +63,7 @@ module Selenium
           opts = opts.dup
 
           http_client          = opts.delete(:http_client) { Http::Default.new }
-          desired_capabilities = opts.delete(:desired_capabilities) { Capabilities.firefox }
+          desired_capabilities = opts.delete(:desired_capabilities) { W3CCapabilities.firefox }
           url                  = opts.delete(:url) { "http://#{Platform.localhost}:4444/wd/hub" }
 
           unless opts.empty?
@@ -71,11 +71,11 @@ module Selenium
           end
 
           if desired_capabilities.kind_of?(Symbol)
-            unless Capabilities.respond_to?(desired_capabilities)
+            unless W3CCapabilities.respond_to?(desired_capabilities)
               raise Error::WebDriverError, "invalid desired capability: #{desired_capabilities.inspect}"
             end
 
-            desired_capabilities = Capabilities.send(desired_capabilities)
+            desired_capabilities = W3CCapabilities.send(desired_capabilities)
           end
 
           uri = url.kind_of?(URI) ? url : URI.parse(url)
@@ -122,7 +122,7 @@ module Selenium
           resp = raw_execute :newSession, {}, :desiredCapabilities => desired_capabilities
           @session_id = resp['sessionId'] or raise Error::WebDriverError, 'no sessionId in returned payload'
 
-          Capabilities.json_create resp['value']
+          W3CCapabilities.json_create resp['value']
         end
 
         def status
@@ -134,7 +134,7 @@ module Selenium
         end
 
         def getCapabilities
-          Capabilities.json_create execute(:getCapabilities)
+          W3CCapabilities.json_create execute(:getCapabilities)
         end
 
         def setImplicitWaitTimeout(milliseconds)
