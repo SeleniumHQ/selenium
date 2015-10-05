@@ -27,9 +27,14 @@ describe "Selenium::WebDriver::TargetLocator" do
   let(:wait) { Selenium::WebDriver::Wait.new }
   let(:new_window) { driver.window_handles.find {|handle| handle != driver.window_handle} }
 
-  it "should find the active element" do
-    driver.navigate.to url_for("xhtmlTest.html")
-    expect(driver.switch_to.active_element).to be_an_instance_of(WebDriver::Element)
+  # Marionette Bug -
+  # POST /session/f7082a32-e685-2843-ad2c-5bb6f376dac5/element/active
+  # did not match a known command
+  not_compliant_on :w3c => true do
+    it "should find the active element" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      expect(driver.switch_to.active_element).to be_an_instance_of(WebDriver::Element)
+    end
   end
 
   it "should switch to a frame" do
@@ -48,7 +53,9 @@ describe "Selenium::WebDriver::TargetLocator" do
     expect(driver.find_element(:name, 'login')).to be_kind_of(WebDriver::Element)
   end
 
-  not_compliant_on :browser => [:safari, :phantomjs] do
+  # Marionette Bug - Marionette Error: switchToParentFrame
+  not_compliant_on({:browser => [:safari, :phantomjs]},
+                   {:w3c => true}) do
     it "should switch to parent frame" do
       driver.navigate.to url_for("iframes.html")
 
@@ -118,60 +125,63 @@ describe "Selenium::WebDriver::TargetLocator" do
       end
     end
 
-    it "should close current window when more than two windows exist" do
-      driver.navigate.to url_for("xhtmlTest.html")
-      driver.find_element(:link, "Create a new anonymous window").click
-      driver.find_element(:link, "Open new window").click
+    # Marionette BUG: Automatically switches browsing context to new window when it opens.
+    not_compliant_on :w3c => true do
+      it "should close current window when more than two windows exist" do
+        driver.navigate.to url_for("xhtmlTest.html")
+        driver.find_element(:link, "Create a new anonymous window").click
+        driver.find_element(:link, "Open new window").click
 
-      wait.until { driver.window_handles.size == 3 }
+        wait.until { driver.window_handles.size == 3 }
 
-      driver.switch_to.window(driver.window_handle) {driver.close}
-      expect(driver.window_handles.size).to eq 2
-    end
-
-    it "should close another window when more than two windows exist" do
-      driver.navigate.to url_for("xhtmlTest.html")
-      driver.find_element(:link, "Create a new anonymous window").click
-      driver.find_element(:link, "Open new window").click
-
-      wait.until { driver.window_handles.size == 3 }
-
-      window_to_close = driver.window_handles.last
-
-      driver.switch_to.window(window_to_close) { driver.close }
-      expect(driver.window_handles.size).to eq 2
-    end
-
-    it "should iterate over open windows when current window is not closed" do
-      driver.navigate.to url_for("xhtmlTest.html")
-      driver.find_element(:link, "Create a new anonymous window").click
-      driver.find_element(:link, "Open new window").click
-
-      wait.until { driver.window_handles.size == 3 }
-
-      matching_window = driver.window_handles.find do |wh|
-        driver.switch_to.window(wh) { driver.title == "We Arrive Here" }
+        driver.switch_to.window(driver.window_handle) {driver.close}
+        expect(driver.window_handles.size).to eq 2
       end
 
-      driver.switch_to.window(matching_window)
-      expect(driver.title).to eq("We Arrive Here")
-    end
+      it "should close another window when more than two windows exist" do
+        driver.navigate.to url_for("xhtmlTest.html")
+        driver.find_element(:link, "Create a new anonymous window").click
+        driver.find_element(:link, "Open new window").click
 
-    it "should iterate over open windows when current window is closed" do
-      driver.navigate.to url_for("xhtmlTest.html")
-      driver.find_element(:link, "Create a new anonymous window").click
-      driver.find_element(:link, "Open new window").click
+        wait.until { driver.window_handles.size == 3 }
 
-      wait.until { driver.window_handles.size == 3 }
+        window_to_close = driver.window_handles.last
 
-      driver.close
-
-      matching_window = driver.window_handles.find do |wh|
-        driver.switch_to.window(wh) { driver.title == "We Arrive Here" }
+        driver.switch_to.window(window_to_close) { driver.close }
+        expect(driver.window_handles.size).to eq 2
       end
 
-      driver.switch_to.window(matching_window)
-      expect(driver.title).to eq("We Arrive Here")
+      it "should iterate over open windows when current window is not closed" do
+        driver.navigate.to url_for("xhtmlTest.html")
+        driver.find_element(:link, "Create a new anonymous window").click
+        driver.find_element(:link, "Open new window").click
+
+        wait.until { driver.window_handles.size == 3 }
+
+        matching_window = driver.window_handles.find do |wh|
+          driver.switch_to.window(wh) { driver.title == "We Arrive Here" }
+        end
+
+        driver.switch_to.window(matching_window)
+        expect(driver.title).to eq("We Arrive Here")
+      end
+
+      it "should iterate over open windows when current window is closed" do
+        driver.navigate.to url_for("xhtmlTest.html")
+        driver.find_element(:link, "Create a new anonymous window").click
+        driver.find_element(:link, "Open new window").click
+
+        wait.until { driver.window_handles.size == 3 }
+
+        driver.close
+
+        matching_window = driver.window_handles.find do |wh|
+          driver.switch_to.window(wh) { driver.title == "We Arrive Here" }
+        end
+
+        driver.switch_to.window(matching_window)
+        expect(driver.title).to eq("We Arrive Here")
+      end
     end
 
     # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1850028
@@ -211,14 +221,14 @@ describe "Selenium::WebDriver::TargetLocator" do
   not_compliant_on :browser => [:iphone, :safari, :phantomjs, :edge] do
     describe "alerts" do
       it "allows the user to accept an alert" do
-          driver.navigate.to url_for("alerts.html")
-          driver.find_element(:id => "alert").click
+        driver.navigate.to url_for("alerts.html")
+        driver.find_element(:id => "alert").click
 
-          alert = wait_for_alert
-          alert.accept
+        alert = wait_for_alert
+        alert.accept
 
-          expect(driver.title).to eq("Testing Alerts")
-        end
+        expect(driver.title).to eq("Testing Alerts")
+      end
 
       not_compliant_on({:browser => :chrome, :platform => :macosx}) do
         it "allows the user to dismiss an alert" do
@@ -234,16 +244,22 @@ describe "Selenium::WebDriver::TargetLocator" do
         end
       end
 
-       it "allows the user to set the value of a prompt" do
-        driver.navigate.to url_for("alerts.html")
-        driver.find_element(:id => "prompt").click
+      # Marionette BUG - http://www.w3.org/TR/webdriver/#send-alert-text
+      # Says message should be an array (I think), but we're getting
+      # InvalidArgumentError: 'message' not a string
+      # When trying a string, error: keysToSend.join is not a function
+      not_compliant_on :w3c => true do
+        it "allows the user to set the value of a prompt" do
+          driver.navigate.to url_for("alerts.html")
+          driver.find_element(:id => "prompt").click
 
-        alert = wait_for_alert
-        alert.send_keys "cheese"
-        alert.accept
+          alert = wait_for_alert
+          alert.send_keys "cheese"
+          alert.accept
 
-        text = driver.find_element(:id => "text").text
-        expect(text).to eq("cheese")
+          text = driver.find_element(:id => "text").text
+          expect(text).to eq("cheese")
+        end
       end
 
       it "allows the user to get the text of an alert" do
@@ -258,31 +274,48 @@ describe "Selenium::WebDriver::TargetLocator" do
       end
 
       it "raises when calling #text on a closed alert" do
+        expected_alert = Selenium::WebDriver::Error::NoSuchAlertError
+
+        not_compliant_on :w3c => true do
+          expected_alert = Selenium::WebDriver::Error::NoAlertPresentError
+        end
+
         driver.navigate.to url_for("alerts.html")
         driver.find_element(:id => "alert").click
 
         alert = wait_for_alert
         alert.accept
 
-        expect { alert.text }.to raise_error(Selenium::WebDriver::Error::NoAlertPresentError)
+        expect { alert.text }.to raise_error(expected_alert)
       end
 
       not_compliant_on :browser => :ie do
         it "raises NoAlertOpenError if no alert is present" do
+          expected_alert = Selenium::WebDriver::Error::NoSuchAlertError
+          not_compliant_on :w3c => true do
+            expected_alert = Selenium::WebDriver::Error::NoAlertPresentError
+          end
+
           expect { driver.switch_to.alert }.to raise_error(
-            Selenium::WebDriver::Error::NoAlertPresentError, /alert|modal dialog/i)
+                                                   expected_alert, /alert|modal/i)
         end
       end
 
       compliant_on :browser => [:firefox, :ie] do
-        it "raises an UnhandledAlertError if an alert has not been dealt with" do
-          driver.navigate.to url_for("alerts.html")
-          driver.find_element(:id => "alert").click
-          wait_for_alert
+        # Marionette BUG - Allows driver calls with alert present
+        # Spec says: "If the subsequent requested command is not one listed
+        # in this chapter, an unexpected alert open error will be returned."
+        not_compliant_on :w3c => true do
 
-          expect { driver.title }.to raise_error(Selenium::WebDriver::Error::UnhandledAlertError, /cheese/)
+          it "raises an UnhandledAlertError if an alert has not been dealt with" do
+            driver.navigate.to url_for("alerts.html")
+            driver.find_element(:id => "alert").click
+            wait_for_alert
 
-          expect(driver.title).to eq("Testing Alerts") # :chrome does not auto-dismiss the alert
+            expect { driver.title }.to raise_error(Selenium::WebDriver::Error::UnhandledAlertError, /cheese/)
+
+            expect(driver.title).to eq("Testing Alerts") # :chrome does not auto-dismiss the alert
+          end
         end
       end
     end

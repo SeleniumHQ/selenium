@@ -57,7 +57,7 @@ describe Selenium::Client::Protocol do
 
     it "succeeds when given zero args" do
       expect(client).to receive(:remote_control_command).with(:a_verb, [])
-      client.string_command:a_verb
+      client.string_command(:a_verb)
     end
   end
 
