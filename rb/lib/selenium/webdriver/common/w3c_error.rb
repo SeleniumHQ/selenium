@@ -80,7 +80,7 @@ module Selenium
       # An error occurred while executing JavaScript supplied by the user.
       #
 
-      class JavascriptErrorError < WebDriverError; end
+      class JavascriptError < WebDriverError; end
 
       #
       # The target for mouse interaction is not in the browser’s viewport and
@@ -164,7 +164,7 @@ module Selenium
       # the command.
       #
 
-      class UnknownErrorError < WebDriverError; end
+      class UnknownError < WebDriverError; end
 
       #
       # The requested command matched a known URL but did not match a
@@ -178,6 +178,15 @@ module Selenium
       #
 
       class UnsupportedOperationError < WebDriverError; end
+
+      # aliased for backwards compatibility
+      NoAlertPresentError       = NoSuchAlertError
+      ScriptTimeOutError        = ScriptTimeoutError
+      ObsoleteElementError      = StaleElementReferenceError
+      UnhandledError            = UnknownError
+      UnexpectedJavascriptError = JavascriptError
+      NoAlertOpenError          = NoAlertPresentError
+      ElementNotDisplayedError  = ElementNotVisibleError
 
 
     end # Error
