@@ -20,7 +20,7 @@ import logging
 from selenium import webdriver
 
 
-class FirefoxLauncherTests (unittest.TestCase):
+class IeLauncherTests (unittest.TestCase):
 
     def testLaunchAndCloseBrowser(self):
         self.webdriver = webdriver.Ie()
