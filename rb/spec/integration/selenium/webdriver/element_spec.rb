@@ -26,9 +26,12 @@ describe "Element" do
     driver.find_element(:id, "imageButton").click
   end
 
-  it "should submit" do
-    driver.navigate.to url_for("formPage.html")
-    driver.find_element(:id, "submitButton").submit
+  # Marionette BUG - AutomatedTester: "known bug with execute script"
+  not_compliant_on :w3c => true do
+    it "should submit" do
+      driver.navigate.to url_for("formPage.html")
+      driver.find_element(:id, "submitButton").submit
+    end
   end
 
   it "should send string keys" do
@@ -46,8 +49,12 @@ describe "Element" do
     end
   end
 
+  # FIXME - Find alternate implementation for File Uploads
+  # TODO - Figure out if/how this works on Firefox/Chrome without Remote server
   # PhantomJS on windows issue: https://github.com/ariya/phantomjs/issues/10993
-  not_compliant_on({:browser => [:android, :iphone, :safari, :edge]}, {:browser => :phantomjs, :platform => :windows}) do
+  not_compliant_on({:browser => [:android, :iphone, :safari, :edge]},
+                   {:browser => :phantomjs, :platform => :windows},
+                   {:w3c => true}) do
     it "should handle file uploads" do
       driver.navigate.to url_for("formPage.html")
 
@@ -124,30 +131,38 @@ describe "Element" do
     expect(driver.find_element(:class, "header")).to be_displayed
   end
 
-  it "should get location" do
-    driver.navigate.to url_for("xhtmlTest.html")
-    loc = driver.find_element(:class, "header").location
-
-    expect(loc.x).to be >= 1
-    expect(loc.y).to be >= 1
-  end
-
-  not_compliant_on :browser => [:iphone] do
-    it "should get location once scrolled into view" do
-      driver.navigate.to url_for("javascriptPage.html")
-      loc = driver.find_element(:id, 'keyUp').location_once_scrolled_into_view
+  # Location not currently supported in Spec, but should be?
+  not_compliant_on :w3c => true do
+    it "should get location" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      loc = driver.find_element(:class, "header").location
 
       expect(loc.x).to be >= 1
-      expect(loc.y).to be >= 0 # can be 0 if scrolled to the top
+      expect(loc.y).to be >= 1
+    end
+
+    not_compliant_on :browser => [:iphone] do
+      it "should get location once scrolled into view" do
+        driver.navigate.to url_for("javascriptPage.html")
+        loc = driver.find_element(:id, 'keyUp').location_once_scrolled_into_view
+
+        expect(loc.x).to be >= 1
+        expect(loc.y).to be >= 0 # can be 0 if scrolled to the top
+      end
     end
   end
 
-  it "should get size" do
-    driver.navigate.to url_for("xhtmlTest.html")
-    size = driver.find_element(:class, "header").size
+  # Marionette BUG:
+  # GET /session/f7082a32-e685-2843-ad2c-5bb6f376dac5/element/b6ff4468-ed6f-7c44-be4b-ca5a3ea8bf26/size
+  # did not match a known command"
+  not_compliant_on :w3c => true do
+    it "should get size" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      size = driver.find_element(:class, "header").size
 
-    expect(size.width).to be > 0
-    expect(size.height).to be > 0
+      expect(size.width).to be > 0
+      expect(size.height).to be > 0
+    end
   end
 
   compliant_on :driver => [:ie, :chrome, :edge] do # Firefox w/native events: issue 1771

@@ -35,8 +35,9 @@ module Selenium
 
         def browser
           if driver == :remote
-            # TODO: get rid of ENV
             (ENV['WD_REMOTE_BROWSER'] || :firefox).to_sym
+          elsif driver == :firefox_nightly
+            :firefox
           else
             driver
           end
@@ -105,6 +106,10 @@ module Selenium
 
         def native_events?
           @native_events ||= !!ENV['native']
+        end
+
+        def w3c?
+          Remote::W3CCapabilities.w3c?
         end
 
         def url_for(filename)

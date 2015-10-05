@@ -141,15 +141,18 @@ module Selenium
           expect(string).to include('user_pref("network.proxy.type", 4)')
         end
 
-        it "should be able to use the same profile more than once" do
-          profile['browser.startup.homepage'] = url_for("formPage.html")
+        # W3C does not allow more than one browser on same endpoint node
+        not_compliant_on :w3c => true do
+          it "should be able to use the same profile more than once" do
+            profile['browser.startup.homepage'] = url_for("formPage.html")
 
-          begin
-            driver_one = WebDriver.for(:firefox, :profile => profile)
-            driver_two = WebDriver.for(:firefox, :profile => profile)
-          ensure
-            driver_one.quit if driver_one
-            driver_two.quit if driver_two
+            begin
+              driver_one = WebDriver.for(:firefox, :profile => profile)
+              driver_two = WebDriver.for(:firefox, :profile => profile)
+            ensure
+              driver_one.quit if driver_one
+              driver_two.quit if driver_two
+            end
           end
         end
 

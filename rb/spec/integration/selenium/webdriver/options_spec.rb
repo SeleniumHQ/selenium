@@ -23,26 +23,29 @@ module Selenium
   module WebDriver
     describe Options do
 
-      describe 'logs' do
-        compliant_on :driver => [:firefox] do
-          it 'can fetch available log types' do
-            expect(driver.manage.logs.available_types).to eq([:browser, :driver])
-          end
+      # Not supported in W3C Spec
+      not_compliant_on :w3c => true do
+        describe 'logs' do
+          compliant_on :driver => [:firefox] do
+            it 'can fetch available log types' do
+              expect(driver.manage.logs.available_types).to eq([:browser, :driver])
+            end
 
-          it 'can get the browser log' do
-            driver.navigate.to url_for("simpleTest.html")
+            it 'can get the browser log' do
+              driver.navigate.to url_for("simpleTest.html")
 
-            entries = driver.manage.logs.get(:browser)
-            expect(entries).not_to be_empty
-            expect(entries.first).to be_kind_of(LogEntry)
-          end
+              entries = driver.manage.logs.get(:browser)
+              expect(entries).not_to be_empty
+              expect(entries.first).to be_kind_of(LogEntry)
+            end
 
-          it 'can get the driver log' do
-            driver.navigate.to url_for("simpleTest.html")
+            it 'can get the driver log' do
+              driver.navigate.to url_for("simpleTest.html")
 
-            entries = driver.manage.logs.get(:driver)
-            expect(entries).not_to be_empty
-            expect(entries.first).to be_kind_of(LogEntry)
+              entries = driver.manage.logs.get(:driver)
+              expect(entries).not_to be_empty
+              expect(entries.first).to be_kind_of(LogEntry)
+            end
           end
         end
       end
@@ -81,7 +84,9 @@ module Selenium
             end
           end
 
-          not_compliant_on :browser => [:ie, :android, :iphone, :safari] do
+          # Marionette BUG - Failed to convert expiry to Date
+          not_compliant_on({:browser => [:ie, :android, :iphone, :safari]},
+                           {:w3c => true}) do
             it "should use DateTime for expires" do
               driver.navigate.to url_for("xhtmlTest.html")
 
@@ -96,7 +101,6 @@ module Selenium
             end
           end
         end
-
       end
     end
   end
