@@ -214,10 +214,10 @@ namespace OpenQA.Selenium.Opera
         /// Adds arguments to be excluded from the list of arguments passed by default 
         /// to the Opera.exe command line by operadriver.exe.
         /// </summary>
-        /// <param name="arguments">An array of arguments to exclude.</param>
-        public void AddExcludedArguments(params string[] arguments)
+        /// <param name="argumentsToExclude">An array of arguments to exclude.</param>
+        public void AddExcludedArguments(params string[] argumentsToExclude)
         {
-            this.AddExcludedArguments(new List<string>(arguments));
+            this.AddExcludedArguments(new List<string>(argumentsToExclude));
         }
 
         /// <summary>

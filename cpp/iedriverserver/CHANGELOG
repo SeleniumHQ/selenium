@@ -9,6 +9,41 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.47.0.5
+=========
+ * Updating screenshot code to retain scroll bars in required directions.
+   When an IE window needs to be resized to obtain the full-DOM screenshot,
+   if it has scroll bars in either direction, those scroll bars need to be
+   present in the resized window, so that layout recalculation doesn't occur.
+   In practice, this means reducing the window size by 2 pixels in the
+   appropriate direction before taking the screenshot. The resulting scroll
+   bars are cropped from the image.
+
+v2.47.0.4
+=========
+ * Updates to JavaScript automation atoms.
+ * Updating screenshot code to prevent resizing if window is large enough.
+   In the previous screenshot update, the driver would incorrectly resize
+   the IE window smaller if the document was smaller in height or width
+   than the current window size. This could cause redraws of the page
+   being viewed such that after resizing, the screenshot still did not
+   display the entire page. This commit resolves that issue, and also takes
+   into account the size of the scroll bars when creating the screenshot
+   image. NOTE: There is a *very* slight chance that resizing the window
+   so there are no longer scroll bars to be displayed *might* still cause
+   layout redraws such that the screenshot does not show the entire DOM
+   after the resize. Since we should now always be expanding the window size,
+   never contracting it, this is a corner case that explicitly will *not* be
+   fixed. Any issue reports describing this corner case will be closed without
+   action. Fixes issue #1085.
+
+v2.47.0.3
+=========
+ * Updates to JavaScript automation atoms.
+ * Removed use of Windows hooks for taking screenshots in IE. This will fix
+   the issue of taking full-page screenshots when using the 32-bit IE driver
+   on 64-bit Windows installations.
+
 v2.47.0.2
 =========
  * Corrected build process to create executables runnable on Windows XP.

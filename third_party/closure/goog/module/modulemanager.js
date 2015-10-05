@@ -43,7 +43,6 @@ goog.require('goog.object');
  * @constructor
  * @extends {goog.Disposable}
  * @struct
- * @suppress {checkStructDictInheritance}
  */
 goog.module.ModuleManager = function() {
   goog.module.ModuleManager.base(this, 'constructor');

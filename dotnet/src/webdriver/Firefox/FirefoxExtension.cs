@@ -69,10 +69,10 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Installs the extension into a profile directory.
         /// </summary>
-        /// <param name="profileDir">The Firefox profile directory into which to install the extension.</param>
-        public void Install(string profileDir)
+        /// <param name="profileDirectory">The Firefox profile directory into which to install the extension.</param>
+        public void Install(string profileDirectory)
         {
-            DirectoryInfo info = new DirectoryInfo(profileDir);
+            DirectoryInfo info = new DirectoryInfo(profileDirectory);
             string stagingDirectoryName = Path.Combine(Path.GetTempPath(), info.Name + ".staging");
             string tempFileName = Path.Combine(stagingDirectoryName, Path.GetFileName(this.extensionFileName));
             if (Directory.Exists(tempFileName))
@@ -97,7 +97,7 @@ namespace OpenQA.Selenium.Firefox
             // Then, copy the contents of the temporarly location into the
             // proper location in the Firefox profile directory.
             string id = ReadIdFromInstallRdf(tempFileName);
-            string extensionDirectory = Path.Combine(Path.Combine(profileDir, "extensions"), id);
+            string extensionDirectory = Path.Combine(Path.Combine(profileDirectory, "extensions"), id);
             if (Directory.Exists(extensionDirectory))
             {
                 Directory.Delete(extensionDirectory, true);

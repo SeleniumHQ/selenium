@@ -33,10 +33,12 @@ import org.openqa.grid.web.servlet.TestSessionStatusServlet;
 import org.openqa.grid.web.servlet.beta.ConsoleServlet;
 import org.openqa.grid.web.utils.ExtraServletUtil;
 import org.openqa.selenium.net.NetworkUtils;
-import org.seleniumhq.jetty7.server.Server;
-import org.seleniumhq.jetty7.server.bio.SocketConnector;
-import org.seleniumhq.jetty7.servlet.ServletContextHandler;
-import org.seleniumhq.jetty7.util.thread.QueuedThreadPool;
+import org.seleniumhq.jetty9.server.HttpConfiguration;
+import org.seleniumhq.jetty9.server.HttpConnectionFactory;
+import org.seleniumhq.jetty9.server.Server;
+import org.seleniumhq.jetty9.server.ServerConnector;
+import org.seleniumhq.jetty9.servlet.ServletContextHandler;
+import org.seleniumhq.jetty9.util.thread.QueuedThreadPool;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -46,7 +48,7 @@ import java.util.logging.Logger;
 import javax.servlet.Servlet;
 
 /**
- * Jetty server. Main entry point for everything about the grid. <p/> Except for unit tests, this
+ * Jetty server. Main entry point for everything about the grid. <p> Except for unit tests, this
  * should be a singleton.
  */
 public class Hub {
@@ -105,15 +107,38 @@ public class Hub {
 
   private void initServer() {
     try {
-      server = new Server();
-      SocketConnector socketListener = new SocketConnector();
-      socketListener.setMaxIdleTime(60000);
-      if (isHostRestricted) {
-        socketListener.setHost(host);
+      if (maxThread>0){
+        QueuedThreadPool pool = new QueuedThreadPool();
+        pool.setMaxThreads(maxThread);
+        server = new Server(pool);
+      } else {
+        server = new Server();
       }
-      socketListener.setPort(port);
-      socketListener.setLowResourcesMaxIdleTime(6000);
-      server.addConnector(socketListener);
+
+      HttpConfiguration httpConfig = new HttpConfiguration();
+      httpConfig.setSecureScheme("https");
+      httpConfig.setSecurePort(getPort());
+
+      log.info("Will listen on " + port);
+
+      ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
+      http.setPort(port);
+
+      server.addConnector(http);
+//      if (isHostRestricted) {
+////        httpConfig.
+//      }
+//      httpConfig.setL
+
+
+//      SocketConnector socketListener = new SocketConnector();
+//      socketListener.setMaxIdleTime(60000);
+//      if (isHostRestricted) {
+//        socketListener.setHost(host);
+//      }
+//      socketListener.setPort(port);
+//      socketListener.setLowResourcesMaxIdleTime(6000);
+//      server.addConnector(socketListener);
 
       ServletContextHandler root = new ServletContextHandler(ServletContextHandler.SESSIONS);
       root.setContextPath("/");
@@ -164,11 +189,6 @@ public class Hub {
 
   public void start() throws Exception {
     initServer();
-    if (maxThread>0){
-      QueuedThreadPool pool = new QueuedThreadPool();
-      pool.setMaxThreads(maxThread);
-      server.setThreadPool(pool);
-    }
     server.start();
   }
 

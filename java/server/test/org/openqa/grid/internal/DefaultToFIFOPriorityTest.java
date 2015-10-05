@@ -23,6 +23,7 @@ import static org.openqa.grid.common.RegistrationRequest.APP;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.mock.GridHelper;
@@ -35,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 
 // TODO freynaud copy paste from PriorityTestLoad ....
-
 public class DefaultToFIFOPriorityTest {
 
   private final static int MAX = 50;
@@ -48,6 +48,8 @@ public class DefaultToFIFOPriorityTest {
   private Map<String, Object> ff = new HashMap<>();
   private List<MockedRequestHandler> requests =
     Collections.synchronizedList(new ArrayList<MockedRequestHandler>());
+
+  private volatile boolean reqDone = false;
 
   /**
    * create a hub with 1 FF
@@ -67,13 +69,12 @@ public class DefaultToFIFOPriorityTest {
       Map<String, Object> cap = new HashMap<>();
       cap.put(APP, "FF");
       cap.put("_priority", i);
-      MockedRequestHandler req =GridHelper.createNewSessionHandler(registry, cap);
+      MockedRequestHandler req = GridHelper.createNewSessionHandler(registry, cap);
       requests.add(req);
     }
 
-
     // use all the spots ( so 1 ) of the grid so that a queue builds up
-    MockedRequestHandler newSessionRequest =GridHelper.createNewSessionHandler(registry, ff);
+    MockedRequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, ff);
     newSessionRequest.process();
     TestSession session = newSessionRequest.getSession();
 
@@ -87,18 +88,26 @@ public class DefaultToFIFOPriorityTest {
       }).start();
     }
 
-
-    // free the grid : the queue is consumed, and the test with the highest
-    // priority should be processed.
-    while (requests.size() != MAX) {
+    // wait for all the request to reach the queue.
+    while (registry.getNewSessionRequestCount() != MAX) {
       Thread.sleep(250);
     }
+
+    // release the initial request.
     registry.terminateSynchronousFOR_TEST_ONLY(session);
   }
 
 
-  @Test
+  // 20 second timeout in case we hang
+  @Test(timeout = 20000)
   public void validateRequestAreHandledFIFO() throws InterruptedException {
+    // using a flag here. The queue contains all the requests.
+    // when release is executed, 1 slot is
+    // freed.The iteration over the queue to sort + find the match isn't
+    // instant.
+    while (!reqDone) {
+      Thread.sleep(20);
+    }
     int cpt = 0;
     while (cpt < 8) {
       try {
@@ -116,6 +125,7 @@ public class DefaultToFIFOPriorityTest {
   @After
   public void teardown() {
     registry.stop();
+    requests.clear();  // Because it's static
   }
 
 }

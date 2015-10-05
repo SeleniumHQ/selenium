@@ -1,11 +1,17 @@
 prebuilt_jar(name = 'servlet-api',
-  binary_jar = 'servlet-api-2.5-6.1.9.jar',
+  binary_jar = 'javax.servlet-api-3.1.0.jar',
+  source_jar = 'javax.servlet-api-3.1.0-sources.jar',
   visibility = [
     '//java/client/test/org/openqa/selenium/environment:environment',
-    '//java/server/src/org/openqa/grid:grid',
-    '//java/server/src/org/openqa/grid/selenium:classes',
+
+    # Everything under grid
+    '//java/server/src/org/openqa/grid/...',
     '//java/server/src/org/openqa/selenium/remote/server:server',
-    '//third_party/java/jetty:jetty',
-    '//third_party/java/jetty:jetty-for-rc',
+
+    # Including the tests
+    '//java/server/test/org/openqa/grid/...',
+
+    # Everything declared in the jetty BUCK file.
+    '//third_party/java/jetty:',
   ],
 )

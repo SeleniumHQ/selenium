@@ -101,7 +101,7 @@ public class ProxySettingTest extends JUnit4TestBase {
     assertTrue("Proxy should have been called", proxyServer.hasBeenCalled("simpleTest.html"));
   }
 
-  @Ignore(value = {PHANTOMJS, SAFARI},
+  @Ignore(value = {PHANTOMJS, SAFARI, HTMLUNIT},
           reason = "PhantomJS - not tested, Safari - not implemented")
   @NeedsLocalEnvironment
   @Test
@@ -127,7 +127,7 @@ public class ProxySettingTest extends JUnit4TestBase {
         "Hello, world!", driver.findElement(By.tagName("h3")).getText());
   }
 
-  @Ignore(value = {PHANTOMJS, SAFARI},
+  @Ignore(value = {PHANTOMJS, SAFARI, HTMLUNIT},
           reason = "PhantomJS - not tested, Safari - not implemented")
   @NeedsLocalEnvironment
   @Test

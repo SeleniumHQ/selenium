@@ -50,7 +50,7 @@ end
 verbose($DEBUG)
 
 def version
-  "2.47.1"
+  "2.48.0"
 end
 ide_version = "2.8.0"
 
@@ -109,7 +109,6 @@ task :tests => [
   "//java/client/test/org/openqa/selenium/htmlunit:test_basic",
   "//java/client/test/org/openqa/selenium/htmlunit:test_js",
   "//java/client/test/org/openqa/selenium/firefox:test_synthesized",
-  "//java/client/test/org/openqa/selenium/firefox:test_native",
   "//java/client/test/org/openqa/selenium/ie:test",
   "//java/client/test/org/openqa/selenium/chrome:test",
   "//java/client/test/org/openqa/selenium/opera:test_blink",
@@ -179,7 +178,6 @@ task :test_grid => [
 task :test_ie => [ "//java/client/test/org/openqa/selenium/ie:test:run" ]
 task :test_jobbie => [ :test_ie ]
 task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test_synthesized:run" ]
-task :test_firefox_native => [ "//java/client/test/org/openqa/selenium/firefox:test_native:run" ]
 task :test_opera => [ "//java/client/test/org/openqa/selenium/opera:test_blink:run" ]
 task :test_remote_server => [ '//java/server/test/org/openqa/selenium/remote/server:small-tests:run' ]
 task :test_remote => [
@@ -251,12 +249,12 @@ task :test_rb => [
   "//rb:firefox-test",
   "//rb:remote-test",
   "//rb:rc-client-integration-test",
- ("//rb:ie-test" if windows?),
- ("//rb:edge-test" if windows?),
   "//rb:chrome-test",
- ("//rb:safari-test" if mac?),
-  "//rb:phantomjs-test"
-].compact
+  "//rb:phantomjs-test",
+  ("//rb:safari-test" if mac?),
+  ("//rb:ie-test" if windows?),
+  ("//rb:edge-test" if windows?)
+     ].compact
 
 task :test_py => [ :py_prep_for_install_release, "//py:firefox_test:run" ]
 
@@ -381,6 +379,9 @@ task :javadocs => [:common, :firefox, :htmlunit, :ie, :remote, :support, :chrome
    [File.join(%w(java client src))].each do |m|
      sourcepath += File::PATH_SEPARATOR + m
    end
+   [File.join(%w(java server src))].each do |m|
+     sourcepath += File::PATH_SEPARATOR + m
+   end
    p sourcepath
    cmd = "javadoc -notimestamp -d build/javadoc -sourcepath #{sourcepath} -classpath #{classpath} -subpackages org.openqa.selenium -subpackages com.thoughtworks "
    cmd << " -exclude org.openqa.selenium.internal.selenesedriver:org.openqa.selenium.internal.seleniumemulation:org.openqa.selenium.remote.internal"
@@ -470,6 +471,49 @@ task :test_webdriverjs => [
 
 desc "Generate a single file with WebDriverJS' public API"
 task :webdriverjs => [ "//javascript/webdriver:webdriver" ]
+
+desc "Repack jetty"
+task "repack-jetty" => "build/third_party/java/jetty/jetty-repacked.jar"
+
+# Expose the repack task to CrazyFun.
+task "//third_party/java/jetty:repacked" => "build/third_party/java/jetty/jetty-repacked.jar"
+
+file "build/third_party/java/jetty/jetty-repacked.jar" => [
+   "third_party/java/jetty/jetty-continuation-9.2.13.v20150730.jar",
+   "third_party/java/jetty/jetty-http-9.2.13.v20150730.jar",
+   "third_party/java/jetty/jetty-io-9.2.13.v20150730.jar",
+   "third_party/java/jetty/jetty-jmx-9.2.13.v20150730.jar",
+   "third_party/java/jetty/jetty-security-9.2.13.v20150730.jar",
+   "third_party/java/jetty/jetty-server-9.2.13.v20150730.jar",
+   "third_party/java/jetty/jetty-servlet-9.2.13.v20150730.jar",
+   "third_party/java/jetty/jetty-servlets-9.2.13.v20150730.jar",
+   "third_party/java/jetty/jetty-util-9.2.13.v20150730.jar"
+ ] do |t|
+   print "Repacking jetty\n"
+   root = File.join("build", "third_party", "java", "jetty")
+   jarjar = File.join("third_party", "java", "jarjar", "jarjar-1.4.jar")
+   rules = File.join("third_party", "java", "jetty", "jetty-repack-rules")
+   temp = File.join(root, "temp")
+
+   # First, process the files
+   mkdir_p root
+   mkdir_p temp
+
+   t.prerequisites.each do |pre|
+     filename = File.basename(pre, ".jar")
+     out = File.join(root, "#{filename}-repacked.jar")
+     `java -jar #{jarjar} process #{rules} #{pre} #{out}`
+     `cd #{temp} && jar xf #{File.join("..", File.basename(out))}`
+   end
+
+   # Now, merge them
+   `cd #{temp} && jar cvf #{File.join("..", "jetty-repacked.jar")} *`
+
+   # And copy the artifact to third_party so that eclipse users can be made happy
+   cp "build/third_party/java/jetty/jetty-repacked.jar", "third_party/java/jetty/jetty-repacked.jar"
+end
+
+task
 
 task :release => [
     :clean,

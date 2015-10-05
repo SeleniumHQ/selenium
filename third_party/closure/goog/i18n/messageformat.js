@@ -164,6 +164,8 @@ goog.i18n.MessageFormat.REGEX_LITERAL_ = new RegExp("'([{}#].*?)'", 'g');
  */
 goog.i18n.MessageFormat.REGEX_DOUBLE_APOSTROPHE_ = new RegExp("''", 'g');
 
+/** @typedef {{ type: goog.i18n.MessageFormat.Element_, value: ? }} */
+goog.i18n.MessageFormat.TypeVal_;
 
 /**
  * Formats a message, treating '#' with special meaning representing
@@ -236,7 +238,8 @@ goog.i18n.MessageFormat.prototype.format_ =
 
 /**
  * Parses generic block and returns a formatted string.
- * @param {!Array<!Object>} parsedPattern Holds parsed tree.
+ * @param {!Array<!goog.i18n.MessageFormat.TypeVal_>} parsedPattern
+ *     Holds parsed tree.
  * @param {!Object} namedParameters Parameters that either influence
  *     the formatting or are used as actual data.
  * @param {boolean} ignorePound If true, treat '#' in plural messages as a
@@ -457,7 +460,7 @@ goog.i18n.MessageFormat.prototype.insertPlaceholders_ = function(pattern) {
 /**
  * Breaks pattern into strings and top level {...} blocks.
  * @param {string} pattern (sub)Pattern to be broken.
- * @return {!Array<Object>} Each item is {type, value}.
+ * @return {!Array<goog.i18n.MessageFormat.TypeVal_>}
  * @private
  */
 goog.i18n.MessageFormat.prototype.extractParts_ = function(pattern) {

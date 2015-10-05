@@ -140,6 +140,7 @@ namespace OpenQA.Selenium.Safari.Internal.Handlers
 
         private static byte[] CalculateAnswerBytes(string key1, string key2, ArraySegment<byte> challenge)
         {
+            byte[] answerBytes = { 0 };
             byte[] result1Bytes = ParseKey(key1);
             byte[] result2Bytes = ParseKey(key2);
 
@@ -148,7 +149,12 @@ namespace OpenQA.Selenium.Safari.Internal.Handlers
             Array.Copy(result2Bytes, 0, rawAnswer, 4, 4);
             Array.Copy(challenge.Array, challenge.Offset, rawAnswer, 8, 8);
 
-            return MD5.Create().ComputeHash(rawAnswer);
+            using (MD5 hashAlgorithm = MD5.Create())
+            {
+                answerBytes = hashAlgorithm.ComputeHash(rawAnswer);
+            }
+
+            return answerBytes;
         }
 
         private static byte[] ParseKey(string key)

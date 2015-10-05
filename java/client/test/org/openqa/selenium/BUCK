@@ -11,7 +11,7 @@ java_test(name = 'small-tests',
   ],
 )
 
-java_test(name = 'large-tests',
+java_library(name = 'large-tests',
   srcs = [
     'StandardSeleniumTests.java',
   ],

@@ -30,43 +30,43 @@ module Selenium
         let(:model_profile) { Profile.new(model) }
 
         before do
-          File.stub(:exist?).with(model).and_return true
-          File.stub(:directory?).with(model).and_return true
+          allow(File).to receive(:exist?).with(model).and_return true
+          allow(File).to receive(:directory?).with(model).and_return true
 
           Dir.stub(:mktmpdir => "/tmp/some/path")
-          FileUtils.stub(:rm_rf)
-          FileUtils.stub(:mkdir_p)
-          FileUtils.stub(:cp_r)
+          allow(FileUtils).to receive(:rm_rf)
+          allow(FileUtils).to receive(:mkdir_p)
+          allow(FileUtils).to receive(:cp_r)
         end
 
         it "should set and get preference paths" do
           profile['foo.bar.baz'] = true
-          profile['foo.bar.baz'].should == true
+          expect(profile['foo.bar.baz']).to eq(true)
         end
 
         it "reads existing prefs" do
-          File.should_receive(:read).with("/some/path/Default/Preferences").
+          expect(File).to receive(:read).with("/some/path/Default/Preferences").
                                      and_return('{"autofill": {"enabled": false}}')
 
-          model_profile['autofill.enabled'].should == false
+          expect(model_profile['autofill.enabled']).to eq(false)
         end
 
         it "writes out prefs" do
-          File.should_receive(:read).with("/some/path/Default/Preferences").
+          expect(File).to receive(:read).with("/some/path/Default/Preferences").
                                      and_return('{"autofill": {"enabled": false}}')
 
           model_profile['some.other.pref'] = 123
 
           mock_io = StringIO.new
-          FileUtils.should_receive(:mkdir_p).with("/tmp/some/path/Default")
-          File.should_receive(:open).with("/tmp/some/path/Default/Preferences", "w").and_yield(mock_io)
+          expect(FileUtils).to receive(:mkdir_p).with("/tmp/some/path/Default")
+          expect(File).to receive(:open).with("/tmp/some/path/Default/Preferences", "w").and_yield(mock_io)
 
           model_profile.layout_on_disk
 
           result = WebDriver.json_load(mock_io.string)
 
-          result['autofill']['enabled'].should == false
-          result['some']['other']['pref'].should == 123
+          expect(result['autofill']['enabled']).to eq(false)
+          expect(result['some']['other']['pref']).to eq(123)
         end
       end
 

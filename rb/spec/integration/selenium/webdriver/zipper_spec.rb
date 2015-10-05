@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path("../spec_helper", __FILE__)
+require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
@@ -51,7 +51,7 @@ module Selenium
         end
 
         unzipped = Zipper.unzip(zip_file)
-        File.read(File.join(unzipped, base_file_name)).should == file_content
+        expect(File.read(File.join(unzipped, base_file_name))).to eq(file_content)
       end
 
       it "zips and unzips a single file" do
@@ -62,7 +62,7 @@ module Selenium
         end
 
         unzipped = Zipper.unzip(zip_file)
-        File.read(File.join(unzipped, base_file_name)).should == file_content
+        expect(File.read(File.join(unzipped, base_file_name))).to eq(file_content)
       end
 
       not_compliant_on :platform => :windows do
@@ -76,7 +76,7 @@ module Selenium
           end
 
           unzipped = Zipper.unzip(zip_file)
-          File.read(File.join(unzipped, "link")).should == file_content
+          expect(File.read(File.join(unzipped, "link"))).to eq(file_content)
         end
       end
 

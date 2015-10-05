@@ -104,7 +104,7 @@ public class CommandLineOptionHelper {
   /**
    * get all occurrences of -name
    *
-   * @param name
+   * @param name parameter name
    * @return A List of Strings that have the passed name argument in them.
    */
   public List<String> getAll(String name) {

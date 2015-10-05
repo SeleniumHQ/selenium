@@ -36,6 +36,9 @@ rb/.yardoc
 maven/*/src
 maven/target
 maven/*/target
+maven/.idea
+maven/*.iml
+maven/*/*.iml
 java/client/build/
 java/client/log.txt
 java/client/iedriver.log
@@ -48,6 +51,7 @@ py/selenium/webdriver/firefox/webdriver_prefs.json
 py/selenium/webdriver/firefox/x86/
 py/docs/build/
 selenium.egg-info/
+third_party/java/jetty/jetty-repacked.jar
 *.user
 *.cache
 obj/

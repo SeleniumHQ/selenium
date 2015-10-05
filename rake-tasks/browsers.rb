@@ -21,6 +21,19 @@ BROWSERS = {
     },
     :browser_name => "firefox",
   },
+  "marionette" => {
+    :python => {
+      :ignore => "marionette", # py.test string used for ignoring
+      :dir => "firefox", # Directory to put tests in/read tests from
+      :file_string => "marionette", # Browser-string to use in test filenames
+      :class => "Firefox", # As per py/selenium/webdriver/__init__.py
+    },
+    :java => {
+      :class => "org.openqa.selenium.firefox.SynthesizedFirefoxDriver",
+      :deps => [ "//java/client/test/org/openqa/selenium/testing/drivers" ]
+    },
+    :browser_name => "firefox",
+  },
   "ie" => {
     :python => {
       :ignore => "ie",

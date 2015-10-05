@@ -465,7 +465,7 @@ goog.ui.ScrollFloater.prototype.float_ = function(floatMode) {
     return;
   }
 
-  var elem = this.getElement();
+  var elem = /** @type {!HTMLElement} */ (this.getElement());
   var doc = this.getDomHelper().getDocument();
 
   // Read properties of element before modifying it.

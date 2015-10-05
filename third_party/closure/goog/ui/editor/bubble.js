@@ -200,7 +200,7 @@ goog.ui.editor.Bubble.prototype.getContainerElement = function() {
 /**
  * @return {goog.events.EventHandler<T>} The event handler.
  * @protected
- * @this T
+ * @this {T}
  * @template T
  */
 goog.ui.editor.Bubble.prototype.getEventHandler = function() {

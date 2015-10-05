@@ -1,7 +1,8 @@
 {
   "name": "selenium-webdriver",
-  "version": "2.46.1",
+  "version": "2.48.0-dev",
   "description": "The official WebDriver JavaScript bindings from the Selenium project",
+  "license": "Apache-2.0",
   "keywords": [
     "automation",
     "selenium",
@@ -19,13 +20,13 @@
     "url": "https://github.com/SeleniumHQ/selenium.git"
   },
   "engines": {
-    "node": ">= 0.10.x"
+    "node": ">= 0.12.x"
   },
   "dependencies": {
     "adm-zip": "0.4.4",
     "rimraf": "^2.2.8",
     "tmp": "0.0.24",
-    "ws": "^0.7.1",
+    "ws": "^0.8.0",
     "xml2js": "0.4.4"
   },
   "devDependencies": {

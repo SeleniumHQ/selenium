@@ -296,8 +296,6 @@ public class InjectionHelper {
       // (int) 187
       // (int)(new String(buf)).charAt(2)
       // (int) 191
-      // (new String(buf)).charAt(2)
-      // (char) ¿
       // (int)(new String(buf)).charAt(3)
       // (int) 10
       //
@@ -313,9 +311,9 @@ public class InjectionHelper {
   /**
    * read bufLen bytes into buf (unless EOF is seen first) from in.
    *
-   * @param in
-   * @param buf
-   * @param bufLen
+   * @param in input stream
+   * @param buf buffer to read into
+   * @param bufLen max size to read
    * @return number of bytes read
    * @throws IOException
    */

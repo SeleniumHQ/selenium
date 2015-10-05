@@ -113,8 +113,8 @@ goog.labs.userAgent.engine.getVersion = function() {
 
 
 /**
- * @param {!Array.<!Array.<string>>} tuples Extracted version tuples.
- * @return {!Array.<string>|undefined} The engine tuple or undefined if not
+ * @param {!Array<!Array<string>>} tuples Extracted version tuples.
+ * @return {!Array<string>|undefined} The engine tuple or undefined if not
  *     found.
  * @private
  */

@@ -24,20 +24,20 @@ describe "Window Selection" do
     page.open "http://localhost:4444/selenium-server/org/openqa/selenium/tests/html/test_select_window.html"
     page.click "popupPage", :wait_for => :popup, :window => "myPopupWindow", :select => true
 
-    page.location.should =~ %r{/tests/html/test_select_window_popup.html}
-    page.title.should =~ /Select Window Popup/
-    page.all_window_names.size.should eql(2)
-    page.all_window_names.include?("myPopupWindow").should be true
+    expect(page.location).to match(%r{/tests/html/test_select_window_popup.html})
+    expect(page.title).to match(/Select Window Popup/)
+    expect(page.all_window_names.size).to eql(2)
+    expect(page.all_window_names.include?("myPopupWindow")).to be true
 
     page.close
     page.select_window "null"
 
-    page.location.should =~ %r{/tests/html/test_select_window.html}
+    expect(page.location).to match(%r{/tests/html/test_select_window.html})
 
     page.click "popupPage", :wait_for => :popup, :window => "myPopupWindow"
     page.select_window "title=Select Window Popup"
 
-    page.location.should =~ %r{/tests/html/test_select_window_popup.html}
+    expect(page.location).to match(%r{/tests/html/test_select_window_popup.html})
 
     page.close
     page.select_window "null"
@@ -47,7 +47,7 @@ describe "Window Selection" do
     page.open "http://localhost:4444/selenium-server/org/openqa/selenium/tests/html/test_select_window.html"
     page.click "popupAnonymous", :wait_for => :popup, :window => "anonymouspopup", :select => true
 
-    page.location.should =~ %r{/tests/html/test_select_window_popup.html}
+    expect(page.location).to match(%r{/tests/html/test_select_window_popup.html})
 
     page.click "closePage"
     page.select_window "null"
@@ -57,7 +57,7 @@ describe "Window Selection" do
     page.open "http://localhost:4444/selenium-server/org/openqa/selenium/tests/html/test_select_window.html"
     page.click "popupAnonymous", :wait_for => :popup, :window => "anonymouspopup", :select => true
 
-    page.location.should =~ %r{/tests/html/test_select_window_popup.html}
+    expect(page.location).to match(%r{/tests/html/test_select_window_popup.html})
 
     page.click "closePage2"
     page.select_window "null"

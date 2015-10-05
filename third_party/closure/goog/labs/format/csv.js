@@ -150,12 +150,18 @@ goog.labs.format.csv.Token;
  * @param {string} text The entire CSV text to be parsed.
  * @param {boolean=} opt_ignoreErrors Whether to ignore parsing errors and
  *      instead try to recover and keep going.
+ * @param {string=} opt_delimiter The delimiter to use. Defaults to ','
  * @return {!Array<!Array<string>>} The parsed CSV.
  */
-goog.labs.format.csv.parse = function(text, opt_ignoreErrors) {
+goog.labs.format.csv.parse = function(text, opt_ignoreErrors, opt_delimiter) {
 
   var index = 0;  // current char offset being considered
 
+  var delimiter = opt_delimiter || ',';
+  goog.asserts.assert(delimiter.length == 1,
+      'Delimiter must be a single character.');
+  goog.asserts.assert(delimiter != '\r' && opt_delimiter != '\n',
+      'Cannot use newline or carriage return has delimiter.');
 
   var EOF = goog.labs.format.csv.Sentinels_.EOF;
   var EOR = goog.labs.format.csv.Sentinels_.EOR;
@@ -239,7 +245,7 @@ goog.labs.format.csv.parse = function(text, opt_ignoreErrors) {
         }
 
         // End of field.  Break out.
-        if (token == ',' || token == EOF || token == NEWLINE) {
+        if (token == delimiter || token == EOF || token == NEWLINE) {
           if (token == NEWLINE) {
             pushBack(token);
           }
@@ -317,7 +323,7 @@ goog.labs.format.csv.parse = function(text, opt_ignoreErrors) {
       }
 
       // This is the end of record.
-      if (token == ',') {
+      if (token == delimiter) {
         sawComma = true;
         break;
       }
@@ -410,6 +416,3 @@ goog.labs.format.csv.assertToken_ = function(o) {
         'Should be a string of length 1 or a sentinel.');
   }
 };
-
-
-

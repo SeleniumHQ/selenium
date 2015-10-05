@@ -108,8 +108,8 @@ public class BrowserNameUtils {
    * get the icon representing the browser for the grid. If the icon cannot be located, returns
    * null.
    *
-   * @param cap
-   * @param registry
+   * @param cap - Capability
+   * @param registry - Registry
    * @return String with path to icon image file.  Can be <i>null</i> if no icon
    *         file if available.
    */

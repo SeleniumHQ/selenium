@@ -132,6 +132,11 @@ public abstract class BaseAugmenter {
 
   /**
    * Subclasses should perform the requested augmentation.
+   *
+   * @param <X>             typically a RemoteWebDriver or RemoteWebElement
+   * @param augmentors      augumentors to augment the object
+   * @param driver          RWD instance
+   * @param objectToAugment object to augment
    * @return an augmented version of objectToAugment.
    */
   protected abstract <X> X create(RemoteWebDriver driver, Map<String, AugmenterProvider> augmentors,
@@ -139,6 +144,9 @@ public abstract class BaseAugmenter {
 
   /**
    * Subclasses should extract the remote webdriver or return null if it can't extract it.
+   *
+   * @param driver WebDriver instance to extract
+   * @return extracted RemoteWebDriver or null
    */
   protected abstract RemoteWebDriver extractRemoteWebDriver(WebDriver driver);
 }

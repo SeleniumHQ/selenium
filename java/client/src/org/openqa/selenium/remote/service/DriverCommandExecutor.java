@@ -53,6 +53,9 @@ public class DriverCommandExecutor extends HttpCommandExecutor {
   /**
    * Creates an {@link DriverCommandExecutor} that supports non-standard
    * {@code additionalCommands} in addition to the standard.
+   *
+   * @param service driver server
+   * @param additionalCommands additional commands the remote end can process
    */
   protected DriverCommandExecutor(
       DriverService service, Map<String, CommandInfo> additionalCommands) {

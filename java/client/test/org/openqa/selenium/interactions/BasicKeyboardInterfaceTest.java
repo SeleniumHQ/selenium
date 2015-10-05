@@ -17,16 +17,14 @@
 
 package org.openqa.selenium.interactions;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-
-import static org.hamcrest.Matchers.is;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -146,10 +144,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testSendingKeysToActiveElement() {
-    assumeFalse("This test fails due to a bug in Firefox 9. For more details, see: " +
-                "https://bugzilla.mozilla.org/show_bug.cgi?id=696020",
-                TestUtilities.isFirefox9(driver));
-
     driver.get(pages.bodyTypingPage);
 
     Action someKeys = getBuilder(driver).sendKeys("ab").build();
@@ -179,10 +173,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void canGenerateKeyboardShortcuts() {
-    assumeTrue(
-        "Test fails with native events enabled, likely due to issue 4385",
-        !TestUtilities.isFirefox(driver) || !TestUtilities.isNativeEventsEnabled(driver));
-
     driver.get(appServer.whereIs("keyboard_shortcut.html"));
 
     WebElement body = driver.findElement(By.xpath("//body"));
@@ -227,9 +217,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   @Ignore(IE)
   @NotYetImplemented(HTMLUNIT)
   public void testSelectionSelectByWord() {
-    assumeTrue(
-        "Test fails with native events enabled, likely due to issue 4385",
-        !TestUtilities.isFirefox(driver) || !TestUtilities.isNativeEventsEnabled(driver));
     assumeFalse(
         "MacOS has alternative keyboard",
         TestUtilities.getEffectivePlatform().is(Platform.MAC));
@@ -257,9 +244,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   @Ignore(IE)
   @NotYetImplemented(HTMLUNIT)
   public void testSelectionSelectAll() {
-    assumeTrue(
-        "Test fails with native events enabled, likely due to issue 4385",
-        !TestUtilities.isFirefox(driver) || !TestUtilities.isNativeEventsEnabled(driver));
     assumeFalse(
         "MacOS has alternative keyboard",
         TestUtilities.getEffectivePlatform().is(Platform.MAC));

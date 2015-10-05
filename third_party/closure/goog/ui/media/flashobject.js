@@ -140,6 +140,22 @@ goog.ui.media.FlashObject.SwfReadyStates_ = {
 
 
 /**
+ * IE specific ready states.
+ *
+ * @see https://msdn.microsoft.com/en-us/library/ms534359(v=vs.85).aspx
+ * @enum {string}
+ * @private
+ */
+goog.ui.media.FlashObject.IeSwfReadyStates_ = {
+  LOADING: 'loading',
+  UNINITIALIZED: 'uninitialized',
+  LOADED: 'loaded',
+  INTERACTIVE: 'interactive',
+  COMPLETE: 'complete'
+};
+
+
+/**
  * The different modes for displaying a SWF. Note that different wmodes
  * can result in different bugs in different browsers and also that
  * both OPAQUE and TRANSPARENT will result in a performance hit.
@@ -617,13 +633,23 @@ goog.ui.media.FlashObject.prototype.isLoaded = function() {
     return false;
   }
 
+  // IE has different readyState values for elements.
+  if (goog.userAgent.EDGE_OR_IE && this.getFlashElement().readyState &&
+      this.getFlashElement().readyState ==
+          goog.ui.media.FlashObject.IeSwfReadyStates_.COMPLETE) {
+    return true;
+  }
+
   if (this.getFlashElement().readyState &&
       this.getFlashElement().readyState ==
           goog.ui.media.FlashObject.SwfReadyStates_.COMPLETE) {
     return true;
   }
 
-  if (this.getFlashElement().PercentLoaded &&
+  // Use "in" operator to check for PercentLoaded because IE8 throws when
+  // accessing directly. See:
+  // https://github.com/google/closure-library/pull/373.
+  if ('PercentLoaded' in this.getFlashElement() &&
       this.getFlashElement().PercentLoaded() == 100) {
     return true;
   }

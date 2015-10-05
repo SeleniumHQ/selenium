@@ -553,7 +553,8 @@ goog.editor.plugins.TagOnEnterHandler.prototype.scrollCursorIntoViewGecko_ =
 
   // Determine the height of that element, since we want the bottom of the
   // element to be in view.
-  var bottomOfNode = elementY + element.offsetHeight;
+  var bottomOfNode = elementY +
+      /** @type {!HTMLElement} */ (element).offsetHeight;
 
   var dom = this.getFieldDomHelper();
   var win = this.getFieldDomHelper().getWindow();

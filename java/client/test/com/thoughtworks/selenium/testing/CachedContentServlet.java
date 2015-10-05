@@ -17,8 +17,6 @@
 
 package com.thoughtworks.selenium.testing;
 
-import org.seleniumhq.jetty7.http.HttpFields;
-
 import java.io.IOException;
 import java.util.Calendar;
 
@@ -48,8 +46,8 @@ public class CachedContentServlet extends HttpServlet {
     resp.setHeader("Cache-Control", "max-age=29723626");
     Calendar calendar = Calendar.getInstance();
     calendar.add(Calendar.YEAR, 1);
-    resp.setHeader("Expires", HttpFields.formatDate(calendar.getTimeInMillis()));
-    resp.setHeader("Last-Modified", HttpFields.__01Jan1970);
+    resp.setDateHeader("Expires", calendar.getTimeInMillis());
+    resp.setDateHeader("Last-Modified", 0);
     resp.setHeader("Pragma", "");
     resp.setHeader("ETag", "foo");
   }

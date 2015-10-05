@@ -20,7 +20,6 @@ package org.openqa.selenium;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
@@ -41,7 +40,7 @@ public class TextPagesTest extends JUnit4TestBase {
     textPage = GlobalTestEnvironment.get().getAppServer().whereIs("plain.txt");
   }
 
-  @Ignore(value = {IE, FIREFOX, CHROME, SAFARI, PHANTOMJS, MARIONETTE},
+  @Ignore(value = {IE, CHROME, SAFARI, PHANTOMJS, MARIONETTE},
       reason = "IE, Firefox: adds HTML tags.")
   @Test
   public void testShouldBeAbleToLoadASimplePageOfText() {

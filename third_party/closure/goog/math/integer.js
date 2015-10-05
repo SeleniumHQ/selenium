@@ -261,7 +261,10 @@ goog.math.Integer.prototype.toString = function(opt_radix) {
   var result = '';
   while (true) {
     var remDiv = rem.divide(radixToPower);
-    var intval = rem.subtract(remDiv.multiply(radixToPower)).toInt();
+    // The right shifting fixes negative values in the case when
+    // intval >= 2^31; for more details see
+    // https://github.com/google/closure-library/pull/498
+    var intval = rem.subtract(remDiv.multiply(radixToPower)).toInt() >>> 0;
     var digits = intval.toString(radix);
 
     rem = remDiv;
@@ -568,8 +571,66 @@ goog.math.Integer.carry16_ = function(bits, index) {
 
 
 /**
+ * Returns "this" Integer divided by the given one. Both "this" and the given
+ * Integer MUST be positive.
+ *
+ * This method is only needed for very large numbers (>10^308),
+ * for which the original division algorithm gets into an infinite
+ * loop (see https://github.com/google/closure-library/issues/500).
+ *
+ * The algorithm has some possible performance enhancements (or
+ * could be rewritten entirely), it's just an initial solution for
+ * the issue linked above.
+ *
+ * @param {!goog.math.Integer} other The Integer to divide "this" by.
+ * @return {!goog.math.Integer} "this" value divided by the given one.
+ * @private
+ */
+goog.math.Integer.prototype.slowDivide_ = function(other) {
+  if (this.isNegative() || other.isNegative()) {
+    throw Error('slowDivide_ only works with positive integers.');
+  }
+
+  var twoPower = goog.math.Integer.ONE;
+  var multiple = other;
+
+  // First we have to figure out what the highest bit of the result
+  // is, so we increase "twoPower" and "multiple" until "multiple"
+  // exceeds "this".
+  while (multiple.lessThanOrEqual(this)) {
+    twoPower = twoPower.shiftLeft(1);
+    multiple = multiple.shiftLeft(1);
+  }
+
+  // Rewind by one power of two, giving us the highest bit of the
+  // result.
+  var res = twoPower.shiftRight(1);
+  var total = multiple.shiftRight(1);
+
+  // Now we starting decreasing "multiple" and "twoPower" to find the
+  // rest of the bits of the result.
+  var total2;
+  multiple = multiple.shiftRight(2);
+  twoPower = twoPower.shiftRight(2);
+  while (!multiple.isZero()) {
+    // whenever we can add "multiple" to the total and not exceed
+    // "this", that means we've found a 1 bit. Else we've found a 0
+    // and don't need to add to the result.
+    total2 = total.add(multiple);
+    if (total2.lessThanOrEqual(this)) {
+      res = res.add(twoPower);
+      total = total2;
+    }
+    multiple = multiple.shiftRight(1);
+    twoPower = twoPower.shiftRight(1);
+  }
+  return res;
+};
+
+
+/**
  * Returns this Integer divided by the given one.
- * @param {goog.math.Integer} other Th Integer to divide this by.
+ * @param {!goog.math.Integer} other The Integer to divide this by.
  * @return {!goog.math.Integer} This value divided by the given one.
  */
 goog.math.Integer.prototype.divide = function(other) {
@@ -587,6 +648,13 @@ goog.math.Integer.prototype.divide = function(other) {
     }
   } else if (other.isNegative()) {
     return this.divide(other.negate()).negate();
+  }
+
+  // Have to degrade to slowDivide for Very Large Numbers, because
+  // they're out of range for the floating-point approximation
+  // technique used below.
+  if (this.bits_.length > 30) {
+    return this.slowDivide_(other);
   }
 
   // Repeat the following until the remainder is less than other:  find a
@@ -631,7 +699,7 @@ goog.math.Integer.prototype.divide = function(other) {
 
 /**
  * Returns this Integer modulo the given one.
- * @param {goog.math.Integer} other The Integer by which to mod.
+ * @param {!goog.math.Integer} other The Integer by which to mod.
  * @return {!goog.math.Integer} This value modulo the given one.
  */
 goog.math.Integer.prototype.modulo = function(other) {

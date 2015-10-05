@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path("../spec_helper", __FILE__)
+require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
@@ -27,13 +27,13 @@ module Selenium
 
       it 'should wait until the returned value is true' do
         returned = true
-        wait.until { returned = !returned }.should be true
+        expect(wait.until { returned = !returned }).to be true
       end
 
       it 'should raise a TimeOutError if the the timer runs out' do
-        lambda {
+        expect {
           wait(:timeout => 0.1).until { false }
-        }.should raise_error(Error::TimeOutError)
+        }.to raise_error(Error::TimeOutError)
       end
 
       it "should silently capture NoSuchElementErrors" do
@@ -47,21 +47,21 @@ module Selenium
           end
         }
 
-        wait.until(&block).should be true
+        expect(wait.until(&block)).to be true
       end
 
       it "will use the message from any NoSuchElementError raised while waiting" do
         block = lambda { raise Error::NoSuchElementError, "foo" }
 
-        lambda {
+        expect {
           wait(:timeout => 0.5).until(&block)
-        }.should raise_error(Error::TimeOutError, /foo/)
+        }.to raise_error(Error::TimeOutError, /foo/)
       end
 
       it "should let users configure what exceptions to ignore" do
-        lambda {
+        expect {
           wait(:ignore => NoMethodError, :timeout => 0.5).until { raise NoMethodError }
-        }.should raise_error(Error::TimeOutError, /NoMethodError/)
+        }.to raise_error(Error::TimeOutError, /NoMethodError/)
       end
     end
   end

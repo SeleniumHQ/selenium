@@ -930,10 +930,10 @@ goog.cssom.iframe.style.getBackgroundContext = function(element) {
   // because backgrounds farther up the chain won't be visible.
   // (This implementation is not sophisticated enough to handle opacity,
   // or multple layered partially-transparent background images.)
-  while ((ancestor = ancestor.parentNode) &&
+  while ((ancestor = /** @type {!Element} */ (ancestor.parentNode)) &&
          ancestor.nodeType == goog.dom.NodeType.ELEMENT) {
-    var computedStyle = goog.cssom.iframe.style.getComputedStyleObject_(
-        /** @type {!Element} */ (ancestor));
+    var computedStyle =
+        goog.cssom.iframe.style.getComputedStyleObject_(ancestor);
     // Copy background color if a non-transparent value is found.
     var backgroundColorValue = computedStyle['backgroundColor'];
     if (!goog.cssom.iframe.style.isTransparentValue_(backgroundColorValue)) {
@@ -954,14 +954,12 @@ goog.cssom.iframe.style.getBackgroundContext = function(element) {
             element, currentIframeWindow);
         var frameElement = currentIframeWindow.frameElement;
         var iframeRelativePosition = goog.style.getRelativePosition(
-            /** @type {!Element} */ (frameElement),
-            /** @type {!Element} */ (ancestor));
+            /** @type {!Element} */ (frameElement), ancestor);
         var iframeBorders = goog.style.getBorderBox(frameElement);
         relativePosition.x += iframeRelativePosition.x + iframeBorders.left;
         relativePosition.y += iframeRelativePosition.y + iframeBorders.top;
       } else {
-        relativePosition = goog.style.getRelativePosition(
-            element, /** @type {Element} */ (ancestor));
+        relativePosition = goog.style.getRelativePosition(element, ancestor);
       }
       var backgroundXYValues = goog.cssom.iframe.style.getBackgroundXYValues_(
           computedStyle);

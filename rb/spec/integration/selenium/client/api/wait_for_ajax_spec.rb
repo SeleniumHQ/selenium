@@ -23,11 +23,11 @@ describe "Wait For Ajax" do
   describe "Prototype" do
     it "blocks until AJAX request is complete" do
       page.open "http://localhost:4567/prototype.html"
-      page.text("calculator-result").should be_empty
+      expect(page.text("calculator-result")).to be_empty
       page.type "calculator-expression", "2 + 2"
       page.click "calculator-button", :wait_for => :ajax
 
-      page.value("calculator-result").should eql("4")
+      expect(page.value("calculator-result")).to eql("4")
     end
   end
 
@@ -35,12 +35,12 @@ describe "Wait For Ajax" do
     it "blocks until AJAX request is complete" do
       page.open "http://localhost:4567/jquery.html"
 
-      page.text("calculator-result").should be_empty
+      expect(page.text("calculator-result")).to be_empty
 
       page.type "calculator-expression", "2 + 2"
       page.click "calculator-button" , :wait_for => :ajax, :javascript_framework => :jquery
 
-      page.value("calculator-result").should eql("4")
+      expect(page.value("calculator-result")).to eql("4")
     end
   end
 end

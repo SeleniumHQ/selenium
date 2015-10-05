@@ -16,10 +16,10 @@
 # under the License.
 
 import base64
-from remote_connection import ChromeRemoteConnection
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.common.exceptions import WebDriverException
+from .remote_connection import ChromeRemoteConnection
 from .service import Service
 from .options import Options
 

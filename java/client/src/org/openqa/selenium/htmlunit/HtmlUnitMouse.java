@@ -43,6 +43,9 @@ public class HtmlUnitMouse implements Mouse {
 
   /**
    * @deprecated as of 2.47.0, please use {@link #HtmlUnitMouse(HtmlUnitKeyboard)} instead
+   *
+   * @param keyboard keyboard
+   * @param parent the htmlunitdriver object
    */
   @Deprecated
   public HtmlUnitMouse(HtmlUnitDriver parent, HtmlUnitKeyboard keyboard) {

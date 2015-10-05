@@ -65,93 +65,13 @@ WebElement.clickElement = function(respond, parameters) {
                                    respond.session.getDocument());
 
   var unwrapped = fxdriver.moz.unwrapFor4(element);
-  var nativeMouse = Utils.getNativeMouse();
-  var node = Utils.getNodeForNativeEvents(unwrapped);
-  var appInfo = Components.classes['@mozilla.org/xre/app-info;1'].
-      getService(Components.interfaces.nsIXULAppInfo);
-  var versionChecker = Components.
-      classes['@mozilla.org/xpcom/version-comparator;1'].
-      getService(Components.interfaces.nsIVersionComparator);
 
-  // I'm having trouble getting clicks to work on Firefox 2 on Windows. Always
-  // fall back for that
-  var useNativeClick =
-      versionChecker.compare(appInfo.platformVersion, '1.9') >= 0;
-  var thmgr_cls = Components.classes['@mozilla.org/thread-manager;1'];
+  var offset = Utils.getClickablePoint(unwrapped);
 
-  // For now, we need to bypass native events for option elements
-  var isOption = 'option' == unwrapped.tagName.toLowerCase();
-
-  var location = Utils.getLocation(unwrapped, unwrapped.tagName == 'A');
-  var elementHalfWidth = (location.width ? Math.floor(location.width / 2) : 0);
-  var elementHalfHeight = (location.height ? Math.floor(location.height / 2) : 0);
-
-  if (!isOption && this.enableNativeEvents && nativeMouse && node && useNativeClick && thmgr_cls) {
-    goog.log.info(WebElement.LOG_, 'Using native events for click');
-
-    var inViewAfterScroll = Utils.scrollIntoView(
-        unwrapped,
-        (respond.session.elementScrollBehavior == 0),
-        new goog.math.Coordinate(elementHalfWidth, elementHalfHeight));
-
-    var isSVG = Utils.isSVG(element.ownerDocument);
-
-    if (!isSVG && !inViewAfterScroll) {
-        respond.sendError(
-            new WebDriverError(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
-                'Element cannot be scrolled into view:' + element));
-        return;
-    }
-
-    location = Utils.getLocationRelativeToWindowHandle(unwrapped, unwrapped.tagName == 'A');
-    var x = location.x + elementHalfWidth;
-    var y = location.y + elementHalfHeight;
-
-    try {
-      var currentPosition = respond.session.getMousePosition();
-      var clickPosition = new goog.math.Coordinate(x, y);
-      var browserOffset = Utils.getBrowserSpecificOffset(respond.session.getBrowser());
-
-      nativeMouse.mouseMove(node,
-          currentPosition.x + browserOffset.x, currentPosition.y + browserOffset.y,
-          clickPosition.x + browserOffset.x, clickPosition.y + browserOffset.y);
-
-      var pageUnloadedIndicator = Utils.getPageUnloadedIndicator(unwrapped);
-
-      nativeMouse.click(node,
-          clickPosition.x + browserOffset.x, clickPosition.y + browserOffset.y, 1);
-
-      respond.session.setMousePosition(clickPosition.x, clickPosition.y);
-
-      Utils.waitForNativeEventsProcessing(unwrapped, Utils.getNativeEvents(),
-          pageUnloadedIndicator, this.jsTimer);
-
-      respond.send();
-
-      return;
-    } catch (e) {
-      // Make sure that we only fall through only if
-      // the error returned from the native call indicates it's not
-      // implemented.
-
-      goog.log.info(WebElement.LOG_, 'Detected error when clicking', e);
-
-      if (e.name != 'NS_ERROR_NOT_IMPLEMENTED') {
-        throw new WebDriverError(bot.ErrorCode.INVALID_ELEMENT_STATE, e);
-      }
-
-      // Fall through to the synthesized click code.
-    }
-  }
-
-
-  goog.log.info(WebElement.LOG_, 'Falling back to synthesized click');
-
-  // TODO(simon): Delete the above and sink most of it into a "nativeMouse"
   Utils.installWindowCloseListener(respond);
   Utils.installClickListener(respond, WebLoadingListener);
 
-  var res = this.mouse.move(element, elementHalfWidth, elementHalfHeight);
+  var res = this.mouse.move(element, offset.x, offset.y);
   if (res.status != bot.ErrorCode.SUCCESS) {
     respond.status = res.status;
     respond.value = res.message;
@@ -225,17 +145,39 @@ WebElement.sendKeysToElement = function(respond, parameters) {
 
   // We may need a beat for firefox to hand over focus.
   this.jsTimer.setTimeout(function() {
-    // Unless the element already had focus, set the cursor location to the end of the line
-    // TODO(simon): This seems a little arbitrary.
     if (!alreadyFocused && bot.dom.isEditable(element)) {
-        var length = element.value ? element.value.length : goog.dom.getTextContent(element).length;
+      var length = element.value ? element.value.length : goog.dom.getTextContent(element).length;
+
+      if (bot.dom.isContentEditable(element)) {
+        var doc = element.ownerDocument || element.document;
+        var rng = doc.createRange();
+        var walker = doc.createTreeWalker(element, 4/*NodeFilter.SHOW_TEXT*/, null, null);
+        var start = length;
+        var end = length;
+        var n,pos = 0;
+        while (n = walker.nextNode()) {
+          pos += n.nodeValue.length;
+          if (pos >= start) {
+            rng.setStart(n, n.nodeValue.length + start - pos);
+            start = Infinity;
+          }
+          if (pos >= end) {
+            rng.setEnd(n, n.nodeValue.length + end - pos);
+            break;
+          }
+        }
+        var sel = doc.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(rng);
+
+      } else {
         goog.dom.selection.setCursorPosition(element, length);
+      }
     }
 
     try {
       Utils.type(respond.session.getDocument(), use, parameters.value.join(''),
-          originalDriver.enableNativeEvents, originalDriver.jsTimer,
-          true /*release modifiers*/);
+          originalDriver.jsTimer, true /*release modifiers*/);
       respond.send();
     } catch (ex) {
       respond.sendError(ex);

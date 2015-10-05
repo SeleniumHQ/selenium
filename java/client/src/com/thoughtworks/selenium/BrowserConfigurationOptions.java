@@ -122,6 +122,8 @@ public class BrowserConfigurationOptions {
 
   /**
    * Sets {@code SINGLE_WINDOW} and unsets {@code MULTI_WINDOW}.
+   *
+   * @return this / self
    */
   public BrowserConfigurationOptions setSingleWindow() {
     synchronized (options) {
@@ -133,6 +135,8 @@ public class BrowserConfigurationOptions {
 
   /**
    * Sets {@code MULTI_WINDOW} and unsets {@code SINGLE_WINDOW}
+   *
+   * @return this / self
    */
   public BrowserConfigurationOptions setMultiWindow() {
     synchronized (options) {
@@ -151,6 +155,7 @@ public class BrowserConfigurationOptions {
    * Sets the full path for the browser executable.
    *
    * @param executablePath the full path for the browser executable.
+   * @return this / self
    */
   public BrowserConfigurationOptions setBrowserExecutablePath(String executablePath) {
     put(BROWSER_EXECUTABLE_PATH, executablePath);
@@ -185,7 +190,8 @@ public class BrowserConfigurationOptions {
    * Note that absolutely no publication nor synchronization of these hard-coded strings such as
    * "HTA" has yet been done. Use at your own risk until this is rectified.
    *
-   * @param mode
+   * @param mode - examples "HTA" or "PROXY"
+   * @return this / self
    */
   public BrowserConfigurationOptions setBrowserMode(String mode) {
     put(BROWSER_MODE, mode);
@@ -234,6 +240,7 @@ public class BrowserConfigurationOptions {
    *
    * @param key the name of the key
    * @param value the value for the key
+   * @return this / self
    */
   public BrowserConfigurationOptions set(String key, String value) {
     if (value != null) {
@@ -243,7 +250,7 @@ public class BrowserConfigurationOptions {
   }
 
   /**
-   * Returns the serialization of this object, as defined by the serialize() method.
+   * @return the serialization of this object, as defined by the serialize() method.
    */
   @Override
   public String toString() {

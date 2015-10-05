@@ -31,11 +31,21 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.AsyncContext;
+import javax.servlet.DispatcherType;
+import javax.servlet.ReadListener;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpUpgradeHandler;
+import javax.servlet.http.Part;
 
 public class FakeHttpServletRequest extends HeaderContainer
     implements HttpServletRequest {
@@ -46,6 +56,21 @@ public class FakeHttpServletRequest extends HeaderContainer
   private final String method;
 
   private ServletInputStream inputStream = new ServletInputStream() {
+    @Override
+    public boolean isFinished() {
+      return false;
+    }
+
+    @Override
+    public boolean isReady() {
+      return true;
+    }
+
+    @Override
+    public void setReadListener(ReadListener readListener) {
+      throw new UnsupportedOperationException();
+    }
+
     @Override
     public int read() throws IOException {
       return 0;
@@ -79,6 +104,21 @@ public class FakeHttpServletRequest extends HeaderContainer
       @Override
       public int read() throws IOException {
         return delegate.read();
+      }
+
+      @Override
+      public boolean isFinished() {
+        return false;
+      }
+
+      @Override
+      public boolean isReady() {
+        return true;
+      }
+
+      @Override
+      public void setReadListener(ReadListener readListener) {
+        throw new UnsupportedOperationException();
       }
     };
   }
@@ -197,11 +237,19 @@ public class FakeHttpServletRequest extends HeaderContainer
     return inputStream;
   }
 
+  public Enumeration<String> getHeaders(String name) {
+    return Collections.enumeration(getHeaders().get(name.toLowerCase()));
+  }
+
+  public Enumeration<String> getHeaderNames() {
+    return Collections.enumeration(getHeaders().keySet());
+  }
+
   public String getParameter(String s) {
     return parameters.get(s);
   }
 
-  public Enumeration getParameterNames() {
+  public Enumeration<String> getParameterNames() {
     return Collections.enumeration(parameters.keySet());
   }
 
@@ -289,6 +337,83 @@ public class FakeHttpServletRequest extends HeaderContainer
   }
 
   public int getLocalPort() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public String changeSessionId() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public boolean authenticate(HttpServletResponse response) throws IOException, ServletException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void login(String username, String password) throws ServletException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void logout() throws ServletException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public Collection<Part> getParts() throws IOException, ServletException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public Part getPart(String name) throws IOException, ServletException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public <T extends HttpUpgradeHandler> T upgrade(Class<T> handlerClass)
+    throws IOException, ServletException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public long getContentLengthLong() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public ServletContext getServletContext() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public AsyncContext startAsync() throws IllegalStateException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse)
+    throws IllegalStateException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public boolean isAsyncStarted() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public boolean isAsyncSupported() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public AsyncContext getAsyncContext() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public DispatcherType getDispatcherType() {
     throw new UnsupportedOperationException();
   }
 }

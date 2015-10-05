@@ -20,4 +20,7 @@ java_library(name = 'classes',
     '//third_party/java/gson:gson',
     '//third_party/java/servlet:servlet-api',
   ],
+  visibility = [
+    '//java/server/test/org/openqa/grid/e2e:tests',
+  ],
 )

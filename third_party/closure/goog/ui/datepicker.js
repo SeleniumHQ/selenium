@@ -1209,6 +1209,7 @@ goog.ui.DatePicker.prototype.createMenu_ = function(srcEl, items, method,
     ul.appendChild(li);
   }
   el.appendChild(ul);
+  srcEl = /** @type {!HTMLElement} */ (srcEl);
   el.style.left = srcEl.offsetLeft + srcEl.parentNode.offsetLeft + 'px';
   el.style.top = srcEl.offsetTop + 'px';
   el.style.width = srcEl.clientWidth + 'px';

@@ -85,7 +85,6 @@ public class CookieServlet extends HttpServlet {
 
     } else if ("deleteAll".equals(action)) {
       for (Cookie cookie : request.getCookies()) {
-        System.out.println(cookie);
         cookie.setValue("");
         cookie.setPath("/");
         cookie.setMaxAge(0);

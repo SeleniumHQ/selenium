@@ -78,6 +78,7 @@ public class RequestHandler implements Comparable<RequestHandler> {
    * Forward the new session request to the TestSession that has been assigned, and parse the
    * response to extract and return the external key assigned by the remote.
    *
+   * @param session session
    * @throws NewSessionException in case anything wrong happens during the new session process.
    */
   public void forwardNewSessionRequestAndUpdateRegistry(TestSession session)
@@ -178,6 +179,7 @@ public class RequestHandler implements Comparable<RequestHandler> {
   /**
    * wait for the registry to match the request with a TestSlot.
    *
+   * @throws InterruptedException Interrupted exception
    * @throws TimeoutException if the request reaches the new session wait timeout before being
    *                          assigned.
    */
@@ -196,14 +198,14 @@ public class RequestHandler implements Comparable<RequestHandler> {
   }
 
   /**
-   * the SeleniumBasedRequest this handler is processing.
+   * @return the SeleniumBasedRequest this handler is processing.
    */
   public SeleniumBasedRequest getRequest() {
     return request;
   }
 
   /**
-   * the HttpServletResponse the handler is writing to.
+   * @return the HttpServletResponse the handler is writing to.
    */
   public HttpServletResponse getResponse() {
     return response;
@@ -241,7 +243,7 @@ public class RequestHandler implements Comparable<RequestHandler> {
   }
 
   /**
-   * return the session from the server ( = opaque handle used by the server to determine where to
+   * @return the session from the server ( = opaque handle used by the server to determine where to
    * route session-specific commands from the JSON wire protocol ). will be null until the request
    * has been processed.
    */
@@ -260,7 +262,8 @@ public class RequestHandler implements Comparable<RequestHandler> {
   @Override
   public String toString() {
     StringBuilder b = new StringBuilder();
-    b.append("session :").append(session).append(" , ");
+    b.append("session:").append(session).append(", ");
+    b.append("caps: ").append(request.getDesiredCapabilities());
     b.append("\n");
     return b.toString();
   }

@@ -16,6 +16,7 @@
 // limitations under the License.
 // </copyright>
 
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -75,6 +76,11 @@ namespace OpenQA.Selenium.Safari.Internal
         /// <returns>The created <see cref="WebSocketConnectionInfo"/>.</returns>
         public static WebSocketConnectionInfo Create(WebSocketHttpRequest request, string clientIPAddress)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException("request", "Request to create WebSocket must not be null");
+            }
+
             var info = new WebSocketConnectionInfo
             {
                 Origin = request["Origin"] ?? request["Sec-WebSocket-Origin"],

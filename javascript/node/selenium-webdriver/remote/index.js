@@ -18,6 +18,7 @@
 'use strict';
 
 var AdmZip = require('adm-zip'),
+    AdmConstants = require('adm-zip/util/constants'),
     fs = require('fs'),
     path = require('path'),
     url = require('url'),
@@ -51,6 +52,7 @@ var _base = require('../_base'),
  *     information, refer to the documentation of `child_process.spawn`.
  *
  * @typedef {{
+ *   loopback: (boolean|undefined),
  *   port: (number|!webdriver.promise.Promise.<number>),
  *   args: !(Array.<string>|webdriver.promise.Promise.<!Array.<string>>),
  *   path: (string|undefined),
@@ -276,6 +278,7 @@ function SeleniumServer(jar, opt_options) {
   });
 
   DriverService.call(this, 'java', {
+    loopback: options.loopback,
     port: port,
     args: args,
     path: '/wd/hub',
@@ -289,6 +292,8 @@ util.inherits(SeleniumServer, DriverService);
 /**
  * Options for the Selenium server:
  *
+ * - `loopback` - Whether the server should only be accessed on this host's
+ *     loopback address.
  * - `port` - The port to start the server on (must be > 0). If the port is
  *     provided as a promise, the service will wait for the promise to resolve
  *     before starting.
@@ -302,6 +307,7 @@ util.inherits(SeleniumServer, DriverService);
  *     information, refer to the documentation of `child_process.spawn`.
  *
  * @typedef {{
+ *   loopback: (boolean|undefined),
  *   port: (number|!webdriver.promise.Promise.<number>),
  *   args: !(Array.<string>|webdriver.promise.Promise.<!Array.<string>>),
  *   jvmArgs: (!Array.<string>|
@@ -346,6 +352,7 @@ FileDetector.prototype.handleFile = function(driver, filePath) {
 
     var zip = new AdmZip();
     zip.addLocalFile(filePath);
+    zip.getEntries()[0].header.method = AdmConstants.STORED;
 
     var command = new webdriver.Command(webdriver.CommandName.UPLOAD_FILE)
         .setParameter('file', zip.toBuffer().toString('base64'));

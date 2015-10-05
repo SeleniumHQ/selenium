@@ -10,7 +10,7 @@ namespace OpenQA.Selenium.Environment
         private Process webserverProcess;
 
         private string standaloneTestJar = @"build/java/client/test/org/openqa/selenium/tests-standalone.jar";
-        private string webserverClassName = "org.openqa.selenium.environment.webserver.Jetty7AppServer";
+        private string webserverClassName = "org.openqa.selenium.environment.webserver.JettyAppServer";
         private string projectRootPath;
 
         public TestWebServer(string projectRoot)
@@ -82,14 +82,22 @@ namespace OpenQA.Selenium.Environment
 
             if (webserverProcess != null)
             {
-                webserverProcess.WaitForExit(10000);
-                if (!webserverProcess.HasExited)
+                try
                 {
-                    webserverProcess.Kill();
+                    webserverProcess.WaitForExit(10000);
+                    if (!webserverProcess.HasExited)
+                    {
+                        webserverProcess.Kill();
+                    }
                 }
-
-                webserverProcess.Dispose();
-                webserverProcess = null;
+                catch (Exception)
+                {
+                }
+                finally
+                {
+                    webserverProcess.Dispose();
+                    webserverProcess = null;
+                }
             }
         }
     }

@@ -36,7 +36,7 @@ module Selenium
         }
 
         it 'finds the rdf extension id as attribute' do
-          File.stub(:read).with('/foo/install.rdf').and_return <<-XML
+          allow(File).to receive(:read).with('/foo/install.rdf').and_return <<-XML
             <?xml version="1.0"?>
             <RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
                 <Description about="urn:mozilla:install-manifest">
@@ -45,11 +45,11 @@ module Selenium
             </RDF>
           XML
 
-          extension.read_id('/foo').should == '{f5198635-4eb3-47a5-b6a5-366b15cd2107}'
+          expect(extension.read_id('/foo')).to eq('{f5198635-4eb3-47a5-b6a5-366b15cd2107}')
         end
 
         it 'finds the rdf extension id as text' do
-          File.stub(:read).with('/foo/install.rdf').and_return <<-XML
+          allow(File).to receive(:read).with('/foo/install.rdf').and_return <<-XML
             <?xml version="1.0"?>
             <RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
                 <Description about="urn:mozilla:install-manifest" em:id="{f5198635-4eb3-47a5-b6a5-366b15cd2107}">
@@ -57,11 +57,11 @@ module Selenium
             </RDF>
           XML
 
-          extension.read_id('/foo').should == '{f5198635-4eb3-47a5-b6a5-366b15cd2107}'
+          expect(extension.read_id('/foo')).to eq('{f5198635-4eb3-47a5-b6a5-366b15cd2107}')
         end
 
         it 'raises if the node id is not found' do
-          File.stub(:read).with('/foo/install.rdf').and_return <<-XML
+          allow(File).to receive(:read).with('/foo/install.rdf').and_return <<-XML
             <?xml version="1.0"?>
             <RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#"></RDF>
           XML

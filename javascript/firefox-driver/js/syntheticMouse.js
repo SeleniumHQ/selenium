@@ -193,19 +193,14 @@ SyntheticMouse.prototype.click = function(target) {
     if (parent && parent.tagName.toLowerCase() == 'select' && !parent.multiple) {
       bot.action.click(parent, undefined /* coords */);
     }
-  }
 
-  goog.log.info(SyntheticMouse.LOG_,
-      'About to do a bot.action.click on ' + element);
-  var keyboardState = new bot.Device.ModifiersState();
-  if (this.modifierKeys !== undefined) {
-    keyboardState.setPressed(bot.Device.Modifier.SHIFT, this.modifierKeys.isShiftPressed());
-    keyboardState.setPressed(bot.Device.Modifier.CONTROL, this.modifierKeys.isControlPressed());
-    keyboardState.setPressed(bot.Device.Modifier.ALT, this.modifierKeys.isAltPressed());
-    keyboardState.setPressed(bot.Device.Modifier.META, this.modifierKeys.isMetaPressed());
-  }
+    goog.log.info(SyntheticMouse.LOG_, 'About to do a bot.action.click on ' + element);
+    bot.action.click(element, this.lastMousePosition, new bot.Mouse(null, this.modifierKeys));
 
-  bot.action.click(element, this.lastMousePosition, new bot.Mouse(null, keyboardState));
+  } else {
+    goog.log.info(SyntheticMouse.LOG_, 'About to do a bot.action.click on ' + element);
+    bot.action.click(element, this.lastMousePosition, this.getMouse_(), true);
+  }
 
   if (bot.dom.isEditable(element) && element.value !== undefined) {
     goog.dom.selection.setCursorPosition(
@@ -248,8 +243,8 @@ SyntheticMouse.prototype.doubleClick = function(target) {
   }
 
   goog.log.info(SyntheticMouse.LOG_,
-      'About to do a bot.action.doubleClick on ' + element);
-  bot.action.doubleClick(element, this.lastMousePosition);
+      'About to do a bot.action.doubleClick2 on ' + element);
+  bot.action.doubleClick2(element, this.lastMousePosition, this.getMouse_());
 
   this.lastElement = element;
 
@@ -268,17 +263,6 @@ SyntheticMouse.prototype.down = function(coordinates) {
   var doc = goog.dom.getOwnerDocument(element);
   this.viewPortOffset = goog.dom.getDomHelper(doc).getDocumentScroll();
 
-  // TODO(simon): This implementation isn't good enough. Again
-  // Defaults to left mouse button, which is right.
-  //this.buttonDown = bot.Mouse.Button.LEFT;
-  //var botCoords = {
-  //  'clientX': coordinates['x'] + pos.x,
-  //  'clientY': coordinates['y'] + pos.y,
-  //  'button': bot.Mouse.Button.LEFT
-  //};
-  //this.addEventModifierKeys(botCoords);
-  //bot.events.fire(element, bot.events.EventType.MOUSEDOWN, botCoords);
-
   this.lastElement = element;
 
   return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, 'ok');
@@ -291,21 +275,6 @@ SyntheticMouse.prototype.up = function(coordinates) {
   var element = this.getElement_(coordinates);
 
   this.getMouse_().releaseButton();
-
-  //var doc = goog.dom.getOwnerDocument(element);
-  //var pos = goog.style.getClientPosition(element);
-
-  // TODO(simon): This implementation isn't good enough. Again
-  // Defaults to left mouse button, which is the correct one.
-  //var button = this.buttonDown;
-  //var botCoords = {
-  //  'clientX': coordinates['x'] + pos.x,
-  //  'clientY': coordinates['y'] + pos.y,
-  //  'button': button
-  //};
-  //this.addEventModifierKeys(botCoords);
-  //bot.events.fire(element, bot.events.EventType.MOUSEMOVE, botCoords);
-  //bot.events.fire(element, bot.events.EventType.MOUSEUP, botCoords);
 
   this.buttonDown = null;
   this.isButtonPressed = false;
@@ -419,7 +388,7 @@ SyntheticMouse.EventEmitter.prototype.fireMouseEvent = function(target, type, ar
   goog.log.info(SyntheticMouse.LOG_,
       'Calling fireMouseEvent ' + type + ' ' + args.clientX +
       ', ' + args.clientY + ', ' + target);
-  if (type == 'click') {
+  if (type == 'click' || type == 'dblclick') {
     // A click event will be automatically fired as a result of a mousedown and mouseup in sequence
     return true;
   }
@@ -429,10 +398,12 @@ SyntheticMouse.EventEmitter.prototype.fireMouseEvent = function(target, type, ar
   var modifiers = this._parseModifiers(args);
   if (utils.sendMouseEventToWindow) {
     // Firefox 4+
-    utils.sendMouseEventToWindow(type, Math.round(args.clientX), Math.round(args.clientY), args.button, 1, modifiers);
+    utils.sendMouseEventToWindow(type, Math.round(args.clientX), Math.round(args.clientY),
+                                 args.button, args.count, modifiers);
   } else {
     // Firefox 3
-    utils.sendMouseEvent(type, Math.round(args.clientX), Math.round(args.clientY), args.button, 1, modifiers);
+    utils.sendMouseEvent(type, Math.round(args.clientX), Math.round(args.clientY),
+                         args.button, args.count, modifiers);
   }
   goog.log.info(SyntheticMouse.LOG_,
       'Called fireMouseEvent ' + type + ' ' + args.clientX +

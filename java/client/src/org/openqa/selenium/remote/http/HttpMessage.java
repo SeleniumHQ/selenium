@@ -49,6 +49,9 @@ class HttpMessage {
   /**
    * Retrieves a user-defined attribute of this message. Attributes are stored as simple key-value
    * pairs and are not included in a message's serialized form.
+   *
+   * @param key attribute name
+   * @return attribute object
    */
   public Object getAttribute(String key) {
     return attributes.get(key);

@@ -22,7 +22,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.ByteStreams;
 
-import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.Registry;
@@ -43,6 +42,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
@@ -220,6 +220,18 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
 
     public synchronized void reset() throws IOException {
       throw new RuntimeException("not implemented");
+    }
+
+    public boolean isFinished() {
+      return false;
+    }
+
+    public boolean isReady() {
+      return true;
+    }
+
+    public void setReadListener(ReadListener readListener) {
+      throw new RuntimeException("setReadListener");
     }
   }
 }

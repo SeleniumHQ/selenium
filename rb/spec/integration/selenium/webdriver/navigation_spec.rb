@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path("../spec_helper", __FILE__)
+require_relative 'spec_helper'
 
 describe "Navigation" do
   let(:wait) { Selenium::WebDriver::Wait.new :timeout => 10 }
@@ -30,22 +30,22 @@ describe "Navigation" do
       result_url   = url_for "resultPage.html"
 
       driver.navigate.to form_url
-      driver.title.should == form_title
+      expect(driver.title).to eq(form_title)
 
       driver.find_element(:id, 'imageButton').click
       wait.until { driver.title != form_title }
 
-      driver.current_url.should include(result_url)
-      driver.title.should == result_title
+      expect(driver.current_url).to include(result_url)
+      expect(driver.title).to eq(result_title)
 
       driver.navigate.back
 
-      driver.current_url.should include(form_url)
-      driver.title.should == form_title
+      expect(driver.current_url).to include(form_url)
+      expect(driver.title).to eq(form_title)
 
       driver.navigate.forward
-      driver.current_url.should include(result_url)
-      driver.title.should == result_title
+      expect(driver.current_url).to include(result_url)
+      expect(driver.title).to eq(result_title)
     end
 
     it "should refresh the page" do
@@ -53,12 +53,12 @@ describe "Navigation" do
 
       driver.navigate.to url_for("javascriptPage.html")
       driver.find_element(:link_text, "Change the page title!").click
-      driver.title.should == changed_title
+      expect(driver.title).to eq(changed_title)
 
       driver.navigate.refresh
       wait.until { driver.title != changed_title }
 
-      driver.title.should == "Testing Javascript"
+      expect(driver.title).to eq("Testing Javascript")
     end
   end
 end

@@ -392,7 +392,7 @@ goog.net.xpc.IframeRelayTransport.prototype.send_ =
 /**
  * The iframe load handler. Gets called as method on the iframe element.
  * @private
- * @this Element
+ * @this {Element}
  */
 goog.net.xpc.IframeRelayTransport.iframeLoadHandler_ = function() {
   goog.log.log(goog.net.xpc.logger, goog.log.Level.FINEST, 'iframe-load');

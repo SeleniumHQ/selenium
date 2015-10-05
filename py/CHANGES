@@ -1,3 +1,17 @@
+Selenium 2.48.0
+* Update error pulling to match spec when we encounter a spec compliant browser.
+* Disable tests that are not working with Marionette when running Marionette tests
+* Add the ability to run python marionette tests
+* Python 3 compatibility for remote Authorization
+* changing casing of children finding tests
+
+Selenium 2.47.3
+* Bring back py 3 support
+
+Selenium 2.47.2
+* Fix running Edge driver locally on win10
+* adding repr to WebDriver and WebElement
+
 Selenium 2.47.1
 * Fix the issue of deleting the profile when shutting down Firefox
 * WebElement __eq__ compares against more types

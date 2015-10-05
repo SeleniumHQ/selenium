@@ -103,10 +103,10 @@ public class BaseRemoteProxy implements RemoteProxy {
 
 
   /**
-   * Create the proxy from the info sent by the remote. <p/> If maxSession is not specified, default
-   * to 1 = max number of tests running at a given time will be 1. <p/> For each capability,
+   * Create the proxy from the info sent by the remote. <p> If maxSession is not specified, default
+   * to 1 = max number of tests running at a given time will be 1. <p> For each capability,
    * maxInstances is defaulted to 1 if not specified = max number of test of each capability running
-   * at a time will be 1. maxInstances for firefox can be > 1. IE won't support it.
+   * at a time will be 1. maxInstances for firefox can be &gt; 1. IE won't support it.
    *
    * @param request  The request
    * @param registry The registry to use
@@ -405,6 +405,7 @@ public class BaseRemoteProxy implements RemoteProxy {
    *
    * @param request  The request
    * @param registry The registry to use
+   * @param <T> RemoteProxy subclass
    * @return a new instance built from the request.
    */
   @SuppressWarnings("unchecked")

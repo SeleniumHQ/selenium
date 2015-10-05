@@ -158,19 +158,23 @@ module Selenium
         end
 
         def acceptAlert
-          execute :acceptAlert
+          command = :acceptAlert
+          execute command
         end
 
         def dismissAlert
-          execute :dismissAlert
+          command = :dismissAlert
+          execute command
         end
 
         def setAlertValue(keys)
-          execute :setAlertValue, {}, :text => keys.to_s
+          command = capabilities.browser_name == 'MicrosoftEdge' ? :setAlertValueW3C : :setAlertValue
+          execute command, {}, :text => keys.to_s
         end
 
         def getAlertText
-          execute :getAlertText
+          command = :getAlertText
+          execute command
         end
 
         #
@@ -206,7 +210,11 @@ module Selenium
         end
 
         def switchToWindow(name)
-          execute :switchToWindow, {}, :name => name
+          if capabilities.browser_name == 'MicrosoftEdge'
+            execute :switchToWindow, {}, :handle => name
+          else
+            execute :switchToWindow, {}, :name => name
+          end
         end
 
         def switchToFrame(id)
@@ -619,9 +627,8 @@ module Selenium
         private
 
         def assert_javascript_enabled
-          unless capabilities.javascript_enabled?
-            raise Error::UnsupportedOperationError, "underlying webdriver instance does not support javascript"
-          end
+          return if capabilities.browser_name == 'MicrosoftEdge' || capabilities.javascript_enabled?
+          raise Error::UnsupportedOperationError, "underlying webdriver instance does not support javascript"
         end
 
         #

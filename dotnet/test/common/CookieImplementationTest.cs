@@ -180,7 +180,7 @@ namespace OpenQA.Selenium
             AssertCookieIsPresentWithName(cookie1.Name);
             AssertCookieIsPresentWithName(cookie2.Name);
 
-            driver.Url = builder.WhereIs("simplePage.html");
+            driver.Url = builder.WhereIs("simpleTest.html");
             AssertCookieIsNotPresentWithName(cookie1.Name);
         }
 

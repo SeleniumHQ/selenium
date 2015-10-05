@@ -631,7 +631,17 @@ goog.ds.FastListNode.prototype.setChildNode = function(key, value) {
       if (index < 0 || index >= this.values_.length) {
         throw Error('List index out of bounds: ' + index);
       }
-      this.values_[key] = value;
+      // NOTE: This code here appears to want to use "index" rather than
+      // "key" here (which would be better for an array. However, changing
+      // that would require knowing that there wasn't a mix of non-number
+      // keys, as using index that would risk overwriting those values if
+      // they were set first.  Instead we loosen the type so we can use
+      // strings as indexes.
+
+      /** @type {!Object} */
+      var values = this.values_;
+
+      values[key] = value;
     } else {
       if (!this.map_) {
         this.map_ = {};

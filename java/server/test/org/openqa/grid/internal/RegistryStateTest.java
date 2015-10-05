@@ -87,7 +87,7 @@ public class RegistryStateTest {
   }
 
   @Test(timeout = 5000)
-  public void basiChecks() {
+  public void basicChecks() {
     Registry registry = Registry.newInstance();
     RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
 

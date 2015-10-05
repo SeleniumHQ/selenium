@@ -688,6 +688,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
    * @param sessionId   the session id.
    * @param commandName the command that is being executed.
    * @param toLog       any data that might be interesting.
+   * @param when        verb tense of "Execute" to prefix message
    */
   protected void log(SessionId sessionId, String commandName, Object toLog, When when) {
     String text = "" + toLog;
@@ -1049,7 +1050,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
      *
      * Usage: driver.switchTo().alert().authenticateUsing(new UsernamePasswordCredentials("cheese",
      *        "secretGouda"));
-     * @param credentials
+     * @param credentials credentials to pass to Auth prompt
      */
     @Beta
     public void authenticateUsing(Credentials credentials) {

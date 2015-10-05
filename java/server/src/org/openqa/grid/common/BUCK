@@ -12,5 +12,6 @@ java_library(name = 'common',
   visibility = [
     '//java/server/src/org/openqa/grid:grid',
     '//java/server/src/org/openqa/grid/selenium:classes',
+    '//java/server/test/org/openqa/grid/...',
   ],
 )

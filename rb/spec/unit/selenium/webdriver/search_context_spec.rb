@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path("../spec_helper", __FILE__)
+require_relative 'spec_helper'
 
 describe "SearchContext" do
   class TestSearchContext
@@ -36,19 +36,19 @@ describe "SearchContext" do
 
   context "finding a single element" do
     it "accepts a hash" do
-      bridge.should_receive(:find_element_by).with('id', "bar", nil).and_return(element)
-      search_context.find_element(:id => "bar").should == element
+      expect(bridge).to receive(:find_element_by).with('id', "bar", nil).and_return(element)
+      expect(search_context.find_element(:id => "bar")).to eq(element)
     end
 
     it "accepts two arguments" do
-      bridge.should_receive(:find_element_by).with('id', "bar", nil).and_return(element)
-      search_context.find_element(:id, "bar").should == element
+      expect(bridge).to receive(:find_element_by).with('id', "bar", nil).and_return(element)
+      expect(search_context.find_element(:id, "bar")).to eq(element)
     end
 
     it "raises an error if given an invalid 'by'" do
-      lambda {
+      expect {
         search_context.find_element(:foo => "bar")
-      }.should raise_error(ArgumentError, 'cannot find element by :foo')
+      }.to raise_error(ArgumentError, 'cannot find element by :foo')
     end
 
     it "does not modify the hash given" do
@@ -56,25 +56,25 @@ describe "SearchContext" do
 
       search_context.find_element(selector)
 
-      selector.should == {:id => "foo"}
+      expect(selector).to eq({:id => "foo"})
     end
   end
 
   context "finding multiple elements" do
     it "accepts a hash" do
-      bridge.should_receive(:find_elements_by).with('id', "bar", nil).and_return([])
-      search_context.find_elements(:id => "bar").should == []
+      expect(bridge).to receive(:find_elements_by).with('id', "bar", nil).and_return([])
+      expect(search_context.find_elements(:id => "bar")).to eq([])
     end
 
     it "accepts two arguments" do
-      bridge.should_receive(:find_elements_by).with('id', "bar", nil).and_return([])
-      search_context.find_elements(:id, "bar").should == []
+      expect(bridge).to receive(:find_elements_by).with('id', "bar", nil).and_return([])
+      expect(search_context.find_elements(:id, "bar")).to eq([])
     end
 
     it "raises an error if given an invalid 'by'" do
-      lambda {
+      expect {
         search_context.find_elements(:foo => "bar")
-      }.should raise_error(ArgumentError, 'cannot find elements by :foo')
+      }.to raise_error(ArgumentError, 'cannot find elements by :foo')
     end
   end
 end

@@ -20,9 +20,11 @@ package org.openqa.selenium.remote.server.testing;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Collection;
 import java.util.Locale;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
@@ -40,6 +42,16 @@ public class FakeHttpServletResponse extends HeaderContainer
 
   public String getBody() {
     return stringWriter.toString();
+  }
+
+  @Override
+  public Collection<String> getHeaders(String name) {
+    return getHeaders().get(name);
+  }
+
+  @Override
+  public Collection<String> getHeaderNames() {
+    return getHeaders().keySet();
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -114,6 +126,11 @@ public class FakeHttpServletResponse extends HeaderContainer
     setIntHeader("content-length", i);
   }
 
+  @Override
+  public void setContentLengthLong(long len) {
+    setIntHeader("content-length", (int) len);
+  }
+
   public void setContentType(String type) {
     setHeader("content-type", type);
   }
@@ -161,6 +178,16 @@ public class FakeHttpServletResponse extends HeaderContainer
     @Override
     public void write(int i) throws IOException {
       printWriter.write(i);
+    }
+
+    @Override
+    public boolean isReady() {
+      return true;
+    }
+
+    @Override
+    public void setWriteListener(WriteListener writeListener) {
+      throw new UnsupportedOperationException();
     }
   }
 }

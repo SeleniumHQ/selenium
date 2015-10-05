@@ -273,12 +273,12 @@ namespace OpenQA.Selenium.Firefox
                             addressBuilder.AppendFormat(CultureInfo.InvariantCulture, "{0}:{1}", address.Address.ToString(), address.Port.ToString(CultureInfo.InvariantCulture));
                         }
 
-                        throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Failed to start up socket within {0} ms. Attempted to connect to the following addresses: {1}", timeToWait.TotalMilliseconds, addressBuilder.ToString()));
+                        throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Failed to start up socket within {0} milliseconds. Attempted to connect to the following addresses: {1}", timeToWait.TotalMilliseconds, addressBuilder.ToString()));
                     }
                     else
                     {
                         IPEndPoint endPoint = (IPEndPoint)extensionSocket.RemoteEndPoint;
-                        string formattedError = string.Format(CultureInfo.InvariantCulture, "Unable to connect to host {0} on port {1} after {2} ms", endPoint.Address.ToString(), endPoint.Port.ToString(CultureInfo.InvariantCulture), timeToWait.TotalMilliseconds);
+                        string formattedError = string.Format(CultureInfo.InvariantCulture, "Unable to connect to host {0} on port {1} after {2} milliseconds", endPoint.Address.ToString(), endPoint.Port.ToString(CultureInfo.InvariantCulture), timeToWait.TotalMilliseconds);
                         throw new WebDriverException(formattedError);
                     }
                 }

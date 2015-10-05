@@ -16,6 +16,7 @@
 # under the License.
 
 import hashlib
+from numbers import Number
 import os
 import zipfile
 try:
@@ -317,7 +318,7 @@ class WebElement(object):
         for val in value:
             if isinstance(val, Keys):
                 typing.append(val)
-            elif isinstance(val, int):
+            elif isinstance(val, Number):
                 val = val.__str__()
                 for i in range(len(val)):
                     typing.append(val[i])

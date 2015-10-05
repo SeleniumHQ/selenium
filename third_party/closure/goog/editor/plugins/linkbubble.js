@@ -417,14 +417,19 @@ goog.editor.plugins.LinkBubble.prototype.createBubbleContents = function(
 /**
  * Tests the link by opening it in a new tab/window. Should be used as the
  * click event handler for the test pseudo-link.
+ * @param {!Event=} opt_event If passed in, the event will be stopped.
  * @protected
  */
-goog.editor.plugins.LinkBubble.prototype.testLink = function() {
+goog.editor.plugins.LinkBubble.prototype.testLink = function(opt_event) {
   goog.window.open(this.getTestLinkAction_(),
       {
         'target': '_blank',
         'noreferrer': this.stopReferrerLeaks_
       }, this.getFieldObject().getAppWindow());
+  if (opt_event) {
+    opt_event.stopPropagation();
+    opt_event.preventDefault();
+  }
 };
 
 

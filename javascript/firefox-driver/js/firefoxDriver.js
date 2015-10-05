@@ -42,9 +42,8 @@ goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
 
 
-FirefoxDriver = function(server, enableNativeEvents, win, opt_pageLoadStrategy) {
+FirefoxDriver = function(server, win, opt_pageLoadStrategy) {
   this.server = server;
-  this.enableNativeEvents = enableNativeEvents;
   this.window = win;
   this.pageLoadStrategy = opt_pageLoadStrategy || 'normal';
 
@@ -98,15 +97,7 @@ FirefoxDriver.prototype.getCurrentWindowHandle = function(respond) {
 
 
 FirefoxDriver.prototype.getCurrentUrl = function(respond) {
-  var window = respond.session.getWindow();
-  var url;
-  if (window) {
-    url = window.location;
-  }
-  if (!url) {
-    url = respond.session.getBrowser().contentWindow.location;
-  }
-  respond.value = '' + url;
+  respond.value = '' + respond.session.getBrowser().contentWindow.location;
   respond.send();
 };
 
@@ -167,9 +158,6 @@ FirefoxDriver.prototype.close = function(respond) {
 
     // Use an nsITimer to give the response time to go out.
     var event = function(timer) {
-        // Create a switch file so the native events library will
-        // let all events through in case of a close.
-        notifyOfCloseWindow();
         appService.quit(forceQuit);
     };
 
@@ -181,7 +169,6 @@ FirefoxDriver.prototype.close = function(respond) {
   // Here we go!
   try {
     var browser = respond.session.getBrowser();
-    notifyOfCloseWindow(browser.id);
     browser.contentWindow.close();
   } catch (e) {
     goog.log.warning(FirefoxDriver.LOG_, 'Error closing window', e);
@@ -380,6 +367,12 @@ FirefoxDriver.prototype.getPageSource = function(respond) {
   if (!docElement) {
     // empty string means no DOM element available (the page is probably rebuilding at the moment)
     respond.value = '';
+    respond.send();
+    return;
+  }
+
+  if (win.document.contentType == "text/plain") {
+    respond.value = win.document.documentElement.textContent;
     respond.send();
     return;
   }
@@ -916,18 +909,6 @@ FirefoxDriver.prototype.screenshot = function(respond) {
 };
 
 
-FirefoxDriver.prototype.getAlert = function(respond) {
-  fxdriver.modals.isModalPresent(
-      function(present) {
-        if (!present) {
-          respond.status = bot.ErrorCode.NO_SUCH_ALERT;
-          respond.value = { message: 'No alert is present' };
-        }
-        respond.send();
-      }, this.alertTimeout);
-};
-
-
 FirefoxDriver.prototype.dismissAlert = function(respond) {
   var self = this;
   fxdriver.modals.isModalPresent(
@@ -1084,21 +1065,6 @@ function getElementFromLocation(mouseLocation, doc) {
   return fxdriver.moz.unwrap(elementForNode);
 }
 
-function generateErrorForNativeEvents(nativeEventsEnabled, nativeEventsObj, nodeForInteraction) {
-  var nativeEventFailureCause = 'Could not get node for element or native ' +
-      'events are not supported on the platform.';
-  if (!nativeEventsEnabled) {
-    nativeEventFailureCause = 'native events are disabled on this platform.';
-  } else if (!nativeEventsObj) {
-    nativeEventFailureCause = 'Could not load native events component.';
-  } else {
-    nativeEventFailureCause = 'Could not get node for element - cannot interact.';
-  }
- // TODO: use the correct error type here.
-  return new WebDriverError(bot.ErrorCode.INVALID_ELEMENT_STATE,
-      'Cannot perform native interaction: ' + nativeEventFailureCause);
-}
-
 FirefoxDriver.prototype.sendResponseFromSyntheticMouse_ = function(mouseReturnValue, respond) {
   if (mouseReturnValue.code != bot.ErrorCode.OK) {
     respond.sendError(new WebDriverError(mouseReturnValue.code, mouseReturnValue.message));
@@ -1142,186 +1108,34 @@ FirefoxDriver.prototype.mouseMoveTo = function(respond, parameters) {
     }
   }
 
-  // Fast path first
-  if (!this.enableNativeEvents) {
-    var target = coords.auxiliary || doc;
-    goog.log.info(FirefoxDriver.LOG_,
-        'Calling move with: ' + coords.x + ', ' + coords.y + ', ' + target);
-    var result = this.mouse.move(target, coords.x, coords.y);
-    this.sendResponseFromSyntheticMouse_(result, respond);
-    return;
-  }
-
-  var nativeMouseMoveTo = function(coordinates, jsTimer) {
-    goog.log.info(FirefoxDriver.LOG_,
-        'Calling native move with: ' + coords.x + ', ' + coords.y);
-
-    var elementForNode = null;
-    var clickPoint_ownerDocumentPreScroll; //toX
-
-    if (coordinates.auxiliary) {
-      elementForNode = fxdriver.moz.unwrap(coordinates.auxiliary);
-      clickPoint_ownerDocumentPreScroll = Utils.getLocationRelativeToWindowHandle(elementForNode);
-    } else {
-      elementForNode = getElementFromLocation(respond.session.getMousePosition(), respond.session.getTopDocument());
-      clickPoint_ownerDocumentPreScroll = respond.session.getMousePosition();
-    }
-
-    // The function getInViewLocation does not work on coordinates that are
-    // not integers. The mouse positions can be doubles so we need to cut off
-    // the decimals.
-    clickPoint_ownerDocumentPreScroll.x = Math.floor(clickPoint_ownerDocumentPreScroll.x + coordinates.x);
-    clickPoint_ownerDocumentPreScroll.y = Math.floor(clickPoint_ownerDocumentPreScroll.y + coordinates.y);
-
-    var clickPoint_ownerDocumentPostScroll; //to
-    try {
-      clickPoint_ownerDocumentPostScroll = getInViewLocation(
-          clickPoint_ownerDocumentPreScroll, respond.session.getTopWindow());
-    } catch (ex) {
-      if (ex.code == bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS) {
-        respond.sendError(new WebDriverError(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
-          'Given coordinates (' + clickPoint_ownerDocumentPreScroll.x + ', ' + clickPoint_ownerDocumentPreScroll.y + ') are outside the document. Error: ' + ex));
-        return;
-      }
-      else {
-        throw ex;
-      }
-    }
-
-    var isMouseButtonPressed = respond.session.isMousePressed();
-    var mouseTarget_ownerDocument = isMouseButtonPressed ? clickPoint_ownerDocumentPreScroll : clickPoint_ownerDocumentPostScroll;
-
-    var browserOffset = Utils.getBrowserSpecificOffset(respond.session.getBrowser());
-    var mouseTarget_ownerDocument_windowHandle = {x: mouseTarget_ownerDocument.x + browserOffset.x, y: mouseTarget_ownerDocument.y + browserOffset.y};
-
-    var nativeMouse = Utils.getNativeMouse();
-    var node = Utils.getNodeForNativeEvents(elementForNode);
-
-    if (nativeMouse && node) {
-      var currentPosition = respond.session.getMousePosition();
-      var currentPosition_windowHandle = {x: currentPosition.x + browserOffset.x, y: currentPosition.y + browserOffset.y};
-      goog.log.info(FirefoxDriver.LOG_,
-          'Moving from (' + currentPosition.x + ', ' + currentPosition.y + ') to (' +
-          clickPoint_ownerDocumentPostScroll.x + ', ' + clickPoint_ownerDocumentPostScroll.y + ')');
-      nativeMouse.mouseMove(node,
-          currentPosition_windowHandle.x, currentPosition_windowHandle.y,
-          mouseTarget_ownerDocument_windowHandle.x, mouseTarget_ownerDocument_windowHandle.y);
-
-      var dummyIndicator = {
-        wasUnloaded: false
-      };
-
-      Utils.waitForNativeEventsProcessing(elementForNode, Utils.getNativeEvents(), dummyIndicator, jsTimer);
-
-      respond.session.setMousePosition(clickPoint_ownerDocumentPostScroll.x, clickPoint_ownerDocumentPostScroll.y);
-      if (isMouseButtonPressed) {
-        respond.session.setMouseViewportOffset(clickPoint_ownerDocumentPreScroll.x, clickPoint_ownerDocumentPreScroll.y);
-      }
-    } else {
-      throw generateErrorForNativeEvents(true, nativeMouse, node);
-    }
-
-  };
-
-  nativeMouseMoveTo(coords, this.jsTimer);
-
-  respond.send();
-
-  function getInViewLocation(targetLocation, opt_currentWindow) {
-    var scrollOffset = bot.window.getScroll(opt_currentWindow);
-    var scrollLocation = goog.math.Coordinate.sum(scrollOffset, targetLocation);
-    bot.window.scrollIntoView(scrollLocation, opt_currentWindow);
-    var newScrollOffset = bot.window.getScroll(opt_currentWindow);
-    return goog.math.Coordinate.difference(scrollLocation, newScrollOffset);
-  }
+  var target = coords.auxiliary || doc;
+  goog.log.info(FirefoxDriver.LOG_,
+      'Calling move with: ' + coords.x + ', ' + coords.y + ', ' + target);
+  var result = this.mouse.move(target, coords.x, coords.y);
+  this.sendResponseFromSyntheticMouse_(result, respond);
 };
 
 FirefoxDriver.prototype.mouseButtonDown = function(respond, parameters) {
   var doc = respond.session.getDocument();
 
-  if (!this.enableNativeEvents) {
-    var coords = fxdriver.events.buildCoordinates(parameters, doc);
-    goog.log.info(FirefoxDriver.LOG_,
-        'Calling down with: ' + coords.x + ', ' + coords.y + ', ' + coords.auxiliary);
-    var result = this.mouse.down(coords);
+  var coords = fxdriver.events.buildCoordinates(parameters, doc);
+  goog.log.info(FirefoxDriver.LOG_,
+      'Calling down with: ' + coords.x + ', ' + coords.y + ', ' + coords.auxiliary);
+  var result = this.mouse.down(coords);
 
-    this.sendResponseFromSyntheticMouse_(result, respond);
-    return;
-  }
-
-  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), respond.session.getTopDocument());
-
-  var nativeMouse = Utils.getNativeMouse();
-  var node = Utils.getNodeForNativeEvents(elementForNode);
-
-  if (nativeMouse && node) {
-    var currentPosition = respond.session.getMousePosition();
-    var browserOffset = Utils.getBrowserSpecificOffset(respond.session.getBrowser());
-
-    nativeMouse.mousePress(node, currentPosition.x + browserOffset.x,
-        currentPosition.y + browserOffset.y, 1);
-
-    var dummyIndicator = {
-      wasUnloaded: false
-    };
-
-    Utils.waitForNativeEventsProcessing(elementForNode, Utils.getNativeEvents(), dummyIndicator, this.jsTimer);
-    respond.session.setMousePressed(true);
-    respond.session.setMouseViewportOffset(currentPosition.x, currentPosition.y);
-  } else {
-    throw generateErrorForNativeEvents(this.enableNativeEvents, nativeMouse, node);
-  }
-
-  respond.send();
+  this.sendResponseFromSyntheticMouse_(result, respond);
+  return;
 };
 
 FirefoxDriver.prototype.mouseButtonUp = function(respond, parameters) {
   var doc = respond.session.getDocument();
 
-  if (!this.enableNativeEvents) {
-    var coords = fxdriver.events.buildCoordinates(parameters, doc);
-    goog.log.info(FirefoxDriver.LOG_,
-        'Calling up with: ' + coords.x + ', ' + coords.y + ', ' + coords.auxiliary);
-    var result = this.mouse.up(coords);
+  var coords = fxdriver.events.buildCoordinates(parameters, doc);
+  goog.log.info(FirefoxDriver.LOG_,
+      'Calling up with: ' + coords.x + ', ' + coords.y + ', ' + coords.auxiliary);
+  var result = this.mouse.up(coords);
 
-    this.sendResponseFromSyntheticMouse_(result, respond);
-    return;
-  }
-
-  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), respond.session.getTopDocument());
-
-  var nativeMouse = Utils.getNativeMouse();
-  var node = Utils.getNodeForNativeEvents(elementForNode);
-
-  if (this.enableNativeEvents && nativeMouse && node) {
-    var currentPosition = respond.session.getMousePosition();
-    var upX = currentPosition.x;
-    var upY = currentPosition.y;
-    var isMouseButtonPressed = respond.session.isMousePressed();
-    if (isMouseButtonPressed) {
-      upX = currentPosition.viewPortXOffset;
-      upY = currentPosition.viewPortYOffset;
-      goog.log.info(FirefoxDriver.LOG_,
-          'Button pressed. Using coordiantes with viewport offset: ' +
-          upX + ', ' + upY);
-    }
-    var browserOffset = Utils.getBrowserSpecificOffset(respond.session.getBrowser());
-
-    nativeMouse.mouseRelease(node, upX + browserOffset.x,
-        upY + browserOffset.y, 1);
-
-    var dummyIndicator = {
-      wasUnloaded: false
-    };
-
-    Utils.waitForNativeEventsProcessing(elementForNode, Utils.getNativeEvents(), dummyIndicator, this.jsTimer);
-    respond.session.setMousePressed(false);
-    respond.session.setMouseViewportOffset(0, 0);
-  } else {
-    throw generateErrorForNativeEvents(this.enableNativeEvents, nativeMouse, node);
-  }
-
-  respond.send();
+  this.sendResponseFromSyntheticMouse_(result, respond);
 };
 
 FirefoxDriver.prototype.mouseClick = function(respond, parameters) {
@@ -1331,49 +1145,16 @@ FirefoxDriver.prototype.mouseClick = function(respond, parameters) {
 
   var button = parameters['button'];
 
-  if (!this.enableNativeEvents) {
-    // The right mouse button is defined as '2' in the wire protocol
-    var RIGHT_MOUSE_BUTTON = 2;
-    var result;
-    if (RIGHT_MOUSE_BUTTON == button) {
-      result = this.mouse.contextClick(null);
-    } else {
-      result = this.mouse.click(null);
-    }
-
-    this.sendResponseFromSyntheticMouse_(result, respond);
-    return;
-  }
-
-  var doc = respond.session.getDocument();
-  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), respond.session.getTopDocument());
-
-  var nativeMouse = Utils.getNativeMouse();
-  var node = Utils.getNodeForNativeEvents(elementForNode);
-
-  if (this.enableNativeEvents && nativeMouse && node) {
-    var currentPosition = respond.session.getMousePosition();
-    var browserOffset = Utils.getBrowserSpecificOffset(respond.session.getBrowser());
-
-    nativeMouse.click(node, currentPosition.x + browserOffset.x,
-        currentPosition.y + browserOffset.y, button);
-
-    var dummyIndicator = {
-      wasUnloaded: false
-    };
-
-    Utils.waitForNativeEventsProcessing(elementForNode, Utils.getNativeEvents(), dummyIndicator, this.jsTimer);
-
-    if (bot.dom.isEditable(elementForNode) && elementForNode.value !== undefined) {
-      goog.dom.selection.setCursorPosition(
-          elementForNode, elementForNode.value.length);
-    }
-
+  // The right mouse button is defined as '2' in the wire protocol
+  var RIGHT_MOUSE_BUTTON = 2;
+  var result;
+  if (RIGHT_MOUSE_BUTTON == button) {
+    result = this.mouse.contextClick(null);
   } else {
-    throw generateErrorForNativeEvents(this.enableNativeEvents, nativeMouse, node);
+    result = this.mouse.click(null);
   }
 
-  respond.send();
+  this.sendResponseFromSyntheticMouse_(result, respond);
 };
 
 
@@ -1382,36 +1163,8 @@ FirefoxDriver.prototype.mouseDoubleClick = function(respond, parameters) {
   Utils.installWindowCloseListener(respond);
   Utils.installClickListener(respond, WebLoadingListener);
 
-  if (!this.enableNativeEvents) {
-    var result = this.mouse.doubleClick(null);
-    this.sendResponseFromSyntheticMouse_(result, respond);
-    return;
-  }
-
-  var doc = respond.session.getDocument();
-  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);
-
-  var nativeMouse = Utils.getNativeMouse();
-  var node = Utils.getNodeForNativeEvents(elementForNode);
-
-  if (this.enableNativeEvents && nativeMouse && node) {
-    var currentPosition = respond.session.getMousePosition();
-    var browserOffset = Utils.getBrowserSpecificOffset(respond.session.getBrowser());
-
-    nativeMouse.doubleClick(node, currentPosition.x + browserOffset.x,
-        currentPosition.y + browserOffset.y);
-
-    var dummyIndicator = {
-      wasUnloaded: false
-    };
-
-    Utils.waitForNativeEventsProcessing(elementForNode, Utils.getNativeEvents(), dummyIndicator, this.jsTimer);
-
-  } else {
-    throw generateErrorForNativeEvents(this.enableNativeEvents, nativeMouse, node);
-  }
-
-  respond.send();
+  var result = this.mouse.doubleClick(null);
+  this.sendResponseFromSyntheticMouse_(result, respond);
 };
 
 FirefoxDriver.prototype.sendKeysToActiveElement = function(respond, parameters) {
@@ -1429,13 +1182,8 @@ FirefoxDriver.prototype.sendKeysToActiveElement = function(respond, parameters) 
     useElement = useElement.ownerDocument.getElementsByTagName('html')[0];
   }
 
-  // In case Utils.type performs non-native typing, it will modify the state of the
-  // modifier keys to be used in subsequent typing. A proper syntheticKeyboard
-  // class should be extracted to use the keyboard.js atom, will properly export
-  // the state.
-
   Utils.type(respond.session.getDocument(), useElement, parameters.value.join(''),
-    this.enableNativeEvents, this.jsTimer, false /*release modifiers*/, this.modifierKeysState);
+    this.jsTimer, false /*release modifiers*/, this.modifierKeysState);
 
   respond.send();
 };

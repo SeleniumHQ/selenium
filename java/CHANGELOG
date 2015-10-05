@@ -1,3 +1,97 @@
+v2.48.0
+=======
+
+WebDriver:
+    * java: add ExpectedConditions#numberOfWindowsToBe
+    * Bump the buck version to the latest version.
+    * fix maven build for jetty 9
+    * adding pom files for jetty 9 repakced jars and the empty-javadoc jar used to upload to maven central
+    * Restoring use of queued thread pool in the hub
+    * Deleting commented code
+    * Fixing UploadServlet in test environment to conform to servlet-api 3.1
+    * Update jetty readme
+    * Bump the Jetty version from 7 to 9
+    * Updating screenshot code to retain scroll bars in required directions.
+    * Updating screenshot code to prevent resizing if window is large enough.
+    * Removing superfluous comment that was causing javadoc build error in ci
+    * fixing the remaining jdk 8 javadoc errors
+    * Make the javadocs for java/server too.
+    * fixing java command line options for 'go' MaxPermSize -> MetaspaceSize in java 8
+    * updating third party wicked good xpath to e33a3876a6d592b824942751d86ba5f2b08a3dc5 Fixes #1040
+    * Removing use of Windows hooks for taking screenshots in IE.
+    * Firefox: fixing sendKeys for contentEditable elements, it should append to the existing text.
+    * Buck version bumps
+    * Update closure-library to 04a8ceefc6972511e669563d47abeca18b28092c
+    * Firefox: implementing mouse doubleclick action via nsIDOMWindowUtils
+    * Add FluentWait.withMessage with string supplier
+    * Firefox: fixing events generated as a result of click on an element that disappears after the click.
+    * Firefox: implementing mouse up/down actions via nsIDOMWindowUtils. This makes mouse actions "more native". In particular, if there are overlapping element at the click point, the driver will click the topmost element.
+    * Safari: stop embedding the extension in the client libs, it should be downloaded and installed manually.
+    * Deleting a couple of redundant casts
+    * No need to cast, the variable has required type already
+    * Deleting redundant logging to console in tests
+    * HtmlUnit: Ignoring one more test
+    * Disabling a test if JS is not enabled
+    * HtmlUnit: Unignoring a magically working test
+    * HtmlUnit: restoring backward compatibility after changes in getCurrentUrl semantics
+    * WDBC: restoring backward compatibility after changes in getCurrentUrl semantics
+    * Deleting native events from firefox driver
+    * Deleting outdated assumes for unsupported Firefox version
+    * Resorting tests for moveByOffset action
+    * Firefox: don't dispatch keypress event if defaultPrevent() of the keydown event is called because KEY_FLAG_PREVENT_DEFAULT has no effect
+    * Moving IE specific test to IE test suite
+    * Firefox: throwing proper exception on an attempt to find an element in the deleted frame
+    * Firefox: changing getCurrentUrl to return top level browsing context address (to conform to the standard)
+    * Firefox: fixing page source for plain text pages
+    * Adding information on the reasons to ignore tests
+    * fix the client and server classpath
+    * Move the servlet-api package for easier automated updates.
+    * Renaming the Jetty7AppServer to remove the version number.
+    * Fix up failing htmlunitdriver test.
+    * Simulating window.getPosition and setPosition operations
+    * Simulating switchTo().window by name
+    * Fixing test to switch back to the original window after opening a new one.
+    * Implementing standard-compliant window operations
+    * Implementing standard-compliant getSize, getPosition and getPositionInView
+    * Deleting marionette tcp connector
+    * remove unused css transform code from location in view
+    * use BasicHttpRequest instead of EnclosingRequest
+    * htmlunit passes the httponly cookie test
+    * fix maven dependency of htmlunit driver on the support package
+    * don't replace a platform specified to the add browser method, like the TODO says
+    * Simulating submit operation for standard compliant drivers
+    * Making sendKeys more backward compatible (because i18n tests)
+    * Change buils to builds
+    * Unignoring marionette tests passed after sendKeys rework
+    * Fixing getSize operation broken by copy-paste from getLocation
+    * Reworking sendKeys to send characters one by one, this is standard compliant behavior
+    * Making switchTo().window more standard compliant
+    * Making getLocation and getSize standard compliant
+    * Making timeout setting methods standard compliant
+    * Fixing "no such alert" error mapping
+    * Making findElement(s) commands standard compliant (except for link text locators)
+    * java: fix log string for RemoteTargetLocator#defaultContent
+    * Update check to see if we are speaking to a W3C remote end point
+    * specificationLevel is defined in http://w3c.github.io/webdriver/webdriver-spec.html#capabilities
+    * use exception message.  no method overload exists for log.severe
+    * Upgrade HtmlUnit 2.18
+    * ReflectionBackendDriverSupplier: two arguments Capabilities
+    * HtmlUnitMouse: no need to .focus()
+    * Fix HtmlUnitWebElement.getCssValue
+    * AMO requires the max version be an actual release version number
+    * Correcting IE driver build process to create executables runnable on Windows XP Fixes issue #936.
+    * Improve comments and error message on scrolling_test#testScrollingAccountsForScrollbarWidths.
+    * Java client side support for launch_app command of chromedriver:
+    * Add "additionalCommands" support to DriverCommandExecutor.
+    * Use directExecutor().
+    * Updating IE driver C++ code to use Visual Studio 2015.
+
+Grid:
+    * Run grid tests using Buck.
+    * removing '-debug' command line parameter for grid hub, it isn't used anywhere.
+    * adding edge icon for grid
+
+
 v2.47.0
 =======
 
@@ -127,7 +221,7 @@ Other notable changes:
   compatibility
 * PageFactory: Provide ability to use custom annotations. (Provided
   by Artem Koshelev)
-* Use DaemonExecutor from commons-exec instead of DefaultExecutor. 
+* Use DaemonExecutor from commons-exec instead of DefaultExecutor.
   Fixes Google Code issue 4734. (Provided by Richard Atkins)
 * FirefoxDriver and Java language bindings now handle both legacy and
   W3C specification dialects of element reference serialization in the

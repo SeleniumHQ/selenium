@@ -90,21 +90,6 @@ public class TestUtilities {
     }
   }
 
-  public  static boolean isFirefox30(WebDriver driver) {
-    return isFirefox(driver)
-        && getUserAgent(driver).contains("Firefox/3.0.");
-  }
-
-  public static boolean isFirefox35(WebDriver driver) {
-    return isFirefox(driver)
-        && getUserAgent(driver).contains("Firefox/3.5.");
-  }
-
-  public static boolean isFirefox9(WebDriver driver) {
-    return isFirefox(driver)
-        && getUserAgent(driver).contains("Firefox/9.0");
-  }
-
   public static boolean isChrome(WebDriver driver) {
     return getUserAgent(driver).contains("Chrome");
   }
