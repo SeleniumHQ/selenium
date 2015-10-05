@@ -32,11 +32,13 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.support.pagefactory.FieldDecorator;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.TickingClock;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -44,6 +46,9 @@ import java.util.List;
 public class PageFactoryTest {
 
   private WebDriver driver;
+  
+  @FindBy 
+  private WebElement proxiedField;
 
   @Test
   public void shouldProxyElementsInAnInstantiatedPage() {
@@ -64,6 +69,62 @@ public class PageFactoryTest {
 
     assertThat(page.q, is(notNullValue()));
     assertThat(page.list, is(notNullValue()));
+  }
+
+  @Test
+  public void shouldInsertProxiesForPublicWebElements2() {
+    RemoteWebElement e = null;
+    PublicPage page = PageFactory.initElements(e , PublicPage.class);
+
+    assertThat(page.q, is(notNullValue()));
+    assertThat(page.list, is(notNullValue()));
+  }
+
+  @Test
+  public void shouldInsertProxiesForPublicWebElementsWhenClassHasConstructorWithWebElementParameter() {
+    RemoteWebElement e = mock(RemoteWebElement.class);
+    NestedWidget page = PageFactory.initElements(e , NestedWidget.class);
+
+    assertThat(page.q, is(notNullValue()));
+    assertThat(page.list, is(notNullValue()));
+  }
+  
+  @Test
+  public void shouldInsertProxiesForPublicWebElementsWhenProxyOfElementIsPassedThroughConsctructor() {
+    WebDriver d = mock(WebDriver.class);
+    PageFactory.initElements(d, this);
+    
+    try{
+      NestedWidget page = PageFactory.initElements(proxiedField , NestedWidget.class);
+      assertThat(page.q, is(notNullValue()));
+      assertThat(page.list, is(notNullValue()));
+    }
+    finally{
+      proxiedField = null;
+    }
+  }
+
+  @Test
+  public void shouldNotInstantiatePageObjectWhenThereIsNoRelevantConstructor() {
+    try{
+    WebDriver d = mock(WebDriver.class);
+    @SuppressWarnings("unused")
+    NestedWidget page = PageFactory.initElements(d , NestedWidget.class);
+    fail("Should not instantiate class because it has no relevant constructors");
+    }
+    catch (Exception e){
+      Assert.assertEquals(e.getClass(), RuntimeException.class);
+      Assert.assertEquals(e.getCause().getClass(), InstantiationException.class);
+    }
+  }
+
+  @Test
+  public void shouldNotInsertProxiesForPublicStaticAndFinalFields() {
+    PageObjectWithStaticAndFinalFields p = new PageObjectWithStaticAndFinalFields();
+    PageFactory.initElements(driver , p);
+
+    assertThat(PageObjectWithStaticAndFinalFields.staticField, is(nullValue()));
+    assertThat(p.finalField, is(equalTo(p.finalField)));
   }
 
   @Test
@@ -208,6 +269,28 @@ public class PageFactoryTest {
     public List<WebElement> list;
 
     public WebElement rendered;
+  }
+
+  public static class PageObjectWithStaticAndFinalFields{
+    @FindBy(name = "q")
+    public static WebElement staticField;
+
+    @FindBy(name = "q")
+    public final WebElement finalField = mock(WebElement.class);
+  }
+
+  public static class NestedWidget {
+
+    @FindBy(name = "q")
+    public WebElement q;
+
+    @FindBy(name = "q")
+    public List<WebElement> list;
+
+    public WebElement rendered;
+
+    NestedWidget(WebElement e){
+    }
   }
 
   public static class ChildPage extends PublicPage {
