@@ -274,30 +274,18 @@ describe "Selenium::WebDriver::TargetLocator" do
       end
 
       it "raises when calling #text on a closed alert" do
-        expected_alert = Selenium::WebDriver::Error::NoSuchAlertError
-
-        not_compliant_on :w3c => true do
-          expected_alert = Selenium::WebDriver::Error::NoAlertPresentError
-        end
-
         driver.navigate.to url_for("alerts.html")
         driver.find_element(:id => "alert").click
 
         alert = wait_for_alert
         alert.accept
 
-        expect { alert.text }.to raise_error(expected_alert)
+        expect { alert.text }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError)
       end
 
       not_compliant_on :browser => :ie do
         it "raises NoAlertOpenError if no alert is present" do
-          expected_alert = Selenium::WebDriver::Error::NoSuchAlertError
-          not_compliant_on :w3c => true do
-            expected_alert = Selenium::WebDriver::Error::NoAlertPresentError
-          end
-
-          expect { driver.switch_to.alert }.to raise_error(
-                                                   expected_alert, /alert|modal/i)
+          expect { driver.switch_to.alert }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError, /alert|modal/i)
         end
       end
 
