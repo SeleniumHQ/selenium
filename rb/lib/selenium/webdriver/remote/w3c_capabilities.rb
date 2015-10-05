@@ -69,11 +69,15 @@ module Selenium
                 }.merge(opts))
           end
 
-          def w3c?(opts={})
+          def w3c?(opts = {})
             return true if opts[:browser_name] == :firefox_nightly
+            w3c_opts? || Firefox::Binary.version > 43
+          end
+
+          def w3c_opts?(opts = {})
             intersect = Remote::W3CCapabilities::DEFAULTS.keys & opts.keys
             common = [:takes_screenshot, :proxy]
-            !(intersect - common).empty? || Firefox::Binary.version > 43
+            !(intersect - common).empty?
           end
 
           #
