@@ -23,6 +23,7 @@
 'use strict';
 
 var AdmZip = require('adm-zip'),
+    AdmConstants = require('adm-zip/util/constants'),
     fs = require('fs'),
     path = require('path'),
     util = require('util'),
@@ -403,6 +404,7 @@ Profile.prototype.encode = function() {
   return this.writeToDisk(true).then(function(dir) {
     var zip = new AdmZip();
     zip.addLocalFolder(dir, '');
+    zip.getEntries()[0].header.method = AdmConstants.STORED;
     return io.tmpFile().then(function(file) {
       zip.writeZip(file);  // Sync! Why oh why :-(
       return promise.checkedNodeCall(fs.readFile, file);

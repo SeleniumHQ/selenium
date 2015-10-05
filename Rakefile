@@ -50,7 +50,7 @@ end
 verbose($DEBUG)
 
 def version
-  "2.47.1"
+  "2.48.0"
 end
 ide_version = "2.8.0"
 
@@ -249,12 +249,12 @@ task :test_rb => [
   "//rb:firefox-test",
   "//rb:remote-test",
   "//rb:rc-client-integration-test",
- ("//rb:ie-test" if windows?),
- ("//rb:edge-test" if windows?),
   "//rb:chrome-test",
- ("//rb:safari-test" if mac?),
-  "//rb:phantomjs-test"
-].compact
+  "//rb:phantomjs-test",
+  ("//rb:safari-test" if mac?),
+  ("//rb:ie-test" if windows?),
+  ("//rb:edge-test" if windows?)
+     ].compact
 
 task :test_py => [ :py_prep_for_install_release, "//py:firefox_test:run" ]
 

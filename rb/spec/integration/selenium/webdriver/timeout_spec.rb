@@ -63,8 +63,6 @@ describe "Timeouts" do
       expect(driver.find_elements(:class_name => "redbox")).to be_empty
     end
 
-    # TODO - File bug with Microsoft - This should not return Not Found Error - {POST} /session/{sessionId}/elements
-    # It should be a list
     it "should return after first attempt to find many after disabling implicit waits" do
       add = driver.find_element(:id => "adder")
 

@@ -271,15 +271,16 @@ describe "Driver" do
         expect(result).to eq(3)
       end
 
-      # TODO - File Edge bug; this command returns status 21, should return status 28
-      it "times out if the callback is not invoked" do
-        expect {
-          # Script is expected to be async and explicitly callback, so this should timeout.
-          driver.execute_async_script "return 1 + 2;"
-        }.to raise_error(Selenium::WebDriver::Error::ScriptTimeOutError)
+      # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1849991/
+      not_compliant_on :browser => :edge do
+        it "times out if the callback is not invoked" do
+          expect {
+            # Script is expected to be async and explicitly callback, so this should timeout.
+            driver.execute_async_script "return 1 + 2;"
+          }.to raise_error(Selenium::WebDriver::Error::ScriptTimeOutError)
+        end
       end
     end
   end
 
 end
-

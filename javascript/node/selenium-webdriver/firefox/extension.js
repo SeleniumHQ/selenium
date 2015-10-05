@@ -69,7 +69,6 @@ function install(extension, dir) {
         return io.copy(extension, dst + '.xpi').then(returnId);
       } else {
         return checkedCall(fs.readFile, extension).then(function(buff) {
-          var zip = new AdmZip(buff);
           // TODO: find an async library for inflating a zip archive.
           new AdmZip(buff).extractAllTo(dst, true);
         }).then(returnId);
