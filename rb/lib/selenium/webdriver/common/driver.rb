@@ -52,6 +52,9 @@ module Selenium
                      else
                        Firefox::Bridge.new(opts)
                      end
+                   when :firefox_nightly
+                     Firefox::Binary.nightly_path
+                     Firefox::W3CBridge.new(opts)
                    when :remote
                      Remote::Bridge.new(opts)
                    when :ie, :internet_explorer

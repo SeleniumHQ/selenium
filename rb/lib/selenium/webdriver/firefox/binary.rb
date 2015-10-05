@@ -153,6 +153,16 @@ module Selenium
             `#{path} -v`.strip[/[^\s]*$/][/^\d+/].to_i
           end
 
+          def nightly_path
+            @path = case Platform.os
+                    when :macosx
+                      nightly_path = "/Applications/FirefoxNightly.app/Contents/MacOS/firefox-bin"
+                      nightly_path if File.exist?(nightly_path)
+                    when :windows
+                      Platform.find_in_program_files("\\Nightly\\firefox.exe")
+                    end
+          end
+
           private
 
           def windows_path
