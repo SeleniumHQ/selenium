@@ -72,7 +72,7 @@ module Selenium
         private
 
         def create_capabilities(opts)
-          caps = opts.delete(:desired_capabilities) { Remote::W3CCapabilities.edge }
+          caps = opts.delete(:desired_capabilities) { Remote::W3CCapabilities.firefox }
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
