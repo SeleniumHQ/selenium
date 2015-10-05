@@ -46,10 +46,9 @@ public class DefaultDriverSessions implements DriverSessions {
 
   private static List<DriverProvider> defaultDriverProviders =
     new ImmutableList.Builder<DriverProvider>()
+      .add(new FirefoxDriverProvider())
       .add(new DefaultDriverProvider(DesiredCapabilities.chrome(),
                                      "org.openqa.selenium.chrome.ChromeDriver"))
-      .add(new DefaultDriverProvider(DesiredCapabilities.firefox(),
-                                     "org.openqa.selenium.firefox.FirefoxDriver"))
       .add(new DefaultDriverProvider(DesiredCapabilities.internetExplorer(),
                                      "org.openqa.selenium.ie.InternetExplorerDriver"))
       .add(new DefaultDriverProvider(DesiredCapabilities.edge(),
