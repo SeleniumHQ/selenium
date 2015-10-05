@@ -70,7 +70,7 @@ namespace OpenQA.Selenium.HTML5
         /// <summary>
         /// Retuns string represenation for current location.
         /// </summary>
-        /// <returns>Returns <see cref="String">string</see> reprsentation for current location.</returns>
+        /// <returns>Returns <see cref="string">string</see> reprsentation for current location.</returns>
         public override string ToString()
         {
             return string.Format("Latitude: {0}, Longitude: {1}, Altitude: {2}", latitude, longitude, altitude);

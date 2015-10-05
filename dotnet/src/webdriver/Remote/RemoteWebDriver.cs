@@ -915,8 +915,9 @@ namespace OpenQA.Selenium.Remote
         /// <param name="desiredCapabilities">Capabilities of the browser</param>
         protected void StartSession(ICapabilities desiredCapabilities)
         {
+            DesiredCapabilities capabilitiesObject = desiredCapabilities as DesiredCapabilities;
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("desiredCapabilities", desiredCapabilities);
+            parameters.Add("desiredCapabilities", capabilitiesObject.CapabilitiesDictionary);
             Response response = this.Execute(DriverCommand.NewSession, parameters);
 
             Dictionary<string, object> rawCapabilities = (Dictionary<string, object>)response.Value;
