@@ -35,10 +35,14 @@ If you have `pip <http://www.pip-installer.org>`_ on your system, you can simply
     pip install -U selenium
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Alternately, you can download the source distribution from `PyPI <http://pypi.python.org/pypi/selenium>`_ (e.g. selenium-2.48.tar.gz), unarchive it, and run::
 =======
 Alternately, you can download the source distribution from `PyPI <http://pypi.python.org/pypi/selenium>`_ (e.g. selenium-2.47.tar.gz), unarchive it, and run::
 >>>>>>> Bump python to 2.47
+=======
+Alternately, you can download the source distribution from `PyPI <http://pypi.python.org/pypi/selenium>`_ (e.g. selenium-2.48.tar.gz), unarchive it, and run::
+>>>>>>> Bump Python version to 2.48. Changelog for Python Updated
 
     python setup.py install
 
@@ -111,6 +115,7 @@ However, to use Selenium Webdriver Remote or the legacy Selenium API (Selenium-R
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 Download the server separately, from: http://selenium-release.storage.googleapis.com/2.48/selenium-server-standalone-2.48.0.jar
 
 Run the server from the command line::
@@ -130,6 +135,13 @@ Run the server from the command line::
 
     java -jar selenium-server-standalone-2.47.1.jar
 >>>>>>> python point release bump 2.47.2
+=======
+Download the server separately, from: http://selenium-release.storage.googleapis.com/2.48/selenium-server-standalone-2.48.0.jar
+
+Run the server from the command line::
+
+    java -jar selenium-server-standalone-2.48.8.jar
+>>>>>>> Bump Python version to 2.48. Changelog for Python Updated
 
 Then run your Python client scripts.
 
