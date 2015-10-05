@@ -40,6 +40,12 @@ public class TerseFormatter extends Formatter {
    */
   private static final String SUFFIX = " - ";
 
+  /**
+   * Line separator string.  This is the value of the line.separator
+   * property at the moment that the TerseFormatter was created.
+   */
+  private final String lineSeparator = System.getProperty("line.separator");
+
   /*
    * DGF - These have to be compile time constants to be used with switch
    */
@@ -83,7 +89,7 @@ public class TerseFormatter extends Formatter {
       buffer.append(record.getLoggerName());
     }
     buffer.append(SUFFIX);
-    buffer.append(formatMessage(record)).append('\n');
+    buffer.append(formatMessage(record)).append(lineSeparator);
     if (record.getThrown() != null) {
       final StringWriter trace = new StringWriter();
       record.getThrown().printStackTrace(new PrintWriter(trace));
