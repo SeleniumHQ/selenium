@@ -18,35 +18,46 @@
 
 package org.openqa.selenium.support.events.internal;
 
+import java.lang.reflect.Proxy;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Keyboard;
-import org.openqa.selenium.support.events.WebDriverEventListener;
+import org.openqa.selenium.support.events.EventFiringInvocationHandler;
+import org.openqa.selenium.support.events.listeners.KeyboardEventListener;
 
 /**
  * A keyboard firing events.
  */
 public class EventFiringKeyboard implements Keyboard {
   private final WebDriver driver;
-  private final WebDriverEventListener dispatcher;
+  private final KeyboardEventListener dispatcher;
   private final Keyboard keyboard;
 
-  public EventFiringKeyboard(WebDriver driver, WebDriverEventListener dispatcher) {
+  public EventFiringKeyboard(WebDriver driver, KeyboardEventListener dispatcher) {
     this.driver = driver;
     this.dispatcher = dispatcher;
-    this.keyboard = ((HasInputDevices) this.driver).getKeyboard();
-
+    this.keyboard = (Keyboard) Proxy.newProxyInstance(Keyboard.class
+        .getClassLoader(), new Class[] { Keyboard.class },
+        new EventFiringInvocationHandler(dispatcher, driver,
+            ((HasInputDevices) this.driver).getKeyboard()));
   }
 
   public void sendKeys(CharSequence... keysToSend) {
+    dispatcher.beforeSendKeys(driver, keysToSend);
     keyboard.sendKeys(keysToSend);
+    dispatcher.afterSendKeys(driver, keysToSend);
   }
 
   public void pressKey(CharSequence keyToPress) {
+    dispatcher.beforePressdKey(driver, keyToPress);
     keyboard.pressKey(keyToPress);
+    dispatcher.afterPressKey(driver, keyToPress);
   }
 
   public void releaseKey(CharSequence keyToRelease) {
+    dispatcher.beforeReleaseKey(driver, keyToRelease);
     keyboard.releaseKey(keyToRelease);
+    dispatcher.afterReleaseKey(driver, keyToRelease);
   }
 }

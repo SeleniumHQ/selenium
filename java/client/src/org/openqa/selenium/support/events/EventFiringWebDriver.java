@@ -39,10 +39,20 @@ import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.logging.Logs;
+import org.openqa.selenium.security.Credentials;
 import org.openqa.selenium.support.events.internal.EventFiringKeyboard;
 import org.openqa.selenium.support.events.internal.EventFiringMouse;
 import org.openqa.selenium.support.events.internal.EventFiringTouch;
-
+import org.openqa.selenium.support.events.listeners.AlertEventListener;
+import org.openqa.selenium.support.events.listeners.ElementEventListener;
+import org.openqa.selenium.support.events.listeners.JavaScriptEventListener;
+import org.openqa.selenium.support.events.listeners.KeyboardEventListener;
+import org.openqa.selenium.support.events.listeners.ListensToException;
+import org.openqa.selenium.support.events.listeners.MouseEventListener;
+import org.openqa.selenium.support.events.listeners.NavigationEventListener;
+import org.openqa.selenium.support.events.listeners.SearchingEventListener;
+import org.openqa.selenium.support.events.listeners.TouchEventLitener;
+import org.openqa.selenium.support.events.listeners.WindowEventListener;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -57,56 +67,76 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * A wrapper around an arbitrary {@link WebDriver} instance which supports registering of a
- * {@link WebDriverEventListener}, e&#46;g&#46; for logging purposes.
+ * A wrapper around an arbitrary {@link WebDriver} instance which supports
+ * registering of a {@link }, {@link AlertEventListener},
+ * {@link ElementEventListener}, {@link JavaScriptEventListener},
+ * {@link KeyboardEventListener}, {@link ListensToException},
+ * {@link NavigationEventListener}, {@link SearchingEventListener},
+ * {@link WindowEventListener}, {@link MouseEventListener},
+ * {@link TouchEventLitener} e&#46;g&#46; for logging purposes.
  */
-public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, TakesScreenshot,
-    WrapsDriver, HasInputDevices, HasTouchScreen {
+public class EventFiringWebDriver implements WebDriver, JavascriptExecutor,
+    TakesScreenshot, WrapsDriver, HasInputDevices, HasTouchScreen {
 
   private final WebDriver driver;
+  private static final List<Class<?>> LISTENERS = new ArrayList<Class<?>>() {
+    private static final long serialVersionUID = 1L;
+    {
+      add(AlertEventListener.class);
+      add(ElementEventListener.class);
+      add(JavaScriptEventListener.class);
+      add(KeyboardEventListener.class);
+      add(ListensToException.class);
+      add(NavigationEventListener.class);
+      add(SearchingEventListener.class);
+      add(WindowEventListener.class);
+      add(MouseEventListener.class);
+      add(TouchEventLitener.class);
+    }
+  };
+  private static final String WRAPS_DRIVER_METHOD = "getWrappedDriver";
 
-  private final List<WebDriverEventListener> eventListeners =
-      new ArrayList<>();
-  private final WebDriverEventListener dispatcher = (WebDriverEventListener) Proxy
-      .newProxyInstance(
-          WebDriverEventListener.class.getClassLoader(),
-          new Class[] {WebDriverEventListener.class},
-          new InvocationHandler() {
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-              try {
-              for (WebDriverEventListener eventListener : eventListeners) {
+  private final List<Object> eventListeners = new ArrayList<>();
+  private final Object dispatcher = Proxy.newProxyInstance(
+      ListensToException.class.getClassLoader(),
+      LISTENERS.toArray(new Class<?>[] {}), new InvocationHandler() {
+        public Object invoke(Object proxy, Method method, Object[] args)
+            throws Throwable {
+          try {
+            for (Object eventListener : eventListeners) {
+              if (method.getDeclaringClass().isAssignableFrom(
+                  eventListener.getClass()))
                 method.invoke(eventListener, args);
-              }
-              return null;
-              } catch (InvocationTargetException e){
-                throw e.getTargetException();
-              }
             }
+          } catch (InvocationTargetException e) {
+            throw e.getTargetException();
           }
-      );
-
-  public EventFiringWebDriver(final WebDriver driver) {
-    Class<?>[] allInterfaces = extractInterfaces(driver);
-
-    this.driver = (WebDriver) Proxy.newProxyInstance(
-        WebDriverEventListener.class.getClassLoader(),
-        allInterfaces,
-        new InvocationHandler() {
-          public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            if ("getWrappedDriver".equals(method.getName())) {
-              return driver;
-            }
-
-            try {
-              return method.invoke(driver, args);
-            } catch (InvocationTargetException e) {
-              dispatcher.onException(e.getTargetException(), driver);
-              throw e.getTargetException();
-            }
-          }
+          return null;
         }
-        );
+      });
+
+  private <T extends Object> T castDispatcher(Class<T> target) {
+    return target.cast(dispatcher);
+  }
+
+  public EventFiringWebDriver(final WebDriver webDriver) {
+    Class<?>[] allInterfaces = extractInterfaces(webDriver);
+
+    this.driver = (WebDriver) Proxy.newProxyInstance(WebDriver.class
+        .getClassLoader(), allInterfaces, new EventFiringInvocationHandler(
+        castDispatcher(ListensToException.class), webDriver, webDriver) {
+      @Override
+      public Object invoke(Object proxy, Method method, Object[] args)
+          throws Throwable {
+        if (WrapsDriver.class.isAssignableFrom(method.getDeclaringClass()) 
+            && method.getName().equals(WRAPS_DRIVER_METHOD))
+          return webDriver;
+        return super.invoke(proxy, method, args);
+      }
+    });
   }
 
   private Class<?>[] extractInterfaces(Object object) {
@@ -132,9 +162,21 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
 
   /**
    * @param eventListener the event listener to register
+   * It is strongly recommended to pass through this method instances
+   * of classes which implement one/few of these interfaces:</br> -
+   * {@link AlertEventListener} </br> - {@link ElementEventListener}
+   * </br> - {@link JavaScriptEventListener}</br> -
+   * {@link KeyboardEventListener}</br> - {@link ListensToException}
+   * </br> - {@link NavigationEventListener}</br> -
+   * {@link SearchingEventListener}</br> - {@link WindowEventListener}
+   * </br> - {@link MouseEventListener}</br> -
+   * {@link TouchEventLitener}</br> </br></br>or
+   * {@link WebDriverEventListener} which already combines some from
+   * the list above.
    * @return this for method chaining.
    */
-  public EventFiringWebDriver register(WebDriverEventListener eventListener) {
+  public EventFiringWebDriver register(Object eventListener) {
+    checkNotNull(eventListener);
     eventListeners.add(eventListener);
     return this;
   }
@@ -143,11 +185,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
    * @param eventListener the event listener to unregister
    * @return this for method chaining.
    */
-  public EventFiringWebDriver unregister(WebDriverEventListener eventListener) {
+  public EventFiringWebDriver unregister(Object eventListener) {
     eventListeners.remove(eventListener);
     return this;
   }
-
 
   public WebDriver getWrappedDriver() {
     if (driver instanceof WrapsDriver) {
@@ -158,9 +199,9 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   }
 
   public void get(String url) {
-    dispatcher.beforeNavigateTo(url, driver);
+    castDispatcher(NavigationEventListener.class).beforeNavigateTo(url, driver);
     driver.get(url);
-    dispatcher.afterNavigateTo(url, driver);
+    castDispatcher(NavigationEventListener.class).afterNavigateTo(url, driver);
   }
 
   public String getCurrentUrl() {
@@ -172,9 +213,9 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   }
 
   public List<WebElement> findElements(By by) {
-    dispatcher.beforeFindBy(by, null, driver);
+    castDispatcher(SearchingEventListener.class).beforeFindBy(by, null, driver);
     List<WebElement> temp = driver.findElements(by);
-    dispatcher.afterFindBy(by, null, driver);
+    castDispatcher(SearchingEventListener.class).afterFindBy(by, null, driver);
     List<WebElement> result = new ArrayList<>(temp.size());
     for (WebElement element : temp) {
       result.add(createWebElement(element));
@@ -183,9 +224,9 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   }
 
   public WebElement findElement(By by) {
-    dispatcher.beforeFindBy(by, null, driver);
+    castDispatcher(SearchingEventListener.class).beforeFindBy(by, null, driver);
     WebElement temp = driver.findElement(by);
-    dispatcher.afterFindBy(by, null, driver);
+    castDispatcher(SearchingEventListener.class).afterFindBy(by, null, driver);
     return createWebElement(temp);
   }
 
@@ -194,7 +235,9 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   }
 
   public void close() {
+    castDispatcher(WindowEventListener.class).beforeWindowIsClosed(driver);
     driver.close();
+    castDispatcher(WindowEventListener.class).afterWindowIsClosed(driver);
   }
 
   public void quit() {
@@ -211,10 +254,12 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
 
   public Object executeScript(String script, Object... args) {
     if (driver instanceof JavascriptExecutor) {
-      dispatcher.beforeScript(script, driver);
+      castDispatcher(JavaScriptEventListener.class)
+          .beforeScript(script, driver);
       Object[] usedArgs = unpackWrappedArgs(args);
-      Object result = ((JavascriptExecutor) driver).executeScript(script, usedArgs);
-      dispatcher.afterScript(script, driver);
+      Object result = ((JavascriptExecutor) driver).executeScript(script,
+          usedArgs);
+      castDispatcher(JavaScriptEventListener.class).afterScript(script, driver);
       return result;
     }
     throw new UnsupportedOperationException(
@@ -223,10 +268,12 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
 
   public Object executeAsyncScript(String script, Object... args) {
     if (driver instanceof JavascriptExecutor) {
-      dispatcher.beforeScript(script, driver);
+      castDispatcher(JavaScriptEventListener.class)
+          .beforeScript(script, driver);
       Object[] usedArgs = unpackWrappedArgs(args);
-      Object result = ((JavascriptExecutor) driver).executeAsyncScript(script, usedArgs);
-      dispatcher.afterScript(script, driver);
+      Object result = ((JavascriptExecutor) driver).executeAsyncScript(script,
+          usedArgs);
+      castDispatcher(JavaScriptEventListener.class).afterScript(script, driver);
       return result;
     }
     throw new UnsupportedOperationException(
@@ -234,7 +281,8 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   }
 
   private Object[] unpackWrappedArgs(Object... args) {
-    // Walk the args: the various drivers expect unpacked versions of the elements
+    // Walk the args: the various drivers expect unpacked versions of the
+    // elements
     Object[] usedArgs = new Object[args.length];
     for (int i = 0; i < args.length; i++) {
       usedArgs[i] = unpackWrappedElement(args[i]);
@@ -291,61 +339,123 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
 
   public Keyboard getKeyboard() {
     if (driver instanceof HasInputDevices) {
-      return new EventFiringKeyboard(driver, dispatcher);
+      return new EventFiringKeyboard(driver,
+          castDispatcher(KeyboardEventListener.class));
     } else {
-      throw new UnsupportedOperationException("Underlying driver does not implement advanced"
-          + " user interactions yet.");
+      throw new UnsupportedOperationException(
+          "Underlying driver does not implement advanced"
+              + " user interactions yet.");
     }
   }
 
   public Mouse getMouse() {
     if (driver instanceof HasInputDevices) {
-      return new EventFiringMouse(driver, dispatcher);
+      return new EventFiringMouse(driver,
+          castDispatcher(MouseEventListener.class));
     } else {
-      throw new UnsupportedOperationException("Underlying driver does not implement advanced"
-          + " user interactions yet.");
+      throw new UnsupportedOperationException(
+          "Underlying driver does not implement advanced"
+              + " user interactions yet.");
     }
   }
 
   public TouchScreen getTouch() {
     if (driver instanceof HasTouchScreen) {
-      return new EventFiringTouch(driver, dispatcher);
+      return new EventFiringTouch(driver,
+          castDispatcher(TouchEventLitener.class));
     } else {
-      throw new UnsupportedOperationException("Underlying driver does not implement advanced"
-          + " user interactions yet.");
+      throw new UnsupportedOperationException(
+          "Underlying driver does not implement advanced"
+              + " user interactions yet.");
     }
   }
 
-  private class EventFiringWebElement implements WebElement, WrapsElement, WrapsDriver, Locatable {
+  private class EventFiringAlert implements Alert {
+    private final Alert alert;
+
+    public EventFiringAlert(Alert alert) {
+      this.alert = (Alert) Proxy.newProxyInstance(Alert.class.getClassLoader(),
+          new Class[] { Alert.class }, new EventFiringInvocationHandler(
+              castDispatcher(ListensToException.class), driver, alert));
+    }
+
+    @Override
+    public void dismiss() {
+      castDispatcher(AlertEventListener.class)
+          .beforeAlertDismiss(driver, alert);
+      alert.dismiss();
+      castDispatcher(AlertEventListener.class).afterAlertDismiss(driver, alert);
+    }
+
+    @Override
+    public void accept() {
+      castDispatcher(AlertEventListener.class).beforeAlertAccept(driver, alert);
+      alert.accept();
+      castDispatcher(AlertEventListener.class).afterAlertAccept(driver, alert);
+    }
+
+    @Override
+    public String getText() {
+      return alert.getText();
+    }
+
+    @Override
+    public void sendKeys(String keysToSend) {
+      castDispatcher(AlertEventListener.class).beforeAlertSendKeys(driver,
+          alert, keysToSend);
+      alert.accept();
+      castDispatcher(AlertEventListener.class).afterAlertSendKeys(driver,
+          alert, keysToSend);
+    }
+
+    @Override
+    public void setCredentials(Credentials credentials) {
+      castDispatcher(AlertEventListener.class).beforeAuthentication(driver,
+          alert, credentials);
+      alert.setCredentials(credentials);
+      castDispatcher(AlertEventListener.class).afterAuthentication(driver,
+          alert, credentials);
+    }
+
+    @Override
+    public void authenticateUsing(Credentials credentials) {
+      castDispatcher(AlertEventListener.class).beforeAuthentication(driver,
+          alert, credentials);
+      alert.authenticateUsing(credentials);
+      castDispatcher(AlertEventListener.class).afterAuthentication(driver,
+          alert, credentials);
+    }
+
+  }
+
+  private class EventFiringWebElement implements WebElement, WrapsElement,
+      WrapsDriver, Locatable {
+    private static final String WRAPS_ELEMENT_METHOD = "getWrappedElement";
 
     private final WebElement element;
     private final WebElement underlyingElement;
 
-    private EventFiringWebElement(final WebElement element) {
-      this.element = (WebElement) Proxy.newProxyInstance(
-          WebDriverEventListener.class.getClassLoader(),
-          extractInterfaces(element),
-          new InvocationHandler() {
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-              if (method.getName().equals("getWrappedElement")) {
-                return element;
-              }
-              try {
-                return method.invoke(element, args);
-              } catch (InvocationTargetException e) {
-                dispatcher.onException(e.getTargetException(), driver);
-                throw e.getTargetException();
-              }
+    private EventFiringWebElement(final WebElement webElement) {
+      this.element = (WebElement) Proxy.newProxyInstance(WebElement.class
+          .getClassLoader(), extractInterfaces(webElement),
+          new EventFiringInvocationHandler(
+              castDispatcher(ListensToException.class), driver, webElement) {
+            @Override
+            public Object invoke(Object proxy, Method method, Object[] args)
+                throws Throwable {
+              if (WrapsElement.class.isAssignableFrom(method
+                  .getDeclaringClass()) && method.getName().equals(WRAPS_ELEMENT_METHOD))
+                return webElement;
+              return super.invoke(proxy, method, args);
             }
-          }
-          );
-      this.underlyingElement = element;
+          });
+      this.underlyingElement = webElement;
     }
 
     public void click() {
-      dispatcher.beforeClickOn(element, driver);
+      castDispatcher(ElementEventListener.class).beforeClickOn(element, driver);
       element.click();
-      dispatcher.afterClickOn(element, driver);
+      castDispatcher(ElementEventListener.class).afterClickOn(element, driver);
     }
 
     public void submit() {
@@ -353,15 +463,19 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     }
 
     public void sendKeys(CharSequence... keysToSend) {
-      dispatcher.beforeChangeValueOf(element, driver);
+      castDispatcher(ElementEventListener.class).beforeChangeValueOf(element,
+          driver);
       element.sendKeys(keysToSend);
-      dispatcher.afterChangeValueOf(element, driver);
+      castDispatcher(ElementEventListener.class).afterChangeValueOf(element,
+          driver);
     }
 
     public void clear() {
-      dispatcher.beforeChangeValueOf(element, driver);
+      castDispatcher(ElementEventListener.class).beforeChangeValueOf(element,
+          driver);
       element.clear();
-      dispatcher.afterChangeValueOf(element, driver);
+      castDispatcher(ElementEventListener.class).afterChangeValueOf(element,
+          driver);
     }
 
     public String getTagName() {
@@ -401,16 +515,20 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     }
 
     public WebElement findElement(By by) {
-      dispatcher.beforeFindBy(by, element, driver);
+      castDispatcher(SearchingEventListener.class).beforeFindBy(by, element,
+          driver);
       WebElement temp = element.findElement(by);
-      dispatcher.afterFindBy(by, element, driver);
+      castDispatcher(SearchingEventListener.class).afterFindBy(by, element,
+          driver);
       return createWebElement(temp);
     }
 
     public List<WebElement> findElements(By by) {
-      dispatcher.beforeFindBy(by, element, driver);
+      castDispatcher(SearchingEventListener.class).beforeFindBy(by, element,
+          driver);
       List<WebElement> temp = element.findElements(by);
-      dispatcher.afterFindBy(by, element, driver);
+      castDispatcher(SearchingEventListener.class).afterFindBy(by, element,
+          driver);
       List<WebElement> result = new ArrayList<>(temp.size());
       for (WebElement element : temp) {
         result.add(createWebElement(element));
@@ -454,7 +572,8 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       return ((Locatable) underlyingElement).getCoordinates();
     }
 
-    public <X> X getScreenshotAs(OutputType<X> outputType) throws WebDriverException {
+    public <X> X getScreenshotAs(OutputType<X> outputType)
+        throws WebDriverException {
       return element.getScreenshotAs(outputType);
     }
   }
@@ -464,13 +583,18 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     private final WebDriver.Navigation navigation;
 
     EventFiringNavigation(Navigation navigation) {
-      this.navigation = navigation;
+      this.navigation = (Navigation) Proxy.newProxyInstance(Navigation.class
+          .getClassLoader(), new Class[] { Navigation.class },
+          new EventFiringInvocationHandler(
+              castDispatcher(ListensToException.class), driver, navigation));
     }
 
     public void to(String url) {
-      dispatcher.beforeNavigateTo(url, driver);
+      castDispatcher(NavigationEventListener.class).beforeNavigateTo(url,
+          driver);
       navigation.to(url);
-      dispatcher.afterNavigateTo(url, driver);
+      castDispatcher(NavigationEventListener.class)
+          .afterNavigateTo(url, driver);
     }
 
     public void to(URL url) {
@@ -478,15 +602,17 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     }
 
     public void back() {
-      dispatcher.beforeNavigateBack(driver);
+      castDispatcher(NavigationEventListener.class).beforeNavigateBack(driver);
       navigation.back();
-      dispatcher.afterNavigateBack(driver);
+      castDispatcher(NavigationEventListener.class).afterNavigateBack(driver);
     }
 
     public void forward() {
-      dispatcher.beforeNavigateForward(driver);
+      castDispatcher(NavigationEventListener.class).beforeNavigateForward(
+          driver);
       navigation.forward();
-      dispatcher.afterNavigateForward(driver);
+      castDispatcher(NavigationEventListener.class)
+          .afterNavigateForward(driver);
     }
 
     public void refresh() {
@@ -535,7 +661,8 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     }
 
     public ImeHandler ime() {
-      throw new UnsupportedOperationException("Driver does not support IME interactions");
+      throw new UnsupportedOperationException(
+          "Driver does not support IME interactions");
     }
 
     @Beta
@@ -605,7 +732,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     }
 
     public Alert alert() {
-      return targetLocator.alert();
+      return new EventFiringAlert(targetLocator.alert());
     }
   }
 
@@ -614,15 +741,26 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     private final Window window;
 
     EventFiringWindow(Window window) {
-      this.window = window;
+      this.window = (Window) Proxy.newProxyInstance(Window.class
+          .getClassLoader(), new Class[] { Window.class },
+          new EventFiringInvocationHandler(
+              castDispatcher(ListensToException.class), driver, window));
     }
 
     public void setSize(Dimension targetSize) {
+      castDispatcher(WindowEventListener.class).beforeWindowChangeSize(driver,
+          window, targetSize);
       window.setSize(targetSize);
+      castDispatcher(WindowEventListener.class).afterWindowChangeSize(driver,
+          window, targetSize);
     }
 
     public void setPosition(Point targetLocation) {
+      castDispatcher(WindowEventListener.class).beforeWindowIsMoved(driver,
+          window, targetLocation);
       window.setPosition(targetLocation);
+      castDispatcher(WindowEventListener.class).afterWindowIsMoved(driver,
+          window, targetLocation);
     }
 
     public Dimension getSize() {

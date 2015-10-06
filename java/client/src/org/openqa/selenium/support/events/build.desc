@@ -2,7 +2,7 @@
 java_library(name = "events",
   srcs = [
     "*.java",
-    "internal/*.java",
+    "internal/*.java","listeners/*.java"
   ],
   deps = [
     "//java/client/src/org/openqa/selenium:webdriver-api",
