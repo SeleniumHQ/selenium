@@ -44,8 +44,7 @@ public class TerseFormatter extends Formatter {
    * Line separator string.  This is the value of the line.separator
    * property at the moment that the TerseFormatter was created.
    */
-  private final String lineSeparator = java.security.AccessController.doPrivileged(
-      new sun.security.action.GetPropertyAction("line.separator"));
+  private final String lineSeparator = System.getProperty("line.separator");
 
   /*
    * DGF - These have to be compile time constants to be used with switch
