@@ -22,6 +22,9 @@ js_binary(name = 'selenium-atoms',
   flags = [
     '--define=goog.NATIVE_ARRAY_PROTOTYPES=false',
   ],
+  visibility = [
+    '//javascript/selenium-core:atoms.js',
+  ],
 )
 
 

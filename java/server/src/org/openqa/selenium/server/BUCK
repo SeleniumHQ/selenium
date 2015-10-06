@@ -24,6 +24,7 @@ java_library(name = 'server',
     '//java/server/src/org/openqa/selenium/remote/server:server',
     '//java/server/src/org/openqa/selenium/remote/server:sessions',
     '//java/server/src/org/openqa/selenium/remote/server/log:log',
+    ':selenium-core',
     '//third_party/java/commons-logging:commons-logging',
     '//third_party/java/guava-libraries:guava-libraries',
     '//third_party/java/gson:gson',
@@ -36,12 +37,16 @@ java_library(name = 'server',
   ],
 )
 
+prebuilt_jar(name = 'selenium-core',
+  binary_jar = '//javascript/selenium-core:selenium-core',
+)
+
 prebuilt_jar(name = 'resources',
   binary_jar = ':resources-zip',
 )
 
 zip_file(name = 'resources-zip',
-  out = 'resources.jar',
+  out = 'resources-sources.jar',
   srcs = [
     'VERSION.txt',
   ] + glob([
