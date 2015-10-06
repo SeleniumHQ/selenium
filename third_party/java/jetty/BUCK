@@ -16,6 +16,7 @@ java_library(
   visibility = [
     '//java/client/test/org/openqa/selenium/environment:environment',
     '//java/server/src/org/openqa/grid:grid',
+    '//java/server/test/com/thoughtworks/selenium/webdriven:webdriven',
   ],
 )
 
