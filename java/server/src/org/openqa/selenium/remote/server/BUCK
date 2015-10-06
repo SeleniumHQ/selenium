@@ -12,7 +12,9 @@ java_library(name = 'sessions',
     '//third_party/java/guava-libraries:guava-libraries',
   ],
   visibility = [
+    '//java/server/src/com/thoughtworks/selenium/webdriven:rc-emulation-servlet',
     '//java/server/src/org/openqa/selenium/server:server',
+    '//java/server/test/com/thoughtworks/selenium/webdriven:webdriven',
   ],
 )
 
@@ -57,7 +59,9 @@ java_library(name = 'server',
     '//third_party/java/servlet:servlet-api',
   ],
   visibility = [
+    '//java/server/src/com/thoughtworks/selenium/webdriven:rc-emulation-servlet',
     '//java/server/src/org/openqa/selenium/server:server',
+    '//java/server/test/com/thoughtworks/selenium/webdriven:webdriven',
   ],
 )
 

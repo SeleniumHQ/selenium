@@ -4,6 +4,11 @@ prebuilt_jar(name = 'servlet-api',
   visibility = [
     '//java/client/test/org/openqa/selenium/environment:environment',
 
+    # The standalone selenium server
+    '//java/server/src/com/thoughtworks/selenium/webdriven:rc-emulation-servlet',
+    '//java/server/test/com/thoughtworks/selenium/webdriven:webdriven',
+    '//java/server/src/org/openqa/selenium/remote/server:standalone-server-lib',
+
     # Everything under grid
     '//java/server/src/org/openqa/grid/...',
     '//java/server/src/org/openqa/selenium/remote/server:server',
