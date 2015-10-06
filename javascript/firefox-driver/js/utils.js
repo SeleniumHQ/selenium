@@ -153,7 +153,7 @@ Utils.initWebLoadingListener = function(respond, opt_window) {
   // Wait for the reload to finish before sending the response.
   new WebLoadingListener(browser, function(timedOut, opt_stopWaiting) {
     // Reset to the top window.
-    respond.session.setWindow(topWindow);
+    respond.session.setWindow(browser.contentWindow);
     if (opt_stopWaiting) {
       respond.session.setWaitForPageLoad(false);
     }
