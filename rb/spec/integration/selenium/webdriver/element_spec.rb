@@ -27,7 +27,7 @@ describe "Element" do
   end
 
   # Marionette BUG - AutomatedTester: "known bug with execute script"
-  not_compliant_on :w3c => true do
+  not_compliant_on :driver => :wires do
     it "should submit" do
       driver.navigate.to url_for("formPage.html")
       driver.find_element(:id, "submitButton").submit
@@ -54,7 +54,7 @@ describe "Element" do
   # PhantomJS on windows issue: https://github.com/ariya/phantomjs/issues/10993
   not_compliant_on({:browser => [:android, :iphone, :safari, :edge]},
                    {:browser => :phantomjs, :platform => :windows},
-                   {:w3c => true}) do
+                   {:driver => :wires}) do
     it "should handle file uploads" do
       driver.navigate.to url_for("formPage.html")
 
@@ -132,7 +132,7 @@ describe "Element" do
   end
 
   # Location not currently supported in Spec, but should be?
-  not_compliant_on :w3c => true do
+  not_compliant_on :driver => :wires do
     it "should get location" do
       driver.navigate.to url_for("xhtmlTest.html")
       loc = driver.find_element(:class, "header").location
@@ -155,7 +155,7 @@ describe "Element" do
   # Marionette BUG:
   # GET /session/f7082a32-e685-2843-ad2c-5bb6f376dac5/element/b6ff4468-ed6f-7c44-be4b-ca5a3ea8bf26/size
   # did not match a known command"
-  not_compliant_on :w3c => true do
+  not_compliant_on :driver => :wires do
     it "should get size" do
       driver.navigate.to url_for("xhtmlTest.html")
       size = driver.find_element(:class, "header").size

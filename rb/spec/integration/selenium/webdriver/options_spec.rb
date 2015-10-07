@@ -24,7 +24,7 @@ module Selenium
     describe Options do
 
       # Not supported in W3C Spec
-      not_compliant_on :w3c => true do
+      not_compliant_on :driver => :wires do
         describe 'logs' do
           compliant_on :driver => [:firefox] do
             it 'can fetch available log types' do
@@ -86,7 +86,7 @@ module Selenium
 
           # Marionette BUG - Failed to convert expiry to Date
           not_compliant_on({:browser => [:ie, :android, :iphone, :safari]},
-                           {:w3c => true}) do
+                           {:driver => :wires}) do
             it "should use DateTime for expires" do
               driver.navigate.to url_for("xhtmlTest.html")
 
