@@ -17,18 +17,22 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require_relative '../spec_helper'
+
 module Selenium
   module WebDriver
     module Firefox
 
-      describe Driver do
-        describe ".new" do
-          it "should take a Firefox::Profile instance as argument" do
-            begin
-              profile = Selenium::WebDriver::Firefox::Profile.new
-              driver = Selenium::WebDriver.for :firefox, :profile => profile
-            ensure
-              driver.quit if driver
+      compliant_on :driver => :firefox do
+        describe Driver do
+          describe ".new" do
+            it "should take a Firefox::Profile instance as argument" do
+              begin
+                profile = Selenium::WebDriver::Firefox::Profile.new
+                driver = Selenium::WebDriver.for :firefox, :profile => profile
+              ensure
+                driver.quit if driver
+              end
             end
           end
         end

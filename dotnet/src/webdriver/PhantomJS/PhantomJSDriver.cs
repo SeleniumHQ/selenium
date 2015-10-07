@@ -151,7 +151,7 @@ namespace OpenQA.Selenium.PhantomJS
         {
             // Add the custom commandInfo of PhantomJSDriver
             CommandInfo commandInfo = new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/phantom/execute");
-            CommandInfoRepository.Instance.TryAddCommand(CommandExecutePhantomScript, commandInfo);
+            this.CommandExecutor.CommandInfoRepository.TryAddCommand(CommandExecutePhantomScript, commandInfo);
         }
 
         /// <summary>

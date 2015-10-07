@@ -74,7 +74,15 @@ namespace OpenQA.Selenium.Remote
         public void SendKeys(string keysToSend)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("text", keysToSend);
+            if (this.driver.IsSpecificationCompliant)
+            {
+                parameters.Add("message", keysToSend);
+            }
+            else
+            {
+                parameters.Add("text", keysToSend);
+            }
+
             this.driver.InternalExecute(DriverCommand.SetAlertValue, parameters);
         }
 

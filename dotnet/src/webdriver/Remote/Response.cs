@@ -51,7 +51,7 @@ namespace OpenQA.Selenium.Remote
             }
         }
 
-        private Response(Dictionary<string, object> rawResponse)
+        private Response(Dictionary<string, object> rawResponse, int protocolSpecLevel)
         {
             if (rawResponse.ContainsKey("sessionId"))
             {
@@ -61,14 +61,40 @@ namespace OpenQA.Selenium.Remote
                 }
             }
 
-            if (rawResponse.ContainsKey("status"))
-            {
-                this.responseStatus = (WebDriverResult)Convert.ToInt32(rawResponse["status"]);
-            }
-
             if (rawResponse.ContainsKey("value"))
             {
                 this.responseValue = rawResponse["value"];
+            }
+
+            if (protocolSpecLevel > 0)
+            {
+                // If the returned object does *not* have a "value" property,
+                // then the responseValue member of the response will be null.
+                if (this.responseValue == null)
+                {
+                    this.responseValue = rawResponse;
+                }
+
+                // Check for an error response by looking for an "error" property,
+                // and if found, convert to a numeric status code.
+                if (rawResponse.ContainsKey("error"))
+                {
+                    this.responseStatus = WebDriverError.ResultFromError(rawResponse["error"].ToString());
+                }
+            }
+            else
+            {
+                if (rawResponse.ContainsKey("status"))
+                {
+                    this.responseStatus = (WebDriverResult)Convert.ToInt32(rawResponse["status"], CultureInfo.InvariantCulture);
+                }
+
+                // Special-case for the new session command, in the case where
+                // the remote end is using the W3C dialect of the protocol.
+                if (rawResponse.ContainsKey("capabilities"))
+                {
+                    this.responseValue = rawResponse["capabilities"];
+                }
             }
         }
 
@@ -106,8 +132,20 @@ namespace OpenQA.Selenium.Remote
         /// <returns>A <see cref="Response"/> object described by the JSON string.</returns>
         public static Response FromJson(string value)
         {
+            return Response.FromJson(value, 0);
+        }
+
+        /// <summary>
+        /// Returns a new <see cref="Response"/> from a JSON-encoded string.
+        /// </summary>
+        /// <param name="value">The JSON string to deserialize into a <see cref="Response"/>.</param>
+        /// <param name="protocolSpecLevel">The specification level of the protocol from which to
+        /// create the response.</param>
+        /// <returns>A <see cref="Response"/> object described by the JSON string.</returns>
+        public static Response FromJson(string value, int protocolSpecLevel)
+        {
             Dictionary<string, object> deserializedResponse = JsonConvert.DeserializeObject<Dictionary<string, object>>(value, new ResponseValueJsonConverter());
-            Response response = new Response(deserializedResponse);
+            Response response = new Response(deserializedResponse, protocolSpecLevel);
             return response;
         }
 

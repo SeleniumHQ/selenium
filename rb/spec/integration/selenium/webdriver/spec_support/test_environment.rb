@@ -35,8 +35,9 @@ module Selenium
 
         def browser
           if driver == :remote
-            # TODO: get rid of ENV
             (ENV['WD_REMOTE_BROWSER'] || :firefox).to_sym
+          elsif driver == :wires
+            :firefox
           else
             driver
           end
@@ -126,6 +127,8 @@ module Selenium
                        create_remote_driver
                      when :firefox
                        create_firefox_driver
+                     when :wires
+                       create_wires_driver
                      when :chrome
                        create_chrome_driver
                      when :iphone
@@ -186,6 +189,10 @@ module Selenium
           else
             WebDriver::Driver.for :firefox
           end
+        end
+
+        def create_wires_driver
+          WebDriver::Driver.for :firefox, {wires: true}
         end
 
         def create_chrome_driver

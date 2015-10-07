@@ -206,18 +206,15 @@ module Selenium
         MoveTargetOutOfBoundsError      # 34
       ]
 
-      # aliased for backwards compatibility
-      ObsoleteElementError      = StaleElementReferenceError
-      UnhandledError            = UnknownError
-      UnexpectedJavascriptError = JavascriptError
-      NoAlertOpenError          = NoAlertPresentError
-      ElementNotDisplayedError  = ElementNotVisibleError
-
       class << self
         def for_code(code)
           return if [nil, 0].include? code
+          return Errors[code - 1] if code.is_a? Fixnum
 
-          Errors[code - 1] || WebDriverError
+          klass_name = code.split(' ').map(&:capitalize).join
+          Error.const_get("#{klass_name}Error")
+        rescue NameError
+          WebDriverError
         end
       end
 

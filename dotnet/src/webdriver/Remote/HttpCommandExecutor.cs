@@ -36,6 +36,7 @@ namespace OpenQA.Selenium.Remote
         private Uri remoteServerUri;
         private TimeSpan serverResponseTimeout;
         private bool enableKeepAlive;
+        private CommandInfoRepository commandInfoRepository = new WebDriverWireProtocolCommandInfoRepository();
 
         /// <summary>
         /// Initializes a new instance of the HttpCommandExecutor class
@@ -45,6 +46,14 @@ namespace OpenQA.Selenium.Remote
         public HttpCommandExecutor(Uri addressOfRemoteServer, TimeSpan timeout)
             : this(addressOfRemoteServer, timeout, true)
         {
+        }
+
+        /// <summary>
+        /// Gets the repository of objects containin information about commands.
+        /// </summary>
+        public CommandInfoRepository CommandInfoRepository
+        {
+            get { return this.commandInfoRepository; }
         }
 
         /// <summary>
@@ -95,7 +104,7 @@ namespace OpenQA.Selenium.Remote
                 throw new ArgumentNullException("commandToExecute", "commandToExecute cannot be null");
             }
 
-            CommandInfo info = CommandInfoRepository.Instance.GetCommandInfo(commandToExecute.Name);
+            CommandInfo info = this.commandInfoRepository.GetCommandInfo(commandToExecute.Name);
             HttpWebRequest request = info.CreateWebRequest(this.remoteServerUri, commandToExecute);
             request.Timeout = (int)this.serverResponseTimeout.TotalMilliseconds;
             request.Accept = RequestAcceptHeader;
@@ -112,6 +121,30 @@ namespace OpenQA.Selenium.Remote
             }
 
             Response toReturn = this.CreateResponse(request);
+            if (commandToExecute.Name == DriverCommand.NewSession)
+            {
+                // If we are creating a new session, sniff the response to determine
+                // what protocol level we are using. If the response contains a
+                // capability called "specificationLevel" that's an integer value
+                // and that's greater than 0, that means we're using the W3C protocol
+                // dialect.
+                // TODO(jimevans): Reverse this test to make it the default path when
+                // most remote ends speak W3C, then remove it entirely when legacy
+                // protocol is phased out.
+                Dictionary<string, object> capabilities = toReturn.Value as Dictionary<string, object>;
+                if (capabilities != null)
+                {
+                    if (capabilities.ContainsKey("specificationLevel"))
+                    {
+                        int returnedSpecLevel = Convert.ToInt32(capabilities["specificationLevel"]);
+                        if (returnedSpecLevel > 0)
+                        {
+                            this.commandInfoRepository = new W3CWireProtocolCommandInfoRepository();
+                        }
+                    }
+                }
+            }
+
             return toReturn;
         }
 
@@ -165,14 +198,14 @@ namespace OpenQA.Selenium.Remote
                 string responseString = GetTextOfWebResponse(webResponse);
                 if (webResponse.ContentType != null && webResponse.ContentType.StartsWith(JsonMimeType, StringComparison.OrdinalIgnoreCase))
                 {
-                    commandResponse = Response.FromJson(responseString);
+                    commandResponse = Response.FromJson(responseString, this.commandInfoRepository.SpecificationLevel);
                 }
                 else
                 {
                     commandResponse.Value = responseString;
                 }
 
-                if (webResponse.StatusCode < HttpStatusCode.OK || webResponse.StatusCode >= HttpStatusCode.BadRequest)
+                if (this.commandInfoRepository.SpecificationLevel < 1 && (webResponse.StatusCode < HttpStatusCode.OK || webResponse.StatusCode >= HttpStatusCode.BadRequest))
                 {
                     // 4xx represents an unknown command or a bad request.
                     if (webResponse.StatusCode >= HttpStatusCode.BadRequest && webResponse.StatusCode < HttpStatusCode.InternalServerError)

@@ -632,7 +632,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {PHANTOMJS})
+  @Ignore(value = {PHANTOMJS, MARIONETTE})
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testGenerateKeyPressEventEvenWhenElementPreventsDefault() {

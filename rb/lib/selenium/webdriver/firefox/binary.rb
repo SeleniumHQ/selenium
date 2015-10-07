@@ -149,6 +149,19 @@ module Selenium
             @path
           end
 
+          def version
+            @version = case Platform.os
+                         when :macosx
+                           `#{path} -v`.strip[/[^\s]*$/][/^\d+/].to_i
+                         when :windows
+                           `\"#{path}\" -v | more`.strip[/[^\s]*$/][/^\d+/].to_i
+                         when :linux
+                           `#{path} -v`.strip[/[^\s]*$/][/^\d+/].to_i
+                         else
+                           0
+                         end
+          end
+
           private
 
           def windows_path

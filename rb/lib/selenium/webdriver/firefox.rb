@@ -28,6 +28,9 @@ require 'selenium/webdriver/firefox/profiles_ini'
 require 'selenium/webdriver/firefox/profile'
 require 'selenium/webdriver/firefox/launcher'
 require 'selenium/webdriver/firefox/bridge'
+require 'selenium/webdriver/firefox/w3c_bridge'
+require 'selenium/webdriver/firefox/binary'
+require 'selenium/webdriver/firefox/service'
 
 module Selenium
   module WebDriver

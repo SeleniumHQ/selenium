@@ -21,8 +21,6 @@ module Selenium
   module WebDriver
     module Remote
 
-      COMMANDS = {}
-
       #
       # Low level bridge to the remote server, through which the rest of the API works.
       #
@@ -31,6 +29,8 @@ module Selenium
 
       class Bridge
         include BridgeHelper
+
+        COMMANDS = {}
 
         #
         # Defines a wrapper method for a command, which ultimately calls #execute.

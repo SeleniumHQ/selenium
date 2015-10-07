@@ -166,13 +166,42 @@ namespace OpenQA.Selenium.Firefox
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FirefoxDriver"/> class using the specified options. Uses the Mozilla-provided Marionette driver implementation.
+        /// </summary>
+        /// <param name="options">The <see cref="FirefoxOptions"/> to be used with the Firefox driver.</param>
+        public FirefoxDriver(FirefoxOptions options)
+            : this(FirefoxDriverService.CreateDefaultService(), options, RemoteWebDriver.DefaultCommandTimeout)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FirefoxDriver"/> class using the specified driver service. Uses the Mozilla-provided Marionette driver implementation.
+        /// </summary>
+        /// <param name="service">The <see cref="FirefoxDriverService"/> used to initialize the driver.</param>
+        public FirefoxDriver(FirefoxDriverService service)
+            : this(service, new FirefoxOptions(), RemoteWebDriver.DefaultCommandTimeout)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FirefoxDriver"/> class using the specified options, driver service, and timeout. Uses the Mozilla-provided Marionette driver implementation.
+        /// </summary>
+        /// <param name="service">The <see cref="FirefoxDriverService"/> to use.</param>
+        /// <param name="options">The <see cref="FirefoxOptions"/> to be used with the Firefox driver.</param>
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        public FirefoxDriver(FirefoxDriverService service, FirefoxOptions options, TimeSpan commandTimeout)
+            : base(new DriverServiceCommandExecutor(service, commandTimeout), options.ToCapabilities())
+        {
+        }
+        #endregion
+
         private FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, ICapabilities capabilities, TimeSpan commandTimeout)
             : base(CreateExtensionConnection(binary, profile, commandTimeout), RemoveUnneededCapabilities(capabilities))
         {
             this.binary = binary;
             this.profile = profile;
         }
-        #endregion
 
         #region Properties
         /// <summary>

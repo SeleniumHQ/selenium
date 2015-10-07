@@ -89,7 +89,7 @@ class WebDriver(RemoteWebDriver):
             # Happens if Firefox shutsdown before we've read the response from
             # the socket.
             pass
-        if "marionette" in self.capabilities and self.capabilities['marionette'] is True:
+        if "specificationLevel" in self.capabilities:
             self.service.stop()
         else:
             self.binary.kill()

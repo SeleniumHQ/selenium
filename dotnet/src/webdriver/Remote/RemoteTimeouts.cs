@@ -71,9 +71,17 @@ namespace OpenQA.Selenium.Remote
                 milliseconds = -1;
             }
 
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("ms", milliseconds);
-            this.driver.InternalExecute(DriverCommand.ImplicitlyWait, parameters);
+            if (this.driver.IsSpecificationCompliant)
+            {
+                this.ExecuteSetTimeout("implicit", timeToWait);
+            }
+            else
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters.Add("ms", milliseconds);
+                this.driver.InternalExecute(DriverCommand.ImplicitlyWait, parameters);
+            }
+
             return this;
         }
 

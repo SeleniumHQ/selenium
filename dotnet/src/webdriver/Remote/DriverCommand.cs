@@ -89,6 +89,11 @@ namespace OpenQA.Selenium.Remote
         public static readonly string GetAllCookies = "getCookies";
 
         /// <summary>
+        /// Represents getting cookie command
+        /// </summary>
+        public static readonly string GetCookie = "getCookie";
+
+        /// <summary>
         /// Represents deleting a cookie command
         /// </summary>        
         public static readonly string DeleteCookie = "deleteCookie";
@@ -137,6 +142,11 @@ namespace OpenQA.Selenium.Remote
         /// Represents SendKeysToElements command
         /// </summary>
         public static readonly string SendKeysToElement = "sendKeysToElement";
+
+        /// <summary>
+        /// Represents TapElement command
+        /// </summary>
+        public static readonly string TapElement = "tapElement";
 
         /// <summary>
         /// Represents SubmitElement command
@@ -239,9 +249,19 @@ namespace OpenQA.Selenium.Remote
         public static readonly string GetElementSize = "getElementSize";
 
         /// <summary>
+        /// Represents GetElementRect command
+        /// </summary>
+        public static readonly string GetElementRect = "getElementRect";
+
+        /// <summary>
         /// Represents GetElementAttribute command
         /// </summary>
         public static readonly string GetElementAttribute = "getElementAttribute";
+
+        /// <summary>
+        /// Represents GetElementProperty command
+        /// </summary>
+        public static readonly string GetElementProperty = "getElementProperty";
 
         /// <summary>
         /// Represents GetElementValueOfCSSProperty command
@@ -299,6 +319,11 @@ namespace OpenQA.Selenium.Remote
         public static readonly string MaximizeWindow = "maximizeWindow";
 
         /// <summary>
+        /// Represents FullScreenWindow command
+        /// </summary>
+        public static readonly string FullScreenWindow = "fullScreenWindow";
+
+        /// <summary>
         /// Represents the DismissAlert command
         /// </summary>
         public static readonly string DismissAlert = "dismissAlert";
@@ -337,6 +362,11 @@ namespace OpenQA.Selenium.Remote
         /// Represents the SetTimeout command
         /// </summary>
         public static readonly string SetTimeout = "setTimeout";
+
+        /// <summary>
+        /// Represents the Actions command.
+        /// </summary>
+        public static readonly string Actions = "actions";
 
         /// <summary>
         /// Represents the MouseClick command.
