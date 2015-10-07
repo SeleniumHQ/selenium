@@ -27,6 +27,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.openqa.selenium.support.ui.ExpectedConditions.elementSelectionStateToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
+import static org.openqa.selenium.support.ui.ExpectedConditions.numberOfWindowsToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.textToBePresentInElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.urlContains;
 import static org.openqa.selenium.support.ui.ExpectedConditions.urlMatches;
@@ -34,7 +35,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.urlToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElements;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
-import static org.openqa.selenium.support.ui.ExpectedConditions.numberOfwindowsToBe;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -451,7 +451,7 @@ public class ExpectedConditionsTest {
     Set<String> twoWindowHandles = Sets.newHashSet("w1", "w2");
     when(mockDriver.getWindowHandles()).thenReturn(twoWindowHandles);
 
-    assertTrue(wait.until(numberOfwindowsToBe(2)));
+    assertTrue(wait.until(numberOfWindowsToBe(2)));
   }
 
   @Test(expected = TimeoutException.class)
@@ -459,7 +459,7 @@ public class ExpectedConditionsTest {
     Set<String> threeWindowHandles = Sets.newHashSet("w1", "w2", "w3");
     when(mockDriver.getWindowHandles()).thenReturn(threeWindowHandles);
 
-    wait.until(numberOfwindowsToBe(2));
+    wait.until(numberOfWindowsToBe(2));
 
     // then TimeoutException is thrown
   }
@@ -468,7 +468,7 @@ public class ExpectedConditionsTest {
   public void waitingNumberOfWindowsToBeThrowsTimeoutExceptionWhenGetWindowHandlesThrowsWebDriverException() {
     when(mockDriver.getWindowHandles()).thenThrow(WebDriverException.class);
 
-    wait.until(numberOfwindowsToBe(2));
+    wait.until(numberOfWindowsToBe(2));
 
     // then TimeoutException is thrown
   }
