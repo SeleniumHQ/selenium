@@ -25,7 +25,7 @@ java_library(name = 'grid',
     '//third_party/java/jetty:jetty',
     '//third_party/java/jetty:jetty-for-rc',
     '//third_party/java/servlet:servlet-api',
-    '//third_party/java/yaml:yaml',
+    '//third_party/java/yaml:snakeyaml',
   ],
   visibility = [
     '//java/server/src/org/openqa/grid/selenium:classes',
