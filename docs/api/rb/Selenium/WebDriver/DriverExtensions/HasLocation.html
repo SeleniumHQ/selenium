@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::DriverExtensions::HasLocation
   
-    &mdash; Documentation by YARD 0.8.7.3
+    &mdash; Documentation by YARD 0.8.7.6
   
 </title>
 
@@ -17,7 +17,7 @@
 <script type="text/javascript" charset="utf-8">
   hasFrames = window.top.frames.main ? true : false;
   relpath = '../../../';
-  framesUrl = "../../../frames.html#!" + escape(window.location.href);
+  framesUrl = "../../../frames.html#!Selenium/WebDriver/DriverExtensions/HasLocation.html";
 </script>
 
 
@@ -79,7 +79,7 @@
   
   
     <dt class="r1 last">Defined in:</dt>
-    <dd class="r1 last">rb/lib/selenium/webdriver/common/driver_extensions/has_location.rb</dd>
+    <dd class="r1 last">lib/selenium/webdriver/common/driver_extensions/has_location.rb</dd>
   
 </dl>
 <div class="clear"></div>
@@ -215,12 +215,12 @@
       <pre class="lines">
 
 
-6
-7
-8</pre>
+25
+26
+27</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/has_location.rb', line 6</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver_extensions/has_location.rb', line 25</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_location'>location</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_getLocation'>getLocation</span>
@@ -258,16 +258,16 @@
       <pre class="lines">
 
 
-10
-11
-12
-13
-14
-15
-16</pre>
+29
+30
+31
+32
+33
+34
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/has_location.rb', line 10</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver_extensions/has_location.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_location='>location=</span><span class='lparen'>(</span><span class='id identifier rubyid_loc'>loc</span><span class='rparen'>)</span>
   <span class='kw'>unless</span> <span class='id identifier rubyid_loc'>loc</span><span class='period'>.</span><span class='id identifier rubyid_kind_of?'>kind_of?</span><span class='lparen'>(</span><span class='const'>Location</span><span class='rparen'>)</span>
@@ -309,12 +309,12 @@
       <pre class="lines">
 
 
-18
-19
-20</pre>
+37
+38
+39</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/has_location.rb', line 18</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver_extensions/has_location.rb', line 37</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_set_location'>set_location</span><span class='lparen'>(</span><span class='id identifier rubyid_lat'>lat</span><span class='comma'>,</span> <span class='id identifier rubyid_lon'>lon</span><span class='comma'>,</span> <span class='id identifier rubyid_alt'>alt</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_location'>location</span> <span class='op'>=</span> <span class='const'>Location</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>Float</span><span class='lparen'>(</span><span class='id identifier rubyid_lat'>lat</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Float</span><span class='lparen'>(</span><span class='id identifier rubyid_lon'>lon</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Float</span><span class='lparen'>(</span><span class='id identifier rubyid_alt'>alt</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -329,9 +329,9 @@
 </div>
 
     <div id="footer">
-  Generated on Mon Feb 17 23:05:56 2014 by
+  Generated on Wed Oct  7 14:18:44 2015 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.3 (ruby-2.1.0).
+  0.8.7.6 (ruby-2.2.2).
 </div>
 
   </body>

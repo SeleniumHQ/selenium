@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::SearchContext
   
-    &mdash; Documentation by YARD 0.8.7.3
+    &mdash; Documentation by YARD 0.8.7.6
   
 </title>
 
@@ -17,7 +17,7 @@
 <script type="text/javascript" charset="utf-8">
   hasFrames = window.top.frames.main ? true : false;
   relpath = '../../';
-  framesUrl = "../../frames.html#!" + escape(window.location.href);
+  framesUrl = "../../frames.html#!Selenium/WebDriver/SearchContext.html";
 </script>
 
 
@@ -83,7 +83,7 @@
   
   
     <dt class="r2 last">Defined in:</dt>
-    <dd class="r2 last">rb/lib/selenium/webdriver/common/search_context.rb</dd>
+    <dd class="r2 last">lib/selenium/webdriver/common/search_context.rb</dd>
   
 </dl>
 <div class="clear"></div>
@@ -238,7 +238,7 @@ limit your search to the children of the receiving Element.</p>
         <span class='name'>what</span>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="../../String.html" title="String (class)">String</a></span></tt>)</span>
+        <span class='type'>(<tt>String</tt>)</span>
       
       
       
@@ -284,18 +284,21 @@ limit your search to the children of the receiving Element.</p>
       <pre class="lines">
 
 
-35
-36
-37
-38
-39
-40
-41
-42
-43</pre>
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/search_context.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/search_context.rb', line 54</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span> <span class='op'>=</span> <span class='id identifier rubyid_extract_args'>extract_args</span><span class='lparen'>(</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
@@ -305,6 +308,9 @@ limit your search to the children of the receiving Element.</p>
   <span class='kw'>end</span>
 
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_find_element_by'>find_element_by</span> <span class='id identifier rubyid_by'>by</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='comma'>,</span> <span class='id identifier rubyid_ref'>ref</span>
+<span class='kw'>rescue</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>WebDriver</span><span class='op'>::</span><span class='const'>Error</span><span class='op'>::</span><span class='const'>TimeOutError</span>
+  <span class='comment'># Implicit Wait times out in Edge
+</span>  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>WebDriver</span><span class='op'>::</span><span class='const'>Error</span><span class='op'>::</span><span class='const'>NoSuchElementError</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -348,7 +354,7 @@ limit your search to the children of the receiving Element.</p>
         <span class='name'>what</span>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="../../String.html" title="String (class)">String</a></span></tt>)</span>
+        <span class='type'>(<tt>String</tt>)</span>
       
       
       
@@ -383,18 +389,21 @@ limit your search to the children of the receiving Element.</p>
       <pre class="lines">
 
 
-55
-56
-57
-58
-59
-60
-61
-62
-63</pre>
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/search_context.rb', line 55</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/search_context.rb', line 77</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_elements'>find_elements</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span> <span class='op'>=</span> <span class='id identifier rubyid_extract_args'>extract_args</span><span class='lparen'>(</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
@@ -404,6 +413,9 @@ limit your search to the children of the receiving Element.</p>
   <span class='kw'>end</span>
 
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_find_elements_by'>find_elements_by</span> <span class='id identifier rubyid_by'>by</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='comma'>,</span> <span class='id identifier rubyid_ref'>ref</span>
+<span class='kw'>rescue</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>WebDriver</span><span class='op'>::</span><span class='const'>Error</span><span class='op'>::</span><span class='const'>TimeOutError</span>
+  <span class='comment'># Implicit Wait times out in Edge
+</span>  <span class='lbracket'>[</span><span class='rbracket'>]</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -415,9 +427,9 @@ limit your search to the children of the receiving Element.</p>
 </div>
 
     <div id="footer">
-  Generated on Mon Feb 17 23:05:57 2014 by
+  Generated on Wed Oct  7 14:18:44 2015 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.3 (ruby-2.1.0).
+  0.8.7.6 (ruby-2.2.2).
 </div>
 
   </body>

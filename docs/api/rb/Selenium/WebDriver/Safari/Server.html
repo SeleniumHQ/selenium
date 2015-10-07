@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Safari::Server
   
-    &mdash; Documentation by YARD 0.8.7.3
+    &mdash; Documentation by YARD 0.8.7.6
   
 </title>
 
@@ -17,7 +17,7 @@
 <script type="text/javascript" charset="utf-8">
   hasFrames = window.top.frames.main ? true : false;
   relpath = '../../../';
-  framesUrl = "../../../frames.html#!" + escape(window.location.href);
+  framesUrl = "../../../frames.html#!Selenium/WebDriver/Safari/Server.html";
 </script>
 
 
@@ -37,7 +37,7 @@
     <span class="title">Server</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -94,7 +94,7 @@
   
   
     <dt class="r2 last">Defined in:</dt>
-    <dd class="r2 last">rb/lib/selenium/webdriver/safari/server.rb</dd>
+    <dd class="r2 last">lib/selenium/webdriver/safari/server.rb</dd>
   
 </dl>
 <div class="clear"></div>
@@ -413,13 +413,13 @@ Server: safaridriver-ruby
       <pre class="lines">
 
 
-6
-7
-8
-9</pre>
+25
+26
+27
+28</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 6</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/safari/server.rb', line 25</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_command_timeout'>command_timeout</span><span class='rparen'>)</span>
   <span class='ivar'>@port</span>  <span class='op'>=</span> <span class='id identifier rubyid_port'>port</span>
@@ -452,17 +452,17 @@ Server: safaridriver-ruby
       <pre class="lines">
 
 
-133
-134
-135
-136
-137
-138
-139
-140</pre>
+152
+153
+154
+155
+156
+157
+158
+159</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 133</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/safari/server.rb', line 152</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_encode_form_component'>encode_form_component</span><span class='lparen'>(</span><span class='id identifier rubyid_str'>str</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='const'>URI</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:encode_www_form_component</span><span class='rparen'>)</span> <span class='comment'># &gt;= 1.9
@@ -492,25 +492,6 @@ Server: safaridriver-ruby
       <pre class="lines">
 
 
-103
-104
-105
-106
-107
-108
-109
-110
-111
-112
-113
-114
-115
-116
-117
-118
-119
-120
-121
 122
 123
 124
@@ -520,10 +501,29 @@ Server: safaridriver-ruby
 128
 129
 130
-131</pre>
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 103</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/safari/server.rb', line 122</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_process_handshake'>process_handshake</span>
   <span class='ivar'>@ws</span> <span class='op'>=</span> <span class='ivar'>@server</span><span class='period'>.</span><span class='id identifier rubyid_accept'>accept</span>
@@ -574,31 +574,31 @@ Server: safaridriver-ruby
       <pre class="lines">
 
 
-80
-81
-82
-83
-84
-85
-86
-87
-88
-89
-90
-91
-92
-93
-94
-95
-96
-97
-98
 99
 100
-101</pre>
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 80</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/safari/server.rb', line 99</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_process_initial_http_request'>process_initial_http_request</span>
   <span class='id identifier rubyid_http'>http</span> <span class='op'>=</span> <span class='ivar'>@server</span><span class='period'>.</span><span class='id identifier rubyid_accept'>accept</span>
@@ -642,34 +642,34 @@ Server: safaridriver-ruby
       <pre class="lines">
 
 
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
 49
 50
 51
 52
 53
-54</pre>
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/safari/server.rb', line 49</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_receive'>receive</span>
   <span class='ivar'>@frame</span> <span class='op'>||=</span> <span class='const'>WebSocket</span><span class='op'>::</span><span class='const'>Frame</span><span class='op'>::</span><span class='const'>Incoming</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='symbol'>:version</span> <span class='op'>=&gt;</span> <span class='ivar'>@version</span><span class='rparen'>)</span>
@@ -716,18 +716,18 @@ Server: safaridriver-ruby
       <pre class="lines">
 
 
-20
-21
-22
-23
-24
-25
-26
-27
-28</pre>
+39
+40
+41
+42
+43
+44
+45
+46
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 20</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/safari/server.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_send'>send</span><span class='lparen'>(</span><span class='id identifier rubyid_command'>command</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_json'>json</span> <span class='op'>=</span> <span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_json_dump'>json_dump</span><span class='lparen'>(</span><span class='id identifier rubyid_command'>command</span><span class='rparen'>)</span>
@@ -758,12 +758,12 @@ Server: safaridriver-ruby
       <pre class="lines">
 
 
-11
-12
-13</pre>
+30
+31
+32</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/safari/server.rb', line 30</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_start'>start</span>
   <span class='ivar'>@server</span> <span class='op'>=</span> <span class='const'>TCPServer</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_localhost'>localhost</span><span class='comma'>,</span> <span class='ivar'>@port</span><span class='rparen'>)</span>
@@ -788,13 +788,13 @@ Server: safaridriver-ruby
       <pre class="lines">
 
 
-15
-16
-17
-18</pre>
+34
+35
+36
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/safari/server.rb', line 34</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_stop'>stop</span>
   <span class='ivar'>@server</span><span class='period'>.</span><span class='id identifier rubyid_close'>close</span> <span class='kw'>if</span> <span class='ivar'>@server</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='ivar'>@server</span><span class='period'>.</span><span class='id identifier rubyid_closed?'>closed?</span>
@@ -820,12 +820,12 @@ Server: safaridriver-ruby
       <pre class="lines">
 
 
-60
-61
-62</pre>
+79
+80
+81</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 60</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/safari/server.rb', line 79</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_uri'>uri</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_localhost'>localhost</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
@@ -850,14 +850,14 @@ Server: safaridriver-ruby
       <pre class="lines">
 
 
-64
-65
-66
-67
-68</pre>
+83
+84
+85
+86
+87</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 64</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/safari/server.rb', line 83</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_wait_for_connection'>wait_for_connection</span>
   <span class='comment'># TODO: timeouts / non-blocking accept
@@ -884,12 +884,12 @@ Server: safaridriver-ruby
       <pre class="lines">
 
 
-56
-57
-58</pre>
+75
+76
+77</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 56</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/safari/server.rb', line 75</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_ws_uri'>ws_uri</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>ws://</span><span class='embexpr_beg'>#{</span><span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_localhost'>localhost</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='embexpr_end'>}</span><span class='tstring_content'>/wd</span><span class='tstring_end'>&quot;</span></span>
@@ -904,9 +904,9 @@ Server: safaridriver-ruby
 </div>
 
     <div id="footer">
-  Generated on Mon Feb 17 23:06:00 2014 by
+  Generated on Wed Oct  7 14:18:48 2015 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.3 (ruby-2.1.0).
+  0.8.7.6 (ruby-2.2.2).
 </div>
 
   </body>

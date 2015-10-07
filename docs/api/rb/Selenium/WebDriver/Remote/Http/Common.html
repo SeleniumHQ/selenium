@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Remote::Http::Common
   
-    &mdash; Documentation by YARD 0.8.7.3
+    &mdash; Documentation by YARD 0.8.7.6
   
 </title>
 
@@ -17,7 +17,7 @@
 <script type="text/javascript" charset="utf-8">
   hasFrames = window.top.frames.main ? true : false;
   relpath = '../../../../';
-  framesUrl = "../../../../frames.html#!" + escape(window.location.href);
+  framesUrl = "../../../../frames.html#!Selenium/WebDriver/Remote/Http/Common.html";
 </script>
 
 
@@ -37,7 +37,7 @@
     <span class="title">Common</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -94,7 +94,7 @@
   
   
     <dt class="r2 last">Defined in:</dt>
-    <dd class="r2 last">rb/lib/selenium/webdriver/remote/http/common.rb</dd>
+    <dd class="r2 last">lib/selenium/webdriver/remote/http/common.rb</dd>
   
 </dl>
 <div class="clear"></div>
@@ -314,12 +314,12 @@
       <pre class="lines">
 
 
-13
-14
-15</pre>
+32
+33
+34</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 13</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/http/common.rb', line 32</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span>
   <span class='ivar'>@timeout</span> <span class='op'>=</span> <span class='kw'>nil</span>
@@ -382,12 +382,12 @@
       <pre class="lines">
 
 
-11
-12
-13</pre>
+30
+31
+32</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/http/common.rb', line 30</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_server_url='>server_url=</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='ivar'>@server_url</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
@@ -425,12 +425,12 @@
       <pre class="lines">
 
 
-10
-11
-12</pre>
+29
+30
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 10</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/http/common.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_timeout'>timeout</span>
   <span class='ivar'>@timeout</span>
@@ -462,30 +462,30 @@
       <pre class="lines">
 
 
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
 40
-41</pre>
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 21</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/http/common.rb', line 40</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_verb'>verb</span><span class='comma'>,</span> <span class='id identifier rubyid_url'>url</span><span class='comma'>,</span> <span class='id identifier rubyid_command_hash'>command_hash</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_url'>url</span>      <span class='op'>=</span> <span class='id identifier rubyid_server_url'>server_url</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='id identifier rubyid_url'>url</span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_url'>url</span><span class='period'>.</span><span class='id identifier rubyid_kind_of?'>kind_of?</span><span class='lparen'>(</span><span class='const'>URI</span><span class='rparen'>)</span>
@@ -502,8 +502,8 @@
       <span class='id identifier rubyid_puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>     &gt; </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_headers'>headers</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
     <span class='kw'>end</span>
   <span class='kw'>elsif</span> <span class='id identifier rubyid_verb'>verb</span> <span class='op'>==</span> <span class='symbol'>:post</span>
-    <span class='id identifier rubyid_payload'>payload</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>{}</span><span class='tstring_end'>&quot;</span></span> <span class='comment'># work around http://code.google.com/p/selenium/issues/detail?id=1396
-</span>    <span class='id identifier rubyid_headers'>headers</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Content-Length</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>2</span><span class='tstring_end'>&quot;</span></span>
+    <span class='id identifier rubyid_payload'>payload</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>{}</span><span class='tstring_end'>&quot;</span></span>
+    <span class='id identifier rubyid_headers'>headers</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Content-Length</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>2</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
 
   <span class='id identifier rubyid_request'>request</span> <span class='id identifier rubyid_verb'>verb</span><span class='comma'>,</span> <span class='id identifier rubyid_url'>url</span><span class='comma'>,</span> <span class='id identifier rubyid_headers'>headers</span><span class='comma'>,</span> <span class='id identifier rubyid_payload'>payload</span>
@@ -528,12 +528,12 @@
       <pre class="lines">
 
 
-17
-18
-19</pre>
+36
+37
+38</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 17</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/http/common.rb', line 36</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_close'>close</span>
   <span class='comment'># hook for subclasses - will be called on Driver#quit
@@ -548,9 +548,9 @@
 </div>
 
     <div id="footer">
-  Generated on Mon Feb 17 23:06:00 2014 by
+  Generated on Wed Oct  7 14:18:48 2015 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.3 (ruby-2.1.0).
+  0.8.7.6 (ruby-2.2.2).
 </div>
 
   </body>

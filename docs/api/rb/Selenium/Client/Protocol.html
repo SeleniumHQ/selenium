@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::Client::Protocol
   
-    &mdash; Documentation by YARD 0.8.7.3
+    &mdash; Documentation by YARD 0.8.7.6
   
 </title>
 
@@ -17,7 +17,7 @@
 <script type="text/javascript" charset="utf-8">
   hasFrames = window.top.frames.main ? true : false;
   relpath = '../../';
-  framesUrl = "../../frames.html#!" + escape(window.location.href);
+  framesUrl = "../../frames.html#!Selenium/Client/Protocol.html";
 </script>
 
 
@@ -37,7 +37,7 @@
     <span class="title">Protocol</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -83,7 +83,7 @@
   
   
     <dt class="r2 last">Defined in:</dt>
-    <dd class="r2 last">rb/lib/selenium/client/protocol.rb</dd>
+    <dd class="r2 last">lib/selenium/client/protocol.rb</dd>
   
 </dl>
 <div class="clear"></div>
@@ -337,12 +337,12 @@
       <pre class="lines">
 
 
-8
-9
-10</pre>
+27
+28
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/protocol.rb', line 8</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/protocol.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_session_id'>session_id</span>
   <span class='ivar'>@session_id</span>
@@ -374,12 +374,12 @@
       <pre class="lines">
 
 
-59
-60
-61</pre>
+78
+79
+80</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/protocol.rb', line 59</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/protocol.rb', line 78</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_boolean_array_command'>boolean_array_command</span><span class='lparen'>(</span><span class='id identifier rubyid_verb'>verb</span><span class='comma'>,</span> <span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_string_array_command'>string_array_command</span><span class='lparen'>(</span><span class='id identifier rubyid_verb'>verb</span><span class='comma'>,</span> <span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_collect'>collect</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id identifier rubyid_value'>value</span><span class='op'>|</span> <span class='id identifier rubyid_parse_boolean_value'>parse_boolean_value</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span><span class='rbrace'>}</span>
@@ -404,12 +404,12 @@
       <pre class="lines">
 
 
-55
-56
-57</pre>
+74
+75
+76</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/protocol.rb', line 55</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/protocol.rb', line 74</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_boolean_command'>boolean_command</span><span class='lparen'>(</span><span class='id identifier rubyid_verb'>verb</span><span class='comma'>,</span> <span class='id identifier rubyid_args'>args</span><span class='op'>=</span><span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_parse_boolean_value'>parse_boolean_value</span> <span class='id identifier rubyid_string_command'>string_command</span><span class='lparen'>(</span><span class='id identifier rubyid_verb'>verb</span><span class='comma'>,</span> <span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
@@ -434,12 +434,12 @@
       <pre class="lines">
 
 
-51
-52
-53</pre>
+70
+71
+72</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/protocol.rb', line 51</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/protocol.rb', line 70</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_number_array_command'>number_array_command</span><span class='lparen'>(</span><span class='id identifier rubyid_verb'>verb</span><span class='comma'>,</span> <span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_string_array_command'>string_array_command</span> <span class='id identifier rubyid_verb'>verb</span><span class='comma'>,</span> <span class='id identifier rubyid_args'>args</span>
@@ -464,12 +464,12 @@
       <pre class="lines">
 
 
-47
-48
-49</pre>
+66
+67
+68</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/protocol.rb', line 47</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/protocol.rb', line 66</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_number_command'>number_command</span><span class='lparen'>(</span><span class='id identifier rubyid_verb'>verb</span><span class='comma'>,</span> <span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_string_command'>string_command</span> <span class='id identifier rubyid_verb'>verb</span><span class='comma'>,</span> <span class='id identifier rubyid_args'>args</span>
@@ -494,16 +494,16 @@
       <pre class="lines">
 
 
-10
-11
-12
-13
-14
-15
-16</pre>
+29
+30
+31
+32
+33
+34
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/protocol.rb', line 10</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/protocol.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remote_control_command'>remote_control_command</span><span class='lparen'>(</span><span class='id identifier rubyid_verb'>verb</span><span class='comma'>,</span> <span class='id identifier rubyid_args'>args</span><span class='op'>=</span><span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_timeout'>timeout</span><span class='lparen'>(</span><span class='ivar'>@default_timeout_in_seconds</span><span class='rparen'>)</span> <span class='kw'>do</span>
@@ -532,33 +532,33 @@
       <pre class="lines">
 
 
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
 41
 42
 43
 44
-45</pre>
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/protocol.rb', line 22</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/protocol.rb', line 41</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_string_array_command'>string_array_command</span><span class='lparen'>(</span><span class='id identifier rubyid_verb'>verb</span><span class='comma'>,</span> <span class='id identifier rubyid_args'>args</span><span class='op'>=</span><span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_csv'>csv</span> <span class='op'>=</span> <span class='id identifier rubyid_string_command'>string_command</span><span class='lparen'>(</span><span class='id identifier rubyid_verb'>verb</span><span class='comma'>,</span> <span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
@@ -604,12 +604,12 @@
       <pre class="lines">
 
 
-18
-19
-20</pre>
+37
+38
+39</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/protocol.rb', line 18</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/protocol.rb', line 37</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_string_command'>string_command</span><span class='lparen'>(</span><span class='id identifier rubyid_verb'>verb</span><span class='comma'>,</span> <span class='id identifier rubyid_args'>args</span><span class='op'>=</span><span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_remote_control_command'>remote_control_command</span><span class='lparen'>(</span><span class='id identifier rubyid_verb'>verb</span><span class='comma'>,</span> <span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
@@ -624,9 +624,9 @@
 </div>
 
     <div id="footer">
-  Generated on Mon Feb 17 23:05:56 2014 by
+  Generated on Wed Oct  7 14:18:44 2015 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.3 (ruby-2.1.0).
+  0.8.7.6 (ruby-2.2.2).
 </div>
 
   </body>

@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::Rake::ServerTask
   
-    &mdash; Documentation by YARD 0.8.7.3
+    &mdash; Documentation by YARD 0.8.7.6
   
 </title>
 
@@ -17,7 +17,7 @@
 <script type="text/javascript" charset="utf-8">
   hasFrames = window.top.frames.main ? true : false;
   relpath = '../../';
-  framesUrl = "../../frames.html#!" + escape(window.location.href);
+  framesUrl = "../../frames.html#!Selenium/Rake/ServerTask.html";
 </script>
 
 
@@ -37,7 +37,7 @@
     <span class="title">ServerTask</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -98,7 +98,7 @@
   
   
     <dt class="r1 last">Defined in:</dt>
-    <dd class="r1 last">rb/lib/selenium/rake/server_task.rb</dd>
+    <dd class="r1 last">lib/selenium/rake/server_task.rb</dd>
   
 </dl>
 <div class="clear"></div>
@@ -450,25 +450,6 @@ rake selenium:server:restart</code></pre>
       <pre class="lines">
 
 
-99
-100
-101
-102
-103
-104
-105
-106
-107
-108
-109
-110
-111
-112
-113
-114
-115
-116
-117
 118
 119
 120
@@ -480,10 +461,29 @@ rake selenium:server:restart</code></pre>
 126
 127
 128
-129</pre>
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/rake/server_task.rb', line 99</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/rake/server_task.rb', line 118</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_prefix'>prefix</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>selenium:server</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
   <span class='ivar'>@jar</span> <span class='op'>=</span> <span class='kw'>nil</span>
@@ -558,12 +558,12 @@ rake selenium:server:restart</code></pre>
       <pre class="lines">
 
 
-72
-73
-74</pre>
+91
+92
+93</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/rake/server_task.rb', line 72</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/rake/server_task.rb', line 91</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_background'>background</span>
   <span class='ivar'>@background</span>
@@ -601,12 +601,12 @@ rake selenium:server:restart</code></pre>
       <pre class="lines">
 
 
-50
-51
-52</pre>
+69
+70
+71</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/rake/server_task.rb', line 50</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/rake/server_task.rb', line 69</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_jar'>jar</span>
   <span class='ivar'>@jar</span>
@@ -647,12 +647,12 @@ specified file</p>
       <pre class="lines">
 
 
-84
-85
-86</pre>
+103
+104
+105</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/rake/server_task.rb', line 84</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/rake/server_task.rb', line 103</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_log'>log</span>
   <span class='ivar'>@log</span>
@@ -690,12 +690,12 @@ specified file</p>
       <pre class="lines">
 
 
-90
-91
-92</pre>
+109
+110
+111</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/rake/server_task.rb', line 90</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/rake/server_task.rb', line 109</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_opts'>opts</span>
   <span class='ivar'>@opts</span>
@@ -733,12 +733,12 @@ specified file</p>
       <pre class="lines">
 
 
-58
-59
-60</pre>
+77
+78
+79</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/rake/server_task.rb', line 58</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/rake/server_task.rb', line 77</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_port'>port</span>
   <span class='ivar'>@port</span>
@@ -776,12 +776,12 @@ specified file</p>
       <pre class="lines">
 
 
-65
-66
-67</pre>
+84
+85
+86</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/rake/server_task.rb', line 65</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/rake/server_task.rb', line 84</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_timeout'>timeout</span>
   <span class='ivar'>@timeout</span>
@@ -819,12 +819,12 @@ specified file</p>
       <pre class="lines">
 
 
-96
-97
-98</pre>
+115
+116
+117</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/rake/server_task.rb', line 96</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/rake/server_task.rb', line 115</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_version'>version</span>
   <span class='ivar'>@version</span>
@@ -840,9 +840,9 @@ specified file</p>
 </div>
 
     <div id="footer">
-  Generated on Mon Feb 17 23:05:57 2014 by
+  Generated on Wed Oct  7 14:18:45 2015 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.3 (ruby-2.1.0).
+  0.8.7.6 (ruby-2.2.2).
 </div>
 
   </body>

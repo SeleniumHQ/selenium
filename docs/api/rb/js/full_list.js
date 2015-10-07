@@ -123,7 +123,10 @@ function linkList() {
       }
     }
     if (clicked) clicked.removeClass('clicked');
-    var win = window.top.frames.main ? window.top.frames.main : window.parent;
+    var win;
+    try {
+      win = window.top.frames.main ? window.top.frames.main : window.parent;
+    } catch (e) { win = window.parent; }
     if (this.tagName.toLowerCase() == "a") {
       clicked = $(this).parents('li').addClass('clicked');
       win.location = this.href;

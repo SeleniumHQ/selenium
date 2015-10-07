@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Safari::Browser
   
-    &mdash; Documentation by YARD 0.8.7.3
+    &mdash; Documentation by YARD 0.8.7.6
   
 </title>
 
@@ -17,7 +17,7 @@
 <script type="text/javascript" charset="utf-8">
   hasFrames = window.top.frames.main ? true : false;
   relpath = '../../../';
-  framesUrl = "../../../frames.html#!" + escape(window.location.href);
+  framesUrl = "../../../frames.html#!Selenium/WebDriver/Safari/Browser.html";
 </script>
 
 
@@ -37,7 +37,7 @@
     <span class="title">Browser</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -94,7 +94,7 @@
   
   
     <dt class="r2 last">Defined in:</dt>
-    <dd class="r2 last">rb/lib/selenium/webdriver/safari/browser.rb</dd>
+    <dd class="r2 last">lib/selenium/webdriver/safari/browser.rb</dd>
   
 </dl>
 <div class="clear"></div>
@@ -182,14 +182,14 @@
       <pre class="lines">
 
 
-6
-7
-8
-9
-10</pre>
+25
+26
+27
+28
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/browser.rb', line 6</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/safari/browser.rb', line 25</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_start'>start</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='ivar'>@process</span> <span class='op'>=</span> <span class='const'>ChildProcess</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>Safari</span><span class='period'>.</span><span class='id identifier rubyid_path'>path</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
@@ -216,12 +216,12 @@
       <pre class="lines">
 
 
-12
-13
-14</pre>
+31
+32
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/browser.rb', line 12</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/safari/browser.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_stop'>stop</span>
   <span class='ivar'>@process</span><span class='period'>.</span><span class='id identifier rubyid_stop'>stop</span> <span class='kw'>if</span> <span class='ivar'>@process</span>
@@ -236,9 +236,9 @@
 </div>
 
     <div id="footer">
-  Generated on Mon Feb 17 23:06:00 2014 by
+  Generated on Wed Oct  7 14:18:48 2015 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.3 (ruby-2.1.0).
+  0.8.7.6 (ruby-2.2.2).
 </div>
 
   </body>

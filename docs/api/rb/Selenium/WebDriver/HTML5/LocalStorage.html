@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::HTML5::LocalStorage
   
-    &mdash; Documentation by YARD 0.8.7.3
+    &mdash; Documentation by YARD 0.8.7.6
   
 </title>
 
@@ -17,7 +17,7 @@
 <script type="text/javascript" charset="utf-8">
   hasFrames = window.top.frames.main ? true : false;
   relpath = '../../../';
-  framesUrl = "../../../frames.html#!" + escape(window.location.href);
+  framesUrl = "../../../frames.html#!Selenium/WebDriver/HTML5/LocalStorage.html";
 </script>
 
 
@@ -37,7 +37,7 @@
     <span class="title">LocalStorage</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -98,7 +98,7 @@
   
   
     <dt class="r1 last">Defined in:</dt>
-    <dd class="r1 last">rb/lib/selenium/webdriver/common/html5/local_storage.rb</dd>
+    <dd class="r1 last">lib/selenium/webdriver/common/html5/local_storage.rb</dd>
   
 </dl>
 <div class="clear"></div>
@@ -324,12 +324,12 @@
       <pre class="lines">
 
 
-11
-12
-13</pre>
+30
+31
+32</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/html5/local_storage.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/local_storage.rb', line 30</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span>
@@ -361,12 +361,12 @@
       <pre class="lines">
 
 
-15
-16
-17</pre>
+34
+35
+36</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/html5/local_storage.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/local_storage.rb', line 34</span>
 
 <span class='kw'>def</span> <span class='op'>[]</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_getLocalStorageItem'>getLocalStorageItem</span> <span class='id identifier rubyid_key'>key</span>
@@ -391,12 +391,12 @@
       <pre class="lines">
 
 
-19
-20
-21</pre>
+38
+39
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/html5/local_storage.rb', line 19</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/local_storage.rb', line 38</span>
 
 <span class='kw'>def</span> <span class='op'>[]=</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_setLocalStorageItem'>setLocalStorageItem</span> <span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span>
@@ -421,12 +421,12 @@
       <pre class="lines">
 
 
-27
-28
-29</pre>
+46
+47
+48</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/html5/local_storage.rb', line 27</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/local_storage.rb', line 46</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_clear'>clear</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_clearLocalStorage'>clearLocalStorage</span>
@@ -451,12 +451,12 @@
       <pre class="lines">
 
 
-23
-24
-25</pre>
+42
+43
+44</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/html5/local_storage.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/local_storage.rb', line 42</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_removeLocalStorageItem'>removeLocalStorageItem</span> <span class='id identifier rubyid_key'>key</span>
@@ -481,12 +481,12 @@
       <pre class="lines">
 
 
-35
-36
-37</pre>
+54
+55
+56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/html5/local_storage.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/local_storage.rb', line 54</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_keys'>keys</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_getLocalStorageKeys'>getLocalStorageKeys</span><span class='period'>.</span><span class='id identifier rubyid_reverse'>reverse</span>
@@ -511,12 +511,12 @@
       <pre class="lines">
 
 
-31
-32
-33</pre>
+50
+51
+52</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/html5/local_storage.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/local_storage.rb', line 50</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_size'>size</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_getLocalStorageSize'>getLocalStorageSize</span>
@@ -531,9 +531,9 @@
 </div>
 
     <div id="footer">
-  Generated on Mon Feb 17 23:05:58 2014 by
+  Generated on Wed Oct  7 14:18:46 2015 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.3 (ruby-2.1.0).
+  0.8.7.6 (ruby-2.2.2).
 </div>
 
   </body>

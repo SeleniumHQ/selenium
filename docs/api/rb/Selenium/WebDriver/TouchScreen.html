@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::TouchScreen
   
-    &mdash; Documentation by YARD 0.8.7.3
+    &mdash; Documentation by YARD 0.8.7.6
   
 </title>
 
@@ -17,7 +17,7 @@
 <script type="text/javascript" charset="utf-8">
   hasFrames = window.top.frames.main ? true : false;
   relpath = '../../';
-  framesUrl = "../../frames.html#!" + escape(window.location.href);
+  framesUrl = "../../frames.html#!Selenium/WebDriver/TouchScreen.html";
 </script>
 
 
@@ -94,7 +94,7 @@
   
   
     <dt class="r2 last">Defined in:</dt>
-    <dd class="r2 last">rb/lib/selenium/webdriver/common/touch_screen.rb</dd>
+    <dd class="r2 last">lib/selenium/webdriver/common/touch_screen.rb</dd>
   
 </dl>
 <div class="clear"></div>
@@ -364,12 +364,12 @@
       <pre class="lines">
 
 
-11
-12
-13</pre>
+30
+31
+32</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/touch_screen.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 30</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span>
@@ -401,13 +401,13 @@
       <pre class="lines">
 
 
-20
-21
-22
-23</pre>
+39
+40
+41
+42</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/touch_screen.rb', line 20</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_double_tap'>double_tap</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_assert_element'>assert_element</span> <span class='id identifier rubyid_element'>element</span>
@@ -433,13 +433,13 @@
       <pre class="lines">
 
 
-30
-31
-32
-33</pre>
+49
+50
+51
+52</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/touch_screen.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 49</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_down'>down</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span> <span class='op'>=</span> <span class='id identifier rubyid_coords_from'>coords_from</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span>
@@ -465,30 +465,30 @@
       <pre class="lines">
 
 
-59
-60
-61
-62
-63
-64
-65
-66
-67
-68
-69
-70
-71
-72
-73
-74
-75
-76
-77
 78
-79</pre>
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/touch_screen.rb', line 59</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 78</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_flick'>flick</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span>
@@ -531,13 +531,13 @@
       <pre class="lines">
 
 
-25
-26
-27
-28</pre>
+44
+45
+46
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/touch_screen.rb', line 25</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 44</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_long_press'>long_press</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_assert_element'>assert_element</span> <span class='id identifier rubyid_element'>element</span>
@@ -563,13 +563,13 @@
       <pre class="lines">
 
 
-40
-41
-42
-43</pre>
+59
+60
+61
+62</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/touch_screen.rb', line 40</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 59</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_move'>move</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span> <span class='op'>=</span> <span class='id identifier rubyid_coords_from'>coords_from</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span>
@@ -595,22 +595,22 @@
       <pre class="lines">
 
 
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57</pre>
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/touch_screen.rb', line 45</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 64</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_scroll'>scroll</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span>
@@ -645,13 +645,13 @@
       <pre class="lines">
 
 
-15
-16
-17
-18</pre>
+34
+35
+36
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/touch_screen.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 34</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_single_tap'>single_tap</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_assert_element'>assert_element</span> <span class='id identifier rubyid_element'>element</span>
@@ -677,13 +677,13 @@
       <pre class="lines">
 
 
-35
-36
-37
-38</pre>
+54
+55
+56
+57</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/touch_screen.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 54</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_up'>up</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span> <span class='op'>=</span> <span class='id identifier rubyid_coords_from'>coords_from</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span>
@@ -699,9 +699,9 @@
 </div>
 
     <div id="footer">
-  Generated on Mon Feb 17 23:05:58 2014 by
+  Generated on Wed Oct  7 14:18:46 2015 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.3 (ruby-2.1.0).
+  0.8.7.6 (ruby-2.2.2).
 </div>
 
   </body>

@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Support::Select
   
-    &mdash; Documentation by YARD 0.8.7.3
+    &mdash; Documentation by YARD 0.8.7.6
   
 </title>
 
@@ -17,7 +17,7 @@
 <script type="text/javascript" charset="utf-8">
   hasFrames = window.top.frames.main ? true : false;
   relpath = '../../../';
-  framesUrl = "../../../frames.html#!" + escape(window.location.href);
+  framesUrl = "../../../frames.html#!Selenium/WebDriver/Support/Select.html";
 </script>
 
 
@@ -37,7 +37,7 @@
     <span class="title">Select</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -94,7 +94,7 @@
   
   
     <dt class="r2 last">Defined in:</dt>
-    <dd class="r2 last">rb/lib/selenium/webdriver/support/select.rb</dd>
+    <dd class="r2 last">lib/selenium/webdriver/support/select.rb</dd>
   
 </dl>
 <div class="clear"></div>
@@ -394,19 +394,19 @@
       <pre class="lines">
 
 
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19</pre>
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/select.rb', line 10</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/select.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_tag_name'>tag_name</span> <span class='op'>=</span> <span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_tag_name'>tag_name</span>
@@ -475,16 +475,16 @@ selections.</p>
       <pre class="lines">
 
 
-138
-139
-140
-141
-142
-143
-144</pre>
+157
+158
+159
+160
+161
+162
+163</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/select.rb', line 138</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/select.rb', line 157</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_deselect_all'>deselect_all</span>
   <span class='kw'>unless</span> <span class='id identifier rubyid_multiple?'>multiple?</span>
@@ -540,7 +540,7 @@ selections.</p>
         <span class='name'>what</span>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="../../../String.html" title="String (class)">String</a></span></tt>)</span>
+        <span class='type'>(<tt>String</tt>)</span>
       
       
       
@@ -567,21 +567,21 @@ selections.</p>
       <pre class="lines">
 
 
-105
-106
-107
-108
-109
-110
-111
-112
-113
-114
-115
-116</pre>
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/select.rb', line 105</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/select.rb', line 124</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_deselect_by'>deselect_by</span><span class='lparen'>(</span><span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_how'>how</span>
@@ -657,13 +657,13 @@ selections.</p>
       <pre class="lines">
 
 
-58
-59
-60
-61</pre>
+77
+78
+79
+80</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/select.rb', line 58</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/select.rb', line 77</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_first_selected_option'>first_selected_option</span>
   <span class='id identifier rubyid_option'>option</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_e'>e</span><span class='period'>.</span><span class='id identifier rubyid_selected?'>selected?</span> <span class='rbrace'>}</span>
@@ -713,12 +713,12 @@ selections.</p>
       <pre class="lines">
 
 
-27
-28
-29</pre>
+46
+47
+48</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/select.rb', line 27</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/select.rb', line 46</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_multiple?'>multiple?</span>
   <span class='ivar'>@multi</span>
@@ -767,12 +767,12 @@ selections.</p>
       <pre class="lines">
 
 
-37
-38
-39</pre>
+56
+57
+58</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/select.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/select.rb', line 56</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_options'>options</span>
   <span class='ivar'>@element</span><span class='period'>.</span><span class='id identifier rubyid_find_elements'>find_elements</span> <span class='symbol'>:tag_name</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>option</span><span class='tstring_end'>&#39;</span></span>
@@ -827,16 +827,16 @@ selections.</p>
       <pre class="lines">
 
 
-124
-125
-126
-127
-128
-129
-130</pre>
+143
+144
+145
+146
+147
+148
+149</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/select.rb', line 124</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/select.rb', line 143</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_select_all'>select_all</span>
   <span class='kw'>unless</span> <span class='id identifier rubyid_multiple?'>multiple?</span>
@@ -906,7 +906,7 @@ counting.</p>
         <span class='name'>what</span>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="../../../String.html" title="String (class)">String</a></span></tt>)</span>
+        <span class='type'>(<tt>String</tt>)</span>
       
       
       
@@ -926,21 +926,21 @@ counting.</p>
       <pre class="lines">
 
 
-83
-84
-85
-86
-87
-88
-89
-90
-91
-92
-93
-94</pre>
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/select.rb', line 83</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/select.rb', line 102</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_select_by'>select_by</span><span class='lparen'>(</span><span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_how'>how</span>
@@ -998,12 +998,12 @@ counting.</p>
       <pre class="lines">
 
 
-47
-48
-49</pre>
+66
+67
+68</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/select.rb', line 47</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/select.rb', line 66</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_selected_options'>selected_options</span>
   <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_e'>e</span><span class='period'>.</span><span class='id identifier rubyid_selected?'>selected?</span> <span class='rbrace'>}</span>
@@ -1018,9 +1018,9 @@ counting.</p>
 </div>
 
     <div id="footer">
-  Generated on Mon Feb 17 23:06:00 2014 by
+  Generated on Wed Oct  7 14:18:49 2015 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.3 (ruby-2.1.0).
+  0.8.7.6 (ruby-2.2.2).
 </div>
 
   </body>

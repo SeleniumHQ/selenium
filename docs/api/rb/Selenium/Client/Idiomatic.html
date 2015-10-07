@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::Client::Idiomatic
   
-    &mdash; Documentation by YARD 0.8.7.3
+    &mdash; Documentation by YARD 0.8.7.6
   
 </title>
 
@@ -17,7 +17,7 @@
 <script type="text/javascript" charset="utf-8">
   hasFrames = window.top.frames.main ? true : false;
   relpath = '../../';
-  framesUrl = "../../frames.html#!" + escape(window.location.href);
+  framesUrl = "../../frames.html#!Selenium/Client/Idiomatic.html";
 </script>
 
 
@@ -37,7 +37,7 @@
     <span class="title">Idiomatic</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -83,7 +83,7 @@
   
   
     <dt class="r2 last">Defined in:</dt>
-    <dd class="r2 last">rb/lib/selenium/client/idiomatic.rb</dd>
+    <dd class="r2 last">lib/selenium/client/idiomatic.rb</dd>
   
 </dl>
 <div class="clear"></div>
@@ -1094,14 +1094,14 @@ page shown to the user.</p>
       <pre class="lines">
 
 
-480
-481
-482
-483
-484</pre>
+499
+500
+501
+502
+503</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 480</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 499</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_actual_timeout_in_milliseconds'>actual_timeout_in_milliseconds</span><span class='lparen'>(</span><span class='id identifier rubyid_timeout_in_seconds'>timeout_in_seconds</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_actual_timeout'>actual_timeout</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='id identifier rubyid_timeout_in_seconds'>timeout_in_seconds</span> <span class='op'>||</span>
@@ -1150,12 +1150,12 @@ generated and Selenium will hang until someone manually clicks OK.</p>
       <pre class="lines">
 
 
-220
-221
-222</pre>
+239
+240
+241</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 220</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 239</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_alert'>alert</span>
   <span class='id identifier rubyid_string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getAlert</span><span class='tstring_end'>&quot;</span></span>
@@ -1204,12 +1204,12 @@ generated and Selenium will hang until someone manually clicks OK.</p>
       <pre class="lines">
 
 
-202
-203
-204</pre>
+221
+222
+223</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 202</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 221</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_alert?'>alert?</span>
   <span class='id identifier rubyid_boolean_command'>boolean_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>isAlertPresent</span><span class='tstring_end'>&quot;</span></span>
@@ -1245,12 +1245,12 @@ generated and Selenium will hang until someone manually clicks OK.</p>
       <pre class="lines">
 
 
-408
-409
-410</pre>
+427
+428
+429</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 408</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 427</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_all_window_ids'>all_window_ids</span>
   <span class='id identifier rubyid_string_array_command'>string_array_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getAllWindowIds</span><span class='tstring_end'>&quot;</span></span>
@@ -1286,12 +1286,12 @@ generated and Selenium will hang until someone manually clicks OK.</p>
       <pre class="lines">
 
 
-414
-415
-416</pre>
+433
+434
+435</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 414</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 433</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_all_window_names'>all_window_names</span>
   <span class='id identifier rubyid_string_array_command'>string_array_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getAllWindowNames</span><span class='tstring_end'>&quot;</span></span>
@@ -1327,12 +1327,12 @@ generated and Selenium will hang until someone manually clicks OK.</p>
       <pre class="lines">
 
 
-420
-421
-422</pre>
+439
+440
+441</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 420</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 439</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_all_window_titles'>all_window_titles</span>
   <span class='id identifier rubyid_string_array_command'>string_array_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getAllWindowTitles</span><span class='tstring_end'>&quot;</span></span>
@@ -1368,12 +1368,12 @@ generated and Selenium will hang until someone manually clicks OK.</p>
       <pre class="lines">
 
 
-115
-116
-117</pre>
+134
+135
+136</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 115</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 134</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_body_text'>body_text</span>
   <span class='id identifier rubyid_string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getBodyText</span><span class='tstring_end'>&quot;</span></span>
@@ -1420,15 +1420,15 @@ modes like `*firefox` and `*safari`.</p>
       <pre class="lines">
 
 
-436
-437
-438
-439
-440
-441</pre>
+455
+456
+457
+458
+459
+460</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 436</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 455</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_browser_network_traffic'>browser_network_traffic</span><span class='lparen'>(</span><span class='id identifier rubyid_format'>format</span> <span class='op'>=</span> <span class='symbol'>:plain</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>format must be :plain, :json, or :xml</span><span class='tstring_end'>&quot;</span></span>   \
@@ -1474,14 +1474,14 @@ browser (e.g. to resolve XPath locators).</p>
       <pre class="lines">
 
 
-450
-451
-452
-453
-454</pre>
+469
+470
+471
+472
+473</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 450</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 469</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_browser_xpath_library='>browser_xpath_library=</span><span class='lparen'>(</span><span class='id identifier rubyid_library_name'>library_name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>library name must be :ajaxslt, :javascript-xpath, or :default</span><span class='tstring_end'>&quot;</span></span>   \
@@ -1537,12 +1537,12 @@ button</p>
       <pre class="lines">
 
 
-197
-198
-199</pre>
+216
+217
+218</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 197</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 216</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_checked?'>checked?</span><span class='lparen'>(</span><span class='id identifier rubyid_locator'>locator</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_boolean_command'>boolean_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>isChecked</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_locator'>locator</span><span class='comma'>,</span><span class='rbracket'>]</span>
@@ -1659,13 +1659,13 @@ key). Otherwise the default driver timeout is used.</p>
       <pre class="lines">
 
 
-148
-149
-150
-151</pre>
+167
+168
+169
+170</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 148</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 167</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_click'>click</span><span class='lparen'>(</span><span class='id identifier rubyid_locator'>locator</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='op'>=</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_remote_control_command'>remote_control_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>click</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_locator'>locator</span><span class='comma'>,</span><span class='rbracket'>]</span>
@@ -1717,12 +1717,12 @@ be generated and Selenium will hang until you manually click OK.</p>
       <pre class="lines">
 
 
-246
-247
-248</pre>
+265
+266
+267</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 246</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 265</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_confirmation'>confirmation</span>
   <span class='id identifier rubyid_string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getConfirmation</span><span class='tstring_end'>&quot;</span></span>
@@ -1772,12 +1772,12 @@ called)</p>
       <pre class="lines">
 
 
-225
-226
-227</pre>
+244
+245
+246</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 225</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 244</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_confirmation?'>confirmation?</span>
   <span class='id identifier rubyid_boolean_command'>boolean_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>isConfirmationPresent</span><span class='tstring_end'>&quot;</span></span>
@@ -1816,12 +1816,12 @@ if the cookie is not present.</p>
       <pre class="lines">
 
 
-362
-363
-364</pre>
+381
+382
+383</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 362</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 381</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cookie'>cookie</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getCookieByName</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span><span class='rbracket'>]</span>
@@ -1873,12 +1873,12 @@ otherwise.</p>
       <pre class="lines">
 
 
-369
-370
-371</pre>
+388
+389
+390</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 369</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 388</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cookie?'>cookie?</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_boolean_command'>boolean_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>isCookiePresent</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span><span class='rbracket'>]</span>
@@ -1914,12 +1914,12 @@ otherwise.</p>
       <pre class="lines">
 
 
-355
-356
-357</pre>
+374
+375
+376</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 355</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 374</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cookies'>cookies</span>
   <span class='id identifier rubyid_string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getCookie</span><span class='tstring_end'>&quot;</span></span>
@@ -1964,19 +1964,19 @@ that isn&#39;t a subset of the current domain will      usually fail.</p>
       <pre class="lines">
 
 
-379
-380
-381
-382
-383
-384</pre>
+398
+399
+400
+401
+402
+403</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 379</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 398</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_cookie'>create_cookie</span><span class='lparen'>(</span><span class='id identifier rubyid_name_value_pair'>name_value_pair</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='op'>=</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_kind_of?'>kind_of?</span> <span class='const'>Hash</span>
-  <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_collect'>collect</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id identifier rubyid_key'>key</span><span class='op'>|</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_key'>key</span><span class='embexpr_end'>}</span><span class='tstring_content'>=</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='id identifier rubyid_key'>key</span><span class='rbracket'>]</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_sort'>sort</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>, </span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_collect'>collect</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id identifier rubyid_key'>key</span><span class='op'>|</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_key'>key</span><span class='embexpr_end'>}</span><span class='tstring_content'>=</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='id identifier rubyid_key'>key</span><span class='rbracket'>]</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_sort'>sort</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>, </span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
   <span class='kw'>end</span>
   <span class='id identifier rubyid_remote_control_command'>remote_control_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>createCookie</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_name_value_pair'>name_value_pair</span><span class='comma'>,</span><span class='id identifier rubyid_options'>options</span><span class='comma'>,</span><span class='rbracket'>]</span>
 <span class='kw'>end</span></pre>
@@ -2030,21 +2030,21 @@ domain will usually fail.</p>
       <pre class="lines">
 
 
-399
-400
-401
-402
-403
-404
-405</pre>
+418
+419
+420
+421
+422
+423
+424</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 399</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 418</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_delete_cookie'>delete_cookie</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='op'>=</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_kind_of?'>kind_of?</span> <span class='const'>Hash</span>
-  <span class='id identifier rubyid_ordered_keys'>ordered_keys</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_sort'>sort</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id identifier rubyid_a'>a</span><span class='comma'>,</span><span class='id identifier rubyid_b'>b</span><span class='op'>|</span> <span class='id identifier rubyid_a'>a</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>&lt;=&gt;</span> <span class='id identifier rubyid_b'>b</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='rbrace'>}</span>
-  <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='id identifier rubyid_ordered_keys'>ordered_keys</span><span class='period'>.</span><span class='id identifier rubyid_collect'>collect</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id identifier rubyid_key'>key</span><span class='op'>|</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_key'>key</span><span class='embexpr_end'>}</span><span class='tstring_content'>=</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='id identifier rubyid_key'>key</span><span class='rbracket'>]</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>, </span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_ordered_keys'>ordered_keys</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_sort'>sort</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id identifier rubyid_a'>a</span><span class='comma'>,</span><span class='id identifier rubyid_b'>b</span><span class='op'>|</span> <span class='id identifier rubyid_a'>a</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>&lt;=&gt;</span> <span class='id identifier rubyid_b'>b</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='rbrace'>}</span>
+    <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='id identifier rubyid_ordered_keys'>ordered_keys</span><span class='period'>.</span><span class='id identifier rubyid_collect'>collect</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id identifier rubyid_key'>key</span><span class='op'>|</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_key'>key</span><span class='embexpr_end'>}</span><span class='tstring_content'>=</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='id identifier rubyid_key'>key</span><span class='rbracket'>]</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>, </span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
   <span class='kw'>end</span>
   <span class='id identifier rubyid_remote_control_command'>remote_control_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>deleteCookie</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span><span class='id identifier rubyid_options'>options</span><span class='comma'>,</span><span class='rbracket'>]</span>
 <span class='kw'>end</span></pre>
@@ -2095,12 +2095,12 @@ domain will usually fail.</p>
       <pre class="lines">
 
 
-163
-164
-165</pre>
+182
+183
+184</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 163</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 182</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element?'>element?</span><span class='lparen'>(</span><span class='id identifier rubyid_locator'>locator</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_boolean_command'>boolean_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>isElementPresent</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_locator'>locator</span><span class='comma'>,</span><span class='rbracket'>]</span>
@@ -2137,12 +2137,12 @@ selenium operation. By default, there is no such delay (value is 0).</p>
       <pre class="lines">
 
 
-468
-469
-470</pre>
+487
+488
+489</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 468</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 487</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_execution_delay'>execution_delay</span>
   <span class='id identifier rubyid_string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getSpeed</span><span class='tstring_end'>&quot;</span></span>
@@ -2181,12 +2181,12 @@ selenium operation. By default, there is no such delay.</p>
       <pre class="lines">
 
 
-476
-477
-478</pre>
+495
+496
+497</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 476</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 495</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_execution_delay='>execution_delay=</span><span class='lparen'>(</span><span class='id identifier rubyid_delay_in_milliseconds'>delay_in_milliseconds</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_remote_control_command'>remote_control_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>setSpeed</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_delay_in_milliseconds'>delay_in_milliseconds</span><span class='rbracket'>]</span>
@@ -2227,12 +2227,12 @@ with a value parameter). For checkbox/radio elements, the value will be
       <pre class="lines">
 
 
-184
-185
-186</pre>
+203
+204
+205</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 184</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 203</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_field'>field</span><span class='lparen'>(</span><span class='id identifier rubyid_locator'>locator</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getValue</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_locator'>locator</span><span class='comma'>,</span><span class='rbracket'>]</span>
@@ -2342,13 +2342,13 @@ key). Otherwise the default driver timeout is used.</p>
       <pre class="lines">
 
 
-349
-350
-351
-352</pre>
+368
+369
+370
+371</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 349</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 368</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_go_back'>go_back</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='op'>=</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_remote_control_command'>remote_control_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>goBack</span><span class='tstring_end'>&quot;</span></span>
@@ -2386,13 +2386,13 @@ by Selenium core. Useful when recording videos</p>
       <pre class="lines">
 
 
-460
-461
-462
-463</pre>
+479
+480
+481
+482</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 460</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 479</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_highlight_located_element='>highlight_located_element=</span><span class='lparen'>(</span><span class='id identifier rubyid_enabled'>enabled</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_boolean'>boolean</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='kw'>true</span> <span class='op'>==</span> <span class='id identifier rubyid_enabled'>enabled</span><span class='rparen'>)</span>
@@ -2444,12 +2444,12 @@ can use <code>this.browserbot.findElement(&quot;id=foo&quot;)</code> where
       <pre class="lines">
 
 
-283
-284
-285</pre>
+302
+303
+304</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 283</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 302</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_js_eval'>js_eval</span><span class='lparen'>(</span><span class='id identifier rubyid_script'>script</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getEval</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_script'>script</span><span class='comma'>,</span><span class='rbracket'>]</span>
@@ -2485,12 +2485,12 @@ can use <code>this.browserbot.findElement(&quot;id=foo&quot;)</code> where
       <pre class="lines">
 
 
-30
-31
-32</pre>
+49
+50
+51</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 49</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_location'>location</span>
   <span class='id identifier rubyid_string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getLocation</span><span class='tstring_end'>&quot;</span></span>
@@ -2537,12 +2537,12 @@ generated and Selenium will hang until someone manually clicks OK.</p>
       <pre class="lines">
 
 
-268
-269
-270</pre>
+287
+288
+289</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 268</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 287</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_prompt'>prompt</span>
   <span class='id identifier rubyid_string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getPrompt</span><span class='tstring_end'>&quot;</span></span>
@@ -2591,12 +2591,12 @@ generated and Selenium will hang until someone manually clicks OK.</p>
       <pre class="lines">
 
 
-251
-252
-253</pre>
+270
+271
+272</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 251</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 270</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_prompt?'>prompt?</span>
   <span class='id identifier rubyid_boolean_command'>boolean_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>isPromptPresent</span><span class='tstring_end'>&quot;</span></span>
@@ -2639,12 +2639,12 @@ seconds, after which the action will return with an error</p>
       <pre class="lines">
 
 
-294
-295
-296</pre>
+313
+314
+315</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 294</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 313</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remote_control_timeout_in_seconds='>remote_control_timeout_in_seconds=</span><span class='lparen'>(</span><span class='id identifier rubyid_timeout_in_seconds'>timeout_in_seconds</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_remote_control_command'>remote_control_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>setTimeout</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_actual_timeout_in_milliseconds'>actual_timeout_in_milliseconds</span><span class='lparen'>(</span><span class='id identifier rubyid_timeout_in_seconds'>timeout_in_seconds</span><span class='rparen'>)</span><span class='comma'>,</span><span class='rbracket'>]</span>
@@ -2684,12 +2684,12 @@ tableLocator.row.column, where row and column start at 0.</p>
       <pre class="lines">
 
 
-302
-303
-304</pre>
+321
+322
+323</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 302</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 321</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_table_cell_text'>table_cell_text</span><span class='lparen'>(</span><span class='id identifier rubyid_tableCellAddress'>tableCellAddress</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getTable</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_tableCellAddress'>tableCellAddress</span><span class='comma'>,</span><span class='rbracket'>]</span>
@@ -2737,12 +2737,12 @@ shown to the user.</p>
       <pre class="lines">
 
 
-19
-20
-21</pre>
+38
+39
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 19</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 38</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_text'>text</span><span class='lparen'>(</span><span class='id identifier rubyid_locator'>locator</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getText</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_locator'>locator</span><span class='comma'>,</span><span class='rbracket'>]</span>
@@ -2795,12 +2795,12 @@ page shown to the user.</p>
       <pre class="lines">
 
 
-156
-157
-158</pre>
+175
+176
+177</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 156</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 175</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_text?'>text?</span><span class='lparen'>(</span><span class='id identifier rubyid_pattern'>pattern</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_boolean_command'>boolean_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>isTextPresent</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_pattern'>pattern</span><span class='comma'>,</span><span class='rbracket'>]</span>
@@ -2836,12 +2836,12 @@ page shown to the user.</p>
       <pre class="lines">
 
 
-25
-26
-27</pre>
+44
+45
+46</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 25</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 44</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_title'>title</span>
   <span class='id identifier rubyid_string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getTitle</span><span class='tstring_end'>&quot;</span></span>
@@ -2877,15 +2877,15 @@ page shown to the user.</p>
       <pre class="lines">
 
 
-189
-190
-191</pre>
+208
+209
+210</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 189</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 208</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_value'>value</span><span class='lparen'>(</span><span class='id identifier rubyid_locator'>locator</span><span class='rparen'>)</span>
- <span class='id identifier rubyid_field'>field</span> <span class='id identifier rubyid_locator'>locator</span>
+  <span class='id identifier rubyid_field'>field</span> <span class='id identifier rubyid_locator'>locator</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -2936,12 +2936,12 @@ ancestors.  This method will fail if the element is not present.</p>
       <pre class="lines">
 
 
-174
-175
-176</pre>
+193
+194
+195</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 174</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 193</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_visible?'>visible?</span><span class='lparen'>(</span><span class='id identifier rubyid_locator'>locator</span><span class='rparen'>)</span>
    <span class='id identifier rubyid_boolean_command'>boolean_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>isVisible</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_locator'>locator</span><span class='comma'>,</span><span class='rbracket'>]</span>
@@ -3049,25 +3049,6 @@ key). Otherwise the default driver timeout is used.</p>
       <pre class="lines">
 
 
-83
-84
-85
-86
-87
-88
-89
-90
-91
-92
-93
-94
-95
-96
-97
-98
-99
-100
-101
 102
 103
 104
@@ -3078,39 +3059,58 @@ key). Otherwise the default driver timeout is used.</p>
 109
 110
 111
-112</pre>
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 83</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 102</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_wait_for'>wait_for</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:page</span>
     <span class='id identifier rubyid_wait_for_page'>wait_for_page</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:timeout_in_seconds</span><span class='rbracket'>]</span>
- <span class='kw'>elsif</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:ajax</span>
-     <span class='id identifier rubyid_wait_for_ajax'>wait_for_ajax</span> <span class='id identifier rubyid_options'>options</span>
- <span class='kw'>elsif</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:element</span>
-     <span class='id identifier rubyid_wait_for_element'>wait_for_element</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:element</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span>
- <span class='kw'>elsif</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:no_element</span>
-     <span class='id identifier rubyid_wait_for_no_element'>wait_for_no_element</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:element</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span>
- <span class='kw'>elsif</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:text</span>
-     <span class='id identifier rubyid_wait_for_text'>wait_for_text</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:text</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span>
- <span class='kw'>elsif</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:no_text</span>
+  <span class='kw'>elsif</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:ajax</span>
+    <span class='id identifier rubyid_wait_for_ajax'>wait_for_ajax</span> <span class='id identifier rubyid_options'>options</span>
+  <span class='kw'>elsif</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:element</span>
+    <span class='id identifier rubyid_wait_for_element'>wait_for_element</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:element</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span>
+  <span class='kw'>elsif</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:no_element</span>
+    <span class='id identifier rubyid_wait_for_no_element'>wait_for_no_element</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:element</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span>
+  <span class='kw'>elsif</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:text</span>
+    <span class='id identifier rubyid_wait_for_text'>wait_for_text</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:text</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span>
+  <span class='kw'>elsif</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:no_text</span>
     <span class='id identifier rubyid_wait_for_no_text'>wait_for_no_text</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:text</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span>
- <span class='kw'>elsif</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:effects</span>
-     <span class='id identifier rubyid_wait_for_effects'>wait_for_effects</span> <span class='id identifier rubyid_options'>options</span>
+  <span class='kw'>elsif</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:effects</span>
+    <span class='id identifier rubyid_wait_for_effects'>wait_for_effects</span> <span class='id identifier rubyid_options'>options</span>
   <span class='kw'>elsif</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:popup</span>
-      <span class='id identifier rubyid_wait_for_popup'>wait_for_popup</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:window</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:timeout_in_seconds</span><span class='rbracket'>]</span>
-      <span class='id identifier rubyid_select_window'>select_window</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:window</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:select</span><span class='rbracket'>]</span>
+    <span class='id identifier rubyid_wait_for_popup'>wait_for_popup</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:window</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:timeout_in_seconds</span><span class='rbracket'>]</span>
+    <span class='id identifier rubyid_select_window'>select_window</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:window</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:select</span><span class='rbracket'>]</span>
   <span class='kw'>elsif</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:value</span>
-      <span class='id identifier rubyid_wait_for_field_value'>wait_for_field_value</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:element</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:value</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span>
+    <span class='id identifier rubyid_wait_for_field_value'>wait_for_field_value</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:element</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:value</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span>
   <span class='kw'>elsif</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:no_value</span>
-      <span class='id identifier rubyid_wait_for_no_field_value'>wait_for_no_field_value</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:element</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:value</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span>
+    <span class='id identifier rubyid_wait_for_no_field_value'>wait_for_no_field_value</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:element</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:value</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span>
   <span class='kw'>elsif</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:visible</span>
-      <span class='id identifier rubyid_wait_for_visible'>wait_for_visible</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:element</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span>
+    <span class='id identifier rubyid_wait_for_visible'>wait_for_visible</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:element</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span>
   <span class='kw'>elsif</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:not_visible</span>
-      <span class='id identifier rubyid_wait_for_not_visible'>wait_for_not_visible</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:element</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span>
- <span class='kw'>elsif</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:condition</span>
-     <span class='id identifier rubyid_wait_for_condition'>wait_for_condition</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:javascript</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:timeout_in_seconds</span><span class='rbracket'>]</span>
+    <span class='id identifier rubyid_wait_for_not_visible'>wait_for_not_visible</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:element</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span>
+  <span class='kw'>elsif</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:condition</span>
+    <span class='id identifier rubyid_wait_for_condition'>wait_for_condition</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:javascript</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:timeout_in_seconds</span><span class='rbracket'>]</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -3158,13 +3158,13 @@ command will return with an error</p>
       <pre class="lines">
 
 
-318
-319
-320
-321</pre>
+337
+338
+339
+340</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 318</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 337</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_wait_for_condition'>wait_for_condition</span><span class='lparen'>(</span><span class='id identifier rubyid_script'>script</span><span class='comma'>,</span> <span class='id identifier rubyid_timeout_in_seconds'>timeout_in_seconds</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_remote_control_command'>remote_control_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>waitForCondition</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
@@ -3215,13 +3215,13 @@ command will return with an error</p>
       <pre class="lines">
 
 
-44
-45
-46
-47</pre>
+63
+64
+65
+66</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 63</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_wait_for_page'>wait_for_page</span><span class='lparen'>(</span><span class='id identifier rubyid_timeout_in_seconds'>timeout_in_seconds</span><span class='op'>=</span><span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_remote_control_command'>remote_control_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>waitForPageToLoad</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
@@ -3262,13 +3262,13 @@ after which the action will return with an error</p>
       <pre class="lines">
 
 
-54
-55
-56
-57</pre>
+73
+74
+75
+76</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 54</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/client/idiomatic.rb', line 73</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_wait_for_popup'>wait_for_popup</span><span class='lparen'>(</span><span class='id identifier rubyid_window_id'>window_id</span><span class='comma'>,</span> <span class='id identifier rubyid_timeout_in_seconds'>timeout_in_seconds</span><span class='op'>=</span><span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_remote_control_command'>remote_control_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>waitForPopUp</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
@@ -3284,9 +3284,9 @@ after which the action will return with an error</p>
 </div>
 
     <div id="footer">
-  Generated on Mon Feb 17 23:05:56 2014 by
+  Generated on Wed Oct  7 14:18:43 2015 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.3 (ruby-2.1.0).
+  0.8.7.6 (ruby-2.2.2).
 </div>
 
   </body>

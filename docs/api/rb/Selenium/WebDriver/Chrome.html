@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::Chrome
   
-    &mdash; Documentation by YARD 0.8.7.3
+    &mdash; Documentation by YARD 0.8.7.6
   
 </title>
 
@@ -17,7 +17,7 @@
 <script type="text/javascript" charset="utf-8">
   hasFrames = window.top.frames.main ? true : false;
   relpath = '../../';
-  framesUrl = "../../frames.html#!" + escape(window.location.href);
+  framesUrl = "../../frames.html#!Selenium/WebDriver/Chrome.html";
 </script>
 
 
@@ -37,7 +37,7 @@
     <span class="title">Chrome</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -79,8 +79,8 @@
   
   
     <dt class="r1 last">Defined in:</dt>
-    <dd class="r1 last">rb/lib/selenium/webdriver/chrome/bridge.rb<span class="defines">,<br />
-  rb/lib/selenium/webdriver/chrome/profile.rb,<br /> rb/lib/selenium/webdriver/chrome/service.rb,<br /> rb/lib/selenium/webdriver/chrome.rb</span>
+    <dd class="r1 last">lib/selenium/webdriver/chrome/bridge.rb<span class="defines">,<br />
+  lib/selenium/webdriver/chrome/profile.rb,<br /> lib/selenium/webdriver/chrome/service.rb,<br /> lib/selenium/webdriver/chrome.rb</span>
 </dd>
   
 </dl>
@@ -201,12 +201,12 @@
       <pre class="lines">
 
 
-11
-12
-13</pre>
+30
+31
+32</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/chrome.rb', line 30</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_driver_path='>driver_path=</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='const'>Service</span><span class='period'>.</span><span class='id identifier rubyid_executable_path'>executable_path</span> <span class='op'>=</span> <span class='id identifier rubyid_path'>path</span>
@@ -231,12 +231,12 @@
       <pre class="lines">
 
 
-20
-21
-22</pre>
+39
+40
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome.rb', line 20</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/chrome.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_path'>path</span>
   <span class='ivar'>@path</span> <span class='op'>||=</span> <span class='kw'>nil</span>
@@ -261,13 +261,13 @@
       <pre class="lines">
 
 
-15
-16
-17
-18</pre>
+34
+35
+36
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/chrome.rb', line 34</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_path='>path=</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_assert_executable'>assert_executable</span> <span class='id identifier rubyid_path'>path</span>
@@ -283,9 +283,9 @@
 </div>
 
     <div id="footer">
-  Generated on Mon Feb 17 23:05:56 2014 by
+  Generated on Wed Oct  7 14:18:44 2015 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.3 (ruby-2.1.0).
+  0.8.7.6 (ruby-2.2.2).
 </div>
 
   </body>

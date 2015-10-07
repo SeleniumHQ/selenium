@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Keyboard
   
-    &mdash; Documentation by YARD 0.8.7.3
+    &mdash; Documentation by YARD 0.8.7.6
   
 </title>
 
@@ -17,7 +17,7 @@
 <script type="text/javascript" charset="utf-8">
   hasFrames = window.top.frames.main ? true : false;
   relpath = '../../';
-  framesUrl = "../../frames.html#!" + escape(window.location.href);
+  framesUrl = "../../frames.html#!Selenium/WebDriver/Keyboard.html";
 </script>
 
 
@@ -37,7 +37,7 @@
     <span class="title">Keyboard</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -94,7 +94,7 @@
   
   
     <dt class="r2 last">Defined in:</dt>
-    <dd class="r2 last">rb/lib/selenium/webdriver/common/keyboard.rb</dd>
+    <dd class="r2 last">lib/selenium/webdriver/common/keyboard.rb</dd>
   
 </dl>
 <div class="clear"></div>
@@ -269,12 +269,12 @@
       <pre class="lines">
 
 
-10
-11
-12</pre>
+29
+30
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/keyboard.rb', line 10</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/keyboard.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span>
@@ -328,14 +328,14 @@
       <pre class="lines">
 
 
-24
-25
-26
-27
-28</pre>
+43
+44
+45
+46
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/keyboard.rb', line 24</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/keyboard.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_press'>press</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_assert_modifier'>assert_modifier</span> <span class='id identifier rubyid_key'>key</span>
@@ -384,14 +384,14 @@
       <pre class="lines">
 
 
-36
-37
-38
-39
-40</pre>
+55
+56
+57
+58
+59</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/keyboard.rb', line 36</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/keyboard.rb', line 55</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_release'>release</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_assert_modifier'>assert_modifier</span> <span class='id identifier rubyid_key'>key</span>
@@ -431,12 +431,12 @@
       <pre class="lines">
 
 
-14
-15
-16</pre>
+33
+34
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/keyboard.rb', line 14</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/keyboard.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_send_keys'>send_keys</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_keys'>keys</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_sendKeysToActiveElement'>sendKeysToActiveElement</span> <span class='const'>Keys</span><span class='period'>.</span><span class='id identifier rubyid_encode'>encode</span><span class='lparen'>(</span><span class='id identifier rubyid_keys'>keys</span><span class='rparen'>)</span>
@@ -451,9 +451,9 @@
 </div>
 
     <div id="footer">
-  Generated on Mon Feb 17 23:05:58 2014 by
+  Generated on Wed Oct  7 14:18:46 2015 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.3 (ruby-2.1.0).
+  0.8.7.6 (ruby-2.2.2).
 </div>
 
   </body>

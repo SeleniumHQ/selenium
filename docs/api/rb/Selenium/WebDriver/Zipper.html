@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::Zipper
   
-    &mdash; Documentation by YARD 0.8.7.3
+    &mdash; Documentation by YARD 0.8.7.6
   
 </title>
 
@@ -17,7 +17,7 @@
 <script type="text/javascript" charset="utf-8">
   hasFrames = window.top.frames.main ? true : false;
   relpath = '../../';
-  framesUrl = "../../frames.html#!" + escape(window.location.href);
+  framesUrl = "../../frames.html#!Selenium/WebDriver/Zipper.html";
 </script>
 
 
@@ -37,7 +37,7 @@
     <span class="title">Zipper</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -79,7 +79,7 @@
   
   
     <dt class="r1 last">Defined in:</dt>
-    <dd class="r1 last">rb/lib/selenium/webdriver/common/zipper.rb</dd>
+    <dd class="r1 last">lib/selenium/webdriver/common/zipper.rb</dd>
   
 </dl>
 <div class="clear"></div>
@@ -240,25 +240,25 @@
       <pre class="lines">
 
 
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32</pre>
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/zipper.rb', line 17</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/zipper.rb', line 36</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_unzip'>unzip</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_destination'>destination</span> <span class='op'>=</span> <span class='const'>Dir</span><span class='period'>.</span><span class='id identifier rubyid_mktmpdir'>mktmpdir</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>webdriver-unzip</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
@@ -309,21 +309,21 @@
       <pre class="lines">
 
 
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45</pre>
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/zipper.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/zipper.rb', line 53</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_zip'>zip</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_tmp_zip'>with_tmp_zip</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_zip'>zip</span><span class='op'>|</span>
@@ -370,17 +370,17 @@
       <pre class="lines">
 
 
-47
-48
-49
-50
-51
-52
-53
-54</pre>
+66
+67
+68
+69
+70
+71
+72
+73</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/zipper.rb', line 47</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/zipper.rb', line 66</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_zip_file'>zip_file</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_tmp_zip'>with_tmp_zip</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_zip'>zip</span><span class='op'>|</span>
@@ -400,9 +400,9 @@
 </div>
 
     <div id="footer">
-  Generated on Mon Feb 17 23:05:57 2014 by
+  Generated on Wed Oct  7 14:18:44 2015 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.3 (ruby-2.1.0).
+  0.8.7.6 (ruby-2.2.2).
 </div>
 
   </body>
