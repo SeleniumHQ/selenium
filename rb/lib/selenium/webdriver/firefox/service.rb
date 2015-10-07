@@ -98,7 +98,7 @@ module Selenium
           server_command = [@executable_path, "--binary=#{Firefox::Binary.path}", "--webdriver-port=#{@port}", *@extra_args]
           @process       = ChildProcess.build(*server_command)
 
-          @process.io.inherit!
+          @process.io.inherit! if $DEBUG || Platform.os == :windows
           @process.start
         end
 

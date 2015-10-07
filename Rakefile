@@ -251,6 +251,7 @@ task :test_rb => [
   "//rb:rc-client-integration-test",
   "//rb:chrome-test",
   "//rb:phantomjs-test",
+  ("//rb:wires-test" if ENV['MARIONETTE_PATH']),
   ("//rb:safari-test" if mac?),
   ("//rb:ie-test" if windows?),
   ("//rb:edge-test" if windows?)

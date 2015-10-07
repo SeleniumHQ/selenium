@@ -26,28 +26,38 @@ module Selenium
       describe Firefox do
 
         context "when designated firefox installation includes Marionette" do
-          before(:all) { Firefox::Binary.path = "/Applications/FirefoxDeveloperEdition.app/Contents/MacOS/firefox-bin" }
-          after { @driver.quit }
-
-          # Currently versions that support Wires do not support Legacy Firefox Extension
-          xit "Does not use wires by default" do
-            @driver = Selenium::WebDriver.for :firefox
-            expect(@driver.instance_variable_get('@bridge').instance_variable_get('@launcher')).to_not be_nil
+          before(:each) do
+            unless ENV['MARIONETTE_PATH']
+              pending "Set ENV['MARIONETTE_PATH'] to test Marionette enabled Firefox installations"
+            end
           end
 
-          it "Uses Wires when initialized with :desired_capabilities" do
+          after { @driver.quit if @driver }
+
+          it "Uses Wires when initialized with W3C desired_capabilities" do
             caps = Selenium::WebDriver::Remote::W3CCapabilities.firefox
             expect { @driver = Selenium::WebDriver.for :firefox, :desired_capabilities => caps }.to_not raise_exception
           end
 
           it "Uses Wires when initialized with wires option" do
             @driver = Selenium::WebDriver.for :firefox, {wires: true}
+
             expect(@driver.instance_variable_get('@bridge').instance_variable_get('@launcher')).to be_nil
+          end
+
+          it "Does not use wires by default" do
+            @driver = Selenium::WebDriver.for :firefox
+            expect(@driver.instance_variable_get('@bridge').instance_variable_get('@launcher')).to_not be_nil
           end
         end
 
         context "when designated firefox installation does not include Marionette" do
-          before(:all) { Firefox::Binary.path = "/Applications/Firefox.app/Contents/MacOS/firefox-bin" }
+          before(:all) do
+            @marionette_path = ENV['MARIONETTE_PATH']
+            ENV['MARIONETTE_PATH'] = nil
+            Firefox::Binary.instance_variable_set(:"@path", nil)
+          end
+          after(:all) {ENV['MARIONETTE_PATH'] = @marionette_path}
           let(:message) { /Firefox Version \d\d does not support W3CCapabilities/ }
 
           it "Does not use Wires by default" do
