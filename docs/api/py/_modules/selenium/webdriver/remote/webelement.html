@@ -65,6 +65,7 @@
 <span class="c"># under the License.</span>
 
 <span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">zipfile</span>
 <span class="k">try</span><span class="p">:</span>
@@ -366,7 +367,7 @@
         <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">Keys</span><span class="p">):</span>
                 <span class="n">typing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">Number</span><span class="p">):</span>
                 <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">__str__</span><span class="p">()</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)):</span>
                     <span class="n">typing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>

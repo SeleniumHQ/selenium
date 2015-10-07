@@ -138,7 +138,7 @@
             <span class="c"># Happens if Firefox shutsdown before we&#39;ve read the response from</span>
             <span class="c"># the socket.</span>
             <span class="k">pass</span>
-        <span class="k">if</span> <span class="s">&quot;marionette&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span><span class="p">[</span><span class="s">&#39;marionette&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s">&quot;specificationLevel&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">binary</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
