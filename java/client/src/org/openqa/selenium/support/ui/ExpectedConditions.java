@@ -847,7 +847,15 @@ public class ExpectedConditions {
     };
   }
 
+  /**
+   * @deprecated please use {@link #numberOfWindowsToBe(int)} instead
+   */
+  @Deprecated
   public static ExpectedCondition<Boolean> numberOfwindowsToBe(final int expectedNumberOfWindows) {
+    return numberOfWindowsToBe(expectedNumberOfWindows);
+  }
+
+  public static ExpectedCondition<Boolean> numberOfWindowsToBe(final int expectedNumberOfWindows) {
     return new ExpectedCondition<Boolean>() {
       @Override
       public Boolean apply(WebDriver driver) {
