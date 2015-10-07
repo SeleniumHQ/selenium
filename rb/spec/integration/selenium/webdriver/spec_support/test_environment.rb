@@ -36,7 +36,7 @@ module Selenium
         def browser
           if driver == :remote
             (ENV['WD_REMOTE_BROWSER'] || :firefox).to_sym
-          elsif driver == :firefox_nightly
+          elsif driver == :wires
             :firefox
           else
             driver
@@ -108,10 +108,6 @@ module Selenium
           @native_events ||= !!ENV['native']
         end
 
-        def w3c?(opt = {})
-          Remote::W3CCapabilities.w3c?(opt)
-        end
-
         def url_for(filename)
           url = app_server.where_is filename
           url.sub!("127.0.0.1", "10.0.2.2") if browser == :android
@@ -131,6 +127,8 @@ module Selenium
                        create_remote_driver
                      when :firefox
                        create_firefox_driver
+                     when :wires
+                       create_wires_driver
                      when :chrome
                        create_chrome_driver
                      when :iphone
@@ -191,6 +189,10 @@ module Selenium
           else
             WebDriver::Driver.for :firefox
           end
+        end
+
+        def create_wires_driver
+          WebDriver::Driver.for :firefox, {wires: true}
         end
 
         def create_chrome_driver
