@@ -1,3 +1,17 @@
+v2.48.0
+=======
+ * Supports native events for Firefox version 31 (immediately previous ESR).
+   Native event support has been discontinued for versions of Firefox later
+   than 33. Synthetic events tested on Firefox versions 31 (immediately
+   previous ESR), 38 (current ESR), and 40 (immediately previous release),
+   and 41 (current release).
+ * Refactored JSON deserialization for responses.
+ * Modified SwitchTo().Frame(string) to use client-side code instead of a
+   direct wire protocol call.
+ * Added support for the W3C Specification dialect of the JSON wire protocol
+ * Added initial support for Mozilla's Marionette implementation of the
+   Firefox driver.
+
 v2.47.0
 =======
  * Supports native events for Firefox version 31 (immediately previous ESR).
