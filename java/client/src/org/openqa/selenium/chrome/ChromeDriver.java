@@ -27,7 +27,10 @@ import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.html5.WebStorage;
+import org.openqa.selenium.interactions.HasTouchScreen;
+import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.remote.FileDetector;
+import org.openqa.selenium.remote.RemoteTouchScreen;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.html5.RemoteLocationContext;
 import org.openqa.selenium.remote.html5.RemoteWebStorage;
@@ -93,7 +96,7 @@ import org.openqa.selenium.remote.html5.RemoteWebStorage;
  * }</pre>
  *
  * Note that unlike ChromeDriver, RemoteWebDriver doesn't directly implement
- * role interfaces such as {@link LocationContext} and {@link WebStorage}.
+ * role interfaces such as {@link LocationContext}, {@link WebStorage} and {@link HasTouchScreen}.
  * Therefore, to access that functionality, it needs to be
  * {@link org.openqa.selenium.remote.Augmenter augmented} and then cast
  * to the appropriate interface.
@@ -101,10 +104,11 @@ import org.openqa.selenium.remote.html5.RemoteWebStorage;
  * @see ChromeDriverService#createDefaultService
  */
 public class ChromeDriver extends RemoteWebDriver
-    implements LocationContext, WebStorage {
+    implements LocationContext, WebStorage, HasTouchScreen {
 
   private RemoteLocationContext locationContext;
   private RemoteWebStorage webStorage;
+  private RemoteTouchScreen touchScreen;
 
   /**
    * Creates a new ChromeDriver using the {@link ChromeDriverService#createDefaultService default}
@@ -170,6 +174,7 @@ public class ChromeDriver extends RemoteWebDriver
     super(new ChromeDriverCommandExecutor(service), capabilities);
     locationContext = new RemoteLocationContext(getExecuteMethod());
     webStorage = new  RemoteWebStorage(getExecuteMethod());
+    touchScreen = new RemoteTouchScreen(getExecuteMethod());
   }
 
   @Override
@@ -197,6 +202,11 @@ public class ChromeDriver extends RemoteWebDriver
   @Override
   public void setLocation(Location location) {
     locationContext.setLocation(location);
+  }
+
+  @Override
+  public TouchScreen getTouch() {
+    return touchScreen;
   }
 
   /**
