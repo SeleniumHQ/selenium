@@ -17,15 +17,6 @@ rubygem(
   ]
 )
 
-rubydocs(
-  files = [
-    "rb/lib/**/*.rb",
-    "CHANGES"
-  ],
-  readme = "rb/README.md",
-  output_dir = "docs/api/rb"
-)
-
 ruby_library(name = "common",
   srcs = [
     "lib/selenium/webdriver/common/**/*.rb",
