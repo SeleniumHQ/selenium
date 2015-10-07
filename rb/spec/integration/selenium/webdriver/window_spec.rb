@@ -50,7 +50,7 @@ module Selenium
         # Marionette BUG -
         # GET /session/2146a9d2-690a-4844-a5f4-e38b02d670c3/window/:window_handle/position
         # did not match a known command
-        not_compliant_on :w3c => true do
+        not_compliant_on :driver => :wires do
           it "gets the position of the current window" do
             pos = driver.manage.window.position
 

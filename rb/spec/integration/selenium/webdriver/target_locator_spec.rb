@@ -30,7 +30,7 @@ describe "Selenium::WebDriver::TargetLocator" do
   # Marionette Bug -
   # POST /session/f7082a32-e685-2843-ad2c-5bb6f376dac5/element/active
   # did not match a known command
-  not_compliant_on :w3c => true do
+  not_compliant_on :driver => :wires do
     it "should find the active element" do
       driver.navigate.to url_for("xhtmlTest.html")
       expect(driver.switch_to.active_element).to be_an_instance_of(WebDriver::Element)
@@ -55,7 +55,7 @@ describe "Selenium::WebDriver::TargetLocator" do
 
   # Marionette Bug - Marionette Error: switchToParentFrame
   not_compliant_on({:browser => [:safari, :phantomjs]},
-                   {:w3c => true}) do
+                   {:driver => :wires}) do
     it "should switch to parent frame" do
       driver.navigate.to url_for("iframes.html")
 
@@ -126,7 +126,7 @@ describe "Selenium::WebDriver::TargetLocator" do
     end
 
     # Marionette BUG: Automatically switches browsing context to new window when it opens.
-    not_compliant_on :w3c => true do
+    not_compliant_on :driver => :wires do
       it "should close current window when more than two windows exist" do
         driver.navigate.to url_for("xhtmlTest.html")
         driver.find_element(:link, "Create a new anonymous window").click
@@ -248,7 +248,7 @@ describe "Selenium::WebDriver::TargetLocator" do
       # Says message should be an array (I think), but we're getting
       # InvalidArgumentError: 'message' not a string
       # When trying a string, error: keysToSend.join is not a function
-      not_compliant_on :w3c => true do
+      not_compliant_on :driver => :wires do
         it "allows the user to set the value of a prompt" do
           driver.navigate.to url_for("alerts.html")
           driver.find_element(:id => "prompt").click
@@ -293,7 +293,7 @@ describe "Selenium::WebDriver::TargetLocator" do
         # Marionette BUG - Allows driver calls with alert present
         # Spec says: "If the subsequent requested command is not one listed
         # in this chapter, an unexpected alert open error will be returned."
-        not_compliant_on :w3c => true do
+        not_compliant_on :driver => :wires do
 
           it "raises an UnhandledAlertError if an alert has not been dealt with" do
             driver.navigate.to url_for("alerts.html")

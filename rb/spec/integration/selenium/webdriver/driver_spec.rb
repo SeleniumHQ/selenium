@@ -26,7 +26,7 @@ describe "Driver" do
   end
 
   # Marionette BUG - AutomatedTester: "I need to add pagesource back and add it to the spec"
-  not_compliant_on :w3c => true do
+  not_compliant_on :driver => :wires do
     it "should get the page source" do
       driver.navigate.to url_for("xhtmlTest.html")
       expect(driver.page_source).to match(%r[<title>XHTML Test Page</title>]i)
@@ -215,7 +215,7 @@ describe "Driver" do
     end
 
     # Marionette BUG - Not finding local javascript for execution
-    not_compliant_on :w3c => true do
+    not_compliant_on :driver => :wires do
       it "should be able to call functions on the page" do
         driver.navigate.to url_for("javascriptPage.html")
         driver.execute_script("displayMessage('I like cheese');")
