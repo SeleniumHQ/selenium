@@ -157,11 +157,17 @@ namespace OpenQA.Selenium
             get { return string.Format(CultureInfo.InvariantCulture, "--port={0}", this.driverServicePort); }
         }
 
+        /// <summary>
+        /// Gets a value indicating the time to wait for an initial connection before timing out.
+        /// </summary>
         protected virtual TimeSpan InitialConnectionTimeout
         {
             get { return TimeSpan.FromSeconds(20); }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether to ignore the absence of a status end point.
+        /// </summary>
         protected virtual bool IgnoreMissingStatusEndPoint
         {
             get { return false; }

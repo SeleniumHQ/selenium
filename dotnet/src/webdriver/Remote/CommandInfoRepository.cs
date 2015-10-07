@@ -43,6 +43,9 @@ namespace OpenQA.Selenium.Remote
         }
         #endregion
 
+        /// <summary>
+        /// Gets the level of the W3C WebDriver specification that this repository supports.
+        /// </summary>
         public abstract int SpecificationLevel { get; }
 
         #region Public methods
