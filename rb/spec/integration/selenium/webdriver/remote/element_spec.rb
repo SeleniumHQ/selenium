@@ -17,27 +17,32 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require_relative '../spec_helper'
+
 module Selenium
   module WebDriver
-    describe Element do
-      before do
-        driver.file_detector = lambda { |str| __FILE__ }
-      end
 
-      after do
-        driver.file_detector = nil
-      end
+    compliant_on :driver => :remote do
+      describe Element do
+        before do
+          driver.file_detector = lambda { |str| __FILE__ }
+        end
 
-      not_compliant_on :browser => :phantomjs do
-        it "uses the file detector" do
-          driver.navigate.to url_for("upload.html")
+        after do
+          driver.file_detector = nil
+        end
 
-          driver.find_element(:id => "upload").send_keys("random string")
-          driver.find_element(:id => "go").submit
+        not_compliant_on :browser => :phantomjs do
+          it "uses the file detector" do
+            driver.navigate.to url_for("upload.html")
 
-          driver.switch_to.frame("upload_target")
-          body = driver.find_element(:xpath => "//body")
-          expect(body.text).to include("uses the set file detector")
+            driver.find_element(:id => "upload").send_keys("random string")
+            driver.find_element(:id => "go").submit
+
+            driver.switch_to.frame("upload_target")
+            body = driver.find_element(:xpath => "//body")
+            expect(body.text).to include("uses the set file detector")
+          end
         end
       end
     end

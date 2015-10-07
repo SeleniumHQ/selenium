@@ -17,11 +17,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require_relative '../spec_helper'
+
 module Selenium
   module WebDriver
     module Firefox
 
-      not_compliant_on :w3c => true do
+      compliant_on :driver => :firefox do
         describe Driver do
           describe ".new" do
             it "should take a Firefox::Profile instance as argument" do
