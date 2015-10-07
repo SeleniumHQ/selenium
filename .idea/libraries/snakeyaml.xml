@@ -1,9 +1,11 @@
 <component name="libraryTable">
   <library name="snakeyaml">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/yaml/snakeyaml-1.8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/yaml/snakeyaml-1.15.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/third_party/java/yaml/snakeyaml-1.15-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>
