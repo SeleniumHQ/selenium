@@ -69,15 +69,13 @@ module Selenium
                 }.merge(opts))
           end
 
-          def w3c?(opts = {})
-            return true if opts[:browser_name] == :firefox_nightly
-            w3c_opts? || Firefox::Binary.version > 43
-          end
+          alias_method :ff, :firefox
 
-          def w3c_opts?(opts = {})
-            intersect = Remote::W3CCapabilities::DEFAULTS.keys & opts.keys
-            common = [:takes_screenshot, :proxy]
-            !(intersect - common).empty?
+          def w3c?(opts = {})
+            return false unless opts[:desired_capabilities].is_a?(W3CCapabilities) || opts.delete(:wires)
+            firefox_version = Firefox::Binary.version
+            raise ArgumentError, "Firefox Version #{firefox_version} does not support W3CCapabilities" if firefox_version < 43
+            true
           end
 
           #
