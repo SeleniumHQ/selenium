@@ -8,7 +8,6 @@ class RubyMappings
     fun.add_mapping "ruby_test", RubyTest.new
     fun.add_mapping "ruby_test", AddTestDependencies.new
 
-    fun.add_mapping "rubydocs", RubyDocs.new
     fun.add_mapping "rubygem",  RubyGem.new
   end
 
@@ -105,34 +104,6 @@ class RubyMappings
       end
     end
   end
-
-  class RubyDocs
-    def handle(fun, dir, args)
-      files      = args[:files] || raise("no :files specified for rubydocs")
-      output_dir = args[:output_dir] || raise("no :output_dir specified for rubydocs")
-
-      # we define a wrapper task to avoid calling require "yard" at parse time
-      desc 'Generate Ruby API docs'
-      task "//#{dir}:docs" do |t|
-        raise "yard is not installed, unable to generate docs" unless have_yard?
-        task = YARD::Rake::YardocTask.new { |yard|
-          yard.files = Array(files).map { |glob| Dir[glob] }.flatten
-          yard.options << "--verbose"
-          yard.options << "--readme" << args[:readme] if args.has_key?(:readme)
-          yard.options << "--output-dir" << output_dir
-        }
-
-        Rake::Task[task.name].invoke
-      end
-    end
-
-    def have_yard?
-      require 'yard'
-      true
-    rescue LoadError
-      false
-    end
-  end # RubyDocs
 
   class RubyGem
     def handle(fun, dir, args)
