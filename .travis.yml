@@ -1,5 +1,16 @@
 language: java
 sudo: false
+
+notifications:
+  email: false
+  irc:
+    channels:
+      - "chat.freenode.org#selenium"
+    on_success: never
+    on_failure: always
+    use_notice: true
+    skip_join: true
+
 script:
   - ./go clean build
   - |
