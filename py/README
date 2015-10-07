@@ -111,7 +111,7 @@ Download the server separately, from: http://selenium-release.storage.googleapis
 
 Run the server from the command line::
 
-    java -jar selenium-server-standalone-2.48.8.jar
+    java -jar selenium-server-standalone-2.48.0.jar
 
 Then run your Python client scripts.
 
