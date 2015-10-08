@@ -83,7 +83,7 @@ std::string DocumentHost::GetCurrentUrl() {
     return "";
   }
 
-  std::wstring converted_url = url;
+  std::wstring converted_url(url, ::SysStringLen(url));
   std::string current_url = StringUtilities::ToString(converted_url);
   return current_url;
 }

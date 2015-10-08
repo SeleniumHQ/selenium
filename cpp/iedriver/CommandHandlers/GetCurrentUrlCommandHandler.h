@@ -43,8 +43,21 @@ class GetCurrentUrlCommandHandler : public IECommandHandler {
       return;
     }
 
-    std::string url = browser_wrapper->GetCurrentUrl();
-    response->SetSuccessResponse(url);
+    CComPtr<IHTMLDocument2> top_level_document;
+    browser_wrapper->GetDocument(true, &top_level_document);
+    if (!top_level_document) {
+      LOG(WARN) << "Unable to get document from browser. Are you viewing a non-HTML document?";
+    }
+
+    CComBSTR url;
+    HRESULT hr = top_level_document->get_URL(&url);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "IHTMLDocument2::get_URL failed.";
+    }
+    
+    std::wstring converted_url(url, ::SysStringLen(url));
+    std::string current_url = StringUtilities::ToString(converted_url);
+    response->SetSuccessResponse(current_url);
   }
 };
 
