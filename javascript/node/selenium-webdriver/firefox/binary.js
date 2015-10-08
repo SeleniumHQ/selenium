@@ -186,10 +186,6 @@ Binary.prototype.addArguments = function(var_args) {
  *     started subprocess.
  */
 Binary.prototype.launch = function(profile) {
-  if (this.command_) {
-    throw Error('Firefox is already running');
-  }
-
   var env = {};
   Object.keys(this.env_).forEach(function(key) {
     env[key] = this.env_[key];
