@@ -63,7 +63,7 @@ namespace OpenQA.Selenium
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_double_overflow_auto.html");
 
             driver.FindElement(By.Id("link")).Click();
-            WaitFor(TitleToBe("Clicked Successfully!"));
+            WaitFor(TitleToBe("Clicked Successfully!"), "Browser title was not 'Clicked Successfully'");
         }
 
         [Test]
@@ -73,7 +73,7 @@ namespace OpenQA.Selenium
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_y_overflow_auto.html");
 
             driver.FindElement(By.Id("link")).Click();
-            WaitFor(TitleToBe("Clicked Successfully!"));
+            WaitFor(TitleToBe("Clicked Successfully!"), "Browser title was not 'Clicked Successfully'");
         }
 
         [Test]

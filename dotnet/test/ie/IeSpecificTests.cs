@@ -16,7 +16,7 @@ namespace OpenQA.Selenium.IE
         {
             driver.Url = alertsPage;
             driver.FindElement(By.Id("input")).Clear();
-            IAlert alert = WaitFor<IAlert>(() => { return driver.SwitchTo().Alert(); });
+            IAlert alert = WaitFor<IAlert>(() => { return driver.SwitchTo().Alert(); }, "No alert found");
             alert.Accept();
         }
 
@@ -27,15 +27,15 @@ namespace OpenQA.Selenium.IE
             {
                 driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("frameScrollPage.html");
 
-                WaitFor(FrameToExistAndBeSwitchedTo("scrolling_frame"));
+                WaitFor(FrameToExistAndBeSwitchedTo("scrolling_frame"), "No frame with name or id 'scrolling_frame' found");
                 IWebElement element = driver.FindElement(By.Name("scroll_checkbox"));
                 element.Click();
                 Assert.IsTrue(element.Selected);
 
                 driver.SwitchTo().DefaultContent();
 
-                WaitFor(FrameToExistAndBeSwitchedTo("scrolling_child_frame"));
-                WaitFor(FrameToExistAndBeSwitchedTo("scrolling_frame"));
+                WaitFor(FrameToExistAndBeSwitchedTo("scrolling_child_frame"), "No frame with name or id 'scrolling_child_frame' found");
+                WaitFor(FrameToExistAndBeSwitchedTo("scrolling_frame"), "No frame with name or id 'scrolling_frame' found");
                 element = driver.FindElement(By.Name("scroll_checkbox"));
                 element.Click();
                 Assert.IsTrue(element.Selected);
@@ -51,7 +51,7 @@ namespace OpenQA.Selenium.IE
         {
             driver.Url = alertsPage;
             driver.FindElement(By.Id("value1")).Click();
-            IAlert alert = WaitFor<IAlert>(() => { return driver.SwitchTo().Alert(); });
+            IAlert alert = WaitFor<IAlert>(() => { return driver.SwitchTo().Alert(); }, "No alert found");
             alert.Accept();
         }
 
@@ -113,7 +113,7 @@ namespace OpenQA.Selenium.IE
             IWebElement element = driver.FindElement(By.Id("dialog"));
             element.Click();
 
-            WaitFor(() => { return driver.WindowHandles.Count > 1; });
+            WaitFor(() => { return driver.WindowHandles.Count > 1; }, "Window count was not greater than 1");
 
             ReadOnlyCollection<string> windowHandles = driver.WindowHandles;
             Assert.AreEqual(2, windowHandles.Count);
@@ -134,7 +134,7 @@ namespace OpenQA.Selenium.IE
             IWebElement closeElement = driver.FindElement(By.Id("close"));
             closeElement.Click();
 
-            WaitFor(() => { return driver.WindowHandles.Count == 1; });
+            WaitFor(() => { return driver.WindowHandles.Count == 1; }, "Window count was not 1");
 
             windowHandles = driver.WindowHandles;
             Assert.AreEqual(1, windowHandles.Count);
@@ -179,7 +179,7 @@ namespace OpenQA.Selenium.IE
  
             // Launch first modal
             driver.FindElement(By.CssSelector("input[type='button'][value='btn1']")).Click();
-            WaitFor(() => { return driver.WindowHandles.Count > 1; });
+            WaitFor(() => { return driver.WindowHandles.Count > 1; }, "Window count was not greater than 1");
             ReadOnlyCollection<string> windows = driver.WindowHandles;
             string firstWindowHandle = windows.Except(new List<string>() { parentHandle }).First();
             driver.SwitchTo().Window(firstWindowHandle);
@@ -187,7 +187,7 @@ namespace OpenQA.Selenium.IE
 
             // Launch second modal
             driver.FindElement(By.CssSelector("input[type='button'][value='btn2']")).Click();
-            WaitFor(() => { return driver.WindowHandles.Count > 2; });
+            WaitFor(() => { return driver.WindowHandles.Count > 2; }, "Window count was not greater than 2");
             ReadOnlyCollection<string> windows_1 = driver.WindowHandles;
             string secondWindowHandle = windows_1.Except(windows).First();
             driver.SwitchTo().Window(secondWindowHandle);
@@ -195,7 +195,7 @@ namespace OpenQA.Selenium.IE
 
             // Launch third modal
             driver.FindElement(By.CssSelector("input[type='button'][value='btn3']")).Click();
-            WaitFor(() => { return driver.WindowHandles.Count > 3; });
+            WaitFor(() => { return driver.WindowHandles.Count > 3; }, "Window count was not greater than 3");
             ReadOnlyCollection<string> windows_2 = driver.WindowHandles;
             string finalWindowHandle = windows_2.Except(windows_1).First();
             Assert.AreEqual(4, windows_2.Count);
@@ -214,7 +214,7 @@ namespace OpenQA.Selenium.IE
  
             // Launch first modal
             driver.FindElement(By.CssSelector("a[id='lnk1']")).Click();
-            WaitFor(() => { return driver.WindowHandles.Count > 1; });
+            WaitFor(() => { return driver.WindowHandles.Count > 1; }, "Window count was not greater than 1");
             ReadOnlyCollection<string> windows = driver.WindowHandles;
             string firstWindowHandle = windows.Except(new List<string>() { parentHandle }).First();
             driver.SwitchTo().Window(firstWindowHandle);
@@ -223,7 +223,7 @@ namespace OpenQA.Selenium.IE
             // Launch second modal
             driver.FindElement(By.CssSelector("a[id='lnk2']")).Click();
             System.Threading.Thread.Sleep(5000);
-            WaitFor(() => { return driver.WindowHandles.Count > 2; });
+            WaitFor(() => { return driver.WindowHandles.Count > 2; }, "Window count was not greater than 2");
             ReadOnlyCollection<string> windows_1 = driver.WindowHandles;
             string secondWindowHandle = windows_1.Except(windows).First();
             driver.SwitchTo().Window(secondWindowHandle);
@@ -231,7 +231,7 @@ namespace OpenQA.Selenium.IE
 
             // Launch third modal
             driver.FindElement(By.CssSelector("a[id='lnk3']")).Click();
-            WaitFor(() => { return driver.WindowHandles.Count > 3; });
+            WaitFor(() => { return driver.WindowHandles.Count > 3; }, "Window count was not greater than 3");
             ReadOnlyCollection<string> windows_2 = driver.WindowHandles;
             string finalWindowHandle = windows_2.Except(windows_1).First();
             Assert.AreEqual(4, windows_2.Count);

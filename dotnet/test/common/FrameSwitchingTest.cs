@@ -450,7 +450,7 @@ namespace OpenQA.Selenium
                     }
 
                     return success != null;
-                });
+                }, "Element with id 'success' still exists on page");
             }
             catch (WebDriverException)
             {

@@ -28,7 +28,7 @@ namespace OpenQA.Selenium
         public void ShouldFollowMetaRedirects()
         {
             driver.Url = metaRedirectPage;
-            WaitFor(() => { return driver.Title == "We Arrive Here"; });
+            WaitFor(() => { return driver.Title == "We Arrive Here"; }, "Browser title was not 'We Arrive Here'");
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 
@@ -138,11 +138,11 @@ namespace OpenQA.Selenium
             driver.Url = formsPage;
 
             driver.FindElement(By.Id("imageButton")).Submit();
-            WaitFor(TitleToBeEqualTo("We Arrive Here"));
+            WaitFor(TitleToBeEqualTo("We Arrive Here"), "Browser title was not 'We Arrive Here'");
             Assert.AreEqual(driver.Title, "We Arrive Here");
 
             driver.Navigate().Back();
-            WaitFor(TitleToBeEqualTo("We Leave From Here"));
+            WaitFor(TitleToBeEqualTo("We Leave From Here"), "Browser title was not 'We Leave From Here'");
             Assert.AreEqual(driver.Title, "We Leave From Here");
         }
 
@@ -153,11 +153,11 @@ namespace OpenQA.Selenium
             driver.Url = xhtmlTestPage;
 
             driver.FindElement(By.Name("sameWindow")).Click();
-            WaitFor(TitleToBeEqualTo("This page has iframes"));
+            WaitFor(TitleToBeEqualTo("This page has iframes"), "Browser title was not 'This page has iframes'");
             Assert.AreEqual(driver.Title, "This page has iframes");
 
             driver.Navigate().Back();
-            WaitFor(TitleToBeEqualTo("XHTML Test Page"));
+            WaitFor(TitleToBeEqualTo("XHTML Test Page"), "Browser title was not 'XHTML Test Page'");
             Assert.AreEqual(driver.Title, "XHTML Test Page");
         }
 
@@ -169,15 +169,15 @@ namespace OpenQA.Selenium
             driver.Url = formsPage;
 
             driver.FindElement(By.Id("imageButton")).Submit();
-            WaitFor(TitleToBeEqualTo("We Arrive Here"));
+            WaitFor(TitleToBeEqualTo("We Arrive Here"), "Browser title was not 'We Arrive Here'");
             Assert.AreEqual(driver.Title, "We Arrive Here");
 
             driver.Navigate().Back();
-            WaitFor(TitleToBeEqualTo("We Leave From Here"));
+            WaitFor(TitleToBeEqualTo("We Leave From Here"), "Browser title was not 'We Leave From Here'");
             Assert.AreEqual(driver.Title, "We Leave From Here");
 
             driver.Navigate().Forward();
-            WaitFor(TitleToBeEqualTo("We Arrive Here"));
+            WaitFor(TitleToBeEqualTo("We Arrive Here"), "Browser title was not 'We Arrive Here'");
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 
