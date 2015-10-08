@@ -31,4 +31,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rack", ["~> 1.0"]
   s.add_development_dependency "ci_reporter", ["~> 1.6", ">= 1.6.2"]
   s.add_development_dependency "webmock", ["~> 1.7", ">= 1.7.5"]
+  s.add_development_dependency "yard", ["~> 0.8.7"]
 end
