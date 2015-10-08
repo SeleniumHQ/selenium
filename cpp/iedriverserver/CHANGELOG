@@ -9,6 +9,11 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.48.0.1
+=========
+ * Updating to return top-level URL when focused on a frame. This makes the
+   driver now consistent with other implementations.
+
 v2.48.0.0
 =========
  * Release to synchronize with release of Selenium project.
