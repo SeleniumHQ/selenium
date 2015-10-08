@@ -126,12 +126,41 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Change to the Window by passing in the name
         /// </summary>
-        /// <param name="windowName">name of the window that you wish to move to</param>
+        /// <param name="windowHandleOrName">Window handle or name of the window that you wish to move to</param>
         /// <returns>A WebDriver instance that is currently in use</returns>
-        public IWebDriver Window(string windowName)
+        public IWebDriver Window(string windowHandleOrName)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("name", windowName);
+            if (this.driver.IsSpecificationCompliant)
+            {
+                parameters.Add("handle", windowHandleOrName);
+                try
+                {
+                    this.driver.InternalExecute(DriverCommand.SwitchToWindow, parameters);
+                    return this.driver;
+                }
+                catch (NoSuchWindowException e)
+                {
+                    // simulate search by name
+                    string original = this.driver.CurrentWindowHandle;
+                    foreach (string handle in driver.WindowHandles)
+                    {
+                        this.Window(handle);
+                        if (windowHandleOrName == this.driver.ExecuteScript("return window.name").ToString())
+                        {
+                            return this.driver; // found by name
+                        }
+                    }
+
+                    this.Window(original);
+                    throw e;
+                }
+            }
+            else
+            {
+                parameters.Add("name", windowHandleOrName);
+            }
+
             this.driver.InternalExecute(DriverCommand.SwitchToWindow, parameters);
             return this.driver;
         }
