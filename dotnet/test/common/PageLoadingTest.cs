@@ -35,6 +35,12 @@ namespace OpenQA.Selenium
         [Test]
         public void ShouldBeAbleToGetAFragmentOnTheCurrentPage()
         {
+            if (TestUtilities.IsMarionette(driver))
+            {
+                // Don't run this test on Marionette.
+                Assert.Ignore("Marionette doesn't see subsequent navigation to a fragment as a new navigation.");
+            }
+
             driver.Url = xhtmlTestPage;
             driver.Url = xhtmlTestPage + "#text";
             driver.FindElement(By.Id("id1"));
@@ -64,6 +70,12 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
         public void ShouldThrowIfUrlIsMalformed()
         {
+            if (TestUtilities.IsMarionette(driver))
+            {
+                // Don't run this test on Marionette.
+                Assert.Ignore("Browser hangs when executed via Marionette");
+            }
+
             driver.Url = "www.test.com";
         }
 
@@ -202,6 +214,12 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Safari, "Untested user-agent")]
         public void ShouldNotHangIfDocumentOpenCallIsNeverFollowedByDocumentCloseCall()
         {
+            if (TestUtilities.IsMarionette(driver))
+            {
+                // Don't run this test on Marionette.
+                Assert.Ignore("Browser hangs when executed via Marionette");
+            }
+
             driver.Url = documentWrite;
 
             // If this command succeeds, then all is well.
