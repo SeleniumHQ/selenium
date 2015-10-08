@@ -19,11 +19,12 @@ rubygem(
 
 rubydocs(
   files = [
-    "rb/lib/**/*.rb",
-    "CHANGES"
+    "build/rb/lib/**/*.rb",
+    "build/rb/CHANGES"
   ],
   readme = "rb/README.md",
-  output_dir = "docs/api/rb"
+  output_dir = "build/docs/api/rb",
+  deps = [ "//rb:gem:build" ]
 )
 
 ruby_library(name = "common",

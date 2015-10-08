@@ -4,13 +4,16 @@
 # Python
 ./go py_docs || exit
 
+# Ruby
+./go //rb:docs || exit
 
 # switch to gh-pages and copy the files
 git checkout gh-pages || exit
-rm -rf docs/api/java docs/api/py
+rm -rf docs/api/java docs/api/py docs/api/rb
 
 mv build/javadoc docs/api/java
 mv build/docs/api/py docs/api/py
+mv build/docs/api/rb docs/api/rb
 
 git add -A docs/api
 
