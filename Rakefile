@@ -50,7 +50,7 @@ end
 verbose($DEBUG)
 
 def version
-  "2.48.0"
+  "2.48.1"
 end
 ide_version = "2.8.0"
 

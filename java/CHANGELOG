@@ -1,3 +1,8 @@
+v2.48.1
+=======
+WebDriver:
+    * Fix #1123, ChromeDriver doesn't start up.
+
 v2.48.0
 =======
 
