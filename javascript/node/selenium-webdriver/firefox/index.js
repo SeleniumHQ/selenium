@@ -239,39 +239,40 @@ var Driver = function(opt_config, opt_flow) {
   /** @private {?string} */
   this.profilePath_ = null;
 
-  /** @private {!Binary} */
-  this.binary_ = binary;
-
   var self = this;
-  var serverUrl = portprober.findFreePort().then(function(port) {
-    var prepareProfile;
+  var freePort = portprober.findFreePort();
+
+  /** @private */
+  this.command_ = freePort.then(function(port) {
     if (typeof profile === 'string') {
-      prepareProfile = decodeProfile(profile).then(function(dir) {
+      return decodeProfile(profile).then(function(dir) {
         var profile = new Profile(dir);
         profile.setPreference('webdriver_firefox_port', port);
         return profile.writeToDisk();
       });
     } else {
       profile.setPreference('webdriver_firefox_port', port);
-      prepareProfile = profile.writeToDisk();
+      return profile.writeToDisk();
     }
-
-    return prepareProfile.then(function(dir) {
-      self.profilePath_ = dir;
-      return binary.launch(dir);
-    }).then(function() {
-      var serverUrl = url.format({
-        protocol: 'http',
-        hostname: net.getLoopbackAddress(),
-        port: port,
-        pathname: '/hub'
-      });
-
-      return httpUtil.waitForServer(serverUrl, 45 * 1000).then(function() {
-        return serverUrl;
-      });
-    });
+  }).then(function(profileDir) {
+    self.profilePath_ = profileDir;
+    return binary.launch(profileDir);
   });
+
+  var serverUrl = this.command_
+      .then(function() { return freePort; })
+      .then(function(port) {
+        var serverUrl = url.format({
+          protocol: 'http',
+          hostname: net.getLoopbackAddress(),
+          port: port,
+          pathname: '/hub'
+        });
+
+        return httpUtil.waitForServer(serverUrl, 45 * 1000).then(function() {
+          return serverUrl;
+        });
+      });
 
   var executor = executors.createExecutor(serverUrl);
   var driver = webdriver.WebDriver.createSession(executor, caps, opt_flow);
@@ -296,7 +297,10 @@ Driver.prototype.quit = function() {
     var self = this;
     return Driver.super_.prototype.quit.call(this)
         .thenFinally(function() {
-          return self.binary_.kill();
+          return self.command_.then(function(command) {
+            command.kill();
+            return command.result();
+          });
         })
         .thenFinally(function() {
           if (self.profilePath_) {

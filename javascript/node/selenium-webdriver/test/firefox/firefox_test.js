@@ -155,5 +155,29 @@ test.suite(function(env) {
         });
       });
     });
+
+    describe('binary management', function() {
+      var driver1, driver2;
+
+      test.ignore(env.isRemote).
+      it('can start multiple sessions with single binary instance', function() {
+        var options = new firefox.Options().setBinary(new firefox.Binary);
+        env.builder().setFirefoxOptions(options);
+        driver1 = env.builder().build();
+        driver2 = env.builder().build();
+        // Ok if this doesn't fail.
+      });
+
+      test.afterEach(function() {
+        if (driver1) {
+          driver1.quit();
+        }
+
+        if (driver2) {
+          driver2.quit();
+        }
+      });
+    });
+
   });
 }, {browsers: ['firefox']});
