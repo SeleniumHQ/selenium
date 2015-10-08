@@ -8,6 +8,7 @@ class RubyMappings
     fun.add_mapping "ruby_test", RubyTest.new
     fun.add_mapping "ruby_test", AddTestDependencies.new
 
+    fun.add_mapping "rubydocs", RubyDocs.new
     fun.add_mapping "rubygem",  RubyGem.new
   end
 
@@ -104,6 +105,28 @@ class RubyMappings
       end
     end
   end
+
+  class RubyDocs < Tasks
+    def handle(fun, dir, args)
+      files = args[:files] || raise("no :files specified for rubydocs")
+      output_dir = args[:output_dir] || raise("no :output_dir specified for rubydocs")
+      readme = args[:readme] || raise("no :readme specified for rubydocs")
+
+      desc 'Generate Ruby API docs'
+      t = task "//#{dir}:docs" do |t|
+        yard_args = %w[doc --verbose]
+        yard_args += ["--output-dir", output_dir]
+        yard_args += ["--readme", readme]
+
+        ruby :command => "yard",
+             :args    => yard_args,
+             :files   => files,
+             :gemfile => "build/rb/Gemfile"
+      end
+
+      add_dependencies t, dir, args[:deps]
+    end
+  end # RubyDocs
 
   class RubyGem
     def handle(fun, dir, args)
