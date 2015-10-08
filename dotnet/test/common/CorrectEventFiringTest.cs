@@ -213,7 +213,7 @@ namespace OpenQA.Selenium
             driver.FindElement(By.Id("labelForCheckbox")).Click();
 
             IWebElement result = driver.FindElement(By.Id("result"));
-            Assert.IsTrue(WaitFor(() => { return result.Text.Contains("labelclick chboxclick"); }), "Did not find text: " + result.Text);
+            Assert.IsTrue(WaitFor(() => { return result.Text.Contains("labelclick chboxclick"); }, "Did not find text: " + result.Text));
         }
 
 

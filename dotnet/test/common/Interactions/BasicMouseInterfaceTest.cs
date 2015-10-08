@@ -187,7 +187,7 @@ namespace OpenQA.Selenium.Interactions
                 IWebElement element = driver.FindElement(By.Id("otherframe"));
                 new Actions(driver).MoveToElement(element).Click().Perform();
                 driver.SwitchTo().DefaultContent().SwitchTo().Frame("target");
-                WaitFor(() => { return driver.FindElement(By.Id("span")).Text == "An inline element"; });
+                WaitFor(() => { return driver.FindElement(By.Id("span")).Text == "An inline element"; }, "Could not find element with text 'An inline element'");
             }
             finally
             {
@@ -242,11 +242,11 @@ namespace OpenQA.Selenium.Interactions
 
             IWebElement reporter = driver.FindElement(By.Id("status"));
 
-            WaitFor(FuzzyMatchingOfCoordinates(reporter, 50, 200));
+            WaitFor(FuzzyMatchingOfCoordinates(reporter, 50, 200), "Coordinate matching was not within tolerance");
 
             new Actions(driver).MoveByOffset(10, 20).Build().Perform();
 
-            WaitFor(FuzzyMatchingOfCoordinates(reporter, 60, 220));
+            WaitFor(FuzzyMatchingOfCoordinates(reporter, 60, 220), "Coordinate matching was not within tolerance");
         }
 
         [Test]
@@ -262,7 +262,7 @@ namespace OpenQA.Selenium.Interactions
 
             IWebElement reporter = driver.FindElement(By.Id("status"));
 
-            WaitFor(FuzzyMatchingOfCoordinates(reporter, 95, 195));
+            WaitFor(FuzzyMatchingOfCoordinates(reporter, 95, 195), "Coordinate matching was not within tolerance");
         }
 
         [Test]
@@ -278,7 +278,7 @@ namespace OpenQA.Selenium.Interactions
 
             IWebElement reporter = driver.FindElement(By.Id("status"));
 
-            WaitFor(FuzzyMatchingOfCoordinates(reporter, 40, 20));
+            WaitFor(FuzzyMatchingOfCoordinates(reporter, 40, 20), "Coordinate matching was not within tolerance");
         }
 
         [Test]

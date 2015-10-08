@@ -26,7 +26,7 @@ namespace OpenQA.Selenium
         public void CanClickOnALinkAndFollowIt()
         {
             driver.FindElement(By.Id("normal")).Click();
-            WaitFor(() => { return driver.Title == "XHTML Test Page"; });
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
             Assert.AreEqual("XHTML Test Page", driver.Title);
         }
 
@@ -36,7 +36,7 @@ namespace OpenQA.Selenium
         {
             driver.FindElement(By.Id("overflowLink")).Click();
 
-            WaitFor(() => { return driver.Title == "XHTML Test Page"; });
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
         }
 
         [Test]
@@ -113,7 +113,7 @@ namespace OpenQA.Selenium
         public void ShouldClickOnFirstBoundingClientRectWithNonZeroSize()
         {
             driver.FindElement(By.Id("twoClientRects")).Click();
-            WaitFor(() => { return driver.Title == "XHTML Test Page"; });
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
             Assert.AreEqual("XHTML Test Page", driver.Title);
         }
 
@@ -155,7 +155,7 @@ namespace OpenQA.Selenium
             int windowHandlesBefore = driver.WindowHandles.Count;
 
             driver.FindElement(By.Id("new-window")).Click();
-            WaitFor(() => { return driver.WindowHandles.Count >= windowHandlesBefore + 1; });
+            WaitFor(() => { return driver.WindowHandles.Count >= windowHandlesBefore + 1; }, "Window handles was not " + (windowHandlesBefore + 1).ToString());
             Assert.AreEqual(windowHandlesBefore + 1, driver.WindowHandles.Count);
         }
 
@@ -181,7 +181,7 @@ namespace OpenQA.Selenium
         public void CanClickOnALinkWithEnclosedImage()
         {
             driver.FindElement(By.Id("link-with-enclosed-image")).Click();
-            WaitFor(() => { return driver.Title == "XHTML Test Page"; });
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
             Assert.AreEqual("XHTML Test Page", driver.Title);
         }
 
@@ -189,7 +189,7 @@ namespace OpenQA.Selenium
         public void CanClickOnAnImageEnclosedInALink()
         {
             driver.FindElement(By.Id("link-with-enclosed-image")).FindElement(By.TagName("img")).Click();
-            WaitFor(() => { return driver.Title == "XHTML Test Page"; });
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
             Assert.AreEqual("XHTML Test Page", driver.Title);
         }
 
@@ -197,7 +197,7 @@ namespace OpenQA.Selenium
         public void CanClickOnALinkThatContainsTextWrappedInASpan()
         {
             driver.FindElement(By.Id("link-with-enclosed-span")).Click();
-            WaitFor(() => { return driver.Title == "XHTML Test Page"; });
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
             Assert.AreEqual("XHTML Test Page", driver.Title);
         }
 
@@ -205,7 +205,7 @@ namespace OpenQA.Selenium
         public void CanClickOnALinkThatContainsEmbeddedBlockElements()
         {
             driver.FindElement(By.Id("embeddedBlock")).Click();
-            WaitFor(() => { return driver.Title == "XHTML Test Page"; });
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
             Assert.AreEqual("XHTML Test Page", driver.Title);
         }
 
@@ -213,7 +213,7 @@ namespace OpenQA.Selenium
         public void CanClickOnAnElementEnclosedInALink()
         {
             driver.FindElement(By.Id("link-with-enclosed-span")).FindElement(By.TagName("span")).Click();
-            WaitFor(() => { return driver.Title == "XHTML Test Page"; });
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
             Assert.AreEqual("XHTML Test Page", driver.Title);
         }
 
@@ -222,7 +222,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = simpleTestPage;
             driver.FindElement(By.Id("multilinelink")).Click();
-            WaitFor(() => { return driver.Title == "We Arrive Here"; });
+            WaitFor(() => { return driver.Title == "We Arrive Here"; }, "Browser title was not 'We Arrive Here'");
             Assert.AreEqual("We Arrive Here", driver.Title);
         }
 
@@ -242,7 +242,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("ClickTest_testClicksASurroundingStrongTag.html");
             driver.FindElement(By.TagName("a")).Click();
-            WaitFor(() => { return driver.Title == "XHTML Test Page"; });
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
         }
 
         [Test]
@@ -255,15 +255,15 @@ namespace OpenQA.Selenium
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/google_map.html");
             driver.FindElement(By.Id("rectG")).Click();
-            WaitFor(() => { return driver.Title == "Target Page 1"; });
+            WaitFor(() => { return driver.Title == "Target Page 1"; }, "Browser title was not 'Target Page 1'");
 
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/google_map.html");
             driver.FindElement(By.Id("circleO")).Click();
-            WaitFor(() => { return driver.Title == "Target Page 2"; });
+            WaitFor(() => { return driver.Title == "Target Page 2"; }, "Browser title was not 'Target Page 2'");
 
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/google_map.html");
             driver.FindElement(By.Id("polyLE")).Click();
-            WaitFor(() => { return driver.Title == "Target Page 3"; });
+            WaitFor(() => { return driver.Title == "Target Page 3"; }, "Browser title was not 'Target Page 3'");
         }
 
         [Test]
@@ -276,7 +276,7 @@ namespace OpenQA.Selenium
 
             element.Click();
 
-            WaitFor(() => { return driver.Title == "clicks"; });
+            WaitFor(() => { return driver.Title == "clicks"; }, "Browser title was not 'clicks'");
         }
 
         [Test]
@@ -298,7 +298,7 @@ namespace OpenQA.Selenium
 
             element.Click();
 
-            WaitFor(() => { return driver.Title == "clicks"; });
+            WaitFor(() => { return driver.Title == "clicks"; }, "Browser title was not 'clicks'");
         }
 
         [Test]
@@ -308,7 +308,7 @@ namespace OpenQA.Selenium
             driver.Url = url;
 
             driver.FindElement(By.Id("link")).Click();
-            WaitFor(() => { return driver.Title == "XHTML Test Page"; });
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
             Assert.AreEqual("XHTML Test Page", driver.Title);
         }
 
@@ -319,7 +319,7 @@ namespace OpenQA.Selenium
             driver.Url = url;
 
             driver.FindElement(By.Id("link")).Click();
-            WaitFor(() => { return driver.Title == "XHTML Test Page"; });
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
             Assert.AreEqual("XHTML Test Page", driver.Title);
         }
     }

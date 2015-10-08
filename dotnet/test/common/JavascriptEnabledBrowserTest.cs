@@ -44,7 +44,7 @@ namespace OpenQA.Selenium
             driver.Url = formsPage;
 
             driver.FindElement(By.Id("changeme")).Click();
-            WaitFor(() => { return driver.Title == "Page3"; });
+            WaitFor(() => { return driver.Title == "Page3"; }, "Browser title was not 'Page3'");
             Assert.AreEqual("Page3", driver.Title);
         }
 
@@ -57,7 +57,7 @@ namespace OpenQA.Selenium
 
             driver.FindElement(By.Id("changeme")).Click();
 
-            WaitFor(() => { return driver.Title == "Page3"; });
+            WaitFor(() => { return driver.Title == "Page3"; }, "Browser title was not 'Page3'");
             Assert.AreEqual("3", driver.FindElement(By.Id("pageNumber")).Text);
         }
 
@@ -107,7 +107,7 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("jsSubmitButton"));
             element.Click();
 
-            WaitFor(() => { return driver.Title == "We Arrive Here"; });
+            WaitFor(() => { return driver.Title == "We Arrive Here"; }, "Browser title was not 'We Arrive Here'");
             Assert.AreEqual("We Arrive Here", driver.Title);
         }
 
@@ -119,7 +119,7 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("submittingButton"));
             element.Click();
 
-            WaitFor(() => { return driver.Title == "We Arrive Here"; });
+            WaitFor(() => { return driver.Title == "We Arrive Here"; }, "Browser title was not 'We Arrive Here'");
             Assert.AreEqual("We Arrive Here", driver.Title);
         }
 
@@ -244,7 +244,7 @@ namespace OpenQA.Selenium
 
             String handle = driver.CurrentWindowHandle;
             driver.FindElement(By.Id("new_window")).Click();
-            WaitFor(() => { driver.SwitchTo().Window("close_me"); return true; });
+            WaitFor(() => { driver.SwitchTo().Window("close_me"); return true; }, "Could not find window with name 'close_me'");
 
             driver.FindElement(By.Id("close")).Click();
 

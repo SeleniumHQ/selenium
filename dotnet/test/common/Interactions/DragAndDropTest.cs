@@ -68,7 +68,7 @@ namespace OpenQA.Selenium.Interactions
                     {
                         return null;
                     }
-                });
+                }, "Element with ID 'test1' not found");
 
             IWebElement img2 = driver.FindElement(By.Id("test2"));
             new Actions(driver).DragAndDrop(img2, img1).Perform();

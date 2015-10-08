@@ -889,7 +889,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = xhtmlTestPage;
             driver.FindElement(By.LinkText("click me")).Click();
-            WaitFor(() => { return driver.Title == "We Arrive Here"; });
+            WaitFor(() => { return driver.Title == "We Arrive Here"; }, "Browser title is not 'We Arrive Here'");
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 
@@ -898,7 +898,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = xhtmlTestPage;
             driver.FindElement(By.Id("linkId")).Click();
-            WaitFor(() => { return driver.Title == "We Arrive Here"; });
+            WaitFor(() => { return driver.Title == "We Arrive Here"; }, "Browser title is not 'We Arrive Here'");
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 
