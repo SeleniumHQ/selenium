@@ -1,5 +1,15 @@
 ## v2.48.0-dev
 
+* FIXED: a single `firefox.Binary` instance may be used to configure and
+    launch multiple FirefoxDriver sessions.
+
+      var binary = new firefox.Binary();
+      var options = new firefox.Options().setBinary(binary);
+      var builder = new Builder().setFirefoxOptions(options);
+
+      var driver1 = builder.build();
+      var driver2 = builder.build();
+
 * FIXED: zip files created for transfer to a remote WebDriver server are no
     longer compressed. If the zip contained a file that was already compressed,
     the server would return an "invalid code lengths set" error.
