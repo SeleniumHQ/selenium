@@ -354,6 +354,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void SwitchingToMissingAlertInAClosedWindowThrows()
         {
+            driver.Url = alertsPage;
             string mainWindow = driver.CurrentWindowHandle;
             try
             {
@@ -538,6 +539,7 @@ namespace OpenQA.Selenium
         [Test]
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
+        [IgnoreBrowser(Browser.Firefox, "After version 27, Firefox does not trigger alerts on unload.")]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Safari)]
         [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
@@ -562,6 +564,7 @@ namespace OpenQA.Selenium
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.Android, "alerts do not pop up when a window is closed")]
         [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Firefox, "After version 27, Firefox does not trigger alerts on unload.")]
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Safari)]
         [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
