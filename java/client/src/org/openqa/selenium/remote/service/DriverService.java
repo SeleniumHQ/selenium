@@ -163,11 +163,11 @@ public class DriverService {
       process.copyOutputTo(System.err);
       process.executeAsync();
 
-      //URL status = new URL(url.toString() + "/status");
-      //new UrlChecker().waitUntilAvailable(20, SECONDS, status);
-    //} catch (UrlChecker.TimeoutException e) {
-    //  process.checkForError();
-    //  throw new WebDriverException("Timed out waiting for driver server to start.", e);
+      URL status = new URL(url.toString() + "/status");
+      new UrlChecker().waitUntilAvailable(20, SECONDS, status);
+    } catch (UrlChecker.TimeoutException e) {
+      process.checkForError();
+      throw new WebDriverException("Timed out waiting for driver server to start.", e);
     } finally {
       lock.unlock();
     }
