@@ -25,6 +25,8 @@ using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Interactions.Internal;
 using OpenQA.Selenium.Internal;
 using System.Text.RegularExpressions;
+using OpenQA.Selenium.HTML5;
+using OpenQA.Selenium.Remote.HTML5;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -74,6 +76,9 @@ namespace OpenQA.Selenium.Remote
         private IMouse mouse;
         private IKeyboard keyboard;
         private SessionId sessionId;
+        private IWebStorage storage;
+        private IApplicationCache appCache;
+        private ILocationContext locationContext;
         private IFileDetector fileDetector = new DefaultFileDetector();
         #endregion
 
@@ -90,6 +95,9 @@ namespace OpenQA.Selenium.Remote
             this.StartSession(desiredCapabilities);
             this.mouse = new RemoteMouse(this);
             this.keyboard = new RemoteKeyboard(this);
+            this.storage = new RemoteWebStorage(this);
+            this.appCache = new RemoteApplicationCache(this);
+            this.locationContext = new RemoteLocationContext(this);
         }
 
         /// <summary>
@@ -268,6 +276,30 @@ namespace OpenQA.Selenium.Remote
             get { return this.mouse; }
         }
         #endregion
+
+        /// <summary>
+        /// Gets an <see cref="IWebStorage"/> object for managing web storage.
+        /// </summary>
+        public IWebStorage WebStorage
+        {
+            get { return this.storage; }
+        }
+
+        /// <summary>
+        /// Gets an <see cref="IApplicationCache"/> object for managing application cache.
+        /// </summary>
+        public IApplicationCache ApplicationCache
+        {
+            get { return this.appCache; }
+        }
+
+        /// <summary>
+        /// Gets an <see cref="ILocationContext"/> object for managing browser location.
+        /// </summary>
+        public ILocationContext LocationContext
+        {
+            get { return this.locationContext; }
+        }
 
         #region IHasCapabilities properties
         /// <summary>
@@ -961,7 +993,7 @@ namespace OpenQA.Selenium.Remote
         protected virtual Response Execute(string driverCommandToExecute, Dictionary<string, object> parameters)
         {
             Command commandToExecute = new Command(this.sessionId, driverCommandToExecute, parameters);
-
+            
             Response commandResponse = new Response();
 
             try
