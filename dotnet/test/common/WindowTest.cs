@@ -163,16 +163,16 @@ namespace OpenQA.Selenium
             IWindow window = driver.Manage().Window;
             Size currentSize = window.Size;
             window.Maximize();
-            WaitFor(WindowHeightToBeGreaterThan(currentSize.Height));
-            WaitFor(WindowWidthToBeGreaterThan(currentSize.Width));
+            WaitFor(WindowHeightToBeGreaterThan(currentSize.Height), "Window height was not greater than " + currentSize.Height.ToString());
+            WaitFor(WindowWidthToBeGreaterThan(currentSize.Width), "Window width was not greater than " + currentSize.Width.ToString());
         }
 
         private void ChangeSizeTo(Size targetSize)
         {
             IWindow window = driver.Manage().Window;
             window.Size = targetSize;
-            WaitFor(WindowHeightToBeEqualTo(targetSize.Height));
-            WaitFor(WindowWidthToBeEqualTo(targetSize.Width));
+            WaitFor(WindowHeightToBeEqualTo(targetSize.Height), "Window height was not " + targetSize.Height.ToString());
+            WaitFor(WindowWidthToBeEqualTo(targetSize.Width), "Window width was not " + targetSize.Width.ToString());
         }
 
         private Func<bool> WindowHeightToBeEqualTo(int height)

@@ -82,14 +82,14 @@ namespace OpenQA.Selenium.Interactions
         {
             driver.Url = clicksPage;
 
-            WaitFor(() => { return driver.FindElement(By.Id("normal")); });
+            WaitFor(() => { return driver.FindElement(By.Id("normal")); }, "Could not find element with id 'normal'");
             IWebElement link = driver.FindElement(By.Id("normal"));
 
             new Actions(driver)
                 .Click(link)
                 .Perform();
 
-            WaitFor(() => { return driver.Title == "XHTML Test Page"; });
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title is not 'XHTML Test Page'");
         }
 
         [Test]
@@ -113,7 +113,7 @@ namespace OpenQA.Selenium.Interactions
         {
             driver.Url = clicksPage;
 
-            WaitFor(() => { return driver.FindElement(By.Id("normal")); });
+            WaitFor(() => { return driver.FindElement(By.Id("normal")); }, "Could not find element with id 'normal'");
             IWebElement link = driver.FindElement(By.Id("normal"));
 
             new Actions(driver)
@@ -121,7 +121,7 @@ namespace OpenQA.Selenium.Interactions
                 .Click()
                 .Perform();
 
-            WaitFor(() => { return driver.Title == "XHTML Test Page"; });
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title is not 'XHTML Test Page'");
         }
 
         /**
@@ -145,7 +145,7 @@ namespace OpenQA.Selenium.Interactions
                 .Click()
                 .Perform();
 
-            WaitFor(() => { return driver.Title == "We Arrive Here"; });
+            WaitFor(() => { return driver.Title == "We Arrive Here"; }, "Browser title is not 'We Arrive Here'");
         }
 
         [Test]
@@ -252,7 +252,7 @@ namespace OpenQA.Selenium.Interactions
 
             new Actions(driver).KeyDown(Keys.Shift).Click(toClick).KeyUp(Keys.Shift).Perform();
 
-            IWebElement shiftInfo = WaitFor(() => { return driver.FindElement(By.Id("shiftKey")); });
+            IWebElement shiftInfo = WaitFor(() => { return driver.FindElement(By.Id("shiftKey")); }, "Could not find element with id 'shiftKey'");
             Assert.AreEqual("true", shiftInfo.Text);
         }
 
@@ -284,7 +284,7 @@ namespace OpenQA.Selenium.Interactions
             target.Click();
 
             IWebElement result = driver.FindElement(By.Id("result"));
-            WaitFor(() => { return result.Text.Contains("item 1"); });
+            WaitFor(() => { return result.Text.Contains("item 1"); }, "Result element does not contain text 'item 1'");
         }
 
         [Test]
@@ -308,7 +308,7 @@ namespace OpenQA.Selenium.Interactions
             target.Click();
 
             IWebElement result = driver.FindElement(By.Id("result"));
-            WaitFor(() => { return result.Text.Contains("item 1"); });
+            WaitFor(() => { return result.Text.Contains("item 1"); }, "Result element does not contain text 'item 1'");
         }
     }
 }

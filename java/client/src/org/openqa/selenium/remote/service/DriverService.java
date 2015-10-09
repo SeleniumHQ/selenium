@@ -163,13 +163,19 @@ public class DriverService {
       process.copyOutputTo(System.err);
       process.executeAsync();
 
-      //URL status = new URL(url.toString() + "/status");
-      //new UrlChecker().waitUntilAvailable(20, SECONDS, status);
-    //} catch (UrlChecker.TimeoutException e) {
-    //  process.checkForError();
-    //  throw new WebDriverException("Timed out waiting for driver server to start.", e);
+      waitUntilAvailable();
     } finally {
       lock.unlock();
+    }
+  }
+
+  protected void waitUntilAvailable() throws MalformedURLException {
+    try {
+      URL status = new URL(url.toString() + "/status");
+      new UrlChecker().waitUntilAvailable(20, SECONDS, status);
+    } catch (UrlChecker.TimeoutException e) {
+      process.checkForError();
+      throw new WebDriverException("Timed out waiting for driver server to start.", e);
     }
   }
 

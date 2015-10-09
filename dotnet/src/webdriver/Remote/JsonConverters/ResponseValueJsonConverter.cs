@@ -66,7 +66,7 @@ namespace OpenQA.Selenium.Remote
 
         private object ProcessToken(JsonReader reader)
         {
-             // Recursively processes a token. This is required for elements that next other elements.
+            // Recursively processes a token. This is required for elements that next other elements.
             object processedObject = null;
             if (reader != null)
             {
@@ -94,6 +94,7 @@ namespace OpenQA.Selenium.Remote
                 }
                 else
                 {
+                    reader.DateParseHandling = DateParseHandling.None;
                     processedObject = reader.Value;
                 }
             }

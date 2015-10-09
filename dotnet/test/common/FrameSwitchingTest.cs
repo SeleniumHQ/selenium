@@ -31,6 +31,28 @@ namespace OpenQA.Selenium
             Assert.IsNotNull(element);
         }
 
+        [Test]
+        public void ShouldOpenPageWithBrokenFrameset()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("framesetPage3.html");
+
+            IWebElement frame1 = driver.FindElement(By.Id("first"));
+            driver.SwitchTo().Frame(frame1);
+
+            driver.SwitchTo().DefaultContent();
+
+            IWebElement frame2 = driver.FindElement(By.Id("second"));
+
+            try
+            {
+                driver.SwitchTo().Frame(frame2);
+            }
+            catch (WebDriverException)
+            {
+                // IE9 can not switch to this broken frame - it has no window.
+            }
+        }
+
         // ----------------------------------------------------------------------------------------------
         //
         // Tests that WebDriver can switch to frames as expected.
@@ -327,6 +349,16 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        public void testShouldBeAbleToClickInAFrameThatRewritesTopWindowLocation()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/issue5237.html");
+            driver.SwitchTo().Frame("search");
+            driver.FindElement(By.Id("submit")).Click();
+            driver.SwitchTo().DefaultContent();
+            WaitFor(() => { return driver.Title == "Target page for issue 5237"; }, "Browser title was not 'Target page for issue 5237'");
+        }
+
+        [Test]
         [IgnoreBrowser(Browser.HtmlUnit)]
         public void ShouldBeAbleToClickInASubFrame()
         {
@@ -345,23 +377,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [NeedsFreshDriver(AfterTest = true)]
-        public void ClosingTheFinalBrowserWindowShouldNotCauseAnExceptionToBeThrown()
-        {
-            driver.Url = simpleTestPage;
-            driver.Close();
-        }
-
-        [Test]
-        public void ShouldBeAbleToFlipToAFrameIdentifiedByItsId()
-        {
-            driver.Url = framesetPage;
-
-            driver.SwitchTo().Frame("fifth");
-            driver.FindElement(By.Id("username"));
-        }
-
-        [Test]
         public void ShouldBeAbleToFindElementsInIframesByXPath()
         {
             driver.Url = iframePage;
@@ -374,22 +389,24 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void GetCurrentUrl()
+        public void GetCurrentUrlShouldReturnTopLevelBrowsingContextUrl()
         {
             driver.Url = framesetPage;
+            Assert.AreEqual(framesetPage, driver.Url);
 
             driver.SwitchTo().Frame("second");
-            string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("page/2");
-            Assert.AreEqual(url + "?title=Fish", driver.Url);
+            Assert.AreEqual(framesetPage, driver.Url);
+        }
 
-            url = EnvironmentManager.Instance.UrlBuilder.WhereIs("iframes.html");
+        [Test]
+        public void GetCurrentUrlShouldReturnTopLevelBrowsingContextUrlForIframes()
+        {
             driver.Url = iframePage;
-            Assert.AreEqual(url, driver.Url);
+            Assert.AreEqual(iframePage, driver.Url);
 
 
-            url = EnvironmentManager.Instance.UrlBuilder.WhereIs("formPage.html");
             driver.SwitchTo().Frame("iframe1");
-            Assert.AreEqual(url, driver.Url);
+            Assert.AreEqual(iframePage, driver.Url);
         }
 
         [Test]
@@ -450,7 +467,7 @@ namespace OpenQA.Selenium
                     }
 
                     return success != null;
-                });
+                }, "Element with id 'success' still exists on page");
             }
             catch (WebDriverException)
             {
@@ -483,6 +500,23 @@ namespace OpenQA.Selenium
         // Frame handling behavior tests not included in Java tests
         //
         // ----------------------------------------------------------------------------------------------
+
+        [Test]
+        [NeedsFreshDriver(AfterTest = true)]
+        public void ClosingTheFinalBrowserWindowShouldNotCauseAnExceptionToBeThrown()
+        {
+            driver.Url = simpleTestPage;
+            driver.Close();
+        }
+
+        [Test]
+        public void ShouldBeAbleToFlipToAFrameIdentifiedByItsId()
+        {
+            driver.Url = framesetPage;
+
+            driver.SwitchTo().Frame("fifth");
+            driver.FindElement(By.Id("username"));
+        }
 
         [Test]
         public void ShouldBeAbleToSelectAFrameByName()
