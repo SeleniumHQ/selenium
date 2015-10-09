@@ -469,16 +469,6 @@ namespace OpenQA.Selenium.Remote
         public static readonly string ClearAppCache = "clearAppCache";
 
         /// <summary>
-        /// Represents the IsBrowserOnline command.
-        /// </summary>
-        public static readonly string IsBrowserOnline = "isBrowserOnline";
-
-        /// <summary>
-        /// Represents the SetBrowserOnline command.
-        /// </summary>
-        public static readonly string SetBrowserOnline = "setBrowserOnline";
-
-        /// <summary>
         /// Represents the GetLocalStorageItem command.
         /// </summary>
         public static readonly string GetLocalStorageItem = "getLocalStorageItem";

@@ -18,6 +18,9 @@
 
 namespace OpenQA.Selenium.HTML5
 {
+    /// <summary>
+    /// Interface for location context
+    /// </summary>
     public interface ILocationContext
     {
         /// <summary>

@@ -143,8 +143,6 @@ namespace OpenQA.Selenium.Remote
             this.TryAddCommand(DriverCommand.GetAppCache, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/application_cache"));
             this.TryAddCommand(DriverCommand.GetAppCacheStatus, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/application_cache/status"));
             this.TryAddCommand(DriverCommand.ClearAppCache, new CommandInfo(CommandInfo.DeleteCommand, "/session/{sessionId}/application_cache/clear"));
-            this.TryAddCommand(DriverCommand.IsBrowserOnline, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/browser_connection"));
-            this.TryAddCommand(DriverCommand.SetBrowserOnline, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/browser_connection"));
             this.TryAddCommand(DriverCommand.GetLocalStorageKeys, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/local_storage"));
             this.TryAddCommand(DriverCommand.SetLocalStorageItem, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/local_storage"));
             this.TryAddCommand(DriverCommand.ClearLocalStorage, new CommandInfo(CommandInfo.DeleteCommand, "/session/{sessionId}/local_storage"));
