@@ -143,6 +143,25 @@ namespace OpenQA.Selenium.Remote
             this.TryAddCommand(DriverCommand.TouchFlick, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/touch/flick"));
 
             this.TryAddCommand(DriverCommand.UploadFile, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/file"));
+
+            // HTML5 commands
+            this.TryAddCommand(DriverCommand.GetLocation, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/location"));
+            this.TryAddCommand(DriverCommand.SetLocation, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/location"));
+            this.TryAddCommand(DriverCommand.GetAppCache, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/application_cache"));
+            this.TryAddCommand(DriverCommand.GetAppCacheStatus, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/application_cache/status"));
+            this.TryAddCommand(DriverCommand.ClearAppCache, new CommandInfo(CommandInfo.DeleteCommand, "/session/{sessionId}/application_cache/clear"));
+            this.TryAddCommand(DriverCommand.GetLocalStorageKeys, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/local_storage"));
+            this.TryAddCommand(DriverCommand.SetLocalStorageItem, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/local_storage"));
+            this.TryAddCommand(DriverCommand.ClearLocalStorage, new CommandInfo(CommandInfo.DeleteCommand, "/session/{sessionId}/local_storage"));
+            this.TryAddCommand(DriverCommand.GetLocalStorageItem, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/local_storage/key/{key}"));
+            this.TryAddCommand(DriverCommand.RemoveLocalStorageItem, new CommandInfo(CommandInfo.DeleteCommand, "/session/{sessionId}/local_storage/key/{key}"));
+            this.TryAddCommand(DriverCommand.GetLocalStorageSize, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/local_storage/size"));
+            this.TryAddCommand(DriverCommand.GetSessionStorageKeys, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/session_storage"));
+            this.TryAddCommand(DriverCommand.SetSessionStorageItem, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/session_storage"));
+            this.TryAddCommand(DriverCommand.ClearSessionStorage, new CommandInfo(CommandInfo.DeleteCommand, "/session/{sessionId}/session_storage"));
+            this.TryAddCommand(DriverCommand.GetSessionStorageItem, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/session_storage/key/{key}"));
+            this.TryAddCommand(DriverCommand.RemoveSessionStorageItem, new CommandInfo(CommandInfo.DeleteCommand, "/session/{sessionId}/session_storage/key/{key}"));
+            this.TryAddCommand(DriverCommand.GetSessionStorageSize, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/session_storage/size"));
         }
     }
 }

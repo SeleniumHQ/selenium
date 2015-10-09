@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlertsTest.cs" />
+    <Compile Include="HTML5\AppCacheTest.cs" />
     <Compile Include="AssemblyTeardown.cs" />
     <Compile Include="Browser.cs" />
     <Compile Include="ByTest.cs" />
@@ -94,7 +95,10 @@
     <Compile Include="AtomsInjectionTest.cs" />
     <Compile Include="CssValueTest.cs" />
     <Compile Include="Interactions\DragAndDropTest.cs" />
+    <Compile Include="HTML5\LocalStorageTest.cs" />
+    <Compile Include="HTML5\LocationContextTest.cs" />
     <Compile Include="PositionAndSizeTest.cs" />
+    <Compile Include="HTML5\SessionStorageTest.cs" />
     <Compile Include="SvgElementTest.cs" />
     <Compile Include="SvgDocumentTest.cs" />
     <Compile Include="DesiredCapabililtiesTest.cs" />

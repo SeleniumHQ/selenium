@@ -21,10 +21,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using OpenQA.Selenium.Interactions;
-using OpenQA.Selenium.Interactions.Internal;
-using OpenQA.Selenium.Internal;
 using System.Text.RegularExpressions;
+using OpenQA.Selenium.Html5;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -61,7 +60,7 @@ namespace OpenQA.Selenium.Remote
     /// }
     /// </code>
     /// </example>
-    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, ITakesScreenshot, IHasInputDevices, IHasCapabilities, IAllowsFileDetection
+    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, ITakesScreenshot, IHasInputDevices, IHasCapabilities, IHasWebStorage, IHasLocationContext, IHasApplicationCache, IAllowsFileDetection
     {
         /// <summary>
         /// The default command timeout for HTTP requests in a RemoteWebDriver instance.
@@ -74,6 +73,9 @@ namespace OpenQA.Selenium.Remote
         private IMouse mouse;
         private IKeyboard keyboard;
         private SessionId sessionId;
+        private IWebStorage storage;
+        private IApplicationCache appCache;
+        private ILocationContext locationContext;
         private IFileDetector fileDetector = new DefaultFileDetector();
         #endregion
 
@@ -90,6 +92,33 @@ namespace OpenQA.Selenium.Remote
             this.StartSession(desiredCapabilities);
             this.mouse = new RemoteMouse(this);
             this.keyboard = new RemoteKeyboard(this);
+
+            if (this.capabilities.HasCapability(CapabilityType.SupportsApplicationCache))
+            {
+                object appCacheCapability = this.capabilities.GetCapability(CapabilityType.SupportsApplicationCache);
+                if (appCacheCapability is bool && (bool)appCacheCapability)
+                {
+                    this.appCache = new RemoteApplicationCache(this);
+                }
+            }
+
+            if (this.capabilities.HasCapability(CapabilityType.SupportsLocationContext))
+            {
+                object locationContextCapability = this.capabilities.GetCapability(CapabilityType.SupportsLocationContext);
+                if (locationContextCapability is bool && (bool)locationContextCapability)
+                {
+                this.locationContext = new RemoteLocationContext(this);
+                }
+            }
+
+            if (this.capabilities.HasCapability(CapabilityType.SupportsWebStorage))
+            {
+                object webContextCapability = this.capabilities.GetCapability(CapabilityType.SupportsWebStorage);
+                if (webContextCapability is bool && (bool)webContextCapability)
+                {
+                    this.storage = new RemoteWebStorage(this);
+                }
+            }
         }
 
         /// <summary>
@@ -268,6 +297,78 @@ namespace OpenQA.Selenium.Remote
             get { return this.mouse; }
         }
         #endregion
+
+        /// <summary>
+        /// Gets a value indicating whether web storage is supported for this driver.
+        /// </summary>
+        public bool HasWebStorage
+        {
+            get { return this.storage != null; }
+        }
+
+        /// <summary>
+        /// Gets an <see cref="IWebStorage"/> object for managing web storage.
+        /// </summary>
+        public IWebStorage WebStorage
+        {
+            get
+            {
+                if (this.storage == null)
+                {
+                    throw new WebDriverException("Driver does not support manipulating HTML5 web storage. Use the HasWebStorage property to test for the driver capability");
+                }
+
+                return this.storage;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether manipulating the application cache is supported for this driver.
+        /// </summary>
+        public bool HasApplicationCache
+        {
+            get { return this.appCache != null; }
+        }
+
+        /// <summary>
+        /// Gets an <see cref="IApplicationCache"/> object for managing application cache.
+        /// </summary>
+        public IApplicationCache ApplicationCache
+        {
+            get
+            {
+                if (this.appCache == null)
+                {
+                    throw new WebDriverException("Driver does not support manipulating the HTML5 application cache. Use the HasApplicationCache property to test for the driver capability");
+                }
+
+                return this.appCache;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether manipulating geolocation is supported for this driver.
+        /// </summary>
+        public bool HasLocationContext
+        {
+            get { return this.locationContext != null; }
+        }
+
+        /// <summary>
+        /// Gets an <see cref="ILocationContext"/> object for managing browser location.
+        /// </summary>
+        public ILocationContext LocationContext
+        {
+            get
+            {
+                if (this.locationContext == null)
+                {
+                    throw new WebDriverException("Driver does not support setting HTML5 geolocation information. Use the HasLocationContext property to test for the driver capability");
+                }
+
+                return this.locationContext;
+            }
+        }
 
         #region IHasCapabilities properties
         /// <summary>
@@ -961,7 +1062,7 @@ namespace OpenQA.Selenium.Remote
         protected virtual Response Execute(string driverCommandToExecute, Dictionary<string, object> parameters)
         {
             Command commandToExecute = new Command(this.sessionId, driverCommandToExecute, parameters);
-
+            
             Response commandResponse = new Response();
 
             try

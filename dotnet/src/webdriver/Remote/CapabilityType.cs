@@ -91,5 +91,20 @@ namespace OpenQA.Selenium.Remote
         /// Capability name used to indicate the page load strategy for the browser.
         /// </summary>
         public static readonly string PageLoadStrategy = "pageLoadStrategy";
+
+        /// <summary>
+        /// Capability name used to indicate whether the driver supports geolocation context.
+        /// </summary>
+        public static readonly string SupportsLocationContext = "locationContextEnabled";
+
+        /// <summary>
+        /// Capability name used to indicate whether the driver supports application cache.
+        /// </summary>
+        public static readonly string SupportsApplicationCache = "applicationCacheEnabled";
+
+        /// <summary>
+        /// Capability name used to indicate whether the driver supports web storage.
+        /// </summary>
+        public static readonly string SupportsWebStorage = "webStorageEnabled";
     }
 }

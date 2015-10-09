@@ -79,6 +79,7 @@ namespace OpenQA.Selenium
         public string dragDropOverflowPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("dragDropOverflow.html");
         public string missedJsReferencePage = EnvironmentManager.Instance.UrlBuilder.WhereIs("missedJsReference.html");
         public string authenticationPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("basicAuth");
+        public string html5Page = EnvironmentManager.Instance.UrlBuilder.WhereIs("html5Page.html");
 
         protected IWebDriver driver;
 
