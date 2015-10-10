@@ -18,10 +18,9 @@
 package org.openqa.grid.internal.utils;
 
 import static com.thoughtworks.selenium.SeleneseTestBase.assertEquals;
-import static org.openqa.grid.internal.utils.ServerJsonValues.BROWSER_TIMEOUT;
-import static org.openqa.grid.internal.utils.ServerJsonValues.CLIENT_TIMEOUT;
 
 import org.junit.Test;
+import org.openqa.grid.common.RegistrationRequest;
 
 public class GridHubConfigurationTest {
 
@@ -31,7 +30,7 @@ public class GridHubConfigurationTest {
     assertEquals(300000, gridHubConfiguration.getTimeout()); // From DefaultHub.json file
     gridHubConfiguration.setTimeout(123);
     assertEquals(123, gridHubConfiguration.getTimeout());
-    assertEquals(123,gridHubConfiguration.getAllParams().get(CLIENT_TIMEOUT.getKey()));
+    assertEquals(123,gridHubConfiguration.getAllParams().get(RegistrationRequest.TIME_OUT));
   }
 
   @Test
@@ -40,7 +39,7 @@ public class GridHubConfigurationTest {
     assertEquals(0, gridHubConfiguration.getBrowserTimeout());// From DefaultHub.json file
     gridHubConfiguration.setBrowserTimeout(1233);
     assertEquals(1233, gridHubConfiguration.getBrowserTimeout());
-    assertEquals(1233,gridHubConfiguration.getAllParams().get(BROWSER_TIMEOUT.getKey()));
+    assertEquals(1233,gridHubConfiguration.getAllParams().get(RegistrationRequest.BROWSER_TIME_OUT));
 
   }
 
