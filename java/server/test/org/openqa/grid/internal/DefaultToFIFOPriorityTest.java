@@ -49,8 +49,6 @@ public class DefaultToFIFOPriorityTest {
   private List<MockedRequestHandler> requests =
     Collections.synchronizedList(new ArrayList<MockedRequestHandler>());
 
-  private volatile boolean reqDone = false;
-
   /**
    * create a hub with 1 FF
    *
@@ -105,9 +103,6 @@ public class DefaultToFIFOPriorityTest {
     // when release is executed, 1 slot is
     // freed.The iteration over the queue to sort + find the match isn't
     // instant.
-    while (!reqDone) {
-      Thread.sleep(20);
-    }
     int cpt = 0;
     while (cpt < 8) {
       try {
