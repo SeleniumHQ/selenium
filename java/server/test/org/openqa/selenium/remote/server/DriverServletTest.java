@@ -42,7 +42,6 @@ import org.openqa.selenium.remote.server.testing.FakeHttpServletRequest;
 import org.openqa.selenium.remote.server.testing.FakeHttpServletResponse;
 import org.openqa.selenium.remote.server.testing.TestSessions;
 import org.openqa.selenium.remote.server.testing.UrlInfo;
-import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.seleniumhq.jetty9.server.handler.ContextHandler;
 
 import java.io.IOException;
@@ -82,8 +81,6 @@ public class DriverServletTest {
         final ContextHandler.Context servletContext = new ContextHandler().getServletContext();
         servletContext.setInitParameter("webdriver.server.session.timeout", "18");
         servletContext.setInitParameter("webdriver.server.browser.timeout", "2");
-        servletContext.setAttribute(RemoteControlConfiguration.KEY,
-                                    new RemoteControlConfiguration());
         return servletContext;
       }
 

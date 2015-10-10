@@ -30,7 +30,6 @@ import java.io.File;
  */
 public class RemoteControlConfiguration {
 
-  public static final String KEY = RemoteControlConfiguration.class.getName() + ".config";
   public static final int DEFAULT_PORT = 4444;
   private static final int USE_SAME_PORT = -1;
   public static final int MINUTES = 60;
