@@ -29,6 +29,7 @@ java_library(name = 'server',
     '//third_party/java/guava-libraries:guava-libraries',
     '//third_party/java/gson:gson',
     '//third_party/java/jetty:jetty-for-rc',
+    '//third_party/java/servlet:servlet-api',
   ],
   visibility = [
     '//java/server/src/org/openqa/grid:grid',
