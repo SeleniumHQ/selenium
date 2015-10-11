@@ -35,9 +35,7 @@ import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.JsonToBeanConverter;
-import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
-import org.openqa.selenium.server.cli.RemoteControlLauncher;
 
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
@@ -582,18 +580,6 @@ public class RegistrationRequest {
 
   public void setRole(GridRole role) {
     this.role = role;
-  }
-
-  public RemoteControlConfiguration getRemoteControlConfiguration() {
-    List<String> params = new ArrayList<>();
-    for (String key : configuration.keySet()) {
-      params.add("-" + key);
-
-      if (!configuration.get(key).toString().trim().isEmpty()) {
-        params.add("" + configuration.get(key));
-      }
-    }
-    return RemoteControlLauncher.parseLauncherOptions(params.toArray(new String[params.size()]));
   }
 
   public String[] getArgs() {

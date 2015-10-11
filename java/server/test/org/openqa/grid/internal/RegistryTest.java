@@ -161,7 +161,7 @@ public class RegistryTest {
     }
   }
 
-  @Test(timeout = 1000)
+  @Test(timeout = 2000)
   public void registerAtTheSameTime() throws InterruptedException {
     final Registry registry = Registry.newInstance();
     final CountDownLatch latch = new CountDownLatch(TOTAL_THREADS);

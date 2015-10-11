@@ -53,6 +53,9 @@ import java.io.InputStreamReader;
 import java.net.BindException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -239,6 +242,22 @@ public class SeleniumServer implements SslCertificateGenerator {
 
   public SeleniumServer() throws Exception {
     this(slowResourceProperty(), new RemoteControlConfiguration());
+  }
+
+  public SeleniumServer(Map<String, Object> configurationAsMap) throws Exception {
+    this(slowResourceProperty(), mapToRemoteControlConfiguration(configurationAsMap));
+  }
+
+  private static RemoteControlConfiguration mapToRemoteControlConfiguration(Map<String, Object> configurationAsMap) {
+    List<String> params = new ArrayList<>();
+    for (String key : configurationAsMap.keySet()) {
+      params.add("-" + key);
+
+      if (!configurationAsMap.get(key).toString().trim().isEmpty()) {
+        params.add("" + configurationAsMap.get(key));
+      }
+    }
+    return RemoteControlLauncher.parseLauncherOptions(params.toArray(new String[params.size()]));
   }
 
   public SeleniumServer(RemoteControlConfiguration configuration) throws Exception {

@@ -41,7 +41,6 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 import org.openqa.selenium.remote.server.log.LoggingManager;
-import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
 
 import java.io.BufferedReader;
@@ -88,19 +87,17 @@ public class SelfRegisteringRemote {
 
     System.setProperty("org.openqa.jetty.http.HttpRequest.maxFormContentSize", "0");
 
-
     nodeConfig.validate();
-    RemoteControlConfiguration remoteControlConfiguration = nodeConfig.getRemoteControlConfiguration();
 
     try {
       JsonObject hubParameters = getHubConfiguration();
       if (hubParameters.has(RegistrationRequest.TIME_OUT)){
         int timeout = hubParameters.get(RegistrationRequest.TIME_OUT).getAsInt() / 1000;
-        remoteControlConfiguration.setTimeoutInSeconds(timeout);
+        nodeConfig.getConfiguration().put(RegistrationRequest.TIME_OUT, timeout);
       }
       if (hubParameters.has(RegistrationRequest.BROWSER_TIME_OUT)) {
         int browserTimeout = hubParameters.get(RegistrationRequest.BROWSER_TIME_OUT).getAsInt();
-        remoteControlConfiguration.setBrowserTimeoutInMs(browserTimeout);
+        nodeConfig.getConfiguration().put(RegistrationRequest.BROWSER_TIME_OUT, browserTimeout);
       }
     } catch (Exception e) {
       LOG.warning(
@@ -108,7 +105,7 @@ public class SelfRegisteringRemote {
           .getMessage());
     }
 
-    server = new SeleniumServer(remoteControlConfiguration);
+    server = new SeleniumServer(nodeConfig.getConfiguration());
 
     Server jetty = server.getServer();
 
