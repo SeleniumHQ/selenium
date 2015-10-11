@@ -17,9 +17,6 @@
 
 package org.openqa.grid.internal.utils;
 
-import static org.openqa.grid.internal.utils.ServerJsonValues.BROWSER_TIMEOUT;
-import static org.openqa.grid.internal.utils.ServerJsonValues.CLIENT_TIMEOUT;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -190,11 +187,11 @@ public class GridHubConfiguration {
     if (helper.isParamPresent("-cleanUpCycle")) {
       cleanupCycle = Integer.parseInt(helper.getParamValue("-cleanUpCycle"));
     }
-    if (helper.isParamPresent(CLIENT_TIMEOUT.getAsParam())) {
-      setTimeout(Integer.parseInt(helper.getParamValue(CLIENT_TIMEOUT.getAsParam())) * 1000);
+    if (helper.isParamPresent("-timeout")) {
+      setTimeout(Integer.parseInt(helper.getParamValue("-timeout")) * 1000);
     }
-    if (helper.isParamPresent(BROWSER_TIMEOUT.getAsParam())) {
-      setBrowserTimeout(Integer.parseInt(helper.getParamValue(BROWSER_TIMEOUT.getAsParam())) * 1000);
+    if (helper.isParamPresent("-browserTimeout")) {
+      setBrowserTimeout(Integer.parseInt(helper.getParamValue("-browserTimeout")) * 1000);
     }
     if (helper.isParamPresent("-newSessionWaitTimeout")) {
       newSessionWaitTimeout = Integer.parseInt(helper.getParamValue("-newSessionWaitTimeout"));
@@ -352,15 +349,15 @@ public class GridHubConfiguration {
   }
 
   public int getTimeout() {
-    return getIntWith0Default(CLIENT_TIMEOUT);
+    return getIntWith0Default(RegistrationRequest.TIME_OUT);
   }
 
   public int getBrowserTimeout() {
-    return getIntWith0Default(BROWSER_TIMEOUT);
+    return getIntWith0Default(RegistrationRequest.BROWSER_TIME_OUT);
   }
 
   public void setBrowserTimeout(int browserTimeout) {
-      put(BROWSER_TIMEOUT, browserTimeout);
+      put(RegistrationRequest.BROWSER_TIME_OUT, browserTimeout);
   }
 
   public int getNewSessionWaitTimeout() {
@@ -404,21 +401,16 @@ public class GridHubConfiguration {
   }
 
   public void setTimeout(int timeout) {
-    put(CLIENT_TIMEOUT, timeout);
+    put(RegistrationRequest.TIME_OUT, timeout);
   }
 
-  private void put(JsonKey key, Object value){
-    allParams.put(key.getKey(), value);
+  private void put(String key, Object value){
+    allParams.put(key, value);
   }
 
-  private <T> T get(JsonKey jsonKey) {
+  private Integer getIntWith0Default(String jsonKey) {
     //noinspection unchecked
-    return (T) allParams.get(jsonKey.getKey());
-  }
-
-  private Integer getIntWith0Default(JsonKey jsonKey) {
-    //noinspection unchecked
-    final Object o = allParams.get(jsonKey.getKey());
+    final Object o = allParams.get(jsonKey);
     if (o instanceof  String){
       return Integer.parseInt((String) o);
     }

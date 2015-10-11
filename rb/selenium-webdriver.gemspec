@@ -7,7 +7,7 @@ end
 
 Gem::Specification.new do |s|
   s.name    = "selenium-webdriver"
-  s.version = "2.48.0.dev"
+  s.version = "2.49.0.dev"
 
   s.authors     = ["Jari Bakken"]
   s.email       = "jari.bakken@gmail.com"
@@ -31,4 +31,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rack", ["~> 1.0"]
   s.add_development_dependency "ci_reporter", ["~> 1.6", ">= 1.6.2"]
   s.add_development_dependency "webmock", ["~> 1.7", ">= 1.7.5"]
+  s.add_development_dependency "yard", ["~> 0.8.7"]
 end

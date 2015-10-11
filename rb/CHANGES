@@ -1,3 +1,21 @@
+2.48.0 (2015-10-07)
+===================
+
+Firefox:
+  * Initial implementation of Mozilla's Wires Driver for Marionette; Supported in version 43 and higher
+
+Edge:
+  * Fix execution with Remote Server
+  * Fix Javascript Execution
+  * Implement Alert Handling
+  * Implement Window Switching
+
+Ruby:
+  * Initial implementation of W3C WebDriver syntax to support Mozilla Wires
+  * Change to RSpec expect syntax
+  * Specs can be run from relative directories
+
+
 2.47.1 (2015-07-31)
 ===================
 

@@ -15,25 +15,38 @@
 // specific language governing permissions and limitations
 // under the License.
 
+package org.openqa.selenium.remote.server;
 
-package org.openqa.grid.internal.utils;
+import com.beust.jcommander.Parameter;
 
 /**
- * Well-known JSON constants in use by grid/server
+ * Command line args for the selenium server.
  */
-public class ServerJsonValues {
+public class CommandLineArgs {
+  @Parameter(
+    names = {"--help", "-help", "-h"},
+    help = true,
+    hidden = true,
+    description = "This help.")
+  boolean help;
 
-  /**
-   * how many ms can a browser be hanging before being considered hanging (dead). The grid does not
-   * act on this value by itself, but passes the value on to the nodes, which do.
-   */
-  public static final JsonKey BROWSER_TIMEOUT = JsonKey.key("browserTimeout");
+  @Parameter(
+    names = "-browserTimeout",
+    description = "Number of seconds a browser is allowed to hang (0 means indefinite).")
+  int browserTimeout;
 
-  /**
-   * how many ms can a session be idle before being considered timed out. Working together with
-   * cleanup cycle. Worst case scenario, a session can be idle for timeout + cleanup cycle before the
-   * timeout is detected.
-   */
-  public static final JsonKey CLIENT_TIMEOUT = JsonKey.key("timeout");
+  @Parameter(
+    names = "-jettyThreads",
+    hidden = true)
+  int jettyThreads;
 
+  @Parameter(
+    names = {"-port"},
+    description = "The port number the selenium server should use.")
+  int port = 4444;
+
+  @Parameter(
+    names = "-timeout",
+    description = "Number of seconds we should allow a client to be idle (0 means indefinite).")
+  int timeout;
 }

@@ -221,6 +221,17 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
+        /// Gets a value indicating whether the Firefox driver instance uses
+        /// Mozilla's Marionette implementation. This is a temporary property
+        /// and will be removed when Marionette is available for the release
+        /// channel of Firefox.
+        /// </summary>
+        public bool IsMarionette
+        {
+            get { return this.IsSpecificationCompliant; }
+        }
+
+        /// <summary>
         /// Gets the FirefoxBinary and its details for subclasses
         /// </summary>
         protected FirefoxBinary Binary

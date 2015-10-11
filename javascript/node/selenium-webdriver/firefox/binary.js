@@ -133,7 +133,8 @@ function installNoFocusLibs(profileDir) {
 
 
 /**
- * Manages a Firefox subprocess configured for use with WebDriver.
+ * Provides a mechanism to configure and launch Firefox in a subprocess for
+ * use with WebDriver.
  *
  * @param {string=} opt_exe Path to the Firefox binary to use. If not
  *     specified, will attempt to locate Firefox on the current system.
@@ -157,9 +158,6 @@ var Binary = function(opt_exe) {
   this.env_['MOZ_CRASHREPORTER_DISABLE'] = '1';
   this.env_['MOZ_NO_REMOTE'] = '1';
   this.env_['NO_EM_RESTART'] = '1';
-
-  /** @private {promise.Promise.<!exec.Command>} */
-  this.command_ = null;
 };
 util.inherits(Binary, Serializable);
 
@@ -181,17 +179,13 @@ Binary.prototype.addArguments = function(var_args) {
 
 
 /**
- * Launches Firefox and eturns a promise that will be fulfilled when the process
- * terminates.
+ * Launches Firefox and returns a promise that will be fulfilled when the
+ * process terminates.
  * @param {string} profile Path to the profile directory to use.
- * @return {!promise.Promise.<!exec.Result>} A promise for the process result.
- * @throws {Error} If this instance has already been started.
+ * @return {!promise.Promise.<!exec.Command>} A promise for the handle to the
+ *     started subprocess.
  */
 Binary.prototype.launch = function(profile) {
-  if (this.command_) {
-    throw Error('Firefox is already running');
-  }
-
   var env = {};
   Object.keys(this.env_).forEach(function(key) {
     env[key] = this.env_[key];
@@ -200,7 +194,7 @@ Binary.prototype.launch = function(profile) {
 
   var args = ['-foreground'].concat(this.args_);
 
-  this.command_ = promise.when(this.exe_ || findFirefox(), function(firefox) {
+  return promise.when(this.exe_ || findFirefox(), function(firefox) {
     if (process.platform === 'win32' || process.platform === 'darwin') {
       return exec(firefox, {args: args, env: env});
     }
@@ -209,26 +203,6 @@ Binary.prototype.launch = function(profile) {
       env['LD_PRELOAD'] = X_IGNORE_NO_FOCUS_LIB;
       return exec(firefox, {args: args, env: env});
     });
-  });
-
-  return this.command_.then(function() {
-    // Don't return the actual command handle, just a promise to signal it has
-    // been started.
-  });
-};
-
-
-/**
- * Kills the managed Firefox process.
- * @return {!promise.Promise} A promise for when the process has terminated.
- */
-Binary.prototype.kill = function() {
-  if (!this.command_) {
-    return promise.defer();  // Not running.
-  }
-  return this.command_.then(function(command) {
-    command.kill();
-    return command.result();
   });
 };
 

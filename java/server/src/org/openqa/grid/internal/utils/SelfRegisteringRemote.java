@@ -18,8 +18,6 @@
 package org.openqa.grid.internal.utils;
 
 import static org.openqa.grid.common.RegistrationRequest.AUTO_REGISTER;
-import static org.openqa.grid.internal.utils.ServerJsonValues.BROWSER_TIMEOUT;
-import static org.openqa.grid.internal.utils.ServerJsonValues.CLIENT_TIMEOUT;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -96,12 +94,12 @@ public class SelfRegisteringRemote {
 
     try {
       JsonObject hubParameters = getHubConfiguration();
-      if (hubParameters.has(CLIENT_TIMEOUT.getKey())){
-        int timeout = hubParameters.get(CLIENT_TIMEOUT.getKey()).getAsInt() / 1000;
+      if (hubParameters.has(RegistrationRequest.TIME_OUT)){
+        int timeout = hubParameters.get(RegistrationRequest.TIME_OUT).getAsInt() / 1000;
         remoteControlConfiguration.setTimeoutInSeconds(timeout);
       }
-      if (hubParameters.has(BROWSER_TIMEOUT.getKey())) {
-        int browserTimeout = hubParameters.get(BROWSER_TIMEOUT.getKey()).getAsInt();
+      if (hubParameters.has(RegistrationRequest.BROWSER_TIME_OUT)) {
+        int browserTimeout = hubParameters.get(RegistrationRequest.BROWSER_TIME_OUT).getAsInt();
         remoteControlConfiguration.setBrowserTimeoutInMs(browserTimeout);
       }
     } catch (Exception e) {
