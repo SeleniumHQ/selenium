@@ -171,7 +171,7 @@ public class JsonToBeanConverterTest {
   @Test
   public void testShouldConvertAResponseWithAnElementInIt() throws Exception {
     String json =
-        "{\"value\":{\"value\":\"\",\"text\":\"\",\"selected\":false,\"enabled\":true,\"id\":\"three\"},\"context\":\"con\",\"sessionId\":\"sess\",\"error\":false}";
+        "{\"value\":{\"value\":\"\",\"text\":\"\",\"selected\":false,\"enabled\":true,\"id\":\"three\"},\"context\":\"con\",\"sessionId\":\"sess\"}";
     Response converted = new JsonToBeanConverter().convert(Response.class, json);
 
     Map<?,?> value = (Map<?,?>) converted.getValue();
@@ -188,7 +188,7 @@ public class JsonToBeanConverterTest {
   @Test
   public void testShouldBeAbleToCopeWithStringsThatLookLikeBooleans() throws Exception {
     String json =
-        "{\"value\":\"false\",\"context\":\"foo\",\"sessionId\":\"1210083863107\",\"error\":false}";
+        "{\"value\":\"false\",\"context\":\"foo\",\"sessionId\":\"1210083863107\"}";
 
     try {
       new JsonToBeanConverter().convert(Response.class, json);
@@ -201,7 +201,7 @@ public class JsonToBeanConverterTest {
   @Test
   public void testShouldBeAbleToSetAnObjectToABoolean() throws Exception {
     String json =
-        "{\"value\":true,\"context\":\"foo\",\"sessionId\":\"1210084658750\",\"error\":false}";
+        "{\"value\":true,\"context\":\"foo\",\"sessionId\":\"1210084658750\"}";
 
     Response response = new JsonToBeanConverter().convert(Response.class, json);
 
