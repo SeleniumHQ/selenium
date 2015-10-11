@@ -58,6 +58,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.servlet.Servlet;
+
 /**
  * Provides a server that can launch/terminate browsers and can receive remote Selenium commands
  * over HTTP and send them on to the browser.
@@ -195,7 +197,6 @@ public class SeleniumServer implements SslCertificateGenerator {
   private static final NetworkUtils networkUtils = new NetworkUtils();
 
   private ProxyHandler proxyHandler;
-
 
   public static int DEFAULT_JETTY_THREADS = 512;
   // Number of jetty threads for the server
@@ -580,9 +581,42 @@ public class SeleniumServer implements SslCertificateGenerator {
    *
    * @return the internal Jetty server, pre-configured with the /selenium-server context as well as
    *         the proxy server on /
+   * @deprecated
    */
+  @Deprecated
   public Server getServer() {
     return server;
+  }
+
+  public void registerExtraServlets(List<String> servlets) {
+    HttpContext extra = new HttpContext();
+
+    extra.setContextPath("/extra");
+    ServletHandler handler = new ServletHandler();
+    handler.addServlet("/resources/*", ResourceServlet.class.getName());
+
+    for (String s : servlets) {
+      Class<? extends Servlet> servletClass = createServlet(s);
+      if (servletClass != null) {
+        String path = "/" + servletClass.getSimpleName() + "/*";
+        String clazz = servletClass.getCanonicalName();
+        handler.addServlet(path, clazz);
+        LOGGER.info("started extra node servlet visible at : http://xxx:"
+                    + configuration.getPort() + "/extra" + path);
+      }
+    }
+    extra.addHandler(handler);
+    server.addContext(extra);
+  }
+
+  private Class<? extends Servlet> createServlet(String className) {
+    try {
+      return Class.forName(className).asSubclass(Servlet.class);
+    } catch (ClassNotFoundException e) {
+      LOGGER.error(
+        "The specified class : " + className + " cannot be instantiated " + e.getMessage());
+    }
+    return null;
   }
 
   public InputStream getResourceAsStream(String path) throws IOException {

@@ -34,9 +34,6 @@ import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.web.servlet.ResourceServlet;
 import org.openqa.grid.web.utils.ExtraServletUtil;
-import org.openqa.jetty.http.HttpContext;
-import org.openqa.jetty.jetty.Server;
-import org.openqa.jetty.jetty.servlet.ServletHandler;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
@@ -53,8 +50,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import javax.servlet.Servlet;
 
 public class SelfRegisteringRemote {
 
@@ -107,30 +102,9 @@ public class SelfRegisteringRemote {
 
     server = new SeleniumServer(nodeConfig.getConfiguration());
 
-    Server jetty = server.getServer();
-
     String servletsStr = (String) nodeConfig.getConfiguration().get(RegistrationRequest.SERVLETS);
     if (servletsStr != null) {
-      List<String> servlets = Arrays.asList(servletsStr.split(","));
-
-      HttpContext extra = new HttpContext();
-
-      extra.setContextPath("/extra");
-      ServletHandler handler = new ServletHandler();
-      handler.addServlet("/resources/*", ResourceServlet.class.getName());
-
-      for (String s : servlets) {
-        Class<? extends Servlet> servletClass = ExtraServletUtil.createServlet(s);
-        if (servletClass != null) {
-          String path = "/" + servletClass.getSimpleName() + "/*";
-          String clazz = servletClass.getCanonicalName();
-          handler.addServlet(path, clazz);
-          LOG.info("started extra node servlet visible at : http://xxx:"
-                   + nodeConfig.getConfiguration().get(RegistrationRequest.PORT) + "/extra" + path);
-        }
-      }
-      extra.addHandler(handler);
-      jetty.addContext(extra);
+      server.registerExtraServlets(Arrays.asList(servletsStr.split(",")));
     }
 
     server.boot();
