@@ -153,6 +153,7 @@ Use The Source Luke!
 ====================
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 View source code online at:
 
 * https://github.com/SeleniumHQ/selenium/tree/master/py
@@ -163,3 +164,11 @@ View source code online at https://github.com/SeleniumHQ/selenium/tree/master/py
 >>>>>>> adding travis config to run python tests
 =======
 >>>>>>> Bump python to 2.47
+=======
+View source code online at https://github.com/SeleniumHQ/selenium/tree/master/py/
+=======
+View source code online at:
+
+* https://github.com/SeleniumHQ/selenium/tree/master/py
+>>>>>>> fixed README and index.rst for Python documentation
+>>>>>>> fixed README and index.rst for Python documentation
