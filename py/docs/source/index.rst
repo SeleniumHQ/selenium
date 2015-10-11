@@ -1,33 +1,31 @@
-======================
-Selenium Client Driver
-======================
+===========================================
+Selenium WebDriver Client - Python Bindings
+===========================================
 
 Introduction
 ============
 
-Python language bindings for Selenium WebDriver.
-
 The `selenium` package is used automate web browser interaction from Python.
 
-+-----------+-------------------------------------------------------------------------------------+
-| **Home**: | http://www.seleniumhq.org                                                           |
-+-----------+-------------------------------------------------------------------------------------+
-| **Docs**: | `selenium package API <http://seleniumhq.github.io/selenium/docs/api/py/api.html>`_ |
-+-----------+-------------------------------------------------------------------------------------+
-| **Dev**:  | https://github.com/SeleniumHQ/Selenium                                              |
-+-----------+-------------------------------------------------------------------------------------+
-| **PyPI**: | https://pypi.python.org/pypi/selenium                                               |
-+-----------+-------------------------------------------------------------------------------------+
-| **IRC**:  | **#selenium** channel on freenode                                                   |
-+-----------+-------------------------------------------------------------------------------------+
++-----------+-----------------------------------------------------------------------------------+
+| **Home**: | http://www.seleniumhq.org                                                         |
++-----------+-----------------------------------------------------------------------------------+
+| **Docs**: | `selenium package API <http://selenium.googlecode.com/git/docs/api/py/api.html>`_ |
++-----------+-----------------------------------------------------------------------------------+
+| **Dev**:  | https://github.com/SeleniumHQ/selenium                                            |
++-----------+-----------------------------------------------------------------------------------+
+| **PyPI**: | https://pypi.python.org/pypi/selenium                                             |
++-----------+-----------------------------------------------------------------------------------+
+| **IRC**:  | **#selenium** channel on freenode                                                 |
++-----------+-----------------------------------------------------------------------------------+
 
-Several browsers/drivers are supported (Firefox, Chrome, Internet Explorer, PhantomJS), as well as the Remote protocol.
+Several browsers/drivers are supported (Firefox, Chrome, Internet Explorer, PhantomJS, etc), as well as the Remote protocol.
 
 Supported Python Versions
 =========================
 
-* Python 2.6, 2.7
-* Python 3.2, 3.3
+* Python 2.6+
+* Python 3.2+
 
 Installing
 ==========
@@ -36,7 +34,7 @@ If you have `pip <http://www.pip-installer.org>`_ on your system, you can simply
 
     pip install -U selenium
 
-Alternately, you can download the source distribution from `PyPI <http://pypi.python.org/pypi/selenium>`_ (e.g. selenium-2.46.tar.gz), unarchive it, and run::
+Alternately, you can download the source distribution from `PyPI <http://pypi.python.org/pypi/selenium>`_ (e.g. selenium-2.48.tar.gz), unarchive it, and run::
 
     python setup.py install
 
@@ -71,7 +69,7 @@ Example 1:
     browser = webdriver.Firefox()
 
     browser.get('http://www.yahoo.com')
-    assert 'Yahoo!' in browser.title
+    assert 'Yahoo' in browser.title
 
     elem = browser.find_element_by_name('p')  # Find the search box
     elem.send_keys('seleniumhq' + Keys.RETURN)
@@ -81,7 +79,7 @@ Example 1:
 Example 2:
 ==========
 
-Selenium WebDriver is often used as a basis for testing web applications.  Here is a simple example uisng Python's standard `unittest <http://docs.python.org/3/library/unittest.html>`_ library:
+Selenium WebDriver is often used as a basis for testing web applications.  Here is a simple example using Python's standard `unittest <http://docs.python.org/3/library/unittest.html>`_ library:
 
 ::
 
@@ -107,19 +105,17 @@ For normal WebDriver scripts (non-Remote), the Java server is not needed.
 
 However, to use Selenium Webdriver Remote or the legacy Selenium API (Selenium-RC), you need to also run the Selenium server.  The server requires a Java Runtime Environment (JRE).
 
-Download the server separately, from: http://selenium-release.storage.googleapis.com/2.46/selenium-server-standalone-2.46.0.jar
+Download the server separately, from: http://selenium-release.storage.googleapis.com/2.48/selenium-server-standalone-2.48.0.jar
 
 Run the server from the command line::
 
-    java -jar selenium-server-standalone-2.46.0.jar
+    java -jar selenium-server-standalone-2.48.0.jar
 
 Then run your Python client scripts.
 
 Use The Source Luke!
 ====================
 
-View source code online:
+View source code online at:
 
-+-----------+-------------------------------------------------------+
-| official: | https://github.com/SeleniumHQ/selenium/tree/master/py |
-+-----------+-------------------------------------------------------+
+* https://github.com/SeleniumHQ/selenium/tree/master/py
