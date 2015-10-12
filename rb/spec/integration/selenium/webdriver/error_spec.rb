@@ -29,7 +29,7 @@ describe Selenium::WebDriver::Error do
     }.to raise_error(WebDriver::Error::NoSuchElementError)
   end
 
-  compliant_on :driver => [:remote, :firefox] do
+  compliant_on({:driver => :firefox}, {:driver => :remote, :browser => :firefox}) do
     it "should show stack trace information" do
       driver.navigate.to url_for("xhtmlTest.html")
 

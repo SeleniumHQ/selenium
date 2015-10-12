@@ -30,6 +30,7 @@ describe "Element" do
   not_compliant_on :driver => :wires do
     it "should submit" do
       driver.navigate.to url_for("formPage.html")
+      wait(5).until {driver.find_elements(:id, "submitButton").size > 0}
       driver.find_element(:id, "submitButton").submit
     end
   end
