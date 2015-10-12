@@ -109,6 +109,7 @@ map[CommandName.GET_ALL_COOKIES] = commands.sendCommand;
 map[CommandName.DELETE_ALL_COOKIES] = commands.sendCommand;
 map[CommandName.DELETE_COOKIE] = commands.sendCommand;
 
+map[CommandName.SET_TIMEOUT] = commands.setDriverTimeout;
 map[CommandName.IMPLICITLY_WAIT] = commands.implicitlyWait;
 map[CommandName.FIND_ELEMENT] = commands.findElement;
 map[CommandName.FIND_ELEMENTS] = commands.findElement;

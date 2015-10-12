@@ -257,6 +257,23 @@ safaridriver.extension.commands.implicitlyWait = function(session, command) {
       /** @type {number} */ (command.getParameter('ms')) || 0);
 };
 
+/**
+ * Updates the various timeouts for the driver
+ * @param {!safaridriver.extension.Session} session The session object.
+ * @param {!safaridriver.Command} command The command object.
+ */
+safaridriver.extension.commands.setDriverTimeout = function(session, command) {
+  var timeoutType = command.getParameter('type');
+  if (timeoutType == 'implicit') {
+    session.setImplicitWait(
+      /** @type {number} */ (command.getParameter('ms')) || 0);
+  } else if (timeoutType == 'page load') {
+    // TODO
+  } else if (timeoutType == 'script'){
+    session.setScriptTimeout(
+      /** @type {number} */ (command.getParameter('ms')) || 0);
+  }
+}
 
 /**
  * Updates the async script timeout setting for the given session.
