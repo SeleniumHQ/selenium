@@ -92,7 +92,13 @@ class RubyMappings
         STDOUT.sync = true
         puts "Running: #{args[:name]} ruby tests"
 
-        ENV['WD_SPEC_DRIVER'] = args[:name]
+        if args[:name].match /^remote-(.*)/
+          ENV['WD_REMOTE_BROWSER'] = $1
+          ENV['WD_SPEC_DRIVER'] = 'remote'
+        else
+          ENV['WD_SPEC_DRIVER'] = args[:name]
+        end
+
         ENV['CI_REPORTS']     = "build/test_logs"
 
         ruby :include => args[:include],

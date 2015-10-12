@@ -246,16 +246,22 @@ task :test_java => [
 task :test_rb => [
   "//rb:unit-test",
   "//rb:rc-client-unit-test",
-  "//rb:firefox-test",
-  "//rb:remote-test",
   "//rb:rc-client-integration-test",
   "//rb:chrome-test",
+  "//rb:firefox-test",
   "//rb:phantomjs-test",
+  "//rb:remote-chrome-test",
+  "//rb:remote-firefox-test",
+  "//rb:remote-phantomjs-test",
   ("//rb:wires-test" if ENV['MARIONETTE_PATH']),
+  ("//rb:remote-wires-test" if ENV['MARIONETTE_PATH']),
   ("//rb:safari-test" if mac?),
+  ("//rb:remote-safari-test" if mac?),
   ("//rb:ie-test" if windows?),
-  ("//rb:edge-test" if windows?)
-     ].compact
+  ("//rb:remote-ie-test" if windows?),
+  ("//rb:edge-test" if windows?),
+  ("//rb:remote-edge-test" if windows?)
+].compact
 
 task :test_py => [ :py_prep_for_install_release, "//py:firefox_test:run" ]
 
