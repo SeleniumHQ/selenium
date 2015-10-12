@@ -113,24 +113,13 @@ ruby_test(name = "edge",
   deps = [ ":edge"  ]
 )
 
-ruby_library(name = "wires",
-  srcs = [
-    "lib/selenium/webdriver/firefox/**/*.rb",
-    "lib/selenium/webdriver/firefox.rb"
-  ],
-  deps = [
-    ":common",
-    ":remote"
-  ]
-)
-
 ruby_test(name = "wires",
   srcs = [
     "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/wires/**/*_spec.rb"
+    "spec/integration/selenium/webdriver/firefox/**/*_spec.rb"
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [ ":wires"  ]
+  deps = [ ":firefox"  ]
 )
 
 ruby_library(name = "firefox",
