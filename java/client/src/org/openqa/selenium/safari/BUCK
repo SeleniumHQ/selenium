@@ -24,8 +24,3 @@ export_file(name = 'client',
   src = '//javascript/safari-driver:client',
   out = 'client.js',
 )
-
-export_file(name = 'extension',
-  src = '//javascript/safari-driver/prebuilt:extension',
-  out = 'SafariDriver.safariextz',
-)
