@@ -59,29 +59,13 @@ namespace OpenQA.Selenium.Remote
         /// </remarks>
         public ITimeouts ImplicitlyWait(TimeSpan timeToWait)
         {
-            // The *correct* approach to this timeout is to use the below
-            // commented line of code and remove the remainder of this method.
-            // However, we need to use the hard-coded timeout commmand for now,
-            // since all drivers don't yet understand the generic "timeouts"
-            // command endpoint.
-            // this.ExecuteSetTimeout("implicit", timeToWait);
             double milliseconds = timeToWait.TotalMilliseconds;
             if (timeToWait == TimeSpan.MinValue)
             {
                 milliseconds = -1;
             }
 
-            if (this.driver.IsSpecificationCompliant)
-            {
-                this.ExecuteSetTimeout("implicit", timeToWait);
-            }
-            else
-            {
-                Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("ms", milliseconds);
-                this.driver.InternalExecute(DriverCommand.ImplicitlyWait, parameters);
-            }
-
+            this.ExecuteSetTimeout("implicit", timeToWait);
             return this;
         }
 
@@ -93,21 +77,13 @@ namespace OpenQA.Selenium.Remote
         /// <returns>A self reference</returns>
         public ITimeouts SetScriptTimeout(TimeSpan timeToWait)
         {
-            // The *correct* approach to this timeout is to use the below
-            // commented line of code and remove the remainder of this method.
-            // However, we need to use the hard-coded timeout commmand for now,
-            // since all drivers don't yet understand the generic "timeouts"
-            // command endpoint.
-            // this.ExecuteSetTimeout("script", timeToWait);
             double milliseconds = timeToWait.TotalMilliseconds;
             if (timeToWait == TimeSpan.MinValue)
             {
                 milliseconds = -1;
             }
 
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("ms", milliseconds);
-            this.driver.InternalExecute(DriverCommand.SetAsyncScriptTimeout, parameters);
+            this.ExecuteSetTimeout("script", timeToWait);
             return this;
         }
 
