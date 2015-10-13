@@ -133,8 +133,13 @@ public class BeanToJsonConverter {
     }
 
     if (toConvert instanceof Map) {
+      Map<String, Object> map = (Map<String, Object>) toConvert;
+      if (map.size() == 1 && map.containsKey("w3c cookie")) {
+        return convertObject(map.get("w3c cookie"));
+      }
+
       JsonObject converted = new JsonObject();
-      for (Map.Entry<String, Object> entry : ((Map<String, Object>) toConvert).entrySet()) {
+      for (Map.Entry<String, Object> entry : map.entrySet()) {
         converted.add(entry.getKey(), convertObject(entry.getValue(), maxDepth - 1));
       }
       return converted;
