@@ -1,8 +1,0 @@
-export_file(
-  name = 'extension',
-  src = 'SafariDriver.safariextz',
-  out = 'SafariDriver.safariextz',
-  visibility = [
-    '//java/client/src/org/openqa/selenium/safari:extension',
-  ],
-)

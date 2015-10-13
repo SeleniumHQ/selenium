@@ -15,6 +15,12 @@ js_library(name = 'base',
   ],
 )
 
+js_library(name = 'button',
+  srcs = [
+    'button.js',
+  ],
+)
+
 js_library(name = 'capabilities',
   srcs = [
     'capabilities.js',
@@ -22,6 +28,9 @@ js_library(name = 'capabilities',
   deps = [
     ':logging',
     ':serializable',
+  ],
+  visibility = [
+    '//javascript/safari-driver/...'
   ],
 )
 
@@ -54,6 +63,15 @@ js_library(name = 'key',
   ],
 )
 
+js_library(name = 'locators',
+  srcs = [
+    'locators.js',
+  ],
+  deps = [
+    '//third_party/closure:closure',
+  ],
+)
+
 js_library(name = 'logging',
   srcs = [
     'logging.js',
@@ -77,6 +95,19 @@ js_library(name = 'promise',
   ],
 )
 
+js_library(name = 'sequence',
+  srcs = [
+    'actionsequence.js',
+    'touchsequence.js',
+  ],
+  deps = [
+    ':base',
+    ':button',
+    ':key',
+    '//third_party/closure:closure',
+  ],
+)
+
 js_library(name = 'serializable',
   srcs = [
     'serializable.js',
@@ -94,6 +125,7 @@ js_library(name = 'session',
   ],
   visibility = [
     '//javascript/remote:client',
+    '//javascript/safari-driver/...'
   ],
 )
 
@@ -103,5 +135,36 @@ js_library(name = 'stacktrace',
   ],
   deps = [
     '//third_party/closure:closure',
+  ],
+)
+
+js_library(name = 'until',
+  srcs = [
+    'until.js',
+  ],
+  deps = [
+    ':locators',
+    '//javascript/atoms:errors',
+    '//third_party/closure:closure',
+  ],
+)
+
+js_library(name = 'webdriver',
+  srcs = [
+    'webdriver.js',
+  ],
+  deps = [
+    ':base',
+    ':key',
+    ':locators',
+    ':logging',
+    ':sequence',
+    ':session',
+    ':until',
+    '//javascript/atoms:errors',
+    '//third_party/closure:closure',
+  ],
+  visibility = [
+    '//javascript/safari-driver/...'
   ],
 )
