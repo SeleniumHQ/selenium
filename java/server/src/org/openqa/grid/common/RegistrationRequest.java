@@ -35,7 +35,6 @@ import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.JsonToBeanConverter;
-import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
@@ -380,13 +379,6 @@ public class RegistrationRequest {
     res.loadFromCommandLine(args);
 
     for (DesiredCapabilities cap : res.capabilities) {
-      if (SeleniumProtocol.Selenium.toString().equals(cap.getCapability(SELENIUM_PROTOCOL))) {
-        if (!BrowserLauncherFactory.isBrowserSupported(cap.getBrowserName())) {
-          throw new GridConfigurationException("browser " + cap.getBrowserName()
-                                               + " is not supported, supported browsers are:\n"
-                                               + BrowserLauncherFactory.getSupportedBrowsersAsString());
-        }
-      }
       if (cap.getCapability(SELENIUM_PROTOCOL) == null) {
         cap.setCapability(SELENIUM_PROTOCOL,
           GridRole.isRC(nodeType)
