@@ -2,7 +2,7 @@ java_library(name = 'safari',
   srcs = glob(['*.java']),
   resources = [
     ':client',
-    ':extension',
+    '//javascript/safari-driver:safari-driver',
   ],
   deps = [
     '//java/client/src/org/openqa/selenium:codecs',
