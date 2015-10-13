@@ -369,7 +369,8 @@
       if (goog.userAgent.product.CHROME && bot.userAgent.isProductVersion(45)) {
         // Chrome 45 and above do not fire the change event.
         return false;
-      } else if (goog.userAgent.WEBKIT || bot.userAgent.IE_DOC_9) {
+      } else if (goog.userAgent.WEBKIT || bot.userAgent.IE_DOC_9 ||
+                 goog.userAgent.EDGE) {
         // Other browsers with goog.userAgent.WEBKIT fire the change event.
         // IE 9 standards mode fires the change event.
         return true;

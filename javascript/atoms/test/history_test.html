@@ -12,6 +12,7 @@
     goog.require('goog.dom');
     goog.require('goog.events');
     goog.require('goog.Promise');
+    goog.require('goog.testing.TestCase');
     goog.require('goog.testing.asserts');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
@@ -62,6 +63,10 @@
     window.setTimeout(function() {
       resolver.resolve();
     }, 0);
+  }
+
+  function setUpPage() {
+    goog.testing.TestCase.getActiveTestCase().promiseTimeout = 10000; // 10s
   }
 
   function setUp() {

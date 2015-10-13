@@ -41,7 +41,7 @@ function testIsEngineVersionLower() {
 }
 
 function testIsEngineVersionLittleHigher() {
-  assertFalse(bot.userAgent.isEngineVersion(engineVersion + 0.111));
+  assertFalse(bot.userAgent.isEngineVersion(engineVersion + 0.00111));
 }
 
 function testIsEngineVersionHigher() {
