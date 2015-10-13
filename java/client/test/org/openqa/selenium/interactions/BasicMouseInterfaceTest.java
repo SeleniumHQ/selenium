@@ -281,20 +281,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     wait.until(titleIs("We Arrive Here"));
   }
 
-  @SuppressWarnings("unchecked")
-  private Map<String, Object> getElementSize(WebElement element) {
-    return (Map<String, Object>) ((JavascriptExecutor) driver).executeScript(
-        "return arguments[0].getBoundingClientRect()", element);
-  }
-
-  private int getHeight(Map<String, Object> sizeRect) {
-    if (sizeRect.containsKey("height")) {
-      return getFieldValue(sizeRect, "height");
-    } else {
-      return getFieldValue(sizeRect, "bottom") - getFieldValue(sizeRect, "top");
-    }
-  }
-
   private int getFieldValue(Map<String, Object> sizeRect, String fieldName) {
     return (int) Double.parseDouble(sizeRect.get(fieldName).toString());
   }
