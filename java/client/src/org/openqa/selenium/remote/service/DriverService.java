@@ -232,7 +232,7 @@ public class DriverService {
      * @return A self reference.
      */
     public B usingPort(int port) {
-      checkArgument(port >= 0, "Invalid port number: %d", port);
+      checkArgument(port >= 0, "Invalid port number: %s", port);
       this.port = port;
       return (B) this;
     }
