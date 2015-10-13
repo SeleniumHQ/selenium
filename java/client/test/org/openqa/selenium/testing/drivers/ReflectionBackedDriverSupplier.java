@@ -59,17 +59,19 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
         return null;
       }
 
-      if (DesiredCapabilities.firefox().getBrowserName().
-          equals(desiredCapsToUse.getBrowserName())) {
-        if (isInDevMode()) {
-          copyFirefoxDriverDefaultsToOutputDir();
-        }
+      if (DesiredCapabilities.firefox().getBrowserName().equals(desiredCapsToUse.getBrowserName())) {
+        boolean isMarionette = Boolean.getBoolean("webdriver.firefox.marionette");
+        if (!isMarionette) {
+          if (isInDevMode()) {
+            copyFirefoxDriverDefaultsToOutputDir();
+          }
 
-        FirefoxProfile profile = new FirefoxProfile();
-        boolean enableNativeEvents = Boolean.getBoolean("selenium.browser.native_events") ||
-                               Platform.getCurrent().is(WINDOWS);
-        profile.setEnableNativeEvents(enableNativeEvents);
-        desiredCapsToUse.setCapability(FirefoxDriver.PROFILE, profile);
+          FirefoxProfile profile = new FirefoxProfile();
+          boolean enableNativeEvents = Boolean.getBoolean("selenium.browser.native_events") ||
+                                       Platform.getCurrent().is(WINDOWS);
+          profile.setEnableNativeEvents(enableNativeEvents);
+          desiredCapsToUse.setCapability(FirefoxDriver.PROFILE, profile);
+        }
 
         try {
           return driverClass.getConstructor(Capabilities.class,
