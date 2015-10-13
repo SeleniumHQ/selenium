@@ -62,12 +62,12 @@ module Selenium
           rdf_path = File.join(directory, "install.rdf")
           doc = REXML::Document.new(File.read(rdf_path))
 
-          id_node = REXML::XPath.first(doc, "//em:id")
+          id_node = REXML::XPath.first(doc, "//em:id|//id")
 
           if id_node
             id_node.text
           else
-            attr_node = REXML::XPath.first(doc, "//@em:id")
+            attr_node = REXML::XPath.first(doc, "//@em:id|//@id")
 
             if attr_node.nil?
               raise Error::WebDriverError, "cannot locate extension id in #{rdf_path}"
