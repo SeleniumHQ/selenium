@@ -434,7 +434,7 @@ bot.events.KeyboardEventFactory_.prototype.create = function(target, opt_args) {
     event.metaKey = args.metaKey;
     event.shiftKey = args.shiftKey;
     event.keyCode = args.charCode || args.keyCode;
-    if (goog.userAgent.WEBKIT) {
+    if (goog.userAgent.WEBKIT || goog.userAgent.EDGE) {
       event.charCode = (this == bot.events.EventType.KEYPRESS) ?
           event.keyCode : 0;
     }

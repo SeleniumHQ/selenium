@@ -11,6 +11,7 @@
     goog.require('bot.userAgent');
     goog.require('goog.Promise');
     goog.require('goog.labs.userAgent.platform');
+    goog.require('goog.testing.TestCase');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
     goog.require('goog.userAgent.product');
@@ -18,12 +19,14 @@
 
   <script type="text/javascript">
     // WebDriver does not enable geolocation for Android.
+    // WebDriver does not enable geolocation for Edge.
     // WebDriver does not enable geolocation for Firefox.
     // WebDriver does not enable geolocation for IE 9.
     // WebDriver does not enable geolocation for Safari.
     var GEOLOCATION_NOT_WORKING =
         !bot.html5.isSupported(bot.html5.API.GEOLOCATION) ||
         goog.userAgent.product.ANDROID ||
+        goog.userAgent.product.EDGE ||
         goog.userAgent.product.FIREFOX ||
         goog.userAgent.product.SAFARI ||
         // Geolocation is blocked by user consent screen on Chrome for Android.
@@ -31,6 +34,10 @@
             goog.userAgent.product.CHROME) ||
         bot.userAgent.IE_DOC_9;
 
+
+    function setUpPage() {
+      goog.testing.TestCase.getActiveTestCase().promiseTimeout = 10000; // 10s
+    }
 
     /**
      * This method checks if the device location

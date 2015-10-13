@@ -246,7 +246,7 @@ limitations under the License.
     function testGetVisibleTextShouldHandleCssContentReplacement() {
       var expect = new goog.testing.ExpectedFailures();
       expect.expectFailureFor(goog.userAgent.GECKO || goog.userAgent.IE ||
-          goog.userAgent.SAFARI || goog.userAgent.WEBKIT,
+          goog.userAgent.SAFARI || goog.userAgent.WEBKIT || goog.userAgent.EDGE,
           "Does not support CSS3 content: 'foo' replacement");
 
       expect.run(function() {

@@ -459,7 +459,7 @@ bot.Keyboard.prototype.pressKey = function(key) {
 bot.Keyboard.prototype.requiresKeyPress_ = function(key) {
   if (key.character || key == bot.Keyboard.Keys.ENTER) {
     return true;
-  } else if (goog.userAgent.WEBKIT) {
+  } else if (goog.userAgent.WEBKIT || goog.userAgent.EDGE) {
     return false;
   } else if (goog.userAgent.IE) {
     return key == bot.Keyboard.Keys.ESC;
