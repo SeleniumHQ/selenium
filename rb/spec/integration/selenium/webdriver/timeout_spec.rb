@@ -63,7 +63,7 @@ describe "Timeouts" do
       expect(driver.find_elements(:class_name => "redbox")).to be_empty
     end
 
-    not_compliant_on(:driver => :wires, :platform => :windows) do
+    not_compliant_on(:driver => :marionette, :platform => :windows) do
       it "should return after first attempt to find many after disabling implicit waits" do
         add = driver.find_element(:id => "adder")
 

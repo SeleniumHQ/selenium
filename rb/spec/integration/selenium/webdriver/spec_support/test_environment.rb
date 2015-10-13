@@ -36,7 +36,7 @@ module Selenium
         def browser
           if driver == :remote
             (ENV['WD_REMOTE_BROWSER'] || :firefox).to_sym
-          elsif driver == :wires
+          elsif driver == :marionette
             :firefox
           else
             driver
@@ -127,8 +127,8 @@ module Selenium
                        create_remote_driver
                      when :firefox
                        create_firefox_driver
-                     when :wires
-                       create_wires_driver
+                     when :marionette
+                       create_marionette_driver
                      when :chrome
                        create_chrome_driver
                      when :iphone
@@ -150,10 +150,15 @@ module Selenium
         end
 
         def remote_capabilities
-          caps  = WebDriver::Remote::Capabilities.send(ENV['WD_REMOTE_BROWSER'] || 'firefox')
+          if ENV['WD_REMOTE_BROWSER'] == 'marionette'
+            caps = WebDriver::Remote::W3CCapabilities.firefox
+            caps[:marionette] = true
+          else
+            caps = WebDriver::Remote::Capabilities.send(ENV['WD_REMOTE_BROWSER'] || 'firefox')
 
-          caps.javascript_enabled    = true
-          caps.css_selectors_enabled = true
+            caps.javascript_enabled = true
+            caps.css_selectors_enabled = true
+          end
 
           caps
         end
@@ -191,8 +196,9 @@ module Selenium
           end
         end
 
-        def create_wires_driver
-          WebDriver::Driver.for :firefox, {wires: true}
+        def create_marionette_driver
+          caps = WebDriver::Remote::W3CCapabilities.firefox
+          WebDriver.for :firefox, :desired_capabilities => caps
         end
 
         def create_chrome_driver

@@ -50,7 +50,8 @@ module Selenium
         # Marionette BUG -
         # GET /session/2146a9d2-690a-4844-a5f4-e38b02d670c3/window/:window_handle/position
         # did not match a known command
-        not_compliant_on :driver => :wires do
+        not_compliant_on({:driver => :marionette},
+                         {:driver => :remote, :browser => :firefox, :platform => :linux}) do
           it "gets the position of the current window" do
             pos = driver.manage.window.position
 
@@ -59,7 +60,9 @@ module Selenium
             expect(pos.x).to be >= 0
             expect(pos.y).to be >= 0
           end
+        end
 
+        not_compliant_on :driver => [:remote, :marionette], :browser => :firefox, :platform => :linux do
           it "sets the position of the current window" do
             pos = window.position
 

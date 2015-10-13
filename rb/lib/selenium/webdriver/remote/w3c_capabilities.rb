@@ -28,13 +28,13 @@ module Selenium
 
         DEFAULTS = {
           :browser_name => '',
-          :browser_version => '',
+          :browser_version => :any,
           :platform_name => :any,
-          :platform_version => false,
+          :platform_version => :any,
           :accept_ssl_certs => false,
           :takes_screenshot => false,
           :takes_element_screenshot => false,
-          :page_load_strategy => false,
+          :page_load_strategy => 'normal',
           :proxy => nil
         }
 
@@ -72,7 +72,7 @@ module Selenium
           alias_method :ff, :firefox
 
           def w3c?(opts = {})
-            return false unless opts[:desired_capabilities].is_a?(W3CCapabilities) || opts.delete(:wires)
+            return false unless opts[:desired_capabilities].is_a?(W3CCapabilities) || opts.delete(:marionette)
             Firefox::Binary.path = ENV['MARIONETTE_PATH'] if ENV['MARIONETTE_PATH']
             firefox_version = Firefox::Binary.version
             raise ArgumentError, "Firefox Version #{firefox_version} does not support W3CCapabilities" if firefox_version < 43

@@ -48,7 +48,7 @@ module Selenium
         end
       end
 
-      compliant_on :driver => :wires do
+      compliant_on({:driver => :remote, :browser => :marionette}, {:driver => :marionette}) do
 
         context "when designated firefox installation includes Marionette" do
 
@@ -60,15 +60,15 @@ module Selenium
             end.to_not raise_exception
           end
 
-          it "Uses Wires when initialized with wires option" do
-            temp_driver = Selenium::WebDriver.for :firefox, {wires: true}
+          it "Uses Wires when initialized with marionette option" do
+            temp_driver = Selenium::WebDriver.for :firefox, {marionette: true}
             expect(temp_driver.instance_variable_get('@bridge').instance_variable_get('@launcher')).to be_nil
             temp_driver.quit
           end
         end
       end
 
-      compliant_on :driver => :wires do
+      compliant_on({:driver => :remote, :browser => :marionette}, {:driver => :marionette}) do
 
         context "when designated firefox installation does not include Marionette" do
           before(:each) do
@@ -85,8 +85,8 @@ module Selenium
             expect { Selenium::WebDriver.for :firefox, opt }.to raise_exception ArgumentError, message
           end
 
-          it "Raises Wires Exception when initialized with wires option" do
-            expect{Selenium::WebDriver.for :firefox, {wires: true}}.to raise_exception ArgumentError, message
+          it "Raises Wires Exception when initialized with marionette option" do
+            expect{Selenium::WebDriver.for :firefox, {marionette: true}}.to raise_exception ArgumentError, message
           end
         end
       end

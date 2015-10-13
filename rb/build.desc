@@ -13,7 +13,7 @@ rubygem(
     "//rb:remote",
     "//rb:rc-client",
     "//rb:safari",
-    "//rb:wires"
+    "//rb:marionette"
   ]
 )
 
@@ -113,7 +113,7 @@ ruby_test(name = "edge",
   deps = [ ":edge"  ]
 )
 
-ruby_test(name = "wires",
+ruby_test(name = "marionette",
   srcs = [
     "spec/integration/selenium/webdriver/*_spec.rb",
     "spec/integration/selenium/webdriver/firefox/**/*_spec.rb"
@@ -300,7 +300,7 @@ ruby_test(name = "remote-edge",
   ]
 )
 
-ruby_test(name = "remote-wires",
+ruby_test(name = "remote-marionette",
   srcs = [
     "spec/integration/selenium/webdriver/*_spec.rb",
     "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
