@@ -1,3 +1,9 @@
+2.48.1 (2015-10-13)
+===================
+
+Firefox:
+  * Mozilla's Wires Driver for Marionette works with Remote WebDriver
+
 2.48.0 (2015-10-07)
 ===================
 
