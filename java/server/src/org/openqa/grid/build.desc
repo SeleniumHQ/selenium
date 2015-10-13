@@ -10,6 +10,7 @@ java_library(name = "grid",
   deps = [
     "//java/client/src/org/openqa/selenium:webdriver-api",
     "//java/server/src/org/openqa/grid/common",
+    "//java/server/src/org/openqa/selenium/server:base",
     "//third_party/java/httpcomponents:httpclient",
     "//third_party/java/guava-libraries",
     "//third_party/java/jcip_annotations",
