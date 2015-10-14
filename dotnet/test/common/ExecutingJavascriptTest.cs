@@ -66,8 +66,8 @@ namespace OpenQA.Selenium
             object result = ExecuteScript("return true;");
 
             Assert.IsNotNull(result);
-            Assert.IsTrue(result is Boolean);
-            Assert.IsTrue((Boolean)result);
+            Assert.IsTrue(result is bool);
+            Assert.IsTrue((bool)result);
         }
 
         [Test]
@@ -247,8 +247,7 @@ namespace OpenQA.Selenium
 
             driver.Url = javascriptPage;
 
-            ExecuteScript("displayMessage(arguments[0]);", "Hello!");
-            string text = driver.FindElement(By.Id("result")).Text;
+            string text = (string)ExecuteScript("return arguments[0] == 'Hello!' ? 'Hello!' : 'Goodbye!';", "Hello!");
             Assert.AreEqual("Hello!", text);
         }
 
@@ -257,49 +256,46 @@ namespace OpenQA.Selenium
         public void ShouldBeAbleToPassABooleanAsAnArgument()
         {
 
-            string function = "displayMessage(arguments[0] ? 'True' : 'False');";
+            string function = "return arguments[0] == true ? true : false;";
 
             if (!(driver is IJavaScriptExecutor))
                 return;
 
             driver.Url = javascriptPage;
 
-            ExecuteScript(function, true);
-            string text = driver.FindElement(By.Id("result")).Text;
-            Assert.AreEqual("True", text);
+            bool result = (bool)ExecuteScript(function, true);
+            Assert.IsTrue(result);
 
-            ExecuteScript(function, false);
-            text = driver.FindElement(By.Id("result")).Text;
-            Assert.AreEqual("False", text);
+            result = (bool)ExecuteScript(function, false);
+            Assert.IsFalse(result);
         }
 
         [Test]
         [Category("Javascript")]
         public void ShouldBeAbleToPassANumberAsAnArgument()
         {
-            string function = "displayMessage(arguments[0]);";
+            string functionTemplate = "return arguments[0] == {0} ? {0} : 0;";
 
             if (!(driver is IJavaScriptExecutor))
                 return;
 
             driver.Url = javascriptPage;
 
-            ExecuteScript(function, 3);
-            string text = driver.FindElement(By.Id("result")).Text;
-            Assert.AreEqual("3", text);
+            string function = string.Format(functionTemplate, 3);
+            long result = (long)ExecuteScript(function, 3);
+            Assert.AreEqual(3, result);
 
-            ExecuteScript(function, -3);
-            text = driver.FindElement(By.Id("result")).Text;
-            Assert.AreEqual("-3", text);
+            function = string.Format(functionTemplate, -3);
+            result = (long)ExecuteScript(function, -3);
+            Assert.AreEqual(-3, result);
 
-            ExecuteScript(function, 2147483647);
-            text = driver.FindElement(By.Id("result")).Text;
-            Assert.AreEqual("2147483647", text);
+            function = string.Format(functionTemplate, 2147483647);
+            result = (long)ExecuteScript(function, 2147483647);
+            Assert.AreEqual(2147483647, result);
 
-            ExecuteScript(function, -2147483647);
-            text = driver.FindElement(By.Id("result")).Text;
-            Assert.AreEqual("-2147483647", text);
-
+            function = string.Format(functionTemplate, -2147483647);
+            result = (long)ExecuteScript(function, -2147483647);
+            Assert.AreEqual(-2147483647, result);
         }
 
         [Test]
@@ -333,8 +329,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.Firefox)]
-        [IgnoreBrowser(Browser.Remote)]
         public void ShouldBeAbleToPassAnArrayAsAdditionalArgument()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -350,7 +344,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.Remote)]
         public void ShouldBeAbleToPassACollectionAsArgument()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -572,9 +565,8 @@ namespace OpenQA.Selenium
                 return;
 
             driver.Url = javascriptPage;
-            ExecuteScript("displayMessage(arguments[0] + arguments[1] + arguments[2] + arguments[3]);", "Hello,", " ", "world", "!");
+            string text = (string)ExecuteScript("return arguments[0] + arguments[1] + arguments[2] + arguments[3];", "Hello,", " ", "world", "!");
 
-            string text = driver.FindElement(By.Id("result")).Text;
             Assert.AreEqual("Hello, world!", text);
         }
 
@@ -583,27 +575,23 @@ namespace OpenQA.Selenium
         public void ShouldBeAbleToPassMoreThanOneBooleanAsArguments()
         {
 
-            string function = "displayMessage((arguments[0] ? 'True' : 'False') + (arguments[1] ? 'True' : 'False'));";
+            string function = "return (arguments[0] ? 'True' : 'False') + (arguments[1] ? 'True' : 'False');";
 
             if (!(driver is IJavaScriptExecutor))
                 return;
 
             driver.Url = javascriptPage;
 
-            ExecuteScript(function, true, true);
-            string text = driver.FindElement(By.Id("result")).Text;
+            string text = (string)ExecuteScript(function, true, true);
             Assert.AreEqual("TrueTrue", text);
 
-            ExecuteScript(function, false, true);
-            text = driver.FindElement(By.Id("result")).Text;
+            text = (string)ExecuteScript(function, false, true);
             Assert.AreEqual("FalseTrue", text);
 
-            ExecuteScript(function, true, false);
-            text = driver.FindElement(By.Id("result")).Text;
+            text = (string)ExecuteScript(function, true, false);
             Assert.AreEqual("TrueFalse", text);
 
-            ExecuteScript(function, false, false);
-            text = driver.FindElement(By.Id("result")).Text;
+            text = (string)ExecuteScript(function, false, false);
             Assert.AreEqual("FalseFalse", text);
         }
 
@@ -611,28 +599,24 @@ namespace OpenQA.Selenium
         [Category("Javascript")]
         public void ShouldBeAbleToPassMoreThanOneNumberAsArguments()
         {
-            string function = "displayMessage(arguments[0]+arguments[1]);";
+            string function = "return arguments[0]+arguments[1];";
 
             if (!(driver is IJavaScriptExecutor))
                 return;
 
             driver.Url = javascriptPage;
 
-            ExecuteScript(function, 30, 12);
-            string text = driver.FindElement(By.Id("result")).Text;
-            Assert.AreEqual("42", text);
+            long result = (long)ExecuteScript(function, 30, 12);
+            Assert.AreEqual(42, result);
 
-            ExecuteScript(function, -30, -12);
-            text = driver.FindElement(By.Id("result")).Text;
-            Assert.AreEqual("-42", text);
+            result = (long)ExecuteScript(function, -30, -12);
+            Assert.AreEqual(-42, result);
 
-            ExecuteScript(function, 2147483646, 1);
-            text = driver.FindElement(By.Id("result")).Text;
-            Assert.AreEqual("2147483647", text);
+            result = (long)ExecuteScript(function, 2147483646, 1);
+            Assert.AreEqual(2147483647, result);
 
-            ExecuteScript(function, -2147483646, -1);
-            text = driver.FindElement(By.Id("result")).Text;
-            Assert.AreEqual("-2147483647", text);
+            result = (long)ExecuteScript(function, -2147483646, -1);
+            Assert.AreEqual(-2147483647, result);
 
         }
 
@@ -640,65 +624,54 @@ namespace OpenQA.Selenium
         [Category("Javascript")]
         public void ShouldBeAbleToPassADoubleAsAnArgument()
         {
-            string function = "displayMessage(arguments[0]);";
+            string function = "return arguments[0];";
 
             if (!(driver is IJavaScriptExecutor))
                 return;
 
             driver.Url = javascriptPage;
 
-            ExecuteScript(function, (double)4.2);
-            string text = driver.FindElement(By.Id("result")).Text;
-            Assert.AreEqual("4.2", text);
+            double result = (double)ExecuteScript(function, (double)4.2);
+            Assert.AreEqual(4.2, result);
 
-            ExecuteScript(function, (double)-4.2);
-            text = driver.FindElement(By.Id("result")).Text;
-            Assert.AreEqual("-4.2", text);
+            result = (double)ExecuteScript(function, (double)-4.2);
+            Assert.AreEqual(-4.2, result);
 
-            ExecuteScript(function, (float)4.2);
-            text = driver.FindElement(By.Id("result")).Text;
-            Assert.AreEqual("4.2", text);
+            result = (double)ExecuteScript(function, (float)4.2);
+            Assert.AreEqual(4.2, result);
 
-            ExecuteScript(function, (float)-4.2);
-            text = driver.FindElement(By.Id("result")).Text;
-            Assert.AreEqual("-4.2", text);
+            result = (double)ExecuteScript(function, (float)-4.2);
+            Assert.AreEqual(-4.2, result);
 
-            ExecuteScript(function, (double)4.0);
-            text = driver.FindElement(By.Id("result")).Text;
-            Assert.AreEqual("4", text);
+            result = (long)ExecuteScript(function, (double)4.0);
+            Assert.AreEqual(4, result);
 
-            ExecuteScript(function, (double)-4.0);
-            text = driver.FindElement(By.Id("result")).Text;
-            Assert.AreEqual("-4", text);
-
+            result = (long)ExecuteScript(function, (double)-4.0);
+            Assert.AreEqual(-4, result);
         }
 
         [Test]
         [Category("Javascript")]
         public void ShouldBeAbleToPassMoreThanOneDoubleAsArguments()
         {
-            String function = "displayMessage(arguments[0]+arguments[1]);";
+            String function = "return arguments[0]+arguments[1];";
 
             if (!(driver is IJavaScriptExecutor))
                 return;
 
             driver.Url = javascriptPage;
 
-            ExecuteScript(function, 30, 12);
-            String text = driver.FindElement(By.Id("result")).Text;
-            Assert.AreEqual("42", text);
+            double result = (double)ExecuteScript(function, 30.1, 12.1);
+            Assert.AreEqual(42.2, result);
 
-            ExecuteScript(function, -30, -12);
-            text = driver.FindElement(By.Id("result")).Text;
-            Assert.AreEqual("-42", text);
+            result = (double)ExecuteScript(function, -30.1, -12.1);
+            Assert.AreEqual(-42.2, result);
 
-            ExecuteScript(function, 2147483646, 1);
-            text = driver.FindElement(By.Id("result")).Text;
-            Assert.AreEqual("2147483647", text);
+            result = (double)ExecuteScript(function, 2147483646.1, 1.0);
+            Assert.AreEqual(2147483647.1, result);
 
-            ExecuteScript(function, -2147483646, -1);
-            text = driver.FindElement(By.Id("result")).Text;
-            Assert.AreEqual("-2147483647", text);
+            result = (double)ExecuteScript(function, -2147483646.1, -1.0);
+            Assert.AreEqual(-2147483647.1, result);
 
         }
 
@@ -791,7 +764,8 @@ namespace OpenQA.Selenium
 
         private object ExecuteScript(String script, params Object[] args)
         {
-            return ((IJavaScriptExecutor)driver).ExecuteScript(script, args);
+            object toReturn = ((IJavaScriptExecutor)driver).ExecuteScript(script, args);
+            return toReturn;
         }
     }
 }

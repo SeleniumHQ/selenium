@@ -240,6 +240,11 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.WindowsPhone, "Windows Phone driver does not support multiple windows")]
         public void ShouldBeAbleToClickALinkThatClosesAWindow()
         {
+            if (TestUtilities.IsMarionette(driver))
+            {
+                Assert.Ignore("Marionette hangs the browser in this case");
+            }
+
             driver.Url = javascriptPage;
 
             String handle = driver.CurrentWindowHandle;

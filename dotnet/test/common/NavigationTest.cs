@@ -40,6 +40,11 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Remote, "Remote server does not handle encoded characters properly")]
         public void ShouldAcceptInvalidUrlsUsingStrings()
         {
+            if (TestUtilities.IsMarionette(driver))
+            {
+                Assert.Ignore("Invalid URLs hang Marionette");
+
+            }
             INavigation navigation;
             navigation = driver.Navigate();
 
