@@ -28,6 +28,7 @@ from .firefox_binary import FirefoxBinary
 from .service import Service
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.firefox.extension_connection import ExtensionConnection
+from .remote_connection import FirefoxRemoteConnection
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
@@ -60,7 +61,8 @@ class WebDriver(RemoteWebDriver):
             self.service.start()
 
             RemoteWebDriver.__init__(self,
-                command_executor=self.service.service_url,
+                command_executor=FirefoxRemoteConnection(
+                    remote_server_addr=self.service.service_url),
                 desired_capabilities=capabilities,
                 keep_alive=True)
 
@@ -103,3 +105,6 @@ class WebDriver(RemoteWebDriver):
     @property
     def firefox_profile(self):
         return self.profile
+
+    def set_context(self, context):
+        self.execute("SET_CONTEXT", {"context": context})
