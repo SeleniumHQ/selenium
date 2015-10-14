@@ -18,6 +18,8 @@
 
 package org.openqa.selenium.server.cli;
 
+import static org.openqa.selenium.server.shared.CliUtils.printWrappedLine;
+
 import org.openqa.selenium.server.InjectionHelper;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
@@ -292,31 +294,6 @@ public class RemoteControlLauncher {
       System.exit(-1);
     }
     return args[i];
-  }
-
-  public static void printWrappedLine(String prefix, String msg) {
-    printWrappedLine(System.out, prefix, msg, true);
-  }
-
-  public static void printWrappedLine(PrintStream output, String prefix, String msg, boolean first) {
-    output.print(prefix);
-    if (!first) {
-      output.print("  ");
-    }
-    int defaultWrap = 70;
-    int wrap = defaultWrap - prefix.length();
-    if (wrap > msg.length()) {
-      output.println(msg);
-      return;
-    }
-    String lineRaw = msg.substring(0, wrap);
-    int spaceIndex = lineRaw.lastIndexOf(' ');
-    if (spaceIndex == -1) {
-      spaceIndex = lineRaw.length();
-    }
-    String line = lineRaw.substring(0, spaceIndex);
-    output.println(line);
-    printWrappedLine(output, prefix, msg.substring(spaceIndex + 1), false);
   }
 
   public static void setSystemProperty(String arg) {

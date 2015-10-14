@@ -29,6 +29,7 @@ import org.openqa.selenium.remote.server.log.LoggingOptions;
 import org.openqa.selenium.remote.server.log.TerseFormatter;
 import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.cli.RemoteControlLauncher;
+import org.openqa.selenium.server.shared.CliUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -98,11 +99,11 @@ public class GridLauncher {
 
   private static void printInfoAboutRoles(CommandLineOptionHelper helper) {
     if (helper.hasParamValue("-role")) {
-      RemoteControlLauncher.printWrappedLine(
+      CliUtils.printWrappedLine(
         "",
         "Error: the role '" + helper.getParamValue("-role") + "' does not match a recognized server role\n");
     } else {
-      RemoteControlLauncher.printWrappedLine(
+      CliUtils.printWrappedLine(
         "",
         "Error: -role option needs to be followed by the value that defines role of this component in the grid\n");
     }
@@ -113,7 +114,7 @@ public class GridLauncher {
       "  standalone  as a standalone server not being a part of a grid\n" +
       "\n" +
       "If -role option is omitted the server runs standalone\n");
-    RemoteControlLauncher.printWrappedLine(
+    CliUtils.printWrappedLine(
       "",
       "To get help on the options available for a specific role run the server"
       + " with -help option and the corresponding -role option value");
