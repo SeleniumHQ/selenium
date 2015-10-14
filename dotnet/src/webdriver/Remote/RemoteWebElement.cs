@@ -210,10 +210,20 @@ namespace OpenQA.Selenium.Remote
         {
             get
             {
-                Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("id", this.Id);
-                Response commandResponse = this.Execute(DriverCommand.GetElementLocationOnceScrolledIntoView, parameters);
-                Dictionary<string, object> rawLocation = (Dictionary<string, object>)commandResponse.Value;
+                Response commandResponse;
+                Dictionary<string, object> rawLocation;
+                if (this.driver.IsSpecificationCompliant)
+                {
+                    rawLocation = this.driver.ExecuteScript("return arguments[0].getBoundingClientRect();", this) as Dictionary<string, object>;
+                }
+                else
+                {
+                    Dictionary<string, object> parameters = new Dictionary<string, object>();
+                    parameters.Add("id", this.Id);
+                    commandResponse = this.Execute(DriverCommand.GetElementLocationOnceScrolledIntoView, parameters);
+                    rawLocation = (Dictionary<string, object>)commandResponse.Value;
+                }
+
                 int x = Convert.ToInt32(rawLocation["x"], CultureInfo.InvariantCulture);
                 int y = Convert.ToInt32(rawLocation["y"], CultureInfo.InvariantCulture);
                 return new Point(x, y);
