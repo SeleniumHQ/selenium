@@ -232,9 +232,10 @@ function testListItem() {
 
 function testRunIn_followedByBlock() {
   // Currently, only IE supports this use of display:run-in, having supported it
-  // starting with IE 8. See http://quirksmode.org/css/css2/display.html.
+  // starting with IE 8. See http://quirksmode.org/css/css2/display.html. The
+  // Android native browser also supports it.
   //
-  // No other major browsers support this now:
+  // No other major desktop browsers support this now:
   // - Firefox has never supported it.
   //   See https://bugzilla.mozilla.org/show_bug.cgi?id=2056
   // - Blink removed support, effective with Chrome 32.
@@ -244,7 +245,8 @@ function testRunIn_followedByBlock() {
   var supportsRunIn =
       (goog.userAgent.IE && bot.userAgent.isProductVersion(8)) ||
       (goog.userAgent.product.CHROME && !bot.userAgent.isProductVersion(32)) ||
-      (goog.userAgent.product.SAFARI && !bot.userAgent.isProductVersion(7.1));
+      (goog.userAgent.product.SAFARI && !bot.userAgent.isProductVersion(7.1)) ||
+      (goog.userAgent.product.ANDROID);
 
   var expectedText = supportsRunIn ? 'Hello, world.' : 'Hello\n, world.';
   new DisplayBoxTester('run-in').
