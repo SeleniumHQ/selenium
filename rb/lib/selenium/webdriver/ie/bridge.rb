@@ -34,7 +34,7 @@ module Selenium
         def initialize(opts = {})
           caps           = opts.delete(:desired_capabilities) { Remote::Capabilities.internet_explorer }
           timeout        = opts.delete(:timeout) { DEFAULT_TIMEOUT }
-          port           = opts.delete(:port) { PortProber.above(DEFAULT_PORT) }
+          port           = opts.delete(:port) { DEFAULT_PORT }
           http_client    = opts.delete(:http_client)
           ignore_mode    = opts.delete(:introduce_flakiness_by_ignoring_security_domains)
           native_events  = opts.delete(:native_events) != false

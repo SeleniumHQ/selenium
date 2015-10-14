@@ -20,9 +20,16 @@
 module Selenium
   module WebDriver
     module IE
+
+      #
+      # @api private
+      #
+
       class Server
 
-        STOP_TIMEOUT = 5
+        STOP_TIMEOUT        = 5
+        SOCKET_LOCK_TIMEOUT = 45
+        MISSING_TEXT        = "Unable to find standalone executable. Please download the IEDriverServer from http://selenium-release.storage.googleapis.com/index.html and place the executable on your PATH."
 
         def self.get(opts = {})
           binary = IE.driver_path || Platform.find_binary("IEDriverServer")
@@ -30,8 +37,7 @@ module Selenium
           if binary
             new binary, opts
           else
-            raise Error::WebDriverError,
-              "Unable to find standalone executable. Please download the IEDriverServer from http://selenium-release.storage.googleapis.com/index.html and place the executable on your PATH."
+            raise Error::WebDriverError, MISSING_TEXT
           end
         end
 
@@ -52,23 +58,19 @@ module Selenium
           unless opts.empty?
             raise ArgumentError, "invalid option#{'s' if opts.size != 1}: #{opts.inspect}"
           end
-
         end
 
         def start(port, timeout)
           return @port if running?
 
           @port = port
-
-          @process = ChildProcess.new(@binary_path, *server_args)
-          @process.io.inherit! if $DEBUG
-          @process.start
-
-          unless SocketPoller.new(Platform.localhost, @port, timeout).connected?
-            raise Error::WebDriverError, "unable to connect to IE server within #{timeout} seconds"
+          socket_lock.locked do
+            find_free_port
+            start_process
+            connect_until_stable(timeout)
           end
 
-          Platform.exit_hook { stop }
+          Platform.exit_hook { stop } # make sure we don't leave the server running
 
           @port
         end
@@ -101,6 +103,28 @@ module Selenium
           args << "--implementation=#{@implementation.to_s.upcase}" if @implementation
 
           args
+        end
+
+        def find_free_port
+          @port = PortProber.above @port
+        end
+
+        def start_process
+          @process = ChildProcess.new(@binary_path, *server_args)
+          @process.io.inherit! if $DEBUG
+          @process.start
+        end
+
+        def connect_until_stable(timeout)
+          socket_poller = SocketPoller.new Platform.localhost, @port, timeout
+
+          unless socket_poller.connected?
+            raise Error::WebDriverError, "unable to connect to IE server within #{timeout} seconds"
+          end
+        end
+
+        def socket_lock
+          @socket_lock ||= SocketLock.new(@port - 1, SOCKET_LOCK_TIMEOUT)
         end
 
       end # Server
