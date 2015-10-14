@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.grid.selenium.utils;
+package org.openqa.grid.selenium.proxy;
 
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.TestSession;
