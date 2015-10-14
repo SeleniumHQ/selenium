@@ -34,6 +34,7 @@ import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
+import org.openqa.selenium.server.SeleniumServer;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -80,6 +81,8 @@ public class Grid1HeartbeatTest {
     SelfRegisteringRemote selenium1 =
         GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
     selenium1.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
+
+    selenium1.setRemoteServer(new SeleniumServer(selenium1.getConfiguration()));
     selenium1.startRemoteServer();
     selenium1.sendRegistrationRequest();
 

@@ -82,6 +82,7 @@ public class GridLauncher {
         try {
           RegistrationRequest c = RegistrationRequest.build(args);
           SelfRegisteringRemote remote = new SelfRegisteringRemote(c);
+          remote.setRemoteServer(new SeleniumServer(c.getConfiguration()));
           remote.startRemoteServer();
           log.info("Selenium Grid node is up and ready to register to the hub");
           remote.startRegistrationProcess();

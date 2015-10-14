@@ -41,6 +41,7 @@ java_library(name = 'server',
 java_library(name = 'shared',
   srcs = glob(['shared/*.java']),
   visibility = [
+    '//java/server/src/org/openqa/grid:grid',
     '//java/server/src/org/openqa/grid/common:common',
   ],
 )

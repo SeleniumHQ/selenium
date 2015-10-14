@@ -38,6 +38,7 @@ import org.openqa.grid.web.Hub;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.server.SeleniumServer;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -61,6 +62,7 @@ public class SmokeTest {
 
     remote.addBrowser(firefoxOnSeleniumCapability, 1);
 
+    remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
     remote.startRemoteServer();
 
     remote.getConfiguration().put(RegistrationRequest.TIME_OUT, -1);

@@ -37,6 +37,7 @@ import org.openqa.grid.web.Hub;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
@@ -62,6 +63,7 @@ public class NodeTimeOutTest {
     node.addBrowser(GridTestHelper.getSelenium1FirefoxCapability(), 1);
     node.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
     node.setTimeout(5000, 2000);
+    node.setRemoteServer(new SeleniumServer(node.getConfiguration()));
     node.startRemoteServer();
     node.sendRegistrationRequest();
 

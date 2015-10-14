@@ -31,6 +31,7 @@ import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.server.SeleniumServer;
 
 /**
  * by specifing a RegistrationRequest.REGISTER_CYCLE= -1 , the node to not try to register against
@@ -58,6 +59,7 @@ public class HubRestartNeg {
 
     remote.getConfiguration().put(RegistrationRequest.REGISTER_CYCLE, -1);
 
+    remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
     remote.startRemoteServer();
 
   }

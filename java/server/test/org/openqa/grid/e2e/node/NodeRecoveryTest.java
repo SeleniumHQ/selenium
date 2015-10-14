@@ -32,6 +32,7 @@ import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.server.SeleniumServer;
 
 import java.net.URL;
 
@@ -64,6 +65,7 @@ public class NodeRecoveryTest {
 
     node.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
     node.setTimeout(originalTimeout, 1000);
+    node.setRemoteServer(new SeleniumServer(node.getConfiguration()));
     node.startRemoteServer();
     node.sendRegistrationRequest();
     RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
@@ -91,6 +93,7 @@ public class NodeRecoveryTest {
     node.setTimeout(newtimeout, 1000);
 
     // restart it
+    node.setRemoteServer(new SeleniumServer(node.getConfiguration()));
     node.startRemoteServer();
     node.sendRegistrationRequest();
 

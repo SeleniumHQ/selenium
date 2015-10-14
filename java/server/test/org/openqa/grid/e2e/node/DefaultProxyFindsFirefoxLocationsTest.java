@@ -40,6 +40,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.server.SeleniumServer;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -102,6 +103,7 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     caps.setVersion("30");
     remote.addBrowser(caps, 1);
 
+    remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
     remote.startRemoteServer();
     remote.sendRegistrationRequest();
     RegistryTestHelper.waitForNode(registry, 1);

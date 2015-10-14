@@ -40,6 +40,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
@@ -50,6 +51,7 @@ import java.net.URL;
 public class CrashWhenStartingBrowserTest {
 
   private static Hub hub;
+  private static SelfRegisteringRemote remote;
   private static Registry registry;
   private static Wait<Object> wait = new FluentWait<Object>("").withTimeout(30, SECONDS);
 
@@ -62,13 +64,13 @@ public class CrashWhenStartingBrowserTest {
     hub = GridTestHelper.getHub();
     registry = hub.getRegistry();
 
-    SelfRegisteringRemote remote =
-        GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
+    remote = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
 
     DesiredCapabilities firefox = DesiredCapabilities.firefox();
     firefox.setCapability(FirefoxDriver.BINARY, wrong_path);
     remote.addBrowser(firefox, 1);
 
+    remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
     remote.startRemoteServer();
     remote.sendRegistrationRequest();
     RegistryTestHelper.waitForNode(registry, 1);
@@ -127,6 +129,7 @@ public class CrashWhenStartingBrowserTest {
 
   @AfterClass
   public static void stop() throws Exception {
+    remote.stopRemoteServer();
     hub.stop();
   }
 }

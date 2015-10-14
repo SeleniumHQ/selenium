@@ -36,7 +36,7 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 import org.openqa.selenium.remote.server.log.LoggingManager;
-import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.server.shared.IServer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -92,10 +92,16 @@ public class SelfRegisteringRemote {
     }
   }
 
-  private SeleniumServer server;
+  private IServer server;
+
+  public void setRemoteServer(IServer server) {
+    this.server = server;
+  }
 
   public void startRemoteServer() throws Exception {
-    server = new SeleniumServer(nodeConfig.getConfiguration());
+    if (server == null) {
+      throw new GridConfigurationException("no server set to register to the hub");
+    }
     server.boot();
   }
 

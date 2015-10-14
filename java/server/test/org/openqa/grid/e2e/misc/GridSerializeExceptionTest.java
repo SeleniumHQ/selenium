@@ -26,6 +26,7 @@ import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.server.SeleniumServer;
 
 public class GridSerializeExceptionTest {
 
@@ -39,6 +40,7 @@ public class GridSerializeExceptionTest {
     SelfRegisteringRemote remote =
         GridTestHelper.getRemoteWithoutCapabilities(hub, GridRole.NODE);
 
+    remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
     remote.startRemoteServer();
     remote.sendRegistrationRequest();
     RegistryTestHelper.waitForNode(hub.getRegistry(), 1);

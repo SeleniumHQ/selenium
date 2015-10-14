@@ -29,6 +29,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.server.SeleniumServer;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -46,6 +47,8 @@ public class Issue1586 {
     SelfRegisteringRemote webdriver =
         GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
     webdriver.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
+
+    webdriver.setRemoteServer(new SeleniumServer(webdriver.getConfiguration()));
     webdriver.startRemoteServer();
     webdriver.sendRegistrationRequest();
 

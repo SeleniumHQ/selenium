@@ -31,6 +31,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.server.SeleniumServer;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -58,6 +59,8 @@ public class BrowserTimeOutTest {
     node = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
     node.addBrowser(GridTestHelper.getSelenium1FirefoxCapability(), 1);
     node.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
+
+    node.setRemoteServer(new SeleniumServer(node.getConfiguration()));
     node.startRemoteServer();
     node.sendRegistrationRequest();
 

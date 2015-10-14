@@ -33,6 +33,7 @@ import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 import org.openqa.grid.web.Hub;
+import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
@@ -61,6 +62,7 @@ public class NodeGoingDownAndUpTest {
     // add browser
     remote.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
 
+    remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
     remote.startRemoteServer();
     remote.sendRegistrationRequest();
     RegistryTestHelper.waitForNode(registry, 1);
@@ -82,6 +84,7 @@ public class NodeGoingDownAndUpTest {
     }
 
     // and back up
+    remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
     remote.startRemoteServer();
 
     // should be up

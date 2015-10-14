@@ -32,6 +32,7 @@ import org.openqa.grid.web.Hub;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.server.SeleniumServer;
 
 import java.net.URL;
 import java.util.Map;
@@ -98,6 +99,7 @@ public class WebDriverPriorityDemo {
     remote = GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.NODE);
     remote.addBrowser(browser, 1);
 
+    remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
     remote.startRemoteServer();
     remote.setMaxConcurrent(1);
     remote.setTimeout(-1, -1);

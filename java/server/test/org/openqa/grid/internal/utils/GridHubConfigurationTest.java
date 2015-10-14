@@ -17,7 +17,7 @@
 
 package org.openqa.grid.internal.utils;
 
-import static com.thoughtworks.selenium.SeleneseTestBase.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;

@@ -59,6 +59,7 @@ java_library(name = 'server',
     '//third_party/java/servlet:servlet-api',
   ],
   visibility = [
+    '//java/server/src/org/openqa/grid:grid',
     '//java/server/src/com/thoughtworks/selenium/webdriven:rc-emulation-servlet',
     '//java/server/src/org/openqa/selenium/server:server',
     '//java/server/test/com/thoughtworks/selenium/webdriven:webdriven',

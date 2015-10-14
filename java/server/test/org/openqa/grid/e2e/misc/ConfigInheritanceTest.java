@@ -30,6 +30,7 @@ import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.server.SeleniumServer;
 
 
 public class ConfigInheritanceTest {
@@ -52,6 +53,7 @@ public class ConfigInheritanceTest {
     remote.getConfiguration().put("A2", "proxyA2");
     remote.getConfiguration().put("B2", 50);
 
+    remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
     remote.startRemoteServer();
     remote.sendRegistrationRequest();
     RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
