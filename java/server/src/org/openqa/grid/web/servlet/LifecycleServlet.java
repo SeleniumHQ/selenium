@@ -20,7 +20,6 @@ package org.openqa.grid.web.servlet;
 
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.Registry;
-import org.openqa.selenium.server.browserlaunchers.Sleeper;
 
 import java.io.IOException;
 
@@ -58,7 +57,11 @@ public class LifecycleServlet extends RegistryBasedServlet {
     if ("shutdown".equals(action)) {
       Runnable initiateHubShutDown = new Runnable() {
         public void run() {
-          Sleeper.sleepTight(500);
+          try {
+            Thread.sleep(500);
+          } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+          }
           System.exit(0);
         }
       };
