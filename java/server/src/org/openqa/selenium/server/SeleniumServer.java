@@ -54,6 +54,7 @@ import java.net.BindException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -247,6 +248,10 @@ public class SeleniumServer implements SslCertificateGenerator {
 
   public SeleniumServer(Map<String, Object> configurationAsMap) throws Exception {
     this(slowResourceProperty(), mapToRemoteControlConfiguration(configurationAsMap));
+    String servletsStr = (String) configurationAsMap.get("servlets");
+    if (servletsStr != null) {
+      registerExtraServlets(Arrays.asList(servletsStr.split(",")));
+    }
   }
 
   private static RemoteControlConfiguration mapToRemoteControlConfiguration(Map<String, Object> configurationAsMap) {
@@ -283,6 +288,7 @@ public class SeleniumServer implements SslCertificateGenerator {
     this.configuration = configuration;
     debugMode = configuration.isDebugMode();
     jettyThreads = configuration.getJettyThreads();
+    System.setProperty("org.openqa.jetty.http.HttpRequest.maxFormContentSize", "0");
     LOGGER = configureLogging(configuration.getLoggingOptions(), debugMode);
     logStartupInfo();
     sanitizeProxyConfiguration();

@@ -32,8 +32,6 @@ import org.apache.http.message.BasicHttpRequest;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.common.exception.GridException;
-import org.openqa.grid.web.servlet.ResourceServlet;
-import org.openqa.grid.web.utils.ExtraServletUtil;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
@@ -62,25 +60,6 @@ public class SelfRegisteringRemote {
   public SelfRegisteringRemote(RegistrationRequest config) {
     this.nodeConfig = config;
     this.httpClientFactory = new HttpClientFactory();
-  }
-
-  public URL getRemoteURL() {
-    String host = (String) nodeConfig.getConfiguration().get(RegistrationRequest.HOST);
-    String port = (String) nodeConfig.getConfiguration().get(RegistrationRequest.PORT);
-    String url = "http://" + host + ":" + port;
-
-    try {
-      return new URL(url);
-    } catch (MalformedURLException e) {
-      throw new GridConfigurationException("error building the node url " + e.getMessage(), e);
-    }
-  }
-
-  private SeleniumServer server;
-
-  public void startRemoteServer() throws Exception {
-
-    System.setProperty("org.openqa.jetty.http.HttpRequest.maxFormContentSize", "0");
 
     nodeConfig.validate();
 
@@ -99,14 +78,24 @@ public class SelfRegisteringRemote {
         "error getting the parameters from the hub. The node may end up with wrong timeouts." + e
           .getMessage());
     }
+  }
 
-    server = new SeleniumServer(nodeConfig.getConfiguration());
+  public URL getRemoteURL() {
+    String host = (String) nodeConfig.getConfiguration().get(RegistrationRequest.HOST);
+    String port = (String) nodeConfig.getConfiguration().get(RegistrationRequest.PORT);
+    String url = "http://" + host + ":" + port;
 
-    String servletsStr = (String) nodeConfig.getConfiguration().get(RegistrationRequest.SERVLETS);
-    if (servletsStr != null) {
-      server.registerExtraServlets(Arrays.asList(servletsStr.split(",")));
+    try {
+      return new URL(url);
+    } catch (MalformedURLException e) {
+      throw new GridConfigurationException("error building the node url " + e.getMessage(), e);
     }
+  }
 
+  private SeleniumServer server;
+
+  public void startRemoteServer() throws Exception {
+    server = new SeleniumServer(nodeConfig.getConfiguration());
     server.boot();
   }
 
