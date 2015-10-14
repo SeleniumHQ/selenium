@@ -68,9 +68,9 @@ namespace OpenQA.Selenium.Remote
 
             if (protocolSpecLevel > 0)
             {
-                // If the returned object does *not* have a "value" property,
-                // then the responseValue member of the response will be null.
-                if (this.responseValue == null)
+                // If the returned object does *not* have a "value" property
+                // the response value should be the entirety of the response.
+                if (!rawResponse.ContainsKey("value") && this.responseValue == null)
                 {
                     this.responseValue = rawResponse;
                 }
