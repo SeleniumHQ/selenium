@@ -21,6 +21,8 @@ module Selenium
   module WebDriver
     module Safari
       class Options
+        DEFAULT_PORT = 56485
+
         attr_accessor :port, :data_dir, :skip_extension_installation
 
         def initialize(opts = {})
@@ -40,16 +42,16 @@ module Selenium
 
         def as_json
           {
-            'port'                      => port,
-            'dataDir'                   => data_dir,
-            'cleanSession'              => clean_session?,
+            'port'         => port,
+            'dataDir'      => data_dir,
+            'cleanSession' => clean_session?,
           }
         end
 
         private
 
         def extract_options(opts)
-          @port          = Integer(opts[:port] || PortProber.random)
+          @port          = Integer(opts[:port] || DEFAULT_PORT)
           @data_dir      = opts[:custom_data_dir] || opts[:data_dir]
           @clean_session = opts[:clean_session]
         end

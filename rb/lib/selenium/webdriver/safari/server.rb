@@ -22,13 +22,20 @@ module Selenium
     module Safari
 
       class Server
+        SOCKET_LOCK_TIMEOUT = 45
+
         def initialize(port, command_timeout)
-          @port  = port
+          @port = port
           @command_timeout = command_timeout
         end
 
         def start
-          @server = TCPServer.new(Platform.localhost, @port)
+          Platform.exit_hook { stop } # make sure we don't leave the server running
+
+          socket_lock.locked do
+            find_free_port
+            start_server
+          end
         end
 
         def stop
@@ -156,6 +163,20 @@ Server: safaridriver-ruby
             # best effort for 1.8
             str.gsub(":", '%3A').gsub('/', '%2F')
           end
+        end
+
+        private
+
+        def start_server
+          @server = TCPServer.new(Platform.localhost, @port)
+        end
+
+        def find_free_port
+          @port = PortProber.above @port
+        end
+
+        def socket_lock
+          @socket_lock ||= SocketLock.new(@port - 1, SOCKET_LOCK_TIMEOUT)
         end
 
       end # Server

@@ -23,6 +23,8 @@ module Selenium
 
       class Browser
         def start(*args)
+          Platform.exit_hook { stop } # make sure we don't leave the browser running
+
           @process = ChildProcess.new(Safari.path, *args)
           @process.io.inherit! if $DEBUG
           @process.start

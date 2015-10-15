@@ -104,7 +104,7 @@ module Selenium
 
         def prepare_connect_file
           # TODO: use tempfile?
-          path = File.join(Dir.tmpdir, "safaridriver-#{Time.now.to_i}.html")
+          path = File.join(Dir.tmpdir, "safaridriver-#{Time.now.usec}.html")
 
           File.open(path, 'w') do |io|
             io << "<!DOCTYPE html><script>window.location = '#{@server.uri}';</script>"
