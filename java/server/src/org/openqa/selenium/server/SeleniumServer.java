@@ -38,6 +38,7 @@ import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.LoggingOptions;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.browserlaunchers.Sleeper;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
@@ -191,6 +192,7 @@ public class SeleniumServer implements SslCertificateGenerator, IServer {
   private Log LOGGER;
 
   private Server server;
+  private BrowserLauncherFactory browserLauncherFactory;
   private SeleniumDriverResourceHandler driver;
   private SeleniumHTMLRunnerResultsHandler postResultsHandler;
   private StaticContentHandler staticContentHandler;
@@ -390,7 +392,8 @@ public class SeleniumServer implements SslCertificateGenerator, IServer {
     // Associate the SeleniumDriverResourceHandler with the /selenium-server/driver context
     HttpContext driverContext = new HttpContext();
     driverContext.setContextPath("/selenium-server/driver");
-    driver = new SeleniumDriverResourceHandler(this, webdriverSessions);
+    browserLauncherFactory = new BrowserLauncherFactory(webdriverSessions);
+    driver = new SeleniumDriverResourceHandler(this, browserLauncherFactory);
     context.addHandler(driver);
     return driverContext;
   }
@@ -575,6 +578,10 @@ public class SeleniumServer implements SslCertificateGenerator, IServer {
 
   public RemoteControlConfiguration getConfiguration() {
     return configuration;
+  }
+
+  public BrowserLauncherFactory getBrowserLauncherFactory() {
+    return browserLauncherFactory;
   }
 
   public int getPort() {

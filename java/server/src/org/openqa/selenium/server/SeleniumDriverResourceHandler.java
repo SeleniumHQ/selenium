@@ -33,7 +33,6 @@ import org.openqa.jetty.util.StringUtil;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
@@ -98,8 +97,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
   private final BrowserSessionFactory browserSessionFactory;
 
   public SeleniumDriverResourceHandler(
-      SeleniumServer remoteControl, DriverSessions webdriverSessions) {
-    browserLauncherFactory = new BrowserLauncherFactory(webdriverSessions);
+      SeleniumServer remoteControl, BrowserLauncherFactory browserLauncherFactory) {
+    this.browserLauncherFactory = browserLauncherFactory;
     browserSessionFactory = new BrowserSessionFactory(browserLauncherFactory);
     this.remoteControl = remoteControl;
   }

@@ -63,8 +63,8 @@ public class MockPIFrameUnitTest {
     configuration.setProxyInjectionModeArg(true);
 
     server = new SeleniumServer(false, configuration);
+    server.getBrowserLauncherFactory().addBrowserLauncher("dummy", DummyBrowserLauncher.class);
     server.start();
-    BrowserLauncherFactory.addBrowserLauncher("dummy", DummyBrowserLauncher.class);
     InjectionHelper.setFailOnError(false);
     LOGGER.info("Starting " + name.getMethodName());
   }

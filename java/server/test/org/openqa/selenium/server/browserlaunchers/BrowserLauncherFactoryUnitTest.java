@@ -29,7 +29,8 @@ public class BrowserLauncherFactoryUnitTest {
 
   @Test
   public void testAllSupportedBrowsersDefineAppropriateConstructor() {
-    for (Class<? extends BrowserLauncher> c : BrowserLauncherFactory.getSupportedLaunchers()
+    BrowserLauncherFactory factory = new BrowserLauncherFactory();
+    for (Class<? extends BrowserLauncher> c : factory.getSupportedLaunchers()
         .values()) {
       try {
         c.getConstructor(Capabilities.class, RemoteControlConfiguration.class, String.class,

@@ -41,11 +41,11 @@ public class BrowserLauncherFactory {
 
   private static final Pattern CUSTOM_PATTERN = Pattern.compile("^\\*?custom( .*)?$");
 
-  private static final Map<String, Class<? extends BrowserLauncher>> supportedBrowsers =
+  private final Map<String, Class<? extends BrowserLauncher>> supportedBrowsers =
       Maps.newHashMap();
   private final DriverSessions webdriverSessions;
 
-  static {
+  {
     supportedBrowsers.put(BrowserType.FIREFOX_PROXY, FirefoxCustomProfileLauncher.class);
     supportedBrowsers.put(BrowserType.FIREFOX, FirefoxLauncher.class);
     supportedBrowsers.put(BrowserType.CHROME, FirefoxChromeLauncher.class);
@@ -122,15 +122,15 @@ public class BrowserLauncherFactory {
     throw browserNotSupported(browser);
   }
 
-  public static Map<String, Class<? extends BrowserLauncher>> getSupportedLaunchers() {
+  public Map<String, Class<? extends BrowserLauncher>> getSupportedLaunchers() {
     return supportedBrowsers;
   }
 
-  public static void addBrowserLauncher(String browser, Class<? extends BrowserLauncher> clazz) {
+  public void addBrowserLauncher(String browser, Class<? extends BrowserLauncher> clazz) {
     supportedBrowsers.put(browser, clazz);
   }
 
-  public static boolean isBrowserSupported(String browser) {
+  public boolean isBrowserSupported(String browser) {
     for (String key : supportedBrowsers.keySet()) {
       final BrowserStringParser.Result result;
       result = new BrowserStringParser().parseBrowserStartCommand(key, browser);
@@ -145,7 +145,7 @@ public class BrowserLauncherFactory {
     return false;
   }
 
-  public static String getSupportedBrowsersAsString() {
+  public String getSupportedBrowsersAsString() {
     StringBuffer str = new StringBuffer("");
     for (String name : supportedBrowsers.keySet()) {
       str.append("  *").append(name).append('\n');
