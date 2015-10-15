@@ -30,7 +30,7 @@ import org.openqa.grid.web.Hub;
 import org.openqa.selenium.remote.server.log.LoggingOptions;
 import org.openqa.selenium.remote.server.log.TerseFormatter;
 import org.openqa.selenium.server.SeleniumServer;
-import org.openqa.selenium.server.shared.CliUtils;
+import org.openqa.grid.shared.CliUtils;
 
 import java.io.File;
 import java.io.IOException;

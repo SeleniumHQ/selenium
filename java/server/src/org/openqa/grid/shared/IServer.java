@@ -1,4 +1,4 @@
-package org.openqa.selenium.server.shared;
+package org.openqa.grid.shared;
 
 public interface IServer {
   void boot() throws Exception;

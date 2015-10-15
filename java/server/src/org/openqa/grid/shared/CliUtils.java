@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.server.shared;
+package org.openqa.grid.shared;
 
 import java.io.File;
 import java.io.PrintStream;

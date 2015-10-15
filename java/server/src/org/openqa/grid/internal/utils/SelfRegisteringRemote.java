@@ -19,7 +19,6 @@ package org.openqa.grid.internal.utils;
 
 import static org.openqa.grid.common.RegistrationRequest.AUTO_REGISTER;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -36,7 +35,7 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 import org.openqa.selenium.remote.server.log.LoggingManager;
-import org.openqa.selenium.server.shared.IServer;
+import org.openqa.grid.shared.IServer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -44,8 +43,6 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidParameterException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 

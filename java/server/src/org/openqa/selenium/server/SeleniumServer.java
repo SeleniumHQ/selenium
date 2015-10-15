@@ -18,7 +18,7 @@
 package org.openqa.selenium.server;
 
 import static java.lang.String.format;
-import static org.openqa.selenium.server.shared.CliUtils.printWrappedLine;
+import static org.openqa.grid.shared.CliUtils.printWrappedLine;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,7 +43,7 @@ import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
 import org.openqa.selenium.server.htmlrunner.SeleniumHTMLRunnerResultsHandler;
 import org.openqa.selenium.server.htmlrunner.SingleTestSuiteResourceHandler;
-import org.openqa.selenium.server.shared.IServer;
+import org.openqa.grid.shared.IServer;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -806,7 +806,7 @@ public class SeleniumServer implements SslCertificateGenerator, IServer {
         (InjectionHelper.userContentTransformationsExist() ||
         InjectionHelper.userJsInjectionsExist())) {
       usage("-userJsInjection and -userContentTransformation are only " +
-          "valid in combination with -proxyInjectionMode");
+            "valid in combination with -proxyInjectionMode");
       System.exit(1);
     }
   }

@@ -24,6 +24,8 @@ java_library(name = 'server',
     '//java/server/src/org/openqa/selenium/remote/server:server',
     '//java/server/src/org/openqa/selenium/remote/server:sessions',
     '//java/server/src/org/openqa/selenium/remote/server/log:log',
+    '//java/server/src/org/openqa/grid/shared:cli',
+    '//java/server/src/org/openqa/grid/shared:interfaces',
     ':selenium-core',
     '//third_party/java/commons-logging:commons-logging',
     '//third_party/java/guava-libraries:guava-libraries',
@@ -35,14 +37,6 @@ java_library(name = 'server',
     '//java/server/src/org/openqa/grid:grid',
     '//java/server/src/org/openqa/grid/common:common',
     '//java/server/src/org/openqa/grid/selenium:classes',
-  ],
-)
-
-java_library(name = 'shared',
-  srcs = glob(['shared/*.java']),
-  visibility = [
-    '//java/server/src/org/openqa/grid:grid',
-    '//java/server/src/org/openqa/grid/common:common',
   ],
 )
 

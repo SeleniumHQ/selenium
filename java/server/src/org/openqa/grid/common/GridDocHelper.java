@@ -22,7 +22,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonParser;
 
-import org.openqa.selenium.server.shared.CliUtils;
+import org.openqa.grid.shared.CliUtils;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
