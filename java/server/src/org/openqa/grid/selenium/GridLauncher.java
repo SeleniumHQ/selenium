@@ -30,7 +30,6 @@ import org.openqa.grid.web.Hub;
 import org.openqa.selenium.remote.server.log.LoggingOptions;
 import org.openqa.selenium.remote.server.log.TerseFormatter;
 import org.openqa.selenium.server.SeleniumServer;
-import org.openqa.selenium.server.cli.RemoteControlLauncher;
 import org.openqa.selenium.server.shared.CliUtils;
 
 import java.io.File;
@@ -63,7 +62,7 @@ public class GridLauncher {
         @Override
         public void printUsage() {
           String separator = "\n-------------------------------\n";
-          RemoteControlLauncher.usage(separator + "Running as a standalone server:" + separator);
+          SeleniumServer.usage(separator + "Running as a standalone server:" + separator);
         }
       })
     .put(GridRole.HUB, new GridItemLauncher() {
@@ -158,7 +157,7 @@ public class GridLauncher {
     String separator = "\n-------------------------------\n";
     switch (role) {
       case NOT_GRID:
-        RemoteControlLauncher.usage(separator + "Running as a standalone server:" + separator);
+        SeleniumServer.usage(separator + "Running as a standalone server:" + separator);
         break;
       case HUB:
         GridDocHelper.printHubHelp(separator + "Running as a grid hub:" + separator, false);

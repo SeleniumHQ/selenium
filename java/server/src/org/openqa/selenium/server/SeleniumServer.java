@@ -18,6 +18,7 @@
 package org.openqa.selenium.server;
 
 import static java.lang.String.format;
+import static org.openqa.selenium.server.shared.CliUtils.printWrappedLine;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,7 +39,6 @@ import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.LoggingOptions;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.Sleeper;
-import org.openqa.selenium.server.cli.RemoteControlLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
 import org.openqa.selenium.server.htmlrunner.SeleniumHTMLRunnerResultsHandler;
@@ -227,7 +227,7 @@ public class SeleniumServer implements SslCertificateGenerator, IServer {
     final RemoteControlConfiguration configuration;
     final SeleniumServer seleniumProxy;
 
-    configuration = RemoteControlLauncher.parseLauncherOptions(args);
+    configuration = parseLauncherOptions(args);
     checkArgsSanity(configuration);
 
     System.setProperty("org.openqa.jetty.http.HttpRequest.maxFormContentSize", "0"); // default max
@@ -264,7 +264,7 @@ public class SeleniumServer implements SslCertificateGenerator, IServer {
         params.add("" + configurationAsMap.get(key));
       }
     }
-    return RemoteControlLauncher.parseLauncherOptions(params.toArray(new String[params.size()]));
+    return parseLauncherOptions(params.toArray(new String[params.size()]));
   }
 
   public SeleniumServer(RemoteControlConfiguration configuration) throws Exception {
@@ -661,12 +661,12 @@ public class SeleniumServer implements SslCertificateGenerator, IServer {
       String suiteFilePath = getRequiredSystemProperty("htmlSuite.suiteFilePath");
       File suiteFile = new File(suiteFilePath).getCanonicalFile();
       if (!suiteFile.exists()) {
-        RemoteControlLauncher.usage("Can't find HTML Suite file:" + suiteFile);
+        usage("Can't find HTML Suite file:" + suiteFile);
         System.exit(1);
       }
       String fileName = suiteFile.getName();
       if (! (fileName.endsWith(".html") || fileName.endsWith(".htm") || fileName.endsWith(".xhtml"))) {
-        RemoteControlLauncher.usage("Suite file must have extension .html or .htm or .xhtml");
+        usage("Suite file must have extension .html or .htm or .xhtml");
         System.exit(1);
       }
       addNewStaticContent(suiteFile.getParentFile());
@@ -676,13 +676,13 @@ public class SeleniumServer implements SslCertificateGenerator, IServer {
       File resultFile = new File(resultFilePath);
       File resultDir = resultFile.getParentFile();
       if ((resultDir != null) && !resultDir.exists() && !resultDir.mkdirs()) {
-        RemoteControlLauncher.usage("can't create directory for result file " + resultFilePath);
+        usage("can't create directory for result file " + resultFilePath);
         System.exit(1);
       }
       resultFile.createNewFile();
 
       if (!resultFile.canWrite()) {
-        RemoteControlLauncher.usage("can't write to result file " + resultFilePath);
+        usage("can't write to result file " + resultFilePath);
         System.exit(1);
       }
 
@@ -805,7 +805,7 @@ public class SeleniumServer implements SslCertificateGenerator, IServer {
     if (!configuration.getProxyInjectionModeArg() &&
         (InjectionHelper.userContentTransformationsExist() ||
         InjectionHelper.userJsInjectionsExist())) {
-      RemoteControlLauncher.usage("-userJsInjection and -userContentTransformation are only " +
+      usage("-userJsInjection and -userContentTransformation are only " +
           "valid in combination with -proxyInjectionMode");
       System.exit(1);
     }
@@ -848,10 +848,287 @@ public class SeleniumServer implements SslCertificateGenerator, IServer {
   private String getRequiredSystemProperty(String name) {
     String value = System.getProperty(name);
     if (value == null) {
-      RemoteControlLauncher.usage("expected property " + name + " to be defined");
+      usage("expected property " + name + " to be defined");
       System.exit(1);
     }
     return value;
+  }
+
+
+  public static void usage(String msg) {
+    if (msg != null) {
+      System.out.println(msg);
+    }
+    String INDENT = "  ";
+    String INDENT2X = INDENT + INDENT;
+    printWrappedLine("", "Usage: java -jar selenium-server.jar [-interactive] [options]\n");
+    printWrappedLine(INDENT,
+                     "-port <nnnn>: the port number the selenium server should use (default 4444)");
+    printWrappedLine(INDENT,
+                     "-timeout <nnnn>: an integer number of seconds we should allow a client to be idle");
+    printWrappedLine(INDENT,
+                     "-browserTimeout <nnnn>: an integer number of seconds a browser is allowed to hang");
+    printWrappedLine(INDENT,
+                     "-interactive: puts you into interactive mode.  See the tutorial for more details");
+    printWrappedLine(
+      INDENT,
+      "-singleWindow: puts you into a mode where the test web site executes in a frame. This mode should only be selected if the application under test does not use frames.");
+    printWrappedLine(
+      INDENT,
+      "-profilesLocation: Specifies the directory that holds the profiles that java clients can use to start up selenium.  Currently supported for Firefox only.");
+    printWrappedLine(
+      INDENT,
+      "-forcedBrowserMode <browser>: sets the browser mode to a single argument (e.g. \"*iexplore\") for all sessions, no matter what is passed to getNewBrowserSession");
+
+
+    printWrappedLine(
+      INDENT,
+      "-forcedBrowserModeRestOfLine <browser>: sets the browser mode to all the remaining tokens on the line (e.g. \"*custom /some/random/place/iexplore.exe\") for all sessions, no matter what is passed to getNewBrowserSession");
+    printWrappedLine(INDENT,
+                     "-userExtensions <file>: indicates a JavaScript file that will be loaded into selenium");
+    printWrappedLine(INDENT,
+                     "-browserSessionReuse: stops re-initialization and spawning of the browser between tests");
+    printWrappedLine(
+      INDENT,
+      "-avoidProxy: By default, we proxy every browser request; set this flag to make the browser use our proxy only for URLs containing '/selenium-server'");
+    printWrappedLine(
+      INDENT,
+      "-firefoxProfileTemplate <dir>: normally, we generate a fresh empty Firefox profile every time we launch.  You can specify a directory to make us copy your profile directory instead.");
+    printWrappedLine(INDENT,
+                     "-debug: puts you into debug mode, with more trace information and diagnostics on the console");
+    printWrappedLine(
+      INDENT,
+      "-browserSideLog: enables logging on the browser side; logging messages will be transmitted to the server.  This can affect performance.");
+    printWrappedLine(
+      INDENT,
+      "-ensureCleanSession: If the browser does not have user profiles, make sure every new session has no artifacts from previous sessions.  For example, enabling this option will cause all user cookies to be archived before launching IE, and restored after IE is closed.");
+    printWrappedLine(
+      INDENT,
+      "-trustAllSSLCertificates: Forces the Selenium proxy to trust all SSL certificates.  This doesn't work in browsers that don't use the Selenium proxy.");
+    printWrappedLine(INDENT,
+                     "-log <logFileName>: writes lots of debug information out to a log file and disables logging to console");
+    printWrappedLine(INDENT,
+                     "-logLongForm: writes information out to console in long format (for debugging purpose)");
+    printWrappedLine(
+      INDENT,
+      "-htmlSuite <browser> <startURL> <suiteFile> <resultFile>: Run a single HTML Selenese (Selenium Core) suite and then exit immediately, using the specified browser (e.g. \"*firefox\") on the specified URL (e.g. \"http://www.google.com\").  You need to specify the absolute path to the HTML test suite as well as the path to the HTML results file we'll generate.");
+    printWrappedLine(
+      INDENT,
+      "-proxyInjectionMode: puts you into proxy injection mode, a mode where the selenium server acts as a proxy server "
+      +
+      "for all content going to the test application.  Under this mode, multiple domains can be visited, and the "
+      +
+      "following additional flags are supported:\n");
+    printWrappedLine(
+      INDENT2X,
+      "-dontInjectRegex <regex>: an optional regular expression that proxy injection mode can use to know when to bypss injection");
+    printWrappedLine(INDENT2X,
+                     "-userJsInjection <file>: specifies a JavaScript file which will then be injected into all pages");
+    printWrappedLine(
+      INDENT2X,
+      "-userContentTransformation <regex> <replacement>: a regular expression which is matched "
+      +
+      "against all test HTML content; the second is a string which will replace matches.  These flags can be used any "
+      +
+      "number of times.  A simple example of how this could be useful: if you add \"-userContentTransformation https http\" "
+      +
+      "then all \"https\" strings in the HTML of the test application will be changed to be \"http\".");
+    printWrappedLine(
+      "",
+      "\nThis synopsis lists options available in standalone role only. To get help on the options available for other roles run the server with -help option and the corresponding -role option value.");
+  }
+
+  public static RemoteControlConfiguration parseLauncherOptions(String[] args) {
+    RemoteControlConfiguration configuration;
+    configuration = new RemoteControlConfiguration();
+    configuration.setPort(RemoteControlConfiguration.getDefaultPort());
+    for (int i = 0; i < args.length; i++) {
+      String arg = args[i];
+      if ("-h".equalsIgnoreCase(arg) || "-help".equalsIgnoreCase(arg)) {
+        usage(null);
+        System.exit(1);
+      } else if ("-defaultBrowserString".equalsIgnoreCase(arg)) {
+        usage("-defaultBrowserString has been renamed -forcedBrowserMode");
+      } else if ("-forcedBrowserMode".equalsIgnoreCase(arg)) {
+        configuration.setForcedBrowserMode(getArg(args, ++i));
+        if (i < args.length) {
+          System.err
+            .println("Warning: -forcedBrowserMode no longer consumes all remaining arguments on line (use -forcedBrowserModeRestOfLine for that)");
+        }
+      } else if ("-forcedBrowserModeRestOfLine".equalsIgnoreCase(arg)) {
+        for (i++; i < args.length; i++) {
+          if (null == configuration.getForcedBrowserMode()) {
+            configuration.setForcedBrowserMode("");
+          } else {
+            configuration.setForcedBrowserMode(configuration.getForcedBrowserMode() + " ");
+          }
+          configuration.setForcedBrowserMode(configuration.getForcedBrowserMode() + args[i]);
+        }
+      } else if ("-log".equalsIgnoreCase(arg)) {
+        configuration.setLogOutFileName(getArg(args, ++i));
+      } else if ("-captureLogsOnQuit".equalsIgnoreCase(arg)) {
+        configuration.setCaptureLogsOnQuit(true);
+      } else if ("-port".equalsIgnoreCase(arg)) {
+        configuration.setPort(Integer.parseInt(getArg(args, ++i)));
+      } else if ("-multiWindow".equalsIgnoreCase(arg)) {
+        configuration.setSingleWindow(!true);
+      } else if ("-singleWindow".equalsIgnoreCase(arg)) {
+        configuration.setSingleWindow(!false);
+      } else if ("-profilesLocation".equalsIgnoreCase(arg)) {
+        File profilesLocation = new File(getArg(args, ++i));
+        if (!profilesLocation.exists()) {
+          System.err.println("Specified profile location directory does not exist: " +
+                             profilesLocation);
+          System.exit(1);
+        }
+        configuration.setProfilesLocation(profilesLocation);
+      } else if ("-avoidProxy".equalsIgnoreCase(arg)) {
+        configuration.setAvoidProxy(true);
+      } else if ("-proxyInjectionMode".equalsIgnoreCase(arg)) {
+        configuration.setProxyInjectionModeArg(true);
+        // proxyInjectionMode implies singleWindow mode
+        configuration.setSingleWindow(!false);
+      } else if ("-portDriversShouldContact".equalsIgnoreCase(arg)) {
+        // to facilitate tcptrace interception of interaction between
+        // injected js and the selenium server
+        configuration.setPortDriversShouldContact(Integer.parseInt(getArg(args, ++i)));
+      } else if ("-noBrowserSessionReuse".equalsIgnoreCase(arg)) {
+        configuration.setReuseBrowserSessions(false);
+      } else if ("-browserSessionReuse".equalsIgnoreCase(arg)) {
+        configuration.setReuseBrowserSessions(true);
+      } else if ("-firefoxProfileTemplate".equalsIgnoreCase(arg)) {
+        configuration.setFirefoxProfileTemplate(new File(getArg(args, ++i)));
+        if (!configuration.getFirefoxProfileTemplate().exists()) {
+          System.err.println("Firefox profile template doesn't exist: " +
+                             configuration.getFirefoxProfileTemplate().getAbsolutePath());
+          System.exit(1);
+        }
+      } else if ("-ensureCleanSession".equalsIgnoreCase(arg)) {
+        configuration.setEnsureCleanSession(true);
+      } else if ("-dontInjectRegex".equalsIgnoreCase(arg)) {
+        configuration.setDontInjectRegex(getArg(args, ++i));
+      } else if ("-browserSideLog".equalsIgnoreCase(arg)) {
+        configuration.setBrowserSideLogEnabled(true);
+      } else if ("-debug".equalsIgnoreCase(arg)) {
+        configuration.setDebugMode(true);
+      } else if ("-debugURL".equalsIgnoreCase(arg)) {
+        configuration.setDebugURL(getArg(args, ++i));
+      } else if ("-timeout".equalsIgnoreCase(arg)) {
+        configuration.setTimeoutInSeconds(Integer.parseInt(getArg(args, ++i)));
+      } else if ("-jettyThreads".equalsIgnoreCase(arg)) {
+        int jettyThreadsCount = Integer.parseInt(getArg(args, ++i));
+
+        // Set the number of jetty threads before we construct the instance
+        configuration.setJettyThreads(jettyThreadsCount);
+      } else if ("-trustAllSSLCertificates".equalsIgnoreCase(arg)) {
+        configuration.setTrustAllSSLCertificates(true);
+      } else if ("-userJsInjection".equalsIgnoreCase(arg)) {
+        configuration.setUserJSInjection(true);
+        if (!InjectionHelper.addUserJsInjectionFile(getArg(args, ++i))) {
+          usage(null);
+          System.exit(1);
+        }
+      } else if ("-userContentTransformation".equalsIgnoreCase(arg)) {
+        if (!InjectionHelper.addUserContentTransformation(getArg(args, ++i), getArg(args, ++i))) {
+          usage(null);
+          System.exit(1);
+        }
+      } else if ("-userExtensions".equalsIgnoreCase(arg)) {
+        configuration.setUserExtensions(new File(getArg(args, ++i)));
+        if (!configuration.getUserExtensions().exists()) {
+          System.err.println("User Extensions file doesn't exist: " +
+                             configuration.getUserExtensions().getAbsolutePath());
+          System.exit(1);
+        }
+        if (!"user-extensions.js".equalsIgnoreCase(configuration.getUserExtensions().getName())) {
+          System.err.println("User extensions file MUST be called \"user-extensions.js\": " +
+                             configuration.getUserExtensions().getAbsolutePath());
+          System.exit(1);
+        }
+      } else if ("-selfTest".equalsIgnoreCase(arg)) {
+        configuration.setSelfTest(true);
+        configuration.setSelfTestDir(new File(getArg(args, ++i)));
+        configuration.getSelfTestDir().mkdirs();
+      } else if ("-htmlSuite".equalsIgnoreCase(arg)) {
+        try {
+          System.setProperty("htmlSuite.browserString", args[++i]);
+          System.setProperty("htmlSuite.startURL", args[++i]);
+          System.setProperty("htmlSuite.suiteFilePath", args[++i]);
+          System.setProperty("htmlSuite.resultFilePath", args[++i]);
+        } catch (ArrayIndexOutOfBoundsException e) {
+          System.err.println("Not enough command line arguments for -htmlSuite");
+          System.err.println("-htmlSuite requires you to specify:");
+          System.err.println("* browserString (e.g. \"*firefox\")");
+          System.err.println("* startURL (e.g. \"http://www.google.com\")");
+          System.err.println("* suiteFile (e.g. \"c:\\absolute\\path\\to\\my\\HTMLSuite.html\")");
+          System.err.println("* resultFile (e.g. \"c:\\absolute\\path\\to\\my\\results.html\")");
+          System.exit(1);
+        }
+        configuration.setHTMLSuite(true);
+      } else if ("-interactive".equalsIgnoreCase(arg)) {
+        configuration.setTimeoutInSeconds(Integer.MAX_VALUE);
+        configuration.setInteractive(true);
+      } else if ("-honor-system-proxy".equals(arg)) {
+        configuration.setHonorSystemProxy(true);
+      } else if (arg.startsWith("-D")) {
+        setSystemProperty(arg);
+      } /*
+         * else { usage("unrecognized argument " + arg); System.exit(1); }
+         */
+    }
+    if (configuration.userJSInjection() && !configuration.getProxyInjectionModeArg()) {
+      System.err.println("User js injection can only be used w/ -proxyInjectionMode");
+      System.exit(1);
+    }
+    if (configuration.getProfilesLocation() != null &&
+        configuration.getFirefoxProfileTemplate() != null) {
+      System.err.println("Cannot specify both a profileDirectory and a firefoxProfileTemplate");
+      System.exit(1);
+    }
+
+    if (null == configuration.getForcedBrowserMode()) {
+      if (null != System.getProperty("selenium.defaultBrowserString")) {
+        System.err
+          .println("The selenium.defaultBrowserString property is no longer supported; use selenium.forcedBrowserMode instead.");
+        System.exit(-1);
+      }
+      configuration.setForcedBrowserMode(System.getProperty("selenium.forcedBrowserMode"));
+    }
+
+    if (!configuration.getProxyInjectionModeArg() &&
+        System.getProperty("selenium.proxyInjectionMode") != null) {
+      configuration.setProxyInjectionModeArg("true".equals(System
+                                                             .getProperty("selenium.proxyInjectionMode")));
+    }
+    if (!configuration.isBrowserSideLogEnabled() &&
+        System.getProperty("selenium.browserSideLog") != null) {
+      configuration.setBrowserSideLogEnabled("true".equals(System
+                                                             .getProperty("selenium.browserSideLog")));
+    }
+
+    if (!configuration.isDebugMode() && System.getProperty("selenium.debugMode") != null) {
+      configuration.setDebugMode("true".equals(System.getProperty("selenium.debugMode")));
+    }
+    return configuration;
+  }
+
+  private static String getArg(String[] args, int i) {
+    if (i >= args.length) {
+      usage("expected at least one more argument");
+      System.exit(-1);
+    }
+    return args[i];
+  }
+
+  private static void setSystemProperty(String arg) {
+    if (arg.indexOf('=') == -1) {
+      usage("poorly formatted Java property setting (I expect to see '=') " + arg);
+      System.exit(1);
+    }
+    String property = arg.replaceFirst("-D", "").replaceFirst("=.*", "");
+    String value = arg.replaceFirst("[^=]*=", "");
+    System.err.println("Setting system property " + property + " to " + value);
+    System.setProperty(property, value);
   }
 
 }

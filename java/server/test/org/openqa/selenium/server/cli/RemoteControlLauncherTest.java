@@ -23,10 +23,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.SeleniumServer;
 
-/**
- * {@link org.openqa.selenium.server.cli.RemoteControlLauncher} unit test class.
- */
 public class RemoteControlLauncherTest {
 
   @Test
@@ -34,7 +32,7 @@ public class RemoteControlLauncherTest {
     final RemoteControlConfiguration configuration;
 
     configuration =
-        RemoteControlLauncher.parseLauncherOptions(new String[] {"-honor-system-proxy"});
+        SeleniumServer.parseLauncherOptions(new String[] {"-honor-system-proxy"});
     assertTrue(configuration.honorSystemProxy());
   }
 
@@ -42,7 +40,7 @@ public class RemoteControlLauncherTest {
   public void testHonorSystemProxyIsFalseWhenNotProvidedAsAnOption() {
     final RemoteControlConfiguration configuration;
 
-    configuration = RemoteControlLauncher.parseLauncherOptions(new String[] {});
+    configuration = SeleniumServer.parseLauncherOptions(new String[]{});
     assertFalse(configuration.honorSystemProxy());
   }
 
