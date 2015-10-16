@@ -1,6 +1,20 @@
 
 # note that this server doesn't include the necessary drivers.
 
+java_library(name = "real-server",
+  srcs = [
+    "CommandLineArgs.java",
+    "SeleniumServer.java",
+  ],
+  deps = [
+    ":server",
+    "//java/server/src/org/openqa/grid/shared:interfaces",
+    "//third_party/java/beust:jcommander",
+    "//third_party/java/jetty:jetty",
+    "//third_party/java/servlet:servlet-api",
+  ])
+
+
 java_library(name = "server",
   deps = [
     ":server_core",

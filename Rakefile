@@ -151,6 +151,8 @@ task :support => [
 desc 'Build the standalone server'
 task 'selenium-server-standalone' => '//java/server/src/org/openqa/grid/selenium:selenium:uber'
 
+task 'selenium-server-standalone-v3' => '//java/server/src/org/openqa/grid/selenium:selenium-v3:uber'
+
 task :ide => [ "//ide:selenium-ide-multi" ]
 task :ide_proxy_setup => [ "//javascript/selenium-atoms", "se_ide:setup_proxy" ]
 task :ide_proxy_remove => [ "se_ide:remove_proxy" ]

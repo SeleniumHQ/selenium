@@ -26,11 +26,11 @@ import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
+import org.openqa.grid.shared.CliUtils;
 import org.openqa.grid.web.Hub;
+import org.openqa.selenium.remote.server.SeleniumServer;
 import org.openqa.selenium.remote.server.log.LoggingOptions;
 import org.openqa.selenium.remote.server.log.TerseFormatter;
-import org.openqa.selenium.server.SeleniumServer;
-import org.openqa.grid.shared.CliUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,9 +40,9 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class GridLauncher {
+public class GridLauncherV3 {
 
-  private static final Logger log = Logger.getLogger(GridLauncher.class.getName());
+  private static final Logger log = Logger.getLogger(GridLauncherV3.class.getName());
 
   public interface GridItemLauncher {
     void launch(String[] args, Logger log) throws Exception;
@@ -88,7 +88,7 @@ public class GridLauncher {
         log.info("Launching a Selenium Grid node");
         RegistrationRequest c = RegistrationRequest.build(args);
         SelfRegisteringRemote remote = new SelfRegisteringRemote(c);
-        remote.setRemoteServer(new SeleniumServer(c.getConfiguration()));
+        remote.setRemoteServer(new SeleniumServer(c.getConfigAsInt("port", 4444)));
         remote.startRemoteServer();
         log.info("Selenium Grid node is up and ready to register to the hub");
         remote.startRegistrationProcess();
