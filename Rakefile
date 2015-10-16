@@ -573,6 +573,57 @@ task :release => [
   cp "build/java/client/src/org/openqa/selenium/client-combined.zip", "build/dist/selenium-java-#{version}.zip"
 end
 
+task "release-v3" => [
+    :clean,
+    :build,
+    '//java/server/src/org/openqa/selenium/remote/server:server:zip',
+    '//java/server/src/org/openqa/grid/selenium:selenium-v3:zip',
+    '//java/client/src/org/openqa/selenium:client-combined-v3-without-htmlunit:zip',
+    '//java/client/src/org/openqa/selenium:client-combined-v3:zip',
+  ] do |t|
+  # Unzip each of the deps and rename the pieces that need renaming
+  renames = {
+    "client-combined-v3-nodeps-srcs.jar" => "selenium-java-v3-#{version}-srcs.jar",
+    "client-combined-v3-nodeps.jar" => "selenium-java-v3-#{version}.jar",
+    "selenium-v3-nodeps-srcs.jar" => "selenium-server-v3-#{version}-srcs.jar",
+    "selenium-v3-nodeps.jar" => "selenium-server-v3-#{version}.jar",
+    "selenium-v3-standalone.jar" => "selenium-server-v3-standalone-#{version}.jar",
+  }
+
+  t.prerequisites.each do |pre|
+    zip = Rake::Task[pre].out
+
+    next unless zip =~ /\.zip$/
+
+    temp =  zip + "rename"
+    rm_rf temp
+    deep = File.join(temp, "/selenium-#{version}")
+    mkdir_p deep
+    cp "java/CHANGELOG", deep
+    cp "NOTICE", deep
+    cp "LICENSE", deep
+
+    sh "cd #{deep} && jar xf ../../#{File.basename(zip)}"
+    renames.each do |from, to|
+      src = File.join(deep, from)
+      next unless File.exists?(src)
+
+      mv src, File.join(deep, to)
+    end
+    rm_f File.join(deep, "client-combined-v3-standalone.jar")
+    rm zip
+    sh "cd #{temp} && jar cMf ../#{File.basename(zip)} *"
+
+    rm_rf temp
+  end
+
+  mkdir_p "build/dist"
+  cp "build/java/server/src/org/openqa/grid/selenium/selenium-v3-standalone.jar", "build/dist/selenium-server-v3-standalone-#{version}.jar"
+  cp "build/java/server/src/org/openqa/grid/selenium/selenium-v3.zip", "build/dist/selenium-server-v3-#{version}.zip"
+  cp "build/java/client/src/org/openqa/selenium/client-combined-v3.zip", "build/dist/selenium-java-v3-#{version}.zip"
+  cp "build/java/client/src/org/openqa/selenium/client-combined-v3-without-htmlunit.zip", "build/dist/selenium-java-v3-without-htmlunit-#{version}.zip"
+end
+
 task :push_release => [:release] do
   py = "java -jar third_party/py/jython.jar"
   if (python?)

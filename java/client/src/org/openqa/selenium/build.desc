@@ -89,10 +89,20 @@ java_library(name = "webdriver-api",
 
 java_library(name = "client-combined",
   deps = [
+    ":client-combined-v3",
     "//java/client/src/com/thoughtworks/selenium:leg-rc",
     "//java/client/src/com/thoughtworks/selenium/webdriven:webdriven",
-    "//java/client/src/org/openqa/selenium/chrome",
+  ])
+
+java_library(name = "client-combined-v3",
+  deps = [
+    ":client-combined-v3-without-htmlunit",
     "//java/client/src/org/openqa/selenium/htmlunit",
+  ])
+
+java_library(name = "client-combined-v3-without-htmlunit",
+  deps = [
+    "//java/client/src/org/openqa/selenium/chrome",
     "//java/client/src/org/openqa/selenium/firefox",
     "//java/client/src/org/openqa/selenium/edge",
     "//java/client/src/org/openqa/selenium/ie",
