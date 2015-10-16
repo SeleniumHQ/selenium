@@ -713,10 +713,9 @@ public class TypingTest extends JUnit4TestBase {
   @Test
   public void testShouldBeAbleToTypeIntoEmptyContentEditableElement() {
     driver.get(pages.readOnlyPage);
-    WebElement editable = driver.findElement(By.id("content-editable"));
+    WebElement editable = driver.findElement(By.id("content-editable-blank"));
 
-    editable.clear();
-    editable.sendKeys("cheese"); // requires focus on OS X
+    editable.sendKeys("cheese");
 
     assertThat(editable.getText(), equalTo("cheese"));
   }

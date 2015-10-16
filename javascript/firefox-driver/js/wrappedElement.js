@@ -148,7 +148,7 @@ WebElement.sendKeysToElement = function(respond, parameters) {
     if (!alreadyFocused && bot.dom.isEditable(element)) {
       var length = element.value ? element.value.length : goog.dom.getTextContent(element).length;
 
-      if (bot.dom.isContentEditable(element)) {
+      if (bot.dom.isContentEditable(element) && length) {
         var doc = element.ownerDocument || element.document;
         var rng = doc.createRange();
         var walker = doc.createTreeWalker(element, 4/*NodeFilter.SHOW_TEXT*/, null, null);
