@@ -1,4 +1,4 @@
-## v2.48.0-dev
+## v2.48.0
 
 * Node v0.12.x users must run with --harmony. _This is the last release that
     will support v0.12.x_
