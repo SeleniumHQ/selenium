@@ -465,16 +465,13 @@ function testThrownPromiseIsHandledSameAsReturningPromise_promiseIsFulfilled() {
 }
 
 
-function testThrownPromiseIsHandledSameAsReturningPromise_promiseIsRejected() {
-  return webdriver.promise.fulfilled().then(function() {
-    throw webdriver.promise.rejected(new StubError);
-  }).then(fail, assertIsStubError);
-}
-
-
-function testTaskThrowsPromise_taskSucceedsIfPromiseIsFulfilled() {
+function testTaskThrowsPromise_promiseWasFulfiled() {
+  var toThrow = webdriver.promise.fulfilled(1234);
   flow.execute(function() {
-    throw webdriver.promise.fulfilled(1234);
+    throw toThrow;
+  }).then(fail, function(value) {
+    assertEquals(toThrow, value);
+    return toThrow;
   }).then(function(value) {
     assertEquals(1234, value);
   });
@@ -482,9 +479,14 @@ function testTaskThrowsPromise_taskSucceedsIfPromiseIsFulfilled() {
 }
 
 
-function testTaskThrowsPromise_taskFailsIfPromiseIsRejected() {
+function testTaskThrowsPromise_promiseWasRejected() {
+  var toThrow = webdriver.promise.rejected(new StubError);
+  toThrow.thenCatch(goog.nullFunction);  // For tearDown.
   flow.execute(function() {
-    throw webdriver.promise.rejected(new StubError);
+    throw toThrow;
+  }).then(fail, function(e) {
+    assertEquals(toThrow, e);
+    return e;
   }).then(fail, assertIsStubError);
   return waitForIdle();
 }
@@ -840,5 +842,51 @@ function testErrorsInAsyncFunctionsAreReportedAsUnhandledRejection() {
     return task.thenCatch(function(error) {
       assertTrue(error instanceof webdriver.promise.CancellationError);
     });
+  });
+}
+
+
+function testDoesNotWaitForValuesThrownFromCallbacksToBeResolved_1() {
+  var p1 = webdriver.promise.fulfilled();
+  var reason = webdriver.promise.fulfilled('should not see me');
+  return p1.then(function() {
+    throw reason;
+  }).then(fail, function(e) {
+    assertEquals(reason, e);
+  });
+}
+
+
+function testDoesNotWaitForValuesThrownFromCallbacksToBeResolved_2() {
+  var p1 = webdriver.promise.fulfilled();
+  var reason = webdriver.promise.rejected('should not see me');
+  reason.thenCatch(goog.nullFunction);  // For tearDown.
+  return p1.then(function() {
+    throw reason;
+  }).then(fail, function(e) {
+    assertEquals(reason, e);
+  });
+}
+
+
+function testDoesNotWaitForValuesThrownFromCallbacksToBeResolved_3() {
+  var p1 = webdriver.promise.fulfilled();
+  var reason = webdriver.promise.defer();
+  setTimeout(() => reason.fulfill('should not see me'), 100);
+  return p1.then(function() {
+    throw reason.promise;
+  }).then(fail, function(e) {
+    assertEquals(reason.promise, e);
+  });
+}
+
+
+function testDoesNotWaitForValuesThrownFromCallbacksToBeResolved_4() {
+  var p1 = webdriver.promise.fulfilled();
+  var reason = {then: function() {}};  // A thenable like object.
+  return p1.then(function() {
+    throw reason;
+  }).then(fail, function(e) {
+    assertEquals(reason, e);
   });
 }

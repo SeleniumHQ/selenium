@@ -574,7 +574,7 @@ function testRejectForcesValueToAnError_errorLike() {
 }
 
 
-function testRejectingAPromiseWithAnotherPromiseCreatesAChain_ourPromise() {
+function testRejectingAPromiseWithAnotherPromise_ourPromise() {
   var d1 = new webdriver.promise.Deferred();
   var d2 = new webdriver.promise.Deferred();
   var pair1 = callbackPair(assertIsStubError, null);
@@ -583,7 +583,11 @@ function testRejectingAPromiseWithAnotherPromiseCreatesAChain_ourPromise() {
     return new StubError;
   });
 
-  d1.then(pair1.callback, pair1.errback);
+  d1.then(fail, function(e) {
+    assertEquals(d2promise, e);
+    return d2promise;
+  }).then(pair1.callback, pair1.errback);
+
   var d2promise = d2.then(pair2.callback, pair2.errback);
 
   pair1.assertNeither();
@@ -600,11 +604,7 @@ function testRejectingAPromiseWithAnotherPromiseCreatesAChain_ourPromise() {
 }
 
 
-function testRejectingAPromiseWithAnotherPromiseCreatesAChain_otherPromise() {
-  var d = new webdriver.promise.Deferred(), callback, errback;
-  d.then(callback = callbackHelper(assertIsStubError),
-         errback = callbackHelper());
-
+function testRejectingAPromiseWithAnotherPromise_otherPromise() {
   var otherPromise = {
     then: function(callback) {
       this.callback = callback;
@@ -614,15 +614,20 @@ function testRejectingAPromiseWithAnotherPromiseCreatesAChain_otherPromise() {
     }
   };
 
+  var pair = callbackPair(null, assertIsStubError);
+  var d = new webdriver.promise.Deferred();
+  d.promise.then(fail, function(e) {
+    assertEquals(otherPromise, e);
+    return otherPromise;
+  }).then(pair.callback, pair.errback);
+
   d.reject(otherPromise);
   clock.tick();
-  callback.assertNotCalled();
-  errback.assertNotCalled();
+  pair.assertNeither();
 
   otherPromise.fulfill(new StubError);
   clock.tick();
-  callback.assertCalled();
-  errback.assertNotCalled();
+  pair.assertCallback();
 }
 
 

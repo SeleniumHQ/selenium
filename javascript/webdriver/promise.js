@@ -1080,38 +1080,40 @@ promise.Promise = goog.defineClass(null, {
     this.parent_ = null;
     this.state_ = PromiseState.BLOCKED;
 
-    if (promise.Thenable.isImplementation(newValue)) {
-      // 2.3.2
-      newValue = /** @type {!promise.Thenable} */(newValue);
-      newValue.then(
-          this.unblockAndResolve_.bind(this, PromiseState.FULFILLED),
-          this.unblockAndResolve_.bind(this, PromiseState.REJECTED));
-      return;
-
-    } else if (goog.isObject(newValue)) {
-      // 2.3.3
-
-      try {
-        // 2.3.3.1
-        var then = newValue['then'];
-      } catch (e) {
-        // 2.3.3.2
-        this.state_ = PromiseState.REJECTED;
-        this.value_ = e;
-        this.scheduleNotifications_();
+    if (newState !== PromiseState.REJECTED) {
+      if (promise.Thenable.isImplementation(newValue)) {
+        // 2.3.2
+        newValue = /** @type {!promise.Thenable} */(newValue);
+        newValue.then(
+            this.unblockAndResolve_.bind(this, PromiseState.FULFILLED),
+            this.unblockAndResolve_.bind(this, PromiseState.REJECTED));
         return;
-      }
 
-      // NB: goog.isFunction is loose and will accept instanceof Function.
-      if (typeof then === 'function') {
-        // 2.3.3.3
-        this.invokeThen_(newValue, then);
-        return;
+      } else if (goog.isObject(newValue)) {
+        // 2.3.3
+
+        try {
+          // 2.3.3.1
+          var then = newValue['then'];
+        } catch (e) {
+          // 2.3.3.2
+          this.state_ = PromiseState.REJECTED;
+          this.value_ = e;
+          this.scheduleNotifications_();
+          return;
+        }
+
+        // NB: goog.isFunction is loose and will accept instanceof Function.
+        if (typeof then === 'function') {
+          // 2.3.3.3
+          this.invokeThen_(newValue, then);
+          return;
+        }
       }
     }
 
     if (newState === PromiseState.REJECTED &&
-      isError(newValue) && newValue.stack && this.stack_) {
+        isError(newValue) && newValue.stack && this.stack_) {
       newValue.stack += '\nFrom: ' + (this.stack_.stack || this.stack_);
     }
 

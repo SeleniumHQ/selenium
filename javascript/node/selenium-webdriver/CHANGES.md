@@ -2,6 +2,11 @@
 
 * Node v0.12.x users must run with --harmony. _This is the last release that
     will support v0.12.x_
+* FIXED: (Promise/A+ compliance) When a promise is rejected with a thenable,
+    the promise adopts the thenable as its rejection reason instead of waiting
+    for it to settle. The previous (incorrect) behavior was hidden by bugs in
+    the `promises-aplus-tests` compliance test suite that were fixed in version
+    `2.1.1`.
 * FIXED: the `webdriver.promise.ControlFlow` now has a consistent execution
     order for tasks/callbacks scheduled in different turns of the JS event loop.
     Refer to the `webdriver.promise` documentation for more details.
