@@ -5,6 +5,7 @@
 * FIXED: the `webdriver.promise.ControlFlow` now has a consistent execution
     order for tasks/callbacks scheduled in different turns of the JS event loop.
     Refer to the `webdriver.promise` documentation for more details.
+* FIXED: do not drop user auth from the WebDriver server URL.
 * FIXED: a single `firefox.Binary` instance may be used to configure and
     launch multiple FirefoxDriver sessions.
 

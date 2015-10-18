@@ -17,6 +17,7 @@
 
 var assert = require('assert');
 var http = require('http');
+var url = require('url');
 
 var HttpClient = require('../../http').HttpClient;
 var HttpRequest = require('../../_base').require('webdriver.http.Request');
@@ -25,7 +26,7 @@ var promise = require('../..').promise;
 var test = require('../../lib/test');
 
 describe('HttpClient', function() {
-  this.timeout(4*1000);
+  this.timeout(4 * 1000);
 
   var server = new Server(function(req, res) {
     if (req.method == 'GET' && req.url == '/echo') {
@@ -43,6 +44,30 @@ describe('HttpClient', function() {
     } else if (req.method == 'GET' && req.url == '/badredirect') {
       res.writeHead(303, {});
       res.end();
+
+    } else if (req.method == 'GET' && req.url == '/protected') {
+      var denyAccess = function() {
+        res.writeHead(401, {'WWW-Authenticate': 'Basic realm="test"'});
+        res.end('Access denied');
+      };
+
+      var basicAuthRegExp = /^\s*basic\s+([a-z0-9\-\._~\+\/]+)=*\s*$/i
+      var auth = req.headers.authorization;
+      var match = basicAuthRegExp.exec(auth || '');
+      if (!match) {
+        denyAccess();
+        return;
+      }
+
+      var userNameAndPass = new Buffer(match[1], 'base64').toString();
+      var parts = userNameAndPass.split(':', 2);
+      if (parts[0] !== 'genie' && parts[1] !== 'bottle') {
+        denyAccess();
+        return;
+      }
+
+      res.writeHead(200, {'content-type': 'text/plain'});
+      res.end('Access granted!');
 
     } else if (req.method == 'GET' && req.url == '/proxy') {
       res.writeHead(200, req.headers);
@@ -84,6 +109,30 @@ describe('HttpClient', function() {
           assert.equal('keep-alive', response.headers['connection']);
           assert.equal(server.host(), response.headers['host']);
         });
+  });
+
+  test.it('can use basic auth', function() {
+    var parsed = url.parse(server.url());
+    parsed.auth = 'genie:bottle';
+
+    var client = new HttpClient(url.format(parsed));
+    var request = new HttpRequest('GET', '/protected');
+    return promise.checkedNodeCall(client.send.bind(client, request))
+      .then(function(response) {
+        assert.equal(200, response.status);
+        assert.equal('text/plain', response.headers['content-type']);
+        assert.equal('Access granted!', response.body);
+      });
+  });
+
+  test.it('fails requests missing required basic auth', function() {
+    var client = new HttpClient(server.url());
+    var request = new HttpRequest('GET', '/protected');
+    return promise.checkedNodeCall(client.send.bind(client, request))
+      .then(function(response) {
+              assert.equal(401, response.status);
+              assert.equal('Access denied', response.body);
+            });
   });
 
   test.it('automatically follows redirects', function() {

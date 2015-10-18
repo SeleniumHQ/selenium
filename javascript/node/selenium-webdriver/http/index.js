@@ -55,6 +55,7 @@ var HttpClient = function(serverUrl, opt_agent, opt_proxy) {
    * @private {!Object}
    */
   this.options_ = {
+    auth: parsedUrl.auth,
     host: parsedUrl.hostname,
     path: parsedUrl.pathname,
     port: parsedUrl.port
@@ -81,6 +82,7 @@ HttpClient.prototype.send = function(httpRequest, callback) {
 
   var options = {
     method: httpRequest.method,
+    auth: this.options_.auth,
     host: this.options_.host,
     port: this.options_.port,
     path: path,
