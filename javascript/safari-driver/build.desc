@@ -59,6 +59,8 @@ js_binary(
 
         "--jscomp_warning=checkTypes",
 
+        "--language_in=ECMASCRIPT6_STRICT",
+        "--language_out=ECMASCRIPT5_STRICT",
         "--output_wrapper='%output%;window.onload = init;'",
         "--third_party=false",
     ])
@@ -103,6 +105,8 @@ js_binary(
         "--jscomp_error=uselessCode",
         "--jscomp_error=visibility",
 
+        "--language_in=ECMASCRIPT6_STRICT",
+        "--language_out=ECMASCRIPT5_STRICT",
         "--output_wrapper='%output%;safaridriver.debug.init();'",
         "--third_party=false",
     ],
@@ -157,6 +161,8 @@ js_binary(
         "--jscomp_error=uselessCode",
         "--jscomp_error=visibility",
 
+        "--language_in=ECMASCRIPT6_STRICT",
+        "--language_out=ECMASCRIPT5_STRICT",
         "--output_wrapper='%output%;safaridriver.extension.init();'",
         "--third_party=false",
     ],
@@ -210,6 +216,8 @@ js_module_binary(
 
         "--jscomp_warning=checkTypes",
 
+        "--language_in=ECMASCRIPT6_STRICT",
+        "--language_out=ECMASCRIPT5_STRICT",
         "--module_wrapper='base:%s;init();'",
         "--module_wrapper='commands:MODULES.injected_commands = function() {%s};'",
 
@@ -268,6 +276,8 @@ js_module_binary(
         "--jscomp_error=uselessCode",
         "--jscomp_error=visibility",
 
+        "--language_in=ECMASCRIPT6_STRICT",
+        "--language_out=ECMASCRIPT5_STRICT",
         "--module_wrapper='base:MODULES.page_base = function(){%s;this.init();};'",
         "--module_wrapper='element:MODULES.page_element = function() {%s};'",
         "--module_wrapper='script:MODULES.page_script = function() {%s};'",

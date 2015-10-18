@@ -249,3 +249,75 @@ function testFlowWaitingOnGeneratorTimesOut() {
   });
 }
 
+
+function testGeneratorAsPromiseCallback_1() {
+  var promises = [
+    webdriver.promise.defer(),
+    webdriver.promise.defer()
+  ];
+  var values = [];
+
+  setTimeout(function() {
+    promises[0].fulfill(1);
+  }, 50);
+
+  setTimeout(function() {
+    promises[1].fulfill(2);
+  }, 100);
+
+  return webdriver.promise.fulfilled().then(function*() {
+    values.push(yield promises[0].promise);
+    values.push(yield promises[1].promise);
+    values.push('fin');
+  }).then(function() {
+    assertArrayEquals([1, 2, 'fin'], values);
+  });
+}
+
+
+function testGeneratorAsPromiseCallback_2() {
+  var promises = [
+    webdriver.promise.defer(),
+    webdriver.promise.defer()
+  ];
+  var values = [];
+
+  setTimeout(function() {
+    promises[0].fulfill(1);
+  }, 50);
+
+  setTimeout(function() {
+    promises[1].fulfill(2);
+  }, 100);
+
+  return webdriver.promise.fulfilled(3).then(function*(value) {
+    var p1 = yield promises[0].promise;
+    var p2 = yield promises[1].promise;
+    values.push(value + p1);
+    values.push(value + p2);
+    values.push('fin');
+  }).then(function() {
+    assertArrayEquals([4, 5, 'fin'], values);
+  });
+}
+
+function testGeneratorAsPromiseCallback_3() {
+  var d = webdriver.promise.defer();
+  var e = Error('stub');
+
+  setTimeout(function() {
+    d.reject(e);
+  }, 50);
+
+  return webdriver.promise.fulfilled().then(function*() {
+    var threw = false;
+    try {
+      yield d.promise;
+    } catch (ex) {
+      threw = true;
+      assertEquals(e, ex);
+    }
+    assertTrue(threw);
+  });
+}
+

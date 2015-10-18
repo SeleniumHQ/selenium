@@ -46,6 +46,8 @@ js_binary(name = 'client',
     '--jscomp_error=uselessCode',
     '--jscomp_error=visibility',
 
+    '--language_in=ECMASCRIPT6_STRICT',
+    '--language_out=ECMASCRIPT5_STRICT',
     '--third_party=false',
 
     '--compilation_level=ADVANCED_OPTIMIZATIONS',

@@ -90,7 +90,7 @@ function onUncaughtException(e) {
 function waitForIdle(opt_flow) {
   var theFlow = opt_flow || flow;
   return new goog.Promise(function(fulfill, reject) {
-    if (!theFlow.activeFrame_ && !theFlow.yieldCount_) {
+    if (theFlow.isIdle()) {
       fulfill();
       return;
     }
@@ -1146,12 +1146,12 @@ function testCustomFunctionDoesNotCompleteUntilReturnedPromiseIsResolved() {
 
   // timeout to ensure the first function starts its execution before we
   // trigger d's callbacks.
-  return webdriver.promise.delayed(0).then(function() {
+  webdriver.promise.delayed(0).then(function() {
     assertArrayEquals(['a'], order);
     d.fulfill();
-    return waitForIdle().then(function() {
-      assertArrayEquals(['a', 'b', 'c'], order);
-    });
+  });
+  return waitForIdle().then(function() {
+    assertArrayEquals(['a', 'b', 'c'], order);
   });
 }
 

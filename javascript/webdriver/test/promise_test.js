@@ -411,7 +411,7 @@ function testFiresUncaughtExceptionEventIfRejectionNeverHandled() {
   var handler = callbackHelper(assertIsStubError);
 
   // so tearDown() doesn't throw
-  app.reset();
+  app.removeAllListeners();
   app.on(webdriver.promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION, handler);
   clock.tick();
   handler.assertCalled();
@@ -652,20 +652,33 @@ function testResolvingADeferredWithAnotherCopiesTheResolvedValue() {
 }
 
 
-function testCannotResolveAPromiseWithItself() {
-  assertThrows(function() {
-    var f, p = new webdriver.promise.Promise(function(fulfill) {
-      f = fulfill;
-    });
-    f(p);
+function testCannotResolveAPromiseWithItself_fulfill() {
+  var pair = callbackPair(null, function(e) {
+    assertTrue(e instanceof TypeError);
   });
 
-  assertThrows(function() {
-    var r, p = new webdriver.promise.Promise(function(_, reject) {
-      r = reject;
-    });
-    r(p);
+  var f, p = new webdriver.promise.Promise(function(fulfill) {
+    f = fulfill;
   });
+  p.then(pair.callback, pair.errback);
+  f(p);
+  clock.tick();
+  pair.assertErrback();
+}
+
+
+function testCannotResolveAPromiseWithItself_reject() {
+  var pair = callbackPair(null, function(e) {
+    assertTrue(e instanceof TypeError);
+  });
+
+  var r, p = new webdriver.promise.Promise(function(_, reject) {
+    r = reject;
+  });
+  p.then(pair.callback, pair.errback);
+  r(p);
+  clock.tick();
+  pair.assertErrback();
 }
 
 
@@ -969,7 +982,6 @@ function testFullyResolved_promiseResolvesToHashWithPromises() {
 
 
 function testFullyResolved_rejectsIfHashPromiseRejects() {
-  var e = new Error('foo');
   var promise = webdriver.promise.fulfilled({
       'a': createRejectedPromise(new StubError)
   });
@@ -983,7 +995,6 @@ function testFullyResolved_rejectsIfHashPromiseRejects() {
 }
 
 function testFullyResolved_rejectsIfNestedHashPromiseRejects() {
-  var e = new Error('foo');
   var promise = webdriver.promise.fulfilled({
       'a': {'b': createRejectedPromise(new StubError)}
   });
@@ -1257,7 +1268,7 @@ function testCancel_cancelIsANoopOnceAPromiseHasBeenRejected() {
 
 function testCancel_noopCancelTriggeredOnCallbackOfResolvedPromise() {
   var d = webdriver.promise.defer();
-  var p = d.then();
+  var p = d.promise.then();
 
   d.fulfill();
   p.cancel();  // This should not throw.
@@ -1278,7 +1289,7 @@ function testCallbackRegistersAnotherListener_callbacksConfiguredPreResolve() {
   });
   d.fulfill();
   clock.tick();
-  assertArrayEquals(['a', 'b', 'c'], messages);
+  assertArrayEquals(['a', 'c', 'b'], messages);
 }
 
 
@@ -1295,7 +1306,7 @@ function testCallbackRegistersAnotherListener_callbacksConfiguredPostResolve() {
     messages.push('b');
   });
   clock.tick();
-  assertArrayEquals(['a', 'b', 'c'], messages);
+  assertArrayEquals(['a', 'c', 'b'], messages);
 }
 
 
@@ -1353,7 +1364,7 @@ function testIsStillConsideredUnHandledIfNoCallbacksWereGivenOnCallsToThen() {
   var handler = callbackHelper(assertIsStubError);
 
   // so tearDown() doesn't throw
-  app.reset();
+  app.removeAllListeners();
   app.on(webdriver.promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION, handler);
   clock.tick();
   handler.assertCalled();

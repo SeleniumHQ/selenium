@@ -111,7 +111,7 @@ exports.getLogger = getLogger;
  * Logs all messages to the Console API.
  */
 function consoleHandler(record) {
-  if (typeof console === 'undefined') {
+  if (typeof console === 'undefined' || !console) {
     return;
   }
   record = /** @type {!LogRecord} */(record);

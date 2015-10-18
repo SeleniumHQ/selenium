@@ -44,9 +44,572 @@
  */
 
 /**
- * @fileoverview A promise implementation based on the CommonJS promise/A and
- * promise/B proposals. For more information, see
- * http://wiki.commonjs.org/wiki/Promises.
+ * @fileoverview
+ * The promise module is centered around the
+ * {@linkplain webdriver.promise.ControlFlow ControlFlow}, a class that
+ * coordinates the execution of asynchronous tasks. The ControlFlow allows users
+ * to focus on the imperative commands for their script without worrying about
+ * chaining together every single asynchronous action, which can be tedious and
+ * verbose. APIs may be layered on top of the control flow to read as if they
+ * were synchronous. For instance, the core
+ * {@linkplain webdriver.WebDriver WebDriver} API is built on top of the
+ * control flow, allowing users to write
+ *
+ *     driver.get('http://www.google.com/ncr');
+ *     driver.findElement({name: 'q'}).sendKeys('webdriver');
+ *     driver.findElement({name: 'btnGn'}).click();
+ *
+ * instead of
+ *
+ *     driver.get('http://www.google.com/ncr')
+ *     .then(function() {
+ *       return driver.findElement({name: 'q'});
+ *     })
+ *     .then(function(q) {
+ *       return q.sendKeys('webdriver');
+ *     })
+ *     .then(function() {
+ *       return driver.findElement({name: 'btnG'});
+ *     })
+ *     .then(function(btnG) {
+ *       return btnG.click();
+ *     });
+ *
+ * ## Tasks and Task Queues
+ *
+ * The control flow is based on the concept of tasks and task queues. Tasks are
+ * functions that define the basic unit of work for the control flow to execute.
+ * Each task is scheduled via
+ * {@link webdriver.promise.ControlFlow#execute() ControlFlow#execute()}, which
+ * will return a {@link webdriver.promise.Promise Promise} that will be resolved
+ * with the task's result.
+ *
+ * A task queue contains all of the tasks scheduled within a single turn of the
+ * [JavaScript event loop][JSEL]. The control flow will create a new task queue
+ * the first time a task is scheduled within an event loop.
+ *
+ *     var flow = promise.controlFlow();
+ *     flow.execute(foo);       // Creates a new task queue and inserts foo.
+ *     flow.execute(bar);       // Inserts bar into the same queue as foo.
+ *     setTimeout(function() {
+ *       flow.execute(baz);     // Creates a new task queue and inserts baz.
+ *     }, 0);
+ *
+ * Whenever the control flow creates a new task queue, it will automatically
+ * begin executing tasks in the next available turn of the event loop. This
+ * execution is scheduled using a "micro-task" timer, such as a (native)
+ * `Promise.then()` callback.
+ *
+ *     setTimeout(() => console.log('a'));
+ *     Promise.resolve().then(() => console.log('b'));  // A native promise.
+ *     flow.execute(() => console.log('c'));
+ *     Promise.resolve().then(() => console.log('d'));
+ *     setTimeout(() => console.log('fin'));
+ *     // b
+ *     // c
+ *     // d
+ *     // a
+ *     // fin
+ *
+ * In the example above, b/c/d is logged before a/fin because native promises
+ * and this module use "micro-task" timers, which have a higher priority than
+ * "macro-tasks" like `setTimeout`.
+ *
+ * ## Task Execution
+ *
+ * Upon creating a task queue, and whenever an exisiting queue completes a task,
+ * the control flow will schedule a micro-task timer to process any scheduled
+ * tasks. This ensures no task is ever started within the same turn of the
+ * JavaScript event loop in which it was scheduled, nor is a task ever started
+ * within the same turn that another finishes.
+ *
+ * When the execution timer fires, a single task will be dequeued and executed.
+ * There are several important events that may occur while executing a task
+ * function:
+ *
+ * 1. A new task queue is created by a call to
+ *    {@link webdriver.promise.ControlFlow#execute ControlFlow#execute()}. Any
+ *    tasks scheduled within this task queue are considered subtasks of the
+ *    current task.
+ * 2. The task function throws an error. Any scheduled tasks are immediately
+ *    discarded and the task's promised result (previously returned by
+ *    {@link webdriver.promise.ControlFlow#execute ControlFlow#execute()}) is
+ *    immediately rejected with the thrown error.
+ * 3. The task function returns sucessfully.
+ *
+ * If a task function created a new task queue, the control flow will wait for
+ * that queue to complete before processing the task result. If the queue
+ * completes without error, the flow will settle the task's promise with the
+ * value originaly returned by the task function. On the other hand, if the task
+ * queue termintes with an error, the task's promise will be rejected with that
+ * error.
+ *
+ *     flow.execute(function() {
+ *       flow.execute(() => console.log('a'));
+ *       flow.execute(() => console.log('b'));
+ *     });
+ *     flow.execute(() => console.log('c'));
+ *     // a
+ *     // b
+ *     // c
+ *
+ * ## Promise Integration
+ *
+ * In addition to the {@link webdriver.promise.ControlFlow ControlFlow} class,
+ * the promise module also exports a [Promise/A+]
+ * {@linkplain webdriver.promise.Promise implementation} that is deeply
+ * integrated with the ControlFlow. First and foremost, each promise
+ * {@linkplain webdriver.promise.Promise#then() callback} is scheduled with the
+ * control flow as a task. As a result, each callback is invoked in its own turn
+ * of the JavaScript event loop with its own task queue. If any tasks are
+ * scheduled within a callback, the callback's promised result will not be
+ * settled until the task queue has completed.
+ *
+ *     promise.fulfilled().then(function() {
+ *       flow.execute(function() {
+ *         console.log('b');
+ *       });
+ *     }).then(() => console.log('a'));
+ *     // b
+ *     // a
+ *
+ * ### Scheduling Promise Callbacks <a id="scheduling_callbacks"></a>
+ *
+ * How callbacks are scheduled in the control flow depends on when they are
+ * attached to the promise. Callbacks attached to a _previously_ resolved
+ * promise are immediately enqueued as subtasks of the currently running task.
+ *
+ *     var p = promise.fulfilled();
+ *     flow.execute(function() {
+ *       flow.execute(() => console.log('A'));
+ *       p.then(      () => console.log('B'));
+ *       flow.execute(() => console.log('C'));
+ *       p.then(      () => console.log('D'));
+ *     }).then(function() {
+ *       console.log('fin');
+ *     });
+ *     // A
+ *     // B
+ *     // C
+ *     // D
+ *     // fin
+ *
+ * When a promise is resolved while a task function is on the call stack, any
+ * callbacks also registered in that stack frame are scheduled as if the promise
+ * were already resolved:
+ *
+ *     var d = promise.defer();
+ *     flow.execute(function() {
+ *       flow.execute(  () => console.log('A'));
+ *       d.promise.then(() => console.log('B'));
+ *       flow.execute(  () => console.log('C'));
+ *       d.promise.then(() => console.log('D'));
+ *
+ *       d.fulfill();
+ *     }).then(function() {
+ *       console.log('fin');
+ *     });
+ *     // A
+ *     // B
+ *     // C
+ *     // D
+ *     // fin
+ *
+ * If a promise is resolved while a task function is on the call stack, any
+ * previously registered callbacks (i.e. attached while the task was _not_ on
+ * the call stack), act as _interrupts_ and are inserted at the front of the
+ * task queue. If multiple promises are fulfilled, their interrupts are enqueued
+ * in the order the promises are resolved.
+ *
+ *     var d1 = promise.defer();
+ *     d1.promise.then(() => console.log('A'));
+ *
+ *     var d2 = promise.defer();
+ *     d2.promise.then(() => console.log('B'));
+ *
+ *     flow.execute(function() {
+ *       flow.execute(() => console.log('C'));
+ *       flow.execute(() => console.log('D'));
+ *       d1.fulfill();
+ *       d2.fulfill();
+ *     }).then(function() {
+ *       console.log('fin');
+ *     });
+ *     // A
+ *     // B
+ *     // C
+ *     // D
+ *     // fin
+ *
+ * Within a task function (or callback), each step of a promise chain acts as
+ * an interrupt on the task queue:
+ *
+ *     var d = promise.defer();
+ *     flow.execute(function() {
+ *       d.promise.
+ *           then(() => console.log('A')).
+ *           then(() => console.log('B')).
+ *           then(() => console.log('C')).
+ *           then(() => console.log('D'));
+ *
+ *       flow.execute(() => console.log('E'));
+ *       d.fulfill();
+ *     }).then(function() {
+ *       console.log('fin');
+ *     });
+ *     // A
+ *     // B
+ *     // C
+ *     // D
+ *     // E
+ *     // fin
+ *
+ * If there are multiple promise chains derived from a single promise, they are
+ * processed in the order created:
+ *
+ *     var d = promise.defer();
+ *     flow.execute(function() {
+ *       var chain = d.promise.then(() => console.log('A'));
+ *
+ *       chain.then(() => console.log('B')).
+ *           then(() => console.log('C'));
+ *
+ *       chain.then(() => console.log('D')).
+ *           then(() => console.log('E'));
+ *
+ *       flow.execute(() => console.log('F'));
+ *
+ *       d.fulfill();
+ *     }).then(function() {
+ *       console.log('fin');
+ *     });
+ *     // A
+ *     // B
+ *     // C
+ *     // D
+ *     // E
+ *     // F
+ *     // fin
+ *
+ * Even though a subtask's promised result will never resolve while the task
+ * function is on the stack, it will be treated as a promise resolved within the
+ * task. In all other scenarios, a task's promise behaves just like a normal
+ * promise. In the sample below, `C/D` is loggged before `B` because the
+ * resolution of `subtask1` interrupts the flow of the enclosing task. Within
+ * the final subtask, `E/F` is logged in order because `subtask1` is a resolved
+ * promise when that task runs.
+ *
+ *     flow.execute(function() {
+ *       var subtask1 = flow.execute(() => console.log('A'));
+ *       var subtask2 = flow.execute(() => console.log('B'));
+ *
+ *       subtask1.then(() => console.log('C'));
+ *       subtask1.then(() => console.log('D'));
+ *
+ *       flow.execute(function() {
+ *         flow.execute(() => console.log('E'));
+ *         subtask1.then(() => console.log('F'));
+ *       });
+ *     }).then(function() {
+ *       console.log('fin');
+ *     });
+ *     // A
+ *     // C
+ *     // D
+ *     // B
+ *     // E
+ *     // F
+ *     // fin
+ *
+ * __Note__: while the ControlFlow will wait for
+ * {@linkplain webdriver.promise.ControlFlow#execute tasks} and
+ * {@linkplain webdriver.promise.Promise#then callbacks} to complete, it
+ * _will not_ wait for unresolved promises created within a task:
+ *
+ *     flow.execute(function() {
+ *       var p = new promise.Promise(function(fulfill) {
+ *         setTimeout(fulfill, 100);
+ *       });
+ *
+ *       p.then(() => console.log('promise resolved!'));
+ *
+ *     }).then(function() {
+ *       console.log('task complete!');
+ *     });
+ *     // task complete!
+ *     // promise resolved!
+ *
+ * Finally, consider the following:
+ *
+ *     var d = promise.defer();
+ *     d.promise.then(() => console.log('A'));
+ *     d.promise.then(() => console.log('B'));
+ *
+ *     flow.execute(function() {
+ *       flow.execute(  () => console.log('C'));
+ *       d.promise.then(() => console.log('D'));
+ *
+ *       flow.execute(  () => console.log('E'));
+ *       d.promise.then(() => console.log('F'));
+ *
+ *       d.fulfill();
+ *
+ *       flow.execute(  () => console.log('G'));
+ *       d.promise.then(() => console.log('H'));
+ *     }).then(function() {
+ *       console.log('fin');
+ *     });
+ *     // A
+ *     // B
+ *     // C
+ *     // D
+ *     // E
+ *     // F
+ *     // G
+ *     // H
+ *     // fin
+ *
+ * In this example, callbacks are registered on `d.promise` both before and
+ * during the invocation of the task function. When `d.fulfill()` is called,
+ * the callbacks registered before the task (`A` & `B`) are registered as
+ * interrupts. The remaining callbacks were all attached within the task and
+ * are scheduled in the flow as standard tasks.
+ *
+ * ## Generator Support
+ *
+ * [Generators][GF] may be scheduled as tasks within a control flow or attached
+ * as callbacks to a promise. Each time the generator yields a promise, the
+ * control flow will wait for that promise to settle before executing the next
+ * iteration of the generator. The yielded promise's fulfilled value will be
+ * passed back into the generator:
+ *
+ *     flow.execute(function* () {
+ *       var d = promise.defer();
+ *
+ *       setTimeout(() => console.log('...waiting...'), 25);
+ *       setTimeout(() => d.fulfill(123), 50);
+ *
+ *       console.log('start: ' + Date.now());
+ *
+ *       var value = yield d.promise;
+ *       console.log('mid: %d; value = %d', Date.now(), value);
+ *
+ *       yield promise.delayed(10);
+ *       console.log('end: ' + Date.now());
+ *     }).then(function() {
+ *       console.log('fin');
+ *     });
+ *     // start: 0
+ *     // ...waiting...
+ *     // mid: 50; value = 123
+ *     // end: 60
+ *     // fin
+ *
+ * Yielding the result of a promise chain will wait for the entire chain to
+ * complete:
+ *
+ *     promise.fulfilled().then(function* () {
+ *       console.log('start: ' + Date.now());
+ *
+ *       var value = yield flow.
+ *           execute(() => console.log('A')).
+ *           then(   () => console.log('B')).
+ *           then(   () => 123);
+ *
+ *       console.log('mid: %s; value = %d', Date.now(), value);
+ *
+ *       yield flow.execute(() => console.log('C'));
+ *     }).then(function() {
+ *       console.log('fin');
+ *     });
+ *     // start: 0
+ *     // A
+ *     // B
+ *     // mid: 2; value = 123
+ *     // C
+ *     // fin
+ *
+ * Yielding a _rejected_ promise will cause the rejected value to be thrown
+ * within the generator function:
+ *
+ *     flow.execute(function* () {
+ *       console.log('start: ' + Date.now());
+ *       try {
+ *         yield promise.delayed(10).then(function() {
+ *           throw Error('boom');
+ *         });
+ *       } catch (ex) {
+ *         console.log('caught time: ' + Date.now());
+ *         console.log(ex.message);
+ *       }
+ *     });
+ *     // start: 0
+ *     // caught time: 10
+ *     // boom
+ *
+ * # Error Handling
+ *
+ * ES6 promises do not require users to handle a promise rejections. This can
+ * result in subtle bugs as the rejections are silently "swallowed" by the
+ * Promise class.
+ *
+ *     Promise.reject(Error('boom'));
+ *     // ... *crickets* ...
+ *
+ * Selenium's {@link webdriver.promise promise} module, on the other hand,
+ * requires that every rejection be explicitly handled. When a
+ * {@linkplain webdriver.promise.Promise Promise} is rejected and no callbacks
+ * are defined on that promise, it is considered an _unhandled rejection_ and
+ * reproted to the active task queue. If the rejection remains unhandled after
+ * a single turn of the [event loop][JSEL] (scheduled with a micro-task), it
+ * will propagate up the stack.
+ *
+ * ## Error Propagation
+ *
+ * If an unhandled rejection occurs within a task function, that task's promised
+ * result is rejected and all remaining subtasks are discarded:
+ *
+ *     flow.execute(function() {
+ *       // No callbacks registered on promise -> unhandled rejection
+ *       promise.rejected(Error('boom'));
+ *       flow.execute(function() { console.log('this will never run'); });
+ *     }).thenCatch(function(e) {
+ *       console.log(e.message);
+ *     });
+ *     // boom
+ *
+ * The promised results for discarded tasks are silently rejected with a
+ * cancellation error and existing callback chains will never fire.
+ *
+ *     flow.execute(function() {
+ *       promise.rejected(Error('boom'));
+ *       flow.execute(function() { console.log('a'); }).
+ *           then(function() { console.log('b'); });
+ *     }).thenCatch(function(e) {
+ *       console.log(e.message);
+ *     });
+ *     // boom
+ *
+ * An unhandled rejection takes precedence over a task function's returned
+ * result, even if that value is another promise:
+ *
+ *     flow.execute(function() {
+ *       promise.rejected(Error('boom'));
+ *       return flow.execute(someOtherTask);
+ *     }).thenCatch(function(e) {
+ *       console.log(e.message);
+ *     });
+ *     // boom
+ *
+ * If there are multiple unhandled rejections within a task, they are packaged
+ * in a {@link webdriver.promise.MultipleUnhandledRejectionError
+ * MultipleUnhandledRejectionError}, which has an `errors` property that is a
+ * `Set` of the recorded unhandled rejections:
+ *
+ *     flow.execute(function() {
+ *       promise.rejected(Error('boom1'));
+ *       promise.rejected(Error('boom2'));
+ *     }).thenCatch(function(ex) {
+ *       console.log(ex instanceof promise.MultipleUnhandledRejectionError);
+ *       for (var e of ex.errors) {
+ *         console.log(e.message);
+ *       }
+ *     });
+ *     // boom1
+ *     // boom2
+ *
+ * When a subtask is discarded due to an unreported rejection in its parent
+ * frame, the existing callbacks on that task will never settle and the
+ * callbacks will not be invoked. If a new callback is attached ot the subtask
+ * _after_ it has been discarded, it is handled the same as adding a callback
+ * to a cancelled promise: the error-callback path is invoked. This behavior is
+ * intended to handle cases where the user saves a reference to a task promise,
+ * as illustrated below.
+ *
+ *     var subTask;
+ *     flow.execute(function() {
+ *       promise.rejected(Error('boom'));
+ *       subTask = flow.execute(function() {});
+ *     }).thenCatch(function(e) {
+ *       console.log(e.message);
+ *     }).then(function() {
+ *       return subTask.then(
+ *           () => console.log('subtask success!'),
+ *           (e) => console.log('subtask failed:\n' + e));
+ *     });
+ *     // boom
+ *     // subtask failed:
+ *     // DiscardedTaskError: Task was discarded due to a previous failure: boom
+ *
+ * When a subtask fails, its promised result is treated the same as any other
+ * promise: it must be handled within one turn of the rejection or the unhandled
+ * rejection is propagated to the parent task. This means users can catch errors
+ * from complex flows from the top level task:
+ *
+ *     flow.execute(function() {
+ *       flow.execute(function() {
+ *         flow.execute(function() {
+ *           throw Error('fail!');
+ *         });
+ *       });
+ *     }).thenCatch(function(e) {
+ *       console.log(e.message);
+ *     });
+ *     // fail!
+ *
+ * ## Unhandled Rejection Events
+ *
+ * When an unhandled rejection propagates to the root of the control flow, the
+ * flow will emit an __uncaughtException__ event. If no listeners are registered
+ * on the flow, the error will be rethrown to the global error handler: an
+ * __uncaughtException__ event from the
+ * [`process`](https://nodejs.org/api/process.html) object in node, or
+ * `window.onerror` when running in a browser.
+ *
+ * Bottom line: you __*must*__ handle rejected promises.
+ *
+ * # Promise/A+ Compatibility
+ *
+ * This `promise` module is compliant with the [Promise/A+][] specification
+ * except for sections `2.2.6.1` and `2.2.6.2`:
+ *
+ * >
+ * > - `then` may be called multiple times on the same promise.
+ * >    - If/when `promise` is fulfilled, all respective `onFulfilled` callbacks
+ * >      must execute in the order of their originating calls to `then`.
+ * >    - If/when `promise` is rejected, all respective `onRejected` callbacks
+ * >      must execute in the order of their originating calls to `then`.
+ * >
+ *
+ * Specifically, the conformance tests contains the following scenario (for
+ * brevity, only the fulfillment version is shown):
+ *
+ *     var p1 = Promise.resolve();
+ *     p1.then(function() {
+ *       console.log('A');
+ *       p1.then(() => console.log('B'));
+ *     });
+ *     p1.then(() => console.log('C'));
+ *     // A
+ *     // C
+ *     // B
+ *
+ * Since the [ControlFlow](#scheduling_callbacks) executes promise callbacks as
+ * tasks, with this module, the result would be
+ *
+ *     var p2 = promise.fulfilled();
+ *     p2.then(function() {
+ *       console.log('A');
+ *       p2.then(() => console.log('B');
+ *     });
+ *     p2.then(() => console.log('C'));
+ *     // A
+ *     // B
+ *     // C
+ *
+ * [JSEL]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop
+ * [GF]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*
+ * [Promise/A+]: https://promisesaplus.com/
  */
 
 goog.module('webdriver.promise');
@@ -57,6 +620,7 @@ var asserts = goog.require('goog.asserts');
 var asyncRun = goog.require('goog.async.run');
 var throwException = goog.require('goog.async.throwException');
 var DebugError = goog.require('goog.debug.Error');
+var log = goog.require('goog.log');
 var Objects = goog.require('goog.object');
 var EventEmitter = goog.require('webdriver.EventEmitter');
 var stacktrace = goog.require('webdriver.stacktrace');
@@ -71,6 +635,33 @@ goog.define('webdriver.promise.LONG_STACK_TRACES', false);
 
 /** @const */
 var promise = exports;
+
+
+/** @const */
+var LOG = log.getLogger('webdriver.promise');
+
+
+/**
+ * @param {number} level What level of verbosity to log with.
+ * @param {(string|function(this: T): string)} loggable The message to log.
+ * @param {T=} opt_self The object in whose context to run the loggable
+ *     function.
+ * @template T
+ */
+function vlog(level, loggable, opt_self) {
+  var logLevel = log.Level.FINE;
+  if (level > 1) {
+    logLevel = log.Level.FINEST;
+  } else if (level > 0) {
+    logLevel = log.Level.FINER;
+  }
+
+  if (typeof loggable === 'function') {
+    loggable = loggable.bind(opt_self);
+  }
+
+  log.log(LOG, logLevel, loggable);
+}
 
 
 /**
@@ -101,7 +692,6 @@ promise.captureStackTrace = function(name, msg, topFn) {
  * Error used when the computation of a promise is cancelled.
  *
  * @unrestricted
- * @final
  */
 promise.CancellationError = goog.defineClass(DebugError, {
   /**
@@ -112,33 +702,105 @@ promise.CancellationError = goog.defineClass(DebugError, {
 
     /** @override */
     this.name = 'CancellationError';
+
+    /** @private {boolean} */
+    this.silent_ = false;
   },
 
   statics: {
     /**
-     * Wraps the given error in a CancellationError. Will trivially return
-     * the error itself if it is an instanceof CancellationError.
+     * Wraps the given error in a CancellationError.
      *
      * @param {*} error The error to wrap.
      * @param {string=} opt_msg The prefix message to use.
      * @return {!promise.CancellationError} A cancellation error.
      */
     wrap: function(error, opt_msg) {
+      var message;
       if (error instanceof promise.CancellationError) {
-        return /** @type {!promise.CancellationError} */(error);
+        return new promise.CancellationError(
+            opt_msg ? (opt_msg + ': ' + error.message) : error.message);
       } else if (opt_msg) {
-        var message = opt_msg;
+        message = opt_msg;
         if (error) {
           message += ': ' + error;
         }
         return new promise.CancellationError(message);
       }
-      var message;
       if (error) {
         message = error + '';
       }
       return new promise.CancellationError(message);
     }
+  }
+});
+
+
+/**
+ * Error used to cancel tasks when a control flow is reset.
+ * @unrestricted
+ * @final
+ */
+var FlowResetError = goog.defineClass(promise.CancellationError, {
+  constructor: function() {
+    FlowResetError.base(this, 'constructor', 'ControlFlow was reset');
+
+    /** @override */
+    this.name = 'FlowResetError';
+
+    this.silent_ = true;
+  }
+});
+
+
+/**
+ * Error used to cancel tasks that have been discarded due to an uncaught error
+ * reported earlier in the control flow.
+ * @unrestricted
+ * @final
+ */
+var DiscardedTaskError = goog.defineClass(promise.CancellationError, {
+  /** @param {*} error The original error. */
+  constructor: function(error) {
+    if (error instanceof DiscardedTaskError) {
+      return /** @type {!DiscardedTaskError} */(error);
+    }
+
+    var msg = '';
+    if (error) {
+      msg = ': ' + (typeof error.message === 'string' ? error.message : error);
+    }
+
+    DiscardedTaskError.base(this, 'constructor',
+        'Task was discarded due to a previous failure' + msg);
+
+    /** @override */
+    this.name = 'DiscardedTaskError';
+    this.silent_ = true;
+  }
+});
+
+
+/**
+ * Error used when there are multiple unhandled promise rejections detected
+ * within a task or callback.
+ *
+ * @unrestricted
+ * @final
+ */
+promise.MultipleUnhandledRejectionError = goog.defineClass(DebugError, {
+  /**
+   * @param {!(Set<*>)} errors The errors to report.
+   */
+  constructor: function(errors) {
+    promise.MultipleUnhandledRejectionError.base(
+        this, 'constructor', 'Multiple unhandled promise rejections reported');
+
+    /** @override */
+    this.name = 'MultipleUnhandledRejectionError';
+
+    /** @type {!Set<*>} */
+    this.errors = errors;
   }
 });
 
@@ -311,6 +973,14 @@ var PromiseState = {
 };
 
 
+/**
+ * Internal symbol used to store a cancellation handler for
+ * {@link promise.Promise} objects. This is an internal implementation detail
+ * used by the {@link TaskQueue} class to monitor for when a promise is
+ * cancelled without generating an extra promise via then().
+ */
+var CANCEL_HANDLER_SYMBOL = Symbol('on cancel');
+
 
 /**
  * Represents the eventual value of a completed operation. Each promise may be
@@ -322,6 +992,7 @@ var PromiseState = {
  * @implements {promise.Thenable<T>}
  * @template T
  * @see http://promises-aplus.github.io/promises-spec/
+ * @unrestricted  // For using CANCEL_HANDLER_SYMBOL.
  */
 promise.Promise = goog.defineClass(null, {
   /**
@@ -335,6 +1006,7 @@ promise.Promise = goog.defineClass(null, {
    *     this instance was created under. Defaults to the currently active flow.
    */
   constructor: function(resolver, opt_flow) {
+    goog.getUid(this);
 
     /** @private {!promise.ControlFlow} */
     this.flow_ = opt_flow || promise.controlFlow();
@@ -349,7 +1021,7 @@ promise.Promise = goog.defineClass(null, {
     /** @private {promise.Promise<?>} */
     this.parent_ = null;
 
-    /** @private {Array<!Callback>} */
+    /** @private {Array<!Task>} */
     this.callbacks_ = null;
 
     /** @private {PromiseState} */
@@ -358,11 +1030,14 @@ promise.Promise = goog.defineClass(null, {
     /** @private {boolean} */
     this.handled_ = false;
 
-    /** @private {boolean} */
-    this.pendingNotifications_ = false;
-
     /** @private {*} */
     this.value_ = undefined;
+
+    /** @private {TaskQueue} */
+    this.queue_ = null;
+
+    /** @private {(function(promise.CancellationError)|null)} */
+    this[CANCEL_HANDLER_SYMBOL] = null;
 
     try {
       var self = this;
@@ -398,7 +1073,8 @@ promise.Promise = goog.defineClass(null, {
     if (newValue === this) {
       // See promise a+, 2.3.1
       // http://promises-aplus.github.io/promises-spec/#point-48
-      throw new TypeError('A promise may not resolve to itself');
+      newValue = new TypeError('A promise may not resolve to itself');
+      newState = PromiseState.REJECTED;
     }
 
     this.parent_ = null;
@@ -408,8 +1084,8 @@ promise.Promise = goog.defineClass(null, {
       // 2.3.2
       newValue = /** @type {!promise.Thenable} */(newValue);
       newValue.then(
-        this.unblockAndResolve_.bind(this, PromiseState.FULFILLED),
-        this.unblockAndResolve_.bind(this, PromiseState.REJECTED));
+          this.unblockAndResolve_.bind(this, PromiseState.FULFILLED),
+          this.unblockAndResolve_.bind(this, PromiseState.REJECTED));
       return;
 
     } else if (goog.isObject(newValue)) {
@@ -497,78 +1173,51 @@ promise.Promise = goog.defineClass(null, {
    * @private
    */
   scheduleNotifications_: function() {
-    if (!this.pendingNotifications_) {
-      this.pendingNotifications_ = true;
-      this.flow_.suspend_();
+    vlog(2, () => this + ' scheduling notifications', this);
 
-      var activeFrame;
-
-      if (!this.handled_ &&
-        this.state_ === PromiseState.REJECTED &&
-        !(this.value_ instanceof promise.CancellationError)) {
-        activeFrame = this.flow_.getActiveFrame_();
-        activeFrame.pendingRejection = true;
-      }
-
-      if (this.callbacks_ && this.callbacks_.length) {
-        activeFrame = this.flow_.getRunningFrame_();
-        var self = this;
-        this.callbacks_.forEach(function(callback) {
-          if (!callback.frame_.getParent()) {
-            activeFrame.addChild(callback.frame_);
-          }
-        });
-      }
-
-      asyncRun(goog.bind(this.notifyAll_, this, activeFrame));
+    this[CANCEL_HANDLER_SYMBOL] = null;
+    if (this.value_ instanceof promise.CancellationError
+        && this.value_.silent_) {
+      this.callbacks_ = null;
     }
-  },
 
-  /**
-   * Notifies all of the listeners registered with this promise that its state
-   * has changed.
-   * @param {Frame} frame The active frame from when this round of
-   *     notifications were scheduled.
-   * @private
-   */
-  notifyAll_: function(frame) {
-    this.flow_.resume_();
-    this.pendingNotifications_ = false;
+    if (!this.queue_) {
+      this.queue_ = this.flow_.getActiveQueue_();
+    }
 
     if (!this.handled_ &&
-      this.state_ === PromiseState.REJECTED &&
-      !(this.value_ instanceof promise.CancellationError)) {
-      this.flow_.abortFrame_(this.value_, frame);
+        this.state_ === PromiseState.REJECTED &&
+        !(this.value_ instanceof promise.CancellationError)) {
+      this.queue_.addUnhandledRejection(this);
     }
-
-    if (this.callbacks_) {
-      var callbacks = this.callbacks_;
-      this.callbacks_ = null;
-      callbacks.forEach(this.notify_, this);
-    }
-  },
-
-  /**
-   * Notifies a single callback of this promise's change ins tate.
-   * @param {Callback} callback The callback to notify.
-   * @private
-   */
-  notify_: function(callback) {
-    callback.notify(this.state_, this.value_);
+    this.queue_.scheduleCallbacks(this);
   },
 
   /** @override */
   cancel: function(opt_reason) {
-    if (!this.isPending()) {
+    if (!canCancel(this)) {
       return;
     }
 
-    if (this.parent_) {
+    if (this.parent_ && canCancel(this.parent_)) {
       this.parent_.cancel(opt_reason);
     } else {
-      this.resolve_(
-        PromiseState.REJECTED,
-        promise.CancellationError.wrap(opt_reason));
+      var reason = promise.CancellationError.wrap(opt_reason);
+      if (this[CANCEL_HANDLER_SYMBOL]) {
+        this[CANCEL_HANDLER_SYMBOL](reason);
+        this[CANCEL_HANDLER_SYMBOL] = null;
+      }
+
+      if (this.state_ === PromiseState.BLOCKED) {
+        this.unblockAndResolve_(PromiseState.REJECTED, reason);
+      } else {
+        this.resolve_(PromiseState.REJECTED, reason);
+      }
+    }
+
+    function canCancel(promise) {
+      return promise.state_ === PromiseState.PENDING
+          || promise.state_ === PromiseState.BLOCKED;
     }
   },
 
@@ -580,13 +1229,13 @@ promise.Promise = goog.defineClass(null, {
   /** @override */
   then: function(opt_callback, opt_errback) {
     return this.addCallback_(
-      opt_callback, opt_errback, 'then', promise.Promise.prototype.then);
+        opt_callback, opt_errback, 'then', promise.Promise.prototype.then);
   },
 
   /** @override */
   thenCatch: function(errback) {
     return this.addCallback_(
-      null, errback, 'thenCatch', promise.Promise.prototype.thenCatch);
+        null, errback, 'thenCatch', promise.Promise.prototype.thenCatch);
   },
 
   /** @override */
@@ -626,19 +1275,57 @@ promise.Promise = goog.defineClass(null, {
     }
 
     this.handled_ = true;
-    var cb = new Callback(this, callback, errback, name, fn);
-
-    if (!this.callbacks_) {
-      this.callbacks_ = [];
+    if (this.queue_) {
+      this.queue_.clearUnhandledRejection(this);
     }
-    this.callbacks_.push(cb);
+
+    var cb = new Task(
+        this.flow_,
+        this.invokeCallback_.bind(this, callback, errback),
+        name,
+        promise.LONG_STACK_TRACES ? {name: 'Promise', top: fn} : undefined);
+    cb.promise.parent_ = this;
 
     if (this.state_ !== PromiseState.PENDING &&
-      this.state_ !== PromiseState.BLOCKED) {
-      this.flow_.getSchedulingFrame_().addChild(cb.frame_);
-      this.scheduleNotifications_();
+        this.state_ !== PromiseState.BLOCKED) {
+      this.flow_.getActiveQueue_().enqueue(cb);
+    } else {
+      if (!this.callbacks_) {
+        this.callbacks_ = [];
+      }
+      this.callbacks_.push(cb);
+      cb.isVolatile = true;
+      this.flow_.getActiveQueue_().enqueue(cb);
     }
+
     return cb.promise;
+  },
+
+  /**
+   * Invokes a callback function attached to this promise.
+   * @param {(function(T): (R|IThenable<R>)|null|undefined)} callback The
+   *    fulfillment callback.
+   * @param {(function(*): (R|IThenable<R>)|null|undefined)} errback The
+   *    rejection callback.
+   * @template R
+   * @private
+   */
+  invokeCallback_: function(callback, errback) {
+    var callbackFn = callback;
+    if (this.state_ === PromiseState.REJECTED) {
+      callbackFn = errback;
+    }
+
+    if (goog.isFunction(callbackFn)) {
+      if (promise.isGenerator(callbackFn)) {
+        return promise.consume(callbackFn, null, this.value_);
+      }
+      return callbackFn(this.value_);
+    } else if (this.state_ === PromiseState.REJECTED) {
+      throw this.value_;
+    } else {
+      return this.value_;
+    }
   }
 });
 promise.Thenable.addImplementation(promise.Promise);
@@ -1123,7 +1810,7 @@ promise.fullyResolved = function(value) {
     default:  // boolean, function, null, number, string, undefined
       return promise.fulfilled(value);
   }
-};
+}
 
 
 /**
@@ -1175,7 +1862,7 @@ promise.fullyResolved = function(value) {
       }
     }
   });
-};
+}
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1212,40 +1899,26 @@ promise.fullyResolved = function(value) {
  * UNCAUGHT_EXCEPTION} event. If there are no listeners registered with the
  * flow, the error will be rethrown to the global error handler.
  *
+ * Refer to the {@link webdriver.promise} module documentation for a detailed
+ * explanation of how the ControlFlow coordinates task execution.
+ *
  * @final
  */
 promise.ControlFlow = goog.defineClass(EventEmitter, {
+  // TODO: remove this empty comment when the compiler properly handles
+  // goog.defineClass with a missing constructor comment.
+  /** @constructor */
   constructor: function() {
     promise.ControlFlow.base(this, 'constructor');
 
-    /**
-     * Tracks the active execution frame for this instance. Lazily initialized
-     * when the first task is scheduled.
-     * @private {Frame}
-     */
-    this.activeFrame_ = null;
+    /** @private {boolean} */
+    this.propagateUnhandledRejections_ = true;
 
-    /**
-     * A reference to the frame which is currently top of the stack in
-     * {@link #runInFrame_}. The {@link #activeFrame_} will always be an
-     * ancestor of the {@link #runningFrame_}, but the two will often not be the
-     * same. The active frame represents which frame is currently executing a
-     * task while the running frame represents either the task itself or a
-     * promise callback which has fired asynchronously.
-     * @private {Frame}
-     */
-    this.runningFrame_ = null;
+    /** @private {TaskQueue} */
+    this.activeQueue_ = null;
 
-    /**
-     * A reference to the frame in which new tasks should be scheduled. If
-     * `null`, tasks will be scheduled within the active frame. When forcing
-     * a function to run in the context of a new frame, this pointer is used to
-     * ensure tasks are scheduled within the newly created frame, even though it
-     * won't be active yet.
-     * @private {Frame}
-     * @see {#runInFrame_}
-     */
-    this.schedulingFrame_ = null;
+    /** @private {Set<TaskQueue>} */
+    this.taskQueues_ = null;
 
     /**
      * Micro task that controls shutting down the control flow. Upon shut down,
@@ -1268,40 +1941,16 @@ promise.ControlFlow = goog.defineClass(EventEmitter, {
     this.shutdownTask_ = null;
 
     /**
-     * Micro task used to trigger execution of this instance's event loop.
-     * @private {MicroTask}
-     */
-    this.eventLoopTask_ = null;
-
-    /**
      * ID for a long running interval used to keep a Node.js process running
-     * while a control flow's event loop has yielded. This is a cheap hack
-     * required since the {@link #runEventLoop_} is only scheduled to run when
-     * there is _actually_ something to run. When a control flow is waiting on
-     * a task, there will be nothing in the JS event loop and the process would
+     * while a control flow's event loop is still working. This is a cheap hack
+     * required since JS events are only scheduled to run when there is
+     * _actually_ something to run. When a control flow is waiting on a task,
+     * there will be nothing in the JS event loop and the process would
      * terminate without this.
-     *
-     * An alternative solution would be to change {@link #runEventLoop_} to run
-     * as an interval rather than as on-demand micro-tasks. While this approach
-     * (which was previously used) requires fewer micro-task allocations, it
-     * results in many unnecessary invocations of {@link #runEventLoop_}.
      *
      * @private {?number}
      */
     this.hold_ = null;
-
-    /**
-     * The number of holds placed on this flow. These represent points where the
-     * flow must not execute any further actions so an asynchronous action may
-     * run first. One such example are notifications fired by a
-     * {@link webdriver.promise.Promise}: the Promise spec requires that
-     * callbacks are invoked in a turn of the event loop after they are
-     * scheduled. To ensure tasks within a callback are scheduled in the correct
-     * frame, a promise will make the parent flow yield before its notifications
-     * are fired.
-     * @private {number}
-     */
-    this.yieldCount_ = 0;
   },
 
   /**
@@ -1315,15 +1964,37 @@ promise.ControlFlow = goog.defineClass(EventEmitter, {
   },
 
   /**
+   * Sets whether any unhandled rejections should propagate up through the
+   * control flow stack and cause rejections within parent tasks. If error
+   * propagation is disabled, tasks will not be aborted when an unhandled
+   * promise rejection is detected, but the rejection _will_ trigger an
+   * {@link webdriver.promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION}
+   * event.
+   *
+   * The default behavior is to propagate all unhandled rejections. _The use
+   * of this option is highly discouraged._
+   *
+   * @param {boolean} propagate whether to propagate errors.
+   */
+  setPropagateUnhandledRejections: function(propagate) {
+    this.propagateUnhandledRejections_ = propagate;
+  },
+
+  /**
+   * @return {boolean} Whether this flow is currently idle.
+   */
+  isIdle: function() {
+    return !this.shutdownTask_ && (!this.taskQueues_ || !this.taskQueues_.size);
+  },
+
+  /**
    * Resets this instance, clearing its queue and removing all event listeners.
    */
   reset: function() {
-    this.activeFrame_ = null;
-    this.schedulingFrame_ = null;
+    this.cancelQueues_(new FlowResetError);
     this.emit(promise.ControlFlow.EventType.RESET);
     this.removeAllListeners();
     this.cancelShutdown_();
-    this.cancelEventLoop_();
   },
 
   /**
@@ -1337,91 +2008,75 @@ promise.ControlFlow = goog.defineClass(EventEmitter, {
    */
   getSchedule: function(opt_includeStackTraces) {
     var ret = 'ControlFlow::' + goog.getUid(this);
-    var activeFrame = this.activeFrame_;
-    var runningFrame = this.runningFrame_;
-    if (!activeFrame) {
+    var activeQueue = this.activeQueue_;
+    if (!this.taskQueues_ || !this.taskQueues_.size) {
       return ret;
     }
     var childIndent = '| ';
-    return ret + '\n' + toStringHelper(activeFrame.getRoot(), childIndent);
+    for (var q of this.taskQueues_) {
+      ret += '\n' + printQ(q, childIndent);
+    }
+    return ret;
 
-    /**
-     * @param {!(Frame|Task)} node .
-     * @param {string} indent .
-     * @param {boolean=} opt_isPending .
-     * @return {string} .
-     */
-    function toStringHelper(node, indent, opt_isPending) {
-      var ret = node.toString();
-      if (opt_isPending) {
-        ret = '(pending) ' + ret;
-      }
-      if (node === activeFrame) {
+    function printQ(q, indent) {
+      var ret = q.toString();
+      if (q === activeQueue) {
         ret = '(active) ' + ret;
       }
-      if (node === runningFrame) {
-        ret = '(running) ' + ret;
-      }
-      if (node instanceof Frame) {
-        if (node.getPendingTask()) {
-          ret += '\n' + toStringHelper(
-              /** @type {!Task} */(node.getPendingTask()),
-                                  childIndent,
-                                  true);
-        }
-        if (node.children_) {
-          node.children_.forEach(function(child) {
-            if (!node.getPendingTask() ||
-              node.getPendingTask().getFrame() !== child) {
-              ret += '\n' + toStringHelper(child, childIndent);
-            }
-          });
-        }
-      } else {
-        var task = /** @type {!Task} */(node);
-        if (opt_includeStackTraces && task.promise.stack_) {
-          ret += '\n' + childIndent +
-            (task.promise.stack_.stack || task.promise.stack_).
-              replace(/\n/g, '\n' + childIndent);
-        }
-        if (task.getFrame()) {
-          ret += '\n' + toStringHelper(
-              /** @type {!Frame} */(task.getFrame()),
-                                   childIndent);
+      var prefix = indent + childIndent;
+      if (q.pending_) {
+        if (q.pending_.q.state_ !== TaskQueueState.FINISHED) {
+          ret += '\n' + prefix + '(pending) ' + q.pending_.task;
+          ret += '\n' + printQ(q.pending_.q, prefix + childIndent);
+        } else {
+          ret += '\n' + prefix + '(blocked) ' + q.pending_.task;
         }
       }
-      return indent + ret.replace(/\n/g, '\n' + indent);
+      if (q.interrupts_) {
+        q.interrupts_.forEach((task) => {
+          ret += '\n' + prefix + task;
+        });
+      }
+      if (q.tasks_) {
+        q.tasks_.forEach((task) => ret += printTask(task, '\n' + prefix));
+      }
+      return indent + ret;
+    }
+
+    function printTask(task, prefix) {
+      var ret = prefix + task;
+      if (opt_includeStackTraces && task.promise.stack_) {
+        ret += prefix + childIndent
+            + (task.promise.stack_.stack || task.promise.stack_)
+                  .replace(/\n/g, prefix);
+      }
+      return ret;
     }
   },
 
   /**
-   * @return {!Frame} The active frame for this flow.
+   * Returns the currently actively task queue for this flow. If there is no
+   * active queue, one will be created.
+   * @return {!TaskQueue} the currently active task queue for this flow.
    * @private
    */
-  getActiveFrame_: function() {
-    this.cancelShutdown_();
-    if (!this.activeFrame_) {
-      this.activeFrame_ = new Frame(this);
-      this.activeFrame_.once(Frame.ERROR_EVENT, this.abortNow_, this);
-      this.scheduleEventLoopStart_();
+  getActiveQueue_: function() {
+    if (this.activeQueue_) {
+      return this.activeQueue_;
     }
-    return this.activeFrame_;
-  },
 
-  /**
-   * @return {!Frame} The frame that new items should be added to.
-   * @private
-   */
-  getSchedulingFrame_: function() {
-    return this.schedulingFrame_ || this.getActiveFrame_();
-  },
+    this.activeQueue_ = new TaskQueue(this);
+    if (!this.taskQueues_) {
+      this.taskQueues_ = new Set();
+    }
+    this.taskQueues_.add(this.activeQueue_);
+    this.activeQueue_
+        .once('end', this.onQueueEnd_, this)
+        .once('error', this.onQueueError_, this);
 
-  /**
-   * @return {!Frame} The frame that is current executing.
-   * @private
-   */
-  getRunningFrame_: function() {
-    return this.runningFrame_ || this.getActiveFrame_();
+    asyncRun(() => this.activeQueue_ = null, this);
+    this.activeQueue_.start();
+    return this.activeQueue_;
   },
 
   /**
@@ -1449,14 +2104,13 @@ promise.ControlFlow = goog.defineClass(EventEmitter, {
       this.hold_ = setInterval(goog.nullFunction, holdIntervalMs);
     }
 
-    var description = opt_description || '<anonymous>';
-    var task = new Task(this, fn, description);
-    task.promise.stack_ = promise.captureStackTrace(
-        'Task', description, promise.ControlFlow.prototype.execute);
+    var task = new Task(
+        this, fn, opt_description || '<anonymous>',
+        {name: 'Task', top: promise.ControlFlow.prototype.execute});
 
-    this.getSchedulingFrame_().addChild(task);
-    this.emit(promise.ControlFlow.EventType.SCHEDULE_TASK, opt_description);
-    this.scheduleEventLoopStart_();
+    var q = this.getActiveQueue_();
+    q.enqueue(task);
+    this.emit(promise.ControlFlow.EventType.SCHEDULE_TASK, task.description);
     return task.promise;
   },
 
@@ -1558,12 +2212,11 @@ promise.ControlFlow = goog.defineClass(EventEmitter, {
     return this.execute(function() {
       var startTime = goog.now();
       return new promise.Promise(function(fulfill, reject) {
-        self.suspend_();
         pollCondition();
 
         function pollCondition() {
-          self.resume_();
-          self.execute(/**@type {function()}*/(condition)).then(function(value) {
+          var conditionFn = /** @type {function()} */(condition);
+          self.execute(conditionFn).then(function(value) {
             var elapsed = goog.now() - startTime;
             if (!!value) {
               fulfill(value);
@@ -1571,7 +2224,6 @@ promise.ControlFlow = goog.defineClass(EventEmitter, {
               reject(new Error((opt_message ? opt_message + '\n' : '') +
                                'Wait timed out after ' + elapsed + 'ms'));
             } else {
-              self.suspend_();
               // Do not use asyncRun here because we need a non-micro yield
               // here so the UI thread is given a chance when running in a
               // browser.
@@ -1584,333 +2236,140 @@ promise.ControlFlow = goog.defineClass(EventEmitter, {
   },
 
   /**
-   * Schedules the interval for this instance's event loop, if necessary.
-   * @private
-   */
-  scheduleEventLoopStart_: function() {
-    if (!this.eventLoopTask_ && !this.yieldCount_ && this.activeFrame_ &&
-      !this.activeFrame_.getPendingTask()) {
-      this.eventLoopTask_ = new MicroTask(this.runEventLoop_, this);
-    }
-  },
-
-  /**
-   * Cancels the event loop, if necessary.
-   * @private
-   */
-  cancelEventLoop_: function() {
-    if (this.eventLoopTask_) {
-      this.eventLoopTask_.cancel();
-      this.eventLoopTask_ = null;
-    }
-  },
-
-  /**
-   * Suspends this control flow, preventing it from executing any more tasks.
-   * @private
-   */
-  suspend_: function() {
-    this.yieldCount_ += 1;
-    this.cancelEventLoop_();
-  },
-
-  /**
-   * Resumes execution of tasks scheduled within this control flow.
-   * @private
-   */
-  resume_: function() {
-    this.yieldCount_ -= 1;
-    if (!this.yieldCount_ && this.activeFrame_) {
-      this.scheduleEventLoopStart_();
-    }
-  },
-
-  /**
-   * Executes the next task for the current frame. If the current frame has no
-   * more tasks, the frame's result will be resolved, returning control to the
-   * frame's creator. This will terminate the flow if the completed frame was at
-   * the top of the stack.
-   * @private
-   */
-  runEventLoop_: function() {
-    this.eventLoopTask_ = null;
-
-    if (this.yieldCount_) {
-      return;
-    }
-
-    if (!this.activeFrame_) {
-      this.commenceShutdown_();
-      return;
-    }
-
-    if (this.activeFrame_.getPendingTask()) {
-      return;
-    }
-
-    var task = this.getNextTask_();
-    if (!task) {
-      return;
-    }
-
-    var activeFrame = this.activeFrame_;
-    var scheduleEventLoop = goog.bind(this.scheduleEventLoopStart_, this);
-
-    var onSuccess = function(value) {
-      activeFrame.setPendingTask(null);
-      task.setFrame(null);
-      task.fulfill(value);
-      scheduleEventLoop();
-    };
-
-    var onFailure = function(reason) {
-      activeFrame.setPendingTask(null);
-      task.setFrame(null);
-      task.reject(reason);
-      scheduleEventLoop();
-    };
-
-    activeFrame.setPendingTask(task);
-    var frame = new Frame(this);
-    task.setFrame(frame);
-    this.runInFrame_(frame, task.execute, function(result) {
-      promise.asap(result, onSuccess, onFailure);
-    }, onFailure, true);
-  },
-
-  /**
-   * @return {Task} The next task to execute, or
-   *     {@code null} if a frame was resolved.
-   * @private
-   */
-  getNextTask_: function() {
-    var frame = this.activeFrame_;
-    var firstChild = frame.getFirstChild();
-    if (!firstChild) {
-      if (!frame.pendingCallback && !frame.isBlocked_) {
-        this.resolveFrame_(frame);
-      }
-      return null;
-    }
-
-    if (firstChild instanceof Frame) {
-      this.activeFrame_ = firstChild;
-      return this.getNextTask_();
-    }
-
-    frame.removeChild(firstChild);
-    if (!firstChild.isPending()) {
-      return this.getNextTask_();
-    }
-    return firstChild;
-  },
-
-  /**
-   * @param {!Frame} frame The frame to resolve.
-   * @private
-   */
-  resolveFrame_: function(frame) {
-    if (this.activeFrame_ === frame) {
-      this.activeFrame_ = frame.getParent();
-    }
-
-    if (frame.getParent()) {
-      frame.getParent().removeChild(frame);
-    }
-    frame.emit(Frame.CLOSE_EVENT);
-
-    if (!this.activeFrame_) {
-      this.commenceShutdown_();
-    } else {
-      this.scheduleEventLoopStart_();
-    }
-  },
-
-  /**
-   * Aborts the current frame. The frame, and all of the tasks scheduled within
-   * it will be discarded. If this instance does not have an active frame, it
-   * will immediately terminate all execution.
-   * @param {*} error The reason the frame is being aborted; typically either
-   *     an Error or string.
-   * @param {Frame=} opt_frame The frame to abort; will use the
-   *     currently active frame if not specified.
-   * @private
-   */
-  abortFrame_: function(error, opt_frame) {
-    if (!this.activeFrame_) {
-      this.abortNow_(error);
-      return;
-    }
-
-    // Frame parent is always another frame, but the compiler is not smart
-    // enough to recognize this.
-    var parent = /** @type {Frame} */ (
-      this.activeFrame_.getParent());
-    if (parent) {
-      parent.removeChild(this.activeFrame_);
-    }
-
-    var frame = this.activeFrame_;
-    this.activeFrame_ = parent;
-    frame.abort(error);
-  },
-
-  /**
-   * Executes a function within a specific frame. If the function does not
-   * schedule any new tasks, the frame will be discarded and the function's
-   * result returned passed to the given callback immediately. Otherwise, the
-   * callback will be invoked once all of the tasks scheduled within the
-   * function have been completed. If the frame is aborted, the `errback` will
-   * be invoked with the offending error.
+   * Executes a function in the next available turn of the JavaScript event
+   * loop. This ensures the function runs with its own task queue and any
+   * scheduled tasks will run in "parallel" to those scheduled in the current
+   * function.
    *
-   * @param {!Frame} newFrame The frame to use.
+   *     flow.execute(() => console.log('a'));
+   *     flow.execute(() => console.log('b'));
+   *     flow.execute(() => console.log('c'));
+   *     flow.async(() => {
+   *        flow.execute(() => console.log('d'));
+   *        flow.execute(() => console.log('e'));
+   *     });
+   *     flow.async(() => {
+   *        flow.execute(() => console.log('f'));
+   *        flow.execute(() => console.log('g'));
+   *     });
+   *     flow.once('idle', () => console.log('fin'));
+   *     // a
+   *     // d
+   *     // f
+   *     // b
+   *     // e
+   *     // g
+   *     // c
+   *     // fin
+   *
+   * If the function itself throws, the error will be treated the same as an
+   * unhandled rejection within the control flow.
+   *
+   * __NOTE__: This function is considered _unstable_.
+   *
    * @param {!Function} fn The function to execute.
-   * @param {function(T)} callback The function to call with a successful
-   *     result.
-   * @param {function(*)} errback The function to call if there is an error.
-   * @param {boolean=} opt_isTask Whether the function is a task and the frame
-   *     should be immediately activated to capture subtasks and errors.
-   * @throws {Error} If this function is invoked while another call to this
-   *     function is present on the stack.
-   * @template T
-   * @private
+   * @param {Object=} opt_self The object in whose context to run the function.
+   * @param {...*} var_args Any arguments to pass to the function.
    */
-  runInFrame_: function(newFrame, fn, callback, errback, opt_isTask) {
-    asserts.assert(
-      !this.runningFrame_, 'unexpected recursive call to runInFrame');
-
-    var self = this,
-    oldFrame = this.activeFrame_;
-
-    try {
-      if (this.activeFrame_ !== newFrame && !newFrame.getParent()) {
-        this.activeFrame_.addChild(newFrame);
-      }
-
-      // Activate the new frame to force tasks to be treated as sub-tasks of
-      // the parent frame.
-      if (opt_isTask) {
-        this.activeFrame_ = newFrame;
-      }
-
+  async: function(fn, opt_self, var_args) {
+    asyncRun(function() {
+      // Clear any lingering queues, forces getActiveQueue_ to create a new one.
+      this.activeQueue_ = null;
+      var q = this.getActiveQueue_();
       try {
-        this.runningFrame_ = newFrame;
-        this.schedulingFrame_ = newFrame;
-        activeFlows.push(this);
-        var result = fn();
+        q.execute_(fn.bind(opt_self, var_args));
+      } catch (ex) {
+        var cancellationError = promise.CancellationError.wrap(ex,
+            'Function passed to ControlFlow.async() threw');
+        cancellationError.silent_ = true;
+        q.abort_(cancellationError);
       } finally {
-        activeFlows.pop();
-        this.schedulingFrame_ = null;
-
-        // `newFrame` should only be considered the running frame when it is
-        // actually executing. After it finishes, set top of stack to its parent
-        // so any failures/interrupts that occur while processing newFrame's
-        // result are handled there.
-        this.runningFrame_ = newFrame.parent_;
+        this.activeQueue_ = null;
       }
-      newFrame.isLocked_ = true;
-
-      // If there was nothing scheduled in the new frame we can discard the
-      // frame and return immediately.
-      if (isCloseable(newFrame)
-          && (!opt_isTask || !promise.isPromise(result))) {
-        removeNewFrame();
-        callback(result);
-        return;
-      }
-
-      // If the executed function returned a promise, wait for it to resolve. If
-      // there is nothing scheduled in the frame, go ahead and discard it.
-      // Otherwise, we wait for the frame to be closed out by the event loop.
-      var shortCircuitTask;
-      if (promise.isPromise(result)) {
-        newFrame.isBlocked_ = true;
-        var onResolve = function() {
-          newFrame.isBlocked_ = false;
-          shortCircuitTask = new MicroTask(function() {
-            if (isCloseable(newFrame)) {
-              removeNewFrame();
-              callback(result);
-            }
-          });
-        };
-        /** @type {Thenable} */(result).then(onResolve, onResolve);
-
-        // If the result is a thenable, attach a listener to silence any
-        // unhandled rejection warnings. This is safe because we *will* handle
-        // it once the frame has completed.
-      } else if (promise.Thenable.isImplementation(result)) {
-        /** @type {!promise.Thenable} */(result).thenCatch(goog.nullFunction);
-      }
-
-      newFrame.once(Frame.CLOSE_EVENT, function() {
-        shortCircuitTask && shortCircuitTask.cancel();
-        if (isCloseable(newFrame)) {
-          removeNewFrame();
-        }
-        callback(result);
-      }).once(Frame.ERROR_EVENT, function(reason) {
-        shortCircuitTask && shortCircuitTask.cancel();
-        if (promise.Thenable.isImplementation(result) && result.isPending()) {
-          result.cancel(reason);
-        }
-        errback(reason);
-      });
-    } catch (ex) {
-      removeNewFrame(ex);
-      errback(ex);
-    } finally {
-      // No longer running anything, clear the reference.
-      this.runningFrame_ = null;
-    }
-
-    function isCloseable(frame) {
-      return (!frame.children_ || !frame.children_.length)
-        && !frame.pendingRejection;
-    }
-
-    /**
-     * @param {*=} opt_err If provided, the reason that the frame was removed.
-     */
-    function removeNewFrame(opt_err) {
-      var parent = newFrame.getParent();
-      if (parent) {
-        parent.removeChild(newFrame);
-        asyncRun(function() {
-          if (isCloseable(parent) && parent !== self.activeFrame_) {
-            parent.emit(Frame.CLOSE_EVENT);
-          }
-        });
-        self.scheduleEventLoopStart_();
-      }
-
-      if (opt_err) {
-        newFrame.cancelRemainingTasks(promise.CancellationError.wrap(
-          opt_err, 'Tasks cancelled due to uncaught error'));
-      }
-      self.activeFrame_ = oldFrame;
-    }
+    }, this);
   },
 
   /**
-   * Commences the shutdown sequence for this instance. After one turn of the
-   * event loop, this object will emit the
+   * Event handler for when a task queue is exhausted. This starts the shutdown
+   * sequence for this instance if there are no remaining task queues: after
+   * one turn of the event loop, this object will emit the
    * {@link webdriver.promise.ControlFlow.EventType.IDLE IDLE} event to signal
    * listeners that it has completed. During this wait, if another task is
    * scheduled, the shutdown will be aborted.
+   *
+   * @param {!TaskQueue} q the completed task queue.
    * @private
    */
-  commenceShutdown_: function() {
-    if (!this.shutdownTask_) {
-      // Go ahead and stop the event loop now.  If we're in here, then there are
-      // no more frames with tasks to execute. If we waited to cancel the event
-      // loop in our timeout below, the event loop could trigger *before* the
-      // timeout, generating an error from there being no frames.
-      // If #execute is called before the timeout below fires, it will cancel
-      // the timeout and restart the event loop.
-      this.cancelEventLoop_();
+  onQueueEnd_: function(q) {
+    if (!this.taskQueues_) {
+      return;
+    }
+    this.taskQueues_.delete(q);
+
+    vlog(1, () => q + ' has finished');
+    vlog(1, () => this.taskQueues_.size + ' queues remain\n' + this, this);
+
+    if (!this.taskQueues_.size) {
+      asserts.assert(!this.shutdownTask_, 'Already have a shutdown task??');
       this.shutdownTask_ = new MicroTask(this.shutdown_, this);
     }
+  },
+
+  /**
+   * Event handler for when a task queue terminates with an error. This triggers
+   * the cancellation of all other task queues and a
+   * {@link webdriver.promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION} event.
+   * If there are no error event listeners registered with this instance, the
+   * error will be rethrown to the global error handler.
+   *
+   * @param {*} error the error that caused the task queue to terminate.
+   * @param {!TaskQueue} q the task queue.
+   * @private
+   */
+  onQueueError_: function(error, q) {
+    if (this.taskQueues_) {
+      this.taskQueues_.delete(q);
+    }
+    this.cancelQueues_(promise.CancellationError.wrap(
+        error, 'There was an uncaught error in the control flow'));
+    this.cancelShutdown_();
+    this.cancelHold_();
+
+    var listeners = this.listeners(
+      promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION);
+    if (!listeners.length) {
+      throwException(error);
+    } else {
+      this.reportUncaughtException_(error);
+    }
+  },
+
+  /**
+   * Cancels all remaining task queues.
+   * @param {!promise.CancellationError} reason The cancellation reason.
+   * @private
+   */
+  cancelQueues_: function(reason) {
+    reason.silent_ = true;
+    if (this.taskQueues_) {
+      for (var q of this.taskQueues_) {
+        q.removeAllListeners();
+        q.abort_(reason);
+      }
+      this.taskQueues_.clear();
+      this.taskQueues_ = null;
+    }
+  },
+
+  /**
+   * Reports an uncaught exception using a
+   * {@link webdriver.promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION} event.
+   *
+   * @param {*} e the error to report.
+   * @private
+   */
+  reportUncaughtException_: function(e) {
+    this.emit(promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION, e);
   },
 
   /** @private */
@@ -1923,6 +2382,7 @@ promise.ControlFlow = goog.defineClass(EventEmitter, {
 
   /** @private */
   shutdown_: function() {
+    vlog(1, () => 'Going idle: ' + this);
     this.cancelHold_();
     this.shutdownTask_ = null;
     this.emit(promise.ControlFlow.EventType.IDLE);
@@ -1936,30 +2396,6 @@ promise.ControlFlow = goog.defineClass(EventEmitter, {
     if (this.shutdownTask_) {
       this.shutdownTask_.cancel();
       this.shutdownTask_ = null;
-    }
-  },
-
-  /**
-   * Aborts this flow, abandoning all remaining tasks. If there are
-   * listeners registered, an {@code UNCAUGHT_EXCEPTION} will be emitted with
-   * the offending {@code error}, otherwise, the {@code error} will be rethrown
-   * to the global error handler.
-   * @param {*} error Object describing the error that caused the flow to
-   *     abort; usually either an Error or string value.
-   * @private
-   */
-  abortNow_: function(error) {
-    this.activeFrame_ = null;
-    this.cancelShutdown_();
-    this.cancelEventLoop_();
-    this.cancelHold_();
-
-    var listeners = this.listeners(
-      promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION);
-    if (!listeners.length) {
-      throwException(error);
-    } else {
-      this.emit(promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION, error);
     }
   }
 });
@@ -2021,269 +2457,8 @@ var MicroTask = goog.defineClass(null, {
 
 
 /**
- * An execution frame within a {@link webdriver.promise.ControlFlow}.  Each
- * frame represents the execution context for either a
- * {@link webdriver.Task} or a callback on a
- * {@link webdriver.promise.Promise}.
- *
- * Each frame may contain sub-frames.  If child N is a sub-frame, then the
- * items queued within it are given priority over child N+1.
- *
- * @unrestricted
- * @final
- * @private
- */
-var Frame = goog.defineClass(EventEmitter, {
-  /**
-   * @param {!promise.ControlFlow} flow The flow this instance belongs to.
-   */
-  constructor: function(flow) {
-    EventEmitter.call(this);
-    goog.getUid(this);
-
-    /** @private {!promise.ControlFlow} */
-    this.flow_ = flow;
-
-    /** @private {Frame} */
-    this.parent_ = null;
-
-    /** @private {Array<!(Frame|Task)>} */
-    this.children_ = null;
-
-    /** @private {(Frame|Task)} */
-    this.lastInsertedChild_ = null;
-
-    /**
-     * The task currently being executed within this frame.
-     * @private {Task}
-     */
-    this.pendingTask_ = null;
-
-    /**
-     * Whether this frame is currently locked. A locked frame represents an
-     * executed function that has scheduled all of its tasks.
-     *
-     * Once a frame becomes locked, any new frames which are added as children
-     * represent interrupts (such as a {@link webdriver.promise.Promise}
-     * callback) whose tasks must be given priority over those already scheduled
-     * within this frame. For example:
-     *
-     *     var flow = promise.controlFlow();
-     *     flow.execute('start here', goog.nullFunction).then(function() {
-     *       flow.execute('this should execute 2nd', goog.nullFunction);
-     *     });
-     *     flow.execute('this should execute last', goog.nullFunction);
-     *
-     * @private {boolean}
-     */
-    this.isLocked_ = false;
-
-    /**
-     * Whether this frame's completion is blocked on the resolution of a promise
-     * returned by its main function.
-     * @private
-     */
-    this.isBlocked_ = false;
-
-    /**
-     * Whether this frame represents a pending callback attached to a
-     * {@link webdriver.promise.Promise}.
-     * @private {boolean}
-     */
-    this.pendingCallback = false;
-
-    /**
-     * Whether there are pending unhandled rejections detected within this frame.
-     * @private {boolean}
-     */
-    this.pendingRejection = false;
-
-    /** @private {promise.CancellationError} */
-    this.cancellationError_ = null;
-  },
-
-  statics: {
-    /** @const */
-    CLOSE_EVENT: 'close',
-
-    /** @const */
-    ERROR_EVENT: 'error',
-
-    /**
-     * @param {!promise.CancellationError} error The cancellation error.
-     * @param {!(Frame|Task)} child The child to cancel.
-     * @private
-     */
-    cancelChild_: function(error, child) {
-      if (child instanceof Frame) {
-        child.cancelRemainingTasks(error);
-      } else {
-        child.promise.callbacks_ = null;
-        child.cancel(error);
-      }
-    }
-  },
-
-  /** @return {Frame} This frame's parent, if any. */
-  getParent: function() {
-    return this.parent_;
-  },
-
-  /** @param {Frame} parent This frame's new parent. */
-  setParent: function(parent) {
-    this.parent_ = parent;
-  },
-
-  /** @return {!Frame} The root of this frame's tree. */
-  getRoot: function() {
-    var root = this;
-    while (root.parent_) {
-      root = root.parent_;
-    }
-    return root;
-  },
-
-  /**
-   * Aborts the execution of this frame, cancelling all outstanding tasks
-   * scheduled within this frame.
-   *
-   * @param {*} error The error that triggered this abortion.
-   */
-  abort: function(error) {
-    this.cancellationError_ = promise.CancellationError.wrap(
-        error, 'Task discarded due to a previous task failure');
-    this.cancelRemainingTasks(this.cancellationError_);
-    if (!this.pendingCallback) {
-      this.emit(Frame.ERROR_EVENT, error);
-    }
-  },
-
-  /**
-   * Marks all of the tasks that are descendants of this frame in the execution
-   * tree as cancelled. This is necessary for callbacks scheduled asynchronous.
-   * For example:
-   *
-   *     var someResult;
-   *     promise.createFlow(function(flow) {
-   *       someResult = flow.execute(function() {});
-   *       throw Error();
-   *     }).thenCatch(function(err) {
-   *       console.log('flow failed: ' + err);
-   *       someResult.then(function() {
-   *         console.log('task succeeded!');
-   *       }, function(err) {
-   *         console.log('task failed! ' + err);
-   *       });
-   *     });
-   *     // flow failed: Error: boom
-   *     // task failed! CancelledTaskError: Task discarded due to a previous
-   *     // task failure: Error: boom
-   *
-   * @param {!promise.CancellationError} reason The cancellation reason.
-   */
-  cancelRemainingTasks: function(reason) {
-    if (this.children_) {
-      this.children_.forEach(function(child) {
-        Frame.cancelChild_(reason, child);
-      });
-    }
-  },
-
-  /**
-   * @return {Task} The task currently executing
-   *     within this frame, if any.
-   */
-  getPendingTask: function() {
-    return this.pendingTask_;
-  },
-
-  /**
-   * @param {Task} task The task currently
-   *     executing within this frame, if any.
-   */
-  setPendingTask: function(task) {
-    this.pendingTask_ = task;
-  },
-
-  /**
-   * @return {boolean} Whether this frame is empty (has no scheduled tasks or
-   *     pending callback frames).
-   */
-  isEmpty: function() {
-    return !this.children_ || !this.children_.length;
-  },
-
-  /**
-   * Adds a new node to this frame.
-   * @param {!(Frame|Task)} node The node to insert.
-   */
-  addChild: function(node) {
-    if (this.cancellationError_) {
-      Frame.cancelChild_(this.cancellationError_, node);
-      return;  // Child will never run, no point keeping a reference.
-    }
-
-    if (!this.children_) {
-      this.children_ = [];
-    }
-
-    node.setParent(this);
-    if (this.isLocked_ && node instanceof Frame) {
-      var index = 0;
-      if (this.lastInsertedChild_ instanceof Frame) {
-        index = this.children_.indexOf(this.lastInsertedChild_);
-        // If the last inserted child into a locked frame is a pending callback,
-        // it is an interrupt and the new interrupt must come after it. Otherwise,
-        // we have our first interrupt for this frame and it shoudl go before the
-        // last inserted child.
-        index += (this.lastInsertedChild_.pendingCallback) ? 1 : -1;
-      }
-      this.children_.splice(Math.max(index, 0), 0, node);
-      this.lastInsertedChild_ = node;
-      return;
-    }
-
-    this.lastInsertedChild_ = node;
-    this.children_.push(node);
-  },
-
-  /**
-   * @return {(Frame|Task)} This frame's fist child.
-   */
-  getFirstChild: function() {
-    this.isLocked_ = true;
-    return this.children_ && this.children_[0];
-  },
-
-  /**
-   * Removes a child from this frame.
-   * @param {!(Frame|Task)} child The child to remove.
-   */
-  removeChild: function(child) {
-    goog.asserts.assert(child.parent_ === this, 'not a child of this frame');
-    goog.asserts.assert(this.children_ !== null, 'frame has no children!');
-    var index = this.children_.indexOf(child);
-    child.setParent(null);
-    this.children_.splice(index, 1);
-    if (this.lastInsertedChild_ === child) {
-      this.lastInsertedChild_ = this.children_[index - 1] || null;
-    }
-    if (!this.children_.length) {
-      this.children_ = null;
-    }
-  },
-
-  /** @override */
-  toString: function() {
-    return 'Frame::' + goog.getUid(this);
-  }
-});
-
-
-/**
  * A task to be executed by a {@link webdriver.promise.ControlFlow}.
  *
- * @unrestricted
  * @final
  */
 var Task = goog.defineClass(promise.Deferred, {
@@ -2295,131 +2470,423 @@ var Task = goog.defineClass(promise.Deferred, {
    *     {@link webdriver.promise.Promise}, the flow will wait for it to be
    *     resolved before starting the next task.
    * @param {string} description A description of the task for debugging.
+   * @param {{name: string, top: !Function}=} opt_stackOptions Options to use
+   *     when capturing the stacktrace for when this task was created.
    * @constructor
    * @extends {promise.Deferred<T>}
    * @template T
    */
-  constructor: function(flow, fn, description) {
+  constructor: function(flow, fn, description, opt_stackOptions) {
     Task.base(this, 'constructor', flow);
-    goog.getUid(this);
 
-    /**
-     * @type {function(): (T|!promise.Promise<T>)}
-     */
+    /** @type {function(): (T|!promise.Promise<T>)} */
     this.execute = fn;
 
-    /** @private {string} */
-    this.description_ = description;
+    /** @type {string} */
+    this.description = description;
 
-    /** @private {Frame} */
-    this.parent_ = null;
+    /** @type {TaskQueue} */
+    this.queue = null;
 
-    /** @private {Frame} */
-    this.frame_ = null;
-  },
+    /**
+     * Whether this task is volatile. Volatile tasks may be registered in a
+     * a task queue, but will be dropped on the next turn of the JS event loop
+     * if still marked volatile.
+     * @type {boolean}
+     */
+    this.isVolatile = false;
 
-  /**
-   * @return {Frame} frame The frame used to run this task's
-   *     {@link #execute} method.
-   */
-  getFrame: function() {
-    return this.frame_;
-  },
-
-  /**
-   * @param {Frame} frame The frame used to run this task's
-   *     {@link #execute} method.
-   */
-  setFrame: function(frame) {
-    this.frame_ = frame;
-  },
-
-  /**
-   * @param {Frame} frame The frame this task is scheduled in.
-   */
-  setParent: function(frame) {
-    goog.asserts.assert(goog.isNull(this.parent_) || goog.isNull(frame),
-        'parent already set');
-    this.parent_ = frame;
-  },
-
-  /** @return {string} This task's description. */
-  getDescription: function() {
-    return this.description_;
+    if (opt_stackOptions) {
+      this.promise.stack_ = promise.captureStackTrace(
+          opt_stackOptions.name, this.description, opt_stackOptions.top);
+    }
   },
 
   /** @override */
   toString: function() {
-    return 'Task::' + goog.getUid(this) + '<' + this.description_ + '>';
+    return 'Task::' + goog.getUid(this) + '<' + this.description + '>';
   }
 });
 
 
+/** @enum {string} */
+var TaskQueueState = {
+  NEW: 'new',
+  STARTED: 'started',
+  FINISHED: 'finished'
+};
+
+
 /**
- * Manages a callback attached to a {@link webdriver.promise.Promise}. When the
- * promise is resolved, this callback will invoke the appropriate callback
- * function based on the promise's resolved value.
- *
- * @unrestricted
  * @final
  */
-var Callback = goog.defineClass(promise.Deferred, {
+var TaskQueue = goog.defineClass(EventEmitter, {
+  /** @param {!promise.ControlFlow} flow . */
+  constructor: function(flow) {
+    TaskQueue.base(this, 'constructor');
+    goog.getUid(this);
+
+    /** @private {string} */
+    this.name_ = 'TaskQueue::' + goog.getUid(this);
+
+    /** @private {!promise.ControlFlow} */
+    this.flow_ = flow;
+
+    /** @private {!Array<!Task>} */
+    this.tasks_ = [];
+
+    /** @private {Array<!Task>} */
+    this.volatileTasks_ = null;
+
+    /** @private {Array<!Task>} */
+    this.interrupts_ = null;
+
+    /** @private {({task: !Task, q: !TaskQueue}|null)} */
+    this.pending_ = null;
+
+    /** @private {TaskQueueState} */
+    this.state_ = TaskQueueState.NEW;
+
+    /** @private {!Set<!webdriver.promise.Promise>} */
+    this.unhandledRejections_ = new Set();
+  },
+
+  /** @override */
+  toString: function() {
+    return 'TaskQueue::' + goog.getUid(this);
+  },
+
   /**
-   * @param {!promise.Promise} parent The promise this callback is attached to.
-   * @param {(function(T): (IThenable<R>|R)|null|undefined)} callback
-   *     The fulfillment callback.
-   * @param {(function(*): (IThenable<R>|R)|null|undefined)} errback
-   *     The rejection callback.
-   * @param {string} name The callback name.
-   * @param {!Function} fn The function to use as the top of the stack when
-   *     recording the callback's creation point.
-   * @extends {promise.Deferred<R>}
-   * @template T, R
+   * @param {!webdriver.promise.Promise} promise .
    */
-  constructor: function(parent, callback, errback, name, fn) {
-    Callback.base(this, 'constructor', parent.flow_);
+  addUnhandledRejection: function(promise) {
+    // TODO: node 4.0.0+
+    vlog(2, () => this + ' registering unhandled rejection: ' + promise, this);
+    this.unhandledRejections_.add(promise);
+  },
 
-    /** @private {(function(T): (IThenable<R>|R)|null|undefined)} */
-    this.callback_ = callback;
-
-    /** @private {(function(*): (IThenable<R>|R)|null|undefined)} */
-    this.errback_ = errback;
-
-    /** @private {!Frame} */
-    this.frame_ = new Frame(parent.flow_);
-    this.frame_.pendingCallback = true;
-
-    this.promise.parent_ = parent;
-    if (promise.LONG_STACK_TRACES) {
-      this.promise.stack_ = promise.captureStackTrace('Promise', name, fn);
+  /**
+   * @param {!webdriver.promise.Promise} promise .
+   */
+  clearUnhandledRejection: function(promise) {
+    var deleted = this.unhandledRejections_.delete(promise);
+    if (deleted) {
+      // TODO: node 4.0.0+
+      vlog(2, () => this + ' clearing unhandled rejection: ' + promise, this);
     }
   },
 
   /**
-   * Called by the parent promise when it has been resolved.
-   * @param {!PromiseState} state The parent's new state.
-   * @param {*} value The parent's new value.
+   * Enqueues a new task for execution.
+   * @param {!Task} task The task to enqueue.
+   * @throws {Error} If this instance has already started execution.
    */
-  notify: function(state, value) {
-    var callback = this.callback_;
-    var fallback = this.fulfill;
-    if (state === PromiseState.REJECTED) {
-      callback = this.errback_;
-      fallback = this.reject;
+  enqueue: function(task) {
+    if (this.state_ !== TaskQueueState.NEW) {
+      throw Error('TaskQueue has started: ' + this);
     }
 
-    this.frame_.pendingCallback = false;
-    if (goog.isFunction(callback)) {
-      this.frame_.flow_.runInFrame_(
-          this.frame_,
-          goog.bind(callback, undefined, value),
-          this.fulfill, this.reject);
-    } else {
-      if (this.frame_.getParent()) {
-        this.frame_.getParent().removeChild(this.frame_);
-      }
-      fallback(value);
+    if (task.queue) {
+      throw Error('Task is already scheduled in another queue');
     }
+
+    if (task.isVolatile) {
+      this.volatileTasks_ = this.volatileTasks_ || [];
+      this.volatileTasks_.push(task);
+    }
+
+    this.tasks_.push(task);
+    task.queue = this;
+    task.promise[CANCEL_HANDLER_SYMBOL] =
+        this.onTaskCancelled_.bind(this, task);
+
+    vlog(1, () => this + '.enqueue(' + task + ')', this);
+    vlog(2, () => this.flow_.toString(), this);
+  },
+
+  /**
+   * Schedules the callbacks registered on the given promise in this queue.
+   *
+   * @param {!promise.Promise} promise the promise whose callbacks should be
+   *     registered as interrupts in this task queue.
+   * @throws {Error} if this queue has already finished.
+   */
+  scheduleCallbacks: function(promise) {
+    if (this.state_ === TaskQueueState.FINISHED) {
+      throw new Error('cannot interrupt a finished q(' + this + ')');
+    }
+
+    if (this.pending_ && this.pending_.task.promise === promise) {
+      this.pending_.task.promise.queue_ = null;
+      this.pending_ = null;
+      asyncRun(this.executeNext_, this);
+    }
+
+    if (!promise.callbacks_) {
+      return;
+    }
+    promise.callbacks_.forEach(function(cb) {
+      cb.promise[CANCEL_HANDLER_SYMBOL] =
+        this.onTaskCancelled_.bind(this, cb);
+
+      cb.isVolatile = false;
+      if (cb.queue === this && this.tasks_.indexOf(cb) !== -1) {
+        return;
+      }
+
+      if (cb.queue) {
+        cb.queue.dropTask_(cb);
+      }
+
+      cb.queue = this;
+      if (!this.interrupts_) {
+        this.interrupts_ = [];
+      }
+      this.interrupts_.push(cb);
+    }, this);
+    promise.callbacks_ = null;
+    vlog(2, () => this + ' interrupted\n' + this.flow_, this);
+  },
+
+  /**
+   * Starts executing tasks in this queue. Once called, no further tasks may
+   * be {@linkplain #enqueue() enqueued} with this instance.
+   *
+   * @throws {Error} if this queue has already been started.
+   */
+  start: function() {
+    if (this.state_ !== TaskQueueState.NEW) {
+      throw new Error('TaskQueue has already started');
+    }
+    // Always asynchronously execute next, even if there doesn't look like
+    // there is anything in the queue. This will catch pending unhandled
+    // rejections that were registered before start was called.
+    asyncRun(this.executeNext_, this);
+  },
+
+  /**
+   * Aborts this task queue. If there are any scheduled tasks, they are silently
+   * cancelled and discarded (their callbacks will never fire). If this queue
+   * has a _pending_ task, the abortion error is used to cancel that task.
+   * Otherwise, this queue will emit an error event.
+   *
+   * @param {*} error The abortion reason.
+   * @private
+   */
+  abort_: function(error) {
+    var cancellation;
+
+    if (error instanceof FlowResetError) {
+      cancellation = error;
+    } else {
+      cancellation = new DiscardedTaskError(error);
+    }
+
+    if (this.interrupts_ && this.interrupts_.length) {
+      this.interrupts_.forEach((t) => t.reject(cancellation));
+      this.interrupts_ = [];
+    }
+
+    if (this.tasks_ && this.tasks_.length) {
+      this.tasks_.forEach((t) => t.reject(cancellation));
+      this.tasks_ = [];
+    }
+
+    if (this.pending_) {
+      vlog(2, () => this + '.abort(); cancelling pending task', this);
+      this.pending_.task.cancel(
+          /** @type {!webdriver.promise.CancellationError} */(error));
+
+    } else {
+      vlog(2, () => this + '.abort(); emitting error event', this);
+      this.emit('error', error, this);
+    }
+  },
+
+  /** @private */
+  executeNext_: function() {
+    if (this.state_ === TaskQueueState.FINISHED) {
+      return;
+    }
+    this.state_ = TaskQueueState.STARTED;
+    this.dropVolatileTasks_();
+
+    if (this.pending_ != null || this.processUnhandledRejections_()) {
+      return;
+    }
+
+    var task;
+    do {
+      task = this.getNextTask_();
+    } while (task && !task.promise.isPending());
+
+    if (!task) {
+      this.state_ = TaskQueueState.FINISHED;
+      this.tasks_ = [];
+      this.interrupts_ = null;
+      vlog(2, () => this + '.emit(end)', this);
+      this.emit('end', this);
+      return;
+    }
+
+    var self = this;
+    var subQ = new TaskQueue(this.flow_);
+    subQ.once('end', () => self.onTaskComplete_(result))
+        .once('error', (e) => self.onTaskFailure_(result, e));
+    vlog(2, () => self + ' created ' + subQ + ' for ' + task);
+
+    var result = undefined;
+    try {
+      this.pending_ = {task: task, q: subQ};
+      task.promise.queue_ = this;
+      result = subQ.execute_(task.execute);
+      subQ.start();
+    } catch (ex) {
+      subQ.abort_(ex);
+    }
+  },
+
+
+  /**
+   * @param {!Function} fn .
+   * @return {T} .
+   * @template T
+   * @private
+   */
+  execute_: function(fn) {
+    try {
+      activeFlows.push(this.flow_);
+      this.flow_.activeQueue_ = this;
+      return fn();
+    } finally {
+      this.flow_.activeQueue_ = null;
+      this.dropVolatileTasks_();
+      activeFlows.pop();
+    }
+  },
+
+  /**
+   * Process any unhandled rejections registered with this task queue. If there
+   * is a rejection, this queue will be aborted with the rejection error. If
+   * there are multiple rejections registered, this queue will be aborted with
+   * a {@link promise.MultipleUnhandledRejectionError}.
+   * @return {boolean} whether there was an unhandled rejection.
+   * @private
+   */
+  processUnhandledRejections_: function() {
+    if (!this.unhandledRejections_.size) {
+      return false;
+    }
+
+    var errors = new Set();
+    for (var rejection of this.unhandledRejections_) {
+      errors.add(rejection.value_);
+    }
+    this.unhandledRejections_.clear();
+
+    var errorToReport = errors.size === 1
+        ? errors.values().next().value
+        : new promise.MultipleUnhandledRejectionError(errors);
+
+    vlog(1, () => this + ' aborting due to unhandled rejections', this);
+    if (this.flow_.propagateUnhandledRejections_) {
+      this.abort_(errorToReport);
+      return true;
+    } else {
+      vlog(1, 'error propagation disabled; reporting to control flow');
+      this.flow_.reportUncaughtException_(errorToReport);
+      return false;
+    }
+  },
+
+  /**
+   * Drops any volatile tasks scheduled within this task queue.
+   * @private
+   */
+  dropVolatileTasks_: function() {
+    if (!this.volatileTasks_) {
+      return;
+    }
+    for (var task of this.volatileTasks_) {
+      if (task.isVolatile) {
+        vlog(2, () => this + ' dropping volatile task ' + task, this);
+        this.dropTask_(task);
+      }
+    }
+    this.volatileTasks_ = null;
+  },
+
+  /**
+   * @param {!Task} task The task to drop.
+   * @private
+   */
+  dropTask_: function(task) {
+    var index;
+    if (this.interrupts_) {
+      index = this.interrupts_.indexOf(task);
+      if (index != -1) {
+        task.queue = null;
+        this.interrupts_.splice(index, 1);
+        return;
+      }
+    }
+
+    index = this.tasks_.indexOf(task);
+    if (index != -1) {
+      task.queue = null;
+      this.tasks_.splice(index, 1);
+    }
+  },
+
+  /**
+   * @param {!Task} task The task that was cancelled.
+   * @param {!promise.CancellationError} reason The cancellation reason.
+   * @private
+   */
+  onTaskCancelled_: function(task, reason) {
+    if (this.pending_ && this.pending_.task === task) {
+      this.pending_.q.abort_(reason);
+    } else {
+      this.dropTask_(task);
+    }
+  },
+
+  /**
+   * @param {*} value the value originally returned by the task function.
+   * @private
+   */
+  onTaskComplete_: function(value) {
+    if (this.pending_) {
+      this.pending_.task.fulfill(value);
+    }
+  },
+
+  /**
+   * @param {*} taskFnResult the value originally returned by the task function.
+   * @param {*} error the error that caused the task function to terminate.
+   * @private
+   */
+  onTaskFailure_: function(taskFnResult, error) {
+    if (promise.Thenable.isImplementation(taskFnResult)) {
+      taskFnResult.cancel(promise.CancellationError.wrap(error));
+    }
+    this.pending_.task.reject(error);
+  },
+
+  /**
+   * @return {(Task|undefined)} the next task scheduled within this queue,
+   *     if any.
+   * @private
+   */
+  getNextTask_: function() {
+    var task = undefined;
+    if (this.interrupts_) {
+      task = this.interrupts_.shift();
+    }
+    if (!task && this.tasks_) {
+      task = this.tasks_.shift();
+    }
+    return task;
   }
 });
 

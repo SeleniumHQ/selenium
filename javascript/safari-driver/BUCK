@@ -70,6 +70,9 @@ js_binary(name = 'client',
 
     '--jscomp_warning=checkTypes',
 
+    '--language_in=ECMASCRIPT6_STRICT',
+    '--language_out=ECMASCRIPT5_STRICT',
+
     "--output_wrapper='%output%;window.onload = init;'",
     '--third_party=false',
   ],

@@ -1340,7 +1340,7 @@ module Javascript
               ant.jvmarg(:line => "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005")
             end
 
-            test_dir = File.join(dir, 'test')
+            test_dir = args[:test_dir] ? File.join(dir, args[:test_dir]) : File.join(dir, 'test')
             ant.sysproperty :key => 'js.test.dir', :value => test_dir
 
             if !args[:exclude].nil?

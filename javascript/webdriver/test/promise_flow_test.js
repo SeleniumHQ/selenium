@@ -130,11 +130,11 @@ function scheduleAction(msg, actionFn) {
 
 /**
  * @param {!Function} condition The condition function.
- * @param {number} timeout The timeout.
+ * @param {number=} opt_timeout The timeout.
  * @param {string=} opt_message Optional message.
  * @return {!webdriver.promise.Promise} The wait result.
  */
-function scheduleWait(condition, timeout, opt_message) {
+function scheduleWait(condition, opt_timeout, opt_message) {
   var msg = opt_message || '';
   // It's not possible to hook into when the wait itself is scheduled, so
   // we record each iteration of the wait loop.
@@ -142,33 +142,13 @@ function scheduleWait(condition, timeout, opt_message) {
   return webdriver.promise.controlFlow().wait(function() {
     flowHistory.push((count++) + ': ' + msg);
     return condition();
-  }, timeout, msg);
+  }, opt_timeout, msg);
 }
 
 
 function assertFlowHistory(var_args) {
   var expected = goog.array.slice(arguments, 0);
   assertArrayEquals(expected, flowHistory);
-}
-
-
-/**
- * @param {string=} opt_description A description of the task for debugging.
- * @return {!webdriver.promise.Task_} The new task.
- */
-function createTask(opt_description) {
-  return new webdriver.promise.Task_(
-      webdriver.promise.controlFlow(),
-      goog.nullFunction,
-      opt_description || '',
-      new webdriver.stacktrace.Snapshot());
-}
-
-/**
- * @return {!webdriver.promise.Frame_}
- */
-function createFrame() {
-  return new webdriver.promise.Frame_(webdriver.promise.controlFlow());
 }
 
 
@@ -296,12 +276,28 @@ function testScheduling_firstScheduledTaskIsWithinACallback() {
 }
 
 
-function testScheduling_newTasksAddedWhileWaitingOnTaskReturnedPromise() {
+function testScheduling_newTasksAddedWhileWaitingOnTaskReturnedPromise1() {
   scheduleAction('a', function() {
     var d = webdriver.promise.defer();
     setTimeout(function() {
       schedule('c');
       d.fulfill();
+    }, 10);
+    return d.promise;
+  });
+  schedule('b');
+  return waitForIdle().then(function() {
+    assertFlowHistory('a', 'b', 'c');
+  });
+}
+
+
+function testScheduling_newTasksAddedWhileWaitingOnTaskReturnedPromise2() {
+  scheduleAction('a', function() {
+    var d = webdriver.promise.defer();
+    setTimeout(function() {
+      schedule('c');
+      goog.async.run(d.fulfill);
     }, 10);
     return d.promise;
   });
@@ -422,7 +418,7 @@ function testFraming_callbacksOnAResolvedPromiseInsertIntoTheCurrentFlow() {
 function testFraming_callbacksInterruptTheFlowWhenPromiseIsResolved() {
   schedule('a').then(function() {
     schedule('c');
-  })
+  });
   schedule('b');
 
   return waitForIdle().then(function() {
@@ -465,10 +461,6 @@ function testFraming_tasksScheduledInAFrameGetPrecedence_1() {
     });
     var e = schedule('e');
     a.then(function() {
-      // When this function runs, |e| will not be resolved yet, so |f| and
-      // |h| will be resolved first.  After |e| is resolved, |g| will be
-      // scheduled in a new frame, resulting in: [j][f, h, i][g], so |g| is
-      // expected to execute first.
       schedule('f');
       e.then(function() {
         schedule('g');
@@ -480,7 +472,7 @@ function testFraming_tasksScheduledInAFrameGetPrecedence_1() {
   schedule('j');
 
   return waitForIdle().then(function() {
-    assertFlowHistory('a', 'b', 'c', 'd', 'e', 'g', 'f', 'h', 'i', 'j');
+    assertFlowHistory('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j');
   });
 }
 
@@ -936,7 +928,7 @@ function testWaiting_aSimpleCountingCondition() {
   var count = 0;
   scheduleWait(function() {
     return ++count == 3;
-  }, 200, 'counting to 3');
+  }, 100, 'counting to 3');
 
   return waitForIdle().then(function() {
     assertEquals(3, count);
@@ -965,7 +957,7 @@ function testWaiting_aConditionThatReturnsAPromise_2() {
   var count = 0;
   scheduleWait(function() {
     return webdriver.promise.fulfilled(++count == 3);
-  }, 200, 'waiting for promise');
+  }, 100, 'waiting for promise');
 
   return waitForIdle().then(function() {
     assertEquals(3, count);
@@ -979,7 +971,7 @@ function testWaiting_aConditionThatReturnsATaskResult() {
     return scheduleAction('increment count', function() {
       return ++count == 3;
     });
-  }, 200, 'counting to 3');
+  }, 100, 'counting to 3');
   schedule('post wait');
 
   return waitForIdle().then(function() {
@@ -998,7 +990,7 @@ function testWaiting_conditionContainsASubtask() {
   scheduleWait(function() {
     schedule('sub task');
     return ++count == 3;
-  }, 200, 'counting to 3');
+  }, 100, 'counting to 3');
   schedule('post wait');
 
   return waitForIdle().then(function() {
@@ -1018,7 +1010,7 @@ function testWaiting_cancelsWaitIfScheduledTaskFails() {
     scheduleAction('boom', throwStubError);
     schedule('this should not run');
     return true;
-  }, 200, 'waiting to go boom').then(pair.callback, pair.errback);
+  }, 100, 'waiting to go boom').then(pair.callback, pair.errback);
   schedule('post wait');
 
   return waitForIdle().
@@ -1084,7 +1076,7 @@ function testWaiting_failsIfConditionHasAFailedSubtask() {
         throw new StubError;
       }
     });
-  }, 200, 'waiting').then(callbacks.callback, callbacks.errback);
+  }, 100, 'waiting').then(callbacks.callback, callbacks.errback);
   schedule('post wait');
 
   return waitForIdle().then(function() {
@@ -1102,7 +1094,7 @@ function testWaiting_pollingLoopWaitsForAllScheduledTasksInCondition() {
   scheduleWait(function() {
     scheduleAction('increment count', function() { ++count; });
     return count >= 3;
-  }, 350, 'counting to 3');
+  }, 100, 'counting to 3');
   schedule('post wait');
 
   return waitForIdle().then(function() {
@@ -1121,14 +1113,14 @@ function testWaiting_waitsForeverOnAZeroTimeout() {
   var done = false;
   setTimeout(function() {
     done = true;
-  }, 500);
+  }, 150);
   var waitResult = scheduleWait(function() {
     return done;
   }, 0);
 
-  return timeout(250).then(function() {
+  return timeout(75).then(function() {
     assertFalse(done);
-    return timeout(300);
+    return timeout(100);
   }).then(function() {
     assertTrue(done);
     return waitResult;
@@ -1140,14 +1132,14 @@ function testWaiting_waitsForeverIfTimeoutOmitted() {
   var done = false;
   setTimeout(function() {
     done = true;
-  }, 500);
+  }, 150);
   var waitResult = scheduleWait(function() {
     return done;
   });
 
-  return timeout(250).then(function() {
+  return timeout(75).then(function() {
     assertFalse(done);
-    return timeout(300);
+    return timeout(100);
   }).then(function() {
     assertTrue(done);
     return waitResult;
@@ -1160,7 +1152,6 @@ function testWaiting_timesOut_nonZeroTimeout() {
   scheduleWait(function() {
     count += 1;
     var ms = count === 2 ? 65 : 5;
-    var start = goog.now();
     return webdriver.promise.delayed(ms).then(function() {
       return false;
     });
@@ -1182,10 +1173,9 @@ function testWaiting_timesOut_nonZeroTimeout() {
 
 
 function testWaiting_shouldFailIfConditionReturnsARejectedPromise() {
-  var count = 0;
   scheduleWait(function() {
     return webdriver.promise.rejected(new StubError);
-  }, 100, 'counting to 3');
+  }, 100, 'returns rejected promise on first pass');
   return waitForAbort().then(assertIsStubError);
 }
 
@@ -1263,7 +1253,7 @@ function testWait_unboundedWaitOnPromiseResolution() {
     assertTrue(waitResult.isPending());
     d.fulfill(1234);
     return waitResult;
-  }).then(function(value) {
+  }).then(function() {
     assertArrayEquals(['a', 'b'], messages);
   });
 
@@ -1489,7 +1479,6 @@ function testEventLoopWaitsOnPendingPromiseRejections_oneRejection() {
 function testEventLoopWaitsOnPendingPromiseRejections_multipleRejections() {
   var once = Error('once');
   var twice = Error('twice');
-  var seen = [];
 
   scheduleAction('one', function() {
     webdriver.promise.rejected(once);
@@ -1501,19 +1490,19 @@ function testEventLoopWaitsOnPendingPromiseRejections_multipleRejections() {
       webdriver.promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION);
   return new goog.Promise(function(fulfill, reject) {
     setTimeout(function() {
-      reject(Error('Should have reported the two errors by now: ' + seen));
-    }, 500);
+      reject(Error('Should have reported the two errors by now'));
+    }, 50);
     flow.on(
         webdriver.promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION,
-        function(e) {
-          seen.push(e);
-          if (seen.length === 2) {
-            fulfill();
-          }
-        });
-  }).then(function() {
-    seen.sort();
-    assertArrayEquals([once, twice], seen);
+        fulfill);
+  }).then(function(e) {
+    assertTrue(e instanceof webdriver.promise.MultipleUnhandledRejectionError);
+    // TODO: switch to Array.from when we drop node 0.12.x
+    var errors = [];
+    for (var e2 of e.errors) {
+      errors.push(e2);
+    }
+    assertArrayEquals([once, twice], errors);
     assertFlowHistory('one');
     assertFalse('Did not cancel the second task', twoResult.isPending());
   });
@@ -1899,7 +1888,7 @@ function testMaintainsOrderWithPromiseChainsCreatedWithinAForeach_1() {
   });
   return waitForIdle().then(function() {
     assertArrayEquals(
-        ['a.1', 'b.1', 'c.1', 'd.1', 'a.2', 'b.2', 'c.2', 'd.2'],
+        ['a.1', 'a.2', 'b.1', 'b.2', 'c.1', 'c.2', 'd.1', 'd.2'],
         messages);
   });
 }
@@ -1916,7 +1905,7 @@ function testMaintainsOrderWithPromiseChainsCreatedWithinAForeach_2() {
       .then(function() {
         messages.push(step + '.1');
       }).then(function() {
-        flow.execute(function() {}, step + '.2').then(function(text) {
+        flow.execute(function() {}, step + '.2').then(function() {
           messages.push(step + '.2');
         });
       });
@@ -1924,7 +1913,7 @@ function testMaintainsOrderWithPromiseChainsCreatedWithinAForeach_2() {
   });
   return waitForIdle().then(function() {
     assertArrayEquals(
-        ['a.1', 'b.1', 'c.1', 'd.1', 'a.2', 'b.2', 'c.2', 'd.2'],
+        ['a.1', 'a.2', 'b.1', 'b.2', 'c.1', 'c.2', 'd.1', 'd.2'],
         messages);
   });
 }
@@ -1951,7 +1940,375 @@ function testMaintainsOrderWithPromiseChainsCreatedWithinAForeach_3() {
   });
   return waitForIdle().then(function() {
     assertArrayEquals(
-        ['a.1', 'b.1', 'c.1', 'd.1', 'a.2', 'b.2', 'c.2', 'd.2'],
+        ['a.1', 'a.2', 'b.1', 'b.2', 'c.1', 'c.2', 'd.1', 'd.2'],
         messages);
+  });
+}
+
+/** See https://github.com/SeleniumHQ/selenium/issues/363 */
+function
+testTasksScheduledInASeparateTurnOfTheEventLoopGetASeparateTaskQueue_1() {
+  scheduleAction('a', () => webdriver.promise.delayed(10));
+  schedule('b');
+  setTimeout(() => schedule('c'), 0);
+
+  return waitForIdle().then(function() {
+    assertFlowHistory('a', 'c', 'b');
+  });
+}
+
+
+/** See https://github.com/SeleniumHQ/selenium/issues/363 */
+function
+testTasksScheduledInASeparateTurnOfTheEventLoopGetASeparateTaskQueue_2() {
+  scheduleAction('a', () => webdriver.promise.delayed(10));
+  schedule('b');
+  schedule('c');
+  setTimeout(function() {
+    schedule('d');
+    scheduleAction('e', () => webdriver.promise.delayed(10));
+    schedule('f');
+  }, 0);
+
+  return waitForIdle().then(function() {
+    assertFlowHistory('a', 'd', 'e', 'b', 'c', 'f');
+  });
+}
+
+
+/** See https://github.com/SeleniumHQ/selenium/issues/363 */
+function testCanSynchronizeTasksFromAdjacentTaskQueues() {
+  var task1 = scheduleAction('a', () => webdriver.promise.delayed(10));
+  schedule('b');
+  setTimeout(function() {
+    scheduleAction('c', () => task1);
+    schedule('d');
+  }, 0);
+
+  return waitForIdle().then(function() {
+    assertFlowHistory('a', 'c', 'd', 'b');
+  });
+}
+
+
+function testCancellingAScheduledTask_1() {
+  var called = false;
+  var task1 = scheduleAction('a', () => called = true);
+  task1.cancel('no soup for you');
+
+  return waitForIdle().then(function() {
+    assertFalse(called);
+    assertFlowHistory();
+    return task1.thenCatch(function(e) {
+      assertTrue(e instanceof webdriver.promise.CancellationError);
+      assertEquals('no soup for you', e.message);
+    });
+  });
+}
+
+
+function testCancellingAScheduledTask_2() {
+  schedule('a');
+  var called = false;
+  var task2 = scheduleAction('b', () => called = true);
+  schedule('c');
+
+  task2.cancel('no soup for you');
+
+  return waitForIdle().then(function() {
+    assertFalse(called);
+    assertFlowHistory('a', 'c');
+    return task2.thenCatch(function(e) {
+      assertTrue(e instanceof webdriver.promise.CancellationError);
+      assertEquals('no soup for you', e.message);
+    });
+  });
+}
+
+
+function testCancellingAScheduledTask_3() {
+  var called = false;
+  var task = scheduleAction('a', () => called = true);
+  task.cancel(new StubError);
+
+  return waitForIdle().then(function() {
+    assertFalse(called);
+    assertFlowHistory();
+    return task.thenCatch(function(e) {
+      assertTrue(e instanceof webdriver.promise.CancellationError);
+    });
+  });
+}
+
+
+function testCancellingAScheduledTask_4() {
+  var seen = [];
+  var task = scheduleAction('a', () => seen.push(1))
+      .then(() => seen.push(2))
+      .then(() => seen.push(3))
+      .then(() => seen.push(4))
+      .then(() => seen.push(5));
+  task.cancel(new StubError);
+
+  return waitForIdle().then(function() {
+    assertArrayEquals([], seen);
+    assertFlowHistory();
+    return task.thenCatch(function(e) {
+      assertTrue(e instanceof webdriver.promise.CancellationError);
+    });
+  });
+}
+
+
+function testCancellingAScheduledTask_fromWithinAnExecutingTask() {
+  var called = false;
+  var task;
+  scheduleAction('a', function() {
+    task.cancel('no soup for you');
+  });
+  task = scheduleAction('b', () => called = true);
+  schedule('c');
+
+  return waitForIdle().then(function() {
+    assertFalse(called);
+    assertFlowHistory('a', 'c');
+    return task.thenCatch(function(e) {
+      assertTrue(e instanceof webdriver.promise.CancellationError);
+      assertEquals('no soup for you', e.message);
+    });
+  });
+}
+
+
+function testCancellingAPendingTask() {
+  var order = [];
+  var unresolved = webdriver.promise.defer();
+
+  var innerTask;
+  var outerTask = scheduleAction('a', function() {
+    order.push(1);
+
+    // Schedule a task that will never finish.
+    innerTask = scheduleAction('a.1', function() {
+      return unresolved.promise;
+    });
+
+    innerTask.thenCatch(function(e) {
+      order.push(2);
+      assertTrue(e instanceof webdriver.promise.CancellationError);
+      assertEquals('no soup for you', e.message);
+    });
+  });
+  schedule('b');
+
+  outerTask.thenCatch(function(e) {
+    order.push(3);
+    assertTrue(e instanceof webdriver.promise.CancellationError);
+    assertEquals('no soup for you', e.message);
+  });
+
+  unresolved.promise.thenCatch(function(e) {
+    order.push(4);
+  });
+
+  return timeout(10).then(function() {
+    assertArrayEquals([1], order);
+    assertTrue(unresolved.promise.isPending());
+
+    outerTask.cancel('no soup for you');
+    return waitForIdle();
+  }).then(function() {
+    assertFlowHistory('a', 'a.1', 'b');
+    assertArrayEquals([1, 4, 2, 3], order);
+  });
+}
+
+
+function testCancellingAPendingPromiseCallback() {
+  var called = false;
+
+  var root = webdriver.promise.fulfilled();
+  root.then(function() {
+    cb2.cancel('no soup for you');
+  });
+
+  var cb2 = root.then(fail, fail);  // These callbacks should never be called.
+  cb2.then(fail, function(e) {
+    called = true;
+    assertTrue(e instanceof webdriver.promise.CancellationError);
+    assertEquals('no soup for you', e.message);
+  });
+
+  return waitForIdle().then(function() {
+    assertTrue(called);
+  });
+}
+
+
+function testResetFlow_1() {
+  var called = 0;
+  var task = flow.execute(() => called++);
+  task.thenFinally(() => called++);
+
+  return new Promise(function(fulfill) {
+    flow.once('reset', fulfill);
+    flow.reset();
+
+  }).then(function() {
+    assertEquals(0, called);
+    assertFalse(task.isPending());
+    return task;
+
+  }).then(fail, function(e) {
+    assertTrue(e instanceof webdriver.promise.CancellationError);
+    assertEquals('ControlFlow was reset', e.message);
+  });
+}
+
+
+function testResetFlow_2() {
+  var called = 0;
+  var task1 = flow.execute(() => called++);
+  task1.thenFinally(() => called++);
+
+  var task2 = flow.execute(() => called++);
+  task2.thenFinally(() => called++);
+
+  var task3 = flow.execute(() => called++);
+  task3.thenFinally(() => called++);
+
+  return new Promise(function(fulfill) {
+    flow.once('reset', fulfill);
+    flow.reset();
+
+  }).then(function() {
+    assertEquals(0, called);
+    assertFalse(task1.isPending());
+    assertFalse(task2.isPending());
+    assertFalse(task3.isPending());
+  });
+}
+
+
+function testPromiseFulfilledInsideTask_1() {
+  var order = [];
+
+  flow.execute(function() {
+    var d = webdriver.promise.defer();
+
+    d.promise.then(() => order.push('a'));
+    d.promise.then(() => order.push('b'));
+    d.promise.then(() => order.push('c'));
+    d.fulfill();
+
+    flow.execute(() => order.push('d'));
+
+  }).then(() => order.push('fin'));
+
+  return waitForIdle().then(function() {
+    assertArrayEquals(['a', 'b', 'c', 'd', 'fin'], order);
+  });
+}
+
+
+function testPromiseFulfilledInsideTask_2() {
+  var order = [];
+
+  flow.execute(function() {
+    flow.execute(() => order.push('a'));
+    flow.execute(() => order.push('b'));
+
+    var d = webdriver.promise.defer();
+    d.promise.then(() => order.push('c'));
+    d.promise.then(() => order.push('d'));
+    d.fulfill();
+
+    flow.execute(() => order.push('e'));
+
+  }).then(() => order.push('fin'));
+
+  return waitForIdle().then(function() {
+    assertArrayEquals(['a', 'b', 'c', 'd', 'e', 'fin'], order);
+  });
+}
+
+
+function testPromiseFulfilledInsideTask_3() {
+  var order = [];
+  var d = webdriver.promise.defer();
+  d.promise.then(() => order.push('c'));
+  d.promise.then(() => order.push('d'));
+
+  flow.execute(function() {
+    flow.execute(() => order.push('a'));
+    flow.execute(() => order.push('b'));
+
+    d.promise.then(() => order.push('e'));
+    d.fulfill();
+
+    flow.execute(() => order.push('f'));
+
+  }).then(() => order.push('fin'));
+
+  return waitForIdle().then(function() {
+    assertArrayEquals(['c', 'd', 'a', 'b', 'e', 'f', 'fin'], order);
+  });
+}
+
+
+function testPromiseFulfilledInsideTask_4() {
+  var order = [];
+  var d = webdriver.promise.defer();
+  d.promise.then(() => order.push('a'));
+  d.promise.then(() => order.push('b'));
+
+  flow.execute(function() {
+    flow.execute(function() {
+      order.push('c');
+      flow.execute(() => order.push('d'));
+      d.promise.then(() => order.push('e'));
+    });
+    flow.execute(() => order.push('f'));
+
+    d.promise.then(() => order.push('g'));
+    d.fulfill();
+
+    flow.execute(() => order.push('h'));
+
+  }).then(() => order.push('fin'));
+
+  return waitForIdle().then(function() {
+    assertArrayEquals(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'fin'], order);
+  });
+}
+
+
+function testSettledPromiseCallbacksInsideATask_1() {
+  var order = [];
+  var p = webdriver.promise.fulfilled();
+
+  flow.execute(function() {
+    flow.execute(() => order.push('a'));
+    p.then(() => order.push('b'));
+    flow.execute(() => order.push('c'));
+    p.then(() => order.push('d'));
+  }).then(() => order.push('fin'));
+
+  return waitForIdle().then(function() {
+    assertArrayEquals(['a', 'b', 'c', 'd', 'fin'], order);
+  });
+}
+
+function testSettledPromiseCallbacksInsideATask_2() {
+  var order = [];
+
+  flow.execute(function() {
+    flow.execute(() => order.push('a'))
+        .then(   () => order.push('c'));
+    flow.execute(() => order.push('b'));
+  }).then(() => order.push('fin'));
+
+  return waitForIdle().then(function() {
+    assertArrayEquals(['a', 'c', 'b', 'fin'], order);
   });
 }

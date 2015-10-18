@@ -100,7 +100,7 @@ function waitForAbort(opt_flow, opt_n) {
 function waitForIdle(opt_flow) {
   var theFlow = opt_flow || flow;
   return new goog.Promise(function(fulfill, reject) {
-    if (!theFlow.activeFrame_ && !theFlow.yieldCount_) {
+    if (theFlow.isIdle()) {
       fulfill();
       return;
     }
@@ -163,7 +163,14 @@ function testMultipleUnhandledRejectionsOutsideATask_reportedInOrderOccurred() {
   webdriver.promise.rejected(e1);
   webdriver.promise.rejected(e2);
 
-  return waitForAbort(flow, 2).then(function(errors) {
+  return waitForAbort(flow).then(function(error) {
+    assertTrue(
+        error instanceof webdriver.promise.MultipleUnhandledRejectionError);
+    // TODO: switch to Array.from when we drop node 0.12.x
+    var errors = [];
+    for (var e of error.errors) {
+      errors.push(e);
+    }
     assertArrayEquals([e1, e2], errors);
   });
 }
@@ -219,6 +226,23 @@ function testTaskFails_returnedPromiseIsUnhandled() {
 }
 
 
+function testTaskHasUnhandledRejection_cancelsRemainingSubTasks() {
+  var seen = [];
+  flow.execute(function() {
+    webdriver.promise.rejected(new StubError);
+
+    flow.execute(() => seen.push('a'))
+        .then(() => seen.push('b'), (e) => seen.push(e));
+    flow.execute(() => seen.push('c'))
+        .then(() => seen.push('b'), (e) => seen.push(e));
+  });
+
+  return waitForAbort()
+      .then(assertIsStubError)
+      .then(() => assertArrayEquals([], seen));
+}
+
+
 function testSubTaskFails_caughtByParentTask() {
   return flow.execute(function() {
     flow.execute(throwStubError);
@@ -231,6 +255,22 @@ function testSubTaskFails_uncaughtErrorBubblesUpToFlow() {
     flow.execute(throwStubError);
   });
   return waitForAbort().then(assertIsStubError);
+}
+
+
+function testSubTasilFails_cancelsRemainingSubTasks() {
+  var seen = [];
+  flow.execute(function() {
+    flow.execute(() => webdriver.promise.rejected(new StubError));
+    flow.execute(() => seen.push('a'))
+        .then(() => seen.push('b'), (e) => seen.push(e));
+    flow.execute(() => seen.push('c'))
+        .then(() => seen.push('b'), (e) => seen.push(e));
+  });
+
+  return waitForAbort()
+      .then(assertIsStubError)
+      .then(() => assertArrayEquals([], seen));
 }
 
 
@@ -453,9 +493,7 @@ function testTaskThrowsPromise_taskFailsIfPromiseIsRejected() {
 function testFailsTaskIfThereIsAnUnhandledErrorWhileWaitingOnTaskResult() {
   var d = webdriver.promise.defer();
   flow.execute(function() {
-    setTimeout(function() {
-      webdriver.promise.rejected(new StubError);
-    }, 10);
+    webdriver.promise.rejected(new StubError);
     return d.promise;
   }).then(fail, assertIsStubError);
 
@@ -470,9 +508,7 @@ function testFailsTaskIfThereIsAnUnhandledErrorWhileWaitingOnTaskResult() {
 function testFailsParentTaskIfAsyncScheduledTaskFails() {
   var d = webdriver.promise.defer();
   flow.execute(function() {
-    setTimeout(function() {
-      flow.execute(throwStubError);
-    }, 10);
+    flow.execute(throwStubError);
     return d.promise;
   }).then(fail, assertIsStubError);
 
@@ -662,25 +698,26 @@ function testRegisteredTaskCallbacksAreDroppedWhenTaskIsCancelled_withReturn() {
 }
 
 
-function testTasksWithinQueuedCallbackInAFrameAreDroppedIfFrameAborts() {
+function testTasksWithinACallbackAreDroppedIfContainingTaskIsAborted() {
   var seen = [];
   return flow.execute(function() {
     flow.execute(throwStubError);
+
+    // None of the callbacks on this promise should execute because the
+    // task failure above is never handled, causing the containing task to
+    // abort.
     webdriver.promise.fulfilled().then(function() {
       seen.push(1);
-
       return flow.execute(function() {
         seen.push(2);
       });
-
-    // This callback depends on the result of a cancelled task, so it will never
-    // be invoked.
     }).thenFinally(function() {
       seen.push(3);
     });
+
   }).then(fail, function(e) {
     assertIsStubError(e);
-    assertArrayEquals([1], seen);
+    assertArrayEquals([], seen);
   });
 }
 
@@ -689,7 +726,7 @@ function testTaskIsCancelledAfterWaitTimeout() {
   var seen = [];
   return flow.execute(function() {
     flow.wait(function() {
-      webdriver.promies.delayed(100).then(goog.nullFunction);
+      return webdriver.promise.delayed(50);
     }, 5);
 
     return flow.execute(function() {
@@ -699,13 +736,14 @@ function testTaskIsCancelledAfterWaitTimeout() {
     }, function() {
       seen.push(3);
     });
-  }).then(fail, function(e) {
+  }).then(fail, function() {
     assertArrayEquals([], seen);
   });
 }
 
 
-function testTaskCallbacksGetCancellationErrorIfRegisteredAfterTaskIsCancelled() {
+function
+testTaskCallbacksGetCancellationErrorIfRegisteredAfterTaskIsCancelled_1() {
   var task;
   flow.execute(function() {
     flow.execute(throwStubError);
@@ -714,6 +752,93 @@ function testTaskCallbacksGetCancellationErrorIfRegisteredAfterTaskIsCancelled()
   return waitForIdle().then(function() {
     return task.then(fail, function(e) {
       assertTrue(e instanceof webdriver.promise.CancellationError);
+    });
+  });
+}
+
+
+function
+testTaskCallbacksGetCancellationErrorIfRegisteredAfterTaskIsCancelled_2() {
+  var seen = [];
+
+  var task;
+  flow.execute(function() {
+    flow.execute(throwStubError);
+    task = flow.execute(goog.nullFunction);
+
+    task.then(() => seen.push(1))
+        .then(() => seen.push(2));
+    task.then(() => seen.push(3))
+        .then(() => seen.push(4));
+
+  }).then(fail, assertIsStubError);
+
+  return waitForIdle().then(function() {
+    return task.then(fail, function(e) {
+      seen.push(5);
+      assertTrue(e instanceof webdriver.promise.CancellationError);
+    });
+  }).then(() => assertArrayEquals([5], seen));
+}
+
+
+function testUnhandledRejectionInParallelTaskQueue() {
+  var seen = [];
+  function schedule(name) {
+    return flow.execute(() => seen.push(name), name);
+  }
+
+  flow.async(function() {
+    schedule('a.1');
+    flow.execute(throwStubError, 'a.2 (throws)');
+  });
+
+  var b3;
+  flow.async(function() {
+    schedule('b.1');
+    schedule('b.2');
+    b3 = schedule('b.3');
+  });
+
+  var c3;
+  flow.async(function() {
+    schedule('c.1');
+    schedule('c.2');
+    c3 = schedule('c.3');
+  });
+
+  function assertWasCancelled(p) {
+    return p.then(fail, function(e) {
+      assertTrue(e instanceof webdriver.promise.CancellationError);
+    });
+  }
+
+  return waitForAbort()
+    .then(function() {
+      assertArrayEquals(['a.1', 'b.1', 'c.1', 'b.2', 'c.2'], seen);
+      assertFalse(b3.isPending());
+      assertFalse(c3.isPending());
+    })
+    .then(() => assertWasCancelled(b3))
+    .then(() => assertWasCancelled(c3));
+}
+
+
+function testErrorsInAsyncFunctionsAreReportedAsUnhandledRejection() {
+  flow.removeAllListeners();  // For tearDown.
+
+  var task;
+  return new Promise(function(fulfill) {
+    flow.once('uncaughtException', fulfill);
+    flow.async(function() {
+      task = flow.execute(function() {});
+      throw Error('boom');
+    });
+  }).then(function(error) {
+    assertTrue(error instanceof webdriver.promise.CancellationError);
+    assertFalse(task.isPending());
+    return task.thenCatch(function(error) {
+      assertTrue(error instanceof webdriver.promise.CancellationError);
     });
   });
 }

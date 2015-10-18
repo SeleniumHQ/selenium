@@ -99,17 +99,37 @@ js_binary(name = "webdriver",
     "--jscomp_error=uselessCode",
     "--jscomp_error=useOfGoogBase",
     "--jscomp_error=visibility",
+    "--language_in=ECMASCRIPT6_STRICT",
+    "--language_out=ECMASCRIPT5_STRICT",
     "--output_wrapper='(function(exports){%output%})(typeof exports===typeof {}&&exports===this?exports:this.webdriver=this.webdriver||{})'",
     "--third_party=false",
   ])
 
 js_test(name = "test",
   srcs = [
-    "test/**/*.js",
-    "test/**/*_test.html",
+    "test/atoms/**/*_test.html",
+  ],
+  test_dir = "test/atoms",
+  deps = [
+    ":test_support_lib",
+    "//java/client/test/org/openqa/selenium/javascript",
+    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+  ])
+
+# Tests that should only run in browsers with ES6 support.
+js_test(name = "es6_test",
+  srcs = [
+    "test/*.js",
+    "test/e2e/**/*.js",
+    "test/http/**/*.js",
+    "test/testing/**/*.js",
   ],
   deps = [
     ":test_support_lib",
     "//java/client/test/org/openqa/selenium/javascript",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+  ],
+  browsers = [
+    "chrome",
+    "ff"
   ])

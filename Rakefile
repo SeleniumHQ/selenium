@@ -161,6 +161,7 @@ task :ide_bamboo => ["se_ide:assemble_ide_in_bamboo"]
 task :test_javascript => [
   '//javascript/atoms:test:run',
   '//javascript/webdriver:test:run',
+  '//javascript/webdriver:es6_test:run',
   '//javascript/selenium-atoms:test:run',
   '//javascript/selenium-core:test:run']
 task :test_chrome => [ "//java/client/test/org/openqa/selenium/chrome:test:run" ]
@@ -475,7 +476,7 @@ desc "Calculate dependencies required for testing the automation atoms"
 task :calcdeps => "build/javascript/deps.js"
 
 task :test_webdriverjs => [
-  "//javascript/webdriver:test:run"
+  "//javascript/webdriver:es6_test:run"
 ]
 
 desc "Generate a single file with WebDriverJS' public API"

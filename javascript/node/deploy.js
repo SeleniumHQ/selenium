@@ -395,7 +395,7 @@ function generateDocs(outputDir, callback) {
       {'name': 'Changes', 'path': path.join(outputDir, 'CHANGES.md')}
     ],
     'readme': path.join(outputDir, 'README.md'),
-    'language': 'ES5',
+    'language': 'ES6_STRICT',
     'sources': sourceFiles,
     'modules': moduleFiles,
     'excludes': [
