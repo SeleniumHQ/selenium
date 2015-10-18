@@ -346,6 +346,13 @@ testAgents.CHROME_IPHONE =
 
 
 /** @const {string} */
+testAgents.CHROME_IPAD =
+    'Mozilla/5.0 (iPad; CPU OS 7_0_4 like Mac OS X) ' +
+    'AppleWebKit/537.51.1 (KHTML, like Gecko) CriOS/32.0.1700.20 ' +
+    'Mobile/11B554a Safari/9537.53';
+
+
+/** @const {string} */
 testAgents.CHROME_LINUX =
     'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.31 (KHTML, like Gecko)' +
     ' Chrome/26.0.1410.33 Safari/537.31';

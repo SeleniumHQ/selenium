@@ -70,6 +70,8 @@ goog.userAgentTestUtil.reinitializeUserAgent = function() {
       goog.labs.userAgent.browser.isAndroidBrowser();
   goog.userAgent.product.CHROME =
       goog.labs.userAgent.browser.isChrome();
+  goog.userAgent.product.EDGE =
+      goog.labs.userAgent.browser.isEdge();
   goog.userAgent.product.FIREFOX =
       goog.labs.userAgent.browser.isFirefox();
   goog.userAgent.product.IE =

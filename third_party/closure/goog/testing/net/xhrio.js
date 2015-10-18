@@ -547,9 +547,11 @@ goog.testing.net.XhrIo.prototype.simulateReady = function() {
  * @param {!boolean} lengthComputable Whether progress is measurable.
  * @param {!number} loaded Amount of work already performed.
  * @param {!number} total Total amount of work to perform.
+ * @param {boolean=} opt_isDownload Whether the progress is from a download or
+ *     upload.
  */
 goog.testing.net.XhrIo.prototype.simulateProgress = function(
-    lengthComputable, loaded, total) {
+    lengthComputable, loaded, total, opt_isDownload) {
   var progressEvent = {
     type: goog.net.EventType.PROGRESS,
     lengthComputable: lengthComputable,
@@ -557,6 +559,11 @@ goog.testing.net.XhrIo.prototype.simulateProgress = function(
     total: total
   };
   this.dispatchEvent(progressEvent);
+  var specificProgress = goog.object.clone(progressEvent);
+  specificProgress.type = opt_isDownload ?
+                              goog.net.EventType.DOWNLOAD_PROGRESS :
+                              goog.net.EventType.UPLOAD_PROGRESS;
+  this.dispatchEvent(specificProgress);
 };
 
 

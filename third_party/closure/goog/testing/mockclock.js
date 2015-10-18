@@ -28,7 +28,6 @@ goog.require('goog.async.run');
 goog.require('goog.testing.PropertyReplacer');
 goog.require('goog.testing.events');
 goog.require('goog.testing.events.Event');
-goog.require('goog.testing.watchers');
 
 
 
@@ -236,7 +235,7 @@ goog.testing.MockClock.prototype.uninstall = function() {
     goog.now = this.oldGoogNow_;
   }
 
-  this.fireResetEvent();
+  this.resetAsyncQueue_();
 };
 
 
@@ -260,16 +259,16 @@ goog.testing.MockClock.prototype.reset = function() {
   this.timeoutsMade_ = 0;
   this.timeoutDelay_ = 0;
 
-  this.fireResetEvent();
+  this.resetAsyncQueue_();
 };
 
 
 /**
- * Signals that the mock clock has been reset, allowing objects that
- * maintain their own internal state to reset.
+ * Resets the async queue when this clock resets.
+ * @private
  */
-goog.testing.MockClock.prototype.fireResetEvent = function() {
-  goog.testing.watchers.signalClockReset();
+goog.testing.MockClock.prototype.resetAsyncQueue_ = function() {
+  goog.async.run.resetQueue();
 };
 
 

@@ -361,18 +361,19 @@ goog.functions.once = function(f) {
  * calls fired repeatedly so long as they are fired less than a specified
  * interval apart (in milliseconds). Whether it receives one signal or multiple,
  * it will always wait until a full interval has elapsed since the last signal
- * before performing the action.
+ * before performing the action, passing the arguments from the last call of the
+ * debouncing decorator into the decorated function.
  *
  * This is particularly useful for bulking up repeated user actions (e.g. only
  * refreshing a view once a user finishes typing rather than updating with every
  * keystroke). For more stateful debouncing with support for pausing, resuming,
  * and canceling debounced actions, use {@code goog.async.Debouncer}.
  *
- * @param {function(this:SCOPE):*} f Function to call.
+ * @param {function(this:SCOPE, ...?)} f Function to call.
  * @param {number} interval Interval over which to debounce. The function will
  *     only be called after the full interval has elapsed since the last call.
  * @param {SCOPE=} opt_scope Object in whose scope to call the function.
- * @return {function():undefined} Wrapped function.
+ * @return {function(...?): undefined} Wrapped function.
  * @template SCOPE
  */
 goog.functions.debounce = function(f, interval, opt_scope) {
@@ -380,28 +381,33 @@ goog.functions.debounce = function(f, interval, opt_scope) {
     f = goog.bind(f, opt_scope);
   }
   var timeout = null;
-  return function() {
+  return /** @type {function(...?)} */ (function(var_args) {
     goog.global.clearTimeout(timeout);
-    timeout = goog.global.setTimeout(f, interval);
-  };
+    var args = arguments;
+    timeout = goog.global.setTimeout(function() {
+      f.apply(null, args);
+    }, interval);
+  });
 };
 
 
 /**
  * Wraps a function to allow it to be called, at most, once per interval
  * (specified in milliseconds). If it is called multiple times while it is
- * waiting, it will only perform the action once at the end of the interval.
+ * waiting, it will only perform the action once at the end of the interval,
+ * passing the arguments from the last call of the throttling decorator into the
+ * decorated function.
  *
  * This is particularly useful for limiting repeated user requests (e.g.
  * preventing a user from spamming a server with frequent view refreshes). For
  * more stateful throttling with support for pausing, resuming, and canceling
  * throttled actions, use {@code goog.async.Throttle}.
  *
- * @param {function(this:SCOPE):*} f Function to call.
+ * @param {function(this:SCOPE, ...?)} f Function to call.
  * @param {number} interval Interval over which to throttle. The function can
  *     only be called once per interval.
  * @param {SCOPE=} opt_scope Object in whose scope to call the function.
- * @return {function():undefined} Wrapped function.
+ * @return {function(...?): undefined} Wrapped function.
  * @template SCOPE
  */
 goog.functions.throttle = function(f, interval, opt_scope) {
@@ -410,10 +416,8 @@ goog.functions.throttle = function(f, interval, opt_scope) {
   }
   var timeout = null;
   var shouldFire = false;
-  var fire = function() {
-    timeout = goog.global.setTimeout(handleTimeout, interval);
-    f();
-  };
+  var args = [];
+
   var handleTimeout = function() {
     timeout = null;
     if (shouldFire) {
@@ -422,11 +426,17 @@ goog.functions.throttle = function(f, interval, opt_scope) {
     }
   };
 
-  return function() {
+  var fire = function() {
+    timeout = goog.global.setTimeout(handleTimeout, interval);
+    f.apply(null, args);
+  };
+
+  return /** @type {function(...?)} */ (function(var_args) {
+    args = arguments;
     if (!timeout) {
       fire();
     } else {
       shouldFire = true;
     }
-  };
+  });
 };

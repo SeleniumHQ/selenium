@@ -41,9 +41,11 @@ goog.require('goog.graphics.VmlTextElement');
 goog.require('goog.html.uncheckedconversions');
 goog.require('goog.math');
 goog.require('goog.math.Size');
+goog.require('goog.reflect');
 goog.require('goog.string');
 goog.require('goog.string.Const');
 goog.require('goog.style');
+goog.require('goog.userAgent');
 
 
 
@@ -497,17 +499,20 @@ goog.graphics.VmlGraphics.prototype.createFullSizeElement_ = function(type) {
 
 
 /**
- * IE magic - if this "no-op" line is not here, the if statement below will
- * fail intermittently.  The eval is used to prevent the JsCompiler from
+ * IE magic - if this "no-op" logic is not here, the 'if' statement in createDom
+ * will fail intermittently.  The logic is used to prevent the JsCompiler from
  * stripping this piece of code, which it quite reasonably thinks is doing
  * nothing. Put it in try-catch block to prevent "Unspecified Error" when
  * this statement is executed in a defer JS in IE.
  * More info here:
  * http://www.mail-archive.com/users@openlayers.org/msg01838.html
  */
-try {
-  eval('document.namespaces');
-} catch (ex) {}
+if (goog.userAgent.IE) {
+  try {
+    goog.reflect.sinkValue(document.namespaces);
+  } catch (e) {
+  }
+}
 
 
 /**

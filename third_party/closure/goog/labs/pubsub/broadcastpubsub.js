@@ -120,7 +120,7 @@ goog.labs.pubsub.BroadcastPubSub.STORAGE_KEY_ = '_closure_bps';
 
 /**
  * Handle the storage event and possibly dispatch topics.
- * @param {!goog.events.Event} e Event object.
+ * @param {!goog.events.BrowserEvent} e Event object.
  * @private
  */
 goog.labs.pubsub.BroadcastPubSub.prototype.handleStorageEvent_ =
@@ -307,7 +307,7 @@ goog.labs.pubsub.BroadcastPubSub.prototype.subscribeOnce =
 
 /**
  * Returns the number of subscriptions to the given topic (or all topics if
- * unspecified).
+ * unspecified). This number will not change while publishing any messages.
  * @param {string=} opt_topic The topic (all topics if unspecified).
  * @return {number} Number of subscriptions to the topic.
  */

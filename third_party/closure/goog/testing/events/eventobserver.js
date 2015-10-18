@@ -85,3 +85,9 @@ goog.testing.events.EventObserver.prototype.getEvents = function(opt_type) {
 
   return events;
 };
+
+
+/** Clears the list of events seen by this observer. */
+goog.testing.events.EventObserver.prototype.clear = function() {
+  this.events_ = [];
+};

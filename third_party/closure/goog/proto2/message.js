@@ -33,7 +33,7 @@ goog.require('goog.proto2.FieldDescriptor');
 goog.proto2.Message = function() {
   /**
    * Stores the field values in this message. Keyed by the tag of the fields.
-   * @type {*}
+   * @type {!Object}
    * @private
    */
   this.values_ = {};
@@ -118,7 +118,7 @@ goog.proto2.Message.descriptor_;
  * @param {goog.proto2.LazyDeserializer} deserializer The lazy deserializer to
  *   use to decode the data on the fly.
  *
- * @param {*} data The data to decode/deserialize.
+ * @param {?} data The data to decode/deserialize.
  */
 goog.proto2.Message.prototype.initializeForLazyDeserializer = function(
     deserializer, data) {
@@ -238,7 +238,7 @@ goog.proto2.Message.prototype.countOf = function(field) {
  * @param {number=} opt_index If the field is repeated, the index to use when
  *     looking up the value.
  *
- * @return {*} The value found or null if none.
+ * @return {?} The value found or null if none.
  */
 goog.proto2.Message.prototype.get = function(field, opt_index) {
   goog.asserts.assert(
@@ -258,7 +258,7 @@ goog.proto2.Message.prototype.get = function(field, opt_index) {
  * @param {number=} opt_index If the field is repeated, the index to use when
  *     looking up the value.
  *
- * @return {*} The value found or the default if none.
+ * @return {?} The value found or the default if none.
  */
 goog.proto2.Message.prototype.getOrDefault = function(field, opt_index) {
   goog.asserts.assert(
@@ -319,7 +319,7 @@ goog.proto2.Message.prototype.clear = function(field) {
 
 /**
  * Compares this message with another one ignoring the unknown fields.
- * @param {*} other The other message.
+ * @param {?} other The other message.
  * @return {boolean} Whether they are equal. Returns false if the {@code other}
  *     argument is a different type of message or not a message.
  */
@@ -499,7 +499,7 @@ goog.proto2.Message.prototype.has$Value = function(tag) {
  * value.
  *
  * @param {number} tag The tag number.
- * @return {*} The corresponding value, if any.
+ * @return {?} The corresponding value, if any.
  * @private
  */
 goog.proto2.Message.prototype.getValueForTag_ = function(tag) {
@@ -514,7 +514,7 @@ goog.proto2.Message.prototype.getValueForTag_ = function(tag) {
   if (this.lazyDeserializer_) {
     // If the tag is not deserialized, then we must do so now. Deserialize
     // the field's value via the deserializer.
-    if (!(tag in this.deserializedFields_)) {
+    if (!(tag in /** @type {!Object} */ (this.deserializedFields_))) {
       var deserializedValue = this.lazyDeserializer_.deserializeField(
           this, this.fields_[tag], value);
       this.deserializedFields_[tag] = deserializedValue;
@@ -538,7 +538,7 @@ goog.proto2.Message.prototype.getValueForTag_ = function(tag) {
  * @param {number=} opt_index If the field is a repeated field, the index
  *     at which to get the value.
  *
- * @return {*} The value found or null for none.
+ * @return {?} The value found or null for none.
  * @protected
  */
 goog.proto2.Message.prototype.get$Value = function(tag, opt_index) {
@@ -567,7 +567,7 @@ goog.proto2.Message.prototype.get$Value = function(tag, opt_index) {
  * @param {number=} opt_index If the field is a repeated field, the index
  *     at which to get the value.
  *
- * @return {*} The value found or the default value if none set.
+ * @return {?} The value found or the default value if none set.
  * @protected
  */
 goog.proto2.Message.prototype.get$ValueOrDefault = function(tag, opt_index) {
@@ -588,12 +588,12 @@ goog.proto2.Message.prototype.get$ValueOrDefault = function(tag, opt_index) {
  *
  * @param {number} tag The field's tag index.
  *
- * @return {!Array<*>} The values found. If none, returns an empty array.
+ * @return {!Array<?>} The values found. If none, returns an empty array.
  * @protected
  */
 goog.proto2.Message.prototype.array$Values = function(tag) {
   var value = this.getValueForTag_(tag);
-  return /** @type {Array<*>} */ (value) || [];
+  return value || [];
 };
 
 

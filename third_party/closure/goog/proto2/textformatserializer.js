@@ -227,7 +227,7 @@ goog.proto2.TextFormatSerializer.prototype.printFieldValue_ =
         // Search the enum type for a matching key.
         var found = false;
         goog.object.forEach(field.getNativeType(), function(eValue, key) {
-          if (eValue == value) {
+          if (!found && eValue == value) {
             printer.append(key);
             found = true;
           }

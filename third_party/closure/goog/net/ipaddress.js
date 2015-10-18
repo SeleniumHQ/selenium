@@ -415,12 +415,7 @@ goog.net.Ipv6Address.explode_ = function(address) {
     return [];
   }
 
-  goog.array.extend(basePart, goog.array.repeat('0', gap));
-
-  // Now we merge the basePart + gap + secondPart
-  goog.array.extend(basePart, secondPart);
-
-  return basePart;
+  return goog.array.join(basePart, goog.array.repeat('0', gap), secondPart);
 };
 
 

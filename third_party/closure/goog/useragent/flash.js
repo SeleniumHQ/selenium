@@ -60,51 +60,61 @@ goog.userAgent.flash.init_ = function() {
       if (plugin.description) {
         goog.userAgent.flash.detectedFlashVersion_ =
             goog.userAgent.flash.getVersion_(plugin.description);
+        return;
       }
     }
 
     if (navigator.plugins['Shockwave Flash 2.0']) {
       goog.userAgent.flash.detectedFlash_ = true;
       goog.userAgent.flash.detectedFlashVersion_ = '2.0.0.11';
+      return;
     }
+  }
 
-  } else if (navigator.mimeTypes && navigator.mimeTypes.length) {
+  if (navigator.mimeTypes && navigator.mimeTypes.length) {
     var mimeType = navigator.mimeTypes['application/x-shockwave-flash'];
     goog.userAgent.flash.detectedFlash_ = mimeType && mimeType.enabledPlugin;
     if (goog.userAgent.flash.detectedFlash_) {
       goog.userAgent.flash.detectedFlashVersion_ =
           goog.userAgent.flash.getVersion_(mimeType.enabledPlugin.description);
+      return;
     }
+  }
 
-  } else {
-    /** @preserveTry */
-    try {
-      // Try 7 first, since we know we can use GetVariable with it
-      var ax = new ActiveXObject('ShockwaveFlash.ShockwaveFlash.7');
-      goog.userAgent.flash.detectedFlash_ = true;
-      goog.userAgent.flash.detectedFlashVersion_ =
-          goog.userAgent.flash.getVersion_(ax.GetVariable('$version'));
-    } catch (e) {
-      // Try 6 next, some versions are known to crash with GetVariable calls
-      /** @preserveTry */
-      try {
-        var ax = new ActiveXObject('ShockwaveFlash.ShockwaveFlash.6');
-        goog.userAgent.flash.detectedFlash_ = true;
-        // First public version of Flash 6
-        goog.userAgent.flash.detectedFlashVersion_ = '6.0.21';
-      } catch (e2) {
-        /** @preserveTry */
-        try {
-          // Try the default activeX
-          var ax = new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
-          goog.userAgent.flash.detectedFlash_ = true;
-          goog.userAgent.flash.detectedFlashVersion_ =
-              goog.userAgent.flash.getVersion_(ax.GetVariable('$version'));
-        } catch (e3) {
-          // No flash
-        }
-      }
-    }
+  /** @preserveTry */
+  try {
+    // Try 7 first, since we know we can use GetVariable with it
+    var ax = new ActiveXObject('ShockwaveFlash.ShockwaveFlash.7');
+    goog.userAgent.flash.detectedFlash_ = true;
+    goog.userAgent.flash.detectedFlashVersion_ =
+        goog.userAgent.flash.getVersion_(ax.GetVariable('$version'));
+    return;
+  } catch (e) {
+    /* Fall through */
+  }
+
+  // Try 6 next, some versions are known to crash with GetVariable calls
+  /** @preserveTry */
+  try {
+    var ax = new ActiveXObject('ShockwaveFlash.ShockwaveFlash.6');
+    goog.userAgent.flash.detectedFlash_ = true;
+    // First public version of Flash 6
+    goog.userAgent.flash.detectedFlashVersion_ = '6.0.21';
+    return;
+  } catch (e) {
+    /* Fall through */
+  }
+
+  /** @preserveTry */
+  try {
+    // Try the default activeX
+    var ax = new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
+    goog.userAgent.flash.detectedFlash_ = true;
+    goog.userAgent.flash.detectedFlashVersion_ =
+        goog.userAgent.flash.getVersion_(ax.GetVariable('$version'));
+    return;
+  } catch (e) {
+    // No flash
   }
 };
 

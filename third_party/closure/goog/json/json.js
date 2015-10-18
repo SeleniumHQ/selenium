@@ -235,7 +235,7 @@ goog.json.Serializer.prototype.serializeInternal = function(object, sb) {
       this.serializeNumber_(object, sb);
       break;
     case 'boolean':
-      sb.push(object);
+      sb.push(String(object));
       break;
     case 'function':
       sb.push('null');
@@ -305,7 +305,7 @@ goog.json.Serializer.prototype.serializeString_ = function(s, sb) {
  * @param {Array<string>} sb Array used as a string builder.
  */
 goog.json.Serializer.prototype.serializeNumber_ = function(n, sb) {
-  sb.push(isFinite(n) && !isNaN(n) ? n : 'null');
+  sb.push(isFinite(n) && !isNaN(n) ? String(n) : 'null');
 };
 
 

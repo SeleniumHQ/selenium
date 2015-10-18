@@ -940,10 +940,10 @@ goog.Promise.prototype.resolve_ = function(state, x) {
  * Invokes the "then" method of an input value if that value is a Thenable. This
  * is a no-op if the value is not thenable.
  *
- * @param {*} value A potentially thenable value.
+ * @param {?} value A potentially thenable value.
  * @param {!Function} onFulfilled
  * @param {!Function} onRejected
- * @param {*} context
+ * @param {?} context
  * @return {boolean} Whether the input value was thenable.
  * @private
  */

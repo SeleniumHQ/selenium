@@ -65,12 +65,14 @@ goog.fx.Transition.EventType = {
 
 
 /**
+ * @type {function()}
  * Plays the transition.
  */
 goog.fx.Transition.prototype.play;
 
 
 /**
+ * @type {function()}
  * Stops the transition.
  */
 goog.fx.Transition.prototype.stop;

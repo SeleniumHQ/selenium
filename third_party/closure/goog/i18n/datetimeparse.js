@@ -22,6 +22,7 @@
  */
 goog.provide('goog.i18n.DateTimeParse');
 
+goog.require('goog.asserts');
 goog.require('goog.date');
 goog.require('goog.i18n.DateTimeFormat');
 goog.require('goog.i18n.DateTimeSymbols');
@@ -125,11 +126,24 @@ goog.require('goog.i18n.DateTimeSymbols');
 /**
  * Construct a DateTimeParse based on current locale.
  * @param {string|number} pattern pattern specification or pattern type.
+ * @param {!Object=} opt_dateTimeSymbols Optional symbols to use use for this
+ *     instance rather than the global symbols.
  * @constructor
  * @final
  */
-goog.i18n.DateTimeParse = function(pattern) {
+goog.i18n.DateTimeParse = function(pattern, opt_dateTimeSymbols) {
+  goog.asserts.assert(
+      goog.isDef(opt_dateTimeSymbols) || goog.isDef(goog.i18n.DateTimeSymbols),
+      'goog.i18n.DateTimeSymbols or explicit symbols must be defined');
+
   this.patternParts_ = [];
+
+  /**
+   * Data structure with all the locale info needed for date formatting.
+   * (day/month names, most common patterns, rules for week-end, etc.)
+   * @const @private {!Object}
+   */
+  this.dateTimeSymbols_ = opt_dateTimeSymbols || goog.i18n.DateTimeSymbols;
   if (typeof pattern == 'number') {
     this.applyStandardPattern_(pattern);
   } else {
@@ -236,15 +250,15 @@ goog.i18n.DateTimeParse.prototype.applyStandardPattern_ = function(formatType) {
   }
 
   if (formatType < 4) {
-    pattern = goog.i18n.DateTimeSymbols.DATEFORMATS[formatType];
+    pattern = this.dateTimeSymbols_.DATEFORMATS[formatType];
   } else if (formatType < 8) {
-    pattern = goog.i18n.DateTimeSymbols.TIMEFORMATS[formatType - 4];
+    pattern = this.dateTimeSymbols_.TIMEFORMATS[formatType - 4];
   } else {
-    pattern = goog.i18n.DateTimeSymbols.DATETIMEFORMATS[formatType - 8];
+    pattern = this.dateTimeSymbols_.DATETIMEFORMATS[formatType - 8];
     pattern = pattern.replace('{1}',
-        goog.i18n.DateTimeSymbols.DATEFORMATS[formatType - 8]);
+        this.dateTimeSymbols_.DATEFORMATS[formatType - 8]);
     pattern = pattern.replace('{0}',
-        goog.i18n.DateTimeSymbols.TIMEFORMATS[formatType - 8]);
+        this.dateTimeSymbols_.TIMEFORMATS[formatType - 8]);
   }
   this.applyPattern_(pattern);
 };
@@ -518,7 +532,7 @@ goog.i18n.DateTimeParse.prototype.subParse_ =
 
   switch (ch) {
     case 'G': // ERA
-      value = this.matchString_(text, pos, goog.i18n.DateTimeSymbols.ERAS);
+      value = this.matchString_(text, pos, this.dateTimeSymbols_.ERAS);
       if (value >= 0) {
         cal.era = value;
       }
@@ -529,7 +543,7 @@ goog.i18n.DateTimeParse.prototype.subParse_ =
     case 'E':
       return this.subParseDayOfWeek_(text, pos, cal);
     case 'a': // AM_PM
-      value = this.matchString_(text, pos, goog.i18n.DateTimeSymbols.AMPMS);
+      value = this.matchString_(text, pos, this.dateTimeSymbols_.AMPMS);
       if (value >= 0) {
         cal.ampm = value;
       }
@@ -640,10 +654,10 @@ goog.i18n.DateTimeParse.prototype.subParseMonth_ =
   if (value < 0) {
     // Want to be able to parse both short and long forms.
     // Try count == 4 first
-    var months = goog.i18n.DateTimeSymbols.MONTHS.concat(
-        goog.i18n.DateTimeSymbols.STANDALONEMONTHS).concat(
-        goog.i18n.DateTimeSymbols.SHORTMONTHS).concat(
-        goog.i18n.DateTimeSymbols.STANDALONESHORTMONTHS);
+    var months = this.dateTimeSymbols_.MONTHS.concat(
+        this.dateTimeSymbols_.STANDALONEMONTHS).concat(
+        this.dateTimeSymbols_.SHORTMONTHS).concat(
+        this.dateTimeSymbols_.STANDALONESHORTMONTHS);
     value = this.matchString_(text, pos, months);
     if (value < 0) {
       return false;
@@ -677,10 +691,9 @@ goog.i18n.DateTimeParse.prototype.subParseQuarter_ =
   if (value < 0) {
     // Want to be able to parse both short and long forms.
     // Try count == 4 first:
-    value = this.matchString_(text, pos, goog.i18n.DateTimeSymbols.QUARTERS);
+    value = this.matchString_(text, pos, this.dateTimeSymbols_.QUARTERS);
     if (value < 0) { // count == 4 failed, now try count == 3
-      value = this.matchString_(text, pos,
-                                goog.i18n.DateTimeSymbols.SHORTQUARTERS);
+      value = this.matchString_(text, pos, this.dateTimeSymbols_.SHORTQUARTERS);
     }
     if (value < 0) {
       return false;
@@ -706,10 +719,9 @@ goog.i18n.DateTimeParse.prototype.subParseDayOfWeek_ =
     function(text, pos, cal) {
   // Handle both short and long forms.
   // Try count == 4 (DDDD) first:
-  var value = this.matchString_(text, pos, goog.i18n.DateTimeSymbols.WEEKDAYS);
+  var value = this.matchString_(text, pos, this.dateTimeSymbols_.WEEKDAYS);
   if (value < 0) {
-    value = this.matchString_(text, pos,
-                              goog.i18n.DateTimeSymbols.SHORTWEEKDAYS);
+    value = this.matchString_(text, pos, this.dateTimeSymbols_.SHORTWEEKDAYS);
   }
   if (value < 0) {
     return false;
@@ -852,10 +864,10 @@ goog.i18n.DateTimeParse.prototype.parseInt_ = function(text, pos) {
   // Delocalizes the string containing native digits specified by the locale,
   // replaces the native digits with ASCII digits. Leaves other characters.
   // This is the reverse operation of localizeNumbers_ in datetimeformat.js.
-  if (goog.i18n.DateTimeSymbols.ZERODIGIT) {
+  if (this.dateTimeSymbols_.ZERODIGIT) {
     var parts = [];
     for (var i = pos[0]; i < text.length; i++) {
-      var c = text.charCodeAt(i) - goog.i18n.DateTimeSymbols.ZERODIGIT;
+      var c = text.charCodeAt(i) - this.dateTimeSymbols_.ZERODIGIT;
       parts.push((0 <= c && c <= 9) ?
           String.fromCharCode(c + 0x30) :
           text.charAt(i));

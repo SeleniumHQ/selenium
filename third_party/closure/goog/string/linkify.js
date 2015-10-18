@@ -114,7 +114,7 @@ goog.string.linkify.linkifyPlainText = function(text, opt_attributes) {
  * @return {string} The first URL, or an empty string if not found.
  */
 goog.string.linkify.findFirstUrl = function(text) {
-  var link = text.match(goog.string.linkify.URL_);
+  var link = text.match(goog.string.linkify.URL_RE_);
   return link != null ? link[0] : '';
 };
 
@@ -125,7 +125,7 @@ goog.string.linkify.findFirstUrl = function(text) {
  * @return {string} The first email address, or an empty string if not found.
  */
 goog.string.linkify.findFirstEmail = function(text) {
-  var email = text.match(goog.string.linkify.EMAIL_);
+  var email = text.match(goog.string.linkify.EMAIL_RE_);
   return email != null ? email[0] : '';
 };
 
@@ -137,7 +137,7 @@ goog.string.linkify.findFirstEmail = function(text) {
  * @const
  * @private
  */
-goog.string.linkify.ENDING_PUNCTUATION_CHARS_ = ':;,\\.?>\\]\\)!';
+goog.string.linkify.ENDING_PUNCTUATION_CHARS_ = ':;,\\.?}\\]\\)!';
 
 
 /**
@@ -151,13 +151,14 @@ goog.string.linkify.ENDS_WITH_PUNCTUATION_RE_ = new RegExp(
 
 /**
  * Set of characters to be put into a regex character set ("[...]"), used to
- * match against a url hostname and everything after it. It includes
- * "#-@", which represents the characters "#$%&'()*+,-./0123456789:;<=>?@".
+ * match against a url hostname and everything after it. It includes, in order,
+ * \w which represents [a-zA-Z0-9_], "#-;" which represents the characters
+ * "#$%&'()*+,-./0123456789:;" and the characters "!=?@[\]`{|}~".
  * @type {string}
  * @const
  * @private
  */
-goog.string.linkify.ACCEPTABLE_URL_CHARS_ = '\\w~#-@!\\[\\]';
+goog.string.linkify.ACCEPTABLE_URL_CHARS_ = '\\w#-;!=?@\\[\\\\\\]_`{|}~';
 
 
 /**
@@ -197,10 +198,20 @@ goog.string.linkify.WWW_START_ = 'www\\.';
  * @const
  * @private
  */
-goog.string.linkify.URL_ =
+goog.string.linkify.URL_RE_STRING_ =
     '(?:' + goog.string.linkify.PROTOCOL_START_ + '|' +
     goog.string.linkify.WWW_START_ + ')[' +
     goog.string.linkify.ACCEPTABLE_URL_CHARS_ + ']+';
+
+
+/**
+ * Regular expression that matches an url. Case-insensitive.
+ * @type {!RegExp}
+ * @const
+ * @private
+ */
+goog.string.linkify.URL_RE_ = new RegExp(
+    goog.string.linkify.URL_RE_STRING_, 'i');
 
 
 /**
@@ -226,9 +237,19 @@ goog.string.linkify.TOP_LEVEL_DOMAIN_ =
  * @const
  * @private
  */
-goog.string.linkify.EMAIL_ =
+goog.string.linkify.EMAIL_RE_STRING_ =
     '(?:mailto:)?([\\w.+-]+@[A-Za-z0-9.-]+\\.' +
     goog.string.linkify.TOP_LEVEL_DOMAIN_ + ')';
+
+
+/**
+ * Regular expression that matches an email. Case-insensitive.
+ * @type {!RegExp}
+ * @const
+ * @private
+ */
+goog.string.linkify.EMAIL_RE_ = new RegExp(
+    goog.string.linkify.EMAIL_RE_STRING_, 'i');
 
 
 /**
@@ -245,8 +266,8 @@ goog.string.linkify.FIND_LINKS_RE_ = new RegExp(
     // Match everything including newlines.
     '([\\S\\s]*?)(' +
     // Match email after a word break.
-    '\\b' + goog.string.linkify.EMAIL_ + '|' +
+    '\\b' + goog.string.linkify.EMAIL_RE_STRING_ + '|' +
     // Match url after a word break.
-    '\\b' + goog.string.linkify.URL_ + '|$)',
+    '\\b' + goog.string.linkify.URL_RE_STRING_ + '|$)',
     'gi');
 

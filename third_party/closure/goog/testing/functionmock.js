@@ -152,7 +152,6 @@ goog.testing.createConstructorMock = function(scope, constructorName,
   // Copy class members from the real constructor to the mock. Do not copy
   // the closure superClass_ property (see goog.inherits), the built-in
   // prototype property, or properties added to Function.prototype
-  // (see goog.MODIFY_FUNCTION_PROTOTYPES in closure/base.js).
   for (var property in realConstructor) {
     if (property != 'superClass_' &&
         property != 'prototype' &&

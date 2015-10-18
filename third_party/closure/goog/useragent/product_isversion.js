@@ -47,7 +47,8 @@ goog.userAgent.product.determineVersion_ = function() {
     return goog.userAgent.product.getFirstRegExpGroup_(/Firefox\/([0-9.]+)/);
   }
 
-  if (goog.userAgent.product.IE || goog.userAgent.product.OPERA) {
+  if (goog.userAgent.product.IE || goog.userAgent.product.EDGE ||
+      goog.userAgent.product.OPERA) {
     return goog.userAgent.VERSION;
   }
 

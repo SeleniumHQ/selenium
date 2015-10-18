@@ -23,6 +23,7 @@
 
 goog.provide('goog.soy.data.SanitizedContent');
 goog.provide('goog.soy.data.SanitizedContentKind');
+goog.provide('goog.soy.data.UnsanitizedText');
 
 goog.require('goog.html.SafeHtml');
 goog.require('goog.html.uncheckedconversions');
@@ -162,3 +163,17 @@ goog.soy.data.SanitizedContent.prototype.toSafeHtml = function() {
                   'SafeHtml-contract-compliant value.'),
           this.toString(), this.contentDir);
 };
+
+
+
+/**
+ * An intermediary base class to allow the type system to sepcify text templates
+ * without referencing the soydata package.
+ * @extends {goog.soy.data.SanitizedContent}
+ * @constructor
+ */
+goog.soy.data.UnsanitizedText = function() {
+  // TODO(gboyer): Delete this class after moving soydata to Closure.
+  goog.soy.data.UnsanitizedText.base(this, 'constructor');
+};
+goog.inherits(goog.soy.data.UnsanitizedText, goog.soy.data.SanitizedContent);

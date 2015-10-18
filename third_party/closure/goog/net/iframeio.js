@@ -888,8 +888,8 @@ goog.net.IframeIo.prototype.sendFormInternal_ = function() {
     } else {
       html = goog.net.IframeIo.createIframeHtml_(innerFrameName);
     }
-    if (goog.userAgent.OPERA) {
-      // Opera adds a history entry when document.write is used.
+    if (goog.userAgent.OPERA && !goog.userAgent.WEBKIT) {
+      // Presto based Opera adds a history entry when document.write is used.
       // Change the innerHTML of the page instead.
       goog.dom.safe.setInnerHtml(doc.documentElement, html);
     } else {
@@ -1062,9 +1062,9 @@ goog.net.IframeIo.prototype.onIeReadyStateChange_ = function(e) {
  * @private
  */
 goog.net.IframeIo.prototype.onIframeLoaded_ = function(e) {
-  // In Opera, the default "about:blank" page of iframes fires an onload
-  // event that we'd like to ignore.
-  if (goog.userAgent.OPERA &&
+  // In Presto based Opera, the default "about:blank" page of iframes fires an
+  // onload event that we'd like to ignore.
+  if (goog.userAgent.OPERA && !goog.userAgent.WEBKIT &&
       this.getContentDocument_().location == 'about:blank') {
     return;
   }
@@ -1264,8 +1264,9 @@ goog.net.IframeIo.prototype.scheduleIframeDisposal_ = function() {
     this.iframeDisposalTimer_ = null;
   }
 
-  if (goog.userAgent.GECKO || goog.userAgent.OPERA) {
-    // For FF and Opera, we must dispose the iframe async,
+  if (goog.userAgent.GECKO || (
+      goog.userAgent.OPERA && !goog.userAgent.WEBKIT)) {
+    // For FF and Presto Opera, we must dispose the iframe async,
     // but it doesn't need to be done as soon as possible.
     // We therefore schedule it for 2s out, so as not to
     // affect any other actions that may have been triggered by the request.

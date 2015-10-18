@@ -414,7 +414,7 @@ goog.math.isNegativeZero = function(num) {
 goog.math.log10Floor = function(num) {
   if (num > 0) {
     var x = Math.round(Math.log(num) * Math.LOG10E);
-    return x - (parseFloat('1e' + x) > num);
+    return x - (parseFloat('1e' + x) > num ? 1 : 0);
   }
   return num == 0 ? -Infinity : NaN;
 };

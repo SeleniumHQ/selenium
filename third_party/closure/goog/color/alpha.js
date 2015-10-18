@@ -69,16 +69,20 @@ goog.color.alpha.hexToRgbaStyle = function(hexColor) {
 
 
 /**
- * Gets the hex color part of an alpha hex color. For example, from '#abcdef55'
- * return '#abcdef'.
+ * Extracts a substring, from startIdx to endIdx, of the normalized (lowercase
+ * #rrggbbaa) form of a hex-with-alpha color.
  * @param {string} colorWithAlpha The alpha hex color to get the hex color from.
- * @return {string} The hex color where the alpha part has been stripped off.
+ *     This may be four or eight digits.
+ * @param {number} startIdx The start index within the #rrggbbaa color.
+ * @param {number} endIdx The end index within the #rrggbbbaa color.
+ * @return {string} The requested startIdx-to-endIdx substring from the color.
+ * @private
  */
-goog.color.alpha.extractHexColor = function(colorWithAlpha) {
+goog.color.alpha.extractColor_ = function(colorWithAlpha, startIdx, endIdx) {
   if (goog.color.alpha.isValidAlphaHexColor_(colorWithAlpha)) {
     var fullColor = goog.color.prependHashIfNecessaryHelper(colorWithAlpha);
     var normalizedColor = goog.color.alpha.normalizeAlphaHex_(fullColor);
-    return normalizedColor.substring(0, 7);
+    return normalizedColor.substring(startIdx, endIdx);
   } else {
     throw Error(colorWithAlpha + ' is not a valid 8-hex color string');
   }
@@ -86,19 +90,24 @@ goog.color.alpha.extractHexColor = function(colorWithAlpha) {
 
 
 /**
- * Gets the alpha color part of an alpha hex color. For example, from
- * '#abcdef55' return '55'. The result is guaranteed to be two characters long.
+ * Gets the hex color part of an alpha hex color. For example, both '#abcd' and
+ * '#AABBCC12' return '#aabbcc'.
  * @param {string} colorWithAlpha The alpha hex color to get the hex color from.
  * @return {string} The hex color where the alpha part has been stripped off.
  */
+goog.color.alpha.extractHexColor = function(colorWithAlpha) {
+  return goog.color.alpha.extractColor_(colorWithAlpha, 0, 7);
+};
+
+
+/**
+ * Gets the alpha color part of an alpha hex color. For example, both '#123A'
+ * and '#123456aa' return 'aa'. The result is always two characters long.
+ * @param {string} colorWithAlpha The alpha hex color to get the hex color from.
+ * @return {string} The two-character alpha from the given color.
+ */
 goog.color.alpha.extractAlpha = function(colorWithAlpha) {
-  if (goog.color.alpha.isValidAlphaHexColor_(colorWithAlpha)) {
-    var fullColor = goog.color.prependHashIfNecessaryHelper(colorWithAlpha);
-    var normalizedColor = goog.color.alpha.normalizeAlphaHex_(fullColor);
-    return normalizedColor.substring(7, 9);
-  } else {
-    throw Error(colorWithAlpha + ' is not a valid 8-hex color string');
-  }
+  return goog.color.alpha.extractColor_(colorWithAlpha, 7, 9);
 };
 
 

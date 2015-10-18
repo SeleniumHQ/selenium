@@ -39,7 +39,7 @@ goog.require('goog.object');
  * @return {number} The number of values in the collection-like object.
  */
 goog.structs.getCount = function(col) {
-  if (typeof col.getCount == 'function') {
+  if (col.getCount && typeof col.getCount == 'function') {
     return col.getCount();
   }
   if (goog.isArrayLike(col) || goog.isString(col)) {
@@ -55,7 +55,7 @@ goog.structs.getCount = function(col) {
  * @return {!Array<?>} The values in the collection-like object.
  */
 goog.structs.getValues = function(col) {
-  if (typeof col.getValues == 'function') {
+  if (col.getValues && typeof col.getValues == 'function') {
     return col.getValues();
   }
   if (goog.isString(col)) {
@@ -80,11 +80,11 @@ goog.structs.getValues = function(col) {
  * @return {!Array|undefined} The keys in the collection.
  */
 goog.structs.getKeys = function(col) {
-  if (typeof col.getKeys == 'function') {
+  if (col.getKeys && typeof col.getKeys == 'function') {
     return col.getKeys();
   }
   // if we have getValues but no getKeys we know this is a key-less collection
-  if (typeof col.getValues == 'function') {
+  if (col.getValues && typeof col.getValues == 'function') {
     return undefined;
   }
   if (goog.isArrayLike(col) || goog.isString(col)) {
@@ -108,10 +108,10 @@ goog.structs.getKeys = function(col) {
  * @return {boolean} True if the map contains the value.
  */
 goog.structs.contains = function(col, val) {
-  if (typeof col.contains == 'function') {
+  if (col.contains && typeof col.contains == 'function') {
     return col.contains(val);
   }
-  if (typeof col.containsValue == 'function') {
+  if (col.containsValue && typeof col.containsValue == 'function') {
     return col.containsValue(val);
   }
   if (goog.isArrayLike(col) || goog.isString(col)) {
@@ -127,7 +127,7 @@ goog.structs.contains = function(col, val) {
  * @return {boolean} True if empty.
  */
 goog.structs.isEmpty = function(col) {
-  if (typeof col.isEmpty == 'function') {
+  if (col.isEmpty && typeof col.isEmpty == 'function') {
     return col.isEmpty();
   }
 
@@ -147,7 +147,7 @@ goog.structs.isEmpty = function(col) {
  */
 goog.structs.clear = function(col) {
   // NOTE(arv): This should not contain strings because strings are immutable
-  if (typeof col.clear == 'function') {
+  if (col.clear && typeof col.clear == 'function') {
     col.clear();
   } else if (goog.isArrayLike(col)) {
     goog.array.clear(/** @type {goog.array.ArrayLike} */ (col));
@@ -174,7 +174,7 @@ goog.structs.clear = function(col) {
  * @template T,S
  */
 goog.structs.forEach = function(col, f, opt_obj) {
-  if (typeof col.forEach == 'function') {
+  if (col.forEach && typeof col.forEach == 'function') {
     col.forEach(f, opt_obj);
   } else if (goog.isArrayLike(col) || goog.isString(col)) {
     goog.array.forEach(/** @type {!Array<?>} */ (col), f, opt_obj);

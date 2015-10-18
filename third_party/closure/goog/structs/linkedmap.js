@@ -484,7 +484,10 @@ goog.structs.LinkedMap.prototype.popNode_ = function(node) {
  * @private
  */
 goog.structs.LinkedMap.Node_ = function(key, value) {
+  /** @type {KEY} */
   this.key = key;
+
+  /** @type {VALUE} */
   this.value = value;
 };
 

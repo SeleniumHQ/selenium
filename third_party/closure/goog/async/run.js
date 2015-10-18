@@ -17,7 +17,6 @@ goog.provide('goog.async.run');
 goog.require('goog.async.WorkQueue');
 goog.require('goog.async.nextTick');
 goog.require('goog.async.throwException');
-goog.require('goog.testing.watchers');
 
 
 /**
@@ -103,17 +102,12 @@ goog.async.run.workQueue_ = new goog.async.WorkQueue();
 
 if (goog.DEBUG) {
   /**
-   * Reset the work queue.
-   * @private
+   * Reset the work queue. Only available for tests in debug mode.
    */
-  goog.async.run.resetQueue_ = function() {
+  goog.async.run.resetQueue = function() {
     goog.async.run.workQueueScheduled_ = false;
     goog.async.run.workQueue_ = new goog.async.WorkQueue();
   };
-
-  // If there is a clock implemenation in use for testing
-  // and it is reset, reset the queue.
-  goog.testing.watchers.watchClockReset(goog.async.run.resetQueue_);
 }
 
 

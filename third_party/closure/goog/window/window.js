@@ -164,8 +164,8 @@ goog.window.open = function(linkRef, opt_options, opt_parentWin) {
     // agent.
     newWin = parentWin.open('', target, optionString);
     if (newWin) {
-      if (goog.userAgent.IE) {
-        // IE has problems parsing the content attribute if the url contains
+      if (goog.userAgent.EDGE_OR_IE) {
+        // IE/EDGE can't parse the content attribute if the url contains
         // a semicolon. We can fix this by adding quotes around the url, but
         // then we can't parse quotes in the URL correctly. We take a
         // best-effort approach.

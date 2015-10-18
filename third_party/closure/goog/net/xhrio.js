@@ -21,7 +21,7 @@
  * ensure no leaks.
  *
  * XhrIo is event based, it dispatches events on success, failure, finishing,
- * ready-state change, or progress.
+ * ready-state change, or progress (download and upload).
  *
  * The ready-state or timeout event fires first, followed by
  * a generic completed event. Then the abort, error, or success event
@@ -37,7 +37,8 @@
  * When progress events are supported by the browser, and progress is
  * enabled via .setProgressEventsEnabled(true), the
  * goog.net.EventType.PROGRESS event will be the re-dispatched browser
- * progress event.
+ * progress event. Additionally, a DOWNLOAD_PROGRESS or UPLOAD_PROGRESS event
+ * will be fired for download and upload progress respectively.
  *
  * Tested = IE6, FF1.5, Safari, Opera 8.5
  *
@@ -527,7 +528,8 @@ goog.net.XhrIo.prototype.send = function(url, opt_method, opt_content,
 
   // Set up upload/download progress events, if progress events are supported.
   if (this.getProgressEventsEnabled() && 'onprogress' in this.xhr_) {
-    this.xhr_.onprogress = goog.bind(this.onProgressHandler_, this);
+    this.xhr_.onprogress =
+        goog.bind(function(e) { this.onProgressHandler_(e, true); }, this);
     if (this.xhr_.upload) {
       this.xhr_.upload.onprogress = goog.bind(this.onProgressHandler_, this);
     }
@@ -875,15 +877,43 @@ goog.net.XhrIo.prototype.onReadyStateChangeHelper_ = function() {
 
 
 /**
- * Internal handler for the XHR object's onprogress event.
+ * Internal handler for the XHR object's onprogress event. Fires both a generic
+ * PROGRESS event and either a DOWNLOAD_PROGRESS or UPLOAD_PROGRESS event to
+ * allow specific binding for each XHR progress event.
  * @param {!ProgressEvent} e XHR progress event.
+ * @param {boolean=} opt_isDownload Whether the current progress event is from a
+ *     download. Used to determine whether DOWNLOAD_PROGRESS or UPLOAD_PROGRESS
+ *     event should be dispatched.
  * @private
  */
-goog.net.XhrIo.prototype.onProgressHandler_ = function(e) {
-  goog.asserts.assert(e.type === goog.net.EventType.PROGRESS,
+goog.net.XhrIo.prototype.onProgressHandler_ = function(e, opt_isDownload) {
+  goog.asserts.assert(
+      e.type === goog.net.EventType.PROGRESS,
       'goog.net.EventType.PROGRESS is of the same type as raw XHR progress.');
-  // Redispatch the progress event.
-  this.dispatchEvent(e);
+  this.dispatchEvent(
+      goog.net.XhrIo.buildProgressEvent_(e, goog.net.EventType.PROGRESS));
+  this.dispatchEvent(goog.net.XhrIo.buildProgressEvent_(
+      e, opt_isDownload ? goog.net.EventType.DOWNLOAD_PROGRESS :
+                          goog.net.EventType.UPLOAD_PROGRESS));
+};
+
+
+/**
+ * Creates a representation of the native ProgressEvent. IE doesn't support
+ * constructing ProgressEvent via "new", and the alternatives (e.g.,
+ * ProgressEvent.initProgressEvent) are non-standard or deprecated.
+ * @param {!ProgressEvent} e XHR progress event.
+ * @param {!goog.net.EventType} eventType The type of the event.
+ * @return {!ProgressEvent} The progress event.
+ * @private
+ */
+goog.net.XhrIo.buildProgressEvent_ = function(e, eventType) {
+  return /** @type {!ProgressEvent} */ ({
+    type: eventType,
+    lengthComputable: e.lengthComputable,
+    loaded: e.loaded,
+    total: e.total
+  });
 };
 
 

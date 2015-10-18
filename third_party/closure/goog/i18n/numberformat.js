@@ -732,9 +732,7 @@ goog.i18n.NumberFormat.formatNumberGroupingNonRepeatingDigitsParts_ =
     }
   }
   // Reverse and push onto the remaining parts
-  rightToLeftParts.reverse().forEach(function(item) {
-    parts.push(item);
-  });
+  parts.push.apply(parts, rightToLeftParts.reverse());
 
   return parts;
 };

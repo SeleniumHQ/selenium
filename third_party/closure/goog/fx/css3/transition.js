@@ -45,12 +45,16 @@ goog.require('goog.style.transition');
  * that expands on the width and then followed by the height:
  *
  * <pre>
- *   initialStyle: {width: 10px, height: 10px}
- *   finalStyle: {width: 100px, height: 100px}
- *   transitions: [
- *     {property: width, duration: 1, timing: 'ease-in', delay: 0},
- *     {property: height, duration: 1, timing: 'ease-in', delay: 1}
- *   ]
+ *   var animation = new goog.fx.css3.Transition(
+ *     element,
+ *     duration,
+ *     {width: 10px, height: 10px},
+ *     {width: 100px, height: 100px},
+ *     [
+ *       {property: width, duration: 1, timing: 'ease-in', delay: 0},
+ *       {property: height, duration: 1, timing: 'ease-in', delay: 1}
+ *     ]
+ *   );
  * </pre>
  *
  * @param {Element} element The element to be transitioned.
