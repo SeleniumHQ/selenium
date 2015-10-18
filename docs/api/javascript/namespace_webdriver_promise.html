@@ -1,7 +1,517 @@
-<!DOCTYPE html><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><meta http-equiv="Content-Language" content="en"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>webdriver.promise</title><link href="dossier.css" rel="stylesheet" type="text/css"><header><div><form><div><input type="search" placeholder="Search" tabindex="1"></div></form></div></header><main><article><div class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l52">View Source</a></div><h1>namespace webdriver.promise</h1><p>A promise implementation based on the CommonJS promise/A and
-promise/B proposals. For more information, see
-http://wiki.commonjs.org/wiki/Promises.</p>
-<h2>Functions</h2><div id="all" class="function"><div><h3><code>&lt;T&gt;</code> all(<wbr>arr)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l939">code »</a></span></h3><p>Given an array of promises, will return a promise that will be fulfilled
+<!DOCTYPE html><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><meta http-equiv="Content-Language" content="en"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>webdriver.promise</title><link href="dossier.css" rel="stylesheet" type="text/css"><header><div><form><div><input type="search" placeholder="Search" tabindex="1"></div></form></div></header><main><article><div class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l615">View Source</a></div><h1>namespace webdriver.promise</h1><p>The promise module is centered around the
+<a href="class_webdriver_promise_ControlFlow.html">ControlFlow</a>, a class that
+coordinates the execution of asynchronous tasks. The ControlFlow allows users
+to focus on the imperative commands for their script without worrying about
+chaining together every single asynchronous action, which can be tedious and
+verbose. APIs may be layered on top of the control flow to read as if they
+were synchronous. For instance, the core
+<a href="class_webdriver_WebDriver.html">WebDriver</a> API is built on top of the
+control flow, allowing users to write</p>
+<pre><code>driver.get(&#39;http://www.google.com/ncr&#39;);
+driver.findElement({name: &#39;q&#39;}).sendKeys(&#39;webdriver&#39;);
+driver.findElement({name: &#39;btnGn&#39;}).click();
+</code></pre>
+<p>instead of</p>
+<pre><code>driver.get(&#39;http://www.google.com/ncr&#39;)
+.then(function() {
+  return driver.findElement({name: &#39;q&#39;});
+})
+.then(function(q) {
+  return q.sendKeys(&#39;webdriver&#39;);
+})
+.then(function() {
+  return driver.findElement({name: &#39;btnG&#39;});
+})
+.then(function(btnG) {
+  return btnG.click();
+});
+</code></pre>
+<h2>Tasks and Task Queues</h2>
+<p>The control flow is based on the concept of tasks and task queues. Tasks are
+functions that define the basic unit of work for the control flow to execute.
+Each task is scheduled via
+<a href="class_webdriver_promise_ControlFlow.html#execute"><code>ControlFlow#execute()</code></a>, which
+will return a <a href="class_webdriver_promise_Promise.html"><code>Promise</code></a> that will be resolved
+with the task&#39;s result.</p>
+<p>A task queue contains all of the tasks scheduled within a single turn of the
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop">JavaScript event loop</a>. The control flow will create a new task queue
+the first time a task is scheduled within an event loop.</p>
+<pre><code>var flow &#61; promise.controlFlow();
+flow.execute(foo);       // Creates a new task queue and inserts foo.
+flow.execute(bar);       // Inserts bar into the same queue as foo.
+setTimeout(function() {
+  flow.execute(baz);     // Creates a new task queue and inserts baz.
+}, 0);
+</code></pre>
+<p>Whenever the control flow creates a new task queue, it will automatically
+begin executing tasks in the next available turn of the event loop. This
+execution is scheduled using a &#34;micro-task&#34; timer, such as a (native)
+<code>Promise.then()</code> callback.</p>
+<pre><code>setTimeout(() &#61;&gt; console.log(&#39;a&#39;));
+Promise.resolve().then(() &#61;&gt; console.log(&#39;b&#39;));  // A native promise.
+flow.execute(() &#61;&gt; console.log(&#39;c&#39;));
+Promise.resolve().then(() &#61;&gt; console.log(&#39;d&#39;));
+setTimeout(() &#61;&gt; console.log(&#39;fin&#39;));
+// b
+// c
+// d
+// a
+// fin
+</code></pre>
+<p>In the example above, b/c/d is logged before a/fin because native promises
+and this module use &#34;micro-task&#34; timers, which have a higher priority than
+&#34;macro-tasks&#34; like <code>setTimeout</code>.</p>
+<h2>Task Execution</h2>
+<p>Upon creating a task queue, and whenever an exisiting queue completes a task,
+the control flow will schedule a micro-task timer to process any scheduled
+tasks. This ensures no task is ever started within the same turn of the
+JavaScript event loop in which it was scheduled, nor is a task ever started
+within the same turn that another finishes.</p>
+<p>When the execution timer fires, a single task will be dequeued and executed.
+There are several important events that may occur while executing a task
+function:</p>
+<ol><li>A new task queue is created by a call to
+<a href="class_webdriver_promise_ControlFlow.html#execute"><code>ControlFlow#execute()</code></a>. Any
+tasks scheduled within this task queue are considered subtasks of the
+current task.</li><li>The task function throws an error. Any scheduled tasks are immediately
+discarded and the task&#39;s promised result (previously returned by
+<a href="class_webdriver_promise_ControlFlow.html#execute"><code>ControlFlow#execute()</code></a>) is
+immediately rejected with the thrown error.</li><li>The task function returns sucessfully.</li></ol>
+<p>If a task function created a new task queue, the control flow will wait for
+that queue to complete before processing the task result. If the queue
+completes without error, the flow will settle the task&#39;s promise with the
+value originaly returned by the task function. On the other hand, if the task
+queue termintes with an error, the task&#39;s promise will be rejected with that
+error.</p>
+<pre><code>flow.execute(function() {
+  flow.execute(() &#61;&gt; console.log(&#39;a&#39;));
+  flow.execute(() &#61;&gt; console.log(&#39;b&#39;));
+});
+flow.execute(() &#61;&gt; console.log(&#39;c&#39;));
+// a
+// b
+// c
+</code></pre>
+<h2>Promise Integration</h2>
+<p>In addition to the <a href="class_webdriver_promise_ControlFlow.html"><code>ControlFlow</code></a> class,
+the promise module also exports a <a href="https://promisesaplus.com/">Promise/A&#43;</a>
+<a href="class_webdriver_promise_Promise.html">implementation</a> that is deeply
+integrated with the ControlFlow. First and foremost, each promise
+<a href="class_webdriver_promise_Promise.html#then">callback</a> is scheduled with the
+control flow as a task. As a result, each callback is invoked in its own turn
+of the JavaScript event loop with its own task queue. If any tasks are
+scheduled within a callback, the callback&#39;s promised result will not be
+settled until the task queue has completed.</p>
+<pre><code>promise.fulfilled().then(function() {
+  flow.execute(function() {
+    console.log(&#39;b&#39;);
+  });
+}).then(() &#61;&gt; console.log(&#39;a&#39;));
+// b
+// a
+</code></pre>
+<h3>Scheduling Promise Callbacks <a id="scheduling_callbacks"></a></h3>
+<p>How callbacks are scheduled in the control flow depends on when they are
+attached to the promise. Callbacks attached to a <em>previously</em> resolved
+promise are immediately enqueued as subtasks of the currently running task.</p>
+<pre><code>var p &#61; promise.fulfilled();
+flow.execute(function() {
+  flow.execute(() &#61;&gt; console.log(&#39;A&#39;));
+  p.then(      () &#61;&gt; console.log(&#39;B&#39;));
+  flow.execute(() &#61;&gt; console.log(&#39;C&#39;));
+  p.then(      () &#61;&gt; console.log(&#39;D&#39;));
+}).then(function() {
+  console.log(&#39;fin&#39;);
+});
+// A
+// B
+// C
+// D
+// fin
+</code></pre>
+<p>When a promise is resolved while a task function is on the call stack, any
+callbacks also registered in that stack frame are scheduled as if the promise
+were already resolved:</p>
+<pre><code>var d &#61; promise.defer();
+flow.execute(function() {
+  flow.execute(  () &#61;&gt; console.log(&#39;A&#39;));
+  d.promise.then(() &#61;&gt; console.log(&#39;B&#39;));
+  flow.execute(  () &#61;&gt; console.log(&#39;C&#39;));
+  d.promise.then(() &#61;&gt; console.log(&#39;D&#39;));
+
+  d.fulfill();
+}).then(function() {
+  console.log(&#39;fin&#39;);
+});
+// A
+// B
+// C
+// D
+// fin
+</code></pre>
+<p>If a promise is resolved while a task function is on the call stack, any
+previously registered callbacks (i.e. attached while the task was <em>not</em> on
+the call stack), act as <em>interrupts</em> and are inserted at the front of the
+task queue. If multiple promises are fulfilled, their interrupts are enqueued
+in the order the promises are resolved.</p>
+<pre><code>var d1 &#61; promise.defer();
+d1.promise.then(() &#61;&gt; console.log(&#39;A&#39;));
+
+var d2 &#61; promise.defer();
+d2.promise.then(() &#61;&gt; console.log(&#39;B&#39;));
+
+flow.execute(function() {
+  flow.execute(() &#61;&gt; console.log(&#39;C&#39;));
+  flow.execute(() &#61;&gt; console.log(&#39;D&#39;));
+  d1.fulfill();
+  d2.fulfill();
+}).then(function() {
+  console.log(&#39;fin&#39;);
+});
+// A
+// B
+// C
+// D
+// fin
+</code></pre>
+<p>Within a task function (or callback), each step of a promise chain acts as
+an interrupt on the task queue:</p>
+<pre><code>var d &#61; promise.defer();
+flow.execute(function() {
+  d.promise.
+      then(() &#61;&gt; console.log(&#39;A&#39;)).
+      then(() &#61;&gt; console.log(&#39;B&#39;)).
+      then(() &#61;&gt; console.log(&#39;C&#39;)).
+      then(() &#61;&gt; console.log(&#39;D&#39;));
+
+  flow.execute(() &#61;&gt; console.log(&#39;E&#39;));
+  d.fulfill();
+}).then(function() {
+  console.log(&#39;fin&#39;);
+});
+// A
+// B
+// C
+// D
+// E
+// fin
+</code></pre>
+<p>If there are multiple promise chains derived from a single promise, they are
+processed in the order created:</p>
+<pre><code>var d &#61; promise.defer();
+flow.execute(function() {
+  var chain &#61; d.promise.then(() &#61;&gt; console.log(&#39;A&#39;));
+
+  chain.then(() &#61;&gt; console.log(&#39;B&#39;)).
+      then(() &#61;&gt; console.log(&#39;C&#39;));
+
+  chain.then(() &#61;&gt; console.log(&#39;D&#39;)).
+      then(() &#61;&gt; console.log(&#39;E&#39;));
+
+  flow.execute(() &#61;&gt; console.log(&#39;F&#39;));
+
+  d.fulfill();
+}).then(function() {
+  console.log(&#39;fin&#39;);
+});
+// A
+// B
+// C
+// D
+// E
+// F
+// fin
+</code></pre>
+<p>Even though a subtask&#39;s promised result will never resolve while the task
+function is on the stack, it will be treated as a promise resolved within the
+task. In all other scenarios, a task&#39;s promise behaves just like a normal
+promise. In the sample below, <code>C/D</code> is loggged before <code>B</code> because the
+resolution of <code>subtask1</code> interrupts the flow of the enclosing task. Within
+the final subtask, <code>E/F</code> is logged in order because <code>subtask1</code> is a resolved
+promise when that task runs.</p>
+<pre><code>flow.execute(function() {
+  var subtask1 &#61; flow.execute(() &#61;&gt; console.log(&#39;A&#39;));
+  var subtask2 &#61; flow.execute(() &#61;&gt; console.log(&#39;B&#39;));
+
+  subtask1.then(() &#61;&gt; console.log(&#39;C&#39;));
+  subtask1.then(() &#61;&gt; console.log(&#39;D&#39;));
+
+  flow.execute(function() {
+    flow.execute(() &#61;&gt; console.log(&#39;E&#39;));
+    subtask1.then(() &#61;&gt; console.log(&#39;F&#39;));
+  });
+}).then(function() {
+  console.log(&#39;fin&#39;);
+});
+// A
+// C
+// D
+// B
+// E
+// F
+// fin
+</code></pre>
+<p><strong>Note</strong>: while the ControlFlow will wait for
+<a href="class_webdriver_promise_ControlFlow.html#execute">tasks</a> and
+<a href="class_webdriver_promise_Promise.html#then">callbacks</a> to complete, it
+<em>will not</em> wait for unresolved promises created within a task:</p>
+<pre><code>flow.execute(function() {
+  var p &#61; new promise.Promise(function(fulfill) {
+    setTimeout(fulfill, 100);
+  });
+
+  p.then(() &#61;&gt; console.log(&#39;promise resolved!&#39;));
+
+}).then(function() {
+  console.log(&#39;task complete!&#39;);
+});
+// task complete!
+// promise resolved!
+</code></pre>
+<p>Finally, consider the following:</p>
+<pre><code>var d &#61; promise.defer();
+d.promise.then(() &#61;&gt; console.log(&#39;A&#39;));
+d.promise.then(() &#61;&gt; console.log(&#39;B&#39;));
+
+flow.execute(function() {
+  flow.execute(  () &#61;&gt; console.log(&#39;C&#39;));
+  d.promise.then(() &#61;&gt; console.log(&#39;D&#39;));
+
+  flow.execute(  () &#61;&gt; console.log(&#39;E&#39;));
+  d.promise.then(() &#61;&gt; console.log(&#39;F&#39;));
+
+  d.fulfill();
+
+  flow.execute(  () &#61;&gt; console.log(&#39;G&#39;));
+  d.promise.then(() &#61;&gt; console.log(&#39;H&#39;));
+}).then(function() {
+  console.log(&#39;fin&#39;);
+});
+// A
+// B
+// C
+// D
+// E
+// F
+// G
+// H
+// fin
+</code></pre>
+<p>In this example, callbacks are registered on <code>d.promise</code> both before and
+during the invocation of the task function. When <code>d.fulfill()</code> is called,
+the callbacks registered before the task (<code>A</code> &amp; <code>B</code>) are registered as
+interrupts. The remaining callbacks were all attached within the task and
+are scheduled in the flow as standard tasks.</p>
+<h2>Generator Support</h2>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*">Generators</a> may be scheduled as tasks within a control flow or attached
+as callbacks to a promise. Each time the generator yields a promise, the
+control flow will wait for that promise to settle before executing the next
+iteration of the generator. The yielded promise&#39;s fulfilled value will be
+passed back into the generator:</p>
+<pre><code>flow.execute(function* () {
+  var d &#61; promise.defer();
+
+  setTimeout(() &#61;&gt; console.log(&#39;...waiting...&#39;), 25);
+  setTimeout(() &#61;&gt; d.fulfill(123), 50);
+
+  console.log(&#39;start: &#39; &#43; Date.now());
+
+  var value &#61; yield d.promise;
+  console.log(&#39;mid: %d; value &#61; %d&#39;, Date.now(), value);
+
+  yield promise.delayed(10);
+  console.log(&#39;end: &#39; &#43; Date.now());
+}).then(function() {
+  console.log(&#39;fin&#39;);
+});
+// start: 0
+// ...waiting...
+// mid: 50; value &#61; 123
+// end: 60
+// fin
+</code></pre>
+<p>Yielding the result of a promise chain will wait for the entire chain to
+complete:</p>
+<pre><code>promise.fulfilled().then(function* () {
+  console.log(&#39;start: &#39; &#43; Date.now());
+
+  var value &#61; yield flow.
+      execute(() &#61;&gt; console.log(&#39;A&#39;)).
+      then(   () &#61;&gt; console.log(&#39;B&#39;)).
+      then(   () &#61;&gt; 123);
+
+  console.log(&#39;mid: %s; value &#61; %d&#39;, Date.now(), value);
+
+  yield flow.execute(() &#61;&gt; console.log(&#39;C&#39;));
+}).then(function() {
+  console.log(&#39;fin&#39;);
+});
+// start: 0
+// A
+// B
+// mid: 2; value &#61; 123
+// C
+// fin
+</code></pre>
+<p>Yielding a <em>rejected</em> promise will cause the rejected value to be thrown
+within the generator function:</p>
+<pre><code>flow.execute(function* () {
+  console.log(&#39;start: &#39; &#43; Date.now());
+  try {
+    yield promise.delayed(10).then(function() {
+      throw Error(&#39;boom&#39;);
+    });
+  } catch (ex) {
+    console.log(&#39;caught time: &#39; &#43; Date.now());
+    console.log(ex.message);
+  }
+});
+// start: 0
+// caught time: 10
+// boom
+</code></pre>
+<h1>Error Handling</h1>
+<p>ES6 promises do not require users to handle a promise rejections. This can
+result in subtle bugs as the rejections are silently &#34;swallowed&#34; by the
+Promise class.</p>
+<pre><code>Promise.reject(Error(&#39;boom&#39;));
+// ... *crickets* ...
+</code></pre>
+<p>Selenium&#39;s <a href="namespace_webdriver_promise.html"><code>promise</code></a> module, on the other hand,
+requires that every rejection be explicitly handled. When a
+<a href="class_webdriver_promise_Promise.html">Promise</a> is rejected and no callbacks
+are defined on that promise, it is considered an <em>unhandled rejection</em> and
+reproted to the active task queue. If the rejection remains unhandled after
+a single turn of the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop">event loop</a> (scheduled with a micro-task), it
+will propagate up the stack.</p>
+<h2>Error Propagation</h2>
+<p>If an unhandled rejection occurs within a task function, that task&#39;s promised
+result is rejected and all remaining subtasks are discarded:</p>
+<pre><code>flow.execute(function() {
+  // No callbacks registered on promise -&gt; unhandled rejection
+  promise.rejected(Error(&#39;boom&#39;));
+  flow.execute(function() { console.log(&#39;this will never run&#39;); });
+}).thenCatch(function(e) {
+  console.log(e.message);
+});
+// boom
+</code></pre>
+<p>The promised results for discarded tasks are silently rejected with a
+cancellation error and existing callback chains will never fire.</p>
+<pre><code>flow.execute(function() {
+  promise.rejected(Error(&#39;boom&#39;));
+  flow.execute(function() { console.log(&#39;a&#39;); }).
+      then(function() { console.log(&#39;b&#39;); });
+}).thenCatch(function(e) {
+  console.log(e.message);
+});
+// boom
+</code></pre>
+<p>An unhandled rejection takes precedence over a task function&#39;s returned
+result, even if that value is another promise:</p>
+<pre><code>flow.execute(function() {
+  promise.rejected(Error(&#39;boom&#39;));
+  return flow.execute(someOtherTask);
+}).thenCatch(function(e) {
+  console.log(e.message);
+});
+// boom
+</code></pre>
+<p>If there are multiple unhandled rejections within a task, they are packaged
+in a <a href="class_webdriver_promise_MultipleUnhandledRejectionError.html"><code>MultipleUnhandledRejectionError</code></a>, which has an <code>errors</code> property that is a
+<code>Set</code> of the recorded unhandled rejections:</p>
+<pre><code>flow.execute(function() {
+  promise.rejected(Error(&#39;boom1&#39;));
+  promise.rejected(Error(&#39;boom2&#39;));
+}).thenCatch(function(ex) {
+  console.log(ex instanceof promise.MultipleUnhandledRejectionError);
+  for (var e of ex.errors) {
+    console.log(e.message);
+  }
+});
+// boom1
+// boom2
+</code></pre>
+<p>When a subtask is discarded due to an unreported rejection in its parent
+frame, the existing callbacks on that task will never settle and the
+callbacks will not be invoked. If a new callback is attached ot the subtask
+<em>after</em> it has been discarded, it is handled the same as adding a callback
+to a cancelled promise: the error-callback path is invoked. This behavior is
+intended to handle cases where the user saves a reference to a task promise,
+as illustrated below.</p>
+<pre><code>var subTask;
+flow.execute(function() {
+  promise.rejected(Error(&#39;boom&#39;));
+  subTask &#61; flow.execute(function() {});
+}).thenCatch(function(e) {
+  console.log(e.message);
+}).then(function() {
+  return subTask.then(
+      () &#61;&gt; console.log(&#39;subtask success!&#39;),
+      (e) &#61;&gt; console.log(&#39;subtask failed:\n&#39; &#43; e));
+});
+// boom
+// subtask failed:
+// DiscardedTaskError: Task was discarded due to a previous failure: boom
+</code></pre>
+<p>When a subtask fails, its promised result is treated the same as any other
+promise: it must be handled within one turn of the rejection or the unhandled
+rejection is propagated to the parent task. This means users can catch errors
+from complex flows from the top level task:</p>
+<pre><code>flow.execute(function() {
+  flow.execute(function() {
+    flow.execute(function() {
+      throw Error(&#39;fail!&#39;);
+    });
+  });
+}).thenCatch(function(e) {
+  console.log(e.message);
+});
+// fail!
+</code></pre>
+<h2>Unhandled Rejection Events</h2>
+<p>When an unhandled rejection propagates to the root of the control flow, the
+flow will emit an <strong>uncaughtException</strong> event. If no listeners are registered
+on the flow, the error will be rethrown to the global error handler: an
+<strong>uncaughtException</strong> event from the
+<a href="https://nodejs.org/api/process.html"><code>process</code></a> object in node, or
+<code>window.onerror</code> when running in a browser.</p>
+<p>Bottom line: you <strong><em>must</em></strong> handle rejected promises.</p>
+<h1>Promise/A&#43; Compatibility</h1>
+<p>This <code>promise</code> module is compliant with the <a href="https://promisesaplus.com/">Promise/A&#43;</a> specification
+except for sections <code>2.2.6.1</code> and <code>2.2.6.2</code>:</p>
+<blockquote>
+<ul><li><code>then</code> may be called multiple times on the same promise.
+<ul><li>If/when <code>promise</code> is fulfilled, all respective <code>onFulfilled</code> callbacks
+must execute in the order of their originating calls to <code>then</code>.</li><li>If/when <code>promise</code> is rejected, all respective <code>onRejected</code> callbacks
+must execute in the order of their originating calls to <code>then</code>.</li></ul>
+</li></ul>
+</blockquote>
+<p>Specifically, the conformance tests contains the following scenario (for
+brevity, only the fulfillment version is shown):</p>
+<pre><code>var p1 &#61; Promise.resolve();
+p1.then(function() {
+  console.log(&#39;A&#39;);
+  p1.then(() &#61;&gt; console.log(&#39;B&#39;));
+});
+p1.then(() &#61;&gt; console.log(&#39;C&#39;));
+// A
+// C
+// B
+</code></pre>
+<p>Since the <a href="#scheduling_callbacks">ControlFlow</a> executes promise callbacks as
+tasks, with this module, the result would be</p>
+<pre><code>var p2 &#61; promise.fulfilled();
+p2.then(function() {
+  console.log(&#39;A&#39;);
+  p2.then(() &#61;&gt; console.log(&#39;B&#39;);
+});
+p2.then(() &#61;&gt; console.log(&#39;C&#39;));
+// A
+// B
+// C
+</code></pre>
+<h2>Functions</h2><div id="all" class="function"><div><h3><code>&lt;T&gt;</code> all(<wbr>arr)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l1614">code »</a></span></h3><p>Given an array of promises, will return a promise that will be fulfilled
 with the fulfillment values of the input array&#39;s values. If any of the
 input array&#39;s promises are rejected, the returned promise will be rejected
 with the same reason.</p>
@@ -11,7 +521,7 @@ promises to wait on.</p>
 fulfilled with an array containing the fulfilled values of the
 input array, or rejected with the same reason as the first
 rejected value.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="asap" class="function"><div><h3>asap(<wbr>value, callback, opt_errback)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l909">code »</a></span></h3><p>Invokes the appropriate callback function as soon as a promised
+</dl></div></div></div></div><hr class="fn-sep"><div id="asap" class="function"><div><h3>asap(<wbr>value, callback, opt_errback)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l1584">code »</a></span></h3><p>Invokes the appropriate callback function as soon as a promised
 <code>value</code> is resolved. This function is similar to
 <a href="namespace_webdriver_promise.html#when"><code>webdriver.promise.when</code></a>, except it does not return a new promise.</p>
 <div><div class="fn-details"><div><b>Parameters</b></div><dl><dt>value<code>*</code><dd><p>The value to observe.</p>
@@ -19,13 +529,13 @@ rejected value.</p>
 resolved successfully.</p>
 <dt>opt_errback<code>?Function=</code><dd><p>The function to call when the value is
 rejected.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="captureStackTrace" class="function"><div><h3>captureStackTrace(<wbr>name, msg, topFn)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l84">code »</a></span></h3><p>Generates an error to capture the current stack trace.</p>
+</dl></div></div></div></div><hr class="fn-sep"><div id="captureStackTrace" class="function"><div><h3>captureStackTrace(<wbr>name, msg, topFn)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l675">code »</a></span></h3><p>Generates an error to capture the current stack trace.</p>
 <div><div class="fn-details"><div><b>Parameters</b></div><dl><dt>name<code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code><dd><p>Error name for this stack trace.</p>
 <dt>msg<code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code><dd><p>Message to record.</p>
 <dt>topFn<code>Function</code><dd><p>The function that should appear at the top of the
 stack; only applicable in V8.</p>
 </dl></div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a></code><dd><p>The generated error.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="checkedNodeCall" class="function"><div><h3>checkedNodeCall(<wbr>fn, var_args)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l862">code »</a></span></h3><p>Wraps a function that expects a node-style callback as its final
+</dl></div></div></div></div><hr class="fn-sep"><div id="checkedNodeCall" class="function"><div><h3>checkedNodeCall(<wbr>fn, var_args)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l1537">code »</a></span></h3><p>Wraps a function that expects a node-style callback as its final
 argument. This callback expects two arguments: an error value (which will be
 null if the call succeeded), and the success value as the second argument.
 The callback will the resolve or reject the returned promise, based on its arguments.</p>
@@ -34,7 +544,7 @@ The callback will the resolve or reject the returned promise, based on its argum
 final callback.</p>
 </dl></div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise</a></code><dd><p>A promise that will be resolved with the
 result of the provided function&#39;s callback.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="consume" class="function"><div><h3>consume(<wbr>generatorFn, opt_self, var_args)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l2567">code »</a></span></h3><p>Consumes a <code>GeneratorFunction</code>. Each time the generator yields a
+</dl></div></div></div></div><hr class="fn-sep"><div id="consume" class="function"><div><h3>consume(<wbr>generatorFn, opt_self, var_args)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l3001">code »</a></span></h3><p>Consumes a <code>GeneratorFunction</code>. Each time the generator yields a
 promise, this function will wait for it to be fulfilled before feeding the
 fulfilled value back into <code>next</code>. Likewise, if a yielded promise is
 rejected, the rejection error will be passed to <code>throw</code>.</p>
@@ -67,21 +577,21 @@ initial generator.</p>
 </dl></div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise</a>&lt;?&gt;</code><dd><p>A promise that will resolve to the
 generator&#39;s final result.</p>
 </dl></div><div class="fn-details"><div><b>Throws</b></div><dl><dt><code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError">TypeError</a></code><dd><p>If the given function is not a generator.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="controlFlow" class="function"><div><h3>controlFlow()<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l2496">code »</a></span></h3><div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="class_webdriver_promise_ControlFlow.html">webdriver.promise.ControlFlow</a></code><dd><p>The currently active control flow.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="createFlow" class="function"><div><h3>createFlow(<wbr>callback)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l2511">code »</a></span></h3><p>Creates a new control flow. The provided callback will be invoked as the
+</dl></div></div></div></div><hr class="fn-sep"><div id="controlFlow" class="function"><div><h3>controlFlow()<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l2930">code »</a></span></h3><div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="class_webdriver_promise_ControlFlow.html">webdriver.promise.ControlFlow</a></code><dd><p>The currently active control flow.</p>
+</dl></div></div></div></div><hr class="fn-sep"><div id="createFlow" class="function"><div><h3>createFlow(<wbr>callback)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l2945">code »</a></span></h3><p>Creates a new control flow. The provided callback will be invoked as the
 first task within the new flow, with the flow as its sole argument. Returns
 a promise that resolves to the callback result.</p>
 <div><div class="fn-details"><div><b>Parameters</b></div><dl><dt>callback<code>function(<a href="class_webdriver_promise_ControlFlow.html">webdriver.promise.ControlFlow</a>): ?</code><dd><p>The entry point
 to the newly created flow.</p>
 </dl></div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise</a></code><dd><p>A promise that resolves to the callback
 result.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="defer" class="function"><div><h3><code>&lt;T&gt;</code> defer()<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l813">code »</a></span></h3><p>Creates a new deferred object.</p>
+</dl></div></div></div></div><hr class="fn-sep"><div id="defer" class="function"><div><h3><code>&lt;T&gt;</code> defer()<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l1488">code »</a></span></h3><p>Creates a new deferred object.</p>
 <div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="class_webdriver_promise_Deferred.html">webdriver.promise.Deferred</a>&lt;T&gt;</code><dd><p>The new deferred object.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="delayed" class="function"><div><h3>delayed(<wbr>ms)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l793">code »</a></span></h3><p>Creates a promise that will be resolved at a set time in the future.</p>
+</dl></div></div></div></div><hr class="fn-sep"><div id="delayed" class="function"><div><h3>delayed(<wbr>ms)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l1468">code »</a></span></h3><p>Creates a promise that will be resolved at a set time in the future.</p>
 <div><div class="fn-details"><div><b>Parameters</b></div><dl><dt>ms<code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code><dd><p>The amount of time, in milliseconds, to wait before
 resolving the promise.</p>
 </dl></div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise</a></code><dd><p>The promise.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="filter" class="function"><div><h3><code>&lt;TYPE, SELF&gt;</code> filter(<wbr>arr, fn, opt_self)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l1042">code »</a></span></h3><p>Calls a function for each element in an array, and if the function returns
+</dl></div></div></div></div><hr class="fn-sep"><div id="filter" class="function"><div><h3><code>&lt;TYPE, SELF&gt;</code> filter(<wbr>arr, fn, opt_self)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l1718">code »</a></span></h3><p>Calls a function for each element in an array, and if the function returns
 true adds the element to a new array.</p>
 <p>If the return value of the filter function is a promise, this function
 will wait for it to be fulfilled before determining whether to insert the
@@ -96,10 +606,10 @@ array to iterator over, or a promise that will resolve to said array.</p>
 to call for each element in the array.</p>
 <dt>opt_self<code>?SELF=</code><dd><p>The object to be used as the value of &#39;this&#39; within
 <code>fn</code>.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="fulfilled" class="function"><div><h3><code>&lt;T&gt;</code> fulfilled(<wbr>opt_value)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l824">code »</a></span></h3><p>Creates a promise that has been resolved with the given value.</p>
+</dl></div></div></div></div><hr class="fn-sep"><div id="fulfilled" class="function"><div><h3><code>&lt;T&gt;</code> fulfilled(<wbr>opt_value)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l1499">code »</a></span></h3><p>Creates a promise that has been resolved with the given value.</p>
 <div><div class="fn-details"><div><b>Parameters</b></div><dl><dt>opt_value<code>?T=</code><dd><p>The resolved value.</p>
 </dl></div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise</a>&lt;T&gt;</code><dd><p>The resolved promise.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="fullyResolved" class="function"><div><h3>fullyResolved(<wbr>value)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l1096">code »</a></span></h3><p>Returns a promise that will be resolved with the input value in a
+</dl></div></div></div></div><hr class="fn-sep"><div id="fullyResolved" class="function"><div><h3>fullyResolved(<wbr>value)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l1773">code »</a></span></h3><p>Returns a promise that will be resolved with the input value in a
 fully-resolved state. If the value is an array, each element will be fully
 resolved. Likewise, if the value is an object, all keys will be fully
 resolved. In both cases, all nested arrays and objects will also be
@@ -114,14 +624,14 @@ promise.fullyResolved(value);  // Stack overflow.
 <div><div class="fn-details"><div><b>Parameters</b></div><dl><dt>value<code>*</code><dd><p>The value to fully resolve.</p>
 </dl></div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise</a></code><dd><p>A promise for a fully resolved version
 of the input value.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="isGenerator" class="function"><div><h3>isGenerator(<wbr>fn)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l2524">code »</a></span></h3><p>Tests is a function is a generator.</p>
+</dl></div></div></div></div><hr class="fn-sep"><div id="isGenerator" class="function"><div><h3>isGenerator(<wbr>fn)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l2958">code »</a></span></h3><p>Tests is a function is a generator.</p>
 <div><div class="fn-details"><div><b>Parameters</b></div><dl><dt>fn<code>Function</code><dd><p>The function to test.</p>
 </dl></div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code><dd><p>Whether the function is a generator.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="isPromise" class="function"><div><h3>isPromise(<wbr>value)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l777">code »</a></span></h3><p>Determines whether a <code>value</code> should be treated as a promise.
+</dl></div></div></div></div><hr class="fn-sep"><div id="isPromise" class="function"><div><h3>isPromise(<wbr>value)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l1452">code »</a></span></h3><p>Determines whether a <code>value</code> should be treated as a promise.
 Any object whose &#34;then&#34; property is a function will be considered a promise.</p>
 <div><div class="fn-details"><div><b>Parameters</b></div><dl><dt>value<code>*</code><dd><p>The value to test.</p>
 </dl></div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code><dd><p>Whether the value is a promise.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="map" class="function"><div><h3><code>&lt;TYPE, SELF&gt;</code> map(<wbr>arr, fn, opt_self)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l987">code »</a></span></h3><p>Calls a function for each element in an array and inserts the result into a
+</dl></div></div></div></div><hr class="fn-sep"><div id="map" class="function"><div><h3><code>&lt;TYPE, SELF&gt;</code> map(<wbr>arr, fn, opt_self)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l1662">code »</a></span></h3><p>Calls a function for each element in an array and inserts the result into a
 new array, which is used as the fulfillment value of the promise returned
 by this function.</p>
 <p>If the return value of the mapping function is a promise, this function
@@ -137,14 +647,14 @@ function to call for each element in the array. This function should
 expect three arguments (the element, the index, and the array itself.</p>
 <dt>opt_self<code>?SELF=</code><dd><p>The object to be used as the value of &#39;this&#39; within
 <code>fn</code>.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="rejected" class="function"><div><h3><code>&lt;T&gt;</code> rejected(<wbr>opt_reason)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l841">code »</a></span></h3><p>Creates a promise that has been rejected with the given reason.</p>
+</dl></div></div></div></div><hr class="fn-sep"><div id="rejected" class="function"><div><h3><code>&lt;T&gt;</code> rejected(<wbr>opt_reason)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l1516">code »</a></span></h3><p>Creates a promise that has been rejected with the given reason.</p>
 <div><div class="fn-details"><div><b>Parameters</b></div><dl><dt>opt_reason<code>*=</code><dd><p>The rejection reason; may be any value, but is
 usually an Error or a string.</p>
 </dl></div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise</a>&lt;T&gt;</code><dd><p>The rejected promise.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="setDefaultFlow" class="function"><div><h3>setDefaultFlow(<wbr>flow)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l2485">code »</a></span></h3><p>Changes the default flow to use when no others are active.</p>
+</dl></div></div></div></div><hr class="fn-sep"><div id="setDefaultFlow" class="function"><div><h3>setDefaultFlow(<wbr>flow)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l2919">code »</a></span></h3><p>Changes the default flow to use when no others are active.</p>
 <div><div class="fn-details"><div><b>Parameters</b></div><dl><dt>flow<code><a href="class_webdriver_promise_ControlFlow.html">webdriver.promise.ControlFlow</a></code><dd><p>The new default flow.</p>
 </dl></div><div class="fn-details"><div><b>Throws</b></div><dl><dt><code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a></code><dd><p>If the default flow is not currently active.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="when" class="function"><div><h3>when(<wbr>value, opt_callback, opt_errback)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l888">code »</a></span></h3><p>Registers an observer on a promised <code>value</code>, returning a new promise
+</dl></div></div></div></div><hr class="fn-sep"><div id="when" class="function"><div><h3>when(<wbr>value, opt_callback, opt_errback)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l1563">code »</a></span></h3><p>Registers an observer on a promised <code>value</code>, returning a new promise
 that will be resolved when the value is. If <code>value</code> is not a promise,
 then the return promise will be immediately resolved.</p>
 <div><div class="fn-details"><div><b>Parameters</b></div><dl><dt>value<code>*</code><dd><p>The value to observe.</p>
@@ -153,13 +663,14 @@ resolved successfully.</p>
 <dt>opt_errback<code>?Function=</code><dd><p>The function to call when the value is
 rejected.</p>
 </dl></div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise</a></code><dd><p>A new promise.</p>
-</dl></div></div></div></div><h2>Compiler Constants</h2><div id="LONG_STACK_TRACES" class="property"><dl><dt><a href="source/lib/webdriver/promise.js.src.html#l70">LONG_STACK_TRACES</a><code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code><dd><p>Whether to append traces of <code>then</code> to rejection
+</dl></div></div></div></div><h2>Compiler Constants</h2><div id="LONG_STACK_TRACES" class="property"><dl><dt><a href="source/lib/webdriver/promise.js.src.html#l634">LONG_STACK_TRACES</a><code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code><dd><p>Whether to append traces of <code>then</code> to rejection
 errors.</p>
 </dl></div><h2>Types</h2><dl><dt><a href="class_webdriver_promise_CancellationError.html">CancellationError</a><dd><p>Error used when the computation of a promise is cancelled.</p>
 <dt><a href="class_webdriver_promise_ControlFlow.html">ControlFlow</a><dd><p>Handles the execution of scheduled tasks, each of which may be an
 asynchronous operation.</p>
 <dt><a href="class_webdriver_promise_Deferred.html">Deferred</a><dd><p>Represents a value that will be resolved at some point in the future.</p>
+<dt><a href="class_webdriver_promise_MultipleUnhandledRejectionError.html">MultipleUnhandledRejectionError</a><dd><p>Error used when there are multiple unhandled promise rejections detected
+within a task or callback.</p>
 <dt><a href="class_webdriver_promise_Promise.html">Promise</a><dd><p>Represents the eventual value of a completed operation.</p>
-<dt><a href="interface_webdriver_promise_Thenable.html">Thenable</a><dd><p>Thenable is a promise-like object with a <code>then</code> method which may be
-used to schedule callbacks on a promised value.</p>
+<dt><a href="interface_webdriver_promise_Thenable.html">Thenable</a><dd><p>No description.</p>
 </dl></article><nav><h3><a href="index.html" tabindex="2">Overview</a></h3><div><input type="checkbox" id="nav-modules" checked/><label for="nav-modules"><h3><span class="selectable" tabindex="2">Modules</span></h3></label><div id="nav-modules-view"></div></div><div><input type="checkbox" id="nav-types" checked/><label for="nav-types"><h3><span class="selectable" tabindex="2">Types</span></h3></label><div id="nav-types-view"></div></div><h3><a href="Changes.html" tabindex="2">Changes</a></h3></nav></main><footer><div><a href="https://github.com/jleyba/js-dossier">Generated by dossier</a></div></footer><script src="types.js"></script><script src="dossier.js"></script>

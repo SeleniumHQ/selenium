@@ -1,11 +1,10 @@
-<!DOCTYPE html><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><meta http-equiv="Content-Language" content="en"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Thenable</title><link href="dossier.css" rel="stylesheet" type="text/css"><header><div><form><div><input type="search" placeholder="Search" tabindex="1"></div></form></div></header><main><article><div class="parentlink"><b>Namespace:</b> <a href="namespace_webdriver_promise.html">webdriver.promise</a></div><div class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l152">View Source</a></div><h1>interface Thenable&lt;T&gt;</h1><dl><dt>All extended interfaces<dd><code>IThenable&lt;T&gt;</code></dl><p>Thenable is a promise-like object with a <code>then</code> method which may be
-used to schedule callbacks on a promised value.</p>
-<h2>Instance Methods</h2><div id="cancel" class="function"><div><h3>cancel(<wbr>opt_reason)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l162">code »</a></span></h3><p>Cancels the computation of this promise&#39;s value, rejecting the promise in the
-process. This method is a no-op if the promise has already been resolved.</p>
+<!DOCTYPE html><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><meta http-equiv="Content-Language" content="en"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Thenable</title><link href="dossier.css" rel="stylesheet" type="text/css"><header><div><form><div><input type="search" placeholder="Search" tabindex="1"></div></form></div></header><main><article><div class="parentlink"><b>Namespace:</b> <a href="namespace_webdriver_promise.html">webdriver.promise</a></div><div class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l825">View Source</a></div><h1>interface Thenable&lt;T&gt;</h1><dl><dt>All extended interfaces<dd><code>IThenable&lt;T&gt;</code></dl><h2>Instance Methods</h2><div id="cancel" class="function"><div><h3>cancel(<wbr>opt_reason)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l879">code »</a></span></h3><p>Cancels the computation of this promise&#39;s value, rejecting the promise in
+the process. This method is a no-op if the promise has already been
+resolved.</p>
 <div><div class="fn-details"><div><b>Parameters</b></div><dl><dt>opt_reason<code>?(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>|<a href="class_webdriver_promise_CancellationError.html">webdriver.promise.CancellationError</a>)=</code><dd><p>The reason this
 promise is being cancelled.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="isPending" class="function"><div><h3>isPending()<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l166">code »</a></span></h3><div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code><dd><p>Whether this promise&#39;s value is still being computed.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="then" class="function"><div><h3><code>&lt;R&gt;</code> then(<wbr>opt_callback, opt_errback)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l182">code »</a></span></h3><p>Registers listeners for when this instance is resolved.</p>
+</dl></div></div></div></div><hr class="fn-sep"><div id="isPending" class="function"><div><h3>isPending()<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l882">code »</a></span></h3><div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code><dd><p>Whether this promise&#39;s value is still being computed.</p>
+</dl></div></div></div></div><hr class="fn-sep"><div id="then" class="function"><div><h3><code>&lt;R&gt;</code> then(<wbr>opt_callback, opt_errback)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l897">code »</a></span></h3><p>Registers listeners for when this instance is resolved.</p>
 <p><b>Specified by: </b><a href="#then">IThenable</a></p><div><div class="fn-details"><div><b>Parameters</b></div><dl><dt>opt_callback<code>?function(T): (R|IThenable&lt;R&gt;)=</code><dd><p>The
 function to call if this promise is successfully resolved. The function
 should expect a single argument: the promise&#39;s resolved value.</p>
@@ -13,7 +12,7 @@ should expect a single argument: the promise&#39;s resolved value.</p>
 expect a single argument: the rejection reason.</p>
 </dl></div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise</a></code><dd><p>A new promise which will be
 resolved with the result of the invoked callback.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="thenCatch" class="function"><div><h3><code>&lt;R&gt;</code> thenCatch(<wbr>errback)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l208">code »</a></span></h3><p>Registers a listener for when this promise is rejected. This is synonymous
+</dl></div></div></div></div><hr class="fn-sep"><div id="thenCatch" class="function"><div><h3><code>&lt;R&gt;</code> thenCatch(<wbr>errback)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l922">code »</a></span></h3><p>Registers a listener for when this promise is rejected. This is synonymous
 with the <code>catch</code> clause in a synchronous API:</p>
 <pre><code>// Synchronous API:
 try {
@@ -32,7 +31,7 @@ function to call if this promise is rejected. The function should
 expect a single argument: the rejection reason.</p>
 </dl></div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise</a></code><dd><p>A new promise which will be
 resolved with the result of the invoked callback.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="thenFinally" class="function"><div><h3><code>&lt;R&gt;</code> thenFinally(<wbr>callback)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l247">code »</a></span></h3><p>Registers a listener to invoke when this promise is resolved, regardless
+</dl></div></div></div></div><hr class="fn-sep"><div id="thenFinally" class="function"><div><h3><code>&lt;R&gt;</code> thenFinally(<wbr>callback)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l960">code »</a></span></h3><p>Registers a listener to invoke when this promise is resolved, regardless
 of whether the promise&#39;s value was successfully computed. This function
 is synonymous with the <code>finally</code> clause in a synchronous API:</p>
 <pre><code>// Synchronous API:
@@ -63,14 +62,15 @@ promise.rejected(Error(&#39;one&#39;))
 to call when this promise is resolved.</p>
 </dl></div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise</a></code><dd><p>A promise that will be fulfilled
 with the callback result.</p>
-</dl></div></div></div></div><h2>Functions</h2><div id="Thenable.addImplementation" class="function"><div><h3>Thenable.addImplementation(<wbr>ctor)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l267">code »</a></span></h3><p>Adds a property to a class prototype to allow runtime checks of whether
-instances of that class implement the Thenable interface. This function will
-also ensure the prototype&#39;s <code>then</code> function is exported from compiled
-code.</p>
+</dl></div></div></div></div><h2>Functions</h2><div id="Thenable.addImplementation" class="function"><div><h3>Thenable.addImplementation(<wbr>ctor)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l835">code »</a></span></h3><p>Adds a property to a class prototype to allow runtime checks of whether
+instances of that class implement the Thenable interface. This function
+will also ensure the prototype&#39;s <code>then</code> function is exported from
+compiled code.</p>
 <div><div class="fn-details"><div><b>Parameters</b></div><dl><dt>ctor<code>function(new: <a href="interface_webdriver_promise_Thenable.html">webdriver.promise.Thenable</a>, ...?): ?</code><dd><p>The
 constructor whose prototype to modify.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="Thenable.isImplementation" class="function"><div><h3>Thenable.isImplementation(<wbr>object)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l290">code »</a></span></h3><p>Checks if an object has been tagged for implementing the Thenable interface
-as defined by <a href="interface_webdriver_promise_Thenable.html#Thenable.addImplementation"><code>webdriver.promise.Thenable.addImplementation</code></a>.</p>
+</dl></div></div></div></div><hr class="fn-sep"><div id="Thenable.isImplementation" class="function"><div><h3>Thenable.isImplementation(<wbr>object)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l858">code »</a></span></h3><p>Checks if an object has been tagged for implementing the Thenable
+interface as defined by
+<a href="interface_webdriver_promise_Thenable.html#Thenable.addImplementation"><code>webdriver.promise.Thenable.addImplementation</code></a>.</p>
 <div><div class="fn-details"><div><b>Parameters</b></div><dl><dt>object<code>*</code><dd><p>The object to test.</p>
 </dl></div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code><dd><p>Whether the object is an implementation of the Thenable
 interface.</p>

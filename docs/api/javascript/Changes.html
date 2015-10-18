@@ -1,4 +1,38 @@
-<!DOCTYPE html><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><meta http-equiv="Content-Language" content="en"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Changes</title><link href="dossier.css" rel="stylesheet" type="text/css"><header><div><form><div><input type="search" placeholder="Search" tabindex="1"></div></form></div></header><main><article class="indexfile"><h2>v2.47.0</h2>
+<!DOCTYPE html><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><meta http-equiv="Content-Language" content="en"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Changes</title><link href="dossier.css" rel="stylesheet" type="text/css"><header><div><form><div><input type="search" placeholder="Search" tabindex="1"></div></form></div></header><main><article class="indexfile"><h2>v2.48.0</h2>
+<ul><li>
+<p>Node v0.12.x users must run with --harmony. <em>This is the last release that
+will support v0.12.x</em></p>
+</li><li>
+<p>FIXED: (Promise/A&#43; compliance) When a promise is rejected with a thenable,
+the promise adopts the thenable as its rejection reason instead of waiting
+for it to settle. The previous (incorrect) behavior was hidden by bugs in
+the <code>promises-aplus-tests</code> compliance test suite that were fixed in version
+<code>2.1.1</code>.</p>
+</li><li>
+<p>FIXED: the <code>webdriver.promise.ControlFlow</code> now has a consistent execution
+order for tasks/callbacks scheduled in different turns of the JS event loop.
+Refer to the <code>webdriver.promise</code> documentation for more details.</p>
+</li><li>
+<p>FIXED: do not drop user auth from the WebDriver server URL.</p>
+</li><li>
+<p>FIXED: a single <code>firefox.Binary</code> instance may be used to configure and
+launch multiple FirefoxDriver sessions.</p>
+<pre><code>var binary &#61; new firefox.Binary();
+var options &#61; new firefox.Options().setBinary(binary);
+var builder &#61; new Builder().setFirefoxOptions(options);
+
+var driver1 &#61; builder.build();
+var driver2 &#61; builder.build();
+</code></pre>
+</li><li>
+<p>FIXED: zip files created for transfer to a remote WebDriver server are no
+longer compressed. If the zip contained a file that was already compressed,
+the server would return an &#34;invalid code lengths set&#34; error.</p>
+</li><li>
+<p>FIXED: Surfaced the <code>loopback</code> option to <code>remote/SeleniumServer</code>. When set,
+the server will be accessed using the current host&#39;s loopback address.</p>
+</li></ul>
+<h2>v2.47.0</h2>
 <h3>Notice</h3>
 <p>This is the last release for <code>selenium-webdriver</code> that will support ES5.
 Subsequent releases will depend on ES6 features that are enabled by

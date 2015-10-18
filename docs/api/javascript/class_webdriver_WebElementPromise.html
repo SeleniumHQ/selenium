@@ -14,8 +14,9 @@ driver.findElement({id: &#39;my-button&#39;}).then(function(el) {
 element.</p>
 <dt>el<code><a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise</a>&lt;<a href="class_webdriver_WebElement.html">webdriver.WebElement</a>&gt;</code><dd><p>A promise
 that will resolve to the promised element.</p>
-</dl></div></div><h2>Instance Methods</h2><div id="cancel" class="function"><div><h3>cancel(<wbr>opt_reason)<span class="codelink"><a href="source/lib/webdriver/webdriver.js.src.html#l2245">code »</a></span></h3><p>Cancels the computation of this promise&#39;s value, rejecting the promise in the
-process. This method is a no-op if the promise has already been resolved.</p>
+</dl></div></div><h2>Instance Methods</h2><div id="cancel" class="function"><div><h3>cancel(<wbr>opt_reason)<span class="codelink"><a href="source/lib/webdriver/webdriver.js.src.html#l2245">code »</a></span></h3><p>Cancels the computation of this promise&#39;s value, rejecting the promise in
+the process. This method is a no-op if the promise has already been
+resolved.</p>
 <p><b>Specified by: </b><a href="interface_webdriver_promise_Thenable.html#cancel">webdriver.promise.Thenable</a></p><div><div class="fn-details"><div><b>Parameters</b></div><dl><dt>opt_reason<code>?(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>|<a href="class_webdriver_promise_CancellationError.html">webdriver.promise.CancellationError</a>)=</code><dd><p>The reason this
 promise is being cancelled.</p>
 </dl></div></div></div></div><hr class="fn-sep"><div id="clear" class="function"><div><h3>clear()<span class="codelink"><a href="source/lib/webdriver/webdriver.js.src.html#l2171">code »</a></span></h3><p>Schedules a command to clear the <code>value</code> of this element. This command
