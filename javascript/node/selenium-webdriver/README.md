@@ -163,7 +163,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 
-[api]: http://selenium.googlecode.com/git/docs/api/javascript/index.html
+[api]: http://seleniumhq.github.io/selenium/docs/api/javascript/
 [cla]: http://goo.gl/qC50R
 [chrome]: http://chromedriver.storage.googleapis.com/index.html
 [gh]: https://github.com/SeleniumHQ/selenium/
