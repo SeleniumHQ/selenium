@@ -442,5 +442,91 @@ namespace OpenQA.Selenium.Remote
         /// Represents the TouchFlick command.
         /// </summary>
         public static readonly string TouchFlick = "touchFlick";
+
+        /// <summary>
+        /// Represents the GetLocation command.
+        /// </summary>
+        public static readonly string GetLocation = "getLocation";
+
+        /// <summary>
+        /// Represents the SetLocation command.
+        /// </summary>
+        public static readonly string SetLocation = "setLocation";
+
+        /// <summary>
+        /// Represents the GetAppCache command.
+        /// </summary>
+        public static readonly string GetAppCache = "getAppCache";
+
+        /// <summary>
+        /// Represents the application cache GetStatus command.
+        /// </summary>
+        public static readonly string GetAppCacheStatus = "getStatus";
+
+        /// <summary>
+        /// Represents the ClearAppCache command.
+        /// </summary>
+        public static readonly string ClearAppCache = "clearAppCache";
+
+        /// <summary>
+        /// Represents the GetLocalStorageItem command.
+        /// </summary>
+        public static readonly string GetLocalStorageItem = "getLocalStorageItem";
+
+        /// <summary>
+        /// Represents the GetLocalStorageKeys command.
+        /// </summary>
+        public static readonly string GetLocalStorageKeys = "getLocalStorageKeys";
+
+        /// <summary>
+        /// Represents the SetLocalStorageItem command.
+        /// </summary>
+        public static readonly string SetLocalStorageItem = "setLocalStorageItem";
+
+        /// <summary>
+        /// Represents the RemoveLocalStorageItem command.
+        /// </summary>
+        public static readonly string RemoveLocalStorageItem = "removeLocalStorageItem";
+
+        /// <summary>
+        /// Represents the ClearLocalStorage command.
+        /// </summary>
+        public static readonly string ClearLocalStorage = "clearLocalStorage";
+
+        /// <summary>
+        /// Represents the GetLocalStorageSize command.
+        /// </summary>
+        public static readonly string GetLocalStorageSize = "getLocalStorageSize";
+
+        /// <summary>
+        /// Represents the GetSessionStorageItem command.
+        /// </summary>
+        public static readonly string GetSessionStorageItem = "getSessionStorageItem";
+
+        /// <summary>
+        /// Represents the GetSessionStorageKeys command.
+        /// </summary>
+        public static readonly string GetSessionStorageKeys = "getSessionStorageKeys";
+
+        /// <summary>
+        /// Represents the SetSessionStorageItem command.
+        /// </summary>
+        public static readonly string SetSessionStorageItem = "setSessionStorageItem";
+
+        /// <summary>
+        /// Represents the RemoveSessionStorageItem command.
+        /// </summary>
+        public static readonly string RemoveSessionStorageItem = "removeSessionStorageItem";
+
+        /// <summary>
+        /// Represents the ClearSessionStorage command.
+        /// </summary>
+        public static readonly string ClearSessionStorage = "clearSessionStorage";
+
+        /// <summary>
+        /// Represents the GetSessionStorageSize command.
+        /// </summary>
+        public static readonly string GetSessionStorageSize = "getSessionStorageSize";
+
     }
 }
