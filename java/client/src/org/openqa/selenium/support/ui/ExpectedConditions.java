@@ -1473,7 +1473,7 @@ public class ExpectedConditions {
       return driver.findElements(by);
     } catch (WebDriverException e) {
       log.log(Level.WARNING,
-              String.format("WebDriverException thrown by findElement(%s)", by), e);
+                  String.format("WebDriverException thrown by findElement(%s)", by), e);
       throw e;
     }
   }
