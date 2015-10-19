@@ -29,13 +29,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -473,58 +467,6 @@ public class ExpectedConditions {
 
   /**
    * An expectation for checking whether the given frame is available to switch to. <p> If the frame
-   * is available it switches the given driver to the specified frame.
-   *
-   * @param frameLocator used to find the frame (id or name)
-   * @return WebDriver instance after frame has been switched
-   */
-  public static ExpectedCondition<WebDriver> frameToBeAvailableAndSwitchToIt(
-      final String frameLocator) {
-    return new ExpectedCondition<WebDriver>() {
-      @Override
-      public WebDriver apply(WebDriver driver) {
-        try {
-          return driver.switchTo().frame(frameLocator);
-        } catch (NoSuchFrameException e) {
-          return null;
-        }
-      }
-
-      @Override
-      public String toString() {
-        return "frame to be available: " + frameLocator;
-      }
-    };
-  }
-
-  /**
-   * An expectation for checking whether the given frame is available to switch to. <p> If the frame
-   * is available it switches the given driver to the specified frame.
-   *
-   * @param locator used to find the frame
-   * @return WebDriver instance after frame has been switched
-   */
-  public static ExpectedCondition<WebDriver> frameToBeAvailableAndSwitchToIt(
-      final By locator) {
-    return new ExpectedCondition<WebDriver>() {
-      @Override
-      public WebDriver apply(WebDriver driver) {
-        try {
-          return driver.switchTo().frame(findElement(locator, driver));
-        } catch (NoSuchFrameException e) {
-          return null;
-        }
-      }
-
-      @Override
-      public String toString() {
-        return "frame to be available: " + locator;
-      }
-    };
-  }
-
-  /**
-   * An expectation for checking whether the given frame is available to switch to. <p> If the frame
    * is available it switches the given driver to the specified frameIndex.
    *
    * @param frameLocator used to find the frame (index)
@@ -838,6 +780,33 @@ public class ExpectedConditions {
       @Override
       public String toString() {
         return "alert to be present";
+      }
+    };
+  }
+
+
+  /**
+   * @deprecated please use {@link #numberOfWindowsToBe(int)} instead
+   */
+  @Deprecated
+  public static ExpectedCondition<Boolean> numberOfwindowsToBe(final int expectedNumberOfWindows) {
+    return numberOfWindowsToBe(expectedNumberOfWindows);
+  }
+
+  public static ExpectedCondition<Boolean> numberOfWindowsToBe(final int expectedNumberOfWindows) {
+    return new ExpectedCondition<Boolean>() {
+      @Override
+      public Boolean apply(WebDriver driver) {
+        try {
+          return driver.getWindowHandles().size() == expectedNumberOfWindows;
+        } catch (WebDriverException e) {
+          return null;
+        }
+      }
+
+      @Override
+      public String toString() {
+        return "number of open windows to be " + expectedNumberOfWindows;
       }
     };
   }
@@ -1472,7 +1441,6 @@ public class ExpectedConditions {
       }
     };
   }
-
 
   /**
    * Looks up an element. Logs and re-throws WebDriverException if thrown. <p/> Method exists to
