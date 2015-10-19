@@ -6,6 +6,6 @@ java_library(name = "cli",
 
 java_library(name = "interfaces",
   srcs = [
-    "IServer.java",
+    "GridNodeServer.java",
   ])
 

@@ -19,7 +19,7 @@ package org.openqa.selenium.remote.server;
 
 import com.beust.jcommander.JCommander;
 
-import org.openqa.grid.shared.IServer;
+import org.openqa.grid.shared.GridNodeServer;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
 import org.seleniumhq.jetty9.server.Connector;
@@ -35,7 +35,7 @@ import javax.servlet.Servlet;
 /**
  * Provides a server that can launch and manage selenium sessions.
  */
-public class SeleniumServer implements IServer {
+public class SeleniumServer implements GridNodeServer {
 
   private final int port;
   private int threadCount;

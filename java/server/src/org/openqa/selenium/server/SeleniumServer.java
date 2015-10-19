@@ -44,7 +44,7 @@ import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
 import org.openqa.selenium.server.htmlrunner.SeleniumHTMLRunnerResultsHandler;
 import org.openqa.selenium.server.htmlrunner.SingleTestSuiteResourceHandler;
-import org.openqa.grid.shared.IServer;
+import org.openqa.grid.shared.GridNodeServer;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -187,7 +187,7 @@ import javax.servlet.Servlet;
  *
  * @author plightbo
  */
-public class SeleniumServer implements SslCertificateGenerator, IServer {
+public class SeleniumServer implements SslCertificateGenerator, GridNodeServer {
 
   private Log LOGGER;
 

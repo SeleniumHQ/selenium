@@ -35,7 +35,7 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 import org.openqa.selenium.remote.server.log.LoggingManager;
-import org.openqa.grid.shared.IServer;
+import org.openqa.grid.shared.GridNodeServer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -89,9 +89,9 @@ public class SelfRegisteringRemote {
     }
   }
 
-  private IServer server;
+  private GridNodeServer server;
 
-  public void setRemoteServer(IServer server) {
+  public void setRemoteServer(GridNodeServer server) {
     this.server = server;
   }
 

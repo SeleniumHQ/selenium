@@ -9,7 +9,7 @@ java_library(name = 'cli',
 )
 
 java_library(name = 'interfaces',
-  srcs = glob(['IServer.java']),
+  srcs = glob(['GridNodeServer.java']),
   visibility = [
     '//java/server/src/org/openqa/grid:grid',
     '//java/server/src/org/openqa/grid/common:common',
