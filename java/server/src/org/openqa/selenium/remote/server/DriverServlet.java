@@ -98,7 +98,7 @@ public class DriverServlet extends HttpServlet {
 
   private long getValueToUseInMs(String propertyName, long defaultValue) {
     long time = defaultValue;
-    final String property = getServletContext().getInitParameter(propertyName);
+    final String property = System.getProperty(propertyName);
     if (property != null) {
       time = Long.parseLong(property);
     }
