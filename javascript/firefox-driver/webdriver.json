@@ -67,6 +67,7 @@
     "javascript.options.showInConsole": true,
     "network.http.max-connections-per-server": 10,
     "startup.homepage_welcome_url": "about:blank",
+    "startup.homepage_welcome_url.additional": "about:blank",
     "webdriver_accept_untrusted_certs": true,
     "webdriver_assume_untrusted_issuer": true
   }
