@@ -349,7 +349,9 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     }
 
     public void submit() {
+      dispatcher.beforeClickOn(element, driver);
       element.submit();
+      dispatcher.afterClickOn(element, driver);
     }
 
     public void sendKeys(CharSequence... keysToSend) {

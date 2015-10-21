@@ -152,6 +152,40 @@ public class EventFiringWebDriverTest {
   }
 
   @Test
+  public void submitEvent() {
+    final WebDriver mockedDriver = mock(WebDriver.class);
+    final WebElement mockedElement = mock(WebElement.class);
+    final StringBuilder log = new StringBuilder();
+
+    when(mockedDriver.findElement(By.name("foo"))).thenReturn(mockedElement);
+
+    EventFiringWebDriver testedDriver =
+        new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
+          @Override
+          public void beforeClickOn(WebElement element, WebDriver driver) {
+            log.append("beforeClickOn\n");
+          }
+
+          @Override
+          public void afterClickOn(WebElement element, WebDriver driver) {
+            log.append("afterClickOn\n");
+          }
+        });
+
+    testedDriver.findElement(By.name("foo")).submit();
+
+    assertEquals(
+        "beforeClickOn\n" +
+            "afterClickOn\n",
+        log.toString());
+
+    InOrder order = Mockito.inOrder(mockedDriver, mockedElement);
+    order.verify(mockedDriver).findElement(By.name("foo"));
+    order.verify(mockedElement).submit();
+    order.verifyNoMoreInteractions();
+  }
+  
+  @Test
   public void changeValueEvent() {
     final WebDriver mockedDriver = mock(WebDriver.class);
     final WebElement mockedElement = mock(WebElement.class);
