@@ -146,6 +146,7 @@ public class ByTest {
     assertThat(new By.ByTagName("a").toString(), equalTo("By.tagName: a"));
     assertThat(new By.ByCssSelector("a").toString(), equalTo("By.cssSelector: a"));
     assertThat(new By.ByPartialLinkText("a").toString(), equalTo("By.partialLinkText: a"));
+    assertThat(new By.ByLinkTextPattern("a").toString(), equalTo("By.linkTextPattern: a"));
   }
 
   // See http://code.google.com/p/selenium/issues/detail?id=2917

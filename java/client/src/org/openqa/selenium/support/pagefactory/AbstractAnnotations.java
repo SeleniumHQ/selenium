@@ -106,6 +106,9 @@ public abstract class AbstractAnnotations {
 
       case LINK_TEXT:
         return By.linkText(using);
+        
+      case LINK_TEXT_PATTERN:
+		return By.linkTextPattern(using);        
 
       case NAME:
         return By.name(using);
@@ -139,6 +142,9 @@ public abstract class AbstractAnnotations {
     if (!"".equals(findBy.linkText()))
       return By.linkText(findBy.linkText());
 
+    if (!"".equals(findBy.linkTextPattern()))
+      return By.linkTextPattern(findBy.linkTextPattern());
+    
     if (!"".equals(findBy.name()))
       return By.name(findBy.name());
 

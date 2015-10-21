@@ -23,6 +23,7 @@ public enum How {
   ID,
   ID_OR_NAME,
   LINK_TEXT,
+  LINK_TEXT_PATTERN,
   NAME,
   PARTIAL_LINK_TEXT,
   TAG_NAME,

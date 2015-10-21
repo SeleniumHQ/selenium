@@ -70,5 +70,7 @@ public @interface FindBy {
 
   String partialLinkText() default "";
 
+  String linkTextPattern() default "";
+  
   String xpath() default "";
 }

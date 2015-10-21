@@ -26,7 +26,11 @@ import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Mechanism used to locate elements within a document. In order to create your own locating
@@ -80,6 +84,18 @@ public abstract class By {
     return new ByPartialLinkText(linkText);
   }
 
+  /**
+   * @param linkTextPattern
+   *          The text pattern to match against
+   * @return a By which locates A elements by the exact text it displays
+   */
+  public static By linkTextPattern(final String linkText) {
+	if (linkText == null)
+	  throw new IllegalArgumentException("Cannot find elements when link text is null.");
+
+	return new ByLinkTextPattern(linkText);
+  }
+  
   /**
    * @param name The value of the "name" attribute to search for
    * @return a By which locates elements by the value of the "name" attribute.
@@ -279,6 +295,59 @@ public abstract class By {
     }
   }
 
+  public static class ByLinkTextPattern extends By implements Serializable {
+
+	private static final long serialVersionUID = 1163955344140679054L;
+
+	private final Pattern linkTextPattern;
+
+	public ByLinkTextPattern(String linkTextPattern) {
+	  this.linkTextPattern = Pattern.compile(linkTextPattern, Pattern.DOTALL);
+	}
+
+	@Override
+	public List<WebElement> findElements(SearchContext context) {
+	  List<WebElement> answerList = new ArrayList<WebElement>();
+	  List<WebElement> linkList = ((FindsByTagName) context).findElementsByTagName("a");
+
+	  Iterator<WebElement> iterator = linkList.iterator();
+	  while (iterator.hasNext()) {
+		WebElement linkElement = iterator.next();
+		Matcher mat = linkTextPattern.matcher(linkElement.getText());
+		if (mat.find()) {
+		  answerList.add(linkElement);
+		}
+	  }
+
+	  return answerList;
+	}
+
+	@Override
+	public WebElement findElement(SearchContext context) {
+	  List<WebElement> linkList = ((FindsByTagName) context).findElementsByTagName("a");
+
+	  Iterator<WebElement> iterator = linkList.iterator();
+	  boolean notFound = true;
+	  WebElement linkElement = null;
+	  while (iterator.hasNext() && notFound) {
+		linkElement = iterator.next();
+		Matcher mat = linkTextPattern.matcher(linkElement.getText());
+		if (mat.find()) {
+		  notFound = false;
+		}
+	  }
+	  if (notFound){
+		throw new NoSuchElementException("Cannot locate any link element with a text that matches the regular expression: " +
+			linkTextPattern);
+	  }
+	  return linkElement;
+	}
+
+	@Override
+	public String toString() {
+	  return "By.linkTextPattern: " + linkTextPattern;
+	}
+  }
   public static class ByName extends By implements Serializable {
 
     private static final long serialVersionUID = 376317282960469555L;
