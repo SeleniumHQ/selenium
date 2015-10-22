@@ -263,7 +263,8 @@ webdriver.Capabilities.phantomjs = function() {
  */
 webdriver.Capabilities.safari = function() {
   return new webdriver.Capabilities().
-      set(webdriver.Capability.BROWSER_NAME, webdriver.Browser.SAFARI);
+      set(webdriver.Capability.BROWSER_NAME, webdriver.Browser.SAFARI).
+      set(webdriver.Capability.PLATFORM, 'MAC');
 };
 
 

@@ -146,6 +146,7 @@ module Selenium
           def safari(opts = {})
             new({
               :browser_name          => "safari",
+              :platform              => :mac,
               :javascript_enabled    => true,
               :takes_screenshot      => true,
               :css_selectors_enabled => true

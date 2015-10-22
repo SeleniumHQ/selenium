@@ -252,7 +252,7 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   public static DesiredCapabilities safari() {
-    return new DesiredCapabilities(BrowserType.SAFARI, "", Platform.ANY);
+    return new DesiredCapabilities(BrowserType.SAFARI, "", Platform.MAC);
   }
 
   public static DesiredCapabilities phantomjs() {

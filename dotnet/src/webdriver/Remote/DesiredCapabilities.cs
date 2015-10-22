@@ -280,7 +280,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>New instance of DesiredCapabilities for use with Safari</returns>
         public static DesiredCapabilities Safari()
         {
-            return new DesiredCapabilities("safari", string.Empty, new Platform(PlatformType.Any));
+            return new DesiredCapabilities("safari", string.Empty, new Platform(PlatformType.Mac));
         }
 
         /// <summary>
