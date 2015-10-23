@@ -602,7 +602,7 @@ webdriver.WebDriver.prototype.executeScript = function(script, var_args) {
  *         if (xhr.readyState == 4) {
  *           callback(xhr.responseText);
  *         }
- *       }
+ *       };
  *       xhr.send('');
  *     }).then(function(str) {
  *       console.log(JSON.parse(str)['food']);
