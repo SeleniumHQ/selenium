@@ -65,19 +65,23 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Gets a value indicating whether to ignore the absence of a status end point.
-        /// </summary>
-        protected override bool IgnoreMissingStatusEndPoint
-        {
-            get { return true; }
-        }
-
-        /// <summary>
         /// Gets a value indicating the time to wait for an initial connection before timing out.
         /// </summary>
         protected override TimeSpan InitialConnectionTimeout
         {
             get { return TimeSpan.FromSeconds(2); }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the service is responding to HTTP requests.
+        /// </summary>
+        protected override bool IsAvailable
+        {
+            get
+            {
+                System.Threading.Thread.Sleep(InitialConnectionTimeout);
+                return true;
+            }
         }
 
         /// <summary>

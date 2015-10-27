@@ -166,11 +166,35 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Gets a value indicating whether to ignore the absence of a status end point.
+        /// Gets a value indicating whether the service is responding to HTTP requests.
         /// </summary>
-        protected virtual bool IgnoreMissingStatusEndPoint
+        protected virtual bool IsAvailable
         {
-            get { return false; }
+            get
+            {
+                bool isAvailable = false;
+                try
+                {
+                    Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri(DriverCommand.Status, UriKind.Relative));
+                    HttpWebRequest request = HttpWebRequest.Create(serviceHealthUri) as HttpWebRequest;
+                    request.KeepAlive = false;
+                    request.Timeout = 5000;
+                    HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+
+                    // Checking the response from the 'status' end point. Note that we are simply checking
+                    // that the HTTP status returned is a 200 status, and that the resposne has the correct
+                    // Content-Type header. A more sophisticated check would parse the JSON response and
+                    // validate its values. At the moment we do not do this more sophisticated check.
+                    isAvailable = response.StatusCode == HttpStatusCode.OK && response.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
+                    response.Close();
+                }
+                catch (WebException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+
+                return isAvailable;
+            }
         }
 
         /// <summary>
@@ -194,38 +218,9 @@ namespace OpenQA.Selenium
             this.driverServiceProcess.StartInfo.UseShellExecute = false;
             this.driverServiceProcess.StartInfo.CreateNoWindow = this.hideCommandPromptWindow;
             this.driverServiceProcess.Start();
-            Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri(DriverCommand.Status, UriKind.Relative));
-            bool processStarted = false;
-            DateTime timeout = DateTime.Now.Add(this.InitialConnectionTimeout);
-            while (!processStarted && DateTime.Now < timeout)
-            {
-                try
-                {
-                    // If the driver service process has exited, we can exit early.
-                    if (this.driverServiceProcess.HasExited)
-                    {
-                        break;
-                    }
+            bool serviceAvailable = WaitForServiceAvailable();
 
-                    HttpWebRequest request = HttpWebRequest.Create(serviceHealthUri) as HttpWebRequest;
-                    request.KeepAlive = false;
-                    request.Timeout = 5000;
-                    HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-
-                    // Checking the response from the 'status' end point. Note that we are simply checking
-                    // that the HTTP status returned is a 200 status, and that the resposne has the correct
-                    // Content-Type header. A more sophisticated check would parse the JSON response and
-                    // validate its values. At the moment we do not do this more sophisticated check.
-                    processStarted = response.StatusCode == HttpStatusCode.OK && response.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
-                    response.Close();
-                }
-                catch (WebException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
-
-            if (!this.IgnoreMissingStatusEndPoint && !processStarted)
+            if (!serviceAvailable)
             {
                 string msg = "Cannot start the driver service on " + this.ServiceUrl;
                 throw new WebDriverException(msg);
@@ -312,6 +307,30 @@ namespace OpenQA.Selenium
                 this.driverServiceProcess.Dispose();
                 this.driverServiceProcess = null;
             }
+        }
+
+        /// <summary>
+        /// Waits until a the service is available, or the timeout set
+        /// by the <see cref="InitialConnectionTimeout"/> property is reached.
+        /// </summary>
+        /// <returns><see langword="true"/> if the service is properly started and receiving HTTP requests;
+        /// otherwise; <see langword="false"/>.</returns>
+        private bool WaitForServiceAvailable()
+        {
+            bool isAvailable = false;
+            DateTime timeout = DateTime.Now.Add(this.InitialConnectionTimeout);
+            while (!isAvailable && DateTime.Now < timeout)
+            {
+                // If the driver service process has exited, we can exit early.
+                if (!this.IsRunning)
+                {
+                    break;
+                }
+
+                isAvailable = this.IsAvailable;
+            }
+
+            return isAvailable;
         }
     }
 }
