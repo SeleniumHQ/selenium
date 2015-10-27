@@ -83,7 +83,7 @@ We do accept help in upgrading our existing dependencies or removing
 superfluous dependencies. If you need to add a new dependency it's
 often a good idea to reach out to the committers on the IRC channel or
 the mailing list to check that your approach aligns with the project's
-ideas. Nothing is more frustrating that seeing your hard work go to
+ideas. Nothing is more frustrating than seeing your hard work go to
 waste because your vision doesn't align with the project's.
 
 #### License Headers
