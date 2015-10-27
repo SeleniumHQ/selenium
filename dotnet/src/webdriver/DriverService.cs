@@ -160,19 +160,27 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets a value indicating the time to wait for an initial connection before timing out.
         /// </summary>
-        protected virtual TimeSpan InitialConnectionTimeout
+        protected virtual TimeSpan InitializationTimeout
         {
             get { return TimeSpan.FromSeconds(20); }
         }
 
         /// <summary>
+        /// Gets a value indicating the time to wait for the service to terminate before forcing it to terminate.
+        /// </summary>
+        protected virtual TimeSpan TerminationTimeout
+        {
+            get { return TimeSpan.FromSeconds(10); }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether the service is responding to HTTP requests.
         /// </summary>
-        protected virtual bool IsAvailable
+        protected virtual bool IsInitialized
         {
             get
             {
-                bool isAvailable = false;
+                bool isInitialized = false;
                 try
                 {
                     Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri(DriverCommand.Status, UriKind.Relative));
@@ -185,7 +193,7 @@ namespace OpenQA.Selenium
                     // that the HTTP status returned is a 200 status, and that the resposne has the correct
                     // Content-Type header. A more sophisticated check would parse the JSON response and
                     // validate its values. At the moment we do not do this more sophisticated check.
-                    isAvailable = response.StatusCode == HttpStatusCode.OK && response.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
+                    isInitialized = response.StatusCode == HttpStatusCode.OK && response.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
                     response.Close();
                 }
                 catch (WebException ex)
@@ -193,7 +201,7 @@ namespace OpenQA.Selenium
                     Console.WriteLine(ex.Message);
                 }
 
-                return isAvailable;
+                return isInitialized;
             }
         }
 
@@ -218,7 +226,7 @@ namespace OpenQA.Selenium
             this.driverServiceProcess.StartInfo.UseShellExecute = false;
             this.driverServiceProcess.StartInfo.CreateNoWindow = this.hideCommandPromptWindow;
             this.driverServiceProcess.Start();
-            bool serviceAvailable = WaitForServiceAvailable();
+            bool serviceAvailable = WaitForServiceInitialization();
 
             if (!serviceAvailable)
             {
@@ -265,12 +273,11 @@ namespace OpenQA.Selenium
         [SecurityPermission(SecurityAction.Demand)]
         private void Stop()
         {
-            if (this.driverServiceProcess != null && !this.driverServiceProcess.HasExited)
+            if (this.IsRunning)
             {
                 Uri shutdownUrl = new Uri(this.ServiceUrl, "/shutdown");
-                DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(10));
-                bool processStopped = false;
-                while (!processStopped && DateTime.Now < timeout)
+                DateTime timeout = DateTime.Now.Add(this.TerminationTimeout);
+                while (this.IsRunning && DateTime.Now < timeout)
                 {
                     try
                     {
@@ -284,20 +291,18 @@ namespace OpenQA.Selenium
                         HttpWebResponse response = request.GetResponse() as HttpWebResponse;
                         response.Close();
                         this.driverServiceProcess.WaitForExit(3000);
-                        processStopped = this.driverServiceProcess.HasExited;
                     }
                     catch (WebException)
                     {
-                        processStopped = true;
                     }
                 }
 
                 // If at this point, the process still hasn't exited, wait for one
                 // last-ditch time, then, if it still hasn't exited, kill it. Note
                 // that falling into this branch of code should be exceedingly rare.
-                if (!this.driverServiceProcess.HasExited)
+                if (this.IsRunning)
                 {
-                    this.driverServiceProcess.WaitForExit(5000);
+                    this.driverServiceProcess.WaitForExit(Convert.ToInt32(this.TerminationTimeout.TotalMilliseconds));
                     if (!this.driverServiceProcess.HasExited)
                     {
                         this.driverServiceProcess.Kill();
@@ -310,16 +315,16 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Waits until a the service is available, or the timeout set
-        /// by the <see cref="InitialConnectionTimeout"/> property is reached.
+        /// Waits until a the service is initialized, or the timeout set
+        /// by the <see cref="InitializationTimeout"/> property is reached.
         /// </summary>
         /// <returns><see langword="true"/> if the service is properly started and receiving HTTP requests;
         /// otherwise; <see langword="false"/>.</returns>
-        private bool WaitForServiceAvailable()
+        private bool WaitForServiceInitialization()
         {
-            bool isAvailable = false;
-            DateTime timeout = DateTime.Now.Add(this.InitialConnectionTimeout);
-            while (!isAvailable && DateTime.Now < timeout)
+            bool isInitialized = false;
+            DateTime timeout = DateTime.Now.Add(this.InitializationTimeout);
+            while (!isInitialized && DateTime.Now < timeout)
             {
                 // If the driver service process has exited, we can exit early.
                 if (!this.IsRunning)
@@ -327,10 +332,10 @@ namespace OpenQA.Selenium
                     break;
                 }
 
-                isAvailable = this.IsAvailable;
+                isInitialized = this.IsInitialized;
             }
 
-            return isAvailable;
+            return isInitialized;
         }
     }
 }

@@ -22,6 +22,8 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using OpenQA.Selenium.Internal;
+using System.Net;
+using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -67,20 +69,76 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Gets a value indicating the time to wait for an initial connection before timing out.
         /// </summary>
-        protected override TimeSpan InitialConnectionTimeout
+        protected override TimeSpan InitializationTimeout
         {
             get { return TimeSpan.FromSeconds(2); }
         }
 
         /// <summary>
+        /// Gets a value indicating the time to wait for the service to terminate before forcing it to terminate.
+        /// </summary>
+        protected override TimeSpan TerminationTimeout
+        {
+            // Use a very small timeout for terminating the Firefox driver,
+            // because the executable does not have a clean shutdown command,
+            // which means we have to kill the process. Using a short timeout
+            // gets us to the termination point much faster.
+            get { return TimeSpan.FromMilliseconds(100); }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether the service is responding to HTTP requests.
         /// </summary>
-        protected override bool IsAvailable
+        protected override bool IsInitialized
         {
             get
             {
-                System.Threading.Thread.Sleep(InitialConnectionTimeout);
-                return true;
+                bool isInitialized = false;
+                try
+                {
+                    // Since Firefox driver won't implement the /session end point (because
+                    // the W3C spec working group stupidly decided that it isn't necessary),
+                    // we'll attempt to poll for a different URL which has no side effects.
+                    // We've chosen to poll on the "quit" URL, passing in a nonexistent
+                    // session id.
+                    Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri("/session/FakeSessionIdForPollingPurposes", UriKind.Relative));
+                    HttpWebRequest request = HttpWebRequest.Create(serviceHealthUri) as HttpWebRequest;
+                    request.KeepAlive = false;
+                    request.Timeout = 5000;
+                    request.Method = "DELETE";
+                    HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+
+                    // Checking the response from deleting a nonexistent session. Note that we are simply
+                    // checking that the HTTP status returned is a 200 status, and that the resposne has
+                    // the correct Content-Type header. A more sophisticated check would parse the JSON
+                    // response and validate its values. At the moment we do not do this more sophisticated
+                    // check.
+                    isInitialized = response.StatusCode == HttpStatusCode.OK && response.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
+                    response.Close();
+                }
+                catch (WebException ex)
+                {
+                    // Because the Firefox driver (incorrectly) does not allow quit on a
+                    // nonexistent session to succeed, this will throw a WebException,
+                    // which means we're reduced to using exception handling for flow control.
+                    // This situation is highly undesirable, and in fact is a horrible code
+                    // smell, but the implementation leaves us no choice. So we will check for
+                    // the known response code and content type header, just like we would for
+                    // the success case. Either way, a valid HTTP response instead of a socket
+                    // error would tell us that the HTTP server is responding to requests, which
+                    // is really what we want anyway.
+                    HttpWebResponse errorResponse = ex.Response as HttpWebResponse;
+                    if (errorResponse != null)
+                    {
+                        isInitialized = errorResponse.StatusCode == HttpStatusCode.InternalServerError && errorResponse.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
+                    }
+                    else
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                }
+
+                return isInitialized;
             }
         }
 
