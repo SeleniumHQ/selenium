@@ -31,6 +31,7 @@ namespace OpenQA.Selenium.Remote
         private object responseValue;
         private string responseSessionId;
         private WebDriverResult responseStatus;
+        private bool isSpecificationCompliant;
 
         /// <summary>
         /// Initializes a new instance of the Response class
@@ -51,7 +52,7 @@ namespace OpenQA.Selenium.Remote
             }
         }
 
-        private Response(Dictionary<string, object> rawResponse, int protocolSpecLevel)
+        private Response(Dictionary<string, object> rawResponse)
         {
             if (rawResponse.ContainsKey("sessionId"))
             {
@@ -66,13 +67,31 @@ namespace OpenQA.Selenium.Remote
                 this.responseValue = rawResponse["value"];
             }
 
-            if (protocolSpecLevel > 0)
+            if (rawResponse.ContainsKey("status"))
             {
+                this.responseStatus = (WebDriverResult)Convert.ToInt32(rawResponse["status"], CultureInfo.InvariantCulture);
+            }
+            else
+            {
+                // If the response does *not* have a "status" property, it
+                // is compliant with the specification, which does not put
+                // status in its responses.
+                this.isSpecificationCompliant = true;
+
                 // If the returned object does *not* have a "value" property
                 // the response value should be the entirety of the response.
                 if (!rawResponse.ContainsKey("value") && this.responseValue == null)
                 {
-                    this.responseValue = rawResponse;
+                    // Special-case for the new session command, where the "capabilities"
+                    // property of the response is the actual value we're interested in.
+                    if (rawResponse.ContainsKey("capabilities"))
+                    {
+                        this.responseValue = rawResponse["capabilities"];
+                    }
+                    else
+                    {
+                        this.responseValue = rawResponse;
+                    }
                 }
 
                 // Check for an error response by looking for an "error" property,
@@ -80,20 +99,6 @@ namespace OpenQA.Selenium.Remote
                 if (rawResponse.ContainsKey("error"))
                 {
                     this.responseStatus = WebDriverError.ResultFromError(rawResponse["error"].ToString());
-                }
-            }
-            else
-            {
-                if (rawResponse.ContainsKey("status"))
-                {
-                    this.responseStatus = (WebDriverResult)Convert.ToInt32(rawResponse["status"], CultureInfo.InvariantCulture);
-                }
-
-                // Special-case for the new session command, in the case where
-                // the remote end is using the W3C dialect of the protocol.
-                if (rawResponse.ContainsKey("capabilities"))
-                {
-                    this.responseValue = rawResponse["capabilities"];
                 }
             }
         }
@@ -126,26 +131,22 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Returns a new <see cref="Response"/> from a JSON-encoded string.
+        /// Gets a value indicating whether this response is compliant with the WebDriver specification.
         /// </summary>
-        /// <param name="value">The JSON string to deserialize into a <see cref="Response"/>.</param>
-        /// <returns>A <see cref="Response"/> object described by the JSON string.</returns>
-        public static Response FromJson(string value)
+        public bool IsSpecificationCompliant
         {
-            return Response.FromJson(value, 0);
+            get { return this.isSpecificationCompliant; }
         }
 
         /// <summary>
         /// Returns a new <see cref="Response"/> from a JSON-encoded string.
         /// </summary>
         /// <param name="value">The JSON string to deserialize into a <see cref="Response"/>.</param>
-        /// <param name="protocolSpecLevel">The specification level of the protocol from which to
-        /// create the response.</param>
         /// <returns>A <see cref="Response"/> object described by the JSON string.</returns>
-        public static Response FromJson(string value, int protocolSpecLevel)
+        public static Response FromJson(string value)
         {
             Dictionary<string, object> deserializedResponse = JsonConvert.DeserializeObject<Dictionary<string, object>>(value, new ResponseValueJsonConverter());
-            Response response = new Response(deserializedResponse, protocolSpecLevel);
+            Response response = new Response(deserializedResponse);
             return response;
         }
 

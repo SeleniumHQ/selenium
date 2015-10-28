@@ -121,28 +121,17 @@ namespace OpenQA.Selenium.Remote
             }
 
             Response toReturn = this.CreateResponse(request);
-            if (commandToExecute.Name == DriverCommand.NewSession)
+            if (commandToExecute.Name == DriverCommand.NewSession && toReturn.IsSpecificationCompliant)
             {
                 // If we are creating a new session, sniff the response to determine
                 // what protocol level we are using. If the response contains a
-                // capability called "specificationLevel" that's an integer value
-                // and that's greater than 0, that means we're using the W3C protocol
-                // dialect.
+                // field called "status", it's not a spec-compliant response.
+                // Each response is polled for this, and sets a property describing
+                // whether it's using the W3C protocol dialect.
                 // TODO(jimevans): Reverse this test to make it the default path when
                 // most remote ends speak W3C, then remove it entirely when legacy
                 // protocol is phased out.
-                Dictionary<string, object> capabilities = toReturn.Value as Dictionary<string, object>;
-                if (capabilities != null)
-                {
-                    if (capabilities.ContainsKey("specificationLevel"))
-                    {
-                        int returnedSpecLevel = Convert.ToInt32(capabilities["specificationLevel"]);
-                        if (returnedSpecLevel > 0)
-                        {
-                            this.commandInfoRepository = new W3CWireProtocolCommandInfoRepository();
-                        }
-                    }
-                }
+                this.commandInfoRepository = new W3CWireProtocolCommandInfoRepository();
             }
 
             return toReturn;
@@ -198,7 +187,7 @@ namespace OpenQA.Selenium.Remote
                 string responseString = GetTextOfWebResponse(webResponse);
                 if (webResponse.ContentType != null && webResponse.ContentType.StartsWith(JsonMimeType, StringComparison.OrdinalIgnoreCase))
                 {
-                    commandResponse = Response.FromJson(responseString, this.commandInfoRepository.SpecificationLevel);
+                    commandResponse = Response.FromJson(responseString);
                 }
                 else
                 {
