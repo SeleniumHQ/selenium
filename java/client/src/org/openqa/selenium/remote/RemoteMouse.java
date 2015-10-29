@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * Executes wire commands for mouse interaction.
  */
-class RemoteMouse implements Mouse {
+public class RemoteMouse implements Mouse {
   protected final ExecuteMethod executor;
 
   public RemoteMouse(ExecuteMethod executor) {
