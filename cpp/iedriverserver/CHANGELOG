@@ -9,6 +9,14 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.48.0.4
+=========
+ * Added ability to set whitelisted IP addresses to access IE driver server.
+   The list of IP addresses is a comma-delimited list passed to the
+   /whitelisted-ips command-line argument. Defaults to local loopback address
+   only. Also improved logging to show executable version and architecture in
+   driver log. Patch provided by lsowen.
+
 v2.48.0.3
 =========
  * Updates to JavaScript automation atoms.

@@ -44,6 +44,7 @@ class Server {
   explicit Server(const int port);
   Server(const int port, const std::string& host);
   Server(const int port, const std::string& host, const std::string& log_level, const std::string& log_file);
+  Server(const int port, const std::string& host, const std::string& log_level, const std::string& log_file, const std::string& acl);
   virtual ~Server(void);
 
   static int OnNewHttpRequest(struct mg_connection* conn);
@@ -74,7 +75,10 @@ class Server {
   void Initialize(const int port,
                   const std::string& host,
                   const std::string& log_level,
-                  const std::string& log_file);
+                  const std::string& log_file,
+                  const std::string& acl);
+
+  void ProcessWhitelist(const std::string& whitelist);
 
   std::string ListSessions(void);
   std::string LookupCommand(const std::string& uri,
@@ -123,6 +127,9 @@ class Server {
   int port_;
   // The host IP address to which the server should bind.
   std::string host_;
+  // List of whitelisted IPv4 addresses allowed to connect
+  // to this server.
+  std::vector<std::string> whitelist_;
   // The map of all command URIs (URL and HTTP verb), and 
   // the corresponding numerical value of the command.
   UrlMap commands_;

@@ -23,6 +23,8 @@
 #include "logging.h"
 
 #define SERVER_DEFAULT_PAGE "<html><head><title>WebDriver</title></head><body><p id='main'>This is the initial start page for the WebDriver server.</p></body></html>"
+#define SERVER_DEFAULT_WHITELIST "127.0.0.1"
+#define SERVER_DEFAULT_BLACKLIST "-0.0.0.0/0"
 #define HTML_CONTENT_TYPE "text/html"
 #define JSON_CONTENT_TYPE "application/json"
 
@@ -44,18 +46,26 @@ inline int wd_snprintf(char* str, size_t size, const char* format, ...) {
 namespace webdriver {
 
 Server::Server(const int port) {
-  this->Initialize(port, "", "", "");
+  this->Initialize(port, "", "", "", SERVER_DEFAULT_WHITELIST);
 }
 
 Server::Server(const int port, const std::string& host) {
-  this->Initialize(port, host, "", "");
+  this->Initialize(port, host, "", "", SERVER_DEFAULT_WHITELIST);
 }
 
 Server::Server(const int port,
                const std::string& host,
                const std::string& log_level,
                const std::string& log_file) {
-  this->Initialize(port, host, log_level, log_file);
+  this->Initialize(port, host, log_level, log_file, SERVER_DEFAULT_WHITELIST);
+}
+
+Server::Server(const int port,
+               const std::string& host,
+               const std::string& log_level,
+               const std::string& log_file,
+               const std::string& acl) {
+    this->Initialize(port, host, log_level, log_file, acl);
 }
 
 Server::~Server(void) {
@@ -69,14 +79,34 @@ Server::~Server(void) {
 void Server::Initialize(const int port,
                         const std::string& host,
                         const std::string& log_level,
-                        const std::string& log_file) {
+                        const std::string& log_file,
+                        const std::string& acl) {
   LOG::Level(log_level);
   LOG::File(log_file);
   LOG(INFO) << "Starting WebDriver server on port: '"
             << port << "' on host: '" << host << "'";
   this->port_ = port;
   this->host_ = host;
+  if (acl.size() > 0) {
+    this->ProcessWhitelist(acl);
+  } else {
+    this->whitelist_.push_back(SERVER_DEFAULT_WHITELIST);
+  }
   this->PopulateCommandRepository();
+}
+
+void Server::ProcessWhitelist(const std::string& whitelist) {
+  std::string input_copy = whitelist;
+  while (input_copy.size() > 0) {
+    size_t delimiter_pos = input_copy.find(",");
+    std::string token = input_copy.substr(0, delimiter_pos);
+    if (delimiter_pos == std::string::npos) {
+      input_copy = "";
+    } else {
+      input_copy = input_copy.substr(delimiter_pos + 1);
+    }
+    this->whitelist_.push_back(token);
+  }
 }
 
 int Server::OnNewHttpRequest(struct mg_connection* conn) {
@@ -109,7 +139,12 @@ bool Server::Start() {
            this->host_.c_str(),
            this->port_);
 
-  std::string acl = "-0.0.0.0/0,+127.0.0.1";
+  std::string acl = SERVER_DEFAULT_BLACKLIST;
+  for (std::vector<std::string>::const_iterator it = this->whitelist_.begin();
+       it < this->whitelist_.end();
+       ++it) {
+    acl.append(",+").append(*it);
+  }
   LOG(DEBUG) << "Civetweb ACL is " << acl;
 
   const char* options[] = { "listening_ports", listening_ports_buffer,
