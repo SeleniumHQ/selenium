@@ -23,6 +23,7 @@
 #include "logging.h"
 
 #define SERVER_DEFAULT_PAGE "<html><head><title>WebDriver</title></head><body><p id='main'>This is the initial start page for the WebDriver server.</p></body></html>"
+#define SERVER_DEFAULT_ACL "-0.0.0.0/0,+127.0.0.1"
 #define HTML_CONTENT_TYPE "text/html"
 #define JSON_CONTENT_TYPE "application/json"
 
@@ -44,18 +45,26 @@ inline int wd_snprintf(char* str, size_t size, const char* format, ...) {
 namespace webdriver {
 
 Server::Server(const int port) {
-  this->Initialize(port, "", "", "");
+  this->Initialize(port, "", "", "", SERVER_DEFAULT_ACL);
 }
 
 Server::Server(const int port, const std::string& host) {
-  this->Initialize(port, host, "", "");
+  this->Initialize(port, host, "", "", SERVER_DEFAULT_ACL);
 }
 
 Server::Server(const int port,
                const std::string& host,
                const std::string& log_level,
                const std::string& log_file) {
-  this->Initialize(port, host, log_level, log_file);
+  this->Initialize(port, host, log_level, log_file, SERVER_DEFAULT_ACL);
+}
+
+Server::Server(const int port,
+    const std::string& host,
+    const std::string& log_level,
+    const std::string& log_file,
+    const std::string& acl) {
+    this->Initialize(port, host, log_level, log_file, acl);
 }
 
 Server::~Server(void) {
@@ -69,13 +78,15 @@ Server::~Server(void) {
 void Server::Initialize(const int port,
                         const std::string& host,
                         const std::string& log_level,
-                        const std::string& log_file) {
+                        const std::string& log_file,
+                        const std::string& acl) {
   LOG::Level(log_level);
   LOG::File(log_file);
   LOG(INFO) << "Starting WebDriver server on port: '"
             << port << "' on host: '" << host << "'";
   this->port_ = port;
   this->host_ = host;
+  this->acl_ = acl;
   this->PopulateCommandRepository();
 }
 
@@ -109,11 +120,10 @@ bool Server::Start() {
            this->host_.c_str(),
            this->port_);
 
-  std::string acl = "-0.0.0.0/0,+127.0.0.1";
-  LOG(DEBUG) << "Civetweb ACL is " << acl;
+  LOG(DEBUG) << "Civetweb ACL is " << this->acl_;
 
   const char* options[] = { "listening_ports", listening_ports_buffer,
-                            "access_control_list", acl.c_str(),
+                            "access_control_list", this->acl_.c_str(),
                             // "enable_keep_alive", "yes",
                             NULL };
   mg_callbacks callbacks = {};

@@ -29,7 +29,7 @@
 // by the .dll produced by the IEDriver project in this solution.
 // The definitions of these functions can be found in WebDriver.h
 // in that project.
-typedef void* (__cdecl *STARTSERVERPROC)(int, const std::wstring&, const std::wstring&, const std::wstring&, const std::wstring&, const std::wstring&);
+typedef void* (__cdecl *STARTSERVERPROC)(int, const std::wstring&, const std::wstring&, const std::wstring&, const std::wstring&, const std::wstring&, const std::wstring&);
 typedef void (__cdecl *STOPSERVERPROC)(void);
 
 #define ERR_DLL_EXTRACT_FAIL 1
@@ -49,6 +49,7 @@ typedef void (__cdecl *STOPSERVERPROC)(void);
 #define SILENT_COMMAND_LINE_ARG L"silent"
 #define EXTRACTPATH_COMMAND_LINE_ARG L"extract-path"
 #define IMPLEMENTATION_COMMAND_LINE_ARG L"implementation"
+#define ACL_COMMAND_LINE_ARG L"whitelisted-ips"
 #define BOOLEAN_COMMAND_LINE_ARG_MISSING_VALUE L"value-not-specified"
 
 bool ExtractResource(unsigned short resource_id,
@@ -157,11 +158,13 @@ std::wstring GetExecutableVersion() {
   return static_cast<wchar_t*>(value);
 }
 
+
 void ShowUsage(void) {
   std::wcout << L"Launches the WebDriver server for the Internet Explorer driver" << std::endl
              << std::endl
              << L"IEDriverServer [/port=<port>] [/host=<host>] [/log-level=<level>]" << std::endl
              << L"               [/log-file=<file>] [/extract-path=<path>] [/silent]" << std::endl
+             << L"               [/whitelisted-ips=<whitelisted-ips>]" << std::endl
              << std::endl
              << L"  /port=<port>  Specifies the port on which the server will listen for" << std::endl
              << L"                commands. Defaults to 5555 if not specified." << std::endl
@@ -182,7 +185,10 @@ void ShowUsage(void) {
              << L"                Specifies the full path to the directory used to extract" << std::endl
              << L"                supporting files used by the server. Defaults to the TEMP" << std::endl
              << L"                directory if not specified." << std::endl
-             << L"  /silent       Suppresses diagnostic output when the server is started." << std::endl;
+             << L"  /silent       Suppresses diagnostic output when the server is started." << std::endl
+             << L"  /whitelisted-ips=<whitelisted-ips>" << std::endl
+             << L"                Comma-separated whitelist of remote IPv4 addresses which" << std::endl
+             << L"                are allowed to connect to the WebDriver server." << std::endl;
 }
 
 int _tmain(int argc, _TCHAR* argv[]) {
@@ -243,6 +249,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
   std::wstring executable_version = GetExecutableVersion();
   std::wstring implementation = args.GetValue(IMPLEMENTATION_COMMAND_LINE_ARG,
                                               L"");
+  std::wstring whitelist = args.GetValue(ACL_COMMAND_LINE_ARG, L"");
 
   // coerce log level and implementation to uppercase, making the values
   // case-insensitive, to match expected values.
@@ -255,18 +262,21 @@ int _tmain(int argc, _TCHAR* argv[]) {
                  implementation.begin(),
                  toupper);
 
+
   void* server_value = start_server_ex_proc(port,
                                             host_address,
                                             log_level,
                                             log_file,
                                             executable_version,
-                                            implementation);
+                                            implementation,
+                                            whitelist);
   if (server_value == NULL) {
     std::wcout << L"Failed to start the server with: "
                << L"port = '" << port << L"', "
                << L"host = '" << host_address << L"', "
                << L"log level = '" << log_level << L"', "
-               << L"log file = '" << log_file << L"'.";
+               << L"log file = '" << log_file << L"', "
+               << L"whitelisted ips = '" << whitelist << L"'.";
     return ERR_SERVER_START;
   }
   if (!silent) {
