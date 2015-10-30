@@ -26,6 +26,7 @@ import org.openqa.selenium.testing.TestUtilities;
 import java.util.List;
 
 import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
@@ -224,6 +225,14 @@ public class ElementAttributeTest extends JUnit4TestBase {
     String value = driver.findElement(By.id("withText")).getAttribute("value");
 
     assertThat(value, equalTo("Example text"));
+  }
+
+  @Test
+  public void testShouldReturnInnerHtml() {
+    driver.get(pages.simpleTestPage);
+
+    String html = driver.findElement(By.id("wrappingtext")).getAttribute("innerHTML");
+    assertThat(html, containsString("<tbody>"));
   }
 
   @Test
