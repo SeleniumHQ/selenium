@@ -414,6 +414,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
       return null;
     }
 
+
     if ("textContent".equalsIgnoreCase(lowerName)) {
       return element.getTextContent();
     }
