@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.TestUtilities;
 
 import java.util.List;
 
@@ -35,6 +36,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 
@@ -237,6 +239,18 @@ public class ElementAttributeTest extends JUnit4TestBase {
     String notReadonly = textInput.getAttribute("readonly");
 
     assertFalse(readonly.equals(notReadonly));
+  }
+
+  @Test
+  public void testShouldReturnHiddenTextForTextContentAttribute() {
+    assumeFalse("IE before 9 doesn't handle textContent attribute", TestUtilities.isOldIe(driver));
+
+    driver.get(pages.simpleTestPage);
+
+    WebElement element = driver.findElement(By.id("hiddenline"));
+    String textContent = element.getAttribute("textContent");
+
+    assertEquals(textContent, "A hidden line of text");
   }
 
   @Test
