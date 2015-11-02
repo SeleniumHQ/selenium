@@ -283,6 +283,8 @@ webdriver.http.Executor.COMMAND_MAP_ = (function() {
           get('/session/:sessionId/element/:id/css/:propertyName')).
       put(webdriver.CommandName.ELEMENT_EQUALS,
           get('/session/:sessionId/element/:id/equals/:other')).
+      put(webdriver.CommandName.TAKE_ELEMENT_SCREENSHOT,
+          get('/session/:sessionId/element/:id/screenshot')).
       put(webdriver.CommandName.SWITCH_TO_WINDOW,
           post('/session/:sessionId/window')).
       put(webdriver.CommandName.MAXIMIZE_WINDOW,

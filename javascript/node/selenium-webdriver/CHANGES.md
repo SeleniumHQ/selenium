@@ -1,3 +1,7 @@
+## v2.49.0-dev
+
+* Added `WebElement#takeScreenshot()`.
+
 ## v2.48.1
 
 * FIXED: Adjusted how the control flow tracks promise callbacks to avoid a

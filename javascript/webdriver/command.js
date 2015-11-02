@@ -163,6 +163,7 @@ webdriver.CommandName = {
   ELEMENT_EQUALS: 'elementEquals',
 
   SCREENSHOT: 'screenshot',
+  TAKE_ELEMENT_SCREENSHOT: 'takeElementScreenshot',
   IMPLICITLY_WAIT: 'implicitlyWait',
   SET_SCRIPT_TIMEOUT: 'setScriptTimeout',
   SET_TIMEOUT: 'setTimeout',
