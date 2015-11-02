@@ -6,7 +6,8 @@ interaction with the browser.
 
 ## Installation
 
-Install via npm with
+Selenium supports Node `0.12.x` and `4.x`. Users on Node `0.12.x` must run with
+the --harmony flag. Selenium may be installed via npm with
 
     npm install selenium-webdriver
 
