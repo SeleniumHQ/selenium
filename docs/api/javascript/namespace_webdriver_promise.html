@@ -259,12 +259,12 @@ promise when that task runs.</p>
   var p &#61; new promise.Promise(function(fulfill) {
     setTimeout(fulfill, 100);
   });
-
   p.then(() &#61;&gt; console.log(&#39;promise resolved!&#39;));
-
+  flow.execute(() &#61;&gt; console.log(&#39;sub-task!&#39;));
 }).then(function() {
   console.log(&#39;task complete!&#39;);
 });
+// sub-task!
 // task complete!
 // promise resolved!
 </code></pre>
@@ -544,7 +544,7 @@ The callback will the resolve or reject the returned promise, based on its argum
 final callback.</p>
 </dl></div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise</a></code><dd><p>A promise that will be resolved with the
 result of the provided function&#39;s callback.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="consume" class="function"><div><h3>consume(<wbr>generatorFn, opt_self, var_args)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l3001">code »</a></span></h3><p>Consumes a <code>GeneratorFunction</code>. Each time the generator yields a
+</dl></div></div></div></div><hr class="fn-sep"><div id="consume" class="function"><div><h3>consume(<wbr>generatorFn, opt_self, var_args)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l2989">code »</a></span></h3><p>Consumes a <code>GeneratorFunction</code>. Each time the generator yields a
 promise, this function will wait for it to be fulfilled before feeding the
 fulfilled value back into <code>next</code>. Likewise, if a yielded promise is
 rejected, the rejection error will be passed to <code>throw</code>.</p>
@@ -577,8 +577,8 @@ initial generator.</p>
 </dl></div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise</a>&lt;?&gt;</code><dd><p>A promise that will resolve to the
 generator&#39;s final result.</p>
 </dl></div><div class="fn-details"><div><b>Throws</b></div><dl><dt><code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError">TypeError</a></code><dd><p>If the given function is not a generator.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="controlFlow" class="function"><div><h3>controlFlow()<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l2930">code »</a></span></h3><div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="class_webdriver_promise_ControlFlow.html">webdriver.promise.ControlFlow</a></code><dd><p>The currently active control flow.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="createFlow" class="function"><div><h3>createFlow(<wbr>callback)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l2945">code »</a></span></h3><p>Creates a new control flow. The provided callback will be invoked as the
+</dl></div></div></div></div><hr class="fn-sep"><div id="controlFlow" class="function"><div><h3>controlFlow()<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l2918">code »</a></span></h3><div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="class_webdriver_promise_ControlFlow.html">webdriver.promise.ControlFlow</a></code><dd><p>The currently active control flow.</p>
+</dl></div></div></div></div><hr class="fn-sep"><div id="createFlow" class="function"><div><h3>createFlow(<wbr>callback)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l2933">code »</a></span></h3><p>Creates a new control flow. The provided callback will be invoked as the
 first task within the new flow, with the flow as its sole argument. Returns
 a promise that resolves to the callback result.</p>
 <div><div class="fn-details"><div><b>Parameters</b></div><dl><dt>callback<code>function(<a href="class_webdriver_promise_ControlFlow.html">webdriver.promise.ControlFlow</a>): ?</code><dd><p>The entry point
@@ -624,7 +624,7 @@ promise.fullyResolved(value);  // Stack overflow.
 <div><div class="fn-details"><div><b>Parameters</b></div><dl><dt>value<code>*</code><dd><p>The value to fully resolve.</p>
 </dl></div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise</a></code><dd><p>A promise for a fully resolved version
 of the input value.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="isGenerator" class="function"><div><h3>isGenerator(<wbr>fn)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l2958">code »</a></span></h3><p>Tests is a function is a generator.</p>
+</dl></div></div></div></div><hr class="fn-sep"><div id="isGenerator" class="function"><div><h3>isGenerator(<wbr>fn)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l2946">code »</a></span></h3><p>Tests is a function is a generator.</p>
 <div><div class="fn-details"><div><b>Parameters</b></div><dl><dt>fn<code>Function</code><dd><p>The function to test.</p>
 </dl></div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code><dd><p>Whether the function is a generator.</p>
 </dl></div></div></div></div><hr class="fn-sep"><div id="isPromise" class="function"><div><h3>isPromise(<wbr>value)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l1452">code »</a></span></h3><p>Determines whether a <code>value</code> should be treated as a promise.
@@ -651,7 +651,7 @@ expect three arguments (the element, the index, and the array itself.</p>
 <div><div class="fn-details"><div><b>Parameters</b></div><dl><dt>opt_reason<code>*=</code><dd><p>The rejection reason; may be any value, but is
 usually an Error or a string.</p>
 </dl></div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise</a>&lt;T&gt;</code><dd><p>The rejected promise.</p>
-</dl></div></div></div></div><hr class="fn-sep"><div id="setDefaultFlow" class="function"><div><h3>setDefaultFlow(<wbr>flow)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l2919">code »</a></span></h3><p>Changes the default flow to use when no others are active.</p>
+</dl></div></div></div></div><hr class="fn-sep"><div id="setDefaultFlow" class="function"><div><h3>setDefaultFlow(<wbr>flow)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l2907">code »</a></span></h3><p>Changes the default flow to use when no others are active.</p>
 <div><div class="fn-details"><div><b>Parameters</b></div><dl><dt>flow<code><a href="class_webdriver_promise_ControlFlow.html">webdriver.promise.ControlFlow</a></code><dd><p>The new default flow.</p>
 </dl></div><div class="fn-details"><div><b>Throws</b></div><dl><dt><code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a></code><dd><p>If the default flow is not currently active.</p>
 </dl></div></div></div></div><hr class="fn-sep"><div id="when" class="function"><div><h3>when(<wbr>value, opt_callback, opt_errback)<span class="codelink"><a href="source/lib/webdriver/promise.js.src.html#l1563">code »</a></span></h3><p>Registers an observer on a promised <code>value</code>, returning a new promise

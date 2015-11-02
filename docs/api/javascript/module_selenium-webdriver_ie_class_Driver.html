@@ -78,7 +78,7 @@ test.</p>
     if (xhr.readyState &#61;&#61; 4) {
       callback(xhr.responseText);
     }
-  }
+  };
   xhr.send(&#39;&#39;);
 }).then(function(str) {
   console.log(JSON.parse(str)[&#39;food&#39;]);
