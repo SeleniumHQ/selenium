@@ -26,6 +26,15 @@ describe "Element" do
     driver.find_element(:id, "imageButton").click
   end
 
+  compliant_on :browser => [:chrome, :firefox] do
+    it "should raise if different element receives click" do
+      driver.navigate.to url_for("click_tests/overlapping_elements.html")
+      expect { driver.find_element(:id, "contents").click }
+        .to raise_error(Selenium::WebDriver::Error::UnknownError,
+          /Element is not clickable at point \(\d+, \d+\)\. Other element would receive the click: <div id="over"><\/div>/)
+    end
+  end
+
   # Marionette BUG - AutomatedTester: "known bug with execute script"
   not_compliant_on :driver => :marionette do
     it "should submit" do
