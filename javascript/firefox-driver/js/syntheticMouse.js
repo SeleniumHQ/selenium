@@ -77,11 +77,62 @@ SyntheticMouse.newResponse = function(status, message) {
 };
 
 
+SyntheticMouse.prototype.isElementShownAndClickable = function(element) {
+  var error = this.isElementShown(element);
+  if (error) {
+    return error;
+  }
+
+  var error = this.isElementClickable(element);
+  if (error) {
+    return error;
+  }
+}
+
+
 SyntheticMouse.prototype.isElementShown = function(element) {
   if (!bot.dom.isShown(element, /*ignoreOpacity=*/true)) {
     return SyntheticMouse.newResponse(bot.ErrorCode.ELEMENT_NOT_VISIBLE,
         'Element is not currently visible and so may not be interacted with');
   }
+};
+
+
+SyntheticMouse.prototype.isElementClickable = function(element) {
+  // get the outermost ancestor of the element. This will be either the document
+  // or a shadow root.
+  var owner = element;
+  while (owner.parentNode) {
+    owner = owner.parentNode;
+  }
+
+  var rect = bot.dom.getClientRect(element);
+  var coords = {
+    x: this.lastMousePosition.x + rect.left,
+    y: this.lastMousePosition.y + rect.top
+  }
+
+  var elementAtPoint = owner.elementFromPoint(coords.x, coords.y);
+
+  if (element == elementAtPoint) {
+    return;
+  }
+
+  // allow clicks to element descendants
+  var parentElemIter = elementAtPoint.parentNode;
+  while (parentElemIter) {
+    if (parentElemIter == element) {
+      return;
+    }
+    parentElemIter = parentElemIter.parentNode;
+  }
+
+  var elementAtPointHTML =
+    elementAtPoint.outerHTML.replace(elementAtPoint.innerHTML, '');
+
+  return SyntheticMouse.newResponse(bot.ErrorCode.UNKNOWN_ERROR,
+      'Element is not clickable at point (' + coords.x + ', ' + coords.y + '). ' +
+      'Other element would receive the click: ' + elementAtPointHTML);
 };
 
 
@@ -176,7 +227,7 @@ SyntheticMouse.prototype.click = function(target) {
   // No need to unwrap the target. All information is provided by the wrapped
   // version, and unwrapping does not work for all firefox versions.
   var element = target ? target : this.lastElement;
-  var error = this.isElementShown(element);
+  var error = this.isElementShownAndClickable(element);
   if (error) {
     return error;
   }
@@ -218,7 +269,7 @@ SyntheticMouse.prototype.contextClick = function(target) {
   // No need to unwrap the target. All information is provided by the wrapped
   // version, and unwrapping does not work for all firefox versions.
   var element = target ? target : this.lastElement;
-  var error = this.isElementShown(element);
+  var error = this.isElementShownAndClickable(element);
   if (error) {
     return error;
   }
@@ -237,7 +288,7 @@ SyntheticMouse.prototype.doubleClick = function(target) {
       'SyntheticMouse.doubleClick ' + target);
 
   var element = target ? target : this.lastElement;
-  var error = this.isElementShown(element);
+  var error = this.isElementShownAndClickable(element);
   if (error) {
     return error;
   }

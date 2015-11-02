@@ -204,7 +204,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
 
     foo.click();
     assertThat(driver.findElement(By.id("result")).getText(),
-        equalTo(initialTextValue));
+               equalTo(initialTextValue));
     bar.click();
     assertThat(driver.findElement(By.id("result")).getText(),
         equalTo("bar"));
@@ -223,10 +223,10 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
 
     foo.click();
     assertThat(driver.findElement(By.id("result")).getText(),
-        equalTo("foo"));
+               equalTo("foo"));
     bar.click();
     assertThat(driver.findElement(By.id("result")).getText(),
-        equalTo("bar"));
+               equalTo("bar"));
   }
 
   @JavascriptEnabled
@@ -415,9 +415,23 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, MARIONETTE, SAFARI, HTMLUNIT})
+  @Ignore(value = {IE, MARIONETTE, SAFARI, HTMLUNIT})
   @Test
   public void testClickOverlappingElements() {
+    assumeFalse(isOldIe(driver));
+    driver.get(appServer.whereIs("click_tests/overlapping_elements.html"));
+    try {
+      driver.findElement(By.id("under")).click();
+    } catch (WebDriverException expected) {
+      return;
+    }
+    fail("Should throw");
+  }
+
+  @JavascriptEnabled
+  @Ignore(value = {CHROME, MARIONETTE, SAFARI, HTMLUNIT})
+  @Test
+  public void testNativelyClickOverlappingElements() {
     assumeFalse(isOldIe(driver));
     driver.get(appServer.whereIs("click_tests/overlapping_elements.html"));
     driver.findElement(By.id("under")).click();
