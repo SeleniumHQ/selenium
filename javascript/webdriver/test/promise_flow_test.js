@@ -435,7 +435,7 @@ function testFraming_allCallbacksInAFrameAreScheduledWhenPromiseIsResolved() {
   schedule('e');
 
   return waitForIdle().then(function() {
-    assertFlowHistory('a', 'b', 'd', 'c', 'e');
+    assertFlowHistory('a', 'b', 'c', 'd', 'e');
   });
 }
 
@@ -2093,10 +2093,11 @@ function testCancellingAPendingTask() {
       return unresolved.promise;
     });
 
+    // Since the outerTask is cancelled below, innerTask should be cancelled
+    // with a DiscardedTaskError, which means its callbacks are silently
+    // dropped - so this should never execute.
     innerTask.thenCatch(function(e) {
       order.push(2);
-      assertTrue(e instanceof webdriver.promise.CancellationError);
-      assertEquals('no soup for you', e.message);
     });
   });
   schedule('b');
@@ -2119,7 +2120,7 @@ function testCancellingAPendingTask() {
     return waitForIdle();
   }).then(function() {
     assertFlowHistory('a', 'a.1', 'b');
-    assertArrayEquals([1, 4, 2, 3], order);
+    assertArrayEquals([1, 4, 3], order);
   });
 }
 
@@ -2310,5 +2311,31 @@ function testSettledPromiseCallbacksInsideATask_2() {
 
   return waitForIdle().then(function() {
     assertArrayEquals(['a', 'c', 'b', 'fin'], order);
+  });
+}
+
+function testTasksDoNotWaitForNewlyCreatedPromises() {
+  var order = [];
+
+  flow.execute(function() {
+    var d = webdriver.promise.defer();
+
+    // This is a normal promise, not a task, so the task for this callback is
+    // considered volatile. Volatile tasks should be skipped when they reach
+    // the front of the task queue.
+    d.promise.then(() => order.push('a'));
+
+    flow.execute(() => order.push('b'));
+    flow.execute(function() {
+      flow.execute(() => order.push('c'));
+      d.promise.then(() => order.push('d'));
+      d.fulfill();
+    });
+    flow.execute(() => order.push('e'));
+
+  }).then(() => order.push('fin'));
+
+  return waitForIdle().then(function() {
+    assertArrayEquals(['b', 'a', 'c', 'd', 'e', 'fin'], order);
   });
 }

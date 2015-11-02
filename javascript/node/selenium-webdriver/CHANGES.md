@@ -1,4 +1,7 @@
-## v2.49.0-dev
+## v2.48.1
+
+* FIXED: Adjusted how the control flow tracks promise callbacks to avoid a
+    potential deadlock.
 
 ## v2.48.0
 

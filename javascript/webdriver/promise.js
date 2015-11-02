@@ -330,12 +330,12 @@
  *       var p = new promise.Promise(function(fulfill) {
  *         setTimeout(fulfill, 100);
  *       });
- *
  *       p.then(() => console.log('promise resolved!'));
- *
+ *       flow.execute(() => console.log('sub-task!'));
  *     }).then(function() {
  *       console.log('task complete!');
  *     });
+ *     // sub-task!
  *     // task complete!
  *     // promise resolved!
  *
@@ -1296,7 +1296,7 @@ promise.Promise = goog.defineClass(null, {
         this.callbacks_ = [];
       }
       this.callbacks_.push(cb);
-      cb.isVolatile = true;
+      cb.blocked = true;
       this.flow_.getActiveQueue_().enqueue(cb);
     }
 
@@ -2491,12 +2491,20 @@ var Task = goog.defineClass(promise.Deferred, {
     this.queue = null;
 
     /**
-     * Whether this task is volatile. Volatile tasks may be registered in a
-     * a task queue, but will be dropped on the next turn of the JS event loop
-     * if still marked volatile.
+     * Whether this task is considered block. A blocked task may be registered
+     * in a task queue, but will be dropped if it is still blocked when it
+     * reaches the front of the queue. A dropped task may always be rescheduled.
+     *
+     * Blocked tasks are used when a callback is attached to an unsettled
+     * promise to reserve a spot in line (in a manner of speaking). If the
+     * promise is not settled before the callback reaches the front of the
+     * of the queue, it will be dropped. Once the promise is settled, the
+     * dropped task will be rescheduled as an interrupt on the currently task
+     * queue.
+     *
      * @type {boolean}
      */
-    this.isVolatile = false;
+    this.blocked = false;
 
     if (opt_stackOptions) {
       this.promise.stack_ = promise.captureStackTrace(
@@ -2536,9 +2544,6 @@ var TaskQueue = goog.defineClass(EventEmitter, {
 
     /** @private {!Array<!Task>} */
     this.tasks_ = [];
-
-    /** @private {Array<!Task>} */
-    this.volatileTasks_ = null;
 
     /** @private {Array<!Task>} */
     this.interrupts_ = null;
@@ -2592,11 +2597,6 @@ var TaskQueue = goog.defineClass(EventEmitter, {
       throw Error('Task is already scheduled in another queue');
     }
 
-    if (task.isVolatile) {
-      this.volatileTasks_ = this.volatileTasks_ || [];
-      this.volatileTasks_.push(task);
-    }
-
     this.tasks_.push(task);
     task.queue = this;
     task.promise[CANCEL_HANDLER_SYMBOL] =
@@ -2628,10 +2628,9 @@ var TaskQueue = goog.defineClass(EventEmitter, {
       return;
     }
     promise.callbacks_.forEach(function(cb) {
-      cb.promise[CANCEL_HANDLER_SYMBOL] =
-        this.onTaskCancelled_.bind(this, cb);
+      cb.promise[CANCEL_HANDLER_SYMBOL] = this.onTaskCancelled_.bind(this, cb);
 
-      cb.isVolatile = false;
+      cb.blocked = false;
       if (cb.queue === this && this.tasks_.indexOf(cb) !== -1) {
         return;
       }
@@ -2711,7 +2710,6 @@ var TaskQueue = goog.defineClass(EventEmitter, {
       return;
     }
     this.state_ = TaskQueueState.STARTED;
-    this.dropVolatileTasks_();
 
     if (this.pending_ != null || this.processUnhandledRejections_()) {
       return;
@@ -2762,7 +2760,6 @@ var TaskQueue = goog.defineClass(EventEmitter, {
       return fn();
     } finally {
       this.flow_.activeQueue_ = null;
-      this.dropVolatileTasks_();
       activeFlows.pop();
     }
   },
@@ -2799,23 +2796,6 @@ var TaskQueue = goog.defineClass(EventEmitter, {
       this.flow_.reportUncaughtException_(errorToReport);
       return false;
     }
-  },
-
-  /**
-   * Drops any volatile tasks scheduled within this task queue.
-   * @private
-   */
-  dropVolatileTasks_: function() {
-    if (!this.volatileTasks_) {
-      return;
-    }
-    for (var task of this.volatileTasks_) {
-      if (task.isVolatile) {
-        vlog(2, () => this + ' dropping volatile task ' + task, this);
-        this.dropTask_(task);
-      }
-    }
-    this.volatileTasks_ = null;
   },
 
   /**
@@ -2882,13 +2862,21 @@ var TaskQueue = goog.defineClass(EventEmitter, {
    */
   getNextTask_: function() {
     var task = undefined;
-    if (this.interrupts_) {
-      task = this.interrupts_.shift();
+    while (true) {
+      if (this.interrupts_) {
+        task = this.interrupts_.shift();
+      }
+      if (!task && this.tasks_) {
+        task = this.tasks_.shift();
+      }
+      if (task && task.blocked) {
+        vlog(2, () => this + ' skipping blocked task ' + task, this);
+        task.queue = null;
+        task = null;
+        continue;
+      }
+      return task;
     }
-    if (!task && this.tasks_) {
-      task = this.tasks_.shift();
-    }
-    return task;
   }
 });
 
