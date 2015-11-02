@@ -2873,10 +2873,12 @@ var TaskQueue = goog.defineClass(EventEmitter, {
         vlog(2, () => this + ' skipping blocked task ' + task, this);
         task.queue = null;
         task = null;
-        continue;
+        // TODO: recurse when tail-call optimization is available in node.
+      } else {
+        break;
       }
-      return task;
     }
+    return task;
   }
 });
 
