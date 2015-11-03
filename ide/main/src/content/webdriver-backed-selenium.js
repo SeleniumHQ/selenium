@@ -10,6 +10,8 @@ function WebdriverBackedSelenium(baseUrl, webDriverBrowserString) {
   }
 }
 
+var lastSessionId;
+
 WebdriverBackedSelenium.prototype.reset = function() {
   //TODO destroy the current session and establish a new one?
 };
@@ -177,7 +179,12 @@ function webdriverBackedSeleniumFnBuilder(cmd, argsLen) {
       }
 
       if (!self.sessionId) {
-        return self.startNewSession().pipe(invokeCommand);
+        if(!lastSessionId){
+          return self.startNewSession().pipe(invokeCommand);
+        }else{
+          self.sessionId = lastSessionId;
+          return invokeCommand();
+        }
       } else {
         return invokeCommand();
       }
@@ -202,7 +209,12 @@ function webdriverBackedSeleniumFnBuilder(cmd, argsLen) {
     }
 
     if (!self.sessionId) {
-      return self.startNewSession().pipe(invokeCommand);
+      if(!lastSessionId){
+        return self.startNewSession().pipe(invokeCommand);
+      }else{
+        self.sessionId = lastSessionId;
+        return invokeCommand();
+      }
     } else {
       return invokeCommand();
     }
@@ -255,6 +267,7 @@ WebdriverBackedSelenium.prototype.startNewBrowserSession = function(options, cal
   }
   return self.remoteControlCommand('getNewBrowserSession', startArgs).done(function(response) {
     self.sessionId = response;
+    lastSessionId = response;
   });
 };
 
