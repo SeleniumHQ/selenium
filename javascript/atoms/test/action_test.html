@@ -8,6 +8,7 @@
     goog.require('goog.Promise');
     goog.require('goog.Uri');
     goog.require('goog.dom');
+    goog.require('goog.dom.forms');
     goog.require('goog.events');
     goog.require('goog.events.EventType');
     goog.require('goog.testing.jsunit');
@@ -180,6 +181,14 @@
       assertEquals('', e.value);
     }
 
+    function testClearingNumberInputWithInvalidData() {
+      var e = goog.dom.getElement('numberField');
+      bot.action.type(e, "e");
+      bot.action.clear(e);
+      bot.action.type(e, "3");
+      assertEquals("3", goog.dom.forms.getValue(e));
+    }
+
     function testSubmittingANonFormElementShouldResultInAnError() {
       assertThrows(goog.partial(bot.action.submit, document.body));
     }
@@ -265,6 +274,10 @@
     </div>
       <label for="fileField">File field</label>
       <input type="file" id="fileField">
+    </div>
+    <div>
+      <label for="numberField">Number field</label>
+      <input type="number" id="numberField">
     </div>
   </form>
 
