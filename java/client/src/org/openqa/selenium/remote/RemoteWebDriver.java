@@ -765,9 +765,14 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     public Set<Cookie> getCookies() {
       Object returned = execute(DriverCommand.GET_ALL_COOKIES).getValue();
 
+      Set<Cookie> toReturn = new HashSet<>();
+
       List<Map<String, Object>> cookies =
           new JsonToBeanConverter().convert(List.class, returned);
-      Set<Cookie> toReturn = new HashSet<>();
+      if (cookies == null) {
+        return toReturn;
+      }
+
       for (Map<String, Object> rawCookie : cookies) {
         String name = (String) rawCookie.get("name");
         String value = (String) rawCookie.get("value");
