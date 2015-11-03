@@ -36,6 +36,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getIEVersion;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
+import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -279,6 +280,9 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Test
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have CONRTROL key", getEffectivePlatform().is(Platform.MAC));
+    assumeFalse("Windows: native events library  does not support storing modifiers state yet",
+                isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.WINDOWS) &&
+                isInternetExplorer(driver));
 
     driver.get(pages.javascriptPage);
 
