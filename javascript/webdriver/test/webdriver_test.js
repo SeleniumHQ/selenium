@@ -1146,12 +1146,12 @@ function testCustomFunctionDoesNotCompleteUntilReturnedPromiseIsResolved() {
 
   // timeout to ensure the first function starts its execution before we
   // trigger d's callbacks.
-  webdriver.promise.delayed(0).then(function() {
+  return new Promise(f => setTimeout(f, 0)).then(function() {
     assertArrayEquals(['a'], order);
     d.fulfill();
-  });
-  return waitForIdle().then(function() {
-    assertArrayEquals(['a', 'b', 'c'], order);
+    return waitForIdle().then(function() {
+      assertArrayEquals(['a', 'b', 'c'], order);
+    });
   });
 }
 

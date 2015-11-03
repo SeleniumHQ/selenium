@@ -215,11 +215,35 @@
  *     // D
  *     // fin
  *
+ * Callbacks attached to an _unresolved_ promise within a task function are
+ * only weakly scheduled as subtasks and will be dropped if they reach the
+ * front of the queue before the promise is resolved. In the example below, the
+ * callbacks for `B` & `D` are dropped as sub-tasks since they are attached to
+ * an unresolved promise when they reach the front of the task queue.
+ *
+ *     var d = promise.defer();
+ *     flow.execute(function() {
+ *       flow.execute(  () => console.log('A'));
+ *       d.promise.then(() => console.log('B'));
+ *       flow.execute(  () => console.log('C'));
+ *       d.promise.then(() => console.log('D'));
+ *
+ *       setTimeout(d.fulfill, 20);
+ *     }).then(function() {
+ *       console.log('fin')
+ *     });
+ *     // A
+ *     // C
+ *     // fin
+ *     // B
+ *     // D
+ *
  * If a promise is resolved while a task function is on the call stack, any
- * previously registered callbacks (i.e. attached while the task was _not_ on
- * the call stack), act as _interrupts_ and are inserted at the front of the
- * task queue. If multiple promises are fulfilled, their interrupts are enqueued
- * in the order the promises are resolved.
+ * previously registered and unqueued callbacks (i.e. either attached while no
+ * task was on the call stack, or previously dropped as described above) act as
+ * _interrupts_ and are inserted at the front of the task queue. If multiple
+ * promises are fulfilled, their interrupts are enqueued in the order the
+ * promises are resolved.
  *
  *     var d1 = promise.defer();
  *     d1.promise.then(() => console.log('A'));
@@ -228,17 +252,23 @@
  *     d2.promise.then(() => console.log('B'));
  *
  *     flow.execute(function() {
- *       flow.execute(() => console.log('C'));
+ *       d1.promise.then(() => console.log('C'));
  *       flow.execute(() => console.log('D'));
+ *     });
+ *     flow.execute(function() {
+ *       flow.execute(() => console.log('E'));
+ *       flow.execute(() => console.log('F'));
  *       d1.fulfill();
  *       d2.fulfill();
  *     }).then(function() {
  *       console.log('fin');
  *     });
- *     // A
- *     // B
- *     // C
  *     // D
+ *     // A
+ *     // C
+ *     // B
+ *     // E
+ *     // F
  *     // fin
  *
  * Within a task function (or callback), each step of a promise chain acts as
@@ -320,24 +350,6 @@
  *     // E
  *     // F
  *     // fin
- *
- * __Note__: while the ControlFlow will wait for
- * {@linkplain webdriver.promise.ControlFlow#execute tasks} and
- * {@linkplain webdriver.promise.Promise#then callbacks} to complete, it
- * _will not_ wait for unresolved promises created within a task:
- *
- *     flow.execute(function() {
- *       var p = new promise.Promise(function(fulfill) {
- *         setTimeout(fulfill, 100);
- *       });
- *       p.then(() => console.log('promise resolved!'));
- *       flow.execute(() => console.log('sub-task!'));
- *     }).then(function() {
- *       console.log('task complete!');
- *     });
- *     // sub-task!
- *     // task complete!
- *     // promise resolved!
  *
  * Finally, consider the following:
  *
@@ -2628,9 +2640,13 @@ var TaskQueue = goog.defineClass(EventEmitter, {
       return;
     }
     promise.callbacks_.forEach(function(cb) {
+      cb.blocked = false;
+      if (cb.queue) {
+        return;
+      }
+
       cb.promise[CANCEL_HANDLER_SYMBOL] = this.onTaskCancelled_.bind(this, cb);
 
-      cb.blocked = false;
       if (cb.queue === this && this.tasks_.indexOf(cb) !== -1) {
         return;
       }

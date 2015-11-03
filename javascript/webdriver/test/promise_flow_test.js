@@ -1248,7 +1248,7 @@ function testWait_unboundedWaitOnPromiseResolution() {
     messages.push('a');
   }, 5);
 
-  webdriver.promise.delayed(10).then(function() {
+  timeout(10).then(function() {
     assertArrayEquals(['a'], messages);
     assertTrue(waitResult.isPending());
     d.fulfill(1234);
@@ -2110,6 +2110,7 @@ function testCancellingAPendingTask() {
 
   unresolved.promise.thenCatch(function(e) {
     order.push(4);
+    assertTrue(e instanceof webdriver.promise.CancellationError);
   });
 
   return timeout(10).then(function() {
@@ -2120,7 +2121,7 @@ function testCancellingAPendingTask() {
     return waitForIdle();
   }).then(function() {
     assertFlowHistory('a', 'a.1', 'b');
-    assertArrayEquals([1, 4, 3], order);
+    assertArrayEquals([1, 3, 4], order);
   });
 }
 
@@ -2337,5 +2338,28 @@ function testTasksDoNotWaitForNewlyCreatedPromises() {
 
   return waitForIdle().then(function() {
     assertArrayEquals(['b', 'a', 'c', 'd', 'e', 'fin'], order);
+  });
+}
+
+function testCallbackDependenciesDoNotDeadlock() {
+  var order = [];
+  var root = webdriver.promise.defer();
+  var dep = webdriver.promise.fulfilled().then(function() {
+    order.push('a');
+    return root.promise.then(function() {
+      order.push('b');
+    });
+  });
+  // This callback depends on |dep|, which depends on another callback
+  // attached to |root| via a chain.
+  root.promise.then(function() {
+    order.push('c');
+    return dep.then(() => order.push('d'));
+  }).then(() => order.push('fin'));
+
+  setTimeout(() => root.fulfill(), 20);
+
+  return waitForIdle().then(function() {
+    assertArrayEquals(['a', 'b', 'c', 'd', 'fin'], order);
   });
 }

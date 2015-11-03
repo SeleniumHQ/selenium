@@ -1,6 +1,7 @@
-## v2.49.0-dev
+## v2.48.2-dev
 
 * Added `WebElement#takeScreenshot()`.
+* More adjustments to promise callback tracking.
 
 ## v2.48.1
 
