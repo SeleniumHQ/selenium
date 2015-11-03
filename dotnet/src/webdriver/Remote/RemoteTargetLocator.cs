@@ -139,7 +139,7 @@ namespace OpenQA.Selenium.Remote
                     this.driver.InternalExecute(DriverCommand.SwitchToWindow, parameters);
                     return this.driver;
                 }
-                catch (NoSuchWindowException e)
+                catch (NoSuchWindowException)
                 {
                     // simulate search by name
                     string original = this.driver.CurrentWindowHandle;
@@ -153,7 +153,7 @@ namespace OpenQA.Selenium.Remote
                     }
 
                     this.Window(original);
-                    throw e;
+                    throw;
                 }
             }
             else

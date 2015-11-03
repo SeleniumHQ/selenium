@@ -51,8 +51,7 @@ namespace OpenQA.Selenium.Safari.Internal
             this.Port = port > 0 ? port : uri.Port;
             this.Location = location;
             this.scheme = uri.Scheme;
-            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
-            this.ListenerSocket = new SocketWrapper(socket);
+            this.ListenerSocket = new SocketWrapper();
             this.ListenerSocket.Accepted += new EventHandler<AcceptEventArgs>(this.ListenerSocketAcceptedEventHandler);
         }
 

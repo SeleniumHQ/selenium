@@ -142,7 +142,7 @@ namespace OpenQA.Selenium.Chrome
         /// <param name="options">The <see cref="ChromeOptions"/> to be used with the Chrome driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public ChromeDriver(ChromeDriverService service, ChromeOptions options, TimeSpan commandTimeout)
-            : base(new DriverServiceCommandExecutor(service, commandTimeout), options.ToCapabilities())
+            : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
         }
         #endregion
@@ -161,6 +161,16 @@ namespace OpenQA.Selenium.Chrome
         {
             get { return base.FileDetector; }
             set { }
+        }
+
+        private static ICapabilities ConvertOptionsToCapabilities(ChromeOptions options)
+        {
+            if (options == null)
+            {
+                throw new ArgumentNullException("options", "options must not be null");
+            }
+
+            return options.ToCapabilities();
         }
     }
 }

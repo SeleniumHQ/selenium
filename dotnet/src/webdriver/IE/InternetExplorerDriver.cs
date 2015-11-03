@@ -111,7 +111,7 @@ namespace OpenQA.Selenium.IE
         /// <param name="internetExplorerDriverServerDirectory">The full path to the directory containing IEDriverServer.exe.</param>
         /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
         public InternetExplorerDriver(string internetExplorerDriverServerDirectory, InternetExplorerOptions options)
-            : this(InternetExplorerDriverService.CreateDefaultService(internetExplorerDriverServerDirectory), options)
+            : this(internetExplorerDriverServerDirectory, options, RemoteWebDriver.DefaultCommandTimeout)
         {
         }
 
@@ -146,7 +146,7 @@ namespace OpenQA.Selenium.IE
         /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public InternetExplorerDriver(InternetExplorerDriverService service, InternetExplorerOptions options, TimeSpan commandTimeout)
-            : base(new DriverServiceCommandExecutor(service, commandTimeout), options.ToCapabilities())
+            : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
         }
 
@@ -164,6 +164,16 @@ namespace OpenQA.Selenium.IE
         {
             get { return base.FileDetector; }
             set { }
+        }
+
+        private static ICapabilities ConvertOptionsToCapabilities(InternetExplorerOptions options)
+        {
+            if (options == null)
+            {
+                throw new ArgumentNullException("options", "options must not be null");
+            }
+
+            return options.ToCapabilities();
         }
     }
 }

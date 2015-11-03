@@ -35,7 +35,7 @@ namespace OpenQA.Selenium.PhantomJS
     [JsonObject(MemberSerialization.OptIn)]
     public sealed class PhantomJSDriverService : DriverService
     {
-        private static readonly string PhantomJSDriverServiceFileName = Platform.CurrentPlatform.IsPlatformType(PlatformType.Unix) ? "phantomjs" : "PhantomJS.exe";
+        private static readonly string PhantomJSDriverServiceFileName = PlatformSpecificDriverServiceFileName;
         private static readonly Uri PhantomJSDownloadUrl = new Uri("http://phantomjs.org/download.html");
 
         private List<string> additionalArguments = new List<string>();
@@ -365,6 +365,14 @@ namespace OpenQA.Selenium.PhantomJS
                 }
 
                 return argsBuilder.ToString();
+            }
+        }
+
+        private static string PlatformSpecificDriverServiceFileName
+        {
+            get
+            {
+                return Platform.CurrentPlatform.IsPlatformType(PlatformType.Unix) ? "phantomjs" : "PhantomJS.exe";
             }
         }
 

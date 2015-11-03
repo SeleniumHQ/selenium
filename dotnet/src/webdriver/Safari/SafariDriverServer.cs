@@ -52,6 +52,11 @@ namespace OpenQA.Selenium.Safari
         /// <param name="options">The <see cref="SafariOptions"/> defining the browser settings.</param>
         public SafariDriverServer(SafariOptions options)
         {
+            if (options == null)
+            {
+                throw new ArgumentNullException("options", "options must not be null");   
+            }
+
             int webSocketPort = options.Port;
             if (webSocketPort == 0)
             {

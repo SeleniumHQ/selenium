@@ -59,12 +59,6 @@ namespace OpenQA.Selenium.Remote
         /// </remarks>
         public ITimeouts ImplicitlyWait(TimeSpan timeToWait)
         {
-            double milliseconds = timeToWait.TotalMilliseconds;
-            if (timeToWait == TimeSpan.MinValue)
-            {
-                milliseconds = -1;
-            }
-
             this.ExecuteSetTimeout("implicit", timeToWait);
             return this;
         }
@@ -77,12 +71,6 @@ namespace OpenQA.Selenium.Remote
         /// <returns>A self reference</returns>
         public ITimeouts SetScriptTimeout(TimeSpan timeToWait)
         {
-            double milliseconds = timeToWait.TotalMilliseconds;
-            if (timeToWait == TimeSpan.MinValue)
-            {
-                milliseconds = -1;
-            }
-
             this.ExecuteSetTimeout("script", timeToWait);
             return this;
         }

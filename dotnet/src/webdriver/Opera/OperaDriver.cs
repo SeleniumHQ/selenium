@@ -133,7 +133,7 @@ namespace OpenQA.Selenium.Opera
         /// <param name="options">The <see cref="OperaOptions"/> to be used with the Opera driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public OperaDriver(OperaDriverService service, OperaOptions options, TimeSpan commandTimeout)
-            : base(new DriverServiceCommandExecutor(service, commandTimeout), options.ToCapabilities())
+            : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
         }
         #endregion
@@ -152,6 +152,16 @@ namespace OpenQA.Selenium.Opera
         {
             get { return base.FileDetector; }
             set { }
+        }
+
+        private static ICapabilities ConvertOptionsToCapabilities(OperaOptions options)
+        {
+            if (options == null)
+            {
+                throw new ArgumentNullException("options", "options must not be null");
+            }
+
+            return options.ToCapabilities();
         }
     }
 }

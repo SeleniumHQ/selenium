@@ -38,7 +38,7 @@ namespace OpenQA.Selenium.Safari
         /// </summary>
         /// <param name="command">The <see cref="Command"/> object used as a base for this <see cref="SafariCommand"/>.</param>
         public SafariCommand(Command command)
-            : base(command.SessionId, command.Name, command.Parameters)
+            : base(ExtractSessionId(command), ExtractName(command), ExtractParameters(command))
         {
             this.id = Guid.NewGuid();
         }
@@ -50,6 +50,36 @@ namespace OpenQA.Selenium.Safari
         public string Id
         {
             get { return this.id.ToString(); }
+        }
+
+        private static SessionId ExtractSessionId(Command command)
+        {
+            if (command == null)
+            {
+                throw new ArgumentNullException("command", "command must not be null");
+            }
+
+            return command.SessionId;
+        }
+
+        private static string ExtractName(Command command)
+        {
+            if (command == null)
+            {
+                throw new ArgumentNullException("command", "command must not be null");
+            }
+
+            return command.Name;
+        }
+
+        private static Dictionary<string, object> ExtractParameters(Command command)
+        {
+            if (command == null)
+            {
+                throw new ArgumentNullException("command", "command must not be null");
+            }
+
+            return command.Parameters;
         }
     }
 }

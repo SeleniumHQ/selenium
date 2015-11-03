@@ -7,30 +7,30 @@ namespace OpenQA.Selenium.Remote
 {
     internal static class WebDriverError
     {
-        public static readonly string ElementNotSelectable = "element not selectable";
-        public static readonly string ElementNotVisible = "element not visible";
-        public static readonly string InvalidArgument = "invalid argument";
-        public static readonly string InvalidElementCoordinates = "invalid element coordinates";
-        public static readonly string InvalidElementState = "invalid element state";
-        public static readonly string InvalidSelector = "invalid selector";
-        public static readonly string InvalidSessionId = "invalid session id";
-        public static readonly string JavaScriptError = "javascript error";
-        public static readonly string MoveTargetOutOfBounds = "move target out of bounds";
-        public static readonly string NoSuchAlert = "no such alert";
-        public static readonly string NoSuchElement = "no such element";
-        public static readonly string NoSuchFrame = "no such frame";
-        public static readonly string NoSuchWindow = "no such window";
-        public static readonly string ScriptTimeout = "script timeout";
-        public static readonly string SessionNotCreated = "session not created";
-        public static readonly string StaleElementReference = "stale element reference";
-        public static readonly string Timeout = "timeout";
-        public static readonly string UnableToSetCookie = "unable to set cookie";
-        public static readonly string UnableToCaptureScreen = "unable to capture screen";
-        public static readonly string UnexpectedAlertOpen = "unexpected alert open";
-        public static readonly string UnknownCommand = "unknown command";
-        public static readonly string UnknownError = "unknown error";
-        public static readonly string UnknownMethod = "unknown method";
-        public static readonly string UnsupportedOperation = "unsupported operation";
+        public const string ElementNotSelectable = "element not selectable";
+        public const string ElementNotVisible = "element not visible";
+        public const string InvalidArgument = "invalid argument";
+        public const string InvalidElementCoordinates = "invalid element coordinates";
+        public const string InvalidElementState = "invalid element state";
+        public const string InvalidSelector = "invalid selector";
+        public const string InvalidSessionId = "invalid session id";
+        public const string JavaScriptError = "javascript error";
+        public const string MoveTargetOutOfBounds = "move target out of bounds";
+        public const string NoSuchAlert = "no such alert";
+        public const string NoSuchElement = "no such element";
+        public const string NoSuchFrame = "no such frame";
+        public const string NoSuchWindow = "no such window";
+        public const string ScriptTimeout = "script timeout";
+        public const string SessionNotCreated = "session not created";
+        public const string StaleElementReference = "stale element reference";
+        public const string Timeout = "timeout";
+        public const string UnableToSetCookie = "unable to set cookie";
+        public const string UnableToCaptureScreen = "unable to capture screen";
+        public const string UnexpectedAlertOpen = "unexpected alert open";
+        public const string UnknownCommand = "unknown command";
+        public const string UnknownError = "unknown error";
+        public const string UnknownMethod = "unknown method";
+        public const string UnsupportedOperation = "unsupported operation";
 
         private static Dictionary<string, WebDriverResult> resultMap;
 

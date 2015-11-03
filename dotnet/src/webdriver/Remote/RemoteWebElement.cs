@@ -550,7 +550,7 @@ namespace OpenQA.Selenium.Remote
         {
             if (this.driver.IsSpecificationCompliant)
             {
-                return this.FindElement("css selector", "#" + this.driver.EscapeCssSelector(id));
+                return this.FindElement("css selector", "#" + RemoteWebDriver.EscapeCssSelector(id));
             }
 
             return this.FindElement("id", id);
@@ -571,7 +571,7 @@ namespace OpenQA.Selenium.Remote
         {
             if (this.driver.IsSpecificationCompliant)
             {
-                return this.FindElements("css selector", "#" + this.driver.EscapeCssSelector(id));
+                return this.FindElements("css selector", "#" + RemoteWebDriver.EscapeCssSelector(id));
             }
 
             return this.FindElements("id", id);
@@ -714,7 +714,7 @@ namespace OpenQA.Selenium.Remote
             // return this.FindElement("css selector", "." + className);
             if (this.driver.IsSpecificationCompliant)
             {
-                return this.FindElement("css selector", "." + this.driver.EscapeCssSelector(className));
+                return this.FindElement("css selector", "." + RemoteWebDriver.EscapeCssSelector(className));
             }
 
             return this.FindElement("class name", className);
@@ -741,7 +741,7 @@ namespace OpenQA.Selenium.Remote
             // return this.FindElements("css selector", "." + className);
             if (this.driver.IsSpecificationCompliant)
             {
-                return this.FindElements("css selector", "." + this.driver.EscapeCssSelector(className));
+                return this.FindElements("css selector", "." + RemoteWebDriver.EscapeCssSelector(className));
             }
 
             return this.FindElements("class name", className);

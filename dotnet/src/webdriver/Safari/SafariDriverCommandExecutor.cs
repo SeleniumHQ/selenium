@@ -34,8 +34,9 @@ namespace OpenQA.Selenium.Safari
     /// <summary>
     /// Provides a way of executing Commands using the SafariDriver.
     /// </summary>
-    public class SafariDriverCommandExecutor : ICommandExecutor
+    public class SafariDriverCommandExecutor : ICommandExecutor, IDisposable
     {
+        private bool isDisposed;
         private SafariDriverServer server;
 
         /// <summary>
@@ -83,11 +84,39 @@ namespace OpenQA.Selenium.Safari
             {
                 if (commandToExecute.Name == DriverCommand.Quit)
                 {
-                    this.server.Dispose();
+                    this.Dispose();
                 }
             }
 
             return toReturn;
+        }
+
+        /// <summary>
+        /// Releases all resources used by the <see cref="SafariDriverCommandExecutor"/>.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="SafariDriverCommandExecutor"/> and 
+        /// optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing"><see langword="true"/> to release managed and resources; 
+        /// <see langword="false"/> to only release unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.isDisposed)
+            {
+                if (disposing)
+                {
+                    this.server.Dispose();
+                }
+
+                this.isDisposed = true;
+            }
         }
     }
 }

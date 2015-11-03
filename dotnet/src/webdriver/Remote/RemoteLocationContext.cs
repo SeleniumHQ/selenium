@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using OpenQA.Selenium.Html5;
+using System.Globalization;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -49,7 +50,7 @@ namespace OpenQA.Selenium.Remote
                 Dictionary<string, object> location = commandResponse.Value as Dictionary<string, object>;
                 if (location != null)
                 {
-                    return new Location(Double.Parse(location["latitude"].ToString()), Double.Parse(location["longitude"].ToString()), Double.Parse(location["altitude"].ToString()));
+                    return new Location(Double.Parse(location["latitude"].ToString(), CultureInfo.InvariantCulture), Double.Parse(location["longitude"].ToString(), CultureInfo.InvariantCulture), Double.Parse(location["altitude"].ToString(), CultureInfo.InvariantCulture));
                 }
 
                 return null;
@@ -57,6 +58,11 @@ namespace OpenQA.Selenium.Remote
 
             set
             {
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", "value cannot be null");
+                }
+
                 Dictionary<string, object> loc = new Dictionary<string, object>();
                 loc.Add("latitude", value.Latitude);
                 loc.Add("longitude", value.Longitude);

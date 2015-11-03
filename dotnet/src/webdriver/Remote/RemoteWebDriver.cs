@@ -315,7 +315,7 @@ namespace OpenQA.Selenium.Remote
             {
                 if (this.storage == null)
                 {
-                    throw new WebDriverException("Driver does not support manipulating HTML5 web storage. Use the HasWebStorage property to test for the driver capability");
+                    throw new InvalidOperationException("Driver does not support manipulating HTML5 web storage. Use the HasWebStorage property to test for the driver capability");
                 }
 
                 return this.storage;
@@ -339,7 +339,7 @@ namespace OpenQA.Selenium.Remote
             {
                 if (this.appCache == null)
                 {
-                    throw new WebDriverException("Driver does not support manipulating the HTML5 application cache. Use the HasApplicationCache property to test for the driver capability");
+                    throw new InvalidOperationException("Driver does not support manipulating the HTML5 application cache. Use the HasApplicationCache property to test for the driver capability");
                 }
 
                 return this.appCache;
@@ -363,7 +363,7 @@ namespace OpenQA.Selenium.Remote
             {
                 if (this.locationContext == null)
                 {
-                    throw new WebDriverException("Driver does not support setting HTML5 geolocation information. Use the HasLocationContext property to test for the driver capability");
+                    throw new InvalidOperationException("Driver does not support setting HTML5 geolocation information. Use the HasLocationContext property to test for the driver capability");
                 }
 
                 return this.locationContext;
@@ -573,7 +573,7 @@ namespace OpenQA.Selenium.Remote
         {
             if (this.IsSpecificationCompliant)
             {
-                return this.FindElement("css selector", "#" + this.EscapeCssSelector(id));
+                return this.FindElement("css selector", "#" + EscapeCssSelector(id));
             }
 
             return this.FindElement("id", id);
@@ -594,7 +594,7 @@ namespace OpenQA.Selenium.Remote
         {
             if (this.IsSpecificationCompliant)
             {
-                return this.FindElements("css selector", "#" + this.EscapeCssSelector(id));
+                return this.FindElements("css selector", "#" + EscapeCssSelector(id));
             }
 
             return this.FindElements("id", id);
@@ -624,7 +624,7 @@ namespace OpenQA.Selenium.Remote
             // return this.FindElement("css selector", "." + className);
             if (this.IsSpecificationCompliant)
             {
-                return this.FindElement("css selector", "." + this.EscapeCssSelector(className));
+                return this.FindElement("css selector", "." + EscapeCssSelector(className));
             }
 
             return this.FindElement("class name", className);
@@ -651,7 +651,7 @@ namespace OpenQA.Selenium.Remote
             // return this.FindElements("css selector", "." + className);
             if (this.IsSpecificationCompliant)
             {
-                return this.FindElements("css selector", "." + this.EscapeCssSelector(className));
+                return this.FindElements("css selector", "." + EscapeCssSelector(className));
             }
 
             return this.FindElements("class name", className);
@@ -929,6 +929,22 @@ namespace OpenQA.Selenium.Remote
         #endregion
 
         #region Internal Methods
+        /// <summary>
+        /// Escapes invalid characters in a CSS selector.
+        /// </summary>
+        /// <param name="selector">The selector to escape.</param>
+        /// <returns>The selector with invalid characters escaped.</returns>
+        internal static string EscapeCssSelector(string selector)
+        {
+            string escaped = Regex.Replace(selector, @"(['""\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]\(\)])", @"\$1");
+            if (selector.Length > 0 && char.IsDigit(selector[0]))
+            {
+                escaped = @"\" + (30 + int.Parse(selector.Substring(0, 1), CultureInfo.InvariantCulture)).ToString(CultureInfo.InvariantCulture) + " " + selector.Substring(1);
+            }
+
+            return escaped;
+        }
+
         /// <summary>
         /// Executes commands with the driver 
         /// </summary>
@@ -1400,17 +1416,6 @@ namespace OpenQA.Selenium.Remote
             }
 
             return returnValue;
-        }
-
-        internal string EscapeCssSelector(string selector)
-        {
-            string escaped = Regex.Replace(selector, @"(['""\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]\(\)])", @"\$1");
-            if (selector.Length > 0 && char.IsDigit(selector[0]))
-            {
-                escaped = @"\" + (30 + int.Parse(selector.Substring(0, 1))).ToString(CultureInfo.InvariantCulture) + " " + selector.Substring(1);
-            }
-
-            return escaped;
         }
         #endregion
     }

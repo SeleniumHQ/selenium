@@ -107,10 +107,20 @@ namespace OpenQA.Selenium.Edge
         /// <param name="options">The <see cref="EdgeOptions"/> to be used with the Edge driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public EdgeDriver(EdgeDriverService service, EdgeOptions options, TimeSpan commandTimeout)
-            : base(new DriverServiceCommandExecutor(service, commandTimeout), options.ToCapabilities())
+            : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
         }
         #endregion
+
+        private static ICapabilities ConvertOptionsToCapabilities(EdgeOptions options)
+        {
+            if (options == null)
+            {
+                throw new ArgumentNullException("options", "options must not be null");
+            }
+
+            return options.ToCapabilities();
+        }
     }
 }
 

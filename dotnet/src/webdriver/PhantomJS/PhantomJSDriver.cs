@@ -147,7 +147,7 @@ namespace OpenQA.Selenium.PhantomJS
         /// <param name="options">The <see cref="PhantomJSOptions"/> used to initialize the driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public PhantomJSDriver(PhantomJSDriverService service, PhantomJSOptions options, TimeSpan commandTimeout)
-            : base(new DriverServiceCommandExecutor(service, commandTimeout, false), options.ToCapabilities())
+            : base(new DriverServiceCommandExecutor(service, commandTimeout, false), ConvertOptionsToCapabilities(options))
         {
             // Add the custom commandInfo of PhantomJSDriver
             CommandInfo commandInfo = new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/phantom/execute");
@@ -201,6 +201,16 @@ namespace OpenQA.Selenium.PhantomJS
         public object ExecutePhantomJS(string script, params object[] args)
         {
             return this.ExecuteScriptCommand(script, CommandExecutePhantomScript, args);
+        }
+
+        private static ICapabilities ConvertOptionsToCapabilities(PhantomJSOptions options)
+        {
+            if (options == null)
+            {
+                throw new ArgumentNullException("options", "options must not be null");
+            }
+
+            return options.ToCapabilities();
         }
     }
 }

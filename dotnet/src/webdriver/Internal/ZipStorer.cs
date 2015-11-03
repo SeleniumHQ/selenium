@@ -2,6 +2,7 @@
 // Website: zipstorer.codeplex.com
 // Version: 2.35 (March 14, 2010)
 
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,6 +11,7 @@ namespace System.IO.Compression
     /// <summary>
     /// Unique class for compression/decompression file. Represents a Zip file.
     /// </summary>
+    [GeneratedCode("ZipStorer", "1.0")]
     internal class ZipStorer : IDisposable
     {
         /// <summary>

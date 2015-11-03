@@ -36,7 +36,19 @@ namespace OpenQA.Selenium.Safari.Internal
         private readonly Socket underlyingSocket;
         private bool disposed;
         private Stream stream;
-        
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SocketWrapper"/> class.
+        /// </summary>
+        public SocketWrapper() 
+        {
+            this.underlyingSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
+            if (this.underlyingSocket.Connected)
+            {
+                this.stream = new NetworkStream(this.underlyingSocket);
+            }
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SocketWrapper"/> class.
         /// </summary>
@@ -48,7 +60,7 @@ namespace OpenQA.Selenium.Safari.Internal
                 throw new ArgumentNullException("socket", "Socket to wrap must not be null");
             }
 
-            this.underlyingSocket = socket;
+            this.underlyingSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
             if (this.underlyingSocket.Connected)
             {
                 this.stream = new NetworkStream(this.underlyingSocket);

@@ -191,7 +191,7 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="options">The <see cref="FirefoxOptions"/> to be used with the Firefox driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public FirefoxDriver(FirefoxDriverService service, FirefoxOptions options, TimeSpan commandTimeout)
-            : base(new DriverServiceCommandExecutor(service, commandTimeout), options.ToCapabilities())
+            : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
         }
         #endregion
@@ -356,6 +356,16 @@ namespace OpenQA.Selenium.Firefox
             caps.CapabilitiesDictionary.Remove(FirefoxDriver.ProfileCapabilityName);
             caps.CapabilitiesDictionary.Remove(FirefoxDriver.BinaryCapabilityName);
             return caps;
+        }
+
+        private static ICapabilities ConvertOptionsToCapabilities(FirefoxOptions options)
+        {
+            if (options == null)
+            {
+                throw new ArgumentNullException("options", "options must not be null");
+            }
+
+            return options.ToCapabilities();
         }
         #endregion
     }

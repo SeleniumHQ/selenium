@@ -35,7 +35,7 @@ namespace OpenQA.Selenium.Firefox
     /// </summary>
     /// <remarks>The <see cref="FirefoxBinary"/> class is responsible for instantiating the
     /// Firefox process, and the operating system environment in which it runs.</remarks>
-    public class FirefoxBinary
+    public class FirefoxBinary : IDisposable
     {
         #region Constants
         private const string NoFocusLibraryName = "x_ignore_nofocus.so"; 
@@ -46,6 +46,7 @@ namespace OpenQA.Selenium.Firefox
         private Executable executable;
         private Process process;
         private TimeSpan timeout = TimeSpan.FromSeconds(45);
+        private bool isDisposed = false;
         #endregion
 
         #region Constructors
@@ -140,28 +141,28 @@ namespace OpenQA.Selenium.Firefox
                 commandLineArgs.Append(" ").Append(commandLineArg);
             }
 
-            Process builder = new Process();
-            builder.StartInfo.FileName = this.BinaryExecutable.ExecutablePath;
-            builder.StartInfo.Arguments = commandLineArgs.ToString();
-            builder.StartInfo.UseShellExecute = false;
+            this.process = new Process();
+            this.process.StartInfo.FileName = this.BinaryExecutable.ExecutablePath;
+            this.process.StartInfo.Arguments = commandLineArgs.ToString();
+            this.process.StartInfo.UseShellExecute = false;
 
             foreach (string environmentVar in this.extraEnv.Keys)
             {
-                if (builder.StartInfo.EnvironmentVariables.ContainsKey(environmentVar))
+                if (this.process.StartInfo.EnvironmentVariables.ContainsKey(environmentVar))
                 {
-                    builder.StartInfo.EnvironmentVariables[environmentVar] = this.extraEnv[environmentVar];
+                    this.process.StartInfo.EnvironmentVariables[environmentVar] = this.extraEnv[environmentVar];
                 }
                 else
                 {
-                    builder.StartInfo.EnvironmentVariables.Add(environmentVar, this.extraEnv[environmentVar]);
+                    this.process.StartInfo.EnvironmentVariables.Add(environmentVar, this.extraEnv[environmentVar]);
                 }
             }
 
-            this.BinaryExecutable.SetLibraryPath(builder);
+            this.BinaryExecutable.SetLibraryPath(this.process);
 
-            this.StartFirefoxProcess(builder);
+            this.StartFirefoxProcess();
 
-            this.CopeWithTheStrangenessOfTheMac(builder);
+            this.CopeWithTheStrangenessOfTheMac();
         }
 
         /// <summary>
@@ -187,21 +188,6 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Creates a named profile for Firefox.
-        /// </summary>
-        /// <param name="profileName">The name of the profile to create.</param>
-        [SecurityPermission(SecurityAction.Demand)]
-        public void CreateProfile(string profileName)
-        {
-            Process builder = new Process();
-            builder.StartInfo.FileName = this.executable.ExecutablePath;
-            builder.StartInfo.Arguments = "--verbose -CreateProfile " + profileName;
-            builder.StartInfo.EnvironmentVariables.Add("MOZ_NO_REMOTE", "1");
-
-            this.StartFirefoxProcess(builder);
-        }
-
-        /// <summary>
         /// Waits for the process to complete execution.
         /// </summary>
         [SecurityPermission(SecurityAction.Demand)]
@@ -211,30 +197,12 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Stops the execution of this <see cref="FirefoxBinary"/>, terminating the process if necessary.
+        /// Releases all resources used by the <see cref="FirefoxBinary"/>.
         /// </summary>
-        [SecurityPermission(SecurityAction.Demand)]
-        public void Quit()
+        public void Dispose()
         {
-            // Suicide watch: First,  a second to see if the process will die on 
-            // it's own (we will likely have asked the process to kill itself just 
-            // before calling this method).
-            if (this.process != null)
-            {
-                if (!this.process.HasExited)
-                {
-                    System.Threading.Thread.Sleep(1000);
-                }
-
-                // Murder option: The process is still alive, so kill it.
-                if (!this.process.HasExited)
-                {
-                    this.process.Kill();
-                }
-
-                this.process.Dispose();
-                this.process = null;
-            }
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -249,17 +217,48 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Starts the Firefox process.
         /// </summary>
-        /// <param name="builder">A <see cref="Process"/> object used to start Firefox.</param>
         [SecurityPermission(SecurityAction.Demand)]
-        protected void StartFirefoxProcess(Process builder)
+        protected void StartFirefoxProcess()
         {
-            if (builder == null)
-            {
-                throw new ArgumentNullException("builder", "builder cannot be null");
-            }
-
-            this.process = builder;
             this.process.Start();
+        }
+
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="FirefoxBinary"/> and optionally 
+        /// releases the managed resources.
+        /// </summary>
+        /// <param name="disposing"><see langword="true"/> to release managed and resources; 
+        /// <see langword="false"/> to only release unmanaged resources.</param>
+        [SecurityPermission(SecurityAction.Demand)]
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.isDisposed)
+            {
+                if (disposing)
+                {
+                    // Suicide watch: First,  a second to see if the process will die on 
+                    // it's own (we will likely have asked the process to kill itself just 
+                    // before calling this method).
+                    if (this.process != null)
+                    {
+                        if (!this.process.HasExited)
+                        {
+                            System.Threading.Thread.Sleep(1000);
+                        }
+
+                        // Murder option: The process is still alive, so kill it.
+                        if (!this.process.HasExited)
+                        {
+                            this.process.Kill();
+                        }
+
+                        this.process.Dispose();
+                        this.process = null;
+                    }
+                }
+
+                this.isDisposed = true;
+            }
         }
 
         private static void Sleep(int timeInMilliseconds)
@@ -343,7 +342,7 @@ namespace OpenQA.Selenium.Firefox
         }
 
         [SecurityPermission(SecurityAction.Demand)]
-        private void CopeWithTheStrangenessOfTheMac(Process builder)
+        private void CopeWithTheStrangenessOfTheMac()
         {
             if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Mac))
             {
@@ -363,7 +362,7 @@ namespace OpenQA.Selenium.Firefox
                     // TODO(simon): This is utterly bogus. We should do something far smarter
                     System.Threading.Thread.Sleep(10000);
 
-                    this.StartFirefoxProcess(builder);
+                    this.StartFirefoxProcess();
                 }
                 catch (ThreadStateException)
                 {
@@ -382,7 +381,7 @@ namespace OpenQA.Selenium.Firefox
 
                     StringBuilder message = new StringBuilder("Unable to start firefox cleanly.\n");
                     message.Append("Exit value: ").Append(this.process.ExitCode.ToString(CultureInfo.InvariantCulture)).Append("\n");
-                    message.Append("Ran from: ").Append(builder.StartInfo.FileName).Append("\n");
+                    message.Append("Ran from: ").Append(this.process.StartInfo.FileName).Append("\n");
                     throw new WebDriverException(message.ToString());
                 }
                 catch (ThreadStateException)

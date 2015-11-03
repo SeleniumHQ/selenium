@@ -125,11 +125,9 @@ namespace OpenQA.Selenium.Firefox
             {
                 // This should only be called after the QUIT command has been sent,
                 // so go ahead and clean up our process and profile.
-                this.process.Quit();
+                this.process.Dispose();
                 this.profile.Clean();
             }
-
-            GC.SuppressFinalize(this);
         }
 
         private static int DetermineNextFreePort(string host, int port)

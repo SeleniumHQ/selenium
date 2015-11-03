@@ -97,5 +97,22 @@ namespace OpenQA.Selenium.Safari
             get { return base.FileDetector; }
             set { }
         }
+
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="SafariDriver"/> and 
+        /// optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing"><see langword="true"/> to release managed and resources; 
+        /// <see langword="false"/> to only release unmanaged resources.</param>
+        protected override void Dispose(bool disposing)
+        {
+            SafariDriverCommandExecutor executor = this.CommandExecutor as SafariDriverCommandExecutor;
+            if (executor != null)
+            {
+                executor.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
     }
 }

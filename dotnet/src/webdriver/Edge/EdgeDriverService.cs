@@ -32,9 +32,6 @@ namespace OpenQA.Selenium.Edge
     {
         private const string MicrosoftWebDriverServiceFileName = "MicrosoftWebDriver.exe";
         private static readonly Uri MicrosoftWebDriverDownloadUrl = new Uri("http://go.microsoft.com/fwlink/?LinkId=619687");
-        private string logPath = string.Empty;
-        private string urlPathPrefix = string.Empty;
-        private string portServerAddress = string.Empty;
 
 
         /// <summary>
@@ -76,7 +73,7 @@ namespace OpenQA.Selenium.Edge
         /// <returns>A EdgeDriverService using a random port.</returns>
         public static EdgeDriverService CreateDefaultService(string driverPath, string driverExecutableFileName)
         {
-            return new EdgeDriverService(driverPath, driverExecutableFileName, PortUtilities.FindFreePort());
+            return CreateDefaultService(driverPath, driverExecutableFileName, PortUtilities.FindFreePort());
         }
 
         /// <summary>
