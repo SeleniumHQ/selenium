@@ -91,6 +91,12 @@ bot.action.clear = function(element) {
   if (element.value) {
     element.value = '';
     bot.events.fire(element, bot.events.EventType.CHANGE);
+  } else if (bot.dom.isElement(element, goog.dom.TagName.INPUT) &&
+             element.getAttribute('type').toLowerCase() == "number") {
+    // number input fields that have invalid inputs
+    // report their value as empty string with no way to tell if there is a
+    // current value or not
+    element.value = '';
   }
 
   if (bot.dom.isContentEditable(element)) {

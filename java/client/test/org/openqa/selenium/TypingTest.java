@@ -25,7 +25,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
-import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
@@ -779,6 +778,16 @@ public class TypingTest extends JUnit4TestBase {
         "keydown (target)",
         "a pressed; removing");
     assertThat(getValueText(log), anyOf(equalTo(expected), equalTo(expected + "\nkeyup (body)")));
+  }
+
+  @Test
+  public void canClearNumberInputAfterTypingInvalidInput() {
+    driver.get(pages.formPage);
+    WebElement input = driver.findElement(By.id("age"));
+    input.sendKeys("e");
+    input.clear();
+    input.sendKeys("3");
+    assertEquals("3", input.getAttribute("value"));
   }
 
   private static String getValueText(WebElement el) {
