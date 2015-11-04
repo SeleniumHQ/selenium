@@ -39,7 +39,7 @@ namespace OpenQA.Selenium.Opera
         private bool enableVerboseLogging;
 
         /// <summary>
-        /// Initializes a new instance of the OperaDriverService class.
+        /// Initializes a new instance of the <see cref="OperaDriverService"/> class.
         /// </summary>
         /// <param name="executablePath">The full path to the OperaDriver executable.</param>
         /// <param name="executableFileName">The file name of the OperaDriver executable.</param>

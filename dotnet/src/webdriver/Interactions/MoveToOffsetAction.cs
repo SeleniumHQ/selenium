@@ -45,7 +45,6 @@ namespace OpenQA.Selenium.Interactions
             this.offsetY = offsetY;
         }
 
-        #region IAction Members
         /// <summary>
         /// Performs this action.
         /// </summary>
@@ -53,7 +52,5 @@ namespace OpenQA.Selenium.Interactions
         {
             this.Mouse.MouseMove(this.ActionLocation, this.offsetX, this.offsetY);
         }
-
-        #endregion
     }
 }

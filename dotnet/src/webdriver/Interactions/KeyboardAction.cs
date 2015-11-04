@@ -58,7 +58,7 @@ namespace OpenQA.Selenium.Interactions.Internal
         {
             if (this.ActionTarget != null)
             {
-                this.mouse.Click(ActionTarget.Coordinates);
+                this.mouse.Click(this.ActionTarget.Coordinates);
             }
         }
     }

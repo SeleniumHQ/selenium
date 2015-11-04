@@ -24,7 +24,7 @@ using OpenQA.Selenium.Internal;
 namespace OpenQA.Selenium.Remote
 {
     /// <summary>
-    /// Class to Create the capabilities of the browser you require for <see cref="IWebDriver"/>. 
+    /// Class to Create the capabilities of the browser you require for <see cref="IWebDriver"/>.
     /// If you wish to use default values use the static methods
     /// </summary>
     public class DesiredCapabilities : ICapabilities
@@ -32,7 +32,7 @@ namespace OpenQA.Selenium.Remote
         private readonly Dictionary<string, object> capabilities = new Dictionary<string, object>();
 
         /// <summary>
-        /// Initializes a new instance of the DesiredCapabilities class
+        /// Initializes a new instance of the <see cref="DesiredCapabilities"/> class
         /// </summary>
         /// <param name="browser">Name of the browser e.g. firefox, internet explorer, safari</param>
         /// <param name="version">Version of the browser</param>
@@ -45,14 +45,14 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Initializes a new instance of the DesiredCapabilities class
+        /// Initializes a new instance of the <see cref="DesiredCapabilities"/> class
         /// </summary>
         public DesiredCapabilities()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the DesiredCapabilities class
+        /// Initializes a new instance of the <see cref="DesiredCapabilities"/> class
         /// </summary>
         /// <param name="rawMap">Dictionary of items for the remote driver</param>
         /// <example>
@@ -89,11 +89,11 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Gets the browser name 
+        /// Gets the browser name
         /// </summary>
         public string BrowserName
         {
-            get 
+            get
             {
                 string name = string.Empty;
                 object capabilityValue = this.GetCapability(CapabilityType.BrowserName);
@@ -111,11 +111,11 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public Platform Platform
         {
-            get 
+            get
             {
                 return this.GetCapability(CapabilityType.Platform) as Platform ?? new Platform(PlatformType.Any);
             }
-            
+
             set
             {
                 this.SetCapability(CapabilityType.Platform, value);
@@ -127,7 +127,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public string Version
         {
-            get 
+            get
             {
                 string browserVersion = string.Empty;
                 object capabilityValue = this.GetCapability(CapabilityType.Version);
@@ -145,7 +145,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public bool IsJavaScriptEnabled
         {
-            get 
+            get
             {
                 bool javascriptEnabled = false;
                 object capabilityValue = this.GetCapability(CapabilityType.IsJavaScriptEnabled);
@@ -157,11 +157,12 @@ namespace OpenQA.Selenium.Remote
                 return javascriptEnabled;
             }
 
-            set 
+            set
             {
                 this.SetCapability(CapabilityType.IsJavaScriptEnabled, value);
             }
         }
+
         /// <summary>
         /// Gets the internal capabilities dictionary.
         /// </summary>
@@ -214,7 +215,7 @@ namespace OpenQA.Selenium.Remote
         {
             return new DesiredCapabilities("htmlunit", string.Empty, new Platform(PlatformType.Any));
         }
-        
+
         /// <summary>
         /// Method to return a new DesiredCapabilities using defaults
         /// </summary>

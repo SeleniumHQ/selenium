@@ -41,7 +41,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <summary>
         /// Initializes a new instance of the <see cref="RetryingElementLocator"/> class.
         /// </summary>
-        /// <param name="searchContext">The <see cref="ISearchContext"/> object that the 
+        /// <param name="searchContext">The <see cref="ISearchContext"/> object that the
         /// locator uses for locating elements.</param>
         public RetryingElementLocator(ISearchContext searchContext)
             : this(searchContext, DefaultTimeout)
@@ -51,7 +51,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <summary>
         /// Initializes a new instance of the <see cref="RetryingElementLocator"/> class.
         /// </summary>
-        /// <param name="searchContext">The <see cref="ISearchContext"/> object that the 
+        /// <param name="searchContext">The <see cref="ISearchContext"/> object that the
         /// locator uses for locating elements.</param>
         /// <param name="timeout">The <see cref="TimeSpan"/> indicating how long the locator should
         /// retry before timing out.</param>
@@ -63,7 +63,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <summary>
         /// Initializes a new instance of the <see cref="RetryingElementLocator"/> class.
         /// </summary>
-        /// <param name="searchContext">The <see cref="ISearchContext"/> object that the 
+        /// <param name="searchContext">The <see cref="ISearchContext"/> object that the
         /// locator uses for locating elements.</param>
         /// <param name="timeout">The <see cref="TimeSpan"/> indicating how long the locator should
         /// retry before timing out.</param>

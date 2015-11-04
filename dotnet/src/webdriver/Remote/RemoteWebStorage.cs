@@ -30,7 +30,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Initializes a new instance of the <see cref="RemoteWebStorage"/> class.
         /// </summary>
-        /// <param name="driver"></param>
+        /// <param name="driver">The driver instance.</param>
         public RemoteWebStorage(RemoteWebDriver driver)
         {
             this.driver = driver;
@@ -43,7 +43,7 @@ namespace OpenQA.Selenium.Remote
         {
             get
             {
-                return new RemoteLocalStorage(driver);
+                return new RemoteLocalStorage(this.driver);
             }
         }
 
@@ -54,7 +54,7 @@ namespace OpenQA.Selenium.Remote
         {
             get
             {
-                return new RemoteSessionStorage(driver);
+                return new RemoteSessionStorage(this.driver);
             }
         }
     }

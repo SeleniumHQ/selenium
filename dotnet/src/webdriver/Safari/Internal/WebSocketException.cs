@@ -102,11 +102,11 @@ namespace OpenQA.Selenium.Safari.Internal
             : base(info, context)
         {
         }
-        
+
         /// <summary>
         /// Gets the status code.
         /// </summary>
-        public int StatusCode 
+        public int StatusCode
         {
             get { return this.statusCode; }
         }

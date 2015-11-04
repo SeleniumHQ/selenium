@@ -50,7 +50,7 @@ namespace OpenQA.Selenium.Remote
         private string method;
 
         /// <summary>
-        /// Initializes a new instance of the CommandInfo class
+        /// Initializes a new instance of the <see cref="CommandInfo"/> class
         /// </summary>
         /// <param name="method">Method of the Command</param>
         /// <param name="resourcePath">Relative URL path to the resource used to execute the command</param>

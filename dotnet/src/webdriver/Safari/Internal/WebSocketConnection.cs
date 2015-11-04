@@ -307,7 +307,7 @@ namespace OpenQA.Selenium.Safari.Internal
             this.SendBytes(handshake);
             this.OnOpen(new ConnectionEventArgs(this));
         }
-        
+
         private void HandleReadError(Exception e)
         {
             if (e.InnerException != null)

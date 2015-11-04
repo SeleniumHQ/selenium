@@ -18,8 +18,8 @@
 
 using System;
 using System.Collections.Generic;
-using OpenQA.Selenium.Html5;
 using System.Globalization;
+using OpenQA.Selenium.Html5;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -46,11 +46,11 @@ namespace OpenQA.Selenium.Remote
         {
             get
             {
-                Response commandResponse = driver.InternalExecute(DriverCommand.GetLocation, null);
+                Response commandResponse = this.driver.InternalExecute(DriverCommand.GetLocation, null);
                 Dictionary<string, object> location = commandResponse.Value as Dictionary<string, object>;
                 if (location != null)
                 {
-                    return new Location(Double.Parse(location["latitude"].ToString(), CultureInfo.InvariantCulture), Double.Parse(location["longitude"].ToString(), CultureInfo.InvariantCulture), Double.Parse(location["altitude"].ToString(), CultureInfo.InvariantCulture));
+                    return new Location(double.Parse(location["latitude"].ToString(), CultureInfo.InvariantCulture), double.Parse(location["longitude"].ToString(), CultureInfo.InvariantCulture), double.Parse(location["altitude"].ToString(), CultureInfo.InvariantCulture));
                 }
 
                 return null;
@@ -70,7 +70,7 @@ namespace OpenQA.Selenium.Remote
 
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("location", loc);
-                driver.InternalExecute(DriverCommand.SetLocation, parameters);
+                this.driver.InternalExecute(DriverCommand.SetLocation, parameters);
             }
         }
     }

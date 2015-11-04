@@ -83,7 +83,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <summary>
         /// Writes out a description of this By object.
         /// </summary>
-        /// <returns>Converts the value of this instance to a <see cref="System.String"/></returns>
+        /// <returns>Converts the value of this instance to a <see cref="string"/></returns>
         public override string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "ByIdOrName([{0}])", this.elementIdentifier);

@@ -34,7 +34,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <summary>
         /// Creates an <see cref="IElementLocator"/> object used to locate elements.
         /// </summary>
-        /// <param name="searchContext">The <see cref="ISearchContext"/> object that the 
+        /// <param name="searchContext">The <see cref="ISearchContext"/> object that the
         /// locator uses for locating elements.</param>
         /// <returns>The <see cref="IElementLocator"/> used to locate elements.</returns>
         public IElementLocator CreateLocator(ISearchContext searchContext)

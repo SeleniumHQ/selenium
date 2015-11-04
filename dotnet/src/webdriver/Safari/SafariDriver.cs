@@ -29,7 +29,7 @@ namespace OpenQA.Selenium.Safari
     /// Provides a way to access Safari to run your tests by creating a SafariDriver instance
     /// </summary>
     /// <remarks>
-    /// When the WebDriver object has been instantiated the browser will load. The test can then navigate to the URL under test and 
+    /// When the WebDriver object has been instantiated the browser will load. The test can then navigate to the URL under test and
     /// start your test.
     /// </remarks>
     /// <example>
@@ -59,7 +59,7 @@ namespace OpenQA.Selenium.Safari
     ///     {
     ///         driver.Quit();
     ///         driver.Dispose();
-    ///     } 
+    ///     }
     /// }
     /// </code>
     /// </example>
@@ -83,13 +83,13 @@ namespace OpenQA.Selenium.Safari
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting 
-        /// sequences of keystrokes representing file paths and names. 
+        /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting
+        /// sequences of keystrokes representing file paths and names.
         /// </summary>
         /// <remarks>The Safari driver does not allow a file detector to be set,
-        /// as the server component of the Safari driver (the Safari extension) only 
+        /// as the server component of the Safari driver (the Safari extension) only
         /// allows uploads from the local computer environment. Attempting to set
-        /// this property has no effect, but does not throw an exception. If you 
+        /// this property has no effect, but does not throw an exception. If you
         /// are attempting to run the Safari driver remotely, use <see cref="RemoteWebDriver"/>
         /// in conjunction with a standalone WebDriver server.</remarks>
         public override IFileDetector FileDetector
@@ -99,10 +99,10 @@ namespace OpenQA.Selenium.Safari
         }
 
         /// <summary>
-        /// Releases the unmanaged resources used by the <see cref="SafariDriver"/> and 
+        /// Releases the unmanaged resources used by the <see cref="SafariDriver"/> and
         /// optionally releases the managed resources.
         /// </summary>
-        /// <param name="disposing"><see langword="true"/> to release managed and resources; 
+        /// <param name="disposing"><see langword="true"/> to release managed and resources;
         /// <see langword="false"/> to only release unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {

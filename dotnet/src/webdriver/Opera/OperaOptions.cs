@@ -196,7 +196,7 @@ namespace OpenQA.Selenium.Opera
         }
 
         /// <summary>
-        /// Adds a single argument to be excluded from the list of arguments passed by default 
+        /// Adds a single argument to be excluded from the list of arguments passed by default
         /// to the Opera.exe command line by operadriver.exe.
         /// </summary>
         /// <param name="argument">The argument to exclude.</param>
@@ -211,7 +211,7 @@ namespace OpenQA.Selenium.Opera
         }
 
         /// <summary>
-        /// Adds arguments to be excluded from the list of arguments passed by default 
+        /// Adds arguments to be excluded from the list of arguments passed by default
         /// to the Opera.exe command line by operadriver.exe.
         /// </summary>
         /// <param name="argumentsToExclude">An array of arguments to exclude.</param>
@@ -221,7 +221,7 @@ namespace OpenQA.Selenium.Opera
         }
 
         /// <summary>
-        /// Adds arguments to be excluded from the list of arguments passed by default 
+        /// Adds arguments to be excluded from the list of arguments passed by default
         /// to the Opera.exe command line by operadriver.exe.
         /// </summary>
         /// <param name="argumentsToExclude">An <see cref="IEnumerable{T}"/> object of arguments to exclude.</param>
@@ -236,7 +236,7 @@ namespace OpenQA.Selenium.Opera
         }
 
         /// <summary>
-        /// Adds a path to a packed Opera extension (.crx file) to the list of extensions 
+        /// Adds a path to a packed Opera extension (.crx file) to the list of extensions
         /// to be installed in the instance of Opera.
         /// </summary>
         /// <param name="pathToExtension">The full path to the extension to add.</param>
@@ -284,7 +284,7 @@ namespace OpenQA.Selenium.Opera
         }
 
         /// <summary>
-        /// Adds a base64-encoded string representing a Opera extension to the list of extensions 
+        /// Adds a base64-encoded string representing a Opera extension to the list of extensions
         /// to be installed in the instance of Opera.
         /// </summary>
         /// <param name="extension">A base64-encoded string representing the extension to add.</param>
@@ -299,7 +299,7 @@ namespace OpenQA.Selenium.Opera
         }
 
         /// <summary>
-        /// Adds a list of base64-encoded strings representing Opera extensions to the list of extensions 
+        /// Adds a list of base64-encoded strings representing Opera extensions to the list of extensions
         /// to be installed in the instance of Opera.
         /// </summary>
         /// <param name="extensions">An array of base64-encoded strings representing the extensions to add.</param>
@@ -371,17 +371,17 @@ namespace OpenQA.Selenium.Opera
         }
 
         /// <summary>
-        /// Provides a means to add additional capabilities not yet added as type safe options 
+        /// Provides a means to add additional capabilities not yet added as type safe options
         /// for the Opera driver.
         /// </summary>
         /// <param name="capabilityName">The name of the capability to add.</param>
         /// <param name="capabilityValue">The value of the capability to add.</param>
         /// <exception cref="ArgumentException">
-        /// thrown when attempting to add a capability for which there is already a type safe option, or 
+        /// thrown when attempting to add a capability for which there is already a type safe option, or
         /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
         /// </exception>
-        /// <remarks>Calling <see cref="AddAdditionalCapability(System.String, System.Object)"/>
-        /// where <paramref name="capabilityName"/> has already been added will overwrite the 
+        /// <remarks>Calling <see cref="AddAdditionalCapability(string, object)"/>
+        /// where <paramref name="capabilityName"/> has already been added will overwrite the
         /// existing value with the new value in <paramref name="capabilityValue"/>.
         /// Also, by default, calling this method adds capabilities to the options object passed to
         /// operadriver.exe.</remarks>
@@ -392,9 +392,9 @@ namespace OpenQA.Selenium.Opera
             // and the bindings have not yet had a type safe option added.
             this.AddAdditionalCapability(capabilityName, capabilityValue, false);
         }
-        
+
         /// <summary>
-        /// Provides a means to add additional capabilities not yet added as type safe options 
+        /// Provides a means to add additional capabilities not yet added as type safe options
         /// for the Opera driver.
         /// </summary>
         /// <param name="capabilityName">The name of the capability to add.</param>
@@ -402,10 +402,10 @@ namespace OpenQA.Selenium.Opera
         /// <param name="isGlobalCapability">Indicates whether the capability is to be set as a global
         /// capability for the driver instead of a Opera-specific option.</param>
         /// <exception cref="ArgumentException">
-        /// thrown when attempting to add a capability for which there is already a type safe option, or 
+        /// thrown when attempting to add a capability for which there is already a type safe option, or
         /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
         /// </exception>
-        /// <remarks>Calling <see cref="AddAdditionalCapability(System.String, System.Object, System.Boolean)"/>
+        /// <remarks>Calling <see cref="AddAdditionalCapability(string, object, bool)"/>
         /// where <paramref name="capabilityName"/> has already been added will overwrite the
         /// existing value with the new value in <paramref name="capabilityValue"/></remarks>
         public void AddAdditionalCapability(string capabilityName, object capabilityValue, bool isGlobalCapability)

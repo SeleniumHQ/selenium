@@ -38,7 +38,6 @@ namespace OpenQA.Selenium.Interactions
         {
         }
 
-        #region IAction Members
         /// <summary>
         /// Performs this action.
         /// </summary>
@@ -47,7 +46,5 @@ namespace OpenQA.Selenium.Interactions
             this.MoveToLocation();
             this.Mouse.ContextClick(this.ActionLocation);
         }
-
-        #endregion
     }
 }

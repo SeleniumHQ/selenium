@@ -20,13 +20,13 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
 using System.Xml;
 using System.Xml.XPath;
 using Newtonsoft.Json;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
-using System.IO.Compression;
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -35,7 +35,6 @@ namespace OpenQA.Selenium.Firefox
     /// </summary>
     public class FirefoxProfile
     {
-        #region Constants
         private const string ExtensionFileName = "webdriver.xpi";
         private const string ExtensionResourceId = "WebDriver.FirefoxExt.zip";
         private const string UserPreferencesFileName = "user.js";
@@ -44,9 +43,6 @@ namespace OpenQA.Selenium.Firefox
         private const string EnableNativeEventsPreferenceName = "webdriver_enable_native_events";
         private const string AcceptUntrustedCertificatesPreferenceName = "webdriver_accept_untrusted_certs";
         private const string AssumeUntrustedCertificateIssuerPreferenceName = "webdriver_assume_untrusted_issuer";
-        #endregion
-
-        #region Private members
         private int profilePort;
         private string profileDir;
         private string sourceProfileDir;
@@ -58,9 +54,7 @@ namespace OpenQA.Selenium.Firefox
         private bool deleteOnClean = true;
         private Preferences profilePreferences;
         private Dictionary<string, FirefoxExtension> extensions = new Dictionary<string, FirefoxExtension>();
-        #endregion
 
-        #region Constructors
         /// <summary>
         /// Initializes a new instance of the <see cref="FirefoxProfile"/> class.
         /// </summary>
@@ -70,7 +64,7 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FirefoxProfile"/> class using a 
+        /// Initializes a new instance of the <see cref="FirefoxProfile"/> class using a
         /// specific profile directory.
         /// </summary>
         /// <param name="profileDirectory">The directory containing the profile.</param>
@@ -80,7 +74,7 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FirefoxProfile"/> class using a 
+        /// Initializes a new instance of the <see cref="FirefoxProfile"/> class using a
         /// specific profile directory.
         /// </summary>
         /// <param name="profileDirectory">The directory containing the profile.</param>
@@ -96,10 +90,8 @@ namespace OpenQA.Selenium.Firefox
             this.ReadDefaultPreferences();
             this.profilePreferences.AppendPreferences(this.ReadExistingPreferences());
             this.AddWebDriverExtension();
-        } 
-        #endregion
+        }
 
-        #region Properties
         /// <summary>
         /// Gets or sets the port on which the profile connects to the WebDriver extension.
         /// </summary>
@@ -137,7 +129,7 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether to always load the library for allowing Firefox 
+        /// Gets or sets a value indicating whether to always load the library for allowing Firefox
         /// to execute commands without its window having focus.
         /// </summary>
         /// <remarks>The <see cref="AlwaysLoadNoFocusLibrary"/> property is only used on Linux.</remarks>
@@ -148,8 +140,8 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether Firefox should accept SSL certificates which have 
-        /// expired, signed by an unknown authority or are generally untrusted. Set to true 
+        /// Gets or sets a value indicating whether Firefox should accept SSL certificates which have
+        /// expired, signed by an unknown authority or are generally untrusted. Set to true
         /// by default.
         /// </summary>
         public bool AcceptUntrustedCertificates
@@ -159,14 +151,14 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether Firefox assume untrusted SSL certificates 
+        /// Gets or sets a value indicating whether Firefox assume untrusted SSL certificates
         /// come from an untrusted issuer or are self-signed. Set to true by default.
         /// </summary>
         /// <remarks>
         /// <para>
         /// Due to limitations within Firefox, it is easy to find out if a certificate has expired
         /// or does not match the host it was served for, but hard to find out if the issuer of the
-        /// certificate is untrusted. By default, it is assumed that the certificates were not 
+        /// certificate is untrusted. By default, it is assumed that the certificates were not
         /// issued from a trusted certificate authority.
         /// </para>
         /// <para>
@@ -181,9 +173,7 @@ namespace OpenQA.Selenium.Firefox
             get { return this.assumeUntrustedIssuer; }
             set { this.assumeUntrustedIssuer = value; }
         }
-        #endregion
 
-        #region Public methods
         /// <summary>
         /// Converts a base64-encoded string into a <see cref="FirefoxProfile"/>.
         /// </summary>
@@ -197,7 +187,7 @@ namespace OpenQA.Selenium.Firefox
             {
                 using (ZipStorer profileZipArchive = ZipStorer.Open(zipStream, FileAccess.Read))
                 {
-                    List<ZipStorer.ZipFileEntry> entryList = profileZipArchive.ReadCentralDir();
+                    List<ZipStorer.ZipFileEntry> entryList = profileZipArchive.ReadCentralDirectory();
                     foreach (ZipStorer.ZipFileEntry entry in entryList)
                     {
                         string fileName = entry.FilenameInZip.Replace('/', Path.DirectorySeparatorChar);
@@ -223,7 +213,7 @@ namespace OpenQA.Selenium.Firefox
         /// Sets a preference in the profile.
         /// </summary>
         /// <param name="name">The name of the preference to add.</param>
-        /// <param name="value">A <see cref="System.String"/> value to add to the profile.</param>
+        /// <param name="value">A <see cref="string"/> value to add to the profile.</param>
         public void SetPreference(string name, string value)
         {
             this.profilePreferences.SetPreference(name, value);
@@ -233,7 +223,7 @@ namespace OpenQA.Selenium.Firefox
         /// Sets a preference in the profile.
         /// </summary>
         /// <param name="name">The name of the preference to add.</param>
-        /// <param name="value">A <see cref="System.Int32"/> value to add to the profile.</param>
+        /// <param name="value">A <see cref="int"/> value to add to the profile.</param>
         public void SetPreference(string name, int value)
         {
             this.profilePreferences.SetPreference(name, value);
@@ -243,7 +233,7 @@ namespace OpenQA.Selenium.Firefox
         /// Sets a preference in the profile.
         /// </summary>
         /// <param name="name">The name of the preference to add.</param>
-        /// <param name="value">A <see cref="System.Boolean"/> value to add to the profile.</param>
+        /// <param name="value">A <see cref="bool"/> value to add to the profile.</param>
         public void SetPreference(string name, bool value)
         {
             this.profilePreferences.SetPreference(name, value);
@@ -252,7 +242,7 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Set proxy preferences for this profile.
         /// </summary>
-        /// <param name="proxy">The <see cref="Proxy"/> object defining the proxy 
+        /// <param name="proxy">The <see cref="Proxy"/> object defining the proxy
         /// preferences for the profile.</param>
         public void SetProxyPreferences(Proxy proxy)
         {
@@ -347,7 +337,7 @@ namespace OpenQA.Selenium.Firefox
                     foreach (string file in files)
                     {
                         string fileNameInZip = file.Substring(this.profileDir.Length).Replace(Path.DirectorySeparatorChar, '/');
-                        profileZipArchive.AddFile(ZipStorer.Compression.Deflate, file, fileNameInZip, string.Empty);
+                        profileZipArchive.AddFile(ZipStorer.CompressionMethod.Deflate, file, fileNameInZip, string.Empty);
                     }
                 }
 
@@ -357,9 +347,7 @@ namespace OpenQA.Selenium.Firefox
 
             return base64zip;
         }
-        #endregion
 
-        #region Support methods
         /// <summary>
         /// Adds the WebDriver extension for Firefox to the profile.
         /// </summary>
@@ -404,7 +392,7 @@ namespace OpenQA.Selenium.Firefox
         /// Deletes the cache of extensions for this profile, if the cache exists.
         /// </summary>
         /// <remarks>If the extensions cache does not exist for this profile, the
-        /// <see cref="DeleteExtensionsCache"/> method performs no operations, but 
+        /// <see cref="DeleteExtensionsCache"/> method performs no operations, but
         /// succeeds.</remarks>
         private void DeleteExtensionsCache()
         {
@@ -530,6 +518,5 @@ namespace OpenQA.Selenium.Firefox
                 this.SetPreference("network.proxy." + key + "_port", int.Parse(hostPort[1], CultureInfo.InvariantCulture));
             }
         }
-        #endregion
     }
 }

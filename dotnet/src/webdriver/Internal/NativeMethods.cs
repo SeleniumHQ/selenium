@@ -40,18 +40,25 @@ namespace OpenQA.Selenium
             None = 0,
 
             /// <summary>
-            /// If this flag is set, a child process created with the bInheritHandles 
+            /// If this flag is set, a child process created with the bInheritHandles
             /// parameter of CreateProcess set to TRUE will inherit the object handle.
             /// </summary>
             Inherit = 1,
 
             /// <summary>
-            /// If this flag is set, calling the CloseHandle function will not close the 
+            /// If this flag is set, calling the CloseHandle function will not close the
             /// object handle.
             /// </summary>
             ProtectFromClose = 2
         }
 
+        /// <summary>
+        /// Sets the handle information for a Windows object.
+        /// </summary>
+        /// <param name="hObject">Handle to the object.</param>
+        /// <param name="dwMask">The handle information to set.</param>
+        /// <param name="dwFlags">The flags for the handle.</param>
+        /// <returns><see langword="true"/> if the information is set; otherwise <see langword="false"/>.</returns>
         [DllImport("kernel32")]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool SetHandleInformation(IntPtr hObject, HandleInformation dwMask, HandleInformation dwFlags);

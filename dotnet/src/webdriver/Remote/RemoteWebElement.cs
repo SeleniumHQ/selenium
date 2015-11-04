@@ -22,9 +22,9 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using OpenQA.Selenium.Interactions.Internal;
 using OpenQA.Selenium.Internal;
-using System.IO.Compression;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -35,12 +35,9 @@ namespace OpenQA.Selenium.Remote
     /// <seealso cref="ILocatable"/>
     public class RemoteWebElement : IWebElement, IFindsByLinkText, IFindsById, IFindsByName, IFindsByTagName, IFindsByClassName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, IWrapsDriver, ILocatable, ITakesScreenshot
     {
-        #region Private members
         private RemoteWebDriver driver;
         private string elementId;
-        #endregion
 
-        #region Constructor
         /// <summary>
         /// Initializes a new instance of the <see cref="RemoteWebElement"/> class.
         /// </summary>
@@ -51,9 +48,7 @@ namespace OpenQA.Selenium.Remote
             this.driver = parentDriver;
             this.elementId = id;
         }
-        #endregion
 
-        #region IWrapsDriver Members
         /// <summary>
         /// Gets the <see cref="IWebDriver"/> used to find this element.
         /// </summary>
@@ -61,16 +56,14 @@ namespace OpenQA.Selenium.Remote
         {
             get { return this.driver; }
         }
-        #endregion
 
-        #region IWebElement properties
         /// <summary>
         /// Gets the tag name of this element.
         /// </summary>
         /// <remarks>
         /// The <see cref="TagName"/> property returns the tag name of the
         /// element, not the value of the name attribute. For example, it will return
-        /// "input" for an element specified by the HTML markup &lt;input name="foo" /&gt;. 
+        /// "input" for an element specified by the HTML markup &lt;input name="foo" /&gt;.
         /// </remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         public string TagName
@@ -103,7 +96,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets a value indicating whether or not this element is enabled.
         /// </summary>
-        /// <remarks>The <see cref="Enabled"/> property will generally 
+        /// <remarks>The <see cref="Enabled"/> property will generally
         /// return <see langword="true"/> for everything except explicitly disabled input elements.</remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         public bool Enabled
@@ -186,7 +179,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets a value indicating whether or not this element is displayed.
         /// </summary>
-        /// <remarks>The <see cref="Displayed"/> property avoids the problem 
+        /// <remarks>The <see cref="Displayed"/> property avoids the problem
         /// of having to parse an element's "style" attribute to determine
         /// visibility of an element.</remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
@@ -200,9 +193,7 @@ namespace OpenQA.Selenium.Remote
                 return (bool)commandResponse.Value;
             }
         }
-        #endregion
 
-        #region ILocatable Members
         /// <summary>
         /// Gets the point where the element would be when scrolled into view.
         /// </summary>
@@ -238,9 +229,7 @@ namespace OpenQA.Selenium.Remote
         {
             get { return new RemoteCoordinates(this); }
         }
-        #endregion
 
-        #region Internal Properties
         /// <summary>
         /// Gets the ID of the element.
         /// </summary>
@@ -255,9 +244,7 @@ namespace OpenQA.Selenium.Remote
         {
             get { return this.elementId; }
         }
-        #endregion
 
-        #region Protected properties
         /// <summary>
         /// Gets the ID of the element
         /// </summary>
@@ -272,14 +259,12 @@ namespace OpenQA.Selenium.Remote
         {
             get { return this.elementId; }
         }
-        #endregion
 
-        #region IWebElement methods
         /// <summary>
         /// Clears the content of this element.
         /// </summary>
         /// <remarks>If this element is a text entry element, the <see cref="Clear"/>
-        /// method will clear the value. It has no effect on other elements. Text entry elements 
+        /// method will clear the value. It has no effect on other elements. Text entry elements
         /// are defined as elements with INPUT or TEXTAREA tags.</remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         public void Clear()
@@ -294,7 +279,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         /// <param name="text">The text to type into the element.</param>
         /// <remarks>The text to be typed may include special characters like arrow keys,
-        /// backspaces, function keys, and so on. Valid special keys are defined in 
+        /// backspaces, function keys, and so on. Valid special keys are defined in
         /// <see cref="Keys"/>.</remarks>
         /// <seealso cref="Keys"/>
         /// <exception cref="InvalidElementStateException">Thrown when the target element is not enabled.</exception>
@@ -335,8 +320,8 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Submits this element to the web server.
         /// </summary>
-        /// <remarks>If this current element is a form, or an element within a form, 
-        /// then this will be submitted to the web server. If this causes the current 
+        /// <remarks>If this current element is a form, or an element within a form,
+        /// then this will be submitted to the web server. If this causes the current
         /// page to change, then this method will attempt to block until the new page
         /// is loaded.</remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
@@ -345,9 +330,10 @@ namespace OpenQA.Selenium.Remote
             if (this.driver.IsSpecificationCompliant)
             {
                 IWebElement form = this.FindElement(By.XPath("./ancestor-or-self::form"));
-                this.driver.ExecuteScript("var e = arguments[0].ownerDocument.createEvent('Event');" +
-                                           "e.initEvent('submit', true, true);" +
-                                           "if (arguments[0].dispatchEvent(e)) { arguments[0].submit(); }", form);
+                this.driver.ExecuteScript(
+                    "var e = arguments[0].ownerDocument.createEvent('Event');" +
+                    "e.initEvent('submit', true, true);" +
+                    "if (arguments[0].dispatchEvent(e)) { arguments[0].submit(); }", form);
             }
             else
             {
@@ -358,13 +344,13 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Clicks this element. 
+        /// Clicks this element.
         /// </summary>
         /// <remarks>
-        /// Click this element. If the click causes a new page to load, the <see cref="Click"/> 
-        /// method will attempt to block until the page has loaded. After calling the 
-        /// <see cref="Click"/> method, you should discard all references to this 
-        /// element unless you know that the element and the page will still be present. 
+        /// Click this element. If the click causes a new page to load, the <see cref="Click"/>
+        /// method will attempt to block until the page has loaded. After calling the
+        /// <see cref="Click"/> method, you should discard all references to this
+        /// element unless you know that the element and the page will still be present.
         /// Otherwise, any further operations performed on this element will have an undefined
         /// behavior.
         /// </remarks>
@@ -382,11 +368,11 @@ namespace OpenQA.Selenium.Remote
         /// Gets the value of the specified attribute for this element.
         /// </summary>
         /// <param name="attributeName">The name of the attribute.</param>
-        /// <returns>The attribute's current value. Returns a <see langword="null"/> if the 
+        /// <returns>The attribute's current value. Returns a <see langword="null"/> if the
         /// value is not set.</returns>
         /// <remarks>The <see cref="GetAttribute"/> method will return the current value
-        /// of the attribute, even if the value has been modified after the page has been 
-        /// loaded. Note that the value of the following attributes will be returned even if 
+        /// of the attribute, even if the value has been modified after the page has been
+        /// loaded. Note that the value of the following attributes will be returned even if
         /// there is no explicit attribute on the element:
         /// <list type="table">
         /// <listheader>
@@ -443,8 +429,8 @@ namespace OpenQA.Selenium.Remote
         /// <param name="propertyName">The name of the CSS property to get the value of.</param>
         /// <returns>The value of the specified CSS property.</returns>
         /// <remarks>The value returned by the <see cref="GetCssValue"/>
-        /// method is likely to be unpredictable in a cross-browser environment. 
-        /// Color values should be returned as hex strings. For example, a 
+        /// method is likely to be unpredictable in a cross-browser environment.
+        /// Color values should be returned as hex strings. For example, a
         /// "background-color" property set as "green" in the HTML source, will
         /// return "#008000" for its value.</remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
@@ -466,7 +452,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Finds all <see cref="IWebElement">IWebElements</see> within the current context 
+        /// Finds all <see cref="IWebElement">IWebElements</see> within the current context
         /// using the given mechanism.
         /// </summary>
         /// <param name="by">The locating mechanism to use.</param>
@@ -483,7 +469,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Finds the first <see cref="IWebElement"/> using the given method. 
+        /// Finds the first <see cref="IWebElement"/> using the given method.
         /// </summary>
         /// <param name="by">The locating mechanism to use.</param>
         /// <returns>The first matching <see cref="IWebElement"/> on the current context.</returns>
@@ -497,9 +483,7 @@ namespace OpenQA.Selenium.Remote
 
             return by.FindElement(this);
         }
-        #endregion
 
-        #region IFindsByLinkText Members
         /// <summary>
         /// Finds the first of elements that match the link text supplied
         /// </summary>
@@ -532,9 +516,6 @@ namespace OpenQA.Selenium.Remote
             return this.FindElements("link text", linkText);
         }
 
-        #endregion
-
-        #region IFindsById Members
         /// <summary>
         /// Finds the first element in the page that matches the ID supplied
         /// </summary>
@@ -577,9 +558,6 @@ namespace OpenQA.Selenium.Remote
             return this.FindElements("id", id);
         }
 
-        #endregion
-
-        #region IFindsByName Members
         /// <summary>
         /// Finds the first of elements that match the name supplied
         /// </summary>
@@ -634,9 +612,6 @@ namespace OpenQA.Selenium.Remote
             return this.FindElements("name", name);
         }
 
-        #endregion
-
-        #region IFindsByTagName Members
         /// <summary>
         /// Finds the first of elements that match the DOM Tag supplied
         /// </summary>
@@ -690,9 +665,7 @@ namespace OpenQA.Selenium.Remote
 
             return this.FindElements("tag name", tagName);
         }
-        #endregion
 
-        #region IFindsByClassName Members
         /// <summary>
         /// Finds the first element in the page that matches the CSS Class supplied
         /// </summary>
@@ -746,9 +719,7 @@ namespace OpenQA.Selenium.Remote
 
             return this.FindElements("class name", className);
         }
-        #endregion
 
-        #region IFindsByXPath Members
         /// <summary>
         /// Finds the first of elements that match the XPath supplied
         /// </summary>
@@ -780,9 +751,7 @@ namespace OpenQA.Selenium.Remote
         {
             return this.FindElements("xpath", xpath);
         }
-        #endregion
 
-        #region IFindsByPartialLinkText Members
         /// <summary>
         /// Finds the first of elements that match the part of the link text supplied
         /// </summary>
@@ -814,9 +783,7 @@ namespace OpenQA.Selenium.Remote
         {
             return this.FindElements("partial link text", partialLinkText);
         }
-        #endregion
 
-        #region IFindsByCssSelector Members
         /// <summary>
         /// Finds the first element matching the specified CSS selector.
         /// </summary>
@@ -837,9 +804,7 @@ namespace OpenQA.Selenium.Remote
         {
             return this.FindElements("css selector", cssSelector);
         }
-        #endregion
 
-        #region ITakesScreenshot
         /// <summary>
         /// Gets a <see cref="Screenshot"/> object representing the image of this element on the screen.
         /// </summary>
@@ -848,6 +813,7 @@ namespace OpenQA.Selenium.Remote
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", this.elementId);
+
             // Get the screenshot as base64.
             Response screenshotResponse = this.Execute(DriverCommand.ElementScreenshot, parameters);
             string base64 = screenshotResponse.Value.ToString();
@@ -855,9 +821,7 @@ namespace OpenQA.Selenium.Remote
             // ... and convert it.
             return new Screenshot(base64);
         }
-        #endregion
 
-        #region Overrides
         /// <summary>
         /// Method to get the hash code of the element
         /// </summary>
@@ -908,9 +872,7 @@ namespace OpenQA.Selenium.Remote
             object value = response.Value;
             return value != null && value is bool && (bool)value;
         }
-        #endregion
 
-        #region Protected support methods
         /// <summary>
         /// Finds a child element matching the given mechanism and value.
         /// </summary>
@@ -953,7 +915,6 @@ namespace OpenQA.Selenium.Remote
         {
             return this.driver.InternalExecute(commandToExecute, parameters);
         }
-        #endregion
 
         private string UploadFile(string localFile)
         {
@@ -965,7 +926,7 @@ namespace OpenQA.Selenium.Remote
                     using (ZipStorer zipArchive = ZipStorer.Create(fileUploadMemoryStream, string.Empty))
                     {
                         string fileName = Path.GetFileName(localFile);
-                        zipArchive.AddFile(ZipStorer.Compression.Deflate, localFile, fileName, string.Empty);
+                        zipArchive.AddFile(ZipStorer.CompressionMethod.Deflate, localFile, fileName, string.Empty);
                         base64zip = Convert.ToBase64String(fileUploadMemoryStream.ToArray());
                     }
                 }

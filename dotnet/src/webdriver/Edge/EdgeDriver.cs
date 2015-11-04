@@ -29,7 +29,6 @@ namespace OpenQA.Selenium.Edge
     /// </summary>
     public class EdgeDriver : RemoteWebDriver
     {
-        #region Constructors
         /// <summary>
         /// Initializes a new instance of the <see cref="EdgeDriver"/> class.
         /// </summary>
@@ -57,7 +56,7 @@ namespace OpenQA.Selenium.Edge
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified path 
+        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified path
         /// to the directory containing EdgeDriver.exe.
         /// </summary>
         /// <param name="edgeDriverDirectory">The full path to the directory containing EdgeDriver.exe.</param>
@@ -90,7 +89,7 @@ namespace OpenQA.Selenium.Edge
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified 
+        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified
         /// <see cref="EdgeDriverService"/> and options.
         /// </summary>
         /// <param name="service">The <see cref="EdgeDriverService"/> to use.</param>
@@ -110,7 +109,6 @@ namespace OpenQA.Selenium.Edge
             : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
         }
-        #endregion
 
         private static ICapabilities ConvertOptionsToCapabilities(EdgeOptions options)
         {
@@ -123,4 +121,3 @@ namespace OpenQA.Selenium.Edge
         }
     }
 }
-

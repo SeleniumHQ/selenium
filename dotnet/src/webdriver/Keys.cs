@@ -137,17 +137,17 @@ namespace OpenQA.Selenium
         /// Represents the left arrow key.
         /// </summary>
         public static readonly string Left = Convert.ToString(Convert.ToChar(0xE012, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
-        
+
         /// <summary>
         /// Represents the left arrow key.
         /// </summary>
         public static readonly string ArrowLeft = Convert.ToString(Convert.ToChar(0xE012, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture); // alias
-        
+
         /// <summary>
         /// Represents the up arrow key.
         /// </summary>
         public static readonly string Up = Convert.ToString(Convert.ToChar(0xE013, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
-        
+
         /// <summary>
         /// Represents the up arrow key.
         /// </summary>
@@ -336,12 +336,12 @@ namespace OpenQA.Selenium
         /// Represents the function key F12.
         /// </summary>
         public static readonly string F12 = Convert.ToString(Convert.ToChar(0xE03C, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
-        
+
         /// <summary>
         /// Represents the function key META.
         /// </summary>
         public static readonly string Meta = Convert.ToString(Convert.ToChar(0xE03D, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
-        
+
         /// <summary>
         /// Represents the function key COMMAND.
         /// </summary>

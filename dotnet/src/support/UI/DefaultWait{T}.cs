@@ -1,4 +1,4 @@
-﻿// <copyright file="DefaultWait.cs" company="WebDriver Committers">
+﻿// <copyright file="DefaultWait{T}.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -45,8 +45,8 @@ namespace OpenQA.Selenium.Support.UI
         /// Initializes a new instance of the <see cref="DefaultWait&lt;T&gt;"/> class.
         /// </summary>
         /// <param name="input">The input value to pass to the evaluated conditions.</param>
-        public DefaultWait(T input) :
-            this(input, new SystemClock())
+        public DefaultWait(T input)
+            : this(input, new SystemClock())
         {
         }
 
@@ -146,7 +146,7 @@ namespace OpenQA.Selenium.Support.UI
             {
                 throw new ArgumentNullException("condition", "condition cannot be null");
             }
-            
+
             var resultType = typeof(TResult);
             if ((resultType.IsValueType && resultType != typeof(bool)) || !typeof(object).IsAssignableFrom(resultType))
             {

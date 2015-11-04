@@ -1,4 +1,4 @@
-﻿// <copyright file="IWait.cs" company="WebDriver Committers">
+﻿// <copyright file="IWait{T}.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -23,8 +23,8 @@ namespace OpenQA.Selenium.Support.UI
     /// <summary>
     /// Interface describing a class designed to wait for a condition.
     /// </summary>
-    /// <typeparam name="TSource">The type of object used to detect the condition.</typeparam>
-    public interface IWait<TSource>
+    /// <typeparam name="T">The type of object used to detect the condition.</typeparam>
+    public interface IWait<T>
     {
         /// <summary>
         /// Gets or sets how long to wait for the evaluated condition to be true.
@@ -56,6 +56,6 @@ namespace OpenQA.Selenium.Support.UI
         /// <returns>If TResult is a boolean, the method returns <see langword="true"/> when the condition is true, and <see langword="false"/> otherwise.
         /// If TResult is an object, the method returns the object when the condition evaluates to a value other than <see langword="null"/>.</returns>
         /// <exception cref="ArgumentException">Thrown when TResult is not boolean or an object type.</exception>
-        TResult Until<TResult>(Func<TSource, TResult> condition);
+        TResult Until<TResult>(Func<T, TResult> condition);
     }
 }

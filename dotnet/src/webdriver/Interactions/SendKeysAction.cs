@@ -43,7 +43,6 @@ namespace OpenQA.Selenium.Interactions
             this.keysToSend = keysToSend;
         }
 
-        #region IAction Members
         /// <summary>
         /// Performs this action.
         /// </summary>
@@ -52,7 +51,5 @@ namespace OpenQA.Selenium.Interactions
             this.FocusOnElement();
             this.Keyboard.SendKeys(this.keysToSend);
         }
-
-        #endregion
     }
 }

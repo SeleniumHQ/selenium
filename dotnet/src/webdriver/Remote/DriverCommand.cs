@@ -95,7 +95,7 @@ namespace OpenQA.Selenium.Remote
 
         /// <summary>
         /// Represents deleting a cookie command
-        /// </summary>        
+        /// </summary>
         public static readonly string DeleteCookie = "deleteCookie";
 
         /// <summary>
@@ -527,6 +527,5 @@ namespace OpenQA.Selenium.Remote
         /// Represents the GetSessionStorageSize command.
         /// </summary>
         public static readonly string GetSessionStorageSize = "getSessionStorageSize";
-
     }
 }

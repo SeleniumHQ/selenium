@@ -28,8 +28,8 @@ namespace OpenQA.Selenium.Interactions
     /// </summary>
     /// <remarks>
     /// This action can be called for an element different than the one
-    /// ClickAndHoldAction was called for. However, if this action is 
-    /// performed out of sequence (without holding down the mouse button, 
+    /// ClickAndHoldAction was called for. However, if this action is
+    /// performed out of sequence (without holding down the mouse button,
     /// for example) the results will be different.
     /// </remarks>
     internal class ButtonReleaseAction : MouseAction, IAction
@@ -44,18 +44,15 @@ namespace OpenQA.Selenium.Interactions
         {
         }
 
-        #region IAction Members
         /// <summary>
         /// Performs this action.
         /// </summary>
         public void Perform()
         {
-            // Releases the mouse button currently left held. 
+            // Releases the mouse button currently left held.
             // between browsers.
             this.MoveToLocation();
             this.Mouse.MouseUp(this.ActionLocation);
         }
-
-        #endregion
     }
 }

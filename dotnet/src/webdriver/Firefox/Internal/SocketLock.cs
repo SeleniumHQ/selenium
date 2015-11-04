@@ -32,14 +32,11 @@ namespace OpenQA.Selenium.Firefox.Internal
     /// </summary>
     internal class SocketLock : ILock
     {
-        #region Private members
         private static int delayBetweenSocketChecks = 100;
 
         private int lockPort;
-        private Socket lockSocket; 
-        #endregion
+        private Socket lockSocket;
 
-        #region Constructor
         /// <summary>
         /// Initializes a new instance of the <see cref="SocketLock"/> class.
         /// </summary>
@@ -52,13 +49,11 @@ namespace OpenQA.Selenium.Firefox.Internal
             this.lockSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             this.PreventSocketInheritance();
         }
-        #endregion
 
-        #region ILock Members
         /// <summary>
         /// Locks the mutex port.
         /// </summary>
-        /// <param name="timeout">The <see cref="TimeSpan"/> describing the amount of time to wait for 
+        /// <param name="timeout">The <see cref="TimeSpan"/> describing the amount of time to wait for
         /// the mutex port to become available.</param>
         public void LockObject(TimeSpan timeout)
         {
@@ -109,7 +104,7 @@ namespace OpenQA.Selenium.Firefox.Internal
         /// <summary>
         /// Locks the mutex port.
         /// </summary>
-        /// <param name="timeoutInMilliseconds">The amount of time (in milliseconds) to wait for 
+        /// <param name="timeoutInMilliseconds">The amount of time (in milliseconds) to wait for
         /// the mutex port to become available.</param>
         [Obsolete("Timeouts should be expressed as a TimeSpan. Use the LockObject overload taking a TimeSpan parameter instead")]
         public void LockObject(long timeoutInMilliseconds)
@@ -131,9 +126,7 @@ namespace OpenQA.Selenium.Firefox.Internal
                 throw new WebDriverException("An error occured unlocking the object", e);
             }
         }
-        #endregion
 
-        #region IDisposable Members
         /// <summary>
         /// Releases all resources associated with this <see cref="SocketLock"/>
         /// </summary>
@@ -146,9 +139,7 @@ namespace OpenQA.Selenium.Firefox.Internal
 
             GC.SuppressFinalize(this);
         }
-        #endregion
 
-        #region Support methods
         private bool IsLockFree(IPEndPoint address)
         {
             try
@@ -170,6 +161,5 @@ namespace OpenQA.Selenium.Firefox.Internal
                 NativeMethods.SetHandleInformation(this.lockSocket.Handle, NativeMethods.HandleInformation.Inherit | NativeMethods.HandleInformation.ProtectFromClose, NativeMethods.HandleInformation.None);
             }
         }
-        #endregion
     }
 }

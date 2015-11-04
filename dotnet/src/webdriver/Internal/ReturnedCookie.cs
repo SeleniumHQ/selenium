@@ -33,7 +33,7 @@ namespace OpenQA.Selenium.Internal
         private bool isHttpOnly;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ReturnedCookie"/> class with a specific name, 
+        /// Initializes a new instance of the <see cref="ReturnedCookie"/> class with a specific name,
         /// value, domain, path and expiration date.
         /// </summary>
         /// <param name="name">The name of the cookie.</param>
@@ -70,7 +70,7 @@ namespace OpenQA.Selenium.Internal
         }
 
         /// <summary>
-        /// Creates and returns a string representation of the current cookie. 
+        /// Creates and returns a string representation of the current cookie.
         /// </summary>
         /// <returns>A string representation of the current cookie.</returns>
         public override string ToString()

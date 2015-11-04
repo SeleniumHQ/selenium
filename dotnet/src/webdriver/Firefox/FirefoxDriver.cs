@@ -33,7 +33,7 @@ namespace OpenQA.Selenium.Firefox
     /// Provides a way to access Firefox to run tests.
     /// </summary>
     /// <remarks>
-    /// When the FirefoxDriver object has been instantiated the browser will load. The test can then navigate to the URL under test and 
+    /// When the FirefoxDriver object has been instantiated the browser will load. The test can then navigate to the URL under test and
     /// start your test.
     /// <para>
     /// In the case of the FirefoxDriver, you can specify a named profile to be used, or you can let the
@@ -67,26 +67,23 @@ namespace OpenQA.Selenium.Firefox
     ///     public void TearDown()
     ///     {
     ///         driver.Quit();
-    ///     } 
+    ///     }
     /// }
     /// </code>
     /// </example>
     public class FirefoxDriver : RemoteWebDriver
     {
-        #region Public members
         /// <summary>
         /// The name of the ICapabilities setting to use to define a custom Firefox profile.
         /// </summary>
         public static readonly string ProfileCapabilityName = "firefox_profile";
-        
+
         /// <summary>
         /// The name of the ICapabilities setting to use to define a custom location for the
         /// Firefox executable.
         /// </summary>
         public static readonly string BinaryCapabilityName = "firefox_binary";
-        #endregion
 
-        #region Private members
         /// <summary>
         /// The default port on which to communicate with the Firefox extension.
         /// </summary>
@@ -110,14 +107,12 @@ namespace OpenQA.Selenium.Firefox
         private FirefoxBinary binary;
 
         private FirefoxProfile profile;
-        #endregion
 
-        #region Constructors
         /// <summary>
         /// Initializes a new instance of the <see cref="FirefoxDriver"/> class.
         /// </summary>
-        public FirefoxDriver() :
-            this(new FirefoxBinary(), null)
+        public FirefoxDriver()
+            : this(new FirefoxBinary(), null)
         {
         }
 
@@ -126,8 +121,8 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         /// <param name="profile">A <see cref="FirefoxProfile"/> object representing the profile settings
         /// to be used in starting Firefox.</param>
-        public FirefoxDriver(FirefoxProfile profile) :
-            this(new FirefoxBinary(), profile)
+        public FirefoxDriver(FirefoxProfile profile)
+            : this(new FirefoxBinary(), profile)
         {
         }
 
@@ -144,7 +139,7 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Initializes a new instance of the <see cref="FirefoxDriver"/> class for a given profile and binary environment.
         /// </summary>
-        /// <param name="binary">A <see cref="FirefoxBinary"/> object representing the operating system 
+        /// <param name="binary">A <see cref="FirefoxBinary"/> object representing the operating system
         /// environmental settings used when running Firefox.</param>
         /// <param name="profile">A <see cref="FirefoxProfile"/> object representing the profile settings
         /// to be used in starting Firefox.</param>
@@ -156,7 +151,7 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Initializes a new instance of the <see cref="FirefoxDriver"/> class for a given profile, binary environment, and timeout value.
         /// </summary>
-        /// <param name="binary">A <see cref="FirefoxBinary"/> object representing the operating system 
+        /// <param name="binary">A <see cref="FirefoxBinary"/> object representing the operating system
         /// environmental settings used when running Firefox.</param>
         /// <param name="profile">A <see cref="FirefoxProfile"/> object representing the profile settings
         /// to be used in starting Firefox.</param>
@@ -194,7 +189,6 @@ namespace OpenQA.Selenium.Firefox
             : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
         }
-        #endregion
 
         private FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, ICapabilities capabilities, TimeSpan commandTimeout)
             : base(CreateExtensionConnection(binary, profile, commandTimeout), RemoveUnneededCapabilities(capabilities))
@@ -203,16 +197,15 @@ namespace OpenQA.Selenium.Firefox
             this.profile = profile;
         }
 
-        #region Properties
         /// <summary>
-        /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting 
-        /// sequences of keystrokes representing file paths and names. 
+        /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting
+        /// sequences of keystrokes representing file paths and names.
         /// </summary>
         /// <remarks>The Firefox driver does not allow a file detector to be set,
         /// as the server component of the Firefox driver only allows uploads from
         /// the local computer environment. Attempting to set this property has no
-        /// effect, but does not throw an exception. If you  are attempting to run 
-        /// the Firefox driver remotely, use <see cref="RemoteWebDriver"/> in 
+        /// effect, but does not throw an exception. If you  are attempting to run
+        /// the Firefox driver remotely, use <see cref="RemoteWebDriver"/> in
         /// conjunction with a standalone WebDriver server.</remarks>
         public override IFileDetector FileDetector
         {
@@ -246,9 +239,7 @@ namespace OpenQA.Selenium.Firefox
         {
             get { return this.profile; }
         }
-        #endregion
 
-        #region Support methods
         /// <summary>
         /// In derived classes, the <see cref="PrepareEnvironment"/> method prepares the environment for test execution.
         /// </summary>
@@ -266,9 +257,7 @@ namespace OpenQA.Selenium.Firefox
         {
             return new FirefoxWebElement(this, elementId);
         }
-        #endregion
 
-        #region Private methods
         private static FirefoxBinary ExtractBinary(ICapabilities capabilities)
         {
             if (capabilities.GetCapability(BinaryCapabilityName) != null)
@@ -276,7 +265,7 @@ namespace OpenQA.Selenium.Firefox
                 string file = capabilities.GetCapability(BinaryCapabilityName).ToString();
                 return new FirefoxBinary(file);
             }
- 
+
             return new FirefoxBinary();
         }
 
@@ -367,6 +356,5 @@ namespace OpenQA.Selenium.Firefox
 
             return options.ToCapabilities();
         }
-        #endregion
     }
 }

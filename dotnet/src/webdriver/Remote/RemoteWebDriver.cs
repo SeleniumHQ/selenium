@@ -56,7 +56,7 @@ namespace OpenQA.Selenium.Remote
     ///     public void TearDown()
     ///     {
     ///         driver.Quit();
-    ///     } 
+    ///     }
     /// }
     /// </code>
     /// </example>
@@ -66,8 +66,6 @@ namespace OpenQA.Selenium.Remote
         /// The default command timeout for HTTP requests in a RemoteWebDriver instance.
         /// </summary>
         protected static readonly TimeSpan DefaultCommandTimeout = TimeSpan.FromSeconds(60);
-
-        #region Private members
         private ICommandExecutor executor;
         private ICapabilities capabilities;
         private IMouse mouse;
@@ -77,11 +75,9 @@ namespace OpenQA.Selenium.Remote
         private IApplicationCache appCache;
         private ILocationContext locationContext;
         private IFileDetector fileDetector = new DefaultFileDetector();
-        #endregion
 
-        #region Constructors
         /// <summary>
-        /// Initializes a new instance of the RemoteWebDriver class
+        /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class
         /// </summary>
         /// <param name="commandExecutor">An <see cref="ICommandExecutor"/> object which executes commands for the driver.</param>
         /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
@@ -122,7 +118,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Initializes a new instance of the RemoteWebDriver class. This constructor defaults proxy to http://127.0.0.1:4444/wd/hub
+        /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class. This constructor defaults proxy to http://127.0.0.1:4444/wd/hub
         /// </summary>
         /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
         public RemoteWebDriver(ICapabilities desiredCapabilities)
@@ -131,7 +127,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Initializes a new instance of the RemoteWebDriver class
+        /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class
         /// </summary>
         /// <param name="remoteAddress">URI containing the address of the WebDriver remote server (e.g. http://127.0.0.1:4444/wd/hub).</param>
         /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
@@ -141,7 +137,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Initializes a new instance of the RemoteWebDriver class using the specified remote address, desired capabilities, and command timeout.
+        /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class using the specified remote address, desired capabilities, and command timeout.
         /// </summary>
         /// <param name="remoteAddress">URI containing the address of the WebDriver remote server (e.g. http://127.0.0.1:4444/wd/hub).</param>
         /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
@@ -150,14 +146,12 @@ namespace OpenQA.Selenium.Remote
             : this(new HttpCommandExecutor(remoteAddress, commandTimeout), desiredCapabilities)
         {
         }
-        #endregion
 
-        #region IWebDriver Properties
         /// <summary>
         /// Gets or sets the URL the browser is currently displaying.
         /// </summary>
         /// <seealso cref="IWebDriver.Url"/>
-        /// <seealso cref="INavigation.GoToUrl(System.String)"/>
+        /// <seealso cref="INavigation.GoToUrl(string)"/>
         /// <seealso cref="INavigation.GoToUrl(System.Uri)"/>
         public string Url
         {
@@ -243,12 +237,13 @@ namespace OpenQA.Selenium.Remote
                     Response commandResponse = this.Execute(DriverCommand.GetPageSource, null);
                     pageSource = commandResponse.Value.ToString();
                 }
+
                 return pageSource;
             }
         }
 
         /// <summary>
-        /// Gets the current window handle, which is an opaque handle to this 
+        /// Gets the current window handle, which is an opaque handle to this
         /// window that uniquely identifies it within this driver instance.
         /// </summary>
         public string CurrentWindowHandle
@@ -278,9 +273,7 @@ namespace OpenQA.Selenium.Remote
                 return handleList.AsReadOnly();
             }
         }
-        #endregion
 
-        #region IHasInputDevices Members
         /// <summary>
         /// Gets an <see cref="IKeyboard"/> object for sending keystrokes to the browser.
         /// </summary>
@@ -296,7 +289,6 @@ namespace OpenQA.Selenium.Remote
         {
             get { return this.mouse; }
         }
-        #endregion
 
         /// <summary>
         /// Gets a value indicating whether web storage is supported for this driver.
@@ -370,7 +362,6 @@ namespace OpenQA.Selenium.Remote
             }
         }
 
-        #region IHasCapabilities properties
         /// <summary>
         /// Gets the capabilities that the RemoteWebDriver instance is currently using
         /// </summary>
@@ -378,12 +369,10 @@ namespace OpenQA.Selenium.Remote
         {
             get { return this.capabilities; }
         }
-        #endregion
 
-        #region IAllowsFileDetection Members
         /// <summary>
-        /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting 
-        /// sequences of keystrokes representing file paths and names. 
+        /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting
+        /// sequences of keystrokes representing file paths and names.
         /// </summary>
         public virtual IFileDetector FileDetector
         {
@@ -402,14 +391,15 @@ namespace OpenQA.Selenium.Remote
                 this.fileDetector = value;
             }
         }
-        #endregion
 
+        /// <summary>
+        /// Gets a value indicating whether or not the driver is compliant with the W3C WebDriver specification.
+        /// </summary>
         internal bool IsSpecificationCompliant
         {
             get { return this.CommandExecutor.CommandInfoRepository.SpecificationLevel > 0; }
         }
 
-        #region Protected properties
         /// <summary>
         /// Gets the <see cref="ICommandExecutor"/> which executes commands for this driver.
         /// </summary>
@@ -425,9 +415,7 @@ namespace OpenQA.Selenium.Remote
         {
             get { return this.sessionId; }
         }
-        #endregion
 
-        #region IWebDriver methods
         /// <summary>
         /// Finds the first element in the page that matches the <see cref="By"/> object
         /// </summary>
@@ -531,9 +519,7 @@ namespace OpenQA.Selenium.Remote
         {
             return new RemoteTargetLocator(this);
         }
-        #endregion
 
-        #region IJavaScriptExecutor Members
         /// <summary>
         /// Executes JavaScript in the context of the currently selected frame or window
         /// </summary>
@@ -555,9 +541,7 @@ namespace OpenQA.Selenium.Remote
         {
             return this.ExecuteScriptCommand(script, DriverCommand.ExecuteAsyncScript, args);
         }
-        #endregion
 
-        #region IFindsById Members
         /// <summary>
         /// Finds the first element in the page that matches the ID supplied
         /// </summary>
@@ -600,9 +584,6 @@ namespace OpenQA.Selenium.Remote
             return this.FindElements("id", id);
         }
 
-        #endregion
-
-        #region IFindsByClassName Members
         /// <summary>
         /// Finds the first element in the page that matches the CSS Class supplied
         /// </summary>
@@ -657,9 +638,6 @@ namespace OpenQA.Selenium.Remote
             return this.FindElements("class name", className);
         }
 
-        #endregion
-
-        #region IFindsByLinkText Members
         /// <summary>
         /// Finds the first of elements that match the link text supplied
         /// </summary>
@@ -692,9 +670,6 @@ namespace OpenQA.Selenium.Remote
             return this.FindElements("link text", linkText);
         }
 
-        #endregion
-
-        #region IFindsByPartialLinkText Members
         /// <summary>
         /// Finds the first of elements that match the part of the link text supplied
         /// </summary>
@@ -727,9 +702,6 @@ namespace OpenQA.Selenium.Remote
             return this.FindElements("partial link text", partialLinkText);
         }
 
-        #endregion
-
-        #region IFindsByName Members
         /// <summary>
         /// Finds the first of elements that match the name supplied
         /// </summary>
@@ -784,9 +756,6 @@ namespace OpenQA.Selenium.Remote
             return this.FindElements("name", name);
         }
 
-        #endregion
-
-        #region IFindsByTagName Members
         /// <summary>
         /// Finds the first of elements that match the DOM Tag supplied
         /// </summary>
@@ -840,9 +809,7 @@ namespace OpenQA.Selenium.Remote
 
             return this.FindElements("tag name", tagName);
         }
-        #endregion
 
-        #region IFindsByXPath Members
         /// <summary>
         /// Finds the first of elements that match the XPath supplied
         /// </summary>
@@ -874,9 +841,7 @@ namespace OpenQA.Selenium.Remote
         {
             return this.FindElements("xpath", xpath);
         }
-        #endregion
 
-        #region IFindsByCssSelector Members
         /// <summary>
         /// Finds the first element matching the specified CSS selector.
         /// </summary>
@@ -897,9 +862,7 @@ namespace OpenQA.Selenium.Remote
         {
             return this.FindElements("css selector", cssSelector);
         }
-        #endregion
 
-        #region ITakesScreenshot Members
         /// <summary>
         /// Gets a <see cref="Screenshot"/> object representing the image of the page on the screen.
         /// </summary>
@@ -913,9 +876,6 @@ namespace OpenQA.Selenium.Remote
             // ... and convert it.
             return new Screenshot(base64);
         }
-        #endregion
-
-        #region IDisposable Members
 
         /// <summary>
         /// Dispose the RemoteWebDriver Instance
@@ -926,9 +886,6 @@ namespace OpenQA.Selenium.Remote
             GC.SuppressFinalize(this);
         }
 
-        #endregion
-
-        #region Internal Methods
         /// <summary>
         /// Escapes invalid characters in a CSS selector.
         /// </summary>
@@ -946,7 +903,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Executes commands with the driver 
+        /// Executes commands with the driver
         /// </summary>
         /// <param name="driverCommandToExecute">Command that needs executing</param>
         /// <param name="parameters">Parameters needed for the command</param>
@@ -1023,9 +980,7 @@ namespace OpenQA.Selenium.Remote
 
             return toReturn.AsReadOnly();
         }
-        #endregion
 
-        #region Protected Members
         /// <summary>
         /// Stops the client from running
         /// </summary>
@@ -1078,7 +1033,7 @@ namespace OpenQA.Selenium.Remote
         protected virtual Response Execute(string driverCommandToExecute, Dictionary<string, object> parameters)
         {
             Command commandToExecute = new Command(this.sessionId, driverCommandToExecute, parameters);
-            
+
             Response commandResponse = new Response();
 
             try
@@ -1180,9 +1135,7 @@ namespace OpenQA.Selenium.Remote
             Response commandResponse = this.Execute(commandName, parameters);
             return this.ParseJavaScriptReturnValue(commandResponse.Value);
         }
-        #endregion
 
-        #region Private methods
         private static object ConvertObjectToJavaScriptObject(object arg)
         {
             IWrapsElement argAsWrapsElement = arg as IWrapsElement;
@@ -1417,6 +1370,5 @@ namespace OpenQA.Selenium.Remote
 
             return returnValue;
         }
-        #endregion
     }
 }

@@ -1,4 +1,4 @@
-﻿// <copyright file="LoadableComponent.cs" company="WebDriver Committers">
+﻿// <copyright file="LoadableComponent{T}.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -22,7 +22,7 @@ namespace OpenQA.Selenium.Support.UI
 {
     /// <summary>
     /// Represents any abstraction of something that can be loaded. This may be an entire web page, or
-    /// simply a component within that page (such as a login box or menu) or even a service. 
+    /// simply a component within that page (such as a login box or menu) or even a service.
     /// </summary>
     /// <typeparam name="T">The type to be returned (normally the subclass' type)</typeparam>
     /// <example>
@@ -38,7 +38,7 @@ namespace OpenQA.Selenium.Support.UI
     /// ready for use. Overload the protected Load and IsLoaded members to both load a component and determine
     /// if the component is already loaded.
     /// </remarks>
-    public abstract class LoadableComponent<T> : ILoadableComponent 
+    public abstract class LoadableComponent<T> : ILoadableComponent
         where T : LoadableComponent<T>
     {
         /// <summary>
@@ -54,8 +54,8 @@ namespace OpenQA.Selenium.Support.UI
         /// Gets a value indicating whether the component is fully loaded.
         /// </summary>
         /// <remarks>
-        /// When the component is loaded, this property will return true or false depending on 
-        /// the execution of <see cref="EvaluateLoadedStatus"/> to indicate the not loaded state. 
+        /// When the component is loaded, this property will return true or false depending on
+        /// the execution of <see cref="EvaluateLoadedStatus"/> to indicate the not loaded state.
         /// </remarks>
         protected bool IsLoaded
         {

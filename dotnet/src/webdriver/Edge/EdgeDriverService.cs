@@ -33,9 +33,8 @@ namespace OpenQA.Selenium.Edge
         private const string MicrosoftWebDriverServiceFileName = "MicrosoftWebDriver.exe";
         private static readonly Uri MicrosoftWebDriverDownloadUrl = new Uri("http://go.microsoft.com/fwlink/?LinkId=619687");
 
-
         /// <summary>
-        /// Initializes a new instance of the EdgeDriverService class.
+        /// Initializes a new instance of the <see cref="EdgeDriverService"/> class.
         /// </summary>
         /// <param name="executablePath">The full path to the EdgeDriver executable.</param>
         /// <param name="executableFileName">The file name of the EdgeDriver executable.</param>
@@ -82,7 +81,7 @@ namespace OpenQA.Selenium.Edge
         /// <param name="driverPath">The directory containing the EdgeDriver executable.</param>
         /// <param name="driverExecutableFileName">The name of the EdgeDriver executable file</param>
         /// <param name="port">The port number on which the driver will listen</param>
-        /// <returns></returns>
+        /// <returns>A EdgeDriverService using the specified port.</returns>
         public static EdgeDriverService CreateDefaultService(string driverPath, string driverExecutableFileName, int port)
         {
             return new EdgeDriverService(driverPath, driverExecutableFileName, port);

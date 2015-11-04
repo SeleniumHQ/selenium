@@ -41,7 +41,6 @@ namespace OpenQA.Selenium.Interactions
             return this;
         }
 
-        #region IAction Members
         /// <summary>
         /// Performs the actions defined in this list of actions.
         /// </summary>
@@ -52,7 +51,5 @@ namespace OpenQA.Selenium.Interactions
                 action.Perform();
             }
         }
-
-        #endregion
     }
 }

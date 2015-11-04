@@ -45,7 +45,7 @@ namespace OpenQA.Selenium.IE
     public class InternetExplorerWebElement : RemoteWebElement
     {
         /// <summary>
-        /// Initializes a new instance of the InternetExplorerWebElement class.
+        /// Initializes a new instance of the <see cref="InternetExplorerWebElement"/> class.
         /// </summary>
         /// <param name="parent">Driver in use.</param>
         /// <param name="id">ID of the element.</param>

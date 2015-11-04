@@ -31,9 +31,8 @@ namespace OpenQA.Selenium.Opera
     /// </summary>
     public class OperaWebElement : RemoteWebElement
     {
-        #region Constructor
         /// <summary>
-        /// Initializes a new instance of the OperaWebElement class
+        /// Initializes a new instance of the <see cref="OperaWebElement"/> class
         /// </summary>
         /// <param name="parent">Driver in use</param>
         /// <param name="elementId">Id of the element</param>
@@ -41,6 +40,5 @@ namespace OpenQA.Selenium.Opera
             : base(parent, elementId)
         {
         }
-        #endregion
     }
 }

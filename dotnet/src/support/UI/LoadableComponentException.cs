@@ -37,11 +37,11 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LoadableComponentException"/> class with 
+        /// Initializes a new instance of the <see cref="LoadableComponentException"/> class with
         /// a specified error message.
         /// </summary>
         /// <param name="message">The message of the exception</param>
-        public LoadableComponentException(string message) 
+        public LoadableComponentException(string message)
             : base(message)
         {
         }
@@ -62,9 +62,9 @@ namespace OpenQA.Selenium.Support.UI
         /// <summary>
         /// Initializes a new instance of the <see cref="LoadableComponentException"/> class with serialized data.
         /// </summary>
-        /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized 
+        /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized
         /// object data about the exception being thrown.</param>
-        /// <param name="context">The <see cref="StreamingContext"/> that contains contextual 
+        /// <param name="context">The <see cref="StreamingContext"/> that contains contextual
         /// information about the source or destination.</param>
         protected LoadableComponentException(SerializationInfo info, StreamingContext context)
             : base(info, context)

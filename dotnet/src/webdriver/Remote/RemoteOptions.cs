@@ -32,7 +32,7 @@ namespace OpenQA.Selenium.Remote
         private RemoteWebDriver driver;
 
         /// <summary>
-        /// Initializes a new instance of the RemoteOptions class
+        /// Initializes a new instance of the <see cref="RemoteOptions"/> class
         /// </summary>
         /// <param name="driver">Instance of the driver currently in use</param>
         public RemoteOptions(RemoteWebDriver driver)
@@ -40,7 +40,6 @@ namespace OpenQA.Selenium.Remote
             this.driver = driver;
         }
 
-        #region IOptions
         /// <summary>
         /// Gets an object allowing the user to manipulate cookies on the page.
         /// </summary>
@@ -67,6 +66,5 @@ namespace OpenQA.Selenium.Remote
         {
             return new RemoteTimeouts(this.driver);
         }
-        #endregion
     }
 }

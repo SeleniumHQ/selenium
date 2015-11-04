@@ -39,7 +39,6 @@ namespace OpenQA.Selenium.Remote
             this.element = element;
         }
 
-        #region ICoordinates Members
         /// <summary>
         /// Gets the location of an element in absolute screen coordinates.
         /// </summary>
@@ -71,6 +70,5 @@ namespace OpenQA.Selenium.Remote
         {
             get { return this.element.InternalElementId; }
         }
-        #endregion
     }
 }

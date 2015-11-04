@@ -26,7 +26,7 @@ namespace OpenQA.Selenium.Safari.Internal
     internal static class IntExtensions
     {
         /// <summary>
-        /// Converts a <see cref="System.UInt16"/> to a big-endian byte array.
+        /// Converts a <see cref="ushort"/> to a big-endian byte array.
         /// </summary>
         /// <param name="source">The value to convert.</param>
         /// <returns>A byte array containing a big-endian representation of the value.</returns>
@@ -43,7 +43,7 @@ namespace OpenQA.Selenium.Safari.Internal
         }
 
         /// <summary>
-        /// Converts a <see cref="System.UInt64"/> to a big-endian byte array.
+        /// Converts a <see cref="ulong"/> to a big-endian byte array.
         /// </summary>
         /// <param name="source">The value to convert.</param>
         /// <returns>A byte array containing a big-endian representation of the value.</returns>
@@ -63,7 +63,7 @@ namespace OpenQA.Selenium.Safari.Internal
         /// Converts a byte array to a little-endian value.
         /// </summary>
         /// <param name="source">The byte array to convert.</param>
-        /// <returns>The little-endian representation of the array as a <see cref="System.Int32"/>.</returns>
+        /// <returns>The little-endian representation of the array as a <see cref="int"/>.</returns>
         public static int ToLittleEndianInt32(this byte[] source)
         {
             if (BitConverter.IsLittleEndian)

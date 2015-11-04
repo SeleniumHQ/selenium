@@ -33,7 +33,8 @@ namespace OpenQA.Selenium.Support.PageObjects
     public sealed class PageFactory
     {
         /// <summary>
-        /// Prevents a default instance of the PageFactory class from being created.
+        /// Initializes a new instance of the <see cref="PageFactory"/> class.
+        /// Private constructor prevents a default instance from being created.
         /// </summary>
         private PageFactory()
         {
@@ -204,7 +205,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         {
             InitElements(page, locator, new DefaultPageObjectMemberDecorator());
         }
-        
+
         /// <summary>
         /// Initializes the elements in the Page Object.
         /// </summary>

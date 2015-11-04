@@ -31,9 +31,8 @@ namespace OpenQA.Selenium.Chrome
     /// </summary>
     public class ChromeWebElement : RemoteWebElement
     {
-        #region Constructor
         /// <summary>
-        /// Initializes a new instance of the ChromeWebElement class
+        /// Initializes a new instance of the <see cref="ChromeWebElement"/> class.
         /// </summary>
         /// <param name="parent">Driver in use</param>
         /// <param name="elementId">Id of the element</param>
@@ -41,6 +40,5 @@ namespace OpenQA.Selenium.Chrome
             : base(parent, elementId)
         {
         }
-        #endregion
     }
 }

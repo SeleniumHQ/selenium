@@ -281,7 +281,7 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Gets or sets the command line arguments used in launching Internet Explorer when the 
+        /// Gets or sets the command line arguments used in launching Internet Explorer when the
         /// Windows CreateProcess API is used. This property only has an effect when the
         /// <see cref="ForceCreateProcessApi"/> is <see langword="true"/>.
         /// </summary>
@@ -330,13 +330,13 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Provides a means to add additional capabilities not yet added as type safe options 
+        /// Provides a means to add additional capabilities not yet added as type safe options
         /// for the Internet Explorer driver.
         /// </summary>
         /// <param name="capabilityName">The name of the capability to add.</param>
         /// <param name="capabilityValue">The value of the capability to add.</param>
         /// <exception cref="ArgumentException">
-        /// thrown when attempting to add a capability for which there is already a type safe option, or 
+        /// thrown when attempting to add a capability for which there is already a type safe option, or
         /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
         /// </exception>
         /// <remarks>Calling <see cref="AddAdditionalCapability"/> where <paramref name="capabilityName"/>

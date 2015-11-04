@@ -47,7 +47,7 @@ namespace OpenQA.Selenium.Remote
         {
             get
             {
-                Response commandResponse = driver.InternalExecute(DriverCommand.GetLocalStorageSize, null);
+                Response commandResponse = this.driver.InternalExecute(DriverCommand.GetLocalStorageSize, null);
                 return Convert.ToInt32(commandResponse.Value, CultureInfo.InvariantCulture);
             }
         }
@@ -55,13 +55,13 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Returns local storage value given a key.
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="key">The key value for the item in storage.</param>
         /// <returns>A local storage <see cref="string"/> value given a key, if present, otherwise returns null.</returns>
         public string GetItem(string key)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("key", key);
-            Response commandResponse = driver.InternalExecute(DriverCommand.GetLocalStorageItem, parameters);
+            Response commandResponse = this.driver.InternalExecute(DriverCommand.GetLocalStorageItem, parameters);
             if (commandResponse.Value == null)
             {
                 return null;
@@ -77,7 +77,7 @@ namespace OpenQA.Selenium.Remote
         public ReadOnlyCollection<string> KeySet()
         {
             List<string> result = new List<string>();
-            Response commandResponse = driver.InternalExecute(DriverCommand.GetLocalStorageKeys, null);
+            Response commandResponse = this.driver.InternalExecute(DriverCommand.GetLocalStorageKeys, null);
             object[] keys = commandResponse.Value as object[];
             foreach (string key in keys)
             {
@@ -97,7 +97,7 @@ namespace OpenQA.Selenium.Remote
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("key", key);
             parameters.Add("value", value);
-            driver.InternalExecute(DriverCommand.SetLocalStorageItem, parameters);
+            this.driver.InternalExecute(DriverCommand.SetLocalStorageItem, parameters);
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace OpenQA.Selenium.Remote
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("key", key);
-            Response commandResponse = driver.InternalExecute(DriverCommand.RemoveLocalStorageItem, parameters);
+            Response commandResponse = this.driver.InternalExecute(DriverCommand.RemoveLocalStorageItem, parameters);
             if (commandResponse.Value == null)
             {
                 return null;
@@ -123,7 +123,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public void Clear()
         {
-            driver.InternalExecute(DriverCommand.ClearLocalStorage, null);
+            this.driver.InternalExecute(DriverCommand.ClearLocalStorage, null);
         }
     }
 }

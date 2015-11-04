@@ -32,7 +32,6 @@ namespace OpenQA.Selenium.Firefox
     /// </summary>
     public class FirefoxWebElement : RemoteWebElement
     {
-        #region Constructor
         /// <summary>
         /// Initializes a new instance of the <see cref="FirefoxWebElement"/> class.
         /// </summary>
@@ -42,14 +41,12 @@ namespace OpenQA.Selenium.Firefox
             : base(parentDriver, id)
         {
         }
-        #endregion
 
-        #region Overrides
         /// <summary>
         /// Determines whether two <see cref="FirefoxWebElement"/> instances are equal.
         /// </summary>
         /// <param name="obj">The <see cref="FirefoxWebElement"/> to compare with the current <see cref="FirefoxWebElement"/>.</param>
-        /// <returns><see langword="true"/> if the specified <see cref="FirefoxWebElement"/> is equal to the 
+        /// <returns><see langword="true"/> if the specified <see cref="FirefoxWebElement"/> is equal to the
         /// current <see cref="FirefoxWebElement"/>; otherwise, <see langword="false"/>.</returns>
         public override bool Equals(object obj)
         {
@@ -82,6 +79,5 @@ namespace OpenQA.Selenium.Firefox
         {
             return base.GetHashCode();
         }
-        #endregion
     }
 }

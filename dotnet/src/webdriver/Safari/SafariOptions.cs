@@ -92,7 +92,7 @@ namespace OpenQA.Selenium.Safari
         /// Gets or sets a value indicating whether to skip the installation of the SafariDriver extension.
         /// </summary>
         /// <remarks>
-        /// Set this property to <see langword="true"/> if the SafariDriver extension is already installed 
+        /// Set this property to <see langword="true"/> if the SafariDriver extension is already installed
         /// in Safari, and you don't want to overwrite it with the version included with WebDriver.
         /// </remarks>
         [Obsolete("No longer used, as the extension now must be manually installed by the user. Will be removed in a future version.")]
@@ -103,13 +103,13 @@ namespace OpenQA.Selenium.Safari
         }
 
         /// <summary>
-        /// Provides a means to add additional capabilities not yet added as type safe options 
+        /// Provides a means to add additional capabilities not yet added as type safe options
         /// for the Safari driver.
         /// </summary>
         /// <param name="capabilityName">The name of the capability to add.</param>
         /// <param name="capabilityValue">The value of the capability to add.</param>
         /// <exception cref="ArgumentException">
-        /// thrown when attempting to add a capability for which there is already a type safe option, or 
+        /// thrown when attempting to add a capability for which there is already a type safe option, or
         /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
         /// </exception>
         /// <remarks>Calling <see cref="AddAdditionalCapability"/> where <paramref name="capabilityName"/>

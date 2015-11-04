@@ -40,7 +40,7 @@ namespace OpenQA.Selenium.Safari.Internal
         /// <summary>
         /// Initializes a new instance of the <see cref="SocketWrapper"/> class.
         /// </summary>
-        public SocketWrapper() 
+        public SocketWrapper()
         {
             this.underlyingSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
             if (this.underlyingSocket.Connected)
@@ -323,10 +323,10 @@ namespace OpenQA.Selenium.Safari.Internal
         }
 
         /// <summary>
-        /// Releases the unmanaged resources used by the <see cref="SocketWrapper"/> and optionally 
+        /// Releases the unmanaged resources used by the <see cref="SocketWrapper"/> and optionally
         /// releases the managed resources.
         /// </summary>
-        /// <param name="disposing"><see langword="true"/> to release managed and resources; 
+        /// <param name="disposing"><see langword="true"/> to release managed and resources;
         /// <see langword="false"/> to only release unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {

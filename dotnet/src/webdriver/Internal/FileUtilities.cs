@@ -162,7 +162,7 @@ namespace OpenQA.Selenium.Internal
             Assembly executingAssembly = Assembly.GetExecutingAssembly();
             string currentDirectory = Path.GetDirectoryName(executingAssembly.Location);
 
-            // If we're shadow copying, get the directory from the codebase instead 
+            // If we're shadow copying, get the directory from the codebase instead
             if (AppDomain.CurrentDomain.ShadowCopyFiles)
             {
                 Uri uri = new Uri(executingAssembly.CodeBase);

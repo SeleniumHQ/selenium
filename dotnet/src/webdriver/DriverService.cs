@@ -40,7 +40,7 @@ namespace OpenQA.Selenium
         private Process driverServiceProcess;
 
         /// <summary>
-        /// Initializes a new instance of the DriverService class.
+        /// Initializes a new instance of the <see cref="DriverService"/> class.
         /// </summary>
         /// <param name="servicePath">The full path to the directory containing the executable providing the service to drive the browser.</param>
         /// <param name="port">The port on which the driver executable should listen.</param>
@@ -226,7 +226,7 @@ namespace OpenQA.Selenium
             this.driverServiceProcess.StartInfo.UseShellExecute = false;
             this.driverServiceProcess.StartInfo.CreateNoWindow = this.hideCommandPromptWindow;
             this.driverServiceProcess.Start();
-            bool serviceAvailable = WaitForServiceInitialization();
+            bool serviceAvailable = this.WaitForServiceInitialization();
 
             if (!serviceAvailable)
             {

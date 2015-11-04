@@ -73,7 +73,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         protected bool Cache
         {
             get { return this.cache; }
-        } 
+        }
 
         /// <summary>
         /// Invokes a method on the object this proxy represents.

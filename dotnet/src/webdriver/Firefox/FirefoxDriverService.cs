@@ -20,9 +20,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Net;
 using System.Text;
 using OpenQA.Selenium.Internal;
-using System.Net;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Firefox
@@ -38,7 +38,7 @@ namespace OpenQA.Selenium.Firefox
         private int browserCommunicationPort = -1;
 
         /// <summary>
-        /// Initializes a new instance of the FirefoxDriverService class.
+        /// Initializes a new instance of the <see cref="FirefoxDriverService"/> class.
         /// </summary>
         /// <param name="executablePath">The full path to the Firefox driver executable.</param>
         /// <param name="executableFileName">The file name of the Firefox driver executable.</param>

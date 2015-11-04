@@ -40,7 +40,7 @@ namespace OpenQA.Selenium.IE
         private string libraryExtractionPath = string.Empty;
 
         /// <summary>
-        /// Initializes a new instance of the InternetExplorerDriverService class.
+        /// Initializes a new instance of the <see cref="InternetExplorerDriverService"/> class.
         /// </summary>
         /// <param name="executablePath">The full path to the IEDriverServer executable.</param>
         /// <param name="executableFileName">The file name of the IEDriverServer executable.</param>

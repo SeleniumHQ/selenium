@@ -32,7 +32,7 @@ namespace OpenQA.Selenium.Support.UI
         private readonly IWebElement element;
 
         /// <summary>
-        /// Initializes a new instance of the SelectElement class.
+        /// Initializes a new instance of the <see cref="SelectElement"/> class.
         /// </summary>
         /// <param name="element">The element to be wrapped</param>
         /// <exception cref="ArgumentNullException">Thrown when the <see cref="IWebElement"/> object is <see langword="null"/></exception>
@@ -176,7 +176,7 @@ namespace OpenQA.Selenium.Support.UI
                         SetSelected(option);
                         if (!this.IsMultiple)
                         {
-                            return; 
+                            return;
                         }
 
                         matched = true;
@@ -258,7 +258,7 @@ namespace OpenQA.Selenium.Support.UI
         /// <summary>
         /// Clear all selected entries. This is only valid when the SELECT supports multiple selections.
         /// </summary>
-        /// <exception cref="WebDriverException">Thrown when attempting to deselect all options from a SELECT 
+        /// <exception cref="WebDriverException">Thrown when attempting to deselect all options from a SELECT
         /// that does not support multiple selections.</exception>
         public void DeselectAll()
         {

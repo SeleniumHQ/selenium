@@ -1,4 +1,4 @@
-﻿// <copyright file="SlowLoadableComponent.cs" company="WebDriver Committers">
+﻿// <copyright file="SlowLoadableComponent{T}.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -34,8 +34,9 @@ namespace OpenQA.Selenium.Support.UI
     /// </para>
     /// </summary>
     /// <typeparam name="T">The type to be returned (normally the subclass' type)</typeparam>
-    public abstract class SlowLoadableComponent<T> : LoadableComponent<T> where T : SlowLoadableComponent<T>
-    {
+    public abstract class SlowLoadableComponent<T> : LoadableComponent<T>
+            where T : SlowLoadableComponent<T>
+        {
         private readonly IClock clock;
         private readonly TimeSpan timeout;
         private TimeSpan sleepInterval = TimeSpan.FromMilliseconds(200);

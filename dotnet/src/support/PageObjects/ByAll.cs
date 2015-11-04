@@ -103,7 +103,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <summary>
         /// Writes out a comma separated list of the <see cref="By"/> objects used in the chain.
         /// </summary>
-        /// <returns>Converts the value of this instance to a <see cref="System.String"/></returns>
+        /// <returns>Converts the value of this instance to a <see cref="string"/></returns>
         public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();

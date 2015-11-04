@@ -29,7 +29,7 @@ using OpenQA.Selenium.Internal;
 namespace OpenQA.Selenium.Support.PageObjects
 {
     /// <summary>
-    /// Intercepts the request to a single <see cref="IWebElement"/> 
+    /// Intercepts the request to a single <see cref="IWebElement"/>
     /// </summary>
     internal sealed class WebElementProxy : WebDriverObjectProxy
     {
@@ -79,7 +79,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         }
 
         /// <summary>
-        /// Invokes the method that is specified in the provided <see cref="IMessage"/> on the 
+        /// Invokes the method that is specified in the provided <see cref="IMessage"/> on the
         /// object that is represented by the current instance.
         /// </summary>
         /// <param name="msg">An <see cref="IMessage"/> that contains a dictionary of

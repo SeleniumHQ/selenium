@@ -41,7 +41,7 @@ namespace OpenQA.Selenium.PhantomJS
         private List<string> additionalArguments = new List<string>();
         private string ghostDriverPath = string.Empty;
         private string logFile = string.Empty;
-        private string ipAddress = string.Empty;
+        private string address = string.Empty;
         private string gridHubUrl = string.Empty;
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace OpenQA.Selenium.PhantomJS
         }
 
         /// <summary>
-        /// Initializes a new instance of the PhantomJSDriverService class.
+        /// Initializes a new instance of the <see cref="PhantomJSDriverService"/> class.
         /// </summary>
         /// <param name="executablePath">The full path to the PhantomJS executable.</param>
         /// <param name="executableFileName">The file name of the PhantomJS executable.</param>
@@ -69,7 +69,7 @@ namespace OpenQA.Selenium.PhantomJS
             this.InitializeProperties();
         }
 
-        // Note: To add support for new PhantomJS command-line arguments, simply add another auto-property 
+        // Note: To add support for new PhantomJS command-line arguments, simply add another auto-property
         // with appropriate [JsonProperty] and [DefaultValue] attributes.
 
         /// <summary>
@@ -214,8 +214,8 @@ namespace OpenQA.Selenium.PhantomJS
         [JsonIgnore]
         public string IPAddress
         {
-            get { return this.ipAddress; }
-            set { this.ipAddress = value; }
+            get { return this.address; }
+            set { this.address = value; }
         }
 
         /// <summary>
@@ -245,7 +245,7 @@ namespace OpenQA.Selenium.PhantomJS
         [JsonIgnore]
         public ReadOnlyCollection<string> AdditionalArguments
         {
-            // We don't want the arguments to be serialized to the JSON-based configuration that could be 
+            // We don't want the arguments to be serialized to the JSON-based configuration that could be
             // subsequently passed to the PhantomJS.exe process using the --config=<path> argument.
             // They're only used to provide a facility to add arguments that are not yet explicitly supported by this API
             // for the launching of the 'PhantomJS.exe' service process.
@@ -255,7 +255,7 @@ namespace OpenQA.Selenium.PhantomJS
         /// <summary>
         /// Gets or sets the path to the JSON configuration file (in lieu of providing any other parameters).
         /// </summary>
-        /// <remarks>If a <see cref="PhantomJSDriverService"/> instance is serialized to JSON, it can be saved to a 
+        /// <remarks>If a <see cref="PhantomJSDriverService"/> instance is serialized to JSON, it can be saved to a
         /// file and used as a JSON configuration source for the PhantomJS.exe process.</remarks>
         /// <example>
         /// <code>
@@ -274,19 +274,19 @@ namespace OpenQA.Selenium.PhantomJS
         ///     SslProtocol = "sslv2",
         ///     WebSecurity = true,
         /// };
-        /// 
+        ///
         /// string json = configOptions.ToJson();
-        /// 
+        ///
         /// File.WriteAllText(@"C:\temp\myconfig.json", json);
-        /// 
+        ///
         /// var driverService = PhantomJSDriver.CreateDefaultService();
         /// driverService.ConfigFile = @"C:\temp\myconfig.json";
-        /// 
+        ///
         /// var driver = new PhantomJSDriver(driverService);  // Launches PhantomJS.exe using JSON configuration file.
         /// </code>
         /// </example>
         [JsonIgnore]
-        public string ConfigFile { get; set; }  // Not serialized because it is used to pass the JSON configuration path to PhantomJS.exe, and should not appear in the JSON configuration.
+        public string ConfigFile { get; set; } // Not serialized because it is used to pass the JSON configuration path to PhantomJS.exe, and should not appear in the JSON configuration.
 
         /// <summary>
         /// Gets the command-line arguments for the driver service.
@@ -324,13 +324,13 @@ namespace OpenQA.Selenium.PhantomJS
 
                 if (string.IsNullOrEmpty(this.ghostDriverPath))
                 {
-                    if (string.IsNullOrEmpty(this.ipAddress))
+                    if (string.IsNullOrEmpty(this.address))
                     {
                         argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --webdriver={0}", this.Port);
                     }
                     else
                     {
-                        argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --webdriver={0}:{1}", this.ipAddress, this.Port);
+                        argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --webdriver={0}:{1}", this.address, this.Port);
                     }
 
                     if (!string.IsNullOrEmpty(this.logFile))

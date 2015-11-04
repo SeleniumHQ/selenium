@@ -23,7 +23,7 @@ using System.Runtime.Serialization;
 namespace OpenQA.Selenium.Support.UI
 {
     /// <summary>
-    /// The exception thrown when using the Select class on a tag that 
+    /// The exception thrown when using the Select class on a tag that
     /// does not support the HTML select element's selection semantics.
     /// </summary>
     [Serializable]
@@ -48,11 +48,11 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UnexpectedTagNameException"/> class with 
+        /// Initializes a new instance of the <see cref="UnexpectedTagNameException"/> class with
         /// a specified error message.
         /// </summary>
         /// <param name="message">The message of the exception</param>
-        public UnexpectedTagNameException(string message) 
+        public UnexpectedTagNameException(string message)
             : base(message)
         {
         }
@@ -73,9 +73,9 @@ namespace OpenQA.Selenium.Support.UI
         /// <summary>
         /// Initializes a new instance of the <see cref="UnexpectedTagNameException"/> class with serialized data.
         /// </summary>
-        /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized 
+        /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized
         /// object data about the exception being thrown.</param>
-        /// <param name="context">The <see cref="StreamingContext"/> that contains contextual 
+        /// <param name="context">The <see cref="StreamingContext"/> that contains contextual
         /// information about the source or destination.</param>
         protected UnexpectedTagNameException(SerializationInfo info, StreamingContext context)
             : base(info, context)

@@ -33,7 +33,7 @@ namespace OpenQA.Selenium.Safari.Internal
         /// <summary>
         /// Initializes a new instance of the <see cref="ConnectionEventArgs"/> class.
         /// </summary>
-        /// <param name="connection">The <see cref="IWebSocketConnection"/> representing the 
+        /// <param name="connection">The <see cref="IWebSocketConnection"/> representing the
         /// connection to the client.</param>
         public ConnectionEventArgs(IWebSocketConnection connection)
         {

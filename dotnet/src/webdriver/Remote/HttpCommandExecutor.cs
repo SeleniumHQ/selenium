@@ -39,7 +39,7 @@ namespace OpenQA.Selenium.Remote
         private CommandInfoRepository commandInfoRepository = new WebDriverWireProtocolCommandInfoRepository();
 
         /// <summary>
-        /// Initializes a new instance of the HttpCommandExecutor class
+        /// Initializes a new instance of the <see cref="HttpCommandExecutor"/> class
         /// </summary>
         /// <param name="addressOfRemoteServer">Address of the WebDriver Server</param>
         /// <param name="timeout">The timeout within which the server must respond.</param>
@@ -49,15 +49,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Gets the repository of objects containin information about commands.
-        /// </summary>
-        public CommandInfoRepository CommandInfoRepository
-        {
-            get { return this.commandInfoRepository; }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the HttpCommandExecutor class
+        /// Initializes a new instance of the <see cref="HttpCommandExecutor"/> class
         /// </summary>
         /// <param name="addressOfRemoteServer">Address of the WebDriver Server</param>
         /// <param name="timeout">The timeout within which the server must respond.</param>
@@ -91,7 +83,14 @@ namespace OpenQA.Selenium.Remote
             }
         }
 
-        #region ICommandExecutor Members
+        /// <summary>
+        /// Gets the repository of objects containin information about commands.
+        /// </summary>
+        public CommandInfoRepository CommandInfoRepository
+        {
+            get { return this.commandInfoRepository; }
+        }
+
         /// <summary>
         /// Executes a command
         /// </summary>
@@ -227,7 +226,7 @@ namespace OpenQA.Selenium.Remote
                 if (commandResponse.Value is string)
                 {
                     // First, collapse all \r\n pairs to \n, then replace all \n with
-                    // System.Environment.NewLine. This ensures the consistency of 
+                    // System.Environment.NewLine. This ensures the consistency of
                     // the values.
                     commandResponse.Value = ((string)commandResponse.Value).Replace("\r\n", "\n").Replace("\n", System.Environment.NewLine);
                 }
@@ -237,7 +236,5 @@ namespace OpenQA.Selenium.Remote
 
             return commandResponse;
         }
-
-        #endregion
     }
 }

@@ -58,6 +58,9 @@ namespace OpenQA.Selenium.Remote
             this.internalExecutor = new HttpCommandExecutor(driverService.ServiceUrl, commandTimeout, enableKeepAlive);
         }
 
+        /// <summary>
+        /// Gets the <see cref="CommandInfoRepository"/> object associated with this executor.
+        /// </summary>
         public CommandInfoRepository CommandInfoRepository
         {
             get { return this.internalExecutor.CommandInfoRepository; }

@@ -169,7 +169,7 @@ namespace OpenQA.Selenium.Safari.Internal.Handlers
             {
                 Array.Reverse(result);
             }
-            
+
             return result;
         }
     }

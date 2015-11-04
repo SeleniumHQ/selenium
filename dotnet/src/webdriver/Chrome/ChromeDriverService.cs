@@ -39,7 +39,7 @@ namespace OpenQA.Selenium.Chrome
         private bool enableVerboseLogging;
 
         /// <summary>
-        /// Initializes a new instance of the ChromeDriverService class.
+        /// Initializes a new instance of the <see cref="ChromeDriverService"/> class.
         /// </summary>
         /// <param name="executablePath">The full path to the ChromeDriver executable.</param>
         /// <param name="executableFileName">The file name of the ChromeDriver executable.</param>

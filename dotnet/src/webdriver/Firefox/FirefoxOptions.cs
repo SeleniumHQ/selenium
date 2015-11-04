@@ -57,9 +57,8 @@ namespace OpenQA.Selenium.Firefox
         public bool IsMarionette
         {
             get { return this.isMarionette; }
-            set { isMarionette = value; }
+            set { this.isMarionette = value; }
         }
-
 
         /// <summary>
         /// Returns DesiredCapabilities for Firefox with these options included as

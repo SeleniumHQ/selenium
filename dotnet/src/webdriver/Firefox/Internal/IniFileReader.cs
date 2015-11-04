@@ -30,11 +30,8 @@ namespace OpenQA.Selenium.Firefox.Internal
     /// </summary>
     internal class IniFileReader
     {
-        #region Private members
-        private Dictionary<string, Dictionary<string, string>> iniFileStore = new Dictionary<string, Dictionary<string, string>>(); 
-        #endregion
+        private Dictionary<string, Dictionary<string, string>> iniFileStore = new Dictionary<string, Dictionary<string, string>>();
 
-        #region Constructor
         /// <summary>
         /// Initializes a new instance of the <see cref="IniFileReader"/> class.
         /// </summary>
@@ -85,10 +82,8 @@ namespace OpenQA.Selenium.Firefox.Internal
             }
 
             this.iniFileStore.Add(sectionName, section);
-        } 
-        #endregion
+        }
 
-        #region Properties
         /// <summary>
         /// Gets a <see cref="ReadOnlyCollection{T}"/> containing the names of the sections in the .INI file.
         /// </summary>
@@ -99,10 +94,8 @@ namespace OpenQA.Selenium.Firefox.Internal
                 List<string> keyList = new List<string>(this.iniFileStore.Keys);
                 return new ReadOnlyCollection<string>(keyList);
             }
-        } 
-        #endregion
+        }
 
-        #region Methods
         /// <summary>
         /// Gets a value from the .INI file.
         /// </summary>
@@ -139,6 +132,5 @@ namespace OpenQA.Selenium.Firefox.Internal
 
             return section[lowerCaseValueName];
         }
-        #endregion
     }
 }

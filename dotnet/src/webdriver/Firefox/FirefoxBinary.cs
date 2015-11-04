@@ -37,24 +37,18 @@ namespace OpenQA.Selenium.Firefox
     /// Firefox process, and the operating system environment in which it runs.</remarks>
     public class FirefoxBinary : IDisposable
     {
-        #region Constants
-        private const string NoFocusLibraryName = "x_ignore_nofocus.so"; 
-        #endregion
-
-        #region Private members
+        private const string NoFocusLibraryName = "x_ignore_nofocus.so";
         private Dictionary<string, string> extraEnv = new Dictionary<string, string>();
         private Executable executable;
         private Process process;
         private TimeSpan timeout = TimeSpan.FromSeconds(45);
         private bool isDisposed = false;
-        #endregion
 
-        #region Constructors
         /// <summary>
         /// Initializes a new instance of the <see cref="FirefoxBinary"/> class.
         /// </summary>
-        public FirefoxBinary() :
-            this(null)
+        public FirefoxBinary()
+            : this(null)
         {
         }
 
@@ -65,10 +59,8 @@ namespace OpenQA.Selenium.Firefox
         public FirefoxBinary(string pathToFirefoxBinary)
         {
             this.executable = new Executable(pathToFirefoxBinary);
-        } 
-        #endregion
+        }
 
-        #region Public properties
         /// <summary>
         /// Gets or sets the timeout to wait for Firefox to be available for command execution.
         /// </summary>
@@ -77,9 +69,7 @@ namespace OpenQA.Selenium.Firefox
             get { return this.timeout; }
             set { this.timeout = value; }
         }
-        #endregion
 
-        #region Support properties
         /// <summary>
         /// Gets the <see cref="Executable"/> associated with this <see cref="FirefoxBinary"/>.
         /// </summary>
@@ -103,8 +93,7 @@ namespace OpenQA.Selenium.Firefox
         protected Dictionary<string, string> ExtraEnvironmentVariables
         {
             get { return this.extraEnv; }
-        } 
-        #endregion
+        }
 
         /// <summary>
         /// Starts Firefox using the specified profile and command-line arguments.
@@ -118,7 +107,7 @@ namespace OpenQA.Selenium.Firefox
             {
                 throw new ArgumentNullException("profile", "profile cannot be null");
             }
-            
+
             if (commandLineArguments == null)
             {
                 commandLineArguments = new string[] { };
@@ -206,9 +195,9 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Returns a <see cref="System.String">String</see> that represents the current <see cref="System.Object">Object</see>.
+        /// Returns a <see cref="string">String</see> that represents the current <see cref="object">Object</see>.
         /// </summary>
-        /// <returns>A <see cref="System.String">String</see> that represents the current <see cref="System.Object">Object</see>.</returns>
+        /// <returns>A <see cref="string">String</see> that represents the current <see cref="object">Object</see>.</returns>
         public override string ToString()
         {
             return "FirefoxBinary(" + this.executable.ExecutablePath + ")";
@@ -224,10 +213,10 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Releases the unmanaged resources used by the <see cref="FirefoxBinary"/> and optionally 
+        /// Releases the unmanaged resources used by the <see cref="FirefoxBinary"/> and optionally
         /// releases the managed resources.
         /// </summary>
-        /// <param name="disposing"><see langword="true"/> to release managed and resources; 
+        /// <param name="disposing"><see langword="true"/> to release managed and resources;
         /// <see langword="false"/> to only release unmanaged resources.</param>
         [SecurityPermission(SecurityAction.Demand)]
         protected virtual void Dispose(bool disposing)
@@ -236,8 +225,8 @@ namespace OpenQA.Selenium.Firefox
             {
                 if (disposing)
                 {
-                    // Suicide watch: First,  a second to see if the process will die on 
-                    // it's own (we will likely have asked the process to kill itself just 
+                    // Suicide watch: First,  a second to see if the process will die on
+                    // it's own (we will likely have asked the process to kill itself just
                     // before calling this method).
                     if (this.process != null)
                     {

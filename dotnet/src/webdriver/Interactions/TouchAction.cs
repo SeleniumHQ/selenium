@@ -57,7 +57,7 @@ namespace OpenQA.Selenium.Interactions.Internal
             {
                 if (this.ActionTarget != null)
                 {
-                    return ActionTarget.Coordinates;
+                    return this.ActionTarget.Coordinates;
                 }
 
                 return null;

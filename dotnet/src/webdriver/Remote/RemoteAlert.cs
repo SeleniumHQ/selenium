@@ -38,7 +38,6 @@ namespace OpenQA.Selenium.Remote
             this.driver = driver;
         }
 
-        #region IAlert Members
         /// <summary>
         /// Gets the text of the alert.
         /// </summary>
@@ -98,6 +97,5 @@ namespace OpenQA.Selenium.Remote
             parameters.Add("password", password);
             this.driver.InternalExecute(DriverCommand.SetAlertCredentials, parameters);
         }
-        #endregion
     }
 }

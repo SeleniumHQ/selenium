@@ -40,7 +40,6 @@ namespace OpenQA.Selenium.Interactions
         {
         }
 
-        #region IAction Members
         /// <summary>
         /// Performs this action.
         /// </summary>
@@ -49,7 +48,5 @@ namespace OpenQA.Selenium.Interactions
             this.FocusOnElement();
             this.Keyboard.PressKey(this.Key);
         }
-
-        #endregion
     }
 }

@@ -59,13 +59,13 @@ namespace OpenQA.Selenium.Safari.Internal.Handlers
         /// </summary>
         protected override void ProcessReceivedData()
         {
-            while (Data.Count >= 2)
+            while (this.Data.Count >= 2)
             {
-                var isFinal = (Data[0] & 128) != 0;
-                var reservedBits = Data[0] & 112;
-                var frameType = (FrameType)(Data[0] & 15);
-                var isMasked = (Data[1] & 128) != 0;
-                var length = Data[1] & 127;
+                var isFinal = (this.Data[0] & 128) != 0;
+                var reservedBits = this.Data[0] & 112;
+                var frameType = (FrameType)(this.Data[0] & 15);
+                var isMasked = (this.Data[1] & 128) != 0;
+                var length = this.Data[1] & 127;
 
                 if (!isMasked
                     || !Enum.IsDefined(typeof(FrameType), frameType)
@@ -80,24 +80,24 @@ namespace OpenQA.Selenium.Safari.Internal.Handlers
 
                 if (length == 127)
                 {
-                    if (Data.Count < index + 8)
-                    {
-                        // Not complete
-                        return;
-                    }
-                    
-                    payloadLength = Data.Skip(index).Take(8).ToArray().ToLittleEndianInt32();
-                    index += 8;
-                }
-                else if (length == 126)
-                {
-                    if (Data.Count < index + 2)
+                    if (this.Data.Count < index + 8)
                     {
                         // Not complete
                         return;
                     }
 
-                    payloadLength = Data.Skip(index).Take(2).ToArray().ToLittleEndianInt32();
+                    payloadLength = this.Data.Skip(index).Take(8).ToArray().ToLittleEndianInt32();
+                    index += 8;
+                }
+                else if (length == 126)
+                {
+                    if (this.Data.Count < index + 2)
+                    {
+                        // Not complete
+                        return;
+                    }
+
+                    payloadLength = this.Data.Skip(index).Take(2).ToArray().ToLittleEndianInt32();
                     index += 2;
                 }
                 else
@@ -105,28 +105,28 @@ namespace OpenQA.Selenium.Safari.Internal.Handlers
                     payloadLength = length;
                 }
 
-                if (Data.Count < index + 4)
+                if (this.Data.Count < index + 4)
                 {
                     // Not complete
                     return;
                 }
 
-                var maskBytes = Data.Skip(index).Take(4).ToArray();
+                var maskBytes = this.Data.Skip(index).Take(4).ToArray();
 
                 index += 4;
-                if (Data.Count < index + payloadLength)
+                if (this.Data.Count < index + payloadLength)
                 {
                     // Not complete
                     return;
                 }
 
-                var payload = Data
+                var payload = this.Data
                                 .Skip(index)
                                 .Take(payloadLength)
                                 .Select((x, i) => (byte)(x ^ maskBytes[i % 4]));
 
                 this.readState.Data.AddRange(payload);
-                Data.RemoveRange(0, index + payloadLength);
+                this.Data.RemoveRange(0, index + payloadLength);
 
                 if (frameType != FrameType.Continuation)
                 {

@@ -76,9 +76,9 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Returns a <see cref="System.String">String</see> that represents the current <see cref="System.Object">Object</see>.
+        /// Returns a <see cref="string">String</see> that represents the current <see cref="object">Object</see>.
         /// </summary>
-        /// <returns>A <see cref="System.String">String</see> that represents the current <see cref="System.Object">Object</see>.</returns>
+        /// <returns>A <see cref="string">String</see> that represents the current <see cref="object">Object</see>.</returns>
         public override string ToString()
         {
             return this.base64Encoded;

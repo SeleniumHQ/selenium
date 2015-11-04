@@ -24,21 +24,19 @@ namespace OpenQA.Selenium.Remote
 {
     /// <summary>
     /// Holds the information about all commands specified by the JSON wire protocol.
-    /// This class cannot be inherited, as it is intended to be a singleton, and 
+    /// This class cannot be inherited, as it is intended to be a singleton, and
     /// allowing subclasses introduces the possibility of multiple instances.
     /// </summary>
     public sealed class W3CWireProtocolCommandInfoRepository : CommandInfoRepository
     {
-        #region Constructor
         /// <summary>
-        /// Initializes a new instance of the <see cref="WebDriverWireProtocolCommandInfoRepository"/> class.
+        /// Initializes a new instance of the <see cref="W3CWireProtocolCommandInfoRepository"/> class.
         /// </summary>
         public W3CWireProtocolCommandInfoRepository()
             : base()
         {
             this.InitializeCommandDictionary();
         }
-        #endregion
 
         /// <summary>
         /// Gets the level of the W3C WebDriver specification that this repository supports.

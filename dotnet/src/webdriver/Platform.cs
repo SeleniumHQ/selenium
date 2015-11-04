@@ -24,8 +24,8 @@ namespace OpenQA.Selenium
     /// <summary>
     /// Represents the known and supported Platforms that WebDriver runs on.
     /// </summary>
-    /// <remarks>The <see cref="Platform"/> class maps closely to the Operating System, 
-    /// but differs slightly, because this class is used to extract information such as 
+    /// <remarks>The <see cref="Platform"/> class maps closely to the Operating System,
+    /// but differs slightly, because this class is used to extract information such as
     /// program locations and line endings. </remarks>
     public enum PlatformType
     {
@@ -36,13 +36,13 @@ namespace OpenQA.Selenium
         Any,
 
         /// <summary>
-        /// Any version of Microsoft Windows. This value is never returned by a driver, 
+        /// Any version of Microsoft Windows. This value is never returned by a driver,
         /// but can be used to find drivers with certain capabilities.
         /// </summary>
         Windows,
 
         /// <summary>
-        /// Any Windows NT-based version of Microsoft Windows. This value is never returned 
+        /// Any Windows NT-based version of Microsoft Windows. This value is never returned
         /// by a driver, but can be used to find drivers with certain capabilities. This value
         /// is equivalent to PlatformType.Windows.
         /// </summary>
@@ -114,7 +114,7 @@ namespace OpenQA.Selenium
                     {
                         this.platformTypeValue = PlatformType.Vista;
                     }
-                    
+
                     break;
 
                 // Thanks to a bug in Mono Mac and Linux will be treated the same  https://bugzilla.novell.com/show_bug.cgi?id=515570 but adding this in case
@@ -133,7 +133,7 @@ namespace OpenQA.Selenium
         /// </summary>
         public static Platform CurrentPlatform
         {
-            get 
+            get
             {
                 if (current == null)
                 {

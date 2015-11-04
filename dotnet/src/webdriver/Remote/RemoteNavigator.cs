@@ -30,7 +30,7 @@ namespace OpenQA.Selenium.Remote
         private RemoteWebDriver driver;
 
         /// <summary>
-        /// Initializes a new instance of the RemoteNavigator class
+        /// Initializes a new instance of the <see cref="RemoteNavigator"/> class
         /// </summary>
         /// <param name="driver">Driver in use</param>
         public RemoteNavigator(RemoteWebDriver driver)
@@ -38,7 +38,6 @@ namespace OpenQA.Selenium.Remote
             this.driver = driver;
         }
 
-        #region INavigation members
         /// <summary>
         /// Move the browser back
         /// </summary>
@@ -86,6 +85,5 @@ namespace OpenQA.Selenium.Remote
             // driver.SwitchTo().DefaultContent();
             this.driver.InternalExecute(DriverCommand.Refresh, null);
         }
-        #endregion
     }
 }

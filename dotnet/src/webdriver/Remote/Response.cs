@@ -16,10 +16,10 @@
 // limitations under the License.
 // </copyright>
 
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using Newtonsoft.Json;
-using System.Collections.Generic;
-using System;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -34,14 +34,14 @@ namespace OpenQA.Selenium.Remote
         private bool isSpecificationCompliant;
 
         /// <summary>
-        /// Initializes a new instance of the Response class
+        /// Initializes a new instance of the <see cref="Response"/> class
         /// </summary>
         public Response()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the Response class
+        /// Initializes a new instance of the <see cref="Response"/> class
         /// </summary>
         /// <param name="sessionId">Session ID in use</param>
         public Response(SessionId sessionId)

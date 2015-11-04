@@ -38,7 +38,7 @@ namespace OpenQA.Selenium
         private DateTime? cookieExpiry;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Cookie"/> class with a specific name, 
+        /// Initializes a new instance of the <see cref="Cookie"/> class with a specific name,
         /// value, domain, path and expiration date.
         /// </summary>
         /// <param name="name">The name of the cookie.</param>
@@ -82,7 +82,7 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Cookie"/> class with a specific name, 
+        /// Initializes a new instance of the <see cref="Cookie"/> class with a specific name,
         /// value, path and expiration date.
         /// </summary>
         /// <param name="name">The name of the cookie.</param>
@@ -98,7 +98,7 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Cookie"/> class with a specific name, 
+        /// Initializes a new instance of the <see cref="Cookie"/> class with a specific name,
         /// value, and path.
         /// </summary>
         /// <param name="name">The name of the cookie.</param>
@@ -269,7 +269,7 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Creates and returns a string representation of the cookie. 
+        /// Creates and returns a string representation of the cookie.
         /// </summary>
         /// <returns>A string representation of the cookie.</returns>
         public override string ToString()
@@ -281,13 +281,13 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object">Object</see> is equal 
-        /// to the current <see cref="System.Object">Object</see>.
+        /// Determines whether the specified <see cref="object">Object</see> is equal
+        /// to the current <see cref="object">Object</see>.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object">Object</see> to compare with the 
-        /// current <see cref="System.Object">Object</see>.</param>
-        /// <returns><see langword="true"/> if the specified <see cref="System.Object">Object</see>
-        /// is equal to the current <see cref="System.Object">Object</see>; otherwise,
+        /// <param name="obj">The <see cref="object">Object</see> to compare with the
+        /// current <see cref="object">Object</see>.</param>
+        /// <returns><see langword="true"/> if the specified <see cref="object">Object</see>
+        /// is equal to the current <see cref="object">Object</see>; otherwise,
         /// <see langword="false"/>.</returns>
         public override bool Equals(object obj)
         {
@@ -315,7 +315,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Serves as a hash function for a particular type.
         /// </summary>
-        /// <returns>A hash code for the current <see cref="System.Object">Object</see>.</returns>
+        /// <returns>A hash code for the current <see cref="object">Object</see>.</returns>
         public override int GetHashCode()
         {
             return this.cookieName.GetHashCode();

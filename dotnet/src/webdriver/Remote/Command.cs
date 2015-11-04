@@ -31,7 +31,7 @@ namespace OpenQA.Selenium.Remote
         private Dictionary<string, object> commandParameters = new Dictionary<string, object>();
 
         /// <summary>
-        /// Initializes a new instance of the Command class using a command name and a JSON-encoded string for the parameters.
+        /// Initializes a new instance of the <see cref="Command"/> class using a command name and a JSON-encoded string for the parameters.
         /// </summary>
         /// <param name="name">Name of the command</param>
         /// <param name="jsonParameters">Parameters for the command as a JSON-encoded string.</param>
@@ -41,7 +41,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Initializes a new instance of the Command class for a Session
+        /// Initializes a new instance of the <see cref="Command"/> class for a Session
         /// </summary>
         /// <param name="sessionId">Session ID the driver is using</param>
         /// <param name="name">Name of the command</param>
@@ -105,7 +105,7 @@ namespace OpenQA.Selenium.Remote
                 return parametersString;
             }
         }
-        
+
         /// <summary>
         /// Returns a string of the Command object
         /// </summary>

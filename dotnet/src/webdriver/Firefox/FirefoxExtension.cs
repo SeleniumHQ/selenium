@@ -19,10 +19,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
 using System.Xml;
 using OpenQA.Selenium.Internal;
-using System.IO.Compression;
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -85,7 +85,7 @@ namespace OpenQA.Selenium.Firefox
             Stream zipFileStream = ResourceUtilities.GetResourceStream(this.extensionFileName, this.extensionResourceId);
             using (ZipStorer extensionZipFile = ZipStorer.Open(zipFileStream, FileAccess.Read))
             {
-                List<ZipStorer.ZipFileEntry> entryList = extensionZipFile.ReadCentralDir();
+                List<ZipStorer.ZipFileEntry> entryList = extensionZipFile.ReadCentralDirectory();
                 foreach (ZipStorer.ZipFileEntry entry in entryList)
                 {
                     string localFileName = entry.FilenameInZip.Replace('/', Path.DirectorySeparatorChar);
@@ -124,21 +124,21 @@ namespace OpenQA.Selenium.Firefox
                 rdfNamespaceManager.AddNamespace("em", EmNamespaceUri);
                 rdfNamespaceManager.AddNamespace("RDF", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 
-                XmlNode idNode = rdfXmlDocument.SelectSingleNode("//em:id", rdfNamespaceManager);
-                if (idNode == null)
+                XmlNode node = rdfXmlDocument.SelectSingleNode("//em:id", rdfNamespaceManager);
+                if (node == null)
                 {
                     XmlNode descriptionNode = rdfXmlDocument.SelectSingleNode("//RDF:Description", rdfNamespaceManager);
-                    XmlAttribute idAttribute = descriptionNode.Attributes["id", EmNamespaceUri];
-                    if (idAttribute == null)
+                    XmlAttribute attribute = descriptionNode.Attributes["id", EmNamespaceUri];
+                    if (attribute == null)
                     {
                         throw new WebDriverException("Cannot locate node containing extension id: " + installRdf);
                     }
 
-                    id = idAttribute.Value;
+                    id = attribute.Value;
                 }
                 else
                 {
-                    id = idNode.InnerText;
+                    id = node.InnerText;
                 }
 
                 if (string.IsNullOrEmpty(id))

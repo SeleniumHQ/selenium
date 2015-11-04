@@ -32,7 +32,7 @@ namespace OpenQA.Selenium.Support.PageObjects
     internal class WebElementListProxy : WebDriverObjectProxy
     {
         private List<IWebElement> collection = null;
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="WebElementListProxy"/> class.
         /// </summary>
@@ -73,7 +73,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <param name="bys">The list of methods by which to search for the elements.</param>
         /// <param name="cacheLookups"><see langword="true"/> to cache the lookup to the
         /// element; otherwise, <see langword="false"/>.</param>
-        /// <returns>An object used to proxy calls to properties and methods of the 
+        /// <returns>An object used to proxy calls to properties and methods of the
         /// list of <see cref="IWebElement"/> objects.</returns>
         public static object CreateProxy(Type classToProxy, IElementLocator locator, IEnumerable<By> bys, bool cacheLookups)
         {
@@ -81,7 +81,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         }
 
         /// <summary>
-        /// Invokes the method that is specified in the provided <see cref="IMessage"/> on the 
+        /// Invokes the method that is specified in the provided <see cref="IMessage"/> on the
         /// object that is represented by the current instance.
         /// </summary>
         /// <param name="msg">An <see cref="IMessage"/> that contains an <see cref="IDictionary"/>  of

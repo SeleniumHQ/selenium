@@ -29,7 +29,7 @@ namespace OpenQA.Selenium.PhantomJS
     /// Provides a way to access PhantomJS to run your tests by creating a PhantomJSDriver instance
     /// </summary>
     /// <remarks>
-    /// When the WebDriver object has been instantiated the browser will load. The test can then navigate to the URL under test and 
+    /// When the WebDriver object has been instantiated the browser will load. The test can then navigate to the URL under test and
     /// start your test.
     /// </remarks>
     /// <example>
@@ -59,7 +59,7 @@ namespace OpenQA.Selenium.PhantomJS
     ///     {
     ///         driver.Quit();
     ///         driver.Dispose();
-    ///     } 
+    ///     }
     /// }
     /// </code>
     /// </example>
@@ -130,7 +130,7 @@ namespace OpenQA.Selenium.PhantomJS
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PhantomJSDriver"/> class using the specified 
+        /// Initializes a new instance of the <see cref="PhantomJSDriver"/> class using the specified
         /// <see cref="PhantomJSDriverService"/> and options.
         /// </summary>
         /// <param name="service">The <see cref="PhantomJSDriverService"/> to use.</param>
@@ -141,7 +141,7 @@ namespace OpenQA.Selenium.PhantomJS
         }
 
         /// <summary>
-        /// Initializes a new instance of the PhantomJSDriver class using the specified <see cref="PhantomJSDriverService"/>.
+        /// Initializes a new instance of the <see cref="PhantomJSDriver"/> class using the specified <see cref="PhantomJSDriverService"/>.
         /// </summary>
         /// <param name="service">The <see cref="PhantomJSDriverService"/> to use.</param>
         /// <param name="options">The <see cref="PhantomJSOptions"/> used to initialize the driver.</param>
@@ -155,8 +155,8 @@ namespace OpenQA.Selenium.PhantomJS
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting 
-        /// sequences of keystrokes representing file paths and names. 
+        /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting
+        /// sequences of keystrokes representing file paths and names.
         /// </summary>
         /// <remarks>The PhantomJS driver does not allow a file detector to be set,
         /// as PhantomJS only allows uploads from the local computer environment.

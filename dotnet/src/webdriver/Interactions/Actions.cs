@@ -68,7 +68,7 @@ namespace OpenQA.Selenium.Interactions
         /// </summary>
         /// <param name="theKey">The key to be sent.</param>
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
-        /// <exception cref="ArgumentException">If the key sent is not is not one 
+        /// <exception cref="ArgumentException">If the key sent is not is not one
         /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
         public Actions KeyDown(string theKey)
         {
@@ -81,7 +81,7 @@ namespace OpenQA.Selenium.Interactions
         /// <param name="element">The element to which to send the key command.</param>
         /// <param name="theKey">The key to be sent.</param>
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
-        /// <exception cref="ArgumentException">If the key sent is not is not one 
+        /// <exception cref="ArgumentException">If the key sent is not is not one
         /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
         public Actions KeyDown(IWebElement element, string theKey)
         {
@@ -95,7 +95,7 @@ namespace OpenQA.Selenium.Interactions
         /// </summary>
         /// <param name="theKey">The key to be sent.</param>
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
-        /// <exception cref="ArgumentException">If the key sent is not is not one 
+        /// <exception cref="ArgumentException">If the key sent is not is not one
         /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
         public Actions KeyUp(string theKey)
         {
@@ -108,7 +108,7 @@ namespace OpenQA.Selenium.Interactions
         /// <param name="element">The element to which to send the key command.</param>
         /// <param name="theKey">The key to be sent.</param>
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
-        /// <exception cref="ArgumentException">If the key sent is not is not one 
+        /// <exception cref="ArgumentException">If the key sent is not is not one
         /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
         public Actions KeyUp(IWebElement element, string theKey)
         {

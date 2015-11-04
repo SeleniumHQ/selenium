@@ -199,10 +199,10 @@ namespace OpenQA.Selenium.Safari.Internal
         }
 
         /// <summary>
-        /// Releases the unmanaged resources used by the <see cref="SocketWrapper"/> and optionally 
+        /// Releases the unmanaged resources used by the <see cref="SocketWrapper"/> and optionally
         /// releases the managed resources.
         /// </summary>
-        /// <param name="disposing"><see langword="true"/> to release managed and resources; 
+        /// <param name="disposing"><see langword="true"/> to release managed and resources;
         /// <see langword="false"/> to only release unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
