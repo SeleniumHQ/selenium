@@ -1948,9 +1948,9 @@ function testLongStackTraces_appendsEachStepToRejectionError() {
     assertArrayEquals([
       'From: Promise: new',
       'From: Promise: then',
-      'From: Promise: thenCatch',
+      'From: Promise: catch',
       'From: Promise: then',
-      'From: Promise: thenCatch',
+      'From: Promise: catch',
     ], getStackMessages(e));
   });
 
@@ -1989,7 +1989,7 @@ function testLongStackTraces_errorOccursInCallbackChain() {
         goog.string.startsWith(e.stack, originalStack));
     assertArrayEquals([
       'From: Promise: then',
-      'From: Promise: thenCatch',
+      'From: Promise: catch',
     ], getStackMessages(e));
   });
 

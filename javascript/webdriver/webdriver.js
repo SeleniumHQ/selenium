@@ -2270,6 +2270,9 @@ webdriver.WebElementPromise = function(driver, el) {
   this.then = goog.bind(el.then, el);
 
   /** @override */
+  this.catch = goog.bind(el.catch, el);
+
+  /** @override */
   this.thenCatch = goog.bind(el.thenCatch, el);
 
   /** @override */
@@ -2391,6 +2394,9 @@ webdriver.AlertPromise = function(driver, alert) {
 
   /** @override */
   this.then = goog.bind(alert.then, alert);
+
+  /** @override */
+  this.catch = goog.bind(alert.catch, alert);
 
   /** @override */
   this.thenCatch = goog.bind(alert.thenCatch, alert);

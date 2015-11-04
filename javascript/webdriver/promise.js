@@ -485,7 +485,7 @@
  *       // No callbacks registered on promise -> unhandled rejection
  *       promise.rejected(Error('boom'));
  *       flow.execute(function() { console.log('this will never run'); });
- *     }).thenCatch(function(e) {
+ *     }).catch(function(e) {
  *       console.log(e.message);
  *     });
  *     // boom
@@ -497,7 +497,7 @@
  *       promise.rejected(Error('boom'));
  *       flow.execute(function() { console.log('a'); }).
  *           then(function() { console.log('b'); });
- *     }).thenCatch(function(e) {
+ *     }).catch(function(e) {
  *       console.log(e.message);
  *     });
  *     // boom
@@ -508,7 +508,7 @@
  *     flow.execute(function() {
  *       promise.rejected(Error('boom'));
  *       return flow.execute(someOtherTask);
- *     }).thenCatch(function(e) {
+ *     }).catch(function(e) {
  *       console.log(e.message);
  *     });
  *     // boom
@@ -521,7 +521,7 @@
  *     flow.execute(function() {
  *       promise.rejected(Error('boom1'));
  *       promise.rejected(Error('boom2'));
- *     }).thenCatch(function(ex) {
+ *     }).catch(function(ex) {
  *       console.log(ex instanceof promise.MultipleUnhandledRejectionError);
  *       for (var e of ex.errors) {
  *         console.log(e.message);
@@ -542,7 +542,7 @@
  *     flow.execute(function() {
  *       promise.rejected(Error('boom'));
  *       subTask = flow.execute(function() {});
- *     }).thenCatch(function(e) {
+ *     }).catch(function(e) {
  *       console.log(e.message);
  *     }).then(function() {
  *       return subTask.then(
@@ -564,7 +564,7 @@
  *           throw Error('fail!');
  *         });
  *       });
- *     }).thenCatch(function(e) {
+ *     }).catch(function(e) {
  *       console.log(e.message);
  *     });
  *     // fail!
@@ -920,9 +920,21 @@ promise.Thenable = goog.defineClass(null, {
    *     }
    *
    *     // Asynchronous promise API:
-   *     doAsynchronousWork().thenCatch(function(ex) {
+   *     doAsynchronousWork().catch(function(ex) {
    *       console.error(ex);
    *     });
+   *
+   * @param {function(*): (R|IThenable<R>)} errback The
+   *     function to call if this promise is rejected. The function should
+   *     expect a single argument: the rejection reason.
+   * @return {!promise.Promise<R>} A new promise which will be
+   *     resolved with the result of the invoked callback.
+   * @template R
+   */
+  catch: function(errback) {},
+
+  /**
+   * An alias for {@link #catch()}
    *
    * @param {function(*): (R|IThenable<R>)} errback The
    *     function to call if this promise is rejected. The function should
@@ -1247,9 +1259,14 @@ promise.Promise = goog.defineClass(null, {
   },
 
   /** @override */
-  thenCatch: function(errback) {
+  catch: function(errback) {
     return this.addCallback_(
-        null, errback, 'thenCatch', promise.Promise.prototype.thenCatch);
+        null, errback, 'catch', promise.Promise.prototype.catch);
+  },
+
+  /** @override */
+  thenCatch: function(errback) {
+    return this.catch(errback);
   },
 
   /** @override */
@@ -1421,6 +1438,14 @@ promise.Deferred = goog.defineClass(null, {
 
   /**
    * @override
+   * @deprecated Use {@lcode catch} from the promise property directly.
+   */
+  catch: function(opt_eb) {
+    return this.promise.catch(opt_eb);
+  },
+
+  /**
+   * @override
    * @deprecated Use {@code thenCatch} from the promise property directly.
    */
   thenCatch: function(opt_eb) {
@@ -1484,7 +1509,7 @@ promise.delayed = function(ms) {
       key = null;
       fulfill();
     }, ms);
-  }).thenCatch(function(e) {
+  }).catch(function(e) {
     clearTimeout(key);
     key = null;
     throw e;
@@ -2992,7 +3017,7 @@ promise.isGenerator = function(fn) {
  *       yield promise.delayed(250).then(function() {
  *         throw Error('boom');
  *       });
- *     }).thenCatch(function(e) {
+ *     }).catch(function(e) {
  *       console.log(e.toString());  // Error: boom
  *     });
  *

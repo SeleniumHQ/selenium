@@ -1,3 +1,9 @@
+## v2.49.0-dev
+
+* Added `promise.Promise#catch()` for API compatibility with native Promises.
+    `promise.Promise#thenCatch()` is not yet deprecated, but it simply
+    delegates to `catch`.
+
 ## v2.48.2
 
 * Added `WebElement#takeScreenshot()`.
