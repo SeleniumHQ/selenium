@@ -1,12 +1,42 @@
-﻿// The Onload method
-// this is an array that holds the devLangs of language specific text control, they might are:
-// vb, cs, cpp, nu
-var allLanguageTagSets = new Array();
-// we stored the ids of code snippets of same pages so that we can do interaction between them when tab are selected
-var snippetIdSets = new Array();
+﻿// The IDs of all code snippet sets on the same page are stored so that we can keep them in synch when a tab is
+// selected.
+var allTabSetIds = new Array();
 
-function onLoad()
+// The IDs of language-specific text (LST) spans are used as dictionary keys so that we can get access to the
+// spans and update them when the user changes to a different language tab.  The values of the dictionary
+// objects are pipe separated language-specific attributes (lang1=value|lang2=value|lang3=value).  The language
+// ID can be specific (cs, vb, cpp, etc.) or may be a neutral entry (nu) which specifies text common to multiple
+// languages.  If a language is not present and there is no neutral entry, the span is hidden for all languages
+// to which it does not apply.
+var allLSTSetIds = new Object();
+
+// Help 1 persistence support.  This code must appear inline.
+var isHelp1;
+
+var curLoc = document.location + ".";
+
+if(curLoc.indexOf("mk:@MSITStore") == 0)
 {
+    isHelp1 = true;
+    curLoc = "ms-its:" + curLoc.substring(14, curLoc.length - 1);
+    document.location.replace(curLoc);
+}
+else
+    if(curLoc.indexOf("ms-its:") == 0)
+        isHelp1 = true;
+    else
+        isHelp1 = false;
+
+// The OnLoad method
+function OnLoad(defaultLanguage)
+{
+    var defLang;
+
+    if(typeof(defaultLanguage) == "undefined" || defaultLanguage == null || defaultLanguage == "")
+        defLang = "vb";
+    else
+        defLang = defaultLanguage;
+
     // This is a hack to fix the URLs for the background images on certain styles.  Help Viewer 1.0 doesn't
     // mind if you put the relative URL in the styles for fix up later in script.  However, Help Viewer 2.0 will
     // abort all processing and won't run any startup script if it sees an invalid URL in the style.  As such, we
@@ -18,34 +48,30 @@ function onLoad()
     try
     {
         var linkEnum = document.getElementsByTagName("link");
-        var link;
 
         for(var idx = 0; idx < linkEnum.length; idx++)
         {
-            link = linkEnum[idx];
+            var link = linkEnum[idx];
 
             if(link.rel.toLowerCase() == "shortcut icon")
                 iconPath = link.href.toString();
         }
     }
-    catch (e) { }
-    finally {}
+    catch(e) { }
+    finally { }
 
     if(iconPath)
     {
         try
         {
             var styleSheetEnum = document.styleSheets;
-            var styleSheet;
-            var ruleNdx;
-            var rule;
 
             for(var idx = 0; idx < styleSheetEnum.length; idx++)
             {
-                styleSheet = styleSheetEnum[idx];
+                var styleSheet = styleSheetEnum[idx];
 
                 // Ignore sheets at ms-help URLs
-                if(styleSheet.href != null && styleSheet.href.substr(0,8) == "ms-help:")
+                if(styleSheet.href != null && styleSheet.href.substr(0, 8) == "ms-help:")
                     continue;
 
                 // Ignore errors (Help Viewer 2).  styleSheet.rules is inaccessible due to security restrictions
@@ -60,9 +86,9 @@ function onLoad()
 
                     if(rules != null)
                         if(rules.length != 0)
-                            for(ruleNdx = 0; ruleNdx != rules.length; ruleNdx++)
+                            for(var ruleNdx = 0; ruleNdx != rules.length; ruleNdx++)
                             {
-                                rule = rules.item(ruleNdx);
+                                var rule = rules.item(ruleNdx);
 
                                 var selectorText = rule.selectorText.toLowerCase();
 
@@ -89,12 +115,12 @@ function onLoad()
                                 }
                             }
                 }
-                catch (e) { }
-                finally {}
+                catch(e) { }
+                finally { }
             }
         }
-        catch (e) { }
-        finally {}
+        catch(e) { }
+        finally { }
     }
 
     // In MS Help Viewer, the transform the topic is ran through can move the footer.  Move it back where it
@@ -117,427 +143,446 @@ function onLoad()
     catch(e) { }
     finally { }
 
-  var lang = GetCookie("CodeSnippetContainerLang", "C#");
-  var currentLang = getDevLangFromCodeSnippet(lang);
+    var language = GetLanguageCookie("CodeSnippetContainerLanguage", defLang);
 
-  // if LST exists on the page, then set the LST to show the user selected programming language.
-  updateLST(currentLang);
+    // If LST exists on the page, set the LST to show the user selected programming language
+    UpdateLST(language);
 
-  // if code snippet exists
-  if (snippetIdSets.length > 0)
-  {
-    var i = 0;
-    while (i < snippetIdSets.length)
+    // If code snippet groups exist, set the current language for them
+    if(allTabSetIds.length > 0)
     {
-      var _tempSnippetCount = 5;
-      if (document.getElementById(snippetIdSets[i] + "_tab4") == null)
-        _tempSnippetCount = 1;
+        var i = 0;
 
-      if (_tempSnippetCount < 2)
-      { // Tabs not grouped - skip
-
-        // Disable 'Copy to clipboard' link if in Chrome
-        if (navigator.userAgent.toLowerCase().indexOf('chrome') != -1)
+        while(i < allTabSetIds.length)
         {
-          document.getElementById(snippetIdSets[i] + "_copycode").style.display = 'none';
+            var tabCount = 1;
+
+            // The tab count may vary so find the last one in this set
+            while(document.getElementById(allTabSetIds[i] + "_tab" + tabCount) != null)
+                tabCount++;
+
+            tabCount--;
+
+            // If not grouped, skip it
+            if(tabCount < 2)
+            {
+                // Disable the Copy Code link if in Chrome
+                if(navigator.userAgent.toLowerCase().indexOf("chrome") != -1)
+                    document.getElementById(allTabSetIds[i] + "_copyCode").style.display = "none";
+            }
+            else
+                SetCurrentLanguage(allTabSetIds[i], language, tabCount);
+
+            i++;
         }
-
-        i++;
-        continue;
-      }
-      if (lang != null && lang.length > 0)
-      {
-        var index = 1, j = 1;
-        while (j < 6)
-        {
-          var tabTemp = document.getElementById(snippetIdSets[i] + "_tab" + j);
-          if (tabTemp == null) { j++; continue; }
-          if (tabTemp.innerHTML.indexOf(lang) != -1)
-          {
-              index = j;
-              break;
-          }
-          j++;
-      }
-      if (j == 6) {
-          if (document.getElementById(snippetIdSets[i] + "_tab1").className.indexOf("OH_CodeSnippetContainerTabDisabled") != -1) {
-              // Select the first non-disabled tab
-              var j = 2;
-              while (j < 6) {
-                  var tab = document.getElementById(snippetIdSets[i] + "_tab" + j);
-                  if (tab.className.indexOf("OH_CodeSnippetContainerTabDisabled") == -1) {
-                      tab.className = "OH_CodeSnippetContainerTabActiveNotFirst";
-                      document.getElementById(snippetIdSets[i] + '_code_Div' + j).style.display = 'block';
-                      break;
-                  }
-                  j++;
-              }
-
-              // disable left most img if first tab disabled
-              document.getElementById(snippetIdSets[i] + "_tabimgleft").className = "OH_CodeSnippetContainerTabLeftDisabled";
-          }
-      }
-      else {
-          setCurrentLang(snippetIdSets[i], lang, index, _tempSnippetCount, false);
-      }
-     
-      }
-      if (document.getElementById(snippetIdSets[i] + "_tab4").className.indexOf("OH_CodeSnippetContainerTabDisabled") != -1)
-      {
-        // disable right most img if last tab disabled
-        document.getElementById(snippetIdSets[i] + "_tabimgright").className = "OH_CodeSnippetContainerTabRightDisabled";
-      }
-
-      i++;
     }
-  }
 }
 
-// The function executes on OnLoad event and Changetab action on Code snippets.
-// The function parameter changeLang is the user choosen programming language, VB is used as default language if the app runs for the fist time.
-// this function iterates through the 'lanSpecTextIdSet' dictionary object to update the node value of the LST span tag per user's choosen programming language.
-function updateLST(currentLang) 
+// This function executes in the OnLoad event and ChangeTab action on code snippets.  The function parameter
+// is the user chosen programming language.  This function iterates through the "allLSTSetIds" dictionary object
+// to update the node value of the LST span tag per the user's chosen programming language.
+function UpdateLST(language)
 {
-    for (var lstMember in lanSpecTextIdSet) 
+    for(var lstMember in allLSTSetIds)
     {
         var devLangSpan = document.getElementById(lstMember);
-        if (devLangSpan != null) 
+
+        if(devLangSpan != null)
         {
-            // There is a carriage return before the LST control in the content, so the replace function below is used to trim the white space(s) at the end of the previous node of the current LST node.
-            if (devLangSpan.previousSibling != null && devLangSpan.previousSibling.nodeValue != null) devLangSpan.previousSibling.nodeValue = devLangSpan.previousSibling.nodeValue.replace(/\s+$/, "");
-            var langs = lanSpecTextIdSet[lstMember].split("|");
+            // There may be a carriage return before the LST span in the content so the replace function below
+            // is used to trim the whitespace at the end of the previous node of the current LST node.
+            if(devLangSpan.previousSibling != null && devLangSpan.previousSibling.nodeValue != null)
+                devLangSpan.previousSibling.nodeValue = devLangSpan.previousSibling.nodeValue.replace(/\s+$/, "");
+
+            var langs = allLSTSetIds[lstMember].split("|");
             var k = 0;
-            while (k < langs.length) 
+            var keyValue;
+
+            while(k < langs.length)
             {
-                if (currentLang == langs[k].split("=")[0]) 
+                keyValue = langs[k].split("=");
+
+                if(keyValue[0] == language)
                 {
-                    devLangSpan.innerHTML = langs[k].split("=")[1];
+                    devLangSpan.innerHTML = keyValue[1];
+
+                    // Help 1 and MS Help Viewer workaround.  Add a space if the following text element starts
+                    // with a space to prevent things running together.
+                    if (devLangSpan.parentNode != null && devLangSpan.parentNode.nextSibling != null) {
+                        if (devLangSpan.parentNode.nextSibling.nodeValue != null &&
+                          !devLangSpan.parentNode.nextSibling.nodeValue.substring(0, 1).match(/[.,);:!/?]/)) {
+                            devLangSpan.innerHTML = keyValue[1] + " ";
+                        }
+                    }
                     break;
                 }
+
                 k++;
+            }
+
+            // If not found, default to the neutral language.  If there is no neutral language entry, clear the
+            // content to hide it.
+            if(k >= langs.length)
+            {
+                if(language != "nu")
+                {
+                    k = 0;
+
+                    while(k < langs.length)
+                    {
+                        keyValue = langs[k].split("=");
+
+                        if(keyValue[0] == "nu")
+                        {
+                            devLangSpan.innerHTML = keyValue[1];
+
+                            // Help 1 and MS Help Viewer workaround.  Add a space if the following text element
+                            // starts with a space to prevent things running together.
+                            if (devLangSpan.parentNode != null && devLangSpan.parentNode.nextSibling != null) {
+                                if (devLangSpan.parentNode.nextSibling.nodeValue != null &&
+                                  !devLangSpan.parentNode.nextSibling.nodeValue.substring(0, 1).match(/[.,);:!/?]/)) {
+                                    devLangSpan.innerHTML = keyValue[1] + " ";
+                                }
+                            }
+                            break;
+                        }
+
+                        k++;
+                    }
+                }
+
+                if(k >= langs.length)
+                    devLangSpan.innerHTML = "";
             }
         }
     }
 }
 
-function getDevLangFromCodeSnippet(lang)
+// Get the selected language cookie
+function GetLanguageCookie(cookieName, defaultValue)
 {
-  var tagSet = "nu";
-  if (lang != null)
-  {
-    var temp = lang.toLowerCase().replace(" ", "");
-    if (temp.indexOf("visualbasic") != -1)
-      tagSet = "vb";
-    if ((temp.indexOf("csharp") != -1) || (temp.indexOf("c#") != -1))
-      tagSet = "cs";
-    if ((temp.indexOf("cplusplus") != -1) || (temp.indexOf("visualc++") != -1))
-      tagSet = "cpp";
-    if((temp.indexOf("fsharp") != -1) || (temp.indexOf("f#") != -1))
-        tagSet = "fs";
-}
-  return tagSet;
-}
-// Cookie functionality
-function GetCookie(sName, defaultValue)
-{
-  var aCookie = document.cookie.split("; ");
-  for (var i = 0; i < aCookie.length; i++)
-  {
-    var aCrumb = aCookie[i].split("=");
-
-    if (sName == aCrumb[0])
-      return unescape(aCrumb[1])
-  }
-  return defaultValue;
-}
-function SetCookie(name, value, expires, path, domain, secure)
-{
-  // set time, it's in milliseconds
-  var today = new Date();
-  today.setTime(today.getTime());
-
-  if (expires)
-  {
-    expires = expires * 1000 * 60 * 60 * 24;
-  }
-  var expires_date = new Date(today.getTime() + (expires));
-
-  document.cookie = name + "=" + escape(value) +
-    ((expires) ? ";expires=" + expires_date.toGMTString() : "") +
-    ((path) ? ";path=" + path : "") +
-    ((domain) ? ";domain=" + domain : "") +
-    ((secure) ? ";secure" : "");
-}
-
-function SetCodeSnippetContainerLangCookie(lang)
-{
-  SetCookie("CodeSnippetContainerLang", lang, 60, "/", "", "");
-  return;
-}
-
-// we store the ids of LST control as dictionary object key values, so that we can get access to them and update when user changes to a different programming language. 
-// The values of this dictionary objects are ';' separated languagespecific attributes of the mtps:languagespecific control in the content.
-// This function is called from LanguageSpecificText.xslt
-var lanSpecTextIdSet = new Object();
-function addToLanSpecTextIdSet(id)
-{
-    var key = id.split("?")[0];
-    var value =id.split("?")[1];
-    lanSpecTextIdSet[key] = value;
-}
-
-// Functions called from codesnippet.xslt
-function ChangeTab(objid, lang, index, snippetCount)
-{
-  setCurrentLang(objid, lang, index, snippetCount, true);
-  SetCodeSnippetContainerLangCookie(lang);
-
-  // switch tab for all of other code snippets
-  i = 0;
-  while (i < snippetIdSets.length)
-  {
-    // we just care about other snippets
-    if (snippetIdSets[i] != objid)
+    if(isHelp1)
     {
+        try
+        {
+            var globals = Help1Globals;
 
-      var _tempSnippetCount = 5;
-      if (document.getElementById(snippetIdSets[i] + "_tab4") == null)
-        _tempSnippetCount = 1;
-      if (_tempSnippetCount < 2)
-      { // Tabs are not grouped - skip
+            var value = globals.Load(cookieName);
+
+            if(value == null)
+                value = defaultValue;
+
+            return value;
+        }
+        catch(e)
+        {
+            return defaultValue;
+        }
+    }
+
+    var cookie = document.cookie.split("; ");
+
+    for(var i = 0; i < cookie.length; i++)
+    {
+        var crumb = cookie[i].split("=");
+
+        if(cookieName == crumb[0])
+            return unescape(crumb[1])
+    }
+
+    return defaultValue;
+}
+
+// Set the selected language cookie
+function SetLanguageCookie(name, value)
+{
+    if(isHelp1)
+    {
+        try
+        {
+            var globals = Help1Globals;
+
+            globals.Save(name, value);
+        }
+        catch(e)
+        {
+        }
+
+        return;
+    }
+
+    var today = new Date();
+
+    today.setTime(today.getTime());
+
+    // Set the expiration time to be 60 days from now (in milliseconds)
+    var expires_date = new Date(today.getTime() + (60 * 1000 * 60 * 60 * 24));
+
+    document.cookie = name + "=" + escape(value) + ";expires=" + expires_date.toGMTString() + ";path=/";
+}
+
+// Add a language-specific text ID
+function AddLanguageSpecificTextSet(lstId)
+{
+    var keyValue = lstId.split("?")
+
+    allLSTSetIds[keyValue[0]] = keyValue[1];
+}
+
+// Add a language tab set ID
+function AddLanguageTabSet(tabSetId)
+{
+    allTabSetIds.push(tabSetId);
+}
+
+// Switch the active tab for all of other code snippets
+function ChangeTab(tabSetId, language, snippetIdx, snippetCount)
+{
+    SetLanguageCookie("CodeSnippetContainerLanguage", language);
+
+    SetActiveTab(tabSetId, snippetIdx, snippetCount);
+
+    // If LST exists on the page, set the LST to show the user selected programming language
+    UpdateLST(language);
+
+    var i = 0;
+
+    while(i < allTabSetIds.length)
+    {
+        // We just care about other snippets
+        if(allTabSetIds[i] != tabSetId)
+        {
+            // Other tab sets may not have the same number of tabs
+            var tabCount = 1;
+
+            while(document.getElementById(allTabSetIds[i] + "_tab" + tabCount) != null)
+                tabCount++;
+
+            tabCount--;
+
+            // If not grouped, skip it
+            if(tabCount > 1)
+                SetCurrentLanguage(allTabSetIds[i], language, tabCount);
+        }
+
         i++;
-        continue;
-      }
-
-
-      var index = 1, j = 1;
-      while (j < 6)
-      {
-        var tabTemp = document.getElementById(snippetIdSets[i] + "_tab" + j);
-        if (tabTemp == null) { j++; continue; }
-        if (tabTemp.innerHTML.indexOf(lang) != -1)
-        {
-          index = j;
-        }
-        j++;
-      }
-
-      if (index > 5) index = 1;
-      setCurrentLang(snippetIdSets[i], lang, index, _tempSnippetCount, false);
     }
-    i++;
-  }
 }
-var viewPlain = false;
-function setCurrentLang(objid, lang, index, snippetCount, setLangSpecText)
+
+// Sets the current language in the specified tab set
+function SetCurrentLanguage(tabSetId, language, tabCount)
 {
-  var _tab = document.getElementById(objid + "_tab" + index);
-  if (_tab != null)
-  {
-    if (document.getElementById(objid + "_tab" + index).innerHTML.match("javascript") == null)
+    var tabIndex = 1;
+
+    while(tabIndex <= tabCount)
     {
-      //Select left most tab as fallback
-      var i = 1;
-      while (i < 6)
-      {
-        if (!document.getElementById(objid + "_tab" + i).disabled)
+        var tabTemp = document.getElementById(tabSetId + "_tab" + tabIndex);
+
+        if(tabTemp != null && tabTemp.innerHTML.indexOf("'" + language + "'") != -1)
+            break;
+
+        tabIndex++;
+    }
+
+    if(tabIndex > tabCount)
+    {
+        // Select the first non-disabled tab
+        tabIndex = 1;
+
+        if(document.getElementById(tabSetId + "_tab1").className.indexOf("OH_CodeSnippetContainerTabDisabled") != -1)
         {
-          setCurrentLang(objid, document.getElementById(objid + "_tab" + i).firstChild.innerHTML, i, snippetCount, false);
-          return;
+            tabIndex++;
+
+            while(tabIndex <= tabCount)
+            {
+                var tab = document.getElementById(tabSetId + "_tab" + tabIndex);
+
+                if(tab.className.indexOf("OH_CodeSnippetContainerTabDisabled") == -1)
+                {
+                    tab.className = "OH_CodeSnippetContainerTabActiveNotFirst";
+                    document.getElementById(tabSetId + "_code_Div" + j).style.display = "block";
+                    break;
+                }
+
+                tabIndex++;
+            }
+
+            // Disable left most image if first tab is disabled
+            document.getElementById(tabSetId + "_tabimgleft").className = "OH_CodeSnippetContainerTabLeftDisabled";
         }
+    }
+
+    SetActiveTab(tabSetId, tabIndex, tabCount);
+
+    // Disable right most image if last tab is disabled
+    if(document.getElementById(tabSetId + "_tab" + tabCount).className.indexOf("OH_CodeSnippetContainerTabDisabled") != -1)
+        document.getElementById(tabSetId + "_tabimgright").className = "OH_CodeSnippetContainerTabRightDisabled";
+}
+
+// Set the active tab within a tab set
+function SetActiveTab(tabSetId, tabIndex, tabCount)
+{
+    var i = 1;
+
+    while(i <= tabCount)
+    {
+        var tabTemp = document.getElementById(tabSetId + "_tab" + i);
+
+        if(tabTemp.className == "OH_CodeSnippetContainerTabActive")
+            tabTemp.className = "OH_CodeSnippetContainerTabFirst";
+        else
+            if(tabTemp.className == "OH_CodeSnippetContainerTabActiveNotFirst")
+                tabTemp.className = "OH_CodeSnippetContainerTab";
+            else
+                if(tabTemp.className.indexOf("OH_CodeSnippetContainerTabDisabled") != -1)
+                {
+                    tabTemp.firstChild.style.color = "#a8a8a8";
+                    tabTemp.firstChild.style.fontWeight = "normal";
+                }
+
+        var codeTemp = document.getElementById(tabSetId + "_code_Div" + i);
+
+        if(codeTemp.style.display != "none")
+            codeTemp.style.display = "none";
+
         i++;
-      }
-      return;
     }
-    var langText = _tab.innerHTML;
-    if (langText.indexOf(lang) != -1)
+
+    if(document.getElementById(tabSetId + "_tab" + tabIndex).className.indexOf("OH_CodeSnippetContainerTabDisabled") == -1)
     {
-      i = 1;
-      while (i < 6)
-      {
-        var tabtemp = document.getElementById(objid + "_tab" + i);
-        if (tabtemp != null)
-        {
-          if (tabtemp.className == "OH_CodeSnippetContainerTabActive")
-            tabtemp.className = "OH_CodeSnippetContainerTabFirst";
-          if (tabtemp.className == "OH_CodeSnippetContainerTabActiveNotFirst")
-            tabtemp.className = "OH_CodeSnippetContainerTab";
-        }
-        var codetemp = document.getElementById(objid + "_code_Div" + i);
-        if (codetemp != null)
-        {
-          if (codetemp.style.display != 'none')
-            codetemp.style.display = 'none';
-        }
+        if(tabIndex == 1)
+            document.getElementById(tabSetId + "_tab" + tabIndex).className = "OH_CodeSnippetContainerTabActive";
+        else
+            document.getElementById(tabSetId + "_tab" + tabIndex).className = "OH_CodeSnippetContainerTabActiveNotFirst";
+    }
+    else
+    {
+        document.getElementById(tabSetId + "_tab" + tabIndex).firstChild.style.color = "black";
+        document.getElementById(tabSetId + "_tab" + tabIndex).firstChild.style.fontWeight = "bold";
+    }
+
+    document.getElementById(tabSetId + "_code_Div" + tabIndex).style.display = "block";
+
+    // Change the CSS of the first/last image div according the currently selected tab
+    if(tabIndex == 1 && document.getElementById(tabSetId + "_tab" + tabIndex).className.indexOf("OH_CodeSnippetContainerTabDisabled") == -1)
+        document.getElementById(tabSetId + "_tabimgleft").className = "OH_CodeSnippetContainerTabLeftActive";
+    else
+        if(document.getElementById(tabSetId + "_tabimgleft").className != "OH_CodeSnippetContainerTabLeftDisabled")
+            document.getElementById(tabSetId + "_tabimgleft").className = "OH_CodeSnippetContainerTabLeft";
+
+    if(tabIndex == tabCount && document.getElementById(tabSetId + "_tab" + tabIndex).className.indexOf("OH_CodeSnippetContainerTabDisabled") == -1)
+        document.getElementById(tabSetId + "_tabimgright").className = "OH_CodeSnippetContainerTabRightActive";
+    else
+        if(document.getElementById(tabSetId + "_tabimgright").className != "OH_CodeSnippetContainerTabRightDisabled")
+            document.getElementById(tabSetId + "_tabimgright").className = "OH_CodeSnippetContainerTabRight";
+
+    // Show copy code button if not in Chrome
+    if(navigator.userAgent.toLowerCase().indexOf("chrome") == -1)
+        document.getElementById(tabSetId + "_copyCode").style.display = "inline";
+    else
+        document.getElementById(tabSetId + "_copyCode").style.display = "none";
+}
+
+// Copy the code from the active tab of the given tab set to the clipboard
+function CopyToClipboard(tabSetId)
+{
+    var tabTemp, contentId;
+    var i = 1;
+
+    do
+    {
+        contentId = tabSetId + "_code_Div" + i;
+        tabTemp = document.getElementById(contentId);
+
+        if(tabTemp != null && tabTemp.style.display != "none")
+            break;
+
         i++;
-      }
-      document.getElementById(objid + "_tab" + index).className = "OH_CodeSnippetContainerTabActive";
-      if (index != 1)
-        document.getElementById(objid + "_tab" + index).className = "OH_CodeSnippetContainerTabActiveNotFirst";
 
-      if (viewPlain == false) document.getElementById(objid + '_code_Div' + index).style.display = 'block';
-      else document.getElementById(objid + '_code_Plain_Div' + index).style.display = 'block';
+    } while(tabTemp != null);
 
-      // change the css of the first/last image div according the current selected tab
-      // if the first tab is selected
-      if (index == 1)
-        document.getElementById(objid + "_tabs").firstChild.className = "OH_CodeSnippetContainerTabLeftActive";
-      else
-      {
-        if (document.getElementById(objid + "_tabs").firstChild.className != "OH_CodeSnippetContainerTabLeftDisabled")
-          document.getElementById(objid + "_tabs").firstChild.className = "OH_CodeSnippetContainerTabLeft";
-      }
-      // if the last tab is selected
-      if (index == snippetCount)
-        document.getElementById(objid + "_tabs").lastChild.className = "OH_CodeSnippetContainerTabRightActive";
-      else
-      {
-        if (document.getElementById(objid + "_tabs").lastChild.className != "OH_CodeSnippetContainerTabRightDisabled")
-          document.getElementById(objid + "_tabs").lastChild.className = "OH_CodeSnippetContainerTabRight";
-      }
+    if(tabTemp == null)
+        return;
 
-      // show copy code button if EnableCopyCode is set to true (and not in Chrome)
-      if (document.getElementById(objid + "_tab" + index).getAttribute("EnableCopyCode") == "true"
-      && navigator.userAgent.toLowerCase().indexOf('chrome') == -1)
-      {
-        document.getElementById(objid + "_copycode").style.display = 'inline';
-      }
-      else
-      {
-        document.getElementById(objid + "_copycode").style.display = 'none';
-      }
-
-    // if LST exists on the page, then set the LST to show the user selected programming language.
-    if (setLangSpecText) 
+    if(window.clipboardData)
     {
-      var currentLang = getDevLangFromCodeSnippet(lang);
-      updateLST(currentLang);
+        try
+        {
+            window.clipboardData.setData("Text", document.getElementById(contentId).innerText);
+        }
+        catch(e)
+        {
+            alert("Permission denied. Enable copying to the clipboard.");
+        }
     }
-  }
- }
+    else if(window.netscape)
+    {
+        try
+        {
+            netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+
+            var clip = Components.classes["@mozilla.org/widget/clipboard;1"].createInstance(
+                Components.interfaces.nsIClipboard);
+
+            if(!clip)
+                return;
+
+            var trans = Components.classes["@mozilla.org/widget/transferable;1"].createInstance(
+                Components.interfaces.nsITransferable);
+
+            if(!trans)
+                return;
+
+            trans.addDataFlavor("text/unicode");
+
+            var str = new Object();
+            var len = new Object();
+            var str = Components.classes["@mozilla.org/supports-string;1"].createInstance(
+                Components.interfaces.nsISupportsString);
+
+            var copytext = document.getElementById(contentId).textContent;
+
+            str.data = copytext;
+            trans.setTransferData("text/unicode", str, copytext.length * 2);
+
+            var clipid = Components.interfaces.nsIClipboard;
+
+            clip.setData(trans, null, clipid.kGlobalClipboard);
+        }
+        catch(e)
+        {
+            alert("Permission denied. Enter \"about:config\" in the address bar and double-click the \"signed.applets.codebase_principal_support\" setting to enable copying to the clipboard.");
+        }
+    }
 }
-function addSpecificTextLanguageTagSet(codesnippetid)
+
+// Help 1 persistence object.  This requires a hidden input element on the page with a class of "userDataStyle"
+// defined in the style sheet that implements the user data binary behavior:
+// <input type="hidden" id="userDataCache" class="userDataStyle" />
+var Help1Globals =
 {
-  var i = 1;
-  while (i < 6)
-  {
-    var snippetObj = document.getElementById(codesnippetid + "_tab" + i);
-    if (snippetObj == null) break;
-
-    var tagSet = getDevLangFromCodeSnippet(snippetObj.innerHTML);
-    var insert = true;
-    var j = 0;
-    while (j < allLanguageTagSets.length)
+    UserDataCache: function()
     {
-      if (allLanguageTagSets[j] == tagSet)
-      {
-        insert = false;
-      }
-      j++;
-    }
-    if (insert) allLanguageTagSets.push(tagSet);
-    i++;
-  }
-  snippetIdSets.push(codesnippetid);
-}
+        var userData = document.getElementById("userDataCache");
 
-function CopyToClipboard(objid, snippetCount)
-{
-  var contentid;
-  var i = 1;
-  while (i <= snippetCount)
-  {
-    var obj = document.getElementById(objid + '_code_Div' + i);
-    if ((obj != null) && (obj.style.display != 'none') && (document.getElementById(objid + '_code_Plain_Div' + i).innerText != ''))
-    {
-      contentid = objid + '_code_Plain_Div' + i;
-      break;
-    }
+        return userData;
+    },
 
-    obj = document.getElementById(objid + '_code_Plain_Div' + i);
-    if ((obj != null) && (obj.style.display != 'none') && (document.getElementById(objid + '_code_Plain_Div' + i).innerText != ''))
+    Load: function(key)
     {
-      contentid = objid + '_code_Plain_Div' + i;
-      break;
-    }
-    i++;
-  }
-  if (contentid == null) return;
-  if (window.clipboardData)
-  {
-      try { window.clipboardData.setData("Text", document.getElementById(contentid).innerText); } 
-      catch (e) {
-          alert("Permission denied. Enable copying to the clipboard.");
-      }
-  }
-  else if (window.netscape)
-  {
-    try
-    {
-      netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+        var userData = this.UserDataCache();
 
-      var clip = Components.classes['@mozilla.org/widget/clipboard;1']
-                          .createInstance(Components.interfaces.nsIClipboard);
-      if (!clip) return;
-      var trans = Components.classes['@mozilla.org/widget/transferable;1']
-                          .createInstance(Components.interfaces.nsITransferable);
-      if (!trans) return;
-      trans.addDataFlavor('text/unicode');
+        userData.load("userDataSettings");
 
-      var str = new Object();
-      var len = new Object();
-      var str = Components.classes["@mozilla.org/supports-string;1"]
-                          .createInstance(Components.interfaces.nsISupportsString);
-      var copytext = document.getElementById(contentid).textContent;
-      str.data = copytext;
-      trans.setTransferData("text/unicode", str, copytext.length * 2);
-      var clipid = Components.interfaces.nsIClipboard;
-      clip.setData(trans, null, clipid.kGlobalClipboard);
-    }
-    catch (e)
-    {
-      alert("Permission denied. Enter \"about:config\" in the address bar and double-click the \"signed.applets.codebase_principal_support\" setting to enable copying to the clipboard.");
-    }
-  }
-  else
-  {
-    return;
-  }
-}
+        var value = userData.getAttribute(key);
 
-function Print(objid, snippetCount)
-{
-  var contentid;
-  var i = 1;
-  while (i <= snippetCount)
-  {
-    var obj = document.getElementById(objid + '_code_Div' + i);
-    if ((obj != null) && (obj.style.display != 'none'))
-    {
-      contentid = objid + '_code_Plain_Div' + i;
-      break;
-    }
+        return value;
+    },
 
-    obj = document.getElementById(objid + '_code_Plain_Div' + i);
-    if ((obj != null) && (obj.style.display != 'none'))
+    Save: function(key, value)
     {
-      contentid = objid + '_code_Plain_Div' + i;
-      break;
+        var userData = this.UserDataCache();
+        userData.setAttribute(key, value);
+        userData.save("userDataSettings");
     }
-    i++;
-  }
-  if (contentid == null) return;
-  var obj = document.getElementById(contentid);
-  if (obj)
-  {
-      var tempwin = window.open('', '', 'top=900000, left=900000, dependent=yes');
-      if (tempwin && tempwin.document) {
-          try {
-              tempwin.document.title = "Printer Dialog";
-              tempwin.document.body.innerText = obj.innerText;
-              tempwin.print();
-              tempwin.close();
-          } catch (e) { if (tempwin) tempwin.close(); };
-      }
-  }
-}
+};

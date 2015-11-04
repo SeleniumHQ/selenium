@@ -1,0 +1,8 @@
+/* Style adjustments for Help Viewer */
+.OH_CodeSnippetToolBarText {
+	top: -10px;
+}
+span.keyword {
+	color: #0000ff;
+	font-weight: normal;
+}

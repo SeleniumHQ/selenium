@@ -13,7 +13,7 @@
 // files created by the help file builder.
 //
 // This code is published under the Microsoft Public License (Ms-PL).  A copy of the license should be
-// distributed with the code.  It can also be found at the project website: http://SHFB.CodePlex.com.  This
+// distributed with the code.  It can also be found at the project website: https://GitHub.com/EWSoftware/SHFB.  This
 // notice, the author's name, and all copyright notices must remain intact in all applications, documentation,
 // and source files.
 //
@@ -21,9 +21,12 @@
 // ==============================================================================================================
 // 06/24/2007  EFW  Created the code
 // 02/17/2012  EFW  Switched to JSON serialization to support websites that use something other than ASP.NET
-//								  such as PHP.
+//                  such as PHP.
 //===============================================================================================================
 
+/// <summary>
+/// This class is used to track the results and their rankings
+/// </summary>
 private class Ranking
 {
     public string Filename, PageTitle;
@@ -151,8 +154,6 @@ private string Search(List<string> keywords, List<string> fileInfo,
     bool isFirst = true;
     int idx, wordCount, matchCount;
 
-// TODO: Support boolean operators (AND, OR and maybe NOT)
-        
     foreach(string word in keywords)
     {
         if(!wordDictionary.TryGetValue(word, out occurrences))

@@ -29,6 +29,7 @@ a img {
 }
 
 pre {
+	font-family: Consolas, Courier, monospace;
 	overflow: hidden;
 }
 
@@ -49,7 +50,7 @@ div.OH_outerContent table th {
 	color: #000;
 	padding: 4px;
 	font-style: normal;
-	font-weight: normal;
+	font-weight: bold;
 	background-color: rgb(229,229,229);
 }
 
@@ -74,7 +75,7 @@ div.OH_outerContent table.TitleTable td {
 	font-family: Segoe UI, Verdana, Arial;
 	font-size: 1.45em; /*17pt*/
 	font-weight: bold;
-	color: #250c58;
+	color: #000000;
 	padding: 0px;
 	padding-left: 10px;
 	text-align: left;
@@ -169,15 +170,16 @@ h4.subHeading, .subHeading {
 	margin: 0px;
 }
 dl {
-	margin: 0 0 10px;
-	padding: 0 0 0 1px;
+	margin-top: 0px;
+	margin-bottom: 10px;
 }
 dt {
 	font-style: normal;
 	margin: 0px;
 }
 dd {
-	margin-left: 13px;
+	margin-left: 20px;
+	margin-bottom: 5px;
 }
 dd p {
 	margin-top: 0;
@@ -222,16 +224,14 @@ div.section p {
 
 ul {
 	line-height: 140%;
-	list-style-position: outside;
 	list-style-type: disc;
 	margin-bottom: 15px;
 }
 
 ul ul {
 	line-height: 140%;
-	list-style-type: disc;
+	list-style-type: circle;
 	margin-bottom: 4px;
-	margin-left: 13px;
 	margin-top: 3px;
 }
 
@@ -262,6 +262,7 @@ div.OH_outerContent div#mainSection table th {
 	padding-right: 13px;
 	vertical-align: middle;
 	text-align: left;
+	font-weight: bold;
 }
 
 div.OH_outerContent div#mainSection table td {
@@ -329,9 +330,7 @@ div.caption {
 	font-weight: bold;
 }
 
-/* added for new spans that replace
-   sub, sup, big and small tags
-*/
+/* added for new spans that replace sub, sup, big and small tags */
 span.sub {
 	vertical-align: sub;
 }
@@ -345,14 +344,14 @@ span.small {
 	font-size: smaller;
 }
 span.tt {
-	font-family: Courier, Consolas, monospace;
+	font-family: Consolas, Courier, monospace;
 }
 
 .OH_regiontitle {
 	font-size: 1.3em; /*15pt*/
 	font-family: Segoe UI, Verdana, Arial;
 	font-weight: bold;
-	color: #250c58;
+	color: #000000;
 	float: left;
 	background-color: #FFFFFF;
 	margin-top: 13px;
@@ -378,28 +377,16 @@ span.tt {
 	border-left-style: none;
 }
 
-span.copyCode {
-	font-weight: normal;
-	display: inline;
-}
-
-a.copyCode {
-	cursor: pointer;
-	color: blue;
-	text-decoration: none;
-	text-align: right;
-}
-
 .OH_CodeSnippetContainer {
 	clear: both;
 	margin-top: 10px;
 	line-height: normal;
+	width: 100%;
 }
 
 .OH_CodeSnippetContainerTabs {
 	position: relative;
-	top: 5px;
-	_top: 3px;
+	top: 2px;
 	float: left;
 	background-color: Transparent;
 	vertical-align: middle;
@@ -411,11 +398,14 @@ a.copyCode {
 
 .OH_CodeSnippetContainerTab, .OH_CodeSnippetContainerTabLeft, .OH_CodeSnippetContainerTabRight, .OH_CodeSnippetContainerTabFirst, .OH_CodeSnippetContainerTabActive, .OH_CodeSnippetContainerTabLeftActive, .OH_CodeSnippetContainerTabRightActive, .OH_CodeSnippetContainerTabActiveNotFirst, .OH_CodeSnippetContainerTabDisabled, .OH_CodeSnippetContainerTabLeftDisabled, .OH_CodeSnippetContainerTabRightDisabled, .OH_CodeSnippetContainerTabDisabledNotFirst, .OH_CodeSnippetContainerTabSolo {
 	float: left;
-	font-size: 0.8em; /*10pt*/
+	font-size: 0.8em;
 	margin: 0px;
 	padding: 0px;
-	_padding-top: 2px;
 	height: 20px;
+}
+
+.OH_CodeSnippetContainerTabSolo {
+	padding: 0px 5px 0px 5px;
 }
 
 .OH_CodeSnippetContainerTab, .OH_CodeSnippetContainerTabFirst, .OH_CodeSnippetContainerTabActive, .OH_CodeSnippetContainerTabActiveNotFirst, .OH_CodeSnippetContainerTabDisabled, .OH_CodeSnippetContainerTabDisabledNotFirst, .OH_CodeSnippetContainerTabSolo {
@@ -423,7 +413,7 @@ a.copyCode {
 }
 
 .OH_CodeSnippetContainerTab, .OH_CodeSnippetContainerTabLeft, .OH_CodeSnippetContainerTabRight, .OH_CodeSnippetContainerTabFirst, .OH_CodeSnippetContainerTabDisabled, .OH_CodeSnippetContainerTabLeftDisabled, .OH_CodeSnippetContainerTabRightDisabled, .OH_CodeSnippetContainerTabDisabledNotFirst {
-	border-bottom: solid 2px #d0d2d2;
+	border-bottom: solid 1px #d0d2d2;
 }
 
 .OH_CodeSnippetContainerTab, .OH_CodeSnippetContainerTabActiveNotFirst, .OH_CodeSnippetContainerTabDisabledNotFirst {
@@ -450,13 +440,7 @@ a.copyCode {
 	cursor: pointer;
 }
 
-.OH_CodeSnippetContainerTabSolo a, .OH_CodeSnippetContainerTabSolo a:link, .OH_CodeSnippetContainerTabSolo a:visited, .OH_CodeSnippetContainerTabSolo a:active, .OH_CodeSnippetContainerTabSolo a:hover {
-	padding: 0px 5px 0px 5px;
-	color: #1364c4;
-	text-decoration: none;
-}
-
-.OH_CodeSnippetContainerTab a:link, .OH_CodeSnippetContainerTab a:visited, .OH_CodeSnippetContainerTabFirst a:link, .OH_CodeSnippetContainerTabFirst a:visited, .OH_CodeSnippetContainerTabSolo a:link, .OH_CodeSnippetContainerTabSolo a:visited {
+.OH_CodeSnippetContainerTab a:link, .OH_CodeSnippetContainerTab a:visited, .OH_CodeSnippetContainerTabFirst a:link, .OH_CodeSnippetContainerTabFirst a:visited {
 	color: #1364c4;
 }
 
@@ -495,8 +479,7 @@ a.copyCode {
 
 .OH_CodeSnippetToolBar {
 	width: 100%;
-	height: 1em;
-	border-top: solid 3px #e5e5e5;
+	border-top: solid 1px #e5e5e5;
 }
 
 .OH_CodeSnippetToolBarText {
@@ -506,11 +489,11 @@ a.copyCode {
 	z-index: 100;
 	width: auto;
 	margin-right: 13px;
-	top: -13px;
+	top: -8px;
 }
 
 .OH_CodeSnippetToolBarText a:link, .OH_CodeSnippetToolBarText a:visited, .OH_CodeSnippetToolBarText a:active, .OH_CodeSnippetToolBarText a:hover {
-	font-size: 0.8em; /*10pt*/
+	font-size: 0.8em;
 	padding-left: 3px;
 	padding-right: 3px;
 	text-decoration: none;
@@ -527,10 +510,8 @@ a.copyCode {
 .OH_CodeSnippetContainerCodeCollection {
 	border-left: solid 1px #e5e5e5;
 	border-right: solid 1px #e5e5e5;
-	border-bottom: solid 3px #e5e5e5;
+	border-bottom: solid 1px #e5e5e5;
 	clear: both;
-	margin: 0px;
-	margin-bottom: 5px;
 	width: 99%;
 }
 
@@ -538,8 +519,7 @@ a.copyCode {
 	width: 100%;
 	border-right-width: 0px;
 	margin: 0px;
-	padding: 0px;
-	padding-left: 19px;
+	padding-left: 10px;
 }
 
 .members {
@@ -563,7 +543,6 @@ a.copyCode {
 }
 
 .OH_outerContent {
-	_width: 99.9%;
 	overflow: visible;
 	border-left: 1px solid #bbb;
 }
@@ -590,27 +569,6 @@ a.copyCode {
 	clear: both;
 }
 
-div.OH_outerContent div#mainSection table.OH_borderlessTable, div.OH_outerContent div#mainSection table.OH_borderlessTable tr, div.OH_outerContent div#mainSection table.OH_borderlessTable td {
-	border: 0;
-	vertical-align: top;
-}
-div.OH_outerContent div#mainSection table.OH_borderlessTableSP {
-	width: 800px;
-	background-color: #d3d3d3;
-}
-
-div.OH_outerContent div#mainSection table.OH_borderlessTableSP, div.OH_outerContent div#mainSection table.OH_borderlessTableSP tr, div.OH_outerContent div#mainSection table.OH_borderlessTableSP td {
-	border: 0;
-	vertical-align: top;
-	padding-top: 0px;
-	padding-bottom: 0px;
-}
-
-div.OH_outerContent div#mainSection table.OH_borderlessTableSP td {
-	width: 300px;
-	background-color: #e5e5e5;
-}
-
 /*Start of colorization*/
 div.seeAlsoStyle {
 	padding-top: 5px;
@@ -628,7 +586,7 @@ span.math {
 	font-style: italic;
 }
 span.input {
-	font-weight: 700;
+	font-weight: bold;
 }
 span.term {
 	font-style: italic;
@@ -642,32 +600,25 @@ span.foreignPhrase, span.phrase {
 span.placeholder {
 	font-style: italic;
 }
-span.keyword {
-	font-weight: bold;
-}
 span.typeparameter {
 	font-style: italic;
 }
 span.identifier {
 }
 span.keyword {
-	color: #871f78;
+	color: #0000ff;
 }
 span.parameter {
 	font-style: italic;
 }
 span.literal, span.literalValue {
-	color: maroon;
+	color: #cc0000;
 }
 span.comment {
-	color: green;
-}
-span.syntaxLabel {
-	font-weight: bold;
-	color: #0481da;
+	color: #006633;
 }
 span.introStyle {
-	color: DarkGray;
+	color: #a9a9a9;
 }
 /*End of colorization*/
 
@@ -820,4 +771,8 @@ span.bibliographyPublisher {
 
 sup.citation a:link a:visited a:active {
 	text-decoration: none;
+}
+
+/* Placeholder for the Help 1 user data style class */
+.userDataStyle {
 }

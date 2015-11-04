@@ -1,0 +1,14 @@
+/* Define the userData cache persistence mechanism for Help 1 files */
+.userDataStyle {
+	behavior: url(#default#userdata);
+}
+
+/* Style adjustments for Help 1*/
+.OH_outerContent {
+	/* _width is some sort of hack for IE6 and earlier.  It does prevent a problem with the tabs shifting
+	   oddly in some cases in Help 1 files.  (i.e. the syntax section grows because it contains more lines) */
+	_width: 99.9%;
+}
+.OH_CodeSnippetToolBarText {
+	top: -14px;
+}

@@ -1,18 +1,18 @@
 /* Start JA-JP locale-specific CSS */
 body
 {
-	font-family:Segoe UI, Verdana, Arial, ＭＳ Ｐゴシック;
+	font-family: Segoe UI, Verdana, Arial, ＭＳ Ｐゴシック;
 }
 pre
 {
-  font-family:Courier, "Courier New", Consolas, Monospace, ＭＳ ゴシック;
+  font-family: Consolas, Courier, monospace, ＭＳ ゴシック;
 }
 span.tt
 {
-  font-family:Courier, "Courier New", Consolas, Monospace, ＭＳ ゴシック;
+  font-family: Consolas, Courier, monospace, ＭＳ ゴシック;
 }
 span.code
 {
-	font-family:Monospace, Courier New, Courier, ＭＳ ゴシック;
+	font-family: Consolas, Courier, monospace, ＭＳ ゴシック;
 }
 /* End locale-specific CSS */

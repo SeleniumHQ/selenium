@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shfbBuild product="Sandcastle Help File Builder" version="2014.4.22.0" projectFile="C:\Projects\webdriver\dotnet\docs\docs.shfbproj" started="6/4/2015 12:21:13 PM">
+<shfbBuild product="Sandcastle Help File Builder and Tools" version="2015.7.25.0" projectFile="C:\Projects\webdriver\dotnet\docs\docs.shfbproj" started="11/4/2015 12:03:59 PM">
 <buildStep step="Initializing">
 Finding tools...
 The Sandcastle tools are located in &#39;C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\&#39;
 Searching for HTML Help 1 compiler...
 Found HTML Help 1 compiler in &#39;C:\Program Files (x86)\HTML Help Workshop\&#39;
 Locating components in the following folder(s):
-   C:\Projects\webdriver\dotnet\docs
+    C:\Projects\webdriver\dotnet\docs
+    C:\ProgramData\EWSoftware\Sandcastle Help File Builder\Components and Plug-Ins\
+    C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\
+Framework reflection data location: C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Data\.NETFramework
 Using presentation style &#39;VS2010&#39; located in &#39;C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010&#39;
+-------------------------------
+Clearing any prior web/markdown output...
 </buildStep>
 <buildStep step="ValidatingDocumentationSources">
 Validating and copying documentation source information
@@ -32,51 +37,53 @@ Copying XML comments files
 </buildStep>
 <buildStep step="GenerateSharedContent">
 Generating shared content files (en-US, English (United States))...
-    Last step completed in 00:00:00.0313
+    Last step completed in 00:00:00.0153
 </buildStep>
 <buildStep step="GenerateApiFilter">
 Generating API filter for MRefBuilder...
-    Last step completed in 00:00:00.0624
+    Last step completed in 00:00:00.0530
 </buildStep>
 <buildStep step="GenerateReflectionInfo">
 Generating reflection information...
-[C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe]
-Build started 6/4/2015 12:21:14 PM.
+[C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe - GenerateRefInfo.proj]
+Build started 11/4/2015 12:04:00 PM.
 Project &quot;C:\Projects\webdriver\build\docs\dotnet\web\Working\GenerateRefInfo.proj&quot; on node 1 (default targets).
+Project file contains ToolsVersion=&quot;12.0&quot;. This toolset may be unknown or missing, in which case you may be able to resolve this by installing the appropriate version of MSBuild, or the build may have been forced to a particular ToolsVersion for policy reasons. Treating the project as if it had ToolsVersion=&quot;4.0&quot;. For more information, please see http://go.microsoft.com/fwlink/?LinkId=291333.
 PrepareForBuild:
   Creating directory &quot;obj\Debug\&quot;.
 GenerateRefInfo:
-  MRefBuilder (v2014.1.26.0)
-  Copyright c 2006-2014, Microsoft Corporation, All Rights Reserved.
-  Portions Copyright c 2006-2014, Eric Woodruff, All Rights Reserved.
+  MRefBuilder (v2015.7.25.0)
+  Copyright c 2006-2015, Microsoft Corporation, All Rights Reserved.
+  Portions Copyright c 2006-2015, Eric Woodruff, All Rights Reserved.
   Loaded 4 assemblies for reflection and 1 dependency assemblies.
-  Wrote information on 18 namespaces, 195 types, and 1739 members
+  Wrote information on 20 namespaces, 219 types, and 1886 members
   Copying file from &quot;reflection.org&quot; to &quot;reflection.all&quot;.
-  XslTransform (v2014.1.26.0)
-  Copyright c 2006-2014, Microsoft Corporation, All Rights Reserved.
-  Portions Copyright c 2006-2014, Eric Woodruff, All Rights Reserved.
+  XslTransform (v2015.7.25.0)
+  Copyright c 2006-2015, Microsoft Corporation, All Rights Reserved.
+  Portions Copyright c 2006-2015, Eric Woodruff, All Rights Reserved.
   Applying XSL transformation &#39;C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\ProductionTransforms\MergeDuplicates.xsl&#39;.
 Done Building Project &quot;C:\Projects\webdriver\build\docs\dotnet\web\Working\GenerateRefInfo.proj&quot; (default targets).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.96
-    Last step completed in 00:00:01.0780
+Time Elapsed 00:00:01.30
+    Last step completed in 00:00:01.5538
 </buildStep>
 <buildStep step="TransformReflectionInfo">
 Transforming reflection output...
-[C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe]
-Build started 6/4/2015 12:21:15 PM.
+[C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe - TransformManifest.proj]
+Build started 11/4/2015 12:04:02 PM.
 Project &quot;C:\Projects\webdriver\build\docs\dotnet\web\Working\TransformManifest.proj&quot; on node 1 (default targets).
+Project file contains ToolsVersion=&quot;12.0&quot;. This toolset may be unknown or missing, in which case you may be able to resolve this by installing the appropriate version of MSBuild, or the build may have been forced to a particular ToolsVersion for policy reasons. Treating the project as if it had ToolsVersion=&quot;4.0&quot;. For more information, please see http://go.microsoft.com/fwlink/?LinkId=291333.
 TransformManifest:
-  XslTransform (v2014.1.26.0)
-  Copyright c 2006-2014, Microsoft Corporation, All Rights Reserved.
-  Portions Copyright c 2006-2014, Eric Woodruff, All Rights Reserved.
+  XslTransform (v2015.7.25.0)
+  Copyright c 2006-2015, Microsoft Corporation, All Rights Reserved.
+  Portions Copyright c 2006-2015, Eric Woodruff, All Rights Reserved.
   Applying XSL transformation &#39;C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\ProductionTransforms\ApplyVSDocModel.xsl&#39;.
   Copying file from &quot;reflection.xml&quot; to &quot;reflection.nofilenames&quot;.
-  XslTransform (v2014.1.26.0)
-  Copyright c 2006-2014, Microsoft Corporation, All Rights Reserved.
-  Portions Copyright c 2006-2014, Eric Woodruff, All Rights Reserved.
+  XslTransform (v2015.7.25.0)
+  Copyright c 2006-2015, Microsoft Corporation, All Rights Reserved.
+  Portions Copyright c 2006-2015, Eric Woodruff, All Rights Reserved.
   Applying XSL transformation &#39;C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\ProductionTransforms\AddFilenames.xsl&#39;.
     Unique name M_OpenQA_Selenium_By__ctor_1 generated for M:OpenQA.Selenium.By.#ctor(System.Func{OpenQA.Selenium.ISearchContext,OpenQA.Selenium.IWebElement},System.Func{OpenQA.Selenium.ISearchContext,System.Collections.ObjectModel.ReadOnlyCollection{OpenQA.Selenium.IWebElement}})
     Unique name M_OpenQA_Selenium_Cookie__ctor_1 generated for M:OpenQA.Selenium.Cookie.#ctor(System.String,System.String,System.String)
@@ -156,12 +163,29 @@ TransformManifest:
     Unique name M_OpenQA_Selenium_Chrome_ChromeOptions_AddEncodedExtensions_1 generated for M:OpenQA.Selenium.Chrome.ChromeOptions.AddEncodedExtensions(System.String[])
     Unique name M_OpenQA_Selenium_Chrome_ChromeOptions_AddExcludedArguments_1 generated for M:OpenQA.Selenium.Chrome.ChromeOptions.AddExcludedArguments(System.String[])
     Unique name M_OpenQA_Selenium_Chrome_ChromeOptions_AddExtensions_1 generated for M:OpenQA.Selenium.Chrome.ChromeOptions.AddExtensions(System.String[])
+    Unique name M_OpenQA_Selenium_Edge_EdgeDriver__ctor_1 generated for M:OpenQA.Selenium.Edge.EdgeDriver.#ctor(OpenQA.Selenium.Edge.EdgeDriverService)
+    Unique name M_OpenQA_Selenium_Edge_EdgeDriver__ctor_2 generated for M:OpenQA.Selenium.Edge.EdgeDriver.#ctor(OpenQA.Selenium.Edge.EdgeDriverService,OpenQA.Selenium.Edge.EdgeOptions)
+    Unique name M_OpenQA_Selenium_Edge_EdgeDriver__ctor_3 generated for M:OpenQA.Selenium.Edge.EdgeDriver.#ctor(OpenQA.Selenium.Edge.EdgeDriverService,OpenQA.Selenium.Edge.EdgeOptions,System.TimeSpan)
+    Unique name M_OpenQA_Selenium_Edge_EdgeDriver__ctor_4 generated for M:OpenQA.Selenium.Edge.EdgeDriver.#ctor(OpenQA.Selenium.Edge.EdgeOptions)
+    Unique name M_OpenQA_Selenium_Edge_EdgeDriver__ctor_5 generated for M:OpenQA.Selenium.Edge.EdgeDriver.#ctor(System.String)
+    Unique name M_OpenQA_Selenium_Edge_EdgeDriver__ctor_6 generated for M:OpenQA.Selenium.Edge.EdgeDriver.#ctor(System.String,OpenQA.Selenium.Edge.EdgeOptions)
+    Unique name M_OpenQA_Selenium_Edge_EdgeDriver__ctor_7 generated for M:OpenQA.Selenium.Edge.EdgeDriver.#ctor(System.String,OpenQA.Selenium.Edge.EdgeOptions,System.TimeSpan)
+    Unique name M_OpenQA_Selenium_Edge_EdgeDriverService_CreateDefaultService_1 generated for M:OpenQA.Selenium.Edge.EdgeDriverService.CreateDefaultService(System.String)
+    Unique name M_OpenQA_Selenium_Edge_EdgeDriverService_CreateDefaultService_2 generated for M:OpenQA.Selenium.Edge.EdgeDriverService.CreateDefaultService(System.String,System.String)
+    Unique name M_OpenQA_Selenium_Edge_EdgeDriverService_CreateDefaultService_3 generated for M:OpenQA.Selenium.Edge.EdgeDriverService.CreateDefaultService(System.String,System.String,System.Int32)
     Unique name M_OpenQA_Selenium_Firefox_FirefoxBinary__ctor_1 generated for M:OpenQA.Selenium.Firefox.FirefoxBinary.#ctor(System.String)
+    Unique name M_OpenQA_Selenium_Firefox_FirefoxBinary_Dispose_1 generated for M:OpenQA.Selenium.Firefox.FirefoxBinary.Dispose(System.Boolean)
     Unique name M_OpenQA_Selenium_Firefox_FirefoxDriver__ctor_1 generated for M:OpenQA.Selenium.Firefox.FirefoxDriver.#ctor(OpenQA.Selenium.Firefox.FirefoxBinary,OpenQA.Selenium.Firefox.FirefoxProfile)
     Unique name M_OpenQA_Selenium_Firefox_FirefoxDriver__ctor_2 generated for M:OpenQA.Selenium.Firefox.FirefoxDriver.#ctor(OpenQA.Selenium.Firefox.FirefoxBinary,OpenQA.Selenium.Firefox.FirefoxProfile,System.TimeSpan)
-    Unique name M_OpenQA_Selenium_Firefox_FirefoxDriver__ctor_3 generated for M:OpenQA.Selenium.Firefox.FirefoxDriver.#ctor(OpenQA.Selenium.Firefox.FirefoxProfile)
-    Unique name M_OpenQA_Selenium_Firefox_FirefoxDriver__ctor_4 generated for M:OpenQA.Selenium.Firefox.FirefoxDriver.#ctor(OpenQA.Selenium.ICapabilities)
+    Unique name M_OpenQA_Selenium_Firefox_FirefoxDriver__ctor_3 generated for M:OpenQA.Selenium.Firefox.FirefoxDriver.#ctor(OpenQA.Selenium.Firefox.FirefoxDriverService)
+    Unique name M_OpenQA_Selenium_Firefox_FirefoxDriver__ctor_4 generated for M:OpenQA.Selenium.Firefox.FirefoxDriver.#ctor(OpenQA.Selenium.Firefox.FirefoxDriverService,OpenQA.Selenium.Firefox.FirefoxOptions,System.TimeSpan)
+    Unique name M_OpenQA_Selenium_Firefox_FirefoxDriver__ctor_5 generated for M:OpenQA.Selenium.Firefox.FirefoxDriver.#ctor(OpenQA.Selenium.Firefox.FirefoxOptions)
+    Unique name M_OpenQA_Selenium_Firefox_FirefoxDriver__ctor_6 generated for M:OpenQA.Selenium.Firefox.FirefoxDriver.#ctor(OpenQA.Selenium.Firefox.FirefoxProfile)
+    Unique name M_OpenQA_Selenium_Firefox_FirefoxDriver__ctor_7 generated for M:OpenQA.Selenium.Firefox.FirefoxDriver.#ctor(OpenQA.Selenium.ICapabilities)
+    Unique name M_OpenQA_Selenium_Firefox_FirefoxDriverCommandExecutor_Dispose_1 generated for M:OpenQA.Selenium.Firefox.FirefoxDriverCommandExecutor.Dispose(System.Boolean)
     Unique name M_OpenQA_Selenium_Firefox_FirefoxDriverServer_Dispose_1 generated for M:OpenQA.Selenium.Firefox.FirefoxDriverServer.Dispose(System.Boolean)
+    Unique name M_OpenQA_Selenium_Firefox_FirefoxDriverService_CreateDefaultService_1 generated for M:OpenQA.Selenium.Firefox.FirefoxDriverService.CreateDefaultService(System.String)
+    Unique name M_OpenQA_Selenium_Firefox_FirefoxDriverService_CreateDefaultService_2 generated for M:OpenQA.Selenium.Firefox.FirefoxDriverService.CreateDefaultService(System.String,System.String)
     Unique name M_OpenQA_Selenium_Firefox_FirefoxProfile__ctor_1 generated for M:OpenQA.Selenium.Firefox.FirefoxProfile.#ctor(System.String)
     Unique name M_OpenQA_Selenium_Firefox_FirefoxProfile__ctor_2 generated for M:OpenQA.Selenium.Firefox.FirefoxProfile.#ctor(System.String,System.Boolean)
     Unique name M_OpenQA_Selenium_Firefox_FirefoxProfile_SetPreference_1 generated for M:OpenQA.Selenium.Firefox.FirefoxProfile.SetPreference(System.String,System.Int32)
@@ -226,11 +250,13 @@ TransformManifest:
     Unique name M_OpenQA_Selenium_Remote_Response__ctor_1 generated for M:OpenQA.Selenium.Remote.Response.#ctor(OpenQA.Selenium.Remote.SessionId)
     Unique name M_OpenQA_Selenium_Remote_StackTraceElement__ctor_1 generated for M:OpenQA.Selenium.Remote.StackTraceElement.#ctor(System.Collections.Generic.Dictionary{System.String,System.Object})
     Unique name M_OpenQA_Selenium_Safari_SafariDriver__ctor_1 generated for M:OpenQA.Selenium.Safari.SafariDriver.#ctor(OpenQA.Selenium.Safari.SafariOptions)
+    Unique name M_OpenQA_Selenium_Safari_SafariDriverCommandExecutor_Dispose_1 generated for M:OpenQA.Selenium.Safari.SafariDriverCommandExecutor.Dispose(System.Boolean)
     Unique name M_OpenQA_Selenium_Safari_SafariDriverServer_Dispose_1 generated for M:OpenQA.Selenium.Safari.SafariDriverServer.Dispose(System.Boolean)
     Unique name M_OpenQA_Selenium_Safari_Internal_HandshakeException__ctor_1 generated for M:OpenQA.Selenium.Safari.Internal.HandshakeException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
     Unique name M_OpenQA_Selenium_Safari_Internal_HandshakeException__ctor_2 generated for M:OpenQA.Selenium.Safari.Internal.HandshakeException.#ctor(System.String)
     Unique name M_OpenQA_Selenium_Safari_Internal_HandshakeException__ctor_3 generated for M:OpenQA.Selenium.Safari.Internal.HandshakeException.#ctor(System.String,System.Exception)
     Unique name M_OpenQA_Selenium_Safari_Internal_IWebSocketConnection_Send_1 generated for M:OpenQA.Selenium.Safari.Internal.IWebSocketConnection.Send(System.String)
+    Unique name M_OpenQA_Selenium_Safari_Internal_SocketWrapper__ctor_1 generated for M:OpenQA.Selenium.Safari.Internal.SocketWrapper.#ctor(System.Net.Sockets.Socket)
     Unique name M_OpenQA_Selenium_Safari_Internal_SocketWrapper_Dispose_1 generated for M:OpenQA.Selenium.Safari.Internal.SocketWrapper.Dispose(System.Boolean)
     Unique name M_OpenQA_Selenium_Safari_Internal_WebSocketConnection_Send_1 generated for M:OpenQA.Selenium.Safari.Internal.WebSocketConnection.Send(System.String)
     Unique name M_OpenQA_Selenium_Safari_Internal_WebSocketException__ctor_1 generated for M:OpenQA.Selenium.Safari.Internal.WebSocketException.#ctor(System.Int32)
@@ -286,20 +312,20 @@ TransformManifest:
     Unique name M_Selenium_WebDriverCommandProcessor__ctor_1 generated for M:Selenium.WebDriverCommandProcessor.#ctor(System.Uri,OpenQA.Selenium.IWebDriver)
     Unique name M_Selenium_WebDriverCommandProcessor_Start_1 generated for M:Selenium.WebDriverCommandProcessor.Start(System.Object)
     Unique name M_Selenium_WebDriverCommandProcessor_Start_2 generated for M:Selenium.WebDriverCommandProcessor.Start(System.String)
-  XslTransform (v2014.1.26.0)
-  Copyright c 2006-2014, Microsoft Corporation, All Rights Reserved.
-  Portions Copyright c 2006-2014, Eric Woodruff, All Rights Reserved.
+  XslTransform (v2015.7.25.0)
+  Copyright c 2006-2015, Microsoft Corporation, All Rights Reserved.
+  Portions Copyright c 2006-2015, Eric Woodruff, All Rights Reserved.
   Applying XSL transformation &#39;C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\ProductionTransforms\ReflectionToManifest.xsl&#39;.
 Done Building Project &quot;C:\Projects\webdriver\build\docs\dotnet\web\Working\TransformManifest.proj&quot; (default targets).
 
 Build succeeded.
 
-Time Elapsed 00:00:01.40
-    Last step completed in 00:00:01.5948
+Time Elapsed 00:00:01.63
+    Last step completed in 00:00:01.8345
 </buildStep>
 <buildStep step="GenerateNamespaceSummaries">
 Generating namespace summary information...
-    Last step completed in 00:00:00.1552
+    Last step completed in 00:00:00.1473
 </buildStep>
 <buildStep step="CopyAdditionalContent">
 Copying additional content files...
@@ -312,83 +338,81 @@ Merging conceptual and additional tables of contents...
 </buildStep>
 <buildStep step="GenerateIntermediateTableOfContents">
 Generating intermediate table of contents file...
-[C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe]
-Build started 6/4/2015 12:21:17 PM.
+[C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe - GenerateIntermediateTOC.proj]
+Build started 11/4/2015 12:04:04 PM.
 Project &quot;C:\Projects\webdriver\build\docs\dotnet\web\Working\GenerateIntermediateTOC.proj&quot; on node 1 (default targets).
+Project file contains ToolsVersion=&quot;12.0&quot;. This toolset may be unknown or missing, in which case you may be able to resolve this by installing the appropriate version of MSBuild, or the build may have been forced to a particular ToolsVersion for policy reasons. Treating the project as if it had ToolsVersion=&quot;4.0&quot;. For more information, please see http://go.microsoft.com/fwlink/?LinkId=291333.
 GenerateIntermediateTOC:
-  XslTransform (v2014.1.26.0)
-  Copyright c 2006-2014, Microsoft Corporation, All Rights Reserved.
-  Portions Copyright c 2006-2014, Eric Woodruff, All Rights Reserved.
+  XslTransform (v2015.7.25.0)
+  Copyright c 2006-2015, Microsoft Corporation, All Rights Reserved.
+  Portions Copyright c 2006-2015, Eric Woodruff, All Rights Reserved.
   Applying XSL transformation &#39;C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\ProductionTransforms\CreateVSToc.xsl&#39;.
 Done Building Project &quot;C:\Projects\webdriver\build\docs\dotnet\web\Working\GenerateIntermediateTOC.proj&quot; (default targets).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.15
+Time Elapsed 00:00:00.41
 Generating conceptual content intermediate TOC file...
-    Last step completed in 00:00:00.2499
+    Last step completed in 00:00:00.6161
 </buildStep>
 <buildStep step="CreateBuildAssemblerConfigs">
 Creating Sandcastle configuration files...
     sandcastle.config
-    Last step completed in 00:00:00.4687
+    Last step completed in 00:00:00.2214
 </buildStep>
 <buildStep step="MergeCustomConfigs">
 Merging custom build component configurations
 C:\Projects\webdriver\build\docs\dotnet\web\Working\sandcastle.config
-    Last step completed in 00:00:00.0469
+    Last step completed in 00:00:00.0000
 </buildStep>
 <buildStep step="BuildReferenceTopics">
 Building reference help topics...
-[C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe]
-Build started 6/4/2015 12:21:18 PM.
+[C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe - BuildReferenceTopics.proj]
+Build started 11/4/2015 12:04:05 PM.
 Project &quot;C:\Projects\webdriver\build\docs\dotnet\web\Working\BuildReferenceTopics.proj&quot; on node 1 (default targets).
+Project file contains ToolsVersion=&quot;12.0&quot;. This toolset may be unknown or missing, in which case you may be able to resolve this by installing the appropriate version of MSBuild, or the build may have been forced to a particular ToolsVersion for policy reasons. Treating the project as if it had ToolsVersion=&quot;4.0&quot;. For more information, please see http://go.microsoft.com/fwlink/?LinkId=291333.
 BuildReferenceTopics:
-  BuildAssembler (v2014.1.26.0)
-  Copyright c 2006-2014, Microsoft Corporation, All Rights Reserved.
-  Portions Copyright c 2006-2014, Eric Woodruff, All Rights Reserved.
+  BuildAssembler (v2015.7.25.0)
+  Copyright c 2006-2015, Microsoft Corporation, All Rights Reserved.
+  Portions Copyright c 2006-2015, Eric Woodruff, All Rights Reserved.
   Loading configuration...
   Processing topics...
-BuildAssembler : warning : ShowMissingComponent: [M:OpenQA.Selenium.Support.UI.ExpectedConditions.AlertState(System.Boolean)] Missing &lt;param name=&quot;state&quot;/&gt; documentation [C:\Projects\webdriver\build\docs\dotnet\web\Working\BuildReferenceTopics.proj]
-  Processed 2319 topic(s)
-  1 warning(s)
-  CopyFromIndexComponent: &quot;reflection&quot; in-memory cache entries used: 15 of 15.
-  CopyFromIndexComponent: &quot;comments&quot; in-memory cache entries used: 6 of 30.
-  ResolveReferenceLinksComponent: New MSDN content ID cache size: 73 entries
+  Processed 2531 topic(s)
+  CopyFromIndexComponent: &quot;reflection&quot; in-memory cache entries used: 14 of 15.
+  CopyFromIndexComponent: &quot;comments&quot; in-memory cache entries used: 5 of 30.
 Done Building Project &quot;C:\Projects\webdriver\build\docs\dotnet\web\Working\BuildReferenceTopics.proj&quot; (default targets).
 
 Build succeeded.
 
-Time Elapsed 00:01:29.29
-    Last step completed in 00:01:29.4005
+Time Elapsed 00:01:07.07
+    Last step completed in 00:01:07.2806
 </buildStep>
 <buildStep step="CombiningIntermediateTocFiles">
 Combining conceptual and API intermediate TOC files...
-
-Clearing any prior web output
-    Last step completed in 00:00:00.0000
+    Last step completed in 00:00:00.0156
 </buildStep>
 <buildStep step="ExtractingHtmlInfo">
 Extracting HTML info for HTML Help 1 and/or website...
-[C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe]
-Sandcastle Help File Builder, version 2014.4.22.0
-Copyright c 2006-2014, Eric Woodruff, All Rights Reserved
+[C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe - ExtractHtmlInfo.proj]
+Project file contains ToolsVersion=&quot;12.0&quot;. This toolset may be unknown or missing, in which case you may be able to resolve this by installing the appropriate version of MSBuild, or the build may have been forced to a particular ToolsVersion for policy reasons. Treating the project as if it had ToolsVersion=&quot;4.0&quot;. For more information, please see http://go.microsoft.com/fwlink/?LinkId=291333.
+Sandcastle Help File Builder and Tools, version 2015.7.25.0
+Copyright c 2006-2015, Eric Woodruff, All Rights Reserved
 E-Mail: Eric@EWoodruff.us
 
 Using LCID &#39;1033&#39;, code page &#39;65001&#39;, encoding charset &#39;UTF-8&#39;.
 
 Processing Help 1 files in C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\HtmlHelp1
-Processed 2319 HTML files
+Processed 2531 HTML files
 Sorting keywords and generating See Also indices
 Saving HTML Help 1 keyword index to C:\Projects\webdriver\build\docs\dotnet\web\Working\WebDriver.hhk
 Saving HTML Help 1 table of contents to C:\Projects\webdriver\build\docs\dotnet\web\Working\WebDriver.hhc
 
 Processing website files in C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website
-Processed 2319 HTML files
+Processed 2531 HTML files
 Sorting keywords and generating See Also indices
 Saving website keyword index to C:\Projects\webdriver\build\docs\dotnet\web\Working\WebKI.xml
 Saving website table of contents to C:\Projects\webdriver\build\docs\dotnet\web\Working\WebTOC.xml
-    Last step completed in 00:00:27.0765
+    Last step completed in 00:00:26.5583
 </buildStep>
 <buildStep step="CopyStandardHelpContent">
 Copying standard help content...
@@ -396,6 +420,7 @@ C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyle
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\icons\alert_note.gif -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\HtmlHelp1\icons\alert_note.gif
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\icons\alert_security.gif -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\HtmlHelp1\icons\alert_security.gif
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\icons\CFW.gif -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\HtmlHelp1\icons\CFW.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\icons\CodeExample.png -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\HtmlHelp1\icons\CodeExample.png
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\icons\favicon.ico -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\HtmlHelp1\icons\favicon.ico
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\icons\footer_slice.gif -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\HtmlHelp1\icons\footer_slice.gif
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\icons\privclass.gif -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\HtmlHelp1\icons\privclass.gif
@@ -441,6 +466,8 @@ C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyle
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\styles\branding-en-US.css -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\HtmlHelp1\styles\branding-en-US.css
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\styles\branding-es-ES.css -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\HtmlHelp1\styles\branding-es-ES.css
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\styles\branding-fr-FR.css -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\HtmlHelp1\styles\branding-fr-FR.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\styles\branding-Help1.css -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\HtmlHelp1\styles\branding-Help1.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\styles\branding-HelpViewer.css -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\HtmlHelp1\styles\branding-HelpViewer.css
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\styles\branding-it-IT.css -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\HtmlHelp1\styles\branding-it-IT.css
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\styles\branding-ja-JP.css -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\HtmlHelp1\styles\branding-ja-JP.css
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\styles\branding-ko-KR.css -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\HtmlHelp1\styles\branding-ko-KR.css
@@ -455,6 +482,7 @@ C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyle
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\icons\alert_note.gif -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\icons\alert_note.gif
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\icons\alert_security.gif -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\icons\alert_security.gif
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\icons\CFW.gif -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\icons\CFW.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\icons\CodeExample.png -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\icons\CodeExample.png
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\icons\favicon.ico -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\icons\favicon.ico
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\icons\footer_slice.gif -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\icons\footer_slice.gif
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\icons\privclass.gif -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\icons\privclass.gif
@@ -500,6 +528,8 @@ C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyle
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\styles\branding-en-US.css -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\styles\branding-en-US.css
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\styles\branding-es-ES.css -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\styles\branding-es-ES.css
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\styles\branding-fr-FR.css -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\styles\branding-fr-FR.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\styles\branding-Help1.css -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\styles\branding-Help1.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\styles\branding-HelpViewer.css -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\styles\branding-HelpViewer.css
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\styles\branding-it-IT.css -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\styles\branding-it-IT.css
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\styles\branding-ja-JP.css -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\styles\branding-ja-JP.css
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\styles\branding-ko-KR.css -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\styles\branding-ko-KR.css
@@ -510,30 +540,30 @@ C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyle
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\styles\branding-zh-CN.css -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\styles\branding-zh-CN.css
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\styles\branding-zh-TW.css -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\styles\branding-zh-TW.css
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\styles\branding.css -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\styles\branding.css
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\Web\CloseSearch.png -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\.\CloseSearch.png
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\Web\CollapseAll.png -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\.\CollapseAll.png
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\Web\Collapsed.gif -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\.\Collapsed.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\Web\Expanded.gif -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\.\Expanded.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\Web\favicon.ico -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\.\favicon.ico
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\Web\FillNode.aspx -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\.\FillNode.aspx
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\Web\FillNode.php -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\.\FillNode.php
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\Web\Index.aspx -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\.\Index.aspx
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\Web\Index.gif -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\.\Index.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\Web\index.html -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\.\index.html
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\Web\index.php -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\.\index.php
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\Web\Item.gif -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\.\Item.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\Web\LoadIndexKeywords.aspx -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\.\LoadIndexKeywords.aspx
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\Web\LoadIndexKeywords.php -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\.\LoadIndexKeywords.php
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\Web\Search.gif -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\.\Search.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\Web\SearchHelp.aspx -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\.\SearchHelp.aspx
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\Web\SearchHelp.inc.php -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\.\SearchHelp.inc.php
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\Web\SearchHelp.php -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\.\SearchHelp.php
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\Web\Splitter.gif -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\.\Splitter.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\Web\SyncTOC.gif -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\.\SyncTOC.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\Web\TOC.css -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\.\TOC.css
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\Web\TOC.js -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\.\TOC.js
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\Web\Web.Config -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\.\Web.Config
-    Last step completed in 00:00:00.6562
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\CloseSearch.png -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\CloseSearch.png
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\CollapseAll.png -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\CollapseAll.png
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\Collapsed.gif -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\Collapsed.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\Expanded.gif -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\Expanded.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\favicon.ico -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\favicon.ico
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\FillNode.aspx -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\FillNode.aspx
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\FillNode.php -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\FillNode.php
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\Index.aspx -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\Index.aspx
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\Index.gif -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\Index.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\index.html -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\index.html
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\index.php -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\index.php
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\Item.gif -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\Item.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\LoadIndexKeywords.aspx -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\LoadIndexKeywords.aspx
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\LoadIndexKeywords.php -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\LoadIndexKeywords.php
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\Search.gif -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\Search.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\SearchHelp.aspx -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\SearchHelp.aspx
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\SearchHelp.inc.php -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\SearchHelp.inc.php
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\SearchHelp.php -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\SearchHelp.php
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\Splitter.gif -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\Splitter.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\SyncTOC.gif -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\SyncTOC.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\TOC.css -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\TOC.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\TOC.js -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\TOC.js
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\Web.Config -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\Web.Config
+    Last step completed in 00:00:00.6001
 </buildStep>
 <buildStep step="GenerateHelpFormatTableOfContents">
 Generating HTML Help 1 table of contents file...
@@ -545,11 +575,12 @@ Generating HTML Help 1 index file...
 </buildStep>
 <buildStep step="GenerateHelpProject">
 Generating HTML Help 1 project file...
-    Last step completed in 00:00:00.0313
+    Last step completed in 00:00:00.0532
 </buildStep>
 <buildStep step="CompilingHelpFile">
 Compiling HTML Help 1 file...
-[C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe]
+[C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe - Build1xHelpFile.proj]
+Project file contains ToolsVersion=&quot;12.0&quot;. This toolset may be unknown or missing, in which case you may be able to resolve this by installing the appropriate version of MSBuild, or the build may have been forced to a particular ToolsVersion for policy reasons. Treating the project as if it had ToolsVersion=&quot;4.0&quot;. For more information, please see http://go.microsoft.com/fwlink/?LinkId=291333.
   Microsoft HTML Help Compiler 4.74.8702
   
   
@@ -562,11 +593,11 @@ Compiling HTML Help 1 file...
   
   Compile time: 0 minutes, 10 seconds
   
-  2,321	Topics
+  2,533	Topics
   
-  28,622	Local links
+  31,636	Local links
   
-  7,074	Internet links
+  7,634	Internet links
   
   0	Graphics
   
@@ -574,58 +605,39 @@ Compiling HTML Help 1 file...
   
   
   
-  Created c:\Projects\webdriver\build\docs\dotnet\web\Working\Output\HtmlHelp1\WebDriver.chm, 2,604,646 bytes
+  Created c:\Projects\webdriver\build\docs\dotnet\web\Working\Output\HtmlHelp1\WebDriver.chm, 2,536,312 bytes
   
-  Compression decreased file by 22,318,404 bytes.
+  Compression decreased file by 22,445,402 bytes.
   
-    Last step completed in 00:00:11.0313
+    Last step completed in 00:00:11.7973
 </buildStep>
 <buildStep step="GenerateHelpFormatTableOfContents">
 Generating website table of contents file...
-    Last step completed in 00:00:00.0000
+    Last step completed in 00:00:00.0153
 </buildStep>
 <buildStep step="GenerateFullTextIndex">
 Generating full-text index for the website...
 
-    Last step completed in 00:00:04.6866
+    Last step completed in 00:00:04.7186
 </buildStep>
 <buildStep step="CopyingWebsiteFiles">
 Copying website files to output folder...
 
-Copied 100 files
-Copied 200 files
-Copied 300 files
-Copied 400 files
 Copied 500 files
-Copied 600 files
-Copied 700 files
-Copied 800 files
-Copied 900 files
 Copied 1000 files
-Copied 1100 files
-Copied 1200 files
-Copied 1300 files
-Copied 1400 files
 Copied 1500 files
-Copied 1600 files
-Copied 1700 files
-Copied 1800 files
-Copied 1900 files
 Copied 2000 files
-Copied 2100 files
-Copied 2200 files
-Copied 2300 files
-Copied 2400 files
-Copied 2431 files for the website content
-    Last step completed in 00:00:02.5622
+Copied 2500 files
+Copied 2646 files for the website content
+    Last step completed in 00:00:03.5286
 </buildStep>
 <buildStep step="CleanIntermediates">
 Removing intermediate files...
-    Last step completed in 00:00:01.2499
+    Last step completed in 00:00:02.5644
 </buildStep>
 <buildStep step="Completed">
 
-Build completed successfully at 06/04/2015 12:23 PM.  Total time: 00:02:21.4442
+Build completed successfully at 11/4/2015 12:06:02 PM.  Total time: 00:02:02.1739
 
 </buildStep>
 </shfbBuild>
