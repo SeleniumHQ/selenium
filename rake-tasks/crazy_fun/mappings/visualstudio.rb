@@ -486,7 +486,7 @@ module CrazyFunDotNet
         nuspec_task.owners = "Software Freedom Conservancy"
         nuspec_task.title = args[:title] unless args[:title].nil?
         nuspec_task.summary = args[:summary] unless args[:summary].nil?
-        nuspec_task.projectUrl = "http://code.google.com/p/selenium/"
+        nuspec_task.projectUrl = "https://github.com/SeleniumHQ/selenium"
         nuspec_task.licenseUrl = "http://www.apache.org/licenses/LICENSE-2.0"
         nuspec_task.iconUrl = "http://seleniumhq.org/images/big-logo.png"
         nuspec_task.requireLicenseAcceptance = "false"
