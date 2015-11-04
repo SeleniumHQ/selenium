@@ -1,3 +1,18 @@
+v2.48.1
+=======
+ * Various updates in communicating with remote ends using the W3C dialect of
+   the JSON wire protocol.
+ * (on behalf of petruc) Added HTML5 functionality to .NET bindings. The .NET
+   bindings now include the ability to access appCache status, local and
+   session storage, and geolocation. Each feature has a role-based marker
+   interface (IHasApplicationCache, IHasWebStorage, or IHasLocationContext),
+   and the implementation has a boolean property to query if the driver
+   supports that feature. Attempting to use the feature for a driver which
+   does not support it will throw an exception.
+ * Issue #1120: Fixed deserialization of date-time data from remote ends.
+ * Issue #1186: Safari should only specify MAC as platform in default desired
+   capabilities.
+
 v2.48.0
 =======
  * Supports native events for Firefox version 31 (immediately previous ESR).
