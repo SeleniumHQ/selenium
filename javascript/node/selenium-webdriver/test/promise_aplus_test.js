@@ -18,7 +18,7 @@
 'use strict';
 
 describe('Promises/A+ Compliance Tests', function() {
-  var promise = require('../_base').require('webdriver.promise');
+  var promise = require('../lib/_base').require('webdriver.promise');
 
   // The promise spec does not define behavior for unhandled rejections and
   // assumes they are effectively swallowed. This is not the case with our

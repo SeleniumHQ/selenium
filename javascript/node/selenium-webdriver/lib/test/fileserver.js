@@ -29,8 +29,8 @@ var serveIndex = require('serve-index');
 var Server = require('./httpserver').Server,
     resources = require('./resources'),
     promise = require('../..').promise,
-    isDevMode = require('../../_base').isDevMode(),
-    string = require('../../_base').require('goog.string');
+    isDevMode = require('../_base').isDevMode(),
+    string = require('../_base').require('goog.string');
 
 var WEB_ROOT = '/common';
 var JS_ROOT = '/javascript';

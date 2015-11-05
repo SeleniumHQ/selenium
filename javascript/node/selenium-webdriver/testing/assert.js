@@ -32,7 +32,7 @@
  *     assert(driver.getTitle()).equalTo('Google');
  */
 
-var base = require('../_base'),
+var base = require('../lib/_base'),
     assert = base.require('webdriver.testing.assert');
 
 

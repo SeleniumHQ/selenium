@@ -20,7 +20,7 @@ var http = require('http');
 var url = require('url');
 
 var HttpClient = require('../../http').HttpClient;
-var HttpRequest = require('../../_base').require('webdriver.http.Request');
+var HttpRequest = require('../../lib/_base').require('webdriver.http.Request');
 var Server = require('../../lib/test/httpserver').Server;
 var promise = require('../..').promise;
 var test = require('../../lib/test');

@@ -20,7 +20,7 @@
  * public API and provides convenience assessors to certain sub-modules.
  */
 
-var base = require('./_base');
+var base = require('./lib/_base');
 var builder = require('./builder');
 var error = require('./error');
 

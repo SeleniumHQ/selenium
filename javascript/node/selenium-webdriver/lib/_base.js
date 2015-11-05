@@ -41,7 +41,7 @@ var fs = require('fs'),
  * @type {boolean}
  */
 var devMode = (function() {
-  var buildDescFile = path.join(__dirname, '..', 'build.desc');
+  var buildDescFile = path.join(__dirname, '..', '..', 'build.desc');
   return fs.existsSync(buildDescFile);
 })();
 
@@ -58,8 +58,8 @@ function isDevMode() {
  */
 var CLOSURE_BASE_FILE_PATH = (function() {
   var relativePath = isDevMode() ?
-      '../../../third_party/closure/goog/base.js' :
-      './lib/goog/base.js';
+      '../../../../third_party/closure/goog/base.js' :
+      './goog/base.js';
   return path.join(__dirname, relativePath);
 })();
 
@@ -70,8 +70,8 @@ var CLOSURE_BASE_FILE_PATH = (function() {
  */
 var DEPS_FILE_PATH = (function() {
   var relativePath = isDevMode() ?
-      '../../../javascript/deps.js' :
-      './lib/goog/deps.js';
+      '../../../../javascript/deps.js' :
+      './goog/deps.js';
   return path.join(__dirname, relativePath);
 })();
 

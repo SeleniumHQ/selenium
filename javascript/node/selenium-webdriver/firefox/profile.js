@@ -31,7 +31,7 @@ var AdmZip = require('adm-zip'),
 
 var Serializable = require('..').Serializable,
     promise = require('..').promise,
-    _base = require('../_base'),
+    _base = require('../lib/_base'),
     io = require('../io'),
     extension = require('./extension');
 

@@ -36,7 +36,7 @@ var ws = require('ws');
 
 var webdriver = require('./');
 var promise = webdriver.promise;
-var _base = require('./_base');
+var _base = require('./lib/_base');
 var io = require('./io');
 var exec = require('./io/exec');
 var portprober = require('./net/portprober');

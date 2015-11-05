@@ -29,7 +29,7 @@ var child = require('child_process'),
 
 var Serializable = require('..').Serializable,
     promise = require('..').promise,
-    _base = require('../_base'),
+    _base = require('../lib/_base'),
     io = require('../io'),
     exec = require('../io/exec');
 

@@ -22,7 +22,7 @@ var spawn = require('child_process').spawn,
     path = require('path');
 
 var promise = require('../..').promise,
-    base = require('../../_base');
+    base = require('../_base');
 
 var projectRoot = path.normalize(path.join(__dirname, '../../../../..'));
 

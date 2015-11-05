@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-var base = require('./_base'),
+var base = require('./lib/_base'),
     executors = require('./executors');
 
 // Use base.require to avoid circular references between index and this module.

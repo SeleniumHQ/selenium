@@ -24,7 +24,7 @@ var AdmZip = require('adm-zip'),
     url = require('url'),
     util = require('util');
 
-var _base = require('../_base'),
+var _base = require('../lib/_base'),
     webdriver = require('../'),
     promise = require('../').promise,
     httpUtil = require('../http/util'),

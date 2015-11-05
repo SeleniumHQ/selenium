@@ -17,7 +17,7 @@
 
 'use strict';
 
-var base = require('./_base');
+var base = require('./lib/_base');
 
 
 /** @type {function(new: bot.Error)} */

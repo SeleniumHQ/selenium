@@ -23,7 +23,7 @@
 var http = require('http'),
     url = require('url');
 
-var base = require('../_base'),
+var base = require('../lib/_base'),
     HttpResponse = base.require('webdriver.http.Response');
 
 

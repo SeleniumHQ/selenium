@@ -19,7 +19,7 @@ var assert = require('assert'),
     fs = require('fs'),
     path = require('path');
 
-var base = require('../_base');
+var base = require('../../lib/_base');
 
 describe('Context', function() {
   it('does not pollute the global scope', function() {
@@ -126,4 +126,5 @@ function findTests(dir) {
 }
 
 findTests(path.join(
-    __dirname, base.isDevMode() ? '../../..' : '../lib', 'webdriver/test'));
+    __dirname, base.isDevMode() ? '../../../..' : '../../lib',
+    'webdriver/test'));

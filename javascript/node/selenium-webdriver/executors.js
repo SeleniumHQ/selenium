@@ -22,7 +22,7 @@
 
 var HttpClient = require('./http').HttpClient,
     HttpExecutor = require('./http').Executor,
-    promise = require('./_base').require('webdriver.promise');
+    promise = require('./lib/_base').require('webdriver.promise');
 
 
 
