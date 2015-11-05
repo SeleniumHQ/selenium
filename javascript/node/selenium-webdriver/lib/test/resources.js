@@ -20,7 +20,7 @@
 var fs = require('fs'),
     path = require('path');
 
-var resourceRoot = require('../../_base').isDevMode() ?
+var resourceRoot = require('../../lib/_base').isDevMode() ?
     require('./build').projectRoot() :
     path.join(__dirname, 'data');
 

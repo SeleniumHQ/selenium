@@ -4,6 +4,11 @@
     `promise.Promise#thenCatch()` is not yet deprecated, but it simply
     delegates to `catch`.
 * Changed some `io` operations to use native promises.
+* Rewrote the `error` module to export an Error subtype for each type of error
+    defined in the [W3C WebDriver spec](https://w3c.github.io/webdriver/webdriver-spec.html#handling-errors).
+    For the export types, the `code` property is now the string code used by
+    the W3C spec and _not_ the numeric code used by the Selenium project's
+    wire protocol.
 
 ## v2.48.2
 

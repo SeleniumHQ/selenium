@@ -19,7 +19,7 @@
  * @fileoverview Various HTTP utilities.
  */
 
-var base = require('../_base'),
+var base = require('../lib/_base'),
     HttpClient = require('./index').HttpClient,
     checkResponse = base.require('bot.response').checkResponse,
     Executor = base.require('webdriver.http.Executor'),
