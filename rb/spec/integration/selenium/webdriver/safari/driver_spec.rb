@@ -17,16 +17,17 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path("../../spec_helper", __FILE__)
+require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
     module Safari
 
-      describe Driver do
-        it_behaves_like "driver that can be started concurrently", :safari
+      compliant_on :browser => :safari do
+        describe Driver do
+          it_behaves_like "driver that can be started concurrently", :safari
+        end
       end
-
     end # Safari
   end # WebDriver
 end # Selenium

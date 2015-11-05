@@ -17,17 +17,16 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require_relative '../spec_helper'
+require File.expand_path("../../spec_helper", __FILE__)
 
 module Selenium
   module WebDriver
-    module PhantomJS
+    module Edge
 
-      compliant_on :browser => :phantomjs do
-        describe Driver do
-          it_behaves_like "driver that can be started concurrently", :phantomjs
-        end
+      describe Driver do
+        it_behaves_like "driver that can be started concurrently", :edge
       end
-    end # PhantomJS
+
+    end # Edge
   end # WebDriver
 end # Selenium

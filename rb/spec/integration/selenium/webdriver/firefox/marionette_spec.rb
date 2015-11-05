@@ -65,6 +65,8 @@ module Selenium
             expect(temp_driver.instance_variable_get('@bridge').instance_variable_get('@launcher')).to be_nil
             temp_driver.quit
           end
+
+          it_behaves_like "driver that can be started concurrently", :firefox, :marionette
         end
       end
 

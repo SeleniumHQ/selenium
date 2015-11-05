@@ -17,16 +17,17 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path("../../spec_helper", __FILE__)
+require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
     module IE
 
-      describe Driver do
-        it_behaves_like "driver that can be started concurrently", :ie
+      compliant_on :browser => :ie do
+        describe Driver do
+          it_behaves_like "driver that can be started concurrently", :ie
+        end
       end
-
     end # IE
   end # WebDriver
 end # Selenium

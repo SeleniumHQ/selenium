@@ -26,7 +26,8 @@ shared_examples_for "driver that can be started concurrently" do |driver_name|
 
         5.times do
           threads << Thread.new do
-            drivers << Selenium::WebDriver.for(driver_name)
+            opt = driver_name ? {marionette: true} : {}
+            drivers << Selenium::WebDriver.for(browser_name, opt)
           end
         end
 
