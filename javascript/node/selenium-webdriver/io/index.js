@@ -15,12 +15,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
+'use strict';
+
 var fs = require('fs'),
     path = require('path'),
     rimraf = require('rimraf'),
     tmp = require('tmp');
-
-var promise = require('..').promise;
 
 
 
@@ -32,11 +32,11 @@ var promise = require('..').promise;
  * Recursively removes a directory and all of its contents. This is equivalent
  * to {@code rm -rf} on a POSIX system.
  * @param {string} path Path to the directory to remove.
- * @return {!promise.Promise} A promise to be resolved when the operation has
+ * @return {!Promise} A promise to be resolved when the operation has
  *     completed.
  */
 exports.rmDir = function(path) {
-  return new promise.Promise(function(fulfill, reject) {
+  return new Promise(function(fulfill, reject) {
     var numAttempts = 0;
     attemptRm();
     function attemptRm() {
@@ -61,23 +61,19 @@ exports.rmDir = function(path) {
  * Copies one file to another.
  * @param {string} src The source file.
  * @param {string} dst The destination file.
- * @return {!promise.Promise.<string>} A promise for the copied file's path.
+ * @return {!Promise<string>} A promise for the copied file's path.
  */
 exports.copy = function(src, dst) {
-  var copied = promise.defer();
+  return new Promise(function(fulfill, reject) {
+    var rs = fs.createReadStream(src);
+    rs.on('error', reject);
+    rs.on('end', () => fulfill(dst));
 
-  var rs = fs.createReadStream(src);
-  rs.on('error', copied.reject);
-  rs.on('end', function() {
-    copied.fulfill(dst);
+    var ws = fs.createWriteStream(dst);
+    ws.on('error', reject);
+
+    rs.pipe(ws);
   });
-
-  var ws = fs.createWriteStream(dst);
-  ws.on('error', copied.reject);
-
-  rs.pipe(ws);
-
-  return copied.promise;
 };
 
 
@@ -88,7 +84,7 @@ exports.copy = function(src, dst) {
  * @param {(RegEx|function(string): boolean)=} opt_exclude An exclusion filter
  *     as either a regex or predicate function. All files matching this filter
  *     will not be copied.
- * @return {!promise.Promise.<string>} A promise for the destination
+ * @return {!Promise<string>} A promise for the destination
  *     directory's path once all files have been copied.
  */
 exports.copyDir = function(src, dst, opt_exclude) {
@@ -128,21 +124,19 @@ exports.copyDir = function(src, dst, opt_exclude) {
     }
   });
 
-  return promise.all(results).then(function() {
-    return dst;
-  });
+  return Promise.all(results).then(() => dst);
 };
 
 
 /**
  * Tests if a file path exists.
  * @param {string} path The path to test.
- * @return {!promise.Promise.<boolean>} A promise for whether the file exists.
+ * @return {!Promise.<boolean>} A promise for whether the file exists.
  */
 exports.exists = function(path) {
-  var result = promise.defer();
-  fs.exists(path, result.fulfill);
-  return result.promise;
+  return new Promise(function(fulfill) {
+    fs.exists(path, fulfill);
+  });
 };
 
 
@@ -150,10 +144,10 @@ exports.exists = function(path) {
  * Deletes a name from the filesystem and possibly the file it refers to. Has
  * no effect if the file does not exist.
  * @param {string} path The path to remove.
- * @return {!promise.Promise} A promise for when the file has been removed.
+ * @return {!Promise} A promise for when the file has been removed.
  */
 exports.unlink = function(path) {
-  return new promise.Promise(function(fulfill, reject) {
+  return new Promise(function(fulfill, reject) {
     fs.exists(path, function(exists) {
       if (exists) {
         fs.unlink(path, function(err) {
@@ -168,27 +162,37 @@ exports.unlink = function(path) {
 
 
 /**
- * @return {!promise.Promise.<string>} A promise for the path to a temporary
- *     directory.
+ * @return {!Promise<string>} A promise for the path to a temporary directory.
  * @see https://www.npmjs.org/package/tmp
  */
 exports.tmpDir = function() {
-  return promise.checkedNodeCall(tmp.dir);
+  return new Promise(function(fulfill, reject) {
+    tmp.dir(function(error, value) {
+      error ? reject(error) : fulfill(value);
+    });
+  });
 };
 
 
 /**
  * @param {{postfix: string}=} opt_options Temporary file options.
- * @return {!promise.Promise.<string>} A promise for the path to a temporary
- *     file.
+ * @return {!Promise<string>} A promise for the path to a temporary file.
  * @see https://www.npmjs.org/package/tmp
  */
 exports.tmpFile = function(opt_options) {
-  // |tmp.file| checks arguments length to detect options rather than doing a
-  // truthy check, so we must only pass options if there are some to pass.
-  return opt_options ?
-      promise.checkedNodeCall(tmp.file, opt_options) :
-      promise.checkedNodeCall(tmp.file);
+  return new Promise(function(fulfill, reject) {
+    let callback = function(err, value) {
+      err ? reject(err) : fulfill(value);
+    };
+
+    // |tmp.file| checks arguments length to detect options rather than doing a
+    // truthy check, so we must only pass options if there are some to pass.
+    if (opt_options) {
+      tmp.file(opt_options, callback);
+    } else {
+      tmp.file(callback);
+    }
+  });
 };
 
 

@@ -3,6 +3,7 @@
 * Added `promise.Promise#catch()` for API compatibility with native Promises.
     `promise.Promise#thenCatch()` is not yet deprecated, but it simply
     delegates to `catch`.
+* Changed some `io` operations to use native promises.
 
 ## v2.48.2
 
