@@ -101,10 +101,10 @@ module Selenium
           @process = ChildProcess.build(*server_command.compact)
 
           if $DEBUG == true
-            process.io.inherit!
+            @process.io.inherit!
           elsif Platform.jruby?
             # apparently we need to read the output for phantomjs to work on jruby
-            process.io.stdout = process.io.stderr = File.new(Platform.null_device, 'w')
+            @process.io.stdout = @process.io.stderr = File.new(Platform.null_device, 'w')
           end
 
           @process.start
