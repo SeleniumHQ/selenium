@@ -66,7 +66,7 @@ module Selenium
             temp_driver.quit
           end
 
-          it_behaves_like "driver that can be started concurrently", :firefox, :marionette
+          it_behaves_like "driver that can be started concurrently", :firefox, marionette: true
         end
       end
 
