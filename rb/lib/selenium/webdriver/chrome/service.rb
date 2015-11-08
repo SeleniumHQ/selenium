@@ -78,7 +78,7 @@ module Selenium
             http.open_timeout = STOP_TIMEOUT / 2
             http.read_timeout = STOP_TIMEOUT / 2
 
-            http.head("/shutdown")
+            http.get("/shutdown")
           end
 
           @process.poll_for_exit STOP_TIMEOUT
