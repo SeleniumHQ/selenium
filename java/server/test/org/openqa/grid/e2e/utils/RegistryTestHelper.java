@@ -49,12 +49,12 @@ public class RegistryTestHelper {
   }
 
 
-  public static void waitForActiveTestSessionCount(final Registry r, final int activeTestSesssions) {
+  public static void waitForActiveTestSessionCount(final Registry r, final int activeTestSessions) {
     newWait().until(new Function<Object, Integer>() {
       @Override
       public Integer apply(Object input) {
         Integer i = r.getActiveSessions().size();
-        if (i != activeTestSesssions) {
+        if (i != activeTestSessions) {
           return null;
         } else {
           return i;

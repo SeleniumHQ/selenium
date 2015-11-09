@@ -536,7 +536,7 @@ public class BrowserSessionFactory {
 
   /**
    * for testing only
-   * @param sessionInfo browser sesssion info
+   * @param sessionInfo browser session info
    */
   protected void addToAvailableSessions(BrowserSessionInfo sessionInfo) {
     availableSessions.add(sessionInfo);

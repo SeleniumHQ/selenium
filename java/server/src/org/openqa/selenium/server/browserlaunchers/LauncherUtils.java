@@ -64,7 +64,7 @@ public class LauncherUtils {
   /**
    * Return the name of the custom profile directory for a specific seleniumm session
    *
-   * @param sessionId Current selenium sesssion id. Cannot be null.
+   * @param sessionId Current selenium session id. Cannot be null.
    * @return file path of the custom profile directory for this session.
    */
   public static File customProfileDir(String sessionId) {
