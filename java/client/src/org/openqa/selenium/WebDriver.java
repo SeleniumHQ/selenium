@@ -238,7 +238,6 @@ public interface WebDriver extends SearchContext {
     /**
      * @return the interface for managing the current window.
      */
-    @Beta
     Window window();
 
     /**
@@ -508,5 +507,10 @@ public interface WebDriver extends SearchContext {
      * Maximizes the current window if it is not already maximized
      */
     void maximize();
+
+    /**
+     * Fullscreen the current window if it is not already fullscreen
+     */
+    void fullscreen();
   }
 }

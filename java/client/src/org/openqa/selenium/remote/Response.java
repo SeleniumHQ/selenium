@@ -21,7 +21,7 @@ public class Response {
 
   private volatile Object value;
   private volatile String sessionId;
-  private volatile int status;
+  private volatile Integer status;
   private volatile String state;
 
   public Response() {
@@ -31,11 +31,11 @@ public class Response {
     this.sessionId = String.valueOf(sessionId);
   }
 
-  public int getStatus() {
+  public Integer getStatus() {
     return status;
   }
 
-  public void setStatus(int status) {
+  public void setStatus(Integer status) {
     this.status = status;
   }
 

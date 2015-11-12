@@ -35,7 +35,11 @@ public class SwitchToWindow extends WebDriverHandler<Void> implements JsonParame
   }
 
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    setName((String) allParameters.get("name"));
+    if (allParameters.containsKey("name")) {
+      setName((String) allParameters.get("name"));
+    } else {
+      setName((String) allParameters.get("handle"));
+    }
   }
 
   @Override

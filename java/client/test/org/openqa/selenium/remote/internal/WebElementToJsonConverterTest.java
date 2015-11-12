@@ -32,6 +32,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsElement;
@@ -328,6 +329,10 @@ public class WebElementToJsonConverterTest {
     }
 
     public Dimension getSize() {
+      throw new UnsupportedOperationException();
+    }
+
+    public Rectangle getRect() {
       throw new UnsupportedOperationException();
     }
 

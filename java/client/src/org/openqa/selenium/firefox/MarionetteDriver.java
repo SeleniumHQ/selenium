@@ -73,11 +73,6 @@ public class MarionetteDriver extends RemoteWebDriver {
     run(service, capabilities);
   }
 
-  @Override
-  public int getW3CStandardComplianceLevel() {
-    return 1;
-  }
-
   private void run(GeckoDriverService service, Capabilities capabilities) {
     setCommandExecutor(new DriverCommandExecutor(service));
 

@@ -120,6 +120,7 @@ java_library(name = 'primitives',
   srcs = [
     'Dimension.java',
     'Point.java',
+    'Rectangle.java',
   ],
   visibility = [
     '//java/client/src/org/openqa/selenium/interactions:core',

@@ -25,6 +25,7 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -396,6 +397,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       return element.getSize();
     }
 
+    public Rectangle getRect() {
+      return element.getRect();
+    }
+
     public String getCssValue(String propertyName) {
       return element.getCssValue(propertyName);
     }
@@ -635,6 +640,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
 
     public void maximize() {
       window.maximize();
+    }
+
+    public void fullscreen() {
+      window.fullscreen();
     }
   }
 }

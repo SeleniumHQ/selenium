@@ -90,9 +90,12 @@ public class JsonHttpCommandCodec implements CommandCodec<HttpRequest> {
     defineCommand(GET_CURRENT_WINDOW_HANDLE, get("/session/:sessionId/window_handle"));
 
     defineCommand(MAXIMIZE_CURRENT_WINDOW, post("/session/:sessionId/window/maximize"));
+    defineCommand(FULLSCREEN_CURRENT_WINDOW, post("/session/:sessionId/window/fullscreen"));
     defineCommand(GET_CURRENT_WINDOW_SIZE, get("/session/:sessionId/window/size"));
     defineCommand(SET_CURRENT_WINDOW_SIZE, post("/session/:sessionId/window/size"));
-    defineCommand(GET_CURRENT_WINDOW_HANDLE_LEVEL_1, get("/session/:sessionId/window/handle"));
+
+    defineCommand(GET_WINDOW_HANDLES_W3C, get("/session/:sessionId/window/handles"));
+    defineCommand(GET_CURRENT_WINDOW_HANDLE_W3C, get("/session/:sessionId/window"));
 
     defineCommand(GET_CURRENT_URL, get("/session/:sessionId/url"));
     defineCommand(GET, post("/session/:sessionId/url"));
@@ -104,10 +107,16 @@ public class JsonHttpCommandCodec implements CommandCodec<HttpRequest> {
     defineCommand(DISMISS_ALERT, post("/session/:sessionId/dismiss_alert"));
     defineCommand(GET_ALERT_TEXT, get("/session/:sessionId/alert_text"));
     defineCommand(SET_ALERT_VALUE, post("/session/:sessionId/alert_text"));
+    defineCommand(ACCEPT_ALERT_W3C, post("/session/:sessionId/alert/accept"));
+    defineCommand(DISMISS_ALERT_W3C, post("/session/:sessionId/alert/dismiss"));
+    defineCommand(GET_ALERT_TEXT_W3C, get("/session/:sessionId/alert/text"));
+    defineCommand(SET_ALERT_VALUE_W3C, post("/session/:sessionId/alert/text"));
     defineCommand(SET_ALERT_CREDENTIALS, post("/session/:sessionId/alert/credentials"));
 
     defineCommand(EXECUTE_SCRIPT, post("/session/:sessionId/execute"));
     defineCommand(EXECUTE_ASYNC_SCRIPT, post("/session/:sessionId/execute_async"));
+    defineCommand(EXECUTE_SCRIPT_W3C, post("/session/:sessionId/execute/sync"));
+    defineCommand(EXECUTE_ASYNC_SCRIPT_W3C, post("/session/:sessionId/execute/async"));
 
     defineCommand(UPLOAD_FILE, post("/session/:sessionId/file"));
     defineCommand(SCREENSHOT, get("/session/:sessionId/screenshot"));
@@ -142,6 +151,7 @@ public class JsonHttpCommandCodec implements CommandCodec<HttpRequest> {
     defineCommand(SEND_KEYS_TO_ELEMENT, post("/session/:sessionId/element/:id/value"));
 
     defineCommand(GET_ALL_COOKIES, get("/session/:sessionId/cookie"));
+    defineCommand(GET_COOKIE, get("/session/:sessionId/cookie/:name"));
     defineCommand(ADD_COOKIE, post("/session/:sessionId/cookie"));
     defineCommand(DELETE_ALL_COOKIES, delete("/session/:sessionId/cookie"));
     defineCommand(DELETE_COOKIE, delete("/session/:sessionId/cookie/:name"));

@@ -116,7 +116,11 @@ public class JsonHttpResponseCodec implements ResponseCodec<HttpResponse> {
       // turn this into \r\r\n, which would be Bad!
       response.setValue(((String) response.getValue()).replace("\r\n", "\n"));
     }
-    response.setState(errorCodes.toState(response.getStatus()));
+    if (response.getStatus() != null) {
+      response.setState(errorCodes.toState(response.getStatus()));
+    } else if (statusCode == 200) {
+      response.setState(errorCodes.toState(ErrorCodes.SUCCESS));
+    }
     return response;
   }
 }

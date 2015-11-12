@@ -98,6 +98,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   private Logs remoteLogs;
   private LocalLogs localLogs;
 
+  private int w3cComplianceLevel = 0;
+
   // For cglib
   protected RemoteWebDriver() {
     init(new DesiredCapabilities(), null);
@@ -157,7 +159,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   public int getW3CStandardComplianceLevel() {
-    return 0;
+    return w3cComplianceLevel;
   }
 
   private void init(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
@@ -272,6 +274,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     capabilities = returnedCapabilities;
     sessionId = new SessionId(response.getSessionId());
+    if (response.getStatus() == null) {
+      w3cComplianceLevel = 1;
+    }
   }
 
   /**
@@ -522,18 +527,26 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   @SuppressWarnings({"unchecked"})
   public Set<String> getWindowHandles() {
-    Response response = execute(DriverCommand.GET_WINDOW_HANDLES);
+    Response response;
+    if (getW3CStandardComplianceLevel() > 0) {
+      response = execute(DriverCommand.GET_WINDOW_HANDLES_W3C);
+    } else {
+      response = execute(DriverCommand.GET_WINDOW_HANDLES);
+    }
     Object value = response.getValue();
     try {
       List<String> returnedValues = (List<String>) value;
       return new LinkedHashSet<String>(returnedValues);
     } catch (ClassCastException ex) {
       throw new WebDriverException(
-          "Returned value cannot be converted to List<String>: " + value, ex);
+        "Returned value cannot be converted to List<String>: " + value, ex);
     }
   }
 
   public String getWindowHandle() {
+    if (getW3CStandardComplianceLevel() > 0) {
+      return String.valueOf(execute(DriverCommand.GET_CURRENT_WINDOW_HANDLE_W3C).getValue());
+    }
     return String.valueOf(execute(DriverCommand.GET_CURRENT_WINDOW_HANDLE).getValue());
   }
 
@@ -553,6 +566,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
         "script", script,
         "args", Lists.newArrayList(convertedArgs));
 
+    if (getW3CStandardComplianceLevel() > 0) {
+      return execute(DriverCommand.EXECUTE_SCRIPT_W3C, params).getValue();
+    }
     return execute(DriverCommand.EXECUTE_SCRIPT, params).getValue();
   }
 
@@ -571,6 +587,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     Map<String, ?> params = ImmutableMap.of(
         "script", script, "args", Lists.newArrayList(convertedArgs));
 
+    if (getW3CStandardComplianceLevel() > 0) {
+      return execute(DriverCommand.EXECUTE_ASYNC_SCRIPT_W3C, params).getValue();
+    }
     return execute(DriverCommand.EXECUTE_ASYNC_SCRIPT, params).getValue();
   }
 
@@ -727,11 +746,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     public void addCookie(Cookie cookie) {
       cookie.validate();
-      if (getW3CStandardComplianceLevel() == 0) {
-        execute(DriverCommand.ADD_COOKIE, ImmutableMap.of("cookie", cookie));
-      } else {
-        execute(DriverCommand.ADD_COOKIE, ImmutableMap.of("w3c cookie", cookie));
-      }
+      execute(DriverCommand.ADD_COOKIE, ImmutableMap.of("cookie", cookie));
     }
 
     public void deleteCookieNamed(String name) {
@@ -914,6 +929,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
           execute(DriverCommand.MAXIMIZE_CURRENT_WINDOW);
         }
       }
+
+      public void fullscreen() {
+        execute(DriverCommand.FULLSCREEN_CURRENT_WINDOW);
+      }
     }
   }
 
@@ -1019,19 +1038,34 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
 
     public void dismiss() {
-      execute(DriverCommand.DISMISS_ALERT);
+      if (getW3CStandardComplianceLevel() > 0) {
+        execute(DriverCommand.DISMISS_ALERT_W3C);
+      } else {
+        execute(DriverCommand.DISMISS_ALERT);
+      }
     }
 
     public void accept() {
-      execute(DriverCommand.ACCEPT_ALERT);
+      if (getW3CStandardComplianceLevel() > 0) {
+        execute(DriverCommand.ACCEPT_ALERT_W3C);
+      } else {
+        execute(DriverCommand.ACCEPT_ALERT);
+      }
     }
 
     public String getText() {
+      if (getW3CStandardComplianceLevel() > 0) {
+        return (String) execute(DriverCommand.GET_ALERT_TEXT_W3C).getValue();
+      }
       return (String) execute(DriverCommand.GET_ALERT_TEXT).getValue();
     }
 
     public void sendKeys(String keysToSend) {
-      execute(DriverCommand.SET_ALERT_VALUE, ImmutableMap.of("text", keysToSend));
+      if (getW3CStandardComplianceLevel() > 0) {
+        execute(DriverCommand.SET_ALERT_VALUE_W3C, ImmutableMap.of("text", keysToSend));
+      } else {
+        execute(DriverCommand.SET_ALERT_VALUE, ImmutableMap.of("text", keysToSend));
+      }
     }
 
     @Beta

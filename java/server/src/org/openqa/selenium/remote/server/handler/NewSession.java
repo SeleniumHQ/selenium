@@ -23,6 +23,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.DriverSessions;
@@ -74,6 +75,9 @@ public class NewSession implements RestishHandler<Response>, JsonParametersAware
     Response response = new Response();
     response.setSessionId(sessionId.toString());
     response.setValue(capabilities);
+    // when it used to be a primitive 'int' this was implied
+    // now explicitly setting it to preserve backwards compatibility
+    response.setStatus(ErrorCodes.SUCCESS);
     return response;
   }
 

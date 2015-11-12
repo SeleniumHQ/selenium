@@ -107,7 +107,7 @@ public class JsonHttpResponseCodecTest {
     response.setContent("{\"foobar\"}".getBytes(UTF_8));
 
     Response decoded = codec.decode(response);
-    assertEquals(ErrorCodes.SUCCESS, decoded.getStatus());
+    assertNull(decoded.getStatus());
     assertEquals("{\"foobar\"}", decoded.getValue());
   }
 
@@ -117,7 +117,7 @@ public class JsonHttpResponseCodecTest {
     response.setStatus(HTTP_NO_CONTENT);
 
     Response decoded = codec.decode(response);
-    assertEquals(ErrorCodes.SUCCESS, decoded.getStatus());
+    assertNull(decoded.getStatus());
     assertNull(decoded.getValue());
   }
 
@@ -128,7 +128,7 @@ public class JsonHttpResponseCodecTest {
     response.setContent("{\"foobar\"}".getBytes(UTF_8));
 
     Response decoded = codec.decode(response);
-    assertEquals(ErrorCodes.UNKNOWN_COMMAND, decoded.getStatus());
+    assertEquals(ErrorCodes.UNKNOWN_COMMAND, decoded.getStatus().intValue());
     assertEquals("{\"foobar\"}", decoded.getValue());
   }
 
@@ -139,7 +139,7 @@ public class JsonHttpResponseCodecTest {
     response.setContent("{\"foobar\"}".getBytes(UTF_8));
 
     Response decoded = codec.decode(response);
-    assertEquals(ErrorCodes.UNHANDLED_ERROR, decoded.getStatus());
+    assertEquals(ErrorCodes.UNHANDLED_ERROR, decoded.getStatus().intValue());
     assertEquals("{\"foobar\"}", decoded.getValue());
   }
 
@@ -178,7 +178,7 @@ public class JsonHttpResponseCodecTest {
     response.setContent("{\"status\":0,\"value\":\"foo\"}\0\0".getBytes(UTF_8));
 
     Response decoded = codec.decode(response);
-    assertEquals(ErrorCodes.SUCCESS, decoded.getStatus());
+    assertEquals(ErrorCodes.SUCCESS, decoded.getStatus().intValue());
     assertEquals("foo", decoded.getValue());
   }
 }

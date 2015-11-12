@@ -1678,6 +1678,11 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       setSize(initialWindowDimension);
       setPosition(new Point(0, 0));
     }
+
+    @Override
+    public void fullscreen() {
+      maximize();
+    }
   }
 
   @Override

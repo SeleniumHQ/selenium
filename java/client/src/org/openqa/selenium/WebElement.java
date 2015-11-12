@@ -195,6 +195,11 @@ public interface WebElement extends SearchContext, TakesScreenshot {
   Dimension getSize();
 
   /**
+   * @return The location and size of the rendered element
+   */
+  Rectangle getRect();
+
+  /**
    * Get the value of a given CSS property.
    * Color values should be returned as rgba strings, so,
    * for example if the "background-color" property is set as "green" in the

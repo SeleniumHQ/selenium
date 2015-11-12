@@ -17,35 +17,25 @@
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.Rectangle;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.server.Session;
 
-import java.util.Map;
+public class GetElementRect extends WebElementHandler<Rectangle> {
 
-public class SetAlertText extends WebDriverHandler<Void> implements JsonParametersAware {
-  private String text;
-
-  public SetAlertText(Session session) {
+  public GetElementRect(Session session) {
     super(session);
   }
 
-  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    if (allParameters.containsKey("text")) {
-      text = (String) allParameters.get("text");
-    } else {
-      // w3c uses 'message' instead of 'text'
-      text = (String) allParameters.get("message");
-    }
+  @Override
+  public Rectangle call() throws Exception {
+    WebElement element = getElement();
+    return element.getRect();
   }
 
-  @Override
-  public Void call() throws Exception {
-    getDriver().switchTo().alert().sendKeys(text);
-    return null;
-  }
 
   @Override
   public String toString() {
-    return "[set alert value]";
+    return String.format("[get element rect: %s]", getElementAsString());
   }
 }

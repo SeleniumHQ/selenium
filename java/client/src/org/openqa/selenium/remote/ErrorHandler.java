@@ -93,7 +93,7 @@ public class ErrorHandler {
 
   @SuppressWarnings("unchecked")
   public Response throwIfResponseFailed(Response response, long duration) throws RuntimeException {
-    if (response.getStatus() == SUCCESS) {
+    if (response.getStatus() == null || response.getStatus() == SUCCESS) {
       return response;
     }
 
@@ -295,9 +295,9 @@ public class ErrorHandler {
       if (frameInfo == null) {
         return null;
       }
-      
+
       Optional<Number> maybeLineNumberInteger = Optional.absent();
-      
+
       final Object lineNumberObject = frameInfo.get(LINE_NUMBER);
       if (lineNumberObject instanceof Number) {
     	  maybeLineNumberInteger = Optional.of((Number) lineNumberObject);
@@ -305,10 +305,10 @@ public class ErrorHandler {
     	  // might be a Number as a String
     	  maybeLineNumberInteger = Optional.fromNullable((Number) Ints.tryParse(lineNumberObject.toString()));
       }
-      
+
       // default -1 for unknown, see StackTraceElement constructor javadoc
       final int lineNumber = maybeLineNumberInteger.or(-1).intValue();
-      
+
       // Gracefully handle remote servers that don't (or can't) send back
       // complete stack trace info. At least some of this information should
       // be included...

@@ -34,6 +34,7 @@ import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -511,6 +512,10 @@ public class HtmlUnitWebElement implements WrapsDriver,
     } catch (Exception e) {
       throw new WebDriverException("Cannot determine size of element", e);
     }
+  }
+
+  public Rectangle getRect() {
+    return new Rectangle(getLocation(), getSize());
   }
 
   private int readAndRound(final String property) {

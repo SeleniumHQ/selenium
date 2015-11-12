@@ -17,35 +17,34 @@
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.remote.server.Session;
 
 import java.util.Map;
 
-public class SetAlertText extends WebDriverHandler<Void> implements JsonParametersAware {
-  private String text;
+public class GetCookie extends WebDriverHandler<Cookie> {
 
-  public SetAlertText(Session session) {
+  private String name;
+
+  public GetCookie(Session session) {
     super(session);
   }
 
+  public void setName(String name) {
+    this.name = name;
+  }
+
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    if (allParameters.containsKey("text")) {
-      text = (String) allParameters.get("text");
-    } else {
-      // w3c uses 'message' instead of 'text'
-      text = (String) allParameters.get("message");
-    }
+    setName((String) allParameters.get("name"));
   }
 
   @Override
-  public Void call() throws Exception {
-    getDriver().switchTo().alert().sendKeys(text);
-    return null;
+  public Cookie call() throws Exception {
+    return getDriver().manage().getCookieNamed(name);
   }
 
   @Override
   public String toString() {
-    return "[set alert value]";
+    return String.format("[get cookie named %s]", name);
   }
 }
