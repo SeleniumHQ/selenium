@@ -22,6 +22,7 @@ goog.require('goog.userAgent.product');
 goog.require('webdriver.Command');
 goog.require('webdriver.CommandExecutor');
 goog.require('webdriver.CommandName');
+goog.require('webdriver.promise');
 
 
 
@@ -84,20 +85,20 @@ webdriver.FirefoxDomExecutor.EventType_ = {
 
 /**
  * The pending command, if any.
- * @private {?{name:string, callback:!Function}}
+ * @private {?{name:string, deferred: !webdriver.promise.Deferred}}
  */
 webdriver.FirefoxDomExecutor.prototype.pendingCommand_ = null;
 
 
 /** @override */
-webdriver.FirefoxDomExecutor.prototype.execute = function(command, callback) {
+webdriver.FirefoxDomExecutor.prototype.execute = function(command) {
   if (this.pendingCommand_) {
     throw Error('Currently awaiting a command response!');
   }
 
   this.pendingCommand_ = {
     name: command.getName(),
-    callback: callback
+    deferred: webdriver.promise.defer()
   };
 
   var parameters = command.getParameters();
@@ -129,6 +130,8 @@ webdriver.FirefoxDomExecutor.prototype.execute = function(command, callback) {
       /*canBubble=*/true, /*cancelable=*/true);
 
   this.docElement_.dispatchEvent(event);
+
+  return this.pendingCommand_.deferred.promise;
 };
 
 
@@ -144,7 +147,7 @@ webdriver.FirefoxDomExecutor.prototype.onResponse_ = function() {
   var json = this.docElement_.getAttribute(
       webdriver.FirefoxDomExecutor.Attribute_.RESPONSE);
   if (!json) {
-    command.callback(Error('Empty command response!'));
+    command.deferred.reject(Error('Empty command response!'));
     return;
   }
 
@@ -157,7 +160,7 @@ webdriver.FirefoxDomExecutor.prototype.onResponse_ = function() {
     var response = bot.response.checkResponse(
         /** @type {!bot.response.ResponseObject} */ (JSON.parse(json)));
   } catch (ex) {
-    command.callback(ex);
+    command.deferred.reject(ex);
     return;
   }
 
@@ -168,8 +171,8 @@ webdriver.FirefoxDomExecutor.prototype.onResponse_ = function() {
       goog.isString(response['value'])) {
     var cmd = new webdriver.Command(webdriver.CommandName.DESCRIBE_SESSION).
         setParameter('sessionId', response['value']);
-    this.execute(cmd, command.callback);
+    command.deferred.fulfill(this.execute(cmd));
   } else {
-    command.callback(null, response);
+    command.deferred.fulfill(response);
   }
 };

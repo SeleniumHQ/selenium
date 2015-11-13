@@ -64,7 +64,7 @@ var HttpClient = function(serverUrl, opt_agent, opt_proxy) {
 
 
 /** @override */
-HttpClient.prototype.send = function(httpRequest, callback) {
+HttpClient.prototype.send = function(httpRequest) {
   var data;
   httpRequest.headers['Content-Length'] = 0;
   if (httpRequest.method == 'POST' || httpRequest.method == 'PUT') {
@@ -93,19 +93,23 @@ HttpClient.prototype.send = function(httpRequest, callback) {
     options.agent = this.agent_;
   }
 
-  sendRequest(options, callback, data, this.proxy_);
+  var proxy = this.proxy_;
+  return new Promise(function(fulfill, reject) {
+    sendRequest(options, fulfill, reject, data, proxy);
+  });
 };
 
 
 /**
  * Sends a single HTTP request.
  * @param {!Object} options The request options.
- * @param {function(Error, !webdriver.http.Response=)} callback The function to
- *     invoke with the server's response.
+ * @param {function(!webdriver.http.Response)} onOk The function to call if the
+ *     request succeeds.
+ * @param {function(!Error)} onError The function to call if the request fails.
  * @param {string=} opt_data The data to send with the request.
  * @param {string=} opt_proxy The proxy server to use for the request.
  */
-var sendRequest = function(options, callback, opt_data, opt_proxy) {
+var sendRequest = function(options, onOk, onError, opt_data, opt_proxy) {
   var host = options.host;
   var port = options.port;
 
@@ -127,7 +131,7 @@ var sendRequest = function(options, callback, opt_data, opt_proxy) {
       try {
         var location = url.parse(response.headers['location']);
       } catch (ex) {
-        callback(Error(
+        onError(Error(
             'Failed to parse "Location" header for server redirect: ' +
             ex.message + '\nResponse was: \n' +
             new HttpResponse(response.statusCode, response.headers, '')));
@@ -148,7 +152,7 @@ var sendRequest = function(options, callback, opt_data, opt_proxy) {
         headers: {
           'Accept': 'application/json; charset=utf-8'
         }
-      }, callback, undefined, opt_proxy);
+      }, onOk, onError, undefined, opt_proxy);
       return;
     }
 
@@ -157,21 +161,21 @@ var sendRequest = function(options, callback, opt_data, opt_proxy) {
     response.on('end', function() {
       var resp = new HttpResponse(response.statusCode,
           response.headers, body.join('').replace(/\0/g, ''));
-      callback(null, resp);
+      onOk(resp);
     });
   });
 
   request.on('error', function(e) {
     if (e.code === 'ECONNRESET') {
       setTimeout(function() {
-        sendRequest(options, callback, opt_data, opt_proxy);
+        sendRequest(options, onOk, onError, opt_data, opt_proxy);
       }, 15);
     } else {
       var message = e.message;
       if (e.code) {
         message = e.code + ' ' + message;
       }
-      callback(new Error(message));
+      onError(new Error(message));
     }
   });
 

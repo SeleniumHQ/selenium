@@ -99,16 +99,15 @@ describe('HttpClient', function() {
     agent.maxSockets = 1;  // Only making 1 request.
 
     var client = new HttpClient(server.url(), agent);
-    return promise.checkedNodeCall(client.send.bind(client, request))
-        .then(function(response) {
-          assert.equal(200, response.status);
-          assert.equal(
-            'application/json; charset=utf-8', response.headers['accept']);
-          assert.equal('Bar', response.headers['foo']);
-          assert.equal('0', response.headers['content-length']);
-          assert.equal('keep-alive', response.headers['connection']);
-          assert.equal(server.host(), response.headers['host']);
-        });
+    return client.send(request).then(function(response) {
+      assert.equal(200, response.status);
+      assert.equal(
+        'application/json; charset=utf-8', response.headers['accept']);
+      assert.equal('Bar', response.headers['foo']);
+      assert.equal('0', response.headers['content-length']);
+      assert.equal('keep-alive', response.headers['connection']);
+      assert.equal(server.host(), response.headers['host']);
+    });
   });
 
   test.it('can use basic auth', function() {
@@ -117,54 +116,49 @@ describe('HttpClient', function() {
 
     var client = new HttpClient(url.format(parsed));
     var request = new HttpRequest('GET', '/protected');
-    return promise.checkedNodeCall(client.send.bind(client, request))
-      .then(function(response) {
-        assert.equal(200, response.status);
-        assert.equal('text/plain', response.headers['content-type']);
-        assert.equal('Access granted!', response.body);
-      });
+    return client.send(request).then(function(response) {
+      assert.equal(200, response.status);
+      assert.equal('text/plain', response.headers['content-type']);
+      assert.equal('Access granted!', response.body);
+    });
   });
 
   test.it('fails requests missing required basic auth', function() {
     var client = new HttpClient(server.url());
     var request = new HttpRequest('GET', '/protected');
-    return promise.checkedNodeCall(client.send.bind(client, request))
-      .then(function(response) {
-              assert.equal(401, response.status);
-              assert.equal('Access denied', response.body);
-            });
+    return client.send(request).then(function(response) {
+      assert.equal(401, response.status);
+      assert.equal('Access denied', response.body);
+    });
   });
 
   test.it('automatically follows redirects', function() {
     var request = new HttpRequest('GET', '/redirect');
     var client = new HttpClient(server.url());
-    return promise.checkedNodeCall(client.send.bind(client, request))
-        .then(function(response) {
-          assert.equal(200, response.status);
-          assert.equal('text/plain', response.headers['content-type']);
-          assert.equal('hello, world!', response.body);
-        });
+    return client.send(request).then(function(response) {
+      assert.equal(200, response.status);
+      assert.equal('text/plain', response.headers['content-type']);
+      assert.equal('hello, world!', response.body);
+    });
   });
 
   test.it('handles malformed redirect responses', function() {
     var request = new HttpRequest('GET', '/badredirect');
     var client = new HttpClient(server.url());
-    return promise.checkedNodeCall(client.send.bind(client, request))
-        .thenCatch(function(err) {
-          assert.ok(/Failed to parse "Location"/.test(err.message),
-              'Not the expected error: ' + err.message);
-        });
+    return client.send(request).then(assert.fail, function(err) {
+      assert.ok(/Failed to parse "Location"/.test(err.message),
+          'Not the expected error: ' + err.message);
+    });
   });
 
   test.it('proxies requests through the webdriver proxy', function() {
     var request = new HttpRequest('GET', '/proxy');
     var client = new HttpClient(
         'http://another.server.com', undefined, server.url());
-    return promise.checkedNodeCall(client.send.bind(client, request))
-        .then(function(response) {
-           assert.equal(200, response.status);
-           assert.equal('another.server.com', response.headers['host']);
-        });
+    return client.send(request).then(function(response) {
+       assert.equal(200, response.status);
+       assert.equal('another.server.com', response.headers['host']);
+    });
   });
 
   test.it(
@@ -172,10 +166,9 @@ describe('HttpClient', function() {
     var request = new HttpRequest('GET', '/proxy/redirect');
     var client = new HttpClient(
         'http://another.server.com', undefined, server.url());
-    return promise.checkedNodeCall(client.send.bind(client, request))
-        .then(function(response) {
-          assert.equal(200, response.status);
-          assert.equal('another.server.com', response.headers['host']);
-        });
+    return client.send(request).then(function(response) {
+      assert.equal(200, response.status);
+      assert.equal('another.server.com', response.headers['host']);
+    });
   });
 });

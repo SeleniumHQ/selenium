@@ -30,6 +30,7 @@ goog.require('webdriver.Capabilities');
 goog.require('webdriver.Session');
 goog.require('webdriver.WebDriver');
 goog.require('webdriver.logging');
+goog.require('webdriver.promise');
 
 
 /**
@@ -126,17 +127,19 @@ safaridriver.debug.CommandExecutor = function(target) {
 
 
 /** @override */
-safaridriver.debug.CommandExecutor.prototype.execute = function(
-    command, callback) {
-  var driverCommand = new safaridriver.Command(
-      goog.string.getRandomString(),
-      command.getName(), command.getParameters());
+safaridriver.debug.CommandExecutor.prototype.execute = function(command) {
+  var target = this.target_;
+  return new webdriver.promise.Promise(function(fulfill) {
+    var driverCommand = new safaridriver.Command(
+        goog.string.getRandomString(),
+        command.getName(), command.getParameters());
 
-  this.target_.once(safaridriver.message.Response.TYPE, function(message) {
-    var response = /** @type {!safaridriver.message.Response} */ (message).
-        getResponse();
-    callback(null, response);
+    target.once(safaridriver.message.Response.TYPE, function(message) {
+      var response = /** @type {!safaridriver.message.Response} */ (message).
+          getResponse();
+      fulfill(response);
+    });
+
+    new safaridriver.message.Command(driverCommand).send(safari.self.tab);
   });
-
-  new safaridriver.message.Command(driverCommand).send(safari.self.tab);
 };

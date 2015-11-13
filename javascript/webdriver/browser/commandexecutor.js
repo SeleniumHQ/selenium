@@ -99,26 +99,22 @@ webdriver.browser.CommandExecutor.prototype.disposeInternal = function() {
 
 
 /** @override */
-webdriver.browser.CommandExecutor.prototype.execute = function(
-    command, callback) {
+webdriver.browser.CommandExecutor.prototype.execute = function(command) {
   if (this.isDisposed()) {
-    callback(Error('Executor was disposed'));
-    return;
+    return webdriver.promise.rejected(Error('Executor was disposed'));
   }
 
   if (this.window_.closed) {
-    callback(new bot.Error(
+    return webdriver.promise.rejected(new bot.Error(
         bot.ErrorCode.NO_SUCH_WINDOW, 'The window has closed'));
-    return;
   }
 
   var handler = webdriver.browser.CommandExecutor.COMMAND_MAP_[
       command.getName()];
   if (!handler) {
-    callback(new bot.Error(
+    return webdriver.promise.rejected(new bot.Error(
         bot.ErrorCode.UNKNOWN_COMMAND,
         'Unsupported command: ' + command.getName()));
-    return;
   }
 
   var executeCommand = goog.bind(function() {
@@ -129,20 +125,15 @@ webdriver.browser.CommandExecutor.prototype.execute = function(
       callback(ex);
       return;
     }
-
-    // TODO: abort on dispose?
-    webdriver.promise.when(
-        result,
-        bot.response.createResponse,
-        bot.response.createErrorResponse).
-        then(goog.partial(callback, null));
+    return webdriver.promise.fulfilled(result)
+        .then(bot.response.createResponse, bot.response.createErrorResponse);
   }, this);
 
   if (this.loadingDeferred_) {
     goog.log.info(this.log_, 'Waiting for window to load');
-    this.loadingDeferred_.then(executeCommand, callback);
+    return this.loadingDeferred_.then(executeCommand);
   } else {
-    executeCommand();
+    return executeCommand();
   }
 };
 

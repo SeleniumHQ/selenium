@@ -16,6 +16,7 @@
 // under the License.
 
 goog.require('bot.ErrorCode');
+goog.require('bot.response');
 goog.require('goog.Promise');
 goog.require('goog.functions');
 goog.require('goog.testing.PropertyReplacer');
@@ -186,7 +187,7 @@ TestHelper.Command.prototype.buildExpectation_ = function() {
   var commandMatcher = createCommandMatcher(this.name_, this.parameters_);
   assertNotNull(this.toDo_);
   var expectation = this.helper_.executor.
-      execute(commandMatcher, goog.testing.mockmatchers.isFunction).
+      execute(commandMatcher).
       $does(this.toDo_);
   if (this.anyTimes_) {
     assertEquals(0, this.times_);
@@ -200,8 +201,8 @@ TestHelper.Command.prototype.buildExpectation_ = function() {
 
 
 TestHelper.Command.prototype.andReturn = function(code, opt_value) {
-  this.toDo_ = function(command, callback) {
-    callback(null, {
+  this.toDo_ = function(command) {
+    return goog.Promise.resolve({
       'status': code,
       'sessionId': {
         'value': SESSION_ID

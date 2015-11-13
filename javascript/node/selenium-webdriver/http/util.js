@@ -33,21 +33,16 @@ var base = require('../lib/_base'),
 /**
  * Queries a WebDriver server for its current status.
  * @param {string} url Base URL of the server to query.
- * @param {function(Error, *=)} callback The function to call with the
- *     response.
+ * @return {!webdriver.promise.Promise.<!Object>} A promise that resolves with
+ *     a hash of the server status.
  */
-function getStatus(url, callback) {
+function getStatus(url) {
   var client = new HttpClient(url);
   var executor = new Executor(client);
   var command = new Command(CommandName.GET_SERVER_STATUS);
-  executor.execute(command, function(err, responseObj) {
-    if (err) return callback(err);
-    try {
-      checkResponse(responseObj);
-    } catch (ex) {
-      return callback(ex);
-    }
-    callback(null, responseObj['value']);
+  return executor.execute(command).then(function(responseObj) {
+    checkResponse(responseObj);
+    return responseObj['value'];
   });
 }
 
@@ -61,9 +56,7 @@ function getStatus(url, callback) {
  * @return {!webdriver.promise.Promise.<!Object>} A promise that resolves with
  *     a hash of the server status.
  */
-exports.getStatus = function(url) {
-  return promise.checkedNodeCall(getStatus.bind(null, url));
-};
+exports.getStatus = getStatus;
 
 
 /**
@@ -75,15 +68,15 @@ exports.getStatus = function(url) {
  */
 exports.waitForServer = function(url, timeout) {
   var ready = promise.defer(),
-      start = Date.now(),
-      checkServerStatus = getStatus.bind(null, url, onResponse);
+      start = Date.now();
   checkServerStatus();
   return ready.promise;
 
-  function onResponse(err) {
-    if (!ready.isPending()) return;
-    if (!err) return ready.fulfill();
+  function checkServerStatus() {
+    return getStatus(url).then(ready.fulfill, onError);
+  }
 
+  function onError() {
     if (Date.now() - start > timeout) {
       ready.reject(
           Error('Timed out waiting for the WebDriver server at ' + url));
@@ -109,18 +102,16 @@ exports.waitForServer = function(url, timeout) {
 exports.waitForUrl = function(url, timeout) {
   var client = new HttpClient(url),
       request = new HttpRequest('GET', ''),
-      testUrl = client.send.bind(client, request, onResponse),
       ready = promise.defer(),
       start = Date.now();
   testUrl();
   return ready.promise;
 
-  function onResponse(err, response) {
-    if (!ready.isPending()) return;
-    if (!err && response.status > 199 && response.status < 300) {
-      return ready.fulfill();
-    }
+  function testUrl() {
+    client.send(request).then(onResponse, onError);
+  }
 
+  function onError() {
     if (Date.now() - start > timeout) {
       ready.reject(Error(
           'Timed out waiting for the URL to return 2xx: ' + url));
@@ -131,5 +122,13 @@ exports.waitForUrl = function(url, timeout) {
         }
       }, 50);
     }
+  }
+
+  function onResponse(response) {
+    if (!ready.isPending()) return;
+    if (response.status > 199 && response.status < 300) {
+      return ready.fulfill();
+    }
+    onError();
   }
 };

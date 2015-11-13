@@ -39,18 +39,18 @@ webdriver.http.XhrClient = function(url) {
 
 
 /** @override */
-webdriver.http.XhrClient.prototype.send = function(request, callback) {
-  try {
+webdriver.http.XhrClient.prototype.send = function(request) {
+  var url = this.url_ + request.path;
+  return new webdriver.promise.Promise(function(fulfill, reject) {
     var xhr = /** @type {!XMLHttpRequest} */ (goog.net.XmlHttp());
-    var url = this.url_ + request.path;
     xhr.open(request.method, url, true);
 
     xhr.onload = function() {
-      callback(null, webdriver.http.Response.fromXmlHttpRequest(xhr));
+      fulfill(webdriver.http.Response.fromXmlHttpRequest(xhr));
     };
 
     xhr.onerror = function() {
-      callback(Error([
+      reject(Error([
         'Unable to send request: ', request.method, ' ', url,
         '\nOriginal request:\n', request
       ].join('')));
@@ -61,7 +61,5 @@ webdriver.http.XhrClient.prototype.send = function(request, callback) {
     }
 
     xhr.send(JSON.stringify(request.data));
-  } catch (ex) {
-    callback(ex);
-  }
+  });
 };

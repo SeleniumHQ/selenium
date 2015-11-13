@@ -311,8 +311,7 @@ webdriver.WebDriver.executeCommand_ = function(executor, command) {
   return webdriver.WebDriver.toWireValue_(command.getParameters()).
       then(function(parameters) {
         command.setParameters(parameters);
-        return webdriver.promise.checkedNodeCall(
-            goog.bind(executor.execute, executor, command));
+        return executor.execute(command);
       });
 };
 
@@ -371,8 +370,7 @@ webdriver.WebDriver.prototype.schedule = function(command, description) {
     // execution.
     return prepCommand.then(function(parameters) {
       command.setParameters(parameters);
-      return webdriver.promise.checkedNodeCall(
-          goog.bind(executor.execute, executor, command));
+      return executor.execute(command);
     });
   }, description).then(function(response) {
     try {

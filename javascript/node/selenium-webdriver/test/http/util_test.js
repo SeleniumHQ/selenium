@@ -65,20 +65,20 @@ describe('selenium-webdriver/http/util', function() {
   });
 
   describe('#getStatus', function() {
-    it('should return value field on success', function(done) {
-      util.getStatus(baseUrl).then(function(response) {
+    it('should return value field on success', function() {
+      return util.getStatus(baseUrl).then(function(response) {
         assert.equal('abc123', response);
-      }).thenFinally(done);
+      });
     });
 
-    it('should fail if response object is not success', function(done) {
+    it('should fail if response object is not success', function() {
       status = 1;
-      util.getStatus(baseUrl).then(function() {
+      return util.getStatus(baseUrl).then(function() {
         throw Error('expected a failure');
       }, function(err) {
         assert.equal(status, err.code);
         assert.equal(value, err.message);
-      }).thenFinally(done);
+      });
     });
 
     it('should fail if the server is not listening', function(done) {
@@ -86,39 +86,38 @@ describe('selenium-webdriver/http/util', function() {
         if(e) return done(e);
 
         util.getStatus(baseUrl).then(function() {
-          throw Error('expected a failure');
+          done(Error('expected a failure'));
         }, function() {
           // Expected.
-        }).thenFinally(done);
+          done();
+        });
       });
     });
 
-    it('should fail if HTTP status is not 200', function(done) {
+    it('should fail if HTTP status is not 200', function() {
       status = 1;
       responseCode = 404;
-      util.getStatus(baseUrl).then(function() {
+      return util.getStatus(baseUrl).then(function() {
         throw Error('expected a failure');
       }, function(err) {
         assert.equal(status, err.code);
         assert.equal(value, err.message);
-      }).thenFinally(done);
+      });
     });
   });
 
   describe('#waitForServer', function() {
-    it('resolves when server is ready', function(done) {
+    it('resolves when server is ready', function() {
       status = 1;
       setTimeout(function() { status = 0; }, 50);
-      util.waitForServer(baseUrl, 100).
-          then(function() {}).  // done needs no argument to pass.
-          thenFinally(done);
+      return util.waitForServer(baseUrl, 100);
     });
 
-    it('should fail if server does not become ready', function(done) {
+    it('should fail if server does not become ready', function() {
       status = 1;
-      util.waitForServer(baseUrl, 50).
-          then(function() { done('Expected to time out'); },
-               function() { done(); });
+      return util.waitForServer(baseUrl, 50).
+          then(function() {throw Error('Expected to time out')},
+               function() {});
     });
 
     it('can cancel wait', function(done) {

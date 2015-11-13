@@ -54,11 +54,14 @@ TestExecutor.prototype.on = function(cmd, handler) {
 };
 
 
-TestExecutor.prototype.execute = function(cmd, callback) {
-  if (!this.handlers_[cmd.getName()]) {
-    throw Error('Unsupported command: ' + cmd.getName());
-  }
-  this.handlers_[cmd.getName()](cmd, callback);
+TestExecutor.prototype.execute = function(cmd) {
+  var self = this;
+  return new webdriver.promise.Promise(function(fulfill) {
+    if (!self.handlers_[cmd.getName()]) {
+      throw Error('Unsupported command: ' + cmd.getName());
+    }
+    fulfill(self.handlers_[cmd.getName()](cmd));
+  });
 };
 
 
@@ -70,8 +73,8 @@ function setUp() {
 
 function testUntilAbleToSwitchToFrame_failsFastForNonSwitchErrors() {
   var e = Error('boom');
-  executor.on(CommandName.SWITCH_TO_FRAME, function(cmd, callback) {
-    callback(e);
+  executor.on(CommandName.SWITCH_TO_FRAME, function() {
+    throw e;
   });
 
   return driver.wait(until.ableToSwitchToFrame(0), 100)
@@ -82,8 +85,8 @@ function testUntilAbleToSwitchToFrame_failsFastForNonSwitchErrors() {
 
 
 function testUntilAbleToSwitchToFrame_byIndex() {
-  executor.on(CommandName.SWITCH_TO_FRAME, function(cmd, callback) {
-    callback(null, {status: bot.ErrorCode.SUCCESS});
+  executor.on(CommandName.SWITCH_TO_FRAME, function() {
+    return {status: bot.ErrorCode.SUCCESS};
   });
 
   return driver.wait(until.ableToSwitchToFrame(0), 100);
@@ -92,7 +95,7 @@ function testUntilAbleToSwitchToFrame_byIndex() {
 
 function testUntilAbleToSwitchToFrame_byWebElement() {
   executor.on(CommandName.SWITCH_TO_FRAME, function(cmd, callback) {
-    callback(null, {status: bot.ErrorCode.SUCCESS});
+    return {status: bot.ErrorCode.SUCCESS};
   });
 
   var el = new webdriver.WebElement(driver, {ELEMENT: 1234});
@@ -102,7 +105,7 @@ function testUntilAbleToSwitchToFrame_byWebElement() {
 
 function testUntilAbleToSwitchToFrame_byWebElementPromise() {
   executor.on(CommandName.SWITCH_TO_FRAME, function(cmd, callback) {
-    callback(null, {status: bot.ErrorCode.SUCCESS});
+    return {status: bot.ErrorCode.SUCCESS};
   });
 
   var el = new webdriver.WebElementPromise(driver,
@@ -113,13 +116,13 @@ function testUntilAbleToSwitchToFrame_byWebElementPromise() {
 
 
 function testUntilAbleToSwitchToFrame_byLocator() {
-  executor.on(CommandName.FIND_ELEMENTS, function(cmd, callback) {
-    callback(null, {
+  executor.on(CommandName.FIND_ELEMENTS, function() {
+    return {
       status: bot.ErrorCode.SUCCESS,
       value: [{ELEMENT: 1234}]
-    });
-  }).on(CommandName.SWITCH_TO_FRAME, function(cmd, callback) {
-    callback(null, {status: bot.ErrorCode.SUCCESS});
+    };
+  }).on(CommandName.SWITCH_TO_FRAME, function() {
+    return {status: bot.ErrorCode.SUCCESS};
   });
 
   return driver.wait(until.ableToSwitchToFrame(By.id('foo')), 100);
@@ -128,13 +131,13 @@ function testUntilAbleToSwitchToFrame_byLocator() {
 
 function testUntilAbleToSwitchToFrame_byLocator_elementNotInitiallyFound() {
   var foundResponses = [[], [], [{ELEMENT: 1234}]];
-  executor.on(CommandName.FIND_ELEMENTS, function(cmd, callback) {
-    callback(null, {
+  executor.on(CommandName.FIND_ELEMENTS, function() {
+    return {
       status: bot.ErrorCode.SUCCESS,
       value: foundResponses.shift()
-    });
+    };
   }).on(CommandName.SWITCH_TO_FRAME, function(cmd, callback) {
-    callback(null, {status: bot.ErrorCode.SUCCESS});
+    return {status: bot.ErrorCode.SUCCESS};
   });
 
   return driver.wait(until.ableToSwitchToFrame(By.id('foo')), 2000)
@@ -146,9 +149,9 @@ function testUntilAbleToSwitchToFrame_byLocator_elementNotInitiallyFound() {
 
 function testUntilAbleToSwitchToFrame_timesOutIfNeverAbletoSwitchFrames() {
   var count = 0;
-  executor.on(CommandName.SWITCH_TO_FRAME, function(cmd, callback) {
+  executor.on(CommandName.SWITCH_TO_FRAME, function() {
     count += 1;
-    callback(null, {status: bot.ErrorCode.NO_SUCH_FRAME});
+    return {status: bot.ErrorCode.NO_SUCH_FRAME};
   });
 
   return driver.wait(until.ableToSwitchToFrame(0), 100).then(fail, function(e) {
@@ -169,14 +172,14 @@ function testUntilAlertIsPresent_failsFastForNonAlertSwitchErrors() {
 
 function testUntilAlertIsPresent() {
   var count = 0;
-  executor.on(CommandName.GET_ALERT_TEXT, function(cmd, callback) {
+  executor.on(CommandName.GET_ALERT_TEXT, function() {
     if (count++ < 3) {
-      callback(null, {status: bot.ErrorCode.NO_SUCH_ALERT});
+      return {status: bot.ErrorCode.NO_SUCH_ALERT};
     } else {
-      callback(null, {status: bot.ErrorCode.SUCCESS});
+      return {status: bot.ErrorCode.SUCCESS};
     }
   }).on(CommandName.DISMISS_ALERT, function(cmd, callback) {
-    callback(null, {status: bot.ErrorCode.SUCCESS});
+    return {status: bot.ErrorCode.SUCCESS};
   });
 
   return driver.wait(until.alertIsPresent(), 1000).then(function(alert) {
@@ -188,8 +191,8 @@ function testUntilAlertIsPresent() {
 
 function testUntilTitleIs() {
   var titles = ['foo', 'bar', 'baz'];
-  executor.on(CommandName.GET_TITLE, function(cmd, callback) {
-    callback(null, bot.response.createResponse(titles.shift()));
+  executor.on(CommandName.GET_TITLE, function() {
+    return bot.response.createResponse(titles.shift());
   });
 
   return driver.wait(until.titleIs('bar'), 3000).then(function() {
@@ -200,8 +203,8 @@ function testUntilTitleIs() {
 
 function testUntilTitleContains() {
   var titles = ['foo', 'froogle', 'google'];
-  executor.on(CommandName.GET_TITLE, function(cmd, callback) {
-    callback(null, bot.response.createResponse(titles.shift()));
+  executor.on(CommandName.GET_TITLE, function() {
+    return bot.response.createResponse(titles.shift());
   });
 
   return driver.wait(until.titleContains('oogle'), 3000).then(function() {
@@ -212,8 +215,8 @@ function testUntilTitleContains() {
 
 function testUntilTitleMatches() {
   var titles = ['foo', 'froogle', 'aaaabc', 'aabbbc', 'google'];
-  executor.on(CommandName.GET_TITLE, function(cmd, callback) {
-    callback(null, bot.response.createResponse(titles.shift()));
+  executor.on(CommandName.GET_TITLE, function() {
+    return bot.response.createResponse(titles.shift());
   });
 
   return driver.wait(until.titleMatches(/^a{2,3}b+c$/), 3000).then(function() {
@@ -225,7 +228,7 @@ function testUntilTitleMatches() {
 function testUntilElementLocated() {
   var responses = [[], [{ELEMENT: 'abc123'}, {ELEMENT: 'foo'}], ['end']];
   executor.on(CommandName.FIND_ELEMENTS, function(cmd, callback) {
-    callback(null, bot.response.createResponse(responses.shift()));
+    return bot.response.createResponse(responses.shift());
   });
 
   return driver.wait(until.elementLocated(By.id('quux')), 2000)
@@ -238,8 +241,8 @@ function testUntilElementLocated() {
 }
 
 function runNoElementFoundTest(locator, locatorStr) {
-  executor.on(CommandName.FIND_ELEMENTS, function(cmd, callback) {
-    callback(null, bot.response.createResponse([]));
+  executor.on(CommandName.FIND_ELEMENTS, function() {
+    return bot.response.createResponse([]);
   });
 
   function expectedFailure() {
@@ -269,8 +272,8 @@ function testUntilElementLocated_elementNeverFound_byFunction() {
 
 function testUntilElementsLocated() {
   var responses = [[], [{ELEMENT: 'abc123'}, {ELEMENT: 'foo'}], ['end']];
-  executor.on(CommandName.FIND_ELEMENTS, function(cmd, callback) {
-    callback(null, bot.response.createResponse(responses.shift()));
+  executor.on(CommandName.FIND_ELEMENTS, function() {
+    return bot.response.createResponse(responses.shift());
   });
 
   return driver.wait(until.elementsLocated(By.id('quux')), 2000)
@@ -287,8 +290,8 @@ function testUntilElementsLocated() {
 }
 
 function runNoElementsFoundTest(locator, locatorStr) {
-  executor.on(CommandName.FIND_ELEMENTS, function(cmd, callback) {
-    callback(null, bot.response.createResponse([]));
+  executor.on(CommandName.FIND_ELEMENTS, function() {
+    return bot.response.createResponse([]);
   });
 
   function expectedFailure() {
@@ -326,8 +329,8 @@ function testUntilStalenessOf() {
         new bot.Error(bot.ErrorCode.STALE_ELEMENT_REFERENCE, 'now stale')),
     ['end']
   ];
-  executor.on(CommandName.GET_ELEMENT_TAG_NAME, function(cmd, callback) {
-    callback(null, responses.shift());
+  executor.on(CommandName.GET_ELEMENT_TAG_NAME, function() {
+    return responses.shift();
   });
 
   var el = new webdriver.WebElement(driver, {ELEMENT: 'foo'});
@@ -340,8 +343,8 @@ function runElementStateTest(predicate, command, responses) {
   assertTrue(responses.length > 1);
 
   responses = goog.array.concat(responses, ['end']);
-  executor.on(command, function(cmd, callback) {
-    callback(null, bot.response.createResponse(responses.shift()));
+  executor.on(command, function() {
+    return bot.response.createResponse(responses.shift());
   });
   return driver.wait(predicate, 2000).then(function() {
     assertArrayEquals(['end'], responses);
