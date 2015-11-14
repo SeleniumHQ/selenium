@@ -534,7 +534,11 @@ module Selenium
           data = execute :getLog, {}, :type => type.to_s
 
           Array(data).map do |l|
-            LogEntry.new l.fetch('level'), l.fetch('timestamp'), l.fetch('message')
+            begin
+              LogEntry.new l.fetch('level', 'UNKNOWN'), l.fetch('timestamp'), l.fetch('message')
+            rescue KeyError
+              next
+            end
           end
         end
 

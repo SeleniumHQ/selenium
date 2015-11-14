@@ -74,8 +74,10 @@ module Selenium
             new({
               :browser_name          => "chrome",
               :javascript_enabled    => true,
-              :css_selectors_enabled => true
-            }.merge(opts))
+              :css_selectors_enabled => true,
+              :loggingPrefs => {:browser => "ALL",
+                                :driver => "ALL"}
+                }.merge(opts))
           end
 
           def edge(opts = {})

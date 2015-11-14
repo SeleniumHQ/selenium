@@ -24,13 +24,26 @@ module Selenium
     describe Options do
 
       # Not supported in W3C Spec
-      not_compliant_on :driver => :marionette do
+      not_compliant_on :browser => :marionette do
         describe 'logs' do
-          compliant_on :driver => [:firefox] do
-            it 'can fetch available log types' do
-              expect(driver.manage.logs.available_types).to eq([:browser, :driver])
+          compliant_on :driver => :remote do
+            # Phantomjs Returns har instead of driver
+            not_compliant_on :browser => :phantomjs do
+              it 'can fetch available log types' do
+                expect(driver.manage.logs.available_types).to include(:browser, :driver, :server, :client)
+              end
             end
+          end
 
+          # Phantomjs Returns har instead of driver
+          not_compliant_on :browser => :phantomjs do
+            it 'can fetch available log types' do
+              expect(driver.manage.logs.available_types).to include(:browser, :driver)
+            end
+          end
+
+          # All other browsers show empty
+          compliant_on :browser => :firefox do
             it 'can get the browser log' do
               driver.navigate.to url_for("simpleTest.html")
 
@@ -38,7 +51,10 @@ module Selenium
               expect(entries).not_to be_empty
               expect(entries.first).to be_kind_of(LogEntry)
             end
+          end
 
+          # Phantomjs Returns har instead of driver
+          not_compliant_on :browser => :phantomjs do
             it 'can get the driver log' do
               driver.navigate.to url_for("simpleTest.html")
 
