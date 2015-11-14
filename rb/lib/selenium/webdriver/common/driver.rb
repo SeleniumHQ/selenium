@@ -46,14 +46,18 @@ module Selenium
           listener = opts.delete(:listener)
 
           bridge = case browser
-                   when :firefox, :ff
+                   when :firefox, :ff, :marionette
                      if Remote::W3CCapabilities.w3c?(opts)
                        Firefox::W3CBridge.new(opts)
                      else
                        Firefox::Bridge.new(opts)
                      end
                    when :remote
-                     Remote::Bridge.new(opts)
+                     if Remote::W3CCapabilities.w3c?(opts)
+                       Remote::W3CBridge.new(opts)
+                     else
+                       Remote::Bridge.new(opts)
+                     end
                    when :ie, :internet_explorer
                      IE::Bridge.new(opts)
                    when :chrome

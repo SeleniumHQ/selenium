@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-shared_examples_for "driver that can be started concurrently" do |*driver_args|
+shared_examples_for "driver that can be started concurrently" do |browser_name|
   it "is started sequentially" do
     expect {
       Timeout.timeout(45) do
@@ -26,7 +26,8 @@ shared_examples_for "driver that can be started concurrently" do |*driver_args|
 
         5.times do
           threads << Thread.new do
-            drivers << Selenium::WebDriver.for(*driver_args)
+            opt = browser_name == :marionette ? {marionette: true} : {}
+            drivers << Selenium::WebDriver.for(browser_name, opt)
           end
         end
 
