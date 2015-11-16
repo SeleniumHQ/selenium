@@ -17,10 +17,7 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Support.Extensions
@@ -87,13 +84,28 @@ namespace OpenQA.Selenium.Support.Extensions
                 throw new WebDriverException("Driver does not implement IJavaScriptExecutor");
             }
 
-            object result = executor.ExecuteScript(script, args);
-            if (typeof(T).IsInstanceOfType(result) == false)
+            Type type = typeof(T);
+
+            var result = default(T);
+
+            object value = executor.ExecuteScript(script, args);
+            if (value == null)
+            {
+                if (type.IsValueType)
+                {
+                    throw new WebDriverException("Script returned null, but desired type is a value type");
+                }
+            }
+            else if (!type.IsInstanceOfType(value))
             {
                 throw new WebDriverException("Script returned a value, but the result could not be cast to the desired type");
             }
+            else
+            {
+                result = (T)value;
+            }
 
-            return (T)result;
+            return result;
         }
     }
 }
