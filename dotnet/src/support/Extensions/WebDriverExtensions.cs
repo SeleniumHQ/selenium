@@ -16,11 +16,8 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
+
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Support.Extensions
@@ -81,19 +78,34 @@ namespace OpenQA.Selenium.Support.Extensions
         /// of the JavaScript execution does not match the expected type.</exception>
         public static T ExecuteJavaScript<T>(this IWebDriver driver, string script, params object[] args)
         {
-            IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
+            var executor = driver as IJavaScriptExecutor;
             if (executor == null)
             {
                 throw new WebDriverException("Driver does not implement IJavaScriptExecutor");
             }
 
-            object result = executor.ExecuteScript(script, args);
-            if (typeof(T).IsInstanceOfType(result) == false)
+            var type = typeof(T);
+
+            var result = default(T);
+
+            object value = executor.ExecuteScript(script, args);
+            if (value == null)
+            {
+                if (type.IsValueType)
+                {
+                    throw new WebDriverException("Script returned null, but desired type is a value type");
+                }
+            }
+            else if (type.IsInstanceOfType(value) == false)
             {
                 throw new WebDriverException("Script returned a value, but the result could not be cast to the desired type");
             }
+            else
+            {
+                result = (T)value;
+            }
 
-            return (T)result;
+            return result;
         }
     }
 }
