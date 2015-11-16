@@ -768,7 +768,7 @@ webdriver.WebDriver.prototype.getAllWindowHandles = function() {
 webdriver.WebDriver.prototype.getPageSource = function() {
   return this.schedule(
       new webdriver.Command(webdriver.CommandName.GET_PAGE_SOURCE),
-      'WebDriver.getAllWindowHandles()');
+      'WebDriver.getPageSource()');
 };
 
 
