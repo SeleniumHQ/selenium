@@ -139,7 +139,7 @@ public class BaseRemoteProxy implements RemoteProxy {
       this.id = id;
     } else {
       // otherwise assign the remote host as id.
-      this.id = id = "http://" + remoteHost.getHost() + ":" + remoteHost.getPort();
+      this.id = "http://" + remoteHost.getHost() + ":" + remoteHost.getPort();
     }
 
     maxConcurrentSession = getConfigInteger(RegistrationRequest.MAX_SESSION);
