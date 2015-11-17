@@ -214,6 +214,7 @@ bot.Device.prototype.fireTouchEvent = function(type, id, coord, opt_id2,
     scale: 0,
     rotation: 0
   };
+  var pageOffset = goog.dom.getDomHelper(this.element_).getDocumentScroll();
 
   function addTouch(identifier, coords) {
     // Android devices leave identifier to zero.
@@ -224,8 +225,8 @@ bot.Device.prototype.fireTouchEvent = function(type, id, coord, opt_id2,
       screenY: coords.y,
       clientX: coords.x,
       clientY: coords.y,
-      pageX: coords.x,
-      pageY: coords.y
+      pageX: coords.x + pageOffset.x,
+      pageY: coords.y + pageOffset.y
     };
 
     args.changedTouches.push(touch);

@@ -534,12 +534,14 @@ bot.events.TouchEventFactory_.prototype.create = function(target, opt_args) {
     event.rotation = args.rotation;
   } else {
     event = doc.createEvent('TouchEvent');
-    if (goog.userAgent.product.ANDROID) {
-      // Android's initTouchEvent method is not compliant with the W3C spec.
+    // Different browsers have different implementations of initTouchEvent.
+    if (event.initTouchEvent.length == 0) {
+      // Chrome/Android.
       event.initTouchEvent(touches, targetTouches, changedTouches,
           this.type_, view, /*screenX*/ 0, /*screenY*/ 0, args.clientX,
           args.clientY, args.ctrlKey, args.altKey, args.shiftKey, args.metaKey);
     } else {
+      // iOS.
       event.initTouchEvent(this.type_, this.bubbles_, this.cancelable_, view,
           /*detail*/ 1, /*screenX*/ 0, /*screenY*/ 0, args.clientX,
           args.clientY, args.ctrlKey, args.altKey, args.shiftKey, args.metaKey,
