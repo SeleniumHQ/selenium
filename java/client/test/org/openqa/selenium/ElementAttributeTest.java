@@ -229,6 +229,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
 
   @Test
   public void testShouldReturnInnerHtml() {
+    assumeFalse("IE before 10 returns innerHTML with uppercase tag names", TestUtilities.getIEVersion(driver) < 10);
     driver.get(pages.simpleTestPage);
 
     String html = driver.findElement(By.id("wrappingtext")).getAttribute("innerHTML");
@@ -317,9 +318,10 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertEquals(null, mousedownDiv.getAttribute("onclick"));
   }
 
-  @Ignore(value = {IE}, reason = "IE7 Does not support SVG")
   @Test
   public void testGetAttributeDoesNotReturnAnObjectForSvgProperties() {
+    assumeFalse("IE before 9 doesn't support SVG", TestUtilities.isOldIe(driver));
+
     driver.get(pages.svgPage);
     WebElement svgElement = driver.findElement(By.id("rotate"));
     assertEquals("rotate(30)", svgElement.getAttribute("transform"));

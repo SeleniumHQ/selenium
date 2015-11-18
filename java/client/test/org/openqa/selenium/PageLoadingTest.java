@@ -232,6 +232,8 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = {IE},
+          reason = "IE: change in test web server causes IE to return resource 404 page instead of custom HTML")
   public void testShouldReturnURLOnNotExistedPage() {
     String url = appServer.whereIs("not_existed_page.html");
     driver.get(url);

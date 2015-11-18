@@ -34,6 +34,8 @@ import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
+import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
+import static org.openqa.selenium.testing.TestUtilities.getIEVersion;
 
 import com.google.common.base.Joiner;
 
@@ -781,8 +783,12 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented({CHROME, HTMLUNIT, IE})
+  @NotYetImplemented({CHROME, HTMLUNIT})
   public void canClearNumberInputAfterTypingInvalidInput() {
+    // IE < 10 treats "number" inputs as regular text fields, so this
+    // test passes.
+    assumeFalse("IE 10+ does not validate input until focus change", isInternetExplorer(driver) && getIEVersion(driver) >= 10);
+
     driver.get(pages.formPage);
     WebElement input = driver.findElement(By.id("age"));
     input.sendKeys("e");
