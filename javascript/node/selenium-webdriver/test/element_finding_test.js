@@ -241,11 +241,11 @@ test.suite(function(env) {
         });
       });
 
-      test.it('does not permit compound class names', function() {
-        driver.get(Pages.xhtmlTestPage);
-        driver.findElement(By.className('a b')).then(fail, pass);
-        driver.findElements(By.className('a b')).then(fail, pass);
-        function pass() {}
+      test.it('permits compound class names', function() {
+        return driver.get(Pages.xhtmlTestPage)
+            .then(() => driver.findElement(By.className('nameA nameC')))
+            .then(el => el.getText())
+            .then(text => assert(text).equalTo('An H2 title'));
       });
     });
 

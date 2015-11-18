@@ -12,6 +12,11 @@
     the W3C spec and _not_ the numeric code used by the Selenium project's
     wire protocol.
 
+### Changes for W3C WebDriver Spec Compliance
+
+* Updated the `By` locators that are not in the W3C spec to delegated to using
+    CSS selectors: `By.className`, `By.id`, `By.name`, and `By.tagName`.
+
 ## v2.48.2
 
 * Added `WebElement#takeScreenshot()`.

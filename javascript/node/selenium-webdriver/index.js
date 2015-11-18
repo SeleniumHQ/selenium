@@ -38,8 +38,7 @@ exports.ActionSequence = base.require('webdriver.ActionSequence');
 exports.Builder = builder.Builder;
 
 
-/** @type {webdriver.By.} */
-exports.By = base.require('webdriver.By');
+exports.By = require('./lib/by').By;
 
 
 /** @type {function(new: webdriver.Capabilities)} */

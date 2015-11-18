@@ -344,6 +344,7 @@ function copyResources(outputDirPath, resources, exclusions) {
 
 function generateDocs(outputDir, callback) {
   var libDir = path.join(outputDir, 'lib');
+
   var excludedDirs = [
     path.join(outputDir, 'example'),
     path.join(libDir, 'test'),
@@ -352,6 +353,7 @@ function generateDocs(outputDir, callback) {
   ];
 
   var excludedFiles = [
+    path.join(libDir, '_base.js'),
     path.join(libDir, 'safari/client.js'),
     path.join(libDir, 'webdriver/builder.js'),
     path.join(libDir, 'webdriver/firefoxdomexecutor.js'),
@@ -383,7 +385,9 @@ function generateDocs(outputDir, callback) {
     return files;
   };
 
-  var sourceFiles = getFiles(libDir);
+  var sourceFiles = getFiles(libDir).filter(function(file) {
+    return path.dirname(file) !== libDir;
+  });
   var moduleFiles = getFiles(outputDir).filter(function(file) {
     return sourceFiles.indexOf(file) == -1;
   });
