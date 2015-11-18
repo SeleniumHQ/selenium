@@ -1,3 +1,8 @@
+v2.48.2
+=======
+ * Release containing fix to Firefox driver bug when clearing input fields of
+   type number.
+
 v2.48.1
 =======
  * Various updates in communicating with remote ends using the W3C dialect of

@@ -805,11 +805,6 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Chrome, "Not implemented")]
         public void CanClearNumberInputAfterTypingInvalidInput()
         {
-            if (TestUtilities.IsIE10OrHigher(driver))
-            {
-                Assert.Ignore("IE 10 and higher do not validate invalid input until focus change");
-            }
-
             driver.Url = formsPage;
             IWebElement input = driver.FindElement(By.Id("age"));
             input.SendKeys("e");
