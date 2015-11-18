@@ -247,7 +247,7 @@
         });
       goog.events.listen(goog.dom.$('clearTestLog'), eventType.CLICK,
         function(e) {
-          goog.dom.$('testLog').innerHTML = '';
+          goog.dom.removeChildren(goog.dom.$('testLog'));
         });
     </script>
   </div>

@@ -341,9 +341,9 @@
     function testOverflowHiddenWithFixedPositionChild() {
       var target = findElement({id: 'overflowHiddenWithFixedPositionChild'});
       var child = findElement({id: 'fixedPositionChild'});
-      child.innerHTML = '';
+      goog.dom.removeChildren(child);
       assertFalse(isShown(target));
-      child.innerHTML = 'some content';
+      goog.dom.setTextContent(child, 'some content');
       assertTrue(isShown(target));
     }
 
