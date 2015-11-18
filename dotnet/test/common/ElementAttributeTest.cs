@@ -221,6 +221,15 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        public void ShouldReturnInnerHtml()
+        {
+            driver.Url = simpleTestPage;
+
+            string html = driver.FindElement(By.Id("wrappingtext")).GetAttribute("innerHTML");
+            Assert.IsTrue(html.Contains("<tbody>"), "text should contain '<tbody>', but does not - " + html);
+        }
+
+        [Test]
         public void ShouldTreatReadonlyAsAValue()
         {
             driver.Url = formsPage;
@@ -235,6 +244,22 @@ namespace OpenQA.Selenium
 
             Assert.IsNull(notReadOnly);
             Assert.IsFalse(readOnlyAttribute.Equals(notReadOnly));
+        }
+
+        [Test]
+        public void ShouldReturnHiddenTextForTextContentAttribute()
+        {
+            if (TestUtilities.IsOldIE(driver))
+            {
+                Assert.Ignore("IE 8 or below does not handle textContent attribute");
+            }
+
+            driver.Url = simpleTestPage;
+
+            IWebElement element = driver.FindElement(By.Id("hiddenline"));
+            string textContent = element.GetAttribute("textContent");
+
+            Assert.AreEqual("A hidden line of text", textContent);
         }
 
         [Test]
@@ -290,10 +315,14 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "IE7 Does not support SVG")]
         [IgnoreBrowser(Browser.IPhone, "SVG elements crash the iWebDriver app (issue 1134)")]
         public void GetAttributeDoesNotReturnAnObjectForSvgProperties()
         {
+            if (TestUtilities.IsOldIE(driver))
+            {
+                Assert.Ignore("IE8 and below do not support SVG");
+            }
+
             driver.Url = svgPage;
             IWebElement svgElement = driver.FindElement(By.Id("rotate"));
             Assert.AreEqual("rotate(30)", svgElement.GetAttribute("transform"));
