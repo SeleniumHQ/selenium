@@ -99,6 +99,20 @@ SyntheticMouse.prototype.isElementShown = function(element) {
 
 
 SyntheticMouse.prototype.isElementClickable = function(element) {
+  // Check to see if this is an option element. If it is, and the parent isn't a multiple
+  // select, then check that select is clickable.
+  var tagName = element.tagName.toLowerCase();
+  if ('option' == tagName) {
+    var parent = element;
+    while (parent.parentNode != null && parent.tagName.toLowerCase() != 'select') {
+      parent = parent.parentNode;
+    }
+
+    if (parent && parent.tagName.toLowerCase() == 'select' && !parent.multiple) {
+      return this.isElementClickable(parent);
+    }
+  }
+
   // get the outermost ancestor of the element. This will be either the document
   // or a shadow root.
   var owner = element;
