@@ -785,10 +785,6 @@ public class TypingTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented({CHROME, HTMLUNIT})
   public void canClearNumberInputAfterTypingInvalidInput() {
-    // IE < 10 treats "number" inputs as regular text fields, so this
-    // test passes.
-    assumeFalse("IE 10+ does not validate input until focus change", isInternetExplorer(driver) && getIEVersion(driver) >= 10);
-
     driver.get(pages.formPage);
     WebElement input = driver.findElement(By.id("age"));
     input.sendKeys("e");

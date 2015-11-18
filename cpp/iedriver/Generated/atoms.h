@@ -1612,11 +1612,11 @@ const wchar_t* const CLEAR[] = {
     L"&b.focus()}a.value?(a.value=\"\",b=x(a),xc&&b.createEventObject?b=b.cr",
     L"eateEventObject():(b=b.createEvent(\"HTMLEvents\"),b.initEvent(Xc.a,Xc",
     L".b,Xc.h)),\"isTrusted\"in b||(b.isTrusted=!1),xc&&a.fireEvent?a.fireEv",
-    L"ent(\"on\"+Xc.a,b):a.dispatchEvent(b)):V(a,\"INPUT\")&&\"number\"==a.g",
-    L"etAttribute(\"type\").toLowerCase()&&(a.value=\"\");Hc(a)&&(a.innerHTM",
-    L"L=\" \")});; return this._.apply(null,arguments);}.apply({navigator:ty",
-    L"peof window!=undefined?window.navigator:null,document:typeof window!=u",
-    L"ndefined?window.document:null}, arguments);}",
+    L"ent(\"on\"+Xc.a,b):a.dispatchEvent(b)):V(a,\"INPUT\")&&a.getAttribute(",
+    L"\"type\")&&\"number\"==a.getAttribute(\"type\").toLowerCase()&&(a.valu",
+    L"e=\"\");Hc(a)&&(a.innerHTML=\" \")});; return this._.apply(null,argume",
+    L"nts);}.apply({navigator:typeof window!=undefined?window.navigator:null",
+    L",document:typeof window!=undefined?window.document:null}, arguments);}",
     NULL
 };
 
