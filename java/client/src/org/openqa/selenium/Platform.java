@@ -124,6 +124,17 @@ public enum Platform {
       return "OS X 10.10";
     }
   },
+  
+  EL_CAPITAN("el capitan", "os x 10.11") {
+    @Override
+    public Platform family() {
+      return MAC;
+    }
+    @Override
+    public String toString() {
+      return "OS X 10.11";
+    }
+  },
 
   /**
    * Many platforms have UNIX traits, amongst them LINUX, Solaris and BSD.
