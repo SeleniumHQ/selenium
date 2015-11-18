@@ -99,9 +99,17 @@ SyntheticMouse.prototype.isElementShown = function(element) {
 
 
 SyntheticMouse.prototype.isElementClickable = function(element) {
+  // get the outermost ancestor of the element. This will be either the document
+  // or a shadow root.
+  var owner = element;
+  while (owner.parentNode) {
+    owner = owner.parentNode;
+  }
+
+  var tagName = element.tagName.toLowerCase();
+
   // Check to see if this is an option element. If it is, and the parent isn't a multiple
   // select, then check that select is clickable.
-  var tagName = element.tagName.toLowerCase();
   if ('option' == tagName) {
     var parent = element;
     while (parent.parentNode != null && parent.tagName.toLowerCase() != 'select') {
@@ -113,11 +121,25 @@ SyntheticMouse.prototype.isElementClickable = function(element) {
     }
   }
 
-  // get the outermost ancestor of the element. This will be either the document
-  // or a shadow root.
-  var owner = element;
-  while (owner.parentNode) {
-    owner = owner.parentNode;
+  // Check to see if this is an area element. If it is, find the image element that
+  // uses area's map, then check that image is clickable.
+  if ('area' == tagName) {
+    var map = element.parentElement;
+    if (map.tagName.toLowerCase() != 'map') {
+      throw new Error('the area is not within a map');
+    }
+    var mapName = map.getAttribute('name');
+    if (mapName == null) {
+      throw new Error ("area's parent map must have a name");
+    }
+    mapName = '#' + mapName.toLowerCase();
+    var images = owner.getElementsByTagName('img');
+    for (var i = 0; i < images.length; i++) {
+      var image = images[i];
+      if (image.useMap.toLowerCase() == mapName) {
+        return this.isElementClickable(image);
+      }
+    }
   }
 
   var rect = bot.dom.getClientRect(element);
