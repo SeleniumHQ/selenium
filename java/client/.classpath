@@ -44,6 +44,6 @@
 	<classpathentry kind="lib" path="/third-party/java/websocket/websocket-common-9.2.13.v20150730.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/jetty/jetty-io-9.2.13.v20150730.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/jetty/jetty-util-9.2.13.v20150730.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/testng/testng-6.9.6.jar" sourcepath="/third-party/java/testng/testng-6.9.6-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/testng/testng-6.9.9.jar" sourcepath="/third-party/java/testng/testng-6.9.9-sources.jar"/>
 	<classpathentry kind="output" path="build/production"/>
 </classpath>
