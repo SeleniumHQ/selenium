@@ -114,6 +114,11 @@ SyntheticMouse.prototype.isElementClickable = function(element) {
 
   var elementAtPoint = owner.elementFromPoint(coords.x, coords.y);
 
+  // element may be huge, so coordinates are outside the viewport
+  if (elementAtPoint === null) {
+    return;
+  }
+
   if (element == elementAtPoint) {
     return;
   }
