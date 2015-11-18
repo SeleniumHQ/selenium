@@ -68,6 +68,11 @@ WebElement.clickElement = function(respond, parameters) {
 
   var offset = Utils.getClickablePoint(unwrapped);
 
+  var inViewAfterScroll = Utils.scrollIntoView(
+      unwrapped,
+      (respond.session.elementScrollBehavior == 0),
+      new goog.math.Coordinate(offset.x, offset.y));
+
   Utils.installWindowCloseListener(respond);
   Utils.installClickListener(respond, WebLoadingListener);
 
