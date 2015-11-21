@@ -164,6 +164,7 @@ class FirefoxProfile(object):
         A zipped, base64 encoded string of profile directory
         for use with remote WebDriver JSON wire protocol
         """
+        self.update_preferences()
         fp = BytesIO()
         zipped = zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED)
         path_root = len(self.path) + 1  # account for trailing slash
