@@ -105,7 +105,10 @@ class Service(object):
         try:
             if self.process:
                 self.process.stdin.close()
-                self.process.send_signal(signal.SIGTERM)
+                if platform.system() == 'Windows':
+                    self.process.kill()
+                else:
+                    self.process.send_signal(signal.SIGTERM)
                 self.process.wait()
                 self.process = None
         except OSError:
