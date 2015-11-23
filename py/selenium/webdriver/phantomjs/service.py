@@ -17,7 +17,6 @@
 import platform
 import subprocess
 import time
-import signal
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
@@ -105,11 +104,10 @@ class Service(object):
         try:
             if self.process:
                 self.process.stdin.close()
-                if platform.system() == 'Windows':
-                    self.process.kill()
-                else:
-                    self.process.send_signal(signal.SIGTERM)
+                self.process.terminate()
                 self.process.wait()
+                if platform.system() != 'Windows':
+                    self.process.kill()
                 self.process = None
         except OSError:
             # kill may not be available under windows environment
