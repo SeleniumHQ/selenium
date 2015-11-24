@@ -128,6 +128,7 @@ namespace OpenQA.Selenium.IE
         private const string EnsureCleanSessionCapability = "ie.ensureCleanSession";
         private const string ForceShellWindowsApiCapability = "ie.forceShellWindowsApi";
         private const string ValidateCookieDocumentTypeCapability = "ie.validateCookieDocumentType";
+        private const string FileUploadDialogTimeoutCapability = "ie.fileUploadDialogTimeout";
 
         private bool ignoreProtectedModeSettings;
         private bool ignoreZoomLevel;
@@ -140,6 +141,7 @@ namespace OpenQA.Selenium.IE
         private bool ensureCleanSession;
         private bool validateCookieDocumentType = true;
         private TimeSpan browserAttachTimeout = TimeSpan.MinValue;
+        private TimeSpan fileUploadDialogTimeout = TimeSpan.MinValue;
         private string initialBrowserUrl = string.Empty;
         private string browserCommandLineArguments = string.Empty;
         private InternetExplorerElementScrollBehavior elementScrollBehavior = InternetExplorerElementScrollBehavior.Top;
@@ -251,6 +253,16 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
+        /// Gets or sets the amount of time the driver will attempt to look for the file selection
+        /// dialog when attempting to upload a file.
+        /// </summary>
+        public TimeSpan FileUploadDialogTimeout
+        {
+            get { return this.fileUploadDialogTimeout; }
+            set { this.fileUploadDialogTimeout = value; }
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating whether to force the use of the Windows CreateProcess API
         /// when launching Internet Explorer. The default value is <see langword="false"/>.
         /// </summary>
@@ -359,7 +371,8 @@ namespace OpenQA.Selenium.IE
                 capabilityName == UsePerProcessProxyCapability ||
                 capabilityName == EnsureCleanSessionCapability ||
                 capabilityName == ValidateCookieDocumentTypeCapability ||
-                capabilityName == CapabilityType.PageLoadStrategy)
+                capabilityName == CapabilityType.PageLoadStrategy ||
+                capabilityName == FileUploadDialogTimeoutCapability)
             {
                 string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use that instead.", capabilityName);
                 throw new ArgumentException(message, "capabilityName");
@@ -447,6 +460,11 @@ namespace OpenQA.Selenium.IE
             if (this.browserAttachTimeout != TimeSpan.MinValue)
             {
                 capabilities.SetCapability(BrowserAttachTimeoutCapability, Convert.ToInt32(this.browserAttachTimeout.TotalMilliseconds));
+            }
+
+            if (this.fileUploadDialogTimeout != TimeSpan.MinValue)
+            {
+                capabilities.SetCapability(FileUploadDialogTimeoutCapability, Convert.ToInt32(this.fileUploadDialogTimeout.TotalMilliseconds));
             }
 
             if (this.forceCreateProcessApi)
