@@ -30,7 +30,8 @@ class IEServer : public Server {
            const std::string& log_level,
            const std::string& log_file,
            const std::string& version,
-           const std::string& driver_implementation);
+           const std::string& driver_implementation,
+           const std::string& acl);
   virtual ~IEServer(void);
 
  protected:
