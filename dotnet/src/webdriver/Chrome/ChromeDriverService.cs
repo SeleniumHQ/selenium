@@ -35,6 +35,7 @@ namespace OpenQA.Selenium.Chrome
         private string logPath = string.Empty;
         private string urlPathPrefix = string.Empty;
         private string portServerAddress = string.Empty;
+        private string whitelistedIpAddresses = string.Empty;
         private int adbPort = -1;
         private bool enableVerboseLogging;
 
@@ -96,6 +97,17 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
+        /// Gets or sets the comma-delimited list of IP addresses that are approved to
+        /// connect to this instance of the Chrome driver. Defaults to an empty string,
+        /// which means only the local loopback address can connect.
+        /// </summary>
+        public string WhitelistedIPAddresses
+        {
+            get { return this.whitelistedIpAddresses; }
+            set { this.whitelistedIpAddresses = value; }
+        }
+
+        /// <summary>
         /// Gets the command-line arguments for the driver service.
         /// </summary>
         protected override string CommandLineArguments
@@ -131,6 +143,11 @@ namespace OpenQA.Selenium.Chrome
                 if (!string.IsNullOrEmpty(this.portServerAddress))
                 {
                     argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --port-server={0}", this.portServerAddress);
+                }
+
+                if (!string.IsNullOrEmpty(this.whitelistedIpAddresses))
+                {
+                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -whitelisted-ips={0}", this.whitelistedIpAddresses));
                 }
 
                 return argsBuilder.ToString();

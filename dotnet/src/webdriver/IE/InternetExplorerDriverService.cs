@@ -38,6 +38,7 @@ namespace OpenQA.Selenium.IE
         private string host = string.Empty;
         private string logFile = string.Empty;
         private string libraryExtractionPath = string.Empty;
+        private string whitelistedIpAddresses = string.Empty;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InternetExplorerDriverService"/> class.
@@ -102,6 +103,17 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
+        /// Gets or sets the comma-delimited list of IP addresses that are approved to
+        /// connect to this instance of the IEDriverServer. Defaults to an empty string,
+        /// which means only the local loopback address can connect.
+        /// </summary>
+        public string WhitelistedIPAddresses
+        {
+            get { return this.whitelistedIpAddresses; }
+            set { this.whitelistedIpAddresses = value; }
+        }
+
+        /// <summary>
         /// Gets the command-line arguments for the driver service.
         /// </summary>
         protected override string CommandLineArguments
@@ -132,6 +144,11 @@ namespace OpenQA.Selenium.IE
                 if (this.engineImplementation != InternetExplorerDriverEngine.Legacy)
                 {
                     argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -implementation={0}", this.engineImplementation.ToString().ToUpperInvariant()));
+                }
+
+                if (!string.IsNullOrEmpty(this.whitelistedIpAddresses))
+                {
+                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -whitelisted-ips={0}", this.whitelistedIpAddresses));
                 }
 
                 if (this.SuppressInitialDiagnosticInformation)
