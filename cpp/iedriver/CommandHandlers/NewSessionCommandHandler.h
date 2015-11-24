@@ -69,6 +69,11 @@ class NewSessionCommandHandler : public IECommandHandler {
       Json::Value validate_cookie_document_type = this->GetCapability(it->second, VALIDATE_COOKIE_DOCUMENT_TYPE_CAPABILITY, Json::booleanValue, true);
       mutable_executor.set_validate_cookie_document_type(validate_cookie_document_type.asBool());
 
+      Json::Value file_upload_dialog_timeout = this->GetCapability(it->second, FILE_UPLOAD_DIALOG_TIMEOUT_CAPABILITY, Json::intValue, 0);
+      if (file_upload_dialog_timeout.asInt() > 0) {
+        mutable_executor.set_file_upload_dialog_timeout(file_upload_dialog_timeout.asInt());
+      }
+
       Json::Value unexpected_alert_behavior = this->GetCapability(it->second, UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY, Json::stringValue, DISMISS_UNEXPECTED_ALERTS);
       mutable_executor.set_unexpected_alert_behavior(this->GetUnexpectedAlertBehaviorValue(unexpected_alert_behavior.asString()));
       Json::Value page_load_strategy = this->GetCapability(it->second, PAGE_LOAD_STRATEGY_CAPABILITY, Json::stringValue, NORMAL_PAGE_LOAD_STRATEGY);

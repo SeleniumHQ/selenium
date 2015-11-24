@@ -187,6 +187,13 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
     this->page_load_strategy_ = page_load_strategy;
   }
 
+  int file_upload_dialog_timeout(void) const {
+    return this->file_upload_dialog_timeout_;
+  }
+  void set_file_upload_dialog_timeout(const int file_upload_dialog_timeout) {
+    this->file_upload_dialog_timeout_ = file_upload_dialog_timeout;
+  }
+
   ElementFinder element_finder(void) const { return this->element_finder_; }
   InputManager* input_manager(void) const { return this->input_manager_; }
   ProxyManager* proxy_manager(void) const { return this->proxy_manager_; }
@@ -238,6 +245,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   std::string unexpected_alert_behavior_;
   bool validate_cookie_document_type_;
   std::string page_load_strategy_;
+  int file_upload_dialog_timeout_;
 
   Command current_command_;
   std::string serialized_response_;

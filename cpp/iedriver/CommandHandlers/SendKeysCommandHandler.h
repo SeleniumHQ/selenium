@@ -40,6 +40,7 @@ class SendKeysCommandHandler : public IECommandHandler {
     HWND main;
     HWND hwnd;
     DWORD ieProcId;
+    DWORD dialogTimeout;
     const wchar_t* text;
   };
 
@@ -103,10 +104,24 @@ class SendKeysCommandHandler : public IECommandHandler {
         bool is_file_element = (file != NULL) ||
                                (input != NULL && element_type == L"file");
         if (is_file_element) {
-          std::wstring keys = L"";
+          std::string keys = "";
           for (unsigned int i = 0; i < key_array.size(); ++i ) {
             std::string key(key_array[i].asString());
-            keys.append(StringUtilities::ToWString(key));
+            keys.append(key);
+          }
+
+          std::wstring full_keys = StringUtilities::ToWString(keys);
+
+          // Key sequence should be a path and file name. Check
+          // to see that the file exists before invoking the file
+          // selection dialog. Note that we also error if the file
+          // path passed in is valid, but is a directory instead of
+          // a file.
+          DWORD file_attributes = ::GetFileAttributes(full_keys.c_str());
+          if (file_attributes == INVALID_FILE_ATTRIBUTES ||
+              (file_attributes & FILE_ATTRIBUTE_DIRECTORY)) {
+            response->SetErrorResponse(EUNHANDLEDERROR, "Attempting to upload file '" + keys + "' which does not exist.");
+            return;
           }
 
           DWORD ie_process_id;
@@ -115,8 +130,9 @@ class SendKeysCommandHandler : public IECommandHandler {
           FileNameData key_data;
           key_data.main = top_level_window_handle;
           key_data.hwnd = window_handle;
-          key_data.text = keys.c_str();
+          key_data.text = full_keys.c_str();
           key_data.ieProcId = ie_process_id;
+          key_data.dialogTimeout = executor.file_upload_dialog_timeout();
 
           unsigned int thread_id;
           HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL,
@@ -126,6 +142,7 @@ class SendKeysCommandHandler : public IECommandHandler {
                                                           0,
                                                           &thread_id));
 
+          LOG(DEBUG) << "Clicking upload button and starting to handle file selection dialog";
           element->click();
           // We're now blocked until the dialog closes.
           ::CloseHandle(thread_handle);
@@ -175,12 +192,13 @@ class SendKeysCommandHandler : public IECommandHandler {
     HWND ie_main_window_handle = data->main;
     HWND dialog_window_handle = ::GetLastActivePopup(ie_main_window_handle);
 
-    int max_wait = 10;
-    while ((dialog_window_handle == ie_main_window_handle) && --max_wait) {
+    int max_retries = data->dialogTimeout / 100;
+    while ((dialog_window_handle == ie_main_window_handle) && --max_retries) {
       ::Sleep(100);
       dialog_window_handle = ::GetLastActivePopup(ie_main_window_handle);
     }
 
+    int max_fallback_retries = 50;
     if (!dialog_window_handle ||
         (dialog_window_handle == ie_main_window_handle)) {
       LOG(WARN) << "No dialog directly owned by the top-level window";
@@ -188,8 +206,8 @@ class SendKeysCommandHandler : public IECommandHandler {
       // Look for a dialog belonging to the same process as
       // the IE server window. This isn't perfect, but it's
       // all we have for now.
-      max_wait = 50;
-      while ((dialog_window_handle == ie_main_window_handle) && --max_wait) {
+      max_fallback_retries = 50;
+      while ((dialog_window_handle == ie_main_window_handle) && --max_fallback_retries) {
         ::Sleep(100);
         ProcessWindowInfo process_win_info;
         process_win_info.dwProcessId = data->ieProcId;
@@ -225,6 +243,7 @@ class SendKeysCommandHandler : public IECommandHandler {
 
     if (edit_field_window_handle) {
       // Attempt to set the value, looping until we succeed.
+      LOG(DEBUG) << "Found edit control on file selection dialog";
       const wchar_t* filename = value;
       size_t expected = wcslen(filename);
       size_t curr = 0;
@@ -239,21 +258,37 @@ class SendKeysCommandHandler : public IECommandHandler {
         curr = ::SendMessage(edit_field_window_handle, WM_GETTEXTLENGTH, 0, 0);
       }
 
+      if (expected != curr) {
+        LOG(WARN) << "Did not send the expected number of characters to the "
+                  << "file name control. Expected: " << expected << ", "
+                  << "Actual: " << curr;
+      }
+
       max_wait = 50;
       bool triedToDismiss = false;
       for (int i = 0; i < max_wait; i++) {
-        HWND open_window_handle = ::GetDlgItem(dialog_window_handle, IDOK);
-        if (open_window_handle) {
+        HWND open_button_window_handle = ::GetDlgItem(dialog_window_handle,
+                                                      IDOK);
+        if (open_button_window_handle) {
           LRESULT total = 0;
-          total += ::SendMessage(open_window_handle, WM_LBUTTONDOWN, 0, 0);
-          total += ::SendMessage(open_window_handle, WM_LBUTTONUP, 0, 0);
+          total += ::SendMessage(open_button_window_handle,
+                                 WM_LBUTTONDOWN,
+                                 0,
+                                 0);
+          total += ::SendMessage(open_button_window_handle,
+                                 WM_LBUTTONUP,
+                                 0, 
+                                 0);
 
+          // SendMessage should return zero for those messages if properly
+          // processed.
           if (total == 0) {
             triedToDismiss = true;
             // Sometimes IE10 doesn't dismiss this dialog after the messages
             // are received, even though the messages were processed
             // successfully.  If not, try again, just in case.
-            if (!IsWindow(dialog_window_handle)) {
+            if (!::IsWindow(dialog_window_handle)) {
+              LOG(DEBUG) << "Dialog successfully dismissed";
               return true;
             }
           }
@@ -261,6 +296,7 @@ class SendKeysCommandHandler : public IECommandHandler {
           wait(200);
         } else if (triedToDismiss) {
           // Probably just a slow close
+          LOG(DEBUG) << "Did not find OK button, but did previously. Assume dialog dismiss worked.";
           return true;
         }
       }

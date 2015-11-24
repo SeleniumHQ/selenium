@@ -127,6 +127,7 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->page_load_timeout_ = -1;
   this->is_waiting_ = false;
   this->page_load_strategy_ = "normal";
+  this->file_upload_dialog_timeout_ = 1000;
 
   this->input_manager_ = new InputManager();
   this->input_manager_->Initialize(&this->managed_elements_);

@@ -9,6 +9,19 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.48.0.3
+=========
+ * Updates to JavaScript automation atoms.
+ * Modifications to file upload functionality. Added additional logging
+   to help diagnose issues where the file selection dialog is not closed
+   by the driver. Also added a new capability, ie.fileUploadDialogTimeout
+   to allow users to customize the amount of time the driver waits for
+   the file selection dialog before giving up. It defaults to one second.
+   Finally, the driver now checks that the file exists before sending the
+   file name to the file selection dialog. If the file does not exist,
+   the sendKeys method will throw an exception explicitly stating that
+   the file does not exist.
+
 v2.48.0.2
 =========
  * Updates to JavaScript automation atoms.
