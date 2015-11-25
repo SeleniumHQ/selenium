@@ -657,7 +657,14 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
         errorMessage = "Could not start a new session. Possible causes are " +
             "invalid address of the remote server or browser start-up failure.";
       }
-      throw new UnreachableBrowserException(errorMessage, e);
+      UnreachableBrowserException ube = new UnreachableBrowserException(errorMessage, e);
+      if (getSessionId() != null) {
+        ube.addInfo(WebDriverException.SESSION_ID, getSessionId().toString());
+      }
+      if (getCapabilities() != null) {
+        ube.addInfo("Capabilities", getCapabilities().toString());
+      }
+      throw ube;
     } finally {
       Thread.currentThread().setName(currentName);
     }
