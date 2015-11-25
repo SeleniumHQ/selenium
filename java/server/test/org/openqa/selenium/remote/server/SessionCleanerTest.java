@@ -116,7 +116,7 @@ public class SessionCleanerTest {
     assertEquals(2, defaultDriverSessions.getSessions().size());
     SessionCleaner sessionCleaner = new TestSessionCleaner(defaultDriverSessions, log, 10);
     sessionCleaner.start();
-    waitForAllSessionsToExpire(11);
+    waitForAllSessionsToExpire(20);
     synchronized (sessionCleaner) {
       sessionCleaner.wait();
     }
