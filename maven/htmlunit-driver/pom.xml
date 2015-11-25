@@ -23,14 +23,14 @@
             <version>2.18</version>
             <exclusions>
                 <exclusion>
-                  <groupId>commons-collection</groupId>
-                  <artifactId>commons-collection</artifactId>
+                  <groupId>commons-collections</groupId>
+                  <artifactId>commons-collections</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>commons-collection</groupId>
-            <artifactId>commons-collection</artifactId>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
             <version>3.2.2</version>
         </dependency>
         <dependency>
