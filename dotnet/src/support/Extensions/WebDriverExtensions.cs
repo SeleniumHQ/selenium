@@ -91,7 +91,7 @@ namespace OpenQA.Selenium.Support.Extensions
             object value = executor.ExecuteScript(script, args);
             if (value == null)
             {
-                if (type.IsValueType)
+                if (type.IsValueType && (Nullable.GetUnderlyingType(type) == null))
                 {
                     throw new WebDriverException("Script returned null, but desired type is a value type");
                 }

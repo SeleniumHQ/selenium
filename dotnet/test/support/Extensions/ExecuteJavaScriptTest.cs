@@ -113,6 +113,17 @@ namespace OpenQA.Selenium.Support.Extensions
         }
 
         [Test]
+        public void ShouldNotThrowWhenNullIsReturnedForNullableValueType()
+        {
+            Expect.Once.On(driver)
+                .Method("ExecuteScript")
+                .With(JavaScript, JavaScriptParameters)
+                .Will(Return.Value(null));
+
+            Assert.That(() => driver.ExecuteJavaScript<int?>(JavaScript, JavaScriptParameters), Throws.Nothing);
+        }
+
+        [Test]
         public void ShouldThrowWhenNullIsReturnedForValueType()
         {
             Expect.Once.On(driver)
