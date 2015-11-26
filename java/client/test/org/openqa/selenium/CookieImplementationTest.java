@@ -438,7 +438,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertNotNull(retrieved);
   }
 
-  @Ignore(reason = "Needs jetty upgrade (servlet api 3)")
+  @Ignore(SAFARI)
   @Test
   public void testRetainsHttpOnlyFlag() {
     Cookie addedCookie =
