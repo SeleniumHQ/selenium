@@ -17,9 +17,9 @@
 
 /**
  * @fileoverview An example WebDriver script using Harmony generator functions.
- * This requires node v0.11 or newer.
+ * This requires node v0.12 or newer.
  *
- * Usage: node --harmony-generators \
+ * Usage: node --harmony \
  *     selenium-webdriver/example/google_search_generator.js
  */
 
