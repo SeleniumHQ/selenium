@@ -5,7 +5,6 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.Rectangle;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
@@ -17,14 +16,12 @@ import java.util.List;
 public class WrappedWebElement implements WebElement {
 
   private final By locator;
-  private final WebDriver driver;
   private final WebElementRetriever retriever;
   private WebElement element;
 
   public WrappedWebElement(By locator, WebElementRetriever retriever) {
     this.locator = locator;
     this.retriever = retriever;
-    this.driver = retriever.getDriver();
   }
 
   @Override

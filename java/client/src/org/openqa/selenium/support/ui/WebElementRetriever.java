@@ -6,6 +6,12 @@ import org.openqa.selenium.WebElement;
 
 public interface WebElementRetriever {
 
+  /**
+   * @param locator
+   * @return the found element
+   * @throws org.openqa.selenium.NoSuchElementException if the element cannot be found
+   */
   WebElement findElement(By locator);
+
   WebDriver getDriver();
 }
