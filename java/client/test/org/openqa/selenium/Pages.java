@@ -78,6 +78,7 @@ public class Pages {
   public String xhtmlFormPage;
   public String xhtmlTestPage;
   public String noIframesPage;
+  public String iframesTreePage;
 
   public Pages(AppServer appServer) {
     ajaxyPage = appServer.whereIs("ajaxy_page.html");
@@ -138,5 +139,6 @@ public class Pages {
     veryLargeCanvas = appServer.whereIs("veryLargeCanvas.html");
     xhtmlTestPage = appServer.whereIs("xhtmlTest.html");
     noIframesPage = appServer.whereIs("pageWithNoIframes.html");
+    iframesTreePage = appServer.whereIs("iframe0.html");
   }
 }

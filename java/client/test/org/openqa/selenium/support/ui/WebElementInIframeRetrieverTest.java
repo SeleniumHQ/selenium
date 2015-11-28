@@ -25,17 +25,41 @@ public class WebElementInIframeRetrieverTest extends JUnit4TestBase {
     JUnit4TestBase.removeDriver();
   }
 
-  @Test
-  public void happyPath() {
-    driver.get(pages.iframePage);
-    WebElement element = sut.findElement(By.id(getClass().getSimpleName()));
-
-    assertThat(element, notNullValue());
-  }
-
   @Test(expected = NoSuchElementException.class)
   public void noIframesAndElementIsNotPresent() {
     driver.get(pages.noIframesPage);
     sut.findElement(By.id("not-present"));
+  }
+
+  @Test
+  public void noIframesAndElementIsPresent() {
+    driver.get(pages.noIframesPage);
+    WebElement btn = sut.findElement(By.id("btn"));
+
+    assertThat(btn, notNullValue());
+  }
+
+  @Test
+  public void foundInRootFrame() {
+    driver.get(pages.iframesTreePage);
+    WebElement btn = sut.findElement(By.id("element-in-root-iframe"));
+
+    assertThat(btn, notNullValue());
+  }
+
+  @Test
+  public void foundInLastIframe() {
+    driver.get(pages.iframesTreePage);
+    WebElement btn = sut.findElement(By.id("element-in-iframe22"));
+
+    assertThat(btn, notNullValue());
+  }
+
+  @Test
+  public void foundInMiddleIframe() {
+    driver.get(pages.iframesTreePage);
+    WebElement btn = sut.findElement(By.id("element-in-iframe12"));
+
+    assertThat(btn, notNullValue());
   }
 }
