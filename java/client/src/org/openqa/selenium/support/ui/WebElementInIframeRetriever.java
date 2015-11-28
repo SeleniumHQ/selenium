@@ -11,7 +11,11 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 /**
- * Not caching: each time starts scanning frames and all from scratch.
+ * Traverses the iframes tree and returns the *first* element found, matching the given locator.
+ *
+ * If there are two iframes containing the same element, the one in the outer iframe will be returned.
+ *
+ * Not caching: each call to {@link #findElement(By)} triggers a fresh scan of the frames.
  */
 public class WebElementInIframeRetriever implements WebElementRetriever {
 
