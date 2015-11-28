@@ -41,29 +41,27 @@ public class WebElementInIframeRetriever implements WebElementRetriever {
   private Optional<WebElement> searchInIframesRecursively(By by) {
     List<WebElement> iframes = driver.findElements(By.tagName("iframe"));
 
-    // base case: no nested iframes
-    if (iframes.isEmpty()) {
-      try {
-        return Optional.of(driver.findElement(by));
-      } catch (NoSuchElementException e) {
-        return Optional.empty();
-      }
-    }
-
     for (WebElement iframe : iframes) {
       try {
         driver.switchTo().frame(iframe);
       } catch (NoSuchFrameException e) {
-        logger.info(e.getMessage() + " => skipping iframe");
-        continue; // some
+        logger.info("skipping iframe: " + e.getMessage());
+        continue;
       }
-      Optional<WebElement> found = searchInIframesRecursively(by);
-      if (found.isPresent()) {
-        return found;
+
+      try {
+        return Optional.of(driver.findElement(by));
+      } catch (NoSuchElementException e) {
+        Optional<WebElement> optional = searchInIframesRecursively(by);
+        if (optional.isPresent()) {
+          return optional;
+        }
+
+        driver.switchTo().parentFrame();
       }
-      driver.switchTo().parentFrame();
     }
 
+    // base case: no nested iframes
     return Optional.empty();
   }
 
