@@ -22,7 +22,7 @@ require_relative 'spec_helper'
 not_compliant_on :driver => :remote, :browser => :marionette do
   describe "Selenium::WebDriver::TargetLocator" do
     after do
-      reset_driver!
+      ensure_single_window
     end
 
     let(:wait) { Selenium::WebDriver::Wait.new }
@@ -128,60 +128,68 @@ not_compliant_on :driver => :remote, :browser => :marionette do
 
       # Marionette BUG: Automatically switches browsing context to new window when it opens.
       not_compliant_on :driver => :marionette do
-        it "should close current window when more than two windows exist" do
-          driver.navigate.to url_for("xhtmlTest.html")
-          driver.find_element(:link, "Create a new anonymous window").click
-          driver.find_element(:link, "Open new window").click
-
-          wait.until { driver.window_handles.size == 3 }
-
-          driver.switch_to.window(driver.window_handle) {driver.close}
-          expect(driver.window_handles.size).to eq 2
-        end
-
-        it "should close another window when more than two windows exist" do
-          driver.navigate.to url_for("xhtmlTest.html")
-          driver.find_element(:link, "Create a new anonymous window").click
-          driver.find_element(:link, "Open new window").click
-
-          wait.until { driver.window_handles.size == 3 }
-
-          window_to_close = driver.window_handles.last
-
-          driver.switch_to.window(window_to_close) { driver.close }
-          expect(driver.window_handles.size).to eq 2
-        end
-
-        it "should iterate over open windows when current window is not closed" do
-          driver.navigate.to url_for("xhtmlTest.html")
-          driver.find_element(:link, "Create a new anonymous window").click
-          driver.find_element(:link, "Open new window").click
-
-          wait.until { driver.window_handles.size == 3 }
-
-          matching_window = driver.window_handles.find do |wh|
-            driver.switch_to.window(wh) { driver.title == "We Arrive Here" }
+        context "with more than two windows" do
+          before(:each) do
+            compliant_on :browser => :chrome do
+              reset_driver!
+            end
           end
 
-          driver.switch_to.window(matching_window)
-          expect(driver.title).to eq("We Arrive Here")
-        end
+          it "should close current window when more than two windows exist" do
+            driver.navigate.to url_for("xhtmlTest.html")
+            driver.find_element(:link, "Create a new anonymous window").click
+            driver.find_element(:link, "Open new window").click
 
-        it "should iterate over open windows when current window is closed" do
-          driver.navigate.to url_for("xhtmlTest.html")
-          driver.find_element(:link, "Create a new anonymous window").click
-          driver.find_element(:link, "Open new window").click
+            wait.until { driver.window_handles.size == 3 }
 
-          wait.until { driver.window_handles.size == 3 }
-
-          driver.close
-
-          matching_window = driver.window_handles.find do |wh|
-            driver.switch_to.window(wh) { driver.title == "We Arrive Here" }
+            driver.switch_to.window(driver.window_handle) {driver.close}
+            expect(driver.window_handles.size).to eq 2
           end
 
-          driver.switch_to.window(matching_window)
-          expect(driver.title).to eq("We Arrive Here")
+          it "should close another window when more than two windows exist" do
+            driver.navigate.to url_for("xhtmlTest.html")
+            driver.find_element(:link, "Create a new anonymous window").click
+            wait.until { driver.window_handles.size == 2 }
+            driver.find_element(:link, "Open new window").click
+            wait.until { driver.window_handles.size == 3 }
+
+            window_to_close = driver.window_handles.last
+
+            driver.switch_to.window(window_to_close) { driver.close }
+            expect(driver.window_handles.size).to eq 2
+          end
+
+          it "should iterate over open windows when current window is not closed" do
+            driver.navigate.to url_for("xhtmlTest.html")
+            driver.find_element(:link, "Create a new anonymous window").click
+            driver.find_element(:link, "Open new window").click
+
+            wait.until { driver.window_handles.size == 3 }
+
+            matching_window = driver.window_handles.find do |wh|
+              driver.switch_to.window(wh) { driver.title == "We Arrive Here" }
+            end
+
+            driver.switch_to.window(matching_window)
+            expect(driver.title).to eq("We Arrive Here")
+          end
+
+          it "should iterate over open windows when current window is closed" do
+            driver.navigate.to url_for("xhtmlTest.html")
+            driver.find_element(:link, "Create a new anonymous window").click
+            driver.find_element(:link, "Open new window").click
+
+            wait.until { driver.window_handles.size == 3 }
+
+            driver.close
+
+            matching_window = driver.window_handles.find do |wh|
+              driver.switch_to.window(wh) { driver.title == "We Arrive Here" }
+            end
+
+            driver.switch_to.window(matching_window)
+            expect(driver.title).to eq("We Arrive Here")
+          end
         end
       end
 
