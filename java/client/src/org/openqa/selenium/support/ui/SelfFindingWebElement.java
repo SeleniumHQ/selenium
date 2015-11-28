@@ -12,19 +12,19 @@ import org.openqa.selenium.WebElement;
 import java.util.List;
 
 /**
- * To be used only when it is expected that the locator can find one and only one element.
+ * Should be used only when it is expected that the locator can find one and only one element.
  * <p/>
  * The first time that a method is called, the element is retrieved, and then the action is performed.
  * Any subsequent call will only perform the action on the element previously retrieved;
  * in case the action fails because the element is stale, another retrieval is performed, and the action is re-attempted.
  */
-public class WrappedWebElement implements WebElement {
+public class SelfFindingWebElement implements WebElement {
 
   private final By locator;
   private final WebElementRetriever retriever;
   private WebElement element;
 
-  public WrappedWebElement(By locator, WebElementRetriever retriever) {
+  public SelfFindingWebElement(By locator, WebElementRetriever retriever) {
     this.locator = locator;
     this.retriever = retriever;
   }

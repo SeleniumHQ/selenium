@@ -12,17 +12,17 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 @RunWith(MockitoJUnitRunner.class)
-public class WrappedWebElementTest {
+public class SelfFindingWebElementTest {
 
   @Mock private WebElementRetriever mockedRetriever;
   @Mock private WebElement mockedElement;
   @Mock private By mockedBy;
-  private WrappedWebElement sut;
+  private SelfFindingWebElement sut;
 
   @Before
   public void setUp() {
     given(mockedRetriever.findElement(mockedBy)).willReturn(mockedElement);
-    sut = new WrappedWebElement(mockedBy, mockedRetriever);
+    sut = new SelfFindingWebElement(mockedBy, mockedRetriever);
   }
 
   @Test
