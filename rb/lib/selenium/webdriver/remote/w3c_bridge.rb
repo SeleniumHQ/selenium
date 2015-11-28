@@ -574,10 +574,6 @@ module Selenium
           execute :getElementCssValue, :id => element, :property_name => prop
         end
 
-        def elementEquals(element, other)
-          element.ref == other.ref
-        end
-
         #
         # finding elements
         #
