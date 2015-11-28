@@ -31,255 +31,188 @@ public class WrappedWebElement implements WebElement {
 
   @Override
   public void click() {
-    if (!isFound()) {
-      findElement();
-      element.click();
-    } else {
-      try {
+    executeOperation(new WebElementOperation<Void>() {
+      @Override
+      public Void perform() {
         element.click();
-      } catch (StaleElementReferenceException e) {
-        findElement();
-        element.click();
+        return null;
       }
-    }
+    });
   }
 
   @Override
   public void submit() {
-    if (!isFound()) {
-      findElement();
-      element.submit();
-    } else {
-      try {
+    executeOperation(new WebElementOperation<Void>() {
+      @Override
+      public Void perform() {
         element.submit();
-      } catch (StaleElementReferenceException e) {
-        findElement();
-        element.submit();
+        return null;
       }
-    }
+    });
   }
 
   @Override
-  public void sendKeys(CharSequence... keysToSend) {
-    if (!isFound()) {
-      findElement();
-      element.sendKeys(keysToSend);
-    } else {
-      try {
+  public void sendKeys(final CharSequence... keysToSend) {
+    executeOperation(new WebElementOperation<Void>() {
+      @Override
+      public Void perform() {
         element.sendKeys(keysToSend);
-      } catch (StaleElementReferenceException e) {
-        findElement();
-        element.sendKeys(keysToSend);
+        return null;
       }
-    }
+    });
   }
 
   @Override
   public void clear() {
-    if (!isFound()) {
-      findElement();
-      element.clear();
-    } else {
-      try {
+    executeOperation(new WebElementOperation<Void>() {
+      @Override
+      public Void perform() {
         element.clear();
-      } catch (StaleElementReferenceException e) {
-        findElement();
-        element.clear();
+        return null;
       }
-    }
+    });
   }
 
   @Override
   public String getTagName() {
-    if (!isFound()) {
-      findElement();
-      return element.getTagName();
-    } else {
-      try {
-        return element.getTagName();
-      } catch (StaleElementReferenceException e) {
-        findElement();
+    return executeOperation(new WebElementOperation<String>() {
+      @Override
+      public String perform() {
         return element.getTagName();
       }
-    }
+    });
   }
 
   @Override
-  public String getAttribute(String name) {
-    if (!isFound()) {
-      findElement();
-      return element.getAttribute(name);
-    } else {
-      try {
-        return element.getAttribute(name);
-      } catch (StaleElementReferenceException e) {
-        findElement();
+  public String getAttribute(final String name) {
+    return executeOperation(new WebElementOperation<String>() {
+      @Override
+      public String perform() {
         return element.getAttribute(name);
       }
-    }
+    });
   }
 
   @Override
   public boolean isSelected() {
-    if (!isFound()) {
-      findElement();
-      return element.isSelected();
-    } else {
-      try {
-        return element.isSelected();
-      } catch (StaleElementReferenceException e) {
-        findElement();
+    return executeOperation(new WebElementOperation<Boolean>() {
+      @Override
+      public Boolean perform() {
         return element.isSelected();
       }
-    }
+    });
   }
 
   @Override
   public boolean isEnabled() {
-    if (!isFound()) {
-      findElement();
-      return element.isEnabled();
-    } else {
-      try {
-        return element.isEnabled();
-      } catch (StaleElementReferenceException e) {
-        findElement();
+    return executeOperation(new WebElementOperation<Boolean>() {
+      @Override
+      public Boolean perform() {
         return element.isEnabled();
       }
-    }
+    });
   }
 
   @Override
   public String getText() {
-    if (!isFound()) {
-      findElement();
-      return element.getText();
-    } else {
-      try {
-        return element.getText();
-      } catch (StaleElementReferenceException e) {
-        findElement();
+    return executeOperation(new WebElementOperation<String>() {
+      @Override
+      public String perform() {
         return element.getText();
       }
-    }
+    });
   }
 
   @Override
-  public List<WebElement> findElements(By by) {
-    if (!isFound()) {
-      findElement();
-      return element.findElements(by);
-    } else {
-      try {
-        return element.findElements(by);
-      } catch (StaleElementReferenceException e) {
-        findElement();
+  public List<WebElement> findElements(final By by) {
+    return executeOperation(new WebElementOperation<List<WebElement>>() {
+      @Override
+      public List<WebElement> perform() {
         return element.findElements(by);
       }
-    }
+    });
   }
 
   @Override
-  public WebElement findElement(By by) {
-    if (!isFound()) {
-      findElement();
-      return element.findElement(by);
-    } else {
-      try {
-        return element.findElement(by);
-      } catch (StaleElementReferenceException e) {
-        findElement();
+  public WebElement findElement(final By by) {
+    return executeOperation(new WebElementOperation<WebElement>() {
+      @Override
+      public WebElement perform() {
         return element.findElement(by);
       }
-    }
+    });
   }
 
   @Override
   public boolean isDisplayed() {
-    if (!isFound()) {
-      findElement();
-      return element.isDisplayed();
-    } else {
-      try {
-        return element.isDisplayed();
-      } catch (StaleElementReferenceException e) {
-        findElement();
+    return executeOperation(new WebElementOperation<Boolean>() {
+      @Override
+      public Boolean perform() {
         return element.isDisplayed();
       }
-    }
+    });
   }
 
   @Override
   public Point getLocation() {
-    if (!isFound()) {
-      findElement();
-      return element.getLocation();
-    } else {
-      try {
-        return element.getLocation();
-      } catch (StaleElementReferenceException e) {
-        findElement();
+    return executeOperation(new WebElementOperation<Point>() {
+      @Override
+      public Point perform() {
         return element.getLocation();
       }
-    }
+    });
   }
 
   @Override
   public Dimension getSize() {
-    if (!isFound()) {
-      findElement();
-      return element.getSize();
-    } else {
-      try {
-        return element.getSize();
-      } catch (StaleElementReferenceException e) {
-        findElement();
+    return executeOperation(new WebElementOperation<Dimension>() {
+      @Override
+      public Dimension perform() {
         return element.getSize();
       }
-    }
+    });
   }
 
   @Override
   public Rectangle getRect() {
-    if (!isFound()) {
-      findElement();
-      return element.getRect();
-    } else {
-      try {
-        return element.getRect();
-      } catch (StaleElementReferenceException e) {
-        findElement();
+    return executeOperation(new WebElementOperation<Rectangle>() {
+      @Override
+      public Rectangle perform() {
         return element.getRect();
       }
-    }
+    });
   }
 
   @Override
-  public String getCssValue(String propertyName) {
-    if (!isFound()) {
-      findElement();
-      return element.getCssValue(propertyName);
-    } else {
-      try {
-        return element.getCssValue(propertyName);
-      } catch (StaleElementReferenceException e) {
-        findElement();
+  public String getCssValue(final String propertyName) {
+    return executeOperation(new WebElementOperation<String>() {
+      @Override
+      public String perform() {
         return element.getCssValue(propertyName);
       }
-    }
+    });
   }
 
   @Override
-  public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
+  public <X> X getScreenshotAs(final OutputType<X> target) throws WebDriverException {
+    return executeOperation(new WebElementOperation<X>() {
+      @Override
+      public X perform() {
+        return element.getScreenshotAs(target);
+      }
+    });
+  }
+
+  private <T> T executeOperation(WebElementOperation<T> operation) {
     if (!isFound()) {
       findElement();
-      return element.getScreenshotAs(target);
+      return operation.perform();
     } else {
       try {
-        return element.getScreenshotAs(target);
+        return operation.perform();
       } catch (StaleElementReferenceException e) {
         findElement();
-        return element.getScreenshotAs(target);
+        return operation.perform();
       }
     }
   }
@@ -290,5 +223,9 @@ public class WrappedWebElement implements WebElement {
 
   private boolean isFound() {
     return element == null;
+  }
+
+  private interface WebElementOperation<T> {
+    T perform();
   }
 }
