@@ -27,9 +27,17 @@ module Selenium
         def initialize(opts = {})
           http_client = opts.delete(:http_client)
 
+          opts.delete(:marionette)
+          caps = opts.delete(:desired_capabilities) { Remote::W3CCapabilities.firefox }
+
           if opts.has_key?(:url)
             url = opts.delete(:url)
           else
+            Binary.path = caps[:firefox_binary] if caps[:firefox_binary]
+            if Firefox::Binary.version < 43
+              raise ArgumentError, "Firefox Version #{Firefox::Binary.version} does not support Marionette; Set firefox_binary in Capabilities to point to a supported binary"
+            end
+
             @service = Service.default_service(*extract_service_args(opts))
 
             if @service.instance_variable_get("@host") == "127.0.0.1"
@@ -41,7 +49,9 @@ module Selenium
             url = @service.uri
           end
 
-          caps = create_capabilities(opts)
+          unless opts.empty?
+            raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
+          end
 
           remote_opts = {
             :url                  => url,
@@ -70,16 +80,6 @@ module Selenium
         end
 
         private
-
-        def create_capabilities(opts)
-          caps = opts.delete(:desired_capabilities) { Remote::W3CCapabilities.firefox }
-
-          unless opts.empty?
-            raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
-          end
-
-          caps
-        end
 
         def extract_service_args(opts)
           args = []

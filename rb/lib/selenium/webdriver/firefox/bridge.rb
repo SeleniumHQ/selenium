@@ -32,6 +32,8 @@ module Selenium
 
           caps = opts.delete(:desired_capabilities) { Remote::Capabilities.firefox }
 
+          Binary.path = caps[:firefox_binary] if caps[:firefox_binary]
+
           @launcher = create_launcher(port, profile)
 
           unless opts.empty?
