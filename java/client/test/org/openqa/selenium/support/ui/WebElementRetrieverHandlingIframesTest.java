@@ -11,13 +11,13 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
-public class WebElementInIframeRetrieverTest extends JUnit4TestBase {
+public class WebElementRetrieverHandlingIframesTest extends JUnit4TestBase {
 
-  private WebElementInIframeRetriever sut;
+  private WebElementRetrieverHandlingIframes sut;
 
   @Before
   public void setup() {
-    sut = new WebElementInIframeRetriever(driver);
+    sut = new WebElementRetrieverHandlingIframes(driver);
   }
 
   @AfterClass

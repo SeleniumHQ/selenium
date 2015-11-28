@@ -17,13 +17,13 @@ import java.util.logging.Logger;
  *
  * Not caching: each call to {@link #findElement(By)} triggers a fresh scan of the frames.
  */
-public class WebElementInIframeRetriever implements WebElementRetriever {
+public class WebElementRetrieverHandlingIframes implements WebElementRetriever {
 
-  private static final Logger logger = Logger.getLogger(WebElementInIframeRetriever.class.getName());
+  private static final Logger logger = Logger.getLogger(WebElementRetrieverHandlingIframes.class.getName());
 
   private final WebDriver driver;
 
-  public WebElementInIframeRetriever(WebDriver driver) {
+  public WebElementRetrieverHandlingIframes(WebDriver driver) {
     this.driver = driver;
   }
 
