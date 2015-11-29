@@ -145,10 +145,6 @@ module Selenium
           execute :get, {}, :url => url
         end
 
-        def getCapabilities
-          W3CCapabilities.json_create execute(:getCapabilities)
-        end
-
         def setImplicitWaitTimeout(milliseconds)
           setTimeout('implicit', milliseconds)
         end
@@ -164,10 +160,6 @@ module Selenium
         #
         # alerts
         #
-
-        def getAlert
-          execute :getAlert
-        end
 
         def acceptAlert
           execute :acceptAlert
@@ -209,14 +201,6 @@ module Selenium
           executeScript("var source = document.documentElement.outerHTML;" +
                             "if (!source) { source = new XMLSerializer().serializeToString(document); }" +
                             "return source;")
-        end
-
-        def getVisible
-          execute :getVisible
-        end
-
-        def setVisible(bool)
-          execute :setVisible, {}, bool
         end
 
         def switchToWindow(name)
@@ -461,22 +445,14 @@ module Selenium
           sendKeysToElement(getActiveElement, keys)
         end
 
+        # TODO - Implement file verification
         def sendKeysToElement(element, keys)
           execute :elementSendKeys, {:id => element}, {:value => keys.join('').split(//)}
-        end
-
-        def upload(local_file)
-          unless File.file?(local_file)
-            raise Error::WebDriverError, "you may only upload files: #{local_file.inspect}"
-          end
-
-          execute :uploadFile, {}, :file => Zipper.zip_file(local_file)
         end
 
         def clearElement(element)
           execute :elementClear, :id => element
         end
-
 
         def submitElement(element)
           executeScript("var e = arguments[0].ownerDocument.createEvent('Event');" +
@@ -590,6 +566,7 @@ module Selenium
         def isElementDisplayed(element)
           execute :isElementDisplayed, :id => element
         end
+
         def getElementValueOfCssProperty(element, prop)
           execute :getElementCssValue, :id => element, :property_name => prop
         end
