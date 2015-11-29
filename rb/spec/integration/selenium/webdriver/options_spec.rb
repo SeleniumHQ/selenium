@@ -24,7 +24,7 @@ module Selenium
     describe Options do
 
       # Not supported in W3C Spec
-      not_compliant_on :browser => :marionette do
+      not_compliant_on :browser => [:marionette, :ie] do
         describe 'logs' do
           compliant_on :driver => :remote do
             # Phantomjs Returns har instead of driver
