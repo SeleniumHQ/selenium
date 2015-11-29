@@ -115,8 +115,6 @@ module Selenium
             DriverExtensions::HasSessionId,
             DriverExtensions::Rotatable,
             DriverExtensions::HasTouchScreen,
-            DriverExtensions::HasLocation,
-            DriverExtensions::HasNetworkConnection,
             DriverExtensions::HasRemoteStatus,
             DriverExtensions::HasWebStorage
           ]
@@ -367,21 +365,19 @@ module Selenium
         end
 
         def getLocation
-          obj = execute(:getLocation) || {} # android returns null
-          Location.new obj['latitude'], obj['longitude'], obj['altitude']
+          raise Error::WebDriverError::UnsupportedOperationError, 'The W3C standard does not currently support getting location'
         end
 
-        def setLocation(lat, lon, alt)
-          loc = {:latitude => lat, :longitude => lon, :altitude => alt}
-          execute :setLocation, {}, :location => loc
+        def setLocation(_lat, _lon, _alt)
+          raise Error::WebDriverError::UnsupportedOperationError, 'The W3C standard does not currently support setting location'
         end
 
         def getNetworkConnection
-          execute :getNetworkConnection
+          raise Error::WebDriverError::UnsupportedOperationError, 'The W3C standard does not currently support getting network connection'
         end
 
-        def setNetworkConnection(type)
-          execute :setNetworkConnection, {}, :parameters => {:type => type}
+        def setNetworkConnection(_type)
+          raise Error::WebDriverError::UnsupportedOperationError, 'The W3C standard does not currently support setting network connection'
         end
 
         #
