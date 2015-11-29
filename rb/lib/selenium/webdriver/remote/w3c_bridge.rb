@@ -274,14 +274,18 @@ module Selenium
           execute :getWindowHandle
         end
 
-        # TODO - These Commands might require checking for being
-        # current window before performing
         def setWindowSize(width, height, handle = :current)
+          unless handle == :current
+            raise Error::WebDriverError, 'Switch to desired window before changing its size'
+          end
           execute :setWindowSize, {}, {:width  => width,
                                    :height => height}
         end
 
         def maximizeWindow(handle = :current)
+          unless handle == :current
+            raise Error::WebDriverError, 'Switch to desired window before changing its size'
+          end
           execute :maximizeWindow
         end
 
@@ -290,19 +294,20 @@ module Selenium
         end
 
         def getWindowSize(handle = :current)
+          unless handle == :current
+            raise Error::WebDriverError, 'Switch to desired window before getting its size'
+          end
           data = execute :getWindowSize
 
           Dimension.new data['width'], data['height']
         end
 
-        def setWindowPosition(x, y, handle = :current)
-          execute :setWindowPosition, :x => x, :y => y
+        def setWindowPosition(_x, _y, _handle = nil)
+          raise Error::WebDriverError::UnsupportedOperationError, 'The W3C standard does not currently support setting the Window Position'
         end
 
-        def getWindowPosition(handle = :current)
-          data = execute :getWindowPosition
-
-          Point.new data['x'], data['y']
+        def getWindowPosition(_handle = nil)
+          raise Error::WebDriverError::UnsupportedOperationError, 'The W3C standard does not currently support getting the Window Position'
         end
 
         def getScreenshot
