@@ -69,6 +69,11 @@ module Selenium
           wait.until { driver.title }
         end
 
+        def wait_for_element(locator)
+          wait = Wait.new(:timeout => 25, :ignore => Error::NoSuchElementError)
+          wait.until { driver.find_element(locator) }
+        end
+
         def wait(timeout = 10)
           Wait.new(:timeout => timeout)
         end

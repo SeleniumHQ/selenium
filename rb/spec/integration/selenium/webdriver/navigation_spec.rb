@@ -20,7 +20,6 @@
 require_relative 'spec_helper'
 
 describe "Navigation" do
-  let(:wait) { Selenium::WebDriver::Wait.new :timeout => 10 }
 
   not_compliant_on :browser => :safari do
     it "should navigate back and forward" do
@@ -47,19 +46,18 @@ describe "Navigation" do
       expect(driver.current_url).to include(result_url)
       expect(driver.title).to eq(result_title)
     end
+  end
 
-    it "should refresh the page" do
-      changed_title = "Changed"
+  it "should refresh the page" do
+    changed_title = "Changed"
 
-      driver.navigate.to url_for("javascriptPage.html")
-      driver.find_element(:link_text, "Change the page title!").click
-      expect(driver.title).to eq(changed_title)
+    driver.navigate.to url_for("javascriptPage.html")
+    driver.find_element(:link_text, "Change the page title!").click
+    expect(driver.title).to eq(changed_title)
 
-      driver.navigate.refresh
-      wait.until { driver.title != changed_title }
+    driver.navigate.refresh
+    wait.until { driver.title != changed_title }
 
-      expect(driver.title).to eq("Testing Javascript")
-    end
+    expect(driver.title).to eq("Testing Javascript")
   end
 end
-

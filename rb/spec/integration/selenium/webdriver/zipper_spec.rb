@@ -21,6 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
+
     describe Zipper do
 
       #
@@ -79,7 +80,6 @@ module Selenium
           expect(File.read(File.join(unzipped, "link"))).to eq(file_content)
         end
       end
-
     end
   end
 end

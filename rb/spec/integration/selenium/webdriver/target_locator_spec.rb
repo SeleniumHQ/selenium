@@ -20,9 +20,7 @@
 require_relative 'spec_helper'
 
 describe "Selenium::WebDriver::TargetLocator" do
-  after do
-    ensure_single_window
-  end
+  after { ensure_single_window }
 
   let(:new_window) { driver.window_handles.find {|handle| handle != driver.window_handle} }
 
@@ -56,7 +54,7 @@ describe "Selenium::WebDriver::TargetLocator" do
                    {:driver => :remote, :browser => :marionette}) do
     it "should switch to parent frame" do
       # For some reason Marionette loses control of itself here unless reset. Unable to isolate
-      compliant_on :driver => :marionette do
+      compliant_on :browser => :marionette do
         reset_driver!
       end
 
@@ -129,9 +127,9 @@ describe "Selenium::WebDriver::TargetLocator" do
     end
 
     # Marionette BUG: Automatically switches browsing context to new window when it opens.
-    not_compliant_on :browser => :marionette do
+    not_compliant_on :browser => [:marionette, :ie] do
       context "with more than two windows" do
-        before(:each) do
+        before do
           compliant_on :browser => :chrome do
             reset_driver!
           end
@@ -229,8 +227,9 @@ describe "Selenium::WebDriver::TargetLocator" do
   end
 
   # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1850030
-  not_compliant_on :browser => [:iphone, :safari, :phantomjs, :edge] do
+  not_compliant_on :browser => [:iphone, :safari, :phantomjs] do
     describe "alerts" do
+
       it "allows the user to accept an alert" do
         driver.navigate.to url_for("alerts.html")
         driver.find_element(:id => "alert").click
@@ -241,7 +240,7 @@ describe "Selenium::WebDriver::TargetLocator" do
         expect(driver.title).to eq("Testing Alerts")
       end
 
-      not_compliant_on({:browser => :chrome, :platform => :macosx}) do
+      not_compliant_on :browser => :chrome, :platform => :macosx do
         it "allows the user to dismiss an alert" do
           driver.navigate.to url_for("alerts.html")
           driver.find_element(:id => "alert").click
@@ -300,15 +299,21 @@ describe "Selenium::WebDriver::TargetLocator" do
         end
       end
 
-      compliant_on :browser => [:firefox, :ie] do
+      not_compliant_on :browser => :marionette do
         it "raises an UnhandledAlertError if an alert has not been dealt with" do
           driver.navigate.to url_for("alerts.html")
           driver.find_element(:id => "alert").click
           wait_for_alert
 
-          expect { driver.title }.to raise_error(Selenium::WebDriver::Error::UnhandledAlertError, /cheese/)
+          expect { driver.title }.to raise_error(Selenium::WebDriver::Error::UnhandledAlertError)
 
-          expect(driver.title).to eq("Testing Alerts") # :chrome does not auto-dismiss the alert
+          not_compliant_on :browser => [:firefox, :ie] do
+            driver.switch_to.alert.accept
+          end
+
+          compliant_on :browser => :firefox do
+            reset_driver!
+          end
         end
       end
     end

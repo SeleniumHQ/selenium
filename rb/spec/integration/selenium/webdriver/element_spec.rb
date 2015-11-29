@@ -39,17 +39,18 @@ describe "Element" do
   not_compliant_on :browser => :marionette do
     it "should submit" do
       driver.navigate.to url_for("formPage.html")
-      wait(5).until {driver.find_elements(:id, "submitButton").size > 0}
+      wait_for_element(:id => "submitButton")
       driver.find_element(:id, "submitButton").submit
     end
   end
 
   it "should send string keys" do
     driver.navigate.to url_for("formPage.html")
+    wait_for_element(:id => "working")
     driver.find_element(:id, "working").send_keys("foo", "bar")
   end
 
-  not_compliant_on :browser => [:android, :iphone, :safari] do
+  not_compliant_on :browser => [:android, :iphone] do
     it "should send key presses" do
       driver.navigate.to url_for("javascriptPage.html")
       key_reporter = driver.find_element(:id, 'keyReporter')
@@ -59,12 +60,8 @@ describe "Element" do
     end
   end
 
-  # FIXME - Find alternate implementation for File Uploads
-  # TODO - Figure out if/how this works on Firefox/Chrome without Remote server
   # PhantomJS on windows issue: https://github.com/ariya/phantomjs/issues/10993
-  not_compliant_on({:browser => [:android, :iphone, :safari, :edge, :marionette]},
-                   {:browser => :phantomjs, :platform => [:windows, :linux]},
-                   {:driver => :marionette}) do
+  not_compliant_on :browser => [:android, :iphone, :safari, :edge, :marionette, :phantomjs] do
     it "should handle file uploads" do
       driver.navigate.to url_for("formPage.html")
 
@@ -90,15 +87,6 @@ describe "Element" do
     it "should return nil for non-existent attributes" do
       driver.navigate.to url_for("formPage.html")
       expect(driver.find_element(:id, "withText").attribute("nonexistent")).to be_nil
-    end
-  end
-
-  # Per W3C spec this should return Invalid Argument not Unknown Error, but there is no comparable error code
-  compliant_on :browser => :edge do
-    it "should return nil for non-existent attributes" do
-      driver.navigate.to url_for("formPage.html")
-      element = driver.find_element(:id, "withText")
-      expect {element.attribute("nonexistent")}.to raise_error(Selenium::WebDriver::Error::UnknownError)
     end
   end
 
@@ -167,7 +155,7 @@ describe "Element" do
     expect(size.height).to be > 0
   end
 
-  compliant_on :driver => [:ie, :chrome, :edge] do # Firefox w/native events: issue 1771
+  not_compliant_on :browser => [:safari, :marionette] do
     it "should drag and drop" do
       driver.navigate.to url_for("dragAndDropTest.html")
 
@@ -182,7 +170,7 @@ describe "Element" do
     end
   end
 
-  not_compliant_on :browser => [:android] do # android returns 'green'
+  not_compliant_on :browser => :android do # android returns 'green'
     it "should get css property" do
       driver.navigate.to url_for("javascriptPage.html")
       element = driver.find_element(:id, "green-parent")
@@ -205,17 +193,15 @@ describe "Element" do
     expect(body).to eql(xbody)
   end
 
-  not_compliant_on :browser => :phantomjs do
-    it "should know when two elements are not equal" do
-      driver.navigate.to url_for("simpleTest.html")
+  it "should know when two elements are not equal" do
+    driver.navigate.to url_for("simpleTest.html")
 
-      elements = driver.find_elements(:tag_name, 'p')
-      p1 = elements.fetch(0)
-      p2 = elements.fetch(1)
+    elements = driver.find_elements(:tag_name, 'p')
+    p1 = elements.fetch(0)
+    p2 = elements.fetch(1)
 
-      expect(p1).not_to eq(p2)
-      expect(p1).not_to eql(p2)
-    end
+    expect(p1).not_to eq(p2)
+    expect(p1).not_to eql(p2)
   end
 
   it "should return the same #hash for equal elements when found by Driver#find_element" do

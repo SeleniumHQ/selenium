@@ -21,21 +21,18 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
+
     describe Options do
 
-      # Not supported in W3C Spec
       not_compliant_on :browser => [:marionette, :ie] do
         describe 'logs' do
+
           compliant_on :driver => :remote do
-            # Phantomjs Returns har instead of driver
-            not_compliant_on :browser => :phantomjs do
-              it 'can fetch available log types' do
-                expect(driver.manage.logs.available_types).to include(:browser, :driver, :server, :client)
-              end
+            it 'can fetch remote log types' do
+              expect(driver.manage.logs.available_types).to include(:server, :client)
             end
           end
 
-          # Phantomjs Returns har instead of driver
           not_compliant_on :browser => :phantomjs do
             it 'can fetch available log types' do
               expect(driver.manage.logs.available_types).to include(:browser, :driver)
@@ -66,8 +63,9 @@ module Selenium
         end
       end
 
-      not_compliant_on({:browser => [:ie, :marionette]}) do
+      not_compliant_on :browser => :marionette do
         describe "cookie management" do
+
           it "should get all" do
             driver.navigate.to url_for("xhtmlTest.html")
             driver.manage.add_cookie :name => "foo", :value => "bar"
@@ -101,8 +99,7 @@ module Selenium
           end
 
           # Marionette BUG - Failed to convert expiry to Date
-          not_compliant_on({:browser => [:ie, :android, :iphone, :safari, :marionette]},
-                           {:driver => :marionette}) do
+          not_compliant_on :browser => [:android, :iphone, :safari, :marionette] do
             it "should use DateTime for expires" do
               driver.navigate.to url_for("xhtmlTest.html")
 

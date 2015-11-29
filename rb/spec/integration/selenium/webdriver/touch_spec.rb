@@ -20,7 +20,9 @@
 require_relative 'spec_helper'
 
 module Selenium::WebDriver::DriverExtensions
+
   describe HasTouchScreen do
+
     compliant_on :browser => :android do
       context "flick" do
         before {

@@ -23,9 +23,9 @@ module Selenium
   module WebDriver
 
     # Marionette BUG - Interactions Not Supported
-    not_compliant_on({:browser => [:chrome, :android, :iphone, :safari, :marionette]},
-                     {:driver => :marionette}) do
+    not_compliant_on :browser => [:android, :iphone, :safari, :marionette] do
       describe Keyboard do
+
         it "sends keys to the active element" do
           driver.navigate.to url_for("bodyTypingTest.html")
 

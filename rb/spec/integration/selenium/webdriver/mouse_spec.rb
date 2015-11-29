@@ -22,11 +22,10 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
 
-    describe Mouse do
+    # Marionette BUG - Interactions Not Supported
+    not_compliant_on :browser => [:android, :iphone, :safari, :marionette] do
+      describe Mouse do
 
-      # Marionette BUG - Interactions Not Supported
-      not_compliant_on({:browser => [:android, :iphone, :safari, :marionette]},
-                       {:driver => :marionette}) do
         it "clicks an element" do
           driver.navigate.to url_for("formPage.html")
           driver.mouse.click driver.find_element(:id, "imageButton")
@@ -76,7 +75,6 @@ module Selenium
           end
         end
       end
-
     end
   end
 end

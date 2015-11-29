@@ -20,6 +20,7 @@
 require_relative 'spec_helper'
 
 module Selenium::WebDriver::DriverExtensions
+
   describe HasWebStorage do
 
     compliant_on :browser => [:chrome, :marionette] do
