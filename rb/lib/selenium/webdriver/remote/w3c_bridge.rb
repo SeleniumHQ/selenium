@@ -567,19 +567,18 @@ module Selenium
         end
 
         def getElementLocation(element)
-          data = execute :getElementLocation, :id => element
+          data = execute :getElementRect, :id => element
 
           Point.new data['x'], data['y']
         end
 
         def getElementLocationOnceScrolledIntoView(element)
-          data = execute :getElementLocationOnceScrolledIntoView, :id => element
-
-          Point.new data['x'], data['y']
+          sendKeysToElement(element, [''])
+          getElementLocation(element)
         end
 
         def getElementSize(element)
-          data = execute :getElementSize, :id => element
+          data = execute :getElementRect, :id => element
 
           Dimension.new data['width'], data['height']
         end

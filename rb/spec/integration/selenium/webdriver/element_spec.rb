@@ -141,38 +141,30 @@ describe "Element" do
     expect(driver.find_element(:class, "header")).to be_displayed
   end
 
-  # Location not currently supported in Spec, but should be?
-  not_compliant_on :browser => :marionette do
-    it "should get location" do
-      driver.navigate.to url_for("xhtmlTest.html")
-      loc = driver.find_element(:class, "header").location
+  it "should get location" do
+    driver.navigate.to url_for("xhtmlTest.html")
+    loc = driver.find_element(:class, "header").location
+
+    expect(loc.x).to be >= 1
+    expect(loc.y).to be >= 1
+  end
+
+  not_compliant_on :browser => :iphone do
+    it "should get location once scrolled into view" do
+      driver.navigate.to url_for("javascriptPage.html")
+      loc = driver.find_element(:id, 'keyUp').location_once_scrolled_into_view
 
       expect(loc.x).to be >= 1
-      expect(loc.y).to be >= 1
-    end
-
-    not_compliant_on :browser => [:iphone] do
-      it "should get location once scrolled into view" do
-        driver.navigate.to url_for("javascriptPage.html")
-        loc = driver.find_element(:id, 'keyUp').location_once_scrolled_into_view
-
-        expect(loc.x).to be >= 1
-        expect(loc.y).to be >= 0 # can be 0 if scrolled to the top
-      end
+      expect(loc.y).to be >= 0 # can be 0 if scrolled to the top
     end
   end
 
-  # Marionette BUG:
-  # GET /session/f7082a32-e685-2843-ad2c-5bb6f376dac5/element/b6ff4468-ed6f-7c44-be4b-ca5a3ea8bf26/size
-  # did not match a known command"
-  not_compliant_on :browser => :marionette do
-    it "should get size" do
-      driver.navigate.to url_for("xhtmlTest.html")
-      size = driver.find_element(:class, "header").size
+  it "should get size" do
+    driver.navigate.to url_for("xhtmlTest.html")
+    size = driver.find_element(:class, "header").size
 
-      expect(size.width).to be > 0
-      expect(size.height).to be > 0
-    end
+    expect(size.width).to be > 0
+    expect(size.height).to be > 0
   end
 
   compliant_on :driver => [:ie, :chrome, :edge] do # Firefox w/native events: issue 1771
@@ -243,5 +235,4 @@ describe "Element" do
 
     expect(body.hash).to eq(xbody.hash)
   end
-
 end
