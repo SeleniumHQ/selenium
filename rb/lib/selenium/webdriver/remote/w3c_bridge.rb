@@ -17,6 +17,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'json'
+
 module Selenium
   module WebDriver
     module Remote
@@ -66,6 +68,11 @@ module Selenium
           desired_capabilities = opts.delete(:desired_capabilities) { W3CCapabilities.firefox }
           url                  = opts.delete(:url) { "http://#{Platform.localhost}:4444/wd/hub" }
 
+          if opts.delete(:marionette) && !desired_capabilities.is_a?(W3CCapabilities)
+            caps = JSON.parse(desired_capabilities.to_json)
+            desired_capabilities = W3CCapabilities.firefox(caps.merge(:marionette => true))
+          end
+
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
           end
@@ -85,6 +92,10 @@ module Selenium
 
           @http          = http_client
           @capabilities  = create_session(desired_capabilities)
+
+          if @capabilities[:browser_name] == 'firefox' && @capabilities[:browser_version].to_i < 43
+            raise ArgumentError, "Server configuration does not support Marionette; start server with flag to Marionette binary -Dwebdriver.firefox.bin=/path/to/bin"
+          end
 
           @file_detector = nil
         end

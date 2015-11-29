@@ -26,7 +26,7 @@ describe "Driver" do
   end
 
   # Marionette BUG - AutomatedTester: "I need to add pagesource back and add it to the spec"
-  not_compliant_on :driver => :marionette do
+  not_compliant_on :browser => :marionette do
     it "should get the page source" do
       driver.navigate.to url_for("xhtmlTest.html")
       expect(driver.page_source).to match(%r[<title>XHTML Test Page</title>]i)

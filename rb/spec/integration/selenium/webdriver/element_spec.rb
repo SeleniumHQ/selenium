@@ -36,7 +36,7 @@ describe "Element" do
   end
 
   # Marionette BUG - AutomatedTester: "known bug with execute script"
-  not_compliant_on :driver => :marionette do
+  not_compliant_on :browser => :marionette do
     it "should submit" do
       driver.navigate.to url_for("formPage.html")
       wait(5).until {driver.find_elements(:id, "submitButton").size > 0}
@@ -142,7 +142,7 @@ describe "Element" do
   end
 
   # Location not currently supported in Spec, but should be?
-  not_compliant_on :driver => :marionette do
+  not_compliant_on :browser => :marionette do
     it "should get location" do
       driver.navigate.to url_for("xhtmlTest.html")
       loc = driver.find_element(:class, "header").location
@@ -165,7 +165,7 @@ describe "Element" do
   # Marionette BUG:
   # GET /session/f7082a32-e685-2843-ad2c-5bb6f376dac5/element/b6ff4468-ed6f-7c44-be4b-ca5a3ea8bf26/size
   # did not match a known command"
-  not_compliant_on :driver => :marionette do
+  not_compliant_on :browser => :marionette do
     it "should get size" do
       driver.navigate.to url_for("xhtmlTest.html")
       size = driver.find_element(:class, "header").size

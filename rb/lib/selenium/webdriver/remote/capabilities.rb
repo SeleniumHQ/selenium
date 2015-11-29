@@ -88,7 +88,7 @@ module Selenium
           end
 
           def firefox(opts = {})
-            return W3CCapabilities.firefox(opts) if opts.delete(:marionette)
+            return W3CCapabilities.firefox(opts) if opts[:marionette]
 
             new({
               :browser_name          => "firefox",

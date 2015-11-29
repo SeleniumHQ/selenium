@@ -29,9 +29,12 @@ module Selenium
             expect(driver.session_id).to be_kind_of(String)
           end
 
-          it "should expose remote status" do
-            expect(driver).to be_kind_of(DriverExtensions::HasRemoteStatus)
-            expect(driver.remote_status).to be_kind_of(Hash)
+          # status is not w3c compliant
+          not_compliant_on :browser => :marionette do
+            it "should expose remote status" do
+              expect(driver).to be_kind_of(DriverExtensions::HasRemoteStatus)
+              expect(driver.remote_status).to be_kind_of(Hash)
+            end
           end
         end
       end

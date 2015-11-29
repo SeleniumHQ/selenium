@@ -66,7 +66,7 @@ module Selenium
         end
       end
 
-      not_compliant_on({:browser => :ie}) do
+      not_compliant_on({:browser => [:ie, :marionette]}) do
         describe "cookie management" do
           it "should get all" do
             driver.navigate.to url_for("xhtmlTest.html")
