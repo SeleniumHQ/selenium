@@ -22,7 +22,7 @@ require_relative 'spec_helper'
 module Selenium::WebDriver::DriverExtensions
   describe HasWebStorage do
 
-    compliant_on :browser => [:android] do
+    compliant_on :browser => [:chrome, :marionette] do
       shared_examples_for 'web storage' do
         before {
           driver.navigate.to url_for("clicks.html")
@@ -46,7 +46,7 @@ module Selenium::WebDriver::DriverExtensions
           storage['foo3'] = 'bar3'
 
           expect(storage.size).to eq(3)
-          expect(storage.keys).to eq(%w[foo1 foo2 foo3])
+          expect(storage.keys).to include('foo1', 'foo2', 'foo3')
         end
 
         it "can clear all items" do
@@ -66,7 +66,7 @@ module Selenium::WebDriver::DriverExtensions
           storage['foo3'] = 'bar3'
 
           expect(storage.size).to eq(3)
-          expect(storage.delete('foo1')).to eq('bar1')
+          storage.delete('foo1')
           expect(storage.size).to eq(2)
         end
 
@@ -81,11 +81,11 @@ module Selenium::WebDriver::DriverExtensions
           storage['foo2'] = 'bar2'
           storage['foo3'] = 'bar3'
 
-          expect(storage.to_a).to eq([
+          expect(storage.to_a).to include(
                                   ['foo1', 'bar1'],
                                   ['foo2', 'bar2'],
                                   ['foo3', 'bar3']
-                                 ])
+                                 )
         end
 
         it "can fetch an item" do
@@ -110,6 +110,5 @@ module Selenium::WebDriver::DriverExtensions
         it_behaves_like 'web storage'
       end
     end
-
   end
 end

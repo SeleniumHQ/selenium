@@ -117,7 +117,8 @@ module Selenium
             DriverExtensions::HasTouchScreen,
             DriverExtensions::HasLocation,
             DriverExtensions::HasNetworkConnection,
-            DriverExtensions::HasRemoteStatus
+            DriverExtensions::HasRemoteStatus,
+            DriverExtensions::HasWebStorage
           ]
         end
 
@@ -305,51 +306,51 @@ module Selenium
         #
 
         def getLocalStorageItem(key)
-          execute :getLocalStorageItem, :key => key
+          executeScript("return localStorage.getItem('#{key}')")
         end
 
         def removeLocalStorageItem(key)
-          execute :removeLocalStorageItem, :key => key
+          executeScript("localStorage.removeItem('#{key}')")
         end
 
         def getLocalStorageKeys
-          execute :getLocalStorageKeys
+          executeScript("return Object.keys(localStorage)")
         end
 
         def setLocalStorageItem(key, value)
-          execute :setLocalStorageItem, {}, :key => key, :value => value
+          executeScript("localStorage.setItem('#{key}', '#{value}')")
         end
 
         def clearLocalStorage
-          execute :clearLocalStorage
+          executeScript("localStorage.clear()")
         end
 
         def getLocalStorageSize
-          execute :getLocalStorageSize
+          executeScript("return localStorage.length")
         end
 
         def getSessionStorageItem(key)
-          execute :getSessionStorageItem, :key => key
+          executeScript("return sessionStorage.getItem('#{key}')")
         end
 
         def removeSessionStorageItem(key)
-          execute :removeSessionStorageItem, :key => key
+          executeScript("sessionStorage.removeItem('#{key}')")
         end
 
         def getSessionStorageKeys
-          execute :getSessionStorageKeys
+          executeScript("return Object.keys(sessionStorage)")
         end
 
         def setSessionStorageItem(key, value)
-          execute :setSessionStorageItem, {}, :key => key, :value => value
+          executeScript("sessionStorage.setItem('#{key}', '#{value}')")
         end
 
         def clearSessionStorage
-          execute :clearSessionStorage
+          executeScript("sessionStorage.clear()")
         end
 
         def getSessionStorageSize
-          execute :getSessionStorageSize
+          executeScript("return sessionStorage.length")
         end
 
         def getLocation

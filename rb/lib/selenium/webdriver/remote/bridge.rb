@@ -106,7 +106,8 @@ module Selenium
             DriverExtensions::HasTouchScreen,
             DriverExtensions::HasLocation,
             DriverExtensions::HasNetworkConnection,
-            DriverExtensions::HasRemoteStatus
+            DriverExtensions::HasRemoteStatus,
+            DriverExtensions::HasWebStorage
           ]
         end
 
