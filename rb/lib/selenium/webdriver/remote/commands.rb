@@ -78,11 +78,6 @@ class Selenium::WebDriver::Remote::Bridge
   command :getAlertText,                           :get,     "session/:session_id/alert_text"
   command :setAlertValue,                          :post,    "session/:session_id/alert_text"
 
-  command :dismissAlertW3C,                           :post,    "session/:session_id/alert/dismiss"
-  command :acceptAlertW3C,                            :post,    "session/:session_id/alert/accept"
-  command :getAlertTextW3C,                           :get,     "session/:session_id/alert/text"
-  command :setAlertValueW3C,                          :post,    "session/:session_id/alert/text"
-
   #
   # target locator
   #

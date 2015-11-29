@@ -24,7 +24,7 @@ module Selenium
 
     describe Options do
 
-      not_compliant_on :browser => [:marionette, :ie] do
+      not_compliant_on :browser => [:marionette, :ie, :edge] do
         describe 'logs' do
 
           compliant_on :driver => :remote do
@@ -33,6 +33,7 @@ module Selenium
             end
           end
 
+          # Phantomjs Returns har instead of driver
           not_compliant_on :browser => :phantomjs do
             it 'can fetch available log types' do
               expect(driver.manage.logs.available_types).to include(:browser, :driver)

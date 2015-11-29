@@ -83,11 +83,9 @@ describe "Element" do
     expect(driver.find_element(:id, "withText").attribute("rows")).to eq("5")
   end
 
-  not_compliant_on :browser => :edge do
-    it "should return nil for non-existent attributes" do
-      driver.navigate.to url_for("formPage.html")
-      expect(driver.find_element(:id, "withText").attribute("nonexistent")).to be_nil
-    end
+  it "should return nil for non-existent attributes" do
+    driver.navigate.to url_for("formPage.html")
+    expect(driver.find_element(:id, "withText").attribute("nonexistent")).to be_nil
   end
 
   it "should clear" do

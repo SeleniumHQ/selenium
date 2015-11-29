@@ -25,7 +25,9 @@ module Selenium
 
       compliant_on :browser => :edge do
         describe Driver do
-          it_behaves_like "driver that can be started concurrently", :edge
+          not_compliant_on :browser => :edge do
+            it_behaves_like "driver that can be started concurrently", :edge
+          end
         end
       end
     end # Edge

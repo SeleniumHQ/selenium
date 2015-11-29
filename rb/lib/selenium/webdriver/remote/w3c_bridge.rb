@@ -62,6 +62,11 @@ module Selenium
         #
 
         def initialize(opts = {})
+          if opts.key?(:desired_capabilities) && opts[:desired_capabilities][:browser_name] == 'MicrosoftEdge'
+            require_relative '../edge/legacy_support'
+            extend Edge::LegacySupport
+          end
+
           opts = opts.dup
 
           http_client          = opts.delete(:http_client) { Http::Default.new }
@@ -208,16 +213,8 @@ module Selenium
         end
 
         def switchToFrame(id)
-          locator  = case id
-                     when String
-                       find_element_by('id', id)
-                     when Hash
-                       find_element_by(id.keys.first.to_s, id.values.first)
-                     else
-                       id
-                     end
-
-          execute :switchToFrame, {}, :id => locator
+          id = find_element_by('id', id) if id.is_a? String
+          execute :switchToFrame, {}, :id => id
         end
 
         def switchToParentFrame
@@ -383,7 +380,7 @@ module Selenium
         #
 
         def addCookie(cookie)
-          execute :addCookie, {}, cookie
+          execute :addCookie, {}, :cookie => cookie
         end
 
         def deleteCookie(name)
@@ -564,6 +561,8 @@ module Selenium
         end
 
         def isElementDisplayed(element)
+          jwp = Selenium::WebDriver::Remote::Bridge::COMMANDS[:isElementDisplayed]
+          self.class.command(:isElementDisplayed, jwp.first, jwp.last)
           execute :isElementDisplayed, :id => element
         end
 

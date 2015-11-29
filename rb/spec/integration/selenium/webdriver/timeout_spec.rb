@@ -76,11 +76,13 @@ describe "Timeouts" do
     end
   end
 
-  context "page loads" do
-    after { driver.manage.timeouts.page_load = -1 }
+  not_compliant_on :browser => :edge do
+    context "page loads" do
+      after { driver.manage.timeouts.page_load = -1 }
 
-    it "should be able to set the page load timeout" do
-      expect { driver.manage.timeouts.page_load = 2 }.to_not raise_exception
+      it "should be able to set the page load timeout" do
+        expect { driver.manage.timeouts.page_load = 2 }.to_not raise_exception
+      end
     end
   end
 end

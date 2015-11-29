@@ -81,10 +81,7 @@ module Selenium
           end
 
           def edge(opts = {})
-            new({
-              :browser_name       => "MicrosoftEdge",
-              :platform           => :windows,
-            }.merge(opts))
+            W3CCapabilities.edge(opts)
           end
 
           def firefox(opts = {})

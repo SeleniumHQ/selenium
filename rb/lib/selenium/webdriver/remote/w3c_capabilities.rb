@@ -49,6 +49,7 @@ module Selenium
         end
 
         alias_method :version, :browser_version
+        alias_method :platform, :platform_name
 
         #
         # Convenience methods for the common choices.
@@ -114,8 +115,6 @@ module Selenium
 
             # any remaining pairs will be added as is, with no conversion
             caps.merge!(data)
-
-            caps
           end
         end
 

@@ -20,9 +20,16 @@
 require_relative 'spec_helper'
 
 describe "Selenium::WebDriver::TargetLocator" do
-  after { ensure_single_window }
+  after do
+    compliant_on :browser => :edge do #https://connect.microsoft.com/IE/Feedback/Details/1853708
+      driver.switch_to.default_content
+    end
+    not_compliant_on :browser => :edge do #https://connect.microsoft.com/IE/Feedback/Details/1853708
+      ensure_single_window
+    end
+  end
 
-  let(:new_window) { driver.window_handles.find {|handle| handle != driver.window_handle} }
+  let(:new_window) { driver.window_handles.find { |handle| handle != driver.window_handle } }
 
   # Marionette Bug -
   # POST /session/f7082a32-e685-2843-ad2c-5bb6f376dac5/element/active
@@ -50,11 +57,10 @@ describe "Selenium::WebDriver::TargetLocator" do
     expect(driver.find_element(:name, 'login')).to be_kind_of(WebDriver::Element)
   end
 
-  not_compliant_on({:browser => [:safari, :phantomjs]},
-                   {:driver => :remote, :browser => :marionette}) do
+  not_compliant_on :browser => [:safari, :phantomjs] do
     it "should switch to parent frame" do
       # For some reason Marionette loses control of itself here unless reset. Unable to isolate
-      compliant_on :browser => :marionette do
+      compliant_on :driver => :marionette do
         reset_driver!
       end
 
@@ -70,7 +76,7 @@ describe "Selenium::WebDriver::TargetLocator" do
     end
   end
 
-  not_compliant_on :browser => [:ie, :iphone, :safari] do
+  not_compliant_on :browser => :iphone do
     it "should switch to a window and back when given a block" do
       driver.navigate.to url_for("xhtmlTest.html")
 
@@ -82,7 +88,6 @@ describe "Selenium::WebDriver::TargetLocator" do
       end
 
       wait.until { driver.title == "XHTML Test Page" }
-
     end
 
     it "should handle exceptions inside the block" do
@@ -130,8 +135,8 @@ describe "Selenium::WebDriver::TargetLocator" do
     not_compliant_on :browser => [:marionette, :ie] do
       context "with more than two windows" do
         before do
-          compliant_on :browser => :chrome do
-            reset_driver!
+          compliant_on :browser => [:chrome, :edge] do
+            reset_driver!(1)
           end
         end
 
@@ -227,7 +232,7 @@ describe "Selenium::WebDriver::TargetLocator" do
   end
 
   # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1850030
-  not_compliant_on :browser => [:iphone, :safari, :phantomjs] do
+  not_compliant_on :browser => [:iphone, :safari, :phantomjs, :edge] do
     describe "alerts" do
 
       it "allows the user to accept an alert" do

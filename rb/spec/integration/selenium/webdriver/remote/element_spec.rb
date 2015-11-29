@@ -32,7 +32,7 @@ module Selenium
           driver.file_detector = nil
         end
 
-        not_compliant_on :browser => [:phantomjs, :safari, :marionette] do
+        not_compliant_on :browser => [:phantomjs, :safari, :marionette, :edge] do
           it "uses the file detector" do
             driver.navigate.to url_for("upload.html")
 

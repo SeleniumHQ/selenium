@@ -45,8 +45,9 @@ module Selenium
           @driver_instance ||= new_driver_instance
         end
 
-        def reset_driver!
+        def reset_driver!(time = 0)
           quit_driver
+          sleep time
           @driver_instance = new_driver_instance
         end
 
@@ -135,6 +136,8 @@ module Selenium
           instance = case driver
                      when :remote
                        create_remote_driver
+                     when :edge
+                       create_edge_driver
                      when :firefox
                        create_firefox_driver
                      when :marionette
@@ -165,8 +168,10 @@ module Selenium
           else
             caps = WebDriver::Remote::Capabilities.send(browser)
 
-            caps.javascript_enabled = true
-            caps.css_selectors_enabled = true
+            unless caps.is_a? WebDriver::Remote::W3CCapabilities
+              caps.javascript_enabled = true
+              caps.css_selectors_enabled = true
+            end
           end
 
           caps
@@ -207,6 +212,11 @@ module Selenium
 
         def create_marionette_driver
           WebDriver.for :firefox, :marionette => true
+        end
+
+        def create_edge_driver
+          caps = WebDriver::Remote::W3CCapabilities.edge
+          WebDriver.for :edge, :desired_capabilities => caps
         end
 
         def create_chrome_driver
