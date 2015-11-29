@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     module Firefox
 
-      compliant_on :driver => :firefox do
+      compliant_on :browser => :firefox do
         describe Driver do
           describe ".new" do
 
@@ -51,6 +51,8 @@ module Selenium
               begin
                 profile = Selenium::WebDriver::Firefox::Profile.new
                 driver = Selenium::WebDriver.for :firefox, :profile => profile
+                stored_profile = driver.instance_variable_get('@bridge').instance_variable_get('@launcher').instance_variable_get('@profile')
+                expect(stored_profile).to be == profile
               ensure
                 driver.quit if driver
               end
