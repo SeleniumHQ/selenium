@@ -50,7 +50,7 @@ class Selenium::WebDriver::Remote::W3CBridge
   command :closeWindow,                :delete,  "session/:session_id/window"
   command :switchToWindow,             :post,    "session/:session_id/window"
   command :getWindowHandles,           :get,     "session/:session_id/window/handles"
-  command :fullscreenWindow,           :post,    "session/:session_id/window/window/fullscreen"
+  command :fullscreenWindow,           :post,    "session/:session_id/window/fullscreen"
   command :maximizeWindow,             :post,    "session/:session_id/window/maximize"
   command :setWindowSize,              :post,    "session/:session_id/window/size"
   command :getWindowSize,              :get,     "session/:session_id/window/size"

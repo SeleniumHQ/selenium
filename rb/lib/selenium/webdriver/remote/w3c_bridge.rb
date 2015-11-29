@@ -285,6 +285,10 @@ module Selenium
           execute :maximizeWindow
         end
 
+        def fullscreenWindow
+          execute :fullscreenWindow
+        end
+
         def getWindowSize(handle = :current)
           data = execute :getWindowSize
 

@@ -117,6 +117,14 @@ module Selenium
         @bridge.maximizeWindow
       end
 
+      #
+      # Make current window full screen
+      #
+
+      def full_screen
+        @bridge.fullscreenWindow
+      end
+
     end # Window
   end # WebDriver
 end # Selenium

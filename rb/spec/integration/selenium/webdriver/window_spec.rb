@@ -94,6 +94,19 @@ module Selenium
         end
       end
 
+      compliant_on :browser => [:marionette, :edge] do
+        not_compliant_on :browser => [:marionette, :edge] do
+          it "can make window full screen" do
+            window.maximize
+            old_size = window.size
+
+            window.full_screen
+
+            new_size = window.size
+            expect(new_size.height).to be > old_size.height
+          end
+        end
+      end
     end
   end
 end
