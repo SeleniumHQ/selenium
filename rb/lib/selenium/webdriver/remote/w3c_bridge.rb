@@ -138,6 +138,8 @@ module Selenium
         end
 
         def status
+          jwp = Selenium::WebDriver::Remote::Bridge::COMMANDS[:status]
+          self.class.command(:status, jwp.first, jwp.last)
           execute :status
         end
 
