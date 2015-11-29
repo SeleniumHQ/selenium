@@ -208,7 +208,9 @@ module Selenium
         end
 
         def getPageSource
-          execute :getPageSource
+          executeScript("var source = document.documentElement.outerHTML;" +
+                            "if (!source) { source = new XMLSerializer().serializeToString(document); }" +
+                            "return source;")
         end
 
         def getVisible
