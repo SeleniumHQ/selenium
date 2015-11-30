@@ -323,7 +323,12 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   public String getCurrentUrl() {
-    return execute(DriverCommand.GET_CURRENT_URL).getValue().toString();
+    Response response = execute(DriverCommand.GET_CURRENT_URL);
+    if (response == null || response.getValue() == null) {
+      throw new WebDriverException("Remote browser did not respond to getCurrentUrl");
+    } else {
+      return response.getValue().toString();
+    }
   }
 
   public <X> X getScreenshotAs(OutputType<X> outputType) throws WebDriverException {
