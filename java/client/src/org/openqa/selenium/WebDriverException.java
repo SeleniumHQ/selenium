@@ -28,6 +28,7 @@ public class WebDriverException extends RuntimeException {
 
   public static final String SESSION_ID = "Session ID";
   public static final String DRIVER_INFO = "Driver info";
+  protected static final String BASE_SUPPORT_URL = "http://seleniumhq.org/exceptions/";
 
   private Map<String, String> extraInfo = new HashMap<>();
 
