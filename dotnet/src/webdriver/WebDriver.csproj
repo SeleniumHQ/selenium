@@ -102,6 +102,7 @@
     <Compile Include="IE\InternetExplorerDriverEngine.cs" />
     <Compile Include="IFileDetector.cs" />
     <Compile Include="Html5\IHasLocationContext.cs" />
+    <Compile Include="Remote\IHasSessionId.cs" />
     <Compile Include="IHasTouchScreen.cs" />
     <Compile Include="Interactions\ScreenMoveAction.cs" />
     <Compile Include="Interactions\ScreenReleaseAction.cs" />

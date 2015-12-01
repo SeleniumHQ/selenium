@@ -60,7 +60,7 @@ namespace OpenQA.Selenium.Remote
     /// }
     /// </code>
     /// </example>
-    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, ITakesScreenshot, IHasInputDevices, IHasCapabilities, IHasWebStorage, IHasLocationContext, IHasApplicationCache, IAllowsFileDetection
+    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, ITakesScreenshot, IHasInputDevices, IHasCapabilities, IHasWebStorage, IHasLocationContext, IHasApplicationCache, IAllowsFileDetection, IHasSessionId
     {
         /// <summary>
         /// The default command timeout for HTTP requests in a RemoteWebDriver instance.
@@ -393,6 +393,14 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Gets the <see cref="SessionId"/> for the current session of this driver.
+        /// </summary>
+        public SessionId SessionId
+        {
+            get { return this.sessionId; }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether or not the driver is compliant with the W3C WebDriver specification.
         /// </summary>
         internal bool IsSpecificationCompliant
@@ -406,14 +414,6 @@ namespace OpenQA.Selenium.Remote
         protected ICommandExecutor CommandExecutor
         {
             get { return this.executor; }
-        }
-
-        /// <summary>
-        /// Gets the <see cref="SessionId"/> for the current session of this driver.
-        /// </summary>
-        protected SessionId SessionId
-        {
-            get { return this.sessionId; }
         }
 
         /// <summary>
