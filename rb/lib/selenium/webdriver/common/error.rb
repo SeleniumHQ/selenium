@@ -159,7 +159,12 @@ module Selenium
       #
 
       class InvalidSelectorError < WebDriverError; end           # 32
-                                                                 # 33
+
+      #
+      # A new session could not be created.
+      #
+
+      class SessionNotCreatedError < WebDriverError; end         # 33
 
       #
       # Indicates that the target provided to the actions #move method is
@@ -202,7 +207,7 @@ module Selenium
         IMENotAvailableError,           # 30
         IMEEngineActivationFailedError, # 31
         InvalidSelectorError,           # 32
-        nil,                            # 33
+        SessionNotCreatedError,         # 33
         MoveTargetOutOfBoundsError      # 34
       ]
 
