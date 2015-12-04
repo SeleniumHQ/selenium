@@ -115,6 +115,7 @@ module Selenium
 
             # any remaining pairs will be added as is, with no conversion
             caps.merge!(data)
+            caps
           end
         end
 
