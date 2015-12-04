@@ -188,6 +188,25 @@ class Builder {
   }
 
   /**
+   * Sets the http agent to use for each request.
+   * If this method is not called, the Builder will use http.globalAgent by default.
+   *
+   * @param {http.Agent} agent The agent to use for each request.
+   * @return {!Builder} A self reference.
+   */
+  usingHttpAgent(agent) {
+    this.agent_ = agent;
+    return this;
+  }
+  
+  /**
+   * @return {http.Agent} The http agent used for each request
+   */
+  getHttpAgent() {
+    return this.agent_;
+  }
+
+  /**
    * Sets the desired capabilities when requesting a new session. This will
    * overwrite any previously set capabilities.
    * @param {!(Object|Capabilities)} capabilities The desired capabilities for
@@ -454,7 +473,7 @@ class Builder {
     }
 
     if (url) {
-      var executor = executors.createExecutor(url, this.proxy_);
+      var executor = executors.createExecutor(url, this.agent_, this.proxy_);
       return WebDriver.createSession(executor, capabilities, this.flow_);
     }
 

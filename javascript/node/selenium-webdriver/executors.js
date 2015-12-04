@@ -38,13 +38,14 @@ exports.DeferredExecutor = DeferredExecutor;
  * Creates a command executor that uses WebDriver's JSON wire protocol.
  * @param {(string|!promise.Promise<string>)} url The server's URL,
  *     or a promise that will resolve to that URL.
- * @param {?string=} opt_proxy (optional) The URL of the HTTP proxy for the
+ * @param {http.Agent=} (optional) The Http.Agent for the client to use. 
+ * @param {string=} opt_proxy (optional) The URL of the HTTP proxy for the
  *     client to use.
  * @returns {!./lib/command.Executor} The new command executor.
  */
-exports.createExecutor = function(url, opt_proxy) {
+exports.createExecutor = function(url, opt_agent, opt_proxy) {
   return new DeferredExecutor(promise.when(url, function(url) {
-    var client = new HttpClient(url, null, opt_proxy);
+    var client = new HttpClient(url, opt_agent, opt_proxy);
     return new HttpExecutor(client);
   }));
 };
