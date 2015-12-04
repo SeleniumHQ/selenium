@@ -1,3 +1,8 @@
+## v2.54.0-dev
+
+* Allow users to set the agent used for HTTP connections through
+   `builder.Builder#usingHttpAgent()`
+
 ## v2.53.2
 
 * Changed `io.exists()` to return a rejected promise if the input path is not
