@@ -65,6 +65,7 @@ module Selenium
           http_client          = opts.delete(:http_client) { Http::Default.new }
           desired_capabilities = opts.delete(:desired_capabilities) { Capabilities.firefox }
           url                  = opts.delete(:url) { "http://#{Platform.localhost}:4444/wd/hub" }
+          session_id           = opts.delete(:session_id)
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
@@ -84,7 +85,12 @@ module Selenium
           http_client.server_url = uri
 
           @http          = http_client
-          @capabilities  = create_session(desired_capabilities)
+          if session_id
+            @session_id = session_id
+            getCapabilities
+          else
+            @capabilities  = create_session(desired_capabilities)
+          end
 
           @file_detector = nil
         end
