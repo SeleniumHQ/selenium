@@ -76,6 +76,7 @@ describe "Selenium::WebDriver::TargetLocator" do
     end
   end
 
+    # Safari Note - Ensure Popup Blocker turned off to prevent failures
   not_compliant_on :browser => :iphone do
     it "should switch to a window and back when given a block" do
       driver.navigate.to url_for("xhtmlTest.html")

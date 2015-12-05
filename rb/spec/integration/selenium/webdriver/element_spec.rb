@@ -20,6 +20,11 @@
 require_relative 'spec_helper'
 
 describe "Element" do
+  before do
+    compliant_on :browser => :safari do
+      sleep 0.5 # Some kind of race condition preventing initial navigation; only on safari
+    end
+  end
 
   it "should click" do
     driver.navigate.to url_for("formPage.html")
