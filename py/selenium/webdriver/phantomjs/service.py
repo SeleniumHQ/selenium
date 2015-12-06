@@ -104,8 +104,10 @@ class Service(object):
         try:
             if self.process:
                 self.process.stdin.close()
-                self.process.kill()
+                self.process.terminate()
                 self.process.wait()
+                if platform.system() != 'Windows':
+                    self.process.kill()
                 self.process = None
         except OSError:
             # kill may not be available under windows environment
