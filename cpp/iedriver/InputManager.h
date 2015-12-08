@@ -25,7 +25,14 @@
 
 namespace webdriver {
 
-// Forward declaration of classes to avoid
+struct KeyInfo {
+  WORD key_code;
+  UINT scan_code;
+  bool is_extended_key;
+  bool is_webdriver_key;
+};
+
+  // Forward declaration of classes to avoid
 // circular include files.
 class ElementRepository;
 
@@ -93,6 +100,12 @@ class InputManager {
                                 int* normalized_y);
   void AddMouseInput(HWND window_handle, long flag, int x, int y);
   void AddKeyboardInput(HWND window_handle, wchar_t character);
+
+  void CreateKeyboardInputItem(KeyInfo key_info, DWORD initial_flags, bool is_generating_keyup);
+
+  bool IsModifierKey(wchar_t character);
+
+  KeyInfo GetKeyInfo(HWND windows_handle, wchar_t character);
   
   bool WaitForInputEventProcessing(int input_count);
 
@@ -113,8 +126,6 @@ class InputManager {
   ElementRepository* element_map_;
 
   std::vector<INPUT> inputs_;
-  HHOOK keyboard_hook_handle_;
-  HHOOK mouse_hook_handle_;
 };
 
 } // namespace webdriver
