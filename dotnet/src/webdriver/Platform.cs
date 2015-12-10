@@ -114,6 +114,10 @@ namespace OpenQA.Selenium
                     {
                         this.platformTypeValue = PlatformType.Vista;
                     }
+                    else
+                    {
+                        this.platformTypeValue = PlatformType.Windows;
+                    }
 
                     break;
 
