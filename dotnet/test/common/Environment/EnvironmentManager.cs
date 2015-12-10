@@ -10,7 +10,7 @@ namespace OpenQA.Selenium.Environment
 {
     public class EnvironmentManager
     {
-        private static readonly EnvironmentManager instance = new EnvironmentManager();
+        private static EnvironmentManager instance;
         private Type driverType;
         private Browser browser;
         private IWebDriver driver;
@@ -21,6 +21,7 @@ namespace OpenQA.Selenium.Environment
 
         private EnvironmentManager()
         {
+            string configFile = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
             // TODO(andre.nogueira): Error checking to guard against malformed config files
             string driverClassName = GetSettingValue("Driver");
             string assemblyName = GetSettingValue("Assembly");
@@ -141,6 +142,11 @@ namespace OpenQA.Selenium.Environment
         {
             get
             {
+                if (instance == null)
+                {
+                    instance = new EnvironmentManager();
+                }
+
                 return instance;
             }
         }

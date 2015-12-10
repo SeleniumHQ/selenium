@@ -59,11 +59,10 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void ShouldNotHaveProblemOpeningNonExistingPage()
         {
             driver.Url = "www.doesnotexist.comx";
-            IWebElement e = driver.FindElement(By.Id("Bla"));
+            Assert.Throws<NoSuchElementException>(() => { IWebElement e = driver.FindElement(By.Id("Bla")); });
         }
 
     }

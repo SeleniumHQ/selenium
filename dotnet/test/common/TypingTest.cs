@@ -762,7 +762,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Safari, "Cannot type on contentEditable with synthetic events")]
         [IgnoreBrowser(Browser.HtmlUnit, "Cannot type on contentEditable with synthetic events")]
         [IgnoreBrowser(Browser.IE, "Untested browser")]
-        [NeedsFreshDriver(AfterTest = true)]
+        [NeedsFreshDriver(IsCreatedAfterTest = true)]
         [Test]
         public void ShouldBeAbleToTypeIntoTinyMCE()
         {

@@ -10,28 +10,25 @@ namespace OpenQA.Selenium
     {
 
         [Test]
-        [ExpectedException(typeof(NoSuchFrameException))]
         public void ShouldThrowExceptionAfterSwitchingToNonExistingFrameIndex()
         {
             driver.Url = framesPage;
-            driver.SwitchTo().Frame(10);
+            Assert.Throws<NoSuchFrameException>(() => driver.SwitchTo().Frame(10));
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchFrameException))]
         public void ShouldThrowExceptionAfterSwitchingToNonExistingFrameName()
         {
             driver.Url = framesPage;
-            driver.SwitchTo().Frame("æ©ñµøöíúüþ®éåä²doesnotexist");
+            Assert.Throws<NoSuchFrameException>(() => driver.SwitchTo().Frame("æ©ñµøöíúüþ®éåä²doesnotexist"));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ShouldThrowExceptionAfterSwitchingToNullFrameName()
         {
             string frameName = null;
             driver.Url = framesPage;
-            driver.SwitchTo().Frame(frameName);
+            Assert.Throws<ArgumentNullException>(() => driver.SwitchTo().Frame(frameName));
         }
 
         [Test]

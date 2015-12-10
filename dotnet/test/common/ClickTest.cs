@@ -144,7 +144,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [NeedsFreshDriver(AfterTest = true)]
+        [NeedsFreshDriver(IsCreatedAfterTest = true)]
         [IgnoreBrowser(Browser.IPhone, "Doesn't support multiple windows")]
         [IgnoreBrowser(Browser.WindowsPhone, "Doesn't support multiple windows")]
         [IgnoreBrowser(Browser.Opera, "Doesn't support multiple windows")]

@@ -9,13 +9,13 @@ namespace OpenQA.Selenium.Support.PageObjects
     public class ByChainedBrowserTests : DriverTestFixture
     {
         //TODO: Move these to a standalone class when more tests rely on the server being up
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void RunBeforeAnyTest()
         {
             EnvironmentManager.Instance.WebServer.Start();
         }
 
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public void RunAfterAnyTests()
         {
             EnvironmentManager.Instance.CloseCurrentDriver();

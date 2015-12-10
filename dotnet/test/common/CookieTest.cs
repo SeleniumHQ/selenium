@@ -15,24 +15,21 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException))]
         public void ShouldThrowAnExceptionWhenSemiColonExistsInTheCookieAttribute()
         {
-            new ReturnedCookie("hi;hi", "value", null, null, DateTime.Now, false, false);
+            Assert.Throws<ArgumentException>(() => new ReturnedCookie("hi;hi", "value", null, null, DateTime.Now, false, false));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException))]
         public void ShouldThrowAnExceptionWhenTheNameIsNull()
         {
-            new ReturnedCookie(null, "value", null, null, DateTime.Now, false, false);
+            Assert.Throws<ArgumentException>(() => new ReturnedCookie(null, "value", null, null, DateTime.Now, false, false));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ShouldThrowAnExceptionWhenTheValueIsNull()
         {
-            new ReturnedCookie("name", null, null, null, DateTime.Now, false, false);
+            Assert.Throws<ArgumentException>(() => new ReturnedCookie("name", null, null, null, DateTime.Now, false, false));
         }
 
         [Test]

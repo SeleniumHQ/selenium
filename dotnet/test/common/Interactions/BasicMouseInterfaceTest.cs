@@ -267,7 +267,7 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [Category("Javascript")]
-        [NeedsFreshDriver(BeforeTest = true)]
+        [NeedsFreshDriver(IsCreatedBeforeTest = true)]
         [IgnoreBrowser(Browser.HtmlUnit, "Advanced mouse actions only implemented in rendered browsers")]
         [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
         public void MoveRelativeToBody()
@@ -283,7 +283,7 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [Category("Javascript")]
-        [NeedsFreshDriver(BeforeTest = true)]
+        [NeedsFreshDriver(IsCreatedBeforeTest = true)]
         [IgnoreBrowser(Browser.HtmlUnit, "Advanced mouse actions only implemented in rendered browsers")]
         [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
         public void CanMouseOverAndOutOfAnElement()

@@ -103,7 +103,7 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("multilinenbsp"));
             string text = element.Text;
             string expectedStart = "These lines  " + System.Environment.NewLine;
-            Assert.That(text, Is.StringStarting(expectedStart));
+            Assert.That(text, Does.StartWith(expectedStart));
         }
 
         [Test]
@@ -113,7 +113,7 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("multilinenbsp"));
             string text = element.Text;
             string expectedContent = System.Environment.NewLine + "  have";
-            Assert.That(text, Is.StringContaining(expectedContent));
+            Assert.That(text, Does.Contain(expectedContent));
         }
 
         [Test]
@@ -123,7 +123,7 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("multilinenbsp"));
             string text = element.Text;
             string expectedEnd = "trailing NBSPs  ";
-            Assert.That(text, Is.StringEnding(expectedEnd));
+            Assert.That(text, Does.EndWith(expectedEnd));
         }
 
         [Test]

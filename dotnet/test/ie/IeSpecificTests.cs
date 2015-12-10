@@ -12,6 +12,97 @@ namespace OpenQA.Selenium.IE
     public class IeSpecificTests : DriverTestFixture
     {
         [Test]
+        public void KeysTest()
+        {
+            List<string> keyComboNames = new List<string>()
+            {
+                "Control",
+                "Shift",
+                "Alt",
+                "Control + Shift",
+                "Control + Alt",
+                "Shift + Alt",
+                "Control + Shift + Alt"
+            };
+
+            List<string> colorNames = new List<string>()
+            {
+                "red",
+                "green",
+                "lightblue",
+                "yellow",
+                "lightgreen",
+                "silver",
+                "magenta"
+            };
+
+            List<List<string>> modifierCombonations = new List<List<string>>()
+            {
+                new List<string>() { Keys.Control },
+                new List<string>() { Keys.Shift },
+                new List<string>() { Keys.Alt },
+                new List<string>() { Keys.Control, Keys.Shift },
+                new List<string>() { Keys.Control, Keys.Alt },
+                new List<string>() { Keys.Shift, Keys.Alt },
+                new List<string>() { Keys.Control, Keys.Shift, Keys.Alt}
+            };
+
+            List<string> expectedColors = new List<string>()
+            {
+                "rgba(255, 0, 0, 1)",
+                "rgba(0, 128, 0, 1)",
+                "rgba(173, 216, 230, 1)",
+                "rgba(255, 255, 0, 1)",
+                "rgba(144, 238, 144, 1)",
+                "rgba(192, 192, 192, 1)",
+                "rgba(255, 0, 255, 1)"
+            };
+
+            bool passed = true;
+            string errors = string.Empty;
+
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("keyboard_shortcut.html");
+            IWebElement body = driver.FindElement(By.CssSelector("body"));
+            Actions actions = new Actions(driver);
+            for (int i = 0; i < keyComboNames.Count; i++)
+            {
+                for (int j = 0; j < modifierCombonations[i].Count; j++)
+                {
+                    actions.KeyDown(modifierCombonations[i][j]);
+                }
+
+                actions.SendKeys("1");
+                
+                // Alternatively, the following single line of code would release
+                // all modifier keys, instead of looping through each key.
+                // actions.SendKeys(Keys.Null);
+                for (int j = 0; j < modifierCombonations[i].Count; j++)
+                {
+                    actions.KeyUp(modifierCombonations[i][j]);
+                }
+
+                actions.Perform();
+                string background = body.GetCssValue("background-color");
+                passed = passed && background == expectedColors[i];
+                if (background != expectedColors[i])
+                {
+                    if (errors.Length > 0)
+                    {
+                        errors += "\n";
+                    }
+
+                    errors += string.Format("Key not properly processed for {0}. Background should be {1}, Expected: '{2}', Actual: '{3}'",
+                        keyComboNames[i],
+                        colorNames[i],
+                        expectedColors[i],
+                        background);
+                }
+            }
+
+            Assert.IsTrue(passed, errors);
+        }
+
+        [Test]
         public void InputOnChangeAlert()
         {
             driver.Url = alertsPage;

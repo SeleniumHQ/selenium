@@ -9,14 +9,13 @@ namespace OpenQA.Selenium.Support.PageObjects
     public class ByChainedTests
     {
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void FindElementZeroBy()
         {
             Mockery mock = new Mockery();
             IAllDriver driver = mock.NewMock<IAllDriver>();
 
             ByChained by = new ByChained();
-            by.FindElement(driver);
+            Assert.Throws<NoSuchElementException>(() => by.FindElement(driver));
         }
 
         [Test]

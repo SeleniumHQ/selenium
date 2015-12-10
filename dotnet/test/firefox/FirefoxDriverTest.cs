@@ -93,7 +93,7 @@ namespace OpenQA.Selenium.Firefox
         }
 
         [Test]
-        [NeedsFreshDriver(BeforeTest = true, AfterTest = true)]
+        [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
         public void FocusRemainsInOriginalWindowWhenOpeningNewWindow()
         {
             if (PlatformHasNativeEvents() == false)
@@ -117,7 +117,7 @@ namespace OpenQA.Selenium.Firefox
         }
 
         [Test]
-        [NeedsFreshDriver(BeforeTest = true, AfterTest = true)]
+        [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
         public void SwitchingWindowShouldSwitchFocus()
         {
             if (PlatformHasNativeEvents() == false)
@@ -162,7 +162,7 @@ namespace OpenQA.Selenium.Firefox
         }
 
         [Test]
-        [NeedsFreshDriver(BeforeTest = true, AfterTest = true)]
+        [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
         public void ClosingWindowAndSwitchingToOriginalSwitchesFocus()
         {
             if (PlatformHasNativeEvents() == false)

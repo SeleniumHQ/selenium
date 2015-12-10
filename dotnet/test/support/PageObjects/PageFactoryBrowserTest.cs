@@ -12,13 +12,13 @@ namespace OpenQA.Selenium.Support.PageObjects
     public class PageFactoryBrowserTest : DriverTestFixture
     {
         //TODO: Move these to a standalone class when more tests rely on the server being up
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void RunBeforeAnyTest()
         {
             EnvironmentManager.Instance.WebServer.Start();
         }
         
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public void RunAfterAnyTests()
         {
             EnvironmentManager.Instance.CloseCurrentDriver();
@@ -109,12 +109,11 @@ namespace OpenQA.Selenium.Support.PageObjects
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "Cannot specify FindsBySequence and FindsByAll on the same member", MatchType = MessageMatch.Contains)]
         public void MixingFindBySequenceAndFindByAllShouldThrow()
         {
             driver.Url = xhtmlTestPage;
             var page = new PageFactoryBrowserTest.InvalidAttributeCombinationPage();
-            PageFactory.InitElements(driver, page);
+            Assert.Throws<ArgumentException>(() => PageFactory.InitElements(driver, page), "Cannot specify FindsBySequence and FindsByAll on the same member");
         }
 
         #region Page classes for tests

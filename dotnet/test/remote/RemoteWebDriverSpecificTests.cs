@@ -12,13 +12,13 @@ namespace OpenQA.Selenium.Remote
         private const string FileHtml = "<div>" + LoremIpsumText + "</div>";
         private System.IO.FileInfo testFile;
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
             CreateTempFile(FileHtml);
         }
 
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public void Teardown()
         {
             if (testFile != null && testFile.Exists)
@@ -28,7 +28,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         [Test]
-        [NeedsFreshDriver(AfterTest = true)]
+        [NeedsFreshDriver(IsCreatedAfterTest = true)]
         public void ShouldBeAbleToCreateRemoteWebDriverWithNoSlashAtEndOfUri()
         {
             Environment.EnvironmentManager.Instance.CloseCurrentDriver();

@@ -113,7 +113,7 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Safari)]
-        [NeedsFreshDriver(BeforeTest = true)]
+        [NeedsFreshDriver(IsCreatedBeforeTest = true)]
         public void ShouldDoNothingIfThereIsNothingToGoBackTo()
         {
             string originalTitle = driver.Title;

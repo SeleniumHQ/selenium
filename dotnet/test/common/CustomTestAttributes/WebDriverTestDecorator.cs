@@ -33,7 +33,7 @@ namespace OpenQA.Selenium
         public Test Decorate(Test test, MemberInfo member)
         {
             NUnitTestMethod testMethod = test as NUnitTestMethod;
-            
+
             if (testMethod != null && testMethod.RunState == RunState.Runnable)
             {
                 List<Attribute> ignoreAttributes = new List<Attribute>();
@@ -62,16 +62,6 @@ namespace OpenQA.Selenium
 
                         test.RunState = RunState.Ignored;
                         test.IgnoreReason = ignoreReason;
-                    }
-                }
-                
-
-                if (test.RunState == RunState.Runnable)
-                {
-                    NeedsFreshDriverAttribute needsDriverAttr = Reflect.GetAttribute(member, NeedsFreshDriverAttributeTypeFullName, false) as NeedsFreshDriverAttribute;
-                    if (needsDriverAttr != null)
-                    {
-                        test = new WebDriverTestMethod(testMethod, needsDriverAttr.BeforeTest, needsDriverAttr.AfterTest);
                     }
                 }
             }

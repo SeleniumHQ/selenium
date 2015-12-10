@@ -9,6 +9,7 @@ using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium
 {
+    [IgnoreBrowser(Browser.Edge)]
     [TestFixture]
     public class AlertsTest : DriverTestFixture
     {
@@ -269,7 +270,6 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
-        [ExpectedException(typeof(NoAlertPresentException))]
         public void AlertShouldNotAllowAdditionalCommandsIfDimissed()
         {
             driver.Url = alertsPage;
@@ -278,7 +278,8 @@ namespace OpenQA.Selenium
 
             IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             alert.Dismiss();
-            string text = alert.Text;
+            string text;
+            Assert.Throws<NoAlertPresentException>(() => text = alert.Text);
         }
 
         [Test]
@@ -334,12 +335,11 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
-        [ExpectedException(typeof(NoAlertPresentException))]
         public void SwitchingToMissingAlertThrows()
         {
             driver.Url = alertsPage;
 
-            AlertToBePresent();
+            Assert.Throws<NoAlertPresentException>(() => AlertToBePresent());
         }
 
         [Test]
@@ -622,7 +622,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [NeedsFreshDriver(AfterTest = true)]
+        [NeedsFreshDriver(IsCreatedAfterTest = true)]
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Safari)]
@@ -661,7 +661,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Safari)]
         [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
-        [NeedsFreshDriver(AfterTest = true)]
+        [NeedsFreshDriver(IsCreatedAfterTest = true)]
         public void ShouldHandleOnBeforeUnloadAlertAtClose()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("pageWithOnBeforeUnloadMessage.html");

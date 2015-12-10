@@ -233,7 +233,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [NeedsFreshDriver(AfterTest = true)]
+        [NeedsFreshDriver(IsCreatedAfterTest = true)]
         [IgnoreBrowser(Browser.Safari, "Safari: issue 3693")]
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.IPhone)]

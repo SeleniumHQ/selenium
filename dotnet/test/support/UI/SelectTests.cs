@@ -21,11 +21,10 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
-        [ExpectedException(typeof(UnexpectedTagNameException))]
         public void ThrowUnexpectedTagNameExceptionWhenNotSelectTag()
         {
             Stub.On(webElement).GetProperty("TagName").Will(Return.Value("form"));
-            new SelectElement(webElement);
+            Assert.Throws<UnexpectedTagNameException>(() => new SelectElement(webElement));
         }
 
         [Test]
@@ -346,7 +345,6 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void SelectedOptionPropertyShouldThrowExceptionWhenNoOptionSelected()
         {
             IWebElement selected = mocks.NewMock<IWebElement>();
@@ -360,7 +358,7 @@ namespace OpenQA.Selenium.Support.UI
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
             SelectElement element = new SelectElement(webElement);
-            IWebElement selectedOption = element.SelectedOption;
+            Assert.Throws<NoSuchElementException>(() => { IWebElement selectedOption = element.SelectedOption; });
         }
 
         [Test]

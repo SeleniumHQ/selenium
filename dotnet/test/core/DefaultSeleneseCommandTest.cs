@@ -48,38 +48,33 @@ namespace ThoughtWorks.Selenium.UnitTests
 		}
 
 		[Test]
-		[ExpectedException(typeof(ArgumentException))]
 		public void ShouldFailToParseCommandStringWithNoPipes()
 		{
-			DefaultRemoteCommand.Parse("junk");
+            Assert.Throws<ArgumentException>(() => DefaultRemoteCommand.Parse("junk"));
 		}
 
 		[Test]
-		[ExpectedException(typeof(ArgumentException))]
 		public void ShouldFailToParseCommandStringWithExtraPipes()
 		{
-			DefaultRemoteCommand.Parse("|command|blah|blah|blah|");
+            Assert.Throws<ArgumentException>(() => DefaultRemoteCommand.Parse("|command|blah|blah|blah|"));
 		}
 
 		[Test]
-		[ExpectedException(typeof(ArgumentException))]
 		public void ShouldFailToParseCommandStringWhichDoesNotStartWithAPipe()
 		{
-			DefaultRemoteCommand.Parse("command|blah|blah|blah|");
+            Assert.Throws<ArgumentException>(() => DefaultRemoteCommand.Parse("command|blah|blah|blah|"));
 		}
 
 		[Test]
-		[ExpectedException(typeof(ArgumentException))]
 		public void ShouldFailToParseNullCommandString()
 		{
-			DefaultRemoteCommand.Parse(null);
+            Assert.Throws<ArgumentException>(() => DefaultRemoteCommand.Parse(null));
 		}
 
 		[Test]
-		[ExpectedException(typeof(ArgumentException))]
 		public void ShouldFailToParseCommandStringWithWhiteSpace()
 		{
-			DefaultRemoteCommand.Parse("  ");
+            Assert.Throws<ArgumentException>(() => DefaultRemoteCommand.Parse("  "));
 		}
 
 	}

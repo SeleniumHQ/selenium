@@ -30,24 +30,22 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void ShouldStillFailToFindAnElementWhenImplicitWaitsAreEnabled()
         {
             driver.Url = dynamicPage;
             driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
-            driver.FindElement(By.Id("box0"));
+            Assert.Throws<NoSuchElementException>(() => driver.FindElement(By.Id("box0")));
         }
 
         [Test]
         [Category("JavaScript")]
         [NeedsFreshDriver]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void ShouldReturnAfterFirstAttemptToFindOneAfterDisablingImplicitWaits()
         {
             driver.Url = dynamicPage;
             driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(3000));
             driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(0));
-            driver.FindElement(By.Id("box0"));
+            Assert.Throws<NoSuchElementException>(() => driver.FindElement(By.Id("box0")));
         }
 
         [Test]

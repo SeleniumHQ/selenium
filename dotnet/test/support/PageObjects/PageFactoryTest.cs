@@ -201,55 +201,49 @@ namespace OpenQA.Selenium.Support.PageObjects
             
             var page = new CustomByNotFoundPage();
             PageFactory.InitElements(mockDriver, page);
-            Assert.Throws(typeof(NoSuchElementException), page.customFoundElement.Clear);
+            Assert.Throws<NoSuchElementException>(page.customFoundElement.Clear);
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "descendent of", MatchType = MessageMatch.Contains)]
         public void UsingCustomByWithInvalidSuperClass()
         {
             var page = new InvalidCustomFinderTypePage();
-            PageFactory.InitElements(mockDriver, page);
+            Assert.Throws<ArgumentException>(() => PageFactory.InitElements(mockDriver, page), "descendent of");
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "How.Custom", MatchType = MessageMatch.Contains)]
         public void UsingCustomByWithNoClass()
         {
             var page = new NoCustomFinderClassPage();
-            PageFactory.InitElements(mockDriver, page);
+            Assert.Throws<ArgumentException>(() => PageFactory.InitElements(mockDriver, page), "How.Custom");
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "constructor", MatchType = MessageMatch.Contains)]
         public void UsingCustomByWithInvalidCtor()
         {
             var page = new InvalidCtorCustomByPage();
-            PageFactory.InitElements(mockDriver, page);
+            Assert.Throws<ArgumentException>(() => PageFactory.InitElements(mockDriver, page), "constructor");
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "is not IWebElement or IList<IWebElement>", MatchType = MessageMatch.Contains)]
         public void ThrowsIfElementTypeIsInvalid()
         {
             var page = new InvalidElementTypePage();
-            PageFactory.InitElements(mockDriver, page);
+            Assert.Throws<ArgumentException>(() => PageFactory.InitElements(mockDriver, page), "is not IWebElement or IList<IWebElement>");
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "is not IWebElement or IList<IWebElement>", MatchType = MessageMatch.Contains)]
         public void ThrowsIfElementCollectionTypeIsInvalid()
         {
             var page = new InvalidCollectionTypePage();
-            PageFactory.InitElements(mockDriver, page);
+            Assert.Throws<ArgumentException>(() => PageFactory.InitElements(mockDriver, page), "is not IWebElement or IList<IWebElement>");
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "is not IWebElement or IList<IWebElement>", MatchType = MessageMatch.Contains)]
         public void ThrowsIfConcreteCollectionTypeIsUsed()
         {
             var page = new ConcreteCollectionTypePage();
-            PageFactory.InitElements(mockDriver, page);
+            Assert.Throws<ArgumentException>(() => PageFactory.InitElements(mockDriver, page), "is not IWebElement or IList<IWebElement>");
         }
 
         [Test]
@@ -259,17 +253,15 @@ namespace OpenQA.Selenium.Support.PageObjects
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "constructor for the specified class containing a single argument of type IWebDriver", MatchType = MessageMatch.Contains)]
         public void CanNotUseGenericInitElementWithInvalidConstructor()
         {
-            InvalidConstructorPage page = PageFactory.InitElements<InvalidConstructorPage>(mockExplicitDriver);
+            Assert.Throws<ArgumentException>(() => { InvalidConstructorPage page = PageFactory.InitElements<InvalidConstructorPage>(mockExplicitDriver); }, "constructor for the specified class containing a single argument of type IWebDriver");
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "constructor for the specified class containing a single argument of type IWebDriver", MatchType = MessageMatch.Contains)]
         public void CanNotUseGenericInitElementWithParameterlessConstructor()
         {
-            ParameterlessConstructorPage page = PageFactory.InitElements<ParameterlessConstructorPage>(mockExplicitDriver);
+            Assert.Throws<ArgumentException>(() => { ParameterlessConstructorPage page = PageFactory.InitElements<ParameterlessConstructorPage>(mockExplicitDriver); }, "constructor for the specified class containing a single argument of type IWebDriver");
         }
 
         #region Test helper methods

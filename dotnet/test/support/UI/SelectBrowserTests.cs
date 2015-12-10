@@ -10,13 +10,13 @@ namespace OpenQA.Selenium.Support.UI
     [TestFixture]
     public class SelectBrowserTests : DriverTestFixture
     {
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void RunBeforeAnyTest()
         {
             EnvironmentManager.Instance.WebServer.Start();
         }
 
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public void RunAfterAnyTests()
         {
             EnvironmentManager.Instance.CloseCurrentDriver();
@@ -30,11 +30,10 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
-        [ExpectedException(typeof(UnexpectedTagNameException))]
         public void ShouldThrowAnExceptionIfTheElementIsNotASelectElement()
         {
             IWebElement element = driver.FindElement(By.Name("checky"));
-            SelectElement elementWrapper = new SelectElement(element);
+            Assert.Throws<UnexpectedTagNameException>(() => { SelectElement elementWrapper = new SelectElement(element); });
         }
 
         [Test]
@@ -166,21 +165,19 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void ShouldNotAllowInvisibleOptionsToBeSelectedByVisibleText()
         {
             IWebElement element = driver.FindElement(By.Name("invisi_select"));
             SelectElement elementWrapper = new SelectElement(element);
-            elementWrapper.SelectByText("Apples");
+            Assert.Throws<NoSuchElementException>(() => elementWrapper.SelectByText("Apples"));
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void ShouldThrowExceptionOnSelectByVisibleTextIfOptionDoesNotExist()
         {
             IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
             SelectElement elementWrapper = new SelectElement(element);
-            elementWrapper.SelectByText("not there");
+            Assert.Throws<NoSuchElementException>(() => elementWrapper.SelectByText("not there"));
         }
 
         [Test]
@@ -194,12 +191,11 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void ShouldThrowExceptionOnSelectByIndexIfOptionDoesNotExist()
         {
             IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
             SelectElement elementWrapper = new SelectElement(element);
-            elementWrapper.SelectByIndex(10);
+            Assert.Throws<NoSuchElementException>(() => elementWrapper.SelectByIndex(10));
         }
 
         [Test]
@@ -213,12 +209,11 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void ShouldThrowExceptionOnSelectByReturnedValueIfOptionDoesNotExist()
         {
             IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
             SelectElement elementWrapper = new SelectElement(element);
-            elementWrapper.SelectByValue("not there");
+            Assert.Throws<NoSuchElementException>(() => elementWrapper.SelectByValue("not there"));
         }
 
         [Test]
@@ -233,12 +228,11 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void ShouldNotAllowUserToDeselectAllWhenSelectDoesNotSupportMultipleSelections()
         {
             IWebElement element = driver.FindElement(By.Name("selectomatic"));
             SelectElement elementWrapper = new SelectElement(element);
-            elementWrapper.DeselectAll();
+            Assert.Throws<InvalidOperationException>(() => elementWrapper.DeselectAll());
         }
 
         [Test]
@@ -253,13 +247,12 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
 
         public void ShouldNotAllowUserToDeselectOptionsByInvisibleText()
         {
             IWebElement element = driver.FindElement(By.Name("invisi_select"));
             SelectElement elementWrapper = new SelectElement(element);
-            elementWrapper.DeselectByText("Apples");
+            Assert.Throws<NoSuchElementException>(() => elementWrapper.DeselectByText("Apples"));
         }
 
         [Test]

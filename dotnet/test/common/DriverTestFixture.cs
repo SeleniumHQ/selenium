@@ -103,13 +103,13 @@ namespace OpenQA.Selenium
             }
         }
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void SetUp()
         {
             driver = EnvironmentManager.Instance.GetCurrentDriver();
         }
 
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public void TearDown()
         {
             // EnvironmentManager.Instance.CloseCurrentDriver();

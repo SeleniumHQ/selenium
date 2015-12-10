@@ -133,7 +133,7 @@ namespace OpenQA.Selenium.IE
         private bool ignoreProtectedModeSettings;
         private bool ignoreZoomLevel;
         private bool enableNativeEvents = true;
-        private bool requireWindowFocus;
+        private bool requireWindowFocus = true;
         private bool enablePersistentHover = true;
         private bool forceCreateProcessApi;
         private bool forceShellWindowsApi;

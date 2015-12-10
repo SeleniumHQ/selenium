@@ -214,14 +214,13 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void ShouldThrowAnExceptionWhenTheJavascriptIsBad()
         {
             if (!(driver is IJavaScriptExecutor))
                 return;
 
             driver.Url = xhtmlTestPage;
-            ExecuteScript("return squiggle();");
+            Assert.Throws<InvalidOperationException>(() => ExecuteScript("return squiggle();"));
         }
 
         [Test]
@@ -361,14 +360,13 @@ namespace OpenQA.Selenium
         }
 
 
-        [ExpectedException(typeof(ArgumentException))]
         public void ShouldThrowAnExceptionIfAnArgumentIsNotValid()
         {
             if (!(driver is IJavaScriptExecutor))
                 return;
 
             driver.Url = javascriptPage;
-            ExecuteScript("return arguments[0];", driver);
+            Assert.Throws<ArgumentException>(() => ExecuteScript("return arguments[0];", driver));
         }
 
         [Test]
@@ -458,7 +456,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [NeedsFreshDriver(BeforeTest = true, AfterTest = true)]
+        [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
         [Ignore("Reason for ignore: Failure indicates hang condition, which would break the test suite. Really needs a timeout set.")]
         public void ShouldThrowExceptionIfExecutingOnNoPage()
         {
@@ -524,7 +522,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException(typeof(StaleElementReferenceException))]
         public void ShouldThrowAnExceptionWhenArgumentsWithStaleElementPassed()
         {
             IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
@@ -541,7 +538,7 @@ namespace OpenQA.Selenium
 
             Dictionary<string, object> args = new Dictionary<string, object>();
             args["key"] = new object[] { "a", new object[] { "zero", 1, true, 3.14159, false, el }, "c" };
-            executor.ExecuteScript("return undefined;", args);
+            Assert.Throws<StaleElementReferenceException>(() => executor.ExecuteScript("return undefined;", args));
         }
 
         ///////////////////////////////////////////////////////

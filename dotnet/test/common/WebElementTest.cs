@@ -42,11 +42,10 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void ShouldThrowExceptionOnNonExistingElement()
         {
             driver.Url = simpleTestPage;
-            driver.FindElement(By.Id("doesnotexist"));
+            Assert.Throws<NoSuchElementException>(() => driver.FindElement(By.Id("doesnotexist")));
         }
 
         [Test]

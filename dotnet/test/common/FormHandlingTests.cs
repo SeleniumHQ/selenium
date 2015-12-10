@@ -68,11 +68,10 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.PhantomJS)]
         [IgnoreBrowser(Browser.Safari)]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void ShouldNotBeAbleToSubmitAFormThatDoesNotExist()
         {
             driver.Url = formsPage;
-            driver.FindElement(By.Name("SearchableText")).Submit();
+            Assert.Throws<NoSuchElementException>(() => driver.FindElement(By.Name("SearchableText")).Submit());
         }
 
         [Test]

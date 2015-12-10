@@ -13,7 +13,7 @@ namespace Selenium.Tests
     {
         protected ISelenium selenium;
         private string baseUrl = "http://localhost:" + EnvironmentManager.Instance.Port.ToString() + "/selenium-server";
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void FixtureSetUp()
         {
             //selenium = new WebDriverBackedSelenium(EnvironmentManager.Instance.StartDriver(), baseUrl + "/tests");
@@ -21,7 +21,7 @@ namespace Selenium.Tests
             selenium = EnvironmentManager.Instance.GetCurrentSelenium();
         }
 
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public void FixtureTearDown()
         {
             //selenium.Stop();

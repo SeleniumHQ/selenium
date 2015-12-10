@@ -40,12 +40,11 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void FindElementByXPathWhenNoMatch()
         {
             driver.Url = nestedPage;
             IWebElement element = driver.FindElement(By.Name("form2"));
-            element.FindElement(By.XPath("select/x"));
+            Assert.Throws<NoSuchElementException>(() => element.FindElement(By.XPath("select/x")));
         }
 
         [Test]
@@ -107,12 +106,11 @@ namespace OpenQA.Selenium
 
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void FindElementByIdWhenNoMatchInContext()
         {
             driver.Url = nestedPage;
             IWebElement element = driver.FindElement(By.Id("test_id_div"));
-            element.FindElement(By.Id("test_id_out"));
+            Assert.Throws<NoSuchElementException>(() => element.FindElement(By.Id("test_id_out")));
         }
 
 

@@ -11,7 +11,7 @@ namespace OpenQA.Selenium
         private const long LoadTimeInSeconds = 3;
 
         [Test]
-        [NeedsFreshDriver(BeforeTest = true)]
+        [NeedsFreshDriver(IsCreatedBeforeTest = true)]
         public void ShouldBlockUntilPageLoads()
         {
             DateTime start = DateTime.Now;
@@ -21,7 +21,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [NeedsFreshDriver(BeforeTest = true)]
+        [NeedsFreshDriver(IsCreatedBeforeTest = true)]
         public void ShouldBlockUntilIFramesAreLoaded()
         {
             DateTime start = DateTime.Now;
@@ -31,7 +31,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [NeedsFreshDriver(BeforeTest = true)]
+        [NeedsFreshDriver(IsCreatedBeforeTest = true)]
         public void RefreshShouldBlockUntilPageLoads()
         {
             DateTime start = DateTime.Now;

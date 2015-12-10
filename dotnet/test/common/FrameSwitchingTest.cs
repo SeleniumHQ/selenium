@@ -140,12 +140,11 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchFrameException))]
         public void ShouldEnsureElementIsAFrameBeforeSwitching()
         {
             driver.Url = framesetPage;
             IWebElement frame = driver.FindElement(By.TagName("frameset"));
-            driver.SwitchTo().Frame(frame);
+            Assert.Throws<NoSuchFrameException>(() => driver.SwitchTo().Frame(frame));
         }
 
         [Test]
@@ -193,29 +192,26 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchFrameException))]
         public void ShouldThrowFrameNotFoundExceptionLookingUpSubFramesWithSuperFrameNames()
         {
             driver.Url = framesetPage;
             driver.SwitchTo().Frame("fourth");
-            driver.SwitchTo().Frame("second");
+            Assert.Throws<NoSuchFrameException>(() => driver.SwitchTo().Frame("second"));
 
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchFrameException))]
         public void ShouldThrowAnExceptionWhenAFrameCannotBeFound()
         {
             driver.Url = xhtmlTestPage;
-            driver.SwitchTo().Frame("Nothing here");
+            Assert.Throws<NoSuchFrameException>(() => driver.SwitchTo().Frame("Nothing here"));
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchFrameException))]
         public void ShouldThrowAnExceptionWhenAFrameCannotBeFoundByIndex()
         {
             driver.Url = xhtmlTestPage;
-            driver.SwitchTo().Frame(27);
+            Assert.Throws<NoSuchFrameException>(() => driver.SwitchTo().Frame(27));
         }
 
         [Test]
@@ -502,7 +498,7 @@ namespace OpenQA.Selenium
         // ----------------------------------------------------------------------------------------------
 
         [Test]
-        [NeedsFreshDriver(AfterTest = true)]
+        [NeedsFreshDriver(IsCreatedAfterTest = true)]
         public void ClosingTheFinalBrowserWindowShouldNotCauseAnExceptionToBeThrown()
         {
             driver.Url = simpleTestPage;

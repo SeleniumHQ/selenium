@@ -629,7 +629,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException(typeof(WebDriverException))]
         public void ShouldNotShowCookieAddedToDifferentDomain()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
@@ -640,7 +639,7 @@ namespace OpenQA.Selenium
             driver.Url = macbethPage;
             IOptions options = driver.Manage();
             Cookie cookie = new Cookie("Bart", "Simpson", EnvironmentManager.Instance.UrlBuilder.HostName + ".com", EnvironmentManager.Instance.UrlBuilder.Path, null);
-            options.Cookies.AddCookie(cookie);
+            Assert.Throws<WebDriverException>(() => options.Cookies.AddCookie(cookie));
             ReadOnlyCollection<Cookie> cookies = options.Cookies.AllCookies;
             Assert.IsFalse(cookies.Contains(cookie), "Invalid cookie was returned");
         }
