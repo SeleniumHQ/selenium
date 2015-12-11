@@ -36,19 +36,24 @@ namespace OpenQA.Selenium
 
         public void ApplyToTest(Test test)
         {
-            if (test.RunState == RunState.Runnable)
+            if (test.RunState != RunState.NotRunnable)
             {
                 List<Attribute> ignoreAttributes = new List<Attribute>();
-                IgnoreBrowserAttribute[] ignoreMethodAttributes = test.Method.GetCustomAttributes<IgnoreBrowserAttribute>(true);
-                if (ignoreMethodAttributes.Length > 0)
+                if (test.IsSuite)
                 {
-                    ignoreAttributes.AddRange(ignoreMethodAttributes);
+                    Attribute[] ignoreClassAttributes = test.TypeInfo.GetCustomAttributes<IgnoreBrowserAttribute>(true);
+                    if (ignoreClassAttributes.Length > 0)
+                    {
+                        ignoreAttributes.AddRange(ignoreClassAttributes);
+                    }
                 }
-
-                Attribute[] ignoreClassAttributes = test.TypeInfo.GetCustomAttributes<IgnoreBrowserAttribute>(true);
-                if (ignoreClassAttributes.Length > 0)
+                else
                 {
-                    ignoreAttributes.AddRange(ignoreClassAttributes);
+                    IgnoreBrowserAttribute[] ignoreMethodAttributes = test.Method.GetCustomAttributes<IgnoreBrowserAttribute>(true);
+                    if (ignoreMethodAttributes.Length > 0)
+                    {
+                        ignoreAttributes.AddRange(ignoreMethodAttributes);
+                    }
                 }
 
                 foreach (Attribute attr in ignoreAttributes)
@@ -63,6 +68,7 @@ namespace OpenQA.Selenium
                         }
 
                         test.RunState = RunState.Ignored;
+                        test.Properties.Set(PropertyNames.SkipReason, browserToIgnoreAttr.Reason);
                     }
                 }
             }
