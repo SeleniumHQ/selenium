@@ -17,7 +17,6 @@
 #ifndef WEBDRIVER_IE_MOUSEMOVETOCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_MOUSEMOVETOCOMMANDHANDLER_H_
 
-#include "interactions.h"
 #include "../Browser.h"
 #include "../IECommandHandler.h"
 #include "../IECommandExecutor.h"

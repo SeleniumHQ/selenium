@@ -20,7 +20,6 @@
 #include "../Browser.h"
 #include "../IECommandHandler.h"
 #include "../IECommandExecutor.h"
-#include "interactions.h"
 
 namespace webdriver {
 
