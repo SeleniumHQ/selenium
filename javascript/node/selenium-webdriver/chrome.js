@@ -749,7 +749,7 @@ Options.prototype.toCapabilities = function(opt_capabilities) {
   capabilities.
       set(webdriver.Capability.PROXY, this.proxy_).
       set(webdriver.Capability.LOGGING_PREFS, this.logPrefs_).
-      set(OPTIONS_CAPABILITY_KEY, this);
+      set(OPTIONS_CAPABILITY_KEY, this.options_);
   return capabilities;
 };
 
