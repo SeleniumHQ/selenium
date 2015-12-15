@@ -116,6 +116,15 @@ namespace OpenQA.Selenium.Support.PageObjects
             Assert.Throws<ArgumentException>(() => PageFactory.InitElements(driver, page), "Cannot specify FindsBySequence and FindsByAll on the same member");
         }
 
+        [Test]
+        public void FrameTest()
+        {
+            driver.Url = iframePage;
+            var page = new PageFactoryBrowserTest.IFramePage();
+            PageFactory.InitElements(driver, page);
+            driver.SwitchTo().Frame(page.Frame);
+        }
+
         #region Page classes for tests
         #pragma warning disable 649 //We set fields through reflection, so expect an always-null warning
 
@@ -154,6 +163,12 @@ namespace OpenQA.Selenium.Support.PageObjects
             [FindsBy(How = How.Id, Using = "parent", Priority = 0)]
             [FindsBy(How = How.Id, Using = "child", Priority = 1)]
             public IWebElement NotFound;
+        }
+
+        private class IFramePage
+        {
+            [FindsBy(How = How.Id, Using = "iframe1")]
+            public IWebElement Frame;
         }
 
         #pragma warning restore 649

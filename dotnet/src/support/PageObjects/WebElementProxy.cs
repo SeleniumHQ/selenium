@@ -31,7 +31,7 @@ namespace OpenQA.Selenium.Support.PageObjects
     /// <summary>
     /// Intercepts the request to a single <see cref="IWebElement"/>
     /// </summary>
-    internal sealed class WebElementProxy : WebDriverObjectProxy
+    internal sealed class WebElementProxy : WebDriverObjectProxy, IWrapsElement
     {
         private IWebElement cachedElement;
 
@@ -46,6 +46,14 @@ namespace OpenQA.Selenium.Support.PageObjects
         private WebElementProxy(Type classToProxy, IElementLocator locator, IEnumerable<By> bys, bool cache)
             : base(classToProxy, locator, bys, cache)
         {
+        }
+
+        /// <summary>
+        /// Gets the <see cref="IWebElement"/> wrapped by this object.
+        /// </summary>
+        public IWebElement WrappedElement
+        {
+            get { return this.Element; }
         }
 
         /// <summary>
