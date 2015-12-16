@@ -29,7 +29,7 @@ namespace OpenQA.Selenium
         [Test]
         public void ShouldThrowAnExceptionWhenTheValueIsNull()
         {
-            Assert.Throws<ArgumentException>(() => new ReturnedCookie("name", null, null, null, DateTime.Now, false, false));
+            Assert.Throws<ArgumentNullException>(() => new ReturnedCookie("name", null, null, null, DateTime.Now, false, false));
         }
 
         [Test]
