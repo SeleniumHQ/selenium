@@ -362,6 +362,14 @@ LRESULT IECommandExecutor::OnNewHtmlDialog(UINT uMsg,
   return 0;
 }
 
+LRESULT IECommandExecutor::OnQuit(UINT uMsg,
+                                  WPARAM wParam,
+                                  LPARAM lParam,
+                                  BOOL& bHandled) {
+  this->input_manager_->StopPersistentEvents();
+  return 0;
+}
+
 LRESULT IECommandExecutor::OnGetQuitStatus(UINT uMsg,
                                            WPARAM wParam,
                                            LPARAM lParam,
@@ -665,11 +673,11 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
     return ENOSUCHDRIVER;
   }
   // Set persistent hover functionality in the interactions implementation. 
-  setEnablePersistentHover(this->enable_persistent_hover_);
+  this->input_manager_->SetPersistentEvents(this->enable_persistent_hover_);
   LOG(INFO) << "Persistent hovering set to: " << this->enable_persistent_hover_;
   if (!this->enable_persistent_hover_) {
     LOG(INFO) << "Stopping previously-running persistent event thread.";
-    stopPersistentEventFiring();
+    this->input_manager_->StopPersistentEvents();
   }
 
   this->proxy_manager_->SetProxySettings(process_window_info.hwndBrowser);

@@ -19,7 +19,6 @@
 #include "command_types.h"
 #include "errorcodes.h"
 #include "IEWebDriverManagerIds.h"
-#include "interactions.h"
 #include "json.h"
 #include "logging.h"
 #include "RegistryUtilities.h"
@@ -58,7 +57,7 @@ LRESULT IEWebDriverManagerCommandExecutor::OnCreate(UINT uMsg,
   this->serialized_response_ = "";
 
   // This call may not be required, but let's not take any chances.
-  setEnablePersistentHover(false);
+  //setEnablePersistentHover(false);
   this->factory_ = new BrowserFactory();
 
   HRESULT hr = ::CoCreateInstance(CLSID_IEWebDriverManager,

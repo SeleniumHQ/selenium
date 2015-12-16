@@ -19,7 +19,7 @@
 #include "ElementRepository.h"
 #include "HookProcessor.h"
 #include "InputManager.h"
-#include "interactions.h"
+#include "InteractionsManager.h"
 #include "json.h"
 #include "keycodes.h"
 #include "logging.h"
@@ -46,9 +46,14 @@ InputManager::InputManager() {
   CComVariant mouse_state;
   mouse_state.vt = VT_NULL;
   this->mouse_state_ = mouse_state;
+
+  this->interactions_manager_ = new InteractionsManager();
 }
 
 InputManager::~InputManager(void) {
+  if (this->interactions_manager_ != NULL) {
+    delete this->interactions_manager_;
+  }
 }
 
 void InputManager::Initialize(ElementRepository* element_map) {
@@ -239,10 +244,10 @@ int InputManager::MouseClick(BrowserHandle browser_wrapper, int button) {
       this->AddMouseInput(browser_window_handle, up_flag, this->last_known_mouse_x_, this->last_known_mouse_y_);
     } else {
       LOG(DEBUG) << "Using SendMessage method for mouse click";
-      clickAt(browser_window_handle,
-              this->last_known_mouse_x_,
-              this->last_known_mouse_y_,
-              button);
+      this->interactions_manager_->clickAt(browser_window_handle,
+                                           this->last_known_mouse_x_,
+                                           this->last_known_mouse_y_,
+                                           button);
     }
   } else {
     LOG(DEBUG) << "Using synthetic events for mouse click";
@@ -298,10 +303,10 @@ int InputManager::MouseButtonDown(BrowserHandle browser_wrapper) {
     } else { 
       LOG(DEBUG) << "Using SendMessage method for mouse button down";
       //TODO: json wire protocol allows 3 mouse button types for this command
-      mouseDownAt(browser_window_handle,
-                  this->last_known_mouse_x_,
-                  this->last_known_mouse_y_,
-                  MOUSEBUTTON_LEFT);
+      this->interactions_manager_->mouseDownAt(browser_window_handle,
+                                               this->last_known_mouse_x_,
+                                               this->last_known_mouse_y_,
+                                               MOUSEBUTTON_LEFT);
     }
   } else {
     LOG(DEBUG) << "Using synthetic events for mouse button down";
@@ -335,10 +340,10 @@ int InputManager::MouseButtonUp(BrowserHandle browser_wrapper) {
     } else { 
       LOG(DEBUG) << "Using SendMessage method for mouse button up";
       //TODO: json wire protocol allows 3 mouse button types for this command
-      mouseUpAt(browser_window_handle,
-                this->last_known_mouse_x_,
-                this->last_known_mouse_y_,
-                MOUSEBUTTON_LEFT);
+      this->interactions_manager_->mouseUpAt(browser_window_handle,
+                                             this->last_known_mouse_x_,
+                                             this->last_known_mouse_y_,
+                                             MOUSEBUTTON_LEFT);
     }
   } else {
     LOG(DEBUG) << "Using synthetic events for mouse button up";
@@ -374,7 +379,9 @@ int InputManager::MouseDoubleClick(BrowserHandle browser_wrapper) {
       this->AddMouseInput(browser_window_handle, MOUSEEVENTF_LEFTUP, this->last_known_mouse_x_, this->last_known_mouse_y_);
     } else { 
       LOG(DEBUG) << "Using SendMessage method for mouse double click";
-      doubleClickAt(browser_window_handle, this->last_known_mouse_x_, this->last_known_mouse_y_);
+      this->interactions_manager_->doubleClickAt(browser_window_handle,
+                                                 this->last_known_mouse_x_,
+                                                 this->last_known_mouse_y_);
     }
   } else {
     LOG(DEBUG) << "Using synthetic events for mouse double click";
@@ -468,12 +475,12 @@ int InputManager::MouseMoveTo(BrowserHandle browser_wrapper, std::string element
       }
     } else {
       LOG(DEBUG) << "Using SendMessage method for mouse move";
-      LRESULT move_result = mouseMoveTo(browser_window_handle,
-                                        10,
-                                        start_x,
-                                        start_y,
-                                        end_x,
-                                        end_y);
+      LRESULT move_result = this->interactions_manager_->mouseMoveTo(browser_window_handle,
+                                                                     10,
+                                                                     start_x,
+                                                                     start_y,
+                                                                     end_x,
+                                                                     end_y);
     }
     this->last_known_mouse_x_ = end_x;
     this->last_known_mouse_y_ = end_y;
@@ -513,6 +520,14 @@ int InputManager::MouseMoveTo(BrowserHandle browser_wrapper, std::string element
   return status_code;
 }
 
+void InputManager::SetPersistentEvents(bool is_firing) {
+  this->interactions_manager_->setEnablePersistentHover(is_firing);
+}
+
+void InputManager::StopPersistentEvents() {
+  this->interactions_manager_->stopPersistentEventFiring();
+}
+
 int InputManager::SendKeystrokes(BrowserHandle browser_wrapper, Json::Value keystroke_array, bool auto_release_modifier_keys) {
   LOG(TRACE) << "Entering InputManager::SendKeystrokes";
   int status_code = WD_SUCCESS;
@@ -542,9 +557,9 @@ int InputManager::SendKeystrokes(BrowserHandle browser_wrapper, Json::Value keys
       }
     } else {
       LOG(DEBUG) << "Using SendMessage method for sending keys";
-      sendKeys(window_handle, keys.c_str(), 0);
+      this->interactions_manager_->sendKeys(window_handle, keys.c_str(), 0);
       if (auto_release_modifier_keys) {
-        releaseModifierKeys(window_handle, 0);
+        this->interactions_manager_->releaseModifierKeys(window_handle, 0);
       }
     }
   } else {

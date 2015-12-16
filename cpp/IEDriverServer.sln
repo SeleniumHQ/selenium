@@ -1,13 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "civetweb", "..\third_party\cpp\civetweb\civetweb.vcxproj", "{231A8BED-6F2D-4688-A3BD-920310621BBF}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "json-cpp", "..\third_party\cpp\json-cpp\json-cpp.vcxproj", "{320F3BBE-8223-4E7F-ABEE-18D3BD57B1FD}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-interactions", "webdriver-interactions\webdriver-interactions.vcxproj", "{87FA39A1-958E-478A-8AB9-6D5E5AAA3886}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-server", "webdriver-server\webdriver-server.vcxproj", "{35A23A16-EF17-4CC3-8854-785025A304F3}"
 EndProject
@@ -39,14 +37,6 @@ Global
 		{320F3BBE-8223-4E7F-ABEE-18D3BD57B1FD}.Release|Win32.Build.0 = Release|Win32
 		{320F3BBE-8223-4E7F-ABEE-18D3BD57B1FD}.Release|x64.ActiveCfg = Release|x64
 		{320F3BBE-8223-4E7F-ABEE-18D3BD57B1FD}.Release|x64.Build.0 = Release|x64
-		{87FA39A1-958E-478A-8AB9-6D5E5AAA3886}.Debug|Win32.ActiveCfg = Debug|Win32
-		{87FA39A1-958E-478A-8AB9-6D5E5AAA3886}.Debug|Win32.Build.0 = Debug|Win32
-		{87FA39A1-958E-478A-8AB9-6D5E5AAA3886}.Debug|x64.ActiveCfg = Debug|x64
-		{87FA39A1-958E-478A-8AB9-6D5E5AAA3886}.Debug|x64.Build.0 = Debug|x64
-		{87FA39A1-958E-478A-8AB9-6D5E5AAA3886}.Release|Win32.ActiveCfg = Release|Win32
-		{87FA39A1-958E-478A-8AB9-6D5E5AAA3886}.Release|Win32.Build.0 = Release|Win32
-		{87FA39A1-958E-478A-8AB9-6D5E5AAA3886}.Release|x64.ActiveCfg = Release|x64
-		{87FA39A1-958E-478A-8AB9-6D5E5AAA3886}.Release|x64.Build.0 = Release|x64
 		{35A23A16-EF17-4CC3-8854-785025A304F3}.Debug|Win32.ActiveCfg = Debug|Win32
 		{35A23A16-EF17-4CC3-8854-785025A304F3}.Debug|Win32.Build.0 = Debug|Win32
 		{35A23A16-EF17-4CC3-8854-785025A304F3}.Debug|x64.ActiveCfg = Debug|x64

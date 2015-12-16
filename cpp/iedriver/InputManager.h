@@ -32,9 +32,10 @@ struct KeyInfo {
   bool is_webdriver_key;
 };
 
-  // Forward declaration of classes to avoid
+// Forward declaration of classes to avoid
 // circular include files.
 class ElementRepository;
+class InteractionsManager;
 
 class InputManager {
  public:
@@ -58,6 +59,9 @@ class InputManager {
                      Json::Value keystroke_array,
                      bool auto_release_modifier_keys);
   bool SetFocusToBrowser(BrowserHandle browser_wrapper);
+
+  void SetPersistentEvents(bool is_firing);
+  void StopPersistentEvents(void);
 
   bool enable_native_events(void) const { return this->use_native_events_; }
   void set_enable_native_events(const bool enable_native_events) { 
@@ -124,6 +128,7 @@ class InputManager {
   CComVariant mouse_state_;
 
   ElementRepository* element_map_;
+  InteractionsManager* interactions_manager_;
 
   std::vector<INPUT> inputs_;
 };

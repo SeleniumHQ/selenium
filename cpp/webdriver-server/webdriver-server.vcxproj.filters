@@ -56,5 +56,11 @@
     <ClInclude Include="uri_info.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="keycodes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="logging.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -29,7 +29,6 @@
 #include <algorithm>
 #include "Browser.h"
 #include "Generated/atoms.h"
-#include "interactions.h"
 #include "json.h"
 #include "logging.h"
 #include "Script.h"

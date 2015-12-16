@@ -19,7 +19,6 @@
 #include "CommandExecutor.h"
 #include "IECommandExecutor.h"
 #include "IEWebDriverManagerCommandExecutor.h"
-#include "interactions.h"
 #include "logging.h"
 #include "messages.h"
 
@@ -141,9 +140,7 @@ void IESession::ShutDown(void) {
   LOG(TRACE) << "Entering IESession::ShutDown";
 
   // Kill the background thread first - otherwise the IE process crashes.
-  if (this->driver_implementation_ == LegacyImplementation) {
-    stopPersistentEventFiring();
-  }
+  ::SendMessage(this->executor_window_handle_, WD_QUIT, NULL, NULL);
 
   // Don't terminate the thread until the browsers have all been deallocated.
   // Note: Loop count of 6, because the timeout is 5 seconds, giving us a nice,

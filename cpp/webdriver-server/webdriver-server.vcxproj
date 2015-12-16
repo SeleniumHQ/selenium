@@ -159,6 +159,8 @@
     <ClInclude Include="command_handler.h" />
     <ClInclude Include="command_types.h" />
     <ClInclude Include="errorcodes.h" />
+    <ClInclude Include="keycodes.h" />
+    <ClInclude Include="logging.h" />
     <ClInclude Include="precompile.h" />
     <ClInclude Include="response.h" />
     <ClInclude Include="server.h" />

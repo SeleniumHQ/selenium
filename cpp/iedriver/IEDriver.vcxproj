@@ -211,11 +211,6 @@
     <ProjectReference Include="..\..\third_party\cpp\json-cpp\json-cpp.vcxproj">
       <Project>{320f3bbe-8223-4e7f-abee-18d3bd57b1fd}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\webdriver-interactions\webdriver-interactions.vcxproj">
-      <Project>{87fa39a1-958e-478a-8ab9-6d5e5aaa3886}</Project>
-      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\webdriver-server\webdriver-server.vcxproj">
       <Project>{35a23a16-ef17-4cc3-8854-785025a304f3}</Project>
       <Private>true</Private>
@@ -245,6 +240,7 @@
     <ClCompile Include="IESession.cpp" />
     <ClCompile Include="IEWebDriverManagerCommandExecutor.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="InteractionsManager.cpp" />
     <ClCompile Include="RegistryUtilities.cpp" />
     <ClCompile Include="Script.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -257,6 +253,7 @@
     <ClCompile Include="VariantUtilities.cpp" />
     <ClCompile Include="WebDriver.cpp" />
     <ClCompile Include="ProxyManager.cpp" />
+    <ClCompile Include="WindowUtilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Alert.h" />
@@ -288,6 +285,7 @@
     <ClInclude Include="IESession.h" />
     <ClInclude Include="IEWebDriverManagerCommandExecutor.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="InteractionsManager.h" />
     <ClInclude Include="LocationInfo.h" />
     <ClInclude Include="messages.h" />
     <ClInclude Include="RegistryUtilities.h" />
@@ -353,6 +351,7 @@
     <ClInclude Include="Generated\atoms.h" />
     <ClInclude Include="Generated\sizzle.h" />
     <ClInclude Include="ProxyManager.h" />
+    <ClInclude Include="WindowUtilities.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="IEDriver.def" />

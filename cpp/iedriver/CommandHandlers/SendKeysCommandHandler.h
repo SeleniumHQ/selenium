@@ -21,7 +21,7 @@
 #include "../Browser.h"
 #include "../IECommandHandler.h"
 #include "../IECommandExecutor.h"
-#include "interactions.h"
+#include "../WindowUtilities.h"
 #include "logging.h"
 
 const LPCTSTR fileDialogNames[] = {
@@ -233,10 +233,10 @@ class SendKeysCommandHandler : public IECommandHandler {
     HWND edit_field_window_handle = NULL;
     int max_wait = 10;
     while (!edit_field_window_handle && --max_wait) {
-      wait(200);
+      WindowUtilities::Wait(200);
       edit_field_window_handle = dialog_window_handle;
       for (int i = 1; fileDialogNames[i]; ++i) {
-        edit_field_window_handle = getChildWindow(edit_field_window_handle,
+        edit_field_window_handle = WindowUtilities::GetChildWindow(edit_field_window_handle,
                                                   fileDialogNames[i]);
       }
     }
@@ -254,7 +254,7 @@ class SendKeysCommandHandler : public IECommandHandler {
                       WM_SETTEXT,
                       0,
                       reinterpret_cast<LPARAM>(filename));
-        wait(1000);
+        WindowUtilities::Wait(1000);
         curr = ::SendMessage(edit_field_window_handle, WM_GETTEXTLENGTH, 0, 0);
       }
 
@@ -293,7 +293,7 @@ class SendKeysCommandHandler : public IECommandHandler {
             }
           }
 
-          wait(200);
+          WindowUtilities::Wait(200);
         } else if (triedToDismiss) {
           // Probably just a slow close
           LOG(DEBUG) << "Did not find OK button, but did previously. Assume dialog dismiss worked.";
@@ -364,7 +364,7 @@ class SendKeysCommandHandler : public IECommandHandler {
     // Hard-coded 1 second timeout here. Possible TODO is make this adjustable.
     clock_t max_wait = clock() + CLOCKS_PER_SEC;
     for (int i = clock(); i < max_wait; i = clock()) {
-      wait(1);
+      WindowUtilities::Wait(1);
       CComPtr<IHTMLElement> active_wait_element;
       if (document->get_activeElement(&active_wait_element) == S_OK && active_wait_element != NULL) {
         CComPtr<IHTMLElement2> active_wait_element2;

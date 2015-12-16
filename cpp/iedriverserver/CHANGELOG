@@ -9,6 +9,21 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.48.0.5
+=========
+ * Refactoring of IE driver native events interaction code. This commit
+   removes the dependency on shared native event code with Firefox.
+   Since Firefox no longer supports native events, it makes no sense to
+   have common code refactored for only one consumer, so this commit
+   moves the Windows-only SendMessage code directly into the IE driver.
+   This is a first step toward deleting the webdriver-interactions
+   directory. While extreme care has been taken to ensure this
+   refactoring causes no regressions, there is a chance something will
+   still break. This particular refactor should also be treated as an
+   intermediate step, as the ported code contains some redundancies to
+   what is already present in the driver. Future refactoring will take
+   place to remove the redundancies and better integrate the code.
+
 v2.48.0.4
 =========
  * Added ability to set whitelisted IP addresses to access IE driver server.
