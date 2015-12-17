@@ -39,7 +39,8 @@ class WebDriver(RemoteWebDriver):
     NATIVE_EVENTS_ALLOWED = sys.platform != "darwin"
 
     def __init__(self, firefox_profile=None, firefox_binary=None, timeout=30,
-                 capabilities=None, proxy=None, executable_path='wires'):
+                 desired_capabilities=DesiredCapabilities.FIREFOX, 
+                 proxy=None, executable_path='wires'):
 
         self.binary = firefox_binary
         self.profile = firefox_profile
@@ -50,20 +51,18 @@ class WebDriver(RemoteWebDriver):
         self.profile.native_events_enabled = (
             self.NATIVE_EVENTS_ALLOWED and self.profile.native_events_enabled)
 
-        if capabilities is None:
-            capabilities = DesiredCapabilities.FIREFOX
-
-        if "marionette" in capabilities and capabilities['marionette'] is True:
+        if ("marionette" in desired_capabilities and
+                 desired_capabilities['marionette'] is True):
             # Let's use Marionette! WOOOOHOOOOO!
-            if "binary" in capabilities:
-                self.binary = capabilities["binary"]
+            if "binary" in desired_capabilities:
+                self.binary = desired_capabilities["binary"]
             self.service = Service(executable_path, firefox_binary=self.binary)
             self.service.start()
 
             RemoteWebDriver.__init__(self,
                 command_executor=FirefoxRemoteConnection(
                     remote_server_addr=self.service.service_url),
-                desired_capabilities=capabilities,
+                desired_capabilities=desired_capabilities,
                 keep_alive=True)
 
         else:
@@ -72,12 +71,12 @@ class WebDriver(RemoteWebDriver):
                 self.binary = FirefoxBinary()
 
             if proxy is not None:
-                proxy.add_to_capabilities(capabilities)
+                proxy.add_to_capabilities(desired_capabilities)
 
             RemoteWebDriver.__init__(self,
             command_executor=ExtensionConnection("127.0.0.1", self.profile,
             self.binary, timeout),
-            desired_capabilities=capabilities,
+            desired_capabilities=desired_capabilities,
             keep_alive=True)
 
 

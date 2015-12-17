@@ -25,7 +25,7 @@ from .service import Service
 class WebDriver(RemoteWebDriver):
 
     def __init__(self, executable_path='MicrosoftWebDriver.exe',
-                 capabilities=None, port=0):
+                 desired_capabilities=DesiredCapabilities.EDGE, port=0):
         self.port = port
         if self.port == 0:
             self.port = utils.free_port()
@@ -33,14 +33,11 @@ class WebDriver(RemoteWebDriver):
         self.edge_service = Service(executable_path, port=self.port)
         self.edge_service.start()
 
-        if capabilities is None:
-            capabilities = DesiredCapabilities.EDGE
-
         RemoteWebDriver.__init__(
             self,
             command_executor=RemoteConnection('http://localhost:%d' % self.port,
                                               resolve_ip=False),
-            desired_capabilities=capabilities)
+            desired_capabilities=desired_capabilities)
         self._is_remote = False
 
     def quit(self):
