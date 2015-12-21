@@ -445,6 +445,7 @@
      */
     function yieldInIE7() {
       return new goog.Promise(function(done) {
+        goog.testing.TestCase.getActiveTestCase().promiseTimeout = 5000;
         if (goog.userAgent.IE && !bot.userAgent.isEngineVersion(8)) {
           setTimeout(done, 500);
         } else {
