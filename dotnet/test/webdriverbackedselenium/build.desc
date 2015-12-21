@@ -14,7 +14,7 @@ dotnet_test(name = "webdriverbackedselenium",
     "//dotnet/src/webdriver:webdriver",
     "//dotnet/src/core:core",
     "//dotnet/src/webdriverbackedselenium:webdriverbackedselenium",
-    "third_party/dotnet/nunit-2.6.2/framework/nunit.framework.dll",
+    "third_party/dotnet/nunit-3.0.1/nunit.framework.dll",
   ],
   out = "Selenium.WebDriverBackedSelenium.Tests.dll",
   files = [

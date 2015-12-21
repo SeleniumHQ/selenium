@@ -7,7 +7,7 @@ dotnet_test(name = "safari",
     "System.Xml.dll",
     "//dotnet/src/webdriver:webdriver",
     "//dotnet/test/common:common",
-    "third_party/dotnet/nunit-2.6.2/framework/nunit.framework.dll"
+    "third_party/dotnet/nunit-3.0.1/nunit.framework.dll"
   ],
   out = "WebDriver.Safari.Tests.dll",
   files = [
