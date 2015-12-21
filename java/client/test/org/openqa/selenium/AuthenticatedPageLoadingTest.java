@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
@@ -46,7 +47,8 @@ public class AuthenticatedPageLoadingTest extends JUnit4TestBase {
 
     alert.authenticateUsing(user);
 
-    assertEquals("authorized", driver.findElement(By.tagName("h1")).getText());
+	WebElement element = wait.until(presenceOfElementLocated(By.tagName("h1")));
+    assertEquals("authorized", element.getText());
   }
 
   @Test
