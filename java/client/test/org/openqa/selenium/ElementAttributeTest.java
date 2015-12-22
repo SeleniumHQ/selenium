@@ -253,7 +253,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
 
   @Test
   public void testShouldReturnHiddenTextForTextContentAttribute() {
-    assumeFalse("IE before 9 doesn't handle textContent attribute", TestUtilities.isOldIe(driver));
+    assumeFalse("IE before 9 doesn't handle textContent attribute; IE9 loads page in quirks mode, so no textContent attribute", TestUtilities.getIEVersion(driver) < 10);
 
     driver.get(pages.simpleTestPage);
 
