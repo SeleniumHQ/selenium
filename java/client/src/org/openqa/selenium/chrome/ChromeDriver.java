@@ -37,6 +37,7 @@ import org.openqa.selenium.remote.html5.RemoteWebStorage;
  * This class is provided as a convenience for easily testing the Chrome browser. The control server
  * which each instance communicates with will live and die with the instance.
  *
+ * <p>
  * To avoid unnecessarily restarting the ChromeDriver server with each instance, use a
  * {@link RemoteWebDriver} coupled with the desired {@link ChromeDriverService}, which is managed
  * separately. For example: <pre>{@code

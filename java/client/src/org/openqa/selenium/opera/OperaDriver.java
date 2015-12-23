@@ -36,6 +36,7 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
  * machine. This class is provided as a convenience for easily testing the Chrome browser. The
  * control server which each instance communicates with will live and die with the instance.
  *
+ * <p>
  * To avoid unnecessarily restarting the OperaDriver server with each instance, use a
  * {@link RemoteWebDriver} coupled with the desired {@link OperaDriverService}, which is managed
  * separately. For example: <pre>{@code
