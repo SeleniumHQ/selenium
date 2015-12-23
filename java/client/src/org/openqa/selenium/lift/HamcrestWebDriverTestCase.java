@@ -97,8 +97,13 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
   }
 
   /**
-   * Syntactic sugar to use with {@link org.openqa.selenium.lift.HamcrestWebDriverTestCase}, e.g.
-   * type("cheese", into(textbox())); The into() method simply returns its argument.
+   * Syntactic sugar to use with
+   * {@link org.openqa.selenium.lift.HamcrestWebDriverTestCase#type(String, Finder)},
+   * e.g.
+   * <pre>
+   * type("cheese", into(textbox()));
+   * </pre>
+   * The into() method simply returns its argument.
    *
    * @param input finder input
    * @return the finder
