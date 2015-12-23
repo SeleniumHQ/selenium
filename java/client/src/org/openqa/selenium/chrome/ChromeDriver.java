@@ -40,25 +40,16 @@ import org.openqa.selenium.remote.html5.RemoteWebStorage;
  * <p>
  * To avoid unnecessarily restarting the ChromeDriver server with each instance, use a
  * {@link RemoteWebDriver} coupled with the desired {@link ChromeDriverService}, which is managed
- * separately. For example: <pre>{@code
+ * separately. For example:
  *
- * import static org.junit.Assert.assertEquals;
- *
- * import org.junit.*;
- * import org.junit.runner.RunWith;
- * import org.junit.runners.JUnit4;
- * import org.openqa.selenium.chrome.ChromeDriverService;
- * import org.openqa.selenium.remote.DesiredCapabilities;
- * import org.openqa.selenium.remote.RemoteWebDriver;
- *
- * {@literal @RunWith(JUnit4.class)}
- * public class ChromeTest extends TestCase {
+ * <pre>
+ * public class ChromeTest {
  *
  *   private static ChromeDriverService service;
  *   private WebDriver driver;
  *
- *   {@literal @BeforeClass}
- *   public static void createAndStartService() {
+ *   &#064;BeforeClass
+ *   public static void createAndStartService() throws IOException {
  *     service = new ChromeDriverService.Builder()
  *         .usingDriverExecutable(new File("path/to/my/chromedriver.exe"))
  *         .usingAnyFreePort()
@@ -66,32 +57,32 @@ import org.openqa.selenium.remote.html5.RemoteWebStorage;
  *     service.start();
  *   }
  *
- *   {@literal @AfterClass}
- *   public static void createAndStopService() {
+ *   &#064;AfterClass
+ *   public static void stopService() {
  *     service.stop();
  *   }
  *
- *   {@literal @Before}
+ *   &#064;Before
  *   public void createDriver() {
  *     driver = new RemoteWebDriver(service.getUrl(),
  *         DesiredCapabilities.chrome());
  *   }
  *
- *   {@literal @After}
+ *   &#064;After
  *   public void quitDriver() {
  *     driver.quit();
  *   }
  *
- *   {@literal @Test}
+ *   &#064;Test
  *   public void testGoogleSearch() {
  *     driver.get("http://www.google.com");
  *     WebElement searchBox = driver.findElement(By.name("q"));
- *     searchBox.sendKeys("webdriver");
- *     searchBox.quit();
- *     assertEquals("webdriver - Google Search", driver.getTitle());
+ *     searchBox.sendKeys("webdriver" + Keys.ENTER);
+ *     new WebDriverWait(driver, 5).until(
+ *        ExpectedConditions.titleIs("webdriver - Google Search"));
  *   }
  * }
- * }</pre>
+ * </pre>
  *
  * Note that unlike ChromeDriver, RemoteWebDriver doesn't directly implement
  * role interfaces such as {@link LocationContext} and {@link WebStorage}.

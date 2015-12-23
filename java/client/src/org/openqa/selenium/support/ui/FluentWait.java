@@ -47,15 +47,16 @@ import java.util.concurrent.TimeUnit;
  * element on the page.
  *
  * <p>
- * Sample usage: <pre>
+ * Sample usage:
+ * <pre>
  *   // Waiting 30 seconds for an element to be present on the page, checking
  *   // for its presence once every 5 seconds.
- *   Wait{@literal<WebDriver>} wait = new FluentWait{@literal<WebDriver>}(driver)
+ *   Wait<WebDriver> wait = new FluentWait<WebDriver>(driver)
  *       .withTimeout(30, SECONDS)
  *       .pollingEvery(5, SECONDS)
  *       .ignoring(NoSuchElementException.class);
  *
- *   WebElement foo = wait.until(new Function{@literal<WebDriver, WebElement>}() {
+ *   WebElement foo = wait.until(new Function<WebDriver, WebElement>() {
  *     public WebElement apply(WebDriver driver) {
  *       return driver.findElement(By.id("foo"));
  *     }

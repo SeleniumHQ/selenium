@@ -18,8 +18,6 @@ package org.openqa.selenium.edge;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.edge.EdgeDriverService;
-import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
@@ -30,25 +28,16 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
  *
  * To avoid unnecessarily restarting the MicrosoftEdgeDriver server with each instance, use a
  * {@link RemoteWebDriver} coupled with the desired {@link EdgeDriverService}, which is managed
- * separately. For example: <pre>{@code
+ * separately. For example:
  *
- * import static org.junit.Assert.assertEquals;
- *
- * import org.junit.*;
- * import org.junit.runner.RunWith;
- * import org.junit.runners.JUnit4;
- * import org.openqa.selenium.edge.EdgeDriverService;
- * import org.openqa.selenium.remote.DesiredCapabilities;
- * import org.openqa.selenium.remote.RemoteWebDriver;
- *
- * {@literal @RunWith(JUnit4.class)}
- * public class EdgeTest extends TestCase {
+ * <pre>
+ * public class EdgeTest {
  *
  *   private static EdgeDriverService service;
  *   private WebDriver driver;
  *
- *   {@literal @BeforeClass}
- *   public static void createAndStartService() {
+ *   &#064;BeforeClass
+ *   public static void createAndStartService() throws IOException {
  *     service = new EdgeDriverService.Builder()
  *         .usingDriverExecutable(new File("path/to/my/MicrosoftWebDriver.exe"))
  *         .usingAnyFreePort()
@@ -56,32 +45,32 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
  *     service.start();
  *   }
  *
- *   {@literal @AfterClass}
- *   public static void createAndStopService() {
+ *   &#064;AfterClass
+ *   public static void stopService() {
  *     service.stop();
  *   }
  *
- *   {@literal @Before}
+ *   &#064;Before
  *   public void createDriver() {
  *     driver = new RemoteWebDriver(service.getUrl(),
  *         DesiredCapabilities.edge());
  *   }
  *
- *   {@literal @After}
+ *   &#064;After
  *   public void quitDriver() {
  *     driver.quit();
  *   }
  *
- *   {@literal @Test}
+ *   &#064;Test
  *   public void testGoogleSearch() {
  *     driver.get("http://www.google.com");
  *     WebElement searchBox = driver.findElement(By.name("q"));
- *     searchBox.sendKeys("webdriver");
- *     searchBox.quit();
- *     assertEquals("webdriver - Google Search", driver.getTitle());
+ *     searchBox.sendKeys("webdriver" + Keys.ENTER);
+ *     new WebDriverWait(driver, 5).until(
+ *        ExpectedConditions.titleIs("webdriver - Google Search"));
  *   }
  * }
- * }</pre>
+ * </pre>
  *
  *
  * @see EdgeDriverService#createDefaultService
@@ -140,7 +129,7 @@ public class EdgeDriver extends RemoteWebDriver {
 	  public EdgeDriver(EdgeDriverService service, EdgeOptions options) {
 	    this(service, options.toCapabilities());
 	  }
-	  
+
 	  /**
 	   * Creates a new EdgeDriver instance. The {@code service} will be started along with the
 	   * driver, and shutdown upon calling {@link #quit()}.

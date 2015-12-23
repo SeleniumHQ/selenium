@@ -39,25 +39,16 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
  * <p>
  * To avoid unnecessarily restarting the OperaDriver server with each instance, use a
  * {@link RemoteWebDriver} coupled with the desired {@link OperaDriverService}, which is managed
- * separately. For example: <pre>{@code
+ * separately. For example:
  *
- * import static org.junit.Assert.assertEquals;
- *
- * import org.junit.*;
- * import org.junit.runner.RunWith;
- * import org.junit.runners.JUnit4;
- * import org.openqa.selenium.opera.OperaDriverService;
- * import org.openqa.selenium.remote.DesiredCapabilities;
- * import org.openqa.selenium.remote.RemoteWebDriver;
- *
- * {@literal @RunWith(JUnit4.class)}
- * public class OperaTest extends TestCase {
+ * <pre>
+ * public class OperaTest {
  *
  *   private static OperaDriverService service;
  *   private WebDriver driver;
  *
- *   {@literal @BeforeClass}
- *   public static void createAndStartService() {
+ *   &#064;BeforeClass
+ *   public static void createAndStartService() throws IOException {
  *     service = new OperaDriverService.Builder()
  *         .usingDriverExecutable(new File("path/to/my/operadriver.exe"))
  *         .usingAnyFreePort()
@@ -65,32 +56,32 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
  *     service.start();
  *   }
  *
- *   {@literal @AfterClass}
- *   public static void createAndStopService() {
+ *   &#064;AfterClass
+ *   public static void stopService() {
  *     service.stop();
  *   }
  *
- *   {@literal @Before}
+ *   &#064;Before
  *   public void createDriver() {
  *     driver = new RemoteWebDriver(service.getUrl(),
  *         DesiredCapabilities.opera());
  *   }
  *
- *   {@literal @After}
+ *   &#064;After
  *   public void quitDriver() {
  *     driver.quit();
  *   }
  *
- *   {@literal @Test}
+ *   &#064;Test
  *   public void testGoogleSearch() {
  *     driver.get("http://www.google.com");
  *     WebElement searchBox = driver.findElement(By.name("q"));
- *     searchBox.sendKeys("webdriver");
- *     searchBox.quit();
- *     assertEquals("webdriver - Google Search", driver.getTitle());
+ *     searchBox.sendKeys("webdriver" + Keys.ENTER);
+ *     new WebDriverWait(driver, 5).until(
+ *        ExpectedConditions.titleIs("webdriver - Google Search"));
  *   }
  * }
- * }</pre>
+ * </pre>
  *
  * Note that unlike OperaDriver, RemoteWebDriver doesn't directly implement
  * role interfaces such as {@link LocationContext} and {@link WebStorage}.
