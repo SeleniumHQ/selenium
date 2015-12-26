@@ -121,6 +121,9 @@ js_binary(
     '--jscomp_error=uselessCode',
     '--jscomp_error=visibility',
 
+    '--language_in=ECMASCRIPT6_STRICT',
+    '--language_out=ECMASCRIPT5_STRICT',
+
     "--output_wrapper='%output%;safaridriver.debug.init();'",
     '--third_party=false',
   ],
@@ -180,6 +183,9 @@ js_binary(
     '--jscomp_error=unknownDefines',
     '--jscomp_error=uselessCode',
     '--jscomp_error=visibility',
+
+    '--language_in=ECMASCRIPT6_STRICT',
+    '--language_out=ECMASCRIPT5_STRICT',
 
     "--output_wrapper='%output%;safaridriver.extension.init();'",
     '--third_party=false',

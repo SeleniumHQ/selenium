@@ -17,7 +17,7 @@
   run_transitive = false
 
 [tools]
-  closure_compiler = third_party/closure/bin/compiler.jar
+  closure_compiler = //third_party/closure:compiler
 
 [alias]
   chrome   = //java/client/src/org/openqa/selenium/chrome:chrome

@@ -37,6 +37,7 @@ java_library(name = 'server',
     '//java/server/src/org/openqa/grid:grid',
     '//java/server/src/org/openqa/grid/common:common',
     '//java/server/src/org/openqa/grid/selenium:classes',
+    '//java/server/test/org/openqa/grid/...',
   ],
 )
 

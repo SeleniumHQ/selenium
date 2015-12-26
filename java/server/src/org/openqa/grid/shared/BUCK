@@ -16,5 +16,6 @@ java_library(name = 'interfaces',
     '//java/server/src/org/openqa/grid/selenium:classes',
     '//java/server/src/org/openqa/selenium/server:server',
     '//java/server/src/org/openqa/selenium/remote/server:standalone-server-lib',
+    '//java/server/test/org/openqa/grid/...'
   ],
 )
