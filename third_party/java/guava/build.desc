@@ -1,0 +1,3 @@
+
+java_library(name = "guava",
+  deps = [ "guava-18.0.jar" ])

@@ -7,5 +7,5 @@ java_library(name = "chrome",
     "//java/client/src/org/openqa/selenium/net",
     "//java/client/src/org/openqa/selenium/remote",
     "//java/client/src/org/openqa/selenium/remote/service",
-    "//third_party/java/guava-libraries",
+    "//third_party/java/guava",
   ])

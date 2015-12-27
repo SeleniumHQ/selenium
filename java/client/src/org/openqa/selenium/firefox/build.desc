@@ -10,7 +10,7 @@ java_library(name = "firefox",
     "//java/client/src/org/openqa/selenium/remote",
     "//java/client/src/org/openqa/selenium/remote/service",
     "//third_party/java/commons-io",
-    "//third_party/java/guava-libraries",
+    "//third_party/java/guava",
     "//third_party/java/commons-exec",
   ],
   embedded = [

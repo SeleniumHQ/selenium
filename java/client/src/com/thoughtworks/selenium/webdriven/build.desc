@@ -49,5 +49,5 @@ java_library(name = "emulation-api",
   deps = [
     "//java/client/src/com/thoughtworks/selenium:api",
     "//java/client/src/org/openqa/selenium:webdriver-api",
-    "//third_party/java/guava-libraries",
+    "//third_party/java/guava",
   ])

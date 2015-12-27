@@ -4,7 +4,7 @@ java_library(
   deps = [
     '//java/client/src/org/openqa/selenium:webdriver-api',
     '//third_party/java/commons-exec:commons-exec',
-    '//third_party/java/guava-libraries:guava-libraries',
+    '//third_party/java/guava:guava',
     '//third_party/java/jna:jna',
   ],
   visibility = [

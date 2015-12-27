@@ -9,5 +9,5 @@ java_library(name = "environment",
     "//java/client/test/org/openqa/selenium:base",
     "//java/client/test/org/openqa/selenium/environment",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
-    "//third_party/java/guava-libraries",
+    "//third_party/java/guava",
   ])

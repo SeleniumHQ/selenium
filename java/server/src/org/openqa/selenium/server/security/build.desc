@@ -7,5 +7,5 @@ java_library(name = "security",
   deps = [
     "//java/client/src/org/openqa/selenium/io",
     "//third_party/java/bouncycastle",
-    "//third_party/java/guava-libraries",
+    "//third_party/java/guava",
   ])

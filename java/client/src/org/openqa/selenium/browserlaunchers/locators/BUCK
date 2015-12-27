@@ -5,7 +5,7 @@ java_library(name = 'locators',
     '//java/client/src/org/openqa/selenium/os:os',
     '//java/client/src/org/openqa/selenium/remote:capabilities',
     '//java/client/src/org/openqa/selenium:platform',
-    '//third_party/java/guava-libraries:guava-libraries',
+    '//third_party/java/guava:guava',
   ],
   visibility = [
     '//java/client/src/org/openqa/selenium/safari:safari',

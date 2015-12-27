@@ -6,7 +6,7 @@ prebuilt_jar(
   deps = [
     ':javax.inject',
     '//third_party/java/aopalliance:aopalliance',
-    '//third_party/java/guava-libraries:guava-libraries'
+    '//third_party/java/guava:guava'
   ],
   visibility = [
     '//third_party/java/testng:testng'

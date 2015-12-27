@@ -15,7 +15,7 @@ java_library(name = "grid",
     "//java/server/src/org/openqa/grid/shared:interfaces",
     "//java/server/src/org/openqa/selenium/remote/server",
     "//third_party/java/httpcomponents:httpclient",
-    "//third_party/java/guava-libraries",
+    "//third_party/java/guava",
     "//third_party/java/jcip_annotations",
     "//third_party/java/yaml",
     "//third_party/java/jetty"

@@ -13,7 +13,7 @@ java_test(name = "test",
     "//java/client/test/com/thoughtworks/selenium/testing:environment",
     "//java/server/src/org/openqa/selenium/server",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
-    "//third_party/java/guava-libraries",
+    "//third_party/java/guava",
     "//third_party/java/junit",
   ])
 

@@ -11,7 +11,7 @@ java_library(
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//java/client/src/org/openqa/selenium/remote/service:service',
     '//third_party/java/gson:gson',
-    '//third_party/java/guava-libraries:guava-libraries',
+    '//third_party/java/guava:guava',
   ],
   visibility = [ 'PUBLIC' ],
 )

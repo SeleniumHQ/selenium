@@ -30,7 +30,7 @@ java_library(name = "drivers",
     "//java/client/test/org/openqa/selenium/testing:annotations",
     "//java/client/test/org/openqa/selenium/testing:dev_mode",
     "//javascript/firefox-driver:webdriver",
-    "//third_party/java/guava-libraries",
+    "//third_party/java/guava",
     "//third_party/java/junit",
   ])
 
@@ -52,7 +52,7 @@ java_library(name = "tests",
     ":drivers",
     "//java/client/src/org/openqa/selenium:base",
     "//java/client/test/org/openqa/selenium/testing:annotations",
-    "//third_party/java/guava-libraries",
+    "//third_party/java/guava",
     "//third_party/java/junit",
     "//third_party/java/mockito",
   ])

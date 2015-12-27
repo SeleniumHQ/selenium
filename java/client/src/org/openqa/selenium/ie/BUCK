@@ -5,7 +5,7 @@ java_library(name = 'ie',
     '//java/client/src/org/openqa/selenium/remote/service:service',
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//java/client/src/org/openqa/selenium:webdriver-api',
-    '//third_party/java/guava-libraries:guava-libraries',
+    '//third_party/java/guava:guava',
   ],
   visibility = [ 'PUBLIC' ],
 )

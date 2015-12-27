@@ -7,7 +7,7 @@ java_library(name = 'common',
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//java/server/src/org/openqa/grid/shared:cli',
     '//third_party/java/gson:gson',
-    '//third_party/java/guava-libraries:guava-libraries',
+    '//third_party/java/guava:guava',
   ],
   visibility = [
     '//java/server/src/org/openqa/grid:grid',

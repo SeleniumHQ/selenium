@@ -37,7 +37,7 @@ java_library(name = "common",
     ":api",
     ":base",
     "//java/client/src/org/openqa/selenium/interactions",
-    "//third_party/java/guava-libraries",
+    "//third_party/java/guava",
     "//third_party/java/gson",
   ])
 
@@ -64,7 +64,7 @@ java_library(name = "augmenter",
     ":api",
     ":remote",
     "//third_party/java/cglib",
-    "//third_party/java/guava-libraries",
+    "//third_party/java/guava",
   ])
 
 java_library(name = "remote",
@@ -115,5 +115,5 @@ java_library(name = "remote",
     "//java/client/src/org/openqa/selenium/io",
     "//java/client/src/org/openqa/selenium/net",
     "//third_party/java/httpcomponents:httpclient",
-    "//third_party/java/guava-libraries",
+    "//third_party/java/guava",
   ])

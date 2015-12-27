@@ -6,7 +6,7 @@ java_library(name = 'clock',
     'SystemClock.java',
   ],
   deps = [
-    '//third_party/java/guava-libraries:guava-libraries',
+    '//third_party/java/guava:guava',
   ],
   visibility = ['PUBLIC'],
 )
@@ -48,7 +48,7 @@ java_library(name = 'wait',
     ':clock',
     '//java/client/src/org/openqa/selenium:webdriver-api',
     '//java/client/src/org/openqa/selenium/remote:remote',
-    '//third_party/java/guava-libraries:guava-libraries',
+    '//third_party/java/guava:guava',
   ],
   visibility = ['PUBLIC'],
 )

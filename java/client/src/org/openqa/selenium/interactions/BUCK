@@ -11,7 +11,7 @@ java_library(name = 'interactions',
   ],
   deps = [
     ':core',
-    '//third_party/java/guava-libraries:guava-libraries',
+    '//third_party/java/guava:guava',
   ],
   visibility = ['PUBLIC'],
 )

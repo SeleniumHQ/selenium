@@ -39,7 +39,7 @@ java_library(name = "restish",
     "//java/client/src/org/openqa/selenium/remote:common",
     "//java/client/src/org/openqa/selenium/remote:http-session-id",
     "//java/server/src/org/openqa/selenium/remote/server/log",
-    "//third_party/java/guava-libraries",
+    "//third_party/java/guava",
   ])
 
 rename(name = "client",
@@ -61,7 +61,7 @@ java_library(name = "server_core",
   ],
   deps = [
     ":server_very_core",
-    "//third_party/java/guava-libraries",
+    "//third_party/java/guava",
     "//third_party/java/servlet:servlet-api",
   ],
   embedded = [
@@ -97,5 +97,5 @@ java_library(name = "server_very_core",
     "//java/client/src/org/openqa/selenium/logging",
     "//java/client/src/org/openqa/selenium/support/events",
     "//java/server/src/org/openqa/selenium/remote/server/log",
-    "//third_party/java/guava-libraries",
+    "//third_party/java/guava",
   ])
