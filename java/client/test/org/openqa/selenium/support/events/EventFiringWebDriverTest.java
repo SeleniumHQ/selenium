@@ -44,6 +44,7 @@ import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -176,30 +177,34 @@ public class EventFiringWebDriverTest {
     EventFiringWebDriver testedDriver =
         new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
           @Override
-          public void beforeChangeValueOf(WebElement element, WebDriver driver) {
-            log.append("beforeChangeValueOf\n");
+          public void beforeChangeValueOf(WebElement element, WebDriver driver,
+                                          CharSequence[] keysToSend) {
+            log.append("beforeChangeValueOf" + " " + Arrays.toString(keysToSend) + "\n");
           }
 
           @Override
-          public void afterChangeValueOf(WebElement element, WebDriver driver) {
-            log.append("afterChangeValueOf\n");
+          public void afterChangeValueOf(WebElement element, WebDriver driver,
+                                         CharSequence[] keysToSend) {
+            log.append("afterChangeValueOf" + " " + Arrays.toString(keysToSend) + "\n");
           }
         });
 
+    String someText = "some text";
+
     testedDriver.findElement(By.name("foo")).clear();
-    testedDriver.findElement(By.name("foo")).sendKeys("some text");
+    testedDriver.findElement(By.name("foo")).sendKeys(someText);
     testedDriver.findElement(By.name("foo")).click();
 
     assertEquals(
-        "beforeChangeValueOf\n" +
-            "afterChangeValueOf\n" +
-            "beforeChangeValueOf\n" +
-            "afterChangeValueOf\n",
+        "beforeChangeValueOf null\n" +
+            "afterChangeValueOf null\n" +
+            "beforeChangeValueOf [" + someText +"]\n" +
+            "afterChangeValueOf [" + someText +"]\n",
         log.toString());
 
     InOrder order = Mockito.inOrder(mockedElement);
     order.verify(mockedElement).clear();
-    order.verify(mockedElement).sendKeys("some text");
+    order.verify(mockedElement).sendKeys(someText);
     order.verify(mockedElement).click();
     order.verifyNoMoreInteractions();
 
