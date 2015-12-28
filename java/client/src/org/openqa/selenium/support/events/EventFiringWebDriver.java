@@ -354,15 +354,15 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     }
 
     public void sendKeys(CharSequence... keysToSend) {
-      dispatcher.beforeChangeValueOf(element, driver);
+      dispatcher.beforeChangeValueOf(element, driver, keysToSend);
       element.sendKeys(keysToSend);
-      dispatcher.afterChangeValueOf(element, driver);
+      dispatcher.afterChangeValueOf(element, driver, keysToSend);
     }
 
     public void clear() {
-      dispatcher.beforeChangeValueOf(element, driver);
+      dispatcher.beforeChangeValueOf(element, driver, null);
       element.clear();
-      dispatcher.afterChangeValueOf(element, driver);
+      dispatcher.afterChangeValueOf(element, driver, null);
     }
 
     public String getTagName() {
