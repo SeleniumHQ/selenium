@@ -281,6 +281,7 @@ public class LauncherUtils {
       // for Firefox 2.0
       out.println("user_pref('browser.startup.homepage', '" + homePage + "');");
       out.println("user_pref('startup.homepage_welcome_url', '');");
+      out.println("user_pref('startup.homepage_welcome_url.additional', '');");
 
       // This handles known RC problems when the startup page is a blank page or when the previous
       // session has been restored
@@ -305,6 +306,7 @@ public class LauncherUtils {
 
     //Allow extensions to be installed into the profile and still work
     out.println("user_pref('extensions.autoDisableScopes', 10);");
+    out.println("user_pref('xpinstall.signatures.required', false);");
 
     // Disable "do you want to remember this password?"
     out.println("user_pref('signon.rememberSignons', false);");
