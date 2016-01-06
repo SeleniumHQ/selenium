@@ -25,41 +25,14 @@ module Selenium
       class W3CBridge < Remote::W3CBridge
 
         def initialize(opts = {})
-          http_client = opts.delete(:http_client)
+          caps = opts[:desired_capabilities] ||= Remote::W3CCapabilities.firefox
+          Binary.path = caps[:firefox_binary] if caps[:firefox_binary]
 
-          opts.delete(:marionette)
-          caps = opts.delete(:desired_capabilities) { Remote::W3CCapabilities.firefox }
+          @service = Service.default_service(*extract_service_args(opts))
+          @service.start
+          opts[:url] = @service.uri
 
-          if opts.has_key?(:url)
-            url = opts.delete(:url)
-          else
-            Binary.path = caps[:firefox_binary] if caps[:firefox_binary]
-            if Firefox::Binary.version < 43
-              raise ArgumentError, "Firefox Version #{Firefox::Binary.version} does not support Marionette; Set firefox_binary in Capabilities to point to a supported binary"
-            end
-
-            @service = Service.default_service(*extract_service_args(opts))
-
-            if @service.instance_variable_get("@host") == "127.0.0.1"
-              @service.instance_variable_set("@host", 'localhost')
-            end
-
-            @service.start
-
-            url = @service.uri
-          end
-
-          unless opts.empty?
-            raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
-          end
-
-          remote_opts = {
-            :url                  => url,
-            :desired_capabilities => caps
-          }
-
-          remote_opts.merge!(:http_client => http_client) if http_client
-          super(remote_opts)
+          super
         end
 
         def browser
@@ -83,13 +56,8 @@ module Selenium
         private
 
         def extract_service_args(opts)
-          args = []
-
-          if opts.has_key?(:service_log_path)
-            args << "--log-path=#{opts.delete(:service_log_path)}"
-          end
-
-          args
+          service_log_path = opts.delete(:service_log_path)
+          service_log_path ? ["--log-path=#{service_log_path}"] : []
         end
 
       end # W3CBridge

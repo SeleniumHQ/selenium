@@ -62,7 +62,7 @@ module Selenium
         #
 
         def initialize(opts = {})
-          if opts.key?(:desired_capabilities) && opts[:desired_capabilities][:browser_name] == 'MicrosoftEdge'
+          if opts.fetch(:desired_capabilities, {})[:browser_name] == 'MicrosoftEdge'
             require_relative '../edge/legacy_support'
             extend Edge::LegacySupport
           end
@@ -73,21 +73,16 @@ module Selenium
           desired_capabilities = opts.delete(:desired_capabilities) { W3CCapabilities.firefox }
           url                  = opts.delete(:url) { "http://#{Platform.localhost}:4444/wd/hub" }
 
-          if opts.delete(:marionette) && !desired_capabilities.is_a?(W3CCapabilities)
-            caps = JSON.parse(desired_capabilities.to_json)
-            desired_capabilities = W3CCapabilities.firefox(caps.merge(:marionette => true))
+          desired_capabilities = W3CCapabilities.send(desired_capabilities) if desired_capabilities.is_a? Symbol
+
+          desired_capabilities[:marionette] = opts.delete(:marionette) unless opts[:marionette].nil?
+
+          if desired_capabilities[:marionette] && Firefox::Binary.version < 45
+              raise Error::WebDriverError, "Marionette is not supported in Firefox Version #{Firefox::Binary.version}"
           end
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
-          end
-
-          if desired_capabilities.kind_of?(Symbol)
-            unless W3CCapabilities.respond_to?(desired_capabilities)
-              raise Error::WebDriverError, "invalid desired capability: #{desired_capabilities.inspect}"
-            end
-
-            desired_capabilities = W3CCapabilities.send(desired_capabilities)
           end
 
           uri = url.kind_of?(URI) ? url : URI.parse(url)
@@ -97,11 +92,6 @@ module Selenium
 
           @http          = http_client
           @capabilities  = create_session(desired_capabilities)
-
-          if @capabilities[:browser_name] == 'firefox' && @capabilities[:browser_version].to_i < 43
-            raise ArgumentError, "Server configuration does not support Marionette; start server with flag to Marionette binary -Dwebdriver.firefox.bin=/path/to/bin"
-          end
-
           @file_detector = nil
         end
 

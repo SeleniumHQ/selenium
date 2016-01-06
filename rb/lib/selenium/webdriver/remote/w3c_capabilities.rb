@@ -87,21 +87,25 @@ module Selenium
           def json_create(data)
             data = data.dup
 
+            # Convert due to Remote Driver implementation
+            data["browserVersion"] = data.delete("version") if data["version"]
+            data["platformName"] = data.delete("platform") if data["platform"]
+
             caps = new
-            caps.browser_name = data.delete("browserName")
-            caps.browser_version = data.delete("browserVersion")
-            caps.platform_name = data.delete("platformName")
-            caps.platform_version = data.delete("platformVersion")
-            caps.accept_ssl_certs = data.delete("acceptSslCerts")
-            caps.takes_screenshot = data.delete("takesScreenshot")
-            caps.takes_element_screenshot = data.delete("takesElementScreenshot")
-            caps.page_load_strategy = data.delete("pageLoadStrategy")
-            caps.proxy = Proxy.json_create(data['proxy']) if data.has_key?('proxy')
+            caps.browser_name = data.delete("browserName") if data["browserName"]
+            caps.browser_version = data.delete("browserVersion") if data["browserVersion"]
+            caps.platform_name = data.delete("platformName") if data["platformName"]
+            caps.platform_version = data.delete("platformVersion") if data["platformVersion"]
+            caps.accept_ssl_certs = data.delete("acceptSslCerts") if data["acceptSslCerts"]
+            caps.takes_screenshot = data.delete("takesScreenshot") if data["takesScreenshot"]
+            caps.takes_element_screenshot = data.delete("takesElementScreenshot") if data["takesElementScreenshot"]
+            caps.page_load_strategy = data.delete("pageLoadStrategy") if data["pageloadStrategy"]
+            caps.proxy = Proxy.json_create(data['proxy']) if data['proxy']
 
             # Remote Server Specific
             caps[:remote_session_id] = data.delete('webdriver.remote.sessionid')
 
-            # obsolete capabilities returned by Remote Server
+            # Obsolete capabilities returned by Remote Server
             data.delete("javascriptEnabled")
             data.delete('cssSelectorsEnabled')
 

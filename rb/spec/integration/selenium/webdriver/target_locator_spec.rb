@@ -24,7 +24,7 @@ describe "Selenium::WebDriver::TargetLocator" do
     compliant_on :browser => :edge do #https://connect.microsoft.com/IE/Feedback/Details/1853708
       driver.switch_to.default_content
     end
-    not_compliant_on :browser => :edge do #https://connect.microsoft.com/IE/Feedback/Details/1853708
+    not_compliant_on :browser => :edge do #https://connect.microsoft.com/IE/Feedback/Details/1850028
       ensure_single_window
     end
   end
@@ -143,7 +143,9 @@ describe "Selenium::WebDriver::TargetLocator" do
 
         it "should close current window when more than two windows exist" do
           driver.navigate.to url_for("xhtmlTest.html")
+          wait_for_element(:link => "Create a new anonymous window")
           driver.find_element(:link, "Create a new anonymous window").click
+          wait.until { driver.window_handles.size == 2 }
           driver.find_element(:link, "Open new window").click
 
           wait.until { driver.window_handles.size == 3 }
@@ -154,6 +156,7 @@ describe "Selenium::WebDriver::TargetLocator" do
 
         it "should close another window when more than two windows exist" do
           driver.navigate.to url_for("xhtmlTest.html")
+          wait_for_element(:link => "Create a new anonymous window")
           driver.find_element(:link, "Create a new anonymous window").click
           wait.until { driver.window_handles.size == 2 }
           driver.find_element(:link, "Open new window").click
@@ -167,7 +170,9 @@ describe "Selenium::WebDriver::TargetLocator" do
 
         it "should iterate over open windows when current window is not closed" do
           driver.navigate.to url_for("xhtmlTest.html")
+          wait_for_element(:link => "Create a new anonymous window")
           driver.find_element(:link, "Create a new anonymous window").click
+          wait.until { driver.window_handles.size == 2 }
           driver.find_element(:link, "Open new window").click
 
           wait.until { driver.window_handles.size == 3 }
@@ -182,7 +187,9 @@ describe "Selenium::WebDriver::TargetLocator" do
 
         it "should iterate over open windows when current window is closed" do
           driver.navigate.to url_for("xhtmlTest.html")
+          wait_for_element(:link => "Create a new anonymous window")
           driver.find_element(:link, "Create a new anonymous window").click
+          wait.until { driver.window_handles.size == 2 }
           driver.find_element(:link, "Open new window").click
 
           wait.until { driver.window_handles.size == 3 }
