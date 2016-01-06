@@ -1525,7 +1525,7 @@ public class ExpectedConditions {
    * @param javaScript as executable js line
    * @return true once js return string
    */
-  public static ExpectedCondition<String> jsReturnsValue(
+  public static ExpectedCondition<String> jsReturnsValue (
     final String javaScript) {
     return new ExpectedCondition<String>() {
       @Override
