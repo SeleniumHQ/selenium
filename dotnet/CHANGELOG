@@ -1,3 +1,27 @@
+v2.49.0
+=======
+ * Updated .NET PageFactory to allow frame switching with located elements.
+   Previously, if you located a `<frame>` or `<iframe>` element using the
+   PageFactory attributes, you could not switch to it. This change allows one
+   to use `driver.SwitchTo().Frame(element)` with the element found via the
+   PageFactory.
+ * Added workaround for Windows 10 major version number encountered when
+   executing via NUnit 3.
+ * Issue #1316: (on behalf of Chris Block) Enhance check for value types to
+   exclude Nullable in extension methods. The System.Nullable type is a value
+   type that can be assigned the null value. This change checks for types
+   wrapped with Nullable and does not throw when they are encountered.
+ * Exposed session ID property on RemoteWebDriver. Users can now cast their
+   driver instance to IHasSessionId to access the SessionId property, which
+   returns a SessionId object. To use the SessionId object with external
+   tools, simply call the ToString() method on the instance. Note that
+   relying on the SessionId for anything is probably a Bad Thing, because it
+   introduces a leak in the abstraction of a driver. Please do not use this
+   property; its introduction is the Wrong Approach, but it's being exposed
+   at the insistence of a selection of users.
+ * Adding support for whitelisted-ips argument for Chrome and IE driver
+   executables.
+
 v2.48.2
 =======
  * Release containing fix to Firefox driver bug when clearing input fields of
