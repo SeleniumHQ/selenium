@@ -540,7 +540,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     }
 
     public ImeHandler ime() {
-      throw new UnsupportedOperationException("Driver does not support IME interactions");
+      return options.ime();
     }
 
     @Beta
