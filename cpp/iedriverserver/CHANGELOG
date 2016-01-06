@@ -9,6 +9,10 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.49.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+
 v2.48.0.5
 =========
  * Refactoring of IE driver native events interaction code. This commit
