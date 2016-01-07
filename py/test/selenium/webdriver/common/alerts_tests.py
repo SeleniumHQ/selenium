@@ -27,7 +27,7 @@ from selenium.common.exceptions import UnexpectedAlertPresentException
 
 import unittest
 
-@pytest.mark.ignore_marionette
+
 class AlertsTest(unittest.TestCase):
     def testShouldBeAbleToOverrideTheWindowAlertMethod(self):
         if self.driver.capabilities['browserName'] == 'phantomjs':
