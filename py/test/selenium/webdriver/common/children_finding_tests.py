@@ -37,8 +37,6 @@ class ChildrenFindingTests(unittest.TestCase):
             self.fail("Expected NoSuchElementException to have been thrown")
         except NoSuchElementException as e:
             pass
-        except Exception as e:
-            self.fail("Expected NoSuchElementException to have been thrown but got " + str(e))
 
     def test_finding_dot_slash_elements_on_element_by_xpath_should_find_not_top_level_elements(self):
         self._load_simple_page()
@@ -103,11 +101,9 @@ class ChildrenFindingTests(unittest.TestCase):
         element = self.driver.find_element_by_id("test_id_div")
         try:
             element.find_element_by_id("test_id_out")
-            self.Fail("Expected NoSuchElementException to have been thrown")
+            self.fail("Expected NoSuchElementException to have been thrown")
         except NoSuchElementException as e:
             pass
-        except Exception as e:
-            self.Fail("Expected NoSuchElementException to have been thrown but got " + str(e))
 
     def test_should_find_element_by_link_text(self):
         self._load_page("nestedElements")
