@@ -82,6 +82,7 @@ describe "Selenium::WebDriver::TargetLocator" do
       driver.navigate.to url_for("xhtmlTest.html")
 
       driver.find_element(:link, "Open new window").click
+      wait.until { driver.window_handles.size == 2 }
       expect(driver.title).to eq("XHTML Test Page")
 
       driver.switch_to.window(new_window) do
@@ -95,6 +96,7 @@ describe "Selenium::WebDriver::TargetLocator" do
       driver.navigate.to url_for("xhtmlTest.html")
 
       driver.find_element(:link, "Open new window").click
+      wait.until { driver.window_handles.size == 2 }
       expect(driver.title).to eq("XHTML Test Page")
 
       expect {
@@ -108,6 +110,7 @@ describe "Selenium::WebDriver::TargetLocator" do
       driver.navigate.to url_for("xhtmlTest.html")
 
       driver.find_element(:link, "Open new window").click
+      wait.until { driver.window_handles.size == 2 }
       expect(driver.title).to eq("XHTML Test Page")
 
       driver.switch_to.window(new_window)
@@ -120,6 +123,7 @@ describe "Selenium::WebDriver::TargetLocator" do
         driver.navigate.to url_for("xhtmlTest.html")
 
         driver.find_element(:link, "Open new window").click
+        wait.until { driver.window_handles.size == 2 }
         expect(driver.title).to eq("XHTML Test Page")
 
         driver.switch_to.window(new_window) do
@@ -147,7 +151,6 @@ describe "Selenium::WebDriver::TargetLocator" do
           driver.find_element(:link, "Create a new anonymous window").click
           wait.until { driver.window_handles.size == 2 }
           driver.find_element(:link, "Open new window").click
-
           wait.until { driver.window_handles.size == 3 }
 
           driver.switch_to.window(driver.window_handle) {driver.close}
@@ -174,7 +177,6 @@ describe "Selenium::WebDriver::TargetLocator" do
           driver.find_element(:link, "Create a new anonymous window").click
           wait.until { driver.window_handles.size == 2 }
           driver.find_element(:link, "Open new window").click
-
           wait.until { driver.window_handles.size == 3 }
 
           matching_window = driver.window_handles.find do |wh|
@@ -191,7 +193,6 @@ describe "Selenium::WebDriver::TargetLocator" do
           driver.find_element(:link, "Create a new anonymous window").click
           wait.until { driver.window_handles.size == 2 }
           driver.find_element(:link, "Open new window").click
-
           wait.until { driver.window_handles.size == 3 }
 
           driver.close
@@ -211,7 +212,6 @@ describe "Selenium::WebDriver::TargetLocator" do
       it "should switch to a window and execute a block when current window is closed" do
         driver.navigate.to url_for("xhtmlTest.html")
         driver.find_element(:link, "Open new window").click
-
         wait.until { driver.window_handles.size == 2 }
 
         driver.switch_to.window(new_window)
