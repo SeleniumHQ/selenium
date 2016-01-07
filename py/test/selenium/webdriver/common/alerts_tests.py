@@ -27,7 +27,7 @@ from selenium.common.exceptions import UnexpectedAlertPresentException
 
 import unittest
 
-
+@pytest.mark.ignore_marionette
 class AlertsTest(unittest.TestCase):
     def testShouldBeAbleToOverrideTheWindowAlertMethod(self):
         if self.driver.capabilities['browserName'] == 'phantomjs':
@@ -165,7 +165,7 @@ class AlertsTest(unittest.TestCase):
         if self.driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs driver does not support alerts")
         self._loadPage("alerts")
-        self.driver.switch_to.frame("iframeWithAlert")
+        self.driver.switch_to.frame(self.driver.find_element(By.NAME, "iframeWithAlert"))
         self.driver.find_element_by_id("alertInFrame").click()
 
         alert = self._waitForAlert()
@@ -177,8 +177,8 @@ class AlertsTest(unittest.TestCase):
         if self.driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs driver does not support alerts")
         self._loadPage("alerts")
-        self.driver.switch_to.frame("iframeWithIframe")
-        self.driver.switch_to.frame("iframeWithAlert")
+        self.driver.switch_to.frame(self.driver.find_element(By.NAME, "iframeWithIframe"))
+        self.driver.switch_to.frame(self.driver.find_element(By.NAME, "iframeWithAlert"))
 
         self.driver.find_element_by_id("alertInFrame").click()
 
@@ -250,7 +250,7 @@ class AlertsTest(unittest.TestCase):
         value = alert.text
         alert.accept()
         self.assertEqual("cheese", value)
-    
+
     def testUnexpectedAlertPresentExceptionContainsAlertText(self):
         if self.driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs driver does not support alerts")
