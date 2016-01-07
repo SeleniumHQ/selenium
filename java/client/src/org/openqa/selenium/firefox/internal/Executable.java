@@ -160,6 +160,10 @@ public class Executable {
 
     } else if (current.is(MAC)) {
       binary = new File("/Applications/Firefox.app/Contents/MacOS/firefox-bin");
+      // fall back to homebrew install location if default is not found
+      if (!binary.exists()) {
+        binary = new File(System.getProperty("user.home") + binary.getAbsolutePath());
+      }
     }
 
     if (binary != null && binary.exists()) {
