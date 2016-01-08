@@ -39,6 +39,7 @@ webdriver.Browser = {
   FIREFOX: 'firefox',
   IE: 'internet explorer',
   INTERNET_EXPLORER: 'internet explorer',
+  EDGE: 'MicrosoftEdge',
   IPAD: 'iPad',
   IPHONE: 'iPhone',
   OPERA: 'opera',
@@ -217,6 +218,16 @@ webdriver.Capabilities.ie = function() {
       set(webdriver.Capability.BROWSER_NAME,
           webdriver.Browser.INTERNET_EXPLORER).
       set(webdriver.Capability.PLATFORM, 'WINDOWS');
+};
+
+/**
+ * @return {!webdriver.Capabilities} A basic set of capabilities for
+ *     Microsoft Edge.
+ */
+webdriver.Capabilities.edge = function() {
+  return new webdriver.Capabilities().
+    set(webdriver.Capability.BROWSER_NAME, webdriver.Browser.EDGE).
+    set(webdriver.Capability.PLATFORM, 'WINDOWS');
 };
 
 

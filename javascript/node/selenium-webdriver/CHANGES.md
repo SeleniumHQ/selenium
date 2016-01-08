@@ -9,6 +9,7 @@ the selenium-webdriver package README.
 
 ### Change Summary
 
+* Add support for Microsoft's Edge web browser
 * Bumped the minimum supported version of Node to v4.2.x
 * Added `promise.Promise#catch()` for API compatibility with native Promises.
     `promise.Promise#thenCatch()` is not yet deprecated, but it simply
