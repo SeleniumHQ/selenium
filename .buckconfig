@@ -32,3 +32,7 @@
   selenium-java = //java/client/src/org/openqa/selenium:selenium-java
 
   se3-server    = //java/server/src/org/openqa/selenium/remote/server:standalone-server
+
+  # Tests
+  firefox-test  = //java/client/test/org/openqa/selenium/firefox:test-synthesized
+  htmlunit-test = //java/client/test/org/openqa/selenium/htmlunit:htmlunit
