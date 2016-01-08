@@ -36,7 +36,8 @@ class Service(service.Service):
         if log_path:
             log_file = open(log_path, "w")
         else:
-            log_file = PIPE
+            log_file = open("geckodriver.log", "w")
+
         service.Service.__init__(self, executable_path, port=port, log_file=log_file, env=env)
         self.firefox_binary = firefox_binary
         self.service_args = service_args or []
