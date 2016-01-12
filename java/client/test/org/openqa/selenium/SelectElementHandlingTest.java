@@ -126,4 +126,12 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("optionEmptyValueSet"));
     assertThat(element.getAttribute("value"), is(""));
   }
+
+  @Test
+  public void testCanSelectFromMultipleSelectWhereValueIsBelowVisibleRange() {
+    driver.get(pages.selectPage);
+    WebElement option = driver.findElements(By.cssSelector("#selectWithMultipleLongList option")).get(4);
+    option.click();
+    assertThat(option.isSelected(), is(true));
+  }
 }
