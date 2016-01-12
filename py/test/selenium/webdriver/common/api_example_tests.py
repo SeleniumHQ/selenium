@@ -270,10 +270,12 @@ class ApiExampleTest (unittest.TestCase):
         self.assertEquals(size['width'], newSize[0])
         self.assertEquals(size['height'], newSize[1])
 
+    @pytest.mark.ignore_marionette
     def testGetLogTypes(self):
         self._loadPage("blank")
         self.assertTrue(isinstance(self.driver.log_types, list))
 
+    @pytest.mark.ignore_marionette
     def testGetLog(self):
         self._loadPage("blank")
         for log_type in self.driver.log_types:
