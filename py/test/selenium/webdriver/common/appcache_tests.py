@@ -22,6 +22,7 @@ import pytest
 class AppCacheTests(unittest.TestCase):
 
     @pytest.mark.ignore_firefox
+    @pytest.mark.ignore_marionette
     def testWeCanGetTheStatusOfTheAppCache(self):
         if self.driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs driver does not implement appcache")
