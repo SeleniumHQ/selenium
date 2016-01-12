@@ -151,7 +151,7 @@ class ApiExampleTest (unittest.TestCase):
 
     def testSwitchFrameByName(self):
         self._loadPage("frameset")
-        self.driver.switch_to.frame("third")
+        self.driver.switch_to.frame(self.driver.find_element_by_name("third"))
         checkbox = self.driver.find_element_by_id("checky")
         checkbox.click()
         checkbox.submit()
