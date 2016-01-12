@@ -116,7 +116,7 @@ SyntheticMouse.prototype.isElementClickable = function(element) {
       parent = parent.parentNode;
     }
 
-    if (parent && parent.tagName.toLowerCase() == 'select' && !parent.multiple) {
+    if (parent && parent.tagName.toLowerCase() == 'select') {
       return this.isElementClickable(parent);
     }
   }
