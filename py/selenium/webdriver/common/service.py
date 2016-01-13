@@ -121,8 +121,12 @@ class Service(object):
 
         try:
             if self.process:
-                self.process.stdout.close()
-                self.process.stderr.close()
+                if hasattr(self.process.stdin, 'close'):
+                    self.process.stdin.close()
+                if hasattr(self.process.stdout, 'close'):
+                    self.process.stdout.close()
+                if hasattr(self.process.stderr, 'close'):
+                    self.process.stderr.close()
                 self.process.terminate()
                 self.process.kill()
                 self.process.wait()
