@@ -121,15 +121,17 @@ class Service(object):
 
         try:
             if self.process:
-                if hasattr(self.process.stdin, 'close'):
-                    self.process.stdin.close()
-                if hasattr(self.process.stdout, 'close'):
-                    self.process.stdout.close()
-                if hasattr(self.process.stderr, 'close'):
-                    self.process.stderr.close()
+                for stream in [self.process.stdin,
+                               self.process.stdout,
+                               self.process.stderr]:
+                    try:
+                        stream.close()
+                    except AttributeError:
+                        pass
                 self.process.terminate()
                 self.process.kill()
                 self.process.wait()
+
         except OSError:
             # kill may not be available under windows environment
             pass
