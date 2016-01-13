@@ -1237,9 +1237,9 @@ public class ExpectedConditions {
    * @param locator     used to check parent element. For example table with locator
    *                    By.xpath("//table")
    * @param sub_locator used to find child element. For example td By.xpath("./tr/td")
-   * @return visible subelement
+   * @return visible nested element
    */
-  public static ExpectedCondition<WebElement> visibilityOfSubElementLocatedBy(final By locator,
+  public static ExpectedCondition<WebElement> visibilityOfNestedElementsLocatedBy(final By locator,
                                                                               final By sub_locator) {
     return new ExpectedCondition<WebElement>() {
 
