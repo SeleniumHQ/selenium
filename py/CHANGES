@@ -1,3 +1,14 @@
+Selenium 2.49.0
+* Have Firefox service write to a file instead of PIPE
+* on osx for firefox, fallback to checking homebrew install, if the default isn't there
+* Added Firefox path variable for string placeholder
+* Update README to show Python 3.2+
+* refactoring all the service classes to use a common one.
+* Add Firefox specific command to switch context between Browser content and Browser chrome
+* updating files after go copyright:update
+* Use specificationLevel to know that we are speaking GeckoDriver
+* Bug fixes: #1294, #1186
+
 Selenium 2.48.0
 * Update error pulling to match spec when we encounter a spec compliant browser.
 * Disable tests that are not working with Marionette when running Marionette tests
