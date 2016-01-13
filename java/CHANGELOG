@@ -1,3 +1,62 @@
+v2.49.0
+=======
+
+WebDriver:
+    * Add maven coordinate for the Firefox Driver when built using Buck.
+    * Remove guava dep on the selenium-apis when built using Buck.
+    * on osx for firefox, fallback to checking homebrew install, if the default isn't there
+    * Pass Options.ime() through to the wrapped driver.
+    * Fixing HTML suite test runner
+    * Bump guava to version 19
+    * Ensure that the buck-built core library has no third party dependencies.
+    * Updating textContent attribute test for IE9
+    * Adding appropriate wait to AuthenticatedPageLoadingTest
+    * Refactor concrete WebDriverException#getSupportUrl's
+    * Fix a NullPointerException in RemoteWebDriver.getCurrentUrl
+    * Reduces time wasted in when using a native driver
+    * add the useful information about the session / capabilities in the exception when the 'browser may have died'
+    * give the cleaner almost double the time to clean up the sessions (a whopping 9 more ms). Hopefull will deflake this test in CI.
+    * Adding El Capitan (OS X 10.11) to Platform
+    * Updating IE driver to fix clearing of <input type='number'> fields
+    * Treat a null response to getCookies as [].
+    * Restore a isNativeEventsEnabled check.
+    * Updating TestNG.
+    * firefox: Throw error when element cannot be clicked
+    * Include Windows 10 in the Platform enum.
+    * adding selenium server pass throughs for W3C dialect of alert / window / cookie commands.
+    * clearing a number input with invalid text, should actually clear it.
+    * Add innerHTML attribute support to HtmlUnitDriver
+    * Add textContent attribute support to HtmlUnitDriver
+    * make RemoteMouse public, akin to RemoteKeyboard. Not sure why it wasn't made public when it was originally moved out of RWD.
+    * Use platform-dependant line separator instead of hardcoded '\n'.
+    * Safari should only specify MAC as platform in default desired capabilities
+    * improve javadoc for FluentWait
+    * Changing interface name to be more Java-ish
+    * Update GeneratedJsTestServlet to work with test files that use Closure's module syntax.
+    * Adding release-v3 crazyfun target
+    * should be able to send keys to a content editable div that is initially empty
+    * Implementing pure WebDriver grid server (v.3)
+    * Making BrowserLauncherFactory non-static, to avoid global configuration, for better testability and configurability (per object, not globally)
+    * Server: Moving shared classes to a more appropriate place out of the legacy server namespace
+    * Deleting RemoteControlLauncher as it is just a couple of static methods to parse command line options, that should belong to the server.
+    * Refactoring GridLauncher: replacing big switch with a map of simple launchers; it's a step toward decomposition of the GridLauncher and dynamic discovery of the elements that can be launched.
+    * Refactoring GridLauncher build process
+    * Decoupling node registration module (SelfRegisteringRemote) from concrete implementation of the server to be run on the node.
+    * Refactoring grid node registration procedure to make server start/stop methods as simple as possible.
+    * Breaking another dependency of Grid on RC server
+    * Deleting fail-fast check of browser configuration, this breaks another Grid dependency on parts of RC server. The check must be performed in RC server (if ever).
+    * Actually fix the Safari BUCK build
+    * Monkey-patching W3C-compatible cookie serialization to fix Marionette. A more proper fix would be to change the parameters of a Command from Map to Object.
+    * There is no need to create a profile for Marionette
+    * removing prebuilt SafariDriver extension, bumping version number to 2.48
+    * Fixing tests for JsonToBeanConverter to avoid "error" key collision that has got new semantics in the standard
+    * Stop exposing embedded jetty out of SeleniumServer
+    * Breaking unwanted grid dependency on parts of RC server
+    * Deleting JsonKey, it's a useless abstraction
+    * Breaking unwanted grid test dependency on RC server (the removed attribute is not used actually)
+    * Fixes #1140, #1334, #1263, #669, #1165, #1132, #1186, #1203, #1214, #1242
+            #1241, #1240, #1238, #1237
+
 v2.48.2
 =======
 WebDriver:
