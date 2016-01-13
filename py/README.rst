@@ -14,7 +14,7 @@ The `selenium` package is used automate web browser interaction from Python.
 +-----------+-----------------------------------------------------------------------------------+
 | **Docs**: | `selenium package API <http://selenium.googlecode.com/git/docs/api/py/api.html>`_ |
 +-----------+-----------------------------------------------------------------------------------+
-| **Dev**:  | https://github.com/SeleniumHQ/selenium                                               |
+| **Dev**:  | https://github.com/SeleniumHQ/selenium                                            |
 +-----------+-----------------------------------------------------------------------------------+
 | **PyPI**: | https://pypi.python.org/pypi/selenium                                             |
 +-----------+-----------------------------------------------------------------------------------+
