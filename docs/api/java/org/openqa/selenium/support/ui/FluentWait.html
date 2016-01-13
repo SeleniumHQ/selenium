@@ -133,20 +133,20 @@ implements <a href="../../../../../org/openqa/selenium/support/ui/Wait.html" tit
  element on the page.
 
  <p>
- Sample usage: <pre><code>
+ Sample usage: <pre>
    // Waiting 30 seconds for an element to be present on the page, checking
    // for its presence once every 5 seconds.
-   Wait&amp;lt;WebDriver&amp;gt; wait = new FluentWait&amp;lt;WebDriver&amp;gt;(driver)
+   Wait wait = new FluentWait(driver)
        .withTimeout(30, SECONDS)
        .pollingEvery(5, SECONDS)
        .ignoring(NoSuchElementException.class);
 
-   WebElement foo = wait.until(new Function&amp;lt;WebDriver, WebElement&amp;gt;() {
+   WebElement foo = wait.until(new Function() {
      public WebElement apply(WebDriver driver) {
        return driver.findElement(By.id("foo"));
      }
    });
- </code></pre>
+ </pre>
 
  <p>
  <em>This class makes no thread safety guarantees.</em></div>

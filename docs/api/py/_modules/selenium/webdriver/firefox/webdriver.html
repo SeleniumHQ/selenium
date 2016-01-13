@@ -77,6 +77,7 @@
 <span class="kn">from</span> <span class="nn">.service</span> <span class="kn">import</span> <span class="n">Service</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.desired_capabilities</span> <span class="kn">import</span> <span class="n">DesiredCapabilities</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.firefox.extension_connection</span> <span class="kn">import</span> <span class="n">ExtensionConnection</span>
+<span class="kn">from</span> <span class="nn">.remote_connection</span> <span class="kn">import</span> <span class="n">FirefoxRemoteConnection</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.firefox.firefox_profile</span> <span class="kn">import</span> <span class="n">FirefoxProfile</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.remote.webdriver</span> <span class="kn">import</span> <span class="n">WebDriver</span> <span class="k">as</span> <span class="n">RemoteWebDriver</span>
 
@@ -109,7 +110,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
             <span class="n">RemoteWebDriver</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                <span class="n">command_executor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">service_url</span><span class="p">,</span>
+                <span class="n">command_executor</span><span class="o">=</span><span class="n">FirefoxRemoteConnection</span><span class="p">(</span>
+                    <span class="n">remote_server_addr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">service_url</span><span class="p">),</span>
                 <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">capabilities</span><span class="p">,</span>
                 <span class="n">keep_alive</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
@@ -151,7 +153,10 @@
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="WebDriver.firefox_profile"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.firefox_profile">[docs]</a>    <span class="k">def</span> <span class="nf">firefox_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span>
+</div>
+<div class="viewcode-block" id="WebDriver.set_context"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.set_context">[docs]</a>    <span class="k">def</span> <span class="nf">set_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;SET_CONTEXT&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s">&quot;context&quot;</span><span class="p">:</span> <span class="n">context</span><span class="p">})</span></div></div>
 </pre></div>
 
           </div>

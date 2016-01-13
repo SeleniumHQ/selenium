@@ -151,7 +151,8 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
                 <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;Can&#39;t load the profile. Profile &quot;</span>
                       <span class="s">&quot;Dir: </span><span class="si">%s</span><span class="s"> If you specified a log_file in the &quot;</span>
-                      <span class="s">&quot;FirefoxBinary constructor, check it for details.&quot;</span><span class="p">)</span>
+                      <span class="s">&quot;FirefoxBinary constructor, check it for details.&quot;</span>
+                      <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">path</span><span class="p">))</span>
             <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">True</span>
@@ -191,7 +192,10 @@
         <span class="sd">&quot;&quot;&quot;Return the command to start firefox.&quot;&quot;&quot;</span>
         <span class="n">start_cmd</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
         <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s">&quot;Darwin&quot;</span><span class="p">:</span>
-            <span class="n">start_cmd</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;/Applications/Firefox.app/Contents/MacOS/firefox-bin&quot;</span><span class="p">)</span>
+            <span class="n">start_cmd</span> <span class="o">=</span> <span class="s">&quot;/Applications/Firefox.app/Contents/MacOS/firefox-bin&quot;</span>
+            <span class="c"># fallback to homebrew installation for mac users</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">start_cmd</span><span class="p">):</span>
+                <span class="n">start_cmd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s">&quot;~&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">start_cmd</span>
         <span class="k">elif</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s">&quot;Windows&quot;</span><span class="p">:</span>
             <span class="n">start_cmd</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_exe_in_registry</span><span class="p">()</span> <span class="ow">or</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_default_windows_location</span><span class="p">())</span>

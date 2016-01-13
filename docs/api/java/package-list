@@ -44,7 +44,6 @@ org.openqa.selenium.safari
 org.openqa.selenium.security
 org.openqa.selenium.server
 org.openqa.selenium.server.browserlaunchers
-org.openqa.selenium.server.cli
 org.openqa.selenium.server.commands
 org.openqa.selenium.server.htmlrunner
 org.openqa.selenium.server.security

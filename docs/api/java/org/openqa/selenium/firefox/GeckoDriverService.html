@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9};
-var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
+var methods = {"i0":9,"i1":10};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -171,7 +171,7 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.ht
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -181,6 +181,10 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.ht
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/GeckoDriverService.html#createDefaultService--">createDefaultService</a></span>()</code>
 <div class="block">Configures and returns a new <a href="../../../../org/openqa/selenium/firefox/GeckoDriverService.html" title="class in org.openqa.selenium.firefox"><code>GeckoDriverService</code></a> using the default configuration.</div>
 </td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>protected void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/GeckoDriverService.html#waitUntilAvailable--">waitUntilAvailable</a></span>()</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -237,7 +241,7 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.ht
 <a name="createDefaultService--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>createDefaultService</h4>
 <pre>public static&nbsp;<a href="../../../../org/openqa/selenium/firefox/GeckoDriverService.html" title="class in org.openqa.selenium.firefox">GeckoDriverService</a>&nbsp;createDefaultService()</pre>
@@ -248,6 +252,22 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.ht
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A new GeckoDriverService using the default configuration.</dd>
+</dl>
+</li>
+</ul>
+<a name="waitUntilAvailable--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>waitUntilAvailable</h4>
+<pre>protected&nbsp;void&nbsp;waitUntilAvailable()
+                           throws java.net.MalformedURLException</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code><a href="../../../../org/openqa/selenium/remote/service/DriverService.html#waitUntilAvailable--">waitUntilAvailable</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/openqa/selenium/remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a></code></dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.net.MalformedURLException</code></dd>
 </dl>
 </li>
 </ul>

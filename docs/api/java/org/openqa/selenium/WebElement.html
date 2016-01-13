@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6,"i7":6,"i8":6,"i9":6,"i10":6,"i11":6,"i12":6,"i13":6,"i14":6};
+var methods = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6,"i7":6,"i8":6,"i9":6,"i10":6,"i11":6,"i12":6,"i13":6,"i14":6,"i15":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -177,50 +177,54 @@ extends <a href="../../../org/openqa/selenium/SearchContext.html" title="interfa
 </td>
 </tr>
 <tr id="i7" class="rowColor">
+<td class="colFirst"><code><a href="../../../org/openqa/selenium/Rectangle.html" title="class in org.openqa.selenium">Rectangle</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/WebElement.html#getRect--">getRect</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="../../../org/openqa/selenium/Dimension.html" title="class in org.openqa.selenium">Dimension</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/WebElement.html#getSize--">getSize</a></span>()</code>
 <div class="block">What is the width and height of the rendered element?</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/WebElement.html#getTagName--">getTagName</a></span>()</code>
 <div class="block">Get the tag name of this element.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/WebElement.html#getText--">getText</a></span>()</code>
 <div class="block">Get the visible (i.e.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/WebElement.html#isDisplayed--">isDisplayed</a></span>()</code>
 <div class="block">Is this element displayed or not? This method avoids the problem of having to parse an
  element's "style" attribute.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/WebElement.html#isEnabled--">isEnabled</a></span>()</code>
 <div class="block">Is the element currently enabled or not? This will generally return true for everything but
  disabled input elements.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/WebElement.html#isSelected--">isSelected</a></span>()</code>
 <div class="block">Determine whether or not this element is selected or not.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/WebElement.html#sendKeys-java.lang.CharSequence...-">sendKeys</a></span>(java.lang.CharSequence...&nbsp;keysToSend)</code>
 <div class="block">Use this method to simulate typing into an element, which may set its value.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/WebElement.html#submit--">submit</a></span>()</code>
 <div class="block">If this current element is a form, or an element within a form, then this will be submitted to
@@ -517,6 +521,19 @@ extends <a href="../../../org/openqa/selenium/SearchContext.html" title="interfa
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The size of the element on the page.</dd>
+</dl>
+</li>
+</ul>
+<a name="getRect--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getRect</h4>
+<pre><a href="../../../org/openqa/selenium/Rectangle.html" title="class in org.openqa.selenium">Rectangle</a>&nbsp;getRect()</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The location and size of the rendered element</dd>
 </dl>
 </li>
 </ul>

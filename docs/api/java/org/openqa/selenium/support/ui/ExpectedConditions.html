@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":41,"i20":9,"i21":9,"i22":9,"i23":9,"i24":9,"i25":9,"i26":9,"i27":9,"i28":9,"i29":9,"i30":9,"i31":9,"i32":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":41,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9,"i20":41,"i21":9,"i22":9,"i23":9,"i24":9,"i25":9,"i26":9,"i27":9,"i28":9,"i29":9,"i30":9,"i31":9,"i32":9,"i33":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -220,35 +220,43 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i14" class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.lang.Boolean&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#numberOfwindowsToBe-int-">numberOfwindowsToBe</a></span>(int&nbsp;expectedNumberOfWindows)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#numberOfwindowsToBe-int-">numberOfwindowsToBe</a></span>(int&nbsp;expectedNumberOfWindows)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">please use <a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#numberOfWindowsToBe-int-"><code>numberOfWindowsToBe(int)</code></a> instead</span></div>
+</div>
+</td>
 </tr>
 <tr id="i15" class="rowColor">
+<td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.lang.Boolean&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#numberOfWindowsToBe-int-">numberOfWindowsToBe</a></span>(int&nbsp;expectedNumberOfWindows)</code>&nbsp;</td>
+</tr>
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.util.List&lt;<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#presenceOfAllElementsLocatedBy-org.openqa.selenium.By-">presenceOfAllElementsLocatedBy</a></span>(<a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code>
 <div class="block">An expectation for checking that there is at least one element present on a
  web page.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#presenceOfElementLocated-org.openqa.selenium.By-">presenceOfElementLocated</a></span>(<a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code>
 <div class="block">An expectation for checking that an element is present on the DOM of a
  page.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>static &lt;T&gt;&nbsp;<a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;T&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#refreshed-org.openqa.selenium.support.ui.ExpectedCondition-">refreshed</a></span>(<a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;T&gt;&nbsp;condition)</code>
 <div class="block">Wrapper for a condition, which allows for elements to update by redrawing.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.lang.Boolean&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#stalenessOf-org.openqa.selenium.WebElement-">stalenessOf</a></span>(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code>
 <div class="block">Wait until an element is no longer attached to the DOM.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.lang.Boolean&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#textToBePresentInElement-org.openqa.selenium.By-java.lang.String-">textToBePresentInElement</a></span>(<a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator,
                         java.lang.String&nbsp;text)</code>
@@ -257,14 +265,14 @@ extends java.lang.Object</pre>
 </div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.lang.Boolean&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#textToBePresentInElement-org.openqa.selenium.WebElement-java.lang.String-">textToBePresentInElement</a></span>(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
                         java.lang.String&nbsp;text)</code>
 <div class="block">An expectation for checking if the given text is present in the specified element.</div>
 </td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.lang.Boolean&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#textToBePresentInElementLocated-org.openqa.selenium.By-java.lang.String-">textToBePresentInElementLocated</a></span>(<a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator,
                                java.lang.String&nbsp;text)</code>
@@ -272,7 +280,7 @@ extends java.lang.Object</pre>
  the given locator.</div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.lang.Boolean&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#textToBePresentInElementValue-org.openqa.selenium.By-java.lang.String-">textToBePresentInElementValue</a></span>(<a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator,
                              java.lang.String&nbsp;text)</code>
@@ -280,7 +288,7 @@ extends java.lang.Object</pre>
  elements value attribute.</div>
 </td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.lang.Boolean&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#textToBePresentInElementValue-org.openqa.selenium.WebElement-java.lang.String-">textToBePresentInElementValue</a></span>(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
                              java.lang.String&nbsp;text)</code>
@@ -288,59 +296,59 @@ extends java.lang.Object</pre>
  elements value attribute.</div>
 </td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.lang.Boolean&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#titleContains-java.lang.String-">titleContains</a></span>(java.lang.String&nbsp;title)</code>
 <div class="block">An expectation for checking that the title contains a case-sensitive
  substring</div>
 </td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.lang.Boolean&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#titleIs-java.lang.String-">titleIs</a></span>(java.lang.String&nbsp;title)</code>
 <div class="block">An expectation for checking the title of a page.</div>
 </td>
 </tr>
-<tr id="i26" class="altColor">
+<tr id="i27" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.lang.Boolean&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#urlContains-java.lang.String-">urlContains</a></span>(java.lang.String&nbsp;fraction)</code>
 <div class="block">An expectation for the URL of the current page to contain specific text.</div>
 </td>
 </tr>
-<tr id="i27" class="rowColor">
+<tr id="i28" class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.lang.Boolean&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#urlMatches-java.lang.String-">urlMatches</a></span>(java.lang.String&nbsp;regex)</code>
 <div class="block">Expectation for the URL to match a specific regular expression</div>
 </td>
 </tr>
-<tr id="i28" class="altColor">
+<tr id="i29" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.lang.Boolean&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#urlToBe-java.lang.String-">urlToBe</a></span>(java.lang.String&nbsp;url)</code>
 <div class="block">An expectation for the URL of the current page to be a specific url.</div>
 </td>
 </tr>
-<tr id="i29" class="rowColor">
+<tr id="i30" class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#visibilityOf-org.openqa.selenium.WebElement-">visibilityOf</a></span>(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code>
 <div class="block">An expectation for checking that an element, known to be present on the DOM
  of a page, is visible.</div>
 </td>
 </tr>
-<tr id="i30" class="altColor">
+<tr id="i31" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.util.List&lt;<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#visibilityOfAllElements-java.util.List-">visibilityOfAllElements</a></span>(java.util.List&lt;<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&nbsp;elements)</code>
 <div class="block">An expectation for checking that all elements present on the web page that
  match the locator are visible.</div>
 </td>
 </tr>
-<tr id="i31" class="rowColor">
+<tr id="i32" class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.util.List&lt;<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#visibilityOfAllElementsLocatedBy-org.openqa.selenium.By-">visibilityOfAllElementsLocatedBy</a></span>(<a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code>
 <div class="block">An expectation for checking that all elements present on the web page that
  match the locator are visible.</div>
 </td>
 </tr>
-<tr id="i32" class="altColor">
+<tr id="i33" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#visibilityOfElementLocated-org.openqa.selenium.By-">visibilityOfElementLocated</a></span>(<a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code>
 <div class="block">An expectation for checking that an element is present on the DOM of a page
@@ -904,7 +912,18 @@ public static&nbsp;<a href="../../../../../org/openqa/selenium/support/ui/Expect
 <ul class="blockList">
 <li class="blockList">
 <h4>numberOfwindowsToBe</h4>
-<pre>public static&nbsp;<a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.lang.Boolean&gt;&nbsp;numberOfwindowsToBe(int&nbsp;expectedNumberOfWindows)</pre>
+<pre>@Deprecated
+public static&nbsp;<a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.lang.Boolean&gt;&nbsp;numberOfwindowsToBe(int&nbsp;expectedNumberOfWindows)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">please use <a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#numberOfWindowsToBe-int-"><code>numberOfWindowsToBe(int)</code></a> instead</span></div>
+</li>
+</ul>
+<a name="numberOfWindowsToBe-int-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>numberOfWindowsToBe</h4>
+<pre>public static&nbsp;<a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.lang.Boolean&gt;&nbsp;numberOfWindowsToBe(int&nbsp;expectedNumberOfWindows)</pre>
 </li>
 </ul>
 <a name="not-org.openqa.selenium.support.ui.ExpectedCondition-">
