@@ -131,7 +131,6 @@ class Service(object):
                 self.process.terminate()
                 self.process.kill()
                 self.process.wait()
-
         except OSError:
             # kill may not be available under windows environment
             pass
