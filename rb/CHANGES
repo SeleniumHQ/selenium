@@ -1,3 +1,37 @@
+2.49.1 (UNRELEASED)
+===================
+
+Ruby:
+  * support for SessionNotCreatedError (thanks Alexander Bayandin)
+
+Safari:
+  * Limit support to OS X (issue 1186)
+  * support for multiple concurrent drivers
+
+PhantomJS:
+  * Implement Socket locking
+
+IE:
+  * support for multiple concurrent drivers
+
+Chrome:
+  * prevent 404 error when shutting down Chrome service (thanks Fumiaki MATSUSHIMA)
+  * logging turned on by default
+  * support local storage capabilities
+
+Firefox:
+  * support setting the location of Firefox binary to use when run locally
+  * add default lookup of Homebrew Cask default directory (issue 1437)
+
+W3C Specification:
+  * support for using with Remote WebDriver
+  * implement window size command
+  * implement window position command
+  * implement element size command
+  * implement element position command
+  * implement full screen window command
+  * implement page source command
+
 2.48.1 (2015-10-13)
 ===================
 
