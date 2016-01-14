@@ -121,8 +121,13 @@ class Service(object):
 
         try:
             if self.process:
-                self.process.stdout.close()
-                self.process.stderr.close()
+                for stream in [self.process.stdin,
+                               self.process.stdout,
+                               self.process.stderr]:
+                    try:
+                        stream.close()
+                    except AttributeError:
+                        pass
                 self.process.terminate()
                 self.process.kill()
                 self.process.wait()
