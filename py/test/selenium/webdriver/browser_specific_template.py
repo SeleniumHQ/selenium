@@ -36,11 +36,9 @@ class ##BROWSER_SPECIFIC_TEST_CLASS##(##GENERAL_FILENAME##.##GENERAL_TEST_CLASS#
 
 def teardown_module(module):
     try:
-        ##BROWSER_SPECIFIC_TEST_CLASS##.driver.quit()
-    except AttributeError:
-        pass
-    try:
         ##BROWSER_SPECIFIC_TEST_CLASS##.webserver.stop()
     except AttributeError:
         pass
+
+    ##BROWSER_SPECIFIC_TEST_CLASS##.driver.quit()
     ##CUSTOM_TEST_TEARDOWN##
