@@ -430,7 +430,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, FIREFOX, MARIONETTE, SAFARI, HTMLUNIT})
+  @Ignore(value = {CHROME, FIREFOX, SAFARI, HTMLUNIT})
   @Test
   public void testNativelyClickOverlappingElements() {
     assumeFalse(isOldIe(driver));
@@ -447,7 +447,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {MARIONETTE, SAFARI, HTMLUNIT})
+  //@Ignore(value = {MARIONETTE, SAFARI, HTMLUNIT})
   @Test
   public void testClickAnElementThatDisappear() {
     assumeFalse(isOldIe(driver));
