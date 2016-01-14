@@ -1000,10 +1000,10 @@ public class ExpectedConditions {
    * it
    *
    * @param locator used to find the element
-   * @param value   used as expected part of text
+   * @param pattern   used as expected text matcher pattern
    * @return Boolean true when element has text value containing @value
    */
-  public static ExpectedCondition<Boolean> textContains(final By locator, final String value) {
+  public static ExpectedCondition<Boolean> textMatches(final By locator, final Pattern pattern) {
     return new ExpectedCondition<Boolean>() {
       private String currentValue = null;
 
@@ -1011,7 +1011,7 @@ public class ExpectedConditions {
       public Boolean apply(WebDriver driver) {
         try {
           currentValue = driver.findElement(locator).getText();
-          return currentValue.contains(value);
+          return pattern.matcher(currentValue).find();
         } catch (Exception e) {
           return false;
         }
@@ -1019,7 +1019,7 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        return String.format("text to contain \"%s\". Current text: \"%s\"", value, currentValue);
+        return String.format("text to match pattern \"%s\". Current text: \"%s\"", pattern.pattern(), currentValue);
       }
     };
   }
