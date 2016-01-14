@@ -163,13 +163,15 @@ public class EventFiringWebDriverTest {
     EventFiringWebDriver testedDriver =
         new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
           @Override
-          public void beforeChangeValueOf(WebElement element, WebDriver driver, CharSequence[] value) {
-            log.append("beforeChangeValueOf" + " " + Arrays.toString(value) + "\n");
+          public void beforeChangeValueOf(WebElement element, WebDriver driver,
+                                          CharSequence[] keysToSend) {
+            log.append("beforeChangeValueOf" + " " + Arrays.toString(keysToSend) + "\n");
           }
 
           @Override
-          public void afterChangeValueOf(WebElement element, WebDriver driver, CharSequence[] value) {
-            log.append("afterChangeValueOf" + " " + Arrays.toString(value) + "\n");
+          public void afterChangeValueOf(WebElement element, WebDriver driver,
+                                         CharSequence[] keysToSend) {
+            log.append("afterChangeValueOf" + " " + Arrays.toString(keysToSend) + "\n");
           }
         });
 

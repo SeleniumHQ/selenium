@@ -67,11 +67,11 @@ public abstract class AbstractWebDriverEventListener implements WebDriverEventLi
     // Do nothing.
   }
 
-  public void beforeChangeValueOf(WebElement element, WebDriver driver, CharSequence[] value) {
+  public void beforeChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysToSend) {
     // Do nothing.
   }
 
-  public void afterChangeValueOf(WebElement element, WebDriver driver, CharSequence[] value) {
+  public void afterChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysToSend) {
     // Do nothing.
   }
 
