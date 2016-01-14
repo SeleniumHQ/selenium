@@ -99,9 +99,12 @@ class ErrorHandler(object):
             value_json = response.get('value', None)
             if value_json and isinstance(value_json, basestring):
                 import json
-                value = json.loads(value_json)
-                status = value['error']
-                message = value['message']
+                try:
+                  value = json.loads(value_json)
+                  status = value['error']
+                  message = value['message']
+                except ValueError:
+                  pass
 
         exception_class = ErrorInResponseException
         if status in ErrorCode.NO_SUCH_ELEMENT:
