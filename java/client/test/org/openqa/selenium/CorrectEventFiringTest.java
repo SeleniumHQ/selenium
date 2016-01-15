@@ -447,7 +447,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  //@Ignore(value = {MARIONETTE, SAFARI, HTMLUNIT})
+  @Ignore(value = {SAFARI, HTMLUNIT})
   @Test
   public void testClickAnElementThatDisappear() {
     assumeFalse(isOldIe(driver));
