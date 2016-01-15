@@ -11,6 +11,7 @@
     For the export types, the `code` property is now the string code used by
     the W3C spec and _not_ the numeric code used by the Selenium project's
     wire protocol.
+* Updated `ws` dependency to version `1.0.1`.
 
 ### Changes for W3C WebDriver Spec Compliance
 
