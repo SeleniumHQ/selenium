@@ -110,8 +110,8 @@ script provided with `selenium-webdriver`.
 
 ## Documentation
 
-API documentation is included in the `docs` directory and is also available
-online from the [Selenium project][api]. Addition resources include
+API documentation is available online from the [Selenium project][api].
+Addition resources include
 
 - the #selenium channel on freenode IRC
 - the [selenium-users@googlegroups.com][users] list

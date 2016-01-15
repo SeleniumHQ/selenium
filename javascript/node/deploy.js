@@ -392,8 +392,9 @@ function generateDocs(outputDir, callback) {
     return sourceFiles.indexOf(file) == -1;
   });
 
+  var output = outputDir + '-docs';
   var config = {
-    'output': path.join(outputDir, 'docs'),
+    'output': output,
     'closureLibraryDir': path.join(outputDir, 'lib', 'goog'),
     'customPages': [
       {'name': 'Changes', 'path': path.join(outputDir, 'CHANGES.md')}
@@ -409,7 +410,7 @@ function generateDocs(outputDir, callback) {
     'typeFilters': ['goog']
   };
 
-  var configFile = outputDir + '-docs.json';
+  var configFile = output + '.json';
   fs.writeFileSync(configFile, JSON.stringify(config), 'utf8');
 
   var command = [
