@@ -16,11 +16,9 @@
 // under the License.
 
 /**
- * @fileoverview An example WebDriver script using Harmony generator functions.
- * This requires node v0.11 or newer.
+ * @fileoverview An example WebDriver script using generator functions.
  *
- * Usage: node --harmony-generators \
- *     selenium-webdriver/example/google_search_generator.js
+ * Usage: node selenium-webdriver/example/google_search_generator.js
  */
 
 var webdriver = require('..'),
