@@ -123,6 +123,54 @@ Contributions are accepted either through [GitHub][gh] pull requests or patches
 via the [Selenium issue tracker][issues]. You must sign our
 [Contributor License Agreement][cla] before your changes will be accepted.
 
+## Node Support Policy
+
+Each version of selenium-webdriver will support the latest _semver-minor_
+version of the [LTS] and stable Node releases. All _semver-major_ &
+_semver-minor_ versions between the LTS and stable release will have "best
+effort" support. Following a Selenium release, any _semver-minor_ Node releases
+will also have "best effort" support. Releases older than the latest LTS,
+_semver-major_ releases, and all unstable release branches (e.g. "v.Next")
+are considered strictly unsupported.
+
+For example, suppose the current LTS and stable releases are v4.2.4 and v5.4.1,
+respectively. Then a Selenium release would have the following support levels:
+
+| Version | Support       |
+| ------- | ------------- |
+| <= 4.1  | _unsupported_ |
+| 4.2     | supported     |
+| 5.0-3   | best effort   |
+| 5.4     | supported     |
+| >= 5.5  | best effort   |
+| v.Next  | _unsupported_ |
+
+### Support Level Definitions
+
+- _supported:_ A selenium-webdriver release will be API compatible with the
+    platform API, without the use of runtime flags.
+
+- _best effort:_ Bugs will be investigated as time permits. API compatibility is
+    only guaranteed where required by a _supported_ release. This effectively
+    means the adoption of new JS features, such as ES2015 modules, will depend
+    on what is supported in Node's LTS.
+
+- _unsupported:_ Bug submissions will be closed as will-not-fix and API
+    compatibility is not guaranteed.
+
+### Projected Support Schedule
+
+If Node releases a new [LTS] each October and a new major version every 6
+months, the support window for selenium-webdriver will be roughly:
+
+| Date      | LTS  | Stable |
+| --------- | ---: | -----: |
+| (current) |  4.2 |    5.0 |
+| 2016-04   |  4.2 |    6.0 |
+| 2016-10   |  6.0 |    7.0 |
+| 2017-04   |  6.0 |    8.0 |
+| 2017-10   |  8.0 |    9.0 |
+
 ## Issues
 
 Please report any issues using the [Selenium issue tracker][issues]. When using
@@ -164,6 +212,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 
+[LTS]: https://github.com/nodejs/LTS
 [api]: http://seleniumhq.github.io/selenium/docs/api/javascript/
 [cla]: http://goo.gl/qC50R
 [chrome]: http://chromedriver.storage.googleapis.com/index.html

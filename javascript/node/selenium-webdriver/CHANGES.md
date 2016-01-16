@@ -1,5 +1,15 @@
 ## v2.49.0-dev
 
+### Notice
+
+Starting with v2.49.0, each release of selenium-webdriver will support the
+latest _minor_ LTS and stable Node releases. All releases between the LTS and
+stable release will have best effort support. Further details are available in
+the selenium-webdriver package README.
+
+### Change Summary
+
+* Bumped the minimum supported version of Node to v4.2.x
 * Added `promise.Promise#catch()` for API compatibility with native Promises.
     `promise.Promise#thenCatch()` is not yet deprecated, but it simply
     delegates to `catch`.
