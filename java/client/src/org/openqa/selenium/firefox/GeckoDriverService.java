@@ -47,8 +47,8 @@ public class GeckoDriverService extends DriverService {
    * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
    */
-  private GeckoDriverService(File executable, int port, ImmutableList<String> args,
-                             ImmutableMap<String, String> environment) throws IOException {
+  public GeckoDriverService(File executable, int port, ImmutableList<String> args,
+                            ImmutableMap<String, String> environment) throws IOException {
     super(executable, port, args, environment);
   }
 
