@@ -17,17 +17,21 @@
 
 package org.openqa.selenium.testing;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
+import org.junit.runners.ParentRunner;
 import org.junit.runners.Suite;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.RunnerBuilder;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Throwables;
 
 public class ParallelSuite extends Suite {
   public static final String PARALLELIZATION_ENV_VAR_NAME = "PARALLEL_DRIVER_COUNT";
@@ -49,7 +53,7 @@ public class ParallelSuite extends Suite {
       }
     });
 
-    for (final Runner runner : getChildren()) {
+    for (final Runner runner : getFilteredChildren()) {
       threadPool.execute(new Runnable() {
         @Override
         public void run() {
@@ -60,7 +64,18 @@ public class ParallelSuite extends Suite {
     try {
       threadPool.shutdownAndWait();
     } catch (InterruptedException e) {
-      throw new RuntimeException(e);
+      Throwables.propagate(e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private Collection<Runner> getFilteredChildren() {
+    try {
+      Method getFilteredChildren = ParentRunner.class.getDeclaredMethod("getFilteredChildren");
+      getFilteredChildren.setAccessible(true);
+      return (Collection<Runner>) getFilteredChildren.invoke(this);
+    } catch (ReflectiveOperationException e) {
+      return getChildren();
     }
   }
 
