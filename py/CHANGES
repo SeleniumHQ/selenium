@@ -1,3 +1,10 @@
+Selenium 2.49.1
+* Ensure you can close stream before attempting to close it.
+* message response may cause json loads ValueError when it's not actually json
+  and just a string (like the message that occurs when firefox driver thinks
+  another element will receive the click)
+* Cleanup some error handling when sniffing what protocol you are speaking
+
 Selenium 2.49.0
 * Have Firefox service write to a file instead of PIPE
 * on osx for firefox, fallback to checking homebrew install, if the default isn't there
