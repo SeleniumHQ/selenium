@@ -101,8 +101,12 @@ class ErrorHandler(object):
                 import json
                 try:
                   value = json.loads(value_json)
-                  status = value['error']
-                  message = value['message']
+                  status = value.get('error', None)
+                  if status is None:
+                      status = value["status"]
+                      message = value["value"]["message"]
+                  else:
+                      message = value.get('message', None)
                 except ValueError:
                   pass
 
@@ -147,13 +151,13 @@ class ErrorHandler(object):
             exception_class = MoveTargetOutOfBoundsException
         else:
             exception_class = WebDriverException
-        value = response['value']
+        if value == '':
+            value = response['value']
         if isinstance(value, basestring):
             if exception_class == ErrorInResponseException:
                 raise exception_class(response, value)
             raise exception_class(value)
-        message = ''
-        if 'message' in value:
+        if message != "" and 'message' in value:
             message = value['message']
 
         screen = None
