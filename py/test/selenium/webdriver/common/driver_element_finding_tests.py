@@ -59,7 +59,7 @@ class DriverElementFindingTests(unittest.TestCase):
         elements = self.driver.find_elements(By.ID, "non_Existent_Button")
         self.assertEqual(len(elements), 0)
 
-    #Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
+    @pytest.mark.ignore_phantomjs
     def test_Finding_ASingle_Element_By_Empty_Id_Should_Throw(self):
         self._load_page("formPage")
         try:
@@ -68,7 +68,7 @@ class DriverElementFindingTests(unittest.TestCase):
         except NoSuchElementException:
             pass
 
-    #Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
+    @pytest.mark.ignore_phantomjs
     def test_Finding_Multiple_Elements_By_Empty_Id_Should_Return_Empty_List(self):
         self._load_page("formPage")
         elements = self.driver.find_elements(By.ID, "")
@@ -119,7 +119,7 @@ class DriverElementFindingTests(unittest.TestCase):
         elements = self.driver.find_elements(By.NAME, "non_Existent_Button")
         self.assertEqual(len(elements), 0)
 
-    #@Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
+    @pytest.mark.ignore_phantomjs
     def test_Finding_ASingle_Element_By_Empty_Name_Should_Throw(self):
         self._load_page("formPage")
         try:
@@ -128,7 +128,7 @@ class DriverElementFindingTests(unittest.TestCase):
         except NoSuchElementException:
             pass
 
-    #Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
+    @pytest.mark.ignore_phantomjs
     def test_Finding_Multiple_Elements_By_Empty_Name_Should_Return_Empty_List(self):
         self._load_page("formPage")
         elements = self.driver.find_elements(By.NAME, "")
@@ -176,7 +176,7 @@ class DriverElementFindingTests(unittest.TestCase):
         elements = self.driver.find_elements(By.TAG_NAME, "non_Existent_Button")
         self.assertEqual(len(elements), 0)
 
-    #Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
+    @pytest.mark.ignore_phantomjs
     def test_Finding_ASingle_Element_By_Empty_Tag_Name_Should_Throw(self):
         self._load_page("formPage")
         try:
@@ -185,7 +185,7 @@ class DriverElementFindingTests(unittest.TestCase):
         except NoSuchElementException:
             pass
 
-    #Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
+    @pytest.mark.ignore_phantomjs
     def test_Finding_Multiple_Elements_By_Empty_Tag_Name_Should_Return_Empty_List(self):
         self._load_page("formPage")
         elements = self.driver.find_elements(By.TAG_NAME, "")
@@ -252,7 +252,7 @@ class DriverElementFindingTests(unittest.TestCase):
         except NoSuchElementException:
             pass
 
-    #Ignore(value = {CHROME, MARIONETTE}, reason = "throws Webself.driver_Exception")
+    @pytest.mark.ignore_phantomjs
     def test_Finding_ASingle_Element_By_Empty_Class_Name_Should_Throw(self):
         self._load_page("xhtmlTest")
         try:
@@ -261,7 +261,7 @@ class DriverElementFindingTests(unittest.TestCase):
         except NoSuchElementException:
             pass
 
-    #Ignore(value = {CHROME, MARIONETTE}, reason = "Chrome: throws Webself.driver_Exception")
+    @pytest.mark.ignore_phantomjs
     def test_Finding_Multiple_Elements_By_Empty_Class_Name_Should_Throw(self):
         self._load_page("xhtmlTest")
         try:
@@ -270,6 +270,7 @@ class DriverElementFindingTests(unittest.TestCase):
         except NoSuchElementException:
             pass
 
+    @pytest.mark.ignore_phantomjs
     def test_Finding_ASingle_Element_By_Compound_Class_Name_Should_Throw(self):
         self._load_page("xhtmlTest")
         try:
@@ -278,7 +279,7 @@ class DriverElementFindingTests(unittest.TestCase):
         except NoSuchElementException:
             pass
 
-    #Ignore(value = {CHROME, MARIONETTE}, reason = "Chrome: throws Webself.driver_Exception")
+    @pytest.mark.ignore_phantomjs
     def test_Finding_Multiple_Elements_By_Compound_Class_Name_Should_Throw(self):
         self._load_page("xhtmlTest")
         try:
@@ -287,7 +288,7 @@ class DriverElementFindingTests(unittest.TestCase):
         except NoSuchElementException:
             pass
 
-    #Ignore(value = {CHROME, MARIONETTE}, reason = "Chrome: throws Invalid_Element_State_Exception")
+    @pytest.mark.ignore_phantomjs
     def test_Finding_ASingle_Element_By_Invalid_Class_Name_Should_Throw(self):
         self._load_page("xhtmlTest")
         try:
@@ -296,7 +297,7 @@ class DriverElementFindingTests(unittest.TestCase):
         except NoSuchElementException:
             pass
 
-    #Ignore(value = {CHROME, MARIONETTE}, reason = "Chrome: throws Invalid_Element_State_Exception")
+    @pytest.mark.ignore_phantomjs
     def test_Finding_Multiple_Elements_By_Invalid_Class_Name_Should_Throw(self):
         self._load_page("xhtmlTest")
         try:
@@ -349,6 +350,7 @@ class DriverElementFindingTests(unittest.TestCase):
 
     @pytest.mark.ignore_firefox
     @pytest.mark.ignore_marionette
+    @pytest.mark.ignore_phantomjs
     def test_Should_Be_Able_To_Find_Element_By_XPath_With_Namespace(self):
         self._load_page("svgPage")
         element = self.driver.find_element(By.XPATH, "//svg:svg//svg:text")
@@ -356,6 +358,7 @@ class DriverElementFindingTests(unittest.TestCase):
 
     @pytest.mark.ignore_firefox
     @pytest.mark.ignore_marionette
+    @pytest.mark.ignore_phantomjs
     def test_Should_Be_Able_To_Find_Element_By_XPath_In_Xml_Document(self):
         self._load_page("simpleXmlDocument")
         element = self.driver.find_element(By.XPATH, "//foo")
@@ -505,8 +508,7 @@ class DriverElementFindingTests(unittest.TestCase):
         elements = self.driver.find_elements(By.CSS_SELECTOR, ".there-is-no-such-class")
         self.assertEqual(len(elements), 0)
 
-    #Ignore(value = {CHROME, MARIONETTE},
-    #        reason = "Chrome: throws Webself.driver_Exception, Marionette: throws Invalid_Element_State_Exception")
+    @pytest.mark.ignore_phantomjs
     def test_Finding_ASingle_Element_By_Empty_Css_Selector_Should_Throw(self):
         self._load_page("xhtmlTest")
         try:
@@ -515,8 +517,7 @@ class DriverElementFindingTests(unittest.TestCase):
         except NoSuchElementException:
             pass
 
-    #Ignore(value = {CHROME, MARIONETTE},
-    #        reason = "Chrome: throws Webself.driver_Exception, Marionette: throws Invalid_Element_State_Exception")
+    @pytest.mark.ignore_phantomjs
     def test_Finding_Multiple_Elements_By_Empty_Css_Selector_Should_Throw(self):
         self._load_page("xhtmlTest")
         try:
@@ -525,7 +526,7 @@ class DriverElementFindingTests(unittest.TestCase):
         except NoSuchElementException:
             pass
 
-    #Ignore(value = {CHROME, MARIONETTE}          reason = "Chrome: throws Invalid_Element_State_Exception, Marionette: throws Invalid_Element_State_Exception")
+    @pytest.mark.ignore_phantomjs
     def test_Finding_ASingle_Element_By_Invalid_Css_Selector_Should_Throw(self):
         self._load_page("xhtmlTest")
         try:
@@ -534,7 +535,7 @@ class DriverElementFindingTests(unittest.TestCase):
         except NoSuchElementException:
             pass
 
-    #Ignore(value = {CHROME, MARIONETTE},       reason = "Chrome: throws Invalid_Element_State_Exception, Marionette: throws Invalid_Element_State_Exception")
+    @pytest.mark.ignore_phantomjs
     def test_Finding_Multiple_Elements_By_Invalid_Css_Selector_Should_Throw(self):
         self._load_page("xhtmlTest")
         try:
