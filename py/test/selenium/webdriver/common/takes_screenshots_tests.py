@@ -26,7 +26,7 @@ class ScreenshotTests(unittest.TestCase):
 
     def test_get_screenshot_as_base64(self):
         self._loadSimplePage()
-        result = base64.decodestring(self.driver.get_screenshot_as_base64())
+        result = base64.b64decode(self.driver.get_screenshot_as_base64())
         self.assertEqual(imghdr.what('', result), 'png')
 
     def test_get_screenshot_as_png(self):
