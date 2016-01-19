@@ -225,19 +225,8 @@ namespace OpenQA.Selenium.Remote
             get
             {
                 string pageSource = string.Empty;
-                if (this.IsSpecificationCompliant)
-                {
-                    string script = "var source = document.documentElement.outerHTML; \n"
-                                    + "if (!source) { source = new XMLSerializer().serializeToString(document); }\n"
-                                    + "return source;";
-                    pageSource = this.ExecuteScript(script).ToString();
-                }
-                else
-                {
-                    Response commandResponse = this.Execute(DriverCommand.GetPageSource, null);
-                    pageSource = commandResponse.Value.ToString();
-                }
-
+                Response commandResponse = this.Execute(DriverCommand.GetPageSource, null);
+                pageSource = commandResponse.Value.ToString();
                 return pageSource;
             }
         }
