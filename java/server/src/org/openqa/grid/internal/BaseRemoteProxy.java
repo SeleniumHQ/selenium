@@ -144,7 +144,7 @@ public class BaseRemoteProxy implements RemoteProxy {
 
     maxConcurrentSession = getConfigInteger(RegistrationRequest.MAX_SESSION);
     cleanUpCycle = getConfigInteger(RegistrationRequest.CLEAN_UP_CYCLE);
-    timeOutMs = getConfigInteger(RegistrationRequest.TIME_OUT);
+    timeOutMs = getConfigInteger(RegistrationRequest.TIME_OUT) * 1000;
     statusCheckTimeout = getConfigInteger(RegistrationRequest.STATUS_CHECK_TIMEOUT);
 
     List<DesiredCapabilities> capabilities = request.getCapabilities();
