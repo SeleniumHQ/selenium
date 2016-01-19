@@ -157,7 +157,7 @@ class ErrorHandler(object):
             if exception_class == ErrorInResponseException:
                 raise exception_class(response, value)
             raise exception_class(value)
-        if message != "" and 'message' in value:
+        if message == "" and 'message' in value:
             message = value['message']
 
         screen = None
