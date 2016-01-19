@@ -88,13 +88,10 @@
     <Compile Include="PageObjects\DefaultPageObjectMemberDecorator.cs" />
     <Compile Include="PageObjects\IElementLocator.cs" />
     <Compile Include="PageObjects\IPageObjectMemberDecorator.cs" />
-    <Compile Include="PageObjects\DefaultElementLocatorFactory.cs" />
     <Compile Include="PageObjects\FindsByAttribute.cs" />
     <Compile Include="PageObjects\FindsBySequenceAttribute.cs" />
     <Compile Include="PageObjects\How.cs" />
-    <Compile Include="PageObjects\IElementLocatorFactory.cs" />
     <Compile Include="PageObjects\PageFactory.cs" />
-    <Compile Include="PageObjects\RetryingElementLocatorFactory.cs" />
     <Compile Include="PageObjects\WebDriverObjectProxy.cs" />
     <Compile Include="PageObjects\WebElementListProxy.cs" />
     <Compile Include="PageObjects\WebElementProxy.cs" />
