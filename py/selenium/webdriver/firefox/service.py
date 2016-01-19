@@ -14,38 +14,47 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 from subprocess import PIPE
+
 from selenium.webdriver.common import service
 
+
 class Service(service.Service):
-    """
-    Object that manages the starting and stopping of the GeckoDriver
-    """
+    """Object that manages the starting and stopping of the
+    GeckoDriver."""
 
-    def __init__(self, executable_path, firefox_binary=None, port=0, service_args=None,
-                 log_path=None, env=None):
+    def __init__(
+        self, executable_path, firefox_binary=None, port=0, service_args=None,
+                 log_path="geckodriver.log", env=None):
+        """Creates a new instance of the GeckoDriver remote service proxy.
+
+        GeckoDriver provides a HTTP interface speaking the W3C WebDriver
+        protocol to Marionette.
+
+        :param executable_path: Path to the GeckoDriver binary.
+        :param firefox_binary: Optional path to the Firefox binary.
+        :param port: Run the remote service on a specified port.
+            Defaults to 0.
+        :param service_args: Optional list of arguments to pass to the
+            GeckoDriver binary.
+        :param log_path: Optional path for the GeckoDriver to log to.
+            Defaults to _geckodriver.log_ in the current working directory.
+        :param env: Optional dictionary of output variables to expose
+            in the services' environment.
         """
-        Creates a new instance of the Service
-
-        :Args:
-         - executable_path : Path to the GeckoDriver
-         - port : Port the service is running on
-         - service_args : List of args to pass to the Geckodriver service
-         - log_path : Path for the GeckoDriver service to log to"""
-
         if log_path:
             log_file = open(log_path, "w")
-        else:
-            log_file = open("geckodriver.log", "w")
 
-        service.Service.__init__(self, executable_path, port=port, log_file=log_file, env=env)
+        service.Service.__init__(
+            self, executable_path, port=port, log_file=log_file, env=env)
         self.firefox_binary = firefox_binary
         self.service_args = service_args or []
 
     def command_line_args(self):
         if self.firefox_binary:
-            return ["-b", self.firefox_binary, '--webdriver-port', "%d" % self.port]
-        return ['--webdriver-port', "%d" % self.port]
+            return ["-b", self.firefox_binary, "--webdriver-port", "%d" % self.port]
+        return ["--webdriver-port", "%d" % self.port]
 
     def send_remote_shutdown_command(self):
         pass
