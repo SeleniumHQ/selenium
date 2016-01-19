@@ -44,7 +44,7 @@ class Service(service.Service):
             in the services' environment.
         """
         if log_path:
-            log_file = open(log_path, "w")
+            log_file = open(log_path, "a+")
 
         service.Service.__init__(
             self, executable_path, port=port, log_file=log_file, env=env)
