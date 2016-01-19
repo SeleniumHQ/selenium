@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 try:
     import http.client as http_client
 except ImportError:
@@ -53,35 +52,36 @@ class WebDriver(RemoteWebDriver):
         if capabilities is None:
             capabilities = DesiredCapabilities.FIREFOX
 
-        if "marionette" in capabilities and capabilities['marionette'] is True:
-            # Let's use Marionette! WOOOOHOOOOO!
+        # marionette
+        if "marionette" in capabilities and capabilities["marionette"] is True:
             if "binary" in capabilities:
                 self.binary = capabilities["binary"]
             self.service = Service(executable_path, firefox_binary=self.binary)
             self.service.start()
 
-            RemoteWebDriver.__init__(self,
-                command_executor=FirefoxRemoteConnection(
-                    remote_server_addr=self.service.service_url),
+            executor = FirefoxRemoteConnection(
+                remote_server_addr=self.service.service_url)
+            RemoteWebDriver.__init__(
+                self,
+                command_executor=executor
                 desired_capabilities=capabilities,
                 keep_alive=True)
 
+        # use old Firefox add-on
         else:
-            # Oh well... sometimes the old way is the best way.
             if self.binary is None:
                 self.binary = FirefoxBinary()
 
             if proxy is not None:
                 proxy.add_to_capabilities(capabilities)
 
-            RemoteWebDriver.__init__(self,
-            command_executor=ExtensionConnection("127.0.0.1", self.profile,
-            self.binary, timeout),
-            desired_capabilities=capabilities,
-            keep_alive=True)
-
-
-        self._is_remote = False
+            executor = ExtensionConnection("127.0.0.1", self.profile, self.binary, timeout)
+            RemoteWebDriver.__init__(
+                self,
+                command_executor=executor,
+                desired_capabilities=capabilities,
+                keep_alive=True)
+            self._is_remote = False
 
     def quit(self):
         """Quits the driver and close every associated window."""
