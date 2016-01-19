@@ -75,7 +75,7 @@ namespace OpenQA.Selenium.Remote
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             if (this.driver.IsSpecificationCompliant)
             {
-                parameters.Add("message", keysToSend);
+                parameters.Add("text", keysToSend.ToCharArray());
             }
             else
             {
