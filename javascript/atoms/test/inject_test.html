@@ -44,6 +44,10 @@ limitations under the License.
 
     var frame, frameWin, frameDoc;
 
+    function setUpPage() {
+      goog.testing.TestCase.getActiveTestCase().promiseTimeout = 30000; // 30s
+    }
+
     function setUp() {
       frame = goog.dom.$('test-frame');
       frameWin = goog.dom.getFrameContentWindow(frame);
