@@ -63,7 +63,7 @@ class WebDriver(RemoteWebDriver):
                 remote_server_addr=self.service.service_url)
             RemoteWebDriver.__init__(
                 self,
-                command_executor=executor
+                command_executor=executor,
                 desired_capabilities=capabilities,
                 keep_alive=True)
 
