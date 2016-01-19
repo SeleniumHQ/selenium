@@ -151,7 +151,7 @@ class ErrorHandler(object):
             exception_class = MoveTargetOutOfBoundsException
         else:
             exception_class = WebDriverException
-        if value == '':
+        if value == '' or value is None:
             value = response['value']
         if isinstance(value, basestring):
             if exception_class == ErrorInResponseException:
