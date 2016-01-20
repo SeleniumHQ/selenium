@@ -54,8 +54,7 @@ class WebDriver(RemoteWebDriver):
 
         # marionette
         if capabilities.get("marionette"):
-            if "binary" in capabilities:
-                self.binary = capabilities["binary"]
+            self.binary = capabilities.get("binary")
             self.service = Service(executable_path, firefox_binary=self.binary)
             self.service.start()
 
