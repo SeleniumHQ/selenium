@@ -23,6 +23,9 @@ the selenium-webdriver package README.
     For the export types, the `code` property is now the string code used by
     the W3C spec and _not_ the numeric code used by the Selenium project's
     wire protocol.
+* Rewrote the `http` module to no longer user the Google Closure Library.
+* Changed the `http.Request` and `http.Response` classes to store headers in
+    maps instead of object literals.
 * Updated `ws` dependency to version `1.0.1`.
 
 ### Changes for W3C WebDriver Spec Compliance
