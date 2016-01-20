@@ -24,8 +24,8 @@ var base = require('../lib/_base'),
     Executor = require('./index').Executor,
     HttpClient = require('./index').HttpClient,
     HttpRequest = require('./index').Request,
-    Command = base.require('webdriver.Command'),
-    CommandName = base.require('webdriver.CommandName'),
+    Command = require('../lib/command').Command,
+    CommandName = require('../lib/command').Name,
     promise = base.require('webdriver.promise');
 
 

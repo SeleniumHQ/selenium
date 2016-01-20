@@ -24,6 +24,7 @@ var webdriver = require('./index'),
     executors = require('./executors'),
     http = require('./http'),
     io = require('./io'),
+    command = require('./lib/command'),
     portprober = require('./net/portprober'),
     remote = require('./remote');
 
@@ -113,7 +114,7 @@ var WEBDRIVER_TO_PHANTOMJS_LEVEL = (function() {
 /**
  * Creates a command executor with support for PhantomJS' custom commands.
  * @param {!webdriver.promise.Promise<string>} url The server's URL.
- * @return {!webdriver.CommandExecutor} The new command executor.
+ * @return {!command.Executor} The new command executor.
  */
 function createExecutor(url) {
   return new executors.DeferredExecutor(url.then(function(url) {
@@ -253,7 +254,7 @@ Driver.prototype.executePhantomJS = function(script, args) {
   var args = arguments.length > 1
       ? Array.prototype.slice.call(arguments, 1) : [];
   return this.schedule(
-      new webdriver.Command(Command.EXECUTE_PHANTOM_SCRIPT)
+      new command.Command(Command.EXECUTE_PHANTOM_SCRIPT)
           .setParameter('script', script)
           .setParameter('args', args),
       'Driver.executePhantomJS()');

@@ -16,6 +16,8 @@ the selenium-webdriver package README.
 * Changed some `io` operations to use native promises.
 * Changed `webdriver.CommandExecutor#execute()` and `HttpClient` to return
     promises instead of using callback passing.
+* Migrated the `webdriver.Command*` types from using the Closure Library to the
+    new `lib/command` module.
 * API documentation is no longer distributed with the npm package, but remains
     available at <http://seleniumhq.github.io/selenium/docs/api/javascript/>
 * Rewrote the `error` module to export an Error subtype for each type of error

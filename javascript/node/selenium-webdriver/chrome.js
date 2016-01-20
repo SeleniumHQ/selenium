@@ -121,6 +121,7 @@ var webdriver = require('./index'),
     executors = require('./executors'),
     http = require('./http'),
     io = require('./io'),
+    command = require('./lib/command'),
     portprober = require('./net/portprober'),
     remote = require('./remote');
 
@@ -146,7 +147,7 @@ var Command = {
 /**
  * Creates a command executor with support for ChromeDriver's custom commands.
  * @param {!webdriver.promise.Promise<string>} url The server's URL.
- * @return {!webdriver.CommandExecutor} The new command executor.
+ * @return {!command.Executor} The new command executor.
  */
 function createExecutor(url) {
   return new executors.DeferredExecutor(url.then(function(url) {
@@ -833,7 +834,7 @@ Driver.prototype.setFileDetector = function() {
  */
 Driver.prototype.launchApp = function(id) {
   return this.schedule(
-      new webdriver.Command(Command.LAUNCH_APP).setParameter('id', id),
+      new command.Command(Command.LAUNCH_APP).setParameter('id', id),
       'Driver.launchApp()');
 };
 

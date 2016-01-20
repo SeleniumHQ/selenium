@@ -28,8 +28,8 @@ var HttpClient = require('../../http').HttpClient;
 var HttpRequest = require('../../http').Request;
 var HttpResponse = require('../../http').Response;
 var buildPath = require('../../http').buildPath;
-var Command = require('../../lib/_base').require('webdriver.Command');
-var CommandName = require('../../lib/_base').require('webdriver.CommandName');
+var Command = require('../../lib/command').Command;
+var CommandName = require('../../lib/command').Name;
 var Server = require('../../lib/test/httpserver').Server;
 var promise = require('../..').promise;
 

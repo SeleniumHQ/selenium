@@ -37,6 +37,7 @@ var ws = require('ws');
 var webdriver = require('./');
 var promise = webdriver.promise;
 var _base = require('./lib/_base');
+var command = require('./lib/command');
 var io = require('./io');
 var exec = require('./io/exec');
 var portprober = require('./net/portprober');
@@ -254,7 +255,7 @@ function cleanSession(desiredCapabilities) {
 
 /**
  * @constructor
- * @implements {webdriver.CommandExecutor}
+ * @implements {command.Executor}
  */
 var CommandExecutor = function() {
   /** @private {Server} */
@@ -282,11 +283,11 @@ CommandExecutor.prototype.execute = function(command, callback) {
   var self = this;
 
   switch (command.getName()) {
-    case webdriver.CommandName.NEW_SESSION:
+    case command.Name.NEW_SESSION:
       this.startSafari_(command).then(sendCommand, callback);
       break;
 
-    case webdriver.CommandName.QUIT:
+    case command.Name.QUIT:
       this.destroySession_().then(function() {
         callback(null, _base.require('bot.response').createResponse(null));
       }, callback);
@@ -332,7 +333,7 @@ CommandExecutor.prototype.execute = function(command, callback) {
 
 
 /**
- * @param {!webdriver.Command} command .
+ * @param {!command.Command} command .
  * @private
  */
 CommandExecutor.prototype.startSafari_ = function(command) {

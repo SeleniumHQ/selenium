@@ -16,8 +16,8 @@
 // under the License.
 
 /**
- * @fileoverview Defines a {@link webdriver.CommandExecutor} that communicates
- * with a remote end using HTTP + JSON.
+ * @fileoverview Defines an {@linkplain cmd.Executor command executor} that
+ * communicates with a remote end using HTTP + JSON.
  */
 
 'use strict';
@@ -27,7 +27,7 @@ const url = require('url');
 
 const error = require('../error');
 const base = require('../lib/_base');
-const CName = base.require('webdriver.CommandName');
+const cmd = require('../lib/command');
 const logging = base.require('webdriver.logging');
 
 
@@ -113,83 +113,83 @@ function get(path)  { return resource('GET', path); }
 function resource(method, path) { return {method: method, path: path}; }
 
 
-/** @const {!Map<CName, {method: string, path: string}>} */
+/** @const {!Map<cmd.Name, {method: string, path: string}>} */
 const COMMAND_MAP = new Map([
-    [CName.GET_SERVER_STATUS, get('/status')],
-    [CName.NEW_SESSION, post('/session')],
-    [CName.GET_SESSIONS, get('/sessions')],
-    [CName.DESCRIBE_SESSION, get('/session/:sessionId')],
-    [CName.QUIT, del('/session/:sessionId')],
-    [CName.CLOSE, del('/session/:sessionId/window')],
-    [CName.GET_CURRENT_WINDOW_HANDLE, get('/session/:sessionId/window_handle')],
-    [CName.GET_WINDOW_HANDLES, get('/session/:sessionId/window_handles')],
-    [CName.GET_CURRENT_URL, get('/session/:sessionId/url')],
-    [CName.GET, post('/session/:sessionId/url')],
-    [CName.GO_BACK, post('/session/:sessionId/back')],
-    [CName.GO_FORWARD, post('/session/:sessionId/forward')],
-    [CName.REFRESH, post('/session/:sessionId/refresh')],
-    [CName.ADD_COOKIE, post('/session/:sessionId/cookie')],
-    [CName.GET_ALL_COOKIES, get('/session/:sessionId/cookie')],
-    [CName.DELETE_ALL_COOKIES, del('/session/:sessionId/cookie')],
-    [CName.DELETE_COOKIE, del('/session/:sessionId/cookie/:name')],
-    [CName.FIND_ELEMENT, post('/session/:sessionId/element')],
-    [CName.FIND_ELEMENTS, post('/session/:sessionId/elements')],
-    [CName.GET_ACTIVE_ELEMENT, post('/session/:sessionId/element/active')],
-    [CName.FIND_CHILD_ELEMENT, post('/session/:sessionId/element/:id/element')],
-    [CName.FIND_CHILD_ELEMENTS, post('/session/:sessionId/element/:id/elements')],
-    [CName.CLEAR_ELEMENT, post('/session/:sessionId/element/:id/clear')],
-    [CName.CLICK_ELEMENT, post('/session/:sessionId/element/:id/click')],
-    [CName.SEND_KEYS_TO_ELEMENT, post('/session/:sessionId/element/:id/value')],
-    [CName.SUBMIT_ELEMENT, post('/session/:sessionId/element/:id/submit')],
-    [CName.GET_ELEMENT_TEXT, get('/session/:sessionId/element/:id/text')],
-    [CName.GET_ELEMENT_TAG_NAME, get('/session/:sessionId/element/:id/name')],
-    [CName.IS_ELEMENT_SELECTED, get('/session/:sessionId/element/:id/selected')],
-    [CName.IS_ELEMENT_ENABLED, get('/session/:sessionId/element/:id/enabled')],
-    [CName.IS_ELEMENT_DISPLAYED, get('/session/:sessionId/element/:id/displayed')],
-    [CName.GET_ELEMENT_LOCATION, get('/session/:sessionId/element/:id/location')],
-    [CName.GET_ELEMENT_SIZE, get('/session/:sessionId/element/:id/size')],
-    [CName.GET_ELEMENT_ATTRIBUTE, get('/session/:sessionId/element/:id/attribute/:name')],
-    [CName.GET_ELEMENT_VALUE_OF_CSS_PROPERTY, get('/session/:sessionId/element/:id/css/:propertyName')],
-    [CName.ELEMENT_EQUALS, get('/session/:sessionId/element/:id/equals/:other')],
-    [CName.TAKE_ELEMENT_SCREENSHOT, get('/session/:sessionId/element/:id/screenshot')],
-    [CName.SWITCH_TO_WINDOW, post('/session/:sessionId/window')],
-    [CName.MAXIMIZE_WINDOW, post('/session/:sessionId/window/:windowHandle/maximize')],
-    [CName.GET_WINDOW_POSITION, get('/session/:sessionId/window/:windowHandle/position')],
-    [CName.SET_WINDOW_POSITION, post('/session/:sessionId/window/:windowHandle/position')],
-    [CName.GET_WINDOW_SIZE, get('/session/:sessionId/window/:windowHandle/size')],
-    [CName.SET_WINDOW_SIZE, post('/session/:sessionId/window/:windowHandle/size')],
-    [CName.SWITCH_TO_FRAME, post('/session/:sessionId/frame')],
-    [CName.GET_PAGE_SOURCE, get('/session/:sessionId/source')],
-    [CName.GET_TITLE, get('/session/:sessionId/title')],
-    [CName.EXECUTE_SCRIPT, post('/session/:sessionId/execute')],
-    [CName.EXECUTE_ASYNC_SCRIPT, post('/session/:sessionId/execute_async')],
-    [CName.SCREENSHOT, get('/session/:sessionId/screenshot')],
-    [CName.SET_TIMEOUT, post('/session/:sessionId/timeouts')],
-    [CName.SET_SCRIPT_TIMEOUT, post('/session/:sessionId/timeouts/async_script')],
-    [CName.IMPLICITLY_WAIT, post('/session/:sessionId/timeouts/implicit_wait')],
-    [CName.MOVE_TO, post('/session/:sessionId/moveto')],
-    [CName.CLICK, post('/session/:sessionId/click')],
-    [CName.DOUBLE_CLICK, post('/session/:sessionId/doubleclick')],
-    [CName.MOUSE_DOWN, post('/session/:sessionId/buttondown')],
-    [CName.MOUSE_UP, post('/session/:sessionId/buttonup')],
-    [CName.MOVE_TO, post('/session/:sessionId/moveto')],
-    [CName.SEND_KEYS_TO_ACTIVE_ELEMENT, post('/session/:sessionId/keys')],
-    [CName.TOUCH_SINGLE_TAP, post('/session/:sessionId/touch/click')],
-    [CName.TOUCH_DOUBLE_TAP, post('/session/:sessionId/touch/doubleclick')],
-    [CName.TOUCH_DOWN, post('/session/:sessionId/touch/down')],
-    [CName.TOUCH_UP, post('/session/:sessionId/touch/up')],
-    [CName.TOUCH_MOVE, post('/session/:sessionId/touch/move')],
-    [CName.TOUCH_SCROLL, post('/session/:sessionId/touch/scroll')],
-    [CName.TOUCH_LONG_PRESS, post('/session/:sessionId/touch/longclick')],
-    [CName.TOUCH_FLICK, post('/session/:sessionId/touch/flick')],
-    [CName.ACCEPT_ALERT, post('/session/:sessionId/accept_alert')],
-    [CName.DISMISS_ALERT, post('/session/:sessionId/dismiss_alert')],
-    [CName.GET_ALERT_TEXT, get('/session/:sessionId/alert_text')],
-    [CName.SET_ALERT_TEXT, post('/session/:sessionId/alert_text')],
-    [CName.GET_LOG, post('/session/:sessionId/log')],
-    [CName.GET_AVAILABLE_LOG_TYPES, get('/session/:sessionId/log/types')],
-    [CName.GET_SESSION_LOGS, post('/logs')],
-    [CName.UPLOAD_FILE, post('/session/:sessionId/file')],
+    [cmd.Name.GET_SERVER_STATUS, get('/status')],
+    [cmd.Name.NEW_SESSION, post('/session')],
+    [cmd.Name.GET_SESSIONS, get('/sessions')],
+    [cmd.Name.DESCRIBE_SESSION, get('/session/:sessionId')],
+    [cmd.Name.QUIT, del('/session/:sessionId')],
+    [cmd.Name.CLOSE, del('/session/:sessionId/window')],
+    [cmd.Name.GET_CURRENT_WINDOW_HANDLE, get('/session/:sessionId/window_handle')],
+    [cmd.Name.GET_WINDOW_HANDLES, get('/session/:sessionId/window_handles')],
+    [cmd.Name.GET_CURRENT_URL, get('/session/:sessionId/url')],
+    [cmd.Name.GET, post('/session/:sessionId/url')],
+    [cmd.Name.GO_BACK, post('/session/:sessionId/back')],
+    [cmd.Name.GO_FORWARD, post('/session/:sessionId/forward')],
+    [cmd.Name.REFRESH, post('/session/:sessionId/refresh')],
+    [cmd.Name.ADD_COOKIE, post('/session/:sessionId/cookie')],
+    [cmd.Name.GET_ALL_COOKIES, get('/session/:sessionId/cookie')],
+    [cmd.Name.DELETE_ALL_COOKIES, del('/session/:sessionId/cookie')],
+    [cmd.Name.DELETE_COOKIE, del('/session/:sessionId/cookie/:name')],
+    [cmd.Name.FIND_ELEMENT, post('/session/:sessionId/element')],
+    [cmd.Name.FIND_ELEMENTS, post('/session/:sessionId/elements')],
+    [cmd.Name.GET_ACTIVE_ELEMENT, post('/session/:sessionId/element/active')],
+    [cmd.Name.FIND_CHILD_ELEMENT, post('/session/:sessionId/element/:id/element')],
+    [cmd.Name.FIND_CHILD_ELEMENTS, post('/session/:sessionId/element/:id/elements')],
+    [cmd.Name.CLEAR_ELEMENT, post('/session/:sessionId/element/:id/clear')],
+    [cmd.Name.CLICK_ELEMENT, post('/session/:sessionId/element/:id/click')],
+    [cmd.Name.SEND_KEYS_TO_ELEMENT, post('/session/:sessionId/element/:id/value')],
+    [cmd.Name.SUBMIT_ELEMENT, post('/session/:sessionId/element/:id/submit')],
+    [cmd.Name.GET_ELEMENT_TEXT, get('/session/:sessionId/element/:id/text')],
+    [cmd.Name.GET_ELEMENT_TAG_NAME, get('/session/:sessionId/element/:id/name')],
+    [cmd.Name.IS_ELEMENT_SELECTED, get('/session/:sessionId/element/:id/selected')],
+    [cmd.Name.IS_ELEMENT_ENABLED, get('/session/:sessionId/element/:id/enabled')],
+    [cmd.Name.IS_ELEMENT_DISPLAYED, get('/session/:sessionId/element/:id/displayed')],
+    [cmd.Name.GET_ELEMENT_LOCATION, get('/session/:sessionId/element/:id/location')],
+    [cmd.Name.GET_ELEMENT_SIZE, get('/session/:sessionId/element/:id/size')],
+    [cmd.Name.GET_ELEMENT_ATTRIBUTE, get('/session/:sessionId/element/:id/attribute/:name')],
+    [cmd.Name.GET_ELEMENT_VALUE_OF_CSS_PROPERTY, get('/session/:sessionId/element/:id/css/:propertyName')],
+    [cmd.Name.ELEMENT_EQUALS, get('/session/:sessionId/element/:id/equals/:other')],
+    [cmd.Name.TAKE_ELEMENT_SCREENSHOT, get('/session/:sessionId/element/:id/screenshot')],
+    [cmd.Name.SWITCH_TO_WINDOW, post('/session/:sessionId/window')],
+    [cmd.Name.MAXIMIZE_WINDOW, post('/session/:sessionId/window/:windowHandle/maximize')],
+    [cmd.Name.GET_WINDOW_POSITION, get('/session/:sessionId/window/:windowHandle/position')],
+    [cmd.Name.SET_WINDOW_POSITION, post('/session/:sessionId/window/:windowHandle/position')],
+    [cmd.Name.GET_WINDOW_SIZE, get('/session/:sessionId/window/:windowHandle/size')],
+    [cmd.Name.SET_WINDOW_SIZE, post('/session/:sessionId/window/:windowHandle/size')],
+    [cmd.Name.SWITCH_TO_FRAME, post('/session/:sessionId/frame')],
+    [cmd.Name.GET_PAGE_SOURCE, get('/session/:sessionId/source')],
+    [cmd.Name.GET_TITLE, get('/session/:sessionId/title')],
+    [cmd.Name.EXECUTE_SCRIPT, post('/session/:sessionId/execute')],
+    [cmd.Name.EXECUTE_ASYNC_SCRIPT, post('/session/:sessionId/execute_async')],
+    [cmd.Name.SCREENSHOT, get('/session/:sessionId/screenshot')],
+    [cmd.Name.SET_TIMEOUT, post('/session/:sessionId/timeouts')],
+    [cmd.Name.SET_SCRIPT_TIMEOUT, post('/session/:sessionId/timeouts/async_script')],
+    [cmd.Name.IMPLICITLY_WAIT, post('/session/:sessionId/timeouts/implicit_wait')],
+    [cmd.Name.MOVE_TO, post('/session/:sessionId/moveto')],
+    [cmd.Name.CLICK, post('/session/:sessionId/click')],
+    [cmd.Name.DOUBLE_CLICK, post('/session/:sessionId/doubleclick')],
+    [cmd.Name.MOUSE_DOWN, post('/session/:sessionId/buttondown')],
+    [cmd.Name.MOUSE_UP, post('/session/:sessionId/buttonup')],
+    [cmd.Name.MOVE_TO, post('/session/:sessionId/moveto')],
+    [cmd.Name.SEND_KEYS_TO_ACTIVE_ELEMENT, post('/session/:sessionId/keys')],
+    [cmd.Name.TOUCH_SINGLE_TAP, post('/session/:sessionId/touch/click')],
+    [cmd.Name.TOUCH_DOUBLE_TAP, post('/session/:sessionId/touch/doubleclick')],
+    [cmd.Name.TOUCH_DOWN, post('/session/:sessionId/touch/down')],
+    [cmd.Name.TOUCH_UP, post('/session/:sessionId/touch/up')],
+    [cmd.Name.TOUCH_MOVE, post('/session/:sessionId/touch/move')],
+    [cmd.Name.TOUCH_SCROLL, post('/session/:sessionId/touch/scroll')],
+    [cmd.Name.TOUCH_LONG_PRESS, post('/session/:sessionId/touch/longclick')],
+    [cmd.Name.TOUCH_FLICK, post('/session/:sessionId/touch/flick')],
+    [cmd.Name.ACCEPT_ALERT, post('/session/:sessionId/accept_alert')],
+    [cmd.Name.DISMISS_ALERT, post('/session/:sessionId/dismiss_alert')],
+    [cmd.Name.GET_ALERT_TEXT, get('/session/:sessionId/alert_text')],
+    [cmd.Name.SET_ALERT_TEXT, post('/session/:sessionId/alert_text')],
+    [cmd.Name.GET_LOG, post('/session/:sessionId/log')],
+    [cmd.Name.GET_AVAILABLE_LOG_TYPES, get('/session/:sessionId/log/types')],
+    [cmd.Name.GET_SESSION_LOGS, post('/logs')],
+    [cmd.Name.UPLOAD_FILE, post('/session/:sessionId/file')],
 ]);
 
 
@@ -363,7 +363,7 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy) {
 
 /**
  * A command executor that communicates with the server using HTTP + JSON.
- * @implements {webdriver.CommandExecutor}
+ * @implements {cmd.Executor}
  */
 class Executor {
   /**

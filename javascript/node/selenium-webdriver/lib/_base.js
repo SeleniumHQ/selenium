@@ -109,7 +109,12 @@ function Context(opt_configureForTesting) {
     },
     CLOSURE_NO_DEPS: !isDevMode(),
     CLOSURE_UNCOMPILED_DEFINES: {'goog.json.USE_NATIVE_JSON': true},
-    goog: {}
+    goog: {},
+    webdriver: {
+      get Command() { return require('./command').Command; },
+      get CommandName() { return require('./command').Name; }
+      // get CommandExecutor() { return require('./command').Executor; }
+    }
   });
   closure.window = closure.top = closure;
 
@@ -124,6 +129,14 @@ function Context(opt_configureForTesting) {
 
   loadScript(CLOSURE_BASE_FILE_PATH);
   loadScript(DEPS_FILE_PATH);
+
+  let provide = closure.goog.provide;
+  closure.goog.provide = function(symbol) {
+    if (symbol.startsWith('webdriver.Command')) {
+      return;
+    }
+    provide(symbol);
+  };
 
   // Redefine retrieveAndExecModule_ to load modules. Closure's version
   // assumes XMLHttpRequest is defined (and by extension that scripts

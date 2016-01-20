@@ -16,9 +16,11 @@
 // under the License.
 
 /**
- * @fileoverview Various utilities for working with
- * {@link webdriver.CommandExecutor} implementations.
+ * @fileoverview Various utilities for working with {@link ./command.Executor}
+ * implementations.
  */
+
+ 'use strict';
 
 var HttpClient = require('./http').HttpClient,
     HttpExecutor = require('./http').Executor,
@@ -27,20 +29,22 @@ var HttpClient = require('./http').HttpClient,
 
 
 /**
- * Wraps a promised {@link webdriver.CommandExecutor}, ensuring no commands
- * are executed until the wrapped executor has been fully built.
- * @param {!webdriver.promise.Promise.<!webdriver.CommandExecutor>} delegate The
- *     promised delegate.
- * @constructor
- * @implements {webdriver.CommandExecutor}
+ * Wraps a promised {@link ./lib/command.Executor}, ensuring no commands are
+ * executed until the wrapped executor has been fully built.
+ * @implements {./lib/command.Executor}
  */
-var DeferredExecutor = function(delegate) {
-
-  /** @override */
-  this.execute = function(command) {
-    return delegate.then(executor => executor.execute(command));
-  };
-};
+class DeferredExecutor {
+  /**
+   * @param {!webdriver.promise.Promise<!./lib/command.Executor>} delegate
+   *     The promised delegate.
+   */
+  constructor(delegate) {
+    /** @override */
+    this.execute = function(command) {
+      return delegate.then(executor => executor.execute(command));
+    };
+  }
+}
 
 
 // PUBLIC API
@@ -50,11 +54,11 @@ exports.DeferredExecutor = DeferredExecutor;
 
 /**
  * Creates a command executor that uses WebDriver's JSON wire protocol.
- * @param {(string|!webdriver.promise.Promise.<string>)} url The server's URL,
+ * @param {(string|!webdriver.promise.Promise<string>)} url The server's URL,
  *     or a promise that will resolve to that URL.
  * @param {string=} opt_proxy (optional) The URL of the HTTP proxy for the
  *     client to use.
- * @returns {!webdriver.CommandExecutor} The new command executor.
+ * @returns {!./lib/command.Executor} The new command executor.
  */
 exports.createExecutor = function(url, opt_proxy) {
   return new DeferredExecutor(promise.when(url, function(url) {
