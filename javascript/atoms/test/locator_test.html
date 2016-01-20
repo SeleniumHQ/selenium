@@ -323,6 +323,17 @@ limitations under the License.
       assertEquals(8, links.length);
     }
 
+    function testShouldThrowInvalidSelectorErrorWhenEmptyStringPassedIn() {
+      try {
+        bot.locators.findElements({tagName: ''});
+        fail('Should not have succeeded because the tagName is ""');
+      } catch (ex) {
+        // We expect an InvalidSelectorException because the xpath expression is
+        // syntactically invalid.
+        assertEquals(bot.ErrorCode.INVALID_SELECTOR_ERROR, ex.code);
+      }
+    }
+
     function testCanAddANewElementLocatingStrategy() {
       var expected = goog.dom.$('lion');
       bot.locators.add('fixed', {
