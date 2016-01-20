@@ -224,12 +224,11 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.tagName(""));
   }
 
-  @Test
+  @Test(expected = NoSuchElementException.class)
   @Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
-  public void testFindingMultipleElementsByEmptyTagNameShouldReturnEmptyList() {
+  public void testFindingMultipleElementsByEmptyTagNameShouldThrow() {
     driver.get(pages.formPage);
-    List<WebElement> elements = driver.findElements(By.tagName(""));
-    assertThat(elements.size(), is(0));
+    driver.findElements(By.tagName(""));
   }
 
   @Test(expected = NoSuchElementException.class)
