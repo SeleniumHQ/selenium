@@ -181,15 +181,18 @@ class DriverElementFindingTests(unittest.TestCase):
         self._load_page("formPage")
         try:
             self.driver.find_element(By.TAG_NAME, "")
-            self.fail("Should have thrown a NoSuchElementException")
-        except NoSuchElementException:
+            self.fail("Should have thrown an InvalidSelectorException")
+        except InvalidSelectorException:
             pass
 
     @pytest.mark.ignore_phantomjs
     def test_Finding_Multiple_Elements_By_Empty_Tag_Name_Should_Return_Empty_List(self):
         self._load_page("formPage")
-        elements = self.driver.find_elements(By.TAG_NAME, "")
-        self.assertEqual(len(elements), 0)
+        try:
+            self.driver.find_elements(By.TAG_NAME, "")
+            self.fail("Should have thrown an InvalidSelectorException")
+        except InvalidSelectorException:
+            pass
 
     def test_Finding_ASingle_Element_By_Tag_Name_With_Space_Should_Throw(self):
         self._load_page("formPage")
