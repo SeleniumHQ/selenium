@@ -26,30 +26,13 @@ var HttpClient = require('./http').HttpClient,
     HttpExecutor = require('./http').Executor,
     promise = require('./lib/_base').require('webdriver.promise');
 
-
-
-/**
- * Wraps a promised {@link ./lib/command.Executor}, ensuring no commands are
- * executed until the wrapped executor has been fully built.
- * @implements {./lib/command.Executor}
- */
-class DeferredExecutor {
-  /**
-   * @param {!webdriver.promise.Promise<!./lib/command.Executor>} delegate
-   *     The promised delegate.
-   */
-  constructor(delegate) {
-    /** @override */
-    this.execute = function(command) {
-      return delegate.then(executor => executor.execute(command));
-    };
-  }
-}
+var DeferredExecutor = require('./lib/command').DeferredExecutor;
 
 
 // PUBLIC API
 
 
+/** @deprecated Use {@link ./lib/command.DeferredExecutor} instead. */
 exports.DeferredExecutor = DeferredExecutor;
 
 /**

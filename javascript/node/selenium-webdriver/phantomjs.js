@@ -21,7 +21,6 @@ var fs = require('fs'),
     util = require('util');
 
 var webdriver = require('./index'),
-    executors = require('./executors'),
     http = require('./http'),
     io = require('./io'),
     command = require('./lib/command'),
@@ -117,7 +116,7 @@ var WEBDRIVER_TO_PHANTOMJS_LEVEL = (function() {
  * @return {!command.Executor} The new command executor.
  */
 function createExecutor(url) {
-  return new executors.DeferredExecutor(url.then(function(url) {
+  return new command.DeferredExecutor(url.then(function(url) {
     var client = new http.HttpClient(url);
     var executor = new http.Executor(client);
 

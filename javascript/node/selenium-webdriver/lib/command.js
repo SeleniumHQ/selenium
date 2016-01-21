@@ -232,9 +232,30 @@ class Executor {
 }
 
 
+/**
+ * Wraps a promised {@link Executor}, ensuring no commands are executed until
+ * the wrapped executor has been fully resolved.
+ * @implements {Executor}
+ */
+class DeferredExecutor {
+  /**
+   * @param {!IThenable<Executor>} delegate The promised delegate, which may
+   *     be provided by any promise-like thenable object.
+   */
+  constructor(delegate) {
+    /** @override */
+    this.execute = function(command) {
+      return delegate.then(executor => executor.execute(command));
+    };
+  }
+}
+
+
+
 // PUBLIC API
 
 
 exports.Command = Command;
 exports.Name = Name;
 exports.Executor = Executor;
+exports.DeferredExecutor = DeferredExecutor;

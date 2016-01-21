@@ -18,6 +18,8 @@ the selenium-webdriver package README.
     promises instead of using callback passing.
 * Migrated the `webdriver.Command*` types from using the Closure Library to the
     new `lib/command` module.
+* Deprecated `executors.DeferredExecutor` in favor of
+    `lib/command.DeferredExecutor`.
 * API documentation is no longer distributed with the npm package, but remains
     available at <http://seleniumhq.github.io/selenium/docs/api/javascript/>
 * Rewrote the `error` module to export an Error subtype for each type of error
