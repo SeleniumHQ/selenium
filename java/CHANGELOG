@@ -1,3 +1,13 @@
+v2.49.1
+=======
+
+Grid:
+    * Fixing timeout issue in the Grid.
+
+WebDriver:
+    * Allow GeckoDriverService to be extended.
+    * Update tagName test searching for "" to throw
+
 v2.49.0
 =======
 
