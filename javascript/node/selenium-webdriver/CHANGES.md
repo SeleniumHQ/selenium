@@ -16,6 +16,12 @@ the selenium-webdriver package README.
 * Changed some `io` operations to use native promises.
 * Changed `webdriver.CommandExecutor#execute()` and `HttpClient` to return
     promises instead of using callback passing.
+* Changed the `webdriver.Serializable` class to an interface defined in the
+    `lib/serializable` module.
+* Changed the `Capabilities` class to extend the native `Map` type; Capabilities
+    implements Serializable to preseve existing functionality.
+* Changed the `Capabilities.has(key)` to only test if a capability has been set
+    (Map semantics); to check whether the value is true, use `get(key)`.
 * Migrated the `webdriver.Command*` types from using the Closure Library to the
     new `lib/command` module.
 * Deprecated `executors.DeferredExecutor` in favor of
