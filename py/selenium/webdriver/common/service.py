@@ -117,7 +117,10 @@ class Service(object):
         if self.process is None:
             return
 
-        self.send_remote_shutdown_command()
+        try:
+            self.send_remote_shutdown_command()
+        except TypeError:
+            pass
 
         try:
             if self.process:
