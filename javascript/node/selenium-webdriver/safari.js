@@ -414,7 +414,7 @@ var Options = function() {
   /** @private {Object<string, *>} */
   this.options_ = null;
 
-  /** @private {webdriver.logging.Preferences} */
+  /** @private {./lib/logging.Preferences} */
   this.logPrefs_ = null;
 };
 util.inherits(Options, webdriver.Serializable);
@@ -463,7 +463,7 @@ Options.prototype.setCleanSession = function(clean) {
 
 /**
  * Sets the logging preferences for the new session.
- * @param {!webdriver.logging.Preferences} prefs The logging preferences.
+ * @param {!./lib/logging.Preferences} prefs The logging preferences.
  * @return {!Options} A self reference.
  */
 Options.prototype.setLoggingPrefs = function(prefs) {

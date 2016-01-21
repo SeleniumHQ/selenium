@@ -112,8 +112,9 @@ function Context(opt_configureForTesting) {
     goog: {},
     webdriver: {
       get Command() { return require('./command').Command; },
-      get CommandName() { return require('./command').Name; }
-      // get CommandExecutor() { return require('./command').Executor; }
+      get CommandName() { return require('./command').Name; },
+      get CommandExecutor() { return require('./command').Executor; },
+      get logging() { return require('./logging'); }
     }
   });
   closure.window = closure.top = closure;
@@ -132,7 +133,8 @@ function Context(opt_configureForTesting) {
 
   let provide = closure.goog.provide;
   closure.goog.provide = function(symbol) {
-    if (symbol.startsWith('webdriver.Command')) {
+    if (symbol.startsWith('webdriver.Command')
+        || symbol.startsWith('webdriver.logging')) {
       return;
     }
     provide(symbol);

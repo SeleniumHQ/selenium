@@ -24,6 +24,7 @@ var builder = require('./builder');
 var error = require('./error');
 var base = require('./lib/_base');
 var command = require('./lib/command');
+var logging = require('./lib/logging');
 
 
 // NOTE: the remainder of this file is nasty and verbose, but the annotations
@@ -114,10 +115,7 @@ exports.WebElementPromise = base.require('webdriver.WebElementPromise');
 }));
 
 
-/** @type {webdriver.logging.} */
-(exports.__defineGetter__('logging', function() {
-  return base.exportPublicApi('webdriver.logging');
-}));
+exports.logging = logging;
 
 
 /** @type {webdriver.promise.} */

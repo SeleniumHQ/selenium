@@ -28,7 +28,7 @@ const url = require('url');
 const error = require('../error');
 const base = require('../lib/_base');
 const cmd = require('../lib/command');
-const logging = base.require('webdriver.logging');
+const logging = require('../lib/logging');
 
 
 
