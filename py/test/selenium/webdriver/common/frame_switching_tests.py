@@ -18,6 +18,8 @@
 import pytest
 # import time
 import unittest
+
+from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchFrameException
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -49,25 +51,25 @@ class FrameSwitchingTest(unittest.TestCase):
 
     def testShouldBeAbleToSwitchToAFrameByItsName(self):
       self._loadPage("frameset")
-      self.driver.switch_to.frame("fourth")
+      self.driver.switch_to.frame(self.driver.find_element(By.NAME, "fourth"))
       element = self.driver.find_element_by_tag_name("frame")
       self.assertEquals("child1", element.get_attribute("name"))
 
     def testShouldBeAbleToSwitchToAnIframeByItsName(self):
       self._loadPage("iframes")
-      self.driver.switch_to.frame("iframe1-name");
+      self.driver.switch_to.frame(self.driver.find_element(By.NAME, "iframe1-name"));
       element = self.driver.find_element_by_name("id-name1")
       self.assertEquals("name", element.get_attribute("value"))
 
     def testShouldBeAbleToSwitchToAFrameByItsID(self):
       self._loadPage("frameset")
-      self.driver.switch_to.frame("fifth")
+      self.driver.switch_to.frame(self.driver.find_element(By.ID, "fifth"))
       element = self.driver.find_element_by_name("windowOne")
       self.assertEquals("Open new window", element.text)
 
     def testShouldBeAbleToSwitchToAnIframeByItsID(self):
       self._loadPage("iframes")
-      self.driver.switch_to.frame("iframe1");
+      self.driver.switch_to.frame(self.driver.find_element(By.ID, "iframe1"));
       element = self.driver.find_element_by_name("id-name1")
       self.assertEquals("name", element.get_attribute("value"))
 
@@ -98,41 +100,41 @@ class FrameSwitchingTest(unittest.TestCase):
 
     def testFrameSearchesShouldBeRelativeToTheCurrentlySelectedFrame(self):
       self._loadPage("frameset")
-      self.driver.switch_to.frame("sixth")
+      self.driver.switch_to.frame(self.driver.find_element(By.ID, "sixth"))
       element = self.driver.find_element_by_id("iframe_page_heading")
       self.assertEquals("This is the heading", element.text)
 
       try:
-        self.driver.switch_to.frame("third")
+        self.driver.switch_to.frame(self.driver.find_element(By.NAME, "third"))
         self.fail()
       except NoSuchFrameException:
         pass
 
       self.driver.switch_to.default_content()
-      self.driver.switch_to.frame("third")
+      self.driver.switch_to.frame(self.driver.find_element(By.NAME, "third"))
 
       try:
-        self.driver.switch_to.frame("third")
+        self.driver.switch_to.frame(self.driver.find_element(By.NAME, "third"))
         self.fail()
       except NoSuchFrameException:
         pass
 
       # Now make sure we can go back.
       self.driver.switch_to.default_content()
-      self.driver.switch_to.frame("sixth")
+      self.driver.switch_to.frame(self.driver.find_element(By.ID, "sixth"))
       element = self.driver.find_element_by_id("iframe_page_heading")
       self.assertEquals("This is the heading", element.text)
 
     def testShouldBeAbleToSelectChildFrames(self):
       self._loadPage("frameset")
-      self.driver.switch_to.frame("sixth")
+      self.driver.switch_to.frame(self.driver.find_element(By.ID, "sixth"))
       self.driver.switch_to.frame(0)
       element = self.driver.find_element_by_id("id-name1")
       self.assertEquals("id", element.get_attribute("value"))
 
     def testShouldThrowFrameNotFoundExceptionLookingUpSubFramesWithSuperFrameNames(self):
       self._loadPage("frameset")
-      self.driver.switch_to.frame("fourth")
+      self.driver.switch_to.frame(self.driver.find_element(By.NAME, "fourth"))
 
       try:
         self.driver.switch_to.frame("second")
@@ -229,7 +231,7 @@ class FrameSwitchingTest(unittest.TestCase):
 
     def testShouldReturnFrameTitleNotWindowTitle(self):
         self._loadPage("frameset")
-        self.driver.switch_to.frame("third")
+        self.driver.switch_to.frame(self.driver.find_element(By.NAME, "third"))
         self.assertEqual("Unique title", self.driver.title)
 
     def _pageURL(self, name):
