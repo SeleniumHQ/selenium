@@ -189,14 +189,14 @@ namespace OpenQA.Selenium
         public void FindingASingleElementByEmptyTagNameShouldThrow()
         {
             driver.Url = formsPage;
-            Assert.Throws<NoSuchElementException>(() => driver.FindElement(By.TagName("")));
+            Assert.Throws<InvalidSelectorException>(() => driver.FindElement(By.TagName("")));
         }
 
         [Test]
         public void FindingMultipleElementsByEmptyTagNameShouldThrow()
         {
             driver.Url = formsPage;
-            Assert.Throws<NoSuchElementException>(() => driver.FindElements(By.TagName("")));;
+            Assert.Throws<InvalidSelectorException>(() => driver.FindElements(By.TagName("")));;
         }
 
         [Test]
@@ -305,7 +305,7 @@ namespace OpenQA.Selenium
         public void FindingASingleElementByCompoundClassNameShouldThrow()
         {
             driver.Url = xhtmlTestPage;
-            Assert.Throws<IllegalLocatorException>(() => driver.FindElement(By.ClassName("a b")));
+            Assert.Throws<InvalidSelectorException>(() => driver.FindElement(By.ClassName("a b")));
         }
 
         [Test]
@@ -314,7 +314,7 @@ namespace OpenQA.Selenium
         public void FindingMultipleElementsByCompoundClassNameShouldThrow()
         {
             driver.Url = xhtmlTestPage;
-            Assert.Throws<IllegalLocatorException>(() => driver.FindElements(By.ClassName("a b")));
+            Assert.Throws<InvalidSelectorException>(() => driver.FindElements(By.ClassName("a b")));
         }
 
         [Test]

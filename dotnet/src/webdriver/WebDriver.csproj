@@ -180,7 +180,6 @@
     <Compile Include="IHasInputDevices.cs" />
     <Compile Include="IJavascriptExecutor.cs" />
     <Compile Include="IKeyboard.cs" />
-    <Compile Include="IllegalLocatorException.cs" />
     <Compile Include="ILocatable.cs" />
     <Compile Include="IMouse.cs" />
     <Compile Include="INavigation.cs" />
