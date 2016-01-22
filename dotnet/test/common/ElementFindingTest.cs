@@ -189,14 +189,14 @@ namespace OpenQA.Selenium
         public void FindingASingleElementByEmptyTagNameShouldThrow()
         {
             driver.Url = formsPage;
-            Assert.Throws<InvalidSelectorException>(() => driver.FindElement(By.TagName("")));
+            Assert.Throws<NoSuchElementException>(() => driver.FindElement(By.TagName("")));
         }
 
         [Test]
         public void FindingMultipleElementsByEmptyTagNameShouldThrow()
         {
             driver.Url = formsPage;
-            Assert.Throws<InvalidSelectorException>(() => driver.FindElements(By.TagName("")));;
+            Assert.Throws<NoSuchElementException>(() => driver.FindElements(By.TagName("")));;
         }
 
         [Test]
