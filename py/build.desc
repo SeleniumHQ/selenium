@@ -64,8 +64,8 @@ py_test(
 py_env(
   name = "test_env",
   packages = [
-    "third_party/py/py-1.4.26.tar.gz",
-    "third_party/py/pytest-2.7.0.tar.gz",
+    "third_party/py/py-1.4.31-py2.py3-none-any.whl",
+    "third_party/py/pytest-2.8.6-py2.py3-none-any.whl",
   ],
   dest = "build/python")
 
