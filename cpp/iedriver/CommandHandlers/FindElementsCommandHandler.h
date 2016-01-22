@@ -55,31 +55,25 @@ class FindElementsCommandHandler : public IECommandHandler {
       }
 
       int status_code = WD_SUCCESS;
-      Json::Value found_elements(Json::arrayValue);
+      Json::Value found_elements;
       do {
         status_code = executor.LocateElements(ElementHandle(),
                                               mechanism,
                                               value,
                                               &found_elements);
-        if (status_code == WD_SUCCESS && found_elements.size() > 0) {
-          response->SetSuccessResponse(found_elements);
-          return;
-        }
-        if(status_code == EINVALIDSELECTOR) {
-          response->SetErrorResponse(status_code, 
-            "The xpath expression '" + value + "' cannot be evaluated or does not" +
-            "result in a WebElement");
-          return;
-        } 
-        if (status_code == EUNHANDLEDERROR) {
-          response->SetErrorResponse(status_code, 
-            "Unknown finder mechanism: " + mechanism);
-          return;
-        }
-        if (status_code == ENOSUCHWINDOW) {
+        if (status_code == WD_SUCCESS) {
+          if (found_elements.isArray() && found_elements.size() > 0) {
+            response->SetSuccessResponse(found_elements);
+            return;
+          }
+        } else if (status_code == ENOSUCHWINDOW) {
           response->SetErrorResponse(status_code, "Unable to find elements on closed window");
           return;
+        } else {
+          response->SetErrorResponse(status_code, found_elements.asString());
+          return;
         }
+
         // Release the thread so that the browser doesn't starve.
         ::Sleep(FIND_ELEMENT_WAIT_TIME_IN_MILLISECONDS);
       } while (clock() < end);

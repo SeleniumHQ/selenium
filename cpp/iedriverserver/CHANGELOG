@@ -9,6 +9,14 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.49.0.1
+=========
+ * Updates to JavaScript automation atoms.
+ * Changes to simplify the execution of finding elements. The driver now
+   delegates more of the error handling of finding elements to the JavaScript
+   automation atoms. This has the effect of simplifying the code within the
+   driver, and synchronizes the error-case behavior with other implementations.
+
 v2.49.0.0
 =========
  * Release to synchronize with release of Selenium project.

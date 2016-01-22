@@ -65,21 +65,15 @@ class FindElementCommandHandler : public IECommandHandler {
           response->SetSuccessResponse(found_element);
           return;
         }
-        if(status_code == EINVALIDSELECTOR) {
-          response->SetErrorResponse(status_code,
-            "The xpath expression '" + value + "' cannot be evaluated or does not" +
-            "result in a WebElement");
-          return;
-        }
-        if (status_code == EUNHANDLEDERROR) {
-          response->SetErrorResponse(status_code, 
-            "Unknown finder mechanism: " + mechanism);
-          return;
-        }
         if (status_code == ENOSUCHWINDOW) {
           response->SetErrorResponse(status_code, "Unable to find element on closed window");
           return;
         }
+        if (status_code != ENOSUCHELEMENT) {
+          response->SetErrorResponse(status_code, found_element.asString());
+          return;
+        }
+
         // Release the thread so that the browser doesn't starve.
         ::Sleep(FIND_ELEMENT_WAIT_TIME_IN_MILLISECONDS);
       } while (clock() < end);
