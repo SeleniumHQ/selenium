@@ -657,19 +657,59 @@ Utils.getClickablePoint = function(element) {
     for (var i = 0; i < element.getClientRects().length; i++) {
       var candidate = element.getClientRects()[i];
       if (candidate.width != 0 && candidate.height != 0) {
-        return {
-          x: (candidate.left - rect.left + Math.floor(candidate.width / 2)),
-          y: (candidate.top - rect.top + Math.floor(candidate.height / 2))
-        };
+        return findClickablePointOrMiddle(candidate);
       }
     }
   }
 
   // Fallback to the main rect
-  return {
-    x: (rect.width ? Math.floor(rect.width / 2) : 0),
-    y: (rect.height ? Math.floor(rect.height / 2) : 0)
-  };
+  return findClickablePointOrMiddle(rect);
+
+  function findClickablePointOrMiddle(rect){
+    var offsets = [
+      { x: Math.floor(rect.width/2), y: Math.floor(rect.height/2) },
+      { x: 0, y: 0 },
+      { x: rect.width, y: 0 },
+      { x: 0,  y: rect.height },
+      { x: rect.width, y: rect.height}
+    ]
+
+    var clickable_offset = goog.array.find(offsets, function(offset){
+      return isClickableAt( { x: rect.left + offset.x, y: rect.top + offset.y } );
+    })
+
+    //This method is expected to reutrn a location - if none are clickable return middle
+    return (clickable_offset || offsets[0]);
+  }
+
+  function isClickableAt(coord) {
+    // get the outermost ancestor of the element. This will be either the document
+    // or a shadow root.
+    var owner = element;
+    while (owner.parentNode) {
+      owner = owner.parentNode;
+    }
+
+    var elementAtPoint = owner.elementFromPoint(coord.x, coord.y);
+
+    // element may be huge, so coordinates are outside the viewport
+    if (elementAtPoint === null) {
+      return true;
+    }
+
+    if (element == elementAtPoint) {
+      return true;
+    }
+
+    // allow clicks to element descendants
+    var parentElemIter = elementAtPoint.parentNode;
+    while (parentElemIter) {
+      if (parentElemIter == element) {
+        return true;
+      }
+      parentElemIter = parentElemIter.parentNode;
+    }
+  }
 };
 
 
