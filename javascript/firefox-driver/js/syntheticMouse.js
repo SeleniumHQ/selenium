@@ -108,6 +108,11 @@ SyntheticMouse.prototype.isElementClickable = function(element) {
 
   var tagName = element.tagName.toLowerCase();
 
+  // TODO: https://gist.github.com/p0deje/c549e93fa19bf7aaee49
+  if ('select' == tagName) {
+    return;
+  }
+
   // Check to see if this is an option element. If it is, and the parent isn't a multiple
   // select, then check that select is clickable.
   if ('option' == tagName) {
@@ -283,11 +288,12 @@ SyntheticMouse.prototype.click = function(target) {
     }
 
     if (parent && parent.tagName.toLowerCase() == 'select' && !parent.multiple) {
+      goog.log.info(SyntheticMouse.LOG_, 'About to do a bot.action.click on ' + element);
       bot.action.click(parent, undefined /* coords */);
     }
 
     goog.log.info(SyntheticMouse.LOG_, 'About to do a bot.action.click on ' + element);
-    bot.action.click(element, this.lastMousePosition, new bot.Mouse(null, this.modifierKeys));
+    bot.action.click(element, undefined, new bot.Mouse(null, this.modifierKeys));
 
   } else {
     goog.log.info(SyntheticMouse.LOG_, 'About to do a bot.action.click on ' + element);

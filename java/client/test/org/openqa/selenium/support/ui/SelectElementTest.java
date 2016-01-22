@@ -26,6 +26,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -39,7 +40,7 @@ public class SelectElementTest extends JUnit4TestBase {
     driver.get(pages.formPage);
   }
 
-  @Test(expected = org.openqa.selenium.support.ui.UnexpectedTagNameException.class)
+  @Test(expected = UnexpectedTagNameException.class)
   public void shouldThrowAnExceptionIfTheElementIsNotASelectElement() {
     WebElement selectElement = driver.findElement(By.name("checky"));
     Select select = new Select(selectElement);
@@ -141,7 +142,7 @@ public class SelectElementTest extends JUnit4TestBase {
     assertEquals("Eggs",firstSelected.getText());
   }
 
-  @Test(expected = org.openqa.selenium.NoSuchElementException.class)
+  @Test(expected = NoSuchElementException.class)
   public void shouldThrowANoSuchElementExceptionIfNothingIsSelected() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
     Select select = new Select(selectElement);
@@ -158,14 +159,14 @@ public class SelectElementTest extends JUnit4TestBase {
     assertEquals("select_2",firstSelected.getText());
   }
 
-  @Test(expected = org.openqa.selenium.NoSuchElementException.class)
+  @Test(expected = NoSuchElementException.class)
   public void shouldNotAllowInvisibleOptionsToBeSelectedByVisibleText() {
     WebElement selectElement = driver.findElement(By.name("invisi_select"));
     Select select = new Select(selectElement);
     select.selectByVisibleText("Apples");
   }
 
-  @Test(expected = org.openqa.selenium.NoSuchElementException.class)
+  @Test(expected = NoSuchElementException.class)
   public void shouldThrowExceptionOnSelectByVisibleTextIfOptionDoesNotExist() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
     Select select = new Select(selectElement);
@@ -181,7 +182,7 @@ public class SelectElementTest extends JUnit4TestBase {
     assertEquals("select_2",firstSelected.getText());
   }
 
-  @Test(expected = org.openqa.selenium.NoSuchElementException.class)
+  @Test(expected = NoSuchElementException.class)
   public void shouldThrowExceptionOnSelectByIndexIfOptionDoesNotExist() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
     Select select = new Select(selectElement);
@@ -197,7 +198,7 @@ public class SelectElementTest extends JUnit4TestBase {
     assertEquals("select_2",firstSelected.getText());
   }
 
-  @Test(expected = org.openqa.selenium.NoSuchElementException.class)
+  @Test(expected = NoSuchElementException.class)
   public void shouldThrowExceptionOnSelectByReturnedValueIfOptionDoesNotExist() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
     Select select = new Select(selectElement);
@@ -215,7 +216,7 @@ public class SelectElementTest extends JUnit4TestBase {
     assertEquals(0,returnedOptions.size());
   }
 
-  @Test(expected = java.lang.UnsupportedOperationException.class)
+  @Test(expected = UnsupportedOperationException.class)
   public void shouldNotAllowUserToDeselectAllWhenSelectDoesNotSupportMultipleSelections() {
     WebElement selectElement = driver.findElement(By.name("selectomatic"));
     Select select = new Select(selectElement);
@@ -232,7 +233,7 @@ public class SelectElementTest extends JUnit4TestBase {
     assertEquals(1,returnedOptions.size());
   }
 
-  @Test(expected = org.openqa.selenium.NoSuchElementException.class)
+  @Test(expected = NoSuchElementException.class)
   public void shouldNotAllowUserToDeselectOptionsByInvisibleText() {
     WebElement selectElement = driver.findElement(By.name("invisi_select"));
     Select select = new Select(selectElement);
@@ -254,6 +255,17 @@ public class SelectElementTest extends JUnit4TestBase {
     WebElement selectElement = driver.findElement(By.name("multi"));
     Select select = new Select(selectElement);
     select.deselectByValue("eggs");
+    List<WebElement> returnedOptions = select.getAllSelectedOptions();
+
+    assertEquals(1,returnedOptions.size());
+  }
+
+  @Test
+  public void shouldAllowOptionsToBeSelectedFromTheSelectElementThatIsNarrowerThanOptions() {
+    driver.get(pages.selectPage);
+    WebElement selectElement = driver.findElement(By.id("narrow"));
+    Select select = new Select(selectElement);
+    select.selectByIndex(1);
     List<WebElement> returnedOptions = select.getAllSelectedOptions();
 
     assertEquals(1,returnedOptions.size());
