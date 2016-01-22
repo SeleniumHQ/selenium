@@ -93,10 +93,16 @@ class Service(object):
     def send_remote_shutdown_command(self):
         try:
             from urllib import request as url_request
+            URLError = url_request.URLError
         except ImportError:
             import urllib2 as url_request
+            import urllib2
+            URLError = urllib2.URLError
 
-        url_request.urlopen("http://127.0.0.1:%d/shutdown" % self.port)
+        try:
+            url_request.urlopen("http://127.0.0.1:%d/shutdown" % self.port)
+        except URLError:
+            return
         count = 0
         while self.is_connectable():
             if count == 30:
@@ -134,6 +140,7 @@ class Service(object):
                 self.process.terminate()
                 self.process.kill()
                 self.process.wait()
+                self.process = None
         except OSError:
             # kill may not be available under windows environment
             pass
