@@ -243,6 +243,7 @@ int ElementFinder::FindElementsUsingSizzle(const IECommandExecutor& executor,
     get_element_count_script_wrapper.AddArgument(snapshot);
     result = get_element_count_script_wrapper.Execute();
     if (result == WD_SUCCESS) {
+      *found_elements = Json::Value(Json::arrayValue);
       if (!get_element_count_script_wrapper.ResultIsInteger()) {
         LOG(WARN) << "Found elements count is not integer";
         result = EUNEXPECTEDJSERROR;
