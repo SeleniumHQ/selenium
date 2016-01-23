@@ -89,4 +89,9 @@ public class DefaultElementLocator implements ElementLocator {
 
     return elements;
   }
+
+  @Override
+  public String toString(){
+    return this.getClass().getSimpleName() + " '" + by + "'";
+  }
 }
