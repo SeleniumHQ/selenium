@@ -734,7 +734,7 @@ Utils.wrapResult = function(result, doc) {
       }
 
       // There's got to be a more intelligent way of detecting this.
-      if (result['tagName']) {
+      if (result.nodeType == 1 && result['tagName']) {
         return {'ELEMENT': Utils.addToKnownElements(result)};
       }
 
