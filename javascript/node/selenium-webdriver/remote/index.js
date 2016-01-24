@@ -17,19 +17,18 @@
 
 'use strict';
 
-var AdmZip = require('adm-zip'),
+const AdmZip = require('adm-zip'),
     AdmConstants = require('adm-zip/util/constants'),
     fs = require('fs'),
     path = require('path'),
     url = require('url'),
     util = require('util');
 
-var _base = require('../lib/_base'),
+const _base = require('../lib/_base'),
     webdriver = require('../'),
     promise = require('../').promise,
     httpUtil = require('../http/util'),
     exec = require('../io/exec'),
-    command = require('../lib/command'),
     net = require('../net'),
     portprober = require('../net/portprober');
 
@@ -54,11 +53,11 @@ var _base = require('../lib/_base'),
  *
  * @typedef {{
  *   loopback: (boolean|undefined),
- *   port: (number|!webdriver.promise.Promise.<number>),
- *   args: !(Array.<string>|webdriver.promise.Promise.<!Array.<string>>),
+ *   port: (number|!webdriver.promise.Promise<number>),
+ *   args: !(Array<string>|webdriver.promise.Promise<!Array<string>>),
  *   path: (string|undefined),
- *   env: (!Object.<string, string>|undefined),
- *   stdio: (string|!Array.<string|number|!Stream|null|undefined>|undefined)
+ *   env: (!Object<string, string>|undefined),
+ *   stdio: (string|!Array<string|number|!Stream|null|undefined>|undefined)
  * }}
  */
 var ServiceOptions;
@@ -71,223 +70,219 @@ var ServiceOptions;
  * https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol.
  * Furthermore, the managed server should support multiple concurrent sessions,
  * so that this class may be reused for multiple clients.
- *
- * @param {string} executable Path to the executable to run.
- * @param {!ServiceOptions} options Configuration options for the service.
- * @constructor
  */
-function DriverService(executable, options) {
-
-  /** @private {string} */
-  this.executable_ = executable;
-
-  /** @private {boolean} */
-  this.loopbackOnly_ = !!options.loopback;
-
-  /** @private {(number|!webdriver.promise.Promise.<number>)} */
-  this.port_ = options.port;
-
+class DriverService {
   /**
-   * @private {!(Array.<string>|webdriver.promise.Promise.<!Array.<string>>)}
+   * @param {string} executable Path to the executable to run.
+   * @param {!ServiceOptions} options Configuration options for the service.
    */
-  this.args_ = options.args;
+  constructor(executable, options) {
+    /** @private {string} */
+    this.executable_ = executable;
 
-  /** @private {string} */
-  this.path_ = options.path || '/';
+    /** @private {boolean} */
+    this.loopbackOnly_ = !!options.loopback;
 
-  /** @private {!Object.<string, string>} */
-  this.env_ = options.env || process.env;
+    /** @private {(number|!webdriver.promise.Promise<number>)} */
+    this.port_ = options.port;
 
-  /** @private {(string|!Array.<string|number|!Stream|null|undefined>)} */
-  this.stdio_ = options.stdio || 'ignore';
+    /**
+     * @private {!(Array<string>|webdriver.promise.Promise<!Array<string>>)}
+     */
+    this.args_ = options.args;
 
-  /**
-   * A promise for the managed subprocess, or null if the server has not been
-   * started yet. This promise will never be rejected.
-   * @private {promise.Promise.<!exec.Command>}
-   */
-  this.command_ = null;
+    /** @private {string} */
+    this.path_ = options.path || '/';
 
-  /**
-   * Promise that resolves to the server's address or null if the server has
-   * not been started. This promise will be rejected if the server terminates
-   * before it starts accepting WebDriver requests.
-   * @private {promise.Promise.<string>}
-   */
-  this.address_ = null;
-}
+    /** @private {!Object<string, string>} */
+    this.env_ = options.env || process.env;
 
+    /** @private {(string|!Array<string|number|!Stream|null|undefined>)} */
+    this.stdio_ = options.stdio || 'ignore';
 
-/**
- * The default amount of time, in milliseconds, to wait for the server to
- * start.
- * @type {number}
- */
-DriverService.DEFAULT_START_TIMEOUT_MS = 30 * 1000;
+    /**
+     * A promise for the managed subprocess, or null if the server has not been
+     * started yet. This promise will never be rejected.
+     * @private {webdriver.promise.Promise<!exec.Command>}
+     */
+    this.command_ = null;
 
-
-/**
- * @return {!webdriver.promise.Promise.<string>} A promise that resolves to
- *    the server's address.
- * @throws {Error} If the server has not been started.
- */
-DriverService.prototype.address = function() {
-  if (this.address_) {
-    return this.address_;
-  }
-  throw Error('Server has not been started.');
-};
-
-
-/**
- * Returns whether the underlying process is still running. This does not take
- * into account whether the process is in the process of shutting down.
- * @return {boolean} Whether the underlying service process is running.
- */
-DriverService.prototype.isRunning = function() {
-  return !!this.address_;
-};
-
-
-/**
- * Starts the server if it is not already running.
- * @param {number=} opt_timeoutMs How long to wait, in milliseconds, for the
- *     server to start accepting requests. Defaults to 30 seconds.
- * @return {!promise.Promise.<string>} A promise that will resolve
- *     to the server's base URL when it has started accepting requests. If the
- *     timeout expires before the server has started, the promise will be
- *     rejected.
- */
-DriverService.prototype.start = function(opt_timeoutMs) {
-  if (this.address_) {
-    return this.address_;
+    /**
+     * Promise that resolves to the server's address or null if the server has
+     * not been started. This promise will be rejected if the server terminates
+     * before it starts accepting WebDriver requests.
+     * @private {webdriver.promise.Promise<string>}
+     */
+    this.address_ = null;
   }
 
-  var timeout = opt_timeoutMs || DriverService.DEFAULT_START_TIMEOUT_MS;
+  /**
+   * The default amount of time, in milliseconds, to wait for the server to
+   * start.
+   * @const {number}
+   */
+  static get DEFAULT_START_TIMEOUT_MS() {
+    return 30 * 1000;
+  }
 
-  var self = this;
-  this.command_ = promise.defer();
-  this.address_ = promise.defer();
-  this.address_.fulfill(promise.when(this.port_, function(port) {
-    if (port <= 0) {
-      throw Error('Port must be > 0: ' + port);
+  /**
+   * @return {!webdriver.promise.Promise<string>} A promise that resolves to
+   *    the server's address.
+   * @throws {Error} If the server has not been started.
+   */
+  address() {
+    if (this.address_) {
+      return this.address_;
     }
-    return promise.when(self.args_, function(args) {
-      var command = exec(self.executable_, {
-        args: args,
-        env: self.env_,
-        stdio: self.stdio_
-      });
-
-      self.command_.fulfill(command);
-
-      var earlyTermination = command.result().then(function(result) {
-        var error = result.code == null ?
-            Error('Server was killed with ' + result.signal) :
-            Error('Server terminated early with status ' + result.code);
-        self.address_.reject(error);
-        self.address_ = null;
-        self.command_ = null;
-        throw error;
-      });
-
-      var serverUrl = url.format({
-        protocol: 'http',
-        hostname: !self.loopbackOnly_ && net.getAddress() ||
-            net.getLoopbackAddress(),
-        port: port,
-        pathname: self.path_
-      });
-
-      return new promise.Promise(function(fulfill, reject) {
-        var ready = httpUtil.waitForServer(serverUrl, timeout)
-            .then(fulfill, reject);
-        earlyTermination.thenCatch(function(e) {
-          ready.cancel(e);
-          reject(Error(e.message));
-        });
-      }).then(function() {
-        return serverUrl;
-      });
-    });
-  }));
-
-  return this.address_;
-};
-
-
-/**
- * Stops the service if it is not currently running. This function will kill
- * the server immediately. To synchronize with the active control flow, use
- * {@link #stop()}.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when
- *     the server has been stopped.
- */
-DriverService.prototype.kill = function() {
-  if (!this.address_ || !this.command_) {
-    return promise.fulfilled();  // Not currently running.
+    throw Error('Server has not been started.');
   }
-  return this.command_.then(function(command) {
-    command.kill('SIGTERM');
-  });
-};
 
+  /**
+   * Returns whether the underlying process is still running. This does not take
+   * into account whether the process is in the process of shutting down.
+   * @return {boolean} Whether the underlying service process is running.
+   */
+  isRunning() {
+    return !!this.address_;
+  }
 
-/**
- * Schedules a task in the current control flow to stop the server if it is
- * currently running.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when
- *     the server has been stopped.
- */
-DriverService.prototype.stop = function() {
-  return promise.controlFlow().execute(this.kill.bind(this));
-};
+  /**
+   * Starts the server if it is not already running.
+   * @param {number=} opt_timeoutMs How long to wait, in milliseconds, for the
+   *     server to start accepting requests. Defaults to 30 seconds.
+   * @return {!webdriver.promise.Promise<string>} A promise that will resolve
+   *     to the server's base URL when it has started accepting requests. If the
+   *     timeout expires before the server has started, the promise will be
+   *     rejected.
+   */
+  start(opt_timeoutMs) {
+    if (this.address_) {
+      return this.address_;
+    }
 
+    var timeout = opt_timeoutMs || DriverService.DEFAULT_START_TIMEOUT_MS;
+
+    var self = this;
+    this.command_ = promise.defer();
+    this.address_ = promise.defer();
+    this.address_.fulfill(promise.when(this.port_, function(port) {
+      if (port <= 0) {
+        throw Error('Port must be > 0: ' + port);
+      }
+      return promise.when(self.args_, function(args) {
+        var command = exec(self.executable_, {
+          args: args,
+          env: self.env_,
+          stdio: self.stdio_
+        });
+
+        self.command_.fulfill(command);
+
+        var earlyTermination = command.result().then(function(result) {
+          var error = result.code == null ?
+              Error('Server was killed with ' + result.signal) :
+              Error('Server terminated early with status ' + result.code);
+          self.address_.reject(error);
+          self.address_ = null;
+          self.command_ = null;
+          throw error;
+        });
+
+        var serverUrl = url.format({
+          protocol: 'http',
+          hostname: !self.loopbackOnly_ && net.getAddress() ||
+              net.getLoopbackAddress(),
+          port: port,
+          pathname: self.path_
+        });
+
+        return new promise.Promise(function(fulfill, reject) {
+          var ready = httpUtil.waitForServer(serverUrl, timeout)
+              .then(fulfill, reject);
+          earlyTermination.thenCatch(function(e) {
+            ready.cancel(e);
+            reject(Error(e.message));
+          });
+        }).then(function() {
+          return serverUrl;
+        });
+      });
+    }));
+
+    return this.address_;
+  }
+
+  /**
+   * Stops the service if it is not currently running. This function will kill
+   * the server immediately. To synchronize with the active control flow, use
+   * {@link #stop()}.
+   * @return {!webdriver.promise.Promise} A promise that will be resolved when
+   *     the server has been stopped.
+   */
+  kill() {
+    if (!this.address_ || !this.command_) {
+      return promise.fulfilled();  // Not currently running.
+    }
+    return this.command_.then(function(command) {
+      command.kill('SIGTERM');
+    });
+  }
+
+  /**
+   * Schedules a task in the current control flow to stop the server if it is
+   * currently running.
+   * @return {!webdriver.promise.Promise} A promise that will be resolved when
+   *     the server has been stopped.
+   */
+  stop() {
+    return promise.controlFlow().execute(this.kill.bind(this));
+  }
+}
 
 
 /**
  * Manages the life and death of the
  * <a href="http://selenium-release.storage.googleapis.com/index.html">
  * standalone Selenium server</a>.
- *
- * @param {string} jar Path to the Selenium server jar.
- * @param {SeleniumServer.Options=} opt_options Configuration options for the
- *     server.
- * @throws {Error} If the path to the Selenium jar is not specified or if an
- *     invalid port is specified.
- * @constructor
- * @extends {DriverService}
  */
-function SeleniumServer(jar, opt_options) {
-  if (!jar) {
-    throw Error('Path to the Selenium jar not specified');
-  }
+class SeleniumServer extends DriverService {
+  /**
+   * @param {string} jar Path to the Selenium server jar.
+   * @param {SeleniumServer.Options=} opt_options Configuration options for the
+   *     server.
+   * @throws {Error} If the path to the Selenium jar is not specified or if an
+   *     invalid port is specified.
+   */
+  constructor(jar, opt_options) {
+    if (!jar) {
+      throw Error('Path to the Selenium jar not specified');
+    }
 
-  var options = opt_options || {};
+    var options = opt_options || {};
 
-  if (options.port < 0) {
-    throw Error('Port must be >= 0: ' + options.port);
-  }
+    if (options.port < 0) {
+      throw Error('Port must be >= 0: ' + options.port);
+    }
 
-  var port = options.port || portprober.findFreePort();
-  var args = promise.when(options.jvmArgs || [], function(jvmArgs) {
-    return promise.when(options.args || [], function(args) {
-      return promise.when(port, function(port) {
-        return jvmArgs.concat(['-jar', jar, '-port', port]).concat(args);
+    var port = options.port || portprober.findFreePort();
+    var args = promise.when(options.jvmArgs || [], function(jvmArgs) {
+      return promise.when(options.args || [], function(args) {
+        return promise.when(port, function(port) {
+          return jvmArgs.concat(['-jar', jar, '-port', port]).concat(args);
+        });
       });
     });
-  });
 
-  DriverService.call(this, 'java', {
-    loopback: options.loopback,
-    port: port,
-    args: args,
-    path: '/wd/hub',
-    env: options.env,
-    stdio: options.stdio
-  });
+    super('java', {
+      loopback: options.loopback,
+      port: port,
+      args: args,
+      path: '/wd/hub',
+      env: options.env,
+      stdio: options.stdio
+    });
+  }
 }
-util.inherits(SeleniumServer, DriverService);
 
 
 /**
@@ -309,13 +304,13 @@ util.inherits(SeleniumServer, DriverService);
  *
  * @typedef {{
  *   loopback: (boolean|undefined),
- *   port: (number|!webdriver.promise.Promise.<number>),
- *   args: !(Array.<string>|webdriver.promise.Promise.<!Array.<string>>),
- *   jvmArgs: (!Array.<string>|
- *             !webdriver.promise.Promise.<!Array.<string>>|
+ *   port: (number|!webdriver.promise.Promise<number>),
+ *   args: !(Array<string>|webdriver.promise.Promise<!Array<string>>),
+ *   jvmArgs: (!Array<string>|
+ *             !webdriver.promise.Promise<!Array<string>>|
  *             undefined),
- *   env: (!Object.<string, string>|undefined),
- *   stdio: (string|!Array.<string|number|!Stream|null|undefined>|undefined)
+ *   env: (!Object<string, string>|undefined),
+ *   stdio: (string|!Array<string|number|!Stream|null|undefined>|undefined)
  * }}
  */
 SeleniumServer.Options;
@@ -336,36 +331,33 @@ SeleniumServer.Options;
  * Java Selenium server. The file detector will fail if used with a server that
  * only supports standard WebDriver commands (such as the ChromeDriver).
  *
- * @constructor
- * @extends {webdriver.FileDetector}
  * @final
  */
-var FileDetector = function() {};
-util.inherits(webdriver.FileDetector, FileDetector);
+class FileDetector extends webdriver.FileDetector {
+  /** @override */
+  handleFile(driver, filePath) {
+    return promise.checkedNodeCall(fs.stat, filePath).then(function(stats) {
+      if (stats.isDirectory()) {
+        throw TypeError('Uploading directories is not supported: ' + filePath);
+      }
 
+      var zip = new AdmZip();
+      zip.addLocalFile(filePath);
+      zip.getEntries()[0].header.method = AdmConstants.STORED;
 
-/** @override */
-FileDetector.prototype.handleFile = function(driver, filePath) {
-  return promise.checkedNodeCall(fs.stat, filePath).then(function(stats) {
-    if (stats.isDirectory()) {
-      throw TypeError('Uploading directories is not supported: ' + filePath);
-    }
+      var command = new webdriver.Command(webdriver.CommandName.UPLOAD_FILE)
+          .setParameter('file', zip.toBuffer().toString('base64'));
+      return driver.schedule(command,
+          'remote.FileDetector.handleFile(' + filePath + ')');
+    }, function(err) {
+      if (err.code === 'ENOENT') {
+        return filePath;  // Not a file; return original input.
+      }
+      throw err;
+    });
+  }
+}
 
-    var zip = new AdmZip();
-    zip.addLocalFile(filePath);
-    zip.getEntries()[0].header.method = AdmConstants.STORED;
-
-    var command = new command.Command(command.Name.UPLOAD_FILE)
-        .setParameter('file', zip.toBuffer().toString('base64'));
-    return driver.schedule(command,
-        'remote.FileDetector.handleFile(' + filePath + ')');
-  }, function(err) {
-    if (err.code === 'ENOENT') {
-      return filePath;  // Not a file; return original input.
-    }
-    throw err;
-  });
-};
 
 // PUBLIC API
 

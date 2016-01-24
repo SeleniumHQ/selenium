@@ -17,14 +17,12 @@
 
 'use strict';
 
-var fs = require('fs'),
-    util = require('util');
+const fs = require('fs');
 
-var webdriver = require('./index'),
+const webdriver = require('./index'),
+    executors = require('./executors'),
     http = require('./http'),
     io = require('./io'),
-    command = require('./lib/command'),
-    logging = require('./lib/logging'),
     portprober = require('./net/portprober'),
     remote = require('./remote');
 
@@ -34,7 +32,7 @@ var webdriver = require('./index'),
  * @type {string}
  * @const
  */
-var PHANTOMJS_EXE =
+const PHANTOMJS_EXE =
     process.platform === 'win32' ? 'phantomjs.exe' : 'phantomjs';
 
 
@@ -43,7 +41,7 @@ var PHANTOMJS_EXE =
  * @type {string}
  * @const
  */
-var BINARY_PATH_CAPABILITY = 'phantomjs.binary.path';
+const BINARY_PATH_CAPABILITY = 'phantomjs.binary.path';
 
 
 /**
@@ -51,7 +49,7 @@ var BINARY_PATH_CAPABILITY = 'phantomjs.binary.path';
  * @type {string}
  * @const
  */
-var CLI_ARGS_CAPABILITY = 'phantomjs.cli.args';
+const CLI_ARGS_CAPABILITY = 'phantomjs.cli.args';
 
 
 /**
@@ -59,14 +57,14 @@ var CLI_ARGS_CAPABILITY = 'phantomjs.cli.args';
  * @type {string}
  * @const
  */
-var DEFAULT_LOG_FILE = 'phantomjsdriver.log';
+const DEFAULT_LOG_FILE = 'phantomjsdriver.log';
 
 
 /**
  * Custom command names supported by PhantomJS.
  * @enum {string}
  */
-var Command = {
+const Command = {
   EXECUTE_PHANTOM_SCRIPT: 'executePhantomScript'
 };
 
@@ -100,13 +98,13 @@ function findExecutable(opt_exe) {
  * @type {!Object.<string, string>}
  * @const
  */
-var WEBDRIVER_TO_PHANTOMJS_LEVEL = (function() {
+const WEBDRIVER_TO_PHANTOMJS_LEVEL = (function() {
   var map = {};
-  map[logging.Level.ALL.name] = 'DEBUG';
-  map[logging.Level.DEBUG.name] = 'DEBUG';
-  map[logging.Level.INFO.name] = 'INFO';
-  map[logging.Level.WARNING.name] = 'WARN';
-  map[logging.Level.SEVERE.name] = 'ERROR';
+  map[webdriver.logging.Level.ALL.name] = 'DEBUG';
+  map[webdriver.logging.Level.DEBUG.name] = 'DEBUG';
+  map[webdriver.logging.Level.INFO.name] = 'INFO';
+  map[webdriver.logging.Level.WARNING.name] = 'WARN';
+  map[webdriver.logging.Level.SEVERE.name] = 'ERROR';
   return map;
 })();
 
@@ -114,10 +112,10 @@ var WEBDRIVER_TO_PHANTOMJS_LEVEL = (function() {
 /**
  * Creates a command executor with support for PhantomJS' custom commands.
  * @param {!webdriver.promise.Promise<string>} url The server's URL.
- * @return {!command.Executor} The new command executor.
+ * @return {!webdriver.CommandExecutor} The new command executor.
  */
 function createExecutor(url) {
-  return new command.DeferredExecutor(url.then(function(url) {
+  return new executors.DeferredExecutor(url.then(function(url) {
     var client = new http.HttpClient(url);
     var executor = new http.Executor(client);
 
@@ -131,134 +129,130 @@ function createExecutor(url) {
 
 /**
  * Creates a new WebDriver client for PhantomJS.
- *
- * @param {webdriver.Capabilities=} opt_capabilities The desired capabilities.
- * @param {webdriver.promise.ControlFlow=} opt_flow The control flow to use, or
- *     {@code null} to use the currently active flow.
- * @constructor
- * @extends {webdriver.WebDriver}
  */
-var Driver = function(opt_capabilities, opt_flow) {
-  var capabilities = opt_capabilities || webdriver.Capabilities.phantomjs();
-  var exe = findExecutable(capabilities.get(BINARY_PATH_CAPABILITY));
-  var args = ['--webdriver-logfile=' + DEFAULT_LOG_FILE];
+class Driver extends webdriver.WebDriver {
+  /**
+   * @param {webdriver.Capabilities=} opt_capabilities The desired capabilities.
+   * @param {webdriver.promise.ControlFlow=} opt_flow The control flow to use,
+   *     or {@code null} to use the currently active flow.
+   */
+  constructor(opt_capabilities, opt_flow) {
+    var capabilities = opt_capabilities || webdriver.Capabilities.phantomjs();
+    var exe = findExecutable(capabilities.get(BINARY_PATH_CAPABILITY));
+    var args = ['--webdriver-logfile=' + DEFAULT_LOG_FILE];
 
-  var logPrefs = capabilities.get(webdriver.Capability.LOGGING_PREFS);
-  if (logPrefs instanceof logging.Preferences) {
-    logPrefs = logPrefs.toJSON();
-  }
-
-  if (logPrefs && logPrefs[webdriver.logging.Type.DRIVER]) {
-    var level = WEBDRIVER_TO_PHANTOMJS_LEVEL[
-        logPrefs[logging.Type.DRIVER]];
-    if (level) {
-      args.push('--webdriver-loglevel=' + level);
+    var logPrefs = capabilities.get(webdriver.Capability.LOGGING_PREFS);
+    if (logPrefs instanceof webdriver.logging.Preferences) {
+      logPrefs = logPrefs.toJSON();
     }
-  }
 
-  var proxy = capabilities.get(webdriver.Capability.PROXY);
-  if (proxy) {
-    switch (proxy.proxyType) {
-      case 'manual':
-        if (proxy.httpProxy) {
-          args.push(
-              '--proxy-type=http',
-              '--proxy=http://' + proxy.httpProxy);
-        }
-        break;
-      case 'pac':
-        throw Error('PhantomJS does not support Proxy PAC files');
-      case 'system':
-        args.push('--proxy-type=system');
-        break;
-      case 'direct':
-        args.push('--proxy-type=none');
-        break;
+    if (logPrefs && logPrefs[webdriver.logging.Type.DRIVER]) {
+      var level = WEBDRIVER_TO_PHANTOMJS_LEVEL[
+          logPrefs[webdriver.logging.Type.DRIVER]];
+      if (level) {
+        args.push('--webdriver-loglevel=' + level);
+      }
     }
+
+    var proxy = capabilities.get(webdriver.Capability.PROXY);
+    if (proxy) {
+      switch (proxy.proxyType) {
+        case 'manual':
+          if (proxy.httpProxy) {
+            args.push(
+                '--proxy-type=http',
+                '--proxy=http://' + proxy.httpProxy);
+          }
+          break;
+        case 'pac':
+          throw Error('PhantomJS does not support Proxy PAC files');
+        case 'system':
+          args.push('--proxy-type=system');
+          break;
+        case 'direct':
+          args.push('--proxy-type=none');
+          break;
+      }
+    }
+    args = args.concat(capabilities.get(CLI_ARGS_CAPABILITY) || []);
+
+    var port = portprober.findFreePort();
+    var service = new remote.DriverService(exe, {
+      port: port,
+      args: webdriver.promise.when(port, function(port) {
+        args.push('--webdriver=' + port);
+        return args;
+      })
+    });
+
+    var executor = createExecutor(service.start());
+    var driver = webdriver.WebDriver.createSession(
+        executor, capabilities, opt_flow);
+
+    super(driver.getSession(), executor, driver.controlFlow());
+
+    var boundQuit = this.quit.bind(this);
+
+    /** @override */
+    this.quit = function() {
+      return boundQuit().thenFinally(service.kill.bind(service));
+    };
   }
-  args = args.concat(capabilities.get(CLI_ARGS_CAPABILITY) || []);
 
-  var port = portprober.findFreePort();
-  var service = new remote.DriverService(exe, {
-    port: port,
-    args: webdriver.promise.when(port, function(port) {
-      args.push('--webdriver=' + port);
-      return args;
-    })
-  });
+  /**
+   * This function is a no-op as file detectors are not supported by this
+   * implementation.
+   * @override
+   */
+  setFileDetector() {}
 
-  var executor = createExecutor(service.start());
-  var driver = webdriver.WebDriver.createSession(
-      executor, capabilities, opt_flow);
-
-  webdriver.WebDriver.call(
-      this, driver.getSession(), executor, driver.controlFlow());
-
-  var boundQuit = this.quit.bind(this);
-
-  /** @override */
-  this.quit = function() {
-    return boundQuit().thenFinally(service.kill.bind(service));
-  };
-};
-util.inherits(Driver, webdriver.WebDriver);
-
-
-/**
- * This function is a no-op as file detectors are not supported by this
- * implementation.
- * @override
- */
-Driver.prototype.setFileDetector = function() {
-};
-
-
-/**
- * Executes a PhantomJS fragment. This method is similar to
- * {@link #executeScript}, except it exposes the
- * <a href="http://phantomjs.org/api/">PhantomJS API</a> to the injected
- * script.
- *
- * <p>The injected script will execute in the context of PhantomJS's
- * {@code page} variable. If a page has not been loaded before calling this
- * method, one will be created.</p>
- *
- * <p>Be sure to wrap callback definitions in a try/catch block, as failures
- * may cause future WebDriver calls to fail.</p>
- *
- * <p>Certain callbacks are used by GhostDriver (the PhantomJS WebDriver
- * implementation) and overriding these may cause the script to fail. It is
- * recommended that you check for existing callbacks before defining your own.
- * </p>
- *
- * As with {@link #executeScript}, the injected script may be defined as
- * a string for an anonymous function body (e.g. "return 123;"), or as a
- * function. If a function is provided, it will be decompiled to its original
- * source. Note that injecting functions is provided as a convenience to
- * simplify defining complex scripts. Care must be taken that the function
- * only references variables that will be defined in the page's scope and
- * that the function does not override {@code Function.prototype.toString}
- * (overriding toString() will interfere with how the function is
- * decompiled.
- *
- * @param {(string|!Function)} script The script to execute.
- * @param {...*} var_args The arguments to pass to the script.
- * @return {!webdriver.promise.Promise<T>} A promise that resolve to the
- *     script's return value.
- * @template T
- */
-Driver.prototype.executePhantomJS = function(script, args) {
-  if (typeof script === 'function') {
-    script = 'return (' + script + ').apply(this, arguments);';
+  /**
+   * Executes a PhantomJS fragment. This method is similar to
+   * {@link #executeScript}, except it exposes the
+   * <a href="http://phantomjs.org/api/">PhantomJS API</a> to the injected
+   * script.
+   *
+   * <p>The injected script will execute in the context of PhantomJS's
+   * {@code page} variable. If a page has not been loaded before calling this
+   * method, one will be created.</p>
+   *
+   * <p>Be sure to wrap callback definitions in a try/catch block, as failures
+   * may cause future WebDriver calls to fail.</p>
+   *
+   * <p>Certain callbacks are used by GhostDriver (the PhantomJS WebDriver
+   * implementation) and overriding these may cause the script to fail. It is
+   * recommended that you check for existing callbacks before defining your own.
+   * </p>
+   *
+   * As with {@link #executeScript}, the injected script may be defined as
+   * a string for an anonymous function body (e.g. "return 123;"), or as a
+   * function. If a function is provided, it will be decompiled to its original
+   * source. Note that injecting functions is provided as a convenience to
+   * simplify defining complex scripts. Care must be taken that the function
+   * only references variables that will be defined in the page's scope and
+   * that the function does not override {@code Function.prototype.toString}
+   * (overriding toString() will interfere with how the function is
+   * decompiled.
+   *
+   * @param {(string|!Function)} script The script to execute.
+   * @param {...*} var_args The arguments to pass to the script.
+   * @return {!webdriver.promise.Promise<T>} A promise that resolve to the
+   *     script's return value.
+   * @template T
+   */
+  executePhantomJS(script, args) {
+    if (typeof script === 'function') {
+      script = 'return (' + script + ').apply(this, arguments);';
+    }
+    var args = arguments.length > 1
+        ? Array.prototype.slice.call(arguments, 1) : [];
+    return this.schedule(
+        new webdriver.Command(Command.EXECUTE_PHANTOM_SCRIPT)
+            .setParameter('script', script)
+            .setParameter('args', args),
+        'Driver.executePhantomJS()');
   }
-  var args = arguments.length > 1
-      ? Array.prototype.slice.call(arguments, 1) : [];
-  return this.schedule(
-      new command.Command(Command.EXECUTE_PHANTOM_SCRIPT)
-          .setParameter('script', script)
-          .setParameter('args', args),
-      'Driver.executePhantomJS()');
-};
+}
 
 
 // PUBLIC API

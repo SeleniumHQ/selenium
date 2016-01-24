@@ -22,12 +22,12 @@
 
 'use strict';
 
-var child = require('child_process'),
+const child = require('child_process'),
     fs = require('fs'),
     path = require('path'),
     util = require('util');
 
-var Serializable = require('..').Serializable,
+const Serializable = require('..').Serializable,
     promise = require('..').promise,
     _base = require('../lib/_base'),
     io = require('../io'),
@@ -36,16 +36,16 @@ var Serializable = require('..').Serializable,
 
 
 /** @const */
-var NO_FOCUS_LIB_X86 = _base.isDevMode() ?
+const NO_FOCUS_LIB_X86 = _base.isDevMode() ?
     path.join(__dirname, '../../../../cpp/prebuilt/i386/libnoblur.so') :
     path.join(__dirname, '../lib/firefox/i386/libnoblur.so') ;
 
 /** @const */
-var NO_FOCUS_LIB_AMD64 = _base.isDevMode() ?
+const NO_FOCUS_LIB_AMD64 = _base.isDevMode() ?
     path.join(__dirname, '../../../../cpp/prebuilt/amd64/libnoblur64.so') :
     path.join(__dirname, '../lib/firefox/amd64/libnoblur64.so') ;
 
-var X_IGNORE_NO_FOCUS_LIB = 'x_ignore_nofocus.so';
+const X_IGNORE_NO_FOCUS_LIB = 'x_ignore_nofocus.so';
 
 var foundBinary = null;
 
@@ -136,90 +136,86 @@ function installNoFocusLibs(profileDir) {
  * Provides a mechanism to configure and launch Firefox in a subprocess for
  * use with WebDriver.
  *
- * @param {string=} opt_exe Path to the Firefox binary to use. If not
- *     specified, will attempt to locate Firefox on the current system.
- * @constructor
- * @extends {Serializable.<string>}
+ * @extends {Serializable<string>}
+ * @final
  */
-var Binary = function(opt_exe) {
-  Serializable.call(this);
+class Binary extends Serializable {
+  /**
+   * @param {string=} opt_exe Path to the Firefox binary to use. If not
+   *     specified, will attempt to locate Firefox on the current system.
+   */
+  constructor(opt_exe) {
+    super();
 
-  /** @private {(string|undefined)} */
-  this.exe_ = opt_exe;
+    /** @private {(string|undefined)} */
+    this.exe_ = opt_exe;
 
-  /** @private {!Array.<string>} */
-  this.args_ = [];
+    /** @private {!Array.<string>} */
+    this.args_ = [];
 
-  /** @private {!Object.<string, string>} */
-  this.env_ = {};
-  Object.keys(process.env).forEach(function(key) {
-    this.env_[key] = process.env[key];
-  }.bind(this));
-  this.env_['MOZ_CRASHREPORTER_DISABLE'] = '1';
-  this.env_['MOZ_NO_REMOTE'] = '1';
-  this.env_['NO_EM_RESTART'] = '1';
-};
-util.inherits(Binary, Serializable);
+    /** @private {!Object<string, string>} */
+    this.env_ = {};
+    Object.assign(this.env_, process.env, {
+      MOZ_CRASHREPORTER_DISABLE: '1',
+      MOZ_NO_REMOTE: '1',
+      NO_EM_RESTART: '1'
+    });
+  }
 
-
-/**
- * Add arguments to the command line used to start Firefox.
- * @param {...(string|!Array.<string>)} var_args Either the arguments to add as
- *     varargs, or the arguments as an array.
- */
-Binary.prototype.addArguments = function(var_args) {
-  for (var i = 0; i < arguments.length; i++) {
-    if (util.isArray(arguments[i])) {
-      this.args_ = this.args_.concat(arguments[i]);
-    } else {
-      this.args_.push(arguments[i]);
+  /**
+   * Add arguments to the command line used to start Firefox.
+   * @param {...(string|!Array.<string>)} var_args Either the arguments to add
+   *     as varargs, or the arguments as an array.
+   */
+  addArguments(var_args) {
+    for (var i = 0; i < arguments.length; i++) {
+      if (Array.isArray(arguments[i])) {
+        this.args_ = this.args_.concat(arguments[i]);
+      } else {
+        this.args_.push(arguments[i]);
+      }
     }
   }
-};
 
+  /**
+   * Launches Firefox and returns a promise that will be fulfilled when the
+   * process terminates.
+   * @param {string} profile Path to the profile directory to use.
+   * @return {!promise.Promise<!exec.Command>} A promise for the handle to the
+   *     started subprocess.
+   */
+  launch(profile) {
+    let env = {};
+    Object.assign(env, this.env_, {XRE_PROFILE_PATH: profile});
 
-/**
- * Launches Firefox and returns a promise that will be fulfilled when the
- * process terminates.
- * @param {string} profile Path to the profile directory to use.
- * @return {!promise.Promise.<!exec.Command>} A promise for the handle to the
- *     started subprocess.
- */
-Binary.prototype.launch = function(profile) {
-  var env = {};
-  Object.keys(this.env_).forEach(function(key) {
-    env[key] = this.env_[key];
-  }.bind(this));
-  env['XRE_PROFILE_PATH'] = profile;
+    let args = ['-foreground'].concat(this.args_);
 
-  var args = ['-foreground'].concat(this.args_);
-
-  return promise.when(this.exe_ || findFirefox(), function(firefox) {
-    if (process.platform === 'win32' || process.platform === 'darwin') {
-      return exec(firefox, {args: args, env: env});
-    }
-    return installNoFocusLibs(profile).then(function(ldLibraryPath) {
-      env['LD_LIBRARY_PATH'] = ldLibraryPath + ':' + env['LD_LIBRARY_PATH'];
-      env['LD_PRELOAD'] = X_IGNORE_NO_FOCUS_LIB;
-      return exec(firefox, {args: args, env: env});
+    return promise.when(this.exe_ || findFirefox(), function(firefox) {
+      if (process.platform === 'win32' || process.platform === 'darwin') {
+        return exec(firefox, {args: args, env: env});
+      }
+      return installNoFocusLibs(profile).then(function(ldLibraryPath) {
+        env['LD_LIBRARY_PATH'] = ldLibraryPath + ':' + env['LD_LIBRARY_PATH'];
+        env['LD_PRELOAD'] = X_IGNORE_NO_FOCUS_LIB;
+        return exec(firefox, {args: args, env: env});
+      });
     });
-  });
-};
+  }
 
-
-/**
- * Returns a promise for the wire representation of this binary. Note: the
- * FirefoxDriver only supports passing the path to the binary executable over
- * the wire; all command line arguments and environment variables will be
- * discarded.
- *
- * @return {!promise.Promise.<string>} A promise for this binary's wire
- *     representation.
- * @override
- */
-Binary.prototype.serialize = function() {
-  return promise.when(this.exe_ || findFirefox());
-};
+  /**
+   * Returns a promise for the wire representation of this binary. Note: the
+   * FirefoxDriver only supports passing the path to the binary executable over
+   * the wire; all command line arguments and environment variables will be
+   * discarded.
+   *
+   * @return {!promise.Promise<string>} A promise for this binary's wire
+   *     representation.
+   * @override
+   */
+  serialize() {
+    return promise.fulfilled(this.exe_ || findFirefox());
+  }
+}
 
 
 // PUBLIC API
