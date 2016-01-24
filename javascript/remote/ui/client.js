@@ -172,8 +172,7 @@ remote.ui.Client.prototype.getSessionContainer = function() {
  */
 remote.ui.Client.prototype.execute_ = function(command) {
   this.banner_.setVisible(false);
-  var fn = goog.bind(this.executor_.execute, this.executor_, command);
-  return webdriver.promise.checkedNodeCall(fn).
+  return this.executor_.execute(command).
       then(bot.response.checkResponse);
 };
 
@@ -322,7 +321,7 @@ remote.ui.Client.prototype.onLoad_ = function(e) {
 remote.ui.Client.prototype.onScreenshot_ = function() {
   var session = this.sessionContainer_.getSelectedSession();
   if (!session) {
-    goog.log.warning(this.log_, 
+    goog.log.warning(this.log_,
         'Cannot take screenshot; no session selected!');
     return;
   }
