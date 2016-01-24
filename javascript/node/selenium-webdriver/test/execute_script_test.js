@@ -58,7 +58,7 @@ test.suite(function(env) {
       execute('throw function\\*')
           .then(function() { throw shoudlHaveFailed; })
           .thenCatch(function(e) {
-            assert(e).not.equalTo(shouldHaveFailed);
+            assert(e).notEqualTo(shouldHaveFailed);
           });
     });
 

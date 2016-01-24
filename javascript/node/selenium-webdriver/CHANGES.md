@@ -38,6 +38,8 @@ the selenium-webdriver package README.
 * Changed the `http.Request` and `http.Response` classes to store headers in
     maps instead of object literals.
 * Updated `ws` dependency to version `1.0.1`.
+* Removed fluent predicates "is" and "not" from the experimental
+    `testing/assert` module.
 
 ### Changes for W3C WebDriver Spec Compliance
 
