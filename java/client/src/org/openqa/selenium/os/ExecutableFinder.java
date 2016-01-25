@@ -54,6 +54,13 @@ class ExecutableFinder {
       return named;
     }
 
+    if (Platform.getCurrent().is(Platform.WINDOWS)) {
+      file = new File(named + ".exe");
+      if (canExecute(file)) {
+        return named + ".exe";
+      }
+    }
+
     addPathFromEnvironment();
     if (Platform.getCurrent().is(Platform.MAC)) {
       addMacSpecificPath();
