@@ -34,8 +34,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
-import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
-import static org.openqa.selenium.testing.TestUtilities.getIEVersion;
 
 import com.google.common.base.Joiner;
 
@@ -648,49 +646,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SAFARI, MARIONETTE}, reason = "Safari: cannot type on contentEditable with synthetic events")
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
-  @Test
-  public void testTypingIntoAnIFrameWithContentEditableOrDesignModeSet() {
-    driver.get(pages.richTextPage);
-
-    driver.switchTo().frame("editFrame");
-    WebElement element = driver.switchTo().activeElement();
-    element.sendKeys("Fishy");
-
-    driver.switchTo().defaultContent();
-    WebElement trusted = driver.findElement(By.id("istrusted"));
-    WebElement id = driver.findElement(By.id("tagId"));
-
-    assertThat(trusted.getText(), anyOf(
-        equalTo("[true]"),
-        // Chrome does not set a trusted flag.
-        equalTo("[n/a]"),
-        equalTo("[]")));
-    assertThat(id.getText(), anyOf(equalTo("[frameHtml]"), equalTo("[theBody]")));
-  }
-
-  @JavascriptEnabled
-  @NotYetImplemented(HTMLUNIT)
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
-  @Test
-  @Ignore(MARIONETTE)
-  public void testNonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet() {
-    assumeFalse("FIXME: Fails in Firefox on Linux with synthesized events",
-                isFirefox(driver) &&
-                (getEffectivePlatform().is(Platform.LINUX) || getEffectivePlatform().is(Platform.MAC)));
-
-    driver.get(pages.richTextPage);
-
-    driver.switchTo().frame("editFrame");
-    WebElement element = driver.switchTo().activeElement();
-    element.sendKeys("Dishy", Keys.BACK_SPACE, Keys.LEFT, Keys.LEFT);
-    element.sendKeys(Keys.LEFT, Keys.LEFT, "F", Keys.DELETE, Keys.END, "ee!");
-
-    assertEquals("Fishee!", element.getText());
-  }
-
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToTypeOnAnEmailInputField() {
     driver.get(pages.formPage);
@@ -706,49 +661,6 @@ public class TypingTest extends JUnit4TestBase {
     WebElement email = driver.findElement(By.id("age"));
     email.sendKeys("33");
     assertThat(email.getAttribute("value"), equalTo("33"));
-  }
-
-  @Ignore(value = {SAFARI, HTMLUNIT}, reason = "Untested browsers;" +
-      " Safari: cannot type on contentEditable with synthetic events",
-      issues = {3127})
-  @Test
-  public void testShouldBeAbleToTypeIntoEmptyContentEditableElement() {
-    driver.get(pages.readOnlyPage);
-    WebElement editable = driver.findElement(By.id("content-editable-blank"));
-
-    editable.sendKeys("cheese");
-
-    assertThat(editable.getText(), equalTo("cheese"));
-  }
-
-  @Ignore(value = {CHROME, IE, SAFARI, HTMLUNIT, MARIONETTE})
-  @Test
-  public void testShouldBeAbleToTypeIntoContentEditableElementWithExistingValue() {
-    driver.get(pages.readOnlyPage);
-    WebElement editable = driver.findElement(By.id("content-editable"));
-
-    String initialText = editable.getText();
-    editable.sendKeys(", edited");
-
-    assertThat(editable.getText(), equalTo(initialText + ", edited"));
-  }
-
-  @Ignore(value = {IE, SAFARI, HTMLUNIT, MARIONETTE},
-          reason = "Untested browsers;" +
-                   " Safari: cannot type on contentEditable with synthetic events",
-          issues = {3127})
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
-  @Test
-  public void testShouldBeAbleToTypeIntoTinyMCE() {
-    driver.get(appServer.whereIs("tinymce.html"));
-    driver.switchTo().frame("mce_0_ifr");
-
-    WebElement editable = driver.findElement(By.id("tinymce"));
-
-    editable.clear();
-    editable.sendKeys("cheese"); // requires focus on OS X
-
-    assertThat(editable.getText(), equalTo("cheese"));
   }
 
   @JavascriptEnabled

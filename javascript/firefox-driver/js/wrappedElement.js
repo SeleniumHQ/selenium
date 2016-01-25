@@ -154,23 +154,15 @@ WebElement.sendKeysToElement = function(respond, parameters) {
       var length = element.value ? element.value.length : goog.dom.getTextContent(element).length;
 
       if (bot.dom.isContentEditable(element) && length) {
+        var setCursorTo = element;
+        if (element.lastElementChild) {
+          setCursorTo = element.lastElementChild;
+        }
+        goog.log.info(WebElement.LOG_, 'ContentEditable ' + element + " " + length);
         var doc = element.ownerDocument || element.document;
         var rng = doc.createRange();
-        var walker = doc.createTreeWalker(element, 4/*NodeFilter.SHOW_TEXT*/, null, null);
-        var start = length;
-        var end = length;
-        var n,pos = 0;
-        while (n = walker.nextNode()) {
-          pos += n.nodeValue.length;
-          if (pos >= start) {
-            rng.setStart(n, n.nodeValue.length + start - pos);
-            start = Infinity;
-          }
-          if (pos >= end) {
-            rng.setEnd(n, n.nodeValue.length + end - pos);
-            break;
-          }
-        }
+        rng.selectNodeContents(setCursorTo);
+        rng.collapse(false);
         var sel = doc.getSelection();
         sel.removeAllRanges();
         sel.addRange(rng);
