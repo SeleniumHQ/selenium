@@ -390,6 +390,36 @@ Utils.type = function(doc, element, text, jsTimer, releaseModifiers,
     } else if (c == '\'' || c == '"') {
       keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_QUOTE;
       charCode = c.charCodeAt(0);
+    } else if (c == '^') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CIRCUMFLEX;
+      charCode = c.charCodeAt(0);
+    } else if (c == '!') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_EXCLAMATION;
+      charCode = c.charCodeAt(0);
+    } else if (c == '#') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_HASH;
+      charCode = c.charCodeAt(0);
+    } else if (c == '$') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_DOLLAR;
+      charCode = c.charCodeAt(0);
+    } else if (c == '%') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_PERCENT;
+      charCode = c.charCodeAt(0);
+    } else if (c == '&') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_AMPERSAND;
+      charCode = c.charCodeAt(0);
+    } else if (c == '_') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_UNDERSCORE;
+      charCode = c.charCodeAt(0);
+    } else if (c == '-') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_HYPHEN_MINUS;
+      charCode = c.charCodeAt(0);
+    } else if (c == '(') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_OPEN_BRACKET;
+      charCode = c.charCodeAt(0);
+    } else if (c == ')') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CLOSE_BRACKET;
+      charCode = c.charCodeAt(0);
     } else {
       keyCode = upper.charCodeAt(i);
       charCode = text.charCodeAt(i);
