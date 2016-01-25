@@ -208,7 +208,7 @@ class By extends LegacyBy {
   }
 
   /**
-   * Locates link elements whose 
+   * Locates link elements whose
    * {@linkplain webdriver.WebElement#getText visible text} contains the given
    * substring.
    *
@@ -247,7 +247,8 @@ class By extends LegacyBy {
 
   /** @override */
   toString() {
-    return this.constructor.name + '(' + this.using + ', ' + this.value + ')';
+    // The static By.name() overrides this.constructor.name.  Shame...
+    return `By(${this.using}, ${this.value})`;
   }
 }
 
