@@ -224,6 +224,14 @@ public class PageLoadingTest extends JUnit4TestBase {
     driver.get("www.test.com");
   }
 
+  @Ignore(value = {IE, SAFARI, PHANTOMJS})
+  @Test(expected = WebDriverException.class)
+  @NeedsFreshDriver
+  public void testShouldThrowIfUrlIsMalformedInPortPart() {
+    assumeFalse("Fails in Sauce Cloud", SauceDriver.shouldUseSauce());
+    driver.get("http://localhost:3001bla");
+  }
+
   @Ignore(value = {SAFARI, MARIONETTE}, issues = {4062})
   @Test
   public void testShouldReturnWhenGettingAUrlThatDoesNotConnect() {
