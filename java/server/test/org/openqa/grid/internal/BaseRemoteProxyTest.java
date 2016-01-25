@@ -147,7 +147,7 @@ public class BaseRemoteProxyTest {
     RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-"+RegistrationRequest.REMOTE_HOST, remoteHost,"-"+RegistrationRequest.ID, "abc", "-timeout", "23", "-browserTimeout", "12","-host","localhost");
     req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
-    assertEquals(23, p.getTimeOut());
+    assertEquals(23000, p.getTimeOut());
   }
 
 

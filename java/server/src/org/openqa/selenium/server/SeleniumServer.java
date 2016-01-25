@@ -1022,8 +1022,6 @@ public class SeleniumServer implements SslCertificateGenerator, GridNodeServer {
         configuration.setDebugURL(getArg(args, ++i));
       } else if ("-timeout".equalsIgnoreCase(arg)) {
         configuration.setTimeoutInSeconds(Integer.parseInt(getArg(args, ++i)));
-      } else if ("-browserTimeout".equalsIgnoreCase(arg)) {
-        configuration.setBrowserTimeoutInMs(Integer.parseInt(getArg(args, ++i)));
       } else if ("-jettyThreads".equalsIgnoreCase(arg)) {
         int jettyThreadsCount = Integer.parseInt(getArg(args, ++i));
 
