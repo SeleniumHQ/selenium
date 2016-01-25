@@ -695,7 +695,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented({CHROME})
+  @NotYetImplemented({CHROME, HTMLUNIT})
   public void canClearNumberInputAfterTypingInvalidInput() {
     driver.get(pages.formPage);
     WebElement input = driver.findElement(By.id("age"));
