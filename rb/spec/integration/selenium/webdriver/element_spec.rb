@@ -40,6 +40,13 @@ describe "Element" do
     end
   end
 
+  compliant_on :browser => [:firefox] do
+    it "should not raise if element is only partially covered" do
+      driver.navigate.to url_for("click_tests/overlapping_elements.html")
+      expect { driver.find_element(:id, "other_contents").click }.not_to raise_error
+    end
+  end
+
   # Marionette BUG - AutomatedTester: "known bug with execute script"
   not_compliant_on :browser => :marionette do
     it "should submit" do
