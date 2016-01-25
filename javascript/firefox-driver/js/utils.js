@@ -653,19 +653,24 @@ Utils.getClickablePoint = function(element) {
   element = element.wrappedJSObject ? element.wrappedJSObject : element;
   var rect = bot.dom.getClientRect(element);
 
-  if (element.getClientRects().length > 1) {
-    for (var i = 0; i < element.getClientRects().length; i++) {
-      var candidate = element.getClientRects()[i];
-      if (candidate.width != 0 && candidate.height != 0) {
-        return findClickablePointOrMiddle(candidate);
+  var rects = goog.array.filter(element.getClientRects(), function(r) {
+    return r.width !=0 && r.height != 0;
+  });
+
+  if (rects.length > 0) {
+    for (var i = 0; i < rects.length; i++) {
+      var candidate = rects[i];
+      if (clickable_point = findClickablePoint(candidate)){
+        return clickable_point;
       }
     }
+    rect = rects[0];
   }
 
-  // Fallback to the main rect
-  return findClickablePointOrMiddle(rect);
+  // Fallback to the main rect - expected to return a point so if no clickable point return middle
+  return findClickablePoint(rect) || { x: Math.floor(rect.width/2), y: Math.floor(rect.height/2) };
 
-  function findClickablePointOrMiddle(rect){
+  function findClickablePoint(rect){
     var offsets = [
       { x: Math.floor(rect.width/2), y: Math.floor(rect.height/2) },
       { x: 0, y: 0 },
@@ -674,12 +679,9 @@ Utils.getClickablePoint = function(element) {
       { x: rect.width, y: rect.height}
     ]
 
-    var clickable_offset = goog.array.find(offsets, function(offset){
+    return goog.array.find(offsets, function(offset){
       return isClickableAt( { x: rect.left + offset.x, y: rect.top + offset.y } );
     })
-
-    //This method is expected to reutrn a location - if none are clickable return middle
-    return (clickable_offset || offsets[0]);
   }
 
   function isClickableAt(coord) {
