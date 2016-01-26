@@ -34,6 +34,8 @@ class ExtensionConnection(RemoteConnection):
         self.profile = firefox_profile
         self.binary = firefox_binary
         HOST = host
+        timeout = int(timeout)
+
         if self.binary is None:
             self.binary = FirefoxBinary()
 
@@ -46,7 +48,7 @@ class ExtensionConnection(RemoteConnection):
         
         self.profile.add_extension()
 
-        self.binary.launch_browser(self.profile)
+        self.binary.launch_browser(self.profile, timeout=timeout)
         _URL = "http://%s:%d/hub" % (HOST, PORT)
         RemoteConnection.__init__(
             self, _URL, keep_alive=True)

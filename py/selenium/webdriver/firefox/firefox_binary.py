@@ -58,14 +58,14 @@ class FirefoxBinary(object):
     def add_command_line_options(self, *args):
         self.command_line = args
 
-    def launch_browser(self, profile):
+    def launch_browser(self, profile, timeout=30):
         """Launches the browser for the given profile name.
         It is assumed the profile already exists.
         """
         self.profile = profile
 
         self._start_from_profile_path(self.profile.path)
-        self._wait_until_connectable()
+        self._wait_until_connectable(timeout=timeout)
 
     def kill(self):
         """Kill the browser.
@@ -89,7 +89,7 @@ class FirefoxBinary(object):
             command, stdout=self._log_file, stderr=STDOUT,
             env=self._firefox_env)
 
-    def _wait_until_connectable(self):
+    def _wait_until_connectable(self, timeout=30):
         """Blocks until the extension is connectable in the firefox."""
         count = 0
         while not utils.is_connectable(self.profile.port):
@@ -98,7 +98,7 @@ class FirefoxBinary(object):
                 raise WebDriverException("The browser appears to have exited "
                       "before we could connect. If you specified a log_file in "
                       "the FirefoxBinary constructor, check it for details.")
-            if count == 30:
+            if count >= timeout:
                 self.kill()
                 raise WebDriverException("Can't load the profile. Profile "
                       "Dir: %s If you specified a log_file in the "
