@@ -70,7 +70,7 @@ namespace System.IO.Compression
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether file names and comments should be encoded using UTF-8.
+        /// Gets a value indicating whether file names and comments should be encoded using UTF-8.
         /// </summary>
         public bool EncodeUtf8
         {
@@ -78,7 +78,7 @@ namespace System.IO.Compression
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether to force using the deflate algorithm,
+        /// Gets a value indicating whether to force using the deflate algorithm,
         /// even if doing so inflates the stored file.
         /// </summary>
         public bool ForceDeflating
