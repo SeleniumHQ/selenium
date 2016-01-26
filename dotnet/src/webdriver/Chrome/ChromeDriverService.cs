@@ -30,7 +30,7 @@ namespace OpenQA.Selenium.Chrome
     /// </summary>
     public sealed class ChromeDriverService : DriverService
     {
-        private const string ChromeDriverServiceFileName = "chromedriver.exe";
+        private static readonly string ChromeDriverServiceFileName;
         private static readonly Uri ChromeDriverDownloadUrl = new Uri("http://chromedriver.storage.googleapis.com/index.html");
         private string logPath = string.Empty;
         private string urlPathPrefix = string.Empty;
@@ -38,6 +38,28 @@ namespace OpenQA.Selenium.Chrome
         private string whitelistedIpAddresses = string.Empty;
         private int adbPort = -1;
         private bool enableVerboseLogging;
+
+        static ChromeDriverService()
+        {
+            // Unfortunately, detecting the currently running platform isn't as straightforward as you might hope.
+            // See:
+            //     http://mono.wikia.com/wiki/Detecting_the_execution_platform
+            //     and
+            //     https://msdn.microsoft.com/en-us/library/3a8hyw88(v=vs.110).aspx
+            int p = (int)Environment.OSVersion.Platform;
+            if (p >= 0 && p <= 3) {
+                // Running on windows
+                ChromeDriverServiceFileName = "chromedriver.exe";
+            }
+            else if (p == 4 || p == 6 || p == 128) {
+                // Running on unix/linux/osx
+                ChromeDriverServiceFileName = "chromedriver";
+            }
+            else {
+                // Running on unsupported platform
+                throw new Exception("Unsupported platform");
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ChromeDriverService"/> class.
