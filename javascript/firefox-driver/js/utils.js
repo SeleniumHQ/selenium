@@ -684,37 +684,10 @@ Utils.getClickablePoint = function(element) {
   var rect = bot.dom.getClientRect(element);
 
   var rects = goog.array.filter(element.getClientRects(), function(r) {
-    return r.width !=0 && r.height != 0;
+    return r.width != 0 && r.height != 0;
   });
 
-  if (rects.length > 0) {
-    for (var i = 0; i < rects.length; i++) {
-      var candidate = rects[i];
-      if (clickable_point = findClickablePoint(candidate)){
-        return clickable_point;
-      }
-    }
-    rect = rects[0];
-  }
-
-  // Fallback to the main rect - expected to return a point so if no clickable point return middle
-  return findClickablePoint(rect) || { x: Math.floor(rect.width/2), y: Math.floor(rect.height/2) };
-
-  function findClickablePoint(rect){
-    var offsets = [
-      { x: Math.floor(rect.width/2), y: Math.floor(rect.height/2) },
-      { x: 0, y: 0 },
-      { x: rect.width, y: 0 },
-      { x: 0,  y: rect.height },
-      { x: rect.width, y: rect.height}
-    ]
-
-    return goog.array.find(offsets, function(offset){
-      return isClickableAt( { x: rect.left + offset.x, y: rect.top + offset.y } );
-    })
-  }
-
-  function isClickableAt(coord) {
+  var isClickableAt = function(coord) {
     // get the outermost ancestor of the element. This will be either the document
     // or a shadow root.
     var owner = element;
@@ -741,7 +714,49 @@ Utils.getClickablePoint = function(element) {
       }
       parentElemIter = parentElemIter.parentNode;
     }
+  };
+
+  var rectPointRelativeToView = function(x, y, r) {
+    return { x: r.left + x, y: r.top + y }
+  };
+
+  var rectPointRelativeToMainRect = function(x, y, r) {
+    return { x: r.left - rect.left + x, y: r.top - rect.top + y }
+  };
+
+  var findClickablePoint = function(r) {
+    var offsets = [
+      { x: Math.floor(r.width / 2), y: Math.floor(r.height / 2) },
+      { x: 0, y: 0 },
+      { x: r.width, y: 0 },
+      { x: 0,  y: r.height },
+      { x: r.width, y: r.height}
+    ]
+
+    return goog.array.find(offsets, function(offset){
+      return isClickableAt(rectPointRelativeToView(offset.x, offset.y, r));
+    })
+  };
+
+  if (rects.length > 1) {
+    goog.log.warning(Utils.LOG_, 'Multirect element ', rects.length);
+    for (var i = 0; i < rects.length; i++) {
+      var p = findClickablePoint(rects[i]);
+      if (p){
+        goog.log.warning(Utils.LOG_, 'Found clickable point in rect ' + rects[i]);
+        return rectPointRelativeToMainRect(p.x, p.y, rects[i]);
+      }
+    }
   }
+
+  // Fallback to the main rect
+  var p = findClickablePoint(rect);
+  if (p) {
+    return p;
+  }
+
+  // Expected to return a point so if there is no clickable point return middle
+  return { x: Math.floor(rect.width / 2), y: Math.floor(rect.height / 2) };
 };
 
 
