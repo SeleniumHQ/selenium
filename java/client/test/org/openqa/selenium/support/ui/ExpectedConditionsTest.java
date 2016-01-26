@@ -30,10 +30,17 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.attributeContain
 import static org.openqa.selenium.support.ui.ExpectedConditions.attributeIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.attributeNotEmpty;
 import static org.openqa.selenium.support.ui.ExpectedConditions.elementSelectionStateToBe;
+import static org.openqa.selenium.support.ui.ExpectedConditions.invisibilityOfAllElements;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
+import static org.openqa.selenium.support.ui.ExpectedConditions.numberOfElements;
+import static org.openqa.selenium.support.ui.ExpectedConditions.numberOfElementsIsLessThan;
+import static org.openqa.selenium.support.ui.ExpectedConditions.numberOfElementsIsMoreThan;
 import static org.openqa.selenium.support.ui.ExpectedConditions.numberOfWindowsToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.or;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfNestedElementLocatedBy;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfNestedElementsLocatedBy;
 import static org.openqa.selenium.support.ui.ExpectedConditions.textIs;
+import static org.openqa.selenium.support.ui.ExpectedConditions.textMatches;
 import static org.openqa.selenium.support.ui.ExpectedConditions.textToBePresentInElement;
 import static org.openqa.selenium.support.ui.ExpectedConditions.textToBePresentInElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.urlContains;
@@ -42,6 +49,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.urlToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElements;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfNestedElementsLocatedBy;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -60,9 +68,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 /**
  * Tests for {@link ExpectedConditions}.
@@ -71,11 +81,18 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("unchecked")
 public class ExpectedConditionsTest {
 
-  @Mock private WebDriver mockDriver;
-  @Mock private WebElement mockElement;
-  @Mock private Clock mockClock;
-  @Mock private Sleeper mockSleeper;
-  @Mock private GenericCondition mockCondition;
+  @Mock
+  private WebDriver mockDriver;
+  @Mock
+  private WebElement mockElement;
+  @Mock
+  private WebElement mockNestedElement;
+  @Mock
+  private Clock mockClock;
+  @Mock
+  private Sleeper mockSleeper;
+  @Mock
+  private GenericCondition mockCondition;
 
   private FluentWait<WebDriver> wait;
 
@@ -84,8 +101,8 @@ public class ExpectedConditionsTest {
     MockitoAnnotations.initMocks(this);
 
     wait = new FluentWait<WebDriver>(mockDriver, mockClock, mockSleeper)
-        .withTimeout(1, TimeUnit.SECONDS)
-        .pollingEvery(250, TimeUnit.MILLISECONDS);
+      .withTimeout(1, TimeUnit.SECONDS)
+      .pollingEvery(250, TimeUnit.MILLISECONDS);
   }
 
   @Test
@@ -168,7 +185,7 @@ public class ExpectedConditionsTest {
 
   @Test
   public void waitingForVisibilityOfElement_elementNeverBecomesVisible()
-      throws InterruptedException {
+    throws InterruptedException {
     when(mockClock.laterBy(1000L)).thenReturn(3000L);
     when(mockClock.isNowBefore(3000L)).thenReturn(true, false);
     when(mockElement.isDisplayed()).thenReturn(false, false);
@@ -202,7 +219,7 @@ public class ExpectedConditionsTest {
 
   @Test
   public void waitingForVisibilityOfElementInverse_elementStaysVisible()
-      throws InterruptedException {
+    throws InterruptedException {
     when(mockClock.laterBy(1000L)).thenReturn(3000L);
     when(mockClock.isNowBefore(3000L)).thenReturn(true, false);
     when(mockElement.isDisplayed()).thenReturn(true, true);
@@ -286,7 +303,7 @@ public class ExpectedConditionsTest {
     when(mockElement.isDisplayed()).thenReturn(true);
 
     List<WebElement> returnedElements =
-        wait.until(visibilityOfAllElementsLocatedBy(By.cssSelector(testSelector)));
+      wait.until(visibilityOfAllElementsLocatedBy(By.cssSelector(testSelector)));
     assertEquals(webElements, returnedElements);
   }
 
@@ -386,7 +403,7 @@ public class ExpectedConditionsTest {
     when(mockElement.getText()).thenReturn("testText");
 
     assertTrue(
-        wait.until(textToBePresentInElementLocated(By.cssSelector(testSelector), "testText")));
+      wait.until(textToBePresentInElementLocated(By.cssSelector(testSelector), "testText")));
   }
 
   @Test
@@ -663,19 +680,131 @@ public class ExpectedConditionsTest {
                               attributeIs(mockElement, attributeName, attributeName))));
   }
 
-/*
-textMatches
-numberOfElementsIsMoreThan
-numberOfElementsIsLessThan
-numberOfElements
-visibilityOfNestedElementsLocatedBy(WebElement and By)
-presenceOfNestedElementLocatedBy(WebElement and By)
-presenceOfNestedElementsLocatedBy
-invisibilityOfAllElements
-jsReturnsNoErrors
-jsReturnsValue
-* */
+  @Test
+  public void waitingForTextMatchingPatternWhenTextExists() {
+    String testSelector = "testSelector";
+    when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
+    when(mockElement.getText()).thenReturn("123");
+    assertTrue(wait.until(textMatches(By.cssSelector(testSelector), Pattern.compile("\\d"))));
+  }
 
+  @Test(expected = TimeoutException.class)
+  public void waitingForTextMatchingPatternWhenTextDoesntExist() {
+    String testSelector = "testSelector";
+    when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
+    when(mockElement.getText()).thenReturn("test");
+    wait.until(textMatches(By.cssSelector(testSelector), Pattern.compile("\\d")));
+  }
+
+  @Test(expected = TimeoutException.class)
+  public void waitingForSpecificNumberOfElementsMoreThanSpecifiedWhenNumberIsEqual() {
+    String testSelector = "testSelector";
+    when(mockDriver.findElements(By.cssSelector(testSelector)))
+      .thenReturn(Arrays.asList(mockElement));
+    wait.until(numberOfElementsIsMoreThan(By.cssSelector(testSelector), 1));
+  }
+
+  @Test
+  public void waitingForSpecificNumberOfElementsMoreThanSpecifiedPositive() {
+    String testSelector = "testSelector";
+    when(mockDriver.findElements(By.cssSelector(testSelector)))
+      .thenReturn(Arrays.asList(mockElement, mockElement));
+    assertTrue(wait.until(numberOfElementsIsMoreThan(By.cssSelector(testSelector), 1)));
+  }
+
+  @Test(expected = TimeoutException.class)
+  public void waitingForSpecificNumberOfElementsLessThanSpecifiedWhenNumberIsEqual() {
+    String testSelector = "testSelector";
+    when(mockDriver.findElements(By.cssSelector(testSelector)))
+      .thenReturn(Arrays.asList(mockElement, mockElement));
+    wait.until(numberOfElementsIsLessThan(By.cssSelector(testSelector), 2));
+  }
+
+  @Test
+  public void waitingForSpecificNumberOfElementsLessThanSpecifiedPositive() {
+    String testSelector = "testSelector";
+    when(mockDriver.findElements(By.cssSelector(testSelector)))
+      .thenReturn(Arrays.asList(mockElement));
+    assertTrue(wait.until(numberOfElementsIsLessThan(By.cssSelector(testSelector), 2)));
+  }
+
+  @Test
+  public void waitingForSpecificNumberOfElementsPositive() {
+    String testSelector = "testSelector";
+    when(mockDriver.findElements(By.cssSelector(testSelector)))
+      .thenReturn(Arrays.asList(mockElement, mockElement));
+    assertTrue(wait.until(numberOfElements(By.cssSelector(testSelector), 2)));
+  }
+
+  @Test(expected = TimeoutException.class)
+  public void waitingForSpecificNumberOfElementsWhenNumberIsLess() {
+    String testSelector = "testSelector";
+    when(mockDriver.findElements(By.cssSelector(testSelector)))
+      .thenReturn(Arrays.asList(mockElement));
+    wait.until(numberOfElements(By.cssSelector(testSelector), 2));
+  }
+
+  @Test
+  public void waitingForVisibilityOfNestedElementWhenElementIsVisible() {
+    String testSelector = "testSelector";
+    when(mockElement.findElements(By.cssSelector(testSelector)))
+      .thenReturn(Arrays.asList(mockNestedElement));
+    when(mockElement.findElement(By.cssSelector(testSelector))).thenReturn(mockNestedElement);
+    wait.until(visibilityOfNestedElementsLocatedBy(mockElement, By.cssSelector(testSelector)));
+  }
+
+  @Test
+  public void waitingForPresenseOfNestedElementWhenElementPresents() {
+    String testSelector = "testSelector";
+    when(mockElement.findElement(By.cssSelector(testSelector))).thenReturn(mockNestedElement);
+    wait.until(presenceOfNestedElementLocatedBy(mockElement, By.cssSelector(testSelector)));
+  }
+
+  @Test
+  public void waitingForVisibilityOfNestedElementByLocatorWhenElementIsVisible() {
+    String testSelector = "testSelector";
+    String testNestedSelector = "testNestedSelector";
+    when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
+    when(mockElement.findElements(By.cssSelector(testNestedSelector)))
+      .thenReturn(Arrays.asList(mockNestedElement));
+    when(mockElement.findElement(By.cssSelector(testNestedSelector))).thenReturn(mockNestedElement);
+    wait.until(visibilityOfNestedElementsLocatedBy(By.cssSelector(testSelector),
+                                                   By.cssSelector(testNestedSelector)));
+  }
+
+  @Test
+  public void waitingForPresenseOfNestedElementByLocatorWhenElementPresents() {
+    String testSelector = "testSelector";
+    String testNestedSelector = "testNestedSelector";
+    when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
+    when(mockElement.findElement(By.cssSelector(testNestedSelector))).thenReturn(mockNestedElement);
+    wait.until(presenceOfNestedElementLocatedBy(By.cssSelector(testSelector),
+                                                By.cssSelector(testNestedSelector)));
+  }
+
+  @Test
+  public void waitingForPresenseOfNestedElementsWhenElementsPresent() {
+    String testSelector = "testSelector";
+    String testNestedSelector = "testNestedSelector";
+    when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
+    when(mockElement.findElement(By.cssSelector(testSelector))).thenReturn(mockNestedElement);
+    when(mockElement.findElements(By.cssSelector(testSelector)))
+      .thenReturn(Arrays.asList(mockNestedElement));
+    wait.until(presenceOfNestedElementsLocatedBy(By.cssSelector(testSelector),
+                                                 By.cssSelector(testNestedSelector)));
+  }
+
+  @Test
+  public void waitingForAllElementsInvisibility() {
+    when(mockElement.isDisplayed()).thenReturn(false);
+    assertTrue(wait.until(invisibilityOfAllElements(Arrays.asList(mockElement))));
+  }
+
+  @Test(expected = TimeoutException.class)
+  public void waitingForAllElementsInvisibilityWhenElementsAreVisible() {
+    when(mockElement.isDisplayed()).thenReturn(true);
+    wait.until(invisibilityOfAllElements(Arrays.asList(mockElement)));
+  }
 
   @Test(expected = TimeoutException.class)
   public void waitingForTextToBePresentInElementLocatedThrowsTimeoutExceptionWhenTextNotPresent() {
@@ -699,7 +828,7 @@ jsReturnsValue
   public void waitingTextToBePresentInElementLocatedThrowsTimeoutExceptionWhenNoElementFound() {
     String testSelector = "testSelector";
     when(mockDriver.findElement(By.cssSelector(testSelector))).thenThrow(
-        new NoSuchElementException("Element not found"));
+      new NoSuchElementException("Element not found"));
 
     wait.until(textToBePresentInElementLocated(By.cssSelector(testSelector), "testText"));
   }
@@ -759,5 +888,7 @@ jsReturnsValue
     // then TimeoutException is thrown
   }
 
-  interface GenericCondition extends ExpectedCondition<Object> {}
+  interface GenericCondition extends ExpectedCondition<Object> {
+
+  }
 }
