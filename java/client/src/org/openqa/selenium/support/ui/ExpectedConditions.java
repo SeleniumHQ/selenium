@@ -1272,7 +1272,7 @@ public class ExpectedConditions {
    * @param sub_locator used to find child element. For example td By.xpath("./tr/td")
    * @return visible subelement
    */
-  public static ExpectedCondition<WebElement> visibilityOfSubElementLocatedBy(
+  public static ExpectedCondition<WebElement> visibilityOfNestedElementsLocatedBy(
     final WebElement element, final By sub_locator) {
     return new ExpectedCondition<WebElement>() {
 
@@ -1305,7 +1305,7 @@ public class ExpectedConditions {
    * @param sub_locator used to find child element. For example td By.xpath("./tr/td")
    * @return subelement
    */
-  public static ExpectedCondition<WebElement> presenceOfSubElementLocatedBy(final By locator,
+  public static ExpectedCondition<WebElement> presenceOfNestedElementLocatedBy(final By locator,
                                                                             final By sub_locator) {
     return new ExpectedCondition<WebElement>() {
 
@@ -1332,7 +1332,7 @@ public class ExpectedConditions {
    * @param sub_locator used to find child element. For example td By.xpath("./tr/td")
    * @return subelement
    */
-  public static ExpectedCondition<WebElement> presenceOfSubElementLocatedBy(
+  public static ExpectedCondition<WebElement> presenceOfNestedElementLocatedBy(
     final WebElement element, final By sub_locator) {
     return new ExpectedCondition<WebElement>() {
 
@@ -1360,7 +1360,7 @@ public class ExpectedConditions {
    * @param sub_locator used to find child element. For example td By.xpath("./tr/td")
    * @return subelement
    */
-  public static ExpectedCondition<List<WebElement>> presenceOfSubElementsLocatedBy(
+  public static ExpectedCondition<List<WebElement>> presenceOfNestedElementsLocatedBy(
     final By locator, final By sub_locator) {
     return new ExpectedCondition<List<WebElement>>() {
 

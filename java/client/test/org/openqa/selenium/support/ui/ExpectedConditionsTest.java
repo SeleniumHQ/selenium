@@ -25,9 +25,16 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
+import static org.openqa.selenium.support.ui.ExpectedConditions.and;
+import static org.openqa.selenium.support.ui.ExpectedConditions.attributeContains;
+import static org.openqa.selenium.support.ui.ExpectedConditions.attributeIs;
+import static org.openqa.selenium.support.ui.ExpectedConditions.attributeNotEmpty;
 import static org.openqa.selenium.support.ui.ExpectedConditions.elementSelectionStateToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.numberOfWindowsToBe;
+import static org.openqa.selenium.support.ui.ExpectedConditions.or;
+import static org.openqa.selenium.support.ui.ExpectedConditions.textIs;
+import static org.openqa.selenium.support.ui.ExpectedConditions.textToBePresentInElement;
 import static org.openqa.selenium.support.ui.ExpectedConditions.textToBePresentInElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.urlContains;
 import static org.openqa.selenium.support.ui.ExpectedConditions.urlMatches;
@@ -390,6 +397,285 @@ public class ExpectedConditionsTest {
 
     assertTrue(wait.until(textToBePresentInElementLocated(By.cssSelector(testSelector), "test")));
   }
+
+  @Test
+  public void waitingForHtmlAttributeToBeEqualForElementLocatedReturnsTrueWhenAttributeIsEqualToSaidText() {
+    String testSelector = "testSelector";
+    String attributeName = "attributeName";
+    String attributeValue = "attributeValue";
+    when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
+    when(mockElement.getAttribute(attributeName)).thenReturn(attributeValue);
+    when(mockElement.getCssValue(attributeName)).thenReturn("");
+
+    assertTrue(
+      wait.until(attributeIs(By.cssSelector(testSelector), attributeName, attributeValue)));
+  }
+
+  @Test
+  public void waitingForCssAttributeToBeEqualForElementLocatedReturnsTrueWhenAttributeIsEqualToSaidText() {
+    String testSelector = "testSelector";
+    String attributeName = "attributeName";
+    String attributeValue = "attributeValue";
+    when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
+    when(mockElement.getAttribute(attributeName)).thenReturn("");
+    when(mockElement.getCssValue(attributeName)).thenReturn(attributeValue);
+
+    assertTrue(
+      wait.until(attributeIs(By.cssSelector(testSelector), attributeName, attributeValue)));
+  }
+
+  @Test(expected = TimeoutException.class)
+  public void waitingForCssAttributeToBeEqualForElementLocatedThrowsTimeoutExceptionWhenAttributeIsNotEqual() {
+    String testSelector = "testSelector";
+    String attributeName = "attributeName";
+    when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
+    when(mockElement.getAttribute(attributeName)).thenReturn("");
+    when(mockElement.getCssValue(attributeName)).thenReturn("");
+
+    wait.until(attributeIs(By.cssSelector(testSelector), attributeName, "test"));
+  }
+
+  @Test
+  public void waitingForHtmlAttributeToBeEqualForWebElementReturnsTrueWhenAttributeIsEqualToSaidText() {
+    String attributeName = "attributeName";
+    String attributeValue = "attributeValue";
+    when(mockElement.getAttribute(attributeName)).thenReturn(attributeValue);
+    when(mockElement.getCssValue(attributeName)).thenReturn("");
+
+    assertTrue(
+      wait.until(attributeIs(mockElement, attributeName, attributeValue)));
+  }
+
+  @Test
+  public void waitingForCssAttributeToBeEqualForWebElementReturnsTrueWhenAttributeIsEqualToSaidText() {
+    String attributeName = "attributeName";
+    String attributeValue = "attributeValue";
+    when(mockElement.getAttribute(attributeName)).thenReturn("");
+    when(mockElement.getCssValue(attributeName)).thenReturn(attributeValue);
+
+    assertTrue(
+      wait.until(attributeIs(mockElement, attributeName, attributeValue)));
+  }
+
+  @Test(expected = TimeoutException.class)
+  public void waitingForCssAttributeToBeEqualForWebElementThrowsTimeoutExceptionWhenAttributeIsNotEqual() {
+    String attributeName = "attributeName";
+    when(mockElement.getAttribute(attributeName)).thenReturn("");
+    when(mockElement.getCssValue(attributeName)).thenReturn("");
+
+    wait.until(attributeIs(mockElement, attributeName, "test"));
+  }
+
+  @Test
+  public void waitingForHtmlAttributeToBeEqualForElementLocatedReturnsTrueWhenAttributeContainsEqualToSaidText() {
+    String testSelector = "testSelector";
+    String attributeName = "attributeName";
+    String attributeValue = "test attributeValue test";
+    when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
+    when(mockElement.getAttribute(attributeName)).thenReturn(attributeValue);
+    when(mockElement.getCssValue(attributeName)).thenReturn("");
+
+    assertTrue(
+      wait.until(attributeContains(By.cssSelector(testSelector), attributeName, "attributeValue")));
+  }
+
+  @Test
+  public void waitingForCssAttributeToBeEqualForElementLocatedReturnsTrueWhenAttributeContainsEqualToSaidText() {
+    String testSelector = "testSelector";
+    String attributeName = "attributeName";
+    String attributeValue = "test attributeValue test";
+    when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
+    when(mockElement.getAttribute(attributeName)).thenReturn("");
+    when(mockElement.getCssValue(attributeName)).thenReturn(attributeValue);
+
+    assertTrue(
+      wait.until(attributeContains(By.cssSelector(testSelector), attributeName, "attributeValue")));
+  }
+
+  @Test(expected = TimeoutException.class)
+  public void waitingForCssAttributeToBeEqualForElementLocatedThrowsTimeoutExceptionWhenAttributeContainsNotEqual() {
+    String testSelector = "testSelector";
+    String attributeName = "attributeName";
+    when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
+    when(mockElement.getAttribute(attributeName)).thenReturn("");
+    when(mockElement.getCssValue(attributeName)).thenReturn("");
+
+    wait.until(attributeContains(By.cssSelector(testSelector), attributeName, "test"));
+  }
+
+  @Test
+  public void waitingForHtmlAttributeToBeEqualForWebElementReturnsTrueWhenAttributeContainsEqualToSaidText() {
+    String attributeName = "attributeName";
+    String attributeValue = "test attributeValue test";
+    when(mockElement.getAttribute(attributeName)).thenReturn(attributeValue);
+    when(mockElement.getCssValue(attributeName)).thenReturn("");
+
+    assertTrue(
+      wait.until(attributeContains(mockElement, attributeName, "attributeValue")));
+  }
+
+  @Test
+  public void waitingForCssAttributeToBeEqualForWebElementReturnsTrueWhenAttributeContainsEqualToSaidText() {
+    String attributeName = "attributeName";
+    String attributeValue = "test attributeValue test";
+    when(mockElement.getAttribute(attributeName)).thenReturn("");
+    when(mockElement.getCssValue(attributeName)).thenReturn(attributeValue);
+
+    assertTrue(
+      wait.until(attributeContains(mockElement, attributeName, "attributeValue")));
+  }
+
+  @Test(expected = TimeoutException.class)
+  public void waitingForCssAttributeToBeEqualForWebElementThrowsTimeoutExceptionWhenAttributeContainsNotEqual() {
+    String attributeName = "attributeName";
+    when(mockElement.getAttribute(attributeName)).thenReturn("");
+    when(mockElement.getCssValue(attributeName)).thenReturn("");
+
+    wait.until(attributeContains(mockElement, attributeName, "test"));
+  }
+
+  @Test
+  public void waitingForTextToBeEqualForElementLocatedReturnsTrueWhenTextIsEqualToSaidText() {
+    String testSelector = "testSelector";
+    String testText = "test text";
+    when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
+    when(mockElement.getText()).thenReturn(testText);
+
+    assertTrue(
+      wait.until(textIs(By.cssSelector(testSelector), testText)));
+  }
+
+  @Test
+  public void waitingForAttributeToBeNotEmptyForElementLocatedReturnsTrueWhenAttributeIsNotEmptyCss() {
+    String attributeName = "test";
+    when(mockElement.getAttribute(attributeName)).thenReturn("");
+    when(mockElement.getCssValue(attributeName)).thenReturn("test1");
+
+    assertTrue(wait.until(attributeNotEmpty(mockElement, attributeName)));
+  }
+
+  @Test
+  public void waitingForAttributeToBeNotEmptyForElementLocatedReturnsTrueWhenAttributeIsNotEmptyHtml() {
+    String attributeName = "test";
+    when(mockElement.getAttribute(attributeName)).thenReturn("test1");
+    when(mockElement.getCssValue(attributeName)).thenReturn("");
+
+    assertTrue(wait.until(attributeNotEmpty(mockElement, attributeName)));
+  }
+
+  @Test(expected = TimeoutException.class)
+  public void waitingForTextToBeEqualForElementLocatedThrowsTimeoutExceptionWhenTextIsNotEqual() {
+    String testSelector = "testSelector";
+    when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
+    when(mockElement.getText()).thenReturn("");
+    wait.until(textIs(By.cssSelector(testSelector), "test"));
+  }
+
+  @Test(expected = TimeoutException.class)
+  public void waitingForAttributetToBeNotEmptyForElementLocatedThrowsTimeoutExceptionWhenAttributeIsEmpty() {
+    String attributeName = "test";
+    when(mockElement.getAttribute(attributeName)).thenReturn("");
+    when(mockElement.getCssValue(attributeName)).thenReturn("");
+    wait.until(attributeNotEmpty(mockElement, attributeName));
+  }
+
+  @Test(expected = TimeoutException.class)
+  public void waitingForOneOfExpectedConditionsToHavePositiveResultWhenAllFailed() {
+    String attributeName = "test";
+    when(mockElement.getText()).thenReturn("");
+    when(mockElement.getCssValue(attributeName)).thenReturn("");
+    when(mockElement.getAttribute(attributeName)).thenReturn("");
+    wait.until(or(textToBePresentInElement(mockElement, "test"),
+                  attributeIs(mockElement, attributeName, "test")));
+  }
+
+  @Test
+  public void waitForOneOfExpectedConditionsToHavePositiveResultWhenFirstPositive() {
+    String attributeName = "test";
+    when(mockElement.getAttribute(attributeName)).thenReturn(attributeName);
+    when(mockElement.getCssValue(attributeName)).thenReturn(attributeName);
+    when(mockElement.getText()).thenReturn("");
+
+    assertTrue(wait.until(or(attributeIs(mockElement, attributeName, attributeName),
+                             textToBePresentInElement(mockElement, attributeName))));
+  }
+
+  @Test
+  public void waitForOneOfExpectedConditionsToHavePositiveResultWhenAllPositive() {
+    String attributeName = "test";
+    when(mockElement.getAttribute(attributeName)).thenReturn(attributeName);
+    when(mockElement.getCssValue(attributeName)).thenReturn(attributeName);
+    when(mockElement.getText()).thenReturn(attributeName);
+
+    assertTrue(wait.until(or(attributeIs(mockElement, attributeName, attributeName),
+                             textToBePresentInElement(mockElement, attributeName))));
+  }
+
+  @Test
+  public void waitForOneOfExpectedConditionsToHavePositiveResultWhenSecondPositive() {
+    String attributeName = "test";
+    when(mockElement.getAttribute(attributeName)).thenReturn(attributeName);
+    when(mockElement.getCssValue(attributeName)).thenReturn(attributeName);
+    when(mockElement.getText()).thenReturn("");
+
+    assertTrue(wait.until(or(textToBePresentInElement(mockElement, attributeName),
+                             attributeIs(mockElement, attributeName, attributeName))));
+  }
+
+
+  @Test(expected = TimeoutException.class)
+  public void waitingForAllExpectedConditionsToHavePositiveResultWhenAllFailed() {
+    String attributeName = "test";
+    when(mockElement.getText()).thenReturn("");
+    when(mockElement.getCssValue(attributeName)).thenReturn("");
+    when(mockElement.getAttribute(attributeName)).thenReturn("");
+    wait.until(and(textToBePresentInElement(mockElement, "test"),
+                   attributeIs(mockElement, attributeName, "test")));
+  }
+
+  @Test(expected = TimeoutException.class)
+  public void waitingForAllExpectedConditionsToHavePositiveResultWhenFirstFailed() {
+    String attributeName = "test";
+    when(mockElement.getText()).thenReturn("");
+    when(mockElement.getCssValue(attributeName)).thenReturn(attributeName);
+    when(mockElement.getAttribute(attributeName)).thenReturn(attributeName);
+    wait.until(and(textToBePresentInElement(mockElement, "test"),
+                   attributeIs(mockElement, attributeName, attributeName)));
+  }
+
+  @Test(expected = TimeoutException.class)
+  public void waitingForAllExpectedConditionsToHavePositiveResultWhenSecondFailed() {
+    String attributeName = "test";
+    when(mockElement.getText()).thenReturn(attributeName);
+    when(mockElement.getCssValue(attributeName)).thenReturn("");
+    when(mockElement.getAttribute(attributeName)).thenReturn("");
+    wait.until(and(textToBePresentInElement(mockElement, attributeName),
+                   attributeIs(mockElement, attributeName, attributeName)));
+  }
+
+  @Test
+  public void waitingForAllExpectedConditionsToHavePositiveResultWhenAllPositive() {
+    String attributeName = "test";
+    when(mockElement.getText()).thenReturn(attributeName);
+    when(mockElement.getCssValue(attributeName)).thenReturn(attributeName);
+    when(mockElement.getAttribute(attributeName)).thenReturn(attributeName);
+    assertTrue(wait.until(and(textToBePresentInElement(mockElement, attributeName),
+                              attributeIs(mockElement, attributeName, attributeName))));
+  }
+
+/*
+textMatches
+numberOfElementsIsMoreThan
+numberOfElementsIsLessThan
+numberOfElements
+visibilityOfNestedElementsLocatedBy(WebElement and By)
+presenceOfNestedElementLocatedBy(WebElement and By)
+presenceOfNestedElementsLocatedBy
+invisibilityOfAllElements
+jsReturnsNoErrors
+jsReturnsValue
+* */
+
 
   @Test(expected = TimeoutException.class)
   public void waitingForTextToBePresentInElementLocatedThrowsTimeoutExceptionWhenTextNotPresent() {
