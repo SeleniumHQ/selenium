@@ -167,9 +167,10 @@ Utils.initWebLoadingListener = function(respond, opt_window) {
   }, respond.session.getPageLoadTimeout(), window);
 };
 
-Utils.type = function(doc, element, text, jsTimer, releaseModifiers,
+Utils.type = function(session, element, text, jsTimer, releaseModifiers,
     opt_keysState) {
 
+  var doc = session.getDocument();
   // For consistency between native and synthesized events, convert common
   // escape sequences to their Key enum aliases.
   text = text.replace(/[\b]/g, '\uE003').   // DOM_VK_BACK_SPACE
@@ -200,25 +201,25 @@ Utils.type = function(doc, element, text, jsTimer, releaseModifiers,
     if (c == '\uE000') {
       if (controlKey) {
         var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
-        Utils.keyEvent(doc, element, 'keyup', kCode, 0,
+        Utils.keyEvent(session, element, 'keyup', kCode, 0,
                        controlKey = false, shiftKey, altKey, metaKey);
       }
 
       if (shiftKey) {
         var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
-        Utils.keyEvent(doc, element, 'keyup', kCode, 0,
+        Utils.keyEvent(session, element, 'keyup', kCode, 0,
                        controlKey, shiftKey = false, altKey, metaKey);
       }
 
       if (altKey) {
         var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
-        Utils.keyEvent(doc, element, 'keyup', kCode, 0,
+        Utils.keyEvent(session, element, 'keyup', kCode, 0,
                        controlKey, shiftKey, altKey = false, metaKey);
       }
 
       if (metaKey) {
         var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_META;
-        Utils.keyEvent(doc, element, 'keyup', kCode, 0,
+        Utils.keyEvent(session, element, 'keyup', kCode, 0,
                        controlKey, shiftKey, altKey, metaKey = false);
       }
 
@@ -428,7 +429,7 @@ Utils.type = function(doc, element, text, jsTimer, releaseModifiers,
     // generate modifier key event if needed, and continue
 
     if (modifierEvent) {
-      Utils.keyEvent(doc, element, modifierEvent, keyCode, 0,
+      Utils.keyEvent(session, element, modifierEvent, keyCode, 0,
                      controlKey, shiftKey, altKey, metaKey);
       continue;
     }
@@ -442,7 +443,7 @@ Utils.type = function(doc, element, text, jsTimer, releaseModifiers,
 
     if (needsShift && !shiftKey) {
       var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
-      Utils.keyEvent(doc, element, 'keydown', kCode, 0,
+      Utils.keyEvent(session, element, 'keydown', kCode, 0,
                      controlKey, true, altKey, metaKey);
       Utils.shiftCount += 1;
     }
@@ -473,22 +474,22 @@ Utils.type = function(doc, element, text, jsTimer, releaseModifiers,
     }
 
     var accepted =
-      Utils.keyEvent(doc, element, 'keydown', keyCode, 0,
+      Utils.keyEvent(session, element, 'keydown', keyCode, 0,
                      controlKey, needsShift || shiftKey, altKey, metaKey);
 
     if (accepted) {
-      Utils.keyEvent(doc, element, 'keypress', pressCode, charCode,
+      Utils.keyEvent(session, element, 'keypress', pressCode, charCode,
                      controlKey, needsShift || shiftKey, altKey, metaKey);
     }
 
-    Utils.keyEvent(doc, element, 'keyup', keyCode, 0,
+    Utils.keyEvent(session, element, 'keyup', keyCode, 0,
                    controlKey, needsShift || shiftKey, altKey, metaKey);
 
     // shift up if needed
 
     if (needsShift && !shiftKey) {
       var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
-      Utils.keyEvent(doc, element, 'keyup', kCode, 0,
+      Utils.keyEvent(session, element, 'keyup', kCode, 0,
                      controlKey, false, altKey, metaKey);
     }
   }
@@ -497,25 +498,25 @@ Utils.type = function(doc, element, text, jsTimer, releaseModifiers,
 
   if (controlKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
-    Utils.keyEvent(doc, element, 'keyup', kCode, 0,
+    Utils.keyEvent(session, element, 'keyup', kCode, 0,
                    controlKey = false, shiftKey, altKey, metaKey);
   }
 
   if (shiftKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
-    Utils.keyEvent(doc, element, 'keyup', kCode, 0,
+    Utils.keyEvent(session, element, 'keyup', kCode, 0,
                    controlKey, shiftKey = false, altKey, metaKey);
   }
 
   if (altKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
-    Utils.keyEvent(doc, element, 'keyup', kCode, 0,
+    Utils.keyEvent(session, element, 'keyup', kCode, 0,
                    controlKey, shiftKey, altKey = false, metaKey);
   }
 
   if (metaKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_META;
-    Utils.keyEvent(doc, element, 'keyup', kCode, 0,
+    Utils.keyEvent(session, element, 'keyup', kCode, 0,
                    controlKey, shiftKey, altKey, metaKey = false);
   }
 
@@ -528,8 +529,10 @@ Utils.type = function(doc, element, text, jsTimer, releaseModifiers,
 };
 
 
-Utils.keyEvent = function(doc, element, type, keyCode, charCode,
+Utils.keyEvent = function(session, element, type, keyCode, charCode,
                           controlState, shiftState, altState, metaState) {
+
+  var doc = session.getDocument();
   // Silently bail out if the element is no longer attached to the DOM.
   var isAttachedToDom = goog.dom.getAncestor(element, function(node) {
     return node === element.ownerDocument.documentElement;
@@ -539,7 +542,7 @@ Utils.keyEvent = function(doc, element, type, keyCode, charCode,
     return false;
   }
 
-  var windowUtils = doc.defaultView
+  var windowUtils = session.getChromeWindow()
       .QueryInterface(Components.interfaces.nsIInterfaceRequestor)
       .getInterface(Components.interfaces.nsIDOMWindowUtils);
 

@@ -1184,7 +1184,7 @@ FirefoxDriver.prototype.sendKeysToActiveElement = function(respond, parameters) 
     useElement = useElement.ownerDocument.getElementsByTagName('html')[0];
   }
 
-  Utils.type(respond.session.getDocument(), useElement, parameters.value.join(''),
+  Utils.type(respond.session, useElement, parameters.value.join(''),
     this.jsTimer, false /*release modifiers*/, this.modifierKeysState);
 
   respond.send();
