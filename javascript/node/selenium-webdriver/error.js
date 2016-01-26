@@ -531,7 +531,7 @@ function checkLegacyResponse(responseObj) {
   // Handle the legacy Selenium error response format.
   if (responseObj
       && typeof responseObj === 'object'
-      && responseObj['status'] === 'number'
+      && typeof responseObj['status'] === 'number'
       && responseObj['status'] !== 0) {
     let status = responseObj['status'];
     let ctor = LEGACY_ERROR_CODE_TO_CLASS.get(status) || WebDriverError;

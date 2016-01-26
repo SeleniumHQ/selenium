@@ -111,7 +111,9 @@ FirefoxDriver.prototype.get = function(respond, parameters) {
   try {
     loadEventExpected = fxdriver.io.isLoadExpected(current, url);
   } catch (e) {
-    var converted = e.QueryInterface(Components.interfaces['nsIException']);
+    goog.log.warning(FirefoxDriver.LOG_, e);
+    var converted = e.QueryInterface ?
+                    e.QueryInterface(Components.interfaces['nsIException']) : e;
     if ('NS_ERROR_MALFORMED_URI' == converted.name) {
       goog.log.warning(FirefoxDriver.LOG_, converted.name);
       respond.sendError(new WebDriverError(
@@ -1182,7 +1184,7 @@ FirefoxDriver.prototype.sendKeysToActiveElement = function(respond, parameters) 
     useElement = useElement.ownerDocument.getElementsByTagName('html')[0];
   }
 
-  Utils.type(respond.session.getDocument(), useElement, parameters.value.join(''),
+  Utils.type(respond.session, useElement, parameters.value.join(''),
     this.jsTimer, false /*release modifiers*/, this.modifierKeysState);
 
   respond.send();

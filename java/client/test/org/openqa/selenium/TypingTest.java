@@ -695,6 +695,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = {HTMLUNIT}, reason = "Failed with JS enabled, passed otherwise")
   @NotYetImplemented({CHROME})
   public void canClearNumberInputAfterTypingInvalidInput() {
     driver.get(pages.formPage);

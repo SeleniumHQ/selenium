@@ -21,9 +21,10 @@ var fs = require('fs'),
     util = require('util');
 
 var webdriver = require('./index'),
-    executors = require('./executors'),
     http = require('./http'),
     io = require('./io'),
+    command = require('./lib/command'),
+    logging = require('./lib/logging'),
     portprober = require('./net/portprober'),
     remote = require('./remote');
 
@@ -101,11 +102,11 @@ function findExecutable(opt_exe) {
  */
 var WEBDRIVER_TO_PHANTOMJS_LEVEL = (function() {
   var map = {};
-  map[webdriver.logging.Level.ALL.name] = 'DEBUG';
-  map[webdriver.logging.Level.DEBUG.name] = 'DEBUG';
-  map[webdriver.logging.Level.INFO.name] = 'INFO';
-  map[webdriver.logging.Level.WARNING.name] = 'WARN';
-  map[webdriver.logging.Level.SEVERE.name] = 'ERROR';
+  map[logging.Level.ALL.name] = 'DEBUG';
+  map[logging.Level.DEBUG.name] = 'DEBUG';
+  map[logging.Level.INFO.name] = 'INFO';
+  map[logging.Level.WARNING.name] = 'WARN';
+  map[logging.Level.SEVERE.name] = 'ERROR';
   return map;
 })();
 
@@ -113,10 +114,10 @@ var WEBDRIVER_TO_PHANTOMJS_LEVEL = (function() {
 /**
  * Creates a command executor with support for PhantomJS' custom commands.
  * @param {!webdriver.promise.Promise<string>} url The server's URL.
- * @return {!webdriver.CommandExecutor} The new command executor.
+ * @return {!command.Executor} The new command executor.
  */
 function createExecutor(url) {
-  return new executors.DeferredExecutor(url.then(function(url) {
+  return new command.DeferredExecutor(url.then(function(url) {
     var client = new http.HttpClient(url);
     var executor = new http.Executor(client);
 
@@ -143,13 +144,13 @@ var Driver = function(opt_capabilities, opt_flow) {
   var args = ['--webdriver-logfile=' + DEFAULT_LOG_FILE];
 
   var logPrefs = capabilities.get(webdriver.Capability.LOGGING_PREFS);
-  if (logPrefs instanceof webdriver.logging.Preferences) {
+  if (logPrefs instanceof logging.Preferences) {
     logPrefs = logPrefs.toJSON();
   }
 
   if (logPrefs && logPrefs[webdriver.logging.Type.DRIVER]) {
     var level = WEBDRIVER_TO_PHANTOMJS_LEVEL[
-        logPrefs[webdriver.logging.Type.DRIVER]];
+        logPrefs[logging.Type.DRIVER]];
     if (level) {
       args.push('--webdriver-loglevel=' + level);
     }
@@ -253,7 +254,7 @@ Driver.prototype.executePhantomJS = function(script, args) {
   var args = arguments.length > 1
       ? Array.prototype.slice.call(arguments, 1) : [];
   return this.schedule(
-      new webdriver.Command(Command.EXECUTE_PHANTOM_SCRIPT)
+      new command.Command(Command.EXECUTE_PHANTOM_SCRIPT)
           .setParameter('script', script)
           .setParameter('args', args),
       'Driver.executePhantomJS()');

@@ -118,9 +118,9 @@ var fs = require('fs'),
     util = require('util');
 
 var webdriver = require('./index'),
-    executors = require('./executors'),
     http = require('./http'),
     io = require('./io'),
+    command = require('./lib/command'),
     portprober = require('./net/portprober'),
     remote = require('./remote');
 
@@ -146,10 +146,10 @@ var Command = {
 /**
  * Creates a command executor with support for ChromeDriver's custom commands.
  * @param {!webdriver.promise.Promise<string>} url The server's URL.
- * @return {!webdriver.CommandExecutor} The new command executor.
+ * @return {!command.Executor} The new command executor.
  */
 function createExecutor(url) {
-  return new executors.DeferredExecutor(url.then(function(url) {
+  return new command.DeferredExecutor(url.then(function(url) {
     var client = new http.HttpClient(url);
     var executor = new http.Executor(client);
     executor.defineCommand(
@@ -387,7 +387,7 @@ var Options = function() {
   /** @private {!Array.<(string|!Buffer)>} */
   this.extensions_ = [];
 
-  /** @private {?webdriver.logging.Preferences} */
+  /** @private {?./lib/logging.Preferences} */
   this.logPrefs_ = null;
 
   /** @private {?webdriver.ProxyConfig} */
@@ -530,7 +530,7 @@ Options.prototype.setUserPreferences = function(prefs) {
 
 /**
  * Sets the logging preferences for the new session.
- * @param {!webdriver.logging.Preferences} prefs The logging preferences.
+ * @param {!./lib/logging.Preferences} prefs The logging preferences.
  * @return {!Options} A self reference.
  */
 Options.prototype.setLoggingPrefs = function(prefs) {
@@ -833,7 +833,7 @@ Driver.prototype.setFileDetector = function() {
  */
 Driver.prototype.launchApp = function(id) {
   return this.schedule(
-      new webdriver.Command(Command.LAUNCH_APP).setParameter('id', id),
+      new command.Command(Command.LAUNCH_APP).setParameter('id', id),
       'Driver.launchApp()');
 };
 

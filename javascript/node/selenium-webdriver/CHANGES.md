@@ -16,6 +16,16 @@ the selenium-webdriver package README.
 * Changed some `io` operations to use native promises.
 * Changed `webdriver.CommandExecutor#execute()` and `HttpClient` to return
     promises instead of using callback passing.
+* Changed the `webdriver.Serializable` class to an interface defined in the
+    `lib/serializable` module.
+* Changed the `Capabilities` class to extend the native `Map` type; Capabilities
+    implements Serializable to preseve existing functionality.
+* Changed the `Capabilities.has(key)` to only test if a capability has been set
+    (Map semantics); to check whether the value is true, use `get(key)`.
+* Migrated the `webdriver.Command*` types from using the Closure Library to the
+    new `lib/command` module.
+* Deprecated `executors.DeferredExecutor` in favor of
+    `lib/command.DeferredExecutor`.
 * API documentation is no longer distributed with the npm package, but remains
     available at <http://seleniumhq.github.io/selenium/docs/api/javascript/>
 * Rewrote the `error` module to export an Error subtype for each type of error
@@ -23,6 +33,9 @@ the selenium-webdriver package README.
     For the export types, the `code` property is now the string code used by
     the W3C spec and _not_ the numeric code used by the Selenium project's
     wire protocol.
+* Rewrote the `http` module to no longer user the Google Closure Library.
+* Changed the `http.Request` and `http.Response` classes to store headers in
+    maps instead of object literals.
 * Updated `ws` dependency to version `1.0.1`.
 
 ### Changes for W3C WebDriver Spec Compliance

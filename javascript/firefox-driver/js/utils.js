@@ -167,9 +167,10 @@ Utils.initWebLoadingListener = function(respond, opt_window) {
   }, respond.session.getPageLoadTimeout(), window);
 };
 
-Utils.type = function(doc, element, text, jsTimer, releaseModifiers,
+Utils.type = function(session, element, text, jsTimer, releaseModifiers,
     opt_keysState) {
 
+  var doc = session.getDocument();
   // For consistency between native and synthesized events, convert common
   // escape sequences to their Key enum aliases.
   text = text.replace(/[\b]/g, '\uE003').   // DOM_VK_BACK_SPACE
@@ -200,25 +201,25 @@ Utils.type = function(doc, element, text, jsTimer, releaseModifiers,
     if (c == '\uE000') {
       if (controlKey) {
         var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
-        Utils.keyEvent(doc, element, 'keyup', kCode, 0,
+        Utils.keyEvent(session, element, 'keyup', kCode, 0,
                        controlKey = false, shiftKey, altKey, metaKey);
       }
 
       if (shiftKey) {
         var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
-        Utils.keyEvent(doc, element, 'keyup', kCode, 0,
+        Utils.keyEvent(session, element, 'keyup', kCode, 0,
                        controlKey, shiftKey = false, altKey, metaKey);
       }
 
       if (altKey) {
         var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
-        Utils.keyEvent(doc, element, 'keyup', kCode, 0,
+        Utils.keyEvent(session, element, 'keyup', kCode, 0,
                        controlKey, shiftKey, altKey = false, metaKey);
       }
 
       if (metaKey) {
         var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_META;
-        Utils.keyEvent(doc, element, 'keyup', kCode, 0,
+        Utils.keyEvent(session, element, 'keyup', kCode, 0,
                        controlKey, shiftKey, altKey, metaKey = false);
       }
 
@@ -390,6 +391,36 @@ Utils.type = function(doc, element, text, jsTimer, releaseModifiers,
     } else if (c == '\'' || c == '"') {
       keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_QUOTE;
       charCode = c.charCodeAt(0);
+    } else if (c == '^') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CIRCUMFLEX;
+      charCode = c.charCodeAt(0);
+    } else if (c == '!') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_EXCLAMATION;
+      charCode = c.charCodeAt(0);
+    } else if (c == '#') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_HASH;
+      charCode = c.charCodeAt(0);
+    } else if (c == '$') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_DOLLAR;
+      charCode = c.charCodeAt(0);
+    } else if (c == '%') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_PERCENT;
+      charCode = c.charCodeAt(0);
+    } else if (c == '&') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_AMPERSAND;
+      charCode = c.charCodeAt(0);
+    } else if (c == '_') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_UNDERSCORE;
+      charCode = c.charCodeAt(0);
+    } else if (c == '-') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_HYPHEN_MINUS;
+      charCode = c.charCodeAt(0);
+    } else if (c == '(') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_OPEN_BRACKET;
+      charCode = c.charCodeAt(0);
+    } else if (c == ')') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CLOSE_BRACKET;
+      charCode = c.charCodeAt(0);
     } else {
       keyCode = upper.charCodeAt(i);
       charCode = text.charCodeAt(i);
@@ -398,7 +429,7 @@ Utils.type = function(doc, element, text, jsTimer, releaseModifiers,
     // generate modifier key event if needed, and continue
 
     if (modifierEvent) {
-      Utils.keyEvent(doc, element, modifierEvent, keyCode, 0,
+      Utils.keyEvent(session, element, modifierEvent, keyCode, 0,
                      controlKey, shiftKey, altKey, metaKey);
       continue;
     }
@@ -412,7 +443,7 @@ Utils.type = function(doc, element, text, jsTimer, releaseModifiers,
 
     if (needsShift && !shiftKey) {
       var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
-      Utils.keyEvent(doc, element, 'keydown', kCode, 0,
+      Utils.keyEvent(session, element, 'keydown', kCode, 0,
                      controlKey, true, altKey, metaKey);
       Utils.shiftCount += 1;
     }
@@ -443,22 +474,22 @@ Utils.type = function(doc, element, text, jsTimer, releaseModifiers,
     }
 
     var accepted =
-      Utils.keyEvent(doc, element, 'keydown', keyCode, 0,
+      Utils.keyEvent(session, element, 'keydown', keyCode, 0,
                      controlKey, needsShift || shiftKey, altKey, metaKey);
 
     if (accepted) {
-      Utils.keyEvent(doc, element, 'keypress', pressCode, charCode,
+      Utils.keyEvent(session, element, 'keypress', pressCode, charCode,
                      controlKey, needsShift || shiftKey, altKey, metaKey);
     }
 
-    Utils.keyEvent(doc, element, 'keyup', keyCode, 0,
+    Utils.keyEvent(session, element, 'keyup', keyCode, 0,
                    controlKey, needsShift || shiftKey, altKey, metaKey);
 
     // shift up if needed
 
     if (needsShift && !shiftKey) {
       var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
-      Utils.keyEvent(doc, element, 'keyup', kCode, 0,
+      Utils.keyEvent(session, element, 'keyup', kCode, 0,
                      controlKey, false, altKey, metaKey);
     }
   }
@@ -467,25 +498,25 @@ Utils.type = function(doc, element, text, jsTimer, releaseModifiers,
 
   if (controlKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
-    Utils.keyEvent(doc, element, 'keyup', kCode, 0,
+    Utils.keyEvent(session, element, 'keyup', kCode, 0,
                    controlKey = false, shiftKey, altKey, metaKey);
   }
 
   if (shiftKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
-    Utils.keyEvent(doc, element, 'keyup', kCode, 0,
+    Utils.keyEvent(session, element, 'keyup', kCode, 0,
                    controlKey, shiftKey = false, altKey, metaKey);
   }
 
   if (altKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
-    Utils.keyEvent(doc, element, 'keyup', kCode, 0,
+    Utils.keyEvent(session, element, 'keyup', kCode, 0,
                    controlKey, shiftKey, altKey = false, metaKey);
   }
 
   if (metaKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_META;
-    Utils.keyEvent(doc, element, 'keyup', kCode, 0,
+    Utils.keyEvent(session, element, 'keyup', kCode, 0,
                    controlKey, shiftKey, altKey, metaKey = false);
   }
 
@@ -498,8 +529,10 @@ Utils.type = function(doc, element, text, jsTimer, releaseModifiers,
 };
 
 
-Utils.keyEvent = function(doc, element, type, keyCode, charCode,
+Utils.keyEvent = function(session, element, type, keyCode, charCode,
                           controlState, shiftState, altState, metaState) {
+
+  var doc = session.getDocument();
   // Silently bail out if the element is no longer attached to the DOM.
   var isAttachedToDom = goog.dom.getAncestor(element, function(node) {
     return node === element.ownerDocument.documentElement;
@@ -509,7 +542,7 @@ Utils.keyEvent = function(doc, element, type, keyCode, charCode,
     return false;
   }
 
-  var windowUtils = doc.defaultView
+  var windowUtils = session.getChromeWindow()
       .QueryInterface(Components.interfaces.nsIInterfaceRequestor)
       .getInterface(Components.interfaces.nsIDOMWindowUtils);
 
@@ -653,23 +686,80 @@ Utils.getClickablePoint = function(element) {
   element = element.wrappedJSObject ? element.wrappedJSObject : element;
   var rect = bot.dom.getClientRect(element);
 
-  if (element.getClientRects().length > 1) {
-    for (var i = 0; i < element.getClientRects().length; i++) {
-      var candidate = element.getClientRects()[i];
-      if (candidate.width != 0 && candidate.height != 0) {
-        return {
-          x: (candidate.left - rect.left + Math.floor(candidate.width / 2)),
-          y: (candidate.top - rect.top + Math.floor(candidate.height / 2))
-        };
+  var rects = goog.array.filter(element.getClientRects(), function(r) {
+    return r.width != 0 && r.height != 0;
+  });
+
+  var isClickableAt = function(coord) {
+    // get the outermost ancestor of the element. This will be either the document
+    // or a shadow root.
+    var owner = element;
+    while (owner.parentNode) {
+      owner = owner.parentNode;
+    }
+
+    var elementAtPoint = owner.elementFromPoint(coord.x, coord.y);
+
+    // element may be huge, so coordinates are outside the viewport
+    if (elementAtPoint === null) {
+      return true;
+    }
+
+    if (element == elementAtPoint) {
+      return true;
+    }
+
+    // allow clicks to element descendants
+    var parentElemIter = elementAtPoint.parentNode;
+    while (parentElemIter) {
+      if (parentElemIter == element) {
+        return true;
+      }
+      parentElemIter = parentElemIter.parentNode;
+    }
+  };
+
+  var rectPointRelativeToView = function(x, y, r) {
+    return { x: r.left + x, y: r.top + y }
+  };
+
+  var rectPointRelativeToMainRect = function(x, y, r) {
+    return { x: r.left - rect.left + x, y: r.top - rect.top + y }
+  };
+
+  var findClickablePoint = function(r) {
+    var offsets = [
+      { x: Math.floor(r.width / 2), y: Math.floor(r.height / 2) },
+      { x: 0, y: 0 },
+      { x: r.width, y: 0 },
+      { x: 0,  y: r.height },
+      { x: r.width, y: r.height}
+    ]
+
+    return goog.array.find(offsets, function(offset){
+      return isClickableAt(rectPointRelativeToView(offset.x, offset.y, r));
+    })
+  };
+
+  if (rects.length > 1) {
+    goog.log.warning(Utils.LOG_, 'Multirect element ', rects.length);
+    for (var i = 0; i < rects.length; i++) {
+      var p = findClickablePoint(rects[i]);
+      if (p){
+        goog.log.warning(Utils.LOG_, 'Found clickable point in rect ' + rects[i]);
+        return rectPointRelativeToMainRect(p.x, p.y, rects[i]);
       }
     }
   }
 
   // Fallback to the main rect
-  return {
-    x: (rect.width ? Math.floor(rect.width / 2) : 0),
-    y: (rect.height ? Math.floor(rect.height / 2) : 0)
-  };
+  var p = findClickablePoint(rect);
+  if (p) {
+    return p;
+  }
+
+  // Expected to return a point so if there is no clickable point return middle
+  return { x: Math.floor(rect.width / 2), y: Math.floor(rect.height / 2) };
 };
 
 

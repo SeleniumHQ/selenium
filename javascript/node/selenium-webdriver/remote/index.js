@@ -29,6 +29,7 @@ var _base = require('../lib/_base'),
     promise = require('../').promise,
     httpUtil = require('../http/util'),
     exec = require('../io/exec'),
+    command = require('../lib/command'),
     net = require('../net'),
     portprober = require('../net/portprober');
 
@@ -354,7 +355,7 @@ FileDetector.prototype.handleFile = function(driver, filePath) {
     zip.addLocalFile(filePath);
     zip.getEntries()[0].header.method = AdmConstants.STORED;
 
-    var command = new webdriver.Command(webdriver.CommandName.UPLOAD_FILE)
+    var command = new command.Command(command.Name.UPLOAD_FILE)
         .setParameter('file', zip.toBuffer().toString('base64'));
     return driver.schedule(command,
         'remote.FileDetector.handleFile(' + filePath + ')');

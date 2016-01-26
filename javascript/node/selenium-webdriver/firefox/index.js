@@ -119,7 +119,7 @@ var Options = function() {
   /** @private {Binary} */
   this.binary_ = null;
 
-  /** @private {webdriver.logging.Preferences} */
+  /** @private {./lib/logging.Preferences} */
   this.logPrefs_ = null;
 
   /** @private {webdriver.ProxyConfig} */
@@ -162,7 +162,7 @@ Options.prototype.setBinary = function(binary) {
 
 /**
  * Sets the logging preferences for the new session.
- * @param {webdriver.logging.Preferences} prefs The logging preferences.
+ * @param {./lib/logging.Preferences} prefs The logging preferences.
  * @return {!Options} A self reference.
  */
 Options.prototype.setLoggingPreferences = function(prefs) {

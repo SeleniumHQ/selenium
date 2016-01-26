@@ -465,7 +465,7 @@ public class RegistrationRequest {
       configuration.put(CLEAN_UP_CYCLE, Integer.parseInt(helper.getParamValue("-cleanUpCycle")));
     }
     if (helper.isParamPresent("-timeout")) {
-      configuration.put(TIME_OUT, Integer.parseInt(helper.getParamValue("-timeout")));
+      configuration.put(TIME_OUT, Integer.parseInt(helper.getParamValue("-timeout")) * 1000);
     }
     if (helper.isParamPresent("-browserTimeout")) {
       configuration.put(BROWSER_TIME_OUT, Integer.parseInt(helper.getParamValue("-browserTimeout")));

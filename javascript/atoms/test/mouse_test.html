@@ -60,6 +60,7 @@ position: relative; top:25px;">Red</div>
     redDiv = bot.locators.findElement({id: 'red'});
     captureDiv = bot.locators.findElement({id: 'capture'});
     innerCaptureDiv = bot.locators.findElement({id: 'innerCapture'});
+    goog.testing.TestCase.getActiveTestCase().promiseTimeout = 30000; // 30s
   }
 
   function setUp() {

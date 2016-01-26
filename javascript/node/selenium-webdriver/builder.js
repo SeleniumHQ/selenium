@@ -246,7 +246,7 @@ Builder.prototype.setProxy = function(config) {
 /**
  * Sets the logging preferences for the created session. Preferences may be
  * changed by repeated calls, or by calling {@link #withCapabilities}.
- * @param {!(webdriver.logging.Preferences|Object.<string, string>)} prefs The
+ * @param {!(./lib/logging.Preferences|Object<string, string>)} prefs The
  *     desired logging preferences.
  * @return {!Builder} A self reference.
  */

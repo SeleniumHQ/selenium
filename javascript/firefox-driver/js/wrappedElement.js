@@ -173,7 +173,7 @@ WebElement.sendKeysToElement = function(respond, parameters) {
     }
 
     try {
-      Utils.type(respond.session.getDocument(), use, parameters.value.join(''),
+      Utils.type(respond.session, use, parameters.value.join(''),
           originalDriver.jsTimer, true /*release modifiers*/);
       respond.send();
     } catch (ex) {

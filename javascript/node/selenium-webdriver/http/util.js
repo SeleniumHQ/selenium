@@ -20,12 +20,12 @@
  */
 
 var base = require('../lib/_base'),
+    error = require('../error'),
+    Executor = require('./index').Executor,
     HttpClient = require('./index').HttpClient,
-    checkResponse = base.require('bot.response').checkResponse,
-    Executor = base.require('webdriver.http.Executor'),
-    HttpRequest = base.require('webdriver.http.Request'),
-    Command = base.require('webdriver.Command'),
-    CommandName = base.require('webdriver.CommandName'),
+    HttpRequest = require('./index').Request,
+    Command = require('../lib/command').Command,
+    CommandName = require('../lib/command').Name,
     promise = base.require('webdriver.promise');
 
 
@@ -41,7 +41,7 @@ function getStatus(url) {
   var executor = new Executor(client);
   var command = new Command(CommandName.GET_SERVER_STATUS);
   return executor.execute(command).then(function(responseObj) {
-    checkResponse(responseObj);
+    error.checkLegacyResponse(responseObj);
     return responseObj['value'];
   });
 }

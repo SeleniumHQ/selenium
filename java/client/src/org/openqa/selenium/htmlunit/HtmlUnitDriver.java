@@ -1102,12 +1102,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   @Override
-  public List<WebElement> findElementsByName(String using) {
+  public List<WebElement> findElementsByName(String name) {
     if (!(lastPage() instanceof HtmlPage)) {
       return new ArrayList<>();
     }
 
-    List<DomElement> allElements = ((HtmlPage) lastPage()).getElementsByName(using);
+    List<DomElement> allElements = ((HtmlPage) lastPage()).getElementsByName(name);
     return convertRawHtmlElementsToWebElements(allElements);
   }
 
@@ -1126,12 +1126,16 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   @Override
-  public List<WebElement> findElementsByTagName(String using) {
+  public List<WebElement> findElementsByTagName(String name) {
+    if ("".equals(name)) {
+      throw new InvalidSelectorException("Unable to locate element by xpath for " + lastPage());
+    }
+
     if (!(lastPage() instanceof HtmlPage)) {
       return new ArrayList<>();
     }
 
-    NodeList allElements = ((HtmlPage) lastPage()).getElementsByTagName(using);
+    NodeList allElements = ((HtmlPage) lastPage()).getElementsByTagName(name);
     List<WebElement> toReturn = new ArrayList<>(allElements.getLength());
     for (int i = 0; i < allElements.getLength(); i++) {
       Node item = allElements.item(i);

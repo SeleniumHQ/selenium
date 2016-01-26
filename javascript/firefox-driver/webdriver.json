@@ -57,6 +57,7 @@
   },
   "mutable": {
     "browser.dom.window.dump.enabled": true,
+    "browser.laterrun.enabled": false,
     "browser.newtab.url": "about:blank",
     "browser.newtabpage.enabled": false,
     "browser.startup.page": 0,

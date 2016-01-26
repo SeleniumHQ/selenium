@@ -367,7 +367,7 @@ Options.prototype.setOperaBinaryPath = function(path) {
 
 /**
  * Sets the logging preferences for the new session.
- * @param {!webdriver.logging.Preferences} prefs The logging preferences.
+ * @param {!./lib/logging.Preferences} prefs The logging preferences.
  * @return {!Options} A self reference.
  */
 Options.prototype.setLoggingPrefs = function(prefs) {
