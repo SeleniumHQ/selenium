@@ -76,7 +76,13 @@ class WebElement(object):
 
     def submit(self):
         """Submits a form."""
-        self._execute(Command.SUBMIT_ELEMENT)
+        if self._w3c:
+            form = self.find_element(By.XPATH, "./ancestor-or-self::form")
+            self._parent.execute_script("var e = arguments[0].ownerDocument.createEvent('Event');"
+                                       "e.initEvent('submit', true, true);"
+                                       "if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }", form)
+        else:
+            self._execute(Command.SUBMIT_ELEMENT)
 
     def clear(self):
         """Clears the text if it's a text entry element."""
