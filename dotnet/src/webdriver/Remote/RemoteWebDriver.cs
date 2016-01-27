@@ -568,7 +568,7 @@ namespace OpenQA.Selenium.Remote
             if (this.IsSpecificationCompliant)
             {
                 string selector = EscapeCssSelector(id);
-                if (selector == string.Empty)
+                if (string.IsNullOrEmpty(selector))
                 {
                     // Finding multiple elements with an empty ID will return
                     // an empty list. However, finding by a CSS selector of '#'
