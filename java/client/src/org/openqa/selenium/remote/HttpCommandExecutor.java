@@ -147,6 +147,9 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
         String sessionId = HttpSessionId.getSessionId(httpResponse.getTargetHost());
         response.setSessionId(sessionId);
       }
+      if (QUIT.equals(command.getName())) {
+    	  client.close();
+      }
       return response;
     } catch (UnsupportedCommandException e) {
       if (e.getMessage() == null || "".equals(e.getMessage())) {

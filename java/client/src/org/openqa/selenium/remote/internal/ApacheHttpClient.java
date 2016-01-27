@@ -48,6 +48,7 @@ import java.net.BindException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpClient {
 
@@ -253,4 +254,10 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
       return defaultClientFactory;
     }
   }
+  
+  @Override
+	public void close() throws IOException {
+	  client.getConnectionManager().closeIdleConnections(0, TimeUnit.SECONDS);		
+	}
+  
 }
