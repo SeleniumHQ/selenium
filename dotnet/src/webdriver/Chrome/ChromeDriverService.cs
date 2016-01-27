@@ -30,7 +30,6 @@ namespace OpenQA.Selenium.Chrome
     /// </summary>
     public sealed class ChromeDriverService : DriverService
     {
-        private const string ChromeDriverServiceFileName = "chromedriver.exe";
         private static readonly Uri ChromeDriverDownloadUrl = new Uri("http://chromedriver.storage.googleapis.com/index.html");
         private string logPath = string.Empty;
         private string urlPathPrefix = string.Empty;
@@ -48,6 +47,48 @@ namespace OpenQA.Selenium.Chrome
         private ChromeDriverService(string executablePath, string executableFileName, int port)
             : base(executablePath, port, executableFileName, ChromeDriverDownloadUrl)
         {
+        }
+
+        /// <summary>
+        /// Returns the Chrome driver filename for the currently running platform
+        /// </summary>
+        private static string ChromeDriverServiceFileName()
+        {
+            const string filenameWindows = "chromedriver.exe";
+            const string filenameUnix = "chromedriver";
+
+            /* Unfortunately, detecting the currently running platform isn't as straightforward as you might hope.
+             * See:
+             *     http://mono.wikia.com/wiki/Detecting_the_execution_platform
+             *     and
+             *     https://msdn.microsoft.com/en-us/library/3a8hyw88(v=vs.110).aspx
+             */
+            const int legacyMonoUnix = 128;
+
+            switch (Environment.OSVersion.Platform)
+            {
+                case PlatformID.MacOSX:
+                    return filenameUnix;
+                case PlatformID.Unix:
+                    return filenameUnix;
+                case PlatformID.Win32NT:
+                    return filenameWindows;
+                case PlatformID.Win32S:
+                    return filenameWindows;
+                case PlatformID.Win32Windows:
+                    return filenameWindows;
+                case PlatformID.WinCE:
+                    return filenameWindows;
+                // Don't handle the Xbox case. Let default handle it.
+                // case PlatformID.Xbox:
+                //     break;
+                default:
+                    if ((int)Environment.OSVersion.Platform == legacyMonoUnix)
+                    {
+                        return filenameUnix;
+                    }
+                    throw new Exception("Unsupported platform");
+            }
         }
 
         /// <summary>
@@ -160,7 +201,7 @@ namespace OpenQA.Selenium.Chrome
         /// <returns>A ChromeDriverService that implements default settings.</returns>
         public static ChromeDriverService CreateDefaultService()
         {
-            string serviceDirectory = DriverService.FindDriverServiceExecutable(ChromeDriverServiceFileName, ChromeDriverDownloadUrl);
+            string serviceDirectory = DriverService.FindDriverServiceExecutable(ChromeDriverServiceFileName(), ChromeDriverDownloadUrl);
             return CreateDefaultService(serviceDirectory);
         }
 
@@ -171,7 +212,7 @@ namespace OpenQA.Selenium.Chrome
         /// <returns>A ChromeDriverService using a random port.</returns>
         public static ChromeDriverService CreateDefaultService(string driverPath)
         {
-            return CreateDefaultService(driverPath, ChromeDriverServiceFileName);
+            return CreateDefaultService(driverPath, ChromeDriverServiceFileName());
         }
 
         /// <summary>
