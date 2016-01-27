@@ -31,9 +31,9 @@ import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.io.CircularOutputStream;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -46,7 +46,7 @@ import java.util.logging.Logger;
 class UnixProcess implements OsProcess {
   private static final Logger log = Logger.getLogger(UnixProcess.class.getName());
 
-  private final ByteArrayOutputStream inputOut = new ByteArrayOutputStream();
+  private final CircularOutputStream inputOut = new CircularOutputStream(null);
   private volatile String allInput;
   private final DefaultExecuteResultHandler handler = new DefaultExecuteResultHandler();
   private final Executor executor = new DaemonExecutor();
@@ -178,7 +178,7 @@ class UnixProcess implements OsProcess {
       throw new IllegalStateException(
           "Cannot get output before executing command line: " + cl);
     }
-    return new String(inputOut.toByteArray());
+    return inputOut.toString();
   }
 
   public void setInput(String allInput) {
