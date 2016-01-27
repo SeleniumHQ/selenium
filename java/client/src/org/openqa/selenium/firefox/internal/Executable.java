@@ -25,7 +25,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.WindowsUtils;
-import org.openqa.selenium.remote.internal.CircularOutputStream;
+import org.openqa.selenium.io.CircularOutputStream;
 
 import java.io.File;
 import java.io.OutputStream;

@@ -32,7 +32,7 @@ import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.internal.CircularOutputStream;
+import org.openqa.selenium.io.CircularOutputStream;
 
 import java.io.File;
 import java.io.IOException;

@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.firefox.internal;
 
-import org.openqa.selenium.remote.internal.CircularOutputStream;
+import org.openqa.selenium.io.CircularOutputStream;
 
 import java.io.OutputStream;
 

@@ -20,7 +20,7 @@ package org.openqa.selenium.firefox.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import org.openqa.selenium.remote.internal.CircularOutputStream;
+import org.openqa.selenium.io.CircularOutputStream;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
