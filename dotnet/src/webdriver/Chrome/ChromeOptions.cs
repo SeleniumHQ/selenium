@@ -69,6 +69,9 @@ namespace OpenQA.Selenium.Chrome
         private const string DebuggerAddressChromeOption = "debuggerAddress";
         private const string ExcludeSwitchesChromeOption = "excludeSwitches";
         private const string MinidumpPathChromeOption = "minidumpPath";
+        private const string MobileEmulationChromeOption = "mobileEmulation";
+        private const string PerformanceLoggingPreferencesChromeOption = "perfLoggingPrefs";
+        private const string WindowTypesChromeOption = "windowTypes";
 
         private bool leaveBrowserRunning;
         private string binaryLocation;
@@ -78,10 +81,16 @@ namespace OpenQA.Selenium.Chrome
         private List<string> extensionFiles = new List<string>();
         private List<string> encodedExtensions = new List<string>();
         private List<string> excludedSwitches = new List<string>();
+        private List<string> windowTypes = new List<string>();
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
         private Dictionary<string, object> additionalChromeOptions = new Dictionary<string, object>();
         private Dictionary<string, object> userProfilePreferences;
         private Dictionary<string, object> localStatePreferences;
+
+        private string mobileEmulationDeviceName;
+        private ChromeMobileEmulationDeviceSettings mobileEmulationDeviceSettings;
+        private ChromePerformanceLoggingPreferences perfLoggingPreferences;
+
         private Proxy proxy;
 
         /// <summary>
@@ -156,6 +165,15 @@ namespace OpenQA.Selenium.Chrome
         {
             get { return this.minidumpPath; }
             set { this.minidumpPath = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the performance logging preferences for the driver.
+        /// </summary>
+        public ChromePerformanceLoggingPreferences PerformanceLoggingPreferences
+        {
+            get { return this.perfLoggingPreferences; }
+            set { this.perfLoggingPreferences = value; }
         }
 
         /// <summary>
@@ -371,6 +389,83 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
+        /// Allows the Chrome browser to emulate a mobile device.
+        /// </summary>
+        /// <param name="deviceName">The name of the device to emulate. The device name must be a
+        /// valid device name from the Chrome DevTools Emulation panel.</param>
+        /// <remarks>Specifying an invalid device name will not throw an exeption, but
+        /// will generate an error in Chrome when the driver starts. To unset mobile
+        /// emulation, call this method with <see langword="null"/> as the argument.</remarks>
+        public void EnableMobileEmulation(string deviceName)
+        {
+            this.mobileEmulationDeviceSettings = null;
+            this.mobileEmulationDeviceName = deviceName;
+        }
+
+        /// <summary>
+        /// Allows the Chrome browser to emulate a mobile device.
+        /// </summary>
+        /// <param name="deviceSettings">The <see cref="ChromeMobileEmulationDeviceSettings"/>
+        /// object containing the settings of the device to emulate.</param>
+        /// <exception cref="ArgumentException">Thrown if the device settings option does
+        /// not have a user agent string set.</exception>
+        /// <remarks>Specifying an invalid device name will not throw an exeption, but
+        /// will generate an error in Chrome when the driver starts. To unset mobile
+        /// emulation, call this method with <see langword="null"/> as the argument.</remarks>
+        public void EnableMobileDeviceEmulation(ChromeMobileEmulationDeviceSettings deviceSettings)
+        {
+            this.mobileEmulationDeviceName = null;
+            if (deviceSettings != null && string.IsNullOrEmpty(deviceSettings.UserAgent))
+            {
+                throw new ArgumentException("Device settings must include a user agent string.", "deviceSettings");
+            }
+
+            this.mobileEmulationDeviceSettings = deviceSettings;
+        }
+
+        /// <summary>
+        /// Adds a type of window that will be listed in the list of window handles
+        /// returned by the Chrome driver.
+        /// </summary>
+        /// <param name="windowType">The name of the window type to add.</param>
+        /// <remarks>This method can be used to allow the driver to access {webview}
+        /// elements by adding "webview" as a window type.</remarks>
+        public void AddWindowType(string windowType)
+        {
+            if (string.IsNullOrEmpty(windowType))
+            {
+                throw new ArgumentException("windowType must not be null or empty", "windowType");
+            }
+
+            this.AddWindowTypes(windowType);
+        }
+
+        /// <summary>
+        /// Adds a list of window types that will be listed in the list of window handles
+        /// returned by the Chrome driver.
+        /// </summary>
+        /// <param name="windowTypesToAdd">An array of window types to add.</param>
+        public void AddWindowTypes(params string[] windowTypesToAdd)
+        {
+            this.AddWindowTypes(new List<string>(windowTypesToAdd));
+        }
+
+        /// <summary>
+        /// Adds a list of window types that will be listed in the list of window handles
+        /// returned by the Chrome driver.
+        /// </summary>
+        /// <param name="windowTypesToAdd">An <see cref="IEnumerable{T}"/> of window types to add.</param>
+        public void AddWindowTypes(IEnumerable<string> windowTypesToAdd)
+        {
+            if (windowTypesToAdd == null)
+            {
+                throw new ArgumentNullException("windowTypesToAdd", "windowTypesToAdd must not be null");
+            }
+
+            this.windowTypes.AddRange(windowTypesToAdd);
+        }
+
+        /// <summary>
         /// Provides a means to add additional capabilities not yet added as type safe options
         /// for the Chrome driver.
         /// </summary>
@@ -421,7 +516,10 @@ namespace OpenQA.Selenium.Chrome
                 capabilityName == ChromeOptions.DebuggerAddressChromeOption ||
                 capabilityName == ChromeOptions.ExtensionsChromeOption ||
                 capabilityName == ChromeOptions.ExcludeSwitchesChromeOption ||
-                capabilityName == ChromeOptions.MinidumpPathChromeOption)
+                capabilityName == ChromeOptions.MinidumpPathChromeOption ||
+                capabilityName == ChromeOptions.MobileEmulationChromeOption ||
+                capabilityName == ChromeOptions.PerformanceLoggingPreferencesChromeOption ||
+                capabilityName == ChromeOptions.WindowTypesChromeOption)
             {
                 string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use that instead.", capabilityName);
                 throw new ArgumentException(message, "capabilityName");
@@ -517,12 +615,69 @@ namespace OpenQA.Selenium.Chrome
                 chromeOptions[MinidumpPathChromeOption] = this.minidumpPath;
             }
 
+            if (!string.IsNullOrEmpty(this.mobileEmulationDeviceName) || this.mobileEmulationDeviceSettings != null)
+            {
+                chromeOptions[MobileEmulationChromeOption] = this.GenerateMobileEmulationSettingsDictionary();
+            }
+
+            if (this.perfLoggingPreferences != null)
+            {
+                chromeOptions[PerformanceLoggingPreferencesChromeOption] = this.GeneratePerformanceLoggingPreferencesDictionary();
+            }
+
+            if (this.windowTypes.Count > 0)
+            {
+                chromeOptions[WindowTypesChromeOption] = this.windowTypes;
+            }
+
             foreach (KeyValuePair<string, object> pair in this.additionalChromeOptions)
             {
                 chromeOptions.Add(pair.Key, pair.Value);
             }
 
             return chromeOptions;
+        }
+
+        private Dictionary<string, object> GeneratePerformanceLoggingPreferencesDictionary()
+        {
+            Dictionary<string, object> perfLoggingPrefsDictionary = new Dictionary<string, object>();
+            perfLoggingPrefsDictionary["enableNetwork"] = this.perfLoggingPreferences.IsCollectingNetworkEvents;
+            perfLoggingPrefsDictionary["enablePage"] = this.perfLoggingPreferences.IsCollectingPageEvents;
+            perfLoggingPrefsDictionary["enableTimeline"] = this.perfLoggingPreferences.IsCollectingTimelineEvents;
+
+            string tracingCategories = this.perfLoggingPreferences.TracingCategories;
+            if (!string.IsNullOrEmpty(tracingCategories))
+            {
+                perfLoggingPrefsDictionary["tracingCategories"] = tracingCategories;
+            }
+
+            perfLoggingPrefsDictionary["bufferUsageReportingInterval"] = Convert.ToInt64(this.perfLoggingPreferences.BufferUsageReportingInterval.TotalMilliseconds);
+
+            return perfLoggingPrefsDictionary;
+        }
+
+        private Dictionary<string, object> GenerateMobileEmulationSettingsDictionary()
+        {
+            Dictionary<string, object> mobileEmulationSettings = new Dictionary<string, object>();
+
+            if (!string.IsNullOrEmpty(this.mobileEmulationDeviceName))
+            {
+                mobileEmulationSettings["deviceName"] = this.mobileEmulationDeviceName;
+            }
+            else if (this.mobileEmulationDeviceSettings != null)
+            {
+                mobileEmulationSettings["userAgent"] = this.mobileEmulationDeviceSettings.UserAgent;
+                Dictionary<string, object> deviceMetrics = new Dictionary<string, object>();
+                deviceMetrics["width"] = this.mobileEmulationDeviceSettings.Width;
+                deviceMetrics["height"] = this.mobileEmulationDeviceSettings.Height;
+                deviceMetrics["pixelRatio"] = this.mobileEmulationDeviceSettings.PixelRatio;
+                if (!this.mobileEmulationDeviceSettings.EnableTouchEvents)
+                {
+                    deviceMetrics["touch"] = this.mobileEmulationDeviceSettings.EnableTouchEvents;
+                }
+            }
+
+            return mobileEmulationSettings;
         }
     }
 }

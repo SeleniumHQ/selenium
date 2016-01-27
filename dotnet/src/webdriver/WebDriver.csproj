@@ -81,6 +81,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="By.cs" />
+    <Compile Include="Chrome\ChromeMobileEmulationDeviceSettings.cs" />
+    <Compile Include="Chrome\ChromePerformanceLoggingPreferences.cs" />
     <Compile Include="DefaultFileDetector.cs" />
     <Compile Include="Edge\EdgeDriver.cs" />
     <Compile Include="Edge\EdgeDriverService.cs" />
