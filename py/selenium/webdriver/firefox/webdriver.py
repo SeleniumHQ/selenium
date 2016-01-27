@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+
 try:
     import http.client as http_client
 except ImportError:
@@ -65,22 +66,23 @@ class WebDriver(RemoteWebDriver):
                 command_executor=executor,
                 desired_capabilities=capabilities,
                 keep_alive=True)
-
-        # use old Firefox add-on
         else:
+            # Oh well... sometimes the old way is the best way.
             if self.binary is None:
                 self.binary = FirefoxBinary()
 
             if proxy is not None:
                 proxy.add_to_capabilities(capabilities)
 
-            executor = ExtensionConnection("127.0.0.1", self.profile, self.binary, timeout)
-            RemoteWebDriver.__init__(
-                self,
+            executor = ExtensionConnection("127.0.0.1", self.profile,
+                                           self.binary, timeout)
+            RemoteWebDriver.__init__(self,
                 command_executor=executor,
-                desired_capabilities=capabilities,
-                keep_alive=True)
-            self._is_remote = False
+            desired_capabilities=capabilities,
+            keep_alive=True)
+
+
+        self._is_remote = False
 
     def quit(self):
         """Quits the driver and close every associated window."""
