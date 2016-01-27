@@ -30,7 +30,8 @@ namespace OpenQA.Selenium.Chrome
     /// </summary>
     public sealed class ChromeDriverService : DriverService
     {
-        private const string ChromeDriverServiceFileName = "chromedriver.exe";
+        private const string DefaultChromeDriverServiceExecutableName = "chromedriver";
+
         private static readonly Uri ChromeDriverDownloadUrl = new Uri("http://chromedriver.storage.googleapis.com/index.html");
         private string logPath = string.Empty;
         private string urlPathPrefix = string.Empty;
@@ -160,7 +161,7 @@ namespace OpenQA.Selenium.Chrome
         /// <returns>A ChromeDriverService that implements default settings.</returns>
         public static ChromeDriverService CreateDefaultService()
         {
-            string serviceDirectory = DriverService.FindDriverServiceExecutable(ChromeDriverServiceFileName, ChromeDriverDownloadUrl);
+            string serviceDirectory = DriverService.FindDriverServiceExecutable(ChromeDriverServiceFileName(), ChromeDriverDownloadUrl);
             return CreateDefaultService(serviceDirectory);
         }
 
@@ -171,7 +172,7 @@ namespace OpenQA.Selenium.Chrome
         /// <returns>A ChromeDriverService using a random port.</returns>
         public static ChromeDriverService CreateDefaultService(string driverPath)
         {
-            return CreateDefaultService(driverPath, ChromeDriverServiceFileName);
+            return CreateDefaultService(driverPath, ChromeDriverServiceFileName());
         }
 
         /// <summary>
@@ -183,6 +184,48 @@ namespace OpenQA.Selenium.Chrome
         public static ChromeDriverService CreateDefaultService(string driverPath, string driverExecutableFileName)
         {
             return new ChromeDriverService(driverPath, driverExecutableFileName, PortUtilities.FindFreePort());
+        }
+
+        /// <summary>
+        /// Returns the Chrome driver filename for the currently running platform
+        /// </summary>
+        /// <returns>The file name of the Chrome driver service executable.</returns>
+        private static string ChromeDriverServiceFileName()
+        {
+            string fileName = DefaultChromeDriverServiceExecutableName;
+
+            // Unfortunately, detecting the currently running platform isn't as
+            // straightforward as you might hope.
+            // See: http://mono.wikia.com/wiki/Detecting_the_execution_platform
+            // and https://msdn.microsoft.com/en-us/library/3a8hyw88(v=vs.110).aspx
+            const int PlatformMonoUnixValue = 128;
+
+            switch (Environment.OSVersion.Platform)
+            {
+                case PlatformID.Win32NT:
+                case PlatformID.Win32S:
+                case PlatformID.Win32Windows:
+                case PlatformID.WinCE:
+                    fileName += ".exe";
+                    break;
+
+                case PlatformID.MacOSX:
+                case PlatformID.Unix:
+                    break;
+
+                // Don't handle the Xbox case. Let default handle it.
+                // case PlatformID.Xbox:
+                //     break;
+                default:
+                    if ((int)Environment.OSVersion.Platform == PlatformMonoUnixValue)
+                    {
+                        break;
+                    }
+
+                    throw new WebDriverException("Unsupported platform: " + Environment.OSVersion.Platform);
+            }
+
+            return fileName;
         }
     }
 }
