@@ -1,3 +1,19 @@
+v2.50.0
+=======
+ * Updated embedded Firefox driver with new click algorithm
+ * Added type-safe options .NET for recently added Chrome capabilities. 
+   This includes adding type-safe capabilities for 'mobileEmulation',
+   'perfLoggingPrefs', and 'windowTypes' to ChromeOptions class.
+ * (on behalf Edward Ned Harvey) Updated ChromeDriverService to locate
+   Chrome driver executable in a cross-platform way.
+ * Removed deprecated PageFactory code.
+ * Updated implementations of EWebDriver.PageSource property and
+   IAlert.SendKeys method for spec-compliant browsers.
+ * Updated implementations for finding by ID, class name, and tag name
+   for consistency between languages and for compatibility with spec-
+   compliant drivers.
+ * Removed the redundant IllegalLocatorException.
+
 v2.49.0
 =======
  * Updated .NET PageFactory to allow frame switching with located elements.
