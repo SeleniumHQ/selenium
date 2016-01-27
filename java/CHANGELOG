@@ -1,3 +1,24 @@
+v2.50.0
+=======
+
+WebDriver:
+    * Firefox: fixing sendKeys throwing "cross-process JS call failed " in FF45
+    * Firefox: fixing click to multirect elements broken by the previous PR
+    * Check element corners and middle for clickability
+    * Fix keyCodes for some characters in the FirefoxDriver.
+    * Firefox: fixing malformed URL handling. Fixed issue #1248
+    * Prevent Firefox from opening a page on a second or later run and/or after some amount of time
+    * Fixing executable finder on Windows
+    * Fixing HtmlUnit driver to pass recently added tests
+    * Firefox: fixing appending to contenteditable elements. Fixes issue 1419
+    * correct javascript remote client ui executor to use new promise based execute introduced by 0fa587 Fixes #1521
+    * Firefox: Adding an extra check to result wrapper. Fixes issue #1426
+    * Changes to simplify the execution of finding elements.
+    * Fixing issue #1479. The only reasonable thing we can do for select elements is to disable clickability checking, see https://gist.github.com/p0deje/c549e93fa19bf7aaee49
+
+Grid: 
+    * Found a better place to convert seconds to milliseconds
+
 v2.49.1
 =======
 
@@ -2033,3 +2054,4 @@ Grid:
   * Track when a session has become orphaned.  I.e., when the client sends no
     commands after the initial session creation.  This almost always indicates
     the client is no longer connected and the session is unusable immediately.
+----
