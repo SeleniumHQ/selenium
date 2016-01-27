@@ -1,3 +1,9 @@
+2.50.0 (2016-1-27)
+===================
+
+Firefox:
+ * Fix bug for locating binary in local path  (issue 1523, thanks Gopal Patel)
+
 2.49.0 (2016-1-13)
 ===================
 
