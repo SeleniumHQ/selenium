@@ -170,8 +170,8 @@ module Selenium
 
           def macosx_path
             path = "/Applications/Firefox.app/Contents/MacOS/firefox-bin"
-            path = "~/Applications/Firefox.app/Contents/MacOS/firefox-bin" unless File.exist?(path)
-            path = Platform.find_binary("firefox-bin") unless File.exist?(path)
+            path = "~/Applications/Firefox.app/Contents/MacOS/firefox-bin" unless File.exist?(File.expand_path(path))
+            path = Platform.find_binary("firefox-bin") unless File.exist?(File.expand_path?(path))
 
             path
           end
