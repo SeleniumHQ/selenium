@@ -1,3 +1,8 @@
+Selenium 2.50.0
+* handle potential URLError from sending shutdown, set self.process to None after it's already been quit
+* Add support for submit() with W3C compliant endpoint
+
+
 Selenium 2.49.1
 * Ensure you can close stream before attempting to close it.
 * message response may cause json loads ValueError when it's not actually json
