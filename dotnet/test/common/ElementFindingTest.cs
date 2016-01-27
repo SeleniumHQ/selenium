@@ -51,7 +51,7 @@ namespace OpenQA.Selenium
         public void FindingASingleElementByEmptyIdShouldThrow()
         {
             driver.Url = formsPage;
-            Assert.Throws<NoSuchElementException>(() => driver.FindElement(By.Id("")));
+            Assert.Throws(Is.InstanceOf<NoSuchElementException>(), () => driver.FindElement(By.Id("")));
         }
 
         [Test]

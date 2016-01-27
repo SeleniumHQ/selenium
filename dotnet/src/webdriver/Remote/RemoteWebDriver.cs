@@ -567,7 +567,17 @@ namespace OpenQA.Selenium.Remote
         {
             if (this.IsSpecificationCompliant)
             {
-                return this.FindElements("css selector", "#" + EscapeCssSelector(id));
+                string selector = EscapeCssSelector(id);
+                if (selector == string.Empty)
+                {
+                    // Finding multiple elements with an empty ID will return
+                    // an empty list. However, finding by a CSS selector of '#'
+                    // throws an exception, even in the multiple elements case,
+                    // which means we need to short-circuit that behavior.
+                    return new List<IWebElement>().AsReadOnly();
+                }
+
+                return this.FindElements("css selector", "#" + selector);
             }
 
             return this.FindElements("id", id);
@@ -594,7 +604,17 @@ namespace OpenQA.Selenium.Remote
             // return this.FindElement("css selector", "." + className);
             if (this.IsSpecificationCompliant)
             {
-                return this.FindElement("css selector", "." + EscapeCssSelector(className));
+                string selector = EscapeCssSelector(className);
+                if (selector.Contains(" "))
+                {
+                    // Finding elements by class name with whitespace is not allowed.
+                    // However, converting the single class name to a valid CSS selector
+                    // by prepending a '.' may result in a still-valid, but incorrect
+                    // selector. Thus, we short-ciruit that behavior here.
+                    throw new InvalidSelectorException("Compound class names not allowed. Cannot have whitespace in class name. Use CSS selectors instead.");
+                }
+
+                return this.FindElement("css selector", "." + selector);
             }
 
             return this.FindElement("class name", className);
@@ -621,7 +641,17 @@ namespace OpenQA.Selenium.Remote
             // return this.FindElements("css selector", "." + className);
             if (this.IsSpecificationCompliant)
             {
-                return this.FindElements("css selector", "." + EscapeCssSelector(className));
+                string selector = EscapeCssSelector(className);
+                if (selector.Contains(" "))
+                {
+                    // Finding elements by class name with whitespace is not allowed.
+                    // However, converting the single class name to a valid CSS selector
+                    // by prepending a '.' may result in a still-valid, but incorrect
+                    // selector. Thus, we short-ciruit that behavior here.
+                    throw new InvalidSelectorException("Compound class names not allowed. Cannot have whitespace in class name. Use CSS selectors instead.");
+                }
+
+                return this.FindElements("css selector", "." + selector);
             }
 
             return this.FindElements("class name", className);
