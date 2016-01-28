@@ -30,14 +30,15 @@ class WindowSwitchingTests(unittest.TestCase):
 
         self.driver.find_element_by_link_text("Open new window").click()
         self.assertEqual(self.driver.title, "XHTML Test Page")
-
-        self.driver.switch_to.window("result")
+        handles = self.driver.window_handles
+        handles.remove(current)
+        self.driver.switch_to.window(handles[0])
         self.assertEqual(self.driver.title, "We Arrive Here")
 
         self._loadPage("iframes")
         handle = self.driver.current_window_handle
         self.driver.find_element_by_id("iframe_page_heading")
-        self.driver.switch_to.frame("iframe1")
+        self.driver.switch_to.frame(self.driver.find_element(By.ID, "iframe1"))
 
         self.assertEqual(self.driver.current_window_handle, handle)
 
@@ -56,12 +57,14 @@ class WindowSwitchingTests(unittest.TestCase):
         self.driver.switch_to.window(current)
 
     @pytest.mark.ignore_chrome
+    @pytest.mark.ignore_marionette
     def testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle(self):
         self._loadPage("xhtmlTest")
         current = self.driver.current_window_handle
         self.driver.find_element(By.LINK_TEXT,"Open new window").click()
-
-        self.driver.switch_to.window("result")
+        handles = self.driver.window_handles
+        handles.remove(current)
+        self.driver.switch_to.window(handles[0])
         self.driver.close()
 
         try :
@@ -74,13 +77,15 @@ class WindowSwitchingTests(unittest.TestCase):
 
     @pytest.mark.ignore_chrome
     @pytest.mark.ignore_ie
+    @pytest.mark.ignore_marionette
     def testShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed(self):
         self._loadPage("xhtmlTest")
         current = self.driver.current_window_handle
 
         self.driver.find_element(By.LINK_TEXT,"Open new window").click()
-
-        self.driver.switch_to.window("result")
+        handles = self.driver.window_handles
+        handles.remove(current)
+        self.driver.switch_to.window(handles[0])
         self.driver.close()
         try:
             try :
@@ -99,12 +104,15 @@ class WindowSwitchingTests(unittest.TestCase):
 
     @pytest.mark.ignore_chrome
     @pytest.mark.ignore_ie
+    @pytest.mark.ignore_marionette
     def testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed(self):
         self._loadPage("xhtmlTest")
         current = self.driver.current_window_handle
         self.driver.find_element(By.LINK_TEXT,"Open new window").click()
 
-        self.driver.switch_to.window("result")
+        handles = self.driver.window_handles
+        handles.remove(current)
+        self.driver.switch_to.window(handles[0])
         element = self.driver.find_element_by_tag_name("body")
         self.driver.close()
 
@@ -116,29 +124,35 @@ class WindowSwitchingTests(unittest.TestCase):
         finally:
             self.driver.switch_to.window(current)
 
+    @pytest.mark.ignore_marionette
     def testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang(self):
         self._loadPage("xhtmlTest")
 
-        currentHandle = self.driver.current_window_handle
+        current = self.driver.current_window_handle
 
         self.driver.find_element_by_name("windowThree").click()
 
-        self.driver.switch_to.window("result")
+        handles = self.driver.window_handles
+        handles.remove(current)
+        self.driver.switch_to.window(handles[0])
 
         try:
             self.driver.find_element_by_id("close").click()
         finally:
-            self.driver.switch_to.window(currentHandle)
+            self.driver.switch_to.window(current)
             self.driver.find_element_by_id("linkId")
 
+    @pytest.mark.ignore_marionette
     def testCanCallGetWindowHandlesAfterClosingAWindow(self):
         self._loadPage("xhtmlTest")
 
-        currentHandle = self.driver.current_window_handle
+        current = self.driver.current_window_handle
 
         self.driver.find_element_by_name("windowThree").click()
 
-        self.driver.switch_to.window("result")
+        handles = self.driver.window_handles
+        handles.remove(current)
+        self.driver.switch_to.window(handles[0])
 
         try:
             self.driver.find_element_by_id("close").click()
@@ -146,7 +160,7 @@ class WindowSwitchingTests(unittest.TestCase):
 
             self.assertEqual(1, len(all_handles))
         finally:
-            self.driver.switch_to.window(currentHandle)
+            self.driver.switch_to.window(current)
 
     def testCanObtainAWindowHandle(self):
         self._loadPage("xhtmlTest")
@@ -167,14 +181,17 @@ class WindowSwitchingTests(unittest.TestCase):
 
         self.assertEqual(current, new_handle)
 
+    @pytest.mark.ignore_marionette
     def testThatAccessingFindingAnElementAfterWindowIsClosedAndHaventswitchedDoesntCrash(self):
         self._loadPage("xhtmlTest")
 
-        currentHandle = self.driver.current_window_handle
+        current = self.driver.current_window_handle
 
         self.driver.find_element_by_name("windowThree").click()
 
-        self.driver.switch_to.window("result")
+        handles = self.driver.window_handles
+        handles.remove(current)
+        self.driver.switch_to.window(handles[0])
 
         try:
             self.driver.find_element_by_id("close").click()
