@@ -167,7 +167,7 @@ public class AlertsTest extends JUnit4TestBase {
     wait.until(textInElementLocated(By.id("text"), "cheese"));
   }
 
-  @Ignore(value = {CHROME, MARIONETTE},
+  @Ignore(value = {CHROME},
     reason = "Marionette: https://github.com/jgraham/wires/issues/17")
   @JavascriptEnabled
   @Test
@@ -225,7 +225,6 @@ public class AlertsTest extends JUnit4TestBase {
     fail("Expected NoAlertPresentException");
   }
 
-  @Ignore(MARIONETTE)
   @JavascriptEnabled
   @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
@@ -241,7 +240,6 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
-  @Ignore(MARIONETTE)
   @JavascriptEnabled
   @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test

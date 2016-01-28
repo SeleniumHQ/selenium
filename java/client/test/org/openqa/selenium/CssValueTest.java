@@ -65,7 +65,6 @@ public class CssValueTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldAllowInheritedStylesToBeUsed() {
     driver.get(pages.javascriptPage);
 

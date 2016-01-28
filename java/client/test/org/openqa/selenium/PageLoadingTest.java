@@ -224,7 +224,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     driver.get("www.test.com");
   }
 
-  @Ignore(value = {IE, SAFARI, PHANTOMJS})
+  @Ignore(value = {IE, SAFARI, PHANTOMJS, MARIONETTE})
   @Test(expected = WebDriverException.class)
   @NeedsFreshDriver
   public void testShouldThrowIfUrlIsMalformedInPortPart() {
@@ -497,7 +497,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     wait.until(titleIs("XHTML Test Page"));
   }
 
-  @Ignore(value = {CHROME, SAFARI},
+  @Ignore(value = {CHROME, SAFARI, MARIONETTE},
           reason = "Not implemented; Safari: see issue 687, comment 41",
           issues = {687})
   @NotYetImplemented(HTMLUNIT)

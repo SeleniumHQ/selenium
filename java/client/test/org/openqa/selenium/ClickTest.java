@@ -61,7 +61,6 @@ public class ClickTest extends JUnit4TestBase {
     wait.until(titleIs("XHTML Test Page"));
   }
 
-  @Ignore(value = {MARIONETTE}, reason = "Not tested.")
   @Test
   public void testCanClickOnALinkThatOverflowsAndFollowIt() {
     driver.findElement(By.id("overflowLink")).click();
@@ -131,7 +130,6 @@ public class ClickTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {MARIONETTE}, reason = "sendKeys is not standard compliant yet")
   public void testCanClickOnAnElementWithTopSetToANegativeNumber() {
     String page = appServer.whereIs("styledPage.html");
     driver.get(page);
@@ -151,7 +149,7 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME}, reason = "Not implemented")
+  @Ignore(value = {CHROME, MARIONETTE}, reason = "Not implemented")
   @Test
   public void testShouldSetRelatedTargetForMouseOver() {
     driver.get(pages.javascriptPage);
@@ -165,7 +163,7 @@ public class ClickTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @NoDriverAfterTest
-  @Ignore(value = {SAFARI, MARIONETTE}, reason = "Safari: issue 3693")
+  @Ignore(value = {SAFARI}, reason = "Safari: issue 3693")
   @Test
   public void testShouldOnlyFollowHrefOnce() {
     driver.get(pages.clicksPage);

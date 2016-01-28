@@ -232,7 +232,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testSendingKeyboardEventsShouldAppendTextInInputsWithExistingValue() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("inputWithText"));
@@ -243,7 +242,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testSendingKeyboardEventsShouldAppendTextInTextAreas() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("withText"));

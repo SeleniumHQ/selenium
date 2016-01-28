@@ -128,6 +128,7 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testCanSelectFromMultipleSelectWhereValueIsBelowVisibleRange() {
     driver.get(pages.selectPage);
     WebElement option = driver.findElements(By.cssSelector("#selectWithMultipleLongList option")).get(4);

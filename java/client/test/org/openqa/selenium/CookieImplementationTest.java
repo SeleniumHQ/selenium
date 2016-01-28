@@ -236,7 +236,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldNotGetCookieOnDifferentDomain() {
     assumeTrue(domainHelper.checkHasValidAlternateHostname());
 
@@ -371,7 +370,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testRetainsCookieExpiry() {
     Cookie addedCookie =
         new Cookie.Builder("fish", "cod")
@@ -385,7 +383,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertEquals(addedCookie.getExpiry(), retrieved.getExpiry());
   }
 
-  @Ignore(value = {IE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore(value = {IE, PHANTOMJS, SAFARI})
   @Test
   public void canHandleSecureCookie() {
     driver.get(domainHelper.getSecureUrlForFirstValidHostname("animals"));
@@ -403,7 +401,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertNotNull(retrieved);
   }
 
-  @Ignore(value = {IE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore(value = {IE, PHANTOMJS, SAFARI})
   @Test
   public void testRetainsCookieSecure() {
     driver.get(domainHelper.getSecureUrlForFirstValidHostname("animals"));
@@ -438,7 +436,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertNotNull(retrieved);
   }
 
-  @Ignore(reason = "Needs jetty upgrade (servlet api 3)")
   @Test
   public void testRetainsHttpOnlyFlag() {
     Cookie addedCookie =
@@ -486,7 +483,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     driver.manage().deleteCookieNamed(key);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, IE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore(value = {CHROME, FIREFOX, IE, PHANTOMJS, SAFARI})
   @Test
   public void testShouldDeleteOneOfTheCookiesWithTheSameName() {
     driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
@@ -609,7 +606,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void deleteAllCookies() throws Exception {
     assumeTrue(domainHelper.checkHasValidAlternateHostname());
 

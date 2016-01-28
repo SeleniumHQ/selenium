@@ -160,7 +160,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
-  @Ignore(value = {SAFARI, MARIONETTE}, reason = "not tested")
+  @Ignore(value = {SAFARI}, reason = "not tested")
   public void testShouldBeAbleToClickElementThatIsOutOfViewInAFrame() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_scrolling_frame.html"));
     driver.switchTo().frame("scrolling_frame");
@@ -181,7 +181,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
-  @Ignore(value = {SAFARI, MARIONETTE}, reason = "not tested")
+  @Ignore(value = {SAFARI}, reason = "not tested")
   public void testShouldBeAbleToClickElementThatIsOutOfViewInAFrameThatIsOutOfView() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_scrolling_frame_out_of_view.html"));
     driver.switchTo().frame("scrolling_frame");
@@ -192,7 +192,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
-  @Ignore(value = {SAFARI, MARIONETTE}, reason = "not tested")
+  @Ignore(value = {SAFARI}, reason = "not tested")
   public void testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrame() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_nested_scrolling_frames.html"));
     driver.switchTo().frame("scrolling_frame");
@@ -204,7 +204,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
-  @Ignore(value = {SAFARI, MARIONETTE}, reason = "not tested")
+  @Ignore(value = {SAFARI}, reason = "not tested")
   public void testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrameThatIsOutOfView() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_nested_scrolling_frames_out_of_view.html"));
     driver.switchTo().frame("scrolling_frame");
@@ -216,7 +216,6 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {MARIONETTE}, reason = "getSize issue https://bugzilla.mozilla.org/show_bug.cgi?id=1199925")
   public void testShouldNotScrollWhenGettingElementSize() {
     driver.get(appServer.whereIs("scroll3.html"));
     long scrollTop = getScrollTop();
