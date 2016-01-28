@@ -65,10 +65,10 @@ public class ProxySetTest {
     try {
       ProxySet set = registry.getAllProxies();
 
-      set.add(buildStubbedRemotePorxy(registry, 10));
-      set.add(buildStubbedRemotePorxy(registry, 2));
-      set.add(buildStubbedRemotePorxy(registry, 0));
-      set.add(buildStubbedRemotePorxy(registry, 1));
+      set.add(buildStubbedRemoteProxy(registry, 10));
+      set.add(buildStubbedRemoteProxy(registry, 2));
+      set.add(buildStubbedRemoteProxy(registry, 0));
+      set.add(buildStubbedRemoteProxy(registry, 1));
 
       List<RemoteProxy> sortedList = set.getSorted();
 
@@ -93,7 +93,7 @@ public class ProxySetTest {
 
   }
 
-  public StubbedRemoteProxy buildStubbedRemotePorxy(Registry registry, int totalUsed){
+  public StubbedRemoteProxy buildStubbedRemoteProxy(Registry registry, int totalUsed){
     RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-host","localhost");
     req.getCapabilities().clear();
 
