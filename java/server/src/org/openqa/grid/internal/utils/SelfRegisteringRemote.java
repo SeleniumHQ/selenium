@@ -63,7 +63,7 @@ public class SelfRegisteringRemote {
     try {
       JsonObject hubParameters = getHubConfiguration();
       if (hubParameters.has(RegistrationRequest.TIME_OUT)){
-        int timeout = hubParameters.get(RegistrationRequest.TIME_OUT).getAsInt() / 1000;
+        int timeout = hubParameters.get(RegistrationRequest.TIME_OUT).getAsInt();
         nodeConfig.getConfiguration().put(RegistrationRequest.TIME_OUT, timeout);
       }
       if (hubParameters.has(RegistrationRequest.BROWSER_TIME_OUT)) {
