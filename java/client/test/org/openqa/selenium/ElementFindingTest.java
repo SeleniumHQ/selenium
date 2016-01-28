@@ -218,6 +218,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.tagName(""));
   }
 
+  @Ignore(CHROME)
   @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByEmptyTagNameShouldThrow() {
     driver.get(pages.formPage);
