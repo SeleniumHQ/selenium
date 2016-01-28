@@ -1,3 +1,7 @@
+v2.50.1
+=======
+ * Changed ChromeOptions to have correct EnableMobileEmulation API.
+
 v2.50.0
 =======
  * Updated embedded Firefox driver with new click algorithm
