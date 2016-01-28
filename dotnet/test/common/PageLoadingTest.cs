@@ -236,6 +236,12 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Safari, "See issue 687, comment 41")]
         public void ShouldTimeoutIfAPageTakesTooLongToLoad()
         {
+            if (TestUtilities.IsMarionette(driver))
+            {
+                // Don't run this test on Marionette.
+                Assert.Ignore("Driver does not return control from timeout wait when executed via Marionette");
+            }
+
             driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(2));
 
             try
