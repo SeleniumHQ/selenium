@@ -253,6 +253,7 @@ public class ErrorCodes {
   }
 
   public static int toStatus(String state) {
-    return stateToStatus.get(state);
+    Integer status = stateToStatus.get(state);
+    return status != null ? status : UNHANDLED_ERROR;
   }
 }
