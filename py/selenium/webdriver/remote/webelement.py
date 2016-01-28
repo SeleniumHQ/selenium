@@ -353,10 +353,13 @@ class WebElement(object):
     @property
     def size(self):
         """The size of the element."""
-        size = self._execute(Command.GET_ELEMENT_SIZE)['value']
-        new_size = {}
-        new_size["height"] = size["height"]
-        new_size["width"] = size["width"]
+        size = {}
+        if self._w3c:
+            size = self._execute(Command.GET_ELEMENT_RECT)
+        else:
+            size = self._execute(Command.GET_ELEMENT_SIZE)['value']
+        new_size = {"height": size["height"],
+                    "width": size["width"]}
         return new_size
 
     def value_of_css_property(self, property_name):
@@ -367,7 +370,10 @@ class WebElement(object):
     @property
     def location(self):
         """The location of the element in the renderable canvas."""
-        old_loc = self._execute(Command.GET_ELEMENT_LOCATION)['value']
+        if self._w3c:
+            old_loc = self._execute(Command.GET_ELEMENT_RECT)
+        else:
+            old_loc = self._execute(Command.GET_ELEMENT_LOCATION)['value']
         new_loc = {"x": old_loc['x'],
                    "y": old_loc['y']}
         return new_loc
@@ -375,7 +381,10 @@ class WebElement(object):
     @property
     def rect(self):
         """A dictionary with the size and location of the element."""
-        return self._execute(Command.GET_ELEMENT_RECT)['value']
+        if self._w3c:
+            return self._execute(Command.GET_ELEMENT_RECT)
+        else:
+            return self._execute(Command.GET_ELEMENT_RECT)['value']
 
     @property
     def screenshot_as_base64(self):
