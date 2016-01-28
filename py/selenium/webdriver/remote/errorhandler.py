@@ -104,7 +104,10 @@ class ErrorHandler(object):
                   status = value.get('error', None)
                   if status is None:
                       status = value["status"]
-                      message = value["value"]["message"]
+                      try:
+                          message = value["value"]["message"]
+                      except TypeError:
+                          message = None
                   else:
                       message = value.get('message', None)
                 except ValueError:
