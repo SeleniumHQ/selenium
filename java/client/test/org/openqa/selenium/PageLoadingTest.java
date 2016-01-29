@@ -249,7 +249,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Ignore({MARIONETTE})
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
+  @SwitchToTopAfterTest
   @Test
   public void testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
     driver.get(pages.framesetPage);

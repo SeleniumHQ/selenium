@@ -36,6 +36,7 @@ import org.junit.runners.model.Statement;
 import org.openqa.selenium.NeedsFreshDriver;
 import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.Pages;
+import org.openqa.selenium.SwitchToTopAfterTest;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
@@ -86,6 +87,7 @@ public abstract class JUnit4TestBase implements WrapsDriver {
     .outerRule(new DetectBrowserRule())
     .around(new TraceMethodNameRule())
     .around(new ManageDriverRule())
+    .around(new SwitchToTopRule())
     .around(new NotYetImplementedRule())
     .around(new CoveringUpSauceErrorsRule());
 
@@ -138,6 +140,17 @@ public abstract class JUnit4TestBase implements WrapsDriver {
     }
   }
 
+  private class SwitchToTopRule extends TestWatcher {
+    @Override
+    protected void finished(Description description) {
+      super.finished(description);
+      SwitchToTopAfterTest annotation = description.getAnnotation(SwitchToTopAfterTest.class);
+      if (annotation != null) {
+        driver.switchTo().defaultContent();
+      }
+    }
+  }
+
   private class CoveringUpSauceErrorsRule implements TestRule {
     @Override
     public Statement apply(final Statement base, final Description description) {
@@ -168,7 +181,6 @@ public abstract class JUnit4TestBase implements WrapsDriver {
         throw Throwables.propagate(t);
       }
     }
-
   }
 
   private class NotYetImplementedRule implements TestRule {

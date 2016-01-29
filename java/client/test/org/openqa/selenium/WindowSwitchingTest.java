@@ -49,7 +49,7 @@ import java.util.Set;
 
 public class WindowSwitchingTest extends JUnit4TestBase {
 
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
+  @SwitchToTopAfterTest
   @Test
   public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
     assumeFalse(Browser.detect() == Browser.opera &&

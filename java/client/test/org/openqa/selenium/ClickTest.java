@@ -49,11 +49,6 @@ public class ClickTest extends JUnit4TestBase {
     driver.get(pages.clicksPage);
   }
 
-  @After
-  public void tearDown() throws Exception {
-    driver.switchTo().defaultContent();
-  }
-
   @Test
   public void testCanClickOnALinkAndFollowIt() {
     driver.findElement(By.id("normal")).click();
@@ -81,9 +76,9 @@ public class ClickTest extends JUnit4TestBase {
     assertEquals("Latch was reset", Boolean.TRUE, samePage);
   }
 
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   @Ignore(value = {MARIONETTE}, reason = "getPageSource issue")
+  @SwitchToTopAfterTest
   public void testCanClickOnALinkThatUpdatesAnotherFrame() {
     driver.switchTo().frame("source");
 
@@ -94,9 +89,9 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   @Ignore(value = {MARIONETTE}, reason = "getPageSource issue")
+  @SwitchToTopAfterTest
   public void testElementsFoundByJsCanLoadUpdatesInAnotherFrame() {
     driver.switchTo().frame("source");
 
@@ -112,6 +107,7 @@ public class ClickTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore(value = {MARIONETTE})
+  @SwitchToTopAfterTest
   public void testJsLocatedElementsCanUpdateFramesIfFoundSomehowElse() {
     driver.switchTo().frame("source");
 
@@ -285,8 +281,8 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {CHROME, MARIONETTE},
-      reason = "Chrome: failed")
+  @Ignore(value = {CHROME, MARIONETTE}, reason = "Chrome: failed")
+  @SwitchToTopAfterTest
   public void testShouldBeAbleToClickOnAnElementInFrameGreaterThanTwoViewports() {
     String url = appServer.whereIs("click_too_big_in_frame.html");
     driver.get(url);

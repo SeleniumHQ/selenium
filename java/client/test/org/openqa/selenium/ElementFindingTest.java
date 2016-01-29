@@ -741,7 +741,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.id("nonExistantButton"));
   }
 
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
+  @SwitchToTopAfterTest
   @Test
   public void testAnElementFoundInADifferentFrameIsStale() {
     driver.get(pages.missedJsReferencePage);
@@ -758,7 +758,7 @@ public class ElementFindingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
+  @SwitchToTopAfterTest
   public void testAnElementFoundInADifferentFrameViaJsCanBeUsed() {
     driver.get(pages.missedJsReferencePage);
 

@@ -108,7 +108,7 @@ public class PositionAndSizeTest extends JUnit4TestBase {
     assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 5010)));
   }
 
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
+  @SwitchToTopAfterTest
   @Test
   public void testShouldGetCoordinatesOfAnElementInAFrame() {
     driver.get(appServer.whereIs("coordinates_tests/element_in_frame.html"));
@@ -119,7 +119,7 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   }
 
   @Ignore({SAFARI, MARIONETTE})
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
+  @SwitchToTopAfterTest
   @Test
   public void testShouldGetCoordinatesInViewPortOfAnElementInAFrame() {
     driver.get(appServer.whereIs("coordinates_tests/element_in_frame.html"));
@@ -129,7 +129,7 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   }
 
   @Ignore({SAFARI, MARIONETTE})
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
+  @SwitchToTopAfterTest
   @Test
   public void testShouldGetCoordinatesInViewPortOfAnElementInANestedFrame() {
     driver.get(appServer.whereIs("coordinates_tests/element_in_nested_frame.html"));

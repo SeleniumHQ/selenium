@@ -45,6 +45,7 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.SwitchToTopAfterTest;
 import org.openqa.selenium.WaitingConditions;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.Ignore;
@@ -183,7 +184,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @Ignore(value = {PHANTOMJS, SAFARI}, reason = "Not tested")
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
+  @SwitchToTopAfterTest
   @Test
   public void canMoveMouseToAnElementInAnIframeAndClick() {
     driver.get(appServer.whereIs("click_tests/click_in_iframe.html"));

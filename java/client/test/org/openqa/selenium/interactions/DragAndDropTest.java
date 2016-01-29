@@ -38,6 +38,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.SwitchToTopAfterTest;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
@@ -87,7 +88,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
+  @SwitchToTopAfterTest
   @Test
   public void testDragAndDropToElementInIframe() {
     driver.get(pages.iframePage);
@@ -102,7 +103,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
+  @SwitchToTopAfterTest
   @Test
   public void testDragAndDropElementWithOffsetInIframeAtBottom() {
     driver.get(appServer.whereIs("iframeAtBottom.html"));

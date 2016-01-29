@@ -321,7 +321,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
     compareColors(expectedColors, actualColors);
   }
 
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
+  @SwitchToTopAfterTest
   @Test
   @Ignore(
       value = {IE, MARIONETTE},
@@ -357,7 +357,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
     compareColors(expectedColors, actualColors);
   }
 
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
+  @SwitchToTopAfterTest
   @Test
   @Ignore(
       value = {IE, CHROME, MARIONETTE},

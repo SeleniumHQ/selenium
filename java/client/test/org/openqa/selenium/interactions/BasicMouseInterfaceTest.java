@@ -40,6 +40,7 @@ import org.openqa.selenium.NeedsFreshDriver;
 import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.SwitchToTopAfterTest;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.Color;
@@ -314,7 +315,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     wait.until(elementTextToEqual(resultArea, expectedEvents));
   }
 
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
+  @SwitchToTopAfterTest
   @Test
   public void testShouldClickElementInIFrame() {
     driver.get(pages.clicksPage);

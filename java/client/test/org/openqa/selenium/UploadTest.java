@@ -60,7 +60,7 @@ public class UploadTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
+  @SwitchToTopAfterTest
   @Test
   public void testFileUploading() throws Exception {
     assumeFalse(
