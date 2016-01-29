@@ -21,7 +21,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
@@ -37,12 +36,6 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
     if (driver != null) {
       driver.quit();
     }
-  }
-
-  @Before
-  @Override
-  public void createDriver() throws Exception {
-    // do nothing, don't want to have it create a driver for these tests
   }
 
   @NeedsLocalEnvironment
