@@ -106,7 +106,7 @@ public class IgnoredTestPrinter {
         return;
       }
 
-      if (ignorance.isIgnored(method, test)) {
+      if (ignorance.isIgnored(description)) {
         ignoreCollector.callback(test.getClass(), method.getMethod());
       }
     }
