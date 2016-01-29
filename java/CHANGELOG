@@ -1,3 +1,13 @@
+v2.50.1
+=======
+
+    * add a way to add to the list of capabilities to consider to the default capability matcher
+    * Grid: Fixing timeout issue again... Why isn't it covered by tests? A rhetorical question...
+    * Java: Improving handling of marionette errors
+    * Java: Replacing ByteArrayOutputStream with CircularOutputStream to prevent OOM exception. Fixes issue #427
+    * Java: Moving CircularOutputStream to another package (it's an internal class so no need to create a copy)
+    * fix #1562
+
 v2.50.0
 =======
 
