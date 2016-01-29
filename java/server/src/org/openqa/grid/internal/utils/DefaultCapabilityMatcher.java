@@ -36,8 +36,7 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
   private static final Logger log = Logger.getLogger(DefaultCapabilityMatcher.class.getName());
   private static final String GRID_TOKEN = "_";
 
-  // temporary fix to only check to most meaningful desiredCapability params
-  private final List<String> toConsider = new ArrayList<>();
+  protected final List<String> toConsider = new ArrayList<>();
 
   public DefaultCapabilityMatcher() {
     toConsider.add(CapabilityType.PLATFORM);
@@ -47,6 +46,13 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
 
   }
 
+  /**
+   * @param capabilityName capability name to have grid match requested with test slot
+   */
+  public void addToConsider(String capabilityName) {
+    toConsider.add(capabilityName);
+  }
+
   public boolean matches(Map<String, Object> nodeCapability, Map<String, Object> requestedCapability) {
     if (nodeCapability == null || requestedCapability == null) {
       return false;
@@ -54,7 +60,6 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
     for (String key : requestedCapability.keySet()) {
       // ignore capabilities that are targeted at grid internal for the
       // matching
-      // TODO freynaud only consider version, browser and OS for now
       if (!key.startsWith(GRID_TOKEN) && toConsider.contains(key)) {
         if (requestedCapability.get(key) != null) {
           String value = requestedCapability.get(key).toString();
