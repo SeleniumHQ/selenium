@@ -39,12 +39,6 @@ public class OperaOptionsFunctionalTest extends JUnit4TestBase {
     }
   }
 
-  @Before
-  @Override
-  public void createDriver() throws Exception {
-    // do nothing, don't want to have it create a driver for these tests
-  }
-
   @NeedsLocalEnvironment
   @Test
   public void canStartOperaWithCustomOptions() {
