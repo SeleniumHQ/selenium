@@ -48,16 +48,6 @@ import static org.openqa.selenium.internal.SocketLock.DEFAULT_PORT;
 
 public class NewProfileExtensionConnection implements ExtensionConnection, NeedsLocalLogs {
 
-  /**
-   * System property that defines the location of the webdriver.xpi browser extension to install
-   * in the browser. If not set, the prebuilt extension bundled with this class will be used
-   * instead.
-   *
-   * @deprecated Use FirefoxDriver.SystemProperty.DRIVER_XPI_PROPERTY instead
-   */
-  @Deprecated
-  public static final String FIREFOX_DRIVER_XPI_PROPERTY = FirefoxDriver.SystemProperty.DRIVER_XPI_PROPERTY;
-
   private final static int BUFFER_SIZE = 4096;
 
   private static final NetworkUtils networkUtils = new NetworkUtils();
