@@ -184,19 +184,6 @@ public class FirefoxBinary {
     return builtPath.toString();
   }
 
-  public void createProfile(String profileName) throws IOException {
-    CommandLine command = new CommandLine(
-        executable.getPath(), "--verbose", "-CreateProfile", profileName);
-    command.setEnvironmentVariable("MOZ_NO_REMOTE", "1");
-
-    if (stream == null) {
-      stream = executable.getDefaultOutputStream();
-    }
-    command.copyOutputTo(stream);
-
-    command.execute();
-  }
-
   /**
    * Waits for the process to execute, returning the command output taken from the profile's
    * execution.
