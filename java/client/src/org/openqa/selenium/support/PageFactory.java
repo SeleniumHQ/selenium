@@ -81,7 +81,7 @@ public class PageFactory {
 
   /**
    * Similar to the other "initElements" methods, but takes an {@link ElementLocatorFactory} which
-   * is used for providing the mechanism for fniding elements. If the ElementLocatorFactory returns
+   * is used for providing the mechanism for finding elements. If the ElementLocatorFactory returns
    * null then the field won't be decorated.
    *
    * @param factory The factory to use
