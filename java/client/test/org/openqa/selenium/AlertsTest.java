@@ -51,11 +51,8 @@ import java.util.Set;
 @Ignore({PHANTOMJS, SAFARI})
 public class AlertsTest extends JUnit4TestBase {
 
-  private WebDriverWait wait;
-
   @Before
   public void setUp() throws Exception {
-    wait = new WebDriverWait(driver, 5);
     driver.get(pages.alertsPage);
   }
 
