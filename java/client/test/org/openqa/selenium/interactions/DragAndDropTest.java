@@ -35,6 +35,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NeedsFreshDriver;
 import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
@@ -122,6 +123,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Ignore(value = {IE}, reason = "IE fails this test if requireWindowFocus=true")
   @Test
+  @NeedsFreshDriver // fails in Sauce if run in a dirty state; to be investigated
   public void testDragAndDropElementWithOffsetInScrolledDiv() {
     driver.get(appServer.whereIs("dragAndDropInsideScrolledDiv.html"));
 
