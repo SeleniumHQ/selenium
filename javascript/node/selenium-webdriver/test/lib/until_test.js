@@ -19,18 +19,19 @@
 
 const assert = require('assert');
 
-const webdriver = require('../../');
 const error = require('../../error');
-const bot = require('../../lib/_base').require('bot');
 const By = require('../../lib/by').By;
 const CommandName = require('../../lib/command').Name;
+const promise = require('../../lib/promise');
 const until = require('../../lib/until');
-
-const createResponse = bot.response.createResponse;
-const createErrorResponse = bot.response.createErrorResponse;
+const webdriver = require('../../lib/webdriver');
 
 describe('until', function() {
   let driver, executor;
+
+  function createResponse(value) {
+    return {status: 0, value};
+  }
 
   class TestExecutor {
     constructor() {
@@ -92,8 +93,7 @@ describe('until', function() {
         return {status: error.ErrorCode.SUCCESS};
       });
       var el = new webdriver.WebElementPromise(driver,
-          webdriver.promise.fulfilled(
-              new webdriver.WebElement(driver, {ELEMENT: 1234})));
+          promise.fulfilled(new webdriver.WebElement(driver, {ELEMENT: 1234})));
       return driver.wait(until.ableToSwitchToFrame(el), 100);
     });
 
@@ -216,7 +216,7 @@ describe('until', function() {
           return el.getId();
         }).then(function(id) {
           assert.deepStrictEqual(responses, [['end']]);
-          assert.equal(id['ELEMENT'], 'abc123');
+          assert.equal(id, 'abc123');
         });
   });
 
@@ -269,8 +269,8 @@ describe('until', function() {
         }).then(function(ids) {
           assert.deepStrictEqual(responses, [['end']]);
           assert.equal(ids.length, 2);
-          assert.equal(ids[0]['ELEMENT'], 'abc123');
-          assert.equal(ids[1]['ELEMENT'], 'foo');
+          assert.equal(ids[0], 'abc123');
+          assert.equal(ids[1], 'foo');
         });
   });
 
@@ -317,8 +317,8 @@ describe('until', function() {
       createResponse('body'),
       createResponse('body'),
       createResponse('body'),
-      createErrorResponse(
-          new bot.Error(error.ErrorCode.STALE_ELEMENT_REFERENCE, 'now stale')),
+      {status: error.ErrorCode.STALE_ELEMENT_REFERENCE,
+       value: {message: 'now stale'}},
       ['end']
     ];
     executor.on(CommandName.GET_ELEMENT_TAG_NAME, function() {

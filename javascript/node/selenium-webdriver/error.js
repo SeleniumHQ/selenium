@@ -165,7 +165,7 @@ class InvalidSelectorError extends WebDriverError {
 
 /**
  * Occurs if the given session id is not in the list of active sessions, meaning
- * the session either does not exist or that it’s not active. 
+ * the session either does not exist or that it’s not active.
  */
 class InvalidSessionIdError extends WebDriverError {
   /** @param {string=} opt_error the error message, if any. */
@@ -382,14 +382,28 @@ class UnableToCaptureScreenError extends WebDriverError {
  * A modal dialog was open, blocking this operation.
  */
 class UnexpectedAlertOpenError extends WebDriverError {
-  /** @param {string=} opt_error the error message, if any. */
-  constructor(opt_error) {
+  /**
+   * @param {string=} opt_error the error message, if any.
+   * @param {string=} opt_text the text of the open dialog, if available.
+   */
+  constructor(opt_error, opt_text) {
     super(opt_error);
+
+    /** @private {(string|undefined)} */
+    this.text_ = opt_text;
   }
 
   /** @override */
   static get code() {
     return 'unexpected alert open';
+  }
+
+  /**
+   * @return {(string|undefined)} The text displayed with the unhandled alert,
+   *     if available.
+   */
+  getAlertText() {
+    return this.text_;
   }
 }
 

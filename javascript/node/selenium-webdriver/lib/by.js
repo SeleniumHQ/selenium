@@ -191,7 +191,7 @@ class By extends LegacyBy {
    *     JavaScript-based locator function.
    */
   static js(script, var_args) {
-    let args = Array.slice.call(arguments, 0);
+    let args = Array.prototype.slice.call(arguments, 0);
     return function(driver) {
       return driver.executeScript.apply(driver, args);
     };

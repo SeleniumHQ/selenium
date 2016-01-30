@@ -43,11 +43,8 @@
 
 const by = require('./by');
 const By = require('./by').By;
+const webdriver = require('./webdriver');
 const error = require('../error');
-const webdriver = require('../');
-
-
-const LegacyCondition = webdriver.until.Condition;
 
 
 /**
@@ -56,7 +53,7 @@ const LegacyCondition = webdriver.until.Condition;
  *
  * @template OUT
  */
-class Condition extends LegacyCondition {
+class Condition {
   /**
    * @param {string} message A descriptive error message. Should complete the
    *     sentence "Waiting [...]"
@@ -64,8 +61,6 @@ class Condition extends LegacyCondition {
    *     evaluate on each iteration of the wait loop.
    */
   constructor(message, fn) {
-    super(message, fn);
-
     /** @private {string} */
     this.description_ = 'Waiting ' + message;
 
@@ -127,7 +122,7 @@ exports.ableToSwitchToFrame = function ableToSwitchToFrame(frame) {
     return driver.switchTo().frame(frame).then(
         function() { return true; },
         function(e) {
-          if (e && e.code !== error.ErrorCode.NO_SUCH_FRAME) {
+          if (!(e instanceof error.NoSuchFrameError)) {
             throw e;
           }
         });
@@ -144,7 +139,7 @@ exports.ableToSwitchToFrame = function ableToSwitchToFrame(frame) {
 exports.alertIsPresent = function alertIsPresent() {
   return new Condition('for alert to be present', function(driver) {
     return driver.switchTo().alert().thenCatch(function(e) {
-      if (e && e.code !== error.ErrorCode.NO_SUCH_ALERT) {
+      if (!(e instanceof error.NoSuchAlertError)) {
         throw e;
       }
     });
@@ -260,7 +255,7 @@ exports.stalenessOf = function stalenessOf(element) {
     return element.getTagName().then(
         function() { return false; },
         function(e) {
-          if (e.code === error.ErrorCode.STALE_ELEMENT_REFERENCE) {
+          if (e instanceof error.StaleElementReferenceError) {
             return true;
           }
           throw e;
