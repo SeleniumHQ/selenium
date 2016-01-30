@@ -61,7 +61,6 @@ public abstract class JUnit4TestBase implements WrapsDriver {
   protected AppServer appServer;
   protected Pages pages;
   private static ThreadLocal<WebDriver> storedDriver = new ThreadLocal<>();
-  private Browser browser;
   protected WebDriver driver;
   protected Wait<WebDriver> wait;
   protected Wait<WebDriver> shortWait;
@@ -84,20 +83,11 @@ public abstract class JUnit4TestBase implements WrapsDriver {
 
   @Rule
   public TestRule chain = RuleChain
-    .outerRule(new DetectBrowserRule())
-    .around(new TraceMethodNameRule())
+    .outerRule(new TraceMethodNameRule())
     .around(new ManageDriverRule())
     .around(new SwitchToTopRule())
     .around(new NotYetImplementedRule())
     .around(new CoveringUpSauceErrorsRule());
-
-  private class DetectBrowserRule extends TestWatcher {
-    @Override
-    protected void starting(Description description) {
-      browser = Browser.detect();
-      super.starting(description);
-    }
-  }
 
   private class TraceMethodNameRule extends TestWatcher {
     @Override
@@ -116,6 +106,7 @@ public abstract class JUnit4TestBase implements WrapsDriver {
   private class ManageDriverRule extends TestWatcher {
     @Override
     protected void starting(Description description) {
+      super.starting(description);
       NeedsFreshDriver annotation = description.getAnnotation(NeedsFreshDriver.class);
       if (annotation != null) {
         removeDriver();
@@ -127,7 +118,6 @@ public abstract class JUnit4TestBase implements WrapsDriver {
       } catch (Exception e) {
         throw new RuntimeException("Exception creating driver", e);
       }
-      super.starting(description);
     }
 
     @Override
@@ -184,6 +174,13 @@ public abstract class JUnit4TestBase implements WrapsDriver {
   }
 
   private class NotYetImplementedRule implements TestRule {
+
+    private Browser browser;
+
+    public NotYetImplementedRule() {
+      browser = Browser.detect();
+    }
+
     @Override
     public Statement apply(final Statement base, final Description description) {
       if (!isNotYetImplemented(description)) {
