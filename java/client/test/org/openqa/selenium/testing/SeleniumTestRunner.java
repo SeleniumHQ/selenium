@@ -26,7 +26,7 @@ import org.openqa.selenium.testing.drivers.TestIgnorance;
 
 public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
 
-  private TestIgnorance ignorance = new TestIgnorance(Browser.detect());
+  private TestIgnorance ignorance;
 
   /**
    * Creates a BlockJUnit4ClassRunner to run {@code klass}
@@ -37,6 +37,11 @@ public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
    */
   public SeleniumTestRunner(Class<?> klass) throws InitializationError {
     super(klass);
+    Browser browser = Browser.detect();
+    if (browser == null && DevMode.isInDevMode()) {
+      browser = Browser.ff;
+    }
+    ignorance = new TestIgnorance(browser);
   }
 
   @Override
