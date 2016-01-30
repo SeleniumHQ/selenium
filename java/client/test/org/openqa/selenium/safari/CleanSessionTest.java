@@ -23,20 +23,22 @@ import static org.junit.Assert.assertTrue;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import org.junit.AfterClass;
 import org.junit.Test;
+import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
-public class CleanSessionTest extends SafariTestBase {
+public class CleanSessionTest extends JUnit4TestBase {
 
   private static final Cookie COOKIE = new Cookie("foo", "bar");
 
   @AfterClass
   public static void quitDriver() {
-    SafariTestBase.quitDriver();
+    JUnit4TestBase.removeDriver();
   }
 
   private void createCleanSession() {
@@ -46,8 +48,15 @@ public class CleanSessionTest extends SafariTestBase {
     safariOptions.setUseCleanSession(true);
     DesiredCapabilities capabilities = DesiredCapabilities.safari();
     capabilities.setCapability(SafariOptions.CAPABILITY, safariOptions);
-    driver = actuallyCreateDriver(capabilities);
-    driver.get(pages.alertsPage);
+    WebDriver otherDriver = null;
+    try {
+      otherDriver = new SafariDriver(capabilities);
+      driver.get(pages.alertsPage);
+    } finally {
+      if (otherDriver != null) {
+        otherDriver.quit();
+      }
+    }
   }
 
   @Test

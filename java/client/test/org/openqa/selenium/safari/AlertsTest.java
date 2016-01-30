@@ -30,16 +30,17 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
 import java.util.concurrent.TimeUnit;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
-public class AlertsTest extends SafariTestBase {
+public class AlertsTest extends JUnit4TestBase {
 
   @AfterClass
   public static void quitDriver() {
-    SafariTestBase.quitDriver();
+    JUnit4TestBase.removeDriver();
   }
 
   @Before

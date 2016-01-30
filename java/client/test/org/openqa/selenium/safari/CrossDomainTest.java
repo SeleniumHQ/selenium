@@ -35,17 +35,18 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.WebbitAppServer;
 import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
 @NeedsLocalEnvironment(reason = "Uses a local server")
-public class CrossDomainTest extends SafariTestBase {
+public class CrossDomainTest extends JUnit4TestBase {
 
   private static AppServer otherServer;
   private static Pages otherPages;
 
   @AfterClass
   public static void quitDriver() {
-    SafariTestBase.quitDriver();
+    JUnit4TestBase.removeDriver();
   }
 
 
