@@ -24,6 +24,7 @@ import static org.junit.Assert.assertThat;
 
 import com.google.common.base.Throwables;
 
+import org.junit.AssumptionViolatedException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.RuleChain;
@@ -112,9 +113,7 @@ public abstract class JUnit4TestBase implements WrapsDriver {
         removeDriver();
       }
       try {
-        driver = actuallyCreateDriver();
-        wait = new WebDriverWait(driver, 30);
-        shortWait = new WebDriverWait(driver, 5);
+        createDriver();
       } catch (Exception e) {
         throw new RuntimeException("Exception creating driver", e);
       }
@@ -159,11 +158,11 @@ public abstract class JUnit4TestBase implements WrapsDriver {
     }
 
     private void dealWithSauceFailureIfNecessary(Throwable t) {
-      if (t.getMessage() != null
+      if (!(t instanceof AssumptionViolatedException) && t.getMessage() != null
           && (t.getMessage().contains("sauce") || t.getMessage().contains("Sauce"))) {
         removeDriver();
         try {
-          actuallyCreateDriver();
+          createDriver();
         } catch (Exception e) {
           throw new RuntimeException("Exception creating driver, after Sauce-detected exception", e);
         }
@@ -265,6 +264,12 @@ public abstract class JUnit4TestBase implements WrapsDriver {
 
   public WebDriver getWrappedDriver() {
     return storedDriver.get();
+  }
+
+  private void createDriver() {
+    driver = actuallyCreateDriver();
+    wait = new WebDriverWait(driver, 30);
+    shortWait = new WebDriverWait(driver, 5);
   }
 
   public static WebDriver actuallyCreateDriver() {
