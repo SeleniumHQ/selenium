@@ -300,9 +300,12 @@ SyntheticMouse.prototype.click = function(target) {
     bot.action.click(element, this.lastMousePosition, this.getMouse_(), true);
   }
 
-  if (bot.dom.isEditable(element) && element.value !== undefined) {
-    goog.dom.selection.setCursorPosition(
+  try { // https://github.com/SeleniumHQ/selenium/issues/1509
+    if (bot.dom.isEditable(element) && element.value !== undefined) {
+      goog.dom.selection.setCursorPosition(
         element, element.value.length);
+    }
+  } catch (ignored) {
   }
 
   this.lastElement = element;
