@@ -28,8 +28,8 @@ const Capabilities = require('./capabilities').Capabilities;
 const command = require('./command');
 const input = require('./input');
 const logging = require('./logging');
-const serializable = require('./serializable');
 const Session = require('./session').Session;
+const Symbols = require('./symbols');
 const promise = require('./promise');
 const until = require('./until');
 
@@ -92,9 +92,8 @@ function executeCommand(executor, command) {
  * <ol>
  * <li>if the object is a WebElement, the return value will be the element's
  *     server ID
- * <li>if the object is a Serializable, its
- *     {@link serializable.Serializable#serialize} function will be invoked and
- *     this algorithm will recursively be applied to the result
+ * <li>if the object defines a {@link Symbols.serialize} method, this algorithm
+ *     will be recursively applied to the object's serialized representation
  * <li>if the object provides a "toJSON" function, this algorithm will
  *     recursively be applied to the result of that function
  * <li>otherwise, the value of each key will be recursively converted according
@@ -132,8 +131,8 @@ function convertValue(value) {
     return '' + value;
   }
 
-  if (serializable.isSerializable(value)) {
-    return toWireValue(value.serialize());
+  if (typeof value[Symbols.serialize] === 'function') {
+    return toWireValue(value[Symbols.serialize]());
   } else if (typeof value.toJSON === 'function') {
     return toWireValue(value.toJSON());
   }
@@ -1523,8 +1522,6 @@ const ELEMENT_ID_KEY = 'element-6066-11e4-a52e-4f735466cecf';
  *     var searchForm = driver.findElement(By.tagName('form'));
  *     var searchBox = searchForm.findElement(By.name('q'));
  *     searchBox.sendKeys('webdriver');
- *
- * @implements {serializable.Serializable}
  */
 class WebElement {
   /**
@@ -1624,8 +1621,10 @@ class WebElement {
     return this.getId();
   }
 
-  /** @override */
-  serialize() {
+  /**
+   * @return {!Object} Returns the serialized representation of this WebElement.
+   */
+  [Symbols.serialize]() {
     return this.getId().then(WebElement.buildId);
   }
 
@@ -2044,7 +2043,6 @@ class WebElement {
     return this.driver_.executeScript('return arguments[0].innerHTML', this);
   }
 }
-serializable.setSerializable(WebElement);
 
 
 /**

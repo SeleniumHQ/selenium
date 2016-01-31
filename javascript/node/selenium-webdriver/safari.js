@@ -40,7 +40,7 @@ const isDevMode = require('./lib/devmode');
 const capabilities = require('./lib/capabilities');
 const command = require('./lib/command');
 const promise = require('./lib/promise');
-const serializable = require('./lib/serializable');
+const Symbols = require('./lib/symbols');
 const webdriver = require('./lib/webdriver');
 const portprober = require('./net/portprober');
 
@@ -418,7 +418,6 @@ const OPTIONS_CAPABILITY_KEY = 'safari.options';
 
 /**
  * Configuration options specific to the {@link Driver SafariDriver}.
- * @implements {serializable.Serializable}
  */
 class Options {
   constructor() {
@@ -500,13 +499,11 @@ class Options {
    * function is an implementation detail not intended for general use.
    * @return {!Object<string, *>} The JSON wire protocol representation of this
    *     instance.
-   * @override
    */
-  serialize() {
+  [Symbols.serialize]() {
     return this.options_ || {};
   }
 }
-serializable.setSerializable(Options);
 
 
 /**

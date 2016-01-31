@@ -76,8 +76,8 @@ const fs = require('fs');
 
 const executors = require('./executors'),
     io = require('./io'),
-    serializable = require('./lib/serializable'),
     promise = require('./lib/promise'),
+    Symbols = require('./lib/symbols'),
     webdriver = require('./lib/webdriver'),
     portprober = require('./net/portprober'),
     remote = require('./remote');
@@ -266,7 +266,6 @@ var OPTIONS_CAPABILITY_KEY = 'chromeOptions';
 
 /**
  * Class for managing {@linkplain Driver OperaDriver} specific options.
- * @implements {serializable.Serializable}
  */
 class Options {
   constructor() {
@@ -396,9 +395,8 @@ class Options {
    *           logPath: (string|undefined),
    *           prefs: (Object|undefined)}} The JSON wire protocol representation
    *     of this instance.
-   * @override
    */
-  serialize() {
+  [Symbols.serialize]() {
     var json = {
       args: this.args_,
       extensions: this.extensions_.map(function(extension) {
@@ -422,7 +420,6 @@ class Options {
     return json;
   }
 }
-serializable.setSerializable(Options);
 
 
 /**

@@ -29,8 +29,8 @@ const AdmZip = require('adm-zip'),
     vm = require('vm');
 
 const isDevMode = require('../lib/devmode'),
-    serializable = require('../lib/serializable'),
     promise = require('../lib/promise'),
+    Symbols = require('../lib/symbols'),
     io = require('../io'),
     extension = require('./extension');
 
@@ -207,7 +207,6 @@ function decode(data) {
  * Models a Firefox proifle directory for use with the FirefoxDriver. The
  * {@code Proifle} directory uses an in-memory model until {@link #writeToDisk}
  * is called.
- * @implements {serializable.Serializable<string>}
  */
 class Profile {
   /**
@@ -391,13 +390,11 @@ class Profile {
   /**
    * Encodes this profile as a zipped, base64 encoded directory.
    * @return {!promise.Promise<string>} A promise for the encoded profile.
-   * @override
    */
-  serialize() {
+  [Symbols.serialize]() {
     return this.encode();
   }
 }
-serializable.setSerializable(Profile);
 
 
 // PUBLIC API

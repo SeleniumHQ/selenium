@@ -18,6 +18,7 @@
 'use strict';
 
 const Capabilities = require('../../lib/capabilities').Capabilities;
+const Symbols = require('../../lib/symbols');
 
 const assert = require('assert');
 
@@ -78,6 +79,6 @@ describe('Capabilities', function() {
   it('can be serialized', function() {
     let m = new Map([['one', 123], ['abc', 'def']]);
     let caps = new Capabilities(m);
-    assert.deepEqual({one: 123, abc: 'def'}, caps.serialize());
+    assert.deepEqual({one: 123, abc: 'def'}, caps[Symbols.serialize]());
   });
 });

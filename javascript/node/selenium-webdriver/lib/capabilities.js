@@ -22,7 +22,7 @@
  * WebDriver session.
  */
 
-const serializable = require('./serializable');
+const Symbols = require('./symbols');
 
 
 /**
@@ -172,8 +172,6 @@ function toMap(hash) {
 
 /**
  * Describes a set of capabilities for a WebDriver session.
- *
- * @implements {serializable.Serializable<!Object<string, ?>>}
  */
 class Capabilities extends Map {
   /**
@@ -283,9 +281,8 @@ class Capabilities extends Map {
   /**
    * @return {!Object<string, ?>} The JSON representation of this instance.
    *     Note, the returned object may contain nested promised values.
-   * @override
    */
-  serialize() {
+  [Symbols.serialize]() {
     let ret = {};
     for (let key of this.keys()) {
       let cap = this.get(key);
@@ -384,7 +381,6 @@ class Capabilities extends Map {
     return this.set(Capability.UNEXPECTED_ALERT_BEHAVIOR, behavior);
   }
 }
-serializable.setSerializable(Capabilities);
 
 
 // PUBLIC API

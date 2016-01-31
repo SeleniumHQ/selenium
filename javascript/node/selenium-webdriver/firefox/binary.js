@@ -28,8 +28,8 @@ const child = require('child_process'),
     util = require('util');
 
 const isDevMode = require('../lib/devmode'),
-    serializable = require('../lib/serializable'),
     promise = require('../lib/promise'),
+    Symbols = require('../lib/symbols'),
     io = require('../io'),
     exec = require('../io/exec');
 
@@ -136,7 +136,6 @@ function installNoFocusLibs(profileDir) {
  * Provides a mechanism to configure and launch Firefox in a subprocess for
  * use with WebDriver.
  *
- * @implements {serializable.Serializable<string>}
  * @final
  */
 class Binary {
@@ -208,13 +207,11 @@ class Binary {
    *
    * @return {!promise.Promise<string>} A promise for this binary's wire
    *     representation.
-   * @override
    */
-  serialize() {
+  [Symbols.serialize]() {
     return promise.fulfilled(this.exe_ || findFirefox());
   }
 }
-serializable.setSerializable(Binary);
 
 
 // PUBLIC API

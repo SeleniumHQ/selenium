@@ -76,7 +76,7 @@ const fs = require('fs'),
 const executors = require('./executors'),
     io = require('./io'),
     capabilities = require('./lib/capabilities'),
-    serializable = require('./lib/serializable'),
+    Symbols = require('./lib/symbols'),
     webdriver = require('./lib/webdriver'),
     portprober = require('./net/portprober'),
     remote = require('./remote');
@@ -95,7 +95,6 @@ const CAPABILITY_KEY = {
 
 /**
  * Class for managing MicrosoftEdgeDriver specific options.
- * @implements {serializable.Serializable}
  */
 class Options {
   constructor() {
@@ -176,9 +175,8 @@ class Options {
    * function is an implementation not intended for general use.
    * @return {{pageLoadStrategy: (string|undefined)}
    *   The JSON wire protocol representation of this instance.
-   * @override
    */
-  serialize() {
+  [Symbols.serialize]() {
     var json = {};
     for (var key in this.options_) {
       if (this.options_[key] != null) {
@@ -188,7 +186,6 @@ class Options {
     return json;
   }
 }
-serializable.setSerializable(Options);
 
 
 /**

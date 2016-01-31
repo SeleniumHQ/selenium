@@ -123,7 +123,7 @@ const executors = require('./executors'),
     Capabilities = require('./lib/capabilities').Capabilities,
     Capability = require('./lib/capabilities').Capability,
     promise = require('./lib/promise'),
-    serializable = require('./lib/serializable'),
+    Symbols = require('./lib/symbols'),
     webdriver = require('./lib/webdriver'),
     portprober = require('./net/portprober'),
     remote = require('./remote');
@@ -369,7 +369,6 @@ let OPTIONS_CAPABILITY_KEY = 'chromeOptions';
 
 /**
  * Class for managing ChromeDriver specific options.
- * @implements serializable.Serializable
  */
 class Options {
   constructor() {
@@ -735,9 +734,8 @@ class Options {
    *           logPath: (string|undefined),
    *           prefs: (Object|undefined)}} The JSON wire protocol representation
    *     of this instance.
-   * @override
    */
-  serialize() {
+  [Symbols.serialize]() {
     let json = {};
     for (let key in this.options_) {
       if (this.options_[key] != null) {
@@ -756,7 +754,6 @@ class Options {
     return json;
   }
 }
-serializable.setSerializable(Options);
 
 
 /**
