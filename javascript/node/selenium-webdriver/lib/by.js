@@ -21,8 +21,6 @@
  * @fileoverview Factory methods for the supported locator strategies.
  */
 
-const LegacyBy = require('./_base').require('webdriver.Locator');
-
 /**
  * Short-hand expressions for the primary element locator strategies.
  * For example the following two statements are equivalent:
@@ -115,15 +113,12 @@ function escapeCss(css) {
  * Describes a mechanism for locating an element on the page.
  * @final
  */
-class By extends LegacyBy {
+class By {
   /**
    * @param {string} using the name of the location strategy to use.
    * @param {string} value the value to search for.
    */
   constructor(using, value) {
-    // TODO: this is a legacy hack that can be removed once fully off closure.
-    super(using, value);
-
     /** @type {string} */
     this.using = using;
 

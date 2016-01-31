@@ -26,7 +26,6 @@ const http = require('http');
 const url = require('url');
 
 const error = require('../error');
-const base = require('../lib/_base');
 const cmd = require('../lib/command');
 const logging = require('../lib/logging');
 

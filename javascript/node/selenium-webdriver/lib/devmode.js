@@ -15,30 +15,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
+/**
+ * @fileoverview Module used to detect if scripts are loaded from the Selenium
+ * project repo instead of from a deployed package.
+ */
+
 'use strict';
 
-var fs = require('fs'),
-    path = require('path');
-
-var resourceRoot = require('../devmode') ?
-    require('./build').projectRoot() :
-    path.join(__dirname, 'data');
-
-
-// PUBLIC API
-
+const fs = require('fs');
+const path = require('path');
 
 /**
- * Locates a test resource.
- * @param {string} resourcePath Path of the resource to locate.
- * @param {string} filePath The file to locate from the root of the project.
- * @return {string} The full path for the file, if it exists.
- * @throws {Error} If the file does not exist.
+ * @const {boolean}
  */
-exports.locate = function(filePath) {
-  var fullPath = path.normalize(path.join(resourceRoot, filePath));
-  if (!fs.existsSync(fullPath)) {
-    throw Error('File does not exist: ' + filePath);
-  }
-  return fullPath;
-};
+module.exports = (function() {
+  let buildDescFile = path.join(__dirname, '..', '..', 'build.desc');
+  return fs.existsSync(buildDescFile);
+})();

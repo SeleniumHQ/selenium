@@ -99,10 +99,12 @@ const url = require('url');
 const Binary = require('./binary').Binary,
     Profile = require('./profile').Profile,
     decodeProfile = require('./profile').decode,
-    webdriver = require('..'),
     executors = require('../executors'),
     httpUtil = require('../http/util'),
     io = require('../io'),
+    capabilities = require('../lib/capabilities'),
+    logging = require('../lib/logging'),
+    webdriver = require('../lib/webdriver'),
     net = require('../net'),
     portprober = require('../net/portprober');
 
@@ -118,10 +120,10 @@ class Options {
     /** @private {Binary} */
     this.binary_ = null;
 
-    /** @private {webdriver.logging.Preferences} */
+    /** @private {logging.Preferences} */
     this.logPrefs_ = null;
 
-    /** @private {webdriver.ProxyConfig} */
+    /** @private {capabilities.ProxyConfig} */
     this.proxy_ = null;
   }
 
@@ -158,7 +160,7 @@ class Options {
 
   /**
    * Sets the logging preferences for the new session.
-   * @param {webdriver.logging.Preferences} prefs The logging preferences.
+   * @param {logging.Preferences} prefs The logging preferences.
    * @return {!Options} A self reference.
    */
   setLoggingPreferences(prefs) {
@@ -169,7 +171,7 @@ class Options {
   /**
    * Sets the proxy to use.
    *
-   * @param {webdriver.ProxyConfig} proxy The proxy configuration to use.
+   * @param {capabilities.ProxyConfig} proxy The proxy configuration to use.
    * @return {!Options} A self reference.
    */
   setProxy(proxy) {
@@ -178,17 +180,17 @@ class Options {
   }
 
   /**
-   * Converts these options to a {@link webdriver.Capabilities} instance.
+   * Converts these options to a {@link capabilities.Capabilities} instance.
    *
-   * @return {!webdriver.Capabilities} A new capabilities object.
+   * @return {!capabilities.Capabilities} A new capabilities object.
    */
   toCapabilities(opt_remote) {
-    var caps = webdriver.Capabilities.firefox();
+    var caps = capabilities.Capabilities.firefox();
     if (this.logPrefs_) {
-      caps.set(webdriver.Capability.LOGGING_PREFS, this.logPrefs_);
+      caps.set(capabilities.Capability.LOGGING_PREFS, this.logPrefs_);
     }
     if (this.proxy_) {
-      caps.set(webdriver.Capability.PROXY, this.proxy_);
+      caps.set(capabilities.Capability.PROXY, this.proxy_);
     }
     if (this.binary_) {
       caps.set('firefox_binary', this.binary_);
@@ -206,11 +208,11 @@ class Options {
  */
 class Driver extends webdriver.WebDriver {
   /**
-   * @param {(Options|webdriver.Capabilities|Object)=} opt_config The
+   * @param {(Options|capabilities.Capabilities|Object)=} opt_config The
    *    configuration options for this driver, specified as either an
-   *    {@link Options} or {@link webdriver.Capabilities}, or as a raw hash
+   *    {@link Options} or {@link capabilities.Capabilities}, or as a raw hash
    *    object.
-   * @param {webdriver.promise.ControlFlow=} opt_flow The flow to
+   * @param {promise.ControlFlow=} opt_flow The flow to
    *     schedule commands through. Defaults to the active flow object.
    */
   constructor(opt_config, opt_flow) {
@@ -218,7 +220,7 @@ class Driver extends webdriver.WebDriver {
     if (opt_config instanceof Options) {
       caps = opt_config.toCapabilities();
     } else {
-      caps = new webdriver.Capabilities(opt_config);
+      caps = new capabilities.Capabilities(opt_config);
     }
 
     let binary = caps.get('firefox_binary') || new Binary();

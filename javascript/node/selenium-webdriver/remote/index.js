@@ -24,11 +24,11 @@ const AdmZip = require('adm-zip'),
     url = require('url'),
     util = require('util');
 
-const _base = require('../lib/_base'),
-    webdriver = require('../'),
-    promise = require('../').promise,
-    httpUtil = require('../http/util'),
+const httpUtil = require('../http/util'),
     exec = require('../io/exec'),
+    input = require('../lib/input'),
+    promise = require('../lib/promise'),
+    webdriver = require('../lib/webdriver'),
     net = require('../net'),
     portprober = require('../net/portprober');
 
@@ -53,8 +53,8 @@ const _base = require('../lib/_base'),
  *
  * @typedef {{
  *   loopback: (boolean|undefined),
- *   port: (number|!webdriver.promise.Promise<number>),
- *   args: !(Array<string>|webdriver.promise.Promise<!Array<string>>),
+ *   port: (number|!promise.Promise<number>),
+ *   args: !(Array<string>|promise.Promise<!Array<string>>),
  *   path: (string|undefined),
  *   env: (!Object<string, string>|undefined),
  *   stdio: (string|!Array<string|number|!Stream|null|undefined>|undefined)
@@ -83,11 +83,11 @@ class DriverService {
     /** @private {boolean} */
     this.loopbackOnly_ = !!options.loopback;
 
-    /** @private {(number|!webdriver.promise.Promise<number>)} */
+    /** @private {(number|!promise.Promise<number>)} */
     this.port_ = options.port;
 
     /**
-     * @private {!(Array<string>|webdriver.promise.Promise<!Array<string>>)}
+     * @private {!(Array<string>|promise.Promise<!Array<string>>)}
      */
     this.args_ = options.args;
 
@@ -103,7 +103,7 @@ class DriverService {
     /**
      * A promise for the managed subprocess, or null if the server has not been
      * started yet. This promise will never be rejected.
-     * @private {webdriver.promise.Promise<!exec.Command>}
+     * @private {promise.Promise<!exec.Command>}
      */
     this.command_ = null;
 
@@ -111,7 +111,7 @@ class DriverService {
      * Promise that resolves to the server's address or null if the server has
      * not been started. This promise will be rejected if the server terminates
      * before it starts accepting WebDriver requests.
-     * @private {webdriver.promise.Promise<string>}
+     * @private {promise.Promise<string>}
      */
     this.address_ = null;
   }
@@ -126,7 +126,7 @@ class DriverService {
   }
 
   /**
-   * @return {!webdriver.promise.Promise<string>} A promise that resolves to
+   * @return {!promise.Promise<string>} A promise that resolves to
    *    the server's address.
    * @throws {Error} If the server has not been started.
    */
@@ -150,7 +150,7 @@ class DriverService {
    * Starts the server if it is not already running.
    * @param {number=} opt_timeoutMs How long to wait, in milliseconds, for the
    *     server to start accepting requests. Defaults to 30 seconds.
-   * @return {!webdriver.promise.Promise<string>} A promise that will resolve
+   * @return {!promise.Promise<string>} A promise that will resolve
    *     to the server's base URL when it has started accepting requests. If the
    *     timeout expires before the server has started, the promise will be
    *     rejected.
@@ -216,7 +216,7 @@ class DriverService {
    * Stops the service if it is not currently running. This function will kill
    * the server immediately. To synchronize with the active control flow, use
    * {@link #stop()}.
-   * @return {!webdriver.promise.Promise} A promise that will be resolved when
+   * @return {!promise.Promise} A promise that will be resolved when
    *     the server has been stopped.
    */
   kill() {
@@ -231,7 +231,7 @@ class DriverService {
   /**
    * Schedules a task in the current control flow to stop the server if it is
    * currently running.
-   * @return {!webdriver.promise.Promise} A promise that will be resolved when
+   * @return {!promise.Promise} A promise that will be resolved when
    *     the server has been stopped.
    */
   stop() {
@@ -304,10 +304,10 @@ class SeleniumServer extends DriverService {
  *
  * @typedef {{
  *   loopback: (boolean|undefined),
- *   port: (number|!webdriver.promise.Promise<number>),
- *   args: !(Array<string>|webdriver.promise.Promise<!Array<string>>),
+ *   port: (number|!promise.Promise<number>),
+ *   args: !(Array<string>|promise.Promise<!Array<string>>),
  *   jvmArgs: (!Array<string>|
- *             !webdriver.promise.Promise<!Array<string>>|
+ *             !promise.Promise<!Array<string>>|
  *             undefined),
  *   env: (!Object<string, string>|undefined),
  *   stdio: (string|!Array<string|number|!Stream|null|undefined>|undefined)
@@ -333,7 +333,7 @@ SeleniumServer.Options;
  *
  * @final
  */
-class FileDetector extends webdriver.FileDetector {
+class FileDetector extends input.FileDetector {
   /** @override */
   handleFile(driver, filePath) {
     return promise.checkedNodeCall(fs.stat, filePath).then(function(stats) {

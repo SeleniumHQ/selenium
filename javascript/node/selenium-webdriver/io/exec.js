@@ -17,9 +17,8 @@
 
 'use strict';
 
-var childProcess = require('child_process');
-
-var promise = require('..').promise;
+const childProcess = require('child_process');
+const promise = require('../lib/promise');
 
 
 /**

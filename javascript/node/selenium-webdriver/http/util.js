@@ -19,21 +19,22 @@
  * @fileoverview Various HTTP utilities.
  */
 
-var base = require('../lib/_base'),
-    error = require('../error'),
+'use strict';
+
+const error = require('../error'),
     Executor = require('./index').Executor,
     HttpClient = require('./index').HttpClient,
     HttpRequest = require('./index').Request,
     Command = require('../lib/command').Command,
     CommandName = require('../lib/command').Name,
-    promise = base.require('webdriver.promise');
+    promise = require('../lib/promise');
 
 
 
 /**
  * Queries a WebDriver server for its current status.
  * @param {string} url Base URL of the server to query.
- * @return {!webdriver.promise.Promise.<!Object>} A promise that resolves with
+ * @return {!promise.Promise.<!Object>} A promise that resolves with
  *     a hash of the server status.
  */
 function getStatus(url) {
@@ -53,7 +54,7 @@ function getStatus(url) {
 /**
  * Queries a WebDriver server for its current status.
  * @param {string} url Base URL of the server to query.
- * @return {!webdriver.promise.Promise.<!Object>} A promise that resolves with
+ * @return {!promise.Promise.<!Object>} A promise that resolves with
  *     a hash of the server status.
  */
 exports.getStatus = getStatus;
@@ -63,7 +64,7 @@ exports.getStatus = getStatus;
  * Waits for a WebDriver server to be healthy and accepting requests.
  * @param {string} url Base URL of the server to query.
  * @param {number} timeout How long to wait for the server.
- * @return {!webdriver.promise.Promise} A promise that will resolve when the
+ * @return {!promise.Promise} A promise that will resolve when the
  *     server is ready.
  */
 exports.waitForServer = function(url, timeout) {
@@ -96,7 +97,7 @@ exports.waitForServer = function(url, timeout) {
  * timeout expires.
  * @param {string} url The URL to poll.
  * @param {number} timeout How long to wait, in milliseconds.
- * @return {!webdriver.promise.Promise} A promise that will resolve when the
+ * @return {!promise.Promise} A promise that will resolve when the
  *     URL responds with 2xx.
  */
 exports.waitForUrl = function(url, timeout) {

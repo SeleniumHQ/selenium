@@ -17,15 +17,22 @@
 
 'use strict';
 
-const base = require('./lib/_base'),
-    executors = require('./executors');
+const chrome = require('./chrome');
+const edge = require('./edge');
+const executors = require('./executors');
+const firefox = require('./firefox');
+const ie = require('./ie');
+const capabilities = require('./lib/capabilities');
+const webdriver = require('./lib/webdriver');
+const promise = require('./lib/promise');
+const opera = require('./opera');
+const phantomjs = require('./phantomjs');
+const safari = require('./safari');
 
-// Use base.require to avoid circular references between index and this module.
-const Browser = base.require('webdriver.Browser'),
-    Capabilities = base.require('webdriver.Capabilities'),
-    Capability = base.require('webdriver.Capability'),
-    WebDriver = base.require('webdriver.WebDriver'),
-    promise = base.require('webdriver.promise');
+const Browser = capabilities.Browser;
+const Capabilities = capabilities.Capabilities;
+const Capability = capabilities.Capability;
+const WebDriver = webdriver.WebDriver;
 
 
 
@@ -34,7 +41,7 @@ var seleniumServer;
 /**
  * Starts an instance of the Selenium server if not yet running.
  * @param {string} jar Path to the server jar to use.
- * @return {!webdriver.promise.Promise<string>} A promise for the server's
+ * @return {!promise.Promise<string>} A promise for the server's
  *     addrss once started.
  */
 function startSeleniumServer(jar) {
@@ -89,7 +96,7 @@ function startSeleniumServer(jar) {
  */
 class Builder {
   constructor() {
-    /** @private {webdriver.promise.ControlFlow} */
+    /** @private {promise.ControlFlow} */
     this.flow_ = null;
 
     /** @private {string} */
@@ -98,7 +105,7 @@ class Builder {
     /** @private {?string} */
     this.proxy_ = null;
 
-    /** @private {!webdriver.Capabilities} */
+    /** @private {!Capabilities} */
     this.capabilities_ = new Capabilities();
 
     /** @private {chrome.Options} */
@@ -183,8 +190,8 @@ class Builder {
   /**
    * Sets the desired capabilities when requesting a new session. This will
    * overwrite any previously set capabilities.
-   * @param {!(Object|webdriver.Capabilities)} capabilities The desired
-   *     capabilities for a new session.
+   * @param {!(Object|Capabilities)} capabilities The desired capabilities for
+   *     a new session.
    * @return {!Builder} A self reference.
    */
   withCapabilities(capabilities) {
@@ -195,8 +202,7 @@ class Builder {
   /**
    * Returns the base set of capabilities this instance is currently configured
    * to use.
-   * @return {!webdriver.Capabilities} The current capabilities for this
-   *     builder.
+   * @return {!Capabilities} The current capabilities for this builder.
    */
   getCapabilities() {
     return this.capabilities_;
@@ -211,7 +217,7 @@ class Builder {
    * environment variable. If set, this environment variable should be of the
    * form `browser[:[version][:platform]]`.
    *
-   * @param {(string|webdriver.Browser)} name The name of the target browser;
+   * @param {(string|Browser)} name The name of the target browser;
    *     common defaults are available on the {@link webdriver.Browser} enum.
    * @param {string=} opt_version A desired version; may be omitted if any
    *     version should be used.
@@ -230,7 +236,7 @@ class Builder {
    * Sets the proxy configuration to use for WebDriver clients created by this
    * builder. Any calls to {@link #withCapabilities} after this function will
    * overwrite these settings.
-   * @param {!webdriver.ProxyConfig} config The configuration to use.
+   * @param {!capabilities.ProxyConfig} config The configuration to use.
    * @return {!Builder} A self reference.
    */
   setProxy(config) {
@@ -241,7 +247,7 @@ class Builder {
   /**
    * Sets the logging preferences for the created session. Preferences may be
    * changed by repeated calls, or by calling {@link #withCapabilities}.
-   * @param {!(webdriver.logging.Preferences|Object.<string, string>)} prefs The
+   * @param {!(./logging.Preferences|Object<string, string>)} prefs The
    *     desired logging preferences.
    * @return {!Builder} A self reference.
    */
@@ -284,9 +290,9 @@ class Builder {
   }
 
   /**
-   * Sets Chrome specific {@linkplain ./chrome.Options options}
-   * for drivers created by this builder. Any logging or proxy settings defined
-   * on the given options will take precedence over those set through
+   * Sets Chrome specific {@linkplain chrome.Options options} for drivers
+   * created by this builder. Any logging or proxy settings defined on the given
+   * options will take precedence over those set through
    * {@link #setLoggingPrefs} and {@link #setProxy}, respectively.
    *
    * @param {!chrome.Options} options The ChromeDriver options to use.
@@ -298,9 +304,9 @@ class Builder {
   }
 
   /**
-   * Sets Firefox specific {@linkplain ./firefox.Options options}
-   * for drivers created by this builder. Any logging or proxy settings defined
-   * on the given options will take precedence over those set through
+   * Sets Firefox specific {@linkplain firefox.Options options} for drivers
+   * created by this builder. Any logging or proxy settings defined on the given
+   * options will take precedence over those set through
    * {@link #setLoggingPrefs} and {@link #setProxy}, respectively.
    *
    * @param {!firefox.Options} options The FirefoxDriver options to use.
@@ -312,10 +318,10 @@ class Builder {
   }
 
   /**
-   * Sets Opera specific {@linkplain ./opera.Options options} for drivers
-   * created by this builder. Any logging or proxy settings defined on the
-   * given options will take precedence over those set through
-   * {@link #setLoggingPrefs} and {@link #setProxy}, respectively.
+   * Sets Opera specific {@linkplain opera.Options options} for drivers created
+   * by this builder. Any logging or proxy settings defined on the given options
+   * will take precedence over those set through {@link #setLoggingPrefs} and
+   * {@link #setProxy}, respectively.
    *
    * @param {!opera.Options} options The OperaDriver options to use.
    * @return {!Builder} A self reference.
@@ -326,10 +332,9 @@ class Builder {
   }
 
   /**
-   * Sets Microsoft's Internet Explorer specific
-   * {@linkplain selenium-webdriver/ie.Options options} for drivers created by
-   * this builder. Any proxy settings defined on the given options will take
-   * precedence over those set through {@link #setProxy}.
+   * Set Internet Explorer specific {@linkplain ie.Options options} for drivers
+   * created by this builder. Any proxy settings defined on the given options
+   * will take precedence over those set through {@link #setProxy}.
    *
    * @param {!ie.Options} options The IEDriver options to use.
    * @return {!Builder} A self reference.
@@ -340,10 +345,10 @@ class Builder {
   }
 
   /**
-   * Sets Microsoft's Edge specific
-   * {@linkplain selenium-webdriver/edge.Options options} for drivers created by
-   * this builder. Any proxy settings defined on the given options will take
-   * precedence over those set through {@link #setProxy}.
+   * Set {@linkplain edge.Options options} specific to Microsoft's Edge browser
+   * for drivers created by this builder. Any proxy settings defined on the
+   * given options will take precedence over those set through
+   * {@link #setProxy}.
    *
    * @param {!edge.Options} options The MicrosoftEdgeDriver options to use.
    * @return {!Builder} A self reference.
@@ -354,7 +359,7 @@ class Builder {
   }
 
   /**
-   * Sets Safari specific {@linkplain ./safari.Options options} for drivers
+   * Sets Safari specific {@linkplain safari.Options options} for drivers
    * created by this builder. Any logging settings defined on the given options
    * will take precedence over those set through {@link #setLoggingPrefs}.
    *
@@ -370,7 +375,7 @@ class Builder {
    * Sets the control flow that created drivers should execute actions in. If
    * the flow is never set, or is set to {@code null}, it will use the active
    * flow at the time {@link #build()} is called.
-   * @param {webdriver.promise.ControlFlow} flow The control flow to use, or
+   * @param {promise.ControlFlow} flow The control flow to use, or
    *     {@code null} to
    * @return {!Builder} A self reference.
    */
@@ -449,45 +454,24 @@ class Builder {
     // Check for a native browser.
     switch (browser) {
       case Browser.CHROME:
-        // Requiring 'chrome' above would create a cycle:
-        // index -> builder -> chrome -> index
-        var chrome = require('./chrome');
         return new chrome.Driver(capabilities, null, this.flow_);
 
       case Browser.FIREFOX:
-        // Requiring 'firefox' above would create a cycle:
-        // index -> builder -> firefox -> index
-        var firefox = require('./firefox');
         return new firefox.Driver(capabilities, this.flow_);
 
       case Browser.INTERNET_EXPLORER:
-        // Requiring 'ie' above would create a cycle:
-        // index -> builder -> ie -> index
-        var ie = require('./ie');
         return new ie.Driver(capabilities, this.flow_);
 
       case Browser.EDGE:
-        // Requiring 'edge' above would create a cycle:
-        // index -> builder -> edge -> index
-        var edge = require('./edge');
         return new edge.Driver(capabilities, null, this.flow_);
 
       case Browser.OPERA:
-        // Requiring 'opera' would create a cycle:
-        // index -> builder -> opera -> index
-        var opera = require('./opera');
         return new opera.Driver(capabilities, this.flow_);
 
       case Browser.PHANTOM_JS:
-        // Requiring 'phantomjs' would create a cycle:
-        // index -> builder -> phantomjs -> index
-        var phantomjs = require('./phantomjs');
         return new phantomjs.Driver(capabilities, this.flow_);
 
       case Browser.SAFARI:
-        // Requiring 'safari' would create a cycle:
-        // index -> builder -> safari -> index
-        var safari = require('./safari');
         return new safari.Driver(capabilities, this.flow_);
 
       default:

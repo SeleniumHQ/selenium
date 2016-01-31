@@ -42,7 +42,6 @@ test.suite(function(env) {
   });
 
   describe('finding elements', function() {
-
     test.it(
         'should work after loading multiple pages in a row',
         function() {
@@ -63,7 +62,7 @@ test.suite(function(env) {
         driver.get(Pages.formPage);
         driver.findElement(By.id('nonExistantButton')).
             then(fail, function(e) {
-              assert(e.code).equalTo(error.ErrorCode.NO_SUCH_ELEMENT);
+              assert(e).instanceOf(error.NoSuchElementError);
             });
       });
 
@@ -86,11 +85,12 @@ test.suite(function(env) {
       });
 
       test.it(
-        'should be able to find elements by partial link text', function() {
-          driver.get(Pages.xhtmlTestPage);
-          driver.findElement(By.partialLinkText('ick me')).click();
-          driver.wait(until.titleIs('We Arrive Here'), 5000);
-        });
+          'should be able to find elements by partial link text',
+          function() {
+            driver.get(Pages.xhtmlTestPage);
+            driver.findElement(By.partialLinkText('ick me')).click();
+            driver.wait(until.titleIs('We Arrive Here'), 5000);
+          });
 
       test.it('should work when link text contains equals sign', function() {
         driver.get(Pages.xhtmlTestPage);
@@ -230,7 +230,7 @@ test.suite(function(env) {
         driver.get(Pages.xhtmlTestPage);
         driver.findElement(By.className('nameB')).
             then(fail, function(e) {
-              assert(e.code).equalTo(error.ErrorCode.NO_SUCH_ELEMENT);
+              assert(e).instanceOf(error.NoSuchElementError);
             });
       });
 

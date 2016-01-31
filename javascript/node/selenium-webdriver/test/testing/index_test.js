@@ -48,8 +48,7 @@ describe('Mocha Integration', function() {
 
       beforeEach(function() {
         flowReset = false;
-        promise.controlFlow().once(
-            promise.ControlFlow.EventType.RESET, onreset);
+        test.controlFlow().once(promise.ControlFlow.EventType.RESET, onreset);
       });
 
       test.it('', function() {
@@ -59,7 +58,7 @@ describe('Mocha Integration', function() {
 
       afterEach(function() {
         assert.ok(!flowReset);
-        promise.controlFlow().removeListener(
+        test.controlFlow().removeListener(
             promise.ControlFlow.EventType.RESET, onreset);
       });
 
@@ -73,8 +72,7 @@ describe('Mocha Integration', function() {
 
       beforeEach(function() {
         flowReset = false;
-        promise.controlFlow().once(
-            promise.ControlFlow.EventType.RESET, onreset);
+        test.controlFlow().once(promise.ControlFlow.EventType.RESET, onreset);
       });
 
       test.it('', function() {
@@ -94,9 +92,11 @@ describe('Mocha Integration', function() {
       });
 
       afterEach(function() {
-        promise.controlFlow().removeListener(
-            promise.ControlFlow.EventType.RESET, onreset);
-        assert.ok(flowReset, 'control flow was not reset after a timeout');
+        return Promise.resolve().then(function() {
+          test.controlFlow().removeListener(
+              promise.ControlFlow.EventType.RESET, onreset);
+          assert.ok(flowReset, 'control flow was not reset after a timeout');
+        });
       });
 
       function onreset() {
@@ -137,8 +137,6 @@ describe('Mocha async "done" support', function() {
    test.it('delayed', function(done) {
       assert(done);
       assert.strictEqual(typeof done, 'function');
-      //console.log(done.name);
-      //console.log(done.toString());
       setTimeout(function delayedTimeoutCallback() {
          waited = true;
          done();
@@ -162,7 +160,7 @@ describe('ControlFlow and "done" work together', function() {
    var flow, order;
    before(function() {
       order = [];
-      flow = promise.controlFlow();
+      flow = test.controlFlow();
       flow.execute(function() { order.push(1); });
    });
 

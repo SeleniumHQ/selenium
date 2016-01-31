@@ -20,117 +20,40 @@
  * public API and provides convenience assessors to certain sub-modules.
  */
 
-var builder = require('./builder');
-var error = require('./error');
-var base = require('./lib/_base');
-var command = require('./lib/command');
-var logging = require('./lib/logging');
+'use strict';
+
+const builder = require('./builder');
+const error = require('./error');
+const actions = require('./lib/actions');
+const by = require('./lib/by');
+const capabilities = require('./lib/capabilities');
+const command = require('./lib/command');
+const events = require('./lib/events');
+const input = require('./lib/input');
+const logging = require('./lib/logging');
+const promise = require('./lib/promise');
+const serializable = require('./lib/serializable');
+const session = require('./lib/session');
+const until = require('./lib/until');
+const webdriver = require('./lib/webdriver');
 
 
-// NOTE: the remainder of this file is nasty and verbose, but the annotations
-// are necessary to guide the Closure Compiler's type analysis. Without them,
-// we would not be able to extract any meaningful API documentation.
-
-
-/** @type {function(new: webdriver.ActionSequence)} */
-exports.ActionSequence = base.require('webdriver.ActionSequence');
-
-
-/** @type {function(new: builder.Builder)} */
+exports.ActionSequence = actions.ActionSequence;
+exports.Browser = capabilities.Browser;
 exports.Builder = builder.Builder;
-
-
-exports.By = require('./lib/by').By;
-
-
-/** @type {function(new: webdriver.Capabilities)} */
-exports.Capabilities = base.require('webdriver.Capabilities');
-
-
-/** @type {function(new: webdriver.EventEmitter)} */
-exports.EventEmitter = base.require('webdriver.EventEmitter');
-
-
-/** @type {function(new: webdriver.FileDetector)} */
-exports.FileDetector = base.require('webdriver.FileDetector');
-
-
-/** @type {function(new: webdriver.Serializable)} */
-exports.Serializable = base.require('webdriver.Serializable');
-
-
-/** @type {function(new: webdriver.Session)} */
-exports.Session = base.require('webdriver.Session');
-
-
-/** @type {function(new: webdriver.WebDriver)} */
-exports.WebDriver = base.require('webdriver.WebDriver');
-
-
-/** @type {function(new: webdriver.WebElement)} */
-exports.WebElement = base.require('webdriver.WebElement');
-
-
-/** @type {function(new: webdriver.WebElementPromise)} */
-exports.WebElementPromise = base.require('webdriver.WebElementPromise');
-
-
-// Export the remainder of our API through getters to keep things cleaner
-// when this module is used in a REPL environment.
-
-
-/** @type {webdriver.Browser.} */
-(exports.__defineGetter__('Browser', function() {
-  return base.require('webdriver.Browser');
-}));
-
-
-/** @type {webdriver.Button.} */
-(exports.__defineGetter__('Button', function() {
-  return base.require('webdriver.Button');
-}));
-
-
-/** @type {webdriver.Capability.} */
-(exports.__defineGetter__('Capability', function() {
-  return base.require('webdriver.Capability');
-}));
-
-
-/** @type {webdriver.Key.} */
-(exports.__defineGetter__('Key', function() {
-  return base.require('webdriver.Key');
-}));
-
-
-/** @type {error.} */
-(exports.__defineGetter__('error', function() {
-  return error;
-}));
-
-
-/** @type {error.} */
-(exports.__defineGetter__('error', function() {
-  return error;
-}));
-
-
+exports.Button = input.Button;
+exports.By = by.By;
+exports.Capabilities = capabilities.Capabilities;
+exports.Capability = capabilities.Capability;
+exports.EventEmitter = events.EventEmitter;
+exports.FileDetector = input.FileDetector;
+exports.Key = input.Key;
+exports.Serializable = serializable.Serializable;
+exports.Session = session.Session;
+exports.WebDriver = webdriver.WebDriver;
+exports.WebElement = webdriver.WebElement;
+exports.WebElementPromise = webdriver.WebElementPromise;
+exports.error = error;
 exports.logging = logging;
-
-
-/** @type {webdriver.promise.} */
-(exports.__defineGetter__('promise', function() {
-  return base.exportPublicApi('webdriver.promise');
-}));
-
-
-/** @type {webdriver.stacktrace.} */
-(exports.__defineGetter__('stacktrace', function() {
-  return base.exportPublicApi('webdriver.stacktrace');
-}));
-
-
-/** @type {webdriver.until.} */
-(exports.__defineGetter__('until', function() {
-  return base.exportPublicApi('webdriver.until');
-}));
+exports.promise = promise;
+exports.until = until;

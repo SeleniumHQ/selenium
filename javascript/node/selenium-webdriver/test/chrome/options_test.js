@@ -28,7 +28,6 @@ var test = require('../../lib/test');
 
 
 describe('chrome.Options', function() {
-
   describe('fromCapabilities', function() {
 
     it('should return a new Options instance if none were defined',

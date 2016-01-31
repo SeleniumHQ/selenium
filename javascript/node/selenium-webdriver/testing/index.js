@@ -189,6 +189,16 @@ function ignore(predicateFn) {
 
 // PUBLIC API
 
+
+/**
+ * @return {!promise.ControlFlow} the control flow instance used by this module
+ *     to coordinate test actions.
+ */
+exports.controlFlow = function(){
+  return flow;
+};
+
+
 /**
  * Registers a new test suite.
  * @param {string} name The suite name.

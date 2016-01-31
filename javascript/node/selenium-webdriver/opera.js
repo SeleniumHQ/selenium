@@ -74,9 +74,11 @@
 
 const fs = require('fs');
 
-const webdriver = require('./index'),
-    executors = require('./executors'),
+const executors = require('./executors'),
     io = require('./io'),
+    serializable = require('./lib/serializable'),
+    promise = require('./lib/promise'),
+    webdriver = require('./lib/webdriver'),
     portprober = require('./net/portprober'),
     remote = require('./remote');
 
@@ -211,7 +213,7 @@ class ServiceBuilder {
     return new remote.DriverService(this.exe_, {
       loopback: true,
       port: port,
-      args: webdriver.promise.when(port, function(port) {
+      args: promise.when(port, function(port) {
         return args.concat('--port=' + port);
       }),
       env: this.env_,
@@ -264,11 +266,10 @@ var OPTIONS_CAPABILITY_KEY = 'chromeOptions';
 
 /**
  * Class for managing {@linkplain Driver OperaDriver} specific options.
+ * @implements {serializable.Serializable}
  */
-class Options extends webdriver.Serializable {
+class Options {
   constructor() {
-    super();
-
     /** @private {!Array.<string>} */
     this.args_ = [];
 
@@ -390,7 +391,7 @@ class Options extends webdriver.Serializable {
    * @return {{args: !Array.<string>,
    *           binary: (string|undefined),
    *           detach: boolean,
-   *           extensions: !Array.<(string|!webdriver.promise.Promise.<string>))>,
+   *           extensions: !Array.<(string|!promise.Promise.<string>))>,
    *           localState: (Object|undefined),
    *           logPath: (string|undefined),
    *           prefs: (Object|undefined)}} The JSON wire protocol representation
@@ -404,7 +405,7 @@ class Options extends webdriver.Serializable {
         if (Buffer.isBuffer(extension)) {
           return extension.toString('base64');
         }
-        return webdriver.promise.checkedNodeCall(
+        return promise.checkedNodeCall(
             fs.readFile, extension, 'base64');
       })
     };
@@ -421,6 +422,7 @@ class Options extends webdriver.Serializable {
     return json;
   }
 }
+serializable.setSerializable(Options);
 
 
 /**
@@ -432,7 +434,7 @@ class Driver extends webdriver.WebDriver {
    *     options.
    * @param {remote.DriverService=} opt_service The session to use; will use
    *     the {@link getDefaultService default service} by default.
-   * @param {webdriver.promise.ControlFlow=} opt_flow The control flow to use,
+   * @param {promise.ControlFlow=} opt_flow The control flow to use,
    *     or {@code null} to use the currently active flow.
    */
   constructor(opt_config, opt_service, opt_flow) {

@@ -20,9 +20,9 @@
 var assert = require('assert');
 
 var build = require('./build'),
-    webdriver = require('../..'),
+    isDevMode = require('../devmode'),
+    webdriver = require('../../'),
     flow = webdriver.promise.controlFlow(),
-    _base = require('../_base'),
     remote = require('../../remote'),
     testing = require('../../testing'),
     fileserver = require('./fileserver');
@@ -194,7 +194,7 @@ function suite(fn, opt_options) {
     browsers.forEach(function(browser) {
       testing.describe('[' + browser + ']', function() {
 
-        if (_base.isDevMode() && nativeRun) {
+        if (isDevMode && nativeRun) {
           if (browser === webdriver.Browser.FIREFOX) {
             testing.before(function() {
               return build.of('//javascript/firefox-driver:webdriver')

@@ -19,7 +19,7 @@
 
 var Browser = require('..').Browser,
     By = require('..').By,
-    ErrorCode = require('..').error.ErrorCode,
+    error = require('../error'),
     until = require('..').until,
     assert = require('../testing/assert'),
     test = require('../lib/test'),
@@ -81,10 +81,10 @@ test.suite(function(env) {
     driver.get(Pages.formPage);
 
     driver.findElement(By.id('imageButton')).click();
-    driver.wait(until.titleIs('We Arrive Here'), 5000);
+    driver.wait(until.titleIs('We Arrive Here'), 2500);
 
     driver.navigate().back();
-    assert(driver.getTitle()).equalTo('We Leave From Here');
+    driver.wait(until.titleIs('We Leave From Here'), 2500);
   });
 
   test.ignore(browsers(Browser.SAFARI)).
@@ -92,10 +92,10 @@ test.suite(function(env) {
     driver.get(Pages.xhtmlTestPage);
 
     driver.findElement(By.name('sameWindow')).click();
-    driver.wait(until.titleIs('This page has iframes'), 5000);
+    driver.wait(until.titleIs('This page has iframes'), 2500);
 
     driver.navigate().back();
-    assert(driver.getTitle()).equalTo('XHTML Test Page');
+    driver.wait(until.titleIs('XHTML Test Page'), 2500);
   });
 
   test.ignore(browsers(Browser.SAFARI)).
@@ -146,10 +146,8 @@ test.suite(function(env) {
           then(function() {
             throw Error('Should have timed out on page load');
           }, function(e) {
-            // The FirefoxDriver returns TIMEOUT directly, where as the
-            // java server returns SCRIPT_TIMEOUT (bug?).
-            if (e.code !== ErrorCode.SCRIPT_TIMEOUT &&
-                e.code !== ErrorCode.TIMEOUT) {
+            if (!(e instanceof error.ScriptTimeoutError)
+                && !(e instanceof error.TimeoutError)) {
               throw Error('Unexpected error response: ' + e);
             }
           });

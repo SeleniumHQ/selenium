@@ -17,18 +17,18 @@
 
 'use strict';
 
-var spawn = require('child_process').spawn,
+const spawn = require('child_process').spawn,
     fs = require('fs'),
     path = require('path');
 
-var promise = require('../..').promise,
-    base = require('../_base');
+const isDevMode = require('../devmode'),
+    promise = require('../promise');
 
 var projectRoot = path.normalize(path.join(__dirname, '../../../../..'));
 
 
 function checkIsDevMode() {
-  if (!base.isDevMode()) {
+  if (!isDevMode) {
     throw Error('Cannot execute build; not running in dev mode');
   }
 }

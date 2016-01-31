@@ -21,7 +21,7 @@ var exec = require('child_process').exec,
     fs = require('fs'),
     net = require('net');
 
-var promise = require('../index').promise;
+var promise = require('../lib/promise');
 
 
 /**

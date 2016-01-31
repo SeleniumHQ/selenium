@@ -30,17 +30,14 @@
 const fs = require('fs'),
     util = require('util');
 
-const webdriver = require('./index'),
-    executors = require('./executors'),
+const executors = require('./executors'),
     io = require('./io'),
+    promise = require('./lib/promise'),
+    webdriver = require('./lib/webdriver'),
     portprober = require('./net/portprober'),
     remote = require('./remote');
 
 
-/**
- * @const
- * @final
- */
 const IEDRIVER_EXE = 'IEDriverServer.exe';
 
 
@@ -406,7 +403,7 @@ class Driver extends webdriver.WebDriver {
   /**
    * @param {(webdriver.Capabilities|Options)=} opt_config The configuration
    *     options.
-   * @param {webdriver.promise.ControlFlow=} opt_flow The control flow to use,
+   * @param {promise.ControlFlow=} opt_flow The control flow to use,
    *     or {@code null} to use the currently active flow.
    */
   constructor(opt_config, opt_flow) {
@@ -420,6 +417,8 @@ class Driver extends webdriver.WebDriver {
         executor, capabilities, opt_flow);
 
     super(driver.getSession(), executor, driver.controlFlow());
+
+    let boundQuit = this.quit.bind(this);
 
     /** @override */
     this.quit = function() {

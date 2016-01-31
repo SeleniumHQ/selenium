@@ -24,7 +24,7 @@ const AdmZip = require('adm-zip'),
     path = require('path'),
     xml = require('xml2js');
 
-const promise = require('..').promise,
+const promise = require('../lib/promise'),
     checkedCall = promise.checkedNodeCall,
     io = require('../io');
 

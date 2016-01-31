@@ -34,16 +34,19 @@ const url = require('url');
 const util = require('util');
 const ws = require('ws');
 
-const webdriver = require('./');
-const promise = webdriver.promise;
-const _base = require('./lib/_base');
 const io = require('./io');
 const exec = require('./io/exec');
+const isDevMode = require('./lib/devmode');
+const capabilities = require('./lib/capabilities');
+const command = require('./lib/command');
+const promise = require('./lib/promise');
+const serializable = require('./lib/serializable');
+const webdriver = require('./lib/webdriver');
 const portprober = require('./net/portprober');
 
 
 /** @const */
-const CLIENT_PATH = _base.isDevMode()
+const CLIENT_PATH = isDevMode
     ? path.join(__dirname,
         '../../../build/javascript/safari-driver/client.js')
     : path.join(__dirname, 'lib/safari/client.js');
@@ -135,7 +138,7 @@ class Server extends events.EventEmitter {
 
       /**
        * Starts the server on a random port.
-       * @return {!webdriver.promise.Promise<Host>} A promise that will resolve
+       * @return {!promise.Promise<Host>} A promise that will resolve
        *     with the server host when it has fully started.
        */
       this.start = function() {
@@ -152,7 +155,7 @@ class Server extends events.EventEmitter {
 
       /**
        * Stops the server.
-       * @return {!webdriver.promise.Promise} A promise that will resolve when
+       * @return {!promise.Promise} A promise that will resolve when
        *     the server has closed all connections.
        */
       this.stop = function() {
@@ -251,8 +254,16 @@ function cleanSession(desiredCapabilities) {
 }
 
 
+/** @return {string} . */
+function getRandomString() {
+  let seed = Date.now();
+  return Math.floor(Math.random() * seed).toString(36)
+      + Math.abs(Math.floor(Math.random() * seed) ^ Date.now()).toString(36);
+}
+
+
 /**
- * @implements {webdriver.CommandExecutor}
+ * @implements {command.Executor}
  */
 class CommandExecutor {
   constructor() {
@@ -266,69 +277,75 @@ class CommandExecutor {
   }
 
   /** @override */
-  execute(command, callback) {
-    var safariCommand = JSON.stringify({
-      'origin': 'webdriver',
-      'type': 'command',
-      'command': {
-        'id': _base.require('goog.string').getRandomString(),
-        'name': command.getName(),
-        'parameters': command.getParameters()
+  execute(cmd) {
+    var self = this;
+    return new promise.Promise(function(fulfill, reject) {
+      var safariCommand = JSON.stringify({
+        'origin': 'webdriver',
+        'type': 'command',
+        'command': {
+          'id': getRandomString(),
+          'name': cmd.getName(),
+          'parameters': cmd.getParameters()
+        }
+      });
+
+      switch (cmd.getName()) {
+        case command.Name.NEW_SESSION:
+          self.startSafari_(cmd)
+              .then(() => self.sendCommand_(safariCommand))
+              .then(fulfill, reject);
+          break;
+
+        case command.Name.QUIT:
+          self.destroySession_()
+              .then(() => fulfill({status: 0, value: null}), reject);
+          break;
+
+        default:
+          self.sendCommand_(safariCommand).then(fulfill, reject);
+          break;
       }
     });
-    var self = this;
-
-    switch (command.getName()) {
-      case webdriver.CommandName.NEW_SESSION:
-        this.startSafari_(command).then(sendCommand, callback);
-        break;
-
-      case webdriver.CommandName.QUIT:
-        this.destroySession_().then(function() {
-          callback(null, _base.require('bot.response').createResponse(null));
-        }, callback);
-        break;
-
-      default:
-        sendCommand();
-        break;
-    }
-
-    function sendCommand() {
-      new promise.Promise(function(fulfill, reject) {
-        // TODO: support reconnecting with the extension.
-        if (!self.socket_) {
-          self.destroySession_().thenFinally(function() {
-            reject(Error('The connection to the SafariDriver was closed'));
-          });
-          return;
-        }
-
-        self.socket_.send(safariCommand, function(err) {
-          if (err) {
-            reject(err);
-            return;
-          }
-        });
-
-        self.socket_.once('message', function(data) {
-          try {
-            data = JSON.parse(data);
-          } catch (ex) {
-            reject(Error('Failed to parse driver message: ' + data));
-            return;
-          }
-          fulfill(data['response']);
-        });
-
-      }).then(function(value) {
-        callback(null, value);
-      }, callback);
-    }
   }
 
   /**
-   * @param {!webdriver.Command} command .
+   * @param {!Object} data .
+   * @return {!promise.Promise} .
+   * @private
+   */
+  sendCommand_(data) {
+    let self = this;
+    return new promise.Promise(function(fulfill, reject) {
+      // TODO: support reconnecting with the extension.
+      if (!self.socket_) {
+        self.destroySession_().thenFinally(function() {
+          reject(Error('The connection to the SafariDriver was closed'));
+        });
+        return;
+      }
+
+      self.socket_.send(data, function(err) {
+        if (err) {
+          reject(err);
+          return;
+        }
+      });
+
+      self.socket_.once('message', function(data) {
+        try {
+          data = JSON.parse(data);
+        } catch (ex) {
+          reject(Error('Failed to parse driver message: ' + data));
+          return;
+        }
+        fulfill(data['response']);
+      });
+    });
+  }
+
+  /**
+   * @param {!command.Command} command .
    * @private
    */
   startSafari_(command) {
@@ -401,15 +418,14 @@ const OPTIONS_CAPABILITY_KEY = 'safari.options';
 
 /**
  * Configuration options specific to the {@link Driver SafariDriver}.
+ * @implements {serializable.Serializable}
  */
-class Options extends webdriver.Serializable {
+class Options {
   constructor() {
-    super();
-
     /** @private {Object<string, *>} */
     this.options_ = null;
 
-    /** @private {webdriver.logging.Preferences} */
+    /** @private {logging.Preferences} */
     this.logPrefs_ = null;
   }
 
@@ -454,7 +470,7 @@ class Options extends webdriver.Serializable {
 
   /**
    * Sets the logging preferences for the new session.
-   * @param {!webdriver.logging.Preferences} prefs The logging preferences.
+   * @param {!logging.Preferences} prefs The logging preferences.
    * @return {!Options} A self reference.
    */
   setLoggingPrefs(prefs) {
@@ -464,19 +480,19 @@ class Options extends webdriver.Serializable {
 
   /**
    * Converts this options instance to a {@link webdriver.Capabilities} object.
-   * @param {webdriver.Capabilities=} opt_capabilities The capabilities to merge
-   *     these options into, if any.
-   * @return {!webdriver.Capabilities} The capabilities.
+   * @param {capabilities.Capabilities=} opt_capabilities The capabilities to
+   *     merge these options into, if any.
+   * @return {!capabilities.Capabilities} The capabilities.
    */
   toCapabilities(opt_capabilities) {
-    var capabilities = opt_capabilities || webdriver.Capabilities.safari();
+    var caps = opt_capabilities || capabilities.Capabilities.safari();
     if (this.logPrefs_) {
-      capabilities.set(webdriver.Capability.LOGGING_PREFS, this.logPrefs_);
+      caps.set(capabilities.Capability.LOGGING_PREFS, this.logPrefs_);
     }
     if (this.options_) {
-      capabilities.set(OPTIONS_CAPABILITY_KEY, this);
+      caps.set(OPTIONS_CAPABILITY_KEY, this);
     }
-    return capabilities;
+    return caps;
   }
 
   /**
@@ -490,6 +506,7 @@ class Options extends webdriver.Serializable {
     return this.options_ || {};
   }
 }
+serializable.setSerializable(Options);
 
 
 /**
@@ -505,17 +522,16 @@ class Driver extends webdriver.WebDriver {
   /**
    * @param {(Options|webdriver.Capabilities)=} opt_config The configuration
    *     options for the new session.
-   * @param {webdriver.promise.ControlFlow=} opt_flow The control flow to create
+   * @param {promise.ControlFlow=} opt_flow The control flow to create
    *     the driver under.
    */
   constructor(opt_config, opt_flow) {
     var executor = new CommandExecutor();
-    var capabilities =
+    var caps =
         opt_config instanceof Options ? opt_config.toCapabilities() :
-        (opt_config || webdriver.Capabilities.safari());
+        (opt_config || capabilities.Capabilities.safari());
 
-    var driver = webdriver.WebDriver.createSession(
-        executor, capabilities, opt_flow);
+    var driver = webdriver.WebDriver.createSession(executor, caps, opt_flow);
     super(driver.getSession(), executor, driver.controlFlow());
   }
 }

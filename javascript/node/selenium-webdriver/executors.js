@@ -22,11 +22,10 @@
 
  'use strict';
 
-var HttpClient = require('./http').HttpClient,
+const HttpClient = require('./http').HttpClient,
     HttpExecutor = require('./http').Executor,
-    promise = require('./lib/_base').require('webdriver.promise');
-
-var DeferredExecutor = require('./lib/command').DeferredExecutor;
+    DeferredExecutor = require('./lib/command').DeferredExecutor,
+    promise = require('./lib/promise');
 
 
 // PUBLIC API

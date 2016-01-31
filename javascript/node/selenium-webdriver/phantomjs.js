@@ -19,10 +19,14 @@
 
 const fs = require('fs');
 
-const webdriver = require('./index'),
-    executors = require('./executors'),
+const executors = require('./executors'),
     http = require('./http'),
     io = require('./io'),
+    capabilities = require('./lib/capabilities'),
+    command = require('./lib/command'),
+    logging = require('./lib/logging'),
+    promise = require('./lib/promise'),
+    webdriver = require('./lib/webdriver'),
     portprober = require('./net/portprober'),
     remote = require('./remote');
 
@@ -95,23 +99,19 @@ function findExecutable(opt_exe) {
 
 /**
  * Maps WebDriver logging level name to those recognised by PhantomJS.
- * @type {!Object.<string, string>}
- * @const
+ * @const {!Map<string, string>}
  */
-const WEBDRIVER_TO_PHANTOMJS_LEVEL = (function() {
-  var map = {};
-  map[webdriver.logging.Level.ALL.name] = 'DEBUG';
-  map[webdriver.logging.Level.DEBUG.name] = 'DEBUG';
-  map[webdriver.logging.Level.INFO.name] = 'INFO';
-  map[webdriver.logging.Level.WARNING.name] = 'WARN';
-  map[webdriver.logging.Level.SEVERE.name] = 'ERROR';
-  return map;
-})();
+const WEBDRIVER_TO_PHANTOMJS_LEVEL = new Map([
+    [logging.Level.ALL.name, 'DEBUG'],
+    [logging.Level.DEBUG.name, 'DEBUG'],
+    [logging.Level.INFO.name, 'INFO'],
+    [logging.Level.WARNING.name, 'WARN'],
+    [logging.Level.SEVERE.name, 'ERROR']]);
 
 
 /**
  * Creates a command executor with support for PhantomJS' custom commands.
- * @param {!webdriver.promise.Promise<string>} url The server's URL.
+ * @param {!promise.Promise<string>} url The server's URL.
  * @return {!webdriver.CommandExecutor} The new command executor.
  */
 function createExecutor(url) {
@@ -132,29 +132,30 @@ function createExecutor(url) {
  */
 class Driver extends webdriver.WebDriver {
   /**
-   * @param {webdriver.Capabilities=} opt_capabilities The desired capabilities.
-   * @param {webdriver.promise.ControlFlow=} opt_flow The control flow to use,
+   * @param {capabilities.Capabilities=} opt_capabilities The desired
+   *     capabilities.
+   * @param {promise.ControlFlow=} opt_flow The control flow to use,
    *     or {@code null} to use the currently active flow.
    */
   constructor(opt_capabilities, opt_flow) {
-    var capabilities = opt_capabilities || webdriver.Capabilities.phantomjs();
-    var exe = findExecutable(capabilities.get(BINARY_PATH_CAPABILITY));
+    var caps = opt_capabilities || capabilities.Capabilities.phantomjs();
+    var exe = findExecutable(caps.get(BINARY_PATH_CAPABILITY));
     var args = ['--webdriver-logfile=' + DEFAULT_LOG_FILE];
 
-    var logPrefs = capabilities.get(webdriver.Capability.LOGGING_PREFS);
-    if (logPrefs instanceof webdriver.logging.Preferences) {
+    var logPrefs = caps.get(capabilities.Capability.LOGGING_PREFS);
+    if (logPrefs instanceof logging.Preferences) {
       logPrefs = logPrefs.toJSON();
     }
 
-    if (logPrefs && logPrefs[webdriver.logging.Type.DRIVER]) {
-      var level = WEBDRIVER_TO_PHANTOMJS_LEVEL[
-          logPrefs[webdriver.logging.Type.DRIVER]];
+    if (logPrefs && logPrefs[logging.Type.DRIVER]) {
+      let level = WEBDRIVER_TO_PHANTOMJS_LEVEL.get(
+          logPrefs[logging.Type.DRIVER]);
       if (level) {
         args.push('--webdriver-loglevel=' + level);
       }
     }
 
-    var proxy = capabilities.get(webdriver.Capability.PROXY);
+    var proxy = caps.get(capabilities.Capability.PROXY);
     if (proxy) {
       switch (proxy.proxyType) {
         case 'manual':
@@ -174,20 +175,19 @@ class Driver extends webdriver.WebDriver {
           break;
       }
     }
-    args = args.concat(capabilities.get(CLI_ARGS_CAPABILITY) || []);
+    args = args.concat(caps.get(CLI_ARGS_CAPABILITY) || []);
 
     var port = portprober.findFreePort();
     var service = new remote.DriverService(exe, {
       port: port,
-      args: webdriver.promise.when(port, function(port) {
+      args: promise.when(port, function(port) {
         args.push('--webdriver=' + port);
         return args;
       })
     });
 
     var executor = createExecutor(service.start());
-    var driver = webdriver.WebDriver.createSession(
-        executor, capabilities, opt_flow);
+    var driver = webdriver.WebDriver.createSession(executor, caps, opt_flow);
 
     super(driver.getSession(), executor, driver.controlFlow());
 
@@ -236,7 +236,7 @@ class Driver extends webdriver.WebDriver {
    *
    * @param {(string|!Function)} script The script to execute.
    * @param {...*} var_args The arguments to pass to the script.
-   * @return {!webdriver.promise.Promise<T>} A promise that resolve to the
+   * @return {!promise.Promise<T>} A promise that resolve to the
    *     script's return value.
    * @template T
    */
@@ -247,7 +247,7 @@ class Driver extends webdriver.WebDriver {
     var args = arguments.length > 1
         ? Array.prototype.slice.call(arguments, 1) : [];
     return this.schedule(
-        new webdriver.Command(Command.EXECUTE_PHANTOM_SCRIPT)
+        new command.Command(Command.EXECUTE_PHANTOM_SCRIPT)
             .setParameter('script', script)
             .setParameter('args', args),
         'Driver.executePhantomJS()');

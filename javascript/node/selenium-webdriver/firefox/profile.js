@@ -28,20 +28,20 @@ const AdmZip = require('adm-zip'),
     path = require('path'),
     vm = require('vm');
 
-const Serializable = require('..').Serializable,
-    promise = require('..').promise,
-    _base = require('../lib/_base'),
+const isDevMode = require('../lib/devmode'),
+    serializable = require('../lib/serializable'),
+    promise = require('../lib/promise'),
     io = require('../io'),
     extension = require('./extension');
 
 
 /** @const */
-const WEBDRIVER_PREFERENCES_PATH = _base.isDevMode()
+const WEBDRIVER_PREFERENCES_PATH = isDevMode
     ? path.join(__dirname, '../../../firefox-driver/webdriver.json')
     : path.join(__dirname, '../lib/firefox/webdriver.json');
 
 /** @const */
-const WEBDRIVER_EXTENSION_PATH = _base.isDevMode()
+const WEBDRIVER_EXTENSION_PATH = isDevMode
     ? path.join(__dirname,
         '../../../../build/javascript/firefox-driver/webdriver.xpi')
     : path.join(__dirname, '../lib/firefox/webdriver.xpi');
@@ -207,17 +207,15 @@ function decode(data) {
  * Models a Firefox proifle directory for use with the FirefoxDriver. The
  * {@code Proifle} directory uses an in-memory model until {@link #writeToDisk}
  * is called.
- * @extends {Serializable<string>}
+ * @implements {serializable.Serializable<string>}
  */
-class Profile extends Serializable {
+class Profile {
   /**
    * @param {string=} opt_dir Path to an existing Firefox profile directory to
    *     use a template for this profile. If not specified, a blank profile will
    *     be used.
    */
   constructor(opt_dir) {
-    super();
-
     /** @private {!Object} */
     this.preferences_ = {};
 
@@ -399,6 +397,7 @@ class Profile extends Serializable {
     return this.encode();
   }
 }
+serializable.setSerializable(Profile);
 
 
 // PUBLIC API

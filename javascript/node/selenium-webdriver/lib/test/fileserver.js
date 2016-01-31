@@ -28,9 +28,8 @@ var serveIndex = require('serve-index');
 
 var Server = require('./httpserver').Server,
     resources = require('./resources'),
-    promise = require('../..').promise,
-    isDevMode = require('../_base').isDevMode(),
-    string = require('../_base').require('goog.string');
+    isDevMode = require('../devmode'),
+    promise = require('../promise');
 
 var WEB_ROOT = '/common';
 var JS_ROOT = '/javascript';
@@ -303,7 +302,7 @@ exports.url = server.url.bind(server);
  */
 exports.whereIs = function(filePath) {
   filePath = filePath.replace(/\\/g, '/');
-  if (!string.startsWith(filePath, '/')) {
+  if (!filePath.startsWith('/')) {
     filePath = '/' + filePath;
   }
   return server.url(WEB_ROOT + filePath);

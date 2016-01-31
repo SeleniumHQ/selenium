@@ -288,7 +288,10 @@ class Capabilities extends Map {
   serialize() {
     let ret = {};
     for (let key of this.keys()) {
-      ret[key] = this.get(key);
+      let cap = this.get(key);
+      if (cap) {
+        ret[key] = cap;
+      }
     }
     return ret;
   }

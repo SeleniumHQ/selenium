@@ -37,7 +37,6 @@ describe('io', function() {
         tmpDir = d;
 
         fs.writeFileSync(path.join(d, 'foo'), 'Hello, world');
-        fs.symlinkSync(path.join(d, 'foo'), path.join(d, 'symlinked-foo'));
       });
     });
 
@@ -51,6 +50,12 @@ describe('io', function() {
     });
 
     it('can copy symlink to destination', function() {
+      if (process.platform === 'win32') {
+        return;  // No symlinks on windows.
+      }
+      fs.symlinkSync(
+          path.join(tmpDir, 'foo'),
+          path.join(tmpDir, 'symlinked-foo'));
       return io.tmpFile().then(function(f) {
         return io.copy(path.join(tmpDir, 'symlinked-foo'), f).then(function(p) {
           assert.equal(p, f);

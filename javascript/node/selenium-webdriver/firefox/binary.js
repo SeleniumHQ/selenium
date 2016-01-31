@@ -17,7 +17,7 @@
 
 /**
  * @fileoverview Manages Firefox binaries. This module is considered internal;
- * users should use {@link selenium-webdriver/firefox}.
+ * users should use {@link ./firefox selenium-webdriver/firefox}.
  */
 
 'use strict';
@@ -27,21 +27,21 @@ const child = require('child_process'),
     path = require('path'),
     util = require('util');
 
-const Serializable = require('..').Serializable,
-    promise = require('..').promise,
-    _base = require('../lib/_base'),
+const isDevMode = require('../lib/devmode'),
+    serializable = require('../lib/serializable'),
+    promise = require('../lib/promise'),
     io = require('../io'),
     exec = require('../io/exec');
 
 
 
 /** @const */
-const NO_FOCUS_LIB_X86 = _base.isDevMode() ?
+const NO_FOCUS_LIB_X86 = isDevMode ?
     path.join(__dirname, '../../../../cpp/prebuilt/i386/libnoblur.so') :
     path.join(__dirname, '../lib/firefox/i386/libnoblur.so') ;
 
 /** @const */
-const NO_FOCUS_LIB_AMD64 = _base.isDevMode() ?
+const NO_FOCUS_LIB_AMD64 = isDevMode ?
     path.join(__dirname, '../../../../cpp/prebuilt/amd64/libnoblur64.so') :
     path.join(__dirname, '../lib/firefox/amd64/libnoblur64.so') ;
 
@@ -136,17 +136,15 @@ function installNoFocusLibs(profileDir) {
  * Provides a mechanism to configure and launch Firefox in a subprocess for
  * use with WebDriver.
  *
- * @extends {Serializable<string>}
+ * @implements {serializable.Serializable<string>}
  * @final
  */
-class Binary extends Serializable {
+class Binary {
   /**
    * @param {string=} opt_exe Path to the Firefox binary to use. If not
    *     specified, will attempt to locate Firefox on the current system.
    */
   constructor(opt_exe) {
-    super();
-
     /** @private {(string|undefined)} */
     this.exe_ = opt_exe;
 
@@ -216,6 +214,7 @@ class Binary extends Serializable {
     return promise.fulfilled(this.exe_ || findFirefox());
   }
 }
+serializable.setSerializable(Binary);
 
 
 // PUBLIC API

@@ -52,7 +52,7 @@ test.suite(function(env) {
     var el = driver.findElement(By.id('oneline'));
     driver.switchTo().defaultContent();
     el.getText().then(fail, function(e) {
-      assert(e.code).equalTo(error.ErrorCode.STALE_ELEMENT_REFERENCE);
+      assert(e).instanceOf(error.StaleElementReferenceError);
     });
   });
 });

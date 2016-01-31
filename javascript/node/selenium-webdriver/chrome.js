@@ -49,17 +49,17 @@
  * You may also create a {@link Driver} with its own driver service. This is
  * useful if you need to capture the server's log output for a specific session:
  *
- *     var chrome = require('selenium-webdriver/chrome');
+ *     let chrome = require('selenium-webdriver/chrome');
  *
- *     var service = new chrome.ServiceBuilder()
+ *     let service = new chrome.ServiceBuilder()
  *         .loggingTo('/my/log/file.txt')
  *         .enableVerboseLogging()
  *         .build();
  *
- *     var options = new chrome.Options();
+ *     let options = new chrome.Options();
  *     // configure browser options ...
  *
- *     var driver = new chrome.Driver(options, service);
+ *     let driver = new chrome.Driver(options, service);
  *
  * Users should only instantiate the {@link Driver} class directly when they
  * need a custom driver service configuration (as shown above). For normal
@@ -78,7 +78,7 @@
  * will require configuring a [custom server](#custom-server) that will connect
  * to adb on the {@linkplain ServiceBuilder#setAdbPort correct port}:
  *
- *     var service = new chrome.ServiceBuilder()
+ *     let service = new chrome.ServiceBuilder()
  *         .setAdbPort(1234)
  *         build();
  *     // etc.
@@ -86,7 +86,7 @@
  * The ChromeDriver may be configured to launch Chrome on Android using
  * {@link Options#androidChrome()}:
  *
- *     var driver = new Builder()
+ *     let driver = new Builder()
  *         .forBrowser('chrome')
  *         .setChromeOptions(new chrome.Options().androidChrome())
  *         .build();
@@ -95,7 +95,7 @@
  * Chrome-WebView by setting the {@linkplain Options#androidActivity
  * androidActivity} option:
  *
- *     var driver = new Builder()
+ *     let driver = new Builder()
  *         .forBrowser('chrome')
  *         .setChromeOptions(new chrome.Options()
  *             .androidPackage('com.example')
@@ -117,10 +117,14 @@
 const fs = require('fs'),
     util = require('util');
 
-const webdriver = require('./index'),
-    executors = require('./executors'),
+const executors = require('./executors'),
     http = require('./http'),
     io = require('./io'),
+    Capabilities = require('./lib/capabilities').Capabilities,
+    Capability = require('./lib/capabilities').Capability,
+    promise = require('./lib/promise'),
+    serializable = require('./lib/serializable'),
+    webdriver = require('./lib/webdriver'),
     portprober = require('./net/portprober'),
     remote = require('./remote');
 
@@ -145,13 +149,13 @@ const Command = {
 
 /**
  * Creates a command executor with support for ChromeDriver's custom commands.
- * @param {!webdriver.promise.Promise<string>} url The server's URL.
+ * @param {!promise.Promise<string>} url The server's URL.
  * @return {!webdriver.CommandExecutor} The new command executor.
  */
 function createExecutor(url) {
   return new executors.DeferredExecutor(url.then(function(url) {
-    var client = new http.HttpClient(url);
-    var executor = new http.Executor(client);
+    let client = new http.HttpClient(url);
+    let executor = new http.Executor(client);
     executor.defineCommand(
         Command.LAUNCH_APP,
         'POST', '/session/:sessionId/chromium/launch_app');
@@ -305,14 +309,14 @@ class ServiceBuilder {
    *     could not be found on the current PATH.
    */
   build() {
-    var port = this.port_ || portprober.findFreePort();
-    var args = this.args_.concat();  // Defensive copy.
+    let port = this.port_ || portprober.findFreePort();
+    let args = this.args_.concat();  // Defensive copy.
 
     return new remote.DriverService(this.exe_, {
       loopback: true,
       path: this.path_,
       port: port,
-      args: webdriver.promise.when(port, function(port) {
+      args: promise.when(port, function(port) {
         return args.concat('--port=' + port);
       }),
       env: this.env_,
@@ -324,7 +328,7 @@ class ServiceBuilder {
 
 
 /** @type {remote.DriverService} */
-var defaultService = null;
+let defaultService = null;
 
 
 /**
@@ -360,39 +364,38 @@ function getDefaultService() {
  * @type {string}
  * @const
  */
-var OPTIONS_CAPABILITY_KEY = 'chromeOptions';
+let OPTIONS_CAPABILITY_KEY = 'chromeOptions';
 
 
 /**
  * Class for managing ChromeDriver specific options.
+ * @implements serializable.Serializable
  */
-class Options extends webdriver.Serializable {
+class Options {
   constructor() {
-    super();
-
     /** @private {!Object} */
     this.options_ = {};
 
     /** @private {!Array<(string|!Buffer)>} */
     this.extensions_ = [];
 
-    /** @private {?webdriver.logging.Preferences} */
+    /** @private {?logging.Preferences} */
     this.logPrefs_ = null;
 
-    /** @private {?webdriver.ProxyConfig} */
+    /** @private {?capabilities.ProxyConfig} */
     this.proxy_ = null;
   }
 
   /**
    * Extracts the ChromeDriver specific options from the given capabilities
    * object.
-   * @param {!webdriver.Capabilities} capabilities The capabilities object.
+   * @param {!Capabilities} caps The capabilities object.
    * @return {!Options} The ChromeDriver options.
    */
-  static fromCapabilities(capabilities) {
-    var options = new Options();
+  static fromCapabilities(caps) {
+    let options = new Options();
 
-    var o = capabilities.get(OPTIONS_CAPABILITY_KEY);
+    let o = caps.get(OPTIONS_CAPABILITY_KEY);
     if (o instanceof Options) {
       options = o;
     } else if (o) {
@@ -410,13 +413,13 @@ class Options extends webdriver.Serializable {
           setPerfLoggingPrefs(o.perfLoggingPrefs);
     }
 
-    if (capabilities.has(webdriver.Capability.PROXY)) {
-      options.setProxy(capabilities.get(webdriver.Capability.PROXY));
+    if (caps.has(Capability.PROXY)) {
+      options.setProxy(caps.get(Capability.PROXY));
     }
 
-    if (capabilities.has(webdriver.Capability.LOGGING_PREFS)) {
+    if (caps.has(Capability.LOGGING_PREFS)) {
       options.setLoggingPrefs(
-          capabilities.get(webdriver.Capability.LOGGING_PREFS));
+          caps.get(Capability.LOGGING_PREFS));
     }
 
     return options;
@@ -431,7 +434,7 @@ class Options extends webdriver.Serializable {
    * @return {!Options} A self reference.
    */
   addArguments(var_args) {
-    var args = this.options_.args || [];
+    let args = this.options_.args || [];
     args = args.concat.apply(args, arguments);
     if (args.length) {
       this.options_.args = args;
@@ -447,7 +450,7 @@ class Options extends webdriver.Serializable {
    * @return {!Options} A self reference.
    */
   excludeSwitches(var_args) {
-    var switches = this.options_.excludeSwitches || [];
+    let switches = this.options_.excludeSwitches || [];
     switches = switches.concat.apply(switches, arguments);
     if (switches.length) {
       this.options_.excludeSwitches = switches;
@@ -511,7 +514,7 @@ class Options extends webdriver.Serializable {
 
   /**
    * Sets the logging preferences for the new session.
-   * @param {!webdriver.logging.Preferences} prefs The logging preferences.
+   * @param {!logging.Preferences} prefs The logging preferences.
    * @return {!Options} A self reference.
    */
   setLoggingPrefs(prefs) {
@@ -667,20 +670,20 @@ class Options extends webdriver.Serializable {
    *
    * __Example 1: Using a Pre-configured Device__
    *
-   *     var options = new chrome.Options().setMobileEmulation(
+   *     let options = new chrome.Options().setMobileEmulation(
    *         {deviceName: 'Google Nexus 5'});
    *
-   *     var driver = new chrome.Driver(options);
+   *     let driver = new chrome.Driver(options);
    *
    * __Example 2: Using Custom Screen Configuration__
    *
-   *     var options = new chrome.Options().setMobileEmulation({
+   *     let options = new chrome.Options().setMobileEmulation({
    *         width: 360,
    *         height: 640,
    *         pixelRatio: 3.0
    *     });
    *
-   *     var driver = new chrome.Driver(options);
+   *     let driver = new chrome.Driver(options);
    *
    *
    * [em]: https://sites.google.com/a/chromium.org/chromedriver/mobile-emulation
@@ -707,18 +710,18 @@ class Options extends webdriver.Serializable {
   }
 
   /**
-   * Converts this options instance to a {@link webdriver.Capabilities} object.
-   * @param {webdriver.Capabilities=} opt_capabilities The capabilities to merge
+   * Converts this options instance to a {@link Capabilities} object.
+   * @param {Capabilities=} opt_capabilities The capabilities to merge
    *     these options into, if any.
-   * @return {!webdriver.Capabilities} The capabilities.
+   * @return {!Capabilities} The capabilities.
    */
   toCapabilities(opt_capabilities) {
-    var capabilities = opt_capabilities || webdriver.Capabilities.chrome();
-    capabilities.
-        set(webdriver.Capability.PROXY, this.proxy_).
-        set(webdriver.Capability.LOGGING_PREFS, this.logPrefs_).
+    let caps = opt_capabilities || Capabilities.chrome();
+    caps.
+        set(Capability.PROXY, this.proxy_).
+        set(Capability.LOGGING_PREFS, this.logPrefs_).
         set(OPTIONS_CAPABILITY_KEY, this);
-    return capabilities;
+    return caps;
   }
 
   /**
@@ -727,7 +730,7 @@ class Options extends webdriver.Serializable {
    * @return {{args: !Array<string>,
    *           binary: (string|undefined),
    *           detach: boolean,
-   *           extensions: !Array<(string|!webdriver.promise.Promise<string>)>,
+   *           extensions: !Array<(string|!promise.Promise<string>)>,
    *           localState: (Object|undefined),
    *           logPath: (string|undefined),
    *           prefs: (Object|undefined)}} The JSON wire protocol representation
@@ -735,8 +738,8 @@ class Options extends webdriver.Serializable {
    * @override
    */
   serialize() {
-    var json = {};
-    for (var key in this.options_) {
+    let json = {};
+    for (let key in this.options_) {
       if (this.options_[key] != null) {
         json[key] = this.options_[key];
       }
@@ -746,13 +749,14 @@ class Options extends webdriver.Serializable {
         if (Buffer.isBuffer(extension)) {
           return extension.toString('base64');
         }
-        return webdriver.promise.checkedNodeCall(
+        return promise.checkedNodeCall(
             fs.readFile, extension, 'base64');
       });
     }
     return json;
   }
 }
+serializable.setSerializable(Options);
 
 
 /**
@@ -760,23 +764,22 @@ class Options extends webdriver.Serializable {
  */
 class Driver extends webdriver.WebDriver {
   /**
-   * @param {(webdriver.Capabilities|Options)=} opt_config The configuration
+   * @param {(Capabilities|Options)=} opt_config The configuration
    *     options.
    * @param {remote.DriverService=} opt_service The session to use; will use
    *     the {@linkplain #getDefaultService default service} by default.
-   * @param {webdriver.promise.ControlFlow=} opt_flow The control flow to use,
+   * @param {promise.ControlFlow=} opt_flow The control flow to use,
    *     or {@code null} to use the currently active flow.
    */
   constructor(opt_config, opt_service, opt_flow) {
-    var service = opt_service || getDefaultService();
-    var executor = createExecutor(service.start());
+    let service = opt_service || getDefaultService();
+    let executor = createExecutor(service.start());
 
-    var capabilities =
+    let caps =
         opt_config instanceof Options ? opt_config.toCapabilities() :
-        (opt_config || webdriver.Capabilities.chrome());
+        (opt_config || Capabilities.chrome());
 
-    var driver = webdriver.WebDriver.createSession(
-        executor, capabilities, opt_flow);
+    let driver = webdriver.WebDriver.createSession(executor, caps, opt_flow);
 
     super(driver.getSession(), executor, driver.controlFlow());
   }
@@ -791,7 +794,7 @@ class Driver extends webdriver.WebDriver {
   /**
    * Schedules a command to launch Chrome App with given ID.
    * @param {string} id ID of the App to launch.
-   * @return {!webdriver.promise.Promise<void>} A promise that will be resolved
+   * @return {!promise.Promise<void>} A promise that will be resolved
    *     when app is launched.
    */
   launchApp(id) {
