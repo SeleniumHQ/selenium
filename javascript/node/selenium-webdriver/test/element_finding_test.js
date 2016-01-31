@@ -23,6 +23,7 @@ var Browser = require('..').Browser,
     By = require('..').By,
     error = require('..').error,
     until = require('..').until,
+    promise = require('../lib/promise'),
     test = require('../lib/test'),
     assert = require('../testing/assert'),
     Pages = test.Pages;
@@ -349,6 +350,43 @@ test.suite(function(env) {
             var el = driver.findElement(By.css('option[selected]'));
             assert(el.getAttribute('value')).equalTo('two');
           });
+    });
+
+    describe('by custom locator', function() {
+      test.it('handles single element result', function() {
+        driver.get(Pages.javascriptPage);
+
+        let link = driver.findElement(function(driver) {
+          let links = driver.findElements(By.tagName('a'));
+          return promise.filter(links, function(link) {
+            return link.getAttribute('id').then(id => id === 'updatediv');
+          }).then(links => links[0]);
+        });
+
+        assert(link.getText()).isEqualTo('Update a div');
+      });
+
+      test.it('uses first element if locator resolves to list', function() {
+        driver.get(Pages.javascriptPage);
+
+        let link = driver.findElement(function() {
+          return driver.findElements(By.tagName('a'));
+        });
+
+        assert(link.getText()).isEqualTo('Change the page title!');
+      });
+
+      test.it('fails if locator returns non-webelement value', function() {
+        driver.get(Pages.javascriptPage);
+
+        let link = driver.findElement(function() {
+          return driver.getTitle();
+        });
+
+        return link.then(
+            () => fail('Should have failed'),
+            (e) => assert(e).instanceOf(TypeError));
+      });
     });
   });
 });

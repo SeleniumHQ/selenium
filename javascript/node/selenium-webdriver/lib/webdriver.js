@@ -790,19 +790,18 @@ class WebDriver {
    *     var e1 = driver.findElement(By.id('foo'));
    *     var e2 = driver.findElement({id:'foo'});
    *
-   * You may also provide a custom locator function, which takes as input
-   * this WebDriver instance and returns a {@link WebElement}, or a
-   * promise that will resolve to a WebElement. For example, to find the first
-   * visible link on a page, you could write:
+   * You may also provide a custom locator function, which takes as input this
+   * instance and returns a {@link WebElement}, or a promise that will resolve
+   * to a WebElement. If the returned promise resolves to an array of
+   * WebElements, WebDriver will use the first element. For example, to find the
+   * first visible link on a page, you could write:
    *
    *     var link = driver.findElement(firstVisibleLink);
    *
    *     function firstVisibleLink(driver) {
    *       var links = driver.findElements(By.tagName('a'));
    *       return webdriver.promise.filter(links, function(link) {
-   *         return links.isDisplayed();
-   *       }).then(function(visibleLinks) {
-   *         return visibleLinks[0];
+   *         return link.isDisplayed();
    *       });
    *     }
    *
@@ -1659,19 +1658,18 @@ class WebElement {
    *     var e1 = element.findElement(By.id('foo'));
    *     var e2 = element.findElement({id:'foo'});
    *
-   * You may also provide a custom locator function, which takes as input
-   * this WebDriver instance and returns a {@link WebElement}, or a promise that
-   * will resolve to a WebElement. For example, to find the first visible link
-   * on a page, you could write:
+   * You may also provide a custom locator function, which takes as input this
+   * instance and returns a {@link WebElement}, or a promise that will resolve
+   * to a WebElement. If the returned promise resolves to an array of
+   * WebElements, WebDriver will use the first element. For example, to find the
+   * first visible link on a page, you could write:
    *
    *     var link = element.findElement(firstVisibleLink);
    *
    *     function firstVisibleLink(element) {
    *       var links = element.findElements(By.tagName('a'));
    *       return webdriver.promise.filter(links, function(link) {
-   *         return links.isDisplayed();
-   *       }).then(function(visibleLinks) {
-   *         return visibleLinks[0];
+   *         return link.isDisplayed();
    *       });
    *     }
    *
