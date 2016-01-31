@@ -211,13 +211,12 @@ describe('until', function() {
       return createResponse(responses.shift());
     });
 
-    return driver.wait(until.elementLocated(By.id('quux')), 2000)
-        .then(function(el) {
-          return el.getId();
-        }).then(function(id) {
-          assert.deepStrictEqual(responses, [['end']]);
-          assert.equal(id, 'abc123');
-        });
+    let element = driver.wait(until.elementLocated(By.id('quux')), 2000);
+    assert.ok(element instanceof webdriver.WebElementPromise);
+    return element.getId().then(function(id) {
+      assert.deepStrictEqual(responses, [['end']]);
+      assert.equal(id, 'abc123');
+    });
   });
 
   describe('untilElementLocated, elementNeverFound', function() {
@@ -332,70 +331,106 @@ describe('until', function() {
   });
 
   describe('element state conditions', function() {
-    function runElementStateTest(predicate, command, responses) {
+    function runElementStateTest(predicate, command, responses, var_args) {
+      let original = new webdriver.WebElement(driver, 'foo');
+      let predicateArgs = [original];
+      if (arguments.length > 3) {
+        predicateArgs = predicateArgs.concat(arguments[1]);
+        command = arguments[2];
+        responses = arguments[3];
+      }
+
       assert.ok(responses.length > 1);
 
       responses = responses.concat(['end']);
       executor.on(command, function() {
         return createResponse(responses.shift());
       });
-      return driver.wait(predicate, 2000).then(function() {
+
+      let result = driver.wait(predicate.apply(null, predicateArgs), 2000);
+      assert.ok(result instanceof webdriver.WebElementPromise);
+      return result.then(function(value) {
+        assert.ok(value instanceof webdriver.WebElement);
+        assert.ok(!(value instanceof webdriver.WebElementPromise));
+        return value.getId();
+      }).then(function(id) {
+        assert.equal('foo', id);
         assert.deepStrictEqual(responses, ['end']);
       });
     }
 
     it('elementIsVisible', function() {
-      var el = new webdriver.WebElement(driver, {ELEMENT: 'foo'});
-      return runElementStateTest(until.elementIsVisible(el),
+      return runElementStateTest(
+          until.elementIsVisible,
           CommandName.IS_ELEMENT_DISPLAYED, [false, false, true]);
     });
 
     it('elementIsNotVisible', function() {
-      var el = new webdriver.WebElement(driver, {ELEMENT: 'foo'});
-      return runElementStateTest(until.elementIsNotVisible(el),
+      return runElementStateTest(
+          until.elementIsNotVisible,
           CommandName.IS_ELEMENT_DISPLAYED, [true, true, false]);
     });
 
     it('elementIsEnabled', function() {
-      var el = new webdriver.WebElement(driver, {ELEMENT: 'foo'});
-      return runElementStateTest(until.elementIsEnabled(el),
+      return runElementStateTest(
+          until.elementIsEnabled,
           CommandName.IS_ELEMENT_ENABLED, [false, false, true]);
     });
 
     it('elementIsDisabled', function() {
-      var el = new webdriver.WebElement(driver, {ELEMENT: 'foo'});
-      return runElementStateTest(until.elementIsDisabled(el),
+      return runElementStateTest(
+          until.elementIsDisabled,
           CommandName.IS_ELEMENT_ENABLED, [true, true, false]);
     });
 
     it('elementIsSelected', function() {
-      var el = new webdriver.WebElement(driver, {ELEMENT: 'foo'});
-      return runElementStateTest(until.elementIsSelected(el),
+      return runElementStateTest(
+          until.elementIsSelected,
           CommandName.IS_ELEMENT_SELECTED, [false, false, true]);
     });
 
     it('elementIsNotSelected', function() {
-      var el = new webdriver.WebElement(driver, {ELEMENT: 'foo'});
-      return runElementStateTest(until.elementIsNotSelected(el),
+      return runElementStateTest(
+          until.elementIsNotSelected,
           CommandName.IS_ELEMENT_SELECTED, [true, true, false]);
     });
 
     it('elementTextIs', function() {
-      var el = new webdriver.WebElement(driver, {ELEMENT: 'foo'});
-      return runElementStateTest(until.elementTextIs(el, 'foobar'),
-          CommandName.GET_ELEMENT_TEXT, ['foo', 'fooba', 'foobar']);
+      return runElementStateTest(
+          until.elementTextIs, 'foobar',
+          CommandName.GET_ELEMENT_TEXT,
+          ['foo', 'fooba', 'foobar']);
     });
 
     it('elementTextContains', function() {
-      var el = new webdriver.WebElement(driver, {ELEMENT: 'foo'});
-      return runElementStateTest(until.elementTextContains(el, 'bar'),
-          CommandName.GET_ELEMENT_TEXT, ['foo', 'foobaz', 'foobarbaz']);
+      return runElementStateTest(
+          until.elementTextContains, 'bar',
+          CommandName.GET_ELEMENT_TEXT,
+          ['foo', 'foobaz', 'foobarbaz']);
     });
 
     it('elementTextMatches', function() {
-      var el = new webdriver.WebElement(driver, {ELEMENT: 'foo'});
-      return runElementStateTest(until.elementTextMatches(el, /fo+bar{3}/),
-          CommandName.GET_ELEMENT_TEXT, ['foo', 'foobar', 'fooobarrr']);
+      return runElementStateTest(
+          until.elementTextMatches, /fo+bar{3}/,
+          CommandName.GET_ELEMENT_TEXT,
+          ['foo', 'foobar', 'fooobarrr']);
+    });
+  });
+
+  describe('WebElementCondition', function() {
+    it('fails if wait completes with a non-WebElement value', function() {
+      let result = driver.wait(
+          new until.WebElementCondition('testing', () => 123), 1000);
+
+      return result.then(
+          () => assert.fail('expected to fail'),
+          function(e) {
+            assert.ok(e instanceof TypeError);
+            assert.equal(
+                'WebElementCondition did not resolve to a WebElement: '
+                    + '[object Number]',
+                e.message);
+          });
     });
   });
 });

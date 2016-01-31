@@ -40,6 +40,8 @@ the selenium-webdriver package README.
 * Updated `ws` dependency to version `1.0.1`.
 * Removed fluent predicates "is" and "not" from the experimental
     `testing/assert` module.
+* Wait conditions that locate an element, or that wait on an element's state,
+    will return a WebElementPromise.
 
 ### Changes for W3C WebDriver Spec Compliance
 

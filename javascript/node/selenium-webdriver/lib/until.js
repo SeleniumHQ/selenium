@@ -75,10 +75,30 @@ class Condition {
 }
 
 
+/**
+ * Defines a condition that will result in a
+ * {@link webdriver.WebElement WebElement}.
+ *
+ * @extends {Condition<!webdriver.WebElement>}
+ */
+class WebElementCondition extends Condition {
+  /**
+   * @param {string} message A descriptive error message. Should complete the
+   *     sentence "Waiting [...]"
+   * @param {function(!webdriver.WebDriver): !webdriver.WebElement} fn The
+   *     condition function to evaluate on each iteration of the wait loop.
+   */
+  constructor(message, fn) {
+    super(message, fn);
+  }
+}
+
+
 // PUBLIC API
 
 
 exports.Condition = Condition;
+exports.WebElementCondition = WebElementCondition;
 
 
 /**
@@ -205,13 +225,13 @@ exports.titleMatches = function titleMatches(regex) {
  * {@link webdriver.WebDriver#findElement found} with the given locator.
  *
  * @param {!(By|Function)} locator The locator to use.
- * @return {!Condition<!webdriver.WebElement>} The new condition.
+ * @return {!WebElementCondition} The new condition.
  */
 exports.elementLocated = function elementLocated(locator) {
   locator = by.checkedLocator(locator);
   let locatorStr =
       typeof locator === 'function' ? 'by function()' : locator + '';
-  return new Condition('for element to be located ' + locatorStr,
+  return new WebElementCondition('for element to be located ' + locatorStr,
       function(driver) {
         return driver.findElements(locator).then(function(elements) {
           return elements[0];
@@ -268,12 +288,12 @@ exports.stalenessOf = function stalenessOf(element) {
  * Creates a condition that will wait for the given element to become visible.
  *
  * @param {!webdriver.WebElement} element The element to test.
- * @return {!Condition<boolean>} The new condition.
+ * @return {!WebElementCondition} The new condition.
  * @see webdriver.WebDriver#isDisplayed
  */
 exports.elementIsVisible = function elementIsVisible(element) {
-  return new Condition('until element is visible', function() {
-    return element.isDisplayed();
+  return new WebElementCondition('until element is visible', function() {
+    return element.isDisplayed().then(v => v ? element : null);
   });
 };
 
@@ -283,14 +303,12 @@ exports.elementIsVisible = function elementIsVisible(element) {
  * yet not visible to the user.
  *
  * @param {!webdriver.WebElement} element The element to test.
- * @return {!Condition<boolean>} The new condition.
+ * @return {!WebElementCondition} The new condition.
  * @see webdriver.WebDriver#isDisplayed
  */
 exports.elementIsNotVisible = function elementIsNotVisible(element) {
-  return new Condition('until element is not visible', function() {
-    return element.isDisplayed().then(function(v) {
-      return !v;
-    });
+  return new WebElementCondition('until element is not visible', function() {
+    return element.isDisplayed().then(v => v ? null : element);
   });
 };
 
@@ -299,12 +317,12 @@ exports.elementIsNotVisible = function elementIsNotVisible(element) {
  * Creates a condition that will wait for the given element to be enabled.
  *
  * @param {!webdriver.WebElement} element The element to test.
- * @return {!Condition<boolean>} The new condition.
+ * @return {!WebElementCondition} The new condition.
  * @see webdriver.WebDriver#isEnabled
  */
 exports.elementIsEnabled = function elementIsEnabled(element) {
-  return new Condition('until element is enabled', function() {
-    return element.isEnabled();
+  return new WebElementCondition('until element is enabled', function() {
+    return element.isEnabled().then(v => v ? element : null);
   });
 };
 
@@ -313,14 +331,12 @@ exports.elementIsEnabled = function elementIsEnabled(element) {
  * Creates a condition that will wait for the given element to be disabled.
  *
  * @param {!webdriver.WebElement} element The element to test.
- * @return {!Condition<boolean>} The new condition.
+ * @return {!WebElementCondition} The new condition.
  * @see webdriver.WebDriver#isEnabled
  */
 exports.elementIsDisabled = function elementIsDisabled(element) {
-  return new Condition('until element is disabled', function() {
-    return element.isEnabled().then(function(v) {
-      return !v;
-    });
+  return new WebElementCondition('until element is disabled', function() {
+    return element.isEnabled().then(v => v ? null : element);
   });
 };
 
@@ -328,12 +344,12 @@ exports.elementIsDisabled = function elementIsDisabled(element) {
 /**
  * Creates a condition that will wait for the given element to be selected.
  * @param {!webdriver.WebElement} element The element to test.
- * @return {!Condition<boolean>} The new condition.
+ * @return {!WebElementCondition} The new condition.
  * @see webdriver.WebDriver#isSelected
  */
 exports.elementIsSelected = function elementIsSelected(element) {
-  return new Condition('until element is selected', function() {
-    return element.isSelected();
+  return new WebElementCondition('until element is selected', function() {
+    return element.isSelected().then(v => v ? element : null);
   });
 };
 
@@ -342,14 +358,12 @@ exports.elementIsSelected = function elementIsSelected(element) {
  * Creates a condition that will wait for the given element to be deselected.
  *
  * @param {!webdriver.WebElement} element The element to test.
- * @return {!Condition<boolean>} The new condition.
+ * @return {!WebElementCondition} The new condition.
  * @see webdriver.WebDriver#isSelected
  */
 exports.elementIsNotSelected = function elementIsNotSelected(element) {
-  return new Condition('until element is not selected', function() {
-    return element.isSelected().then(function(v) {
-      return !v;
-    });
+  return new WebElementCondition('until element is not selected', function() {
+    return element.isSelected().then(v => v ? null : element);
   });
 };
 
@@ -361,14 +375,12 @@ exports.elementIsNotSelected = function elementIsNotSelected(element) {
  *
  * @param {!webdriver.WebElement} element The element to test.
  * @param {string} text The expected text.
- * @return {!Condition<boolean>} The new condition.
+ * @return {!WebElementCondition} The new condition.
  * @see webdriver.WebDriver#getText
  */
 exports.elementTextIs = function elementTextIs(element, text) {
-  return new Condition('until element text is', function() {
-    return element.getText().then(function(t) {
-      return t === text;
-    });
+  return new WebElementCondition('until element text is', function() {
+    return element.getText().then(t => t === text ? element : null);
   });
 };
 
@@ -380,14 +392,13 @@ exports.elementTextIs = function elementTextIs(element, text) {
  *
  * @param {!webdriver.WebElement} element The element to test.
  * @param {string} substr The substring to search for.
- * @return {!Condition<boolean>} The new condition.
+ * @return {!WebElementCondition} The new condition.
  * @see webdriver.WebDriver#getText
  */
 exports.elementTextContains = function elementTextContains(element, substr) {
-  return new Condition('until element text contains', function() {
-    return element.getText().then(function(t) {
-      return t.indexOf(substr) != -1;
-    });
+  return new WebElementCondition('until element text contains', function() {
+    return element.getText()
+        .then(t => t.indexOf(substr) != -1 ? element : null);
   });
 };
 
@@ -399,13 +410,11 @@ exports.elementTextContains = function elementTextContains(element, substr) {
  *
  * @param {!webdriver.WebElement} element The element to test.
  * @param {!RegExp} regex The regular expression to test against.
- * @return {!Condition<boolean>} The new condition.
+ * @return {!WebElementCondition} The new condition.
  * @see webdriver.WebDriver#getText
  */
 exports.elementTextMatches = function elementTextMatches(element, regex) {
-  return new Condition('until element text matches', function() {
-    return element.getText().then(function(t) {
-      return regex.test(t);
-    });
+  return new WebElementCondition('until element text matches', function() {
+    return element.getText().then(t => regex.test(t) ? element : null);
   });
 };
