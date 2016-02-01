@@ -1031,15 +1031,16 @@ public class ExpectedConditions {
    * @param number  user to define exact number of elements
    * @return Boolean true when size of elements list is equal to defined
    */
-  public static ExpectedCondition<Boolean> numberOfElementsIsMoreThan(final By locator,
+  public static ExpectedCondition<List<WebElement>> numberOfElementsIsMoreThan(final By locator,
                                                                       final Integer number) {
-    return new ExpectedCondition<Boolean>() {
+    return new ExpectedCondition<List<WebElement>>() {
       private Integer currentNumber = 0;
 
       @Override
-      public Boolean apply(WebDriver webDriver) {
-        currentNumber = webDriver.findElements(locator).size();
-        return currentNumber > number;
+      public List<WebElement> apply(WebDriver webDriver) {
+        List<WebElement> elements =  webDriver.findElements(locator);
+        currentNumber = elements.size();
+        return currentNumber > number ? elements : null;
       }
 
       @Override
@@ -1058,15 +1059,16 @@ public class ExpectedConditions {
    * @param number  user to define maximum number of elements
    * @return Boolean true when size of elements list is less than defined
    */
-  public static ExpectedCondition<Boolean> numberOfElementsIsLessThan(final By locator,
+  public static ExpectedCondition<List<WebElement>> numberOfElementsIsLessThan(final By locator,
                                                                       final Integer number) {
-    return new ExpectedCondition<Boolean>() {
+    return new ExpectedCondition<List<WebElement>>() {
       private Integer currentNumber = 0;
 
       @Override
-      public Boolean apply(WebDriver webDriver) {
-        currentNumber = webDriver.findElements(locator).size();
-        return currentNumber < number;
+      public List<WebElement> apply(WebDriver webDriver) {
+        List<WebElement> elements =  webDriver.findElements(locator);
+        currentNumber = elements.size();
+        return currentNumber < number ? elements : null;
       }
 
       @Override
@@ -1084,15 +1086,16 @@ public class ExpectedConditions {
    * @param number  user to define number of elements
    * @return Boolean true when size of elements list is equal to defined
    */
-  public static ExpectedCondition<Boolean> numberOfElements(final By locator,
+  public static ExpectedCondition<List<WebElement>> numberOfElements(final By locator,
                                                             final Integer number) {
-    return new ExpectedCondition<Boolean>() {
+    return new ExpectedCondition<List<WebElement>>() {
       private Integer currentNumber = 0;
 
       @Override
-      public Boolean apply(WebDriver webDriver) {
-        currentNumber = webDriver.findElements(locator).size();
-        return currentNumber.equals(number);
+      public List<WebElement> apply(WebDriver webDriver) {
+        List<WebElement> elements =  webDriver.findElements(locator);
+        currentNumber = elements.size();
+        return currentNumber.equals(number) ? elements : null;
       }
 
       @Override
@@ -1239,12 +1242,12 @@ public class ExpectedConditions {
    * @param sub_locator used to find child element. For example td By.xpath("./tr/td")
    * @return visible nested element
    */
-  public static ExpectedCondition<WebElement> visibilityOfNestedElementsLocatedBy(final By locator,
+  public static ExpectedCondition<List<WebElement>> visibilityOfNestedElementsLocatedBy(final By locator,
                                                                               final By sub_locator) {
-    return new ExpectedCondition<WebElement>() {
+    return new ExpectedCondition<List<WebElement>>() {
 
       @Override
-      public WebElement apply(WebDriver webDriver) {
+      public List<WebElement> apply(WebDriver webDriver) {
         Boolean displayed = false;
         Boolean exists = false;
         try {
@@ -1253,13 +1256,13 @@ public class ExpectedConditions {
             webDriver.findElement(locator).findElement(sub_locator).isDisplayed();
         } catch (Exception e) {/**/}
         return (exists && displayed) ?
-               webDriver.findElement(locator).findElement(sub_locator) :
+               webDriver.findElement(locator).findElements(sub_locator) :
                null;
       }
 
       @Override
       public String toString() {
-        return "visibility of element located by " + locator + sub_locator;
+        return "visibility of elements located by " + locator + sub_locator;
       }
     };
   }
@@ -1272,12 +1275,12 @@ public class ExpectedConditions {
    * @param sub_locator used to find child element. For example td By.xpath("./tr/td")
    * @return visible subelement
    */
-  public static ExpectedCondition<WebElement> visibilityOfNestedElementsLocatedBy(
+  public static ExpectedCondition<List<WebElement>> visibilityOfNestedElementsLocatedBy(
     final WebElement element, final By sub_locator) {
-    return new ExpectedCondition<WebElement>() {
+    return new ExpectedCondition<List<WebElement>>() {
 
       @Override
-      public WebElement apply(WebDriver webDriver) {
+      public List<WebElement> apply(WebDriver webDriver) {
         Boolean displayed = false;
         Boolean exists = false;
         try {
@@ -1286,7 +1289,7 @@ public class ExpectedConditions {
             > 0; //duplicating search is to avoid dom rebuilding problems
           displayed = element.findElement(sub_locator).isDisplayed();
         } catch (Exception e) {/**/}
-        return (exists && displayed) ? element.findElement(sub_locator) : null;
+        return (exists && displayed) ? element.findElements(sub_locator) : null;
       }
 
       @Override
@@ -1499,7 +1502,7 @@ public class ExpectedConditions {
    * @param javaScript used as executable script
    * @return true once javaScript executed without errors
    */
-  public static ExpectedCondition<Boolean> jsReturnsNoErrors(
+  public static ExpectedCondition<Boolean> javaScriptThrowsNoExceptions(
     final String javaScript) {
     return new ExpectedCondition<Boolean>() {
       @Override
@@ -1525,16 +1528,19 @@ public class ExpectedConditions {
    * @param javaScript as executable js line
    * @return true once js return string
    */
-  public static ExpectedCondition<String> jsReturnsValue (
+  public static ExpectedCondition<Object> jsReturnsValue(
     final String javaScript) {
-    return new ExpectedCondition<String>() {
+    return new ExpectedCondition<Object>() {
       @Override
-      public String apply(WebDriver driver) {
-        String value = null;
+      public Object apply(WebDriver driver) {
+        Object value = null;
         try {
-          value = (String) ((JavascriptExecutor) driver).executeScript(javaScript);
+          value = ((JavascriptExecutor) driver).executeScript(javaScript);
         } catch (Exception e) {/**/}
-        return value == null || value.isEmpty() ? null : value;
+        if (value == null)  return null;
+        if (value instanceof List) return ((List) value).isEmpty() ? null : value;
+        if (value instanceof String)  return ((String) value).isEmpty() ? null : value;
+        else return value;
       }
 
       @Override

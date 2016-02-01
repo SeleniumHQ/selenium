@@ -709,7 +709,7 @@ public class ExpectedConditionsTest {
     String testSelector = "testSelector";
     when(mockDriver.findElements(By.cssSelector(testSelector)))
       .thenReturn(Arrays.asList(mockElement, mockElement));
-    assertTrue(wait.until(numberOfElementsIsMoreThan(By.cssSelector(testSelector), 1)));
+    assertEquals(2, wait.until(numberOfElementsIsMoreThan(By.cssSelector(testSelector), 1)).size());
   }
 
   @Test(expected = TimeoutException.class)
@@ -725,7 +725,7 @@ public class ExpectedConditionsTest {
     String testSelector = "testSelector";
     when(mockDriver.findElements(By.cssSelector(testSelector)))
       .thenReturn(Arrays.asList(mockElement));
-    assertTrue(wait.until(numberOfElementsIsLessThan(By.cssSelector(testSelector), 2)));
+    assertEquals(1, wait.until(numberOfElementsIsLessThan(By.cssSelector(testSelector), 2)).size());
   }
 
   @Test
@@ -733,7 +733,7 @@ public class ExpectedConditionsTest {
     String testSelector = "testSelector";
     when(mockDriver.findElements(By.cssSelector(testSelector)))
       .thenReturn(Arrays.asList(mockElement, mockElement));
-    assertTrue(wait.until(numberOfElements(By.cssSelector(testSelector), 2)));
+    assertEquals(2, wait.until(numberOfElements(By.cssSelector(testSelector), 2)).size());
   }
 
   @Test(expected = TimeoutException.class)
