@@ -219,7 +219,11 @@ module Python
 
   class Install < Tasks
     def py_exe
-      windows? ? "C:\\Python27\\python.exe" : "/usr/bin/python"
+      if ENV.key? 'python'
+        return ENV['python']
+      else
+        windows? ? "C:\\Python27\\python.exe" : "/usr/bin/python"
+      end
     end
 
     def handle(fun, dir, args)
