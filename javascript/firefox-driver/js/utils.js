@@ -644,6 +644,12 @@ Utils.scrollIntoView = function(element, opt_elementScrollBehavior, opt_coords) 
   if (!Utils.isInView(element, opt_coords)) {
     element.scrollIntoView(opt_elementScrollBehavior);
   }
+  var overflow = bot.dom.getOverflowState(element, opt_coords);
+  if (overflow != bot.dom.OverflowState.NONE) {
+    if (element.scrollIntoView) {
+      element.scrollIntoView(opt_elementScrollBehavior);
+    }
+  }
   return bot.action.scrollIntoView(element, opt_coords);
 };
 
