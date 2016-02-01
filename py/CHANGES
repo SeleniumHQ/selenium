@@ -1,7 +1,12 @@
+Selenium 2.50.1
+* Fixing error message handling. Fixes issue #1497
+* Fixing error message handling. Fixes issue #1507
+* Update webelement to handle W3C commands for size/location and rect
+* rewrite click scrolling tests to match the Java ones
+
 Selenium 2.50.0
 * handle potential URLError from sending shutdown, set self.process to None after it's already been quit
 * Add support for submit() with W3C compliant endpoint
-
 
 Selenium 2.49.1
 * Ensure you can close stream before attempting to close it.
