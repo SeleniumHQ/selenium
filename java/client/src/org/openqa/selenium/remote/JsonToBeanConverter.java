@@ -19,6 +19,7 @@ package org.openqa.selenium.remote;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
@@ -47,7 +48,7 @@ public class JsonToBeanConverter {
 
   @SuppressWarnings("unchecked")
   private <T> T convert(Class<T> clazz, Object source, int depth) {
-    if (source == null) {
+    if (source == null || source instanceof JsonNull) {
       return null;
     }
 
@@ -197,16 +198,16 @@ public class JsonToBeanConverter {
     if (source instanceof JsonElement) {
       JsonElement element = (JsonElement) source;
 
+      if (element.isJsonNull()) {
+        return null;
+      }
+
       if (element.isJsonPrimitive()) {
         return (T) convertJsonPrimitive(element.getAsJsonPrimitive());
       }
 
       if (element.isJsonArray()) {
         return (T) convertList(element.getAsJsonArray(), depth);
-      }
-
-      if (element.isJsonNull()) {
-        return null;
       }
 
       if (element.isJsonObject()) {
