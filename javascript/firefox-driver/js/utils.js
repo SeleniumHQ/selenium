@@ -749,9 +749,9 @@ Utils.getClickablePoint = function(element) {
     var offsets = [
       { x: Math.floor(r.width / 2), y: Math.floor(r.height / 2) },
       { x: 0, y: 0 },
-      { x: r.width, y: 0 },
-      { x: 0,  y: r.height },
-      { x: r.width, y: r.height}
+      { x: r.width - 1, y: 0 },
+      { x: 0,  y: r.height - 1 },
+      { x: r.width - 1, y: r.height - 1}
     ]
 
     return goog.array.find(offsets, function(offset){

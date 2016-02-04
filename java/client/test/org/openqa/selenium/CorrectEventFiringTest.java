@@ -424,9 +424,12 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     try {
       driver.findElement(By.id("under")).click();
     } catch (WebDriverException expected) {
-      return;
+      if (expected.getMessage().contains("Other element would receive the click")) {
+        return;
+      }
+      expected.printStackTrace();
     }
-    fail("Should throw");
+    fail("Should have thrown Exception with 'Other element would receive the click' in the message");
   }
 
   @JavascriptEnabled
