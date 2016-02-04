@@ -61,10 +61,9 @@ public class CookieServlet extends HttpServlet {
       if (secure != null) {
         newCookie.setSecure(Boolean.parseBoolean(secure));
       }
-      // TODO: Requires servlet-api 3.0+
-      //if (httpOnly != null) {
-      //  newCookie.setHttpOnly(Boolean.parseBoolean(httpOnly));
-      //}
+      if (httpOnly != null) {
+        newCookie.setHttpOnly(Boolean.parseBoolean(httpOnly));
+      }
       response.addCookie(newCookie);
 
       response.getOutputStream().println(

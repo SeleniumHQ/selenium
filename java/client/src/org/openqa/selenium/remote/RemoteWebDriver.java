@@ -791,6 +791,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
         String path = (String) rawCookie.get("path");
         String domain = (String) rawCookie.get("domain");
         boolean secure = rawCookie.containsKey("secure") && (Boolean) rawCookie.get("secure");
+        boolean httpOnly = rawCookie.containsKey("httpOnly") && (Boolean) rawCookie.get("httpOnly");
 
         Number expiryNum = (Number) rawCookie.get("expiry");
         Date expiry = expiryNum == null ? null : new Date(
@@ -800,6 +801,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
             .path(path)
             .domain(domain)
             .isSecure(secure)
+            .isHttpOnly(httpOnly)
             .expiresOn(expiry)
             .build());
       }

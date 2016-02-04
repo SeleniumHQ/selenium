@@ -436,7 +436,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertNotNull(retrieved);
   }
 
-  @Ignore(ALL)
+  @Ignore(SAFARI)
   @Test
   public void testRetainsHttpOnlyFlag() {
     Cookie addedCookie =
