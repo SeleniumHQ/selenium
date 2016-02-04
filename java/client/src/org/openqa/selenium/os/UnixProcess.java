@@ -46,7 +46,7 @@ import java.util.logging.Logger;
 class UnixProcess implements OsProcess {
   private static final Logger log = Logger.getLogger(UnixProcess.class.getName());
 
-  private final CircularOutputStream inputOut = new CircularOutputStream(null);
+  private final CircularOutputStream inputOut = new CircularOutputStream(32768);
   private volatile String allInput;
   private final DefaultExecuteResultHandler handler = new DefaultExecuteResultHandler();
   private final Executor executor = new DaemonExecutor();
