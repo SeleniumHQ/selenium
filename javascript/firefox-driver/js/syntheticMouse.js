@@ -173,6 +173,19 @@ SyntheticMouse.prototype.isElementClickable = function(element) {
     parentElemIter = parentElemIter.parentNode;
   }
 
+  // elementFromPoint is not without fault, for example:
+  // <button><span></button> and span.click() results in
+  // elementAtPoint being the button rather than the span.
+  // catch these potential edge cases by checking if the
+  // target element is a direct descendent of the elementAtPoint
+  parentElemIter = element.parentNode;
+  while (parentElemIter) {
+    if (parentElemIter == elementAtPoint) {
+      return;
+    }
+    parentElemIter = parentElemIter.parentNode;
+  }
+
   var elementAtPointHTML =
     elementAtPoint.outerHTML.replace(elementAtPoint.innerHTML, '');
 

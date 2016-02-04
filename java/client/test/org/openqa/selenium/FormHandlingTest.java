@@ -280,6 +280,13 @@ public class FormHandlingTest extends JUnit4TestBase {
     checkSubmitButton("internal_explicit_submit");
   }
 
+
+  @Ignore(value = {SAFARI}, reason = "untested")
+  @Test
+  public void testCanClickOnASubmitButtonNestedSpan() {
+    checkSubmitButton("internal_span_submit");
+  }
+
   @Ignore(value = {SAFARI}, reason = "untested")
   @Test
   public void testCanClickOnAnImplicitSubmitButton() {
