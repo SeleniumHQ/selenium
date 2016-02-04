@@ -723,6 +723,16 @@ Utils.getClickablePoint = function(element) {
       }
       parentElemIter = parentElemIter.parentNode;
     }
+
+    // elementFromPoint does not appear to be reliable. This will catch
+    // other cases where the parent element is found instead.
+    parentElemIter = element.parentNode;
+    while (parentElemIter) {
+      if (parentElemIter == elementAtPoint) {
+        return true;
+      }
+      parentElemIter = parentElemIter.parentNode;
+    }
   };
 
   var rectPointRelativeToView = function(x, y, r) {
