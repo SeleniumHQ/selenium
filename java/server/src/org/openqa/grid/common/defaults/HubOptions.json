@@ -8,5 +8,5 @@
   ["servlets", "<com.mycompany.MyServlet,com.mycompany.MyServlet2> to register a new servlet on the hub/node. The servlet will accessible under the path  /grid/admin/MyServlet /grid/admin/MyServlet2"],
   ["grid1Yml", "a YML file following grid1 format."],
   ["hubConfig", "a JSON file following grid2 format that defines the hub properties."],
-  ["browserTimeout", "The timeout in seconds a browser can hang"]
+  ["browserTimeout", "The timeout in milliseconds a browser can hang"]
 ]
