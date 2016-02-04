@@ -166,6 +166,7 @@ wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING = {
   'webStorageEnabled': 'dom.storage.enabled',
   'applicationCacheEnabled': 'browser.cache.offline.enable',
   'databaseEnabled': 'dom.indexedDB.enabled',
+  'elementScrollBehavior' : 'webdriver.elementScrollBehavior',
   'locationContextEnabled': 'geo.enabled',
   'browserConnectionEnabled': 'dom.network.enabled',
   'acceptSslCerts': 'webdriver_accept_untrusted_certs',
