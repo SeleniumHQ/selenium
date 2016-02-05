@@ -246,11 +246,8 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Element is not clickable")]
         [IgnoreBrowser(Browser.IE, "Map click fails")]
         [IgnoreBrowser(Browser.Opera, "Map click fails")]
-        [IgnoreBrowser(Browser.Android, "Not tested")]
-        [IgnoreBrowser(Browser.IPhone, "Not tested")]
         public void CanClickAnImageMapArea()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/google_map.html");
@@ -280,12 +277,8 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "Fails on Firefox")]
         [IgnoreBrowser(Browser.Chrome, "Fails on Chrome")]
         [IgnoreBrowser(Browser.Opera, "Not Tested")]
-        [IgnoreBrowser(Browser.Android, "Not Tested")]
-        [IgnoreBrowser(Browser.HtmlUnit, "Not Tested")]
-        [IgnoreBrowser(Browser.IPhone, "Not Tested")]
         public void ShouldBeAbleToClickOnAnElementInFrameGreaterThanTwoViewports()
         {
             string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_too_big_in_frame.html");
@@ -299,6 +292,19 @@ namespace OpenQA.Selenium
             element.Click();
 
             WaitFor(() => { return driver.Title == "clicks"; }, "Browser title was not 'clicks'");
+        }
+
+        [Test]
+        public void ShouldBeAbleToClickOnRightToLeftLanguageLink()
+        {
+            String url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_rtl.html");
+            driver.Url = url;
+
+            IWebElement element = driver.FindElement(By.Id("ar_link"));
+            element.Click();
+
+            WaitFor(() => driver.Title == "clicks", "Expected title to be 'clicks'");
+            Assert.AreEqual("clicks", driver.Title);
         }
 
         [Test]
@@ -321,6 +327,54 @@ namespace OpenQA.Selenium
             driver.FindElement(By.Id("link")).Click();
             WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
             Assert.AreEqual("XHTML Test Page", driver.Title);
+        }
+
+        [Test]
+        public void ShouldBeAbleToClickOnLinksWithNoHrefAttribute()
+        {
+            driver.Url = javascriptPage;
+
+            IWebElement element = driver.FindElement(By.LinkText("No href"));
+            element.Click();
+
+            WaitFor(() => driver.Title == "Changed", "Expected title to be 'Changed'");
+            Assert.AreEqual("Changed", driver.Title);
+        }
+
+        [Test]
+        public void ShouldBeAbleToClickOnALinkThatWrapsToTheNextLine()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/link_that_wraps.html");
+
+            driver.FindElement(By.Id("link")).Click();
+
+            WaitFor(() => driver.Title == "Submitted Successfully!", "Expected title to be 'Submitted Successfully!'");
+            Assert.AreEqual("Submitted Successfully!", driver.Title);
+        }
+
+        [Test]
+        public void ShouldBeAbleToClickOnASpanThatWrapsToTheNextLine()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/span_that_wraps.html");
+
+            driver.FindElement(By.Id("span")).Click();
+
+            WaitFor(() => driver.Title == "Submitted Successfully!", "Expected title to be 'Submitted Successfully!'");
+            Assert.AreEqual("Submitted Successfully!", driver.Title);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Safari)]
+        public void ShouldBeAbleToClickOnAPartiallyOverlappedLinkThatWrapsToTheNextLine()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/wrapped_overlapping_elements.html");
+
+            driver.FindElement(By.Id("link")).Click();
+
+            WaitFor(() => driver.Title == "Submitted Successfully!", "Expected title to be 'Submitted Successfully!'");
+            Assert.AreEqual("Submitted Successfully!", driver.Title);
         }
     }
 }
