@@ -359,4 +359,15 @@ public class ClickTest extends JUnit4TestBase {
 
     wait.until(titleIs("Submitted Successfully!"));
   }
+
+  @JavascriptEnabled
+  @Test
+  @Ignore(value = {CHROME, IE, MARIONETTE, SAFARI})
+  public void testShouldBeAbleToClickOnAPartiallyOverlappedLinkThatWrapsToTheNextLine() {
+    driver.get(appServer.whereIs("click_tests/wrapped_overlapping_elements.html"));
+
+    driver.findElement(By.id("link")).click();
+
+    wait.until(titleIs("Submitted Successfully!"));
+  }
 }

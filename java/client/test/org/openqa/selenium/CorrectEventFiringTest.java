@@ -433,6 +433,27 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
+  @Ignore(value = {CHROME, IE, MARIONETTE, SAFARI, HTMLUNIT})
+  @Test
+  public void testClickPartiallyOverlappingElements() {
+    assumeFalse(isOldIe(driver));
+    for (int i = 1; i < 6; i++) {
+      driver.get(appServer.whereIs("click_tests/partially_overlapping_elements.html"));
+      WebElement over = driver.findElement(By.id("over" + i));
+      ((JavascriptExecutor) driver).executeScript("arguments[0].style.display = 'none'", over);
+      driver.findElement(By.id("under")).click();
+      assertEquals(driver.findElement(By.id("log")).getText(),
+                   "Log:\n"
+                   + "mousedown in under (handled by under)\n"
+                   + "mousedown in under (handled by body)\n"
+                   + "mouseup in under (handled by under)\n"
+                   + "mouseup in under (handled by body)\n"
+                   + "click in under (handled by under)\n"
+                   + "click in under (handled by body)");
+    }
+  }
+
+  @JavascriptEnabled
   @Ignore(value = {CHROME, FIREFOX, SAFARI, HTMLUNIT})
   @Test
   public void testNativelyClickOverlappingElements() {
