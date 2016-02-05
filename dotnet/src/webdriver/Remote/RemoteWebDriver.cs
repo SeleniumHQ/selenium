@@ -77,6 +77,36 @@ namespace OpenQA.Selenium.Remote
         private IFileDetector fileDetector = new DefaultFileDetector();
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class. This constructor defaults proxy to http://127.0.0.1:4444/wd/hub
+        /// </summary>
+        /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
+        public RemoteWebDriver(ICapabilities desiredCapabilities)
+            : this(new Uri("http://127.0.0.1:4444/wd/hub"), desiredCapabilities)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class
+        /// </summary>
+        /// <param name="remoteAddress">URI containing the address of the WebDriver remote server (e.g. http://127.0.0.1:4444/wd/hub).</param>
+        /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
+        public RemoteWebDriver(Uri remoteAddress, ICapabilities desiredCapabilities)
+            : this(remoteAddress, desiredCapabilities, RemoteWebDriver.DefaultCommandTimeout)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class using the specified remote address, desired capabilities, and command timeout.
+        /// </summary>
+        /// <param name="remoteAddress">URI containing the address of the WebDriver remote server (e.g. http://127.0.0.1:4444/wd/hub).</param>
+        /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        public RemoteWebDriver(Uri remoteAddress, ICapabilities desiredCapabilities, TimeSpan commandTimeout)
+            : this(new HttpCommandExecutor(remoteAddress, commandTimeout), desiredCapabilities)
+        {
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class
         /// </summary>
         /// <param name="commandExecutor">An <see cref="ICommandExecutor"/> object which executes commands for the driver.</param>
@@ -115,36 +145,6 @@ namespace OpenQA.Selenium.Remote
                     this.storage = new RemoteWebStorage(this);
                 }
             }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class. This constructor defaults proxy to http://127.0.0.1:4444/wd/hub
-        /// </summary>
-        /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
-        public RemoteWebDriver(ICapabilities desiredCapabilities)
-            : this(new Uri("http://127.0.0.1:4444/wd/hub"), desiredCapabilities)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class
-        /// </summary>
-        /// <param name="remoteAddress">URI containing the address of the WebDriver remote server (e.g. http://127.0.0.1:4444/wd/hub).</param>
-        /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
-        public RemoteWebDriver(Uri remoteAddress, ICapabilities desiredCapabilities)
-            : this(remoteAddress, desiredCapabilities, RemoteWebDriver.DefaultCommandTimeout)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class using the specified remote address, desired capabilities, and command timeout.
-        /// </summary>
-        /// <param name="remoteAddress">URI containing the address of the WebDriver remote server (e.g. http://127.0.0.1:4444/wd/hub).</param>
-        /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
-        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
-        public RemoteWebDriver(Uri remoteAddress, ICapabilities desiredCapabilities, TimeSpan commandTimeout)
-            : this(new HttpCommandExecutor(remoteAddress, commandTimeout), desiredCapabilities)
-        {
         }
 
         /// <summary>

@@ -47,7 +47,7 @@ namespace OpenQA.Selenium.Firefox
     /// RemoteWebDriver driver = new RemoteWebDriver(new Uri("http://localhost:4444/wd/hub"), options.ToCapabilities());
     /// </code>
     /// </example>
-    public class FirefoxOptions
+    public class FirefoxOptions : DriverOptions
     {
         private bool isMarionette = true;
 
@@ -61,12 +61,29 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
+        /// Provides a means to add additional capabilities not yet added as type safe options
+        /// for the Firefox driver.
+        /// </summary>
+        /// <param name="capabilityName">The name of the capability to add.</param>
+        /// <param name="capabilityValue">The value of the capability to add.</param>
+        /// <exception cref="ArgumentException">
+        /// thrown when attempting to add a capability for which there is already a type safe option, or
+        /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
+        /// </exception>
+        /// <remarks>For the moment, this method has no effect for the Firefox driver, as use
+        /// of the FirefoxOptions class is only used as a marker for Marionette. This will
+        /// change in the future.</remarks>
+        public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
+        {
+        }
+
+        /// <summary>
         /// Returns DesiredCapabilities for Firefox with these options included as
         /// capabilities. This does not copy the options. Further changes will be
         /// reflected in the returned capabilities.
         /// </summary>
         /// <returns>The DesiredCapabilities for Firefox with these options.</returns>
-        public ICapabilities ToCapabilities()
+        public override ICapabilities ToCapabilities()
         {
             DesiredCapabilities capabilities = DesiredCapabilities.Firefox();
             capabilities.SetCapability("marionette", this.isMarionette);

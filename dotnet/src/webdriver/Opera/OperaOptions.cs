@@ -52,7 +52,7 @@ namespace OpenQA.Selenium.Opera
     /// RemoteWebDriver driver = new RemoteWebDriver(new Uri("http://localhost:4444/wd/hub"), options.ToCapabilities());
     /// </code>
     /// </example>
-    public class OperaOptions
+    public class OperaOptions : DriverOptions
     {
         /// <summary>
         /// Gets the name of the capability used to store Opera options in
@@ -385,7 +385,7 @@ namespace OpenQA.Selenium.Opera
         /// existing value with the new value in <paramref name="capabilityValue"/>.
         /// Also, by default, calling this method adds capabilities to the options object passed to
         /// operadriver.exe.</remarks>
-        public void AddAdditionalCapability(string capabilityName, object capabilityValue)
+        public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
         {
             // Add the capability to the OperaOptions object by default. This is to handle
             // the 80% case where the Operadriver team adds a new option in Operadriver.exe
@@ -448,7 +448,7 @@ namespace OpenQA.Selenium.Opera
         /// reflected in the returned capabilities.
         /// </summary>
         /// <returns>The DesiredCapabilities for Opera with these options.</returns>
-        public ICapabilities ToCapabilities()
+        public override ICapabilities ToCapabilities()
         {
             Dictionary<string, object> operaOptions = this.BuildOperaOptionsDictionary();
 

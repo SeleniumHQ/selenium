@@ -22,7 +22,6 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using Newtonsoft.Json;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Chrome
@@ -52,7 +51,7 @@ namespace OpenQA.Selenium.Chrome
     /// RemoteWebDriver driver = new RemoteWebDriver(new Uri("http://localhost:4444/wd/hub"), options.ToCapabilities());
     /// </code>
     /// </example>
-    public class ChromeOptions
+    public class ChromeOptions : DriverOptions
     {
         /// <summary>
         /// Gets the name of the capability used to store Chrome options in
@@ -496,7 +495,7 @@ namespace OpenQA.Selenium.Chrome
         /// existing value with the new value in <paramref name="capabilityValue"/>.
         /// Also, by default, calling this method adds capabilities to the options object passed to
         /// chromedriver.exe.</remarks>
-        public void AddAdditionalCapability(string capabilityName, object capabilityValue)
+        public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
         {
             // Add the capability to the chromeOptions object by default. This is to handle
             // the 80% case where the chromedriver team adds a new option in chromedriver.exe
@@ -562,7 +561,7 @@ namespace OpenQA.Selenium.Chrome
         /// reflected in the returned capabilities.
         /// </summary>
         /// <returns>The DesiredCapabilities for Chrome with these options.</returns>
-        public ICapabilities ToCapabilities()
+        public override ICapabilities ToCapabilities()
         {
             Dictionary<string, object> chromeOptions = this.BuildChromeOptionsDictionary();
 

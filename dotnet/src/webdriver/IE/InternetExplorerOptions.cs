@@ -113,7 +113,7 @@ namespace OpenQA.Selenium.IE
     /// RemoteWebDriver driver = new RemoteWebDriver(new Uri("http://localhost:4444/wd/hub"), options.ToCapabilities());
     /// </code>
     /// </example>
-    public class InternetExplorerOptions
+    public class InternetExplorerOptions : DriverOptions
     {
         private const string IgnoreProtectedModeSettingsCapability = "ignoreProtectedModeSettings";
         private const string IgnoreZoomSettingCapability = "ignoreZoomSetting";
@@ -353,7 +353,7 @@ namespace OpenQA.Selenium.IE
         /// </exception>
         /// <remarks>Calling <see cref="AddAdditionalCapability"/> where <paramref name="capabilityName"/>
         /// has already been added will overwrite the existing value with the new value in <paramref name="capabilityValue"/></remarks>
-        public void AddAdditionalCapability(string capabilityName, object capabilityValue)
+        public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
         {
             if (capabilityName == IgnoreProtectedModeSettingsCapability ||
                 capabilityName == IgnoreZoomSettingCapability ||
@@ -392,7 +392,7 @@ namespace OpenQA.Selenium.IE
         /// reflected in the returned capabilities.
         /// </summary>
         /// <returns>The DesiredCapabilities for IE with these options.</returns>
-        public ICapabilities ToCapabilities()
+        public override ICapabilities ToCapabilities()
         {
             DesiredCapabilities capabilities = DesiredCapabilities.InternetExplorer();
             capabilities.SetCapability(CapabilityType.HasNativeEvents, this.enableNativeEvents);

@@ -43,7 +43,7 @@ namespace OpenQA.Selenium.PhantomJS
     /// RemoteWebDriver driver = new RemoteWebDriver(new Uri("http://localhost:4444/wd/hub"), options.ToCapabilities());
     /// </code>
     /// </example>
-    public class PhantomJSOptions
+    public class PhantomJSOptions : DriverOptions
     {
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
 
@@ -59,7 +59,7 @@ namespace OpenQA.Selenium.PhantomJS
         /// </exception>
         /// <remarks>Calling <see cref="AddAdditionalCapability"/> where <paramref name="capabilityName"/>
         /// has already been added will overwrite the existing value with the new value in <paramref name="capabilityValue"/></remarks>
-        public void AddAdditionalCapability(string capabilityName, object capabilityValue)
+        public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
         {
             if (string.IsNullOrEmpty(capabilityName))
             {
@@ -75,7 +75,7 @@ namespace OpenQA.Selenium.PhantomJS
         /// reflected in the returned capabilities.
         /// </summary>
         /// <returns>The DesiredCapabilities for PhantomJS with these options.</returns>
-        public ICapabilities ToCapabilities()
+        public override ICapabilities ToCapabilities()
         {
             DesiredCapabilities capabilities = DesiredCapabilities.PhantomJS();
 
