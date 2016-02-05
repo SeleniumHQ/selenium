@@ -1592,6 +1592,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
                 .path(c.getPath())
                 .expiresOn(c.getExpires())
                 .isSecure(c.isSecure())
+                .isHttpOnly(c.isHttpOnly())
                 .build();
           }
         };
