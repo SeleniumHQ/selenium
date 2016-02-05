@@ -471,12 +471,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Test web server does not set HttpOnly cookies")]
-        [IgnoreBrowser(Browser.Chrome, "Test web server does not set HttpOnly cookies")]
-        [IgnoreBrowser(Browser.Firefox, "Test web server does not set HttpOnly cookies")]
-        [IgnoreBrowser(Browser.HtmlUnit, "Test web server does not set HttpOnly cookies")]
-        [IgnoreBrowser(Browser.PhantomJS, "Test web server does not set HttpOnly cookies")]
-        [IgnoreBrowser(Browser.Safari, "Test web server does not set HttpOnly cookies")]
+        [IgnoreBrowser(Browser.Safari)]
         public void ShouldRetainHttpOnlyFlag()
         {
             StringBuilder url = new StringBuilder(EnvironmentManager.Instance.UrlBuilder.WhereElseIs("cookie"));
