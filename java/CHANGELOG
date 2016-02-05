@@ -1,3 +1,24 @@
+v2.51.0
+=======
+
+Firefox:
+    * finding another edge case where we need to check -1 from the right and bottom of the element's rect
+    * stop gap to help with elementFromPoint not being completely reliable
+    * Implementing ability to return non-boolean capabilities
+    * Bumping up the max version
+    * Fixing scrolling to elements in overflow:hidden blocks. Fixes issue #1527
+    * Fixing issue #1509
+    * Deleting deprecated constant 
+    * Deleting unused method FirefoxBinary.createProfile
+
+WebDriver:
+    * Fixing httpOnly cookies in HtmlUnit driver
+    * Adding close connection support to HttpClient to combat hanging open files Fixes #1080
+    * Increasing log buffer max size
+    * optimize JsonToBeanConverter In case the input is a JsonNull, return null asap.
+    * Add toString() to DefaultElementLocator
+    * fix #1575
+
 v2.50.1
 =======
 
@@ -2064,4 +2085,3 @@ Grid:
   * Track when a session has become orphaned.  I.e., when the client sends no
     commands after the initial session creation.  This almost always indicates
     the client is no longer connected and the session is unusable immediately.
-----

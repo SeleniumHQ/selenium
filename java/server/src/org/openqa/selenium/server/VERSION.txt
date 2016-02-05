@@ -1,4 +1,4 @@
-selenium.rc.version=2.50
-selenium.rc.revision=.1
-selenium.core.version=2.50
-selenium.core.revision=.1
+selenium.rc.version=2.51
+selenium.rc.revision=.0
+selenium.core.version=2.51
+selenium.core.revision=.0
