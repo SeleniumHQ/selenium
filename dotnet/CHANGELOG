@@ -1,3 +1,18 @@
+v2.51.0
+=======
+ * Updated Firefox driver which includes fixes for the clicking in overlapped
+   elements. In keeping with project support policy for Firefox, This driver
+   has been tested with Firefox 44 (current release), 43 (immediately prior
+   release), 38 (current ESR release), and 31 (immediately prior ESR release).
+ * Refactoring .NET driver Options classes to descend from common class. This
+   commit introduces a common base class for driver-specific type-safe Options
+   classes (e.g., ChromeOptions, InternetExplorerOptions, etc.). This will
+   help pave the way to eliminate needing to know the name or expected type
+   of arbitrary capabilities in a future release.
+ * Removed the incorrect ChromeOptions method introduced in 2.50.0.
+ * Added ability to add traceCategories to performance logging preferences in
+   ChromeOptions. Fixes issue #1591.
+
 v2.50.1
 =======
  * Changed ChromeOptions to have correct EnableMobileEmulation API.
