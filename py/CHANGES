@@ -1,3 +1,6 @@
+Selenium 2.51.1
+* correcting bundling issue missing README.rst file
+
 Selenium 2.51.0
 * Firefox updates (see java changelog)
 
