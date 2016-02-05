@@ -77,6 +77,16 @@ webdriver.testing.jsunit.TestRunner.prototype.execute = function() {
   }
   this.screenshotCacheEl_.innerHTML = '';
   this.client_.sendInitEvent();
+
+  // This check adapted from goog.testing.TestRunner.prototype.execute.
+  if (this.isStrict() && this.testCase.getCount() == 0) {
+    this.client_.sendErrorEvent(
+        'No tests found in given test case: ' + this.testCase.getName() + ' ' +
+        'By default, the test runner fails if a test case has no tests. ' +
+        'To modify this behavior, see goog.testing.TestRunner\'s ' +
+        'setStrict() method.');
+  }
+
   this.testCase.setCompletedCallback(goog.bind(this.onComplete_, this));
   this.testCase.runTests();
 };
