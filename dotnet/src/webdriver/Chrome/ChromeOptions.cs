@@ -423,22 +423,6 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
-        /// Allows the Chrome browser to emulate a mobile device.
-        /// </summary>
-        /// <param name="deviceSettings">The <see cref="ChromeMobileEmulationDeviceSettings"/>
-        /// object containing the settings of the device to emulate.</param>
-        /// <exception cref="ArgumentException">Thrown if the device settings option does
-        /// not have a user agent string set.</exception>
-        /// <remarks>Specifying an invalid device name will not throw an exeption, but
-        /// will generate an error in Chrome when the driver starts. To unset mobile
-        /// emulation, call this method with <see langword="null"/> as the argument.</remarks>
-        [Obsolete("Use the EnableMobileEmulation method instead. This method was released in error, and will be removed in a future release.")]
-        public void EnableMobileDeviceEmulation(ChromeMobileEmulationDeviceSettings deviceSettings)
-        {
-            this.EnableMobileEmulation(deviceSettings);
-        }
-
-        /// <summary>
         /// Adds a type of window that will be listed in the list of window handles
         /// returned by the Chrome driver.
         /// </summary>
