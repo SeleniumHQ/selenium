@@ -1,10 +1,15 @@
-2.50.0 (2016-1-27)
+2.51.0 (2016-02-05)
+===================
+
+No Ruby changes in this release.
+
+2.50.0 (2016-01-27)
 ===================
 
 Firefox:
  * Fix bug for locating binary in local path  (issue 1523, thanks Gopal Patel)
 
-2.49.0 (2016-1-13)
+2.49.0 (2016-01-13)
 ===================
 
 Ruby:
