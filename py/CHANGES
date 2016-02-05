@@ -1,3 +1,6 @@
+Selenium 2.51.0
+* Firefox updates (see java changelog)
+
 Selenium 2.50.1
 * Fixing error message handling. Fixes issue #1497
 * Fixing error message handling. Fixes issue #1507
