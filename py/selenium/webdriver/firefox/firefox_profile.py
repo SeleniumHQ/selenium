@@ -339,7 +339,7 @@ class FirefoxProfile(object):
                 finally:
                     compressed_file.close()
             elif os.path.isdir(addon_path):
-                with open(os.path.join(addon_path, 'install.rdf'), 'r') as f:
+                with open(os.path.join(addon_path, 'install.rdf'), 'r', encoding='utf-8') as f:
                     manifest = f.read()
             else:
                 raise IOError('Add-on path is neither an XPI nor a directory: %s' % addon_path)
