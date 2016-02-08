@@ -247,36 +247,33 @@ public class TestSession {
 
         byte[] contentBeingForwarded = null;
         if (responseBody != null) {
-          try {
-            InputStream in;
-            if (consumedNewWebDriverSessionBody == null) {
-              in = responseBody.getContent();
-              if (request.getRequestType() == RequestType.START_SESSION
-                  && request instanceof LegacySeleniumRequest) {
-                res = getResponseUtf8Content(in);
+          InputStream in;
+          if (consumedNewWebDriverSessionBody == null) {
+            in = responseBody.getContent();
+            if (request.getRequestType() == RequestType.START_SESSION && request instanceof LegacySeleniumRequest) {
+              res = getResponseUtf8Content(in);
 
-                updateHubNewSeleniumSession(res);
+              updateHubNewSeleniumSession(res);
 
-                in = new ByteArrayInputStream(res.getBytes("UTF-8"));
-              }
-            } else {
-              in = new ByteArrayInputStream(consumedNewWebDriverSessionBody);
+              in = new ByteArrayInputStream(res.getBytes("UTF-8"));
             }
-
-            final byte[] bytes = drainInputStream(in);
-            writeRawBody(response, bytes);
-            contentBeingForwarded = bytes;
-
-          } finally {
-            EntityUtils.consume(responseBody);
+          } else {
+            in = new ByteArrayInputStream(consumedNewWebDriverSessionBody);
           }
 
+          final byte[] bytes = drainInputStream(in);
+          contentBeingForwarded = bytes;
         }
 
         if (slot.getProxy() instanceof CommandListener) {
           SeleniumBasedResponse wrappedResponse = new SeleniumBasedResponse(response);
           wrappedResponse.setForwardedContent(contentBeingForwarded);
           ((CommandListener) slot.getProxy()).afterCommand(this, request, wrappedResponse);
+          contentBeingForwarded = wrappedResponse.getForwardedContentAsByteArray();
+        }
+
+        if (contentBeingForwarded != null) {
+          writeRawBody(response, contentBeingForwarded);
         }
         response.flushBuffer();
       } finally {

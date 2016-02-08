@@ -55,4 +55,7 @@ public class SeleniumBasedResponse extends HttpServletResponseWrapper {
     this.forwardedContent = forwardedContent;
   }
 
+  public byte[] getForwardedContentAsByteArray() {
+    return forwardedContent;
+  }
 }
