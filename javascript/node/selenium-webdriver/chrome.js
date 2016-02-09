@@ -122,6 +122,8 @@ const executors = require('./executors'),
     io = require('./io'),
     Capabilities = require('./lib/capabilities').Capabilities,
     Capability = require('./lib/capabilities').Capability,
+    command = require('./lib/command'),
+    logging = require('./lib/logging'),
     promise = require('./lib/promise'),
     Symbols = require('./lib/symbols'),
     webdriver = require('./lib/webdriver'),
@@ -150,7 +152,7 @@ const Command = {
 /**
  * Creates a command executor with support for ChromeDriver's custom commands.
  * @param {!promise.Promise<string>} url The server's URL.
- * @return {!webdriver.CommandExecutor} The new command executor.
+ * @return {!command.Executor} The new command executor.
  */
 function createExecutor(url) {
   return new executors.DeferredExecutor(url.then(function(url) {
@@ -178,9 +180,8 @@ class ServiceBuilder {
    *     cannot be found on the PATH.
    */
   constructor(opt_exe) {
-    /** @private {string} */
-    this.exe_ = opt_exe || io.findInPath(CHROMEDRIVER_EXE, true);
-    if (!this.exe_) {
+    let exe = opt_exe || io.findInPath(CHROMEDRIVER_EXE, true);
+    if (!exe) {
       throw Error(
           'The ChromeDriver could not be found on the current PATH. Please ' +
           'download the latest version of the ChromeDriver from ' +
@@ -188,14 +189,18 @@ class ServiceBuilder {
           'it can be found on your PATH.');
     }
 
-    if (!fs.existsSync(this.exe_)) {
-      throw Error('File does not exist: ' + this.exe_);
+    if (!fs.existsSync(exe)) {
+      throw Error('File does not exist: ' + exe);
     }
+    /** @private {string} */
+    this.exe_ = exe;
 
     /** @private {!Array<string>} */
     this.args_ = [];
 
-    /** @private {(string|!Array<string|number|!Stream|null|undefined>)} */
+    /**
+     * @private {(string|!Array<string|number|!stream.Stream|null|undefined>)}
+     */
     this.stdio_ = 'ignore';
 
     /** @private {?string} */
@@ -281,8 +286,8 @@ class ServiceBuilder {
   /**
    * Defines the stdio configuration for the driver service. See
    * {@code child_process.spawn} for more information.
-   * @param {(string|!Array<string|number|!Stream|null|undefined>)} config The
-   *     configuration to use.
+   * @param {(string|!Array<string|number|!stream.Stream|null|undefined>)}
+   *     config The configuration to use.
    * @return {!ServiceBuilder} A self reference.
    */
   setStdio(config) {
@@ -303,7 +308,7 @@ class ServiceBuilder {
 
   /**
    * Creates a new DriverService using this instance's current configuration.
-   * @return {remote.DriverService} A new driver service using this instance's
+   * @return {!remote.DriverService} A new driver service using this instance's
    *     current configuration.
    * @throws {Error} If the driver exectuable was not specified and a default
    *     could not be found on the current PATH.
@@ -381,7 +386,7 @@ class Options {
     /** @private {?logging.Preferences} */
     this.logPrefs_ = null;
 
-    /** @private {?capabilities.ProxyConfig} */
+    /** @private {?./lib/capabilities.ProxyConfig} */
     this.proxy_ = null;
   }
 
@@ -700,7 +705,8 @@ class Options {
 
   /**
    * Sets the proxy settings for the new session.
-   * @param {webdriver.ProxyConfig} proxy The proxy configuration to use.
+   * @param {./lib/capabilities.ProxyConfig} proxy The proxy configuration to
+   *    use.
    * @return {!Options} A self reference.
    */
   setProxy(proxy) {
@@ -726,14 +732,7 @@ class Options {
   /**
    * Converts this instance to its JSON wire protocol representation. Note this
    * function is an implementation not intended for general use.
-   * @return {{args: !Array<string>,
-   *           binary: (string|undefined),
-   *           detach: boolean,
-   *           extensions: !Array<(string|!promise.Promise<string>)>,
-   *           localState: (Object|undefined),
-   *           logPath: (string|undefined),
-   *           prefs: (Object|undefined)}} The JSON wire protocol representation
-   *     of this instance.
+   * @return {!Object} The JSON wire protocol representation of this instance.
    */
   [Symbols.serialize]() {
     let json = {};
@@ -796,7 +795,7 @@ class Driver extends webdriver.WebDriver {
    */
   launchApp(id) {
     return this.schedule(
-        new webdriver.Command(Command.LAUNCH_APP).setParameter('id', id),
+        new command.Command(Command.LAUNCH_APP).setParameter('id', id),
         'Driver.launchApp()');
   }
 }

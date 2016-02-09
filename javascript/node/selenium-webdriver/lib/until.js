@@ -43,13 +43,12 @@
 
 const by = require('./by');
 const By = require('./by').By;
-const webdriver = require('./webdriver');
 const error = require('../error');
 
 
 /**
  * Defines a condition for use with WebDriver's
- * {@linkplain webdriver.WebDriver#wait wait command}.
+ * {@linkplain ./webdriver.WebDriver#wait wait command}.
  *
  * @template OUT
  */
@@ -57,14 +56,14 @@ class Condition {
   /**
    * @param {string} message A descriptive error message. Should complete the
    *     sentence "Waiting [...]"
-   * @param {function(!webdriver.WebDriver): OUT} fn The condition function to
+   * @param {function(!./webdriver.WebDriver): OUT} fn The condition function to
    *     evaluate on each iteration of the wait loop.
    */
   constructor(message, fn) {
     /** @private {string} */
     this.description_ = 'Waiting ' + message;
 
-    /** @type {function(!webdriver.WebDriver): OUT} */
+    /** @type {function(!./webdriver.WebDriver): OUT} */
     this.fn = fn;
   }
 
@@ -74,18 +73,24 @@ class Condition {
   }
 }
 
+/**
+ * @typedef {!(./webdriver.WebElement|
+ *             ./promise.Promise<!./webdriver.WebElement>)}
+ */
+var ElementConditionResult;
+
 
 /**
  * Defines a condition that will result in a
- * {@link webdriver.WebElement WebElement}.
+ * {@link ./webdriver.WebElement WebElement}.
  *
- * @extends {Condition<!webdriver.WebElement>}
+ * @extends {Condition<ElementConditionResult>}
  */
 class WebElementCondition extends Condition {
   /**
    * @param {string} message A descriptive error message. Should complete the
    *     sentence "Waiting [...]"
-   * @param {function(!webdriver.WebDriver): !webdriver.WebElement} fn The
+   * @param {function(!./webdriver.WebDriver): ElementConditionResult} fn The
    *     condition function to evaluate on each iteration of the wait loop.
    */
   constructor(message, fn) {
@@ -108,7 +113,7 @@ exports.WebElementCondition = WebElementCondition;
  * 1. a numeric index into
  *     [window.frames](https://developer.mozilla.org/en-US/docs/Web/API/Window.frames)
  *     for the currently selected frame.
- * 2. a {@link webdriver.WebElement}, which must reference a FRAME or IFRAME
+ * 2. a {@link ./webdriver.WebElement}, which must reference a FRAME or IFRAME
  *     element on the current page.
  * 3. a locator which may be used to first locate a FRAME or IFRAME on the
  *     current page before attempting to switch to it.
@@ -116,12 +121,15 @@ exports.WebElementCondition = WebElementCondition;
  * Upon successful resolution of this condition, the driver will be left
  * focused on the new frame.
  *
- * @param {!(number|webdriver.WebElement|By|
- *           function(!webdriver.WebDriver): !webdriver.WebElement)} frame
+ * @param {!(number|./webdriver.WebElement|By|
+ *           function(!./webdriver.WebDriver): !./webdriver.WebElement)} frame
  *     The frame identifier.
  * @return {!Condition<boolean>} A new condition.
  */
 exports.ableToSwitchToFrame = function ableToSwitchToFrame(frame) {
+  // Not at top-level to avoid circular dependency.
+  const webdriver = require('./webdriver');
+
   var condition;
   if (typeof frame === 'number' || frame instanceof webdriver.WebElement) {
     condition = attemptToSwitchFrames;
@@ -154,7 +162,7 @@ exports.ableToSwitchToFrame = function ableToSwitchToFrame(frame) {
  * Creates a condition that waits for an alert to be opened. Upon success, the
  * returned promise will be fulfilled with the handle for the opened alert.
  *
- * @return {!Condition<!webdriver.Alert>} The new condition.
+ * @return {!Condition<!./webdriver.Alert>} The new condition.
  */
 exports.alertIsPresent = function alertIsPresent() {
   return new Condition('for alert to be present', function(driver) {
@@ -222,7 +230,7 @@ exports.titleMatches = function titleMatches(regex) {
 
 /**
  * Creates a condition that will loop until an element is
- * {@link webdriver.WebDriver#findElement found} with the given locator.
+ * {@link ./webdriver.WebDriver#findElement found} with the given locator.
  *
  * @param {!(By|Function)} locator The locator to use.
  * @return {!WebElementCondition} The new condition.
@@ -242,10 +250,10 @@ exports.elementLocated = function elementLocated(locator) {
 
 /**
  * Creates a condition that will loop until at least one element is
- * {@link webdriver.WebDriver#findElement found} with the given locator.
+ * {@link ./webdriver.WebDriver#findElement found} with the given locator.
  *
  * @param {!(By|Function)} locator The locator to use.
- * @return {!Condition<!Array<!webdriver.WebElement>>} The new
+ * @return {!Condition<!Array<!./webdriver.WebElement>>} The new
  *     condition.
  */
 exports.elementsLocated = function elementsLocated(locator) {
@@ -267,7 +275,7 @@ exports.elementsLocated = function elementsLocated(locator) {
  * element is considered stale once it is removed from the DOM, or a new page
  * has loaded.
  *
- * @param {!webdriver.WebElement} element The element that should become stale.
+ * @param {!./webdriver.WebElement} element The element that should become stale.
  * @return {!Condition<boolean>} The new condition.
  */
 exports.stalenessOf = function stalenessOf(element) {
@@ -287,9 +295,9 @@ exports.stalenessOf = function stalenessOf(element) {
 /**
  * Creates a condition that will wait for the given element to become visible.
  *
- * @param {!webdriver.WebElement} element The element to test.
+ * @param {!./webdriver.WebElement} element The element to test.
  * @return {!WebElementCondition} The new condition.
- * @see webdriver.WebDriver#isDisplayed
+ * @see ./webdriver.WebDriver#isDisplayed
  */
 exports.elementIsVisible = function elementIsVisible(element) {
   return new WebElementCondition('until element is visible', function() {
@@ -302,9 +310,9 @@ exports.elementIsVisible = function elementIsVisible(element) {
  * Creates a condition that will wait for the given element to be in the DOM,
  * yet not visible to the user.
  *
- * @param {!webdriver.WebElement} element The element to test.
+ * @param {!./webdriver.WebElement} element The element to test.
  * @return {!WebElementCondition} The new condition.
- * @see webdriver.WebDriver#isDisplayed
+ * @see ./webdriver.WebDriver#isDisplayed
  */
 exports.elementIsNotVisible = function elementIsNotVisible(element) {
   return new WebElementCondition('until element is not visible', function() {
@@ -316,7 +324,7 @@ exports.elementIsNotVisible = function elementIsNotVisible(element) {
 /**
  * Creates a condition that will wait for the given element to be enabled.
  *
- * @param {!webdriver.WebElement} element The element to test.
+ * @param {!./webdriver.WebElement} element The element to test.
  * @return {!WebElementCondition} The new condition.
  * @see webdriver.WebDriver#isEnabled
  */
@@ -330,7 +338,7 @@ exports.elementIsEnabled = function elementIsEnabled(element) {
 /**
  * Creates a condition that will wait for the given element to be disabled.
  *
- * @param {!webdriver.WebElement} element The element to test.
+ * @param {!./webdriver.WebElement} element The element to test.
  * @return {!WebElementCondition} The new condition.
  * @see webdriver.WebDriver#isEnabled
  */
@@ -343,7 +351,7 @@ exports.elementIsDisabled = function elementIsDisabled(element) {
 
 /**
  * Creates a condition that will wait for the given element to be selected.
- * @param {!webdriver.WebElement} element The element to test.
+ * @param {!./webdriver.WebElement} element The element to test.
  * @return {!WebElementCondition} The new condition.
  * @see webdriver.WebDriver#isSelected
  */
@@ -357,7 +365,7 @@ exports.elementIsSelected = function elementIsSelected(element) {
 /**
  * Creates a condition that will wait for the given element to be deselected.
  *
- * @param {!webdriver.WebElement} element The element to test.
+ * @param {!./webdriver.WebElement} element The element to test.
  * @return {!WebElementCondition} The new condition.
  * @see webdriver.WebDriver#isSelected
  */
@@ -373,7 +381,7 @@ exports.elementIsNotSelected = function elementIsNotSelected(element) {
  * {@link webdriver.WebDriver#getText visible text} to match the given
  * {@code text} exactly.
  *
- * @param {!webdriver.WebElement} element The element to test.
+ * @param {!./webdriver.WebElement} element The element to test.
  * @param {string} text The expected text.
  * @return {!WebElementCondition} The new condition.
  * @see webdriver.WebDriver#getText
@@ -390,7 +398,7 @@ exports.elementTextIs = function elementTextIs(element, text) {
  * {@link webdriver.WebDriver#getText visible text} to contain the given
  * substring.
  *
- * @param {!webdriver.WebElement} element The element to test.
+ * @param {!./webdriver.WebElement} element The element to test.
  * @param {string} substr The substring to search for.
  * @return {!WebElementCondition} The new condition.
  * @see webdriver.WebDriver#getText
@@ -408,7 +416,7 @@ exports.elementTextContains = function elementTextContains(element, substr) {
  * {@link webdriver.WebDriver#getText visible text} to match a regular
  * expression.
  *
- * @param {!webdriver.WebElement} element The element to test.
+ * @param {!./webdriver.WebElement} element The element to test.
  * @param {!RegExp} regex The regular expression to test against.
  * @return {!WebElementCondition} The new condition.
  * @see webdriver.WebDriver#getText

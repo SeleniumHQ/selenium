@@ -52,8 +52,8 @@ var ByHash;
  * @see https://drafts.csswg.org/cssom/#serialize-an-identifier
  */
 class InvalidCharacterError extends Error {
-  constructor(msg) {
-    super(msg);
+  constructor() {
+    super();
     this.name = this.constructor.name;
   }
 }
@@ -129,7 +129,7 @@ class By {
   /**
    * Locates elements that have a specific class name.
    *
-   * @param {string} className The class name to search for.
+   * @param {string} name The class name to search for.
    * @return {!By} The new locator.
    * @see http://www.w3.org/TR/2011/WD-html5-20110525/elements.html#classes
    * @see http://www.w3.org/TR/CSS2/selector.html#class-html
@@ -182,8 +182,8 @@ class By {
    *
    * @param {!(string|Function)} script The script to execute.
    * @param {...*} var_args The arguments to pass to the script.
-   * @return {function(!webdriver.WebDriver): !webdriver.promise.Promise} A new,
-   *     JavaScript-based locator function.
+   * @return {function(!./webdriver.WebDriver): !./promise.Promise}
+   *     A new JavaScript-based locator function.
    */
   static js(script, var_args) {
     let args = Array.prototype.slice.call(arguments, 0);
@@ -250,8 +250,8 @@ class By {
 
 /**
  * Checks if a value is a valid locator.
- * @param {(By|Function|ByHash)} locator The value to check.
- * @return {(By|Function)} The valid locator.
+ * @param {!(By|Function|ByHash)} locator The value to check.
+ * @return {!(By|Function)} The valid locator.
  * @throws {TypeError} If the given value does not define a valid locator
  *     strategy.
  */

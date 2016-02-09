@@ -683,15 +683,15 @@ function vlog(level, loggable, opt_self) {
  * Generates an error to capture the current stack trace.
  * @param {string} name Error name for this stack trace.
  * @param {string} msg Message to record.
- * @param {!Function} topFn The function that should appear at the top of the
- *     stack; only applicable in V8.
+ * @param {Function=} opt_topFn The function that should appear at the top of
+ *     the stack; only applicable in V8.
  * @return {!Error} The generated error.
  */
-function captureStackTrace(name, msg, topFn) {
+function captureStackTrace(name, msg, opt_topFn) {
   var e = Error(msg);
   e.name = name;
   if (Error.captureStackTrace) {
-    Error.captureStackTrace(e, topFn);
+    Error.captureStackTrace(e, opt_topFn);
   } else {
     var stack = Error().stack;
     if (stack) {
@@ -862,8 +862,8 @@ class Thenable {
    * the process. This method is a no-op if the promise has already been
    * resolved.
    *
-   * @param {(string|CancellationError)=} opt_reason The reason this
-   *     promise is being cancelled.
+   * @param {(string|Error)=} opt_reason The reason this promise is being
+   *     cancelled. This value will be wrapped in a {@link CancellationError}.
    */
   cancel(opt_reason) {}
 
@@ -990,6 +990,7 @@ const CANCEL_HANDLER_SYMBOL = Symbol('on cancel');
  * resolved.
  *
  * @implements {Thenable<T>}
+ * @unrestricted
  * @template T
  * @see http://promises-aplus.github.io/promises-spec/
  */
@@ -1104,7 +1105,7 @@ const ManagedPromise = class Promise {
 
         if (typeof then === 'function') {
           // 2.3.3.3
-          this.invokeThen_(newValue, then);
+          this.invokeThen_(/** @type {!Object} */(newValue), then);
           return;
         }
       }
@@ -1445,7 +1446,8 @@ Thenable.addImplementation(Deferred);
  */
 function isError(value) {
   return value instanceof Error ||
-      (value && typeof value === 'object' && typeof value.message === 'string');
+      (!!value && typeof value === 'object'
+          && typeof value.message === 'string');
 }
 
 
@@ -1922,9 +1924,6 @@ function fullyResolveKeys(obj) {
  * @final
  */
 class ControlFlow extends events.EventEmitter {
-  // TODO: remove this empty comment when the compiler properly handles
-  // rewriting classes with a missing constructor comment.
-  /** @constructor */
   constructor() {
     super();
 
@@ -1964,8 +1963,7 @@ class ControlFlow extends events.EventEmitter {
      * _actually_ something to run. When a control flow is waiting on a task,
      * there will be nothing in the JS event loop and the process would
      * terminate without this.
-     *
-     * @private {?number}
+     * @private
      */
     this.hold_ = null;
   }
@@ -2360,7 +2358,7 @@ class ControlFlow extends events.EventEmitter {
     var listeners = this.listeners(
         ControlFlow.EventType.UNCAUGHT_EXCEPTION);
     if (!listeners.size) {
-      asyncThrow(error);
+      asyncThrow(/** @type {!Error} */(error));
     } else {
       this.reportUncaughtException_(error);
     }
@@ -2458,6 +2456,7 @@ class MicroTask {
    */
   constructor(fn) {
     /** @private {boolean} */
+    this.cancelled_ = false;
     asyncRun(() => {
       if (!this.cancelled_) {
         fn();
@@ -2470,7 +2469,7 @@ class MicroTask {
    * @param {function()} fn The function to run.
    */
   static run(fn) {
-    ManagedPromise.resolve().then(function() {
+    NativePromise.resolve().then(function() {
       try {
         fn();
       } catch (ignored) {

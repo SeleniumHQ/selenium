@@ -32,6 +32,7 @@ const fs = require('fs'),
 
 const executors = require('./executors'),
     io = require('./io'),
+    capabilities = require('./lib/capabilities'),
     promise = require('./lib/promise'),
     webdriver = require('./lib/webdriver'),
     portprober = require('./net/portprober'),
@@ -87,32 +88,32 @@ const Key = {
  */
 class Options {
   constructor() {
-    /** @private {!Object<(boolean|number|string)>} */
+    /** @private {!Object<(boolean|number|string|!Array<string>)>} */
     this.options_ = {};
 
-    /** @private {(webdriver.ProxyConfig|null)} */
+    /** @private {(capabilities.ProxyConfig|null)} */
     this.proxy_ = null;
   }
 
   /**
    * Extracts the IEDriver specific options from the given capabilities
    * object.
-   * @param {!webdriver.Capabilities} capabilities The capabilities object.
+   * @param {!capabilities.Capabilities} caps The capabilities object.
    * @return {!Options} The IEDriver options.
    */
-  static fromCapabilities(capabilities) {
+  static fromCapabilities(caps) {
     var options = new Options();
     var map = options.options_;
 
     Object.keys(Key).forEach(function(key) {
       key = Key[key];
-      if (capabilities.has(key)) {
-        map[key] = capabilities.get(key);
+      if (caps.has(key)) {
+        map[key] = caps.get(key);
       }
     });
 
-    if (capabilities.has(webdriver.Capability.PROXY)) {
-      options.setProxy(capabilities.get(webdriver.Capability.PROXY));
+    if (caps.has(capabilities.Capability.PROXY)) {
+      options.setProxy(caps.get(capabilities.Capability.PROXY));
     }
 
     return options;
@@ -139,7 +140,7 @@ class Options {
    * Indicates whether to skip the check that the browser's zoom level is set to
    * 100%.
    *
-   * @parm {boolean} ignore Whether to ignore the browser's zoom level settings.
+   * @param {boolean} ignore Whether to ignore the browser's zoom level settings.
    * @return {!Options} A self reference.
    */
   ignoreZoomSetting(ignore) {
@@ -273,7 +274,7 @@ class Options {
 
   /**
    * Sets the path to the log file the driver should log to.
-   * @param {string} path The log file path.
+   * @param {string} file The log file path.
    * @return {!Options} A self reference.
    */
   setLogFile(file) {
@@ -323,7 +324,7 @@ class Options {
 
   /**
    * Sets the proxy settings for the new session.
-   * @param {webdriver.ProxyConfig} proxy The proxy configuration to use.
+   * @param {capabilities.ProxyConfig} proxy The proxy configuration to use.
    * @return {!Options} A self reference.
    */
   setProxy(proxy) {
@@ -332,20 +333,21 @@ class Options {
   }
 
   /**
-   * Converts this options instance to a {@link webdriver.Capabilities} object.
-   * @param {webdriver.Capabilities=} opt_capabilities The capabilities to merge
-   *     these options into, if any.
-   * @return {!webdriver.Capabilities} The capabilities.
+   * Converts this options instance to a {@link capabilities.Capabilities}
+   * object.
+   * @param {capabilities.Capabilities=} opt_capabilities The capabilities to
+   *     merge these options into, if any.
+   * @return {!capabilities.Capabilities} The capabilities.
    */
   toCapabilities(opt_capabilities) {
-    var capabilities = opt_capabilities || webdriver.Capabilities.ie();
+    var caps = opt_capabilities || capabilities.Capabilities.ie();
     if (this.proxy_) {
-      capabilities.set(webdriver.Capability.PROXY, this.proxy_);
+      caps.set(capabilities.Capability.PROXY, this.proxy_);
     }
     Object.keys(this.options_).forEach(function(key) {
-      capabilities.set(key, this.options_[key]);
+      caps.set(key, this.options_[key]);
     }, this);
-    return capabilities;
+    return caps;
   }
 }
 
@@ -401,20 +403,19 @@ function createServiceFromCapabilities(capabilities) {
  */
 class Driver extends webdriver.WebDriver {
   /**
-   * @param {(webdriver.Capabilities|Options)=} opt_config The configuration
+   * @param {(capabilities.Capabilities|Options)=} opt_config The configuration
    *     options.
    * @param {promise.ControlFlow=} opt_flow The control flow to use,
    *     or {@code null} to use the currently active flow.
    */
   constructor(opt_config, opt_flow) {
-    var capabilities = opt_config instanceof Options ?
+    var caps = opt_config instanceof Options ?
         opt_config.toCapabilities() :
-        (opt_config || webdriver.Capabilities.ie());
+        (opt_config || capabilities.Capabilities.ie());
 
-    var service = createServiceFromCapabilities(capabilities);
+    var service = createServiceFromCapabilities(caps);
     var executor = executors.createExecutor(service.start());
-    var driver = webdriver.WebDriver.createSession(
-        executor, capabilities, opt_flow);
+    var driver = webdriver.WebDriver.createSession(executor, caps, opt_flow);
 
     super(driver.getSession(), executor, driver.controlFlow());
 

@@ -76,6 +76,7 @@ const fs = require('fs'),
 const executors = require('./executors'),
     io = require('./io'),
     capabilities = require('./lib/capabilities'),
+    promise = require('./lib/promise'),
     Symbols = require('./lib/symbols'),
     webdriver = require('./lib/webdriver'),
     portprober = require('./net/portprober'),
@@ -123,7 +124,7 @@ class Options {
     });
 
     if (caps.has(capabilities.Capability.PROXY)) {
-      options.setProxy(caps.get(webdriver.Capability.PROXY));
+      options.setProxy(caps.get(capabilities.Capability.PROXY));
     }
 
     return options;
@@ -162,7 +163,7 @@ class Options {
   toCapabilities(opt_capabilities) {
     var caps = opt_capabilities || capabilities.Capabilities.edge();
     if (this.proxy_) {
-      caps.set(webdriver.Capability.PROXY, this.proxy_);
+      caps.set(capabilities.Capability.PROXY, this.proxy_);
     }
     Object.keys(this.options_).forEach(function(key) {
       caps.set(key, this.options_[key]);
@@ -173,7 +174,7 @@ class Options {
   /**
    * Converts this instance to its JSON wire protocol representation. Note this
    * function is an implementation not intended for general use.
-   * @return {{pageLoadStrategy: (string|undefined)}
+   * @return {{pageLoadStrategy: (string|undefined)}}
    *   The JSON wire protocol representation of this instance.
    */
   [Symbols.serialize]() {
@@ -201,30 +202,29 @@ class ServiceBuilder {
    *   MicrosoftEdgeDriver cannot be found on the PATH.
    */
   constructor(opt_exe) {
-    /** @private {string} */
-    this.exe_ = opt_exe || io.findInPath(EDGEDRIVER_EXE, true);
-    if (!this.exe_) {
+    let exe = opt_exe || io.findInPath(EDGEDRIVER_EXE, true);
+    if (!exe) {
       throw Error(
         'The ' + EDGEDRIVER_EXE + ' could not be found on the current PATH. ' +
         'Please download the latest version of the MicrosoftEdgeDriver from ' +
         'https://www.microsoft.com/en-us/download/details.aspx?id=48212 and ' +
         'ensure it can be found on your PATH.');
+    } else if (!fs.existsSync(exe)) {
+      throw Error('File does not exist: ' + exe);
     }
 
-    if (!fs.existsSync(this.exe_)) {
-      throw Error('File does not exist: ' + this.exe_);
-    }
+    /** @private {string} */
+    this.exe_ = /** @type {string} */(exe);
 
     /** @private {!Array.<string>} */
     this.args_ = [];
 
-    /** @private {string} */
-    this.stdio_ = 'ignore';
-
     /** @private {number} */
     this.port_ = 0;
 
-    /** @private {(string|!Array.<string|number|!Stream|null|undefined>)} */
+    /**
+     * @private {(string|!Array.<string|number|!stream.Stream|null|undefined>)}
+     */
     this.stdio_ = 'ignore';
 
     /** @private {Object.<string, string>} */
@@ -234,8 +234,8 @@ class ServiceBuilder {
   /**
    * Defines the stdio configuration for the driver service. See
    * {@code child_process.spawn} for more information.
-   * @param {(string|!Array.<string|number|!Stream|null|undefined>)} config The
-   *     configuration to use.
+   * @param {(string|!Array.<string|number|!stream.Stream|null|undefined>)}
+   *     config The configuration to use.
    * @return {!ServiceBuilder} A self reference.
    */
   setStdio(config) {
@@ -270,7 +270,7 @@ class ServiceBuilder {
 
   /**
    * Creates a new DriverService using this instance's current configuration.
-   * @return {remote.DriverService} A new driver service using this instance's
+   * @return {!remote.DriverService} A new driver service using this instance's
    *     current configuration.
    * @throws {Error} If the driver exectuable was not specified and a default
    *     could not be found on the current PATH.
@@ -281,9 +281,8 @@ class ServiceBuilder {
 
     return new remote.DriverService(this.exe_, {
       loopback: true,
-      path: this.path_,
       port: port,
-      args: webdriver.promise.when(port, function(port) {
+      args: promise.fulfilled(port).then(function(port) {
         return args.concat('--port=' + port);
       }),
       env: this.env_,
@@ -342,13 +341,11 @@ class Driver extends webdriver.WebDriver {
     var service = opt_service || getDefaultService();
     var executor = executors.createExecutor(service.start());
 
-    var capabilities =
+    var caps =
         opt_config instanceof Options ? opt_config.toCapabilities() :
         (opt_config || capabilities.Capabilities.edge());
 
-    var driver = webdriver.WebDriver.createSession(
-        executor, capabilities, opt_flow);
-
+    var driver = webdriver.WebDriver.createSession(executor, caps, opt_flow);
     super(driver.getSession(), executor, driver.controlFlow());
 
     var boundQuit = this.quit.bind(this);

@@ -37,7 +37,8 @@ const ws = require('ws');
 const io = require('./io');
 const exec = require('./io/exec');
 const isDevMode = require('./lib/devmode');
-const capabilities = require('./lib/capabilities');
+const Capabilities = require('./lib/capabilities').Capabilities;
+const Capability = require('./lib/capabilities').Capability;
 const command = require('./lib/command');
 const promise = require('./lib/promise');
 const Symbols = require('./lib/symbols');
@@ -103,91 +104,90 @@ class Server extends events.EventEmitter {
   constructor() {
     super();
     var server = http.createServer(function(req, res) {
-        if (req.url === '/favicon.ico') {
-          res.writeHead(204);
-          res.end();
+      if (req.url === '/favicon.ico') {
+        res.writeHead(204);
+        res.end();
+        return;
+      }
+
+      var query = url.parse(/** @type {string} */(req.url)).query || '';
+      if (query.indexOf('url=') == -1) {
+        var address = server.address()
+        var host = address.address + ':' + address.port;
+        res.writeHead(
+            302, {'Location': 'http://' + host + '?url=ws://' + host});
+        res.end();
+      }
+
+      fs.readFile(CLIENT_PATH, 'utf8', function(err, data) {
+        if (err) {
+          res.writeHead(500, {'Content-Type': 'text/plain'});
+          res.end(err.stack);
           return;
         }
-
-        var query = url.parse(req.url).query || '';
-        if (query.indexOf('url=') == -1) {
-          var address = server.address()
-          var host = address.address + ':' + address.port;
-          res.writeHead(
-              302, {'Location': 'http://' + host + '?url=ws://' + host});
-          res.end();
-        }
-
-        fs.readFile(CLIENT_PATH, 'utf8', function(err, data) {
-          if (err) {
-            res.writeHead(500, {'Content-Type': 'text/plain'});
-            res.end(err.stack);
-            return;
-          }
-          var content = '<!DOCTYPE html><body><script>' + data + '</script>';
-          res.writeHead(200, {
-            'Content-Type': 'text/html; charset=utf-8',
-            'Content-Length': Buffer.byteLength(content, 'utf8'),
-          });
-          res.end(content);
+        var content = '<!DOCTYPE html><body><script>' + data + '</script>';
+        res.writeHead(200, {
+          'Content-Type': 'text/html; charset=utf-8',
+          'Content-Length': Buffer.byteLength(content, 'utf8'),
         });
+        res.end(content);
       });
+    });
 
-      var wss = new ws.Server({server: server});
-      wss.on('connection', this.emit.bind(this, 'connection'));
+    var wss = new ws.Server({server: server});
+    wss.on('connection', this.emit.bind(this, 'connection'));
 
-      /**
-       * Starts the server on a random port.
-       * @return {!promise.Promise<Host>} A promise that will resolve
-       *     with the server host when it has fully started.
-       */
-      this.start = function() {
-        if (server.address()) {
-          return promise.fulfilled(server.address());
-        }
-        return portprober.findFreePort('localhost').then(function(port) {
-          return promise.checkedNodeCall(
-              server.listen.bind(server, port, 'localhost'));
-        }).then(function() {
-          return server.address();
-        });
-      };
+    /**
+     * Starts the server on a random port.
+     * @return {!promise.Promise<Host>} A promise that will resolve
+     *     with the server host when it has fully started.
+     */
+    this.start = function() {
+      if (server.address()) {
+        return promise.fulfilled(server.address());
+      }
+      return portprober.findFreePort('localhost').then(function(port) {
+        return promise.checkedNodeCall(
+            server.listen.bind(server, port, 'localhost'));
+      }).then(function() {
+        return server.address();
+      });
+    };
 
-      /**
-       * Stops the server.
-       * @return {!promise.Promise} A promise that will resolve when
-       *     the server has closed all connections.
-       */
-      this.stop = function() {
-        return new promise.Promise(function(fulfill) {
-          server.close(fulfill);
-        });
-      };
+    /**
+     * Stops the server.
+     * @return {!promise.Promise} A promise that will resolve when
+     *     the server has closed all connections.
+     */
+    this.stop = function() {
+      return new promise.Promise(function(fulfill) {
+        server.close(fulfill);
+      });
+    };
 
-      /**
-       * @return {Host} This server's host info.
-       * @throws {Error} If the server is not running.
-       */
-      this.address = function() {
-        var addr = server.address();
-        if (!addr) {
-          throw Error('There server is not running!');
-        }
-        return addr;
-      };
+    /**
+     * @return {Host} This server's host info.
+     * @throws {Error} If the server is not running.
+     */
+    this.address = function() {
+      var addr = server.address();
+      if (!addr) {
+        throw Error('There server is not running!');
+      }
+      return addr;
+    };
   }
 }
 
 
 /**
- * @return {!promise.Promise<string>} A promise that will resolve with the path
+ * @return {!Promise<string>} A promise that will resolve with the path
  *     to Safari on the current system.
  */
 function findSafariExecutable() {
   switch (process.platform) {
     case 'darwin':
-      return promise.fulfilled(
-          '/Applications/Safari.app/Contents/MacOS/Safari');
+      return Promise.resolve('/Applications/Safari.app/Contents/MacOS/Safari');
 
     case 'win32':
       var files = [
@@ -206,7 +206,7 @@ function findSafariExecutable() {
       });
 
     default:
-      return promise.rejected(
+      return Promise.reject(
           Error('Safari is not supported on the current platform: ' +
               process.platform));
   }
@@ -214,16 +214,15 @@ function findSafariExecutable() {
 
 
 /**
- * @param {string} url The URL to connect to.
- * @return {!promise.Promise<string>} A promise for the path to a file that
- *     Safari can open on start-up to trigger a new connection to the WebSocket
- *     server.
+ * @param {string} serverUrl The URL to connect to.
+ * @return {!Promise<string>} A promise for the path to a file that Safari can
+ *     open on start-up to trigger a new connection to the WebSocket server.
  */
-function createConnectFile(url) {
+function createConnectFile(serverUrl) {
   return io.tmpFile({postfix: '.html'}).then(function(f) {
     var writeFile =  promise.checkedNodeCall(fs.writeFile,
         f,
-        '<!DOCTYPE html><script>window.location = "' + url + '";</script>',
+        '<!DOCTYPE html><script>window.location = "' + serverUrl + '";</script>',
         {encoding: 'utf8'});
     return writeFile.then(function() {
       return f;
@@ -310,7 +309,7 @@ class CommandExecutor {
   }
 
   /**
-   * @param {!Object} data .
+   * @param {string} data .
    * @return {!promise.Promise} .
    * @private
    */
@@ -352,7 +351,9 @@ class CommandExecutor {
     this.server_ = new Server();
 
     this.safari_ = this.server_.start().then(function(address) {
-      var tasks = cleanSession(command.getParameters()['desiredCapabilities']);
+      var tasks = cleanSession(
+          /** @type {!Object} */(
+                command.getParameters()['desiredCapabilities']));
       tasks.push(
         findSafariExecutable(),
         createConnectFile(
@@ -424,14 +425,14 @@ class Options {
     /** @private {Object<string, *>} */
     this.options_ = null;
 
-    /** @private {logging.Preferences} */
+    /** @private {./lib/logging.Preferences} */
     this.logPrefs_ = null;
   }
 
   /**
    * Extracts the SafariDriver specific options from the given capabilities
    * object.
-   * @param {!webdriver.Capabilities} capabilities The capabilities object.
+   * @param {!Capabilities} capabilities The capabilities object.
    * @return {!Options} The ChromeDriver options.
    */
   static fromCapabilities(capabilities) {
@@ -444,9 +445,8 @@ class Options {
       options.setCleanSession(o.cleanSession);
     }
 
-    if (capabilities.has(webdriver.Capability.LOGGING_PREFS)) {
-      options.setLoggingPrefs(
-          capabilities.get(webdriver.Capability.LOGGING_PREFS));
+    if (capabilities.has(Capability.LOGGING_PREFS)) {
+      options.setLoggingPrefs(capabilities.get(Capability.LOGGING_PREFS));
     }
 
     return options;
@@ -469,7 +469,7 @@ class Options {
 
   /**
    * Sets the logging preferences for the new session.
-   * @param {!logging.Preferences} prefs The logging preferences.
+   * @param {!./lib/logging.Preferences} prefs The logging preferences.
    * @return {!Options} A self reference.
    */
   setLoggingPrefs(prefs) {
@@ -478,15 +478,15 @@ class Options {
   }
 
   /**
-   * Converts this options instance to a {@link webdriver.Capabilities} object.
-   * @param {capabilities.Capabilities=} opt_capabilities The capabilities to
+   * Converts this options instance to a {@link Capabilities} object.
+   * @param {Capabilities=} opt_capabilities The capabilities to
    *     merge these options into, if any.
-   * @return {!capabilities.Capabilities} The capabilities.
+   * @return {!Capabilities} The capabilities.
    */
   toCapabilities(opt_capabilities) {
-    var caps = opt_capabilities || capabilities.Capabilities.safari();
+    var caps = opt_capabilities || Capabilities.safari();
     if (this.logPrefs_) {
-      caps.set(capabilities.Capability.LOGGING_PREFS, this.logPrefs_);
+      caps.set(Capability.LOGGING_PREFS, this.logPrefs_);
     }
     if (this.options_) {
       caps.set(OPTIONS_CAPABILITY_KEY, this);
@@ -517,7 +517,7 @@ class Options {
  */
 class Driver extends webdriver.WebDriver {
   /**
-   * @param {(Options|webdriver.Capabilities)=} opt_config The configuration
+   * @param {(Options|Capabilities)=} opt_config The configuration
    *     options for the new session.
    * @param {promise.ControlFlow=} opt_flow The control flow to create
    *     the driver under.
@@ -526,7 +526,7 @@ class Driver extends webdriver.WebDriver {
     var executor = new CommandExecutor();
     var caps =
         opt_config instanceof Options ? opt_config.toCapabilities() :
-        (opt_config || capabilities.Capabilities.safari());
+        (opt_config || Capabilities.safari());
 
     var driver = webdriver.WebDriver.createSession(executor, caps, opt_flow);
     super(driver.getSession(), executor, driver.controlFlow());

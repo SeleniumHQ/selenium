@@ -24,7 +24,7 @@
  * The local logging API, which is anchored by the {@linkplain Logger} class is
  * similar to Java's logging API. Loggers, retrieved by
  * {@linkplain #getLogger getLogger(name)}, use hierarchical, dot-delimited
- * namespaces (e.g. "" > "webdriver" > "webdriver.logging"). Recorded log 
+ * namespaces (e.g. "" > "webdriver" > "webdriver.logging"). Recorded log
  * messages are represented by the {@linkplain Entry} class. You can capture log
  * records by {@linkplain Logger#addHandler attaching} a handler function to the
  * desired logger. For convenience, you can quickly enable logging to the
@@ -110,49 +110,49 @@ Level.OFF = new Level('OFF', Infinity);
 
 
 /**
- * Log messages with a level of `1000` or higher. 
+ * Log messages with a level of `1000` or higher.
  * @const
  */
 Level.SEVERE = new Level('SEVERE', 1000);
 
 
 /**
- * Log messages with a level of `900` or higher. 
+ * Log messages with a level of `900` or higher.
  * @const
  */
 Level.WARNING = new Level('WARNING', 900);
 
 
 /**
- * Log messages with a level of `800` or higher. 
+ * Log messages with a level of `800` or higher.
  * @const
  */
 Level.INFO = new Level('INFO', 800);
 
 
 /**
- * Log messages with a level of `700` or higher. 
+ * Log messages with a level of `700` or higher.
  * @const
  */
 Level.DEBUG = new Level('DEBUG', 700);
 
 
 /**
- * Log messages with a level of `500` or higher. 
+ * Log messages with a level of `500` or higher.
  * @const
  */
 Level.FINE = new Level('FINE', 500);
 
 
 /**
- * Log messages with a level of `400` or higher. 
+ * Log messages with a level of `400` or higher.
  * @const
  */
 Level.FINER = new Level('FINER', 400);
 
 
 /**
- * Log messages with a level of `300` or higher. 
+ * Log messages with a level of `300` or higher.
  * @const
  */
 Level.FINEST = new Level('FINEST', 300);
@@ -165,7 +165,7 @@ Level.FINEST = new Level('FINEST', 300);
 Level.ALL = new Level('ALL', 0);
 
 
-const ALL_LEVELS = new Set([
+const ALL_LEVELS = /** !Set<Level> */new Set([
   Level.OFF,
   Level.SEVERE,
   Level.WARNING,
@@ -178,7 +178,7 @@ const ALL_LEVELS = new Set([
 ]);
 
 
-const LEVELS_BY_NAME = new Map([
+const LEVELS_BY_NAME = /** !Map<string, !Level> */ new Map([
   [Level.OFF.name, Level.OFF],
   [Level.SEVERE.name, Level.SEVERE],
   [Level.WARNING.name, Level.WARNING],
@@ -195,9 +195,9 @@ const LEVELS_BY_NAME = new Map([
  * Converts a level name or value to a {@link Level} value. If the name/value
  * is not recognized, {@link Level.ALL} will be returned.
  *
- * @param {(number|string)} numberOrValue The log level name, or value, to
+ * @param {(number|string)} nameOrValue The log level name, or value, to
  *     convert.
- * @return {!Logger} The converted level.
+ * @return {!Level} The converted level.
  */
 function getLevel(nameOrValue) {
   if (typeof nameOrValue === 'string') {
@@ -262,7 +262,7 @@ let Loggable;
  * the "foo.bar" and an ancestor of "foo.bar.baz".
  *
  * Each logger may be assigned a {@linkplain #setLevel log level}, which
- * controls which level of messages will be reported to the 
+ * controls which level of messages will be reported to the
  * {@linkplain #addHandler handlers} attached to this instance. If a log level
  * is not explicitly set on a logger, it will inherit its parent.
  *
@@ -457,6 +457,7 @@ class Logger {
  */
 class LogManager {
   constructor() {
+    /** @private {!Map<string, !Logger>} */
     this.loggers_ = new Map;
     this.root_ = new Logger('', Level.OFF);
   }
@@ -491,7 +492,7 @@ class LogManager {
    */
   createLogger_(name, parent) {
     if (this.loggers_.has(name)) {
-      return this.loggers_.get(name);
+      return /** @type {!Logger} */(this.loggers_.get(name));
     }
     let logger = new Logger(name, null);
     logger.parent_ = parent;
@@ -626,7 +627,7 @@ class Preferences {
   /**
    * Sets the desired logging level for a particular log type.
    * @param {(string|Type)} type The log type.
-   * @param {!Level} level The desired log level.
+   * @param {(!Level|string|number)} level The desired log level.
    * @throws {TypeError} if `type` is not a `string`.
    */
   setLevel(type, level) {

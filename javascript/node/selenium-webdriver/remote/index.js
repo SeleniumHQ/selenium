@@ -26,6 +26,7 @@ const AdmZip = require('adm-zip'),
 
 const httpUtil = require('../http/util'),
     exec = require('../io/exec'),
+    cmd = require('../lib/command'),
     input = require('../lib/input'),
     promise = require('../lib/promise'),
     webdriver = require('../lib/webdriver'),
@@ -55,9 +56,10 @@ const httpUtil = require('../http/util'),
  *   loopback: (boolean|undefined),
  *   port: (number|!promise.Promise<number>),
  *   args: !(Array<string>|promise.Promise<!Array<string>>),
- *   path: (string|undefined),
- *   env: (!Object<string, string>|undefined),
- *   stdio: (string|!Array<string|number|!Stream|null|undefined>|undefined)
+ *   path: (string|undefined|null),
+ *   env: (Object<string, string>|undefined),
+ *   stdio: (string|!Array<string|number|!stream.Stream|null|undefined>|
+ *           undefined)
  * }}
  */
 var ServiceOptions;
@@ -97,13 +99,15 @@ class DriverService {
     /** @private {!Object<string, string>} */
     this.env_ = options.env || process.env;
 
-    /** @private {(string|!Array<string|number|!Stream|null|undefined>)} */
+    /**
+     * @private {(string|!Array<string|number|!stream.Stream|null|undefined>)}
+     */
     this.stdio_ = options.stdio || 'ignore';
 
     /**
      * A promise for the managed subprocess, or null if the server has not been
      * started yet. This promise will never be rejected.
-     * @private {promise.Promise<!exec.Command>}
+     * @private {promise.Deferred<!exec.Command>}
      */
     this.command_ = null;
 
@@ -111,18 +115,9 @@ class DriverService {
      * Promise that resolves to the server's address or null if the server has
      * not been started. This promise will be rejected if the server terminates
      * before it starts accepting WebDriver requests.
-     * @private {promise.Promise<string>}
+     * @private {promise.Deferred<string>}
      */
     this.address_ = null;
-  }
-
-  /**
-   * The default amount of time, in milliseconds, to wait for the server to
-   * start.
-   * @const {number}
-   */
-  static get DEFAULT_START_TIMEOUT_MS() {
-    return 30 * 1000;
   }
 
   /**
@@ -132,7 +127,7 @@ class DriverService {
    */
   address() {
     if (this.address_) {
-      return this.address_;
+      return this.address_.promise;
     }
     throw Error('Server has not been started.');
   }
@@ -157,7 +152,7 @@ class DriverService {
    */
   start(opt_timeoutMs) {
     if (this.address_) {
-      return this.address_;
+      return this.address_.promise;
     }
 
     var timeout = opt_timeoutMs || DriverService.DEFAULT_START_TIMEOUT_MS;
@@ -200,7 +195,7 @@ class DriverService {
           var ready = httpUtil.waitForServer(serverUrl, timeout)
               .then(fulfill, reject);
           earlyTermination.thenCatch(function(e) {
-            ready.cancel(e);
+            ready.cancel(/** @type {Error} */(e));
             reject(Error(e.message));
           });
         }).then(function() {
@@ -209,7 +204,7 @@ class DriverService {
       });
     }));
 
-    return this.address_;
+    return this.address_.promise;
   }
 
   /**
@@ -223,7 +218,7 @@ class DriverService {
     if (!this.address_ || !this.command_) {
       return promise.fulfilled();  // Not currently running.
     }
-    return this.command_.then(function(command) {
+    return this.command_.promise.then(function(command) {
       command.kill('SIGTERM');
     });
   }
@@ -238,6 +233,14 @@ class DriverService {
     return promise.controlFlow().execute(this.kill.bind(this));
   }
 }
+
+
+/**
+ * The default amount of time, in milliseconds, to wait for the server to
+ * start.
+ * @const {number}
+ */
+DriverService.DEFAULT_START_TIMEOUT_MS = 30 * 1000;
 
 
 /**
@@ -310,7 +313,8 @@ class SeleniumServer extends DriverService {
  *             !promise.Promise<!Array<string>>|
  *             undefined),
  *   env: (!Object<string, string>|undefined),
- *   stdio: (string|!Array<string|number|!Stream|null|undefined>|undefined)
+ *   stdio: (string|!Array<string|number|!stream.Stream|null|undefined>|
+ *           undefined)
  * }}
  */
 SeleniumServer.Options;
@@ -345,7 +349,7 @@ class FileDetector extends input.FileDetector {
       zip.addLocalFile(filePath);
       zip.getEntries()[0].header.method = AdmConstants.STORED;
 
-      var command = new webdriver.Command(webdriver.CommandName.UPLOAD_FILE)
+      var command = new cmd.Command(cmd.Name.UPLOAD_FILE)
           .setParameter('file', zip.toBuffer().toString('base64'));
       return driver.schedule(command,
           'remote.FileDetector.handleFile(' + filePath + ')');

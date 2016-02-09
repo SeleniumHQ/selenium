@@ -32,6 +32,7 @@ const Symbols = require('./symbols');
 const Browser = {
   ANDROID: 'android',
   CHROME: 'chrome',
+  EDGE: 'MicrosoftEdge',
   FIREFOX: 'firefox',
   IE: 'internet explorer',
   INTERNET_EXPLORER: 'internet explorer',
@@ -199,6 +200,15 @@ class Capabilities extends Map {
    */
   static chrome() {
     return new Capabilities().set(Capability.BROWSER_NAME, Browser.CHROME);
+  }
+
+  /**
+   * @return {!Capabilities} A basic set of capabilities for Microsoft Edge.
+   */
+  static edge() {
+    return new Capabilities()
+        .set(Capability.BROWSER_NAME, Browser.EDGE)
+        .set(Capability.PLATFORM, 'WINDOWS');
   }
 
   /**

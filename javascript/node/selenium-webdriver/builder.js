@@ -126,8 +126,8 @@ class Builder {
     /** @private {edge.Options} */
     this.edgeOptions_ = null;
 
-    /** @private {safari.Options} */
-    this.safariOptions_ = null;
+    /** @private {boolean} */
+    this.ignoreEnv_ = false;
   }
 
   /**
@@ -180,8 +180,8 @@ class Builder {
   }
 
   /**
-   * @return {string} The URL of the proxy server to use for the WebDriver's
-   *    HTTP connections.
+   * @return {?string} The URL of the proxy server to use for the WebDriver's
+   *    HTTP connections, or `null` if not set.
    */
   getWebDriverProxy() {
     return this.proxy_;
@@ -247,7 +247,7 @@ class Builder {
   /**
    * Sets the logging preferences for the created session. Preferences may be
    * changed by repeated calls, or by calling {@link #withCapabilities}.
-   * @param {!(./logging.Preferences|Object<string, string>)} prefs The
+   * @param {!(./lib/logging.Preferences|Object<string, string>)} prefs The
    *     desired logging preferences.
    * @return {!Builder} A self reference.
    */
@@ -280,7 +280,7 @@ class Builder {
   /**
    * Sets the default action to take with an unexpected alert before returning
    * an error.
-   * @param {string} beahvior The desired behavior; should be "accept",
+   * @param {string} behavior The desired behavior; should be "accept",
    *     "dismiss", or "ignore". Defaults to "dismiss".
    * @return {!Builder} A self reference.
    */
@@ -466,7 +466,7 @@ class Builder {
         return new edge.Driver(capabilities, null, this.flow_);
 
       case Browser.OPERA:
-        return new opera.Driver(capabilities, this.flow_);
+        return new opera.Driver(capabilities, null, this.flow_);
 
       case Browser.PHANTOM_JS:
         return new phantomjs.Driver(capabilities, this.flow_);

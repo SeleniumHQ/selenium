@@ -60,8 +60,9 @@ var defaultPreferences = null;
  */
 function getDefaultPreferences() {
   if (!defaultPreferences) {
-    var contents = fs.readFileSync(WEBDRIVER_PREFERENCES_PATH, 'utf8');
-    defaultPreferences = JSON.parse(contents);
+    var contents = /** @type {string} */(
+        fs.readFileSync(WEBDRIVER_PREFERENCES_PATH, 'utf8'));
+    defaultPreferences = /** @type {!Object} */(JSON.parse(contents));
   }
   return defaultPreferences;
 }
@@ -94,7 +95,7 @@ function loadUserPrefs(f) {
       }
     });
 
-    vm.runInContext(contents, context, f);
+    vm.runInContext(/** @type {string} */(contents), context, f);
     done.fulfill(prefs);
   });
   return done.promise;
@@ -103,7 +104,7 @@ function loadUserPrefs(f) {
 
 
 /**
- * @param {!Object} defaults The default preferences to write. Will be
+ * @param {!Object} prefs The default preferences to write. Will be
  *     overridden by user.js preferences in the template directory and the
  *     frozen preferences required by WebDriver.
  * @param {string} dir Path to the directory write the file to.
@@ -139,54 +140,48 @@ function writeUserPrefs(prefs, dir) {
  * @param {string} dir The profile directory to install to.
  * @param {boolean=} opt_excludeWebDriverExt Whether to skip installation of
  *     the default WebDriver extension.
- * @return {!promise.Promise<string>} A promise for the main profile directory
+ * @return {!Promise<string>} A promise for the main profile directory
  *     once all extensions have been installed.
  */
 function installExtensions(extensions, dir, opt_excludeWebDriverExt) {
   var hasWebDriver = !!opt_excludeWebDriverExt;
   var next = 0;
   var extensionDir = path.join(dir, 'extensions');
-  var done = promise.defer();
 
-  return io.exists(extensionDir).then(function(exists) {
-    if (!exists) {
-      return promise.checkedNodeCall(fs.mkdir, extensionDir);
-    }
-  }).then(function() {
-    installNext();
-    return done.promise;
-  });
-
-  function installNext() {
-    if (!done.isPending()) {
-      return;
-    }
-
-    if (next >= extensions.length) {
-      if (hasWebDriver) {
-        done.fulfill(dir);
-      } else {
-        install(WEBDRIVER_EXTENSION_PATH);
+  return new Promise(function(fulfill, reject) {
+    io.exists(extensionDir).then(function(exists) {
+      if (!exists) {
+        return promise.checkedNodeCall(fs.mkdir, extensionDir);
       }
-    } else {
-      install(extensions[next++]);
-    }
-  }
+    }).then(installNext);
 
-  function install(ext) {
-    extension.install(ext, extensionDir).then(function(id) {
-      hasWebDriver = hasWebDriver || (id === WEBDRIVER_EXTENSION_NAME);
-      installNext();
-    }, done.reject);
- }
+    function installNext() {
+      if (next >= extensions.length) {
+        if (hasWebDriver) {
+          fulfill(dir);
+        } else {
+          install(WEBDRIVER_EXTENSION_PATH);
+        }
+      } else {
+        install(extensions[next++]);
+      }
+    }
+
+    function install(ext) {
+      extension.install(ext, extensionDir).then(function(id) {
+        hasWebDriver = hasWebDriver || (id === WEBDRIVER_EXTENSION_NAME);
+        installNext();
+      }, reject);
+    }
+  });
 }
 
 
 /**
  * Decodes a base64 encoded profile.
  * @param {string} data The base64 encoded string.
- * @return {!promise.Promise<string>} A promise for the path to the decoded
- *     profile directory.
+ * @return {!Promise<string>} A promise for the path to the decoded profile
+ *     directory.
  */
 function decode(data) {
   return io.tmpFile().then(function(file) {
@@ -343,15 +338,16 @@ class Profile {
    *     extension from the generated profile. Used to reduce the size of an
    *     {@link #encode() encoded profile} since the server will always install
    *     the extension itself.
-   * @return {!promise.Promise<string>} A promise for the path to the new
-   *     profile directory.
+   * @return {!Promise<string>} A promise for the path to the new profile
+   *     directory.
    */
   writeToDisk(opt_excludeWebDriverExt) {
     var profileDir = io.tmpDir();
     if (this.template_) {
       profileDir = profileDir.then(function(dir) {
         return io.copyDir(
-            this.template_, dir, /(parent\.lock|lock|\.parentlock)/);
+            /** @type {string} */(this.template_),
+            dir, /(parent\.lock|lock|\.parentlock)/);
       }.bind(this));
     }
 
@@ -371,7 +367,7 @@ class Profile {
 
   /**
    * Encodes this profile as a zipped, base64 encoded directory.
-   * @return {!promise.Promise<string>} A promise for the encoded profile.
+   * @return {!Promise<string>} A promise for the encoded profile.
    */
   encode() {
     return this.writeToDisk(true).then(function(dir) {
@@ -389,7 +385,7 @@ class Profile {
 
   /**
    * Encodes this profile as a zipped, base64 encoded directory.
-   * @return {!promise.Promise<string>} A promise for the encoded profile.
+   * @return {!Promise<string>} A promise for the encoded profile.
    */
   [Symbols.serialize]() {
     return this.encode();

@@ -31,9 +31,10 @@ const promise = require('../lib/promise');
  *     information, refer to the documentation of `child_process.spawn`.
  *
  * @typedef {{
- *   args: (!Array.<string>|undefined),
- *   env: (!Object.<string, string>|undefined),
- *   stdio: (string|!Array.<string|number|!Stream|null|undefined>|undefined)
+ *   args: (!Array<string>|undefined),
+ *   env: (!Object<string, string>|undefined),
+ *   stdio: (string|!Array<string|number|!stream.Stream|null|undefined>|
+ *           undefined)
  * }}
  */
 var Options;
@@ -64,8 +65,9 @@ class Result {
 }
 
 
-const COMMAND_RESULT = new WeakMap;
-const KILL_HOOK = new WeakMap;
+const COMMAND_RESULT =
+    /** !WeakMap<!Command, !promise.Promise<!Result>> */new WeakMap;
+const KILL_HOOK = /** !WeakMap<!Command, function(string)> */new WeakMap;
 
 /**
  * Represents a command running in a sub-process.
@@ -91,7 +93,7 @@ class Command {
    *     command.
    */
   result() {
-    return COMMAND_RESULT.get(this);
+    return /** @type {!promise.Promise<!Result>} */(COMMAND_RESULT.get(this));
   }
 
   /**

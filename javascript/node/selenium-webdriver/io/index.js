@@ -31,17 +31,17 @@ var fs = require('fs'),
 /**
  * Recursively removes a directory and all of its contents. This is equivalent
  * to {@code rm -rf} on a POSIX system.
- * @param {string} path Path to the directory to remove.
+ * @param {string} dirPath Path to the directory to remove.
  * @return {!Promise} A promise to be resolved when the operation has
  *     completed.
  */
-exports.rmDir = function(path) {
+exports.rmDir = function(dirPath) {
   return new Promise(function(fulfill, reject) {
     var numAttempts = 0;
     attemptRm();
     function attemptRm() {
       numAttempts += 1;
-      rimraf(path, function(err) {
+      rimraf(dirPath, function(err) {
         if (err) {
           if (err.code === 'ENOTEMPTY' && numAttempts < 2) {
             attemptRm();
@@ -81,7 +81,7 @@ exports.copy = function(src, dst) {
  * Recursively copies the contents of one directory to another.
  * @param {string} src The source directory to copy.
  * @param {string} dst The directory to copy into.
- * @param {(RegEx|function(string): boolean)=} opt_exclude An exclusion filter
+ * @param {(RegExp|function(string): boolean)=} opt_exclude An exclusion filter
  *     as either a regex or predicate function. All files matching this filter
  *     will not be copied.
  * @return {!Promise<string>} A promise for the destination
@@ -106,7 +106,7 @@ exports.copyDir = function(src, dst, opt_exclude) {
   });
 
   if (predicate) {
-    files = files.filter(predicate);
+    files = files.filter(/** @type {function(string): boolean} */(predicate));
   }
 
   var results = [];
@@ -130,12 +130,12 @@ exports.copyDir = function(src, dst, opt_exclude) {
 
 /**
  * Tests if a file path exists.
- * @param {string} path The path to test.
- * @return {!Promise.<boolean>} A promise for whether the file exists.
+ * @param {string} aPath The path to test.
+ * @return {!Promise<boolean>} A promise for whether the file exists.
  */
-exports.exists = function(path) {
+exports.exists = function(aPath) {
   return new Promise(function(fulfill) {
-    fs.exists(path, fulfill);
+    fs.exists(aPath, fulfill);
   });
 };
 
@@ -143,14 +143,14 @@ exports.exists = function(path) {
 /**
  * Deletes a name from the filesystem and possibly the file it refers to. Has
  * no effect if the file does not exist.
- * @param {string} path The path to remove.
+ * @param {string} aPath The path to remove.
  * @return {!Promise} A promise for when the file has been removed.
  */
-exports.unlink = function(path) {
+exports.unlink = function(aPath) {
   return new Promise(function(fulfill, reject) {
-    fs.exists(path, function(exists) {
+    fs.exists(aPath, function(exists) {
       if (exists) {
-        fs.unlink(path, function(err) {
+        fs.unlink(aPath, function(err) {
           err && reject(err) || fulfill();
         });
       } else {
@@ -181,7 +181,9 @@ exports.tmpDir = function() {
  */
 exports.tmpFile = function(opt_options) {
   return new Promise(function(fulfill, reject) {
-    let callback = function(err, value) {
+    let callback = function(
+        /** Error */err,
+        /** (string|undefined) */value) {
       err ? reject(err) : fulfill(value);
     };
 

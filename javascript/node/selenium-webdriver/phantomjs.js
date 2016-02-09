@@ -112,7 +112,7 @@ const WEBDRIVER_TO_PHANTOMJS_LEVEL = new Map([
 /**
  * Creates a command executor with support for PhantomJS' custom commands.
  * @param {!promise.Promise<string>} url The server's URL.
- * @return {!webdriver.CommandExecutor} The new command executor.
+ * @return {!command.Executor} The new command executor.
  */
 function createExecutor(url) {
   return new executors.DeferredExecutor(url.then(function(url) {
@@ -240,7 +240,7 @@ class Driver extends webdriver.WebDriver {
    *     script's return value.
    * @template T
    */
-  executePhantomJS(script, args) {
+  executePhantomJS(script, var_args) {
     if (typeof script === 'function') {
       script = 'return (' + script + ').apply(this, arguments);';
     }

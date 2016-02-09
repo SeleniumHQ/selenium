@@ -21,6 +21,8 @@
 
 'use strict';
 
+const promise = require('./promise');
+
 
 /**
  * Describes a command to execute.
@@ -225,10 +227,10 @@ class Executor {
    * response object.
    *
    * @param {!Command} command The command to execute.
-   * @return {!Promise<!bot.response.ResponseObject>} A promise
-   *     that will be fulfilled with the command result.
+   * @return {!promise.Promise<!Object>} A promise that will be fulfilled with
+   *     the command result.
    */
-  execute() {}
+  execute(command) {}
 }
 
 
@@ -239,8 +241,8 @@ class Executor {
  */
 class DeferredExecutor {
   /**
-   * @param {!IThenable<Executor>} delegate The promised delegate, which may
-   *     be provided by any promise-like thenable object.
+   * @param {!promise.Promise<Executor>} delegate The promised delegate, which
+   *     may be provided by any promise-like thenable object.
    */
   constructor(delegate) {
     /** @override */

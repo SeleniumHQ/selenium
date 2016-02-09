@@ -28,6 +28,7 @@ const url = require('url');
 const error = require('../error');
 const cmd = require('../lib/command');
 const logging = require('../lib/logging');
+const promise = require('../lib/promise');
 
 
 
@@ -38,7 +39,9 @@ const logging = require('../lib/logging');
  */
 function headersToString(headers) {
   let ret = [];
-  headers.forEach((value, name) => ret.push(`${name.toLowerCase()}: ${value}`));
+  headers.forEach(function(value, name) {
+    ret.push(`${name.toLowerCase()}: ${value}`);
+  });
   return ret.join('\n');
 }
 
@@ -112,7 +115,7 @@ function get(path)  { return resource('GET', path); }
 function resource(method, path) { return {method: method, path: path}; }
 
 
-/** @const {!Map<cmd.Name, {method: string, path: string}>} */
+/** @const {!Map<string, {method: string, path: string}>} */
 const COMMAND_MAP = new Map([
     [cmd.Name.GET_SERVER_STATUS, get('/status')],
     [cmd.Name.NEW_SESSION, post('/session')],
@@ -200,7 +203,7 @@ class HttpClient {
    * @param {string} serverUrl URL for the WebDriver server to send commands to.
    * @param {http.Agent=} opt_agent The agent to use for each request.
    *     Defaults to `http.globalAgent`.
-   * @param {string=} opt_proxy The proxy to use for the connection to the
+   * @param {?string=} opt_proxy The proxy to use for the connection to the
    *     server. Default is to use no proxy.
    */
   constructor(serverUrl, opt_agent, opt_proxy) {
@@ -210,14 +213,17 @@ class HttpClient {
     }
 
     /** @private {http.Agent} */
-    this.agent_ = opt_agent;
+    this.agent_ = opt_agent || null;
 
-    /** @private {string} */
-    this.proxy_ = opt_proxy;
+    /** @private {?string} */
+    this.proxy_ = opt_proxy || null;
 
     /**
      * Base options for each request.
-     * @private {!Object}
+     * @private {{auth: (?string|undefined),
+     *            host: string,
+     *            path: (?string|undefined),
+     *            port: (?string|undefined)}}
      */
     this.options_ = {
       auth: parsedUrl.auth,
@@ -233,16 +239,22 @@ class HttpClient {
    * final response.
    *
    * @param {!HttpRequest} httpRequest The request to send.
-   * @return {!Promise<HttpResponse>} A promise that will be fulfilled with the
-   *     server's response.
+   * @return {!promise.Promise<HttpResponse>} A promise that will be fulfilled
+   *     with the server's response.
    */
   send(httpRequest) {
     var data;
-    httpRequest.headers['Content-Length'] = 0;
+
+    let headers = {};
+    httpRequest.headers.forEach(function(value, name) {
+      headers[name] = value;
+    });
+
+    headers['Content-Length'] = 0;
     if (httpRequest.method == 'POST' || httpRequest.method == 'PUT') {
       data = JSON.stringify(httpRequest.data);
-      httpRequest.headers['Content-Length'] = Buffer.byteLength(data, 'utf8');
-      httpRequest.headers['Content-Type'] = 'application/json;charset=UTF-8';
+      headers['Content-Length'] = Buffer.byteLength(data, 'utf8');
+      headers['Content-Type'] = 'application/json;charset=UTF-8';
     }
 
     var path = this.options_.path;
@@ -258,7 +270,7 @@ class HttpClient {
       host: this.options_.host,
       port: this.options_.port,
       path: path,
-      headers: httpRequest.headers
+      headers: headers
     };
 
     if (this.agent_) {
@@ -266,7 +278,7 @@ class HttpClient {
     }
 
     var proxy = this.proxy_;
-    return new Promise(function(fulfill, reject) {
+    return new promise.Promise(function(fulfill, reject) {
       sendRequest(options, fulfill, reject, data, proxy);
     });
   }
@@ -279,8 +291,8 @@ class HttpClient {
  * @param {function(!HttpResponse)} onOk The function to call if the
  *     request succeeds.
  * @param {function(!Error)} onError The function to call if the request fails.
- * @param {string=} opt_data The data to send with the request.
- * @param {string=} opt_proxy The proxy server to use for the request.
+ * @param {?string=} opt_data The data to send with the request.
+ * @param {?string=} opt_proxy The proxy server to use for the request.
  */
 function sendRequest(options, onOk, onError, opt_data, opt_proxy) {
   var host = options.host;
@@ -332,8 +344,10 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy) {
     var body = [];
     response.on('data', body.push.bind(body));
     response.on('end', function() {
-      var resp = new HttpResponse(response.statusCode,
-          response.headers, body.join('').replace(/\0/g, ''));
+      var resp = new HttpResponse(
+          /** @type {number} */(response.statusCode),
+          /** @type {!Object<string>} */(response.headers),
+          body.join('').replace(/\0/g, ''));
       onOk(resp);
     });
   });
@@ -376,7 +390,7 @@ class Executor {
     /** @private {Map<string, {method: string, path: string}>} */
     this.customCommands_ = null;
 
-    /** @private {!webdriver.logging.Logger} */
+    /** @private {!logging.Logger} */
     this.log_ = logging.getLogger('webdriver.http.Executor');
   }
 
@@ -428,12 +442,11 @@ class Executor {
  * Callback used to parse {@link HttpResponse} objects from a
  * {@link HttpClient}.
  * @param {!HttpResponse} httpResponse The HTTP response to parse.
- * @return {!bot.response.ResponseObject} The parsed response.
+ * @return {!Object} The parsed response.
  */
 function parseHttpResponse(httpResponse) {
   try {
-    return /** @type {!bot.response.ResponseObject} */ (JSON.parse(
-        httpResponse.body));
+    return /** @type {!Object} */ (JSON.parse(httpResponse.body));
   } catch (ignored) {
     // Whoops, looks like the server sent us a malformed response. We'll need
     // to manually build a response object based on the response code.

@@ -107,7 +107,7 @@ class ActionSequence {
   /**
    * Executes this action sequence.
    *
-   * @return {!webdriver.promise.Promise} A promise that will be resolved once
+   * @return {!./promise.Promise} A promise that will be resolved once
    *     this sequence has completed.
    */
   perform() {
@@ -415,7 +415,7 @@ class TouchSequence {
 
   /**
    * Executes this action sequence.
-   * @return {!webdriver.promise.Promise} A promise that will be resolved once
+   * @return {!./promise.Promise} A promise that will be resolved once
    *     this sequence has completed.
    */
   perform() {
@@ -434,12 +434,12 @@ class TouchSequence {
   /**
    * Taps an element.
    *
-   * @param {!webdriver.WebElement} elem The element to tap.
+   * @param {!./webdriver.WebElement} elem The element to tap.
    * @return {!TouchSequence} A self reference.
    */
   tap(elem) {
     let cmd = new command.Command(command.Name.TOUCH_SINGLE_TAP).
-        setParameter('element', elem.getRawId());
+        setParameter('element', elem.getId());
 
     this.schedule_('tap', cmd);
     return this;
@@ -448,12 +448,12 @@ class TouchSequence {
   /**
    * Double taps an element.
    *
-   * @param {!webdriver.WebElement} elem The element to double tap.
+   * @param {!./webdriver.WebElement} elem The element to double tap.
    * @return {!TouchSequence} A self reference.
    */
   doubleTap(elem) {
     let cmd = new command.Command(command.Name.TOUCH_DOUBLE_TAP).
-        setParameter('element', elem.getRawId());
+        setParameter('element', elem.getId());
 
     this.schedule_('doubleTap', cmd);
     return this;
@@ -462,12 +462,12 @@ class TouchSequence {
   /**
    * Long press on an element.
    *
-   * @param {!webdriver.WebElement} elem The element to long press.
+   * @param {!./webdriver.WebElement} elem The element to long press.
    * @return {!TouchSequence} A self reference.
    */
   longPress(elem) {
     let cmd = new command.Command(command.Name.TOUCH_LONG_PRESS).
-        setParameter('element', elem.getRawId());
+        setParameter('element', elem.getId());
 
     this.schedule_('longPress', cmd);
     return this;
@@ -543,7 +543,7 @@ class TouchSequence {
    */
   scrollFromElement(elem, offset) {
     let cmd = new command.Command(command.Name.TOUCH_SCROLL).
-        setParameter('element', elem.getRawId()).
+        setParameter('element', elem.getId()).
         setParameter('xoffset', offset.x).
         setParameter('yoffset', offset.y);
 
@@ -577,7 +577,7 @@ class TouchSequence {
    */
   flickElement(elem, offset, speed) {
     let cmd = new command.Command(command.Name.TOUCH_FLICK).
-        setParameter('element', elem.getRawId()).
+        setParameter('element', elem.getId()).
         setParameter('xoffset', offset.x).
         setParameter('yoffset', offset.y).
         setParameter('speed', speed);

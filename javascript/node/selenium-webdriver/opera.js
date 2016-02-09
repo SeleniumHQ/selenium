@@ -76,6 +76,7 @@ const fs = require('fs');
 
 const executors = require('./executors'),
     io = require('./io'),
+    capabilities = require('./lib/capabilities'),
     promise = require('./lib/promise'),
     Symbols = require('./lib/symbols'),
     webdriver = require('./lib/webdriver'),
@@ -106,9 +107,8 @@ class ServiceBuilder {
    *     cannot be found on the PATH.
    */
   constructor(opt_exe) {
-    /** @private {string} */
-    this.exe_ = opt_exe || io.findInPath(OPERADRIVER_EXE, true);
-    if (!this.exe_) {
+    let exe = opt_exe || io.findInPath(OPERADRIVER_EXE, true);
+    if (!exe) {
       throw Error(
           'The OperaDriver could not be found on the current PATH. Please ' +
           'download the latest version of the OperaDriver from ' +
@@ -116,6 +116,8 @@ class ServiceBuilder {
           'ensure it can be found on your PATH.');
     }
 
+    /** @private {string} */
+    this.exe_ = /** @type {string} */(exe);
     if (!fs.existsSync(this.exe_)) {
       throw Error('File does not exist: ' + this.exe_);
     }
@@ -126,7 +128,9 @@ class ServiceBuilder {
     /** @private {number} */
     this.port_ = 0;
 
-    /** @private {(string|!Array.<string|number|!Stream|null|undefined>)} */
+    /**
+     * @private {(string|!Array<string|number|!stream.Stream|null|undefined>)}
+     */
     this.stdio_ = 'ignore';
 
     /** @private {Object.<string, string>} */
@@ -179,8 +183,8 @@ class ServiceBuilder {
   /**
    * Defines the stdio configuration for the driver service. See
    * {@code child_process.spawn} for more information.
-   * @param {(string|!Array.<string|number|!Stream|null|undefined>)} config The
-   *     configuration to use.
+   * @param {(string|!Array<string|number|!stream.Stream|null|undefined>)}
+   *     config The configuration to use.
    * @return {!ServiceBuilder} A self reference.
    */
   setStdio(config) {
@@ -201,7 +205,7 @@ class ServiceBuilder {
 
   /**
    * Creates a new DriverService using this instance's current configuration.
-   * @return {remote.DriverService} A new driver service using this instance's
+   * @return {!remote.DriverService} A new driver service using this instance's
    *     current configuration.
    * @throws {Error} If the driver exectuable was not specified and a default
    *     could not be found on the current PATH.
@@ -272,37 +276,46 @@ class Options {
     /** @private {!Array.<string>} */
     this.args_ = [];
 
+    /** @private {?string} */
+    this.binary_ = null;
+
     /** @private {!Array.<(string|!Buffer)>} */
     this.extensions_ = [];
+
+    /** @private {./lib/logging.Preferences} */
+    this.logPrefs_ = null;
+
+    /** @private {?capabilities.ProxyConfig} */
+    this.proxy_ = null;
   }
 
   /**
    * Extracts the OperaDriver specific options from the given capabilities
    * object.
-   * @param {!webdriver.Capabilities} capabilities The capabilities object.
+   * @param {!capabilities.Capabilities} caps The capabilities object.
    * @return {!Options} The OperaDriver options.
    */
-  static fromCapabilities(capabilities) {
+  static fromCapabilities(caps) {
     var options;
-    var o = capabilities.get(OPTIONS_CAPABILITY_KEY);
+    var o = caps.get(OPTIONS_CAPABILITY_KEY);
     if (o instanceof Options) {
       options = o;
     } else if (o) {
-      options.
-          addArguments(o.args || []).
-          addExtensions(o.extensions || []).
-          setOperaBinaryPath(o.binary);
+      options = new Options()
+          .addArguments(o.args || [])
+          .addExtensions(o.extensions || [])
+          .setOperaBinaryPath(o.binary);
     } else {
       options = new Options;
     }
 
-    if (capabilities.has(webdriver.Capability.PROXY)) {
-      options.setProxy(capabilities.get(webdriver.Capability.PROXY));
+    if (caps.has(capabilities.Capability.PROXY)) {
+      options.setProxy(caps.get(capabilities.Capability.PROXY));
     }
 
-    if (capabilities.has(webdriver.Capability.LOGGING_PREFS)) {
+    if (caps.has(capabilities.Capability.LOGGING_PREFS)) {
       options.setLoggingPrefs(
-          capabilities.get(webdriver.Capability.LOGGING_PREFS));
+          caps.get(capabilities.Capability.LOGGING_PREFS));
     }
 
     return options;
@@ -351,7 +364,7 @@ class Options {
 
   /**
    * Sets the logging preferences for the new session.
-   * @param {!webdriver.logging.Preferences} prefs The logging preferences.
+   * @param {!./lib/logging.Preferences} prefs The logging preferences.
    * @return {!Options} A self reference.
    */
   setLoggingPrefs(prefs) {
@@ -361,7 +374,7 @@ class Options {
 
   /**
    * Sets the proxy settings for the new session.
-   * @param {webdriver.ProxyConfig} proxy The proxy configuration to use.
+   * @param {capabilities.ProxyConfig} proxy The proxy configuration to use.
    * @return {!Options} A self reference.
    */
   setProxy(proxy) {
@@ -370,31 +383,25 @@ class Options {
   }
 
   /**
-   * Converts this options instance to a {@link webdriver.Capabilities} object.
-   * @param {webdriver.Capabilities=} opt_capabilities The capabilities to merge
-   *     these options into, if any.
-   * @return {!webdriver.Capabilities} The capabilities.
+   * Converts this options instance to a {@link capabilities.Capabilities}
+   *     object.
+   * @param {capabilities.Capabilities=} opt_capabilities The capabilities to
+   *     merge these options into, if any.
+   * @return {!capabilities.Capabilities} The capabilities.
    */
   toCapabilities(opt_capabilities) {
-    var capabilities = opt_capabilities || webdriver.Capabilities.opera();
-    capabilities.
-        set(webdriver.Capability.PROXY, this.proxy_).
-        set(webdriver.Capability.LOGGING_PREFS, this.logPrefs_).
+    var caps = opt_capabilities || capabilities.Capabilities.opera();
+    caps.
+        set(capabilities.Capability.PROXY, this.proxy_).
+        set(capabilities.Capability.LOGGING_PREFS, this.logPrefs_).
         set(OPTIONS_CAPABILITY_KEY, this);
-    return capabilities;
+    return caps;
   }
 
   /**
    * Converts this instance to its JSON wire protocol representation. Note this
    * function is an implementation not intended for general use.
-   * @return {{args: !Array.<string>,
-   *           binary: (string|undefined),
-   *           detach: boolean,
-   *           extensions: !Array.<(string|!promise.Promise.<string>))>,
-   *           localState: (Object|undefined),
-   *           logPath: (string|undefined),
-   *           prefs: (Object|undefined)}} The JSON wire protocol representation
-   *     of this instance.
+   * @return {!Object} The JSON wire protocol representation of this instance.
    */
   [Symbols.serialize]() {
     var json = {
@@ -410,13 +417,6 @@ class Options {
     if (this.binary_) {
       json.binary = this.binary_;
     }
-    if (this.logFile_) {
-      json.logPath = this.logFile_;
-    }
-    if (this.prefs_) {
-      json.prefs = this.prefs_;
-    }
-
     return json;
   }
 }
@@ -427,7 +427,7 @@ class Options {
  */
 class Driver extends webdriver.WebDriver {
   /**
-   * @param {(webdriver.Capabilities|Options)=} opt_config The configuration
+   * @param {(capabilities.Capabilities|Options)=} opt_config The configuration
    *     options.
    * @param {remote.DriverService=} opt_service The session to use; will use
    *     the {@link getDefaultService default service} by default.
@@ -438,23 +438,26 @@ class Driver extends webdriver.WebDriver {
     var service = opt_service || getDefaultService();
     var executor = executors.createExecutor(service.start());
 
-    var capabilities =
+    var caps =
         opt_config instanceof Options ? opt_config.toCapabilities() :
-        (opt_config || webdriver.Capabilities.opera());
+        (opt_config || capabilities.Capabilities.opera());
 
     // On Linux, the OperaDriver does not look for Opera on the PATH, so we
     // must explicitly find it. See: operachromiumdriver #9.
     if (process.platform === 'linux') {
-      var options = Options.fromCapabilities(capabilities);
+      var options = Options.fromCapabilities(caps);
       if (!options.binary_) {
-        options.setOperaBinaryPath(io.findInPath('opera', true));
+        let exe = io.findInPath('opera', true);
+        if (!exe) {
+          throw Error(
+              'The opera executable could not be found on the current PATH');
+        }
+        options.setOperaBinaryPath(exe);
       }
-      capabilities = options.toCapabilities(capabilities);
+      caps = options.toCapabilities(caps);
     }
 
-    var driver = webdriver.WebDriver.createSession(
-        executor, capabilities, opt_flow);
-
+    var driver = webdriver.WebDriver.createSession(executor, caps, opt_flow);
     super(driver.getSession(), executor, driver.controlFlow());
   }
 

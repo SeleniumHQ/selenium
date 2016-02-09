@@ -104,6 +104,7 @@ const Binary = require('./binary').Binary,
     io = require('../io'),
     capabilities = require('../lib/capabilities'),
     logging = require('../lib/logging'),
+    promise = require('../lib/promise'),
     webdriver = require('../lib/webdriver'),
     net = require('../net'),
     portprober = require('../net/portprober');
@@ -123,7 +124,7 @@ class Options {
     /** @private {logging.Preferences} */
     this.logPrefs_ = null;
 
-    /** @private {capabilities.ProxyConfig} */
+    /** @private {?capabilities.ProxyConfig} */
     this.proxy_ = null;
   }
 
@@ -184,7 +185,7 @@ class Options {
    *
    * @return {!capabilities.Capabilities} A new capabilities object.
    */
-  toCapabilities(opt_remote) {
+  toCapabilities() {
     var caps = capabilities.Capabilities.firefox();
     if (this.logPrefs_) {
       caps.set(capabilities.Capability.LOGGING_PREFS, this.logPrefs_);
@@ -253,11 +254,11 @@ class Driver extends webdriver.WebDriver {
 
     let serverUrl = command
         .then(function() { return freePort; })
-        .then(function(port) {
+        .then(function(/** number */port) {
           var serverUrl = url.format({
             protocol: 'http',
             hostname: net.getLoopbackAddress(),
-            port: port,
+            port: port + '',
             pathname: '/hub'
           });
 

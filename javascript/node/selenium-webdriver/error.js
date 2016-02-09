@@ -521,7 +521,7 @@ registerError(UnsupportedOperationError);
 /**
  * Checks a response object from a server that adheres to the W3C WebDriver
  * protocol.
- * @parma {*} data The response data to check.
+ * @param {*} data The response data to check.
  * @return {*} The response data if it was not an encoded error.
  * @throws {WebDriverError} the decoded error, if present in the data object.
  * @see https://w3c.github.io/webdriver/webdriver-spec.html#protocol

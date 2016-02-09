@@ -52,8 +52,8 @@ var foundBinary = null;
 
 /**
  * Checks the default Windows Firefox locations in Program Files.
- * @return {!promise.Promise.<?string>} A promise for the located executable.
- *     The promise will resolve to {@code null} if Fireox was not found.
+ * @return {!Promise<?string>} A promise for the located executable.
+ *     The promise will resolve to {@code null} if Firefox was not found.
  */
 function defaultWindowsLocation() {
   var files = [

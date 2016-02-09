@@ -26,7 +26,8 @@ var webdriver = require('..'),
     until = webdriver.until;
 
 webdriver.logging.installConsoleHandler();
-webdriver.logging.getLogger().setLevel(webdriver.logging.Level.ALL);
+webdriver.logging.getLogger('webdriver.http')
+    .setLevel(webdriver.logging.Level.ALL);
 
 var driver = new webdriver.Builder()
     .forBrowser('firefox')

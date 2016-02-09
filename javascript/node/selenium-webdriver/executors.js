@@ -36,9 +36,9 @@ exports.DeferredExecutor = DeferredExecutor;
 
 /**
  * Creates a command executor that uses WebDriver's JSON wire protocol.
- * @param {(string|!webdriver.promise.Promise<string>)} url The server's URL,
+ * @param {(string|!promise.Promise<string>)} url The server's URL,
  *     or a promise that will resolve to that URL.
- * @param {string=} opt_proxy (optional) The URL of the HTTP proxy for the
+ * @param {?string=} opt_proxy (optional) The URL of the HTTP proxy for the
  *     client to use.
  * @returns {!./lib/command.Executor} The new command executor.
  */

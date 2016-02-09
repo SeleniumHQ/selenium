@@ -139,7 +139,7 @@ function getDetails(addonPath) {
 /**
  * Reads the manifest for a Firefox add-on.
  * @param {string} addonPath Path to a Firefox add-on as a xpi or an extension.
- * @return {!promise.Promise.<!Object>} A promise for the parsed manifest.
+ * @return {!promise.Promise<!Object>} A promise for the parsed manifest.
  */
 function readManifest(addonPath) {
   var manifest;
