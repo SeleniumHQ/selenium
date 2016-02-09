@@ -527,5 +527,15 @@ namespace OpenQA.Selenium.Remote
         /// Represents the GetSessionStorageSize command.
         /// </summary>
         public static readonly string GetSessionStorageSize = "getSessionStorageSize";
+
+        /// <summary>
+        /// Represents the GetAvailableLogTypes command.
+        /// </summary>
+        public static readonly string GetAvailableLogTypes = "getAvailableLogTypes";
+
+        /// <summary>
+        /// Represents the GetLog command.
+        /// </summary>
+        public static readonly string GetLog = "getLog";
     }
 }

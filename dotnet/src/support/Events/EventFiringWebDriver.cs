@@ -880,6 +880,11 @@ namespace OpenQA.Selenium.Support.Events
                 get { return this.wrappedOptions.Window; }
             }
 
+            public ILogs Logs
+            {
+                get { return this.wrappedOptions.Logs; }
+            }
+
             /// <summary>
             /// Provides access to the timeouts defined for this driver.
             /// </summary>

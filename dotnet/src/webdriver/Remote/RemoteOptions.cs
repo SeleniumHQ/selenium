@@ -59,6 +59,14 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Gets an object allowing the user to examine the logs of the current driver instance.
+        /// </summary>
+        public ILogs Logs
+        {
+            get { return new RemoteLogs(this.driver); }
+        }
+
+        /// <summary>
         /// Provides access to the timeouts defined for this driver.
         /// </summary>
         /// <returns>An object implementing the <see cref="ITimeouts"/> interface.</returns>

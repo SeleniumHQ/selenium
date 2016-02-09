@@ -105,6 +105,10 @@
     <Compile Include="IE\InternetExplorerDriverEngine.cs" />
     <Compile Include="IFileDetector.cs" />
     <Compile Include="Html5\IHasLocationContext.cs" />
+    <Compile Include="ILogs.cs" />
+    <Compile Include="LogEntry.cs" />
+    <Compile Include="LogLevel.cs" />
+    <Compile Include="LogType.cs" />
     <Compile Include="Remote\IHasSessionId.cs" />
     <Compile Include="IHasTouchScreen.cs" />
     <Compile Include="Interactions\ScreenMoveAction.cs" />
@@ -131,6 +135,7 @@
     <Compile Include="PhantomJS\PhantomJSDriverService.cs" />
     <Compile Include="PhantomJS\PhantomJSOptions.cs" />
     <Compile Include="PhantomJS\PhantomJSWebElement.cs" />
+    <Compile Include="Remote\RemoteLogs.cs" />
     <Compile Include="Remote\W3CWireProtocolCommandInfoRepository.cs" />
     <Compile Include="Remote\WebDriverError.cs" />
     <Compile Include="Remote\WebDriverWireProtocolCommandInfoRepository.cs" />

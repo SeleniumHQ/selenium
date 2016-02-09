@@ -506,6 +506,7 @@ namespace OpenQA.Selenium.Chrome
         {
             if (capabilityName == ChromeOptions.Capability ||
                 capabilityName == CapabilityType.Proxy ||
+                capabilityName == CapabilityType.LoggingPreferences ||
                 capabilityName == ChromeOptions.ArgumentsChromeOption ||
                 capabilityName == ChromeOptions.BinaryChromeOption ||
                 capabilityName == ChromeOptions.ExtensionsChromeOption ||
@@ -555,6 +556,12 @@ namespace OpenQA.Selenium.Chrome
             if (this.proxy != null)
             {
                 capabilities.SetCapability(CapabilityType.Proxy, this.proxy);
+            }
+
+            Dictionary<string, object> loggingPreferences = this.GenerateLoggingPreferencesDictionary();
+            if (loggingPreferences != null)
+            {
+                capabilities.SetCapability(CapabilityType.LoggingPreferences, loggingPreferences);
             }
 
             foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)

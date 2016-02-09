@@ -81,6 +81,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlertsTest.cs" />
+    <Compile Include="AvailableLogsTest.cs" />
+    <Compile Include="GetLogsTest.cs" />
     <Compile Include="HTML5\AppCacheTest.cs" />
     <Compile Include="AssemblyTeardown.cs" />
     <Compile Include="Browser.cs" />

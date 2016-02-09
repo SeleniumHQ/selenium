@@ -28,6 +28,8 @@ namespace OpenQA.Selenium
     /// </summary>
     public abstract class DriverOptions
     {
+        private Dictionary<string, LogLevel> loggingPreferences = new Dictionary<string, LogLevel>();
+
         /// <summary>
         /// Provides a means to add additional capabilities not yet added as type safe options
         /// for the specific browser driver.
@@ -51,5 +53,36 @@ namespace OpenQA.Selenium
         /// </summary>
         /// <returns>The DesiredCapabilities for browser driver with these options.</returns>
         public abstract ICapabilities ToCapabilities();
+
+        /// <summary>
+        /// Sets the logging preferences for this driver.
+        /// </summary>
+        /// <param name="logType">The type of log for which to set the preference.
+        /// Known log types can be found in the <see cref="LogType"/> class.</param>
+        /// <param name="logLevel">The <see cref="LogLevel"/> value to which to set the log level.</param>
+        public void SetLoggingPreference(string logType, LogLevel logLevel)
+        {
+            this.loggingPreferences[logType] = logLevel;
+        }
+
+        /// <summary>
+        /// Generates the logging preferences dictionary for transmission as a desired capability.
+        /// </summary>
+        /// <returns>The dictionary containing the logging preferences.</returns>
+        protected Dictionary<string, object> GenerateLoggingPreferencesDictionary()
+        {
+            if (this.loggingPreferences.Count == 0)
+            {
+                return null;
+            }
+
+            Dictionary<string, object> loggingPreferenceCapability = new Dictionary<string, object>();
+            foreach (string logType in this.loggingPreferences.Keys)
+            {
+                loggingPreferenceCapability[logType] = this.loggingPreferences[logType].ToString().ToUpperInvariant();
+            }
+
+            return loggingPreferenceCapability;
+        }
     }
 }

@@ -93,6 +93,16 @@ namespace OpenQA.Selenium.Remote
         public static readonly string PageLoadStrategy = "pageLoadStrategy";
 
         /// <summary>
+        /// Capability name used to indicate the logging preferences for the session.
+        /// </summary>
+        public static readonly string LoggingPreferences = "loggingPrefs";
+
+        /// <summary>
+        /// Capability name used to enable the profiling log for the session.
+        /// </summary>
+        public static readonly string EnableProfiling = "webdriver.logging.profiler.enabled";
+
+        /// <summary>
         /// Capability name used to indicate whether the driver supports geolocation context.
         /// </summary>
         public static readonly string SupportsLocationContext = "locationContextEnabled";

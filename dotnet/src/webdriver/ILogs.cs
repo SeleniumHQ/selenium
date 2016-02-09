@@ -1,4 +1,4 @@
-// <copyright file="IOptions.cs" company="WebDriver Committers">
+﻿// <copyright file="ILogs.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -19,36 +19,27 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 
 namespace OpenQA.Selenium
 {
     /// <summary>
-    /// Defines an interface allowing the user to set options on the browser.
+    /// Interface allowing handling of driver logs.
     /// </summary>
-    public interface IOptions
+    public interface ILogs
     {
         /// <summary>
-        /// Gets an object allowing the user to manipulate cookies on the page.
+        /// Gets the list of available log types for this driver.
         /// </summary>
-        ICookieJar Cookies { get; }
+        ReadOnlyCollection<string> AvailableLogTypes { get; }
 
         /// <summary>
-        /// Gets an object allowing the user to manipulate the currently-focused browser window.
+        /// Gets the set of <see cref="LogEntry"/> objects for a specified log.
         /// </summary>
-        /// <remarks>"Currently-focused" is defined as the browser window having the window handle
-        /// returned when IWebDriver.CurrentWindowHandle is called.</remarks>
-        IWindow Window { get; }
-
-        /// <summary>
-        /// Gets an object allowing the user to examing the logs for this driver instance.
-        /// </summary>
-        ILogs Logs { get; }
-
-        /// <summary>
-        /// Provides access to the timeouts defined for this driver.
-        /// </summary>
-        /// <returns>An object implementing the <see cref="ITimeouts"/> interface.</returns>
-        ITimeouts Timeouts();
+        /// <param name="logKind">The log for which to retrieve the log entries.
+        /// Log types can be found in the <see cref="LogType"/> class.</param>
+        /// <returns>The list of <see cref="LogEntry"/> objects for the specified log.</returns>
+        ReadOnlyCollection<LogEntry> GetLog(string logKind);
     }
 }
