@@ -17,10 +17,6 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using OpenQA.Selenium.Firefox.Internal;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Firefox

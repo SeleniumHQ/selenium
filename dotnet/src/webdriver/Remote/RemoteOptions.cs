@@ -16,12 +16,6 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-using OpenQA.Selenium.Internal;
-
 namespace OpenQA.Selenium.Remote
 {
     /// <summary>

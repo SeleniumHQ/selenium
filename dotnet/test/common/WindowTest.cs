@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 using NUnit.Framework;
 
 namespace OpenQA.Selenium

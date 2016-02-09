@@ -17,7 +17,6 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace OpenQA.Selenium.Support.PageObjects

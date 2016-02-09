@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Reflection;
-using System.Text;
 using OpenQA.Selenium;
 using System.IO;
 

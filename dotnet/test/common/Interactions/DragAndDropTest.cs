@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using System.Drawing;
 using System.Text.RegularExpressions;
-using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium.Interactions

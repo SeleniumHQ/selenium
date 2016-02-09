@@ -18,7 +18,6 @@
 
 using System;
 using System.Collections.ObjectModel;
-using System.Text.RegularExpressions;
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium

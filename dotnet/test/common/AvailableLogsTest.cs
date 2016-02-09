@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System.Collections.ObjectModel;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Firefox;

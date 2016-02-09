@@ -16,7 +16,6 @@
 // limitations under the License.
 // </copyright>
 
-using System;
 using OpenQA.Selenium.Safari.Internal.Handlers;
 
 namespace OpenQA.Selenium.Safari.Internal

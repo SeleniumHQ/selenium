@@ -17,13 +17,8 @@
 // </copyright>
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Reflection;
-using System.Reflection.Emit;
-using OpenQA.Selenium.Interactions.Internal;
-using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Support.PageObjects
 {

@@ -18,7 +18,6 @@
 
 using System;
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 namespace OpenQA.Selenium.Safari.Internal
 {

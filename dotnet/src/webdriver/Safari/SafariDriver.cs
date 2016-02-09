@@ -16,11 +16,6 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Safari

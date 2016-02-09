@@ -18,12 +18,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Drawing;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.Remoting.Messaging;
-using System.Text;
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Support.PageObjects

@@ -2,8 +2,6 @@
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 using OpenQA.Selenium.Interactions;
-using OpenQA.Selenium.Support.UI;
-using System.Collections.ObjectModel;
 using System;
 
 namespace OpenQA.Selenium.Support.PageObjects

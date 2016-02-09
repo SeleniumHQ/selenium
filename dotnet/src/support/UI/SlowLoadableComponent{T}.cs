@@ -18,7 +18,6 @@
 
 using System;
 using System.Globalization;
-using System.Linq;
 using System.Threading;
 
 namespace OpenQA.Selenium.Support.UI

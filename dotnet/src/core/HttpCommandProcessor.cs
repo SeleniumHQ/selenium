@@ -21,14 +21,13 @@ using System.Net;
 using System.Threading;
 using System.Collections;
 using System.Text;
-using Selenium;
 
 namespace Selenium
 {
-	/// <summary>
-	/// Sends commands and retrieves results via HTTP.
-	/// </summary>
-	public class HttpCommandProcessor : ICommandProcessor
+    /// <summary>
+    /// Sends commands and retrieves results via HTTP.
+    /// </summary>
+    public class HttpCommandProcessor : ICommandProcessor
 	{
 		private readonly string url;
 		private string sessionId;

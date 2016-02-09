@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Html5
 {

@@ -17,9 +17,6 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Chrome

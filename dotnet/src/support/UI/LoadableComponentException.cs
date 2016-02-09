@@ -17,7 +17,6 @@
 // </copyright>
 
 using System;
-using System.Linq;
 using System.Runtime.Serialization;
 
 namespace OpenQA.Selenium.Support.UI

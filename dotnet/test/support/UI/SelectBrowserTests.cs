@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using NMock2;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 

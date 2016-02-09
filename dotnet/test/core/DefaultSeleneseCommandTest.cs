@@ -15,16 +15,15 @@
  *
  */
 using System;
-using System.Web;
 using NUnit.Framework;
 using Selenium;
 
 namespace ThoughtWorks.Selenium.UnitTests
 {
-	/// <summary>
-	/// Summary description for DefaultSelenesCommandTest.
-	/// </summary>
-	[TestFixture]
+    /// <summary>
+    /// Summary description for DefaultSelenesCommandTest.
+    /// </summary>
+    [TestFixture]
 	public class DefaultSeleneseCommandTest
 	{
 		[Test]

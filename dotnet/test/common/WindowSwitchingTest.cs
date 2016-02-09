@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
-using OpenQA.Selenium.Environment;
 using System.Collections.ObjectModel;
 
 namespace OpenQA.Selenium

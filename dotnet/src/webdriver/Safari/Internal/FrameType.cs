@@ -16,8 +16,6 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-
 namespace OpenQA.Selenium.Safari.Internal
 {
     /// <summary>

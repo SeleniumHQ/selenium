@@ -12,9 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using NUnit.Framework;
-using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium
