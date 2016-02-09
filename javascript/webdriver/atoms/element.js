@@ -162,6 +162,19 @@ webdriver.atoms.element.getAttribute = function(element, attribute) {
     return /** @type {?string} */ (value);
   }
 
+  if ('spellcheck' == name) {
+    value = bot.dom.getAttribute(element, name);
+    if (!goog.isNull(value)) {
+      if (value.toLowerCase() == 'false') {
+        return 'false';
+      } else if (value.toLowerCase() == 'true') {
+        return 'true';
+      }
+    }
+    // coerce the property value to a string
+    return bot.dom.getProperty(element, name) + '';
+  }
+
   var propName = webdriver.atoms.element.PROPERTY_ALIASES_[attribute] ||
       attribute;
   if (goog.array.contains(webdriver.atoms.element.BOOLEAN_PROPERTIES_, name)) {
