@@ -83,9 +83,20 @@ SyntheticMouse.prototype.isElementShownAndClickable = function(element) {
     return error;
   }
 
-  var error = this.isElementClickable(element);
-  if (error) {
-    return error;
+  var checkOverlapping = true;
+  try {
+    var prefStore = fxdriver.moz.getService('@mozilla.org/preferences-service;1',
+                                            'nsIPrefBranch');
+    if (prefStore.getBoolPref('webdriver.overlappingCheckDisabled', false)) {
+      checkOverlapping = false;
+    }
+  } catch (ignored) {}
+
+  if (checkOverlapping) {
+    error = this.isElementClickable(element);
+    if (error) {
+      return error;
+    }
   }
 }
 

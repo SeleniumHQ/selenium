@@ -48,6 +48,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -581,6 +583,29 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     assertEquals("original sizzle value",
         ((JavascriptExecutor) driver).executeScript("return window.Sizzle + '';"));
   }
+
+  @Test
+  public void testFirefoxCanNativelyClickOverlappingElements() {
+    DesiredCapabilities capabilities = new DesiredCapabilities();
+    capabilities.setCapability(CapabilityType.OVERLAPPING_CHECK_DISABLED, true);
+    WebDriver secondDriver = new FirefoxDriver(capabilities);
+    try {
+      secondDriver.get(appServer.whereIs("click_tests/overlapping_elements.html"));
+      secondDriver.findElement(By.id("under")).click();
+      assertEquals(secondDriver.findElement(By.id("log")).getText(),
+                   "Log:\n"
+                   + "mousedown in over (handled by over)\n"
+                   + "mousedown in over (handled by body)\n"
+                   + "mouseup in over (handled by over)\n"
+                   + "mouseup in over (handled by body)\n"
+                   + "click in over (handled by over)\n"
+                   + "click in over (handled by body)");
+    } finally {
+      secondDriver.quit();
+    }
+  }
+
+
 
   private WebDriver newFirefoxDriver() {
     return newFirefoxDriver(new FirefoxProfile());
