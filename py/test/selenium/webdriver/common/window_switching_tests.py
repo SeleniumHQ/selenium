@@ -202,7 +202,7 @@ class WindowSwitchingTests(unittest.TestCase):
         except WebDriverException:
             pass #this is expected
         finally:
-            self.driver.switch_to.window(currentHandle)
+            self.driver.switch_to.window(current)
 
     def _pageURL(self, name):
         return self.webserver.where_is(name + '.html')
