@@ -27,19 +27,19 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.openqa.selenium.support.ui.ExpectedConditions.and;
 import static org.openqa.selenium.support.ui.ExpectedConditions.attributeContains;
-import static org.openqa.selenium.support.ui.ExpectedConditions.attributeIs;
-import static org.openqa.selenium.support.ui.ExpectedConditions.attributeNotEmpty;
+import static org.openqa.selenium.support.ui.ExpectedConditions.attributeToBe;
+import static org.openqa.selenium.support.ui.ExpectedConditions.attributeToBeNotEmpty;
 import static org.openqa.selenium.support.ui.ExpectedConditions.elementSelectionStateToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.invisibilityOfAllElements;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
-import static org.openqa.selenium.support.ui.ExpectedConditions.numberOfElements;
-import static org.openqa.selenium.support.ui.ExpectedConditions.numberOfElementsIsLessThan;
-import static org.openqa.selenium.support.ui.ExpectedConditions.numberOfElementsIsMoreThan;
+import static org.openqa.selenium.support.ui.ExpectedConditions.numberOfElementsToBe;
+import static org.openqa.selenium.support.ui.ExpectedConditions.numberOfElementsToBeLessThan;
+import static org.openqa.selenium.support.ui.ExpectedConditions.numberOfElementsToBeMoreThan;
 import static org.openqa.selenium.support.ui.ExpectedConditions.numberOfWindowsToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.or;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfNestedElementLocatedBy;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfNestedElementsLocatedBy;
-import static org.openqa.selenium.support.ui.ExpectedConditions.textIs;
+import static org.openqa.selenium.support.ui.ExpectedConditions.textToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.textMatches;
 import static org.openqa.selenium.support.ui.ExpectedConditions.textToBePresentInElement;
 import static org.openqa.selenium.support.ui.ExpectedConditions.textToBePresentInElementLocated;
@@ -425,7 +425,8 @@ public class ExpectedConditionsTest {
     when(mockElement.getCssValue(attributeName)).thenReturn("");
 
     assertTrue(
-      wait.until(attributeIs(By.cssSelector(testSelector), attributeName, attributeValue)));
+      wait.until(
+        ExpectedConditions.attributeToBe(By.cssSelector(testSelector), attributeName, attributeValue)));
   }
 
   @Test
@@ -438,7 +439,8 @@ public class ExpectedConditionsTest {
     when(mockElement.getCssValue(attributeName)).thenReturn(attributeValue);
 
     assertTrue(
-      wait.until(attributeIs(By.cssSelector(testSelector), attributeName, attributeValue)));
+      wait.until(
+        ExpectedConditions.attributeToBe(By.cssSelector(testSelector), attributeName, attributeValue)));
   }
 
   @Test(expected = TimeoutException.class)
@@ -449,7 +451,7 @@ public class ExpectedConditionsTest {
     when(mockElement.getAttribute(attributeName)).thenReturn("");
     when(mockElement.getCssValue(attributeName)).thenReturn("");
 
-    wait.until(attributeIs(By.cssSelector(testSelector), attributeName, "test"));
+    wait.until(ExpectedConditions.attributeToBe(By.cssSelector(testSelector), attributeName, "test"));
   }
 
   @Test
@@ -460,7 +462,7 @@ public class ExpectedConditionsTest {
     when(mockElement.getCssValue(attributeName)).thenReturn("");
 
     assertTrue(
-      wait.until(attributeIs(mockElement, attributeName, attributeValue)));
+      wait.until(attributeToBe(mockElement, attributeName, attributeValue)));
   }
 
   @Test
@@ -471,7 +473,7 @@ public class ExpectedConditionsTest {
     when(mockElement.getCssValue(attributeName)).thenReturn(attributeValue);
 
     assertTrue(
-      wait.until(attributeIs(mockElement, attributeName, attributeValue)));
+      wait.until(attributeToBe(mockElement, attributeName, attributeValue)));
   }
 
   @Test(expected = TimeoutException.class)
@@ -480,7 +482,7 @@ public class ExpectedConditionsTest {
     when(mockElement.getAttribute(attributeName)).thenReturn("");
     when(mockElement.getCssValue(attributeName)).thenReturn("");
 
-    wait.until(attributeIs(mockElement, attributeName, "test"));
+    wait.until(attributeToBe(mockElement, attributeName, "test"));
   }
 
   @Test
@@ -559,7 +561,7 @@ public class ExpectedConditionsTest {
     when(mockElement.getText()).thenReturn(testText);
 
     assertTrue(
-      wait.until(textIs(By.cssSelector(testSelector), testText)));
+      wait.until(textToBe(By.cssSelector(testSelector), testText)));
   }
 
   @Test
@@ -568,7 +570,7 @@ public class ExpectedConditionsTest {
     when(mockElement.getAttribute(attributeName)).thenReturn("");
     when(mockElement.getCssValue(attributeName)).thenReturn("test1");
 
-    assertTrue(wait.until(attributeNotEmpty(mockElement, attributeName)));
+    assertTrue(wait.until(attributeToBeNotEmpty(mockElement, attributeName)));
   }
 
   @Test
@@ -577,7 +579,7 @@ public class ExpectedConditionsTest {
     when(mockElement.getAttribute(attributeName)).thenReturn("test1");
     when(mockElement.getCssValue(attributeName)).thenReturn("");
 
-    assertTrue(wait.until(attributeNotEmpty(mockElement, attributeName)));
+    assertTrue(wait.until(attributeToBeNotEmpty(mockElement, attributeName)));
   }
 
   @Test(expected = TimeoutException.class)
@@ -585,7 +587,7 @@ public class ExpectedConditionsTest {
     String testSelector = "testSelector";
     when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
     when(mockElement.getText()).thenReturn("");
-    wait.until(textIs(By.cssSelector(testSelector), "test"));
+    wait.until(textToBe(By.cssSelector(testSelector), "test"));
   }
 
   @Test(expected = TimeoutException.class)
@@ -593,7 +595,7 @@ public class ExpectedConditionsTest {
     String attributeName = "test";
     when(mockElement.getAttribute(attributeName)).thenReturn("");
     when(mockElement.getCssValue(attributeName)).thenReturn("");
-    wait.until(attributeNotEmpty(mockElement, attributeName));
+    wait.until(attributeToBeNotEmpty(mockElement, attributeName));
   }
 
   @Test(expected = TimeoutException.class)
@@ -603,7 +605,7 @@ public class ExpectedConditionsTest {
     when(mockElement.getCssValue(attributeName)).thenReturn("");
     when(mockElement.getAttribute(attributeName)).thenReturn("");
     wait.until(or(textToBePresentInElement(mockElement, "test"),
-                  attributeIs(mockElement, attributeName, "test")));
+                  attributeToBe(mockElement, attributeName, "test")));
   }
 
   @Test
@@ -613,7 +615,7 @@ public class ExpectedConditionsTest {
     when(mockElement.getCssValue(attributeName)).thenReturn(attributeName);
     when(mockElement.getText()).thenReturn("");
 
-    assertTrue(wait.until(or(attributeIs(mockElement, attributeName, attributeName),
+    assertTrue(wait.until(or(attributeToBe(mockElement, attributeName, attributeName),
                              textToBePresentInElement(mockElement, attributeName))));
   }
 
@@ -624,7 +626,7 @@ public class ExpectedConditionsTest {
     when(mockElement.getCssValue(attributeName)).thenReturn(attributeName);
     when(mockElement.getText()).thenReturn(attributeName);
 
-    assertTrue(wait.until(or(attributeIs(mockElement, attributeName, attributeName),
+    assertTrue(wait.until(or(attributeToBe(mockElement, attributeName, attributeName),
                              textToBePresentInElement(mockElement, attributeName))));
   }
 
@@ -636,7 +638,7 @@ public class ExpectedConditionsTest {
     when(mockElement.getText()).thenReturn("");
 
     assertTrue(wait.until(or(textToBePresentInElement(mockElement, attributeName),
-                             attributeIs(mockElement, attributeName, attributeName))));
+                             attributeToBe(mockElement, attributeName, attributeName))));
   }
 
 
@@ -647,7 +649,7 @@ public class ExpectedConditionsTest {
     when(mockElement.getCssValue(attributeName)).thenReturn("");
     when(mockElement.getAttribute(attributeName)).thenReturn("");
     wait.until(and(textToBePresentInElement(mockElement, "test"),
-                   attributeIs(mockElement, attributeName, "test")));
+                   attributeToBe(mockElement, attributeName, "test")));
   }
 
   @Test(expected = TimeoutException.class)
@@ -657,7 +659,7 @@ public class ExpectedConditionsTest {
     when(mockElement.getCssValue(attributeName)).thenReturn(attributeName);
     when(mockElement.getAttribute(attributeName)).thenReturn(attributeName);
     wait.until(and(textToBePresentInElement(mockElement, "test"),
-                   attributeIs(mockElement, attributeName, attributeName)));
+                   attributeToBe(mockElement, attributeName, attributeName)));
   }
 
   @Test(expected = TimeoutException.class)
@@ -667,7 +669,7 @@ public class ExpectedConditionsTest {
     when(mockElement.getCssValue(attributeName)).thenReturn("");
     when(mockElement.getAttribute(attributeName)).thenReturn("");
     wait.until(and(textToBePresentInElement(mockElement, attributeName),
-                   attributeIs(mockElement, attributeName, attributeName)));
+                   attributeToBe(mockElement, attributeName, attributeName)));
   }
 
   @Test
@@ -677,7 +679,7 @@ public class ExpectedConditionsTest {
     when(mockElement.getCssValue(attributeName)).thenReturn(attributeName);
     when(mockElement.getAttribute(attributeName)).thenReturn(attributeName);
     assertTrue(wait.until(and(textToBePresentInElement(mockElement, attributeName),
-                              attributeIs(mockElement, attributeName, attributeName))));
+                              attributeToBe(mockElement, attributeName, attributeName))));
   }
 
   @Test
@@ -701,7 +703,7 @@ public class ExpectedConditionsTest {
     String testSelector = "testSelector";
     when(mockDriver.findElements(By.cssSelector(testSelector)))
       .thenReturn(Arrays.asList(mockElement));
-    wait.until(numberOfElementsIsMoreThan(By.cssSelector(testSelector), 1));
+    wait.until(numberOfElementsToBeMoreThan(By.cssSelector(testSelector), 1));
   }
 
   @Test
@@ -709,7 +711,7 @@ public class ExpectedConditionsTest {
     String testSelector = "testSelector";
     when(mockDriver.findElements(By.cssSelector(testSelector)))
       .thenReturn(Arrays.asList(mockElement, mockElement));
-    assertEquals(2, wait.until(numberOfElementsIsMoreThan(By.cssSelector(testSelector), 1)).size());
+    assertEquals(2, wait.until(numberOfElementsToBeMoreThan(By.cssSelector(testSelector), 1)).size());
   }
 
   @Test(expected = TimeoutException.class)
@@ -717,7 +719,7 @@ public class ExpectedConditionsTest {
     String testSelector = "testSelector";
     when(mockDriver.findElements(By.cssSelector(testSelector)))
       .thenReturn(Arrays.asList(mockElement, mockElement));
-    wait.until(numberOfElementsIsLessThan(By.cssSelector(testSelector), 2));
+    wait.until(numberOfElementsToBeLessThan(By.cssSelector(testSelector), 2));
   }
 
   @Test
@@ -725,7 +727,7 @@ public class ExpectedConditionsTest {
     String testSelector = "testSelector";
     when(mockDriver.findElements(By.cssSelector(testSelector)))
       .thenReturn(Arrays.asList(mockElement));
-    assertEquals(1, wait.until(numberOfElementsIsLessThan(By.cssSelector(testSelector), 2)).size());
+    assertEquals(1, wait.until(numberOfElementsToBeLessThan(By.cssSelector(testSelector), 2)).size());
   }
 
   @Test
@@ -733,7 +735,7 @@ public class ExpectedConditionsTest {
     String testSelector = "testSelector";
     when(mockDriver.findElements(By.cssSelector(testSelector)))
       .thenReturn(Arrays.asList(mockElement, mockElement));
-    assertEquals(2, wait.until(numberOfElements(By.cssSelector(testSelector), 2)).size());
+    assertEquals(2, wait.until(numberOfElementsToBe(By.cssSelector(testSelector), 2)).size());
   }
 
   @Test(expected = TimeoutException.class)
@@ -741,7 +743,7 @@ public class ExpectedConditionsTest {
     String testSelector = "testSelector";
     when(mockDriver.findElements(By.cssSelector(testSelector)))
       .thenReturn(Arrays.asList(mockElement));
-    wait.until(numberOfElements(By.cssSelector(testSelector), 2));
+    wait.until(numberOfElementsToBe(By.cssSelector(testSelector), 2));
   }
 
   @Test

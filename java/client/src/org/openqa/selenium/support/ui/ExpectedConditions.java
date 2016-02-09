@@ -945,8 +945,8 @@ public class ExpectedConditions {
    * @param value     used as expected attribute value
    * @return Boolean true when element has css or html attribute with the value
    */
-  public static ExpectedCondition<Boolean> attributeIs(final By locator, final String attribute,
-                                                       final String value) {
+  public static ExpectedCondition<Boolean> attributeToBe(final By locator, final String attribute,
+                                                         final String value) {
     return new ExpectedCondition<Boolean>() {
       private String currentValue = null;
 
@@ -974,7 +974,7 @@ public class ExpectedConditions {
    * @param value   used as expected text
    * @return Boolean true when element has text value equal to @value
    */
-  public static ExpectedCondition<Boolean> textIs(final By locator, final String value) {
+  public static ExpectedCondition<Boolean> textToBe(final By locator, final String value) {
     return new ExpectedCondition<Boolean>() {
       private String currentValue = null;
 
@@ -1031,8 +1031,8 @@ public class ExpectedConditions {
    * @param number  user to define exact number of elements
    * @return Boolean true when size of elements list is equal to defined
    */
-  public static ExpectedCondition<List<WebElement>> numberOfElementsIsMoreThan(final By locator,
-                                                                      final Integer number) {
+  public static ExpectedCondition<List<WebElement>> numberOfElementsToBeMoreThan(final By locator,
+                                                                                 final Integer number) {
     return new ExpectedCondition<List<WebElement>>() {
       private Integer currentNumber = 0;
 
@@ -1059,8 +1059,8 @@ public class ExpectedConditions {
    * @param number  user to define maximum number of elements
    * @return Boolean true when size of elements list is less than defined
    */
-  public static ExpectedCondition<List<WebElement>> numberOfElementsIsLessThan(final By locator,
-                                                                      final Integer number) {
+  public static ExpectedCondition<List<WebElement>> numberOfElementsToBeLessThan(final By locator,
+                                                                                 final Integer number) {
     return new ExpectedCondition<List<WebElement>>() {
       private Integer currentNumber = 0;
 
@@ -1086,8 +1086,8 @@ public class ExpectedConditions {
    * @param number  user to define number of elements
    * @return Boolean true when size of elements list is equal to defined
    */
-  public static ExpectedCondition<List<WebElement>> numberOfElements(final By locator,
-                                                            final Integer number) {
+  public static ExpectedCondition<List<WebElement>> numberOfElementsToBe(final By locator,
+                                                                         final Integer number) {
     return new ExpectedCondition<List<WebElement>>() {
       private Integer currentNumber = 0;
 
@@ -1114,8 +1114,8 @@ public class ExpectedConditions {
    * @param value     used as expected attribute value
    * @return Boolean true when element has css or html attribute with the value
    */
-  public static ExpectedCondition<Boolean> attributeIs(final WebElement element,
-                                                       final String attribute, final String value) {
+  public static ExpectedCondition<Boolean> attributeToBe(final WebElement element,
+                                                         final String attribute, final String value) {
     return new ExpectedCondition<Boolean>() {
       private String currentValue = null;
 
@@ -1214,8 +1214,8 @@ public class ExpectedConditions {
    * @param attribute used to define css or html attribute
    * @return Boolean true when element has css or html attribute with non empty value
    */
-  public static ExpectedCondition<Boolean> attributeNotEmpty(final WebElement element,
-                                                             final String attribute) {
+  public static ExpectedCondition<Boolean> attributeToBeNotEmpty(final WebElement element,
+                                                                 final String attribute) {
     return new ExpectedCondition<Boolean>() {
       private String currentValue = null;
 
