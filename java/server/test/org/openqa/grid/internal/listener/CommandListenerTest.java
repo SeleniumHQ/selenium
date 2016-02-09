@@ -9,6 +9,7 @@ import static org.openqa.grid.common.RegistrationRequest.APP;
 import static org.openqa.grid.common.RegistrationRequest.ID;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
@@ -28,6 +30,8 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.DetachedRemoteProxy;
 import org.openqa.grid.internal.Registry;
@@ -72,21 +76,42 @@ public class CommandListenerTest {
 
     @Override
     public HttpClientFactory getHttpClientFactory() {
+      // Create mocks for network traffic
       HttpClientFactory factory = mock(HttpClientFactory.class);
       HttpClient client = mock(HttpClient.class);
       HttpResponse response = mock(HttpResponse.class);
-
+      HttpEntity entity = mock(HttpEntity.class);
+      InputStream stream = mock(InputStream.class);
       StatusLine line = mock(StatusLine.class);
+
       when(line.getStatusCode()).thenReturn(200);
       when(response.getStatusLine()).thenReturn(line);
       when(response.getAllHeaders()).thenReturn(new Header[0]);
-
+      when(response.getEntity()).thenReturn(entity);
       try {
+        // Create a fake stream that will only return the a single number
+        Answer<Integer> answer = new Answer<Integer>() {
+          boolean hasBeenRead = false;
+          @Override
+          public Integer answer(InvocationOnMock invocation) {
+            if (hasBeenRead) {
+              return -1;
+            }
+            hasBeenRead = true;
+            return 1;
+          }
+        };
+
+        // Have all the methods return mocks so client.execute returns our
+        // mocked objects
+        when(stream.read(any(byte[].class))).thenAnswer(answer);
+        when(entity.getContent()).thenReturn(stream);
         when(client.execute(any(HttpHost.class), any(HttpRequest.class))).thenReturn(response);
+        when(factory.getGridHttpClient(anyInt(), anyInt())).thenReturn(client);
       } catch (Exception e) {
         e.printStackTrace();
       }
-      when(factory.getGridHttpClient(anyInt(), anyInt())).thenReturn(client);
+
       return factory;
     }
   }
@@ -113,6 +138,7 @@ public class CommandListenerTest {
     req.process();
     TestSession session = req.getSession();
 
+    // Mock the request so it seems like a new session
     SeleniumBasedRequest request = mock(SeleniumBasedRequest.class);
     when(request.getRequestURI()).thenReturn("session");
     when(request.getServletPath()).thenReturn("session");
@@ -128,6 +154,9 @@ public class CommandListenerTest {
 
     session.forward(request, response, true);
 
+    // When the output stream is being written back to the remote, it should
+    // only contain the bits we modified in
+    // MyRemoteProxy's afterCommand method
     verify(stream).write(responseBytes);
   }
 }
