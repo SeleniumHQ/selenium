@@ -894,7 +894,13 @@ class WebDriver {
       let cmd = new command.Command(command.Name.FIND_ELEMENTS).
           setParameter('using', locator.using).
           setParameter('value', locator.value);
-      return this.schedule(cmd, 'WebDriver.findElements(' + locator + ')');
+      let res = this.schedule(cmd, 'WebDriver.findElements(' + locator + ')');
+      return res.thenCatch(function(e) {
+        if (e instanceof error.NoSuchElementError) {
+          return [];
+        }
+        throw e;
+      });
     }
   }
 

@@ -34,6 +34,7 @@ var build = require('./build'),
  */
 var NATIVE_BROWSERS = [
   webdriver.Browser.CHROME,
+  webdriver.Browser.EDGE,
   webdriver.Browser.FIREFOX,
   webdriver.Browser.IE,
   webdriver.Browser.OPERA,
@@ -58,6 +59,9 @@ var browsersToTest = (function() {
     var parts = browser.split(/:/);
     if (parts[0] === 'ie') {
       parts[0] = webdriver.Browser.IE;
+    }
+    if (parts[0] === 'edge') {
+      parts[0] = webdriver.Browser.EDGE;
     }
     return parts.join(':');
   });

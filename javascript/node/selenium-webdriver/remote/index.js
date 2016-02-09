@@ -40,6 +40,8 @@ const httpUtil = require('../http/util'),
  *
  * - `loopback` - Whether the service should only be accessed on this host's
  *     loopback address.
+ * - `hostname` - The host name to access the server on. If this option is
+ *     specified, the `loopback` option will be ignored.
  * - `port` - The port to start the server on (must be > 0). If the port is
  *     provided as a promise, the service will wait for the promise to resolve
  *     before starting.
@@ -54,6 +56,7 @@ const httpUtil = require('../http/util'),
  *
  * @typedef {{
  *   loopback: (boolean|undefined),
+ *   hostname: (string|undefined),
  *   port: (number|!promise.Promise<number>),
  *   args: !(Array<string>|promise.Promise<!Array<string>>),
  *   path: (string|undefined|null),
@@ -84,6 +87,9 @@ class DriverService {
 
     /** @private {boolean} */
     this.loopbackOnly_ = !!options.loopback;
+
+    /** @private {(string|undefined)} */
+    this.hostname_ = options.hostname;
 
     /** @private {(number|!promise.Promise<number>)} */
     this.port_ = options.port;
@@ -183,10 +189,15 @@ class DriverService {
           throw error;
         });
 
+        var hostname = self.hostname_;
+        if (!hostname) {
+          hostname = !self.loopbackOnly_ && net.getAddress()
+              || net.getLoopbackAddress();
+        }
+
         var serverUrl = url.format({
           protocol: 'http',
-          hostname: !self.loopbackOnly_ && net.getAddress() ||
-              net.getLoopbackAddress(),
+          hostname: hostname,
           port: port,
           pathname: self.path_
         });

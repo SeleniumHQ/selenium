@@ -280,7 +280,10 @@ class ServiceBuilder {
     var args = this.args_.concat();  // Defensive copy.
 
     return new remote.DriverService(this.exe_, {
-      loopback: true,
+      // Binding to the loopback address will fail if not running with
+      // administrator privileges. Since we cannot test for that in script
+      // (or can we?), force the DriverService to use "localhost".
+      hostname: 'localhost',
       port: port,
       args: promise.fulfilled(port).then(function(port) {
         return args.concat('--port=' + port);

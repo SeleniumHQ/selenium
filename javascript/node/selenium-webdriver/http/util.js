@@ -42,8 +42,6 @@ function getStatus(url) {
   var executor = new Executor(client);
   var command = new Command(CommandName.GET_SERVER_STATUS);
   return executor.execute(command).then(function(responseObj) {
-    console.log('GOT HERE GOT HERE GOT HERE');
-    console.dir(responseObj);
     error.checkLegacyResponse(responseObj);
     return responseObj['value'];
   });
