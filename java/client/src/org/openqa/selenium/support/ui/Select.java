@@ -306,7 +306,8 @@ public class Select {
    *          deselected (false)
    */
   private void setSelected(WebElement option, boolean select) {
-    if ((!option.isSelected() && select) || (option.isSelected() && !select)) {
+    boolean isSelected=option.isSelected();
+    if ((!isSelected && select) || (isSelected && !select)) {
       option.click();
     }
   }
