@@ -108,7 +108,7 @@ public abstract class JUnit4TestBase implements WrapsDriver {
       super.starting(description);
       NeedsFreshDriver annotation = description.getAnnotation(NeedsFreshDriver.class);
       if (annotation != null && matches(browser, annotation.value())) {
-        System.out.println("Restarting driver before " + description);
+        System.out.println("Restarting driver before test " + description);
         removeDriver();
       }
       try {
@@ -119,11 +119,21 @@ public abstract class JUnit4TestBase implements WrapsDriver {
     }
 
     @Override
-    protected void finished(Description description) {
+    protected void succeeded(Description description) {
+      super.finished(description);
+      NoDriverAfterTest annotation = description.getAnnotation(NoDriverAfterTest.class);
+      if (annotation != null && !annotation.failedOnly() && matches(browser, annotation.value())) {
+        System.out.println("Restarting driver after succeeded test " + description);
+        removeDriver();
+      }
+    }
+
+    @Override
+    protected void failed(Throwable e, Description description) {
       super.finished(description);
       NoDriverAfterTest annotation = description.getAnnotation(NoDriverAfterTest.class);
       if (annotation != null && matches(browser, annotation.value())) {
-        System.out.println("Restarting driver after " + description);
+        System.out.println("Restarting driver after failed test " + description);
         removeDriver();
       }
     }

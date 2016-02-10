@@ -35,4 +35,5 @@ public @interface NoDriverAfterTest {
 
   String reason() default ("For unknown reason");
 
+  boolean failedOnly() default false;
 }
