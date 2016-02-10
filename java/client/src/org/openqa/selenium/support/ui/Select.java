@@ -116,7 +116,7 @@ public class Select {
 
     boolean matched = false;
     for (WebElement option : options) {
-      setSelected(option);
+      setSelected(option, true);
       if (!isMultiple()) {
         return;
       }
@@ -137,7 +137,7 @@ public class Select {
       }
       for (WebElement option : candidates) {
         if (text.equals(option.getText())) {
-          setSelected(option);
+          setSelected(option, true);
           if (!isMultiple()) {
             return;
           }
@@ -173,19 +173,13 @@ public class Select {
   public void selectByIndex(int index) {
     String match = String.valueOf(index);
 
-    boolean matched = false;
     for (WebElement option : getOptions()) {
       if (match.equals(option.getAttribute("index"))) {
-        setSelected(option);
-        if (!isMultiple()) {
-          return;
-        }
-        matched = true;
+        setSelected(option, true);
+        return;
       }
     }
-    if (!matched) {
-      throw new NoSuchElementException("Cannot locate option with index: " + index);
-    }
+    throw new NoSuchElementException("Cannot locate option with index: " + index);
   }
 
   /**
@@ -203,7 +197,7 @@ public class Select {
 
     boolean matched = false;
     for (WebElement option : options) {
-      setSelected(option);
+      setSelected(option, true);
       if (!isMultiple()) {
         return;
       }
@@ -227,9 +221,7 @@ public class Select {
     }
 
     for (WebElement option : getOptions()) {
-      if (option.isSelected()) {
-        option.click();
-      }
+      setSelected(option, false);
     }
   }
 
@@ -245,11 +237,16 @@ public class Select {
   public void deselectByValue(String value) {
     List<WebElement> options = element.findElements(By.xpath(
         ".//option[@value = " + Quotes.escape(value) + "]"));
-
+    boolean matched = false;
     for (WebElement option : options) {
-      if (option.isSelected()) {
-        option.click();
+      setSelected(option, false);
+      if (!isMultiple()) {
+        return;
       }
+      matched = true;
+    }
+    if (!matched) {
+      throw new NoSuchElementException("Cannot locate option with value: " + value);
     }
   }
 
@@ -262,12 +259,14 @@ public class Select {
    */
   public void deselectByIndex(int index) {
     String match = String.valueOf(index);
-
+    
     for (WebElement option : getOptions()) {
-      if (match.equals(option.getAttribute("index")) && option.isSelected()) {
-        option.click();
+      if (match.equals(option.getAttribute("index"))) {
+        setSelected(option, false);
+        return;
       }
     }
+    throw new NoSuchElementException("Cannot locate option with index: " + index);
   }
 
   /**
@@ -283,15 +282,31 @@ public class Select {
     List<WebElement> options = element.findElements(By.xpath(
         ".//option[normalize-space(.) = " + Quotes.escape(text) + "]"));
 
+    boolean matched = false;
     for (WebElement option : options) {
-      if (option.isSelected()) {
-        option.click();
+      setSelected(option, false);
+      if (!isMultiple()) {
+        return;
       }
+      matched = true;
+    }
+
+    if (!matched) {
+      throw new NoSuchElementException("Cannot locate element with text: " + text);
     }
   }
 
-  private void setSelected(WebElement option) {
-    if (!option.isSelected()) {
+  /**
+   * Select or deselect specified option
+   *
+   * @param option
+   *          The option which state needs to be changed
+   * @param select
+   *          Indicates whether the option needs to be selected (true) or
+   *          deselected (false)
+   */
+  private void setSelected(WebElement option, boolean select) {
+    if ((!option.isSelected() && select) || (option.isSelected() && !select)) {
       option.click();
     }
   }
