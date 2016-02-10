@@ -12,7 +12,7 @@ Selenium may be installed via npm with
 
 Out of the box, Selenium includes everything you need to work with Firefox. You
 will need to download additional components to work with the other major
-browsers. The drivers for Chrome, PhantomJS, Opera, and Microsoft's IE and Edge 
+browsers. The drivers for Chrome, PhantomJS, Opera, and Microsoft's IE and Edge
 web browsers are all standalone executables that should be available on your
 [PATH](http://en.wikipedia.org/wiki/PATH_%28variable%29). The SafariDriver
 browser extension should be installed in your browser before using Selenium; we
@@ -23,7 +23,7 @@ installing the extension in a profile only used for testing.
 | ----------------- | ---------------------------------- |
 | Chrome            | [chromedriver(.exe)][chrome]       |
 | Internet Explorer | [IEDriverServer.exe][release]      |
-| Edge              | [MicrosoftWebDriver.msi][edge]     | 
+| Edge              | [MicrosoftWebDriver.msi][edge]     |
 | PhantomJS         | [phantomjs(.exe)][phantomjs]       |
 | Opera             | [operadriver(.exe)][opera]         |
 | Safari            | [SafariDriver.safariextz][release] |
@@ -34,8 +34,8 @@ The sample below and others are included in the `example` directory. You may
 also find the tests for selenium-webdriver informative.
 
     var webdriver = require('selenium-webdriver'),
-        By = require('selenium-webdriver').By,
-        until = require('selenium-webdriver').until;
+        By = webdriver.By,
+        until = webdriver.until;
 
     var driver = new webdriver.Builder()
         .forBrowser('firefox')
