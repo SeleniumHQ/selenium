@@ -11,6 +11,11 @@ the selenium-webdriver package README.
 
 * Add support for Microsoft's Edge web browser
 * Bumped the minimum supported version of Node to v4.2.x
+* Added `webdriver.Builder#buildAsync()`, which returns a promise that will be
+    fulfilled with the newly created WebDriver instance once the associated
+    browser has been full initialized. This is purely a convenient alternative
+    to the existing build() method as the WebDriver class will always defer
+    commands until it has a fully created browser.
 * Added `firefox.Profile.setHost()` which may be used to set the host that
     the FirefoxDriver's server listens for commands on. The server uses
     "localhost" by default.

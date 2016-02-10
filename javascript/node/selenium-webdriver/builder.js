@@ -388,8 +388,15 @@ class Builder {
    * Creates a new WebDriver client based on this builder's current
    * configuration.
    *
+   * While this method will immediately return a new WebDriver instance, any
+   * commands issued against it will be deferred until the associated browser
+   * has been fully initialized. Users may call {@link #buildAsync()} to obtain
+   * a promise that will not be fulfilled until the browser has been created
+   * (the difference is purely in style).
+   *
    * @return {!webdriver.WebDriver} A new WebDriver instance.
    * @throws {Error} If the current configuration is invalid.
+   * @see #buildAsync()
    */
   build() {
     // Create a copy for any changes we may need to make based on the current
@@ -478,6 +485,24 @@ class Builder {
         throw new Error('Do not know how to build driver: ' + browser
             + '; did you forget to call usingServer(url)?');
     }
+  }
+
+  /**
+   * Creates a new WebDriver client based on this builder's current
+   * configuration. This method returns a promise that will not be fulfilled
+   * until the new browser session has been fully initialized.
+   *
+   * __Note:__ this method is purely a convenience wrapper around
+   * {@link #build()}.
+   *
+   * @return {!promise.Promise<!webdriver.WebDriver>} A promise that will be
+   *    fulfilled with the newly created WebDriver instance once the browser
+   *    has been fully initialized.
+   * @see #build()
+   */
+  buildAsync() {
+    let driver = this.build();
+    return driver.getSession().then(() => driver);
   }
 }
 
