@@ -31,4 +31,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface NoDriverAfterTest {
 
+  Driver[] value() default {Driver.ALL};
+
+  String reason() default ("For unknown reason");
+
 }

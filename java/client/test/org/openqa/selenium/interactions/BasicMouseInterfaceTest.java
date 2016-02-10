@@ -260,7 +260,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {FIREFOX, IE, REMOTE},
+  @Ignore(value = {FIREFOX, IE, REMOTE, CHROME},
           reason = "Behaviour not finalized yet regarding linked images.")
   @NotYetImplemented(HTMLUNIT)
   @Test
@@ -432,7 +432,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @NeedsFreshDriver
+  @NeedsFreshDriver({IE, CHROME})
   @Ignore(value = {SAFARI, MARIONETTE},
           reason = "Advanced mouse actions only implemented in rendered browsers",
           issues = {4136})
@@ -454,11 +454,8 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {SAFARI, MARIONETTE},
-    reason = "Advanced mouse actions only implemented in rendered browsers",
-    issues = {4136})
+  @Ignore(value = {SAFARI, MARIONETTE}, issues = {4136})
   @NotYetImplemented(HTMLUNIT)
-  //@NoDriverAfterTest
   public void testMoveMouseByOffsetOverAndOutOfAnElement() {
     driver.get(pages.mouseOverPage);
 
@@ -493,7 +490,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
           reason = "Advanced mouse actions only implemented in rendered browsers",
           issues = {4136})
   @NotYetImplemented(HTMLUNIT)
-  @NoDriverAfterTest
   public void testCanMoveOverAndOutOfAnElement() {
     driver.get(pages.mouseOverPage);
 
