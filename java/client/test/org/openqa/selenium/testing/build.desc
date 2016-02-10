@@ -10,6 +10,7 @@ java_library(name = "testing",
 
 java_library(name = "annotations",
   srcs = [
+    "Driver.java",
     "Ignore.java",
     "JavascriptEnabled.java",
     "NativeEventsRequired.java",

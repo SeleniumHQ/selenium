@@ -27,18 +27,6 @@ java_library(name = 'large-tests',
   ],
 )
 
-java_library(name = 'annotations',
-  srcs = [
-    'NeedsFreshDriver.java',
-    'NoDriverAfterTest.java',
-  ],
-  deps = [
-  ],
-  visibility = [
-    '//java/client/test/org/openqa/selenium/testing:test-base',
-  ],
-)
-
 java_library(name = 'helpers',
   srcs = [
     'Build.java',

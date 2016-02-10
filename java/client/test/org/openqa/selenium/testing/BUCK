@@ -1,10 +1,14 @@
 java_library(name = 'annotations',
   srcs = [
+    'Driver.java',
     'Ignore.java',
     'JavascriptEnabled.java',
     'NativeEventsRequired.java',
     'NeedsLocalEnvironment.java',
+    'NeedsLocalEnvironment.java',
+    'NeedsFreshDriver.java',
     'NotYetImplemented.java',
+    'SwitchToTopAfterTest.java',
   ],
   deps = [
     '//java/client/src/org/openqa/selenium:platform',
@@ -39,7 +43,6 @@ java_library(name = 'test-base',
   exported_deps = [
     ':annotations',
     ':helpers',
-    '//java/client/test/org/openqa/selenium:annotations',
     '//java/client/test/org/openqa/selenium:helpers',
     '//java/client/test/org/openqa/selenium/testing/drivers:browser',
     '//java/client/test/org/openqa/selenium/environment:environment',
