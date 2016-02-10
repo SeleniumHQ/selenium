@@ -1,8 +1,8 @@
-## v2.49.0-dev
+## v2.52.0
 
 ### Notice
 
-Starting with v2.49.0, each release of selenium-webdriver will support the
+Starting with v2.52.0, each release of selenium-webdriver will support the
 latest _minor_ LTS and stable Node releases. All releases between the LTS and
 stable release will have best effort support. Further details are available in
 the selenium-webdriver package README.
@@ -10,39 +10,30 @@ the selenium-webdriver package README.
 ### Change Summary
 
 * Add support for Microsoft's Edge web browser
-* Bumped the minimum supported version of Node to v4.2.x
 * Added `webdriver.Builder#buildAsync()`, which returns a promise that will be
     fulfilled with the newly created WebDriver instance once the associated
     browser has been full initialized. This is purely a convenient alternative
     to the existing build() method as the WebDriver class will always defer
     commands until it has a fully created browser.
-* Added `firefox.Profile.setHost()` which may be used to set the host that
+* Added `firefox.Profile#setHost()` which may be used to set the host that
     the FirefoxDriver's server listens for commands on. The server uses
     "localhost" by default.
 * Added `promise.Promise#catch()` for API compatibility with native Promises.
     `promise.Promise#thenCatch()` is not yet deprecated, but it simply
     delegates to `catch`.
 * Changed some `io` operations to use native promises.
-* Changed `webdriver.CommandExecutor#execute()` and `HttpClient` to return
+* Changed `command.Executor#execute()` and `HttpClient#send()` to return
     promises instead of using callback passing.
-* Changed the `webdriver.Serializable` class to an interface defined in the
-    `lib/serializable` module.
-* Changed the `Capabilities` class to extend the native `Map` type; Capabilities
-    implements Serializable to preseve existing functionality.
+* Replaced the `Serializable` class with an internal, Symbol-defined method.
+* Changed the `Capabilities` class to extend the native `Map` type.
 * Changed the `Capabilities.has(key)` to only test if a capability has been set
-    (Map semantics); to check whether the value is true, use `get(key)`.
-* Migrated the `webdriver.Command*` types from using the Closure Library to the
-    new `lib/command` module.
+    (Map semantics). To check whether the value is true, use `get(key)`.
 * Deprecated `executors.DeferredExecutor` in favor of
     `lib/command.DeferredExecutor`.
 * API documentation is no longer distributed with the npm package, but remains
     available at <http://seleniumhq.github.io/selenium/docs/api/javascript/>
 * Rewrote the `error` module to export an Error subtype for each type of error
     defined in the [W3C WebDriver spec](https://w3c.github.io/webdriver/webdriver-spec.html#handling-errors).
-    For the export types, the `code` property is now the string code used by
-    the W3C spec and _not_ the numeric code used by the Selenium project's
-    wire protocol.
-* Rewrote the `http` module to no longer user the Google Closure Library.
 * Changed the `http.Request` and `http.Response` classes to store headers in
     maps instead of object literals.
 * Updated `ws` dependency to version `1.0.1`.
@@ -50,11 +41,19 @@ the selenium-webdriver package README.
     `testing/assert` module.
 * Wait conditions that locate an element, or that wait on an element's state,
     will return a WebElementPromise.
+* Lots of internal clean-up to break selenium-webdriver's long standing
+    dependency on Google's Closure library.
 
 ### Changes for W3C WebDriver Spec Compliance
 
 * Updated the `By` locators that are not in the W3C spec to delegated to using
     CSS selectors: `By.className`, `By.id`, `By.name`, and `By.tagName`.
+
+
+## v2.49-51
+
+* _Releases skipped to stay in sync with the rest of the Selenium project_
+
 
 ## v2.48.2
 
