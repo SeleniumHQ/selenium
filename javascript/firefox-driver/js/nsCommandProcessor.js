@@ -462,10 +462,16 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
     return;
   }
 
-  var contentWindow = sessionWindow.getBrowser().contentWindow;
-  if (!contentWindow) {
-    response.sendError(new WebDriverError(bot.ErrorCode.NO_SUCH_WINDOW,
+  try {
+    var contentWindow = sessionWindow.getBrowser().contentWindow;
+    if (!contentWindow) {
+      response.sendError(new WebDriverError(bot.ErrorCode.NO_SUCH_WINDOW,
         'Window not found. The browser window may have been closed.'));
+      return;
+    }
+  } catch (ff45) {
+    response.sendError(new WebDriverError(bot.ErrorCode.NO_SUCH_WINDOW,
+      'Window not found. The browser window may have been closed.'));
     return;
   }
 
