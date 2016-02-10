@@ -210,7 +210,11 @@ limitations under the License.
 
     function testShouldReturnTrueForSpellcheckUndefined() {
       var el = document.getElementById('normal');
-      assertEquals('true', webdriver.atoms.element.getAttribute(el, 'spellcheck'));
+      var defaultSpellcheck = 'false';
+      if (goog.userAgent.WEBKIT) {
+        defaultSpellcheck = 'true';
+      }
+      assertEquals(defaultSpellcheck, webdriver.atoms.element.getAttribute(el, 'spellcheck'));
     }
 
     var newLine = bot.userAgent.IE_DOC_PRE9 ? '\r\n' : '\n';
