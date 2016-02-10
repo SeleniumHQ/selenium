@@ -36,6 +36,7 @@ import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 @Ignore(value = {HTMLUNIT}, reason = "HtmlUnit: Scrolling requires rendering")
 public class ClickScrollingTest extends JUnit4TestBase {

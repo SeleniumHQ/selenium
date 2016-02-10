@@ -14,6 +14,9 @@ java_library(name = "annotations",
     "JavascriptEnabled.java",
     "NativeEventsRequired.java",
     "NeedsLocalEnvironment.java",
+    "NeedsFreshDriver.java",
+    "NoDriverAfterTest.java",
+    "SwitchToTopAfterTest.java",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium:base",
@@ -44,7 +47,7 @@ java_library(name = "junit_4",
     "//third_party/java/junit",
     "//third_party/java/mockito",
   ])
-  
+
 java_library(name = "proxy",
   srcs = [
     "ProxyServer.java",
@@ -55,5 +58,5 @@ java_library(name = "proxy",
     "//third_party/java/netty",
     "//third_party/java/little_proxy",
   ])
-  
+
 

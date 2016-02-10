@@ -20,12 +20,9 @@ java_library(name = "build",
 java_library(name = "base",
   srcs = [
     "Messages.java",
-    "NeedsFreshDriver.java",
-    "NoDriverAfterTest.java",
     "Pages.java",
     "ParallelTestRunner.java",
     "StubDriver.java",
-    "SwitchToTopAfterTest.java",
     "WaitingConditions.java",
   ],
   embedded = [

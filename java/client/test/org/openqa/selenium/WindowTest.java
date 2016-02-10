@@ -31,6 +31,7 @@ import org.junit.Test;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 

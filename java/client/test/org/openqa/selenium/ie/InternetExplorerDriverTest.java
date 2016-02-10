@@ -25,7 +25,7 @@ import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HO
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoDriverAfterTest;
+import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;

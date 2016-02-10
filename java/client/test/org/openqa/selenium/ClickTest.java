@@ -32,13 +32,14 @@ import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.isChrome;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NoDriverAfterTest;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 import java.util.Set;
 

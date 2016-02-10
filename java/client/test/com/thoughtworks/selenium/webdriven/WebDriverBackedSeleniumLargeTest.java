@@ -25,7 +25,7 @@ import com.thoughtworks.selenium.Wait;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.NoDriverAfterTest;
+import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.testing.JUnit4TestBase;
 

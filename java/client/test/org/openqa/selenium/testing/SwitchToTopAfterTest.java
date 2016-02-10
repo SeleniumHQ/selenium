@@ -15,20 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium;
+package org.openqa.selenium.testing;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * Annotation that indicates the shared WebDriver instance should be restarted
- * after a test.  This annotation may also be used to indicate the test itself
- * dispose of the driver and it should be recreated for the next test.
- */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface NoDriverAfterTest {
+public @interface SwitchToTopAfterTest {
 
 }

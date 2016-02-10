@@ -42,6 +42,8 @@ import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.isChrome;
 
 import com.google.common.collect.Sets;
+
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 
 import java.awt.image.BufferedImage;

@@ -28,6 +28,8 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NeedsFreshDriver;
+import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.io.File;

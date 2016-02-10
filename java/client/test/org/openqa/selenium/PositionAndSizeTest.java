@@ -39,6 +39,7 @@ import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
 
 @Ignore(value = {HTMLUNIT},

@@ -39,6 +39,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NeedsFreshDriver;
 
 /**
  * Test case for browsers that support using Javascript

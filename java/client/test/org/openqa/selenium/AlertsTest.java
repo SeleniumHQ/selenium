@@ -39,12 +39,13 @@ import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 import java.util.Set;
 
