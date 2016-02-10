@@ -88,6 +88,8 @@ class NewSessionCommandHandler : public IECommandHandler {
       } else {
         mutable_executor.set_enable_persistent_hover(enable_persistent_hover.asBool());
       }
+      Json::Value resize_on_screenshot = this->GetCapability(it->second, ENABLE_FULL_PAGE_SCREENSHOT_CAPABILITY, Json::booleanValue, true);
+      mutable_executor.set_enable_full_page_screenshot(resize_on_screenshot.asBool());
       ProxySettings proxy_settings = { false, "", "", "", "", "", "", "", "" };
       Json::Value proxy = it->second.get(PROXY_CAPABILITY, Json::nullValue);
       if (!proxy.isNull()) {

@@ -52,11 +52,16 @@ class ScreenshotCommandHandler : public IECommandHandler {
     HRESULT hr;
     int i = 0;
     int tries = 4;
+    const bool should_resize_window = executor.enable_full_page_screenshot();
     do {
       this->ClearImage();
 
       this->image_ = new CImage();
-      hr = this->CaptureBrowser(browser_wrapper);
+      if (should_resize_window) {
+        hr = this->CaptureFullPage(browser_wrapper);
+      } else {
+        hr = this->CaptureViewport(browser_wrapper);
+      }
       if (FAILED(hr)) {
         LOGHR(WARN, hr) << "Failed to capture browser image at " << i << " try";
         this->ClearImage();
@@ -97,8 +102,8 @@ class ScreenshotCommandHandler : public IECommandHandler {
     }
   }
 
-  HRESULT CaptureBrowser(BrowserHandle browser) {
-    LOG(TRACE) << "Entering ScreenshotCommandHandler::CaptureBrowser";
+  HRESULT CaptureFullPage(BrowserHandle browser) {
+    LOG(TRACE) << "Entering ScreenshotCommandHandler::CaptureFullPage";
 
     HWND ie_window_handle = browser->GetTopLevelWindowHandle();
     HWND content_window_handle = browser->GetContentWindowHandle();
@@ -210,24 +215,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
                      SWP_NOSENDCHANGING);
     }
 
-    // Capture the window's canvas to a DIB.
-    // If there are any scroll bars in the window, they should
-    // be explicitly cropped out of the image, because of the
-    // size of image we are creating..
-    BOOL created = this->image_->Create(document_info.width,
-                                        document_info.height,
-                                        /*numbers of bits per pixel = */ 32);
-    if (!created) {
-      LOG(WARN) << "Unable to initialize image object";
-    }
-    HDC device_context_handle = this->image_->GetDC();
-
-    BOOL print_result = ::PrintWindow(content_window_handle,
-                                      device_context_handle,
-                                      PW_CLIENTONLY);
-    if (!print_result) {
-      LOG(WARN) << "PrintWindow API is not able to get content window screenshot";
-    }
+    CaptureWindow(content_window_handle, document_info.width, document_info.height);
 
     if (requires_resize) {
       // Restore the browser to the original dimensions.
@@ -239,8 +227,40 @@ class ScreenshotCommandHandler : public IECommandHandler {
       }
     }
 
-    this->image_->ReleaseDC();
     return S_OK;
+  }
+
+  HRESULT CaptureViewport(BrowserHandle browser) {
+    LOG(TRACE) << "Entering ScreenshotCommandHandler::CaptureViewport";
+
+    HWND content_window_handle = browser->GetContentWindowHandle();
+    int content_width = 0, content_height = 0;
+
+    this->GetWindowDimensions(content_window_handle, &content_width, &content_height);
+    CaptureWindow(content_window_handle, content_width, content_height);
+
+    return S_OK;
+  }
+
+  void CaptureWindow(HWND window_handle, long width, long height) {
+    // Capture the window's canvas to a DIB.
+    // If there are any scroll bars in the window, they should
+    // be explicitly cropped out of the image, because of the
+    // size of image we are creating..
+    BOOL created = this->image_->Create(width, height, /*numbers of bits per pixel = */ 32);
+    if (!created) {
+      LOG(WARN) << "Unable to initialize image object";
+    }
+    HDC device_context_handle = this->image_->GetDC();
+
+    BOOL print_result = ::PrintWindow(window_handle,
+                                      device_context_handle,
+                                      PW_CLIENTONLY);
+    if (!print_result) {
+      LOG(WARN) << "PrintWindow API is not able to get content window screenshot";
+    }
+
+    this->image_->ReleaseDC();
   }
 
   bool IsSameColour() {
