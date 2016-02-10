@@ -53,13 +53,13 @@ import java.util.Arrays;
 @Ignore({CHROME, HTMLUNIT, IE, PHANTOMJS, SAFARI, MARIONETTE})
 public class PerformanceLoggingTest extends JUnit4TestBase {
 
-  private WebDriver localDriver;
+  private WebDriver loggingDriver;
 
   @After
   public void quitDriver() {
-    if (localDriver != null) {
-      localDriver.quit();
-      localDriver = null;
+    if (loggingDriver != null) {
+      loggingDriver.quit();
+      loggingDriver = null;
     }
   }
 
@@ -73,7 +73,7 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
   @Test
   public void testLogsSingleHttpCommand() {
     startLoggingDriver();
-    ImmutableList<LogEntry> entries = getProfilerEntriesOfType(getProfilerEntries(localDriver),
+    ImmutableList<LogEntry> entries = getProfilerEntriesOfType(getProfilerEntries(loggingDriver),
         EventType.HTTP_COMMAND);
     // Expect start of newSession, end of newSession, start of getLogs, end of getLogs
     String[] expected = {"\"command\": \"newSession\",\"startorend\": \"start\"",
@@ -108,16 +108,18 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
   @Test
   public void testGetsYieldToPageLoadLogEntries() throws Exception {
     startLoggingDriver();
-    localDriver.get(pages.formPage);
-    localDriver.findElement(By.id("submitButton")).click();
-    assertThat(getProfilerEntriesOfType(getProfilerEntries(localDriver),
+    loggingDriver.get(pages.formPage);
+    loggingDriver.findElement(By.id("submitButton")).click();
+    assertThat(getProfilerEntriesOfType(getProfilerEntries(loggingDriver),
         EventType.YIELD_TO_PAGE_LOAD).size(), greaterThan(0));
   }
 
   private void startLoggingDriver() {
-    WebDriverBuilder builder = new WebDriverBuilder().setDesiredCapabilities(
+    if (loggingDriver == null) {
+      WebDriverBuilder builder = new WebDriverBuilder().setDesiredCapabilities(
         getCapabilitiesWithProfilerOn(true));
-    localDriver = builder.get();
+      loggingDriver = builder.get();
+    }
   }
 
   private LogEntries getProfilerEntries(WebDriver driver) {
@@ -147,9 +149,9 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
     WebDriverBuilder builder = new WebDriverBuilder().
         setDesiredCapabilities(getCapabilitiesWithProfilerOn(false)).
         setRequiredCapabilities(getCapabilitiesWithProfilerOn(true));
-    localDriver = builder.get();
+    loggingDriver = builder.get();
 
     assertEquals("Start up should render four profiling entries", 4,
-        getProfilerEntriesOfType(getProfilerEntries(localDriver), EventType.HTTP_COMMAND).size());
+        getProfilerEntriesOfType(getProfilerEntries(loggingDriver), EventType.HTTP_COMMAND).size());
   }
 }
