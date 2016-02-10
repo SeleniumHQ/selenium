@@ -55,7 +55,7 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
         """GET method handler."""
         try:
             path = self.path[1:].split('?')[0]
-            if path[:4] == "page":
+            if path[:4] == "page" and path[4] == '/':
                 html = """<html><head><title>Page{page_number}</title></head>
                 <body>Page number <span id=\"pageNumber\">{page_number}</span>
                 <p><a href=\"../xhtmlTest.html\" target=\"_top\">top</a>
