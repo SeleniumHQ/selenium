@@ -214,6 +214,9 @@ limitations under the License.
       if (goog.userAgent.WEBKIT) {
         defaultSpellcheck = 'true';
       }
+      if (goog.userAgent.IE && !goog.userAgent.product.isVersion(10)) {
+        defaultSpellcheck = 'undefined';
+      }
       assertEquals(defaultSpellcheck, webdriver.atoms.element.getAttribute(el, 'spellcheck'));
     }
 
