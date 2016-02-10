@@ -291,4 +291,25 @@ public class SelectElementTest extends JUnit4TestBase {
     Select select = new Select(selectElement);
     select.deselectByIndex(10);
   }
+  
+  @Test(expected = UnsupportedOperationException.class)
+  public void shouldNotAllowUserToDeselectByIndexWhenSelectDoesNotSupportMultipleSelections() {
+    WebElement selectElement = driver.findElement(By.name("selectomatic"));
+    Select select = new Select(selectElement);
+    select.deselectByIndex(0);
+  }
+  
+  @Test(expected = UnsupportedOperationException.class)
+  public void shouldNotAllowUserToDeselectByValueWhenSelectDoesNotSupportMultipleSelections() {
+    WebElement selectElement = driver.findElement(By.name("selectomatic"));
+    Select select = new Select(selectElement);
+    select.deselectByValue("two");
+  }
+  
+  @Test(expected = UnsupportedOperationException.class)
+  public void shouldNotAllowUserToDeselectByVisibleTextWhenSelectDoesNotSupportMultipleSelections() {
+    WebElement selectElement = driver.findElement(By.name("selectomatic"));
+    Select select = new Select(selectElement);
+    select.deselectByVisibleText("Four");
+  }
 }

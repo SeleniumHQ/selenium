@@ -233,16 +233,19 @@ public class Select {
    *
    * @param value The value to match against
    * @throws NoSuchElementException If no matching option elements are found
+   * @throws UnsupportedOperationException If the SELECT does not support multiple selections
    */
   public void deselectByValue(String value) {
+    if (!isMultiple()) {
+      throw new UnsupportedOperationException(
+          "You may only deselect options of a multi-select");
+    }
+    
     List<WebElement> options = element.findElements(By.xpath(
         ".//option[@value = " + Quotes.escape(value) + "]"));
     boolean matched = false;
     for (WebElement option : options) {
       setSelected(option, false);
-      if (!isMultiple()) {
-        return;
-      }
       matched = true;
     }
     if (!matched) {
@@ -256,8 +259,14 @@ public class Select {
    *
    * @param index The option at this index will be deselected
    * @throws NoSuchElementException If no matching option elements are found
+   * @throws UnsupportedOperationException If the SELECT does not support multiple selections
    */
   public void deselectByIndex(int index) {
+    if (!isMultiple()) {
+      throw new UnsupportedOperationException(
+          "You may only deselect options of a multi-select");
+    }
+    
     String match = String.valueOf(index);
     
     for (WebElement option : getOptions()) {
@@ -277,17 +286,20 @@ public class Select {
    *
    * @param text The visible text to match against
    * @throws NoSuchElementException If no matching option elements are found
+   * @throws UnsupportedOperationException If the SELECT does not support multiple selections
    */
   public void deselectByVisibleText(String text) {
+    if (!isMultiple()) {
+      throw new UnsupportedOperationException(
+          "You may only deselect options of a multi-select");
+    }
+    
     List<WebElement> options = element.findElements(By.xpath(
         ".//option[normalize-space(.) = " + Quotes.escape(text) + "]"));
 
     boolean matched = false;
     for (WebElement option : options) {
       setSelected(option, false);
-      if (!isMultiple()) {
-        return;
-      }
       matched = true;
     }
 
