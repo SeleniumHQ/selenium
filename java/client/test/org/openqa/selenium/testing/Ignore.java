@@ -28,18 +28,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface Ignore {
 
-  public static enum Driver {
-    ALL,
-    CHROME,
-    HTMLUNIT,
-    FIREFOX,
-    IE,
-    MARIONETTE,
-    PHANTOMJS,
-    REMOTE,
-    SAFARI,
-  }
-
   Driver[] value() default {Driver.ALL};
 
   Platform[] platforms() default {Platform.ANY};

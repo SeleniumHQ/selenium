@@ -22,8 +22,7 @@ import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 import static org.junit.Assume.assumeFalse;
 
-import static org.openqa.selenium.remote.CapabilityType.HAS_NATIVE_EVENTS;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
 
 import org.junit.After;
 import org.junit.Before;
@@ -31,7 +30,6 @@ import org.junit.Test;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.CapabilityType;

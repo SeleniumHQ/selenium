@@ -22,8 +22,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import com.google.common.collect.Sets;
 
@@ -33,7 +33,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.Ignore.Driver;
+import org.openqa.selenium.testing.Driver;
 
 import java.util.Set;
 
@@ -69,7 +69,7 @@ public class IgnoreComparitorUnitTest {
   @Test
   public void shouldIgnoreDriverAll() {
     assertTrue(ignoreComparator.shouldIgnore(ignoreForDriver(
-      Sets.newHashSet(Ignore.Driver.ALL),
+      Sets.newHashSet(Driver.ALL),
       CURRENT_PLATFORM_SET)));
   }
 

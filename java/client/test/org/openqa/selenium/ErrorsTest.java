@@ -24,8 +24,8 @@ import org.openqa.selenium.testing.JavascriptEnabled;
 
 import static org.junit.Assert.assertEquals;
 
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
 
 /**
  * @author jmleyba@gmail.com (Jason Leyba)

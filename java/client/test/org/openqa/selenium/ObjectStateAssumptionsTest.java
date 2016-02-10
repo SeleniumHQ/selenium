@@ -17,7 +17,7 @@
 
 package org.openqa.selenium;
 
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;

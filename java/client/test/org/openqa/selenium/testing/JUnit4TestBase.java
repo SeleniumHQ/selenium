@@ -206,7 +206,7 @@ public abstract class JUnit4TestBase implements WrapsDriver {
       final NotYetImplemented notYetImplementedBrowsers = description.getAnnotation(NotYetImplemented.class);
       boolean isNotYetImplemented = false;
       if (notYetImplementedBrowsers != null) {
-        for (Ignore.Driver driver : notYetImplementedBrowsers.value()) {
+        for (Driver driver : notYetImplementedBrowsers.value()) {
           if (!isNotYetImplemented) {
             switch (driver) {
               case ALL:
