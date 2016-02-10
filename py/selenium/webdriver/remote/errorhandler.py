@@ -106,6 +106,7 @@ class ErrorHandler(object):
                         status = value["status"]
                         message = value["value"]
                         if not isinstance(message, basestring):
+                            value = message
                             try:
                                 message = message['message']
                             except TypeError:
