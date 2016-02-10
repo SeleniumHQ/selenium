@@ -267,6 +267,18 @@ class Profile {
   }
 
   /**
+   * Specifies which host the driver should listen for commands on. If not
+   * specified, the driver will default to "localhost". This option should be
+   * specified when "localhost" is not mapped to the loopback address
+   * (127.0.0.1) in `/etc/hosts`.
+   *
+   * @param {string} host the host the driver should listen for commands on
+   */
+  setHost(host) {
+    this.preferences_['webdriver_firefox_allowed_hosts'] = host;
+  }
+
+  /**
    * @return {number} The port this profile is currently configured to use, or
    *     0 if the port will be selected at random when the profile is written
    *     to disk.

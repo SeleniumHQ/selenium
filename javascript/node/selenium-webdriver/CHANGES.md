@@ -11,6 +11,9 @@ the selenium-webdriver package README.
 
 * Add support for Microsoft's Edge web browser
 * Bumped the minimum supported version of Node to v4.2.x
+* Added `firefox.Profile.setHost()` which may be used to set the host that
+    the FirefoxDriver's server listens for commands on. The server uses
+    "localhost" by default.
 * Added `promise.Promise#catch()` for API compatibility with native Promises.
     `promise.Promise#thenCatch()` is not yet deprecated, but it simply
     delegates to `catch`.
