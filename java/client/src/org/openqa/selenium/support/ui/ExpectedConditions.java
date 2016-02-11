@@ -1038,7 +1038,7 @@ public class ExpectedConditions {
 
       @Override
       public List<WebElement> apply(WebDriver webDriver) {
-        List<WebElement> elements =  webDriver.findElements(locator);
+        List<WebElement> elements = webDriver.findElements(locator);
         currentNumber = elements.size();
         return currentNumber > number ? elements : null;
       }
@@ -1066,7 +1066,7 @@ public class ExpectedConditions {
 
       @Override
       public List<WebElement> apply(WebDriver webDriver) {
-        List<WebElement> elements =  webDriver.findElements(locator);
+        List<WebElement> elements = webDriver.findElements(locator);
         currentNumber = elements.size();
         return currentNumber < number ? elements : null;
       }
@@ -1093,7 +1093,7 @@ public class ExpectedConditions {
 
       @Override
       public List<WebElement> apply(WebDriver webDriver) {
-        List<WebElement> elements =  webDriver.findElements(locator);
+        List<WebElement> elements = webDriver.findElements(locator);
         currentNumber = elements.size();
         return currentNumber.equals(number) ? elements : null;
       }
@@ -1115,14 +1115,15 @@ public class ExpectedConditions {
    * @return Boolean true when element has css or html attribute with the value
    */
   public static ExpectedCondition<Boolean> attributeToBe(final WebElement element,
-                                                         final String attribute, final String value) {
+                                                         final String attribute,
+                                                         final String value) {
     return new ExpectedCondition<Boolean>() {
       private String currentValue = null;
 
       @Override
       public Boolean apply(WebDriver driver) {
         currentValue = element.getAttribute(attribute);
-        if (currentValue == null) {
+        if (currentValue == null || currentValue.isEmpty()) {
           currentValue = element.getCssValue(attribute);
         }
         return value.equals(currentValue);
@@ -1156,7 +1157,7 @@ public class ExpectedConditions {
         Boolean contains = false;
         try {
           currentValue = element.getAttribute(attribute);
-          if (currentValue == null) {
+          if (currentValue == null || currentValue.isEmpty()) {
             currentValue = element.getCssValue(attribute);
           }
           contains = currentValue.contains(value);
@@ -1191,7 +1192,7 @@ public class ExpectedConditions {
         Boolean contains = false;
         try {
           currentValue = driver.findElement(locator).getAttribute(attribute);
-          if (currentValue == null) {
+          if (currentValue == null || currentValue.isEmpty()) {
             currentValue = driver.findElement(locator).getCssValue(attribute);
           }
           contains = currentValue.contains(value);
@@ -1224,7 +1225,7 @@ public class ExpectedConditions {
         Boolean hasText = false;
         try {
           currentValue = element.getAttribute(attribute);
-          if (currentValue == null) {
+          if (currentValue == null || currentValue.isEmpty()) {
             currentValue = element.getCssValue(attribute);
           }
           hasText = !currentValue.isEmpty();
@@ -1242,8 +1243,9 @@ public class ExpectedConditions {
    * @param sub_locator used to find child element. For example td By.xpath("./tr/td")
    * @return visible nested element
    */
-  public static ExpectedCondition<List<WebElement>> visibilityOfNestedElementsLocatedBy(final By locator,
-                                                                              final By sub_locator) {
+  public static ExpectedCondition<List<WebElement>> visibilityOfNestedElementsLocatedBy(
+    final By locator,
+    final By sub_locator) {
     return new ExpectedCondition<List<WebElement>>() {
 
       @Override
@@ -1309,7 +1311,7 @@ public class ExpectedConditions {
    * @return subelement
    */
   public static ExpectedCondition<WebElement> presenceOfNestedElementLocatedBy(final By locator,
-                                                                            final By sub_locator) {
+                                                                               final By sub_locator) {
     return new ExpectedCondition<WebElement>() {
 
       @Override
@@ -1537,10 +1539,17 @@ public class ExpectedConditions {
         try {
           value = ((JavascriptExecutor) driver).executeScript(javaScript);
         } catch (Exception e) {/**/}
-        if (value == null)  return null;
-        if (value instanceof List) return ((List) value).isEmpty() ? null : value;
-        if (value instanceof String)  return ((String) value).isEmpty() ? null : value;
-        else return value;
+        if (value == null) {
+          return null;
+        }
+        if (value instanceof List) {
+          return ((List) value).isEmpty() ? null : value;
+        }
+        if (value instanceof String) {
+          return ((String) value).isEmpty() ? null : value;
+        } else {
+          return value;
+        }
       }
 
       @Override

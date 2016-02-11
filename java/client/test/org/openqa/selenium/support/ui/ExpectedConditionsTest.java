@@ -752,6 +752,7 @@ public class ExpectedConditionsTest {
     when(mockElement.findElements(By.cssSelector(testSelector)))
       .thenReturn(Arrays.asList(mockNestedElement));
     when(mockElement.findElement(By.cssSelector(testSelector))).thenReturn(mockNestedElement);
+    when(mockElement.findElements(By.cssSelector(testSelector))).thenReturn(Arrays.asList(mockElement));
     wait.until(visibilityOfNestedElementsLocatedBy(mockElement, By.cssSelector(testSelector)));
   }
 
@@ -770,6 +771,7 @@ public class ExpectedConditionsTest {
     when(mockElement.findElements(By.cssSelector(testNestedSelector)))
       .thenReturn(Arrays.asList(mockNestedElement));
     when(mockElement.findElement(By.cssSelector(testNestedSelector))).thenReturn(mockNestedElement);
+    when(mockElement.findElements(By.cssSelector(testSelector))).thenReturn(Arrays.asList(mockElement));
     wait.until(visibilityOfNestedElementsLocatedBy(By.cssSelector(testSelector),
                                                    By.cssSelector(testNestedSelector)));
   }
