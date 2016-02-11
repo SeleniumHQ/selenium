@@ -23,7 +23,7 @@
         <em:targetPlatform>SunOS</em:targetPlatform>
         <em:targetPlatform>FreeBSD</em:targetPlatform>
         <em:targetPlatform>OpenBSD</em:targetPlatform>
-        <em:targetPlatform>WINNT_x86-msvc</em:targetPlatform>
+        <em:targetPlatform>WINNT</em:targetPlatform>
         <em:targetPlatform>Linux</em:targetPlatform>
 
         <!-- We're probably missing lots of platforms here -->
