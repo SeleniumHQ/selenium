@@ -17,7 +17,6 @@
 // </copyright>
 
 using System;
-using System.Globalization;
 
 namespace OpenQA.Selenium
 {
@@ -177,7 +176,7 @@ namespace OpenQA.Selenium
         /// </summary>
         public string ProtocolPlatformType
         {
-            get { return this.platformTypeValue.ToString("G").ToUpper(CultureInfo.InvariantCulture); }
+            get { return this.platformTypeValue.ToString("G").ToUpperInvariant(); }
         }
 
         /// <summary>
