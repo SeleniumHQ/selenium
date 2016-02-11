@@ -1,3 +1,7 @@
+Selenium 2.52.0
+* Fixing case where UnexpectedAlertException doesn't get the alert_text in the error object
+* Firefox: Actually use launch_browser timeout Fixes #1300
+
 Selenium 2.51.1
 * correcting bundling issue missing README.rst file
 
