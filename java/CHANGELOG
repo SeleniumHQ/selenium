@@ -1,3 +1,18 @@
+v2.52.0
+=======
+
+Firefox:
+    * Weakening platform restriction to enable 64-bit support
+    * Fixing closed window handling in FF45
+    * Implementing a capability that disables overlapping checks - "overlappingCheckDisabled"
+    
+WebDriver:
+    * Fix deselecting options in <select>, actually throw Exceptions documented
+    * handle special case spellcheck attribute Fixes #1605
+
+Grid:
+    * Allow forwarded response to be modified by CommandListener
+
 v2.51.0
 =======
 
@@ -2085,3 +2100,5 @@ Grid:
   * Track when a session has become orphaned.  I.e., when the client sends no
     commands after the initial session creation.  This almost always indicates
     the client is no longer connected and the session is unusable immediately.
+
+
