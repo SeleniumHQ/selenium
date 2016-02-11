@@ -4,6 +4,7 @@ projectFilesBackup/
 .svn
 .buckd
 .nobuckcheck
+.credentials.dat
 buck-out
 mockpiframe.log
 mockpiframe.log.lck
