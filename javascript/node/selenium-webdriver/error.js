@@ -31,15 +31,16 @@ class WebDriverError extends Error {
   }
 
   /**
-   * @return {string} the code for this class of error.
-   * @see https://w3c.github.io/webdriver/webdriver-spec.html#handling-errors
+   * @return {number} the legacy numeric code for this class of error.
+   * @deprecated
    */
   static get code() {
-    return 'unknown error';
+    return ErrorCode.UNKNOWN_ERROR;
   }
 
   /**
-   * @return {string} the code for this class of error.
+   * @return {number} the legacy numeric code for this class of error.
+   * @deprecated
    */
   get code() {
     return this.constructor.code;
@@ -58,7 +59,7 @@ class ElementNotSelectableError extends WebDriverError {
 
   /** @override */
   static get code() {
-    return 'element not selectable';
+    return ErrorCode.ELEMENT_NOT_SELECTABLE;
   }
 }
 
@@ -75,7 +76,7 @@ class ElementNotVisibleError extends WebDriverError {
 
   /** @override */
   static get code() {
-    return 'element not visible';
+    return ErrorCode.ELEMENT_NOT_VISIBLE;
   }
 }
 
@@ -87,11 +88,6 @@ class InvalidArgumentError extends WebDriverError {
   /** @param {string=} opt_error the error message, if any. */
   constructor(opt_error) {
     super(opt_error);
-  }
-
-  /** @override */
-  static get code() {
-    return 'invalid argument';
   }
 }
 
@@ -108,7 +104,7 @@ class InvalidCookieDomainError extends WebDriverError {
 
   /** @override */
   static get code() {
-    return 'invalid cookie domain';
+    return ErrorCode.INVALID_COOKIE_DOMAIN;
   }
 }
 
@@ -124,7 +120,7 @@ class InvalidElementCoordinatesError extends WebDriverError {
 
   /** @override */
   static get code() {
-    return 'invalid element coordinates';
+    return ErrorCode.INVALID_ELEMENT_COORDINATES;
   }
 }
 
@@ -142,7 +138,7 @@ class InvalidElementStateError extends WebDriverError {
 
   /** @override */
   static get code() {
-    return 'invalid element state';
+    return ErrorCode.INVALID_ELEMENT_STATE;
   }
 }
 
@@ -158,7 +154,7 @@ class InvalidSelectorError extends WebDriverError {
 
   /** @override */
   static get code() {
-    return 'invalid selector';
+    return ErrorCode.INVALID_SELECTOR_ERROR;
   }
 }
 
@@ -171,11 +167,6 @@ class InvalidSessionIdError extends WebDriverError {
   /** @param {string=} opt_error the error message, if any. */
   constructor(opt_error) {
     super(opt_error);
-  }
-
-  /** @override */
-  static get code() {
-    return 'invalid session id';
   }
 }
 
@@ -191,7 +182,7 @@ class JavascriptError extends WebDriverError {
 
   /** @override */
   static get code() {
-    return 'javascript error';
+    return ErrorCode.JAVASCRIPT_ERROR;
   }
 }
 
@@ -208,7 +199,7 @@ class MoveTargetOutOfBoundsError extends WebDriverError {
 
   /** @override */
   static get code() {
-    return 'move target out of bounds';
+    return ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS;
   }
 }
 
@@ -224,7 +215,7 @@ class NoSuchAlertError extends WebDriverError {
 
   /** @override */
   static get code() {
-    return 'no such alert';
+    return ErrorCode.NO_SUCH_ALERT;
   }
 }
 
@@ -241,7 +232,7 @@ class NoSuchElementError extends WebDriverError {
 
   /** @override */
   static get code() {
-    return 'no such element';
+    return ErrorCode.NO_SUCH_ELEMENT;
   }
 }
 
@@ -258,7 +249,7 @@ class NoSuchFrameError extends WebDriverError {
 
   /** @override */
   static get code() {
-    return 'no such frame';
+    return ErrorCode.NO_SUCH_FRAME;
   }
 }
 
@@ -275,7 +266,7 @@ class NoSuchWindowError extends WebDriverError {
 
   /** @override */
   static get code() {
-    return 'no such window';
+    return ErrorCode.NO_SUCH_WINDOW;
   }
 }
 
@@ -291,7 +282,7 @@ class ScriptTimeoutError extends WebDriverError {
 
   /** @override */
   static get code() {
-    return 'script timeout  ';
+    return ErrorCode.SCRIPT_TIMEOUT;
   }
 }
 
@@ -307,7 +298,7 @@ class SessionNotCreatedError extends WebDriverError {
 
   /** @override */
   static get code() {
-    return 'session not created';
+    return ErrorCode.SESSION_NOT_CREATED;
   }
 }
 
@@ -325,7 +316,7 @@ class StaleElementReferenceError extends WebDriverError {
 
   /** @override */
   static get code() {
-    return 'stale element reference';
+    return ErrorCode.STALE_ELEMENT_REFERENCE;
   }
 }
 
@@ -341,7 +332,7 @@ class TimeoutError extends WebDriverError {
 
   /** @override */
   static get code() {
-    return 'timeout';
+    return ErrorCode.TIMEOUT;
   }
 }
 
@@ -357,7 +348,7 @@ class UnableToSetCookieError extends WebDriverError {
 
   /** @override */
   static get code() {
-    return 'unable to set cookie';
+    return ErrorCode.UNABLE_TO_SET_COOKIE;
   }
 }
 
@@ -369,11 +360,6 @@ class UnableToCaptureScreenError extends WebDriverError {
   /** @param {string=} opt_error the error message, if any. */
   constructor(opt_error) {
     super(opt_error);
-  }
-
-  /** @override */
-  static get code() {
-    return 'unable to capture screen';
   }
 }
 
@@ -395,7 +381,7 @@ class UnexpectedAlertOpenError extends WebDriverError {
 
   /** @override */
   static get code() {
-    return 'unexpected alert open';
+    return ErrorCode.UNEXPECTED_ALERT_OPEN;
   }
 
   /**
@@ -419,7 +405,7 @@ class UnknownCommandError extends WebDriverError {
 
   /** @override */
   static get code() {
-    return 'unknown command';
+    return ErrorCode.UNSUPPORTED_OPERATION;
   }
 }
 
@@ -436,7 +422,7 @@ class UnknownMethodError extends WebDriverError {
 
   /** @override */
   static get code() {
-    return 'unknown method';
+    return ErrorCode.UNSUPPORTED_OPERATION;
   }
 }
 
@@ -452,117 +438,11 @@ class UnsupportedOperationError extends WebDriverError {
 
   /** @override */
   static get code() {
-    return 'unsupported operation';
+    return ErrorCode.UNSUPPORTED_OPERATION;
   }
 }
 
 // TODO(jleyba): Define UnknownError as an alias of WebDriverError?
-
-
-const LEGACY_ERROR_CODE_TO_CLASS = new Map();
-LEGACY_ERROR_CODE_TO_CLASS.set(7, NoSuchElementError);
-LEGACY_ERROR_CODE_TO_CLASS.set(8, NoSuchFrameError);
-LEGACY_ERROR_CODE_TO_CLASS.set(9, UnknownCommandError);
-LEGACY_ERROR_CODE_TO_CLASS.set(10, StaleElementReferenceError);
-LEGACY_ERROR_CODE_TO_CLASS.set(11, ElementNotVisibleError);
-LEGACY_ERROR_CODE_TO_CLASS.set(12, InvalidElementStateError);
-LEGACY_ERROR_CODE_TO_CLASS.set(13, WebDriverError);
-LEGACY_ERROR_CODE_TO_CLASS.set(15, ElementNotSelectableError);
-LEGACY_ERROR_CODE_TO_CLASS.set(17, JavascriptError);
-LEGACY_ERROR_CODE_TO_CLASS.set(19, InvalidSelectorError);
-LEGACY_ERROR_CODE_TO_CLASS.set(21, TimeoutError);
-LEGACY_ERROR_CODE_TO_CLASS.set(23, NoSuchWindowError);
-LEGACY_ERROR_CODE_TO_CLASS.set(24, InvalidCookieDomainError);
-LEGACY_ERROR_CODE_TO_CLASS.set(25, UnableToSetCookieError);
-LEGACY_ERROR_CODE_TO_CLASS.set(26, UnexpectedAlertOpenError);
-LEGACY_ERROR_CODE_TO_CLASS.set(27, NoSuchAlertError);
-LEGACY_ERROR_CODE_TO_CLASS.set(28, ScriptTimeoutError);
-LEGACY_ERROR_CODE_TO_CLASS.set(29, InvalidElementCoordinatesError);
-LEGACY_ERROR_CODE_TO_CLASS.set(32, InvalidSelectorError);
-LEGACY_ERROR_CODE_TO_CLASS.set(33, SessionNotCreatedError);
-LEGACY_ERROR_CODE_TO_CLASS.set(34, MoveTargetOutOfBoundsError);
-LEGACY_ERROR_CODE_TO_CLASS.set(51, InvalidSelectorError);
-LEGACY_ERROR_CODE_TO_CLASS.set(52, InvalidSelectorError);
-LEGACY_ERROR_CODE_TO_CLASS.set(405, UnknownCommandError);
-
-
-const REGISTRY = new Map();
-function registerError(ctor) {
-  REGISTRY.set(ctor.code, ctor);
-}
-registerError(WebDriverError);
-registerError(ElementNotSelectableError);
-registerError(ElementNotVisibleError);
-registerError(InvalidArgumentError);
-registerError(InvalidCookieDomainError);
-registerError(InvalidElementCoordinatesError);
-registerError(InvalidElementStateError);
-registerError(InvalidSelectorError);
-registerError(InvalidSessionIdError);
-registerError(JavascriptError);
-registerError(MoveTargetOutOfBoundsError);
-registerError(NoSuchAlertError);
-registerError(NoSuchElementError);
-registerError(NoSuchFrameError);
-registerError(NoSuchWindowError);
-registerError(ScriptTimeoutError);
-registerError(SessionNotCreatedError);
-registerError(StaleElementReferenceError);
-registerError(TimeoutError);
-registerError(UnableToSetCookieError);
-registerError(UnableToCaptureScreenError);
-registerError(UnexpectedAlertOpenError);
-registerError(UnknownCommandError);
-registerError(UnknownMethodError);
-registerError(UnsupportedOperationError);
-
-
-
-/**
- * Checks a response object from a server that adheres to the W3C WebDriver
- * protocol.
- * @param {*} data The response data to check.
- * @return {*} The response data if it was not an encoded error.
- * @throws {WebDriverError} the decoded error, if present in the data object.
- * @see https://w3c.github.io/webdriver/webdriver-spec.html#protocol
- */
-function checkResponse(data) {
-  if (data && typeof data.error === 'string') {
-    let ctor = REGISTRY.get(data.error) || WebDriverError;
-    throw new ctor(data.message);
-  }
-  return data;
-}
-
-
-/**
- * Checks a legacy response from the Selenium 2.0 wire protocol for an error.
- * @param {*} responseObj the response object to check.
- * @return {*} responseObj the original response if it does not define an error.
- * @throws {WebDriverError} if the response object defines an error.
- */
-function checkLegacyResponse(responseObj) {
-  // Handle the legacy Selenium error response format.
-  if (responseObj
-      && typeof responseObj === 'object'
-      && typeof responseObj['status'] === 'number'
-      && responseObj['status'] !== 0) {
-    let status = responseObj['status'];
-    let ctor = LEGACY_ERROR_CODE_TO_CLASS.get(status) || WebDriverError;
-
-    let value = responseObj['value'];
-
-    if (!value || typeof value !== 'object') {
-      throw new ctor(value + '');
-    } else {
-      throw new ctor(value['message'] + '');
-    }
-  }
-  return responseObj;
-}
-
-
-// PUBLIC API
 
 
 /**
@@ -572,7 +452,7 @@ function checkLegacyResponse(responseObj) {
  * @deprecated
  * @enum {number}
  */
-exports.ErrorCode = {
+const ErrorCode = {
   SUCCESS: 0,
   NO_SUCH_ELEMENT: 7,
   NO_SUCH_FRAME: 8,
@@ -603,6 +483,111 @@ exports.ErrorCode = {
   INVALID_XPATH_SELECTOR_RETURN_TYPE: 52,
   METHOD_NOT_ALLOWED: 405
 };
+
+
+const LEGACY_ERROR_CODE_TO_TYPE = new Map([
+    [ErrorCode.NO_SUCH_ELEMENT, NoSuchElementError],
+    [ErrorCode.NO_SUCH_FRAME, NoSuchFrameError],
+    [ErrorCode.UNSUPPORTED_OPERATION, UnsupportedOperationError],
+    [ErrorCode.STALE_ELEMENT_REFERENCE, StaleElementReferenceError],
+    [ErrorCode.ELEMENT_NOT_VISIBLE, ElementNotVisibleError],
+    [ErrorCode.INVALID_ELEMENT_STATE, InvalidElementStateError],
+    [ErrorCode.UNKNOWN_ERROR, WebDriverError],
+    [ErrorCode.ELEMENT_NOT_SELECTABLE, ElementNotSelectableError],
+    [ErrorCode.JAVASCRIPT_ERROR, JavascriptError],
+    [ErrorCode.XPATH_LOOKUP_ERROR, InvalidSelectorError],
+    [ErrorCode.TIMEOUT, TimeoutError],
+    [ErrorCode.NO_SUCH_WINDOW, NoSuchWindowError],
+    [ErrorCode.INVALID_COOKIE_DOMAIN, InvalidCookieDomainError],
+    [ErrorCode.UNABLE_TO_SET_COOKIE, UnableToSetCookieError],
+    [ErrorCode.UNEXPECTED_ALERT_OPEN, UnexpectedAlertOpenError],
+    [ErrorCode.NO_SUCH_ALERT, NoSuchAlertError],
+    [ErrorCode.SCRIPT_TIMEOUT, ScriptTimeoutError],
+    [ErrorCode.INVALID_ELEMENT_COORDINATES, InvalidElementCoordinatesError],
+    [ErrorCode.INVALID_SELECTOR_ERROR, InvalidSelectorError],
+    [ErrorCode.SESSION_NOT_CREATED, SessionNotCreatedError],
+    [ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS, MoveTargetOutOfBoundsError],
+    [ErrorCode.INVALID_XPATH_SELECTOR, InvalidSelectorError],
+    [ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPE, InvalidSelectorError],
+    [ErrorCode.METHOD_NOT_ALLOWED, UnsupportedOperationError]]);
+
+
+const ERROR_CODE_TO_TYPE = new Map([
+    ['unknown error', WebDriverError],
+    ['element not selectable', ElementNotSelectableError],
+    ['element not visible', ElementNotVisibleError],
+    ['invalid argument', InvalidArgumentError],
+    ['invalid cookie domain', InvalidCookieDomainError],
+    ['invalid element coordinates', InvalidElementCoordinatesError],
+    ['invalid element state', InvalidElementStateError],
+    ['invalid selector', InvalidSelectorError],
+    ['invalid session id', InvalidSessionIdError],
+    ['javascript error', JavascriptError],
+    ['move target out of bounds', MoveTargetOutOfBoundsError],
+    ['no such alert', NoSuchAlertError],
+    ['no such element', NoSuchElementError],
+    ['no such frame', NoSuchFrameError],
+    ['no such window', NoSuchWindowError],
+    ['script timeout', ScriptTimeoutError],
+    ['session not created', SessionNotCreatedError],
+    ['stale element reference', StaleElementReferenceError],
+    ['timeout', TimeoutError],
+    ['unable to set cookie', UnableToSetCookieError],
+    ['unable to capture screen', UnableToCaptureScreenError],
+    ['unexpected alert open', UnexpectedAlertOpenError],
+    ['unknown command', UnknownCommandError],
+    ['unknown method', UnknownMethodError],
+    ['unsupported operation', UnsupportedOperationError]]);
+
+
+/**
+ * Checks a response object from a server that adheres to the W3C WebDriver
+ * protocol.
+ * @param {*} data The response data to check.
+ * @return {*} The response data if it was not an encoded error.
+ * @throws {WebDriverError} the decoded error, if present in the data object.
+ * @see https://w3c.github.io/webdriver/webdriver-spec.html#protocol
+ */
+function checkResponse(data) {
+  if (data && typeof data.error === 'string') {
+    let ctor = ERROR_CODE_TO_TYPE.get(data.error) || WebDriverError;
+    throw new ctor(data.message);
+  }
+  return data;
+}
+
+
+/**
+ * Checks a legacy response from the Selenium 2.0 wire protocol for an error.
+ * @param {*} responseObj the response object to check.
+ * @return {*} responseObj the original response if it does not define an error.
+ * @throws {WebDriverError} if the response object defines an error.
+ */
+function checkLegacyResponse(responseObj) {
+  // Handle the legacy Selenium error response format.
+  if (responseObj
+      && typeof responseObj === 'object'
+      && typeof responseObj['status'] === 'number'
+      && responseObj['status'] !== 0) {
+    let status = responseObj['status'];
+    let ctor = LEGACY_ERROR_CODE_TO_TYPE.get(status) || WebDriverError;
+
+    let value = responseObj['value'];
+
+    if (!value || typeof value !== 'object') {
+      throw new ctor(value + '');
+    } else {
+      throw new ctor(value['message'] + '');
+    }
+  }
+  return responseObj;
+}
+
+
+// PUBLIC API
+
+
+exports.ErrorCode = ErrorCode;
 
 exports.WebDriverError = WebDriverError;
 exports.ElementNotSelectableError = ElementNotSelectableError;

@@ -78,7 +78,7 @@ describe('selenium-webdriver/http/util', function() {
         throw Error('expected a failure');
       }, function(err) {
         assert.ok(err instanceof error.WebDriverError);
-        assert.equal(err.code, 'unknown error');
+        assert.equal(err.code, error.WebDriverError.code);
         assert.equal(err.message, value);
       });
     });
@@ -103,7 +103,7 @@ describe('selenium-webdriver/http/util', function() {
         throw Error('expected a failure');
       }, function(err) {
         assert.ok(err instanceof error.WebDriverError);
-        assert.equal(err.code, 'unknown error');
+        assert.equal(err.code, error.WebDriverError.code);
         assert.equal(err.message, value);
       });
     });
