@@ -54,9 +54,15 @@ const CLIENT_PATH = isDevMode
 
 
 /** @const */
-const LIBRARY_DIR = process.platform === 'darwin'
-    ? path.join('/Users', process.env['USER'], 'Library/Safari')
-    : path.join(process.env['APPDATA'], 'Apple Computer', 'Safari');
+const LIBRARY_DIR = (function() {
+  if (process.platform === 'darwin') {
+    return path.join('/Users', process.env['USER'], 'Library/Safari');
+  } else if (process.platform === 'win32') {
+    return path.join(process.env['APPDATA'], 'Apple Computer', 'Safari');
+  } else {
+    return '/dev/null';
+  }
+})();
 
 
 /** @const */
