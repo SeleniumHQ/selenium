@@ -128,6 +128,7 @@ namespace OpenQA.Selenium.IE
         private const string ForceShellWindowsApiCapability = "ie.forceShellWindowsApi";
         private const string ValidateCookieDocumentTypeCapability = "ie.validateCookieDocumentType";
         private const string FileUploadDialogTimeoutCapability = "ie.fileUploadDialogTimeout";
+        private const string EnableFullPageScreenshotCapability = "ie.enableFullPageScreenshot";
 
         private bool ignoreProtectedModeSettings;
         private bool ignoreZoomLevel;
@@ -139,6 +140,7 @@ namespace OpenQA.Selenium.IE
         private bool usePerProcessProxy;
         private bool ensureCleanSession;
         private bool validateCookieDocumentType = true;
+        private bool enableFullPageScreenshot = true;
         private TimeSpan browserAttachTimeout = TimeSpan.MinValue;
         private TimeSpan fileUploadDialogTimeout = TimeSpan.MinValue;
         private string initialBrowserUrl = string.Empty;
@@ -341,6 +343,16 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to enable full-page screenshots for
+        /// the IE driver. Defaults to <see langword="true"/>.
+        /// </summary>
+        public bool EnableFullPageScreenshot
+        {
+            get { return this.enableFullPageScreenshot; }
+            set { this.enableFullPageScreenshot = value; }
+        }
+
+        /// <summary>
         /// Provides a means to add additional capabilities not yet added as type safe options
         /// for the Internet Explorer driver.
         /// </summary>
@@ -371,7 +383,8 @@ namespace OpenQA.Selenium.IE
                 capabilityName == EnsureCleanSessionCapability ||
                 capabilityName == ValidateCookieDocumentTypeCapability ||
                 capabilityName == CapabilityType.PageLoadStrategy ||
-                capabilityName == FileUploadDialogTimeoutCapability)
+                capabilityName == FileUploadDialogTimeoutCapability ||
+                capabilityName == EnableFullPageScreenshotCapability)
             {
                 string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use that instead.", capabilityName);
                 throw new ArgumentException(message, "capabilityName");
@@ -494,6 +507,11 @@ namespace OpenQA.Selenium.IE
             if (!this.validateCookieDocumentType)
             {
                 capabilities.SetCapability(ValidateCookieDocumentTypeCapability, false);
+            }
+
+            if (!this.enableFullPageScreenshot)
+            {
+                capabilities.SetCapability(EnableFullPageScreenshotCapability, false);
             }
 
             foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
