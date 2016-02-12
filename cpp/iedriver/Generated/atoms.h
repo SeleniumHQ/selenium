@@ -8829,12 +8829,14 @@ const wchar_t* const GET_ATTRIBUTE[] = {
     L"(a))throw new sa(15,\"Element is not selectable\");c=\"selected\";d=a.",
     L"type&&a.type.toLowerCase();if(\"checkbox\"==d||\"radio\"==d)c=\"checke",
     L"d\";return ac(a,c)?\"true\":null}var e=V(a,\"A\");if(V(a,\"IMG\")&&\"s",
-    L"rc\"==d||e&&\"href\"==d)return(c=bc(a,d))&&(c=ac(a,d)),c;e=nc[b]||b;if",
-    L"(0<=ma(oc,d))return(c=null!==bc(a,b)||ac(a,e))?\"true\":null;var f;try",
-    L"{f=ac(a,e)}catch(h){}null==\nf||da(f)?c=bc(a,b):c=f;return null!=c?c.t",
-    L"oString():null});; return this._.apply(null,arguments);}.apply({naviga",
-    L"tor:typeof window!=undefined?window.navigator:null,document:typeof win",
-    L"dow!=undefined?window.document:null}, arguments);}",
+    L"rc\"==d||e&&\"href\"==d)return(c=bc(a,d))&&(c=ac(a,d)),c;if(\"spellche",
+    L"ck\"==d){c=bc(a,d);if(null!==c){if(\"false\"==c.toLowerCase())return\"",
+    L"false\";if(\"true\"==c.toLowerCase())return\"true\"}return ac(a,\nd)+",
+    L"\"\"}e=nc[b]||b;if(0<=ma(oc,d))return(c=null!==bc(a,b)||ac(a,e))?\"tru",
+    L"e\":null;var f;try{f=ac(a,e)}catch(h){}null==f||da(f)?c=bc(a,b):c=f;re",
+    L"turn null!=c?c.toString():null});; return this._.apply(null,arguments)",
+    L";}.apply({navigator:typeof window!=undefined?window.navigator:null,doc",
+    L"ument:typeof window!=undefined?window.document:null}, arguments);}",
     NULL
 };
 

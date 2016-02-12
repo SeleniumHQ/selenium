@@ -9,6 +9,15 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.52.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+ * Updates to JavaScript automation atoms.
+ * (on behalf of Anton Usmansky) Added ie.enableFullPageScreenshot capability
+   to allow users to create screenshots of only the current view port. The
+   capability defaults to true, which preserves the original behavior of 
+   resizing the browser window and taking a screenshot of the full page.
+
 v2.51.0.0
 =========
  * Release to synchronize with release of Selenium project.
