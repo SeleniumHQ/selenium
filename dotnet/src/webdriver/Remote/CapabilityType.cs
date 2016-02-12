@@ -94,6 +94,11 @@ namespace OpenQA.Selenium.Remote
         public static readonly string LoggingPreferences = "loggingPrefs";
 
         /// <summary>
+        /// Capability name used to disable the check for overlapping elements.
+        /// </summary>
+        public static readonly string DisableOverlappedElementCheck = "overlappingCheckDisabled";
+
+        /// <summary>
         /// Capability name used to enable the profiling log for the session.
         /// </summary>
         public static readonly string EnableProfiling = "webdriver.logging.profiler.enabled";
