@@ -1,3 +1,13 @@
+v2.52.0
+=======
+ * Updated Firefox driver to include ability to disable overlapping element
+   check. This includes a new constant for the name of the capability.
+ * Provided an implementation of the local-end logging API.
+ * Provided type-safe option to allow disabling of full-page screenshots when
+   using the IE driver.
+ * (on behalf of Glib Briia) Updated support library's SelectElement class to
+   better handle <select multiple='multiple'> elements.
+
 v2.51.0
 =======
  * Updated Firefox driver which includes fixes for the clicking in overlapped
