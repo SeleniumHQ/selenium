@@ -687,7 +687,6 @@ namespace :node do
         " --resource=build/cpp/i386/libnoblur.so:firefox/i386/libnoblur.so" <<
         " --resource=build/javascript/firefox-driver/webdriver.xpi:firefox/webdriver.xpi" <<
         " --resource=build/javascript/safari-driver/client.js:safari/client.js" <<
-        " --resource=third_party/closure/LICENSE:goog/LICENSE" <<
         " --resource=common/src/web/:test/data/" <<
         " --exclude_resource=common/src/web/Bin" <<
         " --exclude_resource=.gitignore" <<
