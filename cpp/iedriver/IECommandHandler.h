@@ -52,6 +52,7 @@
 #define FORCE_SHELL_WINDOWS_API_CAPABILITY "ie.forceShellWindowsApi"
 #define VALIDATE_COOKIE_DOCUMENT_TYPE_CAPABILITY "ie.validateCookieDocumentType"
 #define FILE_UPLOAD_DIALOG_TIMEOUT_CAPABILITY "ie.fileUploadDialogTimeout"
+#define RESIZE_ON_SCREENSHOT_CAPABILITY "ie.resizeOnScreenshot"
 
 using namespace std;
 

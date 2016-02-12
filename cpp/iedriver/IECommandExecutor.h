@@ -196,6 +196,13 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
     this->file_upload_dialog_timeout_ = file_upload_dialog_timeout;
   }
 
+  bool resize_on_screenshot(void) const {
+    return this->resize_on_screenshot_;
+  }
+  void set_resize_on_screenshot(const bool resize_on_screenshot) {
+    this->resize_on_screenshot_ = resize_on_screenshot;
+  }
+
   ElementFinder element_finder(void) const { return this->element_finder_; }
   InputManager* input_manager(void) const { return this->input_manager_; }
   ProxyManager* proxy_manager(void) const { return this->proxy_manager_; }
@@ -248,6 +255,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   bool validate_cookie_document_type_;
   std::string page_load_strategy_;
   int file_upload_dialog_timeout_;
+  bool resize_on_screenshot_;
 
   Command current_command_;
   std::string serialized_response_;
