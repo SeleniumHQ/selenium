@@ -752,7 +752,7 @@ public class ExpectedConditionsTest {
     when(mockElement.findElements(By.cssSelector(testSelector)))
       .thenReturn(Arrays.asList(mockNestedElement));
     when(mockElement.findElement(By.cssSelector(testSelector))).thenReturn(mockNestedElement);
-    when(mockElement.findElements(By.cssSelector(testSelector))).thenReturn(Arrays.asList(mockElement));
+    when(mockNestedElement.isDisplayed()).thenReturn(true);
     wait.until(visibilityOfNestedElementsLocatedBy(mockElement, By.cssSelector(testSelector)));
   }
 
@@ -768,10 +768,12 @@ public class ExpectedConditionsTest {
     String testSelector = "testSelector";
     String testNestedSelector = "testNestedSelector";
     when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
-    when(mockElement.findElements(By.cssSelector(testNestedSelector)))
-      .thenReturn(Arrays.asList(mockNestedElement));
+    when(mockDriver.findElements(By.cssSelector(testSelector))).thenReturn(Arrays.asList(mockElement));
+
+    when(mockElement.findElements(By.cssSelector(testNestedSelector))).thenReturn(Arrays.asList(mockNestedElement));
     when(mockElement.findElement(By.cssSelector(testNestedSelector))).thenReturn(mockNestedElement);
-    when(mockElement.findElements(By.cssSelector(testSelector))).thenReturn(Arrays.asList(mockElement));
+
+    when(mockNestedElement.isDisplayed()).thenReturn(true);
     wait.until(visibilityOfNestedElementsLocatedBy(By.cssSelector(testSelector),
                                                    By.cssSelector(testNestedSelector)));
   }

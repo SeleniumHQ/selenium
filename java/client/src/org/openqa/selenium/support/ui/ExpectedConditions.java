@@ -36,8 +36,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Canned {@link ExpectedCondition}s which are generally useful within webdriver
- * tests.
+ * Canned {@link ExpectedCondition}s which are generally useful within webdriver tests.
  */
 public class ExpectedConditions {
 
@@ -71,8 +70,7 @@ public class ExpectedConditions {
   }
 
   /**
-   * An expectation for checking that the title contains a case-sensitive
-   * substring
+   * An expectation for checking that the title contains a case-sensitive substring
    *
    * @param title the fragment of title expected
    * @return true when the title matches, false otherwise
@@ -162,20 +160,21 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        return String.format("url to match the regex \"%s\". Current url: \"%s\"", regex, currentUrl);
+        return String
+          .format("url to match the regex \"%s\". Current url: \"%s\"", regex, currentUrl);
       }
     };
   }
 
   /**
-   * An expectation for checking that an element is present on the DOM of a
-   * page. This does not necessarily mean that the element is visible.
+   * An expectation for checking that an element is present on the DOM of a page. This does not
+   * necessarily mean that the element is visible.
    *
    * @param locator used to find the element
    * @return the WebElement once it is located
    */
   public static ExpectedCondition<WebElement> presenceOfElementLocated(
-      final By locator) {
+    final By locator) {
     return new ExpectedCondition<WebElement>() {
       @Override
       public WebElement apply(WebDriver driver) {
@@ -190,15 +189,15 @@ public class ExpectedConditions {
   }
 
   /**
-   * An expectation for checking that an element is present on the DOM of a page
-   * and visible. Visibility means that the element is not only displayed but
-   * also has a height and width that is greater than 0.
+   * An expectation for checking that an element is present on the DOM of a page and visible.
+   * Visibility means that the element is not only displayed but also has a height and width that is
+   * greater than 0.
    *
    * @param locator used to find the element
    * @return the WebElement once it is located and visible
    */
   public static ExpectedCondition<WebElement> visibilityOfElementLocated(
-      final By locator) {
+    final By locator) {
     return new ExpectedCondition<WebElement>() {
       @Override
       public WebElement apply(WebDriver driver) {
@@ -217,21 +216,21 @@ public class ExpectedConditions {
   }
 
   /**
-   * An expectation for checking that all elements present on the web page that
-   * match the locator are visible. Visibility means that the elements are not
-   * only displayed but also have a height and width that is greater than 0.
+   * An expectation for checking that all elements present on the web page that match the locator
+   * are visible. Visibility means that the elements are not only displayed but also have a height
+   * and width that is greater than 0.
    *
    * @param locator used to find the element
    * @return the list of WebElements once they are located
    */
   public static ExpectedCondition<List<WebElement>> visibilityOfAllElementsLocatedBy(
-      final By locator) {
+    final By locator) {
     return new ExpectedCondition<List<WebElement>>() {
       @Override
       public List<WebElement> apply(WebDriver driver) {
         List<WebElement> elements = findElements(locator, driver);
-        for(WebElement element : elements){
-          if(!element.isDisplayed()){
+        for (WebElement element : elements) {
+          if (!element.isDisplayed()) {
             return null;
           }
         }
@@ -246,20 +245,20 @@ public class ExpectedConditions {
   }
 
   /**
-   * An expectation for checking that all elements present on the web page that
-   * match the locator are visible. Visibility means that the elements are not
-   * only displayed but also have a height and width that is greater than 0.
+   * An expectation for checking that all elements present on the web page that match the locator
+   * are visible. Visibility means that the elements are not only displayed but also have a height
+   * and width that is greater than 0.
    *
    * @param elements list of WebElements
    * @return the list of WebElements once they are located
    */
   public static ExpectedCondition<List<WebElement>> visibilityOfAllElements(
-      final List<WebElement> elements) {
+    final List<WebElement> elements) {
     return new ExpectedCondition<List<WebElement>>() {
       @Override
       public List<WebElement> apply(WebDriver driver) {
-        for(WebElement element : elements){
-          if(!element.isDisplayed()){
+        for (WebElement element : elements) {
+          if (!element.isDisplayed()) {
             return null;
           }
         }
@@ -274,15 +273,15 @@ public class ExpectedConditions {
   }
 
   /**
-   * An expectation for checking that an element, known to be present on the DOM
-   * of a page, is visible. Visibility means that the element is not only
-   * displayed but also has a height and width that is greater than 0.
+   * An expectation for checking that an element, known to be present on the DOM of a page, is
+   * visible. Visibility means that the element is not only displayed but also has a height and
+   * width that is greater than 0.
    *
    * @param element the WebElement
    * @return the (same) WebElement once it is visible
    */
   public static ExpectedCondition<WebElement> visibilityOf(
-      final WebElement element) {
+    final WebElement element) {
     return new ExpectedCondition<WebElement>() {
       @Override
       public WebElement apply(WebDriver driver) {
@@ -304,14 +303,13 @@ public class ExpectedConditions {
   }
 
   /**
-   * An expectation for checking that there is at least one element present on a
-   * web page.
+   * An expectation for checking that there is at least one element present on a web page.
    *
    * @param locator used to find the element
    * @return the list of WebElements once they are located
    */
   public static ExpectedCondition<List<WebElement>> presenceOfAllElementsLocatedBy(
-      final By locator) {
+    final By locator) {
     return new ExpectedCondition<List<WebElement>>() {
       @Override
       public List<WebElement> apply(WebDriver driver) {
@@ -330,11 +328,11 @@ public class ExpectedConditions {
    * An expectation for checking if the given text is present in the specified element.
    *
    * @param element the WebElement
-   * @param text to be present in the element
+   * @param text    to be present in the element
    * @return true once the element contains the given text
    */
   public static ExpectedCondition<Boolean> textToBePresentInElement(
-      final WebElement element, final String text) {
+    final WebElement element, final String text) {
 
     return new ExpectedCondition<Boolean>() {
       @Override
@@ -355,31 +353,30 @@ public class ExpectedConditions {
   }
 
   /**
-   * An expectation for checking if the given text is present in the element that matches
-   * the given locator.
+   * An expectation for checking if the given text is present in the element that matches the given
+   * locator.
    *
    * @param locator used to find the element
-   * @param text to be present in the element found by the locator
+   * @param text    to be present in the element found by the locator
    * @return the WebElement once it is located and visible
-   *
    * @deprecated Use {@link #textToBePresentInElementLocated(By, String)} instead
    */
   @Deprecated
   public static ExpectedCondition<Boolean> textToBePresentInElement(
-      final By locator, final String text) {
+    final By locator, final String text) {
     return textToBePresentInElementLocated(locator, text);
   }
 
   /**
-   * An expectation for checking if the given text is present in the element that matches
-   * the given locator.
+   * An expectation for checking if the given text is present in the element that matches the given
+   * locator.
    *
    * @param locator used to find the element
-   * @param text to be present in the element found by the locator
+   * @param text    to be present in the element found by the locator
    * @return true once the first element located by locator contains the given text
    */
   public static ExpectedCondition<Boolean> textToBePresentInElementLocated(
-      final By locator, final String text) {
+    final By locator, final String text) {
 
     return new ExpectedCondition<Boolean>() {
       @Override
@@ -395,21 +392,21 @@ public class ExpectedConditions {
       @Override
       public String toString() {
         return String.format("text ('%s') to be present in element found by %s",
-            text, locator);
+                             text, locator);
       }
     };
   }
 
   /**
-   * An expectation for checking if the given text is present in the specified
-   * elements value attribute.
+   * An expectation for checking if the given text is present in the specified elements value
+   * attribute.
    *
    * @param element the WebElement
-   * @param text to be present in the element's value attribute
+   * @param text    to be present in the element's value attribute
    * @return true once the element's value attribute contains the given text
    */
   public static ExpectedCondition<Boolean> textToBePresentInElementValue(
-      final WebElement element, final String text) {
+    final WebElement element, final String text) {
 
     return new ExpectedCondition<Boolean>() {
       @Override
@@ -434,16 +431,16 @@ public class ExpectedConditions {
   }
 
   /**
-   * An expectation for checking if the given text is present in the specified
-   * elements value attribute.
+   * An expectation for checking if the given text is present in the specified elements value
+   * attribute.
    *
    * @param locator used to find the element
-   * @param text to be present in the value attribute of the element found by the locator
-   * @return true once the value attribute of the first element located by locator contains
-   * the given text
+   * @param text    to be present in the value attribute of the element found by the locator
+   * @return true once the value attribute of the first element located by locator contains the
+   * given text
    */
   public static ExpectedCondition<Boolean> textToBePresentInElementValue(
-      final By locator, final String text) {
+    final By locator, final String text) {
 
     return new ExpectedCondition<Boolean>() {
       @Override
@@ -463,21 +460,20 @@ public class ExpectedConditions {
       @Override
       public String toString() {
         return String.format("text ('%s') to be the value of element located by %s",
-            text, locator);
+                             text, locator);
       }
     };
   }
 
   /**
-   * An expectation for checking whether the given frame is available to switch
-   * to. <p> If the frame is available it switches the given driver to the
-   * specified frame.
+   * An expectation for checking whether the given frame is available to switch to. <p> If the frame
+   * is available it switches the given driver to the specified frame.
    *
    * @param frameLocator used to find the frame (id or name)
    * @return WebDriver instance after frame has been switched
    */
   public static ExpectedCondition<WebDriver> frameToBeAvailableAndSwitchToIt(
-      final String frameLocator) {
+    final String frameLocator) {
     return new ExpectedCondition<WebDriver>() {
       @Override
       public WebDriver apply(WebDriver driver) {
@@ -496,15 +492,14 @@ public class ExpectedConditions {
   }
 
   /**
-   * An expectation for checking whether the given frame is available to switch
-   * to. <p> If the frame is available it switches the given driver to the
-   * specified frame.
+   * An expectation for checking whether the given frame is available to switch to. <p> If the frame
+   * is available it switches the given driver to the specified frame.
    *
    * @param locator used to find the frame
    * @return WebDriver instance after frame has been switched
    */
   public static ExpectedCondition<WebDriver> frameToBeAvailableAndSwitchToIt(
-      final By locator) {
+    final By locator) {
     return new ExpectedCondition<WebDriver>() {
       @Override
       public WebDriver apply(WebDriver driver) {
@@ -523,15 +518,14 @@ public class ExpectedConditions {
   }
 
   /**
-   * An expectation for checking whether the given frame is available to switch
-   * to. <p> If the frame is available it switches the given driver to the
-   * specified frameIndex.
+   * An expectation for checking whether the given frame is available to switch to. <p> If the frame
+   * is available it switches the given driver to the specified frameIndex.
    *
    * @param frameLocator used to find the frame (index)
    * @return WebDriver instance after frame has been switched
    */
   public static ExpectedCondition<WebDriver> frameToBeAvailableAndSwitchToIt(
-      final int frameLocator) {
+    final int frameLocator) {
     return new ExpectedCondition<WebDriver>() {
       @Override
       public WebDriver apply(WebDriver driver) {
@@ -550,15 +544,14 @@ public class ExpectedConditions {
   }
 
   /**
-   * An expectation for checking whether the given frame is available to switch
-   * to. <p> If the frame is available it switches the given driver to the
-   * specified webelement.
+   * An expectation for checking whether the given frame is available to switch to. <p> If the frame
+   * is available it switches the given driver to the specified webelement.
    *
    * @param frameLocator used to find the frame (webelement)
    * @return WebDriver instance after frame has been switched
    */
   public static ExpectedCondition<WebDriver> frameToBeAvailableAndSwitchToIt(
-      final WebElement frameLocator) {
+    final WebElement frameLocator) {
     return new ExpectedCondition<WebDriver>() {
       @Override
       public WebDriver apply(WebDriver driver) {
@@ -577,14 +570,13 @@ public class ExpectedConditions {
   }
 
   /**
-   * An expectation for checking that an element is either invisible or not
-   * present on the DOM.
+   * An expectation for checking that an element is either invisible or not present on the DOM.
    *
    * @param locator used to find the element
    * @return true if the element is not displayed or the element doesn't exist or stale element
    */
   public static ExpectedCondition<Boolean> invisibilityOfElementLocated(
-      final By locator) {
+    final By locator) {
     return new ExpectedCondition<Boolean>() {
       @Override
       public Boolean apply(WebDriver driver) {
@@ -609,15 +601,15 @@ public class ExpectedConditions {
   }
 
   /**
-   * An expectation for checking that an element with text is either invisible
-   * or not present on the DOM.
+   * An expectation for checking that an element with text is either invisible or not present on the
+   * DOM.
    *
    * @param locator used to find the element
-   * @param text of the element
+   * @param text    of the element
    * @return true if no such element, stale element or displayed text not equal that provided
    */
   public static ExpectedCondition<Boolean> invisibilityOfElementWithText(
-      final By locator, final String text) {
+    final By locator, final String text) {
     return new ExpectedCondition<Boolean>() {
       @Override
       public Boolean apply(WebDriver driver) {
@@ -638,24 +630,23 @@ public class ExpectedConditions {
       @Override
       public String toString() {
         return String.format("element containing '%s' to no longer be visible: %s",
-            text, locator);
+                             text, locator);
       }
     };
   }
 
   /**
-   * An expectation for checking an element is visible and enabled such that you
-   * can click it.
+   * An expectation for checking an element is visible and enabled such that you can click it.
    *
    * @param locator used to find the element
    * @return the WebElement once it is located and clickable (visible and enabled)
    */
   public static ExpectedCondition<WebElement> elementToBeClickable(
-      final By locator) {
+    final By locator) {
     return new ExpectedCondition<WebElement>() {
 
       public ExpectedCondition<WebElement> visibilityOfElementLocated =
-          ExpectedConditions.visibilityOfElementLocated(locator);
+        ExpectedConditions.visibilityOfElementLocated(locator);
 
       @Override
       public WebElement apply(WebDriver driver) {
@@ -679,18 +670,17 @@ public class ExpectedConditions {
   }
 
   /**
-   * An expectation for checking an element is visible and enabled such that you
-   * can click it.
+   * An expectation for checking an element is visible and enabled such that you can click it.
    *
    * @param element the WebElement
    * @return the (same) WebElement once it is clickable (visible and enabled)
    */
   public static ExpectedCondition<WebElement> elementToBeClickable(
-      final WebElement element) {
+    final WebElement element) {
     return new ExpectedCondition<WebElement>() {
 
       public ExpectedCondition<WebElement> visibilityOfElement =
-          ExpectedConditions.visibilityOf(element);
+        ExpectedConditions.visibilityOf(element);
 
       @Override
       public WebElement apply(WebDriver driver) {
@@ -717,11 +707,10 @@ public class ExpectedConditions {
    * Wait until an element is no longer attached to the DOM.
    *
    * @param element The element to wait for.
-   * @return false is the element is still attached to the DOM, true
-   *         otherwise.
+   * @return false is the element is still attached to the DOM, true otherwise.
    */
   public static ExpectedCondition<Boolean> stalenessOf(
-      final WebElement element) {
+    final WebElement element) {
     return new ExpectedCondition<Boolean>() {
       @Override
       public Boolean apply(WebDriver ignored) {
@@ -744,18 +733,17 @@ public class ExpectedConditions {
   /**
    * Wrapper for a condition, which allows for elements to update by redrawing.
    *
-   * This works around the problem of conditions which have two parts: find an
-   * element and then check for some condition on it. For these conditions it is
-   * possible that an element is located and then subsequently it is redrawn on
-   * the client. When this happens a {@link StaleElementReferenceException} is
-   * thrown when the second part of the condition is checked.
+   * This works around the problem of conditions which have two parts: find an element and then
+   * check for some condition on it. For these conditions it is possible that an element is located
+   * and then subsequently it is redrawn on the client. When this happens a {@link
+   * StaleElementReferenceException} is thrown when the second part of the condition is checked.
    *
    * @param condition ExpectedCondition to wrap
-   * @param <T> return type of the condition provided
+   * @param <T>       return type of the condition provided
    * @return the result of the provided condition
    */
   public static <T> ExpectedCondition<T> refreshed(
-      final ExpectedCondition<T> condition) {
+    final ExpectedCondition<T> condition) {
     return new ExpectedCondition<T>() {
       @Override
       public T apply(WebDriver driver) {
@@ -786,7 +774,7 @@ public class ExpectedConditions {
   /**
    * An expectation for checking if the given element is selected.
    *
-   * @param element WebElement to be selected
+   * @param element  WebElement to be selected
    * @param selected boolean state of the selection state of the element
    * @return true once the element's selection stated is that of selected
    */
@@ -825,7 +813,7 @@ public class ExpectedConditions {
       @Override
       public String toString() {
         return String.format("element found by %s to %sbe selected",
-            locator, (selected ? "" : "not "));
+                             locator, (selected ? "" : "not "));
       }
     };
   }
@@ -877,9 +865,8 @@ public class ExpectedConditions {
   /**
    * An expectation with the logical opposite condition of the given condition.
    *
-   * Note that if the Condition your are inverting throws an exception that is
-   * caught by the Ignored Exceptions, the inversion will not take place and lead
-   * to confusing results.
+   * Note that if the Condition your are inverting throws an exception that is caught by the Ignored
+   * Exceptions, the inversion will not take place and lead to confusing results.
    *
    * @param condition ExpectedCondition to be inverted
    * @return true once the condition is satisfied
@@ -900,11 +887,11 @@ public class ExpectedConditions {
   }
 
   /**
-   * Looks up an element. Logs and re-throws WebDriverException if thrown. <p/>
-   * Method exists to gather data for http://code.google.com/p/selenium/issues/detail?id=1800
+   * Looks up an element. Logs and re-throws WebDriverException if thrown. <p/> Method exists to
+   * gather data for http://code.google.com/p/selenium/issues/detail?id=1800
    *
    * @param driver WebDriver
-   * @param by locator
+   * @param by     locator
    * @return WebElement found
    */
   private static WebElement findElement(By by, WebDriver driver) {
@@ -914,27 +901,26 @@ public class ExpectedConditions {
       throw e;
     } catch (WebDriverException e) {
       log.log(Level.WARNING,
-          String.format("WebDriverException thrown by findElement(%s)", by), e);
+              String.format("WebDriverException thrown by findElement(%s)", by), e);
       throw e;
     }
   }
 
   /**
-   * @see #findElement(By, WebDriver)
    * @param driver WebDriver
-   * @param by locator
+   * @param by     locator
    * @return List of WebElements found
+   * @see #findElement(By, WebDriver)
    */
   private static List<WebElement> findElements(By by, WebDriver driver) {
     try {
       return driver.findElements(by);
     } catch (WebDriverException e) {
       log.log(Level.WARNING,
-          String.format("WebDriverException thrown by findElement(%s)", by), e);
+              String.format("WebDriverException thrown by findElement(%s)", by), e);
       throw e;
     }
   }
-
 
 
   /**
@@ -954,7 +940,7 @@ public class ExpectedConditions {
       public Boolean apply(WebDriver driver) {
         WebElement element = driver.findElement(locator);
         currentValue = element.getAttribute(attribute);
-        if (currentValue == null) {
+        if (currentValue == null||currentValue.isEmpty()) {
           currentValue = element.getCssValue(attribute);
         }
         return value.equals(currentValue);
@@ -1000,7 +986,7 @@ public class ExpectedConditions {
    * it
    *
    * @param locator used to find the element
-   * @param pattern   used as expected text matcher pattern
+   * @param pattern used as expected text matcher pattern
    * @return Boolean true when element has text value containing @value
    */
   public static ExpectedCondition<Boolean> textMatches(final By locator, final Pattern pattern) {
@@ -1019,7 +1005,9 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        return String.format("text to match pattern \"%s\". Current text: \"%s\"", pattern.pattern(), currentValue);
+        return String
+          .format("text to match pattern \"%s\". Current text: \"%s\"", pattern.pattern(),
+                  currentValue);
       }
     };
   }
@@ -1256,7 +1244,9 @@ public class ExpectedConditions {
           exists = webDriver.findElement(locator).findElements(sub_locator).size() > 0;
           displayed =
             webDriver.findElement(locator).findElement(sub_locator).isDisplayed();
-        } catch (Exception e) {/**/}
+        } catch (Exception e) {
+          int i = 0;
+        }
         return (exists && displayed) ?
                webDriver.findElement(locator).findElements(sub_locator) :
                null;
