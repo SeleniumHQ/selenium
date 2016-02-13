@@ -60,7 +60,7 @@ public class AppServerTest {
 
   @Before
   public void startServer() throws Throwable {
-    server = new WebbitAppServer();
+    server = new JettyAppServer();
     server.start();
   }
 

@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.testing.InProject;
 import org.seleniumhq.jetty9.http.HttpVersion;
+import org.seleniumhq.jetty9.http.MimeTypes;
 import org.seleniumhq.jetty9.server.Connector;
 import org.seleniumhq.jetty9.server.HttpConfiguration;
 import org.seleniumhq.jetty9.server.HttpConnectionFactory;
@@ -35,10 +36,9 @@ import org.seleniumhq.jetty9.server.SslConnectionFactory;
 import org.seleniumhq.jetty9.server.handler.AllowSymLinkAliasChecker;
 import org.seleniumhq.jetty9.server.handler.ContextHandler.ApproveAliases;
 import org.seleniumhq.jetty9.server.handler.ContextHandlerCollection;
-import org.seleniumhq.jetty9.servlet.DefaultServlet;
+import org.seleniumhq.jetty9.server.handler.ResourceHandler;
 import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 import org.seleniumhq.jetty9.servlet.ServletHolder;
-import org.seleniumhq.jetty9.servlets.MultiPartFilter;
 import org.seleniumhq.jetty9.util.ssl.SslContextFactory;
 
 import java.io.File;
@@ -104,8 +104,6 @@ public class JettyAppServer implements AppServer {
     addServlet(defaultContext, "/page/*", PageServlet.class);
 
     addServlet(defaultContext, "/manifest/*", ManifestServlet.class);
-    addServlet(defaultContext, "*.appcache", ManifestServlet.class);
-    addServlet(jsContext, "*.appcache", ManifestServlet.class);
     // Serves every file under DEFAULT_CONTEXT_PATH/utf8 as UTF-8 to the browser
     addServlet(defaultContext, "/utf8/*", Utf8Servlet.class);
 
@@ -258,16 +256,21 @@ public class JettyAppServer implements AppServer {
 
   protected ServletContextHandler addResourceHandler(String contextPath, File resourceBase) {
     ServletContextHandler context = new ServletContextHandler();
-    context.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", "true");
-    context.setInitParameter("org.eclipse.jetty.servlet.Default.aliases", "true");
-    context.setInitParameter("org.eclipse.jetty.servlet.Default.pathInfoOnly", "true");
+
+    ResourceHandler staticResource = new ResourceHandler();
+    staticResource.setDirectoriesListed(true);
+    staticResource.setWelcomeFiles(new String[] { "index.html" });
+    staticResource.setResourceBase(resourceBase.getAbsolutePath());
+    MimeTypes mimeTypes = new MimeTypes();
+    mimeTypes.addMimeMapping("appcache", "text/cache-manifest");
+    staticResource.setMimeTypes(mimeTypes);
 
     context.setContextPath(contextPath);
-    context.setResourceBase(resourceBase.getAbsolutePath());
+    context.setHandler(staticResource);
     context.setAliasChecks(ImmutableList.of(new ApproveAliases(), new AllowSymLinkAliasChecker()));
-    context.addServlet(new ServletHolder(new DefaultServlet()), "/*");
 
     handlers.addHandler(context);
+
     return context;
   }
 
