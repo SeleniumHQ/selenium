@@ -1,6 +1,6 @@
 java_library(
   name = "webserver",
-  srcs = [ 
+  srcs = [
     "AppServer.java",
 
     "BasicAuth.java",
@@ -16,17 +16,6 @@ java_library(
     "RedirectServlet.java",
     "SleepingServlet.java",
     "UploadServlet.java",
-
-    "BasicAuthHandler.java",
-    "ImprovedStaticFileHandler.java",
-    "LastPathSegmentHandler.java",
-    "PathAugmentingStaticFileHandler.java",
-    "PathForwardingHandler.java",
-    "QuitQuitQuitHandler.java",
-    "RedirectHandler.java",
-    "SleepHandler.java",
-    "UploadFileHandler.java",
-    "WebbitAppServer.java",
   ],
   deps = [
     "//javascript:calcdeps",
@@ -36,9 +25,7 @@ java_library(
     "//java/client/test/org/openqa/selenium/testing/drivers:browser",
     "//third_party/java/jetty",
     "//third_party/java/servlet:servlet-api",
-
     "//third_party/java/commons-fileupload",
-    "//third_party/java/webbit",
   ])
 
 java_binary(name = "WebServer",
