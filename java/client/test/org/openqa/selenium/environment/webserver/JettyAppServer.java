@@ -39,14 +39,18 @@ import org.seleniumhq.jetty9.server.handler.ContextHandlerCollection;
 import org.seleniumhq.jetty9.server.handler.ResourceHandler;
 import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 import org.seleniumhq.jetty9.servlet.ServletHolder;
+import org.seleniumhq.jetty9.util.resource.Resource;
 import org.seleniumhq.jetty9.util.ssl.SslContextFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.EnumSet;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class JettyAppServer implements AppServer {
 
@@ -254,10 +258,20 @@ public class JettyAppServer implements AppServer {
     context.addFilter(filter, path, EnumSet.of(dispatches));
   }
 
+  private static class ResourceHandler2 extends ResourceHandler {
+    @Override
+    protected void doDirectory(HttpServletRequest request, HttpServletResponse response, Resource resource) throws IOException {
+      String listing = resource.getListHTML(request.getRequestURI(), request.getPathInfo() != null && request.getPathInfo().lastIndexOf("/") > 0);
+      response.setContentType("text/html; charset=UTF-8");
+      response.getWriter().println(listing);
+    }
+
+  }
+
   protected ServletContextHandler addResourceHandler(String contextPath, File resourceBase) {
     ServletContextHandler context = new ServletContextHandler();
 
-    ResourceHandler staticResource = new ResourceHandler();
+    ResourceHandler staticResource = new ResourceHandler2();
     staticResource.setDirectoriesListed(true);
     staticResource.setWelcomeFiles(new String[] { "index.html" });
     staticResource.setResourceBase(resourceBase.getAbsolutePath());
