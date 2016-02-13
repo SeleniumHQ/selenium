@@ -25,7 +25,7 @@ module Selenium
 
       describe Service do
         let(:mock_process) do
-          double("ChildProcess", :io => double.as_null_object, :start => true)
+          double("ChildProcess", :io => double.as_null_object, :leader= => true, :start => true)
         end
 
         # ugh.
