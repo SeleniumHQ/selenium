@@ -117,6 +117,7 @@ module Selenium
         #
         # @param [:text, :index, :value] how How to find the option
         # @param [String] what What value to find the option by.
+        # @raise [Error::UnsupportedOperationError] if the element does not support multiple selections.
         #
         # @see Select#select_by
         #
@@ -181,7 +182,7 @@ module Selenium
             raise Error::NoSuchElementError, "cannot locate element with index: #{index.inspect}"
           end
 
-          select_options opts
+          select_option opts.first
         end
 
         def select_by_value(value)
@@ -195,6 +196,9 @@ module Selenium
         end
 
         def deselect_by_text(text)
+          unless multiple?
+            raise Error::UnsupportedOperationError, 'you may only deselect option of a multi-select'
+          end
           opts = find_by_text text
 
           if opts.empty?
@@ -205,6 +209,9 @@ module Selenium
         end
 
         def deselect_by_value(value)
+          unless multiple?
+            raise Error::UnsupportedOperationError, 'you may only deselect option of a multi-select'
+          end
           opts = find_by_value value
 
           if opts.empty?
@@ -215,13 +222,16 @@ module Selenium
         end
 
         def deselect_by_index(index)
+          unless multiple?
+            raise Error::UnsupportedOperationError, 'you may only deselect option of a multi-select'
+          end
           opts = find_by_index index
 
           if opts.empty?
             raise Error::NoSuchElementError, "cannot locate option with index: #{index}"
           end
 
-          deselect_options opts
+          deselect_option opts.first
         end
 
         private
