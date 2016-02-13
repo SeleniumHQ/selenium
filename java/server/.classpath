@@ -17,7 +17,6 @@
 	<classpathentry kind="lib" path="/third-party/java/mx4j/mx4j-tools-3.0.1.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/jcip_annotations/jcip-annotations-1.0.jar" sourcepath="/third-party/java/jcip_annotations/jcip-annotations-1.0-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/bouncycastle/bcpkix-jdk15on-1.48.jar" sourcepath="/third-party/java/bouncycastle/bcpkix-jdk15on-1.48-sources.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/webbit/webbit-0.4.14.jar" sourcepath="/third-party/java/webbit/webbit-0.4.14-src.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/netty/netty-3.5.7.Final.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/guava/guava-19.0.jar" sourcepath="/third-party/java/guava/guava-19.0-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/mockito/mockito-core-1.9.5.jar"/>

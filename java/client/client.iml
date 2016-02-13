@@ -35,7 +35,6 @@
     <orderEntry type="library" name="phantomjsdriver" level="project" />
     <orderEntry type="library" name="servlet-api" level="project" />
     <orderEntry type="library" name="testng" level="project" />
-    <orderEntry type="library" name="webbit" level="project" />
     <orderEntry type="library" name="xml-apis" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="nekohtml" level="project" />
     <orderEntry type="library" name="sac" level="project" />

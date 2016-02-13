@@ -29,7 +29,6 @@
 	<classpathentry kind="lib" path="/third-party/java/xerces/xercesImpl-2.11.0.jar" sourcepath="/third-party/java/xerces/xercesImpl-2.11.0-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/xalan/xalan-2.7.2.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/commons-fileupload/commons-fileupload-1.2.2.jar" sourcepath="/third-party/java/commons-fileupload/commons-fileupload-1.2.2-src.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/webbit/webbit-0.4.14.jar" sourcepath="/third-party/java/webbit/webbit-0.4.14-src.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/little_proxy/littleproxy-0.5.3.jar" sourcepath="/third-party/java/little_proxy/littleproxy-0.5.3-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/nekohtml/nekohtml-1.9.22.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/netty/netty-3.5.7.Final.jar"/>

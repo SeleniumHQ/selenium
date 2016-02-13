@@ -74,7 +74,6 @@ java_library(name = "tests",
     "//third_party/java/commons-io",
     "//third_party/java/junit",
     "//third_party/java/mockito",
-    "//third_party/java/webbit",
   ])
 
 java_test(name = "SmallTests",
