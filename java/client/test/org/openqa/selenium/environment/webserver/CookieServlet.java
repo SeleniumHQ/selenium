@@ -83,11 +83,13 @@ public class CookieServlet extends HttpServlet {
           String.format(RESPONSE_STRING, "Cookie deleted", name));
 
     } else if ("deleteAll".equals(action)) {
-      for (Cookie cookie : request.getCookies()) {
-        cookie.setValue("");
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+      if (request.getCookies() != null) {
+        for (Cookie cookie : request.getCookies()) {
+          cookie.setValue("");
+          cookie.setPath("/");
+          cookie.setMaxAge(0);
+          response.addCookie(cookie);
+        }
       }
       response.getOutputStream().println(
           String.format(RESPONSE_STRING, "All cookies deleted", ""));
