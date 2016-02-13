@@ -124,18 +124,17 @@ public class ReferrerTest extends JUnit4TestBase {
   public void basicHistoryNavigationWithoutAProxy() {
     testServer1.start();
 
-    String baseUrl = testServer1.getBaseUrl();
-    String page1Url = buildPage1Url(testServer1.getBaseUrl() + buildPage2Url());
-    String page2Url = buildPage2Url(testServer1.getBaseUrl() + buildPage3Url());
-    String page3Url = buildPage3Url();
+    String page1Url = buildPage1Url(testServer1, buildPage2Url(testServer1));
+    String page2Url = buildPage2Url(testServer1, buildPage3Url(testServer1));
+    String page3Url = buildPage3Url(testServer1);
 
-    performNavigation(driver, baseUrl + page1Url);
+    performNavigation(driver, page1Url);
 
     assertEquals(
         ImmutableList.of(
             new HttpRequest(page1Url, null),
-            new HttpRequest(page2Url, baseUrl + page1Url),
-            new HttpRequest(page3Url, baseUrl + page2Url)),
+            new HttpRequest(page2Url, page1Url),
+            new HttpRequest(page3Url, page2Url)),
         testServer1.getRequests());
   }
 
@@ -150,22 +149,22 @@ public class ReferrerTest extends JUnit4TestBase {
     testServer1.start();
     testServer2.start();
 
-    String page1Url = buildPage1Url(testServer2.getBaseUrl() + buildPage2Url());
-    String page2Url = buildPage2Url(testServer1.getBaseUrl() + buildPage3Url());
-    String page3Url = buildPage3Url();
+    String page1Url = buildPage1Url(testServer1, buildPage2Url(testServer2));
+    String page2Url = buildPage2Url(testServer2, buildPage3Url(testServer1));
+    String page3Url = buildPage3Url(testServer1);
 
-    performNavigation(driver, testServer1.getBaseUrl() + page1Url);
+    performNavigation(driver, page1Url);
 
     assertEquals(
         ImmutableList.of(
             new HttpRequest(page1Url, null),
-            new HttpRequest(page3Url, testServer2.getBaseUrl() + page2Url)),
+            new HttpRequest(page3Url, page2Url)),
         testServer1.getRequests());
 
     assertEquals(
         ImmutableList.of(new HttpRequest(
             page2Url,
-            testServer1.getBaseUrl() + page1Url)),
+            page1Url)),
         testServer2.getRequests());
   }
 
@@ -184,18 +183,17 @@ public class ReferrerTest extends JUnit4TestBase {
     pacFileServer.start();
     WebDriver driver = customDriverFactory.createDriver(pacFileServer.getBaseUrl());
 
-    String baseUrl = testServer1.getBaseUrl();
-    String page1Url = buildPage1Url(testServer1.getBaseUrl() + buildPage2Url());
-    String page2Url = buildPage2Url(testServer1.getBaseUrl() + buildPage3Url());
-    String page3Url = buildPage3Url();
+    String page1Url = buildPage1Url(testServer1, buildPage2Url(testServer1));
+    String page2Url = buildPage2Url(testServer1, buildPage3Url(testServer1));
+    String page3Url = buildPage3Url(testServer1);
 
-    performNavigation(driver, baseUrl + page1Url);
+    performNavigation(driver, page1Url);
 
     assertEquals(
         ImmutableList.of(
             new HttpRequest(page1Url, null),
-            new HttpRequest(page2Url, baseUrl + page1Url),
-            new HttpRequest(page3Url, baseUrl + page2Url)),
+            new HttpRequest(page2Url, page1Url),
+            new HttpRequest(page3Url, page2Url)),
         testServer1.getRequests());
   }
 
@@ -215,22 +213,22 @@ public class ReferrerTest extends JUnit4TestBase {
     pacFileServer.start();
     WebDriver driver = customDriverFactory.createDriver(pacFileServer.getBaseUrl());
 
-    String page1Url = buildPage1Url(testServer2.getBaseUrl() + buildPage2Url());
-    String page2Url = buildPage2Url(testServer1.getBaseUrl() + buildPage3Url());
-    String page3Url = buildPage3Url();
+    String page1Url = buildPage1Url(testServer1, buildPage2Url(testServer2));
+    String page2Url = buildPage2Url(testServer2, buildPage3Url(testServer1));
+    String page3Url = buildPage3Url(testServer1);
 
-    performNavigation(driver, testServer1.getBaseUrl() + page1Url);
+    performNavigation(driver, page1Url);
 
     assertEquals(
         ImmutableList.of(
             new HttpRequest(page1Url, null),
-            new HttpRequest(page3Url, testServer2.getBaseUrl() + page2Url)),
+            new HttpRequest(page3Url, page2Url)),
         testServer1.getRequests());
 
     assertEquals(
         ImmutableList.of(new HttpRequest(
             page2Url,
-            testServer1.getBaseUrl() + page1Url)),
+            page1Url)),
         testServer2.getRequests());
   }
 
@@ -256,22 +254,21 @@ public class ReferrerTest extends JUnit4TestBase {
     pacFileServer.start();
     WebDriver driver = customDriverFactory.createDriver(pacFileServer.getBaseUrl());
 
-    String page1Url = buildPage1Url("http://www.example.com" + buildPage2Url());
-    String page2Url = buildPage2Url(testServer1.getBaseUrl() + buildPage3Url());
-    String page3Url = buildPage3Url();
+    String page1Url = buildPage1Url(testServer1, "http://www.example.com" + buildPage2Url());
+    String page2Url = buildPage2Url("http://www.example.com", buildPage3Url(testServer1));
+    String page3Url = buildPage3Url(testServer1);
 
-    performNavigation(driver, testServer1.getBaseUrl() + page1Url);
+    performNavigation(driver, page1Url);
 
     assertEquals(
         ImmutableList.of(
             new HttpRequest(page1Url, null),
-            new HttpRequest(page3Url, "http://www.example.com" + page2Url)),
+            new HttpRequest(page3Url, page2Url)),
         testServer1.getRequests());
 
     assertEquals(
-        ImmutableList.of(new HttpRequest(
-            "http://www.example.com" + page2Url,
-            testServer1.getBaseUrl() + page1Url)),
+        ImmutableList.of(
+            new HttpRequest(page2Url, page1Url)),
         testServer2.getRequests());
   }
 
@@ -295,23 +292,22 @@ public class ReferrerTest extends JUnit4TestBase {
         "  return 'DIRECT';",
         " }"));
 
-    String page1Url = buildPage1Url("http://www.example.com" + buildPage2Url());
-    String page2Url = buildPage2Url(testServer1.getBaseUrl() + buildPage3Url());
-    String page3Url = buildPage3Url();
+    String page1Url = buildPage1Url(testServer1, "http://www.example.com" + buildPage2Url());
+    String page2Url = buildPage2Url("http://www.example.com", buildPage3Url(testServer1));
+    String page3Url = buildPage3Url(testServer1);
 
     WebDriver driver = customDriverFactory.createDriver(proxyServer.getPacUrl());
-    performNavigation(driver, testServer1.getBaseUrl() + page1Url);
+    performNavigation(driver, page1Url);
 
     assertEquals(
         ImmutableList.of(
             new HttpRequest(page1Url, null),
-            new HttpRequest(page3Url, "http://www.example.com" + page2Url)),
+            new HttpRequest(page3Url, page2Url)),
         testServer1.getRequests());
 
     assertEquals(
-        ImmutableList.of(new HttpRequest(
-            "http://www.example.com" + page2Url,
-            testServer1.getBaseUrl() + page1Url)),
+        ImmutableList.of(
+            new HttpRequest(page2Url, page1Url)),
         proxyServer.getRequests());
   }
 
@@ -330,9 +326,9 @@ public class ReferrerTest extends JUnit4TestBase {
     testServer1.start();
     proxyServer.start();
 
-    String page1Url = buildPage1Url(testServer1.getBaseUrl() + buildPage2Url());
-    String page2Url = buildPage2Url(testServer1.getBaseUrl() + buildPage3Url());
-    String page3Url = buildPage3Url();
+    String page1Url = buildPage1Url(testServer1, buildPage2Url(testServer1));
+    String page2Url = buildPage2Url(testServer1, buildPage3Url(testServer1));
+    String page3Url = buildPage3Url(testServer1);
 
     // Have our proxy intercept requests for page 2.
     proxyServer.setPacFileContents(Joiner.on('\n').join(
@@ -344,18 +340,18 @@ public class ReferrerTest extends JUnit4TestBase {
         " }"));
 
     WebDriver driver = customDriverFactory.createDriver(proxyServer.getPacUrl());
-    performNavigation(driver, testServer1.getBaseUrl() + page1Url);
+    performNavigation(driver, page1Url);
 
     assertEquals(
         ImmutableList.of(
             new HttpRequest(page1Url, null),
-            new HttpRequest(page3Url, testServer1.getBaseUrl() + page2Url)),
+            new HttpRequest(page3Url, page2Url)),
         testServer1.getRequests());
 
     assertEquals(
         ImmutableList.of(new HttpRequest(
-            testServer1.getBaseUrl() + page2Url,
-            testServer1.getBaseUrl() + page1Url)),
+            page2Url,
+            page1Url)),
         proxyServer.getRequests());
   }
 
@@ -382,16 +378,36 @@ public class ReferrerTest extends JUnit4TestBase {
     return "/page1.html?next=" + encode(nextUrl);
   }
 
+  private static String buildPage1Url(ServerResource server, String nextUrl) {
+    return server.getBaseUrl() + "/page1.html?next=" + encode(nextUrl);
+  }
+
   private static String buildPage2Url(String nextUrl) {
     return "/page2.html?next=" + encode(nextUrl);
+  }
+
+  private static String buildPage2Url(String server, String nextUrl) {
+    return server + "/page2.html?next=" + encode(nextUrl);
+  }
+
+  private static String buildPage2Url(ServerResource server, String nextUrl) {
+    return server.getBaseUrl() + "/page2.html?next=" + encode(nextUrl);
   }
 
   private static String buildPage2Url() {
     return "/page2.html";  // Nothing special here.
   }
 
+  private static String buildPage2Url(ServerResource server) {
+    return server.getBaseUrl() + "/page2.html";  // Nothing special here.
+  }
+
   private static String buildPage3Url() {
     return "/page3.html";  // Nothing special here.
+  }
+
+  private static String buildPage3Url(ServerResource server) {
+    return server.getBaseUrl() + "/page3.html";  // Nothing special here.
   }
 
   private static String encode(String url) {
@@ -522,7 +538,7 @@ public class ReferrerTest extends JUnit4TestBase {
 
     ProxyServer() {
       requests = Lists.newCopyOnWriteArrayList();
-      addHandler(new AbstractHandler() {
+      addHandler(new PageRequestHandler(requests) {
         @Override
         public void handle(String s, Request baseRequest, HttpServletRequest request,
                            HttpServletResponse response) throws IOException, ServletException {
@@ -531,10 +547,11 @@ public class ReferrerTest extends JUnit4TestBase {
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().println(getPacFileContents());
             baseRequest.setHandled(true);
+          } else {
+            super.handle(s, baseRequest, request, response);
           }
         }
       });
-      addHandler(new PageRequestHandler(requests));
     }
 
     String getPacUrl() {
@@ -572,7 +589,9 @@ public class ReferrerTest extends JUnit4TestBase {
 
       // Don't record / requests so we can poll the server for availability in start().
       if (!"/".equals(request.getRequestURI())) {
-        requests.add(new HttpRequest(request.getRequestURI(), request.getHeader(HttpHeaders.REFERER)));
+        requests.add(new HttpRequest(
+          request.getRequestURL() + (request.getQueryString() == null ? "" : "?" + request.getQueryString()),
+          request.getHeader(HttpHeaders.REFERER)));
       }
 
       String responseHtml;
