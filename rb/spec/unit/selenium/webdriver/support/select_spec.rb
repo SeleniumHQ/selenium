@@ -259,10 +259,10 @@ module Selenium
         end
 
         it 'should raise NoSuchElementError if there are no selects to deselect' do
-          expect(select).to receive(:attribute).with(:multiple).and_return('false')
-          expect(select).to receive(:find_elements).at_least(3).times.and_return []
+          expect(multi_select).to receive(:attribute).with(:multiple).and_return('true')
+          expect(multi_select).to receive(:find_elements).at_least(3).times.and_return []
 
-          s = Select.new select
+          s = Select.new multi_select
 
           expect {
             s.deselect_by :index, 12
@@ -275,6 +275,24 @@ module Selenium
           expect {
             s.deselect_by :text, 'also not there'
           }.to raise_error(Error::NoSuchElementError)
+        end
+		
+        it 'should raise UnsupportedOperationError if trying to deselect options in non-multiselect' do
+          expect(select).to receive(:attribute).with(:multiple).and_return('false')
+		  
+          s = Select.new select
+
+          expect {
+            s.deselect_by :index, 0
+          }.to raise_error(Error::UnsupportedOperationError)
+
+          expect {
+            s.deselect_by :value, 'not there'
+          }.to raise_error(Error::UnsupportedOperationError)
+
+          expect {
+            s.deselect_by :text, 'also not there'
+          }.to raise_error(Error::UnsupportedOperationError)
         end
       end # Select
 
