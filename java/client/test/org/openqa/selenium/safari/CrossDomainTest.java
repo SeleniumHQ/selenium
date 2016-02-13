@@ -33,7 +33,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.environment.webserver.WebbitAppServer;
+import org.openqa.selenium.environment.webserver.JettyAppServer;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
@@ -52,7 +52,7 @@ public class CrossDomainTest extends JUnit4TestBase {
 
   @BeforeClass
   public static void startSecondServer() {
-    otherServer = new WebbitAppServer();
+    otherServer = new JettyAppServer();
     otherServer.start();
 
     otherPages = new Pages(otherServer);
