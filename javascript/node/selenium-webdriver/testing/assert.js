@@ -181,13 +181,13 @@ class Assertion {
    *     is a promised-value. Otherwise, the assertion is performed immediately
    *     and nothing is returned.
    */
-  closeTo(expected, episolon, opt_message) {
+  closeTo(expected, epsilon, opt_message) {
     checkNumber(expected);
-    checkNumber(episolon);
+    checkNumber(epsilon);
     return evaluate(this.subject_, function(actual) {
       checkNumber(actual);
-      if (Math.abs(expected - actual) > episolon) {
-        assert.fail(opt_message || `${actual} === ${expected} (± ${episolon})`);
+      if (Math.abs(expected - actual) > epsilon) {
+        assert.fail(opt_message || `${actual} === ${expected} (± ${epsilon})`);
       }
     });
   }

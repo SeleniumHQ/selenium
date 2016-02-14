@@ -694,6 +694,10 @@ namespace :node do
 
     sh cmd
   end
+
+  task :docs do
+    sh "node javascript/node/gendocs.js"
+  end
 end
 
 namespace :safari do
