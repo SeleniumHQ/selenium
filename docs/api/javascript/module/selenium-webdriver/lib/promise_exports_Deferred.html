@@ -1,0 +1,91 @@
+<!DOCTYPE html><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><meta http-equiv="Content-Language" content="en"><meta http-equiv="X-UA-Compatible" content="IE=edge"><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><title>Deferred</title><link href="../../../dossier.css" rel="stylesheet" type="text/css"><header><button class="dossier-menu"><i class="material-icons">menu</i></button><form><input type="search" placeholder="Search" tabindex="1"><i class="material-icons">search</i></form></header><div class="content"><main><article><section class="intro"><div class="parentlink"><b>Module:</b> <a href="promise.html">selenium-webdriver/lib/promise</a></div><div class="codelink"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/promise.js#L3072" target="_blank">View Source</a></div><h1 class="title"><div>class Deferred&lt;T&gt;</div></h1><dl><dt class="spec">All implemented interfaces<dd><code><a href="promise_exports_Thenable.html">Thenable</a>&lt;T&gt;</code><dd><code>IThenable&lt;T&gt;</code></dl><p>Represents a value that will be resolved at some point in the future. This
+class represents the protected &#34;producer&#34; half of a ManagedPromise - each Deferred
+has a <code>promise</code> property that may be returned to consumers for
+registering callbacks, reserving the ability to resolve the deferred to the
+producer.</p>
+<p>If this Deferred is rejected and there are no listeners registered before
+the next turn of the event loop, the rejection will be passed to the
+<a href="promise_exports_ControlFlow.html"><code>ControlFlow</code></a> as an unhandled failure.</p>
+<h3 class="name"><div>new Deferred(<wbr>opt_flow)</div></h3><dt class="spec">Parameters</dt><dd><dl><dt class="named">opt_flow<code>?<a href="promise_exports_ControlFlow.html">ControlFlow</a>=</code><dd><p>The control flow this instance was
+created under. This should only be provided during unit tests.</p>
+</dl></dd></section><section class="instance-methods"><h2>Instance Methods</h2><section class="property" id="cancel"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/promise.js#L1402" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>cancel(<wbr>opt_reason)</div></h3><p>Cancels the computation of this promise&#39;s value, rejecting the promise in
+the process. This method is a no-op if the promise has already been
+resolved.</p>
+<dl><dt class="spec">Specified by</dt><dd><a href="promise_exports_Thenable.html#cancel">Thenable</a></dd><dt class="spec">Parameters</dt><dd><dl><dt class="named">opt_reason<code>?(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>|<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>)=</code><dd><p>The reason this promise is being
+cancelled. This value will be wrapped in a <a href="promise_exports_CancellationError.html"><code>CancellationError</code></a>.</p>
+</dl></dd></dl></section><section class="property" id="catch"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/promise.js#L1418" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div class="tags"><span class="deprecated"></span></div><div>catch(<wbr>errback)</div></h3><p>Registers a listener for when this promise is rejected. This is synonymous
+with the <code>catch</code> clause in a synchronous API:</p>
+<pre><code> // Synchronous API:
+ try {
+   doSynchronousWork();
+ } catch (ex) {
+   console.error(ex);
+ }
+
+ // Asynchronous promise API:
+ doAsynchronousWork().catch(function(ex) {
+   console.error(ex);
+ });
+</code></pre>
+<dl><dt class="spec">Deprecated<dd><p>Use catch from the promise property directly.</p>
+<dt class="spec">Specified by</dt><dd><a href="promise_exports_Thenable.html#catch">Thenable</a></dd><dt class="spec">Parameters</dt><dd><dl><dt class="named">errback<code>function(*): (R|IThenable&lt;R&gt;)</code><dd><p>The
+function to call if this promise is rejected. The function should
+expect a single argument: the rejection reason.</p>
+</dl></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code><dd><p>A new promise which will be
+resolved with the result of the invoked callback.</p>
+</dl></dd></dl></section><section class="property" id="fulfill"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/promise.js#L1380" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>fulfill(<wbr>opt_value)</div></h3><p>Resolves this deferred with the given value. It is safe to call this as a
+normal function (with no bound &#34;this&#34;).</p>
+<dl><dt class="spec">Parameters</dt><dd><dl><dt class="named">opt_value<code>?(T|IThenable&lt;T&gt;|<a href="promise_exports_Thenable.html">Thenable</a>)=</code><dd><p>The fulfilled value.</p>
+</dl></dd></dl></section><section class="property" id="isPending"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/promise.js#L1397" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>isPending()</div></h3><dl><dt class="spec">Specified by</dt><dd><a href="promise_exports_Thenable.html#isPending">Thenable</a></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code><dd><p>Whether this promise&#39;s value is still being computed.</p>
+</dl></dd></dl></section><section class="property" id="reject"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/promise.js#L1390" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>reject(<wbr>opt_reason)</div></h3><p>Rejects this promise with the given reason. It is safe to call this as a
+normal function (with no bound &#34;this&#34;).</p>
+<dl><dt class="spec">Parameters</dt><dd><dl><dt class="named">opt_reason<code>*=</code><dd><p>The rejection reason.</p>
+</dl></dd></dl></section><section class="property" id="then"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/promise.js#L1410" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div class="tags"><span class="deprecated"></span></div><div>then(<wbr>opt_callback,<wbr> opt_errback)</div></h3><p>Registers listeners for when this instance is resolved.</p>
+<dl><dt class="spec">Deprecated<dd><p>Use <code>then</code> from the promise property directly.</p>
+<dt class="spec">Specified by</dt><dd><a href="promise_exports_Thenable.html#then">Thenable</a></dd><dd>IThenable</dd><dt class="spec">Parameters</dt><dd><dl><dt class="named">opt_callback<code>?function(T): (R|IThenable&lt;R&gt;)=</code><dd><p>The
+function to call if this promise is successfully resolved. The function
+should expect a single argument: the promise&#39;s resolved value.</p>
+<dt class="named">opt_errback<code>?function(*): (R|IThenable&lt;R&gt;)=</code><dd><p>The function to call if this promise is rejected. The function should
+expect a single argument: the rejection reason.</p>
+</dl></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code><dd><p>A new promise which will be
+resolved with the result of the invoked callback.</p>
+</dl></dd></dl></section><section class="property" id="thenCatch"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/promise.js#L1426" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div class="tags"><span class="deprecated"></span></div><div>thenCatch(<wbr>errback)</div></h3><p>An alias for <a href="promise_exports_Deferred.html#catch"><code>#catch()</code></a></p>
+<dl><dt class="spec">Deprecated<dd><p>Use <code>thenCatch</code> from the promise property directly.</p>
+<dt class="spec">Specified by</dt><dd><a href="promise_exports_Thenable.html#thenCatch">Thenable</a></dd><dt class="spec">Parameters</dt><dd><dl><dt class="named">errback<code>function(*): (R|IThenable&lt;R&gt;)</code><dd><p>The
+function to call if this promise is rejected. The function should
+expect a single argument: the rejection reason.</p>
+</dl></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code><dd><p>A new promise which will be
+resolved wdith the result of the invoked callback.</p>
+</dl></dd></dl></section><section class="property" id="thenFinally"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/promise.js#L1434" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div class="tags"><span class="deprecated"></span></div><div>thenFinally(<wbr>callback)</div></h3><p>Registers a listener to invoke when this promise is resolved, regardless
+of whether the promise&#39;s value was successfully computed. This function
+is synonymous with the <code>finally</code> clause in a synchronous API:</p>
+<pre><code> // Synchronous API:
+ try {
+   doSynchronousWork();
+ } finally {
+   cleanUp();
+ }
+
+ // Asynchronous promise API:
+ doAsynchronousWork().thenFinally(cleanUp);
+</code></pre>
+<p><strong>Note:</strong> similar to the <code>finally</code> clause, if the registered
+callback returns a rejected promise or throws an error, it will silently
+replace the rejection error (if any) from this promise:</p>
+<pre><code> try {
+   throw Error(&#39;one&#39;);
+ } finally {
+   throw Error(&#39;two&#39;);  // Hides Error: one
+ }
+
+ promise.rejected(Error(&#39;one&#39;))
+     .thenFinally(function() {
+       throw Error(&#39;two&#39;);  // Hides Error: one
+     });
+</code></pre>
+<dl><dt class="spec">Deprecated<dd><p>Use <code>thenFinally</code> from the promise property directly.</p>
+<dt class="spec">Specified by</dt><dd><a href="promise_exports_Thenable.html#thenFinally">Thenable</a></dd><dt class="spec">Parameters</dt><dd><dl><dt class="named">callback<code>function(): (R|IThenable&lt;R&gt;)</code><dd><p>The function
+to call when this promise is resolved.</p>
+</dl></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code><dd><p>A promise that will be fulfilled
+with the callback result.</p>
+</dl></dd></dl></section></section><section class="instance-properties"><h2>Instance Properties</h2><section class="property" id="promise"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/promise.js#L1363" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>promise</div></h3><dl><dt class="spec">Type<dd>!<a href="promise_exports_Promise.html">Promise</a>&lt;T&gt;</dd></dl></section></section></article></main><footer><div><a href="https://github.com/jleyba/js-dossier">Generated by dossier</a></div></footer></div><nav class="dossier-nav"><section><a class="title" href="../../../index.html" tabindex="2">Overview</a></section><section class="modules"><div class="toggle"><div class="title"><span class="item" tabindex="2">Modules</span><i class="material-icons">expand_more</i></div></div></section><section><a class="title" href="../../../Changes.html" tabindex="2">Changes</a></section></nav><script src="../../../types.js"></script><script src="../../../dossier.js"></script>

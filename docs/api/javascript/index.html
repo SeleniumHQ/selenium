@@ -1,21 +1,20 @@
-<!DOCTYPE html><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><meta http-equiv="Content-Language" content="en"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Index</title><link href="dossier.css" rel="stylesheet" type="text/css"><header><div><form><div><input type="search" placeholder="Search" tabindex="1"></div></form></div></header><main><article class="indexfile"><h1>selenium-webdriver</h1>
+<!DOCTYPE html><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><meta http-equiv="Content-Language" content="en"><meta http-equiv="X-UA-Compatible" content="IE=edge"><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><title>Index</title><link href="dossier.css" rel="stylesheet" type="text/css"><header><button class="dossier-menu"><i class="material-icons">menu</i></button><form><input type="search" placeholder="Search" tabindex="1"><i class="material-icons">search</i></form></header><div class="content"><main><article class="page"><h1>selenium-webdriver</h1>
 <p>Selenium is a browser automation library. Most often used for testing
 web-applications, Selenium may be used for any task that requires automating
 interaction with the browser.</p>
 <h2>Installation</h2>
-<p>Selenium supports Node <code>0.12.x</code> and <code>4.x</code>. Users on Node <code>0.12.x</code> must run with
-the --harmony flag. Selenium may be installed via npm with</p>
+<p>Selenium may be installed via npm with</p>
 <pre><code>npm install selenium-webdriver
 </code></pre>
 <p>Out of the box, Selenium includes everything you need to work with Firefox. You
 will need to download additional components to work with the other major
-browsers. The drivers for Chrome, IE, PhantomJS, and Opera are all standalone
-executables that should be placed on your
+browsers. The drivers for Chrome, PhantomJS, Opera, and Microsoft&#39;s IE and Edge
+web browsers are all standalone executables that should be available on your
 <a href="http://en.wikipedia.org/wiki/PATH_%28variable%29">PATH</a>. The SafariDriver
 browser extension should be installed in your browser before using Selenium; we
 recommend disabling the extension when using the browser without Selenium or
 installing the extension in a profile only used for testing.</p>
-<table><thead><tr><th>Browser</th><th>Component</th></tr></thead><tbody><tr><td>Chrome</td><td><a href="http://chromedriver.storage.googleapis.com/index.html">chromedriver(.exe)</a></td></tr><tr><td>Internet Explorer</td><td><a href="http://selenium-release.storage.googleapis.com/index.html">IEDriverServer.exe</a></td></tr><tr><td>PhantomJS</td><td><a href="http://phantomjs.org/">phantomjs(.exe)</a></td></tr><tr><td>Opera</td><td><a href="https://github.com/operasoftware/operachromiumdriver/releases">operadriver(.exe)</a></td></tr><tr><td>Safari</td><td><a href="http://selenium-release.storage.googleapis.com/index.html">SafariDriver.safariextz</a></td></tr></tbody></table>
+<table><thead><tr><th>Browser</th><th>Component</th></tr></thead><tbody><tr><td>Chrome</td><td><a href="http://chromedriver.storage.googleapis.com/index.html">chromedriver(.exe)</a></td></tr><tr><td>Internet Explorer</td><td><a href="http://selenium-release.storage.googleapis.com/index.html">IEDriverServer.exe</a></td></tr><tr><td>Edge</td><td><a href="http://go.microsoft.com/fwlink/?LinkId&#61;619687">MicrosoftWebDriver.msi</a></td></tr><tr><td>PhantomJS</td><td><a href="http://phantomjs.org/">phantomjs(.exe)</a></td></tr><tr><td>Opera</td><td><a href="https://github.com/operasoftware/operachromiumdriver/releases">operadriver(.exe)</a></td></tr><tr><td>Safari</td><td><a href="http://selenium-release.storage.googleapis.com/index.html">SafariDriver.safariextz</a></td></tr></tbody></table>
 <h2>Usage</h2>
 <p>The sample below and others are included in the <code>example</code> directory. You may
 also find the tests for selenium-webdriver informative.</p>
@@ -86,13 +85,41 @@ environment variable:</p>
 <p>You can experiment with these options using the <code>example/google_search.js</code>
 script provided with <code>selenium-webdriver</code>.</p>
 <h2>Documentation</h2>
-<p>API documentation is included in the <code>docs</code> directory and is also available
-online from the <a href="http://seleniumhq.github.io/selenium/docs/api/javascript/">Selenium project</a>. Addition resources include</p>
+<p>API documentation is available online from the <a href="http://seleniumhq.github.io/selenium/docs/api/javascript/">Selenium project</a>.
+Addition resources include</p>
 <ul><li>the #selenium channel on freenode IRC</li><li>the <a href="https://groups.google.com/forum/#!forum/selenium-users">selenium-users&#64;googlegroups.com</a> list</li><li><a href="http://www.seleniumhq.org/docs/">SeleniumHQ</a> documentation</li></ul>
 <h2>Contributing</h2>
 <p>Contributions are accepted either through <a href="https://github.com/SeleniumHQ/selenium/">GitHub</a> pull requests or patches
 via the <a href="https://github.com/SeleniumHQ/selenium/issues">Selenium issue tracker</a>. You must sign our
 <a href="http://goo.gl/qC50R">Contributor License Agreement</a> before your changes will be accepted.</p>
+<h2>Node Support Policy</h2>
+<p>Each version of selenium-webdriver will support the latest <em>semver-minor</em>
+version of the <a href="https://github.com/nodejs/LTS">LTS</a> and stable Node releases. All <em>semver-major</em> &amp;
+<em>semver-minor</em> versions between the LTS and stable release will have &#34;best
+effort&#34; support. Following a Selenium release, any <em>semver-minor</em> Node releases
+will also have &#34;best effort&#34; support. Releases older than the latest LTS,
+<em>semver-major</em> releases, and all unstable release branches (e.g. &#34;v.Next&#34;)
+are considered strictly unsupported.</p>
+<p>For example, suppose the current LTS and stable releases are v4.2.4 and v5.4.1,
+respectively. Then a Selenium release would have the following support levels:</p>
+<table><thead><tr><th>Version</th><th>Support</th></tr></thead><tbody><tr><td>&lt;&#61; 4.1</td><td><em>unsupported</em></td></tr><tr><td>4.2</td><td>supported</td></tr><tr><td>5.0-3</td><td>best effort</td></tr><tr><td>5.4</td><td>supported</td></tr><tr><td>&gt;&#61; 5.5</td><td>best effort</td></tr><tr><td>v.Next</td><td><em>unsupported</em></td></tr></tbody></table>
+<h3>Support Level Definitions</h3>
+<ul><li>
+<p><em>supported:</em> A selenium-webdriver release will be API compatible with the
+platform API, without the use of runtime flags.</p>
+</li><li>
+<p><em>best effort:</em> Bugs will be investigated as time permits. API compatibility is
+only guaranteed where required by a <em>supported</em> release. This effectively
+means the adoption of new JS features, such as ES2015 modules, will depend
+on what is supported in Node&#39;s LTS.</p>
+</li><li>
+<p><em>unsupported:</em> Bug submissions will be closed as will-not-fix and API
+compatibility is not guaranteed.</p>
+</li></ul>
+<h3>Projected Support Schedule</h3>
+<p>If Node releases a new <a href="https://github.com/nodejs/LTS">LTS</a> each October and a new major version every 6
+months, the support window for selenium-webdriver will be roughly:</p>
+<table><thead><tr><th>Date</th><th align="right">LTS</th><th align="right">Stable</th></tr></thead><tbody><tr><td>(current)</td><td align="right">4.2</td><td align="right">5.0</td></tr><tr><td>2016-04</td><td align="right">4.2</td><td align="right">6.0</td></tr><tr><td>2016-10</td><td align="right">6.0</td><td align="right">7.0</td></tr><tr><td>2017-04</td><td align="right">6.0</td><td align="right">8.0</td></tr><tr><td>2017-10</td><td align="right">8.0</td><td align="right">9.0</td></tr></tbody></table>
 <h2>Issues</h2>
 <p>Please report any issues using the <a href="https://github.com/SeleniumHQ/selenium/issues">Selenium issue tracker</a>. When using
 the issue tracker</p>
@@ -122,4 +149,4 @@ software distributed under the License is distributed on an
 KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.</p>
-</article><nav><h3><a href="index.html" tabindex="2">Overview</a></h3><div><input type="checkbox" id="nav-modules" checked/><label for="nav-modules"><h3><span class="selectable" tabindex="2">Modules</span></h3></label><div id="nav-modules-view"></div></div><div><input type="checkbox" id="nav-types" checked/><label for="nav-types"><h3><span class="selectable" tabindex="2">Types</span></h3></label><div id="nav-types-view"></div></div><h3><a href="Changes.html" tabindex="2">Changes</a></h3></nav></main><footer><div><a href="https://github.com/jleyba/js-dossier">Generated by dossier</a></div></footer><script src="types.js"></script><script src="dossier.js"></script>
+</article></main><footer><div><a href="https://github.com/jleyba/js-dossier">Generated by dossier</a></div></footer></div><nav class="dossier-nav"><section><a class="title" href="index.html" tabindex="2">Overview</a></section><section class="modules"><div class="toggle"><div class="title"><span class="item" tabindex="2">Modules</span><i class="material-icons">expand_more</i></div></div></section><section><a class="title" href="Changes.html" tabindex="2">Changes</a></section></nav><script src="types.js"></script><script src="dossier.js"></script>

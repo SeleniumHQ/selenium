@@ -1,0 +1,90 @@
+<!DOCTYPE html><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><meta http-equiv="Content-Language" content="en"><meta http-equiv="X-UA-Compatible" content="IE=edge"><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><title>selenium-webdriver/chrome</title><link href="../../dossier.css" rel="stylesheet" type="text/css"><header><button class="dossier-menu"><i class="material-icons">menu</i></button><form><input type="search" placeholder="Search" tabindex="1"><i class="material-icons">search</i></form></header><div class="content"><main><article><section class="intro"><div class="codelink"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/chrome.js#L115" target="_blank">View Source</a></div><h1 class="title"><div>module selenium-webdriver/chrome</div></h1><p>Defines a <a href="chrome_exports_Driver.html">WebDriver</a> client for the Chrome
+web browser. Before using this module, you must download the latest
+<a href="http://chromedriver.storage.googleapis.com/index.html">ChromeDriver release</a> and ensure it can be found on your system <a href="http://en.wikipedia.org/wiki/PATH_%28variable%29">PATH</a>.</p>
+<p>There are three primary classes exported by this module:</p>
+<ol><li>
+<p><a href="chrome_exports_ServiceBuilder.html">ServiceBuilder</a>: configures the
+<a href="remote/index_exports_DriverService.html"><code>remote.DriverService</code></a>
+that manages the <a href="https://sites.google.com/a/chromium.org/chromedriver/">ChromeDriver</a> child process.</p>
+</li><li>
+<p><a href="chrome_exports_Options.html">Options</a>: defines configuration options for each new Chrome
+session, such as which <a href="chrome_exports_Options.html#setProxy">proxy</a> to use,
+what <a href="chrome_exports_Options.html#addExtensions">extensions</a> to install, or
+what <a href="chrome_exports_Options.html#addArguments">command-line switches</a> to use when
+starting the browser.</p>
+</li><li>
+<p><a href="chrome_exports_Driver.html">Driver</a>: the WebDriver client; each new instance will control
+a unique browser session with a clean user profile (unless otherwise
+configured through the <a href="chrome_exports_Options.html"><code>Options</code></a> class).</p>
+</li></ol>
+<p><strong>Customizing the ChromeDriver Server</strong> <a id="custom-server"></a></p>
+<p>By default, every Chrome session will use a single driver service, which is
+started the first time a <a href="chrome_exports_Driver.html"><code>Driver</code></a> instance is created and terminated
+when this process exits. The default service will inherit its environment
+from the current process and direct all output to /dev/null. You may obtain
+a handle to this default service using
+<a href="chrome.html#getDefaultService"><code>getDefaultService()</code></a> and change its configuration
+with <a href="chrome.html#setDefaultService"><code>setDefaultService()</code></a>.</p>
+<p>You may also create a <a href="chrome_exports_Driver.html"><code>Driver</code></a> with its own driver service. This is
+useful if you need to capture the server&#39;s log output for a specific session:</p>
+<pre><code> let chrome &#61; require(&#39;selenium-webdriver/chrome&#39;);
+
+ let service &#61; new chrome.ServiceBuilder()
+     .loggingTo(&#39;/my/log/file.txt&#39;)
+     .enableVerboseLogging()
+     .build();
+
+ let options &#61; new chrome.Options();
+ // configure browser options ...
+
+ let driver &#61; new chrome.Driver(options, service);
+</code></pre>
+<p>Users should only instantiate the <a href="chrome_exports_Driver.html"><code>Driver</code></a> class directly when they
+need a custom driver service configuration (as shown above). For normal
+operation, users should start Chrome using the
+<a href="index_exports_Builder.html"><code>selenium-webdriver.Builder</code></a>.</p>
+<p><strong>Working with Android</strong> <a id="android"></a></p>
+<p>The <a href="https://sites.google.com/a/chromium.org/chromedriver/getting-started/getting-started---android">ChromeDriver</a> supports running tests on the Chrome browser as
+well as <a href="https://developer.chrome.com/multidevice/webview/overview">WebView apps</a> starting in Android 4.4 (KitKat). In order to
+work with Android, you must first start the adb</p>
+<pre><code> adb start-server
+</code></pre>
+<p>By default, adb will start on port 5037. You may change this port, but this
+will require configuring a <a href="#custom-server">custom server</a> that will connect
+to adb on the <a href="chrome_exports_ServiceBuilder.html#setAdbPort">correct port</a>:</p>
+<pre><code> let service &#61; new chrome.ServiceBuilder()
+     .setAdbPort(1234)
+     build();
+ // etc.
+</code></pre>
+<p>The ChromeDriver may be configured to launch Chrome on Android using
+<a href="chrome_exports_Options.html#androidChrome"><code>Options#androidChrome()</code></a>:</p>
+<pre><code> let driver &#61; new Builder()
+     .forBrowser(&#39;chrome&#39;)
+     .setChromeOptions(new chrome.Options().androidChrome())
+     .build();
+</code></pre>
+<p>Alternatively, you can configure the ChromeDriver to launch an app with a
+Chrome-WebView by setting the <a href="chrome_exports_Options.html#androidActivity"> androidActivity</a> option:</p>
+<pre><code> let driver &#61; new Builder()
+     .forBrowser(&#39;chrome&#39;)
+     .setChromeOptions(new chrome.Options()
+         .androidPackage(&#39;com.example&#39;)
+         .androidActivity(&#39;com.example.Activity&#39;))
+     .build();
+</code></pre>
+<p>[Refer to the ChromeDriver site] for more information on using the
+<a href="https://sites.google.com/a/chromium.org/chromedriver/getting-started/getting-started---android">ChromeDriver with Android</a>.</p>
+</section><section class="static-functions"><h2>Exported Functions</h2><section class="property" id="getDefaultService"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/chrome.js#L810" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>getDefaultService()</div></h3><p>Returns the default ChromeDriver service. If such a service has not been
+configured, one will be constructed using the default configuration for
+a ChromeDriver executable found on the system PATH.</p>
+<dl><dt class="spec">Returns</dt><dd><dl><dt><code><a href="remote/index_exports_DriverService.html">DriverService</a></code><dd><p>The default ChromeDriver service.</p>
+</dl></dd></dl></section><section class="property" id="setDefaultService"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/chrome.js#L811" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>setDefaultService(<wbr>service)</div></h3><p>Sets the default service to use for new ChromeDriver instances.</p>
+<dl><dt class="spec">Parameters</dt><dd><dl><dt class="named">service<code>!<a href="remote/index_exports_DriverService.html">DriverService</a></code><dd><p>The service to use.</p>
+</dl></dd><dt class="spec">Throws</dt><dd><dl><dt><code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a></code><dd><p>If the default service is currently running.</p>
+</dl></dd></dl></section></section><section class="types"><h2>Exported Types</h2><section class="property"><dl><dt><a href="chrome_exports_Driver.html">Driver</a><dd><p>Creates a new WebDriver client for Chrome.</p>
+<dt><a href="chrome_exports_Options.html">Options</a><dd><p>Class for managing ChromeDriver specific options.</p>
+<dt><a href="chrome_exports_ServiceBuilder.html">ServiceBuilder</a><dd><p>Creates <a href="remote/index_exports_DriverService.html"><code>selenium-webdriver/remote.DriverService</code></a> instances that manage
+a <a href="https://sites.google.com/a/chromium.org/chromedriver/">ChromeDriver</a>
+server in a child process.</p>
+</dl></section></section></article></main><footer><div><a href="https://github.com/jleyba/js-dossier">Generated by dossier</a></div></footer></div><nav class="dossier-nav"><section><a class="title" href="../../index.html" tabindex="2">Overview</a></section><section class="modules"><div class="toggle"><div class="title"><span class="item" tabindex="2">Modules</span><i class="material-icons">expand_more</i></div></div></section><section><a class="title" href="../../Changes.html" tabindex="2">Changes</a></section></nav><script src="../../types.js"></script><script src="../../dossier.js"></script>

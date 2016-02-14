@@ -1,0 +1,211 @@
+<!DOCTYPE html><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><meta http-equiv="Content-Language" content="en"><meta http-equiv="X-UA-Compatible" content="IE=edge"><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><title>WebElementPromise</title><link href="../../../dossier.css" rel="stylesheet" type="text/css"><header><button class="dossier-menu"><i class="material-icons">menu</i></button><form><input type="search" placeholder="Search" tabindex="1"><i class="material-icons">search</i></form></header><div class="content"><main><article><section class="intro"><div class="parentlink"><b>Module:</b> <a href="webdriver.html">selenium-webdriver/lib/webdriver</a></div><div class="codelink"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L2350" target="_blank">View Source</a></div><h1 class="title"><div class="tags"><span class="final"></span></div><div>class WebElementPromise</div></h1><pre class="inheritance"><a href="webdriver_exports_WebElement.html">WebElement</a>
+  &#x2514; WebElementPromise</pre><dl><dt class="spec">All implemented interfaces<dd><code><a href="promise_exports_Thenable.html">Thenable</a></code></dl><p>WebElementPromise is a promise that will be fulfilled with a WebElement.
+This serves as a forward proxy on WebElement, allowing calls to be
+scheduled without directly on this instance before the underlying
+WebElement has been fulfilled. In other words, the following two statements
+are equivalent:</p>
+<pre><code> driver.findElement({id: &#39;my-button&#39;}).click();
+ driver.findElement({id: &#39;my-button&#39;}).then(function(el) {
+   return el.click();
+ });
+</code></pre>
+<h3 class="name"><div>new WebElementPromise(<wbr>driver,<wbr> el)</div></h3><dt class="spec">Parameters</dt><dd><dl><dt class="named">driver<code>!<a href="webdriver_exports_WebDriver.html">WebDriver</a></code><dd><p>The parent WebDriver instance for this
+element.</p>
+<dt class="named">el<code>!<a href="promise_exports_Promise.html">Promise</a></code><dd><p>A promise
+that will resolve to the promised element.</p>
+</dl></dd></section><section class="instance-methods"><h2>Instance Methods</h2><section class="property" id="cancel"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L2138" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>cancel(<wbr>arg0)</div></h3><dl><dt class="spec">Parameters</dt><dd><dl><dt class="named">arg0<code>?(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>|<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>)=</code></dl></dd></dl></section><section class="property" id="catch"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L2147" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>catch(<wbr>arg0)</div></h3><dl><dt class="spec">Parameters</dt><dd><dl><dt class="named">arg0<code>function(*): (R|IThenable&lt;R&gt;)</code></dl></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code></dl></dd></dl></section><section class="property" id="clear"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L2048" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>clear()</div></h3><p>Schedules a command to clear the <code>value</code> of this element. This command has
+no effect if the underlying DOM element is neither a text INPUT element
+nor a TEXTAREA element.</p>
+<dl><dt class="spec">Defined by</dt><dd><a href="webdriver_exports_WebElement.html#clear">WebElement</a></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code><dd><p>A promise that will be resolved
+when the element has been cleared.</p>
+</dl></dd></dl></section><section class="property" id="click"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L1807" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>click()</div></h3><p>Schedules a command to click on this element.</p>
+<dl><dt class="spec">Defined by</dt><dd><a href="webdriver_exports_WebElement.html#click">WebElement</a></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code><dd><p>A promise that will be resolved
+when the click command has completed.</p>
+</dl></dd></dl></section><section class="property" id="findElement"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L1749" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>findElement(<wbr>locator)</div></h3><p>Schedule a command to find a descendant of this element. If the element
+cannot be found, the returned promise will be rejected with a
+<a href="../error_exports_NoSuchElementError.html">NoSuchElementError</a>.</p>
+<p>The search criteria for an element may be defined using one of the static
+factories on the <a href="by_exports_By.html"><code>by.By</code></a> class, or as a short-hand
+<a href="by.html"><code>./by.ByHash</code></a> object. For example, the following two statements
+are equivalent:</p>
+<pre><code> var e1 &#61; element.findElement(By.id(&#39;foo&#39;));
+ var e2 &#61; element.findElement({id:&#39;foo&#39;});
+</code></pre>
+<p>You may also provide a custom locator function, which takes as input this
+instance and returns a <a href="webdriver_exports_WebElement.html"><code>WebElement</code></a>, or a promise that will resolve
+to a WebElement. If the returned promise resolves to an array of
+WebElements, WebDriver will use the first element. For example, to find the
+first visible link on a page, you could write:</p>
+<pre><code> var link &#61; element.findElement(firstVisibleLink);
+
+ function firstVisibleLink(element) {
+   var links &#61; element.findElements(By.tagName(&#39;a&#39;));
+   return promise.filter(links, function(link) {
+     return link.isDisplayed();
+   });
+ }
+</code></pre>
+<dl><dt class="spec">Defined by</dt><dd><a href="webdriver_exports_WebElement.html#findElement">WebElement</a></dd><dt class="spec">Parameters</dt><dd><dl><dt class="named">locator<code>!(<a href="by_exports_By.html">By</a>|Function)</code><dd><p>The locator strategy to use when
+searching for the element.</p>
+</dl></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="webdriver_exports_WebElementPromise.html">WebElementPromise</a></code><dd><p>A WebElement that can be used to issue
+commands against the located element. If the element is not found, the
+element will be invalidated and all scheduled commands aborted.</p>
+</dl></dd></dl></section><section class="property" id="findElements"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L1788" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>findElements(<wbr>locator)</div></h3><p>Schedules a command to find all of the descendants of this element that
+match the given search criteria.</p>
+<dl><dt class="spec">Defined by</dt><dd><a href="webdriver_exports_WebElement.html#findElements">WebElement</a></dd><dt class="spec">Parameters</dt><dd><dl><dt class="named">locator<code>!(<a href="by_exports_By.html">By</a>|Function)</code><dd><p>The locator strategy to use when
+searching for the element.</p>
+</dl></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code><dd><p>A
+promise that will resolve to an array of WebElements.</p>
+</dl></dd></dl></section><section class="property" id="getAttribute"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L1961" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>getAttribute(<wbr>attributeName)</div></h3><p>Schedules a command to query for the value of the given attribute of the
+element. Will return the current value, even if it has been modified after
+the page has been loaded. More exactly, this method will return the value of
+the given attribute, unless that attribute is not present, in which case the
+value of the property with the same name is returned. If neither value is
+set, null is returned (for example, the &#34;value&#34; property of a textarea
+element). The &#34;style&#34; attribute is converted as best can be to a
+text representation with a trailing semi-colon. The following are deemed to
+be &#34;boolean&#34; attributes and will return either &#34;true&#34; or null:</p>
+<p>async, autofocus, autoplay, checked, compact, complete, controls, declare,
+defaultchecked, defaultselected, defer, disabled, draggable, ended,
+formnovalidate, hidden, indeterminate, iscontenteditable, ismap, itemscope,
+loop, multiple, muted, nohref, noresize, noshade, novalidate, nowrap, open,
+paused, pubdate, readonly, required, reversed, scoped, seamless, seeking,
+selected, spellcheck, truespeed, willvalidate</p>
+<p>Finally, the following commonly mis-capitalized attribute/property names
+are evaluated as expected:</p>
+<ul><li>&#34;class&#34;</li><li>&#34;readonly&#34;</li></ul>
+<dl><dt class="spec">Defined by</dt><dd><a href="webdriver_exports_WebElement.html#getAttribute">WebElement</a></dd><dt class="spec">Parameters</dt><dd><dl><dt class="named">attributeName<code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code><dd><p>The name of the attribute to query.</p>
+</dl></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code><dd><p>A promise that will be
+resolved with the attribute&#39;s value. The returned value will always be
+either a string or null.</p>
+</dl></dd></dl></section><section class="property" id="getCssValue"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L1924" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>getCssValue(<wbr>cssStyleProperty)</div></h3><p>Schedules a command to query for the computed style of the element
+represented by this instance. If the element inherits the named style from
+its parent, the parent will be queried for its value.  Where possible, color
+values will be converted to their hex representation (e.g. #00ff00 instead of
+rgb(0, 255, 0)).</p>
+<p><em>Warning:</em> the value returned will be as the browser interprets it, so
+it may be tricky to form a proper assertion.</p>
+<dl><dt class="spec">Defined by</dt><dd><a href="webdriver_exports_WebElement.html#getCssValue">WebElement</a></dd><dt class="spec">Parameters</dt><dd><dl><dt class="named">cssStyleProperty<code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code><dd><p>The name of the CSS style property to look
+up.</p>
+</dl></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code><dd><p>A promise that will be
+resolved with the requested CSS value.</p>
+</dl></dd></dl></section><section class="property" id="getDriver"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L1671" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>getDriver()</div></h3><dl><dt class="spec">Defined by</dt><dd><a href="webdriver_exports_WebElement.html#getDriver">WebElement</a></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="webdriver_exports_WebDriver.html">WebDriver</a></code><dd><p>The parent driver for this instance.</p>
+</dl></dd></dl></section><section class="property" id="getId"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L2160" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>getId()</div></h3><p>Defers returning the element ID until the wrapped WebElement has been
+resolved.</p>
+<dl><dt class="spec">Overrides</dt><dd><a href="webdriver_exports_WebElement.html#getId">WebElement</a></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code><dd><p>A promise that resolves to
+the server-assigned opaque ID assigned to this element.</p>
+</dl></dd></dl></section><section class="property" id="getInnerHtml"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L2106" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>getInnerHtml()</div></h3><p>Schedules a command to retrieve the inner HTML of this element.</p>
+<dl><dt class="spec">Defined by</dt><dd><a href="webdriver_exports_WebElement.html#getInnerHtml">WebElement</a></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code><dd><p>A promise that will be
+resolved with the element&#39;s inner HTML.</p>
+</dl></dd></dl></section><section class="property" id="getLocation"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L1999" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>getLocation()</div></h3><p>Schedules a command to compute the location of this element in page space.</p>
+<dl><dt class="spec">Defined by</dt><dd><a href="webdriver_exports_WebElement.html#getLocation">WebElement</a></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code><dd><p>A promise that
+will be resolved to the element&#39;s location as a
+<code>{x:number, y:number}</code> object.</p>
+</dl></dd></dl></section><section class="property" id="getOuterHtml"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L2088" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>getOuterHtml()</div></h3><p>Schedules a command to retrieve the outer HTML of this element.</p>
+<dl><dt class="spec">Defined by</dt><dd><a href="webdriver_exports_WebElement.html#getOuterHtml">WebElement</a></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code><dd><p>A promise that will be
+resolved with the element&#39;s outer HTML.</p>
+</dl></dd></dl></section><section class="property" id="getRawId"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L1686" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div class="tags"><span class="deprecated"></span></div><div>getRawId()</div></h3><dl><dt class="spec">Deprecated<dd><p>Use <a href="webdriver_exports_WebElementPromise.html#getId"><code>#getId()</code></a> instead.</p>
+<dt class="spec">Defined by</dt><dd><a href="webdriver_exports_WebElement.html#getRawId">WebElement</a></dd></dl></section><section class="property" id="getSize"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L1987" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>getSize()</div></h3><p>Schedules a command to compute the size of this element&#39;s bounding box, in
+pixels.</p>
+<dl><dt class="spec">Defined by</dt><dd><a href="webdriver_exports_WebElement.html#getSize">WebElement</a></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code><dd><p>A
+promise that will be resolved with the element&#39;s size as a
+<code>{width:number, height:number}</code> object.</p>
+</dl></dd></dl></section><section class="property" id="getTagName"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L1903" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>getTagName()</div></h3><p>Schedules a command to query for the tag/node name of this element.</p>
+<dl><dt class="spec">Defined by</dt><dd><a href="webdriver_exports_WebElement.html#getTagName">WebElement</a></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code><dd><p>A promise that will be
+resolved with the element&#39;s tag name.</p>
+</dl></dd></dl></section><section class="property" id="getText"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L1974" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>getText()</div></h3><p>Get the visible (i.e. not hidden by CSS) innerText of this element, including
+sub-elements, without any leading or trailing whitespace.</p>
+<dl><dt class="spec">Defined by</dt><dd><a href="webdriver_exports_WebElement.html#getText">WebElement</a></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code><dd><p>A promise that will be
+resolved with the element&#39;s visible text.</p>
+</dl></dd></dl></section><section class="property" id="isDisplayed"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L2059" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>isDisplayed()</div></h3><p>Schedules a command to test whether this element is currently displayed.</p>
+<dl><dt class="spec">Defined by</dt><dd><a href="webdriver_exports_WebElement.html#isDisplayed">WebElement</a></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code><dd><p>A promise that will be
+resolved with whether this element is currently visible on the page.</p>
+</dl></dd></dl></section><section class="property" id="isElementPresent"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L1773" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>isElementPresent(<wbr>locator)</div></h3><p>Schedules a command to test if there is at least one descendant of this
+element that matches the given search criteria.</p>
+<dl><dt class="spec">Defined by</dt><dd><a href="webdriver_exports_WebElement.html#isElementPresent">WebElement</a></dd><dt class="spec">Parameters</dt><dd><dl><dt class="named">locator<code>!(<a href="by_exports_By.html">By</a>|Function)</code><dd><p>The locator strategy to use when
+searching for the element.</p>
+</dl></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code><dd><p>A promise that will be
+resolved with whether an element could be located on the page.</p>
+</dl></dd></dl></section><section class="property" id="isEnabled"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L2011" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>isEnabled()</div></h3><p>Schedules a command to query whether the DOM element represented by this
+instance is enabled, as dicted by the <code>disabled</code> attribute.</p>
+<dl><dt class="spec">Defined by</dt><dd><a href="webdriver_exports_WebElement.html#isEnabled">WebElement</a></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code><dd><p>A promise that will be
+resolved with whether this element is currently enabled.</p>
+</dl></dd></dl></section><section class="property" id="isPending"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L2141" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>isPending()</div></h3><dl><dt class="spec">Returns</dt><dd><dl><dt><code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code></dl></dd></dl></section><section class="property" id="isSelected"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L2022" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>isSelected()</div></h3><p>Schedules a command to query whether this element is selected.</p>
+<dl><dt class="spec">Defined by</dt><dd><a href="webdriver_exports_WebElement.html#isSelected">WebElement</a></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code><dd><p>A promise that will be
+resolved with whether this element is currently selected.</p>
+</dl></dd></dl></section><section class="property" id="sendKeys"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L1868" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>sendKeys(<wbr>var_args)</div></h3><p>Schedules a command to type a sequence on the DOM element represented by
+this instance.</p>
+<p>Modifier keys (SHIFT, CONTROL, ALT, META) are stateful; once a modifier is
+processed in the keysequence, that key state is toggled until one of the
+following occurs:</p>
+<ul><li>
+<p>The modifier key is encountered again in the sequence. At this point the
+state of the key is toggled (along with the appropriate keyup/down
+events).</p>
+</li><li>
+<p>The <a href="input_exports_Key.html#NULL"><code>input.Key.NULL</code></a> key is encountered in the sequence. When
+this key is encountered, all modifier keys current in the down state are
+released (with accompanying keyup events). The NULL key can be used to
+simulate common keyboard shortcuts:</p>
+<pre><code>  element.sendKeys(&#34;text was&#34;,
+                   Key.CONTROL, &#34;a&#34;, Key.NULL,
+                   &#34;now text is&#34;);
+  // Alternatively:
+  element.sendKeys(&#34;text was&#34;,
+                   Key.chord(Key.CONTROL, &#34;a&#34;),
+                   &#34;now text is&#34;);
+</code></pre>
+</li><li>
+<p>The end of the keysequence is encountered. When there are no more keys
+to type, all depressed modifier keys are released (with accompanying
+keyup events).</p>
+</li></ul>
+<p>If this element is a file input (<code>&lt;input type&#61;&#34;file&#34;&gt;</code>), the
+specified key sequence should specify the path to the file to attach to
+the element. This is analgous to the user clicking &#34;Browse...&#34; and entering
+the path into the file select dialog.</p>
+<pre><code> var form &#61; driver.findElement(By.css(&#39;form&#39;));
+ var element &#61; form.findElement(By.css(&#39;input[type&#61;file]&#39;));
+ element.sendKeys(&#39;/path/to/file.txt&#39;);
+ form.submit();
+</code></pre>
+<p>For uploads to function correctly, the entered path must reference a file
+on the <em>browser&#39;s</em> machine, not the local machine running this script. When
+running against a remote Selenium server, a <a href="input_exports_FileDetector.html"><code>input.FileDetector</code></a>
+may be used to transparently copy files to the remote machine before
+attempting to upload them in the browser.</p>
+<p><strong>Note:</strong> On browsers where native keyboard events are not supported
+(e.g. Firefox on OS X), key events will be synthesized. Special
+punctionation keys will be synthesized according to a standard QWERTY en-us
+keyboard layout.</p>
+<dl><dt class="spec">Defined by</dt><dd><a href="webdriver_exports_WebElement.html#sendKeys">WebElement</a></dd><dt class="spec">Parameters</dt><dd><dl><dt class="named">var_args<code>...(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>|<a href="promise_exports_Promise.html">Promise</a>)</code><dd><p>The
+sequence of keys to type. All arguments will be joined into a single
+sequence.</p>
+</dl></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code><dd><p>A promise that will be resolved
+when all keys have been typed.</p>
+</dl></dd></dl></section><section class="property" id="submit"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L2035" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>submit()</div></h3><p>Schedules a command to submit the form containing this element (or this
+element if it is a FORM element). This command is a no-op if the element is
+not contained in a form.</p>
+<dl><dt class="spec">Defined by</dt><dd><a href="webdriver_exports_WebElement.html#submit">WebElement</a></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code><dd><p>A promise that will be resolved
+when the form has been submitted.</p>
+</dl></dd></dl></section><section class="property" id="takeScreenshot"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L2075" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>takeScreenshot(<wbr>opt_scroll)</div></h3><p>Take a screenshot of the visible region encompassed by this element&#39;s
+bounding rectangle.</p>
+<dl><dt class="spec">Defined by</dt><dd><a href="webdriver_exports_WebElement.html#takeScreenshot">WebElement</a></dd><dt class="spec">Parameters</dt><dd><dl><dt class="named">opt_scroll<code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>=</code><dd><p>Optional argument that indicates whether the
+element should be scrolled into view before taking a screenshot.
+Defaults to false.</p>
+</dl></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code><dd><p>A promise that will be
+resolved to the screenshot as a base-64 encoded PNG.</p>
+</dl></dd></dl></section><section class="property" id="then"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L2144" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>then(<wbr>arg0,<wbr> arg1)</div></h3><dl><dt class="spec">Parameters</dt><dd><dl><dt class="named">arg0<code>?function(T): (R|IThenable&lt;R&gt;)=</code><dt class="named">arg1<code>?function(*): (R|IThenable&lt;R&gt;)=</code></dl></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code></dl></dd></dl></section><section class="property" id="thenCatch"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L2150" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>thenCatch(<wbr>arg0)</div></h3><dl><dt class="spec">Parameters</dt><dd><dl><dt class="named">arg0<code>function(*): (R|IThenable&lt;R&gt;)</code></dl></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code></dl></dd></dl></section><section class="property" id="thenFinally"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L2153" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>thenFinally(<wbr>arg0)</div></h3><dl><dt class="spec">Parameters</dt><dd><dl><dt class="named">arg0<code>function(): (R|IThenable&lt;R&gt;)</code></dl></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code></dl></dd></dl></section></section><section class="static-functions"><h2>Static Functions</h2><section class="property" id="WebElementPromise.buildId"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L2127" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>WebElementPromise.buildId(<wbr>id)</div></h3><dl><dt class="spec">Parameters</dt><dd><dl><dt class="named">id<code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code><dd><p>The raw ID.</p>
+</dl></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code><dd><p>The element ID for use with WebDriver&#39;s wire protocol.</p>
+</dl></dd></dl></section><section class="property" id="WebElementPromise.equals"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L2127" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>WebElementPromise.equals(<wbr>a,<wbr> b)</div></h3><p>Compares two WebElements for equality.</p>
+<dl><dt class="spec">Parameters</dt><dd><dl><dt class="named">a<code>!<a href="webdriver_exports_WebElement.html">WebElement</a></code><dd><p>A WebElement.</p>
+<dt class="named">b<code>!<a href="webdriver_exports_WebElement.html">WebElement</a></code><dd><p>A WebElement.</p>
+</dl></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="promise_exports_Promise.html">Promise</a></code><dd><p>A promise that will be
+resolved to whether the two WebElements are equal.</p>
+</dl></dd></dl></section><section class="property" id="WebElementPromise.extractId"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L2127" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>WebElementPromise.extractId(<wbr>obj)</div></h3><p>Extracts the encoded WebElement ID from the object.</p>
+<dl><dt class="spec">Parameters</dt><dd><dl><dt class="named">obj<code>?</code><dd><p>The object to extract the ID from.</p>
+</dl></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code><dd><p>the extracted ID.</p>
+</dl></dd><dt class="spec">Throws</dt><dd><dl><dt><code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError">TypeError</a></code><dd><p>if the object is not a valid encoded ID.</p>
+</dl></dd></dl></section><section class="property" id="WebElementPromise.isId"><div class="code-link"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/lib/webdriver.js#L2127" target="_blank" title="View source"><i class="material-icons">code</i></a></div><h3 class="name"><div>WebElementPromise.isId(<wbr>obj)</div></h3><dl><dt class="spec">Parameters</dt><dd><dl><dt class="named">obj<code>?</code><dd><p>the object to test.</p>
+</dl></dd><dt class="spec">Returns</dt><dd><dl><dt><code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code><dd><p>whether the object is a valid encoded WebElement ID.</p>
+</dl></dd></dl></section></section></article></main><footer><div><a href="https://github.com/jleyba/js-dossier">Generated by dossier</a></div></footer></div><nav class="dossier-nav"><section><a class="title" href="../../../index.html" tabindex="2">Overview</a></section><section class="modules"><div class="toggle"><div class="title"><span class="item" tabindex="2">Modules</span><i class="material-icons">expand_more</i></div></div></section><section><a class="title" href="../../../Changes.html" tabindex="2">Changes</a></section></nav><script src="../../../types.js"></script><script src="../../../dossier.js"></script>
