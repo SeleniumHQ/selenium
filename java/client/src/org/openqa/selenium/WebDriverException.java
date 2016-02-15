@@ -29,6 +29,7 @@ public class WebDriverException extends RuntimeException {
   public static final String SESSION_ID = "Session ID";
   public static final String DRIVER_INFO = "Driver info";
   protected static final String BASE_SUPPORT_URL = "http://seleniumhq.org/exceptions/";
+  private boolean isMessageCreated = false;
 
   private Map<String, String> extraInfo = new HashMap<>();
 
@@ -50,10 +51,14 @@ public class WebDriverException extends RuntimeException {
 
   @Override
   public String getMessage() {
+    if (isMessageCreated){
+      return super.getMessage();
+    }    
     return createMessage(super.getMessage());
   }
 
   private String createMessage(String originalMessageString) {
+    isMessageCreated = true;
     String supportMessage = getSupportUrl() == null ?
         "" : "For documentation on this error, please visit: " + getSupportUrl() + "\n";
 
