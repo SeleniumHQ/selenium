@@ -37,6 +37,21 @@ module Selenium
           bridge = Bridge.new
           expect { bridge.upload("NotAFile")}.to raise_error(Error::WebDriverError)
         end
+
+        context 'custom session_id' do
+          let(:bridge) { described_class.new session_id: 'session_id' }
+
+          before { allow_any_instance_of(described_class).to receive(:getCapabilities) }
+
+          it 'sets session_id' do
+            expect(bridge.session_id).to eq 'session_id'
+          end
+
+          it 'retrieves capabilities' do
+            expect_any_instance_of(described_class).to receive(:getCapabilities)
+            bridge
+          end
+        end
       end
 
     end # Remote
