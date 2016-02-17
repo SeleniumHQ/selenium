@@ -244,7 +244,7 @@ public class FluentWait<T> implements Wait<T> {
           return value;
         }
       } catch (Throwable e) {
-        lastException = propagateIfNotIngored(e);
+        lastException = propagateIfNotIgnored(e);
       }
 
       // Check the timeout after evaluating the function to ensure conditions
@@ -270,7 +270,7 @@ public class FluentWait<T> implements Wait<T> {
     }
   }
 
-  private Throwable propagateIfNotIngored(Throwable e) {
+  private Throwable propagateIfNotIgnored(Throwable e) {
     for (Class<? extends Throwable> ignoredException : ignoredExceptions) {
       if (ignoredException.isInstance(e)) {
         return e;
