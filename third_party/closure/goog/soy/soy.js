@@ -69,13 +69,14 @@ goog.soy.renderHtml = function(element, templateResult) {
  * @param {Object=} opt_injectedData The injected data for the template.
  * @template ARG_TYPES
  */
-goog.soy.renderElement = function(element, template, opt_templateData,
-                                  opt_injectedData) {
+goog.soy.renderElement = function(
+    element, template, opt_templateData, opt_injectedData) {
   // Soy template parameter is only nullable for historical reasons.
   goog.asserts.assert(template, 'Soy template may not be null.');
-  element.innerHTML = goog.soy.ensureTemplateOutputHtml_(template(
-      opt_templateData || goog.soy.defaultTemplateData_, undefined,
-      opt_injectedData));
+  element.innerHTML = goog.soy.ensureTemplateOutputHtml_(
+      template(
+          opt_templateData || goog.soy.defaultTemplateData_, undefined,
+          opt_injectedData));
 };
 
 
@@ -95,14 +96,15 @@ goog.soy.renderElement = function(element, template, opt_templateData,
  * @return {!Node} The resulting node or document fragment.
  * @template ARG_TYPES
  */
-goog.soy.renderAsFragment = function(template, opt_templateData,
-                                     opt_injectedData, opt_domHelper) {
+goog.soy.renderAsFragment = function(
+    template, opt_templateData, opt_injectedData, opt_domHelper) {
   // Soy template parameter is only nullable for historical reasons.
   goog.asserts.assert(template, 'Soy template may not be null.');
   var dom = opt_domHelper || goog.dom.getDomHelper();
   var html = goog.soy.ensureTemplateOutputHtml_(
-      template(opt_templateData || goog.soy.defaultTemplateData_,
-               undefined, opt_injectedData));
+      template(
+          opt_templateData || goog.soy.defaultTemplateData_, undefined,
+          opt_injectedData));
   goog.soy.assertFirstTagValid_(html);
   return dom.htmlToDocumentFragment(html);
 };
@@ -123,13 +125,15 @@ goog.soy.renderAsFragment = function(template, opt_templateData,
  *     element if necessary.
  * @template ARG_TYPES
  */
-goog.soy.renderAsElement = function(template, opt_templateData,
-                                    opt_injectedData, opt_domHelper) {
+goog.soy.renderAsElement = function(
+    template, opt_templateData, opt_injectedData, opt_domHelper) {
   // Soy template parameter is only nullable for historical reasons.
   goog.asserts.assert(template, 'Soy template may not be null.');
-  return goog.soy.convertToElement_(template(
-      opt_templateData || goog.soy.defaultTemplateData_,
-      undefined, opt_injectedData), opt_domHelper);
+  return goog.soy.convertToElement_(
+      template(
+          opt_templateData || goog.soy.defaultTemplateData_, undefined,
+          opt_injectedData),
+      opt_domHelper);
 };
 
 
@@ -207,8 +211,8 @@ goog.soy.ensureTemplateOutputHtml_ = function(templateResult) {
 
   // Allow SanitizedContent of kind HTML.
   if (templateResult instanceof goog.soy.data.SanitizedContent) {
-    templateResult = /** @type {!goog.soy.data.SanitizedContent} */ (
-        templateResult);
+    templateResult =
+        /** @type {!goog.soy.data.SanitizedContent} */ (templateResult);
     var ContentKind = goog.soy.data.SanitizedContentKind;
     if (templateResult.contentKind === ContentKind.HTML) {
       return goog.asserts.assertString(templateResult.getContent());
@@ -221,8 +225,8 @@ goog.soy.ensureTemplateOutputHtml_ = function(templateResult) {
     }
   }
 
-  goog.asserts.fail('Soy template output is unsafe for use as HTML: ' +
-      templateResult);
+  goog.asserts.fail(
+      'Soy template output is unsafe for use as HTML: ' + templateResult);
 
   // In production, return a safe string, rather than failing hard.
   return 'zSoyz';
@@ -240,9 +244,10 @@ goog.soy.ensureTemplateOutputHtml_ = function(templateResult) {
 goog.soy.assertFirstTagValid_ = function(html) {
   if (goog.asserts.ENABLE_ASSERTS) {
     var matches = html.match(goog.soy.INVALID_TAG_TO_RENDER_);
-    goog.asserts.assert(!matches, 'This template starts with a %s, which ' +
-        'cannot be a child of a <div>, as required by soy internals. ' +
-        'Consider using goog.soy.renderElement instead.\nTemplate output: %s',
+    goog.asserts.assert(
+        !matches, 'This template starts with a %s, which ' +
+            'cannot be a child of a <div>, as required by soy internals. ' +
+            'Consider using goog.soy.renderElement instead.\nTemplate output: %s',
         matches && matches[0], html);
   }
 };

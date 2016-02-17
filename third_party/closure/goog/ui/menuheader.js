@@ -39,8 +39,9 @@ goog.require('goog.ui.registry');
  * @extends {goog.ui.Control}
  */
 goog.ui.MenuHeader = function(content, opt_domHelper, opt_renderer) {
-  goog.ui.Control.call(this, content, opt_renderer ||
-      goog.ui.MenuHeaderRenderer.getInstance(), opt_domHelper);
+  goog.ui.Control.call(
+      this, content, opt_renderer || goog.ui.MenuHeaderRenderer.getInstance(),
+      opt_domHelper);
 
   this.setSupportedState(goog.ui.Component.State.DISABLED, false);
   this.setSupportedState(goog.ui.Component.State.HOVER, false);
@@ -55,8 +56,7 @@ goog.inherits(goog.ui.MenuHeader, goog.ui.Control);
 
 // Register a decorator factory function for goog.ui.MenuHeaders.
 goog.ui.registry.setDecoratorByClassName(
-    goog.ui.MenuHeaderRenderer.CSS_CLASS,
-    function() {
+    goog.ui.MenuHeaderRenderer.CSS_CLASS, function() {
       // MenuHeader defaults to using MenuHeaderRenderer.
       return new goog.ui.MenuHeader(null);
     });

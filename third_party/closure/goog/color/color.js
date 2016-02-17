@@ -97,9 +97,10 @@ goog.color.parse = function(str) {
  */
 goog.color.isValidColor = function(str) {
   var maybeHex = goog.color.prependHashIfNecessaryHelper(str);
-  return !!(goog.color.isValidHexColor_(maybeHex) ||
-            goog.color.isValidRgbColor_(str).length ||
-            goog.color.names && goog.color.names[str.toLowerCase()]);
+  return !!(
+      goog.color.isValidHexColor_(maybeHex) ||
+      goog.color.isValidRgbColor_(str).length ||
+      goog.color.names && goog.color.names[str.toLowerCase()]);
 };
 
 
@@ -148,7 +149,7 @@ goog.color.normalizeHex = function(hexColor) {
   if (!goog.color.isValidHexColor_(hexColor)) {
     throw Error("'" + hexColor + "' is not a valid hex color");
   }
-  if (hexColor.length == 4) { // of the form #RGB
+  if (hexColor.length == 4) {  // of the form #RGB
     hexColor = hexColor.replace(goog.color.hexTripletRe_, '#$1$1$2$2$3$3');
   }
   return hexColor.toLowerCase();
@@ -181,9 +182,7 @@ goog.color.rgbToHex = function(r, g, b) {
   r = Number(r);
   g = Number(g);
   b = Number(b);
-  if (isNaN(r) || r < 0 || r > 255 ||
-      isNaN(g) || g < 0 || g > 255 ||
-      isNaN(b) || b < 0 || b > 255) {
+  if (r != (r & 255) || g != (g & 255) || b != (b & 255)) {
     throw Error('"(' + r + ',' + g + ',' + b + '") is not a valid RGB color');
   }
   var hexR = goog.color.prependZeroIfNecessaryHelper(r.toString(16));
@@ -294,7 +293,7 @@ goog.color.hslToRgb = function(h, s, l) {
   var r = 0;
   var g = 0;
   var b = 0;
-  var normH = h / 360; // normalize h to fall in [0, 1]
+  var normH = h / 360;  // normalize h to fall in [0, 1]
 
   if (s == 0) {
     r = g = b = l * 255;
@@ -395,9 +394,7 @@ goog.color.isValidRgbColor_ = function(str) {
     var r = Number(regExpResultArray[1]);
     var g = Number(regExpResultArray[2]);
     var b = Number(regExpResultArray[3]);
-    if (r >= 0 && r <= 255 &&
-        g >= 0 && g <= 255 &&
-        b >= 0 && b <= 255) {
+    if (r >= 0 && r <= 255 && g >= 0 && g <= 255 && b >= 0 && b <= 255) {
       return [r, g, b];
     }
   }
@@ -656,8 +653,8 @@ goog.color.hslDistance = function(hsl1, hsl2) {
   var h1 = hsl1[0] / 360.0;
   var h2 = hsl2[0] / 360.0;
   var dh = (h1 - h2) * 2.0 * Math.PI;
-  return (hsl1[2] - hsl2[2]) * (hsl1[2] - hsl2[2]) +
-      sl1 * sl1 + sl2 * sl2 - 2 * sl1 * sl2 * Math.cos(dh);
+  return (hsl1[2] - hsl2[2]) * (hsl1[2] - hsl2[2]) + sl1 * sl1 + sl2 * sl2 -
+      2 * sl1 * sl2 * Math.cos(dh);
 };
 
 
@@ -728,9 +725,7 @@ goog.color.highContrast = function(prime, suggestions) {
           goog.color.colorDiff_(suggestions[i], prime)
     });
   }
-  suggestionsWithDiff.sort(function(a, b) {
-    return b.diff - a.diff;
-  });
+  suggestionsWithDiff.sort(function(a, b) { return b.diff - a.diff; });
   return suggestionsWithDiff[0].color;
 };
 
@@ -757,8 +752,8 @@ goog.color.yiqBrightness_ = function(rgb) {
  * @private
  */
 goog.color.yiqBrightnessDiff_ = function(rgb1, rgb2) {
-  return Math.abs(goog.color.yiqBrightness_(rgb1) -
-                  goog.color.yiqBrightness_(rgb2));
+  return Math.abs(
+      goog.color.yiqBrightness_(rgb1) - goog.color.yiqBrightness_(rgb2));
 };
 
 

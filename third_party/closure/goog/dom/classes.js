@@ -121,9 +121,8 @@ goog.dom.classes.add_ = function(classes, args) {
  * @private
  */
 goog.dom.classes.getDifference_ = function(arr1, arr2) {
-  return goog.array.filter(arr1, function(item) {
-    return !goog.array.contains(arr2, item);
-  });
+  return goog.array.filter(
+      arr1, function(item) { return !goog.array.contains(arr2, item); });
 };
 
 

@@ -256,8 +256,8 @@ goog.ui.ModalPopup.prototype.manageBackgroundDom_ = function() {
 goog.ui.ModalPopup.prototype.createTabCatcher_ = function() {
   // Creates tab catcher element.
   if (!this.tabCatcherElement_) {
-    this.tabCatcherElement_ = this.getDomHelper().createElement(
-        goog.dom.TagName.SPAN);
+    this.tabCatcherElement_ =
+        this.getDomHelper().createElement(goog.dom.TagName.SPAN);
     goog.style.setElementShown(this.tabCatcherElement_, false);
     goog.dom.setFocusableTabIndex(this.tabCatcherElement_, true);
     this.tabCatcherElement_.style.position = 'absolute';
@@ -320,9 +320,7 @@ goog.ui.ModalPopup.prototype.decorateInternal = function(element) {
   goog.ui.ModalPopup.base(this, 'decorateInternal', element);
   var allClasses = goog.string.trim(this.getCssClass()).split(' ');
 
-  goog.dom.classlist.addAll(
-      goog.asserts.assert(this.getElement()),
-      allClasses);
+  goog.dom.classlist.addAll(goog.asserts.assert(this.getElement()), allClasses);
 
   // Create the background mask...
   this.manageBackgroundDom_();
@@ -341,8 +339,8 @@ goog.ui.ModalPopup.prototype.enterDocument = function() {
 
   goog.dom.insertSiblingAfter(this.tabCatcherElement_, this.getElement());
 
-  this.focusHandler_ = new goog.events.FocusHandler(
-      this.getDomHelper().getDocument());
+  this.focusHandler_ =
+      new goog.events.FocusHandler(this.getDomHelper().getDocument());
 
   // We need to watch the entire document so that we can detect when the
   // focus is moved out of this modal popup.
@@ -422,8 +420,9 @@ goog.ui.ModalPopup.prototype.setA11YDetectBackground = function(hide) {
  * @param {!goog.fx.Transition} bgHideTransition Transition to hide
  *     the background.
  */
-goog.ui.ModalPopup.prototype.setTransition = function(popupShowTransition,
-    popupHideTransition, bgShowTransition, bgHideTransition) {
+goog.ui.ModalPopup.prototype.setTransition = function(
+    popupShowTransition, popupHideTransition, bgShowTransition,
+    bgHideTransition) {
   this.popupShowTransition_ = popupShowTransition;
   this.popupHideTransition_ = popupHideTransition;
   this.bgShowTransition_ = bgShowTransition;
@@ -618,9 +617,11 @@ goog.ui.ModalPopup.prototype.resizeBackground_ = function() {
   // to account for browser differences in treatment of absolutely-positioned
   // content.
   var viewSize = goog.dom.getViewportSize(win);
-  var w = Math.max(viewSize.width,
+  var w = Math.max(
+      viewSize.width,
       Math.max(doc.body.scrollWidth, doc.documentElement.scrollWidth));
-  var h = Math.max(viewSize.height,
+  var h = Math.max(
+      viewSize.height,
       Math.max(doc.body.scrollHeight, doc.documentElement.scrollHeight));
 
   if (this.bgIframeEl_) {

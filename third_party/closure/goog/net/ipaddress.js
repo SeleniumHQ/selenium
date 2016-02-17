@@ -71,8 +71,9 @@ goog.net.IpAddress.prototype.getVersion = function() {
  * @return {boolean} true if the IP Addresses are equal.
  */
 goog.net.IpAddress.prototype.equals = function(other) {
-  return (this.version_ == other.getVersion() &&
-          this.ip_.equals(other.toInteger()));
+  return (
+      this.version_ == other.getVersion() &&
+      this.ip_.equals(other.toInteger()));
 };
 
 
@@ -138,8 +139,7 @@ goog.net.IpAddress.fromUriString = function(address) {
   try {
     if (goog.string.startsWith(address, '[') &&
         goog.string.endsWith(address, ']')) {
-      return new goog.net.Ipv6Address(
-          address.substring(1, address.length - 1));
+      return new goog.net.Ipv6Address(address.substring(1, address.length - 1));
     }
 
     return new goog.net.Ipv4Address(address);
@@ -166,8 +166,7 @@ goog.net.IpAddress.fromUriString = function(address) {
 goog.net.Ipv4Address = function(address) {
   var ip = goog.math.Integer.ZERO;
   if (address instanceof goog.math.Integer) {
-    if (address.getSign() != 0 ||
-        address.lessThan(goog.math.Integer.ZERO) ||
+    if (address.getSign() != 0 || address.lessThan(goog.math.Integer.ZERO) ||
         address.greaterThan(goog.net.Ipv4Address.MAX_ADDRESS_)) {
       throw Error('The address does not look like an IPv4.');
     } else {
@@ -185,8 +184,7 @@ goog.net.Ipv4Address = function(address) {
 
     for (var i = 0; i < octets.length; i++) {
       var parsedOctet = goog.string.toNumber(octets[i]);
-      if (isNaN(parsedOctet) ||
-          parsedOctet < 0 || parsedOctet > 255 ||
+      if (isNaN(parsedOctet) || parsedOctet < 0 || parsedOctet > 255 ||
           (octets[i].length != 1 && goog.string.startsWith(octets[i], '0'))) {
         throw Error('In ' + address + ', octet ' + i + ' is not valid');
       }
@@ -223,8 +221,9 @@ goog.net.Ipv4Address.MAX_NETMASK_LENGTH = 32;
  * @private
  * @const
  */
-goog.net.Ipv4Address.MAX_ADDRESS_ = goog.math.Integer.ONE.shiftLeft(
-    goog.net.Ipv4Address.MAX_NETMASK_LENGTH).subtract(goog.math.Integer.ONE);
+goog.net.Ipv4Address.MAX_ADDRESS_ =
+    goog.math.Integer.ONE.shiftLeft(goog.net.Ipv4Address.MAX_NETMASK_LENGTH)
+        .subtract(goog.math.Integer.ONE);
 
 
 /**
@@ -270,8 +269,7 @@ goog.net.Ipv4Address.prototype.toUriString = function() {
 goog.net.Ipv6Address = function(address) {
   var ip = goog.math.Integer.ZERO;
   if (address instanceof goog.math.Integer) {
-    if (address.getSign() != 0 ||
-        address.lessThan(goog.math.Integer.ZERO) ||
+    if (address.getSign() != 0 || address.lessThan(goog.math.Integer.ZERO) ||
         address.greaterThan(goog.net.Ipv6Address.MAX_ADDRESS_)) {
       throw Error('The address does not look like a valid IPv6.');
     } else {
@@ -355,8 +353,9 @@ goog.net.Ipv6Address.MAX_HEXTET_VALUE_ = goog.math.Integer.fromInt(65535);
  * @private
  * @const
  */
-goog.net.Ipv6Address.MAX_ADDRESS_ = goog.math.Integer.ONE.shiftLeft(
-    goog.net.Ipv6Address.MAX_NETMASK_LENGTH).subtract(goog.math.Integer.ONE);
+goog.net.Ipv6Address.MAX_ADDRESS_ =
+    goog.math.Integer.ONE.shiftLeft(goog.net.Ipv6Address.MAX_NETMASK_LENGTH)
+        .subtract(goog.math.Integer.ONE);
 
 
 /**
@@ -484,9 +483,9 @@ goog.net.Ipv6Address.dottedQuadtoHextets_ = function(quads) {
  * @return {boolean} true if the IPv6 contains a mapped IPv4.
  */
 goog.net.Ipv6Address.prototype.isMappedIpv4Address = function() {
-  return (this.ip_.getBitsUnsigned(3) == 0 &&
-          this.ip_.getBitsUnsigned(2) == 0 &&
-          this.ip_.getBitsUnsigned(1) == 0xffff);
+  return (
+      this.ip_.getBitsUnsigned(3) == 0 && this.ip_.getBitsUnsigned(2) == 0 &&
+      this.ip_.getBitsUnsigned(1) == 0xffff);
 };
 
 

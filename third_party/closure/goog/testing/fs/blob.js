@@ -78,16 +78,14 @@ goog.testing.fs.Blob.prototype.slice = function(
   }
   var relativeEnd;
   if (goog.isNumber(opt_end)) {
-    relativeEnd = (opt_end < 0) ?
-        Math.max(this.data_.length + opt_end, 0) :
-        Math.min(opt_end, this.data_.length);
+    relativeEnd = (opt_end < 0) ? Math.max(this.data_.length + opt_end, 0) :
+                                  Math.min(opt_end, this.data_.length);
   } else {
     relativeEnd = this.data_.length;
   }
   var span = Math.max(relativeEnd - relativeStart, 0);
   return new goog.testing.fs.Blob(
-      this.data_.substr(relativeStart, span),
-      opt_contentType);
+      this.data_.substr(relativeStart, span), opt_contentType);
 };
 
 

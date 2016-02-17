@@ -49,7 +49,8 @@ goog.testing.FunctionMock = function(opt_functionName, opt_strictness) {
     return fn.$mockMethod.apply(fn, args);
   };
   var base = opt_strictness === goog.testing.Mock.LOOSE ?
-      goog.testing.LooseMock : goog.testing.StrictMock;
+      goog.testing.LooseMock :
+      goog.testing.StrictMock;
   goog.object.extend(fn, new base({}));
 
   return /** @type {!goog.testing.MockInterface} */ (fn);
@@ -143,18 +144,17 @@ goog.testing.createMethodMock = function(scope, functionName, opt_strictness) {
  *     goog.testing.Mock.STRICT. The default is STRICT.
  * @return {!goog.testing.MockInterface} The mocked constructor.
  */
-goog.testing.createConstructorMock = function(scope, constructorName,
-                                              opt_strictness) {
+goog.testing.createConstructorMock = function(
+    scope, constructorName, opt_strictness) {
   var realConstructor = scope[constructorName];
-  var constructorMock = goog.testing.MethodMock(scope, constructorName,
-                                                opt_strictness);
+  var constructorMock =
+      goog.testing.MethodMock(scope, constructorName, opt_strictness);
 
   // Copy class members from the real constructor to the mock. Do not copy
   // the closure superClass_ property (see goog.inherits), the built-in
   // prototype property, or properties added to Function.prototype
   for (var property in realConstructor) {
-    if (property != 'superClass_' &&
-        property != 'prototype' &&
+    if (property != 'superClass_' && property != 'prototype' &&
         realConstructor.hasOwnProperty(property)) {
       constructorMock[property] = realConstructor[property];
     }

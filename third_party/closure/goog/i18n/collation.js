@@ -37,9 +37,7 @@ goog.i18n.collation.createComparator = function(opt_locale) {
     var intl = goog.global.Intl;
     return new intl.Collator([opt_locale || goog.LOCALE]).compare;
   } else {
-    return function(arg1, arg2) {
-      return arg1.localeCompare(arg2);
-    };
+    return function(arg1, arg2) { return arg1.localeCompare(arg2); };
   }
 };
 

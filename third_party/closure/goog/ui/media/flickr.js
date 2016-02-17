@@ -173,8 +173,7 @@ goog.ui.media.FlickrSet.prototype.createDom = function(c) {
   // TODO(user): find out what is the policy about hosting this SWF. figure out
   // if it works over https.
   var flash = new goog.ui.media.FlashObject(
-      model.getPlayer().getTrustedResourceUrl(),
-      control.getDomHelper());
+      model.getPlayer().getTrustedResourceUrl(), control.getDomHelper());
   flash.addFlashVars(model.getPlayer().getVars());
   flash.render(div);
 
@@ -207,16 +206,11 @@ goog.ui.media.FlickrSet.prototype.getCssClass = function() {
  * @extends {goog.ui.media.MediaModel}
  * @final
  */
-goog.ui.media.FlickrSetModel = function(userId,
-                                        setId,
-                                        opt_caption,
-                                        opt_description) {
+goog.ui.media.FlickrSetModel = function(
+    userId, setId, opt_caption, opt_description) {
   goog.ui.media.MediaModel.call(
-      this,
-      goog.ui.media.FlickrSetModel.buildUrl(userId, setId),
-      opt_caption,
-      opt_description,
-      goog.ui.media.MediaModel.MimeType.FLASH);
+      this, goog.ui.media.FlickrSetModel.buildUrl(userId, setId), opt_caption,
+      opt_description, goog.ui.media.MediaModel.MimeType.FLASH);
 
   /**
    * The Flickr user id.
@@ -272,9 +266,8 @@ goog.ui.media.FlickrSetModel.MATCHER_ =
  *     Flickr set.
  * @throws exception in case the parsing fails
  */
-goog.ui.media.FlickrSetModel.newInstance = function(flickrSetUrl,
-                                                    opt_caption,
-                                                    opt_description) {
+goog.ui.media.FlickrSetModel.newInstance = function(
+    flickrSetUrl, opt_caption, opt_description) {
   if (goog.ui.media.FlickrSetModel.MATCHER_.test(flickrSetUrl)) {
     var data = goog.ui.media.FlickrSetModel.MATCHER_.exec(flickrSetUrl);
     return new goog.ui.media.FlickrSetModel(

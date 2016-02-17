@@ -60,8 +60,7 @@ goog.dom.dataset.set = function(element, key, value) {
     element.dataset[key] = value;
   } else {
     element.setAttribute(
-        goog.dom.dataset.PREFIX_ + goog.string.toSelectorCase(key),
-        value);
+        goog.dom.dataset.PREFIX_ + goog.string.toSelectorCase(key), value);
   }
 };
 
@@ -82,8 +81,8 @@ goog.dom.dataset.get = function(element, key) {
     }
     return element.dataset[key];
   } else {
-    return element.getAttribute(goog.dom.dataset.PREFIX_ +
-                                goog.string.toSelectorCase(key));
+    return element.getAttribute(
+        goog.dom.dataset.PREFIX_ + goog.string.toSelectorCase(key));
   }
 };
 
@@ -98,8 +97,8 @@ goog.dom.dataset.remove = function(element, key) {
   if (goog.dom.dataset.ALLOWED_ && element.dataset) {
     delete element.dataset[key];
   } else {
-    element.removeAttribute(goog.dom.dataset.PREFIX_ +
-                            goog.string.toSelectorCase(key));
+    element.removeAttribute(
+        goog.dom.dataset.PREFIX_ + goog.string.toSelectorCase(key));
   }
 };
 
@@ -116,11 +115,12 @@ goog.dom.dataset.has = function(element, key) {
   if (goog.dom.dataset.ALLOWED_ && element.dataset) {
     return key in element.dataset;
   } else if (element.hasAttribute) {
-    return element.hasAttribute(goog.dom.dataset.PREFIX_ +
-                                goog.string.toSelectorCase(key));
+    return element.hasAttribute(
+        goog.dom.dataset.PREFIX_ + goog.string.toSelectorCase(key));
   } else {
-    return !!(element.getAttribute(goog.dom.dataset.PREFIX_ +
-                                   goog.string.toSelectorCase(key)));
+    return !!(
+        element.getAttribute(
+            goog.dom.dataset.PREFIX_ + goog.string.toSelectorCase(key)));
   }
 };
 
@@ -142,8 +142,7 @@ goog.dom.dataset.getAll = function(element) {
     var attributes = element.attributes;
     for (var i = 0; i < attributes.length; ++i) {
       var attribute = attributes[i];
-      if (goog.string.startsWith(attribute.name,
-                                 goog.dom.dataset.PREFIX_)) {
+      if (goog.string.startsWith(attribute.name, goog.dom.dataset.PREFIX_)) {
         // We use substr(5), since it's faster than replacing 'data-' with ''.
         var key = goog.string.toCamelCase(attribute.name.substr(5));
         dataset[key] = attribute.value;

@@ -32,8 +32,7 @@ goog.require('goog.testing.TestRunner');
  * Base path for JsUnit app files, relative to Closure's base path.
  * @type {string}
  */
-goog.testing.jsunit.BASE_PATH =
-    '../../third_party/java/jsunit/core/app/';
+goog.testing.jsunit.BASE_PATH = '../../third_party/java/jsunit/core/app/';
 
 
 /**
@@ -78,11 +77,11 @@ goog.define('goog.testing.jsunit.AUTO_RUN_DELAY_IN_MS', 500);
   if (top['JsUnitTestManager'] || top['jsUnitTestManager']) {
     // Running inside JsUnit so add support code.
     var path = goog.basePath + goog.testing.jsunit.CORE_SCRIPT;
-    document.write('<script type="text/javascript" src="' +
-                   path + '"></' + 'script>');
+    document.write(
+        '<script type="text/javascript" src="' + path + '"></' +
+        'script>');
 
   } else {
-
     // Create a test runner.
     var tr = new goog.testing.TestRunner();
 

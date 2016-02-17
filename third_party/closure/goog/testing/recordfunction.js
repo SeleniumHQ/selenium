@@ -68,8 +68,8 @@ goog.testing.recordFunction = function(opt_f) {
       calls.push(new goog.testing.FunctionCall(f, this, arguments, ret, null));
       return ret;
     } catch (err) {
-      calls.push(new goog.testing.FunctionCall(f, this, arguments, undefined,
-          err));
+      calls.push(
+          new goog.testing.FunctionCall(f, this, arguments, undefined, err));
       throw err;
     }
   }
@@ -77,18 +77,20 @@ goog.testing.recordFunction = function(opt_f) {
   /**
    * @return {number} Total number of calls.
    */
-  recordedFunction.getCallCount = function() {
-    return calls.length;
-  };
+  recordedFunction.getCallCount = function() { return calls.length; };
 
   /**
-   * Asserts that the function was called {@code expected} times.
-   * @param {number} expected The expected number of calls.
+   * Asserts that the function was called a certain number of times.
+   * @param {number|string} a The expected number of calls (1 arg) or debug
+   *     message (2 args).
+   * @param {number=} opt_b The expected number of calls (2 args only).
    */
-  recordedFunction.assertCallCount = function(expected) {
+  recordedFunction.assertCallCount = function(a, opt_b) {
     var actual = calls.length;
+    var expected = arguments.length == 1 ? a : opt_b;
+    var message = arguments.length == 1 ? '' : ' ' + a;
     assertEquals(
-        'Expected ' + expected + ' call(s), but was ' + actual + '.',
+        'Expected ' + expected + ' call(s), but was ' + actual + '.' + message,
         expected, actual);
   };
 
@@ -96,9 +98,7 @@ goog.testing.recordFunction = function(opt_f) {
    * @return {!Array<!goog.testing.FunctionCall>} All calls of the recorded
    *     function.
    */
-  recordedFunction.getCalls = function() {
-    return calls;
-  };
+  recordedFunction.getCalls = function() { return calls; };
 
 
   /**
@@ -114,16 +114,12 @@ goog.testing.recordFunction = function(opt_f) {
    * @return {goog.testing.FunctionCall} Last call of the recorded function or
    *     null if it hasn't been called.
    */
-  recordedFunction.popLastCall = function() {
-    return calls.pop() || null;
-  };
+  recordedFunction.popLastCall = function() { return calls.pop() || null; };
 
   /**
    * Resets the recorded function and removes all calls.
    */
-  recordedFunction.reset = function() {
-    calls.length = 0;
-  };
+  recordedFunction.reset = function() { calls.length = 0; };
 
   return recordedFunction;
 };

@@ -84,8 +84,8 @@ goog.net.XhrLike.prototype.statusText;
  * @param {?string=} opt_password
  * @see http://www.w3.org/TR/XMLHttpRequest/#the-open()-method
  */
-goog.net.XhrLike.prototype.open = function(method, url, opt_async, opt_user,
-    opt_password) {};
+goog.net.XhrLike.prototype.open = function(
+    method, url, opt_async, opt_user, opt_password) {};
 
 
 /**

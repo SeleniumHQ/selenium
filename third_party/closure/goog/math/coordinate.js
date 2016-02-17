@@ -209,7 +209,7 @@ goog.math.Coordinate.prototype.translate = function(tx, opt_ty) {
     this.x += tx.x;
     this.y += tx.y;
   } else {
-    this.x += tx;
+    this.x += Number(tx);
     if (goog.isNumber(opt_ty)) {
       this.y += opt_ty;
     }

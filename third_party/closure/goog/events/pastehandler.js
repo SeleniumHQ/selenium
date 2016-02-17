@@ -92,23 +92,17 @@ goog.events.PasteHandler = function(element) {
    */
   this.lastTime_ = goog.now();
 
-  if (goog.userAgent.WEBKIT ||
-      goog.userAgent.IE ||
-      goog.userAgent.EDGE ||
-      goog.userAgent.GECKO && goog.userAgent.isVersionOrHigher('1.9')) {
+  if (goog.events.PasteHandler.SUPPORTS_NATIVE_PASTE_EVENT) {
     // Most modern browsers support the paste event.
-    this.eventHandler_.listen(element, goog.events.EventType.PASTE,
-        this.dispatch_);
+    this.eventHandler_.listen(
+        element, goog.events.EventType.PASTE, this.dispatch_);
   } else {
     // But FF2 and Opera doesn't. we listen for a series of events to try to
     // find out if a paste occurred. We enumerate and cover all known ways to
     // paste text on textareas.  See more details on {@link #handleEvent_}.
     var events = [
-      goog.events.EventType.KEYDOWN,
-      goog.events.EventType.BLUR,
-      goog.events.EventType.FOCUS,
-      goog.events.EventType.MOUSEOVER,
-      'input'
+      goog.events.EventType.KEYDOWN, goog.events.EventType.BLUR,
+      goog.events.EventType.FOCUS, goog.events.EventType.MOUSEOVER, 'input'
     ];
     this.eventHandler_.listen(element, events, this.handleEvent_);
   }
@@ -120,8 +114,8 @@ goog.events.PasteHandler = function(element) {
    * @type {goog.async.ConditionalDelay}
    * @private
    */
-  this.delay_ = new goog.async.ConditionalDelay(
-      goog.bind(this.checkUpdatedText_, this));
+  this.delay_ =
+      new goog.async.ConditionalDelay(goog.bind(this.checkUpdatedText_, this));
 
 };
 goog.inherits(goog.events.PasteHandler, goog.events.EventTarget);
@@ -151,8 +145,16 @@ goog.events.PasteHandler.EventType = {
  * differentiated between non key paste events and key events.
  * @type {number}
  */
-goog.events.PasteHandler.MANDATORY_MS_BETWEEN_INPUT_EVENTS_TIE_BREAKER =
-    400;
+goog.events.PasteHandler.MANDATORY_MS_BETWEEN_INPUT_EVENTS_TIE_BREAKER = 400;
+
+
+/**
+ * Whether current UA supoprts the native "paste" event type.
+ * @const {boolean}
+ */
+goog.events.PasteHandler.SUPPORTS_NATIVE_PASTE_EVENT = goog.userAgent.WEBKIT ||
+    goog.userAgent.IE || goog.userAgent.EDGE ||
+    (goog.userAgent.GECKO && goog.userAgent.isVersionOrHigher('1.9'));
 
 
 /**
@@ -188,8 +190,7 @@ goog.events.PasteHandler.State = {
  * @type {goog.events.PasteHandler.State}
  * @private
  */
-goog.events.PasteHandler.prototype.state_ =
-    goog.events.PasteHandler.State.INIT;
+goog.events.PasteHandler.prototype.state_ = goog.events.PasteHandler.State.INIT;
 
 
 /**
@@ -391,8 +392,8 @@ goog.events.PasteHandler.prototype.handleUnderInit_ = function(e) {
       break;
     }
     default: {
-      goog.log.error(this.logger_,
-          'unexpected event ' + e.type + 'during init');
+      goog.log.error(
+          this.logger_, 'unexpected event ' + e.type + 'during init');
     }
   }
 };
@@ -421,7 +422,7 @@ goog.events.PasteHandler.prototype.handleUnderInit_ = function(e) {
  */
 goog.events.PasteHandler.prototype.handleUnderFocused_ = function(e) {
   switch (e.type) {
-    case 'input' : {
+    case 'input': {
       // there are two different events that happen in practice that involves
       // consecutive 'input' events. we use a heuristic to differentiate
       // between the one that generates a valid paste action and the one that
@@ -433,8 +434,8 @@ goog.events.PasteHandler.prototype.handleUnderFocused_ = function(e) {
       // paste event, which is described in
       // @see testMiddleClickWithoutFocusTriggersPasteEvent
       var minimumMilisecondsBetweenInputEvents = this.lastTime_ +
-          goog.events.PasteHandler.
-              MANDATORY_MS_BETWEEN_INPUT_EVENTS_TIE_BREAKER;
+          goog.events.PasteHandler
+              .MANDATORY_MS_BETWEEN_INPUT_EVENTS_TIE_BREAKER;
       if (goog.now() > minimumMilisecondsBetweenInputEvents ||
           this.previousEvent_ == goog.events.EventType.FOCUS) {
         goog.log.info(this.logger_, 'paste by textchange while focused!');
@@ -465,8 +466,8 @@ goog.events.PasteHandler.prototype.handleUnderFocused_ = function(e) {
       break;
     }
     default: {
-      goog.log.error(this.logger_,
-          'unexpected event ' + e.type + ' during focused');
+      goog.log.error(
+          this.logger_, 'unexpected event ' + e.type + ' during focused');
     }
   }
 };
@@ -486,7 +487,7 @@ goog.events.PasteHandler.prototype.handleUnderFocused_ = function(e) {
  */
 goog.events.PasteHandler.prototype.handleUnderTyping_ = function(e) {
   switch (e.type) {
-    case 'input' : {
+    case 'input': {
       this.state_ = goog.events.PasteHandler.State.FOCUSED;
       break;
     }
@@ -511,8 +512,8 @@ goog.events.PasteHandler.prototype.handleUnderTyping_ = function(e) {
       break;
     }
     default: {
-      goog.log.error(this.logger_,
-          'unexpected event ' + e.type + ' during keypressed');
+      goog.log.error(
+          this.logger_, 'unexpected event ' + e.type + ' during keypressed');
     }
   }
 };

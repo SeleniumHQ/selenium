@@ -181,9 +181,10 @@ goog.Disposable.prototype.dispose = function() {
     if (goog.Disposable.MONITORING_MODE != goog.Disposable.MonitoringMode.OFF) {
       var uid = goog.getUid(this);
       if (goog.Disposable.MONITORING_MODE ==
-          goog.Disposable.MonitoringMode.PERMANENT &&
+              goog.Disposable.MonitoringMode.PERMANENT &&
           !goog.Disposable.instances_.hasOwnProperty(uid)) {
-        throw Error(this + ' did not call the goog.Disposable base ' +
+        throw Error(
+            this + ' did not call the goog.Disposable base ' +
             'constructor or was disposed of after a clearUndisposedObjects ' +
             'call');
       }

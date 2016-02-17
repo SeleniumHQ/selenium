@@ -46,7 +46,8 @@ goog.require('goog.i18n.uChar');
  * @final
  */
 goog.i18n.CharListDecompressor = function() {
-  this.buildCharMap_('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqr' +
+  this.buildCharMap_(
+      '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqr' +
       'stuvwxyz!#$%()*+,-.:;<=>?@[]^_`{|}~');
 };
 
@@ -86,8 +87,8 @@ goog.i18n.CharListDecompressor.prototype.buildCharMap_ = function(str) {
  * @return {number} The encoded number.
  * @private
  */
-goog.i18n.CharListDecompressor.prototype.getCodeAt_ = function(str, start,
-    leng) {
+goog.i18n.CharListDecompressor.prototype.getCodeAt_ = function(
+    str, start, leng) {
   var result = 0;
   for (var i = 0; i < leng; i++) {
     var c = this.charMap_[str.charAt(start + i)];
@@ -110,20 +111,20 @@ goog.i18n.CharListDecompressor.prototype.getCodeAt_ = function(str, start,
  * @return {number} Last codepoint that is added to the list.
  * @private
  */
-goog.i18n.CharListDecompressor.prototype.addChars_ = function(list, lastcode,
-    value, type) {
-   if (type == 0) {
-     lastcode += value + 1;
-     goog.array.extend(list, goog.i18n.uChar.fromCharCode(lastcode));
-   } else if (type == 1) {
-     lastcode -= value + 1;
-     goog.array.extend(list, goog.i18n.uChar.fromCharCode(lastcode));
-   } else if (type == 2) {
-     for (var i = 0; i <= value; i++) {
-       lastcode++;
-       goog.array.extend(list, goog.i18n.uChar.fromCharCode(lastcode));
-     }
-   }
+goog.i18n.CharListDecompressor.prototype.addChars_ = function(
+    list, lastcode, value, type) {
+  if (type == 0) {
+    lastcode += value + 1;
+    goog.array.extend(list, goog.i18n.uChar.fromCharCode(lastcode));
+  } else if (type == 1) {
+    lastcode -= value + 1;
+    goog.array.extend(list, goog.i18n.uChar.fromCharCode(lastcode));
+  } else if (type == 2) {
+    for (var i = 0; i <= value; i++) {
+      lastcode++;
+      goog.array.extend(list, goog.i18n.uChar.fromCharCode(lastcode));
+    }
+  }
   return lastcode;
 };
 
@@ -155,4 +156,3 @@ goog.i18n.CharListDecompressor.prototype.toCharList = function(str) {
   }
   return result;
 };
-

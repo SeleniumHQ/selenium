@@ -76,8 +76,9 @@ if (goog.DEBUG) {
  */
 goog.math.RangeSet.equals = function(a, b) {
   // Fast check for object equality. Also succeeds if a and b are both null.
-  return a == b || !!(a && b && goog.array.equals(a.ranges_, b.ranges_,
-      goog.math.Range.equals));
+  return a == b ||
+      !!(a && b &&
+         goog.array.equals(a.ranges_, b.ranges_, goog.math.Range.equals));
 };
 
 
@@ -161,9 +162,8 @@ goog.math.RangeSet.prototype.remove = function(a) {
     insertionPoint++;
 
     if (a.end < b.end) {
-      goog.array.insertAt(this.ranges_,
-                          new goog.math.Range(a.end, b.end),
-                          insertionPoint);
+      goog.array.insertAt(
+          this.ranges_, new goog.math.Range(a.end, b.end), insertionPoint);
     }
     b.end = a.start;
   }
@@ -298,8 +298,9 @@ goog.math.RangeSet.prototype.slice = function(range) {
       break;
     }
 
-    set.add(new goog.math.Range(Math.max(range.start, b.start),
-                                Math.min(range.end, b.end)));
+    set.add(
+        new goog.math.Range(
+            Math.max(range.start, b.start), Math.min(range.end, b.end)));
   }
 
   return set;
@@ -336,9 +337,8 @@ goog.math.RangeSet.prototype.inverse = function(range) {
  * @return {number} The sum of the lengths of ranges covered in the set.
  */
 goog.math.RangeSet.prototype.coveredLength = function() {
-  return /** @type {number} */ (goog.array.reduce(
-      this.ranges_,
-      function(res, range) {
+  return /** @type {number} */ (
+      goog.array.reduce(this.ranges_, function(res, range) {
         return res + range.end - range.start;
       }, 0));
 };
@@ -350,8 +350,8 @@ goog.math.RangeSet.prototype.coveredLength = function() {
  */
 goog.math.RangeSet.prototype.getBounds = function() {
   if (this.ranges_.length) {
-    return new goog.math.Range(this.ranges_[0].start,
-                               goog.array.peek(this.ranges_).end);
+    return new goog.math.Range(
+        this.ranges_[0].start, goog.array.peek(this.ranges_).end);
   }
 
   return null;

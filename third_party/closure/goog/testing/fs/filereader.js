@@ -131,8 +131,7 @@ goog.testing.fs.FileReader.prototype.abort = function() {
   if (this.readyState_ != goog.fs.FileReader.ReadyState.LOADING) {
     var msg = 'aborting read';
     throw new goog.fs.Error(
-        /** @type {!FileError} */ ({'name': 'InvalidStateError'}),
-        msg);
+        /** @type {!FileError} */ ({'name': 'InvalidStateError'}), msg);
   }
 
   this.aborted_ = true;
@@ -152,14 +151,14 @@ goog.testing.fs.FileReader.prototype.getResult = function() {
   }
   if (this.returnType_ == goog.testing.fs.FileReader.ReturnType.TEXT) {
     return this.blob_.toString();
-  } else if (this.returnType_ ==
-      goog.testing.fs.FileReader.ReturnType.ARRAY_BUFFER) {
+  } else if (
+      this.returnType_ == goog.testing.fs.FileReader.ReturnType.ARRAY_BUFFER) {
     return this.blob_.toArrayBuffer();
-  } else if (this.returnType_ ==
-      goog.testing.fs.FileReader.ReturnType.BINARY_STRING) {
+  } else if (
+      this.returnType_ == goog.testing.fs.FileReader.ReturnType.BINARY_STRING) {
     return this.blob_.toString();
-  } else if (this.returnType_ ==
-      goog.testing.fs.FileReader.ReturnType.DATA_URL) {
+  } else if (
+      this.returnType_ == goog.testing.fs.FileReader.ReturnType.DATA_URL) {
     return this.blob_.toDataUrl();
   } else {
     return undefined;
@@ -177,8 +176,7 @@ goog.testing.fs.FileReader.prototype.read_ = function(blob) {
   if (this.readyState_ == goog.fs.FileReader.ReadyState.LOADING) {
     var msg = 'reading file';
     throw new goog.fs.Error(
-        /** @type {!FileError} */ ({'name': 'InvalidStateError'}),
-        msg);
+        /** @type {!FileError} */ ({'name': 'InvalidStateError'}), msg);
   }
 
   this.readyState_ = goog.fs.FileReader.ReadyState.LOADING;
@@ -189,15 +187,15 @@ goog.testing.fs.FileReader.prototype.read_ = function(blob) {
     }
 
     this.progressEvent_(goog.fs.FileReader.EventType.LOAD_START, 0, blob.size);
-    this.progressEvent_(goog.fs.FileReader.EventType.LOAD, blob.size / 2,
-        blob.size);
-    this.progressEvent_(goog.fs.FileReader.EventType.LOAD, blob.size,
-        blob.size);
+    this.progressEvent_(
+        goog.fs.FileReader.EventType.LOAD, blob.size / 2, blob.size);
+    this.progressEvent_(
+        goog.fs.FileReader.EventType.LOAD, blob.size, blob.size);
     this.readyState_ = goog.fs.FileReader.ReadyState.DONE;
-    this.progressEvent_(goog.fs.FileReader.EventType.LOAD, blob.size,
-        blob.size);
-    this.progressEvent_(goog.fs.FileReader.EventType.LOAD_END, blob.size,
-        blob.size);
+    this.progressEvent_(
+        goog.fs.FileReader.EventType.LOAD, blob.size, blob.size);
+    this.progressEvent_(
+        goog.fs.FileReader.EventType.LOAD_END, blob.size, blob.size);
   }, 0, this);
 };
 
@@ -251,8 +249,7 @@ goog.testing.fs.FileReader.prototype.readAsDataUrl = function(blob) {
  */
 goog.testing.fs.FileReader.prototype.abort_ = function(total) {
   this.error_ = new goog.fs.Error(
-      /** @type {!FileError} */ ({'name': 'AbortError'}),
-      'reading file');
+      /** @type {!FileError} */ ({'name': 'AbortError'}), 'reading file');
   this.progressEvent_(goog.fs.FileReader.EventType.ERROR, 0, total);
   this.progressEvent_(goog.fs.FileReader.EventType.ABORT, 0, total);
   this.readyState_ = goog.fs.FileReader.ReadyState.DONE;
@@ -269,7 +266,7 @@ goog.testing.fs.FileReader.prototype.abort_ = function(total) {
  * @param {number} total The total data that was to be processed, in bytes.
  * @private
  */
-goog.testing.fs.FileReader.prototype.progressEvent_ = function(type, loaded,
-    total) {
+goog.testing.fs.FileReader.prototype.progressEvent_ = function(
+    type, loaded, total) {
   this.dispatchEvent(new goog.testing.fs.ProgressEvent(type, loaded, total));
 };

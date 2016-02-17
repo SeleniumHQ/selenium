@@ -156,11 +156,11 @@ goog.soy.data.SanitizedContent.prototype.toSafeHtml = function() {
   if (this.contentKind !== goog.soy.data.SanitizedContentKind.HTML) {
     throw Error('Sanitized content was not of kind TEXT or HTML.');
   }
-  return goog.html.uncheckedconversions.
-      safeHtmlFromStringKnownToSatisfyTypeContract(
+  return goog.html.uncheckedconversions
+      .safeHtmlFromStringKnownToSatisfyTypeContract(
           goog.string.Const.from(
               'Soy SanitizedContent of kind HTML produces ' +
-                  'SafeHtml-contract-compliant value.'),
+              'SafeHtml-contract-compliant value.'),
           this.toString(), this.contentDir);
 };
 

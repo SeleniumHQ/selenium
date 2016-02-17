@@ -90,8 +90,9 @@ goog.storage.mechanism.IEUserData = function(storageKey, opt_storageNodeId) {
     }
   }
 };
-goog.inherits(goog.storage.mechanism.IEUserData,
-              goog.storage.mechanism.IterableMechanism);
+goog.inherits(
+    goog.storage.mechanism.IEUserData,
+    goog.storage.mechanism.IterableMechanism);
 
 
 /**

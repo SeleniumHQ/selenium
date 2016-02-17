@@ -101,16 +101,13 @@ goog.dom.pattern.Tag.prototype.matchToken = function(token, type) {
     // Check the attributes.
     if (this.attrs_ &&
         !goog.object.every(
-            this.attrs_,
-            goog.dom.pattern.matchStringOrRegexMap,
-            token)) {
+            this.attrs_, goog.dom.pattern.matchStringOrRegexMap, token)) {
       return goog.dom.pattern.MatchType.NO_MATCH;
     }
     // Check the styles.
     if (this.styles_ &&
         !goog.object.every(
-            this.styles_,
-            goog.dom.pattern.matchStringOrRegexMap,
+            this.styles_, goog.dom.pattern.matchStringOrRegexMap,
             token.style)) {
       return goog.dom.pattern.MatchType.NO_MATCH;
     }

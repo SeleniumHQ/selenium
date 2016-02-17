@@ -127,9 +127,8 @@ goog.labs.mock.formatMethodCall_ = function(methodName, opt_args) {
       var funcName = goog.labs.mock.getFunctionName_(arg);
       return '<function ' + funcName + '>';
     } else {
-      var isObjectWithClass = goog.isObject(arg) &&
-          !goog.isFunction(arg) && !goog.isArray(arg) &&
-          arg.constructor != Object;
+      var isObjectWithClass = goog.isObject(arg) && !goog.isFunction(arg) &&
+          !goog.isArray(arg) && arg.constructor != Object;
 
       if (isObjectWithClass) {
         return arg.toString();
@@ -198,8 +197,8 @@ goog.labs.mock.formatValue_ = function(obj, opt_id) {
       } else if (goog.isObject(obj)) {
         if (goog.array.contains(previous, obj)) {
           if (id) {
-            output.push('<recursive/dupe obj_' +
-                goog.labs.mock.getUid(obj) + '>');
+            output.push(
+                '<recursive/dupe obj_' + goog.labs.mock.getUid(obj) + '>');
           } else {
             output.push('<recursive/dupe>');
           }
@@ -209,7 +208,9 @@ goog.labs.mock.formatValue_ = function(obj, opt_id) {
           var inner_obj = [];
           for (var x in obj) {
             output.push(' ');
-            output.push('"' + x + '"' + ':');
+            output.push(
+                '"' + x + '"' +
+                ':');
             helper(obj[x]);
           }
           if (id) {
@@ -226,7 +227,8 @@ goog.labs.mock.formatValue_ = function(obj, opt_id) {
   };
 
   helper(obj);
-  return output.join('').replace(/"closure_uid_\d+"/g, '_id')
+  return output.join('')
+      .replace(/"closure_uid_\d+"/g, '_id')
       .replace(/{ /g, '{');
 
 };
@@ -265,13 +267,8 @@ goog.labs.mock.VerificationError.prototype.name = 'VerificationError';
  * @private
  */
 goog.labs.mock.PROTOTYPE_FIELDS_ = [
-  'constructor',
-  'hasOwnProperty',
-  'isPrototypeOf',
-  'propertyIsEnumerable',
-  'toLocaleString',
-  'toString',
-  'valueOf'
+  'constructor', 'hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable',
+  'toLocaleString', 'toString', 'valueOf'
 ];
 
 
@@ -284,8 +281,8 @@ goog.labs.mock.PROTOTYPE_FIELDS_ = [
  * @param {!Array<?>} args The expected arguments.
  * @return {string} The error message.
  */
-goog.labs.mock.VerificationError.getVerificationErrorMsg_ =
-    function(recordedCalls, methodName, args) {
+goog.labs.mock.VerificationError.getVerificationErrorMsg_ = function(
+    recordedCalls, methodName, args) {
 
   recordedCalls = goog.array.filter(recordedCalls, function(binding) {
     return binding.getMethodName() == methodName;
@@ -362,8 +359,8 @@ goog.labs.mock.MockManager_ = function() {
  * @return {!goog.labs.mock.StubBinder_} The stub binder.
  * @private
  */
-goog.labs.mock.MockManager_.prototype.handleMockCall_ =
-    function(methodName, var_args) {
+goog.labs.mock.MockManager_.prototype.handleMockCall_ = function(
+    methodName, var_args) {
   var args = goog.array.slice(arguments, 1);
   return new goog.labs.mock.StubBinder_(this, methodName, args);
 };
@@ -388,8 +385,8 @@ goog.labs.mock.MockManager_.prototype.getMockedItem = function() {
  * @param {!Function} func The stub function.
  *
  */
-goog.labs.mock.MockManager_.prototype.addBinding =
-    function(methodName, args, func) {
+goog.labs.mock.MockManager_.prototype.addBinding = function(
+    methodName, args, func) {
   var binding = new goog.labs.mock.MethodBinding_(methodName, args, func);
   this.methodBindings.push(binding);
 };
@@ -405,8 +402,8 @@ goog.labs.mock.MockManager_.prototype.addBinding =
  * @return {Function} The stub function or undefined.
  * @protected
  */
-goog.labs.mock.MockManager_.prototype.getNextBinding =
-    function(methodName, args) {
+goog.labs.mock.MockManager_.prototype.getNextBinding = function(
+    methodName, args) {
   var first = -1;
   var count = 0;
   var stub = null;
@@ -449,8 +446,8 @@ goog.labs.mock.MockManager_.prototype.getExecutor = function(methodName, args) {
  * @return {*} Value returned by the stub function.
  * @protected
  */
-goog.labs.mock.MockManager_.prototype.executeStub =
-    function(methodName, var_args) {
+goog.labs.mock.MockManager_.prototype.executeStub = function(
+    methodName, var_args) {
   var args = goog.array.slice(arguments, 1);
 
   // Record this call
@@ -470,10 +467,9 @@ goog.labs.mock.MockManager_.prototype.executeStub =
  * @param {!Array<?>} args The array of arguments.
  * @private
  */
-goog.labs.mock.MockManager_.prototype.recordCall_ =
-    function(methodName, args) {
-  var callRecord = new goog.labs.mock.MethodBinding_(methodName, args,
-      goog.nullFunction);
+goog.labs.mock.MockManager_.prototype.recordCall_ = function(methodName, args) {
+  var callRecord =
+      new goog.labs.mock.MethodBinding_(methodName, args, goog.nullFunction);
 
   this.callRecords_.push(callRecord);
 };
@@ -486,8 +482,8 @@ goog.labs.mock.MockManager_.prototype.recordCall_ =
  * @param {...*} var_args The arguments passed.
  * @protected
  */
-goog.labs.mock.MockManager_.prototype.verifyInvocation =
-    function(methodName, var_args) {
+goog.labs.mock.MockManager_.prototype.verifyInvocation = function(
+    methodName, var_args) {
   var args = goog.array.slice(arguments, 1);
   var binding = goog.array.find(this.callRecords_, function(binding) {
     return binding.matches(methodName, args, true /* isVerification */);
@@ -590,8 +586,7 @@ goog.labs.mock.MockObjectManager_ = function(objOrClass) {
   // The alias for verifier for the world.
   this.mockedItem.$callVerifier = this.objectCallVerifier_;
 };
-goog.inherits(goog.labs.mock.MockObjectManager_,
-              goog.labs.mock.MockManager_);
+goog.inherits(goog.labs.mock.MockObjectManager_, goog.labs.mock.MockManager_);
 
 
 
@@ -608,8 +603,8 @@ goog.inherits(goog.labs.mock.MockObjectManager_,
 goog.labs.mock.MockSpyManager_ = function(obj) {
   goog.labs.mock.MockSpyManager_.base(this, 'constructor', obj);
 };
-goog.inherits(goog.labs.mock.MockSpyManager_,
-              goog.labs.mock.MockObjectManager_);
+goog.inherits(
+    goog.labs.mock.MockSpyManager_, goog.labs.mock.MockObjectManager_);
 
 
 /**
@@ -619,8 +614,8 @@ goog.inherits(goog.labs.mock.MockSpyManager_,
  * @return {!Function} The stub or the invocation logger, if defined.
  * @override
  */
-goog.labs.mock.MockSpyManager_.prototype.getNextBinding =
-    function(methodName, args) {
+goog.labs.mock.MockSpyManager_.prototype.getNextBinding = function(
+    methodName, args) {
   var stub = goog.labs.mock.MockSpyManager_.base(
       this, 'getNextBinding', methodName, args);
 
@@ -669,8 +664,7 @@ goog.labs.mock.MockFunctionManager_ = function(func) {
   this.mockedItem.$callVerifier =
       this.useMockedFunctionName_(this.verifyInvocation);
 };
-goog.inherits(goog.labs.mock.MockFunctionManager_,
-              goog.labs.mock.MockManager_);
+goog.inherits(goog.labs.mock.MockFunctionManager_, goog.labs.mock.MockManager_);
 
 
 /**
@@ -681,12 +675,11 @@ goog.inherits(goog.labs.mock.MockFunctionManager_,
  * @param {Function} nextFunc The function to override.
  * @return {!Function} The overloaded function.
  */
-goog.labs.mock.MockFunctionManager_.prototype.useMockedFunctionName_ =
-    function(nextFunc) {
+goog.labs.mock.MockFunctionManager_.prototype.useMockedFunctionName_ = function(
+    nextFunc) {
   return goog.bind(function(var_args) {
     var args = goog.array.slice(arguments, 0);
-    var name =
-        '#mockFor<' + goog.labs.mock.getFunctionName_(this.func_) + '>';
+    var name = '#mockFor<' + goog.labs.mock.getFunctionName_(this.func_) + '>';
     goog.array.insertAt(args, name, 0);
     return nextFunc.apply(this, args);
   }, this);
@@ -749,8 +742,8 @@ goog.labs.mock.StubBinder_.prototype.then = function(func) {
  * @param {*} value The value to return.
  */
 goog.labs.mock.StubBinder_.prototype.thenReturn = function(value) {
-  this.mockManager_.addBinding(this.name_, this.args_,
-                               goog.functions.constant(value));
+  this.mockManager_.addBinding(
+      this.name_, this.args_, goog.functions.constant(value));
 };
 
 
@@ -846,7 +839,7 @@ goog.labs.mock.MethodBinding_.prototype.matches = function(
   var specs = isVerification ? args : this.args_;
   var calls = isVerification ? this.args_ : args;
 
-  //TODO(user): More elaborate argument matching. Think about matching
+  // TODO(user): More elaborate argument matching. Think about matching
   //    objects.
   return this.methodName_ == methodName &&
       goog.array.equals(calls, specs, function(arg, spec) {

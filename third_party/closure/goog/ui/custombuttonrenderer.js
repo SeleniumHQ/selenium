@@ -78,8 +78,7 @@ goog.ui.CustomButtonRenderer.prototype.createDom = function(control) {
   var buttonElement = button.getDomHelper().createDom(
       goog.dom.TagName.DIV, attributes,
       this.createButton(button.getContent(), button.getDomHelper()));
-  this.setTooltip(
-      buttonElement, /** @type {!string}*/ (button.getTooltip()));
+  this.setTooltip(buttonElement, /** @type {!string}*/ (button.getTooltip()));
 
   return buttonElement;
 };
@@ -126,12 +125,13 @@ goog.ui.CustomButtonRenderer.prototype.getContentElement = function(element) {
  * @return {Element} Pseudo-rounded-corner box containing the content.
  */
 goog.ui.CustomButtonRenderer.prototype.createButton = function(content, dom) {
-  return dom.createDom(goog.dom.TagName.DIV,
-      goog.ui.INLINE_BLOCK_CLASSNAME + ' ' +
-      goog.getCssName(this.getCssClass(), 'outer-box'),
-      dom.createDom(goog.dom.TagName.DIV,
-          goog.ui.INLINE_BLOCK_CLASSNAME + ' ' +
-          goog.getCssName(this.getCssClass(), 'inner-box'), content));
+  return dom.createDom(
+      goog.dom.TagName.DIV, goog.ui.INLINE_BLOCK_CLASSNAME + ' ' +
+          goog.getCssName(this.getCssClass(), 'outer-box'),
+      dom.createDom(
+          goog.dom.TagName.DIV, goog.ui.INLINE_BLOCK_CLASSNAME + ' ' +
+              goog.getCssName(this.getCssClass(), 'inner-box'),
+          content));
 };
 
 
@@ -161,7 +161,6 @@ goog.ui.CustomButtonRenderer.prototype.hasBoxStructure = function(
   var outer = button.getDomHelper().getFirstElementChild(element);
   var outerClassName = goog.getCssName(this.getCssClass(), 'outer-box');
   if (outer && goog.dom.classlist.contains(outer, outerClassName)) {
-
     var inner = button.getDomHelper().getFirstElementChild(outer);
     var innerClassName = goog.getCssName(this.getCssClass(), 'inner-box');
     if (inner && goog.dom.classlist.contains(inner, innerClassName)) {
@@ -198,10 +197,10 @@ goog.ui.CustomButtonRenderer.prototype.decorate = function(control, element) {
         this.createButton(element.childNodes, button.getDomHelper()));
   }
 
-  goog.dom.classlist.addAll(element,
-      [goog.ui.INLINE_BLOCK_CLASSNAME, this.getCssClass()]);
-  return goog.ui.CustomButtonRenderer.superClass_.decorate.call(this, button,
-      element);
+  goog.dom.classlist.addAll(
+      element, [goog.ui.INLINE_BLOCK_CLASSNAME, this.getCssClass()]);
+  return goog.ui.CustomButtonRenderer.superClass_.decorate.call(
+      this, button, element);
 };
 
 
@@ -258,8 +257,8 @@ goog.ui.CustomButtonRenderer.trimTextNodes_ = function(element, fromStart) {
           element.removeChild(node);
         } else {
           // Found a non-empty text node; trim from the start/end, then exit.
-          node.nodeValue = fromStart ?
-              goog.string.trimLeft(text) : goog.string.trimRight(text);
+          node.nodeValue = fromStart ? goog.string.trimLeft(text) :
+                                       goog.string.trimRight(text);
           break;
         }
       } else {

@@ -86,14 +86,12 @@ testAgents.ANDROID_WEB_VIEW_4_4 =
 
 
 /** @const {string} */
-testAgents.IE_6 =
-    'Mozilla/5.0 (Windows; U; MSIE 6.0; Windows NT 5.1; SV1;' +
+testAgents.IE_6 = 'Mozilla/5.0 (Windows; U; MSIE 6.0; Windows NT 5.1; SV1;' +
     '.NET CLR 2.0.50727)';
 
 
 /** @const {string} */
-testAgents.IE_7 =
-    'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)';
+testAgents.IE_7 = 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)';
 
 
 /** @const {string} */
@@ -192,8 +190,7 @@ testAgents.FIREFOX_WINDOWS =
 
 
 /** @const {string} */
-testAgents.SAFARI_6 =
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_1) ' +
+testAgents.SAFARI_6 = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_1) ' +
     'AppleWebKit/536.25 (KHTML, like Gecko) ' +
     'Version/6.0 Safari/536.25';
 
@@ -263,8 +260,7 @@ testAgents.WEBVIEW_IPAD =
 
 
 /** @const {string} */
-testAgents.OPERA_10 =
-    'Opera/9.80 (S60; SymbOS; Opera Mobi/447; U; en) ' +
+testAgents.OPERA_10 = 'Opera/9.80 (S60; SymbOS; Opera Mobi/447; U; en) ' +
     'Presto/2.4.18 Version/10.00';
 
 
@@ -286,8 +282,7 @@ testAgents.OPERA_15 =
 
 
 /** @const {string} */
-testAgents.IPAD_4 =
-    'Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us)' +
+testAgents.IPAD_4 = 'Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us)' +
     ' AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B334b' +
     ' Safari/531.21.10';
 
@@ -299,15 +294,13 @@ testAgents.IPAD_5 =
 
 
 /** @const {string} */
-testAgents.IPAD_6 =
-    'Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) ' +
+testAgents.IPAD_6 = 'Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) ' +
     'AppleWebKit/536.26 (KHTML, like Gecko) ' +
     'Version/6.0 Mobile/10A403 Safari/8536.25';
 
 
 /** @const {string} */
-testAgents.CHROME_25 =
-    'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) ' +
+testAgents.CHROME_25 = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) ' +
     'AppleWebKit/535.8 (KHTML, like Gecko) ' +
     'Chrome/25.0.1000.10 Safari/535.8';
 
@@ -346,8 +339,7 @@ testAgents.CHROME_IPHONE =
 
 
 /** @const {string} */
-testAgents.CHROME_IPAD =
-    'Mozilla/5.0 (iPad; CPU OS 7_0_4 like Mac OS X) ' +
+testAgents.CHROME_IPAD = 'Mozilla/5.0 (iPad; CPU OS 7_0_4 like Mac OS X) ' +
     'AppleWebKit/537.51.1 (KHTML, like Gecko) CriOS/32.0.1700.20 ' +
     'Mobile/11B554a Safari/9537.53';
 

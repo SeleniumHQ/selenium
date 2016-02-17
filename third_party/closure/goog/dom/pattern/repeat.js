@@ -38,9 +38,7 @@ goog.require('goog.dom.pattern.MatchType');
  * @extends {goog.dom.pattern.AbstractPattern}
  * @final
  */
-goog.dom.pattern.Repeat = function(pattern,
-                                   opt_minimum,
-                                   opt_maximum) {
+goog.dom.pattern.Repeat = function(pattern, opt_minimum, opt_maximum) {
   /**
    * Pattern to repetitively match.
    *

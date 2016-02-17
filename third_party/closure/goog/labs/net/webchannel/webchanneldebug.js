@@ -74,12 +74,11 @@ WebChannelDebug.prototype.browserOfflineResponse = function(url) {
  * @param {number} attempt Which attempt # the request was.
  * @param {?string} postData The data posted in the request.
  */
-WebChannelDebug.prototype.xmlHttpChannelRequest =
-    function(verb, uri, id, attempt, postData) {
+WebChannelDebug.prototype.xmlHttpChannelRequest = function(
+    verb, uri, id, attempt, postData) {
   this.info(
-      'XMLHTTP REQ (' + id + ') [attempt ' + attempt + ']: ' +
-      verb + '\n' + uri + '\n' +
-      this.maybeRedactPostData_(postData));
+      'XMLHTTP REQ (' + id + ') [attempt ' + attempt + ']: ' + verb + '\n' +
+      uri + '\n' + this.maybeRedactPostData_(postData));
 };
 
 
@@ -92,11 +91,11 @@ WebChannelDebug.prototype.xmlHttpChannelRequest =
  * @param {goog.net.XmlHttp.ReadyState} readyState The ready state.
  * @param {number} statusCode The HTTP status code.
  */
-WebChannelDebug.prototype.xmlHttpChannelResponseMetaData =
-    function(verb, uri, id, attempt, readyState, statusCode)  {
+WebChannelDebug.prototype.xmlHttpChannelResponseMetaData = function(
+    verb, uri, id, attempt, readyState, statusCode) {
   this.info(
-      'XMLHTTP RESP (' + id + ') [ attempt ' + attempt + ']: ' +
-      verb + '\n' + uri + '\n' + readyState + ' ' + statusCode);
+      'XMLHTTP RESP (' + id + ') [ attempt ' + attempt + ']: ' + verb + '\n' +
+      uri + '\n' + readyState + ' ' + statusCode);
 };
 
 
@@ -106,11 +105,10 @@ WebChannelDebug.prototype.xmlHttpChannelResponseMetaData =
  * @param {?string} responseText The response text.
  * @param {?string=} opt_desc Optional request description.
  */
-WebChannelDebug.prototype.xmlHttpChannelResponseText =
-    function(id, responseText, opt_desc) {
+WebChannelDebug.prototype.xmlHttpChannelResponseText = function(
+    id, responseText, opt_desc) {
   this.info(
-      'XMLHTTP TEXT (' + id + '): ' +
-      this.redactResponse_(responseText) +
+      'XMLHTTP TEXT (' + id + '): ' + this.redactResponse_(responseText) +
       (opt_desc ? ' ' + opt_desc : ''));
 };
 
@@ -251,7 +249,9 @@ WebChannelDebug.prototype.maybeRedactPostData_ = function(data) {
       if (keyParts.length >= 2 && keyParts[1] == 'type') {
         out += key + '=' + value + '&';
       } else {
-        out += key + '=' + 'redacted' + '&';
+        out += key + '=' +
+            'redacted' +
+            '&';
       }
     }
   }

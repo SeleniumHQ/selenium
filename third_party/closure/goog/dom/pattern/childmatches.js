@@ -123,8 +123,8 @@ goog.dom.pattern.ChildMatches.prototype.matchToken = function(token, type) {
       // when we don't meet our minimum.
       this.needsReset_ = true;
       return (this.matches.length >= this.minimumMatches_) ?
-             goog.dom.pattern.MatchType.BACKTRACK_MATCH :
-             goog.dom.pattern.MatchType.NO_MATCH;
+          goog.dom.pattern.MatchType.BACKTRACK_MATCH :
+          goog.dom.pattern.MatchType.NO_MATCH;
 
     default:
       this.needsReset_ = true;

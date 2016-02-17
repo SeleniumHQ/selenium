@@ -79,10 +79,5 @@ goog.async.FreeList = goog.defineClass(null, {
    * @package
    * @return {number}
    */
-  occupants: function() {
-    return this.occupants_;
-  }
+  occupants: function() { return this.occupants_; }
 });
-
-
-

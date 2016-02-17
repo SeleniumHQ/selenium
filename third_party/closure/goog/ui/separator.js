@@ -42,8 +42,9 @@ goog.require('goog.ui.registry');
  * @extends {goog.ui.Control}
  */
 goog.ui.Separator = function(opt_renderer, opt_domHelper) {
-  goog.ui.Control.call(this, null, opt_renderer ||
-      goog.ui.MenuSeparatorRenderer.getInstance(), opt_domHelper);
+  goog.ui.Control.call(
+      this, null, opt_renderer || goog.ui.MenuSeparatorRenderer.getInstance(),
+      opt_domHelper);
 
   this.setSupportedState(goog.ui.Component.State.DISABLED, false);
   this.setSupportedState(goog.ui.Component.State.HOVER, false);
@@ -65,16 +66,15 @@ goog.inherits(goog.ui.Separator, goog.ui.Control);
 goog.ui.Separator.prototype.enterDocument = function() {
   goog.ui.Separator.superClass_.enterDocument.call(this);
   var element = this.getElement();
-  goog.asserts.assert(element,
-      'The DOM element for the separator cannot be null.');
+  goog.asserts.assert(
+      element, 'The DOM element for the separator cannot be null.');
   goog.a11y.aria.setRole(element, 'separator');
 };
 
 
 // Register a decorator factory function for goog.ui.MenuSeparators.
 goog.ui.registry.setDecoratorByClassName(
-    goog.ui.MenuSeparatorRenderer.CSS_CLASS,
-    function() {
+    goog.ui.MenuSeparatorRenderer.CSS_CLASS, function() {
       // Separator defaults to using MenuSeparatorRenderer.
       return new goog.ui.Separator();
     });

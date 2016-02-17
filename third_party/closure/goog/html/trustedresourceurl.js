@@ -165,16 +165,15 @@ goog.html.TrustedResourceUrl.unwrap = function(trustedResourceUrl) {
   if (trustedResourceUrl instanceof goog.html.TrustedResourceUrl &&
       trustedResourceUrl.constructor === goog.html.TrustedResourceUrl &&
       trustedResourceUrl
-          .TRUSTED_RESOURCE_URL_TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ ===
-              goog.html.TrustedResourceUrl
-                  .TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_) {
+              .TRUSTED_RESOURCE_URL_TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ ===
+          goog.html.TrustedResourceUrl
+              .TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_) {
     return trustedResourceUrl
         .privateDoNotAccessOrElseTrustedResourceUrlWrappedValue_;
   } else {
     goog.asserts.fail('expected object of type TrustedResourceUrl, got \'' +
-                      trustedResourceUrl + '\'');
+        trustedResourceUrl + '\' of type ' + goog.typeOf(trustedResourceUrl));
     return 'type_error:TrustedResourceUrl';
-
   }
 };
 
@@ -215,8 +214,8 @@ goog.html.TrustedResourceUrl.TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ = {};
  *     object.
  * @package
  */
-goog.html.TrustedResourceUrl.
-    createTrustedResourceUrlSecurityPrivateDoNotAccessOrElse = function(url) {
+goog.html.TrustedResourceUrl
+    .createTrustedResourceUrlSecurityPrivateDoNotAccessOrElse = function(url) {
   var trustedResourceUrl = new goog.html.TrustedResourceUrl();
   trustedResourceUrl.privateDoNotAccessOrElseTrustedResourceUrlWrappedValue_ =
       url;

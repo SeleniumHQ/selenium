@@ -52,8 +52,8 @@ goog.math.interpolator.Pchip1.prototype.computeDerivatives = function(
       deriv[i] = (w1 + w2) / (w1 / slope[i - 1] + w2 / slope[i]);
     }
   }
-  deriv[0] = this.computeDerivativeAtBoundary_(
-      dx[0], dx[1], slope[0], slope[1]);
+  deriv[0] =
+      this.computeDerivativeAtBoundary_(dx[0], dx[1], slope[0], slope[1]);
   deriv[len] = this.computeDerivativeAtBoundary_(
       dx[len - 1], dx[len - 2], slope[len - 1], slope[len - 2]);
   return deriv;
@@ -74,7 +74,8 @@ goog.math.interpolator.Pchip1.prototype.computeDerivativeAtBoundary_ = function(
   var deriv = ((2 * dx0 + dx1) * slope0 - dx0 * slope1) / (dx0 + dx1);
   if (goog.math.sign(deriv) != goog.math.sign(slope0)) {
     deriv = 0;
-  } else if (goog.math.sign(slope0) != goog.math.sign(slope1) &&
+  } else if (
+      goog.math.sign(slope0) != goog.math.sign(slope1) &&
       Math.abs(deriv) > Math.abs(3 * slope0)) {
     deriv = 3 * slope0;
   }

@@ -89,7 +89,6 @@ goog.vec.Ray.prototype.setDir = function(dir) {
  * @return {boolean} True if this ray is equal to the other ray.
  */
 goog.vec.Ray.prototype.equals = function(other) {
-  return other != null &&
-      goog.vec.Vec3.equals(this.origin, other.origin) &&
+  return other != null && goog.vec.Vec3.equals(this.origin, other.origin) &&
       goog.vec.Vec3.equals(this.dir, other.dir);
 };

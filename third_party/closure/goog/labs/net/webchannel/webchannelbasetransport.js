@@ -26,6 +26,7 @@ goog.provide('goog.labs.net.webChannel.WebChannelBaseTransport');
 
 goog.require('goog.asserts');
 goog.require('goog.events.EventTarget');
+goog.require('goog.json');
 goog.require('goog.labs.net.webChannel.ChannelRequest');
 goog.require('goog.labs.net.webChannel.WebChannelBase');
 goog.require('goog.log');
@@ -84,16 +85,12 @@ WebChannelBaseTransport.Channel = function(url, opt_options) {
   WebChannelBaseTransport.Channel.base(this, 'constructor');
 
   /**
-   * The underlying channel object.
-   *
-   * @private {!WebChannelBase}
+   * @private {!WebChannelBase} The underlying channel object.
    */
   this.channel_ = new WebChannelBase(opt_options);
 
   /**
-   * The URL of the target server end-point.
-   *
-   * @private {string}
+   * @private {string} The URL of the target server end-point.
    */
   this.url_ = url;
 
@@ -103,18 +100,18 @@ WebChannelBaseTransport.Channel = function(url, opt_options) {
    *
    * @private {string}
    */
-  this.testUrl_ = (opt_options && opt_options.testUrl) ? opt_options.testUrl :
+  this.testUrl_ = (opt_options && opt_options.testUrl) ?
+      opt_options.testUrl :
       goog.string.path.join(this.url_, 'test');
 
   /**
-   * The logger for this class.
-   * @private {goog.log.Logger}
+   * @private {goog.log.Logger} The logger for this class.
    */
-  this.logger_ = goog.log.getLogger(
-      'goog.labs.net.webChannel.WebChannelBaseTransport');
+  this.logger_ =
+      goog.log.getLogger('goog.labs.net.webChannel.WebChannelBaseTransport');
 
   /**
-   * @private {Object<string, string>} messageUrlParams_ Extra URL parameters
+   * @private {Object<string, string>} Extra URL parameters
    * to be added to each HTTP request.
    */
   this.messageUrlParams_ =
@@ -125,8 +122,8 @@ WebChannelBaseTransport.Channel = function(url, opt_options) {
   // default is false
   if (opt_options && opt_options.clientProtocolHeaderRequired) {
     if (messageHeaders) {
-      goog.object.set(messageHeaders,
-          goog.net.WebChannel.X_CLIENT_PROTOCOL,
+      goog.object.set(
+          messageHeaders, goog.net.WebChannel.X_CLIENT_PROTOCOL,
           goog.net.WebChannel.X_CLIENT_PROTOCOL_WEB_CHANNEL);
     } else {
       messageHeaders = goog.object.create(
@@ -138,16 +135,20 @@ WebChannelBaseTransport.Channel = function(url, opt_options) {
   this.channel_.setExtraHeaders(messageHeaders);
 
   /**
-   * @private {boolean} supportsCrossDomainXhr_ Whether to enable CORS.
+   * @private {boolean} Whether to enable CORS.
    */
   this.supportsCrossDomainXhr_ =
       (opt_options && opt_options.supportsCrossDomainXhr) || false;
 
   /**
+   * @private {boolean} Whether to send raw Json and bypass v8 wire format.
+   */
+  this.sendRawJson_ = (opt_options && opt_options.sendRawJson) || false;
+
+  /**
    * The channel handler.
    *
-   * @type {WebChannelBaseTransport.Channel.Handler_}
-   * @private
+   * @private {!WebChannelBaseTransport.Channel.Handler_}
    */
   this.channelHandler_ = new WebChannelBaseTransport.Channel.Handler_(this);
 };
@@ -161,12 +162,11 @@ goog.inherits(WebChannelBaseTransport.Channel, goog.events.EventTarget);
  */
 WebChannelBaseTransport.Channel.prototype.open = function() {
   this.channel_.setHandler(this.channelHandler_);
-  this.channel_.connect(this.testUrl_, this.url_,
-      (this.messageUrlParams_ || undefined));
-
   if (this.supportsCrossDomainXhr_) {
     this.channel_.setSupportsCrossDomainXhrs(true);
   }
+  this.channel_.connect(
+      this.testUrl_, this.url_, (this.messageUrlParams_ || undefined));
 };
 
 
@@ -186,7 +186,14 @@ WebChannelBaseTransport.Channel.prototype.close = function() {
  */
 WebChannelBaseTransport.Channel.prototype.send = function(message) {
   goog.asserts.assert(goog.isObject(message), 'only object type expected');
-  this.channel_.sendMap(message);
+
+  if (this.sendRawJson_) {
+    var rawJson = {};
+    rawJson['__data__'] = goog.json.serialize(message);
+    this.channel_.sendMap(rawJson);
+  } else {
+    this.channel_.sendMap(message);
+  }
 };
 
 
@@ -217,8 +224,9 @@ WebChannelBaseTransport.Channel.MessageEvent = function(array) {
 
   this.data = array;
 };
-goog.inherits(WebChannelBaseTransport.Channel.MessageEvent,
-              goog.net.WebChannel.MessageEvent);
+goog.inherits(
+    WebChannelBaseTransport.Channel.MessageEvent,
+    goog.net.WebChannel.MessageEvent);
 
 
 
@@ -238,8 +246,8 @@ WebChannelBaseTransport.Channel.ErrorEvent = function(error) {
    */
   this.status = goog.net.WebChannel.ErrorStatus.NETWORK_ERROR;
 };
-goog.inherits(WebChannelBaseTransport.Channel.ErrorEvent,
-              goog.net.WebChannel.ErrorEvent);
+goog.inherits(
+    WebChannelBaseTransport.Channel.ErrorEvent, goog.net.WebChannel.ErrorEvent);
 
 
 
@@ -269,8 +277,8 @@ goog.inherits(WebChannelBaseTransport.Channel.Handler_, WebChannelBase.Handler);
  */
 WebChannelBaseTransport.Channel.Handler_.prototype.channelOpened = function(
     channel) {
-  goog.log.info(this.channel_.logger_,
-      'WebChannel opened on ' + this.channel_.url_);
+  goog.log.info(
+      this.channel_.logger_, 'WebChannel opened on ' + this.channel_.url_);
   this.channel_.dispatchEvent(goog.net.WebChannel.EventType.OPEN);
 };
 
@@ -291,9 +299,9 @@ WebChannelBaseTransport.Channel.Handler_.prototype.channelHandleArray =
  */
 WebChannelBaseTransport.Channel.Handler_.prototype.channelError = function(
     channel, error) {
-  goog.log.info(this.channel_.logger_,
-      'WebChannel aborted on ' + this.channel_.url_ +
-      ' due to channel error: ' + error);
+  goog.log.info(
+      this.channel_.logger_, 'WebChannel aborted on ' + this.channel_.url_ +
+          ' due to channel error: ' + error);
   this.channel_.dispatchEvent(
       new WebChannelBaseTransport.Channel.ErrorEvent(error));
 };
@@ -304,8 +312,8 @@ WebChannelBaseTransport.Channel.Handler_.prototype.channelError = function(
  */
 WebChannelBaseTransport.Channel.Handler_.prototype.channelClosed = function(
     channel, opt_pendingMaps, opt_undeliveredMaps) {
-  goog.log.info(this.channel_.logger_,
-      'WebChannel closed on ' + this.channel_.url_);
+  goog.log.info(
+      this.channel_.logger_, 'WebChannel closed on ' + this.channel_.url_);
   this.channel_.dispatchEvent(goog.net.WebChannel.EventType.CLOSE);
 };
 
@@ -351,8 +359,7 @@ WebChannelBaseTransport.ChannelProperties.prototype.getConcurrentRequestLimit =
 /**
  * @override
  */
-WebChannelBaseTransport.ChannelProperties.prototype.isSpdyEnabled =
-    function() {
+WebChannelBaseTransport.ChannelProperties.prototype.isSpdyEnabled = function() {
   return this.getConcurrentRequestLimit() > 1;
 };
 

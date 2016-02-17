@@ -78,8 +78,8 @@ goog.inherits(goog.module.ModuleLoader, goog.events.EventTarget);
  * @type {goog.log.Logger}
  * @protected
  */
-goog.module.ModuleLoader.prototype.logger = goog.log.getLogger(
-    'goog.module.ModuleLoader');
+goog.module.ModuleLoader.prototype.logger =
+    goog.log.getLogger('goog.module.ModuleLoader');
 
 
 /**
@@ -220,8 +220,8 @@ goog.module.ModuleLoader.prototype.evaluateCode_ = function(moduleIds) {
   } catch (e) {
     error = e;
     // TODO(user): Consider throwing an exception here.
-    goog.log.warning(this.logger, 'Loaded incomplete code for module(s): ' +
-        moduleIds, e);
+    goog.log.warning(
+        this.logger, 'Loaded incomplete code for module(s): ' + moduleIds, e);
   }
 
   this.dispatchEvent(new goog.module.ModuleLoader.EvaluateCodeEvent(moduleIds));
@@ -266,8 +266,7 @@ goog.module.ModuleLoader.prototype.handleSuccess_ = function(
 
 
 /** @override */
-goog.module.ModuleLoader.prototype.prefetchModule = function(
-    id, moduleInfo) {
+goog.module.ModuleLoader.prototype.prefetchModule = function(id, moduleInfo) {
   // Do not prefetch in debug mode.
   if (this.getDebugMode()) {
     return;
@@ -299,8 +298,7 @@ goog.module.ModuleLoader.prototype.downloadModules_ = function(
   }
   goog.log.info(this.logger, 'downloadModules ids:' + ids + ' uris:' + uris);
 
-  if (this.getDebugMode() &&
-      !this.usingSourceUrlInjection_()) {
+  if (this.getDebugMode() && !this.usingSourceUrlInjection_()) {
     // In debug mode use <script> tags rather than XHRs to load the files.
     // This makes it possible to debug and inspect stack traces more easily.
     // It's also possible to use it to load JavaScript files that are hosted on
@@ -316,12 +314,10 @@ goog.module.ModuleLoader.prototype.downloadModules_ = function(
 
     var eventHandler = this.eventHandler_;
     eventHandler.listen(
-        bulkLoader,
-        goog.net.EventType.SUCCESS,
+        bulkLoader, goog.net.EventType.SUCCESS,
         goog.bind(this.handleSuccess_, this, bulkLoader, ids));
     eventHandler.listen(
-        bulkLoader,
-        goog.net.EventType.ERROR,
+        bulkLoader, goog.net.EventType.ERROR,
         goog.bind(this.handleError_, this, bulkLoader, ids));
     bulkLoader.load();
   }
@@ -343,8 +339,7 @@ goog.module.ModuleLoader.prototype.handleError_ = function(
   // subsequent errors.
   if (loadStatus) {
     delete this.loadingModulesStatus_[moduleIds];
-    this.handleErrorHelper_(
-        moduleIds, loadStatus.errorFn, status);
+    this.handleErrorHelper_(moduleIds, loadStatus.errorFn, status);
   }
 
   // NOTE: A bulk loader instance is used for loading a set of module ids. Once
@@ -397,24 +392,24 @@ goog.module.ModuleLoader.EventType = {
    *     !goog.module.ModuleLoader.EvaluateCodeEvent>} Called after the code for
    *     a module is evaluated.
    */
-  EVALUATE_CODE: new goog.events.EventId(
-      goog.events.getUniqueId('evaluateCode')),
+  EVALUATE_CODE:
+      new goog.events.EventId(goog.events.getUniqueId('evaluateCode')),
 
   /**
    * @const {!goog.events.EventId<
    *     !goog.module.ModuleLoader.RequestSuccessEvent>} Called when the
    *     BulkLoader finishes successfully.
    */
-  REQUEST_SUCCESS: new goog.events.EventId(
-      goog.events.getUniqueId('requestSuccess')),
+  REQUEST_SUCCESS:
+      new goog.events.EventId(goog.events.getUniqueId('requestSuccess')),
 
   /**
    * @const {!goog.events.EventId<
    *     !goog.module.ModuleLoader.RequestErrorEvent>} Called when the
    *     BulkLoader fails, or code loading fails.
    */
-  REQUEST_ERROR: new goog.events.EventId(
-      goog.events.getUniqueId('requestError'))
+  REQUEST_ERROR:
+      new goog.events.EventId(goog.events.getUniqueId('requestError'))
 };
 
 

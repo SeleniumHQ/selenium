@@ -37,11 +37,18 @@ goog.require('goog.string');
  */
 goog.html.utils.stripHtmlTags = function(value) {
   // TODO(user): Make a version that extracts text attributes such as alt.
-  return goog.string.unescapeEntities(goog.string.trim(value.replace(
-      goog.html.utils.HTML_TAG_REGEX_, function(fullMatch, tagName) {
-        return goog.html.utils.INLINE_HTML_TAG_REGEX_.test(tagName) ? '' : ' ';
-      }).
-      replace(/[\t\n ]+/g, ' ')));
+  return goog.string.unescapeEntities(
+      goog.string.trim(
+          value
+              .replace(
+                  goog.html.utils.HTML_TAG_REGEX_,
+                  function(fullMatch, tagName) {
+                    return goog.html.utils.INLINE_HTML_TAG_REGEX_.test(
+                               tagName) ?
+                        '' :
+                        ' ';
+                  })
+              .replace(/[\t\n ]+/g, ' ')));
 };
 
 

@@ -40,8 +40,7 @@ goog.require('goog.userAgent');
  * @implements {goog.events.EventWrapper}
  * @private
  */
-goog.events.ActionEventWrapper_ = function() {
-};
+goog.events.ActionEventWrapper_ = function() {};
 
 
 /**
@@ -59,8 +58,8 @@ goog.events.actionEventWrapper = new goog.events.ActionEventWrapper_();
  */
 goog.events.ActionEventWrapper_.EVENT_TYPES_ = [
   goog.events.EventType.CLICK,
-  goog.userAgent.GECKO ?
-      goog.events.EventType.KEYPRESS : goog.events.EventType.KEYDOWN,
+  goog.userAgent.GECKO ? goog.events.EventType.KEYPRESS :
+                         goog.events.EventType.KEYDOWN,
   goog.events.EventType.KEYUP
 ];
 
@@ -80,24 +79,27 @@ goog.events.ActionEventWrapper_.EVENT_TYPES_ = [
  *     listener to.
  * @override
  */
-goog.events.ActionEventWrapper_.prototype.listen = function(target, listener,
-    opt_capt, opt_scope, opt_eventHandler) {
+goog.events.ActionEventWrapper_.prototype.listen = function(
+    target, listener, opt_capt, opt_scope, opt_eventHandler) {
   var callback = function(e) {
     var listenerFn = goog.events.wrapListener(listener);
     var role = goog.dom.isElement(e.target) ?
-        goog.a11y.aria.getRole(/** @type {!Element} */ (e.target)) : null;
+        goog.a11y.aria.getRole(/** @type {!Element} */ (e.target)) :
+        null;
     if (e.type == goog.events.EventType.CLICK && e.isMouseActionButton()) {
       listenerFn.call(opt_scope, e);
-    } else if ((e.keyCode == goog.events.KeyCodes.ENTER ||
-        e.keyCode == goog.events.KeyCodes.MAC_ENTER) &&
+    } else if (
+        (e.keyCode == goog.events.KeyCodes.ENTER ||
+         e.keyCode == goog.events.KeyCodes.MAC_ENTER) &&
         e.type != goog.events.EventType.KEYUP) {
       // convert keydown to keypress for backward compatibility.
       e.type = goog.events.EventType.KEYPRESS;
       listenerFn.call(opt_scope, e);
-    } else if (e.keyCode == goog.events.KeyCodes.SPACE &&
+    } else if (
+        e.keyCode == goog.events.KeyCodes.SPACE &&
         e.type == goog.events.EventType.KEYUP &&
         (role == goog.a11y.aria.Role.BUTTON ||
-            role == goog.a11y.aria.Role.TAB)) {
+         role == goog.a11y.aria.Role.TAB)) {
       listenerFn.call(opt_scope, e);
       e.preventDefault();
     }
@@ -106,13 +108,13 @@ goog.events.ActionEventWrapper_.prototype.listen = function(target, listener,
   callback.scope_ = opt_scope;
 
   if (opt_eventHandler) {
-    opt_eventHandler.listen(target,
-        goog.events.ActionEventWrapper_.EVENT_TYPES_,
-        callback, opt_capt);
+    opt_eventHandler.listen(
+        target, goog.events.ActionEventWrapper_.EVENT_TYPES_, callback,
+        opt_capt);
   } else {
-    goog.events.listen(target,
-        goog.events.ActionEventWrapper_.EVENT_TYPES_,
-        callback, opt_capt);
+    goog.events.listen(
+        target, goog.events.ActionEventWrapper_.EVENT_TYPES_, callback,
+        opt_capt);
   }
 };
 
@@ -130,17 +132,17 @@ goog.events.ActionEventWrapper_.prototype.listen = function(target, listener,
  *     listener from.
  * @override
  */
-goog.events.ActionEventWrapper_.prototype.unlisten = function(target, listener,
-    opt_capt, opt_scope, opt_eventHandler) {
+goog.events.ActionEventWrapper_.prototype.unlisten = function(
+    target, listener, opt_capt, opt_scope, opt_eventHandler) {
   for (var type, j = 0; type = goog.events.ActionEventWrapper_.EVENT_TYPES_[j];
-      j++) {
+       j++) {
     var listeners = goog.events.getListeners(target, type, !!opt_capt);
     for (var obj, i = 0; obj = listeners[i]; i++) {
       if (obj.listener.listener_ == listener &&
           obj.listener.scope_ == opt_scope) {
         if (opt_eventHandler) {
-          opt_eventHandler.unlisten(target, type, obj.listener, opt_capt,
-              opt_scope);
+          opt_eventHandler.unlisten(
+              target, type, obj.listener, opt_capt, opt_scope);
         } else {
           goog.events.unlisten(target, type, obj.listener, opt_capt, opt_scope);
         }

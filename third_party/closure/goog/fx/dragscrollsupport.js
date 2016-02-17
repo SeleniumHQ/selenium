@@ -48,8 +48,8 @@ goog.require('goog.style');
  * @extends {goog.Disposable}
  * @see ../demos/dragscrollsupport.html
  */
-goog.fx.DragScrollSupport = function(containerNode, opt_margin,
-                                     opt_externalMouseMoveTracking) {
+goog.fx.DragScrollSupport = function(
+    containerNode, opt_margin, opt_externalMouseMoveTracking) {
   goog.fx.DragScrollSupport.base(this, 'constructor');
 
   /**
@@ -164,8 +164,8 @@ goog.fx.DragScrollSupport.prototype.setConstrainScroll = function(constrain) {
  * Sets whether horizontal scrolling is allowed.
  * @param {boolean} scrolling Whether horizontal scrolling is allowed.
  */
-goog.fx.DragScrollSupport.prototype.setHorizontalScrolling =
-    function(scrolling) {
+goog.fx.DragScrollSupport.prototype.setHorizontalScrolling = function(
+    scrolling) {
   this.horizontalScrolling_ = scrolling;
 };
 
@@ -205,7 +205,8 @@ goog.fx.DragScrollSupport.prototype.setupListeners_ = function(
     externalMouseMoveTracking) {
   if (!externalMouseMoveTracking) {
     // Track mouse pointer position to determine scroll direction.
-    this.eventHandler_.listen(goog.dom.getOwnerDocument(this.containerNode_),
+    this.eventHandler_.listen(
+        goog.dom.getOwnerDocument(this.containerNode_),
         goog.events.EventType.MOUSEMOVE, this.onMouseMove);
   }
 
@@ -231,10 +232,12 @@ goog.fx.DragScrollSupport.prototype.onTick_ = function(event) {
  * @param {goog.events.Event} event Mouse move event.
  */
 goog.fx.DragScrollSupport.prototype.onMouseMove = function(event) {
-  var deltaX = this.horizontalScrolling_ ? this.calculateScrollDelta(
-      event.clientX, this.scrollBounds_.left, this.scrollBounds_.width) : 0;
-  var deltaY = this.calculateScrollDelta(event.clientY,
-      this.scrollBounds_.top, this.scrollBounds_.height);
+  var deltaX = this.horizontalScrolling_ ?
+      this.calculateScrollDelta(
+          event.clientX, this.scrollBounds_.left, this.scrollBounds_.width) :
+      0;
+  var deltaY = this.calculateScrollDelta(
+      event.clientY, this.scrollBounds_.top, this.scrollBounds_.height);
   this.scrollDelta_.x = deltaX;
   this.scrollDelta_.y = deltaY;
 
@@ -260,9 +263,9 @@ goog.fx.DragScrollSupport.prototype.onMouseMove = function(event) {
 goog.fx.DragScrollSupport.prototype.isInContainerBounds_ = function(x, y) {
   var containerBounds = this.containerBounds_;
   return containerBounds.left <= x &&
-         containerBounds.left + containerBounds.width >= x &&
-         containerBounds.top <= y &&
-         containerBounds.top + containerBounds.height >= y;
+      containerBounds.left + containerBounds.width >= x &&
+      containerBounds.top <= y &&
+      containerBounds.top + containerBounds.height >= y;
 };
 
 

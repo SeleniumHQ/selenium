@@ -59,10 +59,10 @@ goog.require('goog.ui.registry');
  * @constructor
  * @extends {goog.ui.MenuButton}
  */
-goog.ui.Select = function(opt_caption, opt_menu, opt_renderer, opt_domHelper,
-    opt_menuRenderer) {
-  goog.ui.Select.base(this, 'constructor',
-      opt_caption, opt_menu, opt_renderer, opt_domHelper,
+goog.ui.Select = function(
+    opt_caption, opt_menu, opt_renderer, opt_domHelper, opt_menuRenderer) {
+  goog.ui.Select.base(
+      this, 'constructor', opt_caption, opt_menu, opt_renderer, opt_domHelper,
       opt_menuRenderer ||
           new goog.ui.MenuRenderer(goog.a11y.aria.Role.LISTBOX));
   /**
@@ -374,7 +374,7 @@ goog.ui.Select.prototype.getValue = function() {
 goog.ui.Select.prototype.getSelectedItem = function() {
   return this.selectionModel_ ?
       /** @type {goog.ui.MenuItem} */ (this.selectionModel_.getSelectedItem()) :
-      null;
+                                      null;
 };
 
 
@@ -422,7 +422,8 @@ goog.ui.Select.prototype.createSelectionModel_ = function(opt_component) {
  */
 goog.ui.Select.prototype.listenToSelectionModelEvents_ = function() {
   if (this.selectionModel_) {
-    this.getHandler().listen(this.selectionModel_, goog.events.EventType.SELECT,
+    this.getHandler().listen(
+        this.selectionModel_, goog.events.EventType.SELECT,
         this.handleSelectionChange);
   }
 };
@@ -447,8 +448,9 @@ goog.ui.Select.prototype.updateCaption = function() {
       this.initialAriaLabel_ = goog.a11y.aria.getLabel(contentElement);
     }
     var itemElement = item ? item.getElement() : null;
-    goog.a11y.aria.setLabel(contentElement, itemElement ?
-        goog.a11y.aria.getLabel(itemElement) : this.initialAriaLabel_);
+    goog.a11y.aria.setLabel(
+        contentElement, itemElement ? goog.a11y.aria.getLabel(itemElement) :
+                                      this.initialAriaLabel_);
     this.updateAriaActiveDescendant_();
   }
 };
@@ -468,19 +470,22 @@ goog.ui.Select.prototype.updateAriaActiveDescendant_ = function() {
         contentElement.id = goog.ui.IdGenerator.getInstance().getNextUniqueId();
       }
       goog.a11y.aria.setRole(contentElement, goog.a11y.aria.Role.OPTION);
-      goog.a11y.aria.setState(buttonElement,
-          goog.a11y.aria.State.ACTIVEDESCENDANT, contentElement.id);
+      goog.a11y.aria.setState(
+          buttonElement, goog.a11y.aria.State.ACTIVEDESCENDANT,
+          contentElement.id);
       if (this.selectionModel_) {
         // We can't use selectionmodel's getItemCount here because we need to
         // skip separators.
         var items = this.selectionModel_.getItems();
-        goog.a11y.aria.setState(contentElement, goog.a11y.aria.State.SETSIZE,
+        goog.a11y.aria.setState(
+            contentElement, goog.a11y.aria.State.SETSIZE,
             this.getNumMenuItems_(items));
         // Set a human-readable selection index, excluding menu separators.
         var index = this.selectionModel_.getSelectedIndex();
-        goog.a11y.aria.setState(contentElement, goog.a11y.aria.State.POSINSET,
-            index >= 0 ?
-            this.getNumMenuItems_(goog.array.slice(items, 0, index + 1)) : 0);
+        goog.a11y.aria.setState(
+            contentElement, goog.a11y.aria.State.POSINSET, index >= 0 ?
+                this.getNumMenuItems_(goog.array.slice(items, 0, index + 1)) :
+                0);
       }
     }
   }
@@ -494,9 +499,8 @@ goog.ui.Select.prototype.updateAriaActiveDescendant_ = function() {
  * @private
  */
 goog.ui.Select.prototype.getNumMenuItems_ = function(items) {
-  return goog.array.count(items, function(item) {
-    return item instanceof goog.ui.MenuItem;
-  });
+  return goog.array.count(
+      items, function(item) { return item instanceof goog.ui.MenuItem; });
 };
 
 
@@ -506,8 +510,9 @@ goog.ui.Select.prototype.getNumMenuItems_ = function(items) {
  * @private
  */
 goog.ui.Select.prototype.setCorrectAriaRole_ = function(item) {
-  item.setPreferredAriaRole(item instanceof goog.ui.MenuItem ?
-      goog.a11y.aria.Role.OPTION : goog.a11y.aria.Role.SEPARATOR);
+  item.setPreferredAriaRole(
+      item instanceof goog.ui.MenuItem ? goog.a11y.aria.Role.OPTION :
+                                         goog.a11y.aria.Role.SEPARATOR);
 };
 
 

@@ -162,9 +162,8 @@ goog.events.EventHandler.prototype.listenWithScope = function(
  * @template EVENTOBJ
  * @private
  */
-goog.events.EventHandler.prototype.listen_ = function(src, type, opt_fn,
-                                                      opt_capture,
-                                                      opt_scope) {
+goog.events.EventHandler.prototype.listen_ = function(
+    src, type, opt_fn, opt_capture, opt_scope) {
   if (!goog.isArray(type)) {
     if (type) {
       goog.events.EventHandler.typeArray_[0] = type.toString();
@@ -173,8 +172,7 @@ goog.events.EventHandler.prototype.listen_ = function(src, type, opt_fn,
   }
   for (var i = 0; i < type.length; i++) {
     var listenerObj = goog.events.listen(
-        src, type[i], opt_fn || this.handleEvent,
-        opt_capture || false,
+        src, type[i], opt_fn || this.handleEvent, opt_capture || false,
         opt_scope || this.handler_ || this);
 
     if (!listenerObj) {
@@ -201,7 +199,8 @@ goog.events.EventHandler.prototype.listen_ = function(src, type, opt_fn,
  * @param {string|Array<string>|
  *     !goog.events.EventId<EVENTOBJ>|!Array<!goog.events.EventId<EVENTOBJ>>}
  *     type Event type to listen for or array of event types.
- * @param {function(this:SCOPE, EVENTOBJ):?|{handleEvent:function(?):?}|null=} opt_fn
+ * @param {function(this:SCOPE, EVENTOBJ):?|{handleEvent:function(?):?}|null=}
+ * opt_fn
  *    Optional callback function to be used as the listener or an object with
  *    handleEvent function.
  * @param {boolean=} opt_capture Optional whether to use capture phase.
@@ -350,8 +349,8 @@ goog.events.EventHandler.prototype.listenWithWrapperAndScope = function(
  */
 goog.events.EventHandler.prototype.listenWithWrapper_ = function(
     src, wrapper, listener, opt_capt, opt_scope) {
-  wrapper.listen(src, listener, opt_capt, opt_scope || this.handler_ || this,
-                 this);
+  wrapper.listen(
+      src, listener, opt_capt, opt_scope || this.handler_ || this, this);
   return this;
 };
 
@@ -385,17 +384,16 @@ goog.events.EventHandler.prototype.getListenerCount = function() {
  *     calls.
  * @template EVENTOBJ
  */
-goog.events.EventHandler.prototype.unlisten = function(src, type, opt_fn,
-                                                       opt_capture,
-                                                       opt_scope) {
+goog.events.EventHandler.prototype.unlisten = function(
+    src, type, opt_fn, opt_capture, opt_scope) {
   if (goog.isArray(type)) {
     for (var i = 0; i < type.length; i++) {
       this.unlisten(src, type[i], opt_fn, opt_capture, opt_scope);
     }
   } else {
-    var listener = goog.events.getListener(src, type,
-        opt_fn || this.handleEvent,
-        opt_capture, opt_scope || this.handler_ || this);
+    var listener = goog.events.getListener(
+        src, type, opt_fn || this.handleEvent, opt_capture,
+        opt_scope || this.handler_ || this);
 
     if (listener) {
       goog.events.unlistenByKey(listener);
@@ -422,10 +420,10 @@ goog.events.EventHandler.prototype.unlisten = function(src, type, opt_fn,
  * @return {!goog.events.EventHandler} This object, allowing for chaining of
  *     calls.
  */
-goog.events.EventHandler.prototype.unlistenWithWrapper = function(src, wrapper,
-    listener, opt_capt, opt_scope) {
-  wrapper.unlisten(src, listener, opt_capt,
-                   opt_scope || this.handler_ || this, this);
+goog.events.EventHandler.prototype.unlistenWithWrapper = function(
+    src, wrapper, listener, opt_capt, opt_scope) {
+  wrapper.unlisten(
+      src, listener, opt_capt, opt_scope || this.handler_ || this, this);
   return this;
 };
 

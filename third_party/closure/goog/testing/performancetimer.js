@@ -151,8 +151,9 @@ goog.testing.PerformanceTimer.prototype.isDiscardOutliers = function() {
  * @return {!Object} Object containing performance stats.
  */
 goog.testing.PerformanceTimer.prototype.run = function(testFn) {
-  return this.runTask(new goog.testing.PerformanceTimer.Task(
-      /** @type {goog.testing.PerformanceTimer.TestFunction} */ (testFn)));
+  return this.runTask(
+      new goog.testing.PerformanceTimer.Task(
+          /** @type {goog.testing.PerformanceTimer.TestFunction} */ (testFn)));
 };
 
 
@@ -231,8 +232,8 @@ goog.testing.PerformanceTimer.prototype.runAsyncTask = function(task) {
   // implementing runTask() in terms of runAsyncTask() could easily cause
   // a stack overflow if there are many iterations.
   var result = new goog.async.Deferred();
-  this.runAsyncTaskSample_(testFn, setUpFn, tearDownFn, result, samples,
-      testStart);
+  this.runAsyncTaskSample_(
+      testFn, setUpFn, tearDownFn, result, samples, testStart);
   return result;
 };
 
@@ -253,8 +254,8 @@ goog.testing.PerformanceTimer.prototype.runAsyncTask = function(task) {
  * @param {number} testStart The timestamp when the first sample was started.
  * @private
  */
-goog.testing.PerformanceTimer.prototype.runAsyncTaskSample_ = function(testFn,
-    setUpFn, tearDownFn, result, samples, testStart) {
+goog.testing.PerformanceTimer.prototype.runAsyncTaskSample_ = function(
+    testFn, setUpFn, tearDownFn, result, samples, testStart) {
   var timer = this;
   timer.handleOptionalDeferred_(setUpFn, function() {
     var sampleStart = goog.testing.PerformanceTimer.now_();
@@ -265,8 +266,8 @@ goog.testing.PerformanceTimer.prototype.runAsyncTaskSample_ = function(testFn,
         var totalRunTime = sampleEnd - testStart;
         if (samples.length < timer.numSamples_ &&
             totalRunTime <= timer.timeoutInterval_) {
-          timer.runAsyncTaskSample_(testFn, setUpFn, tearDownFn, result,
-              samples, testStart);
+          timer.runAsyncTaskSample_(
+              testFn, setUpFn, tearDownFn, result, samples, testStart);
         } else {
           result.callback(timer.finishTask_(samples));
         }

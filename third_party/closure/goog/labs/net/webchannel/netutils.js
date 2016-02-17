@@ -73,8 +73,8 @@ netUtils.testNetwork = function(callback, opt_imageUri) {
  * @param {number=} opt_pauseBetweenRetriesMS Optional number of milliseconds
  *     between retries - defaults to 0.
  */
-netUtils.testLoadImageWithRetries = function(url, timeout, callback,
-    retries, opt_pauseBetweenRetriesMS) {
+netUtils.testLoadImageWithRetries = function(
+    url, timeout, callback, retries, opt_pauseBetweenRetriesMS) {
   var channelDebug = new WebChannelDebug();
   channelDebug.debug('TestLoadImageWithRetries: ' + opt_pauseBetweenRetriesMS);
   if (retries == 0) {
@@ -91,8 +91,8 @@ netUtils.testLoadImageWithRetries = function(url, timeout, callback,
     } else {
       // try again
       goog.global.setTimeout(function() {
-        netUtils.testLoadImageWithRetries(url, timeout, callback,
-            retries, pauseBetweenRetries);
+        netUtils.testLoadImageWithRetries(
+            url, timeout, callback, retries, pauseBetweenRetries);
       }, pauseBetweenRetries);
     }
   });
@@ -109,14 +109,18 @@ netUtils.testLoadImage = function(url, timeout, callback) {
   var channelDebug = new WebChannelDebug();
   channelDebug.debug('TestLoadImage: loading ' + url);
   var img = new Image();
-  img.onload = goog.partial(netUtils.imageCallback_, channelDebug, img,
-      'TestLoadImage: loaded', true, callback);
-  img.onerror = goog.partial(netUtils.imageCallback_, channelDebug, img,
-      'TestLoadImage: error', false, callback);
-  img.onabort = goog.partial(netUtils.imageCallback_, channelDebug, img,
-      'TestLoadImage: abort', false, callback);
-  img.ontimeout = goog.partial(netUtils.imageCallback_, channelDebug, img,
-      'TestLoadImage: timeout', false, callback);
+  img.onload = goog.partial(
+      netUtils.imageCallback_, channelDebug, img, 'TestLoadImage: loaded', true,
+      callback);
+  img.onerror = goog.partial(
+      netUtils.imageCallback_, channelDebug, img, 'TestLoadImage: error', false,
+      callback);
+  img.onabort = goog.partial(
+      netUtils.imageCallback_, channelDebug, img, 'TestLoadImage: abort', false,
+      callback);
+  img.ontimeout = goog.partial(
+      netUtils.imageCallback_, channelDebug, img, 'TestLoadImage: timeout',
+      false, callback);
 
   goog.global.setTimeout(function() {
     if (img.ontimeout) {
@@ -136,8 +140,8 @@ netUtils.testLoadImage = function(url, timeout, callback) {
  * @param {function(boolean)} callback The image callback.
  * @private
  */
-netUtils.imageCallback_ = function(channelDebug, img, debugText, result,
-    callback) {
+netUtils.imageCallback_ = function(
+    channelDebug, img, debugText, result, callback) {
   try {
     channelDebug.debug(debugText);
     netUtils.clearImageCallbacks_(img);

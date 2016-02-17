@@ -45,8 +45,9 @@ goog.storage.mechanism.HTML5WebStorage = function(storage) {
    */
   this.storage_ = storage;
 };
-goog.inherits(goog.storage.mechanism.HTML5WebStorage,
-              goog.storage.mechanism.IterableMechanism);
+goog.inherits(
+    goog.storage.mechanism.HTML5WebStorage,
+    goog.storage.mechanism.IterableMechanism);
 
 
 /**

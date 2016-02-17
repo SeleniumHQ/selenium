@@ -124,9 +124,8 @@ goog.window.open = function(linkRef, opt_options, opt_parentWin) {
   var optionString = sb.join(',');
 
   var newWin;
-  if (goog.labs.userAgent.platform.isIos() &&
-          parentWin.navigator && parentWin.navigator['standalone'] &&
-          target && target != '_self') {
+  if (goog.labs.userAgent.platform.isIos() && parentWin.navigator &&
+      parentWin.navigator['standalone'] && target && target != '_self') {
     // iOS in standalone mode disregards "target" in window.open and always
     // opens new URL in the same window. The workout around is to create an "A"
     // element and send a click event to it.
@@ -140,7 +139,8 @@ goog.window.open = function(linkRef, opt_options, opt_parentWin) {
       a.setAttribute('rel', 'noreferrer');
     }
     var click = document.createEvent('MouseEvent');
-    click.initMouseEvent('click',
+    click.initMouseEvent(
+        'click',
         true,  // canBubble
         true,  // cancelable
         parentWin,
@@ -186,10 +186,11 @@ goog.window.open = function(linkRef, opt_options, opt_parentWin) {
       newWin.opener = null;
       var escapedUrl = goog.string.htmlEscape(url);
       var safeHtml = goog.html.uncheckedconversions
-          .safeHtmlFromStringKnownToSatisfyTypeContract(
-              goog.string.Const.from('b/12014412, meta tag with sanitized URL'),
-              '<META HTTP-EQUIV="refresh" content="0; url=' +
-                  escapedUrl + '">');
+                         .safeHtmlFromStringKnownToSatisfyTypeContract(
+                             goog.string.Const.from(
+                                 'b/12014412, meta tag with sanitized URL'),
+                             '<META HTTP-EQUIV="refresh" content="0; url=' +
+                                 escapedUrl + '">');
       goog.dom.safe.documentWrite(newWin.document, safeHtml);
       newWin.document.close();
     }
@@ -249,12 +250,12 @@ goog.window.openBlank = function(opt_message, opt_options, opt_parentWin) {
         goog.string.escapeString(goog.string.htmlEscape(opt_message));
   }
   var url = goog.html.uncheckedconversions
-      .safeUrlFromStringKnownToSatisfyTypeContract(
-          goog.string.Const.from(
-              'b/12014412, encoded string in javascript: URL'),
-          'javascript:"' + encodeURI(loadingMessage) + '"');
-  return /** @type {Window} */ (goog.window.open(
-      url, opt_options, opt_parentWin));
+                .safeUrlFromStringKnownToSatisfyTypeContract(
+                    goog.string.Const.from(
+                        'b/12014412, encoded string in javascript: URL'),
+                    'javascript:"' + encodeURI(loadingMessage) + '"');
+  return /** @type {Window} */ (
+      goog.window.open(url, opt_options, opt_parentWin));
 };
 
 
@@ -285,12 +286,12 @@ goog.window.popup = function(linkRef, opt_options) {
   }
 
   // set default properties
-  opt_options['target'] = opt_options['target'] ||
-      linkRef['target'] || goog.window.DEFAULT_POPUP_TARGET;
-  opt_options['width'] = opt_options['width'] ||
-      goog.window.DEFAULT_POPUP_WIDTH;
-  opt_options['height'] = opt_options['height'] ||
-      goog.window.DEFAULT_POPUP_HEIGHT;
+  opt_options['target'] = opt_options['target'] || linkRef['target'] ||
+      goog.window.DEFAULT_POPUP_TARGET;
+  opt_options['width'] =
+      opt_options['width'] || goog.window.DEFAULT_POPUP_WIDTH;
+  opt_options['height'] =
+      opt_options['height'] || goog.window.DEFAULT_POPUP_HEIGHT;
 
   var newWin = goog.window.open(linkRef, opt_options);
   if (!newWin) {

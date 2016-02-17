@@ -94,8 +94,8 @@ goog.dom.classlist.add = function(element, className) {
 
   if (!goog.dom.classlist.contains(element, className)) {
     // Ensure we add a space if this is not the first class name added.
-    element.className += element.className.length > 0 ?
-        (' ' + className) : className;
+    element.className +=
+        element.className.length > 0 ? (' ' + className) : className;
   }
 };
 
@@ -119,22 +119,19 @@ goog.dom.classlist.addAll = function(element, classesToAdd) {
   var classMap = {};
 
   // Get all current class names into a map.
-  goog.array.forEach(goog.dom.classlist.get(element),
-      function(className) {
-        classMap[className] = true;
-      });
+  goog.array.forEach(goog.dom.classlist.get(element), function(className) {
+    classMap[className] = true;
+  });
 
   // Add new class names to the map.
-  goog.array.forEach(classesToAdd,
-      function(className) {
-        classMap[className] = true;
-      });
+  goog.array.forEach(
+      classesToAdd, function(className) { classMap[className] = true; });
 
   // Flatten the keys of the map into the className.
   element.className = '';
   for (var className in classMap) {
-    element.className += element.className.length > 0 ?
-        (' ' + className) : className;
+    element.className +=
+        element.className.length > 0 ? (' ' + className) : className;
   }
 };
 
@@ -153,11 +150,11 @@ goog.dom.classlist.remove = function(element, className) {
 
   if (goog.dom.classlist.contains(element, className)) {
     // Filter out the class name.
-    element.className = goog.array.filter(
-        goog.dom.classlist.get(element),
-        function(c) {
-          return c != className;
-        }).join(' ');
+    element.className = goog.array
+                            .filter(
+                                goog.dom.classlist.get(element),
+                                function(c) { return c != className; })
+                            .join(' ');
   }
 };
 
@@ -180,13 +177,16 @@ goog.dom.classlist.removeAll = function(element, classesToRemove) {
     return;
   }
   // Filter out those classes in classesToRemove.
-  element.className = goog.array.filter(
-      goog.dom.classlist.get(element),
-      function(className) {
-        // If this class is not one we are trying to remove,
-        // add it to the array of new class names.
-        return !goog.array.contains(classesToRemove, className);
-      }).join(' ');
+  element.className =
+      goog.array
+          .filter(
+              goog.dom.classlist.get(element),
+              function(className) {
+                // If this class is not one we are trying to remove,
+                // add it to the array of new class names.
+                return !goog.array.contains(classesToRemove, className);
+              })
+          .join(' ');
 };
 
 
@@ -219,8 +219,7 @@ goog.dom.classlist.enable = function(element, className, enabled) {
  *     false removes).
  */
 goog.dom.classlist.enableAll = function(element, classesToEnable, enabled) {
-  var f = enabled ? goog.dom.classlist.addAll :
-      goog.dom.classlist.removeAll;
+  var f = enabled ? goog.dom.classlist.addAll : goog.dom.classlist.removeAll;
   f(element, classesToEnable);
 };
 

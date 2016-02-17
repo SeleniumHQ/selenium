@@ -194,7 +194,7 @@ goog.i18n.TimeZone.createSimpleTimeZone_ = function(timeZoneOffsetInMinutes) {
   var str = goog.i18n.TimeZone.composeUTCString_(timeZoneOffsetInMinutes);
   var strGMT = goog.i18n.TimeZone.composeGMTString_(timeZoneOffsetInMinutes);
   tz.tzNames_ = [str, str];
-  tz.tzNamesExt_ = { STD_LONG_NAME_GMT: strGMT, STD_GENERIC_LOCATION: strGMT };
+  tz.tzNamesExt_ = {STD_LONG_NAME_GMT: strGMT, STD_GENERIC_LOCATION: strGMT};
   tz.transitions_ = [];
   return tz;
 };
@@ -211,8 +211,9 @@ goog.i18n.TimeZone.composeGMTString_ = function(offset) {
   var parts = ['GMT'];
   parts.push(offset <= 0 ? '+' : '-');
   offset = Math.abs(offset);
-  parts.push(goog.string.padNumber(Math.floor(offset / 60) % 100, 2),
-             ':', goog.string.padNumber(offset % 60, 2));
+  parts.push(
+      goog.string.padNumber(Math.floor(offset / 60) % 100, 2), ':',
+      goog.string.padNumber(offset % 60, 2));
   return parts.join('');
 };
 
@@ -272,7 +273,7 @@ goog.i18n.TimeZone.prototype.getTimeZoneData = function() {
     'id': this.timeZoneId_,
     'std_offset': -this.standardOffset_,  // note createTimeZone flips the sign
     'names': goog.array.clone(this.tzNames_),  // avoid aliasing the array
-    'names_ext': goog.object.clone(this.tzNamesExt_), // avoid aliasing
+    'names_ext': goog.object.clone(this.tzNamesExt_),   // avoid aliasing
     'transitions': goog.array.clone(this.transitions_)  // avoid aliasing
   };
 };
@@ -286,9 +287,9 @@ goog.i18n.TimeZone.prototype.getTimeZoneData = function() {
  * @return {number} The DST adjustment in minutes EAST of UTC.
  */
 goog.i18n.TimeZone.prototype.getDaylightAdjustment = function(date) {
-  var timeInMs = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(),
-                          date.getUTCDate(), date.getUTCHours(),
-                          date.getUTCMinutes());
+  var timeInMs = Date.UTC(
+      date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
+      date.getUTCHours(), date.getUTCMinutes());
   var timeInHours = timeInMs / goog.i18n.TimeZone.MILLISECONDS_PER_HOUR_;
   var index = 0;
   while (index < this.transitions_.length &&
@@ -318,8 +319,8 @@ goog.i18n.TimeZone.prototype.getGMTString = function(date) {
  */
 goog.i18n.TimeZone.prototype.getLongName = function(date) {
   return this.tzNames_[this.isDaylightTime(date) ?
-      goog.i18n.TimeZone.NameType.DLT_LONG_NAME :
-      goog.i18n.TimeZone.NameType.STD_LONG_NAME];
+                           goog.i18n.TimeZone.NameType.DLT_LONG_NAME :
+                           goog.i18n.TimeZone.NameType.STD_LONG_NAME];
 };
 
 
@@ -344,8 +345,9 @@ goog.i18n.TimeZone.prototype.getRFCTimeZoneString = function(date) {
   var offset = -this.getOffset(date);
   var parts = [offset < 0 ? '-' : '+'];
   offset = Math.abs(offset);
-  parts.push(goog.string.padNumber(Math.floor(offset / 60) % 100, 2),
-             goog.string.padNumber(offset % 60, 2));
+  parts.push(
+      goog.string.padNumber(Math.floor(offset / 60) % 100, 2),
+      goog.string.padNumber(offset % 60, 2));
   return parts.join('');
 };
 
@@ -358,8 +360,8 @@ goog.i18n.TimeZone.prototype.getRFCTimeZoneString = function(date) {
  */
 goog.i18n.TimeZone.prototype.getShortName = function(date) {
   return this.tzNames_[this.isDaylightTime(date) ?
-      goog.i18n.TimeZone.NameType.DLT_SHORT_NAME :
-      goog.i18n.TimeZone.NameType.STD_SHORT_NAME];
+                           goog.i18n.TimeZone.NameType.DLT_SHORT_NAME :
+                           goog.i18n.TimeZone.NameType.STD_SHORT_NAME];
 };
 
 

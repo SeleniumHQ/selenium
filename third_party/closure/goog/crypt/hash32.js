@@ -70,11 +70,8 @@ goog.crypt.hash32.encodeStringUtf8 = function(str) {
 goog.crypt.hash32.encodeInteger = function(value) {
   // TODO(user): Does this make sense in JavaScript with doubles?  Should we
   // force the value to be in the correct range?
-  return goog.crypt.hash32.mix32_({
-    a: value,
-    b: goog.crypt.hash32.CONSTANT32,
-    c: goog.crypt.hash32.SEED32
-  });
+  return goog.crypt.hash32.mix32_(
+      {a: value, b: goog.crypt.hash32.CONSTANT32, c: goog.crypt.hash32.SEED32});
 };
 
 
@@ -109,24 +106,33 @@ goog.crypt.hash32.encodeByteArray = function(
   // Hash any remaining bytes
   mix.c += length;
   switch (keylen) {  // deal with rest.  Some cases fall through
-    case 11: mix.c += (bytes[offset + 10]) << 24;
-    case 10: mix.c += (bytes[offset + 9] & 0xff) << 16;
-    case 9 : mix.c += (bytes[offset + 8] & 0xff) << 8;
+    case 11:
+      mix.c += (bytes[offset + 10]) << 24;
+    case 10:
+      mix.c += (bytes[offset + 9] & 0xff) << 16;
+    case 9:
+      mix.c += (bytes[offset + 8] & 0xff) << 8;
     // the first byte of c is reserved for the length
-    case 8 :
+    case 8:
       mix.b += goog.crypt.hash32.wordAt_(bytes, offset + 4);
       mix.a += goog.crypt.hash32.wordAt_(bytes, offset);
       break;
-    case 7 : mix.b += (bytes[offset + 6] & 0xff) << 16;
-    case 6 : mix.b += (bytes[offset + 5] & 0xff) << 8;
-    case 5 : mix.b += (bytes[offset + 4] & 0xff);
-    case 4 :
+    case 7:
+      mix.b += (bytes[offset + 6] & 0xff) << 16;
+    case 6:
+      mix.b += (bytes[offset + 5] & 0xff) << 8;
+    case 5:
+      mix.b += (bytes[offset + 4] & 0xff);
+    case 4:
       mix.a += goog.crypt.hash32.wordAt_(bytes, offset);
       break;
-    case 3 : mix.a += (bytes[offset + 2] & 0xff) << 16;
-    case 2 : mix.a += (bytes[offset + 1] & 0xff) << 8;
-    case 1 : mix.a += (bytes[offset + 0] & 0xff);
-    // case 0 : nothing left to add
+    case 3:
+      mix.a += (bytes[offset + 2] & 0xff) << 16;
+    case 2:
+      mix.a += (bytes[offset + 1] & 0xff) << 8;
+    case 1:
+      mix.a += (bytes[offset + 0] & 0xff);
+      // case 0 : nothing left to add
   }
   return goog.crypt.hash32.mix32_(mix);
 };
@@ -141,16 +147,36 @@ goog.crypt.hash32.encodeByteArray = function(
  */
 goog.crypt.hash32.mix32_ = function(mix) {
   var a = mix.a, b = mix.b, c = mix.c;
-  a -= b; a -= c; a ^= c >>> 13;
-  b -= c; b -= a; b ^= a << 8;
-  c -= a; c -= b; c ^= b >>> 13;
-  a -= b; a -= c; a ^= c >>> 12;
-  b -= c; b -= a; b ^= a << 16;
-  c -= a; c -= b; c ^= b >>> 5;
-  a -= b; a -= c; a ^= c >>> 3;
-  b -= c; b -= a; b ^= a << 10;
-  c -= a; c -= b; c ^= b >>> 15;
-  mix.a = a; mix.b = b; mix.c = c;
+  a -= b;
+  a -= c;
+  a ^= c >>> 13;
+  b -= c;
+  b -= a;
+  b ^= a << 8;
+  c -= a;
+  c -= b;
+  c ^= b >>> 13;
+  a -= b;
+  a -= c;
+  a ^= c >>> 12;
+  b -= c;
+  b -= a;
+  b ^= a << 16;
+  c -= a;
+  c -= b;
+  c ^= b >>> 5;
+  a -= b;
+  a -= c;
+  a ^= c >>> 3;
+  b -= c;
+  b -= a;
+  b ^= a << 10;
+  c -= a;
+  c -= b;
+  c ^= b >>> 15;
+  mix.a = a;
+  mix.b = b;
+  mix.c = c;
   return c;
 };
 

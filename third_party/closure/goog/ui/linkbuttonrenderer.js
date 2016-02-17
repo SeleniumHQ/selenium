@@ -60,8 +60,8 @@ goog.ui.LinkButtonRenderer.prototype.getCssClass = function() {
 
 
 // Register a decorator factory function for Link Buttons.
-goog.ui.registry.setDecoratorByClassName(goog.ui.LinkButtonRenderer.CSS_CLASS,
-    function() {
+goog.ui.registry.setDecoratorByClassName(
+    goog.ui.LinkButtonRenderer.CSS_CLASS, function() {
       // Uses goog.ui.Button, but with LinkButtonRenderer.
       return new goog.ui.Button(null, goog.ui.LinkButtonRenderer.getInstance());
     });

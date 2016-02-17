@@ -59,27 +59,16 @@ goog.db.IndexedDb = function(db) {
   this.eventHandler_ = new goog.events.EventHandler(this);
 
   this.eventHandler_.listen(
-      this.db_,
-      goog.db.IndexedDb.EventType.ABORT,
-      goog.bind(
-          this.dispatchEvent,
-          this,
-          goog.db.IndexedDb.EventType.ABORT));
+      this.db_, goog.db.IndexedDb.EventType.ABORT,
+      goog.bind(this.dispatchEvent, this, goog.db.IndexedDb.EventType.ABORT));
   this.eventHandler_.listen(
-      this.db_,
-      goog.db.IndexedDb.EventType.ERROR,
-      this.dispatchError_);
+      this.db_, goog.db.IndexedDb.EventType.ERROR, this.dispatchError_);
   this.eventHandler_.listen(
-      this.db_,
-      goog.db.IndexedDb.EventType.VERSION_CHANGE,
+      this.db_, goog.db.IndexedDb.EventType.VERSION_CHANGE,
       this.dispatchVersionChange_);
   this.eventHandler_.listen(
-      this.db_,
-      goog.db.IndexedDb.EventType.CLOSE,
-      goog.bind(
-          this.dispatchEvent,
-          this,
-          goog.db.IndexedDb.EventType.CLOSE));
+      this.db_, goog.db.IndexedDb.EventType.CLOSE,
+      goog.bind(this.dispatchEvent, this, goog.db.IndexedDb.EventType.CLOSE));
 };
 goog.inherits(goog.db.IndexedDb, goog.events.EventTarget);
 
@@ -115,8 +104,8 @@ goog.db.IndexedDb.prototype.dispatchError_ = function(ev) {
  * @private
  */
 goog.db.IndexedDb.prototype.dispatchVersionChange_ = function(ev) {
-  this.dispatchEvent(new goog.db.IndexedDb.VersionChangeEvent(
-      ev.oldVersion, ev.newVersion));
+  this.dispatchEvent(
+      new goog.db.IndexedDb.VersionChangeEvent(ev.oldVersion, ev.newVersion));
 };
 
 
@@ -181,8 +170,8 @@ goog.db.IndexedDb.prototype.getObjectStoreNames = function() {
  */
 goog.db.IndexedDb.prototype.createObjectStore = function(name, opt_params) {
   try {
-    return new goog.db.ObjectStore(this.db_.createObjectStore(
-        name, opt_params));
+    return new goog.db.ObjectStore(
+        this.db_.createObjectStore(name, opt_params));
   } catch (ex) {
     throw goog.db.Error.fromException(ex, 'creating object store ' + name);
   }
@@ -220,9 +209,8 @@ goog.db.IndexedDb.prototype.createTransaction = function(storeNames, opt_mode) {
   try {
     // IndexedDB on Chrome 22+ requires that opt_mode not be passed rather than
     // be explicitly passed as undefined.
-    var transaction = opt_mode ?
-        this.db_.transaction(storeNames, opt_mode) :
-        this.db_.transaction(storeNames);
+    var transaction = opt_mode ? this.db_.transaction(storeNames, opt_mode) :
+                                 this.db_.transaction(storeNames);
     return new goog.db.Transaction(transaction, this);
   } catch (ex) {
     throw goog.db.Error.fromException(ex, 'creating transaction');

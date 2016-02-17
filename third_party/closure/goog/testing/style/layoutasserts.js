@@ -36,9 +36,9 @@ var assertIsVisible = function(a, opt_b) {
   _validateArguments(1, arguments);
   var element = nonCommentArg(1, 1, arguments);
 
-  _assert(commentArg(1, arguments),
-      goog.testing.style.isVisible(element) &&
-      goog.testing.style.hasVisibleDimensions(element),
+  _assert(
+      commentArg(1, arguments), goog.testing.style.isVisible(element) &&
+          goog.testing.style.hasVisibleDimensions(element),
       'Specified element should be visible.');
 };
 
@@ -55,9 +55,9 @@ var assertNotVisible = function(a, opt_b) {
     return;
   }
 
-  _assert(commentArg(1, arguments),
-      !goog.testing.style.isVisible(element) ||
-      !goog.testing.style.hasVisibleDimensions(element),
+  _assert(
+      commentArg(1, arguments), !goog.testing.style.isVisible(element) ||
+          !goog.testing.style.hasVisibleDimensions(element),
       'Specified element should not be visible.');
 };
 
@@ -74,7 +74,8 @@ var assertIntersect = function(a, b, opt_c) {
   var element = nonCommentArg(1, 2, arguments);
   var otherElement = nonCommentArg(2, 2, arguments);
 
-  _assert(commentArg(1, arguments),
+  _assert(
+      commentArg(1, arguments),
       goog.testing.style.intersects(element, otherElement),
       'Elements should intersect.');
 };
@@ -92,7 +93,8 @@ var assertNoIntersect = function(a, b, opt_c) {
   var element = nonCommentArg(1, 2, arguments);
   var otherElement = nonCommentArg(2, 2, arguments);
 
-  _assert(commentArg(1, arguments),
+  _assert(
+      commentArg(1, arguments),
       !goog.testing.style.intersects(element, otherElement),
       'Elements should not intersect.');
 };
@@ -112,7 +114,8 @@ var assertWidth = function(a, b, opt_c) {
   var size = goog.style.getSize(element);
   var elementWidth = size.width;
 
-  _assert(commentArg(1, arguments),
+  _assert(
+      commentArg(1, arguments),
       goog.testing.style.layoutasserts.isWithinThreshold_(
           width, elementWidth, 0 /* tolerance */),
       'Element should have width ' + width + ' but was ' + elementWidth + '.');
@@ -137,11 +140,12 @@ var assertWidthWithinTolerance = function(a, b, c, opt_d) {
   var size = goog.style.getSize(element);
   var elementWidth = size.width;
 
-  _assert(commentArg(1, arguments),
+  _assert(
+      commentArg(1, arguments),
       goog.testing.style.layoutasserts.isWithinThreshold_(
           width, elementWidth, tolerance),
       'Element width(' + elementWidth + ') should be within given width(' +
-      width + ') with tolerance value of ' + tolerance + '.');
+          width + ') with tolerance value of ' + tolerance + '.');
 };
 
 
@@ -159,7 +163,8 @@ var assertHeight = function(a, b, opt_c) {
   var size = goog.style.getSize(element);
   var elementHeight = size.height;
 
-  _assert(commentArg(1, arguments),
+  _assert(
+      commentArg(1, arguments),
       goog.testing.style.layoutasserts.isWithinThreshold_(
           height, elementHeight, 0 /* tolerance */),
       'Element should have height ' + height + '.');
@@ -184,11 +189,12 @@ var assertHeightWithinTolerance = function(a, b, c, opt_d) {
   var size = goog.style.getSize(element);
   var elementHeight = size.height;
 
-  _assert(commentArg(1, arguments),
+  _assert(
+      commentArg(1, arguments),
       goog.testing.style.layoutasserts.isWithinThreshold_(
           height, elementHeight, tolerance),
       'Element width(' + elementHeight + ') should be within given width(' +
-      height + ') with tolerance value of ' + tolerance + '.');
+          height + ') with tolerance value of ' + tolerance + '.');
 };
 
 
@@ -206,8 +212,8 @@ var assertIsLeftOf = function(a, b, opt_c) {
   var elementRect = goog.style.getBounds(element);
   var otherElementRect = goog.style.getBounds(otherElement);
 
-  _assert(commentArg(1, arguments),
-      elementRect.left < otherElementRect.left,
+  _assert(
+      commentArg(1, arguments), elementRect.left < otherElementRect.left,
       'Elements should be left to right.');
 };
 
@@ -226,7 +232,8 @@ var assertIsStrictlyLeftOf = function(a, b, opt_c) {
   var elementRect = goog.style.getBounds(element);
   var otherElementRect = goog.style.getBounds(otherElement);
 
-  _assert(commentArg(1, arguments),
+  _assert(
+      commentArg(1, arguments),
       elementRect.left + elementRect.width < otherElementRect.left,
       'Elements should be strictly left to right.');
 };
@@ -246,8 +253,8 @@ var assertIsAbove = function(a, b, opt_c) {
   var elementRect = goog.style.getBounds(element);
   var otherElementRect = goog.style.getBounds(otherElement);
 
-  _assert(commentArg(1, arguments),
-      elementRect.top < otherElementRect.top,
+  _assert(
+      commentArg(1, arguments), elementRect.top < otherElementRect.top,
       'Elements should be top to bottom.');
 };
 
@@ -266,7 +273,8 @@ var assertIsStrictlyAbove = function(a, b, opt_c) {
   var elementRect = goog.style.getBounds(element);
   var otherElementRect = goog.style.getBounds(otherElement);
 
-  _assert(commentArg(1, arguments),
+  _assert(
+      commentArg(1, arguments),
       elementRect.top + elementRect.height < otherElementRect.top,
       'Elements should be strictly top to bottom.');
 };
@@ -287,8 +295,8 @@ var assertContained = function(a, b, opt_c) {
   var elementRect = goog.style.getBounds(element);
   var otherElementRect = goog.style.getBounds(otherElement);
 
-  _assert(commentArg(1, arguments),
-      elementRect.contains(otherElementRect),
+  _assert(
+      commentArg(1, arguments), elementRect.contains(otherElementRect),
       'Element should be contained within the other element.');
 };
 
@@ -306,5 +314,3 @@ goog.testing.style.layoutasserts.isWithinThreshold_ = function(
     val1, val2, threshold) {
   return Math.abs(val1 - val2) <= threshold;
 };
-
-

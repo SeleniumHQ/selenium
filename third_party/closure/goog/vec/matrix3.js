@@ -100,8 +100,7 @@ goog.vec.Matrix3.createFromValues = function(
  * @param {goog.vec.Matrix3.Type} matrix The source 3x3 matrix.
  * @return {goog.vec.Matrix3.Type} The new 3x3 element matrix.
  */
-goog.vec.Matrix3.clone =
-    goog.vec.Matrix3.createFromArray;
+goog.vec.Matrix3.clone = goog.vec.Matrix3.createFromArray;
 
 
 /**
@@ -245,8 +244,7 @@ goog.vec.Matrix3.setDiagonal = function(mat, vec) {
  * @param {number} v1 The value for row 1.
  * @param {number} v2 The value for row 2.
  */
-goog.vec.Matrix3.setColumnValues = function(
-    mat, column, v0, v1, v2) {
+goog.vec.Matrix3.setColumnValues = function(mat, column, v0, v1, v2) {
   var i = column * 3;
   mat[i] = v0;
   mat[i + 1] = v1;
@@ -298,8 +296,7 @@ goog.vec.Matrix3.getColumn = function(mat, column, vec) {
  * @param {goog.vec.ArrayType} vec1 The values for column 1.
  * @param {goog.vec.ArrayType} vec2 The values for column 2.
  */
-goog.vec.Matrix3.setColumns = function(
-    mat, vec0, vec1, vec2) {
+goog.vec.Matrix3.setColumns = function(mat, vec0, vec1, vec2) {
   goog.vec.Matrix3.setColumn(mat, 0, vec0);
   goog.vec.Matrix3.setColumn(mat, 1, vec1);
   goog.vec.Matrix3.setColumn(mat, 2, vec2);
@@ -319,8 +316,7 @@ goog.vec.Matrix3.setColumns = function(
  * @param {goog.vec.ArrayType} vec2 The vector elements to receive
  *     column 2.
  */
-goog.vec.Matrix3.getColumns = function(
-    mat, vec0, vec1, vec2) {
+goog.vec.Matrix3.getColumns = function(mat, vec0, vec1, vec2) {
   goog.vec.Matrix3.getColumn(mat, 0, vec0);
   goog.vec.Matrix3.getColumn(mat, 1, vec1);
   goog.vec.Matrix3.getColumn(mat, 2, vec2);
@@ -383,8 +379,7 @@ goog.vec.Matrix3.getRow = function(mat, row, vec) {
  * @param {goog.vec.ArrayType} vec1 The values for row 1.
  * @param {goog.vec.ArrayType} vec2 The values for row 2.
  */
-goog.vec.Matrix3.setRows = function(
-    mat, vec0, vec1, vec2) {
+goog.vec.Matrix3.setRows = function(mat, vec0, vec1, vec2) {
   goog.vec.Matrix3.setRow(mat, 0, vec0);
   goog.vec.Matrix3.setRow(mat, 1, vec1);
   goog.vec.Matrix3.setRow(mat, 2, vec2);
@@ -400,8 +395,7 @@ goog.vec.Matrix3.setRows = function(
  * @param {goog.vec.ArrayType} vec1 The vector to receive row 1.
  * @param {goog.vec.ArrayType} vec2 The vector to receive row 2.
  */
-goog.vec.Matrix3.getRows = function(
-    mat, vec0, vec1, vec2) {
+goog.vec.Matrix3.getRows = function(mat, vec0, vec1, vec2) {
   goog.vec.Matrix3.getRow(mat, 0, vec0);
   goog.vec.Matrix3.getRow(mat, 1, vec1);
   goog.vec.Matrix3.getRow(mat, 2, vec2);
@@ -631,10 +625,10 @@ goog.vec.Matrix3.invert = function(mat0, resultMat) {
  * @return {boolean} True if the the two matrices are equivalent.
  */
 goog.vec.Matrix3.equals = function(mat0, mat1) {
-  return mat0.length == mat1.length &&
-      mat0[0] == mat1[0] && mat0[1] == mat1[1] && mat0[2] == mat1[2] &&
-      mat0[3] == mat1[3] && mat0[4] == mat1[4] && mat0[5] == mat1[5] &&
-      mat0[6] == mat1[6] && mat0[7] == mat1[7] && mat0[8] == mat1[8];
+  return mat0.length == mat1.length && mat0[0] == mat1[0] &&
+      mat0[1] == mat1[1] && mat0[2] == mat1[2] && mat0[3] == mat1[3] &&
+      mat0[4] == mat1[4] && mat0[5] == mat1[5] && mat0[6] == mat1[6] &&
+      mat0[7] == mat1[7] && mat0[8] == mat1[8];
 };
 
 
@@ -699,22 +693,15 @@ goog.vec.Matrix3.makeScale = function(mat, x, y, z) {
  * @param {number} ay The y component of the rotation axis.
  * @param {number} az The z component of the rotation axis.
  */
-goog.vec.Matrix3.makeAxisAngleRotate = function(
-    mat, angle, ax, ay, az) {
+goog.vec.Matrix3.makeAxisAngleRotate = function(mat, angle, ax, ay, az) {
   var c = Math.cos(angle);
   var d = 1 - c;
   var s = Math.sin(angle);
 
-  goog.vec.Matrix3.setFromValues(mat,
-      ax * ax * d + c,
-      ax * ay * d + az * s,
-      ax * az * d - ay * s,
+  goog.vec.Matrix3.setFromValues(
+      mat, ax * ax * d + c, ax * ay * d + az * s, ax * az * d - ay * s,
 
-      ax * ay * d - az * s,
-      ay * ay * d + c,
-      ay * az * d + ax * s,
+      ax * ay * d - az * s, ay * ay * d + c, ay * az * d + ax * s,
 
-      ax * az * d + ay * s,
-      ay * az * d - ax * s,
-      az * az * d + c);
+      ax * az * d + ay * s, ay * az * d - ax * s, az * az * d + c);
 };

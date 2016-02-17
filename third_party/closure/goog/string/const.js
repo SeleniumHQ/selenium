@@ -97,8 +97,8 @@ goog.string.Const.prototype.getTypedStringValue = function() {
  */
 goog.string.Const.prototype.toString = function() {
   return 'Const{' +
-         this.stringConstValueWithSecurityContract__googStringSecurityPrivate_ +
-         '}';
+      this.stringConstValueWithSecurityContract__googStringSecurityPrivate_ +
+      '}';
 };
 
 
@@ -120,11 +120,11 @@ goog.string.Const.unwrap = function(stringConst) {
       stringConst.constructor === goog.string.Const &&
       stringConst.STRING_CONST_TYPE_MARKER__GOOG_STRING_SECURITY_PRIVATE_ ===
           goog.string.Const.TYPE_MARKER_) {
-    return stringConst.
-        stringConstValueWithSecurityContract__googStringSecurityPrivate_;
+    return stringConst
+        .stringConstValueWithSecurityContract__googStringSecurityPrivate_;
   } else {
-    goog.asserts.fail('expected object of type Const, got \'' +
-                      stringConst + '\'');
+    goog.asserts.fail(
+        'expected object of type Const, got \'' + stringConst + '\'');
     return 'type_error:Const';
   }
 };

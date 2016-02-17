@@ -95,8 +95,8 @@ goog.ui.Css3ButtonRenderer.prototype.createDom = function(control) {
     'class': goog.ui.INLINE_BLOCK_CLASSNAME + ' ' + classNames.join(' '),
     'title': button.getTooltip() || ''
   };
-  return button.getDomHelper().createDom(goog.dom.TagName.DIV, attr,
-                                         button.getContent());
+  return button.getDomHelper().createDom(
+      goog.dom.TagName.DIV, attr, button.getContent());
 };
 
 
@@ -116,10 +116,10 @@ goog.ui.Css3ButtonRenderer.prototype.canDecorate = function(element) {
 /** @override */
 goog.ui.Css3ButtonRenderer.prototype.decorate = function(button, element) {
   goog.asserts.assert(element);
-  goog.dom.classlist.addAll(element,
-      [goog.ui.INLINE_BLOCK_CLASSNAME, this.getCssClass()]);
-  return goog.ui.Css3ButtonRenderer.superClass_.decorate.call(this, button,
-      element);
+  goog.dom.classlist.addAll(
+      element, [goog.ui.INLINE_BLOCK_CLASSNAME, this.getCssClass()]);
+  return goog.ui.Css3ButtonRenderer.superClass_.decorate.call(
+      this, button, element);
 };
 
 
@@ -136,20 +136,17 @@ goog.ui.Css3ButtonRenderer.prototype.getCssClass = function() {
 
 // Register a decorator factory function for goog.ui.Css3ButtonRenderer.
 goog.ui.registry.setDecoratorByClassName(
-    goog.ui.Css3ButtonRenderer.CSS_CLASS,
-    function() {
-      return new goog.ui.Button(null,
-          goog.ui.Css3ButtonRenderer.getInstance());
+    goog.ui.Css3ButtonRenderer.CSS_CLASS, function() {
+      return new goog.ui.Button(null, goog.ui.Css3ButtonRenderer.getInstance());
     });
 
 
 // Register a decorator factory function for toggle buttons using the
 // goog.ui.Css3ButtonRenderer.
 goog.ui.registry.setDecoratorByClassName(
-    goog.getCssName('goog-css3-toggle-button'),
-    function() {
-      var button = new goog.ui.Button(null,
-          goog.ui.Css3ButtonRenderer.getInstance());
+    goog.getCssName('goog-css3-toggle-button'), function() {
+      var button =
+          new goog.ui.Button(null, goog.ui.Css3ButtonRenderer.getInstance());
       button.setSupportedState(goog.ui.Component.State.CHECKED, true);
       return button;
     });

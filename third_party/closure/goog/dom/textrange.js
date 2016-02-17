@@ -109,8 +109,8 @@ goog.dom.TextRange.createFromBrowserRange = function(range, opt_isReversed) {
  * @return {!goog.dom.TextRange} A range wrapper object.
  * @private
  */
-goog.dom.TextRange.createFromBrowserRangeWrapper_ = function(browserRange,
-    opt_isReversed) {
+goog.dom.TextRange.createFromBrowserRangeWrapper_ = function(
+    browserRange, opt_isReversed) {
   var range = new goog.dom.TextRange();
 
   // Initialize the range as a browser range wrapper type range.
@@ -131,8 +131,7 @@ goog.dom.TextRange.createFromBrowserRangeWrapper_ = function(browserRange,
  */
 goog.dom.TextRange.createFromNodeContents = function(node, opt_isReversed) {
   return goog.dom.TextRange.createFromBrowserRangeWrapper_(
-      goog.dom.browserrange.createRangeFromNodeContents(node),
-      opt_isReversed);
+      goog.dom.browserrange.createRangeFromNodeContents(node), opt_isReversed);
 };
 
 
@@ -146,12 +145,12 @@ goog.dom.TextRange.createFromNodeContents = function(node, opt_isReversed) {
  * @param {number} focusOffset The offset within the node to end.
  * @return {!goog.dom.TextRange} A range wrapper object.
  */
-goog.dom.TextRange.createFromNodes = function(anchorNode, anchorOffset,
-    focusNode, focusOffset) {
+goog.dom.TextRange.createFromNodes = function(
+    anchorNode, anchorOffset, focusNode, focusOffset) {
   var range = new goog.dom.TextRange();
   range.isReversed_ = /** @suppress {missingRequire} */ (
-      goog.dom.Range.isReversed(anchorNode, anchorOffset,
-                                focusNode, focusOffset));
+      goog.dom.Range.isReversed(
+          anchorNode, anchorOffset, focusNode, focusOffset));
 
   // Avoid selecting terminal elements directly
   if (goog.dom.isElement(anchorNode) && !goog.dom.canHaveChildren(anchorNode)) {
@@ -223,8 +222,7 @@ goog.dom.TextRange.prototype.setBrowserRangeObject = function(nativeRange) {
   if (goog.dom.AbstractRange.isNativeControlRange(nativeRange)) {
     return false;
   }
-  this.browserRangeWrapper_ = goog.dom.browserrange.createRange(
-      nativeRange);
+  this.browserRangeWrapper_ = goog.dom.browserrange.createRange(nativeRange);
   this.clearCachedValues_();
   return true;
 };
@@ -258,8 +256,8 @@ goog.dom.TextRange.prototype.getTextRange = function(i) {
 goog.dom.TextRange.prototype.getBrowserRangeWrapper_ = function() {
   return this.browserRangeWrapper_ ||
       (this.browserRangeWrapper_ = goog.dom.browserrange.createRangeFromNodes(
-          this.getStartNode(), this.getStartOffset(),
-          this.getEndNode(), this.getEndOffset()));
+           this.getStartNode(), this.getStartOffset(), this.getEndNode(),
+           this.getEndOffset()));
 };
 
 
@@ -278,7 +276,8 @@ goog.dom.TextRange.prototype.getStartNode = function() {
 
 /** @override */
 goog.dom.TextRange.prototype.getStartOffset = function() {
-  return this.startOffset_ != null ? this.startOffset_ :
+  return this.startOffset_ != null ?
+      this.startOffset_ :
       (this.startOffset_ = this.getBrowserRangeWrapper_().getStartOffset());
 };
 
@@ -298,7 +297,8 @@ goog.dom.TextRange.prototype.getEndNode = function() {
 
 /** @override */
 goog.dom.TextRange.prototype.getEndOffset = function() {
-  return this.endOffset_ != null ? this.endOffset_ :
+  return this.endOffset_ != null ?
+      this.endOffset_ :
       (this.endOffset_ = this.getBrowserRangeWrapper_().getEndOffset());
 };
 
@@ -317,9 +317,8 @@ goog.dom.TextRange.prototype.getEndPosition = function() {
  * @param {number} endOffset The offset within the node to end.
  * @param {boolean} isReversed Whether the range is reversed.
  */
-goog.dom.TextRange.prototype.moveToNodes = function(startNode, startOffset,
-                                                    endNode, endOffset,
-                                                    isReversed) {
+goog.dom.TextRange.prototype.moveToNodes = function(
+    startNode, startOffset, endNode, endOffset, isReversed) {
   this.startNode_ = startNode;
   this.startOffset_ = startOffset;
   this.endNode_ = endNode;
@@ -336,16 +335,22 @@ goog.dom.TextRange.prototype.isReversed = function() {
 
 
 /** @override */
-goog.dom.TextRange.prototype.containsRange = function(otherRange,
-                                                      opt_allowPartial) {
+goog.dom.TextRange.prototype.containsRange = function(
+    otherRange, opt_allowPartial) {
   var otherRangeType = otherRange.getType();
   if (otherRangeType == goog.dom.RangeType.TEXT) {
     return this.getBrowserRangeWrapper_().containsRange(
         otherRange.getBrowserRangeWrapper_(), opt_allowPartial);
   } else if (otherRangeType == goog.dom.RangeType.CONTROL) {
     var elements = otherRange.getElements();
+    /**
+     * @param {!Array<!Element>} array
+     * @param {function(this: T, !Element)} fn
+     * @param {T} scope
+     * @template T
+     */
     var fn = opt_allowPartial ? goog.array.some : goog.array.every;
-    return fn(elements, /** @this {!goog.dom.TextRange} */ function(el) {
+    return fn(elements, function(el) {
       return this.containsNode(el, opt_allowPartial);
     }, this);
   }
@@ -383,10 +388,9 @@ goog.dom.TextRange.prototype.isRangeInDocument = function() {
   // well for IE.
   return (!this.startNode_ ||
           goog.dom.TextRange.isAttachedNode(this.startNode_)) &&
-         (!this.endNode_ ||
-          goog.dom.TextRange.isAttachedNode(this.endNode_)) &&
-         (!(goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(9)) ||
-          this.getBrowserRangeWrapper_().isRangeInDocument());
+      (!this.endNode_ || goog.dom.TextRange.isAttachedNode(this.endNode_)) &&
+      (!(goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(9)) ||
+       this.getBrowserRangeWrapper_().isRangeInDocument());
 };
 
 
@@ -460,8 +464,9 @@ goog.dom.TextRange.prototype.getPastableHtml = function() {
  * @override
  */
 goog.dom.TextRange.prototype.__iterator__ = function(opt_keys) {
-  return new goog.dom.TextRangeIterator(this.getStartNode(),
-      this.getStartOffset(), this.getEndNode(), this.getEndOffset());
+  return new goog.dom.TextRangeIterator(
+      this.getStartNode(), this.getStartOffset(), this.getEndNode(),
+      this.getEndOffset());
 };
 
 
@@ -597,8 +602,9 @@ goog.inherits(goog.dom.DomSavedTextRange_, goog.dom.SavedRange);
  */
 goog.dom.DomSavedTextRange_.prototype.restoreInternal = function() {
   return /** @suppress {missingRequire} */ (
-      goog.dom.Range.createFromNodes(this.anchorNode_, this.anchorOffset_,
-                                     this.focusNode_, this.focusOffset_));
+      goog.dom.Range.createFromNodes(
+          this.anchorNode_, this.anchorOffset_, this.focusNode_,
+          this.focusOffset_));
 };
 
 

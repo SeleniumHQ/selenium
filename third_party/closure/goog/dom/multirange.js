@@ -112,9 +112,8 @@ goog.dom.MultiRange.createFromBrowserRanges = function(browserRanges) {
 goog.dom.MultiRange.createFromTextRanges = function(textRanges) {
   var range = new goog.dom.MultiRange();
   range.ranges_ = textRanges;
-  range.browserRanges_ = goog.array.map(textRanges, function(range) {
-    return range.getBrowserRangeObject();
-  });
+  range.browserRanges_ = goog.array.map(
+      textRanges, function(range) { return range.getBrowserRangeObject(); });
   return range;
 };
 
@@ -153,7 +152,8 @@ goog.dom.MultiRange.prototype.getType = function() {
 goog.dom.MultiRange.prototype.getBrowserRangeObject = function() {
   // NOTE(robbyw): This method does not make sense for multi-ranges.
   if (this.browserRanges_.length > 1) {
-    goog.log.warning(this.logger_,
+    goog.log.warning(
+        this.logger_,
         'getBrowserRangeObject called on MultiRange with more than 1 range');
   }
   return this.browserRanges_[0];
@@ -176,8 +176,8 @@ goog.dom.MultiRange.prototype.getTextRangeCount = function() {
 /** @override */
 goog.dom.MultiRange.prototype.getTextRange = function(i) {
   if (!this.ranges_[i]) {
-    this.ranges_[i] = goog.dom.TextRange.createFromBrowserRange(
-        this.browserRanges_[i]);
+    this.ranges_[i] =
+        goog.dom.TextRange.createFromBrowserRange(this.browserRanges_[i]);
   }
   return this.ranges_[i];
 };
@@ -213,8 +213,10 @@ goog.dom.MultiRange.prototype.getSortedRanges = function() {
         return 0;
       }
 
-      return goog.dom.Range.isReversed(aStartNode, aStartOffset, bStartNode,
-          bStartOffset) ? 1 : -1;
+      return goog.dom.Range.isReversed(
+                 aStartNode, aStartOffset, bStartNode, bStartOffset) ?
+          1 :
+          -1;
     });
   }
   return this.sortedRanges_;
@@ -264,9 +266,9 @@ goog.dom.MultiRange.prototype.isCollapsed = function() {
 
 /** @override */
 goog.dom.MultiRange.prototype.getText = function() {
-  return goog.array.map(this.getTextRanges(), function(range) {
-    return range.getText();
-  }).join('');
+  return goog.array
+      .map(this.getTextRanges(), function(range) { return range.getText(); })
+      .join('');
 };
 
 
@@ -279,9 +281,11 @@ goog.dom.MultiRange.prototype.getHtmlFragment = function() {
 /** @override */
 goog.dom.MultiRange.prototype.getValidHtml = function() {
   // NOTE(robbyw): This does not behave well if the sub-ranges overlap.
-  return goog.array.map(this.getTextRanges(), function(range) {
-    return range.getValidHtml();
-  }).join('');
+  return goog.array
+      .map(
+          this.getTextRanges(),
+          function(range) { return range.getValidHtml(); })
+      .join('');
 };
 
 
@@ -304,8 +308,8 @@ goog.dom.MultiRange.prototype.__iterator__ = function(opt_keys) {
 
 /** @override */
 goog.dom.MultiRange.prototype.select = function() {
-  var selection = goog.dom.AbstractRange.getBrowserSelectionForWindow(
-      this.getWindow());
+  var selection =
+      goog.dom.AbstractRange.getBrowserSelectionForWindow(this.getWindow());
   selection.removeAllRanges();
   for (var i = 0, len = this.getTextRangeCount(); i < len; i++) {
     selection.addRange(this.getTextRange(i).getBrowserRangeObject());
@@ -315,9 +319,8 @@ goog.dom.MultiRange.prototype.select = function() {
 
 /** @override */
 goog.dom.MultiRange.prototype.removeContents = function() {
-  goog.array.forEach(this.getTextRanges(), function(range) {
-    range.removeContents();
-  });
+  goog.array.forEach(
+      this.getTextRanges(), function(range) { range.removeContents(); });
 };
 
 
@@ -342,8 +345,8 @@ goog.dom.MultiRange.prototype.saveUsingDom = function() {
  */
 goog.dom.MultiRange.prototype.collapse = function(toAnchor) {
   if (!this.isCollapsed()) {
-    var range = toAnchor ? this.getTextRange(0) : this.getTextRange(
-        this.getTextRangeCount() - 1);
+    var range = toAnchor ? this.getTextRange(0) :
+                           this.getTextRange(this.getTextRangeCount() - 1);
 
     this.clearCachedValues_();
     range.collapse(toAnchor);
@@ -371,9 +374,8 @@ goog.dom.DomSavedMultiRange_ = function(range) {
    * @type {Array<goog.dom.SavedRange>}
    * @private
    */
-  this.savedRanges_ = goog.array.map(range.getTextRanges(), function(range) {
-    return range.saveUsingDom();
-  });
+  this.savedRanges_ = goog.array.map(
+      range.getTextRanges(), function(range) { return range.saveUsingDom(); });
 };
 goog.inherits(goog.dom.DomSavedMultiRange_, goog.dom.SavedRange);
 
@@ -383,9 +385,8 @@ goog.inherits(goog.dom.DomSavedMultiRange_, goog.dom.SavedRange);
  * @override
  */
 goog.dom.DomSavedMultiRange_.prototype.restoreInternal = function() {
-  var ranges = goog.array.map(this.savedRanges_, function(savedRange) {
-    return savedRange.restore();
-  });
+  var ranges = goog.array.map(
+      this.savedRanges_, function(savedRange) { return savedRange.restore(); });
   return goog.dom.MultiRange.createFromTextRanges(ranges);
 };
 
@@ -394,9 +395,8 @@ goog.dom.DomSavedMultiRange_.prototype.restoreInternal = function() {
 goog.dom.DomSavedMultiRange_.prototype.disposeInternal = function() {
   goog.dom.DomSavedMultiRange_.superClass_.disposeInternal.call(this);
 
-  goog.array.forEach(this.savedRanges_, function(savedRange) {
-    savedRange.dispose();
-  });
+  goog.array.forEach(
+      this.savedRanges_, function(savedRange) { savedRange.dispose(); });
   delete this.savedRanges_;
 };
 
@@ -428,11 +428,9 @@ goog.dom.MultiRangeIterator = function(range) {
   this.currentIdx_ = 0;
 
   if (range) {
-    this.iterators_ = goog.array.map(
-        range.getSortedRanges(),
-        function(r) {
-          return goog.iter.toIterator(r);
-        });
+    this.iterators_ = goog.array.map(range.getSortedRanges(), function(r) {
+      return goog.iter.toIterator(r);
+    });
   }
 
   goog.dom.MultiRangeIterator.base(

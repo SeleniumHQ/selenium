@@ -60,16 +60,16 @@ goog.ui.editor.TabPane = function(dom, opt_caption) {
    * @type {goog.ui.TabBar}
    * @private
    */
-  this.tabBar_ = new goog.ui.TabBar(goog.ui.TabBar.Location.START,
-      undefined, this.dom_);
+  this.tabBar_ =
+      new goog.ui.TabBar(goog.ui.TabBar.Location.START, undefined, this.dom_);
   this.tabBar_.setFocusable(false);
 
   /**
    * The content element.
    * @private
    */
-  this.tabContent_ = this.dom_.createDom(goog.dom.TagName.DIV,
-      {className: goog.getCssName('goog-tab-content')});
+  this.tabContent_ = this.dom_.createDom(
+      goog.dom.TagName.DIV, {className: goog.getCssName('goog-tab-content')});
 
   /**
    * The currently selected radio button.
@@ -88,8 +88,7 @@ goog.ui.editor.TabPane = function(dom, opt_caption) {
 
   // Add the caption as the first element in the tab bar.
   if (opt_caption) {
-    var captionControl = new goog.ui.Control(opt_caption, undefined,
-        this.dom_);
+    var captionControl = new goog.ui.Control(opt_caption, undefined, this.dom_);
     captionControl.addClassName(goog.getCssName('tr-tabpane-caption'));
     captionControl.setEnabled(false);
     this.tabBar_.addChild(captionControl, true);
@@ -124,16 +123,14 @@ goog.ui.editor.TabPane.prototype.setSelectedTabId = function(id) {
  * @param {Element} content The content element to show when this tab is
  *     selected.
  */
-goog.ui.editor.TabPane.prototype.addTab = function(id, caption, tooltip,
-    groupName, content) {
-  var radio = this.dom_.createDom(goog.dom.TagName.INPUT,
-      {
-        name: groupName,
-        type: goog.dom.InputType.RADIO
-      });
+goog.ui.editor.TabPane.prototype.addTab = function(
+    id, caption, tooltip, groupName, content) {
+  var radio = this.dom_.createDom(
+      goog.dom.TagName.INPUT,
+      {name: groupName, type: goog.dom.InputType.RADIO});
 
-  var tab = new goog.ui.Tab([radio, this.dom_.createTextNode(caption)],
-      undefined, this.dom_);
+  var tab = new goog.ui.Tab(
+      [radio, this.dom_.createTextNode(caption)], undefined, this.dom_);
   tab.setId(id);
   tab.setTooltip(tooltip);
   this.tabBar_.addChild(tab, true);
@@ -143,8 +140,8 @@ goog.ui.editor.TabPane.prototype.addTab = function(id, caption, tooltip,
   // is selected.  You don't get a SELECT at all.  We listen for SELECT
   // nonetheless because it's possible that some browser will issue only
   // SELECT.
-  this.eventHandler_.listen(radio,
-      [goog.events.EventType.SELECT, goog.events.EventType.CLICK],
+  this.eventHandler_.listen(
+      radio, [goog.events.EventType.SELECT, goog.events.EventType.CLICK],
       goog.bind(this.tabBar_.setSelectedTab, this.tabBar_, tab));
 
   content.id = id + '-tab';
@@ -164,16 +161,16 @@ goog.ui.editor.TabPane.prototype.enterDocument = function() {
 
   // Add the tabs.
   this.addChild(this.tabBar_, true);
-  this.eventHandler_.listen(this.tabBar_, goog.ui.Component.EventType.SELECT,
-      this.handleTabSelect_);
+  this.eventHandler_.listen(
+      this.tabBar_, goog.ui.Component.EventType.SELECT, this.handleTabSelect_);
 
   // Add the tab content.
   root.appendChild(this.tabContent_);
 
   // Add an element to clear the tab float.
-  root.appendChild(
-      this.dom_.createDom(goog.dom.TagName.DIV,
-          {className: goog.getCssName('goog-tab-bar-clear')}));
+  root.appendChild(this.dom_.createDom(goog.dom.TagName.DIV, {
+    className: goog.getCssName('goog-tab-bar-clear')
+  }));
 };
 
 
@@ -196,7 +193,7 @@ goog.ui.editor.TabPane.prototype.handleTabSelect_ = function(e) {
   if (this.selectedRadio_) {
     this.selectedRadio_.checked = false;
   }
-  this.selectedRadio_ = tab.getElement().getElementsByTagName(
-      goog.dom.TagName.INPUT)[0];
+  this.selectedRadio_ =
+      tab.getElement().getElementsByTagName(goog.dom.TagName.INPUT)[0];
   this.selectedRadio_.checked = true;
 };

@@ -216,9 +216,8 @@ goog.html.SafeUrl.unwrap = function(safeUrl) {
     return safeUrl.privateDoNotAccessOrElseSafeHtmlWrappedValue_;
   } else {
     goog.asserts.fail('expected object of type SafeUrl, got \'' +
-                      safeUrl + '\'');
+        safeUrl + '\' of type ' + goog.typeOf(safeUrl));
     return 'type_error:SafeUrl';
-
   }
 };
 
@@ -264,7 +263,8 @@ goog.html.SAFE_MIME_TYPE_PATTERN_ =
  */
 goog.html.SafeUrl.fromBlob = function(blob) {
   var url = goog.html.SAFE_MIME_TYPE_PATTERN_.test(blob.type) ?
-      goog.fs.url.createObjectUrl(blob) : goog.html.SafeUrl.INNOCUOUS_STRING;
+      goog.fs.url.createObjectUrl(blob) :
+      goog.html.SafeUrl.INNOCUOUS_STRING;
   return goog.html.SafeUrl.createSafeUrlSecurityPrivateDoNotAccessOrElse(url);
 };
 
@@ -334,25 +334,11 @@ goog.html.SAFE_URL_PATTERN_ =
 /**
  * Creates a SafeUrl object from {@code url}. If {@code url} is a
  * goog.html.SafeUrl then it is simply returned. Otherwise the input string is
- * validated to match a pattern of commonly used safe URLs. The string is
- * converted to UTF-8 and non-whitelisted characters are percent-encoded. The
- * string wrapped by the created SafeUrl will thus contain only ASCII printable
- * characters.
+ * validated to match a pattern of commonly used safe URLs.
  *
  * {@code url} may be a URL with the http, https, mailto or ftp scheme,
  * or a relative URL (i.e., a URL without a scheme; specifically, a
  * scheme-relative, absolute-path-relative, or path-relative URL).
- *
- * {@code url} is converted to UTF-8 and non-whitelisted characters are
- * percent-encoded. Whitelisted characters are '%' and, from RFC 3986,
- * unreserved characters and reserved characters, with the exception of '\'',
- * '(' and ')'. This ensures the the SafeUrl contains only ASCII-printable
- * characters and reduces the chance of security bugs were it to be
- * interpolated into a specific context without the necessary escaping.
- *
- * If {@code url} fails validation or does not UTF-16 decode correctly
- * (JavaScript strings are UTF-16 encoded), this function returns a SafeUrl
- * object containing an innocuous string, goog.html.SafeUrl.INNOCUOUS_STRING.
  *
  * @see http://url.spec.whatwg.org/#concept-relative-url
  * @param {string|!goog.string.TypedString} url The URL to validate.
@@ -361,8 +347,7 @@ goog.html.SAFE_URL_PATTERN_ =
 goog.html.SafeUrl.sanitize = function(url) {
   if (url instanceof goog.html.SafeUrl) {
     return url;
-  }
-  else if (url.implementsGoogStringTypedString) {
+  } else if (url.implementsGoogStringTypedString) {
     url = url.getTypedStringValue();
   } else {
     url = String(url);
@@ -396,3 +381,12 @@ goog.html.SafeUrl.createSafeUrlSecurityPrivateDoNotAccessOrElse = function(
   safeUrl.privateDoNotAccessOrElseSafeHtmlWrappedValue_ = url;
   return safeUrl;
 };
+
+
+/**
+ * A SafeUrl corresponding to the special about:blank url.
+ * @const {!goog.html.SafeUrl}
+ */
+goog.html.SafeUrl.ABOUT_BLANK =
+    goog.html.SafeUrl.createSafeUrlSecurityPrivateDoNotAccessOrElse(
+        'about:blank');

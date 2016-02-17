@@ -55,9 +55,49 @@ goog.vec.vec2d.create = function() {
 
 
 /**
+ * Creates a new vec2d initialized with the value from the given array.
+ *
+ * @param {!Array<number>} vec The source 2 element array.
+ * @return {!goog.vec.vec2d.Type} The new vec2d.
+ */
+goog.vec.vec2d.createFromArray = function(vec) {
+  var newVec = goog.vec.vec2d.create();
+  goog.vec.vec2d.setFromArray(newVec, vec);
+  return newVec;
+};
+
+
+/**
+ * Creates a new vec2d initialized with the supplied values.
+ *
+ * @param {number} v0 The value for element at index 0.
+ * @param {number} v1 The value for element at index 1.
+ * @return {!goog.vec.vec2d.Type} The new vector.
+ */
+goog.vec.vec2d.createFromValues = function(v0, v1) {
+  var vec = goog.vec.vec2d.create();
+  goog.vec.vec2d.setFromValues(vec, v0, v1);
+  return vec;
+};
+
+
+/**
+ * Creates a clone of the given vec2d.
+ *
+ * @param {!goog.vec.vec2d.Type} vec The source vec2d.
+ * @return {!goog.vec.vec2d.Type} The new cloned vec2d.
+ */
+goog.vec.vec2d.clone = function(vec) {
+  var newVec = goog.vec.vec2d.create();
+  goog.vec.vec2d.setFromVec2d(newVec, vec);
+  return newVec;
+};
+
+
+/**
  * Initializes the vector with the given values.
  *
- * @param {goog.vec.vec2d.Type} vec The vector to receive the values.
+ * @param {!goog.vec.vec2d.Type} vec The vector to receive the values.
  * @param {number} v0 The value for element at index 0.
  * @param {number} v1 The value for element at index 1.
  * @return {!goog.vec.vec2d.Type} Return vec so that operations can be
@@ -73,8 +113,8 @@ goog.vec.vec2d.setFromValues = function(vec, v0, v1) {
 /**
  * Initializes vec2d vec from vec2d src.
  *
- * @param {goog.vec.vec2d.Type} vec The destination vector.
- * @param {goog.vec.vec2d.Type} src The source vector.
+ * @param {!goog.vec.vec2d.Type} vec The destination vector.
+ * @param {!goog.vec.vec2d.Type} src The source vector.
  * @return {!goog.vec.vec2d.Type} Return vec so that operations can be
  *     chained together.
  */
@@ -89,7 +129,7 @@ goog.vec.vec2d.setFromVec2d = function(vec, src) {
  * Initializes vec2d vec from vec2f src (typed as a Float32Array to
  * avoid circular goog.requires).
  *
- * @param {goog.vec.vec2d.Type} vec The destination vector.
+ * @param {!goog.vec.vec2d.Type} vec The destination vector.
  * @param {Float32Array} src The source vector.
  * @return {!goog.vec.vec2d.Type} Return vec so that operations can be
  *     chained together.
@@ -104,7 +144,7 @@ goog.vec.vec2d.setFromVec2f = function(vec, src) {
 /**
  * Initializes vec2d vec from Array src.
  *
- * @param {goog.vec.vec2d.Type} vec The destination vector.
+ * @param {!goog.vec.vec2d.Type} vec The destination vector.
  * @param {Array<number>} src The source vector.
  * @return {!goog.vec.vec2d.Type} Return vec so that operations can be
  *     chained together.
@@ -120,9 +160,9 @@ goog.vec.vec2d.setFromArray = function(vec, src) {
  * Performs a component-wise addition of vec0 and vec1 together storing the
  * result into resultVec.
  *
- * @param {goog.vec.vec2d.Type} vec0 The first addend.
- * @param {goog.vec.vec2d.Type} vec1 The second addend.
- * @param {goog.vec.vec2d.Type} resultVec The vector to
+ * @param {!goog.vec.vec2d.Type} vec0 The first addend.
+ * @param {!goog.vec.vec2d.Type} vec1 The second addend.
+ * @param {!goog.vec.vec2d.Type} resultVec The vector to
  *     receive the result. May be vec0 or vec1.
  * @return {!goog.vec.vec2d.Type} Return resultVec so that operations can be
  *     chained together.
@@ -138,9 +178,9 @@ goog.vec.vec2d.add = function(vec0, vec1, resultVec) {
  * Performs a component-wise subtraction of vec1 from vec0 storing the
  * result into resultVec.
  *
- * @param {goog.vec.vec2d.Type} vec0 The minuend.
- * @param {goog.vec.vec2d.Type} vec1 The subtrahend.
- * @param {goog.vec.vec2d.Type} resultVec The vector to
+ * @param {!goog.vec.vec2d.Type} vec0 The minuend.
+ * @param {!goog.vec.vec2d.Type} vec1 The subtrahend.
+ * @param {!goog.vec.vec2d.Type} resultVec The vector to
  *     receive the result. May be vec0 or vec1.
  * @return {!goog.vec.vec2d.Type} Return resultVec so that operations can be
  *     chained together.
@@ -191,8 +231,8 @@ goog.vec.vec2d.componentDivide = function(vec0, vec1, resultVec) {
 /**
  * Negates vec0, storing the result into resultVec.
  *
- * @param {goog.vec.vec2d.Type} vec0 The vector to negate.
- * @param {goog.vec.vec2d.Type} resultVec The vector to
+ * @param {!goog.vec.vec2d.Type} vec0 The vector to negate.
+ * @param {!goog.vec.vec2d.Type} resultVec The vector to
  *     receive the result. May be vec0.
  * @return {!goog.vec.vec2d.Type} Return resultVec so that operations can be
  *     chained together.
@@ -208,8 +248,8 @@ goog.vec.vec2d.negate = function(vec0, resultVec) {
  * Takes the absolute value of each component of vec0 storing the result in
  * resultVec.
  *
- * @param {goog.vec.vec2d.Type} vec0 The source vector.
- * @param {goog.vec.vec2d.Type} resultVec The vector to receive the result.
+ * @param {!goog.vec.vec2d.Type} vec0 The source vector.
+ * @param {!goog.vec.vec2d.Type} resultVec The vector to receive the result.
  *     May be vec0.
  * @return {!goog.vec.vec2d.Type} Return resultVec so that operations can be
  *     chained together.
@@ -225,9 +265,9 @@ goog.vec.vec2d.abs = function(vec0, resultVec) {
  * Multiplies each component of vec0 with scalar storing the product into
  * resultVec.
  *
- * @param {goog.vec.vec2d.Type} vec0 The source vector.
+ * @param {!goog.vec.vec2d.Type} vec0 The source vector.
  * @param {number} scalar The value to multiply with each component of vec0.
- * @param {goog.vec.vec2d.Type} resultVec The vector to
+ * @param {!goog.vec.vec2d.Type} resultVec The vector to
  *     receive the result. May be vec0.
  * @return {!goog.vec.vec2d.Type} Return resultVec so that operations can be
  *     chained together.
@@ -242,7 +282,7 @@ goog.vec.vec2d.scale = function(vec0, scalar, resultVec) {
 /**
  * Returns the magnitudeSquared of the given vector.
  *
- * @param {goog.vec.vec2d.Type} vec0 The vector.
+ * @param {!goog.vec.vec2d.Type} vec0 The vector.
  * @return {number} The magnitude of the vector.
  */
 goog.vec.vec2d.magnitudeSquared = function(vec0) {
@@ -254,7 +294,7 @@ goog.vec.vec2d.magnitudeSquared = function(vec0) {
 /**
  * Returns the magnitude of the given vector.
  *
- * @param {goog.vec.vec2d.Type} vec0 The vector.
+ * @param {!goog.vec.vec2d.Type} vec0 The vector.
  * @return {number} The magnitude of the vector.
  */
 goog.vec.vec2d.magnitude = function(vec0) {
@@ -266,8 +306,8 @@ goog.vec.vec2d.magnitude = function(vec0) {
 /**
  * Normalizes the given vector storing the result into resultVec.
  *
- * @param {goog.vec.vec2d.Type} vec0 The vector to normalize.
- * @param {goog.vec.vec2d.Type} resultVec The vector to
+ * @param {!goog.vec.vec2d.Type} vec0 The vector to normalize.
+ * @param {!goog.vec.vec2d.Type} resultVec The vector to
  *     receive the result. May be vec0.
  * @return {!goog.vec.vec2d.Type} Return resultVec so that operations can be
  *     chained together.
@@ -284,8 +324,8 @@ goog.vec.vec2d.normalize = function(vec0, resultVec) {
 /**
  * Returns the scalar product of vectors vec0 and vec1.
  *
- * @param {goog.vec.vec2d.Type} vec0 The first vector.
- * @param {goog.vec.vec2d.Type} vec1 The second vector.
+ * @param {!goog.vec.vec2d.Type} vec0 The first vector.
+ * @param {!goog.vec.vec2d.Type} vec1 The second vector.
  * @return {number} The scalar product.
  */
 goog.vec.vec2d.dot = function(vec0, vec1) {
@@ -296,8 +336,8 @@ goog.vec.vec2d.dot = function(vec0, vec1) {
 /**
  * Returns the squared distance between two points.
  *
- * @param {goog.vec.vec2d.Type} vec0 First point.
- * @param {goog.vec.vec2d.Type} vec1 Second point.
+ * @param {!goog.vec.vec2d.Type} vec0 First point.
+ * @param {!goog.vec.vec2d.Type} vec1 Second point.
  * @return {number} The squared distance between the points.
  */
 goog.vec.vec2d.distanceSquared = function(vec0, vec1) {
@@ -310,8 +350,8 @@ goog.vec.vec2d.distanceSquared = function(vec0, vec1) {
 /**
  * Returns the distance between two points.
  *
- * @param {goog.vec.vec2d.Type} vec0 First point.
- * @param {goog.vec.vec2d.Type} vec1 Second point.
+ * @param {!goog.vec.vec2d.Type} vec0 First point.
+ * @param {!goog.vec.vec2d.Type} vec1 Second point.
  * @return {number} The distance between the points.
  */
 goog.vec.vec2d.distance = function(vec0, vec1) {
@@ -323,9 +363,9 @@ goog.vec.vec2d.distance = function(vec0, vec1) {
  * Returns a unit vector pointing from one point to another.
  * If the input points are equal then the result will be all zeros.
  *
- * @param {goog.vec.vec2d.Type} vec0 Origin point.
- * @param {goog.vec.vec2d.Type} vec1 Target point.
- * @param {goog.vec.vec2d.Type} resultVec The vector to receive the
+ * @param {!goog.vec.vec2d.Type} vec0 Origin point.
+ * @param {!goog.vec.vec2d.Type} vec1 Target point.
+ * @param {!goog.vec.vec2d.Type} resultVec The vector to receive the
  *     results (may be vec0 or vec1).
  * @return {!goog.vec.vec2d.Type} Return resultVec so that operations can be
  *     chained together.
@@ -349,10 +389,10 @@ goog.vec.vec2d.direction = function(vec0, vec1, resultVec) {
  * Linearly interpolate from vec0 to vec1 according to f. The value of f should
  * be in the range [0..1] otherwise the results are undefined.
  *
- * @param {goog.vec.vec2d.Type} vec0 The first vector.
- * @param {goog.vec.vec2d.Type} vec1 The second vector.
+ * @param {!goog.vec.vec2d.Type} vec0 The first vector.
+ * @param {!goog.vec.vec2d.Type} vec1 The second vector.
  * @param {number} f The interpolation factor.
- * @param {goog.vec.vec2d.Type} resultVec The vector to receive the
+ * @param {!goog.vec.vec2d.Type} resultVec The vector to receive the
  *     results (may be vec0 or vec1).
  * @return {!goog.vec.vec2d.Type} Return resultVec so that operations can be
  *     chained together.
@@ -369,9 +409,9 @@ goog.vec.vec2d.lerp = function(vec0, vec1, f, resultVec) {
  * Compares the components of vec0 with the components of another vector or
  * scalar, storing the larger values in resultVec.
  *
- * @param {goog.vec.vec2d.Type} vec0 The source vector.
- * @param {goog.vec.vec2d.Type|number} limit The limit vector or scalar.
- * @param {goog.vec.vec2d.Type} resultVec The vector to receive the
+ * @param {!goog.vec.vec2d.Type} vec0 The source vector.
+ * @param {!goog.vec.vec2d.Type|number} limit The limit vector or scalar.
+ * @param {!goog.vec.vec2d.Type} resultVec The vector to receive the
  *     results (may be vec0 or limit).
  * @return {!goog.vec.vec2d.Type} Return resultVec so that operations can be
  *     chained together.
@@ -392,9 +432,9 @@ goog.vec.vec2d.max = function(vec0, limit, resultVec) {
  * Compares the components of vec0 with the components of another vector or
  * scalar, storing the smaller values in resultVec.
  *
- * @param {goog.vec.vec2d.Type} vec0 The source vector.
- * @param {goog.vec.vec2d.Type|number} limit The limit vector or scalar.
- * @param {goog.vec.vec2d.Type} resultVec The vector to receive the
+ * @param {!goog.vec.vec2d.Type} vec0 The source vector.
+ * @param {!goog.vec.vec2d.Type|number} limit The limit vector or scalar.
+ * @param {!goog.vec.vec2d.Type} resultVec The vector to receive the
  *     results (may be vec0 or limit).
  * @return {!goog.vec.vec2d.Type} Return resultVec so that operations can be
  *     chained together.
@@ -414,11 +454,10 @@ goog.vec.vec2d.min = function(vec0, limit, resultVec) {
 /**
  * Returns true if the components of vec0 are equal to the components of vec1.
  *
- * @param {goog.vec.vec2d.Type} vec0 The first vector.
- * @param {goog.vec.vec2d.Type} vec1 The second vector.
+ * @param {!goog.vec.vec2d.Type} vec0 The first vector.
+ * @param {!goog.vec.vec2d.Type} vec1 The second vector.
  * @return {boolean} True if the vectors are equal, false otherwise.
  */
 goog.vec.vec2d.equals = function(vec0, vec1) {
-  return vec0.length == vec1.length &&
-      vec0[0] == vec1[0] && vec0[1] == vec1[1];
+  return vec0.length == vec1.length && vec0[0] == vec1[0] && vec0[1] == vec1[1];
 };

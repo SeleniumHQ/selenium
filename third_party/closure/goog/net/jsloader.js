@@ -50,7 +50,8 @@ goog.net.jsloader.DEFAULT_TIMEOUT = 5000;
 /**
  * Optional parameters for goog.net.jsloader.send.
  * timeout: The length of time, in milliseconds, we are prepared to wait
- *     for a load request to complete. Default it 5 seconds.
+ *     for a load request to complete, or 0 or negative for no timeout. Default
+ *     is 5 seconds.
  * document: The HTML document under which to load the JavaScript. Default is
  *     the current document.
  * cleanupWhenDone: If true clean up the script tag after script completes to
@@ -164,13 +165,15 @@ goog.net.jsloader.load = function(uri, opt_options) {
   // Set a timeout.
   var timeout = null;
   var timeoutDuration = goog.isDefAndNotNull(options.timeout) ?
-      options.timeout : goog.net.jsloader.DEFAULT_TIMEOUT;
+      options.timeout :
+      goog.net.jsloader.DEFAULT_TIMEOUT;
   if (timeoutDuration > 0) {
     timeout = window.setTimeout(function() {
       goog.net.jsloader.cleanup_(script, true);
-      deferred.errback(new goog.net.jsloader.Error(
-          goog.net.jsloader.ErrorCode.TIMEOUT,
-          'Timeout reached for loading script ' + uri));
+      deferred.errback(
+          new goog.net.jsloader.Error(
+              goog.net.jsloader.ErrorCode.TIMEOUT,
+              'Timeout reached for loading script ' + uri));
     }, timeoutDuration);
     request.timeout_ = timeout;
   }
@@ -192,9 +195,10 @@ goog.net.jsloader.load = function(uri, opt_options) {
   // NOTE(user): Not supported in IE.
   script.onerror = function() {
     goog.net.jsloader.cleanup_(script, true, timeout);
-    deferred.errback(new goog.net.jsloader.Error(
-        goog.net.jsloader.ErrorCode.LOAD_ERROR,
-        'Error while loading script ' + uri));
+    deferred.errback(
+        new goog.net.jsloader.Error(
+            goog.net.jsloader.ErrorCode.LOAD_ERROR,
+            'Error while loading script ' + uri));
   };
 
   var properties = options.attributes || {};
@@ -243,17 +247,19 @@ goog.net.jsloader.loadAndVerify = function(uri, verificationObjName, options) {
   // Verify that the expected object does not exist yet.
   if (goog.isDef(verifyObjs[verificationObjName])) {
     // TODO(user): Error or reset variable?
-    return goog.async.Deferred.fail(new goog.net.jsloader.Error(
-        goog.net.jsloader.ErrorCode.VERIFY_OBJECT_ALREADY_EXISTS,
-        'Verification object ' + verificationObjName + ' already defined.'));
+    return goog.async.Deferred.fail(
+        new goog.net.jsloader.Error(
+            goog.net.jsloader.ErrorCode.VERIFY_OBJECT_ALREADY_EXISTS,
+            'Verification object ' + verificationObjName +
+                ' already defined.'));
   }
 
   // Send request to load the JavaScript.
   var sendDeferred = goog.net.jsloader.load(uri, options);
 
   // Create a deferred object wrapping the send result.
-  var deferred = new goog.async.Deferred(
-      goog.bind(sendDeferred.cancel, sendDeferred));
+  var deferred =
+      new goog.async.Deferred(goog.bind(sendDeferred.cancel, sendDeferred));
 
   // Call user back with object that was set by the script.
   sendDeferred.addCallback(function() {
@@ -263,10 +269,11 @@ goog.net.jsloader.loadAndVerify = function(uri, verificationObjName, options) {
       delete verifyObjs[verificationObjName];
     } else {
       // Error: script was not loaded properly.
-      deferred.errback(new goog.net.jsloader.Error(
-          goog.net.jsloader.ErrorCode.VERIFY_ERROR,
-          'Script ' + uri + ' loaded, but verification object ' +
-          verificationObjName + ' was not defined.'));
+      deferred.errback(
+          new goog.net.jsloader.Error(
+              goog.net.jsloader.ErrorCode.VERIFY_ERROR, 'Script ' + uri +
+                  ' loaded, but verification object ' + verificationObjName +
+                  ' was not defined.'));
     }
   });
 
@@ -325,8 +332,8 @@ goog.net.jsloader.cancel_ = function() {
  * @param {?number=} opt_timeout The timeout handler to cleanup.
  * @private
  */
-goog.net.jsloader.cleanup_ = function(scriptNode, removeScriptNode,
-                                      opt_timeout) {
+goog.net.jsloader.cleanup_ = function(
+    scriptNode, removeScriptNode, opt_timeout) {
   if (goog.isDefAndNotNull(opt_timeout)) {
     goog.global.clearTimeout(opt_timeout);
   }
@@ -338,9 +345,7 @@ goog.net.jsloader.cleanup_ = function(scriptNode, removeScriptNode,
   // Do this after a delay (removing the script node of a running script can
   // confuse older IEs).
   if (removeScriptNode) {
-    window.setTimeout(function() {
-      goog.dom.removeNode(scriptNode);
-    }, 0);
+    window.setTimeout(function() { goog.dom.removeNode(scriptNode); }, 0);
   }
 };
 

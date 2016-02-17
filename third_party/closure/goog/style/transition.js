@@ -64,21 +64,20 @@ goog.style.transition.set = function(element, properties) {
   goog.asserts.assert(
       properties.length > 0, 'At least one Css3Property should be specified.');
 
-  var values = goog.array.map(
-      properties, function(p) {
-        if (goog.isString(p)) {
-          return p;
-        } else {
-          goog.asserts.assertObject(p,
-              'Expected css3 property to be an object.');
-          var propString = p.property + ' ' + p.duration + 's ' + p.timing +
-              ' ' + p.delay + 's';
-          goog.asserts.assert(p.property && goog.isNumber(p.duration) &&
-              p.timing && goog.isNumber(p.delay),
-              'Unexpected css3 property value: %s', propString);
-          return propString;
-        }
-      });
+  var values = goog.array.map(properties, function(p) {
+    if (goog.isString(p)) {
+      return p;
+    } else {
+      goog.asserts.assertObject(p, 'Expected css3 property to be an object.');
+      var propString =
+          p.property + ' ' + p.duration + 's ' + p.timing + ' ' + p.delay + 's';
+      goog.asserts.assert(
+          p.property && goog.isNumber(p.duration) && p.timing &&
+              goog.isNumber(p.delay),
+          'Unexpected css3 property value: %s', propString);
+      return propString;
+    }
+  });
   goog.style.transition.setPropertyValue_(element, values.join(','));
 };
 
@@ -112,8 +111,8 @@ goog.style.transition.isSupported = goog.functions.cacheReturnValue(function() {
   if (vendorPrefix) {
     style[vendorPrefix + '-transition'] = transition;
   }
-  goog.dom.safe.setInnerHtml(el,
-      goog.html.SafeHtml.create('div', {'style': style}));
+  goog.dom.safe.setInnerHtml(
+      el, goog.html.SafeHtml.create('div', {'style': style}));
 
   var testElement = /** @type {Element} */ (el.firstChild);
   goog.asserts.assert(testElement.nodeType == Node.ELEMENT_NODE);

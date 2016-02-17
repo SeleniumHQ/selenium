@@ -151,8 +151,8 @@ goog.ui.PlainTextSpellChecker.prototype.textArrayProcess_;
  * @override
  */
 goog.ui.PlainTextSpellChecker.prototype.createDom = function() {
-  this.setElementInternal(this.getDomHelper().createElement(
-      goog.dom.TagName.TEXTAREA));
+  this.setElementInternal(
+      this.getDomHelper().createElement(goog.dom.TagName.TEXTAREA));
 };
 
 
@@ -190,7 +190,8 @@ goog.ui.PlainTextSpellChecker.prototype.exitDocument = function() {
  */
 goog.ui.PlainTextSpellChecker.prototype.initSuggestionsMenu = function() {
   goog.ui.PlainTextSpellChecker.superClass_.initSuggestionsMenu.call(this);
-  this.eventHandler_.listen(/** @type {goog.ui.PopupMenu} */ (this.getMenu()),
+  this.eventHandler_.listen(
+      /** @type {goog.ui.PopupMenu} */ (this.getMenu()),
       goog.ui.Component.EventType.HIDE, this.onCorrectionHide_);
 };
 
@@ -227,7 +228,8 @@ goog.ui.PlainTextSpellChecker.prototype.finishCheck_ = function() {
 
   var eh = this.eventHandler_;
   eh.listen(this.overlay_, goog.events.EventType.CLICK, this.onWordClick_);
-  eh.listen(/** @type {goog.events.KeyHandler} */ (this.keyHandler_),
+  eh.listen(
+      /** @type {goog.events.KeyHandler} */ (this.keyHandler_),
       goog.events.KeyHandler.EventType.KEY, this.handleOverlayKeyEvent);
 
   // The position and size of the overlay element needs to be recalculated if
@@ -247,8 +249,9 @@ goog.ui.PlainTextSpellChecker.prototype.finishCheck_ = function() {
  * @private
  */
 goog.ui.PlainTextSpellChecker.prototype.preChargeDictionary_ = function(text) {
-  this.eventHandler_.listen(this.spellCheck,
-      goog.spell.SpellCheck.EventType.READY, this.onDictionaryCharged_, true);
+  this.eventHandler_.listen(
+      this.spellCheck, goog.spell.SpellCheck.EventType.READY,
+      this.onDictionaryCharged_, true);
 
   this.populateDictionary(text, this.dictionaryPreScanSize_);
 };
@@ -262,8 +265,9 @@ goog.ui.PlainTextSpellChecker.prototype.preChargeDictionary_ = function(text) {
  */
 goog.ui.PlainTextSpellChecker.prototype.onDictionaryCharged_ = function(e) {
   e.stopPropagation();
-  this.eventHandler_.unlisten(this.spellCheck,
-      goog.spell.SpellCheck.EventType.READY, this.onDictionaryCharged_, true);
+  this.eventHandler_.unlisten(
+      this.spellCheck, goog.spell.SpellCheck.EventType.READY,
+      this.onDictionaryCharged_, true);
   this.checkAsync_(this.getElement().value);
 };
 
@@ -320,8 +324,8 @@ goog.ui.PlainTextSpellChecker.prototype.initTextArray_ = function(text) {
       break;
     }
     var excludedRange = result[0];
-    var includedRange = text.substr(stringSegmentStart, result.index -
-        stringSegmentStart);
+    var includedRange =
+        text.substr(stringSegmentStart, result.index - stringSegmentStart);
     if (includedRange) {
       this.textArray_.push(includedRange);
       this.textArrayProcess_.push(true);
@@ -386,8 +390,8 @@ goog.ui.PlainTextSpellChecker.prototype.continueAsync_ = function() {
  * @param {goog.spell.SpellCheck.WordStatus} status Status of word.
  * @override
  */
-goog.ui.PlainTextSpellChecker.prototype.processWord = function(node, word,
-    status) {
+goog.ui.PlainTextSpellChecker.prototype.processWord = function(
+    node, word, status) {
   node.appendChild(this.createWordElement(word, status));
 };
 
@@ -433,7 +437,8 @@ goog.ui.PlainTextSpellChecker.prototype.resume = function() {
 
     var eh = this.eventHandler_;
     eh.unlisten(this.overlay_, goog.events.EventType.CLICK, this.onWordClick_);
-    eh.unlisten(/** @type {goog.events.KeyHandler} */ (this.keyHandler_),
+    eh.unlisten(
+        /** @type {goog.events.KeyHandler} */ (this.keyHandler_),
         goog.events.KeyHandler.EventType.KEY, this.handleOverlayKeyEvent);
 
     var win = goog.dom.getWindow(this.getDomHelper().getDocument()) || window;
@@ -449,8 +454,8 @@ goog.ui.PlainTextSpellChecker.prototype.resume = function() {
  * @return {!Object} Properties to apply to word element.
  * @override
  */
-goog.ui.PlainTextSpellChecker.prototype.getElementProperties =
-    function(status) {
+goog.ui.PlainTextSpellChecker.prototype.getElementProperties = function(
+    status) {
   if (status == goog.spell.SpellCheck.WordStatus.INVALID) {
     return {'class': this.invalidWordClassName};
   } else if (status == goog.spell.SpellCheck.WordStatus.CORRECTED) {
@@ -543,7 +548,8 @@ goog.ui.PlainTextSpellChecker.prototype.disposeInternal = function() {
  * @private
  */
 goog.ui.PlainTextSpellChecker.prototype.initAccessibility_ = function() {
-  goog.asserts.assert(this.overlay_,
+  goog.asserts.assert(
+      this.overlay_,
       'The plain text spell checker DOM element cannot be null.');
   goog.a11y.aria.setRole(this.overlay_, 'region');
   goog.a11y.aria.setState(this.overlay_, 'live', 'assertive');
@@ -571,15 +577,15 @@ goog.ui.PlainTextSpellChecker.prototype.handleOverlayKeyEvent = function(e) {
 
     case goog.events.KeyCodes.LEFT:
       if (e.ctrlKey) {
-        handled = this.navigate(
-            goog.ui.AbstractSpellChecker.Direction.PREVIOUS);
+        handled =
+            this.navigate(goog.ui.AbstractSpellChecker.Direction.PREVIOUS);
       }
       break;
 
     case goog.events.KeyCodes.DOWN:
       if (this.getFocusedElementIndex()) {
-        var el = this.getDomHelper().getElement(this.makeElementId(
-            this.getFocusedElementIndex()));
+        var el = this.getDomHelper().getElement(
+            this.makeElementId(this.getFocusedElementIndex()));
         if (el) {
           var position = goog.style.getPosition(el);
           var size = goog.style.getSize(el);
@@ -607,8 +613,8 @@ goog.ui.PlainTextSpellChecker.prototype.handleOverlayKeyEvent = function(e) {
  * @override
  */
 goog.ui.PlainTextSpellChecker.prototype.onCorrectionAction = function(event) {
-  goog.ui.PlainTextSpellChecker.superClass_.onCorrectionAction.call(this,
-      event);
+  goog.ui.PlainTextSpellChecker.superClass_.onCorrectionAction.call(
+      this, event);
 
   // In case of editWord base class has already set the focus (on the input),
   // otherwise set the focus back on the word.

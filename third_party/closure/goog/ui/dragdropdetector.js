@@ -49,9 +49,7 @@ goog.require('goog.userAgent');
 goog.ui.DragDropDetector = function(opt_filePath) {
   goog.ui.DragDropDetector.base(this, 'constructor');
 
-  var iframe = goog.dom.createDom(goog.dom.TagName.IFRAME, {
-    'frameborder': 0
-  });
+  var iframe = goog.dom.createDom(goog.dom.TagName.IFRAME, {'frameborder': 0});
   // In Firefox, we do all drop detection with an IFRAME.  In IE, we only use
   // the IFRAME to capture copied, non-linked images.  (When we don't need it,
   // we put a text INPUT before it and push it off screen.)
@@ -72,11 +70,12 @@ goog.ui.DragDropDetector = function(opt_filePath) {
     // IFRAME for catching images.
     this.textInput_ = goog.dom.createDom(goog.dom.TagName.INPUT, {
       'type': goog.dom.InputType.TEXT,
-      'className': goog.getCssName(
-          goog.ui.DragDropDetector.BASE_CSS_NAME_, 'ie-input')
+      'className':
+          goog.getCssName(goog.ui.DragDropDetector.BASE_CSS_NAME_, 'ie-input')
     });
 
-    this.root_ = goog.dom.createDom(goog.dom.TagName.DIV,
+    this.root_ = goog.dom.createDom(
+        goog.dom.TagName.DIV,
         goog.getCssName(goog.ui.DragDropDetector.BASE_CSS_NAME_, 'ie-div'),
         this.textInput_, iframe);
   } else {
@@ -103,8 +102,8 @@ goog.ui.DragDropDetector.EventType = {
  * @type {string}
  * @private
  */
-goog.ui.DragDropDetector.DROP_EVENT_TYPE_ = goog.userAgent.IE ?
-    goog.events.EventType.DROP : 'dragdrop';
+goog.ui.DragDropDetector.DROP_EVENT_TYPE_ =
+    goog.userAgent.IE ? goog.events.EventType.DROP : 'dragdrop';
 
 
 /**
@@ -278,21 +277,22 @@ goog.ui.DragDropDetector.prototype.initIframe_ = function() {
     this.body_.contentEditable = true;
   }
 
-  this.handler_.listen(document.body, goog.events.EventType.DRAGENTER,
-      this.coverScreen_);
+  this.handler_.listen(
+      document.body, goog.events.EventType.DRAGENTER, this.coverScreen_);
 
   if (goog.userAgent.IE) {
     // IE only events.
     // Set up events on the IFrame.
-    this.handler_.
-        listen(this.body_,
+    this.handler_
+        .listen(
+            this.body_,
             [goog.events.EventType.DRAGENTER, goog.events.EventType.DRAGOVER],
-            goog.ui.DragDropDetector.enforceCopyEffect_).
-        listen(this.body_, goog.events.EventType.MOUSEOUT,
-            this.switchToInput_).
-        listen(this.body_, goog.events.EventType.DRAGLEAVE,
-            this.uncoverScreen_).
-        listen(this.body_, goog.ui.DragDropDetector.DROP_EVENT_TYPE_,
+            goog.ui.DragDropDetector.enforceCopyEffect_)
+        .listen(this.body_, goog.events.EventType.MOUSEOUT, this.switchToInput_)
+        .listen(
+            this.body_, goog.events.EventType.DRAGLEAVE, this.uncoverScreen_)
+        .listen(
+            this.body_, goog.ui.DragDropDetector.DROP_EVENT_TYPE_,
             function(e) {
               this.trackMouse_(e);
 
@@ -302,38 +302,44 @@ goog.ui.DragDropDetector.prototype.initIframe_ = function() {
               goog.global.setTimeout(
                   goog.bind(this.handleNodeInserted_, this, e), 0);
               return true;
-            }).
+            })
+        .
 
         // Set up events on the DIV.
-        listen(this.root_,
+        listen(
+            this.root_,
             [goog.events.EventType.DRAGENTER, goog.events.EventType.DRAGOVER],
-            this.handleNewDrag_).
-        listen(this.root_,
-            [
-              goog.events.EventType.MOUSEMOVE,
-              goog.events.EventType.KEYPRESS
-            ], this.uncoverScreen_).
+            this.handleNewDrag_)
+        .listen(
+            this.root_,
+            [goog.events.EventType.MOUSEMOVE, goog.events.EventType.KEYPRESS],
+            this.uncoverScreen_)
+        .
 
         // Set up events on the text INPUT.
-        listen(this.textInput_, goog.events.EventType.DRAGOVER,
-            goog.events.Event.preventDefault).
-        listen(this.textInput_, goog.ui.DragDropDetector.DROP_EVENT_TYPE_,
+        listen(
+            this.textInput_, goog.events.EventType.DRAGOVER,
+            goog.events.Event.preventDefault)
+        .listen(
+            this.textInput_, goog.ui.DragDropDetector.DROP_EVENT_TYPE_,
             this.handleInputDrop_);
   } else {
     // W3C events.
-    this.handler_.
-        listen(this.body_, goog.ui.DragDropDetector.DROP_EVENT_TYPE_,
+    this.handler_
+        .listen(
+            this.body_, goog.ui.DragDropDetector.DROP_EVENT_TYPE_,
             function(e) {
               this.trackMouse_(e);
               this.uncoverScreen_();
-            }).
-        listen(this.body_,
+            })
+        .listen(
+            this.body_,
             [goog.events.EventType.MOUSEMOVE, goog.events.EventType.KEYPRESS],
-            this.uncoverScreen_).
+            this.uncoverScreen_)
+        .
 
         // Detect content insertion.
-        listen(this.document_, 'DOMNodeInserted',
-            this.handleNodeInserted_);
+        listen(this.document_, 'DOMNodeInserted', this.handleNodeInserted_);
   }
 };
 
@@ -578,8 +584,8 @@ goog.ui.DragDropDetector.prototype.disposeInternal = function() {
  * @final
  */
 goog.ui.DragDropDetector.ImageDropEvent = function(url, position) {
-  goog.ui.DragDropDetector.ImageDropEvent.base(this, 'constructor',
-      goog.ui.DragDropDetector.EventType.IMAGE_DROPPED);
+  goog.ui.DragDropDetector.ImageDropEvent.base(
+      this, 'constructor', goog.ui.DragDropDetector.EventType.IMAGE_DROPPED);
 
   /**
    * The url of the image that was dropped.
@@ -595,8 +601,7 @@ goog.ui.DragDropDetector.ImageDropEvent = function(url, position) {
    */
   this.position_ = position;
 };
-goog.inherits(goog.ui.DragDropDetector.ImageDropEvent,
-    goog.events.Event);
+goog.inherits(goog.ui.DragDropDetector.ImageDropEvent, goog.events.Event);
 
 
 /**
@@ -626,8 +631,8 @@ goog.ui.DragDropDetector.ImageDropEvent.prototype.getPosition = function() {
  * @final
  */
 goog.ui.DragDropDetector.LinkDropEvent = function(url) {
-  goog.ui.DragDropDetector.LinkDropEvent.base(this, 'constructor',
-      goog.ui.DragDropDetector.EventType.LINK_DROPPED);
+  goog.ui.DragDropDetector.LinkDropEvent.base(
+      this, 'constructor', goog.ui.DragDropDetector.EventType.LINK_DROPPED);
 
   /**
    * The url of the link that was dropped.
@@ -636,8 +641,7 @@ goog.ui.DragDropDetector.LinkDropEvent = function(url) {
    */
   this.url_ = url;
 };
-goog.inherits(goog.ui.DragDropDetector.LinkDropEvent,
-    goog.events.Event);
+goog.inherits(goog.ui.DragDropDetector.LinkDropEvent, goog.events.Event);
 
 
 /**

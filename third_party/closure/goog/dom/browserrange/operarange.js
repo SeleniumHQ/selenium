@@ -59,11 +59,11 @@ goog.dom.browserrange.OperaRange.createFromNodeContents = function(node) {
  * @param {number} endOffset The offset within the node to end.
  * @return {!goog.dom.browserrange.OperaRange} A wrapper object.
  */
-goog.dom.browserrange.OperaRange.createFromNodes = function(startNode,
-    startOffset, endNode, endOffset) {
+goog.dom.browserrange.OperaRange.createFromNodes = function(
+    startNode, startOffset, endNode, endOffset) {
   return new goog.dom.browserrange.OperaRange(
-      goog.dom.browserrange.W3cRange.getBrowserRangeForNodes(startNode,
-          startOffset, endNode, endOffset));
+      goog.dom.browserrange.W3cRange.getBrowserRangeForNodes(
+          startNode, startOffset, endNode, endOffset));
 };
 
 

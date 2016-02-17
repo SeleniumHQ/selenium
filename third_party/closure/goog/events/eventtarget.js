@@ -330,7 +330,7 @@ goog.events.EventTarget.prototype.assertInitialized_ = function() {
   goog.asserts.assert(
       this.eventTargetListeners_,
       'Event target is not initialized. Did you call the superclass ' +
-      '(goog.events.EventTarget) constructor?');
+          '(goog.events.EventTarget) constructor?');
 };
 
 
@@ -375,7 +375,7 @@ goog.events.EventTarget.dispatchEventInternal_ = function(
 
   // Executes capture and bubble listeners on the target.
   if (!e.propagationStopped_) {
-    currentTarget = e.currentTarget = target;
+    currentTarget = /** @type {?} */ (e.currentTarget = target);
     rv = currentTarget.fireListeners(type, true, e) && rv;
     if (!e.propagationStopped_) {
       rv = currentTarget.fireListeners(type, false, e) && rv;

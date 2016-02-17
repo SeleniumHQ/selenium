@@ -97,8 +97,8 @@ goog.vec.Matrix4.createFromArray = function(matrix) {
  * @return {goog.vec.Matrix4.Type} The new, 16 element array.
  */
 goog.vec.Matrix4.createFromValues = function(
-    v00, v10, v20, v30, v01, v11, v21, v31, v02, v12, v22, v32,
-    v03, v13, v23, v33) {
+    v00, v10, v20, v30, v01, v11, v21, v31, v02, v12, v22, v32, v03, v13, v23,
+    v33) {
   var newMatrix = goog.vec.Matrix4.create();
   goog.vec.Matrix4.setFromValues(
       newMatrix, v00, v10, v20, v30, v01, v11, v21, v31, v02, v12, v22, v32,
@@ -113,8 +113,7 @@ goog.vec.Matrix4.createFromValues = function(
  * @param {goog.vec.Matrix4.Type} matrix The source 4x4 matrix.
  * @return {goog.vec.Matrix4.Type} The new, 16 element matrix.
  */
-goog.vec.Matrix4.clone =
-    goog.vec.Matrix4.createFromArray;
+goog.vec.Matrix4.clone = goog.vec.Matrix4.createFromArray;
 
 
 /**
@@ -169,8 +168,8 @@ goog.vec.Matrix4.setElement = function(mat, row, column, value) {
  * @param {number} v33 The values at (3, 3).
  */
 goog.vec.Matrix4.setFromValues = function(
-    mat, v00, v10, v20, v30, v01, v11, v21, v31, v02, v12, v22, v32,
-    v03, v13, v23, v33) {
+    mat, v00, v10, v20, v30, v01, v11, v21, v31, v02, v12, v22, v32, v03, v13,
+    v23, v33) {
   mat[0] = v00;
   mat[1] = v10;
   mat[2] = v20;
@@ -259,8 +258,7 @@ goog.vec.Matrix4.setFromRowMajorArray = function(mat, values) {
  * @param {number} v22 The values for (2, 2).
  * @param {number} v33 The values for (3, 3).
  */
-goog.vec.Matrix4.setDiagonalValues = function(
-    mat, v00, v11, v22, v33) {
+goog.vec.Matrix4.setDiagonalValues = function(mat, v00, v11, v22, v33) {
   mat[0] = v00;
   mat[5] = v11;
   mat[10] = v22;
@@ -295,8 +293,7 @@ goog.vec.Matrix4.setDiagonal = function(mat, vec) {
  * @param {number} v2 The value for row 2.
  * @param {number} v3 The value for row 3.
  */
-goog.vec.Matrix4.setColumnValues = function(
-    mat, column, v0, v1, v2, v3) {
+goog.vec.Matrix4.setColumnValues = function(mat, column, v0, v1, v2, v3) {
   var i = column * 4;
   mat[i] = v0;
   mat[i + 1] = v1;
@@ -352,8 +349,7 @@ goog.vec.Matrix4.getColumn = function(mat, column, vec) {
  * @param {goog.vec.ArrayType} vec2 The values for column 2.
  * @param {goog.vec.ArrayType} vec3 The values for column 3.
  */
-goog.vec.Matrix4.setColumns = function(
-    mat, vec0, vec1, vec2, vec3) {
+goog.vec.Matrix4.setColumns = function(mat, vec0, vec1, vec2, vec3) {
   goog.vec.Matrix4.setColumn(mat, 0, vec0);
   goog.vec.Matrix4.setColumn(mat, 1, vec1);
   goog.vec.Matrix4.setColumn(mat, 2, vec2);
@@ -376,8 +372,7 @@ goog.vec.Matrix4.setColumns = function(
  * @param {goog.vec.ArrayType} vec3 The vector elements to receive
  *     column 3.
  */
-goog.vec.Matrix4.getColumns = function(
-    mat, vec0, vec1, vec2, vec3) {
+goog.vec.Matrix4.getColumns = function(mat, vec0, vec1, vec2, vec3) {
   goog.vec.Matrix4.getColumn(mat, 0, vec0);
   goog.vec.Matrix4.getColumn(mat, 1, vec1);
   goog.vec.Matrix4.getColumn(mat, 2, vec2);
@@ -448,8 +443,7 @@ goog.vec.Matrix4.getRow = function(mat, row, vec) {
  * @param {goog.vec.ArrayType} vec2 The values for row 2.
  * @param {goog.vec.ArrayType} vec3 The values for row 3.
  */
-goog.vec.Matrix4.setRows = function(
-    mat, vec0, vec1, vec2, vec3) {
+goog.vec.Matrix4.setRows = function(mat, vec0, vec1, vec2, vec3) {
   goog.vec.Matrix4.setRow(mat, 0, vec0);
   goog.vec.Matrix4.setRow(mat, 1, vec1);
   goog.vec.Matrix4.setRow(mat, 2, vec2);
@@ -467,8 +461,7 @@ goog.vec.Matrix4.setRows = function(
  * @param {goog.vec.ArrayType} vec2 The vector to receive row 2.
  * @param {goog.vec.ArrayType} vec3 The vector to receive row 3.
  */
-goog.vec.Matrix4.getRows = function(
-    mat, vec0, vec1, vec2, vec3) {
+goog.vec.Matrix4.getRows = function(mat, vec0, vec1, vec2, vec3) {
   goog.vec.Matrix4.getRow(mat, 0, vec0);
   goog.vec.Matrix4.getRow(mat, 1, vec1);
   goog.vec.Matrix4.getRow(mat, 2, vec2);
@@ -811,23 +804,12 @@ goog.vec.Matrix4.invert = function(mat, resultMat) {
  * @return {boolean} True if the the two matrices are equivalent.
  */
 goog.vec.Matrix4.equals = function(mat0, mat1) {
-  return mat0.length == mat1.length &&
-      mat0[0] == mat1[0] &&
-      mat0[1] == mat1[1] &&
-      mat0[2] == mat1[2] &&
-      mat0[3] == mat1[3] &&
-      mat0[4] == mat1[4] &&
-      mat0[5] == mat1[5] &&
-      mat0[6] == mat1[6] &&
-      mat0[7] == mat1[7] &&
-      mat0[8] == mat1[8] &&
-      mat0[9] == mat1[9] &&
-      mat0[10] == mat1[10] &&
-      mat0[11] == mat1[11] &&
-      mat0[12] == mat1[12] &&
-      mat0[13] == mat1[13] &&
-      mat0[14] == mat1[14] &&
-      mat0[15] == mat1[15];
+  return mat0.length == mat1.length && mat0[0] == mat1[0] &&
+      mat0[1] == mat1[1] && mat0[2] == mat1[2] && mat0[3] == mat1[3] &&
+      mat0[4] == mat1[4] && mat0[5] == mat1[5] && mat0[6] == mat1[6] &&
+      mat0[7] == mat1[7] && mat0[8] == mat1[8] && mat0[9] == mat1[9] &&
+      mat0[10] == mat1[10] && mat0[11] == mat1[11] && mat0[12] == mat1[12] &&
+      mat0[13] == mat1[13] && mat0[14] == mat1[14] && mat0[15] == mat1[15];
 };
 
 
@@ -869,8 +851,7 @@ goog.vec.Matrix4.multVec3 = function(mat, vec, resultVec) {
  * @return {goog.vec.ArrayType} return resultVec so that operations can be
  *     chained together.
  */
-goog.vec.Matrix4.multVec3NoTranslate = function(
-    mat, vec, resultVec) {
+goog.vec.Matrix4.multVec3NoTranslate = function(mat, vec, resultVec) {
   var x = vec[0], y = vec[1], z = vec[2];
   resultVec[0] = x * mat[0] + y * mat[4] + z * mat[8];
   resultVec[1] = x * mat[1] + y * mat[5] + z * mat[9];
@@ -894,8 +875,7 @@ goog.vec.Matrix4.multVec3NoTranslate = function(
  * @return {goog.vec.ArrayType} return resultVec so that operations can be
  *     chained together.
  */
-goog.vec.Matrix4.multVec3Projective = function(
-    mat, vec, resultVec) {
+goog.vec.Matrix4.multVec3Projective = function(mat, vec, resultVec) {
   var x = vec[0], y = vec[1], z = vec[2];
   var invw = 1 / (x * mat[3] + y * mat[7] + z * mat[11] + mat[15]);
   resultVec[0] = (x * mat[0] + y * mat[4] + z * mat[8] + mat[12]) * invw;
@@ -1007,27 +987,17 @@ goog.vec.Matrix4.makeScale = function(mat, x, y, z) {
  * @param {number} ay The y component of the rotation axis.
  * @param {number} az The z component of the rotation axis.
  */
-goog.vec.Matrix4.makeAxisAngleRotate = function(
-    mat, angle, ax, ay, az) {
+goog.vec.Matrix4.makeAxisAngleRotate = function(mat, angle, ax, ay, az) {
   var c = Math.cos(angle);
   var d = 1 - c;
   var s = Math.sin(angle);
 
-  goog.vec.Matrix4.setFromValues(mat,
-      ax * ax * d + c,
-      ax * ay * d + az * s,
-      ax * az * d - ay * s,
-      0,
+  goog.vec.Matrix4.setFromValues(
+      mat, ax * ax * d + c, ax * ay * d + az * s, ax * az * d - ay * s, 0,
 
-      ax * ay * d - az * s,
-      ay * ay * d + c,
-      ay * az * d + ax * s,
-      0,
+      ax * ay * d - az * s, ay * ay * d + c, ay * az * d + ax * s, 0,
 
-      ax * az * d + ay * s,
-      ay * az * d - ax * s,
-      az * az * d + c,
-      0,
+      ax * az * d + ay * s, ay * az * d - ax * s, az * az * d + c, 0,
 
       0, 0, 0, 1);
 };
@@ -1053,12 +1023,8 @@ goog.vec.Matrix4.makeFrustum = function(
   var c = -(far + near) / (far - near);
   var d = -(2 * far * near) / (far - near);
 
-  goog.vec.Matrix4.setFromValues(mat,
-      x, 0, 0, 0,
-      0, y, 0, 0,
-      a, b, c, -1,
-      0, 0, d, 0
-  );
+  goog.vec.Matrix4.setFromValues(
+      mat, x, 0, 0, 0, 0, y, 0, 0, a, b, c, -1, 0, 0, d, 0);
 };
 
 
@@ -1073,20 +1039,16 @@ goog.vec.Matrix4.makeFrustum = function(
  * @param {number} near The distance to the near clipping plane.
  * @param {number} far The distance to the far clipping plane.
  */
-goog.vec.Matrix4.makePerspective = function(
-    mat, fovy, aspect, near, far) {
+goog.vec.Matrix4.makePerspective = function(mat, fovy, aspect, near, far) {
   var angle = fovy / 2;
   var dz = far - near;
   var sinAngle = Math.sin(angle);
   if (dz == 0 || sinAngle == 0 || aspect == 0) return;
 
   var cot = Math.cos(angle) / sinAngle;
-  goog.vec.Matrix4.setFromValues(mat,
-      cot / aspect, 0, 0, 0,
-      0, cot, 0, 0,
-      0, 0, -(far + near) / dz, -1,
-      0, 0, -(2 * near * far) / dz, 0
-  );
+  goog.vec.Matrix4.setFromValues(
+      mat, cot / aspect, 0, 0, 0, 0, cot, 0, 0, 0, 0, -(far + near) / dz, -1, 0,
+      0, -(2 * near * far) / dz, 0);
 };
 
 
@@ -1110,12 +1072,8 @@ goog.vec.Matrix4.makeOrtho = function(
   var b = -(top + bottom) / (top - bottom);
   var c = -(far + near) / (far - near);
 
-  goog.vec.Matrix4.setFromValues(mat,
-      x, 0, 0, 0,
-      0, y, 0, 0,
-      0, 0, z, 0,
-      a, b, c, 1
-  );
+  goog.vec.Matrix4.setFromValues(
+      mat, x, 0, 0, 0, 0, y, 0, 0, 0, 0, z, 0, a, b, c, 1);
 };
 
 
@@ -1130,8 +1088,7 @@ goog.vec.Matrix4.makeOrtho = function(
  * @param {goog.vec.ArrayType} worldUpVec The vector that
  *     identifies the up direction for the camera.
  */
-goog.vec.Matrix4.lookAt = function(
-    viewMatrix, eyePt, centerPt, worldUpVec) {
+goog.vec.Matrix4.lookAt = function(viewMatrix, eyePt, centerPt, worldUpVec) {
   // Compute the direction vector from the eye point to the center point and
   // normalize.
   var fwdVec = goog.vec.Matrix4.tmpVec4_[0];
@@ -1158,8 +1115,7 @@ goog.vec.Matrix4.lookAt = function(
   goog.vec.Matrix4.setRow(viewMatrix, 1, upVec);
   goog.vec.Matrix4.setRow(viewMatrix, 2, fwdVec);
   goog.vec.Matrix4.setRowValues(viewMatrix, 3, 0, 0, 0, 1);
-  goog.vec.Matrix4.applyTranslate(
-      viewMatrix, -eyePt[0], -eyePt[1], -eyePt[2]);
+  goog.vec.Matrix4.applyTranslate(viewMatrix, -eyePt[0], -eyePt[1], -eyePt[2]);
 };
 
 
@@ -1178,8 +1134,7 @@ goog.vec.Matrix4.lookAt = function(
  * @return {boolean} True if the method succeeds, false otherwise.
  *     The method can only fail if the inverse of viewMatrix is not defined.
  */
-goog.vec.Matrix4.toLookAt = function(
-    viewMatrix, eyePt, fwdVec, worldUpVec) {
+goog.vec.Matrix4.toLookAt = function(viewMatrix, eyePt, fwdVec, worldUpVec) {
   // Get eye of the camera.
   var viewMatrixInverse = goog.vec.Matrix4.tmpMatrix4_[0];
   if (!goog.vec.Matrix4.invert(viewMatrix, viewMatrixInverse)) {
@@ -1230,8 +1185,7 @@ goog.vec.Matrix4.toLookAt = function(
  * @param {number} theta2 The angle of rotation around the X axis in radians.
  * @param {number} theta3 The angle of rotation around the Z axis in radians.
  */
-goog.vec.Matrix4.fromEulerZXZ = function(
-    matrix, theta1, theta2, theta3) {
+goog.vec.Matrix4.fromEulerZXZ = function(matrix, theta1, theta2, theta3) {
   var c1 = Math.cos(theta1);
   var s1 = Math.sin(theta1);
 
@@ -1298,8 +1252,7 @@ goog.vec.Matrix4.toEulerZXZ = function(matrix, euler) {
  */
 goog.vec.Matrix4.applyTranslate = function(mat, x, y, z) {
   goog.vec.Matrix4.setColumnValues(
-      mat, 3,
-      mat[0] * x + mat[4] * y + mat[8] * z + mat[12],
+      mat, 3, mat[0] * x + mat[4] * y + mat[8] * z + mat[12],
       mat[1] * x + mat[5] * y + mat[9] * z + mat[13],
       mat[2] * x + mat[6] * y + mat[10] * z + mat[14],
       mat[3] * x + mat[7] * y + mat[11] * z + mat[15]);
@@ -1316,11 +1269,9 @@ goog.vec.Matrix4.applyTranslate = function(mat, x, y, z) {
  */
 goog.vec.Matrix4.applyScale = function(mat, x, y, z) {
   goog.vec.Matrix4.setFromValues(
-      mat,
-      mat[0] * x, mat[1] * x, mat[2] * x, mat[3] * x,
-      mat[4] * y, mat[5] * y, mat[6] * y, mat[7] * y,
-      mat[8] * z, mat[9] * z, mat[10] * z, mat[11] * z,
-      mat[12], mat[13], mat[14], mat[15]);
+      mat, mat[0] * x, mat[1] * x, mat[2] * x, mat[3] * x, mat[4] * y,
+      mat[5] * y, mat[6] * y, mat[7] * y, mat[8] * z, mat[9] * z, mat[10] * z,
+      mat[11] * z, mat[12], mat[13], mat[14], mat[15]);
 };
 
 
@@ -1355,21 +1306,14 @@ goog.vec.Matrix4.applyRotate = function(mat, angle, x, y, z) {
   var r22 = z * z * diffCosAngle + cosAngle;
 
   goog.vec.Matrix4.setFromValues(
-      mat,
-      m00 * r00 + m01 * r10 + m02 * r20,
-      m10 * r00 + m11 * r10 + m12 * r20,
-      m20 * r00 + m21 * r10 + m22 * r20,
-      m30 * r00 + m31 * r10 + m32 * r20,
+      mat, m00 * r00 + m01 * r10 + m02 * r20, m10 * r00 + m11 * r10 + m12 * r20,
+      m20 * r00 + m21 * r10 + m22 * r20, m30 * r00 + m31 * r10 + m32 * r20,
 
-      m00 * r01 + m01 * r11 + m02 * r21,
-      m10 * r01 + m11 * r11 + m12 * r21,
-      m20 * r01 + m21 * r11 + m22 * r21,
-      m30 * r01 + m31 * r11 + m32 * r21,
+      m00 * r01 + m01 * r11 + m02 * r21, m10 * r01 + m11 * r11 + m12 * r21,
+      m20 * r01 + m21 * r11 + m22 * r21, m30 * r01 + m31 * r11 + m32 * r21,
 
-      m00 * r02 + m01 * r12 + m02 * r22,
-      m10 * r02 + m11 * r12 + m12 * r22,
-      m20 * r02 + m21 * r12 + m22 * r22,
-      m30 * r02 + m31 * r12 + m32 * r22,
+      m00 * r02 + m01 * r12 + m02 * r22, m10 * r02 + m11 * r12 + m12 * r22,
+      m20 * r02 + m21 * r12 + m22 * r22, m30 * r02 + m31 * r12 + m32 * r22,
 
       m03, m13, m23, m33);
 };
@@ -1379,10 +1323,8 @@ goog.vec.Matrix4.applyRotate = function(mat, angle, x, y, z) {
  * @type {!Array<!goog.vec.Vec3.Type>}
  * @private
  */
-goog.vec.Matrix4.tmpVec3_ = [
-  goog.vec.Vec3.createNumber(),
-  goog.vec.Vec3.createNumber()
-];
+goog.vec.Matrix4.tmpVec3_ =
+    [goog.vec.Vec3.createNumber(), goog.vec.Vec3.createNumber()];
 
 
 /**
@@ -1390,8 +1332,7 @@ goog.vec.Matrix4.tmpVec3_ = [
  * @private
  */
 goog.vec.Matrix4.tmpVec4_ = [
-  goog.vec.Vec4.createNumber(),
-  goog.vec.Vec4.createNumber(),
+  goog.vec.Vec4.createNumber(), goog.vec.Vec4.createNumber(),
   goog.vec.Vec4.createNumber()
 ];
 
@@ -1400,6 +1341,4 @@ goog.vec.Matrix4.tmpVec4_ = [
  * @type {Array<goog.vec.Matrix4.Type>}
  * @private
  */
-goog.vec.Matrix4.tmpMatrix4_ = [
-  goog.vec.Matrix4.create()
-];
+goog.vec.Matrix4.tmpMatrix4_ = [goog.vec.Matrix4.create()];

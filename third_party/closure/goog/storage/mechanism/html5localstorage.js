@@ -39,8 +39,10 @@ goog.storage.mechanism.HTML5LocalStorage = function() {
     // May throw an exception in cases where the local storage object
     // is visible but access to it is disabled.
     storage = window.localStorage || null;
-  } catch (e) {}
+  } catch (e) {
+  }
   goog.storage.mechanism.HTML5LocalStorage.base(this, 'constructor', storage);
 };
-goog.inherits(goog.storage.mechanism.HTML5LocalStorage,
-              goog.storage.mechanism.HTML5WebStorage);
+goog.inherits(
+    goog.storage.mechanism.HTML5LocalStorage,
+    goog.storage.mechanism.HTML5WebStorage);

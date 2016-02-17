@@ -64,7 +64,9 @@ goog.events.MouseWheelHandler = function(element, opt_capture) {
 
   var rtlElement = goog.dom.isElement(this.element_) ?
       /** @type {Element} */ (this.element_) :
-      (this.element_ ? /** @type {Document} */ (this.element_).body : null);
+                             (this.element_ ?
+                                  /** @type {Document} */ (this.element_).body :
+                                  null);
 
   /**
    * True if the element exists and is RTL, false otherwise.
@@ -140,8 +142,8 @@ goog.events.MouseWheelHandler.prototype.handleEvent = function(e) {
   if (be.type == 'mousewheel') {
     var wheelDeltaScaleFactor = 1;
     if (goog.userAgent.IE ||
-        goog.userAgent.WEBKIT &&
-        (goog.userAgent.WINDOWS || goog.userAgent.isVersionOrHigher('532.0'))) {
+        goog.userAgent.WEBKIT && (goog.userAgent.WINDOWS ||
+                                  goog.userAgent.isVersionOrHigher('532.0'))) {
       // In IE we get a multiple of 120; we adjust to a multiple of 3 to
       // represent number of lines scrolled (like Gecko).
       // Newer versions of Webkit match IE behavior, and WebKit on
@@ -164,7 +166,7 @@ goog.events.MouseWheelHandler.prototype.handleEvent = function(e) {
     }
 
     // Historical note: Opera (pre 9.5) used to negate the detail value.
-  } else { // Gecko
+  } else {  // Gecko
     // Gecko returns multiple of 3 (representing the number of lines scrolled)
     detail = be.detail;
 
@@ -213,8 +215,8 @@ goog.events.MouseWheelHandler.prototype.handleEvent = function(e) {
  *     scaleFactor does not appear to be applicable.
  * @private
  */
-goog.events.MouseWheelHandler.smartScale_ = function(mouseWheelDelta,
-    scaleFactor) {
+goog.events.MouseWheelHandler.smartScale_ = function(
+    mouseWheelDelta, scaleFactor) {
   // The basic problem here is that in Webkit on Mac and Linux, we can get two
   // very different types of mousewheel events: from continuous devices
   // (touchpads, Mighty Mouse) or non-continuous devices (normal wheel mice).
@@ -227,8 +229,7 @@ goog.events.MouseWheelHandler.smartScale_ = function(mouseWheelDelta,
   // Detailed discussion:
   //   https://bugs.webkit.org/show_bug.cgi?id=29601
   //   http://trac.webkit.org/browser/trunk/WebKit/chromium/src/mac/WebInputEventFactory.mm#L1063
-  if (goog.userAgent.WEBKIT &&
-      (goog.userAgent.MAC || goog.userAgent.LINUX) &&
+  if (goog.userAgent.WEBKIT && (goog.userAgent.MAC || goog.userAgent.LINUX) &&
       (mouseWheelDelta % scaleFactor) != 0) {
     return mouseWheelDelta;
   } else {

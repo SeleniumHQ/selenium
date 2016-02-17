@@ -81,8 +81,7 @@ goog.testing.proto2.findDifferences_ = function(expected, actual, path) {
         if (isComposite) {
           var diff = goog.testing.proto2.findDifferences_(
               /** @type {!goog.proto2.Message} */ (expectedValue),
-              /** @type {!goog.proto2.Message} */ (actualValue),
-              newPath);
+              /** @type {!goog.proto2.Message} */ (actualValue), newPath);
           if (diff) {
             return diff;
           }
@@ -108,18 +107,20 @@ goog.testing.proto2.findDifferences_ = function(expected, actual, path) {
  * @param {string=} opt_failureMessage Failure message when the values don't
  *     match.
  */
-goog.testing.proto2.assertEquals = function(expected, actual,
-    opt_failureMessage) {
+goog.testing.proto2.assertEquals = function(
+    expected, actual, opt_failureMessage) {
   var failureSummary = opt_failureMessage || '';
   if (!(expected instanceof goog.proto2.Message) ||
       !(actual instanceof goog.proto2.Message)) {
-    goog.testing.asserts.raiseException(failureSummary,
+    goog.testing.asserts.raiseException(
+        failureSummary,
         'Bad arguments were passed to goog.testing.proto2.assertEquals');
   }
   if (expected.constructor != actual.constructor) {
-    goog.testing.asserts.raiseException(failureSummary,
-        'Message type mismatch: ' + expected.getDescriptor().getFullName() +
-        ' != ' + actual.getDescriptor().getFullName());
+    goog.testing.asserts.raiseException(
+        failureSummary, 'Message type mismatch: ' +
+            expected.getDescriptor().getFullName() + ' != ' +
+            actual.getDescriptor().getFullName());
   }
   var diff = goog.testing.proto2.findDifferences_(expected, actual, '');
   if (diff) {

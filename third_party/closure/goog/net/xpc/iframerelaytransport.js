@@ -124,9 +124,10 @@ if (goog.userAgent.WEBKIT) {
    */
   goog.net.xpc.IframeRelayTransport.startCleanupTimer_ = function() {
     if (!goog.net.xpc.IframeRelayTransport.cleanupTimer_) {
-      goog.net.xpc.IframeRelayTransport.cleanupTimer_ = window.setTimeout(
-          function() { goog.net.xpc.IframeRelayTransport.cleanup_(); },
-          goog.net.xpc.IframeRelayTransport.CLEANUP_INTERVAL_);
+      goog.net.xpc.IframeRelayTransport.cleanupTimer_ =
+          window.setTimeout(function() {
+            goog.net.xpc.IframeRelayTransport.cleanup_();
+          }, goog.net.xpc.IframeRelayTransport.CLEANUP_INTERVAL_);
     }
   };
 
@@ -143,12 +144,12 @@ if (goog.userAgent.WEBKIT) {
 
     while (goog.net.xpc.IframeRelayTransport.iframeRefs_.length &&
            now - goog.net.xpc.IframeRelayTransport.iframeRefs_[0].timestamp >=
-           maxAge) {
-      var ifr = goog.net.xpc.IframeRelayTransport.iframeRefs_.
-          shift().iframeElement;
+               maxAge) {
+      var ifr =
+          goog.net.xpc.IframeRelayTransport.iframeRefs_.shift().iframeElement;
       goog.dom.removeNode(ifr);
-      goog.log.log(goog.net.xpc.logger, goog.log.Level.FINEST,
-          'iframe removed');
+      goog.log.log(
+          goog.net.xpc.logger, goog.log.Level.FINEST, 'iframe removed');
     }
 
     goog.net.xpc.IframeRelayTransport.cleanupTimer_ = window.setTimeout(
@@ -222,8 +223,8 @@ goog.net.xpc.IframeRelayTransport.prototype.connect = function() {
  * @param {string} frame The raw frame content.
  * @private
  */
-goog.net.xpc.IframeRelayTransport.receiveMessage_ =
-    function(channelName, frame) {
+goog.net.xpc.IframeRelayTransport.receiveMessage_ = function(
+    channelName, frame) {
   var pos = frame.indexOf(':');
   var header = frame.substr(0, pos);
   var payload = frame.substr(pos + 1);
@@ -248,7 +249,7 @@ goog.net.xpc.IframeRelayTransport.receiveMessage_ =
     if (!fragmentInfo) {
       fragmentInfo =
           goog.net.xpc.IframeRelayTransport.fragmentMap_[messageIdStr] =
-          {fragments: [], received: 0, expected: 0};
+              {fragments: [], received: 0, expected: 0};
     }
 
     if (goog.string.contains(fragmentIdStr, '++')) {
@@ -267,8 +268,8 @@ goog.net.xpc.IframeRelayTransport.receiveMessage_ =
     delete goog.net.xpc.IframeRelayTransport.fragmentMap_[messageIdStr];
   }
 
-  goog.net.xpc.channels[channelName].
-      xpcDeliver(service, decodeURIComponent(payload));
+  goog.net.xpc.channels[channelName].xpcDeliver(
+      service, decodeURIComponent(payload));
 };
 
 
@@ -277,15 +278,14 @@ goog.net.xpc.IframeRelayTransport.receiveMessage_ =
  * @param {string} payload The message content.
  * @override
  */
-goog.net.xpc.IframeRelayTransport.prototype.transportServiceHandler =
-    function(payload) {
+goog.net.xpc.IframeRelayTransport.prototype.transportServiceHandler = function(
+    payload) {
   if (payload == goog.net.xpc.SETUP) {
     // TODO(user) Safari swallows the SETUP_ACK from the iframe to the
     // container after hitting reload.
     this.send(goog.net.xpc.TRANSPORT_SERVICE_, goog.net.xpc.SETUP_ACK_);
     this.channel_.notifyConnected();
-  }
-  else if (payload == goog.net.xpc.SETUP_ACK_) {
+  } else if (payload == goog.net.xpc.SETUP_ACK_) {
     this.channel_.notifyConnected();
   }
 };
@@ -333,16 +333,16 @@ goog.net.xpc.IframeRelayTransport.prototype.send = function(service, payload) {
  *     identifies the fragment.
  * @private
  */
-goog.net.xpc.IframeRelayTransport.prototype.send_ =
-    function(service, encodedPayload, opt_fragmentIdStr) {
+goog.net.xpc.IframeRelayTransport.prototype.send_ = function(
+    service, encodedPayload, opt_fragmentIdStr) {
   // IE requires that we create the onload attribute inline, otherwise the
   // handler is not triggered
   if (goog.userAgent.IE) {
     var div = this.getWindow().document.createElement(goog.dom.TagName.DIV);
     // TODO(user): It might be possible to set the sandbox attribute
     // to restrict the privileges of the created iframe.
-    goog.dom.safe.setInnerHtml(div,
-        goog.html.SafeHtml.createIframe(null, null, {
+    goog.dom.safe.setInnerHtml(
+        div, goog.html.SafeHtml.createIframe(null, null, {
           'onload': goog.string.Const.from('this.xpcOnload()'),
           'sandbox': null
         }));
@@ -355,13 +355,11 @@ goog.net.xpc.IframeRelayTransport.prototype.send_ =
     if (goog.userAgent.WEBKIT) {
       // safari doesn't fire load-events on iframes.
       // keep a reference and remove after a timeout.
-      goog.net.xpc.IframeRelayTransport.iframeRefs_.push({
-        timestamp: goog.now(),
-        iframeElement: ifr
-      });
+      goog.net.xpc.IframeRelayTransport.iframeRefs_.push(
+          {timestamp: goog.now(), iframeElement: ifr});
     } else {
-      goog.events.listen(ifr, 'load',
-                         goog.net.xpc.IframeRelayTransport.iframeLoadHandler_);
+      goog.events.listen(
+          ifr, 'load', goog.net.xpc.IframeRelayTransport.iframeLoadHandler_);
     }
   }
 

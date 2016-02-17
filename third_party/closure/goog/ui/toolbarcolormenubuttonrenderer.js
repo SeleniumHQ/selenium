@@ -37,8 +37,8 @@ goog.require('goog.ui.ToolbarMenuButtonRenderer');
 goog.ui.ToolbarColorMenuButtonRenderer = function() {
   goog.ui.ToolbarMenuButtonRenderer.call(this);
 };
-goog.inherits(goog.ui.ToolbarColorMenuButtonRenderer,
-              goog.ui.ToolbarMenuButtonRenderer);
+goog.inherits(
+    goog.ui.ToolbarColorMenuButtonRenderer, goog.ui.ToolbarMenuButtonRenderer);
 goog.addSingletonGetter(goog.ui.ToolbarColorMenuButtonRenderer);
 
 
@@ -60,8 +60,7 @@ goog.ui.ToolbarColorMenuButtonRenderer.prototype.createCaption = function(
     content, dom) {
   return goog.ui.MenuButtonRenderer.wrapCaption(
       goog.ui.ColorMenuButtonRenderer.wrapCaption(content, dom),
-      this.getCssClass(),
-      dom);
+      this.getCssClass(), dom);
 };
 
 
@@ -73,8 +72,8 @@ goog.ui.ToolbarColorMenuButtonRenderer.prototype.createCaption = function(
  * @param {*} value New value; assumed to be a color spec string.
  * @override
  */
-goog.ui.ToolbarColorMenuButtonRenderer.prototype.setValue = function(element,
-    value) {
+goog.ui.ToolbarColorMenuButtonRenderer.prototype.setValue = function(
+    element, value) {
   if (element) {
     goog.ui.ColorMenuButtonRenderer.setCaptionValue(
         this.getContentElement(element), value);
@@ -96,6 +95,6 @@ goog.ui.ToolbarColorMenuButtonRenderer.prototype.initializeDom = function(
   goog.dom.classlist.add(
       goog.asserts.assert(button.getElement()),
       goog.getCssName('goog-toolbar-color-menu-button'));
-  goog.ui.ToolbarColorMenuButtonRenderer.superClass_.initializeDom.call(this,
-      button);
+  goog.ui.ToolbarColorMenuButtonRenderer.superClass_.initializeDom.call(
+      this, button);
 };

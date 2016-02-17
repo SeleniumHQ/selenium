@@ -208,9 +208,9 @@ goog.events.BrowserEvent.MouseButton = {
  * @type {!Array<number>}
  */
 goog.events.BrowserEvent.IEButtonMap = [
-  1, // LEFT
-  4, // MIDDLE
-  2  // RIGHT
+  1,  // LEFT
+  4,  // MIDDLE
+  2   // RIGHT
 ];
 
 
@@ -257,19 +257,21 @@ goog.events.BrowserEvent.prototype.init = function(e, opt_currentTarget) {
   this.relatedTarget = relatedTarget;
 
   if (!goog.isNull(relevantTouch)) {
-    this.clientX = relevantTouch.clientX !== undefined ?
-        relevantTouch.clientX : relevantTouch.pageX;
-    this.clientY = relevantTouch.clientY !== undefined ?
-        relevantTouch.clientY : relevantTouch.pageY;
+    this.clientX = relevantTouch.clientX !== undefined ? relevantTouch.clientX :
+                                                         relevantTouch.pageX;
+    this.clientY = relevantTouch.clientY !== undefined ? relevantTouch.clientY :
+                                                         relevantTouch.pageY;
     this.screenX = relevantTouch.screenX || 0;
     this.screenY = relevantTouch.screenY || 0;
   } else {
     // Webkit emits a lame warning whenever layerX/layerY is accessed.
     // http://code.google.com/p/chromium/issues/detail?id=101733
     this.offsetX = (goog.userAgent.WEBKIT || e.offsetX !== undefined) ?
-        e.offsetX : e.layerX;
+        e.offsetX :
+        e.layerX;
     this.offsetY = (goog.userAgent.WEBKIT || e.offsetY !== undefined) ?
-        e.offsetY : e.layerY;
+        e.offsetY :
+        e.layerY;
     this.clientX = e.clientX !== undefined ? e.clientX : e.pageX;
     this.clientY = e.clientY !== undefined ? e.clientY : e.pageY;
     this.screenX = e.screenX || 0;
@@ -314,8 +316,8 @@ goog.events.BrowserEvent.prototype.isButton = function(button) {
     if (this.type == 'click') {
       return button == goog.events.BrowserEvent.MouseButton.LEFT;
     } else {
-      return !!(this.event_.button &
-          goog.events.BrowserEvent.IEButtonMap[button]);
+      return !!(
+          this.event_.button & goog.events.BrowserEvent.IEButtonMap[button]);
     }
   } else {
     return this.event_.button == button;

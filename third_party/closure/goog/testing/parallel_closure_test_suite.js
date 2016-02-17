@@ -71,14 +71,14 @@ function processAllTestResults(testResults) {
   }
 
   return {
-    'totalTests': totalTests,
-    'totalFailures': totalFailed,
-    'failureReports': failureReports,
-    'allResults': allResults
+    totalTests: totalTests,
+    totalFailures: totalFailed,
+    failureReports: failureReports,
+    allResults: allResults
   };
 }
 
-testSuite({
+var testObj = {
   setUpPage: function() {
     // G_parallelTestRunner is exported in gen_parallel_test_html.py.
     var timeout = goog.global['G_parallelTestRunner']['testTimeout'];
@@ -101,6 +101,9 @@ testSuite({
     // There's only a single test method that runs all the tests, so this
     // promiseTimeout is effectively the timeout of the entire test suite
     TestCase.getActiveTestCase().promiseTimeout = parallelTimeout * 1000;
+
+    // Return testRunner for testing purposes.
+    return testRunner;
   },
 
   testRunAllTests: function() {
@@ -120,11 +123,23 @@ testSuite({
 
     return failurePromise.then(function(failures) {
       var testResults = processAllTestResults(failures['allTestResults']);
-      allResults = testResults['allResults'];
-      if (testResults['totalFailures']) {
-        fail(testResults['totalFailures'] + ' of ' + testResults['totalTests'] +
-             ' test(s) failed!\n\n' + testResults['failureReports']);
+      allResults = testResults.allResults;
+      if (testResults.totalFailures) {
+        fail(
+            testResults.totalFailures + ' of ' + testResults.totalTests +
+            ' test(s) failed!\n\n' + testResults.failureReports);
       }
     });
   }
-});
+};
+
+// G_parallelTestRunner should only be present when being run from a parallel
+// closure_test_suite target. If it's not present, we're including this file
+// to be unit tested.
+if (goog.global['G_parallelTestRunner']) {
+  testSuite(testObj);
+}
+
+// Export test methods/vars so they can also be tested.
+testObj['processAllTestResults'] = processAllTestResults;
+exports = testObj;

@@ -105,7 +105,7 @@ goog.testing.PropertyReplacer.hasKey_ = function(obj, key) {
   // examining obj.toString().
   if (obj.constructor == Object &&
       (!goog.userAgent.OPERA ||
-          Object.prototype.toString.call(obj) == '[object Object]')) {
+       Object.prototype.toString.call(obj) == '[object Object]')) {
     return false;
   }
   try {
@@ -152,8 +152,22 @@ goog.testing.PropertyReplacer.deleteKey_ = function(obj, key) {
   }
 
   if (obj[key]) {
-    throw Error('Cannot delete non configurable property "' + key + '" in ' +
-                obj);
+    throw Error(
+        'Cannot delete non configurable property "' + key + '" in ' + obj);
+  }
+};
+
+
+/**
+ * Restore the original state of a key in an object.
+ * @param {{ object: ?, key: string, value: ? }} original Original state
+ * @private
+ */
+goog.testing.PropertyReplacer.restoreOriginal_ = function(original) {
+  if (original.value == goog.testing.PropertyReplacer.NO_SUCH_KEY_) {
+    goog.testing.PropertyReplacer.deleteKey_(original.object, original.key);
+  } else {
+    original.object[original.key] = original.value;
   }
 };
 
@@ -167,8 +181,9 @@ goog.testing.PropertyReplacer.deleteKey_ = function(obj, key) {
  * @throws {Error} In case of trying to set a read-only property.
  */
 goog.testing.PropertyReplacer.prototype.set = function(obj, key, value) {
-  var origValue = goog.testing.PropertyReplacer.hasKey_(obj, key) ? obj[key] :
-                  goog.testing.PropertyReplacer.NO_SUCH_KEY_;
+  var origValue = goog.testing.PropertyReplacer.hasKey_(obj, key) ?
+      obj[key] :
+      goog.testing.PropertyReplacer.NO_SUCH_KEY_;
   this.original_.push({object: obj, key: key, value: origValue});
   obj[key] = value;
 
@@ -201,7 +216,8 @@ goog.testing.PropertyReplacer.prototype.replace = function(obj, key, value) {
     throw Error('Cannot replace missing property "' + key + '" in ' + obj);
   }
   if (goog.typeOf(obj[key]) != goog.typeOf(value)) {
-    throw Error('Cannot replace property "' + key + '" in ' + obj +
+    throw Error(
+        'Cannot replace property "' + key + '" in ' + obj +
         ' with a value of different type');
   }
   this.set(obj, key, value);
@@ -246,16 +262,31 @@ goog.testing.PropertyReplacer.prototype.remove = function(obj, key) {
 
 
 /**
+ * Restore the original state of key in an object.
+ * @param {!Object|!Function} obj The JavaScript or native object whose state
+ *     should be restored.
+ * @param {string} key The key to restore the original value for.
+ * @throws {Error} In case the object/key pair hadn't been modified earlier.
+ */
+goog.testing.PropertyReplacer.prototype.restore = function(obj, key) {
+  for (var i = this.original_.length - 1; i >= 0; i--) {
+    var original = this.original_[i];
+    if (original.object === obj && original.key == key) {
+      goog.testing.PropertyReplacer.restoreOriginal_(original);
+      this.original_.splice(i, 1);
+      return;
+    }
+  }
+  throw Error('Cannot restore unmodified property "' + key + '" of ' + obj);
+};
+
+
+/**
  * Resets all changes made by goog.testing.PropertyReplacer.prototype.set.
  */
 goog.testing.PropertyReplacer.prototype.reset = function() {
   for (var i = this.original_.length - 1; i >= 0; i--) {
-    var original = this.original_[i];
-    if (original.value == goog.testing.PropertyReplacer.NO_SUCH_KEY_) {
-      goog.testing.PropertyReplacer.deleteKey_(original.object, original.key);
-    } else {
-      original.object[original.key] = original.value;
-    }
+    goog.testing.PropertyReplacer.restoreOriginal_(this.original_[i]);
     delete this.original_[i];
   }
   this.original_.length = 0;

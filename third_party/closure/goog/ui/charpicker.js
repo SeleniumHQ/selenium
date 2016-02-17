@@ -72,9 +72,9 @@ goog.require('goog.ui.Tooltip');
  * @extends {goog.ui.Component}
  * @final
  */
-goog.ui.CharPicker = function(charPickerData, charNameFetcher, opt_recents,
-                              opt_initCategory, opt_initSubcategory,
-                              opt_rowCount, opt_columnCount, opt_domHelper) {
+goog.ui.CharPicker = function(
+    charPickerData, charNameFetcher, opt_recents, opt_initCategory,
+    opt_initSubcategory, opt_rowCount, opt_columnCount, opt_domHelper) {
   goog.ui.Component.call(this, opt_domHelper);
 
   /**
@@ -328,8 +328,8 @@ goog.ui.CharPicker.prototype.getRecentChars = function() {
 goog.ui.CharPicker.prototype.createDom = function() {
   goog.ui.CharPicker.superClass_.createDom.call(this);
 
-  this.decorateInternal(this.getDomHelper().createElement(
-      goog.dom.TagName.DIV));
+  this.decorateInternal(
+      this.getDomHelper().createElement(goog.dom.TagName.DIV));
 };
 
 
@@ -359,14 +359,16 @@ goog.ui.CharPicker.prototype.decorateInternal = function(element) {
     this.menu_.addChild(this.createMenuItem_(i, categories[i]), true);
   }
 
-  this.menubutton_ = new goog.ui.MenuButton('Category Menu', this.menu_,
+  this.menubutton_ = new goog.ui.MenuButton(
+      'Category Menu', this.menu_,
       /* opt_renderer */ undefined, this.getDomHelper());
   this.addChild(this.menubutton_, true);
 
   this.submenu_ = new goog.ui.Menu(this.getDomHelper());
 
-  this.submenubutton_ = new goog.ui.MenuButton('Subcategory Menu',
-      this.submenu_, /* opt_renderer */ undefined, this.getDomHelper());
+  this.submenubutton_ = new goog.ui.MenuButton(
+      'Subcategory Menu', this.submenu_, /* opt_renderer */ undefined,
+      this.getDomHelper());
   this.addChild(this.submenubutton_, true);
 
   // The containing component for grid component and the scroller.
@@ -385,8 +387,8 @@ goog.ui.CharPicker.prototype.decorateInternal = function(element) {
   gridcontainer.addChild(this.grid_, true);
 
   this.notice_ = new goog.ui.Component(this.getDomHelper());
-  this.notice_.setElementInternal(this.getDomHelper().createDom(
-      goog.dom.TagName.DIV));
+  this.notice_.setElementInternal(
+      this.getDomHelper().createDom(goog.dom.TagName.DIV));
   this.addChild(this.notice_, true);
 
   // The component used for displaying 'Recent Selections' label.
@@ -395,8 +397,9 @@ goog.ui.CharPicker.prototype.decorateInternal = function(element) {
    */
   var MSG_CHAR_PICKER_RECENT_SELECTIONS = goog.getMsg('Recent Selections:');
   var recenttext = new goog.ui.Component(this.getDomHelper());
-  recenttext.setElementInternal(this.getDomHelper().createDom(
-      goog.dom.TagName.SPAN, null, MSG_CHAR_PICKER_RECENT_SELECTIONS));
+  recenttext.setElementInternal(
+      this.getDomHelper().createDom(
+          goog.dom.TagName.SPAN, null, MSG_CHAR_PICKER_RECENT_SELECTIONS));
   this.addChild(recenttext, true);
 
   this.recentgrid_ = new goog.ui.Component(this.getDomHelper());
@@ -404,16 +407,16 @@ goog.ui.CharPicker.prototype.decorateInternal = function(element) {
 
   // The component used for displaying 'U+'.
   var uplus = new goog.ui.Component(this.getDomHelper());
-  uplus.setElementInternal(this.getDomHelper().createDom(
-      goog.dom.TagName.SPAN, null, 'U+'));
+  uplus.setElementInternal(
+      this.getDomHelper().createDom(goog.dom.TagName.SPAN, null, 'U+'));
   this.addChild(uplus, true);
 
   /**
    * @desc The text inside the input box to specify the hex code of a character.
    */
   var MSG_CHAR_PICKER_HEX_INPUT = goog.getMsg('Hex Input');
-  this.input_ = new goog.ui.LabelInput(
-      MSG_CHAR_PICKER_HEX_INPUT, this.getDomHelper());
+  this.input_ =
+      new goog.ui.LabelInput(MSG_CHAR_PICKER_HEX_INPUT, this.getDomHelper());
   this.addChild(this.input_, true);
 
   this.okbutton_ = new goog.ui.Button(
@@ -421,20 +424,24 @@ goog.ui.CharPicker.prototype.decorateInternal = function(element) {
   this.addChild(this.okbutton_, true);
   this.okbutton_.setEnabled(false);
 
-  this.zoomEl_ = this.getDomHelper().createDom(goog.dom.TagName.DIV,
+  this.zoomEl_ = this.getDomHelper().createDom(
+      goog.dom.TagName.DIV,
       {id: 'zoom', className: goog.getCssName('goog-char-picker-char-zoom')});
 
-  this.charNameEl_ = this.getDomHelper().createDom(goog.dom.TagName.DIV,
+  this.charNameEl_ = this.getDomHelper().createDom(
+      goog.dom.TagName.DIV,
       {id: 'charName', className: goog.getCssName('goog-char-picker-name')});
 
-  this.unicodeEl_ = this.getDomHelper().createDom(goog.dom.TagName.DIV,
+  this.unicodeEl_ = this.getDomHelper().createDom(
+      goog.dom.TagName.DIV,
       {id: 'unicode', className: goog.getCssName('goog-char-picker-unicode')});
 
-  var card = this.getDomHelper().createDom(goog.dom.TagName.DIV,
-      {'id': 'preview'},
-      this.zoomEl_, this.charNameEl_, this.unicodeEl_);
+  var card = this.getDomHelper().createDom(
+      goog.dom.TagName.DIV, {'id': 'preview'}, this.zoomEl_, this.charNameEl_,
+      this.unicodeEl_);
   goog.style.setElementShown(card, false);
-  this.hc_ = new goog.ui.HoverCard({'DIV': 'char'},
+  this.hc_ = new goog.ui.HoverCard(
+      {'DIV': 'char'},
       /* opt_checkDescendants */ undefined, this.getDomHelper());
   this.hc_.setElement(card);
   var self = this;
@@ -459,14 +466,14 @@ goog.ui.CharPicker.prototype.decorateInternal = function(element) {
     }
   }
 
-  goog.events.listen(this.hc_, goog.ui.HoverCard.EventType.BEFORE_SHOW,
-                     onBeforeShow);
+  goog.events.listen(
+      this.hc_, goog.ui.HoverCard.EventType.BEFORE_SHOW, onBeforeShow);
   goog.asserts.assert(element);
   goog.dom.classlist.add(element, goog.getCssName('goog-char-picker'));
-  goog.dom.classlist.add(goog.asserts.assert(this.stick_),
-                         goog.getCssName('goog-stick'));
-  goog.dom.classlist.add(goog.asserts.assert(this.stickwrap_),
-                         goog.getCssName('goog-stickwrap'));
+  goog.dom.classlist.add(
+      goog.asserts.assert(this.stick_), goog.getCssName('goog-stick'));
+  goog.dom.classlist.add(
+      goog.asserts.assert(this.stickwrap_), goog.getCssName('goog-stickwrap'));
   goog.dom.classlist.add(
       goog.asserts.assert(gridcontainer.getElement()),
       goog.getCssName('goog-char-picker-grid-container'));
@@ -493,8 +500,7 @@ goog.ui.CharPicker.prototype.decorateInternal = function(element) {
       goog.asserts.assert(this.okbutton_.getElement()),
       goog.getCssName('goog-char-picker-okbutton'));
   goog.dom.classlist.add(
-      goog.asserts.assert(card),
-      goog.getCssName('goog-char-picker-hovercard'));
+      goog.asserts.assert(card), goog.getCssName('goog-char-picker-hovercard'));
 
   this.hc_.className = goog.getCssName('goog-char-picker-hovercard');
 
@@ -528,42 +534,33 @@ goog.ui.CharPicker.prototype.enterDocument = function() {
   // If not stopped, the user widget will receive the event, which is
   // undesired. User widget should receive an event only on the character
   // click.
-  this.eventHandler_.
-      listen(
-          this.menubutton_,
-          goog.ui.Component.EventType.ACTION,
-          goog.events.Event.stopPropagation).
-      listen(
-          this.submenubutton_,
-          goog.ui.Component.EventType.ACTION,
-          goog.events.Event.stopPropagation).
-      listen(
-          this,
-          goog.ui.Component.EventType.ACTION,
-          this.handleSelectedItem_,
-          true).
-      listen(
-          inputkh,
-          goog.events.InputHandler.EventType.INPUT,
-          this.handleInput_).
-      listen(
-          this.keyHandler_,
-          goog.events.KeyHandler.EventType.KEY,
-          this.handleEnter_).
-      listen(
-          this.recentgrid_,
-          goog.ui.Component.EventType.FOCUS,
-          this.handleFocus_).
-      listen(
-          this.grid_,
-          goog.ui.Component.EventType.FOCUS,
-          this.handleFocus_);
+  this.eventHandler_
+      .listen(
+          this.menubutton_, goog.ui.Component.EventType.ACTION,
+          goog.events.Event.stopPropagation)
+      .listen(
+          this.submenubutton_, goog.ui.Component.EventType.ACTION,
+          goog.events.Event.stopPropagation)
+      .listen(
+          this, goog.ui.Component.EventType.ACTION, this.handleSelectedItem_,
+          true)
+      .listen(
+          inputkh, goog.events.InputHandler.EventType.INPUT, this.handleInput_)
+      .listen(
+          this.keyHandler_, goog.events.KeyHandler.EventType.KEY,
+          this.handleEnter_)
+      .listen(
+          this.recentgrid_, goog.ui.Component.EventType.FOCUS,
+          this.handleFocus_)
+      .listen(this.grid_, goog.ui.Component.EventType.FOCUS, this.handleFocus_);
 
-  goog.events.listen(this.okbutton_.getElement(),
-      goog.events.EventType.MOUSEDOWN, this.handleOkClick_, true, this);
+  goog.events.listen(
+      this.okbutton_.getElement(), goog.events.EventType.MOUSEDOWN,
+      this.handleOkClick_, true, this);
 
-  goog.events.listen(this.stickwrap_, goog.events.EventType.SCROLL,
-      this.handleScroll_, true, this);
+  goog.events.listen(
+      this.stickwrap_, goog.events.EventType.SCROLL, this.handleScroll_, true,
+      this);
 };
 
 
@@ -594,8 +591,7 @@ goog.ui.CharPicker.prototype.handleFocus_ = function(e) {
     // so that this asynchronous gymnastic can be avoided.
     this.charNameFetcher_.getName(ch, function(charName) {
       if (charName) {
-        goog.a11y.aria.setState(
-            element, goog.a11y.aria.State.LABEL, charName);
+        goog.a11y.aria.setState(element, goog.a11y.aria.State.LABEL, charName);
       }
     });
   }
@@ -610,8 +606,9 @@ goog.ui.CharPicker.prototype.handleFocus_ = function(e) {
 goog.ui.CharPicker.prototype.handleScroll_ = function(e) {
   var height = e.target.scrollHeight;
   var top = e.target.scrollTop;
-  var itempos = Math.ceil(top * this.items.length / (this.columnCount_ *
-      height)) * this.columnCount_;
+  var itempos =
+      Math.ceil(top * this.items.length / (this.columnCount_ * height)) *
+      this.columnCount_;
   if (this.itempos != itempos) {
     this.itempos = itempos;
     this.modifyGridWithItems_(this.grid_, this.items, itempos);
@@ -696,7 +693,8 @@ goog.ui.CharPicker.prototype.handleOkClick_ = function(opt_event) {
 goog.ui.CharPicker.prototype.handleEnter_ = function(e) {
   if (e.keyCode == goog.events.KeyCodes.ENTER) {
     return this.handleOkClick_() ?
-        this.dispatchEvent(goog.ui.Component.EventType.ACTION) : false;
+        this.dispatchEvent(goog.ui.Component.EventType.ACTION) :
+        false;
   }
   return false;
 };
@@ -733,8 +731,8 @@ goog.ui.CharPicker.prototype.createMenuItem_ = function(id, caption) {
  * @param {number=} opt_subcategory Subcategory index used with category index.
  * @private
  */
-goog.ui.CharPicker.prototype.setSelectedCategory_ = function(category,
-                                                             opt_subcategory) {
+goog.ui.CharPicker.prototype.setSelectedCategory_ = function(
+    category, opt_subcategory) {
   this.category = category;
   this.menubutton_.setCaption(this.data_.categories[category]);
   while (this.submenu_.hasChildren()) {
@@ -770,8 +768,8 @@ goog.ui.CharPicker.prototype.setSelectedSubcategory_ = function(subcategory) {
  * @param {number} subcategory Index to the subcategory table.
  * @private
  */
-goog.ui.CharPicker.prototype.setSelectedGrid_ = function(category,
-    subcategory) {
+goog.ui.CharPicker.prototype.setSelectedGrid_ = function(
+    category, subcategory) {
   var charLists = this.data_.charList;
   var charListStr = charLists[category][subcategory];
   var content = this.decompressor_.toCharList(charListStr);
@@ -796,9 +794,10 @@ goog.ui.CharPicker.prototype.updateGrid_ = function(grid, items) {
     var MSG_PLEASE_HOVER =
         goog.getMsg('Please hover over each cell for the character name.');
 
-    goog.dom.setTextContent(this.notice_.getElement(),
-        this.charNameFetcher_.isNameAvailable(
-            items[0]) ? MSG_PLEASE_HOVER : '');
+    goog.dom.setTextContent(
+        this.notice_.getElement(),
+        this.charNameFetcher_.isNameAvailable(items[0]) ? MSG_PLEASE_HOVER :
+                                                          '');
     this.items = items;
     if (this.stickwrap_.offsetHeight > 0) {
       this.stick_.style.height =
@@ -807,8 +806,8 @@ goog.ui.CharPicker.prototype.updateGrid_ = function(grid, items) {
       // This is the last ditch effort if height is not avaialble.
       // Maximum of 3em is assumed to the the cell height. Extra space after
       // last character in the grid is OK.
-      this.stick_.style.height = 3 * this.columnCount_ * items.length /
-          this.gridsize_ + 'em';
+      this.stick_.style.height =
+          3 * this.columnCount_ * items.length / this.gridsize_ + 'em';
     }
     this.stickwrap_.scrollTop = 0;
   }
@@ -826,8 +825,8 @@ goog.ui.CharPicker.prototype.updateGrid_ = function(grid, items) {
  *     displayed.
  * @private
  */
-goog.ui.CharPicker.prototype.modifyGridWithItems_ = function(grid, items,
-    start) {
+goog.ui.CharPicker.prototype.modifyGridWithItems_ = function(
+    grid, items, start) {
   for (var buttonpos = 0, itempos = start;
        buttonpos < grid.buttoncount && itempos < items.length;
        buttonpos++, itempos++) {
@@ -850,9 +849,8 @@ goog.ui.CharPicker.prototype.modifyGridWithItems_ = function(grid, items,
  */
 goog.ui.CharPicker.prototype.populateGridWithButtons_ = function(grid) {
   for (var i = 0; i < grid.buttoncount; i++) {
-    var button = new goog.ui.Button(' ',
-                                    goog.ui.FlatButtonRenderer.getInstance(),
-                                    this.getDomHelper());
+    var button = new goog.ui.Button(
+        ' ', goog.ui.FlatButtonRenderer.getInstance(), this.getDomHelper());
 
     // Dispatch the focus event so we can update the aria description while
     // the user tabs through the cells.

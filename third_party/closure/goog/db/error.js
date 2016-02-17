@@ -77,7 +77,7 @@ goog.inherits(goog.db.Error, goog.debug.Error);
 /**
  * @return {string} The name of the error.
  */
-goog.db.Error.prototype.getName = function()  {
+goog.db.Error.prototype.getName = function() {
   return this.error_.name;
 };
 
@@ -135,42 +135,55 @@ goog.db.Error.DatabaseErrorCode_ = {
  */
 goog.db.Error.ErrorCode = {
   UNKNOWN_ERR: (goog.global.IDBDatabaseException ||
-      goog.global.webkitIDBDatabaseException ||
-      goog.db.Error.DatabaseErrorCode_).UNKNOWN_ERR,
+                goog.global.webkitIDBDatabaseException ||
+                goog.db.Error.DatabaseErrorCode_)
+                   .UNKNOWN_ERR,
   NON_TRANSIENT_ERR: (goog.global.IDBDatabaseException ||
-      goog.global.webkitIDBDatabaseException ||
-      goog.db.Error.DatabaseErrorCode_).NON_TRANSIENT_ERR,
+                      goog.global.webkitIDBDatabaseException ||
+                      goog.db.Error.DatabaseErrorCode_)
+                         .NON_TRANSIENT_ERR,
   NOT_FOUND_ERR: (goog.global.IDBDatabaseException ||
-      goog.global.webkitIDBDatabaseException ||
-      goog.db.Error.DatabaseErrorCode_).NOT_FOUND_ERR,
+                  goog.global.webkitIDBDatabaseException ||
+                  goog.db.Error.DatabaseErrorCode_)
+                     .NOT_FOUND_ERR,
   CONSTRAINT_ERR: (goog.global.IDBDatabaseException ||
-      goog.global.webkitIDBDatabaseException ||
-      goog.db.Error.DatabaseErrorCode_).CONSTRAINT_ERR,
+                   goog.global.webkitIDBDatabaseException ||
+                   goog.db.Error.DatabaseErrorCode_)
+                      .CONSTRAINT_ERR,
   DATA_ERR: (goog.global.IDBDatabaseException ||
-      goog.global.webkitIDBDatabaseException ||
-      goog.db.Error.DatabaseErrorCode_).DATA_ERR,
+             goog.global.webkitIDBDatabaseException ||
+             goog.db.Error.DatabaseErrorCode_)
+                .DATA_ERR,
   NOT_ALLOWED_ERR: (goog.global.IDBDatabaseException ||
-      goog.global.webkitIDBDatabaseException ||
-      goog.db.Error.DatabaseErrorCode_).NOT_ALLOWED_ERR,
+                    goog.global.webkitIDBDatabaseException ||
+                    goog.db.Error.DatabaseErrorCode_)
+                       .NOT_ALLOWED_ERR,
   TRANSACTION_INACTIVE_ERR: (goog.global.IDBDatabaseException ||
-      goog.global.webkitIDBDatabaseException ||
-      goog.db.Error.DatabaseErrorCode_).TRANSACTION_INACTIVE_ERR,
+                             goog.global.webkitIDBDatabaseException ||
+                             goog.db.Error.DatabaseErrorCode_)
+                                .TRANSACTION_INACTIVE_ERR,
   ABORT_ERR: (goog.global.IDBDatabaseException ||
-      goog.global.webkitIDBDatabaseException ||
-      goog.db.Error.DatabaseErrorCode_).ABORT_ERR,
+              goog.global.webkitIDBDatabaseException ||
+              goog.db.Error.DatabaseErrorCode_)
+                 .ABORT_ERR,
   READ_ONLY_ERR: (goog.global.IDBDatabaseException ||
-      goog.global.webkitIDBDatabaseException ||
-      goog.db.Error.DatabaseErrorCode_).READ_ONLY_ERR,
+                  goog.global.webkitIDBDatabaseException ||
+                  goog.db.Error.DatabaseErrorCode_)
+                     .READ_ONLY_ERR,
   TIMEOUT_ERR: (goog.global.IDBDatabaseException ||
-      goog.global.webkitIDBDatabaseException ||
-      goog.db.Error.DatabaseErrorCode_).TIMEOUT_ERR,
+                goog.global.webkitIDBDatabaseException ||
+                goog.db.Error.DatabaseErrorCode_)
+                   .TIMEOUT_ERR,
   QUOTA_ERR: (goog.global.IDBDatabaseException ||
-      goog.global.webkitIDBDatabaseException ||
-      goog.db.Error.DatabaseErrorCode_).QUOTA_ERR,
-  INVALID_ACCESS_ERR: (goog.global.DOMException ||
-      goog.db.Error.DatabaseErrorCode_).INVALID_ACCESS_ERR,
-  INVALID_STATE_ERR: (goog.global.DOMException ||
-      goog.db.Error.DatabaseErrorCode_).INVALID_STATE_ERR
+              goog.global.webkitIDBDatabaseException ||
+              goog.db.Error.DatabaseErrorCode_)
+                 .QUOTA_ERR,
+  INVALID_ACCESS_ERR:
+      (goog.global.DOMException || goog.db.Error.DatabaseErrorCode_)
+          .INVALID_ACCESS_ERR,
+  INVALID_STATE_ERR:
+      (goog.global.DOMException || goog.db.Error.DatabaseErrorCode_)
+          .INVALID_STATE_ERR
 };
 
 
@@ -330,8 +343,9 @@ goog.db.Error.fromRequest = function(request, message) {
     return new goog.db.Error(
         /**@type {!DOMError} */ ({name: errorName}), message);
   } else {
-    return new goog.db.Error(/** @type {!DOMError} */ (
-        {name: goog.db.Error.ErrorName.UNKNOWN_ERR}), message);
+    return new goog.db.Error(
+        /** @type {!DOMError} */ ({name: goog.db.Error.ErrorName.UNKNOWN_ERR}),
+        message);
   }
 };
 
@@ -358,7 +372,8 @@ goog.db.Error.fromException = function(ex, message) {
     return new goog.db.Error(
         /** @type {!DOMError} */ ({name: errorName}), errorMessage);
   } else {
-    return new goog.db.Error(/** @type {!DOMError} */ (
-        {name: goog.db.Error.ErrorName.UNKNOWN_ERR}), message);
+    return new goog.db.Error(
+        /** @type {!DOMError} */ ({name: goog.db.Error.ErrorName.UNKNOWN_ERR}),
+        message);
   }
 };

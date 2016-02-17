@@ -43,8 +43,10 @@ goog.require('goog.ui.registry');
  */
 goog.ui.ToolbarColorMenuButton = function(
     content, opt_menu, opt_renderer, opt_domHelper) {
-  goog.ui.ColorMenuButton.call(this, content, opt_menu, opt_renderer ||
-      goog.ui.ToolbarColorMenuButtonRenderer.getInstance(), opt_domHelper);
+  goog.ui.ColorMenuButton.call(
+      this, content, opt_menu,
+      opt_renderer || goog.ui.ToolbarColorMenuButtonRenderer.getInstance(),
+      opt_domHelper);
 };
 goog.inherits(goog.ui.ToolbarColorMenuButton, goog.ui.ColorMenuButton);
 
@@ -52,6 +54,4 @@ goog.inherits(goog.ui.ToolbarColorMenuButton, goog.ui.ColorMenuButton);
 // Registers a decorator factory function for toolbar color menu buttons.
 goog.ui.registry.setDecoratorByClassName(
     goog.getCssName('goog-toolbar-color-menu-button'),
-    function() {
-      return new goog.ui.ToolbarColorMenuButton(null);
-    });
+    function() { return new goog.ui.ToolbarColorMenuButton(null); });

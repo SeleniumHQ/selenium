@@ -88,28 +88,15 @@ goog.require('goog.html.TrustedResourceUrl');
 
 
 /**
- * @define {boolean} Whether conversion from string to goog.html types for
- * legacy API purposes is permitted.
- *
- * If false, the conversion functions in this file unconditionally throw an
- * exception.
- */
-goog.define('goog.html.legacyconversions.ALLOW_LEGACY_CONVERSIONS', true);
-
-
-/**
  * Performs an "unchecked conversion" from string to SafeHtml for legacy API
  * purposes.
- *
- * Unchecked conversion will not proceed if ALLOW_LEGACY_CONVERSIONS is false,
- * and instead this function unconditionally throws an exception.
  *
  * @param {string} html A string to be converted to SafeHtml.
  * @return {!goog.html.SafeHtml} The value of html, wrapped in a SafeHtml
  *     object.
  */
 goog.html.legacyconversions.safeHtmlFromString = function(html) {
-  goog.html.legacyconversions.throwIfConversionsDisallowed();
+  goog.html.legacyconversions.reportCallback_();
   return goog.html.SafeHtml.createSafeHtmlSecurityPrivateDoNotAccessOrElse(
       html, null /* dir */);
 };
@@ -119,35 +106,14 @@ goog.html.legacyconversions.safeHtmlFromString = function(html) {
  * Performs an "unchecked conversion" from string to SafeStyle for legacy API
  * purposes.
  *
- * Unchecked conversion will not proceed if ALLOW_LEGACY_CONVERSIONS is false,
- * and instead this function unconditionally throws an exception.
- *
  * @param {string} style A string to be converted to SafeStyle.
  * @return {!goog.html.SafeStyle} The value of style, wrapped in a SafeStyle
  *     object.
  */
 goog.html.legacyconversions.safeStyleFromString = function(style) {
-  goog.html.legacyconversions.throwIfConversionsDisallowed();
+  goog.html.legacyconversions.reportCallback_();
   return goog.html.SafeStyle.createSafeStyleSecurityPrivateDoNotAccessOrElse(
       style);
-};
-
-
-/**
- * Performs an "unchecked conversion" from string to TrustedResourceUrl for
- * legacy API purposes.
- *
- * Unchecked conversion will not proceed if ALLOW_LEGACY_CONVERSIONS is false,
- * and instead this function unconditionally throws an exception.
- *
- * @param {string} url A string to be converted to TrustedResourceUrl.
- * @return {!goog.html.TrustedResourceUrl} The value of url, wrapped in a
- *     TrustedResourceUrl object.
- */
-goog.html.legacyconversions.trustedResourceUrlFromString = function(url) {
-  goog.html.legacyconversions.throwIfConversionsDisallowed();
-  return goog.html.TrustedResourceUrl.
-      createTrustedResourceUrlSecurityPrivateDoNotAccessOrElse(url);
 };
 
 
@@ -155,18 +121,29 @@ goog.html.legacyconversions.trustedResourceUrlFromString = function(url) {
  * Performs an "unchecked conversion" from string to SafeUrl for legacy API
  * purposes.
  *
- * Unchecked conversion will not proceed if ALLOW_LEGACY_CONVERSIONS is false,
- * and instead this function unconditionally throws an exception.
- *
  * @param {string} url A string to be converted to SafeUrl.
  * @return {!goog.html.SafeUrl} The value of url, wrapped in a SafeUrl
  *     object.
  */
 goog.html.legacyconversions.safeUrlFromString = function(url) {
-  goog.html.legacyconversions.throwIfConversionsDisallowed();
+  goog.html.legacyconversions.reportCallback_();
   return goog.html.SafeUrl.createSafeUrlSecurityPrivateDoNotAccessOrElse(url);
 };
 
+
+/**
+ * Performs an "unchecked conversion" from string to TrustedResourceUrl for
+ * legacy API purposes.
+ *
+ * @param {string} url A string to be converted to TrustedResourceUrl.
+ * @return {!goog.html.TrustedResourceUrl} The value of url, wrapped in a
+ *     TrustedResourceUrl object.
+ */
+goog.html.legacyconversions.trustedResourceUrlFromString = function(url) {
+  goog.html.legacyconversions.reportCallback_();
+  return goog.html.TrustedResourceUrl
+      .createTrustedResourceUrlSecurityPrivateDoNotAccessOrElse(url);
+};
 
 /**
  * @private {function(): undefined}
@@ -183,18 +160,4 @@ goog.html.legacyconversions.reportCallback_ = goog.nullFunction;
  */
 goog.html.legacyconversions.setReportCallback = function(callback) {
   goog.html.legacyconversions.reportCallback_ = callback;
-};
-
-
-/**
- * Throws an exception if ALLOW_LEGACY_CONVERSIONS is false. This is useful
- * for legacy APIs which consume HTML in the form of plain string types, but
- * do not provide an alternative HTML-type-safe API.
- */
-goog.html.legacyconversions.throwIfConversionsDisallowed = function() {
-  if (!goog.html.legacyconversions.ALLOW_LEGACY_CONVERSIONS) {
-    throw Error(
-        'Error: Legacy conversion from string to goog.html types is disabled');
-  }
-  goog.html.legacyconversions.reportCallback_();
 };

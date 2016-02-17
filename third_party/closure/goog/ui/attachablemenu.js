@@ -157,8 +157,8 @@ goog.ui.AttachableMenu.prototype.getSelectedItem = function() {
 goog.ui.AttachableMenu.prototype.setSelectedItem = function(obj) {
   var elt = /** @type {HTMLElement} */ (obj);
   if (this.selectedElement_) {
-    goog.dom.classlist.remove(this.selectedElement_,
-        this.selectedItemClassName_);
+    goog.dom.classlist.remove(
+        this.selectedElement_, this.selectedItemClassName_);
   }
 
   this.selectedElement_ = elt;
@@ -172,8 +172,8 @@ goog.ui.AttachableMenu.prototype.setSelectedItem = function(obj) {
       // Update activedescendant to reflect the new selection. ARIA roles for
       // menu and menuitem can be set statically (thru Soy templates, for
       // example) whereas this needs to be updated as the selection changes.
-      goog.a11y.aria.setState(el, goog.a11y.aria.State.ACTIVEDESCENDANT,
-          elt.id);
+      goog.a11y.aria.setState(
+          el, goog.a11y.aria.State.ACTIVEDESCENDANT, elt.id);
     }
 
     var top = this.selectedElement_.offsetTop;
@@ -209,19 +209,17 @@ goog.ui.AttachableMenu.prototype.showPopupElement = function() {
 /**
  * Called after the menu is shown.
  * @protected
- * @suppress {underscore|visibility}
  * @override
  */
-goog.ui.AttachableMenu.prototype.onShow_ = function() {
-  goog.ui.AttachableMenu.superClass_.onShow_.call(this);
+goog.ui.AttachableMenu.prototype.onShow = function() {
+  goog.ui.AttachableMenu.superClass_.onShow.call(this);
 
   // In IE, focusing the menu causes weird scrolling to happen. Focusing the
   // first child makes the scroll behavior better, and the key handling still
   // works. In FF, focusing the first child causes us to lose key events, so we
   // still focus the menu.
   var el = this.getElement();
-  goog.userAgent.IE ? el.firstChild.focus() :
-      el.focus();
+  goog.userAgent.IE ? el.firstChild.focus() : el.focus();
 };
 
 
@@ -390,8 +388,8 @@ goog.ui.AttachableMenu.prototype.onKeyDown = function(e) {
  *     unless no other item has the given prefix.
  * @private
  */
-goog.ui.AttachableMenu.prototype.selectByName_ =
-    function(prefix, opt_direction, opt_skip) {
+goog.ui.AttachableMenu.prototype.selectByName_ = function(
+    prefix, opt_direction, opt_skip) {
   var elements = this.getElement().getElementsByTagName('*');
   var elementCount = elements.length;
   var index;
@@ -438,8 +436,10 @@ goog.ui.AttachableMenu.prototype.selectByName_ =
  * @private
  */
 goog.ui.AttachableMenu.prototype.onItemSelected_ = function(opt_item) {
-  this.dispatchEvent(new goog.ui.ItemEvent(goog.ui.MenuBase.Events.ITEM_ACTION,
-      this, opt_item || this.selectedElement_));
+  this.dispatchEvent(
+      new goog.ui.ItemEvent(
+          goog.ui.MenuBase.Events.ITEM_ACTION, this,
+          opt_item || this.selectedElement_));
 };
 
 

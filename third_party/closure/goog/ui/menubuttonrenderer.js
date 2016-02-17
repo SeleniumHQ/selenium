@@ -62,7 +62,8 @@ goog.ui.MenuButtonRenderer.CSS_CLASS = goog.getCssName('goog-menu-button');
  * @override
  */
 goog.ui.MenuButtonRenderer.prototype.getContentElement = function(element) {
-  return goog.ui.MenuButtonRenderer.superClass_.getContentElement.call(this,
+  return goog.ui.MenuButtonRenderer.superClass_.getContentElement.call(
+      this,
       /** @type {Element} */ (element && element.firstChild));
 };
 
@@ -95,8 +96,8 @@ goog.ui.MenuButtonRenderer.prototype.decorate = function(control, element) {
   }
 
   // Let the superclass do the rest.
-  return goog.ui.MenuButtonRenderer.superClass_.decorate.call(this, button,
-      element);
+  return goog.ui.MenuButtonRenderer.superClass_.decorate.call(
+      this, button, element);
 };
 
 
@@ -121,8 +122,8 @@ goog.ui.MenuButtonRenderer.prototype.decorate = function(control, element) {
  * @override
  */
 goog.ui.MenuButtonRenderer.prototype.createButton = function(content, dom) {
-  return goog.ui.MenuButtonRenderer.superClass_.createButton.call(this,
-      [this.createCaption(content, dom), this.createDropdown(dom)], dom);
+  return goog.ui.MenuButtonRenderer.superClass_.createButton.call(
+      this, [this.createCaption(content, dom), this.createDropdown(dom)], dom);
 };
 
 
@@ -157,8 +158,7 @@ goog.ui.MenuButtonRenderer.prototype.createCaption = function(content, dom) {
  */
 goog.ui.MenuButtonRenderer.wrapCaption = function(content, cssClass, dom) {
   return dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.ui.INLINE_BLOCK_CLASSNAME + ' ' +
+      goog.dom.TagName.DIV, goog.ui.INLINE_BLOCK_CLASSNAME + ' ' +
           goog.getCssName(cssClass, 'caption'),
       content);
 };
@@ -175,9 +175,10 @@ goog.ui.MenuButtonRenderer.wrapCaption = function(content, cssClass, dom) {
  */
 goog.ui.MenuButtonRenderer.prototype.createDropdown = function(dom) {
   // 00A0 is &nbsp;
-  return dom.createDom(goog.dom.TagName.DIV,
-      goog.ui.INLINE_BLOCK_CLASSNAME + ' ' +
-      goog.getCssName(this.getCssClass(), 'dropdown'), '\u00A0');
+  return dom.createDom(
+      goog.dom.TagName.DIV, goog.ui.INLINE_BLOCK_CLASSNAME + ' ' +
+          goog.getCssName(this.getCssClass(), 'dropdown'),
+      '\u00A0');
 };
 
 

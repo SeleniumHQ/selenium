@@ -187,10 +187,6 @@ goog.net.xpc.IframePollingTransport.prototype.rcvdConnectionSetupAck_;
 goog.net.xpc.IframePollingTransport.prototype.sentConnectionSetupAck_;
 
 
-/** @private {boolean} */
-goog.net.xpc.IframePollingTransport.prototype.sentConnectionSetup_;
-
-
 /** @private */
 goog.net.xpc.IframePollingTransport.prototype.parts_;
 
@@ -311,14 +307,18 @@ goog.net.xpc.IframePollingTransport.prototype.constructSenderFrames_ =
  * @return {!Element} The constructed frame.
  * @private
  */
-goog.net.xpc.IframePollingTransport.prototype.constructSenderFrame_ =
-    function(id) {
-  goog.log.log(goog.net.xpc.logger, goog.log.Level.FINEST,
+goog.net.xpc.IframePollingTransport.prototype.constructSenderFrame_ = function(
+    id) {
+  goog.log.log(
+      goog.net.xpc.logger, goog.log.Level.FINEST,
       'constructing sender frame: ' + id);
   var ifr = goog.dom.createElement(goog.dom.TagName.IFRAME);
   var s = ifr.style;
   s.position = 'absolute';
-  s.top = '-10px'; s.left = '10px'; s.width = '1px'; s.height = '1px';
+  s.top = '-10px';
+  s.left = '10px';
+  s.width = '1px';
+  s.height = '1px';
   ifr.id = ifr.name = id;
   ifr.src = this.sendUri_ + '#INITIAL';
   this.getWindow().document.body.appendChild(ifr);
@@ -346,17 +346,19 @@ goog.net.xpc.IframePollingTransport.prototype.maybeInnerPeerReconnect_ =
     return;
   }
 
-  goog.log.log(goog.net.xpc.logger, goog.log.Level.FINEST,
+  goog.log.log(
+      goog.net.xpc.logger, goog.log.Level.FINEST,
       'Inner peer reconnect triggered.');
   this.channel_.updateChannelNameAndCatalog(goog.net.xpc.getRandomString(10));
-  goog.log.log(goog.net.xpc.logger, goog.log.Level.FINEST,
+  goog.log.log(
+      goog.net.xpc.logger, goog.log.Level.FINEST,
       'switching channels: ' + this.channel_.name);
   this.deconstructSenderFrames_();
   this.initialized_ = false;
   // Communicate new channel name to outer peer.
   this.reconnectFrame_ = this.constructSenderFrame_(
-      goog.net.xpc.IframePollingTransport.IFRAME_PREFIX +
-          '_reconnect_' + this.channel_.name);
+      goog.net.xpc.IframePollingTransport.IFRAME_PREFIX + '_reconnect_' +
+      this.channel_.name);
 };
 
 
@@ -368,8 +370,8 @@ goog.net.xpc.IframePollingTransport.prototype.maybeInnerPeerReconnect_ =
  * @private
  */
 goog.net.xpc.IframePollingTransport.prototype.outerPeerReconnect_ = function() {
-  goog.log.log(goog.net.xpc.logger, goog.log.Level.FINEST,
-      'outerPeerReconnect called');
+  goog.log.log(
+      goog.net.xpc.logger, goog.log.Level.FINEST, 'outerPeerReconnect called');
   var frames = this.getPeerFrames_();
   var length = frames.length;
   for (var i = 0; i < length; i++) {
@@ -407,7 +409,8 @@ goog.net.xpc.IframePollingTransport.prototype.outerPeerReconnect_ = function() {
  */
 goog.net.xpc.IframePollingTransport.prototype.deconstructSenderFrames_ =
     function() {
-  goog.log.log(goog.net.xpc.logger, goog.log.Level.FINEST,
+  goog.log.log(
+      goog.net.xpc.logger, goog.log.Level.FINEST,
       'deconstructSenderFrames called');
   if (this.msgIframeElm_) {
     this.msgIframeElm_.parentNode.removeChild(this.msgIframeElm_);
@@ -432,7 +435,8 @@ goog.net.xpc.IframePollingTransport.prototype.checkForeignFramesReady_ =
   // check if the connected iframe ready
   if (!(this.isRcvFrameReady_(this.getMsgFrameName_()) &&
         this.isRcvFrameReady_(this.getAckFrameName_()))) {
-    goog.log.log(goog.net.xpc.logger, goog.log.Level.FINEST,
+    goog.log.log(
+        goog.net.xpc.logger, goog.log.Level.FINEST,
         'foreign frames not (yet) present');
 
     if (this.channel_.getRole() == goog.net.xpc.CrossPageChannelRole.INNER) {
@@ -442,8 +446,8 @@ goog.net.xpc.IframePollingTransport.prototype.checkForeignFramesReady_ =
       // the first few times it's called, and then allows the reconnection
       // sequence to begin.
       this.maybeInnerPeerReconnect_();
-    } else if (this.channel_.getRole() ==
-               goog.net.xpc.CrossPageChannelRole.OUTER) {
+    } else if (
+        this.channel_.getRole() == goog.net.xpc.CrossPageChannelRole.OUTER) {
       // The inner peer is either not loaded yet, or the receiving
       // frames are simply missing. Since we cannot discern the two cases, we
       // should scan for a reconnect message from the inner peer.
@@ -457,12 +461,10 @@ goog.net.xpc.IframePollingTransport.prototype.checkForeignFramesReady_ =
 
     // Create receivers.
     this.msgReceiver_ = new goog.net.xpc.IframePollingTransport.Receiver(
-        this,
-        this.getPeerFrame_(this.getMsgFrameName_()),
+        this, this.getPeerFrame_(this.getMsgFrameName_()),
         goog.bind(this.processIncomingMsg, this));
     this.ackReceiver_ = new goog.net.xpc.IframePollingTransport.Receiver(
-        this,
-        this.getPeerFrame_(this.getAckFrameName_()),
+        this, this.getPeerFrame_(this.getAckFrameName_()),
         goog.bind(this.processIncomingAck, this));
 
     this.checkLocalFramesPresent_();
@@ -476,9 +478,10 @@ goog.net.xpc.IframePollingTransport.prototype.checkForeignFramesReady_ =
  * @return {boolean} Whether the receiving frame is ready.
  * @private
  */
-goog.net.xpc.IframePollingTransport.prototype.isRcvFrameReady_ =
-    function(frameName) {
-  goog.log.log(goog.net.xpc.logger, goog.log.Level.FINEST,
+goog.net.xpc.IframePollingTransport.prototype.isRcvFrameReady_ = function(
+    frameName) {
+  goog.log.log(
+      goog.net.xpc.logger, goog.log.Level.FINEST,
       'checking for receive frame: ' + frameName);
   /** @preserveTry */
   try {
@@ -504,12 +507,11 @@ goog.net.xpc.IframePollingTransport.prototype.checkLocalFramesPresent_ =
   // These contain a document from the peer's domain, therefore we can only
   // check if the frame itself is present.
   var frames = this.getPeerFrames_();
-  if (!(frames[this.getAckFrameName_()] &&
-        frames[this.getMsgFrameName_()])) {
+  if (!(frames[this.getAckFrameName_()] && frames[this.getMsgFrameName_()])) {
     // start a timer to check again
     if (!this.checkLocalFramesPresentCb_) {
-      this.checkLocalFramesPresentCb_ = goog.bind(
-          this.checkLocalFramesPresent_, this);
+      this.checkLocalFramesPresentCb_ =
+          goog.bind(this.checkLocalFramesPresent_, this);
     }
     this.getWindow().setTimeout(this.checkLocalFramesPresentCb_, 100);
     goog.log.fine(goog.net.xpc.logger, 'local frames not (yet) present');
@@ -524,7 +526,6 @@ goog.net.xpc.IframePollingTransport.prototype.checkLocalFramesPresent_ =
 
     this.getWindow().setTimeout(goog.bind(function() {
       this.msgSender_.send(goog.net.xpc.SETUP);
-      this.sentConnectionSetup_ = true;
       this.waitForAck_ = true;
       goog.log.fine(goog.net.xpc.logger, 'SETUP sent');
     }, this), 100);
@@ -541,8 +542,9 @@ goog.net.xpc.IframePollingTransport.prototype.checkIfConnected_ = function() {
     this.channel_.notifyConnected();
 
     if (this.deliveryQueue_) {
-      goog.log.fine(goog.net.xpc.logger, 'delivering queued messages ' +
-          '(' + this.deliveryQueue_.length + ')');
+      goog.log.fine(
+          goog.net.xpc.logger, 'delivering queued messages ' +
+              '(' + this.deliveryQueue_.length + ')');
 
       for (var i = 0, m; i < this.deliveryQueue_.length; i++) {
         m = this.deliveryQueue_[i];
@@ -551,10 +553,10 @@ goog.net.xpc.IframePollingTransport.prototype.checkIfConnected_ = function() {
       delete this.deliveryQueue_;
     }
   } else {
-    goog.log.log(goog.net.xpc.logger, goog.log.Level.FINEST,
-        'checking if connected: ' +
-        'ack sent:' + this.sentConnectionSetupAck_ +
-        ', ack rcvd: ' + this.rcvdConnectionSetupAck_);
+    goog.log.log(
+        goog.net.xpc.logger, goog.log.Level.FINEST, 'checking if connected: ' +
+            'ack sent:' + this.sentConnectionSetupAck_ + ', ack rcvd: ' +
+            this.rcvdConnectionSetupAck_);
   }
 };
 
@@ -563,10 +565,10 @@ goog.net.xpc.IframePollingTransport.prototype.checkIfConnected_ = function() {
  * Processes an incoming message.
  * @param {string} raw The complete received string.
  */
-goog.net.xpc.IframePollingTransport.prototype.processIncomingMsg =
-    function(raw) {
-  goog.log.log(goog.net.xpc.logger, goog.log.Level.FINEST,
-      'msg received: ' + raw);
+goog.net.xpc.IframePollingTransport.prototype.processIncomingMsg = function(
+    raw) {
+  goog.log.log(
+      goog.net.xpc.logger, goog.log.Level.FINEST, 'msg received: ' + raw);
 
   if (raw == goog.net.xpc.SETUP) {
     if (!this.ackSender_) {
@@ -581,7 +583,6 @@ goog.net.xpc.IframePollingTransport.prototype.processIncomingMsg =
     this.checkIfConnected_();
 
   } else if (this.channel_.isConnected() || this.sentConnectionSetupAck_) {
-
     var pos = raw.indexOf('|');
     var head = raw.substring(0, pos);
     var frame = raw.substring(pos + 1);
@@ -614,8 +615,8 @@ goog.net.xpc.IframePollingTransport.prototype.processIncomingMsg =
       }
     }
   } else {
-    goog.log.warning(goog.net.xpc.logger,
-        'received msg, but channel is not connected');
+    goog.log.warning(
+        goog.net.xpc.logger, 'received msg, but channel is not connected');
   }
 };
 
@@ -624,10 +625,10 @@ goog.net.xpc.IframePollingTransport.prototype.processIncomingMsg =
  * Process an incoming acknowdedgement.
  * @param {string} msgStr The incoming ack string to process.
  */
-goog.net.xpc.IframePollingTransport.prototype.processIncomingAck =
-    function(msgStr) {
-  goog.log.log(goog.net.xpc.logger, goog.log.Level.FINEST,
-      'ack received: ' + msgStr);
+goog.net.xpc.IframePollingTransport.prototype.processIncomingAck = function(
+    msgStr) {
+  goog.log.log(
+      goog.net.xpc.logger, goog.log.Level.FINEST, 'ack received: ' + msgStr);
 
   if (msgStr == goog.net.xpc.SETUP_ACK_) {
     this.waitForAck_ = false;
@@ -649,8 +650,8 @@ goog.net.xpc.IframePollingTransport.prototype.processIncomingAck =
       goog.log.warning(goog.net.xpc.logger, 'got ack with wrong sequence');
     }
   } else {
-    goog.log.warning(goog.net.xpc.logger,
-        'received ack, but channel not connected');
+    goog.log.warning(
+        goog.net.xpc.logger, 'received ack, but channel not connected');
   }
 };
 
@@ -669,7 +670,8 @@ goog.net.xpc.IframePollingTransport.prototype.sendNextFrame_ = function() {
   var s = this.sendQueue_.shift();
   ++this.sequence_;
   this.msgSender_.send(this.sequence_ + s);
-  goog.log.log(goog.net.xpc.logger, goog.log.Level.FINEST,
+  goog.log.log(
+      goog.net.xpc.logger, goog.log.Level.FINEST,
       'msg sent: ' + this.sequence_ + s);
 
 
@@ -693,10 +695,9 @@ goog.net.xpc.IframePollingTransport.prototype.deliverPayload_ = function(s) {
     // as valid messages can come in before a SETUP_ACK has
     // been received (because subchannels for msgs and acks are independent),
     // delay delivery of early messages until after 'connect'-event
-    (this.deliveryQueue_ || (this.deliveryQueue_ = [])).
-        push({service: service, payload: payload});
-    goog.log.log(goog.net.xpc.logger, goog.log.Level.FINEST,
-        'queued delivery');
+    (this.deliveryQueue_ || (this.deliveryQueue_ = [
+     ])).push({service: service, payload: payload});
+    goog.log.log(goog.net.xpc.logger, goog.log.Level.FINEST, 'queued delivery');
   } else {
     this.channel_.xpcDeliver(service, payload);
   }
@@ -723,21 +724,21 @@ goog.net.xpc.IframePollingTransport.prototype.MAX_FRAME_LENGTH_ = 3800;
  * @param {string} payload The message content.
  * @override
  */
-goog.net.xpc.IframePollingTransport.prototype.send =
-    function(service, payload) {
+goog.net.xpc.IframePollingTransport.prototype.send = function(
+    service, payload) {
   var frame = service + ':' + payload;
   // put in queue
   if (!goog.userAgent.IE || payload.length <= this.MAX_FRAME_LENGTH_) {
     this.sendQueue_.push('|' + frame);
-  }
-  else {
+  } else {
     var l = payload.length;
-    var num = Math.ceil(l / this.MAX_FRAME_LENGTH_); // number of frames
+    var num = Math.ceil(l / this.MAX_FRAME_LENGTH_);  // number of frames
     var pos = 0;
     var i = 1;
     while (pos < l) {
-      this.sendQueue_.push(',' + i + '/' + num + '|' +
-                           frame.substr(pos, this.MAX_FRAME_LENGTH_));
+      this.sendQueue_.push(
+          ',' + i + '/' + num + '|' +
+          frame.substr(pos, this.MAX_FRAME_LENGTH_));
       i++;
       pos += this.MAX_FRAME_LENGTH_;
     }
@@ -792,8 +793,7 @@ goog.net.xpc.IframePollingTransport.TIME_POLL_LONG_ = 100;
  * @type {number}
  * @private
  */
-goog.net.xpc.IframePollingTransport.TIME_SHORT_POLL_AFTER_ACTIVITY_ =
-    1000;
+goog.net.xpc.IframePollingTransport.TIME_SHORT_POLL_AFTER_ACTIVITY_ = 1000;
 
 
 /**
@@ -831,11 +831,11 @@ goog.net.xpc.IframePollingTransport.receive_ = function() {
 
   // Schedule next check.
   var t = now - goog.net.xpc.IframePollingTransport.lastActivity_ <
-      goog.net.xpc.IframePollingTransport.TIME_SHORT_POLL_AFTER_ACTIVITY_ ?
+          goog.net.xpc.IframePollingTransport.TIME_SHORT_POLL_AFTER_ACTIVITY_ ?
       goog.net.xpc.IframePollingTransport.TIME_POLL_SHORT_ :
       goog.net.xpc.IframePollingTransport.TIME_POLL_LONG_;
-  goog.net.xpc.IframePollingTransport.rcvTimer_ = window.setTimeout(
-      goog.net.xpc.IframePollingTransport.receiveCb_, t);
+  goog.net.xpc.IframePollingTransport.rcvTimer_ =
+      window.setTimeout(goog.net.xpc.IframePollingTransport.receiveCb_, t);
 };
 
 
@@ -956,9 +956,8 @@ goog.net.xpc.IframePollingTransport.Sender.prototype.send = function(payload) {
  *     location has changed.
  * @final
  */
-goog.net.xpc.IframePollingTransport.Receiver = function(transport,
-                                                        windowObj,
-                                                        callback) {
+goog.net.xpc.IframePollingTransport.Receiver = function(
+    transport, windowObj, callback) {
   /**
    * The transport to receive from.
    * @type {goog.net.xpc.IframePollingTransport}
@@ -986,7 +985,7 @@ goog.net.xpc.IframePollingTransport.Receiver.prototype.receive = function() {
     this.currentLoc_ = loc;
     var payload = loc.split('#')[1];
     if (payload) {
-      payload = payload.substr(1); // discard first character (cycle)
+      payload = payload.substr(1);  // discard first character (cycle)
       this.cb_(decodeURIComponent(payload));
     }
     return true;

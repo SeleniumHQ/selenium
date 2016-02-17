@@ -64,8 +64,8 @@ goog.require('goog.userAgent');
 goog.ui.ScrollFloater = function(opt_parentElement, opt_domHelper) {
   // If a parentElement is supplied, we want to use its domHelper,
   // ignoring the caller-supplied one.
-  var domHelper = opt_parentElement ?
-      goog.dom.getDomHelper(opt_parentElement) : opt_domHelper;
+  var domHelper = opt_parentElement ? goog.dom.getDomHelper(opt_parentElement) :
+                                      opt_domHelper;
 
   goog.ui.ScrollFloater.base(this, 'constructor', domHelper);
 
@@ -123,6 +123,13 @@ goog.ui.ScrollFloater = function(opt_parentElement, opt_domHelper) {
    * @private
    */
   this.originalTopOffset_ = 0;
+
+  /**
+   * Element's left offset when it's not floated or pinned.
+   * @type {number}
+   * @private
+   */
+  this.originalLeftOffset_ = 0;
 
   /**
    * The placeholder element dropped in to hold the layout for
@@ -200,8 +207,8 @@ goog.ui.ScrollFloater.FloatMode_ = {
  * @type {Array<string>}
  * @private
  */
-goog.ui.ScrollFloater.STORED_STYLE_PROPS_ = [
-  'position', 'top', 'left', 'width', 'cssFloat'];
+goog.ui.ScrollFloater.STORED_STYLE_PROPS_ =
+    ['position', 'top', 'left', 'width', 'cssFloat'];
 
 
 /**
@@ -210,8 +217,9 @@ goog.ui.ScrollFloater.STORED_STYLE_PROPS_ = [
  * @private
  */
 goog.ui.ScrollFloater.PLACEHOLDER_STYLE_PROPS_ = [
-  'position', 'top', 'left', 'display', 'cssFloat',
-  'marginTop', 'marginLeft', 'marginRight', 'marginBottom'];
+  'position', 'top', 'left', 'display', 'cssFloat', 'marginTop', 'marginLeft',
+  'marginRight', 'marginBottom'
+];
 
 
 /**
@@ -259,9 +267,9 @@ goog.ui.ScrollFloater.prototype.enterDocument = function() {
 
   this.setScrollingEnabled(this.scrollingEnabled_);
   var win = this.getDomHelper().getWindow();
-  this.getHandler().
-      listen(win, goog.events.EventType.SCROLL, this.handleScroll_).
-      listen(win, goog.events.EventType.RESIZE, this.update);
+  this.getHandler()
+      .listen(win, goog.events.EventType.SCROLL, this.handleScroll_)
+      .listen(win, goog.events.EventType.RESIZE, this.update);
 };
 
 
@@ -281,8 +289,10 @@ goog.ui.ScrollFloater.prototype.update = function() {
   if (this.containerElement_) {
     this.containerBounds_ = goog.style.getBounds(this.containerElement_);
   }
+  var pageOffset_ = goog.style.getPageOffset(this.getElement());
   this.originalBounds_ = goog.style.getBounds(this.getElement());
-  this.originalTopOffset_ = goog.style.getPageOffset(this.getElement()).y;
+  this.originalTopOffset_ = pageOffset_.y;
+  this.originalLeftOffset_ = pageOffset_.x;
   this.handleScroll_();
 };
 
@@ -378,13 +388,13 @@ goog.ui.ScrollFloater.prototype.handleScroll_ = function(opt_e) {
       return;
     }
 
-    var effectiveElementHeight = this.originalBounds_.height +
-        this.viewportTopOffset_;
+    var effectiveElementHeight =
+        this.originalBounds_.height + this.viewportTopOffset_;
 
     // If the element extends past the container, we need to pin it instead.
     if (this.containerElement_) {
-      var containerBottom = this.containerBounds_.top +
-          this.containerBounds_.height;
+      var containerBottom =
+          this.containerBounds_.top + this.containerBounds_.height;
 
       if (scrollTop > containerBottom - effectiveElementHeight) {
         this.pin_();
@@ -459,14 +469,19 @@ goog.ui.ScrollFloater.prototype.float_ = function(floatMode) {
     return;
   }
 
-  // Ignore if the component is floating or the FLOAT event is cancelled.
-  if (this.floating_ ||
-      !this.dispatchEvent(goog.ui.ScrollFloater.EventType.FLOAT)) {
+  // Ignore if the FLOAT event is cancelled.
+  if (!this.dispatchEvent(goog.ui.ScrollFloater.EventType.FLOAT)) {
+    return;
+  }
+
+  // If the component is already floating, only update the left position.
+  var newWindowLeftOffset_ = goog.dom.getDocumentScroll().x;
+  if (this.floating_) {
+    this.updateFloatingLeftPosition_();
     return;
   }
 
   var elem = /** @type {!HTMLElement} */ (this.getElement());
-  var doc = this.getDomHelper().getDocument();
 
   // Read properties of element before modifying it.
   var originalLeft_ = goog.style.getPageOffsetLeft(elem);
@@ -478,7 +493,7 @@ goog.ui.ScrollFloater.prototype.float_ = function(floatMode) {
 
   // Make element float.
   goog.style.setStyle(elem, {
-    'left': originalLeft_ + 'px',
+    'left': (originalLeft_ - newWindowLeftOffset_) + 'px',
     'width': originalWidth_ + 'px',
     'cssFloat': 'none'
   });
@@ -498,9 +513,9 @@ goog.ui.ScrollFloater.prototype.float_ = function(floatMode) {
   // not supported.) Also checked in handleScroll_.
   if (this.needsIePositionHack_()) {
     elem.style.position = 'absolute';
-    elem.style.setExpression('top',
-        'document.compatMode=="CSS1Compat"?' +
-        'documentElement.scrollTop:document.body.scrollTop');
+    elem.style.setExpression(
+        'top', 'document.compatMode=="CSS1Compat"?' +
+            'documentElement.scrollTop:document.body.scrollTop');
   } else {
     elem.style.position = 'fixed';
     if (isTop) {
@@ -559,6 +574,23 @@ goog.ui.ScrollFloater.prototype.dock_ = function() {
 
 
 /**
+ * Handle horizontal scroll events by updating the left offset position. This
+ * cannot change the floating or docked state and is only valid while the
+ * element is floating.
+ * @private
+ */
+goog.ui.ScrollFloater.prototype.updateFloatingLeftPosition_ = function() {
+  goog.asserts.assert(this.floating_);
+
+  var newWindowLeftOffset_ = goog.dom.getDocumentScroll().x;
+
+  goog.style.setStyle(
+      this.getElement(),
+      {'left': (this.originalLeftOffset_ - newWindowLeftOffset_) + 'px'});
+};
+
+
+/**
  * @private
  */
 goog.ui.ScrollFloater.prototype.storeOriginalStyles_ = function() {
@@ -567,22 +599,19 @@ goog.ui.ScrollFloater.prototype.storeOriginalStyles_ = function() {
 
   // Store styles while not floating so we can restore them when the
   // element stops floating.
-  goog.array.forEach(goog.ui.ScrollFloater.STORED_STYLE_PROPS_,
-                     function(property) {
-                       this.originalStyles_[property] = elem.style[property];
-                     },
-                     this);
+  goog.array.forEach(
+      goog.ui.ScrollFloater.STORED_STYLE_PROPS_, function(property) {
+        this.originalStyles_[property] = elem.style[property];
+      }, this);
 
   // Copy relevant styles to placeholder so it will be layed out the same
   // as the element that's about to be floated.
-  goog.array.forEach(goog.ui.ScrollFloater.PLACEHOLDER_STYLE_PROPS_,
-                     function(property) {
-                       this.placeholder_.style[property] =
-                           elem.style[property] ||
-                               goog.style.getCascadedStyle(elem, property) ||
-                               goog.style.getComputedStyle(elem, property);
-                     },
-                     this);
+  goog.array.forEach(
+      goog.ui.ScrollFloater.PLACEHOLDER_STYLE_PROPS_, function(property) {
+        this.placeholder_.style[property] = elem.style[property] ||
+            goog.style.getCascadedStyle(elem, property) ||
+            goog.style.getComputedStyle(elem, property);
+      }, this);
 };
 
 
@@ -606,7 +635,7 @@ goog.ui.ScrollFloater.prototype.restoreOriginalStyles_ = function() {
 goog.ui.ScrollFloater.prototype.needsIePositionHack_ = function() {
   return goog.userAgent.IE &&
       !(goog.userAgent.isVersionOrHigher('7') &&
-          this.getDomHelper().isCss1CompatMode());
+        this.getDomHelper().isCss1CompatMode());
 };
 
 
@@ -630,7 +659,8 @@ goog.ui.ScrollFloater.prototype.applyIeBgHack_ = function() {
       // "This page contains a mix of secure and nonsecure items" warning.
       topLevelElement.style.backgroundImage =
           this.getDomHelper().getWindow().location.protocol == 'https:' ?
-              'url(https:///)' : 'url(about:blank)';
+          'url(https:///)' :
+          'url(about:blank)';
       topLevelElement.style.backgroundAttachment = 'fixed';
     }
   }

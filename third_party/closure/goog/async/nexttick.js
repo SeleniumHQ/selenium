@@ -65,27 +65,12 @@ goog.async.nextTick = function(callback, opt_context, opt_useSetImmediate) {
     cb = goog.bind(callback, opt_context);
   }
   cb = goog.async.nextTick.wrapCallback_(cb);
-  // window.setImmediate was introduced and currently only supported by IE10+,
-  // but due to a bug in the implementation it is not guaranteed that
-  // setImmediate is faster than setTimeout nor that setImmediate N is before
-  // setImmediate N+1. That is why we do not use the native version if
-  // available. We do, however, call setImmediate if it is a normal function
-  // because that indicates that it has been replaced by goog.testing.MockClock
-  // which we do want to support.
-  // See
-  // http://connect.microsoft.com/IE/feedback/details/801823/setimmediate-and-messagechannel-are-broken-in-ie10
-  //
   // Note we do allow callers to also request setImmediate if they are willing
   // to accept the possible tradeoffs of incorrectness in exchange for speed.
-  // The IE fallback of readystate change is much slower.
+  // The IE fallback of readystate change is much slower. See useSetImmediate_
+  // for details.
   if (goog.isFunction(goog.global.setImmediate) &&
-      // Opt in.
-      (opt_useSetImmediate ||
-      // or it isn't a browser or the environment is weird
-      !goog.global.Window || !goog.global.Window.prototype ||
-      // or something redefined setImmediate in which case we (YOLO) decide
-      // to use it (This is so that we use the mockClock setImmediate. sigh).
-      goog.global.Window.prototype.setImmediate != goog.global.setImmediate)) {
+      (opt_useSetImmediate || goog.async.nextTick.useSetImmediate_())) {
     goog.global.setImmediate(cb);
     return;
   }
@@ -96,6 +81,48 @@ goog.async.nextTick = function(callback, opt_context, opt_useSetImmediate) {
         goog.async.nextTick.getSetImmediateEmulator_();
   }
   goog.async.nextTick.setImmediate_(cb);
+};
+
+
+/**
+ * Returns whether should use setImmediate implementation currently on window.
+ *
+ * window.setImmediate was introduced and currently only supported by IE10+,
+ * but due to a bug in the implementation it is not guaranteed that
+ * setImmediate is faster than setTimeout nor that setImmediate N is before
+ * setImmediate N+1. That is why we do not use the native version if
+ * available. We do, however, call setImmediate if it is a non-native function
+ * because that indicates that it has been replaced by goog.testing.MockClock
+ * which we do want to support.
+ * See
+ * http://connect.microsoft.com/IE/feedback/details/801823/setimmediate-and-messagechannel-are-broken-in-ie10
+ *
+ * @return {boolean} Whether to use the implementation of setImmediate defined
+ *     on Window.
+ * @private
+ */
+goog.async.nextTick.useSetImmediate_ = function() {
+  // Not a browser environment.
+  if (!goog.global.Window || !goog.global.Window.prototype) {
+    return true;
+  }
+
+  // MS Edge has window.setImmediate natively, but it's not on Window.prototype.
+  // Also, there's no clean way to detect if the goog.global.setImmediate has
+  // been replaced by mockClock as its replacement also shows up as "[native
+  // code]" when using toString. Therefore, just always use
+  // goog.global.setImmediate for Edge. It's unclear if it suffers the same
+  // issues as IE10/11, but based on
+  // https://dev.modern.ie/testdrive/demos/setimmediatesorting/
+  // it seems they've been working to ensure it's WAI.
+  if (goog.labs.userAgent.browser.isEdge() ||
+      goog.global.Window.prototype.setImmediate != goog.global.setImmediate) {
+    // Something redefined setImmediate in which case we decide to use it (This
+    // is so that we use the mockClock setImmediate).
+    return true;
+  }
+
+  return false;
 };
 
 
@@ -129,7 +156,8 @@ goog.async.nextTick.getSetImmediateEmulator_ = function() {
     /** @constructor */
     Channel = function() {
       // Make an empty, invisible iframe.
-      var iframe = document.createElement(goog.dom.TagName.IFRAME);
+      var iframe = /** @type {!HTMLIFrameElement} */ (
+          document.createElement(goog.dom.TagName.IFRAME));
       iframe.style.display = 'none';
       iframe.src = '';
       document.documentElement.appendChild(iframe);
@@ -146,7 +174,8 @@ goog.async.nextTick.getSetImmediateEmulator_ = function() {
       // unless the origin is '*'.
       // TODO(b/16335441): Use '*' origin for data: and other similar protocols.
       var origin = win.location.protocol == 'file:' ?
-          '*' : win.location.protocol + '//' + win.location.host;
+          '*' :
+          win.location.protocol + '//' + win.location.host;
       var onmessage = goog.bind(function(e) {
         // Validate origin and message to make sure that this message was
         // intended for us. If the origin is set to '*' (see above) only the
@@ -160,14 +189,11 @@ goog.async.nextTick.getSetImmediateEmulator_ = function() {
       win.addEventListener('message', onmessage, false);
       this['port1'] = {};
       this['port2'] = {
-        postMessage: function() {
-          win.postMessage(message, origin);
-        }
+        postMessage: function() { win.postMessage(message, origin); }
       };
     };
   }
-  if (typeof Channel !== 'undefined' &&
-      (!goog.labs.userAgent.browser.isIE())) {
+  if (typeof Channel !== 'undefined' && (!goog.labs.userAgent.browser.isIE())) {
     // Exclude all of IE due to
     // http://codeforhire.com/2013/09/21/setimmediate-and-messagechannel-broken-on-internet-explorer-10/
     // which allows starving postMessage with a busy setTimeout loop.
@@ -186,17 +212,15 @@ goog.async.nextTick.getSetImmediateEmulator_ = function() {
       }
     };
     return function(cb) {
-      tail.next = {
-        cb: cb
-      };
+      tail.next = {cb: cb};
       tail = tail.next;
       channel['port2'].postMessage(0);
     };
   }
-  // Implementation for IE6+: Script elements fire an asynchronous
+  // Implementation for IE6 to IE10: Script elements fire an asynchronous
   // onreadystatechange event when inserted into the DOM.
-  if (typeof document !== 'undefined' && 'onreadystatechange' in
-      document.createElement(goog.dom.TagName.SCRIPT)) {
+  if (typeof document !== 'undefined' &&
+      'onreadystatechange' in document.createElement(goog.dom.TagName.SCRIPT)) {
     return function(cb) {
       var script = document.createElement(goog.dom.TagName.SCRIPT);
       script.onreadystatechange = function() {
@@ -212,9 +236,8 @@ goog.async.nextTick.getSetImmediateEmulator_ = function() {
   }
   // Fall back to setTimeout with 0. In browsers this creates a delay of 5ms
   // or more.
-  return function(cb) {
-    goog.global.setTimeout(cb, 0);
-  };
+  // NOTE(user): This fallback is used for IE11.
+  return function(cb) { goog.global.setTimeout(cb, 0); };
 };
 
 
@@ -236,6 +259,4 @@ goog.debug.entryPointRegistry.register(
      * @param {function(!Function): !Function} transformer The transforming
      *     function.
      */
-    function(transformer) {
-      goog.async.nextTick.wrapCallback_ = transformer;
-    });
+    function(transformer) { goog.async.nextTick.wrapCallback_ = transformer; });

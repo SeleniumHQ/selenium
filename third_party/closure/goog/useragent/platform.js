@@ -79,5 +79,5 @@ goog.userAgent.platform.VERSION = goog.userAgent.platform.determineVersion_();
  */
 goog.userAgent.platform.isVersion = function(version) {
   return goog.string.compareVersions(
-      goog.userAgent.platform.VERSION, version) >= 0;
+             goog.userAgent.platform.VERSION, version) >= 0;
 };

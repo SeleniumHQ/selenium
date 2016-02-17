@@ -97,8 +97,8 @@ goog.dom.TagWalkType = {
  * @constructor
  * @extends {goog.iter.Iterator<Node>}
  */
-goog.dom.TagIterator = function(opt_node, opt_reversed,
-    opt_unconstrained, opt_tagType, opt_depth) {
+goog.dom.TagIterator = function(
+    opt_node, opt_reversed, opt_unconstrained, opt_tagType, opt_depth) {
   /**
    * Whether the node iterator is moving in reverse.
    * @type {boolean}
@@ -161,8 +161,8 @@ goog.inherits(goog.dom.TagIterator, goog.iter.Iterator);
  *     Defaults to the start of the given node.
  * @param {number=} opt_depth The tree depth.
  */
-goog.dom.TagIterator.prototype.setPosition = function(node,
-    opt_tagType, opt_depth) {
+goog.dom.TagIterator.prototype.setPosition = function(
+    node, opt_tagType, opt_depth) {
   this.node = node;
 
   if (node) {
@@ -173,7 +173,7 @@ goog.dom.TagIterator.prototype.setPosition = function(node,
       this.tagType = this.node.nodeType != goog.dom.NodeType.ELEMENT ?
           goog.dom.TagWalkType.OTHER :
           this.reversed ? goog.dom.TagWalkType.END_TAG :
-          goog.dom.TagWalkType.START_TAG;
+                          goog.dom.TagWalkType.START_TAG;
     }
   }
 
@@ -202,8 +202,8 @@ goog.dom.TagIterator.prototype.copyFrom = function(other) {
  * @return {!goog.dom.TagIterator} A copy of this iterator.
  */
 goog.dom.TagIterator.prototype.clone = function() {
-  return new goog.dom.TagIterator(this.node, this.reversed,
-      !this.constrained, this.tagType, this.depth);
+  return new goog.dom.TagIterator(
+      this.node, this.reversed, !this.constrained, this.tagType, this.depth);
 };
 
 
@@ -212,7 +212,7 @@ goog.dom.TagIterator.prototype.clone = function() {
  */
 goog.dom.TagIterator.prototype.skipTag = function() {
   var check = this.reversed ? goog.dom.TagWalkType.END_TAG :
-              goog.dom.TagWalkType.START_TAG;
+                              goog.dom.TagWalkType.START_TAG;
   if (this.tagType == check) {
     this.tagType = /** @type {goog.dom.TagWalkType} */ (check * -1);
     this.depth += this.tagType * (this.reversed ? -1 : 1);
@@ -225,7 +225,7 @@ goog.dom.TagIterator.prototype.skipTag = function() {
  */
 goog.dom.TagIterator.prototype.restartTag = function() {
   var check = this.reversed ? goog.dom.TagWalkType.START_TAG :
-              goog.dom.TagWalkType.END_TAG;
+                              goog.dom.TagWalkType.END_TAG;
   if (this.tagType == check) {
     this.tagType = /** @type {goog.dom.TagWalkType} */ (check * -1);
     this.depth += this.tagType * (this.reversed ? -1 : 1);
@@ -249,7 +249,7 @@ goog.dom.TagIterator.prototype.next = function() {
     node = this.node;
 
     var startType = this.reversed ? goog.dom.TagWalkType.END_TAG :
-        goog.dom.TagWalkType.START_TAG;
+                                    goog.dom.TagWalkType.START_TAG;
 
     if (this.tagType == startType) {
       // If we have entered the tag, test if there are any children to move to.
@@ -258,7 +258,8 @@ goog.dom.TagIterator.prototype.next = function() {
         this.setPosition(child);
       } else {
         // If not, move on to exiting this tag.
-        this.setPosition(node,
+        this.setPosition(
+            node,
             /** @type {goog.dom.TagWalkType} */ (startType * -1));
       }
     } else {
@@ -268,7 +269,8 @@ goog.dom.TagIterator.prototype.next = function() {
         this.setPosition(sibling);
       } else {
         // If no such node exists, exit our parent.
-        this.setPosition(node.parentNode,
+        this.setPosition(
+            node.parentNode,
             /** @type {goog.dom.TagWalkType} */ (startType * -1));
       }
     }
@@ -330,8 +332,8 @@ goog.dom.TagIterator.prototype.isNonElement = function() {
 goog.dom.TagIterator.prototype.equals = function(other) {
   // Nodes must be equal, and we must either have reached the end of our tree
   // or be at the same position.
-  return other.node == this.node && (!this.node ||
-      other.tagType == this.tagType);
+  return other.node == this.node &&
+      (!this.node || other.tagType == this.tagType);
 };
 
 

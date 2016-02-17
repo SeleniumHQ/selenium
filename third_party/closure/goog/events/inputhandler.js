@@ -83,7 +83,7 @@ goog.events.InputHandler = function(element) {
   // WebKit before version 531 did not support input events for textareas.
   var emulateInputEvents = goog.userAgent.IE || goog.userAgent.EDGE ||
       (goog.userAgent.WEBKIT && !goog.userAgent.isVersionOrHigher('531') &&
-          element.tagName == goog.dom.TagName.TEXTAREA);
+       element.tagName == goog.dom.TagName.TEXTAREA);
 
   /**
    * @type {goog.events.EventHandler<!goog.events.InputHandler>}
@@ -100,9 +100,8 @@ goog.events.InputHandler = function(element) {
   // fit.)
   this.eventHandler_.listen(
       this.element_,
-      emulateInputEvents ?
-          ['keydown', 'paste', 'cut', 'drop', 'input'] :
-          'input',
+      emulateInputEvents ? ['keydown', 'paste', 'cut', 'drop', 'input'] :
+                           'input',
       this);
 };
 goog.inherits(goog.events.InputHandler, goog.events.EventTarget);

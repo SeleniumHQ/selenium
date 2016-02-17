@@ -37,16 +37,15 @@ goog.require('goog.ui.registry');
  * @extends {goog.ui.Separator}
  */
 goog.ui.MenuSeparator = function(opt_domHelper) {
-  goog.ui.Separator.call(this, goog.ui.MenuSeparatorRenderer.getInstance(),
-      opt_domHelper);
+  goog.ui.Separator.call(
+      this, goog.ui.MenuSeparatorRenderer.getInstance(), opt_domHelper);
 };
 goog.inherits(goog.ui.MenuSeparator, goog.ui.Separator);
 
 
 // Register a decorator factory function for goog.ui.MenuSeparators.
 goog.ui.registry.setDecoratorByClassName(
-    goog.ui.MenuSeparatorRenderer.CSS_CLASS,
-    function() {
+    goog.ui.MenuSeparatorRenderer.CSS_CLASS, function() {
       // Separator defaults to using MenuSeparatorRenderer.
       return new goog.ui.Separator();
     });

@@ -62,9 +62,9 @@ global.CLOSURE_IMPORT_SCRIPT = function(src, opt_sourceText) {
   // Sources are always expressed relative to closure's base.js, but
   // require() is always relative to the current source.
   if (opt_sourceText === undefined) {
-      require('./../' + src);
+    require('./../' + src);
   } else {
-      eval(opt_sourceText);
+    eval(opt_sourceText);
   }
   return true;
 };
@@ -79,14 +79,13 @@ global.CLOSURE_IMPORT_SCRIPT = function(src, opt_sourceText) {
 
 global.CLOSURE_LOAD_FILE_SYNC = function(src) {
   return fs.readFileSync(
-      path.resolve(__dirname, '..', src), { encoding: 'utf-8' });
+      path.resolve(__dirname, '..', src), {encoding: 'utf-8'});
 };
 
 
 // Declared here so it can be used to require base.js
 function nodeGlobalRequire(file) {
-  vm.runInThisContext.call(
-      global, fs.readFileSync(file), file);
+  vm.runInThisContext.call(global, fs.readFileSync(file), file);
 }
 
 
@@ -107,4 +106,3 @@ nodeGlobalRequire(path.resolve(__dirname, '..', 'base.js'));
  * @param {string} file The path to the file.
  */
 goog.nodeGlobalRequire = nodeGlobalRequire;
-

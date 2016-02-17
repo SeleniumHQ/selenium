@@ -121,8 +121,9 @@ goog.structs.weak.set = function(id, key, value) {
   goog.structs.weak.checkKeyType(key);
   if (!key.hasOwnProperty(goog.structs.weak.WEAKREFS_PROPERTY_NAME)) {
     // Use defineProperty to make property non-enumerable
-    Object.defineProperty(/** @type {!Object} */(key),
-        goog.structs.weak.WEAKREFS_PROPERTY_NAME, {value: {}});
+    Object.defineProperty(
+        /** @type {!Object} */ (key), goog.structs.weak.WEAKREFS_PROPERTY_NAME,
+        {value: {}});
   }
   key[goog.structs.weak.WEAKREFS_PROPERTY_NAME][id] = value;
 };

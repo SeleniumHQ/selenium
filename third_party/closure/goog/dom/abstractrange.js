@@ -48,8 +48,7 @@ goog.dom.RangeType = {
  * use one of the goog.dom.Range.from* methods instead.
  * @constructor
  */
-goog.dom.AbstractRange = function() {
-};
+goog.dom.AbstractRange = function() {};
 
 
 /**
@@ -76,7 +75,8 @@ goog.dom.AbstractRange.getBrowserSelectionForWindow = function(win) {
           if (range.parentElement().document != doc) {
             return null;
           }
-        } else if (!range.length ||
+        } else if (
+            !range.length ||
             /** @type {ControlRange} */ (range).item(0).document != doc) {
           // For ControlRanges, check that the range has items, and that
           // the first item in the range is in the correct document.
@@ -284,8 +284,8 @@ goog.dom.AbstractRange.prototype.getDocument = function() {
   // getContainer for that browser. It's also faster for IE, but still slower
   // than start node for other browsers so we continue to use getStartNode when
   // it is not problematic. See bug 1687309.
-  return goog.dom.getOwnerDocument(goog.userAgent.IE ?
-      this.getContainer() : this.getStartNode());
+  return goog.dom.getOwnerDocument(
+      goog.userAgent.IE ? this.getContainer() : this.getStartNode());
 };
 
 
@@ -315,10 +315,10 @@ goog.dom.AbstractRange.prototype.containsRange = goog.abstractMethod;
  *     entirely contained in the selection for this function to return true.
  * @return {boolean} Whether this range contains the given node.
  */
-goog.dom.AbstractRange.prototype.containsNode = function(node,
-    opt_allowPartial) {
-  return this.containsRange(goog.dom.Range.createFromNodeContents(node),
-      opt_allowPartial);
+goog.dom.AbstractRange.prototype.containsNode = function(
+    node, opt_allowPartial) {
+  return this.containsRange(
+      goog.dom.Range.createFromNodeContents(node), opt_allowPartial);
 };
 
 
@@ -465,7 +465,8 @@ goog.dom.AbstractRange.prototype.saveUsingDom = goog.abstractMethod;
  */
 goog.dom.AbstractRange.prototype.saveUsingCarets = function() {
   return (this.getStartNode() && this.getEndNode()) ?
-      new goog.dom.SavedCaretRange(this) : null;
+      new goog.dom.SavedCaretRange(this) :
+      null;
 };
 
 

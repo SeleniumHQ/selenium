@@ -73,7 +73,7 @@ goog.require('goog.dom.safe');
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
-goog.require('goog.html.legacyconversions');
+goog.require('goog.html.SafeHtml');
 goog.require('goog.json');
 goog.require('goog.log');
 goog.require('goog.net.EventType');
@@ -85,11 +85,6 @@ goog.require('goog.userAgent');
 
 /**
  * Creates a new instance of cross domain RPC.
- *
- * This class makes use of goog.html.legacyconversions and provides no
- * HTML-type-safe alternative. As such, it is not compatible with
- * code that sets goog.html.legacyconversions.ALLOW_LEGACY_CONVERSIONS to
- * false.
  *
  * @extends {goog.events.EventTarget}
  * @constructor
@@ -157,10 +152,11 @@ goog.net.CrossDomainRpc.prototype.loadListenerKey_;
  * @private
  */
 goog.net.CrossDomainRpc.isInResponseIframe_ = function() {
-  return window.location && (window.location.hash.indexOf(
-      goog.net.CrossDomainRpc.RESPONSE_MARKER_) == 1 ||
-      window.location.search.indexOf(
-          goog.net.CrossDomainRpc.RESPONSE_MARKER_) == 1);
+  return window.location &&
+      (window.location.hash.indexOf(goog.net.CrossDomainRpc.RESPONSE_MARKER_) ==
+           1 ||
+       window.location.search.indexOf(
+           goog.net.CrossDomainRpc.RESPONSE_MARKER_) == 1);
 };
 
 
@@ -169,7 +165,7 @@ goog.net.CrossDomainRpc.isInResponseIframe_ = function() {
  *    response iframe.
  */
 if (goog.net.CrossDomainRpc.isInResponseIframe_()) {
-  if (goog.userAgent.IE) {
+  if (goog.userAgent.EDGE_OR_IE) {
     document.execCommand('Stop');
   } else if (goog.userAgent.GECKO) {
     window.stop();
@@ -217,8 +213,8 @@ goog.net.CrossDomainRpc.setUseFallBackDummyResource = function(useFallBack) {
  *     request parameter.
  * @param {Object=} opt_headers Map of headers of the request.
  */
-goog.net.CrossDomainRpc.send =
-    function(uri, opt_continuation, opt_method, opt_params, opt_headers) {
+goog.net.CrossDomainRpc.send = function(
+    uri, opt_continuation, opt_method, opt_params, opt_headers) {
   var xdrpc = new goog.net.CrossDomainRpc();
   if (opt_continuation) {
     goog.events.listen(xdrpc, goog.net.EventType.COMPLETE, opt_continuation);
@@ -244,34 +240,18 @@ goog.net.CrossDomainRpc.setDebugMode = function(flag) {
  * @type {goog.log.Logger}
  * @private
  */
-goog.net.CrossDomainRpc.logger_ =
-    goog.log.getLogger('goog.net.CrossDomainRpc');
+goog.net.CrossDomainRpc.logger_ = goog.log.getLogger('goog.net.CrossDomainRpc');
 
 
 /**
  * Creates the HTML of an input element
  * @param {string} name Name of input element.
  * @param {*} value Value of input element.
- * @return {string} HTML of input element with that name and value.
+ * @return {!goog.html.SafeHtml} HTML of input element with that name and value.
  * @private
  */
 goog.net.CrossDomainRpc.createInputHtml_ = function(name, value) {
-  return '<textarea name="' + name + '">' +
-      goog.net.CrossDomainRpc.escapeAmpersand_(value) + '</textarea>';
-};
-
-
-/**
- * Escapes ampersand so that XML/HTML entities are submitted as is because
- * browser unescapes them when they are put into a text area.
- * @param {*} value Value to escape.
- * @return {*} Value with ampersand escaped, if value is a string;
- *     otherwise the value itself is returned.
- * @private
- */
-goog.net.CrossDomainRpc.escapeAmpersand_ = function(value) {
-  return value && (goog.isString(value) || value.constructor == String) ?
-      value.replace(/&/g, '&amp;') : value;
+  return goog.html.SafeHtml.create('textarea', {'name': name}, String(value));
 };
 
 
@@ -319,7 +299,7 @@ goog.net.CrossDomainRpc.getDummyResourceUri_ = function() {
         'No suitable dummy resource specified or detected for this page');
   }
 
-  if (goog.userAgent.IE) {
+  if (goog.userAgent.EDGE_OR_IE) {
     // use this page as the dummy resource; remove hash from URL if any
     return goog.net.CrossDomainRpc.removeHash_(window.location.href);
   } else {
@@ -408,13 +388,14 @@ goog.net.CrossDomainRpc.REQUEST_MARKER_ = 'xdrq';
 /**
  * Sends a request across domain.
  * @param {string} uri Uri to make request to.
- * @param {string=} opt_method Method of request. Default is POST.
+ * @param {string=} opt_method Method of request, 'GET' or 'POST' (uppercase).
+ *     Default is 'POST'.
  * @param {Object=} opt_params Parameters. Each property is turned into a
  *     request parameter.
  * @param {Object=} opt_headers Map of headers of the request.
  */
-goog.net.CrossDomainRpc.prototype.sendRequest =
-    function(uri, opt_method, opt_params, opt_headers) {
+goog.net.CrossDomainRpc.prototype.sendRequest = function(
+    uri, opt_method, opt_params, opt_headers) {
   // create request frame
   var requestFrame = this.requestFrame_ = /** @type {!HTMLIFrameElement} */ (
       document.createElement(goog.dom.TagName.IFRAME));
@@ -431,22 +412,24 @@ goog.net.CrossDomainRpc.prototype.sendRequest =
   var inputs = [];
 
   // add request id
-  inputs.push(goog.net.CrossDomainRpc.createInputHtml_(
-      goog.net.CrossDomainRpc.PARAM_ECHO_REQUEST_ID, requestId));
+  inputs.push(
+      goog.net.CrossDomainRpc.createInputHtml_(
+          goog.net.CrossDomainRpc.PARAM_ECHO_REQUEST_ID, requestId));
 
   // add dummy resource uri
   var dummyUri = goog.net.CrossDomainRpc.getDummyResourceUri_();
-  goog.log.fine(goog.net.CrossDomainRpc.logger_,
-      'dummyUri: ' + dummyUri);
-  inputs.push(goog.net.CrossDomainRpc.createInputHtml_(
-      goog.net.CrossDomainRpc.PARAM_ECHO_DUMMY_URI, dummyUri));
+  goog.log.fine(goog.net.CrossDomainRpc.logger_, 'dummyUri: ' + dummyUri);
+  inputs.push(
+      goog.net.CrossDomainRpc.createInputHtml_(
+          goog.net.CrossDomainRpc.PARAM_ECHO_DUMMY_URI, dummyUri));
 
   // add parameters
   if (opt_params) {
     for (var name in opt_params) {
       var value = opt_params[name];
-      inputs.push(goog.net.CrossDomainRpc.createInputHtml_(
-          goog.net.CrossDomainRpc.PARAM + name, value));
+      inputs.push(
+          goog.net.CrossDomainRpc.createInputHtml_(
+              goog.net.CrossDomainRpc.PARAM + name, value));
     }
   }
 
@@ -454,16 +437,18 @@ goog.net.CrossDomainRpc.prototype.sendRequest =
   if (opt_headers) {
     for (var name in opt_headers) {
       var value = opt_headers[name];
-      inputs.push(goog.net.CrossDomainRpc.createInputHtml_(
-          goog.net.CrossDomainRpc.HEADER + name, value));
+      inputs.push(
+          goog.net.CrossDomainRpc.createInputHtml_(
+              goog.net.CrossDomainRpc.HEADER + name, value));
     }
   }
 
-  var requestFrameContent = '<body><form method="' +
-      (opt_method == 'GET' ? 'GET' : 'POST') + '" action="' +
-      uri + '">' + inputs.join('') + '</form></body>';
-  var requestFrameContentHtml = goog.html.legacyconversions.safeHtmlFromString(
-      requestFrameContent);
+  var requestFrameContentHtml = goog.html.SafeHtml.create(
+      'body', {},
+      goog.html.SafeHtml.create(
+          'form',
+          {'method': opt_method == 'GET' ? 'GET' : 'POST', 'action': uri},
+          inputs));
   var requestFrameDoc = goog.dom.getFrameContentDocument(requestFrame);
   requestFrameDoc.open();
   goog.dom.safe.documentWrite(requestFrameDoc, requestFrameContentHtml);
@@ -472,8 +457,8 @@ goog.net.CrossDomainRpc.prototype.sendRequest =
   requestFrameDoc.forms[0].submit();
   requestFrameDoc = null;
 
-  this.loadListenerKey_ = goog.events.listen(
-      requestFrame, goog.events.EventType.LOAD, function() {
+  this.loadListenerKey_ =
+      goog.events.listen(requestFrame, goog.events.EventType.LOAD, function() {
         goog.log.fine(goog.net.CrossDomainRpc.logger_, 'response ready');
         this.responseReady_ = true;
       }, false, this);
@@ -516,24 +501,26 @@ goog.net.CrossDomainRpc.prototype.receiveResponse_ = function() {
  * @param {number} responseDetectorHandle Handle of detector.
  * @private
  */
-goog.net.CrossDomainRpc.prototype.detectResponse_ =
-    function(responseDetectorHandle) {
+goog.net.CrossDomainRpc.prototype.detectResponse_ = function(
+    responseDetectorHandle) {
   var requestFrameWindow = this.requestFrame_.contentWindow;
   var grandChildrenLength = requestFrameWindow.frames.length;
   var responseInfoFrame = null;
   if (grandChildrenLength > 0 &&
-      goog.net.CrossDomainRpc.isResponseInfoFrame_(responseInfoFrame =
-      requestFrameWindow.frames[grandChildrenLength - 1])) {
-    goog.log.fine(goog.net.CrossDomainRpc.logger_,
-        'xd response ready');
+      goog.net.CrossDomainRpc.isResponseInfoFrame_(
+          responseInfoFrame =
+              requestFrameWindow.frames[grandChildrenLength - 1])) {
+    goog.log.fine(goog.net.CrossDomainRpc.logger_, 'xd response ready');
 
-    var responseInfoPayload = goog.net.CrossDomainRpc.getFramePayload_(
-        responseInfoFrame).substring(1);
+    var responseInfoPayload =
+        goog.net.CrossDomainRpc.getFramePayload_(responseInfoFrame)
+            .substring(1);
     var params = new goog.Uri.QueryData(responseInfoPayload);
 
     var chunks = [];
     var numChunks = Number(params.get('n'));
-    goog.log.fine(goog.net.CrossDomainRpc.logger_,
+    goog.log.fine(
+        goog.net.CrossDomainRpc.logger_,
         'xd response number of chunks: ' + numChunks);
     for (var i = 0; i < numChunks; i++) {
       var responseFrame = requestFrameWindow.frames[i];
@@ -541,15 +528,15 @@ goog.net.CrossDomainRpc.prototype.detectResponse_ =
           !responseFrame.location.href) {
         // On Safari 3.0, it is sometimes the case that the
         // iframe exists but doesn't have a same domain href yet.
-        goog.log.fine(goog.net.CrossDomainRpc.logger_,
-            'xd response iframe not ready');
+        goog.log.fine(
+            goog.net.CrossDomainRpc.logger_, 'xd response iframe not ready');
         return;
       }
       var responseChunkPayload =
           goog.net.CrossDomainRpc.getFramePayload_(responseFrame);
       // go past "chunk="
-      var chunkIndex = responseChunkPayload.indexOf(
-          goog.net.CrossDomainRpc.PARAM_CHUNK_) +
+      var chunkIndex =
+          responseChunkPayload.indexOf(goog.net.CrossDomainRpc.PARAM_CHUNK_) +
           goog.net.CrossDomainRpc.PARAM_CHUNK_.length + 1;
       var chunk = responseChunkPayload.substring(chunkIndex);
       chunks.push(chunk);
@@ -559,7 +546,7 @@ goog.net.CrossDomainRpc.prototype.detectResponse_ =
 
     var responseData = chunks.join('');
     // Payload is not encoded to begin with on IE. Decode in other cases only.
-    if (!goog.userAgent.IE) {
+    if (!goog.userAgent.EDGE_OR_IE) {
       responseData = decodeURIComponent(responseData);
     }
 
@@ -580,8 +567,7 @@ goog.net.CrossDomainRpc.prototype.detectResponse_ =
           goog.net.CrossDomainRpc.RESPONSE_POLLING_PERIOD_;
       if (this.timeWaitedAfterResponseReady_ >
           goog.net.CrossDomainRpc.SEND_RESPONSE_TIME_OUT_) {
-        goog.log.fine(goog.net.CrossDomainRpc.logger_,
-            'xd response timed out');
+        goog.log.fine(goog.net.CrossDomainRpc.logger_, 'xd response timed out');
         window.clearInterval(responseDetectorHandle);
 
         this.status = goog.net.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -606,7 +592,7 @@ goog.net.CrossDomainRpc.isResponseInfoFrame_ = function(frame) {
   /** @preserveTry */
   try {
     return goog.net.CrossDomainRpc.getFramePayload_(frame).indexOf(
-        goog.net.CrossDomainRpc.RESPONSE_INFO_MARKER_) == 1;
+               goog.net.CrossDomainRpc.RESPONSE_INFO_MARKER_) == 1;
   } catch (e) {
     // frame not ready for same-domain access yet
     return false;
@@ -628,8 +614,8 @@ goog.net.CrossDomainRpc.getFramePayload_ = function(frame) {
   // On IE, beucase the URL is not encoded, we can have a case where ?
   // is the delimiter before payload and # in payload or # as the delimiter
   // and ? in payload.  So here we treat whoever is the first as the delimiter.
-  var delimiter = question < 0 ? hash :
-      hash < 0 ? question : Math.min(question, hash);
+  var delimiter =
+      question < 0 ? hash : hash < 0 ? question : Math.min(question, hash);
   return href.substring(delimiter);
 };
 
@@ -641,8 +627,8 @@ goog.net.CrossDomainRpc.getFramePayload_ = function(frame) {
  *     or undefined.
  */
 goog.net.CrossDomainRpc.prototype.getResponseJson = function() {
-  return this.responseTextIsJson_ ?
-      goog.json.unsafeParse(this.responseText) : undefined;
+  return this.responseTextIsJson_ ? goog.json.unsafeParse(this.responseText) :
+                                    undefined;
 };
 
 
@@ -667,7 +653,8 @@ goog.net.CrossDomainRpc.prototype.isSuccess = function() {
  */
 goog.net.CrossDomainRpc.prototype.reset = function() {
   if (!goog.net.CrossDomainRpc.debugMode_) {
-    goog.log.fine(goog.net.CrossDomainRpc.logger_,
+    goog.log.fine(
+        goog.net.CrossDomainRpc.logger_,
         'request frame removed: ' + this.requestFrame_.id);
     goog.events.unlistenByKey(this.loadListenerKey_);
     this.requestFrame_.parentNode.removeChild(this.requestFrame_);
@@ -696,7 +683,7 @@ goog.net.CrossDomainRpc.RESPONSE_INFO_MARKER_ =
  * @private
  */
 goog.net.CrossDomainRpc.MAX_CHUNK_SIZE_ =
-    goog.userAgent.IE ? 4095 : 1024 * 1024;
+    goog.userAgent.EDGE_OR_IE ? 4095 : 1024 * 1024;
 
 
 /**
@@ -736,8 +723,8 @@ goog.net.CrossDomainRpc.CHUNK_PREFIX_ =
  * @param {number} status HTTP response status code.
  * @param {string} headers Response headers in JSON format.
  */
-goog.net.CrossDomainRpc.sendResponse =
-    function(data, isDataJson, echo, status, headers) {
+goog.net.CrossDomainRpc.sendResponse = function(
+    data, isDataJson, echo, status, headers) {
   var dummyUri = echo[goog.net.CrossDomainRpc.PARAM_ECHO_DUMMY_URI];
 
   // since the dummy-uri can be specified by the user, verify that it doesn't
@@ -751,7 +738,7 @@ goog.net.CrossDomainRpc.sendResponse =
   // usable chunk size is max less dummy URI less chunk prefix length
   // TODO(user): Figure out why we need to do "- 1" below
   var chunkSize = goog.net.CrossDomainRpc.MAX_CHUNK_SIZE_ - dummyUri.length -
-      1 - // payload delimiter ('#' or '?')
+      1 -  // payload delimiter ('#' or '?')
       goog.net.CrossDomainRpc.CHUNK_PREFIX_.length - 1;
 
   /*
@@ -775,7 +762,7 @@ goog.net.CrossDomainRpc.sendResponse =
    * Note(*): IE actually does encode only space to %20 and decodes that
    *   automatically when you do location.href or location.hash.
    */
-  if (!goog.userAgent.IE) {
+  if (!goog.userAgent.EDGE_OR_IE) {
     data = encodeURIComponent(data);
   }
 
@@ -795,9 +782,8 @@ goog.net.CrossDomainRpc.sendResponse =
     for (var i = 0; i < numChunksToSend; i++) {
       var chunkStart = i * chunkSize;
       var chunkEnd = chunkStart + chunkSize;
-      var chunk = chunkEnd > data.length ?
-          data.substring(chunkStart) :
-          data.substring(chunkStart, chunkEnd);
+      var chunk = chunkEnd > data.length ? data.substring(chunkStart) :
+                                           data.substring(chunkStart, chunkEnd);
 
       var responseFrame = document.createElement(goog.dom.TagName.IFRAME);
       responseFrame.src = dummyUri +
@@ -825,15 +811,15 @@ goog.net.CrossDomainRpc.sendResponse =
  * @param {string} headers Response headers in JSON format.
  * @private
  */
-goog.net.CrossDomainRpc.createResponseInfo_ =
-    function(dummyUri, numChunks, isDataJson, status, headers) {
+goog.net.CrossDomainRpc.createResponseInfo_ = function(
+    dummyUri, numChunks, isDataJson, status, headers) {
   var responseInfoFrame = document.createElement(goog.dom.TagName.IFRAME);
   document.body.appendChild(responseInfoFrame);
   responseInfoFrame.src = dummyUri +
       goog.net.CrossDomainRpc.getPayloadDelimiter_(dummyUri) +
-      goog.net.CrossDomainRpc.RESPONSE_INFO_MARKER_ +
-      '=1&n=' + numChunks + '&isDataJson=' + isDataJson + '&status=' + status +
-      '&headers=' + encodeURIComponent(headers);
+      goog.net.CrossDomainRpc.RESPONSE_INFO_MARKER_ + '=1&n=' + numChunks +
+      '&isDataJson=' + isDataJson + '&status=' + status + '&headers=' +
+      encodeURIComponent(headers);
 };
 
 
@@ -880,8 +866,8 @@ goog.net.CrossDomainRpc.removeUriParams_ = function(uri) {
  * @return {string|undefined} Value of response header; undefined if not found.
  */
 goog.net.CrossDomainRpc.prototype.getResponseHeader = function(name) {
-  return goog.isObject(this.responseHeaders) ?
-      this.responseHeaders[name] : undefined;
+  return goog.isObject(this.responseHeaders) ? this.responseHeaders[name] :
+                                               undefined;
 };
 
 

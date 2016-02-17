@@ -118,7 +118,10 @@ goog.messaging.LoggerClient.prototype.sendLog_ = function(logRecord) {
     }
   }
   this.channel_.send(this.serviceName_, {
-    'name': name, 'level': level.value, 'message': msg, 'exception': exception
+    'name': name,
+    'level': level.value,
+    'message': msg,
+    'exception': exception
   });
 };
 

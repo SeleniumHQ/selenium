@@ -279,11 +279,12 @@ goog.net.BrowserTestChannel.prototype.connect = function(path) {
 
   // the first request returns server specific parameters
   sendDataUri.setParameterValues('MODE', 'init');
-  this.request_ = goog.net.BrowserChannel.createChannelRequest(
-      this, this.channelDebug_);
+  this.request_ =
+      goog.net.BrowserChannel.createChannelRequest(this, this.channelDebug_);
   this.request_.setExtraHeaders(this.extraHeaders_);
-  this.request_.xmlHttpGet(sendDataUri, false /* decodeChunks */,
-      null /* hostPrefix */, true /* opt_noClose */);
+  this.request_.xmlHttpGet(
+      sendDataUri, false /* decodeChunks */, null /* hostPrefix */,
+      true /* opt_noClose */);
   this.state_ = goog.net.BrowserTestChannel.State_.INIT;
 };
 
@@ -298,11 +299,11 @@ goog.net.BrowserTestChannel.prototype.connect = function(path) {
  * @private
  */
 goog.net.BrowserTestChannel.prototype.checkBlocked_ = function() {
-  var uri = this.channel_.createDataUri(this.blockedPrefix_,
-      '/mail/images/cleardot.gif');
+  var uri = this.channel_.createDataUri(
+      this.blockedPrefix_, '/mail/images/cleardot.gif');
   uri.makeUnique();
-  goog.net.tmpnetwork.testLoadImageWithRetries(uri.toString(),
-      goog.net.BrowserTestChannel.BLOCKED_TIMEOUT_,
+  goog.net.tmpnetwork.testLoadImageWithRetries(
+      uri.toString(), goog.net.BrowserTestChannel.BLOCKED_TIMEOUT_,
       goog.bind(this.checkBlockedCallback_, this),
       goog.net.BrowserTestChannel.BLOCKED_RETRIES_,
       goog.net.BrowserTestChannel.BLOCKED_PAUSE_BETWEEN_RETRIES_);
@@ -354,24 +355,27 @@ goog.net.BrowserTestChannel.prototype.connectStage2_ = function() {
   if (goog.isDefAndNotNull(secondTestResults)) {
     this.channelDebug_.debug(
         'TestConnection: skipping stage 2, precomputed result is ' +
-        secondTestResults ? 'Buffered' : 'Unbuffered');
+                secondTestResults ?
+            'Buffered' :
+            'Unbuffered');
     goog.net.BrowserChannel.notifyStatEvent(
         goog.net.BrowserChannel.Stat.TEST_STAGE_TWO_START);
-    if (secondTestResults) { // Buffered/Proxy connection
+    if (secondTestResults) {  // Buffered/Proxy connection
       goog.net.BrowserChannel.notifyStatEvent(
           goog.net.BrowserChannel.Stat.PROXY);
       this.channel_.testConnectionFinished(this, false);
-    } else { // Unbuffered/NoProxy connection
+    } else {  // Unbuffered/NoProxy connection
       goog.net.BrowserChannel.notifyStatEvent(
           goog.net.BrowserChannel.Stat.NOPROXY);
       this.channel_.testConnectionFinished(this, true);
     }
-    return; // Skip the test
+    return;  // Skip the test
   }
-  this.request_ = goog.net.BrowserChannel.createChannelRequest(
-      this, this.channelDebug_);
+  this.request_ =
+      goog.net.BrowserChannel.createChannelRequest(this, this.channelDebug_);
   this.request_.setExtraHeaders(this.extraHeaders_);
-  var recvDataUri = this.channel_.getBackChannelUri(this.hostPrefix_,
+  var recvDataUri = this.channel_.getBackChannelUri(
+      this.hostPrefix_,
       /** @type {string} */ (this.path_));
 
   goog.net.BrowserChannel.notifyStatEvent(
@@ -381,8 +385,9 @@ goog.net.BrowserTestChannel.prototype.connectStage2_ = function() {
     this.request_.tridentGet(recvDataUri, Boolean(this.hostPrefix_));
   } else {
     recvDataUri.setParameterValues('TYPE', 'xmlhttp');
-    this.request_.xmlHttpGet(recvDataUri, false /** decodeChunks */,
-        this.hostPrefix_, false /** opt_noClose */);
+    this.request_.xmlHttpGet(
+        recvDataUri, false /** decodeChunks */, this.hostPrefix_,
+        false /** opt_noClose */);
   }
 };
 
@@ -427,16 +432,16 @@ goog.net.BrowserTestChannel.prototype.isClosed = function() {
  * @param {goog.net.ChannelRequest} req  The request object.
  * @param {string} responseText The text of the response.
  */
-goog.net.BrowserTestChannel.prototype.onRequestData =
-    function(req, responseText) {
+goog.net.BrowserTestChannel.prototype.onRequestData = function(
+    req, responseText) {
   this.lastStatusCode_ = req.getLastStatusCode();
   if (this.state_ == goog.net.BrowserTestChannel.State_.INIT) {
     this.channelDebug_.debug('TestConnection: Got data for stage 1');
     if (!responseText) {
       this.channelDebug_.debug('TestConnection: Null responseText');
       // The server should always send text; something is wrong here
-      this.channel_.testConnectionFailure(this,
-          goog.net.ChannelRequest.Error.BAD_DATA);
+      this.channel_.testConnectionFailure(
+          this, goog.net.ChannelRequest.Error.BAD_DATA);
       return;
     }
     /** @preserveTry */
@@ -444,14 +449,14 @@ goog.net.BrowserTestChannel.prototype.onRequestData =
       var respArray = this.parser_.parse(responseText);
     } catch (e) {
       this.channelDebug_.dumpException(e);
-      this.channel_.testConnectionFailure(this,
-          goog.net.ChannelRequest.Error.BAD_DATA);
+      this.channel_.testConnectionFailure(
+          this, goog.net.ChannelRequest.Error.BAD_DATA);
       return;
     }
     this.hostPrefix_ = this.channel_.correctHostPrefix(respArray[0]);
     this.blockedPrefix_ = respArray[1];
-  } else if (this.state_ ==
-             goog.net.BrowserTestChannel.State_.CONNECTION_TESTING) {
+  } else if (
+      this.state_ == goog.net.BrowserTestChannel.State_.CONNECTION_TESTING) {
     if (this.receivedIntermediateResult_) {
       goog.net.BrowserChannel.notifyStatEvent(
           goog.net.BrowserChannel.Stat.TEST_STAGE_TWO_DATA_TWO);
@@ -491,8 +496,7 @@ goog.net.BrowserTestChannel.prototype.onRequestData =
  *
  * @param {goog.net.ChannelRequest} req  The request object.
  */
-goog.net.BrowserTestChannel.prototype.onRequestComplete =
-    function(req) {
+goog.net.BrowserTestChannel.prototype.onRequestComplete = function(req) {
   this.lastStatusCode_ = this.request_.getLastStatusCode();
   if (!this.request_.getSuccess()) {
     this.channelDebug_.debug(
@@ -500,12 +504,13 @@ goog.net.BrowserTestChannel.prototype.onRequestComplete =
     if (this.state_ == goog.net.BrowserTestChannel.State_.INIT) {
       goog.net.BrowserChannel.notifyStatEvent(
           goog.net.BrowserChannel.Stat.TEST_STAGE_ONE_FAILED);
-    } else if (this.state_ ==
-               goog.net.BrowserTestChannel.State_.CONNECTION_TESTING) {
+    } else if (
+        this.state_ == goog.net.BrowserTestChannel.State_.CONNECTION_TESTING) {
       goog.net.BrowserChannel.notifyStatEvent(
           goog.net.BrowserChannel.Stat.TEST_STAGE_TWO_FAILED);
     }
-    this.channel_.testConnectionFailure(this,
+    this.channel_.testConnectionFailure(
+        this,
         /** @type {goog.net.ChannelRequest.Error} */
         (this.request_.getLastError()));
     return;
@@ -521,8 +526,8 @@ goog.net.BrowserTestChannel.prototype.onRequestComplete =
       this.state_ = goog.net.BrowserTestChannel.State_.CONNECTION_TESTING;
       this.connectStage2_();
     }
-  } else if (this.state_ ==
-             goog.net.BrowserTestChannel.State_.CONNECTION_TESTING) {
+  } else if (
+      this.state_ == goog.net.BrowserTestChannel.State_.CONNECTION_TESTING) {
     this.channelDebug_.debug('TestConnection: request complete for stage 2');
     var goodConn = false;
 
@@ -548,8 +553,7 @@ goog.net.BrowserTestChannel.prototype.onRequestComplete =
           goog.net.BrowserChannel.Stat.NOPROXY);
       this.channel_.testConnectionFinished(this, true);
     } else {
-      this.channelDebug_.debug(
-          'Test connection failed; not using streaming');
+      this.channelDebug_.debug('Test connection failed; not using streaming');
       goog.net.BrowserChannel.notifyStatEvent(
           goog.net.BrowserChannel.Stat.PROXY);
       this.channel_.testConnectionFinished(this, false);
@@ -583,8 +587,7 @@ goog.net.BrowserTestChannel.prototype.shouldUseSecondaryDomains = function() {
  * @param {goog.net.BrowserChannel} browserChannel The browser channel.
  * @return {boolean} Whether the channel is currently active.
  */
-goog.net.BrowserTestChannel.prototype.isActive =
-    function(browserChannel) {
+goog.net.BrowserTestChannel.prototype.isActive = function(browserChannel) {
   return this.channel_.isActive();
 };
 
@@ -594,8 +597,7 @@ goog.net.BrowserTestChannel.prototype.isActive =
  *     channel early and early no buffering detection is enabled.
  * @private
  */
-goog.net.BrowserTestChannel.prototype.checkForEarlyNonBuffered_ =
-    function() {
+goog.net.BrowserTestChannel.prototype.checkForEarlyNonBuffered_ = function() {
   var ms = this.firstTime_ - this.startTime_;
 
   // we always get Trident responses in separate calls to
@@ -612,7 +614,7 @@ goog.net.BrowserTestChannel.prototype.checkForEarlyNonBuffered_ =
  * @param {goog.net.BrowserChannel.ServerReachability} reachabilityType The
  *     reachability event type.
  */
-goog.net.BrowserTestChannel.prototype.notifyServerReachabilityEvent =
-    function(reachabilityType) {
+goog.net.BrowserTestChannel.prototype.notifyServerReachabilityEvent = function(
+    reachabilityType) {
   this.channel_.notifyServerReachabilityEvent(reachabilityType);
 };

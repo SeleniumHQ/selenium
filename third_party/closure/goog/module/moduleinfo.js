@@ -151,8 +151,7 @@ goog.module.ModuleInfo.prototype.getUris = function() {
  * @param {Function} constructor The constructor of a goog.module.BaseModule
  *     subclass.
  */
-goog.module.ModuleInfo.prototype.setModuleConstructor = function(
-    constructor) {
+goog.module.ModuleInfo.prototype.setModuleConstructor = function(constructor) {
   if (this.moduleConstructor_ === goog.module.BaseModule) {
     this.moduleConstructor_ = constructor;
   } else {
@@ -187,8 +186,7 @@ goog.module.ModuleInfo.prototype.registerEarlyCallback = function(
  * @return {!goog.module.ModuleLoadCallback} Reference to the callback
  *     object.
  */
-goog.module.ModuleInfo.prototype.registerCallback = function(
-    fn, opt_handler) {
+goog.module.ModuleInfo.prototype.registerCallback = function(fn, opt_handler) {
   return this.registerCallback_(this.onloadCallbacks_, fn, opt_handler);
 };
 
@@ -202,8 +200,7 @@ goog.module.ModuleInfo.prototype.registerCallback = function(
  * @return {!goog.module.ModuleLoadCallback} Reference to the callback
  *     object.
  */
-goog.module.ModuleInfo.prototype.registerErrback = function(
-    fn, opt_handler) {
+goog.module.ModuleInfo.prototype.registerErrback = function(fn, opt_handler) {
   return this.registerCallback_(this.onErrorCallbacks_, fn, opt_handler);
 };
 
@@ -267,8 +264,8 @@ goog.module.ModuleInfo.prototype.onLoad = function(contextProvider) {
       !!this.callCallbacks_(this.earlyOnloadCallbacks_, contextProvider());
 
   // Fire any callbacks that were waiting for the module to be loaded.
-  errors = errors ||
-      !!this.callCallbacks_(this.onloadCallbacks_, contextProvider());
+  errors =
+      errors || !!this.callCallbacks_(this.onloadCallbacks_, contextProvider());
 
   if (!errors) {
     // Clear the errbacks.

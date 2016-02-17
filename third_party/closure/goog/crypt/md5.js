@@ -157,16 +157,14 @@ goog.crypt.Md5.prototype.compress_ = function(buf, opt_offset) {
   if (goog.isString(buf)) {
     for (var i = 0; i < 16; ++i) {
       X[i] = (buf.charCodeAt(opt_offset++)) |
-             (buf.charCodeAt(opt_offset++) << 8) |
-             (buf.charCodeAt(opt_offset++) << 16) |
-             (buf.charCodeAt(opt_offset++) << 24);
+          (buf.charCodeAt(opt_offset++) << 8) |
+          (buf.charCodeAt(opt_offset++) << 16) |
+          (buf.charCodeAt(opt_offset++) << 24);
     }
   } else {
     for (var i = 0; i < 16; ++i) {
-      X[i] = (buf[opt_offset++]) |
-             (buf[opt_offset++] << 8) |
-             (buf[opt_offset++] << 16) |
-             (buf[opt_offset++] << 24);
+      X[i] = (buf[opt_offset++]) | (buf[opt_offset++] << 8) |
+          (buf[opt_offset++] << 16) | (buf[opt_offset++] << 24);
     }
   }
 
@@ -407,9 +405,9 @@ goog.crypt.Md5.prototype.update = function(bytes, opt_length) {
 goog.crypt.Md5.prototype.digest = function() {
   // This must accommodate at least 1 padding byte (0x80), 8 bytes of
   // total bitlength, and must end at a 64-byte boundary.
-  var pad = new Array((this.blockLength_ < 56 ?
-                       this.blockSize :
-                       this.blockSize * 2) - this.blockLength_);
+  var pad = new Array(
+      (this.blockLength_ < 56 ? this.blockSize : this.blockSize * 2) -
+      this.blockLength_);
 
   // Add padding: 0x80 0x00*
   pad[0] = 0x80;
@@ -420,7 +418,7 @@ goog.crypt.Md5.prototype.digest = function() {
   var totalBits = this.totalLength_ * 8;
   for (var i = pad.length - 8; i < pad.length; ++i) {
     pad[i] = totalBits & 0xff;
-    totalBits /= 0x100; // Don't use bit-shifting here!
+    totalBits /= 0x100;  // Don't use bit-shifting here!
   }
   this.update(pad);
 

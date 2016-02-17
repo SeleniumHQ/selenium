@@ -138,9 +138,7 @@ goog.debug.Trace_ = function() {
 
   // TODO(nicksantos): SimplePool is supposed to only return objects.
   // Reconcile this so that we don't have to cast to number below.
-  this.idPool_.createObject = function() {
-    return String(self.nextId_++);
-  };
+  this.idPool_.createObject = function() { return String(self.nextId_++); };
   this.idPool_.disposeObject = function(obj) {};
 
   /**
@@ -157,8 +155,7 @@ goog.debug.Trace_ = function() {
  * @type {goog.log.Logger}
  * @private
  */
-goog.debug.Trace_.prototype.logger_ =
-    goog.log.getLogger('goog.debug.Trace');
+goog.debug.Trace_.prototype.logger_ = goog.log.getLogger('goog.debug.Trace');
 
 
 /**
@@ -230,7 +227,8 @@ goog.debug.Trace_.Stat_.prototype.type;
  */
 goog.debug.Trace_.Stat_.prototype.toString = function() {
   var sb = [];
-  sb.push(this.type, ' ', this.count, ' (', Math.round(this.time * 10) / 10,
+  sb.push(
+      this.type, ' ', this.count, ' (', Math.round(this.time * 10) / 10,
       ' ms)');
   if (this.varAlloc) {
     sb.push(' [VarAlloc = ', this.varAlloc, ']');
@@ -266,8 +264,8 @@ goog.debug.Trace_.Event_.prototype.type;
  *     if there was no previous event.
  * @return {string} The formatted tracer string.
  */
-goog.debug.Trace_.Event_.prototype.toTraceString = function(startTime, prevTime,
-    indent) {
+goog.debug.Trace_.Event_.prototype.toTraceString = function(
+    startTime, prevTime, indent) {
   var sb = [];
 
   if (prevTime == -1) {
@@ -347,7 +345,7 @@ goog.debug.Trace_.prototype.reset = function(defaultThreshold) {
   this.defaultThreshold_ = defaultThreshold;
 
   for (var i = 0; i < this.events_.length; i++) {
-    var id = /** @type {Object} */ (this.eventPool_).id;
+    var id = /** @type {?} */ (this.eventPool_).id;
     if (id) {
       this.idPool_.releaseObject(id);
     }
@@ -395,8 +393,8 @@ goog.debug.Trace_.prototype.startTracer = function(comment, opt_type) {
   var varAlloc = this.getTotalVarAlloc();
   var outstandingEventCount = this.outstandingEvents_.getCount();
   if (this.events_.length + outstandingEventCount > this.MAX_TRACE_SIZE) {
-    goog.log.warning(this.logger_,
-        'Giant thread trace. Clearing to avoid memory leak.');
+    goog.log.warning(
+        this.logger_, 'Giant thread trace. Clearing to avoid memory leak.');
     // This is the more likely case. This usually means that we
     // either forgot to clear the trace or else we are performing a
     // very large number of events
@@ -421,8 +419,8 @@ goog.debug.Trace_.prototype.startTracer = function(comment, opt_type) {
 
   goog.debug.Logger.logToProfilers('Start : ' + comment);
 
-  var event = /** @type {goog.debug.Trace_.Event_} */ (
-      this.eventPool_.getObject());
+  var event =
+      /** @type {goog.debug.Trace_.Event_} */ (this.eventPool_.getObject());
   event.totalVarAlloc = varAlloc;
   event.eventType = goog.debug.Trace_.EventType.START;
   event.id = Number(this.idPool_.getObject());
@@ -482,8 +480,8 @@ goog.debug.Trace_.prototype.stopTracer = function(id, opt_silenceThreshold) {
     }
 
   } else {
-    stopEvent = /** @type {goog.debug.Trace_.Event_} */ (
-        this.eventPool_.getObject());
+    stopEvent =
+        /** @type {goog.debug.Trace_.Event_} */ (this.eventPool_.getObject());
     stopEvent.eventType = goog.debug.Trace_.EventType.STOP;
     stopEvent.startTime = startEvent.startTime;
     stopEvent.comment = startEvent.comment;
@@ -549,13 +547,13 @@ goog.debug.Trace_.prototype.getTotalVarAlloc = function() {
  * @param {?number=} opt_timeStamp The timestamp to insert the comment. If not
  *    specified, the current time wil be used.
  */
-goog.debug.Trace_.prototype.addComment = function(comment, opt_type,
-                                                  opt_timeStamp) {
+goog.debug.Trace_.prototype.addComment = function(
+    comment, opt_type, opt_timeStamp) {
   var now = goog.debug.Trace_.now();
   var timeStamp = opt_timeStamp ? opt_timeStamp : now;
 
-  var eventComment = /** @type {goog.debug.Trace_.Event_} */ (
-      this.eventPool_.getObject());
+  var eventComment =
+      /** @type {goog.debug.Trace_.Event_} */ (this.eventPool_.getObject());
   eventComment.eventType = goog.debug.Trace_.EventType.COMMENT;
   eventComment.eventTime = timeStamp;
   eventComment.type = opt_type;
@@ -601,12 +599,11 @@ goog.debug.Trace_.prototype.addComment = function(comment, opt_type,
 goog.debug.Trace_.prototype.getStat_ = function(type) {
   var stat = this.stats_.get(type);
   if (!stat) {
-    stat = /** @type {goog.debug.Trace_.Event_} */ (
-        this.statPool_.getObject());
+    stat = /** @type {goog.debug.Trace_.Event_} */ (this.statPool_.getObject());
     stat.type = type;
     this.stats_.set(type, stat);
   }
-  return /** @type {goog.debug.Trace_.Stat_} */(stat);
+  return /** @type {goog.debug.Trace_.Stat_} */ (stat);
 };
 
 
@@ -647,10 +644,10 @@ goog.debug.Trace_.prototype.toString = function() {
 
     sb.push(' Unstopped timers:\n');
     goog.iter.forEach(this.outstandingEvents_, function(startEvent) {
-      sb.push('  ', startEvent, ' (', now - startEvent.startTime,
+      sb.push(
+          '  ', startEvent, ' (', now - startEvent.startTime,
           ' ms, started at ',
-          goog.debug.Trace_.formatTime_(startEvent.startTime),
-          ')\n');
+          goog.debug.Trace_.formatTime_(startEvent.startTime), ')\n');
     });
   }
 
@@ -662,11 +659,12 @@ goog.debug.Trace_.prototype.toString = function() {
     }
   }
 
-  sb.push('Total tracers created ', this.tracerCount_, '\n',
-      'Total comments created ', this.commentCount_, '\n',
-      'Overhead start: ', this.tracerOverheadStart_, ' ms\n',
-      'Overhead end: ', this.tracerOverheadEnd_, ' ms\n',
-      'Overhead comment: ', this.tracerOverheadComment_, ' ms\n');
+  sb.push(
+      'Total tracers created ', this.tracerCount_, '\n',
+      'Total comments created ', this.commentCount_, '\n', 'Overhead start: ',
+      this.tracerOverheadStart_, ' ms\n', 'Overhead end: ',
+      this.tracerOverheadEnd_, ' ms\n', 'Overhead comment: ',
+      this.tracerOverheadComment_, ' ms\n');
 
   return sb.join('');
 };
@@ -703,7 +701,7 @@ goog.debug.Trace_.formatTime_ = function(time) {
 
   // TODO their must be a nicer way to get zero padded integers
   return String(100 + sec).substring(1, 3) + '.' +
-         String(1000 + ms).substring(1, 4);
+      String(1000 + ms).substring(1, 4);
 };
 
 

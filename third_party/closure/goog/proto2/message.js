@@ -14,6 +14,7 @@
 
 /**
  * @fileoverview Protocol Buffer Message base class.
+ * @suppress {unusedPrivateMembers} For descriptor_ declaration.
  */
 
 goog.provide('goog.proto2.Message');
@@ -136,8 +137,8 @@ goog.proto2.Message.prototype.initializeForLazyDeserializer = function(
  * @param {*} value The value for that unknown field.
  */
 goog.proto2.Message.prototype.setUnknown = function(tag, value) {
-  goog.asserts.assert(!this.fields_[tag],
-      'Field is not unknown in this message');
+  goog.asserts.assert(
+      !this.fields_[tag], 'Field is not unknown in this message');
   goog.asserts.assert(tag >= 1, 'Tag is not valid');
   goog.asserts.assert(value !== null, 'Value cannot be null');
 
@@ -151,10 +152,11 @@ goog.proto2.Message.prototype.setUnknown = function(tag, value) {
 /**
  * Iterates over all the unknown fields in the message.
  *
- * @param {function(number, *)} callback A callback method
+ * @param {function(this:T, number, *)} callback A callback method
  *     which gets invoked for each unknown field.
- * @param {Object=} opt_scope The scope under which to execute the callback.
+ * @param {T=} opt_scope The scope under which to execute the callback.
  *     If not given, the current message will be used.
+ * @template T
  */
 goog.proto2.Message.prototype.forEachUnknown = function(callback, opt_scope) {
   var scope = opt_scope || this;
@@ -372,7 +374,8 @@ goog.proto2.Message.prototype.equals = function(other) {
  * @param {!goog.proto2.Message} message The source message.
  */
 goog.proto2.Message.prototype.copyFrom = function(message) {
-  goog.asserts.assert(this.constructor == message.constructor,
+  goog.asserts.assert(
+      this.constructor == message.constructor,
       'The source message must have the same type.');
 
   if (this != message) {
@@ -393,7 +396,8 @@ goog.proto2.Message.prototype.copyFrom = function(message) {
  * @param {!goog.proto2.Message} message The source message.
  */
 goog.proto2.Message.prototype.mergeFrom = function(message) {
-  goog.asserts.assert(this.constructor == message.constructor,
+  goog.asserts.assert(
+      this.constructor == message.constructor,
       'The source message must have the same type.');
   var fields = this.getDescriptor().getFields();
 
@@ -548,8 +552,8 @@ goog.proto2.Message.prototype.get$Value = function(tag, opt_index) {
     var index = opt_index || 0;
     goog.asserts.assert(
         index >= 0 && index < value.length,
-        'Given index %s is out of bounds.  Repeated field length: %s',
-        index, value.length);
+        'Given index %s is out of bounds.  Repeated field length: %s', index,
+        value.length);
     return value[index];
   }
 
@@ -677,7 +681,7 @@ goog.proto2.Message.prototype.checkFieldType_ = function(field, value) {
   if (field.getFieldType() == goog.proto2.FieldDescriptor.FieldType.ENUM) {
     goog.asserts.assertNumber(value);
   } else {
-    goog.asserts.assert(value.constructor == field.getNativeType());
+    goog.asserts.assert(Object(value).constructor == field.getNativeType());
   }
 };
 

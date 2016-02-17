@@ -144,8 +144,9 @@ goog.ui.Ratings.EventType = {
 goog.ui.Ratings.prototype.decorateInternal = function(el) {
   var select = el.getElementsByTagName(goog.dom.TagName.SELECT)[0];
   if (!select) {
-    throw Error('Can not decorate ' + el + ', with Ratings. Must ' +
-                'contain select box');
+    throw Error(
+        'Can not decorate ' + el + ', with Ratings. Must ' +
+        'contain select box');
   }
   this.ratings_.length = 0;
   for (var i = 0, n = select.options.length; i < n; i++) {
@@ -154,7 +155,7 @@ goog.ui.Ratings.prototype.decorateInternal = function(el) {
   }
   this.setSelectedIndex(select.selectedIndex);
   select.style.display = 'none';
-  this.attachedFormField_ = select;
+  this.attachedFormField_ = /** @type {HTMLSelectElement} */ (select);
   this.createDom();
   el.insertBefore(this.getElement(), select);
 };
@@ -183,7 +184,8 @@ goog.ui.Ratings.prototype.enterDocument = function() {
     var star = this.getDomHelper().createDom(goog.dom.TagName.SPAN, {
       'title': this.ratings_[i],
       'class': this.getClassName_(i, false),
-      'index': i});
+      'index': i
+    });
     this.stars_.push(star);
     el.appendChild(star);
   }
@@ -245,11 +247,10 @@ goog.ui.Ratings.prototype.setSelectedIndex = function(index) {
             /** @type {string} */ (this.getValue());
       }
       var ratingsElement = this.getElement();
-      goog.asserts.assert(ratingsElement,
-          'The DOM ratings element cannot be null.');
-      goog.a11y.aria.setState(ratingsElement,
-          goog.a11y.aria.State.VALUENOW,
-          this.ratings_[index]);
+      goog.asserts.assert(
+          ratingsElement, 'The DOM ratings element cannot be null.');
+      goog.a11y.aria.setState(
+          ratingsElement, goog.a11y.aria.State.VALUENOW, this.ratings_[index]);
     }
     this.dispatchEvent(goog.ui.Ratings.EventType.CHANGE);
   }
@@ -290,7 +291,7 @@ goog.ui.Ratings.prototype.getHighlightedIndex = function() {
  */
 goog.ui.Ratings.prototype.getHighlightedValue = function() {
   return this.highlightedIndex_ == -1 ? null :
-      this.ratings_[this.highlightedIndex_];
+                                        this.ratings_[this.highlightedIndex_];
 };
 
 
@@ -414,19 +415,19 @@ goog.ui.Ratings.prototype.onKeyDown_ = function(e) {
     return;
   }
   switch (e.keyCode) {
-    case 27: // esc
+    case 27:  // esc
       this.setSelectedIndex(-1);
       break;
-    case 36: // home
+    case 36:  // home
       this.setSelectedIndex(0);
       break;
-    case 35: // end
+    case 35:  // end
       this.setSelectedIndex(this.ratings_.length);
       break;
-    case 37: // left arrow
+    case 37:  // left arrow
       this.setSelectedIndex(this.getSelectedIndex() - 1);
       break;
-    case 39: // right arrow
+    case 39:  // right arrow
       this.setSelectedIndex(this.getSelectedIndex() + 1);
       break;
     default:
@@ -505,6 +506,6 @@ goog.ui.Ratings.prototype.getClassName_ = function(i, on) {
     enabledClassName = goog.getCssName(baseClass, 'disabled');
   }
 
-  return goog.getCssName(baseClass, 'star') + ' ' + className +
-      ' ' + enabledClassName;
+  return goog.getCssName(baseClass, 'star') + ' ' + className + ' ' +
+      enabledClassName;
 };

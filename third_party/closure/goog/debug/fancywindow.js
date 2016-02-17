@@ -70,7 +70,8 @@ goog.debug.FancyWindow.HAS_LOCAL_STORE = (function() {
   /** @preserveTry */
   try {
     return !!window['localStorage'].getItem;
-  } catch (e) {}
+  } catch (e) {
+  }
   return false;
 })();
 
@@ -129,10 +130,8 @@ goog.debug.FancyWindow.prototype.writeInitialDocument = function() {
       goog.bind(this.openOptions_, this);
   this.dh_.getElement('closebutton').onclick =
       goog.bind(this.closeOptions_, this);
-  this.dh_.getElement('clearbutton').onclick =
-      goog.bind(this.clear, this);
-  this.dh_.getElement('exitbutton').onclick =
-      goog.bind(this.exit_, this);
+  this.dh_.getElement('clearbutton').onclick = goog.bind(this.clear, this);
+  this.dh_.getElement('exitbutton').onclick = goog.bind(this.exit_, this);
 
   this.writeSavedMessages();
 };
@@ -152,7 +151,8 @@ goog.debug.FancyWindow.prototype.openOptions_ = function() {
   for (var i = 0; i < loggers.length; i++) {
     var logger = loggers[i];
     var curlevel = logger.getLevel() ? logger.getLevel().name : 'INHERIT';
-    var div = dh.createDom(goog.dom.TagName.DIV, {},
+    var div = dh.createDom(
+        goog.dom.TagName.DIV, {},
         this.getDropDown_('sel' + logger.getName(), curlevel),
         dh.createDom(goog.dom.TagName.SPAN, {}, logger.getName() || '(root)'));
     el.appendChild(div);
@@ -182,8 +182,10 @@ goog.debug.FancyWindow.prototype.getDropDown_ = function(id, selected) {
     }
     sel.appendChild(option);
   }
-  sel.appendChild(dh.createDom(goog.dom.TagName.OPTION,
-      {'selected': selected == 'INHERIT'}, 'INHERIT'));
+  sel.appendChild(
+      dh.createDom(
+          goog.dom.TagName.OPTION, {'selected': selected == 'INHERIT'},
+          'INHERIT'));
   return sel;
 };
 
@@ -199,7 +201,8 @@ goog.debug.FancyWindow.prototype.closeOptions_ = function() {
   var dh = this.dh_;
   for (var i = 0; i < loggers.length; i++) {
     var logger = loggers[i];
-    var sel = dh.getElement('sel' + logger.getName());
+    var sel = /** @type {!HTMLSelectElement} */ (
+        dh.getElement('sel' + logger.getName()));
     var level = sel.options[sel.selectedIndex].text;
     if (level == 'INHERIT') {
       logger.setLevel(null);
@@ -219,10 +222,11 @@ goog.debug.FancyWindow.prototype.closeOptions_ = function() {
 goog.debug.FancyWindow.prototype.resizeStuff_ = function() {
   var dh = this.dh_;
   var logel = /** @type {!HTMLElement} */ (dh.getElement('log'));
-  var headel = dh.getElement('head');
+  var headel = /** @type {!HTMLElement} */ (dh.getElement('head'));
   logel.style.top = headel.offsetHeight + 'px';
   logel.style.height = (dh.getDocument().body.offsetHeight -
-      headel.offsetHeight - (goog.userAgent.IE ? 4 : 0)) + 'px';
+                        headel.offsetHeight - (goog.userAgent.IE ? 4 : 0)) +
+      'px';
 };
 
 
@@ -243,26 +247,27 @@ goog.debug.FancyWindow.prototype.exit_ = function(e) {
 /** @override */
 goog.debug.FancyWindow.prototype.getStyleRules = function() {
   var baseRules = goog.debug.FancyWindow.base(this, 'getStyleRules');
-  var extraRules = goog.html.SafeStyleSheet.fromConstant(goog.string.Const.from(
-      'html,body{height:100%;width:100%;margin:0px;padding:0px;' +
-      'background-color:#FFF;overflow:hidden}' +
-      '*{}' +
-      '.logmsg{border-bottom:1px solid #CCC;padding:2px;font:90% monospace}' +
-      '#head{position:absolute;width:100%;font:x-small arial;' +
-      'border-bottom:2px solid #999;background-color:#EEE;}' +
-      '#head p{margin:0px 5px;}' +
-      '#log{position:absolute;width:100%;background-color:#FFF;}' +
-      '#options{position:absolute;right:0px;width:50%;height:100%;' +
-      'border-left:1px solid #999;background-color:#DDD;display:none;' +
-      'padding-left: 5px;font:normal small arial;overflow:auto;}' +
-      '#openbutton,#closebutton{text-decoration:underline;color:#00F;cursor:' +
-      'pointer;position:absolute;top:0px;right:5px;font:x-small arial;}' +
-      '#clearbutton{text-decoration:underline;color:#00F;cursor:' +
-      'pointer;position:absolute;top:0px;right:80px;font:x-small arial;}' +
-      '#exitbutton{text-decoration:underline;color:#00F;cursor:' +
-      'pointer;position:absolute;top:0px;right:50px;font:x-small arial;}' +
-      'select{font:x-small arial;margin-right:10px;}' +
-      'hr{border:0;height:5px;background-color:#8c8;color:#8c8;}'));
+  var extraRules = goog.html.SafeStyleSheet.fromConstant(
+      goog.string.Const.from(
+          'html,body{height:100%;width:100%;margin:0px;padding:0px;' +
+          'background-color:#FFF;overflow:hidden}' +
+          '*{}' +
+          '.logmsg{border-bottom:1px solid #CCC;padding:2px;font:90% monospace}' +
+          '#head{position:absolute;width:100%;font:x-small arial;' +
+          'border-bottom:2px solid #999;background-color:#EEE;}' +
+          '#head p{margin:0px 5px;}' +
+          '#log{position:absolute;width:100%;background-color:#FFF;}' +
+          '#options{position:absolute;right:0px;width:50%;height:100%;' +
+          'border-left:1px solid #999;background-color:#DDD;display:none;' +
+          'padding-left: 5px;font:normal small arial;overflow:auto;}' +
+          '#openbutton,#closebutton{text-decoration:underline;color:#00F;cursor:' +
+          'pointer;position:absolute;top:0px;right:5px;font:x-small arial;}' +
+          '#clearbutton{text-decoration:underline;color:#00F;cursor:' +
+          'pointer;position:absolute;top:0px;right:80px;font:x-small arial;}' +
+          '#exitbutton{text-decoration:underline;color:#00F;cursor:' +
+          'pointer;position:absolute;top:0px;right:50px;font:x-small arial;}' +
+          'select{font:x-small arial;margin-right:10px;}' +
+          'hr{border:0;height:5px;background-color:#8c8;color:#8c8;}'));
   return goog.html.SafeStyleSheet.concat(baseRules, extraRules);
 };
 
@@ -274,25 +279,36 @@ goog.debug.FancyWindow.prototype.getStyleRules = function() {
  */
 goog.debug.FancyWindow.prototype.getHtml_ = function() {
   var SafeHtml = goog.html.SafeHtml;
-  var head = SafeHtml.create('head', {}, SafeHtml.concat(
-      SafeHtml.create('title', {}, 'Logging: ' + this.identifier),
-      SafeHtml.createStyle(this.getStyleRules())));
+  var head = SafeHtml.create(
+      'head', {},
+      SafeHtml.concat(
+          SafeHtml.create('title', {}, 'Logging: ' + this.identifier),
+          SafeHtml.createStyle(this.getStyleRules())));
 
-  var body = SafeHtml.create('body', {}, SafeHtml.concat(
-      SafeHtml.create('div',
-          {'id': 'log', 'style': goog.string.Const.from('overflow:auto')}),
-      SafeHtml.create('div', {'id': 'head'}, SafeHtml.concat(
-          SafeHtml.create('p', {},
-              SafeHtml.create('b', {}, 'Logging: ' + this.identifier)),
-          SafeHtml.create('p', {}, this.welcomeMessage),
-          SafeHtml.create('span', {'id': 'clearbutton'}, 'clear'),
-          SafeHtml.create('span', {'id': 'exitbutton'}, 'exit'),
-          SafeHtml.create('span', {'id': 'openbutton'}, 'options'))),
-      SafeHtml.create('div', {'id': 'options'}, SafeHtml.concat(
-          SafeHtml.create('big', {},
-              SafeHtml.create('b', {}, 'Options:')),
-          SafeHtml.create('div', {'id': 'optionsarea'}),
-          SafeHtml.create('span', {'id': 'closebutton'}, 'save and close')))));
+  var body = SafeHtml.create(
+      'body', {},
+      SafeHtml.concat(
+          SafeHtml.create(
+              'div',
+              {'id': 'log', 'style': goog.string.Const.from('overflow:auto')}),
+          SafeHtml.create(
+              'div', {'id': 'head'},
+              SafeHtml.concat(
+                  SafeHtml.create(
+                      'p', {},
+                      SafeHtml.create('b', {}, 'Logging: ' + this.identifier)),
+                  SafeHtml.create('p', {}, this.welcomeMessage),
+                  SafeHtml.create('span', {'id': 'clearbutton'}, 'clear'),
+                  SafeHtml.create('span', {'id': 'exitbutton'}, 'exit'),
+                  SafeHtml.create('span', {'id': 'openbutton'}, 'options'))),
+          SafeHtml.create(
+              'div', {'id': 'options'},
+              SafeHtml.concat(
+                  SafeHtml.create(
+                      'big', {}, SafeHtml.create('b', {}, 'Options:')),
+                  SafeHtml.create('div', {'id': 'optionsarea'}),
+                  SafeHtml.create(
+                      'span', {'id': 'closebutton'}, 'save and close')))));
 
   return SafeHtml.create('html', {}, SafeHtml.concat(head, body));
 };
@@ -355,8 +371,9 @@ goog.debug.FancyWindow.getStoredKeys_ = function() {
   var storedKeys = {};
   for (var i = 0, len = window.localStorage.length; i < len; i++) {
     var key = window.localStorage.key(i);
-    if (key != null && goog.string.startsWith(
-        key, goog.debug.FancyWindow.LOCAL_STORE_PREFIX)) {
+    if (key != null &&
+        goog.string.startsWith(
+            key, goog.debug.FancyWindow.LOCAL_STORE_PREFIX)) {
       storedKeys[key] = true;
     }
   }

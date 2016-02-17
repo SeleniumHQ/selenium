@@ -172,8 +172,8 @@ goog.tweak.BaseSetting = function(id, description) {
   goog.tweak.BaseEntry.call(this, id, description);
   // Apply this restriction for settings since they turn in to query
   // parameters. For buttons, it's not really important.
-  goog.asserts.assert(!/[^A-Za-z0-9._]/.test(id),
-      'Tweak id contains illegal characters: ', id);
+  goog.asserts.assert(
+      !/[^A-Za-z0-9._]/.test(id), 'Tweak id contains illegal characters: ', id);
 
   /**
    * The value of this setting's query parameter.
@@ -254,8 +254,9 @@ goog.tweak.BaseSetting.prototype.getNewValueEncoded = goog.abstractMethod;
  * @protected
  */
 goog.tweak.BaseSetting.prototype.assertNotInitialized = function(funcName) {
-  goog.asserts.assert(this.initializeState_ !=
-      goog.tweak.BaseSetting.InitializeState_.INITIALIZED,
+  goog.asserts.assert(
+      this.initializeState_ !=
+          goog.tweak.BaseSetting.InitializeState_.INITIALIZED,
       'Cannot call ' + funcName + ' after the tweak as been initialized.');
 };
 
@@ -317,11 +318,11 @@ goog.tweak.BaseSetting.prototype.ensureInitialized = function() {
     // initialize().
     this.initializeState_ =
         goog.tweak.BaseSetting.InitializeState_.INITIALIZING;
-    var value = this.initialQueryParamValue == undefined ? null :
+    var value = this.initialQueryParamValue == undefined ?
+        null :
         this.initialQueryParamValue;
     this.initialize(value);
-    this.initializeState_ =
-        goog.tweak.BaseSetting.InitializeState_.INITIALIZED;
+    this.initializeState_ = goog.tweak.BaseSetting.InitializeState_.INITIALIZED;
   }
 };
 
@@ -376,8 +377,7 @@ goog.tweak.BasePrimitiveSetting.prototype.logger =
  * @return {string} The encoded value.
  * @protected
  */
-goog.tweak.BasePrimitiveSetting.prototype.encodeNewValue =
-    goog.abstractMethod;
+goog.tweak.BasePrimitiveSetting.prototype.encodeNewValue = goog.abstractMethod;
 
 
 /**
@@ -441,8 +441,7 @@ goog.tweak.BasePrimitiveSetting.prototype.getDefaultValue = function() {
  * Sets the default value for the tweak.
  * @param {*} value The new value.
  */
-goog.tweak.BasePrimitiveSetting.prototype.setDefaultValue =
-    function(value) {
+goog.tweak.BasePrimitiveSetting.prototype.setDefaultValue = function(value) {
   this.assertNotInitialized('setDefaultValue');
   this.defaultValue_ = value;
 };
@@ -574,8 +573,9 @@ goog.tweak.StringSetting.prototype.initialize = function(value) {
         }
       }
       // Warn if the value is not in the list of allowed values.
-      goog.log.warning(this.logger, 'Tweak ' + this.getId() +
-          ' has value outside of expected range:' + value);
+      goog.log.warning(
+          this.logger, 'Tweak ' + this.getId() +
+              ' has value outside of expected range:' + value);
     }
     this.setValue(value);
   }
@@ -659,8 +659,7 @@ goog.tweak.NumericSetting.prototype.encodeNewValue = function() {
  * Sets the valid values for the setting.
  * @param {Array<number>|undefined} values Valid values.
  */
-goog.tweak.NumericSetting.prototype.setValidValues =
-    function(values) {
+goog.tweak.NumericSetting.prototype.setValidValues = function(values) {
   this.assertNotInitialized('setValidValues');
   this.validValues_ = values;
   // Set the default value to the first value in the list if the current
@@ -691,13 +690,15 @@ goog.tweak.NumericSetting.prototype.initialize = function(value) {
     // Warn if the value is not in the list of allowed values.
     if (this.validValues_ &&
         !goog.array.contains(this.validValues_, coercedValue)) {
-      goog.log.warning(this.logger, 'Tweak ' + this.getId() +
-          ' has value outside of expected range: ' + value);
+      goog.log.warning(
+          this.logger, 'Tweak ' + this.getId() +
+              ' has value outside of expected range: ' + value);
     }
 
     if (isNaN(coercedValue)) {
-      goog.log.warning(this.logger, 'Tweak ' + this.getId() +
-          ' has value of NaN, resetting to ' + this.getDefaultValue());
+      goog.log.warning(
+          this.logger, 'Tweak ' + this.getId() +
+              ' has value of NaN, resetting to ' + this.getDefaultValue());
       this.setValue(this.getDefaultValue());
     } else {
       this.setValue(coercedValue);
@@ -815,8 +816,7 @@ goog.tweak.BooleanInGroupSetting = function(id, description, group) {
   this.group_ = group;
 
   // Take setting out of top-level query parameter list.
-  goog.tweak.BooleanInGroupSetting.superClass_.setParamName.call(this,
-      null);
+  goog.tweak.BooleanInGroupSetting.superClass_.setParamName.call(this, null);
 };
 goog.inherits(goog.tweak.BooleanInGroupSetting, goog.tweak.BooleanSetting);
 
@@ -929,7 +929,8 @@ goog.tweak.BooleanGroup.prototype.addChild = function(boolEntry) {
 
   var token = boolEntry.getToken();
   var lcToken = token.toLowerCase();
-  goog.asserts.assert(!this.entriesByToken_[lcToken],
+  goog.asserts.assert(
+      !this.entriesByToken_[lcToken],
       'Multiple bools registered with token "%s" in group: %s', token,
       this.getId());
   this.entriesByToken_[lcToken] = boolEntry;
@@ -975,8 +976,8 @@ goog.tweak.BooleanGroup.prototype.getNewValueEncoded = function() {
   for (var i = 0, entry; entry = this.entriesByToken_[keys[i]]; ++i) {
     var encodedValue = entry.getNewValueEncoded();
     if (encodedValue != null) {
-      nonDefaultValues.push((entry.getNewValue() ? '' : '-') +
-          entry.getToken());
+      nonDefaultValues.push(
+          (entry.getNewValue() ? '' : '-') + entry.getToken());
     }
   }
   return nonDefaultValues.length ? nonDefaultValues.join(',') : null;
@@ -999,4 +1000,3 @@ goog.tweak.ButtonAction = function(id, description, callback) {
   this.setRestartRequired(false);
 };
 goog.inherits(goog.tweak.ButtonAction, goog.tweak.BaseEntry);
-

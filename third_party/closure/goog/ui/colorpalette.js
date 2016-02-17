@@ -53,8 +53,9 @@ goog.ui.ColorPalette = function(opt_colors, opt_renderer, opt_domHelper) {
    */
   this.colors_ = opt_colors || [];
 
-  goog.ui.Palette.call(this, null,
-      opt_renderer || goog.ui.PaletteRenderer.getInstance(), opt_domHelper);
+  goog.ui.Palette.call(
+      this, null, opt_renderer || goog.ui.PaletteRenderer.getInstance(),
+      opt_domHelper);
 
   // Set the colors separately from the super call since we need the correct
   // DomHelper to be initialized for this class.
@@ -131,8 +132,8 @@ goog.ui.ColorPalette.prototype.setSelectedColor = function(color) {
       return goog.ui.ColorPalette.parseColor_(color);
     });
   }
-  this.setSelectedIndex(hexColor ?
-      goog.array.indexOf(this.normalizedColors_, hexColor) : -1);
+  this.setSelectedIndex(
+      hexColor ? goog.array.indexOf(this.normalizedColors_, hexColor) : -1);
 };
 
 
@@ -143,15 +144,15 @@ goog.ui.ColorPalette.prototype.setSelectedColor = function(color) {
 goog.ui.ColorPalette.prototype.createColorNodes = function() {
   return goog.array.map(this.colors_, function(color, index) {
     var swatch = this.getDomHelper().createDom(goog.dom.TagName.DIV, {
-      'class': goog.getCssName(this.getRenderer().getCssClass(),
-          'colorswatch'),
+      'class': goog.getCssName(this.getRenderer().getCssClass(), 'colorswatch'),
       'style': 'background-color:' + color
     });
     if (this.labels_ && this.labels_[index]) {
       swatch.title = this.labels_[index];
     } else {
       swatch.title = color.charAt(0) == '#' ?
-          'RGB (' + goog.color.hexToRgb(color).join(', ') + ')' : color;
+          'RGB (' + goog.color.hexToRgb(color).join(', ') + ')' :
+          color;
     }
     return swatch;
   }, this);

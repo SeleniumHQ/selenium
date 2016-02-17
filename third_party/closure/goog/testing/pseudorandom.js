@@ -169,8 +169,8 @@ goog.testing.PseudoRandom.prototype.seed = function(seed) {
 goog.testing.PseudoRandom.prototype.random = function() {
   var hi = Math.floor(this.seed_ / goog.testing.PseudoRandom.Q);
   var lo = this.seed_ % goog.testing.PseudoRandom.Q;
-  var test = goog.testing.PseudoRandom.A * lo -
-             goog.testing.PseudoRandom.R * hi;
+  var test =
+      goog.testing.PseudoRandom.A * lo - goog.testing.PseudoRandom.R * hi;
   if (test > 0) {
     this.seed_ = test;
   } else {

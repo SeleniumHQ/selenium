@@ -73,27 +73,32 @@ goog.ui.CheckboxRenderer.prototype.decorate = function(checkbox, element) {
   var classes = goog.dom.classlist.get(element);
   // Update the checked state of the element based on its css classNames
   // with the following order: undetermined -> checked -> unchecked.
-  var checked = /** @suppress {missingRequire} */ (
-      goog.ui.Checkbox.State.UNCHECKED);
-  if (goog.array.contains(classes,
-      this.getClassForCheckboxState(
-          /** @suppress {missingRequire} */
-          goog.ui.Checkbox.State.UNDETERMINED))) {
-    checked = (/** @suppress {missingRequire} */
-        goog.ui.Checkbox.State.UNDETERMINED);
-  } else if (goog.array.contains(classes,
-      this.getClassForCheckboxState(
-          /** @suppress {missingRequire} */ goog.ui.Checkbox.State.CHECKED))) {
+  var checked =
+      /** @suppress {missingRequire} */ (goog.ui.Checkbox.State.UNCHECKED);
+  if (goog.array.contains(
+          classes, this.getClassForCheckboxState(
+                       /** @suppress {missingRequire} */
+                       goog.ui.Checkbox.State.UNDETERMINED))) {
+    checked =
+        (/** @suppress {missingRequire} */
+         goog.ui.Checkbox.State.UNDETERMINED);
+  } else if (
+      goog.array.contains(
+          classes, this.getClassForCheckboxState(
+                       /** @suppress {missingRequire} */ goog.ui.Checkbox.State
+                           .CHECKED))) {
     checked = /** @suppress {missingRequire} */ goog.ui.Checkbox.State.CHECKED;
   } else if (goog.array.contains(classes,
       this.getClassForCheckboxState(/** @suppress {missingRequire} */
           goog.ui.Checkbox.State.UNCHECKED))) {
-    checked = (/** @suppress {missingRequire} */
-        goog.ui.Checkbox.State.UNCHECKED);
+    checked =
+        (/** @suppress {missingRequire} */
+         goog.ui.Checkbox.State.UNCHECKED);
   }
   checkbox.setCheckedInternal(checked);
   goog.asserts.assert(element, 'The element cannot be null.');
-  goog.a11y.aria.setState(element, goog.a11y.aria.State.CHECKED,
+  goog.a11y.aria.setState(
+      element, goog.a11y.aria.State.CHECKED,
       this.ariaStateFromCheckState_(checked));
 
   return element;
@@ -116,8 +121,7 @@ goog.ui.CheckboxRenderer.prototype.getAriaRole = function() {
  * @param {Element} element Checkbox element.
  * @param {goog.ui.Checkbox.State} state Updated checkbox state.
  */
-goog.ui.CheckboxRenderer.prototype.setCheckboxState = function(
-    element, state) {
+goog.ui.CheckboxRenderer.prototype.setCheckboxState = function(element, state) {
   if (element) {
     goog.asserts.assert(element);
     var classToAdd = this.getClassForCheckboxState(state);
@@ -131,10 +135,12 @@ goog.ui.CheckboxRenderer.prototype.setCheckboxState = function(
         function(state) {
           var className = this.getClassForCheckboxState(state);
           goog.asserts.assert(element);
-          goog.dom.classlist.enable(element, className,
-                                    className == classToAdd);
-        }, this);
-    goog.a11y.aria.setState(element, goog.a11y.aria.State.CHECKED,
+          goog.dom.classlist.enable(
+              element, className, className == classToAdd);
+        },
+        this);
+    goog.a11y.aria.setState(
+        element, goog.a11y.aria.State.CHECKED,
         this.ariaStateFromCheckState_(state));
   }
 };
@@ -151,8 +157,9 @@ goog.ui.CheckboxRenderer.prototype.ariaStateFromCheckState_ = function(state) {
   if (state ==
       /** @suppress {missingRequire} */ goog.ui.Checkbox.State.UNDETERMINED) {
     return 'mixed';
-  } else if (state ==
-             /** @suppress {missingRequire} */ goog.ui.Checkbox.State.CHECKED) {
+  } else if (
+      state ==
+      /** @suppress {missingRequire} */ goog.ui.Checkbox.State.CHECKED) {
     return 'true';
   } else {
     return 'false';
@@ -178,13 +185,15 @@ goog.ui.CheckboxRenderer.prototype.getClassForCheckboxState = function(state) {
   if (state ==
       /** @suppress {missingRequire} */ goog.ui.Checkbox.State.CHECKED) {
     return goog.getCssName(baseClass, 'checked');
-  } else if (state ==
-             /** @suppress {missingRequire} */
-             goog.ui.Checkbox.State.UNCHECKED) {
+  } else if (
+      state ==
+      /** @suppress {missingRequire} */
+      goog.ui.Checkbox.State.UNCHECKED) {
     return goog.getCssName(baseClass, 'unchecked');
-  } else if (state ==
-             /** @suppress {missingRequire} */
-             goog.ui.Checkbox.State.UNDETERMINED) {
+  } else if (
+      state ==
+      /** @suppress {missingRequire} */
+      goog.ui.Checkbox.State.UNDETERMINED) {
     return goog.getCssName(baseClass, 'undetermined');
   }
   throw Error('Invalid checkbox state: ' + state);

@@ -145,13 +145,13 @@ goog.debug.Formatter.prototype.resetRelativeTimeStart = function() {
 goog.debug.Formatter.getDateTimeStamp_ = function(logRecord) {
   var time = new Date(logRecord.getMillis());
   return goog.debug.Formatter.getTwoDigitString_((time.getFullYear() - 2000)) +
-         goog.debug.Formatter.getTwoDigitString_((time.getMonth() + 1)) +
-         goog.debug.Formatter.getTwoDigitString_(time.getDate()) + ' ' +
-         goog.debug.Formatter.getTwoDigitString_(time.getHours()) + ':' +
-         goog.debug.Formatter.getTwoDigitString_(time.getMinutes()) + ':' +
-         goog.debug.Formatter.getTwoDigitString_(time.getSeconds()) + '.' +
-         goog.debug.Formatter.getTwoDigitString_(
-             Math.floor(time.getMilliseconds() / 10));
+      goog.debug.Formatter.getTwoDigitString_((time.getMonth() + 1)) +
+      goog.debug.Formatter.getTwoDigitString_(time.getDate()) + ' ' +
+      goog.debug.Formatter.getTwoDigitString_(time.getHours()) + ':' +
+      goog.debug.Formatter.getTwoDigitString_(time.getMinutes()) + ':' +
+      goog.debug.Formatter.getTwoDigitString_(time.getSeconds()) + '.' +
+      goog.debug.Formatter.getTwoDigitString_(
+          Math.floor(time.getMilliseconds() / 10));
 };
 
 
@@ -180,8 +180,7 @@ goog.debug.Formatter.getTwoDigitString_ = function(n) {
  *     start time.
  * @private
  */
-goog.debug.Formatter.getRelativeTime_ = function(logRecord,
-                                                 relativeTimeStart) {
+goog.debug.Formatter.getRelativeTime_ = function(logRecord, relativeTimeStart) {
   var ms = logRecord.getMillis() - relativeTimeStart;
   var sec = ms / 1000;
   var str = sec.toFixed(3);
@@ -278,9 +277,9 @@ goog.debug.HtmlFormatter.prototype.formatRecordAsHtml = function(logRecord) {
     sb.push('[', goog.debug.Formatter.getDateTimeStamp_(logRecord), '] ');
   }
   if (this.showRelativeTime) {
-    sb.push('[',
-        goog.debug.Formatter.getRelativeTime_(
-            logRecord, this.startTimeProvider_.get()),
+    sb.push(
+        '[', goog.debug.Formatter.getRelativeTime_(
+                 logRecord, this.startTimeProvider_.get()),
         's] ');
   }
   if (this.showLoggerName) {
@@ -296,22 +295,21 @@ goog.debug.HtmlFormatter.prototype.formatRecordAsHtml = function(logRecord) {
   var exceptionHtml = goog.html.SafeHtml.EMPTY;
   if (this.showExceptionText && logRecord.getException()) {
     exceptionHtml = goog.html.SafeHtml.concat(
-        goog.html.SafeHtml.create('br'),
+        goog.html.SafeHtml.BR,
         goog.debug.exposeExceptionAsHtml(logRecord.getException()));
   }
   var logRecordHtml = goog.html.SafeHtml.htmlEscapePreservingNewlinesAndSpaces(
       logRecord.getMessage());
   var recordAndExceptionHtml = goog.html.SafeHtml.create(
-      'span',
-      {'class': className},
+      'span', {'class': className},
       goog.html.SafeHtml.concat(logRecordHtml, exceptionHtml));
 
 
   // Combine both pieces of HTML and, if needed, append a final newline.
   var html;
   if (this.appendNewline) {
-    html = goog.html.SafeHtml.concat(fullPrefixHtml, recordAndExceptionHtml,
-        goog.html.SafeHtml.create('br'));
+    html = goog.html.SafeHtml.concat(
+        fullPrefixHtml, recordAndExceptionHtml, goog.html.SafeHtml.BR);
   } else {
     html = goog.html.SafeHtml.concat(fullPrefixHtml, recordAndExceptionHtml);
   }
@@ -347,8 +345,10 @@ goog.debug.TextFormatter.prototype.formatRecord = function(logRecord) {
     sb.push('[', goog.debug.Formatter.getDateTimeStamp_(logRecord), '] ');
   }
   if (this.showRelativeTime) {
-    sb.push('[', goog.debug.Formatter.getRelativeTime_(logRecord,
-        this.startTimeProvider_.get()), 's] ');
+    sb.push(
+        '[', goog.debug.Formatter.getRelativeTime_(
+                 logRecord, this.startTimeProvider_.get()),
+        's] ');
   }
 
   if (this.showLoggerName) {
@@ -361,9 +361,8 @@ goog.debug.TextFormatter.prototype.formatRecord = function(logRecord) {
   if (this.showExceptionText) {
     var exception = logRecord.getException();
     if (exception) {
-      var exceptionText = exception instanceof Error ?
-          exception.message :
-          exception.toString();
+      var exceptionText =
+          exception instanceof Error ? exception.message : exception.toString();
       sb.push('\n', exceptionText);
     }
   }

@@ -337,7 +337,7 @@ goog.math.Integer.prototype.isNegative = function() {
 /** @return {boolean} Whether this value is odd. */
 goog.math.Integer.prototype.isOdd = function() {
   return (this.bits_.length == 0) && (this.sign_ == -1) ||
-         (this.bits_.length > 0) && ((this.bits_[0] & 1) != 0);
+      (this.bits_.length > 0) && ((this.bits_[0] & 1) != 0);
 };
 
 
@@ -776,7 +776,7 @@ goog.math.Integer.prototype.shiftLeft = function(numBits) {
   for (var i = 0; i < len; i++) {
     if (bit_delta > 0) {
       arr[i] = (this.getBits(i - arr_delta) << bit_delta) |
-               (this.getBits(i - arr_delta - 1) >>> (32 - bit_delta));
+          (this.getBits(i - arr_delta - 1) >>> (32 - bit_delta));
     } else {
       arr[i] = this.getBits(i - arr_delta);
     }
@@ -798,7 +798,7 @@ goog.math.Integer.prototype.shiftRight = function(numBits) {
   for (var i = 0; i < len; i++) {
     if (bit_delta > 0) {
       arr[i] = (this.getBits(i + arr_delta) >>> bit_delta) |
-               (this.getBits(i + arr_delta + 1) << (32 - bit_delta));
+          (this.getBits(i + arr_delta + 1) << (32 - bit_delta));
     } else {
       arr[i] = this.getBits(i + arr_delta);
     }

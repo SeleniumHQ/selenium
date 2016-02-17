@@ -474,6 +474,6 @@ goog.vec.Vec4.min = function(vec0, limit, resultVec) {
  * @return {boolean} True if the vectors are equal, false otherwise.
  */
 goog.vec.Vec4.equals = function(v0, v1) {
-  return v0.length == v1.length &&
-      v0[0] == v1[0] && v0[1] == v1[1] && v0[2] == v1[2] && v0[3] == v1[3];
+  return v0.length == v1.length && v0[0] == v1[0] && v0[1] == v1[1] &&
+      v0[2] == v1[2] && v0[3] == v1[3];
 };

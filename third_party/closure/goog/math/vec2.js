@@ -290,6 +290,6 @@ goog.math.Vec2.determinant = function(a, b) {
  * @return {!goog.math.Vec2} The interpolated vector.
  */
 goog.math.Vec2.lerp = function(a, b, x) {
-  return new goog.math.Vec2(goog.math.lerp(a.x, b.x, x),
-                            goog.math.lerp(a.y, b.y, x));
+  return new goog.math.Vec2(
+      goog.math.lerp(a.x, b.x, x), goog.math.lerp(a.y, b.y, x));
 };

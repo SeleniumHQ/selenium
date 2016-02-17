@@ -43,10 +43,10 @@ goog.style.transform.isSupported = goog.functions.cacheReturnValue(function() {
  */
 goog.style.transform.is3dSupported =
     goog.functions.cacheReturnValue(function() {
-  return goog.userAgent.WEBKIT ||
-      (goog.userAgent.GECKO && goog.userAgent.product.isVersion(10)) ||
-      (goog.userAgent.IE && goog.userAgent.product.isVersion(10));
-});
+      return goog.userAgent.WEBKIT || goog.userAgent.EDGE ||
+          (goog.userAgent.GECKO && goog.userAgent.product.isVersion(10)) ||
+          (goog.userAgent.IE && goog.userAgent.product.isVersion(10));
+    });
 
 
 /**
@@ -84,10 +84,11 @@ goog.style.transform.setTranslation = function(element, x, y) {
   // TODO(user): After http://crbug.com/324107 is fixed, it will be faster to
   // use something like: translation = new CSSMatrix().translate(x, y, 0);
   var translation = goog.style.transform.is3dSupported() ?
-      'translate3d(' + x + 'px,' + y + 'px,' + '0px)' :
+      'translate3d(' + x + 'px,' + y + 'px,' +
+          '0px)' :
       'translate(' + x + 'px,' + y + 'px)';
-  goog.style.setStyle(element,
-      goog.style.transform.getTransformProperty_(), translation);
+  goog.style.setStyle(
+      element, goog.style.transform.getTransformProperty_(), translation);
   return true;
 };
 
@@ -128,8 +129,8 @@ goog.style.transform.setScale = function(element, x, y, z) {
   var scale = goog.style.transform.is3dSupported() ?
       'scale3d(' + x + ',' + y + ',' + z + ')' :
       'scale(' + x + ',' + y + ')';
-  goog.style.setStyle(element,
-      goog.style.transform.getTransformProperty_(), scale);
+  goog.style.setStyle(
+      element, goog.style.transform.getTransformProperty_(), scale);
   return true;
 };
 
@@ -143,9 +144,10 @@ goog.style.transform.setScale = function(element, x, y, z) {
  */
 goog.style.transform.getTransformProperty_ =
     goog.functions.cacheReturnValue(function() {
-  return goog.userAgent.IE && goog.userAgent.DOCUMENT_MODE == 9 ?
-      '-ms-transform' : 'transform';
-});
+      return goog.userAgent.IE && goog.userAgent.DOCUMENT_MODE == 9 ?
+          '-ms-transform' :
+          'transform';
+    });
 
 
 /**
@@ -156,14 +158,14 @@ goog.style.transform.getTransformProperty_ =
  */
 goog.style.transform.matrixConstructor_ =
     goog.functions.cacheReturnValue(function() {
-  if (goog.isDef(goog.global['WebKitCSSMatrix'])) {
-    return goog.global['WebKitCSSMatrix'];
-  }
-  if (goog.isDef(goog.global['MSCSSMatrix'])) {
-    return goog.global['MSCSSMatrix'];
-  }
-  if (goog.isDef(goog.global['CSSMatrix'])) {
-    return goog.global['CSSMatrix'];
-  }
-  return null;
-});
+      if (goog.isDef(goog.global['WebKitCSSMatrix'])) {
+        return goog.global['WebKitCSSMatrix'];
+      }
+      if (goog.isDef(goog.global['MSCSSMatrix'])) {
+        return goog.global['MSCSSMatrix'];
+      }
+      if (goog.isDef(goog.global['CSSMatrix'])) {
+        return goog.global['CSSMatrix'];
+      }
+      return null;
+    });

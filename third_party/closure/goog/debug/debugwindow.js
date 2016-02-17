@@ -117,7 +117,7 @@ goog.debug.DebugWindow.MAX_SAVED = 500;
  * How long to keep the cookies for in milliseconds
  * @type {number}
  */
-goog.debug.DebugWindow.COOKIE_TIME = 30 * 24 * 60 * 60 * 1000; // 30-days
+goog.debug.DebugWindow.COOKIE_TIME = 30 * 24 * 60 * 60 * 1000;  // 30-days
 
 
 /**
@@ -240,8 +240,8 @@ goog.debug.DebugWindow.prototype.setEnabled = function(enable) {
  * encountered.
  * @param {boolean} enableOnSevere Whether to enable on severe logs..
  */
-goog.debug.DebugWindow.prototype.setForceEnableOnSevere =
-    function(enableOnSevere) {
+goog.debug.DebugWindow.prototype.setForceEnableOnSevere = function(
+    enableOnSevere) {
   this.enableOnSevere_ = enableOnSevere;
 };
 
@@ -385,8 +385,8 @@ goog.debug.DebugWindow.prototype.writeBufferToLog = function() {
   this.lastCall = goog.now();
   if (this.hasActiveWindow()) {
     var body = this.win.document.body;
-    var scroll = body &&
-        body.scrollHeight - (body.scrollTop + body.clientHeight) <= 100;
+    var scroll =
+        body && body.scrollHeight - (body.scrollTop + body.clientHeight) <= 100;
 
     goog.dom.safe.documentWrite(
         this.win.document, goog.html.SafeHtml.concat(this.outputBuffer));
@@ -427,10 +427,11 @@ goog.debug.DebugWindow.prototype.openWindow_ = function() {
   var h = Number(winpos[3]);
 
   this.winOpening_ = true;
-  this.win = window.open('', this.getWindowName_(), 'width=' + w +
-                         ',height=' + h + ',toolbar=no,resizable=yes,' +
-                         'scrollbars=yes,left=' + x + ',top=' + y +
-                         ',status=no,screenx=' + x + ',screeny=' + y);
+  this.win = window.open(
+      '', this.getWindowName_(), 'width=' + w + ',height=' + h +
+          ',toolbar=no,resizable=yes,' +
+          'scrollbars=yes,left=' + x + ',top=' + y + ',status=no,screenx=' + x +
+          ',screeny=' + y);
 
   if (!this.win) {
     if (!goog.debug.DebugWindow.showedBlockedAlert_) {
@@ -455,8 +456,8 @@ goog.debug.DebugWindow.prototype.openWindow_ = function() {
  * @private
  */
 goog.debug.DebugWindow.prototype.getWindowName_ = function() {
-  return goog.userAgent.IE ?
-      this.identifier.replace(/[\s\-\.\,]/g, '_') : this.identifier;
+  return goog.userAgent.IE ? this.identifier.replace(/[\s\-\.\,]/g, '_') :
+                             this.identifier;
 };
 
 
@@ -465,15 +466,16 @@ goog.debug.DebugWindow.prototype.getWindowName_ = function() {
  *     initial HTML.
  */
 goog.debug.DebugWindow.prototype.getStyleRules = function() {
-  return goog.html.SafeStyleSheet.fromConstant(goog.string.Const.from(
-      '*{font:normal 14px monospace;}' +
-      '.dbg-sev{color:#F00}' +
-      '.dbg-w{color:#E92}' +
-      '.dbg-sh{background-color:#fd4;font-weight:bold;color:#000}' +
-      '.dbg-i{color:#666}' +
-      '.dbg-f{color:#999}' +
-      '.dbg-ev{color:#0A0}' +
-      '.dbg-m{color:#990}'));
+  return goog.html.SafeStyleSheet.fromConstant(
+      goog.string.Const.from(
+          '*{font:normal 14px monospace;}' +
+          '.dbg-sev{color:#F00}' +
+          '.dbg-w{color:#E92}' +
+          '.dbg-sh{background-color:#fd4;font-weight:bold;color:#000}' +
+          '.dbg-i{color:#666}' +
+          '.dbg-f{color:#999}' +
+          '.dbg-ev{color:#0A0}' +
+          '.dbg-m{color:#990}'));
 };
 
 
@@ -491,17 +493,15 @@ goog.debug.DebugWindow.prototype.writeInitialDocument = function() {
   var div = goog.html.SafeHtml.create(
       'div', {
         'class': 'dbg-ev',
-        'style': goog.string.Const.from('text-align:center;')},
+        'style': goog.string.Const.from('text-align:center;')
+      },
       goog.html.SafeHtml.concat(
-          this.welcomeMessage,
-          goog.html.SafeHtml.create('br'),
+          this.welcomeMessage, goog.html.SafeHtml.BR,
           goog.html.SafeHtml.create(
               'small', {}, 'Logger: ' + this.identifier)));
   var html = goog.html.SafeHtml.concat(
       goog.html.SafeHtml.createStyle(this.getStyleRules()),
-      goog.html.SafeHtml.create('hr'),
-      div,
-      goog.html.SafeHtml.create('hr'));
+      goog.html.SafeHtml.create('hr'), div, goog.html.SafeHtml.create('hr'));
 
   this.writeToLog_(html);
   this.writeSavedMessages();
@@ -568,8 +568,9 @@ goog.debug.DebugWindow.getCookieValue_ = function(
   var start = cookie.indexOf(fullKey + '=');
   if (start != -1) {
     var end = cookie.indexOf(';', start);
-    return decodeURIComponent(cookie.substring(start + fullKey.length + 1,
-        end == -1 ? cookie.length : end));
+    return decodeURIComponent(
+        cookie.substring(
+            start + fullKey.length + 1, end == -1 ? cookie.length : end));
   } else {
     return opt_default || '';
   }

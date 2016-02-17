@@ -104,11 +104,12 @@ goog.ui.AbstractSpellChecker = function(spellCheck, opt_domHelper) {
    */
   this.splitRegex_ = new RegExp(
       '([^' + goog.spell.SpellCheck.WORD_BOUNDARY_CHARS + ']*)' +
-      '([' + goog.spell.SpellCheck.WORD_BOUNDARY_CHARS + ']*)', 'g');
+          '([' + goog.spell.SpellCheck.WORD_BOUNDARY_CHARS + ']*)',
+      'g');
 
-  goog.events.listen(this.spellCheck,
-      goog.spell.SpellCheck.EventType.WORD_CHANGED, this.onWordChanged_,
-      false, this);
+  goog.events.listen(
+      this.spellCheck, goog.spell.SpellCheck.EventType.WORD_CHANGED,
+      this.onWordChanged_, false, this);
 };
 goog.inherits(goog.ui.AbstractSpellChecker, goog.ui.Component);
 goog.tagUnsealableClass(goog.ui.AbstractSpellChecker);
@@ -459,8 +460,7 @@ goog.ui.AbstractSpellChecker.prototype.clearWordElements = function() {
  * @param {string} word Word to add.
  */
 goog.ui.AbstractSpellChecker.prototype.ignoreWord = function(word) {
-  this.spellCheck.setWordStatus(word,
-      goog.spell.SpellCheck.WordStatus.IGNORED);
+  this.spellCheck.setWordStatus(word, goog.spell.SpellCheck.WordStatus.IGNORED);
 };
 
 
@@ -485,7 +485,8 @@ goog.ui.AbstractSpellChecker.prototype.editWord_ = function(el, old) {
   try {
     input.focus();
     goog.dom.selection.setCursorPosition(input, old.length);
-  } catch (o) { }
+  } catch (o) {
+  }
 
   this.inputElements_.push(input);
 };
@@ -570,8 +571,8 @@ goog.ui.AbstractSpellChecker.prototype.getSuggestions_ = function() {
  *     display menu at relative to the viewport (in client coordinates), or a
  *     mouse event.
  */
-goog.ui.AbstractSpellChecker.prototype.showSuggestionsMenu = function(el,
-                                                                      opt_pos) {
+goog.ui.AbstractSpellChecker.prototype.showSuggestionsMenu = function(
+    el, opt_pos) {
   this.activeWord_ = goog.dom.getTextContent(el);
   this.activeElement_ = el;
 
@@ -583,15 +584,16 @@ goog.ui.AbstractSpellChecker.prototype.showSuggestionsMenu = function(el,
   // Add new suggestion entries.
   var suggestions = this.getSuggestions_();
   for (var suggestion, i = 0; suggestion = suggestions[i]; i++) {
-    this.menu_.addChildAt(new goog.ui.MenuItem(
-        suggestion, suggestion, this.getDomHelper()), i, true);
+    this.menu_.addChildAt(
+        new goog.ui.MenuItem(suggestion, suggestion, this.getDomHelper()), i,
+        true);
   }
 
   if (!suggestions[0]) {
     /** @desc Item shown in menu when no suggestions are available. */
     var MSG_SPELL_NO_SUGGESTIONS = goog.getMsg('No Suggestions');
-    var item = new goog.ui.MenuItem(
-        MSG_SPELL_NO_SUGGESTIONS, '', this.getDomHelper());
+    var item =
+        new goog.ui.MenuItem(MSG_SPELL_NO_SUGGESTIONS, '', this.getDomHelper());
     item.setEnabled(false);
     this.menu_.addChildAt(item, 0, true);
   }
@@ -599,8 +601,8 @@ goog.ui.AbstractSpellChecker.prototype.showSuggestionsMenu = function(el,
   // Show 'Edit word' option if {@link markCorrected} is enabled and don't show
   // 'Ignore' option for corrected words.
   if (this.markCorrected) {
-    var corrected = this.correctedWords_ &&
-                    this.correctedWords_.contains(this.activeWord_);
+    var corrected =
+        this.correctedWords_ && this.correctedWords_.contains(this.activeWord_);
     this.menuIgnore_.setVisible(!corrected);
     this.menuEdit_.setVisible(true);
   } else {
@@ -609,7 +611,7 @@ goog.ui.AbstractSpellChecker.prototype.showSuggestionsMenu = function(el,
   }
 
   if (opt_pos) {
-    if (!(opt_pos instanceof goog.math.Coordinate)) { // it's an event
+    if (!(opt_pos instanceof goog.math.Coordinate)) {  // it's an event
       var posX = opt_pos.clientX;
       var posY = opt_pos.clientY;
       // Certain implementations which derive from AbstractSpellChecker
@@ -662,11 +664,11 @@ goog.ui.AbstractSpellChecker.prototype.initSuggestionsMenu = function() {
 
   var menuElement = this.menu_.getElement();
   goog.asserts.assert(menuElement);
-  goog.dom.classlist.add(menuElement,
-      this.suggestionsMenuClassName);
+  goog.dom.classlist.add(menuElement, this.suggestionsMenuClassName);
 
-  goog.events.listen(this.menu_, goog.ui.Component.EventType.ACTION,
-      this.onCorrectionAction, false, this);
+  goog.events.listen(
+      this.menu_, goog.ui.Component.EventType.ACTION, this.onCorrectionAction,
+      false, this);
 };
 
 
@@ -703,17 +705,17 @@ goog.ui.AbstractSpellChecker.prototype.removeMarkup = function(el) {
   var firstChild = el.firstChild;
   var text = firstChild.nodeValue;
 
-  if (el.nextSibling &&
-      el.nextSibling.nodeType == goog.dom.NodeType.TEXT) {
+  if (el.nextSibling && el.nextSibling.nodeType == goog.dom.NodeType.TEXT) {
     if (el.previousSibling &&
         el.previousSibling.nodeType == goog.dom.NodeType.TEXT) {
-      el.previousSibling.nodeValue = el.previousSibling.nodeValue + text +
-          el.nextSibling.nodeValue;
+      el.previousSibling.nodeValue =
+          el.previousSibling.nodeValue + text + el.nextSibling.nodeValue;
       this.getDomHelper().removeNode(el.nextSibling);
     } else {
       el.nextSibling.nodeValue = text + el.nextSibling.nodeValue;
     }
-  } else if (el.previousSibling &&
+  } else if (
+      el.previousSibling &&
       el.previousSibling.nodeType == goog.dom.NodeType.TEXT) {
     el.previousSibling.nodeValue += text;
   } else {
@@ -734,8 +736,8 @@ goog.ui.AbstractSpellChecker.prototype.removeMarkup = function(el) {
  * @param {goog.spell.SpellCheck.WordStatus} status Status of word.
  * @protected
  */
-goog.ui.AbstractSpellChecker.prototype.updateElement =
-    function(el, word, status) {
+goog.ui.AbstractSpellChecker.prototype.updateElement = function(
+    el, word, status) {
   if (this.markCorrected && this.correctedWords_ &&
       this.correctedWords_.contains(word)) {
     status = goog.spell.SpellCheck.WordStatus.CORRECTED;
@@ -858,9 +860,9 @@ goog.ui.AbstractSpellChecker.prototype.disposeInternal = function() {
     this.resume();
   }
 
-  goog.events.unlisten(this.spellCheck,
-      goog.spell.SpellCheck.EventType.WORD_CHANGED, this.onWordChanged_,
-      false, this);
+  goog.events.unlisten(
+      this.spellCheck, goog.spell.SpellCheck.EventType.WORD_CHANGED,
+      this.onWordChanged_, false, this);
 
   if (this.menu_) {
     this.menu_.dispose();
@@ -885,8 +887,8 @@ goog.ui.AbstractSpellChecker.prototype.disposeInternal = function() {
  * @return {number} number of words actually scanned.
  * @protected
  */
-goog.ui.AbstractSpellChecker.prototype.populateDictionary = function(text,
-                                                                     words) {
+goog.ui.AbstractSpellChecker.prototype.populateDictionary = function(
+    text, words) {
   this.splitRegex_.lastIndex = 0;
   var result;
   var numScanned = 0;
@@ -982,7 +984,8 @@ goog.ui.AbstractSpellChecker.prototype.finishAsyncProcessing = function() {
  * @protected
  */
 goog.ui.AbstractSpellChecker.prototype.blockReadyEvents = function() {
-  goog.events.listen(this.spellCheck, goog.spell.SpellCheck.EventType.READY,
+  goog.events.listen(
+      this.spellCheck, goog.spell.SpellCheck.EventType.READY,
       goog.events.Event.stopPropagation, true);
 };
 
@@ -995,7 +998,8 @@ goog.ui.AbstractSpellChecker.prototype.blockReadyEvents = function() {
  * @protected
  */
 goog.ui.AbstractSpellChecker.prototype.unblockReadyEvents = function() {
-  goog.events.unlisten(this.spellCheck, goog.spell.SpellCheck.EventType.READY,
+  goog.events.unlisten(
+      this.spellCheck, goog.spell.SpellCheck.EventType.READY,
       goog.events.Event.stopPropagation, true);
 };
 
@@ -1009,8 +1013,7 @@ goog.ui.AbstractSpellChecker.prototype.unblockReadyEvents = function() {
  * @return {goog.ui.AbstractSpellChecker.AsyncResult} operation result.
  * @protected
  */
-goog.ui.AbstractSpellChecker.prototype.processTextAsync = function(
-    node, text) {
+goog.ui.AbstractSpellChecker.prototype.processTextAsync = function(node, text) {
   if (!this.asyncMode_ || this.asyncText_ != null || this.asyncNode_) {
     throw Error('Not in async mode or previous text has not been processed.');
   }
@@ -1027,8 +1030,8 @@ goog.ui.AbstractSpellChecker.prototype.processTextAsync = function(
     if (word) {
       var status = this.spellCheck.checkWord(word);
       if (status != goog.spell.SpellCheck.WordStatus.VALID) {
-        var preceedingText = text.substr(stringSegmentStart, result.index -
-            stringSegmentStart);
+        var preceedingText =
+            text.substr(stringSegmentStart, result.index - stringSegmentStart);
         if (preceedingText) {
           this.processRange(node, preceedingText);
         }
@@ -1080,8 +1083,8 @@ goog.ui.AbstractSpellChecker.prototype.continueAsyncProcessing = function() {
     if (word) {
       var status = this.spellCheck.checkWord(word);
       if (status != goog.spell.SpellCheck.WordStatus.VALID) {
-        var preceedingText = text.substr(stringSegmentStart, result.index -
-            stringSegmentStart);
+        var preceedingText =
+            text.substr(stringSegmentStart, result.index - stringSegmentStart);
         if (preceedingText) {
           this.processRange(node, preceedingText);
         }
@@ -1185,8 +1188,8 @@ goog.ui.AbstractSpellChecker.prototype.getFocusedElementIndex = function() {
  * @param {number} focusElementIndex the index of the currently focussed element
  * @protected
  */
-goog.ui.AbstractSpellChecker.prototype.setFocusedElementIndex =
-    function(focusElementIndex) {
+goog.ui.AbstractSpellChecker.prototype.setFocusedElementIndex = function(
+    focusElementIndex) {
   this.focusedElementIndex_ = focusElementIndex;
 };
 

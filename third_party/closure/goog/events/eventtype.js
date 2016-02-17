@@ -32,9 +32,10 @@ goog.require('goog.userAgent');
  * @private
  */
 goog.events.getVendorPrefixedName_ = function(eventName) {
-  return goog.userAgent.WEBKIT ? 'webkit' + eventName :
+  return goog.userAgent.WEBKIT ?
+      'webkit' + eventName :
       (goog.userAgent.OPERA ? 'o' + eventName.toLowerCase() :
-          eventName.toLowerCase());
+                              eventName.toLowerCase());
 };
 
 
@@ -56,7 +57,7 @@ goog.events.EventType = {
   MOUSELEAVE: 'mouseleave',
   // Select start is non-standard.
   // See http://msdn.microsoft.com/en-us/library/ie/ms536969(v=vs.85).aspx.
-  SELECTSTART: 'selectstart', // IE, Safari, Chrome
+  SELECTSTART: 'selectstart',  // IE, Safari, Chrome
 
   // Wheel events
   // http://www.w3.org/TR/DOM-Level-3-Events/#events-wheelevents
@@ -70,7 +71,7 @@ goog.events.EventType = {
   // Focus
   BLUR: 'blur',
   FOCUS: 'focus',
-  DEACTIVATE: 'deactivate', // IE only
+  DEACTIVATE: 'deactivate',  // IE only
   // NOTE: The following two events are not stable in cross-browser usage.
   //     WebKit and Opera implement DOMFocusIn/Out.
   //     IE implements focusin/out.
@@ -88,7 +89,7 @@ goog.events.EventType = {
   SELECT: 'select',
   SUBMIT: 'submit',
   INPUT: 'input',
-  PROPERTYCHANGE: 'propertychange', // IE only
+  PROPERTYCHANGE: 'propertychange',  // IE only
 
   // Drag and drop
   DRAGSTART: 'dragstart',

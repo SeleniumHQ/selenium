@@ -900,7 +900,7 @@ goog.async.Deferred.Error_.prototype.resetTimer = function() {
 
 /**
  * Map of unhandled errors scheduled to be rethrown in a future timestep.
- * @private {!Object<number|string, goog.async.Deferred.Error_>}
+ * @private {!Object<(number|string), goog.async.Deferred.Error_>}
  */
 goog.async.Deferred.errorMap_ = {};
 

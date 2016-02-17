@@ -57,8 +57,8 @@ goog.require('goog.style');
  * @param {goog.dom.DomHelper=} opt_domHelper An optional DOM helper.
  * @constructor
  */
-goog.ui.Zippy = function(header, opt_content, opt_expanded,
-    opt_expandedHeader, opt_domHelper) {
+goog.ui.Zippy = function(
+    header, opt_content, opt_expanded, opt_expandedHeader, opt_domHelper) {
   goog.ui.Zippy.base(this, 'constructor');
 
   /**
@@ -96,7 +96,8 @@ goog.ui.Zippy = function(header, opt_content, opt_expanded,
    * @type {Element}
    * @private
    */
-  this.elContent_ = this.lazyCreateFunc_ || !opt_content ? null :
+  this.elContent_ = this.lazyCreateFunc_ || !opt_content ?
+      null :
       this.dom_.getElement(/** @type {!Element} */ (opt_content));
 
   /**
@@ -214,7 +215,8 @@ goog.ui.Zippy.prototype.getContentElement = function() {
 goog.ui.Zippy.prototype.getVisibleHeaderElement = function() {
   var expandedHeader = this.elExpandedHeader_;
   return expandedHeader && goog.style.isElementShown(expandedHeader) ?
-      expandedHeader : this.elHeader_;
+      expandedHeader :
+      this.elHeader_;
 };
 
 
@@ -256,8 +258,8 @@ goog.ui.Zippy.prototype.setExpanded = function(expanded) {
     this.elContent_ = this.lazyCreateFunc_();
   }
   if (this.elContent_) {
-    goog.dom.classlist.add(this.elContent_,
-        goog.getCssName('goog-zippy-content'));
+    goog.dom.classlist.add(
+        this.elContent_, goog.getCssName('goog-zippy-content'));
   }
 
   if (this.elExpandedHeader_) {
@@ -272,8 +274,9 @@ goog.ui.Zippy.prototype.setExpanded = function(expanded) {
   this.setExpandedInternal(expanded);
 
   // Fire toggle event
-  this.dispatchEvent(new goog.ui.ZippyEvent(goog.ui.Zippy.Events.TOGGLE,
-                                            this, this.expanded_));
+  this.dispatchEvent(
+      new goog.ui.ZippyEvent(
+          goog.ui.Zippy.Events.TOGGLE, this, this.expanded_));
 };
 
 
@@ -305,13 +308,12 @@ goog.ui.Zippy.prototype.isExpanded = function() {
  */
 goog.ui.Zippy.prototype.updateHeaderClassName = function(expanded) {
   if (this.elHeader_) {
-    goog.dom.classlist.enable(this.elHeader_,
-        goog.getCssName('goog-zippy-expanded'), expanded);
-    goog.dom.classlist.enable(this.elHeader_,
-        goog.getCssName('goog-zippy-collapsed'), !expanded);
-    goog.a11y.aria.setState(this.elHeader_,
-        goog.a11y.aria.State.EXPANDED,
-        expanded);
+    goog.dom.classlist.enable(
+        this.elHeader_, goog.getCssName('goog-zippy-expanded'), expanded);
+    goog.dom.classlist.enable(
+        this.elHeader_, goog.getCssName('goog-zippy-collapsed'), !expanded);
+    goog.a11y.aria.setState(
+        this.elHeader_, goog.a11y.aria.State.EXPANDED, expanded);
   }
 };
 
@@ -373,8 +375,8 @@ goog.ui.Zippy.prototype.setHandleMouseEvents = function(enable) {
  */
 goog.ui.Zippy.prototype.enableKeyboardEventsHandling_ = function(header) {
   if (header) {
-    this.keyboardEventHandler_.listen(header, goog.events.EventType.KEYDOWN,
-        this.onHeaderKeyDown_);
+    this.keyboardEventHandler_.listen(
+        header, goog.events.EventType.KEYDOWN, this.onHeaderKeyDown_);
   }
 };
 
@@ -386,8 +388,8 @@ goog.ui.Zippy.prototype.enableKeyboardEventsHandling_ = function(header) {
  */
 goog.ui.Zippy.prototype.enableMouseEventsHandling_ = function(header) {
   if (header) {
-    this.mouseEventHandler_.listen(header, goog.events.EventType.CLICK,
-        this.onHeaderClick_);
+    this.mouseEventHandler_.listen(
+        header, goog.events.EventType.CLICK, this.onHeaderClick_);
   }
 };
 
@@ -402,7 +404,6 @@ goog.ui.Zippy.prototype.enableMouseEventsHandling_ = function(header) {
 goog.ui.Zippy.prototype.onHeaderKeyDown_ = function(event) {
   if (event.keyCode == goog.events.KeyCodes.ENTER ||
       event.keyCode == goog.events.KeyCodes.SPACE) {
-
     this.toggle();
     this.dispatchActionEvent_();
 

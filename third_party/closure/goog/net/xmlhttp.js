@@ -92,8 +92,7 @@ goog.net.XmlHttp.OptionType = {
 
 /**
  * Status constants for XMLHTTP, matches:
- * http://msdn.microsoft.com/library/default.asp?url=/library/
- *   en-us/xmlsdk/html/0e6a34e4-f90c-489d-acff-cb44242fafc6.asp
+ * https://msdn.microsoft.com/en-us/library/ms534361(v=vs.85).aspx
  * @enum {number}
  */
 goog.net.XmlHttp.ReadyState = {
@@ -139,9 +138,9 @@ goog.net.XmlHttp.factory_;
  * @deprecated Use setGlobalFactory instead.
  */
 goog.net.XmlHttp.setFactory = function(factory, optionsFactory) {
-  goog.net.XmlHttp.setGlobalFactory(new goog.net.WrapperXmlHttpFactory(
-      goog.asserts.assert(factory),
-      goog.asserts.assert(optionsFactory)));
+  goog.net.XmlHttp.setGlobalFactory(
+      new goog.net.WrapperXmlHttpFactory(
+          goog.asserts.assert(factory), goog.asserts.assert(optionsFactory)));
 };
 
 
@@ -217,8 +216,10 @@ goog.net.DefaultXmlHttpFactory.prototype.getProgId_ = function() {
   if (!this.ieProgId_ && typeof XMLHttpRequest == 'undefined' &&
       typeof ActiveXObject != 'undefined') {
     // Candidate Active X types.
-    var ACTIVE_X_IDENTS = ['MSXML2.XMLHTTP.6.0', 'MSXML2.XMLHTTP.3.0',
-                           'MSXML2.XMLHTTP', 'Microsoft.XMLHTTP'];
+    var ACTIVE_X_IDENTS = [
+      'MSXML2.XMLHTTP.6.0', 'MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP',
+      'Microsoft.XMLHTTP'
+    ];
     for (var i = 0; i < ACTIVE_X_IDENTS.length; i++) {
       var candidate = ACTIVE_X_IDENTS[i];
       /** @preserveTry */
@@ -234,13 +235,14 @@ goog.net.DefaultXmlHttpFactory.prototype.getProgId_ = function() {
     }
 
     // couldn't find any matches
-    throw Error('Could not create ActiveXObject. ActiveX might be disabled,' +
-                ' or MSXML might not be installed');
+    throw Error(
+        'Could not create ActiveXObject. ActiveX might be disabled,' +
+        ' or MSXML might not be installed');
   }
 
   return /** @type {string} */ (this.ieProgId_);
 };
 
 
-//Set the global factory to an instance of the default factory.
+// Set the global factory to an instance of the default factory.
 goog.net.XmlHttp.setGlobalFactory(new goog.net.DefaultXmlHttpFactory());

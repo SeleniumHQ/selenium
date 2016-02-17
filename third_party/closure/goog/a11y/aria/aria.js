@@ -55,23 +55,12 @@ goog.a11y.aria.ROLE_ATTRIBUTE_ = 'role';
  * @private
  */
 goog.a11y.aria.TAGS_WITH_ASSUMED_ROLES_ = [
-  goog.dom.TagName.A,
-  goog.dom.TagName.AREA,
-  goog.dom.TagName.BUTTON,
-  goog.dom.TagName.HEAD,
-  goog.dom.TagName.INPUT,
-  goog.dom.TagName.LINK,
-  goog.dom.TagName.MENU,
-  goog.dom.TagName.META,
-  goog.dom.TagName.OPTGROUP,
-  goog.dom.TagName.OPTION,
-  goog.dom.TagName.PROGRESS,
-  goog.dom.TagName.STYLE,
-  goog.dom.TagName.SELECT,
-  goog.dom.TagName.SOURCE,
-  goog.dom.TagName.TEXTAREA,
-  goog.dom.TagName.TITLE,
-  goog.dom.TagName.TRACK
+  goog.dom.TagName.A, goog.dom.TagName.AREA, goog.dom.TagName.BUTTON,
+  goog.dom.TagName.HEAD, goog.dom.TagName.INPUT, goog.dom.TagName.LINK,
+  goog.dom.TagName.MENU, goog.dom.TagName.META, goog.dom.TagName.OPTGROUP,
+  goog.dom.TagName.OPTION, goog.dom.TagName.PROGRESS, goog.dom.TagName.STYLE,
+  goog.dom.TagName.SELECT, goog.dom.TagName.SOURCE, goog.dom.TagName.TEXTAREA,
+  goog.dom.TagName.TITLE, goog.dom.TagName.TRACK
 ];
 
 
@@ -84,20 +73,13 @@ goog.a11y.aria.TAGS_WITH_ASSUMED_ROLES_ = [
  * @private @const
  */
 goog.a11y.aria.CONTAINER_ROLES_ = [
-  goog.a11y.aria.Role.COMBOBOX,
-  goog.a11y.aria.Role.GRID,
-  goog.a11y.aria.Role.GROUP,
-  goog.a11y.aria.Role.LISTBOX,
-  goog.a11y.aria.Role.MENU,
-  goog.a11y.aria.Role.MENUBAR,
-  goog.a11y.aria.Role.RADIOGROUP,
-  goog.a11y.aria.Role.ROW,
-  goog.a11y.aria.Role.ROWGROUP,
-  goog.a11y.aria.Role.TAB_LIST,
-  goog.a11y.aria.Role.TEXTBOX,
-  goog.a11y.aria.Role.TOOLBAR,
-  goog.a11y.aria.Role.TREE,
-  goog.a11y.aria.Role.TREEGRID
+  goog.a11y.aria.Role.COMBOBOX, goog.a11y.aria.Role.GRID,
+  goog.a11y.aria.Role.GROUP, goog.a11y.aria.Role.LISTBOX,
+  goog.a11y.aria.Role.MENU, goog.a11y.aria.Role.MENUBAR,
+  goog.a11y.aria.Role.RADIOGROUP, goog.a11y.aria.Role.ROW,
+  goog.a11y.aria.Role.ROWGROUP, goog.a11y.aria.Role.TAB_LIST,
+  goog.a11y.aria.Role.TEXTBOX, goog.a11y.aria.Role.TOOLBAR,
+  goog.a11y.aria.Role.TREE, goog.a11y.aria.Role.TREEGRID
 ];
 
 
@@ -119,8 +101,9 @@ goog.a11y.aria.setRole = function(element, roleName) {
     goog.a11y.aria.removeRole(element);
   } else {
     if (goog.asserts.ENABLE_ASSERTS) {
-      goog.asserts.assert(goog.object.containsValue(
-          goog.a11y.aria.Role, roleName), 'No such ARIA role ' + roleName);
+      goog.asserts.assert(
+          goog.object.containsValue(goog.a11y.aria.Role, roleName),
+          'No such ARIA role ' + roleName);
     }
     element.setAttribute(goog.a11y.aria.ROLE_ATTRIBUTE_, roleName);
   }
@@ -228,8 +211,9 @@ goog.a11y.aria.getState = function(element, stateName) {
   // getState(...) and setState(...) methods.
 
   var attr =
-      /** @type {string|number|boolean} */ (element.getAttribute(
-      goog.a11y.aria.getAriaAttributeName_(stateName)));
+      /** @type {string|number|boolean} */ (
+          element.getAttribute(
+              goog.a11y.aria.getAriaAttributeName_(stateName)));
   var isNullOrUndefined = attr == null || attr == undefined;
   return isNullOrUndefined ? '' : String(attr);
 };
@@ -243,8 +227,8 @@ goog.a11y.aria.getState = function(element, stateName) {
  * @return {?Element} DOM node of the activedescendant, if found.
  */
 goog.a11y.aria.getActiveDescendant = function(element) {
-  var id = goog.a11y.aria.getState(
-      element, goog.a11y.aria.State.ACTIVEDESCENDANT);
+  var id =
+      goog.a11y.aria.getState(element, goog.a11y.aria.State.ACTIVEDESCENDANT);
   return goog.dom.getOwnerDocument(element).getElementById(id);
 };
 
@@ -295,20 +279,20 @@ goog.a11y.aria.setLabel = function(element, label) {
  * the roles.
  */
 goog.a11y.aria.assertRoleIsSetInternalUtil = function(element, allowedRoles) {
-  if (goog.array.contains(goog.a11y.aria.TAGS_WITH_ASSUMED_ROLES_,
-      element.tagName)) {
+  if (goog.array.contains(
+          goog.a11y.aria.TAGS_WITH_ASSUMED_ROLES_, element.tagName)) {
     return;
   }
   var elementRole = /** @type {string}*/ (goog.a11y.aria.getRole(element));
-  goog.asserts.assert(elementRole != null,
-      'The element ARIA role cannot be null.');
+  goog.asserts.assert(
+      elementRole != null, 'The element ARIA role cannot be null.');
 
-  goog.asserts.assert(goog.array.contains(allowedRoles, elementRole),
+  goog.asserts.assert(
+      goog.array.contains(allowedRoles, elementRole),
       'Non existing or incorrect role set for element.' +
-      'The role set is "' + elementRole +
-      '". The role should be any of "' + allowedRoles +
-      '". Check the ARIA specification for more details ' +
-      'http://www.w3.org/TR/wai-aria/roles.');
+          'The role set is "' + elementRole + '". The role should be any of "' +
+          allowedRoles + '". Check the ARIA specification for more details ' +
+          'http://www.w3.org/TR/wai-aria/roles.');
 };
 
 
@@ -321,11 +305,12 @@ goog.a11y.aria.assertRoleIsSetInternalUtil = function(element, allowedRoles) {
  */
 goog.a11y.aria.getStateBoolean = function(element, stateName) {
   var attr =
-      /** @type {string|boolean} */ (element.getAttribute(
-          goog.a11y.aria.getAriaAttributeName_(stateName)));
+      /** @type {string|boolean} */ (
+          element.getAttribute(
+              goog.a11y.aria.getAriaAttributeName_(stateName)));
   goog.asserts.assert(
       goog.isBoolean(attr) || attr == null || attr == 'true' ||
-          attr == 'false');
+      attr == 'false');
   if (attr == null) {
     return attr;
   }
@@ -342,10 +327,11 @@ goog.a11y.aria.getStateBoolean = function(element, stateName) {
  */
 goog.a11y.aria.getStateNumber = function(element, stateName) {
   var attr =
-      /** @type {string|number} */ (element.getAttribute(
-          goog.a11y.aria.getAriaAttributeName_(stateName)));
-  goog.asserts.assert((attr == null || !isNaN(Number(attr))) &&
-      !goog.isBoolean(attr));
+      /** @type {string|number} */ (
+          element.getAttribute(
+              goog.a11y.aria.getAriaAttributeName_(stateName)));
+  goog.asserts.assert(
+      (attr == null || !isNaN(Number(attr))) && !goog.isBoolean(attr));
   return attr == null ? null : Number(attr);
 };
 
@@ -358,9 +344,10 @@ goog.a11y.aria.getStateNumber = function(element, stateName) {
  *     the state value is empty string or not set.
  */
 goog.a11y.aria.getStateString = function(element, stateName) {
-  var attr = element.getAttribute(
-      goog.a11y.aria.getAriaAttributeName_(stateName));
-  goog.asserts.assert((attr == null || goog.isString(attr)) &&
+  var attr =
+      element.getAttribute(goog.a11y.aria.getAriaAttributeName_(stateName));
+  goog.asserts.assert(
+      (attr == null || goog.isString(attr)) &&
       (attr == '' || isNaN(Number(attr))) && attr != 'true' && attr != 'false');
   return (attr == null || attr == '') ? null : attr;
 };
@@ -376,8 +363,8 @@ goog.a11y.aria.getStateString = function(element, stateName) {
  *     value of the state attribute.
  */
 goog.a11y.aria.getStringArrayStateInternalUtil = function(element, stateName) {
-  var attrValue = element.getAttribute(
-      goog.a11y.aria.getAriaAttributeName_(stateName));
+  var attrValue =
+      element.getAttribute(goog.a11y.aria.getAriaAttributeName_(stateName));
   return goog.a11y.aria.splitStringOnWhitespace_(attrValue);
 };
 
@@ -430,8 +417,8 @@ goog.a11y.aria.splitStringOnWhitespace_ = function(stringValue) {
 goog.a11y.aria.getAriaAttributeName_ = function(ariaName) {
   if (goog.asserts.ENABLE_ASSERTS) {
     goog.asserts.assert(ariaName, 'ARIA attribute cannot be empty.');
-    goog.asserts.assert(goog.object.containsValue(
-        goog.a11y.aria.State, ariaName),
+    goog.asserts.assert(
+        goog.object.containsValue(goog.a11y.aria.State, ariaName),
         'No such ARIA attribute ' + ariaName);
   }
   return goog.a11y.aria.ARIA_PREFIX_ + ariaName;

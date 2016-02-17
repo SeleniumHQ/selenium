@@ -88,7 +88,7 @@ goog.storage.ExpiringStorage.isExpired = function(wrapper) {
   var creation = goog.storage.ExpiringStorage.getCreationTime(wrapper);
   var expiration = goog.storage.ExpiringStorage.getExpirationTime(wrapper);
   return !!expiration && expiration < goog.now() ||
-         !!creation && creation > goog.now();
+      !!creation && creation > goog.now();
 };
 
 

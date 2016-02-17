@@ -61,8 +61,8 @@ goog.editor.ClickToEditWrapper = function(fieldObj) {
    * @type {goog.dom.DomHelper}
    * @private
    */
-  this.originalDomHelper_ = goog.dom.getDomHelper(
-      fieldObj.getOriginalElement());
+  this.originalDomHelper_ =
+      goog.dom.getDomHelper(fieldObj.getOriginalElement());
 
   /**
    * @type {goog.dom.SavedCaretRange}
@@ -96,12 +96,14 @@ goog.editor.ClickToEditWrapper = function(fieldObj) {
     this.enterDocument();
   }
 
-  this.fieldEventHandler_.
+  this.fieldEventHandler_
+      .
       // Whenever the field is made editable, we need to check if there
       // are any carets in it, and if so, use them to render the selection.
       listen(
           this.fieldObj_, goog.editor.Field.EventType.LOAD,
-          this.renderSelection_).
+          this.renderSelection_)
+      .
       // Whenever the field is made uneditable, we need to set up
       // the click-to-edit listeners.
       listen(
@@ -164,9 +166,9 @@ goog.editor.ClickToEditWrapper.prototype.enterDocument = function() {
   // implementation-specific, and computationally hard to detect (bidi
   // and ig modules both set innerHTML), so we just do it in all cases.
   this.savedAnchorClicked_ = null;
-  this.mouseEventHandler_.
-      listen(field, goog.events.EventType.MOUSEUP, this.handleMouseUp_).
-      listen(field, goog.events.EventType.CLICK, this.handleClick_);
+  this.mouseEventHandler_
+      .listen(field, goog.events.EventType.MOUSEUP, this.handleMouseUp_)
+      .listen(field, goog.events.EventType.CLICK, this.handleClick_);
 
   // manage lorem ipsum text, if necessary
   this.fieldObj_.execCommand(goog.editor.Command.UPDATE_LOREM);
@@ -190,8 +192,8 @@ goog.editor.ClickToEditWrapper.prototype.exitDocument = function() {
  * @return {Element} The element containing the editable field contents.
  */
 goog.editor.ClickToEditWrapper.prototype.getElement = function() {
-  return this.fieldObj_.isLoaded() ?
-      this.fieldObj_.getElement() : this.fieldObj_.getOriginalElement();
+  return this.fieldObj_.isLoaded() ? this.fieldObj_.getElement() :
+                                     this.fieldObj_.getOriginalElement();
 };
 
 
@@ -216,8 +218,7 @@ goog.editor.ClickToEditWrapper.prototype.handleClick_ = function(e) {
   // If the user clicked on a link in an uneditable field,
   // we want to cancel the click.
   var anchorAncestor = goog.dom.getAncestorByTagNameAndClass(
-      /** @type {Node} */ (e.target),
-      goog.dom.TagName.A);
+      /** @type {Node} */ (e.target), goog.dom.TagName.A);
   if (anchorAncestor) {
     e.preventDefault();
 
@@ -316,7 +317,6 @@ goog.editor.ClickToEditWrapper.prototype.renderSelection_ = function() {
   }
 
   if (hasCarets) {
-
     this.savedCaretRange_.restore();
     this.fieldObj_.dispatchSelectionChangeEvent();
 
@@ -398,15 +398,13 @@ goog.editor.ClickToEditWrapper.prototype.insertCarets_ = function() {
     // document.activeElement. In FF, we have to be more hacky.
     var specialNodeClicked;
     if (goog.editor.BrowserFeature.HAS_ACTIVE_ELEMENT) {
-      specialNodeClicked = goog.dom.getActiveElement(
-          this.originalDomHelper_.getDocument());
+      specialNodeClicked =
+          goog.dom.getActiveElement(this.originalDomHelper_.getDocument());
     } else {
       specialNodeClicked = this.savedAnchorClicked_;
     }
 
-    var isFieldElement = function(node) {
-      return node == fieldElement;
-    };
+    var isFieldElement = function(node) { return node == fieldElement; };
     if (specialNodeClicked &&
         goog.dom.getAncestor(specialNodeClicked, isFieldElement, true)) {
       // Insert the cursor at the beginning of the active element to be

@@ -29,6 +29,7 @@ goog.require('goog.net.HttpStatus');
 goog.require('goog.net.XhrIo');
 goog.require('goog.net.XmlHttp');
 goog.require('goog.object');
+goog.require('goog.structs');
 goog.require('goog.structs.Map');
 goog.require('goog.uri.utils');
 
@@ -125,18 +126,17 @@ goog.testing.net.XhrIo.cleanup = function() {
  *     request. Default to false. See {@link goog.net.XhrIo#setWithCredentials}.
  * @return {!goog.testing.net.XhrIo} The mocked sent XhrIo.
  */
-goog.testing.net.XhrIo.send = function(url, opt_callback, opt_method,
-                                       opt_content, opt_headers,
-                                       opt_timeoutInterval,
-                                       opt_withCredentials) {
+goog.testing.net.XhrIo.send = function(
+    url, opt_callback, opt_method, opt_content, opt_headers,
+    opt_timeoutInterval, opt_withCredentials) {
   var x = new goog.testing.net.XhrIo();
   goog.testing.net.XhrIo.sendInstances_.push(x);
   if (opt_callback) {
     goog.events.listen(x, goog.net.EventType.COMPLETE, opt_callback);
   }
-  goog.events.listen(x,
-                     goog.net.EventType.READY,
-                     goog.partial(goog.testing.net.XhrIo.cleanupSend_, x));
+  goog.events.listen(
+      x, goog.net.EventType.READY,
+      goog.partial(goog.testing.net.XhrIo.cleanupSend_, x));
   if (opt_timeoutInterval) {
     x.setTimeoutInterval(opt_timeoutInterval);
   }
@@ -215,8 +215,7 @@ goog.testing.net.XhrIo.prototype.lastHeaders_;
  * @type {goog.net.ErrorCode}
  * @private
  */
-goog.testing.net.XhrIo.prototype.lastErrorCode_ =
-    goog.net.ErrorCode.NO_ERROR;
+goog.testing.net.XhrIo.prototype.lastErrorCode_ = goog.net.ErrorCode.NO_ERROR;
 
 
 /**
@@ -364,8 +363,8 @@ goog.testing.net.XhrIo.prototype.getResponseType = function() {
  * @param {boolean} withCredentials Whether this should be a "credentialed"
  *     request.
  */
-goog.testing.net.XhrIo.prototype.setWithCredentials =
-    function(withCredentials) {
+goog.testing.net.XhrIo.prototype.setWithCredentials = function(
+    withCredentials) {
   this.withCredentials_ = withCredentials;
 };
 
@@ -428,8 +427,8 @@ goog.testing.net.XhrIo.prototype.abort = function(opt_failureCode) {
  * @param {Object|goog.structs.Map=} opt_headers Map of headers to add to the
  *     request.
  */
-goog.testing.net.XhrIo.prototype.send = function(url, opt_method, opt_content,
-                                                 opt_headers) {
+goog.testing.net.XhrIo.prototype.send = function(
+    url, opt_method, opt_content, opt_headers) {
   if (this.xhr_) {
     throw Error('[goog.net.XhrIo] Object is active with another request');
   }
@@ -437,7 +436,17 @@ goog.testing.net.XhrIo.prototype.send = function(url, opt_method, opt_content,
   this.lastUri_ = url;
   this.lastMethod_ = opt_method || 'GET';
   this.lastContent_ = opt_content;
-  this.lastHeaders_ = opt_headers;
+  if (!this.headers.isEmpty()) {
+    this.lastHeaders_ = this.headers.toObject();
+    // Add headers specific to this request
+    if (opt_headers) {
+      goog.structs.forEach(opt_headers, goog.bind(function(value, key) {
+        this.lastHeaders_[key] = value;
+      }, this));
+    }
+  } else {
+    this.lastHeaders_ = opt_headers;
+  }
 
   if (this.testQueue_) {
     this.testQueue_.enqueue(['s', url, opt_method, opt_content, opt_headers]);
@@ -464,8 +473,8 @@ goog.testing.net.XhrIo.prototype.createXhr = function() {
  * Simulates changing to the new ready state.
  * @param {number} readyState Ready state to change to.
  */
-goog.testing.net.XhrIo.prototype.simulateReadyStateChange =
-    function(readyState) {
+goog.testing.net.XhrIo.prototype.simulateReadyStateChange = function(
+    readyState) {
   if (readyState < this.readyState_) {
     throw Error('Readystate cannot go backwards');
   }
@@ -495,8 +504,8 @@ goog.testing.net.XhrIo.prototype.simulateReadyStateChange =
  * @param {string} partialResponse A string to append to the response text.
  * @param {Object=} opt_headers Simulated response headers.
  */
-goog.testing.net.XhrIo.prototype.simulatePartialResponse =
-    function(partialResponse, opt_headers) {
+goog.testing.net.XhrIo.prototype.simulatePartialResponse = function(
+    partialResponse, opt_headers) {
   this.response_ += partialResponse;
   this.responseHeaders_ = opt_headers || {};
   this.statusCode_ = 200;
@@ -510,8 +519,8 @@ goog.testing.net.XhrIo.prototype.simulatePartialResponse =
  * @param {string|Document|ArrayBuffer|null} response Simulated response.
  * @param {Object=} opt_headers Simulated response headers.
  */
-goog.testing.net.XhrIo.prototype.simulateResponse = function(statusCode,
-    response, opt_headers) {
+goog.testing.net.XhrIo.prototype.simulateResponse = function(
+    statusCode, response, opt_headers) {
   this.statusCode_ = statusCode;
   this.response_ = response || '';
   this.responseHeaders_ = opt_headers || {};
@@ -561,8 +570,8 @@ goog.testing.net.XhrIo.prototype.simulateProgress = function(
   this.dispatchEvent(progressEvent);
   var specificProgress = goog.object.clone(progressEvent);
   specificProgress.type = opt_isDownload ?
-                              goog.net.EventType.DOWNLOAD_PROGRESS :
-                              goog.net.EventType.UPLOAD_PROGRESS;
+      goog.net.EventType.DOWNLOAD_PROGRESS :
+      goog.net.EventType.UPLOAD_PROGRESS;
   this.dispatchEvent(specificProgress);
 };
 
@@ -700,8 +709,8 @@ goog.testing.net.XhrIo.prototype.getLastRequestHeaders = function() {
 goog.testing.net.XhrIo.prototype.getResponseText = function() {
   if (goog.isString(this.response_)) {
     return this.response_;
-  } else if (goog.global['ArrayBuffer'] &&
-      this.response_ instanceof ArrayBuffer) {
+  } else if (
+      goog.global['ArrayBuffer'] && this.response_ instanceof ArrayBuffer) {
     return '';
   } else {
     return goog.dom.xml.serialize(/** @type {Document} */ (this.response_));
@@ -746,8 +755,10 @@ goog.testing.net.XhrIo.prototype.getResponseXml = function() {
   // NOTE(user): I haven't found out how to check in Internet Explorer
   // whether the response is XML document, so I do it the other way around.
   return goog.isString(this.response_) ||
-      (goog.global['ArrayBuffer'] && this.response_ instanceof ArrayBuffer) ?
-      null : /** @type {Document} */ (this.response_);
+          (goog.global['ArrayBuffer'] &&
+           this.response_ instanceof ArrayBuffer) ?
+      null :
+      /** @type {Document} */ (this.response_);
 };
 
 

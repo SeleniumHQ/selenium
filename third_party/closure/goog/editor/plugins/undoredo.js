@@ -52,8 +52,8 @@ goog.require('goog.object');
 goog.editor.plugins.UndoRedo = function(opt_manager) {
   goog.editor.Plugin.call(this);
 
-  this.setUndoRedoManager(opt_manager ||
-      new goog.editor.plugins.UndoRedoManager());
+  this.setUndoRedoManager(
+      opt_manager || new goog.editor.plugins.UndoRedoManager());
 
   // Map of goog.editor.Field hashcode to goog.events.EventHandler
   this.eventHandlers_ = {};
@@ -156,12 +156,10 @@ goog.editor.plugins.UndoRedo.prototype.setUndoRedoManager = function(manager) {
   }
 
   this.undoManager_ = manager;
-  this.managerStateChangeKey_ =
-      goog.events.listen(this.undoManager_,
-          goog.editor.plugins.UndoRedoManager.EventType.STATE_CHANGE,
-          this.dispatchCommandValueChange_,
-          false,
-          this);
+  this.managerStateChangeKey_ = goog.events.listen(
+      this.undoManager_,
+      goog.editor.plugins.UndoRedoManager.EventType.STATE_CHANGE,
+      this.dispatchCommandValueChange_, false, this);
 };
 
 
@@ -256,13 +254,15 @@ goog.editor.plugins.UndoRedo.prototype.enable = function(fieldObject) {
     // We don't listen to beforechange in mutation-event browsers because
     // there we fire beforechange, then syncronously file change. The point
     // of before change is to capture before the user has changed anything.
-    eventHandler.listen(fieldObject,
-        goog.editor.Field.EventType.BEFORECHANGE, this.handleBeforeChange_);
+    eventHandler.listen(
+        fieldObject, goog.editor.Field.EventType.BEFORECHANGE,
+        this.handleBeforeChange_);
   }
-  eventHandler.listen(fieldObject,
-      goog.editor.Field.EventType.DELAYEDCHANGE, this.handleDelayedChange_);
-  eventHandler.listen(fieldObject, goog.editor.Field.EventType.BLUR,
-      this.handleBlur_);
+  eventHandler.listen(
+      fieldObject, goog.editor.Field.EventType.DELAYEDCHANGE,
+      this.handleDelayedChange_);
+  eventHandler.listen(
+      fieldObject, goog.editor.Field.EventType.BLUR, this.handleBlur_);
 
   this.eventHandlers_[fieldObject.getHashCode()] = eventHandler;
 
@@ -339,8 +339,8 @@ goog.editor.plugins.UndoRedo.prototype.getTrogClassId = function() {
 
 
 /** @override */
-goog.editor.plugins.UndoRedo.prototype.execCommand = function(command,
-    var_args) {
+goog.editor.plugins.UndoRedo.prototype.execCommand = function(
+    command, var_args) {
   if (command == goog.editor.plugins.UndoRedo.COMMAND.UNDO) {
     this.undoManager_.undo();
   } else if (command == goog.editor.plugins.UndoRedo.COMMAND.REDO) {
@@ -373,8 +373,11 @@ goog.editor.plugins.UndoRedo.prototype.dispatchCommandValueChange_ =
   var eventTarget = this.getCurrentEventTarget();
   eventTarget.dispatchEvent({
     type: goog.editor.Field.EventType.COMMAND_VALUE_CHANGE,
-    commands: [goog.editor.plugins.UndoRedo.COMMAND.REDO,
-      goog.editor.plugins.UndoRedo.COMMAND.UNDO]});
+    commands: [
+      goog.editor.plugins.UndoRedo.COMMAND.REDO,
+      goog.editor.plugins.UndoRedo.COMMAND.UNDO
+    ]
+  });
 };
 
 
@@ -450,13 +453,13 @@ goog.editor.plugins.UndoRedo.prototype.restoreState = function(
 /**
  * @override
  */
-goog.editor.plugins.UndoRedo.prototype.handleKeyboardShortcut = function(e, key,
-    isModifierPressed) {
+goog.editor.plugins.UndoRedo.prototype.handleKeyboardShortcut = function(
+    e, key, isModifierPressed) {
   if (isModifierPressed) {
     var command;
     if (key == 'z') {
       command = e.shiftKey ? goog.editor.plugins.UndoRedo.COMMAND.REDO :
-          goog.editor.plugins.UndoRedo.COMMAND.UNDO;
+                             goog.editor.plugins.UndoRedo.COMMAND.UNDO;
     } else if (key == 'y') {
       command = goog.editor.plugins.UndoRedo.COMMAND.REDO;
     }
@@ -469,7 +472,8 @@ goog.editor.plugins.UndoRedo.prototype.handleKeyboardShortcut = function(e, key,
       // the current field. Only Trogedit UndoState's have a fieldHashCode so
       // use that to distinguish between Trogedit and other states.
       var state = command == goog.editor.plugins.UndoRedo.COMMAND.UNDO ?
-          this.undoManager_.undoPeek() : this.undoManager_.redoPeek();
+          this.undoManager_.undoPeek() :
+          this.undoManager_.redoPeek();
       if (state && state.fieldHashCode) {
         this.getCurrentFieldObject().execCommand(command);
       } else {
@@ -638,8 +642,8 @@ goog.editor.plugins.UndoRedo.prototype.updateCurrentState_ = function(
   }
 
   this.currentStates_[fieldHashCode] =
-      new goog.editor.plugins.UndoRedo.UndoState_(fieldHashCode, content,
-          cursorPos, this.boundRestoreState_);
+      new goog.editor.plugins.UndoRedo.UndoState_(
+          fieldHashCode, content, cursorPos, this.boundRestoreState_);
 };
 
 
@@ -657,8 +661,8 @@ goog.editor.plugins.UndoRedo.prototype.updateCurrentState_ = function(
  * @constructor
  * @extends {goog.editor.plugins.UndoRedoState}
  */
-goog.editor.plugins.UndoRedo.UndoState_ = function(fieldHashCode, content,
-    cursorPosition, restore) {
+goog.editor.plugins.UndoRedo.UndoState_ = function(
+    fieldHashCode, content, cursorPosition, restore) {
   goog.editor.plugins.UndoRedoState.call(this, true);
 
   /**
@@ -677,8 +681,8 @@ goog.editor.plugins.UndoRedo.UndoState_ = function(fieldHashCode, content,
 
   this.setUndoState(content, cursorPosition);
 };
-goog.inherits(goog.editor.plugins.UndoRedo.UndoState_,
-    goog.editor.plugins.UndoRedoState);
+goog.inherits(
+    goog.editor.plugins.UndoRedo.UndoState_, goog.editor.plugins.UndoRedoState);
 
 
 /**
@@ -720,8 +724,7 @@ goog.editor.plugins.UndoRedo.UndoState_.prototype.redoCursorPosition_;
  * @override
  */
 goog.editor.plugins.UndoRedo.UndoState_.prototype.undo = function() {
-  this.restore_(this, this.undoContent_,
-      this.undoCursorPosition_);
+  this.restore_(this, this.undoContent_, this.undoCursorPosition_);
 };
 
 
@@ -730,8 +733,7 @@ goog.editor.plugins.UndoRedo.UndoState_.prototype.undo = function() {
  * @override
  */
 goog.editor.plugins.UndoRedo.UndoState_.prototype.redo = function() {
-  this.restore_(this, this.redoContent_,
-      this.redoCursorPosition_);
+  this.restore_(this, this.redoContent_, this.redoCursorPosition_);
 };
 
 
@@ -798,8 +800,8 @@ goog.editor.plugins.UndoRedo.CursorPosition_ = function(field) {
 
   var win = field.getEditableDomHelper().getWindow();
   var range = field.getRange();
-  var isValidRange = !!range && range.isRangeInDocument() &&
-      range.getWindow() == win;
+  var isValidRange =
+      !!range && range.isRangeInDocument() && range.getWindow() == win;
   range = isValidRange ? range : null;
 
   if (goog.editor.BrowserFeature.HAS_W3C_RANGES) {
@@ -943,8 +945,8 @@ goog.editor.plugins.UndoRedo.CursorPosition_.prototype.select = function() {
  * @return {Range|TextRange|null} The browser range for this position.
  * @private
  */
-goog.editor.plugins.UndoRedo.CursorPosition_.prototype.getRange_ =
-    function(baseNode) {
+goog.editor.plugins.UndoRedo.CursorPosition_.prototype.getRange_ = function(
+    baseNode) {
   if (goog.editor.BrowserFeature.HAS_W3C_RANGES) {
     var startNode = this.startOffset_.findTargetNode(baseNode);
     var endNode = this.endOffset_.findTargetNode(baseNode);
@@ -954,8 +956,11 @@ goog.editor.plugins.UndoRedo.CursorPosition_.prototype.getRange_ =
 
     // Create range.
     return /** @type {Range} */ (
-        goog.dom.Range.createFromNodes(startNode, this.startChildOffset_,
-            endNode, this.endChildOffset_).getBrowserRangeObject());
+        goog.dom.Range
+            .createFromNodes(
+                startNode, this.startChildOffset_, endNode,
+                this.endChildOffset_)
+            .getBrowserRangeObject());
   }
 
   // Create a collapsed selection at the start of the contentEditable region,
@@ -976,8 +981,8 @@ goog.editor.plugins.UndoRedo.CursorPosition_.prototype.getRange_ =
  * @return {number} The number of characters to the end of the range.
  * @private
  */
-goog.editor.plugins.UndoRedo.CursorPosition_.computeEndOffsetIE_ =
-    function(range) {
+goog.editor.plugins.UndoRedo.CursorPosition_.computeEndOffsetIE_ = function(
+    range) {
   var testRange = range.duplicate();
 
   // The number of offset characters is a little off depending on

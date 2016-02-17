@@ -59,8 +59,8 @@ storage.BoundedCollectableStorage = function(mechanism, maxItems) {
    */
   this.maxItems_ = maxItems;
 };
-goog.inherits(storage.BoundedCollectableStorage,
-              goog.storage.CollectableStorage);
+goog.inherits(
+    storage.BoundedCollectableStorage, goog.storage.CollectableStorage);
 
 
 /**
@@ -79,8 +79,10 @@ storage.BoundedCollectableStorage.KEY_LIST_KEY_ = 'bounded-collectable-storage';
  */
 storage.BoundedCollectableStorage.prototype.rebuildIndex_ = function() {
   var keys = [];
-  goog.iter.forEach(/** @type {goog.storage.mechanism.IterableMechanism} */ (
-      this.mechanism).__iterator__(true), function(key) {
+  goog.iter.forEach(
+      /** @type {goog.storage.mechanism.IterableMechanism} */ (this.mechanism)
+          .__iterator__(true),
+      function(key) {
         if (storage.BoundedCollectableStorage.KEY_LIST_KEY_ == key) {
           return;
         }
@@ -102,15 +104,12 @@ storage.BoundedCollectableStorage.prototype.rebuildIndex_ = function() {
         var creationTime =
             goog.storage.ExpiringStorage.getCreationTime(wrapper);
         keys.push({key: key, created: creationTime});
-      }, this);
+      },
+      this);
 
-  goog.array.sort(keys, function(a, b) {
-    return a.created - b.created;
-  });
+  goog.array.sort(keys, function(a, b) { return a.created - b.created; });
 
-  return goog.array.map(keys, function(v) {
-    return v.key;
-  });
+  return goog.array.map(keys, function(v) { return v.key; });
 };
 
 
@@ -123,8 +122,9 @@ storage.BoundedCollectableStorage.prototype.rebuildIndex_ = function() {
  * @private
  */
 storage.BoundedCollectableStorage.prototype.getKeys_ = function(rebuild) {
-  var keys = storage.BoundedCollectableStorage.superClass_.get.call(this,
-      storage.BoundedCollectableStorage.KEY_LIST_KEY_) || null;
+  var keys = storage.BoundedCollectableStorage.superClass_.get.call(
+                 this, storage.BoundedCollectableStorage.KEY_LIST_KEY_) ||
+      null;
   if (!keys || !goog.isArray(keys)) {
     if (rebuild) {
       keys = this.rebuildIndex_();
@@ -143,8 +143,8 @@ storage.BoundedCollectableStorage.prototype.getKeys_ = function(rebuild) {
  * @private
  */
 storage.BoundedCollectableStorage.prototype.setKeys_ = function(keys) {
-  storage.BoundedCollectableStorage.superClass_.set.call(this,
-      storage.BoundedCollectableStorage.KEY_LIST_KEY_, keys);
+  storage.BoundedCollectableStorage.superClass_.set.call(
+      this, storage.BoundedCollectableStorage.KEY_LIST_KEY_, keys);
 };
 
 
@@ -157,8 +157,8 @@ storage.BoundedCollectableStorage.prototype.setKeys_ = function(keys) {
  * @return {!Array<string>} a keys sequence after removing keysToRemove.
  * @private
  */
-storage.BoundedCollectableStorage.removeSubsequence_ =
-    function(keys, keysToRemove) {
+storage.BoundedCollectableStorage.removeSubsequence_ = function(
+    keys, keysToRemove) {
   if (keysToRemove.length == 0) {
     return goog.array.clone(keys);
   }
@@ -190,8 +190,8 @@ storage.BoundedCollectableStorage.removeSubsequence_ =
  * @return {!Array<string>} keys left after removing oversize data.
  * @private
  */
-storage.BoundedCollectableStorage.prototype.collectOversize_ =
-    function(keys, maxSize) {
+storage.BoundedCollectableStorage.prototype.collectOversize_ = function(
+    keys, maxSize) {
   if (keys.length <= maxSize) {
     return goog.array.clone(keys);
   }
@@ -210,12 +210,11 @@ storage.BoundedCollectableStorage.prototype.collectOversize_ =
  * @param {boolean=} opt_strict Also remove invalid keys.
  * @override
  */
-storage.BoundedCollectableStorage.prototype.collect =
-    function(opt_strict) {
+storage.BoundedCollectableStorage.prototype.collect = function(opt_strict) {
   var keys = this.getKeys_(true);
   var keysToRemove = this.collectInternal(keys, opt_strict);
-  keys = storage.BoundedCollectableStorage.removeSubsequence_(
-      keys, keysToRemove);
+  keys =
+      storage.BoundedCollectableStorage.removeSubsequence_(keys, keysToRemove);
   this.setKeys_(keys);
 };
 
@@ -225,8 +224,8 @@ storage.BoundedCollectableStorage.prototype.collect =
  * @param {boolean=} opt_skipExpired skip removing expired items first.
  * @param {boolean=} opt_strict Also remove invalid keys.
  */
-storage.BoundedCollectableStorage.prototype.collectOversize =
-    function(opt_skipExpired, opt_strict) {
+storage.BoundedCollectableStorage.prototype.collectOversize = function(
+    opt_skipExpired, opt_strict) {
   var keys = this.getKeys_(true);
   if (!opt_skipExpired) {
     var keysToRemove = this.collectInternal(keys, opt_strict);
@@ -248,8 +247,8 @@ storage.BoundedCollectableStorage.prototype.collectOversize =
  *     time is not provided, the value will persist as long as possible.
  * @override
  */
-storage.BoundedCollectableStorage.prototype.set =
-    function(key, value, opt_expiration) {
+storage.BoundedCollectableStorage.prototype.set = function(
+    key, value, opt_expiration) {
   storage.BoundedCollectableStorage.base(
       this, 'set', key, value, opt_expiration);
   var keys = this.getKeys_(true);

@@ -123,7 +123,7 @@ goog.labs.events.NonDisposableEventTarget.prototype.dispatchEvent = function(
       ancestorsTree.push(ancestor);
       goog.asserts.assert(
           (++ancestorCount <
-                  goog.labs.events.NonDisposableEventTarget.MAX_ANCESTORS_),
+           goog.labs.events.NonDisposableEventTarget.MAX_ANCESTORS_),
           'infinite loop');
     }
   }
@@ -238,7 +238,7 @@ goog.labs.events.NonDisposableEventTarget.prototype.assertInitialized_ =
   goog.asserts.assert(
       this.eventTargetListeners_,
       'Event target is not initialized. Did you call the superclass ' +
-      '(goog.labs.events.NonDisposableEventTarget) constructor?');
+          '(goog.labs.events.NonDisposableEventTarget) constructor?');
 };
 
 

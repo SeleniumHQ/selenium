@@ -110,8 +110,8 @@ goog.ui.FlatButtonRenderer.prototype.canDecorate = function(element) {
 goog.ui.FlatButtonRenderer.prototype.decorate = function(button, element) {
   goog.asserts.assert(element);
   goog.dom.classlist.add(element, goog.ui.INLINE_BLOCK_CLASSNAME);
-  return goog.ui.FlatButtonRenderer.superClass_.decorate.call(this, button,
-      element);
+  return goog.ui.FlatButtonRenderer.superClass_.decorate.call(
+      this, button, element);
 };
 
 
@@ -141,8 +141,8 @@ goog.ui.FlatButtonRenderer.prototype.getCssClass = function() {
 
 
 // Register a decorator factory function for Flat Buttons.
-goog.ui.registry.setDecoratorByClassName(goog.ui.FlatButtonRenderer.CSS_CLASS,
-    function() {
+goog.ui.registry.setDecoratorByClassName(
+    goog.ui.FlatButtonRenderer.CSS_CLASS, function() {
       // Uses goog.ui.Button, but with FlatButtonRenderer.
       return new goog.ui.Button(null, goog.ui.FlatButtonRenderer.getInstance());
     });

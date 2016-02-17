@@ -43,8 +43,7 @@ goog.require('goog.testing.mockmatchers');
  * @suppress {missingProperties} Mocks do not fit in the type system well.
  * @final
  */
-goog.testing.editor.FieldMock =
-    function(opt_window, opt_appWindow, opt_range) {
+goog.testing.editor.FieldMock = function(opt_window, opt_appWindow, opt_range) {
   goog.testing.LooseMock.call(this, goog.editor.Field);
   opt_window = opt_window || window;
   opt_appWindow = opt_appWindow || opt_window;
@@ -86,31 +85,23 @@ goog.testing.editor.FieldMock =
   /**
    * @return {boolean} Whether we're in modal interaction mode.
    */
-  this.inModalMode = function() {
-    return inModalMode;
-  };
+  this.inModalMode = function() { return inModalMode; };
 
   /**
    * @param {boolean} mode Sets whether we're in modal interaction mode.
    */
-  this.setModalMode = function(mode) {
-    inModalMode = mode;
-  };
+  this.setModalMode = function(mode) { inModalMode = mode; };
 
   var uneditable = false;
 
   /**
    * @return {boolean} Whether the field is uneditable.
    */
-  this.isUneditable = function() {
-    return uneditable;
-  };
+  this.isUneditable = function() { return uneditable; };
 
   /**
    * @param {boolean} isUneditable Whether the field is uneditable.
    */
-  this.setUneditable = function(isUneditable) {
-    uneditable = isUneditable;
-  };
+  this.setUneditable = function(isUneditable) { uneditable = isUneditable; };
 };
 goog.inherits(goog.testing.editor.FieldMock, goog.testing.LooseMock);

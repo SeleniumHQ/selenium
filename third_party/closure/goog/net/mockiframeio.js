@@ -118,8 +118,8 @@ goog.net.MockIFrameIo.prototype.complete_;
  *     caching.
  * @param {Object|goog.structs.Map=} opt_data Map of key-value pairs.
  */
-goog.net.MockIFrameIo.prototype.send = function(uri, opt_method, opt_noCache,
-                                                opt_data) {
+goog.net.MockIFrameIo.prototype.send = function(
+    uri, opt_method, opt_noCache, opt_data) {
   if (this.active_) {
     throw Error('[goog.net.IframeIo] Unable to send, already active.');
   }
@@ -138,8 +138,8 @@ goog.net.MockIFrameIo.prototype.send = function(uri, opt_method, opt_noCache,
  * @param {boolean=} opt_noCache Append a timestamp to the request to avoid
  *     caching.
  */
-goog.net.MockIFrameIo.prototype.sendFromForm = function(form, opt_uri,
-    opt_noCache) {
+goog.net.MockIFrameIo.prototype.sendFromForm = function(
+    form, opt_uri, opt_noCache) {
   if (this.active_) {
     throw Error('[goog.net.IframeIo] Unable to send, already active.');
   }

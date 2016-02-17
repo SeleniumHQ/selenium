@@ -74,7 +74,9 @@ WireV8.prototype.encodeMessage = function(message, buffer, opt_prefix) {
   } catch (ex) {
     // We send a map here because lots of the retry logic relies on map IDs,
     // so we have to send something (possibly redundant).
-    buffer.push(prefix + 'type' + '=' + encodeURIComponent('_badmap'));
+    buffer.push(
+        prefix + 'type' +
+        '=' + encodeURIComponent('_badmap'));
     throw ex;
   }
 };
@@ -88,8 +90,8 @@ WireV8.prototype.encodeMessage = function(message, buffer, opt_prefix) {
  * @param {number} count The number of messages to be encoded.
  * @param {?function(!Object)} badMapHandler Callback for bad messages.
  */
-WireV8.prototype.encodeMessageQueue = function(messageQueue, count,
-    badMapHandler) {
+WireV8.prototype.encodeMessageQueue = function(
+    messageQueue, count, badMapHandler) {
   var sb = ['count=' + count];
   var offset;
   if (count > 0) {
