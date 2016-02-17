@@ -77,8 +77,8 @@ goog.testing.benchmark.run_ = function() {
   var performanceTimer = new goog.testing.PerformanceTimer(times);
   performanceTimer.setDiscardOutliers(true);
 
-  var performanceTable = new goog.testing.PerformanceTable(document.body,
-      performanceTimer, 2);
+  var performanceTable =
+      new goog.testing.PerformanceTable(document.body, performanceTimer, 2);
 
   // Next, run the benchmarks.
   for (var i = 0; i < names.length; i++) {

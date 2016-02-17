@@ -199,31 +199,8 @@ goog.math.Long.TWO_PWR_16_DBL_ = 1 << 16;
  * @type {number}
  * @private
  */
-goog.math.Long.getTwoPwr24DBL_ = 1 << 24;
-
-
-/**
- * @type {number}
- * @private
- */
 goog.math.Long.TWO_PWR_32_DBL_ =
     goog.math.Long.TWO_PWR_16_DBL_ * goog.math.Long.TWO_PWR_16_DBL_;
-
-
-/**
- * @type {number}
- * @private
- */
-goog.math.Long.TWO_PWR_31_DBL_ =
-    goog.math.Long.TWO_PWR_32_DBL_ / 2;
-
-
-/**
- * @type {number}
- * @private
- */
-goog.math.Long.TWO_PWR_48_DBL_ =
-    goog.math.Long.TWO_PWR_32_DBL_ * goog.math.Long.TWO_PWR_16_DBL_;
 
 
 /**
@@ -238,8 +215,7 @@ goog.math.Long.TWO_PWR_64_DBL_ =
  * @type {number}
  * @private
  */
-goog.math.Long.TWO_PWR_63_DBL_ =
-    goog.math.Long.TWO_PWR_64_DBL_ / 2;
+goog.math.Long.TWO_PWR_63_DBL_ = goog.math.Long.TWO_PWR_64_DBL_ / 2;
 
 
 /**
@@ -288,8 +264,8 @@ goog.math.Long.getNegOne = function() {
 goog.math.Long.getMaxValue = function() {
   var idMaxValue = goog.math.Long.ValueCacheId_.MAX_VALUE;
   if (!goog.math.Long.valueCache_[idMaxValue]) {
-    goog.math.Long.valueCache_[idMaxValue] = goog.math.Long.fromBits(
-        0xFFFFFFFF | 0, 0x7FFFFFFF | 0);
+    goog.math.Long.valueCache_[idMaxValue] =
+        goog.math.Long.fromBits(0xFFFFFFFF | 0, 0x7FFFFFFF | 0);
   }
   return goog.math.Long.valueCache_[idMaxValue];
 };
@@ -302,8 +278,8 @@ goog.math.Long.getMaxValue = function() {
 goog.math.Long.getMinValue = function() {
   var idMinValue = goog.math.Long.ValueCacheId_.MIN_VALUE;
   if (!goog.math.Long.valueCache_[idMinValue]) {
-    goog.math.Long.valueCache_[idMinValue] = goog.math.Long.fromBits(
-        0, 0x80000000 | 0);
+    goog.math.Long.valueCache_[idMinValue] =
+        goog.math.Long.fromBits(0, 0x80000000 | 0);
   }
   return goog.math.Long.valueCache_[idMinValue];
 };
@@ -331,7 +307,7 @@ goog.math.Long.prototype.toInt = function() {
 /** @return {number} The closest floating-point representation to this value. */
 goog.math.Long.prototype.toNumber = function() {
   return this.high_ * goog.math.Long.TWO_PWR_32_DBL_ +
-         this.getLowBitsUnsigned();
+      this.getLowBitsUnsigned();
 };
 
 
@@ -404,8 +380,8 @@ goog.math.Long.prototype.getLowBits = function() {
 
 /** @return {number} The low 32-bits as an unsigned value. */
 goog.math.Long.prototype.getLowBitsUnsigned = function() {
-  return (this.low_ >= 0) ?
-      this.low_ : goog.math.Long.TWO_PWR_32_DBL_ + this.low_;
+  return (this.low_ >= 0) ? this.low_ :
+                            goog.math.Long.TWO_PWR_32_DBL_ + this.low_;
 };
 
 
@@ -600,11 +576,11 @@ goog.math.Long.prototype.multiply = function(other) {
   }
 
   if (this.equals(goog.math.Long.getMinValue())) {
-    return other.isOdd() ?
-        goog.math.Long.getMinValue() : goog.math.Long.getZero();
+    return other.isOdd() ? goog.math.Long.getMinValue() :
+                           goog.math.Long.getZero();
   } else if (other.equals(goog.math.Long.getMinValue())) {
-    return this.isOdd() ?
-        goog.math.Long.getMinValue() : goog.math.Long.getZero();
+    return this.isOdd() ? goog.math.Long.getMinValue() :
+                          goog.math.Long.getZero();
   }
 
   if (this.isNegative()) {
@@ -684,8 +660,8 @@ goog.math.Long.prototype.div = function(other) {
       var halfThis = this.shiftRight(1);
       var approx = halfThis.div(other).shiftLeft(1);
       if (approx.equals(goog.math.Long.getZero())) {
-        return other.isNegative() ?
-            goog.math.Long.getOne() : goog.math.Long.getNegOne();
+        return other.isNegative() ? goog.math.Long.getOne() :
+                                    goog.math.Long.getNegOne();
       } else {
         var rem = this.subtract(other.multiply(approx));
         var result = approx.add(rem.div(other));
@@ -768,8 +744,8 @@ goog.math.Long.prototype.not = function() {
  * @return {!goog.math.Long} The bitwise-AND of this and the other.
  */
 goog.math.Long.prototype.and = function(other) {
-  return goog.math.Long.fromBits(this.low_ & other.low_,
-                                 this.high_ & other.high_);
+  return goog.math.Long.fromBits(
+      this.low_ & other.low_, this.high_ & other.high_);
 };
 
 
@@ -779,8 +755,8 @@ goog.math.Long.prototype.and = function(other) {
  * @return {!goog.math.Long} The bitwise-OR of this and the other.
  */
 goog.math.Long.prototype.or = function(other) {
-  return goog.math.Long.fromBits(this.low_ | other.low_,
-                                 this.high_ | other.high_);
+  return goog.math.Long.fromBits(
+      this.low_ | other.low_, this.high_ | other.high_);
 };
 
 
@@ -790,8 +766,8 @@ goog.math.Long.prototype.or = function(other) {
  * @return {!goog.math.Long} The bitwise-XOR of this and the other.
  */
 goog.math.Long.prototype.xor = function(other) {
-  return goog.math.Long.fromBits(this.low_ ^ other.low_,
-                                 this.high_ ^ other.high_);
+  return goog.math.Long.fromBits(
+      this.low_ ^ other.low_, this.high_ ^ other.high_);
 };
 
 
@@ -809,8 +785,7 @@ goog.math.Long.prototype.shiftLeft = function(numBits) {
     if (numBits < 32) {
       var high = this.high_;
       return goog.math.Long.fromBits(
-          low << numBits,
-          (high << numBits) | (low >>> (32 - numBits)));
+          low << numBits, (high << numBits) | (low >>> (32 - numBits)));
     } else {
       return goog.math.Long.fromBits(0, low << (numBits - 32));
     }
@@ -833,12 +808,10 @@ goog.math.Long.prototype.shiftRight = function(numBits) {
     if (numBits < 32) {
       var low = this.low_;
       return goog.math.Long.fromBits(
-          (low >>> numBits) | (high << (32 - numBits)),
-          high >> numBits);
+          (low >>> numBits) | (high << (32 - numBits)), high >> numBits);
     } else {
       return goog.math.Long.fromBits(
-          high >> (numBits - 32),
-          high >= 0 ? 0 : -1);
+          high >> (numBits - 32), high >= 0 ? 0 : -1);
     }
   }
 };
@@ -860,8 +833,7 @@ goog.math.Long.prototype.shiftRightUnsigned = function(numBits) {
     if (numBits < 32) {
       var low = this.low_;
       return goog.math.Long.fromBits(
-          (low >>> numBits) | (high << (32 - numBits)),
-          high >>> numBits);
+          (low >>> numBits) | (high << (32 - numBits)), high >>> numBits);
     } else if (numBits == 32) {
       return goog.math.Long.fromBits(high, 0);
     } else {
@@ -883,4 +855,3 @@ goog.math.Long.ValueCacheId_ = {
   NEG_ONE: 5,
   TWO_PWR_24: 6
 };
-

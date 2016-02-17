@@ -157,9 +157,10 @@ goog.labs.testing.Environment = goog.defineClass(null, {
    */
   mock: function(toMock) {
     if (!this.shouldMakeMockControl_) {
-      throw new Error('MockControl not available on this environment. ' +
-                      'Call withMockControl if this environment is expected ' +
-                      'to contain a MockControl.');
+      throw new Error(
+          'MockControl not available on this environment. ' +
+          'Call withMockControl if this environment is expected ' +
+          'to contain a MockControl.');
     }
     return this.mockControl.createStrictMock(toMock);
   }
@@ -203,7 +204,7 @@ goog.labs.testing.EnvironmentTestCase_ = function() {
   this.environments_ = [];
 
   /** @private {!Object} */
-  this.testobj_ = goog.global; //default
+  this.testobj_ = goog.global;  // default
 
   // Automatically install this TestCase when any environment is used in a test.
   goog.testing.TestCase.initializeTestRunner(this);
@@ -217,9 +218,10 @@ goog.addSingletonGetter(goog.labs.testing.EnvironmentTestCase_);
  * @override
  */
 goog.labs.testing.EnvironmentTestCase_.prototype.setTestObj = function(obj) {
-  goog.asserts.assert(this.testobj_ == goog.global,
+  goog.asserts.assert(
+      this.testobj_ == goog.global,
       'A test method object has already been provided ' +
-      'and only one is supported.');
+          'and only one is supported.');
   this.testobj_ = obj;
   goog.labs.testing.EnvironmentTestCase_.base(this, 'setTestObj', obj);
 };
@@ -236,8 +238,8 @@ goog.labs.testing.EnvironmentTestCase_.prototype.autoDiscoverLifecycle =
     this.runTests = goog.bind(this.testobj_['runTests'], this.testobj_);
   }
   if (this.testobj_['shouldRunTests']) {
-    this.shouldRunTests = goog.bind(
-        this.testobj_['shouldRunTests'], this.testobj_);
+    this.shouldRunTests =
+        goog.bind(this.testobj_['shouldRunTests'], this.testobj_);
   }
 };
 
@@ -255,9 +257,7 @@ goog.labs.testing.EnvironmentTestCase_.prototype.registerEnvironment_ =
 
 /** @override */
 goog.labs.testing.EnvironmentTestCase_.prototype.setUpPage = function() {
-  goog.array.forEach(this.environments_, function(env) {
-    env.setUpPage();
-  });
+  goog.array.forEach(this.environments_, function(env) { env.setUpPage(); });
 
   // User defined setUpPage method.
   if (this.testobj_['setUpPage']) {
@@ -273,9 +273,7 @@ goog.labs.testing.EnvironmentTestCase_.prototype.setUp = function() {
     this.testobj_['configureEnvironment']();
   }
 
-  goog.array.forEach(this.environments_, function(env) {
-    env.setUp();
-  }, this);
+  goog.array.forEach(this.environments_, function(env) { env.setUp(); }, this);
 
   // User defined setUp method.
   if (this.testobj_['setUp']) {
@@ -324,7 +322,6 @@ goog.labs.testing.EnvironmentTestCase_.prototype.tearDownPage = function() {
     this.testobj_['tearDownPage']();
   }
 
-  goog.array.forEachRight(this.environments_, function(env) {
-    env.tearDownPage();
-  });
+  goog.array.forEachRight(
+      this.environments_, function(env) { env.tearDownPage(); });
 };

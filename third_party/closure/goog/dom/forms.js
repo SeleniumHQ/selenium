@@ -34,8 +34,8 @@ goog.require('goog.structs.Map');
  */
 goog.dom.forms.getFormDataMap = function(form) {
   var map = new goog.structs.Map();
-  goog.dom.forms.getFormDataHelper_(form, map,
-      goog.dom.forms.addFormDataToMap_);
+  goog.dom.forms.getFormDataHelper_(
+      form, map, goog.dom.forms.addFormDataToMap_);
   return map;
 };
 
@@ -48,8 +48,8 @@ goog.dom.forms.getFormDataMap = function(form) {
  */
 goog.dom.forms.getFormDataString = function(form) {
   var sb = [];
-  goog.dom.forms.getFormDataHelper_(form, sb,
-      goog.dom.forms.addFormDataToStringBuffer_);
+  goog.dom.forms.getFormDataHelper_(
+      form, sb, goog.dom.forms.addFormDataToStringBuffer_);
   return sb.join('&');
 };
 
@@ -67,13 +67,12 @@ goog.dom.forms.getFormDataString = function(form) {
 goog.dom.forms.getFormDataHelper_ = function(form, result, fnAppend) {
   var els = form.elements;
   for (var el, i = 0; el = els[i]; i++) {
-    if (// Make sure we don't include elements that are not part of the form.
+    if (  // Make sure we don't include elements that are not part of the form.
         // Some browsers include non-form elements. Check for 'form' property.
         // See http://code.google.com/p/closure-library/issues/detail?id=227
         // and
         // http://www.whatwg.org/specs/web-apps/current-work/multipage/the-input-element.html#the-input-element
-        (el.form != form) ||
-        el.disabled ||
+        (el.form != form) || el.disabled ||
         // HTMLFieldSetElement has a form property but no value.
         el.tagName == goog.dom.TagName.FIELDSET) {
       continue;
@@ -82,7 +81,7 @@ goog.dom.forms.getFormDataHelper_ = function(form, result, fnAppend) {
     var name = el.name;
     switch (el.type.toLowerCase()) {
       case goog.dom.InputType.FILE:
-        // file inputs are not supported
+      // file inputs are not supported
       case goog.dom.InputType.SUBMIT:
       case goog.dom.InputType.RESET:
       case goog.dom.InputType.BUTTON:
@@ -172,7 +171,7 @@ goog.dom.forms.hasFileInput = function(form) {
 goog.dom.forms.setDisabled = function(el, disabled) {
   // disable all elements in a form
   if (el.tagName == goog.dom.TagName.FORM) {
-    var els = el.elements;
+    var els = /** @type {!HTMLFormElement} */ (el).elements;
     for (var i = 0; el = els[i]; i++) {
       goog.dom.forms.setDisabled(el, disabled);
     }
@@ -229,7 +228,7 @@ goog.dom.forms.hasValueByName = function(form, name) {
  *     (or null).
  */
 goog.dom.forms.getValue = function(el) {
-  var type = el.type;
+  var type = /** @type {!HTMLInputElement} */ (el).type;
   if (!goog.isDef(type)) {
     return null;
   }
@@ -292,7 +291,7 @@ goog.dom.forms.getValueByName = function(form, name) {
  * @private
  */
 goog.dom.forms.getInputChecked_ = function(el) {
-  return el.checked ? el.value : null;
+  return el.checked ? /** @type {?} */ (el).value : null;
 };
 
 
@@ -303,7 +302,7 @@ goog.dom.forms.getInputChecked_ = function(el) {
  * @private
  */
 goog.dom.forms.getSelectSingle_ = function(el) {
-  var selectedIndex = el.selectedIndex;
+  var selectedIndex = /** @type {!HTMLSelectElement} */ (el).selectedIndex;
   return selectedIndex >= 0 ? el.options[selectedIndex].value : null;
 };
 
@@ -316,7 +315,8 @@ goog.dom.forms.getSelectSingle_ = function(el) {
  */
 goog.dom.forms.getSelectMultiple_ = function(el) {
   var values = [];
-  for (var option, i = 0; option = el.options[i]; i++) {
+  for (var option, i = 0;
+       option = /** @type {!HTMLSelectElement} */ (el).options[i]; i++) {
     if (option.selected) {
       values.push(option.value);
     }
@@ -333,20 +333,23 @@ goog.dom.forms.getSelectMultiple_ = function(el) {
  *     an array for setting the value of select multiple elements.
  */
 goog.dom.forms.setValue = function(el, opt_value) {
-  var type = el.type;
+  var type = /** @type {!HTMLInputElement} */ (el).type;
   if (goog.isDef(type)) {
     switch (type.toLowerCase()) {
       case goog.dom.InputType.CHECKBOX:
       case goog.dom.InputType.RADIO:
-        goog.dom.forms.setInputChecked_(el,
+        goog.dom.forms.setInputChecked_(
+            el,
             /** @type {string} */ (opt_value));
         break;
       case goog.dom.InputType.SELECT_ONE:
-        goog.dom.forms.setSelectSingle_(el,
+        goog.dom.forms.setSelectSingle_(
+            el,
             /** @type {string} */ (opt_value));
         break;
       case goog.dom.InputType.SELECT_MULTIPLE:
-        goog.dom.forms.setSelectMultiple_(el,
+        goog.dom.forms.setSelectMultiple_(
+            el,
             /** @type {Array<string>} */ (opt_value));
         break;
       default:
@@ -381,7 +384,8 @@ goog.dom.forms.setSelectSingle_ = function(el, opt_value) {
   // unset any prior selections
   el.selectedIndex = -1;
   if (goog.isString(opt_value)) {
-    for (var option, i = 0; option = el.options[i]; i++) {
+    for (var option, i = 0;
+         option = /** @type {!HTMLSelectElement} */ (el).options[i]; i++) {
       if (option.value == opt_value) {
         option.selected = true;
         break;
@@ -403,7 +407,8 @@ goog.dom.forms.setSelectMultiple_ = function(el, opt_value) {
   if (goog.isString(opt_value)) {
     opt_value = [opt_value];
   }
-  for (var option, i = 0; option = el.options[i]; i++) {
+  for (var option, i = 0;
+       option = /** @type {!HTMLSelectElement} */ (el).options[i]; i++) {
     // we have to reset the other options to false for select-multiple
     option.selected = false;
     if (opt_value) {

@@ -90,8 +90,8 @@ goog.editor.plugins.LoremIpsum.prototype.queryCommandValue = function(command) {
  *     after clearing lorem. Should be a boolean.
  * @override
  */
-goog.editor.plugins.LoremIpsum.prototype.execCommand = function(command,
-    opt_placeCursor) {
+goog.editor.plugins.LoremIpsum.prototype.execCommand = function(
+    command, opt_placeCursor) {
   if (command == goog.editor.Command.CLEAR_LOREM) {
     this.clearLorem_(!!opt_placeCursor);
   } else if (command == goog.editor.Command.UPDATE_LOREM) {
@@ -101,8 +101,8 @@ goog.editor.plugins.LoremIpsum.prototype.execCommand = function(command,
 
 
 /** @override */
-goog.editor.plugins.LoremIpsum.prototype.isSupportedCommand =
-    function(command) {
+goog.editor.plugins.LoremIpsum.prototype.isSupportedCommand = function(
+    command) {
   return command == goog.editor.Command.CLEAR_LOREM ||
       command == goog.editor.Command.UPDATE_LOREM ||
       command == goog.editor.Command.USING_LOREM;
@@ -122,8 +122,7 @@ goog.editor.plugins.LoremIpsum.prototype.updateLorem_ = function() {
   // 3) We're not using lorem already
   // 4) The field is not currently active (doesn't have focus).
   var fieldObj = this.getFieldObject();
-  if (!this.usingLorem_ &&
-      !fieldObj.inModalMode() &&
+  if (!this.usingLorem_ && !fieldObj.inModalMode() &&
       goog.editor.Field.getActiveFieldId() != fieldObj.id) {
     var field = fieldObj.getElement();
     if (!field) {

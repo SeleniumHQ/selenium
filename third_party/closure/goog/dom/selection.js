@@ -162,7 +162,8 @@ goog.dom.selection.getEndPointsTextareaIe_ = function(
   }
   return [
     untrimmedBeforeSelectionText.length,
-    untrimmedBeforeSelectionText.length + untrimmedSelectionText.length];
+    untrimmedBeforeSelectionText.length + untrimmedSelectionText.length
+  ];
 };
 
 
@@ -198,6 +199,7 @@ goog.dom.selection.getEndPoints = function(textfield) {
  * @private
  */
 goog.dom.selection.getEndPoints_ = function(textfield, getOnlyStart) {
+  textfield = /** @type {!HTMLInputElement|!HTMLTextAreaElement} */ (textfield);
   var startPos = 0;
   var endPos = 0;
   if (goog.dom.selection.useSelectionProperties_(textfield)) {
@@ -297,6 +299,7 @@ goog.dom.selection.setCursorPosition = function(textfield, pos) {
  * @param {string} text The text to change the selection to.
  */
 goog.dom.selection.setText = function(textfield, text) {
+  textfield = /** @type {!HTMLInputElement|!HTMLTextAreaElement} */ (textfield);
   if (goog.dom.selection.useSelectionProperties_(textfield)) {
     var value = textfield.value;
     var oldSelectionStart = textfield.selectionStart;
@@ -333,6 +336,7 @@ goog.dom.selection.setText = function(textfield, text) {
  * @return {string} The selected text.
  */
 goog.dom.selection.getText = function(textfield) {
+  textfield = /** @type {!HTMLInputElement|!HTMLTextAreaElement} */ (textfield);
   if (goog.dom.selection.useSelectionProperties_(textfield)) {
     var s = textfield.value;
     return s.substring(textfield.selectionStart, textfield.selectionEnd);
@@ -420,7 +424,7 @@ goog.dom.selection.getRangeIe_ = function(el) {
   // el.createTextRange() doesn't work on textareas
   var range;
 
-  if (el.type == goog.dom.InputType.TEXTAREA) {
+  if (/** @type {?} */ (el).type == goog.dom.InputType.TEXTAREA) {
     range = doc.body.createTextRange();
     range.moveToElementText(el);
   } else {
@@ -442,6 +446,7 @@ goog.dom.selection.getRangeIe_ = function(el) {
  *     move('character', pos).
  */
 goog.dom.selection.canonicalizePositionIe_ = function(textfield, pos) {
+  textfield = /** @type {!HTMLTextAreaElement} */ (textfield);
   if (textfield.type == goog.dom.InputType.TEXTAREA) {
     // We do this only for textarea because it is the only one which can
     // have a \r\n (input cannot have this).

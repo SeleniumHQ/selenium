@@ -113,8 +113,8 @@ goog.editor.plugins.RemoveFormatting.prototype.isSupportedCommand = function(
 
 
 /** @override */
-goog.editor.plugins.RemoveFormatting.prototype.execCommandInternal =
-    function(command, var_args) {
+goog.editor.plugins.RemoveFormatting.prototype.execCommandInternal = function(
+    command, var_args) {
   if (command ==
       goog.editor.plugins.RemoveFormatting.REMOVE_FORMATTING_COMMAND) {
     this.removeFormatting_();
@@ -156,7 +156,7 @@ goog.editor.plugins.RemoveFormatting.prototype.removeFormatting_ = function() {
   // Get the html to format and send it off for formatting. Built in
   // removeFormat only strips some inline elements and some inline CSS styles
   var convFunc = this.optRemoveFormattingFunc_ ||
-                 goog.bind(this.removeFormattingWorker_, this);
+      goog.bind(this.removeFormattingWorker_, this);
   this.convertSelectedHtmlText_(convFunc);
 
   // Do the execCommand last as it needs block elements removed to work
@@ -221,8 +221,8 @@ goog.editor.plugins.RemoveFormatting.prototype.pasteHtml_ = function(html) {
   // because their implementations are so self-inconsistent and buggy.
   var startSpanId = goog.string.createUniqueString();
   var endSpanId = goog.string.createUniqueString();
-  html = '<span id="' + startSpanId + '"></span>' + html +
-      '<span id="' + endSpanId + '"></span>';
+  html = '<span id="' + startSpanId + '"></span>' + html + '<span id="' +
+      endSpanId + '"></span>';
   var dummyNodeId = goog.string.createUniqueString();
   var dummySpanText = '<span id="' + dummyNodeId + '"></span>';
 
@@ -243,8 +243,7 @@ goog.editor.plugins.RemoveFormatting.prototype.pasteHtml_ = function(html) {
            !goog.editor.node.isEditableContainer(parent)) {
       var tag = parent.nodeName;
       // We can't remove these table tags as it will invalidate the table dom.
-      if (tag == goog.dom.TagName.TD ||
-          tag == goog.dom.TagName.TR ||
+      if (tag == goog.dom.TagName.TD || tag == goog.dom.TagName.TR ||
           tag == goog.dom.TagName.TH) {
         break;
       }
@@ -286,10 +285,11 @@ goog.editor.plugins.RemoveFormatting.prototype.pasteHtml_ = function(html) {
     // remove parentNodes of the span while they are empty.
 
     if (goog.userAgent.GECKO) {
-      goog.editor.node.replaceInnerHtml(parent,
-          parent.innerHTML.replace(dummyImageNodePattern, html));
+      goog.editor.node.replaceInnerHtml(
+          parent, parent.innerHTML.replace(dummyImageNodePattern, html));
     } else {
-      goog.editor.node.replaceInnerHtml(parent,
+      goog.editor.node.replaceInnerHtml(
+          parent,
           parent.innerHTML.replace(dummyImageNodePattern, dummySpanText));
       var dummySpan = dh.getElement(dummyNodeId);
       parent = dummySpan;
@@ -298,8 +298,7 @@ goog.editor.plugins.RemoveFormatting.prototype.pasteHtml_ = function(html) {
              !goog.editor.node.isEditableContainer(parent)) {
         var tag = parent.nodeName;
         // We can't remove these table tags as it will invalidate the table dom.
-        if (tag == goog.dom.TagName.TD ||
-            tag == goog.dom.TagName.TR ||
+        if (tag == goog.dom.TagName.TD || tag == goog.dom.TagName.TR ||
             tag == goog.dom.TagName.TH) {
           break;
         }
@@ -310,15 +309,17 @@ goog.editor.plugins.RemoveFormatting.prototype.pasteHtml_ = function(html) {
         goog.dom.insertSiblingAfter(dummySpan, parent);
         goog.dom.removeNode(parent);
       }
-      goog.editor.node.replaceInnerHtml(parent,
+      goog.editor.node.replaceInnerHtml(
+          parent,
           parent.innerHTML.replace(new RegExp(dummySpanText, 'i'), html));
     }
   }
 
   var startSpan = dh.getElement(startSpanId);
   var endSpan = dh.getElement(endSpanId);
-  goog.dom.Range.createFromNodes(startSpan, 0, endSpan,
-      endSpan.childNodes.length).select();
+  goog.dom.Range
+      .createFromNodes(startSpan, 0, endSpan, endSpan.childNodes.length)
+      .select();
   goog.dom.removeNode(startSpan);
   goog.dom.removeNode(endSpan);
 };
@@ -384,8 +385,8 @@ goog.editor.plugins.RemoveFormatting.prototype.getHtmlText_ = function(range) {
  *     selection after we run our custom remove formatting.
  * @private
  */
-goog.editor.plugins.RemoveFormatting.prototype.adjustRangeForTables_ =
-    function(range, startInTable, endInTable) {
+goog.editor.plugins.RemoveFormatting.prototype.adjustRangeForTables_ = function(
+    range, startInTable, endInTable) {
   // Create placeholders for the current selection so we can restore it
   // later.
   var savedCaretRange = goog.editor.range.saveUsingNormalizedCarets(range);
@@ -411,8 +412,8 @@ goog.editor.plugins.RemoveFormatting.prototype.adjustRangeForTables_ =
     endOffset = 0;
   }
 
-  goog.dom.Range.createFromNodes(startNode, startOffset,
-      endNode, endOffset).select();
+  goog.dom.Range.createFromNodes(startNode, startOffset, endNode, endOffset)
+      .select();
 
   return savedCaretRange;
 };
@@ -482,7 +483,7 @@ goog.editor.plugins.RemoveFormatting.prototype.convertSelectedHtmlText_ =
     return;
   }
 
-  if (goog.userAgent.GECKO) {
+  if (goog.userAgent.GECKO || goog.userAgent.EDGE) {
     // Determine if we need to handle tables, since they are special cases.
     // If the selection is entirely within a table, there is no extra
     // formatting removal we can do.  If a table is fully selected, we will
@@ -502,8 +503,8 @@ goog.editor.plugins.RemoveFormatting.prototype.convertSelectedHtmlText_ =
     // Expand the selection to include any outermost tags that weren't included
     // in the selection, but have the same visible selection. Stop expanding
     // if we reach the top level field.
-    var expandedRange = goog.editor.range.expand(range,
-        this.getFieldObject().getElement());
+    var expandedRange =
+        goog.editor.range.expand(range, this.getFieldObject().getElement());
 
     var startInTable = this.getTableAncestor_(expandedRange.getStartNode());
     var endInTable = this.getTableAncestor_(expandedRange.getEndNode());
@@ -518,8 +519,8 @@ goog.editor.plugins.RemoveFormatting.prototype.convertSelectedHtmlText_ =
 
       // Adjust the range to not contain any partially selected tables, since
       // we don't want to run our custom remove formatting on them.
-      var savedCaretRange = this.adjustRangeForTables_(range,
-          startInTable, endInTable);
+      var savedCaretRange =
+          this.adjustRangeForTables_(range, startInTable, endInTable);
 
       // Hack alert!!
       // If start is not in a table, then the saved caret will get sent out
@@ -538,8 +539,8 @@ goog.editor.plugins.RemoveFormatting.prototype.convertSelectedHtmlText_ =
 
       // Re-fetch the range, and re-expand it, since we just modified it.
       range = this.getFieldObject().getRange();
-      expandedRange = goog.editor.range.expand(range,
-          this.getFieldObject().getElement());
+      expandedRange =
+          goog.editor.range.expand(range, this.getFieldObject().getElement());
     }
 
     expandedRange.select();
@@ -551,7 +552,7 @@ goog.editor.plugins.RemoveFormatting.prototype.convertSelectedHtmlText_ =
   var text = this.getHtmlText_(range);
   this.pasteHtml_(convertFunc(text));
 
-  if (goog.userAgent.GECKO && savedCaretRange) {
+  if ((goog.userAgent.GECKO || goog.userAgent.EDGE) && savedCaretRange) {
     // If we moved the selection, move it back so the user can't tell we did
     // anything crazy and so the browser removeFormat that we call next
     // will operate on the entire originally selected range.
@@ -683,9 +684,9 @@ goog.editor.plugins.RemoveFormatting.prototype.removeFormattingWorker_ =
             sb.push("'>");
             sb.push(this.removeFormattingWorker_(node.innerHTML));
             sb.push('</a>');
-            continue; // Children taken care of.
+            continue;  // Children taken care of.
           } else {
-            break; // Take care of the children.
+            break;  // Take care of the children.
           }
 
         case goog.dom.TagName.IMG:
@@ -725,7 +726,7 @@ goog.editor.plugins.RemoveFormatting.prototype.removeFormattingWorker_ =
             // block element, the DIV does not add a new line.
             break;
           }
-          // Otherwise, the DIV does add a new line.  Fall through.
+        // Otherwise, the DIV does add a new line.  Fall through.
 
         default:
           if (goog.editor.plugins.RemoveFormatting.BLOCK_RE_.test(nodeName)) {

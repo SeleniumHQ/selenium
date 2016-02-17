@@ -43,8 +43,9 @@ goog.require('goog.ui.registry');
  * @extends {goog.ui.Button}
  */
 goog.ui.ToggleButton = function(content, opt_renderer, opt_domHelper) {
-  goog.ui.Button.call(this, content, opt_renderer ||
-      goog.ui.CustomButtonRenderer.getInstance(), opt_domHelper);
+  goog.ui.Button.call(
+      this, content, opt_renderer || goog.ui.CustomButtonRenderer.getInstance(),
+      opt_domHelper);
   this.setSupportedState(goog.ui.Component.State.CHECKED, true);
 };
 goog.inherits(goog.ui.ToggleButton, goog.ui.Button);

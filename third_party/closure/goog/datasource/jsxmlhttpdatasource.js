@@ -53,16 +53,16 @@ goog.require('goog.net.XhrIo');
  * @constructor
  * @final
  */
-goog.ds.JsXmlHttpDataSource = function(uri, name, opt_startText, opt_endText,
-                                       opt_usePost) {
+goog.ds.JsXmlHttpDataSource = function(
+    uri, name, opt_startText, opt_endText, opt_usePost) {
   goog.ds.FastDataNode.call(this, {}, name, null);
   if (uri) {
     this.uri_ = new goog.Uri(uri);
     this.xhr_ = new goog.net.XhrIo();
     this.usePost_ = !!opt_usePost;
 
-    goog.events.listen(this.xhr_, goog.net.EventType.COMPLETE,
-        this.completed_, false, this);
+    goog.events.listen(
+        this.xhr_, goog.net.EventType.COMPLETE, this.completed_, false, this);
   } else {
     this.uri_ = null;
   }
@@ -117,12 +117,12 @@ goog.ds.JsXmlHttpDataSource.prototype.setQueryData = function(data) {
  * @override
  */
 goog.ds.JsXmlHttpDataSource.prototype.load = function() {
-  goog.log.info(goog.ds.logger, 'Sending JS request for DataSource ' +
-      this.getDataName() + ' to ' + this.uri_);
+  goog.log.info(
+      goog.ds.logger, 'Sending JS request for DataSource ' +
+          this.getDataName() + ' to ' + this.uri_);
 
   if (this.uri_) {
     if (this.usePost_) {
-
       var queryData;
       if (!this.queryData_) {
         queryData = this.uri_.getQueryData().toString();
@@ -146,7 +146,7 @@ goog.ds.JsXmlHttpDataSource.prototype.load = function() {
  * Called on successful request.
  * @private
  */
-goog.ds.JsXmlHttpDataSource.prototype.success_ = function()  {
+goog.ds.JsXmlHttpDataSource.prototype.success_ = function() {
   goog.ds.DataManager.getInstance().fireDataChange(this.getDataName());
 };
 
@@ -159,8 +159,8 @@ goog.ds.JsXmlHttpDataSource.prototype.success_ = function()  {
  */
 goog.ds.JsXmlHttpDataSource.prototype.completed_ = function(e) {
   if (this.xhr_.isSuccess()) {
-    goog.log.info(goog.ds.logger,
-        'Got data for DataSource ' + this.getDataName());
+    goog.log.info(
+        goog.ds.logger, 'Got data for DataSource ' + this.getDataName());
     var text = this.xhr_.getResponseText();
 
     // Look for start and end token and trim text
@@ -179,8 +179,7 @@ goog.ds.JsXmlHttpDataSource.prototype.completed_ = function(e) {
       var jsonObj = /** @type {Object} */ (eval('[' + text + '][0]'));
       this.extendWith(jsonObj);
       this.loadState_ = goog.ds.LoadState.LOADED;
-    }
-    catch (ex) {
+    } catch (ex) {
       // Invalid JS
       this.loadState_ = goog.ds.LoadState.FAILED;
       goog.log.error(goog.ds.logger, 'Failed to parse data: ' + ex.message);
@@ -189,8 +188,9 @@ goog.ds.JsXmlHttpDataSource.prototype.completed_ = function(e) {
     // Call on a timer to avoid threading issues on IE.
     goog.global.setTimeout(goog.bind(this.success_, this), 0);
   } else {
-    goog.log.info(goog.ds.logger, 'Data retrieve failed for DataSource ' +
-        this.getDataName());
+    goog.log.info(
+        goog.ds.logger,
+        'Data retrieve failed for DataSource ' + this.getDataName());
     this.loadState_ = goog.ds.LoadState.FAILED;
   }
 };

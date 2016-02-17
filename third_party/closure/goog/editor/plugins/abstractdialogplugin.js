@@ -46,8 +46,41 @@ goog.require('goog.ui.editor.AbstractDialog');
  * @extends {goog.editor.Plugin}
  */
 goog.editor.plugins.AbstractDialogPlugin = function(command) {
-  goog.editor.Plugin.call(this);
+  goog.editor.plugins.AbstractDialogPlugin.base(this, 'constructor');
+
+  /**
+   * The command that this plugin handles.
+   * @private {string}
+   */
   this.command_ = command;
+
+  /** @private {function()} */
+  this.restoreScrollPosition_ = function() {};
+
+  /**
+   * The current dialog that was created and opened by this plugin.
+   * @private {?goog.ui.editor.AbstractDialog}
+   */
+  this.dialog_ = null;
+
+  /**
+   * Whether this plugin should reuse the same instance of the dialog each time
+   * execCommand is called or create a new one.
+   * @private {boolean}
+   */
+  this.reuseDialog_ = false;
+
+  /**
+   * Mutex to prevent recursive calls to disposeDialog_.
+   * @private {boolean}
+   */
+  this.isDisposingDialog_ = false;
+
+  /**
+   * SavedRange representing the selection before the dialog was opened.
+   * @private {?goog.dom.SavedRange}
+   */
+  this.savedRange_ = null;
 };
 goog.inherits(goog.editor.plugins.AbstractDialogPlugin, goog.editor.Plugin);
 
@@ -126,8 +159,8 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.getDialog = function() {
  * @param {boolean} reuse Whether to reuse the dialog.
  * @protected
  */
-goog.editor.plugins.AbstractDialogPlugin.prototype.setReuseDialog =
-    function(reuse) {
+goog.editor.plugins.AbstractDialogPlugin.prototype.setReuseDialog = function(
+    reuse) {
   this.reuseDialog_ = reuse;
 };
 
@@ -156,8 +189,7 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.execCommandInternal =
     this.dialog_ = this.createDialog(
         // TODO(user): Add Field.getAppDomHelper. (Note dom helper will
         // need to be updated if setAppWindow is called by clients.)
-        goog.dom.getDomHelper(this.getFieldObject().getAppWindow()),
-        opt_arg);
+        goog.dom.getDomHelper(this.getFieldObject().getAppWindow()), opt_arg);
   }
 
   // Since we're opening a dialog, we need to clear the selection because the
@@ -169,17 +201,17 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.execCommandInternal =
   var tempRange = this.getFieldObject().getRange();
   // saveUsingDom() did not work as well as saveUsingNormalizedCarets(),
   // not sure why.
-  this.savedRange_ = tempRange && goog.editor.range.saveUsingNormalizedCarets(
-      tempRange);
+
+  this.restoreScrollPosition_ = this.saveScrollPosition();
+  this.savedRange_ =
+      tempRange && goog.editor.range.saveUsingNormalizedCarets(tempRange);
   goog.dom.Range.clearSelection(
       this.getFieldObject().getEditableDomHelper().getWindow());
 
   // Listen for the dialog closing so we can clean up.
-  goog.events.listenOnce(this.dialog_,
-      goog.ui.editor.AbstractDialog.EventType.AFTER_HIDE,
-      this.handleAfterHide,
-      false,
-      this);
+  goog.events.listenOnce(
+      this.dialog_, goog.ui.editor.AbstractDialog.EventType.AFTER_HIDE,
+      this.handleAfterHide, false, this);
 
   this.getFieldObject().setModalMode(true);
   this.dialog_.show();
@@ -208,6 +240,7 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.handleAfterHide = function(
     e) {
   this.getFieldObject().setModalMode(false);
   this.restoreOriginalSelection();
+  this.restoreScrollPosition_();
 
   if (!this.reuseDialog_) {
     this.disposeDialog_();
@@ -268,47 +301,6 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.disposeInternal =
 
 
 // *** Private implementation *********************************************** //
-
-
-/**
- * The command that this plugin handles.
- * @type {string}
- * @private
- */
-goog.editor.plugins.AbstractDialogPlugin.prototype.command_;
-
-
-/**
- * The current dialog that was created and opened by this plugin.
- * @type {goog.ui.editor.AbstractDialog}
- * @private
- */
-goog.editor.plugins.AbstractDialogPlugin.prototype.dialog_;
-
-
-/**
- * Whether this plugin should reuse the same instance of the dialog each time
- * execCommand is called or create a new one.
- * @type {boolean}
- * @private
- */
-goog.editor.plugins.AbstractDialogPlugin.prototype.reuseDialog_ = false;
-
-
-/**
- * Mutex to prevent recursive calls to disposeDialog_.
- * @type {boolean}
- * @private
- */
-goog.editor.plugins.AbstractDialogPlugin.prototype.isDisposingDialog_ = false;
-
-
-/**
- * SavedRange representing the selection before the dialog was opened.
- * @type {goog.dom.SavedRange}
- * @private
- */
-goog.editor.plugins.AbstractDialogPlugin.prototype.savedRange_;
 
 
 /**

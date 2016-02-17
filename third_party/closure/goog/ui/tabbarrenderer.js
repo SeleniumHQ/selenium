@@ -79,8 +79,8 @@ goog.ui.TabBarRenderer.prototype.getCssClass = function() {
  * @protected
  * @override
  */
-goog.ui.TabBarRenderer.prototype.setStateFromClassName = function(tabBar,
-    className, baseClass) {
+goog.ui.TabBarRenderer.prototype.setStateFromClassName = function(
+    tabBar, className, baseClass) {
   // Create the class-to-location lookup table on first access.
   if (!this.locationByClass_) {
     this.createLocationByClassMap_();
@@ -92,8 +92,8 @@ goog.ui.TabBarRenderer.prototype.setStateFromClassName = function(tabBar,
   if (location) {
     tabBar.setLocation(location);
   } else {
-    goog.ui.TabBarRenderer.superClass_.setStateFromClassName.call(this, tabBar,
-        className, baseClass);
+    goog.ui.TabBarRenderer.superClass_.setStateFromClassName.call(
+        this, tabBar, className, baseClass);
   }
 };
 
@@ -108,8 +108,8 @@ goog.ui.TabBarRenderer.prototype.setStateFromClassName = function(tabBar,
  * @override
  */
 goog.ui.TabBarRenderer.prototype.getClassNames = function(tabBar) {
-  var classNames = goog.ui.TabBarRenderer.superClass_.getClassNames.call(this,
-      tabBar);
+  var classNames =
+      goog.ui.TabBarRenderer.superClass_.getClassNames.call(this, tabBar);
 
   // Create the location-to-class lookup table on first access.
   if (!this.classByLocation_) {

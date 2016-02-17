@@ -105,38 +105,39 @@ goog.ui.CookieEditor.prototype.canDecorate = function() {
 /** @override */
 goog.ui.CookieEditor.prototype.createDom = function() {
   // Debug-only, so we don't need i18n.
-  this.clearButtonElem_ = /** @type {!HTMLButtonElement} */ (goog.dom.createDom(
-      goog.dom.TagName.BUTTON, /* attributes */ null, 'Clear'));
+  this.clearButtonElem_ = /** @type {!HTMLButtonElement} */ (
+      goog.dom.createDom(
+          goog.dom.TagName.BUTTON, /* attributes */ null, 'Clear'));
   this.updateButtonElem_ =
-      /** @type {!HTMLButtonElement} */ (goog.dom.createDom(
-          goog.dom.TagName.BUTTON, /* attributes */ null, 'Update'));
+      /** @type {!HTMLButtonElement} */ (
+          goog.dom.createDom(
+              goog.dom.TagName.BUTTON, /* attributes */ null, 'Update'));
   var value = this.cookieKey_ && goog.net.cookies.get(this.cookieKey_);
-  this.textAreaElem_ = /** @type {!HTMLTextAreaElement} */ (goog.dom.createDom(
-      goog.dom.TagName.TEXTAREA, /* attibutes */ null, value || ''));
-  this.valueWarningElem_ = /** @type {!HTMLSpanElement} */ (goog.dom.createDom(
-      goog.dom.TagName.SPAN, /* attibutes */ {
-        'style': 'display:none;color:red'
-      }, 'Invalid cookie value.'));
-  this.setElementInternal(goog.dom.createDom(goog.dom.TagName.DIV,
-      /* attibutes */ null,
-      this.valueWarningElem_,
-      goog.dom.createDom(goog.dom.TagName.BR),
-      this.textAreaElem_,
-      goog.dom.createDom(goog.dom.TagName.BR),
-      this.clearButtonElem_,
-      this.updateButtonElem_));
+  this.textAreaElem_ = /** @type {!HTMLTextAreaElement} */ (
+      goog.dom.createDom(
+          goog.dom.TagName.TEXTAREA, /* attibutes */ null, value || ''));
+  this.valueWarningElem_ = /** @type {!HTMLSpanElement} */ (
+      goog.dom.createDom(
+          goog.dom.TagName.SPAN,
+          /* attibutes */ {'style': 'display:none;color:red'},
+          'Invalid cookie value.'));
+  this.setElementInternal(
+      goog.dom.createDom(
+          goog.dom.TagName.DIV,
+          /* attibutes */ null, this.valueWarningElem_,
+          goog.dom.createDom(goog.dom.TagName.BR), this.textAreaElem_,
+          goog.dom.createDom(goog.dom.TagName.BR), this.clearButtonElem_,
+          this.updateButtonElem_));
 };
 
 
 /** @override */
 goog.ui.CookieEditor.prototype.enterDocument = function() {
   goog.ui.CookieEditor.base(this, 'enterDocument');
-  this.getHandler().listen(this.clearButtonElem_,
-      goog.events.EventType.CLICK,
-      this.handleClear_);
-  this.getHandler().listen(this.updateButtonElem_,
-      goog.events.EventType.CLICK,
-      this.handleUpdate_);
+  this.getHandler().listen(
+      this.clearButtonElem_, goog.events.EventType.CLICK, this.handleClear_);
+  this.getHandler().listen(
+      this.updateButtonElem_, goog.events.EventType.CLICK, this.handleUpdate_);
 };
 
 

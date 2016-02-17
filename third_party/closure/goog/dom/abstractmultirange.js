@@ -34,8 +34,7 @@ goog.require('goog.dom.AbstractRange');
  * @constructor
  * @extends {goog.dom.AbstractRange}
  */
-goog.dom.AbstractMultiRange = function() {
-};
+goog.dom.AbstractMultiRange = function() {};
 goog.inherits(goog.dom.AbstractMultiRange, goog.dom.AbstractRange);
 
 
@@ -69,8 +68,8 @@ goog.dom.AbstractMultiRange.prototype.insertNode = function(node, before) {
 
 
 /** @override */
-goog.dom.AbstractMultiRange.prototype.surroundWithNodes = function(startNode,
-    endNode) {
+goog.dom.AbstractMultiRange.prototype.surroundWithNodes = function(
+    startNode, endNode) {
   this.insertNode(startNode, true);
   this.insertNode(endNode, false);
 };

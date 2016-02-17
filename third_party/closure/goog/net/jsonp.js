@@ -79,8 +79,8 @@ goog.net.Jsonp = function(uri, opt_callbackParamName) {
    * @type {string}
    * @private
    */
-  this.callbackParamName_ = opt_callbackParamName ?
-      opt_callbackParamName : 'callback';
+  this.callbackParamName_ =
+      opt_callbackParamName ? opt_callbackParamName : 'callback';
 
   /**
    * The length of time, in milliseconds, this channel is prepared
@@ -166,16 +166,14 @@ goog.net.Jsonp.prototype.getRequestTimeout = function() {
  * @return {!Object} A request descriptor that may be used to cancel this
  *     transmission, or null, if the message may not be cancelled.
  */
-goog.net.Jsonp.prototype.send = function(opt_payload,
-                                         opt_replyCallback,
-                                         opt_errorCallback,
-                                         opt_callbackParamValue) {
+goog.net.Jsonp.prototype.send = function(
+    opt_payload, opt_replyCallback, opt_errorCallback, opt_callbackParamValue) {
 
   var payload = opt_payload || null;
 
   var id = opt_callbackParamValue ||
       '_' + (goog.net.Jsonp.scriptCounter_++).toString(36) +
-      goog.now().toString(36);
+          goog.now().toString(36);
 
   if (!goog.global[goog.net.Jsonp.CALLBACKS]) {
     goog.global[goog.net.Jsonp.CALLBACKS] = {};
@@ -191,12 +189,12 @@ goog.net.Jsonp.prototype.send = function(opt_payload,
     var reply = goog.net.Jsonp.newReplyHandler_(id, opt_replyCallback);
     goog.global[goog.net.Jsonp.CALLBACKS][id] = reply;
 
-    uri.setParameterValues(this.callbackParamName_,
-                           goog.net.Jsonp.CALLBACKS + '.' + id);
+    uri.setParameterValues(
+        this.callbackParamName_, goog.net.Jsonp.CALLBACKS + '.' + id);
   }
 
-  var deferred = goog.net.jsloader.load(uri.toString(),
-      {timeout: this.timeout_, cleanupWhenDone: true});
+  var deferred = goog.net.jsloader.load(
+      uri.toString(), {timeout: this.timeout_, cleanupWhenDone: true});
   var error = goog.net.Jsonp.newErrorHandler_(id, payload, opt_errorCallback);
   deferred.addErrback(error);
 
@@ -232,9 +230,7 @@ goog.net.Jsonp.prototype.cancel = function(request) {
  * @return {!Function} A zero argument function that handles callback duties.
  * @private
  */
-goog.net.Jsonp.newErrorHandler_ = function(id,
-                                           payload,
-                                           opt_errorCallback) {
+goog.net.Jsonp.newErrorHandler_ = function(id, payload, opt_errorCallback) {
   /**
    * When we call across domains with a request, this function is the
    * timeout handler. Once it's done executing the user-specified

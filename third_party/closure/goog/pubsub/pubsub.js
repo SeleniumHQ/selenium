@@ -22,6 +22,7 @@ goog.provide('goog.pubsub.PubSub');
 
 goog.require('goog.Disposable');
 goog.require('goog.array');
+goog.require('goog.async.run');
 
 
 
@@ -36,9 +37,11 @@ goog.require('goog.array');
  * "toString", "hasOwnProperty", etc.
  *
  * @constructor
+ * @param {boolean=} opt_async Enable asynchronous behavior.  Recommended for
+ *     new code.  See notes on the publish() method.
  * @extends {goog.Disposable}
  */
-goog.pubsub.PubSub = function() {
+goog.pubsub.PubSub = function(opt_async) {
   goog.pubsub.PubSub.base(this, 'constructor');
 
   /**
@@ -91,6 +94,11 @@ goog.pubsub.PubSub = function() {
    * @private {!Object<!Array<number>>}
    */
   this.topics_ = {};
+
+  /**
+   * @private @const {boolean}
+   */
+  this.async_ = Boolean(opt_async);
 };
 goog.inherits(goog.pubsub.PubSub, goog.Disposable);
 
@@ -147,10 +155,22 @@ goog.pubsub.PubSub.prototype.subscribe = function(topic, fn, opt_context) {
  * @return {number} Subscription key.
  */
 goog.pubsub.PubSub.prototype.subscribeOnce = function(topic, fn, opt_context) {
+  // Keep track of whether the function was called.  This is necessary because
+  // in async mode, multiple calls could be scheduled before the function has
+  // the opportunity to unsubscribe itself.
+  var called = false;
+
   // Behold the power of lexical closures!
   var key = this.subscribe(topic, function(var_args) {
-    fn.apply(opt_context, arguments);
-    this.unsubscribeByKey(key);
+    if (!called) {
+      called = true;
+
+      // Unsubuscribe before calling function so the function is unscubscribed
+      // even if it throws an exception.
+      this.unsubscribeByKey(key);
+
+      fn.apply(opt_context, arguments);
+    }
   }, this);
   return key;
 };
@@ -220,8 +240,11 @@ goog.pubsub.PubSub.prototype.unsubscribeByKey = function(key) {
 
 /**
  * Publishes a message to a topic.  Calls functions subscribed to the topic in
- * the order in which they were added, passing all arguments along.  If any of
- * the functions throws an uncaught error, publishing is aborted.
+ * the order in which they were added, passing all arguments along.
+ *
+ * If this object was created with async=true, subscribed functions are called
+ * via goog.async.run().  Otherwise, the functions are called directly, and if
+ * any of them throw an uncaught error, publishing is aborted.
  *
  * @param {string} topic Topic to publish to.
  * @param {...*} var_args Arguments that are applied to each subscription
@@ -231,11 +254,6 @@ goog.pubsub.PubSub.prototype.unsubscribeByKey = function(key) {
 goog.pubsub.PubSub.prototype.publish = function(topic, var_args) {
   var keys = this.topics_[topic];
   if (keys) {
-    // We must lock subscriptions and remove them at the end, so we don't
-    // adversely affect the performance of the common case by cloning the key
-    // array.
-    this.publishDepth_++;
-
     // Copy var_args to a new array so they can be passed to subscribers.
     // Note that we can't use Array.slice or goog.array.toArray for this for
     // performance reasons. Using those with the arguments object will cause
@@ -245,25 +263,41 @@ goog.pubsub.PubSub.prototype.publish = function(topic, var_args) {
       args[i - 1] = arguments[i];
     }
 
-    try {
-      // For each key in the list of subscription keys for the topic, apply the
-      // function to the arguments in the appropriate context.  The length of
-      // the array must be fixed during the iteration, since subscribers may add
-      // new subscribers during publishing.
-      for (var i = 0, len = keys.length; i < len; i++) {
+    if (this.async_) {
+      // For each key in the list of subscription keys for the topic, schedule
+      // the function to be applied to the arguments in the appropriate context.
+      for (i = 0; i < keys.length; i++) {
         var key = keys[i];
-        this.subscriptions_[key + 1].apply(this.subscriptions_[key + 2], args);
+        goog.pubsub.PubSub.runAsync_(
+            this.subscriptions_[key + 1], this.subscriptions_[key + 2], args);
       }
-    } finally {
-      // Always unlock subscriptions, even if a subscribed method throws an
-      // uncaught exception. This makes it possible for users to catch
-      // exceptions themselves and unsubscribe remaining subscriptions.
-      this.publishDepth_--;
+    } else {
+      // We must lock subscriptions and remove them at the end, so we don't
+      // adversely affect the performance of the common case by cloning the key
+      // array.
+      this.publishDepth_++;
 
-      if (this.pendingKeys_.length > 0 && this.publishDepth_ == 0) {
-        var pendingKey;
-        while ((pendingKey = this.pendingKeys_.pop())) {
-          this.unsubscribeByKey(pendingKey);
+      try {
+        // For each key in the list of subscription keys for the topic, apply
+        // the function to the arguments in the appropriate context.  The length
+        // of the array must be fixed during the iteration, since subscribers
+        // may add new subscribers during publishing.
+        for (i = 0, len = keys.length; i < len; i++) {
+          var key = keys[i];
+          this.subscriptions_[key + 1].apply(
+              this.subscriptions_[key + 2], args);
+        }
+      } finally {
+        // Always unlock subscriptions, even if a subscribed method throws an
+        // uncaught exception. This makes it possible for users to catch
+        // exceptions themselves and unsubscribe remaining subscriptions.
+        this.publishDepth_--;
+
+        if (this.pendingKeys_.length > 0 && this.publishDepth_ == 0) {
+          var pendingKey;
+          while ((pendingKey = this.pendingKeys_.pop())) {
+            this.unsubscribeByKey(pendingKey);
+          }
         }
       }
     }
@@ -274,6 +308,18 @@ goog.pubsub.PubSub.prototype.publish = function(topic, var_args) {
 
   // No subscribers were found.
   return false;
+};
+
+
+/**
+ * Runs a function asynchronously with the given context and arguments.
+ * @param {!Function} func The function to call.
+ * @param {*} context The context in which to call {@code func}.
+ * @param {!Array} args The arguments to pass to {@code func}.
+ * @private
+ */
+goog.pubsub.PubSub.runAsync_ = function(func, context, args) {
+  goog.async.run(function() { func.apply(context, args); });
 };
 
 

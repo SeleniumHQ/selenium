@@ -140,12 +140,13 @@ goog.ui.Popup.prototype.getMargin = function() {
  * @param {number=} opt_arg3 Bottom value.
  * @param {number=} opt_arg4 Left value.
  */
-goog.ui.Popup.prototype.setMargin = function(arg1, opt_arg2, opt_arg3,
-                                             opt_arg4) {
+goog.ui.Popup.prototype.setMargin = function(
+    arg1, opt_arg2, opt_arg3, opt_arg4) {
   if (arg1 == null || arg1 instanceof goog.math.Box) {
     this.margin_ = arg1;
   } else {
-    this.margin_ = new goog.math.Box(arg1,
+    this.margin_ = new goog.math.Box(
+        arg1,
         /** @type {number} */ (opt_arg2),
         /** @type {number} */ (opt_arg3),
         /** @type {number} */ (opt_arg4));

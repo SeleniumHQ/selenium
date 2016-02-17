@@ -65,8 +65,8 @@ goog.require('goog.structs.Map');
  * @constructor
  * @template KEY, VALUE
  */
-goog.structs.LinkedMap = function(opt_maxCount, opt_cache,
-    opt_evictionCallback) {
+goog.structs.LinkedMap = function(
+    opt_maxCount, opt_cache, opt_evictionCallback) {
   /**
    * The maximum number of entries to allow, or null if there is no limit.
    * @private {?number}
@@ -248,8 +248,8 @@ goog.structs.LinkedMap.prototype.isEmpty = function() {
  * evicted from the LRU because the max count was reached.
  * @param {function(string, VALUE)} evictionCallback
  */
-goog.structs.LinkedMap.prototype.setEvictionCallback =
-    function(evictionCallback) {
+goog.structs.LinkedMap.prototype.setEvictionCallback = function(
+    evictionCallback) {
   this.evictionCallback_ = evictionCallback;
 };
 
@@ -272,9 +272,7 @@ goog.structs.LinkedMap.prototype.setMaxCount = function(maxCount) {
  *     this LinkedMap.
  */
 goog.structs.LinkedMap.prototype.getKeys = function() {
-  return this.map(function(val, key) {
-    return key;
-  });
+  return this.map(function(val, key) { return key; });
 };
 
 
@@ -283,9 +281,7 @@ goog.structs.LinkedMap.prototype.getKeys = function() {
  *     this LinkedMap.
  */
 goog.structs.LinkedMap.prototype.getValues = function() {
-  return this.map(function(val, key) {
-    return val;
-  });
+  return this.map(function(val, key) { return val; });
 };
 
 
@@ -296,9 +292,7 @@ goog.structs.LinkedMap.prototype.getValues = function() {
  * @return {boolean} Whether the value is in the LinkedMap.
  */
 goog.structs.LinkedMap.prototype.contains = function(value) {
-  return this.some(function(el) {
-    return el == value;
-  });
+  return this.some(function(el) { return el == value; });
 };
 
 

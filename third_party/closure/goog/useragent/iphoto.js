@@ -43,8 +43,7 @@ goog.require('goog.userAgent');
     return matches.join('.');
   }
 
-  if (goog.userAgent.WEBKIT &&
-      navigator.mimeTypes &&
+  if (goog.userAgent.WEBKIT && navigator.mimeTypes &&
       navigator.mimeTypes.length > 0) {
     var iphoto = navigator.mimeTypes['application/photo'];
 
@@ -82,6 +81,6 @@ goog.require('goog.userAgent');
  *     than a given version.
  */
 goog.userAgent.iphoto.isVersion = function(version) {
-  return goog.string.compareVersions(
-      goog.userAgent.iphoto.VERSION, version) >= 0;
+  return goog.string.compareVersions(goog.userAgent.iphoto.VERSION, version) >=
+      0;
 };

@@ -37,8 +37,9 @@ goog.style.bidi.getScrollLeft = function(element) {
     // ScrollLeft starts at 0 and then goes negative as the element is scrolled
     // towards the left.
     return -element.scrollLeft;
-  } else if (isRtl &&
-             !(goog.userAgent.IE && goog.userAgent.isVersionOrHigher('8'))) {
+  } else if (
+      isRtl &&
+      !(goog.userAgent.EDGE_OR_IE && goog.userAgent.isVersionOrHigher('8'))) {
     // ScrollLeft starts at the maximum positive value and decreases towards
     // 0 as the element is scrolled towards the left. However, for overflow
     // visible, there is no scrollLeft and the value always stays correctly at 0
@@ -109,8 +110,9 @@ goog.style.bidi.getOffsetStart = function(element) {
     // the border width from the actual distance.  So we need to add it back.
     var borderWidths = goog.style.getBorderBox(bestParent);
     offsetLeftForReal += borderWidths.left;
-  } else if (goog.userAgent.isDocumentModeOrHigher(8) &&
-             !goog.userAgent.isDocumentModeOrHigher(9)) {
+  } else if (
+      goog.userAgent.isDocumentModeOrHigher(8) &&
+      !goog.userAgent.isDocumentModeOrHigher(9)) {
     // When calculating an element's offsetLeft, IE8/9-Standards Mode
     // erroneously adds the border width to the actual distance.  So we need to
     // subtract it.
@@ -151,7 +153,8 @@ goog.style.bidi.setScrollOffset = function(element, offsetStart) {
   } else if (goog.userAgent.GECKO) {
     // Negative scroll-left positions in RTL.
     element.scrollLeft = -offsetStart;
-  } else if (!(goog.userAgent.IE && goog.userAgent.isVersionOrHigher('8'))) {
+  } else if (
+      !(goog.userAgent.EDGE_OR_IE && goog.userAgent.isVersionOrHigher('8'))) {
     // Take the current scrollLeft value and move to the right by the
     // offsetStart to get to the left edge of the element, and then by
     // the clientWidth of the element to get to the right edge.

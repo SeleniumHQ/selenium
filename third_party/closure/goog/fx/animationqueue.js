@@ -57,7 +57,8 @@ goog.inherits(goog.fx.AnimationQueue, goog.fx.TransitionBase);
  * @param {goog.fx.TransitionBase} animation The animation to add to the queue.
  */
 goog.fx.AnimationQueue.prototype.add = function(animation) {
-  goog.asserts.assert(this.isStopped(),
+  goog.asserts.assert(
+      this.isStopped(),
       'Not allowed to add animations to a running animation queue.');
 
   if (goog.array.contains(this.queue, animation)) {
@@ -65,8 +66,9 @@ goog.fx.AnimationQueue.prototype.add = function(animation) {
   }
 
   this.queue.push(animation);
-  goog.events.listen(animation, goog.fx.Transition.EventType.FINISH,
-                     this.onAnimationFinish, false, this);
+  goog.events.listen(
+      animation, goog.fx.Transition.EventType.FINISH, this.onAnimationFinish,
+      false, this);
 };
 
 
@@ -75,12 +77,14 @@ goog.fx.AnimationQueue.prototype.add = function(animation) {
  * @param {goog.fx.Animation} animation The animation to remove.
  */
 goog.fx.AnimationQueue.prototype.remove = function(animation) {
-  goog.asserts.assert(this.isStopped(),
+  goog.asserts.assert(
+      this.isStopped(),
       'Not allowed to remove animations from a running animation queue.');
 
   if (goog.array.remove(this.queue, animation)) {
-    goog.events.unlisten(animation, goog.fx.Transition.EventType.FINISH,
-                         this.onAnimationFinish, false, this);
+    goog.events.unlisten(
+        animation, goog.fx.Transition.EventType.FINISH, this.onAnimationFinish,
+        false, this);
   }
 };
 
@@ -98,9 +102,7 @@ goog.fx.AnimationQueue.prototype.onAnimationFinish = goog.abstractMethod;
  * @override
  */
 goog.fx.AnimationQueue.prototype.disposeInternal = function() {
-  goog.array.forEach(this.queue, function(animation) {
-    animation.dispose();
-  });
+  goog.array.forEach(this.queue, function(animation) { animation.dispose(); });
   this.queue.length = 0;
 
   goog.fx.AnimationQueue.base(this, 'disposeInternal');

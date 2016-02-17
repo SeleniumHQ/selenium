@@ -80,8 +80,7 @@ goog.labs.userAgent.engine.isGecko = function() {
 goog.labs.userAgent.engine.getVersion = function() {
   var userAgentString = goog.labs.userAgent.util.getUserAgent();
   if (userAgentString) {
-    var tuples = goog.labs.userAgent.util.extractVersionTuples(
-        userAgentString);
+    var tuples = goog.labs.userAgent.util.extractVersionTuples(userAgentString);
 
     var engineTuple = goog.labs.userAgent.engine.getEngineTuple_(tuples);
     if (engineTuple) {
@@ -89,8 +88,7 @@ goog.labs.userAgent.engine.getVersion = function() {
       // Firefox version.  See Gecko user agent string reference:
       // http://goo.gl/mULqa
       if (engineTuple[0] == 'Gecko') {
-        return goog.labs.userAgent.engine.getVersionForKey_(
-            tuples, 'Firefox');
+        return goog.labs.userAgent.engine.getVersionForKey_(tuples, 'Firefox');
       }
 
       return engineTuple[1];
@@ -137,8 +135,8 @@ goog.labs.userAgent.engine.getEngineTuple_ = function(tuples) {
  *     as the given version.
  */
 goog.labs.userAgent.engine.isVersionOrHigher = function(version) {
-  return goog.string.compareVersions(goog.labs.userAgent.engine.getVersion(),
-                                     version) >= 0;
+  return goog.string.compareVersions(
+             goog.labs.userAgent.engine.getVersion(), version) >= 0;
 };
 
 
@@ -152,9 +150,7 @@ goog.labs.userAgent.engine.isVersionOrHigher = function(version) {
 goog.labs.userAgent.engine.getVersionForKey_ = function(tuples, key) {
   // TODO(nnaze): Move to util if useful elsewhere.
 
-  var pair = goog.array.find(tuples, function(pair) {
-    return key == pair[0];
-  });
+  var pair = goog.array.find(tuples, function(pair) { return key == pair[0]; });
 
   return pair && pair[1] || '';
 };

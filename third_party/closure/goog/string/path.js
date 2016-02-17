@@ -139,8 +139,7 @@ goog.string.path.normalizePath = function(path) {
     // A '..' should pop a directory unless this is not an absolute path and
     // we're at the root, or we've travelled upwards relatively in the last
     // iteration.
-    if (part != '..' ||
-        (!initialSlashes && !newParts.length) ||
+    if (part != '..' || (!initialSlashes && !newParts.length) ||
         goog.array.peek(newParts) == '..') {
       newParts.push(part);
     } else {

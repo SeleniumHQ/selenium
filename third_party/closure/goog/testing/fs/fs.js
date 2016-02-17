@@ -126,8 +126,8 @@ goog.testing.fs.getBlob = function(var_args) {
  * @return {!goog.testing.fs.Blob} The blob.
  */
 goog.testing.fs.getBlobWithProperties = function(parts, opt_type, opt_endings) {
-  return new goog.testing.fs.Blob(goog.array.map(parts, String).join(''),
-      opt_type);
+  return new goog.testing.fs.Blob(
+      goog.array.map(parts, String).join(''), opt_type);
 };
 
 
@@ -178,9 +178,8 @@ goog.testing.fs.install = function(stubs) {
   stubs.replace(fs, 'createObjectUrl', goog.testing.fs.createObjectUrl);
   stubs.replace(fs, 'revokeObjectUrl', goog.testing.fs.revokeObjectUrl);
   stubs.replace(fs, 'getBlob', goog.testing.fs.getBlob);
-  stubs.replace(fs, 'getBlobWithProperties',
-      goog.testing.fs.getBlobWithProperties);
+  stubs.replace(
+      fs, 'getBlobWithProperties', goog.testing.fs.getBlobWithProperties);
   stubs.replace(fs, 'blobToString', goog.testing.fs.blobToString);
-  stubs.replace(fs, 'browserSupportsObjectUrls',
-      function() { return true; });
+  stubs.replace(fs, 'browserSupportsObjectUrls', function() { return true; });
 };

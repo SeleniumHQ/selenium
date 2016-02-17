@@ -60,8 +60,8 @@ goog.inherits(goog.ui.ac.Remote, goog.ui.ac.AutoComplete);
  * Set whether or not standard highlighting should be used when rendering rows.
  * @param {boolean} useStandardHighlighting true if standard highlighting used.
  */
-goog.ui.ac.Remote.prototype.setUseStandardHighlighting =
-    function(useStandardHighlighting) {
+goog.ui.ac.Remote.prototype.setUseStandardHighlighting = function(
+    useStandardHighlighting) {
   this.renderer_.setUseStandardHighlighting(useStandardHighlighting);
 };
 
@@ -71,8 +71,7 @@ goog.ui.ac.Remote.prototype.setUseStandardHighlighting =
  * @return {goog.ui.ac.InputHandler} The input handler.
  */
 goog.ui.ac.Remote.prototype.getInputHandler = function() {
-  return /** @type {goog.ui.ac.InputHandler} */ (
-      this.selectionHandler_);
+  return /** @type {goog.ui.ac.InputHandler} */ (this.selectionHandler_);
 };
 
 

@@ -126,7 +126,7 @@ goog.require('goog.i18n.DateTimeSymbols');
 /**
  * Construct a DateTimeParse based on current locale.
  * @param {string|number} pattern pattern specification or pattern type.
- * @param {!Object=} opt_dateTimeSymbols Optional symbols to use use for this
+ * @param {!Object=} opt_dateTimeSymbols Optional symbols to use for this
  *     instance rather than the global symbols.
  * @constructor
  * @final
@@ -141,9 +141,10 @@ goog.i18n.DateTimeParse = function(pattern, opt_dateTimeSymbols) {
   /**
    * Data structure with all the locale info needed for date formatting.
    * (day/month names, most common patterns, rules for week-end, etc.)
-   * @const @private {!Object}
+   * @const @private {!goog.i18n.DateTimeSymbolsType}
    */
-  this.dateTimeSymbols_ = opt_dateTimeSymbols || goog.i18n.DateTimeSymbols;
+  this.dateTimeSymbols_ = /** @type {!goog.i18n.DateTimeSymbolsType} */ (
+      opt_dateTimeSymbols || goog.i18n.DateTimeSymbols);
   if (typeof pattern == 'number') {
     this.applyStandardPattern_(pattern);
   } else {
@@ -255,10 +256,10 @@ goog.i18n.DateTimeParse.prototype.applyStandardPattern_ = function(formatType) {
     pattern = this.dateTimeSymbols_.TIMEFORMATS[formatType - 4];
   } else {
     pattern = this.dateTimeSymbols_.DATETIMEFORMATS[formatType - 8];
-    pattern = pattern.replace('{1}',
-        this.dateTimeSymbols_.DATEFORMATS[formatType - 8]);
-    pattern = pattern.replace('{0}',
-        this.dateTimeSymbols_.TIMEFORMATS[formatType - 8]);
+    pattern = pattern.replace(
+        '{1}', this.dateTimeSymbols_.DATEFORMATS[formatType - 8]);
+    pattern = pattern.replace(
+        '{0}', this.dateTimeSymbols_.TIMEFORMATS[formatType - 8]);
   }
   this.applyPattern_(pattern);
 };
@@ -274,7 +275,7 @@ goog.i18n.DateTimeParse.prototype.applyStandardPattern_ = function(formatType) {
  */
 goog.i18n.DateTimeParse.prototype.parse = function(text, date, opt_start) {
   var start = opt_start || 0;
-  return this.internalParse_(text, date, start, false/*validation*/);
+  return this.internalParse_(text, date, start, false /*validation*/);
 };
 
 
@@ -286,10 +287,10 @@ goog.i18n.DateTimeParse.prototype.parse = function(text, date, opt_start) {
  * @param {number=} opt_start The position from where parse should begin.
  * @return {number} How many characters parser advanced.
  */
-goog.i18n.DateTimeParse.prototype.strictParse =
-    function(text, date, opt_start) {
+goog.i18n.DateTimeParse.prototype.strictParse = function(
+    text, date, opt_start) {
   var start = opt_start || 0;
-  return this.internalParse_(text, date, start, true/*validation*/);
+  return this.internalParse_(text, date, start, true /*validation*/);
 };
 
 
@@ -303,8 +304,8 @@ goog.i18n.DateTimeParse.prototype.strictParse =
  * @return {number} How many characters parser advanced.
  * @private
  */
-goog.i18n.DateTimeParse.prototype.internalParse_ =
-    function(text, date, start, validation) {
+goog.i18n.DateTimeParse.prototype.internalParse_ = function(
+    text, date, start, validation) {
   var cal = new goog.i18n.DateTimeParse.MyDate_();
   var parsePos = [start];
 
@@ -313,7 +314,7 @@ goog.i18n.DateTimeParse.prototype.internalParse_ =
   // numeric fields. 'abutStart' is the offset into 'text'
   // where parsing the fields begins. 'abutPass' starts off as 0
   // and increments each time we try to parse the fields.
-  var abutPat = -1; // If >=0, we are in a run of abutting numeric fields
+  var abutPat = -1;  // If >=0, we are in a run of abutting numeric fields
   var abutStart = 0;
   var abutPass = 0;
 
@@ -347,8 +348,8 @@ goog.i18n.DateTimeParse.prototype.internalParse_ =
           }
         }
 
-        if (!this.subParse_(text, parsePos, this.patternParts_[i], count,
-                            cal)) {
+        if (!this.subParse_(
+                text, parsePos, this.patternParts_[i], count, cal)) {
           // If the parse fails anywhere in the run, back up to the
           // start of the run and retry.
           i = abutPat - 1;
@@ -380,8 +381,9 @@ goog.i18n.DateTimeParse.prototype.internalParse_ =
         if (parsePos[0] > s) {
           continue;
         }
-      } else if (text.indexOf(this.patternParts_[i].text, parsePos[0]) ==
-                 parsePos[0]) {
+      } else if (
+          text.indexOf(this.patternParts_[i].text, parsePos[0]) ==
+          parsePos[0]) {
         parsePos[0] += this.patternParts_[i].text.length;
         continue;
       }
@@ -405,8 +407,7 @@ goog.i18n.DateTimeParse.prototype.internalParse_ =
  * @return {number} Repeat count.
  * @private
  */
-goog.i18n.DateTimeParse.prototype.getNextCharCount_ =
-    function(pattern, start) {
+goog.i18n.DateTimeParse.prototype.getNextCharCount_ = function(pattern, start) {
   var ch = pattern.charAt(start);
   var next = start + 1;
   while (next < pattern.length && pattern.charAt(next) == ch) {
@@ -509,8 +510,8 @@ goog.i18n.DateTimeParse.prototype.skipSpace_ = function(text, pos) {
  * @return {boolean} True if it parses successfully.
  * @private
  */
-goog.i18n.DateTimeParse.prototype.subParse_ =
-    function(text, pos, part, digitCount, cal) {
+goog.i18n.DateTimeParse.prototype.subParse_ = function(
+    text, pos, part, digitCount, cal) {
   this.skipSpace_(text, pos);
 
   var start = pos[0];
@@ -523,67 +524,66 @@ goog.i18n.DateTimeParse.prototype.subParse_ =
       if ((start + digitCount) > text.length) {
         return false;
       }
-      value = this.parseInt_(
-          text.substring(0, start + digitCount), pos);
+      value = this.parseInt_(text.substring(0, start + digitCount), pos);
     } else {
       value = this.parseInt_(text, pos);
     }
   }
 
   switch (ch) {
-    case 'G': // ERA
+    case 'G':  // ERA
       value = this.matchString_(text, pos, this.dateTimeSymbols_.ERAS);
       if (value >= 0) {
         cal.era = value;
       }
       return true;
-    case 'M': // MONTH
-    case 'L': // STANDALONEMONTH
+    case 'M':  // MONTH
+    case 'L':  // STANDALONEMONTH
       return this.subParseMonth_(text, pos, cal, value);
     case 'E':
       return this.subParseDayOfWeek_(text, pos, cal);
-    case 'a': // AM_PM
+    case 'a':  // AM_PM
       value = this.matchString_(text, pos, this.dateTimeSymbols_.AMPMS);
       if (value >= 0) {
         cal.ampm = value;
       }
       return true;
-    case 'y': // YEAR
+    case 'y':  // YEAR
       return this.subParseYear_(text, pos, start, value, part, cal);
-    case 'Q': // QUARTER
+    case 'Q':  // QUARTER
       return this.subParseQuarter_(text, pos, cal, value);
-    case 'd': // DATE
+    case 'd':  // DATE
       if (value >= 0) {
         cal.day = value;
       }
       return true;
-    case 'S': // FRACTIONAL_SECOND
+    case 'S':  // FRACTIONAL_SECOND
       return this.subParseFractionalSeconds_(value, pos, start, cal);
-    case 'h': // HOUR (1..12)
+    case 'h':  // HOUR (1..12)
       if (value == 12) {
         value = 0;
       }
-    case 'K': // HOUR (0..11)
-    case 'H': // HOUR_OF_DAY (0..23)
-    case 'k': // HOUR_OF_DAY (1..24)
+    case 'K':  // HOUR (0..11)
+    case 'H':  // HOUR_OF_DAY (0..23)
+    case 'k':  // HOUR_OF_DAY (1..24)
       if (value >= 0) {
         cal.hours = value;
       }
       return true;
-    case 'm': // MINUTE
+    case 'm':  // MINUTE
       if (value >= 0) {
         cal.minutes = value;
       }
       return true;
-    case 's': // SECOND
+    case 's':  // SECOND
       if (value >= 0) {
         cal.seconds = value;
       }
       return true;
 
-    case 'z': // ZONE_OFFSET
-    case 'Z': // TIMEZONE_RFC
-    case 'v': // TIMEZONE_GENERIC
+    case 'z':  // ZONE_OFFSET
+    case 'Z':  // TIMEZONE_RFC
+    case 'v':  // TIMEZONE_GENERIC
       return this.subparseTimeZoneInGMT_(text, pos, cal);
     default:
       return false;
@@ -607,11 +607,11 @@ goog.i18n.DateTimeParse.prototype.subParse_ =
  * @return {boolean} True if successful.
  * @private
  */
-goog.i18n.DateTimeParse.prototype.subParseYear_ =
-    function(text, pos, start, value, part, cal) {
+goog.i18n.DateTimeParse.prototype.subParseYear_ = function(
+    text, pos, start, value, part, cal) {
   var ch;
   if (value < 0) {
-    //possible sign
+    // possible sign
     ch = text.charAt(pos[0]);
     if (ch != '+' && ch != '-') {
       return false;
@@ -648,16 +648,16 @@ goog.i18n.DateTimeParse.prototype.subParseYear_ =
  * @return {boolean} True if parsing successful.
  * @private
  */
-goog.i18n.DateTimeParse.prototype.subParseMonth_ =
-    function(text, pos, cal, value) {
+goog.i18n.DateTimeParse.prototype.subParseMonth_ = function(
+    text, pos, cal, value) {
   // when month is symbols, i.e., MMM, MMMM, LLL or LLLL, value will be -1
   if (value < 0) {
     // Want to be able to parse both short and long forms.
     // Try count == 4 first
-    var months = this.dateTimeSymbols_.MONTHS.concat(
-        this.dateTimeSymbols_.STANDALONEMONTHS).concat(
-        this.dateTimeSymbols_.SHORTMONTHS).concat(
-        this.dateTimeSymbols_.STANDALONESHORTMONTHS);
+    var months = this.dateTimeSymbols_.MONTHS
+                     .concat(this.dateTimeSymbols_.STANDALONEMONTHS)
+                     .concat(this.dateTimeSymbols_.SHORTMONTHS)
+                     .concat(this.dateTimeSymbols_.STANDALONESHORTMONTHS);
     value = this.matchString_(text, pos, months);
     if (value < 0) {
       return false;
@@ -685,14 +685,14 @@ goog.i18n.DateTimeParse.prototype.subParseMonth_ =
  * @return {boolean} True if parsing successful.
  * @private
  */
-goog.i18n.DateTimeParse.prototype.subParseQuarter_ =
-    function(text, pos, cal, value) {
+goog.i18n.DateTimeParse.prototype.subParseQuarter_ = function(
+    text, pos, cal, value) {
   // value should be -1, since this is a non-numeric field.
   if (value < 0) {
     // Want to be able to parse both short and long forms.
     // Try count == 4 first:
     value = this.matchString_(text, pos, this.dateTimeSymbols_.QUARTERS);
-    if (value < 0) { // count == 4 failed, now try count == 3
+    if (value < 0) {  // count == 4 failed, now try count == 3
       value = this.matchString_(text, pos, this.dateTimeSymbols_.SHORTQUARTERS);
     }
     if (value < 0) {
@@ -715,8 +715,8 @@ goog.i18n.DateTimeParse.prototype.subParseQuarter_ =
  * @return {boolean} True if successful.
  * @private
  */
-goog.i18n.DateTimeParse.prototype.subParseDayOfWeek_ =
-    function(text, pos, cal) {
+goog.i18n.DateTimeParse.prototype.subParseDayOfWeek_ = function(
+    text, pos, cal) {
   // Handle both short and long forms.
   // Try count == 4 (DDDD) first:
   var value = this.matchString_(text, pos, this.dateTimeSymbols_.WEEKDAYS);
@@ -742,8 +742,8 @@ goog.i18n.DateTimeParse.prototype.subParseDayOfWeek_ =
  * @return {boolean} True if successful.
  * @private
  */
-goog.i18n.DateTimeParse.prototype.subParseFractionalSeconds_ =
-    function(value, pos, start, cal) {
+goog.i18n.DateTimeParse.prototype.subParseFractionalSeconds_ = function(
+    value, pos, start, cal) {
   // Fractional seconds left-justify
   var len = pos[0] - start;
   cal.milliseconds = len < 3 ? value * Math.pow(10, 3 - len) :
@@ -762,8 +762,8 @@ goog.i18n.DateTimeParse.prototype.subParseFractionalSeconds_ =
  * @return {boolean} True if successful.
  * @private
  */
-goog.i18n.DateTimeParse.prototype.subparseTimeZoneInGMT_ =
-    function(text, pos, cal) {
+goog.i18n.DateTimeParse.prototype.subparseTimeZoneInGMT_ = function(
+    text, pos, cal) {
   // First try to parse generic forms such as GMT-07:00. Do this first
   // in case localized DateFormatZoneData contains the string "GMT"
   // for a zone; in that case, we don't want to match the first three
@@ -802,8 +802,8 @@ goog.i18n.DateTimeParse.prototype.subparseTimeZoneInGMT_ =
  * @return {boolean} True if successful.
  * @private
  */
-goog.i18n.DateTimeParse.prototype.parseTimeZoneOffset_ =
-    function(text, pos, cal) {
+goog.i18n.DateTimeParse.prototype.parseTimeZoneOffset_ = function(
+    text, pos, cal) {
   if (pos[0] >= text.length) {
     cal.tzOffset = 0;
     return true;
@@ -811,8 +811,10 @@ goog.i18n.DateTimeParse.prototype.parseTimeZoneOffset_ =
 
   var sign = 1;
   switch (text.charAt(pos[0])) {
-    case '-': sign = -1;  // fall through
-    case '+': pos[0]++;
+    case '-':
+      sign = -1;  // fall through
+    case '+':
+      pos[0]++;
   }
 
   // Look for hours:minutes or hhmm.
@@ -868,9 +870,8 @@ goog.i18n.DateTimeParse.prototype.parseInt_ = function(text, pos) {
     var parts = [];
     for (var i = pos[0]; i < text.length; i++) {
       var c = text.charCodeAt(i) - this.dateTimeSymbols_.ZERODIGIT;
-      parts.push((0 <= c && c <= 9) ?
-          String.fromCharCode(c + 0x30) :
-          text.charAt(i));
+      parts.push(
+          (0 <= c && c <= 9) ? String.fromCharCode(c + 0x30) : text.charAt(i));
     }
     text = parts.join('');
   } else {
@@ -1049,11 +1050,11 @@ goog.i18n.DateTimeParse.MyDate_.prototype.setTwoDigitYear_ = function(year) {
  * @return {boolean} false if fields specify a invalid date.
  * @private
  */
-goog.i18n.DateTimeParse.MyDate_.prototype.calcDate_ =
-    function(date, validation) {
+goog.i18n.DateTimeParse.MyDate_.prototype.calcDate_ = function(
+    date, validation) {
   // year 0 is 1 BC, and so on.
-  if (this.era != undefined && this.year != undefined &&
-      this.era == 0 && this.year > 0) {
+  if (this.era != undefined && this.year != undefined && this.era == 0 &&
+      this.year > 0) {
     this.year = -(this.year - 1);
   }
 
@@ -1102,8 +1103,7 @@ goog.i18n.DateTimeParse.MyDate_.prototype.calcDate_ =
     date.setSeconds(this.seconds);
   }
 
-  if (goog.isFunction(date.setMilliseconds) &&
-      this.milliseconds != undefined) {
+  if (goog.isFunction(date.setMilliseconds) && this.milliseconds != undefined) {
     date.setMilliseconds(this.milliseconds);
   }
 
@@ -1129,7 +1129,7 @@ goog.i18n.DateTimeParse.MyDate_.prototype.calcDate_ =
   }
 
   // resolve ambiguous year if needed
-  if (this.ambiguousYear) { // the two-digit year == the default start year
+  if (this.ambiguousYear) {  // the two-digit year == the default start year
     var defaultCenturyStart = new Date();
     defaultCenturyStart.setFullYear(
         defaultCenturyStart.getFullYear() -

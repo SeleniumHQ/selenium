@@ -71,8 +71,8 @@ goog.labs.userAgent.util.userAgent_ =
  * @param {?string=} opt_userAgent The User-Agent override.
  */
 goog.labs.userAgent.util.setUserAgent = function(opt_userAgent) {
-  goog.labs.userAgent.util.userAgent_ = opt_userAgent ||
-      goog.labs.userAgent.util.getNativeUserAgentString_();
+  goog.labs.userAgent.util.userAgent_ =
+      opt_userAgent || goog.labs.userAgent.util.getNativeUserAgentString_();
 };
 
 
@@ -123,10 +123,10 @@ goog.labs.userAgent.util.extractVersionTuples = function(userAgent) {
       // (i.e. 'Mobile Safari' in 'Mobile Safari/5.0')
       '(\\w[\\w ]+)' +
 
-      '/' +                // slash
-      '([^\\s]+)' +        // version (i.e. '5.0b')
-      '\\s*' +             // whitespace
-      '(?:\\((.*?)\\))?',  // parenthetical info. parentheses not matched.
+          '/' +                // slash
+          '([^\\s]+)' +        // version (i.e. '5.0b')
+          '\\s*' +             // whitespace
+          '(?:\\((.*?)\\))?',  // parenthetical info. parentheses not matched.
       'g');
 
   var data = [];
@@ -145,4 +145,3 @@ goog.labs.userAgent.util.extractVersionTuples = function(userAgent) {
 
   return data;
 };
-

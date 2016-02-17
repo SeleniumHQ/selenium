@@ -60,10 +60,8 @@ goog.dom.annotate.AnnotateFn;
  *
  * @return {boolean} Whether any terms were annotated.
  */
-goog.dom.annotate.annotateTerms = function(node, terms, annotateFn,
-                                           opt_ignoreCase,
-                                           opt_classesToSkip,
-                                           opt_maxMs) {
+goog.dom.annotate.annotateTerms = function(
+    node, terms, annotateFn, opt_ignoreCase, opt_classesToSkip, opt_maxMs) {
   if (opt_ignoreCase) {
     terms = goog.dom.annotate.lowercaseTerms_(terms);
   }
@@ -89,7 +87,8 @@ goog.dom.annotate.MAX_RECURSION_ = 200;
  * @private {Array<string>}
  */
 goog.dom.annotate.NODES_TO_SKIP_ = [
-  goog.dom.TagName.SCRIPT, goog.dom.TagName.STYLE, goog.dom.TagName.TEXTAREA];
+  goog.dom.TagName.SCRIPT, goog.dom.TagName.STYLE, goog.dom.TagName.TEXTAREA
+];
 
 
 /**
@@ -112,9 +111,9 @@ goog.dom.annotate.NODES_TO_SKIP_ = [
  * @return {boolean} Whether any terms were annotated.
  * @private
  */
-goog.dom.annotate.annotateTermsInNode_ =
-    function(node, terms, annotateFn, ignoreCase, classesToSkip,
-             stopTime, recursionLevel) {
+goog.dom.annotate.annotateTermsInNode_ = function(
+    node, terms, annotateFn, ignoreCase, classesToSkip, stopTime,
+    recursionLevel) {
   if ((stopTime > 0 && goog.now() >= stopTime) ||
       recursionLevel > goog.dom.annotate.MAX_RECURSION_) {
     return false;
@@ -123,15 +122,15 @@ goog.dom.annotate.annotateTermsInNode_ =
   var annotated = false;
 
   if (node.nodeType == goog.dom.NodeType.TEXT) {
-    var html = goog.dom.annotate.helpAnnotateText_(node.nodeValue, terms,
-                                                   annotateFn, ignoreCase);
+    var html = goog.dom.annotate.helpAnnotateText_(
+        node.nodeValue, terms, annotateFn, ignoreCase);
     if (html != null) {
       // Replace the text with the annotated html. First we put the html into
       // a temporary node, to get its DOM structure. To avoid adding a wrapper
       // element as a side effect, we'll only actually use the temporary node's
       // children.
-      var tempNode = goog.dom.getOwnerDocument(node).createElement(
-          goog.dom.TagName.SPAN);
+      var tempNode =
+          goog.dom.getOwnerDocument(node).createElement(goog.dom.TagName.SPAN);
       goog.dom.safe.setInnerHtml(tempNode, html);
 
       var parentNode = node.parentNode;
@@ -145,9 +144,11 @@ goog.dom.annotate.annotateTermsInNode_ =
       parentNode.removeChild(node);
       annotated = true;
     }
-  } else if (node.hasChildNodes() &&
-             !goog.array.contains(goog.dom.annotate.NODES_TO_SKIP_,
-                 /** @type {!Element} */ (node).tagName)) {
+  } else if (
+      node.hasChildNodes() &&
+      !goog.array.contains(
+          goog.dom.annotate.NODES_TO_SKIP_,
+          /** @type {!Element} */ (node).tagName)) {
     var classes = /** @type {!Element} */ (node).className.split(/\s+/);
     var skip = goog.array.some(classes, function(className) {
       return goog.array.contains(classesToSkip, className);
@@ -159,8 +160,8 @@ goog.dom.annotate.annotateTermsInNode_ =
       while (curNode) {
         var nextNode = curNode.nextSibling;
         var curNodeAnnotated = goog.dom.annotate.annotateTermsInNode_(
-            curNode, terms, annotateFn, ignoreCase, classesToSkip,
-            stopTime, recursionLevel);
+            curNode, terms, annotateFn, ignoreCase, classesToSkip, stopTime,
+            recursionLevel);
         annotated = annotated || curNodeAnnotated;
         curNode = nextNode;
       }
@@ -205,13 +206,13 @@ goog.dom.annotate.NONWORD_RE_ = /\W/;
  * @return {goog.html.SafeHtml} The HTML equivalent of {@code text} with terms
  *   annotated, or null if the text did not contain any of the terms.
  */
-goog.dom.annotate.annotateText = function(text, terms, annotateFn,
-                                          opt_ignoreCase) {
+goog.dom.annotate.annotateText = function(
+    text, terms, annotateFn, opt_ignoreCase) {
   if (opt_ignoreCase) {
     terms = goog.dom.annotate.lowercaseTerms_(terms);
   }
-  return goog.dom.annotate.helpAnnotateText_(text, terms, annotateFn,
-                                             opt_ignoreCase);
+  return goog.dom.annotate.helpAnnotateText_(
+      text, terms, annotateFn, opt_ignoreCase);
 };
 
 
@@ -235,8 +236,8 @@ goog.dom.annotate.annotateText = function(text, terms, annotateFn,
  *   annotated, or null if the text did not contain any of the terms.
  * @private
  */
-goog.dom.annotate.helpAnnotateText_ = function(text, terms, annotateFn,
-                                               ignoreCase) {
+goog.dom.annotate.helpAnnotateText_ = function(
+    text, terms, annotateFn, ignoreCase) {
   var hit = false;
   var textToSearch = ignoreCase ? text.toLowerCase() : text;
   var textLen = textToSearch.length;
@@ -322,8 +323,8 @@ goog.dom.annotate.helpAnnotateText_ = function(text, terms, annotateFn,
 
       // Append the annotated term.
       var termLen = terms[termIndexOfNextHit][0].length;
-      var termHtml = goog.html.SafeHtml.htmlEscape(
-          text.substr(posOfNextHit, termLen));
+      var termHtml =
+          goog.html.SafeHtml.htmlEscape(text.substr(posOfNextHit, termLen));
       html.push(
           annotateFn(goog.asserts.assertNumber(termIndexOfNextHit), termHtml));
 

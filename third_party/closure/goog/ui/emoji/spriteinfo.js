@@ -41,8 +41,9 @@ goog.provide('goog.ui.emoji.SpriteInfo');
  * @constructor
  * @final
  */
-goog.ui.emoji.SpriteInfo = function(cssClass, opt_url, opt_width, opt_height,
-                                    opt_xOffset, opt_yOffset, opt_animated) {
+goog.ui.emoji.SpriteInfo = function(
+    cssClass, opt_url, opt_width, opt_height, opt_xOffset, opt_yOffset,
+    opt_animated) {
   if (cssClass != null) {
     this.cssClass_ = cssClass;
   } else {

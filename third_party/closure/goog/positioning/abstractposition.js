@@ -40,5 +40,5 @@ goog.positioning.AbstractPosition = function() {};
  * @param {goog.math.Size=} opt_preferredSize PreferredSize of the
  *     movableElement.
  */
-goog.positioning.AbstractPosition.prototype.reposition =
-    function(movableElement, corner, opt_margin, opt_preferredSize) { };
+goog.positioning.AbstractPosition.prototype.reposition = function(
+    movableElement, corner, opt_margin, opt_preferredSize) {};

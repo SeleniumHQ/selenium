@@ -90,8 +90,8 @@ goog.ds.DataManager.clearInstance = function() {
  * @param {string=} opt_name Optional name, can also get name
  *   from the datasource.
  */
-goog.ds.DataManager.prototype.addDataSource = function(ds, opt_autoload,
-    opt_name) {
+goog.ds.DataManager.prototype.addDataSource = function(
+    ds, opt_autoload, opt_name) {
   var autoload = !!opt_autoload;
   var name = opt_name || ds.getDataName();
   if (!goog.string.startsWith(name, '$')) {
@@ -187,7 +187,7 @@ goog.ds.DataManager.prototype.set = function(value) {
 goog.ds.DataManager.prototype.getChildNodes = function(opt_selector) {
   if (opt_selector) {
     return new goog.ds.BasicNodeList(
-        [this.getChildNode(/** @type {string} */(opt_selector))]);
+        [this.getChildNode(/** @type {string} */ (opt_selector))]);
   } else {
     return this.dataSources_;
   }
@@ -346,8 +346,8 @@ goog.ds.DataManager.prototype.addListener = function(fn, dataPath, opt_id) {
  * @param {string=} opt_id A value passed back to the listener when the dataPath
  *   is matched.
  */
-goog.ds.DataManager.prototype.addIndexedListener = function(fn, dataPath,
-    opt_id) {
+goog.ds.DataManager.prototype.addIndexedListener = function(
+    fn, dataPath, opt_id) {
   var firstStarPos = dataPath.indexOf('*');
   // Just need a regular listener
   if (firstStarPos == -1) {
@@ -415,8 +415,8 @@ goog.ds.DataManager.prototype.removeIndexedListeners = function(
  * @param {string=} opt_id A value passed back to the listener when the dataPath
  *   is matched.
  */
-goog.ds.DataManager.prototype.removeListeners = function(fn, opt_dataPath,
-    opt_id) {
+goog.ds.DataManager.prototype.removeListeners = function(
+    fn, opt_dataPath, opt_id) {
 
   // Normalize data path root
   if (opt_dataPath && goog.string.endsWith(opt_dataPath, '/...')) {
@@ -455,8 +455,7 @@ goog.ds.DataManager.prototype.removeListenersByFunction_ = function(
       if ((!opt_dataPath || opt_dataPath == listener.dataPath) &&
           (!opt_id || opt_id == listener.id)) {
         if (indexed) {
-          this.removeListeners(
-              listener.fn, listener.dataPath, listener.id);
+          this.removeListeners(listener.fn, listener.dataPath, listener.id);
         }
         if (functionMatch.items) {
           for (var i = 0; i < functionMatch.items.length; i++) {

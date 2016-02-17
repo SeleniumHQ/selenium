@@ -39,8 +39,8 @@ goog.require('goog.ui.MenuItemRenderer');
 goog.ui.FilterObservingMenuItemRenderer = function() {
   goog.ui.MenuItemRenderer.call(this);
 };
-goog.inherits(goog.ui.FilterObservingMenuItemRenderer,
-              goog.ui.MenuItemRenderer);
+goog.inherits(
+    goog.ui.FilterObservingMenuItemRenderer, goog.ui.MenuItemRenderer);
 goog.addSingletonGetter(goog.ui.FilterObservingMenuItemRenderer);
 
 

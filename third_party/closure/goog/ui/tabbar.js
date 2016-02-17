@@ -61,9 +61,9 @@ goog.require('goog.ui.registry');
 goog.ui.TabBar = function(opt_location, opt_renderer, opt_domHelper) {
   this.setLocation(opt_location || goog.ui.TabBar.Location.TOP);
 
-  goog.ui.Container.call(this, this.getOrientation(),
-      opt_renderer || goog.ui.TabBarRenderer.getInstance(),
-      opt_domHelper);
+  goog.ui.Container.call(
+      this, this.getOrientation(),
+      opt_renderer || goog.ui.TabBarRenderer.getInstance(), opt_domHelper);
 
   this.listenToTabEvents_();
 };
@@ -262,8 +262,7 @@ goog.ui.TabBar.prototype.deselectIfSelected = function(tab) {
     var index = this.indexOfChild(tab);
     // First look for the closest selectable tab before this one.
     for (var i = index - 1;
-         tab = /** @type {goog.ui.Tab} */ (this.getChildAt(i));
-         i--) {
+         tab = /** @type {goog.ui.Tab} */ (this.getChildAt(i)); i--) {
       if (this.isSelectableTab(tab)) {
         this.setSelectedTab(tab);
         return;
@@ -271,8 +270,7 @@ goog.ui.TabBar.prototype.deselectIfSelected = function(tab) {
     }
     // Next, look for the closest selectable tab after this one.
     for (var j = index + 1;
-         tab = /** @type {goog.ui.Tab} */ (this.getChildAt(j));
-         j++) {
+         tab = /** @type {goog.ui.Tab} */ (this.getChildAt(j)); j++) {
       if (this.isSelectableTab(tab)) {
         this.setSelectedTab(tab);
         return;
@@ -352,7 +350,8 @@ goog.ui.TabBar.prototype.handleTabHide = function(e) {
  */
 goog.ui.TabBar.prototype.handleFocus = function(e) {
   if (!this.getHighlighted()) {
-    this.setHighlighted(this.getSelectedTab() ||
+    this.setHighlighted(
+        this.getSelectedTab() ||
         /** @type {goog.ui.Tab} */ (this.getChildAt(0)));
   }
 };
@@ -364,13 +363,12 @@ goog.ui.TabBar.prototype.handleFocus = function(e) {
  */
 goog.ui.TabBar.prototype.listenToTabEvents_ = function() {
   // Listen for SELECT, UNSELECT, DISABLE, and HIDE events dispatched by tabs.
-  this.getHandler().
-      listen(this, goog.ui.Component.EventType.SELECT, this.handleTabSelect).
-      listen(this,
-             goog.ui.Component.EventType.UNSELECT,
-             this.handleTabUnselect).
-      listen(this, goog.ui.Component.EventType.DISABLE, this.handleTabDisable).
-      listen(this, goog.ui.Component.EventType.HIDE, this.handleTabHide);
+  this.getHandler()
+      .listen(this, goog.ui.Component.EventType.SELECT, this.handleTabSelect)
+      .listen(
+          this, goog.ui.Component.EventType.UNSELECT, this.handleTabUnselect)
+      .listen(this, goog.ui.Component.EventType.DISABLE, this.handleTabDisable)
+      .listen(this, goog.ui.Component.EventType.HIDE, this.handleTabHide);
 };
 
 
@@ -382,14 +380,13 @@ goog.ui.TabBar.prototype.listenToTabEvents_ = function() {
  */
 goog.ui.TabBar.getOrientationFromLocation = function(location) {
   return location == goog.ui.TabBar.Location.START ||
-         location == goog.ui.TabBar.Location.END ?
-             goog.ui.Container.Orientation.VERTICAL :
-             goog.ui.Container.Orientation.HORIZONTAL;
+          location == goog.ui.TabBar.Location.END ?
+      goog.ui.Container.Orientation.VERTICAL :
+      goog.ui.Container.Orientation.HORIZONTAL;
 };
 
 
 // Register a decorator factory function for goog.ui.TabBars.
-goog.ui.registry.setDecoratorByClassName(goog.ui.TabBarRenderer.CSS_CLASS,
-    function() {
-      return new goog.ui.TabBar();
-    });
+goog.ui.registry.setDecoratorByClassName(
+    goog.ui.TabBarRenderer.CSS_CLASS,
+    function() { return new goog.ui.TabBar(); });

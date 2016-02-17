@@ -101,9 +101,7 @@ goog.labs.structs.Multimap.prototype.add = function(key, value) {
  * @param {!Array<*>} values The values to add.
  */
 goog.labs.structs.Multimap.prototype.addAllValues = function(key, values) {
-  goog.array.forEach(values, function(v) {
-    this.add(key, v);
-  }, this);
+  goog.array.forEach(values, function(v) { this.add(key, v); }, this);
 };
 
 
@@ -156,9 +154,8 @@ goog.labs.structs.Multimap.prototype.remove = function(key, value) {
     return false;
   }
 
-  var removed = goog.array.removeIf(values, function(v) {
-    return goog.labs.object.is(value, v);
-  });
+  var removed = goog.array.removeIf(
+      values, function(v) { return goog.labs.object.is(value, v); });
 
   if (removed) {
     this.count_--;
@@ -216,9 +213,8 @@ goog.labs.structs.Multimap.prototype.containsEntry = function(key, value) {
     return false;
   }
 
-  var index = goog.array.findIndex(values, function(v) {
-    return goog.labs.object.is(v, value);
-  });
+  var index = goog.array.findIndex(
+      values, function(v) { return goog.labs.object.is(v, value); });
   return index >= 0;
 };
 
@@ -239,12 +235,11 @@ goog.labs.structs.Multimap.prototype.containsKey = function(key) {
  *     value) pair with the given value.
  */
 goog.labs.structs.Multimap.prototype.containsValue = function(value) {
-  return goog.array.some(this.map_.getValues(),
-      function(values) {
-        return goog.array.some(/** @type {Array<?>} */ (values), function(v) {
-          return goog.labs.object.is(v, value);
-        });
-      });
+  return goog.array.some(this.map_.getValues(), function(values) {
+    return goog.array.some(/** @type {Array<?>} */ (values), function(v) {
+      return goog.labs.object.is(v, value);
+    });
+  });
 };
 
 

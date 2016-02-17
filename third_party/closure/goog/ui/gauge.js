@@ -113,8 +113,8 @@ goog.ui.Gauge = function(width, height, opt_domHelper) {
    * @type {goog.graphics.AbstractGraphics}
    * @private
    */
-  this.graphics_ = goog.graphics.createGraphics(width, height,
-      null, null, opt_domHelper);
+  this.graphics_ =
+      goog.graphics.createGraphics(width, height, null, null, opt_domHelper);
 
 
   /**
@@ -494,7 +494,7 @@ goog.ui.Gauge.prototype.setValue = function(value, opt_formattedValue) {
   this.value_ = value;
   this.formattedValue_ = opt_formattedValue || null;
 
-  this.stopAnimation_(); // Stop the active animation if exists
+  this.stopAnimation_();  // Stop the active animation if exists
 
   // Compute desired value position (normalize value to range 0-1)
   var valuePosition = this.valueToRangePosition_(value);
@@ -504,17 +504,18 @@ goog.ui.Gauge.prototype.setValue = function(value, opt_formattedValue) {
     this.drawValue_();
   } else {
     // Animate move
-    this.animation_ = new goog.fx.Animation([this.needleValuePosition_],
-        [valuePosition],
-        goog.ui.Gauge.NEEDLE_MOVE_TIME,
-        goog.fx.easing.inAndOut);
+    this.animation_ = new goog.fx.Animation(
+        [this.needleValuePosition_], [valuePosition],
+        goog.ui.Gauge.NEEDLE_MOVE_TIME, goog.fx.easing.inAndOut);
 
-    var events = [goog.fx.Transition.EventType.BEGIN,
-                  goog.fx.Animation.EventType.ANIMATE,
-                  goog.fx.Transition.EventType.END];
+    var events = [
+      goog.fx.Transition.EventType.BEGIN, goog.fx.Animation.EventType.ANIMATE,
+      goog.fx.Transition.EventType.END
+    ];
     goog.events.listen(this.animation_, events, this.onAnimate_, false, this);
-    goog.events.listen(this.animation_, goog.fx.Transition.EventType.END,
-        this.onAnimateEnd_, false, this);
+    goog.events.listen(
+        this.animation_, goog.fx.Transition.EventType.END, this.onAnimateEnd_,
+        false, this);
 
     // Start animation
     this.animation_.play(false);
@@ -609,8 +610,8 @@ goog.ui.Gauge.prototype.setTheme = function(theme) {
  * @param {string} color The color name to paint the range with. For example
  *     'red', '#ffcc00' or constants like goog.ui.Gauge.RED.
  */
-goog.ui.Gauge.prototype.addBackgroundColor = function(fromValue, toValue,
-    color) {
+goog.ui.Gauge.prototype.addBackgroundColor = function(
+    fromValue, toValue, color) {
   this.rangeColors_.push(
       new goog.ui.GaugeColoredRange(fromValue, toValue, color));
   this.draw_();
@@ -622,9 +623,10 @@ goog.ui.Gauge.prototype.addBackgroundColor = function(fromValue, toValue,
  * @override
  */
 goog.ui.Gauge.prototype.createDom = function() {
-  this.setElementInternal(this.getDomHelper().createDom(
-      goog.dom.TagName.DIV, goog.getCssName('goog-gauge'),
-      this.graphics_.getElement()));
+  this.setElementInternal(
+      this.getDomHelper().createDom(
+          goog.dom.TagName.DIV, goog.getCssName('goog-gauge'),
+          this.graphics_.getElement()));
 };
 
 
@@ -706,22 +708,20 @@ goog.ui.Gauge.prototype.draw_ = function() {
     var font = this.titleFont_;
     if (!font) {
       // Lazy creation of font
-      var fontSize =
-          Math.round(r * goog.ui.Gauge.FACTOR_TITLE_FONT_SIZE);
-      font = new goog.graphics.Font(
-          fontSize, goog.ui.Gauge.TITLE_FONT_NAME);
+      var fontSize = Math.round(r * goog.ui.Gauge.FACTOR_TITLE_FONT_SIZE);
+      font = new goog.graphics.Font(fontSize, goog.ui.Gauge.TITLE_FONT_NAME);
       this.titleFont_ = font;
     }
     fill = new goog.graphics.SolidFill(theme.getTitleColor());
     if (this.titleTop_) {
       y = cy - Math.round(r * goog.ui.Gauge.FACTOR_TITLE_OFFSET);
-      graphics.drawTextOnLine(this.titleTop_, 0, y, this.width_, y,
-          'center', font, null, fill);
+      graphics.drawTextOnLine(
+          this.titleTop_, 0, y, this.width_, y, 'center', font, null, fill);
     }
     if (this.titleBottom_) {
       y = cy + Math.round(r * goog.ui.Gauge.FACTOR_TITLE_OFFSET);
-      graphics.drawTextOnLine(this.titleBottom_, 0, y, this.width_, y,
-          'center', font, null, fill);
+      graphics.drawTextOnLine(
+          this.titleBottom_, 0, y, this.width_, y, 'center', font, null, fill);
     }
   }
 
@@ -776,13 +776,13 @@ goog.ui.Gauge.prototype.draw_ = function() {
           x2 = this.width_;
         } else {
           // Values around top (angle 260-280) are centered around point
-          var dw = Math.min(x, this.width_ - x); // Nearest side border
+          var dw = Math.min(x, this.width_ - x);  // Nearest side border
           x1 = x - dw;
           x2 = x + dw;
-          y += Math.round(tickLabelFontSize / 4); // Movea bit down
+          y += Math.round(tickLabelFontSize / 4);  // Movea bit down
         }
-        graphics.drawTextOnLine(label, x1, y, x2, y,
-            align, tickLabelFont, null, tickLabelFill);
+        graphics.drawTextOnLine(
+            label, x1, y, x2, y, align, tickLabelFont, null, tickLabelFill);
       }
     }
   }
@@ -846,13 +846,11 @@ goog.ui.Gauge.prototype.stopAnimation_ = function() {
  */
 goog.ui.Gauge.prototype.valueToRangePosition_ = function(value) {
   var valueRange = this.maxValue_ - this.minValue_;
-  var valuePct = (value - this.minValue_) / valueRange; // 0 to 1
+  var valuePct = (value - this.minValue_) / valueRange;  // 0 to 1
 
   // If value is out of range, trim it not to be too much out of range
-  valuePct = Math.max(valuePct,
-      -goog.ui.Gauge.MAX_EXCEED_POSITION_POSITION);
-  valuePct = Math.min(valuePct,
-      1 + goog.ui.Gauge.MAX_EXCEED_POSITION_POSITION);
+  valuePct = Math.max(valuePct, -goog.ui.Gauge.MAX_EXCEED_POSITION_POSITION);
+  valuePct = Math.min(valuePct, 1 + goog.ui.Gauge.MAX_EXCEED_POSITION_POSITION);
 
   return valuePct;
 };
@@ -903,34 +901,32 @@ goog.ui.Gauge.prototype.drawValue_ = function() {
   var cx = this.width_ / 2;
   var cy = this.height_ / 2;
   var angle = this.valuePositionToAngle_(
-      /** @type {number} */(this.needleValuePosition_));
+      /** @type {number} */ (this.needleValuePosition_));
 
   // Compute the needle path
-  var frontRadius =
-      Math.round(r * goog.ui.Gauge.FACTOR_NEEDLE_FRONT);
-  var backRadius =
-      Math.round(r * goog.ui.Gauge.FACTOR_NEEDLE_BACK);
+  var frontRadius = Math.round(r * goog.ui.Gauge.FACTOR_NEEDLE_FRONT);
+  var backRadius = Math.round(r * goog.ui.Gauge.FACTOR_NEEDLE_BACK);
   var frontDx = goog.math.angleDx(angle, frontRadius);
   var frontDy = goog.math.angleDy(angle, frontRadius);
   var backDx = goog.math.angleDx(angle, backRadius);
   var backDy = goog.math.angleDy(angle, backRadius);
   var angleRight = goog.math.standardAngle(angle + 90);
   var distanceControlPointBase = r * goog.ui.Gauge.FACTOR_NEEDLE_WIDTH;
-  var controlPointMidDx = goog.math.angleDx(angleRight,
-      distanceControlPointBase);
-  var controlPointMidDy = goog.math.angleDy(angleRight,
-      distanceControlPointBase);
+  var controlPointMidDx =
+      goog.math.angleDx(angleRight, distanceControlPointBase);
+  var controlPointMidDy =
+      goog.math.angleDy(angleRight, distanceControlPointBase);
 
   var path = new goog.graphics.Path();
   path.moveTo(cx + frontDx, cy + frontDy);
-  path.curveTo(cx + controlPointMidDx, cy + controlPointMidDy,
+  path.curveTo(
+      cx + controlPointMidDx, cy + controlPointMidDy,
       cx - backDx + (controlPointMidDx / 2),
-      cy - backDy + (controlPointMidDy / 2),
-      cx - backDx, cy - backDy);
-  path.curveTo(cx - backDx - (controlPointMidDx / 2),
-      cy - backDy - (controlPointMidDy / 2),
-      cx - controlPointMidDx, cy - controlPointMidDy,
-      cx + frontDx, cy + frontDy);
+      cy - backDy + (controlPointMidDy / 2), cx - backDx, cy - backDy);
+  path.curveTo(
+      cx - backDx - (controlPointMidDx / 2),
+      cy - backDy - (controlPointMidDy / 2), cx - controlPointMidDx,
+      cy - controlPointMidDy, cx + frontDx, cy + frontDy);
 
   // Draw the needle hinge
   var rh = Math.round(r * goog.ui.Gauge.FACTOR_NEEDLE_HINGE);
@@ -947,17 +943,16 @@ goog.ui.Gauge.prototype.drawValue_ = function() {
   if (this.formattedValue_) {
     var font = this.valueFont_;
     if (!font) {
-      var fontSize =
-          Math.round(r * goog.ui.Gauge.FACTOR_VALUE_FONT_SIZE);
-      font = new goog.graphics.Font(fontSize,
-          goog.ui.Gauge.TITLE_FONT_NAME);
+      var fontSize = Math.round(r * goog.ui.Gauge.FACTOR_VALUE_FONT_SIZE);
+      font = new goog.graphics.Font(fontSize, goog.ui.Gauge.TITLE_FONT_NAME);
       font.bold = true;
       this.valueFont_ = font;
     }
     var fill = new goog.graphics.SolidFill(theme.getValueColor());
     var y = cy + Math.round(r * goog.ui.Gauge.FACTOR_VALUE_OFFSET);
-    graphics.drawTextOnLine(this.formattedValue_, 0, y, this.width_, y,
-        'center', font, null, fill, needleGroup);
+    graphics.drawTextOnLine(
+        this.formattedValue_, 0, y, this.width_, y, 'center', font, null, fill,
+        needleGroup);
   }
 
   // Draw the needle

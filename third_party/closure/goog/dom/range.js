@@ -39,8 +39,8 @@ goog.require('goog.dom.TextRange');
  *     was an error.
  */
 goog.dom.Range.createFromWindow = function(opt_win) {
-  var sel = goog.dom.AbstractRange.getBrowserSelectionForWindow(
-      opt_win || window);
+  var sel =
+      goog.dom.AbstractRange.getBrowserSelectionForWindow(opt_win || window);
   return sel && goog.dom.Range.createFromBrowserSelection(sel);
 };
 
@@ -71,8 +71,9 @@ goog.dom.Range.createFromBrowserSelection = function(selection) {
           /** @type {!Selection} */ (selection));
     } else {
       range = selection.getRangeAt(0);
-      isReversed = goog.dom.Range.isReversed(selection.anchorNode,
-          selection.anchorOffset, selection.focusNode, selection.focusOffset);
+      isReversed = goog.dom.Range.isReversed(
+          selection.anchorNode, selection.anchorOffset, selection.focusNode,
+          selection.focusOffset);
     }
   } else {
     return null;
@@ -131,10 +132,10 @@ goog.dom.Range.createCaret = function(node, offset) {
  * @param {number} focusOffset The offset within the node to focus on.
  * @return {!goog.dom.AbstractRange} A range wrapper object.
  */
-goog.dom.Range.createFromNodes = function(anchorNode, anchorOffset, focusNode,
-    focusOffset) {
-  return goog.dom.TextRange.createFromNodes(anchorNode, anchorOffset, focusNode,
-      focusOffset);
+goog.dom.Range.createFromNodes = function(
+    anchorNode, anchorOffset, focusNode, focusOffset) {
+  return goog.dom.TextRange.createFromNodes(
+      anchorNode, anchorOffset, focusNode, focusOffset);
 };
 
 
@@ -144,8 +145,8 @@ goog.dom.Range.createFromNodes = function(anchorNode, anchorOffset, focusNode,
  *     window this class was defined in.
  */
 goog.dom.Range.clearSelection = function(opt_win) {
-  var sel = goog.dom.AbstractRange.getBrowserSelectionForWindow(
-      opt_win || window);
+  var sel =
+      goog.dom.AbstractRange.getBrowserSelectionForWindow(opt_win || window);
   if (!sel) {
     return;
   }
@@ -176,11 +177,11 @@ goog.dom.Range.clearSelection = function(opt_win) {
  * @return {boolean} Whether the window has a selection.
  */
 goog.dom.Range.hasSelection = function(opt_win) {
-  var sel = goog.dom.AbstractRange.getBrowserSelectionForWindow(
-      opt_win || window);
+  var sel =
+      goog.dom.AbstractRange.getBrowserSelectionForWindow(opt_win || window);
   return !!sel &&
-      (goog.dom.BrowserFeature.LEGACY_IE_RANGES ?
-       sel.type != 'None' : !!sel.rangeCount);
+      (goog.dom.BrowserFeature.LEGACY_IE_RANGES ? sel.type != 'None' :
+                                                  !!sel.rangeCount);
 };
 
 
@@ -193,8 +194,8 @@ goog.dom.Range.hasSelection = function(opt_win) {
  * @return {boolean} Whether the focus position occurs before the anchor
  *     position.
  */
-goog.dom.Range.isReversed = function(anchorNode, anchorOffset, focusNode,
-    focusOffset) {
+goog.dom.Range.isReversed = function(
+    anchorNode, anchorOffset, focusNode, focusOffset) {
   if (anchorNode == focusNode) {
     return focusOffset < anchorOffset;
   }
@@ -222,5 +223,5 @@ goog.dom.Range.isReversed = function(anchorNode, anchorOffset, focusNode,
     }
   }
   return (goog.dom.compareNodeOrder(anchorNode, focusNode) ||
-      anchorOffset - focusOffset) > 0;
+          anchorOffset - focusOffset) > 0;
 };

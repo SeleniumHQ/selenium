@@ -166,9 +166,9 @@ goog.i18n.BidiFormatter.prototype.estimateDirection =
  * @return {boolean} Whether the directionalities are opposite.
  * @private
  */
-goog.i18n.BidiFormatter.prototype.areDirectionalitiesOpposite_ = function(dir1,
-    dir2) {
-  return dir1 * dir2 < 0;
+goog.i18n.BidiFormatter.prototype.areDirectionalitiesOpposite_ = function(
+    dir1, dir2) {
+  return Number(dir1) * Number(dir2) < 0;
 };
 
 
@@ -186,8 +186,8 @@ goog.i18n.BidiFormatter.prototype.areDirectionalitiesOpposite_ = function(dir1,
  * @return {string} A unicode BiDi mark or the empty string.
  * @private
  */
-goog.i18n.BidiFormatter.prototype.dirResetIfNeeded_ = function(str, dir,
-    opt_isHtml, opt_dirReset) {
+goog.i18n.BidiFormatter.prototype.dirResetIfNeeded_ = function(
+    str, dir, opt_isHtml, opt_dirReset) {
   // endsWithRtl and endsWithLtr are called only if needed (short-circuit).
   if (opt_dirReset &&
       (this.areDirectionalitiesOpposite_(dir, this.contextDir_) ||
@@ -196,7 +196,8 @@ goog.i18n.BidiFormatter.prototype.dirResetIfNeeded_ = function(str, dir,
        (this.contextDir_ == goog.i18n.bidi.Dir.RTL &&
         goog.i18n.bidi.endsWithLtr(str, opt_isHtml)))) {
     return this.contextDir_ == goog.i18n.bidi.Dir.LTR ?
-        goog.i18n.bidi.Format.LRM : goog.i18n.bidi.Format.RLM;
+        goog.i18n.bidi.Format.LRM :
+        goog.i18n.bidi.Format.RLM;
   } else {
     return '';
   }
@@ -264,7 +265,8 @@ goog.i18n.BidiFormatter.prototype.dirAttr = function(str, opt_isHtml) {
  */
 goog.i18n.BidiFormatter.prototype.knownDirAttr = function(dir) {
   if (dir != this.contextDir_) {
-    return dir == goog.i18n.bidi.Dir.RTL ? 'dir="rtl"' :
+    return dir == goog.i18n.bidi.Dir.RTL ?
+        'dir="rtl"' :
         dir == goog.i18n.bidi.Dir.LTR ? 'dir="ltr"' : '';
   }
   return '';
@@ -292,8 +294,8 @@ goog.i18n.BidiFormatter.prototype.knownDirAttr = function(dir) {
  *     garbling of whatever may follow {@code html}. Default: true.
  * @return {!goog.html.SafeHtml} Input text after applying the processing.
  */
-goog.i18n.BidiFormatter.prototype.spanWrapSafeHtml = function(html,
-    opt_dirReset) {
+goog.i18n.BidiFormatter.prototype.spanWrapSafeHtml = function(
+    html, opt_dirReset) {
   return this.spanWrapSafeHtmlWithKnownDir(null, html, opt_dirReset);
 };
 
@@ -311,8 +313,8 @@ goog.i18n.BidiFormatter.prototype.spanWrapSafeHtml = function(html,
  *     garbling of whatever may follow {@code str}. Default: true.
  * @return {string} Input text after applying the above processing.
  */
-goog.i18n.BidiFormatter.prototype.spanWrap = function(str, opt_isHtml,
-    opt_dirReset) {
+goog.i18n.BidiFormatter.prototype.spanWrap = function(
+    str, opt_isHtml, opt_dirReset) {
   return this.spanWrapWithKnownDir(null, str, opt_isHtml, opt_dirReset);
 };
 
@@ -338,8 +340,8 @@ goog.i18n.BidiFormatter.prototype.spanWrap = function(str, opt_isHtml,
  *     garbling of whatever may follow {@code html}. Default: true.
  * @return {!goog.html.SafeHtml} Input text after applying the processing.
  */
-goog.i18n.BidiFormatter.prototype.spanWrapSafeHtmlWithKnownDir = function(dir,
-    html, opt_dirReset) {
+goog.i18n.BidiFormatter.prototype.spanWrapSafeHtmlWithKnownDir = function(
+    dir, html, opt_dirReset) {
   if (dir == null) {
     dir = this.estimateDirection(goog.html.SafeHtml.unwrap(html), true);
   }
@@ -362,11 +364,11 @@ goog.i18n.BidiFormatter.prototype.spanWrapSafeHtmlWithKnownDir = function(dir,
  *     garbling of whatever may follow {@code str}. Default: true.
  * @return {string} Input text after applying the above processing.
  */
-goog.i18n.BidiFormatter.prototype.spanWrapWithKnownDir = function(dir, str,
-    opt_isHtml, opt_dirReset) {
+goog.i18n.BidiFormatter.prototype.spanWrapWithKnownDir = function(
+    dir, str, opt_isHtml, opt_dirReset) {
   // We're calling legacy conversions, but quickly unwrapping it.
   var html = opt_isHtml ? goog.html.legacyconversions.safeHtmlFromString(str) :
-      goog.html.SafeHtml.htmlEscape(str);
+                          goog.html.SafeHtml.htmlEscape(str);
   return goog.html.SafeHtml.unwrap(
       this.spanWrapSafeHtmlWithKnownDir(dir, html, opt_dirReset));
 };
@@ -384,8 +386,8 @@ goog.i18n.BidiFormatter.prototype.spanWrapWithKnownDir = function(dir, str,
  * @return {!goog.html.SafeHtml} Input text after applying the above processing.
  * @private
  */
-goog.i18n.BidiFormatter.prototype.spanWrapWithKnownDir_ = function(dir, html,
-    opt_dirReset) {
+goog.i18n.BidiFormatter.prototype.spanWrapWithKnownDir_ = function(
+    dir, html, opt_dirReset) {
   opt_dirReset = opt_dirReset || (opt_dirReset == undefined);
 
   var result;
@@ -402,7 +404,8 @@ goog.i18n.BidiFormatter.prototype.spanWrapWithKnownDir_ = function(dir, html,
     result = html;
   }
   var str = goog.html.SafeHtml.unwrap(html);
-  result = goog.html.SafeHtml.concatWithDir(goog.i18n.bidi.Dir.NEUTRAL, result,
+  result = goog.html.SafeHtml.concatWithDir(
+      goog.i18n.bidi.Dir.NEUTRAL, result,
       this.dirResetIfNeeded_(str, dir, true, opt_dirReset));
   return result;
 };
@@ -436,8 +439,8 @@ goog.i18n.BidiFormatter.prototype.spanWrapWithKnownDir_ = function(dir, html,
  *     garbling of whatever may follow {@code str}. Default: true.
  * @return {string} Input text after applying the above processing.
  */
-goog.i18n.BidiFormatter.prototype.unicodeWrap = function(str, opt_isHtml,
-    opt_dirReset) {
+goog.i18n.BidiFormatter.prototype.unicodeWrap = function(
+    str, opt_isHtml, opt_dirReset) {
   return this.unicodeWrapWithKnownDir(null, str, opt_isHtml, opt_dirReset);
 };
 
@@ -471,8 +474,8 @@ goog.i18n.BidiFormatter.prototype.unicodeWrap = function(str, opt_isHtml,
  *     garbling of whatever may follow {@code str}. Default: true.
  * @return {string} Input text after applying the above processing.
  */
-goog.i18n.BidiFormatter.prototype.unicodeWrapWithKnownDir = function(dir, str,
-    opt_isHtml, opt_dirReset) {
+goog.i18n.BidiFormatter.prototype.unicodeWrapWithKnownDir = function(
+    dir, str, opt_isHtml, opt_dirReset) {
   if (dir == null) {
     dir = this.estimateDirection(str, opt_isHtml);
   }
@@ -494,13 +497,14 @@ goog.i18n.BidiFormatter.prototype.unicodeWrapWithKnownDir = function(dir, str,
  * @return {string} Input text after applying the above processing.
  * @private
  */
-goog.i18n.BidiFormatter.prototype.unicodeWrapWithKnownDir_ = function(dir, str,
-    opt_isHtml, opt_dirReset) {
+goog.i18n.BidiFormatter.prototype.unicodeWrapWithKnownDir_ = function(
+    dir, str, opt_isHtml, opt_dirReset) {
   opt_dirReset = opt_dirReset || (opt_dirReset == undefined);
   var result = [];
   if (dir != goog.i18n.bidi.Dir.NEUTRAL && dir != this.contextDir_) {
-    result.push(dir == goog.i18n.bidi.Dir.RTL ? goog.i18n.bidi.Format.RLE :
-                                                goog.i18n.bidi.Format.LRE);
+    result.push(
+        dir == goog.i18n.bidi.Dir.RTL ? goog.i18n.bidi.Format.RLE :
+                                        goog.i18n.bidi.Format.LRE);
     result.push(str);
     result.push(goog.i18n.bidi.Format.PDF);
   } else {
@@ -578,8 +582,8 @@ goog.i18n.BidiFormatter.prototype.mark = function() {
  *     context directionality.
  */
 goog.i18n.BidiFormatter.prototype.startEdge = function() {
-  return this.contextDir_ == goog.i18n.bidi.Dir.RTL ?
-      goog.i18n.bidi.RIGHT : goog.i18n.bidi.LEFT;
+  return this.contextDir_ == goog.i18n.bidi.Dir.RTL ? goog.i18n.bidi.RIGHT :
+                                                      goog.i18n.bidi.LEFT;
 };
 
 
@@ -591,6 +595,6 @@ goog.i18n.BidiFormatter.prototype.startEdge = function() {
  *     context directionality.
  */
 goog.i18n.BidiFormatter.prototype.endEdge = function() {
-  return this.contextDir_ == goog.i18n.bidi.Dir.RTL ?
-      goog.i18n.bidi.LEFT : goog.i18n.bidi.RIGHT;
+  return this.contextDir_ == goog.i18n.bidi.Dir.RTL ? goog.i18n.bidi.LEFT :
+                                                      goog.i18n.bidi.RIGHT;
 };

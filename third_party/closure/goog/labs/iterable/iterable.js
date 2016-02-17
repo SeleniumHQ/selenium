@@ -15,7 +15,7 @@
 /**
  * @fileoverview Utilities for working with ES6 iterables.
  * Note that this file is written ES5-only.
- * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/The_Iterator_protocol
+ * @see https://goo.gl/Rok5YQ
  */
 
 goog.module('goog.labs.iterable');
@@ -103,10 +103,7 @@ MapIterator.prototype.next = function() {
   }
 
   var mappedValue = this.func_(nextObj.value);
-  return {
-    done: false,
-    value: mappedValue
-  };
+  return {done: false, value: mappedValue};
 };
 
 

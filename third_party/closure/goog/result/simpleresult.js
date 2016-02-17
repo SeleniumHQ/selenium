@@ -96,8 +96,8 @@ goog.result.SimpleResult.HandlerEntry_;
  * @deprecated Use {@link goog.Promise} instead - http://go/promisemigration
  */
 goog.result.SimpleResult.StateError = function() {
-  goog.result.SimpleResult.StateError.base(this, 'constructor',
-      'Multiple attempts to set the state of this Result');
+  goog.result.SimpleResult.StateError.base(
+      this, 'constructor', 'Multiple attempts to set the state of this Result');
 };
 goog.inherits(goog.result.SimpleResult.StateError, goog.debug.Error);
 
@@ -132,10 +132,7 @@ goog.result.SimpleResult.prototype.getError = function() {
  */
 goog.result.SimpleResult.prototype.wait = function(handler, opt_scope) {
   if (this.isPending_()) {
-    this.handlers_.push({
-      callback: handler,
-      scope: opt_scope || null
-    });
+    this.handlers_.push({callback: handler, scope: opt_scope || null});
   } else {
     handler.call(opt_scope, this);
   }
@@ -220,7 +217,7 @@ goog.result.SimpleResult.prototype.cancel = function() {
 /** @override */
 goog.result.SimpleResult.prototype.isCanceled = function() {
   return this.state_ == goog.result.Result.State.ERROR &&
-         this.error_ instanceof goog.result.Result.CancelError;
+      this.error_ instanceof goog.result.Result.CancelError;
 };
 
 

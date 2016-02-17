@@ -75,15 +75,17 @@ goog.testing.MockUserAgent.prototype.installed_;
 goog.testing.MockUserAgent.prototype.install = function() {
   if (!this.installed_) {
     // Stub out user agent functions.
-    this.propertyReplacer_.set(goog.userAgent, 'getUserAgentString',
-                               goog.bind(this.getUserAgentString, this));
+    this.propertyReplacer_.set(
+        goog.userAgent, 'getUserAgentString',
+        goog.bind(this.getUserAgentString, this));
 
-    this.propertyReplacer_.set(goog.labs.userAgent.util, 'getUserAgent',
-                               goog.bind(this.getUserAgentString, this));
+    this.propertyReplacer_.set(
+        goog.labs.userAgent.util, 'getUserAgent',
+        goog.bind(this.getUserAgentString, this));
 
     // Stub out navigator functions.
-    this.propertyReplacer_.set(goog.userAgent, 'getNavigator',
-                               goog.bind(this.getNavigator, this));
+    this.propertyReplacer_.set(
+        goog.userAgent, 'getNavigator', goog.bind(this.getNavigator, this));
 
     this.installed_ = true;
   }

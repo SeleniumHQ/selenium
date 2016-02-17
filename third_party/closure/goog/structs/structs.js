@@ -131,7 +131,8 @@ goog.structs.isEmpty = function(col) {
     return col.isEmpty();
   }
 
-  // We do not use goog.string.isEmptyOrWhitespace because here we treat the string as
+  // We do not use goog.string.isEmptyOrWhitespace because here we treat the
+  // string as
   // collection and as such even whitespace matters
 
   if (goog.isArrayLike(col) || goog.isString(col)) {
@@ -183,7 +184,7 @@ goog.structs.forEach = function(col, f, opt_obj) {
     var values = goog.structs.getValues(col);
     var l = values.length;
     for (var i = 0; i < l; i++) {
-      f.call(opt_obj, values[i], keys && keys[i], col);
+      f.call(/** @type {?} */ (opt_obj), values[i], keys && keys[i], col);
     }
   }
 };
@@ -222,7 +223,7 @@ goog.structs.filter = function(col, f, opt_obj) {
   if (keys) {
     rv = {};
     for (var i = 0; i < l; i++) {
-      if (f.call(opt_obj, values[i], keys[i], col)) {
+      if (f.call(/** @type {?} */ (opt_obj), values[i], keys[i], col)) {
         rv[keys[i]] = values[i];
       }
     }
@@ -272,7 +273,7 @@ goog.structs.map = function(col, f, opt_obj) {
   if (keys) {
     rv = {};
     for (var i = 0; i < l; i++) {
-      rv[keys[i]] = f.call(opt_obj, values[i], keys[i], col);
+      rv[keys[i]] = f.call(/** @type {?} */ (opt_obj), values[i], keys[i], col);
     }
   } else {
     // We should not use goog.array.map here since we want to make sure that
@@ -280,7 +281,7 @@ goog.structs.map = function(col, f, opt_obj) {
     // function.
     rv = [];
     for (var i = 0; i < l; i++) {
-      rv[i] = f.call(opt_obj, values[i], undefined, col);
+      rv[i] = f.call(/** @type {?} */ (opt_obj), values[i], undefined, col);
     }
   }
   return rv;
@@ -312,7 +313,7 @@ goog.structs.some = function(col, f, opt_obj) {
   var values = goog.structs.getValues(col);
   var l = values.length;
   for (var i = 0; i < l; i++) {
-    if (f.call(opt_obj, values[i], keys && keys[i], col)) {
+    if (f.call(/** @type {?} */ (opt_obj), values[i], keys && keys[i], col)) {
       return true;
     }
   }
@@ -346,7 +347,7 @@ goog.structs.every = function(col, f, opt_obj) {
   var values = goog.structs.getValues(col);
   var l = values.length;
   for (var i = 0; i < l; i++) {
-    if (!f.call(opt_obj, values[i], keys && keys[i], col)) {
+    if (!f.call(/** @type {?} */ (opt_obj), values[i], keys && keys[i], col)) {
       return false;
     }
   }

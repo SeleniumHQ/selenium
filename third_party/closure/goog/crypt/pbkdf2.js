@@ -88,8 +88,8 @@ goog.crypt.pbkdf2.deriveKeySha1 = function(
  * @return {!Array<number>} Byte array representation of the output key.
  * @private
  */
-goog.crypt.pbkdf2.deriveKeyFromPassword_ =
-    function(computeBlock, hashLength, keyLength) {
+goog.crypt.pbkdf2.deriveKeyFromPassword_ = function(
+    computeBlock, hashLength, keyLength) {
   goog.asserts.assert(keyLength % 8 == 0, 'invalid output key length');
 
   // Compute and concactate each block of the output key.

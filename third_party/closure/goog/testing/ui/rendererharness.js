@@ -40,8 +40,8 @@ goog.require('goog.testing.dom');
  * @extends {goog.Disposable}
  * @final
  */
-goog.testing.ui.RendererHarness = function(renderer, renderParent,
-    decorateParent) {
+goog.testing.ui.RendererHarness = function(
+    renderer, renderParent, decorateParent) {
   goog.Disposable.call(this);
 
   /**
@@ -111,8 +111,8 @@ goog.testing.ui.RendererHarness.prototype.verified_ = false;
  * @param {goog.ui.Control} control A control.
  * @return {Element} The element created.
  */
-goog.testing.ui.RendererHarness.prototype.attachControlAndRender =
-    function(control) {
+goog.testing.ui.RendererHarness.prototype.attachControlAndRender = function(
+    control) {
   this.renderControl_ = control;
 
   control.setRenderer(this.renderer_);
@@ -126,15 +126,16 @@ goog.testing.ui.RendererHarness.prototype.attachControlAndRender =
  * @param {goog.ui.Control} control A control.
  * @return {Element} The element created.
  */
-goog.testing.ui.RendererHarness.prototype.attachControlAndDecorate =
-    function(control) {
+goog.testing.ui.RendererHarness.prototype.attachControlAndDecorate = function(
+    control) {
   this.decorateControl_ = control;
 
   control.setRenderer(this.renderer_);
 
   var child = this.decorateParent_.firstChild;
-  assertEquals('The decorated node must be an element',
-               goog.dom.NodeType.ELEMENT, child.nodeType);
+  assertEquals(
+      'The decorated node must be an element', goog.dom.NodeType.ELEMENT,
+      child.nodeType);
   control.decorate(/** @type {!Element} */ (child));
   return control.getElement();
 };
@@ -144,8 +145,9 @@ goog.testing.ui.RendererHarness.prototype.attachControlAndDecorate =
  * Assert that the rendered element and the decorated element match.
  */
 goog.testing.ui.RendererHarness.prototype.assertDomMatches = function() {
-  assert('Both elements were not generated',
-         !!(this.renderControl_ && this.decorateControl_));
+  assert(
+      'Both elements were not generated',
+      !!(this.renderControl_ && this.decorateControl_));
   goog.testing.dom.assertHtmlMatches(
       this.renderControl_.getElement().innerHTML,
       this.decorateControl_.getElement().innerHTML);
@@ -160,8 +162,9 @@ goog.testing.ui.RendererHarness.prototype.assertDomMatches = function() {
  */
 goog.testing.ui.RendererHarness.prototype.disposeInternal = function() {
   // If the harness was not verified appropriately, throw an exception.
-  assert('Expected assertDomMatches to be called',
-         this.verified_ || !this.renderControl_ || !this.decorateControl_);
+  assert(
+      'Expected assertDomMatches to be called',
+      this.verified_ || !this.renderControl_ || !this.decorateControl_);
 
   if (this.decorateControl_) {
     this.decorateControl_.dispose();

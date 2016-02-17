@@ -18,6 +18,7 @@
 
 goog.provide('goog.math.Rect');
 
+goog.require('goog.asserts');
 goog.require('goog.math.Box');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
@@ -64,10 +65,7 @@ goog.math.Rect.prototype.clone = function() {
 goog.math.Rect.prototype.toBox = function() {
   var right = this.left + this.width;
   var bottom = this.top + this.height;
-  return new goog.math.Box(this.top,
-                           right,
-                           bottom,
-                           this.left);
+  return new goog.math.Box(this.top, right, bottom, this.left);
 };
 
 
@@ -91,8 +89,8 @@ goog.math.Rect.createFromPositionAndSize = function(position, size) {
  *     and size.
  */
 goog.math.Rect.createFromBox = function(box) {
-  return new goog.math.Rect(box.left, box.top,
-      box.right - box.left, box.bottom - box.top);
+  return new goog.math.Rect(
+      box.left, box.top, box.right - box.left, box.bottom - box.top);
 };
 
 
@@ -104,7 +102,7 @@ if (goog.DEBUG) {
    */
   goog.math.Rect.prototype.toString = function() {
     return '(' + this.left + ', ' + this.top + ' - ' + this.width + 'w x ' +
-           this.height + 'h)';
+        this.height + 'h)';
   };
 }
 
@@ -123,8 +121,8 @@ goog.math.Rect.equals = function(a, b) {
   if (!a || !b) {
     return false;
   }
-  return a.left == b.left && a.width == b.width &&
-         a.top == b.top && a.height == b.height;
+  return a.left == b.left && a.width == b.width && a.top == b.top &&
+      a.height == b.height;
 };
 
 
@@ -193,7 +191,8 @@ goog.math.Rect.intersection = function(a, b) {
  * @return {boolean} Whether a and b intersect.
  */
 goog.math.Rect.intersects = function(a, b) {
-  return (a.left <= b.left + b.width && b.left <= a.left + a.width &&
+  return (
+      a.left <= b.left + b.width && b.left <= a.left + a.width &&
       a.top <= b.top + b.height && b.top <= a.top + a.height);
 };
 
@@ -320,14 +319,12 @@ goog.math.Rect.boundingRect = function(a, b) {
 goog.math.Rect.prototype.contains = function(another) {
   if (another instanceof goog.math.Rect) {
     return this.left <= another.left &&
-           this.left + this.width >= another.left + another.width &&
-           this.top <= another.top &&
-           this.top + this.height >= another.top + another.height;
-  } else { // (another instanceof goog.math.Coordinate)
-    return another.x >= this.left &&
-           another.x <= this.left + this.width &&
-           another.y >= this.top &&
-           another.y <= this.top + this.height;
+        this.left + this.width >= another.left + another.width &&
+        this.top <= another.top &&
+        this.top + this.height >= another.top + another.height;
+  } else {  // (another instanceof goog.math.Coordinate)
+    return another.x >= this.left && another.x <= this.left + this.width &&
+        another.y >= this.top && another.y <= this.top + this.height;
   }
 };
 
@@ -340,9 +337,10 @@ goog.math.Rect.prototype.contains = function(another) {
  */
 goog.math.Rect.prototype.squaredDistance = function(point) {
   var dx = point.x < this.left ?
-      this.left - point.x : Math.max(point.x - (this.left + this.width), 0);
-  var dy = point.y < this.top ?
-      this.top - point.y : Math.max(point.y - (this.top + this.height), 0);
+      this.left - point.x :
+      Math.max(point.x - (this.left + this.width), 0);
+  var dy = point.y < this.top ? this.top - point.y :
+                                Math.max(point.y - (this.top + this.height), 0);
   return dx * dx + dy * dy;
 };
 
@@ -448,7 +446,7 @@ goog.math.Rect.prototype.translate = function(tx, opt_ty) {
     this.left += tx.x;
     this.top += tx.y;
   } else {
-    this.left += tx;
+    this.left += goog.asserts.assertNumber(tx);
     if (goog.isNumber(opt_ty)) {
       this.top += opt_ty;
     }

@@ -69,7 +69,7 @@ goog.ui.DimensionPickerRenderer.CSS_CLASS =
  */
 goog.ui.DimensionPickerRenderer.prototype.getUnderlyingDiv_ = function(
     element) {
-  return element.firstChild.childNodes[1];
+  return /** @type {Element} */ (element.firstChild.childNodes[1]);
 };
 
 
@@ -79,8 +79,7 @@ goog.ui.DimensionPickerRenderer.prototype.getUnderlyingDiv_ = function(
  * @return {Element} The highlight div.
  * @private
  */
-goog.ui.DimensionPickerRenderer.prototype.getHighlightDiv_ = function(
-    element) {
+goog.ui.DimensionPickerRenderer.prototype.getHighlightDiv_ = function(element) {
   return /** @type {Element} */ (element.firstChild.lastChild);
 };
 
@@ -91,8 +90,7 @@ goog.ui.DimensionPickerRenderer.prototype.getHighlightDiv_ = function(
  * @return {Element} The status message div.
  * @private
  */
-goog.ui.DimensionPickerRenderer.prototype.getStatusDiv_ = function(
-    element) {
+goog.ui.DimensionPickerRenderer.prototype.getStatusDiv_ = function(element) {
   return /** @type {Element} */ (element.lastChild);
 };
 
@@ -103,8 +101,7 @@ goog.ui.DimensionPickerRenderer.prototype.getStatusDiv_ = function(
  * @return {Element} The invisible mouse catching div.
  * @private
  */
-goog.ui.DimensionPickerRenderer.prototype.getMouseCatcher_ = function(
-    element) {
+goog.ui.DimensionPickerRenderer.prototype.getMouseCatcher_ = function(element) {
   return /** @type {Element} */ (element.firstChild.firstChild);
 };
 
@@ -116,8 +113,7 @@ goog.ui.DimensionPickerRenderer.prototype.getMouseCatcher_ = function(
  * @return {boolean} Whether if the element is an empty div.
  * @override
  */
-goog.ui.DimensionPickerRenderer.prototype.canDecorate = function(
-    element) {
+goog.ui.DimensionPickerRenderer.prototype.canDecorate = function(element) {
   return element.tagName == goog.dom.TagName.DIV && !element.firstChild;
 };
 
@@ -129,11 +125,11 @@ goog.ui.DimensionPickerRenderer.prototype.canDecorate = function(
  * @return {Element} The decorated element.
  * @override
  */
-goog.ui.DimensionPickerRenderer.prototype.decorate = function(control,
-    element) {
+goog.ui.DimensionPickerRenderer.prototype.decorate = function(
+    control, element) {
   var palette = /** @type {goog.ui.DimensionPicker} */ (control);
-  goog.ui.DimensionPickerRenderer.superClass_.decorate.call(this,
-      palette, element);
+  goog.ui.DimensionPickerRenderer.superClass_.decorate.call(
+      this, palette, element);
 
   this.addElementContents_(palette, element);
   this.updateSize(palette, element);
@@ -147,8 +143,8 @@ goog.ui.DimensionPickerRenderer.prototype.decorate = function(control,
  * @param {goog.ui.DimensionPicker} palette The palette object.
  * @param {Element} element The element to set the style of.
  */
-goog.ui.DimensionPickerRenderer.prototype.updateSize =
-    function(palette, element) {
+goog.ui.DimensionPickerRenderer.prototype.updateSize = function(
+    palette, element) {
   var size = palette.getSize();
 
   element.style.width = size.width + 'em';
@@ -177,23 +173,25 @@ goog.ui.DimensionPickerRenderer.prototype.addElementContents_ = function(
   // in which TrogEdit creates iframes. The middle div uses a css tiled
   // background image to represent deselected tiles.  The top div uses a
   // different css tiled background image to represent selected tiles.
-  var mouseCatcherDiv = palette.getDomHelper().createDom(goog.dom.TagName.DIV,
+  var mouseCatcherDiv = palette.getDomHelper().createDom(
+      goog.dom.TagName.DIV,
       goog.getCssName(this.getCssClass(), 'mousecatcher'));
-  var unhighlightedDiv = palette.getDomHelper().createDom(goog.dom.TagName.DIV,
-      {
+  var unhighlightedDiv =
+      palette.getDomHelper().createDom(goog.dom.TagName.DIV, {
         'class': goog.getCssName(this.getCssClass(), 'unhighlighted'),
         'style': 'width:100%;height:100%'
       });
-  var highlightedDiv = palette.getDomHelper().createDom(goog.dom.TagName.DIV,
-      goog.getCssName(this.getCssClass(), 'highlighted'));
+  var highlightedDiv = palette.getDomHelper().createDom(
+      goog.dom.TagName.DIV, goog.getCssName(this.getCssClass(), 'highlighted'));
   element.appendChild(
-      palette.getDomHelper().createDom(goog.dom.TagName.DIV,
-          {'style': 'width:100%;height:100%'},
+      palette.getDomHelper().createDom(
+          goog.dom.TagName.DIV, {'style': 'width:100%;height:100%'},
           mouseCatcherDiv, unhighlightedDiv, highlightedDiv));
 
   // Lastly we add a div to store the text version of the current state.
-  element.appendChild(palette.getDomHelper().createDom(goog.dom.TagName.DIV,
-      goog.getCssName(this.getCssClass(), 'status')));
+  element.appendChild(
+      palette.getDomHelper().createDom(
+          goog.dom.TagName.DIV, goog.getCssName(this.getCssClass(), 'status')));
 };
 
 
@@ -208,10 +206,9 @@ goog.ui.DimensionPickerRenderer.prototype.createDom = function(control) {
   var classNames = this.getClassNames(palette);
   // Hide the element from screen readers so they don't announce "1 of 1" for
   // the perceived number of items in the palette.
-  var element = palette.getDomHelper().createDom(goog.dom.TagName.DIV, {
-    'class': classNames ? classNames.join(' ') : '',
-    'aria-hidden': 'true'
-  });
+  var element = palette.getDomHelper().createDom(
+      goog.dom.TagName.DIV,
+      {'class': classNames ? classNames.join(' ') : '', 'aria-hidden': 'true'});
   this.addElementContents_(palette, element);
   this.updateSize(palette, element);
   return element;
@@ -225,15 +222,14 @@ goog.ui.DimensionPickerRenderer.prototype.createDom = function(control) {
  *     initialized as it enters the document.
  * @override
  */
-goog.ui.DimensionPickerRenderer.prototype.initializeDom = function(
-    control) {
+goog.ui.DimensionPickerRenderer.prototype.initializeDom = function(control) {
   var palette = /** @type {goog.ui.DimensionPicker} */ (control);
   goog.ui.DimensionPickerRenderer.superClass_.initializeDom.call(this, palette);
 
   // Make the displayed highlighted size match the dimension picker's value.
   var highlightedSize = palette.getValue();
-  this.setHighlightedSize(palette,
-      highlightedSize.width, highlightedSize.height);
+  this.setHighlightedSize(
+      palette, highlightedSize.width, highlightedSize.height);
 
   this.positionMouseCatcher(palette);
 };
@@ -305,13 +301,14 @@ goog.ui.DimensionPickerRenderer.prototype.setHighlightedSize = function(
    * dimension picker, as text that can be spoken by a screen reader.
    */
   var MSG_DIMENSION_PICKER_HIGHLIGHTED_DIMENSIONS = goog.getMsg(
-      '{$numCols} by {$numRows}',
-      {'numCols': columns, 'numRows': rows});
-  this.announcer_.say(MSG_DIMENSION_PICKER_HIGHLIGHTED_DIMENSIONS,
+      '{$numCols} by {$numRows}', {'numCols': columns, 'numRows': rows});
+  this.announcer_.say(
+      MSG_DIMENSION_PICKER_HIGHLIGHTED_DIMENSIONS,
       goog.a11y.aria.LivePriority.ASSERTIVE);
 
   // Update the size text.
-  goog.dom.setTextContent(this.getStatusDiv_(element),
+  goog.dom.setTextContent(
+      this.getStatusDiv_(element),
       goog.i18n.bidi.enforceLtrInText(columns + ' x ' + rows));
 };
 
@@ -386,8 +383,8 @@ goog.ui.DimensionPickerRenderer.prototype.getCssClass = function() {
  * @param {goog.ui.DimensionPicker} palette The palette object.
  * @param {Element} element The palette's element.
  */
-goog.ui.DimensionPickerRenderer.prototype.adjustParentDirection_ =
-    function(palette, element) {
+goog.ui.DimensionPickerRenderer.prototype.adjustParentDirection_ = function(
+    palette, element) {
   var parent = palette.getParent();
   if (parent) {
     var parentElement = parent.getElement();
@@ -399,8 +396,8 @@ goog.ui.DimensionPickerRenderer.prototype.adjustParentDirection_ =
       var parentPos = goog.style.getPosition(parentElement);
       var parentSize = goog.style.getSize(parentElement);
       if (parentSize.width != 0 && parentPos.x != 0) {
-        var visibleRect = goog.style.getBounds(
-            goog.style.getClientViewportElement());
+        var visibleRect =
+            goog.style.getBounds(goog.style.getClientViewportElement());
         var visibleWidth = visibleRect.width;
         right = visibleWidth - parentPos.x - parentSize.width;
         goog.style.setStyle(parentElement, 'right', right + 'px');

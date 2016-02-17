@@ -35,7 +35,8 @@ goog.require('goog.testing.asserts');
  * @param {string} referencePath A path to a reference HTML file.
  */
 goog.testing.ui.style.writeReferenceFrame = function(referencePath) {
-  document.write('<iframe id="reference" name="reference" ' +
+  document.write(
+      '<iframe id="reference" name="reference" ' +
       'src="' + referencePath + '"></iframe>');
 };
 
@@ -92,10 +93,10 @@ goog.testing.ui.style.isContentNode = function(element) {
  * @param {string} referenceId The id of the container for the reference
  *   structure to test against.
  */
-goog.testing.ui.style.assertStructureMatchesReference = function(element,
-    referenceId) {
-  goog.testing.ui.style.assertStructureMatchesReferenceInner_(element,
-      goog.testing.ui.style.getReferenceNode(referenceId));
+goog.testing.ui.style.assertStructureMatchesReference = function(
+    element, referenceId) {
+  goog.testing.ui.style.assertStructureMatchesReferenceInner_(
+      element, goog.testing.ui.style.getReferenceNode(referenceId));
 };
 
 
@@ -108,20 +109,22 @@ goog.testing.ui.style.assertStructureMatchesReference = function(element,
  * @param {Node} reference DOM element to use as a reference (test against).
  * @private
  */
-goog.testing.ui.style.assertStructureMatchesReferenceInner_ = function(element,
-    reference) {
+goog.testing.ui.style.assertStructureMatchesReferenceInner_ = function(
+    element, reference) {
   if (!element && !reference) {
     return;
   }
   assertTrue('Expected two elements.', !!element && !!reference);
-  assertEquals('Expected nodes to have the same nodeName.',
-      element.nodeName, reference.nodeName);
+  assertEquals(
+      'Expected nodes to have the same nodeName.', element.nodeName,
+      reference.nodeName);
   var testElem = goog.asserts.assertElement(element);
   var refElem = goog.asserts.assertElement(reference);
   var elementClasses = goog.dom.classlist.get(testElem);
   goog.array.forEach(goog.dom.classlist.get(refElem), function(referenceClass) {
-    assertContains('Expected test node to have all reference classes.',
-        referenceClass, elementClasses);
+    assertContains(
+        'Expected test node to have all reference classes.', referenceClass,
+        elementClasses);
   });
   // Call assertStructureMatchesReferenceInner_ on all element children
   // unless this is a content node
@@ -129,12 +132,13 @@ goog.testing.ui.style.assertStructureMatchesReferenceInner_ = function(element,
       refChildren = goog.testing.ui.style.getElementChildren(reference);
   if (!goog.testing.ui.style.isContentNode(reference)) {
     if (elChildren.length != refChildren.length) {
-      assertEquals('Expected same number of children for a non-content node.',
+      assertEquals(
+          'Expected same number of children for a non-content node.',
           elChildren.length, refChildren.length);
     }
     for (var i = 0; i < elChildren.length; i++) {
-      goog.testing.ui.style.assertStructureMatchesReferenceInner_(elChildren[i],
-          refChildren[i]);
+      goog.testing.ui.style.assertStructureMatchesReferenceInner_(
+          elChildren[i], refChildren[i]);
     }
   }
 };

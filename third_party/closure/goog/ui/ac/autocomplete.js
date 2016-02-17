@@ -392,8 +392,8 @@ goog.ui.ac.AutoComplete.prototype.handleEvent = function(e) {
           var row = this.rows_[index];
 
           // Make sure the row selected is not a disabled row.
-          rowDisabled = !!row && matcher.isRowDisabled &&
-              matcher.isRowDisabled(row);
+          rowDisabled =
+              !!row && matcher.isRowDisabled && matcher.isRowDisabled(row);
           if (row && !rowDisabled && this.hiliteId_ != rowId) {
             // Event target row not currently highlighted - fix the mismatch.
             this.hiliteId(rowId);
@@ -445,8 +445,8 @@ goog.ui.ac.AutoComplete.prototype.setAutoHilite = function(autoHilite) {
  *
  * @param {boolean} allowFreeSelect true iff the up arrow can unhilite all rows.
  */
-goog.ui.ac.AutoComplete.prototype.setAllowFreeSelect =
-    function(allowFreeSelect) {
+goog.ui.ac.AutoComplete.prototype.setAllowFreeSelect = function(
+    allowFreeSelect) {
   this.allowFreeSelect_ = allowFreeSelect;
 };
 
@@ -488,8 +488,9 @@ goog.ui.ac.AutoComplete.prototype.setToken = function(token, opt_fullString) {
     return;
   }
   this.token_ = token;
-  this.matcher_.requestMatchingRows(this.token_,
-      this.maxMatches_, goog.bind(this.matchListener_, this), opt_fullString);
+  this.matcher_.requestMatchingRows(
+      this.token_, this.maxMatches_, goog.bind(this.matchListener_, this),
+      opt_fullString);
   this.cancelDelayedDismiss();
 };
 
@@ -607,8 +608,8 @@ goog.ui.ac.AutoComplete.prototype.hilitePrev = function() {
 goog.ui.ac.AutoComplete.prototype.hiliteId = function(id) {
   var index = this.getIndexOfId(id);
   var row = this.rows_[index];
-  var rowDisabled = !!row && this.matcher_.isRowDisabled &&
-      this.matcher_.isRowDisabled(row);
+  var rowDisabled =
+      !!row && this.matcher_.isRowDisabled && this.matcher_.isRowDisabled(row);
   if (!rowDisabled) {
     this.hiliteId_ = id;
     this.renderer_.hiliteId(id);
@@ -658,12 +659,11 @@ goog.ui.ac.AutoComplete.prototype.selectHilited = function() {
     return true;
   } else {
     this.dismiss();
-    this.dispatchEvent(
-        {
-          type: goog.ui.ac.AutoComplete.EventType.UPDATE,
-          row: null,
-          index: null
-        });
+    this.dispatchEvent({
+      type: goog.ui.ac.AutoComplete.EventType.UPDATE,
+      row: null,
+      index: null
+    });
     return false;
   }
 };
@@ -732,8 +732,8 @@ goog.ui.ac.AutoComplete.prototype.cancelDelayedDismiss = function() {
   // less than 10ms before the delayed dismiss timout ends. If that happens the
   // clearTimeout() will occur too late and have no effect.
   if (!this.immediatelyCancelDelayedDismiss_()) {
-    window.setTimeout(goog.bind(this.immediatelyCancelDelayedDismiss_, this),
-        10);
+    window.setTimeout(
+        goog.bind(this.immediatelyCancelDelayedDismiss_, this), 10);
   }
 };
 
@@ -769,8 +769,8 @@ goog.ui.ac.AutoComplete.prototype.disposeInternal = function() {
  *     Otherwise a RenderOptions object.
  * @private
  */
-goog.ui.ac.AutoComplete.prototype.matchListener_ =
-    function(matchedToken, rows, opt_options) {
+goog.ui.ac.AutoComplete.prototype.matchListener_ = function(
+    matchedToken, rows, opt_options) {
   if (this.token_ != matchedToken) {
     // Matcher's response token doesn't match current token.
     // This is probably an async response that came in after
@@ -803,10 +803,7 @@ goog.ui.ac.AutoComplete.prototype.renderRows = function(rows, opt_options) {
   this.rows_ = rows;
   var rendRows = [];
   for (var i = 0; i < rows.length; ++i) {
-    rendRows.push({
-      id: this.getIdOfIndex_(i),
-      data: rows[i]
-    });
+    rendRows.push({id: this.getIdOfIndex_(i), data: rows[i]});
   }
 
   var anchor = null;
@@ -821,8 +818,7 @@ goog.ui.ac.AutoComplete.prototype.renderRows = function(rows, opt_options) {
     autoHilite = optionsObj.getAutoHilite();
   }
   this.hiliteId_ = -1;
-  if ((autoHilite || indexToHilite >= 0) &&
-      rendRows.length != 0 &&
+  if ((autoHilite || indexToHilite >= 0) && rendRows.length != 0 &&
       this.token_) {
     if (indexToHilite >= 0) {
       this.hiliteId(this.getIdOfIndex_(indexToHilite));

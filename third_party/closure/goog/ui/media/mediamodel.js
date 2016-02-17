@@ -61,14 +61,9 @@ goog.require('goog.html.legacyconversions');
  * @param {number=} opt_height The height of the media in pixels.
  * @constructor
  */
-goog.ui.media.MediaModel = function(opt_url,
-                                    opt_caption,
-                                    opt_description,
-                                    opt_type,
-                                    opt_medium,
-                                    opt_duration,
-                                    opt_width,
-                                    opt_height) {
+goog.ui.media.MediaModel = function(
+    opt_url, opt_caption, opt_description, opt_type, opt_medium, opt_duration,
+    opt_width, opt_height) {
   /**
    * The URL of the media.
    * @type {string|undefined}
@@ -462,9 +457,8 @@ goog.ui.media.MediaModel.prototype.setCredits = function(credits) {
  *     with the given role. May be empty.
  */
 goog.ui.media.MediaModel.prototype.findCreditsWithRole = function(role) {
-  var credits = goog.array.filter(this.credits_, function(credit) {
-    return role == credit.getRole();
-  });
+  var credits = goog.array.filter(
+      this.credits_, function(credit) { return role == credit.getRole(); });
   return /** @type {!Array<!goog.ui.media.MediaModel.Credit>} */ (credits);
 };
 
@@ -573,7 +567,8 @@ goog.ui.media.MediaModel.Player = function(url, opt_vars, opt_size) {
    * @type {!goog.html.TrustedResourceUrl}
    * @private
    */
-  this.trustedResourceUrl_ = url instanceof goog.html.TrustedResourceUrl ? url :
+  this.trustedResourceUrl_ = url instanceof goog.html.TrustedResourceUrl ?
+      url :
       goog.html.legacyconversions.trustedResourceUrlFromString(url);
 
   /**
@@ -617,7 +612,8 @@ goog.ui.media.MediaModel.Player.prototype.getUrl = function() {
  *     chaining.
  */
 goog.ui.media.MediaModel.Player.prototype.setUrl = function(url) {
-  this.trustedResourceUrl_ = url instanceof goog.html.TrustedResourceUrl ? url :
+  this.trustedResourceUrl_ = url instanceof goog.html.TrustedResourceUrl ?
+      url :
       goog.html.legacyconversions.trustedResourceUrlFromString(url);
   return this;
 };

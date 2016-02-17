@@ -68,14 +68,10 @@ goog.userAgentTestUtil.reinitializeUserAgent = function() {
   // Update goog.userAgent.product
   goog.userAgent.product.ANDROID =
       goog.labs.userAgent.browser.isAndroidBrowser();
-  goog.userAgent.product.CHROME =
-      goog.labs.userAgent.browser.isChrome();
-  goog.userAgent.product.EDGE =
-      goog.labs.userAgent.browser.isEdge();
-  goog.userAgent.product.FIREFOX =
-      goog.labs.userAgent.browser.isFirefox();
-  goog.userAgent.product.IE =
-      goog.labs.userAgent.browser.isIE();
+  goog.userAgent.product.CHROME = goog.labs.userAgent.browser.isChrome();
+  goog.userAgent.product.EDGE = goog.labs.userAgent.browser.isEdge();
+  goog.userAgent.product.FIREFOX = goog.labs.userAgent.browser.isFirefox();
+  goog.userAgent.product.IE = goog.labs.userAgent.browser.isIE();
   goog.userAgent.product.IPAD = goog.labs.userAgent.platform.isIpad();
   goog.userAgent.product.IPHONE = goog.userAgent.product.isIphoneOrIpod_();
   goog.userAgent.product.OPERA = goog.labs.userAgent.browser.isOpera();

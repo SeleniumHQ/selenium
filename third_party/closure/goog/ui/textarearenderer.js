@@ -58,8 +58,7 @@ goog.ui.TextareaRenderer.prototype.getAriaRole = function() {
 /** @override */
 goog.ui.TextareaRenderer.prototype.decorate = function(control, element) {
   this.setUpTextarea_(control);
-  goog.ui.TextareaRenderer.superClass_.decorate.call(this, control,
-      element);
+  goog.ui.TextareaRenderer.superClass_.decorate.call(this, control, element);
   control.setContent(element.value);
   return element;
 };
@@ -75,10 +74,12 @@ goog.ui.TextareaRenderer.prototype.decorate = function(control, element) {
  */
 goog.ui.TextareaRenderer.prototype.createDom = function(textarea) {
   this.setUpTextarea_(textarea);
-  var element = textarea.getDomHelper().createDom(goog.dom.TagName.TEXTAREA, {
-    'class': this.getClassNames(textarea).join(' '),
-    'disabled': !textarea.isEnabled()
-  }, textarea.getContent() || '');
+  var element = textarea.getDomHelper().createDom(
+      goog.dom.TagName.TEXTAREA, {
+        'class': this.getClassNames(textarea).join(' '),
+        'disabled': !textarea.isEnabled()
+      },
+      textarea.getContent() || '');
   return element;
 };
 
@@ -123,10 +124,10 @@ goog.ui.TextareaRenderer.prototype.setFocusable = goog.nullFunction;
  * {@code disabled} attribute.
  * @override
  */
-goog.ui.TextareaRenderer.prototype.setState = function(textarea, state,
-    enable) {
-  goog.ui.TextareaRenderer.superClass_.setState.call(this, textarea, state,
-      enable);
+goog.ui.TextareaRenderer.prototype.setState = function(
+    textarea, state, enable) {
+  goog.ui.TextareaRenderer.superClass_.setState.call(
+      this, textarea, state, enable);
   var element = textarea.getElement();
   if (element && state == goog.ui.Component.State.DISABLED) {
     element.disabled = enable;

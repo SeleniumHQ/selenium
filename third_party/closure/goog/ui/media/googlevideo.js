@@ -110,9 +110,7 @@ goog.addSingletonGetter(goog.ui.media.GoogleVideo);
  */
 goog.ui.media.GoogleVideo.newControl = function(dataModel, opt_domHelper) {
   var control = new goog.ui.media.Media(
-      dataModel,
-      goog.ui.media.GoogleVideo.getInstance(),
-      opt_domHelper);
+      dataModel, goog.ui.media.GoogleVideo.getInstance(), opt_domHelper);
   // GoogleVideo videos don't have any thumbnail for now, so we show the
   // "selected" version of the UI at the start, which is the flash player.
   control.setSelected(true);
@@ -146,8 +144,7 @@ goog.ui.media.GoogleVideo.prototype.createDom = function(c) {
       /** @type {goog.ui.media.GoogleVideoModel} */ (control.getDataModel());
 
   var flash = new goog.ui.media.FlashObject(
-      dataModel.getPlayer().getTrustedResourceUrl(),
-      control.getDomHelper());
+      dataModel.getPlayer().getTrustedResourceUrl(), control.getDomHelper());
   flash.render(div);
 
   return div;
@@ -181,14 +178,11 @@ goog.ui.media.GoogleVideo.prototype.getCssClass = function() {
  * @extends {goog.ui.media.MediaModel}
  * @final
  */
-goog.ui.media.GoogleVideoModel = function(videoId, opt_caption, opt_description,
-                                          opt_autoplay) {
+goog.ui.media.GoogleVideoModel = function(
+    videoId, opt_caption, opt_description, opt_autoplay) {
   goog.ui.media.MediaModel.call(
-      this,
-      goog.ui.media.GoogleVideoModel.buildUrl(videoId),
-      opt_caption,
-      opt_description,
-      goog.ui.media.MediaModel.MimeType.FLASH);
+      this, goog.ui.media.GoogleVideoModel.buildUrl(videoId), opt_caption,
+      opt_description, goog.ui.media.MediaModel.MimeType.FLASH);
 
   /**
    * The GoogleVideo video id.
@@ -197,8 +191,9 @@ goog.ui.media.GoogleVideoModel = function(videoId, opt_caption, opt_description,
    */
   this.videoId_ = videoId;
 
-  this.setPlayer(new goog.ui.media.MediaModel.Player(
-      goog.ui.media.GoogleVideoModel.buildFlashUrl(videoId, opt_autoplay)));
+  this.setPlayer(
+      new goog.ui.media.MediaModel.Player(
+          goog.ui.media.GoogleVideoModel.buildFlashUrl(videoId, opt_autoplay)));
 };
 goog.inherits(goog.ui.media.GoogleVideoModel, goog.ui.media.MediaModel);
 
@@ -229,18 +224,16 @@ goog.ui.media.GoogleVideoModel.MATCHER_ =
  * @see goog.ui.media.GoogleVideoModel.getVideoId()
  * @throws Error in case the parsing fails.
  */
-goog.ui.media.GoogleVideoModel.newInstance = function(googleVideoUrl,
-                                                      opt_caption,
-                                                      opt_description,
-                                                      opt_autoplay) {
+goog.ui.media.GoogleVideoModel.newInstance = function(
+    googleVideoUrl, opt_caption, opt_description, opt_autoplay) {
   if (goog.ui.media.GoogleVideoModel.MATCHER_.test(googleVideoUrl)) {
     var data = goog.ui.media.GoogleVideoModel.MATCHER_.exec(googleVideoUrl);
     return new goog.ui.media.GoogleVideoModel(
         data[1], opt_caption, opt_description, opt_autoplay);
   }
 
-  throw Error('failed to parse video id from GoogleVideo url: ' +
-      googleVideoUrl);
+  throw Error(
+      'failed to parse video id from GoogleVideo url: ' + googleVideoUrl);
 };
 
 
@@ -269,8 +262,7 @@ goog.ui.media.GoogleVideoModel.buildUrl = function(videoId) {
 goog.ui.media.GoogleVideoModel.buildFlashUrl = function(videoId, opt_autoplay) {
   var autoplay = opt_autoplay ? '&autoplay=1' : '';
   return 'http://video.google.com/googleplayer.swf?docid=' +
-      goog.string.urlEncode(videoId) +
-      '&hl=en&fs=true' + autoplay;
+      goog.string.urlEncode(videoId) + '&hl=en&fs=true' + autoplay;
 };
 
 

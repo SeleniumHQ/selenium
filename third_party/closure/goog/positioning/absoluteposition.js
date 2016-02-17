@@ -43,11 +43,12 @@ goog.positioning.AbsolutePosition = function(arg1, opt_arg2) {
    * Coordinate to position popup at.
    * @type {goog.math.Coordinate}
    */
-  this.coordinate = arg1 instanceof goog.math.Coordinate ? arg1 :
+  this.coordinate = arg1 instanceof goog.math.Coordinate ?
+      arg1 :
       new goog.math.Coordinate(/** @type {number} */ (arg1), opt_arg2);
 };
-goog.inherits(goog.positioning.AbsolutePosition,
-              goog.positioning.AbstractPosition);
+goog.inherits(
+    goog.positioning.AbsolutePosition, goog.positioning.AbstractPosition);
 
 
 /**
@@ -63,11 +64,7 @@ goog.inherits(goog.positioning.AbsolutePosition,
  */
 goog.positioning.AbsolutePosition.prototype.reposition = function(
     movableElement, movableCorner, opt_margin, opt_preferredSize) {
-  goog.positioning.positionAtCoordinate(this.coordinate,
-                                        movableElement,
-                                        movableCorner,
-                                        opt_margin,
-                                        null,
-                                        null,
-                                        opt_preferredSize);
+  goog.positioning.positionAtCoordinate(
+      this.coordinate, movableElement, movableCorner, opt_margin, null, null,
+      opt_preferredSize);
 };

@@ -19,13 +19,13 @@
  */
 
 goog.provide('goog.format.JsonPrettyPrinter');
-goog.provide('goog.format.JsonPrettyPrinter.HtmlDelimiters');
+goog.provide('goog.format.JsonPrettyPrinter.SafeHtmlDelimiters');
 goog.provide('goog.format.JsonPrettyPrinter.TextDelimiters');
 
+goog.require('goog.html.SafeHtml');
 goog.require('goog.json');
 goog.require('goog.json.Serializer');
 goog.require('goog.string');
-goog.require('goog.string.StringBuffer');
 goog.require('goog.string.format');
 
 
@@ -62,8 +62,8 @@ goog.format.JsonPrettyPrinter = function(delimiters) {
    * @type {goog.format.JsonPrettyPrinter.TextDelimiters}
    * @private
    */
-  this.delimiters_ = delimiters ||
-      new goog.format.JsonPrettyPrinter.TextDelimiters();
+  this.delimiters_ =
+      delimiters || new goog.format.JsonPrettyPrinter.TextDelimiters();
 
   /**
    * Used to serialize property names and values.
@@ -82,34 +82,64 @@ goog.format.JsonPrettyPrinter = function(delimiters) {
  *     display.
  */
 goog.format.JsonPrettyPrinter.prototype.format = function(json) {
+  var buffer = this.format_(json);
+  var output = '';
+  for (var i = 0; i < buffer.length; i++) {
+    var item = buffer[i];
+    output += item instanceof goog.html.SafeHtml ?
+        goog.html.SafeHtml.unwrap(item) :
+        item;
+  }
+  return output;
+};
+
+
+/**
+ * Formats a JSON object as a SafeHtml, properly indented for display.
+ * @param {*} json The object to pretty print. It could be a JSON object, a
+ *     string representing a JSON object, or any other type.
+ * @return {!goog.html.SafeHtml} A HTML code of the JSON object.
+ */
+goog.format.JsonPrettyPrinter.prototype.formatSafeHtml = function(json) {
+  return goog.html.SafeHtml.concat(this.format_(json));
+};
+
+
+/**
+ * Formats a JSON object and returns an output buffer.
+ * @param {*} json The object to pretty print.
+ * @return {!Array<string|!goog.html.SafeHtml>}
+ * @private
+ */
+goog.format.JsonPrettyPrinter.prototype.format_ = function(json) {
   // If input is undefined, null, or empty, return an empty string.
   if (!goog.isDefAndNotNull(json)) {
-    return '';
+    return [];
   }
   if (goog.isString(json)) {
     if (goog.string.isEmptyOrWhitespace(json)) {
-      return '';
+      return [];
     }
     // Try to coerce a string into a JSON object.
     json = goog.json.parse(json);
   }
-  var outputBuffer = new goog.string.StringBuffer();
+  var outputBuffer = [];
   this.printObject_(json, outputBuffer, 0);
-  return outputBuffer.toString();
+  return outputBuffer;
 };
 
 
 /**
  * Formats a property value based on the type of the propery.
  * @param {*} val The object to format.
- * @param {goog.string.StringBuffer} outputBuffer The buffer to write the
- *     response to.
+ * @param {!Array<string|!goog.html.SafeHtml>} outputBuffer The buffer to write
+ *     the response to.
  * @param {number} indent The number of spaces to indent each line of the
  *     output.
  * @private
  */
-goog.format.JsonPrettyPrinter.prototype.printObject_ = function(val,
-    outputBuffer, indent) {
+goog.format.JsonPrettyPrinter.prototype.printObject_ = function(
+    val, outputBuffer, indent) {
   var typeOf = goog.typeOf(val);
   switch (typeOf) {
     case 'null':
@@ -119,8 +149,8 @@ goog.format.JsonPrettyPrinter.prototype.printObject_ = function(val,
       // "null", "boolean", "number" and "string" properties are printed
       // directly to the output.
       this.printValue_(
-          /** @type {null|string|boolean|number} */ (val),
-          typeOf, outputBuffer);
+          /** @type {null|string|boolean|number} */ (val), typeOf,
+          outputBuffer);
       break;
     case 'array':
       // Example of how an array looks when formatted
@@ -130,27 +160,27 @@ goog.format.JsonPrettyPrinter.prototype.printObject_ = function(val,
       //   2,
       //   3
       // ]
-      outputBuffer.append(this.delimiters_.arrayStart);
+      outputBuffer.push(this.delimiters_.arrayStart);
       var i = 0;
       // Iterate through the array and format each element.
       for (i = 0; i < val.length; i++) {
         if (i > 0) {
           // There are multiple elements, add a comma to separate them.
-          outputBuffer.append(this.delimiters_.propertySeparator);
+          outputBuffer.push(this.delimiters_.propertySeparator);
         }
-        outputBuffer.append(this.delimiters_.lineBreak);
+        outputBuffer.push(this.delimiters_.lineBreak);
         this.printSpaces_(indent + this.delimiters_.indent, outputBuffer);
-        this.printObject_(val[i], outputBuffer,
-            indent + this.delimiters_.indent);
+        this.printObject_(
+            val[i], outputBuffer, indent + this.delimiters_.indent);
       }
       // If there are no properties in this object, don't put a line break
       // between the beginning "[" and ending "]", so the output of an empty
       // array looks like <code>[]</code>.
       if (i > 0) {
-        outputBuffer.append(this.delimiters_.lineBreak);
+        outputBuffer.push(this.delimiters_.lineBreak);
         this.printSpaces_(indent, outputBuffer);
       }
-      outputBuffer.append(this.delimiters_.arrayEnd);
+      outputBuffer.push(this.delimiters_.arrayEnd);
       break;
     case 'object':
       // Example of how an object looks when formatted
@@ -160,7 +190,7 @@ goog.format.JsonPrettyPrinter.prototype.printObject_ = function(val,
       //   "b": 2,
       //   "c": "3"
       // }
-      outputBuffer.append(this.delimiters_.objectStart);
+      outputBuffer.push(this.delimiters_.objectStart);
       var propertyCount = 0;
       // Iterate through the object and display each property.
       for (var name in val) {
@@ -169,25 +199,25 @@ goog.format.JsonPrettyPrinter.prototype.printObject_ = function(val,
         }
         if (propertyCount > 0) {
           // There are multiple properties, add a comma to separate them.
-          outputBuffer.append(this.delimiters_.propertySeparator);
+          outputBuffer.push(this.delimiters_.propertySeparator);
         }
-        outputBuffer.append(this.delimiters_.lineBreak);
+        outputBuffer.push(this.delimiters_.lineBreak);
         this.printSpaces_(indent + this.delimiters_.indent, outputBuffer);
         this.printName_(name, outputBuffer);
-        outputBuffer.append(this.delimiters_.nameValueSeparator,
-            this.delimiters_.space);
-        this.printObject_(val[name], outputBuffer,
-            indent + this.delimiters_.indent);
+        outputBuffer.push(
+            this.delimiters_.nameValueSeparator, this.delimiters_.space);
+        this.printObject_(
+            val[name], outputBuffer, indent + this.delimiters_.indent);
         propertyCount++;
       }
       // If there are no properties in this object, don't put a line break
       // between the beginning "{" and ending "}", so the output of an empty
       // object looks like <code>{}</code>.
       if (propertyCount > 0) {
-        outputBuffer.append(this.delimiters_.lineBreak);
+        outputBuffer.push(this.delimiters_.lineBreak);
         this.printSpaces_(indent, outputBuffer);
       }
-      outputBuffer.append(this.delimiters_.objectEnd);
+      outputBuffer.push(this.delimiters_.objectEnd);
       break;
     // Other types, such as "function", aren't expected in JSON, and their
     // behavior is undefined.  In these cases, just print an empty string to the
@@ -202,14 +232,14 @@ goog.format.JsonPrettyPrinter.prototype.printObject_ = function(val,
 /**
  * Prints a property name to the output.
  * @param {string} name The property name.
- * @param {goog.string.StringBuffer} outputBuffer The buffer to write the
- *     response to.
+ * @param {!Array<string|!goog.html.SafeHtml>} outputBuffer The buffer to write
+ *     the response to.
  * @private
  */
-goog.format.JsonPrettyPrinter.prototype.printName_ = function(name,
-    outputBuffer) {
-  outputBuffer.append(this.delimiters_.preName,
-      this.jsonSerializer_.serialize(name), this.delimiters_.postName);
+goog.format.JsonPrettyPrinter.prototype.printName_ = function(
+    name, outputBuffer) {
+  outputBuffer.push(
+      this.delimiters_.formatName(this.jsonSerializer_.serialize(name)));
 };
 
 
@@ -222,28 +252,27 @@ goog.format.JsonPrettyPrinter.prototype.printName_ = function(name,
  *     classes: "goog-jsonprettyprinter-propertyvalue-string" and
  *     "goog-jsonprettyprinter-propertyvalue-number" to assign a different color
  *     to string and number values.
- * @param {goog.string.StringBuffer} outputBuffer The buffer to write the
- *     response to.
+ * @param {!Array<string|!goog.html.SafeHtml>} outputBuffer The buffer to write
+ *     the response to.
  * @private
  */
-goog.format.JsonPrettyPrinter.prototype.printValue_ = function(val,
-    typeOf, outputBuffer) {
-  outputBuffer.append(goog.string.format(this.delimiters_.preValue, typeOf),
-      this.jsonSerializer_.serialize(val),
-      goog.string.format(this.delimiters_.postValue, typeOf));
+goog.format.JsonPrettyPrinter.prototype.printValue_ = function(
+    val, typeOf, outputBuffer) {
+  var value = this.jsonSerializer_.serialize(val);
+  outputBuffer.push(this.delimiters_.formatValue(value, typeOf));
 };
 
 
 /**
  * Print a number of space characters to the output.
  * @param {number} indent The number of spaces to indent the line.
- * @param {goog.string.StringBuffer} outputBuffer The buffer to write the
- *     response to.
+ * @param {!Array<string|!goog.html.SafeHtml>} outputBuffer The buffer to write
+ *     the response to.
  * @private
  */
-goog.format.JsonPrettyPrinter.prototype.printSpaces_ = function(indent,
-    outputBuffer) {
-  outputBuffer.append(goog.string.repeat(this.delimiters_.space, indent));
+goog.format.JsonPrettyPrinter.prototype.printSpaces_ = function(
+    indent, outputBuffer) {
+  outputBuffer.push(goog.string.repeat(this.delimiters_.space, indent));
 };
 
 
@@ -254,8 +283,7 @@ goog.format.JsonPrettyPrinter.prototype.printSpaces_ = function(indent,
  * the object, which makes it easy to tweak delimiters to specific environments.
  * @constructor
  */
-goog.format.JsonPrettyPrinter.TextDelimiters = function() {
-};
+goog.format.JsonPrettyPrinter.TextDelimiters = function() {};
 
 
 /**
@@ -269,7 +297,7 @@ goog.format.JsonPrettyPrinter.TextDelimiters.prototype.space = ' ';
 
 /**
  * Represents a newline character in the output.  Used to begin a new line.
- * @type {string}
+ * @type {string|!goog.html.SafeHtml}
  */
 goog.format.JsonPrettyPrinter.TextDelimiters.prototype.lineBreak = '\n';
 
@@ -312,7 +340,7 @@ goog.format.JsonPrettyPrinter.TextDelimiters.prototype.propertySeparator = ',';
 /**
  * Represents the string used to separate property names from property values in
  * the output.
- * @type {string}
+ * @type {string|!goog.html.SafeHtml}
  */
 goog.format.JsonPrettyPrinter.TextDelimiters.prototype.nameValueSeparator = ':';
 
@@ -334,6 +362,17 @@ goog.format.JsonPrettyPrinter.TextDelimiters.prototype.postName = '';
 
 
 /**
+ * Formats a property name before adding it to the output.
+ * @param {string} name The property name.
+ * @return {string|!goog.html.SafeHtml}
+ */
+goog.format.JsonPrettyPrinter.TextDelimiters.prototype.formatName = function(
+    name) {
+  return this.preName + name + this.postName;
+};
+
+
+/**
  * A string that's placed before a property value in the output.  Useful for
  * wrapping a property value in an html tag.
  * @type {string}
@@ -350,6 +389,18 @@ goog.format.JsonPrettyPrinter.TextDelimiters.prototype.postValue = '';
 
 
 /**
+ * Formats a value before adding it to the output.
+ * @param {string} value The value.
+ * @param {string} typeOf The type of the value obtained by goog.typeOf.
+ * @return {string|!goog.html.SafeHtml}
+ */
+goog.format.JsonPrettyPrinter.TextDelimiters.prototype.formatValue = function(
+    value, typeOf) {
+  return goog.string.format(this.preValue, typeOf) + value + this.postValue;
+};
+
+
+/**
  * Represents the number of spaces to indent each sub-property of the JSON.
  * @type {number}
  */
@@ -360,55 +411,58 @@ goog.format.JsonPrettyPrinter.TextDelimiters.prototype.indent = 2;
 /**
  * A container for the delimiting characters used to display the JSON string
  * to an HTML <code>&lt;pre&gt;</code> or <code>&lt;code&gt;</code> element.
+ * It escapes the names and values before they are added to the output.
+ * Use this class together with goog.format.JsonPrettyPrinter#formatSafeHtml.
  * @constructor
  * @extends {goog.format.JsonPrettyPrinter.TextDelimiters}
- * @final
  */
-goog.format.JsonPrettyPrinter.HtmlDelimiters = function() {
+goog.format.JsonPrettyPrinter.SafeHtmlDelimiters = function() {
   goog.format.JsonPrettyPrinter.TextDelimiters.call(this);
 };
-goog.inherits(goog.format.JsonPrettyPrinter.HtmlDelimiters,
+goog.inherits(
+    goog.format.JsonPrettyPrinter.SafeHtmlDelimiters,
     goog.format.JsonPrettyPrinter.TextDelimiters);
 
 
-/**
- * A <code>span</code> tag thats placed before a property name.  Used to style
- * property names with CSS.
- * @type {string}
- * @override
- */
-goog.format.JsonPrettyPrinter.HtmlDelimiters.prototype.preName =
-    '<span class="' +
-    goog.getCssName('goog-jsonprettyprinter-propertyname') +
-    '">';
+/** @override */
+goog.format.JsonPrettyPrinter.SafeHtmlDelimiters.prototype.formatName =
+    function(name) {
+  var classes = goog.getCssName('goog-jsonprettyprinter-propertyname');
+  return goog.html.SafeHtml.create('span', {'class': classes}, name);
+};
+
+
+/** @override */
+goog.format.JsonPrettyPrinter.SafeHtmlDelimiters.prototype.formatValue =
+    function(value, typeOf) {
+  var classes = this.getValueCssName(typeOf);
+  return goog.html.SafeHtml.create('span', {'class': classes}, value);
+};
 
 
 /**
- * A closing <code>span</code> tag that's placed after a property name.
- * @type {string}
- * @override
+ * Return a class name for the given type.
+ * @param {string} typeOf The type of the value.
+ * @return {string}
+ * @protected
  */
-goog.format.JsonPrettyPrinter.HtmlDelimiters.prototype.postName = '</span>';
-
-
-/**
- * A <code>span</code> tag thats placed before a property value.  Used to style
- * property value with CSS.  The span tag's class is in the format
- * goog-jsonprettyprinter-propertyvalue-{TYPE}, where {TYPE} is the JavaScript
- * type of the object (the {TYPE} parameter is obtained from goog.typeOf).  This
- * can be used to style different value types.
- * @type {string}
- * @override
- */
-goog.format.JsonPrettyPrinter.HtmlDelimiters.prototype.preValue =
-    '<span class="' +
-    goog.getCssName('goog-jsonprettyprinter-propertyvalue-%s') +
-    '">';
-
-
-/**
- * A closing <code>span</code> tag that's placed after a property value.
- * @type {string}
- * @override
- */
-goog.format.JsonPrettyPrinter.HtmlDelimiters.prototype.postValue = '</span>';
+goog.format.JsonPrettyPrinter.SafeHtmlDelimiters.prototype.getValueCssName =
+    function(typeOf) {
+  // This switch is needed because goog.getCssName requires a constant string.
+  switch (typeOf) {
+    case 'null':
+      return goog.getCssName('goog-jsonprettyprinter-propertyvalue-null');
+    case 'boolean':
+      return goog.getCssName('goog-jsonprettyprinter-propertyvalue-boolean');
+    case 'number':
+      return goog.getCssName('goog-jsonprettyprinter-propertyvalue-number');
+    case 'string':
+      return goog.getCssName('goog-jsonprettyprinter-propertyvalue-string');
+    case 'array':
+      return goog.getCssName('goog-jsonprettyprinter-propertyvalue-array');
+    case 'object':
+      return goog.getCssName('goog-jsonprettyprinter-propertyvalue-object');
+    default:
+      return goog.getCssName('goog-jsonprettyprinter-propertyvalue-unknown');
+  }
+};

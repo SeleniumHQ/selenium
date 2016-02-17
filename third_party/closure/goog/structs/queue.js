@@ -128,8 +128,7 @@ goog.structs.Queue.prototype.getCount = function() {
  * @return {boolean} true if this queue contains no elements.
  */
 goog.structs.Queue.prototype.isEmpty = function() {
-  return goog.array.isEmpty(this.front_) &&
-         goog.array.isEmpty(this.back_);
+  return goog.array.isEmpty(this.front_) && goog.array.isEmpty(this.back_);
 };
 
 
@@ -149,7 +148,7 @@ goog.structs.Queue.prototype.clear = function() {
  */
 goog.structs.Queue.prototype.contains = function(obj) {
   return goog.array.contains(this.front_, obj) ||
-         goog.array.contains(this.back_, obj);
+      goog.array.contains(this.back_, obj);
 };
 
 

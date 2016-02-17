@@ -129,7 +129,7 @@ goog.editor.Link.prototype.removeLink = function() {
   goog.dom.flattenElement(this.anchor_);
   this.anchor_ = null;
   while (this.extraAnchors_.length) {
-    goog.dom.flattenElement(/** @type {Element} */(this.extraAnchors_.pop()));
+    goog.dom.flattenElement(/** @type {Element} */ (this.extraAnchors_.pop()));
   }
 };
 
@@ -192,8 +192,7 @@ goog.editor.Link.prototype.placeCursorRightOf = function() {
 
     // Check if there is already a space after the link.  Only handle the
     // simple case - the next node is a text node that starts with a space.
-    if (nextSibling &&
-        nextSibling.nodeType == goog.dom.NodeType.TEXT &&
+    if (nextSibling && nextSibling.nodeType == goog.dom.NodeType.TEXT &&
         (goog.string.startsWith(nextSibling.data, goog.string.Unicode.NBSP) ||
          goog.string.startsWith(nextSibling.data, ' '))) {
       spaceNode = nextSibling;
@@ -269,8 +268,8 @@ goog.editor.Link.prototype.finishLinkCreation = function(field) {
  *     by the browser when parsing a selection.
  * @return {!goog.editor.Link} The link.
  */
-goog.editor.Link.createNewLink = function(anchor, url, opt_target,
-    opt_extraAnchors) {
+goog.editor.Link.createNewLink = function(
+    anchor, url, opt_target, opt_extraAnchors) {
   var link = new goog.editor.Link(anchor, true);
   link.initializeUrl(url);
 
@@ -358,11 +357,12 @@ goog.editor.Link.isLikelyUrl = function(str) {
  * @private
  */
 goog.editor.Link.LIKELY_EMAIL_ADDRESS_ = new RegExp(
-    '^' +                     // Test from start of string
-    '[\\w-]+(\\.[\\w-]+)*' +  // Dot-delimited alphanumerics and dashes (name)
-    '\\@' +                   // @
-    '([\\w-]+\\.)+' +         // Alphanumerics, dashes and dots (domain)
-    '(\\d+|\\w\\w+)$',        // Domain ends in at least one number or 2 letters
+    '^' +                         // Test from start of string
+        '[\\w-]+(\\.[\\w-]+)*' +  // Dot-delimited alphanumerics and dashes
+                                  // (name)
+        '\\@' +                   // @
+        '([\\w-]+\\.)+' +         // Alphanumerics, dashes and dots (domain)
+        '(\\d+|\\w\\w+)$',  // Domain ends in at least one number or 2 letters
     'i');
 
 

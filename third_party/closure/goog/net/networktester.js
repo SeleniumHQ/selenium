@@ -273,15 +273,16 @@ goog.net.NetworkTester.prototype.startNextAttempt_ = function() {
     // Call in a timeout to make async like the rest.
     goog.Timer.callOnce(goog.bind(this.onResult, this, false), 0);
   } else {
-    goog.log.info(this.logger_, 'Loading image (attempt ' + this.attempt_ +
-                      ') at ' + this.uri_);
+    goog.log.info(
+        this.logger_,
+        'Loading image (attempt ' + this.attempt_ + ') at ' + this.uri_);
     this.image_ = new Image();
     this.image_.onload = goog.bind(this.onImageLoad_, this);
     this.image_.onerror = goog.bind(this.onImageError_, this);
     this.image_.onabort = goog.bind(this.onImageAbort_, this);
 
-    this.timeoutTimer_ = goog.Timer.callOnce(this.onImageTimeout_,
-        this.timeoutMs_, this);
+    this.timeoutTimer_ =
+        goog.Timer.callOnce(this.onImageTimeout_, this.timeoutMs_, this);
     this.image_.src = String(this.uri_);
   }
 };
@@ -292,7 +293,7 @@ goog.net.NetworkTester.prototype.startNextAttempt_ = function() {
  * @private
  */
 goog.net.NetworkTester.getNavigatorOffline_ = function() {
-  return 'onLine' in navigator && !navigator.onLine;
+  return navigator !== null && 'onLine' in navigator && !navigator.onLine;
 };
 
 
@@ -349,8 +350,8 @@ goog.net.NetworkTester.prototype.onResult = function(succeeded) {
   } else {
     if (this.attempt_ <= this.retries_) {
       if (this.pauseBetweenRetriesMs_) {
-        this.pauseTimer_ = goog.Timer.callOnce(this.onPauseFinished_,
-            this.pauseBetweenRetriesMs_, this);
+        this.pauseTimer_ = goog.Timer.callOnce(
+            this.onPauseFinished_, this.pauseBetweenRetriesMs_, this);
       } else {
         this.startNextAttempt_();
       }

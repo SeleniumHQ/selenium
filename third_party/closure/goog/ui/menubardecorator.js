@@ -31,5 +31,5 @@ goog.require('goog.ui.registry');
  * Register a decorator factory function. 'goog-menubar' defaults to
  * goog.ui.MenuBarRenderer.
  */
-goog.ui.registry.setDecoratorByClassName(goog.ui.MenuBarRenderer.CSS_CLASS,
-    goog.ui.menuBar.create);
+goog.ui.registry.setDecoratorByClassName(
+    goog.ui.MenuBarRenderer.CSS_CLASS, goog.ui.menuBar.create);

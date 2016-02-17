@@ -119,8 +119,7 @@ goog.locale.getRegionSubTag = function(languageCode) {
  */
 goog.locale.getScriptSubTag = function(languageCode) {
   var result = languageCode.split(/[-_]/g);
-  return result.length > 1 && result[1].match(/^[a-zA-Z]{4}$/) ?
-      result[1] : '';
+  return result.length > 1 && result[1].match(/^[a-zA-Z]{4}$/) ? result[1] : '';
 };
 
 
@@ -149,9 +148,10 @@ goog.locale.getVariantSubTag = function(languageCode) {
  */
 goog.locale.getNativeCountryName = function(countryCode) {
   var key = goog.locale.getLanguageSubTag(countryCode) + '_' +
-            goog.locale.getRegionSubTag(countryCode);
+      goog.locale.getRegionSubTag(countryCode);
   return key in goog.locale.nativeNameConstants['COUNTRY'] ?
-      goog.locale.nativeNameConstants['COUNTRY'][key] : countryCode;
+      goog.locale.nativeNameConstants['COUNTRY'][key] :
+      countryCode;
 };
 
 
@@ -169,15 +169,16 @@ goog.locale.getNativeCountryName = function(countryCode) {
  *
  * @return {string} Localized country name.
  */
-goog.locale.getLocalizedCountryName = function(languageCode,
-                                               opt_localeSymbols) {
+goog.locale.getLocalizedCountryName = function(
+    languageCode, opt_localeSymbols) {
   if (!opt_localeSymbols) {
-    opt_localeSymbols = goog.locale.getResource('LocaleNameConstants',
-        goog.locale.getLocale());
+    opt_localeSymbols =
+        goog.locale.getResource('LocaleNameConstants', goog.locale.getLocale());
   }
   var code = goog.locale.getRegionSubTag(languageCode);
   return code in opt_localeSymbols['COUNTRY'] ?
-      opt_localeSymbols['COUNTRY'][code] : languageCode;
+      opt_localeSymbols['COUNTRY'][code] :
+      languageCode;
 };
 
 
@@ -197,7 +198,8 @@ goog.locale.getNativeLanguageName = function(languageCode) {
     return goog.locale.nativeNameConstants['LANGUAGE'][languageCode];
   var code = goog.locale.getLanguageSubTag(languageCode);
   return code in goog.locale.nativeNameConstants['LANGUAGE'] ?
-      goog.locale.nativeNameConstants['LANGUAGE'][code] : languageCode;
+      goog.locale.nativeNameConstants['LANGUAGE'][code] :
+      languageCode;
 };
 
 
@@ -214,17 +216,18 @@ goog.locale.getNativeLanguageName = function(languageCode) {
  *
  * @return {string} Localized language name of the provided language code.
  */
-goog.locale.getLocalizedLanguageName = function(languageCode,
-                                                opt_localeSymbols) {
+goog.locale.getLocalizedLanguageName = function(
+    languageCode, opt_localeSymbols) {
   if (!opt_localeSymbols) {
-    opt_localeSymbols = goog.locale.getResource('LocaleNameConstants',
-        goog.locale.getLocale());
+    opt_localeSymbols =
+        goog.locale.getResource('LocaleNameConstants', goog.locale.getLocale());
   }
   if (languageCode in opt_localeSymbols['LANGUAGE'])
     return opt_localeSymbols['LANGUAGE'][languageCode];
   var code = goog.locale.getLanguageSubTag(languageCode);
   return code in opt_localeSymbols['LANGUAGE'] ?
-      opt_localeSymbols['LANGUAGE'][code] : languageCode;
+      opt_localeSymbols['LANGUAGE'][code] :
+      languageCode;
 };
 
 
@@ -400,4 +403,3 @@ var registerTimeZoneSelectedShortNames =
 var registerTimeZoneSelectedLongNames =
     goog.locale.registerTimeZoneSelectedLongNames;
 var registerTimeZoneAllLongNames = goog.locale.registerTimeZoneAllLongNames;
-

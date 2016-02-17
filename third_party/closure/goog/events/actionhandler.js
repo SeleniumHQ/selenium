@@ -62,10 +62,11 @@ goog.events.ActionHandler = function(element) {
    */
   this.element_ = element;
 
-  goog.events.listen(element, goog.events.ActionHandler.KEY_EVENT_TYPE_,
-      this.handleKeyDown_, false, this);
-  goog.events.listen(element, goog.events.EventType.CLICK,
-      this.handleClick_, false, this);
+  goog.events.listen(
+      element, goog.events.ActionHandler.KEY_EVENT_TYPE_, this.handleKeyDown_,
+      false, this);
+  goog.events.listen(
+      element, goog.events.EventType.CLICK, this.handleClick_, false, this);
 };
 goog.inherits(goog.events.ActionHandler, goog.events.EventTarget);
 
@@ -144,10 +145,12 @@ goog.events.ActionHandler.prototype.dispatchEvents_ = function(e) {
 /** @override */
 goog.events.ActionHandler.prototype.disposeInternal = function() {
   goog.events.ActionHandler.superClass_.disposeInternal.call(this);
-  goog.events.unlisten(this.element_, goog.events.ActionHandler.KEY_EVENT_TYPE_,
+  goog.events.unlisten(
+      this.element_, goog.events.ActionHandler.KEY_EVENT_TYPE_,
       this.handleKeyDown_, false, this);
-  goog.events.unlisten(this.element_, goog.events.EventType.CLICK,
-      this.handleClick_, false, this);
+  goog.events.unlisten(
+      this.element_, goog.events.EventType.CLICK, this.handleClick_, false,
+      this);
   delete this.element_;
 };
 

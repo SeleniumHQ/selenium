@@ -25,6 +25,7 @@ goog.provide('proto2.TestAllTypes.RepeatedGroup');
 goog.provide('proto2.TestAllTypes.NestedEnum');
 goog.provide('proto2.TestDefaultParent');
 goog.provide('proto2.TestDefaultChild');
+goog.setTestOnly('proto2.TestAllTypes');
 
 goog.require('goog.proto2.Message');
 
@@ -34,11 +35,19 @@ goog.require('goog.proto2.Message');
  * Message TestAllTypes.
  * @constructor
  * @extends {goog.proto2.Message}
+ * @final
  */
 proto2.TestAllTypes = function() {
   goog.proto2.Message.call(this);
 };
 goog.inherits(proto2.TestAllTypes, goog.proto2.Message);
+
+
+/**
+ * Descriptor for this message, deserialized lazily in getDescriptor().
+ * @private {?goog.proto2.Descriptor}
+ */
+proto2.TestAllTypes.descriptor_ = null;
 
 
 /**
@@ -816,10 +825,10 @@ proto2.TestAllTypes.prototype.clearOptionalBytes = function() {
 
 /**
  * Gets the value of the optionalgroup field.
- * @return {proto2.TestAllTypes.OptionalGroup} The value.
+ * @return {?proto2.TestAllTypes.OptionalGroup} The value.
  */
 proto2.TestAllTypes.prototype.getOptionalgroup = function() {
-  return /** @type {proto2.TestAllTypes.OptionalGroup} */ (this.get$Value(16));
+  return /** @type {?proto2.TestAllTypes.OptionalGroup} */ (this.get$Value(16));
 };
 
 
@@ -867,10 +876,10 @@ proto2.TestAllTypes.prototype.clearOptionalgroup = function() {
 
 /**
  * Gets the value of the optional_nested_message field.
- * @return {proto2.TestAllTypes.NestedMessage} The value.
+ * @return {?proto2.TestAllTypes.NestedMessage} The value.
  */
 proto2.TestAllTypes.prototype.getOptionalNestedMessage = function() {
-  return /** @type {proto2.TestAllTypes.NestedMessage} */ (this.get$Value(18));
+  return /** @type {?proto2.TestAllTypes.NestedMessage} */ (this.get$Value(18));
 };
 
 
@@ -927,16 +936,16 @@ proto2.TestAllTypes.prototype.getOptionalNestedEnum = function() {
 
 /**
  * Gets the value of the optional_nested_enum field or the default value if not set.
- * @return {proto2.TestAllTypes.NestedEnum} The value.
+ * @return {!proto2.TestAllTypes.NestedEnum} The value.
  */
 proto2.TestAllTypes.prototype.getOptionalNestedEnumOrDefault = function() {
-  return /** @type {proto2.TestAllTypes.NestedEnum} */ (this.get$ValueOrDefault(21));
+  return /** @type {!proto2.TestAllTypes.NestedEnum} */ (this.get$ValueOrDefault(21));
 };
 
 
 /**
  * Sets the value of the optional_nested_enum field.
- * @param {proto2.TestAllTypes.NestedEnum} value The value.
+ * @param {!proto2.TestAllTypes.NestedEnum} value The value.
  */
 proto2.TestAllTypes.prototype.setOptionalNestedEnum = function(value) {
   this.set$Value(21, value);
@@ -2002,10 +2011,10 @@ proto2.TestAllTypes.prototype.clearRepeatedBytes = function() {
 /**
  * Gets the value of the repeatedgroup field at the index given.
  * @param {number} index The index to lookup.
- * @return {proto2.TestAllTypes.RepeatedGroup} The value.
+ * @return {?proto2.TestAllTypes.RepeatedGroup} The value.
  */
 proto2.TestAllTypes.prototype.getRepeatedgroup = function(index) {
-  return /** @type {proto2.TestAllTypes.RepeatedGroup} */ (this.get$Value(46, index));
+  return /** @type {?proto2.TestAllTypes.RepeatedGroup} */ (this.get$Value(46, index));
 };
 
 
@@ -2064,10 +2073,10 @@ proto2.TestAllTypes.prototype.clearRepeatedgroup = function() {
 /**
  * Gets the value of the repeated_nested_message field at the index given.
  * @param {number} index The index to lookup.
- * @return {proto2.TestAllTypes.NestedMessage} The value.
+ * @return {?proto2.TestAllTypes.NestedMessage} The value.
  */
 proto2.TestAllTypes.prototype.getRepeatedNestedMessage = function(index) {
-  return /** @type {proto2.TestAllTypes.NestedMessage} */ (this.get$Value(48, index));
+  return /** @type {?proto2.TestAllTypes.NestedMessage} */ (this.get$Value(48, index));
 };
 
 
@@ -2136,16 +2145,16 @@ proto2.TestAllTypes.prototype.getRepeatedNestedEnum = function(index) {
 /**
  * Gets the value of the repeated_nested_enum field at the index given or the default value if not set.
  * @param {number} index The index to lookup.
- * @return {proto2.TestAllTypes.NestedEnum} The value.
+ * @return {!proto2.TestAllTypes.NestedEnum} The value.
  */
 proto2.TestAllTypes.prototype.getRepeatedNestedEnumOrDefault = function(index) {
-  return /** @type {proto2.TestAllTypes.NestedEnum} */ (this.get$ValueOrDefault(49, index));
+  return /** @type {!proto2.TestAllTypes.NestedEnum} */ (this.get$ValueOrDefault(49, index));
 };
 
 
 /**
  * Adds a value to the repeated_nested_enum field.
- * @param {proto2.TestAllTypes.NestedEnum} value The value to add.
+ * @param {!proto2.TestAllTypes.NestedEnum} value The value to add.
  */
 proto2.TestAllTypes.prototype.addRepeatedNestedEnum = function(value) {
   this.add$Value(49, value);
@@ -2154,10 +2163,10 @@ proto2.TestAllTypes.prototype.addRepeatedNestedEnum = function(value) {
 
 /**
  * Returns the array of values in the repeated_nested_enum field.
- * @return {!Array<proto2.TestAllTypes.NestedEnum>} The values in the field.
+ * @return {!Array<!proto2.TestAllTypes.NestedEnum>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedNestedEnumArray = function() {
-  return /** @type {!Array<proto2.TestAllTypes.NestedEnum>} */ (this.array$Values(49));
+  return /** @type {!Array<!proto2.TestAllTypes.NestedEnum>} */ (this.array$Values(49));
 };
 
 
@@ -3121,6 +3130,7 @@ proto2.TestAllTypes.prototype.clearPackedBool = function() {
  */
 proto2.TestAllTypes.NestedEnum = {
   FOO: 0,
+  OOF: 0,
   BAR: 2,
   BAZ: 3
 };
@@ -3131,11 +3141,19 @@ proto2.TestAllTypes.NestedEnum = {
  * Message NestedMessage.
  * @constructor
  * @extends {goog.proto2.Message}
+ * @final
  */
 proto2.TestAllTypes.NestedMessage = function() {
   goog.proto2.Message.call(this);
 };
 goog.inherits(proto2.TestAllTypes.NestedMessage, goog.proto2.Message);
+
+
+/**
+ * Descriptor for this message, deserialized lazily in getDescriptor().
+ * @private {?goog.proto2.Descriptor}
+ */
+proto2.TestAllTypes.NestedMessage.descriptor_ = null;
 
 
 /**
@@ -3253,11 +3271,19 @@ proto2.TestAllTypes.NestedMessage.prototype.clearC = function() {
  * Message OptionalGroup.
  * @constructor
  * @extends {goog.proto2.Message}
+ * @final
  */
 proto2.TestAllTypes.OptionalGroup = function() {
   goog.proto2.Message.call(this);
 };
 goog.inherits(proto2.TestAllTypes.OptionalGroup, goog.proto2.Message);
+
+
+/**
+ * Descriptor for this message, deserialized lazily in getDescriptor().
+ * @private {?goog.proto2.Descriptor}
+ */
+proto2.TestAllTypes.OptionalGroup.descriptor_ = null;
 
 
 /**
@@ -3324,11 +3350,19 @@ proto2.TestAllTypes.OptionalGroup.prototype.clearA = function() {
  * Message RepeatedGroup.
  * @constructor
  * @extends {goog.proto2.Message}
+ * @final
  */
 proto2.TestAllTypes.RepeatedGroup = function() {
   goog.proto2.Message.call(this);
 };
 goog.inherits(proto2.TestAllTypes.RepeatedGroup, goog.proto2.Message);
+
+
+/**
+ * Descriptor for this message, deserialized lazily in getDescriptor().
+ * @private {?goog.proto2.Descriptor}
+ */
+proto2.TestAllTypes.RepeatedGroup.descriptor_ = null;
 
 
 /**
@@ -3406,11 +3440,19 @@ proto2.TestAllTypes.RepeatedGroup.prototype.clearA = function() {
  * Message TestDefaultParent.
  * @constructor
  * @extends {goog.proto2.Message}
+ * @final
  */
 proto2.TestDefaultParent = function() {
   goog.proto2.Message.call(this);
 };
 goog.inherits(proto2.TestDefaultParent, goog.proto2.Message);
+
+
+/**
+ * Descriptor for this message, deserialized lazily in getDescriptor().
+ * @private {?goog.proto2.Descriptor}
+ */
+proto2.TestDefaultParent.descriptor_ = null;
 
 
 /**
@@ -3423,10 +3465,10 @@ proto2.TestDefaultParent.prototype.clone;
 
 /**
  * Gets the value of the child field.
- * @return {proto2.TestDefaultChild} The value.
+ * @return {?proto2.TestDefaultChild} The value.
  */
 proto2.TestDefaultParent.prototype.getChild = function() {
-  return /** @type {proto2.TestDefaultChild} */ (this.get$Value(1));
+  return /** @type {?proto2.TestDefaultChild} */ (this.get$Value(1));
 };
 
 
@@ -3477,11 +3519,19 @@ proto2.TestDefaultParent.prototype.clearChild = function() {
  * Message TestDefaultChild.
  * @constructor
  * @extends {goog.proto2.Message}
+ * @final
  */
 proto2.TestDefaultChild = function() {
   goog.proto2.Message.call(this);
 };
 goog.inherits(proto2.TestDefaultChild, goog.proto2.Message);
+
+
+/**
+ * Descriptor for this message, deserialized lazily in getDescriptor().
+ * @private {?goog.proto2.Descriptor}
+ */
+proto2.TestDefaultChild.descriptor_ = null;
 
 
 /**
@@ -3545,7 +3595,8 @@ proto2.TestDefaultChild.prototype.clearFoo = function() {
 
 /** @override */
 proto2.TestAllTypes.prototype.getDescriptor = function() {
-  if (!proto2.TestAllTypes.descriptor_) {
+  var descriptor = proto2.TestAllTypes.descriptor_;
+  if (!descriptor) {
     // The descriptor is created lazily when we instantiate a new instance.
     var descriptorObj = {
       0: {
@@ -3871,21 +3922,23 @@ proto2.TestAllTypes.prototype.getDescriptor = function() {
         type: Boolean
       }
     };
-    proto2.TestAllTypes.descriptor_ =
+    proto2.TestAllTypes.descriptor_ = descriptor =
         goog.proto2.Message.createDescriptor(
              proto2.TestAllTypes, descriptorObj);
   }
-  return proto2.TestAllTypes.descriptor_;
+  return descriptor;
 };
 
 
-proto2.TestAllTypes['ctor'] = proto2.TestAllTypes;proto2.TestAllTypes['ctor'].getDescriptor =
+/** @nocollapse */
+proto2.TestAllTypes.getDescriptor =
     proto2.TestAllTypes.prototype.getDescriptor;
 
 
 /** @override */
 proto2.TestAllTypes.NestedMessage.prototype.getDescriptor = function() {
-  if (!proto2.TestAllTypes.NestedMessage.descriptor_) {
+  var descriptor = proto2.TestAllTypes.NestedMessage.descriptor_;
+  if (!descriptor) {
     // The descriptor is created lazily when we instantiate a new instance.
     var descriptorObj = {
       0: {
@@ -3904,21 +3957,23 @@ proto2.TestAllTypes.NestedMessage.prototype.getDescriptor = function() {
         type: Number
       }
     };
-    proto2.TestAllTypes.NestedMessage.descriptor_ =
+    proto2.TestAllTypes.NestedMessage.descriptor_ = descriptor =
         goog.proto2.Message.createDescriptor(
              proto2.TestAllTypes.NestedMessage, descriptorObj);
   }
-  return proto2.TestAllTypes.NestedMessage.descriptor_;
+  return descriptor;
 };
 
 
-proto2.TestAllTypes.NestedMessage['ctor'] = proto2.TestAllTypes.NestedMessage;proto2.TestAllTypes.NestedMessage['ctor'].getDescriptor =
+/** @nocollapse */
+proto2.TestAllTypes.NestedMessage.getDescriptor =
     proto2.TestAllTypes.NestedMessage.prototype.getDescriptor;
 
 
 /** @override */
 proto2.TestAllTypes.OptionalGroup.prototype.getDescriptor = function() {
-  if (!proto2.TestAllTypes.OptionalGroup.descriptor_) {
+  var descriptor = proto2.TestAllTypes.OptionalGroup.descriptor_;
+  if (!descriptor) {
     // The descriptor is created lazily when we instantiate a new instance.
     var descriptorObj = {
       0: {
@@ -3932,21 +3987,23 @@ proto2.TestAllTypes.OptionalGroup.prototype.getDescriptor = function() {
         type: Number
       }
     };
-    proto2.TestAllTypes.OptionalGroup.descriptor_ =
+    proto2.TestAllTypes.OptionalGroup.descriptor_ = descriptor =
         goog.proto2.Message.createDescriptor(
              proto2.TestAllTypes.OptionalGroup, descriptorObj);
   }
-  return proto2.TestAllTypes.OptionalGroup.descriptor_;
+  return descriptor;
 };
 
 
-proto2.TestAllTypes.OptionalGroup['ctor'] = proto2.TestAllTypes.OptionalGroup;proto2.TestAllTypes.OptionalGroup['ctor'].getDescriptor =
+/** @nocollapse */
+proto2.TestAllTypes.OptionalGroup.getDescriptor =
     proto2.TestAllTypes.OptionalGroup.prototype.getDescriptor;
 
 
 /** @override */
 proto2.TestAllTypes.RepeatedGroup.prototype.getDescriptor = function() {
-  if (!proto2.TestAllTypes.RepeatedGroup.descriptor_) {
+  var descriptor = proto2.TestAllTypes.RepeatedGroup.descriptor_;
+  if (!descriptor) {
     // The descriptor is created lazily when we instantiate a new instance.
     var descriptorObj = {
       0: {
@@ -3961,21 +4018,23 @@ proto2.TestAllTypes.RepeatedGroup.prototype.getDescriptor = function() {
         type: Number
       }
     };
-    proto2.TestAllTypes.RepeatedGroup.descriptor_ =
+    proto2.TestAllTypes.RepeatedGroup.descriptor_ = descriptor =
         goog.proto2.Message.createDescriptor(
              proto2.TestAllTypes.RepeatedGroup, descriptorObj);
   }
-  return proto2.TestAllTypes.RepeatedGroup.descriptor_;
+  return descriptor;
 };
 
 
-proto2.TestAllTypes.RepeatedGroup['ctor'] = proto2.TestAllTypes.RepeatedGroup;proto2.TestAllTypes.RepeatedGroup['ctor'].getDescriptor =
+/** @nocollapse */
+proto2.TestAllTypes.RepeatedGroup.getDescriptor =
     proto2.TestAllTypes.RepeatedGroup.prototype.getDescriptor;
 
 
 /** @override */
 proto2.TestDefaultParent.prototype.getDescriptor = function() {
-  if (!proto2.TestDefaultParent.descriptor_) {
+  var descriptor = proto2.TestDefaultParent.descriptor_;
+  if (!descriptor) {
     // The descriptor is created lazily when we instantiate a new instance.
     var descriptorObj = {
       0: {
@@ -3988,21 +4047,23 @@ proto2.TestDefaultParent.prototype.getDescriptor = function() {
         type: proto2.TestDefaultChild
       }
     };
-    proto2.TestDefaultParent.descriptor_ =
+    proto2.TestDefaultParent.descriptor_ = descriptor =
         goog.proto2.Message.createDescriptor(
              proto2.TestDefaultParent, descriptorObj);
   }
-  return proto2.TestDefaultParent.descriptor_;
+  return descriptor;
 };
 
 
-proto2.TestDefaultParent['ctor'] = proto2.TestDefaultParent;proto2.TestDefaultParent['ctor'].getDescriptor =
+/** @nocollapse */
+proto2.TestDefaultParent.getDescriptor =
     proto2.TestDefaultParent.prototype.getDescriptor;
 
 
 /** @override */
 proto2.TestDefaultChild.prototype.getDescriptor = function() {
-  if (!proto2.TestDefaultChild.descriptor_) {
+  var descriptor = proto2.TestDefaultChild.descriptor_;
+  if (!descriptor) {
     // The descriptor is created lazily when we instantiate a new instance.
     var descriptorObj = {
       0: {
@@ -4016,13 +4077,14 @@ proto2.TestDefaultChild.prototype.getDescriptor = function() {
         type: Boolean
       }
     };
-    proto2.TestDefaultChild.descriptor_ =
+    proto2.TestDefaultChild.descriptor_ = descriptor =
         goog.proto2.Message.createDescriptor(
              proto2.TestDefaultChild, descriptorObj);
   }
-  return proto2.TestDefaultChild.descriptor_;
+  return descriptor;
 };
 
 
-proto2.TestDefaultChild['ctor'] = proto2.TestDefaultChild;proto2.TestDefaultChild['ctor'].getDescriptor =
+/** @nocollapse */
+proto2.TestDefaultChild.getDescriptor =
     proto2.TestDefaultChild.prototype.getDescriptor;

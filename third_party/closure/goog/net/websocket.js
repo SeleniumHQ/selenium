@@ -72,8 +72,8 @@ goog.net.WebSocket = function(opt_autoReconnect, opt_getNextReconnect) {
    * @type {boolean}
    * @private
    */
-  this.autoReconnect_ = goog.isDef(opt_autoReconnect) ?
-      opt_autoReconnect : true;
+  this.autoReconnect_ =
+      goog.isDef(opt_autoReconnect) ? opt_autoReconnect : true;
 
   /**
    * A function for obtaining the time until the next reconnect attempt.
@@ -83,8 +83,8 @@ goog.net.WebSocket = function(opt_autoReconnect, opt_getNextReconnect) {
    * @type {function(number):number}
    * @private
    */
-  this.getNextReconnect_ = opt_getNextReconnect ||
-      goog.net.WebSocket.EXPONENTIAL_BACKOFF_;
+  this.getNextReconnect_ =
+      opt_getNextReconnect || goog.net.WebSocket.EXPONENTIAL_BACKOFF_;
 
   /**
    * The time, in milliseconds, that must elapse before the next attempt to
@@ -147,8 +147,7 @@ goog.net.WebSocket.prototype.reconnectTimer_ = null;
  * @type {goog.log.Logger}
  * @private
  */
-goog.net.WebSocket.prototype.logger_ = goog.log.getLogger(
-    'goog.net.WebSocket');
+goog.net.WebSocket.prototype.logger_ = goog.log.getLogger('goog.net.WebSocket');
 
 
 /**
@@ -234,14 +233,14 @@ goog.net.WebSocket.EXPONENTIAL_BACKOFF_ = function(attempt) {
  *     protect the entry points.
  */
 goog.net.WebSocket.protectEntryPoints = function(errorHandler) {
-  goog.net.WebSocket.prototype.onOpen_ = errorHandler.protectEntryPoint(
-      goog.net.WebSocket.prototype.onOpen_);
-  goog.net.WebSocket.prototype.onClose_ = errorHandler.protectEntryPoint(
-      goog.net.WebSocket.prototype.onClose_);
-  goog.net.WebSocket.prototype.onMessage_ = errorHandler.protectEntryPoint(
-      goog.net.WebSocket.prototype.onMessage_);
-  goog.net.WebSocket.prototype.onError_ = errorHandler.protectEntryPoint(
-      goog.net.WebSocket.prototype.onError_);
+  goog.net.WebSocket.prototype.onOpen_ =
+      errorHandler.protectEntryPoint(goog.net.WebSocket.prototype.onOpen_);
+  goog.net.WebSocket.prototype.onClose_ =
+      errorHandler.protectEntryPoint(goog.net.WebSocket.prototype.onClose_);
+  goog.net.WebSocket.prototype.onMessage_ =
+      errorHandler.protectEntryPoint(goog.net.WebSocket.prototype.onMessage_);
+  goog.net.WebSocket.prototype.onError_ =
+      errorHandler.protectEntryPoint(goog.net.WebSocket.prototype.onError_);
 };
 
 
@@ -259,8 +258,8 @@ goog.net.WebSocket.protectEntryPoints = function(errorHandler) {
  */
 goog.net.WebSocket.prototype.open = function(url, opt_protocol) {
   // Sanity check.  This works only in modern browsers.
-  goog.asserts.assert(goog.global['WebSocket'],
-      'This browser does not support WebSocket');
+  goog.asserts.assert(
+      goog.global['WebSocket'], 'This browser does not support WebSocket');
 
   // Don't do anything if the web socket is already open.
   goog.asserts.assert(!this.isOpen(), 'The WebSocket is already open');
@@ -275,8 +274,9 @@ goog.net.WebSocket.prototype.open = function(url, opt_protocol) {
   // This check has to be made otherwise you get protocol mismatch exceptions
   // for passing undefined, null, '', or [].
   if (this.protocol_) {
-    goog.log.info(this.logger_, 'Opening the WebSocket on ' + this.url_ +
-        ' with protocol ' + this.protocol_);
+    goog.log.info(
+        this.logger_, 'Opening the WebSocket on ' + this.url_ +
+            ' with protocol ' + this.protocol_);
     this.webSocket_ = new WebSocket(this.url_, this.protocol_);
   } else {
     goog.log.info(this.logger_, 'Opening the WebSocket on ' + this.url_);
@@ -391,15 +391,15 @@ goog.net.WebSocket.prototype.onClose_ = function(event) {
     this.protocol_ = undefined;
   } else {
     // Unexpected, so try to reconnect.
-    goog.log.error(this.logger_, 'The WebSocket disconnected unexpectedly: ' +
-        event.data);
+    goog.log.error(
+        this.logger_, 'The WebSocket disconnected unexpectedly: ' + event.data);
 
     // Only try to reconnect if it is enabled.
     if (this.autoReconnect_) {
       // Log the reconnect attempt.
       var seconds = Math.floor(this.nextReconnect_ / 1000);
-      goog.log.info(this.logger_,
-          'Seconds until next reconnect attempt: ' + seconds);
+      goog.log.info(
+          this.logger_, 'Seconds until next reconnect attempt: ' + seconds);
 
       // Actually schedule the timer.
       this.reconnectTimer_ = goog.Timer.callOnce(

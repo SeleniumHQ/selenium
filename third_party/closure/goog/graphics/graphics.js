@@ -52,26 +52,26 @@ goog.require('goog.userAgent');
  *     differences before the canvas tag was widely supported.  See
  *     http://en.wikipedia.org/wiki/Canvas_element for details.
  */
-goog.graphics.createGraphics = function(width, height, opt_coordWidth,
-    opt_coordHeight, opt_domHelper) {
+goog.graphics.createGraphics = function(
+    width, height, opt_coordWidth, opt_coordHeight, opt_domHelper) {
   var graphics;
   // On IE9 and above, SVG is available, except in compatibility mode.
   // We check createElementNS on document object that is not exist in
   // compatibility mode.
-  if (goog.userAgent.IE &&
-      (!goog.userAgent.isVersionOrHigher('9') ||
-       !(opt_domHelper || goog.dom.getDomHelper()).
-           getDocument().createElementNS)) {
-    graphics = new goog.graphics.VmlGraphics(width, height,
-        opt_coordWidth, opt_coordHeight, opt_domHelper);
-  } else if (goog.userAgent.WEBKIT &&
-             (!goog.userAgent.isVersionOrHigher('420') ||
-              goog.userAgent.MOBILE)) {
-    graphics = new goog.graphics.CanvasGraphics(width, height,
-        opt_coordWidth, opt_coordHeight, opt_domHelper);
+  if (goog.userAgent.IE && (!goog.userAgent.isVersionOrHigher('9') ||
+                            !(opt_domHelper || goog.dom.getDomHelper())
+                                 .getDocument()
+                                 .createElementNS)) {
+    graphics = new goog.graphics.VmlGraphics(
+        width, height, opt_coordWidth, opt_coordHeight, opt_domHelper);
+  } else if (
+      goog.userAgent.WEBKIT &&
+      (!goog.userAgent.isVersionOrHigher('420') || goog.userAgent.MOBILE)) {
+    graphics = new goog.graphics.CanvasGraphics(
+        width, height, opt_coordWidth, opt_coordHeight, opt_domHelper);
   } else {
-    graphics = new goog.graphics.SvgGraphics(width, height,
-        opt_coordWidth, opt_coordHeight, opt_domHelper);
+    graphics = new goog.graphics.SvgGraphics(
+        width, height, opt_coordWidth, opt_coordHeight, opt_domHelper);
   }
 
   // Create the dom now, because all drawing methods require that the
@@ -100,21 +100,20 @@ goog.graphics.createGraphics = function(width, height, opt_coordWidth,
  *     differences before the canvas tag was widely supported.  See
  *     http://en.wikipedia.org/wiki/Canvas_element for details.
  */
-goog.graphics.createSimpleGraphics = function(width, height,
-    opt_coordWidth, opt_coordHeight, opt_domHelper) {
+goog.graphics.createSimpleGraphics = function(
+    width, height, opt_coordWidth, opt_coordHeight, opt_domHelper) {
   if (goog.userAgent.MAC && goog.userAgent.GECKO &&
       !goog.userAgent.isVersionOrHigher('1.9a')) {
     // Canvas is 6x faster than SVG on Mac FF 2.0
     var graphics = new goog.graphics.CanvasGraphics(
-        width, height, opt_coordWidth, opt_coordHeight,
-        opt_domHelper);
+        width, height, opt_coordWidth, opt_coordHeight, opt_domHelper);
     graphics.createDom();
     return graphics;
   }
 
   // Otherwise, defer to normal graphics object creation.
-  return goog.graphics.createGraphics(width, height, opt_coordWidth,
-      opt_coordHeight, opt_domHelper);
+  return goog.graphics.createGraphics(
+      width, height, opt_coordWidth, opt_coordHeight, opt_domHelper);
 };
 
 

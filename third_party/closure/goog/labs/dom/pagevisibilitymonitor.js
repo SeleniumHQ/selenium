@@ -72,8 +72,9 @@ dom.PageVisibilityMonitor = function(opt_domHelper) {
     /**
      * @private {goog.events.Key}
      */
-    this.eventKey_ = goog.events.listen(this.domHelper_.getDocument(),
-        this.eventType_, goog.bind(this.handleChange_, this));
+    this.eventKey_ = goog.events.listen(
+        this.domHelper_.getDocument(), this.eventType_,
+        goog.bind(this.handleChange_, this));
   }
 };
 goog.inherits(dom.PageVisibilityMonitor, goog.events.EventTarget);
@@ -86,17 +87,18 @@ goog.inherits(dom.PageVisibilityMonitor, goog.events.EventTarget);
  */
 dom.PageVisibilityMonitor.prototype.getBrowserEventType_ =
     goog.memoize(function() {
-  var isSupported = this.isSupported();
-  var isPrefixed = this.isPrefixed_();
+      var isSupported = this.isSupported();
+      var isPrefixed = this.isPrefixed_();
 
-  if (isSupported) {
-    return isPrefixed ? goog.dom.vendor.getPrefixedEventType(
-        goog.events.EventType.VISIBILITYCHANGE) :
-        goog.events.EventType.VISIBILITYCHANGE;
-  } else {
-    return null;
-  }
-});
+      if (isSupported) {
+        return isPrefixed ?
+            goog.dom.vendor.getPrefixedEventType(
+                goog.events.EventType.VISIBILITYCHANGE) :
+            goog.events.EventType.VISIBILITYCHANGE;
+      } else {
+        return null;
+      }
+    });
 
 
 /**
@@ -104,8 +106,8 @@ dom.PageVisibilityMonitor.prototype.getBrowserEventType_ =
  *     for performance.
  * @private
  */
-dom.PageVisibilityMonitor.prototype.getHiddenPropertyName_ = goog.memoize(
-    function() {
+dom.PageVisibilityMonitor.prototype.getHiddenPropertyName_ =
+    goog.memoize(function() {
       return goog.dom.vendor.getPrefixedPropertyName(
           'hidden', this.domHelper_.getDocument());
     });
@@ -127,9 +129,9 @@ dom.PageVisibilityMonitor.prototype.isPrefixed_ = function() {
  */
 dom.PageVisibilityMonitor.prototype.getVisibilityStatePropertyName_ =
     goog.memoize(function() {
-  return goog.dom.vendor.getPrefixedPropertyName(
-      'visibilityState', this.domHelper_.getDocument());
-});
+      return goog.dom.vendor.getPrefixedPropertyName(
+          'visibilityState', this.domHelper_.getDocument());
+    });
 
 
 /**

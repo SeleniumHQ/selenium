@@ -135,8 +135,8 @@ goog.testing.async.MockControl.prototype.asyncAssertEquals = function(
  */
 goog.testing.async.MockControl.prototype.assertDeferredError = function(
     deferred, fn) {
-  deferred.addErrback(this.createCallbackMock(
-      'assertDeferredError', function() {}));
+  deferred.addErrback(
+      this.createCallbackMock('assertDeferredError', function() {}));
   goog.testing.asserts.callWithoutLogging(fn);
 };
 
@@ -156,15 +156,15 @@ goog.testing.async.MockControl.prototype.assertDeferredEquals = function(
   if (expected instanceof goog.async.Deferred &&
       actual instanceof goog.async.Deferred) {
     // Assert that the first deferred is resolved.
-    expected.addCallback(this.createCallbackMock(
-        'assertDeferredEquals', function(exp) {
+    expected.addCallback(
+        this.createCallbackMock('assertDeferredEquals', function(exp) {
           // Assert that the second deferred is resolved, and that the value is
           // as expected.
           actual.addCallback(this.asyncAssertEquals(message, exp));
         }, this));
   } else if (expected instanceof goog.async.Deferred) {
-    expected.addCallback(this.createCallbackMock(
-        'assertDeferredEquals', function(exp) {
+    expected.addCallback(
+        this.createCallbackMock('assertDeferredEquals', function(exp) {
           assertObjectEquals(message, exp, actual);
         }));
   } else if (actual instanceof goog.async.Deferred) {

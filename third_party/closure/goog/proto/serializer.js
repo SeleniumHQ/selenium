@@ -54,7 +54,7 @@ goog.proto.Serializer.prototype.serializeArray = function(arr, sb) {
   var emptySlots = 0;
   var sep = '';
   for (var i = 0; i < l; i++) {
-    if (arr[i] == null) { // catches undefined as well
+    if (arr[i] == null) {  // catches undefined as well
       emptySlots++;
     } else {
       if (emptySlots > 0) {

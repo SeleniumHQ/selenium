@@ -54,8 +54,8 @@ goog.require('goog.style');
  * @see ../demos/tabpane.html
  * @deprecated Use goog.ui.TabBar instead.
  */
-goog.ui.TabPane = function(el, opt_tabLocation, opt_domHelper,
-                           opt_useMouseDown) {
+goog.ui.TabPane = function(
+    el, opt_tabLocation, opt_domHelper, opt_useMouseDown) {
   goog.events.EventTarget.call(this);
 
   /**
@@ -162,12 +162,13 @@ goog.ui.TabPane.prototype.create_ = function() {
   var nodes = this.getChildNodes_();
 
   // Create tab strip
-  this.elButtonBar_ = this.dom_.createDom(goog.dom.TagName.UL,
+  this.elButtonBar_ = this.dom_.createDom(
+      goog.dom.TagName.UL,
       {'className': goog.getCssName('goog-tabpane-tabs'), 'tabIndex': '0'});
 
   // Create content area
-  this.elContent_ = this.dom_.createDom(goog.dom.TagName.DIV,
-                                        goog.getCssName('goog-tabpane-cont'));
+  this.elContent_ = this.dom_.createDom(
+      goog.dom.TagName.DIV, goog.getCssName('goog-tabpane-cont'));
   this.el_.appendChild(this.elContent_);
 
   var element = goog.asserts.assertElement(this.el_);
@@ -197,13 +198,13 @@ goog.ui.TabPane.prototype.create_ = function() {
 
   // Listen for click and keydown events on header
   this.elButtonBar_.tabIndex = 0;
-  goog.events.listen(this.elButtonBar_,
-      this.useMouseDown_ ?
-      goog.events.EventType.MOUSEDOWN :
-      goog.events.EventType.CLICK,
+  goog.events.listen(
+      this.elButtonBar_, this.useMouseDown_ ? goog.events.EventType.MOUSEDOWN :
+                                              goog.events.EventType.CLICK,
       this.onHeaderClick_, false, this);
-  goog.events.listen(this.elButtonBar_, goog.events.EventType.KEYDOWN,
-      this.onHeaderKeyDown_, false, this);
+  goog.events.listen(
+      this.elButtonBar_, goog.events.EventType.KEYDOWN, this.onHeaderKeyDown_,
+      false, this);
 
   this.createPages_(nodes);
 };
@@ -220,21 +221,21 @@ goog.ui.TabPane.prototype.createClear_ = function() {
   var clearFloatStyle = '.' + goog.getCssName('goog-tabpane-clear') +
       ' { clear: both; height: 0px; overflow: hidden }';
   goog.style.installStyles(clearFloatStyle);
-  return this.dom_.createDom(goog.dom.TagName.DIV,
-                             goog.getCssName('goog-tabpane-clear'));
+  return this.dom_.createDom(
+      goog.dom.TagName.DIV, goog.getCssName('goog-tabpane-clear'));
 };
 
 
 /** @override */
 goog.ui.TabPane.prototype.disposeInternal = function() {
   goog.ui.TabPane.superClass_.disposeInternal.call(this);
-  goog.events.unlisten(this.elButtonBar_,
-      this.useMouseDown_ ?
-      goog.events.EventType.MOUSEDOWN :
-      goog.events.EventType.CLICK,
+  goog.events.unlisten(
+      this.elButtonBar_, this.useMouseDown_ ? goog.events.EventType.MOUSEDOWN :
+                                              goog.events.EventType.CLICK,
       this.onHeaderClick_, false, this);
-  goog.events.unlisten(this.elButtonBar_, goog.events.EventType.KEYDOWN,
-      this.onHeaderKeyDown_, false, this);
+  goog.events.unlisten(
+      this.elButtonBar_, goog.events.EventType.KEYDOWN, this.onHeaderKeyDown_,
+      false, this);
   delete this.el_;
   this.elButtonBar_ = null;
   this.elContent_ = null;
@@ -291,8 +292,8 @@ goog.ui.TabPane.prototype.addPage = function(page, opt_index) {
   if (goog.isDef(opt_index) && opt_index != index) {
     index = opt_index;
     this.pages_.splice(index, 0, page);
-    this.elButtonBar_.insertBefore(page.elTitle_,
-                                   this.elButtonBar_.childNodes[index]);
+    this.elButtonBar_.insertBefore(
+        page.elTitle_, this.elButtonBar_.childNodes[index]);
   }
 
   // Append page to end
@@ -306,8 +307,9 @@ goog.ui.TabPane.prototype.addPage = function(page, opt_index) {
   // Select first page and fire change event
   if (!this.selected_) {
     this.selected_ = page;
-    this.dispatchEvent(new goog.ui.TabPaneEvent(goog.ui.TabPane.Events.CHANGE,
-                                                this, this.selected_));
+    this.dispatchEvent(
+        new goog.ui.TabPaneEvent(
+            goog.ui.TabPane.Events.CHANGE, this, this.selected_));
   }
 
   // Move page content to the tab pane and update visibility.
@@ -360,15 +362,15 @@ goog.ui.TabPane.prototype.getPage = function(index) {
  * @param {goog.ui.TabPane.TabPage} page Tab page to select.
  */
 goog.ui.TabPane.prototype.setSelectedPage = function(page) {
-  if (page.isEnabled() &&
-      (!this.selected_ || page != this.selected_)) {
+  if (page.isEnabled() && (!this.selected_ || page != this.selected_)) {
     this.selected_.setVisible_(false);
     page.setVisible_(true);
     this.selected_ = page;
 
     // Fire changed event
-    this.dispatchEvent(new goog.ui.TabPaneEvent(goog.ui.TabPane.Events.CHANGE,
-                                                this, this.selected_));
+    this.dispatchEvent(
+        new goog.ui.TabPaneEvent(
+            goog.ui.TabPane.Events.CHANGE, this, this.selected_));
   }
 };
 
@@ -432,7 +434,8 @@ goog.ui.TabPane.prototype.onHeaderClick_ = function(event) {
     if (el.tagName == goog.dom.TagName.LI) {
       var i;
       // {} prevents compiler warning
-      for (i = 0; el = el.previousSibling; i++) {}
+      for (i = 0; el = el.previousSibling; i++) {
+      }
       this.setSelectedIndex(i);
       break;
     }

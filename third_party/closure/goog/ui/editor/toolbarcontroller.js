@@ -91,11 +91,12 @@ goog.ui.editor.ToolbarController = function(field, toolbar) {
 
   // Hook up handlers that update the toolbar in response to field events,
   // and to execute editor commands in response to toolbar events.
-  this.handler_.
-      listen(this.field_, goog.editor.Field.EventType.COMMAND_VALUE_CHANGE,
-          this.updateToolbar).
-      listen(this.toolbar_, goog.ui.Component.EventType.ACTION,
-          this.handleAction);
+  this.handler_
+      .listen(
+          this.field_, goog.editor.Field.EventType.COMMAND_VALUE_CHANGE,
+          this.updateToolbar)
+      .listen(
+          this.toolbar_, goog.ui.Component.EventType.ACTION, this.handleAction);
 };
 goog.inherits(goog.ui.editor.ToolbarController, goog.events.EventTarget);
 
@@ -248,7 +249,7 @@ goog.ui.editor.ToolbarController.prototype.updateToolbar = function(e) {
   /** @preserveTry */
   try {
     /** @type {Array<string>} */
-    e.commands; // Added by dispatchEvent.
+    e.commands;  // Added by dispatchEvent.
 
     // If the COMMAND_VALUE_CHANGE event specifies which commands changed
     // state, then we only need to update those ones, otherwise update all
@@ -268,8 +269,8 @@ goog.ui.editor.ToolbarController.prototype.updateToolbar = function(e) {
  * Updates the toolbar to reflect a given state.
  * @param {Object} state Object mapping editor commands to values.
  */
-goog.ui.editor.ToolbarController.prototype.updateToolbarFromState =
-    function(state) {
+goog.ui.editor.ToolbarController.prototype.updateToolbarFromState = function(
+    state) {
   for (var command in state) {
     var button = this.toolbar_.getChild(this.getComponentId(command));
     if (button) {

@@ -157,19 +157,19 @@ goog.storage.EncryptedStorage.prototype.set = function(
     salt[i] = Math.floor(Math.random() * 0x100);
   }
   var wrapper = new goog.storage.RichStorage.Wrapper(
-      this.encryptValue_(salt, key,
-                         this.cleartextSerializer_.serialize(value)));
+      this.encryptValue_(
+          salt, key, this.cleartextSerializer_.serialize(value)));
   wrapper[goog.storage.EncryptedStorage.SALT_KEY] = salt;
-  goog.storage.EncryptedStorage.base(this, 'set',
-      this.hashKeyWithSecret_(key), wrapper, opt_expiration);
+  goog.storage.EncryptedStorage.base(
+      this, 'set', this.hashKeyWithSecret_(key), wrapper, opt_expiration);
 };
 
 
 /** @override */
 goog.storage.EncryptedStorage.prototype.getWrapper = function(
     key, opt_expired) {
-  var wrapper = goog.storage.EncryptedStorage.base(this, 'getWrapper',
-      this.hashKeyWithSecret_(key), opt_expired);
+  var wrapper = goog.storage.EncryptedStorage.base(
+      this, 'getWrapper', this.hashKeyWithSecret_(key), opt_expired);
   if (!wrapper) {
     return undefined;
   }

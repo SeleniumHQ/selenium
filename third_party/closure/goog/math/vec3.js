@@ -288,9 +288,8 @@ goog.math.Vec3.dot = function(a, b) {
  * @return {!goog.math.Vec3} The cross-product of the two vectors.
  */
 goog.math.Vec3.cross = function(a, b) {
-  return new goog.math.Vec3(a.y * b.z - a.z * b.y,
-                            a.z * b.x - a.x * b.z,
-                            a.x * b.y - a.y * b.x);
+  return new goog.math.Vec3(
+      a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
 };
 
 
@@ -304,7 +303,7 @@ goog.math.Vec3.cross = function(a, b) {
  * @return {!goog.math.Vec3} The interpolated vector.
  */
 goog.math.Vec3.lerp = function(a, b, x) {
-  return new goog.math.Vec3(goog.math.lerp(a.x, b.x, x),
-                            goog.math.lerp(a.y, b.y, x),
-                            goog.math.lerp(a.z, b.z, x));
+  return new goog.math.Vec3(
+      goog.math.lerp(a.x, b.x, x), goog.math.lerp(a.y, b.y, x),
+      goog.math.lerp(a.z, b.z, x));
 };

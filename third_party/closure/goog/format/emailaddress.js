@@ -162,9 +162,9 @@ goog.format.EmailAddress.DOMAIN_PART_ =
  * A RegExp to match an email address.
  * @private {!RegExp}
  */
-goog.format.EmailAddress.EMAIL_ADDRESS_ =
-    new RegExp('^' + goog.format.EmailAddress.LOCAL_PART_REGEXP_STR_ + '@' +
-        goog.format.EmailAddress.DOMAIN_PART_REGEXP_STR_ + '$');
+goog.format.EmailAddress.EMAIL_ADDRESS_ = new RegExp(
+    '^' + goog.format.EmailAddress.LOCAL_PART_REGEXP_STR_ + '@' +
+    goog.format.EmailAddress.DOMAIN_PART_REGEXP_STR_ + '$');
 
 
 /**
@@ -215,8 +215,7 @@ goog.format.EmailAddress.prototype.setAddress = function(address) {
  * @override
  */
 goog.format.EmailAddress.prototype.toString = function() {
-  return this.toStringInternal(
-      goog.format.EmailAddress.CHARS_REQUIRE_QUOTES_);
+  return this.toStringInternal(goog.format.EmailAddress.CHARS_REQUIRE_QUOTES_);
 };
 
 
@@ -375,8 +374,7 @@ goog.format.EmailAddress.parseInternal = function(addr, ctor) {
  * @return {!goog.format.EmailAddress} The parsed address.
  */
 goog.format.EmailAddress.parse = function(addr) {
-  return goog.format.EmailAddress.parseInternal(
-      addr, goog.format.EmailAddress);
+  return goog.format.EmailAddress.parseInternal(addr, goog.format.EmailAddress);
 };
 
 
@@ -401,10 +399,9 @@ goog.format.EmailAddress.parseListInternal = function(
   // reason.
   str = goog.string.collapseWhitespace(str);
 
-  for (var i = 0; i < str.length; ) {
+  for (var i = 0; i < str.length;) {
     token = goog.format.EmailAddress.getToken_(str, i);
-    if (separatorChecker(token) ||
-        (token == ' ' && parser(email).isValid())) {
+    if (separatorChecker(token) || (token == ' ' && parser(email).isValid())) {
       if (!goog.string.isEmptyOrWhitespace(email)) {
         result.push(parser(email));
       }
@@ -451,7 +448,6 @@ goog.format.EmailAddress.getToken_ = function(str, pos) {
     return ch;
   }
   if (goog.format.EmailAddress.isEscapedDlQuote_(str, pos)) {
-
     // If an opener is an escaped quote we do not treat it as a real opener
     // and keep accumulating the token.
     return ch;

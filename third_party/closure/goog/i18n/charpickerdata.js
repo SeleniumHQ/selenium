@@ -18,6 +18,7 @@
  * https://sites/cibu/character-picker.
  */
 
+// clang-format off
 goog.provide('goog.i18n.CharPickerData');
 
 
@@ -2081,7 +2082,7 @@ goog.i18n.CharPickerData.CHARLIST_OF_SYMBOL = [
   '2>807AnTMm6e6HDk%`O728F1f4V1PNF2WF1G}58?]514M]Ol1%2l2^3X1U:1Un2Mb>$0MD-(068k11I3706:%MwiZ06',
   ';oA0FN',
   '(j90d3',
-  'H3XBMQQ10HB(2106uPM]N:qol202S20t2^.Z0^xM0:91E]J6O6',
+  'H3XBMQQ10HB(2106uPM]N:qol202S20#2;.Z0^xM0:91E]J6O6',
   ';(i1-5W?',
   'Q6A06f5#1H2,]4MeEY[W1@3W}891N1GF1GN18N1P%k',
   '2JA0sOc',
@@ -2232,7 +2233,7 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_FORMAT_WHITESPACE = [
  * @type {!Array<string>}
  */
 goog.i18n.CharPickerData.CHARLIST_OF_FORMAT_WHITESPACE = [
-  'vF;Z10c12fHf4gh40;920UX2Uf4U8M2n#0Iej0MQi50sbwt0vME',
+  'vF;Z10c12fHf4gh40;920UX2Uf4U8M2n#0Iej0MQi50sY)W9l8bk0AvME',
   ']=oY506%7E^$zA#LDF1AV1',
   'fEIH602920,H3P4wB40;#s0',
   'w-10f4^#206IV10(970ols0',
@@ -2681,7 +2682,7 @@ goog.i18n.CharPickerData.CHARLIST_OF_SOUTHEAST_ASIAN_SCRIPTS = [
   ';I6073GE8?]2E8UO,m,Hi-2Srl286O',
   'g:3068G68GmM8k8E88G68M86.GU11,GMC4Gc86.8c',
   'QK40-3:1}1WMOO6uEW71918,W6Iwe0V18,D-e0#192MWE8EGkOMH1|8[M;xe0[',
-  'Y%60@3]1k$?O6K4d1u6',
+  'Y%60@3WN2m?O6',
   '2z60t2GU',
   '^@60#4]3,m,mk8c`7,8l2Gn3',
   '^7j0N48O6GUG8H2686K48EG6e68f2',

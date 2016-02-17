@@ -42,9 +42,8 @@ goog.require('goog.positioning.AbstractPosition');
  * @constructor
  * @extends {goog.positioning.AbstractPosition}
  */
-goog.positioning.AnchoredPosition = function(anchorElement,
-                                             corner,
-                                             opt_overflow) {
+goog.positioning.AnchoredPosition = function(
+    anchorElement, corner, opt_overflow) {
   /**
    * Element the movable element should be anchored against.
    * @type {Element}
@@ -65,8 +64,8 @@ goog.positioning.AnchoredPosition = function(anchorElement,
    */
   this.overflow_ = opt_overflow;
 };
-goog.inherits(goog.positioning.AnchoredPosition,
-              goog.positioning.AbstractPosition);
+goog.inherits(
+    goog.positioning.AnchoredPosition, goog.positioning.AbstractPosition);
 
 
 /**
@@ -82,11 +81,7 @@ goog.inherits(goog.positioning.AnchoredPosition,
  */
 goog.positioning.AnchoredPosition.prototype.reposition = function(
     movableElement, movableCorner, opt_margin, opt_preferredSize) {
-  goog.positioning.positionAtAnchor(this.element,
-                                    this.corner,
-                                    movableElement,
-                                    movableCorner,
-                                    undefined,
-                                    opt_margin,
-                                    this.overflow_);
+  goog.positioning.positionAtAnchor(
+      this.element, this.corner, movableElement, movableCorner, undefined,
+      opt_margin, this.overflow_);
 };

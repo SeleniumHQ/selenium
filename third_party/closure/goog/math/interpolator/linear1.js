@@ -51,7 +51,8 @@ goog.math.interpolator.Linear1 = function() {
 
 /** @override */
 goog.math.interpolator.Linear1.prototype.setData = function(x, y) {
-  goog.asserts.assert(x.length == y.length,
+  goog.asserts.assert(
+      x.length == y.length,
       'input arrays to setData should have the same length');
   if (x.length == 1) {
     this.x_ = [x[0], x[0] + 1];

@@ -79,9 +79,9 @@ goog.proto2.ObjectSerializer.prototype.serialize = function(message) {
   for (var i = 0; i < fields.length; i++) {
     var field = fields[i];
 
-    var key =
-        this.keyOption_ == goog.proto2.ObjectSerializer.KeyOption.NAME ?
-        field.getName() : field.getTag();
+    var key = this.keyOption_ == goog.proto2.ObjectSerializer.KeyOption.NAME ?
+        field.getName() :
+        field.getTag();
 
 
     if (message.has(field)) {
@@ -100,17 +100,15 @@ goog.proto2.ObjectSerializer.prototype.serialize = function(message) {
   }
 
   // Add the unknown fields, if any.
-  message.forEachUnknown(function(tag, value) {
-    objectValue[tag] = value;
-  });
+  message.forEachUnknown(function(tag, value) { objectValue[tag] = value; });
 
   return objectValue;
 };
 
 
 /** @override */
-goog.proto2.ObjectSerializer.prototype.getDeserializedValue =
-    function(field, value) {
+goog.proto2.ObjectSerializer.prototype.getDeserializedValue = function(
+    field, value) {
 
   // Gracefully handle the case where a boolean is represented by 0/1.
   // Some serialization libraries, such as GWT, can use this notation.

@@ -34,9 +34,7 @@ goog.require('goog.ui.ac.RemoteArrayMatcher');
  * rich rows.
  *
  * This class makes use of goog.html.legacyconversions and provides no
- * HTML-type-safe alternative. As such, it is not compatible with
- * code that sets goog.html.legacyconversions.ALLOW_LEGACY_CONVERSIONS to
- * false.
+ * HTML-type-safe alternative.
  *
  * @param {string} url The Uri which generates the auto complete matches.  The
  *     search term is passed to the server as the 'token' query param.
@@ -56,7 +54,6 @@ goog.ui.ac.RichRemoteArrayMatcher = function(url, opt_noSimilar) {
   // respective check rule fire from all such places which polymorphically
   // call requestMatchingRows(); such calls are safe as long as they're not to
   // RichRemoteArrayMatcher.
-  goog.html.legacyconversions.throwIfConversionsDisallowed();
   goog.ui.ac.RemoteArrayMatcher.call(this, url, opt_noSimilar);
 
   /**
@@ -94,8 +91,8 @@ goog.ui.ac.RichRemoteArrayMatcher.prototype.setRowFilter = function(rowFilter) {
  *     matching.
  * @override
  */
-goog.ui.ac.RichRemoteArrayMatcher.prototype.requestMatchingRows =
-    function(token, maxMatches, matchHandler) {
+goog.ui.ac.RichRemoteArrayMatcher.prototype.requestMatchingRows = function(
+    token, maxMatches, matchHandler) {
   // The RichRemoteArrayMatcher must map over the results and filter them
   // before calling the request matchHandler.  This is done by passing
   // myMatchHandler to RemoteArrayMatcher.requestMatchingRows which maps,
@@ -105,7 +102,7 @@ goog.ui.ac.RichRemoteArrayMatcher.prototype.requestMatchingRows =
     try {
       var rows = [];
       for (var i = 0; i < matches.length; i++) {
-        var func =  /** @type {!Function} */
+        var func = /** @type {!Function} */
             (goog.json.unsafeParse(matches[i][0]));
         for (var j = 1; j < matches[i].length; j++) {
           var richRow = func(matches[i][j]);
@@ -114,9 +111,9 @@ goog.ui.ac.RichRemoteArrayMatcher.prototype.requestMatchingRows =
           // If no render function was provided, set the node's innerHTML.
           if (typeof richRow.render == 'undefined') {
             richRow.render = function(node, token) {
-              goog.dom.safe.setInnerHtml(node,
-                  goog.html.legacyconversions.safeHtmlFromString(
-                      richRow.toString()));
+              goog.dom.safe.setInnerHtml(
+                  node, goog.html.legacyconversions.safeHtmlFromString(
+                            richRow.toString()));
             };
           }
 
@@ -139,6 +136,6 @@ goog.ui.ac.RichRemoteArrayMatcher.prototype.requestMatchingRows =
   }, this);
 
   // Call the super's requestMatchingRows with myMatchHandler
-  goog.ui.ac.RichRemoteArrayMatcher.superClass_
-      .requestMatchingRows.call(this, token, maxMatches, myMatchHandler);
+  goog.ui.ac.RichRemoteArrayMatcher.superClass_.requestMatchingRows.call(
+      this, token, maxMatches, myMatchHandler);
 };

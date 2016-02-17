@@ -40,8 +40,10 @@ goog.storage.mechanism.HTML5SessionStorage = function() {
     // visible but access to it is disabled. For example, accessing the file
     // in local mode in Firefox throws 'Operation is not supported' exception.
     storage = window.sessionStorage || null;
-  } catch (e) {}
+  } catch (e) {
+  }
   goog.storage.mechanism.HTML5SessionStorage.base(this, 'constructor', storage);
 };
-goog.inherits(goog.storage.mechanism.HTML5SessionStorage,
-              goog.storage.mechanism.HTML5WebStorage);
+goog.inherits(
+    goog.storage.mechanism.HTML5SessionStorage,
+    goog.storage.mechanism.HTML5WebStorage);

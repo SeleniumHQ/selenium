@@ -58,6 +58,8 @@ goog.debug.DevCss = function(opt_userAgent, opt_userAgentVersion) {
       opt_userAgent = goog.debug.DevCss.UserAgent.MOBILE;
     } else if (goog.userAgent.OPERA) {
       opt_userAgent = goog.debug.DevCss.UserAgent.OPERA;
+    } else if (goog.userAgent.EDGE) {
+      opt_userAgent = goog.debug.DevCss.UserAgent.EDGE;
     }
   }
   switch (opt_userAgent) {
@@ -68,6 +70,7 @@ goog.debug.DevCss = function(opt_userAgent, opt_userAgentVersion) {
     case goog.debug.DevCss.UserAgent.WEBKIT:
     case goog.debug.DevCss.UserAgent.SAFARI:
     case goog.debug.DevCss.UserAgent.MOBILE:
+    case goog.debug.DevCss.UserAgent.EDGE:
       break;
     default:
       throw Error('Could not determine the user agent from known UserAgents');
@@ -118,8 +121,8 @@ goog.debug.DevCss = function(opt_userAgent, opt_userAgentVersion) {
  */
 goog.debug.DevCss.prototype.activateBrowserSpecificCssRules = function(
     opt_enableIe6ReadyHandler) {
-  var enableIe6EventHandler = goog.isDef(opt_enableIe6ReadyHandler) ?
-      opt_enableIe6ReadyHandler : true;
+  var enableIe6EventHandler =
+      goog.isDef(opt_enableIe6ReadyHandler) ? opt_enableIe6ReadyHandler : true;
   var cssRules = goog.cssom.getAllCssStyleRules();
 
   for (var i = 0, cssRule; cssRule = cssRules[i]; i++) {
@@ -139,8 +142,9 @@ goog.debug.DevCss.prototype.activateBrowserSpecificCssRules = function(
   // Add an event listener for document ready to rewrite any necessary
   // combined classnames in IE6.
   if (this.isIe6OrLess_ && enableIe6EventHandler) {
-    goog.events.listen(document, goog.events.EventType.LOAD, goog.bind(
-        this.addIe6CombinedClassNames_, this));
+    goog.events.listen(
+        document, goog.events.EventType.LOAD,
+        goog.bind(this.addIe6CombinedClassNames_, this));
   }
 };
 
@@ -156,7 +160,8 @@ goog.debug.DevCss.UserAgent = {
   FIREFOX: 'GECKO',
   WEBKIT: 'WEBKIT',
   SAFARI: 'WEBKIT',
-  MOBILE: 'MOBILE'
+  MOBILE: 'MOBILE',
+  EDGE: 'EDGE'
 };
 
 
@@ -187,8 +192,8 @@ goog.debug.DevCss.CssToken_ = {
 goog.debug.DevCss.prototype.generateUserAgentTokens_ = function() {
   this.userAgentTokens_.ANY = goog.debug.DevCss.CssToken_.USERAGENT +
       goog.debug.DevCss.CssToken_.SEPARATOR + this.userAgent_;
-  this.userAgentTokens_.EQUALS = this.userAgentTokens_.ANY +
-      goog.debug.DevCss.CssToken_.SEPARATOR;
+  this.userAgentTokens_.EQUALS =
+      this.userAgentTokens_.ANY + goog.debug.DevCss.CssToken_.SEPARATOR;
   this.userAgentTokens_.LESS_THAN = this.userAgentTokens_.ANY +
       goog.debug.DevCss.CssToken_.SEPARATOR +
       goog.debug.DevCss.CssToken_.LESS_THAN;
@@ -231,19 +236,19 @@ goog.debug.DevCss.prototype.getVersionNumberFromSelectorText_ = function(
  *     call and the matched ruleVersion.
  * @private
  */
-goog.debug.DevCss.prototype.getRuleVersionAndCompare_ = function(cssRule,
-    token) {
+goog.debug.DevCss.prototype.getRuleVersionAndCompare_ = function(
+    cssRule, token) {
   if (!cssRule.selectorText.match(token)) {
     return;
   }
-  var ruleVersion = this.getVersionNumberFromSelectorText_(
-      cssRule.selectorText, token);
+  var ruleVersion =
+      this.getVersionNumberFromSelectorText_(cssRule.selectorText, token);
   if (!ruleVersion) {
     return;
   }
 
-  var comparison = goog.string.compareVersions(this.userAgentVersion_,
-      ruleVersion);
+  var comparison =
+      goog.string.compareVersions(this.userAgentVersion_, ruleVersion);
   return [comparison, ruleVersion];
 };
 
@@ -268,19 +273,19 @@ goog.debug.DevCss.prototype.replaceBrowserSpecificClassNames_ = function(
   var additionalRegexString;
 
   // Tests "Less than or equals".
-  var compared = this.getRuleVersionAndCompare_(cssRule,
-      this.userAgentTokens_.LESS_THAN_OR_EQUAL);
+  var compared = this.getRuleVersionAndCompare_(
+      cssRule, this.userAgentTokens_.LESS_THAN_OR_EQUAL);
   if (compared && compared.length) {
     if (compared[0] > 0) {
       return;
     }
-    additionalRegexString = this.userAgentTokens_.LESS_THAN_OR_EQUAL +
-        compared[1];
+    additionalRegexString =
+        this.userAgentTokens_.LESS_THAN_OR_EQUAL + compared[1];
   }
 
   // Tests "Less than".
-  compared = this.getRuleVersionAndCompare_(cssRule,
-      this.userAgentTokens_.LESS_THAN);
+  compared =
+      this.getRuleVersionAndCompare_(cssRule, this.userAgentTokens_.LESS_THAN);
   if (compared && compared.length) {
     if (compared[0] > -1) {
       return;
@@ -289,19 +294,19 @@ goog.debug.DevCss.prototype.replaceBrowserSpecificClassNames_ = function(
   }
 
   // Tests "Greater than or equals".
-  compared = this.getRuleVersionAndCompare_(cssRule,
-      this.userAgentTokens_.GREATER_THAN_OR_EQUAL);
+  compared = this.getRuleVersionAndCompare_(
+      cssRule, this.userAgentTokens_.GREATER_THAN_OR_EQUAL);
   if (compared && compared.length) {
     if (compared[0] < 0) {
       return;
     }
-    additionalRegexString = this.userAgentTokens_.GREATER_THAN_OR_EQUAL +
-        compared[1];
+    additionalRegexString =
+        this.userAgentTokens_.GREATER_THAN_OR_EQUAL + compared[1];
   }
 
   // Tests "Greater than".
-  compared = this.getRuleVersionAndCompare_(cssRule,
-      this.userAgentTokens_.GREATER_THAN);
+  compared = this.getRuleVersionAndCompare_(
+      cssRule, this.userAgentTokens_.GREATER_THAN);
   if (compared && compared.length) {
     if (compared[0] < 1) {
       return;
@@ -310,8 +315,8 @@ goog.debug.DevCss.prototype.replaceBrowserSpecificClassNames_ = function(
   }
 
   // Tests "Equals".
-  compared = this.getRuleVersionAndCompare_(cssRule,
-      this.userAgentTokens_.EQUALS);
+  compared =
+      this.getRuleVersionAndCompare_(cssRule, this.userAgentTokens_.EQUALS);
   if (compared && compared.length) {
     if (compared[0] != 0) {
       return;
@@ -380,8 +385,10 @@ goog.debug.DevCss.prototype.replaceIe6CombinedSelectors_ = function(cssRule) {
  * @private
  */
 goog.debug.DevCss.prototype.getIe6CombinedSelectorText_ = function(cssText) {
-  var regex = new RegExp(goog.debug.DevCss.CssToken_.IE6_SELECTOR_TEXT +
-      '\\s*:\\s*\\"([^\\"]+)\\"', 'gi');
+  var regex = new RegExp(
+      goog.debug.DevCss.CssToken_.IE6_SELECTOR_TEXT +
+          '\\s*:\\s*\\"([^\\"]+)\\"',
+      'gi');
   var matches = regex.exec(cssText);
   if (matches) {
     var combinedSelectorText = matches[1];
@@ -417,13 +424,13 @@ goog.debug.DevCss.prototype.addIe6CombinedClassNames_ = function() {
   }
   var allEls = document.getElementsByTagName('*');
   // Match nodes for all classNames.
-  for (var i = 0, classNameEntry; classNameEntry =
-      this.ie6CombinedMatches_[i]; i++) {
+  for (var i = 0, classNameEntry; classNameEntry = this.ie6CombinedMatches_[i];
+       i++) {
     for (var j = 0, el; el = allEls[j]; j++) {
       var classNamesLength = classNameEntry.classNames.length;
       for (var k = 0, className; className = classNameEntry.classNames[k];
-          k++) {
-        if (!goog.dom.classlist.contains(goog.asserts.assert(el), className)) {
+           k++) {
+        if (!goog.dom.classlist.contains(el, className)) {
           break;
         }
         if (k == classNamesLength - 1) {
@@ -435,8 +442,8 @@ goog.debug.DevCss.prototype.addIe6CombinedClassNames_ = function() {
     if (classNameEntry.els.length) {
       for (var j = 0, el; el = classNameEntry.els[j]; j++) {
         goog.asserts.assert(el);
-        if (!goog.dom.classlist.contains(el,
-            classNameEntry.combinedClassName)) {
+        if (!goog.dom.classlist.contains(
+                el, classNameEntry.combinedClassName)) {
           goog.dom.classlist.add(el, classNameEntry.combinedClassName);
         }
       }

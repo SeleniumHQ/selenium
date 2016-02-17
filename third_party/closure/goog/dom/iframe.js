@@ -39,9 +39,8 @@ goog.require('goog.userAgent');
  *
  * @type {string}
  */
-goog.dom.iframe.BLANK_SOURCE = goog.userAgent.IE ?
-    'javascript:""' :
-    'about:blank';
+goog.dom.iframe.BLANK_SOURCE =
+    goog.userAgent.IE ? 'javascript:""' : 'about:blank';
 
 
 /**
@@ -72,9 +71,8 @@ goog.dom.iframe.BLANK_SOURCE = goog.userAgent.IE ?
  *
  * @type {string}
  */
-goog.dom.iframe.BLANK_SOURCE_NEW_FRAME = goog.userAgent.IE ?
-    'javascript:""' :
-    'javascript:undefined';
+goog.dom.iframe.BLANK_SOURCE_NEW_FRAME =
+    goog.userAgent.IE ? 'javascript:""' : 'javascript:undefined';
 
 
 /**
@@ -106,7 +104,7 @@ goog.dom.iframe.createBlank = function(domHelper, opt_styles) {
   var styles;
   if (goog.isString(opt_styles)) {
     styles = goog.html.legacyconversions.safeStyleFromString(opt_styles)
-        .getTypedStringValue();
+                 .getTypedStringValue();
   } else if (opt_styles instanceof goog.html.SafeStyle) {
     // SafeStyle has to be converted back to a string for now, since there's
     // no safe alternative to createDom().
@@ -198,13 +196,13 @@ goog.dom.iframe.createWithContent = function(
         goog.html.legacyconversions.safeHtmlFromString(opt_bodyContents);
   }
   if (goog.isString(opt_styles)) {
-    opt_styles =
-        goog.html.legacyconversions.safeStyleFromString(opt_styles);
+    opt_styles = goog.html.legacyconversions.safeStyleFromString(opt_styles);
   }
 
-  var content = goog.html.SafeHtml.create('html', {}, goog.html.SafeHtml.concat(
-      goog.html.SafeHtml.create('head', {}, opt_headContents),
-      goog.html.SafeHtml.create('body', {}, opt_bodyContents)));
+  var content = goog.html.SafeHtml.create(
+      'html', {}, goog.html.SafeHtml.concat(
+                      goog.html.SafeHtml.create('head', {}, opt_headContents),
+                      goog.html.SafeHtml.create('body', {}, opt_bodyContents)));
   if (!opt_quirks) {
     content =
         goog.html.SafeHtml.concat(goog.html.SafeHtml.DOCTYPE_HTML, content);

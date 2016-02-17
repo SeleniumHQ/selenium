@@ -50,8 +50,8 @@ goog.ui.AnimatedZippy = function(header, content, opt_expanded, opt_domHelper) {
   var domHelper = opt_domHelper || goog.dom.getDomHelper();
 
   // Create wrapper element and move content into it.
-  var elWrapper = domHelper.createDom(goog.dom.TagName.DIV,
-                                      {'style': 'overflow:hidden'});
+  var elWrapper =
+      domHelper.createDom(goog.dom.TagName.DIV, {'style': 'overflow:hidden'});
   var elContent = domHelper.getElement(content);
   elContent.parentNode.replaceChild(elWrapper, elContent);
   elWrapper.appendChild(elContent);
@@ -71,8 +71,8 @@ goog.ui.AnimatedZippy = function(header, content, opt_expanded, opt_domHelper) {
   this.anim_ = null;
 
   // Call constructor of super class.
-  goog.ui.Zippy.call(this, header, elContent, opt_expanded,
-      undefined, domHelper);
+  goog.ui.Zippy.call(
+      this, header, elContent, opt_expanded, undefined, domHelper);
 
   // Set initial state.
   // NOTE: Set the class names as well otherwise animated zippys
@@ -145,18 +145,18 @@ goog.ui.AnimatedZippy.prototype.setExpanded = function(expanded) {
   this.updateHeaderClassName(expanded);
 
   // Set up expand/collapse animation.
-  this.anim_ = new goog.fx.Animation([0, startH],
-                                     [0, expanded ? h : 0],
-                                     this.animationDuration,
-                                     this.animationAcceleration);
+  this.anim_ = new goog.fx.Animation(
+      [0, startH], [0, expanded ? h : 0], this.animationDuration,
+      this.animationAcceleration);
 
-  var events = [goog.fx.Transition.EventType.BEGIN,
-                goog.fx.Animation.EventType.ANIMATE,
-                goog.fx.Transition.EventType.END];
+  var events = [
+    goog.fx.Transition.EventType.BEGIN, goog.fx.Animation.EventType.ANIMATE,
+    goog.fx.Transition.EventType.END
+  ];
   goog.events.listen(this.anim_, events, this.onAnimate_, false, this);
-  goog.events.listen(this.anim_,
-                     goog.fx.Transition.EventType.END,
-                     goog.bind(this.onAnimationCompleted_, this, expanded));
+  goog.events.listen(
+      this.anim_, goog.fx.Transition.EventType.END,
+      goog.bind(this.onAnimationCompleted_, this, expanded));
 
   // Start animation.
   this.anim_.play(false);
@@ -197,6 +197,6 @@ goog.ui.AnimatedZippy.prototype.onAnimationCompleted_ = function(expanded) {
   }
 
   // Fire toggle event.
-  this.dispatchEvent(new goog.ui.ZippyEvent(goog.ui.Zippy.Events.TOGGLE,
-                                            this, expanded));
+  this.dispatchEvent(
+      new goog.ui.ZippyEvent(goog.ui.Zippy.Events.TOGGLE, this, expanded));
 };

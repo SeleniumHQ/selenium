@@ -101,8 +101,8 @@ goog.ds.XmlDataSource.prototype.createChildNodes_ = function() {
     for (var i = 0, childNode; childNode = childNodes[i]; i++) {
       if (childNode.nodeType != goog.dom.NodeType.TEXT ||
           !goog.ds.XmlDataSource.isEmptyTextNodeValue_(childNode.nodeValue)) {
-        var newNode = new goog.ds.XmlDataSource(childNode,
-            this, childNode.nodeName);
+        var newNode =
+            new goog.ds.XmlDataSource(childNode, this, childNode.nodeName);
         childNodeList.add(newNode);
       }
     }
@@ -156,11 +156,12 @@ goog.ds.XmlDataSource.prototype.set = function(value) {
 
 /** @override */
 goog.ds.XmlDataSource.prototype.getChildNodes = function(opt_selector) {
-  if (opt_selector && opt_selector ==
-      goog.ds.XmlDataSource.ATTRIBUTE_SELECTOR_) {
+  if (opt_selector &&
+      opt_selector == goog.ds.XmlDataSource.ATTRIBUTE_SELECTOR_) {
     this.createAttributes_();
     return this.attributes_;
-  } else if (opt_selector == null ||
+  } else if (
+      opt_selector == null ||
       opt_selector == goog.ds.STR_ALL_CHILDREN_SELECTOR) {
     this.createChildNodes_();
     return this.childNodeList_;
@@ -235,8 +236,9 @@ goog.ds.XmlDataSource.prototype.getDataPath = function() {
   var parentPath = '';
   if (this.parent_) {
     parentPath = this.parent_.getDataPath() +
-        (this.dataName_.indexOf(goog.ds.STR_ARRAY_START) != -1 ? '' :
-        goog.ds.STR_PATH_SEPARATOR);
+        (this.dataName_.indexOf(goog.ds.STR_ARRAY_START) != -1 ?
+             '' :
+             goog.ds.STR_PATH_SEPARATOR);
   }
 
   return parentPath + this.dataName_;
@@ -328,8 +330,9 @@ goog.ds.XmlHttpDataSource.prototype.loadState_ = goog.ds.LoadState.NOT_LOADED;
  */
 goog.ds.XmlHttpDataSource.prototype.load = function() {
   if (this.uri_) {
-    goog.log.info(goog.ds.logger, 'Sending XML request for DataSource ' +
-        this.getDataName() + ' to ' + this.uri_);
+    goog.log.info(
+        goog.ds.logger, 'Sending XML request for DataSource ' +
+            this.getDataName() + ' to ' + this.uri_);
     this.loadState_ = goog.ds.LoadState.LOADING;
 
     goog.net.XhrIo.send(this.uri_, goog.bind(this.complete_, this));
@@ -374,14 +377,13 @@ goog.ds.XmlHttpDataSource.prototype.complete_ = function(e) {
  * @private
  */
 goog.ds.XmlHttpDataSource.prototype.success_ = function(xhr) {
-  goog.log.info(goog.ds.logger,
-      'Got data for DataSource ' + this.getDataName());
+  goog.log.info(
+      goog.ds.logger, 'Got data for DataSource ' + this.getDataName());
   var xml = xhr.getResponseXml();
 
   // Fix for case where IE returns valid XML as text but
   // doesn't parse by default
-  if (xml && !xml.hasChildNodes() &&
-      goog.isObject(xhr.getResponseText())) {
+  if (xml && !xml.hasChildNodes() && goog.isObject(xhr.getResponseText())) {
     xml = goog.dom.xml.loadXml(xhr.getResponseText());
   }
   // Failure result
@@ -405,8 +407,9 @@ goog.ds.XmlHttpDataSource.prototype.success_ = function(xhr) {
  * @private
  */
 goog.ds.XmlHttpDataSource.prototype.failure_ = function() {
-  goog.log.info(goog.ds.logger, 'Data retrieve failed for DataSource ' +
-      this.getDataName());
+  goog.log.info(
+      goog.ds.logger,
+      'Data retrieve failed for DataSource ' + this.getDataName());
 
   this.loadState_ = goog.ds.LoadState.FAILED;
   this.node_ = goog.ds.XmlDataSource.createChildlessDocument_();

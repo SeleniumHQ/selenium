@@ -50,7 +50,8 @@ goog.memoize = function(f, opt_serializer) {
       var cache = thisOrGlobal[goog.memoize.CACHE_PROPERTY_] ||
           (thisOrGlobal[goog.memoize.CACHE_PROPERTY_] = {});
       var key = serializer(goog.getUid(f), arguments);
-      return cache.hasOwnProperty(key) ? cache[key] :
+      return cache.hasOwnProperty(key) ?
+          cache[key] :
           (cache[key] = f.apply(this, arguments));
     } else {
       return f.apply(this, arguments);
@@ -89,9 +90,9 @@ goog.memoize.CACHE_PROPERTY_ = 'closure_memoize_cache_';
  * support \x0B characters in the strings.
  * @param {number} functionUid Unique identifier of the function whose result
  *     is cached.
- * @param {Object} args The arguments that the function to memoize is called
- *     with. Note: it is an array-like object, because supports indexing and
- *     has the length property.
+ * @param {?{length:number}} args The arguments that the function to memoize is
+ *     called with. Note: it is an array-like object, because supports indexing
+ *     and has the length property.
  * @return {string} The list of arguments with type information concatenated
  *     with the functionUid argument, serialized as \x0B-separated string.
  */

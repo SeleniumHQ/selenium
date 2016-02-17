@@ -55,10 +55,13 @@ goog.require('goog.ui.SelectionModel');
  * @extends {goog.ui.Control}
  */
 goog.ui.Palette = function(items, opt_renderer, opt_domHelper) {
-  goog.ui.Palette.base(this, 'constructor', items,
+  goog.ui.Palette.base(
+      this, 'constructor', items,
       opt_renderer || goog.ui.PaletteRenderer.getInstance(), opt_domHelper);
-  this.setAutoStates(goog.ui.Component.State.CHECKED |
-      goog.ui.Component.State.SELECTED | goog.ui.Component.State.OPENED, false);
+  this.setAutoStates(
+      goog.ui.Component.State.CHECKED | goog.ui.Component.State.SELECTED |
+          goog.ui.Component.State.OPENED,
+      false);
 
   /**
    * A fake component for dispatching events on palette cell changes.
@@ -152,10 +155,10 @@ goog.ui.Palette.prototype.setContentInternal = function(content) {
   } else {
     // Create a selection model, initialize the items, and hook up handlers.
     this.selectionModel_ = new goog.ui.SelectionModel(items);
-    this.selectionModel_.setSelectionHandler(goog.bind(this.selectItem_,
-        this));
-    this.getHandler().listen(this.selectionModel_,
-        goog.events.EventType.SELECT, this.handleSelectionChange);
+    this.selectionModel_.setSelectionHandler(goog.bind(this.selectItem_, this));
+    this.getHandler().listen(
+        this.selectionModel_, goog.events.EventType.SELECT,
+        this.handleSelectionChange);
   }
 
   // In all cases, clear the highlight.
@@ -288,14 +291,13 @@ goog.ui.Palette.prototype.handleKeyEvent = function(e) {
   // If nothing is highlighted, start from the selected index.  If nothing is
   // selected either, highlightedIndex is -1.
   var highlightedIndex = this.highlightedIndex_ < 0 ? this.getSelectedIndex() :
-      this.highlightedIndex_;
+                                                      this.highlightedIndex_;
 
   switch (e.keyCode) {
     case goog.events.KeyCodes.LEFT:
       // If the highlighted index is uninitialized, or is at the beginning, move
       // it to the end.
-      if (highlightedIndex == -1 ||
-          highlightedIndex == 0) {
+      if (highlightedIndex == -1 || highlightedIndex == 0) {
         highlightedIndex = numItems;
       }
       this.setHighlightedIndex(highlightedIndex - 1);
@@ -378,7 +380,8 @@ goog.ui.Palette.prototype.setSize = function(size, opt_rows) {
   }
 
   this.size_ = goog.isNumber(size) ?
-      new goog.math.Size(size, /** @type {number} */ (opt_rows)) : size;
+      new goog.math.Size(size, /** @type {number} */ (opt_rows)) :
+      size;
 
   // Adjust size, if needed.
   this.adjustSize_();
@@ -439,7 +442,8 @@ goog.ui.Palette.prototype.setHighlightedIndex = function(index) {
  */
 goog.ui.Palette.prototype.setHighlightedItem = function(item) {
   var items = /** @type {Array<Node>} */ (this.getContent());
-  this.setHighlightedIndex(items ? goog.array.indexOf(items, item) : -1);
+  this.setHighlightedIndex(
+      (items && item) ? goog.array.indexOf(items, item) : -1);
 };
 
 
@@ -459,7 +463,8 @@ goog.ui.Palette.prototype.getSelectedIndex = function() {
  */
 goog.ui.Palette.prototype.getSelectedItem = function() {
   return this.selectionModel_ ?
-      /** @type {Node} */ (this.selectionModel_.getSelectedItem()) : null;
+      /** @type {Node} */ (this.selectionModel_.getSelectedItem()) :
+                          null;
 };
 
 
@@ -520,9 +525,7 @@ goog.ui.Palette.prototype.setHighlighted = function(highlight) {
     // If there was a last highlighted index, use that. Otherwise, highlight the
     // first cell.
     this.setHighlightedIndex(
-        this.lastHighlightedIndex_ > -1 ?
-        this.lastHighlightedIndex_ :
-        0);
+        this.lastHighlightedIndex_ > -1 ? this.lastHighlightedIndex_ : 0);
   } else if (!highlight) {
     this.setHighlightedIndex(-1);
   }

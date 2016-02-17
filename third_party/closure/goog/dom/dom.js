@@ -81,7 +81,7 @@ goog.dom.getDomHelper = function(opt_element) {
   return opt_element ?
       new goog.dom.DomHelper(goog.dom.getOwnerDocument(opt_element)) :
       (goog.dom.defaultDomHelper_ ||
-          (goog.dom.defaultDomHelper_ = new goog.dom.DomHelper()));
+       (goog.dom.defaultDomHelper_ = new goog.dom.DomHelper()));
 };
 
 
@@ -124,9 +124,7 @@ goog.dom.getElement = function(element) {
  * @private
  */
 goog.dom.getElementHelper_ = function(doc, element) {
-  return goog.isString(element) ?
-      doc.getElementById(element) :
-      element;
+  return goog.isString(element) ? doc.getElementById(element) : element;
 };
 
 
@@ -156,8 +154,8 @@ goog.dom.getRequiredElementHelper_ = function(doc, id) {
   // To prevent users passing in Elements as is permitted in getElement().
   goog.asserts.assertString(id);
   var element = goog.dom.getElementHelper_(doc, id);
-  element = goog.asserts.assertElement(element,
-      'No element found with id: ' + id);
+  element =
+      goog.asserts.assertElement(element, 'No element found with id: ' + id);
   return element;
 };
 
@@ -197,8 +195,8 @@ goog.dom.$ = goog.dom.getElement;
  *     property and numerical indices are guaranteed to exist).
  */
 goog.dom.getElementsByTagNameAndClass = function(opt_tag, opt_class, opt_el) {
-  return goog.dom.getElementsByTagNameAndClass_(document, opt_tag, opt_class,
-                                                opt_el);
+  return goog.dom.getElementsByTagNameAndClass_(
+      document, opt_tag, opt_class, opt_el);
 };
 
 
@@ -254,8 +252,8 @@ goog.dom.getElementByClass = function(className, opt_el) {
  */
 goog.dom.getRequiredElementByClass = function(className, opt_root) {
   var retValue = goog.dom.getElementByClass(className, opt_root);
-  return goog.asserts.assert(retValue,
-      'No element found with className: ' + className);
+  return goog.asserts.assert(
+      retValue, 'No element found with className: ' + className);
 };
 
 
@@ -281,13 +279,12 @@ goog.dom.canUseQuerySelector_ = function(parent) {
  *     property and numerical indices are guaranteed to exist).
  * @private
  */
-goog.dom.getElementsByTagNameAndClass_ = function(doc, opt_tag, opt_class,
-                                                  opt_el) {
+goog.dom.getElementsByTagNameAndClass_ = function(
+    doc, opt_tag, opt_class, opt_el) {
   var parent = opt_el || doc;
   var tagName = (opt_tag && opt_tag != '*') ? opt_tag.toUpperCase() : '';
 
-  if (goog.dom.canUseQuerySelector_(parent) &&
-      (tagName || opt_class)) {
+  if (goog.dom.canUseQuerySelector_(parent) && (tagName || opt_class)) {
     var query = tagName + (opt_class ? '.' + opt_class : '');
     return parent.querySelectorAll(query);
   }
@@ -364,7 +361,8 @@ goog.dom.setProperties = function(element, properties) {
       element.htmlFor = val;
     } else if (goog.dom.DIRECT_ATTRIBUTE_MAP_.hasOwnProperty(key)) {
       element.setAttribute(goog.dom.DIRECT_ATTRIBUTE_MAP_[key], val);
-    } else if (goog.string.startsWith(key, 'aria-') ||
+    } else if (
+        goog.string.startsWith(key, 'aria-') ||
         goog.string.startsWith(key, 'data-')) {
       element.setAttribute(key, val);
     } else {
@@ -491,6 +489,15 @@ goog.dom.getDocumentHeight = function() {
   return goog.dom.getDocumentHeight_(window);
 };
 
+/**
+ * Calculates the height of the document of the given window.
+ *
+ * @param {!Window} win The window whose document height to retrieve.
+ * @return {number} The height of the document of the given window.
+ */
+goog.dom.getDocumentHeightForWindow = function(win) {
+  return goog.dom.getDocumentHeight_(win);
+};
 
 /**
  * Calculates the height of the document of the given window.
@@ -534,8 +541,8 @@ goog.dom.getDocumentHeight_ = function(win) {
       //    document.documentElement.offsetHeight
       // Based on studying the values output by different browsers,
       // use the value that's NOT equal to the viewport height found above.
-      height = docEl.scrollHeight != vh ?
-          docEl.scrollHeight : docEl.offsetHeight;
+      height =
+          docEl.scrollHeight != vh ? docEl.scrollHeight : docEl.offsetHeight;
     } else {
       // In Quirks mode:
       // documentElement.clientHeight is equal to documentElement.offsetHeight
@@ -609,8 +616,8 @@ goog.dom.getDocumentScroll_ = function(doc) {
     // offsets.
     return new goog.math.Coordinate(el.scrollLeft, el.scrollTop);
   }
-  return new goog.math.Coordinate(win.pageXOffset || el.scrollLeft,
-      win.pageYOffset || el.scrollTop);
+  return new goog.math.Coordinate(
+      win.pageXOffset || el.scrollLeft, win.pageYOffset || el.scrollTop);
 };
 
 
@@ -765,8 +772,8 @@ goog.dom.append_ = function(doc, parent, args, startIndex) {
   function childHandler(child) {
     // TODO(user): More coercion, ala MochiKit?
     if (child) {
-      parent.appendChild(goog.isString(child) ?
-          doc.createTextNode(child) : child);
+      parent.appendChild(
+          goog.isString(child) ? doc.createTextNode(child) : child);
     }
   }
 
@@ -776,8 +783,8 @@ goog.dom.append_ = function(doc, parent, args, startIndex) {
     if (goog.isArrayLike(arg) && !goog.dom.isNodeLike(arg)) {
       // If the argument is a node list, not a real array, use a clone,
       // because forEach can't be used to mutate a NodeList.
-      goog.array.forEach(goog.dom.isNodeList(arg) ?
-          goog.array.toArray(arg) : arg,
+      goog.array.forEach(
+          goog.dom.isNodeList(arg) ? goog.array.toArray(arg) : arg,
           childHandler);
     } else {
       childHandler(arg);
@@ -888,8 +895,8 @@ goog.dom.safeHtmlToNode = function(html) {
 goog.dom.safeHtmlToNode_ = function(doc, html) {
   var tempDiv = doc.createElement(goog.dom.TagName.DIV);
   if (goog.dom.BrowserFeature.INNER_HTML_NEEDS_SCOPED_ELEMENT) {
-    goog.dom.safe.setInnerHtml(tempDiv,
-        goog.html.SafeHtml.concat(goog.html.SafeHtml.create('br'), html));
+    goog.dom.safe.setInnerHtml(
+        tempDiv, goog.html.SafeHtml.concat(goog.html.SafeHtml.BR, html));
     tempDiv.removeChild(tempDiv.firstChild);
   } else {
     goog.dom.safe.setInnerHtml(tempDiv, html);
@@ -1204,7 +1211,7 @@ goog.dom.getChildren = function(element) {
  */
 goog.dom.getFirstElementChild = function(node) {
   if (goog.isDef(node.firstElementChild)) {
-    return /** @type {!Element} */(node).firstElementChild;
+    return /** @type {!Element} */ (node).firstElementChild;
   }
   return goog.dom.getNextElementNode_(node.firstChild, true);
 };
@@ -1217,7 +1224,7 @@ goog.dom.getFirstElementChild = function(node) {
  */
 goog.dom.getLastElementChild = function(node) {
   if (goog.isDef(node.lastElementChild)) {
-    return /** @type {!Element} */(node).lastElementChild;
+    return /** @type {!Element} */ (node).lastElementChild;
   }
   return goog.dom.getNextElementNode_(node.lastChild, false);
 };
@@ -1230,7 +1237,7 @@ goog.dom.getLastElementChild = function(node) {
  */
 goog.dom.getNextElementSibling = function(node) {
   if (goog.isDef(node.nextElementSibling)) {
-    return /** @type {!Element} */(node).nextElementSibling;
+    return /** @type {!Element} */ (node).nextElementSibling;
   }
   return goog.dom.getNextElementNode_(node.nextSibling, true);
 };
@@ -1244,7 +1251,7 @@ goog.dom.getNextElementSibling = function(node) {
  */
 goog.dom.getPreviousElementSibling = function(node) {
   if (goog.isDef(node.previousElementSibling)) {
-    return /** @type {!Element} */(node).previousElementSibling;
+    return /** @type {!Element} */ (node).previousElementSibling;
   }
   return goog.dom.getNextElementNode_(node.previousSibling, false);
 };
@@ -1353,13 +1360,12 @@ goog.dom.isWindow = function(obj) {
 goog.dom.getParentElement = function(element) {
   var parent;
   if (goog.dom.BrowserFeature.CAN_USE_PARENT_ELEMENT_PROPERTY) {
-    var isIe9 = goog.userAgent.IE &&
-        goog.userAgent.isVersionOrHigher('9') &&
+    var isIe9 = goog.userAgent.IE && goog.userAgent.isVersionOrHigher('9') &&
         !goog.userAgent.isVersionOrHigher('10');
     // SVG elements in IE9 can't use the parentElement property.
     // goog.global['SVGElement'] is not defined in IE9 quirks mode.
     if (!(isIe9 && goog.global['SVGElement'] &&
-        element instanceof goog.global['SVGElement'])) {
+          element instanceof goog.global['SVGElement'])) {
       parent = element.parentElement;
       if (parent) {
         return parent;
@@ -1373,11 +1379,14 @@ goog.dom.getParentElement = function(element) {
 
 /**
  * Whether a node contains another node.
- * @param {Node} parent The node that should contain the other node.
- * @param {Node} descendant The node to test presence of.
+ * @param {?Node} parent The node that should contain the other node.
+ * @param {?Node} descendant The node to test presence of.
  * @return {boolean} Whether the parent node contains the descendent node.
  */
 goog.dom.contains = function(parent, descendant) {
+  if (!parent || !descendant) {
+    return false;
+  }
   // We use browser specific methods for this if available since it is faster
   // that way.
 
@@ -1461,7 +1470,7 @@ goog.dom.compareNodeOrder = function(node1, node2) {
       }
 
       return (isElement1 ? node1.sourceIndex : parent1.sourceIndex) -
-             (isElement2 ? node2.sourceIndex : parent2.sourceIndex);
+          (isElement2 ? node2.sourceIndex : parent2.sourceIndex);
     }
   }
 
@@ -1477,8 +1486,8 @@ goog.dom.compareNodeOrder = function(node1, node2) {
   range2.selectNode(node2);
   range2.collapse(true);
 
-  return range1.compareBoundaryPoints(goog.global['Range'].START_TO_END,
-      range2);
+  return range1.compareBoundaryPoints(
+      goog.global['Range'].START_TO_END, range2);
 };
 
 
@@ -1580,8 +1589,8 @@ goog.dom.getOwnerDocument = function(node) {
   // TODO(nnaze): Update param signature to be non-nullable.
   goog.asserts.assert(node, 'Node cannot be null or undefined.');
   return /** @type {!Document} */ (
-      node.nodeType == goog.dom.NodeType.DOCUMENT ? node :
-      node.ownerDocument || node.document);
+      node.nodeType == goog.dom.NodeType.DOCUMENT ? node : node.ownerDocument ||
+              node.document);
 };
 
 
@@ -1591,19 +1600,29 @@ goog.dom.getOwnerDocument = function(node) {
  * @return {!Document} The frame content document.
  */
 goog.dom.getFrameContentDocument = function(frame) {
-  var doc = frame.contentDocument || frame.contentWindow.document;
-  return doc;
+  return frame.contentDocument ||
+      /** @type {!HTMLFrameElement} */ (frame).contentWindow.document;
 };
 
 
 /**
  * Cross-browser function for getting the window of a frame or iframe.
  * @param {Element} frame Frame element.
- * @return {Window} The window associated with the given frame.
+ * @return {Window} The window associated with the given frame, or null if none
+ *     exists.
  */
 goog.dom.getFrameContentWindow = function(frame) {
-  return frame.contentWindow ||
-      goog.dom.getWindow(goog.dom.getFrameContentDocument(frame));
+  try {
+    return frame.contentWindow ||
+        (frame.contentDocument ? goog.dom.getWindow(frame.contentDocument) :
+                                 null);
+  } catch (e) {
+    // NOTE(user): In IE8, checking the contentWindow or contentDocument
+    // properties will throw a "Unspecified Error" exception if the iframe is
+    // not inserted in the DOM. If we get this we can be sure that no window
+    // exists, so return null.
+  }
+  return null;
 };
 
 
@@ -1613,15 +1632,16 @@ goog.dom.getFrameContentWindow = function(frame) {
  * @param {string|number} text The value that should replace the node's content.
  */
 goog.dom.setTextContent = function(node, text) {
-  goog.asserts.assert(node != null,
+  goog.asserts.assert(
+      node != null,
       'goog.dom.setTextContent expects a non-null value for node');
 
   if ('textContent' in node) {
     node.textContent = text;
   } else if (node.nodeType == goog.dom.NodeType.TEXT) {
     node.data = text;
-  } else if (node.firstChild &&
-             node.firstChild.nodeType == goog.dom.NodeType.TEXT) {
+  } else if (
+      node.firstChild && node.firstChild.nodeType == goog.dom.NodeType.TEXT) {
     // If the first child is a text node we just change its data and remove the
     // rest of the children.
     while (node.lastChild != node.firstChild) {
@@ -1643,6 +1663,9 @@ goog.dom.setTextContent = function(node, text) {
  * @return {string} The outerHTML of the given element.
  */
 goog.dom.getOuterHtml = function(element) {
+  goog.asserts.assert(
+      element !== null,
+      'goog.dom.getOuterHtml expects a non-null value for element');
   // IE, Opera and WebKit all have outerHTML.
   if ('outerHTML' in element) {
     return element.outerHTML;
@@ -1744,7 +1767,10 @@ goog.dom.TAGS_TO_IGNORE_ = {
  * @private {!Object<string, string>}
  * @const
  */
-goog.dom.PREDEFINED_TAG_VALUES_ = {'IMG': ' ', 'BR': '\n'};
+goog.dom.PREDEFINED_TAG_VALUES_ = {
+  'IMG': ' ',
+  'BR': '\n'
+};
 
 
 /**
@@ -1754,11 +1780,10 @@ goog.dom.PREDEFINED_TAG_VALUES_ = {'IMG': ' ', 'BR': '\n'};
  * @param {!Element} element Element to check.
  * @return {boolean} Whether the element has a tab index that allows keyboard
  *     focus.
- * @see http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
  */
 goog.dom.isFocusableTabIndex = function(element) {
   return goog.dom.hasSpecifiedTabIndex_(element) &&
-         goog.dom.isTabIndexFocusable_(element);
+      goog.dom.isTabIndexFocusable_(element);
 };
 
 
@@ -1780,7 +1805,7 @@ goog.dom.setFocusableTabIndex = function(element, enable) {
     // without setting it to -1 first, the element remains keyboard focusable
     // despite not having a tabIndex attribute anymore.
     element.tabIndex = -1;
-    element.removeAttribute('tabIndex'); // Must be camelCase!
+    element.removeAttribute('tabIndex');  // Must be camelCase!
   }
 };
 
@@ -1807,7 +1832,8 @@ goog.dom.isFocusable = function(element) {
 
   // IE requires elements to be visible in order to focus them.
   return focusable && goog.userAgent.IE ?
-             goog.dom.hasNonZeroBoundingRect_(element) : focusable;
+      goog.dom.hasNonZeroBoundingRect_(/** @type {!HTMLElement} */ (element)) :
+      focusable;
 };
 
 
@@ -1821,7 +1847,7 @@ goog.dom.hasSpecifiedTabIndex_ = function(element) {
   // IE returns 0 for an unset tabIndex, so we must use getAttributeNode(),
   // which returns an object with a 'specified' property if tabIndex is
   // specified.  This works on other browsers, too.
-  var attrNode = element.getAttributeNode('tabindex'); // Must be lowercase!
+  var attrNode = element.getAttributeNode('tabindex');  // Must be lowercase!
   return goog.isDefAndNotNull(attrNode) && attrNode.specified;
 };
 
@@ -1833,7 +1859,7 @@ goog.dom.hasSpecifiedTabIndex_ = function(element) {
  * @private
  */
 goog.dom.isTabIndexFocusable_ = function(element) {
-  var index = element.tabIndex;
+  var index = /** @type {!HTMLElement} */ (element).tabIndex;
   // NOTE: IE9 puts tabIndex in 16-bit int, e.g. -2 is 65534.
   return goog.isNumber(index) && index >= 0 && index < 32768;
 };
@@ -1847,24 +1873,29 @@ goog.dom.isTabIndexFocusable_ = function(element) {
  */
 goog.dom.nativelySupportsFocus_ = function(element) {
   return element.tagName == goog.dom.TagName.A ||
-         element.tagName == goog.dom.TagName.INPUT ||
-         element.tagName == goog.dom.TagName.TEXTAREA ||
-         element.tagName == goog.dom.TagName.SELECT ||
-         element.tagName == goog.dom.TagName.BUTTON;
+      element.tagName == goog.dom.TagName.INPUT ||
+      element.tagName == goog.dom.TagName.TEXTAREA ||
+      element.tagName == goog.dom.TagName.SELECT ||
+      element.tagName == goog.dom.TagName.BUTTON;
 };
 
 
 /**
  * Returns true if the element has a bounding rectangle that would be visible
  * (i.e. its width and height are greater than zero).
- * @param {!Element} element Element to check.
+ * @param {!HTMLElement} element Element to check.
  * @return {boolean} Whether the element has a non-zero bounding rectangle.
  * @private
  */
 goog.dom.hasNonZeroBoundingRect_ = function(element) {
-  var rect = goog.isFunction(element['getBoundingClientRect']) ?
-      element.getBoundingClientRect() :
-      {'height': element.offsetHeight, 'width': element.offsetWidth};
+  var rect;
+  if (!goog.isFunction(element['getBoundingClientRect']) ||
+      // In IE, getBoundingClientRect throws on detached nodes.
+      (goog.userAgent.IE && element.parentElement == null)) {
+    rect = {'height': element.offsetHeight, 'width': element.offsetWidth};
+  } else {
+    rect = element.getBoundingClientRect();
+  }
   return goog.isDefAndNotNull(rect) && rect.height > 0 && rect.width > 0;
 };
 
@@ -1884,7 +1915,8 @@ goog.dom.getTextContent = function(node) {
   var textContent;
   // Note(arv): IE9, Opera, and Safari 3 support innerText but they include
   // text nodes in script tags. So we revert to use a user agent test here.
-  if (goog.dom.BrowserFeature.CAN_USE_INNER_TEXT && ('innerText' in node)) {
+  if (goog.dom.BrowserFeature.CAN_USE_INNER_TEXT && node !== null &&
+      ('innerText' in node)) {
     textContent = goog.string.canonicalizeNewlines(node.innerText);
     // Unfortunately .innerText() returns text with &shy; symbols
     // We need to filter it out and then remove duplicate whitespaces
@@ -2078,18 +2110,18 @@ goog.dom.isNodeList = function(val) {
  * @return {Element} The first ancestor that matches the passed criteria, or
  *     null if no match is found.
  */
-goog.dom.getAncestorByTagNameAndClass = function(element, opt_tag, opt_class,
-    opt_maxSearchSteps) {
+goog.dom.getAncestorByTagNameAndClass = function(
+    element, opt_tag, opt_class, opt_maxSearchSteps) {
   if (!opt_tag && !opt_class) {
     return null;
   }
   var tagName = opt_tag ? opt_tag.toUpperCase() : null;
-  return /** @type {Element} */ (goog.dom.getAncestor(element,
-      function(node) {
-        return (!tagName || node.nodeName == tagName) &&
-               (!opt_class || goog.isString(node.className) &&
-                   goog.array.contains(node.className.split(/\s+/), opt_class));
-      }, true, opt_maxSearchSteps));
+  return /** @type {Element} */ (goog.dom.getAncestor(element, function(node) {
+    return (!tagName || node.nodeName == tagName) &&
+        (!opt_class ||
+         goog.isString(node.className) &&
+             goog.array.contains(node.className.split(/\s+/), opt_class));
+  }, true, opt_maxSearchSteps));
 };
 
 
@@ -2105,8 +2137,8 @@ goog.dom.getAncestorByTagNameAndClass = function(element, opt_tag, opt_class,
  *     null if none match.
  */
 goog.dom.getAncestorByClass = function(element, className, opt_maxSearchSteps) {
-  return goog.dom.getAncestorByTagNameAndClass(element, null, className,
-      opt_maxSearchSteps);
+  return goog.dom.getAncestorByTagNameAndClass(
+      element, null, className, opt_maxSearchSteps);
 };
 
 
@@ -2129,9 +2161,9 @@ goog.dom.getAncestor = function(
   if (!opt_includeNode) {
     element = element.parentNode;
   }
-  var ignoreSearchSteps = opt_maxSearchSteps == null;
   var steps = 0;
-  while (element && (ignoreSearchSteps || steps <= opt_maxSearchSteps)) {
+  while (element &&
+         (opt_maxSearchSteps == null || steps <= opt_maxSearchSteps)) {
     goog.asserts.assert(element.name != 'parentNode');
     if (matcher(element)) {
       return element;
@@ -2186,9 +2218,8 @@ goog.dom.getPixelRatio = function() {
     return win.devicePixelRatio;
   } else if (win.matchMedia) {
     return goog.dom.matchesPixelRatio_(.75) ||
-           goog.dom.matchesPixelRatio_(1.5) ||
-           goog.dom.matchesPixelRatio_(2) ||
-           goog.dom.matchesPixelRatio_(3) || 1;
+        goog.dom.matchesPixelRatio_(1.5) || goog.dom.matchesPixelRatio_(2) ||
+        goog.dom.matchesPixelRatio_(3) || 1;
   }
   return 1;
 };
@@ -2203,9 +2234,10 @@ goog.dom.getPixelRatio = function() {
  */
 goog.dom.matchesPixelRatio_ = function(pixelRatio) {
   var win = goog.dom.getWindow();
-  var query = ('(-webkit-min-device-pixel-ratio: ' + pixelRatio + '),' +
-               '(min--moz-device-pixel-ratio: ' + pixelRatio + '),' +
-               '(min-resolution: ' + pixelRatio + 'dppx)');
+  var query =
+      ('(-webkit-min-device-pixel-ratio: ' + pixelRatio + '),' +
+       '(min--moz-device-pixel-ratio: ' + pixelRatio + '),' +
+       '(min-resolution: ' + pixelRatio + 'dppx)');
   return win.matchMedia(query).matches ? pixelRatio : 0;
 };
 
@@ -2301,11 +2333,10 @@ goog.dom.DomHelper.prototype.$ = goog.dom.DomHelper.prototype.getElement;
  * @return { {length: number} } Array-like list of elements (only a length
  *     property and numerical indices are guaranteed to exist).
  */
-goog.dom.DomHelper.prototype.getElementsByTagNameAndClass = function(opt_tag,
-                                                                     opt_class,
-                                                                     opt_el) {
-  return goog.dom.getElementsByTagNameAndClass_(this.document_, opt_tag,
-                                                opt_class, opt_el);
+goog.dom.DomHelper.prototype.getElementsByTagNameAndClass = function(
+    opt_tag, opt_class, opt_el) {
+  return goog.dom.getElementsByTagNameAndClass_(
+      this.document_, opt_tag, opt_class, opt_el);
 };
 
 
@@ -2345,8 +2376,8 @@ goog.dom.DomHelper.prototype.getElementByClass = function(className, opt_el) {
  * @return {!Element} The first item found with the class name provided.
  * @throws {goog.asserts.AssertionError} Thrown if no element is found.
  */
-goog.dom.DomHelper.prototype.getRequiredElementByClass = function(className,
-                                                                  opt_root) {
+goog.dom.DomHelper.prototype.getRequiredElementByClass = function(
+    className, opt_root) {
   var root = opt_root || this.document_;
   return goog.dom.getRequiredElementByClass(className, root);
 };
@@ -2429,9 +2460,8 @@ goog.dom.Appendable;
  *     NodeList, its elements will be added as childNodes instead.
  * @return {!Element} Reference to a DOM node.
  */
-goog.dom.DomHelper.prototype.createDom = function(tagName,
-                                                  opt_attributes,
-                                                  var_args) {
+goog.dom.DomHelper.prototype.createDom = function(
+    tagName, opt_attributes, var_args) {
   return goog.dom.createDom_(this.document_, arguments);
 };
 
@@ -2479,10 +2509,10 @@ goog.dom.DomHelper.prototype.createTextNode = function(content) {
  *     {@code goog.string.Unicode.NBSP} characters.
  * @return {!HTMLElement} The created table.
  */
-goog.dom.DomHelper.prototype.createTable = function(rows, columns,
-    opt_fillWithNbsp) {
-  return goog.dom.createTable_(this.document_, rows, columns,
-      !!opt_fillWithNbsp);
+goog.dom.DomHelper.prototype.createTable = function(
+    rows, columns, opt_fillWithNbsp) {
+  return goog.dom.createTable_(
+      this.document_, rows, columns, !!opt_fillWithNbsp);
 };
 
 
@@ -2970,8 +3000,7 @@ goog.dom.DomHelper.prototype.getAncestorByTagNameAndClass =
  * @return {Element} The first ancestor that matches the passed criteria, or
  *     null if none match.
  */
-goog.dom.DomHelper.prototype.getAncestorByClass =
-    goog.dom.getAncestorByClass;
+goog.dom.DomHelper.prototype.getAncestorByClass = goog.dom.getAncestorByClass;
 
 
 /**

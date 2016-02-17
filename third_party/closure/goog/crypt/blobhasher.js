@@ -203,7 +203,6 @@ goog.crypt.BlobHasher.prototype.processNextBlock_ = function() {
   goog.asserts.assert(this.blob_, 'A hash computation must be in progress.');
 
   if (this.bytesProcessed_ < this.blob_.size) {
-
     if (this.hashingLimit_ <= this.bytesProcessed_) {
       // Throttle limit reached. Wait until we are allowed to hash more bytes.
       this.dispatchEvent(goog.crypt.BlobHasher.EventType.THROTTLED);
@@ -219,8 +218,8 @@ goog.crypt.BlobHasher.prototype.processNextBlock_ = function() {
 
     var endOffset = Math.min(this.hashingLimit_, this.blob_.size);
     var size = Math.min(endOffset - this.bytesProcessed_, this.blockSize_);
-    var chunk = goog.fs.sliceBlob(this.blob_, this.bytesProcessed_,
-                                  this.bytesProcessed_ + size);
+    var chunk = goog.fs.sliceBlob(
+        this.blob_, this.bytesProcessed_, this.bytesProcessed_ + size);
     if (!chunk || chunk.size != size) {
       goog.log.error(this.logger_, 'Failed slicing the blob');
       this.onError_();
@@ -254,8 +253,9 @@ goog.crypt.BlobHasher.prototype.onLoad_ = function() {
   if (this.fileReader_.result instanceof Array ||
       goog.isString(this.fileReader_.result)) {
     array = this.fileReader_.result;
-  } else if (goog.global['ArrayBuffer'] && goog.global['Uint8Array'] &&
-             this.fileReader_.result instanceof ArrayBuffer) {
+  } else if (
+      goog.global['ArrayBuffer'] && goog.global['Uint8Array'] &&
+      this.fileReader_.result instanceof ArrayBuffer) {
     array = new Uint8Array(this.fileReader_.result);
   }
   if (!array) {

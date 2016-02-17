@@ -175,11 +175,13 @@ goog.html.SafeStyle.fromConstant = function(style) {
     return goog.html.SafeStyle.EMPTY;
   }
   goog.html.SafeStyle.checkStyle_(styleString);
-  goog.asserts.assert(goog.string.endsWith(styleString, ';'),
+  goog.asserts.assert(
+      goog.string.endsWith(styleString, ';'),
       'Last character of style string is not \';\': ' + styleString);
-  goog.asserts.assert(goog.string.contains(styleString, ':'),
+  goog.asserts.assert(
+      goog.string.contains(styleString, ':'),
       'Style string must contain at least one \':\', to ' +
-      'specify a "name: value" pair: ' + styleString);
+          'specify a "name: value" pair: ' + styleString);
   return goog.html.SafeStyle.createSafeStyleSecurityPrivateDoNotAccessOrElse(
       styleString);
 };
@@ -191,8 +193,8 @@ goog.html.SafeStyle.fromConstant = function(style) {
  * @private
  */
 goog.html.SafeStyle.checkStyle_ = function(style) {
-  goog.asserts.assert(!/[<>]/.test(style),
-      'Forbidden characters in style string: ' + style);
+  goog.asserts.assert(
+      !/[<>]/.test(style), 'Forbidden characters in style string: ' + style);
 };
 
 
@@ -233,8 +235,8 @@ if (goog.DEBUG) {
    * @override
    */
   goog.html.SafeStyle.prototype.toString = function() {
-    return 'SafeStyle{' +
-        this.privateDoNotAccessOrElseSafeStyleWrappedValue_ + '}';
+    return 'SafeStyle{' + this.privateDoNotAccessOrElseSafeStyleWrappedValue_ +
+        '}';
   };
 }
 
@@ -266,8 +268,8 @@ goog.html.SafeStyle.unwrap = function(safeStyle) {
           goog.html.SafeStyle.TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_) {
     return safeStyle.privateDoNotAccessOrElseSafeStyleWrappedValue_;
   } else {
-    goog.asserts.fail(
-        'expected object of type SafeStyle, got \'' + safeStyle + '\'');
+    goog.asserts.fail('expected object of type SafeStyle, got \'' +
+        safeStyle + '\' of type ' + goog.typeOf(safeStyle));
     return 'type_error:SafeStyle';
   }
 };
@@ -280,8 +282,8 @@ goog.html.SafeStyle.unwrap = function(safeStyle) {
  * @return {!goog.html.SafeStyle} The initialized SafeStyle object.
  * @package
  */
-goog.html.SafeStyle.createSafeStyleSecurityPrivateDoNotAccessOrElse =
-    function(style) {
+goog.html.SafeStyle.createSafeStyleSecurityPrivateDoNotAccessOrElse = function(
+    style) {
   return new goog.html.SafeStyle().initSecurityPrivateDoNotAccessOrElse_(style);
 };
 
@@ -355,7 +357,8 @@ goog.html.SafeStyle.create = function(map) {
       goog.asserts.assert(!/[{;}]/.test(value), 'Value does not allow [{;}].');
     } else if (!goog.html.SafeStyle.VALUE_RE_.test(value)) {
       goog.asserts.fail(
-          'String value allows only [-,."\'%_!# a-zA-Z0-9], got: ' + value);
+          'String value allows only [-,."\'%_!# a-zA-Z0-9], rgb() and ' +
+          'rgba(), got: ' + value);
       value = goog.html.SafeStyle.INNOCUOUS_STRING;
     } else if (!goog.html.SafeStyle.hasBalancedQuotes_(value)) {
       goog.asserts.fail('String value requires balanced quotes, got: ' + value);
@@ -407,10 +410,14 @@ goog.html.SafeStyle.hasBalancedQuotes_ = function(value) {
  * ',' allows multiple values to be assigned to the same property
  * (e.g. background-attachment or font-family) and hence could allow
  * multiple values to get injected, but that should pose no risk of XSS.
+ *
+ * The rgb() and rgba() expression checks only for XSS safety, not for CSS
+ * validity.
  * @const {!RegExp}
  * @private
  */
-goog.html.SafeStyle.VALUE_RE_ = /^[-,."'%_!# a-zA-Z0-9]+$/;
+goog.html.SafeStyle.VALUE_RE_ =
+    /^([-,."'%_!# a-zA-Z0-9]+|(?:rgb|hsl)a?\([0-9.%, ]+\))$/;
 
 
 /**

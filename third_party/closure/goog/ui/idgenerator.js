@@ -26,8 +26,7 @@ goog.provide('goog.ui.IdGenerator');
  * @constructor
  * @final
  */
-goog.ui.IdGenerator = function() {
-};
+goog.ui.IdGenerator = function() {};
 goog.addSingletonGetter(goog.ui.IdGenerator);
 
 

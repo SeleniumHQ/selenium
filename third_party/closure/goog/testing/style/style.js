@@ -63,8 +63,7 @@ goog.testing.style.hasVisibleDimensions = function(element) {
 goog.testing.style.isVisible = function(element) {
   var visibilityStyle =
       goog.testing.style.getAvailableStyle_(element, 'visibility');
-  var displayStyle =
-      goog.testing.style.getAvailableStyle_(element, 'display');
+  var displayStyle = goog.testing.style.getAvailableStyle_(element, 'display');
 
   return (visibilityStyle != 'hidden' && displayStyle != 'none');
 };

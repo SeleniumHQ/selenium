@@ -54,12 +54,12 @@ goog.testing.events.OnlineHandler.prototype.isOnline = function() {
  * Sets the online state.
  * @param {boolean} newOnlineState The new online state.
  */
-goog.testing.events.OnlineHandler.prototype.setOnline =
-    function(newOnlineState) {
+goog.testing.events.OnlineHandler.prototype.setOnline = function(
+    newOnlineState) {
   if (newOnlineState != this.online_) {
     this.online_ = newOnlineState;
-    this.dispatchEvent(newOnlineState ?
-        goog.net.NetworkStatusMonitor.EventType.ONLINE :
-        goog.net.NetworkStatusMonitor.EventType.OFFLINE);
+    this.dispatchEvent(
+        newOnlineState ? goog.net.NetworkStatusMonitor.EventType.ONLINE :
+                         goog.net.NetworkStatusMonitor.EventType.OFFLINE);
   }
 };

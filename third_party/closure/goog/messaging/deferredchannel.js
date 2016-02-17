@@ -21,7 +21,7 @@
 goog.provide('goog.messaging.DeferredChannel');
 
 goog.require('goog.Disposable');
-goog.require('goog.messaging.MessageChannel'); // interface
+goog.require('goog.messaging.MessageChannel');  // interface
 
 
 
@@ -75,8 +75,8 @@ goog.messaging.DeferredChannel.prototype.registerService = function(
 
 
 /** @override */
-goog.messaging.DeferredChannel.prototype.registerDefaultService =
-    function(callback) {
+goog.messaging.DeferredChannel.prototype.registerDefaultService = function(
+    callback) {
   this.deferred_.addCallback(function(resolved) {
     resolved.registerDefaultService(callback);
   });

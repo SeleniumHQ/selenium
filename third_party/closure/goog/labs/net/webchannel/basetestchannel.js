@@ -171,8 +171,9 @@ BaseTestChannel.prototype.connect = function(path) {
   sendDataUri.setParameterValues('MODE', 'init');
   this.request_ = ChannelRequest.createChannelRequest(this, this.channelDebug_);
   this.request_.setExtraHeaders(this.extraHeaders_);
-  this.request_.xmlHttpGet(sendDataUri, false /* decodeChunks */,
-      null /* hostPrefix */, true /* opt_noClose */);
+  this.request_.xmlHttpGet(
+      sendDataUri, false /* decodeChunks */, null /* hostPrefix */,
+      true /* opt_noClose */);
   this.state_ = BaseTestChannel.State_.INIT;
 };
 
@@ -194,26 +195,30 @@ BaseTestChannel.prototype.checkBufferingProxy_ = function() {
   if (goog.isDefAndNotNull(bufferingProxyResult)) {
     this.channelDebug_.debug(
         'TestConnection: skipping stage 2, precomputed result is ' +
-        bufferingProxyResult ? 'Buffered' : 'Unbuffered');
+                bufferingProxyResult ?
+            'Buffered' :
+            'Unbuffered');
     requestStats.notifyStatEvent(requestStats.Stat.TEST_STAGE_TWO_START);
-    if (bufferingProxyResult) { // Buffered/Proxy connection
+    if (bufferingProxyResult) {  // Buffered/Proxy connection
       requestStats.notifyStatEvent(requestStats.Stat.PROXY);
       this.channel_.testConnectionFinished(this, false);
-    } else { // Unbuffered/NoProxy connection
+    } else {  // Unbuffered/NoProxy connection
       requestStats.notifyStatEvent(requestStats.Stat.NOPROXY);
       this.channel_.testConnectionFinished(this, true);
     }
-    return; // Skip the test
+    return;  // Skip the test
   }
   this.request_ = ChannelRequest.createChannelRequest(this, this.channelDebug_);
   this.request_.setExtraHeaders(this.extraHeaders_);
-  var recvDataUri = this.channel_.getBackChannelUri(this.hostPrefix_,
+  var recvDataUri = this.channel_.getBackChannelUri(
+      this.hostPrefix_,
       /** @type {string} */ (this.path_));
 
   requestStats.notifyStatEvent(requestStats.Stat.TEST_STAGE_TWO_START);
   recvDataUri.setParameterValues('TYPE', 'xmlhttp');
-  this.request_.xmlHttpGet(recvDataUri, false /** decodeChunks */,
-      this.hostPrefix_, false /** opt_noClose */);
+  this.request_.xmlHttpGet(
+      recvDataUri, false /** decodeChunks */, this.hostPrefix_,
+      false /** opt_noClose */);
 };
 
 
@@ -320,7 +325,8 @@ BaseTestChannel.prototype.onRequestComplete = function(req) {
     } else if (this.state_ == BaseTestChannel.State_.CONNECTION_TESTING) {
       requestStats.notifyStatEvent(requestStats.Stat.TEST_STAGE_TWO_FAILED);
     }
-    this.channel_.testConnectionFailure(this,
+    this.channel_.testConnectionFailure(
+        this,
         /** @type {ChannelRequest.Error} */
         (this.request_.getLastError()));
     return;
@@ -344,8 +350,7 @@ BaseTestChannel.prototype.onRequestComplete = function(req) {
       requestStats.notifyStatEvent(requestStats.Stat.NOPROXY);
       this.channel_.testConnectionFinished(this, true);
     } else {
-      this.channelDebug_.debug(
-          'Test connection failed; not using streaming');
+      this.channelDebug_.debug('Test connection failed; not using streaming');
       requestStats.notifyStatEvent(requestStats.Stat.PROXY);
       this.channel_.testConnectionFinished(this, false);
     }

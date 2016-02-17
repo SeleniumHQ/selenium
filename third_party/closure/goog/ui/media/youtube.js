@@ -128,9 +128,7 @@ goog.addSingletonGetter(goog.ui.media.Youtube);
  */
 goog.ui.media.Youtube.newControl = function(youtubeModel, opt_domHelper) {
   var control = new goog.ui.media.Media(
-      youtubeModel,
-      goog.ui.media.Youtube.getInstance(),
-      opt_domHelper);
+      youtubeModel, goog.ui.media.Youtube.getInstance(), opt_domHelper);
   control.setStateInternal(goog.ui.Component.State.ACTIVE);
   return control;
 };
@@ -171,15 +169,13 @@ goog.ui.media.Youtube.prototype.setState = function(c, state, enable) {
 
   if (!!(state & goog.ui.Component.State.SELECTED) && enable) {
     var flashEls = domHelper.getElementsByTagNameAndClass(
-        goog.dom.TagName.DIV,
-        goog.ui.media.FlashObject.CSS_CLASS,
+        goog.dom.TagName.DIV, goog.ui.media.FlashObject.CSS_CLASS,
         control.getElement());
     if (flashEls.length > 0) {
       return;
     }
     var youtubeFlash = new goog.ui.media.FlashObject(
-        dataModel.getPlayer().getTrustedResourceUrl(),
-        domHelper);
+        dataModel.getPlayer().getTrustedResourceUrl(), domHelper);
     control.addChild(youtubeFlash, true);
   }
 };
@@ -213,11 +209,8 @@ goog.ui.media.Youtube.prototype.getCssClass = function() {
  */
 goog.ui.media.YoutubeModel = function(videoId, opt_caption, opt_description) {
   goog.ui.media.MediaModel.call(
-      this,
-      goog.ui.media.YoutubeModel.buildUrl(videoId),
-      opt_caption,
-      opt_description,
-      goog.ui.media.MediaModel.MimeType.FLASH);
+      this, goog.ui.media.YoutubeModel.buildUrl(videoId), opt_caption,
+      opt_description, goog.ui.media.MediaModel.MimeType.FLASH);
 
   /**
    * The Youtube video id.
@@ -229,8 +222,9 @@ goog.ui.media.YoutubeModel = function(videoId, opt_caption, opt_description) {
   this.setThumbnails([new goog.ui.media.MediaModel.Thumbnail(
       goog.ui.media.YoutubeModel.getThumbnailUrl(videoId))]);
 
-  this.setPlayer(new goog.ui.media.MediaModel.Player(
-      goog.ui.media.YoutubeModel.getFlashUrl(videoId, true)));
+  this.setPlayer(
+      new goog.ui.media.MediaModel.Player(
+          goog.ui.media.YoutubeModel.getFlashUrl(videoId, true)));
 };
 goog.inherits(goog.ui.media.YoutubeModel, goog.ui.media.MediaModel);
 
@@ -249,31 +243,33 @@ goog.inherits(goog.ui.media.YoutubeModel, goog.ui.media.MediaModel);
 goog.ui.media.YoutubeModel.MATCHER_ = new RegExp(
     // Lead in.
     'https?://(?:[a-zA-Z]{1,3}\\.)?' +
-    // Watch short URL prefix. This should handle URLs of the form:
-    // https://youtu.be/jqxENMKaeCU?cgiparam=value
-    '(?:(?:youtu\\.be/([\\w-]+)(?:\\?[\\w=&-]+)?)|' +
-    // Watch URL prefix.  This should handle new URLs of the form:
-    // http://www.youtube.com/watch#!v=jqxENMKaeCU&feature=related
-    // where the parameters appear after "#!" instead of "?".
-    '(?:youtube\\.com/watch)' +
-    // Get the video id:
-    // The video ID is a parameter v=[videoid] either right after the "?"
-    // or after some other parameters.
-    '(?:\\?(?:[\\w=-]+&(?:amp;)?)*v=([\\w-]+)' +
-    '(?:&(?:amp;)?[\\w=-]+)*)?' +
-    // Get any extra arguments in the URL's hash part.
-    '(?:#[!]?(?:' +
-    // Video ID from the v=[videoid] parameter, optionally surrounded by other
-    // & separated parameters.
-    '(?:(?:[\\w=-]+&(?:amp;)?)*(?:v=([\\w-]+))' +
-    '(?:&(?:amp;)?[\\w=-]+)*)' +
-    '|' +
-    // Continue supporting "?" for the video ID
-    // and "#" for other hash parameters.
-    '(?:[\\w=&-]+)' +
-    '))?)' +
-    // Should terminate with a non-word, non-dash (-) character.
-    '[^\\w-]?', 'i');
+        // Watch short URL prefix. This should handle URLs of the form:
+        // https://youtu.be/jqxENMKaeCU?cgiparam=value
+        '(?:(?:youtu\\.be/([\\w-]+)(?:\\?[\\w=&-]+)?)|' +
+        // Watch URL prefix.  This should handle new URLs of the form:
+        // http://www.youtube.com/watch#!v=jqxENMKaeCU&feature=related
+        // where the parameters appear after "#!" instead of "?".
+        '(?:youtube\\.com/watch)' +
+        // Get the video id:
+        // The video ID is a parameter v=[videoid] either right after the "?"
+        // or after some other parameters.
+        '(?:\\?(?:[\\w=-]+&(?:amp;)?)*v=([\\w-]+)' +
+        '(?:&(?:amp;)?[\\w=-]+)*)?' +
+        // Get any extra arguments in the URL's hash part.
+        '(?:#[!]?(?:' +
+        // Video ID from the v=[videoid] parameter, optionally surrounded by
+        // other
+        // & separated parameters.
+        '(?:(?:[\\w=-]+&(?:amp;)?)*(?:v=([\\w-]+))' +
+        '(?:&(?:amp;)?[\\w=-]+)*)' +
+        '|' +
+        // Continue supporting "?" for the video ID
+        // and "#" for other hash parameters.
+        '(?:[\\w=&-]+)' +
+        '))?)' +
+        // Should terminate with a non-word, non-dash (-) character.
+        '[^\\w-]?',
+    'i');
 
 
 /**
@@ -289,9 +285,8 @@ goog.ui.media.YoutubeModel.MATCHER_ = new RegExp(
  * @see goog.ui.media.YoutubeModel.getVideoId()
  * @throws Error in case the parsing fails.
  */
-goog.ui.media.YoutubeModel.newInstance = function(youtubeUrl,
-                                                  opt_caption,
-                                                  opt_description) {
+goog.ui.media.YoutubeModel.newInstance = function(
+    youtubeUrl, opt_caption, opt_description) {
   var extract = goog.ui.media.YoutubeModel.MATCHER_.exec(youtubeUrl);
   if (extract) {
     var videoId = extract[1] || extract[2] || extract[3];

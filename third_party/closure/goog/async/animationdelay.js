@@ -141,8 +141,7 @@ goog.async.AnimationDelay.prototype.start = function() {
     // but not the W3C requestAnimationFrame function (as in draft) or the
     // equivalent cancel functions.
     this.id_ = goog.events.listen(
-        this.win_,
-        goog.async.AnimationDelay.MOZ_BEFORE_PAINT_EVENT_,
+        this.win_, goog.async.AnimationDelay.MOZ_BEFORE_PAINT_EVENT_,
         this.callback_);
     this.win_.mozRequestAnimationFrame(null);
     this.usingListeners_ = true;
@@ -152,8 +151,7 @@ goog.async.AnimationDelay.prototype.start = function() {
     this.id_ = this.win_.setTimeout(
         // Prior to Firefox 13, Gecko passed a non-standard parameter
         // to the callback that we want to ignore.
-        goog.functions.lock(this.callback_),
-        goog.async.AnimationDelay.TIMEOUT);
+        goog.functions.lock(this.callback_), goog.async.AnimationDelay.TIMEOUT);
   }
 };
 
@@ -240,12 +238,9 @@ goog.async.AnimationDelay.prototype.disposeInternal = function() {
  */
 goog.async.AnimationDelay.prototype.getRaf_ = function() {
   var win = this.win_;
-  return win.requestAnimationFrame ||
-      win.webkitRequestAnimationFrame ||
-      win.mozRequestAnimationFrame ||
-      win.oRequestAnimationFrame ||
-      win.msRequestAnimationFrame ||
-      null;
+  return win.requestAnimationFrame || win.webkitRequestAnimationFrame ||
+      win.mozRequestAnimationFrame || win.oRequestAnimationFrame ||
+      win.msRequestAnimationFrame || null;
 };
 
 
@@ -256,11 +251,8 @@ goog.async.AnimationDelay.prototype.getRaf_ = function() {
  */
 goog.async.AnimationDelay.prototype.getCancelRaf_ = function() {
   var win = this.win_;
-  return win.cancelAnimationFrame ||
-      win.cancelRequestAnimationFrame ||
+  return win.cancelAnimationFrame || win.cancelRequestAnimationFrame ||
       win.webkitCancelRequestAnimationFrame ||
-      win.mozCancelRequestAnimationFrame ||
-      win.oCancelRequestAnimationFrame ||
-      win.msCancelRequestAnimationFrame ||
-      null;
+      win.mozCancelRequestAnimationFrame || win.oCancelRequestAnimationFrame ||
+      win.msCancelRequestAnimationFrame || null;
 };

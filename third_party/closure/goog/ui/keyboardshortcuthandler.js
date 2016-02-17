@@ -212,7 +212,7 @@ goog.ui.KeyboardShortcutHandler.SequenceTree_;
  * key in a key sequence.
  * @type {number}
  */
-goog.ui.KeyboardShortcutHandler.MAX_KEY_SEQUENCE_DELAY = 1500; // 1.5 sec
+goog.ui.KeyboardShortcutHandler.MAX_KEY_SEQUENCE_DELAY = 1500;  // 1.5 sec
 
 
 /**
@@ -234,20 +234,11 @@ goog.ui.KeyboardShortcutHandler.Modifiers = {
  * @private
  */
 goog.ui.KeyboardShortcutHandler.DEFAULT_GLOBAL_KEYS_ = [
-  goog.events.KeyCodes.ESC,
-  goog.events.KeyCodes.F1,
-  goog.events.KeyCodes.F2,
-  goog.events.KeyCodes.F3,
-  goog.events.KeyCodes.F4,
-  goog.events.KeyCodes.F5,
-  goog.events.KeyCodes.F6,
-  goog.events.KeyCodes.F7,
-  goog.events.KeyCodes.F8,
-  goog.events.KeyCodes.F9,
-  goog.events.KeyCodes.F10,
-  goog.events.KeyCodes.F11,
-  goog.events.KeyCodes.F12,
-  goog.events.KeyCodes.PAUSE
+  goog.events.KeyCodes.ESC, goog.events.KeyCodes.F1, goog.events.KeyCodes.F2,
+  goog.events.KeyCodes.F3, goog.events.KeyCodes.F4, goog.events.KeyCodes.F5,
+  goog.events.KeyCodes.F6, goog.events.KeyCodes.F7, goog.events.KeyCodes.F8,
+  goog.events.KeyCodes.F9, goog.events.KeyCodes.F10, goog.events.KeyCodes.F11,
+  goog.events.KeyCodes.F12, goog.events.KeyCodes.PAUSE
 ];
 
 
@@ -258,20 +249,8 @@ goog.ui.KeyboardShortcutHandler.DEFAULT_GLOBAL_KEYS_ = [
  * @private
  */
 goog.ui.KeyboardShortcutHandler.DEFAULT_TEXT_INPUTS_ = [
-  'color',
-  'date',
-  'datetime',
-  'datetime-local',
-  'email',
-  'month',
-  'number',
-  'password',
-  'search',
-  'tel',
-  'text',
-  'time',
-  'url',
-  'week'
+  'color', 'date', 'datetime', 'datetime-local', 'email', 'month', 'number',
+  'password', 'search', 'tel', 'text', 'time', 'url', 'week'
 ];
 
 
@@ -588,7 +567,7 @@ goog.ui.KeyboardShortcutHandler.prototype.interpretStrokes_ = function(
               stroke.keyCode, stroke.modifiers);
         });
 
-  // Build strokes array from arguments list or from array.
+    // Build strokes array from arguments list or from array.
   } else {
     var strokesArgs = args, i = initialIndex;
     if (goog.isArray(args[initialIndex])) {
@@ -598,8 +577,9 @@ goog.ui.KeyboardShortcutHandler.prototype.interpretStrokes_ = function(
 
     strokes = [];
     for (; i < strokesArgs.length; i += 2) {
-      strokes.push(goog.ui.KeyboardShortcutHandler.makeStroke_(
-          strokesArgs[i], strokesArgs[i + 1]));
+      strokes.push(
+          goog.ui.KeyboardShortcutHandler.makeStroke_(
+              strokesArgs[i], strokesArgs[i + 1]));
     }
   }
 
@@ -647,8 +627,7 @@ goog.ui.KeyboardShortcutHandler.prototype.disposeInternal = function() {
  * @param {string} identifier Identifier for the shortcut task.
  * @return {string} Theh event type.
  */
-goog.ui.KeyboardShortcutHandler.prototype.getEventType =
-    function(identifier) {
+goog.ui.KeyboardShortcutHandler.prototype.getEventType = function(identifier) {
 
   return goog.ui.KeyboardShortcutHandler.EventType.SHORTCUT_PREFIX + identifier;
 };
@@ -710,16 +689,18 @@ goog.ui.KeyboardShortcutHandler.parseStringShortcut = function(s) {
  *     event listener should be attached to.
  * @protected
  */
-goog.ui.KeyboardShortcutHandler.prototype.initializeKeyListener =
-    function(keyTarget) {
+goog.ui.KeyboardShortcutHandler.prototype.initializeKeyListener = function(
+    keyTarget) {
   this.keyTarget_ = keyTarget;
 
-  goog.events.listen(this.keyTarget_, goog.events.EventType.KEYDOWN,
-      this.handleKeyDown_, false, this);
+  goog.events.listen(
+      this.keyTarget_, goog.events.EventType.KEYDOWN, this.handleKeyDown_,
+      false, this);
 
   if (goog.userAgent.GECKO) {
-    goog.events.listen(this.keyTarget_, goog.events.EventType.KEYUP,
-        this.handleGeckoKeyUp_, false, this);
+    goog.events.listen(
+        this.keyTarget_, goog.events.EventType.KEYUP, this.handleGeckoKeyUp_,
+        false, this);
   }
 
   // Windows uses ctrl+alt keys (a.k.a. alt-graph keys) for typing characters
@@ -729,10 +710,12 @@ goog.ui.KeyboardShortcutHandler.prototype.initializeKeyListener =
   // inputting characters. Therefore, we listen to these events and prevent
   // firing shortcut-key events if ctrl+alt keys are used for typing characters.
   if (goog.userAgent.WINDOWS && !goog.userAgent.GECKO) {
-    goog.events.listen(this.keyTarget_, goog.events.EventType.KEYPRESS,
-                       this.handleWindowsKeyPress_, false, this);
-    goog.events.listen(this.keyTarget_, goog.events.EventType.KEYUP,
-                       this.handleWindowsKeyUp_, false, this);
+    goog.events.listen(
+        this.keyTarget_, goog.events.EventType.KEYPRESS,
+        this.handleWindowsKeyPress_, false, this);
+    goog.events.listen(
+        this.keyTarget_, goog.events.EventType.KEYUP, this.handleWindowsKeyUp_,
+        false, this);
   }
 };
 
@@ -762,8 +745,9 @@ goog.ui.KeyboardShortcutHandler.prototype.handleGeckoKeyUp_ = function(e) {
 
     var metaKey = e.metaKey || this.metaKeyRecentlyReleased_;
     if ((e.keyCode == goog.events.KeyCodes.C ||
-        e.keyCode == goog.events.KeyCodes.X ||
-        e.keyCode == goog.events.KeyCodes.V) && metaKey) {
+         e.keyCode == goog.events.KeyCodes.X ||
+         e.keyCode == goog.events.KeyCodes.V) &&
+        metaKey) {
       e.metaKey = metaKey;
       this.handleKeyDown_(e);
     }
@@ -790,10 +774,10 @@ goog.ui.KeyboardShortcutHandler.prototype.handleGeckoKeyUp_ = function(e) {
  * @return {boolean} Whether this event is a possible printable-key event.
  * @private
  */
-goog.ui.KeyboardShortcutHandler.prototype.isPossiblePrintableKey_ =
-    function(e) {
-  return goog.userAgent.WINDOWS && !goog.userAgent.GECKO &&
-      e.ctrlKey && e.altKey && !e.shiftKey;
+goog.ui.KeyboardShortcutHandler.prototype.isPossiblePrintableKey_ = function(
+    e) {
+  return goog.userAgent.WINDOWS && !goog.userAgent.GECKO && e.ctrlKey &&
+      e.altKey;
 };
 
 
@@ -832,17 +816,21 @@ goog.ui.KeyboardShortcutHandler.prototype.handleWindowsKeyUp_ = function(e) {
  * @protected
  */
 goog.ui.KeyboardShortcutHandler.prototype.clearKeyListener = function() {
-  goog.events.unlisten(this.keyTarget_, goog.events.EventType.KEYDOWN,
-      this.handleKeyDown_, false, this);
+  goog.events.unlisten(
+      this.keyTarget_, goog.events.EventType.KEYDOWN, this.handleKeyDown_,
+      false, this);
   if (goog.userAgent.GECKO) {
-    goog.events.unlisten(this.keyTarget_, goog.events.EventType.KEYUP,
-        this.handleGeckoKeyUp_, false, this);
+    goog.events.unlisten(
+        this.keyTarget_, goog.events.EventType.KEYUP, this.handleGeckoKeyUp_,
+        false, this);
   }
   if (goog.userAgent.WINDOWS && !goog.userAgent.GECKO) {
-    goog.events.unlisten(this.keyTarget_, goog.events.EventType.KEYPRESS,
+    goog.events.unlisten(
+        this.keyTarget_, goog.events.EventType.KEYPRESS,
         this.handleWindowsKeyPress_, false, this);
-    goog.events.unlisten(this.keyTarget_, goog.events.EventType.KEYUP,
-        this.handleWindowsKeyUp_, false, this);
+    goog.events.unlisten(
+        this.keyTarget_, goog.events.EventType.KEYUP, this.handleWindowsKeyUp_,
+        false, this);
   }
   this.keyTarget_ = null;
 };
@@ -869,7 +857,8 @@ goog.ui.KeyboardShortcutHandler.setShortcut_ = function(
   }
 
   if (strokes.length) {
-    node = goog.object.setIfUndefined(tree, stroke.toString(),
+    node = goog.object.setIfUndefined(
+        tree, stroke.toString(),
         goog.ui.KeyboardShortcutHandler.createInternalNode_());
     goog.ui.KeyboardShortcutHandler.setShortcut_(
         goog.asserts.assert(node.next, 'An internal node must have a next map'),
@@ -1069,14 +1058,14 @@ goog.ui.KeyboardShortcutHandler.prototype.isValidShortcut_ = function(event) {
     return false;
   }
   var el = /** @type {Element} */ (event.target);
-  var isFormElement =
-      el.tagName == goog.dom.TagName.TEXTAREA ||
+  var isFormElement = el.tagName == goog.dom.TagName.TEXTAREA ||
       el.tagName == goog.dom.TagName.INPUT ||
       el.tagName == goog.dom.TagName.BUTTON ||
       el.tagName == goog.dom.TagName.SELECT;
 
-  var isContentEditable = !isFormElement && (el.isContentEditable ||
-      (el.ownerDocument && el.ownerDocument.designMode == 'on'));
+  var isContentEditable = !isFormElement &&
+      (el.isContentEditable ||
+       (el.ownerDocument && el.ownerDocument.designMode == 'on'));
 
   if (!isFormElement && !isContentEditable) {
     return true;
@@ -1093,8 +1082,8 @@ goog.ui.KeyboardShortcutHandler.prototype.isValidShortcut_ = function(event) {
   }
   // Event target is one of (TEXTAREA, INPUT, BUTTON, SELECT).
   // Allow modifier shortcuts, unless we shouldn't.
-  if (this.modifierShortcutsAreGlobal_ && (
-      event.altKey || event.ctrlKey || event.metaKey)) {
+  if (this.modifierShortcutsAreGlobal_ &&
+      (event.altKey || event.ctrlKey || event.metaKey)) {
     return true;
   }
   // Allow ENTER to be used as shortcut for text inputs.

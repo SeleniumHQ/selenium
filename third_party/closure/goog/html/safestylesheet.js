@@ -62,7 +62,8 @@ goog.require('goog.string.TypedString');
  * style element and {@code evil} would execute. Also note that within an HTML
  * style (raw text) element, HTML character references, such as
  * {@code &amp;lt;}, are not allowed. See
- * http://www.w3.org/TR/html5/scripting-1.html#restrictions-for-contents-of-script-elements
+ *
+ http://www.w3.org/TR/html5/scripting-1.html#restrictions-for-contents-of-script-elements
  * (similar considerations apply to the style element).
  *
  * @see goog.html.SafeStyleSheet#fromConstant
@@ -86,7 +87,7 @@ goog.html.SafeStyleSheet = function() {
    * @const
    * @private
    */
-  this.SAFE_SCRIPT_TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ =
+  this.SAFE_STYLE_SHEET_TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ =
       goog.html.SafeStyleSheet.TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_;
 };
 
@@ -152,10 +153,11 @@ goog.html.SafeStyleSheet.fromConstant = function(styleSheet) {
   }
   // > is a valid character in CSS selectors and there's no strict need to
   // block it if we already block <.
-  goog.asserts.assert(!goog.string.contains(styleSheetString, '<'),
+  goog.asserts.assert(
+      !goog.string.contains(styleSheetString, '<'),
       "Forbidden '<' character in style sheet string: " + styleSheetString);
-  return goog.html.SafeStyleSheet.
-      createSafeStyleSheetSecurityPrivateDoNotAccessOrElse(styleSheetString);
+  return goog.html.SafeStyleSheet
+      .createSafeStyleSheetSecurityPrivateDoNotAccessOrElse(styleSheetString);
 };
 
 
@@ -225,13 +227,13 @@ goog.html.SafeStyleSheet.unwrap = function(safeStyleSheet) {
   // to stand out in code reviews.
   if (safeStyleSheet instanceof goog.html.SafeStyleSheet &&
       safeStyleSheet.constructor === goog.html.SafeStyleSheet &&
-      safeStyleSheet.SAFE_SCRIPT_TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ ===
+      safeStyleSheet
+              .SAFE_STYLE_SHEET_TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ ===
           goog.html.SafeStyleSheet.TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_) {
     return safeStyleSheet.privateDoNotAccessOrElseSafeStyleSheetWrappedValue_;
   } else {
-    goog.asserts.fail(
-        "expected object of type SafeStyleSheet, got '" + safeStyleSheet +
-        "'");
+    goog.asserts.fail('expected object of type SafeStyleSheet, got \'' +
+        safeStyleSheet + '\' of type ' + goog.typeOf(safeStyleSheet));
     return 'type_error:SafeStyleSheet';
   }
 };
@@ -272,5 +274,5 @@ goog.html.SafeStyleSheet.prototype.initSecurityPrivateDoNotAccessOrElse_ =
  * @const {!goog.html.SafeStyleSheet}
  */
 goog.html.SafeStyleSheet.EMPTY =
-    goog.html.SafeStyleSheet.
-        createSafeStyleSheetSecurityPrivateDoNotAccessOrElse('');
+    goog.html.SafeStyleSheet
+        .createSafeStyleSheetSecurityPrivateDoNotAccessOrElse('');

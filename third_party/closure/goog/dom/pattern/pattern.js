@@ -63,8 +63,9 @@ goog.dom.pattern.matchStringOrRegex = function(obj, str) {
  * @this {Element} Called using goog.object every on an Element.
  */
 goog.dom.pattern.matchStringOrRegexMap = function(elem, index, orig) {
-  return goog.dom.pattern.matchStringOrRegex(elem,
-      index in this ? this[index] :
+  return goog.dom.pattern.matchStringOrRegex(
+      elem, index in this ?
+          this[index] :
           (this.getAttribute ? this.getAttribute(index) : null));
 };
 

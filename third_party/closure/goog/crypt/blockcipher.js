@@ -35,7 +35,7 @@ goog.crypt.BlockCipher = function() {};
 /**
  * Encrypt a plaintext block.  The implementation may expect (and assert)
  * a particular block length.
- * @param {!Array<number>} input Plaintext array of input bytes.
+ * @param {!Array<number>|!Uint8Array} input Plaintext array of input bytes.
  * @return {!Array<number>} Encrypted ciphertext array of bytes.  Should be the
  *     same length as input.
  */
@@ -45,7 +45,7 @@ goog.crypt.BlockCipher.prototype.encrypt;
 /**
  * Decrypt a plaintext block.  The implementation may expect (and assert)
  * a particular block length.
- * @param {!Array<number>} input Ciphertext. Array of input bytes.
+ * @param {!Array<number>|!Uint8Array} input Ciphertext. Array of input bytes.
  * @return {!Array<number>} Decrypted plaintext array of bytes.  Should be the
  *     same length as input.
  */

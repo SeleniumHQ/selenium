@@ -78,8 +78,7 @@ goog.date.month = {
 goog.date.formatMonthAndYear = function(monthName, yearNum) {
   /** @desc Month/year format given the month name and the numeric year. */
   var MSG_MONTH_AND_YEAR = goog.getMsg(
-      '{$monthName} {$yearNum}',
-      { 'monthName' : monthName, 'yearNum' : yearNum });
+      '{$monthName} {$yearNum}', {'monthName': monthName, 'yearNum': yearNum});
   return MSG_MONTH_AND_YEAR;
 };
 
@@ -196,8 +195,7 @@ goog.date.getNumberOfDaysInMonth = function(year, month) {
  */
 goog.date.isSameDay = function(date, opt_now) {
   var now = opt_now || new Date(goog.now());
-  return date.getDate() == now.getDate() &&
-      goog.date.isSameMonth(date, now);
+  return date.getDate() == now.getDate() && goog.date.isSameMonth(date, now);
 };
 
 
@@ -209,8 +207,7 @@ goog.date.isSameDay = function(date, opt_now) {
  */
 goog.date.isSameMonth = function(date, opt_now) {
   var now = opt_now || new Date(goog.now());
-  return date.getMonth() == now.getMonth() &&
-      goog.date.isSameYear(date, now);
+  return date.getMonth() == now.getMonth() && goog.date.isSameYear(date, now);
 };
 
 
@@ -238,8 +235,8 @@ goog.date.isSameYear = function(date, opt_now) {
  *     Monday=0, Sunday=6.
  * @return {number} The week number (1-53).
  */
-goog.date.getWeekNumber = function(year, month, date, opt_weekDay,
-    opt_firstDayOfWeek) {
+goog.date.getWeekNumber = function(
+    year, month, date, opt_weekDay, opt_firstDayOfWeek) {
   var d = new Date(year, month, date);
 
   // Default to Thursday for cut off as per ISO 8601.
@@ -260,15 +257,16 @@ goog.date.getWeekNumber = function(year, month, date, opt_weekDay,
   // Unix timestamp of the midnight of the cutoff day in the week of 'd'.
   // There might be +-1 hour shift in the result due to the daylight saving,
   // but it doesn't affect the year.
-  var cutoffSameWeek = d.valueOf() +
-      (cutoffpos - daypos) * goog.date.MS_PER_DAY;
+  var cutoffSameWeek =
+      d.valueOf() + (cutoffpos - daypos) * goog.date.MS_PER_DAY;
 
   // Unix timestamp of January 1 in the year of 'cutoffSameWeek'.
   var jan1 = new Date(new Date(cutoffSameWeek).getFullYear(), 0, 1).valueOf();
 
   // Number of week. The round() eliminates the effect of daylight saving.
-  return Math.floor(Math.round(
-      (cutoffSameWeek - jan1) / goog.date.MS_PER_DAY) / 7) + 1;
+  return Math.floor(
+             Math.round((cutoffSameWeek - jan1) / goog.date.MS_PER_DAY) / 7) +
+      1;
 };
 
 
@@ -351,7 +349,7 @@ goog.date.setIso8601DateOnly_ = function(d, formatted) {
   if (dayOfYear) {
     d.setDate(1);
     d.setMonth(0);
-    var offset = dayOfYear - 1; // offset, so 1-indexed, i.e., skip day 1
+    var offset = dayOfYear - 1;  // offset, so 1-indexed, i.e., skip day 1
     d.add(new goog.date.Interval(goog.date.Interval.DAYS, offset));
   } else if (week) {
     goog.date.setDateFromIso8601Week_(d, week, dayOfWeek);
@@ -397,10 +395,10 @@ goog.date.setDateFromIso8601Week_ = function(d, week, dayOfWeek) {
   var THURSDAY = 4;
   if (jan1WeekDay <= THURSDAY) {
     // was extended back to Monday
-    var startDelta = 1 - jan1WeekDay; // e.g., Thu(4) ==> -3
+    var startDelta = 1 - jan1WeekDay;  // e.g., Thu(4) ==> -3
   } else {
     // was extended forward to Monday
-    startDelta = 8 - jan1WeekDay; // e.g., Fri(5) ==> +3
+    startDelta = 8 - jan1WeekDay;  // e.g., Fri(5) ==> +3
   }
 
   // find the absolute number of days to offset from the start of year
@@ -430,10 +428,10 @@ goog.date.setIso8601TimeOnly_ = function(d, formatted) {
   // first strip timezone info from the end
   var parts = formatted.match(goog.date.splitTimezoneStringRegex_);
 
-  var offset = 0; // local time if no timezone info
+  var offset = 0;  // local time if no timezone info
   if (parts) {
     if (parts[0] != 'Z') {
-      offset = parts[2] * 60 + Number(parts[3]);
+      offset = Number(parts[2]) * 60 + Number(parts[3]);
       offset *= parts[1] == '-' ? 1 : -1;
     }
     offset -= d.getTimezoneOffset();
@@ -449,7 +447,7 @@ goog.date.setIso8601TimeOnly_ = function(d, formatted) {
   d.setHours(Number(parts[1]));
   d.setMinutes(Number(parts[2]) || 0);
   d.setSeconds(Number(parts[3]) || 0);
-  d.setMilliseconds(parts[4] ? parts[4] * 1000 : 0);
+  d.setMilliseconds(parts[4] ? Number(parts[4]) * 1000 : 0);
 
   if (offset != 0) {
     // adjust the date and time according to the specified timezone
@@ -480,8 +478,8 @@ goog.date.setIso8601TimeOnly_ = function(d, formatted) {
  * @struct
  * @final
  */
-goog.date.Interval = function(opt_years, opt_months, opt_days, opt_hours,
-                              opt_minutes, opt_seconds) {
+goog.date.Interval = function(
+    opt_years, opt_months, opt_days, opt_hours, opt_minutes, opt_seconds) {
   if (goog.isString(opt_years)) {
     var type = opt_years;
     var interval = /** @type {number} */ (opt_months);
@@ -530,10 +528,10 @@ goog.date.Interval.fromIsoString = function(duration) {
   var hours = parseInt(parts[6], 10) || 0;
   var minutes = parseInt(parts[7], 10) || 0;
   var seconds = parseFloat(parts[8]) || 0;
-  return negative ? new goog.date.Interval(-years, -months, -days,
-                                           -hours, -minutes, -seconds) :
-                    new goog.date.Interval(years, months, days,
-                                           hours, minutes, seconds);
+  return negative ?
+      new goog.date.Interval(
+          -years, -months, -days, -hours, -minutes, -seconds) :
+      new goog.date.Interval(years, months, days, hours, minutes, seconds);
 };
 
 
@@ -546,10 +544,12 @@ goog.date.Interval.fromIsoString = function(duration) {
  *     or null if the interval contains both positive and negative fields.
  */
 goog.date.Interval.prototype.toIsoString = function(opt_verbose) {
-  var minField = Math.min(this.years, this.months, this.days,
-                          this.hours, this.minutes, this.seconds);
-  var maxField = Math.max(this.years, this.months, this.days,
-                          this.hours, this.minutes, this.seconds);
+  var minField = Math.min(
+      this.years, this.months, this.days, this.hours, this.minutes,
+      this.seconds);
+  var maxField = Math.max(
+      this.years, this.months, this.days, this.hours, this.minutes,
+      this.seconds);
   if (minField < 0 && maxField > 0) {
     return null;
   }
@@ -605,12 +605,9 @@ goog.date.Interval.prototype.toIsoString = function(opt_verbose) {
  * @return {boolean} Whether the intervals are equal.
  */
 goog.date.Interval.prototype.equals = function(other) {
-  return other.years == this.years &&
-         other.months == this.months &&
-         other.days == this.days &&
-         other.hours == this.hours &&
-         other.minutes == this.minutes &&
-         other.seconds == this.seconds;
+  return other.years == this.years && other.months == this.months &&
+      other.days == this.days && other.hours == this.hours &&
+      other.minutes == this.minutes && other.seconds == this.seconds;
 };
 
 
@@ -619,8 +616,8 @@ goog.date.Interval.prototype.equals = function(other) {
  */
 goog.date.Interval.prototype.clone = function() {
   return new goog.date.Interval(
-      this.years, this.months, this.days,
-      this.hours, this.minutes, this.seconds);
+      this.years, this.months, this.days, this.hours, this.minutes,
+      this.seconds);
 };
 
 
@@ -670,12 +667,8 @@ goog.date.Interval.SECONDS = 's';
  * @return {boolean} Whether all fields of the interval are zero.
  */
 goog.date.Interval.prototype.isZero = function() {
-  return this.years == 0 &&
-         this.months == 0 &&
-         this.days == 0 &&
-         this.hours == 0 &&
-         this.minutes == 0 &&
-         this.seconds == 0;
+  return this.years == 0 && this.months == 0 && this.days == 0 &&
+      this.hours == 0 && this.minutes == 0 && this.seconds == 0;
 };
 
 
@@ -693,12 +686,9 @@ goog.date.Interval.prototype.getInverse = function() {
  * @return {!goog.date.Interval} n * this.
  */
 goog.date.Interval.prototype.times = function(n) {
-  return new goog.date.Interval(this.years * n,
-                                this.months * n,
-                                this.days * n,
-                                this.hours * n,
-                                this.minutes * n,
-                                this.seconds * n);
+  return new goog.date.Interval(
+      this.years * n, this.months * n, this.days * n, this.hours * n,
+      this.minutes * n, this.seconds * n);
 };
 
 
@@ -760,8 +750,8 @@ goog.date.Date = function(opt_year, opt_month, opt_date) {
     this.date = this.buildDate_(opt_year, opt_month || 0, opt_date || 1);
     this.maybeFixDst_(opt_date || 1);
   } else if (goog.isObject(opt_year)) {
-    this.date = this.buildDate_(opt_year.getFullYear(), opt_year.getMonth(),
-        opt_year.getDate());
+    this.date = this.buildDate_(
+        opt_year.getFullYear(), opt_year.getMonth(), opt_year.getDate());
     this.maybeFixDst_(opt_year.getDate());
   } else {
     this.date = new Date(goog.now());
@@ -1043,8 +1033,7 @@ goog.date.Date.prototype.getTimezoneOffsetString = function() {
     var n = Math.abs(offset) / 60;
     var h = Math.floor(n);
     var m = (n - h) * 60;
-    tz = (offset > 0 ? '-' : '+') +
-        goog.string.padNumber(h, 2) + ':' +
+    tz = (offset > 0 ? '-' : '+') + goog.string.padNumber(h, 2) + ':' +
         goog.string.padNumber(m, 2);
   }
 
@@ -1224,13 +1213,12 @@ goog.date.Date.prototype.add = function(interval) {
  */
 goog.date.Date.prototype.toIsoString = function(opt_verbose, opt_tz) {
   var str = [
-    this.getFullYear(),
-    goog.string.padNumber(this.getMonth() + 1, 2),
+    this.getFullYear(), goog.string.padNumber(this.getMonth() + 1, 2),
     goog.string.padNumber(this.getDate(), 2)
   ];
 
   return str.join((opt_verbose) ? '-' : '') +
-         (opt_tz ? this.getTimezoneOffsetString() : '');
+      (opt_tz ? this.getTimezoneOffsetString() : '');
 };
 
 
@@ -1246,8 +1234,7 @@ goog.date.Date.prototype.toIsoString = function(opt_verbose, opt_tz) {
  */
 goog.date.Date.prototype.toUTCIsoString = function(opt_verbose, opt_tz) {
   var str = [
-    this.getUTCFullYear(),
-    goog.string.padNumber(this.getUTCMonth() + 1, 2),
+    this.getUTCFullYear(), goog.string.padNumber(this.getUTCMonth() + 1, 2),
     goog.string.padNumber(this.getUTCDate(), 2)
   ];
 
@@ -1264,10 +1251,9 @@ goog.date.Date.prototype.toUTCIsoString = function(opt_verbose, opt_tz) {
  * @return {boolean} Whether the given date is equal to this one.
  */
 goog.date.Date.prototype.equals = function(other) {
-  return !!(other &&
-            this.getYear() == other.getYear() &&
-            this.getMonth() == other.getMonth() &&
-            this.getDate() == other.getDate());
+  return !!(
+      other && this.getYear() == other.getYear() &&
+      this.getMonth() == other.getMonth() && this.getDate() == other.getDate());
 };
 
 
@@ -1338,14 +1324,16 @@ goog.date.Date.compare = function(date1, date2) {
  * @struct
  * @extends {goog.date.Date}
  */
-goog.date.DateTime = function(opt_year, opt_month, opt_date, opt_hours,
-                              opt_minutes, opt_seconds, opt_milliseconds) {
+goog.date.DateTime = function(
+    opt_year, opt_month, opt_date, opt_hours, opt_minutes, opt_seconds,
+    opt_milliseconds) {
   if (goog.isNumber(opt_year)) {
-    this.date = new Date(opt_year, opt_month || 0, opt_date || 1,
-        opt_hours || 0, opt_minutes || 0, opt_seconds || 0,
-        opt_milliseconds || 0);
+    this.date = new Date(
+        opt_year, opt_month || 0, opt_date || 1, opt_hours || 0,
+        opt_minutes || 0, opt_seconds || 0, opt_milliseconds || 0);
   } else {
-    this.date = new Date(opt_year ? opt_year.getTime() : goog.now());
+    this.date = new Date(
+        opt_year && opt_year.getTime ? opt_year.getTime() : goog.now());
   }
 };
 goog.inherits(goog.date.DateTime, goog.date.Date);
@@ -1566,13 +1554,13 @@ goog.date.DateTime.prototype.add = function(interval) {
   goog.date.Date.prototype.add.call(this, interval);
 
   if (interval.hours) {
-    this.setHours(this.date.getHours() + interval.hours);
+    this.setUTCHours(this.date.getUTCHours() + interval.hours);
   }
   if (interval.minutes) {
-    this.setMinutes(this.date.getMinutes() + interval.minutes);
+    this.setUTCMinutes(this.date.getUTCMinutes() + interval.minutes);
   }
   if (interval.seconds) {
-    this.setSeconds(this.date.getSeconds() + interval.seconds);
+    this.setUTCSeconds(this.date.getUTCSeconds() + interval.seconds);
   }
 };
 
@@ -1591,15 +1579,13 @@ goog.date.DateTime.prototype.toIsoString = function(opt_verbose, opt_tz) {
   var dateString = goog.date.Date.prototype.toIsoString.call(this, opt_verbose);
 
   if (opt_verbose) {
-    return dateString + ' ' +
-        goog.string.padNumber(this.getHours(), 2) + ':' +
+    return dateString + ' ' + goog.string.padNumber(this.getHours(), 2) + ':' +
         goog.string.padNumber(this.getMinutes(), 2) + ':' +
         goog.string.padNumber(this.getSeconds(), 2) +
         (opt_tz ? this.getTimezoneOffsetString() : '');
   }
 
-  return dateString + 'T' +
-      goog.string.padNumber(this.getHours(), 2) +
+  return dateString + 'T' + goog.string.padNumber(this.getHours(), 2) +
       goog.string.padNumber(this.getMinutes(), 2) +
       goog.string.padNumber(this.getSeconds(), 2) +
       (opt_tz ? this.getTimezoneOffsetString() : '');
@@ -1639,18 +1625,14 @@ goog.date.DateTime.prototype.toUTCIsoString = function(opt_verbose, opt_tz) {
   var dateStr = goog.date.Date.prototype.toUTCIsoString.call(this, opt_verbose);
 
   if (opt_verbose) {
-    return dateStr + ' ' +
-        goog.string.padNumber(this.getUTCHours(), 2) + ':' +
+    return dateStr + ' ' + goog.string.padNumber(this.getUTCHours(), 2) + ':' +
         goog.string.padNumber(this.getUTCMinutes(), 2) + ':' +
-        goog.string.padNumber(this.getUTCSeconds(), 2) +
-        (opt_tz ? 'Z' : '');
+        goog.string.padNumber(this.getUTCSeconds(), 2) + (opt_tz ? 'Z' : '');
   }
 
-  return dateStr + 'T' +
-      goog.string.padNumber(this.getUTCHours(), 2) +
+  return dateStr + 'T' + goog.string.padNumber(this.getUTCHours(), 2) +
       goog.string.padNumber(this.getUTCMinutes(), 2) +
-      goog.string.padNumber(this.getUTCSeconds(), 2) +
-      (opt_tz ? 'Z' : '');
+      goog.string.padNumber(this.getUTCSeconds(), 2) + (opt_tz ? 'Z' : '');
 };
 
 
@@ -1688,9 +1670,8 @@ goog.date.DateTime.prototype.toString = function() {
  *                                      but '5:01pm' remains '5:01pm'.
  * @return {string} The time label.
  */
-goog.date.DateTime.prototype.toUsTimeString = function(opt_padHours,
-                                                       opt_showAmPm,
-                                                       opt_omitZeroMinutes) {
+goog.date.DateTime.prototype.toUsTimeString = function(
+    opt_padHours, opt_showAmPm, opt_omitZeroMinutes) {
   var hours = this.getHours();
 
   // show am/pm marker by default
@@ -1744,9 +1725,8 @@ goog.date.DateTime.prototype.toUsTimeString = function(opt_padHours,
  */
 goog.date.DateTime.prototype.toIsoTimeString = function(opt_showSeconds) {
   var hours = this.getHours();
-  var label = goog.string.padNumber(hours, 2) +
-              ':' +
-              goog.string.padNumber(this.getMinutes(), 2);
+  var label = goog.string.padNumber(hours, 2) + ':' +
+      goog.string.padNumber(this.getMinutes(), 2);
   if (!goog.isDef(opt_showSeconds) || opt_showSeconds) {
     label += ':' + goog.string.padNumber(this.getSeconds(), 2);
   }

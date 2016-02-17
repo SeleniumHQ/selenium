@@ -49,8 +49,9 @@ goog.require('goog.ui.registry');
  * @extends {goog.ui.Control}
  */
 goog.ui.MenuItem = function(content, opt_model, opt_domHelper, opt_renderer) {
-  goog.ui.Control.call(this, content, opt_renderer ||
-      goog.ui.MenuItemRenderer.getInstance(), opt_domHelper);
+  goog.ui.Control.call(
+      this, content, opt_renderer || goog.ui.MenuItemRenderer.getInstance(),
+      opt_domHelper);
   this.setValue(opt_model);
 };
 goog.inherits(goog.ui.MenuItem, goog.ui.Control);
@@ -187,17 +188,23 @@ goog.ui.MenuItem.prototype.getCaption = function() {
   if (goog.isArray(content)) {
     var acceleratorClass = goog.ui.MenuItem.ACCELERATOR_CLASS;
     var mnemonicWrapClass = goog.ui.MenuItem.MNEMONIC_WRAPPER_CLASS_;
-    var caption = goog.array.map(content, function(node) {
-      if (goog.dom.isElement(node) &&
-          (goog.dom.classlist.contains(/** @type {!Element} */ (node),
-              acceleratorClass) ||
-          goog.dom.classlist.contains(/** @type {!Element} */ (node),
-              mnemonicWrapClass))) {
-        return '';
-      } else {
-        return goog.dom.getRawTextContent(node);
-      }
-    }).join('');
+    var caption =
+        goog.array
+            .map(
+                content,
+                function(node) {
+                  if (goog.dom.isElement(node) &&
+                      (goog.dom.classlist.contains(
+                           /** @type {!Element} */ (node), acceleratorClass) ||
+                       goog.dom.classlist.contains(
+                           /** @type {!Element} */ (node),
+                           mnemonicWrapClass))) {
+                    return '';
+                  } else {
+                    return goog.dom.getRawTextContent(node);
+                  }
+                })
+            .join('');
     return goog.string.collapseBreakingSpaces(caption);
   }
   return goog.ui.MenuItem.superClass_.getCaption.call(this);
@@ -213,8 +220,8 @@ goog.ui.MenuItem.prototype.getAccelerator = function() {
   var content = this.getContent();
   if (goog.isArray(content)) {
     var acceleratorEl = goog.array.find(content, function(e) {
-      return goog.dom.classlist.contains(/** @type {!Element} */ (e),
-          goog.ui.MenuItem.ACCELERATOR_CLASS);
+      return goog.dom.classlist.contains(
+          /** @type {!Element} */ (e), goog.ui.MenuItem.ACCELERATOR_CLASS);
     });
     if (acceleratorEl) {
       return dom.getTextContent(acceleratorEl);
@@ -281,8 +288,8 @@ goog.ui.MenuItem.prototype.getMnemonic = function() {
 
 
 // Register a decorator factory function for goog.ui.MenuItems.
-goog.ui.registry.setDecoratorByClassName(goog.ui.MenuItemRenderer.CSS_CLASS,
-    function() {
+goog.ui.registry.setDecoratorByClassName(
+    goog.ui.MenuItemRenderer.CSS_CLASS, function() {
       // MenuItem defaults to using MenuItemRenderer.
       return new goog.ui.MenuItem(null);
     });

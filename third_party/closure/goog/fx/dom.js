@@ -145,7 +145,8 @@ goog.inherits(goog.fx.dom.Slide, goog.fx.dom.PredefinedEffect);
 /** @override */
 goog.fx.dom.Slide.prototype.updateStyle = function() {
   var pos = (this.isRightPositioningForRtlEnabled() && this.isRightToLeft()) ?
-      'right' : 'left';
+      'right' :
+      'left';
   this.element.style[pos] = Math.round(this.coords[0]) + 'px';
   this.element.style.top = Math.round(this.coords[1]) + 'px';
 };
@@ -179,9 +180,12 @@ goog.inherits(goog.fx.dom.SlideFrom, goog.fx.dom.Slide);
 /** @override */
 goog.fx.dom.SlideFrom.prototype.onBegin = function() {
   var offsetLeft = this.isRightPositioningForRtlEnabled() ?
-      goog.style.bidi.getOffsetStart(this.element) : this.element.offsetLeft;
-  this.startPoint = [offsetLeft,
-                     /** @type {!HTMLElement} */ (this.element).offsetTop];
+      goog.style.bidi.getOffsetStart(this.element) :
+      this.element.offsetLeft;
+  this.startPoint = [
+    offsetLeft,
+    /** @type {!HTMLElement} */ (this.element).offsetTop
+  ];
   goog.fx.dom.SlideFrom.superClass_.onBegin.call(this);
 };
 
@@ -234,8 +238,10 @@ goog.fx.dom.Swipe.prototype.updateStyle = function() {
   var y = this.coords[1];
   this.clip_(Math.round(x), Math.round(y), this.maxWidth_, this.maxHeight_);
   this.element.style.width = Math.round(x) + 'px';
-  var marginX = (this.isRightPositioningForRtlEnabled() &&
-      this.isRightToLeft()) ? 'marginRight' : 'marginLeft';
+  var marginX =
+      (this.isRightPositioningForRtlEnabled() && this.isRightToLeft()) ?
+      'marginRight' :
+      'marginLeft';
 
   this.element.style[marginX] = Math.round(x) - this.maxWidth_ + 'px';
   this.element.style.marginTop = Math.round(y) - this.maxHeight_ + 'px';
@@ -348,8 +354,8 @@ goog.fx.dom.Resize.prototype.updateStyle = function() {
  * @struct
  */
 goog.fx.dom.ResizeWidth = function(element, start, end, time, opt_acc) {
-  goog.fx.dom.PredefinedEffect.call(this, element, [start],
-                                    [end], time, opt_acc);
+  goog.fx.dom.PredefinedEffect.call(
+      this, element, [start], [end], time, opt_acc);
 };
 goog.inherits(goog.fx.dom.ResizeWidth, goog.fx.dom.PredefinedEffect);
 
@@ -380,8 +386,8 @@ goog.fx.dom.ResizeWidth.prototype.updateStyle = function() {
  * @struct
  */
 goog.fx.dom.ResizeHeight = function(element, start, end, time, opt_acc) {
-  goog.fx.dom.PredefinedEffect.call(this, element, [start],
-                                    [end], time, opt_acc);
+  goog.fx.dom.PredefinedEffect.call(
+      this, element, [start], [end], time, opt_acc);
 };
 goog.inherits(goog.fx.dom.ResizeHeight, goog.fx.dom.PredefinedEffect);
 
@@ -416,8 +422,8 @@ goog.fx.dom.Fade = function(element, start, end, time, opt_acc) {
   if (goog.isNumber(start)) start = [start];
   if (goog.isNumber(end)) end = [end];
 
-  goog.fx.dom.Fade.base(this, 'constructor',
-      element, start, end, time, opt_acc);
+  goog.fx.dom.Fade.base(
+      this, 'constructor', element, start, end, time, opt_acc);
 
   if (start.length != 1 || end.length != 1) {
     throw Error('Start and end points must be 1D');
@@ -653,16 +659,12 @@ goog.fx.dom.bgColorFadeIn = function(element, start, time, opt_eventHandler) {
 
   var anim = new goog.fx.dom.BgColorTransform(element, start, end, time);
 
-  function setBgColor() {
-    element.style.backgroundColor = initialBgColor;
-  }
+  function setBgColor() { element.style.backgroundColor = initialBgColor; }
 
   if (opt_eventHandler) {
-    opt_eventHandler.listen(
-        anim, goog.fx.Transition.EventType.END, setBgColor);
+    opt_eventHandler.listen(anim, goog.fx.Transition.EventType.END, setBgColor);
   } else {
-    goog.events.listen(
-        anim, goog.fx.Transition.EventType.END, setBgColor);
+    goog.events.listen(anim, goog.fx.Transition.EventType.END, setBgColor);
   }
 
   anim.play();
