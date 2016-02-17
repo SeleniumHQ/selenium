@@ -54,12 +54,21 @@ wgxpath.NameTest = function(name, opt_namespaceUri) {
    */
   this.name_ = name.toLowerCase();
 
+  var defaultNamespace;
+  if (this.name_ == wgxpath.NameTest.WILDCARD) {
+    // Wildcard names default to wildcard namespace.
+    defaultNamespace = wgxpath.NameTest.WILDCARD;
+  } else {
+    // Defined names default to html namespace.
+    defaultNamespace = wgxpath.NameTest.HTML_NAMESPACE_URI_;
+  }
   /**
    * @type {string}
    * @private
    */
   this.namespaceUri_ = opt_namespaceUri ? opt_namespaceUri.toLowerCase() :
-      wgxpath.NameTest.HTML_NAMESPACE_URI_;
+      defaultNamespace;
+
 };
 
 
@@ -72,6 +81,15 @@ wgxpath.NameTest = function(name, opt_namespaceUri) {
  */
 wgxpath.NameTest.HTML_NAMESPACE_URI_ = 'http://www.w3.org/1999/xhtml';
 
+ /**
+  * Wildcard namespace which matches any namespace
+  *
+  * @const
+  * @type {string}
+  * @public
+  */
+ wgxpath.NameTest.WILDCARD = '*';
+
 
 /**
  * @override
@@ -82,12 +100,17 @@ wgxpath.NameTest.prototype.matches = function(node) {
       type != goog.dom.NodeType.ATTRIBUTE) {
     return false;
   }
-  if (this.name_ != '*' && this.name_ != node.nodeName.toLowerCase()) {
+  if (this.name_ != wgxpath.NameTest.WILDCARD &&
+      this.name_ != node.localName.toLowerCase()) {
     return false;
   } else {
-    var namespaceUri = node.namespaceURI ? node.namespaceURI.toLowerCase() :
-        wgxpath.NameTest.HTML_NAMESPACE_URI_;
-    return this.namespaceUri_ == namespaceUri;
+    if (this.namespaceUri_ == wgxpath.NameTest.WILDCARD) {
+      return true;
+    } else {
+      var namespaceUri = node.namespaceURI ? node.namespaceURI.toLowerCase() :
+          wgxpath.NameTest.HTML_NAMESPACE_URI_;
+      return this.namespaceUri_ == namespaceUri;
+    }
   }
 };
 
