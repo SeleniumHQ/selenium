@@ -308,6 +308,33 @@ class WebDriverSelectSupportTests(unittest.TestCase):
         except UnexpectedTagNameException:
           pass
 
+    def testDeselectByIndexNonExistent(self):
+        self._loadPage("formPage")
+        for select in [multiSelectValues1, multiSelectValues2]:
+            try:
+                Select(self.driver.find_element(By.NAME, select['name'])).deselect_by_index(10)
+                raise Exception("Should have gotten an NoSuchElementException to be raised.")
+            except NoSuchElementException:
+                pass # should get this exception
+
+    def testDeselectByValueNonExistent(self):
+        self._loadPage("formPage")
+        for select in [multiSelectValues1, multiSelectValues2]:
+            try:
+                Select(self.driver.find_element(By.NAME, select['name'])).deselect_by_value('not there')
+                raise Exception("Should have gotten an NoSuchElementException to be raised.")
+            except NoSuchElementException:
+                pass # should get this exception
+
+    def testDeselectByTextNonExistent(self):
+        self._loadPage("formPage")
+        for select in [multiSelectValues1, multiSelectValues2]:
+            try:
+                Select(self.driver.find_element(By.NAME, select['name'])).deselect_by_visible_text('not there')
+                raise Exception("Should have gotten an NoSuchElementException to be raised.")
+            except NoSuchElementException:
+                pass # should get this exception
+
     def _pageURL(self, name):
         return self.webserver.where_is(name + '.html')
 

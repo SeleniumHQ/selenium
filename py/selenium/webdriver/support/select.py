@@ -71,6 +71,8 @@ class Select:
 
            :Args:
             - value - The value to match against
+            
+           throws NoSuchElementException If there is no option with specisied value in SELECT
            """
         css = "option[value =%s]" % self._escapeString(value)
         opts = self._el.find_elements(By.CSS_SELECTOR, css)
@@ -89,17 +91,15 @@ class Select:
 
            :Args:
             - index - The option at this index will be selected 
+            
+           throws NoSuchElementException If there is no option with specisied index in SELECT
            """
         match = str(index)
-        matched = False
         for opt in self.options:
             if opt.get_attribute("index") == match:
                 self._setSelected(opt)
-                if not self.is_multiple:
-                    return
-                matched = True
-        if not matched:
-            raise NoSuchElementException("Could not locate element with index %d" % index)
+                return
+        raise NoSuchElementException("Could not locate element with index %d" % index)
 
     def select_by_visible_text(self, text):
         """Select all options that display text matching the argument. That is, when given "Bar" this
@@ -109,6 +109,8 @@ class Select:
              
            :Args:
             - text - The visible text to match against
+            
+            throws NoSuchElementException If there is no option with specisied text in SELECT
            """
         xpath = ".//option[normalize-space(.) = %s]" % self._escapeString(text)
         opts = self._el.find_elements(By.XPATH, xpath)
@@ -153,26 +155,36 @@ class Select:
              
            :Args:
             - value - The value to match against
+            
+            throws NoSuchElementException If there is no option with specisied value in SELECT
         """
         if not self.is_multiple:
             raise NotImplementedError("You may only deselect options of a multi-select")
+        matched = False
         css = "option[value = %s]" % self._escapeString(value)
         opts = self._el.find_elements(By.CSS_SELECTOR, css)
         for opt in opts:
             self._unsetSelected(opt)
-
+            matched = True
+        if not matched:
+            raise NoSuchElementException("Could not locate element with value: %s" % value)
+			
     def deselect_by_index(self, index):
         """Deselect the option at the given index. This is done by examing the "index" attribute of an
            element, and not merely by counting.
 
            :Args:
             - index - The option at this index will be deselected
+            
+            throws NoSuchElementException If there is no option with specisied index in SELECT
         """
         if not self.is_multiple:
             raise NotImplementedError("You may only deselect options of a multi-select")
         for opt in self.options:
             if opt.get_attribute("index") == str(index):
                 self._unsetSelected(opt)
+                return
+        raise NoSuchElementException("Could not locate element with index %d" % index)
 
     def deselect_by_visible_text(self, text):
         """Deselect all options that display text matching the argument. That is, when given "Bar" this
@@ -185,10 +197,14 @@ class Select:
         """
         if not self.is_multiple:
             raise NotImplementedError("You may only deselect options of a multi-select")
+        matched = False
         xpath = ".//option[normalize-space(.) = %s]" % self._escapeString(text)
         opts = self._el.find_elements(By.XPATH, xpath)
         for opt in opts:
             self._unsetSelected(opt)
+            matched = True
+        if not matched:
+            raise NoSuchElementException("Could not locate element with visible text: %s" % text)
 
     def _setSelected(self, option):
         if not option.is_selected():
