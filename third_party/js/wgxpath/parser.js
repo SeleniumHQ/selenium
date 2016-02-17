@@ -270,9 +270,14 @@ wgxpath.Parser.prototype.parseNameTest_ = function() {
     return new wgxpath.NameTest(name);
   } else {
     var namespacePrefix = name.substring(0, colonIndex);
-    var namespaceUri = this.nsResolver_(namespacePrefix);
-    if (!namespaceUri) {
-      throw Error('Namespace prefix not declared: ' + namespacePrefix);
+    var namespaceUri;
+    if (namespacePrefix == wgxpath.NameTest.WILDCARD) {
+      namespaceUri = wgxpath.NameTest.WILDCARD;
+    } else {
+      namespaceUri = this.nsResolver_(namespacePrefix);
+      if (!namespaceUri) {
+        throw Error('Namespace prefix not declared: ' + namespacePrefix);
+      }
     }
     name = name.substr(colonIndex + 1);
     return new wgxpath.NameTest(name, namespaceUri);
@@ -388,12 +393,8 @@ wgxpath.Parser.prototype.parseStep_ = function(op) {
 
     // Grab the test.
     token = this.lexer_.peek();
-    if (!/(?![0-9])[\w]/.test(token.charAt(0))) {
-      if (token == '*') {
-        test = this.parseNameTest_();
-      } else {
-        throw Error('Bad token: ' + this.lexer_.next());
-      }
+    if (!/(?![0-9])[\w\*]/.test(token.charAt(0))) {
+      throw Error('Bad token: ' + this.lexer_.next());
     } else {
       if (this.lexer_.peek(1) == '(') {
         if (!wgxpath.KindTest.isValidType(token)) {

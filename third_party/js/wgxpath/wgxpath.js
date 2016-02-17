@@ -221,16 +221,20 @@ wgxpath.XPathNSResolver_ = function(node) {
 
 
 /**
- * Installs the library. This is a noop if native XPath is available.
+ * Installs the library. Unless opt_force is true, this is a noop if native
+ * XPath is available.
  *
  * @param {Window=} opt_win The window to install the library on.
+ * @param {boolean=} opt_force Forces installation of this library,
+ *     overwriting existing XPath functionality.
  */
-wgxpath.install = function(opt_win) {
+wgxpath.install = function(opt_win, opt_force) {
   var win = opt_win || goog.global;
   var doc = win.document;
 
-  // Installation is a noop if native XPath is available.
-  if (doc['evaluate']) {
+  // Unless opt_force is true, installation is a noop if native XPath is
+  // available.
+  if (doc['evaluate'] && !opt_force) {
     return;
   }
 

@@ -147,8 +147,13 @@ wgxpath.BinaryExpr.compare_ = function(comp, lhs, rhs, ctx, opt_equChk) {
         default:
           throw Error('Illegal primitive type for comparison.');
       }
-      if (comp(stringValue,
-          /** @type {(string|number|boolean)} */ (primitive))) {
+      if (nodeset == left &&
+          comp(stringValue,
+              /** @type {(string|number|boolean)} */ (primitive))) {
+        return true;
+      } else if (nodeset == right &&
+          comp(/** @type {(string|number|boolean)} */ (primitive),
+              stringValue)) {
         return true;
       }
     }
