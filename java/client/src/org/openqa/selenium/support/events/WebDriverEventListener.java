@@ -73,6 +73,21 @@ public interface WebDriverEventListener {
   void afterNavigateForward(WebDriver driver);
 
   /**
+   * Called before {@link org.openqa.selenium.WebDriver.Navigation#refresh navigate().refresh()}.
+   *
+   * @param driver WebDriver
+   */
+  void beforeNavigateRefresh(WebDriver driver);
+
+  /**
+   * Called after {@link org.openqa.selenium.WebDriver.Navigation#refresh navigate().refresh()}. Not called,
+   * if an exception is thrown.
+   *
+   * @param driver WebDriver
+   */
+  void afterNavigateRefresh(WebDriver driver);
+
+  /**
    * Called before {@link WebDriver#findElement WebDriver.findElement(...)}, or
    * {@link WebDriver#findElements WebDriver.findElements(...)}, or {@link WebElement#findElement
    * WebElement.findElement(...)}, or {@link WebElement#findElement WebElement.findElements(...)}.

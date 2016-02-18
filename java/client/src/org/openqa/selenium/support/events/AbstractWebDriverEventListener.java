@@ -51,6 +51,14 @@ public abstract class AbstractWebDriverEventListener implements WebDriverEventLi
     // Do nothing.
   }
 
+  public void beforeNavigateRefresh(WebDriver driver) {
+    // Do nothing.
+  }
+
+  public void afterNavigateRefresh(WebDriver driver) {
+    // Do nothing.
+  }
+
   public void beforeFindBy(By by, WebElement element, WebDriver driver) {
     // Do nothing.
   }

@@ -91,12 +91,23 @@ public class EventFiringWebDriverTest {
           public void afterNavigateForward(WebDriver driver) {
             log.append("afterNavigateForward\n");
           }
+
+          @Override
+          public void beforeNavigateRefresh(WebDriver driver) {
+            log.append("beforeNavigateRefresh\n");
+          }
+
+          @Override
+          public void afterNavigateRefresh(WebDriver driver) {
+            log.append("afterNavigateRefresh\n");
+          }
         });
 
     testedDriver.get("http://www.get.com");
     testedDriver.navigate().to("http://www.navigate-to.com");
     testedDriver.navigate().back();
     testedDriver.navigate().forward();
+    testedDriver.navigate().refresh();
 
     assertEquals(
         "beforeNavigateTo http://www.get.com\n" +
@@ -106,7 +117,9 @@ public class EventFiringWebDriverTest {
             "beforeNavigateBack\n" +
             "afterNavigateBack\n" +
             "beforeNavigateForward\n" +
-            "afterNavigateForward\n",
+            "afterNavigateForward\n" +
+            "beforeNavigateRefresh\n" +
+            "afterNavigateRefresh\n",
         log.toString());
 
     InOrder order = Mockito.inOrder(mockedDriver, mockedNavigation);
@@ -114,6 +127,7 @@ public class EventFiringWebDriverTest {
     order.verify(mockedNavigation).to("http://www.navigate-to.com");
     order.verify(mockedNavigation).back();
     order.verify(mockedNavigation).forward();
+    order.verify(mockedNavigation).refresh();
     order.verifyNoMoreInteractions();
   }
 
