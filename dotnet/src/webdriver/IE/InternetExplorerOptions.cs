@@ -287,6 +287,7 @@ namespace OpenQA.Selenium.IE
         /// Gets or sets a value indicating whether to validate the document type of the loaded
         /// document when setting cookies.
         /// </summary>
+        [Obsolete("The IE driver no longer validates document types for cookie retrieval or setting. This property will be removed in a future release.")]
         public bool ValidateCookieDocumentType
         {
             get { return this.validateCookieDocumentType; }
@@ -502,11 +503,6 @@ namespace OpenQA.Selenium.IE
             if (this.ensureCleanSession)
             {
                 capabilities.SetCapability(EnsureCleanSessionCapability, true);
-            }
-
-            if (!this.validateCookieDocumentType)
-            {
-                capabilities.SetCapability(ValidateCookieDocumentTypeCapability, false);
             }
 
             if (!this.enableFullPageScreenshot)
