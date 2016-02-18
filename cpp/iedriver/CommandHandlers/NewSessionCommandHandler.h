@@ -94,9 +94,6 @@ class NewSessionCommandHandler : public IECommandHandler {
       mutable_executor.input_manager()->set_require_window_focus(require_window_focus.asBool());
       returned_capabilities[REQUIRE_WINDOW_FOCUS_CAPABILITY] = mutable_executor.input_manager()->require_window_focus();
 
-      Json::Value validate_cookie_document_type = this->GetCapability(it->second, VALIDATE_COOKIE_DOCUMENT_TYPE_CAPABILITY, Json::booleanValue, true);
-      mutable_executor.set_validate_cookie_document_type(validate_cookie_document_type.asBool());
-
       Json::Value file_upload_dialog_timeout = this->GetCapability(it->second, FILE_UPLOAD_DIALOG_TIMEOUT_CAPABILITY, Json::intValue, 0);
       if (file_upload_dialog_timeout.asInt() > 0) {
         mutable_executor.set_file_upload_dialog_timeout(file_upload_dialog_timeout.asInt());
