@@ -19,7 +19,9 @@
 The ActionChains implementation,
 """
 from selenium.webdriver.remote.command import Command
-from selenium.webdriver.common.keys import Keys
+
+from .utils import keys_to_typing
+
 
 class ActionChains(object):
     """
@@ -169,7 +171,7 @@ class ActionChains(object):
         if element: self.click(element)
         self._actions.append(lambda:
             self._driver.execute(Command.SEND_KEYS_TO_ACTIVE_ELEMENT, {
-                "value": self._keys_to_typing(value) }))
+                "value": keys_to_typing(value) }))
         return self
 
     def key_up(self, value, element=None):
@@ -189,7 +191,7 @@ class ActionChains(object):
         if element: self.click(element)
         self._actions.append(lambda:
             self._driver.execute(Command.SEND_KEYS_TO_ACTIVE_ELEMENT, {
-                "value": self._keys_to_typing(value) }))
+                "value": keys_to_typing(value) }))
         return self
 
     def move_by_offset(self, xoffset, yoffset):
@@ -257,7 +259,7 @@ class ActionChains(object):
         """
         self._actions.append(lambda:
             self._driver.execute(Command.SEND_KEYS_TO_ACTIVE_ELEMENT, 
-              { 'value': self._keys_to_typing(keys_to_send)}))
+              { 'value': keys_to_typing(keys_to_send)}))
         return self
 
     def send_keys_to_element(self, element, *keys_to_send):
@@ -274,18 +276,8 @@ class ActionChains(object):
         return self
 
     def _keys_to_typing(self, value):
-        typing = []
-        for val in value:
-            if isinstance(val, Keys):
-                typing.append(val)
-            elif isinstance(val, int):
-                val = str(val)
-                for i in range(len(val)):
-                    typing.append(val[i])
-            else:
-                for i in range(len(val)):
-                    typing.append(val[i])
-        return typing
+        """DEPRECATED: Wrapper here just in case someone has been using this."""
+        return keys_to_typing(value)
 
     # Context manager so ActionChains can be used in a 'with .. as' statements.
     def __enter__(self):

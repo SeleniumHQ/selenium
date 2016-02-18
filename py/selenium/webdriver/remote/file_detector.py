@@ -17,7 +17,7 @@
 
 import abc
 import os
-from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.utils import keys_to_typing
 
 
 class FileDetector(object):
@@ -45,21 +45,9 @@ class LocalFileDetector(FileDetector):
     Detects files on the local disk.
     """
     def is_local_file(self, *keys):
-        file_path = ''
-        typing = []
-        for val in keys:
-            if isinstance(val, Keys):
-                typing.append(val)
-            elif isinstance(val, int):
-                val = val.__str__()
-                for i in range(len(val)):
-                    typing.append(val[i])
-            else:
-                for i in range(len(val)):
-                    typing.append(val[i])
-        file_path = ''.join(typing)
+        file_path = ''.join(keys_to_typing(keys))
 
-        if file_path is '':
+        if not file_path:
             return None
 
         try:

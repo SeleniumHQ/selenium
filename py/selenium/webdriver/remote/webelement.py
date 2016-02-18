@@ -16,7 +16,6 @@
 # under the License.
 
 import hashlib
-from numbers import Number
 import os
 import zipfile
 try:
@@ -29,7 +28,7 @@ from .command import Command
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.utils import keys_to_typing
 
 
 try:
@@ -320,18 +319,7 @@ class WebElement(object):
             if local_file is not None:
                 value = self._upload(local_file)
 
-        typing = []
-        for val in value:
-            if isinstance(val, Keys):
-                typing.append(val)
-            elif isinstance(val, Number):
-                val = val.__str__()
-                for i in range(len(val)):
-                    typing.append(val[i])
-            else:
-                for i in range(len(val)):
-                    typing.append(val[i])
-        self._execute(Command.SEND_KEYS_TO_ELEMENT, {'value': typing})
+        self._execute(Command.SEND_KEYS_TO_ELEMENT, {'value': keys_to_typing(value)})
 
     # RenderedWebElement Items
     def is_displayed(self):
