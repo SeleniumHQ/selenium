@@ -36,35 +36,63 @@ class NewSessionCommandHandler : public IECommandHandler {
   void ExecuteInternal(const IECommandExecutor& executor,
                        const ParametersMap& command_parameters,
                        Response* response) {
+    Json::Value returned_capabilities;
+    returned_capabilities[BROWSER_NAME_CAPABILITY] = "internet explorer";
+    returned_capabilities[BROWSER_VERSION_CAPABILITY] = std::to_string(static_cast<long long>(executor.browser_version()));
+    returned_capabilities[JAVASCRIPT_ENABLED_CAPABILITY] = true;
+    returned_capabilities[PLATFORM_CAPABILITY] = "WINDOWS";
+
     std::string default_initial_url = "http://localhost:" + std::to_string(static_cast<long long>(executor.port())) + "/";
     IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
     ParametersMap::const_iterator it = command_parameters.find("desiredCapabilities");
     if (it != command_parameters.end()) {
       BrowserFactorySettings factory_settings;
+      
       Json::Value ignore_protected_mode_settings = this->GetCapability(it->second, IGNORE_PROTECTED_MODE_CAPABILITY, Json::booleanValue, false);
       factory_settings.ignore_protected_mode_settings = ignore_protected_mode_settings.asBool();
+      returned_capabilities[IGNORE_PROTECTED_MODE_CAPABILITY] = factory_settings.ignore_protected_mode_settings;
+
       Json::Value ignore_zoom_setting = this->GetCapability(it->second, IGNORE_ZOOM_SETTING_CAPABILITY, Json::booleanValue, false);
       factory_settings.ignore_zoom_setting = ignore_zoom_setting.asBool();
+      returned_capabilities[IGNORE_ZOOM_SETTING_CAPABILITY] = factory_settings.ignore_zoom_setting;
+
       Json::Value browser_attach_timeout = this->GetCapability(it->second, BROWSER_ATTACH_TIMEOUT_CAPABILITY, Json::intValue, 0);
       factory_settings.browser_attach_timeout = browser_attach_timeout.asInt();
+      returned_capabilities[BROWSER_ATTACH_TIMEOUT_CAPABILITY] = factory_settings.browser_attach_timeout;
+
       Json::Value initial_url = this->GetCapability(it->second, INITIAL_BROWSER_URL_CAPABILITY, Json::stringValue, default_initial_url);
       factory_settings.initial_browser_url = initial_url.asString();
+      returned_capabilities[INITIAL_BROWSER_URL_CAPABILITY] = factory_settings.initial_browser_url;
+
       Json::Value force_create_process_api = this->GetCapability(it->second, FORCE_CREATE_PROCESS_API_CAPABILITY, Json::booleanValue, false);
       factory_settings.force_create_process_api = force_create_process_api.asBool();
+      returned_capabilities[FORCE_CREATE_PROCESS_API_CAPABILITY] = factory_settings.force_create_process_api;
+
       Json::Value force_shell_windows_api = this->GetCapability(it->second, FORCE_SHELL_WINDOWS_API_CAPABILITY, Json::booleanValue, false);
       factory_settings.force_shell_windows_api = force_shell_windows_api.asBool();
+      returned_capabilities[FORCE_SHELL_WINDOWS_API_CAPABILITY] = factory_settings.force_shell_windows_api;
+
       Json::Value browser_command_line_switches = this->GetCapability(it->second, BROWSER_COMMAND_LINE_SWITCHES_CAPABILITY, Json::stringValue, "");
       factory_settings.browser_command_line_switches = browser_command_line_switches.asString();
+      returned_capabilities[BROWSER_COMMAND_LINE_SWITCHES_CAPABILITY] = factory_settings.browser_command_line_switches;
+
       Json::Value ensure_clean_session = this->GetCapability(it->second, ENSURE_CLEAN_SESSION_CAPABILITY, Json::booleanValue, false);
       factory_settings.clear_cache_before_launch = ensure_clean_session.asBool();
+      returned_capabilities[ENSURE_CLEAN_SESSION_CAPABILITY] = factory_settings.clear_cache_before_launch;
+
       mutable_executor.browser_factory()->Initialize(factory_settings);
 
       Json::Value enable_native_events = this->GetCapability(it->second, NATIVE_EVENTS_CAPABILITY, Json::booleanValue, true);
       mutable_executor.input_manager()->set_enable_native_events(enable_native_events.asBool());
+      returned_capabilities[NATIVE_EVENTS_CAPABILITY] = mutable_executor.input_manager()->enable_native_events();
+
       Json::Value scroll_behavior = this->GetCapability(it->second, ELEMENT_SCROLL_BEHAVIOR_CAPABILITY, Json::intValue, 0);
       mutable_executor.input_manager()->set_scroll_behavior(static_cast<ELEMENT_SCROLL_BEHAVIOR>(scroll_behavior.asInt()));
+      returned_capabilities[ELEMENT_SCROLL_BEHAVIOR_CAPABILITY] = scroll_behavior.asInt();
+
       Json::Value require_window_focus = this->GetCapability(it->second, REQUIRE_WINDOW_FOCUS_CAPABILITY, Json::booleanValue, false);
       mutable_executor.input_manager()->set_require_window_focus(require_window_focus.asBool());
+      returned_capabilities[REQUIRE_WINDOW_FOCUS_CAPABILITY] = mutable_executor.input_manager()->require_window_focus();
 
       Json::Value validate_cookie_document_type = this->GetCapability(it->second, VALIDATE_COOKIE_DOCUMENT_TYPE_CAPABILITY, Json::booleanValue, true);
       mutable_executor.set_validate_cookie_document_type(validate_cookie_document_type.asBool());
@@ -73,13 +101,20 @@ class NewSessionCommandHandler : public IECommandHandler {
       if (file_upload_dialog_timeout.asInt() > 0) {
         mutable_executor.set_file_upload_dialog_timeout(file_upload_dialog_timeout.asInt());
       }
+      returned_capabilities[FILE_UPLOAD_DIALOG_TIMEOUT_CAPABILITY] = mutable_executor.file_upload_dialog_timeout();
 
       Json::Value unexpected_alert_behavior = this->GetCapability(it->second, UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY, Json::stringValue, DISMISS_UNEXPECTED_ALERTS);
       mutable_executor.set_unexpected_alert_behavior(this->GetUnexpectedAlertBehaviorValue(unexpected_alert_behavior.asString()));
+      returned_capabilities[UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY] = executor.unexpected_alert_behavior();
+
       Json::Value page_load_strategy = this->GetCapability(it->second, PAGE_LOAD_STRATEGY_CAPABILITY, Json::stringValue, NORMAL_PAGE_LOAD_STRATEGY);
       mutable_executor.set_page_load_strategy(this->GetPageLoadStrategyValue(page_load_strategy.asString()));
+      returned_capabilities[PAGE_LOAD_STRATEGY_CAPABILITY] = executor.page_load_strategy();
+
       Json::Value enable_element_cache_cleanup = this->GetCapability(it->second, ENABLE_ELEMENT_CACHE_CLEANUP_CAPABILITY, Json::booleanValue, true);
       mutable_executor.set_enable_element_cache_cleanup(enable_element_cache_cleanup.asBool());
+      returned_capabilities[ENABLE_ELEMENT_CACHE_CLEANUP_CAPABILITY] = executor.enable_element_cache_cleanup();
+
       Json::Value enable_persistent_hover = this->GetCapability(it->second, ENABLE_PERSISTENT_HOVER_CAPABILITY, Json::booleanValue, true);
       if (require_window_focus.asBool() || !enable_native_events.asBool()) {
         // Setting "require_window_focus" implies SendInput() API, and does not therefore require
@@ -88,8 +123,12 @@ class NewSessionCommandHandler : public IECommandHandler {
       } else {
         mutable_executor.set_enable_persistent_hover(enable_persistent_hover.asBool());
       }
+      returned_capabilities[ENABLE_PERSISTENT_HOVER_CAPABILITY] = executor.enable_persistent_hover();
+
       Json::Value resize_on_screenshot = this->GetCapability(it->second, ENABLE_FULL_PAGE_SCREENSHOT_CAPABILITY, Json::booleanValue, true);
       mutable_executor.set_enable_full_page_screenshot(resize_on_screenshot.asBool());
+      returned_capabilities[ENABLE_FULL_PAGE_SCREENSHOT_CAPABILITY] = executor.enable_full_page_screenshot();
+
       ProxySettings proxy_settings = { false, "", "", "", "", "", "", "", "" };
       Json::Value proxy = it->second.get(PROXY_CAPABILITY, Json::nullValue);
       if (!proxy.isNull()) {
@@ -118,6 +157,7 @@ class NewSessionCommandHandler : public IECommandHandler {
         proxy_settings.use_per_process_proxy = use_per_process_proxy.asBool();
       }
       mutable_executor.proxy_manager()->Initialize(proxy_settings);
+      returned_capabilities[PROXY_CAPABILITY] = executor.proxy_manager()->GetProxyAsJson();
     }
     std::string create_browser_error_message = "";
     int result_code = mutable_executor.CreateNewBrowser(&create_browser_error_message);
@@ -130,8 +170,7 @@ class NewSessionCommandHandler : public IECommandHandler {
                                  "Unexpected error launching Internet Explorer. " + create_browser_error_message);
       return;
     }
-    std::string id = executor.session_id();
-    response->SetResponse(303, "/session/" + id);
+    response->SetNewSessionResponse(executor.session_id(), returned_capabilities);
   }
 
  private:

@@ -79,6 +79,13 @@ void Response::SetErrorResponse(const int status_code,
   this->value_["message"] = message;
 }
 
+void Response::SetNewSessionResponse(const std::string& new_session_id,
+                                     const Json::Value& response_value) {
+  LOG(TRACE) << "Entering Response::SetNewSessionResponse";
+  this->session_id_ = new_session_id;
+  this->SetResponse(0, response_value);
+}
+
 // TODO: This method will be rendered unnecessary once all implementations
 // move to string status codes instead of integer status codes. This mapping
 // is not entirely correct; it's merely intended as a stopgap.
