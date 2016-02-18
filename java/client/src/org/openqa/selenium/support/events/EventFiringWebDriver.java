@@ -495,7 +495,9 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     }
 
     public void refresh() {
+      dispatcher.beforeNavigateRefresh(driver);
       navigation.refresh();
+      dispatcher.afterNavigateRefresh(driver);
     }
   }
 
