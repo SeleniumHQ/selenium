@@ -31,6 +31,7 @@ class WindowUtilities
   static void Wait(long wait_in_milliseconds);
   static void WaitWithoutMsgPump(long wait_in_milliseconds);
   static HWND GetChildWindow(HWND hwnd, std::wstring name);
+  static std::string GetWindowCaption(HWND hwnd);
 };
 
 } // webdriver

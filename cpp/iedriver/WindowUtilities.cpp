@@ -60,4 +60,14 @@ HWND WindowUtilities::GetChildWindow(HWND parent_window_handle,
   return NULL;
 }
 
+std::string WindowUtilities::GetWindowCaption(HWND window_handle) {
+  std::wstring window_caption = L"";
+  std::vector<wchar_t> buffer(256);
+  int success = ::GetWindowText(window_handle, &buffer[0], 256);
+  if (success > 0) {
+    window_caption = &buffer[0];
+  }
+  return StringUtilities::ToString(window_caption);
+}
+
 } // namespace webdriver

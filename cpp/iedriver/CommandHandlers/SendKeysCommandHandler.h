@@ -24,6 +24,9 @@
 #include "../WindowUtilities.h"
 #include "logging.h"
 
+#define MAXIMUM_DIALOG_FIND_RETRIES 50
+#define MAXIMUM_CONTROL_FIND_RETRIES 10
+
 const LPCTSTR fileDialogNames[] = {
   _T("#32770"),
   _T("ComboBoxEx32"),
@@ -193,21 +196,16 @@ class SendKeysCommandHandler : public IECommandHandler {
     HWND dialog_window_handle = ::GetLastActivePopup(ie_main_window_handle);
 
     int max_retries = data->dialogTimeout / 100;
-    while ((dialog_window_handle == ie_main_window_handle) && --max_retries) {
-      ::Sleep(100);
-      dialog_window_handle = ::GetLastActivePopup(ie_main_window_handle);
-    }
-
-    int max_fallback_retries = 50;
     if (!dialog_window_handle ||
         (dialog_window_handle == ie_main_window_handle)) {
-      LOG(WARN) << "No dialog directly owned by the top-level window";
+      LOG(DEBUG) << "No dialog directly owned by the top-level window found. "
+                 << "Beginning search for dialog. Will search for " 
+                 << max_retries << " attempts at 100ms intervals.";
       // No dialog directly owned by the top-level window.
       // Look for a dialog belonging to the same process as
       // the IE server window. This isn't perfect, but it's
       // all we have for now.
-      max_fallback_retries = 50;
-      while ((dialog_window_handle == ie_main_window_handle) && --max_fallback_retries) {
+      while ((dialog_window_handle == ie_main_window_handle) && --max_retries) {
         ::Sleep(100);
         ProcessWindowInfo process_win_info;
         process_win_info.dwProcessId = data->ieProcId;
@@ -221,23 +219,45 @@ class SendKeysCommandHandler : public IECommandHandler {
 
     if (!dialog_window_handle ||
         (dialog_window_handle == ie_main_window_handle)) {
+      LOG(DEBUG) << "Did not find dialog owned by IE process. "
+                 << "Searching again using GetLastActivePopup API.";
+      max_retries = data->dialogTimeout / 100;
+      while ((dialog_window_handle == ie_main_window_handle) && --max_retries) {
+        ::Sleep(100);
+        dialog_window_handle = ::GetLastActivePopup(ie_main_window_handle);
+      }
+    }
+
+    if (!dialog_window_handle ||
+        (dialog_window_handle == ie_main_window_handle)) {
       LOG(WARN) << "No dialog found";
       return false;
     }
 
+    LOG(DEBUG) << "Found file upload dialog. Window has caption '"
+               << WindowUtilities::GetWindowCaption(dialog_window_handle)
+               << "' Starting to look for file name edit control.";
     return SendKeysToFileUploadAlert(dialog_window_handle, data->text);
   }
 
   static bool SendKeysToFileUploadAlert(HWND dialog_window_handle,
                                         const wchar_t* value) {
     HWND edit_field_window_handle = NULL;
-    int max_wait = 10;
+    int max_wait = MAXIMUM_CONTROL_FIND_RETRIES;
     while (!edit_field_window_handle && --max_wait) {
       WindowUtilities::Wait(200);
       edit_field_window_handle = dialog_window_handle;
       for (int i = 1; fileDialogNames[i]; ++i) {
+        std::wstring child_window_class = fileDialogNames[i];
         edit_field_window_handle = WindowUtilities::GetChildWindow(edit_field_window_handle,
-                                                  fileDialogNames[i]);
+                                                                   child_window_class);
+        if (!edit_field_window_handle) {
+          LOG(WARN) << "Didn't find window with class name '" 
+                    << LOGWSTRING(child_window_class)
+                    << "' during attempt "
+                    << MAXIMUM_CONTROL_FIND_RETRIES - max_wait
+                    << " of " << MAXIMUM_CONTROL_FIND_RETRIES << ".";
+        }
       }
     }
 
@@ -248,7 +268,7 @@ class SendKeysCommandHandler : public IECommandHandler {
       size_t expected = wcslen(filename);
       size_t curr = 0;
 
-      max_wait = 10;
+      max_wait = MAXIMUM_CONTROL_FIND_RETRIES;
       while ((expected != curr) && --max_wait) {
         ::SendMessage(edit_field_window_handle,
                       WM_SETTEXT,
@@ -264,7 +284,7 @@ class SendKeysCommandHandler : public IECommandHandler {
                   << "Actual: " << curr;
       }
 
-      max_wait = 50;
+      max_wait = MAXIMUM_DIALOG_FIND_RETRIES;
       bool triedToDismiss = false;
       for (int i = 0; i < max_wait; i++) {
         HWND open_button_window_handle = ::GetDlgItem(dialog_window_handle,
