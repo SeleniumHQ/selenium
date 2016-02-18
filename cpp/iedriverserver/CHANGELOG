@@ -9,6 +9,24 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.52.0.1
+=========
+ * Removing IE driver support for ie.validateCookieDocumentType capability.
+   This capability was made obsolete with the rewrite of the IE driver's
+   cookie handling in 2.47. It has been ignored since, so this commit removes
+   the IE driver code for that capability.
+ * Make IE driver directly return capabilities from new session command.
+   Previously, the driver would return a redirect HTTP response (303), and
+   the language bindings were expected to follow the redirect to get the
+   returned capabilities. This has been an obsolete pattern for some time,
+   and the IE driver is only now conforming to the proper pattern of simply
+   returning a 200 response with the correct capabilities as part of the
+   body.
+ * Updating logic for uploading files in IE. Updating the IE driver's handling
+   of sendKeys to have extra logging around finding the file open dialog. Also
+   rearranged the search for the dialog to more properly find the dialog using
+   the most common method first.
+
 v2.52.0.0
 =========
  * Release to synchronize with release of Selenium project.
