@@ -19,6 +19,7 @@
 
 import base64
 import warnings
+from contextlib import contextmanager
 
 from .command import Command
 from .webelement import WebElement
@@ -54,7 +55,8 @@ class WebDriver(object):
     """
 
     def __init__(self, command_executor='http://127.0.0.1:4444/wd/hub',
-        desired_capabilities=None, browser_profile=None, proxy=None, keep_alive=False):
+            desired_capabilities=None, browser_profile=None, proxy=None, keep_alive=False,
+            file_detector=None):
         """
         Create a new driver that will issue commands using the wire protocol.
 
@@ -69,6 +71,8 @@ class WebDriver(object):
              be started with given proxy settings, if possible. Optional.
          - keep_alive - Whether to configure remote_connection.RemoteConnection to use
              HTTP keep-alive. Defaults to False.
+         - file_detector - Pass custom file detector object during instantiation. If None,
+             then default LocalFileDetector() will be used.
         """
         if desired_capabilities is None:
             raise WebDriverException("Desired Capabilities can't be None")
@@ -87,12 +91,40 @@ class WebDriver(object):
         self.start_session(desired_capabilities, browser_profile)
         self._switch_to = SwitchTo(self)
         self._mobile = Mobile(self)
-        self.file_detector = LocalFileDetector()
+        self.file_detector = file_detector or LocalFileDetector()
 
     def __repr__(self):
         return '<{0.__module__}.{0.__name__} (session="{1}")>'.format(
             type(self), self.session_id)
 
+    @contextmanager
+    def file_detector_context(self, file_detector_class, *args, **kwargs):
+        """
+        Overrides the current file detector (if necessary) in limited context.
+        Ensures the original file detector is set afterwards.
+
+        Example:
+
+        with webdriver.file_detector_context(UselessFileDetector):
+            someinput.send_keys('/etc/hosts')
+
+        :Args:
+         - file_detector_class - Class of the desired file detector. If the class is different
+             from the current file_detector, then the class is instantiated with args and kwargs
+             and used as a file detector during the duration of the context manager.
+         - args - Optional arguments that get passed to the file detector class during
+             instantiation.
+         - kwargs - Keyword arguments, passed the same way as args.
+        """
+        last_detector = None
+        if not isinstance(self.file_detector, file_detector_class):
+            last_detector = self.file_detector
+            self.file_detector = file_detector_class(*args, **kwargs)
+        try:
+            yield
+        finally:
+            if last_detector is not None:
+                self.file_detector = last_detector
 
     @property
     def mobile(self):

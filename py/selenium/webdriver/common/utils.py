@@ -20,6 +20,12 @@ The Utils methods.
 """
 import socket
 
+try:
+    basestring
+except NameError:
+    # Python 3
+    basestring = str
+
 
 def free_port():
     """
@@ -71,3 +77,19 @@ def is_url_connectable(port):
             return False
     except:
         return False
+
+
+def keys_to_typing(value):
+    """Processes the values that will be typed in the element."""
+    typing = []
+    for val in value:
+        # If it is a non-string object, make it a string
+        if not isinstance(val, basestring):
+            # This str() call enables for abstraction if one has a custom object that has some
+            # UI representation to implement __str__() to return the representation, making it
+            # possible to pass that object to the filling methods.
+            val = str(val)
+        # Then just add the separate characters in the list
+        # ['e'].extend('asdf')  =>  ['e', 'a', 's', 'd', 'f']
+        typing.extend(val)
+    return typing
