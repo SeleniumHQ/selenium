@@ -6,6 +6,7 @@ java_library(name = "testing",
   deps = [
     ":util",
     "//java/client/test/org/openqa/selenium/testing/drivers",
+    "//third_party/java/htmlunit:htmlunit",
   ])
 
 java_library(name = "annotations",

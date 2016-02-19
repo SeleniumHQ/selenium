@@ -123,7 +123,6 @@ task :tests => [
 task :chrome => [ "//java/client/src/org/openqa/selenium/chrome" ]
 task :common_core => [ "//common:core" ]
 task :grid => [ "//java/server/src/org/openqa/grid/selenium" ]
-task :htmlunit => [ "//java/client/src/org/openqa/selenium/htmlunit" ]
 task :ie => [ "//java/client/src/org/openqa/selenium/ie" ]
 task :firefox => [
   "//cpp:noblur",
@@ -379,7 +378,7 @@ end
                 :browser => v )
 end
 
-task :javadocs => [:common, :firefox, :htmlunit, :ie, :remote, :support, :chrome, :selenium] do
+task :javadocs => [:common, :firefox, :ie, :remote, :support, :chrome, :selenium] do
   mkdir_p "build/javadoc"
    sourcepath = ""
    classpath = '.'
@@ -579,7 +578,6 @@ task "release-v3" => [
     :build,
     '//java/server/src/org/openqa/selenium/remote/server:server:zip',
     '//java/server/src/org/openqa/grid/selenium:selenium-v3:zip',
-    '//java/client/src/org/openqa/selenium:client-combined-v3-without-htmlunit:zip',
     '//java/client/src/org/openqa/selenium:client-combined-v3:zip',
   ] do |t|
   # Unzip each of the deps and rename the pieces that need renaming
@@ -622,7 +620,6 @@ task "release-v3" => [
   cp "build/java/server/src/org/openqa/grid/selenium/selenium-v3-standalone.jar", "build/dist/selenium-server-v3-standalone-#{version}.jar"
   cp "build/java/server/src/org/openqa/grid/selenium/selenium-v3.zip", "build/dist/selenium-server-v3-#{version}.zip"
   cp "build/java/client/src/org/openqa/selenium/client-combined-v3.zip", "build/dist/selenium-java-v3-#{version}.zip"
-  cp "build/java/client/src/org/openqa/selenium/client-combined-v3-without-htmlunit.zip", "build/dist/selenium-java-v3-without-htmlunit-#{version}.zip"
 end
 
 task :push_release => [:release] do

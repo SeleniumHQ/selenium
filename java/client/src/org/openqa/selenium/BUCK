@@ -129,7 +129,6 @@ java_library(name = 'primitives',
 java_binary(name = 'selenium-java',
   deps = [
     ':webdriver-api',
-    '//java/client/src/org/openqa/selenium/htmlunit:htmlunit',
     '//java/client/src/org/openqa/selenium/ie:ie',
     '//java/client/src/org/openqa/selenium/chrome:chrome',
     '//java/client/src/org/openqa/selenium/firefox:firefox',

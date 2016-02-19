@@ -1,7 +1,6 @@
 java_library(name = "selenium",
   deps = [
     ":base",
-    "//java/client/src/org/openqa/selenium/htmlunit",
     "//java/client/src/org/openqa/selenium/firefox",
     "//java/client/src/org/openqa/selenium/remote",
   ])
