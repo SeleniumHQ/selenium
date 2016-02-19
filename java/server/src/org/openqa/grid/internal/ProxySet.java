@@ -24,9 +24,8 @@ import org.openqa.grid.common.exception.GridException;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,6 +41,7 @@ import java.util.logging.Logger;
 public class ProxySet implements Iterable<RemoteProxy> {
 
   private final Set<RemoteProxy> proxies = new CopyOnWriteArraySet<RemoteProxy>();
+  private final List<RemoteProxy> nextProxyToUse = new LinkedList<RemoteProxy>();
 
   private static final Logger log = Logger.getLogger(ProxySet.class.getName());
   private volatile boolean throwOnCapabilityNotPresent = true;
@@ -80,6 +80,7 @@ public class ProxySet implements Iterable<RemoteProxy> {
     for (RemoteProxy p : proxies) {
       if (p.equals(proxy)) {
         proxies.remove(p);
+        nextProxyToUse.remove(p);
         return p;
       }
     }
@@ -88,6 +89,7 @@ public class ProxySet implements Iterable<RemoteProxy> {
 
   public void add(RemoteProxy proxy) {
     proxies.add(proxy);
+    nextProxyToUse.add(proxy);
   }
 
   public boolean contains(RemoteProxy o) {
@@ -121,38 +123,23 @@ public class ProxySet implements Iterable<RemoteProxy> {
     return proxies.isEmpty();
   }
 
-  public List<RemoteProxy> getSorted() {
-    List<RemoteProxy> sorted = new ArrayList<>(proxies);
-    Collections.sort(sorted, proxyComparator);
-    return sorted;
-  }
+  public TestSession getNewSession(Map<String, Object> desiredCapabilities) {   
+    // sorting is not working, use a linked list to always put the last used node at the end
+    log.info("Available nodes: " + nextProxyToUse);
 
-  private Comparator<RemoteProxy> proxyComparator = new Comparator<RemoteProxy>() {
-    @Override
-    public int compare(RemoteProxy o1, RemoteProxy o2) {
-      double p1used = (o1.getTotalUsed() * 1.0) / o1.getTestSlots().size();
-      double p2used = (o2.getTotalUsed() * 1.0) / o2.getTestSlots().size();
-
-      if (p1used == p2used) return 0;
-      return p1used < p2used? -1 : 1;
-    }
-  };
-
-  public TestSession getNewSession(Map<String, Object> desiredCapabilities) {
-    // sort the proxies first, by default by total number of
-    // test running, to avoid putting all the load of the first
-    // proxies.
-    List<RemoteProxy> sorted = getSorted();
-    log.info("Available nodes: " + sorted);
-
-    for (RemoteProxy proxy : sorted) {
+    for (RemoteProxy proxy : nextProxyToUse) {
       TestSession session = proxy.getNewSession(desiredCapabilities);
       if (session != null) {
+        synchronized(nextProxyToUse) {
+          nextProxyToUse.remove(proxy);
+          nextProxyToUse.add(proxy);
+//          nextProxyToUse.add(nextProxyToUse.size(), proxy);
+        }
         return session;
       }
     }
     return null;
-  }
+}
 
   public Iterator<RemoteProxy> iterator() {
     return proxies.iterator();

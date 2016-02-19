@@ -22,13 +22,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
-import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.selenium.remote.BrowserType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ProxySetTest {
 
@@ -56,79 +51,6 @@ public class ProxySetTest {
       assertNull(p1.getTestSlots().get(0).getSession());
     } finally {
       registry.stop();
-    }
-  }
-
-  @Test
-  public void testProxySortingByIdle() throws Exception {
-    Registry registry = Registry.newInstance();
-    try {
-      ProxySet set = registry.getAllProxies();
-
-      set.add(buildStubbedRemoteProxy(registry, 10));
-      set.add(buildStubbedRemoteProxy(registry, 2));
-      set.add(buildStubbedRemoteProxy(registry, 0));
-      set.add(buildStubbedRemoteProxy(registry, 1));
-
-      List<RemoteProxy> sortedList = set.getSorted();
-
-      //Check that there are indeed 4 proxies registered
-      assertEquals(4, sortedList.size());
-
-      //Check the order of proxies, to make sure the totalUsed is ascending
-      assertEquals(0, sortedList.get(0).getTotalUsed());
-      assertEquals(1, sortedList.get(1).getTotalUsed());
-      assertEquals(2, sortedList.get(2).getTotalUsed());
-      assertEquals(10, sortedList.get(3).getTotalUsed());
-
-      //Check the ordered proxies to make sure proxyId's are in correct order
-      assertEquals("http://remote_host:0", sortedList.get(0).getId());
-      assertEquals("http://remote_host:1", sortedList.get(1).getId());
-      assertEquals("http://remote_host:2", sortedList.get(2).getId());
-      assertEquals("http://remote_host:10", sortedList.get(3).getId());
-
-    } finally {
-      registry.stop();
-    }
-
-  }
-
-  public StubbedRemoteProxy buildStubbedRemoteProxy(Registry registry, int totalUsed){
-    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-host","localhost");
-    req.getCapabilities().clear();
-
-    DesiredCapabilities capability = new DesiredCapabilities();
-    capability.setBrowserName(BrowserType.CHROME);
-    req.addDesiredCapability(capability);
-
-    Map<String, Object> config = new HashMap<>();
-    config.put(RegistrationRequest.REMOTE_HOST, "http://remote_host:" + totalUsed);
-    req.setConfiguration(config);
-
-    StubbedRemoteProxy tempProxy = new StubbedRemoteProxy(req, registry);
-    tempProxy.setTotalUsed(totalUsed);
-
-     return tempProxy;
-  }
-
-  public class StubbedRemoteProxy extends BaseRemoteProxy {
-
-    private int testsRunning;
-
-    public StubbedRemoteProxy(RegistrationRequest request,
-                              Registry registry) {
-
-      super(request, registry);
-    }
-
-
-    public void setTotalUsed(int count){
-      this.testsRunning = count;
-    }
-
-    @Override
-    public int getTotalUsed() {
-      return this.testsRunning;
     }
   }
 }
