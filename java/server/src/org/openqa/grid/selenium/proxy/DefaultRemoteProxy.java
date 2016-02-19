@@ -88,12 +88,12 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
 
 
   public void afterCommand(TestSession session, HttpServletRequest request, HttpServletResponse response) {
-    session.put("lastCommand", request.getMethod() + " - " + request.getPathInfo() + " executing ...");
+    session.put("lastCommand", request.getMethod() + " - " + request.getPathInfo() + " executed.");
   }
 
 
   public void beforeCommand(TestSession session, HttpServletRequest request, HttpServletResponse response) {
-    session.put("lastCommand", request.getMethod() + " - " + request.getPathInfo() + " executed.");
+    session.put("lastCommand", request.getMethod() + " - " + request.getPathInfo() + " executing ...");
   }
 
   private final HtmlRenderer renderer = new WebProxyHtmlRenderer(this);

@@ -398,6 +398,7 @@ public class GridHubConfiguration {
 
   public void setCleanupCycle(int cleanupCycle) {
     this.cleanupCycle = cleanupCycle;
+    put(RegistrationRequest.CLEAN_UP_CYCLE, cleanupCycle);
   }
 
   public void setTimeout(int timeout) {
