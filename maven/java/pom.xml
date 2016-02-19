@@ -48,10 +48,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.webbitserver</groupId>
-            <artifactId>webbit</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-leg-rc</artifactId>
             <version>${project.version}</version>

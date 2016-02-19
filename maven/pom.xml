@@ -9,8 +9,8 @@
     <packaging>pom</packaging>
 
     <name>selenium-parent</name>
-    <description>Browser automation framework</description>
-    <url>http://selenium.googlecode.com/</url>
+    <description>Selenium automates browsers. That's it! What you do with that power is entirely up to you.</description>
+    <url>http://www.seleniumhq.org/</url>
 
     <licenses>
         <license>
@@ -21,9 +21,9 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:http://selenium.googlecode.com/git</connection> 
-        <developerConnection>scm:git:https://selenium.googlecode.com/git</developerConnection>
-        <url>http://selenium.googlecode.com/git</url>
+        <connection>scm:git:git@github.com:SeleniumHQ/selenium.git</connection> 
+        <developerConnection>scm:git:git@github.com:SeleniumHQ/selenium.git</developerConnection>
+        <url>https://github.com/SeleniumHQ/selenium/</url>
     </scm>
 
     <developers>
@@ -90,6 +90,13 @@
                 <role>Committer</role>
             </roles>
         </developer>
+        <developer>
+            <id>barancev</id>
+            <name>Alexei Barantsev</name>
+            <roles>
+                <role>Committer</role>
+            </roles>
+        </developer>
         <!-- A complete list can be found here: http://code.google.com/p/selenium/people/list -->
     </developers>
 
@@ -127,7 +134,6 @@
         <module>safari-driver</module>
         <module>server</module>
         <module>support</module>
-        <module>htmlunit-driver</module>
         <module>leg-rc</module>
     </modules>
 
@@ -204,9 +210,9 @@
                 <version>6.9.9</version>
             </dependency>
             <dependency>
-                <groupId>org.webbitserver</groupId>
-                <artifactId>webbit</artifactId>
-                <version>0.4.14</version>
+                <groupId>io.netty</groupId>
+                <artifactId>netty</artifactId>
+                <version>3.5.7.Final</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
