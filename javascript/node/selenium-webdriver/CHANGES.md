@@ -1,3 +1,15 @@
+## v2.53.0-dev
+
+### Change Summary
+
+* For consistency with the other Selenium language bindings,
+   `WebDriver#isElementPresent()` and `WebElement#isElementPresent()` have
+   been deprecated. These methods will be removed in v3.0. Use the findElements
+   command to test for the presence of an element:
+
+      driver.findElements(By.css('.foo')).then(found => !!found.length);
+
+
 ## v2.52.0
 
 ### Notice

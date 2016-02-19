@@ -872,6 +872,11 @@ class WebDriver {
    * @param {!(by.By|Function)} locator The locator to use.
    * @return {!promise.Promise<boolean>} A promise that will resolve
    *     with whether the element is present on the page.
+   * @deprecated This method will be removed in Selenium 3.0 for consistency
+   *     with the other Selenium language bindings. This method is equivalent
+   *     to
+   *
+   *      driver.findElements(locator).then(e => !!e.length);
    */
   isElementPresent(locator) {
     return this.findElements.apply(this, arguments).then(function(result) {
@@ -1769,6 +1774,11 @@ class WebElement {
    *     searching for the element.
    * @return {!promise.Promise<boolean>} A promise that will be
    *     resolved with whether an element could be located on the page.
+   * @deprecated This method will be removed in Selenium 3.0 for consistency
+   *     with the other Selenium language bindings. This method is equivalent
+   *     to
+   *
+   *      element.findElements(locator).then(e => !!e.length);
    */
   isElementPresent(locator) {
     return this.findElements(locator).then(function(result) {
