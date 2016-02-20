@@ -34,6 +34,7 @@ const url = require('url');
 const util = require('util');
 const ws = require('ws');
 
+const error = require('./error');
 const io = require('./io');
 const exec = require('./io/exec');
 const isDevMode = require('./lib/devmode');
@@ -303,8 +304,7 @@ class CommandExecutor {
           break;
 
         case command.Name.QUIT:
-          self.destroySession_()
-              .then(() => fulfill({status: 0, value: null}), reject);
+          self.destroySession_().then(() => fulfill(null), reject);
           break;
 
         default:
@@ -344,7 +344,13 @@ class CommandExecutor {
           reject(Error('Failed to parse driver message: ' + data));
           return;
         }
-        fulfill(data['response']);
+
+        try {
+          error.checkLegacyResponse(data['response']);
+          fulfill(data['response']['value']);
+        } catch (ex) {
+          reject(ex);
+        }
       });
     });
   }

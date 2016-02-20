@@ -24,14 +24,11 @@ const By = require('../../lib/by').By;
 const CommandName = require('../../lib/command').Name;
 const promise = require('../../lib/promise');
 const until = require('../../lib/until');
-const webdriver = require('../../lib/webdriver');
+const webdriver = require('../../lib/webdriver'),
+      WebElement = webdriver.WebElement;
 
 describe('until', function() {
   let driver, executor;
-
-  function createResponse(value) {
-    return {status: 0, value};
-  }
 
   class TestExecutor {
     constructor() {
@@ -45,11 +42,11 @@ describe('until', function() {
 
     execute(cmd) {
       let self = this;
-      return new Promise(function(fulfill) {
+      return Promise.resolve().then(function() {
         if (!self.handlers_[cmd.getName()]) {
           throw new error.UnknownCommandError(cmd.getName());
         }
-        fulfill(self.handlers_[cmd.getName()](cmd));
+        return self.handlers_[cmd.getName()](cmd);
       });
     }
   }
@@ -74,52 +71,33 @@ describe('until', function() {
     });
 
     it('byIndex', function() {
-      executor.on(CommandName.SWITCH_TO_FRAME, function() {
-        return {status: error.ErrorCode.SUCCESS};
-      });
+      executor.on(CommandName.SWITCH_TO_FRAME, () => true);
       return driver.wait(until.ableToSwitchToFrame(0), 100);
     });
 
     it('byWebElement', function() {
-      executor.on(CommandName.SWITCH_TO_FRAME, function(cmd, callback) {
-        return {status: error.ErrorCode.SUCCESS};
-      });
+      executor.on(CommandName.SWITCH_TO_FRAME, () => true);
       var el = new webdriver.WebElement(driver, {ELEMENT: 1234});
       return driver.wait(until.ableToSwitchToFrame(el), 100);
     });
 
     it('byWebElementPromise', function() {
-      executor.on(CommandName.SWITCH_TO_FRAME, function(cmd, callback) {
-        return {status: error.ErrorCode.SUCCESS};
-      });
+      executor.on(CommandName.SWITCH_TO_FRAME, () => true);
       var el = new webdriver.WebElementPromise(driver,
           promise.fulfilled(new webdriver.WebElement(driver, {ELEMENT: 1234})));
       return driver.wait(until.ableToSwitchToFrame(el), 100);
     });
 
     it('byLocator', function() {
-      executor.on(CommandName.FIND_ELEMENTS, function() {
-        return {
-          status: error.ErrorCode.SUCCESS,
-          value: [{ELEMENT: 1234}]
-        };
-      }).on(CommandName.SWITCH_TO_FRAME, function() {
-        return {status: error.ErrorCode.SUCCESS};
-      });
-
+      executor.on(CommandName.FIND_ELEMENTS, () => [WebElement.buildId(1234)]);
+      executor.on(CommandName.SWITCH_TO_FRAME, () => true);
       return driver.wait(until.ableToSwitchToFrame(By.id('foo')), 100);
     });
 
     it('byLocator_elementNotInitiallyFound', function() {
-      var foundResponses = [[], [], [{ELEMENT: 1234}]];
-      executor.on(CommandName.FIND_ELEMENTS, function() {
-        return {
-          status: error.ErrorCode.SUCCESS,
-          value: foundResponses.shift()
-        };
-      }).on(CommandName.SWITCH_TO_FRAME, function(cmd, callback) {
-        return {status: error.ErrorCode.SUCCESS};
-      });
+      var foundResponses = [[], [], [WebElement.buildId(1234)]];
+      executor.on(CommandName.FIND_ELEMENTS, () => foundResponses.shift());
+      executor.on(CommandName.SWITCH_TO_FRAME, () => true);
 
       return driver.wait(until.ableToSwitchToFrame(By.id('foo')), 2000)
           .then(function() {
@@ -131,7 +109,7 @@ describe('until', function() {
       var count = 0;
       executor.on(CommandName.SWITCH_TO_FRAME, function() {
         count += 1;
-        return {status: error.ErrorCode.NO_SUCH_FRAME};
+        throw new error.NoSuchFrameError;
       });
 
       return driver.wait(until.ableToSwitchToFrame(0), 100)
@@ -156,13 +134,11 @@ describe('until', function() {
       var count = 0;
       executor.on(CommandName.GET_ALERT_TEXT, function() {
         if (count++ < 3) {
-          return {status: error.ErrorCode.NO_SUCH_ALERT};
+          throw new error.NoSuchAlertError;
         } else {
-          return {status: error.ErrorCode.SUCCESS};
+          return true;
         }
-      }).on(CommandName.DISMISS_ALERT, function(cmd, callback) {
-        return {status: error.ErrorCode.SUCCESS};
-      });
+      }).on(CommandName.DISMISS_ALERT, () => true);
 
       return driver.wait(until.alertIsPresent(), 1000).then(function(alert) {
         assert.equal(count, 4);
@@ -173,9 +149,7 @@ describe('until', function() {
 
   it('testUntilTitleIs', function() {
     var titles = ['foo', 'bar', 'baz'];
-    executor.on(CommandName.GET_TITLE, function() {
-      return createResponse(titles.shift());
-    });
+    executor.on(CommandName.GET_TITLE, () => titles.shift());
 
     return driver.wait(until.titleIs('bar'), 3000).then(function() {
       assert.deepStrictEqual(titles, ['baz']);
@@ -184,9 +158,7 @@ describe('until', function() {
 
   it('testUntilTitleContains', function() {
     var titles = ['foo', 'froogle', 'google'];
-    executor.on(CommandName.GET_TITLE, function() {
-      return createResponse(titles.shift());
-    });
+    executor.on(CommandName.GET_TITLE, () => titles.shift());
 
     return driver.wait(until.titleContains('oogle'), 3000).then(function() {
       assert.deepStrictEqual(titles, ['google']);
@@ -195,9 +167,7 @@ describe('until', function() {
 
   it('testUntilTitleMatches', function() {
     var titles = ['foo', 'froogle', 'aaaabc', 'aabbbc', 'google'];
-    executor.on(CommandName.GET_TITLE, function() {
-      return createResponse(titles.shift());
-    });
+    executor.on(CommandName.GET_TITLE, () => titles.shift());
 
     return driver.wait(until.titleMatches(/^a{2,3}b+c$/), 3000)
         .then(function() {
@@ -206,10 +176,12 @@ describe('until', function() {
   });
 
   it('testUntilElementLocated', function() {
-    var responses = [[], [{ELEMENT: 'abc123'}, {ELEMENT: 'foo'}], ['end']];
-    executor.on(CommandName.FIND_ELEMENTS, function(cmd, callback) {
-      return createResponse(responses.shift());
-    });
+    var responses = [
+        [],
+        [WebElement.buildId('abc123'), WebElement.buildId('foo')],
+        ['end']
+    ];
+    executor.on(CommandName.FIND_ELEMENTS, () => responses.shift());
 
     let element = driver.wait(until.elementLocated(By.id('quux')), 2000);
     assert.ok(element instanceof webdriver.WebElementPromise);
@@ -221,9 +193,7 @@ describe('until', function() {
 
   describe('untilElementLocated, elementNeverFound', function() {
     function runNoElementFoundTest(locator, locatorStr) {
-      executor.on(CommandName.FIND_ELEMENTS, function() {
-        return createResponse([]);
-      });
+      executor.on(CommandName.FIND_ELEMENTS, () => []);
 
       function expectedFailure() {
         fail('expected condition to timeout');
@@ -257,10 +227,12 @@ describe('until', function() {
   });
 
   it('testUntilElementsLocated', function() {
-    var responses = [[], [{ELEMENT: 'abc123'}, {ELEMENT: 'foo'}], ['end']];
-    executor.on(CommandName.FIND_ELEMENTS, function() {
-      return createResponse(responses.shift());
-    });
+    var responses = [
+        [],
+        [WebElement.buildId('abc123'), WebElement.buildId('foo')],
+        ['end']
+    ];
+    executor.on(CommandName.FIND_ELEMENTS, () => responses.shift());
 
     return driver.wait(until.elementsLocated(By.id('quux')), 2000)
         .then(function(els) {
@@ -275,9 +247,7 @@ describe('until', function() {
 
   describe('untilElementsLocated, noElementsFound', function() {
     function runNoElementsFoundTest(locator, locatorStr) {
-      executor.on(CommandName.FIND_ELEMENTS, function() {
-        return createResponse([]);
-      });
+      executor.on(CommandName.FIND_ELEMENTS, () => []);
 
       function expectedFailure() {
         fail('expected condition to timeout');
@@ -312,22 +282,18 @@ describe('until', function() {
   });
 
   it('testUntilStalenessOf', function() {
-    var responses = [
-      createResponse('body'),
-      createResponse('body'),
-      createResponse('body'),
-      {status: error.ErrorCode.STALE_ELEMENT_REFERENCE,
-       value: {message: 'now stale'}},
-      ['end']
-    ];
+    let count = 0;
     executor.on(CommandName.GET_ELEMENT_TAG_NAME, function() {
-      return responses.shift();
+      while (count < 3) {
+        count += 1;
+        return 'body';
+      }
+      throw new error.StaleElementReferenceError('now stale');
     });
 
     var el = new webdriver.WebElement(driver, {ELEMENT: 'foo'});
-    return driver.wait(until.stalenessOf(el), 2000).then(function() {
-      assert.deepStrictEqual(responses, [['end']]);
-    });
+    return driver.wait(until.stalenessOf(el), 2000)
+        .then(() => assert.equal(count, 3));
   });
 
   describe('element state conditions', function() {
@@ -343,9 +309,7 @@ describe('until', function() {
       assert.ok(responses.length > 1);
 
       responses = responses.concat(['end']);
-      executor.on(command, function() {
-        return createResponse(responses.shift());
-      });
+      executor.on(command, () => responses.shift());
 
       let result = driver.wait(predicate.apply(null, predicateArgs), 2000);
       assert.ok(result instanceof webdriver.WebElementPromise);

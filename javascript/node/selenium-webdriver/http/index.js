@@ -29,6 +29,7 @@ const error = require('../error');
 const cmd = require('../lib/command');
 const logging = require('../lib/logging');
 const promise = require('../lib/promise');
+const Session = require('../lib/session').Session;
 
 
 
@@ -432,8 +433,31 @@ class Executor {
     log.finer(() => '>>>\n' + request);
     return this.client_.send(request).then(function(response) {
       log.finer(() => '<<<\n' + response);
-      return parseHttpResponse(/** @type {!HttpResponse} */ (response));
+
+      let value = parseHttpResponse(/** @type {!HttpResponse} */ (response));
+      let isResponseObj = (value && typeof value === 'object');
+      if (command.getName() === cmd.Name.NEW_SESSION) {
+        if (!isResponseObj) {
+          throw new error.WebDriverError(
+              'Unable to parse new session response: ' + response.body);
+        }
+        return new Session(value['sessionId'], value['value']);
+      }
+      return isResponseObj ? value['value'] : value;
     });
+  }
+}
+
+
+/**
+ * @param {string} str .
+ * @return {?} .
+ */
+function tryParse(str) {
+  try {
+    return JSON.parse(str);
+  } catch (ignored) {
+    // Do nothing.
   }
 }
 
@@ -445,27 +469,26 @@ class Executor {
  * @return {!Object} The parsed response.
  */
 function parseHttpResponse(httpResponse) {
-  try {
-    return /** @type {!Object} */ (JSON.parse(httpResponse.body));
-  } catch (ignored) {
-    // Whoops, looks like the server sent us a malformed response. We'll need
-    // to manually build a response object based on the response code.
+  let parsed = tryParse(httpResponse.body);
+  if (parsed !== undefined) {
+    error.checkLegacyResponse(parsed);
+    return parsed;
   }
 
-  let response = {
-    'status': error.ErrorCode.SUCCESS,
-    'value': httpResponse.body.replace(/\r\n/g, '\n')
-  };
-
-  if (httpResponse.status >= 400) {
-    // 404 represents an unknown command; anything else is a generic unknown
-    // error.
-    response['status'] = httpResponse.status == 404 ?
-        error.ErrorCode.UNKNOWN_COMMAND :
-        error.ErrorCode.UNKNOWN_ERROR;
+  let value = httpResponse.body.replace(/\r\n/g, '\n');
+  if (!value) {
+    return null;
   }
 
-  return response;
+  // 404 represents an unknown command; anything else is a generic unknown
+  // error.
+  if (httpResponse.status == 404) {
+    throw new error.UnsupportedOperationError(value);
+  } else if (httpResponse.status >= 400) {
+    throw new error.WebDriverError(value);
+  }
+
+  return value;
 }
 
 

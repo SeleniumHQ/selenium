@@ -60,10 +60,7 @@ const until = require('./until');
 function acquireSession(executor, command, description, opt_flow) {
   let flow = opt_flow || promise.controlFlow();
   let session = flow.execute(function() {
-    return executeCommand(executor, command).then(function(response) {
-      error.checkLegacyResponse(response);
-      return new Session(response['sessionId'], response['value']);
-    });
+    return executeCommand(executor, command);
   }, description);
   return new WebDriver(session, executor, flow);
 }
@@ -354,24 +351,8 @@ class WebDriver {
       return prepCommand.then(function(parameters) {
         command.setParameters(parameters);
         return executor.execute(command);
-      });
-    }, description).then(function(response) {
-      try {
-        error.checkLegacyResponse(response);
-      } catch (ex) {
-        if (ex instanceof error.UnexpectedAlertOpenError) {
-          let text = '';
-          if (response['value']
-              && response['value']['alert']
-              && typeof response['value']['alert']['text'] === 'string') {
-            text = response['value']['alert']['text'];
-          }
-          throw new error.UnexpectedAlertOpenError(ex.message, text);
-        }
-        throw ex;
-      }
-      return fromWireValue(self, response['value']);
-    });
+      }).then(value => fromWireValue(self, value));
+    }, description);
 
     function checkHasNotQuit() {
       if (!self.session_) {

@@ -28,8 +28,10 @@ var HttpClient = require('../../http').HttpClient;
 var HttpRequest = require('../../http').Request;
 var HttpResponse = require('../../http').Response;
 var buildPath = require('../../http').buildPath;
+var Capabilities = require('../../lib/capabilities').Capabilities;
 var Command = require('../../lib/command').Command;
 var CommandName = require('../../lib/command').Name;
+var Session = require('../../lib/session').Session;
 var Server = require('../../lib/test/httpserver').Server;
 var promise = require('../..').promise;
 
@@ -104,7 +106,8 @@ describe('Executor', function() {
   });
 
   it('can execute commands with no URL parameters', function() {
-    send.returns(Promise.resolve(new HttpResponse(200, {}, '')));
+    var resp = JSON.stringify({sessionId: 'abc123'});
+    send.returns(Promise.resolve(new HttpResponse(200, {}, resp)));
 
     let command = new Command(CommandName.NEW_SESSION);
     return assertSendsSuccessfully(command).then(function(response) {
@@ -145,95 +148,160 @@ describe('Executor', function() {
     });
   });
 
-  it('returns parsed JSON response', function() {
-    var responseObj = {
-      'status': error.ErrorCode.SUCCESS,
-      'value': 'http://www.google.com'
-    };
 
-    var command = new Command(CommandName.GET_CURRENT_URL).
-        setParameter('sessionId', 's123');
+  describe('response parsing', function() {
+    it('extracts value from JSON response', function() {
+      var responseObj = {
+        'status': error.ErrorCode.SUCCESS,
+        'value': 'http://www.google.com'
+      };
 
+      var command = new Command(CommandName.GET_CURRENT_URL)
+          .setParameter('sessionId', 's123');
 
-    send.returns(Promise.resolve(
-        new HttpResponse(200, {}, JSON.stringify(responseObj))));
+      send.returns(Promise.resolve(
+          new HttpResponse(200, {}, JSON.stringify(responseObj))));
 
-    return assertSendsSuccessfully(command).then(function(response) {
-       assertSent('GET', '/session/s123/url', {},
-           [['Accept', 'application/json; charset=utf-8']]);
-       assert.deepEqual(response, responseObj);
-    });
-  });
-
-  it('returns success for 2xx with body as value when not json', function() {
-    var command = new Command(CommandName.GET_CURRENT_URL).
-        setParameter('sessionId', 's123');
-
-    send.returns(Promise.resolve(
-        new HttpResponse(200, {}, 'hello, world\r\ngoodbye, world!')));
-
-    return assertSendsSuccessfully(command).then(function(response) {
-       assertSent('GET', '/session/s123/url', {},
-           [['Accept', 'application/json; charset=utf-8']]);
-       assert.deepEqual(response, {
-         'status': error.ErrorCode.SUCCESS,
-         'value': 'hello, world\ngoodbye, world!'
-       });
-    });
-  });
-
-  it('returns success for 2xx with invalid JSON body', function() {
-    var command = new Command(CommandName.GET_CURRENT_URL).
-        setParameter('sessionId', 's123');
-
-    send.returns(Promise.resolve(
-        new HttpResponse(200, {}, '[')));
-
-    return assertSendsSuccessfully(command).then(function(response) {
-       assertSent('GET', '/session/s123/url', {},
-           [['Accept', 'application/json; charset=utf-8']]);
-       assert.deepEqual(response, {
-         'status': error.ErrorCode.SUCCESS,
-         'value': '['
-       });
-    });
-  });
-
-  it('returns unknown command for 404 with body as value when not json',
-      function() {
-        var command = new Command(CommandName.GET_CURRENT_URL).
-            setParameter('sessionId', 's123');
-
-        send.returns(Promise.resolve(
-            new HttpResponse(404, {}, 'hello, world\r\ngoodbye, world!')));
-
-        return assertSendsSuccessfully(command, function(response) {
-           assertSent('GET', '/session/s123/url', {},
-               [['Accept', 'application/json; charset=utf-8']]);
-           assert.deepEqual(response, {
-             'status': error.ErrorCode.UNKNOWN_COMMAND,
-             'value': 'hello, world\ngoodbye, world!'
-           });
+      return executor.execute(command).then(function(response) {
+         assertSent('GET', '/session/s123/url', {},
+             [['Accept', 'application/json; charset=utf-8']]);
+         assert.strictEqual(response, 'http://www.google.com');
       });
-     });
+    });
 
-  it('returnsUnknownErrorForGenericErrorCodeWithBodyAsValueWhenNotJSON',
-      function() {
-        var command = new Command(CommandName.GET_CURRENT_URL).
-            setParameter('sessionId', 's123');
+    it('returns Session object from NEW_SESSION response', function() {
+      var command = new Command(CommandName.NEW_SESSION);
+      var rawResponse = {sessionId: 's123', value: {name: 'Bob'}};
 
-        send.returns(Promise.resolve(
-            new HttpResponse(500, {}, 'hello, world\r\ngoodbye, world!')));
+      send.returns(Promise.resolve(
+          new HttpResponse(200, {}, JSON.stringify(rawResponse))));
 
-        return assertSendsSuccessfully(command).then(function(response) {
-           assertSent('GET', '/session/s123/url', {},
-               [['Accept', 'application/json; charset=utf-8']]);
-           assert.deepEqual(response, {
-             'status': error.ErrorCode.UNKNOWN_ERROR,
-             'value': 'hello, world\ngoodbye, world!'
-           });
+      return executor.execute(command).then(function(response) {
+        assert.ok(response instanceof Session);
+        assert.equal(response.getId(), 's123');
+
+        let caps = response.getCapabilities();
+        assert.ok(caps instanceof Capabilities);
+        assert.equal(caps.get('name'), 'Bob');
+      });
+    });
+
+    it('handles JSON null', function() {
+      var command = new Command(CommandName.GET_CURRENT_URL)
+          .setParameter('sessionId', 's123');
+
+      send.returns(Promise.resolve(new HttpResponse(200, {}, 'null')));
+
+      return executor.execute(command).then(function(response) {
+         assertSent('GET', '/session/s123/url', {},
+             [['Accept', 'application/json; charset=utf-8']]);
+         assert.strictEqual(response, null);
+      });
+    });
+
+    it('handles non-object JSON', function() {
+      var command = new Command(CommandName.GET_CURRENT_URL)
+          .setParameter('sessionId', 's123');
+
+      send.returns(Promise.resolve(new HttpResponse(200, {}, '123')));
+
+      return executor.execute(command).then(function(response) {
+         assertSent('GET', '/session/s123/url', {},
+             [['Accept', 'application/json; charset=utf-8']]);
+         assert.strictEqual(response, 123);
+      });
+    });
+
+    it('returns body text when 2xx but not JSON', function() {
+      var command = new Command(CommandName.GET_CURRENT_URL)
+          .setParameter('sessionId', 's123');
+
+      send.returns(Promise.resolve(
+          new HttpResponse(200, {}, 'hello, world\r\ngoodbye, world!')));
+
+      return executor.execute(command).then(function(response) {
+         assertSent('GET', '/session/s123/url', {},
+             [['Accept', 'application/json; charset=utf-8']]);
+         assert.strictEqual(response, 'hello, world\ngoodbye, world!');
+      });
+    });
+
+    it('returns body text when 2xx but invalid JSON', function() {
+      var command = new Command(CommandName.GET_CURRENT_URL)
+          .setParameter('sessionId', 's123');
+
+      send.returns(Promise.resolve(
+          new HttpResponse(200, {}, '[')));
+
+      return executor.execute(command).then(function(response) {
+         assertSent('GET', '/session/s123/url', {},
+             [['Accept', 'application/json; charset=utf-8']]);
+         assert.strictEqual(response, '[');
+      });
+    });
+
+    it('returns null if no body text and 2xx', function() {
+      var command = new Command(CommandName.GET_CURRENT_URL)
+          .setParameter('sessionId', 's123');
+
+      send.returns(Promise.resolve(new HttpResponse(200, {}, '')));
+
+      return executor.execute(command).then(function(response) {
+         assertSent('GET', '/session/s123/url', {},
+             [['Accept', 'application/json; charset=utf-8']]);
+         assert.strictEqual(response, null);
+      });
+    });
+
+    it('returns normalized body text when 2xx but not JSON', function() {
+      var command = new Command(CommandName.GET_CURRENT_URL)
+          .setParameter('sessionId', 's123');
+
+      send.returns(Promise.resolve(new HttpResponse(200, {}, '\r\n\n\n\r\n')));
+
+      return executor.execute(command).then(function(response) {
+         assertSent('GET', '/session/s123/url', {},
+             [['Accept', 'application/json; charset=utf-8']]);
+         assert.strictEqual(response, '\n\n\n\n');
+      });
+    });
+
+    it('throws UnsupportedOperationError for 404 and body not JSON',
+        function() {
+          var command = new Command(CommandName.GET_CURRENT_URL)
+              .setParameter('sessionId', 's123');
+
+          send.returns(Promise.resolve(
+              new HttpResponse(404, {}, 'hello, world\r\ngoodbye, world!')));
+
+          return executor.execute(command)
+              .then(
+                  () => assert.fail('should have failed'),
+                  checkError(
+                      error.UnsupportedOperationError,
+                      'hello, world\ngoodbye, world!'));
         });
-      });
+
+    it('throws WebDriverError for generic 4xx when body not JSON',
+        function() {
+          var command = new Command(CommandName.GET_CURRENT_URL)
+              .setParameter('sessionId', 's123');
+
+          send.returns(Promise.resolve(
+              new HttpResponse(500, {}, 'hello, world\r\ngoodbye, world!')));
+
+          return executor.execute(command)
+              .then(
+                  () => assert.fail('should have failed'),
+                  checkError(
+                      error.WebDriverError,
+                      'hello, world\ngoodbye, world!'))
+              .then(function() {
+                 assertSent('GET', '/session/s123/url', {},
+                     [['Accept', 'application/json; charset=utf-8']]);
+              });
+        });
+  });
 
   it('canDefineNewCommands', function() {
     executor.defineCommand('greet', 'GET', '/person/:name');
@@ -269,6 +337,16 @@ describe('Executor', function() {
       entries.push(e);
     }
     return entries;
+  }
+
+  function checkError(type, message) {
+    return function(e) {
+      if (e instanceof type) {
+        assert.strictEqual(e.message, message);
+      } else {
+        throw e;
+      }
+    };
   }
 
   function assertSent(method, path, data, headers) {

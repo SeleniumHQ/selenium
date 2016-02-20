@@ -577,7 +577,16 @@ function checkLegacyResponse(responseObj) {
     if (!value || typeof value !== 'object') {
       throw new ctor(value + '');
     } else {
-      throw new ctor(value['message'] + '');
+      let message = value['message'] + '';
+      if (ctor !== UnexpectedAlertOpenError) {
+        throw new ctor(message);
+      }
+
+      let text = '';
+      if (value['alert'] && typeof value['alert']['text'] === 'string') {
+        text = value['alert']['text'];
+      }
+      throw new UnexpectedAlertOpenError(message, text);
     }
   }
   return responseObj;

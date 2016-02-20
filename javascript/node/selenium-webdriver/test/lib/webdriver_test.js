@@ -44,7 +44,6 @@ const SESSION_ID = 'test_session_id';
 
 // Aliases for readability.
 const NativePromise = Promise;
-const ECode = error.ErrorCode;
 const StubError = testutil.StubError;
 const assertIsInstance = testutil.assertIsInstance;
 const assertIsStubError = testutil.assertIsStubError;
@@ -158,23 +157,28 @@ describe('WebDriver', function() {
     andReturn(code, opt_value) {
       this.toDo_ = function(command) {
         LOG.info('executing ' + command.getName() + '; returning ' + code);
-        return Promise.resolve({
-          'status': code,
-          'sessionId': {
-            'value': SESSION_ID
-          },
-          'value': opt_value !== void(0) ? opt_value : null
-        });
+        return Promise.resolve(opt_value !== void(0) ? opt_value : null);
       };
       return this;
     }
 
     andReturnSuccess(opt_value) {
-      return this.andReturn(0, opt_value);
+      this.toDo_ = function(command) {
+        LOG.info('executing ' + command.getName() + '; returning success');
+        return Promise.resolve(opt_value !== void(0) ? opt_value : null);
+      };
+      return this;
     }
 
-    andReturnError(code, opt_value) {
-      return this.andReturn(code, opt_value);
+    andReturnError(error) {
+      if (typeof error === 'number') {
+        throw Error('need error type');
+      }
+      this.toDo_ = function(command) {
+        LOG.info('executing ' + command.getName() + '; returning failure');
+        return Promise.reject(error);
+      };
+      return this;
     }
 
     expect(name, opt_parameters) {
@@ -243,32 +247,29 @@ describe('WebDriver', function() {
 
   describe('testAttachToSession', function() {
     it('sessionIsAvailable', function() {
+      let aSession = new Session(SESSION_ID, {'browserName': 'firefox'});
       let executor = new FakeExecutor().
           expect(CName.DESCRIBE_SESSION).
           withParameters({'sessionId': SESSION_ID}).
-          andReturnSuccess({'browserName': 'firefox'}).
+          andReturnSuccess(aSession).
           end();
 
       let driver = WebDriver.attachToSession(executor, SESSION_ID);
-      return driver.getSession().then(function(session) {
-        assert.deepEqual({'value': 'test_session_id'}, session.getId());
-        assert.equal('firefox', session.getCapability('browserName'));
-      });
+      return driver.getSession().then(v => assert.strictEqual(v, aSession));
     });
 
     it('failsToGetSessionInfo', function() {
+      let e = new Error('boom');
       let executor = new FakeExecutor().
           expect(CName.DESCRIBE_SESSION).
           withParameters({'sessionId': SESSION_ID}).
-          andReturnError(ECode.UNKNOWN_ERROR, {'message': 'boom'}).
+          andReturnError(e).
           end();
 
       let driver = WebDriver.attachToSession(executor, SESSION_ID);
       return driver.getSession()
-          .then(() => assert.fail('should have failed!'), function(e) {
-            assertIsInstance(error.WebDriverError, e);
-            assert.equal('boom', e.message);
-          });
+          .then(() => assert.fail('should have failed!'),
+                (actual) => assert.strictEqual(actual, e));
     });
 
     it('usesActiveFlowByDefault', function() {
@@ -302,59 +303,50 @@ describe('WebDriver', function() {
 
   describe('testCreateSession', function() {
     it('happyPathWithCapabilitiesHashObject', function() {
+      let aSession = new Session(SESSION_ID, {'browserName': 'firefox'});
       let executor = new FakeExecutor().
           expect(CName.NEW_SESSION).
           withParameters({
             'desiredCapabilities': {'browserName': 'firefox'}
           }).
-          andReturnSuccess({'browserName': 'firefox'}).
+          andReturnSuccess(aSession).
           end();
 
       var driver = WebDriver.createSession(executor, {
         'browserName': 'firefox'
       });
-      return driver.getSession().then(function(session) {
-        assert.deepEqual({
-          'value':'test_session_id'
-        }, session.getId());
-        assert.equal('firefox', session.getCapability('browserName'));
-      });
+      return driver.getSession().then(v => assert.strictEqual(v, aSession));
     });
 
     it('happyPathWithCapabilitiesInstance', function() {
+      let aSession = new Session(SESSION_ID, {'browserName': 'firefox'});
       let executor = new FakeExecutor().
           expect(CName.NEW_SESSION).
           withParameters({'desiredCapabilities': {'browserName': 'firefox'}}).
-          andReturnSuccess({'browserName': 'firefox'}).
+          andReturnSuccess(aSession).
           end();
 
       var driver = WebDriver.createSession(executor, Capabilities.firefox());
-      return driver.getSession().then(function(session) {
-        assert.deepEqual({'value':'test_session_id' }, session.getId());
-        assert.equal('firefox', session.getCapability('browserName'));
-      });
+      return driver.getSession().then(v => assert.strictEqual(v, aSession));
     });
 
     it('failsToCreateSession', function() {
       let executor = new FakeExecutor().
           expect(CName.NEW_SESSION).
           withParameters({'desiredCapabilities': {'browserName': 'firefox'}}).
-          andReturnError(ECode.UNKNOWN_ERROR, {'message': 'boom'}).
+          andReturnError(new StubError()).
           end();
 
       var driver =
           WebDriver.createSession(executor, {'browserName': 'firefox'});
-      return driver.getSession().then(fail, function(e) {
-        assertIsInstance(error.WebDriverError, e);
-        assert.equal('boom', e.message);
-      });
+      return driver.getSession().then(fail, assertIsStubError);
     });
 
     it('usesActiveFlowByDefault', function() {
       let executor = new FakeExecutor().
           expect(CName.NEW_SESSION).
           withParameters({'desiredCapabilities': {}}).
-          andReturnSuccess({}).
+          andReturnSuccess(new Session(SESSION_ID)).
           end();
 
       var driver = WebDriver.createSession(executor, {});
@@ -397,53 +389,54 @@ describe('WebDriver', function() {
   });
 
   it('testStopsCommandExecutionWhenAnErrorOccurs', function() {
+    let e = new error.NoSuchWindowError('window not found');
     let executor = new FakeExecutor().
         expect(CName.SWITCH_TO_WINDOW).
         withParameters({'name': 'foo'}).
-        andReturnError(ECode.NO_SUCH_WINDOW, {'message': 'window not found'}).
+        andReturnError(e).
         end();
 
     var driver = executor.createDriver();
     driver.switchTo().window('foo');
     driver.getTitle();  // mock should blow if this gets executed
 
-    return waitForAbort().
-        then(expectedError(error.NoSuchWindowError, 'window not found'));
+    return waitForAbort().then(v => assert.strictEqual(v, e));
   });
 
   it('testCanSuppressCommandFailures', function() {
+    let e = new error.NoSuchWindowError('window not found');
     let executor = new FakeExecutor().
         expect(CName.SWITCH_TO_WINDOW).
             withParameters({'name': 'foo'}).
-            andReturnError(ECode.NO_SUCH_WINDOW, {'message': 'window not found'}).
+            andReturnError(e).
         expect(CName.GET_TITLE).
             andReturnSuccess('Google Search').
         end();
 
     var driver = executor.createDriver();
     driver.switchTo().window('foo')
-        .thenCatch(expectedError(error.NoSuchWindowError, 'window not found'));
+        .thenCatch(v => assert.strictEqual(v, e));
     driver.getTitle();
     return waitForIdle();
   });
 
   it('testErrorsPropagateUpToTheRunningApplication', function() {
+    let e = new error.NoSuchWindowError('window not found');
     let executor = new FakeExecutor().
         expect(CName.SWITCH_TO_WINDOW).
             withParameters({'name':'foo'}).
-            andReturnError(ECode.NO_SUCH_WINDOW, {'message': 'window not found'}).
+            andReturnError(e).
         end();
 
     executor.createDriver().switchTo().window('foo');
-    return waitForAbort().
-        then(expectedError(error.NoSuchWindowError, 'window not found'));
+    return waitForAbort().then(v => assert.strictEqual(v, e));
   });
 
   it('testErrbacksThatReturnErrorsStillSwitchToCallbackChain', function() {
     let executor = new FakeExecutor().
         expect(CName.SWITCH_TO_WINDOW).
             withParameters({'name':'foo'}).
-            andReturnError(ECode.NO_SUCH_WINDOW, {'message':'window not found'}).
+            andReturnError(new error.NoSuchWindowError('window not found')).
         end();
 
     var driver = executor.createDriver();
@@ -455,7 +448,7 @@ describe('WebDriver', function() {
   it('testErrbacksThrownCanOverrideOriginalError', function() {
     let executor = new FakeExecutor().
         expect(CName.SWITCH_TO_WINDOW, {'name': 'foo'}).
-        andReturnError(ECode.NO_SUCH_WINDOW, {'message':'window not found'}).
+        andReturnError(new error.NoSuchWindowError('window not found')).
         end();
 
     var driver = executor.createDriver();
@@ -544,10 +537,11 @@ describe('WebDriver', function() {
 
   describe('nestedCommandFailures', function() {
     it('bubbleUpToGlobalHandlerIfUnsuppressed', function() {
+      let e = new error.NoSuchWindowError('window not found');
       let executor = new FakeExecutor().
           expect(CName.GET_TITLE).
           expect(CName.SWITCH_TO_WINDOW, {'name': 'foo'}).
-              andReturnError(ECode.NO_SUCH_WINDOW, {'message':'window not found'}).
+          andReturnError(e).
           end();
 
       var driver = executor.createDriver();
@@ -555,15 +549,14 @@ describe('WebDriver', function() {
         driver.switchTo().window('foo');
       });
 
-      return waitForAbort().
-          then(expectedError(error.NoSuchWindowError, 'window not found'));
+      return waitForAbort().then(v => assert.strictEqual(v, e));
     });
 
     it('canBeSuppressWhenTheyOccur', function() {
       let executor = new FakeExecutor().
           expect(CName.GET_TITLE).
           expect(CName.SWITCH_TO_WINDOW, {'name':'foo'}).
-              andReturnError(ECode.NO_SUCH_WINDOW, {'message':'window not found'}).
+              andReturnError(new error.NoSuchWindowError('window not found')).
           expect(CName.CLOSE).
           end();
 
@@ -577,10 +570,11 @@ describe('WebDriver', function() {
     });
 
     it('bubbleUpThroughTheFrameStack', function() {
+      let e = new error.NoSuchWindowError('window not found');
       let executor = new FakeExecutor().
           expect(CName.GET_TITLE).
           expect(CName.SWITCH_TO_WINDOW, {'name':'foo'}).
-              andReturnError(ECode.NO_SUCH_WINDOW, {'message':'window not found'}).
+          andReturnError(e).
           end();
 
       var driver = executor.createDriver();
@@ -588,10 +582,7 @@ describe('WebDriver', function() {
           then(function() {
             return driver.switchTo().window('foo');
           }).
-          thenCatch(function(e) {
-            assertIsInstance(error.NoSuchWindowError, e);
-            assert.equal('window not found', e.message);
-          });
+          thenCatch(v => assert.strictEqual(v, e));
 
       return waitForIdle();
     });
@@ -601,7 +592,7 @@ describe('WebDriver', function() {
           expect(CName.GET_TITLE).
           expect(CName.GET_CURRENT_URL).
           expect(CName.SWITCH_TO_WINDOW, {'name':'foo'}).
-              andReturnError(ECode.NO_SUCH_WINDOW, {'message':'window not found'}).
+              andReturnError(new StubError()).
           expect(CName.CLOSE).
           end();
 
@@ -642,7 +633,7 @@ describe('WebDriver', function() {
       var count = 0;
       let executor = new FakeExecutor().
           expect(CName.SWITCH_TO_WINDOW, {'name':'foo'}).
-              andReturnError(ECode.NO_SUCH_WINDOW, {'message':'window not found'}).
+              andReturnError(new StubError()).
           expect(CName.GET_CURRENT_URL).
               andReturnSuccess('http://www.google.com').
           end();
@@ -650,8 +641,7 @@ describe('WebDriver', function() {
       var driver = executor.createDriver();
       driver.switchTo().window('foo').
           thenCatch(function(e) {
-            assertIsInstance(error.NoSuchWindowError, e);
-            assert.equal('window not found', e.message);
+            assertIsStubError(e);
             count += 1;
             return driver.getCurrentUrl();
           }).
@@ -770,16 +760,13 @@ describe('WebDriver', function() {
     it('hasANestedCommandThatFails', function() {
       let executor = new FakeExecutor().
           expect(CName.SWITCH_TO_WINDOW, {'name': 'foo'}).
-              andReturnError(ECode.NO_SUCH_WINDOW, {'message':'window not found'}).
+              andReturnError(new StubError()).
           end();
 
       var driver = executor.createDriver();
       return driver.call(function() {
         return driver.switchTo().window('foo');
-      }).then(fail, function(e) {
-        assertIsInstance(error.NoSuchWindowError, e);
-        assert.equal('window not found', e.message);
-      });
+      }).then(fail, assertIsStubError);
     });
 
     it('doesNotCompleteUntilReturnedPromiseIsResolved', function() {
@@ -1145,14 +1132,11 @@ describe('WebDriver', function() {
                 'script': 'throw Error(arguments[0]);',
                 'args': ['bam']
               }).
-              andReturnError(ECode.UNKNOWN_ERROR, {'message':'bam'}).
+              andReturnError(new StubError).
           end();
       var driver = executor.createDriver();
       return driver.executeScript('throw Error(arguments[0]);', 'bam').
-          then(fail, function(e) {
-            assertIsInstance(error.WebDriverError, e);
-            assert.equal('bam', e.message);
-          });
+          then(fail, assertIsStubError);
     });
 
     it('failsIfArgumentIsARejectedPromise', function() {
@@ -1183,26 +1167,20 @@ describe('WebDriver', function() {
       let executor = new FakeExecutor().
           expect(CName.FIND_ELEMENT,
                  {using: 'css selector', value: '*[id="foo"]'}).
-          andReturnError(ECode.NO_SUCH_ELEMENT, {
-              'message':'Unable to find element'
-          }).
+          andReturnError(new StubError).
           end();
 
       var driver = executor.createDriver();
       var element = driver.findElement(By.id('foo'));
       element.click();  // This should never execute.
-      return waitForAbort().then(function(e) {
-        assertIsInstance(error.NoSuchElementError, e);
-        assert.equal('Unable to find element', e.message);
-      });
+      return waitForAbort().then(assertIsStubError);
     });
 
     it('elementNotFoundInACallback', function() {
       let executor = new FakeExecutor().
           expect(CName.FIND_ELEMENT,
                  {using: 'css selector', value: '*[id="foo"]'}).
-          andReturnError(
-              ECode.NO_SUCH_ELEMENT, {'message':'Unable to find element'}).
+          andReturnError(new StubError).
           end();
 
       var driver = executor.createDriver();
@@ -1210,10 +1188,7 @@ describe('WebDriver', function() {
         var element = driver.findElement(By.id('foo'));
         return element.click();  // Should not execute.
       });
-      return waitForAbort().then(function(e) {
-        assertIsInstance(error.NoSuchElementError, e);
-        assert.equal('Unable to find element', e.message);
-      });
+      return waitForAbort().then(assertIsStubError);
     });
 
     it('elementFound', function() {
@@ -1351,15 +1326,12 @@ describe('WebDriver', function() {
       let executor = new FakeExecutor().
           expect(CName.FIND_ELEMENTS,
                  {using: 'css selector', value: '*[id="foo"]'}).
-          andReturnError(ECode.UNKNOWN_ERROR, {'message':'There is no spoon'}).
+          andReturnError(new StubError).
           end();
 
       var driver = executor.createDriver();
       driver.isElementPresent(By.id('foo'));
-      return waitForAbort().then(function(e) {
-        assertIsInstance(error.WebDriverError, e);
-        assert.equal(e.message, 'There is no spoon');
-      });
+      return waitForAbort().then(assertIsStubError);
     });
 
     it('byJs', function() {
@@ -1637,37 +1609,6 @@ describe('WebDriver', function() {
   });
 
   describe('alert handling', function() {
-    it('interceptsAndTransformsUnhandledAlertErrors', function() {
-      let executor = new FakeExecutor().
-          expect(CName.FIND_ELEMENT,
-                 {using: 'css selector', value: '*[id="foo"]'}).
-          andReturnError(ECode.UNEXPECTED_ALERT_OPEN, {
-            'message': 'boom',
-            'alert': {'text': 'hello'}
-          }).
-          end();
-
-      var driver = executor.createDriver();
-      return driver.findElement(By.id('foo')).then(fail, function(e) {
-        assertIsInstance(UnhandledAlertError, e);
-        assert.equal('hello', e.getAlertText());
-      });
-    });
-
-    it('usesEmptyStringIfAlertTextOmittedFromResponse', function() {
-      let executor = new FakeExecutor().
-          expect(CName.FIND_ELEMENT,
-                 {using: 'css selector', value: '*[id="foo"]'}).
-          andReturnError(ECode.UNEXPECTED_ALERT_OPEN, {'message': 'boom'}).
-          end();
-
-      var driver = executor.createDriver();
-      return driver.findElement(By.id('foo')).then(fail, function(e) {
-        assertIsInstance(UnhandledAlertError, e);
-        assert.equal('', e.getAlertText());
-      });
-    });
-
     it('alertResolvesWhenPromisedTextResolves', function() {
       var textPromise = new promise.Deferred();
 
@@ -1681,18 +1622,16 @@ describe('WebDriver', function() {
     });
 
     it('cannotSwitchToAlertThatIsNotPresent', function() {
+      let e = new error.NoSuchAlertError;
       let executor = new FakeExecutor()
           .expect(CName.GET_ALERT_TEXT)
-          .andReturnError(ECode.NO_SUCH_ALERT, {'message': 'no alert'})
+          .andReturnError(e)
           .end();
 
       var driver = executor.createDriver();
       var alert = driver.switchTo().alert();
       alert.dismiss();  // Should never execute.
-      return waitForAbort().then(function(e) {
-        assertIsInstance(error.NoSuchAlertError, e);
-        assert.equal('no alert', e.message);
-      });
+      return waitForAbort().then(v => assert.strictEqual(v, e));
     });
 
     it('alertsBelongToSameFlowAsParentDriver', function() {
@@ -1718,15 +1657,16 @@ describe('WebDriver', function() {
     });
 
     it('commandsFailIfAlertNotPresent', function() {
+      let e = new error.NoSuchAlertError;
       let executor = new FakeExecutor()
           .expect(CName.GET_ALERT_TEXT)
-              .andReturnError(ECode.NO_SUCH_ALERT, {'message': 'no alert'})
+          .andReturnError(e)
           .end();
 
       var driver = executor.createDriver();
       var alert = driver.switchTo().alert();
 
-      var expectError = expectedError(error.NoSuchAlertError, 'no alert');
+      var expectError = (v) => assert.strictEqual(v, e);
 
       return alert.getText()
           .then(fail, expectedError)
@@ -1806,37 +1746,31 @@ describe('WebDriver', function() {
   });
 
   it('testWebElementCommansFailIfElementCouldNotBeFound', function() {
+    let e = new error.NoSuchElementError('Unable to find element');
     let executor = new FakeExecutor().
         expect(CName.FIND_ELEMENT,
                {using: 'css selector', value: '*[id="foo"]'}).
-            andReturnError(ECode.NO_SUCH_ELEMENT,
-                           {'message':'Unable to find element'}).
+            andReturnError(e).
         end();
 
     var driver = executor.createDriver();
     return driver.findElement(By.id('foo')).click()
-        .then(fail, function(e) {
-          assertIsInstance(error.NoSuchElementError, e);
-          assert.equal('Unable to find element', e.message);
-        });
+        .then(fail, v => assert.strictEqual(v, e));
   });
 
   it('testCannotFindChildElementsIfParentCouldNotBeFound', function() {
+    let e = new error.NoSuchElementError('Unable to find element');
     let executor = new FakeExecutor().
         expect(CName.FIND_ELEMENT,
                {using: 'css selector', value: '*[id="foo"]'}).
-        andReturnError(ECode.NO_SUCH_ELEMENT,
-                       {'message':'Unable to find element'}).
+        andReturnError(e).
         end();
 
     var driver = executor.createDriver();
     return driver.findElement(By.id('foo'))
         .findElement(By.id('bar'))
         .findElement(By.id('baz'))
-        .then(fail, function(e) {
-          assertIsInstance(error.NoSuchElementError, e);
-          assert.equal('Unable to find element', e.message);
-        });
+        .then(fail, v => assert.strictEqual(v, e));
   });
 
   describe('actions()', function() {

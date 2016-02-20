@@ -109,6 +109,43 @@ describe('error', function() {
     test('INVALID_XPATH_SELECTOR_RETURN_TYPE', error.InvalidSelectorError);
     test('METHOD_NOT_ALLOWED', error.UnsupportedOperationError);
 
+    describe('UnexpectedAlertOpenError', function() {
+      it('includes alert text from the response object', function() {
+        let response = {
+          status: error.ErrorCode.UNEXPECTED_ALERT_OPEN,
+          value: {
+            message: 'hi',
+            alert: {text: 'alert text here'}
+          }
+        };
+        assert.throws(
+            () => error.checkLegacyResponse(response),
+            (e) => {
+              assert.equal(error.UnexpectedAlertOpenError, e.constructor);
+              assert.equal(e.message, 'hi');
+              assert.equal(e.getAlertText(), 'alert text here');
+              return true;
+            });
+      });
+
+      it('uses an empty string if alert text omitted', function() {
+        let response = {
+          status: error.ErrorCode.UNEXPECTED_ALERT_OPEN,
+          value: {
+            message: 'hi'
+          }
+        };
+        assert.throws(
+            () => error.checkLegacyResponse(response),
+            (e) => {
+              assert.equal(error.UnexpectedAlertOpenError, e.constructor);
+              assert.equal(e.message, 'hi');
+              assert.equal(e.getAlertText(), '');
+              return true;
+            });
+      });
+    });
+
     function test(codeKey, expectedType) {
       it(`${codeKey} => ${expectedType.name}`, function() {
         let code = error.ErrorCode[codeKey];

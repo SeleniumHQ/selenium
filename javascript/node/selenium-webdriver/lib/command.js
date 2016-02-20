@@ -227,7 +227,7 @@ class Executor {
    * response object.
    *
    * @param {!Command} command The command to execute.
-   * @return {!promise.Promise<!Object>} A promise that will be fulfilled with
+   * @return {!promise.Promise<?>} A promise that will be fulfilled with
    *     the command result.
    */
   execute(command) {}

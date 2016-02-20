@@ -2,6 +2,8 @@
 
 ### Change Summary
 
+* Moved all logic for parsing and interpreting responses from the remote end
+   into the individual `command.Executor` implementations.
 * For consistency with the other Selenium language bindings,
    `WebDriver#isElementPresent()` and `WebElement#isElementPresent()` have
    been deprecated. These methods will be removed in v3.0. Use the findElements

@@ -21,8 +21,7 @@
 
 'use strict';
 
-const error = require('../error'),
-    Executor = require('./index').Executor,
+const Executor = require('./index').Executor,
     HttpClient = require('./index').HttpClient,
     HttpRequest = require('./index').Request,
     Command = require('../lib/command').Command,
@@ -41,10 +40,7 @@ function getStatus(url) {
   var client = new HttpClient(url);
   var executor = new Executor(client);
   var command = new Command(CommandName.GET_SERVER_STATUS);
-  return executor.execute(command).then(function(responseObj) {
-    error.checkLegacyResponse(responseObj);
-    return responseObj['value'];
-  });
+  return executor.execute(command);
 }
 
 
