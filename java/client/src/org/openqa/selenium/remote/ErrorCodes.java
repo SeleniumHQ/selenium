@@ -125,6 +125,7 @@ public class ErrorCodes {
         builder.put(pair.getValue(), pair.getKey());
       }
     }
+    builder.put("invalid session id", NO_SUCH_SESSION); // for W3C compatibility
     stateToStatus = builder.build();
   }
 
