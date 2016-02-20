@@ -1,10 +1,7 @@
 java_library(name = "tests",
   srcs = [
-    "HtmlUnitCapabilitiesTest.java",
     "HtmlUnitSpecificTests.java",
-    "InputKeysContainerTest.java",
     "ToStringTest.java",
-    "HtmlUnitProxyTest.java",
   ],
   deps = [
     "//third_party/java/htmlunit",

@@ -24,9 +24,6 @@ import static org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-    HtmlUnitCapabilitiesTest.class,
-    InputKeysContainerTest.class,
-    HtmlUnitProxyTest.class,
     ToStringTest.class
 })
 public class HtmlUnitSpecificTests {
