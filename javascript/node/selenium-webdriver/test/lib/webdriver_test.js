@@ -485,7 +485,7 @@ describe('WebDriver', function() {
     driver.get('http://www.google.com');
     return waitForAbort().
         then(expectedError(
-            error.UnsupportedOperationError,
+            error.NoSuchSessionError,
             'This driver instance does not have a valid session ID ' +
             '(did you call WebDriver.quit()?) and may no longer be used.'));
   });

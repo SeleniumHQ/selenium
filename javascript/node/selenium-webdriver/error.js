@@ -160,10 +160,20 @@ class InvalidSelectorError extends WebDriverError {
 
 
 /**
- * Occurs if the given session id is not in the list of active sessions, meaning
- * the session either does not exist or that it’s not active.
+ * Occurs when a command is directed to a session that does not exist.
  */
-class InvalidSessionIdError extends WebDriverError {
+class NoSuchSessionError extends WebDriverError {
+  /** @param {string=} opt_error the error message, if any. */
+  constructor(opt_error) {
+    super(opt_error);
+  }
+}
+
+
+/**
+ * @deprecated Use {@link NoSuchSessionError} instead.
+ */
+class InvalidSessionIdError extends NoSuchSessionError {
   /** @param {string=} opt_error the error message, if any. */
   constructor(opt_error) {
     super(opt_error);
@@ -521,7 +531,7 @@ const ERROR_CODE_TO_TYPE = new Map([
     ['invalid element coordinates', InvalidElementCoordinatesError],
     ['invalid element state', InvalidElementStateError],
     ['invalid selector', InvalidSelectorError],
-    ['invalid session id', InvalidSessionIdError],
+    ['invalid session id', NoSuchSessionError],
     ['javascript error', JavascriptError],
     ['move target out of bounds', MoveTargetOutOfBoundsError],
     ['no such alert', NoSuchAlertError],
@@ -630,6 +640,7 @@ exports.MoveTargetOutOfBoundsError = MoveTargetOutOfBoundsError;
 exports.NoSuchAlertError = NoSuchAlertError;
 exports.NoSuchElementError = NoSuchElementError;
 exports.NoSuchFrameError = NoSuchFrameError;
+exports.NoSuchSessionError = NoSuchSessionError;
 exports.NoSuchWindowError = NoSuchWindowError;
 exports.ScriptTimeoutError = ScriptTimeoutError;
 exports.SessionNotCreatedError = SessionNotCreatedError;

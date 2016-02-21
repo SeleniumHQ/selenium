@@ -356,7 +356,7 @@ class WebDriver {
 
     function checkHasNotQuit() {
       if (!self.session_) {
-        throw new error.UnsupportedOperationError(
+        throw new error.NoSuchSessionError(
           'This driver instance does not have a valid session ID ' +
           '(did you call WebDriver.quit()?) and may no longer be ' +
           'used.');

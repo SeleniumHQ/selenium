@@ -11,6 +11,8 @@
 
       driver.findElements(By.css('.foo')).then(found => !!found.length);
 * Added support for W3C-spec compliant servers.
+* For consistent naming, deprecating `error.InvalidSessionIdError` in favor of
+    `error.NoSuchSessionError`.
 
 ### Changes for W3C WebDriver Spec Compliance
 

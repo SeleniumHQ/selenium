@@ -46,7 +46,7 @@ describe('error', function() {
     test('invalid element coordinates', error.InvalidElementCoordinatesError);
     test('invalid element state', error.InvalidElementStateError);
     test('invalid selector', error.InvalidSelectorError);
-    test('invalid session id', error.InvalidSessionIdError);
+    test('invalid session id', error.NoSuchSessionError);
     test('javascript error', error.JavascriptError);
     test('move target out of bounds', error.MoveTargetOutOfBoundsError);
     test('no such alert', error.NoSuchAlertError);
@@ -119,7 +119,7 @@ describe('error', function() {
     test('invalid element coordinates', error.InvalidElementCoordinatesError);
     test('invalid element state', error.InvalidElementStateError);
     test('invalid selector', error.InvalidSelectorError);
-    test('invalid session id', error.InvalidSessionIdError);
+    test('invalid session id', error.NoSuchSessionError);
     test('javascript error', error.JavascriptError);
     test('move target out of bounds', error.MoveTargetOutOfBoundsError);
     test('no such alert', error.NoSuchAlertError);
@@ -243,7 +243,7 @@ describe('error', function() {
     check(error.InvalidElementCoordinatesError, 'INVALID_ELEMENT_COORDINATES');
     check(error.InvalidElementStateError, 'INVALID_ELEMENT_STATE');
     check(error.InvalidSelectorError, 'INVALID_SELECTOR_ERROR');
-    check(error.InvalidSessionIdError, 'UNKNOWN_ERROR');
+    check(error.NoSuchSessionError, 'UNKNOWN_ERROR');
     check(error.JavascriptError, 'JAVASCRIPT_ERROR');
     check(error.MoveTargetOutOfBoundsError, 'MOVE_TARGET_OUT_OF_BOUNDS');
     check(error.NoSuchAlertError, 'NO_SUCH_ALERT');
