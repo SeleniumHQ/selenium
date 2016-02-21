@@ -75,6 +75,31 @@ public class Rectangle {
   }
 
   public Dimension getDimension() {
-    return new Dimension(x, y);
+    return new Dimension(width, height);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    Rectangle rectangle = (Rectangle) o;
+
+    if (! getPoint().equals(rectangle.getPoint())) {
+      return false;
+    }
+    return getDimension().equals(rectangle.getDimension());
+
+  }
+
+  @Override
+  public int hashCode() {
+    int result = getPoint().hashCode();
+    result = 31 * result + getDimension().hashCode();
+    return result;
   }
 }
