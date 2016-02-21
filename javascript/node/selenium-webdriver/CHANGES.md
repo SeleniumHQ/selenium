@@ -10,6 +10,14 @@
    command to test for the presence of an element:
 
       driver.findElements(By.css('.foo')).then(found => !!found.length);
+* Added support for W3C-spec compliant servers.
+
+### Changes for W3C WebDriver Spec Compliance
+
+* Changed `element.sendKeys(...)` to send the key sequence as an array where
+   each element defines a single key. The legacy wire protocol permits arrays
+   where each element is a string of arbitrary length. This change is solely
+   at the protocol level and should have no user-visible effect.
 
 
 ## v2.52.0

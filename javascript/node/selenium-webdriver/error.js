@@ -546,6 +546,7 @@ const ERROR_CODE_TO_TYPE = new Map([
  * @param {*} data The response data to check.
  * @return {*} The response data if it was not an encoded error.
  * @throws {WebDriverError} the decoded error, if present in the data object.
+ * @deprecated Use {@link #throwDecodedError(data)} instead.
  * @see https://w3c.github.io/webdriver/webdriver-spec.html#protocol
  */
 function checkResponse(data) {
@@ -554,6 +555,23 @@ function checkResponse(data) {
     throw new ctor(data.message);
   }
   return data;
+}
+
+
+/**
+ * Throws an error coded from the W3C protocol. A generic error will be thrown
+ * if the privded `data` is not a valid encoded error.
+ *
+ * @param {{error: string, message: string}} data The error data to decode.
+ * @throws {WebDriverError} the decoded error.
+ * @see https://w3c.github.io/webdriver/webdriver-spec.html#protocol
+ */
+function throwDecodedError(data) {
+  if (data && typeof data === 'object' && typeof data.error === 'string') {
+    let ctor = ERROR_CODE_TO_TYPE.get(data.error) || WebDriverError;
+    throw new ctor(data.message);
+  }
+  throw new WebDriverError('Unknown error: ' + JSON.stringify(data));
 }
 
 
@@ -626,3 +644,4 @@ exports.UnsupportedOperationError = UnsupportedOperationError;
 
 exports.checkResponse = checkResponse;
 exports.checkLegacyResponse = checkLegacyResponse;
+exports.throwDecodedError = throwDecodedError;

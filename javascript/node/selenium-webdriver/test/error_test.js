@@ -77,6 +77,79 @@ describe('error', function() {
     }
   });
 
+  describe('throwDecodedError', function() {
+    it('defaults to WebDriverError if type is unrecognized', function() {
+      assert.throws(
+          () => error.throwDecodedError({error: 'foo', message: 'hi there'}),
+          (e) => {
+            assert.equal(e.constructor, error.WebDriverError);
+            assert.equal(e.code, error.ErrorCode.UNKNOWN_ERROR);
+            return true;
+          });
+    });
+
+    it('throws generic error if encoded data is not valid', function() {
+      assert.throws(
+          () => error.throwDecodedError({error: 123, message: 'abc123'}),
+          (e) => {
+            assert.strictEqual(e.constructor, error.WebDriverError);
+            return true;
+          });
+
+      assert.throws(
+          () => error.throwDecodedError('null'),
+          (e) => {
+            assert.strictEqual(e.constructor, error.WebDriverError);
+            return true;
+          });
+
+      assert.throws(
+          () => error.throwDecodedError(''),
+          (e) => {
+            assert.strictEqual(e.constructor, error.WebDriverError);
+            return true;
+          });
+    });
+
+    test('unknown error', error.WebDriverError);
+    test('element not selectable', error.ElementNotSelectableError);
+    test('element not visible', error.ElementNotVisibleError);
+    test('invalid argument', error.InvalidArgumentError);
+    test('invalid cookie domain', error.InvalidCookieDomainError);
+    test('invalid element coordinates', error.InvalidElementCoordinatesError);
+    test('invalid element state', error.InvalidElementStateError);
+    test('invalid selector', error.InvalidSelectorError);
+    test('invalid session id', error.InvalidSessionIdError);
+    test('javascript error', error.JavascriptError);
+    test('move target out of bounds', error.MoveTargetOutOfBoundsError);
+    test('no such alert', error.NoSuchAlertError);
+    test('no such element', error.NoSuchElementError);
+    test('no such frame', error.NoSuchFrameError);
+    test('no such window', error.NoSuchWindowError);
+    test('script timeout', error.ScriptTimeoutError);
+    test('session not created', error.SessionNotCreatedError);
+    test('stale element reference', error.StaleElementReferenceError);
+    test('timeout', error.TimeoutError);
+    test('unable to set cookie', error.UnableToSetCookieError);
+    test('unable to capture screen', error.UnableToCaptureScreenError);
+    test('unexpected alert open', error.UnexpectedAlertOpenError);
+    test('unknown command', error.UnknownCommandError);
+    test('unknown method', error.UnknownMethodError);
+    test('unsupported operation', error.UnsupportedOperationError);
+
+    function test(status, expectedType) {
+      it(`"${status}" => ${expectedType.name}`, function() {
+        assert.throws(
+            () => error.throwDecodedError({error: status, message: 'oops'}),
+            (e) => {
+              assert.strictEqual(e.constructor, expectedType);
+              assert.strictEqual(e.message, 'oops');
+              return true;
+            });
+      });
+    }
+  });
+
   describe('checkLegacyResponse', function() {
     it('does not throw for success', function() {
       let resp = {status: error.ErrorCode.SUCCESS};

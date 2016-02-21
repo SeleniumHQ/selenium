@@ -17,23 +17,24 @@
 
 'use strict';
 
-var assert = require('assert');
-var http = require('http');
-var sinon = require('sinon');
-var url = require('url');
+var assert = require('assert'),
+    http = require('http'),
+    sinon = require('sinon'),
+    url = require('url');
 
-var error = require('../../error');
-var Executor = require('../../http').Executor;
-var HttpClient = require('../../http').HttpClient;
-var HttpRequest = require('../../http').Request;
-var HttpResponse = require('../../http').Response;
-var buildPath = require('../../http').buildPath;
-var Capabilities = require('../../lib/capabilities').Capabilities;
-var Command = require('../../lib/command').Command;
-var CommandName = require('../../lib/command').Name;
-var Session = require('../../lib/session').Session;
-var Server = require('../../lib/test/httpserver').Server;
-var promise = require('../..').promise;
+var error = require('../../error'),
+    Executor = require('../../http').Executor,
+    HttpClient = require('../../http').HttpClient,
+    HttpRequest = require('../../http').Request,
+    HttpResponse = require('../../http').Response,
+    buildPath = require('../../http').buildPath,
+    Capabilities = require('../../lib/capabilities').Capabilities,
+    Command = require('../../lib/command').Command,
+    CommandName = require('../../lib/command').Name,
+    Session = require('../../lib/session').Session,
+    Server = require('../../lib/test/httpserver').Server,
+    promise = require('../../lib/promise'),
+    WebElement = require('../../lib/webdriver').WebElement;
 
 describe('buildPath', function() {
   it('properly replaces path segments with command parameters', function() {
@@ -44,8 +45,7 @@ describe('buildPath', function() {
   });
 
   it('handles web element references', function() {
-    var parameters = {'sessionId':'foo', 'id': {}};
-    parameters['id']['ELEMENT'] = 'bar';
+    var parameters = {'sessionId':'foo', 'id': WebElement.buildId('bar')};
 
     var finalPath = buildPath(
         '/session/:sessionId/element/:id/click', parameters);
@@ -76,78 +76,136 @@ describe('buildPath', function() {
 
 describe('Executor', function() {
   let executor;
+  let client;
   let send;
 
   beforeEach(function setUp() {
-    let client = new HttpClient('http://www.example.com');
+    client = new HttpClient('http://www.example.com');
     send = sinon.stub(client, 'send');
     executor = new Executor(client);
   });
 
-  it('rejects unrecognized commands', function() {
-    assert.throws(
-        () => executor.execute(new Command('fake-name')),
-        function (err) {
-          return err instanceof error.UnknownCommandError
-              && 'Unrecognized command: fake-name' === err.message;
+  describe('command routing', function() {
+    it('rejects unrecognized commands', function() {
+      assert.throws(
+          () => executor.execute(new Command('fake-name')),
+          function (err) {
+            return err instanceof error.UnknownCommandError
+                && 'Unrecognized command: fake-name' === err.message;
+          });
+    });
+
+    it('rejects promise if client fails to send request', function() {
+      let error = new Error('boom');
+      send.returns(Promise.reject(error));
+      return assertFailsToSend(new Command(CommandName.NEW_SESSION))
+          .then(function(e) {
+             assert.strictEqual(error, e);
+             assertSent(
+                 'POST', '/session', {},
+                 [['Accept', 'application/json; charset=utf-8']]);
+          });
+    });
+
+    it('can execute commands with no URL parameters', function() {
+      var resp = JSON.stringify({sessionId: 'abc123'});
+      send.returns(Promise.resolve(new HttpResponse(200, {}, resp)));
+
+      let command = new Command(CommandName.NEW_SESSION);
+      return assertSendsSuccessfully(command).then(function(response) {
+         assertSent(
+             'POST', '/session', {},
+             [['Accept', 'application/json; charset=utf-8']]);
+      });
+    });
+
+    it('rejects commands missing URL parameters', function() {
+      let command =
+          new Command(CommandName.FIND_CHILD_ELEMENT).
+              setParameter('sessionId', 's123').
+              // Let this be missing: setParameter('id', {'ELEMENT': 'e456'}).
+              setParameter('using', 'id').
+              setParameter('value', 'foo');
+
+      assert.throws(
+          () => executor.execute(command),
+          function(err) {
+            return err instanceof error.InvalidArgumentError
+                && 'Missing required parameter: id' === err.message;
+          });
+      assert.ok(!send.called);
+    });
+
+    it('replaces URL parameters with command parameters', function() {
+      var command = new Command(CommandName.GET).
+          setParameter('sessionId', 's123').
+          setParameter('url', 'http://www.google.com');
+
+      send.returns(Promise.resolve(new HttpResponse(200, {}, '')));
+
+      return assertSendsSuccessfully(command).then(function(response) {
+         assertSent(
+             'POST', '/session/s123/url', {'url': 'http://www.google.com'},
+             [['Accept', 'application/json; charset=utf-8']]);
+      });
+    });
+
+    describe('uses correct URL', function() {
+      beforeEach(() => executor = new Executor(client));
+
+      describe('in legacy mode', function() {
+        test(CommandName.GET_WINDOW_SIZE, {sessionId:'s123'}, false,
+             'GET', '/session/s123/window/current/size');
+
+        test(CommandName.SET_WINDOW_SIZE,
+             {sessionId:'s123', width: 1, height: 1}, false,
+             'POST', '/session/s123/window/current/size',
+             {width: 1, height: 1});
+
+        test(CommandName.MAXIMIZE_WINDOW, {sessionId:'s123'}, false,
+             'POST', '/session/s123/window/current/maximize');
+
+        // This is consistent b/w legacy and W3C, just making sure.
+        test(CommandName.GET,
+             {sessionId:'s123', url: 'http://www.example.com'}, false,
+             'POST', '/session/s123/url', {url: 'http://www.example.com'});
+      });
+
+      describe('in W3C mode', function() {
+        test(CommandName.GET_WINDOW_SIZE,
+             {sessionId:'s123'}, true,
+             'GET', '/session/s123/window/size');
+
+        test(CommandName.SET_WINDOW_SIZE,
+             {sessionId:'s123', width: 1, height: 1}, true,
+             'POST', '/session/s123/window/size', {width: 1, height: 1});
+
+        test(CommandName.MAXIMIZE_WINDOW, {sessionId:'s123'}, true,
+             'POST', '/session/s123/window/maximize');
+
+        // This is consistent b/w legacy and W3C, just making sure.
+        test(CommandName.GET,
+             {sessionId:'s123', url: 'http://www.example.com'}, true,
+             'POST', '/session/s123/url', {url: 'http://www.example.com'});
+      });
+
+      function test(command, parameters, w3c,
+          expectedMethod, expectedUrl, opt_expectedParams) {
+        it(`command=${command}`, function() {
+          var resp = JSON.stringify({sessionId: 'abc123'});
+          send.returns(Promise.resolve(new HttpResponse(200, {}, resp)));
+
+          let cmd = new Command(command).setParameters(parameters);
+          executor.w3c = w3c;
+          return executor.execute(cmd).then(function() {
+             assertSent(
+                 expectedMethod, expectedUrl, opt_expectedParams || {},
+                 [['Accept', 'application/json; charset=utf-8']]);
+          });
         });
-  });
-
-  it('rejects promise if client fails to send request', function() {
-    let error = new Error('boom');
-    send.returns(Promise.reject(error));
-    return assertFailsToSend(new Command(CommandName.NEW_SESSION))
-        .then(function(e) {
-           assert.strictEqual(error, e);
-           assertSent(
-               'POST', '/session', {},
-               [['Accept', 'application/json; charset=utf-8']]);
-        });
-  });
-
-  it('can execute commands with no URL parameters', function() {
-    var resp = JSON.stringify({sessionId: 'abc123'});
-    send.returns(Promise.resolve(new HttpResponse(200, {}, resp)));
-
-    let command = new Command(CommandName.NEW_SESSION);
-    return assertSendsSuccessfully(command).then(function(response) {
-       assertSent(
-           'POST', '/session', {},
-           [['Accept', 'application/json; charset=utf-8']]);
+      }
     });
   });
-
-  it('rejects commands missing URL parameters', function() {
-    let command =
-        new Command(CommandName.FIND_CHILD_ELEMENT).
-            setParameter('sessionId', 's123').
-            // Let this be missing: setParameter('id', {'ELEMENT': 'e456'}).
-            setParameter('using', 'id').
-            setParameter('value', 'foo');
-
-    assert.throws(
-        () => executor.execute(command),
-        function(err) {
-          return err instanceof error.InvalidArgumentError
-              && 'Missing required parameter: id' === err.message;
-        });
-    assert.ok(!send.called);
-  });
-
-  it('replaces URL parameters with command parameters', function() {
-    var command = new Command(CommandName.GET).
-        setParameter('sessionId', 's123').
-        setParameter('url', 'http://www.google.com');
-
-    send.returns(Promise.resolve(new HttpResponse(200, {}, '')));
-
-    return assertSendsSuccessfully(command).then(function(response) {
-       assertSent(
-           'POST', '/session/s123/url', {'url': 'http://www.google.com'},
-           [['Accept', 'application/json; charset=utf-8']]);
-    });
-  });
-
 
   describe('response parsing', function() {
     it('extracts value from JSON response', function() {
@@ -169,20 +227,104 @@ describe('Executor', function() {
       });
     });
 
-    it('returns Session object from NEW_SESSION response', function() {
-      var command = new Command(CommandName.NEW_SESSION);
-      var rawResponse = {sessionId: 's123', value: {name: 'Bob'}};
+    describe('extracts Session from NEW_SESSION response', function() {
+      beforeEach(() => executor = new Executor(client));
 
-      send.returns(Promise.resolve(
-          new HttpResponse(200, {}, JSON.stringify(rawResponse))));
+      const command = new Command(CommandName.NEW_SESSION);
 
-      return executor.execute(command).then(function(response) {
-        assert.ok(response instanceof Session);
-        assert.equal(response.getId(), 's123');
+      describe('fails if server returns invalid response', function() {
+        describe('(empty response)', function() {
+          test(true);
+          test(false);
 
-        let caps = response.getCapabilities();
-        assert.ok(caps instanceof Capabilities);
-        assert.equal(caps.get('name'), 'Bob');
+          function test(w3c) {
+            it('w3c === ' + w3c, function() {
+              send.returns(Promise.resolve(new HttpResponse(200, {}, '')));
+              executor.w3c = w3c;
+              return executor.execute(command).then(
+                  () => assert.fail('expected to fail'),
+                  (e) => {
+                    if (!e.message.startsWith('Unable to parse')) {
+                      throw e;
+                    }
+                  });
+            });
+          }
+        });
+
+        describe('(no session ID)', function() {
+          test(true);
+          test(false);
+
+          function test(w3c) {
+            it('w3c === ' + w3c, function() {
+              let resp = {value:{name: 'Bob'}};
+              send.returns(Promise.resolve(
+                  new HttpResponse(200, {}, JSON.stringify(resp))));
+              executor.w3c = w3c;
+              return executor.execute(command).then(
+                  () => assert.fail('expected to fail'),
+                  (e) => {
+                    if (!e.message.startsWith('Unable to parse')) {
+                      throw e;
+                    }
+                  });
+            });
+          }
+        });
+      });
+
+      it('handles legacy response', function() {
+        var rawResponse = {sessionId: 's123', status: 0, value: {name: 'Bob'}};
+
+        send.returns(Promise.resolve(
+            new HttpResponse(200, {}, JSON.stringify(rawResponse))));
+
+        assert.ok(!executor.w3c);
+        return executor.execute(command).then(function(response) {
+          assert.ok(response instanceof Session);
+          assert.equal(response.getId(), 's123');
+
+          let caps = response.getCapabilities();
+          assert.ok(caps instanceof Capabilities);
+          assert.equal(caps.get('name'), 'Bob');
+
+          assert.ok(!executor.w3c);
+        });
+      });
+
+      it('auto-upgrades on W3C response', function() {
+        var rawResponse = {sessionId: 's123', value: {name: 'Bob'}};
+
+        send.returns(Promise.resolve(
+            new HttpResponse(200, {}, JSON.stringify(rawResponse))));
+
+        assert.ok(!executor.w3c);
+        return executor.execute(command).then(function(response) {
+          assert.ok(response instanceof Session);
+          assert.equal(response.getId(), 's123');
+
+          let caps = response.getCapabilities();
+          assert.ok(caps instanceof Capabilities);
+          assert.equal(caps.get('name'), 'Bob');
+
+          assert.ok(executor.w3c);
+        });
+      });
+
+      it('if w3c, does not downgrade on legacy response', function() {
+        var rawResponse = {sessionId: 's123', status: 0, value: null};
+
+        send.returns(Promise.resolve(
+            new HttpResponse(200, {}, JSON.stringify(rawResponse))));
+
+        executor.w3c = true;
+        return executor.execute(command).then(function(response) {
+          assert.ok(response instanceof Session);
+          assert.equal(response.getId(), 's123');
+          assert.equal(response.getCapabilities().size, 0);
+          assert.ok(executor.w3c, 'should never downgrade');
+        });
       });
     });
 

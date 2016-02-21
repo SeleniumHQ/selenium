@@ -156,11 +156,11 @@ const COMMAND_MAP = new Map([
     [cmd.Name.ELEMENT_EQUALS, get('/session/:sessionId/element/:id/equals/:other')],
     [cmd.Name.TAKE_ELEMENT_SCREENSHOT, get('/session/:sessionId/element/:id/screenshot')],
     [cmd.Name.SWITCH_TO_WINDOW, post('/session/:sessionId/window')],
-    [cmd.Name.MAXIMIZE_WINDOW, post('/session/:sessionId/window/:windowHandle/maximize')],
-    [cmd.Name.GET_WINDOW_POSITION, get('/session/:sessionId/window/:windowHandle/position')],
-    [cmd.Name.SET_WINDOW_POSITION, post('/session/:sessionId/window/:windowHandle/position')],
-    [cmd.Name.GET_WINDOW_SIZE, get('/session/:sessionId/window/:windowHandle/size')],
-    [cmd.Name.SET_WINDOW_SIZE, post('/session/:sessionId/window/:windowHandle/size')],
+    [cmd.Name.MAXIMIZE_WINDOW, post('/session/:sessionId/window/current/maximize')],
+    [cmd.Name.GET_WINDOW_POSITION, get('/session/:sessionId/window/current/position')],
+    [cmd.Name.SET_WINDOW_POSITION, post('/session/:sessionId/window/current/position')],
+    [cmd.Name.GET_WINDOW_SIZE, get('/session/:sessionId/window/current/size')],
+    [cmd.Name.SET_WINDOW_SIZE, post('/session/:sessionId/window/current/size')],
     [cmd.Name.SWITCH_TO_FRAME, post('/session/:sessionId/frame')],
     [cmd.Name.GET_PAGE_SOURCE, get('/session/:sessionId/source')],
     [cmd.Name.GET_TITLE, get('/session/:sessionId/title')],
@@ -193,6 +193,14 @@ const COMMAND_MAP = new Map([
     [cmd.Name.GET_AVAILABLE_LOG_TYPES, get('/session/:sessionId/log/types')],
     [cmd.Name.GET_SESSION_LOGS, post('/logs')],
     [cmd.Name.UPLOAD_FILE, post('/session/:sessionId/file')],
+]);
+
+
+/** @const {!Map<string, {method: string, path: string}>} */
+const W3C_COMMAND_MAP = new Map([
+  [cmd.Name.GET_WINDOW_SIZE, get('/session/:sessionId/window/size')],
+  [cmd.Name.SET_WINDOW_SIZE, post('/session/:sessionId/window/size')],
+  [cmd.Name.MAXIMIZE_WINDOW, post('/session/:sessionId/window/maximize')],
 ]);
 
 
@@ -377,6 +385,15 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy) {
 
 /**
  * A command executor that communicates with the server using HTTP + JSON.
+ *
+ * By default, each instance of this class will use the legacy wire protocol
+ * from [Selenium project][json]. The executor will automatically switch to the
+ * [W3C wire protocol][w3c] if the remote end returns a compliant response to
+ * a new session command.
+ *
+ * [json]: https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
+ * [w3c]: https://w3c.github.io/webdriver/webdriver-spec.html
+ *
  * @implements {cmd.Executor}
  */
 class Executor {
@@ -387,6 +404,15 @@ class Executor {
   constructor(client) {
     /** @private {!HttpClient} */
     this.client_ = client;
+
+    /**
+     * Whether this executor should use the W3C wire protocol. The executor
+     * will automatically switch if the remote end sends a compliant response
+     * to a new session command, however, this property may be directly set to
+     * `true` to force the executor into W3C mode.
+     * @type {boolean}
+     */
+    this.w3c = false;
 
     /** @private {Map<string, {method: string, path: string}>} */
     this.customCommands_ = null;
@@ -419,6 +445,7 @@ class Executor {
   execute(command) {
     let resource =
         (this.customCommands_ && this.customCommands_.get(command.getName()))
+        || (this.w3c && W3C_COMMAND_MAP.get(command.getName()))
         || COMMAND_MAP.get(command.getName());
     if (!resource) {
       throw new error.UnknownCommandError(
@@ -431,19 +458,26 @@ class Executor {
 
     let log = this.log_;
     log.finer(() => '>>>\n' + request);
-    return this.client_.send(request).then(function(response) {
+    return this.client_.send(request).then(response => {
       log.finer(() => '<<<\n' + response);
 
-      let value = parseHttpResponse(/** @type {!HttpResponse} */ (response));
-      let isResponseObj = (value && typeof value === 'object');
+      let parsed =
+          parseHttpResponse(/** @type {!HttpResponse} */ (response), this.w3c);
+
       if (command.getName() === cmd.Name.NEW_SESSION) {
-        if (!isResponseObj) {
+        if (!parsed || !parsed['sessionId']) {
           throw new error.WebDriverError(
               'Unable to parse new session response: ' + response.body);
         }
-        return new Session(value['sessionId'], value['value']);
+
+        // The remote end is a W3C compliant server if there is no `status`
+        // field in the response.
+        this.w3c = this.w3c || !('status' in parsed);
+
+        return new Session(parsed['sessionId'], parsed['value']);
       }
-      return isResponseObj ? value['value'] : value;
+
+      return parsed ? (parsed['value'] || null) : parsed;
     });
   }
 }
@@ -466,21 +500,38 @@ function tryParse(str) {
  * Callback used to parse {@link HttpResponse} objects from a
  * {@link HttpClient}.
  * @param {!HttpResponse} httpResponse The HTTP response to parse.
- * @return {!Object} The parsed response.
+ * @param {boolean} w3c Whether the response should be processed using the
+ *     W3C wire protocol.
+ * @return {{value: ?}} The parsed response.
+ * @throws {WebDriverError} If the HTTP response is an error.
  */
-function parseHttpResponse(httpResponse) {
+function parseHttpResponse(httpResponse, w3c) {
   let parsed = tryParse(httpResponse.body);
   if (parsed !== undefined) {
-    error.checkLegacyResponse(parsed);
-    return parsed;
+    if (w3c) {
+      if (httpResponse.status > 399) {
+        error.throwDecodedError(parsed);
+      }
+
+      if (httpResponse.status < 200) {
+        // This should never happen, but throw the raw response so
+        // users report it.
+        throw error.WebDriverError(
+            `Unexpected HTTP response:\n${httpResponse}`);
+      }
+    } else {
+      error.checkLegacyResponse(parsed);
+    }
+
+    if (!parsed || typeof parsed !== 'object') {
+      parsed = {value: parsed};
+    }
+    return parsed
   }
 
   let value = httpResponse.body.replace(/\r\n/g, '\n');
-  if (!value) {
-    return null;
-  }
 
-  // 404 represents an unknown command; anything else is a generic unknown
+  // 404 represents an unknown command; anything else > 399 is a generic unknown
   // error.
   if (httpResponse.status == 404) {
     throw new error.UnsupportedOperationError(value);
@@ -488,7 +539,7 @@ function parseHttpResponse(httpResponse) {
     throw new error.WebDriverError(value);
   }
 
-  return value;
+  return value ? {value: value} : null;
 }
 
 

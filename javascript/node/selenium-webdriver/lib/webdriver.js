@@ -1861,7 +1861,19 @@ class WebElement {
     // ignore the jsdoc and give us a number (which ends up causing problems on
     // the server, which requires strings).
     let keys = promise.all(Array.prototype.slice.call(arguments, 0)).
-        then(keys => keys.map(String));
+        then(keys => {
+          let ret = [];
+          keys.forEach(key => {
+            if (typeof key !== 'string') {
+              key = String(key);
+            }
+
+            // The W3C protocol requires keys to be specified as an array where
+            // each element is a single key.
+            ret.push.apply(ret, key.split(''));
+          });
+          return ret;
+        });
     if (!this.driver_.fileDetector_) {
       return this.schedule_(
           new command.Command(command.Name.SEND_KEYS_TO_ELEMENT).

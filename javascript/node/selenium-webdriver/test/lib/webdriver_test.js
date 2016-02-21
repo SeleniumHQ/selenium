@@ -1482,8 +1482,8 @@ describe('WebDriver', function() {
   describe('sendKeys', function() {
     it('convertsVarArgsIntoStrings_simpleArgs', function() {
       let executor = new FakeExecutor().
-          expect(CName.SEND_KEYS_TO_ELEMENT, {'id': 'one',
-                                              'value':['1','2','abc','3']}).
+          expect(CName.SEND_KEYS_TO_ELEMENT,
+                 {'id': 'one', 'value':'12abc3'.split('')}).
               andReturnSuccess().
           end();
 
@@ -1498,8 +1498,8 @@ describe('WebDriver', function() {
           expect(CName.FIND_ELEMENT,
                  {'using':'css selector', 'value':'*[id="foo"]'}).
               andReturnSuccess(WebElement.buildId('one')).
-          expect(CName.SEND_KEYS_TO_ELEMENT, {'id':'one',
-                                              'value':['abc', '123', 'def']}).
+          expect(CName.SEND_KEYS_TO_ELEMENT,
+                 {'id':'one', 'value':'abc123def'.split('')}).
               andReturnSuccess().
           end();
 
