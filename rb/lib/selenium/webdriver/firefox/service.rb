@@ -82,7 +82,7 @@ module Selenium
 
           @process.poll_for_exit STOP_TIMEOUT
         rescue ChildProcess::TimeoutError
-          # ok, force quit
+        ensure
           @process.stop STOP_TIMEOUT
         end
 
