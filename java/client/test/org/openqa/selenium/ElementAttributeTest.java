@@ -1,29 +1,32 @@
-/*
-Copyright 2012 Software Freedom Conservancy
-Copyright 2007-2012 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.TestUtilities;
 
 import java.util.List;
 
 import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
@@ -34,13 +37,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.junit.Assume.assumeFalse;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
 
 public class ElementAttributeTest extends JUnit4TestBase {
 
@@ -83,7 +81,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertThat(body.getAttribute("style"), equalTo(""));
   }
 
-  @Ignore({OPERA, IPHONE, ANDROID, MARIONETTE})
+  @Ignore({MARIONETTE})
   @Test
   public void testShouldReturnTheValueOfTheDisabledAttributeAsNullIfNotSet() {
     driver.get(pages.formPage);
@@ -128,7 +126,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertThat(disabledSubmitElement.isEnabled(), is(false));
   }
 
-  @Ignore(value = {IPHONE, MARIONETTE},
+  @Ignore(value = {MARIONETTE},
           reason = "sendKeys does not determine whether the element is disabled")
   @Test
   public void testShouldThrowExceptionIfSendingKeysToElementDisabledUsingRandomDisabledStrings() {
@@ -229,6 +227,15 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Test
+  public void testShouldReturnInnerHtml() {
+    assumeFalse("IE before 10 returns innerHTML with uppercase tag names", TestUtilities.getIEVersion(driver) < 10);
+    driver.get(pages.simpleTestPage);
+
+    String html = driver.findElement(By.id("wrappingtext")).getAttribute("innerHTML");
+    assertThat(html, containsString("<tbody>"));
+  }
+
+  @Test
   public void testShouldTreatReadonlyAsAValue() {
     driver.get(pages.formPage);
 
@@ -241,6 +248,18 @@ public class ElementAttributeTest extends JUnit4TestBase {
     String notReadonly = textInput.getAttribute("readonly");
 
     assertFalse(readonly.equals(notReadonly));
+  }
+
+  @Test
+  public void testShouldReturnHiddenTextForTextContentAttribute() {
+    assumeFalse("IE before 9 doesn't handle textContent attribute; IE9 loads page in quirks mode, so no textContent attribute", TestUtilities.getIEVersion(driver) < 10);
+
+    driver.get(pages.simpleTestPage);
+
+    WebElement element = driver.findElement(By.id("hiddenline"));
+    String textContent = element.getAttribute("textContent");
+
+    assertEquals(textContent, "A hidden line of text");
   }
 
   @Test
@@ -298,11 +317,10 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertEquals(null, mousedownDiv.getAttribute("onclick"));
   }
 
-  @Ignore(value = {IE, IPHONE, ANDROID}, reason = "IE7 Does not support SVG; " +
-                                                  "SVG elements crash the iWebDriver app (issue 1134)",
-          issues = {1134})
   @Test
   public void testGetAttributeDoesNotReturnAnObjectForSvgProperties() {
+    assumeFalse("IE before 9 doesn't support SVG", TestUtilities.isOldIe(driver));
+
     driver.get(pages.svgPage);
     WebElement svgElement = driver.findElement(By.id("rotate"));
     assertEquals("rotate(30)", svgElement.getAttribute("transform"));
@@ -326,7 +344,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertEquals("hello@example.com", element.getAttribute("value"));
   }
 
-  @Ignore({ANDROID, OPERA_MOBILE})
   @Test
   public void testCanRetrieveTheCurrentValueOfATextFormField_textArea() {
     driver.get(pages.formPage);
@@ -336,7 +353,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertEquals("hello world", element.getAttribute("value"));
   }
 
-  @Ignore({OPERA, IPHONE, ANDROID, MARIONETTE})
+  @Ignore({MARIONETTE})
   @Test
   public void testShouldReturnNullForNonPresentBooleanAttributes() {
     driver.get(pages.booleanAttributes);
@@ -346,7 +363,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertNull(element2.getAttribute("nowrap"));
   }
 
-  @Ignore({IPHONE, ANDROID})
   @Test
   public void testShouldReturnTrueForPresentBooleanAttributes() {
     driver.get(pages.booleanAttributes);
@@ -362,7 +378,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertEquals("true", element5.getAttribute("nowrap"));
   }
 
-  @Ignore({OPERA, IPHONE, ANDROID, MARIONETTE})
+  @Ignore({MARIONETTE})
   @Test
   public void testMultipleAttributeShouldBeNullWhenNotSet() {
     driver.get(pages.selectPage);
@@ -398,8 +414,9 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertEquals("true", element.getAttribute("multiple"));
   }
 
-  @Ignore({HTMLUNIT})
+  @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testGetAttributeOfUserDefinedProperty() {
     driver.get(pages.userDefinedProperty);
     WebElement element = driver.findElement(By.id("d"));

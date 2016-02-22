@@ -35,7 +35,9 @@ goog.require('goog.structs.Heap');
  * Class for Priority Queue datastructure.
  *
  * @constructor
- * @extends {goog.structs.Heap}
+ * @extends {goog.structs.Heap<number, VALUE>}
+ * @template VALUE
+ * @final
  */
 goog.structs.PriorityQueue = function() {
   goog.structs.Heap.call(this);
@@ -45,9 +47,9 @@ goog.inherits(goog.structs.PriorityQueue, goog.structs.Heap);
 
 /**
  * Puts the specified value in the queue.
- * @param {*} priority The priority of the value. A smaller value here means a
- *     higher priority.
- * @param {*} value The value.
+ * @param {number} priority The priority of the value. A smaller value here
+ *     means a higher priority.
+ * @param {VALUE} value The value.
  */
 goog.structs.PriorityQueue.prototype.enqueue = function(priority, value) {
   this.insert(priority, value);
@@ -56,8 +58,8 @@ goog.structs.PriorityQueue.prototype.enqueue = function(priority, value) {
 
 /**
  * Retrieves and removes the head of this queue.
- * @return {*} The element at the head of this queue. Returns
- *     undefined if the queue is empty.
+ * @return {VALUE} The element at the head of this queue. Returns undefined if
+ *     the queue is empty.
  */
 goog.structs.PriorityQueue.prototype.dequeue = function() {
   return this.remove();

@@ -22,7 +22,7 @@ goog.provide('goog.net.xpc.Transport');
 
 goog.require('goog.Disposable');
 goog.require('goog.dom');
-goog.require('goog.net.xpc');
+goog.require('goog.net.xpc.TransportNames');
 
 
 
@@ -64,7 +64,7 @@ goog.net.xpc.Transport.prototype.getType = function() {
 
 /**
  * Returns the window associated with this transport instance.
- * @return {Window} The window to use.
+ * @return {!Window} The window to use.
  */
 goog.net.xpc.Transport.prototype.getWindow = function() {
   return this.domHelper_.getWindow();
@@ -76,7 +76,7 @@ goog.net.xpc.Transport.prototype.getWindow = function() {
  * @return {string} the transport name.
  */
 goog.net.xpc.Transport.prototype.getName = function() {
-  return goog.net.xpc.TransportNames[this.transportType] || '';
+  return goog.net.xpc.TransportNames[String(this.transportType)] || '';
 };
 
 

@@ -24,5 +24,6 @@ java_library(name = "interactions",
   deps = [
     "//java/client/src/org/openqa/selenium:base",
     "//java/client/src/org/openqa/selenium:webdriver-api",
+    "//third_party/java/guava",
   ])
 

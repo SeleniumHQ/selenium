@@ -1,33 +1,86 @@
-/*
-Copyright 2007-2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium;
-
-import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+@RunWith(JUnit4.class)
 public class PlatformTest {
 
   @Test
-  public void testShouldIdentifyWindowsVariants() {
-    assertAllAre(Platform.WINDOWS, "Windows 2003");
+  public void testXpIsWindows() {
+    assertTrue(Platform.XP.is(Platform.WINDOWS));
+  }
+
+  @Test
+  public void testVistaIsWindows() {
+    assertTrue(Platform.VISTA.is(Platform.WINDOWS));
+  }
+
+  @Test
+  public void testWin8IsWindows() {
+    assertTrue(Platform.WIN8.is(Platform.WINDOWS));
+  }
+
+  @Test
+  public void testWin81IsWindows() {
+    assertTrue(Platform.WIN8_1.is(Platform.WINDOWS));
+  }
+
+  @Test
+  public void testLinuxIsUnix() {
+    assertTrue(Platform.LINUX.is(Platform.UNIX));
+  }
+
+  @Test
+  public void testUnixIsNotLinux() {
+    assertFalse(Platform.UNIX.is(Platform.LINUX));
+  }
+
+  @Test
+  public void testXpIsAny() {
+    assertTrue(Platform.XP.is(Platform.ANY));
+  }
+
+  @Test
+  public void testWindowsIsAny() {
+    assertTrue(Platform.WINDOWS.is(Platform.ANY));
+  }
+
+  @Test
+  public void testLinuxIsAny() {
+    assertTrue(Platform.LINUX.is(Platform.ANY));
+  }
+
+  @Test
+  public void testUnixIsAny() {
+    assertTrue(Platform.UNIX.is(Platform.ANY));
+  }
+
+  @Test
+  public void testShouldIdentifyXPVariants() {
+    assertAllAre(Platform.WINDOWS, "Windows 2003", "xp", "windows", "winnt");
   }
 
   @Test
@@ -57,12 +110,9 @@ public class PlatformTest {
   }
 
   @Test
-  public void testShouldDistinctUnixFromLinux() {
-    Platform linPlatform = Platform.extractFromSysProperty("Linux");
-    assertTrue("Linux should be identified as Unix", linPlatform.is(Platform.UNIX));
-
-    Platform anyUnixPlatform = Platform.extractFromSysProperty("solaris");
-    assertFalse("Unix should NOT be identified as Linux", anyUnixPlatform.is(Platform.LINUX));
+  public void testWindows81Detection() {
+    assertEquals("Windows NT with os version 6.3 should be detected as Windows 8.1",
+                 Platform.WIN8_1, Platform.extractFromSysProperty("windows nt (unknown)", "6.3"));
   }
 
   private void assertAllAre(Platform platform, String... osNames) {

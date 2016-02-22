@@ -1,39 +1,35 @@
-/*
-Copyright 2007-2010 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.interactions;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-
-import static org.hamcrest.Matchers.is;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.Color;
@@ -41,6 +37,7 @@ import org.openqa.selenium.support.Colors;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
 /**
@@ -56,7 +53,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE})
   @Test
   public void testBasicKeyboardInput() {
     driver.get(pages.javascriptPage);
@@ -71,7 +67,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE, IE, OPERA, OPERA_MOBILE})
+  @Ignore({IE})
   @Test
   public void testSendingKeyDownOnly() {
     driver.get(pages.javascriptPage);
@@ -89,11 +85,11 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     releaseShift.perform();
 
     assertTrue("Key down event not isolated, got: " + logText,
-        logText.endsWith("keydown"));
+               logText.endsWith("keydown"));
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE, IE, OPERA, OPERA_MOBILE})
+  @Ignore({IE})
   @Test
   public void testSendingKeyUp() {
     driver.get(pages.javascriptPage);
@@ -118,7 +114,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, HTMLUNIT, IPHONE, IE, OPERA, OPERA_MOBILE})
+  @Ignore({IE, HTMLUNIT})
   @Test
   public void testSendingKeysWithShiftPressed() {
     driver.get(pages.javascriptPage);
@@ -146,13 +142,8 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE})
   @Test
   public void testSendingKeysToActiveElement() {
-    assumeFalse("This test fails due to a bug in Firefox 9. For more details, see: " +
-                "https://bugzilla.mozilla.org/show_bug.cgi?id=696020",
-                TestUtilities.isFirefox9(driver));
-
     driver.get(pages.bodyTypingPage);
 
     Action someKeys = getBuilder(driver).sendKeys("ab").build();
@@ -162,7 +153,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     assertThatFormEventsFiredAreExactly("");
   }
 
-  @Ignore({ANDROID, IPHONE})
   @Test
   public void testBasicKeyboardInputOnActiveElement() {
     driver.get(pages.javascriptPage);
@@ -178,14 +168,11 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     assertThat(keyReporter.getAttribute("value"), is("abc def"));
   }
 
-  @Ignore(value = {ANDROID, IPHONE, IE, OPERA, SAFARI, HTMLUNIT}, reason = "untested")
+  @Ignore(value = {IE, SAFARI}, reason = "untested")
+  @NotYetImplemented(HTMLUNIT)
   @JavascriptEnabled
   @Test
   public void canGenerateKeyboardShortcuts() {
-    assumeTrue(
-        "Test fails with native events enabled, likely due to issue 4385",
-        !TestUtilities.isFirefox(driver) || !TestUtilities.isNativeEventsEnabled(driver));
-
     driver.get(appServer.whereIs("keyboard_shortcut.html"));
 
     WebElement body = driver.findElement(By.xpath("//body"));
@@ -203,6 +190,79 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
         .keyUp(Keys.SHIFT).keyUp(Keys.ALT)
         .perform();
     assertBackgroundColor(body, Colors.SILVER);
+  }
+
+  @Test
+  @NotYetImplemented(HTMLUNIT)
+  public void testSelectionSelectBySymbol() {
+    driver.get(pages.javascriptPage);
+
+    WebElement keyReporter = driver.findElement(By.id("keyReporter"));
+
+    getBuilder(driver).click(keyReporter).sendKeys("abc def").perform();
+    assertThat(keyReporter.getAttribute("value"), is("abc def"));
+
+    getBuilder(driver).click(keyReporter)
+        .keyDown(Keys.SHIFT)
+        .sendKeys(Keys.LEFT)
+        .sendKeys(Keys.LEFT)
+        .keyUp(Keys.SHIFT)
+        .sendKeys(Keys.DELETE)
+        .perform();
+
+    assertThat(keyReporter.getAttribute("value"), is("abc d"));
+  }
+
+  @Test
+  @Ignore(IE)
+  @NotYetImplemented(HTMLUNIT)
+  public void testSelectionSelectByWord() {
+    assumeFalse(
+        "MacOS has alternative keyboard",
+        TestUtilities.getEffectivePlatform().is(Platform.MAC));
+
+    driver.get(pages.javascriptPage);
+
+    WebElement keyReporter = driver.findElement(By.id("keyReporter"));
+
+    getBuilder(driver).click(keyReporter).sendKeys("abc def").perform();
+    assertThat(keyReporter.getAttribute("value"), is("abc def"));
+
+    getBuilder(driver).click(keyReporter)
+        .keyDown(Keys.SHIFT)
+        .keyDown(Keys.CONTROL)
+        .sendKeys(Keys.LEFT)
+        .keyUp(Keys.CONTROL)
+        .keyUp(Keys.SHIFT)
+        .sendKeys(Keys.DELETE)
+        .perform();
+
+    assertThat(keyReporter.getAttribute("value"), is("abc "));
+  }
+
+  @Test
+  @Ignore(IE)
+  @NotYetImplemented(HTMLUNIT)
+  public void testSelectionSelectAll() {
+    assumeFalse(
+        "MacOS has alternative keyboard",
+        TestUtilities.getEffectivePlatform().is(Platform.MAC));
+
+    driver.get(pages.javascriptPage);
+
+    WebElement keyReporter = driver.findElement(By.id("keyReporter"));
+
+    getBuilder(driver).click(keyReporter).sendKeys("abc def").perform();
+    assertThat(keyReporter.getAttribute("value"), is("abc def"));
+
+    getBuilder(driver).click(keyReporter)
+        .keyDown(Keys.CONTROL)
+        .sendKeys("a")
+        .keyUp(Keys.CONTROL)
+        .sendKeys(Keys.DELETE)
+        .perform();
+
+    assertThat(keyReporter.getAttribute("value"), is(""));
   }
 
   private void assertBackgroundColor(WebElement el, Colors expected) {

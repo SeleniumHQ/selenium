@@ -16,6 +16,7 @@
  * @fileoverview A class for representing menu separators.
  * @see goog.ui.Menu
  *
+ * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.MenuSeparator');

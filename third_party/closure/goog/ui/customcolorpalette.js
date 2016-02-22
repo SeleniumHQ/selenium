@@ -22,7 +22,8 @@ goog.provide('goog.ui.CustomColorPalette');
 
 goog.require('goog.color');
 goog.require('goog.dom');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.TagName');
+goog.require('goog.dom.classlist');
 goog.require('goog.ui.ColorPalette');
 goog.require('goog.ui.Component');
 
@@ -32,7 +33,7 @@ goog.require('goog.ui.Component');
  * A custom color palette is a grid of color swatches and a button that allows
  * the user to add additional colors to the palette
  *
- * @param {Array.<string>} initColors Array of initial colors to populate the
+ * @param {Array<string>} initColors Array of initial colors to populate the
  *     palette with.
  * @param {goog.ui.PaletteRenderer=} opt_renderer Renderer used to render or
  *     decorate the palette; defaults to {@link goog.ui.PaletteRenderer}.
@@ -40,6 +41,7 @@ goog.require('goog.ui.Component');
  *     document interaction.
  * @constructor
  * @extends {goog.ui.ColorPalette}
+ * @final
  */
 goog.ui.CustomColorPalette = function(initColors, opt_renderer, opt_domHelper) {
   goog.ui.ColorPalette.call(this, initColors, opt_renderer, opt_domHelper);
@@ -51,15 +53,15 @@ goog.inherits(goog.ui.CustomColorPalette, goog.ui.ColorPalette);
 /**
  * Returns an array of DOM nodes for each color, and an additional cell with a
  * '+'.
- * @return {Array.<Node>} Array of div elements.
+ * @return {!Array<Node>} Array of div elements.
  * @override
  */
 goog.ui.CustomColorPalette.prototype.createColorNodes = function() {
   /** @desc Hover caption for the button that allows the user to add a color. */
   var MSG_CLOSURE_CUSTOM_COLOR_BUTTON = goog.getMsg('Add a color');
 
-  var nl = goog.base(this, 'createColorNodes');
-  nl.push(goog.dom.createDom('div', {
+  var nl = goog.ui.CustomColorPalette.base(this, 'createColorNodes');
+  nl.push(goog.dom.createDom(goog.dom.TagName.DIV, {
     'class': goog.getCssName('goog-palette-customcolor'),
     'title': MSG_CLOSURE_CUSTOM_COLOR_BUTTON
   }, '+'));
@@ -75,7 +77,7 @@ goog.ui.CustomColorPalette.prototype.createColorNodes = function() {
 goog.ui.CustomColorPalette.prototype.performActionInternal = function(e) {
   var item = /** @type {Element} */ (this.getHighlightedItem());
   if (item) {
-    if (goog.dom.classes.has(
+    if (goog.dom.classlist.contains(
         item, goog.getCssName('goog-palette-customcolor'))) {
       // User activated the special "add custom color" swatch.
       this.promptForCustomColor();

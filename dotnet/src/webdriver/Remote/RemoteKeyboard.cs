@@ -18,7 +18,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -38,7 +37,6 @@ namespace OpenQA.Selenium.Remote
             this.driver = driver;
         }
 
-        #region IKeyboard Members
         /// <summary>
         /// Sends a sequence of keystrokes to the target.
         /// </summary>
@@ -88,6 +86,5 @@ namespace OpenQA.Selenium.Remote
             parameters.Add("value", keyToRelease.ToCharArray());
             this.driver.InternalExecute(DriverCommand.SendKeysToActiveElement, parameters);
         }
-        #endregion
     }
 }

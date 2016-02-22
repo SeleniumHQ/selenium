@@ -1,6 +1,6 @@
 <NUnitProject>
-	<Settings appbase="." />
-	<Config name="Default" binpathtype="Auto">
+	<Settings activeconfig="Default"/>
+	<Config name="Default" binpathtype="Auto" configfile="WebDriver.Firefox.Tests.config">
 		<assembly path="WebDriver.Common.Tests.dll" />
 		<assembly path="WebDriver.Firefox.Tests.dll" />
 	</Config>

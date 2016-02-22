@@ -1,17 +1,19 @@
-// Copyright 2012 Selenium committers
-// Copyright 2012 Software Freedom Conservancy
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview Definitions for various command handlers used by the
@@ -23,7 +25,7 @@ goog.provide('safaridriver.extension.commands');
 goog.require('bot.response');
 goog.require('goog.Uri');
 goog.require('goog.array');
-goog.require('goog.debug.Logger');
+goog.require('goog.log');
 goog.require('goog.string');
 goog.require('safaridriver.alert');
 goog.require('safaridriver.extension.LogDb');
@@ -35,10 +37,10 @@ goog.require('webdriver.promise');
 
 
 /**
- * @private {!goog.debug.Logger}
+ * @private {goog.log.Logger}
  * @const
  */
-safaridriver.extension.commands.LOG_ = goog.debug.Logger.getLogger(
+safaridriver.extension.commands.LOG_ = goog.log.getLogger(
     'safaridriver.extension.commands');
 
 
@@ -48,7 +50,7 @@ safaridriver.extension.commands.LOG_ = goog.debug.Logger.getLogger(
  * provided capabilities (e.g. logging).
  * @param {!safaridriver.extension.Session} session The session object.
  * @param {!safaridriver.Command} command The command object.
- * @return {!Object.<*>} The session capabilities.
+ * @return {!Object<string, ?>} The JSON-serializable session capabilities.
  */
 safaridriver.extension.commands.newSession = function(session, command) {
   var caps = command.getParameter('desiredCapabilities');
@@ -61,7 +63,7 @@ safaridriver.extension.commands.newSession = function(session, command) {
     }
     safaridriver.extension.LogDb.getInstance().setPreferences(loggingPrefs);
   }
-  return session.getCapabilities();
+  return session.getCapabilities().serialize();
 };
 
 
@@ -108,11 +110,11 @@ safaridriver.extension.commands.getWindowHandles = function(session) {
  *     screenshot of the focused tab as a base64 encoded PNG.
  */
 safaridriver.extension.commands.takeScreenshot = function(session) {
-  var response = new webdriver.promise.Deferred();
-  session.getCommandTab().visibleContentsAsDataURL(function(dataUrl) {
-    response.fulfill(dataUrl.substring('data:image/png;base64,'.length));
+  return new webdriver.promise.Promise(function(fulfill) {
+    session.getCommandTab().visibleContentsAsDataURL(function(dataUrl) {
+      fulfill(dataUrl.substring('data:image/png;base64,'.length));
+    });
   });
-  return response.promise;
 };
 
 
@@ -138,15 +140,14 @@ safaridriver.extension.commands.loadUrl = function(session, command) {
         'http://code.google.com/p/selenium/issues/detail?id=3773');
   }
 
-  var response = new webdriver.promise.Deferred();
-  var tab = session.getCommandTab();
-  tab.whenReady(function() {
-    var expectLoad = tab.loadsNewPage(uri);
-    safaridriver.extension.commands.sendNavigationCommand_(session, command,
-        expectLoad).then(response.fulfill, response.reject);
+  return new webdriver.promise.Promise(function(fulfill, reject) {
+    var tab = session.getCommandTab();
+    tab.whenReady(function() {
+      var expectLoad = tab.loadsNewPage(uri);
+      safaridriver.extension.commands.sendNavigationCommand_(
+          session, command, expectLoad).then(fulfill, reject);
+    });
   });
-
-  return response.promise;
 };
 
 
@@ -158,12 +159,12 @@ safaridriver.extension.commands.loadUrl = function(session, command) {
  *     the operation has completed.
  */
 safaridriver.extension.commands.refresh = function(session, command) {
-  var response = new webdriver.promise.Deferred();
-  session.getCommandTab().whenReady(function() {
-    safaridriver.extension.commands.sendNavigationCommand_(session, command,
-        true).then(response.fulfill, response.reject);
+  return new webdriver.promise.Promise(function(fulfill, reject) {
+    session.getCommandTab().whenReady(function() {
+      safaridriver.extension.commands.sendNavigationCommand_(
+          session, command, true).then(fulfill, reject);
+    });
   });
-  return response.promise;
 };
 
 
@@ -185,14 +186,14 @@ safaridriver.extension.commands.sendNavigationCommand_ = function(
     tab.once(safaridriver.message.Load.TYPE, onLoad);
   }
   safaridriver.extension.commands.sendCommand(session, command).
-      then(onSuccess, onFailure);
+      then(onSuccess, /** @type {function(*)} */(onFailure));
   return response.promise;
 
   /** Load message handler that completes the command response. */
   function onLoad() {
     tab.removeListener(safaridriver.message.Alert.TYPE, onAlert);
     if (response.isPending()) {
-      safaridriver.extension.commands.LOG_.info(
+      goog.log.info(safaridriver.extension.commands.LOG_,
           'Page load finished; returning');
       tab.removeListener(safaridriver.message.Alert.TYPE, onAlert);
       response.fulfill();
@@ -224,7 +225,7 @@ safaridriver.extension.commands.sendNavigationCommand_ = function(
    */
   function onSuccess() {
     if (!waitForLoad && response.isPending()) {
-      safaridriver.extension.commands.LOG_.info(
+      goog.log.info(safaridriver.extension.commands.LOG_,
           'Not expecting a new page load; returning');
       response.fulfill();
     }
@@ -237,7 +238,7 @@ safaridriver.extension.commands.sendNavigationCommand_ = function(
    */
   function onFailure(e) {
     if (response.isPending()) {
-      safaridriver.extension.commands.LOG_.severe(
+      goog.log.error(safaridriver.extension.commands.LOG_,
           'Error while loading page; failing', e);
       tab.removeListener(safaridriver.message.Load.TYPE, onLoad);
       response.reject(e);
@@ -256,6 +257,23 @@ safaridriver.extension.commands.implicitlyWait = function(session, command) {
       /** @type {number} */ (command.getParameter('ms')) || 0);
 };
 
+/**
+ * Updates the various timeouts for the driver
+ * @param {!safaridriver.extension.Session} session The session object.
+ * @param {!safaridriver.Command} command The command object.
+ */
+safaridriver.extension.commands.setDriverTimeout = function(session, command) {
+  var timeoutType = command.getParameter('type');
+  if (timeoutType == 'implicit') {
+    session.setImplicitWait(
+      /** @type {number} */ (command.getParameter('ms')) || 0);
+  } else if (timeoutType == 'page load') {
+    // TODO
+  } else if (timeoutType == 'script'){
+    session.setScriptTimeout(
+      /** @type {number} */ (command.getParameter('ms')) || 0);
+  }
+}
 
 /**
  * Updates the async script timeout setting for the given session.
@@ -488,7 +506,7 @@ safaridriver.extension.commands.executeAsyncScript = function(session,
  * @see http://code.google.com/p/selenium/issues/detail?id=3862
  */
 safaridriver.extension.commands.handleNoAlertsPresent = function() {
-  throw new bot.Error(bot.ErrorCode.NO_MODAL_DIALOG_OPEN,
+  throw new bot.Error(bot.ErrorCode.NO_SUCH_ALERT,
       'The SafariDriver does not support alert handling. To prevent tests ' +
           'from handing when an alert is opened, they are always immediately ' +
           'dismissed. For more information, see ' +

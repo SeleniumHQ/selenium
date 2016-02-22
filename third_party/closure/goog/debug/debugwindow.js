@@ -24,6 +24,10 @@ goog.provide('goog.debug.DebugWindow');
 goog.require('goog.debug.HtmlFormatter');
 goog.require('goog.debug.LogManager');
 goog.require('goog.debug.Logger');
+goog.require('goog.dom.safe');
+goog.require('goog.html.SafeHtml');
+goog.require('goog.html.SafeStyleSheet');
+goog.require('goog.string.Const');
 goog.require('goog.structs.CircularBuffer');
 goog.require('goog.userAgent');
 
@@ -50,7 +54,7 @@ goog.debug.DebugWindow = function(opt_identifier, opt_prefix) {
 
   /**
    * Array used to buffer log output
-   * @protected {!Array}
+   * @protected {!Array<!goog.html.SafeHtml>}
    */
   this.outputBuffer = [];
 
@@ -136,9 +140,8 @@ goog.debug.DebugWindow.prototype.enableOnSevere_ = false;
  * Reference to debug window
  * @type {Window}
  * @protected
- * @suppress {underscore}
  */
-goog.debug.DebugWindow.prototype.win_ = null;
+goog.debug.DebugWindow.prototype.win = null;
 
 
 /**
@@ -295,7 +298,7 @@ goog.debug.DebugWindow.prototype.setFormatter = function(formatter) {
  * Adds a separator to the debug window.
  */
 goog.debug.DebugWindow.prototype.addSeparator = function() {
-  this.write_('<hr>');
+  this.write_(goog.html.SafeHtml.create('hr'));
 };
 
 
@@ -303,7 +306,7 @@ goog.debug.DebugWindow.prototype.addSeparator = function() {
  * @return {boolean} Whether there is an active window.
  */
 goog.debug.DebugWindow.prototype.hasActiveWindow = function() {
-  return !!this.win_ && !this.win_.closed;
+  return !!this.win && !this.win.closed;
 };
 
 
@@ -327,7 +330,7 @@ goog.debug.DebugWindow.prototype.addLogRecord = function(logRecord) {
   if (this.filteredLoggers_[logRecord.getLoggerName()]) {
     return;
   }
-  var html = this.formatter_.formatRecord(logRecord);
+  var html = this.formatter_.formatRecordAsHtml(logRecord);
   this.write_(html);
   if (this.enableOnSevere_ &&
       logRecord.getLevel().value >= goog.debug.Logger.Level.SEVERE.value) {
@@ -339,7 +342,7 @@ goog.debug.DebugWindow.prototype.addLogRecord = function(logRecord) {
 /**
  * Writes a message to the log, possibly opening up the window if it's enabled,
  * or saving it if it's disabled.
- * @param {string} html The HTML to write.
+ * @param {!goog.html.SafeHtml} html The HTML to write.
  * @private
  */
 goog.debug.DebugWindow.prototype.write_ = function(html) {
@@ -358,7 +361,7 @@ goog.debug.DebugWindow.prototype.write_ = function(html) {
 /**
  * Write to the buffer.  If a message hasn't been sent for more than 750ms just
  * write, otherwise delay for a minimum of 250ms.
- * @param {string} html HTML to post to the log.
+ * @param {!goog.html.SafeHtml} html HTML to post to the log.
  * @private
  */
 goog.debug.DebugWindow.prototype.writeToLog_ = function(html) {
@@ -381,15 +384,16 @@ goog.debug.DebugWindow.prototype.writeToLog_ = function(html) {
 goog.debug.DebugWindow.prototype.writeBufferToLog = function() {
   this.lastCall = goog.now();
   if (this.hasActiveWindow()) {
-    var body = this.win_.document.body;
+    var body = this.win.document.body;
     var scroll = body &&
         body.scrollHeight - (body.scrollTop + body.clientHeight) <= 100;
 
-    this.win_.document.write(this.outputBuffer.join(''));
+    goog.dom.safe.documentWrite(
+        this.win.document, goog.html.SafeHtml.concat(this.outputBuffer));
     this.outputBuffer.length = 0;
 
     if (scroll) {
-      this.win_.scrollTo(0, 1000000);
+      this.win.scrollTo(0, 1000000);
     }
   }
 };
@@ -423,22 +427,22 @@ goog.debug.DebugWindow.prototype.openWindow_ = function() {
   var h = Number(winpos[3]);
 
   this.winOpening_ = true;
-  this.win_ = window.open('', this.getWindowName_(), 'width=' + w +
-                          ',height=' + h + ',toolbar=no,resizable=yes,' +
-                          'scrollbars=yes,left=' + x + ',top=' + y +
-                          ',status=no,screenx=' + x + ',screeny=' + y);
+  this.win = window.open('', this.getWindowName_(), 'width=' + w +
+                         ',height=' + h + ',toolbar=no,resizable=yes,' +
+                         'scrollbars=yes,left=' + x + ',top=' + y +
+                         ',status=no,screenx=' + x + ',screeny=' + y);
 
-  if (!this.win_) {
-    if (!this.showedBlockedAlert_) {
+  if (!this.win) {
+    if (!goog.debug.DebugWindow.showedBlockedAlert_) {
       // only show this once
       alert('Logger popup was blocked');
-      this.showedBlockedAlert_ = true;
+      goog.debug.DebugWindow.showedBlockedAlert_ = true;
     }
   }
 
   this.winOpening_ = false;
 
-  if (this.win_) {
+  if (this.win) {
     this.writeInitialDocument();
   }
 };
@@ -457,17 +461,19 @@ goog.debug.DebugWindow.prototype.getWindowName_ = function() {
 
 
 /**
- * @return {string} The style rule text, for inclusion in the initial HTML.
+ * @return {!goog.html.SafeStyleSheet} The stylesheet, for inclusion in the
+ *     initial HTML.
  */
 goog.debug.DebugWindow.prototype.getStyleRules = function() {
-  return '*{font:normal 14px monospace;}' +
-         '.dbg-sev{color:#F00}' +
-         '.dbg-w{color:#E92}' +
-         '.dbg-sh{background-color:#fd4;font-weight:bold;color:#000}' +
-         '.dbg-i{color:#666}' +
-         '.dbg-f{color:#999}' +
-         '.dbg-ev{color:#0A0}' +
-         '.dbg-m{color:#990}';
+  return goog.html.SafeStyleSheet.fromConstant(goog.string.Const.from(
+      '*{font:normal 14px monospace;}' +
+      '.dbg-sev{color:#F00}' +
+      '.dbg-w{color:#E92}' +
+      '.dbg-sh{background-color:#fd4;font-weight:bold;color:#000}' +
+      '.dbg-i{color:#666}' +
+      '.dbg-f{color:#999}' +
+      '.dbg-ev{color:#0A0}' +
+      '.dbg-m{color:#990}'));
 };
 
 
@@ -480,12 +486,22 @@ goog.debug.DebugWindow.prototype.writeInitialDocument = function() {
     return;
   }
 
-  this.win_.document.open();
+  this.win.document.open();
 
-  var html = '<style>' + this.getStyleRules() + '</style>' +
-             '<hr><div class="dbg-ev" style="text-align:center">' +
-             this.welcomeMessage + '<br><small>Logger: ' +
-             this.identifier + '</small></div><hr>';
+  var div = goog.html.SafeHtml.create(
+      'div', {
+        'class': 'dbg-ev',
+        'style': goog.string.Const.from('text-align:center;')},
+      goog.html.SafeHtml.concat(
+          this.welcomeMessage,
+          goog.html.SafeHtml.create('br'),
+          goog.html.SafeHtml.create(
+              'small', {}, 'Logger: ' + this.identifier)));
+  var html = goog.html.SafeHtml.concat(
+      goog.html.SafeHtml.createStyle(this.getStyleRules()),
+      goog.html.SafeHtml.create('hr'),
+      div,
+      goog.html.SafeHtml.create('hr'));
 
   this.writeToLog_(html);
   this.writeSavedMessages();
@@ -577,10 +593,10 @@ goog.debug.DebugWindow.prototype.saveWindowPositionSize_ = function() {
   if (!this.hasActiveWindow()) {
     return;
   }
-  var x = this.win_.screenX || this.win_.screenLeft || 0;
-  var y = this.win_.screenY || this.win_.screenTop || 0;
-  var w = this.win_.outerWidth || 800;
-  var h = this.win_.outerHeight || 500;
+  var x = this.win.screenX || this.win.screenLeft || 0;
+  var y = this.win.screenY || this.win.screenTop || 0;
+  var w = this.win.outerWidth || 800;
+  var h = this.win.outerHeight || 500;
   this.setCookie_('dbg', x + ',' + y + ',' + w + ',' + h);
 };
 

@@ -1,24 +1,26 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.common;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+
 import org.openqa.grid.common.exception.GridConfigurationException;
 
 import java.io.BufferedReader;
@@ -32,13 +34,11 @@ public class JSONConfigurationUtils {
 
   /**
    * load a JSON file from the resource or file system.
-   * 
-   * @param resource
-   * @return A JSONObject representing the passed resource argument.
-   * @throws IOException
-   * @throws JSONException
+   *
+   * @param resource file or jar resource location
+   * @return A JsonObject representing the passed resource argument.
    */
-  public static JSONObject loadJSON(String resource) {
+  public static JsonObject loadJSON(String resource) {
     InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(
         JSONConfigurationUtils.class.getPackage().getName().replace('.', '/') + '/' + resource);
 
@@ -75,14 +75,10 @@ public class JSONConfigurationUtils {
       }
     }
 
-    String json = b.toString();
-    JSONObject o;
     try {
-      o = new JSONObject(json);
-    } catch (JSONException e) {
+      return new JsonParser().parse(b.toString()).getAsJsonObject();
+    } catch (JsonSyntaxException e) {
       throw new GridConfigurationException("Wrong format for the JSON input : " + e.getMessage(), e);
     }
-
-    return o;
   }
 }

@@ -1,9 +1,9 @@
 ﻿// <copyright file="HttpCommandExecutor.cs" company="WebDriver Committers">
-// Copyright 2007-2011 WebDriver committers
-// Copyright 2007-2011 Google Inc.
-// Portions copyright 2011 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -17,7 +17,6 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
@@ -36,9 +35,10 @@ namespace OpenQA.Selenium.Remote
         private Uri remoteServerUri;
         private TimeSpan serverResponseTimeout;
         private bool enableKeepAlive;
+        private CommandInfoRepository commandInfoRepository = new WebDriverWireProtocolCommandInfoRepository();
 
         /// <summary>
-        /// Initializes a new instance of the HttpCommandExecutor class
+        /// Initializes a new instance of the <see cref="HttpCommandExecutor"/> class
         /// </summary>
         /// <param name="addressOfRemoteServer">Address of the WebDriver Server</param>
         /// <param name="timeout">The timeout within which the server must respond.</param>
@@ -48,7 +48,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Initializes a new instance of the HttpCommandExecutor class
+        /// Initializes a new instance of the <see cref="HttpCommandExecutor"/> class
         /// </summary>
         /// <param name="addressOfRemoteServer">Address of the WebDriver Server</param>
         /// <param name="timeout">The timeout within which the server must respond.</param>
@@ -82,7 +82,14 @@ namespace OpenQA.Selenium.Remote
             }
         }
 
-        #region ICommandExecutor Members
+        /// <summary>
+        /// Gets the repository of objects containin information about commands.
+        /// </summary>
+        public CommandInfoRepository CommandInfoRepository
+        {
+            get { return this.commandInfoRepository; }
+        }
+
         /// <summary>
         /// Executes a command
         /// </summary>
@@ -95,7 +102,7 @@ namespace OpenQA.Selenium.Remote
                 throw new ArgumentNullException("commandToExecute", "commandToExecute cannot be null");
             }
 
-            CommandInfo info = CommandInfoRepository.Instance.GetCommandInfo(commandToExecute.Name);
+            CommandInfo info = this.commandInfoRepository.GetCommandInfo(commandToExecute.Name);
             HttpWebRequest request = info.CreateWebRequest(this.remoteServerUri, commandToExecute);
             request.Timeout = (int)this.serverResponseTimeout.TotalMilliseconds;
             request.Accept = RequestAcceptHeader;
@@ -111,7 +118,21 @@ namespace OpenQA.Selenium.Remote
                 requestStream.Close();
             }
 
-            return this.CreateResponse(request);
+            Response toReturn = this.CreateResponse(request);
+            if (commandToExecute.Name == DriverCommand.NewSession && toReturn.IsSpecificationCompliant)
+            {
+                // If we are creating a new session, sniff the response to determine
+                // what protocol level we are using. If the response contains a
+                // field called "status", it's not a spec-compliant response.
+                // Each response is polled for this, and sets a property describing
+                // whether it's using the W3C protocol dialect.
+                // TODO(jimevans): Reverse this test to make it the default path when
+                // most remote ends speak W3C, then remove it entirely when legacy
+                // protocol is phased out.
+                this.commandInfoRepository = new W3CWireProtocolCommandInfoRepository();
+            }
+
+            return toReturn;
         }
 
         private static string GetTextOfWebResponse(HttpWebResponse webResponse)
@@ -135,7 +156,6 @@ namespace OpenQA.Selenium.Remote
         private Response CreateResponse(WebRequest request)
         {
             Response commandResponse = new Response();
-
             HttpWebResponse webResponse = null;
             try
             {
@@ -163,7 +183,6 @@ namespace OpenQA.Selenium.Remote
             else
             {
                 string responseString = GetTextOfWebResponse(webResponse);
-
                 if (webResponse.ContentType != null && webResponse.ContentType.StartsWith(JsonMimeType, StringComparison.OrdinalIgnoreCase))
                 {
                     commandResponse = Response.FromJson(responseString);
@@ -173,7 +192,7 @@ namespace OpenQA.Selenium.Remote
                     commandResponse.Value = responseString;
                 }
 
-                if (webResponse.StatusCode < HttpStatusCode.OK || webResponse.StatusCode >= HttpStatusCode.BadRequest)
+                if (this.commandInfoRepository.SpecificationLevel < 1 && (webResponse.StatusCode < HttpStatusCode.OK || webResponse.StatusCode >= HttpStatusCode.BadRequest))
                 {
                     // 4xx represents an unknown command or a bad request.
                     if (webResponse.StatusCode >= HttpStatusCode.BadRequest && webResponse.StatusCode < HttpStatusCode.InternalServerError)
@@ -206,7 +225,7 @@ namespace OpenQA.Selenium.Remote
                 if (commandResponse.Value is string)
                 {
                     // First, collapse all \r\n pairs to \n, then replace all \n with
-                    // System.Environment.NewLine. This ensures the consistency of 
+                    // System.Environment.NewLine. This ensures the consistency of
                     // the values.
                     commandResponse.Value = ((string)commandResponse.Value).Replace("\r\n", "\n").Replace("\n", System.Environment.NewLine);
                 }
@@ -216,7 +235,5 @@ namespace OpenQA.Selenium.Remote
 
             return commandResponse;
         }
-
-        #endregion
     }
 }

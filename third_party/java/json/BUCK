@@ -1,4 +1,0 @@
-prebuilt_jar(name = 'json',
-  binary_jar = 'json-20080701.jar',
-  visibility = [ 'PUBLIC' ],
-)

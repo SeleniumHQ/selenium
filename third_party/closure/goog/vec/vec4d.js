@@ -111,7 +111,7 @@ goog.vec.vec4d.setFromVec4f = function(vec, src) {
  * Initializes vec4d vec from Array src.
  *
  * @param {goog.vec.vec4d.Type} vec The destination vector.
- * @param {Array.<number>} src The source vector.
+ * @param {Array<number>} src The source vector.
  * @return {!goog.vec.vec4d.Type} Return vec so that operations can be
  *     chained together.
  */
@@ -132,7 +132,7 @@ goog.vec.vec4d.setFromArray = function(vec, src) {
  * @param {goog.vec.vec4d.Type} vec1 The second addend.
  * @param {goog.vec.vec4d.Type} resultVec The vector to
  *     receive the result. May be vec0 or vec1.
- * @return {!goog.vec.vec4d.Type} return resultVec so that operations can be
+ * @return {!goog.vec.vec4d.Type} Return resultVec so that operations can be
  *     chained together.
  */
 goog.vec.vec4d.add = function(vec0, vec1, resultVec) {
@@ -152,7 +152,7 @@ goog.vec.vec4d.add = function(vec0, vec1, resultVec) {
  * @param {goog.vec.vec4d.Type} vec1 The subtrahend.
  * @param {goog.vec.vec4d.Type} resultVec The vector to
  *     receive the result. May be vec0 or vec1.
- * @return {!goog.vec.vec4d.Type} return resultVec so that operations can be
+ * @return {!goog.vec.vec4d.Type} Return resultVec so that operations can be
  *     chained together.
  */
 goog.vec.vec4d.subtract = function(vec0, vec1, resultVec) {
@@ -170,7 +170,7 @@ goog.vec.vec4d.subtract = function(vec0, vec1, resultVec) {
  * @param {goog.vec.vec4d.Type} vec0 The vector to negate.
  * @param {goog.vec.vec4d.Type} resultVec The vector to
  *     receive the result. May be vec0.
- * @return {!goog.vec.vec4d.Type} return resultVec so that operations can be
+ * @return {!goog.vec.vec4d.Type} Return resultVec so that operations can be
  *     chained together.
  */
 goog.vec.vec4d.negate = function(vec0, resultVec) {
@@ -183,6 +183,25 @@ goog.vec.vec4d.negate = function(vec0, resultVec) {
 
 
 /**
+ * Takes the absolute value of each component of vec0 storing the result in
+ * resultVec.
+ *
+ * @param {goog.vec.vec4d.Type} vec0 The source vector.
+ * @param {goog.vec.vec4d.Type} resultVec The vector to receive the result.
+ *     May be vec0.
+ * @return {!goog.vec.vec4d.Type} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.vec4d.abs = function(vec0, resultVec) {
+  resultVec[0] = Math.abs(vec0[0]);
+  resultVec[1] = Math.abs(vec0[1]);
+  resultVec[2] = Math.abs(vec0[2]);
+  resultVec[3] = Math.abs(vec0[3]);
+  return resultVec;
+};
+
+
+/**
  * Multiplies each component of vec0 with scalar storing the product into
  * resultVec.
  *
@@ -190,7 +209,7 @@ goog.vec.vec4d.negate = function(vec0, resultVec) {
  * @param {number} scalar The value to multiply with each component of vec0.
  * @param {goog.vec.vec4d.Type} resultVec The vector to
  *     receive the result. May be vec0.
- * @return {!goog.vec.vec4d.Type} return resultVec so that operations can be
+ * @return {!goog.vec.vec4d.Type} Return resultVec so that operations can be
  *     chained together.
  */
 goog.vec.vec4d.scale = function(vec0, scalar, resultVec) {
@@ -232,7 +251,7 @@ goog.vec.vec4d.magnitude = function(vec0) {
  * @param {goog.vec.vec4d.Type} vec0 The vector to normalize.
  * @param {goog.vec.vec4d.Type} resultVec The vector to
  *     receive the result. May be vec0.
- * @return {!goog.vec.vec4d.Type} return resultVec so that operations can be
+ * @return {!goog.vec.vec4d.Type} Return resultVec so that operations can be
  *     chained together.
  */
 goog.vec.vec4d.normalize = function(vec0, resultVec) {
@@ -267,7 +286,7 @@ goog.vec.vec4d.dot = function(v0, v1) {
  * @param {number} f The interpolation factor.
  * @param {goog.vec.vec4d.Type} resultVec The vector to receive the
  *     results (may be v0 or v1).
- * @return {!goog.vec.vec4d.Type} return resultVec so that operations can be
+ * @return {!goog.vec.vec4d.Type} Return resultVec so that operations can be
  *     chained together.
  */
 goog.vec.vec4d.lerp = function(v0, v1, f, resultVec) {
@@ -276,6 +295,60 @@ goog.vec.vec4d.lerp = function(v0, v1, f, resultVec) {
   resultVec[1] = (v1[1] - y) * f + y;
   resultVec[2] = (v1[2] - z) * f + z;
   resultVec[3] = (v1[3] - w) * f + w;
+  return resultVec;
+};
+
+
+/**
+ * Compares the components of vec0 with the components of another vector or
+ * scalar, storing the larger values in resultVec.
+ *
+ * @param {goog.vec.vec4d.Type} vec0 The source vector.
+ * @param {goog.vec.vec4d.Type|number} limit The limit vector or scalar.
+ * @param {goog.vec.vec4d.Type} resultVec The vector to receive the
+ *     results (may be vec0 or limit).
+ * @return {!goog.vec.vec4d.Type} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.vec4d.max = function(vec0, limit, resultVec) {
+  if (goog.isNumber(limit)) {
+    resultVec[0] = Math.max(vec0[0], limit);
+    resultVec[1] = Math.max(vec0[1], limit);
+    resultVec[2] = Math.max(vec0[2], limit);
+    resultVec[3] = Math.max(vec0[3], limit);
+  } else {
+    resultVec[0] = Math.max(vec0[0], limit[0]);
+    resultVec[1] = Math.max(vec0[1], limit[1]);
+    resultVec[2] = Math.max(vec0[2], limit[2]);
+    resultVec[3] = Math.max(vec0[3], limit[3]);
+  }
+  return resultVec;
+};
+
+
+/**
+ * Compares the components of vec0 with the components of another vector or
+ * scalar, storing the smaller values in resultVec.
+ *
+ * @param {goog.vec.vec4d.Type} vec0 The source vector.
+ * @param {goog.vec.vec4d.Type|number} limit The limit vector or scalar.
+ * @param {goog.vec.vec4d.Type} resultVec The vector to receive the
+ *     results (may be vec0 or limit).
+ * @return {!goog.vec.vec4d.Type} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.vec4d.min = function(vec0, limit, resultVec) {
+  if (goog.isNumber(limit)) {
+    resultVec[0] = Math.min(vec0[0], limit);
+    resultVec[1] = Math.min(vec0[1], limit);
+    resultVec[2] = Math.min(vec0[2], limit);
+    resultVec[3] = Math.min(vec0[3], limit);
+  } else {
+    resultVec[0] = Math.min(vec0[0], limit[0]);
+    resultVec[1] = Math.min(vec0[1], limit[1]);
+    resultVec[2] = Math.min(vec0[2], limit[2]);
+    resultVec[3] = Math.min(vec0[3], limit[3]);
+  }
   return resultVec;
 };
 

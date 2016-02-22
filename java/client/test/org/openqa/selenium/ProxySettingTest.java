@@ -1,44 +1,37 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium;
 
-import static java.util.concurrent.Executors.newFixedThreadPool;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
-import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.Driver.CHROME;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.PHANTOMJS;
+import static org.openqa.selenium.testing.Driver.REMOTE;
+import static org.openqa.selenium.testing.Driver.SAFARI;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
-import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.common.net.HostAndPort;
-import com.google.common.net.HttpHeaders;
 
 import org.junit.After;
 import org.junit.Before;
@@ -52,17 +45,19 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.ProxyServer;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
-import org.webbitserver.HttpControl;
-import org.webbitserver.HttpHandler;
-import org.webbitserver.HttpRequest;
-import org.webbitserver.HttpResponse;
-import org.webbitserver.WebServer;
-import org.webbitserver.WebServers;
+import org.seleniumhq.jetty9.server.Handler;
+import org.seleniumhq.jetty9.server.Request;
+import org.seleniumhq.jetty9.server.Server;
+import org.seleniumhq.jetty9.server.ServerConnector;
+import org.seleniumhq.jetty9.server.handler.AbstractHandler;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Ignore(MARIONETTE)
 public class ProxySettingTest extends JUnit4TestBase {
@@ -87,9 +82,8 @@ public class ProxySettingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {ANDROID, IPHONE, OPERA_MOBILE, PHANTOMJS, SAFARI},
-          reason = "Android/Iphone/PhantomJS - not tested,"
-                   + "Opera mobile/Safari - not implemented")
+  @Ignore(value = {PHANTOMJS, SAFARI},
+          reason = "PhantomJS - not tested, Safari - not implemented")
   @NeedsLocalEnvironment
   @Test
   public void canConfigureManualHttpProxy() {
@@ -104,15 +98,14 @@ public class ProxySettingTest extends JUnit4TestBase {
     assertTrue("Proxy should have been called", proxyServer.hasBeenCalled("simpleTest.html"));
   }
 
-  @Ignore(value = {ANDROID, IPHONE, OPERA_MOBILE, PHANTOMJS, SAFARI, HTMLUNIT},
-          reason = "Android/Iphone/PhantomJS - not tested,"
-                   + "Opera mobile/Safari - not implemented")
+  @Ignore(value = {PHANTOMJS, SAFARI, HTMLUNIT},
+          reason = "PhantomJS - not tested, Safari - not implemented")
   @NeedsLocalEnvironment
   @Test
   public void canConfigureProxyThroughPACFile() {
-    WebServer helloServer = createSimpleHttpServer(
+    Server helloServer = createSimpleHttpServer(
         "<!DOCTYPE html><title>Hello</title><h3>Hello, world!</h3>");
-    WebServer pacFileServer = createPacfileServer(Joiner.on('\n').join(
+    Server pacFileServer = createPacfileServer(Joiner.on('\n').join(
         "function FindProxyForURL(url, host) {",
         "  return 'PROXY " + getHostAndPort(helloServer) + "';",
         "}"));
@@ -131,17 +124,16 @@ public class ProxySettingTest extends JUnit4TestBase {
         "Hello, world!", driver.findElement(By.tagName("h3")).getText());
   }
 
-  @Ignore(value = {ANDROID, IPHONE, OPERA_MOBILE, PHANTOMJS, SAFARI, HTMLUNIT},
-          reason = "Android/Iphone/PhantomJS - not tested,"
-                   + "Opera mobile/Safari - not implemented")
+  @Ignore(value = {PHANTOMJS, SAFARI, HTMLUNIT},
+          reason = "PhantomJS - not tested, Safari - not implemented")
   @NeedsLocalEnvironment
   @Test
   public void canUsePACThatOnlyProxiesCertainHosts() throws Exception {
-    WebServer helloServer = createSimpleHttpServer(
+    Server helloServer = createSimpleHttpServer(
         "<!DOCTYPE html><title>Hello</title><h3>Hello, world!</h3>");
-    WebServer goodbyeServer = createSimpleHttpServer(
+    Server goodbyeServer = createSimpleHttpServer(
         "<!DOCTYPE html><title>Goodbye</title><h3>Goodbye, world!</h3>");
-    WebServer pacFileServer = createPacfileServer(Joiner.on('\n').join(
+    Server pacFileServer = createPacfileServer(Joiner.on('\n').join(
         "function FindProxyForURL(url, host) {",
         "  if (url.indexOf('" + getHostAndPort(helloServer) + "') != -1) {",
         "    return 'PROXY " + getHostAndPort(goodbyeServer) + "';",
@@ -167,7 +159,7 @@ public class ProxySettingTest extends JUnit4TestBase {
         "Heading", driver.findElement(By.tagName("h1")).getText());
   }
 
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI})
+  @Ignore({CHROME, IE, PHANTOMJS, REMOTE, SAFARI})
   @NeedsLocalEnvironment
   @Test
   public void canConfigureProxyWithRequiredCapability() {
@@ -182,7 +174,7 @@ public class ProxySettingTest extends JUnit4TestBase {
     assertTrue("Proxy should have been called", proxyServer.hasBeenCalled("simpleTest.html"));
   }
 
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI})
+  @Ignore({CHROME, IE, PHANTOMJS, REMOTE, SAFARI})
   @NeedsLocalEnvironment
   @Test
   public void requiredProxyCapabilityShouldHavePriority() {
@@ -229,60 +221,64 @@ public class ProxySettingTest extends JUnit4TestBase {
     });
   }
 
-  private WebServer createSimpleHttpServer(final String responseHtml) {
-    return createServer(new HttpHandler() {
+  private Server createSimpleHttpServer(final String responseHtml) {
+    return createServer(new AbstractHandler() {
       @Override
-      public void handleHttpRequest(
-          HttpRequest request, HttpResponse response, HttpControl control) {
-        response.charset(Charsets.UTF_8)
-            .header(HttpHeaders.CONTENT_TYPE, "text/html")
-            .content(responseHtml)
-            .end();
+      public void handle(String s, Request baseRequest, HttpServletRequest request,
+                         HttpServletResponse response) throws IOException, ServletException {
+        response.setContentType("text/html; charset=utf-8");
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().println(responseHtml);
+        baseRequest.setHandled(true);
       }
     });
   }
 
-  private WebServer createPacfileServer(final String pacFileContents) {
-    return createServer(new HttpHandler() {
+  private Server createPacfileServer(final String pacFileContents) {
+    return createServer(new AbstractHandler() {
       @Override
-      public void handleHttpRequest(
-          HttpRequest request, HttpResponse response, HttpControl control) {
-        response.charset(Charsets.US_ASCII)
-            .header(HttpHeaders.CONTENT_TYPE, "application/x-javascript-config")
-            .content(pacFileContents)
-            .end();
+      public void handle(String s, Request baseRequest, HttpServletRequest request,
+                         HttpServletResponse response) throws IOException, ServletException {
+        response.setContentType("application/x-javascript-config; charset=us-ascii");
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().println(pacFileContents);
+        baseRequest.setHandled(true);
       }
     });
   }
 
-  private WebServer createServer(HttpHandler handler) {
+  private Server createServer(Handler handler) {
+    final Server server = new Server();
+
+    ServerConnector http = new ServerConnector(server);
     int port = PortProber.findFreePort();
-    final WebServer server = WebServers.createWebServer(newFixedThreadPool(5), port);
-    server.add(handler);
+    http.setPort(port);
+    http.setIdleTimeout(500000);
+    server.addConnector(http);
+
+    server.setHandler(handler);
 
     tearDowns.add(new Callable<Object>() {
       @Override
       public Object call() {
-        server.stop();
+        try {
+          server.stop();
+        } catch (Exception e) {
+          throw new RuntimeException(e);
+        }
         return null;
       }
     });
 
     try {
-      server.start().get(10, TimeUnit.SECONDS);
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw new RuntimeException("Interrupted waiting for server to start", e);
-    } catch (ExecutionException e) {
+      server.start();
+    } catch (Exception e) {
       throw new RuntimeException("Server failed to start", e);
-    } catch (java.util.concurrent.TimeoutException e) {
-      throw new TimeoutException("Timed out waiting for the server to start", e);
     }
     return server;
   }
 
-  private static HostAndPort getHostAndPort(WebServer server) {
-    String host = Objects.firstNonNull(System.getenv("HOSTNAME"), "localhost");
-    return HostAndPort.fromParts(host, server.getPort());
+  private static HostAndPort getHostAndPort(Server server) {
+    return HostAndPort.fromParts(server.getURI().getHost(), server.getURI().getPort());
   }
 }

@@ -1,32 +1,34 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 
 package org.openqa.selenium.atoms;
 
 import static org.junit.Assert.assertEquals;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+
 import net.sourceforge.htmlunit.corejs.javascript.Context;
 import net.sourceforge.htmlunit.corejs.javascript.ContextAction;
 import net.sourceforge.htmlunit.corejs.javascript.ContextFactory;
 import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -115,18 +117,18 @@ public class CompiledAtomsNotLeakingTest {
         String nestedScript = String.format("(%s).call(null, %s, ['return 1+2;'], true)",
             fragment, fragment);
 
-        String jsonResult = eval(context, nestedScript, FRAGMENT_PATH);
+        String jsonResult = (String) eval(context, nestedScript, FRAGMENT_PATH);
 
         try {
-          JSONObject result = new JSONObject(jsonResult);
+          JsonObject result = new JsonParser().parse(jsonResult).getAsJsonObject();
 
-          assertEquals(jsonResult, 0, result.getInt("status"));
+          assertEquals(jsonResult, 0, result.get("status").getAsLong());
 
-          result = result.getJSONObject("value");
-          assertEquals(jsonResult, 0, result.getInt("status"));
-          assertEquals(jsonResult, 3, result.getInt("value"));
+          result = result.get("value").getAsJsonObject();
+          assertEquals(jsonResult, 0, result.get("status").getAsLong());
+          assertEquals(jsonResult, 3, result.get("value").getAsLong());
 
-        } catch (JSONException e) {
+        } catch (JsonSyntaxException e) {
           throw new RuntimeException("JSON result was: " + jsonResult, e);
         }
 
@@ -136,13 +138,11 @@ public class CompiledAtomsNotLeakingTest {
     });
   }
 
-  @SuppressWarnings({"unchecked"})
-  private <T> T eval(Context context, String script) {
-    return (T) eval(context, script, "");
+  private Object eval(Context context, String script) {
+    return eval(context, script, "");
   }
 
-  @SuppressWarnings({"unchecked"})
-  private <T> T eval(Context context, String script, String src) {
-    return (T) context.evaluateString(global, script, src, 1, null);
+  private Object eval(Context context, String script, String src) {
+    return context.evaluateString(global, script, src, 1, null);
   }
 }

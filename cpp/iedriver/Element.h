@@ -1,5 +1,8 @@
-// Copyright 2013 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -18,8 +21,13 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include "json.h"
 #include "LocationInfo.h"
+
+// Forward declaration of classes to avoid
+// circular include files.
+namespace Json {
+  class Value;
+} // namespace Json
 
 namespace webdriver {
 
@@ -52,7 +60,7 @@ class Element {
   int GetCssPropertyValue(const std::string& property_name,
                           std::string* property_value);
 
-  int IsDisplayed(bool* result);
+  int IsDisplayed(bool ignore_opacity, bool* result);
   bool IsEnabled(void);
   bool IsSelected(void);
   bool IsInteractable(void);

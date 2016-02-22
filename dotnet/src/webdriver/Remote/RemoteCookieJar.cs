@@ -1,9 +1,9 @@
 ﻿// <copyright file="RemoteCookieJar.cs" company="WebDriver Committers">
-// Copyright 2007-2011 WebDriver committers
-// Copyright 2007-2011 Google Inc.
-// Portions copyright 2011 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -19,8 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
-using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -121,7 +119,7 @@ namespace OpenQA.Selenium.Remote
         private ReadOnlyCollection<Cookie> GetAllCookies()
         {
             List<Cookie> toReturn = new List<Cookie>();
-            object returned = this.driver.InternalExecute(DriverCommand.GetAllCookies, null).Value;
+            object returned = this.driver.InternalExecute(DriverCommand.GetAllCookies, new Dictionary<string, object>()).Value;
 
             try
             {
@@ -130,48 +128,10 @@ namespace OpenQA.Selenium.Remote
                 {
                     foreach (object rawCookie in cookies)
                     {
-                        Dictionary<string, object> cookie = rawCookie as Dictionary<string, object>;
+                        Dictionary<string, object> cookieDictionary = rawCookie as Dictionary<string, object>;
                         if (rawCookie != null)
                         {
-                            string name = cookie["name"].ToString();
-                            string value = cookie["value"].ToString();
-
-                            string path = "/";
-                            if (cookie.ContainsKey("path") && cookie["path"] != null)
-                            {
-                                path = cookie["path"].ToString();
-                            }
-
-                            string domain = string.Empty;
-                            if (cookie.ContainsKey("domain") && cookie["domain"] != null)
-                            {
-                                domain = cookie["domain"].ToString();
-                            }
-
-                            DateTime? expires = null;
-                            if (cookie.ContainsKey("expiry") && cookie["expiry"] != null)
-                            {
-                                long seconds = 0;
-                                if (long.TryParse(cookie["expiry"].ToString(), out seconds))
-                                {
-                                    try
-                                    {
-                                        expires = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(seconds).ToLocalTime();
-                                    }
-                                    catch (ArgumentOutOfRangeException)
-                                    {
-                                        expires = DateTime.MaxValue.ToLocalTime();
-                                    }
-                                }
-                            }
-
-                            bool secure = false;
-                            if (cookie.ContainsKey("secure") && cookie["secure"] != null)
-                            {
-                                secure = bool.Parse(cookie["secure"].ToString());
-                            }
-
-                            toReturn.Add(new ReturnedCookie(name, value, domain, path, expires, secure, new Uri(this.driver.Url)));
+                            toReturn.Add(Cookie.FromDictionary(cookieDictionary));
                         }
                     }
                 }

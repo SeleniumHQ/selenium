@@ -1,9 +1,9 @@
 // <copyright file="By.cs" company="WebDriver Committers">
-// Copyright 2007-2011 WebDriver committers
-// Copyright 2007-2011 Google Inc.
-// Portions copyright 2011 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -18,7 +18,6 @@
 
 using System;
 using System.Collections.ObjectModel;
-using System.Text.RegularExpressions;
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium
@@ -28,7 +27,7 @@ namespace OpenQA.Selenium
     /// </summary>
     /// <remarks>It is possible to create your own locating mechanisms for finding documents.
     /// In order to do this,subclass this class and override the protected methods. However,
-    /// it is expected that that all subclasses rely on the basic finding mechanisms provided 
+    /// it is expected that that all subclasses rely on the basic finding mechanisms provided
     /// through static methods of this class. An example of this can be found in OpenQA.Support.ByIdOrName
     /// </remarks>
     [Serializable]
@@ -50,7 +49,7 @@ namespace OpenQA.Selenium
         /// </summary>
         /// <param name="findElementMethod">A function that takes an object implementing <see cref="ISearchContext"/>
         /// and returns the found <see cref="IWebElement"/>.</param>
-        /// <param name="findElementsMethod">A function that takes an object implementing <see cref="ISearchContext"/> 
+        /// <param name="findElementsMethod">A function that takes an object implementing <see cref="ISearchContext"/>
         /// and returns a <see cref="ReadOnlyCollection{T}"/> of the found<see cref="IWebElement">IWebElements</see>.
         /// <see cref="IWebElement">IWebElements</see>/>.</param>
         protected By(Func<ISearchContext, IWebElement> findElementMethod, Func<ISearchContext, ReadOnlyCollection<IWebElement>> findElementsMethod)
@@ -87,11 +86,45 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Determines if two <see cref="By"/> instances are equal.
+        /// </summary>
+        /// <param name="one">One instance to compare.</param>
+        /// <param name="two">The other instance to compare.</param>
+        /// <returns><see langword="true"/> if the two instances are equal; otherwise, <see langword="false"/>.</returns>
+        public static bool operator ==(By one, By two)
+        {
+            // If both are null, or both are same instance, return true.
+            if (object.ReferenceEquals(one, two))
+            {
+                return true;
+            }
+
+            // If one is null, but not both, return false.
+            if (((object)one == null) || ((object)two == null))
+            {
+                return false;
+            }
+
+            return one.Equals(two);
+        }
+
+        /// <summary>
+        /// Determines if two <see cref="By"/> instances are unequal.
+        /// </summary>s
+        /// <param name="one">One instance to compare.</param>
+        /// <param name="two">The other instance to compare.</param>
+        /// <returns><see langword="true"/> if the two instances are not equal; otherwise, <see langword="false"/>.</returns>
+        public static bool operator !=(By one, By two)
+        {
+            return !(one == two);
+        }
+
+        /// <summary>
         /// Gets a mechanism to find elements by their ID.
         /// </summary>
         /// <param name="idToFind">The ID to find.</param>
         /// <returns>A <see cref="By"/> object the driver can use to find the elements.</returns>
-        public static By Id(string idToFind) 
+        public static By Id(string idToFind)
         {
             if (idToFind == null)
             {
@@ -111,7 +144,7 @@ namespace OpenQA.Selenium
         /// </summary>
         /// <param name="linkTextToFind">The link text to find.</param>
         /// <returns>A <see cref="By"/> object the driver can use to find the elements.</returns>
-        public static By LinkText(string linkTextToFind) 
+        public static By LinkText(string linkTextToFind)
         {
             if (linkTextToFind == null)
             {
@@ -178,18 +211,13 @@ namespace OpenQA.Selenium
         /// <param name="classNameToFind">The CSS class to find.</param>
         /// <returns>A <see cref="By"/> object the driver can use to find the elements.</returns>
         /// <remarks>If an element has many classes then this will match against each of them.
-        /// For example if the value is "one two onone", then the following values for the 
+        /// For example if the value is "one two onone", then the following values for the
         /// className parameter will match: "one" and "two".</remarks>
         public static By ClassName(string classNameToFind)
         {
             if (classNameToFind == null)
             {
                 throw new ArgumentNullException("classNameToFind", "Cannot find elements when the class name expression is null.");
-            }
-
-            if (new Regex(".*\\s+.*").IsMatch(classNameToFind))
-            {
-                throw new IllegalLocatorException("Compound class names are not supported. Consider searching for one class name and filtering the results.");
             }
 
             By by = new By();
@@ -266,40 +294,6 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Determines if two <see cref="By"/> instances are equal.
-        /// </summary>
-        /// <param name="one">One instance to compare.</param>
-        /// <param name="two">The other instance to compare.</param>
-        /// <returns><see langword="true"/> if the two instances are equal; otherwise, <see langword="false"/>.</returns>
-        public static bool operator ==(By one, By two)
-        {
-            // If both are null, or both are same instance, return true.
-            if (object.ReferenceEquals(one, two))
-            {
-                return true;
-            }
-
-            // If one is null, but not both, return false.
-            if (((object)one == null) || ((object)two == null))
-            {
-                return false;
-            }
-
-            return one.Equals(two);
-        }
-
-        /// <summary>
-        /// Determines if two <see cref="By"/> instances are unequal.
-        /// </summary>s
-        /// <param name="one">One instance to compare.</param>
-        /// <param name="two">The other instance to compare.</param>
-        /// <returns><see langword="true"/> if the two instances are not equal; otherwise, <see langword="false"/>.</returns>
-        public static bool operator !=(By one, By two)
-        {
-            return !(one == two);
-        }
-
-        /// <summary>
         /// Finds the first element matching the criteria.
         /// </summary>
         /// <param name="context">An <see cref="ISearchContext"/> object to use to search for the elements.</param>
@@ -330,13 +324,13 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object">Object</see> is equal 
-        /// to the current <see cref="System.Object">Object</see>.
+        /// Determines whether the specified <see cref="object">Object</see> is equal
+        /// to the current <see cref="object">Object</see>.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object">Object</see> to compare with the 
-        /// current <see cref="System.Object">Object</see>.</param>
-        /// <returns><see langword="true"/> if the specified <see cref="System.Object">Object</see>
-        /// is equal to the current <see cref="System.Object">Object</see>; otherwise,
+        /// <param name="obj">The <see cref="object">Object</see> to compare with the
+        /// current <see cref="object">Object</see>.</param>
+        /// <returns><see langword="true"/> if the specified <see cref="object">Object</see>
+        /// is equal to the current <see cref="object">Object</see>; otherwise,
         /// <see langword="false"/>.</returns>
         public override bool Equals(object obj)
         {
@@ -349,7 +343,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Serves as a hash function for a particular type.
         /// </summary>
-        /// <returns>A hash code for the current <see cref="System.Object">Object</see>.</returns>
+        /// <returns>A hash code for the current <see cref="object">Object</see>.</returns>
         public override int GetHashCode()
         {
             return this.description.GetHashCode();

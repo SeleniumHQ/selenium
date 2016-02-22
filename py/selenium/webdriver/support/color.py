@@ -1,18 +1,19 @@
-#!/usr/bin/python
-
-# Copyright 2011 Software Freedom Conservancy.
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
 
 RGB_PATTERN = r"^\s*rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)\s*$"
 RGB_PCT_PATTERN = r"^\s*rgb\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*\)\s*$"
@@ -113,7 +114,7 @@ class Color(object):
             g = hue_to_rgb(luminocity1, luminocity2, h)
             b = hue_to_rgb(luminocity1, luminocity2, h - 1.0 / 3.0)
 
-        return Color(r * 256, g * 256, b * 256, a)
+        return Color(round(r * 255), round(g * 255), round(b * 255), a)
 
     def __init__(self, red, green, blue, alpha=1):
         self.red = int(red)
@@ -277,6 +278,7 @@ Colors = {
     "PLUM": Color(221, 160, 221),
     "POWDERBLUE": Color(176, 224, 230),
     "PURPLE": Color(128, 0, 128),
+    "REBECCAPURPLE": Color(128, 51, 153),
     "RED": Color(255, 0, 0),
     "ROSYBROWN": Color(188, 143, 143),
     "ROYALBLUE": Color(65, 105, 225),

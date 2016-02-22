@@ -1,19 +1,19 @@
-/*
-Copyright 2012-2013 Software Freedom Conservancy
-Copyright 2007-2013 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium;
 
@@ -24,16 +24,15 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
+import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBeGreaterThan;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
-import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.REMOTE;
 
 import com.google.common.collect.Sets;
 
@@ -42,15 +41,18 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NoDriverAfterTest;
+import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.Browser;
 
 import java.util.Set;
 
-@Ignore(value = {IPHONE}, reason = "The iPhone only supports one window")
 public class WindowSwitchingTest extends JUnit4TestBase {
 
-  @Ignore({OPERA_MOBILE, MARIONETTE})
+  @SwitchToTopAfterTest
+  @NoDriverAfterTest(failedOnly = true)
   @Test
   public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
     assumeFalse(Browser.detect() == Browser.opera &&
@@ -94,7 +96,8 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.switchTo().window(current);
   }
 
-  @Ignore({OPERA, OPERA_MOBILE, MARIONETTE})
+  @NoDriverAfterTest(failedOnly = true)
+  @Ignore({MARIONETTE})
   @Test
   public void testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle() {
     driver.get(pages.xhtmlTestPage);
@@ -118,7 +121,8 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({OPERA, OPERA_MOBILE, MARIONETTE})
+  @NoDriverAfterTest(failedOnly = true)
+  @Ignore({MARIONETTE})
   @Test
   public void testShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed() {
     driver.get(pages.xhtmlTestPage);
@@ -151,7 +155,8 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({OPERA, OPERA_MOBILE, MARIONETTE})
+  @NoDriverAfterTest(failedOnly = true)
+  @Ignore({MARIONETTE})
   @Test
   public void testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed() {
     driver.get(pages.xhtmlTestPage);
@@ -176,13 +181,14 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @NeedsFreshDriver
   @NoDriverAfterTest
   @Ignore({IE, REMOTE})
   @Test
   public void testShouldBeAbleToIterateOverAllOpenWindows() {
     driver.get(pages.xhtmlTestPage);
+    String original = driver.getWindowHandle();
     driver.findElement(By.name("windowOne")).click();
+    driver.switchTo().window(original);
     driver.findElement(By.name("windowTwo")).click();
 
     wait.until(windowHandleCountToBeGreaterThan(2));
@@ -203,7 +209,9 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore(MARIONETTE)
-  public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang() {
+  @NotYetImplemented(HTMLUNIT)
+  public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang()
+      throws Exception {
     assumeFalse(Browser.detect() == Browser.opera &&
                 TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
 
@@ -219,6 +227,10 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
     driver.switchTo().window("result");
 
+    // TODO Remove sleep when https://code.google.com/p/chromedriver/issues/detail?id=1044 is fixed.
+    if (TestUtilities.isChrome(driver) && TestUtilities.getEffectivePlatform(driver).is(ANDROID)) {
+      Thread.sleep(1000);
+    }
     try {
       wait.until(ExpectedConditions.presenceOfElementLocated(By.id("close")));
       driver.findElement(By.id("close")).click();
@@ -238,7 +250,8 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore(MARIONETTE)
-  public void testCanCallGetWindowHandlesAfterClosingAWindow() {
+  @NotYetImplemented(HTMLUNIT)
+  public void testCanCallGetWindowHandlesAfterClosingAWindow() throws Exception {
     assumeFalse(Browser.detect() == Browser.opera &&
                 TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
 
@@ -256,6 +269,10 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.switchTo().window("result");
     int allWindowHandles = driver.getWindowHandles().size();
 
+    // TODO Remove sleep when https://code.google.com/p/chromedriver/issues/detail?id=1044 is fixed.
+    if (TestUtilities.isChrome(driver) && TestUtilities.getEffectivePlatform(driver).is(ANDROID)) {
+      Thread.sleep(1000);
+    }
     try {
       wait.until(ExpectedConditions.presenceOfElementLocated(By.id("close"))).click();
 
@@ -298,12 +315,12 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     assertEquals(current, newHandle);
   }
 
-  @NeedsFreshDriver
-  @NoDriverAfterTest
-  @Ignore(value = {OPERA_MOBILE})
+  @NoDriverAfterTest(failedOnly = true)
   @Test
   public void testCanCloseWindowWhenMultipleWindowsAreOpen() {
     driver.get(pages.xhtmlTestPage);
+    String mainHandle = driver.getWindowHandle();
+
     Set<String> currentWindowHandles = driver.getWindowHandles();
 
     driver.findElement(By.name("windowOne")).click();
@@ -314,20 +331,27 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
     // There should be two windows. We should also see each of the window titles at least once.
     assertEquals(2, allWindowHandles.size());
-    String handle1 = (String) allWindowHandles.toArray()[1];
-    driver.switchTo().window(handle1);
-    driver.close();
-    allWindowHandles = driver.getWindowHandles();
-    assertEquals(1, allWindowHandles.size());
+
+    for (String handle : allWindowHandles) {
+      if (! handle.equals(mainHandle)) {
+        driver.switchTo().window(handle);
+        driver.close();
+        break;
+      }
+    }
+
+    assertEquals(1, driver.getWindowHandles().size());
+
+    driver.switchTo().window(mainHandle);
   }
 
-  @NeedsFreshDriver
-  @NoDriverAfterTest
-  @Ignore(value = {OPERA_MOBILE})
+  @NoDriverAfterTest(failedOnly = true)
   @Test
   public void testCanCloseWindowAndSwitchBackToMainWindow() {
     driver.get(pages.xhtmlTestPage);
+
     Set<String> currentWindowHandles = driver.getWindowHandles();
+    String mainHandle = driver.getWindowHandle();
 
     driver.findElement(By.name("windowOne")).click();
 
@@ -337,17 +361,23 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
     // There should be two windows. We should also see each of the window titles at least once.
     assertEquals(2, allWindowHandles.size());
-    String mainHandle = (String) allWindowHandles.toArray()[0];
-    String handle1 = (String) allWindowHandles.toArray()[1];
-    driver.switchTo().window(handle1);
-    driver.close();
+
+    for (String handle : allWindowHandles) {
+      if (! handle.equals(mainHandle)) {
+        driver.switchTo().window(handle);
+        driver.close();
+        break;
+      }
+    }
+
     driver.switchTo().window(mainHandle);
 
     String newHandle = driver.getWindowHandle();
     assertEquals(mainHandle, newHandle);
+
+    assertEquals(1, driver.getWindowHandles().size());
   }
 
-  @NeedsFreshDriver
   @NoDriverAfterTest
   @Test
   public void testClosingOnlyWindowShouldNotCauseTheBrowserToHang() {
@@ -355,8 +385,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.close();
   }
 
-  @NeedsFreshDriver
-  @NoDriverAfterTest
+  @NoDriverAfterTest(failedOnly = true)
   @Test
   @Ignore(MARIONETTE)
   public void testShouldFocusOnTheTopMostFrameAfterSwitchingToAWindow() {

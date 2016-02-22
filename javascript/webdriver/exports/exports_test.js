@@ -1,16 +1,19 @@
-// Copyright 2012 Selenium committers
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview A NodeJS test script that verifies the deployable WebDriverJS
@@ -143,7 +146,7 @@ function checkWebDriver() {
   assertFunction('webdriver.WebDriver', 'attachToSession');
   assertFunction('webdriver.WebDriver', 'createSession');
   assertFunction('webdriver.WebDriver.prototype', 'getSession');
-  assertFunction('webdriver.WebDriver.prototype', 'getCapability');
+  assertFunction('webdriver.WebDriver.prototype', 'getCapabilities');
   assertFunction('webdriver.WebDriver.prototype', 'quit');
   assertFunction('webdriver.WebDriver.prototype', 'call');
   assertFunction('webdriver.WebDriver.prototype', 'sleep');
@@ -265,10 +268,6 @@ function checkPromise() {
   assertFunction('webdriver.promise.Promise.prototype', 'thenCatch');
   assertFunction('webdriver.promise.Promise.prototype', 'thenFinally');
   assertFunction('webdriver.promise.Promise.prototype', 'cancel');
-  assertFunction('webdriver.promise.Promise.prototype', 'addBoth');
-  assertFunction('webdriver.promise.Promise.prototype', 'addCallback');
-  assertFunction('webdriver.promise.Promise.prototype', 'addCallbacks');
-  assertFunction('webdriver.promise.Promise.prototype', 'addErrback');
   assertFunction('webdriver.promise.Promise.prototype', 'isPending');
 
   assertFunction('webdriver.promise', 'Deferred');
@@ -276,10 +275,6 @@ function checkPromise() {
   assertFunction('new webdriver.promise.Deferred()', 'thenCatch');
   assertFunction('new webdriver.promise.Deferred()', 'thenFinally');
   assertFunction('new webdriver.promise.Deferred()', 'cancel');
-  assertFunction('new webdriver.promise.Deferred()', 'addBoth');
-  assertFunction('new webdriver.promise.Deferred()', 'addCallback');
-  assertFunction('new webdriver.promise.Deferred()', 'addCallbacks');
-  assertFunction('new webdriver.promise.Deferred()', 'addErrback');
   assertFunction('new webdriver.promise.Deferred()', 'isPending');
   assertFunction('new webdriver.promise.Deferred()', 'fulfill');
   assertFunction('new webdriver.promise.Deferred()', 'reject');

@@ -1,9 +1,28 @@
+# encoding: utf-8
+#
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 module Selenium
   module Client
 
-		# Provide a more idiomatic API than the generated Ruby driver.
-		#
-		# Work in progress...
+    # Provide a more idiomatic API than the generated Ruby driver.
+    #
+    # Work in progress...
     module Idiomatic
 
       # Return the text content of an HTML element (rendered text shown to
@@ -83,31 +102,31 @@ module Selenium
       def wait_for(options)
         if options[:wait_for] == :page
           wait_for_page options[:timeout_in_seconds]
-	      elsif options[:wait_for] == :ajax
-	          wait_for_ajax options
-	      elsif options[:wait_for] == :element
-	          wait_for_element options[:element], options
-	      elsif options[:wait_for] == :no_element
-	          wait_for_no_element options[:element], options
-	      elsif options[:wait_for] == :text
-	          wait_for_text options[:text], options
-	      elsif options[:wait_for] == :no_text
+        elsif options[:wait_for] == :ajax
+          wait_for_ajax options
+        elsif options[:wait_for] == :element
+          wait_for_element options[:element], options
+        elsif options[:wait_for] == :no_element
+          wait_for_no_element options[:element], options
+        elsif options[:wait_for] == :text
+          wait_for_text options[:text], options
+        elsif options[:wait_for] == :no_text
           wait_for_no_text options[:text], options
-	      elsif options[:wait_for] == :effects
-	          wait_for_effects options
+        elsif options[:wait_for] == :effects
+          wait_for_effects options
         elsif options[:wait_for] == :popup
-            wait_for_popup options[:window], options[:timeout_in_seconds]
-            select_window options[:window] if options[:select]
+          wait_for_popup options[:window], options[:timeout_in_seconds]
+          select_window options[:window] if options[:select]
         elsif options[:wait_for] == :value
-            wait_for_field_value options[:element], options[:value], options
+          wait_for_field_value options[:element], options[:value], options
         elsif options[:wait_for] == :no_value
-            wait_for_no_field_value options[:element], options[:value], options
+          wait_for_no_field_value options[:element], options[:value], options
         elsif options[:wait_for] == :visible
-            wait_for_visible options[:element], options
+          wait_for_visible options[:element], options
         elsif options[:wait_for] == :not_visible
-            wait_for_not_visible options[:element], options
-	      elsif options[:wait_for] == :condition
-	          wait_for_condition options[:javascript], options[:timeout_in_seconds]
+          wait_for_not_visible options[:element], options
+        elsif options[:wait_for] == :condition
+          wait_for_condition options[:javascript], options[:timeout_in_seconds]
         end
       end
 
@@ -187,7 +206,7 @@ module Selenium
 
       # Alias for +field+
       def value(locator)
-	      field locator
+        field locator
       end
 
       # Returns whether a toggle-button (checkbox/radio) is checked.
@@ -378,7 +397,7 @@ module Selenium
       # the optionsString's format is "path=/path/, max_age=60, domain=.foo.com". The order of options are irrelevant, the unit      of the value of 'max_age' is second.  Note that specifying a domain that isn't a subset of the current domain will      usually fail.
       def create_cookie(name_value_pair, options="")
         if options.kind_of? Hash
-		      options = options.keys.collect {|key| "#{key}=#{options[key]}" }.sort.join(", ")
+          options = options.keys.collect {|key| "#{key}=#{options[key]}" }.sort.join(", ")
         end
         remote_control_command "createCookie", [name_value_pair,options,]
       end
@@ -398,8 +417,8 @@ module Selenium
       # 'optionsString' is options for the cookie. Currently supported options include 'path', 'domain'      and 'recurse.' The optionsString's format is "path=/path/, domain=.foo.com, recurse=true".      The order of options are irrelevant. Note that specifying a domain that isn't a subset of      the current domain will usually fail.
       def delete_cookie(name, options="")
         if options.kind_of? Hash
-		      ordered_keys = options.keys.sort {|a,b| a.to_s <=> b.to_s }
-		      options = ordered_keys.collect {|key| "#{key}=#{options[key]}" }.join(", ")
+          ordered_keys = options.keys.sort {|a,b| a.to_s <=> b.to_s }
+          options = ordered_keys.collect {|key| "#{key}=#{options[key]}" }.join(", ")
         end
         remote_control_command "deleteCookie", [name,options,]
       end

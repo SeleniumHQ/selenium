@@ -187,7 +187,7 @@ goog.crypt.baseN.recodeString = function(number, inputBase, outputBase) {
  *
  * @param {string} number The string to convert, most significant digit first.
  * @param {string} base Digits in the base.
- * @return {Array.<number>} Array of digit values, least significant digit
+ * @return {!Array<number>} Array of digit values, least significant digit
  *     first.
  * @private
  */
@@ -221,7 +221,7 @@ goog.crypt.baseN.stringToArray_ = function(number, base) {
  * Throws an Error if the number contains a digit which is outside the range
  * 0 ... base.length - 1.
  *
- * @param {Array.<number>} number Array of digit values, least significant
+ * @param {Array<number>} number Array of digit values, least significant
  *     first.
  * @param {string} base Digits in the base.
  * @return {string} Number as a string, most significant digit first.

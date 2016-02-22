@@ -22,43 +22,35 @@
 goog.provide('goog.net.BulkLoaderHelper');
 
 goog.require('goog.Disposable');
-goog.require('goog.debug.Logger');
 
 
 
 /**
  * Helper class used to load multiple URIs.
- * @param {Array.<string|goog.Uri>} uris The URIs to load.
+ * @param {Array<string|goog.Uri>} uris The URIs to load.
  * @constructor
  * @extends {goog.Disposable}
+ * @final
  */
 goog.net.BulkLoaderHelper = function(uris) {
   goog.Disposable.call(this);
 
   /**
    * The URIs to load.
-   * @type {Array.<string|goog.Uri>}
+   * @type {Array<string|goog.Uri>}
    * @private
    */
   this.uris_ = uris;
 
   /**
    * The response from the XHR's.
-   * @type {Array.<string>}
+   * @type {Array<string>}
    * @private
    */
   this.responseTexts_ = [];
 };
 goog.inherits(goog.net.BulkLoaderHelper, goog.Disposable);
 
-
-/**
- * A logger.
- * @type {goog.debug.Logger}
- * @private
- */
-goog.net.BulkLoaderHelper.prototype.logger_ =
-    goog.debug.Logger.getLogger('goog.net.BulkLoaderHelper');
 
 
 /**
@@ -73,7 +65,7 @@ goog.net.BulkLoaderHelper.prototype.getUri = function(id) {
 
 /**
  * Gets the URIs.
- * @return {Array.<string|goog.Uri>} The URIs.
+ * @return {Array<string|goog.Uri>} The URIs.
  */
 goog.net.BulkLoaderHelper.prototype.getUris = function() {
   return this.uris_;
@@ -82,7 +74,7 @@ goog.net.BulkLoaderHelper.prototype.getUris = function() {
 
 /**
  * Gets the response texts.
- * @return {Array.<string>} The response texts.
+ * @return {Array<string>} The response texts.
  */
 goog.net.BulkLoaderHelper.prototype.getResponseTexts = function() {
   return this.responseTexts_;

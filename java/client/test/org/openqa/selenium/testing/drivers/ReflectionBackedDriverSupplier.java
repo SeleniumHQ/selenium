@@ -1,19 +1,19 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.testing.drivers;
 
@@ -39,12 +39,12 @@ import java.util.logging.Logger;
 
 public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
 
-  private final static Logger log = 
+  private final static Logger log =
       Logger.getLogger(ReflectionBackedDriverSupplier.class.getName());
   private final Capabilities desiredCapabilities;
   private final Capabilities requiredCapabilities;
 
-  public ReflectionBackedDriverSupplier(Capabilities desiredCapabilities, 
+  public ReflectionBackedDriverSupplier(Capabilities desiredCapabilities,
       Capabilities requiredCapabilities) {
     this.desiredCapabilities = desiredCapabilities;
     this.requiredCapabilities = requiredCapabilities;
@@ -59,23 +59,36 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
         return null;
       }
 
-      if (DesiredCapabilities.firefox().getBrowserName().
-          equals(desiredCapsToUse.getBrowserName())) {
-        if (isInDevMode()) {
-          copyFirefoxDriverDefaultsToOutputDir();
+      if (DesiredCapabilities.firefox().getBrowserName().equals(desiredCapsToUse.getBrowserName())) {
+        boolean isMarionette = Boolean.getBoolean("webdriver.firefox.marionette");
+        if (!isMarionette) {
+          if (isInDevMode()) {
+            copyFirefoxDriverDefaultsToOutputDir();
+          }
+
+          FirefoxProfile profile = new FirefoxProfile();
+          boolean enableNativeEvents = Boolean.getBoolean("selenium.browser.native_events") ||
+                                       Platform.getCurrent().is(WINDOWS);
+          profile.setEnableNativeEvents(enableNativeEvents);
+          desiredCapsToUse.setCapability(FirefoxDriver.PROFILE, profile);
         }
 
-        FirefoxProfile profile = new FirefoxProfile();
-        boolean enableNativeEvents = Boolean.getBoolean("selenium.browser.native_events") ||
-                               Platform.getCurrent().is(WINDOWS);
-        profile.setEnableNativeEvents(enableNativeEvents);
-        desiredCapsToUse.setCapability(FirefoxDriver.PROFILE, profile);
-        
-        return driverClass.getConstructor(Capabilities.class, 
-            Capabilities.class).newInstance(desiredCapsToUse, requiredCapabilities);
+        try {
+          return driverClass.getConstructor(Capabilities.class,
+                                            Capabilities.class)
+            .newInstance(desiredCapsToUse, requiredCapabilities);
+        } catch (NoSuchMethodException ex) {
+          return driverClass.getConstructor(Capabilities.class).newInstance(desiredCapsToUse);
+        }
       }
 
-      //TODO: Call constructor with two Capabilities arguments for all driver classes
+      try {
+          return driverClass.getConstructor(Capabilities.class,
+             Capabilities.class).newInstance(desiredCapsToUse, requiredCapabilities);
+      } catch (NoSuchMethodException e) {
+          // ignore
+      }
+
       return driverClass.getConstructor(Capabilities.class).newInstance(desiredCapsToUse);
     } catch (InvocationTargetException e) {
       throw Throwables.propagate(e.getTargetException());
@@ -98,6 +111,8 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
 
     if (DesiredCapabilities.chrome().getBrowserName().equals(name)) {
       className = "org.openqa.selenium.testing.drivers.TestChromeDriver";
+    } else if (DesiredCapabilities.operaBlink().getBrowserName().equals(name)) {
+      className = "org.openqa.selenium.testing.drivers.TestOperaBlinkDriver";
     } else if (DesiredCapabilities.firefox().getBrowserName().equals(name)) {
       className = getFirefoxClassName();
     } else if (DesiredCapabilities.htmlUnit().getBrowserName().equals(name)) {
@@ -128,7 +143,9 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
   }
 
   private String getFirefoxClassName() {
-    if (isInDevMode()) {
+    if (Boolean.parseBoolean(System.getProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE))) {
+      return "org.openqa.selenium.firefox.MarionetteDriver";
+    } else if (isInDevMode()) {
       return "org.openqa.selenium.testing.drivers.SynthesizedFirefoxDriver";
     } else {
       return "org.openqa.selenium.firefox.FirefoxDriver";

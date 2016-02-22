@@ -29,7 +29,9 @@
  * Examples of usage:
  *
  * <pre>
- *   var flash = new goog.ui.media.FlashObject('http://hostname/flash.swf');
+ *   var url = goog.html.TrustedResourceUrl.fromConstant(
+ *       goog.string.Const.from('https://hostname/flash.swf'))
+ *   var flash = new goog.ui.media.FlashObject(url);
  *   flash.setFlashVar('myvar', 'foo');
  *   flash.render(goog.dom.getElement('parent'));
  * </pre>
@@ -45,10 +47,16 @@ goog.provide('goog.ui.media.FlashObject.ScriptAccessLevel');
 goog.provide('goog.ui.media.FlashObject.Wmodes');
 
 goog.require('goog.asserts');
-goog.require('goog.debug.Logger');
+goog.require('goog.dom.TagName');
+goog.require('goog.dom.safe');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
+goog.require('goog.html.SafeUrl');
+goog.require('goog.html.TrustedResourceUrl');
+goog.require('goog.html.flash');
+goog.require('goog.html.legacyconversions');
+goog.require('goog.log');
 goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.structs.Map');
@@ -65,7 +73,11 @@ goog.require('goog.userAgent.flash');
  * {@link goog.ui.Component}, which makes it very easy to be embedded on the
  * page.
  *
- * @param {string} flashUrl The flash SWF URL.
+ * @param {string|!goog.html.TrustedResourceUrl} flashUrl The Flash SWF URL.
+ *     If possible pass a TrustedResourceUrl. string is supported
+ *     for backwards-compatibility only, uses goog.html.legacyconversions,
+ *     and will be sanitized with goog.html.SafeUrl.sanitize() before being
+ *     used.
  * @param {goog.dom.DomHelper=} opt_domHelper An optional DomHelper.
  * @extends {goog.ui.Component}
  * @constructor
@@ -73,17 +85,27 @@ goog.require('goog.userAgent.flash');
 goog.ui.media.FlashObject = function(flashUrl, opt_domHelper) {
   goog.ui.Component.call(this, opt_domHelper);
 
+  var trustedResourceUrl;
+  if (flashUrl instanceof goog.html.TrustedResourceUrl) {
+    trustedResourceUrl = flashUrl;
+  } else {
+    var flashUrlSanitized =
+        goog.html.SafeUrl.unwrap(goog.html.SafeUrl.sanitize(flashUrl));
+    trustedResourceUrl = goog.html.legacyconversions
+        .trustedResourceUrlFromString(flashUrlSanitized);
+  }
+
   /**
    * The URL of the flash movie to be embedded.
    *
-   * @type {string}
+   * @type {!goog.html.TrustedResourceUrl}
    * @private
    */
-  this.flashUrl_ = flashUrl;
+  this.flashUrl_ = trustedResourceUrl;
 
   /**
    * An event handler used to handle events consistently between browsers.
-   * @type {goog.events.EventHandler}
+   * @type {goog.events.EventHandler<!goog.ui.media.FlashObject>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -114,6 +136,22 @@ goog.ui.media.FlashObject.SwfReadyStates_ = {
   LOADED: 2,
   INTERACTIVE: 3,
   COMPLETE: 4
+};
+
+
+/**
+ * IE specific ready states.
+ *
+ * @see https://msdn.microsoft.com/en-us/library/ms534359(v=vs.85).aspx
+ * @enum {string}
+ * @private
+ */
+goog.ui.media.FlashObject.IeSwfReadyStates_ = {
+  LOADING: 'loading',
+  UNINITIALIZED: 'uninitialized',
+  LOADED: 'loaded',
+  INTERACTIVE: 'interactive',
+  COMPLETE: 'complete'
 };
 
 
@@ -187,77 +225,13 @@ goog.ui.media.FlashObject.FLASH_CSS_CLASS =
 
 
 /**
- * Template for the object tag for IE.
- *
- * @type {string}
- * @private
- */
-goog.ui.media.FlashObject.IE_HTML_ =
-    '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"' +
-    ' id="%s"' +
-    ' name="%s"' +
-    ' class="%s"' +
-    '>' +
-    '<param name="movie" value="%s"/>' +
-    '<param name="quality" value="high"/>' +
-    '<param name="FlashVars" value="%s"/>' +
-    '<param name="bgcolor" value="%s"/>' +
-    '<param name="AllowScriptAccess" value="%s"/>' +
-    '<param name="allowFullScreen" value="true"/>' +
-    '<param name="SeamlessTabbing" value="false"/>' +
-    '%s' +
-    '</object>';
-
-
-/**
- * Template for the wmode param for IE.
- *
- * @type {string}
- * @private
- */
-goog.ui.media.FlashObject.IE_WMODE_PARAMS_ = '<param name="wmode" value="%s"/>';
-
-
-/**
- * Template for the embed tag for FF.
- *
- * @type {string}
- * @private
- */
-goog.ui.media.FlashObject.FF_HTML_ =
-    '<embed quality="high"' +
-    ' id="%s"' +
-    ' name="%s"' +
-    ' class="%s"' +
-    ' src="%s"' +
-    ' FlashVars="%s"' +
-    ' bgcolor="%s"' +
-    ' AllowScriptAccess="%s"' +
-    ' allowFullScreen="true"' +
-    ' SeamlessTabbing="false"' +
-    ' type="application/x-shockwave-flash"' +
-    ' pluginspage="http://www.macromedia.com/go/getflashplayer"' +
-    ' %s>' +
-    '</embed>';
-
-
-/**
- * Template for the wmode param for Firefox.
- *
- * @type {string}
- * @private
- */
-goog.ui.media.FlashObject.FF_WMODE_PARAMS_ = 'wmode=%s';
-
-
-/**
  * A logger used for debugging.
  *
- * @type {goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @private
  */
 goog.ui.media.FlashObject.prototype.logger_ =
-    goog.debug.Logger.getLogger('goog.ui.media.FlashObject');
+    goog.log.getLogger('goog.ui.media.FlashObject');
 
 
 /**
@@ -320,7 +294,7 @@ goog.ui.media.FlashObject.prototype.allowScriptAccess_ =
  * Sets the flash movie Wmode.
  *
  * @param {goog.ui.media.FlashObject.Wmodes} wmode the flash movie Wmode.
- * @return {goog.ui.media.FlashObject} The flash object instance for chaining.
+ * @return {!goog.ui.media.FlashObject} The flash object instance for chaining.
  */
 goog.ui.media.FlashObject.prototype.setWmode = function(wmode) {
   this.wmode_ = wmode;
@@ -340,7 +314,7 @@ goog.ui.media.FlashObject.prototype.getWmode = function() {
  * Adds flash variables.
  *
  * @param {goog.structs.Map|Object} map A key-value map of variables.
- * @return {goog.ui.media.FlashObject} The flash object instance for chaining.
+ * @return {!goog.ui.media.FlashObject} The flash object instance for chaining.
  */
 goog.ui.media.FlashObject.prototype.addFlashVars = function(map) {
   this.flashVars_.addAll(map);
@@ -353,7 +327,7 @@ goog.ui.media.FlashObject.prototype.addFlashVars = function(map) {
  *
  * @param {string} key The name of the flash variable.
  * @param {string} value The value of the flash variable.
- * @return {goog.ui.media.FlashObject} The flash object instance for chaining.
+ * @return {!goog.ui.media.FlashObject} The flash object instance for chaining.
  */
 goog.ui.media.FlashObject.prototype.setFlashVar = function(key, value) {
   this.flashVars_.set(key, value);
@@ -372,7 +346,7 @@ goog.ui.media.FlashObject.prototype.setFlashVar = function(key, value) {
  *    as a goog.structs.Map or an Object literal) or a key to the optional
  *    {@code opt_value}.
  * @param {string=} opt_value The optional value for the flashVar key.
- * @return {goog.ui.media.FlashObject} The flash object instance for chaining.
+ * @return {!goog.ui.media.FlashObject} The flash object instance for chaining.
  */
 goog.ui.media.FlashObject.prototype.setFlashVars = function(flashVar,
                                                             opt_value) {
@@ -401,7 +375,7 @@ goog.ui.media.FlashObject.prototype.getFlashVars = function() {
  * Sets the background color of the movie.
  *
  * @param {string} color The new color to be set.
- * @return {goog.ui.media.FlashObject} The flash object instance for chaining.
+ * @return {!goog.ui.media.FlashObject} The flash object instance for chaining.
  */
 goog.ui.media.FlashObject.prototype.setBackgroundColor = function(color) {
   this.backgroundColor_ = color;
@@ -421,7 +395,7 @@ goog.ui.media.FlashObject.prototype.getBackgroundColor = function() {
  * Sets the allowScriptAccess setting of the movie.
  *
  * @param {string} value The new value to be set.
- * @return {goog.ui.media.FlashObject} The flash object instance for chaining.
+ * @return {!goog.ui.media.FlashObject} The flash object instance for chaining.
  */
 goog.ui.media.FlashObject.prototype.setAllowScriptAccess = function(value) {
   this.allowScriptAccess_ = value;
@@ -442,7 +416,7 @@ goog.ui.media.FlashObject.prototype.getAllowScriptAccess = function() {
  *
  * @param {number|string} width The width of the movie.
  * @param {number|string} height The height of the movie.
- * @return {goog.ui.media.FlashObject} The flash object instance for chaining.
+ * @return {!goog.ui.media.FlashObject} The flash object instance for chaining.
  */
 goog.ui.media.FlashObject.prototype.setSize = function(width, height) {
   this.width_ = goog.isString(width) ? width : Math.round(width) + 'px';
@@ -467,7 +441,7 @@ goog.ui.media.FlashObject.prototype.getRequiredVersion = function() {
  *
  * @param {?string} version The minimum required version for this movie to work,
  *     or null if you want to unset it.
- * @return {goog.ui.media.FlashObject} The flash object instance for chaining.
+ * @return {!goog.ui.media.FlashObject} The flash object instance for chaining.
  */
 goog.ui.media.FlashObject.prototype.setRequiredVersion = function(version) {
   this.requiredVersion_ = version;
@@ -495,7 +469,8 @@ goog.ui.media.FlashObject.prototype.enterDocument = function() {
 
   // The SWF tag must be written after this component's element is appended to
   // the DOM. Otherwise Flash's ExternalInterface is broken in IE.
-  this.getElement().innerHTML = this.generateSwfTag_();
+  goog.dom.safe.setInnerHtml(
+      /** @type {!Element} */ (this.getElement()), this.createSwfTag_());
   if (this.width_ && this.height_) {
     this.setSize(this.width_, this.height_);
   }
@@ -538,53 +513,95 @@ goog.ui.media.FlashObject.prototype.createDom = function() {
   if (this.hasRequiredVersion() &&
       !goog.userAgent.flash.isVersion(
           /** @type {string} */ (this.getRequiredVersion()))) {
-    this.logger_.warning('Required flash version not found:' +
+    goog.log.warning(this.logger_, 'Required flash version not found:' +
         this.getRequiredVersion());
     throw Error(goog.ui.Component.Error.NOT_SUPPORTED);
   }
 
-  var element = this.getDomHelper().createElement('div');
+  var element = this.getDomHelper().createElement(goog.dom.TagName.DIV);
   element.className = goog.ui.media.FlashObject.CSS_CLASS;
   this.setElementInternal(element);
 };
 
 
 /**
- * Writes the HTML to embed the flash object.
+ * Creates the HTML to embed the flash object.
  *
- * @return {string} Browser appropriate HTML to add the SWF to the DOM.
+ * @return {!goog.html.SafeHtml} Browser appropriate HTML to add the SWF to the
+ *     DOM.
  * @private
  */
-goog.ui.media.FlashObject.prototype.generateSwfTag_ = function() {
-  var template = goog.userAgent.IE ? goog.ui.media.FlashObject.IE_HTML_ :
-      goog.ui.media.FlashObject.FF_HTML_;
-
-  var params = goog.userAgent.IE ? goog.ui.media.FlashObject.IE_WMODE_PARAMS_ :
-      goog.ui.media.FlashObject.FF_WMODE_PARAMS_;
-
-  params = goog.string.subs(params, this.wmode_);
-
+goog.ui.media.FlashObject.prototype.createSwfTag_ = function() {
   var keys = this.flashVars_.getKeys();
   var values = this.flashVars_.getValues();
-
   var flashVars = [];
   for (var i = 0; i < keys.length; i++) {
     var key = goog.string.urlEncode(keys[i]);
     var value = goog.string.urlEncode(values[i]);
     flashVars.push(key + '=' + value);
   }
+  var flashVarsString = flashVars.join('&');
+  if (goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(11)) {
+    return this.createSwfTagOldIe_(flashVarsString);
+  } else {
+    return this.createSwfTagModern_(flashVarsString);
+  }
+};
 
-  // TODO(user): find a more efficient way to build the HTML.
-  return goog.string.subs(
-      template,
-      this.getId(),
-      this.getId(),
-      goog.ui.media.FlashObject.FLASH_CSS_CLASS,
-      goog.string.htmlEscape(this.flashUrl_),
-      goog.string.htmlEscape(flashVars.join('&')),
-      this.backgroundColor_,
-      this.allowScriptAccess_,
-      params);
+
+/**
+ * Creates the HTML to embed the flash object for IE>=11 and other browsers.
+ *
+ * @param {string} flashVars The value of the FlashVars attribute.
+ * @return {!goog.html.SafeHtml} Browser appropriate HTML to add the SWF to the
+ *     DOM.
+ * @private
+ */
+goog.ui.media.FlashObject.prototype.createSwfTagModern_ = function(flashVars) {
+  return goog.html.flash.createEmbed(
+      this.flashUrl_,
+      {
+        'AllowScriptAccess': this.allowScriptAccess_,
+        'allowFullScreen': 'true',
+        'allowNetworking': 'all',
+        'bgcolor': this.backgroundColor_,
+        'class': goog.ui.media.FlashObject.FLASH_CSS_CLASS,
+        'FlashVars': flashVars,
+        'id': this.getId(),
+        'name': this.getId(),
+        'quality': 'high',
+        'SeamlessTabbing': 'false',
+        'wmode': this.wmode_
+      });
+};
+
+
+/**
+ * Creates the HTML to embed the flash object for IE<11.
+ *
+ * @param {string} flashVars The value of the FlashVars attribute.
+ * @return {!goog.html.SafeHtml} Browser appropriate HTML to add the SWF to the
+ *     DOM.
+ * @private
+ */
+goog.ui.media.FlashObject.prototype.createSwfTagOldIe_ = function(flashVars) {
+  return goog.html.flash.createObjectForOldIe(
+      this.flashUrl_,
+      {
+        'allowFullScreen': 'true',
+        'AllowScriptAccess': this.allowScriptAccess_,
+        'allowNetworking': 'all',
+        'bgcolor': this.backgroundColor_,
+        'FlashVars': flashVars,
+        'quality': 'high',
+        'SeamlessTabbing': 'false',
+        'wmode': this.wmode_
+      },
+      {
+        'class': goog.ui.media.FlashObject.FLASH_CSS_CLASS,
+        'id': this.getId(),
+        'name': this.getId()
+      });
 };
 
 
@@ -616,13 +633,23 @@ goog.ui.media.FlashObject.prototype.isLoaded = function() {
     return false;
   }
 
+  // IE has different readyState values for elements.
+  if (goog.userAgent.EDGE_OR_IE && this.getFlashElement().readyState &&
+      this.getFlashElement().readyState ==
+          goog.ui.media.FlashObject.IeSwfReadyStates_.COMPLETE) {
+    return true;
+  }
+
   if (this.getFlashElement().readyState &&
       this.getFlashElement().readyState ==
           goog.ui.media.FlashObject.SwfReadyStates_.COMPLETE) {
     return true;
   }
 
-  if (this.getFlashElement().PercentLoaded &&
+  // Use "in" operator to check for PercentLoaded because IE8 throws when
+  // accessing directly. See:
+  // https://github.com/google/closure-library/pull/373.
+  if ('PercentLoaded' in this.getFlashElement() &&
       this.getFlashElement().PercentLoaded() == 100) {
     return true;
   }

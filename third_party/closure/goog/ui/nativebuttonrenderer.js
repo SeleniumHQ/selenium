@@ -20,10 +20,13 @@
 
 goog.provide('goog.ui.NativeButtonRenderer');
 
-goog.require('goog.dom.classes');
+goog.require('goog.asserts');
+goog.require('goog.dom.InputType');
+goog.require('goog.dom.TagName');
+goog.require('goog.dom.classlist');
 goog.require('goog.events.EventType');
 goog.require('goog.ui.ButtonRenderer');
-goog.require('goog.ui.Component.State');
+goog.require('goog.ui.Component');
 
 
 
@@ -58,7 +61,7 @@ goog.ui.NativeButtonRenderer.prototype.getAriaRole = function() {
  */
 goog.ui.NativeButtonRenderer.prototype.createDom = function(button) {
   this.setUpNativeButton_(button);
-  return button.getDomHelper().createDom('button', {
+  return button.getDomHelper().createDom(goog.dom.TagName.BUTTON, {
     'class': this.getClassNames(button).join(' '),
     'disabled': !button.isEnabled(),
     'title': button.getTooltip() || '',
@@ -75,9 +78,11 @@ goog.ui.NativeButtonRenderer.prototype.createDom = function(button) {
  * @override
  */
 goog.ui.NativeButtonRenderer.prototype.canDecorate = function(element) {
-  return element.tagName == 'BUTTON' ||
-      (element.tagName == 'INPUT' && (element.type == 'button' ||
-          element.type == 'submit' || element.type == 'reset'));
+  return element.tagName == goog.dom.TagName.BUTTON ||
+      (element.tagName == goog.dom.TagName.INPUT && (
+          element.type == goog.dom.InputType.BUTTON ||
+          element.type == goog.dom.InputType.SUBMIT ||
+          element.type == goog.dom.InputType.RESET));
 };
 
 
@@ -87,8 +92,9 @@ goog.ui.NativeButtonRenderer.prototype.decorate = function(button, element) {
   if (element.disabled) {
     // Add the marker class for the DISABLED state before letting the superclass
     // implementation decorate the element, so its state will be correct.
-    goog.dom.classes.add(element,
+    var disabledClassName = goog.asserts.assertString(
         this.getClassForState(goog.ui.Component.State.DISABLED));
+    goog.dom.classlist.add(element, disabledClassName);
   }
   return goog.ui.NativeButtonRenderer.superClass_.decorate.call(this, button,
       element);

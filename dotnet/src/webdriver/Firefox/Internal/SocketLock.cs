@@ -1,9 +1,9 @@
 ﻿// <copyright file="SocketLock.cs" company="WebDriver Committers">
-// Copyright 2007-2011 WebDriver committers
-// Copyright 2007-2011 Google Inc.
-// Portions copyright 2011 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -17,12 +17,10 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 
 namespace OpenQA.Selenium.Firefox.Internal
@@ -32,14 +30,11 @@ namespace OpenQA.Selenium.Firefox.Internal
     /// </summary>
     internal class SocketLock : ILock
     {
-        #region Private members
         private static int delayBetweenSocketChecks = 100;
 
         private int lockPort;
-        private Socket lockSocket; 
-        #endregion
+        private Socket lockSocket;
 
-        #region Constructor
         /// <summary>
         /// Initializes a new instance of the <see cref="SocketLock"/> class.
         /// </summary>
@@ -52,13 +47,11 @@ namespace OpenQA.Selenium.Firefox.Internal
             this.lockSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             this.PreventSocketInheritance();
         }
-        #endregion
 
-        #region ILock Members
         /// <summary>
         /// Locks the mutex port.
         /// </summary>
-        /// <param name="timeout">The <see cref="TimeSpan"/> describing the amount of time to wait for 
+        /// <param name="timeout">The <see cref="TimeSpan"/> describing the amount of time to wait for
         /// the mutex port to become available.</param>
         public void LockObject(TimeSpan timeout)
         {
@@ -103,13 +96,13 @@ namespace OpenQA.Selenium.Firefox.Internal
             }
             while (DateTime.Now < maxWait);
 
-            throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Unable to bind to locking port {0} within {1} ms", this.lockPort, timeout.TotalMilliseconds));
+            throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Unable to bind to locking port {0} within {1} milliseconds", this.lockPort, timeout.TotalMilliseconds));
         }
 
         /// <summary>
         /// Locks the mutex port.
         /// </summary>
-        /// <param name="timeoutInMilliseconds">The amount of time (in milliseconds) to wait for 
+        /// <param name="timeoutInMilliseconds">The amount of time (in milliseconds) to wait for
         /// the mutex port to become available.</param>
         [Obsolete("Timeouts should be expressed as a TimeSpan. Use the LockObject overload taking a TimeSpan parameter instead")]
         public void LockObject(long timeoutInMilliseconds)
@@ -131,9 +124,7 @@ namespace OpenQA.Selenium.Firefox.Internal
                 throw new WebDriverException("An error occured unlocking the object", e);
             }
         }
-        #endregion
 
-        #region IDisposable Members
         /// <summary>
         /// Releases all resources associated with this <see cref="SocketLock"/>
         /// </summary>
@@ -146,9 +137,7 @@ namespace OpenQA.Selenium.Firefox.Internal
 
             GC.SuppressFinalize(this);
         }
-        #endregion
 
-        #region Support methods
         private bool IsLockFree(IPEndPoint address)
         {
             try
@@ -170,6 +159,5 @@ namespace OpenQA.Selenium.Firefox.Internal
                 NativeMethods.SetHandleInformation(this.lockSocket.Handle, NativeMethods.HandleInformation.Inherit | NativeMethods.HandleInformation.ProtectFromClose, NativeMethods.HandleInformation.None);
             }
         }
-        #endregion
     }
 }

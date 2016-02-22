@@ -20,9 +20,9 @@
 
 goog.provide('goog.ui.ToolbarColorMenuButtonRenderer');
 
-goog.require('goog.dom.classes');
+goog.require('goog.asserts');
+goog.require('goog.dom.classlist');
 goog.require('goog.ui.ColorMenuButtonRenderer');
-goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.MenuButtonRenderer');
 goog.require('goog.ui.ToolbarMenuButtonRenderer');
 
@@ -32,6 +32,7 @@ goog.require('goog.ui.ToolbarMenuButtonRenderer');
  * Toolbar-style renderer for {@link goog.ui.ColorMenuButton}s.
  * @constructor
  * @extends {goog.ui.ToolbarMenuButtonRenderer}
+ * @final
  */
 goog.ui.ToolbarColorMenuButtonRenderer = function() {
   goog.ui.ToolbarMenuButtonRenderer.call(this);
@@ -51,7 +52,7 @@ goog.addSingletonGetter(goog.ui.ToolbarColorMenuButtonRenderer);
  *   </div>
  * @param {goog.ui.ControlContent} content Text caption or DOM structure.
  * @param {goog.dom.DomHelper} dom DOM helper, used for document interaction.
- * @return {Element} Caption element.
+ * @return {!Element} Caption element.
  * @see goog.ui.ToolbarColorMenuButtonRenderer#createColorIndicator
  * @override
  */
@@ -92,7 +93,8 @@ goog.ui.ToolbarColorMenuButtonRenderer.prototype.setValue = function(element,
 goog.ui.ToolbarColorMenuButtonRenderer.prototype.initializeDom = function(
     button) {
   this.setValue(button.getElement(), button.getValue());
-  goog.dom.classes.add(button.getElement(),
+  goog.dom.classlist.add(
+      goog.asserts.assert(button.getElement()),
       goog.getCssName('goog-toolbar-color-menu-button'));
   goog.ui.ToolbarColorMenuButtonRenderer.superClass_.initializeDom.call(this,
       button);

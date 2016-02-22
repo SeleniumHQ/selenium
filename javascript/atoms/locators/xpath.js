@@ -1,17 +1,19 @@
-// Copyright 2010 WebDriver committers
-// Copyright 2010 Google Inc.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview Functions to locate elements by XPath.
@@ -40,7 +42,6 @@ goog.require('goog.dom.NodeType');
 goog.require('goog.userAgent');
 goog.require('goog.userAgent.product');
 goog.require('wgxpath');
-
 
 /**
  * XPathResult enum values. These are defined separately since
@@ -89,6 +90,11 @@ bot.locators.xpath.DEFAULT_RESOLVER_ = (function() {
 bot.locators.xpath.evaluate_ = function(node, path, resultType) {
   var doc = goog.dom.getOwnerDocument(node);
 
+  if (!doc.documentElement) {
+    // document is not loaded yet
+    return null;
+  }
+
   // Let the wgxpath library be compiled away unless we are on IE or Android.
   // TODO: Restrict this to just IE when we drop support for Froyo.
   if (goog.userAgent.IE || goog.userAgent.product.ANDROID) {
@@ -97,15 +103,57 @@ bot.locators.xpath.evaluate_ = function(node, path, resultType) {
 
   try {
     var resolver = doc.createNSResolver ?
-        doc.createNSResolver(doc.documentElement) :
-        bot.locators.xpath.DEFAULT_RESOLVER_;
+      doc.createNSResolver(doc.documentElement) :
+      bot.locators.xpath.DEFAULT_RESOLVER_;
+
     if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher(7)) {
       // IE6, and only IE6, has an issue where calling a custom function
       // directly attached to the document object does not correctly propagate
       // thrown errors. So in that case *only* we will use apply().
       return doc.evaluate.call(doc, path, node, resolver, resultType, null);
+
     } else {
-      return doc.evaluate(path, node, resolver, resultType, null);
+      if (!goog.userAgent.IE || goog.userAgent.isDocumentModeOrHigher(9)) {
+        var reversedNamespaces = {};
+        var allNodes = doc.getElementsByTagName("*");
+        for (var i = 0; i < allNodes.length; ++i) {
+          var n = allNodes[i];
+          var ns = n.namespaceURI;
+          if (ns && !reversedNamespaces[ns]) {
+            var prefix = n.lookupPrefix(ns);
+            if (!prefix) {
+              var m = ns.match('.*/(\\w+)/?$');
+              if (m) {
+                prefix = m[1];
+              } else {
+                prefix = 'xhtml';
+              }
+            }
+            reversedNamespaces[ns] = prefix;
+          }
+        }
+        var namespaces = {};
+        for (var key in reversedNamespaces) {
+          namespaces[reversedNamespaces[key]] = key;
+        }
+        resolver = function(prefix) {
+          return namespaces[prefix] || null;
+        }
+      }
+
+      try {
+        return doc.evaluate(path, node, resolver, resultType, null);
+      } catch (te) {
+        if (te.name === 'TypeError') {
+          // fallback to simplified implementation
+          resolver = doc.createNSResolver ?
+            doc.createNSResolver(doc.documentElement) :
+            bot.locators.xpath.DEFAULT_RESOLVER_;
+          return doc.evaluate(path, node, resolver, resultType, null);
+        } else {
+          throw te;
+        }
+      }
     }
   } catch (ex) {
     // The Firefox XPath evaluator can throw an exception if the document is
@@ -147,11 +195,10 @@ bot.locators.xpath.single = function(target, root) {
   function selectSingleNode() {
     var result = bot.locators.xpath.evaluate_(root, target,
         bot.locators.XPathResult_.FIRST_ORDERED_NODE_TYPE);
+
     if (result) {
       var node = result.singleNodeValue;
-      // On Opera, a singleNodeValue of undefined indicates a type error, while
-      // other browsers may use it to indicate something has not been found.
-      return goog.userAgent.OPERA ? node : (node || null);
+      return node || null;
     } else if (root.selectSingleNode) {
       var doc = goog.dom.getOwnerDocument(root);
       if (doc.setProperty) {
@@ -184,11 +231,6 @@ bot.locators.xpath.many = function(target, root) {
         bot.locators.XPathResult_.ORDERED_NODE_SNAPSHOT_TYPE);
     if (result) {
       var count = result.snapshotLength;
-      // On Opera, if the XPath evaluates to a non-Node value, snapshotLength
-      // will be undefined and the result empty, so fail immediately.
-      if (goog.userAgent.OPERA && !goog.isDef(count)) {
-        bot.locators.xpath.checkElement_(null, target);
-      }
       var results = [];
       for (var i = 0; i < count; ++i) {
         results.push(result.snapshotItem(i));

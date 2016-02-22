@@ -257,8 +257,8 @@ goog.fs.FileEntry = function() {};
 /**
  * Create a writer for writing to the file.
  *
- * @return {!goog.async.Deferred} The deferred {@link goog.fs.FileWriter}. If an
- *     error occurs, the errback is called with a {@link goog.fs.Error}.
+ * @return {!goog.async.Deferred<!goog.fs.FileWriter>} If an error occurs, the
+ *     errback is called with a {@link goog.fs.Error}.
  */
 goog.fs.FileEntry.prototype.createWriter = function() {};
 
@@ -266,7 +266,7 @@ goog.fs.FileEntry.prototype.createWriter = function() {};
 /**
  * Get the file contents as a File blob.
  *
- * @return {!goog.async.Deferred} The deferred File. If an error occurs, the
- *     errback is called with a {@link goog.fs.Error}.
+ * @return {!goog.async.Deferred<!File>} If an error occurs, the errback is
+ *     called with a {@link goog.fs.Error}.
  */
 goog.fs.FileEntry.prototype.file = function() {};

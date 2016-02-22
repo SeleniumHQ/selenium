@@ -22,7 +22,6 @@ goog.provide('goog.fx.TransitionBase.State');
 
 goog.require('goog.events.EventTarget');
 goog.require('goog.fx.Transition');  // Unreferenced: interface
-goog.require('goog.fx.Transition.EventType');
 
 
 
@@ -30,11 +29,12 @@ goog.require('goog.fx.Transition.EventType');
  * Constructor for a transition object.
  *
  * @constructor
+ * @struct
  * @implements {goog.fx.Transition}
  * @extends {goog.events.EventTarget}
  */
 goog.fx.TransitionBase = function() {
-  goog.base(this);
+  goog.fx.TransitionBase.base(this, 'constructor');
 
   /**
    * The internal state of the animation.

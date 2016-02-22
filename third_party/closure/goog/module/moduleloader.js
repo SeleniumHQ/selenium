@@ -31,15 +31,18 @@ goog.provide('goog.module.ModuleLoader');
 
 goog.require('goog.Timer');
 goog.require('goog.array');
-goog.require('goog.debug.Logger');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventHandler');
+goog.require('goog.events.EventId');
 goog.require('goog.events.EventTarget');
+goog.require('goog.labs.userAgent.browser');
+goog.require('goog.log');
 goog.require('goog.module.AbstractModuleLoader');
 goog.require('goog.net.BulkLoader');
 goog.require('goog.net.EventType');
 goog.require('goog.net.jsloader');
+goog.require('goog.userAgent');
 goog.require('goog.userAgent.product');
 
 
@@ -51,18 +54,18 @@ goog.require('goog.userAgent.product');
  * @implements {goog.module.AbstractModuleLoader}
  */
 goog.module.ModuleLoader = function() {
-  goog.base(this);
+  goog.module.ModuleLoader.base(this, 'constructor');
 
   /**
    * Event handler for managing handling events.
-   * @type {goog.events.EventHandler}
+   * @type {goog.events.EventHandler<!goog.module.ModuleLoader>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
 
   /**
    * A map from module IDs to goog.module.ModuleLoader.LoadStatus.
-   * @type {!Object.<Array.<string>, goog.module.ModuleLoader.LoadStatus>}
+   * @type {!Object<Array<string>, goog.module.ModuleLoader.LoadStatus>}
    * @private
    */
   this.loadingModulesStatus_ = {};
@@ -72,10 +75,10 @@ goog.inherits(goog.module.ModuleLoader, goog.events.EventTarget);
 
 /**
  * A logger.
- * @type {goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @protected
  */
-goog.module.ModuleLoader.prototype.logger = goog.debug.Logger.getLogger(
+goog.module.ModuleLoader.prototype.logger = goog.log.getLogger(
     'goog.module.ModuleLoader');
 
 
@@ -97,12 +100,11 @@ goog.module.ModuleLoader.prototype.sourceUrlInjection_ = false;
 
 /**
  * @return {boolean} Whether sourceURL affects stack traces.
- *     Chrome is currently the only browser that does this, but
- *     we believe other browsers are working on this.
- * @see http://bugzilla.mozilla.org/show_bug.cgi?id=583083
  */
 goog.module.ModuleLoader.supportsSourceUrlStackTraces = function() {
-  return goog.userAgent.product.CHROME;
+  return goog.userAgent.product.CHROME ||
+      (goog.labs.userAgent.browser.isFirefox() &&
+       goog.labs.userAgent.browser.isVersionOrHigher('36'));
 };
 
 
@@ -194,18 +196,18 @@ goog.module.ModuleLoader.prototype.loadModules = function(
 
 /**
  * Evaluate the JS code.
- * @param {Array.<string>} moduleIds The module ids.
+ * @param {Array<string>} moduleIds The module ids.
  * @private
  */
 goog.module.ModuleLoader.prototype.evaluateCode_ = function(moduleIds) {
-  this.dispatchEvent(new goog.module.ModuleLoader.Event(
-      goog.module.ModuleLoader.EventType.REQUEST_SUCCESS, moduleIds));
+  this.dispatchEvent(
+      new goog.module.ModuleLoader.RequestSuccessEvent(moduleIds));
 
-  this.logger.info('evaluateCode ids:' + moduleIds);
-  var success = true;
+  goog.log.info(this.logger, 'evaluateCode ids:' + moduleIds);
   var loadStatus = this.loadingModulesStatus_[moduleIds];
   var uris = loadStatus.requestUris;
   var texts = loadStatus.responseTexts;
+  var error = null;
   try {
     if (this.usingSourceUrlInjection_()) {
       for (var i = 0; i < uris.length; i++) {
@@ -216,18 +218,17 @@ goog.module.ModuleLoader.prototype.evaluateCode_ = function(moduleIds) {
       goog.globalEval(texts.join('\n'));
     }
   } catch (e) {
-    success = false;
+    error = e;
     // TODO(user): Consider throwing an exception here.
-    this.logger.warning('Loaded incomplete code for module(s): ' +
+    goog.log.warning(this.logger, 'Loaded incomplete code for module(s): ' +
         moduleIds, e);
   }
 
-  this.dispatchEvent(
-      new goog.module.ModuleLoader.Event(
-          goog.module.ModuleLoader.EventType.EVALUATE_CODE, moduleIds));
+  this.dispatchEvent(new goog.module.ModuleLoader.EvaluateCodeEvent(moduleIds));
 
-  if (!success) {
-    this.handleErrorHelper_(moduleIds, loadStatus.errorFn, null /* status */);
+  if (error) {
+    this.handleErrorHelper_(
+        moduleIds, loadStatus.errorFn, null /* status */, error);
   } else if (loadStatus.successFn) {
     loadStatus.successFn();
   }
@@ -240,12 +241,12 @@ goog.module.ModuleLoader.prototype.evaluateCode_ = function(moduleIds) {
  * modules.
  *
  * @param {goog.net.BulkLoader} bulkLoader The bulk loader.
- * @param {Array.<string>} moduleIds The ids of the modules requested.
+ * @param {Array<string>} moduleIds The ids of the modules requested.
  * @private
  */
 goog.module.ModuleLoader.prototype.handleSuccess_ = function(
     bulkLoader, moduleIds) {
-  this.logger.info('Code loaded for module(s): ' + moduleIds);
+  goog.log.info(this.logger, 'Code loaded for module(s): ' + moduleIds);
 
   var loadStatus = this.loadingModulesStatus_[moduleIds];
   loadStatus.responseTexts = bulkLoader.getResponseTexts();
@@ -286,7 +287,7 @@ goog.module.ModuleLoader.prototype.prefetchModule = function(
 /**
  * Downloads a list of JavaScript modules.
  *
- * @param {Array.<string>} ids The module ids in dependency order.
+ * @param {Array<string>} ids The module ids in dependency order.
  * @param {Object} moduleInfoMap A mapping from module id to ModuleInfo object.
  * @private
  */
@@ -296,7 +297,7 @@ goog.module.ModuleLoader.prototype.downloadModules_ = function(
   for (var i = 0; i < ids.length; i++) {
     goog.array.extend(uris, moduleInfoMap[ids[i]].getUris());
   }
-  this.logger.info('downloadModules ids:' + ids + ' uris:' + uris);
+  goog.log.info(this.logger, 'downloadModules ids:' + ids + ' uris:' + uris);
 
   if (this.getDebugMode() &&
       !this.usingSourceUrlInjection_()) {
@@ -317,15 +318,11 @@ goog.module.ModuleLoader.prototype.downloadModules_ = function(
     eventHandler.listen(
         bulkLoader,
         goog.net.EventType.SUCCESS,
-        goog.bind(this.handleSuccess_, this, bulkLoader, ids),
-        false,
-        null);
+        goog.bind(this.handleSuccess_, this, bulkLoader, ids));
     eventHandler.listen(
         bulkLoader,
         goog.net.EventType.ERROR,
-        goog.bind(this.handleError_, this, bulkLoader, ids),
-        false,
-        null);
+        goog.bind(this.handleError_, this, bulkLoader, ids));
     bulkLoader.load();
   }
 };
@@ -334,7 +331,7 @@ goog.module.ModuleLoader.prototype.downloadModules_ = function(
 /**
  * Handles an error during a request for one or more modules.
  * @param {goog.net.BulkLoader} bulkLoader The bulk loader.
- * @param {Array.<string>} moduleIds The ids of the modules requested.
+ * @param {Array<string>} moduleIds The ids of the modules requested.
  * @param {number} status The response status.
  * @private
  */
@@ -346,7 +343,8 @@ goog.module.ModuleLoader.prototype.handleError_ = function(
   // subsequent errors.
   if (loadStatus) {
     delete this.loadingModulesStatus_[moduleIds];
-    this.handleErrorHelper_(moduleIds, loadStatus.errorFn, status);
+    this.handleErrorHelper_(
+        moduleIds, loadStatus.errorFn, status);
   }
 
   // NOTE: A bulk loader instance is used for loading a set of module ids. Once
@@ -361,18 +359,18 @@ goog.module.ModuleLoader.prototype.handleError_ = function(
 
 /**
  * Handles an error during a request for one or more modules.
- * @param {Array.<string>} moduleIds The ids of the modules requested.
+ * @param {Array<string>} moduleIds The ids of the modules requested.
  * @param {?function(?number)} errorFn The function to call on failure.
  * @param {?number} status The response status.
+ * @param {!Error=} opt_error The error encountered, if available.
  * @private
  */
 goog.module.ModuleLoader.prototype.handleErrorHelper_ = function(
-    moduleIds, errorFn, status) {
+    moduleIds, errorFn, status, opt_error) {
   this.dispatchEvent(
-      new goog.module.ModuleLoader.Event(
-          goog.module.ModuleLoader.EventType.REQUEST_ERROR, moduleIds));
+      new goog.module.ModuleLoader.RequestErrorEvent(moduleIds, opt_error));
 
-  this.logger.warning('Request failed for module(s): ' + moduleIds);
+  goog.log.warning(this.logger, 'Request failed for module(s): ' + moduleIds);
 
   if (errorFn) {
     errorFn(status);
@@ -390,36 +388,98 @@ goog.module.ModuleLoader.prototype.disposeInternal = function() {
 
 
 /**
- * @enum {string}
+ * Events dispatched by the ModuleLoader.
+ * @const
  */
 goog.module.ModuleLoader.EventType = {
-  /** Called after the code for a module is evaluated. */
-  EVALUATE_CODE: goog.events.getUniqueId('evaluateCode'),
+  /**
+   * @const {!goog.events.EventId<
+   *     !goog.module.ModuleLoader.EvaluateCodeEvent>} Called after the code for
+   *     a module is evaluated.
+   */
+  EVALUATE_CODE: new goog.events.EventId(
+      goog.events.getUniqueId('evaluateCode')),
 
-  /** Called when the BulkLoader finishes successfully. */
-  REQUEST_SUCCESS: goog.events.getUniqueId('requestSuccess'),
+  /**
+   * @const {!goog.events.EventId<
+   *     !goog.module.ModuleLoader.RequestSuccessEvent>} Called when the
+   *     BulkLoader finishes successfully.
+   */
+  REQUEST_SUCCESS: new goog.events.EventId(
+      goog.events.getUniqueId('requestSuccess')),
 
-  /** Called when the BulkLoader fails, or code loading fails. */
-  REQUEST_ERROR: goog.events.getUniqueId('requestError')
+  /**
+   * @const {!goog.events.EventId<
+   *     !goog.module.ModuleLoader.RequestErrorEvent>} Called when the
+   *     BulkLoader fails, or code loading fails.
+   */
+  REQUEST_ERROR: new goog.events.EventId(
+      goog.events.getUniqueId('requestError'))
 };
 
 
 
 /**
- * @param {goog.module.ModuleLoader.EventType} type The type.
- * @param {Array.<string>} moduleIds The ids of the modules being evaluated.
+ * @param {Array<string>} moduleIds The ids of the modules being evaluated.
  * @constructor
  * @extends {goog.events.Event}
+ * @final
+ * @protected
  */
-goog.module.ModuleLoader.Event = function(type, moduleIds) {
-  goog.base(this, type);
+goog.module.ModuleLoader.EvaluateCodeEvent = function(moduleIds) {
+  goog.module.ModuleLoader.EvaluateCodeEvent.base(
+      this, 'constructor', goog.module.ModuleLoader.EventType.EVALUATE_CODE);
 
   /**
-   * @type {Array.<string>}
+   * @type {Array<string>}
    */
   this.moduleIds = moduleIds;
 };
-goog.inherits(goog.module.ModuleLoader.Event, goog.events.Event);
+goog.inherits(goog.module.ModuleLoader.EvaluateCodeEvent, goog.events.Event);
+
+
+
+/**
+ * @param {Array<string>} moduleIds The ids of the modules being evaluated.
+ * @constructor
+ * @extends {goog.events.Event}
+ * @final
+ * @protected
+ */
+goog.module.ModuleLoader.RequestSuccessEvent = function(moduleIds) {
+  goog.module.ModuleLoader.RequestSuccessEvent.base(
+      this, 'constructor', goog.module.ModuleLoader.EventType.REQUEST_SUCCESS);
+
+  /**
+   * @type {Array<string>}
+   */
+  this.moduleIds = moduleIds;
+};
+goog.inherits(goog.module.ModuleLoader.RequestSuccessEvent, goog.events.Event);
+
+
+
+/**
+ * @param {Array<string>} moduleIds The ids of the modules being evaluated.
+ * @param {!Error=} opt_error The error encountered, if available.
+ * @constructor
+ * @extends {goog.events.Event}
+ * @final
+ * @protected
+ */
+goog.module.ModuleLoader.RequestErrorEvent = function(moduleIds, opt_error) {
+  goog.module.ModuleLoader.RequestErrorEvent.base(
+      this, 'constructor', goog.module.ModuleLoader.EventType.REQUEST_ERROR);
+
+  /**
+   * @type {Array<string>}
+   */
+  this.moduleIds = moduleIds;
+
+  /** @type {?Error} */
+  this.error = opt_error || null;
+};
+goog.inherits(goog.module.ModuleLoader.RequestErrorEvent, goog.events.Event);
 
 
 
@@ -427,17 +487,18 @@ goog.inherits(goog.module.ModuleLoader.Event, goog.events.Event);
  * A class that keeps the state of the module during the loading process. It is
  * used to save loading information between modules download and evaluation.
  * @constructor
+ * @final
  */
 goog.module.ModuleLoader.LoadStatus = function() {
   /**
    * The request uris.
-   * @type {Array.<string>}
+   * @type {Array<string>}
    */
   this.requestUris = null;
 
   /**
    * The response texts.
-   * @type {Array.<string>}
+   * @type {Array<string>}
    */
   this.responseTexts = null;
 

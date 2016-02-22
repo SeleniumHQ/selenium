@@ -156,6 +156,9 @@ SeleniumIDE.Preferences.DEFAULT_OPTIONS = {
   executeUsingWebDriver: "false",
   webDriverBrowserString: "firefox",
 
+  //Scheduler related options
+  jobResultsServer: 'http://localhost:3000/api/result',
+
   //Other options
   // This should be called 'userExtensionsPaths', but it is left for backward compatibility.
   userExtensionsURL: "",
@@ -164,10 +167,12 @@ SeleniumIDE.Preferences.DEFAULT_OPTIONS = {
   disableBadPluginAddon: "true",
   enableExperimentalFeatures: "false",
   showDeveloperTools: "false",
+  visualEye: "false",
 
   //Internal data
   pluginsData: "[]",
   currentVersion: "",
+  showHealthAlerts: "true",
   lastSavedTestCase: "",
   lastSavedTestSuite: ""
 };

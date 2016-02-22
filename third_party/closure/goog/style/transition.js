@@ -15,6 +15,7 @@
 /**
  * @fileoverview Utility methods to deal with CSS3 transitions
  * programmatically.
+ * @author chrishenry@google.com (Chris Henry)
  */
 
 goog.provide('goog.style.transition');
@@ -22,7 +23,11 @@ goog.provide('goog.style.transition.Css3Property');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.dom.TagName');
+goog.require('goog.dom.safe');
 goog.require('goog.dom.vendor');
+goog.require('goog.functions');
+goog.require('goog.html.SafeHtml');
 goog.require('goog.style');
 goog.require('goog.userAgent');
 
@@ -49,7 +54,7 @@ goog.style.transition.Css3Property;
  * Sets the element CSS3 transition to properties.
  * @param {Element} element The element to set transition on.
  * @param {goog.style.transition.Css3Property|
- *     Array.<goog.style.transition.Css3Property>} properties A single CSS3
+ *     Array<goog.style.transition.Css3Property>} properties A single CSS3
  *     transition property or array of properties.
  */
 goog.style.transition.set = function(element, properties) {
@@ -90,41 +95,31 @@ goog.style.transition.removeAll = function(element) {
 /**
  * @return {boolean} Whether CSS3 transition is supported.
  */
-goog.style.transition.isSupported = function() {
-  if (!goog.isDef(goog.style.transition.css3TransitionSupported_)) {
-    // Since IE would allow any attribute, we need to explicitly check the
-    // browser version here instead.
-    if (goog.userAgent.IE) {
-      goog.style.transition.css3TransitionSupported_ =
-          goog.userAgent.isVersionOrHigher('10.0');
-    } else {
-      // We create a test element with style=-vendor-transition
-      // We then detect whether those style properties are recognized and
-      // available from js.
-      var el = document.createElement('div');
-      var transition = 'transition:opacity 1s linear;';
-      var vendorPrefix = goog.dom.vendor.getVendorPrefix();
-      var vendorTransition =
-          vendorPrefix ? vendorPrefix + '-' + transition : '';
-      el.innerHTML = '<div style="' + vendorTransition + transition + '">';
-
-      var testElement = /** @type {Element} */ (el.firstChild);
-      goog.asserts.assert(testElement.nodeType == Node.ELEMENT_NODE);
-
-      goog.style.transition.css3TransitionSupported_ =
-          goog.style.getStyle(testElement, 'transition') != '';
-    }
+goog.style.transition.isSupported = goog.functions.cacheReturnValue(function() {
+  // Since IE would allow any attribute, we need to explicitly check the
+  // browser version here instead.
+  if (goog.userAgent.IE) {
+    return goog.userAgent.isVersionOrHigher('10.0');
   }
-  return goog.style.transition.css3TransitionSupported_;
-};
 
+  // We create a test element with style=-vendor-transition
+  // We then detect whether those style properties are recognized and
+  // available from js.
+  var el = document.createElement(goog.dom.TagName.DIV);
+  var transition = 'opacity 1s linear';
+  var vendorPrefix = goog.dom.vendor.getVendorPrefix();
+  var style = {'transition': transition};
+  if (vendorPrefix) {
+    style[vendorPrefix + '-transition'] = transition;
+  }
+  goog.dom.safe.setInnerHtml(el,
+      goog.html.SafeHtml.create('div', {'style': style}));
 
-/**
- * Whether CSS3 transition is supported.
- * @type {boolean}
- * @private
- */
-goog.style.transition.css3TransitionSupported_;
+  var testElement = /** @type {Element} */ (el.firstChild);
+  goog.asserts.assert(testElement.nodeType == Node.ELEMENT_NODE);
+
+  return goog.style.getStyle(testElement, 'transition') != '';
+});
 
 
 /**

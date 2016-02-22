@@ -1,19 +1,19 @@
-/*
- * Copyright 2011 Software Freedom Conservancy.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 package org.openqa.selenium.os;
 
 import static org.openqa.selenium.Platform.WINDOWS;
@@ -55,8 +55,8 @@ public class WindowsUtils {
   private static Properties env = null;
 
   /**
-   * @param args
-   * @throws Exception
+   * @param args command line arguments
+   * @throws Exception possible IO exception
    */
   public static void main(String[] args) throws Exception {
     if (args.length == 0) {
@@ -73,6 +73,8 @@ public class WindowsUtils {
 
   /**
    * Kill processes by name
+   *
+   * @param name name of the process to kill
    */
   public static void killByName(String name) {
     executeCommand("taskkill", "/f", "/t", "/im", name);
@@ -80,6 +82,8 @@ public class WindowsUtils {
 
   /**
    * Kill processes by name, log and ignore errors
+   *
+   * @param name name of the process to kill
    */
   public static void tryToKillByName(String name) {
     if (!thisIsWindows()) {
@@ -94,7 +98,7 @@ public class WindowsUtils {
 
   /**
    * Searches the process list for a process with the specified command line and kills it
-   * 
+   *
    * @param cmdarray the array of command line arguments
    * @throws Exception if something goes wrong while reading the process list or searching for your
    *         command line
@@ -167,14 +171,23 @@ public class WindowsUtils {
 
   /**
    * Kills the specified process ID
+   *
+   * @param processID PID to kill
    */
-  private static void killPID(String processID) {
-    executeCommand("taskkill", "/f", "/t", "/pid", processID);
+  public static void killPID(String processID) {
+    CommandLine cmd = new CommandLine("taskkill", "/f", "/t", "/pid", processID);
+    cmd.execute();
+
+    String output = cmd.getStdOut();
+    if (cmd.getExitCode() == 0 || cmd.getExitCode() ==  128 || cmd.getExitCode() ==  255) {
+      return;
+    }
+    throw new RuntimeException("exec return code " + cmd.getExitCode() + ": " + output);
   }
 
   /**
    * Returns a map of process IDs to command lines
-   * 
+   *
    * @return a map of process IDs to command lines
    * @throws Exception - if something goes wrong while reading the process list
    */
@@ -193,11 +206,11 @@ public class WindowsUtils {
     Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
         .parse(new ByteArrayInputStream(output.getBytes()));
     NodeList procList = doc.getElementsByTagName("INSTANCE");
-    Map<String, String> processes = new HashMap<String, String>();
+    Map<String, String> processes = new HashMap<>();
     for (int i = 0; i < procList.getLength(); i++) {
       Element process = (Element) procList.item(i);
       NodeList propList = process.getElementsByTagName("PROPERTY");
-      Map<String, String> procProps = new HashMap<String, String>();
+      Map<String, String> procProps = new HashMap<>();
       for (int j = 0; j < propList.getLength(); j++) {
         Element property = (Element) propList.item(j);
         String propName = property.getAttribute("NAME");
@@ -219,7 +232,7 @@ public class WindowsUtils {
 
   /**
    * Returns the current process environment variables
-   * 
+   *
    * @return the current process environment variables
    */
   public static synchronized Properties loadEnvironment() {
@@ -236,7 +249,7 @@ public class WindowsUtils {
   /**
    * Returns the path to the Windows Program Files. On non-English versions, this is not necessarily
    * "C:\Program Files".
-   * 
+   *
    * @return the path to the Windows Program Files
    */
   public static String getProgramFilesPath() {
@@ -271,7 +284,7 @@ public class WindowsUtils {
 
   /**
    * Returns the path to Local AppData. For different users, this will be different.
-   * 
+   *
    * @return the path to Local AppData
    */
   public static String getLocalAppDataPath() {
@@ -297,6 +310,8 @@ public class WindowsUtils {
 
   /**
    * Finds the system root directory, e.g. "c:\windows" or "c:\winnt"
+   *
+   * @return location of system root
    */
   public static File findSystemRoot() {
     Properties p = loadEnvironment();
@@ -319,7 +334,7 @@ public class WindowsUtils {
 
   /**
    * Finds WMIC.exe
-   * 
+   *
    * @return the exact path to wmic.exe, or just the string "wmic" if it couldn't be found (in which
    *         case you can pass that to exec to try to run it from the path)
    */
@@ -342,7 +357,7 @@ public class WindowsUtils {
 
   /**
    * Finds the WBEM directory in the systemRoot directory
-   * 
+   *
    * @return the WBEM directory, or <code>null</code> if it couldn't be found
    */
   public static File findWBEM() {
@@ -360,7 +375,7 @@ public class WindowsUtils {
 
   /**
    * Finds taskkill.exe
-   * 
+   *
    * @return the exact path to taskkill.exe, or just the string "taskkill" if it couldn't be found
    *         (in which case you can pass that to exec to try to run it from the path)
    */
@@ -381,7 +396,7 @@ public class WindowsUtils {
 
   /**
    * Finds reg.exe
-   * 
+   *
    * @return the exact path to reg.exe, or just the string "reg" if it couldn't be found (in which
    *         case you can pass that to exec to try to run it from the path)
    */
@@ -466,7 +481,7 @@ public class WindowsUtils {
       throw new WindowsRegistryException(
           r.value + " was not a REG_SZ or a REG_EXPAND_SZ (String): " + type);
     }
-    
+
     return m.group(2);
   }
 
@@ -533,7 +548,7 @@ public class WindowsUtils {
 
   public static void writeStringRegistryValue(String key, String data)
       throws WindowsRegistryException {
-    List<String> args = new ArrayList<String>();
+    List<String> args = new ArrayList<>();
     if (isRegExeVersion1()) {
       if (doesRegistryValueExist(key)) {
         args.add("update");
@@ -567,7 +582,7 @@ public class WindowsUtils {
   }
 
   public static void writeIntRegistryValue(String key, int data) {
-    List<String> args = new ArrayList<String>();
+    List<String> args = new ArrayList<>();
     if (isRegExeVersion1()) {
       if (doesRegistryValueExist(key)) {
         args.add("update");
@@ -598,7 +613,7 @@ public class WindowsUtils {
   }
 
   public static void deleteRegistryValue(String key) {
-    List<String> args = new ArrayList<String>();
+    List<String> args = new ArrayList<>();
     if (isRegExeVersion1()) {
       args.add("delete");
       args.add(key);
@@ -619,7 +634,7 @@ public class WindowsUtils {
    * Executes reg.exe to query the registry
    */
   private static String runRegQuery(String key) {
-    List<String> args = new ArrayList<String>();
+    List<String> args = new ArrayList<>();
     args.add("query");
     if (isRegExeVersion1()) {
       args.add(key);
@@ -646,7 +661,7 @@ public class WindowsUtils {
 
   /**
    * Returns true if the current OS is MS Windows; false otherwise
-   * 
+   *
    * @return true if the current OS is MS Windows; false otherwise
    */
   public static boolean thisIsWindows() {

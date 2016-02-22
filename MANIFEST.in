@@ -9,12 +9,12 @@ recursive-include py/selenium/webdriver/phantomjs *.py
 recursive-include py/selenium/webdriver/firefox *.py *.xpi *.json
 recursive-include py/selenium/webdriver/firefox/x86 *.so
 recursive-include py/selenium/webdriver/firefox/amd64 *.so
-recursive-include py/selenium/webdriver/ie *.py 
+recursive-include py/selenium/webdriver/ie *.py
+recursive-include py/selenium/webdriver/edge *.py
 recursive-include py/selenium/webdriver/remote *.py
 recursive-include py/selenium/webdriver/support *.py
 include py/selenium/selenium.py
 include py/selenium/__init__.py
 include py/CHANGES
-include py/README
+include py/README.rst
 recursive-include selenium.egg-info *
-

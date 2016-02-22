@@ -23,10 +23,14 @@ goog.provide('goog.ui.HoverCard');
 goog.provide('goog.ui.HoverCard.EventType');
 goog.provide('goog.ui.HoverCard.TriggerEvent');
 
+goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.events');
+goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('goog.ui.AdvancedTooltip');
+goog.require('goog.ui.PopupBase');
+goog.require('goog.ui.Tooltip');
 
 
 
@@ -96,7 +100,7 @@ goog.ui.HoverCard = function(isAnchor, opt_checkDescendants, opt_domHelper,
   /**
    * Array of anchor elements that should be detached when we are no longer
    * associated with them.
-   * @type {!Array.<Element>}
+   * @type {!Array<Element>}
    * @private
    */
   this.tempAttachedAnchors_ = [];
@@ -114,6 +118,7 @@ goog.ui.HoverCard = function(isAnchor, opt_checkDescendants, opt_domHelper,
                      this.handleTriggerMouseOver_, false, this);
 };
 goog.inherits(goog.ui.HoverCard, goog.ui.AdvancedTooltip);
+goog.tagUnsealableClass(goog.ui.HoverCard);
 
 
 /**
@@ -194,7 +199,7 @@ goog.ui.HoverCard.prototype.handleTriggerMouseOver_ = function(e) {
                                        this.maxSearchSteps_);
     if (trigger) {
       this.setPosition(null);
-      this.triggerForElement(/** @type {Element} */ (trigger));
+      this.triggerForElement(/** @type {!Element} */ (trigger));
     }
   }
 };
@@ -337,7 +342,7 @@ goog.ui.HoverCard.prototype.getAnchorElement = function() {
 /**
  * Make sure we detach from temp anchor when we are done displaying hovercard.
  * @protected
- * @suppress {underscore}
+ * @suppress {underscore|visibility}
  * @override
  */
 goog.ui.HoverCard.prototype.onHide_ = function() {
@@ -433,6 +438,7 @@ goog.ui.HoverCard.prototype.setMaxSearchSteps = function(maxSearchSteps) {
  * @param {Object=} opt_data Optional data to be available in the TRIGGER event.
  * @constructor
  * @extends {goog.events.Event}
+ * @final
  */
 goog.ui.HoverCard.TriggerEvent = function(type, target, anchor, opt_data) {
   goog.events.Event.call(this, type, target);

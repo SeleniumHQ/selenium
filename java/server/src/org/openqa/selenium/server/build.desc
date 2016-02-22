@@ -4,7 +4,6 @@ java_binary(name = "server",
     ":base",
     ":server_resources",
     "//java/client/src/org/openqa/selenium:client-combined",
-    "//third_party/java/opera-driver",
   ])
 
 # Light version of the server for drivers that don't need to depend on all other drivers.
@@ -38,10 +37,10 @@ java_library(name = "logging",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium/remote:common",
-    "//java/server/src/org/openqa/jetty",
     "//java/client/src/org/openqa/selenium/logging:api",
     "//java/client/src/org/openqa/selenium/logging:logging",
     "//java/server/src/org/openqa/selenium/remote/server/log",
+    "//third_party/java/jetty:jetty-for-rc",
   ])
 
 java_library(name = "base",
@@ -53,13 +52,13 @@ java_library(name = "base",
     "//java/client/src/com/thoughtworks/selenium:api",
     "//java/client/src/com/thoughtworks/selenium/webdriven",
     "//java/client/src/org/openqa/selenium:codecs",
-    "//java/client/src/org/openqa/selenium/browserlaunchers",
-    "//java/client/src/org/openqa/selenium/browserlaunchers:launcher-utils",
+    "//java/client/src/org/openqa/selenium/browserlaunchers/locators",
     "//java/client/src/org/openqa/selenium/net",
     "//java/client/src/org/openqa/selenium/support",
+    "//java/server/src/org/openqa/grid/shared:cli",
+    "//java/server/src/org/openqa/grid/shared:interfaces",
     "//java/server/src/cybervillains",
     "//java/server/src/org/openqa/selenium/remote/server",
-    "//java/server/src/org/openqa/jetty",
-    "//third_party/java/servlet-api"
+    "//third_party/java/jetty:jetty-for-rc",
+    "//third_party/java/servlet:servlet-api"
   ])
-

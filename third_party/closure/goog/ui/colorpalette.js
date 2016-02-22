@@ -22,6 +22,7 @@ goog.provide('goog.ui.ColorPalette');
 
 goog.require('goog.array');
 goog.require('goog.color');
+goog.require('goog.dom.TagName');
 goog.require('goog.style');
 goog.require('goog.ui.Palette');
 goog.require('goog.ui.PaletteRenderer');
@@ -35,7 +36,7 @@ goog.require('goog.ui.PaletteRenderer');
  * component fires an ACTION event.  Event listeners may retrieve the selected
  * color using the {@link #getSelectedColor} method.
  *
- * @param {Array.<string>=} opt_colors Array of colors in any valid CSS color
+ * @param {Array<string>=} opt_colors Array of colors in any valid CSS color
  *     format.
  * @param {goog.ui.PaletteRenderer=} opt_renderer Renderer used to render or
  *     decorate the palette; defaults to {@link goog.ui.PaletteRenderer}.
@@ -47,7 +48,7 @@ goog.require('goog.ui.PaletteRenderer');
 goog.ui.ColorPalette = function(opt_colors, opt_renderer, opt_domHelper) {
   /**
    * Array of colors to show in the palette.
-   * @type {Array.<string>}
+   * @type {Array<string>}
    * @private
    */
   this.colors_ = opt_colors || [];
@@ -60,11 +61,12 @@ goog.ui.ColorPalette = function(opt_colors, opt_renderer, opt_domHelper) {
   this.setColors(this.colors_);
 };
 goog.inherits(goog.ui.ColorPalette, goog.ui.Palette);
+goog.tagUnsealableClass(goog.ui.ColorPalette);
 
 
 /**
  * Array of normalized colors. Initialized lazily as often never needed.
- * @type {?Array.<string>}
+ * @type {?Array<string>}
  * @private
  */
 goog.ui.ColorPalette.prototype.normalizedColors_ = null;
@@ -73,7 +75,7 @@ goog.ui.ColorPalette.prototype.normalizedColors_ = null;
 /**
  * Array of labels for the colors. Will be used for the tooltips and
  * accessibility.
- * @type {?Array.<string>}
+ * @type {?Array<string>}
  * @private
  */
 goog.ui.ColorPalette.prototype.labels_ = null;
@@ -81,7 +83,7 @@ goog.ui.ColorPalette.prototype.labels_ = null;
 
 /**
  * Returns the array of colors represented in the color palette.
- * @return {Array.<string>} Array of colors.
+ * @return {Array<string>} Array of colors.
  */
 goog.ui.ColorPalette.prototype.getColors = function() {
   return this.colors_;
@@ -90,8 +92,8 @@ goog.ui.ColorPalette.prototype.getColors = function() {
 
 /**
  * Sets the colors that are contained in the palette.
- * @param {Array.<string>} colors Array of colors in any valid CSS color format.
- * @param {Array.<string>=} opt_labels The array of labels to be used as
+ * @param {Array<string>} colors Array of colors in any valid CSS color format.
+ * @param {Array<string>=} opt_labels The array of labels to be used as
  *        tooltips. When not provided, the color value will be used.
  */
 goog.ui.ColorPalette.prototype.setColors = function(colors, opt_labels) {
@@ -135,12 +137,12 @@ goog.ui.ColorPalette.prototype.setSelectedColor = function(color) {
 
 
 /**
- * @return {Array.<Node>} An array of DOM nodes for each color.
+ * @return {!Array<!Node>} An array of DOM nodes for each color.
  * @protected
  */
 goog.ui.ColorPalette.prototype.createColorNodes = function() {
   return goog.array.map(this.colors_, function(color, index) {
-    var swatch = this.getDomHelper().createDom('div', {
+    var swatch = this.getDomHelper().createDom(goog.dom.TagName.DIV, {
       'class': goog.getCssName(this.getRenderer().getCssClass(),
           'colorswatch'),
       'style': 'background-color:' + color

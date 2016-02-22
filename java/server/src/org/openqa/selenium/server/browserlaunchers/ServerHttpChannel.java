@@ -1,19 +1,19 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.server.browserlaunchers;
 
@@ -21,11 +21,11 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
 import com.google.common.io.ByteStreams;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import com.thoughtworks.selenium.CommandProcessor;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,14 +34,13 @@ import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
 public class ServerHttpChannel implements Runnable {
   private final static Logger log = Logger.getLogger(ServerHttpChannel.class.getName());
-  
+
   private final String serverUrl;
   private final String sessionId;
   private final CommandProcessor processor;
@@ -126,21 +125,16 @@ public class ServerHttpChannel implements Runnable {
     if (!raw.startsWith("json=")) {
       return null;
     }
-    try {
-      JSONObject converted = new JSONObject(raw.substring("json=".length()));
 
-      Map<String, String> toReturn = Maps.newHashMap();
-      Iterator allKeys = converted.keys();
+    JsonObject converted = new JsonParser().parse(raw.substring("json=".length())).getAsJsonObject();
 
-      while (allKeys.hasNext()) {
-        String next = (String) allKeys.next();
-        toReturn.put(next, converted.getString(next));
-      }
+    Map<String, String> toReturn = Maps.newHashMap();
 
-      return toReturn;
-    } catch (JSONException e) {
-      throw Throwables.propagate(e);
+    for (Map.Entry<String, JsonElement> entry : converted.entrySet()) {
+      toReturn.put(entry.getKey(), entry.getValue().getAsString());
     }
+
+    return toReturn;
   }
 
   public void kill() {
@@ -149,7 +143,7 @@ public class ServerHttpChannel implements Runnable {
 
   public void send(String postedData, String urlParams) throws IOException {
     log.fine("Sending a response: " + postedData);
-    
+
     StringBuilder builder = new StringBuilder(serverUrl).append("&sessionId=").append(sessionId);
     if (sequenceNumber == 0) {
       builder.append("&seleniumStart=true");

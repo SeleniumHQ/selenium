@@ -55,12 +55,6 @@ goog.net.IpAddress = function(address, version) {
    */
   this.version_ = version;
 
-  /**
-   * The IPAddress, as string.
-   * @type {string}
-   * @private
-   */
-  this.ipStr_ = '';
 };
 
 
@@ -83,10 +77,10 @@ goog.net.IpAddress.prototype.equals = function(other) {
 
 
 /**
- * @return {goog.math.Integer} The IP Address, as an Integer.
+ * @return {!goog.math.Integer} The IP Address, as an Integer.
  */
 goog.net.IpAddress.prototype.toInteger = function() {
-  return /** @type {goog.math.Integer} */ (goog.object.clone(this.ip_));
+  return /** @type {!goog.math.Integer} */ (goog.object.clone(this.ip_));
 };
 
 
@@ -167,6 +161,7 @@ goog.net.IpAddress.fromUriString = function(address) {
  * @param {(string|!goog.math.Integer)} address The address to store.
  * @extends {goog.net.IpAddress}
  * @constructor
+ * @final
  */
 goog.net.Ipv4Address = function(address) {
   var ip = goog.math.Integer.ZERO;
@@ -199,7 +194,8 @@ goog.net.Ipv4Address = function(address) {
       ip = ip.shiftLeft(8).or(intOctet);
     }
   }
-  goog.base(this, /** @type {!goog.math.Integer} */ (ip), 4);
+  goog.net.Ipv4Address.base(
+      this, 'constructor', /** @type {!goog.math.Integer} */ (ip), 4);
 };
 goog.inherits(goog.net.Ipv4Address, goog.net.IpAddress);
 
@@ -269,6 +265,7 @@ goog.net.Ipv4Address.prototype.toUriString = function() {
  * @param {(string|!goog.math.Integer)} address The address to store.
  * @constructor
  * @extends {goog.net.IpAddress}
+ * @final
  */
 goog.net.Ipv6Address = function(address) {
   var ip = goog.math.Integer.ZERO;
@@ -320,7 +317,8 @@ goog.net.Ipv6Address = function(address) {
       ip = ip.shiftLeft(16).or(parsedHextet);
     }
   }
-  goog.base(this, /** @type {!goog.math.Integer} */ (ip), 6);
+  goog.net.Ipv6Address.base(
+      this, 'constructor', /** @type {!goog.math.Integer} */ (ip), 6);
 };
 goog.inherits(goog.net.Ipv6Address, goog.net.IpAddress);
 
@@ -396,8 +394,8 @@ goog.net.Ipv6Address.prototype.toUriString = function() {
  * This method is in charge of expanding/exploding an IPv6 string from its
  * compressed form.
  * @private
- * @param {!Array.<string>} address An IPv6 address split around '::'.
- * @return {Array.<string>} The expanded version of the IPv6.
+ * @param {!Array<string>} address An IPv6 address split around '::'.
+ * @return {!Array<string>} The expanded version of the IPv6.
  */
 goog.net.Ipv6Address.explode_ = function(address) {
   var basePart = address[0].split(':');
@@ -417,20 +415,15 @@ goog.net.Ipv6Address.explode_ = function(address) {
     return [];
   }
 
-  goog.array.extend(basePart, goog.array.repeat('0', gap));
-
-  // Now we merge the basePart + gap + secondPart
-  goog.array.extend(basePart, secondPart);
-
-  return basePart;
+  return goog.array.join(basePart, goog.array.repeat('0', gap), secondPart);
 };
 
 
 /**
  * This method is in charge of compressing an expanded IPv6 array of hextets.
  * @private
- * @param {!Array.<string>} hextets The array of hextet.
- * @return {Array.<string>} The compressed version of this array.
+ * @param {!Array<string>} hextets The array of hextet.
+ * @return {!Array<string>} The compressed version of this array.
  */
 goog.net.Ipv6Address.compress_ = function(hextets) {
   var bestStart = -1;
@@ -473,7 +466,7 @@ goog.net.Ipv6Address.compress_ = function(hextets) {
  * For instance, 1.2.3.4 will be converted to ['0102', '0304'].
  * @private
  * @param {string} quads An IPv4 as a string.
- * @return {Array.<string>} A list of 2 hextets.
+ * @return {!Array<string>} A list of 2 hextets.
  */
 goog.net.Ipv6Address.dottedQuadtoHextets_ = function(quads) {
   var ip4 = new goog.net.Ipv4Address(quads).toInteger();

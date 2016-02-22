@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -31,7 +34,6 @@ class GetCurrentUrlCommandHandler : public IECommandHandler {
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
-                       const LocatorMap& locator_parameters,
                        const ParametersMap& command_parameters,
                        Response* response) {
     BrowserHandle browser_wrapper;
@@ -41,8 +43,21 @@ class GetCurrentUrlCommandHandler : public IECommandHandler {
       return;
     }
 
-    std::string url = browser_wrapper->GetCurrentUrl();
-    response->SetSuccessResponse(url);
+    CComPtr<IHTMLDocument2> top_level_document;
+    browser_wrapper->GetDocument(true, &top_level_document);
+    if (!top_level_document) {
+      LOG(WARN) << "Unable to get document from browser. Are you viewing a non-HTML document?";
+    }
+
+    CComBSTR url;
+    HRESULT hr = top_level_document->get_URL(&url);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "IHTMLDocument2::get_URL failed.";
+    }
+    
+    std::wstring converted_url(url, ::SysStringLen(url));
+    std::string current_url = StringUtilities::ToString(converted_url);
+    response->SetSuccessResponse(current_url);
   }
 };
 

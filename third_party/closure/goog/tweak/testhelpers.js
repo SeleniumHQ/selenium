@@ -16,9 +16,12 @@
  * @fileoverview Common test functions for tweak unit tests.
  *
  * @author agrieve@google.com (Andrew Grieve)
+ * @package
  */
 
 goog.provide('goog.tweak.testhelpers');
+
+goog.setTestOnly();
 
 goog.require('goog.tweak');
 goog.require('goog.tweak.BooleanGroup');
@@ -47,8 +50,9 @@ var buttonEntry;
  * Creates a registry with some entries in it.
  * @param {string} queryParams The query parameter string to use for the
  *     registry.
- * @param {!Object.<string|number|boolean>=} opt_compilerOverrides Compiler
+ * @param {!Object<string|number|boolean>=} opt_compilerOverrides Compiler
  *     overrides.
+ * @suppress {accessControls} Private state is accessed for test purposes.
  */
 function createRegistryEntries(queryParams, opt_compilerOverrides) {
   // Initialize the registry with the given query string.

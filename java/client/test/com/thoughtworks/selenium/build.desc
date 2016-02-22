@@ -6,14 +6,14 @@ java_test(name = "test",
     "WaitTests.java",
   ],
   deps = [
-    "//java/client/src/org/openqa/selenium:webdriver-backed-selenium",
+    "//java/client/src/com/thoughtworks/selenium/webdriven",
     "//java/client/src/org/openqa/selenium/firefox",
     "//java/client/src/org/openqa/selenium/ie",
     "//java/client/test/com/thoughtworks/selenium/condition:test",
-    "//java/client/test/org/openqa/selenium/v1:environment",
+    "//java/client/test/com/thoughtworks/selenium/testing:environment",
     "//java/server/src/org/openqa/selenium/server",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
-    "//third_party/java/guava-libraries",
+    "//third_party/java/guava",
     "//third_party/java/junit",
   ])
 
@@ -28,7 +28,7 @@ java_library(name = "rc-tests",
      "//java/client/src/com/thoughtworks/selenium",
      "//java/client/test/com/thoughtworks/selenium/corebased",
      "//java/client/src/org/openqa/selenium/remote",
-     "//java/client/test/org/openqa/selenium/v1:environment",
+     "//java/client/test/com/thoughtworks/selenium/testing:environment",
      "//java/server/test/org/openqa/selenium:server-with-tests:uber",
      "//third_party/java/mockito",
    ])
@@ -65,18 +65,6 @@ java_test(name = "ie-emulation-test",
   deps = [
     ":rc-tests",
     "//cpp/iedriverserver:win32",
-  ])
-
-java_test(name = "opera-emulation-test",
-  test_suite = "com.thoughtworks.selenium.WebDriverSeleniumTestSuite",
-  deps = [
-    ":rc-tests",
-  ],
-  sysproperties = [
-    { "selenium.browser" : "opera" },
-  ],
-  deps = [
-    ":rc-tests",
   ])
 
 java_test(name = "chrome-rc-test",

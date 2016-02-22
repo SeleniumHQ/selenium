@@ -1,19 +1,19 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 
 package org.openqa.grid.internal;
@@ -22,8 +22,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.openqa.grid.common.RegistrationRequest.ID;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.listeners.RegistrationListener;
@@ -33,24 +33,24 @@ import java.util.Map;
 
 public class RemoteProxySlowSetup {
 
-  private static RemoteProxy p1;
-  private static RemoteProxy p2;
+  private RemoteProxy p1;
+  private RemoteProxy p2;
 
-  private static Registry registry;
+  private Registry registry;
 
-  @BeforeClass
-  public static void setup() {
+  @Before
+  public void setup() {
     registry = Registry.newInstance();
     // create 2 proxy that are equal and have a slow onRegistration
     // p1.equals(p2) = true
     RegistrationRequest req1 = new RegistrationRequest();
-    Map<String, Object> config1 = new HashMap<String, Object>();
+    Map<String, Object> config1 = new HashMap<>();
     config1.put(ID, "abc");
     req1.setConfiguration(config1);
     p1 = new SlowRemoteSetup(req1,registry);
-    
+
     RegistrationRequest req2 = new RegistrationRequest();
-    Map<String, Object> config2 = new HashMap<String, Object>();
+    Map<String, Object> config2 = new HashMap<>();
     config2.put(ID, "abc2");
     req2.setConfiguration(config2);
     p2 = new SlowRemoteSetup(req2,registry);
@@ -78,48 +78,47 @@ public class RemoteProxySlowSetup {
 
   }
 
-  @AfterClass
-  public static void teardown() {
+  @After
+  public void teardown() {
     registry.stop();
   }
-}
 
+  private static class SlowRemoteSetup extends BaseRemoteProxy implements RegistrationListener {
 
-class SlowRemoteSetup extends BaseRemoteProxy implements RegistrationListener {
+    private boolean flag = false;
+    private static boolean error = false;
 
-  boolean flag = false;
-  static boolean error = false;
-
-  // update flag to true. It should happen only once, so if flag is already
-  // true, set error to true.
-  private synchronized void updateFlag() {
-    if (flag) {
-      error = true;
+    // update flag to true. It should happen only once, so if flag is already
+    // true, set error to true.
+    private synchronized void updateFlag() {
+      if (flag) {
+        error = true;
+      }
+      flag = true;
     }
-    flag = true;
-  }
 
-  public SlowRemoteSetup(RegistrationRequest req,Registry registry) {
-    super(req, registry);
-  }
-
-  public void beforeRegistration() {
-    try {
-      updateFlag();
-      Thread.sleep(1000);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
+    public SlowRemoteSetup(RegistrationRequest req,Registry registry) {
+      super(req, registry);
     }
-  }
 
-  @Override
-  public boolean equals(Object obj) {
-    return true;
-  }
+    public void beforeRegistration() {
+      try {
+        updateFlag();
+        Thread.sleep(1000);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
 
-  @Override
-  public int hashCode() {
-    return 42;
-  }
+    @Override
+    public boolean equals(Object obj) {
+      return true;
+    }
 
+    @Override
+    public int hashCode() {
+      return 42;
+    }
+
+  }
 }

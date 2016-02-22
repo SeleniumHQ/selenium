@@ -1,18 +1,19 @@
-/*
-Copyright 2007-2009 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.lift;
 
@@ -79,7 +80,7 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
   /**
    * Cause the browser to navigate to the given URL
    *
-   * @param url
+   * @param url URL
    */
   protected void goTo(String url) {
     context.goTo(url);
@@ -96,9 +97,11 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
   }
 
   /**
-   * Syntactic sugar to use with {@link org.openqa.selenium.lift.HamcrestWebDriverTestCase type(String, Finder<WebElement,
-   * WebDriver>)}, e.g. type("cheese", into(textbox())); The into() method simply returns its
-   * argument.
+   * Syntactic sugar to use with {@link org.openqa.selenium.lift.HamcrestWebDriverTestCase}, e.g.
+   * type("cheese", into(textbox())); The into() method simply returns its argument.
+   *
+   * @param input finder input
+   * @return the finder
    */
   protected Finder<WebElement, WebDriver> into(Finder<WebElement, WebDriver> input) {
     return input;
@@ -106,27 +109,29 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
 
   /**
    * replace the default {@link TestContext}
+   *
+   * @param context context to set
    */
   void setContext(TestContext context) {
     this.context = context;
   }
 
   /**
-   * Returns the current page source
+   * @return  the current page source
    */
   public String getPageSource() {
     return getWebDriver().getPageSource();
   }
 
   /**
-   * Returns the current page title
+   * @return  the current page title
    */
   public String getTitle() {
     return getWebDriver().getTitle();
   }
 
   /**
-   * Returns the current URL
+   * @return  the current URL
    */
   public String getCurrentUrl() {
     return getWebDriver().getCurrentUrl();

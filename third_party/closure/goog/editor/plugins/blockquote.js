@@ -15,20 +15,21 @@
 /**
  * @fileoverview goog.editor plugin to handle splitting block quotes.
  *
+ * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.editor.plugins.Blockquote');
 
-goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.editor.BrowserFeature');
 goog.require('goog.editor.Command');
 goog.require('goog.editor.Plugin');
 goog.require('goog.editor.node');
 goog.require('goog.functions');
+goog.require('goog.log');
 
 
 
@@ -42,6 +43,7 @@ goog.require('goog.functions');
  *     blockquotes.  Defaults to 'tr_bq'.
  * @constructor
  * @extends {goog.editor.Plugin}
+ * @final
  */
 goog.editor.plugins.Blockquote = function(requiresClassNameToSplit,
     opt_className) {
@@ -84,12 +86,12 @@ goog.editor.plugins.Blockquote.CLASS_ID = 'Blockquote';
 
 /**
  * Logging object.
- * @type {goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @protected
  * @override
  */
 goog.editor.plugins.Blockquote.prototype.logger =
-    goog.debug.Logger.getLogger('goog.editor.plugins.Blockquote');
+    goog.log.getLogger('goog.editor.plugins.Blockquote');
 
 
 /** @override */
@@ -106,38 +108,6 @@ goog.editor.plugins.Blockquote.prototype.isSilentCommand = goog.functions.TRUE;
 
 
 /**
- * Checks if a node is a blockquote node.  If isAlreadySetup is set, it also
- * makes sure the node has the blockquote classname applied.  Otherwise, it
- * ensures that the blockquote does not already have the classname applied.
- * @param {Node} node DOM node to check.
- * @param {boolean} isAlreadySetup True to enforce that the classname must be
- *                  set in order for it to count as a blockquote, false to
- *                  enforce that the classname must not be set in order for
- *                  it to count as a blockquote.
- * @param {boolean} requiresClassNameToSplit Whether only blockquotes with the
- *     class name should be split.
- * @param {string} className The official blockquote class name.
- * @return {boolean} Whether node is a blockquote and if isAlreadySetup is
- *    true, then whether this is a setup blockquote.
- * @deprecated Use {@link #isSplittableBlockquote},
- *     {@link #isSetupBlockquote}, or {@link #isUnsetupBlockquote} instead
- *     since this has confusing behavior.
- */
-goog.editor.plugins.Blockquote.isBlockquote = function(node, isAlreadySetup,
-    requiresClassNameToSplit, className) {
-  if (node.tagName != goog.dom.TagName.BLOCKQUOTE) {
-    return false;
-  }
-  if (!requiresClassNameToSplit) {
-    return isAlreadySetup;
-  }
-  var hasClassName = goog.dom.classes.has(/** @type {Element} */ (node),
-      className);
-  return isAlreadySetup ? hasClassName : !hasClassName;
-};
-
-
-/**
  * Checks if a node is a blockquote which can be split. A splittable blockquote
  * meets the following criteria:
  * <ol>
@@ -151,7 +121,7 @@ goog.editor.plugins.Blockquote.isBlockquote = function(node, isAlreadySetup,
  */
 goog.editor.plugins.Blockquote.prototype.isSplittableBlockquote =
     function(node) {
-  if (node.tagName != goog.dom.TagName.BLOCKQUOTE) {
+  if (/** @type {!Element} */ (node).tagName != goog.dom.TagName.BLOCKQUOTE) {
     return false;
   }
 
@@ -159,7 +129,8 @@ goog.editor.plugins.Blockquote.prototype.isSplittableBlockquote =
     return true;
   }
 
-  return goog.dom.classes.has(node, this.className_);
+  return goog.dom.classlist.contains(/** @type {!Element} */ (node),
+      this.className_);
 };
 
 
@@ -171,8 +142,9 @@ goog.editor.plugins.Blockquote.prototype.isSplittableBlockquote =
  */
 goog.editor.plugins.Blockquote.prototype.isSetupBlockquote =
     function(node) {
-  return node.tagName == goog.dom.TagName.BLOCKQUOTE &&
-      goog.dom.classes.has(node, this.className_);
+  return /** @type {!Element} */(node).tagName == goog.dom.TagName.BLOCKQUOTE &&
+      goog.dom.classlist.contains(/** @type {!Element} */ (node),
+          this.className_);
 };
 
 
@@ -184,7 +156,7 @@ goog.editor.plugins.Blockquote.prototype.isSetupBlockquote =
  */
 goog.editor.plugins.Blockquote.prototype.isUnsetupBlockquote =
     function(node) {
-  return node.tagName == goog.dom.TagName.BLOCKQUOTE &&
+  return /** @type {!Element} */(node).tagName == goog.dom.TagName.BLOCKQUOTE &&
       !this.isSetupBlockquote(node);
 };
 
@@ -223,7 +195,7 @@ goog.editor.plugins.Blockquote.findAndRemoveSingleChildAncestor_ = function(
 
 /**
  * Remove every nodes from the DOM tree that are all white space nodes.
- * @param {Array.<Node>} nodes Nodes to be checked.
+ * @param {Array<Node>} nodes Nodes to be checked.
  * @private
  */
 goog.editor.plugins.Blockquote.removeAllWhiteSpaceNodes_ = function(nodes) {
@@ -247,10 +219,10 @@ goog.editor.plugins.Blockquote.prototype.isSupportedCommand = function(
  * function returns true, the event that caused it to be called should be
  * canceled.
  * @param {string} command The command to execute.
- * @param {...*} var_args Single additional argument representing the
- *     current cursor position.  In IE, it is a single node.  In any other
- *     browser, it is an object with a {@code node} key and an {@code offset}
- *     key.
+ * @param {...*} var_args Single additional argument representing the current
+ *     cursor position. If BrowserFeature.HAS_W3C_RANGES it is an object with a
+ *     {@code node} key and an {@code offset} key. In other cases (legacy IE)
+ *     it is a single node.
  * @return {boolean|undefined} Boolean true when the quoted region has been
  *     split, false or undefined otherwise.
  * @override
@@ -411,7 +383,8 @@ goog.editor.plugins.Blockquote.prototype.splitQuotedBlockIE_ =
   // dummy span that we create (splitNode) occurs before the BR and we split
   // on that.
   if (splitNode.nextSibling &&
-      splitNode.nextSibling.tagName == goog.dom.TagName.BR) {
+      /** @type {!Element} */ (splitNode.nextSibling).tagName ==
+      goog.dom.TagName.BR) {
     splitNode = splitNode.nextSibling;
   }
   var secondHalf = goog.editor.node.splitDomTreeAt(splitNode, clone, quoteNode);

@@ -1,11 +1,31 @@
+# encoding: utf-8
+#
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 require 'selenium/webdriver/common/core_ext/dir'
-require 'selenium/webdriver/common/core_ext/string'
 require 'selenium/webdriver/common/core_ext/base64'
+require 'selenium/webdriver/common/w3c_error'
 require 'selenium/webdriver/common/error'
 require 'selenium/webdriver/common/platform'
 require 'selenium/webdriver/common/proxy'
 require 'selenium/webdriver/common/log_entry'
 require 'selenium/webdriver/common/file_reaper'
+require 'selenium/webdriver/common/socket_lock'
 require 'selenium/webdriver/common/socket_poller'
 require 'selenium/webdriver/common/port_prober'
 require 'selenium/webdriver/common/zipper'
@@ -28,13 +48,13 @@ require 'selenium/webdriver/common/html5/local_storage'
 require 'selenium/webdriver/common/html5/session_storage'
 require 'selenium/webdriver/common/driver_extensions/takes_screenshot'
 require 'selenium/webdriver/common/driver_extensions/rotatable'
-require 'selenium/webdriver/common/driver_extensions/has_browser_connection'
 require 'selenium/webdriver/common/driver_extensions/has_input_devices'
 require 'selenium/webdriver/common/driver_extensions/has_web_storage'
 require 'selenium/webdriver/common/driver_extensions/has_location'
 require 'selenium/webdriver/common/driver_extensions/has_session_id'
 require 'selenium/webdriver/common/driver_extensions/has_touch_screen'
 require 'selenium/webdriver/common/driver_extensions/has_remote_status'
+require 'selenium/webdriver/common/driver_extensions/has_network_connection'
 require 'selenium/webdriver/common/driver_extensions/uploads_files'
 require 'selenium/webdriver/common/keys'
 require 'selenium/webdriver/common/bridge_helper'

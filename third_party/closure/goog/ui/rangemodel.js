@@ -29,7 +29,7 @@
 goog.provide('goog.ui.RangeModel');
 
 goog.require('goog.events.EventTarget');
-goog.require('goog.ui.Component.EventType');
+goog.require('goog.ui.Component');
 
 
 
@@ -42,6 +42,7 @@ goog.ui.RangeModel = function() {
   goog.events.EventTarget.call(this);
 };
 goog.inherits(goog.ui.RangeModel, goog.events.EventTarget);
+goog.tagUnsealableClass(goog.ui.RangeModel);
 
 
 /**

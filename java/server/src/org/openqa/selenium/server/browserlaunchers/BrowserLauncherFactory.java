@@ -1,25 +1,24 @@
-/*
- * Copyright 2011 Software Freedom Conservancy.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 package org.openqa.selenium.server.browserlaunchers;
 
 import com.google.common.collect.Maps;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
@@ -33,7 +32,7 @@ import java.util.regex.Pattern;
 
 /**
  * Returns BrowserLaunchers based on simple strings given by the user
- * 
+ *
  * @author danielf
  */
 public class BrowserLauncherFactory {
@@ -42,23 +41,20 @@ public class BrowserLauncherFactory {
 
   private static final Pattern CUSTOM_PATTERN = Pattern.compile("^\\*?custom( .*)?$");
 
-  private static final Map<String, Class<? extends BrowserLauncher>> supportedBrowsers =
+  private final Map<String, Class<? extends BrowserLauncher>> supportedBrowsers =
       Maps.newHashMap();
   private final DriverSessions webdriverSessions;
 
-  static {
+  {
     supportedBrowsers.put(BrowserType.FIREFOX_PROXY, FirefoxCustomProfileLauncher.class);
     supportedBrowsers.put(BrowserType.FIREFOX, FirefoxLauncher.class);
     supportedBrowsers.put(BrowserType.CHROME, FirefoxChromeLauncher.class);
     supportedBrowsers.put(BrowserType.FIREFOX_CHROME, FirefoxChromeLauncher.class);
-    supportedBrowsers.put(BrowserType.FIREFOX_2, Firefox2Launcher.class);
-    supportedBrowsers.put(BrowserType.FIREFOX_3, Firefox3Launcher.class);
     supportedBrowsers.put(BrowserType.IEXPLORE_PROXY, InternetExplorerCustomProxyLauncher.class);
     supportedBrowsers.put(BrowserType.SAFARI, SafariLauncher.class);
     supportedBrowsers.put(BrowserType.SAFARI_PROXY, SafariCustomProfileLauncher.class);
     supportedBrowsers.put(BrowserType.IE_HTA, HTABrowserLauncher.class);
     supportedBrowsers.put(BrowserType.IEXPLORE, InternetExplorerLauncher.class);
-    supportedBrowsers.put(BrowserType.OPERA, OperaCustomProfileLauncher.class);
     supportedBrowsers.put("piiexplore", ProxyInjectionInternetExplorerCustomProxyLauncher.class);
     supportedBrowsers.put("pifirefox", ProxyInjectionFirefoxCustomProfileLauncher.class);
     supportedBrowsers.put(BrowserType.KONQUEROR, KonquerorLauncher.class);
@@ -77,10 +73,11 @@ public class BrowserLauncherFactory {
 
   /**
    * Returns the browser given by the specified browser string
-   * 
+   *
    * @param browser a browser string like "*firefox"
    * @param sessionId the sessionId to launch
    * @param browserOptions TODO
+   * @param configuration remote control configuration
    * @return the BrowserLauncher ready to launch
    */
   public BrowserLauncher getBrowserLauncher(String browser, String sessionId,
@@ -125,15 +122,15 @@ public class BrowserLauncherFactory {
     throw browserNotSupported(browser);
   }
 
-  public static Map<String, Class<? extends BrowserLauncher>> getSupportedLaunchers() {
+  public Map<String, Class<? extends BrowserLauncher>> getSupportedLaunchers() {
     return supportedBrowsers;
   }
 
-  public static void addBrowserLauncher(String browser, Class<? extends BrowserLauncher> clazz) {
+  public void addBrowserLauncher(String browser, Class<? extends BrowserLauncher> clazz) {
     supportedBrowsers.put(browser, clazz);
   }
 
-  public static boolean isBrowserSupported(String browser) {
+  public boolean isBrowserSupported(String browser) {
     for (String key : supportedBrowsers.keySet()) {
       final BrowserStringParser.Result result;
       result = new BrowserStringParser().parseBrowserStartCommand(key, browser);
@@ -148,7 +145,7 @@ public class BrowserLauncherFactory {
     return false;
   }
 
-  public static String getSupportedBrowsersAsString() {
+  public String getSupportedBrowsersAsString() {
     StringBuffer str = new StringBuffer("");
     for (String name : supportedBrowsers.keySet()) {
       str.append("  *").append(name).append('\n');

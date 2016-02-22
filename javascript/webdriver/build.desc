@@ -7,13 +7,11 @@ js_library(name = "base_lib",
   ],
   deps = [
     "//javascript/atoms:error_lib",
-    "//third_party/closure",
   ])
 
 js_library(
   name = "logging_lib",
-  srcs = ["logging.js"],
-  deps = ["//third_party/closure"])
+  srcs = ["logging.js"])
 
 js_library(name = "key_lib",
   srcs = [ "key.js" ])
@@ -32,7 +30,7 @@ js_library(name = "asserts_lib",
   srcs = ["testing/asserts.js"],
   deps = [":webdriver_lib"])
 
-js_library(name = "test_lib",
+js_library(name = "test_support_lib",
   srcs = [
     "testing/*.js",
   ],
@@ -40,13 +38,27 @@ js_library(name = "test_lib",
     ":webdriver_lib"
   ])
 
-js_deps(name = "deps",
+js_library(name = "unit_test_lib",
+  srcs = [
+    "test/*.js",
+    "test/http/*.js",
+    "test/testing/*.js",
+  ],
+  deps = [
+    ":webdriver_lib",
+    ":test_support_lib",
+  ])
+
+js_library(name = "all_js",
   srcs = [
     "*.js",
     "atoms/*/*.js",
     "http/*/*.js",
     "test/*/*.js",
     "testing/*/*.js",
+  ],
+  deps = [
+    "//javascript/atoms:all_js",
   ])
 
 js_binary(name = "webdriver",
@@ -85,18 +97,39 @@ js_binary(name = "webdriver",
     "--jscomp_error=undefinedVars",
     "--jscomp_error=unknownDefines",
     "--jscomp_error=uselessCode",
+    "--jscomp_error=useOfGoogBase",
     "--jscomp_error=visibility",
+    "--language_in=ECMASCRIPT6_STRICT",
+    "--language_out=ECMASCRIPT5_STRICT",
     "--output_wrapper='(function(exports){%output%})(typeof exports===typeof {}&&exports===this?exports:this.webdriver=this.webdriver||{})'",
     "--third_party=false",
   ])
 
 js_test(name = "test",
   srcs = [
-    "test/**/*.js",
-    "test/**/*_test.html",
+    "test/atoms/**/*_test.html",
   ],
+  test_dir = "test/atoms",
   deps = [
-    ":test_lib",
+    ":test_support_lib",
     "//java/client/test/org/openqa/selenium/javascript",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+  ])
+
+# Tests that should only run in browsers with ES6 support.
+js_test(name = "es6_test",
+  srcs = [
+    "test/*.js",
+    "test/e2e/**/*.js",
+    "test/http/**/*.js",
+    "test/testing/**/*.js",
+  ],
+  deps = [
+    ":test_support_lib",
+    "//java/client/test/org/openqa/selenium/javascript",
+    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+  ],
+  browsers = [
+    "chrome",
+    "ff"
   ])

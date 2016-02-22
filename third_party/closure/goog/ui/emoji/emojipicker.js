@@ -26,11 +26,10 @@
 
 goog.provide('goog.ui.emoji.EmojiPicker');
 
-goog.require('goog.debug.Logger');
-goog.require('goog.dom');
+goog.require('goog.dom.TagName');
+goog.require('goog.style');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.TabPane');
-goog.require('goog.ui.TabPane.TabPage');
 goog.require('goog.ui.emoji.Emoji');
 goog.require('goog.ui.emoji.EmojiPalette');
 goog.require('goog.ui.emoji.EmojiPaletteRenderer');
@@ -70,7 +69,7 @@ goog.ui.emoji.EmojiPicker = function(defaultImgUrl, opt_domHelper) {
   /**
    * Emoji that this picker displays.
    *
-   * @type {Array.<Object>}
+   * @type {Array<Object>}
    * @private
    */
   this.emoji_ = [];
@@ -78,7 +77,7 @@ goog.ui.emoji.EmojiPicker = function(defaultImgUrl, opt_domHelper) {
   /**
    * Pages of this emoji picker.
    *
-   * @type {Array.<goog.ui.emoji.EmojiPalette>}
+   * @type {Array<goog.ui.emoji.EmojiPalette>}
    * @private
    */
   this.pages_ = [];
@@ -87,7 +86,7 @@ goog.ui.emoji.EmojiPicker = function(defaultImgUrl, opt_domHelper) {
    * Keeps track of which pages in the picker have been loaded. Used for delayed
    * loading of tabs.
    *
-   * @type {Array.<boolean>}
+   * @type {Array<boolean>}
    * @private
    */
   this.pageLoadStatus_ = [];
@@ -129,6 +128,14 @@ goog.ui.emoji.EmojiPicker.DEFAULT_NUM_COLS = 10;
  */
 goog.ui.emoji.EmojiPicker.DEFAULT_TAB_LOCATION =
     goog.ui.TabPane.TabLocation.TOP;
+
+
+/** @private {goog.ui.emoji.Emoji} */
+goog.ui.emoji.EmojiPicker.prototype.selectedEmoji_;
+
+
+/** @private {goog.ui.emoji.EmojiPaletteRenderer} */
+goog.ui.emoji.EmojiPicker.prototype.renderer_;
 
 
 /**
@@ -254,7 +261,7 @@ goog.ui.emoji.EmojiPicker.prototype.activePage_ = -1;
  * Adds a group of emoji to the picker.
  *
  * @param {string|Element} title Title for the group.
- * @param {Array.<Array.<string>>} emojiGroup A new group of emoji to be added
+ * @param {Array<Array<string>>} emojiGroup A new group of emoji to be added
  *    Each internal array contains [emojiUrl, emojiId].
  */
 goog.ui.emoji.EmojiPicker.prototype.addEmojiGroup =
@@ -407,16 +414,6 @@ goog.ui.emoji.EmojiPicker.prototype.setProgressiveRender =
 
 
 /**
- * Logger for the emoji picker.
- *
- * @type {goog.debug.Logger}
- * @private
- */
-goog.ui.emoji.EmojiPicker.prototype.logger_ =
-    goog.debug.Logger.getLogger('goog.ui.emoji.EmojiPicker');
-
-
-/**
  * Adjusts the number of rows to be the maximum row count out of all the emoji
  * groups, in order to prevent jitter in switching among the tabs.
  *
@@ -457,7 +454,7 @@ goog.ui.emoji.EmojiPicker.prototype.loadImages = function() {
  * @suppress {deprecated} Using deprecated goog.ui.TabPane.
  */
 goog.ui.emoji.EmojiPicker.prototype.createDom = function() {
-  this.setElementInternal(this.getDomHelper().createDom('div'));
+  this.setElementInternal(this.getDomHelper().createDom(goog.dom.TagName.DIV));
 
   if (this.autoSizeByColumnCount_) {
     this.adjustNumRowsIfNecessary_();
@@ -471,7 +468,7 @@ goog.ui.emoji.EmojiPicker.prototype.createDom = function() {
   if (this.emoji_.length > 1) {
     // Give the tabpane a div to use as its content element, since tabpane
     // overwrites the CSS class of the element it's passed
-    var div = this.getDomHelper().createDom('div');
+    var div = this.getDomHelper().createDom(goog.dom.TagName.DIV);
     this.getElement().appendChild(div);
     this.tabPane_ = new goog.ui.TabPane(div,
                                         this.tabLocation_,
@@ -510,7 +507,7 @@ goog.ui.emoji.EmojiPicker.prototype.manuallyLoadAnimatedEmoji = function() {
  * Creates a page if it has not already been loaded. This has the side effects
  * of setting the load status of the page to true.
  *
- * @param {Array.<Array.<string>>} emoji Emoji for this page. See
+ * @param {Array<Array<string>>} emoji Emoji for this page. See
  *     {@link addEmojiGroup} for more details.
  * @param {number} index Index of the page in the emojipicker.
  * @return {goog.ui.emoji.EmojiPalette} the emoji page.
@@ -544,8 +541,8 @@ goog.ui.emoji.EmojiPicker.prototype.createEmojiPage_ = function(emoji, index) {
  * Returns an array of emoji whose real URLs have been replaced with the
  * default img URL. Used for delayed loading.
  *
- * @param {Array.<Array.<string>>} emoji Original emoji array.
- * @return {Array.<Array.<string>>} emoji array with all emoji pointing to the
+ * @param {Array<Array<string>>} emoji Original emoji array.
+ * @return {!Array<!Array<string>>} emoji array with all emoji pointing to the
  *     default img.
  * @private
  */
@@ -564,9 +561,9 @@ goog.ui.emoji.EmojiPicker.prototype.getPlaceholderEmoji_ = function(emoji) {
  * Creates an emoji page using placeholder emoji pointing to the default
  * img instead of the real emoji. Used for delayed loading.
  *
- * @param {Array.<Array.<string>>} emoji Emoji for this page. See
+ * @param {Array<Array<string>>} emoji Emoji for this page. See
  *     {@link addEmojiGroup} for more details.
- * @return {goog.ui.emoji.EmojiPalette} the emoji page.
+ * @return {!goog.ui.emoji.EmojiPalette} the emoji page.
  * @private
  */
 goog.ui.emoji.EmojiPicker.prototype.createPlaceholderEmojiPage_ =
@@ -717,7 +714,7 @@ goog.ui.emoji.EmojiPicker.prototype.getPage = function(index) {
  * Returns all the pages from the picker. This should be considered protected,
  * and is ONLY FOR TESTING.
  *
- * @return {Array.<goog.ui.emoji.EmojiPalette>?} the pages in the picker or
+ * @return {Array<goog.ui.emoji.EmojiPalette>?} the pages in the picker or
  *     null if none exist.
  */
 goog.ui.emoji.EmojiPicker.prototype.getPages = function() {

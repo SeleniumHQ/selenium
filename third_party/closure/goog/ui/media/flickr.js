@@ -62,11 +62,11 @@
 goog.provide('goog.ui.media.FlickrSet');
 goog.provide('goog.ui.media.FlickrSetModel');
 
-goog.require('goog.object');
+goog.require('goog.html.TrustedResourceUrl');
+goog.require('goog.string.Const');
 goog.require('goog.ui.media.FlashObject');
 goog.require('goog.ui.media.Media');
 goog.require('goog.ui.media.MediaModel');
-goog.require('goog.ui.media.MediaModel.Player');
 goog.require('goog.ui.media.MediaRenderer');
 
 
@@ -91,6 +91,7 @@ goog.require('goog.ui.media.MediaRenderer');
  *
  * @constructor
  * @extends {goog.ui.media.MediaRenderer}
+ * @final
  */
 goog.ui.media.FlickrSet = function() {
   goog.ui.media.MediaRenderer.call(this);
@@ -111,11 +112,12 @@ goog.ui.media.FlickrSet.CSS_CLASS = goog.getCssName('goog-ui-media-flickrset');
 /**
  * Flash player URL. Uses Flickr's flash player by default.
  *
- * @type {string}
+ * @type {!goog.html.TrustedResourceUrl}
  * @private
  */
-goog.ui.media.FlickrSet.flashUrl_ =
-    'http://www.flickr.com/apps/slideshow/show.swf?v=63961';
+goog.ui.media.FlickrSet.flashUrl_ = goog.html.TrustedResourceUrl.fromConstant(
+    goog.string.Const.from(
+        'http://www.flickr.com/apps/slideshow/show.swf?v=63961'));
 
 
 /**
@@ -129,7 +131,7 @@ goog.ui.media.FlickrSet.flashUrl_ =
  * @param {goog.ui.media.FlickrSetModel} dataModel The Flickr Set data model.
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
- * @return {goog.ui.media.Media} A Control binded to the FlickrSet renderer.
+ * @return {!goog.ui.media.Media} A Control binded to the FlickrSet renderer.
  * @throws exception in case {@code flickrSetUrl} is an invalid flickr set URL.
  * TODO(user): use {@link goog.ui.media.MediaModel} once it is checked in.
  */
@@ -145,7 +147,8 @@ goog.ui.media.FlickrSet.newControl = function(dataModel, opt_domHelper) {
  * A static method that sets which flash URL this class should use. Use this if
  * you want to host your own flash flickr player.
  *
- * @param {string} flashUrl The URL of the flash flickr player.
+ * @param {!goog.html.TrustedResourceUrl} flashUrl The URL of the flash flickr
+ *     player.
  */
 goog.ui.media.FlickrSet.setFlashUrl = function(flashUrl) {
   goog.ui.media.FlickrSet.flashUrl_ = flashUrl;
@@ -157,7 +160,7 @@ goog.ui.media.FlickrSet.setFlashUrl = function(flashUrl) {
  * the flash object pointing to a flickr set player.
  *
  * @param {goog.ui.Control} c The media control.
- * @return {Element} The DOM structure that represents this control.
+ * @return {!Element} The DOM structure that represents this control.
  * @override
  */
 goog.ui.media.FlickrSet.prototype.createDom = function(c) {
@@ -170,7 +173,7 @@ goog.ui.media.FlickrSet.prototype.createDom = function(c) {
   // TODO(user): find out what is the policy about hosting this SWF. figure out
   // if it works over https.
   var flash = new goog.ui.media.FlashObject(
-      model.getPlayer().getUrl() || '',
+      model.getPlayer().getTrustedResourceUrl(),
       control.getDomHelper());
   flash.addFlashVars(model.getPlayer().getVars());
   flash.render(div);
@@ -202,6 +205,7 @@ goog.ui.media.FlickrSet.prototype.getCssClass = function() {
  * @param {string=} opt_description An optional description of the flickr set.
  * @constructor
  * @extends {goog.ui.media.MediaModel}
+ * @final
  */
 goog.ui.media.FlickrSetModel = function(userId,
                                         setId,
@@ -264,7 +268,7 @@ goog.ui.media.FlickrSetModel.MATCHER_ =
  * @param {string} flickrSetUrl A Flickr set URL.
  * @param {string=} opt_caption An optional caption of the flickr set.
  * @param {string=} opt_description An optional description of the flickr set.
- * @return {goog.ui.media.FlickrSetModel} The data model that represents the
+ * @return {!goog.ui.media.FlickrSetModel} The data model that represents the
  *     Flickr set.
  * @throws exception in case the parsing fails
  */

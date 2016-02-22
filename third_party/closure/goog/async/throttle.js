@@ -31,22 +31,27 @@ goog.require('goog.Timer');
  * per interval (specified in milliseconds). If it gets multiple signals
  * to perform the action while it is waiting, it will only perform the action
  * once at the end of the interval.
- * @param {Function} listener Function to callback when the action is triggered.
- * @param {number} interval Interval over which to throttle. The handler can
+ * @param {function(this: T, ...?)} listener Function to callback when the
+ *     action is triggered.
+ * @param {number} interval Interval over which to throttle. The listener can
  *     only be called once per interval.
- * @param {Object=} opt_handler Object in whose scope to call the listener.
+ * @param {T=} opt_handler Object in whose scope to call the listener.
  * @constructor
+ * @struct
  * @extends {goog.Disposable}
+ * @final
+ * @template T
  */
 goog.async.Throttle = function(listener, interval, opt_handler) {
-  goog.Disposable.call(this);
+  goog.async.Throttle.base(this, 'constructor');
 
   /**
    * Function to callback
-   * @type {Function}
+   * @type {function(this: T, ...?)}
    * @private
    */
-  this.listener_ = listener;
+  this.listener_ = opt_handler != null ?
+      goog.bind(listener, opt_handler) : listener;
 
   /**
    * Interval for the throttle time
@@ -56,18 +61,17 @@ goog.async.Throttle = function(listener, interval, opt_handler) {
   this.interval_ = interval;
 
   /**
-   * "this" context for the listener
-   * @type {Object|undefined}
-   * @private
-   */
-  this.handler_ = opt_handler;
-
-  /**
    * Cached callback function invoked after the throttle timeout completes
    * @type {Function}
    * @private
    */
   this.callback_ = goog.bind(this.onTimer_, this);
+
+  /**
+   * The last arguments passed into {@code fire}.
+   * @private {!Array}
+   */
+  this.args_ = [];
 };
 goog.inherits(goog.async.Throttle, goog.Disposable);
 
@@ -77,6 +81,7 @@ goog.inherits(goog.async.Throttle, goog.Disposable);
  * A deprecated alias.
  * @deprecated Use goog.async.Throttle instead.
  * @constructor
+ * @final
  */
 goog.Throttle = goog.async.Throttle;
 
@@ -110,9 +115,12 @@ goog.async.Throttle.prototype.timer_ = null;
 /**
  * Notifies the throttle that the action has happened. It will throttle the call
  * so that the callback is not called too often according to the interval
- * parameter passed to the constructor.
+ * parameter passed to the constructor, passing the arguments from the last call
+ * of this function into the throttled function.
+ * @param {...?} var_args Arguments to pass on to the throttled function.
  */
-goog.async.Throttle.prototype.fire = function() {
+goog.async.Throttle.prototype.fire = function(var_args) {
+  this.args_ = arguments;
   if (!this.timer_ && !this.pauseCount_) {
     this.doAction_();
   } else {
@@ -130,6 +138,7 @@ goog.async.Throttle.prototype.stop = function() {
     goog.Timer.clear(this.timer_);
     this.timer_ = null;
     this.shouldFire_ = false;
+    this.args_ = [];
   }
 };
 
@@ -160,7 +169,7 @@ goog.async.Throttle.prototype.resume = function() {
 
 /** @override */
 goog.async.Throttle.prototype.disposeInternal = function() {
-  goog.async.Throttle.superClass_.disposeInternal.call(this);
+  goog.async.Throttle.base(this, 'disposeInternal');
   this.stop();
 };
 
@@ -185,5 +194,5 @@ goog.async.Throttle.prototype.onTimer_ = function() {
  */
 goog.async.Throttle.prototype.doAction_ = function() {
   this.timer_ = goog.Timer.callOnce(this.callback_, this.interval_);
-  this.listener_.call(this.handler_);
+  this.listener_.apply(null, this.args_);
 };

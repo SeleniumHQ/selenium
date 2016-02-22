@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -12,6 +15,7 @@
 // limitations under the License.
 
 #include "response.h"
+#include "errorcodes.h"
 #include "logging.h"
 
 namespace webdriver {
@@ -34,7 +38,11 @@ void Response::Deserialize(const std::string& json) {
   Json::Value response_object;
   Json::Reader reader;
   reader.parse(json, response_object);
-  this->status_code_ = response_object["status"].asInt();
+  if (response_object["status"].isString()) {
+    this->status_code_ = this->ConvertStatusToCode(response_object["status"].asString());
+  } else {
+    this->status_code_ = response_object["status"].asInt();
+  }
   this->session_id_ = response_object["sessionId"].asString();
   this->value_ = response_object["value"];
 }
@@ -69,6 +77,97 @@ void Response::SetErrorResponse(const int status_code,
   LOG(WARN) << "Error response has status code " << status_code << " and message '" << message << "' message";
   this->status_code_ = status_code;
   this->value_["message"] = message;
+}
+
+void Response::SetNewSessionResponse(const std::string& new_session_id,
+                                     const Json::Value& response_value) {
+  LOG(TRACE) << "Entering Response::SetNewSessionResponse";
+  this->session_id_ = new_session_id;
+  this->SetResponse(0, response_value);
+}
+
+// TODO: This method will be rendered unnecessary once all implementations
+// move to string status codes instead of integer status codes. This mapping
+// is not entirely correct; it's merely intended as a stopgap.
+int Response::ConvertStatusToCode(const std::string& status_string) {
+  if (status_string == "success") {
+    // Special case success to return early.
+    return WD_SUCCESS;
+  }
+
+  if (status_string == "element not selectable") {
+    return EELEMENTNOTSELECTED;
+  }
+
+  if (status_string == "element not visible") {
+    return EELEMENTNOTDISPLAYED;
+  }
+
+  if (status_string == "invalid cookie domain") {
+    return EINVALIDCOOKIEDOMAIN;
+  }
+
+  if (status_string == "invalid element coordinates") {
+    return EINVALIDCOORDINATES;
+  }
+
+  if (status_string == "invalid element state") {
+    return EELEMENTNOTENABLED;
+  }
+
+  if (status_string == "invalid selector") {
+    return EINVALIDSELECTOR;
+  }
+
+  if (status_string == "javascript error") {
+    return EUNEXPECTEDJSERROR;
+  }
+
+  if (status_string == "no such alert") {
+    return ENOSUCHALERT;
+  }
+
+  if (status_string == "no such element") {
+    return ENOSUCHELEMENT;
+  }
+
+  if (status_string == "no such frame") {
+    return ENOSUCHFRAME;
+  }
+
+  if (status_string == "no such window") {
+    return ENOSUCHWINDOW;
+  }
+
+  if (status_string == "script timeout") {
+    return ESCRIPTTIMEOUT;
+  }
+
+  if (status_string == "stale element reference") {
+    return EOBSOLETEELEMENT;
+  }
+
+  if (status_string == "timeout") {
+    return ETIMEOUT;
+  }
+
+  if (status_string == "unable to set cookie") {
+    return EUNABLETOSETCOOKIE;
+  }
+
+  if (status_string == "unexpected alert open") {
+    return EUNEXPECTEDALERTOPEN;
+  }
+
+  if (status_string == "unknown command") {
+    return ENOTIMPLEMENTED;
+  }
+
+  if (status_string == "unknown error") {
+    return EUNHANDLEDERROR;
+  }
+
+  return EUNHANDLEDERROR;
 }
 
 }  // namespace webdriver

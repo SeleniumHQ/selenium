@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -15,6 +18,7 @@
 #include "Generated/sizzle.h"
 #include "IECommandExecutor.h"
 #include "logging.h"
+#include "Script.h"
 
 namespace webdriver {
 
@@ -65,28 +69,14 @@ int ElementFinder::FindElement(const IECommandExecutor& executor,
 
     status_code = script_wrapper.Execute();
     if (status_code == WD_SUCCESS) {
-      if (script_wrapper.ResultIsElement()) {
-        script_wrapper.ConvertResultToJsonValue(executor, found_element);
-      } else {
-        LOG(WARN) << "Unable to find element by mechanism "
-                  << LOGWSTRING(mechanism) << " and criteria " 
-                  << LOGWSTRING(criteria);
-        status_code = ENOSUCHELEMENT;
-      }
+      Json::Value atom_result;
+      script_wrapper.ConvertResultToJsonValue(executor, &atom_result);
+      int atom_status_code = atom_result["status"].asInt();
+      Json::Value atom_value = atom_result["value"];
+      status_code = atom_status_code;
+      *found_element = atom_result["value"];
     } else {
-      // An error in the execution of the FindElement atom for XPath is assumed
-      // to be a syntactically invalid XPath.
-      if (mechanism == L"xpath") {
-        LOG(WARN) << "Attempted to find element using invalid xpath: "
-                  << LOGWSTRING(criteria);
-        status_code = EINVALIDSELECTOR;
-      } else {
-        LOG(WARN) << "Unexpected error attempting to find element by mechanism "
-                  << LOGWSTRING(mechanism) << " with criteria "
-                  << LOGWSTRING(
-                  criteria);
-        status_code = ENOSUCHELEMENT;
-      }
+      *found_element = "A JavaScript error was encountered executing the findElement atom.";
     }
   } else {
     LOG(WARN) << "Unable to get browser";
@@ -135,26 +125,14 @@ int ElementFinder::FindElements(const IECommandExecutor& executor,
 
     status_code = script_wrapper.Execute();
     if (status_code == WD_SUCCESS) {
-      if (script_wrapper.ResultIsArray() || 
-          script_wrapper.ResultIsElementCollection()) {
-        script_wrapper.ConvertResultToJsonValue(executor, found_elements);
-      } else {
-        LOG(WARN) << "Returned value is not an array or element collection";
-        status_code = ENOSUCHELEMENT;
-      }
+      Json::Value atom_result;
+      script_wrapper.ConvertResultToJsonValue(executor, &atom_result);
+      int atom_status_code = atom_result["status"].asInt();
+      Json::Value atom_value = atom_result["value"];
+      status_code = atom_status_code;
+      *found_elements = atom_result["value"];
     } else {
-      // An error in the execution of the FindElement atom for XPath is assumed
-      // to be a syntactically invalid XPath.
-      if (mechanism == L"xpath") {
-        LOG(WARN) << "Attempted to find elements using invalid xpath: "
-                  << LOGWSTRING(criteria);
-        status_code = EINVALIDSELECTOR;
-      } else {
-        LOG(WARN) << "Unexpected error attempting to find element by mechanism "
-                  << LOGWSTRING(mechanism) << " and criteria "
-                  << LOGWSTRING(criteria);
-        status_code = ENOSUCHELEMENT;
-      }
+      *found_elements = "A JavaScript error was encountered executing the findElements atom.";
     }
   } else {
     LOG(WARN) << "Unable to get browser";
@@ -265,6 +243,7 @@ int ElementFinder::FindElementsUsingSizzle(const IECommandExecutor& executor,
     get_element_count_script_wrapper.AddArgument(snapshot);
     result = get_element_count_script_wrapper.Execute();
     if (result == WD_SUCCESS) {
+      *found_elements = Json::Value(Json::arrayValue);
       if (!get_element_count_script_wrapper.ResultIsInteger()) {
         LOG(WARN) << "Found elements count is not integer";
         result = EUNEXPECTEDJSERROR;

@@ -1,26 +1,25 @@
-#!/usr/bin/python
-
-# Copyright 2008-2010 WebDriver committers
-# Copyright 2008-2010 Google Inc.
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-# Licensed under the Apache License, Version 2.0 (the "License")
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS.
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
 
 import pytest
 import unittest
 from selenium.common.exceptions import NoSuchElementException
 
-from selenium.common.exceptions import WebDriverException 
+from selenium.common.exceptions import WebDriverException
 
 
 class FormHandlingTests(unittest.TestCase):
@@ -30,35 +29,35 @@ class FormHandlingTests(unittest.TestCase):
         self.driver.find_element_by_id("submitButton").click()
         self.driver.implicitly_wait(5)
         self.assertEqual(self.driver.title, "We Arrive Here")
-        
-    def testClickingOnUnclickableElementsDoesNothing(self):    
+
+    def testClickingOnUnclickableElementsDoesNothing(self):
         self._loadPage("formPage")
         self.driver.find_element_by_xpath("//body").click()
-        
-    def testShouldBeAbleToClickImageButtons(self): 
+
+    def testShouldBeAbleToClickImageButtons(self):
         self._loadPage("formPage")
         self.driver.find_element_by_id("imageButton").click()
         self.driver.implicitly_wait(5)
         self.assertEqual(self.driver.title, "We Arrive Here")
-        
+
     def testShouldBeAbleToSubmitForms(self):
         self._loadPage("formPage")
         self.driver.find_element_by_name("login").submit()
         self.driver.implicitly_wait(5)
         self.assertEqual(self.driver.title, "We Arrive Here")
-        
+
     def testShouldSubmitAFormWhenAnyInputElementWithinThatFormIsSubmitted(self):
         self._loadPage("formPage")
         self.driver.find_element_by_id("checky").submit()
         self.driver.implicitly_wait(5)
         self.assertEqual(self.driver.title, "We Arrive Here")
-        
+
     def testShouldSubmitAFormWhenAnyElementWihinThatFormIsSubmitted(self):
         self._loadPage("formPage")
         self.driver.find_element_by_xpath("//form/p").submit()
         self.driver.implicitly_wait(5)
         self.assertEqual(self.driver.title, "We Arrive Here")
-        
+
     def testShouldNotBeAbleToSubmitAFormThatDoesNotExist(self):
         self._loadPage("formPage")
         try:
@@ -68,14 +67,14 @@ class FormHandlingTests(unittest.TestCase):
             pass
         except Exception as e:
             self.fail("Expected NoSuchElementException but got " + str(e))
-        
+
     def testShouldBeAbleToEnterTextIntoATextAreaBySettingItsValue(self):
         self._loadPage("javascriptPage")
         textarea = self.driver.find_element_by_id("keyUpArea")
         cheesey = "Brie and cheddar"
         textarea.send_keys(cheesey)
         self.assertEqual(textarea.get_attribute("value"), cheesey)
-        
+
     def testShouldEnterDataIntoFormFields(self):
         self._loadPage("xhtmlTest")
         element = self.driver.find_element_by_xpath("//form[@name='someForm']/input[@id='username']")
@@ -88,7 +87,7 @@ class FormHandlingTests(unittest.TestCase):
         element = self.driver.find_element_by_xpath("//form[@name='someForm']/input[@id='username']")
         newFormValue = element.get_attribute("value")
         self.assertEqual(newFormValue, "some text")
-        
+
     def testShouldBeAbleToSelectACheckBox(self):
         self._loadPage("formPage")
         checkbox = self.driver.find_element_by_id("checky")
@@ -97,7 +96,7 @@ class FormHandlingTests(unittest.TestCase):
         self.assertEqual(checkbox.is_selected(), True)
         checkbox.click()
         self.assertEqual(checkbox.is_selected(), False)
-        
+
     def testShouldToggleTheCheckedStateOfACheckbox(self):
         self._loadPage("formPage")
         checkbox = self.driver.find_element_by_id("checky")
@@ -106,7 +105,7 @@ class FormHandlingTests(unittest.TestCase):
         self.assertEqual(checkbox.is_selected(), True)
         checkbox.click()
         self.assertEqual(checkbox.is_selected(), False)
-        
+
     def testTogglingACheckboxShouldReturnItsCurrentState(self):
         self._loadPage("formPage")
         checkbox = self.driver.find_element_by_id("checky")
@@ -115,21 +114,21 @@ class FormHandlingTests(unittest.TestCase):
         self.assertEqual(checkbox.is_selected(), True)
         checkbox.click()
         self.assertEqual(checkbox.is_selected(), False)
-        
+
     def testShouldBeAbleToSelectARadioButton(self):
         self._loadPage("formPage")
         radioButton = self.driver.find_element_by_id("peas")
         self.assertEqual(radioButton.is_selected(), False)
         radioButton.click()
         self.assertEqual(radioButton.is_selected(), True)
-        
+
     def testShouldBeAbleToSelectARadioButtonByClickingOnIt(self):
         self._loadPage("formPage")
         radioButton = self.driver.find_element_by_id("peas")
         self.assertEqual(radioButton.is_selected(), False)
         radioButton.click()
         self.assertEqual(radioButton.is_selected(), True)
-        
+
     def testShouldReturnStateOfRadioButtonsBeforeInteration(self):
         self._loadPage("formPage")
         radioButton = self.driver.find_element_by_id("cheese_and_peas")
@@ -137,15 +136,15 @@ class FormHandlingTests(unittest.TestCase):
 
         radioButton = self.driver.find_element_by_id("cheese")
         self.assertEqual(radioButton.is_selected(), False)
-        
+
      #   [ExpectedException(typeof(NotImplementedException))]
     #def testShouldThrowAnExceptionWhenTogglingTheStateOfARadioButton(self):
     #    self._loadPage("formPage")
     #    radioButton = self.driver.find_element_by_id("cheese"))
     #    radioButton.click()
-        
 
-        
+
+
     #    [IgnoreBrowser(Browser.IE, "IE allows toggling of an option not in a multiselect")]
     #    [ExpectedException(typeof(NotImplementedException))]
     #def testTogglingAnOptionShouldThrowAnExceptionIfTheOptionIsNotInAMultiSelect(self):
@@ -154,8 +153,8 @@ class FormHandlingTests(unittest.TestCase):
     #    select = self.driver.find_element_by_name("selectomatic"))
     #    option = select.find_elements_by_tag_name("option"))[0]
     #    option.click()
-        
-    def testTogglingAnOptionShouldToggleOptionsInAMultiSelect(self):    
+
+    def testTogglingAnOptionShouldToggleOptionsInAMultiSelect(self):
         if self.driver.capabilities['browserName'] == 'chrome' and int(self.driver.capabilities['version'].split('.')[0]) < 16:
             pytest.skip("deselecting preselected values only works on chrome >= 16")
         self._loadPage("formPage")
@@ -169,10 +168,10 @@ class FormHandlingTests(unittest.TestCase):
 
         option.click()
         self.assertTrue(selected == option.is_selected())
-        
-    def testShouldThrowAnExceptionWhenSelectingAnUnselectableElement(self):    
+
+    def testShouldThrowAnExceptionWhenSelectingAnUnselectableElement(self):
         self._loadPage("formPage")
-    
+
         element = self.driver.find_element_by_xpath("//title")
         try:
             element.click()
@@ -181,8 +180,8 @@ class FormHandlingTests(unittest.TestCase):
             pass
         except Exception as e:
             self.fail("Expected WebDriverException but got " + str(type(e)))
-        
-    def testSendingKeyboardEventsShouldAppendTextInInputs(self):    
+
+    def testSendingKeyboardEventsShouldAppendTextInInputs(self):
         self._loadPage("formPage")
         element = self.driver.find_element_by_id("working")
         element.send_keys("Some")
@@ -212,7 +211,7 @@ class FormHandlingTests(unittest.TestCase):
 
         emptyTextArea = self.driver.find_element_by_id("emptyTextArea")
         self.assertEqual(emptyTextBox.get_attribute("value"), "")
-        
+
     def testShouldBeAbleToClearTextFromTextAreas(self):
         self._loadPage("formPage")
         element = self.driver.find_element_by_id("withText")
@@ -224,8 +223,8 @@ class FormHandlingTests(unittest.TestCase):
         value = element.get_attribute("value")
 
         self.assertEqual(len(value), 0)
-        
-    def testRadioShouldNotBeSelectedAfterSelectingSibling(self):        
+
+    def testRadioShouldNotBeSelectedAfterSelectingSibling(self):
         self._loadPage("formPage")
         cheese = self.driver.find_element_by_id("cheese")
         peas = self.driver.find_element_by_id("peas")
@@ -239,10 +238,10 @@ class FormHandlingTests(unittest.TestCase):
 
         self.assertEqual(False, cheese.is_selected())
         self.assertEqual(True, peas.is_selected())
-        
+
     def _pageURL(self, name):
-        return "http://localhost:%d/%s.html" % (self.webserver.port, name)
-    
+        return self.webserver.where_is(name + '.html')
+
     def _loadSimplePage(self):
         self._loadPage("simpleTest")
 

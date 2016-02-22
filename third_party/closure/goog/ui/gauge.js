@@ -25,15 +25,16 @@ goog.provide('goog.ui.GaugeColoredRange');
 
 goog.require('goog.a11y.aria');
 goog.require('goog.asserts');
-goog.require('goog.dom');
+goog.require('goog.dom.TagName');
+goog.require('goog.events');
 goog.require('goog.fx.Animation');
-goog.require('goog.fx.Animation.EventType');
-goog.require('goog.fx.Transition.EventType');
+goog.require('goog.fx.Transition');
 goog.require('goog.fx.easing');
 goog.require('goog.graphics');
 goog.require('goog.graphics.Font');
 goog.require('goog.graphics.Path');
 goog.require('goog.graphics.SolidFill');
+goog.require('goog.math');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.GaugeTheme');
 
@@ -46,6 +47,7 @@ goog.require('goog.ui.GaugeTheme');
  * @param {number} toValue The range end (maximal) value.
  * @param {string} backgroundColor Color to fill the range background with.
  * @constructor
+ * @final
  */
 goog.ui.GaugeColoredRange = function(fromValue, toValue, backgroundColor) {
 
@@ -85,6 +87,7 @@ goog.ui.GaugeColoredRange = function(fromValue, toValue, backgroundColor) {
  *     document we want to render in.
  * @constructor
  * @extends {goog.ui.Component}
+ * @final
  */
 goog.ui.Gauge = function(width, height, opt_domHelper) {
   goog.ui.Component.call(this, opt_domHelper);
@@ -116,7 +119,7 @@ goog.ui.Gauge = function(width, height, opt_domHelper) {
 
   /**
    * Colors to paint the background of certain ranges (optional).
-   * @type {Array.<goog.ui.GaugeColoredRange>}
+   * @type {Array<goog.ui.GaugeColoredRange>}
    * @private
    */
   this.rangeColors_ = [];
@@ -423,7 +426,7 @@ goog.ui.Gauge.prototype.needleValuePosition_ = null;
 
 /**
  * Text labels to display by major tick marks.
- * @type {Array.<string>?}
+ * @type {Array<string>?}
  * @private
  */
 goog.ui.Gauge.prototype.majorTickLabels_ = null;
@@ -539,7 +542,7 @@ goog.ui.Gauge.prototype.setTicks = function(majorUnits, minorUnits) {
 
 /**
  * Sets the labels of the major ticks.
- * @param {Array.<string>} tickLabels A text label for each major tick value.
+ * @param {Array<string>} tickLabels A text label for each major tick value.
  */
 goog.ui.Gauge.prototype.setMajorTickLabels = function(tickLabels) {
   this.majorTickLabels_ = tickLabels;
@@ -620,7 +623,8 @@ goog.ui.Gauge.prototype.addBackgroundColor = function(fromValue, toValue,
  */
 goog.ui.Gauge.prototype.createDom = function() {
   this.setElementInternal(this.getDomHelper().createDom(
-      'div', goog.getCssName('goog-gauge'), this.graphics_.getElement()));
+      goog.dom.TagName.DIV, goog.getCssName('goog-gauge'),
+      this.graphics_.getElement()));
 };
 
 
@@ -790,7 +794,6 @@ goog.ui.Gauge.prototype.draw_ = function() {
   // Draw the needle and the value label. Stop animation when doing
   // full redraw and jump to the final value position.
   this.stopAnimation_();
-  this.valuePosition_ = this.valueToRangePosition_(this.value);
   this.needleRadius_ = r;
   this.drawValue_();
 };

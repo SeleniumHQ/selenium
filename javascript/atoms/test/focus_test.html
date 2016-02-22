@@ -6,17 +6,15 @@
   <script type="text/javascript">
     goog.require('bot.action');
     goog.require('bot.test');
+    goog.require('goog.Promise');
     goog.require('goog.dom');
     goog.require('goog.events');
     goog.require('goog.events.EventType');
-    goog.require('goog.testing.AsyncTestCase');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
     goog.require('goog.userAgent.product');
   </script>
   <script type="text/javascript">
-    var asyncTestCase = null;
-
     var events = goog.events;
     var eventType = goog.events.EventType;
 
@@ -33,7 +31,7 @@
       // cause events to dispatch, we need to wait for them to do so
       // before continuing. In IE, this means continuing in a timeout.
       bot.action.focusOnElement(goog.dom.$('dummyFocusHolder'));
-      continueAfterTimeout(goog.nullFunction);
+      return timeout();
     }
 
 
@@ -78,13 +76,10 @@
      * Pauses the test momentarily so IE can dispatch the onfocus event, which
      * is scheduled for the next event loop after element.focus() is called.
      */
-    function continueAfterTimeout(fn) {
-      asyncTestCase.waitForAsync(
-          'IE requires a timeout for focus() triggered events to fire.');
-      window.setTimeout(function() {
-        asyncTestCase.continueTesting();
-        fn();
-      }, 5);
+    function timeout() {
+      return new goog.Promise(function(done) {
+        setTimeout(done, 5);
+      });
     }
 
     function testShouldBeAbleToFocusOnAnElement() {
@@ -102,25 +97,25 @@
 
       expect(eventType.FOCUS, text1);
       bot.action.focusOnElement(text1);
-      continueAfterTimeout(function() {
+      return timeout().then(function() {
         assertHasExpectedEventOrder();
         assertElementIsActiveElement(text1);
 
         expect(eventType.BLUR, text1);
         expect(eventType.FOCUS, text2);
         bot.action.focusOnElement(text2);
-        continueAfterTimeout(function() {
-          assertHasExpectedEventOrder();
-          assertElementIsActiveElement(text2);
+        return timeout();
+      }).then(function() {
+        assertHasExpectedEventOrder();
+        assertElementIsActiveElement(text2);
 
-          expect(eventType.BLUR, text2);
-          expect(eventType.FOCUS, text1);
-          bot.action.focusOnElement(text1);
-          continueAfterTimeout(function() {
-            assertHasExpectedEventOrder();
-            assertElementIsActiveElement(text1);
-          });
-        });
+        expect(eventType.BLUR, text2);
+        expect(eventType.FOCUS, text1);
+        bot.action.focusOnElement(text1);
+        return timeout();
+      }).then(function() {
+        assertHasExpectedEventOrder();
+        assertElementIsActiveElement(text1);
       });
     }
 
@@ -134,15 +129,15 @@
 
       expect(eventType.FOCUS, text1);
       bot.action.focusOnElement(text1);
-      continueAfterTimeout(function() {
+      return timeout().then(function() {
         assertHasExpectedEventOrder();
         assertElementIsActiveElement(text1);
 
         bot.action.focusOnElement(text1);
-        continueAfterTimeout(function() {
-          assertHasExpectedEventOrder();
-          assertElementIsActiveElement(text1);
-        });
+        return timeout();
+      }).then(function() {
+        assertHasExpectedEventOrder();
+        assertElementIsActiveElement(text1);
       });
     }
 
@@ -252,15 +247,10 @@
         });
       goog.events.listen(goog.dom.$('clearTestLog'), eventType.CLICK,
         function(e) {
-          goog.dom.$('testLog').innerHTML = '';
+          goog.dom.removeChildren(goog.dom.$('testLog'));
         });
     </script>
   </div>
 </form>
-<script type="text/javascript">
-    // AsyncTestCase references the DOM on instantiation, so we have to do it
-    // here once the body has been written.
-    asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
-</script>
 </body>
 </html>

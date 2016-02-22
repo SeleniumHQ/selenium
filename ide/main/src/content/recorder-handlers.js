@@ -19,19 +19,21 @@
  */
 Recorder.inputTypes = ["text", "password", "file", "datetime", "datetime-local", "date", "month", "time", "week", "number", "range", "email", "url", "search", "tel", "color"];
 Recorder.addEventHandler('type', 'change', function(event) {
-  var tagName = event.target.tagName.toLowerCase();
-  var type = event.target.type;
-  if ('input' == tagName && Recorder.inputTypes.indexOf(type) >= 0) {
-    if (event.target.value.length > 0) {
-      // TODO figure out if we need sendKeys or type and record it
-      this.record("type", this.findLocators(event.target), event.target.value);
-    } else {
-      //use type to clear
+  if (event.target.tagName) {
+    var tagName = event.target.tagName.toLowerCase();
+    var type = event.target.type;
+    if ('input' == tagName && Recorder.inputTypes.indexOf(type) >= 0) {
+      if (event.target.value.length > 0) {
+        // TODO figure out if we need sendKeys or type and record it
+        this.record("type", this.findLocators(event.target), event.target.value);
+      } else {
+        //use type to clear
+        this.record("type", this.findLocators(event.target), event.target.value);
+      }
+    } else if ('textarea' == tagName) {
+      //use type for file uploads
       this.record("type", this.findLocators(event.target), event.target.value);
     }
-  } else if ('textarea' == tagName) {
-    //use type for file uploads
-    this.record("type", this.findLocators(event.target), event.target.value);
   }
 });
 
@@ -39,32 +41,36 @@ Recorder.addEventHandler('type', 'change', function(event) {
  * select / addSelection / removeSelection
  */
 Recorder.addEventHandler('selectFocus', 'focus', function(event) {
-		var tagName = event.target.nodeName.toLowerCase();
-		if ('select' == tagName && event.target.multiple) {
-			this.log.debug('remembering selections');
-			var options = event.target.options;
-			for (var i = 0; i < options.length; i++) {
-				if (options[i]._wasSelected == null) {
-					// is the focus was gained by mousedown event, _wasSelected would be already set
-					options[i]._wasSelected = options[i].selected;
-				}
-			}
-		}
-	}, { capture: true });
+  if (event.target.nodeName) {
+    var tagName = event.target.nodeName.toLowerCase();
+    if ('select' == tagName && event.target.multiple) {
+      this.log.debug('remembering selections');
+      var options = event.target.options;
+      for (var i = 0; i < options.length; i++) {
+        if (options[i]._wasSelected == null) {
+          // is the focus was gained by mousedown event, _wasSelected would be already set
+          options[i]._wasSelected = options[i].selected;
+        }
+      }
+    }
+  }
+}, { capture: true });
 
 Recorder.addEventHandler('selectMousedown', 'mousedown', function(event) {
-		var tagName = event.target.nodeName.toLowerCase();
-		if ('option' == tagName) {
-			var parent = event.target.parentNode;
-			if (parent.multiple) {
-				this.log.debug('remembering selections');
-				var options = parent.options;
-				for (var i = 0; i < options.length; i++) {
-					options[i]._wasSelected = options[i].selected;
-				}
-			}
-		}
-	}, { capture: true });
+  if (event.target.nodeName) {
+    var tagName = event.target.nodeName.toLowerCase();
+    if ('option' == tagName) {
+      var parent = event.target.parentNode;
+      if (parent.multiple) {
+        this.log.debug('remembering selections');
+        var options = parent.options;
+        for (var i = 0; i < options.length; i++) {
+          options[i]._wasSelected = options[i].selected;
+        }
+      }
+    }
+  }
+}, { capture: true });
 
 Recorder.prototype.getOptionLocator = function(option) {
     var label = option.text.replace(/^ *(.*?) *$/, "$1");
@@ -87,33 +93,35 @@ Recorder.prototype.getOptionLocator = function(option) {
 };
 
 Recorder.addEventHandler('select', 'change', function(event) {
-		var tagName = event.target.tagName.toLowerCase();
-		if ('select' == tagName) {
-			if (!event.target.multiple) {
-                var option = event.target.options[event.target.selectedIndex];
-				this.log.debug('selectedIndex=' + event.target.selectedIndex);
-				this.record("select", this.findLocators(event.target), this.getOptionLocator(option));
-			} else {
-				this.log.debug('change selection on select-multiple');
-				var options = event.target.options;
-				for (var i = 0; i < options.length; i++) {
-					this.log.debug('option=' + i + ', ' + options[i].selected);
-					if (options[i]._wasSelected == null) {
-						this.log.warn('_wasSelected was not recorded');
-					}
-					if (options[i]._wasSelected != options[i].selected) {
-                        var value = this.getOptionLocator(options[i]);
-						if (options[i].selected) {
-							this.record("addSelection", this.findLocators(event.target), value);
-						} else {
-							this.record("removeSelection", this.findLocators(event.target), value);
-						}
-						options[i]._wasSelected = options[i].selected;
-					}
-				}
-			}
-		}
-	});
+  if (event.target.tagName) {
+    var tagName = event.target.tagName.toLowerCase();
+    if ('select' == tagName) {
+      if (!event.target.multiple) {
+        var option = event.target.options[event.target.selectedIndex];
+        this.log.debug('selectedIndex=' + event.target.selectedIndex);
+        this.record("select", this.findLocators(event.target), this.getOptionLocator(option));
+      } else {
+        this.log.debug('change selection on select-multiple');
+        var options = event.target.options;
+        for (var i = 0; i < options.length; i++) {
+          this.log.debug('option=' + i + ', ' + options[i].selected);
+          if (options[i]._wasSelected == null) {
+            this.log.warn('_wasSelected was not recorded');
+          }
+          if (options[i]._wasSelected != options[i].selected) {
+            var value = this.getOptionLocator(options[i]);
+            if (options[i].selected) {
+              this.record("addSelection", this.findLocators(event.target), value);
+            } else {
+              this.record("removeSelection", this.findLocators(event.target), value);
+            }
+            options[i]._wasSelected = options[i].selected;
+          }
+        }
+      }
+    }
+  }
+});
 
 Recorder.addEventHandler('clickLocator', 'click', function(event) {
 		if (event.button == 0) {
@@ -152,8 +160,8 @@ Recorder.prototype.findClickableElement = function(e) {
 	if (!e.tagName) return null;
 	var tagName = e.tagName.toLowerCase();
 	var type = e.type;
-	if (e.hasAttribute("onclick") || e.hasAttribute("href") || tagName == "button" ||
-		(tagName == "input" && 
+	if (e.hasAttribute("onclick") || e.hasAttribute("href") || tagName == "button" || tagName == "a" ||
+		(tagName == "input" &&
 		 (type == "submit" || type == "button" || type == "image" || type == "radio" || type == "checkbox" || type == "reset"))) {
 		return e;
 	} else {

@@ -1,25 +1,22 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 
 package org.openqa.selenium;
-
-import org.junit.Test;
-import org.openqa.selenium.Proxy.ProxyType;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -27,9 +24,17 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.openqa.selenium.Proxy.ProxyType;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
+
 import java.util.HashMap;
 import java.util.Map;
 
+@RunWith(JUnit4.class)
 public class ProxyTest {
 
   @Test
@@ -200,7 +205,7 @@ public class ProxyTest {
 
   @Test
   public void testInitializationManualProxy() {
-    Map<String, String> proxyData = new HashMap<String, String>();
+    Map<String, String> proxyData = new HashMap<>();
     proxyData.put("proxyType", "manual");
     proxyData.put("httpProxy", "http.proxy:1234");
     proxyData.put("ftpProxy", "ftp.proxy");
@@ -227,7 +232,7 @@ public class ProxyTest {
 
   @Test
   public void testInitializationPACProxy() {
-    Map<String, String> proxyData = new HashMap<String, String>();
+    Map<String, String> proxyData = new HashMap<>();
     proxyData.put("proxyType", "PAC");
     proxyData.put("proxyAutoconfigUrl", "http://aaa/bbb.pac");
 
@@ -248,7 +253,7 @@ public class ProxyTest {
 
   @Test
   public void testInitializationAutodetectProxy() {
-    Map<String, Object> proxyData = new HashMap<String, Object>();
+    Map<String, Object> proxyData = new HashMap<>();
     proxyData.put("proxyType", "AUTODETECT");
     proxyData.put("autodetect", true);
 
@@ -269,7 +274,7 @@ public class ProxyTest {
 
   @Test
   public void testInitializationSystemProxy() {
-    Map<String, String> proxyData = new HashMap<String, String>();
+    Map<String, String> proxyData = new HashMap<>();
     proxyData.put("proxyType", "system");
 
     Proxy proxy = new Proxy(proxyData);
@@ -289,7 +294,7 @@ public class ProxyTest {
 
   @Test
   public void testInitializationDirectProxy() {
-    Map<String, String> proxyData = new HashMap<String, String>();
+    Map<String, String> proxyData = new HashMap<>();
     proxyData.put("proxyType", "DIRECT");
 
     Proxy proxy = new Proxy(proxyData);
@@ -307,4 +312,19 @@ public class ProxyTest {
     assertNull(proxy.getProxyAutoconfigUrl());
   }
 
+  @Test
+  public void constructingWithNullKeysWorksAsExpected() {
+    Map<String, String> rawProxy = new HashMap<>();
+    rawProxy.put("ftpProxy", null);
+    rawProxy.put("httpProxy", "http://www.example.com");
+    rawProxy.put("autodetect", null);
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability(CapabilityType.PROXY, rawProxy);
+
+    Proxy proxy = Proxy.extractFrom(caps);
+
+    assertNull(proxy.getFtpProxy());
+    assertFalse(proxy.isAutodetect());
+    assertEquals("http://www.example.com", proxy.getHttpProxy());
+  }
 }

@@ -1,3 +1,22 @@
+# encoding: utf-8
+#
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 require File.expand_path("../../spec_helper", __FILE__)
 
 
@@ -18,7 +37,7 @@ module Selenium
         end
 
         it "raises ArgumentError if passed invalid options" do
-          lambda { Bridge.new(:foo => 'bar') }.should raise_error(ArgumentError)
+          expect { Bridge.new(:foo => 'bar') }.to raise_error(ArgumentError)
         end
 
         it "accepts the :introduce_flakiness_by_ignoring_security_domains option" do
@@ -27,13 +46,13 @@ module Selenium
             :http_client => http
           )
 
-          caps['ignoreProtectedModeSettings'].should be_true
+          expect(caps['ignoreProtectedModeSettings']).to be true
         end
 
         it "has native events enabled by default" do
           Bridge.new(:http_client => http)
 
-          caps['nativeEvents'].should be_true
+          expect(caps['nativeEvents']).to be true
         end
 
         it "can disable native events" do
@@ -42,12 +61,12 @@ module Selenium
             :http_client => http
           )
 
-          caps['nativeEvents'].should be_false
+          expect(caps['nativeEvents']).to be false
         end
 
         it 'sets the server log level and log file' do
-          server.should_receive(:log_level=).with :trace
-          server.should_receive(:log_file=).with '/foo/bar'
+          expect(server).to receive(:log_level=).with :trace
+          expect(server).to receive(:log_file=).with '/foo/bar'
 
           Bridge.new(
             :log_level   => :trace,
@@ -56,12 +75,21 @@ module Selenium
           )
         end
 
+        it 'should be able to set implementation' do
+          expect(Server).to receive(:get).with(:implementation => :vendor).and_return(server)
+
+          Bridge.new(
+            :implementation => :vendor,
+            :http_client    => http
+          )
+        end
+
         it 'takes desired capabilities' do
           custom_caps = Remote::Capabilities.new
           custom_caps['ignoreProtectedModeSettings'] = true
 
-          http.should_receive(:call).with do |_, _, payload|
-            payload[:desiredCapabilities]['ignoreProtectedModeSettings'].should be_true
+          expect(http).to receive(:call) do |_, _, payload|
+            expect(payload[:desiredCapabilities]['ignoreProtectedModeSettings']).to be true
             resp
           end
 
@@ -72,8 +100,8 @@ module Selenium
           custom_caps = Remote::Capabilities.new
           custom_caps['ignoreProtectedModeSettings'] = false
 
-          http.should_receive(:call).with do |_, _, payload|
-            payload[:desiredCapabilities]['ignoreProtectedModeSettings'].should be_true
+          expect(http).to receive(:call) do |_, _, payload|
+            expect(payload[:desiredCapabilities]['ignoreProtectedModeSettings']).to be true
             resp
           end
 

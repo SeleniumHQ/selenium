@@ -3,42 +3,42 @@ function SeleniumIDEGenericAutoCompleteSearch() {
 }
 
 SeleniumIDEGenericAutoCompleteSearch.prototype = {
-	startSearch: function(searchString, searchParam, prevResult, listener) {
-		var result = new AutoCompleteResult(searchString, this.candidates[searchParam] || []);
-		listener.onSearchResult(this, result);
-	},
+  startSearch: function(searchString, searchParam, prevResult, listener) {
+    var result = new AutoCompleteResult(searchString, this.candidates[searchParam] || []);
+    listener.onSearchResult(this, result);
+  },
 
-	stopSearch: function() {
-	},
+  stopSearch: function() {
+  },
 
-    setCandidates: function(key, values) {
-        this.setCandidatesWithComments(key, values, null);
-	},
+  setCandidates: function(key, values) {
+    this.setCandidatesWithComments(key, values, null);
+  },
 
-    setCandidatesWithComments: function(key, values, comments) {
-		var count = values.Count();
-        var candidates = this.candidates[key] = new Array(count);
-		for (var i = 0; i < count; i++) {
-            candidates[i] = [values.GetElementAt(i).QueryInterface(Components.interfaces.nsISupportsString).data,
-                             comments ? comments.GetElementAt(i).QueryInterface(Components.interfaces.nsISupportsString).data : null];
-		}
-	},
-
-    clearCandidates: function(key) {
-        if (this.candidates[key]) {
-            delete this.candidates[key];
-        }
-    },
-
-    QueryInterface: function(uuid) {
-		if (uuid.equals(Components.interfaces.nsISeleniumIDEGenericAutoCompleteSearch) ||
-			uuid.equals(Components.interfaces.nsIAutoCompleteSearch) ||
-			uuid.equals(Components.interfaces.nsISupports)) {
-			return this;
-		}
-        Components.returnCode = Components.results.NS_ERROR_NO_INTERFACE;
-        return null;
+  setCandidatesWithComments: function(key, values, comments) {
+    var count = values.Count();
+    var candidates = this.candidates[key] = new Array(count);
+    for (var i = 0; i < count; i++) {
+      candidates[i] = [values.GetElementAt(i).QueryInterface(Components.interfaces.nsISupportsString).data,
+        comments ? comments.GetElementAt(i).QueryInterface(Components.interfaces.nsISupportsString).data : null];
     }
+  },
+
+  clearCandidates: function(key) {
+    if (this.candidates[key]) {
+      delete this.candidates[key];
+    }
+  },
+
+  QueryInterface: function(uuid) {
+    if (uuid.equals(Components.interfaces.nsISeleniumIDEGenericAutoCompleteSearch) ||
+      uuid.equals(Components.interfaces.nsIAutoCompleteSearch) ||
+      uuid.equals(Components.interfaces.nsISupports)) {
+      return this;
+    }
+    Components.returnCode = Components.results.NS_ERROR_NO_INTERFACE;
+    return null;
+  }
 };
 
 function AutoCompleteResult(search, candidates) {
@@ -70,46 +70,53 @@ function AutoCompleteResult(search, candidates) {
 }
 
 AutoCompleteResult.prototype = {
-	get defaultIndex() {
-		return 0;
-	},
-	get errorDescription() {
-		return '';
-	},
-	get matchCount() {
-		return this.result.length;
-	},
-	get searchResult() {
-		return Components.interfaces.nsIAutoCompleteResult.RESULT_SUCCESS;
-	},
-	get searchString() {
-		return this.search;
-	},
-	getCommentAt: function(index) {
-		return this.result[index][1] || '';
-	},
-	getStyleAt: function(index) {
-		return '';
-	},
-	getValueAt: function(index) {
-		return this.result[index][0];
-	},
-	getImageAt: function (index) {
-		return '';
-	},
-	getLabelAt: function getLabelAt(index) {
-		return this.getValueAt(index);
+  get searchString() {
+    return this.search;
   },
-	removeValueAt: function(rowIndex, removeFromDb) {
-	},
-    QueryInterface: function (uuid) {
-		if (uuid.equals(Components.interfaces.nsIAutoCompleteResult) ||
-			uuid.equals(Components.interfaces.nsISupports)) {
-			return this;
-		}
-        Components.returnCode = Components.results.NS_ERROR_NO_INTERFACE;
-        return null;
+  get searchResult() {
+    return Components.interfaces.nsIAutoCompleteResult.RESULT_SUCCESS;
+  },
+  get defaultIndex() {
+    return 0;
+  },
+  get errorDescription() {
+    return '';
+  },
+  get matchCount() {
+    return this.result.length;
+  },
+  get typeAheadResult() {
+    return false;
+  },
+  getValueAt: function(index) {
+    return this.result[index][0];
+  },
+  getLabelAt: function(index) {
+    return this.getValueAt(index);
+  },
+  getCommentAt: function(index) {
+    return this.result[index][1] || '';
+  },
+  getStyleAt: function(index) {
+    // TODO improve this proof of concept with an optimised version for multiple deprecated commands
+    return this.result[index][0] === "verifyTextPresent" ? 'deprecated' : '';
+  },
+  getImageAt: function (index) {
+    return '';
+  },
+  getFinalCompleteValueAt: function(index) {
+    return this.getValueAt(index);
+  },
+  removeValueAt: function(rowIndex, removeFromDb) {
+  },
+  QueryInterface: function (uuid) {
+    if (uuid.equals(Components.interfaces.nsIAutoCompleteResult) ||
+      uuid.equals(Components.interfaces.nsISupports)) {
+      return this;
     }
+    Components.returnCode = Components.results.NS_ERROR_NO_INTERFACE;
+    return null;
+  }
 };
 
 //const COMPONENT_ID = Components.ID("{4791AF5F-AFBA-45A1-8204-47A135DF9591}");

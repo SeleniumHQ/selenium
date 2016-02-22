@@ -1,9 +1,9 @@
 // <copyright file="Keys.cs" company="WebDriver Committers">
-// Copyright 2007-2011 WebDriver committers
-// Copyright 2007-2011 Google Inc.
-// Portions copyright 2011 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -17,9 +17,7 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 
 namespace OpenQA.Selenium
 {
@@ -137,17 +135,17 @@ namespace OpenQA.Selenium
         /// Represents the left arrow key.
         /// </summary>
         public static readonly string Left = Convert.ToString(Convert.ToChar(0xE012, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
-        
+
         /// <summary>
         /// Represents the left arrow key.
         /// </summary>
         public static readonly string ArrowLeft = Convert.ToString(Convert.ToChar(0xE012, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture); // alias
-        
+
         /// <summary>
         /// Represents the up arrow key.
         /// </summary>
         public static readonly string Up = Convert.ToString(Convert.ToChar(0xE013, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
-        
+
         /// <summary>
         /// Represents the up arrow key.
         /// </summary>
@@ -336,12 +334,12 @@ namespace OpenQA.Selenium
         /// Represents the function key F12.
         /// </summary>
         public static readonly string F12 = Convert.ToString(Convert.ToChar(0xE03C, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
-        
+
         /// <summary>
         /// Represents the function key META.
         /// </summary>
         public static readonly string Meta = Convert.ToString(Convert.ToChar(0xE03D, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
-        
+
         /// <summary>
         /// Represents the function key COMMAND.
         /// </summary>

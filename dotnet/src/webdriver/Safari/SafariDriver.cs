@@ -1,9 +1,9 @@
 ﻿// <copyright file="SafariDriver.cs" company="WebDriver Committers">
-// Copyright 2007-2011 WebDriver committers
-// Copyright 2007-2011 Google Inc.
-// Portions copyright 2011 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -16,11 +16,6 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Safari
@@ -29,7 +24,7 @@ namespace OpenQA.Selenium.Safari
     /// Provides a way to access Safari to run your tests by creating a SafariDriver instance
     /// </summary>
     /// <remarks>
-    /// When the WebDriver object has been instantiated the browser will load. The test can then navigate to the URL under test and 
+    /// When the WebDriver object has been instantiated the browser will load. The test can then navigate to the URL under test and
     /// start your test.
     /// </remarks>
     /// <example>
@@ -59,11 +54,11 @@ namespace OpenQA.Selenium.Safari
     ///     {
     ///         driver.Quit();
     ///         driver.Dispose();
-    ///     } 
+    ///     }
     /// }
     /// </code>
     /// </example>
-    public class SafariDriver : RemoteWebDriver, ITakesScreenshot
+    public class SafariDriver : RemoteWebDriver
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SafariDriver"/> class.
@@ -83,13 +78,13 @@ namespace OpenQA.Selenium.Safari
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting 
-        /// sequences of keystrokes representing file paths and names. 
+        /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting
+        /// sequences of keystrokes representing file paths and names.
         /// </summary>
         /// <remarks>The Safari driver does not allow a file detector to be set,
-        /// as the server component of the Safari driver (the Safari extension) only 
+        /// as the server component of the Safari driver (the Safari extension) only
         /// allows uploads from the local computer environment. Attempting to set
-        /// this property has no effect, but does not throw an exception. If you 
+        /// this property has no effect, but does not throw an exception. If you
         /// are attempting to run the Safari driver remotely, use <see cref="RemoteWebDriver"/>
         /// in conjunction with a standalone WebDriver server.</remarks>
         public override IFileDetector FileDetector
@@ -99,42 +94,20 @@ namespace OpenQA.Selenium.Safari
         }
 
         /// <summary>
-        /// Gets a <see cref="Screenshot"/> object representing the image of the page on the screen.
+        /// Releases the unmanaged resources used by the <see cref="SafariDriver"/> and
+        /// optionally releases the managed resources.
         /// </summary>
-        /// <returns>A <see cref="Screenshot"/> object containing the image.</returns>
-        public Screenshot GetScreenshot()
+        /// <param name="disposing"><see langword="true"/> to release managed and resources;
+        /// <see langword="false"/> to only release unmanaged resources.</param>
+        protected override void Dispose(bool disposing)
         {
-            // Get the screenshot as base64.
-            Response screenshotResponse = Execute(DriverCommand.Screenshot, null);
-            string base64 = screenshotResponse.Value.ToString();
-
-            // ... and convert it.
-            return new Screenshot(base64);
-        }
-
-        /// <summary>
-        /// Starts the command executor, enabling communication with the browser.
-        /// </summary>
-        protected override void StartClient()
-        {
-            SafariDriverCommandExecutor executor = (SafariDriverCommandExecutor)this.CommandExecutor;
-            try
+            SafariDriverCommandExecutor executor = this.CommandExecutor as SafariDriverCommandExecutor;
+            if (executor != null)
             {
-                executor.Start();
+                executor.Dispose();
             }
-            catch (IOException e)
-            {
-                throw new WebDriverException("Unexpected error launching Safari", e);
-            }
-        }
 
-        /// <summary>
-        /// Stops the command executor, ending further communication with the browser.
-        /// </summary>
-        protected override void StopClient()
-        {
-            SafariDriverCommandExecutor executor = (SafariDriverCommandExecutor)this.CommandExecutor;
-            executor.Dispose();
+            base.Dispose(disposing);
         }
     }
 }

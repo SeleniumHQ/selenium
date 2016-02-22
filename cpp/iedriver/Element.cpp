@@ -1,5 +1,8 @@
-// Copyright 2013 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -26,8 +29,9 @@
 #include <algorithm>
 #include "Browser.h"
 #include "Generated/atoms.h"
-#include "interactions.h"
+#include "json.h"
 #include "logging.h"
+#include "Script.h"
 
 namespace webdriver {
 
@@ -70,12 +74,15 @@ Json::Value Element::ConvertToJson() {
   LOG(TRACE) << "Entering Element::ConvertToJson";
 
   Json::Value json_wrapper;
+  // TODO: Remove the "ELEMENT" property once all target bindings 
+  // have been updated to use spec-compliant protocol.
+  json_wrapper["element-6066-11e4-a52e-4f735466cecf"] = this->element_id_;
   json_wrapper["ELEMENT"] = this->element_id_;
 
   return json_wrapper;
 }
 
-int Element::IsDisplayed(bool* result) {
+int Element::IsDisplayed(bool ignore_opacity, bool* result) {
   LOG(TRACE) << "Entering Element::IsDisplayed";
 
   int status_code = WD_SUCCESS;
@@ -92,7 +99,7 @@ int Element::IsDisplayed(bool* result) {
   // N.B., The second argument to the IsDisplayed atom is "ignoreOpacity".
   Script script_wrapper(doc, script_source, 2);
   script_wrapper.AddArgument(this->element_);
-  script_wrapper.AddArgument(false);
+  script_wrapper.AddArgument(ignore_opacity);
   status_code = script_wrapper.Execute();
 
   if (status_code == WD_SUCCESS) {
@@ -206,7 +213,7 @@ int Element::GetClickLocation(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior,
   LOG(TRACE) << "Entering Element::GetClickLocation";
 
   bool displayed;
-  int status_code = this->IsDisplayed(&displayed);
+  int status_code = this->IsDisplayed(true, &displayed);
   if (status_code != WD_SUCCESS) {
     LOG(WARN) << "Unable to determine element is displayed";
     return status_code;

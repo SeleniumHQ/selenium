@@ -1,6 +1,6 @@
-js_deps(name = "deps",
+js_library(name = "deps",
   srcs = [ "*.js" ],
-  deps = [ "//javascript/atoms:deps" ])
+  deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(name = "find_element",
   module = "webdriver.ie",

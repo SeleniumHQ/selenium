@@ -15,6 +15,7 @@
 /**
  * @fileoverview Class to support scrollable containers for drag and drop.
  *
+ * @author dgajda@google.com (Damian Gajda)
  */
 
 goog.provide('goog.fx.DragScrollSupport');
@@ -43,12 +44,26 @@ goog.require('goog.style');
  *     event handler, useful when events are generated for more than one source
  *     element and/or are not real mousemove events.
  * @constructor
+ * @struct
  * @extends {goog.Disposable}
  * @see ../demos/dragscrollsupport.html
  */
 goog.fx.DragScrollSupport = function(containerNode, opt_margin,
                                      opt_externalMouseMoveTracking) {
-  goog.Disposable.call(this);
+  goog.fx.DragScrollSupport.base(this, 'constructor');
+
+  /**
+   * Whether scrolling should be constrained to happen only when the cursor is
+   * inside the container node.
+   * @private {boolean}
+   */
+  this.constrainScroll_ = false;
+
+  /**
+   * Whether horizontal scrolling is allowed.
+   * @private {boolean}
+   */
+  this.horizontalScrolling_ = true;
 
   /**
    * The container to be scrolled.
@@ -69,7 +84,7 @@ goog.fx.DragScrollSupport = function(containerNode, opt_margin,
 
   /**
    * EventHandler used to set up and tear down listeners.
-   * @type {goog.events.EventHandler}
+   * @type {goog.events.EventHandler<!goog.fx.DragScrollSupport>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -133,23 +148,6 @@ goog.fx.DragScrollSupport.MARGIN = 32;
 
 
 /**
- * Whether scrolling should be constrained to happen only when the cursor is
- * inside the container node.
- * @type {boolean}
- * @private
- */
-goog.fx.DragScrollSupport.prototype.constrainScroll_ = false;
-
-
-/**
- * Whether horizontal scrolling is allowed.
- * @type {boolean}
- * @private
- */
-goog.fx.DragScrollSupport.prototype.horizontalScrolling_ = true;
-
-
-/**
  * Sets whether scrolling should be constrained to happen only when the cursor
  * is inside the container node.
  * NOTE: If a margin is not set, then it does not make sense to
@@ -190,8 +188,8 @@ goog.fx.DragScrollSupport.prototype.constrainBounds_ = function(bounds) {
 
     var quarterWidth = bounds.width * 0.25;
     var xMargin = Math.min(margin, quarterWidth);
-    bounds.top += xMargin;
-    bounds.height -= 2 * xMargin;
+    bounds.left += xMargin;
+    bounds.width -= 2 * xMargin;
   }
   return bounds;
 };

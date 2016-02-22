@@ -30,6 +30,7 @@ goog.require('goog.async.Deferred');
 goog.require('goog.fs.Error');
 goog.require('goog.fs.FileReader');
 goog.require('goog.fs.FileSystemImpl');
+goog.require('goog.fs.url');
 goog.require('goog.userAgent');
 
 
@@ -54,7 +55,7 @@ goog.fs.get_ = function(type, size) {
   requestFileSystem(type, size, function(fs) {
     d.callback(new goog.fs.FileSystemImpl(fs));
   }, function(err) {
-    d.errback(new goog.fs.Error(err.code, 'requesting filesystem'));
+    d.errback(new goog.fs.Error(err, 'requesting filesystem'));
   });
   return d;
 };
@@ -107,55 +108,44 @@ goog.fs.getPersistent = function(size) {
 
 /**
  * Creates a blob URL for a blob object.
+ * Throws an error if the browser does not support Object Urls.
+ *
+ * TODO(user): Update references to this method to use
+ * goog.fs.url.createObjectUrl instead.
  *
  * @param {!Blob} blob The object for which to create the URL.
  * @return {string} The URL for the object.
  */
 goog.fs.createObjectUrl = function(blob) {
-  return goog.fs.getUrlObject_().createObjectURL(blob);
+  return goog.fs.url.createObjectUrl(blob);
 };
 
 
 /**
  * Revokes a URL created by {@link goog.fs.createObjectUrl}.
+ * Throws an error if the browser does not support Object Urls.
+ *
+ * TODO(user): Update references to this method to use
+ * goog.fs.url.revokeObjectUrl instead.
  *
  * @param {string} url The URL to revoke.
  */
 goog.fs.revokeObjectUrl = function(url) {
-  goog.fs.getUrlObject_().revokeObjectURL(url);
+  goog.fs.url.revokeObjectUrl(url);
 };
 
 
 /**
- * @typedef {!{createObjectURL: (function(!Blob): string),
- *             revokeObjectURL: function(string): void}}
- */
-goog.fs.UrlObject_;
-
-
-/**
- * Get the object that has the createObjectURL and revokeObjectURL functions for
- * this browser.
+ * Checks whether this browser supports Object Urls. If not, calls to
+ * createObjectUrl and revokeObjectUrl will result in an error.
  *
- * @return {goog.fs.UrlObject_} The object for this browser.
- * @private
+ * TODO(user): Update references to this method to use
+ * goog.fs.url.browserSupportsObjectUrls instead.
+ *
+ * @return {boolean} True if this browser supports Object Urls.
  */
-goog.fs.getUrlObject_ = function() {
-  // This is what the spec says to do
-  // http://dev.w3.org/2006/webapi/FileAPI/#dfn-createObjectURL
-  if (goog.isDef(goog.global.URL) &&
-      goog.isDef(goog.global.URL.createObjectURL)) {
-    return /** @type {goog.fs.UrlObject_} */ (goog.global.URL);
-  // This is what Chrome does (as of 10.0.648.6 dev)
-  } else if (goog.isDef(goog.global.webkitURL) &&
-             goog.isDef(goog.global.webkitURL.createObjectURL)) {
-    return /** @type {goog.fs.UrlObject_} */ (goog.global.webkitURL);
-  // This is what the spec used to say to do
-  } else if (goog.isDef(goog.global.createObjectURL)) {
-    return /** @type {goog.fs.UrlObject_} */ (goog.global);
-  } else {
-    throw Error('This browser doesn\'t seem to support blob URLs');
-  }
+goog.fs.browserSupportsObjectUrls = function() {
+  return goog.fs.url.browserSupportsObjectUrls();
 };
 
 
@@ -176,7 +166,42 @@ goog.fs.getBlob = function(var_args) {
     }
     return bb.getBlob();
   } else {
-    return new Blob(goog.array.toArray(arguments));
+    return goog.fs.getBlobWithProperties(goog.array.toArray(arguments));
+  }
+};
+
+
+/**
+ * Creates a blob with the given properties.
+ * See https://developer.mozilla.org/en-US/docs/Web/API/Blob for more details.
+ *
+ * @param {Array<string|!Blob>} parts The values that will make up the
+ *     resulting blob.
+ * @param {string=} opt_type The MIME type of the Blob.
+ * @param {string=} opt_endings Specifies how strings containing newlines are to
+ *     be written out.
+ * @return {!Blob} The blob.
+ */
+goog.fs.getBlobWithProperties = function(parts, opt_type, opt_endings) {
+  var BlobBuilder = goog.global.BlobBuilder || goog.global.WebKitBlobBuilder;
+
+  if (goog.isDef(BlobBuilder)) {
+    var bb = new BlobBuilder();
+    for (var i = 0; i < parts.length; i++) {
+      bb.append(parts[i], opt_endings);
+    }
+    return bb.getBlob(opt_type);
+  } else if (goog.isDef(goog.global.Blob)) {
+    var properties = {};
+    if (opt_type) {
+      properties['type'] = opt_type;
+    }
+    if (opt_endings) {
+      properties['endings'] = opt_endings;
+    }
+    return new Blob(parts, properties);
+  } else {
+    throw Error('This browser doesn\'t seem to support creating Blobs');
   }
 };
 

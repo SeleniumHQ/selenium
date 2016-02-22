@@ -1,24 +1,22 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.selenium.proxy;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.RemoteException;
@@ -32,12 +30,12 @@ import org.openqa.grid.internal.listeners.SelfHealingProxy;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.utils.HtmlRenderer;
-import org.openqa.grid.selenium.utils.WebProxyHtmlRenderer;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -56,7 +54,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
       CommandListener,
       TestSessionListener {
 
-  private static final Logger log = Logger.getLogger(DefaultRemoteProxy.class.getName());
+  private static final Logger LOG = Logger.getLogger(DefaultRemoteProxy.class.getName());
 
   public static final int DEFAULT_POLLING_INTERVAL = 10000;
   public static final int DEFAULT_UNREGISTER_DELAY = 60000;
@@ -78,25 +76,24 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
   }
 
   public void beforeRelease(TestSession session) {
-    // release the resources remotely.
+    // release the resources remotely if the remote started a browser.
     if (session.getExternalKey() == null) {
-      throw new IllegalStateException(
-          "cannot release the resources, they haven't been reserved properly.");
+      return;
     }
     boolean ok = session.sendDeleteSessionRequest();
     if (!ok) {
-      log.warning("Error releasing the resources on timeout for session " + session);
+      LOG.warning("Error releasing the resources on timeout for session " + session);
     }
   }
 
 
   public void afterCommand(TestSession session, HttpServletRequest request, HttpServletResponse response) {
-    session.put("lastCommand", request.getMethod() + " - " + request.getPathInfo() + " executing ...");
+    session.put("lastCommand", request.getMethod() + " - " + request.getPathInfo() + " executed.");
   }
 
 
   public void beforeCommand(TestSession session, HttpServletRequest request, HttpServletResponse response) {
-    session.put("lastCommand", request.getMethod() + " - " + request.getPathInfo() + " executed.");
+    session.put("lastCommand", request.getMethod() + " - " + request.getPathInfo() + " executing ...");
   }
 
   private final HtmlRenderer renderer = new WebProxyHtmlRenderer(this);
@@ -121,7 +118,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
       getStatus();
       return true;
     } catch (Exception e) {
-      log.warning("Failed to check status of node: " + e.getMessage());
+      LOG.fine("Failed to check status of node: " + e.getMessage());
       return false;
     }
   }
@@ -140,14 +137,16 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
                     failedPollingTries++;
                     if (failedPollingTries >= downPollingLimit) {
                       downSince = System.currentTimeMillis();
-                      addNewEvent(new RemoteNotReachableException("Marking the node as down. " +
-                                                                  "Cannot reach the node for " + failedPollingTries + " tries."));
+                      addNewEvent(new RemoteNotReachableException(String.format(
+                        "Marking the node %s as down: cannot reach the node for %s tries",
+                        DefaultRemoteProxy.this, failedPollingTries)));
                     }
                   } else {
                     long downFor = System.currentTimeMillis() - downSince;
                     if (downFor > unregisterDelay) {
-                      addNewEvent(new RemoteUnregisterException(
-                          "Unregistering the node. It's been down for " + downFor + " milliseconds."));
+                      addNewEvent(new RemoteUnregisterException(String.format(
+                        "Unregistering the node %s because it's been down for %s milliseconds",
+                        DefaultRemoteProxy.this, downFor)));
                     }
                   }
                 } else {
@@ -178,12 +177,12 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
   public void onEvent(List<RemoteException> events, RemoteException lastInserted) {
     for (RemoteException e : events) {
       if (e instanceof RemoteNotReachableException) {
-        log.warning(e.getMessage());
+        LOG.info(e.getMessage());
         down = true;
         this.errors.clear();
       }
       if (e instanceof RemoteUnregisterException) {
-        log.warning(e.getMessage());
+        LOG.info(e.getMessage());
         Registry registry = this.getRegistry();
         registry.removeIfPresent(this);
       }
@@ -209,14 +208,14 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
    * The client shouldn't have to care where firefox is installed as long as the correct version is
    * launched, however with webdriver the binary location is specified in the desiredCapability,
    * making it the responsibility of the person running the test.
-   * 
+   *
    * With this implementation of beforeSession, that problem disappears . If the webdriver slot is
    * registered with a firefox using a custom binary location, the hub will handle it.
-   * 
+   *
    * <p>
    * For instance if a node registers:
    * {"browserName":"firefox","version":"7.0","firefox_binary":"/home/ff7"}
-   * 
+   *
    * and later on a client requests {"browserName":"firefox","version":"7.0"} , the hub will
    * automatically append the correct binary path to the desiredCapability before it's forwarded to
    * the server. That way the version / install location mapping is done only once at the node
@@ -236,27 +235,16 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
 
       if (BrowserType.CHROME.equals(cap.get(CapabilityType.BROWSER_NAME))) {
         if (session.getSlot().getCapabilities().get("chrome_binary") != null) {
-          JSONObject options = (JSONObject) cap.get(ChromeOptions.CAPABILITY);
+          Map<String, Object> options = (Map<String, Object>) cap.get(ChromeOptions.CAPABILITY);
           if (options == null) {
-            options = new JSONObject();
+            options = new HashMap<>();
           }
-          try {
+          if (!options.containsKey("binary")) {
             options.put("binary", session.getSlot().getCapabilities().get("chrome_binary"));
-          } catch (JSONException e) {
-            e.printStackTrace();
           }
           cap.put(ChromeOptions.CAPABILITY, options);
         }
       }
-
-      if (BrowserType.OPERA.equals(cap.get(CapabilityType.BROWSER_NAME))) {
-        if (session.getSlot().getCapabilities().get("opera_binary") != null
-            && cap.get("opera.binary") == null) {
-          session.getRequestedCapabilities().put("opera.binary",
-                                                 session.getSlot().getCapabilities().get("opera_binary"));
-        }
-      }
-
     }
   }
 

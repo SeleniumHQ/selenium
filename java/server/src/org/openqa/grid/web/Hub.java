@@ -1,19 +1,19 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.web;
 
@@ -33,9 +33,12 @@ import org.openqa.grid.web.servlet.TestSessionStatusServlet;
 import org.openqa.grid.web.servlet.beta.ConsoleServlet;
 import org.openqa.grid.web.utils.ExtraServletUtil;
 import org.openqa.selenium.net.NetworkUtils;
-import org.seleniumhq.jetty7.server.Server;
-import org.seleniumhq.jetty7.server.bio.SocketConnector;
-import org.seleniumhq.jetty7.servlet.ServletContextHandler;
+import org.seleniumhq.jetty9.server.HttpConfiguration;
+import org.seleniumhq.jetty9.server.HttpConnectionFactory;
+import org.seleniumhq.jetty9.server.Server;
+import org.seleniumhq.jetty9.server.ServerConnector;
+import org.seleniumhq.jetty9.servlet.ServletContextHandler;
+import org.seleniumhq.jetty9.util.thread.QueuedThreadPool;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -45,7 +48,7 @@ import java.util.logging.Logger;
 import javax.servlet.Servlet;
 
 /**
- * Jetty server. Main entry point for everything about the grid. <p/> Except for unit tests, this
+ * Jetty server. Main entry point for everything about the grid. <p> Except for unit tests, this
  * should be a singleton.
  */
 public class Hub {
@@ -54,6 +57,7 @@ public class Hub {
 
   private final int port;
   private final String host;
+  private final int maxThread;
   private final boolean isHostRestricted;
   private final Registry registry;
   private final Map<String, Class<? extends Servlet>> extraServlet = Maps.newHashMap();
@@ -75,6 +79,8 @@ public class Hub {
 
   public Hub(GridHubConfiguration config) {
     registry = Registry.newInstance(this, config);
+
+    maxThread = config.getJettyMaxThreads();
 
     if (config.getHost() != null) {
       host = config.getHost();
@@ -101,14 +107,38 @@ public class Hub {
 
   private void initServer() {
     try {
-      server = new Server();
-      SocketConnector socketListener = new SocketConnector();
-      socketListener.setMaxIdleTime(60000);
-      if (isHostRestricted) {
-        socketListener.setHost(host);
+      if (maxThread>0){
+        QueuedThreadPool pool = new QueuedThreadPool();
+        pool.setMaxThreads(maxThread);
+        server = new Server(pool);
+      } else {
+        server = new Server();
       }
-      socketListener.setPort(port);
-      server.addConnector(socketListener);
+
+      HttpConfiguration httpConfig = new HttpConfiguration();
+      httpConfig.setSecureScheme("https");
+      httpConfig.setSecurePort(getPort());
+
+      log.info("Will listen on " + port);
+
+      ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
+      http.setPort(port);
+
+      server.addConnector(http);
+//      if (isHostRestricted) {
+////        httpConfig.
+//      }
+//      httpConfig.setL
+
+
+//      SocketConnector socketListener = new SocketConnector();
+//      socketListener.setMaxIdleTime(60000);
+//      if (isHostRestricted) {
+//        socketListener.setHost(host);
+//      }
+//      socketListener.setPort(port);
+//      socketListener.setLowResourcesMaxIdleTime(6000);
+//      server.addConnector(socketListener);
 
       ServletContextHandler root = new ServletContextHandler(ServletContextHandler.SESSIONS);
       root.setContextPath("/");

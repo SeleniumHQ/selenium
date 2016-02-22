@@ -1,20 +1,10 @@
 
-java_library(name = "api",
-  srcs = [
-    "Timer.java",
-  ],
-  deps = [
-    "//java/client/src/com/thoughtworks/selenium/webdriven:emulation-api",
-  ])
-
-
 java_library(name = "commands",
   srcs = [
     "*.java",
   ],
   deps = [
-    ":api",
-    "//java/client/src/com/thoughtworks/selenium:wait",
+    "//java/client/src/com/thoughtworks/selenium/webdriven:emulation-api",
     "//java/client/src/org/openqa/selenium:webdriver-api",
     "//java/client/src/org/openqa/selenium/interactions",
     "//java/client/src/org/openqa/selenium/io",

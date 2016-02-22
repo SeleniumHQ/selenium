@@ -42,6 +42,7 @@ goog.provide('goog.ui.TwoThumbSlider');
 goog.require('goog.a11y.aria');
 goog.require('goog.a11y.aria.Role');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.ui.SliderBase');
 
 
@@ -58,6 +59,7 @@ goog.ui.TwoThumbSlider = function(opt_domHelper) {
   this.rangeModel.setExtent(this.getMaximum() - this.getMinimum());
 };
 goog.inherits(goog.ui.TwoThumbSlider, goog.ui.SliderBase);
+goog.tagUnsealableClass(goog.ui.TwoThumbSlider);
 
 
 /**
@@ -108,13 +110,13 @@ goog.ui.TwoThumbSlider.prototype.getCssClass = function(orient) {
 /**
  * This creates a thumb element with the specified CSS class name.
  * @param {string} cs  CSS class name of the thumb to be created.
- * @return {HTMLDivElement} The created thumb element.
+ * @return {!HTMLDivElement} The created thumb element.
  * @private
  */
 goog.ui.TwoThumbSlider.prototype.createThumb_ = function(cs) {
-  var thumb = this.getDomHelper().createDom('div', cs);
+  var thumb = this.getDomHelper().createDom(goog.dom.TagName.DIV, cs);
   goog.a11y.aria.setRole(thumb, goog.a11y.aria.Role.BUTTON);
-  return /** @type {HTMLDivElement} */ (thumb);
+  return /** @type {!HTMLDivElement} */ (thumb);
 };
 
 
@@ -146,7 +148,7 @@ goog.ui.TwoThumbSlider.prototype.createThumbs = function() {
     this.getElement().appendChild(extentThumb);
   }
   if (!rangeHighlight) {
-    rangeHighlight = this.getDomHelper().createDom('div',
+    rangeHighlight = this.getDomHelper().createDom(goog.dom.TagName.DIV,
         goog.ui.TwoThumbSlider.RANGE_HIGHLIGHT_CSS_CLASS);
     // Insert highlight before value thumb so that it renders under the thumbs.
     this.getDomHelper().insertSiblingBefore(rangeHighlight, valueThumb);

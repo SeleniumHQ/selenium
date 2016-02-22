@@ -17,16 +17,11 @@
  *     resize options for the popup.
  *
  * @author eae@google.com (Emil A Eklund)
- * @author tildahl@google.com (Michael Tildahl)
  */
 
 goog.provide('goog.positioning.MenuAnchoredPosition');
 
-goog.require('goog.math.Box');
-goog.require('goog.math.Size');
-goog.require('goog.positioning');
 goog.require('goog.positioning.AnchoredViewportPosition');
-goog.require('goog.positioning.Corner');
 goog.require('goog.positioning.Overflow');
 
 

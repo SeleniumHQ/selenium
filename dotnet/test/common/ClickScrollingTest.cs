@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 using System.Drawing;
@@ -63,7 +61,7 @@ namespace OpenQA.Selenium
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_double_overflow_auto.html");
 
             driver.FindElement(By.Id("link")).Click();
-            WaitFor(TitleToBe("Clicked Successfully!"));
+            WaitFor(TitleToBe("Clicked Successfully!"), "Browser title was not 'Clicked Successfully'");
         }
 
         [Test]
@@ -73,7 +71,7 @@ namespace OpenQA.Selenium
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_y_overflow_auto.html");
 
             driver.FindElement(By.Id("link")).Click();
-            WaitFor(TitleToBe("Clicked Successfully!"));
+            WaitFor(TitleToBe("Clicked Successfully!"), "Browser title was not 'Clicked Successfully'");
         }
 
         [Test]
@@ -161,7 +159,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException]
         [Ignore("All tested browses scroll non-scrollable frames")]
         public void ShouldNotBeAbleToClickElementThatIsOutOfViewInANonScrollableFrame()
         {
@@ -170,7 +167,7 @@ namespace OpenQA.Selenium
                 driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_non_scrolling_frame.html");
                 driver.SwitchTo().Frame("scrolling_frame");
                 IWebElement element = driver.FindElement(By.Name("scroll_checkbox"));
-                element.Click();
+                Assert.Throws<WebDriverException>(() => element.Click());
             }
             finally
             {

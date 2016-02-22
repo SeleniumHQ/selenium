@@ -24,6 +24,8 @@ goog.provide('goog.debug.FpsDisplay');
 
 goog.require('goog.asserts');
 goog.require('goog.async.AnimationDelay');
+goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.ui.Component');
 
 
@@ -35,9 +37,10 @@ goog.require('goog.ui.Component');
  * @param {goog.dom.DomHelper=} opt_domHelper An optional dom helper.
  * @constructor
  * @extends {goog.ui.Component}
+ * @final
  */
 goog.debug.FpsDisplay = function(opt_domHelper) {
-  goog.base(this, opt_domHelper);
+  goog.debug.FpsDisplay.base(this, 'constructor', opt_domHelper);
 };
 goog.inherits(goog.debug.FpsDisplay, goog.ui.Component);
 
@@ -64,14 +67,14 @@ goog.debug.FpsDisplay.prototype.animation_ = null;
 
 /** @override */
 goog.debug.FpsDisplay.prototype.createDom = function() {
-  this.setElementInternal(
-      this.getDomHelper().createDom('div', goog.debug.FpsDisplay.CSS));
+  this.setElementInternal(this.getDomHelper().createDom(
+      goog.dom.TagName.DIV, goog.debug.FpsDisplay.CSS));
 };
 
 
 /** @override */
 goog.debug.FpsDisplay.prototype.enterDocument = function() {
-  goog.base(this, 'enterDocument');
+  goog.debug.FpsDisplay.base(this, 'enterDocument');
   this.animation_ = new goog.debug.FpsDisplay.FpsAnimation_(this.getElement());
   this.delay_ = new goog.async.AnimationDelay(
       this.handleDelay_, this.getDomHelper().getWindow(), this);
@@ -93,7 +96,7 @@ goog.debug.FpsDisplay.prototype.handleDelay_ = function(now) {
 
 /** @override */
 goog.debug.FpsDisplay.prototype.exitDocument = function() {
-  goog.base(this, 'exitDocument');
+  goog.debug.FpsDisplay.base(this, 'exitDocument');
   this.animation_ = null;
   goog.dispose(this.delay_);
 };
@@ -155,7 +158,7 @@ goog.debug.FpsDisplay.FpsAnimation_.prototype.onAnimationFrame = function(now) {
   var SAMPLES = goog.debug.FpsDisplay.SAMPLES;
   if (this.frameNumber_ % SAMPLES == 0) {
     this.lastFps_ = Math.round((1000 * SAMPLES) / (now - this.lastTime_));
-    this.element_.innerHTML = this.lastFps_;
+    goog.dom.setTextContent(this.element_, this.lastFps_);
     this.lastTime_ = now;
   }
   this.frameNumber_++;

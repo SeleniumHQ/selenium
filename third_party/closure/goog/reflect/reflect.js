@@ -15,6 +15,7 @@
 /**
  * @fileoverview Useful compiler idioms.
  *
+ * @author johnlenz@google.com (John Lenz)
  */
 
 goog.provide('goog.reflect');
@@ -23,8 +24,7 @@ goog.provide('goog.reflect');
 /**
  * Syntax for object literal casts.
  * @see http://go/jscompiler-renaming
- * @see http://code.google.com/p/closure-compiler/wiki/
- *      ExperimentalTypeBasedPropertyRenaming
+ * @see https://github.com/google/closure-compiler/wiki/Type-Based-Property-Renaming
  *
  * Use this if you have an object literal whose keys need to have the same names
  * as the properties of some class even after they are renamed by the compiler.

@@ -1,17 +1,19 @@
-// Copyright 2013 Selenium committers
-// Copyright 2013 Software Freedom Conservancy
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-//     You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 'use strict';
 
@@ -19,7 +21,7 @@ var exec = require('child_process').exec,
     fs = require('fs'),
     net = require('net');
 
-var promise = require('../index').promise;
+var promise = require('../lib/promise');
 
 
 /**
@@ -34,7 +36,7 @@ var DEFAULT_IANA_RANGE = {min: 49152, max: 65535};
 /**
  * The epheremal port range for the current system. Lazily computed on first
  * access.
- * @type {webdriver.promise.Promise.<{min: number, max: number}>}
+ * @type {promise.Promise.<{min: number, max: number}>}
  */
 var systemRange = null;
 
@@ -42,7 +44,7 @@ var systemRange = null;
 /**
  * Computes the ephemeral port range for the current system. This is based on
  * http://stackoverflow.com/a/924337.
- * @return {webdriver.promise.Promise.<{min: number, max: number}>} A promise
+ * @return {promise.Promise.<{min: number, max: number}>} A promise
  *     that will resolve to the ephemeral port range of the current system.
  */
 function findSystemPortRange() {
@@ -60,7 +62,7 @@ function findSystemPortRange() {
 /**
  * Executes a command and returns its output if it succeeds.
  * @param {string} cmd The command to execute.
- * @return {!webdriver.promise.Promise<string>} A promise that will resolve
+ * @return {!promise.Promise.<string>} A promise that will resolve
  *     with the command's stdout data.
  */
 function execute(cmd) {
@@ -78,7 +80,7 @@ function execute(cmd) {
 
 /**
  * Computes the ephemeral port range for a Unix-like system.
- * @return {!webdriver.promise.Promise<{min: number, max: number}>} A promise
+ * @return {!promise.Promise.<{min: number, max: number}>} A promise
  *     that will resolve with the ephemeral port range on the current system.
  */
 function findUnixPortRange() {
@@ -105,7 +107,7 @@ function findUnixPortRange() {
 
 /**
  * Computes the ephemeral port range for a Windows system.
- * @return {!webdriver.promise.Promise<{min: number, max: number}>} A promise
+ * @return {!promise.Promise.<{min: number, max: number}>} A promise
  *     that will resolve with the ephemeral port range on the current system.
  */
 function findWindowsPortRange() {
@@ -144,12 +146,18 @@ function findWindowsPortRange() {
 /**
  * Tests if a port is free.
  * @param {number} port The port to test.
- * @return {!webdriver.promise.Promise.<boolean>} A promise that will resolve
+ * @param {string=} opt_host The bound host to test the {@code port} against.
+ *     Defaults to {@code INADDR_ANY}.
+ * @return {!promise.Promise.<boolean>} A promise that will resolve
  *     with whether the port is free.
  */
 function isFree(port, opt_host) {
-  var result = promise.defer(function() {
-    server.cancel();
+  var result = promise.defer();
+
+  result.promise.thenCatch(function(e) {
+    if (e instanceof promise.CancellationError) {
+      server.close();
+    }
   });
 
   var server = net.createServer().on('error', function(e) {
@@ -171,7 +179,9 @@ function isFree(port, opt_host) {
 
 
 /**
- * @return {!webdriver.promise.Promise.<number>} A promise that will resolve
+ * @param {string=} opt_host The bound host to test the {@code port} against.
+ *     Defaults to {@code INADDR_ANY}.
+ * @return {!promise.Promise.<number>} A promise that will resolve
  *     to a free port. If a port cannot be found, the promise will be
  *     rejected.
  */

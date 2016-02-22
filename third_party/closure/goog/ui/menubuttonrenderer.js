@@ -20,17 +20,13 @@
 
 goog.provide('goog.ui.MenuButtonRenderer');
 
-goog.require('goog.a11y.aria');
-goog.require('goog.a11y.aria.State');
-goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.string');
+goog.require('goog.dom.TagName');
 goog.require('goog.style');
 goog.require('goog.ui.CustomButtonRenderer');
 goog.require('goog.ui.INLINE_BLOCK_CLASSNAME');
 goog.require('goog.ui.Menu');
 goog.require('goog.ui.MenuRenderer');
-goog.require('goog.userAgent');
 
 
 
@@ -57,40 +53,6 @@ goog.ui.MenuButtonRenderer.CSS_CLASS = goog.getCssName('goog-menu-button');
 
 
 /**
- * A property to denote content elements that have been wrapped in an extra
- * div to work around FF2/RTL bugs.
- * @type {string}
- * @private
- */
-goog.ui.MenuButtonRenderer.WRAPPER_PROP_ = '__goog_wrapper_div';
-
-
-if (goog.userAgent.GECKO) {
-  /**
-   * Takes the menubutton's root element, and sets its content to the given
-   * text caption or DOM structure. Because the DOM structure of this button is
-   * conditional based on whether we need to work around FF2/RTL bugs, we
-   * override the default implementation to take this into account.
-   * @param {Element} element The control's root element.
-   * @param {goog.ui.ControlContent} content Text caption or DOM
-   *     structure to be set as the control's content.
-   * @override
-   */
-  goog.ui.MenuButtonRenderer.prototype.setContent = function(element,
-      content) {
-    var caption =
-        goog.ui.MenuButtonRenderer.superClass_.getContentElement.call(this,
-            /** @type {Element} */ (element && element.firstChild));
-    if (caption) {
-      goog.dom.replaceNode(
-          this.createCaption(content, goog.dom.getDomHelper(element)),
-          caption);
-    }
-  };
-} // end goog.userAgent.GECKO
-
-
-/**
  * Takes the button's root element and returns the parent element of the
  * button's contents.  Overrides the superclass implementation by taking
  * the nested DIV structure of menu buttons into account.
@@ -100,43 +62,8 @@ if (goog.userAgent.GECKO) {
  * @override
  */
 goog.ui.MenuButtonRenderer.prototype.getContentElement = function(element) {
-  var content =
-      goog.ui.MenuButtonRenderer.superClass_.getContentElement.call(this,
-          /** @type {Element} */ (element && element.firstChild));
-  if (goog.userAgent.GECKO && content &&
-      content[goog.ui.MenuButtonRenderer.WRAPPER_PROP_]) {
-    content = /** @type {Element} */ (content.firstChild);
-  }
-  return content;
-};
-
-
-/**
- * Updates the menu button's ARIA (accessibility) state so that aria-expanded
- * does not appear when the button is "opened."
- * @param {Element} element Element whose ARIA state is to be updated.
- * @param {goog.ui.Component.State} state Component state being enabled or
- *     disabled.
- * @param {boolean} enable Whether the state is being enabled or disabled.
- * @protected
- * @override
- */
-goog.ui.MenuButtonRenderer.prototype.updateAriaState = function(element, state,
-    enable) {
-  // If button has OPENED state, do not assign an ARIA state. Usually
-  // aria-expanded would be assigned, which does not mean anything for a menu
-  // button.
-  goog.asserts.assert(
-      element, 'The menu button DOM element cannot be null.');
-  goog.asserts.assert(
-      goog.string.isEmpty(
-      goog.a11y.aria.getState(element, goog.a11y.aria.State.EXPANDED)),
-      'Menu buttons do not support the ARIA expanded attribute. ' +
-      'Please use ARIA disabled instead.' +
-      goog.a11y.aria.getState(element, goog.a11y.aria.State.EXPANDED).length);
-  if (state != goog.ui.Component.State.OPENED) {
-    goog.base(this, 'updateAriaState', element, state, enable);
-  }
+  return goog.ui.MenuButtonRenderer.superClass_.getContentElement.call(this,
+      /** @type {Element} */ (element && element.firstChild));
 };
 
 
@@ -226,11 +153,11 @@ goog.ui.MenuButtonRenderer.prototype.createCaption = function(content, dom) {
  *     to wrap in a box.
  * @param {string} cssClass The CSS class for the renderer.
  * @param {goog.dom.DomHelper} dom DOM helper, used for document interaction.
- * @return {Element} Caption element.
+ * @return {!Element} Caption element.
  */
 goog.ui.MenuButtonRenderer.wrapCaption = function(content, cssClass, dom) {
   return dom.createDom(
-      'div',
+      goog.dom.TagName.DIV,
       goog.ui.INLINE_BLOCK_CLASSNAME + ' ' +
           goog.getCssName(cssClass, 'caption'),
       content);
@@ -248,7 +175,7 @@ goog.ui.MenuButtonRenderer.wrapCaption = function(content, cssClass, dom) {
  */
 goog.ui.MenuButtonRenderer.prototype.createDropdown = function(dom) {
   // 00A0 is &nbsp;
-  return dom.createDom('div',
+  return dom.createDom(goog.dom.TagName.DIV,
       goog.ui.INLINE_BLOCK_CLASSNAME + ' ' +
       goog.getCssName(this.getCssClass(), 'dropdown'), '\u00A0');
 };

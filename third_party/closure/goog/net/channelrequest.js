@@ -29,11 +29,17 @@ goog.provide('goog.net.ChannelRequest.Error');
 
 goog.require('goog.Timer');
 goog.require('goog.async.Throttle');
+goog.require('goog.dom.TagName');
+goog.require('goog.dom.safe');
 goog.require('goog.events.EventHandler');
+goog.require('goog.html.SafeUrl');
+goog.require('goog.html.uncheckedconversions');
 goog.require('goog.net.ErrorCode');
 goog.require('goog.net.EventType');
 goog.require('goog.net.XmlHttp');
 goog.require('goog.object');
+goog.require('goog.string');
+goog.require('goog.string.Const');
 goog.require('goog.userAgent');
 
 // TODO(nnaze): This file depends on goog.net.BrowserChannel and vice versa (a
@@ -103,7 +109,7 @@ goog.net.ChannelRequest = function(channel, channelDebug, opt_sessionId,
 
   /**
    * An object to keep track of the channel request event listeners.
-   * @type {!goog.events.EventHandler}
+   * @type {!goog.events.EventHandler<!goog.net.ChannelRequest>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -213,7 +219,7 @@ goog.net.ChannelRequest.prototype.xmlHttpChunkStart_ = 0;
 
 /**
  * The Trident instance if the request is using Trident.
- * @type {ActiveXObject}
+ * @type {Object}
  * @private
  */
 goog.net.ChannelRequest.prototype.trident_ = null;
@@ -716,7 +722,7 @@ goog.net.ChannelRequest.prototype.onXmlHttpReadyStateChanged_ = function() {
 
   if (this.decodeChunks_) {
     this.decodeNextChunks_(readyState, responseText);
-    if (goog.userAgent.OPERA &&
+    if (goog.userAgent.OPERA && this.successful_ &&
         readyState == goog.net.XmlHttp.ReadyState.INTERACTIVE) {
       this.startPolling_();
     }
@@ -839,33 +845,6 @@ goog.net.ChannelRequest.prototype.startPolling_ = function() {
 
 
 /**
- * Called when the browser declares itself offline at the start of a request or
- * during its lifetime.  Abandons that request.
- * @private
- */
-goog.net.ChannelRequest.prototype.cancelRequestAsBrowserIsOffline_ =
-    function() {
-  if (this.successful_) {
-    // Should never happen.
-    this.channelDebug_.severe(
-        'Received browser offline event even though request completed ' +
-        'successfully');
-  }
-
-  this.channelDebug_.browserOfflineResponse(this.requestUri_);
-  this.cleanup_();
-
-  // set error and dispatch failure
-  this.lastError_ = goog.net.ChannelRequest.Error.BROWSER_OFFLINE;
-  /** @suppress {missingRequire} */
-  goog.net.BrowserChannel.notifyStatEvent(
-      /** @suppress {missingRequire} */
-      goog.net.BrowserChannel.Stat.BROWSER_OFFLINE);
-  this.dispatchFailure_();
-};
-
-
-/**
  * Returns the next chunk of a chunk-encoded response. This is not standard
  * HTTP chunked encoding because browsers don't expose the chunk boundaries to
  * the application through XMLHTTP. So we have an additional chunk encoding at
@@ -948,14 +927,28 @@ goog.net.ChannelRequest.prototype.tridentGet_ = function(usingSecondaryDomain) {
     return;
   }
 
+  // Using goog.html.SafeHtml.create() might be viable here but since
+  // this code is now superseded by
+  // closure/labs/net/webchannel/channelrequest.js it's not worth risking
+  // the performance regressions and bugs that might result. Instead we
+  // do an unchecked conversion. Please be extra careful if modifying
+  // the HTML construction in this code, it's brittle and so it's easy to make
+  // mistakes.
+
   var body = '<html><body>';
   if (usingSecondaryDomain) {
-    body += '<script>document.domain="' + hostname + '"</scr' + 'ipt>';
+    var escapedHostname =
+        goog.net.ChannelRequest.escapeForStringInScript_(hostname);
+    body += '<script>document.domain="' + escapedHostname + '"</scr' + 'ipt>';
   }
   body += '</body></html>';
+  var bodyHtml = goog.html.uncheckedconversions
+      .safeHtmlFromStringKnownToSatisfyTypeContract(
+          goog.string.Const.from('b/12014412'), body);
 
   this.trident_.open();
-  this.trident_.write(body);
+  goog.dom.safe.documentWrite(
+      /** @type {!Document} */ (this.trident_), bodyHtml);
   this.trident_.close();
 
   this.trident_.parentWindow['m'] = goog.bind(this.onTridentRpcMessage_, this);
@@ -963,14 +956,48 @@ goog.net.ChannelRequest.prototype.tridentGet_ = function(usingSecondaryDomain) {
   this.trident_.parentWindow['rpcClose'] =
       goog.bind(this.onTridentDone_, this, false);
 
-  var div = this.trident_.createElement('div');
+  var div = this.trident_.createElement(goog.dom.TagName.DIV);
   this.trident_.parentWindow.document.body.appendChild(div);
-  div.innerHTML = '<iframe src="' + this.requestUri_ + '"></iframe>';
+
+  var safeUrl = goog.html.SafeUrl.sanitize(this.requestUri_.toString());
+  var sanitizedEscapedUrl = goog.string.htmlEscape(
+      goog.html.SafeUrl.unwrap(safeUrl));
+  var iframeHtml = goog.html.uncheckedconversions
+      .safeHtmlFromStringKnownToSatisfyTypeContract(
+          goog.string.Const.from('b/12014412'),
+          '<iframe src="' + sanitizedEscapedUrl + '"></iframe>');
+  goog.dom.safe.setInnerHtml(div, iframeHtml);
+
   this.channelDebug_.tridentChannelRequest('GET',
       this.requestUri_, this.rid_, this.retryId_);
   this.channel_.notifyServerReachabilityEvent(
       /** @suppress {missingRequire} */
       goog.net.BrowserChannel.ServerReachability.REQUEST_MADE);
+};
+
+
+/**
+ * JavaScript-escapes a string so that it can be included inside a JS string.
+ * Since the JS string is expected to be inside a <script>, HTML-escaping
+ * cannot be used and thus '<' and '>' are also JS-escaped.
+ * @param {string} string
+ * @return {string}
+ * @private
+ */
+goog.net.ChannelRequest.escapeForStringInScript_ = function(string) {
+  var escaped = '';
+  for (var i = 0; i < string.length; i++) {
+    var c = string.charAt(i);
+    if (c == '<') {
+      escaped += '\\x3c';
+    } else if (c == '>') {
+      escaped += '\\x3e';
+    } else {
+      // This will escape both " and '.
+      escaped += goog.string.escapeChar(c);
+    }
+  }
+  return escaped;
 };
 
 

@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -13,6 +16,7 @@
 
 #include "IEServer.h"
 #include "IESession.h"
+#include "FileUtilities.h"
 #include "logging.h"
 
 namespace webdriver {
@@ -21,10 +25,13 @@ IEServer::IEServer(int port,
                    const std::string& host,
                    const std::string& log_level,
                    const std::string& log_file,
-                   const std::string& version) : Server(port, host, log_level, log_file) {
+                   const std::string& version,
+                   const std::string& driver_implementation,
+                   const std::string& acl) : Server(port, host, log_level, log_file, acl) {
   LOG(TRACE) << "Entering IEServer::IEServer";
-
+  LOG(INFO) << "Driver version: " << version;
   this->version_ = version;
+  this->driver_implementation_ = driver_implementation;
 }
 
 IEServer::~IEServer(void) {
@@ -35,6 +42,7 @@ SessionHandle IEServer::InitializeSession() {
   SessionHandle session_handle(new IESession());
   SessionParameters params;
   params.port = this->port();
+  params.implementation = IESession::ConvertDriverEngine(this->driver_implementation_);
   session_handle->Initialize(reinterpret_cast<void*>(&params));
   return session_handle;
 }
@@ -45,15 +53,7 @@ std::string IEServer::GetStatus() {
   ::ZeroMemory(&system_info, sizeof(SYSTEM_INFO));
   ::GetNativeSystemInfo(&system_info);
 
-  OSVERSIONINFO os_version_info;
-  ::ZeroMemory(&os_version_info, sizeof(OSVERSIONINFO));
-  os_version_info.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-  ::GetVersionEx(&os_version_info);
-
-  std::string major_version = std::to_string(static_cast<long long>(os_version_info.dwMajorVersion));
-  std::string minor_version = std::to_string(static_cast<long long>(os_version_info.dwMinorVersion));
-  std::string build_version = std::to_string(static_cast<long long>(os_version_info.dwBuildNumber));
-  std::string os_version = major_version + "." + minor_version + "." + build_version;
+  std::string os_version = FileUtilities::GetFileVersion("kernel32.dll");
 
   std::string arch = "x86";
   if (system_info.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {

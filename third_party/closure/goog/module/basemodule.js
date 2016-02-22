@@ -22,6 +22,8 @@
 goog.provide('goog.module.BaseModule');
 
 goog.require('goog.Disposable');
+/** @suppress {extraRequire} */
+goog.require('goog.module');
 
 
 

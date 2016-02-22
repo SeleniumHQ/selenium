@@ -1,18 +1,19 @@
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-# Copyright 2012 WebDriver committers
-# Copyright 2012 Software Freedom Conservancy.
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoSuchFrameException
@@ -86,8 +87,8 @@ class visibility_of(object):
     def __call__(self, ignored):
         return _element_if_visible(self.element)
 
-def _element_if_visible(element):
-    return element if element.is_displayed() else False
+def _element_if_visible(element, visibility=True):
+    return element if element.is_displayed() == visibility else False
 
 class presence_of_all_elements_located(object):
     """ An expectation for checking that there is at least one element present
@@ -147,7 +148,11 @@ class frame_to_be_available_and_switch_to_it(object):
 
     def __call__(self, driver):
         try:
-            driver.switch_to_frame(self.frame_locator)
+            if isinstance(self.frame_locator, tuple):
+                driver.switch_to.frame(_find_element(driver,
+                                                     self.frame_locator))
+            else:
+                driver.switch_to.frame(self.frame_locator)
             return True
         except NoSuchFrameException:
             return False
@@ -163,7 +168,7 @@ class invisibility_of_element_located(object):
 
     def __call__(self, driver):
         try:
-            return not _find_element(driver, self.locator).is_displayed()
+            return _element_if_visible(_find_element(driver, self.locator), False)
         except (NoSuchElementException, StaleElementReferenceException):
             # In the case of NoSuchElement, returns true because the element is
             # not present in DOM. The try block checks if the element is present
@@ -256,24 +261,21 @@ class alert_is_present(object):
 
     def __call__(self, driver):
         try:
-            alert = driver.switch_to_alert()
+            alert = driver.switch_to.alert
             alert.text
             return alert
         except NoAlertPresentException:
             return False
 
 def _find_element(driver, by):
-    """ Looks up an element. Logs and re-raises WebDriverException if thrown.
-    Method exists to gather data for
-    http://code.google.com/p/selenium/issues/detail?id=1800
-    """
+    """Looks up an element. Logs and re-raises ``WebDriverException``
+    if thrown."""
     try :
-      return driver.find_element(*by)
+        return driver.find_element(*by)
     except NoSuchElementException as e:
         raise e
     except WebDriverException as e:
         raise e
-
 
 def _find_elements(driver, by):
     try :

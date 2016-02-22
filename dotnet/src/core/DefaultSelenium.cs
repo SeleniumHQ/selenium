@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Software Freedom Conservancy.
+ * Copyright 2015 Software Freedom Conservancy.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -119,6 +119,7 @@ namespace Selenium
 	    /// <summary>
 	    /// Uses an arbitrary CommandProcessor
 	    /// </summary>
+        /// <param name="processor">An ICommandProcessor to be used.</param>
 	    public DefaultSelenium(ICommandProcessor processor)
 	    {
 	        this.commandProcessor = processor;
@@ -135,6 +136,7 @@ namespace Selenium
 		/// <summary>
 		/// Sets the extension Javascript for the session
 		/// </summary>
+        /// <param name="extensionJs">The extention JavaScript to use.</param>
 		public void SetExtensionJs(string extensionJs)
 		{
 			commandProcessor.SetExtensionJs(extensionJs);
@@ -149,9 +151,9 @@ namespace Selenium
 		}
 		
         /// <summary>
-        /// 
+        /// Starts a new Selenium testing session
         /// </summary>
-        /// <param name="optionsString"></param>
+        /// <param name="optionsString">The options to use for the session.</param>
         public void Start(string optionsString)
         {
             commandProcessor.Start(optionsString);
@@ -1798,8 +1800,8 @@ namespace Selenium
         /// <summary>
         /// Captures the Network Traffic that is passing through Selenium Server
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
+        /// <param name="type">Type of traffic to capture</param>
+        /// <returns>The traffic passing through the Selenium Server.</returns>
         public string CaptureNetworkTraffic(string type)
         {
             return commandProcessor.GetString("captureNetworkTraffic", new string[] {type});

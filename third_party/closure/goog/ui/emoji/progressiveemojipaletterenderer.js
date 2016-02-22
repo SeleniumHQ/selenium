@@ -19,6 +19,8 @@
 
 goog.provide('goog.ui.emoji.ProgressiveEmojiPaletteRenderer');
 
+goog.require('goog.dom.TagName');
+goog.require('goog.style');
 goog.require('goog.ui.emoji.EmojiPaletteRenderer');
 
 
@@ -34,6 +36,7 @@ goog.require('goog.ui.emoji.EmojiPaletteRenderer');
  *     to the emoji cell size. A good image is a transparent dot.
  * @constructor
  * @extends {goog.ui.emoji.EmojiPaletteRenderer}
+ * @final
  */
 goog.ui.emoji.ProgressiveEmojiPaletteRenderer = function(defaultImgUrl) {
   goog.ui.emoji.EmojiPaletteRenderer.call(this, defaultImgUrl);
@@ -50,8 +53,8 @@ goog.ui.emoji.ProgressiveEmojiPaletteRenderer.prototype.
   var x = spriteInfo.getXOffsetCssValue();
   var y = spriteInfo.getYOffsetCssValue();
   // Need this extra div for proper vertical centering.
-  var inner = dom.createDom('img', {'src': displayUrl});
-  var el = /** @type {HTMLDivElement} */ (dom.createDom('div',
+  var inner = dom.createDom(goog.dom.TagName.IMG, {'src': displayUrl});
+  var el = /** @type {!HTMLDivElement} */ (dom.createDom(goog.dom.TagName.DIV,
       goog.getCssName('goog-palette-cell-extra'), inner));
   goog.style.setStyle(el, {
     'width': width,
@@ -77,8 +80,8 @@ goog.ui.emoji.ProgressiveEmojiPaletteRenderer.prototype.
   var img;
   var el = item.firstChild;
   while (el) {
-    if ('IMG' == el.tagName) {
-      img = /** @type {Element} */ (el);
+    if ('IMG' == /** @type {!Element} */ (el).tagName) {
+      img = /** @type {!Element} */ (el);
       break;
     }
     el = el.firstChild;

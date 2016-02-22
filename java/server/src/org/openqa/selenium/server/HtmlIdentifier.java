@@ -1,19 +1,19 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 
 package org.openqa.selenium.server;
@@ -21,20 +21,20 @@ package org.openqa.selenium.server;
 /*
  * HtmlIdentifier: a module to identify HTML (and in so doing determine whether it should be
  * injected with selenium JavaScript when running in proxy injection mode).
- * 
+ *
  * As content arrives from the web server, the selenium server must decide whether it is appropriate
  * to inject the selenium test harness JavaScript into that content.  It determines this by means of
  * logic in HtmlIdentifier, a module Patrick recently added.  This module looks at the suffix (e.g.,
  * .html, .js, etc.), the HTTP content type header field, and the content itself (e.g., it
  * asks questions like 'does it contain "<html>"?').  It applies a series of rules which are used
  * to derive an integer score indicating whether injection is a good idea.
- * 
+ *
  * So if you find that proxy injection mode is inappropriately injecting JavaScript into content, or
  * not injecting JavaScript into content which needs it, then it is likely that HtmlIdentifier's rules
  * need to be adjusted.  First, you can diagnose the logic by running the selenium server in
  * debug mode, and looking at the logger output.  In this output you can see how any particular
  * content's score was arrived at.  For example:
- * 
+ *
  * HtmlIdentifier.shouldBeInjected("http://www.google.com/webhp", "text/html; charset=UTF-8", "...")
  *   applied rule [extension [html, htm] rule: match=10000]: 0
  *   applied rule [extension [jsp, asp, php, pl] rule: match=100]: 0
@@ -44,9 +44,9 @@ package org.openqa.selenium.server;
  *   applied rule [content type text/html rule: match=100, failure to match -> -1000]: 100
  *   applied rule [dojo catcher rule: match=-100000]: 0
  *   total : 1000 (should inject)
- * 
+ *
  * If you find a case where an incorrect decision is being made, then
- * 
+ *
  * 1. add a test case to the HtmlIdentifierTest module to reproduce the problem
  * 2. add rules or adjust HtmlIdentifier's logic to fix the problem
  * 3. run all the tests to be sure that we haven't regressed in scenarios other than your own
@@ -59,7 +59,7 @@ import java.util.logging.Logger;
 
 public class HtmlIdentifier {
   static Logger log = Logger.getLogger(HtmlIdentifier.class.getName());
-  private static List<Rule> rules = new ArrayList<Rule>();
+  private static List<Rule> rules = new ArrayList<>();
   private static final int INJECTION_THRESHOLD = 200;
 
   static {
@@ -133,7 +133,7 @@ public class HtmlIdentifier {
   }
 
   static class ExtensionRule extends Rule {
-    List<String> exts = new ArrayList<String>();
+    List<String> exts = new ArrayList<>();
 
     public ExtensionRule(String ext, int score) {
       super("extension " + ext, score, 0);

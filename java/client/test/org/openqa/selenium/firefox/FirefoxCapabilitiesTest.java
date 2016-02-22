@@ -1,19 +1,19 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.firefox;
 
@@ -22,8 +22,7 @@ import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 import static org.junit.Assume.assumeFalse;
 
-import static org.openqa.selenium.remote.CapabilityType.HAS_NATIVE_EVENTS;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
 
 import org.junit.After;
 import org.junit.Before;
@@ -31,7 +30,6 @@ import org.junit.Test;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.CapabilityType;
@@ -104,20 +102,6 @@ public class FirefoxCapabilitiesTest extends JUnit4TestBase {
     }
   }
 
-  @Test
-  public void enableNativeEventCapability() {
-    assumeFalse(TestUtilities.getEffectivePlatform().is(Platform.MAC));
-
-    configureCapability(CapabilityType.HAS_NATIVE_EVENTS, true);
-  }
-
-  @Test
-  public void disableNativeEventCapability() {
-    assumeFalse(TestUtilities.getEffectivePlatform().is(Platform.MAC));
-
-    configureCapability(CapabilityType.HAS_NATIVE_EVENTS, false);
-  }
-
   private void configureCapability(String capability, boolean isEnabled) {
     DesiredCapabilities requiredCaps = new DesiredCapabilities();
     requiredCaps.setCapability(capability, isEnabled);
@@ -129,25 +113,6 @@ public class FirefoxCapabilitiesTest extends JUnit4TestBase {
         "for the session", capability), caps.getCapability(capability) != null);
     assertTrue(String.format("Capability %s should be set to %b", capability, isEnabled),
         isEnabled == (Boolean) caps.getCapability(capability));
-  }
-
-  @Test
-  public void requiredNativeEventCapabilityShouldHavePriority() {
-    assumeFalse(TestUtilities.getEffectivePlatform().is(Platform.MAC));
-
-    DesiredCapabilities desiredCaps = new DesiredCapabilities();
-    desiredCaps.setCapability(HAS_NATIVE_EVENTS, false);
-    DesiredCapabilities requiredCaps = new DesiredCapabilities();
-    requiredCaps.setCapability(HAS_NATIVE_EVENTS, true);
-    WebDriverBuilder builder = new WebDriverBuilder().setDesiredCapabilities(desiredCaps).
-        setRequiredCapabilities(requiredCaps);
-    localDriver = builder.get();
-
-    Capabilities caps = ((HasCapabilities)localDriver).getCapabilities();
-    assertTrue("The native events capability should be included in " +
-        "capabilities for the session", caps.getCapability(HAS_NATIVE_EVENTS) != null);
-    assertTrue("Native events capability should be set enabled",
-        (Boolean) caps.getCapability(HAS_NATIVE_EVENTS));
   }
 
   @After

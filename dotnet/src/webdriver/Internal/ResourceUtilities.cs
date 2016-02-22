@@ -1,9 +1,9 @@
 ﻿// <copyright file="ResourceUtilities.cs" company="WebDriver Committers">
-// Copyright 2007-2011 WebDriver committers
-// Copyright 2007-2011 Google Inc.
-// Portions copyright 2011 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -16,12 +16,10 @@
 // limitations under the License.
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
-using System.Text;
 
 namespace OpenQA.Selenium.Internal
 {
@@ -78,6 +76,18 @@ namespace OpenQA.Selenium.Internal
             }
 
             return resourceStream;
+        }
+
+        /// <summary>
+        /// Returns a value indicating whether a resource exists with the specified ID.
+        /// </summary>
+        /// <param name="resourceId">ID of the embedded resource to check for.</param>
+        /// <returns><see langword="true"/> if the resource exists in the calling assembly; otherwise <see langword="false"/>.</returns>
+        public static bool IsValidResourceName(string resourceId)
+        {
+            Assembly executingAssembly = Assembly.GetCallingAssembly();
+            List<string> resourceNames = new List<string>(executingAssembly.GetManifestResourceNames());
+            return resourceNames.Contains(resourceId);
         }
     }
 }

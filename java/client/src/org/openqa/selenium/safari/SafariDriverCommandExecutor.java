@@ -1,19 +1,19 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.safari;
 
@@ -25,9 +25,11 @@ import com.google.common.base.Stopwatch;
 import com.google.common.base.Throwables;
 import com.google.common.io.Files;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.locators.BrowserLocator;
@@ -59,7 +61,6 @@ class SafariDriverCommandExecutor implements CommandExecutor {
 
   private static final Logger log = Logger.getLogger(SafariDriverCommandExecutor.class.getName());
 
-  private final SafariExtensions safariExtensions;
   private final SafariDriverServer server;
   private final BrowserLocator browserLocator;
   private final SessionData sessionData;
@@ -72,7 +73,6 @@ class SafariDriverCommandExecutor implements CommandExecutor {
    * @param options The {@link SafariOptions} instance
    */
   SafariDriverCommandExecutor(SafariOptions options) {
-    this.safariExtensions = new SafariExtensions(options);
     this.server = new SafariDriverServer(options.getPort());
     this.browserLocator = new SafariLocator();
     this.sessionData = SessionData.forCurrentPlatform();
@@ -92,7 +92,6 @@ class SafariDriverCommandExecutor implements CommandExecutor {
 
     server.start();
 
-    safariExtensions.install();
     if (cleanSession) {
       sessionData.clear();
     }
@@ -112,7 +111,7 @@ class SafariDriverCommandExecutor implements CommandExecutor {
     Stopwatch stopwatch = Stopwatch.createStarted();
     try {
       log.info("Waiting for SafariDriver to connect");
-      connection = server.getConnection(45, TimeUnit.SECONDS);
+      connection = server.getConnection(10, TimeUnit.SECONDS);
     } catch (InterruptedException ignored) {
       // Do nothing.
     }
@@ -159,14 +158,6 @@ class SafariDriverCommandExecutor implements CommandExecutor {
 
     log.info("Stopping server");
     server.stop();
-
-    try {
-      log.info("Uninstalling extensions");
-      safariExtensions.uninstall();
-    } catch (IOException e) {
-      throw new WebDriverException("Unable to uninstall extensions", e);
-    }
-
     log.info("Shutdown complete");
   }
 
@@ -196,18 +187,18 @@ class SafariDriverCommandExecutor implements CommandExecutor {
       String rawJsonCommand = new BeanToJsonConverter().convert(serialize(safariCommand));
       ListenableFuture<String> futureResponse = connection.send(rawJsonCommand);
 
-      JSONObject jsonResponse = new JSONObject(futureResponse.get());
+      JsonObject jsonResponse = new JsonParser().parse(futureResponse.get()).getAsJsonObject();
       Response response = new JsonToBeanConverter().convert(
-          Response.class, jsonResponse.getJSONObject("response").toString());
+          Response.class, jsonResponse.get("response"));
       if (response.getStatus() == ErrorCodes.SUCCESS) {
         checkArgument(
-            safariCommand.getId().equals(jsonResponse.getString("id")),
+            safariCommand.getId().equals(jsonResponse.get("id").getAsString()),
             "Response ID<%s> does not match command ID<%s>",
-            jsonResponse.getString("id"), safariCommand.getId());
+            jsonResponse.get("id").getAsString(), safariCommand.getId());
       }
 
       return response;
-    } catch (JSONException e) {
+    } catch (JsonSyntaxException e) {
       throw new JsonException(e);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
@@ -217,13 +208,13 @@ class SafariDriverCommandExecutor implements CommandExecutor {
     }
   }
 
-  private static String serialize(SafariCommand command) throws JSONException {
-    String rawJsonCommand = new BeanToJsonConverter().convert(command);
-    return new JSONObject()
-        .put("origin", "webdriver")
-        .put("type", "command")
-        .put("command", new JSONObject(rawJsonCommand))
-        .toString();
+  private static JsonElement serialize(SafariCommand command) {
+    JsonObject rawJsonCommand = new BeanToJsonConverter().convertObject(command).getAsJsonObject();
+    JsonObject serialized = new JsonObject();
+    serialized.addProperty("origin", "webdriver");
+    serialized.addProperty("type", "command");
+    serialized.add("command", rawJsonCommand);
+    return serialized;
   }
 
   /**

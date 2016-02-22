@@ -16,13 +16,11 @@
  * @fileoverview A toolbar color menu button control.
  *
  * @author attila@google.com (Attila Bodis)
- * @author ssaviano@google.com (Steven Saviano)
  */
 
 goog.provide('goog.ui.ToolbarColorMenuButton');
 
 goog.require('goog.ui.ColorMenuButton');
-goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.ToolbarColorMenuButtonRenderer');
 goog.require('goog.ui.registry');
 
@@ -38,7 +36,7 @@ goog.require('goog.ui.registry');
  * @param {goog.ui.ColorMenuButtonRenderer=} opt_renderer Optional
  *     renderer used to render or decorate the button; defaults to
  *     {@link goog.ui.ToolbarColorMenuButtonRenderer}.
- * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM hepler, used for
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
  * @constructor
  * @extends {goog.ui.ColorMenuButton}

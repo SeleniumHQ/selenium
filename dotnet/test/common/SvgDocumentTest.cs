@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 
 namespace OpenQA.Selenium
@@ -12,6 +9,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.HtmlUnit, "SVG tests only in rendered browsers")]
         [IgnoreBrowser(Browser.Opera, "Not tested")]
         [IgnoreBrowser(Browser.Chrome, "Test not supported in Chrome yet")]
+        [IgnoreBrowser(Browser.Safari, "Not supported by driver")]
         public void ClickOnSvgElement()
         {
             if (TestUtilities.IsOldIE(driver))
@@ -30,6 +28,7 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.HtmlUnit, "SVG tests only in rendered browsers")]
         [IgnoreBrowser(Browser.Opera, "Not tested")]
+        [IgnoreBrowser(Browser.Safari, "Not supported by driver")]
         public void ExecuteScriptInSvgDocument()
         {
             if (TestUtilities.IsOldIE(driver))

@@ -1,74 +1,106 @@
-// Copyright 2013 Selenium committers
-// Copyright 2013 Software Freedom Conservancy
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-//     You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 'use strict';
 
 var assert = require('assert');
 
-var webdriver = require('../..'),
+var build = require('./build'),
+    isDevMode = require('../devmode'),
+    webdriver = require('../../'),
     flow = webdriver.promise.controlFlow(),
+    remote = require('../../remote'),
     testing = require('../../testing'),
-    fileserver = require('./fileserver'),
-    seleniumserver = require('./seleniumserver');
-
-
-var Browser = {
-  ANDROID: 'android',
-  CHROME: 'chrome',
-  IE: 'internet explorer',
-  // Shorthand for IPAD && IPHONE when using the browsers predciate.
-  IOS: 'iOS',
-  IPAD: 'iPad',
-  IPHONE: 'iPhone',
-  FIREFOX: 'firefox',
-  OPERA: 'opera',
-  PHANTOMJS: 'phantomjs',
-  SAFARI: 'safari',
-
-  // Browsers that should always be tested via the java Selenium server.
-  REMOTE_CHROME: 'remote.chrome',
-  REMOTE_PHANTOMJS: 'remote.phantomjs'
-};
+    fileserver = require('./fileserver');
 
 
 /**
  * Browsers with native support.
- * @type {!Array.<string>}
+ * @type {!Array.<webdriver.Browser>}
  */
 var NATIVE_BROWSERS = [
-  Browser.CHROME,
-  Browser.PHANTOMJS
+  webdriver.Browser.CHROME,
+  webdriver.Browser.EDGE,
+  webdriver.Browser.FIREFOX,
+  webdriver.Browser.IE,
+  webdriver.Browser.OPERA,
+  webdriver.Browser.PHANTOM_JS,
+  webdriver.Browser.SAFARI
 ];
 
 
+var serverJar = process.env['SELENIUM_SERVER_JAR'];
+var remoteUrl = process.env['SELENIUM_REMOTE_URL'];
+var useLoopback = process.env['SELENIUM_USE_LOOP_BACK'] == '1';
+var startServer = !!serverJar && !remoteUrl;
+var nativeRun = !serverJar && !remoteUrl;
+
+
 var browsersToTest = (function() {
-  var browsers = process.env['SELENIUM_BROWSER'] || Browser.CHROME;
-  browsers = browsers.split(',');
+  var permitRemoteBrowsers = !!remoteUrl || !!serverJar;
+  var permitUnknownBrowsers = !nativeRun;
+  var browsers = process.env['SELENIUM_BROWSER'] || webdriver.Browser.FIREFOX;
+
+  browsers = browsers.split(',').map(function(browser) {
+    var parts = browser.split(/:/);
+    if (parts[0] === 'ie') {
+      parts[0] = webdriver.Browser.IE;
+    }
+    if (parts[0] === 'edge') {
+      parts[0] = webdriver.Browser.EDGE;
+    }
+    return parts.join(':');
+  });
   browsers.forEach(function(browser) {
-    if (browser === Browser.IOS) {
-      throw Error('Invalid browser name: ' + browser);
+    var parts = browser.split(/:/, 3);
+    if (parts[0] === 'ie') {
+      parts[0] = webdriver.Browser.IE;
     }
 
-    for (var name in Browser) {
-      if (Browser.hasOwnProperty(name) && Browser[name] === browser) {
-        return;
+    if (NATIVE_BROWSERS.indexOf(parts[0]) == -1 && !permitRemoteBrowsers) {
+      throw Error('Browser ' + parts[0] + ' requires a WebDriver server and ' +
+          'neither the SELENIUM_REMOTE_URL nor the SELENIUM_SERVER_JAR ' +
+          'environment variables have been set.');
+    }
+
+    var recognized = false;
+    for (var prop in webdriver.Browser) {
+      if (webdriver.Browser.hasOwnProperty(prop) &&
+          webdriver.Browser[prop] === parts[0]) {
+        recognized = true;
+        break;
       }
     }
 
-    throw Error('Unrecognized browser: ' + browser);
+    if (!recognized && !permitUnknownBrowsers) {
+      throw Error('Unrecognized browser: ' + browser);
+    }
   });
+
+  console.log('Running tests against [' + browsers.join(',') + ']');
+  if (remoteUrl) {
+    console.log('Using remote server ' + remoteUrl);
+  } else if (serverJar) {
+    console.log('Using standalone Selenium server ' + serverJar);
+    if (useLoopback) {
+      console.log('Running tests using loopback address')
+    }
+  }
+
   return browsers;
 })();
 
@@ -81,10 +113,7 @@ var browsersToTest = (function() {
  */
 function browsers(currentBrowser, browsersToIgnore) {
   return function() {
-    var checkIos =
-        currentBrowser === Browser.IPAD || currentBrowser === Browser.IPHONE;
-    return browsersToIgnore.indexOf(currentBrowser) != -1 ||
-        (checkIos && browsersToIgnore.indexOf(Browser.IOS) != -1);
+    return browsersToIgnore.indexOf(currentBrowser) != -1;
   };
 }
 
@@ -96,79 +125,37 @@ function browsers(currentBrowser, browsersToIgnore) {
  */
 function TestEnvironment(browserName, server) {
   var name = browserName;
-  if (name.lastIndexOf('remote.', 0) == 0) {
-    name = name.substring('remote.'.length);
-  }
 
-  var autoCreate = true;
-  this.__defineGetter__(
-      'autoCreateDriver', function() { return autoCreate; });
-  this.__defineSetter__(
-      'autoCreateDriver', function(auto) { autoCreate = auto; });
+  this.currentBrowser = function() {
+    return browserName;
+  };
 
-  this.__defineGetter__('browser', function() { return name; });
-
-  var driver;
-  this.__defineGetter__('driver', function() { return driver; });
+  this.isRemote = function() {
+    return server || remoteUrl;
+  };
 
   this.browsers = function(var_args) {
     var browsersToIgnore = Array.prototype.slice.apply(arguments, [0]);
-    var remoteVariants = [];
-    browsersToIgnore.forEach(function(browser) {
-      if (browser.lastIndexOf('remote.', 0) === 0) {
-        remoteVariants.push(browser.substring('remote.'.length));
-      }
-    });
-    browsersToIgnore = browsersToIgnore.concat(remoteVariants);
     return browsers(browserName, browsersToIgnore);
   };
 
   this.builder = function() {
-    assert.ok(!driver, 'Can only have one driver at a time');
     var builder = new webdriver.Builder();
     var realBuild = builder.build;
 
     builder.build = function() {
-      builder.getCapabilities().
-          set(webdriver.Capability.BROWSER_NAME, name);
-
+      var parts = browserName.split(/:/, 3);
+      builder.forBrowser(parts[0], parts[1], parts[2]);
       if (server) {
         builder.usingServer(server.address());
+      } else if (remoteUrl) {
+        builder.usingServer(remoteUrl);
       }
-      return driver = realBuild.call(builder);
+      builder.disableEnvironmentOverrides();
+      return realBuild.call(builder);
     };
 
     return builder;
-  };
-
-  this.createDriver = function() {
-    if (!driver) {
-      driver = this.builder().build();
-    }
-    return driver;
-  };
-
-  this.refreshDriver = function() {
-    if (driver) {
-      driver.quit();
-      driver = null;
-    }
-    this.createDriver();
-  };
-
-  this.dispose = function() {
-    if (driver) {
-      driver.quit();
-      driver = null;
-    }
-  };
-
-  this.waitForTitleToBe = function(expected) {
-    driver.wait(function() {
-      return driver.getTitle().then(function(title) {
-        return title === expected;
-      });
-    }, 5000, 'Waiting for title to be ' + expected);
   };
 }
 
@@ -193,43 +180,52 @@ function suite(fn, opt_options) {
     // Filter out browser specific tests when that browser is not currently
     // selected for testing.
     browsers = browsers.filter(function(browser) {
-      if (browsersToTest.indexOf(browser) != -1) {
-        return true;
-      }
-      return browsersToTest.indexOf(
-          browser.substring('remote.'.length)) != -1;
+      return browsersToTest.indexOf(browser) != -1;
     });
   } else {
     browsers = browsersToTest;
   }
 
   try {
+
+    // Server is only started if required for a specific config.
+    testing.after(function() {
+      if (seleniumServer) {
+        return seleniumServer.stop();
+      }
+    });
+
     browsers.forEach(function(browser) {
-
       testing.describe('[' + browser + ']', function() {
-        var serverToUse = null;
 
-        if (NATIVE_BROWSERS.indexOf(browser) == -1) {
-          serverToUse = seleniumServer;
-          if (!serverToUse) {
-            serverToUse = seleniumServer = new seleniumserver.Server();
+        if (isDevMode && nativeRun) {
+          if (browser === webdriver.Browser.FIREFOX) {
+            testing.before(function() {
+              return build.of('//javascript/firefox-driver:webdriver')
+                  .onlyOnce().go();
+            });
+          } else if (browser === webdriver.Browser.SAFARI) {
+            testing.before(function() {
+              return build.of('//javascript/safari-driver:client')
+                  .onlyOnce().go();
+            });
           }
-          testing.before(seleniumServer.start.bind(seleniumServer, 60 * 1000));
         }
 
-        var env = new TestEnvironment(browser, serverToUse);
+        var serverToUse = null;
 
-        testing.beforeEach(function() {
-          if (env.autoCreateDriver) {
-            env.createDriver();
+        if (!!serverJar && !remoteUrl) {
+          if (!(serverToUse = seleniumServer)) {
+            serverToUse = seleniumServer = new remote.SeleniumServer(
+                serverJar, {loopback: useLoopback});
           }
-        });
 
-        testing.after(function() {
-          env.dispose();
-        });
-
-        fn(env);
+          testing.before(function() {
+            this.timeout(0);
+            return seleniumServer.start(60 * 1000);
+          });
+        }
+        fn(new TestEnvironment(browser, serverToUse));
       });
     });
   } finally {
@@ -240,17 +236,16 @@ function suite(fn, opt_options) {
 
 // GLOBAL TEST SETUP
 
-
-testing.before(fileserver.start);
-testing.after(fileserver.stop);
-
-// Server is only started if required for a specific config.
-testing.after(function() {
-  if (seleniumServer) {
-    seleniumServer.stop();
-  }
+testing.before(function() {
+   // Do not pass register fileserver.start directly with testing.before,
+   // as start takes an optional port, which before assumes is an async
+   // callback.
+   return fileserver.start();
 });
 
+testing.after(function() {
+   return fileserver.stop();
+});
 
 // PUBLIC API
 
@@ -263,6 +258,5 @@ exports.beforeEach = testing.beforeEach;
 exports.it = testing.it;
 exports.ignore = testing.ignore;
 
-exports.Browser = Browser;
 exports.Pages = fileserver.Pages;
 exports.whereIs = fileserver.whereIs;

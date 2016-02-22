@@ -16,20 +16,27 @@
  * @fileoverview Rich text spell checker implementation.
  *
  * @author eae@google.com (Emil A Eklund)
- * @author sergeys@google.com (Sergey Solyanik)
  * @see ../demos/richtextspellchecker.html
  */
 
 goog.provide('goog.ui.RichTextSpellChecker');
 
 goog.require('goog.Timer');
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
-goog.require('goog.events');
+goog.require('goog.dom.Range');
+goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
+goog.require('goog.events.KeyCodes');
+goog.require('goog.events.KeyHandler');
+goog.require('goog.math.Coordinate');
 goog.require('goog.spell.SpellCheck');
 goog.require('goog.string.StringBuffer');
+goog.require('goog.style');
 goog.require('goog.ui.AbstractSpellChecker');
+goog.require('goog.ui.Component');
+goog.require('goog.ui.PopupMenu');
 
 
 
@@ -59,8 +66,23 @@ goog.ui.RichTextSpellChecker = function(handler, opt_domHelper) {
    * @private
    */
   this.boundContinueAsyncFn_ = goog.bind(this.continueAsync_, this);
+
+  /**
+   * Event handler for listening to events without leaking.
+   * @private {!goog.events.EventHandler}
+   */
+  this.eventHandler_ = new goog.events.EventHandler(this);
+  this.registerDisposable(this.eventHandler_);
+
+  /**
+   * The object handling keyboard events.
+   * @private {!goog.events.KeyHandler}
+   */
+  this.keyHandler_ = new goog.events.KeyHandler();
+  this.registerDisposable(this.keyHandler_);
 };
 goog.inherits(goog.ui.RichTextSpellChecker, goog.ui.AbstractSpellChecker);
+goog.tagUnsealableClass(goog.ui.RichTextSpellChecker);
 
 
 /**
@@ -69,6 +91,13 @@ goog.inherits(goog.ui.RichTextSpellChecker, goog.ui.AbstractSpellChecker);
  * @private
  */
 goog.ui.RichTextSpellChecker.prototype.rootNode_;
+
+
+/**
+ * Indicates whether the root node for the rich editor is an iframe.
+ * @private {boolean}
+ */
+goog.ui.RichTextSpellChecker.prototype.rootNodeIframe_ = false;
 
 
 /**
@@ -115,10 +144,10 @@ goog.ui.RichTextSpellChecker.prototype.editorDom_;
 
 
 /**
- * Tag name porition of the marker for the text that does not need to be checked
+ * Tag name portion of the marker for the text that does not need to be checked
  * for spelling.
  *
- * @type {Array.<string|undefined>}
+ * @type {Array<string|undefined>}
  */
 goog.ui.RichTextSpellChecker.prototype.excludeTags;
 
@@ -153,7 +182,8 @@ goog.ui.RichTextSpellChecker.prototype.createDom = function() {
  */
 goog.ui.RichTextSpellChecker.prototype.decorateInternal = function(element) {
   this.setElementInternal(element);
-  if (element.contentDocument || element.contentWindow) {
+  this.rootNodeIframe_ = element.contentDocument || element.contentWindow;
+  if (this.rootNodeIframe_) {
     var doc = element.contentDocument || element.contentWindow.document;
     this.rootNode_ = doc.body;
     this.editorDom_ = goog.dom.getDomHelper(doc);
@@ -167,7 +197,23 @@ goog.ui.RichTextSpellChecker.prototype.decorateInternal = function(element) {
 /** @override */
 goog.ui.RichTextSpellChecker.prototype.enterDocument = function() {
   goog.ui.RichTextSpellChecker.superClass_.enterDocument.call(this);
+
+  var rootElement = goog.asserts.assertElement(this.rootNode_,
+      'The rootNode_ of a richtextspellchecker must be an Element.');
+  this.keyHandler_.attach(rootElement);
+
   this.initSuggestionsMenu();
+};
+
+
+/** @override */
+goog.ui.RichTextSpellChecker.prototype.initSuggestionsMenu = function() {
+  goog.ui.RichTextSpellChecker.base(this, 'initSuggestionsMenu');
+
+  var menu = goog.asserts.assertInstanceof(this.getMenu(), goog.ui.PopupMenu,
+      'The menu of a richtextspellchecker must be a PopupMenu.');
+  this.eventHandler_.listen(menu,
+      goog.ui.Component.EventType.HIDE, this.onCorrectionHide_);
 };
 
 
@@ -180,8 +226,8 @@ goog.ui.RichTextSpellChecker.prototype.check = function() {
   this.preChargeDictionary_(this.rootNode_, this.dictionaryPreScanSize_);
   this.unblockReadyEvents();
 
-  goog.events.listen(this.spellCheck, goog.spell.SpellCheck.EventType.READY,
-                     this.onDictionaryCharged_, true, this);
+  this.eventHandler_.listen(this.spellCheck,
+      goog.spell.SpellCheck.EventType.READY, this.onDictionaryCharged_, true);
   this.spellCheck.processPending();
 };
 
@@ -225,8 +271,8 @@ goog.ui.RichTextSpellChecker.prototype.preChargeDictionary_ = function(node,
  */
 goog.ui.RichTextSpellChecker.prototype.onDictionaryCharged_ = function(e) {
   e.stopPropagation();
-  goog.events.unlisten(this.spellCheck, goog.spell.SpellCheck.EventType.READY,
-                       this.onDictionaryCharged_, true, this);
+  this.eventHandler_.unlisten(this.spellCheck,
+      goog.spell.SpellCheck.EventType.READY, this.onDictionaryCharged_, true);
 
   // Now actually do the spell checking.
   this.clearWordElements();
@@ -271,8 +317,10 @@ goog.ui.RichTextSpellChecker.prototype.finishCheck_ = function() {
   this.spellCheck.processPending();
 
   if (!this.isVisible()) {
-    goog.events.listen(this.rootNode_, goog.events.EventType.CLICK,
-                       this.onWordClick_, false, this);
+    this.eventHandler_.
+        listen(this.rootNode_, goog.events.EventType.CLICK, this.onWordClick_).
+        listen(this.keyHandler_, goog.events.KeyHandler.EventType.KEY,
+            this.handleRootNodeKeyEvent);
   }
   goog.ui.RichTextSpellChecker.superClass_.check.call(this);
 };
@@ -470,13 +518,8 @@ goog.ui.RichTextSpellChecker.prototype.processRange = function(node, text) {
 
 
 /** @override */
-goog.ui.RichTextSpellChecker.prototype.createWordElement = function(
-    word, status) {
-  var parameters = this.getElementProperties(status);
-  var el = /** @type {HTMLSpanElement} */ (this.editorDom_.createDom('span',
-      parameters, word));
-  this.registerWordElement(word, el);
-  return el;
+goog.ui.RichTextSpellChecker.prototype.getElementByIndex = function(id) {
+  return this.editorDom_.getElement(this.makeElementId(id));
 };
 
 
@@ -513,8 +556,10 @@ goog.ui.RichTextSpellChecker.prototype.resume = function() {
 
   this.restoreNode_(this.rootNode_);
 
-  goog.events.unlisten(this.rootNode_, goog.events.EventType.CLICK,
-                       this.onWordClick_, false, this);
+  this.eventHandler_.
+      unlisten(this.rootNode_, goog.events.EventType.CLICK, this.onWordClick_).
+      unlisten(this.keyHandler_, goog.events.KeyHandler.EventType.KEY,
+          this.handleRootNodeKeyEvent);
 };
 
 
@@ -584,7 +629,7 @@ goog.ui.RichTextSpellChecker.prototype.restoreNode_ = function(node) {
  * Returns desired element properties for the specified status.
  *
  * @param {goog.spell.SpellCheck.WordStatus} status Status of the word.
- * @return {Object} Properties to apply to word element.
+ * @return {!Object} Properties to apply to word element.
  * @protected
  * @override
  */
@@ -623,4 +668,113 @@ goog.ui.RichTextSpellChecker.prototype.disposeInternal = function() {
   goog.ui.RichTextSpellChecker.superClass_.disposeInternal.call(this);
   this.rootNode_ = null;
   this.editorDom_ = null;
+};
+
+
+/**
+ * Returns whether the editor node is an iframe.
+ *
+ * @return {boolean} true the editor node is an iframe, otherwise false.
+ * @protected
+ */
+goog.ui.RichTextSpellChecker.prototype.isEditorIframe = function() {
+  return this.rootNodeIframe_;
+};
+
+
+/**
+ * Handles keyboard events inside the editor to allow keyboard navigation
+ * between misspelled words and activation of the suggestion menu.
+ *
+ * @param {goog.events.BrowserEvent} e the key event.
+ * @return {boolean} The handled value.
+ * @protected
+ */
+goog.ui.RichTextSpellChecker.prototype.handleRootNodeKeyEvent = function(e) {
+  var handled = false;
+  switch (e.keyCode) {
+    case goog.events.KeyCodes.RIGHT:
+      if (e.ctrlKey) {
+        handled = this.navigate(goog.ui.AbstractSpellChecker.Direction.NEXT);
+      }
+      break;
+
+    case goog.events.KeyCodes.LEFT:
+      if (e.ctrlKey) {
+        handled = this.navigate(
+            goog.ui.AbstractSpellChecker.Direction.PREVIOUS);
+      }
+      break;
+
+    case goog.events.KeyCodes.DOWN:
+      if (this.getFocusedElementIndex()) {
+        var el = this.editorDom_.getElement(this.makeElementId(
+            this.getFocusedElementIndex()));
+        if (el) {
+          var position = goog.style.getClientPosition(el);
+
+          if (this.isEditorIframe()) {
+            var iframePosition = goog.style.getClientPosition(
+                this.getElementStrict());
+            position = goog.math.Coordinate.sum(iframePosition, position);
+          }
+
+          var size = goog.style.getSize(el);
+          position.x += size.width / 2;
+          position.y += size.height / 2;
+          this.showSuggestionsMenu(el, position);
+          handled = true;
+        }
+      }
+      break;
+  }
+
+  if (handled) {
+    e.preventDefault();
+  }
+
+  return handled;
+};
+
+
+/** @override */
+goog.ui.RichTextSpellChecker.prototype.onCorrectionAction = function(event) {
+  goog.ui.RichTextSpellChecker.base(this, 'onCorrectionAction', event);
+
+  // In case of editWord base class has already set the focus (on the input),
+  // otherwise set the focus back on the word.
+  if (event.target != this.getMenuEdit()) {
+    this.reFocus_();
+  }
+};
+
+
+/**
+ * Restores focus when the suggestion menu is hidden.
+ *
+ * @param {goog.events.BrowserEvent} event Blur event.
+ * @private
+ */
+goog.ui.RichTextSpellChecker.prototype.onCorrectionHide_ = function(event) {
+  this.reFocus_();
+};
+
+
+/**
+ * Sets the focus back on the previously focused word element.
+ * @private
+ */
+goog.ui.RichTextSpellChecker.prototype.reFocus_ = function() {
+  this.getElementStrict().focus();
+
+  var el = this.getElementByIndex(this.getFocusedElementIndex());
+  if (el) {
+    this.focusOnElement(el);
+  }
+};
+
+
+/** @override */
+goog.ui.RichTextSpellChecker.prototype.focusOnElement = function(element) {
+  goog.dom.Range.createCaret(element, 0).select();
 };

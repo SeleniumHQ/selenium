@@ -1,18 +1,19 @@
-/*
-Copyright 2007-2011 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium;
 
@@ -30,9 +31,9 @@ import java.util.List;
 /**
  * Mechanism used to locate elements within a document. In order to create your own locating
  * mechanisms, it is possible to subclass this class and override the protected methods as required,
- * though it is expected that that all subclasses rely on the basic finding mechanisms provided
+ * though it is expected that all subclasses rely on the basic finding mechanisms provided
  * through static methods of this class:
- * 
+ *
  * <code>
  * public WebElement findElement(WebDriver driver) {
  *     WebElement element = driver.findElement(By.id(getSelector()));
@@ -119,7 +120,7 @@ public abstract class By {
    * Finds elements based on the value of the "class" attribute. If an element has many classes then
    * this will match against each of them. For example if the value is "one two onone", then the
    * following "className"s will match: "one" and "two"
-   * 
+   *
    * @param className The value of the "class" attribute to search for
    * @return a By which locates elements by the value of the "class" attribute.
    */
@@ -135,6 +136,9 @@ public abstract class By {
    * Finds elements via the driver's underlying W3 Selector engine. If the browser does not
    * implement the Selector API, a best effort is made to emulate the API. In this case, we strive
    * for at least CSS2 support, but offer no guarantees.
+   *
+   * @param selector css expression
+   * @return a By which locates elements by CSS.
    */
   public static By cssSelector(final String selector) {
     if (selector == null)
@@ -147,7 +151,7 @@ public abstract class By {
 
   /**
    * Find a single element. Override this method if necessary.
-   * 
+   *
    * @param context A context to use to find the element
    * @return The WebElement that matches the selector
    */
@@ -161,7 +165,7 @@ public abstract class By {
 
   /**
    * Find many elements.
-   * 
+   *
    * @param context A context to use to find the element
    * @return A list of WebElements matching the selector
    */
@@ -393,7 +397,7 @@ public abstract class By {
      * Generates a partial xpath expression that matches an element whose specified attribute
      * contains the given CSS word. So to match &lt;div class='foo bar'&gt; you would say "//div[" +
      * containingWord("class", "foo") + "]".
-     * 
+     *
      * @param attribute name
      * @param word name
      * @return XPath fragment
@@ -443,7 +447,7 @@ public abstract class By {
 
     @Override
     public String toString() {
-      return "By.selector: " + selector;
+      return "By.cssSelector: " + selector;
     }
   }
 }

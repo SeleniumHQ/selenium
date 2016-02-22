@@ -1,36 +1,39 @@
-/*
-Copyright 2011 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.support.ui;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.base.Supplier;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * An implementation of the {@link Wait} interface that may have its timeout and polling interval
@@ -44,20 +47,20 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  * element on the page.
  *
  * <p>
- * Sample usage: <code><pre>
+ * Sample usage: <pre>
  *   // Waiting 30 seconds for an element to be present on the page, checking
  *   // for its presence once every 5 seconds.
- *   Wait&lt;WebDriver&gt; wait = new FluentWait&lt;WebDriver&gt;(driver)
+ *   Wait{@literal<WebDriver>} wait = new FluentWait{@literal<WebDriver>}(driver)
  *       .withTimeout(30, SECONDS)
  *       .pollingEvery(5, SECONDS)
  *       .ignoring(NoSuchElementException.class);
  *
- *   WebElement foo = wait.until(new Function&lt;WebDriver, WebElement&gt;() {
+ *   WebElement foo = wait.until(new Function{@literal<WebDriver, WebElement>}() {
  *     public WebElement apply(WebDriver driver) {
  *       return driver.findElement(By.id("foo"));
  *     }
  *   });
- * </pre></code>
+ * </pre>
  *
  * <p>
  * <em>This class makes no thread safety guarantees.</em>
@@ -66,7 +69,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  */
 public class FluentWait<T> implements Wait<T> {
 
-  public static Duration FIVE_HUNDRED_MILLIS = new Duration(500, MILLISECONDS);
+  public static final Duration FIVE_HUNDRED_MILLIS = new Duration(500, MILLISECONDS);
 
   private final T input;
   private final Clock clock;
@@ -74,7 +77,12 @@ public class FluentWait<T> implements Wait<T> {
 
   private Duration timeout = FIVE_HUNDRED_MILLIS;
   private Duration interval = FIVE_HUNDRED_MILLIS;
-  private String message = null;
+  private Supplier<String> messageSupplier = new Supplier<String>() {
+    @Override
+    public String get() {
+      return null;
+    }
+  };
 
   private List<Class<? extends Throwable>> ignoredExceptions = Lists.newLinkedList();
 
@@ -115,8 +123,24 @@ public class FluentWait<T> implements Wait<T> {
    * @param message to be appended to default.
    * @return A self reference.
    */
-  public FluentWait<T> withMessage(String message) {
-    this.message = message;
+  public FluentWait<T> withMessage(final String message) {
+    this.messageSupplier = new Supplier<String>() {
+      @Override
+      public String get() {
+        return message;
+      }
+    };
+    return this;
+  }
+
+  /**
+   * Sets the message to be evaluated and displayed when time expires.
+   *
+   * @param messageSupplier to be evaluated on failure and appended to default.
+   * @return A self reference.
+   */
+  public FluentWait<T> withMessage(Supplier<String> messageSupplier) {
+    this.messageSupplier = messageSupplier;
     return this;
   }
 
@@ -141,6 +165,7 @@ public class FluentWait<T> implements Wait<T> {
    * Any exceptions not whitelisted will be allowed to propagate, terminating the wait.
    *
    * @param types The types of exceptions to ignore.
+   * @param <K> an Exception that extends Throwable
    * @return A self reference.
    */
   public <K extends Throwable> FluentWait<T> ignoreAll(Collection<Class<? extends K>> types) {
@@ -150,6 +175,8 @@ public class FluentWait<T> implements Wait<T> {
 
   /**
    * @see #ignoreAll(Collection)
+   * @param exceptionType exception to ignore
+   * @return a self reference
    */
   public FluentWait<T> ignoring(Class<? extends Throwable> exceptionType) {
     return this.ignoreAll(ImmutableList.<Class<? extends Throwable>>of(exceptionType));
@@ -157,6 +184,9 @@ public class FluentWait<T> implements Wait<T> {
 
   /**
    * @see #ignoreAll(Collection)
+   * @param firstType exception to ignore
+   * @param secondType another exception to ignore
+   * @return a self reference
    */
   public FluentWait<T> ignoring(Class<? extends Throwable> firstType,
                                 Class<? extends Throwable> secondType) {
@@ -214,12 +244,15 @@ public class FluentWait<T> implements Wait<T> {
           return value;
         }
       } catch (Throwable e) {
-        lastException = propagateIfNotIngored(e);
+        lastException = propagateIfNotIgnored(e);
       }
 
       // Check the timeout after evaluating the function to ensure conditions
       // with a zero timeout can succeed.
       if (!clock.isNowBefore(end)) {
+        String message = messageSupplier != null ?
+            messageSupplier.get() : null;
+
         String toAppend = message == null ?
             " waiting for " + isTrue.toString() : ": " + message;
 
@@ -237,7 +270,7 @@ public class FluentWait<T> implements Wait<T> {
     }
   }
 
-  private Throwable propagateIfNotIngored(Throwable e) {
+  private Throwable propagateIfNotIgnored(Throwable e) {
     for (Class<? extends Throwable> ignoredException : ignoredExceptions) {
       if (ignoredException.isInstance(e)) {
         return e;

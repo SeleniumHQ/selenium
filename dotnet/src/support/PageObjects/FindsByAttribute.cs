@@ -1,9 +1,9 @@
 ﻿// <copyright file="FindsByAttribute.cs" company="WebDriver Committers">
-// Copyright 2007-2011 WebDriver committers
-// Copyright 2007-2011 Google Inc.
-// Portions copyright 2011 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -17,7 +17,6 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace OpenQA.Selenium.Support.PageObjects
@@ -32,20 +31,20 @@ namespace OpenQA.Selenium.Support.PageObjects
     /// to indicate how to find the elements. This attribute can be used to decorate fields and properties
     /// in your Page Object classes. The <see cref="Type"/> of the field or property must be either
     /// <see cref="IWebElement"/> or IList{IWebElement}. Any other type will throw an
-    /// <see cref="ArgumentException"/> when <see cref="PageFactory.InitElements"/> is called.
+    /// <see cref="ArgumentException"/> when <see cref="PageFactory.InitElements(ISearchContext, object)"/> is called.
     /// </para>
     /// <para>
     /// <code>
     /// [FindsBy(How = How.Name, Using = "myElementName")]
     /// public IWebElement foundElement;
-    /// 
+    ///
     /// [FindsBy(How = How.TagName, Using = "a")]
     /// public IList{IWebElement} allLinks;
     /// </code>
     /// </para>
     /// <para>
     /// You can also use multiple instances of this attribute to find an element that may meet
-    /// one of multiple criteria. When using multiple instances, you can specify the order in 
+    /// one of multiple criteria. When using multiple instances, you can specify the order in
     /// which the criteria is matched by using the <see cref="Priority"/> property.
     /// </para>
     /// <para>
@@ -83,7 +82,7 @@ namespace OpenQA.Selenium.Support.PageObjects
 
         /// <summary>
         /// Gets or sets a value indicating the <see cref="Type"/> of the custom finder. The custom finder must
-        /// descend from the <see cref="By"/> class, and expose a public constructor that takes a <see cref="String"/>
+        /// descend from the <see cref="By"/> class, and expose a public constructor that takes a <see cref="string"/>
         /// argument.
         /// </summary>
         public Type CustomFinderType { get; set; }
@@ -152,6 +151,11 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <returns><see langword="true"/> if the first instance is greater than the second; otherwise, <see langword="false"/>.</returns>
         public static bool operator >(FindsByAttribute one, FindsByAttribute two)
         {
+            if (one == null)
+            {
+                throw new ArgumentNullException("one", "Object to compare cannot be null");
+            }
+
             return one.CompareTo(two) > 0;
         }
 
@@ -163,12 +167,17 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <returns><see langword="true"/> if the first instance is less than the second; otherwise, <see langword="false"/>.</returns>
         public static bool operator <(FindsByAttribute one, FindsByAttribute two)
         {
+            if (one == null)
+            {
+                throw new ArgumentNullException("one", "Object to compare cannot be null");
+            }
+
             return one.CompareTo(two) < 0;
         }
 
         /// <summary>
-        /// Compares the current instance with another object of the same type and returns an 
-        /// integer that indicates whether the current instance precedes, follows, or occurs 
+        /// Compares the current instance with another object of the same type and returns an
+        /// integer that indicates whether the current instance precedes, follows, or occurs
         /// in the same position in the sort order as the other object.
         /// </summary>
         /// <param name="obj">An object to compare with this instance.</param>
@@ -203,13 +212,13 @@ namespace OpenQA.Selenium.Support.PageObjects
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object">Object</see> is equal 
-        /// to the current <see cref="System.Object">Object</see>.
+        /// Determines whether the specified <see cref="object">Object</see> is equal
+        /// to the current <see cref="object">Object</see>.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object">Object</see> to compare with the 
-        /// current <see cref="System.Object">Object</see>.</param>
-        /// <returns><see langword="true"/> if the specified <see cref="System.Object">Object</see>
-        /// is equal to the current <see cref="System.Object">Object</see>; otherwise,
+        /// <param name="obj">The <see cref="object">Object</see> to compare with the
+        /// current <see cref="object">Object</see>.</param>
+        /// <returns><see langword="true"/> if the specified <see cref="object">Object</see>
+        /// is equal to the current <see cref="object">Object</see>; otherwise,
         /// <see langword="false"/>.</returns>
         public override bool Equals(object obj)
         {
@@ -240,7 +249,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <summary>
         /// Serves as a hash function for a particular type.
         /// </summary>
-        /// <returns>A hash code for the current <see cref="System.Object">Object</see>.</returns>
+        /// <returns>A hash code for the current <see cref="object">Object</see>.</returns>
         public override int GetHashCode()
         {
             return this.Finder.GetHashCode();

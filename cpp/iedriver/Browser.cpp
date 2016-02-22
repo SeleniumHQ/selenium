@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -14,7 +17,9 @@
 #include "Browser.h"
 #include "logging.h"
 #include <comutil.h>
+#include <ShlGuid.h>
 #include "Alert.h"
+#include "BrowserFactory.h"
 
 namespace webdriver {
 
@@ -52,14 +57,29 @@ void __stdcall Browser::NewWindow3(IDispatch** ppDisp,
   LOG(TRACE) << "Entering Browser::NewWindow3";
   // Handle the NewWindow3 event to allow us to immediately hook
   // the events of the new browser window opened by the user action.
+  // The three ways we can respond to this event are documented at
+  // http://msdn.microsoft.com/en-us/library/aa768337%28v=vs.85%29.aspx
+  // We potentially use two of those response methods.
   // This will not allow us to handle windows created by the JavaScript
   // showModalDialog function().
   IWebBrowser2* browser;
   LPSTREAM message_payload;
-  ::SendMessage(this->executor_handle(),
-                WD_BROWSER_NEW_WINDOW,
-                NULL,
-                reinterpret_cast<LPARAM>(&message_payload));
+  LRESULT create_result = ::SendMessage(this->executor_handle(),
+                                        WD_BROWSER_NEW_WINDOW,
+                                        NULL,
+                                        reinterpret_cast<LPARAM>(&message_payload));
+  if (create_result != 0) {
+    // The new, blank IWebBrowser2 object was not created,
+    // so we can't really do anything appropriate here.
+    // Note this is "response method 2" of the aforementioned
+    // documentation.
+    LOG(WARN) << "A valid IWebBrowser2 object could not be created.";
+    *pbCancel = VARIANT_TRUE;
+    return;
+  }
+
+  // We received a valid IWebBrowser2 pointer, so deserialize it onto this
+  // thread, and pass the result back to the caller.
   HRESULT hr = ::CoGetInterfaceAndReleaseStream(message_payload,
                                                 IID_IWebBrowser2,
                                                 reinterpret_cast<void**>(&browser));
@@ -92,10 +112,15 @@ void __stdcall Browser::DocumentComplete(IDispatch* pDisp, VARIANT* URL) {
 }
 
 void Browser::GetDocument(IHTMLDocument2** doc) {
+  this->GetDocument(false, doc);
+}
+
+void Browser::GetDocument(const bool force_top_level_document,
+                          IHTMLDocument2** doc) {
   LOG(TRACE) << "Entering Browser::GetDocument";
   CComPtr<IHTMLWindow2> window;
 
-  if (this->focused_frame_window() == NULL) {
+  if (this->focused_frame_window() == NULL || force_top_level_document) {
     LOG(INFO) << "No child frame focus. Focus is on top-level frame";
 
     CComPtr<IDispatch> dispatch;
@@ -171,8 +196,8 @@ std::string Browser::GetBrowserUrl() {
   return current_url;
 }
 
-HWND Browser::GetWindowHandle() {
-  LOG(TRACE) << "Entering Browser::GetWindowHandle";
+HWND Browser::GetContentWindowHandle() {
+  LOG(TRACE) << "Entering Browser::GetContentWindowHandle";
 
   // If, for some reason, the window handle is no longer valid,
   // set the member variable to NULL so that we can reacquire
@@ -186,7 +211,12 @@ HWND Browser::GetWindowHandle() {
 
   if (this->window_handle() == NULL) {
     LOG(INFO) << "Restore window handle from tab";
-    this->set_window_handle(this->GetTabWindowHandle());
+    // GetBrowserWindowHandle gets the TabWindowClass window in IE 7 and 8,
+    // and the top-level window frame in IE 6. The window we need is the
+    // InternetExplorer_Server window.
+    HWND tab_window_handle = this->GetBrowserWindowHandle();
+    HWND content_window_handle = this->FindContentWindowHandle(tab_window_handle);
+    this->set_window_handle(content_window_handle);
   }
 
   return this->window_handle();
@@ -398,8 +428,14 @@ bool Browser::IsBusy() {
   return SUCCEEDED(hr) && is_busy == VARIANT_TRUE;
 }
 
-bool Browser::Wait() {
+bool Browser::Wait(const std::string& page_load_strategy) {
   LOG(TRACE) << "Entering Browser::Wait";
+  
+  if (page_load_strategy == "none") {
+    LOG(DEBUG) << "Page load strategy is 'none'. Aborting wait.";
+    this->set_wait_required(false);
+    return true;
+  }
 
   bool is_navigating = true;
 
@@ -459,7 +495,7 @@ bool Browser::Wait() {
   hr = document_dispatch->QueryInterface(&doc);
   if (SUCCEEDED(hr)) {
     LOG(DEBUG) << "Waiting for document to complete...";
-    is_navigating = this->IsDocumentNavigating(doc);
+    is_navigating = this->IsDocumentNavigating(page_load_strategy, doc);
   }
 
   if (!is_navigating) {
@@ -470,27 +506,36 @@ bool Browser::Wait() {
   return !is_navigating;
 }
 
-bool Browser::IsDocumentNavigating(IHTMLDocument2* doc) {
+bool Browser::IsDocumentNavigating(const std::string& page_load_strategy,
+                                   IHTMLDocument2* doc) {
   LOG(TRACE) << "Entering Browser::IsDocumentNavigating";
 
   bool is_navigating = true;
 
   // Starting WaitForDocumentComplete()
   is_navigating = this->is_navigation_started_;
-  CComBSTR ready_state;
-  HRESULT hr = doc->get_readyState(&ready_state);
-  if (FAILED(hr) || is_navigating || _wcsicmp(ready_state, L"complete") != 0) {
+  CComBSTR ready_state_bstr;
+  HRESULT hr = doc->get_readyState(&ready_state_bstr);
+  if (FAILED(hr) || is_navigating) {
     if (FAILED(hr)) {
       LOGHR(DEBUG, hr) << "IHTMLDocument2::get_readyState failed.";
     } else if (is_navigating) {
       LOG(DEBUG) << "DocumentComplete event fired, indicating a new navigation.";
-    } else {
-      std::wstring state = ready_state;
-      LOG(DEBUG) << "document.readyState is not 'complete'; it was " << LOGWSTRING(state);
     }
     return true;
   } else {
-    is_navigating = false;
+    std::wstring ready_state = ready_state_bstr;
+    if ((ready_state == L"complete") ||
+        (page_load_strategy == "eager" && ready_state == L"interactive")) {
+      is_navigating = false;
+    } else {
+      if (page_load_strategy == "eager") {
+        LOG(DEBUG) << "document.readyState is not 'complete' or 'interactive'; it was " << LOGWSTRING(ready_state);
+      } else {
+        LOG(DEBUG) << "document.readyState is not 'complete'; it was " << LOGWSTRING(ready_state);
+      }
+      return true;
+    }
   }
 
   // document.readyState == complete
@@ -540,7 +585,7 @@ bool Browser::IsDocumentNavigating(IHTMLDocument2* doc) {
 
       // Recursively call to wait for the frame document to complete
       if (is_valid_frame_document) {
-        is_navigating = this->IsDocumentNavigating(frame_document);
+        is_navigating = this->IsDocumentNavigating(page_load_strategy, frame_document);
         if (is_navigating) {
           break;
         }
@@ -599,8 +644,8 @@ bool Browser::GetDocumentFromWindow(IHTMLWindow2* window,
   return false;
 }
 
-HWND Browser::GetTabWindowHandle() {
-  LOG(TRACE) << "Entering Browser::GetTabWindowHandle";
+HWND Browser::GetBrowserWindowHandle() {
+  LOG(TRACE) << "Entering Browser::GetBrowserWindowHandle";
 
   HWND hwnd = NULL;
   CComPtr<IServiceProvider> service_provider;
@@ -613,10 +658,8 @@ HWND Browser::GetTabWindowHandle() {
                                         reinterpret_cast<void**>(&window));
     if (SUCCEEDED(hr)) {
       // This gets the TabWindowClass window in IE 7 and 8,
-      // and the top-level window frame in IE 6. The window
-      // we need is the InternetExplorer_Server window.
+      // and the top-level window frame in IE 6.
       window->GetWindow(&hwnd);
-      hwnd = this->FindContentWindowHandle(hwnd);
     } else {
       LOGHR(WARN, hr) << "Unable to get window, call to IOleWindow::QueryService for SID_SShellBrowser failed";
     }
@@ -627,13 +670,41 @@ HWND Browser::GetTabWindowHandle() {
   return hwnd;
 }
 
+//HWND Browser::GetTabWindowHandle() {
+//  LOG(TRACE) << "Entering Browser::GetTabWindowHandle";
+//
+//  HWND hwnd = NULL;
+//  CComPtr<IServiceProvider> service_provider;
+//  HRESULT hr = this->browser_->QueryInterface(IID_IServiceProvider,
+//                                              reinterpret_cast<void**>(&service_provider));
+//  if (SUCCEEDED(hr)) {
+//    CComPtr<IOleWindow> window;
+//    hr = service_provider->QueryService(SID_SShellBrowser,
+//                                        IID_IOleWindow,
+//                                        reinterpret_cast<void**>(&window));
+//    if (SUCCEEDED(hr)) {
+//      // This gets the TabWindowClass window in IE 7 and 8,
+//      // and the top-level window frame in IE 6. The window
+//      // we need is the InternetExplorer_Server window.
+//      window->GetWindow(&hwnd);
+//      hwnd = this->FindContentWindowHandle(hwnd);
+//    } else {
+//      LOGHR(WARN, hr) << "Unable to get window, call to IOleWindow::QueryService for SID_SShellBrowser failed";
+//    }
+//  } else {
+//    LOGHR(WARN, hr) << "Unable to get service, call to IWebBrowser2::QueryInterface for IID_IServiceProvider failed";
+//  }
+//
+//  return hwnd;
+//}
+
 HWND Browser::GetActiveDialogWindowHandle() {
   LOG(TRACE) << "Entering Browser::GetActiveDialogWindowHandle";
 
   HWND active_dialog_handle = NULL;
 
   DWORD process_id;
-  ::GetWindowThreadProcessId(this->GetWindowHandle(), &process_id);
+  ::GetWindowThreadProcessId(this->GetContentWindowHandle(), &process_id);
 
   ProcessWindowInfo process_win_info;
   process_win_info.dwProcessId = process_id;

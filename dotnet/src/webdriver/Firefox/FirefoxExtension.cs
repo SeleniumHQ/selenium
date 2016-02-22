@@ -1,9 +1,9 @@
 ﻿// <copyright file="FirefoxExtension.cs" company="WebDriver Committers">
-// Copyright 2007-2011 WebDriver committers
-// Copyright 2007-2011 Google Inc.
-// Portions copyright 2011 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -19,9 +19,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.IO.Compression;
 using System.Xml;
-using Ionic.Zip;
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Firefox
@@ -69,10 +68,10 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Installs the extension into a profile directory.
         /// </summary>
-        /// <param name="profileDir">The Firefox profile directory into which to install the extension.</param>
-        public void Install(string profileDir)
+        /// <param name="profileDirectory">The Firefox profile directory into which to install the extension.</param>
+        public void Install(string profileDirectory)
         {
-            DirectoryInfo info = new DirectoryInfo(profileDir);
+            DirectoryInfo info = new DirectoryInfo(profileDirectory);
             string stagingDirectoryName = Path.Combine(Path.GetTempPath(), info.Name + ".staging");
             string tempFileName = Path.Combine(stagingDirectoryName, Path.GetFileName(this.extensionFileName));
             if (Directory.Exists(tempFileName))
@@ -83,16 +82,21 @@ namespace OpenQA.Selenium.Firefox
             // First, expand the .xpi archive into a temporary location.
             Directory.CreateDirectory(tempFileName);
             Stream zipFileStream = ResourceUtilities.GetResourceStream(this.extensionFileName, this.extensionResourceId);
-            using (ZipFile extensionZipFile = ZipFile.Read(zipFileStream))
+            using (ZipStorer extensionZipFile = ZipStorer.Open(zipFileStream, FileAccess.Read))
             {
-                extensionZipFile.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
-                extensionZipFile.ExtractAll(tempFileName);
+                List<ZipStorer.ZipFileEntry> entryList = extensionZipFile.ReadCentralDirectory();
+                foreach (ZipStorer.ZipFileEntry entry in entryList)
+                {
+                    string localFileName = entry.FilenameInZip.Replace('/', Path.DirectorySeparatorChar);
+                    string destinationFile = Path.Combine(tempFileName, localFileName);
+                    extensionZipFile.ExtractFile(entry, destinationFile);
+                }
             }
 
             // Then, copy the contents of the temporarly location into the
             // proper location in the Firefox profile directory.
             string id = ReadIdFromInstallRdf(tempFileName);
-            string extensionDirectory = Path.Combine(Path.Combine(profileDir, "extensions"), id);
+            string extensionDirectory = Path.Combine(Path.Combine(profileDirectory, "extensions"), id);
             if (Directory.Exists(extensionDirectory))
             {
                 Directory.Delete(extensionDirectory, true);
@@ -103,7 +107,7 @@ namespace OpenQA.Selenium.Firefox
 
             // By deleting the staging directory, we also delete the temporarily
             // expanded extension, which we copied into the profile.
-            Directory.Delete(stagingDirectoryName, true);
+            FileUtilities.DeleteDirectory(stagingDirectoryName);
         }
 
         private static string ReadIdFromInstallRdf(string root)
@@ -119,21 +123,21 @@ namespace OpenQA.Selenium.Firefox
                 rdfNamespaceManager.AddNamespace("em", EmNamespaceUri);
                 rdfNamespaceManager.AddNamespace("RDF", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 
-                XmlNode idNode = rdfXmlDocument.SelectSingleNode("//em:id", rdfNamespaceManager);
-                if (idNode == null)
+                XmlNode node = rdfXmlDocument.SelectSingleNode("//em:id", rdfNamespaceManager);
+                if (node == null)
                 {
                     XmlNode descriptionNode = rdfXmlDocument.SelectSingleNode("//RDF:Description", rdfNamespaceManager);
-                    XmlAttribute idAttribute = descriptionNode.Attributes["id", EmNamespaceUri];
-                    if (idAttribute == null)
+                    XmlAttribute attribute = descriptionNode.Attributes["id", EmNamespaceUri];
+                    if (attribute == null)
                     {
                         throw new WebDriverException("Cannot locate node containing extension id: " + installRdf);
                     }
 
-                    id = idAttribute.Value;
+                    id = attribute.Value;
                 }
                 else
                 {
-                    id = idNode.InnerText;
+                    id = node.InnerText;
                 }
 
                 if (string.IsNullOrEmpty(id))

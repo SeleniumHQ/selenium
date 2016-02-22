@@ -1,17 +1,19 @@
-// Copyright 2013 Selenium committers
-// Copyright 2013 Software Freedom Conservancy
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-//     You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 'use strict';
 
@@ -20,18 +22,20 @@ var fs = require('fs'),
     path = require('path'),
     url = require('url');
 
+var express = require('express');
+var multer = require('multer');
+var serveIndex = require('serve-index');
+
 var Server = require('./httpserver').Server,
     resources = require('./resources'),
-    promise = require('../..').promise,
-    isDevMode = require('../../_base').isDevMode(),
-    string = require('../../_base').require('goog.string');
+    isDevMode = require('../devmode'),
+    promise = require('../promise');
 
-var WEB_ROOT = isDevMode ? '/common/src/web' : '/common';
+var WEB_ROOT = '/common';
 var JS_ROOT = '/javascript';
 
-var baseDirectory = resources.locate('.'),
-    server = new Server(onRequest);
-
+var baseDirectory = resources.locate(isDevMode ? 'common/src/web' : '.');
+var jsDirectory = resources.locate(isDevMode ? 'javascript' : '..');
 
 var Pages = (function() {
   var pages = {};
@@ -58,6 +62,7 @@ var Pages = (function() {
   addPage('documentWrite', 'document_write_in_onload.html');
   addPage('dynamicallyModifiedPage', 'dynamicallyModifiedPage.html');
   addPage('dynamicPage', 'dynamic.html');
+  addPage('echoPage', 'echo');
   addPage('errorsPage', 'errors.html');
   addPage('xhtmlFormPage', 'xhtmlFormPage.xhtml');
   addPage('formPage', 'formPage.html');
@@ -102,93 +107,41 @@ var Pages = (function() {
 
 
 var Path = {
-  BASIC_AUTH: path.join(WEB_ROOT, 'basicAuth'),
-  MANIFEST: path.join(WEB_ROOT, 'manifest'),
-  REDIRECT: path.join(WEB_ROOT, 'redirect'),
-  PAGE: path.join(WEB_ROOT, 'page'),
-  SLEEP: path.join(WEB_ROOT, 'sleep'),
-  UPLOAD: path.join(WEB_ROOT, 'upload')
+  BASIC_AUTH: WEB_ROOT + '/basicAuth',
+  ECHO: WEB_ROOT + '/echo',
+  GENERATED: WEB_ROOT + '/generated',
+  MANIFEST: WEB_ROOT + '/manifest',
+  REDIRECT: WEB_ROOT + '/redirect',
+  PAGE: WEB_ROOT + '/page',
+  SLEEP: WEB_ROOT + '/sleep',
+  UPLOAD: WEB_ROOT + '/upload'
 };
 
+var app = express();
 
-/**
- * HTTP request handler.
- * @param {!http.ServerRequest} request The request object.
- * @param {!http.ServerResponse} response The response object.
- */
-function onRequest(request, response) {
-  if (request.method !== 'GET' && request.method !== 'HEAD') {
-    response.writeHead(405, {'Allowed': 'GET,HEAD'});
-    return response.end();
-  }
+app.get('/', sendIndex)
+.get('/favicon.ico', function(req, res) {
+  res.writeHead(204);
+  res.end();
+})
+.use(JS_ROOT, serveIndex(jsDirectory), express.static(jsDirectory))
+.post(Path.UPLOAD, handleUpload)
+.use(WEB_ROOT, serveIndex(baseDirectory), express.static(baseDirectory))
+.get(Path.ECHO, sendEcho)
+.get(Path.PAGE, sendInifinitePage)
+.get(Path.PAGE + '/*', sendInifinitePage)
+.get(Path.REDIRECT, redirectToResultPage)
+.get(Path.SLEEP, sendDelayedResponse)
 
-  var pathname = path.resolve(url.parse(request.url).pathname);
-  if (pathname === '/') {
-    return sendIndex(request, response);
-  }
-
-  if (pathname === '/favicon.ico') {
-    response.writeHead(204);
-    return response.end();
-  }
-
-  switch (pathname) {
-    case Path.BASIC_AUTH: return sendBasicAuth(response);
-    case Path.MANIFEST: return sendManifest(response);
-    case Path.PAGE: return sendInifinitePage(request, response);
-    case Path.REDIRECT: return redirectToResultPage(response);
-    case Path.SLEEP: return sendDelayedResponse(request, response);
-    case Path.UPLOAD: return sendUpload(response);
-  }
-
-  if (string.startsWith(pathname, Path.PAGE + '/')) {
-    return sendInifinitePage(request, response);
-  }
-
-  if ((string.startsWith(pathname, WEB_ROOT) ||
-       string.startsWith(pathname, JS_ROOT)) &&
-      string.endsWith(pathname, '.appcache')) {
-    return sendManifest(response);
-  }
-
-  if (string.startsWith(pathname, WEB_ROOT)) {
-    if (!isDevMode) {
-      pathname = pathname.substring(WEB_ROOT.length);
-    }
-  } else if (string.startsWith(pathname, JS_ROOT)) {
-    if (!isDevMode) {
-      sendSimpleError(response, 404, request.url);
-      return;
-    }
-    pathname = pathname.substring(JS_ROOT);
-  }
-
-  try {
-    var fullPath = resources.locate(pathname);
-  } catch (ex) {
-    fullPath = '';
-  }
-
-  if (fullPath.lastIndexOf(baseDirectory, 0) == -1) {
-    sendSimpleError(response, 404, request.url);
-    return;
-  }
-
-  fs.stat(fullPath, function(err, stats) {
-    if (err) {
-      sendIOError(request, response, err);
-    } else if (stats.isDirectory()) {
-      sendDirectoryListing(request, response, fullPath);
-    } else if (stats.isFile()) {
-      sendFile(request, response, fullPath);
-    } else {
-      sendSimpleError(response, 404, request.url);
-    }
-  });
+if (isDevMode) {
+  var closureDir = resources.locate('third_party/closure/goog');
+  app.use('/third_party/closure/goog',
+      serveIndex(closureDir), express.static(closureDir));
 }
+var server = new Server(app);
 
 
-function redirectToResultPage(response) {
+function redirectToResultPage(_, response) {
   response.writeHead(303, {
     Location: Pages.resultPage
   });
@@ -197,23 +150,21 @@ function redirectToResultPage(response) {
 
 
 function sendInifinitePage(request, response) {
-  setTimeout(function() {
-    var pathname = url.parse(request.url).pathname;
-    var lastIndex = pathname.lastIndexOf('/');
-    var pageNumber =
-        (lastIndex == -1 ? 'Unknown' : pathname.substring(lastIndex + 1));
-    var body = [
-      '<!DOCTYPE html>',
-      '<title>Page', pageNumber, '</title>',
-      'Page number <span id="pageNumber">', pageNumber, '</span>',
-      '<p><a href="../xhtmlTest.html" target="_top">top</a>'
-    ].join('');
-    response.writeHead(200, {
-      'Content-Length': Buffer.byteLength(body, 'utf8'),
-      'Content-Type': 'text/html; charset=utf-8'
-    });
-    response.end(body);
-  }, 500);
+  var pathname = url.parse(request.url).pathname;
+  var lastIndex = pathname.lastIndexOf('/');
+  var pageNumber =
+      (lastIndex == -1 ? 'Unknown' : pathname.substring(lastIndex + 1));
+  var body = [
+    '<!DOCTYPE html>',
+    '<title>Page', pageNumber, '</title>',
+    'Page number <span id="pageNumber">', pageNumber, '</span>',
+    '<p><a href="../xhtmlTest.html" target="_top">top</a>'
+  ].join('');
+  response.writeHead(200, {
+    'Content-Length': Buffer.byteLength(body, 'utf8'),
+    'Content-Type': 'text/html; charset=utf-8'
+  });
+  response.end(body);
 }
 
 
@@ -222,7 +173,7 @@ function sendDelayedResponse(request, response) {
   var query = url.parse(request.url).query || '';
   var match = query.match(/\btime=(\d+)/);
   if (match) {
-    duration = parseInt(match[1]);
+    duration = parseInt(match[1], 10);
   }
 
   setTimeout(function() {
@@ -243,74 +194,36 @@ function sendDelayedResponse(request, response) {
 }
 
 
-/**
- * Sends an error in response to an I/O operation.
- * @param {!http.ServerRequest} request The request object.
- * @param {!http.ServerResponse} response The response object.
- * @param {!Error} err The I/O error.
- */
-function sendIOError(request, response, err) {
-  var code = 500;
-  if (err.code === 'ENOENT') {
-    code = 404;
-  } else if (err.code === 'EACCES') {
-    code = 403;
-  }
-  sendSimpleError(response, code, request.url);
-}
-
-
-/**
- * Sends a simple error message to the client and instructs it to close the
- * connection.
- * @param {!http.ServerResponse} response The response to populate.
- * @param {number} code The numeric HTTP code to send.
- * @param {string} message The error message.
- */
-function sendSimpleError(response, code, message) {
-  response.writeHead(code, {
-    'Content-Type': 'text/html; charset=utf-8',
-    'Connection': 'close'
-  });
-  response.end(
-      '<!DOCTYPE html><h1>' + code + ' ' + http.STATUS_CODES[code] +
-      '</h1><hr/>' + message);
-}
-
-
-var MimeType = {
-  'css': 'text/css',
-  'gif': 'image/gif',
-  'html': 'text/html',
-  'js': 'application/javascript',
-  'png': 'image/png',
-  'svg': 'image/svg+xml',
-  'txt': 'text/plain',
-  'xhtml': 'application/xhtml+xml',
-  'xsl': 'application/xml',
-  'xml': 'application/xml'
-};
-
-
-/**
- * Responds to a request for an individual file.
- * @param {!http.ServerRequest} request The request object.
- * @param {!http.ServerResponse} response The response object.
- * @param {string} filePath Path to the file to return.
- */
-function sendFile(request, response, filePath) {
-  fs.readFile(filePath, function(err, buffer) {
-    if (err) {
-      sendIOError(request, response, err);
-      return;
+function handleUpload(request, response, next) {
+  multer({
+    inMemory: true,
+    onFileUploadComplete: function(file) {
+      response.writeHead(200);
+      response.write(file.buffer);
+      response.end('<script>window.top.window.onUploadDone();</script>');
     }
-    var index = filePath.lastIndexOf('.');
-    var type = MimeType[index < 0 ? '' : filePath.substring(index + 1)];
-    var headers = {'Content-Length': buffer.length};
-    if (type) headers['Content-Type'] = type;
-    response.writeHead(200, headers);
-    response.end(buffer);
+  })(request, response, function() {});
+}
+
+
+function sendEcho(request, response) {
+  var body = [
+    '<!DOCTYPE html>',
+    '<title>Echo</title>',
+    '<div class="request">',
+    request.method, ' ', request.url, ' ', 'HTTP/', request.httpVersion,
+    '</div>'
+  ];
+  for (var name in request.headers) {
+    body.push('<div class="header ', name , '">',
+        name, ': ', request.headers[name], '</div>');
+  }
+  body = body.join('');
+  response.writeHead(200, {
+    'Content-Length': Buffer.byteLength(body, 'utf8'),
+    'Content-Type': 'text/html; charset=utf-8'
   });
+  response.end(body);
 }
 
 
@@ -347,69 +260,6 @@ function sendIndex(request, response) {
     'Content-Length': Buffer.byteLength(data, 'utf8')
   });
   response.end(data);
-}
-
-
-/**
- * Responds to a request for a directory listing.
- * @param {!http.ServerRequest} request The request object.
- * @param {!http.ServerResponse} response The response object.
- * @param {string} dirPath Path to the directory to generate a listing for.
- */
-function sendDirectoryListing(request, response, dirPath) {
-  var pathname = url.parse(request.url).pathname;
-
-  var host = request.headers.host;
-  if (!host) {
-    host = server.host();
-  }
-
-  var requestUrl = ['http://' + host + pathname].join('');
-  if (requestUrl[requestUrl.length - 1] !== '/') {
-    response.writeHead(303, {'Location': requestUrl + '/'});
-    return response.end();
-  }
-
-  fs.readdir(dirPath, function(err, files) {
-    if (err) {
-      sendIOError(request, response, err);
-      return;
-    }
-
-    var data = ['<!DOCTYPE html><h1>', pathname, '</h1><hr/><ul>'];
-    if (pathname !== '/') {
-      data.push(createListEntry('../'));
-    }
-    processNextFile();
-
-    function processNextFile() {
-      var file = files.shift();
-      if (file) {
-        fs.stat(path.join(dirPath, file), function(err, stats) {
-          if (err) {
-            sendIOError(request, response, err);
-            return;
-          }
-
-          data.push(createListEntry(
-              stats.isDirectory() ? file + '/' : file));
-          processNextFile();
-        });
-      } else {
-        data = new Buffer(data.join(''), 'utf-8');
-        response.writeHead(200, {
-          'Content-Type': 'text/html; charset=utf-8',
-          'Content-Length': data.length
-        });
-        response.end(data);
-      }
-    }
-
-    function createListEntry(path) {
-      var url = requestUrl + path;
-      return ['<li><a href="', url, '">', path, '</a>'].join('');
-    }
-  });
 }
 
 
@@ -451,7 +301,11 @@ exports.url = server.url.bind(server);
  * @throws {Error} If the server is not running.
  */
 exports.whereIs = function(filePath) {
-  return server.url(path.join(WEB_ROOT, filePath));
+  filePath = filePath.replace(/\\/g, '/');
+  if (!filePath.startsWith('/')) {
+    filePath = '/' + filePath;
+  }
+  return server.url(WEB_ROOT + filePath);
 };
 
 

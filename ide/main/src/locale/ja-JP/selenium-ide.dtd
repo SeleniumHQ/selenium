@@ -1,5 +1,5 @@
 <!ENTITY selenium-ide.name "Selenium IDE">
-<!ENTITY selenium-ide.version "2.5.0">
+<!ENTITY selenium-ide.version "2.9.0">
 <!ENTITY selenium-ide.sidebar.title "&selenium-ide.name; &selenium-ide.version;">
 <!ENTITY selenium-ide.standalone.title "&selenium-ide.name; &selenium-ide.version;">
 
@@ -45,6 +45,8 @@
 
 <!ENTITY helpDocumentation.label "ドキュメンテーション">
 <!ENTITY helpReportIssue.label "レポートを発行">
+<!ENTITY helpSearchIssues.label "Search Issues">
+<!ENTITY helpSubmitDiagInfo.label "Submit Diagnostic Information">
 <!ENTITY helpReleaseNotes.label "リリースノート">
 <!ENTITY helpBlog.label "公式のSeleniumブログ">
 <!ENTITY helpWebsite.label "公式のSeleniumのウェブサイト">
@@ -67,6 +69,7 @@
 <!ENTITY contextMenu.breakpoint.label "ブレークポイントの指定/解除">
 <!ENTITY contextMenu.startpoint.label "開始位置の指定/解除">
 <!ENTITY contextMenu.execCommand.label "このコマンドを実行">
+<!ENTITY contextMenu.playSuiteHere.label "Play test suite from here">
 
 <!ENTITY uiReference.label "UI-Element">
 <!ENTITY rollupReference.label "Rollup">

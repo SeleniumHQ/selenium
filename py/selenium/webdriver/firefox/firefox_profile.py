@@ -1,17 +1,19 @@
-# Copyright 2008-2011 WebDriver committers
-# Copyright 2008-2011 Google Inc.
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
 from __future__ import with_statement
 
 import base64
@@ -20,13 +22,12 @@ import json
 import os
 import re
 import shutil
+import sys
 import tempfile
 import zipfile
 
 try:
     from cStringIO import StringIO as BytesIO
-    bytes = str
-    str = unicode
 except ImportError:
     from io import BytesIO
 
@@ -38,6 +39,10 @@ from selenium.common.exceptions import WebDriverException
 WEBDRIVER_EXT = "webdriver.xpi"
 WEBDRIVER_PREFERENCES = "webdriver_prefs.json"
 EXTENSION_NAME = "fxdriver@googlecode.com"
+
+
+class AddonFormatError(Exception):
+    """Exception for not well-formed add-on manifest files"""
 
 
 class FirefoxProfile(object):
@@ -159,6 +164,7 @@ class FirefoxProfile(object):
         A zipped, base64 encoded string of profile directory
         for use with remote WebDriver JSON wire protocol
         """
+        self.update_preferences()
         fp = BytesIO()
         zipped = zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED)
         path_root = len(self.path) + 1  # account for trailing slash
@@ -167,7 +173,7 @@ class FirefoxProfile(object):
                 filename = os.path.join(base, fyle)
                 zipped.write(filename, filename[path_root:])
         zipped.close()
-        return base64.encodestring(fp.getvalue())
+        return base64.b64encode(fp.getvalue()).decode('UTF-8')
 
     def set_proxy(self, proxy):
         import warnings
@@ -249,7 +255,8 @@ class FirefoxProfile(object):
             compressed_file = zipfile.ZipFile(addon, 'r')
             for name in compressed_file.namelist():
                 if name.endswith('/'):
-                    os.makedirs(os.path.join(tmpdir, name))
+                    if not os.path.isdir(os.path.join(tmpdir, name)):
+                        os.makedirs(os.path.join(tmpdir, name))
                 else:
                     if not os.path.isdir(os.path.dirname(os.path.join(tmpdir, name))):
                         os.makedirs(os.path.dirname(os.path.join(tmpdir, name)))
@@ -272,7 +279,8 @@ class FirefoxProfile(object):
                 os.makedirs(extensions_path)
             shutil.copy(xpifile, addon_path + '.xpi')
         else:
-            shutil.copytree(addon, addon_path, symlinks=True)
+            if not os.path.exists(addon_path):
+                shutil.copytree(addon, addon_path, symlinks=True)
 
         # remove the temporary directory, if any
         if tmpdir:
@@ -280,20 +288,22 @@ class FirefoxProfile(object):
 
     def _addon_details(self, addon_path):
         """
-            returns a dictionary of details about the addon
-            - addon_path : path to the addon directory
-            Returns:
-            {'id': 'rainbow@colors.org', # id of the addon
-            'version': '1.4', # version of the addon
-            'name': 'Rainbow', # name of the addon
-            'unpack': False } # whether to unpack the addon
+        Returns a dictionary of details about the addon.
+
+        :param addon_path: path to the add-on directory or XPI
+
+        Returns::
+
+            {'id':      u'rainbow@colors.org', # id of the addon
+             'version': u'1.4',                # version of the addon
+             'name':    u'Rainbow',            # name of the addon
+             'unpack':  False }                # whether to unpack the addon
         """
 
-        # TODO: We don't use the unpack variable yet, but we should: bug 662683
         details = {
             'id': None,
+            'unpack': False,
             'name': None,
-            'unpack': True,
             'version': None
         }
 
@@ -316,17 +326,55 @@ class FirefoxProfile(object):
                     rc.append(node.data)
             return ''.join(rc).strip()
 
-        doc = minidom.parse(os.path.join(addon_path, 'install.rdf'))
+        if not os.path.exists(addon_path):
+            raise IOError('Add-on path does not exist: %s' % addon_path)
 
-        # Get the namespaces abbreviations
-        em = get_namespace_id(doc, "http://www.mozilla.org/2004/em-rdf#")
-        rdf = get_namespace_id(doc, "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+        try:
+            if zipfile.is_zipfile(addon_path):
+                # Bug 944361 - We cannot use 'with' together with zipFile because
+                # it will cause an exception thrown in Python 2.6.
+                try:
+                    compressed_file = zipfile.ZipFile(addon_path, 'r')
+                    manifest = compressed_file.read('install.rdf')
+                finally:
+                    compressed_file.close()
+            elif os.path.isdir(addon_path):
+                with open(os.path.join(addon_path, 'install.rdf'), 'r') as f:
+                    manifest = f.read()
+            else:
+                raise IOError('Add-on path is neither an XPI nor a directory: %s' % addon_path)
+        except (IOError, KeyError) as e:
+            raise AddonFormatError(str(e), sys.exc_info()[2])
 
-        description = doc.getElementsByTagName(rdf + "Description").item(0)
-        for node in description.childNodes:
-            # Remove the namespace prefix from the tag for comparison
-            entry = node.nodeName.replace(em, "")
-            if entry in details.keys():
-                details.update({entry: get_text(node)})
+        try:
+            doc = minidom.parseString(manifest)
+
+            # Get the namespaces abbreviations
+            em = get_namespace_id(doc, 'http://www.mozilla.org/2004/em-rdf#')
+            rdf = get_namespace_id(doc, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+
+            description = doc.getElementsByTagName(rdf + 'Description').item(0)
+            if description is None:
+                description = doc.getElementsByTagName('Description').item(0)
+            for node in description.childNodes:
+                # Remove the namespace prefix from the tag for comparison
+                entry = node.nodeName.replace(em, "")
+                if entry in details.keys():
+                    details.update({entry: get_text(node)})
+            if details.get('id') is None:
+                for i in range(description.attributes.length):
+                    attribute = description.attributes.item(i)
+                    if attribute.name == em + 'id':
+                        details.update({'id': attribute.value})
+        except Exception as e:
+            raise AddonFormatError(str(e), sys.exc_info()[2])
+
+        # turn unpack into a true/false value
+        if isinstance(details['unpack'], str):
+            details['unpack'] = details['unpack'].lower() == 'true'
+
+        # If no ID is set, the add-on is invalid
+        if details.get('id') is None:
+            raise AddonFormatError('Add-on id could not be found.')
 
         return details

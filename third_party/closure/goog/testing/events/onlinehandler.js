@@ -30,9 +30,10 @@ goog.require('goog.net.NetworkStatusMonitor');
  * @constructor
  * @extends {goog.events.EventTarget}
  * @implements {goog.net.NetworkStatusMonitor}
+ * @final
  */
 goog.testing.events.OnlineHandler = function(initialState) {
-  goog.base(this);
+  goog.testing.events.OnlineHandler.base(this, 'constructor');
 
   /**
    * Whether the mock is online.

@@ -1,19 +1,19 @@
-/*
- * Copyright 2008 Google, Inc.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.browserlaunchers.locators;
 
@@ -53,21 +53,23 @@ public class GoogleChromeLocator extends SingleBrowserLocator {
 
   /**
    * Returns usual Google Chrome installation location on Windows.
-   * 
+   *
    * WARNING: Executing this method on a non-windows platform will fail because the system root is
    * not set.
-   * 
+   *
    * @return Usual Google Chrome installation location on Windows
    */
   protected String[] usualWindowsLauncherLocations() {
     return new String[] {
-        WindowsUtils.getLocalAppDataPath() + "\\Google\\Chrome\\Application"
+        WindowsUtils.getLocalAppDataPath() + "\\Google\\Chrome\\Application",
+        WindowsUtils.getProgramFiles86Path() + "\\Google\\Chrome\\Application",
+        WindowsUtils.getProgramFilesPath() + "\\Google\\Chrome\\Application"
     };
   }
 
   /**
    * Returns usual Google Chrome installation location on Linux.
-   * 
+   *
    * @return Usual Google Chrome installation location on Linux
    */
   protected String[] usualUnixLauncherLocations() {

@@ -21,6 +21,7 @@
 goog.provide('goog.dom.pattern.Sequence');
 
 goog.require('goog.dom.NodeType');
+goog.require('goog.dom.pattern');
 goog.require('goog.dom.pattern.AbstractPattern');
 goog.require('goog.dom.pattern.MatchType');
 
@@ -29,44 +30,37 @@ goog.require('goog.dom.pattern.MatchType');
 /**
  * Pattern object that matches a sequence of other patterns.
  *
- * @param {Array.<goog.dom.pattern.AbstractPattern>} patterns Ordered array of
+ * @param {Array<goog.dom.pattern.AbstractPattern>} patterns Ordered array of
  *     patterns to match.
  * @param {boolean=} opt_ignoreWhitespace Optional flag to ignore text nodes
  *     consisting entirely of whitespace.  The default is to not ignore them.
  * @constructor
  * @extends {goog.dom.pattern.AbstractPattern}
+ * @final
  */
 goog.dom.pattern.Sequence = function(patterns, opt_ignoreWhitespace) {
+  /**
+   * Ordered array of patterns to match.
+   *
+   * @type {Array<goog.dom.pattern.AbstractPattern>}
+   */
   this.patterns = patterns;
+
+  /**
+   * Whether or not to ignore whitespace only Text nodes.
+   *
+   * @private {boolean}
+   */
   this.ignoreWhitespace_ = !!opt_ignoreWhitespace;
+
+  /**
+   * Position in the patterns array we have reached by successful matches.
+   *
+   * @private {number}
+   */
+  this.currentPosition_ = 0;
 };
 goog.inherits(goog.dom.pattern.Sequence, goog.dom.pattern.AbstractPattern);
-
-
-/**
- * Ordered array of patterns to match.
- *
- * @type {Array.<goog.dom.pattern.AbstractPattern>}
- */
-goog.dom.pattern.Sequence.prototype.patterns;
-
-
-/**
- * Position in the patterns array we have reached by successful matches.
- *
- * @type {number}
- * @private
- */
-goog.dom.pattern.Sequence.prototype.currentPosition_ = 0;
-
-
-/**
- * Whether or not to ignore whitespace only Text nodes.
- *
- * @type {boolean}
- * @private
- */
-goog.dom.pattern.Sequence.prototype.ignoreWhitespace_ = false;
 
 
 /**

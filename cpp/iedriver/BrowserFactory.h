@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -14,15 +17,7 @@
 #ifndef WEBDRIVER_IE_BROWSERFACTORY_H_
 #define WEBDRIVER_IE_BROWSERFACTORY_H_
 
-#include <exdisp.h>
-#include <exdispid.h>
-#include <iepmapi.h>
-#include <shlguid.h>
-#include <oleacc.h>
-#include <sddl.h>
 #include <string>
-#include <sstream>
-#include <vector>
 
 #define HTML_GETOBJECT_MSG L"WM_HTML_GETOBJECT"
 #define OLEACC_LIBRARY_NAME L"OLEACC.DLL"
@@ -34,9 +29,6 @@
 #define IE_SERVER_CHILD_WINDOW_CLASS "Internet Explorer_Server"
 #define ALERT_WINDOW_CLASS "#32770"
 #define HTML_DIALOG_WINDOW_CLASS "Internet Explorer_TridentDlgFrame"
-
-#define FILE_LANGUAGE_INFO L"\\VarFileInfo\\Translation"
-#define FILE_VERSION_INFO L"\\StringFileInfo\\%04x%04x\\FileVersion"
 
 #define IE_CLSID_REGISTRY_KEY L"SOFTWARE\\Classes\\InternetExplorer.Application\\CLSID"
 #define IE_SECURITY_ZONES_REGISTRY_KEY L"Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones"
@@ -50,6 +42,7 @@
 #define PROTECTED_MODE_SETTING_ERROR_MESSAGE "Protected Mode settings are not the same for all zones. Enable Protected Mode must be set to the same value (enabled or disabled) for all zones."
 #define ZOOM_SETTING_ERROR_MESSAGE "Browser zoom level was set to %d%%. It should be set to 100%%"
 #define ATTACH_TIMEOUT_ERROR_MESSAGE "Could not find an Internet Explorer window belonging to the process with ID %d within %d milliseconds."
+#define ATTACH_FAILURE_ERROR_MESSAGE "Found browser window using ShellWindows API, but could not attach to the browser IWebBrowser2 object."
 #define CREATEPROCESS_REGISTRY_ERROR_MESSAGE "Unable to use CreateProcess() API. To use CreateProcess() with Internet Explorer 8 or higher, the value of registry setting in HEKY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\TabProcGrowth must be '0'."
 
 #define ZONE_MY_COMPUTER L"0"
@@ -130,20 +123,21 @@ class BrowserFactory {
   }
 
   int browser_version(void) const { return this->ie_major_version_; }
-  int windows_major_version(void) const { return this->windows_major_version_; }
-  int windows_minor_version(void) const { return this->windows_minor_version_; }
 
   static BOOL CALLBACK FindChildWindowForProcess(HWND hwnd, LPARAM arg);
   static BOOL CALLBACK FindDialogWindowForProcess(HWND hwnd, LPARAM arg);
 
+  static bool IsWindowsVistaOrGreater(void);
+
  private:
   static BOOL CALLBACK FindBrowserWindow(HWND hwnd, LPARAM param);
+  static bool IsWindowsVersionOrGreater(unsigned short major_version,
+                                        unsigned short minor_version,
+                                        unsigned short service_pack);
 
   UINT html_getobject_msg_;
   HINSTANCE oleacc_instance_handle_;
 
-  void SetThreadIntegrityLevel(void);
-  void ResetThreadIntegrityLevel(void);
   bool CreateLowIntegrityLevelToken(HANDLE* process_token_handle,
                                     HANDLE* mic_token_handle,
                                     PSID* sid);
@@ -156,7 +150,6 @@ class BrowserFactory {
 
   void GetExecutableLocation(void);
   void GetIEVersion(void);
-  void GetOSVersion(void);
   bool ProtectedModeSettingsAreValid(void);
   int GetZoneProtectedModeSetting(const HKEY key_handle,
                                   const std::wstring& zone_subkey_name);
@@ -182,8 +175,6 @@ class BrowserFactory {
   int browser_attach_timeout_;
 
   int ie_major_version_;
-  int windows_major_version_;
-  int windows_minor_version_;
   std::wstring ie_executable_location_;
 };
 

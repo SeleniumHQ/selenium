@@ -1,55 +1,29 @@
 rubygem(
-  version = "2.40.0.rc1",
-  name = "selenium-webdriver",
-  dir = "build/rb",
+  gemspec = "build/rb/selenium-webdriver.gemspec",
   deps = [
     "//rb:android",
     "//rb:chrome",
     "//rb:common",
     "//rb:support",
+    "//rb:edge",
     "//rb:firefox",
     "//rb:ie",
     "//rb:iphone",
-    "//rb:opera",
     "//rb:phantomjs",
     "//rb:remote",
     "//rb:rc-client",
     "//rb:safari"
-  ],
-  gemdeps = [
-    { "multi_json"   : "~> 1.0"   },
-    { "rubyzip"      : "~> 1.0"   },
-    { "childprocess" : ">= 0.2.5" },
-    { "websocket"    : "~> 1.0.4" }
-  ],
-  devdeps = [
-    { "rspec"       : "~> 2.0"   },
-    { "rack"        : "~> 1.0"   },
-    { "ci_reporter" : "~> 1.6.2" },
-    { "webmock"     : "~> 1.7.5" }
-  ],
-  summary = "The next generation developer focused tool for automated testing of webapps",
-  description = "WebDriver is a tool for writing automated tests of websites. It aims to mimic the behaviour of a real user, and as such interacts with the HTML of the application.",
-  author = ["Jari Bakken"],
-  email = "jari.bakken@gmail.com",
-  homepage = "http://selenium.googlecode.com",
-  license = "Apache",
-  files = [
-    "lib/**/*",
-    "CHANGES",
-    "README.md",
-    "COPYING"
-  ],
-  required_ruby_version = ">= 1.9.2"
+  ]
 )
 
 rubydocs(
   files = [
-    "rb/lib/**/*.rb",
-    "CHANGES"
+    "build/rb/lib/**/*.rb",
+    "build/rb/CHANGES"
   ],
   readme = "rb/README.md",
-  output_dir = "docs/api/rb"
+  output_dir = "build/docs/api/rb",
+  deps = [ "//rb:gem:build" ]
 )
 
 ruby_library(name = "common",
@@ -60,12 +34,15 @@ ruby_library(name = "common",
     "lib/selenium/server.rb",
     "lib/selenium/rake/server_task.rb",
     "lib/selenium-webdriver.rb",
+    "selenium-webdriver.gemspec",
+    "Gemfile",
     "CHANGES",
     "README.md"
   ],
   resources = [
-    { "../COPYING" : "rb/COPYING" }
-  ]
+    { "../LICENSE" : "rb/LICENSE" }
+  ],
+  deps = [ "//java/client/test/org/openqa/selenium/environment" ]
 )
 
 ruby_library(name = "support",
@@ -113,6 +90,35 @@ ruby_test(name = "chrome",
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [ ":chrome"  ]
+)
+
+ruby_library(name = "edge",
+  srcs = [
+    "lib/selenium/webdriver/edge/**/*.rb",
+    "lib/selenium/webdriver/edge.rb"
+  ],
+  deps = [
+    ":common",
+    ":remote"
+  ]
+)
+
+ruby_test(name = "edge",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/edge/**/*_spec.rb"
+  ],
+  include = ["rb/spec/integration", "build/rb/lib"],
+  deps = [ ":edge"  ]
+)
+
+ruby_test(name = "marionette",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/firefox/**/*_spec.rb"
+  ],
+  include = ["rb/spec/integration", "build/rb/lib"],
+  deps = [ ":firefox"  ]
 )
 
 ruby_library(name = "firefox",
@@ -178,29 +184,6 @@ ruby_test(name = "iphone",
   deps = [ ":iphone" ]
 )
 
-ruby_library(name = "opera",
-  srcs = [
-    "lib/selenium/webdriver/opera/**/*.rb",
-    "lib/selenium/webdriver/opera.rb"
-  ],
-  deps = [
-    ":common",
-    ":remote"
-  ]
-)
-
-ruby_test(name = "opera",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/opera/**/*_spec.rb"
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
-    ":opera"
-  ]
-)
-
 ruby_library(name = "phantomjs",
   srcs = [
     "lib/selenium/webdriver/phantomjs/**/*.rb",
@@ -244,6 +227,91 @@ ruby_test(name = "remote",
   ]
 )
 
+ruby_test(name = "remote-chrome",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
+  ],
+  include = ["rb/spec/integration", "build/rb/lib"],
+  deps = [
+    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+    ":remote"
+  ]
+)
+
+ruby_test(name = "remote-firefox",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
+  ],
+  include = ["rb/spec/integration", "build/rb/lib"],
+  deps = [
+    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+    ":remote"
+  ]
+)
+
+ruby_test(name = "remote-phantomjs",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
+  ],
+  include = ["rb/spec/integration", "build/rb/lib"],
+  deps = [
+    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+    ":remote"
+  ]
+)
+
+ruby_test(name = "remote-safari",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
+  ],
+  include = ["rb/spec/integration", "build/rb/lib"],
+  deps = [
+    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+    ":remote"
+  ]
+)
+
+ruby_test(name = "remote-ie",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
+  ],
+  include = ["rb/spec/integration", "build/rb/lib"],
+  deps = [
+    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+    ":remote"
+  ]
+)
+
+ruby_test(name = "remote-edge",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
+  ],
+  include = ["rb/spec/integration", "build/rb/lib"],
+  deps = [
+    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+    ":remote"
+  ]
+)
+
+ruby_test(name = "remote-marionette",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
+  ],
+  include = ["rb/spec/integration", "build/rb/lib"],
+  deps = [
+    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+    ":remote",
+    ":firefox"
+  ]
+)
+
 ruby_library(name = "safari",
   srcs = [
     "lib/selenium/webdriver/safari/**/*.rb",
@@ -254,7 +322,6 @@ ruby_library(name = "safari",
     ":remote",
   ],
   resources = [
-    { "//javascript/safari-driver/prebuilt:SafariDriver": "rb/lib/selenium/webdriver/safari/resources/SafariDriver.safariextz"},
     { "//javascript/safari-driver:client": "rb/lib/selenium/webdriver/safari/resources/client.js"}
   ]
 )
@@ -293,11 +360,12 @@ ruby_test(name = "unit",
     ":android",
     ":chrome",
     ":common",
+    ":edge",
     ":firefox",
     ":ie",
     ":iphone",
-    ":opera",
     ":remote",
+    ":safari",
     ":phantomjs",
     ":support",
   ]

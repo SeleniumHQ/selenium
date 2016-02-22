@@ -1,19 +1,19 @@
-/*
-Copyright 2007-2010 Selenium committers
-Portions copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.firefox.internal;
 
@@ -22,6 +22,7 @@ import com.google.common.base.Optional;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.ExtensionConnection;
 import org.openqa.selenium.firefox.FirefoxBinary;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.NotConnectedException;
 import org.openqa.selenium.internal.Lock;
@@ -31,26 +32,21 @@ import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.internal.CircularOutputStream;
+import org.openqa.selenium.io.CircularOutputStream;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import static org.openqa.selenium.firefox.FirefoxProfile.PORT_PREFERENCE;
 import static org.openqa.selenium.internal.SocketLock.DEFAULT_PORT;
 
 public class NewProfileExtensionConnection implements ExtensionConnection, NeedsLocalLogs {
-
-  /**
-   * System property that defines the location of the webdriver.xpi browser extension to install
-   * in the browser. If not set, the prebuilt extension bundled with this class will be used
-   * instead.
-   */
-  public static final String FIREFOX_DRIVER_XPI_PROPERTY = "webdriver.firefox.driver";
 
   private final static int BUFFER_SIZE = 4096;
 
@@ -83,16 +79,14 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
 
     lock.lock(connectTimeout);
     try {
-      port = determineNextFreePort(DEFAULT_PORT);
+      port = determineNextFreePort(profile.getIntegerPreference(PORT_PREFERENCE, DEFAULT_PORT));
       profile.setPreference(PORT_PREFERENCE, port);
 
       profileDir = profile.layoutOnDisk();
 
-      process.clean(profile, profileDir);
-
       delegate = new HttpCommandExecutor(buildUrl(host, port));
       delegate.setLocalLogs(logs);
-      String firefoxLogFile = System.getProperty("webdriver.firefox.logfile");
+      String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
 
       if (firefoxLogFile !=  null) {
         if ("/dev/stdout".equals(firefoxLogFile)) {
@@ -149,8 +143,9 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
   }
 
   private static Optional<Extension> loadCustomExtension() {
-    if (System.getProperty(FIREFOX_DRIVER_XPI_PROPERTY) != null) {
-      File xpi = new File(System.getProperty(FIREFOX_DRIVER_XPI_PROPERTY));
+    String xpiProperty = System.getProperty(FirefoxDriver.SystemProperty.DRIVER_XPI_PROPERTY);
+    if (xpiProperty != null) {
+      File xpi = new File(xpiProperty);
       return Optional.of((Extension) new FileExtension(xpi));
     }
     return Optional.absent();
@@ -205,7 +200,7 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
   /**
    * Builds the URL for the Firefox extension running on the given host and port. If the host is
    * {@code localhost}, an attempt will be made to find the correct loopback address.
-   * 
+   *
    * @param host The hostname the extension is running on.
    * @param port The port the extension is listening on.
    * @return The URL of the Firefox extension.
@@ -235,5 +230,13 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
       delegate.setLocalLogs(logs);
     }
     this.logs = logs;
+  }
+
+  public URI getAddressOfRemoteServer() {
+    try {
+      return delegate.getAddressOfRemoteServer().toURI();
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

@@ -1,5 +1,8 @@
-// Copyright 2013 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -111,6 +114,21 @@ bool RegistryUtilities::GetRegistryValue(const HKEY root_key,
 
   }
   return value_retrieved;
+}
+
+bool RegistryUtilities::RegistryKeyExists(HKEY root_key,
+                                          const std::wstring& subkey) {
+  HKEY key_handle;
+  long registry_call_result = ::RegOpenKeyEx(root_key,
+                                             subkey.c_str(),
+                                             0,
+                                             KEY_QUERY_VALUE,
+                                             &key_handle);
+  bool result = (ERROR_SUCCESS == registry_call_result);
+  if (result) {
+    ::RegCloseKey(key_handle);
+  }
+  return result;
 }
 
 } // namespace webdriver

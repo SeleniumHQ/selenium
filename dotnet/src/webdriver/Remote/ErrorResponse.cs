@@ -1,9 +1,9 @@
 ﻿// <copyright file="ErrorResponse.cs" company="WebDriver Committers">
-// Copyright 2007-2011 WebDriver committers
-// Copyright 2007-2011 Google Inc.
-// Portions copyright 2011 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -17,7 +17,6 @@
 // </copyright>
 
 using System.Collections.Generic;
-using Newtonsoft.Json;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -93,7 +92,6 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets or sets the message from the response
         /// </summary>
-        [JsonProperty("message")]
         public string Message
         {
             get { return this.message; }
@@ -103,7 +101,6 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets or sets the class name that threw the error
         /// </summary>
-        [JsonProperty("class")]
         public string ClassName
         {
             get { return this.className; }
@@ -113,7 +110,6 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets or sets the screenshot of the error
         /// </summary>
-        [JsonProperty("screen")]
         public string Screenshot
         {
             // TODO: (JimEvans) Change this to return an Image.
@@ -124,7 +120,6 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets or sets the stack trace of the error
         /// </summary>
-        [JsonProperty("stackTrace")]
         public StackTraceElement[] StackTrace
         {
             get { return this.stackTrace; }

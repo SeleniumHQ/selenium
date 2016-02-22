@@ -36,13 +36,14 @@ goog.require('goog.events');
  * object store. They can only be created when setting the version of the
  * database. Should not be created directly, access object stores through
  * transactions.
- * @see goog.db.IndexedDb#setVersion
+ * @see goog.db.UpgradeNeededCallback
  * @see goog.db.Transaction#objectStore
  *
  * @param {!IDBObjectStore} store The backing IndexedDb object.
  * @constructor
+ * @final
  *
- * TODO(user): revisit msg in exception and errors in this class. In newer
+ * TODO(arthurhsu): revisit msg in exception and errors in this class. In newer
  *     Chrome (v22+) the error/request come with a DOM error string that is
  *     already very descriptive.
  */
@@ -100,7 +101,6 @@ goog.db.ObjectStore.prototype.insert_ = function(fn, msg, value, opt_key) {
   request.onsuccess = function(ev) {
     d.callback();
   };
-  var self = this;
   request.onerror = function(ev) {
     msg += goog.debug.deepExpose(value);
     if (opt_key) {
@@ -313,8 +313,8 @@ goog.db.ObjectStore.prototype.clear = function() {
 
 
 /**
- * Creates an index in this object store. Can only be called inside the callback
- * for the Deferred returned from goog.db.IndexedDb#setVersion.
+ * Creates an index in this object store. Can only be called inside a
+ * {@link goog.db.UpgradeNeededCallback}.
  *
  * @param {string} name Name of the index to create.
  * @param {string} keyPath Attribute to index on.
@@ -322,7 +322,7 @@ goog.db.ObjectStore.prototype.clear = function() {
  *     available option is unique, which defaults to false. If unique is true,
  *     the index will enforce that there is only ever one object in the object
  *     store for each unique value it indexes on.
- * @return {goog.db.Index} The newly created, wrapped index.
+ * @return {!goog.db.Index} The newly created, wrapped index.
  * @throws {goog.db.Error} In case of an error creating the index.
  */
 goog.db.ObjectStore.prototype.createIndex = function(
@@ -341,7 +341,7 @@ goog.db.ObjectStore.prototype.createIndex = function(
  * Gets an index.
  *
  * @param {string} name Name of the index to fetch.
- * @return {goog.db.Index} The requested wrapped index.
+ * @return {!goog.db.Index} The requested wrapped index.
  * @throws {goog.db.Error} In case of an error getting the index.
  */
 goog.db.ObjectStore.prototype.getIndex = function(name) {
@@ -355,8 +355,8 @@ goog.db.ObjectStore.prototype.getIndex = function(name) {
 
 
 /**
- * Deletes an index from the object store. Can only be called inside the
- * callback for the Deferred returned from goog.db.IndexedDb#setVersion.
+ * Deletes an index from the object store. Can only be called inside a
+ * {@link goog.db.UpgradeNeededCallback}.
  *
  * @param {string} name Name of the index to delete.
  * @throws {goog.db.Error} In case of an error deleting the index.
@@ -379,21 +379,22 @@ goog.db.ObjectStore.prototype.deleteIndex = function(name) {
  * @return {!goog.async.Deferred} The deferred number of records.
  */
 goog.db.ObjectStore.prototype.count = function(opt_range) {
-  var request;
   var d = new goog.async.Deferred();
 
   try {
     var range = opt_range ? opt_range.range() : null;
-    request = this.store_.count(range);
+    var request = this.store_.count(range);
+    request.onsuccess = function(ev) {
+      d.callback(ev.target.result);
+    };
+    var self = this;
+    request.onerror = function(ev) {
+      d.errback(goog.db.Error.fromRequest(ev.target, self.getName()));
+    };
   } catch (ex) {
     d.errback(goog.db.Error.fromException(ex, this.getName()));
   }
-  request.onsuccess = function(ev) {
-    d.callback(ev.target.result);
-  };
-  request.onerror = function(ev) {
-    d.errback(goog.db.Error.fromRequest(ev.target, this.getName()));
-  };
+
   return d;
 };
 

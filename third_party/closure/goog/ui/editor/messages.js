@@ -20,6 +20,9 @@
 
 goog.provide('goog.ui.editor.messages');
 
+goog.require('goog.html.uncheckedconversions');
+goog.require('goog.string.Const');
+
 
 /** @desc Link button / bubble caption. */
 goog.ui.editor.messages.MSG_LINK_CAPTION = goog.getMsg('Link');
@@ -69,6 +72,17 @@ goog.ui.editor.messages.MSG_TR_LINK_EXPLANATION = goog.getMsg(
       'endLink': '</a>'});
 
 
+/**
+ * @return {!goog.html.SafeHtml} SafeHtml version of MSG_TR_LINK_EXPLANATION.
+ */
+goog.ui.editor.messages.getTrLinkExplanationSafeHtml = function() {
+  return goog.html.uncheckedconversions.
+      safeHtmlFromStringKnownToSatisfyTypeContract(
+          goog.string.Const.from('Parameterless translation'),
+          goog.ui.editor.messages.MSG_TR_LINK_EXPLANATION);
+};
+
+
 /** @desc Prompt for the URL of a link that the user is creating. */
 goog.ui.editor.messages.MSG_WHAT_URL = goog.getMsg(
     'To what URL should this link go?');
@@ -109,6 +123,17 @@ goog.ui.editor.messages.MSG_EMAIL_EXPLANATION = goog.getMsg(
     '{$preb}Be careful.{$postb} ' +
     'Remember that any time you include an email address on a web page, ' +
     'nasty spammers can find it too.', {'preb': '<b>', 'postb': '</b>'});
+
+
+/**
+ * @return {!goog.html.SafeHtml} SafeHtml version of MSG_EMAIL_EXPLANATION.
+ */
+goog.ui.editor.messages.getEmailExplanationSafeHtml = function() {
+  return goog.html.uncheckedconversions.
+      safeHtmlFromStringKnownToSatisfyTypeContract(
+          goog.string.Const.from('Parameterless translation'),
+          goog.ui.editor.messages.MSG_EMAIL_EXPLANATION);
+};
 
 
 /**

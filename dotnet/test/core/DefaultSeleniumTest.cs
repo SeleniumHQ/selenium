@@ -66,12 +66,11 @@ namespace ThoughtWorks.Selenium.UnitTests
 		}
 
 		[Test]
-		[ExpectedException(typeof(SeleniumException))]
 		public void ChooseCancelOnNextConfirmationFailsIfResultIsNotOK()
 		{
 			mockProcessor.ExpectAndThrow("DoCommand", new SeleniumException("Error"), 
 				new object[]{"chooseCancelOnNextConfirmation", new String[]{}});
-			selenium.ChooseCancelOnNextConfirmation();
+            Assert.Throws<SeleniumException>(() => selenium.ChooseCancelOnNextConfirmation());
 		}
 
 		[Test]
@@ -84,13 +83,12 @@ namespace ThoughtWorks.Selenium.UnitTests
 
 		
 		[Test]
-		[ExpectedException (typeof(SeleniumException))]
 		public void ClickShouldFailWhenOKIsNotReturned()
 		{
 			string fieldname = "fieldname";
 
 			mockProcessor.ExpectAndThrow("DoCommand", new SeleniumException("Error"), new object[]{"click", new string[]{fieldname}});
-			selenium.Click(fieldname);
+            Assert.Throws<SeleniumException>(() => selenium.Click(fieldname));
 		}
 
 		[Test]

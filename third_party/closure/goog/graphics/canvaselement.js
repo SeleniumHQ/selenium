@@ -16,7 +16,6 @@
 /**
  * @fileoverview Objects representing shapes drawn on a canvas.
  * @author robbyw@google.com (Robby Walker)
- * @author wcrosby@google.com (Wayne Crosby)
  */
 
 goog.provide('goog.graphics.CanvasEllipseElement');
@@ -30,6 +29,7 @@ goog.provide('goog.graphics.CanvasTextElement');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.dom.safe');
 goog.require('goog.graphics.EllipseElement');
 goog.require('goog.graphics.GroupElement');
 goog.require('goog.graphics.ImageElement');
@@ -37,8 +37,11 @@ goog.require('goog.graphics.Path');
 goog.require('goog.graphics.PathElement');
 goog.require('goog.graphics.RectElement');
 goog.require('goog.graphics.TextElement');
+goog.require('goog.html.SafeHtml');
+goog.require('goog.html.uncheckedconversions');
 goog.require('goog.math');
 goog.require('goog.string');
+goog.require('goog.string.Const');
 
 
 
@@ -54,6 +57,7 @@ goog.require('goog.string');
  * @deprecated goog.graphics is deprecated. It existed to abstract over browser
  *     differences before the canvas tag was widely supported.  See
  *     http://en.wikipedia.org/wiki/Canvas_element for details.
+ * @final
  */
 goog.graphics.CanvasGroupElement = function(graphics) {
   goog.graphics.GroupElement.call(this, null, graphics);
@@ -61,7 +65,7 @@ goog.graphics.CanvasGroupElement = function(graphics) {
 
   /**
    * Children contained by this group.
-   * @type {Array.<goog.graphics.Element>}
+   * @type {Array<goog.graphics.Element>}
    * @private
    */
   this.children_ = [];
@@ -112,6 +116,24 @@ goog.graphics.CanvasGroupElement.prototype.draw = function(ctx) {
 };
 
 
+/**
+ * Removes an element from the group.
+ * @param {!goog.graphics.Element} elem the element to remove.
+ */
+goog.graphics.CanvasGroupElement.prototype.removeElement = function(elem) {
+  goog.array.removeIf(this.children_, function(child) {
+    // If the child has children (and thus is a group element)
+    // call removeElement on that group
+    if (child.children_) {
+      child.removeElement(elem);
+      return false;
+    } else {
+      return child === elem;
+    }
+  });
+};
+
+
 
 /**
  * Thin wrapper for canvas ellipse elements.
@@ -129,6 +151,7 @@ goog.graphics.CanvasGroupElement.prototype.draw = function(ctx) {
  * @param {goog.graphics.Fill} fill The fill to use for this element.
  * @constructor
  * @extends {goog.graphics.EllipseElement}
+ * @final
  */
 goog.graphics.CanvasEllipseElement = function(element, graphics,
     cx, cy, rx, ry, stroke, fill) {
@@ -252,6 +275,7 @@ goog.graphics.CanvasEllipseElement.prototype.draw = function(ctx) {
  * @param {goog.graphics.Fill} fill The fill to use for this element.
  * @constructor
  * @extends {goog.graphics.RectElement}
+ * @final
  */
 goog.graphics.CanvasRectElement = function(element, graphics, x, y, w, h,
     stroke, fill) {
@@ -358,6 +382,7 @@ goog.graphics.CanvasRectElement.prototype.draw = function(ctx) {
  * @param {goog.graphics.Fill} fill The fill to use for this element.
  * @constructor
  * @extends {goog.graphics.PathElement}
+ * @final
  */
 goog.graphics.CanvasPathElement = function(element, graphics, path, stroke,
     fill) {
@@ -452,6 +477,7 @@ goog.graphics.CanvasPathElement.prototype.draw = function(ctx) {
  * @param {goog.graphics.Fill} fill The fill to use for this element.
  * @constructor
  * @extends {goog.graphics.TextElement}
+ * @final
  */
 goog.graphics.CanvasTextElement = function(graphics, text, x1, y1, x2, y2,
     align, font, stroke, fill) {
@@ -514,7 +540,7 @@ goog.graphics.CanvasTextElement = function(graphics, text, x1, y1, x2, y2,
    * @type {Element}
    * @private
    */
-  this.innerElement_ = goog.dom.createDom('DIV', {
+  this.innerElement_ = goog.dom.createDom(goog.dom.TagName.DIV, {
     'style': 'display:table-cell;padding: 0;margin: 0;border: 0'
   });
 
@@ -632,12 +658,23 @@ goog.graphics.CanvasTextElement.prototype.updateStyle_ = function() {
 goog.graphics.CanvasTextElement.prototype.updateText_ = function() {
   if (this.x1_ == this.x2_) {
     // Special case vertical text
-    this.innerElement_.innerHTML =
-        goog.array.map(this.text_.split(''),
-            function(entry) { return goog.string.htmlEscape(entry); }).
-            join('<br>');
+    var html =
+        goog.array.map(
+            this.text_.split(''),
+            function(entry) { return goog.string.htmlEscape(entry); })
+        .join('<br>');
+    // Creating a SafeHtml for each character would be quite expensive, and it's
+    // obvious that this is safe, so an unchecked conversion is appropriate.
+    var safeHtml = goog.html.uncheckedconversions
+        .safeHtmlFromStringKnownToSatisfyTypeContract(
+            goog.string.Const.from('Concatenate escaped chars and <br>'),
+            html);
+    goog.dom.safe.setInnerHtml(
+        /** @type {!Element} */ (this.innerElement_), safeHtml);
   } else {
-    this.innerElement_.innerHTML = goog.string.htmlEscape(this.text_);
+    goog.dom.safe.setInnerHtml(
+        /** @type {!Element} */ (this.innerElement_),
+        goog.html.SafeHtml.htmlEscape(this.text_));
   }
 };
 
@@ -658,6 +695,7 @@ goog.graphics.CanvasTextElement.prototype.updateText_ = function() {
  * @param {string} src Source of the image.
  * @constructor
  * @extends {goog.graphics.ImageElement}
+ * @final
  */
 goog.graphics.CanvasImageElement = function(element, graphics, x, y, w, h,
     src) {

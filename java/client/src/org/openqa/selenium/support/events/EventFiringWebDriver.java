@@ -1,18 +1,19 @@
-/*
-Copyright 2007-2009 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.support.events;
 
@@ -24,6 +25,7 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -66,7 +68,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   private final WebDriver driver;
 
   private final List<WebDriverEventListener> eventListeners =
-      new ArrayList<WebDriverEventListener>();
+      new ArrayList<>();
   private final WebDriverEventListener dispatcher = (WebDriverEventListener) Proxy
       .newProxyInstance(
           WebDriverEventListener.class.getClassLoader(),
@@ -109,7 +111,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   }
 
   private Class<?>[] extractInterfaces(Object object) {
-    Set<Class<?>> allInterfaces = new HashSet<Class<?>>();
+    Set<Class<?>> allInterfaces = new HashSet<>();
     allInterfaces.add(WrapsDriver.class);
     if (object instanceof WebElement) {
       allInterfaces.add(WrapsElement.class);
@@ -130,6 +132,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   }
 
   /**
+   * @param eventListener the event listener to register
    * @return this for method chaining.
    */
   public EventFiringWebDriver register(WebDriverEventListener eventListener) {
@@ -138,6 +141,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   }
 
   /**
+   * @param eventListener the event listener to unregister
    * @return this for method chaining.
    */
   public EventFiringWebDriver unregister(WebDriverEventListener eventListener) {
@@ -172,7 +176,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     dispatcher.beforeFindBy(by, null, driver);
     List<WebElement> temp = driver.findElements(by);
     dispatcher.afterFindBy(by, null, driver);
-    List<WebElement> result = new ArrayList<WebElement>(temp.size());
+    List<WebElement> result = new ArrayList<>(temp.size());
     for (WebElement element : temp) {
       result.add(createWebElement(element));
     }
@@ -242,14 +246,14 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   private Object unpackWrappedElement(Object arg) {
     if (arg instanceof List<?>) {
       List<?> aList = (List<?>) arg;
-      List<Object> toReturn = new ArrayList<Object>();
-      for (int j = 0; j < aList.size(); j++) {
-        toReturn.add(unpackWrappedElement(aList.get(j)));
+      List<Object> toReturn = new ArrayList<>();
+      for (Object anAList : aList) {
+        toReturn.add(unpackWrappedElement(anAList));
       }
       return toReturn;
     } else if (arg instanceof Map<?, ?>) {
       Map<?, ?> aMap = (Map<?, ?>) arg;
-      Map<Object, Object> toReturn = new HashMap<Object, Object>();
+      Map<Object, Object> toReturn = new HashMap<>();
       for (Object key : aMap.keySet()) {
         toReturn.put(key, unpackWrappedElement(aMap.get(key)));
       }
@@ -393,6 +397,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       return element.getSize();
     }
 
+    public Rectangle getRect() {
+      return element.getRect();
+    }
+
     public String getCssValue(String propertyName) {
       return element.getCssValue(propertyName);
     }
@@ -408,7 +416,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       dispatcher.beforeFindBy(by, element, driver);
       List<WebElement> temp = element.findElements(by);
       dispatcher.afterFindBy(by, element, driver);
-      List<WebElement> result = new ArrayList<WebElement>(temp.size());
+      List<WebElement> result = new ArrayList<>(temp.size());
       for (WebElement element : temp) {
         result.add(createWebElement(element));
       }
@@ -450,6 +458,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     public Coordinates getCoordinates() {
       return ((Locatable) underlyingElement).getCoordinates();
     }
+
+    public <X> X getScreenshotAs(OutputType<X> outputType) throws WebDriverException {
+      return element.getScreenshotAs(outputType);
+    }
   }
 
   private class EventFiringNavigation implements Navigation {
@@ -483,7 +495,9 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     }
 
     public void refresh() {
+      dispatcher.beforeNavigateRefresh(driver);
       navigation.refresh();
+      dispatcher.afterNavigateRefresh(driver);
     }
   }
 
@@ -528,7 +542,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     }
 
     public ImeHandler ime() {
-      throw new UnsupportedOperationException("Driver does not support IME interactions");
+      return options.ime();
     }
 
     @Beta
@@ -581,6 +595,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       return targetLocator.frame(frameElement);
     }
 
+    public WebDriver parentFrame() {
+      return targetLocator.parentFrame();
+    }
+
     public WebDriver window(String windowName) {
       return targetLocator.window(windowName);
     }
@@ -624,6 +642,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
 
     public void maximize() {
       window.maximize();
+    }
+
+    public void fullscreen() {
+      window.fullscreen();
     }
   }
 }

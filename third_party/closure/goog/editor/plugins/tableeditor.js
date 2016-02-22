@@ -22,12 +22,14 @@ goog.provide('goog.editor.plugins.TableEditor');
 
 goog.require('goog.array');
 goog.require('goog.dom');
+goog.require('goog.dom.Range');
 goog.require('goog.dom.TagName');
 goog.require('goog.editor.Plugin');
 goog.require('goog.editor.Table');
 goog.require('goog.editor.node');
 goog.require('goog.editor.range');
 goog.require('goog.object');
+goog.require('goog.userAgent');
 
 
 
@@ -35,14 +37,15 @@ goog.require('goog.object');
  * Plugin that adds support for table creation and editing commands.
  * @constructor
  * @extends {goog.editor.Plugin}
+ * @final
  */
 goog.editor.plugins.TableEditor = function() {
-  goog.base(this);
+  goog.editor.plugins.TableEditor.base(this, 'constructor');
 
   /**
    * The array of functions that decide whether a table element could be
    * editable by the user or not.
-   * @type {Array.<function(Element):boolean>}
+   * @type {Array<function(Element):boolean>}
    * @private
    */
   this.isTableEditableFunctions_ = [];
@@ -111,7 +114,7 @@ goog.editor.plugins.TableEditor.prototype.isSupportedCommand =
 
 /** @override */
 goog.editor.plugins.TableEditor.prototype.enable = function(fieldObject) {
-  goog.base(this, 'enable', fieldObject);
+  goog.editor.plugins.TableEditor.base(this, 'enable', fieldObject);
 
   // enableObjectResizing is supported only for Gecko.
   // You can refer to http://qooxdoo.org/contrib/project/htmlarea/html_editing
@@ -189,7 +192,7 @@ goog.editor.plugins.TableEditor.prototype.execCommandInternal = function(
     // TODO(user): use the reference to the table element returned from
     // replaceContentsWithNode.
     if (!goog.userAgent.IE) {
-      cursorCell = table.getElementsByTagName('td')[0];
+      cursorCell = table.getElementsByTagName(goog.dom.TagName.TD)[0];
     }
   } else {
     var cellSelection = new goog.editor.plugins.TableEditor.CellSelection_(
@@ -378,7 +381,7 @@ goog.editor.plugins.TableEditor.CellSelection_ =
 /**
  * Returns the EditableTable object of which this selection's cells are a
  * subset.
- * @return {goog.editor.Table?} the table.
+ * @return {!goog.editor.Table} the table.
  */
 goog.editor.plugins.TableEditor.CellSelection_.prototype.getTable =
     function() {
@@ -428,7 +431,7 @@ goog.editor.plugins.TableEditor.CellSelection_.prototype.getLastColumnIndex =
 
 /**
  * Returns the cells in this selection.
- * @return {Array.<Element>} Cells in this selection.
+ * @return {!Array<Element>} Cells in this selection.
  */
 goog.editor.plugins.TableEditor.CellSelection_.prototype.getCells = function() {
   return this.cells_;

@@ -1,52 +1,33 @@
-// Copyright 2012 Software Freedom Conservancy
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /** @fileoverview Defines logging for the Firefox driver. */
 
 goog.provide('fxdriver.logging');
-goog.provide('fxdriver.logging.LoggingPreferences');
 
 goog.require('fxdriver.files.File');
 goog.require('fxdriver.prefs');
 goog.require('goog.array');
-goog.require('goog.debug.Formatter');
-goog.require('goog.debug.Logger');
 goog.require('goog.debug.TextFormatter');
+goog.require('goog.log');
 goog.require('goog.object');
 goog.require('goog.string');
+goog.require('webdriver.logging');
 
-
-/**
- * Represents the logging preferences as sent across the wire.
- *
- * @typedef {{driver: (number|undefined), profiler: (number|undefined)}}
- */
-fxdriver.logging.LoggingPreferences;
-
-
-/**
- * Logging levels.
- * @enum {{value:number, name:string}}
- */
-fxdriver.logging.LogLevel = {
-  ALL: { value: -Math.pow(2, 31), name: 'ALL' },
-  DEBUG: { value: 500, name: 'DEBUG' },
-  INFO: { value: 800, name: 'INFO' },
-  WARNING: { value: 900, name: 'WARNING' },
-  SEVERE: { value: 1000, name: 'SEVERE' },
-  OFF: { value: Math.pow(2, 31) - 1, name: 'OFF' }
-};
 
 
 /**
@@ -61,69 +42,22 @@ fxdriver.logging.LogType = {
 
 
 /**
- * A single log entry.
- *
- * @constructor
- * @param {!fxdriver.logging.LogLevel} level The log level of the entry.
- * @param {string} message The message of the entry.
+ * @param {string} name The logger name.
+ * @returns {goog.log.Logger} The logger, or {@code null} if logging is
+ *     disabled for the current build.
+ * @see goog.log.getLogger
  */
-fxdriver.logging.LogEntry = function(level, message) {
-  /** @type {number} */
-  this.timestamp = new Date().getTime();
-
-  /** @type {!LogLevel} */
-  this.level = level;
-
-  /** @type {string} */
-  this.message = message;
-};
-
-
-/**
- * Logs a debug message to the driver log.
- *
- * @param {string} message The message to log.
- */
-fxdriver.logging.debug = function(message) {
+fxdriver.logging.getLogger = function(name) {
   fxdriver.logging.initialize_();
-  fxdriver.logging.getDriverLogger_().fine(message);
+  return goog.log.getLogger(name);
 };
 
-/**
- * Logs an info message to the driver log.
- *
- * @param {string} message The message to log.
- */
-fxdriver.logging.info = function(message) {
-  fxdriver.logging.initialize_();
-  fxdriver.logging.getDriverLogger_().info(message);
-};
-
-/**
- * Logs a warning message to the driver log.
- *
- * @param {string} message The message to log.
- */
-fxdriver.logging.warning = function(message) {
-  fxdriver.logging.initialize_();
-  fxdriver.logging.getDriverLogger_().warning(message);
-};
-
-/**
- * Logs an error message to the driver log.
- *
- * @param {string} message The message to log.
- */
-fxdriver.logging.error = function(message) {
-  fxdriver.logging.initialize_();
-  fxdriver.logging.getDriverLogger_().severe(message);
-};
 
 /**
  * Logs a message on the given log level and for the given type.
  *
- * @param {!LogType} logType The log type to use.
- * @param {!LogLevel} logLevel The log level to use.
+ * @param {string} logType The log type to use.
+ * @param {!webdriver.logging.Level} logLevel The log level to use.
  * @param {string} message The message to log.
  */
 fxdriver.logging.log = function(logType, logLevel, message) {
@@ -132,27 +66,19 @@ fxdriver.logging.log = function(logType, logLevel, message) {
     message = JSON.stringify(message);
   }
   var logFile = fxdriver.logging.getLogFile_(logType);
-  var entry = new fxdriver.logging.LogEntry(logLevel.name, message);
+  var entry = new webdriver.logging.Entry(
+      logLevel.name, message, goog.now(), logType);
   var logEntryStr = JSON.stringify(entry);
   logEntryStr = logEntryStr.replace(/\n/g, ' ');
   logFile.append(logEntryStr + '\n');
 };
 
-/**
- * Fetches the webdriver closure logger.
- *
- * @private
- * @return {!goog.debug.Logger} The logger.
- */
-fxdriver.logging.getDriverLogger_ = function() {
-  return goog.debug.Logger.getLogger('webdriver');
-};
 
 /**
  * Get log entries for a given log type.
  *
  * @param {string} logType The log type.
- * @return {!Array.<!fxdriver.logging.LogEntry>} The log entries for the type.
+ * @return {!Array.<!webdriver.logging.Entry>} The log entries for the type.
  */
 fxdriver.logging.getLog = function(logType) {
   fxdriver.logging.initialize_();
@@ -163,6 +89,7 @@ fxdriver.logging.getLog = function(logType) {
       fxdriver.logging.getLogFromFile_(logType));
 };
 
+
 /**
  * Get available log types.
  *
@@ -170,19 +97,19 @@ fxdriver.logging.getLog = function(logType) {
  */
 fxdriver.logging.getAvailableLogTypes = function() {
   var result = [];
-  var collectLogTypes = function(value, key) {
+  goog.object.forEach(fxdriver.logging.LogType, function(value) {
     if (!fxdriver.logging.shouldIgnoreLogType_(value)) {
       result.push(value);
     }
-  };
-  goog.object.forEach(fxdriver.logging.LogType, collectLogTypes);
+  });
   return result;
 };
+
 
 /**
  * Configures logging using logging preferences.
  *
- * @param {(string|!fxdriver.logging.LoggingPreferences)=} logging_prefs
+ * @param {(string|!webdriver.logging.Preferences)=} logging_prefs
  *   The preferences to use.
  * @param {boolean} enable_profiler Whether to collect profiler log.
  */
@@ -192,14 +119,13 @@ fxdriver.logging.configure = function(logging_prefs, enable_profiler) {
   if (goog.isString(logging_prefs)) {
     logging_prefs = JSON.parse(logging_prefs);
   }
-  var configureLogLevels = function(logLevel, logType) {
-    if (logLevel == fxdriver.logging.LogLevel.OFF.name) {
+  goog.object.forEach(logging_prefs, function(logLevel, logType) {
+    if (logLevel == webdriver.logging.Level.OFF.name) {
       fxdriver.logging.ignoreLogType_(logType);
     } else {
       fxdriver.logging.setLogLevel_(logType, logLevel);
     }
-  };
-  goog.object.forEach(logging_prefs, configureLogLevels);
+  });
 
   if (!enable_profiler) {
     fxdriver.logging.ignoreLogType_(fxdriver.logging.LogType.PROFILER);
@@ -213,6 +139,7 @@ fxdriver.logging.configure = function(logging_prefs, enable_profiler) {
  */
 fxdriver.logging.initialized_ = false;
 
+
 /**
  * Initializes logging.
  *
@@ -224,7 +151,7 @@ fxdriver.logging.initialize_ = function() {
   }
   fxdriver.logging.initialized_ = true;
 
-  var rootLogger = goog.debug.Logger.getLogger('');
+  var rootLogger = goog.log.getLogger('');
   fxdriver.logging.addClosureToDriverFileLogger_(rootLogger);
   fxdriver.logging.addClosureToConsoleLogger_(rootLogger);
   fxdriver.logging.addClosureToFileLogger_(rootLogger);
@@ -261,7 +188,6 @@ fxdriver.logging.addConsoleToFileLogger_ = function() {
 
   // add console listener
   var filter = new fxdriver.logging.ConsoleToLogEntryFilter();
-  var file = fxdriver.logging.getLogFile_(fxdriver.logging.LogType.BROWSER);
   var consoleListener = {
     observe: function(consoleEntry) {
       if (!filter.excludeConsoleEntry(consoleEntry)) {
@@ -274,28 +200,36 @@ fxdriver.logging.addConsoleToFileLogger_ = function() {
   consoleService.registerListener(consoleListener);
 };
 
+
 /**
  * Adds a log handler to the logger that will record messages to
  * Firefox's Error Console.
  *
+ * @param {goog.log.Logger} logger The logger to use.
  * @private
- * @param {!goog.debug.Logger} logger The logger to use.
  */
 fxdriver.logging.addClosureToConsoleLogger_ = function(logger) {
-  var formatter = new fxdriver.logging.ClosureToConsoleFormatter();
-  formatter.showSeverityLevel = true;
   var consoleService = Components.classes['@mozilla.org/consoleservice;1']
       .getService(Components.interfaces['nsIConsoleService']);
-  logger.addHandler(function(logRecord) {
-    consoleService.logStringMessage(formatter.formatRecord(logRecord));
+  goog.log.addHandler(logger, function(logRecord) {
+    var sb = [];
+    sb.push('[WEBDRIVER] ');
+    sb.push('[', logRecord.getLevel().name, '] ');
+    sb.push('[', logRecord.getLoggerName(), '] ');
+    sb.push(logRecord.getMessage(), '\n');
+    if (logRecord.getException()) {
+      sb.push(logRecord.getException().message, '\n');
+    }
+    consoleService.logStringMessage(sb.join(''));
   });
 };
+
 
 /**
  * Adds a log handler to the logger that will record to a log file.
  *
+ * @param {goog.log.Logger} logger The logger to use.
  * @private
- * @param {!goog.debug.Logger} logger The logger to use.
  */
 fxdriver.logging.addClosureToFileLogger_ = function(logger) {
   var filePath = fxdriver.prefs.getCharPref(
@@ -306,30 +240,31 @@ fxdriver.logging.addClosureToFileLogger_ = function(logger) {
   var formatter = new goog.debug.TextFormatter('webdriver');
 
   if ('/dev/stdout' == filePath) {
-    logger.addHandler(function(logRecord) {
+    goog.log.addHandler(logger, function(logRecord) {
       dump(formatter.formatRecord(logRecord));
     });
     return;
   }
 
   var file = fxdriver.files.getFile(filePath);
-  logger.addHandler(function(logRecord) {
+  goog.log.addHandler(logger, function(logRecord) {
     file.append(formatter.formatRecord(logRecord));
   });
 };
+
 
 /**
  * Adds a log handler to the logger that records log entries to a temporary
  * file using the log entry format of the wire protocol.
  *
+ * @param {goog.log.Logger} logger The logger to use.
  * @private
- * @param {!goog.debug.Logger} logger The logger to use.
  */
 fxdriver.logging.addClosureToDriverFileLogger_ = function(logger) {
-  var formatter = new fxdriver.logging.ClosureToLogEntryFormatter();
   var file = fxdriver.logging.getLogFile_(fxdriver.logging.LogType.DRIVER);
-  logger.addHandler(function(logRecord) {
-    file.append(formatter.formatRecord(logRecord));
+  goog.log.addHandler(logger, function(logRecord) {
+    var entry = webdriver.logging.Entry.fromClosureLogRecord(logRecord);
+    file.append(JSON.stringify(entry).replace(/\n/g, ' ') + '\n');
   });
 };
 
@@ -338,21 +273,16 @@ fxdriver.logging.addClosureToDriverFileLogger_ = function(logger) {
 /**
  * Filter log entries based on the log level set for the given log type.
  *
+ * @param {string} logType The log type.
+ * @param {!Array.<!webdriver.logging.Entry>} logEntries The log entries.
+ * @return {!Array.<!webdriver.logging.Entry>} The filtered log entries.
  * @private
- * @param {!LogLevel} logType The log type.
- * @param {!Array.<!fxdriver.logging.LogEntry>} logEntries The log entries
- *    to filter.
- * @return {!Array.<!fxdriver.logging.LogEntry>} A filtered list of log entries.
  */
 fxdriver.logging.filterLogEntries_ = function(logType, logEntries) {
-  var result = [];
   var logLevel = fxdriver.logging.getLogLevel_(logType);
-  goog.array.forEach(logEntries, function(entry) {
-    if (entry.level.value >= logLevel.value) {
-      result.push(entry);
-    }
+  return goog.array.filter(logEntries, function(entry) {
+    return entry.level.value >= logLevel.value;
   });
-  return result;
 };
 
 /**
@@ -364,17 +294,18 @@ fxdriver.logging.filterLogEntries_ = function(logType, logEntries) {
 fxdriver.logging.ConsoleToLogEntryFilter = function() {
 };
 
+
 /**
  * Checks if the given console entry should be excluded from being converted
  * to a log entry.
  *
  * @param {!nsIConsoleMessage} consoleEntry The console entry.
- * @return {!boolean} true if this entry should be excluded.
+ * @return {boolean} Whether this entry should be excluded.
  */
 fxdriver.logging.ConsoleToLogEntryFilter.prototype.excludeConsoleEntry =
     function(consoleEntry) {
   var msg = fxdriver.logging.getConsoleEntryMessage_(consoleEntry);
-  return goog.string.contains(msg, '[WEBDRIVER]');
+  return goog.string.startsWith(msg, '[WEBDRIVER] ');
 };
 
 
@@ -388,6 +319,7 @@ fxdriver.logging.ConsoleToLogEntryFilter.prototype.excludeConsoleEntry =
 fxdriver.logging.ConsoleToLogEntryFormatter = function() {
 };
 
+
 /**
  * Formats a console entry to a JSON log entry.
  *
@@ -396,13 +328,12 @@ fxdriver.logging.ConsoleToLogEntryFormatter = function() {
  */
 fxdriver.logging.ConsoleToLogEntryFormatter.prototype.formatConsoleEntry =
     function(consoleEntry) {
-  var entry = {
-    level: fxdriver.logging.getConsoleEntryLogLevel_(consoleEntry).name,
-    message: fxdriver.logging.getConsoleEntryMessage_(consoleEntry),
-    timestamp: new Date().getTime()
-  };
+  var entry = new webdriver.logging.Entry(
+      fxdriver.logging.getConsoleEntryLogLevel_(consoleEntry),
+      fxdriver.logging.getConsoleEntryMessage_(consoleEntry));
   return JSON.stringify(entry).replace(/\n/g, ' ') + '\n';
 };
+
 
 /**
  * Gets the message from a browser log entry.
@@ -411,8 +342,7 @@ fxdriver.logging.ConsoleToLogEntryFormatter.prototype.formatConsoleEntry =
  * @param {!nsIConsoleMessage} entry The log entry.
  * @return {string} The message.
  */
-fxdriver.logging.getConsoleEntryMessage_ =
-    function(entry) {
+fxdriver.logging.getConsoleEntryMessage_ = function(entry) {
   try {
     entry.QueryInterface(Components.interfaces.nsIScriptError);
     return entry.errorMessage;
@@ -426,141 +356,34 @@ fxdriver.logging.getConsoleEntryMessage_ =
   return '' + entry;
 };
 
+
 /**
  * Gets the log level from a browser log entry.
  *
  * @private
  * @param {!nsIConsoleMessage} entry The log entry.
- * @return {!fxdriver.logging.LogLevel} The log level.
+ * @return {!webdriver.logging.Level} The log level.
  */
-fxdriver.logging.getConsoleEntryLogLevel_ =
-    function(entry) {
+fxdriver.logging.getConsoleEntryLogLevel_ = function(entry) {
   try {
     entry.QueryInterface(Components.interfaces.nsIScriptError);
     if (entry.flags & entry.exceptionFlag) {
-      return fxdriver.logging.LogLevel.SEVERE;
+      return webdriver.logging.Level.SEVERE;
     }
     if (entry.flags & entry.warningFlag) {
-      return fxdriver.logging.LogLevel.WARNING;
+      return webdriver.logging.Level.WARNING;
     }
   } catch (interfaceNotSupported) {
   }
-  return fxdriver.logging.LogLevel.INFO;
+  return webdriver.logging.Level.INFO;
 };
-
-
-/**
- * Formatter that return a formatted JSON log entry to write to a file given
- * a closure log record.
- *
- * @constructor
- * @extends {goog.debug.Formatter}
- */
-fxdriver.logging.ClosureToLogEntryFormatter = function() {
-  goog.debug.Formatter.call(this);
-};
-goog.inherits(fxdriver.logging.ClosureToLogEntryFormatter,
-    goog.debug.Formatter);
-
-/**
- * Formats a record as a JSON log entry.
- *
- * @param {goog.debug.LogRecord} logRecord the logRecord to format.
- * @return {string} The formatted string.
- */
-fxdriver.logging.ClosureToLogEntryFormatter.prototype.formatRecord =
-    function(logRecord) {
-  var entry = {
-    message: JSON.stringify(fxdriver.logging.formatMessage_(logRecord,
-        this.showExceptionText)),
-    level: fxdriver.logging.getLevelFromLogRecord_(logRecord.getLevel()).name,
-    timestamp: new Date().getTime()
-  };
-  return JSON.stringify(entry).replace(/\n/g, ' ') + '\n';
-};
-
-/**
- * Translates goog.debug.Logger.Level to fxdriver.logging.LogLevel.
- *
- * @private
- * @param {!goog.debug.Logger.Level} level The level to lookup.
- * @return {!fxdriver.logging.LogLevel} the corresponding level in
- *     fxdriver.logging.LogLevel if found, otherwise returns
- *     fxdriver.logging.LogLevel.INFO.
- */
-fxdriver.logging.getLevelFromLogRecord_ = function(level) {
-  switch (level) {
-    case goog.debug.Logger.Level.WARNING:
-      return fxdriver.logging.LogLevel.WARNING;
-    case goog.debug.Logger.Level.ERROR:
-      return fxdriver.logging.LogLevel.ERROR;
-    case goog.debug.Logger.Level.INFO:
-      return fxdriver.logging.LogLevel.INFO;
-  }
-  return fxdriver.logging.LogLevel.DEBUG;
-};
-
-
-/**
- * Formatter that returns formatted text for display on Firefox's error console.
- *
- * @constructor
- * @extends {goog.debug.Formatter}
- */
-fxdriver.logging.ClosureToConsoleFormatter = function() {
-  goog.debug.Formatter.call(this);
-};
-goog.inherits(fxdriver.logging.ClosureToConsoleFormatter, goog.debug.Formatter);
-
-/**
- * Formats a record as text.
- *
- * @param {goog.debug.LogRecord} logRecord the logRecord to format.
- * @return {string} The formatted string.
- */
-fxdriver.logging.ClosureToConsoleFormatter.prototype.formatRecord =
-    function(logRecord) {
-  // Build message html
-  var sb = [];
-  sb.push('[WEBDRIVER] ');
-  if (this.showSeverityLevel) {
-    sb.push('[', logRecord.getLevel().name, '] ');
-  }
-  sb.push(fxdriver.logging.formatMessage_(logRecord, this.showExceptionText));
-  return sb.join('');
-};
-
-/**
- * Formats a closure log record to a message.
- *
- * @private
- * @param {!goog.debug.LogRecord} logRecord The log record.
- * @param {boolean} showExceptionText Whether to show exception text.
- * @return {string} The formatted message.
- */
-fxdriver.logging.formatMessage_ = function(logRecord, showExceptionText) {
-  var sb = [];
-  var stack = Components.stack;
-  // Trial and error says that we're 8 levels deep in the stack when called.
-  for (var i = 0; i < 8 && stack; i++) {
-    stack = stack['caller'];
-  }
-  var filename = stack.filename.replace(/.*\//, '');
-  sb.push(filename + ':' + stack.lineNumber + ' ');
-  sb.push(logRecord.getMessage(), '\n');
-  if (showExceptionText && logRecord.getException()) {
-    sb.push(logRecord.getExceptionText(), '\n');
-  }
-  return sb.join('');
-};
-
 
 
 /**
  * Creates a new log file for the given log type and stores its location.
  *
  * @private
- * @param {!LogType} logType The log type.
+ * @param {string} logType The log type.
  * @return {!fxdriver.files.File} The new log file.
  */
 fxdriver.logging.createNewLogFile_ = function(logType) {
@@ -570,12 +393,13 @@ fxdriver.logging.createNewLogFile_ = function(logType) {
   return logFile;
 };
 
+
 /**
  * Gets the log file for the given log type.
  *
+ * @param {string} logType The log type.
+ * @return {!fxdriver.files.File} The log file.
  * @private
- * @param {!LogType} logType The log type.
- * @return {!fxdriver.logging.File} The log file.
  */
 fxdriver.logging.getLogFile_ = function(logType) {
   var fileName = fxdriver.prefs.getCharPref(
@@ -587,12 +411,13 @@ fxdriver.logging.getLogFile_ = function(logType) {
   return logFile;
 };
 
+
 /**
  * Gets log entries for the given log type.
  *
+ * @param {string} logType The log type.
+ * @return {!Array.<!webdriver.logging.Entry>} All logged entries.
  * @private
- * @param {!LogType} logType The log type.
- * @return {!Array.<!fxdriver.logging.LogEntry>} All logged entries.
  */
 fxdriver.logging.getLogFromFile_ = function(logType) {
 
@@ -607,72 +432,79 @@ fxdriver.logging.getLogFromFile_ = function(logType) {
   var result = JSON.parse('[' + fileContent + ']');
   logFile.resetBuffer();
   goog.array.forEach(result, function(entry) {
-    entry.level = fxdriver.logging.LogLevel[entry.level];
+    entry.level = webdriver.logging.getLevel(entry.level);
   });
   return result;
 };
 
+
 /**
  * Sets the log level for the given log type.
  *
- * @private
- * @param {!LogLevel} logType The log type.
+ * @param {string} logType The log type.
  * @param {string} logLevelName The log level name.
+ * @private
  */
 fxdriver.logging.setLogLevel_ = function(logType, logLevelName) {
   fxdriver.prefs.setCharPref(fxdriver.logging.getPrefNameLogLevel_(logType),
       logLevelName);
 };
 
+
 /**
  * Gets the log level for the given log type. Default is INFO if no level is
  * stored for the log type.
  *
+ * @param {string} logType The log type.
+ * @return {!webdriver.logging.Level} The log level.
  * @private
- * @param {!LogType} logType The log type.
- * @return {!LogLevel} The log level.
  */
 fxdriver.logging.getLogLevel_ = function(logType) {
-  return fxdriver.logging.LogLevel[fxdriver.prefs.getCharPref(
-      fxdriver.logging.getPrefNameLogLevel_(logType), 'INFO')];
+  var name = fxdriver.prefs.getCharPref(
+      fxdriver.logging.getPrefNameLogLevel_(logType), 'INFO');
+  return webdriver.logging.getLevel(name);
 };
+
 
 /**
  * Gets the log level preference name for the given log type.
  *
- * @private
- * @param {!LogType} logType The log type to get the preference name for.
+ * @param {!string} logType The log type to get the preference name for.
  * @return {string} The preference name.
+ * @private
  */
 fxdriver.logging.getPrefNameLogLevel_ = function(logType) {
   return 'webdriver.log.' + logType + '.level';
 };
 
+
 /**
  * Gets the log level preference name for the given log type, or for the named
  * webdriver log file if a log type is not given.
  *
- * @private
- * @param {LogType} logType The log type to get the preference name for.
+ * @param {string=} opt_logType The log type to get the preference name for.
  * @return {string} The preference name.
+ * @private
  */
-fxdriver.logging.getPrefNameLogFile_ = function(logType) {
-  if (!logType) {
+fxdriver.logging.getPrefNameLogFile_ = function(opt_logType) {
+  if (!opt_logType) {
     return 'webdriver.log.file';
   }
-  return 'webdriver.log.' + logType + '.file';
+  return 'webdriver.log.' + opt_logType + '.file';
 };
+
 
 /**
  * Checks if logging has been initialized.
  *
+ * @return {boolean} Whether logging has been initialized.
  * @private
- * @return {!boolean} True if logging has been initialized.
  */
 fxdriver.logging.hasConsoleListenerBeenRegistered_ = function() {
   return fxdriver.prefs.getBoolPref(
       fxdriver.logging.prefNameInitialized_, false);
 };
+
 
 /**
  * Sets logging to initialized.
@@ -682,6 +514,7 @@ fxdriver.logging.hasConsoleListenerBeenRegistered_ = function() {
 fxdriver.logging.setConsoleListenerToRegistered_ = function() {
   fxdriver.prefs.setBoolPref(fxdriver.logging.prefNameInitialized_, true);
 };
+
 
 /**
  * Preference name used to keep track of logging initialization which should
@@ -698,44 +531,48 @@ fxdriver.logging.setConsoleListenerToRegistered_ = function() {
  */
 fxdriver.logging.prefNameInitialized_ = 'webdriver.log.init';
 
+
 /**
  * Stores setting to ignore the given log type.
  *
+ * @param {string} logType The log type to ignore.
  * @private
- * @param {!LogType} logType The log type to ignore.
  */
 fxdriver.logging.ignoreLogType_ = function(logType) {
   fxdriver.prefs.setBoolPref(
       fxdriver.logging.getPrefNameLogIgnore_(logType), true);
 };
 
+
 /**
  * Checks if the given log type should be ignored.
  *
+ * @param {string} logType The log type to ignore.
+ * @return {boolean} true if the log type should be ignored, otherwise false.
  * @private
- * @param {!LogType} logType The log type to ignore.
- * @return {!boolean} true if the log type should be ignored, otherwise false.
  */
 fxdriver.logging.shouldIgnoreLogType_ = function(logType) {
   return fxdriver.prefs.getBoolPref(
     fxdriver.logging.getPrefNameLogIgnore_(logType), false);
 };
 
+
 /**
  * Gets the log ignore preference name for the given log type.
  *
+ * @param {string} logType The log type to get the preference name for.
+ * @return {string} The preference name.
  * @private
- * @param {!LogType} logType The log type to get the preference name for.
- * @return {!string} The preference name.
  */
 fxdriver.logging.getPrefNameLogIgnore_ = function(logType) {
   return 'webdriver.log.' + logType + '.ignore';
 };
 
+
 /**
  * Takes an object and attempts to discover which interfaces it implements.
  *
- * @param {*} object The object to dump.
+ * @param {*} element The object to dump.
  */
 fxdriver.logging.dumpObject = function(element) {
   var msg = '=============\n';
@@ -743,14 +580,14 @@ fxdriver.logging.dumpObject = function(element) {
   var rows = [];
 
   msg += 'Supported interfaces: ';
-  for (var i in Components.interfaces) {
+  goog.object.forEach(Components.interfaces, function(i) {
     try {
       var view = element.QueryInterface(Components.interfaces[i]);
       msg += i + ', ';
     } catch (e) {
       // Doesn't support the interface
     }
-  }
+  });
   msg += '\n------------\n';
 
   try {
@@ -764,8 +601,9 @@ fxdriver.logging.dumpObject = function(element) {
   }
 
   msg += '=============\n\n\n';
-  fxdriver.logging.info(msg);
+  goog.log.info(fxdriver.logging.driverLogger_, msg);
 };
+
 
 /**
  * @param {*} view The object to get the properties of.
@@ -773,17 +611,13 @@ fxdriver.logging.dumpObject = function(element) {
  * @private
  */
 fxdriver.logging.dumpProperties_ = function(view, rows) {
-  for (var i in view) {
-    var value = '\t' + i + ': ';
-    try {
-      if (typeof(view[i]) == typeof(Function)) {
-        value += ' function()';
-      } else {
-        value += String(view[i]);
-      }
-    } catch (e) {
-      value += ' Cannot obtain value';
+  goog.object.forEach(view, function(value, key) {
+    var entry = '\t' + key + ': ';
+    if (typeof value === 'function') {
+      entry += ' function()';
+    } else {
+      entry += key;
     }
-    rows.push(value);
-  }
+    rows.push(entry);
+  });
 };

@@ -1,8 +1,26 @@
-# @api private
+# encoding: utf-8
+#
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 class Selenium::WebDriver::Remote::Bridge
 
   #
-  # http://code.google.com/p/selenium/wiki/JsonWireProtocol#Command_Reference
+  # https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-reference
   #
 
   command :newSession,                             :post,    "session"
@@ -20,8 +38,6 @@ class Selenium::WebDriver::Remote::Bridge
   command :refresh,                                :post,    "session/:session_id/refresh"
   command :quit,                                   :delete,  "session/:session_id"
   command :close,                                  :delete,  "session/:session_id/window"
-  command :getVisible,                             :get,     "session/:session_id/visible"
-  command :setVisible,                             :post,    "session/:session_id/visible"
   command :getPageSource,                          :get,     "session/:session_id/source"
   command :getTitle,                               :get,     "session/:session_id/title"
   command :findElement,                            :post,    "session/:session_id/element"
@@ -67,6 +83,7 @@ class Selenium::WebDriver::Remote::Bridge
   #
 
   command :switchToFrame,                          :post,    "session/:session_id/frame"
+  command :switchToParentFrame,                    :post,    "session/:session_id/frame/parent"
   command :switchToWindow,                         :post,    "session/:session_id/window"
 
   #
@@ -144,8 +161,8 @@ class Selenium::WebDriver::Remote::Bridge
   command :getAppCacheStatus,                      :get,    "session/:session_id/application_cache/status"
   command :clearAppCache,                          :delete, "session/:session_id/application_cache/clear"
 
-  command :isBrowserOnline,                        :get,    "session/:session_id/browser_connection"
-  command :setBrowserOnline,                       :post,   "session/:session_id/browser_connection"
+  command :getNetworkConnection,                   :get,    "session/:session_id/network_connection"
+  command :setNetworkConnection,                   :post,   "session/:session_id/network_connection"
 
   command :getLocalStorageItem,                    :get,    "session/:session_id/local_storage/key/:key"
   command :removeLocalStorageItem,                 :delete, "session/:session_id/local_storage/key/:key"

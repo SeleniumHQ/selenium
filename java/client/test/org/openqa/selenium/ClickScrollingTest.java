@@ -1,20 +1,19 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium;
 
@@ -25,24 +24,21 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.Driver.CHROME;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.PHANTOMJS;
+import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.Test;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
-@Ignore(value = {ANDROID, HTMLUNIT}, reason = "Android: Race condition when click returns, "
-    + "the UI did not finish scrolling..\nHtmlUnit: Scrolling requires rendering")
+@Ignore(value = {HTMLUNIT}, reason = "HtmlUnit: Scrolling requires rendering")
 public class ClickScrollingTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
@@ -93,8 +89,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, IPHONE},
-          reason = "Chrome: failed, iPhone: untested, Firefox: failed with native events")
+  @Ignore(value = {CHROME}, reason = "Chrome: failed")
   @Test
   public void testShouldBeAbleToClickOnAnElementHiddenByDoubleOverflow() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_double_overflow_auto.html"));
@@ -104,7 +99,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, SAFARI, MARIONETTE}, reason = "Safari: failed, iPhone: untested")
+  @Ignore(value = {SAFARI}, reason = "Safari: failed")
   @Test
   public void testShouldBeAbleToClickOnAnElementHiddenByYOverflow() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_y_overflow_auto.html"));
@@ -114,7 +109,6 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({OPERA})
   @Test
   public void testShouldNotScrollOverflowElementsWhichAreVisible() {
     driver.get(appServer.whereIs("scroll2.html"));
@@ -127,7 +121,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, IPHONE, PHANTOMJS, SAFARI, MARIONETTE},
+  @Ignore(value = {CHROME, PHANTOMJS, SAFARI, MARIONETTE},
       reason = "Safari: button1 is scrolled to the bottom edge of the view, " +
           "so additonal scrolling is still required for button2")
   @Test
@@ -140,13 +134,12 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToClickRadioButtonScrolledIntoView() {
     driver.get(appServer.whereIs("scroll4.html"));
     driver.findElement(By.id("radio")).click();
     // If we don't throw, we're good
   }
-  
+
   @Ignore(value = {IE, MARIONETTE}, reason = "IE has special overflow handling")
   @Test
   public void testShouldScrollOverflowElementsIfClickPointIsOutOfViewButElementIsInView() {
@@ -155,94 +148,71 @@ public class ClickScrollingTest extends JUnit4TestBase {
     assertEquals("clicked", driver.findElement(By.id("clicked")).getText());
   }
 
+  @SwitchToTopAfterTest
   @Test
-  @Ignore(value = {OPERA, IPHONE, SAFARI, MARIONETTE},
-          reason = "Opera: fails, others: not tested")
+  @Ignore(value = {SAFARI, MARIONETTE}, reason = "others: not tested")
   public void testShouldBeAbleToClickElementInAFrameThatIsOutOfView() {
-    try {
-      driver.get(appServer.whereIs("scrolling_tests/page_with_frame_out_of_view.html"));
-      driver.switchTo().frame("frame");
-      WebElement element = driver.findElement(By.name("checkbox"));
-      element.click();
-      assertTrue(element.isSelected());
-    } finally {
-      driver.switchTo().defaultContent();
-    }
+    driver.get(appServer.whereIs("scrolling_tests/page_with_frame_out_of_view.html"));
+    driver.switchTo().frame("frame");
+    WebElement element = driver.findElement(By.name("checkbox"));
+    element.click();
+    assertTrue(element.isSelected());
   }
-  
+
+  @SwitchToTopAfterTest
   @Test
-  @Ignore(value = {OPERA, IPHONE, SAFARI, MARIONETTE},
-          reason = "Opera: fails, others: not tested")
+  @Ignore(value = {SAFARI}, reason = "not tested")
   public void testShouldBeAbleToClickElementThatIsOutOfViewInAFrame() {
-    try {
-      driver.get(appServer.whereIs("scrolling_tests/page_with_scrolling_frame.html"));
-      driver.switchTo().frame("scrolling_frame");
-      WebElement element = driver.findElement(By.name("scroll_checkbox"));
-      element.click();
-      assertTrue(element.isSelected());
-    } finally {
-      driver.switchTo().defaultContent();
-    }
+    driver.get(appServer.whereIs("scrolling_tests/page_with_scrolling_frame.html"));
+    driver.switchTo().frame("scrolling_frame");
+    WebElement element = driver.findElement(By.name("scroll_checkbox"));
+    element.click();
+    assertTrue(element.isSelected());
   }
-  
+
+  @SwitchToTopAfterTest
   @Test(expected = MoveTargetOutOfBoundsException.class)
   @Ignore(reason = "All tested browses scroll non-scrollable frames")
   public void testShouldNotBeAbleToClickElementThatIsOutOfViewInANonScrollableFrame() {
-    try {
-      driver.get(appServer.whereIs("scrolling_tests/page_with_non_scrolling_frame.html"));
-      driver.switchTo().frame("scrolling_frame");
-      WebElement element = driver.findElement(By.name("scroll_checkbox"));
-      element.click();
-    } finally {
-      driver.switchTo().defaultContent();
-    }
+    driver.get(appServer.whereIs("scrolling_tests/page_with_non_scrolling_frame.html"));
+    driver.switchTo().frame("scrolling_frame");
+    WebElement element = driver.findElement(By.name("scroll_checkbox"));
+    element.click();
   }
-  
+
+  @SwitchToTopAfterTest
   @Test
-  @Ignore(value = {OPERA, IPHONE, SAFARI, MARIONETTE},
-          reason = "Opera: fails, others: not tested")
+  @Ignore(value = {SAFARI}, reason = "not tested")
   public void testShouldBeAbleToClickElementThatIsOutOfViewInAFrameThatIsOutOfView() {
-    try {
-      driver.get(appServer.whereIs("scrolling_tests/page_with_scrolling_frame_out_of_view.html"));
-      driver.switchTo().frame("scrolling_frame");
-      WebElement element = driver.findElement(By.name("scroll_checkbox"));
-      element.click();
-      assertTrue(element.isSelected());
-    } finally {
-      driver.switchTo().defaultContent();
-    }
+    driver.get(appServer.whereIs("scrolling_tests/page_with_scrolling_frame_out_of_view.html"));
+    driver.switchTo().frame("scrolling_frame");
+    WebElement element = driver.findElement(By.name("scroll_checkbox"));
+    element.click();
+    assertTrue(element.isSelected());
   }
-  
+
+  @SwitchToTopAfterTest
   @Test
-  @Ignore(value = {OPERA, IPHONE, SAFARI, MARIONETTE},
-          reason = "Opera: fails, others: not tested")
+  @Ignore(value = {SAFARI}, reason = "not tested")
   public void testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrame() {
-    try {
-      driver.get(appServer.whereIs("scrolling_tests/page_with_nested_scrolling_frames.html"));
-      driver.switchTo().frame("scrolling_frame");
-      driver.switchTo().frame("nested_scrolling_frame");
-      WebElement element = driver.findElement(By.name("scroll_checkbox"));
-      element.click();
-      assertTrue(element.isSelected());
-    } finally {
-      driver.switchTo().defaultContent();
-    }
+    driver.get(appServer.whereIs("scrolling_tests/page_with_nested_scrolling_frames.html"));
+    driver.switchTo().frame("scrolling_frame");
+    driver.switchTo().frame("nested_scrolling_frame");
+    WebElement element = driver.findElement(By.name("scroll_checkbox"));
+    element.click();
+    assertTrue(element.isSelected());
   }
-  
+
+  @SwitchToTopAfterTest
   @Test
-  @Ignore(value = {OPERA, IPHONE, SAFARI, MARIONETTE},
-          reason = "Opera: fails, others: not tested")
+  @Ignore(value = {SAFARI}, reason = "not tested")
   public void testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrameThatIsOutOfView() {
-    try {
-      driver.get(appServer.whereIs("scrolling_tests/page_with_nested_scrolling_frames_out_of_view.html"));
-      driver.switchTo().frame("scrolling_frame");
-      driver.switchTo().frame("nested_scrolling_frame");
-      WebElement element = driver.findElement(By.name("scroll_checkbox"));
-      element.click();
-      assertTrue(element.isSelected());
-    } finally {
-      driver.switchTo().defaultContent();
-    }
+    driver.get(appServer.whereIs("scrolling_tests/page_with_nested_scrolling_frames_out_of_view.html"));
+    driver.switchTo().frame("scrolling_frame");
+    driver.switchTo().frame("nested_scrolling_frame");
+    WebElement element = driver.findElement(By.name("scroll_checkbox"));
+    element.click();
+    assertTrue(element.isSelected());
   }
 
   @JavascriptEnabled
@@ -258,19 +228,14 @@ public class ClickScrollingTest extends JUnit4TestBase {
     return (Long)((JavascriptExecutor)driver).executeScript("return document.body.scrollTop;");
   }
 
+  @SwitchToTopAfterTest
   @Test
-  @Ignore(value = {OPERA, IPHONE, SAFARI, MARIONETTE},
-          reason = "Not tested")
+  @Ignore(value = {SAFARI, MARIONETTE}, reason = "Not tested")
   public void testShouldBeAbleToClickElementInATallFrame() {
-    try {
-      driver.get(appServer.whereIs("scrolling_tests/page_with_tall_frame.html"));
-      driver.switchTo().frame("tall_frame");
-      WebElement element = driver.findElement(By.name("checkbox"));
-      element.click();
-      assertTrue(element.isSelected());
-    } finally {
-      driver.switchTo().defaultContent();
-    }
+    driver.get(appServer.whereIs("scrolling_tests/page_with_tall_frame.html"));
+    driver.switchTo().frame("tall_frame");
+    WebElement element = driver.findElement(By.name("checkbox"));
+    element.click();
+    assertTrue(element.isSelected());
   }
-
 }

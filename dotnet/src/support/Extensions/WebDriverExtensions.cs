@@ -1,7 +1,9 @@
 ﻿// <copyright file="WebDriverExtensions.cs" company="WebDriver Committers">
-// Copyright 2013 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -15,10 +17,7 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Support.Extensions
@@ -85,13 +84,28 @@ namespace OpenQA.Selenium.Support.Extensions
                 throw new WebDriverException("Driver does not implement IJavaScriptExecutor");
             }
 
-            object result = executor.ExecuteScript(script, args);
-            if (!result.GetType().IsAssignableFrom(typeof(T)))
+            Type type = typeof(T);
+
+            var result = default(T);
+
+            object value = executor.ExecuteScript(script, args);
+            if (value == null)
+            {
+                if (type.IsValueType && (Nullable.GetUnderlyingType(type) == null))
+                {
+                    throw new WebDriverException("Script returned null, but desired type is a value type");
+                }
+            }
+            else if (!type.IsInstanceOfType(value))
             {
                 throw new WebDriverException("Script returned a value, but the result could not be cast to the desired type");
             }
+            else
+            {
+                result = (T)value;
+            }
 
-            return (T)result;
+            return result;
         }
     }
 }

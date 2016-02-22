@@ -1,19 +1,19 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 - 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.internal;
 
@@ -22,13 +22,15 @@ import static org.openqa.grid.common.RegistrationRequest.PATH;
 import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 import static org.openqa.grid.common.RegistrationRequest.SELENIUM_PROTOCOL;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.message.BasicHttpRequest;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridException;
@@ -101,10 +103,10 @@ public class BaseRemoteProxy implements RemoteProxy {
 
 
   /**
-   * Create the proxy from the info sent by the remote. <p/> If maxSession is not specified, default
-   * to 1 = max number of tests running at a given time will be 1. <p/> For each capability,
+   * Create the proxy from the info sent by the remote. <p> If maxSession is not specified, default
+   * to 1 = max number of tests running at a given time will be 1. <p> For each capability,
    * maxInstances is defaulted to 1 if not specified = max number of test of each capability running
-   * at a time will be 1. maxInstances for firefox can be > 1. IE won't support it.
+   * at a time will be 1. maxInstances for firefox can be &gt; 1. IE won't support it.
    *
    * @param request  The request
    * @param registry The registry to use
@@ -143,15 +145,11 @@ public class BaseRemoteProxy implements RemoteProxy {
     maxConcurrentSession = getConfigInteger(RegistrationRequest.MAX_SESSION);
     cleanUpCycle = getConfigInteger(RegistrationRequest.CLEAN_UP_CYCLE);
     timeOutMs = getConfigInteger(RegistrationRequest.TIME_OUT);
-    Object tm = this.config.get(RegistrationRequest.STATUS_CHECK_TIMEOUT);
-    if (tm == null) {
-      tm = new Integer(0);
-    }
-    statusCheckTimeout = ((Integer) tm).intValue();
+    statusCheckTimeout = getConfigInteger(RegistrationRequest.STATUS_CHECK_TIMEOUT);
 
     List<DesiredCapabilities> capabilities = request.getCapabilities();
 
-    List<TestSlot> slots = new ArrayList<TestSlot>();
+    List<TestSlot> slots = new ArrayList<>();
     for (DesiredCapabilities capability : capabilities) {
       Object maxInstance = capability.getCapability(MAX_INSTANCES);
 
@@ -165,7 +163,7 @@ public class BaseRemoteProxy implements RemoteProxy {
 
       int value = Integer.parseInt(maxInstance.toString());
       for (int i = 0; i < value; i++) {
-        Map<String, Object> c = new HashMap<String, Object>();
+        Map<String, Object> c = new HashMap<>();
         for (String k : capability.asMap().keySet()) {
           c.put(k, capability.getCapability(k));
         }
@@ -178,6 +176,9 @@ public class BaseRemoteProxy implements RemoteProxy {
 
   private Integer getConfigInteger(String key){
     Object o = this.config.get(key);
+    if (o == null) {
+      return 0;
+    }
     if (o instanceof String){
       return Integer.parseInt((String)o);
     }
@@ -238,7 +239,7 @@ public class BaseRemoteProxy implements RemoteProxy {
    */
   private Map<String, Object> mergeConfig(Map<String, Object> configuration1,
                                           Map<String, Object> configuration2) {
-    Map<String, Object> res = new HashMap<String, Object>();
+    Map<String, Object> res = new HashMap<>();
     res.putAll(configuration1);
 
     for (String key : configuration2.keySet()) {
@@ -310,7 +311,11 @@ public class BaseRemoteProxy implements RemoteProxy {
             log.logp(Level.WARNING, "SessionCleanup", null,
                 "session " + session
                     + " has TIMED OUT due to client inactivity and will be released.");
-            ((TimeoutListener) proxy).beforeRelease(session);
+            try {
+              ((TimeoutListener) proxy).beforeRelease(session);
+            } catch(IllegalStateException ignore){
+              log.log(Level.WARNING, ignore.getMessage());
+            }
             registry.terminate(session, SessionTerminationReason.TIMEOUT);
           }
         }
@@ -318,7 +323,11 @@ public class BaseRemoteProxy implements RemoteProxy {
         if (session.isOrphaned()) {
           log.logp(Level.WARNING, "SessionCleanup", null,
               "session " + session + " has been ORPHANED and will be released");
-          ((TimeoutListener) proxy).beforeRelease(session);
+          try {
+            ((TimeoutListener) proxy).beforeRelease(session);
+          } catch(IllegalStateException ignore){
+            log.log(Level.WARNING, ignore.getMessage());
+          }
           registry.terminate(session, SessionTerminationReason.ORPHAN);
         }
       }
@@ -396,11 +405,12 @@ public class BaseRemoteProxy implements RemoteProxy {
    *
    * @param request  The request
    * @param registry The registry to use
+   * @param <T> RemoteProxy subclass
    * @return a new instance built from the request.
    */
   @SuppressWarnings("unchecked")
-  public static <T extends RemoteProxy> T getNewInstance(RegistrationRequest request,
-                                                         Registry registry) {
+  public static <T extends RemoteProxy> T getNewInstance(
+      RegistrationRequest request, Registry registry) {
     try {
       String proxyClass = request.getRemoteProxyClass();
       if (proxyClass == null) {
@@ -419,13 +429,9 @@ public class BaseRemoteProxy implements RemoteProxy {
       } else {
         throw new InvalidParameterException("Error: " + proxy.getClass() + " isn't a remote proxy");
       }
-
     } catch (InvocationTargetException e) {
-      log.log(Level.SEVERE, e.getTargetException().getMessage(), e.getTargetException());
       throw new InvalidParameterException("Error: " + e.getTargetException().getMessage());
-
     } catch (Exception e) {
-      log.log(Level.SEVERE, e.getMessage(), e);
       throw new InvalidParameterException("Error: " + e.getMessage());
     }
   }
@@ -474,7 +480,7 @@ public class BaseRemoteProxy implements RemoteProxy {
 
   @Override
   public String toString() {
-    return "host :" + getRemoteHost();
+    return getRemoteHost() != null ? getRemoteHost().toString() : "<detached>";
   }
 
   private final HtmlRenderer renderer = new DefaultHtmlRenderer(this);
@@ -495,21 +501,22 @@ public class BaseRemoteProxy implements RemoteProxy {
   /**
    * @throws GridException If the node if down or doesn't recognize the /wd/hub/status request.
    */
-  public JSONObject getStatus() throws GridException {
+  public JsonObject getStatus() throws GridException {
     String url = getRemoteHost().toExternalForm() + "/wd/hub/status";
     BasicHttpRequest r = new BasicHttpRequest("GET", url);
     HttpClient client = getHttpClientFactory().getGridHttpClient(statusCheckTimeout, statusCheckTimeout);
     HttpHost host = new HttpHost(getRemoteHost().getHost(), getRemoteHost().getPort());
     HttpResponse response;
     String existingName = Thread.currentThread().getName();
-
+    HttpEntity entity = null;
     try {
       Thread.currentThread().setName("Probing status of " + url);
       response = client.execute(host, r);
+      entity = response.getEntity();
       int code = response.getStatusLine().getStatusCode();
 
       if (code == 200) {
-        JSONObject status = new JSONObject();
+        JsonObject status = new JsonObject();
         try {
           status = extractObject(response);
         } catch (Exception e) {
@@ -518,7 +525,7 @@ public class BaseRemoteProxy implements RemoteProxy {
         EntityUtils.consume(response.getEntity());
         return status;
       } else if (code == 404) { // selenium RC case
-        JSONObject status = new JSONObject();
+        JsonObject status = new JsonObject();
         EntityUtils.consume(response.getEntity());
         return status;
       } else {
@@ -530,10 +537,16 @@ public class BaseRemoteProxy implements RemoteProxy {
       throw new GridException(e.getMessage(), e);
     } finally {
       Thread.currentThread().setName(existingName);
+      try { //Added by jojo to release connection thoroughly
+          EntityUtils.consume(entity);
+          } catch (IOException e) {
+            log.info("Exception thrown when consume entity");
+          }
+
     }
   }
 
-  private JSONObject extractObject(HttpResponse resp) throws IOException, JSONException {
+  private JsonObject extractObject(HttpResponse resp) throws IOException {
     BufferedReader rd = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
     StringBuilder s = new StringBuilder();
     String line;
@@ -543,10 +556,10 @@ public class BaseRemoteProxy implements RemoteProxy {
     }
     rd.close();
 
-    return new JSONObject(s.toString());
+    return new JsonParser().parse(s.toString()).getAsJsonObject();
   }
-  
-  
+
+
   public float getResourceUsageInPercent() {
     return 100 * (float)getTotalUsed() / (float)getMaxNumberOfConcurrentTestSessions();
   }

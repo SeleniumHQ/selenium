@@ -5,7 +5,7 @@ java_library(
     '//java/client/src/org/openqa/selenium:codecs',
     '//java/client/src/org/openqa/selenium:exceptions',
     '//java/client/src/org/openqa/selenium:platform',
-    '//third_party/java/guava-libraries:guava-libraries',
+    '//third_party/java/guava:guava',
   ],
   visibility = ['PUBLIC'],
 )

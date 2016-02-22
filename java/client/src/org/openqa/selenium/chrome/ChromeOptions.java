@@ -1,19 +1,19 @@
-/*
- Copyright 2011 Selenium committers
- Copyright 2011 Software Freedom Conservancy
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.chrome;
 
@@ -25,9 +25,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Files;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.openqa.selenium.internal.Base64Encoder;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -178,8 +178,18 @@ public class ChromeOptions {
    * @param value Value of the experimental option, which must be convertible
    *     to JSON.
    */
-  public void setExperimentalOptions(String name, Object value) {
+  public void setExperimentalOption(String name, Object value) {
     experimentalOptions.put(checkNotNull(name), value);
+  }
+
+  /**
+   * Returns the value of an experimental option.
+   *
+   * @param name The option name.
+   * @return The option value, or {@code null} if not set.
+   */
+  public Object getExperimentalOption(String name) {
+    return experimentalOptions.get(checkNotNull(name));
   }
 
   /**
@@ -188,11 +198,13 @@ public class ChromeOptions {
    * @return The JSON representation of these options.
    * @throws IOException If an error occurs while reading the
    *     {@link #addExtensions(java.util.List) extension files} from disk.
-   * @throws JSONException If an error occurs while encoding these options as
-   *     JSON.
    */
-  public JSONObject toJson() throws IOException, JSONException {
-    JSONObject options = new JSONObject(experimentalOptions);
+  public JsonElement toJson() throws IOException {
+    Map<String, Object> options = Maps.newHashMap();
+
+    for (String key : experimentalOptions.keySet()) {
+      options.put(key, experimentalOptions.get(key));
+    }
 
     if (binary != null) {
       options.put("binary", binary);
@@ -209,7 +221,7 @@ public class ChromeOptions {
     encoded_extensions.addAll(extensions);
     options.put("extensions", encoded_extensions);
 
-    return options;
+    return new Gson().toJsonTree(options);
   }
 
   /**
@@ -221,18 +233,7 @@ public class ChromeOptions {
    */
   DesiredCapabilities toCapabilities() {
     DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-
     capabilities.setCapability(CAPABILITY, this);
-
-    // chromeOptions is only recognized by chromedriver 17.0.963.0 or newer.
-    // Provide backwards compatibility for capabilities supported by older
-    // versions of chromedriver.
-    // TODO: remove this once the deprecated capabilities are no longer supported.
-    capabilities.setCapability("chrome.switches", args);
-    if (binary != null) {
-      capabilities.setCapability("chrome.binary", binary);
-    }
-
     return capabilities;
   }
 
@@ -251,6 +252,7 @@ public class ChromeOptions {
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(this.binary, this.args, this.extensionFiles, this.experimentalOptions, this.extensions);
+    return Objects.hashCode(this.binary, this.args, this.extensionFiles, this.experimentalOptions,
+        this.extensions);
   }
 }

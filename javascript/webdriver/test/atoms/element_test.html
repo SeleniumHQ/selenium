@@ -198,6 +198,28 @@ limitations under the License.
       assertEquals('true', webdriver.atoms.element.getAttribute(el, 'nowrap'));
     }
 
+    function testShouldReturnFalseForSpellcheckFalse() {
+      var el = document.getElementById('nospell');
+      assertEquals('false', webdriver.atoms.element.getAttribute(el, 'spellcheck'));
+    }
+
+    function testShouldReturnTrueForSpellcheckTrue() {
+      var el = document.getElementById('spell');
+      assertEquals('true', webdriver.atoms.element.getAttribute(el, 'spellcheck'));
+    }
+
+    function testShouldReturnTrueForSpellcheckUndefined() {
+      var el = document.getElementById('normal');
+      var defaultSpellcheck = 'false';
+      if (goog.userAgent.WEBKIT) {
+        defaultSpellcheck = 'true';
+      }
+      if (goog.userAgent.IE && !goog.userAgent.product.isVersion(10)) {
+        defaultSpellcheck = 'undefined';
+      }
+      assertEquals(defaultSpellcheck, webdriver.atoms.element.getAttribute(el, 'spellcheck'));
+    }
+
     var newLine = bot.userAgent.IE_DOC_PRE9 ? '\r\n' : '\n';
 
     function testTypingEnterKeyOnTextArea() {
@@ -263,6 +285,8 @@ limitations under the License.
     </select>
   </select>
 
+  <input id="nospell" spellcheck="false"/>
+  <input id="spell" spellcheck="true"/>
 </form>
 
 <img src="kitten.jpg" id="image">

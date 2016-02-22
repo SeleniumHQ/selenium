@@ -34,6 +34,7 @@ goog.require('goog.Disposable');
  *     construction time.
  * @extends {goog.Disposable}
  * @constructor
+ * @final
  */
 goog.testing.PseudoRandom = function(opt_seed, opt_install) {
   goog.Disposable.call(this);

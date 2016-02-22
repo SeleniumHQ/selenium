@@ -1,5 +1,5 @@
 <!ENTITY selenium-ide.name "Selenium IDE">
-<!ENTITY selenium-ide.version "2.5.0">
+<!ENTITY selenium-ide.version "2.9.0">
 <!ENTITY selenium-ide.sidebar.title "&selenium-ide.name; &selenium-ide.version;">
 <!ENTITY selenium-ide.standalone.title "&selenium-ide.name; &selenium-ide.version;">
 
@@ -45,6 +45,8 @@
 
 <!ENTITY helpDocumentation.label "Documentação">
 <!ENTITY helpReportIssue.label "Reportagem Edição">
+<!ENTITY helpSearchIssues.label "Search Issues">
+<!ENTITY helpSubmitDiagInfo.label "Submit Diagnostic Information">
 <!ENTITY helpReleaseNotes.label "Notas sobre o Release">
 <!ENTITY helpBlog.label "Blog Oficial Selenium">
 <!ENTITY helpWebsite.label "Site Oficial Selenium">
@@ -67,6 +69,7 @@
 <!ENTITY contextMenu.breakpoint.label "Definir / Limpar Breakpoint">
 <!ENTITY contextMenu.startpoint.label "Definir / Limpar Ponto de Início">
 <!ENTITY contextMenu.execCommand.label "Executar Este Comando">
+<!ENTITY contextMenu.playSuiteHere.label "Play test suite from here">
 
 <!ENTITY uiReference.label "UI-Element">
 <!ENTITY rollupReference.label "Rollup">

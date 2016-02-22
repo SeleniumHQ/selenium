@@ -25,6 +25,7 @@ limitations under the License.
     goog.require('bot.userAgent');
     goog.require('goog.array');
     goog.require('goog.dom');
+    goog.require('goog.testing.ExpectedFailures');
     goog.require('goog.testing.jsunit');
   </script>
   <style>
@@ -47,6 +48,15 @@ limitations under the License.
   var TD = goog.partial(goog.dom.createDom, goog.dom.TagName.TD, null);
   var P = goog.partial(goog.dom.createDom, goog.dom.TagName.P, null);
 
+  var expectedFailures;
+
+  function setUp() {
+    expectedFailures = new goog.testing.ExpectedFailures();
+  }
+
+  function tearDown() {
+    expectedFailures.handleTearDown();
+  }
 
   function testEmptyTable() {
     assertTextIs(TABLE(), '');
@@ -196,7 +206,24 @@ limitations under the License.
         "Table 2, Row 1, Cell 1 Table 2, Row 1, Cell 2",
         "Table 1, Row 3, Cell 1 Table 1, Row 3, Cell 2");
   }
+
+
+  function testTableWithCollapsedRows() {
+    expectedFailures.expectFailureFor(
+        (goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(8)),
+        'IE does not support visibilty:collapsed until IE8');
+    expectedFailures.run(function() {
+      assertTextIs(
+          goog.dom.getElement('collapsedTable'),
+          'a', 'c');
+    });
+  }
 </script>
+<table id="collapsedTable">
+  <tr><td>a</td></tr>
+  <tr style="visibility:collapse"><td>b</td></tr>
+  <tr><td>c</td></tr>
+</table>
 <table id="nestedTable">
   <tr>
       <td>

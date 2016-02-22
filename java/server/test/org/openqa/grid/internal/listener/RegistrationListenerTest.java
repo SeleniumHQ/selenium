@@ -1,19 +1,19 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.internal.listener;
 
@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue;
 import static org.openqa.grid.common.RegistrationRequest.APP;
 import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.DetachedRemoteProxy;
@@ -39,9 +39,9 @@ import java.util.Map;
 
 public class RegistrationListenerTest {
 
-  private static boolean serverUp = false;
+  private boolean serverUp = false;
 
-  static class MyRemoteProxy extends DetachedRemoteProxy implements RegistrationListener {
+  private class MyRemoteProxy extends DetachedRemoteProxy implements RegistrationListener {
 
     public MyRemoteProxy(RegistrationRequest request, Registry registry) {
       super(request, registry);
@@ -57,12 +57,12 @@ public class RegistrationListenerTest {
     }
   }
 
-  static RegistrationRequest req = null;
-  static Map<String, Object> app1 = new HashMap<String, Object>();
+  private RegistrationRequest req;
+  private Map<String, Object> app1 = new HashMap<>();
 
-  @BeforeClass
-  public static void prepareReqRequest() {
-    Map<String, Object> config = new HashMap<String, Object>();
+  @Before
+  public void prepareReqRequest() {
+    Map<String, Object> config = new HashMap<>();
     app1.put(APP, "app1");
     config.put(REMOTE_HOST, "http://machine1:4444");
     config.put("host","localhost");
@@ -83,21 +83,22 @@ public class RegistrationListenerTest {
     assertTrue(serverUp);
   }
 
-  private static Boolean firstRun = true;
+  private final Object lock = new Object();
+  private Boolean firstRun = true;
 
   /**
    * this proxy will throw an exception on registration the first time.
    *
    * @author François Reynaud
    */
-  static class MyBuggyRemoteProxy extends DetachedRemoteProxy implements RegistrationListener {
+  private class MyBuggyRemoteProxy extends DetachedRemoteProxy implements RegistrationListener {
 
     public MyBuggyRemoteProxy(RegistrationRequest request, Registry registry) {
       super(request, registry);
     }
 
     public void beforeRegistration() {
-      synchronized (firstRun) {
+      synchronized (lock) {
         if (firstRun) {
           firstRun = false;
           throw new NullPointerException();
@@ -118,9 +119,9 @@ public class RegistrationListenerTest {
     assertEquals(registry.getAllProxies().size(), 1);
   }
 
-  static boolean slowRemoteUp = false;
+  private boolean slowRemoteUp = false;
 
-  static class MySlowRemoteProxy extends DetachedRemoteProxy implements RegistrationListener {
+  private class MySlowRemoteProxy extends DetachedRemoteProxy implements RegistrationListener {
 
     public MySlowRemoteProxy(RegistrationRequest request, Registry registry) {
       super(request, registry);

@@ -1,27 +1,27 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.web.servlet;
 
 import com.google.common.io.ByteStreams;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
@@ -84,37 +84,34 @@ public class DriverServlet extends RegistryBasedServlet {
 
     } catch (Throwable e) {
       if (r instanceof WebDriverRequest && !response.isCommitted()) {
-        // http://code.google.com/p/selenium/wiki/JsonWireProtocol#Error_Handling
+        // https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#error-handling
         response.reset();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.setStatus(500);
 
-        JSONObject resp = new JSONObject();
-        try {
-          final ExternalSessionKey serverSession = req.getServerSession();
-          resp.put("sessionId", serverSession != null ? serverSession.getKey() : null);
-          resp.put("status", ErrorCodes.UNHANDLED_ERROR);
-          JSONObject value = new JSONObject();
-          value.put("message", e.getMessage());
-          value.put("class", e.getClass().getCanonicalName());
+        JsonObject resp = new JsonObject();
 
-          JSONArray stacktrace = new JSONArray();
-          for (StackTraceElement ste : e.getStackTrace()) {
-            JSONObject st = new JSONObject();
-            st.put("fileName", ste.getFileName());
-            st.put("className", ste.getClassName());
-            st.put("methodName", ste.getMethodName());
-            st.put("lineNumber", ste.getLineNumber());
-            stacktrace.put(st);
-          }
-          value.put("stackTrace", stacktrace);
-          resp.put("value", value);
+        final ExternalSessionKey serverSession = req.getServerSession();
+        resp.addProperty("sessionId", serverSession != null ? serverSession.getKey() : null);
+        resp.addProperty("status", ErrorCodes.UNHANDLED_ERROR);
+        JsonObject value = new JsonObject();
+        value.addProperty("message", e.getMessage());
+        value.addProperty("class", e.getClass().getCanonicalName());
 
-        } catch (JSONException e1) {
-          e1.printStackTrace();
+        JsonArray stacktrace = new JsonArray();
+        for (StackTraceElement ste : e.getStackTrace()) {
+          JsonObject st = new JsonObject();
+          st.addProperty("fileName", ste.getFileName());
+          st.addProperty("className", ste.getClassName());
+          st.addProperty("methodName", ste.getMethodName());
+          st.addProperty("lineNumber", ste.getLineNumber());
+          stacktrace.add(st);
         }
-        String json = resp.toString();
+        value.add("stackTrace", stacktrace);
+        resp.add("value", value);
+
+        String json = new Gson().toJson(resp);
 
         byte[] bytes = json.getBytes("UTF-8");
         InputStream in = new ByteArrayInputStream(bytes);

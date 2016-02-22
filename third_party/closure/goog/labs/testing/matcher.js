@@ -49,3 +49,32 @@ goog.labs.testing.Matcher.prototype.matches = function(value) {};
  */
 goog.labs.testing.Matcher.prototype.describe =
     function(value, opt_description) {};
+
+
+/**
+ * Generates a Matcher from the ‘matches’ and ‘describe’ functions passed in.
+ *
+ * @param {!Function} matchesFunction The ‘matches’ function.
+ * @param {Function=} opt_describeFunction The ‘describe’ function.
+ * @return {!Function} The custom matcher.
+ */
+goog.labs.testing.Matcher.makeMatcher =
+    function(matchesFunction, opt_describeFunction) {
+
+  /**
+   * @constructor
+   * @implements {goog.labs.testing.Matcher}
+   * @final
+   */
+  var matcherConstructor = function() {};
+
+  /** @override */
+  matcherConstructor.prototype.matches = matchesFunction;
+
+  if (opt_describeFunction) {
+    /** @override */
+    matcherConstructor.prototype.describe = opt_describeFunction;
+  }
+
+  return matcherConstructor;
+};

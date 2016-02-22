@@ -120,6 +120,12 @@ PluginManager.prototype.setPluginError = function(pluginId, code, error) {
   this.autoDisablePlugin(pluginId);
 };
 
+PluginManager.prototype.runDiagnostic = function() {
+  return {
+    pluginsData: this.pluginsData,
+    errors: this.errors.getPluginErrors()
+  };
+};
 
 PluginManager.Errors = (function () {
   var errors = [];
@@ -136,6 +142,9 @@ PluginManager.Errors = (function () {
     },
 
     getPluginErrors: function (id) {
+      if (!id) {
+        return errors;
+      }
       return errors.filter(function(plugin) {
         return id == plugin.id;
       });

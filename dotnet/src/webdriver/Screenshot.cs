@@ -1,9 +1,9 @@
 ﻿// <copyright file="Screenshot.cs" company="WebDriver Committers">
-// Copyright 2007-2011 WebDriver committers
-// Copyright 2007-2011 Google Inc.
-// Portions copyright 2011 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -17,11 +17,9 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Text;
 
 namespace OpenQA.Selenium
 {
@@ -76,9 +74,9 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Returns a <see cref="System.String">String</see> that represents the current <see cref="System.Object">Object</see>.
+        /// Returns a <see cref="string">String</see> that represents the current <see cref="object">Object</see>.
         /// </summary>
-        /// <returns>A <see cref="System.String">String</see> that represents the current <see cref="System.Object">Object</see>.</returns>
+        /// <returns>A <see cref="string">String</see> that represents the current <see cref="object">Object</see>.</returns>
         public override string ToString()
         {
             return this.base64Encoded;

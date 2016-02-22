@@ -40,9 +40,10 @@ goog.require('goog.object');
  * @constructor
  * @extends {goog.Disposable}
  * @implements {goog.messaging.PortNetwork}
+ * @final
  */
 goog.messaging.PortCaller = function(operatorPort) {
-  goog.base(this);
+  goog.messaging.PortCaller.base(this, 'constructor');
 
   /**
    * The channel to the {@link goog.messaging.PortOperator} for this network.
@@ -72,7 +73,7 @@ goog.messaging.PortCaller = function(operatorPort) {
    * If a value exists for a given key, it must contain a channel, but it
    * doesn't necessarily contain a Deferred.
    *
-   * @type {!Object.<{deferred: goog.async.Deferred,
+   * @type {!Object<{deferred: goog.async.Deferred,
    *                  channel: !goog.messaging.MessageChannel}>}
    * @private
    */
@@ -147,5 +148,5 @@ goog.messaging.PortCaller.prototype.disposeInternal = function() {
   goog.object.forEach(this.connections_, goog.dispose);
   delete this.operatorPort_;
   delete this.connections_;
-  goog.base(this, 'disposeInternal');
+  goog.messaging.PortCaller.base(this, 'disposeInternal');
 };

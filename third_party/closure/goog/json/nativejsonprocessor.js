@@ -21,7 +21,6 @@
 goog.provide('goog.json.NativeJsonProcessor');
 
 goog.require('goog.asserts');
-goog.require('goog.json');
 goog.require('goog.json.Processor');
 
 
@@ -43,6 +42,7 @@ goog.require('goog.json.Processor');
  *     parsing.
  * @constructor
  * @implements {goog.json.Processor}
+ * @final
  */
 goog.json.NativeJsonProcessor = function(opt_replacer, opt_reviver) {
   goog.asserts.assert(goog.isDef(goog.global['JSON']), 'JSON not defined');

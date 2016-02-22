@@ -1,9 +1,11 @@
 <component name="libraryTable">
   <library name="servlet-api">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/servlet-api/servlet-api-2.5-6.1.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/servlet/javax.servlet-api-3.1.0.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/third_party/java/servlet/javax.servlet-api-3.1.0-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

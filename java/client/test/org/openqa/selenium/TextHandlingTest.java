@@ -1,18 +1,19 @@
-/*
-Copyright 2007-2009 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium;
 
@@ -22,13 +23,8 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Driver.IE;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
@@ -45,6 +41,7 @@ import org.hamcrest.TypeSafeMatcher;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
 import java.util.regex.Pattern;
@@ -119,7 +116,6 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, equalTo("This line has a non-breaking space"));
   }
 
-  @Ignore({IPHONE})
   @Test
   public void testShouldNotCollapseANonBreakingSpaces() {
     driver.get(pages.simpleTestPage);
@@ -129,7 +125,6 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, equalTo("This line has a   non-breaking space and spaces"));
   }
 
-  @Ignore({IPHONE})
   @Test
   public void testShouldNotTrimNonBreakingSpacesAtTheEndOfALineInTheMiddleOfText() {
     driver.get(pages.simpleTestPage);
@@ -138,7 +133,6 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, startsWith("These lines  \n"));
   }
 
-  @Ignore({IPHONE})
   @Test
   public void testShouldNotTrimNonBreakingSpacesAtTheStartOfALineInTheMiddleOfText() {
     driver.get(pages.simpleTestPage);
@@ -147,7 +141,6 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, containsString("\n  have"));
   }
 
-  @Ignore({IPHONE})
   @Test
   public void testShouldNotTrimTrailingNonBreakingSpacesInMultilineText() {
     driver.get(pages.simpleTestPage);
@@ -156,7 +149,6 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, endsWith("trailing NBSPs  "));
   }
 
-  @Ignore(IPHONE)
   @Test
   public void testHavingInlineElementsShouldNotAffectHowTextIsReturned() {
     driver.get(pages.simpleTestPage);
@@ -174,7 +166,6 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, equalTo("An inline element"));
   }
 
-  @Ignore({IPHONE, ANDROID, OPERA})
   @Test
   public void testShouldRetainTheFormatingOfTextWithinAPreElement() {
     driver.get(pages.simpleTestPage);
@@ -186,7 +177,6 @@ public class TextHandlingTest extends JUnit4TestBase {
         "         "));
   }
 
-  @Ignore({IPHONE, ANDROID, OPERA})
   @Test
   public void testShouldRetainTheFormatingOfTextWithinAPreElementThatIsWithinARegularBlock() {
     driver.get(pages.simpleTestPage);
@@ -199,9 +189,7 @@ public class TextHandlingTest extends JUnit4TestBase {
         "after pre"));
   }
 
-  @Ignore(value = {IPHONE, IE, OPERA, OPERA_MOBILE}, reason =
-      "iPhone: sendKeys is broken;"
-      + " Opera,IE: inserts \r\n instead of \n.")
+  @Ignore(value = {IE}, reason = "IE: inserts \r\n instead of \n")
   @Test
   public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
     driver.get(pages.formPage);
@@ -218,7 +206,6 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(seenText, equalTo(expectedText));
   }
 
-  @Ignore(value = {OPERA, ANDROID, MARIONETTE})
   @Test
   public void testShouldBeAbleToEnterDatesAfterFillingInOtherValuesFirst() {
     driver.get(pages.formPage);
@@ -256,7 +243,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, equalTo(""));
   }
 
-  @Ignore({HTMLUNIT})
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldNotTrimSpacesWhenLineWraps() {
     driver.get(pages.simpleTestPage);
@@ -274,7 +261,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, is("Some text" + newLine + "Some more text"));
   }
 
-  @Ignore({HTMLUNIT})
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldHandleNestedBlockLevelElements() {
     driver.get(pages.simpleTestPage);
@@ -294,7 +281,6 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, is("line has text"));
   }
 
-  @Ignore(value = {IPHONE})
   @Test
   public void testReadALargeAmountOfData() {
     driver.get(pages.macbethPage);
@@ -329,7 +315,6 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({IPHONE})
   @Test
   public void testShouldOnlyIncludeVisibleText() {
     driver.get(pages.javascriptPage);
@@ -367,8 +352,8 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {IE, IPHONE, ANDROID, HTMLUNIT},
-          reason = "IE, HTMLUNIT: failed, other: untested")
+  @Ignore(value = {IE})
+  @NotYetImplemented(HTMLUNIT)
   public void testTextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterTyping() {
     driver.get(pages.formPage);
     WebElement area = driver.findElement(By.id("withText"));
@@ -379,8 +364,8 @@ public class TextHandlingTest extends JUnit4TestBase {
 
   @Test
   @JavascriptEnabled
-  @Ignore(value = {IE, IPHONE, ANDROID, HTMLUNIT},
-          reason = "IE, HTMLUNIT: failed, other: untested")
+  @Ignore(value = {IE})
+  @NotYetImplemented(HTMLUNIT)
   public void testTextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterChangingTheValue() {
     driver.get(pages.formPage);
     WebElement area = driver.findElement(By.id("withText"));

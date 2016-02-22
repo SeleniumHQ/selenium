@@ -21,9 +21,10 @@
 
 goog.provide('goog.ui.ColorMenuButtonRenderer');
 
+goog.require('goog.asserts');
 goog.require('goog.color');
-goog.require('goog.dom.classes');
-goog.require('goog.ui.ControlContent');
+goog.require('goog.dom.TagName');
+goog.require('goog.dom.classlist');
 goog.require('goog.ui.MenuButtonRenderer');
 goog.require('goog.userAgent');
 
@@ -77,10 +78,10 @@ goog.ui.ColorMenuButtonRenderer.prototype.createCaption = function(content,
  * Wrap a caption in a div with the color-menu-button-indicator CSS class.
  * @param {goog.ui.ControlContent} content Text caption or DOM structure.
  * @param {goog.dom.DomHelper} dom DOM helper, used for document interaction.
- * @return {Element} Caption element.
+ * @return {!Element} Caption element.
  */
 goog.ui.ColorMenuButtonRenderer.wrapCaption = function(content, dom) {
-  return dom.createDom('div',
+  return dom.createDom(goog.dom.TagName.DIV,
       goog.getCssName(goog.ui.ColorMenuButtonRenderer.CSS_CLASS, 'indicator'),
       content);
 };
@@ -137,8 +138,10 @@ goog.ui.ColorMenuButtonRenderer.setCaptionValue = function(caption, value) {
  * @override
  */
 goog.ui.ColorMenuButtonRenderer.prototype.initializeDom = function(button) {
-  this.setValue(button.getElement(), button.getValue());
-  goog.dom.classes.add(button.getElement(),
+  var buttonElement = button.getElement();
+  goog.asserts.assert(buttonElement);
+  this.setValue(buttonElement, button.getValue());
+  goog.dom.classlist.add(buttonElement,
       goog.ui.ColorMenuButtonRenderer.CSS_CLASS);
   goog.ui.ColorMenuButtonRenderer.superClass_.initializeDom.call(this,
       button);

@@ -1,16 +1,19 @@
-// Copyright 2011 Software Freedom Conservancy. All Rights Reserved.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview Defines a special test case that runs each test inside of a
@@ -28,7 +31,7 @@
 goog.provide('webdriver.testing.TestCase');
 
 goog.require('goog.testing.TestCase');
-goog.require('webdriver.promise.ControlFlow');
+goog.require('webdriver.promise');
 /** @suppress {extraRequire} Imported for user convenience. */
 goog.require('webdriver.testing.asserts');
 
@@ -83,7 +86,7 @@ webdriver.testing.TestCase.prototype.cycleTests = function() {
 
   function onError(e) {
     hadError = true;
-    self.doError(test, app.annotateError(e));
+    self.doError(test, e);
     // Note: result_ is a @protected field but still uses the trailing
     // underscore.
     var err = self.result_.errors[self.result_.errors.length - 1];
@@ -101,9 +104,6 @@ webdriver.testing.TestCase.prototype.logError = function(name, opt_e) {
     if (goog.isString(opt_e)) {
       errMsg = opt_e;
     } else {
-      // In case someone calls this function directly, make sure we have a
-      // properly annotated error.
-      webdriver.promise.controlFlow().annotateError(opt_e);
       errMsg = opt_e.toString();
       stack = opt_e.stack.substring(errMsg.length + 1);
     }
@@ -153,7 +153,6 @@ webdriver.testing.TestCase.prototype.logError = function(name, opt_e) {
  */
 webdriver.testing.TestCase.prototype.runSingleTest_ = function(test, onError) {
   var flow = webdriver.promise.controlFlow();
-  flow.clearHistory();
 
   return execute(test.name + '.setUp()', this.setUp)().
       then(execute(test.name + '()', test.ref)).

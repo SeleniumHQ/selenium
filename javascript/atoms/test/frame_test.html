@@ -160,6 +160,24 @@ limitations under the License.
           var index = bot.frame.getFrameIndex(el, frameWin);
           assertEquals(1, index);
         }
+
+        function testFindParentFrame() {
+          if (goog.userAgent.IE && !bot.userAgent.isProductVersion(9)) {
+            // IE < 9 does not see window objects as equal.
+            return;
+          }
+          var frameWin = bot.frame.parentFrame(window.frames[1]);
+          assertEquals(frameWin, window);
+        }
+
+        function testParentFrameOnTopLevelIsNoOp() {
+          if (goog.userAgent.IE && !bot.userAgent.isProductVersion(9)) {
+            // IE < 9 does not see window objects as equal.
+            return;
+          }
+          var frameWin = bot.frame.parentFrame(window);
+          assertEquals(frameWin, window);
+        }
     </script>
 </head>
 <frameset rows="*,*,*" >

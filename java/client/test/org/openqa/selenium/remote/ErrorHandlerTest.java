@@ -1,18 +1,19 @@
-/*
- Copyright 2007-2010 Selenium committers
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.remote;
 
@@ -249,7 +250,7 @@ public class ErrorHandlerTest {
 
   @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
   @Test
-  public void testShouldDefaultToUnknownServerErrorIfClassIsNotSpecified()
+  public void testShouldDefaultToWebDriverExceptionIfClassIsNotSpecified()
       throws Exception {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
     Map<String, Object> data = toMap(serverError);
@@ -264,7 +265,7 @@ public class ErrorHandlerTest {
 
       Throwable cause = expected.getCause();
       assertNotNull(cause);
-      assertEquals(ErrorHandler.UnknownServerException.class, cause.getClass());
+      assertEquals(WebDriverException.class, cause.getClass());
       assertEquals(new WebDriverException(serverError.getMessage()).getMessage(),
           cause.getMessage());
       assertStackTracesEqual(serverError.getStackTrace(), cause.getStackTrace());
@@ -273,7 +274,7 @@ public class ErrorHandlerTest {
 
   @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
   @Test
-  public void testShouldStillTryToBuildServerErrorIfClassIsNotProvidedAndStackTraceIsNotForJava() {
+  public void testShouldStillTryToBuildWebDriverExceptionIfClassIsNotProvidedAndStackTraceIsNotForJava() {
     Map<String, ?> data = ImmutableMap.of(
         "message", "some error message",
         "stackTrace", Lists.newArrayList(
@@ -297,7 +298,7 @@ public class ErrorHandlerTest {
 
       Throwable cause = expected.getCause();
       assertNotNull(cause);
-      assertEquals(ErrorHandler.UnknownServerException.class, cause.getClass());
+      assertEquals(WebDriverException.class, cause.getClass());
       assertEquals(helper.getMessage(),
           cause.getMessage());
 
@@ -305,6 +306,74 @@ public class ErrorHandlerTest {
     }
   }
 
+  @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
+  @Test
+  public void testToleratesNonNumericLineNumber() {
+    Map<String, ?> data = ImmutableMap.of(
+        "message", "some error message",
+        "stackTrace", Lists.newArrayList(
+            ImmutableMap.of("lineNumber", "some string, might be empty or 'Not avalable'",
+                "methodName", "someMethod",
+                "className", "MyClass",
+                "fileName", "Resource.m")));
+
+    try {
+      handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123);
+      fail("Should have thrown!");
+    } catch (WebDriverException expected) {
+      assertEquals(new WebDriverException("some error message\nCommand duration or timeout: 123 milliseconds").getMessage(),
+          expected.getMessage());
+
+      StackTraceElement[] expectedTrace = {
+          new StackTraceElement("MyClass", "someMethod", "Resource.m", -1)
+      };
+      WebDriverException helper = new WebDriverException("some error message");
+      helper.setStackTrace(expectedTrace);
+
+      Throwable cause = expected.getCause();
+      assertNotNull(cause);
+      assertEquals(WebDriverException.class, cause.getClass());
+      assertEquals(helper.getMessage(),
+          cause.getMessage());
+
+      assertStackTracesEqual(expectedTrace, cause.getStackTrace());
+    }
+  }
+  
+  @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
+  @Test
+  public void testToleratesNumericLineNumberAsString() {
+    Map<String, ?> data = ImmutableMap.of(
+        "message", "some error message",
+        "stackTrace", Lists.newArrayList(
+            ImmutableMap.of("lineNumber", "1224", // number as a string
+                "methodName", "someMethod",
+                "className", "MyClass",
+                "fileName", "Resource.m")));
+
+    try {
+      handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123);
+      fail("Should have thrown!");
+    } catch (WebDriverException expected) {
+      assertEquals(new WebDriverException("some error message\nCommand duration or timeout: 123 milliseconds").getMessage(),
+          expected.getMessage());
+
+      StackTraceElement[] expectedTrace = {
+          new StackTraceElement("MyClass", "someMethod", "Resource.m", 1224)
+      };
+      WebDriverException helper = new WebDriverException("some error message");
+      helper.setStackTrace(expectedTrace);
+
+      Throwable cause = expected.getCause();
+      assertNotNull(cause);
+      assertEquals(WebDriverException.class, cause.getClass());
+      assertEquals(helper.getMessage(),
+          cause.getMessage());
+
+      assertStackTracesEqual(expectedTrace, cause.getStackTrace());
+    }
+  }
+  
   @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
   @Test
   public void testShouldIndicateWhenTheServerReturnedAnExceptionThatWasSuppressed()

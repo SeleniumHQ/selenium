@@ -229,7 +229,7 @@ WebdriverBackedSelenium.prototype.startNewWebdriverSession = function(browserNam
   var self = this;
   return new Deferred(function(deferred) {
     LOG.debug('Connecting to Selenium Server');
-    httpPost('http://localhost:4444/wd/hub/session',
+    HTTP.post('http://localhost:4444/wd/hub/session',
         JSON.stringify({
           'desiredCapabilities': {'browserName': browserName}
         }), {'Accept': 'application/json; charset=utf-8'}, function(response, success) {
@@ -263,7 +263,7 @@ WebdriverBackedSelenium.prototype.remoteControlCommand = function(verb, args) {
   var requestData = httpRequestFor(verb, args, this.sessionId);
 //  alert("Sending server request: " + requestData);
   return new Deferred(function(deferred) {
-    httpPost('http://localhost:4444/selenium-server/driver/', requestData, {'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'}, function(response, success) {
+    HTTP.post('http://localhost:4444/selenium-server/driver/', requestData, {'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'}, function(response, success) {
       if (success) {
         if (response.substr(0, 2) === 'OK') {
           deferred.resolve(response.substr(3)); //strip "OK," from response
@@ -303,7 +303,7 @@ WebdriverBackedSelenium.prototype.webDriverCommand = function(url, opts, args) {
   }
 //  alert("Sending server request: " + requestData);
   return new Deferred(function(deferred) {
-    httpCommon(requestMethod, 'http://localhost:4444/wd/hub/' + url, requestData, contentType, function(response, success, status) {
+    HTTP.request(requestMethod, 'http://localhost:4444/wd/hub/' + url, requestData, contentType, function(response, success, status) {
       var result;
       if (response) {
 //          alert("Response: " + response);
@@ -337,47 +337,4 @@ function httpRequestFor(verb, args, sessionId) {
     data += '&sessionId=' + sessionId;
   }
   return data;
-}
-
-function httpCommon(method, url, data, headers, callback) {
-  var httpRequest = new XMLHttpRequest();
-  //LOG.debug('Executing: ' + method + " " + url);
-  httpRequest.open(method, url);
-  httpRequest.onreadystatechange = function() {
-    try {
-      if (httpRequest.readyState === 4) {
-        if (httpRequest.status === 200 || (httpRequest.status > 200 && httpRequest.status < 300)) {
-          callback(httpRequest.responseText, true, httpRequest.status);
-        } else if (httpRequest.status === 500 ) {
-          callback(httpRequest.responseText, false, httpRequest.status);
-        } else {
-          //TODO eliminate alert and signal the failure
-//          alert('There was a problem with the request.\nUrl: ' + url + '\nHttp Status: ' + httpRequest.status + "\nResponse: " + httpRequest.responseText);
-          LOG.debug('Error: There was a problem with the request.\nUrl: ' + url + '\nHttp Status: ' + httpRequest.status + "\nResponse: " + httpRequest.responseText);
-          callback(null, false, httpRequest.status);
-        }
-      }
-    } catch(e) {
-      //TODO eliminate alert and signal the failure
-      alert('Caught Exception in httpPost: ' + e);
-      throw e;
-    }
-  };
-  //httpRequest.channel.loadFlags |= Components.interfaces.nsIRequest.LOAD_BYPASS_CACHE;
-  for (var header in headers) {
-    httpRequest.setRequestHeader(header, headers[header] + '');
-  }
-  if (data) {
-    httpRequest.send(data);
-  } else {
-    httpRequest.send();
-  }
-}
-
-function httpPost(url, data, headers, callback) {
-  httpCommon('POST',url, data, headers, callback);
-}
-
-function httpGet(url, headers, callback) {
-  httpCommon('GET',url, null, headers, callback);
 }

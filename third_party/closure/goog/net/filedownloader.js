@@ -65,9 +65,10 @@ goog.require('goog.object');
  *     downloading files.
  * @constructor
  * @extends {goog.Disposable}
+ * @final
  */
 goog.net.FileDownloader = function(dir, opt_pool) {
-  goog.base(this);
+  goog.net.FileDownloader.base(this, 'constructor');
 
   /**
    * The directory in which the downloaded files are stored.
@@ -85,14 +86,14 @@ goog.net.FileDownloader = function(dir, opt_pool) {
 
   /**
    * A map from URLs to active downloads running for those URLs.
-   * @type {!Object.<!goog.net.FileDownloader.Download_>}
+   * @type {!Object<!goog.net.FileDownloader.Download_>}
    * @private
    */
   this.downloads_ = {};
 
   /**
    * The handler for URL capturing events.
-   * @type {!goog.events.EventHandler}
+   * @type {!goog.events.EventHandler<!goog.net.FileDownloader>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -223,7 +224,7 @@ goog.net.FileDownloader.prototype.isDownloaded = function(url) {
     deferred.callback(true);
   });
   blobDeferred.addErrback(function(err) {
-    if (err.code == goog.fs.Error.ErrorCode.NOT_FOUND) {
+    if (err.name == goog.fs.Error.ErrorName.NOT_FOUND) {
       deferred.callback(false);
     } else {
       deferred.errback(err);
@@ -599,7 +600,7 @@ goog.net.FileDownloader.prototype.disposeInternal = function() {
   goog.dispose(this.pool_);
   delete this.pool_;
 
-  goog.base(this, 'disposeInternal');
+  goog.net.FileDownloader.base(this, 'disposeInternal');
 };
 
 
@@ -614,9 +615,11 @@ goog.net.FileDownloader.prototype.disposeInternal = function() {
  *
  * @constructor
  * @extends {goog.debug.Error}
+ * @final
  */
 goog.net.FileDownloader.Error = function(download, opt_fsErr) {
-  goog.base(this, 'Error capturing URL ' + download.url);
+  goog.net.FileDownloader.Error.base(
+      this, 'constructor', 'Error capturing URL ' + download.url);
 
   /**
    * The URL the event relates to.
@@ -670,7 +673,7 @@ goog.net.FileDownloader.Error.prototype.fileError;
  * @private
  */
 goog.net.FileDownloader.Download_ = function(url, downloader) {
-  goog.base(this);
+  goog.net.FileDownloader.Download_.base(this, 'constructor');
 
   /**
    * The URL for the file being downloaded.
@@ -739,5 +742,5 @@ goog.net.FileDownloader.Download_.prototype.disposeInternal = function() {
     this.writer.abort();
   }
 
-  goog.base(this, 'disposeInternal');
+  goog.net.FileDownloader.Download_.base(this, 'disposeInternal');
 };

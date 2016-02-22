@@ -1,3 +1,22 @@
+# encoding: utf-8
+#
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 module Selenium
   module WebDriver
     module Remote
@@ -31,14 +50,14 @@ module Selenium
           case val
           when Hash
             msg = val['message'] or return "unknown error"
+            msg << ": #{val['alert']['text'].inspect}" if val['alert'].kind_of?(Hash) && val['alert']['text']
             msg << " (#{ val['class'] })" if val['class']
+            msg
           when String
-            msg = val
+            val
           else
-            msg = "unknown error, status=#{status}: #{val.inspect}"
+            "unknown error, status=#{status}: #{val.inspect}"
           end
-
-          msg
         end
 
         def [](key)
@@ -84,11 +103,11 @@ module Selenium
         end
 
         def status
-          @payload['status']
+          @payload['status'] || @payload['error']
         end
 
         def value
-          @payload['value']
+          @payload['value'] || @payload['message']
         end
 
       end # Response

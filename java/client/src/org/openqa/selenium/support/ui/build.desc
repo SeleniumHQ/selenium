@@ -15,7 +15,7 @@ java_library(name = "clock",
     "SystemClock.java",
   ],
   deps = [
-    "//third_party/java/guava-libraries",
+    "//third_party/java/guava",
   ])
 
 java_library(name = "components",
@@ -32,6 +32,7 @@ java_library(name = "components",
 java_library(name = "elements",
   srcs = [
     "Select.java",
+    "Quotes.java",
     "UnexpectedTagNameException.java",
   ],
   deps = [
@@ -49,5 +50,6 @@ java_library(name = "wait",
   deps = [
     ":clock",
     "//java/client/src/org/openqa/selenium:webdriver-api",
-    "//third_party/java/guava-libraries",
+    "//java/client/src/org/openqa/selenium/remote:remote",
+    "//third_party/java/guava",
   ])

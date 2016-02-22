@@ -1,18 +1,19 @@
-/*
-Copyright 2007-2011 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.remote.server.log;
 
@@ -45,7 +46,7 @@ import java.util.logging.LogRecord;
 public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
 
   private final Map<SessionId, List<LogRecord>> perSessionRecords;
-  
+
   private final Map<SessionId, Map<String, LogEntries>> perSessionDriverEntries;
 
   // Used to store log records that doesnt have associated session.
@@ -59,7 +60,7 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
   private SessionLogsToFileRepository logFileRepository;
   private int capacity;
   private boolean storeLogsOnSessionQuit = false;
-  
+
   private Level serverLogLevel = Level.INFO;
 
   /**
@@ -71,7 +72,7 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
    * @param formatter    Formatter to use when retrieving log messages.
    * @param captureLogsOnQuit Whether to enable log capture on quit.
    */
-  public DefaultPerSessionLogHandler(int capacity, Level minimumLevel, Formatter formatter, 
+  public DefaultPerSessionLogHandler(int capacity, Level minimumLevel, Formatter formatter,
       boolean captureLogsOnQuit) {
     this.capacity = capacity;
     this.formatter = formatter;
@@ -92,13 +93,13 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
     if (sessionId != null) {
       List<LogRecord> records = perSessionRecords.get(sessionId);
       if (records == null) {
-        records = new ArrayList<LogRecord>();
+        records = new ArrayList<>();
       }
       records.add(record);
       perSessionRecords.put(sessionId, records);
-      
+
       if (records.size() > capacity) {
-        perSessionRecords.put( sessionId, new ArrayList<LogRecord>());
+        perSessionRecords.put(sessionId, new ArrayList<LogRecord>());
         // flush records to file;
         try {
           logFileRepository.flushRecordsToLogFile(sessionId, records);
@@ -111,7 +112,7 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
     } else {
       List<LogRecord> records = perThreadTempRecords.get(threadId);
       if (records == null) {
-        records = new ArrayList<LogRecord>();
+        records = new ArrayList<>();
         perThreadTempRecords.put(threadId, records);
       }
       records.add(record);
@@ -168,7 +169,7 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
 
     if (threadRecords != null) {
       if (sessionRecords == null) {
-        sessionRecords = new ArrayList<LogRecord>();
+        sessionRecords = new ArrayList<>();
         perSessionRecords.put(sessionId, sessionRecords);
       }
       sessionRecords.addAll(threadRecords);
@@ -188,10 +189,10 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
   }
 
   /**
-   * Removes session logs for the given session id. 
-   * 
+   * Removes session logs for the given session id.
+   *
    * NB! If the handler has been configured to capture logs on quit no logs will be removed.
-   * 
+   *
    * @param sessionId The session id to use.
    */
   @Override
@@ -245,7 +246,7 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
 
   /**
    * Returns the server log for the given session id.
-   * 
+   *
    * @param sessionId The session id.
    * @return The available server log entries for the session.
    * @throws IOException If there was a problem reading from file.
@@ -264,11 +265,11 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
   }
 
   /**
-   * Returns a list of session IDs for which there are logs. 
-   * 
+   * Returns a list of session IDs for which there are logs.
+   *
    * The type of logs that are available depends on the log types provided
    * by the driver. An included session id will at least have server logs.
-   * 
+   *
    * @return The list of session IDs.
    */
   @Override
@@ -279,12 +280,12 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
     builder.addAll(perSessionDriverEntries.keySet());
     return builder.build();
   }
-  
+
   /**
    * Gets all logs for a session.
-   * 
+   *
    * @param sessionId The id of the session.
-   * @return The logs for the session, ordered after log types in a session logs object. 
+   * @return The logs for the session, ordered after log types in a session logs object.
    */
   @Override
   public synchronized SessionLogs getAllLogsForSession(SessionId sessionId) {
@@ -301,13 +302,13 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
 
   /**
    * Fetches and stores available logs from the given session and driver.
-   * 
+   *
    *  @param sessionId The id of the session.
    *  @param driver The driver to get the logs from.
    *  @throws IOException If there was a problem reading from file.
    */
   @Override
-  public synchronized void fetchAndStoreLogsFromDriver(SessionId sessionId, WebDriver driver) 
+  public synchronized void fetchAndStoreLogsFromDriver(SessionId sessionId, WebDriver driver)
       throws IOException {
     if (!perSessionDriverEntries.containsKey(sessionId)) {
       perSessionDriverEntries.put(sessionId, Maps.<String, LogEntries>newHashMap());
@@ -321,10 +322,10 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
       }
     }
   }
-  
+
   /**
    * Configures logging using a logging preferences object.
-   * 
+   *
    * @param prefs The logging preferences object.
    */
   @Override
@@ -332,7 +333,7 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
     if (prefs == null) {
       return;
     }
-    if (prefs.getEnabledLogTypes().contains(LogType.SERVER)) {      
+    if (prefs.getEnabledLogTypes().contains(LogType.SERVER)) {
       serverLogLevel = prefs.getLevel(LogType.SERVER);
     }
   }

@@ -68,7 +68,7 @@ goog.debug.EntryPointMonitor.prototype.unwrap;
 
 /**
  * An array of entry point callbacks.
- * @type {!Array.<function(!Function)>}
+ * @type {!Array<function(!Function)>}
  * @private
  */
 goog.debug.entryPointRegistry.refList_ = [];
@@ -76,7 +76,7 @@ goog.debug.entryPointRegistry.refList_ = [];
 
 /**
  * Monitors that should wrap all the entry points.
- * @type {!Array.<!goog.debug.EntryPointMonitor>}
+ * @type {!Array<!goog.debug.EntryPointMonitor>}
  * @private
  */
 goog.debug.entryPointRegistry.monitors_ = [];

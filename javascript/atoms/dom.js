@@ -1,17 +1,19 @@
-// Copyright 2012 Software Freedom Conservancy
-// Copyright 2010 WebDriver committers
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview DOM manipulation and querying routines.
@@ -34,6 +36,13 @@ goog.require('goog.math.Rect');
 goog.require('goog.string');
 goog.require('goog.style');
 goog.require('goog.userAgent');
+
+
+/**
+ * Whether Shadow DOM operations are supported by the browser.
+ * @const {boolean}
+ */
+bot.dom.IS_SHADOW_DOM_ENABLED = (typeof ShadowRoot === 'function');
 
 
 /**
@@ -94,7 +103,7 @@ bot.dom.isInteractable = function(element) {
  * @private
  */
 bot.dom.hasPointerEventsDisabled_ = function(element) {
-  if (goog.userAgent.IE || goog.userAgent.OPERA ||
+  if (goog.userAgent.IE ||
       (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion('1.9.2'))) {
     // Don't support pointer events
     return false;
@@ -216,7 +225,6 @@ bot.dom.SPLIT_STYLE_ATTRIBUTE_ON_SEMICOLONS_REGEXP_ =
  * Standardize a style attribute value, which includes:
  *  (1) converting all property names lowercase
  *  (2) ensuring it ends in a trailing semi-colon
- *  (3) removing empty style values (which only appear on Opera).
  * @param {string} value The style attribute value.
  * @return {string} The identical value, with the formatting rules described
  *     above applied.
@@ -237,7 +245,7 @@ bot.dom.standardizeStyleAttribute_ = function(value) {
   });
   css = css.join('');
   css = css.charAt(css.length - 1) == ';' ? css : css + ';';
-  return goog.userAgent.OPERA ? css.replace(/\w+:;/g, '') : css;
+  return css;
 };
 
 
@@ -410,6 +418,20 @@ bot.dom.isTextual = function(element) {
 
 /**
  * @param {!Element} element The element to check.
+ * @return {boolean} Whether the element is a file input.
+ */
+bot.dom.isFileInput = function(element) {
+  if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
+    var type = element.type.toLowerCase();
+    return type == 'file';
+  }
+
+  return false;
+};
+
+
+/**
+ * @param {!Element} element The element to check.
  * @return {boolean} Whether the element is contentEditable.
  */
 bot.dom.isContentEditable = function(element) {
@@ -449,7 +471,7 @@ bot.dom.isContentEditable = function(element) {
  * @return {boolean} Whether the element accepts user-typed text.
  */
 bot.dom.isEditable = function(element) {
-  return bot.dom.isTextual(element) &&
+  return (bot.dom.isTextual(element) || bot.dom.isFileInput(element)) &&
       !bot.dom.getProperty(element, 'readOnly');
 };
 
@@ -542,21 +564,26 @@ bot.dom.getCascadedStyle_ = function(elem, styleName) {
 
 
 /**
- * Determines whether an element is what a user would call "shown". This means
- * that the element is shown in the viewport of the browser, and only has
- * height and width greater than 0px, and that its visibility is not "hidden"
- * and its display property is not "none".
- * Options and Optgroup elements are treated as special cases: they are
- * considered shown iff they have a enclosing select element that is shown.
+ * Common code used by bot.dom.isShown and bot.dom.isShownInComposedDom.
  *
  * @param {!Element} elem The element to consider.
- * @param {boolean=} opt_ignoreOpacity Whether to ignore the element's opacity
- *     when determining whether it is shown; defaults to false.
+ * @param {boolean} ignoreOpacity Whether to ignore the element's opacity
+ *     when determining whether it is shown.
+ * @param {function(!Element):boolean} parentsDisplayedFn a function that's used
+ *     to tell if the chain of ancestors are all shown.
  * @return {boolean} Whether or not the element is visible.
+ * @private
  */
-bot.dom.isShown = function(elem, opt_ignoreOpacity) {
+bot.dom.isShown_ = function(elem, ignoreOpacity, parentsDisplayedFn) {
   if (!bot.dom.isElement(elem)) {
     throw new Error('Argument to isShown must be of type Element');
+  }
+
+  // By convention, BODY element is always shown: BODY represents the document
+  // and even if there's nothing rendered in there, user can always see there's
+  // the document.
+  if (bot.dom.isElement(elem, goog.dom.TagName.BODY)) {
+    return true;
   }
 
   // Option or optgroup is shown iff enclosing select is shown (ignoring the
@@ -566,7 +593,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     var select = /**@type {Element}*/ (goog.dom.getAncestor(elem, function(e) {
       return bot.dom.isElement(e, goog.dom.TagName.SELECT);
     }));
-    return !!select && bot.dom.isShown(select, /*ignoreOpacity=*/true);
+    return !!select && bot.dom.isShown_(select, true, parentsDisplayedFn);
   }
 
   // Image map elements are shown if image that uses it is shown, and
@@ -575,7 +602,8 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
   if (imageMap) {
     return !!imageMap.image &&
            imageMap.rect.width > 0 && imageMap.rect.height > 0 &&
-           bot.dom.isShown(imageMap.image, opt_ignoreOpacity);
+           bot.dom.isShown_(
+               imageMap.image, ignoreOpacity, parentsDisplayedFn);
   }
 
   // Any hidden input is not shown.
@@ -589,26 +617,18 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     return false;
   }
 
-  // Any element with hidden visibility is not shown.
-  if (bot.dom.getEffectiveStyle(elem, 'visibility') == 'hidden') {
+  // Any element with hidden/collapsed visibility is not shown.
+  var visibility = bot.dom.getEffectiveStyle(elem, 'visibility');
+  if (visibility == 'collapse' || visibility == 'hidden') {
     return false;
   }
 
-  // Any element with a display style equal to 'none' or that has an ancestor
-  // with display style equal to 'none' is not shown.
-  function displayed(e) {
-    if (bot.dom.getEffectiveStyle(e, 'display') == 'none') {
-      return false;
-    }
-    var parent = bot.dom.getParentElement(e);
-    return !parent || displayed(parent);
-  }
-  if (!displayed(elem)) {
+  if (!parentsDisplayedFn(elem)) {
     return false;
   }
 
   // Any transparent element is not shown.
-  if (!opt_ignoreOpacity && bot.dom.getOpacity(elem) == 0) {
+  if (!ignoreOpacity && bot.dom.getOpacity(elem) == 0) {
     return false;
   }
 
@@ -641,10 +661,38 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
   function hiddenByOverflow(e) {
     return bot.dom.getOverflowState(e) == bot.dom.OverflowState.HIDDEN &&
         goog.array.every(e.childNodes, function(n) {
-          return !bot.dom.isElement(n) || hiddenByOverflow(n);
+          return !bot.dom.isElement(n) || hiddenByOverflow(n) ||
+                 !positiveSize(n);
         });
   }
   return !hiddenByOverflow(elem);
+};
+
+
+/**
+ * Determines whether an element is what a user would call "shown". This means
+ * that the element is shown in the viewport of the browser, and only has
+ * height and width greater than 0px, and that its visibility is not "hidden"
+ * and its display property is not "none".
+ * Options and Optgroup elements are treated as special cases: they are
+ * considered shown iff they have a enclosing select element that is shown.
+ *
+ * @param {!Element} elem The element to consider.
+ * @param {boolean=} opt_ignoreOpacity Whether to ignore the element's opacity
+ *     when determining whether it is shown; defaults to false.
+ * @return {boolean} Whether or not the element is visible.
+ */
+bot.dom.isShown = function(elem, opt_ignoreOpacity) {
+  // Any element with a display style equal to 'none' or that has an ancestor
+  // with display style equal to 'none' is not shown.
+  function displayed(e) {
+    if (bot.dom.getEffectiveStyle(e, 'display') == 'none') {
+      return false;
+    }
+    var parent = bot.dom.getParentElement(e);
+    return !parent || displayed(parent);
+  }
+  return bot.dom.isShown_(elem, !!opt_ignoreOpacity, displayed);
 };
 
 
@@ -878,60 +926,7 @@ bot.dom.getClientRect = function(elem) {
       rect.top -= doc.documentElement.clientTop + doc.body.clientTop;
     }
 
-    // Opera sometimes falsely report zero size bounding rects.
-    if (goog.userAgent.OPERA) {
-      if (rect.width == 0 && elem.offsetWidth > 0) {
-        rect.width = elem.offsetWidth;
-      }
-      if (rect.height == 0 && elem.offsetHeight > 0) {
-        rect.height = elem.offsetHeight;
-      }
-    }
-
-    // On Gecko < 12, getBoundingClientRect does not account for CSS transforms.
-    // TODO: Remove this when we drop support for FF3.6 and FF10.
-    if (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion(12)) {
-      transformLegacyFirefoxClientRect(elem);
-    }
-
     return rect;
-  }
-
-  function transformLegacyFirefoxClientRect(container) {
-    var win = goog.dom.getWindow(goog.dom.getOwnerDocument(container));
-    var transform = win.getComputedStyle(container, null)['MozTransform'];
-    var matches = transform.match(bot.dom.CSS_TRANSFORM_MATRIX_REGEX_);
-
-    if (matches) {
-      var a = parseFloat(matches[1]), b = parseFloat(matches[2]),
-          c = parseFloat(matches[3]), d = parseFloat(matches[4]),
-          x = parseFloat(matches[5]), y = parseFloat(matches[6]);
-      var right = rect.left + rect.width, bottom = rect.top + rect.height;
-      var leftXa = rect.left * a, rightXa = right * a,
-          leftXb = rect.left * b, rightXb = right * b,
-          topXc = rect.top * c, bottomXc = bottom * c,
-          topXd = rect.top * d, bottomXd = bottom * d;
-      var topLeftX = leftXa + topXc + x,
-          topLeftY = leftXb + topXd + y,
-          topRightX = rightXa + topXc + x,
-          topRightY = rightXb + topXd + y,
-          bottomLeftX = leftXa + bottomXc + x,
-          bottomLeftY = leftXb + bottomXd + y,
-          bottomRightX = rightXa + bottomXc + x,
-          bottomRightY = rightXb + bottomXd + y;
-      rect.left = Math.min(topLeftX, topRightX, bottomLeftX, bottomRightX);
-      rect.top = Math.min(topLeftY, topRightY, bottomLeftY, bottomRightY);
-      var newRight = Math.max(topLeftX, topRightX, bottomLeftX, bottomRightX);
-      var newBottom = Math.max(topLeftY, topRightY, bottomLeftY, bottomRightY);
-      rect.width = newRight - rect.left;
-      rect.height = newBottom - rect.top;
-    }
-
-    // The computed transform style not not take into account parent transforms.
-    var parentContainer = bot.dom.getParentElement(container);
-    if (parentContainer) {
-      transformLegacyFirefoxClientRect(parentContainer);
-    }
   }
 };
 
@@ -1067,15 +1062,15 @@ bot.dom.trimExcludingNonBreakingSpaceCharacters_ = function(str) {
 
 
 /**
- * @param {!Element} elem The element to consider.
- * @return {string} visible text.
+ * Helper function for getVisibleText[InDisplayedDom].
+ * @param {!Array.<string>} lines Accumulated visible lines of text.
+ * @return {string} cleaned up concatenated lines
+ * @private
  */
-bot.dom.getVisibleText = function(elem) {
-  var lines = [];
-  bot.dom.appendVisibleTextLinesFromElement_(elem, lines);
+bot.dom.concatenateCleanedLines_ = function(lines) {
   lines = goog.array.map(
-      lines,
-      bot.dom.trimExcludingNonBreakingSpaceCharacters_);
+    lines,
+    bot.dom.trimExcludingNonBreakingSpaceCharacters_);
   var joined = lines.join('\n');
   var trimmed = bot.dom.trimExcludingNonBreakingSpaceCharacters_(joined);
 
@@ -1085,11 +1080,29 @@ bot.dom.getVisibleText = function(elem) {
 
 
 /**
+ * @param {!Element} elem The element to consider.
+ * @return {string} visible text.
+ */
+bot.dom.getVisibleText = function(elem) {
+  var lines = [];
+  bot.dom.appendVisibleTextLinesFromElement_(elem, lines);
+  return bot.dom.concatenateCleanedLines_(lines);
+};
+
+
+/**
+ * Helper function used by bot.dom.appendVisibleTextLinesFromElement_ and
+ * bot.dom.appendVisibleTextLinesFromElementInComposedDom_
  * @param {!Element} elem Element.
  * @param {!Array.<string>} lines Accumulated visible lines of text.
+ * @param {function(!Element):boolean} isShownFn function to call to
+ *     tell if an element is shown
+ * @param {function(!Node, !Array.<string>, boolean, ?string, ?string):void}
+ *     childNodeFn function to call to append lines from any child nodes
  * @private
  */
-bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
+bot.dom.appendVisibleTextLinesFromElementCommon_ = function(
+    elem, lines, isShownFn, childNodeFn) {
   function currLine() {
     return /** @type {string|undefined} */ (goog.array.peek(lines)) || '';
   }
@@ -1125,7 +1138,7 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
     // explicitly shown (e.g. this element has "visibility:hidden").
     // Nevertheless, any text nodes that are direct descendants of this
     // element will not contribute to the visible text.
-    var shown = bot.dom.isShown(elem);
+    var shown = isShownFn(elem);
 
     // All text nodes that are children of this element need to know the
     // effective "white-space" and "text-transform" styles to properly
@@ -1137,14 +1150,7 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
     }
 
     goog.array.forEach(elem.childNodes, function(node) {
-      if (node.nodeType == goog.dom.NodeType.TEXT && shown) {
-        var textNode = /** @type {!Text} */ (node);
-        bot.dom.appendVisibleTextLinesFromTextNode_(textNode, lines,
-            whitespace, textTransform);
-      } else if (bot.dom.isElement(node)) {
-        var castElem = /** @type {!Element} */ (node);
-        bot.dom.appendVisibleTextLinesFromElement_(castElem, lines);
-      }
+      childNodeFn(node, lines, shown, whitespace, textTransform);
     });
 
     var line = currLine();
@@ -1163,6 +1169,27 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
       lines.push('');
     }
   }
+};
+
+
+/**
+ * @param {!Element} elem Element.
+ * @param {!Array.<string>} lines Accumulated visible lines of text.
+ * @private
+ */
+bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
+    bot.dom.appendVisibleTextLinesFromElementCommon_(
+      elem, lines, bot.dom.isShown,
+      function(node, lines, shown, whitespace, textTransform) {
+        if (node.nodeType == goog.dom.NodeType.TEXT && shown) {
+          var textNode = /** @type {!Text} */ (node);
+          bot.dom.appendVisibleTextLinesFromTextNode_(textNode, lines,
+              whitespace, textTransform);
+        } else if (bot.dom.isElement(node)) {
+          var castElem = /** @type {!Element} */ (node);
+          bot.dom.appendVisibleTextLinesFromElement_(castElem, lines);
+        }
+      });
 };
 
 
@@ -1192,6 +1219,7 @@ bot.dom.INLINE_DISPLAY_BOXES_ = [
  */
 bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
     whitespace, textTransform) {
+
   // First, remove zero-width characters. Do this before regularizing spaces as
   // the zero-width space is both zero-width and a space, but we do not want to
   // make it visible by converting it to a regular space.
@@ -1293,3 +1321,194 @@ bot.dom.getOpacityNonIE_ = function(elem) {
   }
   return elemOpacity;
 };
+
+if (bot.dom.IS_SHADOW_DOM_ENABLED) {
+
+
+  /**
+   * Returns the display parent element of the given node, or null. This method
+   * differs from bot.dom.getParentElement in the presence of ShadowDOM and
+   * &lt;shadow&gt; or &lt;content&gt; tags. For example if
+   * <ul>
+   * <li>div A contains div B
+   * <li>div B has a css class .C
+   * <li>div A contains a Shadow DOM with a div D
+   * <li>div D contains a contents tag selecting all items of class .C
+   * </ul>
+   * then calling bot.dom.getParentElement on B will return A, but calling
+   * getDisplayParentElement on B will return D.
+   *
+   * @param {!Node} node The node whose parent is desired.
+   * @return {Node} The parent node, if available, null otherwise.
+   */
+  bot.dom.getParentNodeInComposedDom = function(node) {
+    var /**@type {Node}*/ parent = node.parentNode;
+    if (node.getDestinationInsertionPoints) {
+      var destinations = node.getDestinationInsertionPoints();
+      if (destinations.length > 0) {
+        parent = destinations[destinations.length - 1];
+      }
+    }
+    return parent;
+  };
+
+
+  /**
+   * @param {!Element} elem The element to consider.
+   * @return {string} visible text.
+   */
+  bot.dom.getVisibleTextInComposedDom = function(elem) {
+    var lines = [];
+    bot.dom.appendVisibleTextLinesFromElementInComposedDom_(elem, lines);
+    return bot.dom.concatenateCleanedLines_(lines);
+  };
+
+
+  /**
+   * Determines whether an element is what a user would call "shown". This is
+   * heavily based on bot.dom.isShown. It differs only in how it handles
+   * elementsin shadow DOMs, or elements that are distributed into shadow DOMs
+   * by &lt;shadow&gt; or &lt;content&gt; tags. Specifically, elements in shadow
+   * DOMs with younger shadow roots are not visible, and elements distributed
+   * into shadow DOMs check the visibility of the ancestors in the Composed DOM,
+   * rather than their ancestors in the logical DOM.
+   *
+   * @param {!Element} elem The element to consider.
+   * @param {boolean=} opt_ignoreOpacity Whether to ignore the element's opacity
+   *     when determining whether it is shown; defaults to false.
+   * @return {boolean} Whether or not the element is visible.
+   */
+  bot.dom.isShownInComposedDom = function(elem, opt_ignoreOpacity) {
+    // Any element with a display style equal to 'none' or that has an ancestor
+    // with display style equal to 'none' is not shown.
+    function displayed(e) {
+      if (bot.dom.getEffectiveStyle(e, 'display') == 'none') {
+        return false;
+      }
+      var parent;
+      do {
+        parent = bot.dom.getParentNodeInComposedDom(e);
+        if (parent instanceof ShadowRoot) {
+          if (parent.host.shadowRoot != parent) {
+            // There is a younger shadow root, which will take precedence over
+            // the shadow this element is in, thus this element won't be
+            // displayed.
+            return false;
+          } else {
+            parent = parent.host;
+          }
+        } else if (parent.nodeType == goog.dom.NodeType.DOCUMENT ||
+            parent.nodeType == goog.dom.NodeType.DOCUMENT_FRAGMENT) {
+          parent = null;
+        }
+      } while (elem && elem.nodeType != goog.dom.NodeType.ELEMENT);
+      return !parent || displayed(parent);
+    }
+    return bot.dom.isShown_(elem, !!opt_ignoreOpacity, displayed);
+  };
+
+
+  /**
+   * @param {!Node} node Node.
+   * @param {!Array.<string>} lines Accumulated visible lines of text.
+   * @param {boolean} shown whether the node is visible
+   * @param {?string} whitespace the node's 'white-space' effectiveStyle
+   * @param {?string} textTransform the node's 'text-transform' effectiveStyle
+   * @private
+   * @suppress {missingProperties}
+   */
+  bot.dom.appendVisibleTextLinesFromNodeInComposedDom_ = function(
+      node, lines, shown, whitespace, textTransform) {
+
+    if (node.nodeType == goog.dom.NodeType.TEXT && shown) {
+      var textNode = /** @type {!Text} */ (node);
+      bot.dom.appendVisibleTextLinesFromTextNode_(textNode, lines,
+          whitespace, textTransform);
+    } else if (bot.dom.isElement(node)) {
+      var castElem = /** @type {!Element} */ (node);
+
+      if (bot.dom.isElement(node, 'CONTENT')) {
+        // If the element is <content> then just append the contents of the
+        // nodes that have been distributed into it.
+        var contentElem = /** @type {!Object} */ (node);
+        goog.array.forEach(contentElem.getDistributedNodes(), function(node) {
+          bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
+              node, lines, shown, whitespace, textTransform);
+        });
+      } else if (bot.dom.isElement(node, 'SHADOW')) {
+        // if the element is <shadow> then find the owning shadowRoot
+        var parentNode = node;
+        while (parentNode.parentNode) {
+          parentNode = parentNode.parentNode;
+        }
+        if (parentNode instanceof ShadowRoot) {
+          var thisShadowRoot = /** @type {!ShadowRoot} */ (parentNode);
+          if (thisShadowRoot) {
+            // then go through the owning shadowRoots older siblings and append
+            // their contents
+            var olderShadowRoot = thisShadowRoot.olderShadowRoot;
+            while (olderShadowRoot) {
+              goog.array.forEach(
+                  olderShadowRoot.childNodes, function(childNode) {
+                bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
+                    childNode, lines, shown, whitespace, textTransform);
+              });
+              olderShadowRoot = olderShadowRoot.olderShadowRoot;
+            }
+          }
+        }
+      } else {
+        // otherwise append the contents of an element as per normal.
+        bot.dom.appendVisibleTextLinesFromElementInComposedDom_(
+          castElem, lines);
+      }
+    }
+  };
+
+
+  /**
+   * Determines whether a given node has been distributed into a ShadowDOM
+   * element somewhere.
+   * @param {!Node} node The node to check
+   * @return {boolean} True if the node has been distributed.
+   */
+  bot.dom.isNodeDistributedIntoShadowDom = function(node) {
+    var elemOrText = null;
+    if (node.nodeType == goog.dom.NodeType.ELEMENT) {
+      elemOrText = /** @type {!Element} */ (node);
+    } else if (node.nodeType == goog.dom.NodeType.TEXT) {
+      elemOrText = /** @type {!Text} */ (node);
+    }
+    return elemOrText != null &&
+        elemOrText.getDestinationInsertionPoints &&
+        elemOrText.getDestinationInsertionPoints().length > 0;
+  };
+
+
+  /**
+   * @param {!Element} elem Element.
+   * @param {!Array.<string>} lines Accumulated visible lines of text.
+   * @private
+   */
+  bot.dom.appendVisibleTextLinesFromElementInComposedDom_ = function(
+      elem, lines) {
+    if (elem.shadowRoot) {
+        goog.array.forEach(elem.shadowRoot.childNodes, function(node) {
+          bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
+              node, lines, true, null, null);
+        });
+    }
+
+    bot.dom.appendVisibleTextLinesFromElementCommon_(
+      elem, lines, bot.dom.isShownInComposedDom,
+      function(node, lines, shown, whitespace, textTransform) {
+        // If the node has been distributed into a shadowDom element
+        // to be displayed elsewhere, then we shouldn't append
+        // its contents here).
+        if (!bot.dom.isNodeDistributedIntoShadowDom(node)) {
+          bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
+              node, lines, shown, whitespace, textTransform);
+        }
+      });
+  };
+}

@@ -1,19 +1,19 @@
-/*
-Copyright 2010 WebDriver committers
-Copyright 2010 Google Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 (function() {
   var handleEvaluateEvent = function(event) {
@@ -34,6 +34,7 @@ limitations under the License.
       if (isAsync) {
         window.clearTimeout(timeoutId);
         window.removeEventListener('unload', onunload, false);
+        timeoutId = true;
       }
 
       document.__webdriver_evaluate['args'] = null;
@@ -67,12 +68,16 @@ limitations under the License.
     try {
       var result = new Function(script).apply(null, args);
       if (isAsync) {
-        timeoutId = window.setTimeout(function() {
-          sendResponse(
-              Error('Timed out waiting for async script result after ' +
-                  (new Date().getTime() - startTime) + 'ms'),
-              28);  // "script timeout" == 28
-        }, timeout);
+        // if the callback method is called synchronously in the provided script
+        // don't set a timeout function, since the timeout has already been 'cleared'
+        if (!timeoutId) {
+          timeoutId = window.setTimeout(function() {
+            sendResponse(
+                Error('Timed out waiting for async script result after ' +
+                      (new Date().getTime() - startTime) + 'ms'),
+                28);  // "script timeout" == 28
+          }, timeout);
+        }
       } else {
         sendResponse(result, 0);
       }

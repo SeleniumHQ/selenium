@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
-using System.Collections.ObjectModel;
-using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium
 {
+    [IgnoreBrowser(Browser.Edge)]
     [TestFixture]
     public class AlertsTest : DriverTestFixture
     {
@@ -45,7 +43,7 @@ namespace OpenQA.Selenium
 
             driver.FindElement(By.Id("alert")).Click();
 
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             alert.Accept();
 
             // If we can perform any action, we're good to go
@@ -65,7 +63,7 @@ namespace OpenQA.Selenium
 
             driver.FindElement(By.Id("empty-alert")).Click();
 
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             alert.Accept();
 
             // If we can perform any action, we're good to go
@@ -113,7 +111,7 @@ namespace OpenQA.Selenium
 
             driver.FindElement(By.Id("alert")).Click();
 
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             alert.Dismiss();
 
             // If we can perform any action, we're good to go
@@ -135,7 +133,7 @@ namespace OpenQA.Selenium
 
             driver.FindElement(By.Id("prompt")).Click();
 
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             alert.Accept();
 
             // If we can perform any action, we're good to go
@@ -157,7 +155,7 @@ namespace OpenQA.Selenium
 
             driver.FindElement(By.Id("prompt")).Click();
 
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             alert.Dismiss();
 
             // If we can perform any action, we're good to go
@@ -179,7 +177,7 @@ namespace OpenQA.Selenium
 
             driver.FindElement(By.Id("prompt")).Click();
 
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             alert.SendKeys("cheese");
             alert.Accept();
 
@@ -203,7 +201,7 @@ namespace OpenQA.Selenium
 
             driver.FindElement(By.Id("alert")).Click();
 
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             try
             {
                 alert.SendKeys("cheese");
@@ -233,7 +231,7 @@ namespace OpenQA.Selenium
 
             driver.FindElement(By.Id("alert")).Click();
 
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             string value = alert.Text;
             alert.Accept();
 
@@ -254,7 +252,7 @@ namespace OpenQA.Selenium
 
             driver.FindElement(By.Id("prompt")).Click();
 
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             string value = alert.Text;
             alert.Accept();
 
@@ -269,16 +267,16 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
-        [ExpectedException(typeof(NoAlertPresentException))]
         public void AlertShouldNotAllowAdditionalCommandsIfDimissed()
         {
             driver.Url = alertsPage;
 
             driver.FindElement(By.Id("alert")).Click();
 
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             alert.Dismiss();
-            string text = alert.Text;
+            string text;
+            Assert.Throws<NoAlertPresentException>(() => text = alert.Text);
         }
 
         [Test]
@@ -297,7 +295,7 @@ namespace OpenQA.Selenium
 
             driver.FindElement(By.Id("alertInFrame")).Click();
 
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             alert.Accept();
 
             // If we can perform any action, we're good to go
@@ -318,7 +316,7 @@ namespace OpenQA.Selenium
 
             driver.FindElement(By.Id("alertInFrame")).Click();
 
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             alert.Accept();
 
             // If we can perform any action, we're good to go
@@ -334,12 +332,11 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
-        [ExpectedException(typeof(NoAlertPresentException))]
         public void SwitchingToMissingAlertThrows()
         {
             driver.Url = alertsPage;
 
-            AlertToBePresent();
+            Assert.Throws<NoAlertPresentException>(() => AlertToBePresent());
         }
 
         [Test]
@@ -354,14 +351,15 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void SwitchingToMissingAlertInAClosedWindowThrows()
         {
+            driver.Url = alertsPage;
             string mainWindow = driver.CurrentWindowHandle;
             try
             {
                 driver.FindElement(By.Id("open-new-window")).Click();
-                WaitFor(WindowHandleCountToBe(2));
-                WaitFor(WindowWithName("newwindow"));
+                WaitFor(WindowHandleCountToBe(2), "Window count was not 2");
+                WaitFor(WindowWithName("newwindow"), "Could not find window with name 'newwindow'");
                 driver.Close();
-                WaitFor(WindowHandleCountToBe(1));
+                WaitFor(WindowHandleCountToBe(1), "Window count was not 1");
 
                 try
                 {
@@ -377,7 +375,7 @@ namespace OpenQA.Selenium
             finally
             {
                 driver.SwitchTo().Window(mainWindow);
-                WaitFor(ElementTextToEqual(driver.FindElement(By.Id("open-new-window")), "open new window"));
+                WaitFor(ElementTextToEqual(driver.FindElement(By.Id("open-new-window")), "open new window"), "Could not find element with text 'open new window'");
             }
         }
 
@@ -395,11 +393,11 @@ namespace OpenQA.Selenium
             driver.Url = alertsPage;
             driver.FindElement(By.Id("prompt-with-default")).Click();
 
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             alert.Accept();
 
             IWebElement element = driver.FindElement(By.Id("text"));
-            WaitFor(ElementTextToEqual(element, "This is a default value"));
+            WaitFor(ElementTextToEqual(element, "This is a default value"), "Element text was not 'This is a default value'");
             Assert.AreEqual("This is a default value", element.Text);
         }
 
@@ -417,10 +415,10 @@ namespace OpenQA.Selenium
             driver.Url = alertsPage;
             driver.FindElement(By.Id("prompt-with-default")).Click();
 
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             alert.Dismiss();
             IWebElement element = driver.FindElement(By.Id("text"));
-            WaitFor(ElementTextToEqual(element, "null"));
+            WaitFor(ElementTextToEqual(element, "null"), "Element text was not 'null'");
             Assert.AreEqual("null", element.Text);
         }
 
@@ -438,19 +436,19 @@ namespace OpenQA.Selenium
             driver.Url = alertsPage;
             driver.FindElement(By.Id("double-prompt")).Click();
 
-            IAlert alert1 = WaitFor<IAlert>(AlertToBePresent);
+            IAlert alert1 = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             alert1.SendKeys("brie");
             alert1.Accept();
 
-            IAlert alert2 = WaitFor<IAlert>(AlertToBePresent);
+            IAlert alert2 = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             alert2.SendKeys("cheddar");
             alert2.Accept();
 
             IWebElement element1 = driver.FindElement(By.Id("text1"));
-            WaitFor(ElementTextToEqual(element1, "brie"));
+            WaitFor(ElementTextToEqual(element1, "brie"), "Element text was not 'brie'");
             Assert.AreEqual("brie", element1.Text);
             IWebElement element2 = driver.FindElement(By.Id("text2"));
-            WaitFor(ElementTextToEqual(element2, "cheddar"));
+            WaitFor(ElementTextToEqual(element2, "cheddar"), "Element text was not 'cheddar'");
             Assert.AreEqual("cheddar", element2.Text);
         }
 
@@ -465,13 +463,13 @@ namespace OpenQA.Selenium
 
             driver.FindElement(By.Id("open-page-with-onload-alert")).Click();
 
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             string value = alert.Text;
             alert.Accept();
 
             Assert.AreEqual("onload", value);
             IWebElement element = driver.FindElement(By.TagName("p"));
-            WaitFor(ElementTextToEqual(element, "Page with onload event handler"));
+            WaitFor(ElementTextToEqual(element, "Page with onload event handler"), "Element text was not 'Page with onload event handler'");
         }
 
         [Test]
@@ -483,12 +481,12 @@ namespace OpenQA.Selenium
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("pageWithOnLoad.html");
 
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             string value = alert.Text;
             alert.Accept();
 
             Assert.AreEqual("onload", value);
-            WaitFor(ElementTextToEqual(driver.FindElement(By.TagName("p")), "Page with onload event handler"));
+            WaitFor(ElementTextToEqual(driver.FindElement(By.TagName("p")), "Page with onload event handler"), "Could not find element with text 'Page with onload event handler'");
         }
 
         [Test]
@@ -515,7 +513,7 @@ namespace OpenQA.Selenium
                 try
                 {
                     IWebElement el = driver.FindElement(By.Id("open-page-with-onunload-alert"));
-                    WaitFor<IAlert>(AlertToBePresent, TimeSpan.FromSeconds(5));
+                    WaitFor<IAlert>(AlertToBePresent, TimeSpan.FromSeconds(5), "No alert found");
                     Assert.Fail("Expected exception");
                 }
                 catch (WebDriverException)
@@ -528,16 +526,17 @@ namespace OpenQA.Selenium
             finally
             {
                 driver.SwitchTo().Window(onloadWindow);
-                WaitFor<IAlert>(AlertToBePresent).Dismiss();
+                WaitFor<IAlert>(AlertToBePresent, "No alert found").Dismiss();
                 driver.Close();
                 driver.SwitchTo().Window(mainWindow);
-                WaitFor(ElementTextToEqual(driver.FindElement(By.Id("open-window-with-onload-alert")), "open new window"));
+                WaitFor(ElementTextToEqual(driver.FindElement(By.Id("open-window-with-onload-alert")), "open new window"), "Could not find element with text 'open new window'");
             }
         }
 
         [Test]
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
+        [IgnoreBrowser(Browser.Firefox, "After version 27, Firefox does not trigger alerts on unload.")]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Safari)]
         [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
@@ -545,23 +544,24 @@ namespace OpenQA.Selenium
         {
             driver.Url = alertsPage;
 
-            IWebElement element = WaitFor<IWebElement>(ElementToBePresent(By.Id("open-page-with-onunload-alert")));
+            IWebElement element = WaitFor<IWebElement>(ElementToBePresent(By.Id("open-page-with-onunload-alert")), "Could not find element with id 'open-page-with-onunload-alert'");
             element.Click();
             driver.Navigate().Back();
 
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             string value = alert.Text;
             alert.Accept();
 
             Assert.AreEqual("onunload", value);
-            element = WaitFor<IWebElement>(ElementToBePresent(By.Id("open-page-with-onunload-alert")));
-            WaitFor(ElementTextToEqual(element, "open new page"));
+            element = WaitFor<IWebElement>(ElementToBePresent(By.Id("open-page-with-onunload-alert")), "Could not find element with id 'open-page-with-onunload-alert'");
+            WaitFor(ElementTextToEqual(element, "open new page"), "Element text was not 'open new page'");
         }
 
         [Test]
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.Android, "alerts do not pop up when a window is closed")]
         [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Firefox, "After version 27, Firefox does not trigger alerts on unload.")]
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Safari)]
         [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
@@ -573,11 +573,11 @@ namespace OpenQA.Selenium
             try
             {
                 driver.FindElement(By.Id("open-window-with-onclose-alert")).Click();
-                WaitFor(WindowHandleCountToBe(2));
-                WaitFor(WindowWithName("onclose"));
+                WaitFor(WindowHandleCountToBe(2), "Window count was not 2");
+                WaitFor(WindowWithName("onclose"), "Could not find window with name 'onclose'");
                 driver.Close();
 
-                IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+                IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
                 string value = alert.Text;
                 alert.Accept();
 
@@ -587,7 +587,7 @@ namespace OpenQA.Selenium
             finally
             {
                 driver.SwitchTo().Window(mainWindow);
-                WaitFor(ElementTextToEqual(driver.FindElement(By.Id("open-window-with-onclose-alert")), "open new window"));
+                WaitFor(ElementTextToEqual(driver.FindElement(By.Id("open-window-with-onclose-alert")), "open new window"), "Could not find element with text equal to 'open new window'");
             }
         }
 
@@ -606,7 +606,7 @@ namespace OpenQA.Selenium
             driver.Url = alertsPage;
 
             driver.FindElement(By.Id("alert")).Click();
-            WaitFor<IAlert>(AlertToBePresent);
+            WaitFor<IAlert>(AlertToBePresent, "No alert found");
             try
             {
                 string title = driver.Title;
@@ -619,7 +619,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [NeedsFreshDriver(AfterTest = true)]
+        [NeedsFreshDriver(IsCreatedAfterTest = true)]
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Safari)]
@@ -628,7 +628,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = alertsPage;
             driver.FindElement(By.Id("alert")).Click();
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             EnvironmentManager.Instance.CloseCurrentDriver();
         }
 
@@ -641,16 +641,16 @@ namespace OpenQA.Selenium
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("pageWithOnBeforeUnloadMessage.html");
             IWebElement element = driver.FindElement(By.Id("navigate"));
             element.Click();
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             alert.Dismiss();
             Assert.IsTrue(driver.Url.Contains("pageWithOnBeforeUnloadMessage.html"));
 
             // Can't move forward or even quit the driver
             // until the alert is accepted.
             element.Click();
-            alert = WaitFor<IAlert>(AlertToBePresent);
+            alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             alert.Accept();
-            WaitFor(() => { return driver.Url.Contains(alertsPage); });
+            WaitFor(() => { return driver.Url.Contains(alertsPage); }, "Browser URL does not contain " + alertsPage);
             Assert.IsTrue(driver.Url.Contains(alertsPage));
         }
 
@@ -658,13 +658,13 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Safari)]
         [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
-        [NeedsFreshDriver(AfterTest = true)]
+        [NeedsFreshDriver(IsCreatedAfterTest = true)]
         public void ShouldHandleOnBeforeUnloadAlertAtClose()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("pageWithOnBeforeUnloadMessage.html");
             IWebElement element = driver.FindElement(By.Id("navigate"));
             element.Click();
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             driver.Quit();
             driver = null;
         }
@@ -703,7 +703,7 @@ namespace OpenQA.Selenium
 
             driver.FindElement(By.Id("alert")).Click();
 
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             try
             {
                 string title = driver.Title;
@@ -716,6 +716,77 @@ namespace OpenQA.Selenium
 
             // but the next call should be good.
             Assert.AreEqual("Testing Alerts", driver.Title);
+        }
+
+        [Test]
+        [Category("JavaScript")]
+        [IgnoreBrowser(Browser.Android)]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Firefox)]
+        [IgnoreBrowser(Browser.HtmlUnit)]
+        [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.Opera)]
+        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
+        [IgnoreBrowser(Browser.Remote)]
+        [IgnoreBrowser(Browser.Safari)]
+        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
+        public void ShouldBeAbleToHandleAuthenticationDialog()
+        {
+            driver.Url = authenticationPage;
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
+            alert.SetAuthenticationCredentials("test", "test");
+            alert.Accept();
+            Assert.IsTrue(driver.FindElement(By.TagName("h1")).Text.Contains("authorized"));
+        }
+
+        [Test]
+        [Category("JavaScript")]
+        [IgnoreBrowser(Browser.Android)]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Firefox)]
+        [IgnoreBrowser(Browser.HtmlUnit)]
+        [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.Opera)]
+        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
+        [IgnoreBrowser(Browser.Remote)]
+        [IgnoreBrowser(Browser.Safari)]
+        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
+        public void ShouldBeAbleToDismissAuthenticationDialog()
+        {
+            driver.Url = authenticationPage;
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
+            alert.Dismiss();
+        }
+
+        [Test]
+        [Category("JavaScript")]
+        [IgnoreBrowser(Browser.Android)]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Firefox)]
+        [IgnoreBrowser(Browser.HtmlUnit)]
+        [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.Opera)]
+        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
+        [IgnoreBrowser(Browser.Remote)]
+        [IgnoreBrowser(Browser.Safari)]
+        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
+        public void ShouldThrowAuthenticatingOnStandardAlert()
+        {
+            driver.Url = alertsPage;
+            driver.FindElement(By.Id("alert")).Click();
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
+            try
+            {
+                alert.SetAuthenticationCredentials("test", "test");
+                Assert.Fail("Should not be able to Authenticate");
+            }
+            catch (UnhandledAlertException)
+            {
+                // this is an expected exception
+            }
+
+            // but the next call should be good.
+            alert.Dismiss();
         }
 
         private IAlert AlertToBePresent()

@@ -18,8 +18,8 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-          <groupId>org.webbitserver</groupId>
-           <artifactId>webbit</artifactId>
+          <groupId>io.netty</groupId>
+           <artifactId>netty</artifactId>
        </dependency>
     </dependencies>
 

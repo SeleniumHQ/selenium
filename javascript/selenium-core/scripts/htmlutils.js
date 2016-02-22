@@ -1,19 +1,19 @@
-/*
- * Copyright 2011 Software Freedom Conservancy
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 // This script contains a badly-organised collection of miscellaneous
 // functions that really better homes.
@@ -97,10 +97,6 @@ function elementGetStyle(element, style) {
         value = element.currentStyle[style];
       }
     }
-
-    /** DGF necessary? 
-    if (window.opera && ['left', 'top', 'right', 'bottom'].include(style))
-      if (Element.getStyle(element, 'position') == 'static') value = 'auto'; */
 
     return value == 'auto' ? null : value;
   }
@@ -328,7 +324,7 @@ function triggerKeyEvent(element, eventType, keySequence, canBubble, controlKeyD
             evt.initKeyEvent(eventType, true, true, view, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown, keycode, keycode);
         } else {
             evt = document.createEvent('UIEvents');
-            
+
             evt.shiftKey = shiftKeyDown;
             evt.metaKey = metaKeyDown;
             evt.altKey = altKeyDown;
@@ -411,9 +407,9 @@ function isArray(x) {
 
 function absolutify(url, baseUrl) {
     /** returns a relative url in its absolute form, given by baseUrl.
-    * 
+    *
     * This function is a little odd, because it can take baseUrls that
-    * aren't necessarily directories.  It uses the same rules as the HTML 
+    * aren't necessarily directories.  It uses the same rules as the HTML
     * &lt;base&gt; tag; if the baseUrl doesn't end with "/", we'll assume
     * that it points to a file, and strip the filename off to find its
     * base directory.
@@ -421,19 +417,19 @@ function absolutify(url, baseUrl) {
     * So absolutify("foo", "http://x/bar") will return "http://x/foo" (stripping off bar),
     * whereas absolutify("foo", "http://x/bar/") will return "http://x/bar/foo" (preserving bar).
     * Naturally absolutify("foo", "http://x") will return "http://x/foo", appropriately.
-    * 
+    *
     * @param url the url to make absolute; if this url is already absolute, we'll just return that, unchanged
     * @param baseUrl the baseUrl from which we'll absolutify, following the rules above.
     * @return 'url' if it was already absolute, or the absolutized version of url if it was not absolute.
     */
-    
+
     // DGF isn't there some library we could use for this?
-        
+
     if (/^\w+:/.test(url)) {
         // it's already absolute
         return url;
     }
-    
+
     var loc;
     try {
         loc = parseUrl(baseUrl);
@@ -448,34 +444,34 @@ function absolutify(url, baseUrl) {
     }
     loc.search = null;
     loc.hash = null;
-    
+
     // if url begins with /, then that's the whole pathname
     if (/^\//.test(url)) {
         loc.pathname = url;
         var result = reassembleLocation(loc);
         return result;
     }
-    
+
     // if pathname is null, then we'll just append "/" + the url
     if (!loc.pathname) {
         loc.pathname = "/" + url;
         var result = reassembleLocation(loc);
         return result;
     }
-    
+
     // if pathname ends with /, just append url
     if (/\/$/.test(loc.pathname)) {
         loc.pathname += url;
         var result = reassembleLocation(loc);
         return result;
     }
-    
+
     // if we're here, then the baseUrl has a pathname, but it doesn't end with /
     // in that case, we replace everything after the final / with the relative url
     loc.pathname = loc.pathname.replace(/[^\/\\]+$/, url);
     var result = reassembleLocation(loc);
     return result;
-    
+
 }
 
 var URL_REGEX = /^((\w+):\/\/)(([^:]+):?([^@]+)?@)?([^\/\?:]*):?(\d+)?(\/?[^\?#]+)?\??([^#]+)?#?(.+)?/;
@@ -514,15 +510,15 @@ function reassembleLocation(loc) {
     if (loc.host) {
         url += loc.host;
     }
-    
+
     if (loc.port) {
         url += ":" + loc.port;
     }
-    
+
     if (loc.pathname) {
         url += loc.pathname;
     }
-    
+
     if (loc.search) {
         url += "?" + loc.search;
     }
@@ -566,7 +562,7 @@ function extractExceptionMessage(ex) {
     if (ex.message != null) return ex.message;
     if (ex.toString && ex.toString() != null) return ex.toString();
 }
-    
+
 
 function describe(object, delimiter) {
     var props = new Array();
@@ -647,7 +643,7 @@ PatternMatcher.strategies = {
             return this.regexp.test(actual);
         };
     },
-    
+
     regexpi: function(regexpString) {
         this.regexp = new RegExp(regexpString, "i");
         this.matches = function(actual) {
@@ -920,10 +916,10 @@ objectExtend(URLConfiguration.prototype, {
     isMultiWindowMode:function() {
         return this._isQueryParameterTrue('multiWindow');
     },
-    
+
     getBaseUrl:function() {
         return this._getQueryParameter('baseUrl');
-            
+
     }
 });
 
@@ -947,11 +943,11 @@ function safeScrollIntoView(element) {
 function getTimeoutTime(timeout) {
     var now = new Date().getTime();
     var timeoutLength = parseInt(timeout);
-    
+
     if (isNaN(timeoutLength)) {
         throw new SeleniumError("Timeout is not a number: '" + timeout + "'");
     }
-    
+
     return now + timeoutLength;
 }
 
@@ -961,11 +957,11 @@ function getTimeoutTime(timeout) {
  */
 function is_IDE() {
     var locstr = window.location.href;
-    
+
     if (locstr.indexOf('chrome://selenium-ide-testrunner') == 0) {
          return false;
     }
-    
+
     return (typeof(SeleniumIDE) != 'undefined');
 }
 
@@ -1071,7 +1067,7 @@ function XPathEngine() {
      * engine. Needs override.
      */
     this.isAvailable = function() { return false; };
-    
+
     /**
      * Sets the document to be used for evaluation. Always returns the current
      * engine object so as to be chainable.
@@ -1087,7 +1083,7 @@ function XPathEngine() {
     this.selectNodes = function(xpath, contextNode, namespaceResolver) {
         return [];
     };
-    
+
     /**
      * Returns a single node, or null if no nodes were selected. This default
      * implementation simply returns the first result of selectNodes(), or
@@ -1097,7 +1093,7 @@ function XPathEngine() {
         var nodes = this.selectNodes(xpath, contextNode, namespaceResolver);
         return (nodes.length > 0 ? nodes[0] : null);
     };
-    
+
     /**
      * Returns the number of matching nodes. This default implementation simply
      * returns the length of the result of selectNodes(), which should be
@@ -1106,7 +1102,7 @@ function XPathEngine() {
     this.countNodes = function(xpath, contextNode, namespaceResolver) {
         return this.selectNodes(xpath, contextNode, namespaceResolver).length;
     };
-    
+
     /**
      * An optimization; likely to be a no-op for many implementations. Always
      * returns the current engine object so as to be chainable.
@@ -1125,18 +1121,18 @@ function NativeEngine() {
             // javascript-xpath can fake out the check otherwise
             return false;
         }
-    
+
         return this.doc && this.doc.evaluate;
     };
-    
+
     // Override
     this.selectNodes = function(xpath, contextNode, namespaceResolver) {
         if (contextNode != this.doc) {
             xpath = '.' + xpath;
         }
-    
+
         var nodes = [];
-        
+
         try {
             var xpathResult = this.doc.evaluate(xpath, contextNode,
                 namespaceResolver, 0, null);
@@ -1148,17 +1144,17 @@ function NativeEngine() {
         finally {
             if (xpathResult == null) {
                 // If the result is null, we should still throw an Error.
-                throw new SeleniumError("Invalid xpath [2]: " + xpath); 
+                throw new SeleniumError("Invalid xpath [2]: " + xpath);
             }
         }
-        
+
         var node = xpathResult.iterateNext();
-        
+
         while (node) {
             nodes.push(node);
             node = xpathResult.iterateNext();
         }
-        
+
         return nodes;
     };
 }
@@ -1171,13 +1167,13 @@ NativeEngine.prototype = new XPathEngine();
 function AjaxsltEngine() {
 // private
     var ignoreAttributesWithoutValue = false;
-    
+
     function selectLogic(xpath, contextNode, namespaceResolver, firstMatch) {
         // DGF set xpathdebug = true (using getEval, if you like) to turn on JS
         // XPath debugging
         //xpathdebug = true;
         var context;
-        
+
         if (contextNode == this.doc) {
             context = new ExprContext(this.doc);
         }
@@ -1186,11 +1182,11 @@ function AjaxsltEngine() {
             context = new ExprContext(contextNode, false, false,
                 contextNode.parentNode);
         }
-        
+
         context.setCaseInsensitive(true);
         context.setIgnoreAttributesWithoutValue(ignoreAttributesWithoutValue);
         context.setReturnOnFirstMatch(firstMatch);
-        
+
         try {
             var xpathObj = xpathParse(xpath);
         }
@@ -1198,34 +1194,34 @@ function AjaxsltEngine() {
             var msg = extractExceptionMessage(e);
             throw new SeleniumError("Invalid xpath [3]: " + msg);
         }
-        
+
         var nodes = []
         var xpathResult = xpathObj.evaluate(context);
-        
+
         if (xpathResult && xpathResult.value) {
             for (var i = 0; i < xpathResult.value.length; ++i) {
                 nodes.push(xpathResult.value[i]);
             }
         }
-        
+
         return nodes;
     }
-    
+
 // public
     // Override
     this.isAvailable = function() { return true; };
-    
+
     // Override
     this.selectNodes = function(xpath, contextNode, namespaceResolver) {
         return selectLogic(xpath, contextNode, namespaceResolver, false);
     };
-    
+
     // Override
     this.selectSingleNode = function(xpath, contextNode, namespaceResolver) {
         var nodes = selectLogic(xpath, contextNode, namespaceResolver, true);
         return (nodes.length > 0 ? nodes[0] : null);
     };
-    
+
     // Override
     this.setIgnoreAttributesWithoutValue = function(ignore) {
         ignoreAttributesWithoutValue = ignore;
@@ -1241,11 +1237,11 @@ AjaxsltEngine.prototype = new XPathEngine();
 function JavascriptXPathEngine() {
 // private
     var engineDoc = document;
-    
+
 // public
     // Override
     this.isAvailable = function() { return true; };
-    
+
     // Override
     this.selectNodes = function(xpath, contextNode, namespaceResolver) {
         if (contextNode != this.doc) {
@@ -1253,9 +1249,9 @@ function JavascriptXPathEngine() {
             // http://groups.google.com/group/comp.lang.javascript/browse_thread/thread/a59ce20639c74ba1/a9d9f53e88e5ebb5
             xpath = '.' + xpath;
         }
-    
+
         var nodes = [];
-        
+
         try {
             // When using the new and faster javascript-xpath library, we'll
             // use the TestRunner's document object, not the App-Under-Test's
@@ -1271,17 +1267,17 @@ function JavascriptXPathEngine() {
         finally {
             if (xpathResult == null) {
                 // If the result is null, we should still throw an Error.
-                throw new SeleniumError("Invalid xpath [2]: " + xpath); 
+                throw new SeleniumError("Invalid xpath [2]: " + xpath);
             }
         }
-        
+
         var node = xpathResult.iterateNext();
-        
+
         while (node) {
             nodes.push(node);
             node = xpathResult.iterateNext();
         }
-        
+
         return nodes;
     };
 }
@@ -1298,7 +1294,7 @@ function BoundedCache(newMaxSize) {
     var map = {};
     var size = 0;
     var counter = -1;
-    
+
     /**
      * Adds a key-value pair to the cache. If the cache is at its size limit,
      * the least-recently used entry is evicted.
@@ -1311,24 +1307,24 @@ function BoundedCache(newMaxSize) {
         else {
             map[key] = { usage: ++counter, value: value };
             ++size;
-            
+
             if (size > maxSize) {
                 // remove the least recently used item
                 var minUsage = counter;
                 var keyToRemove = key;
-            
+
                 for (var key in map) {
                     if (map[key].usage < minUsage) {
                         minUsage = map[key].usage;
                         keyToRemove = key;
                     }
                 }
-                
+
                 this.remove(keyToRemove);
             }
         }
     };
-    
+
     /**
      * Returns a cache item by its key, and updates its use status.
      */
@@ -1337,10 +1333,10 @@ function BoundedCache(newMaxSize) {
             map[key].usage = ++counter;
             return map[key].value;
         }
-        
+
         return null;
     };
-    
+
     /**
      * Removes a cache item by its key.
      */
@@ -1348,13 +1344,13 @@ function BoundedCache(newMaxSize) {
         if (map[key]) {
             delete map[key];
             --size;
-            
+
             if (size == 0) {
                 counter = -1;
             }
         }
     }
-    
+
     /**
      * Clears all entries in the cache.
      */
@@ -1373,22 +1369,22 @@ function BoundedCache(newMaxSize) {
 function FinderBuilder(newDocument) {
 // private
     var doc = newDocument;
-    
+
     function buildIdFinder(e) {
         if (e.id) {
             var id = e.id;
-            
+
             return (function(targetDoc) {
                 return targetDoc.getElementById(id);
             });
         }
-        
+
         return null;
     }
-    
+
     function buildTagNameFinder(e) {
         var elements = doc.getElementsByTagName(e.tagName);
-        
+
         for (var i = 0, n = elements.length; i < n; ++i) {
             if (elements[i] === e) {
                 // both the descendant axis and getElementsByTagName() should
@@ -1399,16 +1395,16 @@ function FinderBuilder(newDocument) {
                 });
             }
         }
-        
+
         return null;
     }
-    
+
 // public
     this.setDocument = function(newDocument) {
         doc = newDocument;
         return this;
     };
-    
+
     this.build = function(e) {
         return (
             buildIdFinder(e) ||
@@ -1439,15 +1435,15 @@ function MirroredDocument() {
     function appendHTML(html, parentNode) {
         var scripts = jQuery.clean([ html ], null, parentNode);
     }
-    
+
     function getHeadHtml(doc) {
         return doc.getElementsByTagName('head')[0].innerHTML;
     }
-    
+
     function getBodyHtml(doc) {
         return doc.body.innerHTML;
     }
-    
+
     /**
      * Copies the given HTML as the content of the current document's <head>
      * element. If the current document's head already contains identical
@@ -1455,17 +1451,17 @@ function MirroredDocument() {
      */
     function copyHead(headHtml, doc) {
         var head = doc.getElementsByTagName('head')[0];
-        
+
         if (head.innerHTML == headHtml) {
             // the content is already correct
             return;
         }
-        
+
         jQuery.init(head).empty();
-        
+
         appendHTML(headHtml, head);
     }
-    
+
     /**
      * Copies the given HTML as the content of the current document's <body>
      * element. If the current document's body already contains identical
@@ -1475,36 +1471,36 @@ function MirroredDocument() {
         if (doc.body.innerHTML == bodyHtml) {
             return;
         }
-        
+
         jQuery.init(doc.body).empty();
-        
+
         appendHTML(bodyHtml, doc.body);
     }
-    
+
 // public
     this.setOriginal = function(newOriginalDoc) {
         originalDoc = newOriginalDoc;
         return this;
     };
-    
+
     this.getOriginal = function() {
         return originalDoc;
     };
-    
+
     this.setReflection = function(newReflectionDoc) {
         reflectionDoc = newReflectionDoc;
         return this;
     }
-    
+
     this.getReflection = function() {
         return reflectionDoc;
     };
-    
+
     this.setNamespaceResolver = function(newNamespaceResolver) {
         namespaceResolver = newNamespaceResolver;
         return this;
     };
-    
+
     /**
      * Makes sure the reflected document reflects the original. Returns this
      * object.
@@ -1514,33 +1510,33 @@ function MirroredDocument() {
             // the reflection and the original are one and the same
             return this;
         }
-        
+
         var originalHtml = originalDoc.documentElement.innerHTML;
         var pastReflectionHtml = pastReflections.get(originalHtml);
-        
+
         if (pastReflectionHtml != null &&
             pastReflectionHtml == reflectionDoc.documentElement.innerHTML) {
             // the reflection is already accurate
             return this;
         }
-    
+
         var headHtml = getHeadHtml(originalDoc);
         var bodyHtml = getBodyHtml(originalDoc);
-        
+
         try {
             copyHead(headHtml, reflectionDoc);
             copyBody(bodyHtml, reflectionDoc);
-            
+
             pastReflections.put(originalHtml,
                 reflectionDoc.documentElement.innerHTML);
         }
         catch (e) {
             safe_log('warn', 'Document reflection failed: ' + e.message);
         }
-        
+
         return this;
     };
-    
+
     /**
      * Returns the node in the reflection that corresponds to node in the
      * original document. Returns null if the reflected node can't be found.
@@ -1550,13 +1546,13 @@ function MirroredDocument() {
             // the reflection and the original are one and the same
             return originalNode;
         }
-    
+
         if (originalNode == originalDoc) {
             return reflectionDoc;
         }
-    
+
         var finder = finderBuilder.setDocument(originalDoc).build(originalNode);
-        
+
         return finder(reflectionDoc) || null;
     };
 }
@@ -1574,7 +1570,7 @@ function XPathOptimizationCache(newMaxSize) {
      */
     this.get = function(html, xpath) {
         var byHtml = cache.get(html);
-        
+
         return byHtml ? byHtml[xpath] : null;
     };
 
@@ -1585,25 +1581,25 @@ function XPathOptimizationCache(newMaxSize) {
      */
     this.getOrCreate = function(html, xpath) {
         var byHtml = cache.get(html);
-        
+
         if (byHtml == null) {
             var result = {};
             var optimizations = {};
-            
+
             optimizations[xpath] = result;
             cache.put(html, optimizations);
             return result;
         }
-        
+
         var item = byHtml[xpath];
-        
+
         if (item == null) {
             var result = {};
-            
+
             byHtml[xpath] = result;
             return result;
         }
-        
+
         return item;
     };
 }
@@ -1616,7 +1612,7 @@ function XPathOptimizer(newEngine) {
     var namespaceResolver;
     var mirror = new MirroredDocument(namespaceResolver);
     var finderBuilder = new FinderBuilder();
-    
+
     // keys are full document HTML strings, and values are mappings from
     // XPath's to objects which the following fields:
     //
@@ -1630,7 +1626,7 @@ function XPathOptimizer(newEngine) {
     //                  determine if the node has since changed positions
     //
     var knownOptimizations = new XPathOptimizationCache(100);
-    
+
     /**
      * Returns whether this optimizer is capable of optimizing XPath's for the
      * given node.
@@ -1638,7 +1634,7 @@ function XPathOptimizer(newEngine) {
     function isOptimizable(node) {
         return (node.nodeType == 1);
     }
-    
+
     /**
      * Returns whether the given XPath evaluates to the given node in the
      * test document.
@@ -1648,7 +1644,7 @@ function XPathOptimizer(newEngine) {
         return (engine.setDocument(mirror.getReflection())
             .selectSingleNode(xpath, contextNode, namespaceResolver) === node);
     }
-    
+
 // public
     this.setDocument = function(newDocument) {
         mirror.setOriginal(newDocument);
@@ -1664,13 +1660,13 @@ function XPathOptimizer(newEngine) {
         mirror.setReflection(newTestDocument);
         return this;
     };
-    
+
     this.setNamespaceResolver = function(newNamespaceResolver) {
         namespaceResolver = newNamespaceResolver;
         mirror.setNamespaceResolver(newNamespaceResolver);
         return this;
     };
-    
+
     /**
      * Returns an optimal XPath whose first result is the same as the first
      * result of the given XPath, when evaluated on the currently set document.
@@ -1679,10 +1675,10 @@ function XPathOptimizer(newEngine) {
     this.getOptimizedFinder = function(xpath, contextNode) {
         var originalHtml = mirror.getOriginal().documentElement.innerHTML;
         var optimization = knownOptimizations.get(originalHtml, xpath);
-        
+
         if (optimization) {
             var finder =  optimization.finder;
-            
+
             if (finder) {
                 // the optimized finder for this document content was found in
                 // the cache!
@@ -1690,50 +1686,50 @@ function XPathOptimizer(newEngine) {
                 return finder;
             }
         }
-        
+
         mirror.reflect();
-    
+
         if (contextNode) {
             contextNode = mirror.getReflectedNode(contextNode);
         }
-        
+
         var firstResult = engine.setDocument(mirror.getReflection())
             .selectSingleNode(xpath, contextNode, namespaceResolver);
-        
+
         if (! firstResult) {
             // either the element doesn't exist, or there was a failure to
             // reflect the document accurately
             return null;
         }
-        
+
         if (isOptimizable(firstResult)) {
             var finder = finderBuilder.setDocument(mirror.getReflection())
                 .build(firstResult);
-            
+
             if (finder) {
                 safe_log('info', 'Found optimized finder: ' + finder);
-                
+
                 if (! optimization) {
                     optimization = knownOptimizations
                         .getOrCreate(originalHtml, xpath);
                 }
-                
+
                 optimization.finder = finder;
-                
+
                 return finder;
             }
         }
-        
+
         return null;
     };
-    
+
     this.countNodes = function(xpath, contextNode) {
         var originalHtml = mirror.getOriginal().documentElement.innerHTML;
         var optimization = knownOptimizations.get(originalHtml, xpath);
-        
+
         if (optimization) {
             var nodeCount = optimization.nodeCount;
-            
+
             if (nodeCount != null) {
                 // the node count for the XPath for this document content was
                 // found in the cache!
@@ -1741,27 +1737,27 @@ function XPathOptimizer(newEngine) {
                 return nodeCount;
             }
         }
-        
+
         mirror.reflect();
-        
+
         if (contextNode) {
             contextNode = mirror.getReflectedNode(contextNode);
         }
-        
+
         // count the nodes using the test document, and circumvent
         // window RPC altogether
         var nodeCount = engine.setDocument(mirror.getReflection())
             .countNodes(xpath, contextNode, namespaceResolver);
-        
+
         if (! optimization) {
             optimization = knownOptimizations.getOrCreate(originalHtml, xpath);
         }
-        
+
         optimization.nodeCount = nodeCount;
-        
+
         return nodeCount;
     };
-    
+
     this.getKnownOptimizations = function() {
         return knownOptimizations;
     };
@@ -1787,7 +1783,7 @@ function XPathOptimizer(newEngine) {
 function MultiWindowRPCOptimizingEngine(newFrameName, newDelegateEngine) {
 // private
     var NO_RESULT = '__NO_NODE_RESULT';
-    
+
     var frameName = newFrameName;
     var engine = newDelegateEngine || new JavascriptXPathEngine();
     var optimizer = new XPathOptimizer(engine);
@@ -1795,22 +1791,22 @@ function MultiWindowRPCOptimizingEngine(newFrameName, newDelegateEngine) {
     function createTestDocument() {
         if (! window.frames[frameName]) {
             var iframe = document.createElement('iframe');
-            
+
             iframe.id = frameName;
             iframe.name = frameName;
             iframe.width = 0;
             iframe.height = 0;
-            
+
             document.body.appendChild(iframe);
         }
     }
-    
+
     function isMultiWindowMode() {
         return (typeof(runOptions) != 'undefined' &&
             runOptions &&
             runOptions.isMultiWindowMode());
     };
-    
+
     /**
      * Returns whether a node is detached from any live documents. Detached
      * nodes should be considered invalidated and evicted from any caches.
@@ -1826,11 +1822,11 @@ function MultiWindowRPCOptimizingEngine(newFrameName, newDelegateEngine) {
                 return false;
             }
         }
-        
+
         // we didn't find a document; we're detached (most other browsers)
         return true;
     }
-    
+
 // public
     // Override
     this.isAvailable = function() {
@@ -1838,7 +1834,7 @@ function MultiWindowRPCOptimizingEngine(newFrameName, newDelegateEngine) {
         // do not impose that restriction here.
         return engine.isAvailable();
     };
-    
+
     // Override
     this.setDocument = function(newDocument) {
         this.doc = newDocument;
@@ -1855,33 +1851,33 @@ function MultiWindowRPCOptimizingEngine(newFrameName, newDelegateEngine) {
     this.selectNodes = function(xpath, contextNode, namespaceResolver) {
         return engine.selectNodes(xpath, contextNode, namespaceResolver);
     };
-    
+
     // Override
     this.selectSingleNode = function(xpath, contextNode, namespaceResolver) {
         var html = this.doc.documentElement.innerHTML;
         var knownOptimizations = optimizer.getKnownOptimizations();
         var optimization = knownOptimizations.get(html, xpath);
-        
+
         if (optimization) {
             var node = optimization.node;
             var sourceIndex = optimization.sourceIndex;
-            
+
             if (node == NO_RESULT) {
                 return null;
             }
-            
+
             // node is still valid? (test ok even if sourceIndex is null)
             if (! isDetached(node) && node.sourceIndex == sourceIndex) {
                 safe_log('info', 'Found cached node for ' + xpath);
                 return node;
             }
         }
-        
+
         var node;
         var finder = optimizer.setNamespaceResolver(namespaceResolver)
             .setTestDocument(this.getTestDocument())
             .getOptimizedFinder(xpath, contextNode);
-        
+
         if (finder) {
             node = finder(this.doc);
         }
@@ -1889,11 +1885,11 @@ function MultiWindowRPCOptimizingEngine(newFrameName, newDelegateEngine) {
             node = engine.selectSingleNode(xpath, contextNode,
                 namespaceResolver);
         }
-        
+
         if (! optimization) {
             optimization = knownOptimizations.getOrCreate(html, xpath);
         }
-        
+
         if (node) {
             optimization.node = node;
             optimization.sourceIndex = node.sourceIndex;
@@ -1901,23 +1897,23 @@ function MultiWindowRPCOptimizingEngine(newFrameName, newDelegateEngine) {
         else {
             optimization.node = NO_RESULT;
         }
-        
+
         return node;
     };
-    
+
     // Override
     this.countNodes = function(xpath, contextNode, namespaceResolver) {
         return optimizer.setNamespaceResolver(namespaceResolver)
             .setTestDocument(this.getTestDocument())
             .countNodes(xpath, contextNode);
     };
-    
+
     // Override
     this.setIgnoreAttributesWithoutValue = function(ignore) {
         engine.setIgnoreAttributesWithoutValue(ignore);
         return this;
     };
-    
+
     /**
      * Returns the "local" document as a frame in the Selenium runner document.
      */
@@ -1928,7 +1924,7 @@ function MultiWindowRPCOptimizingEngine(newFrameName, newDelegateEngine) {
             ? window.frames[frameName].document
             : this.doc);
     };
-    
+
 // initialization
 
     // creating the frame and the document it contains is not a synchronous
@@ -1959,11 +1955,11 @@ function XPathEvaluator(newDefaultEngineName) {
         'rpc-optimizing-jsxpath': new MultiWindowRPCOptimizingEngine('test-doc-frame', new JavascriptXPathEngine()),
         'native'                : nativeEngine
     };
-    
+
     var currentEngineName = defaultEngineName;
     var allowNativeXPath = true;
     var ignoreAttributesWithoutValue = true;
-    
+
     function preprocess(xpath) {
         // Trim any trailing "/": not valid xpath, and remains from attribute
         // locator.
@@ -1974,11 +1970,11 @@ function XPathEvaluator(newDefaultEngineName) {
         if (browserVersion && browserVersion.isIE) {
             xpath = xpath.replace(/x:/g, '')
         }
-        
+
         return xpath;
     }
-    
-    /** 
+
+    /**
      * Returns the most sensible engine given the settings and the document
      * object.
      */
@@ -1987,35 +1983,35 @@ function XPathEvaluator(newDefaultEngineName) {
             nativeEngine.setDocument(inDocument).isAvailable()) {
             return nativeEngine;
         }
-        
+
         var currentEngine = engines[currentEngineName];
-        
+
         if (currentEngine &&
             currentEngine.setDocument(inDocument).isAvailable()) {
             return currentEngine;
         }
-        
+
         return engines[defaultEngineName].setDocument(inDocument);
     }
-    
+
     /**
      * Dispatches an XPath evaluation method on the relevant engine for the
      * given document, and returns the result
      */
     function dispatch(methodName, inDocument, xpath, contextNode, namespaceResolver) {
         xpath = preprocess(xpath);
-    
+
         if (! contextNode) {
             contextNode = inDocument;
         }
-        
+
         var result = getEngineFor(inDocument)
             .setIgnoreAttributesWithoutValue(ignoreAttributesWithoutValue)
             [methodName](xpath, contextNode, namespaceResolver);
-            
+
         return result;
     }
-    
+
 // public
     /**
      * Registers a new engine by name, and returns whether the registration was
@@ -2031,19 +2027,19 @@ function XPathEvaluator(newDefaultEngineName) {
             name == 'default') {
             return false;
         }
-        
+
         if (! (engine instanceof XPathEngine)) {
             return false;
         }
-        
+
         engines[name] = engine;
         return true;
     };
-    
+
     this.getRegisteredEngine = function(name) {
         return engines[name];
     };
-    
+
     this.setCurrentEngine = function(name) {
         if (name == 'default') {
             currentEngineName = defaultEngineName;
@@ -2055,42 +2051,42 @@ function XPathEvaluator(newDefaultEngineName) {
             currentEngineName = name;
         }
     };
-    
+
     this.getCurrentEngine = function() {
         return currentEngineName || defaultEngineName;
     };
-    
+
     this.setAllowNativeXPath = function(allow) {
         allowNativeXPath = allow;
     };
-    
+
     this.isAllowNativeXPath = function() {
         return allowNativeXPath;
     };
-    
+
     this.setIgnoreAttributesWithoutValue = function(ignore) {
         ignoreAttributesWithoutValue = ignore;
     };
-    
+
     this.isIgnoreAttributesWithoutValue = function() {
         return ignoreAttributesWithoutValue;
     };
-    
+
     this.selectNodes = function(inDocument, xpath, contextNode, namespaceResolver) {
         return dispatch('selectNodes', inDocument, xpath, contextNode,
             namespaceResolver);
     };
-    
+
     this.selectSingleNode = function(inDocument, xpath, contextNode, namespaceResolver) {
         return dispatch('selectSingleNode', inDocument, xpath, contextNode,
             namespaceResolver);
     };
-    
+
     this.countNodes = function(inDocument, xpath, contextNode, namespaceResolver) {
         return dispatch('countNodes', inDocument, xpath, contextNode,
             namespaceResolver);
     };
-    
+
 // initialization
     this.init();
 };
@@ -2113,7 +2109,7 @@ XPathEvaluator.prototype.init = function() {};
  *                    modify how the xpath is evaluated. Here's a listing of
  *                    the meaningful keys:
  *
- *                     contextNode: 
+ *                     contextNode:
  *                       the context node from which to evaluate the xpath. If
  *                       unspecified, the context will be the root document
  *                       element.
@@ -2146,7 +2142,7 @@ function eval_xpath(xpath, inDocument, opts)
     if (! opts) {
         var opts = {};
     }
-    
+
     var contextNode = opts.contextNode
         ? opts.contextNode : inDocument;
     var namespaceResolver = opts.namespaceResolver
@@ -2163,24 +2159,24 @@ function eval_xpath(xpath, inDocument, opts)
     if (! eval_xpath.xpathEvaluator) {
         eval_xpath.xpathEvaluator = new XPathEvaluator();
     }
-    
+
     var xpathEvaluator = eval_xpath.xpathEvaluator;
-    
+
     xpathEvaluator.setCurrentEngine(xpathLibrary);
     xpathEvaluator.setAllowNativeXPath(allowNativeXpath);
     xpathEvaluator.setIgnoreAttributesWithoutValue(ignoreAttributesWithoutValue);
-    
+
     if (returnOnFirstMatch) {
         var singleNode = xpathEvaluator.selectSingleNode(inDocument, xpath,
             contextNode, namespaceResolver);
-        
+
         var results = (singleNode ? [ singleNode ] : []);
     }
     else {
         var results = xpathEvaluator.selectNodes(inDocument, xpath, contextNode,
             namespaceResolver);
     }
-    
+
     return results;
 }
 
@@ -2201,14 +2197,14 @@ function eval_css(locator, inDocument) {
  * This function duplicates part of BrowserBot.findElement() to open up locator
  * evaluation on arbitrary documents. It returns a plain old array of located
  * elements found by using a Selenium locator.
- * 
+ *
  * Multiple results may be generated for xpath and CSS locators. Even though a
  * list could potentially be generated for other locator types, such as link,
  * we don't try for them, because they aren't very expressive location
  * strategies; if you want a list, use xpath or CSS. Furthermore, strategies
  * for these locators have been optimized to only return the first result. For
  * these types of locators, performance is more important than ideal behavior.
- * 
+ *
  * @param locator          a locator string
  * @param inDocument       the document in which to apply the locator
  * @param opt_contextNode  the context within which to evaluate the locator
@@ -2218,7 +2214,7 @@ function eval_css(locator, inDocument) {
 function eval_locator(locator, inDocument, opt_contextNode)
 {
     locator = parse_locator(locator);
-    
+
     var pageBot;
     if (typeof(selenium) != 'undefined' && selenium != undefined) {
         if (typeof(editor) == 'undefined' || editor.state == 'playing') {
@@ -2235,9 +2231,9 @@ function eval_locator(locator, inDocument, opt_contextNode)
         }
         pageBot = UI_GLOBAL.mozillaBrowserBot;
     }
-    
+
     var results = [];
-    
+
     if (locator.type == 'xpath' || (locator.string.charAt(0) == '/' &&
         locator.type == 'implicit')) {
         results = eval_xpath(locator.string, inDocument,
@@ -2275,11 +2271,11 @@ RegExp.escape = (function() {
         '/', '.', '*', '+', '?', '|', '^', '$',
         '(', ')', '[', ']', '{', '}', '\\'
     ];
-    
+
     var sRE = new RegExp(
         '(\\' + specials.join('|\\') + ')', 'g'
     );
-  
+
     return function(text) {
         return text.replace(sRE, '\\$1');
     }
@@ -2297,7 +2293,7 @@ function are_equal(a1, a2)
 {
     if (typeof(a1) != typeof(a2))
         return false;
-    
+
     switch(typeof(a1)) {
         case 'object':
             // arrays
@@ -2324,7 +2320,7 @@ function are_equal(a1, a2)
                 }
             }
             return true;
-            
+
         default:
             return a1 == a2;
     }
@@ -2454,7 +2450,7 @@ function keys(object)
  *               up from zero to the value of the start parameter. Note that
  *               the array returned will count up to but will not include this
  *               value.
- * @return       an array of consecutive integers. 
+ * @return       an array of consecutive integers.
  */
 function range(start, end)
 {
@@ -2462,7 +2458,7 @@ function range(start, end)
         var end = start;
         start = 0;
     }
-    
+
     var r = [];
     if (start < end) {
         while (start != end)
@@ -2662,10 +2658,10 @@ var jQuery = function( selector, context ) {
 
 	// For matching the engine and version of the browser
 	browserMatch,
-	
+
 	// Has the ready events already been bound?
 	readyBound = false,
-	
+
 	// The functions to execute on DOM ready
 	readyList = [],
 
@@ -2847,7 +2843,7 @@ jQuery.fn = jQuery.prototype = {
 	each: function( callback, args ) {
 		return jQuery.each( this, callback, args );
 	},
-	
+
 	ready: function( fn ) {
 		// Attach the listeners
 		jQuery.bindReady();
@@ -2865,7 +2861,7 @@ jQuery.fn = jQuery.prototype = {
 
 		return this;
 	},
-	
+
 	eq: function( i ) {
 		return i === -1 ?
 			this.slice( i ) :
@@ -2890,7 +2886,7 @@ jQuery.fn = jQuery.prototype = {
 			return callback.call( elem, i, elem );
 		}));
 	},
-	
+
 	end: function() {
 		return this.prevObject || jQuery(null);
 	},
@@ -2971,10 +2967,10 @@ jQuery.extend({
 
 		return jQuery;
 	},
-	
+
 	// Is the DOM ready to be used? Set to true once it occurs.
 	isReady: false,
-	
+
 	// Handle when the DOM is ready
 	ready: function() {
 		// Make sure that the DOM is not already loaded
@@ -3005,7 +3001,7 @@ jQuery.extend({
 			}
 		}
 	},
-	
+
 	bindReady: function() {
 		if ( readyBound ) {
 			return;
@@ -3023,7 +3019,7 @@ jQuery.extend({
 		if ( document.addEventListener ) {
 			// Use the handy event callback
 			document.addEventListener( "DOMContentLoaded", DOMContentLoaded, false );
-			
+
 			// A fallback to window.onload, that will always work
 			window.addEventListener( "load", jQuery.ready, false );
 
@@ -3032,7 +3028,7 @@ jQuery.extend({
 			// ensure firing before onload,
 			// maybe late but safe also for iframes
 			document.attachEvent("onreadystatechange", DOMContentLoaded);
-			
+
 			// A fallback to window.onload, that will always work
 			window.attachEvent( "onload", jQuery.ready );
 
@@ -3068,20 +3064,20 @@ jQuery.extend({
 		if ( !obj || toString.call(obj) !== "[object Object]" || obj.nodeType || obj.setInterval ) {
 			return false;
 		}
-		
+
 		// Not own constructor property must be Object
 		if ( obj.constructor
 			&& !hasOwnProperty.call(obj, "constructor")
 			&& !hasOwnProperty.call(obj.constructor.prototype, "isPrototypeOf") ) {
 			return false;
 		}
-		
+
 		// Own properties are enumerated firstly, so to speed up,
 		// if last one is own, then all properties are own.
-	
+
 		var key;
 		for ( key in obj ) {}
-		
+
 		return key === undefined || hasOwnProperty.call( obj, key );
 	},
 
@@ -3091,16 +3087,16 @@ jQuery.extend({
 		}
 		return true;
 	},
-	
+
 	error: function( msg ) {
 		throw msg;
 	},
-	
+
 	parseJSON: function( data ) {
 		if ( typeof data !== "string" || !data ) {
 			return null;
 		}
-		
+
 		// Make sure the incoming data is actual JSON
 		// Logic borrowed from http://json.org/json2.js
 		if ( /^[\],:{}\s]*$/.test(data.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, "@")
@@ -3306,7 +3302,6 @@ jQuery.extend({
 		ua = ua.toLowerCase();
 
 		var match = /(webkit)[ \/]([\w.]+)/.exec( ua ) ||
-			/(opera)(?:.*version)?[ \/]([\w.]+)/.exec( ua ) ||
 			/(msie) ([\w.]+)/.exec( ua ) ||
 			!/compatible/.test( ua ) && /(mozilla)(?:.*? rv:([\w.]+))?/.exec( ua ) ||
 		  	[];
@@ -3393,7 +3388,7 @@ function evalScript( i, elem ) {
 // The value/s can be optionally by executed if its a function
 function access( elems, key, value, exec, fn, pass ) {
 	var length = elems.length;
-	
+
 	// Setting many attributes
 	if ( typeof key === "object" ) {
 		for ( var k in key ) {
@@ -3401,19 +3396,19 @@ function access( elems, key, value, exec, fn, pass ) {
 		}
 		return elems;
 	}
-	
+
 	// Setting one attribute
 	if ( value !== undefined ) {
 		// Optionally, function values get executed if exec is true
 		exec = !pass && exec && jQuery.isFunction(value);
-		
+
 		for ( var i = 0; i < length; i++ ) {
 			fn( elems[i], key, exec ? value.call( elems[i], i, fn( elems[i], key ) ) : value, pass );
 		}
-		
+
 		return elems;
 	}
-	
+
 	// Getting an attribute
 	return length ? fn( elems[0], key ) : null;
 }
@@ -3536,20 +3531,20 @@ function now() {
 
 	// Technique from Juriy Zaytsev
 	// http://thinkweb2.com/projects/prototype/detecting-event-support-without-browser-sniffing/
-	var eventSupported = function( eventName ) { 
-		var el = document.createElement("div"); 
-		eventName = "on" + eventName; 
+	var eventSupported = function( eventName ) {
+		var el = document.createElement("div");
+		eventName = "on" + eventName;
 
-		var isSupported = (eventName in el); 
-		if ( !isSupported ) { 
-			el.setAttribute(eventName, "return;"); 
-			isSupported = typeof el[eventName] === "function"; 
-		} 
-		el = null; 
+		var isSupported = (eventName in el);
+		if ( !isSupported ) {
+			el.setAttribute(eventName, "return;");
+			isSupported = typeof el[eventName] === "function";
+		}
+		el = null;
 
-		return isSupported; 
+		return isSupported;
 	};
-	
+
 	jQuery.support.submitBubbles = eventSupported("submit");
 	jQuery.support.changeBubbles = eventSupported("change");
 
@@ -3574,7 +3569,7 @@ var emptyObject = {};
 
 jQuery.extend({
 	cache: {},
-	
+
 	expando:expando,
 
 	// The following elements throw uncatchable exceptions if you
@@ -3602,7 +3597,7 @@ jQuery.extend({
 		}
 
 		// Compute a unique ID for the element
-		if ( !id ) { 
+		if ( !id ) {
 			id = ++uuid;
 		}
 
@@ -3976,7 +3971,7 @@ jQuery.fn.extend({
 				if ( rradiocheck.test( elem.type ) && !jQuery.support.checkOn ) {
 					return elem.getAttribute("value") === null ? "on" : elem.value;
 				}
-				
+
 
 				// Everything else, we just grab the value
 				return (elem.value || "").replace(rreturn, "");
@@ -4037,7 +4032,7 @@ jQuery.extend({
 		height: true,
 		offset: true
 	},
-		
+
 	attr: function( elem, name, value, pass ) {
 		// don't set attributes on text and comment nodes
 		if ( !elem || elem.nodeType === 3 || elem.nodeType === 8 ) {
@@ -4066,7 +4061,7 @@ jQuery.extend({
 				var parent = elem.parentNode;
 				if ( parent ) {
 					parent.selectedIndex;
-	
+
 					// Make sure that it also works with optgroups, see #5701
 					if ( parent.parentNode ) {
 						parent.parentNode.selectedIndex;
@@ -4243,17 +4238,17 @@ jQuery.event = {
 					}
 				}
 			}
-			
-			if ( special.add ) { 
-				var modifiedHandler = special.add.call( elem, handler, data, namespaces, handlers ); 
-				if ( modifiedHandler && jQuery.isFunction( modifiedHandler ) ) { 
-					modifiedHandler.guid = modifiedHandler.guid || handler.guid; 
-					modifiedHandler.data = modifiedHandler.data || handler.data; 
-					modifiedHandler.type = modifiedHandler.type || handler.type; 
-					handler = modifiedHandler; 
-				} 
-			} 
-			
+
+			if ( special.add ) {
+				var modifiedHandler = special.add.call( elem, handler, data, namespaces, handlers );
+				if ( modifiedHandler && jQuery.isFunction( modifiedHandler ) ) {
+					modifiedHandler.guid = modifiedHandler.guid || handler.guid;
+					modifiedHandler.data = modifiedHandler.data || handler.data;
+					modifiedHandler.type = modifiedHandler.type || handler.type;
+					handler = modifiedHandler;
+				}
+			}
+
 			// Add the function to the element's handler list
 			handlers[ handler.guid ] = handler;
 
@@ -4584,11 +4579,11 @@ jQuery.event = {
 			add: function( proxy, data, namespaces, live ) {
 				jQuery.extend( proxy, data || {} );
 
-				proxy.guid += data.selector + data.live; 
+				proxy.guid += data.selector + data.live;
 				data.liveProxy = proxy;
 
-				jQuery.event.add( this, data.live, liveHandler, data ); 
-				
+				jQuery.event.add( this, data.live, liveHandler, data );
+
 			},
 
 			remove: function( namespaces ) {
@@ -4666,7 +4661,7 @@ jQuery.Event.prototype = {
 		if ( !e ) {
 			return;
 		}
-		
+
 		// if preventDefault exists run it on the original event
 		if ( e.preventDefault ) {
 			e.preventDefault();
@@ -4761,7 +4756,7 @@ jQuery.event.special.submit = {
 					return trigger( "submit", this, arguments );
 				}
 			});
-	 
+
 			jQuery.event.add(this, "keypress.specialSubmit." + fn.guid, function( e ) {
 				var elem = e.target, type = elem.type;
 
@@ -4822,7 +4817,7 @@ function testChange( e ) {
 		if ( e.type !== "focusout" || elem.type !== "radio" ) {
 			jQuery.data( elem, "_change_data", val );
 		}
-		
+
 		if ( data === undefined || val === data ) {
 			return;
 		}
@@ -4835,7 +4830,7 @@ function testChange( e ) {
 
 jQuery.event.special.change = {
 	filters: {
-		focusout: testChange, 
+		focusout: testChange,
 
 		click: function( e ) {
 			var elem = e.target, type = elem.type;
@@ -4899,13 +4894,13 @@ if ( document.addEventListener ) {
 		jQuery.event.special[ fix ] = {
 			setup: function() {
 				this.addEventListener( orig, handler, true );
-			}, 
-			teardown: function() { 
+			},
+			teardown: function() {
 				this.removeEventListener( orig, handler, true );
 			}
 		};
 
-		function handler( e ) { 
+		function handler( e ) {
 			e = jQuery.event.fix( e );
 			e.type = fix;
 			return jQuery.event.handle.call( this, e );
@@ -4922,7 +4917,7 @@ jQuery.each(["bind", "one"], function( i, name ) {
 			}
 			return this;
 		}
-		
+
 		if ( jQuery.isFunction( data ) ) {
 			fn = data;
 			data = undefined;
@@ -5014,7 +5009,7 @@ jQuery.each(["live", "die"], function( i, name ) {
 					type === "blur" ? "focusout" : // blur --> focusout
 					type === "hover" ? types.push("mouseleave") && "mouseenter" : // hover support
 					type;
-			
+
 			if ( name === "live" ) {
 				// bind live handler
 				jQuery( this.context ).bind( liveConvert( type, this.selector ), {
@@ -5026,7 +5021,7 @@ jQuery.each(["live", "die"], function( i, name ) {
 				jQuery( this.context ).unbind( liveConvert( type, this.selector ), fn ? { guid: fn.guid + this.selector + type } : null );
 			}
 		}
-		
+
 		return this;
 	}
 });
@@ -5047,7 +5042,7 @@ function liveHandler( event ) {
 				fn.altLive && jQuery.inArray(event.type, fn.altLive) > -1 ) {
 
 			data = fn.data;
-			if ( !(data.beforeFilter && data.beforeFilter[event.type] && 
+			if ( !(data.beforeFilter && data.beforeFilter[event.type] &&
 					!data.beforeFilter[event.type](event)) ) {
 				selectors.push( fn.selector );
 			}
@@ -5154,20 +5149,20 @@ var Sizzle = function(selector, context, results, seed) {
 	if ( context.nodeType !== 1 && context.nodeType !== 9 ) {
 		return [];
 	}
-	
+
 	if ( !selector || typeof selector !== "string" ) {
 		return results;
 	}
 
 	var parts = [], m, set, checkSet, extra, prune = true, contextXML = isXML(context),
 		soFar = selector;
-	
+
 	// Reset the position of the chunker regexp (start from head)
 	while ( (chunker.exec(""), m = chunker.exec(soFar)) !== null ) {
 		soFar = m[3];
-		
+
 		parts.push( m[1] );
-		
+
 		if ( m[2] ) {
 			extra = m[3];
 			break;
@@ -5188,7 +5183,7 @@ var Sizzle = function(selector, context, results, seed) {
 				if ( Expr.relative[ selector ] ) {
 					selector += parts.shift();
 				}
-				
+
 				set = posProcess( selector, set );
 			}
 		}
@@ -5299,7 +5294,7 @@ Sizzle.find = function(expr, context, isXML){
 
 	for ( var i = 0, l = Expr.order.length; i < l; i++ ) {
 		var type = Expr.order[i], match;
-		
+
 		if ( (match = Expr.leftMatch[ type ].exec( expr )) ) {
 			var left = match[1];
 			match.splice(1,1);
@@ -5573,7 +5568,7 @@ var Expr = Sizzle.selectors = {
 		},
 		ATTR: function(match, curLoop, inplace, result, not, isXML){
 			var name = match[1].replace(/\\/g, "");
-			
+
 			if ( !isXML && Expr.attrMap[name] ) {
 				match[1] = Expr.attrMap[name];
 			}
@@ -5599,7 +5594,7 @@ var Expr = Sizzle.selectors = {
 			} else if ( Expr.match.POS.test( match[0] ) || Expr.match.CHILD.test( match[0] ) ) {
 				return true;
 			}
-			
+
 			return match;
 		},
 		POS: function(match){
@@ -5720,18 +5715,18 @@ var Expr = Sizzle.selectors = {
 				case 'only':
 				case 'first':
 					while ( (node = node.previousSibling) )	 {
-						if ( node.nodeType === 1 ) { 
-							return false; 
+						if ( node.nodeType === 1 ) {
+							return false;
 						}
 					}
-					if ( type === "first" ) { 
-						return true; 
+					if ( type === "first" ) {
+						return true;
 					}
 					node = elem;
 				case 'last':
 					while ( (node = node.nextSibling) )	 {
-						if ( node.nodeType === 1 ) { 
-							return false; 
+						if ( node.nodeType === 1 ) {
+							return false;
 						}
 					}
 					return true;
@@ -5741,20 +5736,20 @@ var Expr = Sizzle.selectors = {
 					if ( first === 1 && last === 0 ) {
 						return true;
 					}
-					
+
 					var doneName = match[0],
 						parent = elem.parentNode;
-	
+
 					if ( parent && (parent.sizcache !== doneName || !elem.nodeIndex) ) {
 						var count = 0;
 						for ( node = parent.firstChild; node; node = node.nextSibling ) {
 							if ( node.nodeType === 1 ) {
 								node.nodeIndex = ++count;
 							}
-						} 
+						}
 						parent.sizcache = doneName;
 					}
-					
+
 					var diff = elem.nodeIndex - last;
 					if ( first === 0 ) {
 						return diff === 0;
@@ -5830,7 +5825,7 @@ var makeArray = function(array, results) {
 		results.push.apply( results, array );
 		return results;
 	}
-	
+
 	return array;
 };
 
@@ -6020,7 +6015,7 @@ if ( document.querySelectorAll ) {
 		if ( div.querySelectorAll && div.querySelectorAll(".TEST").length === 0 ) {
 			return;
 		}
-	
+
 		Sizzle = function(query, context, extra, seed){
 			context = context || document;
 
@@ -6031,7 +6026,7 @@ if ( document.querySelectorAll ) {
 					return makeArray( context.querySelectorAll(query), extra );
 				} catch(e){}
 			}
-		
+
 			return oldSizzle(query, context, extra, seed);
 		};
 
@@ -6060,7 +6055,7 @@ if ( document.querySelectorAll ) {
 	if ( div.getElementsByClassName("e").length === 1 ) {
 		return;
 	}
-	
+
 	Expr.order.splice(1, 0, "CLASS");
 	Expr.find.CLASS = function(match, context, isXML) {
 		if ( typeof context.getElementsByClassName !== "undefined" && !isXML ) {
@@ -6148,7 +6143,7 @@ var contains = document.compareDocumentPosition ? function(a, b){
 
 var isXML = function(elem){
 	// documentElement is verified for cases where it doesn't yet exist
-	// (such as loading iframes in IE - #4833) 
+	// (such as loading iframes in IE - #4833)
 	var documentElement = (elem ? elem.ownerDocument || elem : 0).documentElement;
 	return documentElement ? documentElement.nodeName !== "HTML" : false;
 };
@@ -6264,7 +6259,7 @@ jQuery.fn.extend({
 	filter: function( selector ) {
 		return this.pushStack( winnow(this, selector, true), "filter", selector );
 	},
-	
+
 	is: function( selector ) {
 		return !!selector && jQuery.filter( selector, this ).length > 0;
 	},
@@ -6278,7 +6273,7 @@ jQuery.fn.extend({
 					selector = selectors[i];
 
 					if ( !matches[selector] ) {
-						matches[selector] = jQuery.expr.match.POS.test( selector ) ? 
+						matches[selector] = jQuery.expr.match.POS.test( selector ) ?
 							jQuery( selector, context || this.context ) :
 							selector;
 					}
@@ -6300,7 +6295,7 @@ jQuery.fn.extend({
 			return ret;
 		}
 
-		var pos = jQuery.expr.match.POS.test( selectors ) ? 
+		var pos = jQuery.expr.match.POS.test( selectors ) ?
 			jQuery( selectors, context || this.context ) : null;
 
 		return this.map(function( i, cur ) {
@@ -6313,7 +6308,7 @@ jQuery.fn.extend({
 			return null;
 		});
 	},
-	
+
 	// Determine the position of an element within
 	// the matched set of elements
 	index: function( elem ) {
@@ -6394,7 +6389,7 @@ jQuery.each({
 }, function( name, fn ) {
 	jQuery.fn[ name ] = function( until, selector ) {
 		var ret = jQuery.map( this, fn, until );
-		
+
 		if ( !runtil.test( name ) ) {
 			selector = until;
 		}
@@ -6421,7 +6416,7 @@ jQuery.extend({
 
 		return jQuery.find.matches(expr, elems);
 	},
-	
+
 	dir: function( elem, dir, until ) {
 		var matched = [], cur = elem[dir];
 		while ( cur && cur.nodeType !== 9 && (until === undefined || cur.nodeType !== 1 || !jQuery( cur ).is( until )) ) {
@@ -6977,7 +6972,7 @@ jQuery.extend({
 
 		return ret;
 	},
-	
+
 	cleanData: function( elems ) {
 		for ( var i = 0, elem, id; (elem = elems[i]) != null; i++ ) {
 			jQuery.event.remove( elem );
@@ -7012,7 +7007,7 @@ jQuery.fn.css = function( name, value ) {
 		if ( value === undefined ) {
 			return jQuery.curCSS( elem, name );
 		}
-		
+
 		if ( typeof value === "number" && !rexclude.test(name) ) {
 			value += "px";
 		}
@@ -7420,7 +7415,7 @@ jQuery.extend({
 
 	ajax: function( origSettings ) {
 		var s = jQuery.extend(true, {}, jQuery.ajaxSettings, origSettings);
-		
+
 		var jsonp, status, data,
 			callbackContext = origSettings && origSettings.context || s,
 			type = s.type.toUpperCase();
@@ -7735,7 +7730,7 @@ jQuery.extend({
 				jQuery.event.trigger( "ajaxStop" );
 			}
 		}
-		
+
 		function trigger(type, args) {
 			(s.context ? jQuery(s.context) : jQuery.event).trigger(type, args);
 		}
@@ -7823,19 +7818,19 @@ jQuery.extend({
 	// key/values into a query string
 	param: function( a, traditional ) {
 		var s = [];
-		
+
 		// Set traditional to true for jQuery <= 1.3.2 behavior.
 		if ( traditional === undefined ) {
 			traditional = jQuery.ajaxSettings.traditional;
 		}
-		
+
 		// If an array was passed in, assume that it is an array of form elements.
 		if ( jQuery.isArray(a) || a.jquery ) {
 			// Serialize the form elements
 			jQuery.each( a, function() {
 				add( this.name, this.value );
 			});
-			
+
 		} else {
 			// If traditional, encode the "old" way (the way 1.3.2 or older
 			// did it), otherwise encode params recursively.
@@ -7865,13 +7860,13 @@ jQuery.extend({
 						buildParams( prefix + "[" + ( typeof v === "object" || jQuery.isArray(v) ? i : "" ) + "]", v );
 					}
 				});
-					
+
 			} else if ( !traditional && obj != null && typeof obj === "object" ) {
 				// Serialize object item.
 				jQuery.each( obj, function( k, v ) {
 					buildParams( prefix + "[" + k + "]", v );
 				});
-					
+
 			} else {
 				// Serialize scalar item.
 				add( prefix, obj );
@@ -8322,12 +8317,12 @@ jQuery.extend( jQuery.fx, {
 			jQuery.fx.stop();
 		}
 	},
-		
+
 	stop: function() {
 		clearInterval( timerId );
 		timerId = null;
 	},
-	
+
 	speeds: {
 		slow: 600,
  		fast: 200,
@@ -8371,7 +8366,7 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 	jQuery.fn.offset = function( options ) {
 		var elem = this[0];
 
-		if ( options ) { 
+		if ( options ) {
 			return this.each(function( i ) {
 				jQuery.offset.setOffset( this, options, i );
 			});
@@ -8397,7 +8392,7 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 	jQuery.fn.offset = function( options ) {
 		var elem = this[0];
 
-		if ( options ) { 
+		if ( options ) {
 			return this.each(function( i ) {
 				jQuery.offset.setOffset( this, options, i );
 			});
@@ -8505,7 +8500,7 @@ jQuery.offset = {
 
 		return { top: top, left: left };
 	},
-	
+
 	setOffset: function( elem, options, i ) {
 		// set position first, in-case top/left are set even on static elem
 		if ( /static/.test( jQuery.curCSS( elem, "position" ) ) ) {
@@ -8524,7 +8519,7 @@ jQuery.offset = {
 			top:  (options.top  - curOffset.top)  + curTop,
 			left: (options.left - curOffset.left) + curLeft
 		};
-		
+
 		if ( "using" in options ) {
 			options.using.call( elem, props );
 		} else {
@@ -8584,7 +8579,7 @@ jQuery.each( ["Left", "Top"], function( i, name ) {
 
 	jQuery.fn[ method ] = function(val) {
 		var elem = this[0], win;
-		
+
 		if ( !elem ) {
 			return null;
 		}
@@ -8648,7 +8643,7 @@ jQuery.each([ "Height", "Width" ], function( i, name ) {
 		if ( !elem ) {
 			return size == null ? null : this;
 		}
-		
+
 		if ( jQuery.isFunction( size ) ) {
 			return this.each(function( i ) {
 				var self = jQuery( this );

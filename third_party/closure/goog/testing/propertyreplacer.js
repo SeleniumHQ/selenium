@@ -19,6 +19,8 @@
 
 goog.provide('goog.testing.PropertyReplacer');
 
+/** @suppress {extraRequire} Needed for some tests to compile. */
+goog.require('goog.testing.ObjectPropertyString');
 goog.require('goog.userAgent');
 
 
@@ -31,24 +33,25 @@ goog.require('goog.userAgent');
  * http://protobuf.googlecode.com/svn/trunk/python/stubout.py
  *
  * Example usage:
- * <pre>var stubs = new goog.testing.PropertyReplacer();
  *
- * function setUp() {
- *   // Mock functions used in all test cases.
- *   stubs.set(Math, 'random', function() {
- *     return 4;  // Chosen by fair dice roll. Guaranteed to be random.
- *   });
- * }
+ *     var stubs = new goog.testing.PropertyReplacer();
  *
- * function tearDown() {
- *   stubs.reset();
- * }
+ *     function setUp() {
+ *       // Mock functions used in all test cases.
+ *       stubs.set(Math, 'random', function() {
+ *         return 4;  // Chosen by fair dice roll. Guaranteed to be random.
+ *       });
+ *     }
  *
- * function testThreeDice() {
- *   // Mock a constant used only in this test case.
- *   stubs.set(goog.global, 'DICE_COUNT', 3);
- *   assertEquals(12, rollAllDice());
- * }</pre>
+ *     function tearDown() {
+ *       stubs.reset();
+ *     }
+ *
+ *     function testThreeDice() {
+ *       // Mock a constant used only in this test case.
+ *       stubs.set(goog.global, 'DICE_COUNT', 3);
+ *       assertEquals(12, rollAllDice());
+ *     }
  *
  * Constraints on altered objects:
  * <ul>
@@ -58,6 +61,7 @@ goog.require('goog.userAgent');
  * </ul>
  *
  * @constructor
+ * @final
  */
 goog.testing.PropertyReplacer = function() {
   /**
@@ -65,7 +69,7 @@ goog.testing.PropertyReplacer = function() {
    * Its items are objects with 3 fields: 'object', 'key', 'value'. The
    * original value for the given key in the given object is stored under the
    * 'value' key.
-   * @type {Array.<Object>}
+   * @type {Array<{ object: ?, key: string, value: ? }>}
    * @private
    */
   this.original_ = [];
@@ -74,8 +78,7 @@ goog.testing.PropertyReplacer = function() {
 
 /**
  * Indicates that a key didn't exist before having been set by the set() method.
- * @type {Object}
- * @private
+ * @private @const
  */
 goog.testing.PropertyReplacer.NO_SUCH_KEY_ = {};
 
@@ -126,6 +129,7 @@ goog.testing.PropertyReplacer.hasKey_ = function(obj, key) {
  * delete failed.
  * @param {Object|Function} obj The object or function to delete a key from.
  * @param {string} key The key to delete.
+ * @throws {Error} In case of trying to set a read-only property
  * @private
  */
 goog.testing.PropertyReplacer.deleteKey_ = function(obj, key) {
@@ -146,6 +150,11 @@ goog.testing.PropertyReplacer.deleteKey_ = function(obj, key) {
     // so undefined will become 'undefined'.
     obj[key] = '';
   }
+
+  if (obj[key]) {
+    throw Error('Cannot delete non configurable property "' + key + '" in ' +
+                obj);
+  }
 };
 
 
@@ -155,12 +164,22 @@ goog.testing.PropertyReplacer.deleteKey_ = function(obj, key) {
  *     alter. See the constraints in the class description.
  * @param {string} key The key to change the value for.
  * @param {*} value The new value to set.
+ * @throws {Error} In case of trying to set a read-only property.
  */
 goog.testing.PropertyReplacer.prototype.set = function(obj, key, value) {
   var origValue = goog.testing.PropertyReplacer.hasKey_(obj, key) ? obj[key] :
                   goog.testing.PropertyReplacer.NO_SUCH_KEY_;
   this.original_.push({object: obj, key: key, value: origValue});
   obj[key] = value;
+
+  // Check whether obj[key] was a read-only value and the assignment failed.
+  // Also, check that we're not comparing returned pixel values when "value"
+  // is 0. In other words, account for this case:
+  // document.body.style.margin = 0;
+  // document.body.style.margin; // returns "0px"
+  if (obj[key] != value && (value + 'px') != obj[key]) {
+    throw Error('Cannot overwrite read-only property "' + key + '" in ' + obj);
+  }
 };
 
 

@@ -24,24 +24,24 @@
 goog.provide('goog.labs.net.xhr');
 goog.provide('goog.labs.net.xhr.Error');
 goog.provide('goog.labs.net.xhr.HttpError');
+goog.provide('goog.labs.net.xhr.Options');
+goog.provide('goog.labs.net.xhr.PostData');
+goog.provide('goog.labs.net.xhr.ResponseType');
 goog.provide('goog.labs.net.xhr.TimeoutError');
 
+goog.require('goog.Promise');
 goog.require('goog.debug.Error');
 goog.require('goog.json');
 goog.require('goog.net.HttpStatus');
 goog.require('goog.net.XmlHttp');
-goog.require('goog.result');
-goog.require('goog.result.SimpleResult');
 goog.require('goog.string');
 goog.require('goog.uri.utils');
+goog.require('goog.userAgent');
 
 
 
 goog.scope(function() {
-var _ = goog.labs.net.xhr;
-var Result = goog.result.Result;
-var SimpleResult = goog.result.SimpleResult;
-var Wait = goog.result.wait;
+var xhr = goog.labs.net.xhr;
 var HttpStatus = goog.net.HttpStatus;
 
 
@@ -51,254 +51,291 @@ var HttpStatus = goog.net.HttpStatus;
  * - timeoutMs: number of milliseconds after which the request will be timed
  *      out by the client. Default is to allow the browser to handle timeouts.
  * - withCredentials: whether user credentials are to be included in a
- *      cross-origin request.  See:
- *      http://dev.w3.org/2006/webapi/XMLHttpRequest-2/#the-withcredentials-attribute
+ *      cross-origin request. See:
+ *      http://www.w3.org/TR/XMLHttpRequest/#the-withcredentials-attribute
  * - mimeType: allows the caller to override the content-type and charset for
- *      the request, which is useful when requesting binary data.  See:
- *      http://dev.w3.org/2006/webapi/XMLHttpRequest-2/#dom-xmlhttprequest-overridemimetype
+ *      the request. See:
+ *      http://www.w3.org/TR/XMLHttpRequest/#dom-xmlhttprequest-overridemimetype
+ * - responseType: may be set to change the response type to an arraybuffer or
+ *      blob for downloading binary data. See:
+ *      http://www.w3.org/TR/XMLHttpRequest/#dom-xmlhttprequest-responsetype]
+ * - xmlHttpFactory: allows the caller to override the factory used to create
+ *      XMLHttpRequest objects.
  * - xssiPrefix: Prefix used for protecting against XSSI attacks, which should
  *      be removed before parsing the response as JSON.
  *
  * @typedef {{
- *   headers: (Object.<string>|undefined),
+ *   headers: (Object<string>|undefined),
+ *   mimeType: (string|undefined),
+ *   responseType: (xhr.ResponseType|undefined),
  *   timeoutMs: (number|undefined),
  *   withCredentials: (boolean|undefined),
- *   mimeType: (string|undefined),
+ *   xmlHttpFactory: (goog.net.XmlHttpFactory|undefined),
  *   xssiPrefix: (string|undefined)
  * }}
  */
-_.Options;
+xhr.Options;
 
 
 /**
  * Defines the types that are allowed as post data.
  * @typedef {(ArrayBuffer|Blob|Document|FormData|null|string|undefined)}
  */
-_.PostData;
+xhr.PostData;
 
 
 /**
  * The Content-Type HTTP header name.
  * @type {string}
  */
-_.CONTENT_TYPE_HEADER = 'Content-Type';
+xhr.CONTENT_TYPE_HEADER = 'Content-Type';
 
 
 /**
  * The Content-Type HTTP header value for a url-encoded form.
  * @type {string}
  */
-_.FORM_CONTENT_TYPE = 'application/x-www-form-urlencoded;charset=utf-8';
+xhr.FORM_CONTENT_TYPE = 'application/x-www-form-urlencoded;charset=utf-8';
 
 
 /**
- * Sends a get request, returning a transformed result which will be resolved
+ * Supported data types for the responseType field.
+ * See: http://www.w3.org/TR/XMLHttpRequest/#dom-xmlhttprequest-response
+ * @enum {string}
+ */
+xhr.ResponseType = {
+  ARRAYBUFFER: 'arraybuffer',
+  BLOB: 'blob',
+  DOCUMENT: 'document',
+  JSON: 'json',
+  TEXT: 'text'
+};
+
+
+/**
+ * Sends a get request, returning a promise that will be resolved
  * with the response text once the request completes.
  *
  * @param {string} url The URL to request.
- * @param {_.Options=} opt_options Configuration options for the request.
- * @return {!Result} A result object that will be resolved
- *     with the response text once the request finishes.
+ * @param {xhr.Options=} opt_options Configuration options for the request.
+ * @return {!goog.Promise<string>} A promise that will be resolved with the
+ *     response text once the request completes.
  */
-_.get = function(url, opt_options) {
-  var result = _.send('GET', url, null, opt_options);
-  var transformedResult = goog.result.transform(result,
-                                                _.getResponseText_);
-  return transformedResult;
+xhr.get = function(url, opt_options) {
+  return xhr.send('GET', url, null, opt_options).then(function(request) {
+    return request.responseText;
+  });
 };
 
 
 /**
- * Sends a post request, returning a transformed result which will be resolved
+ * Sends a post request, returning a promise that will be resolved
  * with the response text once the request completes.
  *
  * @param {string} url The URL to request.
- * @param {_.PostData} data The body of the post request.
- * @param {_.Options=} opt_options Configuration options for the request.
- * @return {!Result} A result object that will be resolved
- *     with the response text once the request finishes.
+ * @param {xhr.PostData} data The body of the post request.
+ * @param {xhr.Options=} opt_options Configuration options for the request.
+ * @return {!goog.Promise<string>} A promise that will be resolved with the
+ *     response text once the request completes.
  */
-_.post = function(url, data, opt_options) {
-  var result = _.send('POST', url, data, opt_options);
-  var transformedResult = goog.result.transform(result,
-                                                _.getResponseText_);
-  return transformedResult;
+xhr.post = function(url, data, opt_options) {
+  return xhr.send('POST', url, data, opt_options).then(function(request) {
+    return request.responseText;
+  });
 };
 
 
 /**
- * Sends a get request, returning a result which will be resolved with
+ * Sends a get request, returning a promise that will be resolved with
  * the parsed response text once the request completes.
  *
  * @param {string} url The URL to request.
- * @param {_.Options=} opt_options Configuration options for the request.
- * @return {!Result} A result object that will be resolved
- *     with the response JSON once the request finishes.
+ * @param {xhr.Options=} opt_options Configuration options for the request.
+ * @return {!goog.Promise<Object>} A promise that will be resolved with the
+ *     response JSON once the request completes.
  */
-_.getJson = function(url, opt_options) {
-  var result = _.send('GET', url, null, opt_options);
-  var transformedResult = _.addJsonParsingCallbacks_(result, opt_options);
-  return transformedResult;
+xhr.getJson = function(url, opt_options) {
+  return xhr.send('GET', url, null, opt_options).then(function(request) {
+    return xhr.parseJson_(request.responseText, opt_options);
+  });
 };
 
 
 /**
- * Sends a post request, returning a result which will be resolved with
+ * Sends a get request, returning a promise that will be resolved with the
+ * response as an array of bytes.
+ *
+ * Supported in all XMLHttpRequest level 2 browsers, as well as IE9. IE8 and
+ * earlier are not supported.
+ *
+ * @param {string} url The URL to request.
+ * @param {xhr.Options=} opt_options Configuration options for the request. The
+ *     responseType will be overwritten to 'arraybuffer' if it was set.
+ * @return {!goog.Promise<!Uint8Array|!Array<number>>} A promise that will be
+ *     resolved with an array of bytes once the request completes.
+ */
+xhr.getBytes = function(url, opt_options) {
+  if (goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(9)) {
+    throw new Error('getBytes is not supported in this browser.');
+  }
+
+  var options = opt_options || {};
+  options.responseType = xhr.ResponseType.ARRAYBUFFER;
+
+  return xhr.send('GET', url, null, options).then(function(request) {
+    // Use the ArrayBuffer response in browsers that support XMLHttpRequest2.
+    // This covers nearly all modern browsers: http://caniuse.com/xhr2
+    if (request.response) {
+      return new Uint8Array(/** @type {!ArrayBuffer} */ (request.response));
+    }
+
+    // Fallback for IE9: the response may be accessed as an array of bytes with
+    // the non-standard responseBody property, which can only be accessed as a
+    // VBArray. IE7 and IE8 require significant amounts of VBScript to extract
+    // the bytes.
+    // See: http://stackoverflow.com/questions/1919972/
+    if (goog.global['VBArray']) {
+      return new goog.global['VBArray'](request['responseBody']).toArray();
+    }
+
+    // Nearly all common browsers are covered by the cases above. If downloading
+    // binary files in older browsers is necessary, the MDN article "Sending and
+    // Receiving Binary Data" provides techniques that may work with
+    // XMLHttpRequest level 1 browsers: http://goo.gl/7lEuGN
+    throw new xhr.Error(
+        'getBytes is not supported in this browser.', url, request);
+  });
+};
+
+
+/**
+ * Sends a post request, returning a promise that will be resolved with
  * the parsed response text once the request completes.
  *
  * @param {string} url The URL to request.
- * @param {_.PostData} data The body of the post request.
- * @param {_.Options=} opt_options Configuration options for the request.
- * @return {!Result} A result object that will be resolved
- *     with the response JSON once the request finishes.
+ * @param {xhr.PostData} data The body of the post request.
+ * @param {xhr.Options=} opt_options Configuration options for the request.
+ * @return {!goog.Promise<Object>} A promise that will be resolved with the
+ *     response JSON once the request completes.
  */
-_.postJson = function(url, data, opt_options) {
-  var result = _.send('POST', url, data, opt_options);
-  var transformedResult = _.addJsonParsingCallbacks_(result, opt_options);
-  return transformedResult;
+xhr.postJson = function(url, data, opt_options) {
+  return xhr.send('POST', url, data, opt_options).then(function(request) {
+    return xhr.parseJson_(request.responseText, opt_options);
+  });
 };
 
 
 /**
- * Sends a request using XMLHttpRequest and returns a result.
+ * Sends a request, returning a promise that will be resolved
+ * with the XHR object once the request completes.
+ *
+ * If content type hasn't been set in opt_options headers, and hasn't been
+ * explicitly set to null, default to form-urlencoded/UTF8 for POSTs.
  *
  * @param {string} method The HTTP method for the request.
  * @param {string} url The URL to request.
- * @param {_.PostData} data The body of the post request.
- * @param {_.Options=} opt_options Configuration options for the request.
- * @return {!Result} A result object that will be resolved
- *     with the XHR object as it's value when the request finishes.
+ * @param {xhr.PostData} data The body of the post request.
+ * @param {xhr.Options=} opt_options Configuration options for the request.
+ * @return {!goog.Promise<!goog.net.XhrLike.OrNative>} A promise that will be
+ *     resolved with the XHR object once the request completes.
  */
-_.send = function(method, url, data, opt_options) {
+xhr.send = function(method, url, data, opt_options) {
+  return new goog.Promise(function(resolve, reject) {
+    var options = opt_options || {};
+    var timer;
 
-  var result = new SimpleResult();
+    var request = options.xmlHttpFactory ?
+        options.xmlHttpFactory.createInstance() : goog.net.XmlHttp();
+    try {
+      request.open(method, url, true);
+    } catch (e) {
+      // XMLHttpRequest.open may throw when 'open' is called, for example, IE7
+      // throws "Access Denied" for cross-origin requests.
+      reject(new xhr.Error('Error opening XHR: ' + e.message, url, request));
+    }
 
-  // When the deferred is cancelled, we abort the XHR.  We want to make sure
-  // the readystatechange event still fires, so it can do the timeout
-  // cleanup, however we don't want the callback or errback to be called
-  // again.  Thus the slight ugliness here.  If results were pushed into
-  // makeRequest, this could become a lot cleaner but we want an option for
-  // people not to include goog.result.Result.
-  goog.result.waitOnError(result, function(error, result) {
-    if (result.isCanceled()) {
-      xhr.abort();
-      xhr.onreadystatechange = goog.nullFunction;
+    // So sad that IE doesn't support onload and onerror.
+    request.onreadystatechange = function() {
+      if (request.readyState == goog.net.XmlHttp.ReadyState.COMPLETE) {
+        goog.global.clearTimeout(timer);
+        // Note: When developing locally, XHRs to file:// schemes return
+        // a status code of 0. We mark that case as a success too.
+        if (HttpStatus.isSuccess(request.status) ||
+            request.status === 0 && !xhr.isEffectiveSchemeHttp_(url)) {
+          resolve(request);
+        } else {
+          reject(new xhr.HttpError(request.status, url, request));
+        }
+      }
+    };
+    request.onerror = function() {
+      reject(new xhr.Error('Network error', url, request));
+    };
+
+    // Set the headers.
+    var contentType;
+    if (options.headers) {
+      for (var key in options.headers) {
+        var value = options.headers[key];
+        if (goog.isDefAndNotNull(value)) {
+          request.setRequestHeader(key, value);
+        }
+      }
+      contentType = options.headers[xhr.CONTENT_TYPE_HEADER];
+    }
+
+    // Browsers will automatically set the content type to multipart/form-data
+    // when passed a FormData object.
+    var dataIsFormData = (goog.global['FormData'] &&
+        (data instanceof goog.global['FormData']));
+    // If a content type hasn't been set, it hasn't been explicitly set to null,
+    // and the data isn't a FormData, default to form-urlencoded/UTF8 for POSTs.
+    // This is because some proxies have been known to reject posts without a
+    // content-type.
+    if (method == 'POST' && contentType === undefined && !dataIsFormData) {
+      request.setRequestHeader(xhr.CONTENT_TYPE_HEADER, xhr.FORM_CONTENT_TYPE);
+    }
+
+    // Set whether to include cookies with cross-domain requests. See:
+    // http://www.w3.org/TR/XMLHttpRequest/#the-withcredentials-attribute
+    if (options.withCredentials) {
+      request.withCredentials = options.withCredentials;
+    }
+
+    // Allows setting an alternative response type, such as an ArrayBuffer. See:
+    // http://www.w3.org/TR/XMLHttpRequest/#dom-xmlhttprequest-responsetype
+    if (options.responseType) {
+      request.responseType = options.responseType;
+    }
+
+    // Allow the request to override the MIME type of the response. See:
+    // http://www.w3.org/TR/XMLHttpRequest/#dom-xmlhttprequest-overridemimetype
+    if (options.mimeType) {
+      request.overrideMimeType(options.mimeType);
+    }
+
+    // Handle timeouts, if requested.
+    if (options.timeoutMs > 0) {
+      timer = goog.global.setTimeout(function() {
+        // Clear event listener before aborting so the errback will not be
+        // called twice.
+        request.onreadystatechange = goog.nullFunction;
+        request.abort();
+        reject(new xhr.TimeoutError(url, request));
+      }, options.timeoutMs);
+    }
+
+    // Trigger the send.
+    try {
+      request.send(data);
+    } catch (e) {
+      // XMLHttpRequest.send is known to throw on some versions of FF,
+      // for example if a cross-origin request is disallowed.
+      request.onreadystatechange = goog.nullFunction;
+      goog.global.clearTimeout(timer);
+      reject(new xhr.Error('Error sending XHR: ' + e.message, url, request));
     }
   });
-
-  function callback(data) {
-    result.setValue(data);
-  }
-
-  function errback(err) {
-    result.setError(err);
-  }
-
-  var xhr = _.makeRequest(method, url, data, opt_options, callback, errback);
-
-  return result;
-};
-
-
-/**
- * Creates a new XMLHttpRequest and initiates a request.
- *
- * @param {string} method The HTTP method for the request.
- * @param {string} url The URL to request.
- * @param {_.PostData} data The body of the post request, unless the content
- *    type is explicitly set in the Options, then it will default to form
- *    urlencoded.
- * @param {_.Options=} opt_options Configuration options for the request.
- * @param {function(XMLHttpRequest)=} opt_callback Optional callback to call
- *     when the request completes.
- * @param {function(Error)=} opt_errback Optional callback to call
- *     when there is an error.
- * @return {!XMLHttpRequest} The new XMLHttpRequest.
- */
-_.makeRequest = function(
-    method, url, data, opt_options, opt_callback, opt_errback) {
-  var options = opt_options || {};
-  var callback = opt_callback || goog.nullFunction;
-  var errback = opt_errback || goog.nullFunction;
-  var timer;
-
-  var xhr = /** @type {!XMLHttpRequest} */ (goog.net.XmlHttp());
-  try {
-    xhr.open(method, url, true);
-  } catch (e) {
-    // XMLHttpRequest.open may throw when 'open' is called, for example, IE7
-    // throws "Access Denied" for cross-origin requests.
-    errback(new _.Error('Error opening XHR: ' + e.message, url, xhr));
-    return xhr;
-  }
-
-  // So sad that IE doesn't support onload and onerror.
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState == goog.net.XmlHttp.ReadyState.COMPLETE) {
-      window.clearTimeout(timer);
-      // Note: When developing locally, XHRs to file:// schemes return a status
-      // code of 0. We mark that case as a success too.
-      if (HttpStatus.isSuccess(xhr.status) ||
-          xhr.status === 0 && !_.isEffectiveSchemeHttp_(url)) {
-        callback(xhr);
-      } else {
-        errback(new _.HttpError(xhr.status, url, xhr));
-      }
-    }
-  };
-
-  // Set the headers.
-  var contentTypeIsSet = false;
-  if (options.headers) {
-    for (var key in options.headers) {
-      xhr.setRequestHeader(key, options.headers[key]);
-    }
-    contentTypeIsSet = _.CONTENT_TYPE_HEADER in options.headers;
-  }
-
-  // If a content type hasn't been set, default to form-urlencoded/UTF8 for
-  // POSTs.  This is because some proxies have been known to reject posts
-  // without a content-type.
-  if (method == 'POST' && !contentTypeIsSet) {
-    xhr.setRequestHeader(_.CONTENT_TYPE_HEADER, _.FORM_CONTENT_TYPE);
-  }
-
-  // Set whether to pass cookies on cross-domain requests (if applicable).
-  // @see http://dev.w3.org/2006/webapi/XMLHttpRequest-2/#the-withcredentials-attribute
-  if (options.withCredentials) {
-    xhr.withCredentials = options.withCredentials;
-  }
-
-  // Allow the request to override the mime type, useful for getting binary
-  // data from the server.  e.g. 'text/plain; charset=x-user-defined'.
-  // @see http://dev.w3.org/2006/webapi/XMLHttpRequest-2/#dom-xmlhttprequest-overridemimetype
-  if (options.mimeType) {
-    xhr.overrideMimeType(options.mimeType);
-  }
-
-  // Handle timeouts, if requested.
-  if (options.timeoutMs > 0) {
-    timer = window.setTimeout(function() {
-      // Clear event listener before aborting so the errback will not be
-      // called twice.
-      xhr.onreadystatechange = goog.nullFunction;
-      xhr.abort();
-      errback(new _.TimeoutError(url, xhr));
-    }, options.timeoutMs);
-  }
-
-  // Trigger the send.
-  try {
-    xhr.send(data);
-  } catch (e) {
-    // XMLHttpRequest.send is known to throw on some versions of FF, for example
-    // if a cross-origin request is disallowed.
-    xhr.onreadystatechange = goog.nullFunction;
-    window.clearTimeout(timer);
-    errback(new _.Error('Error sending XHR: ' + e.message, url, xhr));
-  }
-
-  return xhr;
 };
 
 
@@ -307,7 +344,7 @@ _.makeRequest = function(
  * @return {boolean} Whether the effective scheme is HTTP or HTTPs.
  * @private
  */
-_.isEffectiveSchemeHttp_ = function(url) {
+xhr.isEffectiveSchemeHttp_ = function(url) {
   var scheme = goog.uri.utils.getEffectiveScheme(url);
   // NOTE(user): Empty-string is for the case under FF3.5 when the location
   // is not defined inside a web worker.
@@ -316,41 +353,20 @@ _.isEffectiveSchemeHttp_ = function(url) {
 
 
 /**
- * Returns the response text of an XHR object.  Intended to be called when
- * the result resolves.
+ * JSON-parses the given response text, returning an Object.
  *
- * @param {!XMLHttpRequest} xhr The XHR object.
- * @return {string} The response text.
+ * @param {string} responseText Response text.
+ * @param {xhr.Options|undefined} options The options object.
+ * @return {Object} The JSON-parsed value of the original responseText.
  * @private
  */
-_.getResponseText_ = function(xhr) {
-  return xhr.responseText;
-};
-
-
-/**
- * Transforms a result, parsing the JSON in the original result value's
- * responseText. The transformed result's value is a javascript object.
- * Parse errors resolve the transformed result in an error.
- *
- * @param {!Result} result The result to wait on.
- * @param {_.Options|undefined} options The options object.
- *
- * @return {!Result} The transformed result.
- * @private
- */
-_.addJsonParsingCallbacks_ = function(result, options) {
-  var resultWithResponseText = goog.result.transform(result,
-                                                     _.getResponseText_);
-  var prefixStrippedResult = resultWithResponseText;
+xhr.parseJson_ = function(responseText, options) {
+  var prefixStrippedResult = responseText;
   if (options && options.xssiPrefix) {
-    prefixStrippedResult = goog.result.transform(resultWithResponseText,
-        goog.partial(_.stripXssiPrefix_, options.xssiPrefix));
+    prefixStrippedResult = xhr.stripXssiPrefix_(
+        options.xssiPrefix, prefixStrippedResult);
   }
-
-  var jsonParsedResult = goog.result.transform(prefixStrippedResult,
-                                               goog.json.parse);
-  return jsonParsedResult;
+  return goog.json.parse(prefixStrippedResult);
 };
 
 
@@ -362,7 +378,7 @@ _.addJsonParsingCallbacks_ = function(result, options) {
  * @return {string} The input string without the prefix.
  * @private
  */
-_.stripXssiPrefix_ = function(prefix, string) {
+xhr.stripXssiPrefix_ = function(prefix, string) {
   if (goog.string.startsWith(string, prefix)) {
     string = string.substring(prefix.length);
   }
@@ -376,12 +392,12 @@ _.stripXssiPrefix_ = function(prefix, string) {
  *
  * @param {string} message The error message.
  * @param {string} url The URL that was being requested.
- * @param {!XMLHttpRequest} xhr The XMLHttpRequest that failed.
+ * @param {!goog.net.XhrLike.OrNative} request The XHR that failed.
  * @extends {goog.debug.Error}
  * @constructor
  */
-_.Error = function(message, url, xhr) {
-  goog.base(this, message + ', url=' + url);
+xhr.Error = function(message, url, request) {
+  xhr.Error.base(this, 'constructor', message + ', url=' + url);
 
   /**
    * The URL that was requested.
@@ -391,15 +407,15 @@ _.Error = function(message, url, xhr) {
 
   /**
    * The XMLHttpRequest corresponding with the failed request.
-   * @type {!XMLHttpRequest}
+   * @type {!goog.net.XhrLike.OrNative}
    */
-  this.xhr = xhr;
+  this.xhr = request;
 };
-goog.inherits(_.Error, goog.debug.Error);
+goog.inherits(xhr.Error, goog.debug.Error);
 
 
 /** @override */
-_.Error.prototype.name = 'XhrError';
+xhr.Error.prototype.name = 'XhrError';
 
 
 
@@ -408,12 +424,14 @@ _.Error.prototype.name = 'XhrError';
  *
  * @param {number} status The HTTP status code of the response.
  * @param {string} url The URL that was being requested.
- * @param {!XMLHttpRequest} xhr The XMLHttpRequest that failed.
- * @extends {_.Error}
+ * @param {!goog.net.XhrLike.OrNative} request The XHR that failed.
+ * @extends {xhr.Error}
  * @constructor
+ * @final
  */
-_.HttpError = function(status, url, xhr) {
-  goog.base(this, 'Request Failed, status=' + status, url, xhr);
+xhr.HttpError = function(status, url, request) {
+  xhr.HttpError.base(
+      this, 'constructor', 'Request Failed, status=' + status, url, request);
 
   /**
    * The HTTP status code for the error.
@@ -421,11 +439,11 @@ _.HttpError = function(status, url, xhr) {
    */
   this.status = status;
 };
-goog.inherits(_.HttpError, _.Error);
+goog.inherits(xhr.HttpError, xhr.Error);
 
 
 /** @override */
-_.HttpError.prototype.name = 'XhrHttpError';
+xhr.HttpError.prototype.name = 'XhrHttpError';
 
 
 
@@ -433,17 +451,18 @@ _.HttpError.prototype.name = 'XhrHttpError';
  * Class for Timeout errors.
  *
  * @param {string} url The URL that timed out.
- * @param {!XMLHttpRequest} xhr The XMLHttpRequest that failed.
- * @extends {_.Error}
+ * @param {!goog.net.XhrLike.OrNative} request The XHR that failed.
+ * @extends {xhr.Error}
  * @constructor
+ * @final
  */
-_.TimeoutError = function(url, xhr) {
-  goog.base(this, 'Request timed out', url, xhr);
+xhr.TimeoutError = function(url, request) {
+  xhr.TimeoutError.base(this, 'constructor', 'Request timed out', url, request);
 };
-goog.inherits(_.TimeoutError, _.Error);
+goog.inherits(xhr.TimeoutError, xhr.Error);
 
 
 /** @override */
-_.TimeoutError.prototype.name = 'XhrTimeoutError';
+xhr.TimeoutError.prototype.name = 'XhrTimeoutError';
 
 });  // goog.scope

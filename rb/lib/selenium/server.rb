@@ -1,3 +1,22 @@
+# encoding: utf-8
+#
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 require 'childprocess'
 require 'selenium/webdriver/common/socket_poller'
 require 'net/http'
@@ -57,8 +76,8 @@ module Selenium
 
       begin
         open(download_file_name, "wb") do |destination|
-          net_http.start("selenium.googlecode.com") do |http|
-            resp = http.request_get("/files/#{download_file_name}") do |response|
+          net_http.start("selenium-release.storage.googleapis.com") do |http|
+            resp = http.request_get("/#{required_version[/(\d+\.\d+)\./, 1]}/#{download_file_name}") do |response|
               total = response.content_length
               progress = 0
               segment_count = 0
@@ -95,9 +114,11 @@ module Selenium
     #
 
     def self.latest
-      net_http.start("code.google.com") do |http|
-        resp = http.get("/p/selenium/downloads/list")
-        resp.body.to_s[/selenium-server-standalone-(\d+.\d+.\d+).jar/, 1]
+      require 'rexml/document'
+      net_http.start("selenium-release.storage.googleapis.com") do |http|
+        REXML::Document.new(http.get("/").body).root.get_elements("//Contents/Key").map { |e|
+          e.text[/selenium-server-standalone-(\d+\.\d+\.\d+)\.jar/, 1]
+        }.compact.max
       end
     end
 

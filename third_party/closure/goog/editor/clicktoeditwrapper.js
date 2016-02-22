@@ -27,16 +27,14 @@
 goog.provide('goog.editor.ClickToEditWrapper');
 
 goog.require('goog.Disposable');
-goog.require('goog.asserts');
-goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('goog.dom.Range');
 goog.require('goog.dom.TagName');
 goog.require('goog.editor.BrowserFeature');
 goog.require('goog.editor.Command');
-goog.require('goog.editor.Field.EventType');
+goog.require('goog.editor.Field');
 goog.require('goog.editor.range');
-goog.require('goog.events.BrowserEvent.MouseButton');
+goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
 
@@ -74,7 +72,7 @@ goog.editor.ClickToEditWrapper = function(fieldObj) {
 
   /**
    * Event handler for field related events.
-   * @type {!goog.events.EventHandler}
+   * @type {!goog.events.EventHandler<!goog.editor.ClickToEditWrapper>}
    * @private
    */
   this.fieldEventHandler_ = new goog.events.EventHandler(this);
@@ -88,7 +86,7 @@ goog.editor.ClickToEditWrapper = function(fieldObj) {
 
   /**
    * Event handler for mouse events.
-   * @type {!goog.events.EventHandler}
+   * @type {!goog.events.EventHandler<!goog.editor.ClickToEditWrapper>}
    * @private
    */
   this.mouseEventHandler_ = new goog.events.EventHandler(this);
@@ -113,14 +111,6 @@ goog.editor.ClickToEditWrapper = function(fieldObj) {
 goog.inherits(goog.editor.ClickToEditWrapper, goog.Disposable);
 
 
-/**
- * The logger for this class.
- * @type {goog.debug.Logger}
- * @private
- */
-goog.editor.ClickToEditWrapper.prototype.logger_ =
-    goog.debug.Logger.getLogger('goog.editor.ClickToEditWrapper');
-
 
 /** @return {goog.editor.Field} The field. */
 goog.editor.ClickToEditWrapper.prototype.getFieldObject = function() {
@@ -136,7 +126,7 @@ goog.editor.ClickToEditWrapper.prototype.getOriginalDomHelper = function() {
 
 /** @override */
 goog.editor.ClickToEditWrapper.prototype.disposeInternal = function() {
-  goog.base(this, 'disposeInternal');
+  goog.editor.ClickToEditWrapper.base(this, 'disposeInternal');
   this.exitDocument();
 
   if (this.savedCaretRange_) {
@@ -326,8 +316,6 @@ goog.editor.ClickToEditWrapper.prototype.renderSelection_ = function() {
   }
 
   if (hasCarets) {
-    var startCaretParent = startCaret.parentNode;
-    var endCaretParent = endCaret.parentNode;
 
     this.savedCaretRange_.restore();
     this.fieldObj_.dispatchSelectionChangeEvent();

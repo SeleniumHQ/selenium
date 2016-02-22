@@ -1,27 +1,31 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 
 package org.openqa.selenium.remote;
 
+import static org.openqa.selenium.remote.ErrorCodes.SUCCESS;
+
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.base.Predicates;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Iterables;
+import com.google.common.primitives.Ints;
 
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriverException;
@@ -33,11 +37,9 @@ import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 
-import static org.openqa.selenium.remote.ErrorCodes.SUCCESS;
-
 /**
  * Maps exceptions to status codes for sending over the wire.
- * 
+ *
  * @author jmleyba@gmail.com (Jason Leyba)
  */
 public class ErrorHandler {
@@ -54,7 +56,7 @@ public class ErrorHandler {
   private static final String UNKNOWN_METHOD = "<anonymous method>";
   private static final String UNKNOWN_FILE = null;
 
-  private final ErrorCodes errorCodes = new ErrorCodes();
+  private ErrorCodes errorCodes;
 
   private boolean includeServerErrors;
 
@@ -68,6 +70,17 @@ public class ErrorHandler {
    */
   public ErrorHandler(boolean includeServerErrors) {
     this.includeServerErrors = includeServerErrors;
+    this.errorCodes = new ErrorCodes();
+  }
+
+  /**
+   * @param includeServerErrors Whether to include server-side details in thrown exceptions if the
+   *        information is available.
+   * @param codes The ErrorCodes object to use for linking error codes to exceptions.
+   */
+  public ErrorHandler(ErrorCodes codes, boolean includeServerErrors) {
+    this.includeServerErrors = includeServerErrors;
+    this.errorCodes = codes;
   }
 
   public boolean isIncludeServerErrors() {
@@ -80,10 +93,10 @@ public class ErrorHandler {
 
   @SuppressWarnings("unchecked")
   public Response throwIfResponseFailed(Response response, long duration) throws RuntimeException {
-    if (response.getStatus() == SUCCESS) {
+    if (response.getStatus() == null || response.getStatus() == SUCCESS) {
       return response;
     }
-    
+
     if (response.getValue() instanceof Throwable) {
       throw Throwables.propagate((Throwable) response.getValue());
     }
@@ -104,7 +117,7 @@ public class ErrorHandler {
         message = String.valueOf(e);
       }
 
-      Throwable serverError = rebuildServerError(rawErrorData);
+      Throwable serverError = rebuildServerError(rawErrorData, response.getStatus());
 
       // If serverError is null, then the server did not provide a className (only expected if
       // the server is a Java process) or a stack trace. The lack of a className is OK, but
@@ -130,7 +143,7 @@ public class ErrorHandler {
 
     String duration1 = duration(duration);
 
-    if (message != null && message.indexOf(duration1) == -1) {
+    if (message != null && !message.contains(duration1)) {
       message = message + duration1;
     }
 
@@ -205,7 +218,7 @@ public class ErrorHandler {
     return null;
   }
 
-  private Throwable rebuildServerError(Map<String, Object> rawErrorData) {
+  private Throwable rebuildServerError(Map<String, Object> rawErrorData, int responseStatus) {
 
     if (!rawErrorData.containsKey(CLASS) && !rawErrorData.containsKey(STACK_TRACE)) {
       // Not enough information for us to try to rebuild an error.
@@ -214,22 +227,32 @@ public class ErrorHandler {
 
     Throwable toReturn = null;
     String message = (String) rawErrorData.get(MESSAGE);
+    Class<?> clazz = null;
 
+    // First: allow Remote Driver to specify the Selenium Server internal exception
     if (rawErrorData.containsKey(CLASS)) {
       String className = (String) rawErrorData.get(CLASS);
       try {
-        Class clazz = Class.forName(className);
-        if (clazz.equals(UnhandledAlertException.class)) {
-          toReturn = createUnhandledAlertException(rawErrorData);
-        } else if (Throwable.class.isAssignableFrom(clazz)) {
-          @SuppressWarnings({"unchecked"})
-          Class<? extends Throwable> throwableType = (Class<? extends Throwable>) clazz;
-          toReturn = createThrowable(throwableType, new Class<?>[] {String.class},
-              new Object[] {message});
-        }
+        clazz = Class.forName(className);
       } catch (ClassNotFoundException ignored) {
         // Ok, fall-through
       }
+    }
+
+    // If the above fails, map Response Status to Exception class
+    if (null == clazz) {
+      clazz = errorCodes.getExceptionType(responseStatus);
+    }
+
+    if (clazz.equals(UnhandledAlertException.class)) {
+      toReturn = createUnhandledAlertException(rawErrorData);
+    } else if (Throwable.class.isAssignableFrom(clazz)) {
+      @SuppressWarnings({"unchecked"})
+      Class<? extends Throwable> throwableType = (Class<? extends Throwable>) clazz;
+      toReturn = createThrowable(
+          throwableType,
+          new Class<?>[] {String.class},
+          new Object[] {message});
     }
 
     if (toReturn == null) {
@@ -273,10 +296,18 @@ public class ErrorHandler {
         return null;
       }
 
-      Number lineNumber = (Number) frameInfo.get(LINE_NUMBER);
-      if (lineNumber == null) {
-        return null;
+      Optional<Number> maybeLineNumberInteger = Optional.absent();
+
+      final Object lineNumberObject = frameInfo.get(LINE_NUMBER);
+      if (lineNumberObject instanceof Number) {
+    	  maybeLineNumberInteger = Optional.of((Number) lineNumberObject);
+      } else if (lineNumberObject != null) {
+    	  // might be a Number as a String
+    	  maybeLineNumberInteger = Optional.fromNullable((Number) Ints.tryParse(lineNumberObject.toString()));
       }
+
+      // default -1 for unknown, see StackTraceElement constructor javadoc
+      final int lineNumber = maybeLineNumberInteger.or(-1).intValue();
 
       // Gracefully handle remote servers that don't (or can't) send back
       // complete stack trace info. At least some of this information should
@@ -289,7 +320,7 @@ public class ErrorHandler {
           ? toStringOrNull(frameInfo.get(FILE_NAME)) : UNKNOWN_FILE;
 
       return new StackTraceElement(className, methodName, fileName,
-          lineNumber.intValue());
+          lineNumber);
     }
 
     private static String toStringOrNull(Object o) {

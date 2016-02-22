@@ -20,6 +20,8 @@
 
 goog.provide('goog.net.WrapperXmlHttpFactory');
 
+/** @suppress {extraRequire} Typedef. */
+goog.require('goog.net.XhrLike');
 goog.require('goog.net.XmlHttpFactory');
 
 
@@ -28,19 +30,20 @@ goog.require('goog.net.XmlHttpFactory');
  * An xhr factory subclass which can be constructed using two factory methods.
  * This exists partly to allow the preservation of goog.net.XmlHttp.setFactory()
  * with an unchanged signature.
- * @param {function() : !(XMLHttpRequest|GearsHttpRequest)} xhrFactory A
- *     function which returns a new XHR object.
- * @param {function() : !Object} optionsFactory A function which returns the
+ * @param {function():!goog.net.XhrLike.OrNative} xhrFactory
+ *     A function which returns a new XHR object.
+ * @param {function():!Object} optionsFactory A function which returns the
  *     options associated with xhr objects from this factory.
  * @extends {goog.net.XmlHttpFactory}
  * @constructor
+ * @final
  */
 goog.net.WrapperXmlHttpFactory = function(xhrFactory, optionsFactory) {
   goog.net.XmlHttpFactory.call(this);
 
   /**
    * XHR factory method.
-   * @type {function() : !(XMLHttpRequest|GearsHttpRequest)}
+   * @type {function() : !goog.net.XhrLike.OrNative}
    * @private
    */
   this.xhrFactory_ = xhrFactory;

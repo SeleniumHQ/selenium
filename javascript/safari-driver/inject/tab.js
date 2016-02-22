@@ -1,17 +1,19 @@
-// Copyright 2012 Selenium committers
-// Copyright 2012 Software Freedom Conservancy
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview Defines the safaridriver.inject.Tab class, which is
@@ -26,6 +28,7 @@ goog.require('bot.inject');
 goog.require('bot.json');
 goog.require('bot.response');
 goog.require('goog.asserts');
+goog.require('goog.dom');
 goog.require('goog.object');
 goog.require('safaridriver.Command');
 goog.require('safaridriver.Tab');
@@ -236,7 +239,7 @@ safaridriver.inject.Tab.prototype.init = function() {
 
 /**
  * @param {!safaridriver.message.Log} message The log message.
- * @param {!MessageEvent} e The original message event.
+ * @param {!MessageEvent.<*>} e The original message event.
  * @private
  */
 safaridriver.inject.Tab.prototype.onLogMessage_ = function(message, e) {
@@ -248,7 +251,7 @@ safaridriver.inject.Tab.prototype.onLogMessage_ = function(message, e) {
 
 /**
  * @param {!safaridriver.message.Alert} message The alert message.
- * @param {!MessageEvent} e The original message event.
+ * @param {!MessageEvent.<*>} e The original message event.
  * @private
  */
 safaridriver.inject.Tab.prototype.onAlert_ = function(message, e) {
@@ -279,7 +282,7 @@ safaridriver.inject.Tab.prototype.onAlert_ = function(message, e) {
 
 /**
  * @param {!safaridriver.message.LoadModule} message The alert message.
- * @param {!MessageEvent} e The original message event.
+ * @param {!MessageEvent.<*>} e The original message event.
  * @private
  */
 safaridriver.inject.Tab.prototype.onLoadModule_ = function(message, e) {
@@ -294,7 +297,7 @@ safaridriver.inject.Tab.prototype.onLoadModule_ = function(message, e) {
 /**
  * Responds to an activate message sent from another frame in this window.
  * @param {!safaridriver.inject.message.Activate} message The activate message.
- * @param {!MessageEvent} e The original message event.
+ * @param {!MessageEvent.<*>} e The original message event.
  * @private
  */
 safaridriver.inject.Tab.prototype.onActivate_ = function(message, e) {
@@ -324,7 +327,7 @@ safaridriver.inject.Tab.prototype.onActivate_ = function(message, e) {
  * start handling command messages.
  * @param {!safaridriver.inject.message.ActivateFrame} message The activate
  *     message.
- * @param {!MessageEvent} e The original message event.
+ * @param {!MessageEvent.<*>} e The original message event.
  * @private
  */
 safaridriver.inject.Tab.prototype.onActivateFrame_ = function(message, e) {
@@ -341,7 +344,7 @@ safaridriver.inject.Tab.prototype.onActivateFrame_ = function(message, e) {
 
 /**
  * @param {!safaridriver.message.Message} message The activate message.
- * @param {!MessageEvent} e The original message event.
+ * @param {!MessageEvent.<*>} e The original message event.
  * @private
  */
 safaridriver.inject.Tab.prototype.onReactivateFrame_ = function(message, e) {
@@ -368,7 +371,7 @@ safaridriver.inject.Tab.prototype.onReactivateFrame_ = function(message, e) {
 /**
  * Responds to load messages.
  * @param {!safaridriver.message.Message} message The message.
- * @param {!MessageEvent} e The original message event.
+ * @param {!MessageEvent.<*>} e The original message event.
  * @private
  */
 safaridriver.inject.Tab.prototype.onLoad_ = function(message, e) {
@@ -496,7 +499,7 @@ safaridriver.inject.Tab.prototype.checkFrame_ = function() {
 
 /**
  * @param {!safaridriver.message.Command} message The command message.
- * @param {!MessageEvent} e The original message event.
+ * @param {!MessageEvent.<*>} e The original message event.
  * @private
  */
 safaridriver.inject.Tab.prototype.onFrameCommand_ = function(message, e) {
@@ -585,7 +588,7 @@ safaridriver.inject.Tab.prototype.installPageScript_ = function(opt_dom) {
           var docEl = dom.getDocument().documentElement;
           goog.dom.appendChild(docEl, script);
 
-          this.installedPageScript_.thenFinally(function() {
+          this.installedPageScript_.promise.thenFinally(function() {
             goog.dom.removeNode(script);
           });
         }, this));
@@ -621,7 +624,7 @@ safaridriver.inject.Tab.prototype.executeInPage = function(command) {
 
     message.send(window);
 
-    return commandResponse.then(function(result) {
+    return commandResponse.promise.then(function(result) {
       return bot.inject.wrapValue(result);
     });
   }, this));
@@ -630,7 +633,7 @@ safaridriver.inject.Tab.prototype.executeInPage = function(command) {
 
 /**
  * @param {!safaridriver.message.Response} message The message.
- * @param {!MessageEvent} e The original message.
+ * @param {!MessageEvent.<*>} e The original message.
  * @private
  */
 safaridriver.inject.Tab.prototype.onPageResponse_ = function(message, e) {

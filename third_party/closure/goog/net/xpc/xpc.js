@@ -46,7 +46,7 @@ goog.provide('goog.net.xpc.TransportNames');
 goog.provide('goog.net.xpc.TransportTypes');
 goog.provide('goog.net.xpc.UriCfgFields');
 
-goog.require('goog.debug.Logger');
+goog.require('goog.log');
 
 
 /**
@@ -59,14 +59,15 @@ goog.net.xpc.TransportTypes = {
   IFRAME_RELAY: 3,
   IFRAME_POLLING: 4,
   FLASH: 5,
-  NIX: 6
+  NIX: 6,
+  DIRECT: 7
 };
 
 
 /**
  * Enum containing transport names. These need to correspond to the
  * transport class names for createTransport_() to work.
- * @type {Object}
+ * @const {!Object<string,string>}
  */
 goog.net.xpc.TransportNames = {
   '1': 'NativeMessagingTransport',
@@ -74,7 +75,8 @@ goog.net.xpc.TransportNames = {
   '3': 'IframeRelayTransport',
   '4': 'IframePollingTransport',
   '5': 'FlashTransport',
-  '6': 'NixTransport'
+  '6': 'NixTransport',
+  '7': 'DirectTransport'
 };
 
 
@@ -83,7 +85,7 @@ goog.net.xpc.TransportNames = {
 
 /**
  * Field names used on configuration object.
- * @type {Object}
+ * @const
  */
 goog.net.xpc.CfgFields = {
   /**
@@ -186,13 +188,20 @@ goog.net.xpc.CfgFields = {
    * starts out with V2 at both ends, and one of the ends reconnects as a V1.
    * All other initial startup and reconnection scenarios are supported.
    */
-  NATIVE_TRANSPORT_PROTOCOL_VERSION: 'nativeProtocolVersion'
+  NATIVE_TRANSPORT_PROTOCOL_VERSION: 'nativeProtocolVersion',
+  /**
+   * Whether the direct transport runs in synchronous mode. The default is to
+   * emulate the other transports and run asyncronously but there are some
+   * circumstances where syncronous calls are required. If this property is
+   * set to true, the transport will send the messages synchronously.
+   */
+  DIRECT_TRANSPORT_SYNC_MODE: 'directSyncMode'
 };
 
 
 /**
  * Config properties that need to be URL sanitized.
- * @type {Array}.<string>
+ * @type {Array<string>}
  */
 goog.net.xpc.UriCfgFields = [
   goog.net.xpc.CfgFields.PEER_URI,
@@ -216,7 +225,7 @@ goog.net.xpc.ChannelStates = {
 /**
  * The name of the transport service (used for internal signalling).
  * @type {string}
- * @suppress {underscore}
+ * @suppress {underscore|visibility}
  */
 goog.net.xpc.TRANSPORT_SERVICE_ = 'tp';
 
@@ -238,7 +247,7 @@ goog.net.xpc.SETUP_NTPV2 = 'SETUP_NTPV2';
 /**
  * Transport signaling message: setup acknowledgement.
  * @type {string}
- * @suppress {underscore}
+ * @suppress {underscore|visibility}
  */
 goog.net.xpc.SETUP_ACK_ = 'SETUP_ACK';
 
@@ -252,9 +261,8 @@ goog.net.xpc.SETUP_ACK_NTPV2 = 'SETUP_ACK_NTPV2';
 
 /**
  * Object holding active channels.
- * Package private. Do not call from outside goog.net.xpc.
  *
- * @type {Object.<string, goog.net.xpc.CrossPageChannel>}
+ * @package {Object<string, goog.net.xpc.CrossPageChannel>}
  */
 goog.net.xpc.channels = {};
 
@@ -287,6 +295,6 @@ goog.net.xpc.randomStringCharacters_ =
 
 /**
  * The logger.
- * @type {goog.debug.Logger}
+ * @type {goog.log.Logger}
  */
-goog.net.xpc.logger = goog.debug.Logger.getLogger('goog.net.xpc');
+goog.net.xpc.logger = goog.log.getLogger('goog.net.xpc');

@@ -16,12 +16,10 @@
  * @fileoverview A toolbar toggle button control.
  *
  * @author attila@google.com (Attila Bodis)
- * @author ssaviano@google.com (Steven Saviano)
  */
 
 goog.provide('goog.ui.ToolbarToggleButton');
 
-goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.ToggleButton');
 goog.require('goog.ui.ToolbarButtonRenderer');
 goog.require('goog.ui.registry');
@@ -36,7 +34,7 @@ goog.require('goog.ui.registry');
  * @param {goog.ui.ToolbarButtonRenderer=} opt_renderer Optional renderer used
  *     to render or decorate the button; defaults to
  *     {@link goog.ui.ToolbarButtonRenderer}.
- * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM hepler, used for
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
  * @constructor
  * @extends {goog.ui.ToggleButton}

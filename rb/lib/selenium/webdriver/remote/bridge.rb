@@ -1,8 +1,25 @@
+# encoding: utf-8
+#
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 module Selenium
   module WebDriver
     module Remote
-
-      COMMANDS = {}
 
       #
       # Low level bridge to the remote server, through which the rest of the API works.
@@ -12,6 +29,8 @@ module Selenium
 
       class Bridge
         include BridgeHelper
+
+        COMMANDS = {}
 
         #
         # Defines a wrapper method for a command, which ultimately calls #execute.
@@ -66,6 +85,8 @@ module Selenium
 
           @http          = http_client
           @capabilities  = create_session(desired_capabilities)
+
+          @file_detector = nil
         end
 
         def browser
@@ -83,7 +104,10 @@ module Selenium
             DriverExtensions::HasSessionId,
             DriverExtensions::Rotatable,
             DriverExtensions::HasTouchScreen,
-            DriverExtensions::HasRemoteStatus
+            DriverExtensions::HasLocation,
+            DriverExtensions::HasNetworkConnection,
+            DriverExtensions::HasRemoteStatus,
+            DriverExtensions::HasWebStorage
           ]
         end
 
@@ -130,10 +154,6 @@ module Selenium
         # alerts
         #
 
-        def getAlert
-          execute :getAlert
-        end
-
         def acceptAlert
           execute :acceptAlert
         end
@@ -174,20 +194,16 @@ module Selenium
           execute :getPageSource
         end
 
-        def getVisible
-          execute :getVisible
-        end
-
-        def setVisible(bool)
-          execute :setVisible, {}, bool
-        end
-
         def switchToWindow(name)
           execute :switchToWindow, {}, :name => name
         end
 
         def switchToFrame(id)
           execute :switchToFrame, {}, :id => id
+        end
+
+        def switchToParentFrame
+          execute :switchToParentFrame
         end
 
         def switchToDefaultContent
@@ -315,12 +331,12 @@ module Selenium
           execute :setLocation, {}, :location => loc
         end
 
-        def isBrowserOnline
-          execute :isBrowserOnline
+        def getNetworkConnection
+          execute :getNetworkConnection
         end
 
-        def setBrowserOnline(bool)
-          execute :setBrowserOnline, {}, :state => bool
+        def setNetworkConnection(type)
+          execute :setNetworkConnection, {}, :parameters => {:type => type}
         end
 
         #
@@ -423,7 +439,6 @@ module Selenium
           execute :clearElement, :id => element
         end
 
-
         def submitElement(element)
           execute :submitElement, :id => element
         end
@@ -499,7 +514,11 @@ module Selenium
           data = execute :getLog, {}, :type => type.to_s
 
           Array(data).map do |l|
-            LogEntry.new l.fetch('level'), l.fetch('timestamp'), l.fetch('message')
+            begin
+              LogEntry.new l.fetch('level', 'UNKNOWN'), l.fetch('timestamp'), l.fetch('message')
+            rescue KeyError
+              next
+            end
           end
         end
 
@@ -552,16 +571,9 @@ module Selenium
         def isElementDisplayed(element)
           execute :isElementDisplayed, :id => element
         end
+
         def getElementValueOfCssProperty(element, prop)
           execute :getElementValueOfCssProperty, :id => element, :property_name => prop
-        end
-
-        def elementEquals(element, other)
-          if element.ref == other.ref
-            true
-          else
-            execute :elementEquals, :id => element.ref, :other => other.ref
-          end
         end
 
         #
@@ -596,9 +608,8 @@ module Selenium
         private
 
         def assert_javascript_enabled
-          unless capabilities.javascript_enabled?
-            raise Error::UnsupportedOperationError, "underlying webdriver instance does not support javascript"
-          end
+          return if capabilities.javascript_enabled?
+          raise Error::UnsupportedOperationError, "underlying webdriver instance does not support javascript"
         end
 
         #

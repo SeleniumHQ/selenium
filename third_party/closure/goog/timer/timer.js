@@ -21,6 +21,7 @@
 
 goog.provide('goog.Timer');
 
+goog.require('goog.Promise');
 goog.require('goog.events.EventTarget');
 
 
@@ -45,7 +46,7 @@ goog.Timer = function(opt_interval, opt_timerObject) {
   this.interval_ = opt_interval || 1;
 
   /**
-   * An object that implements setTimout, setInterval, clearTimeout and
+   * An object that implements setTimeout, setInterval, clearTimeout and
    * clearInterval. We default to the window object. Changing this on
    * goog.Timer.prototype changes the object for all timer instances which can
    * be useful if your environment has some other implementation of timers than
@@ -88,6 +89,17 @@ goog.inherits(goog.Timer, goog.events.EventTarget);
  * @private
  */
 goog.Timer.MAX_TIMEOUT_ = 2147483647;
+
+
+/**
+ * A timer ID that cannot be returned by any known implmentation of
+ * Window.setTimeout.  Passing this value to window.clearTimeout should
+ * therefore be a no-op.
+ *
+ * @const {number}
+ * @private
+ */
+goog.Timer.INVALID_TIMEOUT_ID_ = -1;
 
 
 /**
@@ -252,11 +264,12 @@ goog.Timer.TICK = 'tick';
  * is a common trick to schedule a function to run after a batch of browser
  * event processing.
  *
- * @param {Function|{handleEvent:Function}} listener Function or object that
- *     has a handleEvent method.
+ * @param {function(this:SCOPE)|{handleEvent:function()}|null} listener Function
+ *     or object that has a handleEvent method.
  * @param {number=} opt_delay Milliseconds to wait; default is 0.
- * @param {Object=} opt_handler Object in whose scope to call the listener.
+ * @param {SCOPE=} opt_handler Object in whose scope to call the listener.
  * @return {number} A handle to the timer ID.
+ * @template SCOPE
  */
 goog.Timer.callOnce = function(listener, opt_delay, opt_handler) {
   if (goog.isFunction(listener)) {
@@ -274,7 +287,7 @@ goog.Timer.callOnce = function(listener, opt_delay, opt_handler) {
     // Timeouts greater than MAX_INT return immediately due to integer
     // overflow in many browsers.  Since MAX_INT is 24.8 days, just don't
     // schedule anything at all.
-    return -1;
+    return goog.Timer.INVALID_TIMEOUT_ID_;
   } else {
     return goog.Timer.defaultTimerObject.setTimeout(
         listener, opt_delay || 0);
@@ -288,4 +301,29 @@ goog.Timer.callOnce = function(listener, opt_delay, opt_handler) {
  */
 goog.Timer.clear = function(timerId) {
   goog.Timer.defaultTimerObject.clearTimeout(timerId);
+};
+
+
+/**
+ * @param {number} delay Milliseconds to wait.
+ * @param {(RESULT|goog.Thenable<RESULT>|Thenable)=} opt_result The value
+ *     with which the promise will be resolved.
+ * @return {!goog.Promise<RESULT>} A promise that will be resolved after
+ *     the specified delay, unless it is canceled first.
+ * @template RESULT
+ */
+goog.Timer.promise = function(delay, opt_result) {
+  var timerKey = null;
+  return new goog.Promise(function(resolve, reject) {
+    timerKey = goog.Timer.callOnce(function() {
+      resolve(opt_result);
+    }, delay);
+    if (timerKey == goog.Timer.INVALID_TIMEOUT_ID_) {
+      reject(new Error('Failed to schedule timer.'));
+    }
+  }).thenCatch(function(error) {
+    // Clear the timer. The most likely reason is "cancel" signal.
+    goog.Timer.clear(timerKey);
+    throw error;
+  });
 };

@@ -1,20 +1,21 @@
-#!/usr/bin/python
-
-# Copyright 2011 WebDriver committers
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
 
-
+import pytest
 import time
 import unittest
 from selenium import webdriver
@@ -88,8 +89,8 @@ class WebDriverWaitTest(unittest.TestCase):
                 self.fail("Expected TimeoutException to have been thrown")
             except TimeoutException as e:
                 pass
-            self.assertTrue(time.time() - start < 1.5, 
-                "Expected to take just over 1 second to execute, but took %f" % 
+            self.assertTrue(time.time() - start < 1.5,
+                "Expected to take just over 1 second to execute, but took %f" %
                 (time.time() - start))
         finally:
             self.driver.implicitly_wait(0)
@@ -147,7 +148,7 @@ class WebDriverWaitTest(unittest.TestCase):
             self.fail("Expected TimeoutException to have been thrown")
         except TimeoutException as e:
             pass
-    
+
     def testExpectedConditionVisibilityOfElementLocated(self):
         self._loadPage("javascriptPage")
         try:
@@ -170,7 +171,7 @@ class WebDriverWaitTest(unittest.TestCase):
         self.driver.find_element_by_id('clickToShow').click()
         element = WebDriverWait(self.driver, 5).until(EC.visibility_of(hidden))
         self.assertTrue(element.is_displayed())
-    
+
     def testExpectedConditionTextToBePresentInElement(self):
         self._loadPage('booleanAttributes')
         try:
@@ -181,7 +182,7 @@ class WebDriverWaitTest(unittest.TestCase):
         self.driver.execute_script("setTimeout(function(){var el = document.getElementById('unwrappable'); el.textContent = el.innerText = 'Unwrappable Expected text'}, 200)")
         WebDriverWait(self.driver, 1).until(EC.text_to_be_present_in_element((By.ID, 'unwrappable'), 'Expected'))
         self.assertEqual('Unwrappable Expected text', self.driver.find_element_by_id('unwrappable').text)
-    
+
     def testExpectedConditionTextToBePresentInElementValue(self):
         self._loadPage('booleanAttributes')
         try:
@@ -192,8 +193,8 @@ class WebDriverWaitTest(unittest.TestCase):
         self.driver.execute_script("setTimeout(function(){document.getElementById('inputRequired').value = 'Example Expected text'}, 200)")
         WebDriverWait(self.driver, 1).until(EC.text_to_be_present_in_element_value((By.ID, 'inputRequired'), 'Expected'))
         self.assertEqual('Example Expected text', self.driver.find_element_by_id('inputRequired').get_attribute('value'))
-    
-    def testExpectedConditionFrameToBeAvailableAndSwitchTo(self):
+
+    def testExpectedConditionFrameToBeAvailableAndSwitchToItByName(self):
         self._loadPage("blank")
         try:
             WebDriverWait(self.driver, 1).until(EC.frame_to_be_available_and_switch_to_it('myFrame'))
@@ -204,7 +205,18 @@ class WebDriverWaitTest(unittest.TestCase):
         WebDriverWait(self.driver, 1).until(EC.frame_to_be_available_and_switch_to_it('myFrame'))
         self.assertEqual('click me', self.driver.find_element_by_id('alertInFrame').text)
 
-    
+    def testExpectedConditionFrameToBeAvailableAndSwitchToItByLocator(self):
+        self._loadPage("blank")
+        try:
+            WebDriverWait(self.driver, 1).until(EC.frame_to_be_available_and_switch_to_it((By.ID, 'myFrame')))
+            self.fail("Expected TimeoutException to have been thrown")
+        except TimeoutException as e:
+            pass
+        self.driver.execute_script("setTimeout(function(){var f = document.createElement('iframe'); f.id='myFrame'; f.src = '"+self._pageURL('iframeWithAlert')+"'; document.body.appendChild(f)}, 200)")
+        WebDriverWait(self.driver, 1).until(EC.frame_to_be_available_and_switch_to_it((By.ID, 'myFrame')))
+        self.assertEqual('click me', self.driver.find_element_by_id('alertInFrame').text)
+
+
     def testExpectedConditionInvisiblityOfElementLocated(self):
         self._loadPage("javascriptPage")
         self.driver.execute_script("delayedShowHide(0, true)")
@@ -214,10 +226,10 @@ class WebDriverWaitTest(unittest.TestCase):
         except TimeoutException as e:
             pass
         self.driver.execute_script("delayedShowHide(200, false)")
-        WebDriverWait(self.driver, 0.7).until(EC.invisibility_of_element_located((By.ID, 'clickToHide')))
-        self.assertFalse(self.driver.find_element_by_id('clickToHide').is_displayed())
+        element = WebDriverWait(self.driver, 0.7).until(EC.invisibility_of_element_located((By.ID, 'clickToHide')))
+        self.assertFalse(element.is_displayed())
 
-    
+
     def testExpectedConditionElementToBeClickable(self):
         self._loadPage("javascriptPage")
         try:
@@ -231,7 +243,7 @@ class WebDriverWaitTest(unittest.TestCase):
         element.click()
         WebDriverWait(self.driver, 3.5).until(EC.invisibility_of_element_located((By.ID, 'clickToHide')))
         self.assertFalse(element.is_displayed())
-    
+
     def testExpectedConditionStalenessOf(self):
         self._loadPage('dynamicallyModifiedPage')
         element = self.driver.find_element_by_id('element-to-remove')
@@ -248,7 +260,7 @@ class WebDriverWaitTest(unittest.TestCase):
             self.fail("Expected StaleReferenceException to have been thrown")
         except StaleElementReferenceException as e:
             pass
-    
+
     def testExpectedConditionElementToBeSelected(self):
         self._loadPage("formPage")
         element = self.driver.find_element_by_id('checky')
@@ -260,7 +272,7 @@ class WebDriverWaitTest(unittest.TestCase):
         self.driver.execute_script("setTimeout(function(){document.getElementById('checky').checked = true}, 200)")
         WebDriverWait(self.driver, 0.7).until(EC.element_to_be_selected(element))
         self.assertTrue(element.is_selected())
-    
+
     def testExpectedConditionElementLocatedToBeSelected(self):
         self._loadPage("formPage")
         element = self.driver.find_element_by_id('checky')
@@ -272,7 +284,7 @@ class WebDriverWaitTest(unittest.TestCase):
         self.driver.execute_script("setTimeout(function(){document.getElementById('checky').checked = true}, 200)")
         WebDriverWait(self.driver, 0.7).until(EC.element_located_to_be_selected((By.ID, 'checky')))
         self.assertTrue(element.is_selected())
-    
+
     def testExpectedConditionElementSelectionStateToBe(self):
         self._loadPage("formPage")
         element = self.driver.find_element_by_id('checky')
@@ -286,7 +298,7 @@ class WebDriverWaitTest(unittest.TestCase):
         self.driver.execute_script("setTimeout(function(){document.getElementById('checky').checked = true}, 200)")
         WebDriverWait(self.driver, 0.7).until(EC.element_selection_state_to_be(element, True))
         self.assertTrue(element.is_selected())
-    
+
     def testExpectedConditionElementLocatedSelectionStateToBe(self):
         self._loadPage("formPage")
         element = self.driver.find_element_by_id('checky')
@@ -300,8 +312,10 @@ class WebDriverWaitTest(unittest.TestCase):
         self.driver.execute_script("setTimeout(function(){document.getElementById('checky').checked = true}, 200)")
         WebDriverWait(self.driver, 0.7).until(EC.element_located_selection_state_to_be((By.ID, 'checky'), True))
         self.assertTrue(element.is_selected())
-    
+
     def testExpectedConditionAlertIsPresent(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support alerts")
         self._loadPage('blank')
         try:
             WebDriverWait(self.driver, 0.7).until(EC.alert_is_present())
@@ -310,12 +324,12 @@ class WebDriverWaitTest(unittest.TestCase):
             pass
         self.driver.execute_script("setTimeout(function(){alert('alerty')}, 200)")
         WebDriverWait(self.driver, 0.7).until(EC.alert_is_present())
-        alert = self.driver.switch_to_alert()
+        alert = self.driver.switch_to.alert
         self.assertEqual('alerty', alert.text)
         alert.dismiss()
 
     def _pageURL(self, name):
-        return "http://localhost:%d/%s.html" % (self.webserver.port, name)
+        return self.webserver.where_is(name + '.html')
 
     def _loadSimplePage(self):
         self._loadPage("simpleTest")

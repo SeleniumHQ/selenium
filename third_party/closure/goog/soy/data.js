@@ -21,9 +21,13 @@
  * @author gboyer@google.com (Garrett Boyer)
  */
 
-goog.provide('goog.soy.data');
 goog.provide('goog.soy.data.SanitizedContent');
 goog.provide('goog.soy.data.SanitizedContentKind');
+goog.provide('goog.soy.data.UnsanitizedText');
+
+goog.require('goog.html.SafeHtml');
+goog.require('goog.html.uncheckedconversions');
+goog.require('goog.string.Const');
 
 
 /**
@@ -46,27 +50,17 @@ goog.soy.data.SanitizedContentKind = {
    * Executable Javascript code or expression, safe for insertion in a
    * script-tag or event handler context, known to be free of any
    * attacker-controlled scripts. This can either be side-effect-free
-   * Javascript (such as JSON) or Javascript that entirely under Google's
+   * Javascript (such as JSON) or Javascript that's entirely under Google's
    * control.
    */
-  JS: goog.DEBUG ? {sanitizedContentJsStrChars: true} : {},
-
-  /**
-   * A sequence of code units that can appear between quotes (either kind) in a
-   * JS program without causing a parse error, and without causing any side
-   * effects.
-   * <p>
-   * The content should not contain unescaped quotes, newlines, or anything else
-   * that would cause parsing to fail or to cause a JS parser to finish the
-   * string its parsing inside the content.
-   * <p>
-   * The content must also not end inside an escape sequence ; no partial octal
-   * escape sequences or odd number of '{@code \}'s at the end.
-   */
-  JS_STR_CHARS: goog.DEBUG ? {sanitizedContentJsStrChars: true} : {},
+  JS: goog.DEBUG ? {sanitizedContentJsChars: true} : {},
 
   /** A properly encoded portion of a URI. */
   URI: goog.DEBUG ? {sanitizedContentUri: true} : {},
+
+  /** A resource URI not under attacker control. */
+  TRUSTED_RESOURCE_URI:
+      goog.DEBUG ? {sanitizedContentTrustedResourceUri: true} : {},
 
   /**
    * Repeated attribute names and values. For example,
@@ -97,7 +91,7 @@ goog.soy.data.SanitizedContentKind = {
 
 
 /**
- * A string-like object that carries a content-type.
+ * A string-like object that carries a content-type and a content direction.
  *
  * IMPORTANT! Do not create these directly, nor instantiate the subclasses.
  * Instead, use a trusted, centrally reviewed library as endorsed by your team
@@ -120,13 +114,66 @@ goog.soy.data.SanitizedContent.prototype.contentKind;
 
 
 /**
+ * The content's direction; null if unknown and thus to be estimated when
+ * necessary.
+ * @type {?goog.i18n.bidi.Dir}
+ */
+goog.soy.data.SanitizedContent.prototype.contentDir = null;
+
+
+/**
  * The already-safe content.
- * @type {string}
+ * @protected {string}
  */
 goog.soy.data.SanitizedContent.prototype.content;
+
+
+/**
+ * Gets the already-safe content.
+ * @return {string}
+ */
+goog.soy.data.SanitizedContent.prototype.getContent = function() {
+  return this.content;
+};
 
 
 /** @override */
 goog.soy.data.SanitizedContent.prototype.toString = function() {
   return this.content;
 };
+
+
+/**
+ * Converts sanitized content of kind TEXT or HTML into SafeHtml. HTML content
+ * is converted without modification, while text content is HTML-escaped.
+ * @return {!goog.html.SafeHtml}
+ * @throws {Error} when the content kind is not TEXT or HTML.
+ */
+goog.soy.data.SanitizedContent.prototype.toSafeHtml = function() {
+  if (this.contentKind === goog.soy.data.SanitizedContentKind.TEXT) {
+    return goog.html.SafeHtml.htmlEscape(this.toString());
+  }
+  if (this.contentKind !== goog.soy.data.SanitizedContentKind.HTML) {
+    throw Error('Sanitized content was not of kind TEXT or HTML.');
+  }
+  return goog.html.uncheckedconversions.
+      safeHtmlFromStringKnownToSatisfyTypeContract(
+          goog.string.Const.from(
+              'Soy SanitizedContent of kind HTML produces ' +
+                  'SafeHtml-contract-compliant value.'),
+          this.toString(), this.contentDir);
+};
+
+
+
+/**
+ * An intermediary base class to allow the type system to sepcify text templates
+ * without referencing the soydata package.
+ * @extends {goog.soy.data.SanitizedContent}
+ * @constructor
+ */
+goog.soy.data.UnsanitizedText = function() {
+  // TODO(gboyer): Delete this class after moving soydata to Closure.
+  goog.soy.data.UnsanitizedText.base(this, 'constructor');
+};
+goog.inherits(goog.soy.data.UnsanitizedText, goog.soy.data.SanitizedContent);

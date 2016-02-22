@@ -9,6 +9,486 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.52.0.1
+=========
+ * Removing IE driver support for ie.validateCookieDocumentType capability.
+   This capability was made obsolete with the rewrite of the IE driver's
+   cookie handling in 2.47. It has been ignored since, so this commit removes
+   the IE driver code for that capability.
+ * Make IE driver directly return capabilities from new session command.
+   Previously, the driver would return a redirect HTTP response (303), and
+   the language bindings were expected to follow the redirect to get the
+   returned capabilities. This has been an obsolete pattern for some time,
+   and the IE driver is only now conforming to the proper pattern of simply
+   returning a 200 response with the correct capabilities as part of the
+   body.
+ * Updating logic for uploading files in IE. Updating the IE driver's handling
+   of sendKeys to have extra logging around finding the file open dialog. Also
+   rearranged the search for the dialog to more properly find the dialog using
+   the most common method first.
+
+v2.52.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+ * Updates to JavaScript automation atoms.
+ * (on behalf of Anton Usmansky) Added ie.enableFullPageScreenshot capability
+   to allow users to create screenshots of only the current view port. The
+   capability defaults to true, which preserves the original behavior of 
+   resizing the browser window and taking a screenshot of the full page.
+
+v2.51.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+ * Updates to JavaScript automation atoms.
+
+v2.50.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+ * Updates to JavaScript automation atoms.
+
+v2.49.0.2
+=========
+ * Fixed finding elements where native CSS selector engine cannot be found.
+
+v2.49.0.1
+=========
+ * Updates to JavaScript automation atoms.
+ * Changes to simplify the execution of finding elements. The driver now
+   delegates more of the error handling of finding elements to the JavaScript
+   automation atoms. This has the effect of simplifying the code within the
+   driver, and synchronizes the error-case behavior with other implementations.
+
+v2.49.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+
+v2.48.0.5
+=========
+ * Refactoring of IE driver native events interaction code. This commit
+   removes the dependency on shared native event code with Firefox.
+   Since Firefox no longer supports native events, it makes no sense to
+   have common code refactored for only one consumer, so this commit
+   moves the Windows-only SendMessage code directly into the IE driver.
+   This is a first step toward deleting the webdriver-interactions
+   directory. While extreme care has been taken to ensure this
+   refactoring causes no regressions, there is a chance something will
+   still break. This particular refactor should also be treated as an
+   intermediate step, as the ported code contains some redundancies to
+   what is already present in the driver. Future refactoring will take
+   place to remove the redundancies and better integrate the code.
+
+v2.48.0.4
+=========
+ * Added ability to set whitelisted IP addresses to access IE driver server.
+   The list of IP addresses is a comma-delimited list passed to the
+   /whitelisted-ips command-line argument. Defaults to local loopback address
+   only. Also improved logging to show executable version and architecture in
+   driver log. Patch provided by lsowen.
+
+v2.48.0.3
+=========
+ * Updates to JavaScript automation atoms.
+ * Modifications to file upload functionality. Added additional logging
+   to help diagnose issues where the file selection dialog is not closed
+   by the driver. Also added a new capability, ie.fileUploadDialogTimeout
+   to allow users to customize the amount of time the driver waits for
+   the file selection dialog before giving up. It defaults to one second.
+   Finally, the driver now checks that the file exists before sending the
+   file name to the file selection dialog. If the file does not exist,
+   the sendKeys method will throw an exception explicitly stating that
+   the file does not exist.
+
+v2.48.0.2
+=========
+ * Updates to JavaScript automation atoms.
+ * Includes fix for clearing input elements with type "number".
+
+v2.48.0.1
+=========
+ * Updating to return top-level URL when focused on a frame. This makes the
+   driver now consistent with other implementations.
+
+v2.48.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+
+v2.47.0.5
+=========
+ * Updating screenshot code to retain scroll bars in required directions.
+   When an IE window needs to be resized to obtain the full-DOM screenshot,
+   if it has scroll bars in either direction, those scroll bars need to be
+   present in the resized window, so that layout recalculation doesn't occur.
+   In practice, this means reducing the window size by 2 pixels in the
+   appropriate direction before taking the screenshot. The resulting scroll
+   bars are cropped from the image.
+
+v2.47.0.4
+=========
+ * Updates to JavaScript automation atoms.
+ * Updating screenshot code to prevent resizing if window is large enough.
+   In the previous screenshot update, the driver would incorrectly resize
+   the IE window smaller if the document was smaller in height or width
+   than the current window size. This could cause redraws of the page
+   being viewed such that after resizing, the screenshot still did not
+   display the entire page. This commit resolves that issue, and also takes
+   into account the size of the scroll bars when creating the screenshot
+   image. NOTE: There is a *very* slight chance that resizing the window
+   so there are no longer scroll bars to be displayed *might* still cause
+   layout redraws such that the screenshot does not show the entire DOM
+   after the resize. Since we should now always be expanding the window size,
+   never contracting it, this is a corner case that explicitly will *not* be
+   fixed. Any issue reports describing this corner case will be closed without
+   action. Fixes issue #1085.
+
+v2.47.0.3
+=========
+ * Updates to JavaScript automation atoms.
+ * Removed use of Windows hooks for taking screenshots in IE. This will fix
+   the issue of taking full-page screenshots when using the 32-bit IE driver
+   on 64-bit Windows installations.
+
+v2.47.0.2
+=========
+ * Corrected build process to create executables runnable on Windows XP.
+
+v2.47.0.1
+=========
+ * Added logging messages for IE driver for bitness mismatches. This commit
+   adds logging messages at the warning level whenever a mismatch in bitness
+   is detected between the browser and driver. This is a particularly bad
+   problem in cases where users have 64-bit Windows, and (incorrectly) assume
+   they automatically should use the 64-bit IEDriverServer.exe when running
+   with IE 10 or 11. Since the process that actually renders content in IE 10
+   and 11 is almost always 32-bit, even on 64-bit Windows, it is almost always
+   the proper decision to use the 32-bit IE driver. It is now very clear from
+   log messages when this state of affairs exists.
+ * Enabled fast failure for cookie manipulation in IE. The refactor of cookie
+   handling for the IE driver introduces an incompatibility with the 64-bit IE
+   driver and IE 10 and 11 running on 64-bit Windows. As is the case with
+   sending keystrokes and creating screenshots, a Windows hook procedure is now
+   used for getting and settingcookies in IE. That means that in IE 10 and 11
+   on 64-bit Windows, where the content rendering process is still 32-bit, you
+   **must** use the 32-bit IEDriverServer.exe in order to manipulate cookies.
+   This commit will now cause exceptions to be thrown if you attempt to set
+   or get cookies using the 64-bit driver against a 32-bit version of IE (or
+   vice versa), but in particular, this will affect users who mistakenly try
+   to use the 64-bit executable with IE 10 or 11 in 64-bit Windows.
+
+v2.47.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+ * Updates to JavaScript automation atoms.
+
+v2.46.0.12
+==========
+ * Fixed handling of authentication dialogs for different Windows versions.
+
+v2.46.0.11
+==========
+ * Enabling handling of authentication dialogs in IE driver.
+ * Modified to resize IE window for screenshots using dimensions of top-level
+   document when focused on a frame. Fixes issue #703.
+
+v2.46.0.10
+==========
+ * Init last known mouse position with -1, -1. This avoids issues where the
+   first operation is to move the mouse to [0, 0]. Patch provided by Anton
+   Usmansky.
+
+v2.46.0.9
+=========
+ * Fixed bug in SOCKS proxy authentication settings retrieval.
+
+v2.46.0.8
+=========
+ * Fixed bug in screenshot handling due to Windows hook refactor.
+
+v2.46.0.7
+=========
+ * Fixed cookie delete bug for related domains.
+
+v2.46.0.6
+=========
+ * Corrected cookie add/delete logic with respect to HTTP-only cookies.
+
+v2.46.0.5
+=========
+ * Updates to JavaScript automation atoms.
+ * Updated delete cookie logic to no longer rely on JavaScript. This allows
+   HTTP-only cookies to be deleted by the driver.
+ * Added support for SOCKS proxy in the IE driver. Using a SOCKS proxy is not
+   quite as straightforward for IE as it is for other browser drivers. While
+   the driver is now able to set the proxy settings for a SOCKS proxy, using
+   the ie.usePerProcessProxy capability with a user name and password for a
+   SOCKS proxy is problematic for the driver. The Windows API does not provide
+   any ability to set the user name and password for a SOCKS proxy on a
+   per-process basis. The driver attempts to work around this limitation, but
+   this combination will be largely unsupported. Using the driver to temporarily
+   set the global proxy settings on the machine should work as normal.
+
+v2.46.0.4
+=========
+ * Corrected logic for http-only and secure cookies. Cookies now behave
+   in IE as expected. The driver will properly return 'secure' or
+   'httpOnly' flags as set on the cookie itself. Note carefully that
+   'secure' cookies will only be retrieved when browsing a page using
+   SSL (https), as this is the only environment where the cookies are
+   used by the browser. This behavior is consistent with the behavior
+   of the Chrome driver, and with the W3C specification behavior for
+   cookies. Firefox, it should be noted, returns secure cookies regardless
+   of whether the page in question is being browsed via SSL or not.
+   This is a bug in the Firefox driver.
+
+v2.46.0.3
+=========
+ * Fixed IE cookie handling for down-level operating systems.
+
+v2.46.0.2
+=========
+ * Updates to JavaScript automation atoms.
+ * Refactoring Windows Hooks. Windows hooks are now wrapped in a single class,
+   eliminating a fair amount of duplicate code.
+ * Rewrote cookie handling for IE. The IE driver should now be able to return
+   full information for most cookies, including expiration date and secure
+   status. Additionally, the driver will now return HTTP-only cookies from
+   IE. Note that some specific cookie information will still be incomplete.
+   In particular, session cookies that may have been set with domain, path,
+   or secure tokens in the cookie string will not have those tokens set in
+   the returned cookie, as that information is not available via any API.
+   Also note that this change introduces additional use of Windows APIs that
+   are not supported when run from a service process, making that more
+   completely unsupported. Fixes issue #391.
+
+v2.46.0.1
+=========
+ * Handles issue with alert text controls conatining no accText property in IE.
+   Fixes issue #651.
+
+v2.46.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+ * Updates to JavaScript automation atoms.
+
+v2.45.0.6
+=========
+ * Updates to JavaScript automation atoms.
+ * Allow IE driver to work with transparent file upload elements. Many modern
+   JavaScript widget frameworks hide <input type="file"> elements so as to
+   make their UIs "prettier." The IE driver would see these elements as not
+   visible, and thus not interactible. This commit allows users to use sendKeys
+   to upload files when this type of file upload element exists, bringing the
+   driver in line with what is allowed by the Firefox driver.
+
+v2.45.0.5
+=========
+ * Changed to allow interaction with elements where opacity = 0. The
+   isDisplayed will still return false for those elements, as is consistent
+   with drivers for Firefox and Chrome. Fixes issue #503.
+
+v2.45.0.4
+=========
+ * Added busy check after attaching to newly launched IE instance.
+ * Corrected logic in 'eager' page loading strategy for IE.
+
+v2.45.0.3
+=========
+ * Updates to JavaScript automation atoms.
+ * Corrected wrong value for pageLoadStrategy capability.
+ * Reset browser window handle on failure to attach via Active Accessibility.
+   When launching a new instance, if the driver attempts to use Active
+   Accessibility to attach to the instance, and the attach fails, the driver
+   should attempt to attach using the ShellWindows API. However, this fallback
+   is skipped if the window has already been found. Resetting the found window
+   handle to NULL allows the driver to proceed with the second attempt.
+
+v2.45.0.2
+=========
+ * Updates to JavaScript automation atoms.
+ * Added pageLoadStrategy to IE driver. Setting a capability named 
+   pageLoadStrategy when creating a session with the IE driver will now change
+   the wait behavior when navigating to a new page. The valid values are:
+
+     "normal" - Waits for document.readyState to be 'complete'. This is the
+                default, and is the same behavior as all previous versions of
+                the IE driver.
+     "eager"  - Will abort the wait when document.readyState is
+                'interactive' instead of waiting for 'complete'.
+     "none"   - Will abort the wait immediately, without waiting for any of
+                the page to load.
+
+   Setting the capability to an invalid value will result in use of the
+   "normal" page load strategy.
+ * Added delay and logging on attaching to launched IE. There are times when
+   the two methods used for attaching to a launched instance of Internet
+   Explorer will fail. This commit adds additional logging to help make
+   diagnosing the exact failure points of these circumstances easier.
+
+v2.45.0.1
+=========
+ * Updates to JavaScript automation atoms.
+ * Changed to prevent crash when driver fails to connect to IWebBrowser2
+   object.
+
+v2.45.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+ * Updates to JavaScript automation atoms.
+
+v2.44.0.4
+=========
+ * Fixed passing per-process proxy settings to new windows. Fixes issue #8112.
+
+v2.44.0.3
+=========
+ * Fixed finding elements by XPath for IE 9 where document mode is less than
+   IE9.
+
+v2.44.0.2
+=========
+ * Updates to JavaScript automation atoms.
+ * Added additional logging to cache clearing code
+ * Updated session intialization to more robustly handle malformed JSON.
+   Previously, in the IE driver, malformed JSON requests when requesting a
+   new session would cause the driver to crash. The new behavior is that
+   if the JSON payload for the new session is malformed by not including
+   a desiredCapabilities object will now throw an exception. If the user
+   passes a capability value with the wrong data type, it will be logged
+   by the driver at a warning level, and the default value for the specified
+   capability will be used.
+
+v2.44.0.1
+=========
+ * Updates to JavaScript automation atoms.
+ * Introduced capability to disable check of document type when setting
+   cookies. When setting cookies, there is a check in the IE driver to validate
+   that the page in the browser is, in fact, an HTML page. Despite the fact
+   that omitting this check can cause unrecoverable crashes in the driver,
+   there is demand for a mechanism to disable this check for older, legacy
+   versions of Internet Explorer. This commit introduces a new capability,
+   "ie.validateCookieDocumentType" which, when set to false, skips this check
+   when adding a cookie. The default for this capability when unspecified for
+   a session is true; users setting this capability to false are considered to
+   be on their own when encountering issues setting cookies, including, but not
+   limited to, crashes in the driver executable. Fixes issue #1227.
+
+v2.44.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+ * Updates to JavaScript automation atoms.
+
+v2.43.0.2
+=========
+ * Implemented retrival of alert text for onBeforeUnload dialogs. Fixes issue
+   #7901.
+
+v2.43.0.1
+=========
+ * Improved cross-platform compatibility of webdriver-server C++ code. This
+   commit makes the common webdriver-server C++ code more easily cross-
+   platform. It does this mainly by removing use of std::tr1::regex, which has
+   issues compiling under gcc. In its place, we now use a custom URL matching
+   algorithm for matching URLs in the WebDriver JSON Wire Protocol. While this
+   matching algorithm may be a potential source of future errors, a nice side
+   effect of it is a 3% performance increase in server execution times over
+   using regular expressions. Additionally, this commit includes an alias for
+   snprintf, which throws buffer overrun warnings when used with Visual Studio.
+   It also contains some header #include rearranging and linting of the C++
+   code.
+ * Implemented driver implementation autodetect in IE driver server. When
+   specified by the correct command line switch, the driver will use the
+   Microsoft driver implementation, if the detected version of IE is 11 or
+   higher, and if the implementation is installed. Otherwise, it will fall
+   back to the legacy (open-source) implementation.
+ * Updated third-party C++ library dependencies. This resolves compiler
+   warnings when compiling Civetweb and JsonCpp under Visual Studio.
+
+v2.43.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+ * Updates to JavaScript automation atoms.
+ * Integrated the Microsoft Internet Explorer driver implementation.
+
+   This commit optionally allows the user to use the Microsoft-supplied
+   implementation of WebDriver for IE 11 and above. To use the Microsoft
+   implementation, the user must have the August 2014 updates to Internet
+   Explorer installed through Windows Update, and must install the IE Web
+   Driver Tool for Internet Explorer 11 download from Microsoft
+   (http://www.microsoft.com/en-us/download/details.aspx?id=44069).
+
+   Once those prerequisites are installed, the user can use the
+   InternetExplorerDriverService object in the language bindings to set the
+   implementation to be used.
+
+   By default, the driver will continue to use the driver implementation
+   developed by the open-source project. Over time as the Microsoft
+   implementation matures, this will be switched to use that implementation,
+   first by default, then exclusively.
+ * Fixed IEDriver crash in WaitUntilElementFocused() because of null pointer.
+   Added required null check after document->get_activeElement() call
+   (see MSDN documentation for more information). Fixes issue #7577. Patch 
+   provided by Dominik Rauch.
+
+v2.42.0.2
+=========
+ * Updated json-cpp lib and replaced mongoose web server with civetweb. The
+   Mongoose project has changed its licensing to GPL. This change replaces
+   Mongoose with Civetweb, a fork of the Mongoose project at the last commit
+   under the previous license. Civetweb is licensed using the MIT license.
+   Additionally, the JsonCpp project has moved and changed owners. It now has
+   a much simpler method of source code incorporation into additional projects.
+   See the README.txt in third_party/json-cpp for information about how to
+   generate the code included here.
+
+v2.42.0.1
+=========
+ * Implemented switchToParentFrame command.
+
+v2.42.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+ * Updates to JavaScript automation atoms.
+
+v2.41.0.2
+=========
+ * Fixed IE driver to allow JavaScript objects with property names with spaces.
+   Fixes issue #7305.
+
+v2.41.0.1
+=========
+ * Updates to JavaScript automation atoms.
+ * Fixed crash when clicking on link that opens a new window.
+   When IWebBrowser2::Quit() is called, the wrapper process doesn't exit
+   right away. When that happens, CoCreateInstance can fail while the abandoned
+   iexplore.exe instance is still valid. The "right" way to do this would be to
+   call ::EnumProcesses before calling CoCreateInstance, finding all of the
+   iexplore.exe processes, waiting for one to exit, and then proceed. However,
+   there is no way to tell if a process ID belongs to an Internet Explorer
+   instance, particularly when a 32-bit process tries to enumerate 64-bit
+   processes on 64-bit Windows. So, we take the brute force way out, just
+   retrying the call to CoCreateInstance until it succeeds (the old
+   iexplore.exe process has exited), or we get a different error code. We also
+   set a 45-second timeout, with 45 seconds being chosen because it's below the
+   default 60 second HTTP request timeout of most language bindings. Fixes
+   issue #5848. Fixes issue #7021.
+
+v2.41.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+
+v2.40.0.0
+=========
+ * Updates to JavaScript automation atoms.
+ * Release to synchronize with release of Selenium project.
+
+v2.39.0.7
+=========
+ * Improved error message for findElements in the failure case.
+ * Added additional logging for failure of get_mimeType when setting cookies.
+ * Fixed edge case for finding elements by class name with invalid characters.
+   The fix should be isolated only to situations where the IE document mode
+   is 8 or less. In other words, it should fix the case for quirks mode for
+   IE9 or below, and for standards mode for IE8 or below.
+
 v2.39.0.6
 =========
  * Reorganized wait algorithm in HtmlDialog. Now is more correctly aborting

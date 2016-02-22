@@ -1,19 +1,19 @@
-/*
- * Copyright 2011 Software Freedom Conservancy.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package com.thoughtworks.selenium.condition;
 
@@ -40,6 +40,7 @@ public class DefaultConditionRunner implements ConditionRunner {
   private final int timeout;
 
   /**
+   * @param monitor the Monitor
    * @param selenium the selenium to be passed to the Conditions run from within this runner.
    * @param initialDelay (in millis) how long to wait before the initial test of the condition
    * @param interval (in millis) when waiting for a condition, how long to wait between calls to
@@ -56,19 +57,25 @@ public class DefaultConditionRunner implements ConditionRunner {
   }
 
   /**
+   * @param monitor the Monitor
    * @param selenium the selenium to be passed to the Conditions run from within this runner.
    * @param interval (in millis) when waiting for a condition, how long to wait between calls to
    *        {@link Condition#isTrue(com.thoughtworks.selenium.condition.ConditionRunner.Context)}
    * @param timeout (in millis) when waiting for a condition, how long to wait until we give up.
    */
   public DefaultConditionRunner(Monitor monitor, Selenium selenium, int interval, int timeout) {
-    this(new NoOpMonitor(), selenium, interval, interval, timeout);
+    this(monitor, selenium, interval, interval, timeout);
   }
 
   /**
    * Constructs an instance of this class with a {@link NoOpMonitor}.
-   * 
+   *
    * @see DefaultConditionRunner#DefaultConditionRunner(Monitor, Selenium, int, int)
+   * @param selenium the selenium to be passed to the Conditions run from within this runner.
+   * @param initialDelay (in millis) how long to wait before the initial test of the condition
+   * @param interval (in millis) when waiting for a condition, how long to wait between calls to
+   *        {@link Condition#isTrue(com.thoughtworks.selenium.condition.ConditionRunner.Context)}
+   * @param timeout (in millis) when waiting for a condition, how long to wait until we give up.
    */
   public DefaultConditionRunner(Selenium selenium, int initialDelay, int interval, int timeout) {
     this(new NoOpMonitor(), selenium, initialDelay, interval, timeout);
@@ -76,8 +83,12 @@ public class DefaultConditionRunner implements ConditionRunner {
 
   /**
    * Constructs an instance of this class with a {@link NoOpMonitor}.
-   * 
+   *
    * @see DefaultConditionRunner#DefaultConditionRunner(Monitor, Selenium, int, int)
+   * @param selenium the selenium to be passed to the Conditions run from within this runner.
+   * @param interval (in millis) when waiting for a condition, how long to wait between calls to
+   *        {@link Condition#isTrue(com.thoughtworks.selenium.condition.ConditionRunner.Context)}
+   * @param timeout (in millis) when waiting for a condition, how long to wait until we give up.
    */
   public DefaultConditionRunner(Selenium selenium, int interval, int timeout) {
     this(new NoOpMonitor(), selenium, interval, timeout);
@@ -85,8 +96,9 @@ public class DefaultConditionRunner implements ConditionRunner {
 
   /**
    * Constructs an instance of this class with reasonable defaults.
-   * 
+   *
    * @see DefaultConditionRunner#DefaultConditionRunner(Monitor, Selenium, int, int)
+   * @param selenium the selenium to be passed to the Conditions run from within this runner.
    */
   public DefaultConditionRunner(Selenium selenium) {
     this(new NoOpMonitor(), selenium, 500, 45 * 1000);
@@ -101,6 +113,9 @@ public class DefaultConditionRunner implements ConditionRunner {
     /**
      * Called whenever a {@link DefaultConditionRunner#waitFor(Condition)} has begun, and is being
      * tracked with the given {@code condition}.
+     *
+     * @param condition condition that waiting is about to begin
+     * @param context context on with the condition will be run
      */
     void waitHasBegun(ConditionRunner.Context context, Condition condition);
 
@@ -108,6 +123,8 @@ public class DefaultConditionRunner implements ConditionRunner {
      * Called whenever a {@link DefaultConditionRunner#waitFor(Condition)} is successful (i.e.
      * {@link Condition#isTrue(com.thoughtworks.selenium.condition.ConditionRunner.Context)}
      * returned true within the timeout}.
+     * @param condition condition that waiting completed
+     * @param context context for the condition
      */
     void conditionWasReached(ConditionRunner.Context context, Condition condition);
 
@@ -208,7 +225,7 @@ public class DefaultConditionRunner implements ConditionRunner {
   private final class ContextImpl implements ConditionRunner.Context {
 
     private final long start;
-    private List<String> info = new ArrayList<String>();
+    private List<String> info = new ArrayList<>();
     private String lastInfo;
 
     public ContextImpl() {

@@ -1,34 +1,35 @@
-/*
- Copyright 2007-2010 WebDriver committers
- Copyright 2007-2010 Google Inc.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
-
-goog.provide('Response');
+goog.provide('fxdriver.Response');
 
 /**
  * Encapsulates the information for a HTTP response.
- * @param {?Request} request The request this is a response to. May be null if
- *     this response is to a malformed request that could not be fully parsed.
+ * @param {?fxdriver.Request} request The request this is a response to. May be
+ *     null if this response is to a malformed request that could not be fully
+ *     parsed.
  * @param {nsIOutputStream} outputStream The stream to write responses to.
  * @constructor
  */
-Response = function(response, outputStream) {
+fxdriver.Response = function(response, outputStream) {
 
   /**
    * The request this is a response to.
-   * @private {?Request}
+   * @private {?fxdriver.Request}
    */
   this.response_ = response;
 
@@ -42,28 +43,28 @@ Response = function(response, outputStream) {
 };
 
 
-Response.CONTINUE = 100;
-Response.OK = 200;
-Response.NO_CONTENT = 204;
-Response.SEE_OTHER = 303;
-Response.BAD_REQUEST = 400;
-Response.NOT_FOUND = 404;
-Response.METHOD_NOT_ALLOWED = 405;
-Response.LENGTH_REQUIRED = 411;
-Response.INTERNAL_ERROR = 500;
-Response.NOT_IMPLEMENTED = 501;
-Response.HTTP_VERSION_NOT_SUPPORTED = 505;
+fxdriver.Response.CONTINUE = 100;
+fxdriver.Response.OK = 200;
+fxdriver.Response.NO_CONTENT = 204;
+fxdriver.Response.SEE_OTHER = 303;
+fxdriver.Response.BAD_REQUEST = 400;
+fxdriver.Response.NOT_FOUND = 404;
+fxdriver.Response.METHOD_NOT_ALLOWED = 405;
+fxdriver.Response.LENGTH_REQUIRED = 411;
+fxdriver.Response.INTERNAL_ERROR = 500;
+fxdriver.Response.NOT_IMPLEMENTED = 501;
+fxdriver.Response.HTTP_VERSION_NOT_SUPPORTED = 505;
 
-Response.TEXT_PLAIN = 'text/plain';
-Response.TEXT_HTML = 'text/html';
-Response.APPLICATION_JSON = 'application/json';
+fxdriver.Response.TEXT_PLAIN = 'text/plain';
+fxdriver.Response.TEXT_HTML = 'text/html';
+fxdriver.Response.APPLICATION_JSON = 'application/json';
 
 
 /**
  * Internal map of supported status messages.
  * @enum {string}
  */
-Response.StatusMessage_ = {
+fxdriver.Response.StatusMessage_ = {
   100: 'Continue',
   200: 'OK',
   204: 'No Content',
@@ -83,22 +84,23 @@ Response.StatusMessage_ = {
  * @type {string}
  * @const
  */
-Response.CRLF = '\r\n';
+fxdriver.Response.CRLF = '\r\n';
 
 
 /**
  * This response's HTTP stauts code.
  * @private {number}
  */
-Response.prototype.status_ = Response.OK;
+fxdriver.Response.prototype.status_ = fxdriver.Response.OK;
 
 
 /**
  * Set this response's HTTP status code.
  */
-Response.prototype.setStatus = function(status) {
+fxdriver.Response.prototype.setStatus = function(status) {
   this.status_ = status;
-  this.response_.setStatusLine(null, status, Response.StatusMessage_[status]);
+  this.response_.setStatusLine(
+      null, status, fxdriver.Response.StatusMessage_[status]);
 };
 
 
@@ -107,17 +109,17 @@ Response.prototype.setStatus = function(status) {
  * @param {string} name The name of the header.
  * @param {?string} value The header value, or null to delete the field.
  */
-Response.prototype.setHeader = function(name, value) {
+fxdriver.Response.prototype.setHeader = function(name, value) {
   this.response_.setHeader(name, value, false);
 };
 
 
 /**
- * Sets the value of this response's Content-Type header. Responses are always
- * sent as UTF-8, so the content type value need not specify a charset.
+ * Sets the value of this response's Content-Type header. fxdriver.Responses are
+ * always sent as UTF-8, so the content type value need not specify a charset.
  * @param {string} type The new content type.
  */
-Response.prototype.setContentType = function(type) {
+fxdriver.Response.prototype.setContentType = function(type) {
   this.setHeader('Content-Type', type + '; charset=UTF-8');
 };
 
@@ -126,7 +128,7 @@ Response.prototype.setContentType = function(type) {
  * @param {string} name The name of the header to get.
  * @return {string} The value of the named header if it has been specified.
  */
-Response.prototype.getHeader = function(name) {
+fxdriver.Response.prototype.getHeader = function(name) {
   return this.response_.getHeader(name);
 };
 
@@ -135,15 +137,15 @@ Response.prototype.getHeader = function(name) {
  * Sets this response's message body, overwriting any previously saved content.
  * The message body will be converted to UTF-8 before the response is committed.
  * @param {string} body The new message body.
- * @see Response.prototype.commit
+ * @see fxdriver.Response.prototype.commit
  */
-Response.prototype.setBody = function(body) {
+fxdriver.Response.prototype.setBody = function(body) {
   this.body_ = body.toString();
 };
 
 
 /** @return {string} The response message body. */
-Response.prototype.getBody = function() {
+fxdriver.Response.prototype.getBody = function() {
   return this.body_;
 };
 
@@ -152,8 +154,8 @@ Response.prototype.getBody = function() {
  * Convenience function for sending a 303 redirect.
  * @param {string} location The location to redirect to.
  */
-Response.prototype.sendRedirect = function(location) {
-  this.setStatus(Response.SEE_OTHER);
+fxdriver.Response.prototype.sendRedirect = function(location) {
+  this.setStatus(fxdriver.Response.SEE_OTHER);
   this.setHeader('Location', location);
   this.commit();
 };
@@ -167,7 +169,8 @@ Response.prototype.sendRedirect = function(location) {
  * @param {string} opt_contentType An optional content type to send with the
  *     error response.
  */
-Response.prototype.sendError = function(code, opt_message, opt_contentType) {
+fxdriver.Response.prototype.sendError = function(
+    code, opt_message, opt_contentType) {
   this.setStatus(code);
   this.setBody(opt_message || '');
   if (opt_contentType) {
@@ -176,7 +179,7 @@ Response.prototype.sendError = function(code, opt_message, opt_contentType) {
   this.commit();
 };
 
-Response.prototype.send = function() {
+fxdriver.Response.prototype.send = function() {
   this.commit();
 };
 
@@ -184,11 +187,11 @@ Response.prototype.send = function() {
  * Commits this response. This function is a no-op if the response has already
  * been committed.
  */
-Response.prototype.commit = function() {
+fxdriver.Response.prototype.commit = function() {
   if (this.committed_) {
-    var info = ['Response already committed'];
+    var info = ['fxdriver.Response already committed'];
     info.push('response: ' + this.status_ + ' ' +
-              Response.StatusMessage_[this.status_]);
+              fxdriver.Response.StatusMessage_[this.status_]);
     info.push('          ' + this.body_);
     Components.utils.reportError(info.join('\n  '));
     return;
@@ -217,7 +220,7 @@ Response.prototype.commit = function() {
   if (statusCanHaveBody) {
     var byteStream = converter.convertToInputStream(this.body_);
     this.response_.bodyOutputStream.writeFrom(byteStream, bytes.length);
-    this.response_.bodyOutputStream.flush();      
+    this.response_.bodyOutputStream.flush();
   }
 
   this.response_.finish();

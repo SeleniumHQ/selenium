@@ -1,17 +1,19 @@
-// Copyright 2012 Selenium committers
-// Copyright 2012 Software Freedom Conservancy
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 
 /**
@@ -23,7 +25,7 @@ goog.provide('safaridriver.extension');
 goog.require('bot.response');
 goog.require('goog.asserts');
 goog.require('goog.debug.LogManager');
-goog.require('goog.debug.Logger');
+goog.require('goog.log');
 goog.require('safaridriver.console');
 goog.require('safaridriver.extension.LogDb');
 goog.require('safaridriver.extension.Server');
@@ -64,12 +66,12 @@ safaridriver.extension.postLogInit_ = function() {
     safaridriver.extension.LogDb.getInstance().save([entry]);
   });
 
-  safaridriver.extension.LOG_.fine('Creating global session...');
+  goog.log.fine(safaridriver.extension.LOG_, 'Creating global session...');
   safaridriver.extension.tabManager_ = new safaridriver.extension.TabManager();
   safaridriver.extension.session_ = new safaridriver.extension.Session(
       safaridriver.extension.tabManager_);
 
-  safaridriver.extension.LOG_.fine('Creating debug driver...');
+  goog.log.fine(safaridriver.extension.LOG_, 'Creating debug driver...');
   var server = safaridriver.extension.createSessionServer_();
   safaridriver.extension.driver = new webdriver.WebDriver(
       new webdriver.Session('debug', {}), server);
@@ -82,16 +84,15 @@ safaridriver.extension.postLogInit_ = function() {
 
   // Now that we're initialized, we sit and wait for a page to send us a client
   // to attempt connecting to.
-  safaridriver.extension.LOG_.info('Waiting for connect command...');
+  goog.log.info(safaridriver.extension.LOG_, 'Waiting for connect command...');
 };
 
 
 /**
- * @private {!goog.debug.Logger}
+ * @private {goog.log.Logger}
  * @const
  */
-safaridriver.extension.LOG_ = goog.debug.Logger.getLogger(
-    'safaridriver.extension');
+safaridriver.extension.LOG_ = goog.log.getLogger('safaridriver.extension');
 
 
 /**
@@ -256,14 +257,16 @@ safaridriver.extension.onMessage_ = function(e) {
       var server = safaridriver.extension.createSessionServer_();
       server.connect(url).
           then(function() {
-            safaridriver.extension.LOG_.info('Connected to client: ' + url);
+            goog.log.info(safaridriver.extension.LOG_,
+                'Connected to client: ' + url);
             safaridriver.extension.numConnections_++;
             server.onDispose(function() {
               safaridriver.extension.numConnections_--;
             });
           }, function(e) {
-            safaridriver.extension.LOG_.severe(
-                'Failed to connect to client: ' + url, e);
+            goog.log.error(safaridriver.extension.LOG_,
+                'Failed to connect to client: ' + url,
+                /** @type {Error} */(e));
           });
       break;
 
@@ -271,7 +274,7 @@ safaridriver.extension.onMessage_ = function(e) {
       checkIsSynchronous();
       if (message.blocksUiThread() &&
           !safaridriver.extension.session_.isExecutingCommand()) {
-        safaridriver.extension.LOG_.warning(
+        goog.log.warning(safaridriver.extension.LOG_,
             'Saving unhandled alert text: ' + message.getMessage());
         safaridriver.extension.session_.setUnhandledAlertText(
             message.getMessage());
@@ -321,12 +324,14 @@ safaridriver.extension.createSessionServer_ = function() {
  * @private
  */
 safaridriver.extension.loadModule_ = function(moduleId) {
-  safaridriver.extension.LOG_.config('Loading module(' + moduleId + ')');
+  goog.log.fine(safaridriver.extension.LOG_,
+      'Loading module(' + moduleId + ')');
   var moduleFn = safaridriver.extension.modules_[moduleId];
   if (moduleFn) {
     return bot.response.createResponse(moduleFn.toString());
   }
-  safaridriver.extension.LOG_.warning('module not found: ' + moduleId);
+  goog.log.warning(safaridriver.extension.LOG_,
+      'module not found: ' + moduleId);
   return bot.response.createErrorResponse(
       Error('Internal error: module ' + moduleId + ' not found'));
 };

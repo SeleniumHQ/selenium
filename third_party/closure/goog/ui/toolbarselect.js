@@ -16,12 +16,10 @@
  * @fileoverview A toolbar select control.
  *
  * @author attila@google.com (Attila Bodis)
- * @author ssaviano@google.com (Steven Saviano)
  */
 
 goog.provide('goog.ui.ToolbarSelect');
 
-goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.Select');
 goog.require('goog.ui.ToolbarMenuButtonRenderer');
 goog.require('goog.ui.registry');
@@ -37,7 +35,7 @@ goog.require('goog.ui.registry');
  * @param {goog.ui.MenuButtonRenderer=} opt_renderer Renderer used to
  *     render or decorate the control; defaults to
  *     {@link goog.ui.ToolbarMenuButtonRenderer}.
- * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM hepler, used for
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
  * @constructor
  * @extends {goog.ui.Select}

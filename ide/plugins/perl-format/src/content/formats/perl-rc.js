@@ -27,14 +27,12 @@ var formatter = this;
 string = function(value) {
 	if (value != null) {
 		value = value.replace(/\\/g, '\\\\');
-		value = value.replace(/\"/g, '\\"');
+		value = value.replace(/\'/g, '\\\'');
 		value = value.replace(/\r/g, '\\r');
 		value = value.replace(/\n/g, '\\n');
-		value = value.replace(/@/g, '\\@');
-		value = value.replace(/\$/g, '\\$');
-		return '"' + value + '"';
+		return "'" + value + "'";
 	} else {
-		return '""';
+		return "''";
 	}
 }
 
@@ -229,6 +227,11 @@ this.options = {
 	header: 
 		'use strict;\n' +
 		'use warnings;\n' +
+		'use utf8;\n' +
+		'BEGIN {\n' +
+		'    binmode STDOUT, ":utf8";\n' +
+		'    binmode STDERR, ":utf8";\n' +
+		'}\n' +
 		'use Time::HiRes qw(sleep);\n' +
 		'use Test::WWW::Selenium;\n' +
 		'use Test::More "no_plan";\n' +

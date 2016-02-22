@@ -1,18 +1,19 @@
-/*
-Copyright 2007-2011 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.interactions;
 
@@ -29,6 +30,7 @@ import org.openqa.selenium.internal.Locatable;
  * method calls.
  */
 public class Actions {
+  protected WebDriver driver;
   protected Mouse mouse;
   protected Keyboard keyboard;
   protected CompositeAction action;
@@ -38,8 +40,10 @@ public class Actions {
    * @param driver the driver providing the implementations to use.
    */
   public Actions(WebDriver driver) {
-    this(((HasInputDevices) driver).getKeyboard(),
-        ((HasInputDevices) driver).getMouse());
+    this.driver = driver;
+    this.mouse = ((HasInputDevices) driver).getMouse();
+    this.keyboard = ((HasInputDevices) driver).getKeyboard();
+    resetCompositeAction();
   }
 
   /**
@@ -64,7 +68,7 @@ public class Actions {
   }
 
   private void resetCompositeAction() {
-    action = new CompositeAction();
+    action = new CompositeAction(driver);
   }
 
   /**
@@ -88,6 +92,7 @@ public class Actions {
    *
    * @param theKey Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}. If the
    * provided key is none of those, {@link IllegalArgumentException} is thrown.
+   * @param element WebElement to perform the action
    * @return A self reference.
    */
   public Actions keyDown(WebElement element, Keys theKey) {
@@ -112,6 +117,7 @@ public class Actions {
    * @see #keyUp(org.openqa.selenium.Keys) on behaviour regarding non-depressed modifier keys.
    *
    * @param theKey Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}.
+   * @param element WebElement to perform the action on
    * @return A self reference.
    */
   public Actions keyUp(WebElement element, Keys theKey) {
@@ -256,7 +262,7 @@ public class Actions {
    * Moves the mouse to an offset from the top-left corner of the element.
    * The element is scrolled into view and its location is calculated using getBoundingClientRect.
    * @param toElement element to move to.
-   * @param xOffset Offset from the top-left corner. A negative value means coordinates right from
+   * @param xOffset Offset from the top-left corner. A negative value means coordinates left from
    * the element.
    * @param yOffset Offset from the top-left corner. A negative value means coordinates above
    * the element.
@@ -338,7 +344,7 @@ public class Actions {
    *
    * @param pause pause duration, in milliseconds.
    * @return A self reference.
-   * 
+   *
    * @deprecated 'Pause' is considered to be a bad design practice.
    */
   @Deprecated

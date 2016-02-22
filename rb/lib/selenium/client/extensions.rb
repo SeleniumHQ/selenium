@@ -1,27 +1,41 @@
+# encoding: utf-8
+#
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 module Selenium
   module Client
 
-    # Convenience methods not explicitely part of the protocol
+    # Convenience methods not explicitly part of the protocol
     module Extensions
 
-	    # These for all Ajax request to finish (Only works if you are using prototype, the wait happens in the browser)
-	    #
-	    # See http://davidvollbracht.com/2008/6/4/30-days-of-tech-day-3-waitforajax for
-	    # more background.
+      # These for all Ajax request to finish (Only works if you are using prototype, the wait happens in the browser)
       def wait_for_ajax(options={})
-		    builder = JavascriptExpressionBuilder.new active_javascript_framework(options)
-	      wait_for_condition builder.no_pending_ajax_requests.script,
-	                         options[:timeout_in_seconds]
+        builder = JavascriptExpressionBuilder.new active_javascript_framework(options)
+        wait_for_condition builder.no_pending_ajax_requests.script, options[:timeout_in_seconds]
       end
 
-	    # Wait for all Prototype effects to be processed (the wait happens in the browser).
-	    #
-	    # Credits to http://github.com/brynary/webrat/tree/master
-			def wait_for_effects(options={})
-		    builder = JavascriptExpressionBuilder.new active_javascript_framework(options)
-			  wait_for_condition builder.no_pending_effects.script,
-			                     options[:timeout_in_seconds]
-			end
+      # Wait for all Prototype effects to be processed (the wait happens in the browser).
+      #
+      # Credits to http://github.com/brynary/webrat/tree/master
+      def wait_for_effects(options={})
+        builder = JavascriptExpressionBuilder.new active_javascript_framework(options)
+        wait_for_condition builder.no_pending_effects.script, options[:timeout_in_seconds]
+      end
 
       # Wait for an element to be present (the wait happens in the browser).
       def wait_for_element(locator, options={})
@@ -37,8 +51,8 @@ module Selenium
         wait_for_condition builder.script, options[:timeout_in_seconds]
       end
 
-			# Wait for some text to be present (the wait is happening browser side).
-			#
+      # Wait for some text to be present (the wait is happening browser side).
+      #
       # wait_for_text will search for the given argument within the innerHTML
       # of the current DOM. Note that this method treats a single string
       # as a special case.
@@ -69,7 +83,7 @@ module Selenium
       #
       def wait_for_text(pattern, options={})
         builder = JavascriptExpressionBuilder.new
-		    builder.find_text(pattern, options).append("text_match == true;")
+        builder.find_text(pattern, options).append("text_match == true;")
         wait_for_condition builder.script, options[:timeout_in_seconds]
       end
 
@@ -78,7 +92,7 @@ module Selenium
       # See wait_for_text for usage details.
       def wait_for_no_text(pattern, options={})
         builder = JavascriptExpressionBuilder.new
-		    builder.find_text(pattern, options).append("text_match == false;")
+        builder.find_text(pattern, options).append("text_match == false;")
         wait_for_condition builder.script, options[:timeout_in_seconds]
       end
 

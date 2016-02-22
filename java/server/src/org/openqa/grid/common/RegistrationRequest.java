@@ -1,36 +1,21 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.common;
-
-import com.google.common.collect.Maps;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.openqa.grid.common.exception.GridConfigurationException;
-import org.openqa.grid.common.exception.GridException;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.net.NetworkUtils;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
-import org.openqa.selenium.server.cli.RemoteControlLauncher;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -39,10 +24,25 @@ import java.net.URLDecoder;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import org.openqa.grid.common.exception.GridConfigurationException;
+import org.openqa.grid.common.exception.GridException;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.JsonToBeanConverter;
+
+import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 /**
  * helper to register to the grid. Using JSON to exchange the object between the node and grid.
@@ -54,12 +54,12 @@ public class RegistrationRequest {
   private String description;
 
   private GridRole role;
-  private List<DesiredCapabilities> capabilities = new ArrayList<DesiredCapabilities>();
-  private Map<String, Object> configuration = new HashMap<String, Object>();
+  private List<DesiredCapabilities> capabilities = new ArrayList<>();
+  private Map<String, Object> configuration = new HashMap<>();
 
   private String[] args;
 
-  private static final Logger log = Logger.getLogger(RegistrationRequest.class.getName());
+  private static final Logger LOG = Logger.getLogger(RegistrationRequest.class.getName());
 
   // some special param for capability
   public static final String APP = "applicationName";
@@ -156,27 +156,22 @@ public class RegistrationRequest {
   }
 
   public String toJSON() {
-    JSONObject res = getAssociatedJSON();
-    return res.toString();
+    return new Gson().toJson(getAssociatedJSON());
   }
 
-  public JSONObject getAssociatedJSON() {
+  public JsonObject getAssociatedJSON() {
+    JsonObject res = new JsonObject();
 
-    JSONObject res = new JSONObject();
-    try {
-      res.put("class", getClass().getCanonicalName());
-      res.put("id", id);
-      res.put("name", name);
-      res.put("description", description);
-      res.put("configuration", configuration);
-      JSONArray caps = new JSONArray();
-      for (DesiredCapabilities c : capabilities) {
-        caps.put(c.asMap());
-      }
-      res.put("capabilities", caps);
-    } catch (JSONException e) {
-      throw new RuntimeException("Error encoding to JSON " + e.getMessage(), e);
+    res.addProperty("class", getClass().getCanonicalName());
+    res.addProperty("id", id);
+    res.addProperty("name", name);
+    res.addProperty("description", description);
+    res.add("configuration", new Gson().toJsonTree(configuration));
+    JsonArray caps = new JsonArray();
+    for (DesiredCapabilities c : capabilities) {
+      caps.add(new Gson().toJsonTree(c.asMap()));
     }
+    res.add("capabilities", caps);
 
     return res;
   }
@@ -197,8 +192,10 @@ public class RegistrationRequest {
     }
     try {
       return Integer.parseInt(o.toString());
-    } catch (Throwable t) {
-      log.warning("Error. " + param + " is supposed to be an int. Keeping default of " + defaultValue);
+    } catch (NumberFormatException t) {
+      LOG.warning(String.format(
+        "Parameter %s has value '%s', but it is supposed to be an int. Keeping default of %s",
+        param, o, defaultValue));
       return defaultValue;
     }
 
@@ -250,8 +247,8 @@ public class RegistrationRequest {
 
   /**
    * Create an object from a registration request formatted as a json string.
-   * 
-   * @param json
+   *
+   * @param json JSON
    * @return create a request from the JSON request received.
    */
   @SuppressWarnings("unchecked")
@@ -259,34 +256,33 @@ public class RegistrationRequest {
   public static RegistrationRequest getNewInstance(String json) {
     RegistrationRequest request = new RegistrationRequest();
     try {
-      JSONObject o = new JSONObject(json);
+      JsonObject o = new JsonParser().parse(json).getAsJsonObject();
 
-      if (o.has("id")) request.setId(o.getString("id"));
-      if (o.has("name")) request.setName(o.getString("name"));
-      if (o.has("description")) request.setDescription(o.getString("description"));
-      JSONObject config = o.getJSONObject("configuration");
+      if (o.has("id")) request.setId(o.get("id").getAsString());
+      if (o.has("name")) request.setName(o.get("name").getAsString());
+      if (o.has("description")) request.setDescription(o.get("description").getAsString());
 
-      Map<String, Object> configuration = Maps.newHashMap();
-      for (Iterator<String> iterator = config.keys(); iterator.hasNext();) {
-        String key = iterator.next();
-        configuration.put(key, config.get(key));
+      JsonObject config = o.get("configuration").getAsJsonObject();
+      Map<String, Object> configuration = new JsonToBeanConverter().convert(Map.class, config);
+      // For backward compatibility numbers should be converted to integers
+      for (String key : configuration.keySet()) {
+        Object value = configuration.get(key);
+        if (value instanceof Long) {
+          configuration.put(key, ((Long) value).intValue());
+        }
       }
       request.setConfiguration(configuration);
 
-      JSONArray capabilities = o.getJSONArray("capabilities");
+      JsonArray capabilities = o.get("capabilities").getAsJsonArray();
 
-      for (int i = 0; i < capabilities.length(); i++) {
-        JSONObject capability = capabilities.getJSONObject(i);
-        DesiredCapabilities cap = new DesiredCapabilities();
-        for (Iterator<String> iterator = capability.keys(); iterator.hasNext();) {
-          String key = iterator.next();
-          cap.setCapability(key, capability.get(key));
-        }
+      for (int i = 0; i < capabilities.size(); i++) {
+        DesiredCapabilities cap = new JsonToBeanConverter()
+            .convert(DesiredCapabilities.class, capabilities.get(i));
         request.capabilities.add(cap);
       }
       request.ensureBackwardCompatibility();
       return request;
-    } catch (JSONException e) {
+    } catch (JsonSyntaxException e) {
       // Check if it was a Selenium Grid 1.0 request.
       return parseGrid1Request(json);
     }
@@ -295,7 +291,7 @@ public class RegistrationRequest {
   /**
    * if a PROXY_CLASS is specified in the request, the proxy created following this request will be
    * of that type. If nothing is specified, it will use RemoteProxy
-   * 
+   *
    * @return null if no class was specified.
    */
   public String getRemoteProxyClass() {
@@ -324,7 +320,7 @@ public class RegistrationRequest {
         registrationInfo.put(URLDecoder.decode(configItem[0], "UTF-8"),
             URLDecoder.decode(configItem[1], "UTF-8"));
       } catch (UnsupportedEncodingException e) {
-        log.warning(String.format("Unable to decode registration request portion: %s", part));
+        LOG.warning(String.format("Unable to decode registration request portion: %s", part));
       }
     }
 
@@ -354,13 +350,6 @@ public class RegistrationRequest {
     }
   }
 
-  // TODO freynaud : this is only used in tests. Move the method ?
-  public static RegistrationRequest localWebdriverNoCapabilities() {
-    RegistrationRequest res = build("-role", "webdriver","-host","localhost");
-    res.capabilities.clear();
-    return res;
-  }
-
   public static RegistrationRequest build(String... args) {
     RegistrationRequest res = new RegistrationRequest();
     res.args = args;
@@ -369,17 +358,15 @@ public class RegistrationRequest {
 
     res.role = GridRole.find(args);
 
-
     String defaultConfig = "defaults/DefaultNode.json";
     String nodeType = helper.getParamValue("-role");
-    if (GridRole.RCAliases().contains(nodeType)) {
+    if (GridRole.isRC(nodeType)) {
       defaultConfig = "defaults/DefaultNodeSelenium.json";
     }
-    if (GridRole.WDAliases().contains(nodeType)) {
+    if (GridRole.isWebDriver(nodeType)) {
       defaultConfig = "defaults/DefaultNodeWebDriver.json";
     }
 
-   
     res.loadFromJSON(defaultConfig);
 
     // -file *.json ?
@@ -392,16 +379,9 @@ public class RegistrationRequest {
     res.loadFromCommandLine(args);
 
     for (DesiredCapabilities cap : res.capabilities) {
-      if (SeleniumProtocol.Selenium.toString().equals(cap.getCapability(SELENIUM_PROTOCOL))) {
-        if (!BrowserLauncherFactory.isBrowserSupported(cap.getBrowserName())) {
-          throw new GridConfigurationException("browser " + cap.getBrowserName()
-                                               + " is not supported, supported browsers are:\n"
-                                               + BrowserLauncherFactory.getSupportedBrowsersAsString());
-        }
-      }
       if (cap.getCapability(SELENIUM_PROTOCOL) == null) {
         cap.setCapability(SELENIUM_PROTOCOL,
-          GridRole.RCAliases().contains(nodeType)
+          GridRole.isRC(nodeType)
             ? SeleniumProtocol.Selenium.toString() : SeleniumProtocol.WebDriver.toString());
       }
     }
@@ -426,7 +406,13 @@ public class RegistrationRequest {
       try {
         URL ur = new URL(u);
         res.configuration.put(HUB_HOST, ur.getHost());
-        res.configuration.put(HUB_PORT, ur.getPort());
+        //If port was not defined after -hub default it to 4444
+        int port = ur.getPort();
+        if(port==-1){
+        	port=4444;
+        	LOG.info("No port was provided in -hub. Defaulting hub port to 4444");
+        }
+        res.configuration.put(HUB_PORT, port);
       } catch (MalformedURLException e) {
         throw new GridConfigurationException("the specified hub is not valid : -hub " + u);
       }
@@ -479,7 +465,7 @@ public class RegistrationRequest {
       configuration.put(CLEAN_UP_CYCLE, Integer.parseInt(helper.getParamValue("-cleanUpCycle")));
     }
     if (helper.isParamPresent("-timeout")) {
-      configuration.put(TIME_OUT, Integer.parseInt(helper.getParamValue("-timeout")));
+      configuration.put(TIME_OUT, Integer.parseInt(helper.getParamValue("-timeout")) * 1000);
     }
     if (helper.isParamPresent("-browserTimeout")) {
       configuration.put(BROWSER_TIME_OUT, Integer.parseInt(helper.getParamValue("-browserTimeout")));
@@ -511,7 +497,7 @@ public class RegistrationRequest {
   }
 
   private DesiredCapabilities addCapabilityFromString(String capability) {
-    log.info("Adding " + capability);
+    LOG.info("Adding " + capability);
     String[] s = capability.split(",");
     if (s.length == 0) {
       throw new GridConfigurationException("-browser must be followed by a browser description");
@@ -544,61 +530,34 @@ public class RegistrationRequest {
     }
   }
 
-  public JSONObject getRegistrationRequest() {
-    try {
-      JSONObject res = new JSONObject();
-      JSONArray a = new JSONArray();
-      for (DesiredCapabilities cap : capabilities) {
-        JSONObject capa = new JSONObject(cap.asMap());
-        a.put(capa);
-      }
-
-      res.put("configuration", new JSONObject(configuration));
-      return res;
-    } catch (JSONException e) {
-      throw new GridConfigurationException("error generating the node config : " + e.getMessage());
-    }
-  }
-
   /**
    * add config, but overwrite capabilities.
-   * 
-   * @param resource
+   *
+   * @param resource resource
    */
   public void loadFromJSON(String resource) {
     try {
-      JSONObject base = JSONConfigurationUtils.loadJSON(resource);
+      JsonObject base = JSONConfigurationUtils.loadJSON(resource);
 
       if (base.has("capabilities")) {
-        capabilities = new ArrayList<DesiredCapabilities>();
-        JSONArray a = base.getJSONArray("capabilities");
-        for (int i = 0; i < a.length(); i++) {
-          JSONObject cap = a.getJSONObject(i);
-          DesiredCapabilities c = new DesiredCapabilities();
-          for (Iterator<?> iterator = cap.keys(); iterator.hasNext();) {
-            String name = (String) iterator.next();
-            Object value = cap.get(name);
-            c.setCapability(name, value);
-          }
+        capabilities = new ArrayList<>();
+        JsonArray a = base.get("capabilities").getAsJsonArray();
+        for (int i = 0; i < a.size(); i++) {
+          DesiredCapabilities c = new JsonToBeanConverter()
+              .convert(DesiredCapabilities.class, a.get(i));
           capabilities.add(c);
         }
         addPlatformInfoToCapabilities();
       }
 
-      JSONObject o = base.getJSONObject("configuration");
-      for (Iterator<?> iterator = o.keys(); iterator.hasNext();) {
-        String key = (String) iterator.next();
-        Object value = o.get(key);
-        if (value instanceof JSONArray) {
-          JSONArray a = (JSONArray) value;
-          List<String> as = new ArrayList<String>();
-          for (int i = 0; i < a.length(); i++) {
-            as.add(a.getString(i));
-          }
-          configuration.put(key, as);
-        } else {
-          configuration.put(key, o.get(key));
+      JsonObject o = base.get("configuration").getAsJsonObject();
+      for (Map.Entry<String, JsonElement> entry : o.entrySet()) {
+        Object value = new JsonToBeanConverter().convert(Object.class, entry.getValue());
+        // For backward compatibility numbers should be converted to integers
+        if (value instanceof Long) {
+          value = ((Long) value).intValue();
         }
+        configuration.put(entry.getKey(), value);
       }
 
     } catch (Throwable e) {
@@ -615,26 +574,14 @@ public class RegistrationRequest {
     this.role = role;
   }
 
-  public RemoteControlConfiguration getRemoteControlConfiguration() {
-    List<String> params = new ArrayList<String>();
-    for (String key : configuration.keySet()) {
-      params.add("-" + key);
-
-      if (!configuration.get(key).toString().trim().isEmpty()) {
-        params.add("" + configuration.get(key));
-      }
-    }
-    return RemoteControlLauncher.parseLauncherOptions(params.toArray(new String[params.size()]));
-  }
-
   public String[] getArgs() {
     return args;
   }
 
   /**
    * Validate the current setting and throw a config exception is an invalid setup is detected.
-   * 
-   * @throws GridConfigurationException
+   *
+   * @throws GridConfigurationException grid configuration
    */
   public void validate() throws GridConfigurationException {
     String hub = (String) configuration.get(HUB_HOST);
@@ -645,7 +592,7 @@ public class RegistrationRequest {
           + hub + " -" + HUB_PORT + " " + port);
     }
   }
-  
- 
+
+
 
 }

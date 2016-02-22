@@ -1,9 +1,9 @@
 // <copyright file="WebSocketServer.cs" company="WebDriver Committers">
-// Copyright 2007-2012 WebDriver committers
-// Copyright 2007-2012 Google Inc.
-// Portions copyright 2012 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -18,7 +18,6 @@
 
 using System;
 using System.Net;
-using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 
 namespace OpenQA.Selenium.Safari.Internal
@@ -51,8 +50,7 @@ namespace OpenQA.Selenium.Safari.Internal
             this.Port = port > 0 ? port : uri.Port;
             this.Location = location;
             this.scheme = uri.Scheme;
-            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
-            this.ListenerSocket = new SocketWrapper(socket);
+            this.ListenerSocket = new SocketWrapper();
             this.ListenerSocket.Accepted += new EventHandler<AcceptEventArgs>(this.ListenerSocketAcceptedEventHandler);
         }
 
@@ -200,10 +198,10 @@ namespace OpenQA.Selenium.Safari.Internal
         }
 
         /// <summary>
-        /// Releases the unmanaged resources used by the <see cref="SocketWrapper"/> and optionally 
+        /// Releases the unmanaged resources used by the <see cref="SocketWrapper"/> and optionally
         /// releases the managed resources.
         /// </summary>
-        /// <param name="disposing"><see langword="true"/> to release managed and resources; 
+        /// <param name="disposing"><see langword="true"/> to release managed and resources;
         /// <see langword="false"/> to only release unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {

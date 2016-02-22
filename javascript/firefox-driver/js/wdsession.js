@@ -1,25 +1,26 @@
-/*
- Copyright 2007-2010 WebDriver committers
- Copyright 2007-2010 Google Inc.
- Portions copyright 2011 Software Freedom Conservancy
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 goog.provide('wdSession');
 
-goog.require('fxdriver.moz');
 goog.require('fxdriver.logging');
+goog.require('fxdriver.moz');
+goog.require('goog.log');
+
 
 /**
  * An active FirefoxDriver session.
@@ -32,6 +33,13 @@ wdSession = function() {
    */
   this.wrappedJSObject = this;
 };
+
+
+/**
+ * @private {goog.log.Logger}
+ * @const
+ */
+wdSession.LOG_ = fxdriver.logging.getLogger('fxdriver.wdSession');
 
 
 /**
@@ -202,7 +210,7 @@ wdSession.prototype.getWindow = function() {
       }
     }
   } catch (ex) {
-    fxdriver.logging.error(ex);
+    goog.log.error(wdSession.LOG_, 'Failed to get frame contentWindow', ex);
     // ignore exception and try other way
   }
 
@@ -212,7 +220,7 @@ wdSession.prototype.getWindow = function() {
         win = this.window_.get();
       }
     } catch (ex) {
-      fxdriver.logging.error(ex);
+      goog.log.error(wdSession.LOG_, 'Failed to get window', ex);
       // ignore exception and try other way
     }
   }
@@ -221,7 +229,7 @@ wdSession.prototype.getWindow = function() {
     // Uh-oh, we lost our DOM! Try to recover by changing focus to the main
     // content window. Note: this will cause problems in case the lost DOM
     // was under a frame.
-    fxdriver.logging.error("Lost DOM in window " + win);
+    goog.log.error(wdSession.LOG_, 'Lost DOM in window ' + win);
     win = this.chromeWindow_.getBrowser().contentWindow;
     this.setWindow(win);
   }
@@ -230,7 +238,7 @@ wdSession.prototype.getWindow = function() {
 };
 
 
-/** @return @return {?nsIDOMWindow} This session's top window. */
+/** @return {?nsIDOMWindow} This session's top window. */
 wdSession.prototype.getTopWindow = function() {
   return this.getWindow().top;
 };
@@ -371,7 +379,7 @@ wdSession.prototype.getWaitForPageLoad = function() {
  */
 wdSession.prototype.setWaitForPageLoad = function(flag) {
   this.waitForPageLoad_ = flag;
-  fxdriver.logging.info("setWaitForPageLoad " + flag);
+  goog.log.info(wdSession.LOG_, "setWaitForPageLoad " + flag);
 };
 
 
@@ -440,9 +448,6 @@ wdSession.prototype.setMouseViewportOffset = function(x, y) {
 wdSession.quitBrowser = function(timeDelay) {
   // Use an nsITimer to give the response time to go out.
   var event = function(timer) {
-      // Create a switch file so the native events library will
-      // let all events through in case of a close.
-      notifyOfCloseWindow();
       Components.classes['@mozilla.org/toolkit/app-startup;1'].
           getService(Components.interfaces.nsIAppStartup).
           quit(Components.interfaces.nsIAppStartup.eForceQuit);

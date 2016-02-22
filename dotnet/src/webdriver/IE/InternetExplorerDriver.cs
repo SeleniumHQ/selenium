@@ -1,9 +1,9 @@
 // <copyright file="InternetExplorerDriver.cs" company="WebDriver Committers">
-// Copyright 2007-2011 WebDriver committers
-// Copyright 2007-2011 Google Inc.
-// Portions copyright 2011 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -17,12 +17,6 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.IE
@@ -31,7 +25,7 @@ namespace OpenQA.Selenium.IE
     /// Provides a way to access Internet Explorer to run your tests by creating a InternetExplorerDriver instance
     /// </summary>
     /// <remarks>
-    /// When the WebDriver object has been instantiated the browser will load. The test can then navigate to the URL under test and 
+    /// When the WebDriver object has been instantiated the browser will load. The test can then navigate to the URL under test and
     /// start your test.
     /// </remarks>
     /// <example>
@@ -61,14 +55,14 @@ namespace OpenQA.Selenium.IE
     ///     {
     ///         driver.Quit();
     ///         driver.Dispose();
-    ///     } 
+    ///     }
     /// }
     /// </code>
     /// </example>
-    public class InternetExplorerDriver : RemoteWebDriver, ITakesScreenshot
+    public class InternetExplorerDriver : RemoteWebDriver
     {
         /// <summary>
-        /// Initializes a new instance of the InternetExplorerDriver class.
+        /// Initializes a new instance of the <see cref="InternetExplorerDriver"/> class.
         /// </summary>
         public InternetExplorerDriver()
             : this(new InternetExplorerOptions())
@@ -76,7 +70,7 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InternetExplorerDriver"/> class with the desired 
+        /// Initializes a new instance of the <see cref="InternetExplorerDriver"/> class with the desired
         /// options.
         /// </summary>
         /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
@@ -86,7 +80,16 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InternetExplorerDriver"/> class using the specified path 
+        /// Initializes a new instance of the <see cref="InternetExplorerDriver"/> class using the specified driver service.
+        /// </summary>
+        /// <param name="service">The <see cref="InternetExplorerDriverService"/> used to initialize the driver.</param>
+        public InternetExplorerDriver(InternetExplorerDriverService service)
+            : this(service, new InternetExplorerOptions())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InternetExplorerDriver"/> class using the specified path
         /// to the directory containing IEDriverServer.exe.
         /// </summary>
         /// <param name="internetExplorerDriverServerDirectory">The full path to the directory containing IEDriverServer.exe.</param>
@@ -102,7 +105,7 @@ namespace OpenQA.Selenium.IE
         /// <param name="internetExplorerDriverServerDirectory">The full path to the directory containing IEDriverServer.exe.</param>
         /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
         public InternetExplorerDriver(string internetExplorerDriverServerDirectory, InternetExplorerOptions options)
-            : this(InternetExplorerDriverService.CreateDefaultService(internetExplorerDriverServerDirectory), options)
+            : this(internetExplorerDriverServerDirectory, options, RemoteWebDriver.DefaultCommandTimeout)
         {
         }
 
@@ -119,7 +122,7 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InternetExplorerDriver"/> class using the specified 
+        /// Initializes a new instance of the <see cref="InternetExplorerDriver"/> class using the specified
         /// <see cref="InternetExplorerDriverService"/> and options.
         /// </summary>
         /// <param name="service">The <see cref="DriverService"/> to use.</param>
@@ -137,18 +140,18 @@ namespace OpenQA.Selenium.IE
         /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public InternetExplorerDriver(InternetExplorerDriverService service, InternetExplorerOptions options, TimeSpan commandTimeout)
-            : base(new DriverServiceCommandExecutor(service, commandTimeout), options.ToCapabilities())
+            : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting 
-        /// sequences of keystrokes representing file paths and names. 
+        /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting
+        /// sequences of keystrokes representing file paths and names.
         /// </summary>
         /// <remarks>The IE driver does not allow a file detector to be set,
-        /// as the server component of the IE driver (IEDriverServer.exe) only 
+        /// as the server component of the IE driver (IEDriverServer.exe) only
         /// allows uploads from the local computer environment. Attempting to set
-        /// this property has no effect, but does not throw an exception. If you 
+        /// this property has no effect, but does not throw an exception. If you
         /// are attempting to run the IE driver remotely, use <see cref="RemoteWebDriver"/>
         /// in conjunction with a standalone WebDriver server.</remarks>
         public override IFileDetector FileDetector
@@ -157,20 +160,14 @@ namespace OpenQA.Selenium.IE
             set { }
         }
 
-        #region ITakesScreenshot Members
-        /// <summary>
-        /// Gets a <see cref="Screenshot"/> object representing the image of the page on the screen.
-        /// </summary>
-        /// <returns>A <see cref="Screenshot"/> object containing the image.</returns>
-        public Screenshot GetScreenshot()
+        private static ICapabilities ConvertOptionsToCapabilities(InternetExplorerOptions options)
         {
-            // Get the screenshot as base64.
-            Response screenshotResponse = Execute(DriverCommand.Screenshot, null);
-            string base64 = screenshotResponse.Value.ToString();
+            if (options == null)
+            {
+                throw new ArgumentNullException("options", "options must not be null");
+            }
 
-            // ... and convert it.
-            return new Screenshot(base64);
+            return options.ToCapabilities();
         }
-        #endregion
     }
 }

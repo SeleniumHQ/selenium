@@ -1,9 +1,9 @@
 ﻿// <copyright file="Platform.cs" company="WebDriver Committers">
-// Copyright 2007-2011 WebDriver committers
-// Copyright 2007-2011 Google Inc.
-// Portions copyright 2011 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -23,8 +23,8 @@ namespace OpenQA.Selenium
     /// <summary>
     /// Represents the known and supported Platforms that WebDriver runs on.
     /// </summary>
-    /// <remarks>The <see cref="Platform"/> class maps closely to the Operating System, 
-    /// but differs slightly, because this class is used to extract information such as 
+    /// <remarks>The <see cref="Platform"/> class maps closely to the Operating System,
+    /// but differs slightly, because this class is used to extract information such as
     /// program locations and line endings. </remarks>
     public enum PlatformType
     {
@@ -35,13 +35,13 @@ namespace OpenQA.Selenium
         Any,
 
         /// <summary>
-        /// Any version of Microsoft Windows. This value is never returned by a driver, 
+        /// Any version of Microsoft Windows. This value is never returned by a driver,
         /// but can be used to find drivers with certain capabilities.
         /// </summary>
         Windows,
 
         /// <summary>
-        /// Any Windows NT-based version of Microsoft Windows. This value is never returned 
+        /// Any Windows NT-based version of Microsoft Windows. This value is never returned
         /// by a driver, but can be used to find drivers with certain capabilities. This value
         /// is equivalent to PlatformType.Windows.
         /// </summary>
@@ -113,7 +113,11 @@ namespace OpenQA.Selenium
                     {
                         this.platformTypeValue = PlatformType.Vista;
                     }
-                    
+                    else
+                    {
+                        this.platformTypeValue = PlatformType.Windows;
+                    }
+
                     break;
 
                 // Thanks to a bug in Mono Mac and Linux will be treated the same  https://bugzilla.novell.com/show_bug.cgi?id=515570 but adding this in case
@@ -132,7 +136,7 @@ namespace OpenQA.Selenium
         /// </summary>
         public static Platform CurrentPlatform
         {
-            get 
+            get
             {
                 if (current == null)
                 {
@@ -165,6 +169,14 @@ namespace OpenQA.Selenium
         public PlatformType PlatformType
         {
             get { return this.platformTypeValue; }
+        }
+
+        /// <summary>
+        /// Gets the value of the platform type for transmission using the JSON Wire Protocol.
+        /// </summary>
+        public string ProtocolPlatformType
+        {
+            get { return this.platformTypeValue.ToString("G").ToUpperInvariant(); }
         }
 
         /// <summary>
@@ -203,6 +215,36 @@ namespace OpenQA.Selenium
             }
 
             return platformIsType;
+        }
+
+        /// <summary>
+        /// Returns the string value for this platform type.
+        /// </summary>
+        /// <returns>The string value for this platform type.</returns>
+        public override string ToString()
+        {
+            return this.platformTypeValue.ToString();
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Platform"/> object from a string name of the platform.
+        /// </summary>
+        /// <param name="platformName">The name of the platform to create.</param>
+        /// <returns>The Platform object represented by the string name.</returns>
+        internal static Platform FromString(string platformName)
+        {
+            PlatformType platformTypeFromString = PlatformType.Any;
+            try
+            {
+                platformTypeFromString = (PlatformType)Enum.Parse(typeof(PlatformType), platformName, true);
+            }
+            catch (ArgumentException)
+            {
+                // If the requested platform string is not a valid platform type,
+                // ignore it and use PlatformType.Any.
+            }
+
+            return new Platform(platformTypeFromString);
         }
     }
 }

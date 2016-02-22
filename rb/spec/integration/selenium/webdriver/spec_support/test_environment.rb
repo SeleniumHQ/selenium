@@ -1,3 +1,22 @@
+# encoding: utf-8
+#
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 module Selenium
   module WebDriver
     module SpecSupport
@@ -11,12 +30,11 @@ module Selenium
           @create_driver_error_count = 0
 
           # TODO: get rid of ENV
-          @driver = (ENV['WD_SPEC_DRIVER'] || raise("must set WD_SPEC_DRIVER")).to_sym
+          @driver = (ENV['WD_SPEC_DRIVER'] || raise("must set WD_SPEC_DRIVER")).strip.to_sym
         end
 
         def browser
           if driver == :remote
-            # TODO: get rid of ENV
             (ENV['WD_REMOTE_BROWSER'] || :firefox).to_sym
           else
             driver
@@ -27,9 +45,18 @@ module Selenium
           @driver_instance ||= new_driver_instance
         end
 
-        def reset_driver!
+        def reset_driver!(time = 0)
           quit_driver
+          sleep time
           @driver_instance = new_driver_instance
+        end
+
+        def ensure_single_window
+          @driver_instance.window_handles[1..-1].each do |handle|
+            @driver_instance.switch_to.window(handle)
+            @driver_instance.close
+          end
+          @driver_instance.switch_to.window @driver_instance.window_handles.first
         end
 
         def quit_driver
@@ -46,8 +73,7 @@ module Selenium
 
         def app_server
           @app_server ||= (
-            path = File.join(root, "common/src/web")
-            s = RackServer.new(path)
+            s = RackServer.new(root.join("common/src/web").to_s)
             s.start
 
             s
@@ -65,8 +91,12 @@ module Selenium
           )
         end
 
+        def remote_server?
+          !@remote_server.nil?
+        end
+
         def remote_server_jar
-          @remote_server_jar ||= File.join(root, "build/java/server/test/org/openqa/selenium/server-with-tests-standalone.jar")
+          @remote_server_jar ||= root.join("build/java/server/test/org/openqa/selenium/server-with-tests-standalone.jar").to_s
         end
 
         def quit
@@ -97,7 +127,7 @@ module Selenium
         end
 
         def root
-          @root ||= File.expand_path("../../../../../../../", __FILE__)
+          @root ||= Pathname.new("../../../../../../../").expand_path(__FILE__)
         end
 
         private
@@ -106,10 +136,12 @@ module Selenium
           instance = case driver
                      when :remote
                        create_remote_driver
-                     when :opera
-                       create_opera_driver
+                     when :edge
+                       create_edge_driver
                      when :firefox
                        create_firefox_driver
+                     when :marionette
+                       create_marionette_driver
                      when :chrome
                        create_chrome_driver
                      when :iphone
@@ -131,10 +163,16 @@ module Selenium
         end
 
         def remote_capabilities
-          caps  = WebDriver::Remote::Capabilities.send(ENV['WD_REMOTE_BROWSER'] || 'firefox')
+          if browser == :marionette
+            caps = WebDriver::Remote::Capabilities.firefox(:marionette => true)
+          else
+            caps = WebDriver::Remote::Capabilities.send(browser)
 
-          caps.javascript_enabled    = true
-          caps.css_selectors_enabled = true
+            unless caps.is_a? WebDriver::Remote::W3CCapabilities
+              caps.javascript_enabled = true
+              caps.css_selectors_enabled = true
+            end
+          end
 
           caps
         end
@@ -161,11 +199,6 @@ module Selenium
           )
         end
 
-        def create_opera_driver
-          ENV['SELENIUM_SERVER_JAR'] = remote_server_jar
-          WebDriver::Driver.for :opera, :logging_level => ENV['log'] ? :config : :severe
-        end
-
         def create_firefox_driver
           if native_events?
             profile = WebDriver::Firefox::Profile.new
@@ -175,6 +208,15 @@ module Selenium
           else
             WebDriver::Driver.for :firefox
           end
+        end
+
+        def create_marionette_driver
+          WebDriver.for :firefox, :marionette => true
+        end
+
+        def create_edge_driver
+          caps = WebDriver::Remote::W3CCapabilities.edge
+          WebDriver.for :edge, :desired_capabilities => caps
         end
 
         def create_chrome_driver
@@ -194,7 +236,6 @@ module Selenium
           WebDriver::Driver.for :chrome,
                                 :native_events => native_events?,
                                 :args          => args
-                                # :http_client => keep_alive_client || http_client
         end
 
         def create_phantomjs_driver

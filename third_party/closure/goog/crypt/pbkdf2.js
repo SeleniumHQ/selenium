@@ -28,6 +28,7 @@
 
 goog.provide('goog.crypt.pbkdf2');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.crypt');
 goog.require('goog.crypt.Hmac');
@@ -36,13 +37,13 @@ goog.require('goog.crypt.Sha1');
 
 /**
  * Derives key from password using PBKDF2-SHA1
- * @param {!Array.<number>} password Byte array representation of the password
+ * @param {!Array<number>} password Byte array representation of the password
  *     from which the key is derived.
- * @param {!Array.<number>} initialSalt Byte array representation of the salt.
+ * @param {!Array<number>} initialSalt Byte array representation of the salt.
  * @param {number} iterations Number of interations when computing the key.
  * @param {number} keyLength Length of the output key in bits.
  *     Must be multiple of 8.
- * @return {!Array.<number>} Byte array representation of the output key.
+ * @return {!Array<number>} Byte array representation of the output key.
  */
 goog.crypt.pbkdf2.deriveKeySha1 = function(
     password, initialSalt, iterations, keyLength) {
@@ -51,9 +52,9 @@ goog.crypt.pbkdf2.deriveKeySha1 = function(
 
   /**
    * Compute each block of the key using HMAC-SHA1.
-   * @param {!Array.<number>} index Byte array representation of the index of
+   * @param {!Array<number>} index Byte array representation of the index of
    *     the block to be computed.
-   * @return {!Array.<number>} Byte array representation of the output block.
+   * @return {!Array<number>} Byte array representation of the output block.
    */
   var computeBlock = function(index) {
     // Initialize the result to be array of 0 such that its xor with the first
@@ -84,7 +85,7 @@ goog.crypt.pbkdf2.deriveKeySha1 = function(
  *     by the specific hash function used. Must be multiple of 8.
  * @param {number} keyLength Length of the output key in bits.
  *     Must be multiple of 8.
- * @return {!Array.<number>} Byte array representation of the output key.
+ * @return {!Array<number>} Byte array representation of the output key.
  * @private
  */
 goog.crypt.pbkdf2.deriveKeyFromPassword_ =
@@ -113,7 +114,7 @@ goog.crypt.pbkdf2.deriveKeyFromPassword_ =
 /**
  * Converts an integer number to a 32-bit big endian byte array.
  * @param {number} n Integer number to be converted.
- * @return {!Array.<number>} Byte Array representation of the 32-bit big endian
+ * @return {!Array<number>} Byte Array representation of the 32-bit big endian
  *     encoding of n.
  * @private
  */

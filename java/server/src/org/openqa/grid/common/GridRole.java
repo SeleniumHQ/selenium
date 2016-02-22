@@ -1,34 +1,52 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.common;
 
+import com.google.common.collect.ImmutableList;
+
 import org.openqa.grid.common.exception.GridConfigurationException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public enum GridRole {
   NOT_GRID, HUB, NODE;
 
+  private static List<String> rcAliases = new ImmutableList.Builder<String>()
+    .add("rc")
+    .add("remotecontrol")
+    .add("remote-control")
+    .build();
+
+  private static List<String> wdAliases = new ImmutableList.Builder<String>()
+    .add("wd")
+    .add("webdriver")
+    .build();
+
+  private static List<String> nodeAliases = new ImmutableList.Builder<String>()
+    .add("node")
+    .addAll(rcAliases)
+    .addAll(wdAliases)
+    .build();
+
   /**
    * finds the requested role from the parameters.
-   * 
-   * @param args
+   *
+   * @param args command line arguments
    * @return the role in the grid from the -role param
    */
   public static GridRole find(String[] args) {
@@ -38,17 +56,17 @@ public enum GridRole {
     for (int i = 0; i < args.length; i++) {
       if ("-role".equals(args[i])) {
         if (i == args.length - 1) {
-          throw new GridConfigurationException(
-              "-role needs to be followed by the role of this component in the grid.");
+          return null;
         } else {
           String role = args[i + 1].toLowerCase();
-          if (NodeAliases().contains(role)) {
+          if (nodeAliases.contains(role)) {
             return NODE;
           } else if ("hub".equals(role)) {
             return HUB;
+          } else if ("standalone".equals(role)) {
+            return NOT_GRID;
           } else {
-            throw new GridConfigurationException("The role specified :" + role
-                + " doesn't match a recognized role for grid.");
+            return null;
           }
         }
       }
@@ -56,26 +74,11 @@ public enum GridRole {
     return NOT_GRID;
   }
 
-  private static List<String> NodeAliases() {
-    List<String> res = new ArrayList<String>();
-    res.add("node");
-    res.addAll(RCAliases());
-    res.addAll(WDAliases());
-    return res;
-  }
-  
-  public static List<String> RCAliases() {
-    List<String> res = new ArrayList<String>();
-    res.add("rc");
-    res.add("remotecontrol");
-    res.add("remote-control");
-    return res;
+  public static boolean isRC(String nodeType) {
+    return rcAliases.contains(nodeType);
   }
 
-  public static List<String> WDAliases() {
-    List<String> res = new ArrayList<String>();
-    res.add("wd");
-    res.add("webdriver");
-    return res;
+  public static boolean isWebDriver(String nodeType) {
+    return wdAliases.contains(nodeType);
   }
 }

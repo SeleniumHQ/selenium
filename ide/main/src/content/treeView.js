@@ -87,10 +87,6 @@ objectExtend(TreeView.prototype, {
                 onEvent : function(evt) {}
             };
             this.tree.controllers.appendController(controller);
-            
-//            this.atomService = Components.classes["@mozilla.org/atom-service;1"].
-//                getService(Components.interfaces.nsIAtomService);
-            
             this._loadSeleniumCommands();
         },
 
@@ -123,13 +119,22 @@ objectExtend(TreeView.prototype, {
             return this.clipboard;
         },
 
-        setTextBox: function(id,value,disabled) {
-            this.document.getElementById(id).value = value;
-            this.document.getElementById(id).disabled = disabled;
+        updateTextBox: function(id, value, disabled, autoComplete) {
+            var e = this.document.getElementById(id);
+            e.value = value;
+            e.disabled = disabled;
+            if (arguments.length == 4) {
+              e.disableAutoComplete = !autoComplete;
+              if (autoComplete) {
+                e.setAttribute("enablehistory", 'true');
+              } else {
+                e.removeAttribute("enablehistory");
+              }
+            }
         },
 
         updateTarget: function(value, disabled) {
-            this.setTextBox("commandTarget", value, disabled);
+            this.updateTextBox("commandTarget", value, disabled);
             this.document.getElementById('selectElementButton').disabled = disabled;
             this.document.getElementById('findElementButton').disabled = disabled;
         },
@@ -202,21 +207,21 @@ objectExtend(TreeView.prototype, {
             var command = this.currentCommand;
             var candidates = [];
             var targetBox = this.document.getElementById("commandTarget");
-            
-            // various strategies for auto-populating the target field
-            if (command.isRollup() && Editor.rollupManager) {
-                candidates = Editor.rollupManager.getRollupRulesForDropdown();
-            }
-            else {
-                if (command.targetCandidates) {
-                    candidates = candidates.concat(command.targetCandidates);
-                }
-                // if lastURL exists, load only those targets associated with it.
-                // Otherwise, show all possible targets.
-                if (Editor.uiMap) {
-                    candidates = candidates
-                        .concat(Editor.uiMap.getUISpecifierStringStubs());
-                }
+
+            if (command.type == 'command') {
+                // various strategies for auto-populating the target field
+                if (command.isRollup() && Editor.rollupManager) {
+                    candidates = Editor.rollupManager.getRollupRulesForDropdown();
+                } else {
+                    if (command.targetCandidates) {
+                        candidates = candidates.concat(command.targetCandidates);
+                    }
+                    // if lastURL exists, load only those targets associated with it.
+                    // Otherwise, show all possible targets.
+                    if (Editor.uiMap) {
+                        candidates = candidates.concat(Editor.uiMap.getUISpecifierStringStubs());
+                    }
+                  }
             }
             
             if (candidates.length > 0) {
@@ -233,7 +238,7 @@ objectExtend(TreeView.prototype, {
                                                                       XulUtils.toXPCOMArray(types));
                 this.updateTarget(this.encodeText(command.target), false);
             } else {
-                targetBox.setAttribute("enablehistory", "false");
+                targetBox.removeAttribute("enablehistory");
                 targetBox.disableAutoComplete = true;
                 this.updateTarget(this.encodeText(command.target), false);
             }
@@ -257,8 +262,7 @@ objectExtend(TreeView.prototype, {
                         args[name] = "";
                         keys.push(name);
                     }
-                    this.setTextBox('commandValue',
-                        this.encodeText(to_kwargs(args, keys)), false);
+                    this.updateTextBox('commandValue', this.encodeText(to_kwargs(args, keys)), false);
                 }
             }
         },
@@ -274,15 +278,21 @@ objectExtend(TreeView.prototype, {
         },
             
         encodeText: function(text) {
-            text = text.replace(/\\/g, "\\\\");
-            text = text.replace(/\n/g, "\\n");
-            return text;
+            if (text) {
+                text = text.replace(/\\/g, "\\\\");
+                text = text.replace(/\n/g, "\\n");
+                return text;
+            }
+            return '';
         },
             
         decodeText: function(text) {
-            text = text.replace(/\\n/g, "\n");
-            text = text.replace(/\\\\/g, "\\");
-            return text;
+            if (text) {
+                text = text.replace(/\\n/g, "\n");
+                text = text.replace(/\\\\/g, "\\");
+                return text;
+            }
+            return '';
         },
         
         /*
@@ -326,23 +336,25 @@ objectExtend(TreeView.prototype, {
                 var command = this.getCommand(this.tree.currentIndex);
                 this.currentCommand = command;
                 if (command.type == 'command') {
-                    this.setTextBox("commandAction", command.command, false);
+                    this.updateTextBox("commandAction", command.command, false, true);
                     this.updateSeleniumTargets();
-                    this.setTextBox("commandValue", this.encodeText(command.value), false);
+                    this.updateTextBox("commandValue", this.encodeText(command.value), false);
                 } else if (command.type == 'comment') {
-                    this.setTextBox("commandAction", command.comment, false);
+                    this.updateTextBox("commandAction", command.comment, false, false);
                     this.updateTarget('', true);
-                    this.setTextBox("commandValue", '', true);
+                    this.updateTextBox("commandValue", '', true);
                 }
-                
+
                 this.selectRecordIndex(this.tree.currentIndex);
-                this.editor.showReference(command);
-                this.editor.showUIReference(command.target);
-                this.editor.showRollupReference(command);
+                if (command.type == 'command') {
+                    this.editor.showReference(command);
+                    this.editor.showUIReference(command.target);
+                    this.editor.showRollupReference(command);
+                }
             } else {
-                this.setTextBox("commandAction", '', true);
+                this.updateTextBox("commandAction", '', true);
                 this.updateTarget('', true);
-                this.setTextBox("commandValue", '', true);
+                this.updateTextBox("commandValue", '', true);
                 this.currentCommand = null;
             }
             window.updateCommands('select');
@@ -358,8 +370,10 @@ objectExtend(TreeView.prototype, {
             if (this.currentCommand != null) {
                 this.executeAction(new TreeView.UpdateCommandAction(this, key, value));
                 if (key == 'command') {
-                    this.updateSeleniumTargets();
-                    this.editor.showReference(this.currentCommand);
+                    if (this.currentCommand.type == 'command') {
+                      this.updateSeleniumTargets();
+                      this.editor.showReference(this.currentCommand);
+                    }
                 }
                 else if (key == 'targetCandidates') {
                   this.updateSeleniumTargets();
@@ -379,9 +393,9 @@ objectExtend(TreeView.prototype, {
             }
         },
         onHide: function() {
-            this.setTextBox("commandAction", '', true);
+            this.updateTextBox("commandAction", '', true);
             this.updateTarget('', true);
-            this.setTextBox("commandValue", '', true);
+            this.updateTextBox("commandValue", '', true);
             this.currentCommand = null;
         },
         getRecordIndex: function() {
@@ -646,7 +660,7 @@ TreeView.UpdateCommandAction = function(treeView, key, value) {
 	this.value = value;
 	this.index = this.treeView.tree.currentIndex;
 	this.wasNewCommand = this.command == treeView.newCommand;
-}
+};
 
 TreeView.UpdateCommandAction.prototype = {
 	execute: function() {
@@ -689,12 +703,12 @@ TreeView.UpdateCommandAction.prototype = {
       this.treeView.selectCommand();
     }
 	}
-}
+};
 
 TreeView.DeleteCommandAction = function(treeView, ranges) {
 	this.treeView = treeView;
 	this.ranges = ranges;
-}
+};
 
 TreeView.DeleteCommandAction.prototype = {
 	execute: function() {
@@ -730,13 +744,13 @@ TreeView.DeleteCommandAction.prototype = {
 		}
 		this.treeView.selection.select(currentIndex);
 	}
-}
+};
 
 TreeView.PasteCommandAction = function(treeView, index, commands) {
 	this.treeView = treeView;
 	this.index = index;
 	this.commands = commands;
-}
+};
 
 TreeView.PasteCommandAction.prototype = {
 	execute: function() {
@@ -767,7 +781,7 @@ TreeView.PasteCommandAction.prototype = {
 		this.treeView.selection.select(currentIndex);
 		this.treeView.treebox.ensureRowIsVisible(currentIndex);
 	}
-}
+};
 
 //D'n'D action for the undo/redo process
 TreeView.dndCommandAction = function(treeView, sourceIndex, dropIndex, orientation){
@@ -786,7 +800,7 @@ TreeView.dndCommandAction = function(treeView, sourceIndex, dropIndex, orientati
                    this.sourceIndexU++;
     }
     this.orientationU = this.orientation == Ci.nsITreeView.DROP_BEFORE ? Ci.nsITreeView.DROP_AFTER : Ci.nsITreeView.DROP_BEFORE;
-}
+};
 
 TreeView.dndCommandAction.prototype = {
 
@@ -834,4 +848,4 @@ TreeView.dndCommandAction.prototype = {
         }
 
     }
-}
+};

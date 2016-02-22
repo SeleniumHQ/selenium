@@ -1,22 +1,25 @@
-// Copyright 2013 Software Freedom Conservancy
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 goog.provide('safaridriver.debug');
 
-goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.log');
 goog.require('goog.string');
 goog.require('safaridriver.Command');
 goog.require('safaridriver.console');
@@ -27,13 +30,14 @@ goog.require('webdriver.Capabilities');
 goog.require('webdriver.Session');
 goog.require('webdriver.WebDriver');
 goog.require('webdriver.logging');
+goog.require('webdriver.promise');
 
 
 /**
- * @private {!goog.debug.Logger}
+ * @private {goog.log.Logger}
  * @const
  */
-safaridriver.debug.LOG_ = goog.debug.Logger.getLogger('safaridriver.debug');
+safaridriver.debug.LOG_ = goog.log.getLogger('safaridriver.debug');
 
 
 /**
@@ -43,7 +47,8 @@ safaridriver.debug.init = function() {
   safaridriver.console.init();
 
   var messageTarget = new safaridriver.message.MessageTarget(safari.self);
-  messageTarget.on(safaridriver.message.Log.TYPE, safaridriver.debug.onLogEntry_);
+  messageTarget.on(
+      safaridriver.message.Log.TYPE, safaridriver.debug.onLogEntry_);
   messageTarget.setLogger(safaridriver.debug.LOG_);
 
   var driver = webdriver.WebDriver.createSession(
@@ -122,17 +127,19 @@ safaridriver.debug.CommandExecutor = function(target) {
 
 
 /** @override */
-safaridriver.debug.CommandExecutor.prototype.execute = function(
-    command, callback) {
-  var driverCommand = new safaridriver.Command(
-      goog.string.getRandomString(),
-      command.getName(), command.getParameters());
+safaridriver.debug.CommandExecutor.prototype.execute = function(command) {
+  var target = this.target_;
+  return new webdriver.promise.Promise(function(fulfill) {
+    var driverCommand = new safaridriver.Command(
+        goog.string.getRandomString(),
+        command.getName(), command.getParameters());
 
-  this.target_.once(safaridriver.message.Response.TYPE, function(message) {
-    var response = /** @type {!safaridriver.message.Response} */ (message).
-        getResponse();
-    callback(null, response);
+    target.once(safaridriver.message.Response.TYPE, function(message) {
+      var response = /** @type {!safaridriver.message.Response} */ (message).
+          getResponse();
+      fulfill(response);
+    });
+
+    new safaridriver.message.Command(driverCommand).send(safari.self.tab);
   });
-
-  new safaridriver.message.Command(driverCommand).send(safari.self.tab);
 };

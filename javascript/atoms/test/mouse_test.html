@@ -7,13 +7,13 @@
   goog.require('bot.Mouse');
   goog.require('bot.action');
   goog.require('bot.userAgent');
+  goog.require('goog.Promise');
   goog.require('goog.array');
   goog.require('goog.dom');
   goog.require('goog.events');
   goog.require('goog.events.EventType');
   goog.require('goog.math.Coordinate');
   goog.require('goog.style');
-  goog.require('goog.testing.AsyncTestCase');
   goog.require('goog.testing.jsunit');
   goog.require('goog.userAgent');
 </script>
@@ -29,8 +29,6 @@ position: relative; top:25px;">Red</div>
   </div>
 </div>
 <script type="text/javascript">
-  var asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
-
   // The goog.events.EventType enum is missing mouse scrolling event types.
   // This a little hacky but gives us some stylistic consistency :).
   goog.events.EventType.MOUSEWHEEL =
@@ -62,6 +60,7 @@ position: relative; top:25px;">Red</div>
     redDiv = bot.locators.findElement({id: 'red'});
     captureDiv = bot.locators.findElement({id: 'capture'});
     innerCaptureDiv = bot.locators.findElement({id: 'innerCapture'});
+    goog.testing.TestCase.getActiveTestCase().promiseTimeout = 30000; // 30s
   }
 
   function setUp() {
@@ -91,12 +90,12 @@ position: relative; top:25px;">Red</div>
   /**
    * Returns the button value in the object depending on the current useragent.
    * Returns the 'wk' property for WebKit and IE9 in standards mode, the 'ie'
-   * property for IE, and the 'ff' property for Firefox and Opera.
+   * property for IE, and the 'ff' property for Firefox.
    */
   function b(button) {
     return bot.userAgent.IE_DOC_9 || goog.userAgent.WEBKIT ? button['wk'] :
         (goog.userAgent.IE ? button['ie'] :
-            button['ff']);  // Firefox or Opera
+            button['ff']);  // Firefox
   }
 
   function assertEvents(var_args) {
@@ -324,22 +323,20 @@ position: relative; top:25px;">Red</div>
     var coord = new goog.math.Coordinate(0, 0);
     var iframe = document.createElement('iframe');
 
-    goog.events.listenOnce(iframe, 'load', function() {
-      asyncTestCase.continueTesting();
+    return new goog.Promise(function(loaded) {
+      goog.events.listenOnce(iframe, 'load', loaded);
+      iframe.src = 'testdata/blank_page.html';
+      document.body.appendChild(iframe);
+    }).then(function() {
       mouse.move(iframe.contentWindow.document.body, coord);
-      goog.events.listenOnce(iframe, 'load', function() {
-        asyncTestCase.continueTesting();
-        mouse.move(iframe.contentWindow.document.body, coord);
-        document.body.removeChild(iframe);
+      return new goog.Promise(function(loaded) {
+        goog.events.listenOnce(iframe, 'load', loaded);
+        iframe.src = 'testdata/iframe_page.html';
       });
-
-      asyncTestCase.waitForAsync('waiting for second iframe page to load');
-      iframe.src = 'testdata/iframe_page.html';
+    }).then(function() {
+      mouse.move(iframe.contentWindow.document.body, coord);
+      document.body.removeChild(iframe);
     });
-
-    asyncTestCase.waitForAsync('waiting for first iframe page to load');
-    iframe.src = 'testdata/blank_page.html';
-    document.body.appendChild(iframe);
   }
 
   function testMoveMouseFiresAllEventsOnElementHiddenMidSequence() {

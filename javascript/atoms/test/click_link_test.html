@@ -8,6 +8,7 @@
     goog.require('bot.action');
     goog.require('bot.locators');
     goog.require('bot.userAgent');
+    goog.require('goog.Promise');
     goog.require('goog.Uri');
     goog.require('goog.debug.DivConsole');
     goog.require('goog.debug.Logger');
@@ -16,27 +17,23 @@
     goog.require('goog.events.EventType');
     goog.require('goog.math.Coordinate');
     goog.require('goog.style');
-    goog.require('goog.testing.AsyncTestCase');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
     goog.require('goog.userAgent.product');
   </script>
   <script type="text/javascript">
-    var GECKO6 = goog.userAgent.GECKO && bot.userAgent.isEngineVersion(6);
     var divConsole;
     var iframe, iframeWindow, other, otherWindow;
     var link, link2;
     var findElement = bot.locators.findElement;
     var findElements = bot.locators.findElements;
     var log = goog.debug.Logger.getLogger('click_link_test');
-    var asyncTestCase = null;
 
     function setUp() {
       iframe = bot.locators.findElement({id: 'iframe'});
       iframeWindow = goog.dom.getFrameContentWindow(iframe);
       otherFrame = bot.locators.findElement({id: 'other'});
       otherFrameWindow = goog.dom.getFrameContentWindow(otherFrame);
-      continueAfterLoad(iframe, goog.nullFunction);
       iframeWindow.location = resolveUrl('testdata/click_iframe.html');
 
       link = bot.locators.findElement({id: 'link'});
@@ -46,6 +43,8 @@
       link.blur();
       link2.blur();
       window.focus();
+
+      return waitForLoad(iframe);
     }
 
     function checkActionCompatibility(action) {
@@ -55,24 +54,26 @@
       return true;
     }
 
-    function continueAfterLoad(iframe, fn) {
-      asyncTestCase.waitForAsync('Waiting for ' + iframe.id + ' to load');
-      return goog.events.listenOnce(iframe, 'load', function() {
-        asyncTestCase.continueTesting();
-        fn();
+    function waitForLoad(iframe) {
+      return new goog.Promise(function(done) {
+        goog.events.listenOnce(iframe, 'load', done);
       });
     }
 
-    function continueAfterTimeout(fn) {
-      asyncTestCase.waitForAsync('Waiting a cycle for page to update.');
-      window.setTimeout(function() {
-        asyncTestCase.continueTesting();
-        fn();
-      // Firefox 6 currently needs a fairly long timeout before a hashchange is
-      // completed, while other browsers complete it on the next event cycle.
-      // TODO: Remove superfluous link following from device.js and
-      // then check whether this longer timeout is still necessary.
-      }, GECKO6 ? 250 : 0);
+    /**
+     * Creates a promise that will be resolved after a 0-based setTimeout.
+     * This is used by tests to yield for a DOM reflow. The promise must
+     * is resolved after the 0-based timeout to trigger the browser's default
+     * yield (~4ms); resolving the promise immediately could potentially
+     * run on the very next tick (depending on the browser) and prevent the
+     * reflow that we are trying to yield to.
+     *
+     * @return {!goog.Promise} A new promise.
+     */
+    function timeout() {
+      return new goog.Promise(function(done) {
+        setTimeout(done, 0);
+      });
     }
 
     function resolveUrl(url) {
@@ -99,10 +100,10 @@
       var targetHref = '#' + Math.random();
       clickTarget.href = targetHref;
 
-      continueAfterTimeout(function() {
+      action(clickTarget);
+      return timeout().then(function() {
         assertEquals(targetHref, window.location.hash);
       });
-      action(clickTarget);
     }
 
     var testClickExecutesDefaultHandler =
@@ -122,11 +123,11 @@
       var targetHref = '#' + Math.random();
       parent.href = targetHref;
 
-      continueAfterTimeout(function() {
-        assertEquals(targetHref, window.location.hash);
-      });
       var clickTarget = goog.dom.getFirstElementChild(parent);
       action(clickTarget);
+      return timeout().then(function() {
+        assertEquals(targetHref, window.location.hash);
+      });
     }
 
     var testClickNestedElementExecutesDefaultHandler =
@@ -144,12 +145,12 @@
       // Make sure no other event listeners are interfering.
       goog.events.removeAll(clickTarget);
 
-      continueAfterTimeout(function() {
+      clickTarget.href = '#';
+      action(clickTarget);
+      return timeout().then(function() {
         var windowHref = window.location.href;
         assertEquals('#', windowHref.charAt(windowHref.length - 1));
       });
-      clickTarget.href = '#';
-      action(clickTarget);
     }
 
     var testClickCorrectlyResolvesEmptyFragment =
@@ -175,7 +176,7 @@
 
       clickTarget.href = targetHref;
       action(clickTarget);
-      continueAfterTimeout(function() {
+      return timeout().then(function() {
         assertEquals(targetHref, iframeWindow.location.href);
       });
     }
@@ -202,7 +203,7 @@
           '/testdata/click_iframe.html#' + Math.random();
       clickTarget.href = targetHref;
       action(clickTarget);
-      continueAfterTimeout(function() {
+      return timeout().then(function() {
         assertContains(targetHref, iframeWindow.location.href);
       });
     }
@@ -227,7 +228,7 @@
       var targetHref = 'click_iframe.html#' + Math.random();
       clickTarget.href = targetHref;
       action(clickTarget);
-      continueAfterTimeout(function() {
+      return timeout().then(function() {
         assertContains(targetHref, iframeWindow.location.href);
       });
     }
@@ -252,7 +253,7 @@
       var targetHref = '#' + Math.random();
       clickTarget.href = targetHref;
       action(clickTarget);
-      continueAfterTimeout(function() {
+      return timeout().then(function() {
         assertEquals(targetHref, iframeWindow.location.hash);
       });
     }
@@ -278,7 +279,7 @@
       var targetHref = '#' + Math.random();
       parent.href = targetHref;
       action(clickTarget);
-      continueAfterTimeout(function() {
+      return timeout().then(function() {
         assertEquals(targetHref, iframeWindow.location.hash);
       });
     }
@@ -306,7 +307,7 @@
       });
 
       action(clickTarget);
-      continueAfterTimeout(function() {
+      return timeout().then(function() {
         assertEquals(previousLocation, window.location.href);
       });
     }
@@ -329,7 +330,7 @@
       clickTarget.href = '#' + Math.random();
 
       action(clickTarget);
-      continueAfterTimeout(function() {
+      return timeout().then(function() {
         assertEquals(previousLocation, window.location.href);
       });
     }
@@ -352,7 +353,7 @@
       var previousLocation = window.location.href;
 
       action(clickTarget);
-      continueAfterTimeout(function() {
+      return timeout().then(function() {
         assertEquals(previousLocation, window.location.href);
       });
     }
@@ -392,10 +393,10 @@
 
       var targetHref = '?a=?/+';
       clickTarget.href = targetHref;
-      continueAfterLoad(iframe, function() {
+      action(clickTarget);
+      return waitForLoad(iframe).then(function() {
         assertEquals(targetHref, iframeWindow.location.search);
       });
-      action(clickTarget);
     }
 
     var testClickDoesNoteEncodeReservedButAllowedCharactersInQuery =
@@ -412,10 +413,10 @@
       }
       var clickTarget = getClickTarget('testdata/click_destination.html');
       var targetHref = clickTarget.href;
-      continueAfterLoad(iframe, function() {
+      action(clickTarget);
+      return waitForLoad(iframe).then(function() {
         assertEquals(targetHref, iframeWindow.location.href);
       });
-      action(clickTarget);
     }
 
     var testClickAbsoluteAnchorInAnIframeExecutesDefaultHandler =
@@ -433,10 +434,10 @@
       var clickTarget = getClickTarget('testdata/click_destination.html');
       var targetHref = clickTarget.href;
       clickTarget.target = 'other';
-      continueAfterLoad(otherFrame, function() {
+      action(clickTarget);
+      return waitForLoad(otherFrame).then(function() {
         assertEquals(targetHref, otherFrameWindow.location.href);
       });
-      action(clickTarget);
     }
 
     var testClickLinkThatCausesContentToLoadInAnotherFrame =
@@ -453,10 +454,10 @@
       }
       var clickTarget = getClickTarget(iframeWindow.location.href);
       var targetHref = clickTarget.href;
-      continueAfterLoad(iframe, function() {
+      action(clickTarget);
+      return waitForLoad(iframe).then(function() {
         assertEquals(targetHref, iframeWindow.location.href);
       });
-      action(clickTarget);
     }
 
     var testClickOnSelfPageReloadsPage = goog.partial(onSelfPageReloadsPage,
@@ -472,14 +473,19 @@
       var clickTarget = getClickTarget('');
       clickTarget.href = '#';
       // Fail immediately if the iframe is loaded.
-      var id = continueAfterLoad(iframe, fail);
-      action(clickTarget);
+      return new goog.Promise(function(fulfill, reject) {
+        var id = goog.events.listenOnce(iframe, 'load', function() {
+          reject(Error('Did not expect iframe to load a new page'));
+        });
 
-      // After a delay, assume page is not going to load and pass the test.
-      window.setTimeout(function() {
-        asyncTestCase.continueTesting();
-        goog.events.unlistenByKey(id);
-      }, 250);
+        action(clickTarget);
+
+        // After a delay, assume page is not going to load and pass the test.
+        window.setTimeout(function() {
+          goog.events.unlistenByKey(id);
+          fulfill();
+        }, 250);
+      });
     }
 
     var testClickOnHashDoesNotReloadThePage = goog.partial(
@@ -492,12 +498,11 @@
       if (!checkActionCompatibility(action)) {
         return;
       }
-      goog.events.listen(link, goog.events.EventType.FOCUS, function() {
-        asyncTestCase.continueTesting();
-      });
 
-      asyncTestCase.waitForAsync('Waiting for link focus');
-      action(link);
+      return new goog.Promise(function(done) {
+        goog.events.listenOnce(link, goog.events.EventType.FOCUS, done);
+        action(link);
+      });
     }
 
     var testClickFocusOnAnElementBeforeFinishingClickSequence = goog.partial(
@@ -515,22 +520,27 @@
       goog.events.listen(link, goog.events.EventType.MOUSEDOWN, function() {
         link2.focus();
       });
-      goog.events.listen(link, goog.events.EventType.FOCUS, function() {
-        asyncTestCase.continueTesting();
-        assert(!mousedownPreemptsFocus);
-      });
-      goog.events.listen(link2, goog.events.EventType.FOCUS, function() {
-        // If the mousedown will preempt the focus, delay the continue testing
-        // call for a short delay to make sure the above assert never triggers.
-        if (mousedownPreemptsFocus) {
-          window.setTimeout(function() {
-            asyncTestCase.continueTesting();
-          }, 100);
-        }
-      });
+      return new goog.Promise(function(fulfill, reject) {
+        goog.events.listen(link, goog.events.EventType.FOCUS, function() {
+          if (mousedownPreemptsFocus) {
+            reject(Error('Did not expect link to be focused'));
+          } else {
+            fulfill();
+          }
+        });
 
-      asyncTestCase.waitForAsync('Waiting for link focus');
-      action(link);
+        goog.events.listen(link2, goog.events.EventType.FOCUS, function() {
+          // If the mousedown will preempt the focus, delay the continue testing
+          // call for a short delay to make sure the above assert never triggers.
+          if (mousedownPreemptsFocus) {
+            window.setTimeout(function() {
+              fulfill();  // No-op if the above handler above calls reject.
+            }, 100);
+          }
+        });
+
+        action(link);
+      });
     }
 
     var testClickFocusOnAnElementWhenMousedownChangesFocus = goog.partial(
@@ -557,19 +567,6 @@
   <div style="width:200px; height:100px;
                 border:1px solid black; padding:10px">Click Me</div>
   </div>
-  <script>
-    asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
-    // Android needs a longer timeout due to emulator slowness.
-    // Opera 12, IE9+, Firefox 10 are sometimes slow to load new iframe pages.
-    if (goog.userAgent.product.ANDROID || bot.userAgent.IE_DOC_9) {
-      asyncTestCase.stepTimeout = 5000;
-    } else if ((goog.userAgent.product.OPERA &&
-               bot.userAgent.isEngineVersion(12)) ||
-               (goog.userAgent.GECKO &&
-               bot.userAgent.isEngineVersion(10))) {
-      asyncTestCase.stepTimeout = 2000;
-    }
-  </script>
   <iframe id="iframe"></iframe>
   <iframe id="other" name="other"></iframe>
   <a id="link" href="javascript:void(0)">link</a>

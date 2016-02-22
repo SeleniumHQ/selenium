@@ -1,3 +1,842 @@
+v2.52.0
+=======
+
+Firefox:
+    * Weakening platform restriction to enable 64-bit support
+    * Fixing closed window handling in FF45
+    * Implementing a capability that disables overlapping checks - "overlappingCheckDisabled"
+    
+WebDriver:
+    * Fix deselecting options in <select>, actually throw Exceptions documented
+    * handle special case spellcheck attribute Fixes #1605
+
+Grid:
+    * Allow forwarded response to be modified by CommandListener
+
+v2.51.0
+=======
+
+Firefox:
+    * finding another edge case where we need to check -1 from the right and bottom of the element's rect
+    * stop gap to help with elementFromPoint not being completely reliable
+    * Implementing ability to return non-boolean capabilities
+    * Bumping up the max version
+    * Fixing scrolling to elements in overflow:hidden blocks. Fixes issue #1527
+    * Fixing issue #1509
+    * Deleting deprecated constant 
+    * Deleting unused method FirefoxBinary.createProfile
+
+WebDriver:
+    * Fixing httpOnly cookies in HtmlUnit driver
+    * Adding close connection support to HttpClient to combat hanging open files Fixes #1080
+    * Increasing log buffer max size
+    * optimize JsonToBeanConverter In case the input is a JsonNull, return null asap.
+    * Add toString() to DefaultElementLocator
+    * fix #1575
+
+v2.50.1
+=======
+
+    * add a way to add to the list of capabilities to consider to the default capability matcher
+    * Grid: Fixing timeout issue again... Why isn't it covered by tests? A rhetorical question...
+    * Java: Improving handling of marionette errors
+    * Java: Replacing ByteArrayOutputStream with CircularOutputStream to prevent OOM exception. Fixes issue #427
+    * Java: Moving CircularOutputStream to another package (it's an internal class so no need to create a copy)
+    * fix #1562
+
+v2.50.0
+=======
+
+WebDriver:
+    * Firefox: fixing sendKeys throwing "cross-process JS call failed " in FF45
+    * Firefox: fixing click to multirect elements broken by the previous PR
+    * Check element corners and middle for clickability
+    * Fix keyCodes for some characters in the FirefoxDriver.
+    * Firefox: fixing malformed URL handling. Fixed issue #1248
+    * Prevent Firefox from opening a page on a second or later run and/or after some amount of time
+    * Fixing executable finder on Windows
+    * Fixing HtmlUnit driver to pass recently added tests
+    * Firefox: fixing appending to contenteditable elements. Fixes issue 1419
+    * correct javascript remote client ui executor to use new promise based execute introduced by 0fa587 Fixes #1521
+    * Firefox: Adding an extra check to result wrapper. Fixes issue #1426
+    * Changes to simplify the execution of finding elements.
+    * Fixing issue #1479. The only reasonable thing we can do for select elements is to disable clickability checking, see https://gist.github.com/p0deje/c549e93fa19bf7aaee49
+
+Grid: 
+    * Found a better place to convert seconds to milliseconds
+
+v2.49.1
+=======
+
+Grid:
+    * Fixing timeout issue in the Grid.
+
+WebDriver:
+    * Allow GeckoDriverService to be extended.
+    * Update tagName test searching for "" to throw
+
+v2.49.0
+=======
+
+WebDriver:
+    * Add maven coordinate for the Firefox Driver when built using Buck.
+    * Remove guava dep on the selenium-apis when built using Buck.
+    * on osx for firefox, fallback to checking homebrew install, if the default isn't there
+    * Pass Options.ime() through to the wrapped driver.
+    * Fixing HTML suite test runner
+    * Bump guava to version 19
+    * Ensure that the buck-built core library has no third party dependencies.
+    * Updating textContent attribute test for IE9
+    * Adding appropriate wait to AuthenticatedPageLoadingTest
+    * Refactor concrete WebDriverException#getSupportUrl's
+    * Fix a NullPointerException in RemoteWebDriver.getCurrentUrl
+    * Reduces time wasted in when using a native driver
+    * add the useful information about the session / capabilities in the exception when the 'browser may have died'
+    * give the cleaner almost double the time to clean up the sessions (a whopping 9 more ms). Hopefull will deflake this test in CI.
+    * Adding El Capitan (OS X 10.11) to Platform
+    * Updating IE driver to fix clearing of <input type='number'> fields
+    * Treat a null response to getCookies as [].
+    * Restore a isNativeEventsEnabled check.
+    * Updating TestNG.
+    * firefox: Throw error when element cannot be clicked
+    * Include Windows 10 in the Platform enum.
+    * adding selenium server pass throughs for W3C dialect of alert / window / cookie commands.
+    * clearing a number input with invalid text, should actually clear it.
+    * Add innerHTML attribute support to HtmlUnitDriver
+    * Add textContent attribute support to HtmlUnitDriver
+    * make RemoteMouse public, akin to RemoteKeyboard. Not sure why it wasn't made public when it was originally moved out of RWD.
+    * Use platform-dependant line separator instead of hardcoded '\n'.
+    * Safari should only specify MAC as platform in default desired capabilities
+    * improve javadoc for FluentWait
+    * Changing interface name to be more Java-ish
+    * Update GeneratedJsTestServlet to work with test files that use Closure's module syntax.
+    * Adding release-v3 crazyfun target
+    * should be able to send keys to a content editable div that is initially empty
+    * Implementing pure WebDriver grid server (v.3)
+    * Making BrowserLauncherFactory non-static, to avoid global configuration, for better testability and configurability (per object, not globally)
+    * Server: Moving shared classes to a more appropriate place out of the legacy server namespace
+    * Deleting RemoteControlLauncher as it is just a couple of static methods to parse command line options, that should belong to the server.
+    * Refactoring GridLauncher: replacing big switch with a map of simple launchers; it's a step toward decomposition of the GridLauncher and dynamic discovery of the elements that can be launched.
+    * Refactoring GridLauncher build process
+    * Decoupling node registration module (SelfRegisteringRemote) from concrete implementation of the server to be run on the node.
+    * Refactoring grid node registration procedure to make server start/stop methods as simple as possible.
+    * Breaking another dependency of Grid on RC server
+    * Deleting fail-fast check of browser configuration, this breaks another Grid dependency on parts of RC server. The check must be performed in RC server (if ever).
+    * Actually fix the Safari BUCK build
+    * Monkey-patching W3C-compatible cookie serialization to fix Marionette. A more proper fix would be to change the parameters of a Command from Map to Object.
+    * There is no need to create a profile for Marionette
+    * removing prebuilt SafariDriver extension, bumping version number to 2.48
+    * Fixing tests for JsonToBeanConverter to avoid "error" key collision that has got new semantics in the standard
+    * Stop exposing embedded jetty out of SeleniumServer
+    * Breaking unwanted grid dependency on parts of RC server
+    * Deleting JsonKey, it's a useless abstraction
+    * Breaking unwanted grid test dependency on RC server (the removed attribute is not used actually)
+    * Fixes #1140, #1334, #1263, #669, #1165, #1132, #1186, #1203, #1214, #1242
+            #1241, #1240, #1238, #1237
+
+v2.48.2
+=======
+WebDriver:
+    * Update fix for ChromeDriver to work with Marionette/Wires also.
+
+v2.48.1
+=======
+WebDriver:
+    * Fix #1123, ChromeDriver doesn't start up.
+
+v2.48.0
+=======
+
+WebDriver:
+    * java: add ExpectedConditions#numberOfWindowsToBe
+    * Bump the buck version to the latest version.
+    * fix maven build for jetty 9
+    * adding pom files for jetty 9 repakced jars and the empty-javadoc jar used to upload to maven central
+    * Restoring use of queued thread pool in the hub
+    * Deleting commented code
+    * Fixing UploadServlet in test environment to conform to servlet-api 3.1
+    * Update jetty readme
+    * Bump the Jetty version from 7 to 9
+    * Updating screenshot code to retain scroll bars in required directions.
+    * Updating screenshot code to prevent resizing if window is large enough.
+    * Removing superfluous comment that was causing javadoc build error in ci
+    * fixing the remaining jdk 8 javadoc errors
+    * Make the javadocs for java/server too.
+    * fixing java command line options for 'go' MaxPermSize -> MetaspaceSize in java 8
+    * updating third party wicked good xpath to e33a3876a6d592b824942751d86ba5f2b08a3dc5 Fixes #1040
+    * Removing use of Windows hooks for taking screenshots in IE.
+    * Firefox: fixing sendKeys for contentEditable elements, it should append to the existing text.
+    * Buck version bumps
+    * Update closure-library to 04a8ceefc6972511e669563d47abeca18b28092c
+    * Firefox: implementing mouse doubleclick action via nsIDOMWindowUtils
+    * Add FluentWait.withMessage with string supplier
+    * Firefox: fixing events generated as a result of click on an element that disappears after the click.
+    * Firefox: implementing mouse up/down actions via nsIDOMWindowUtils. This makes mouse actions "more native". In particular, if there are overlapping element at the click point, the driver will click the topmost element.
+    * Safari: stop embedding the extension in the client libs, it should be downloaded and installed manually.
+    * Deleting a couple of redundant casts
+    * No need to cast, the variable has required type already
+    * Deleting redundant logging to console in tests
+    * HtmlUnit: Ignoring one more test
+    * Disabling a test if JS is not enabled
+    * HtmlUnit: Unignoring a magically working test
+    * HtmlUnit: restoring backward compatibility after changes in getCurrentUrl semantics
+    * WDBC: restoring backward compatibility after changes in getCurrentUrl semantics
+    * Deleting native events from firefox driver
+    * Deleting outdated assumes for unsupported Firefox version
+    * Resorting tests for moveByOffset action
+    * Firefox: don't dispatch keypress event if defaultPrevent() of the keydown event is called because KEY_FLAG_PREVENT_DEFAULT has no effect
+    * Moving IE specific test to IE test suite
+    * Firefox: throwing proper exception on an attempt to find an element in the deleted frame
+    * Firefox: changing getCurrentUrl to return top level browsing context address (to conform to the standard)
+    * Firefox: fixing page source for plain text pages
+    * Adding information on the reasons to ignore tests
+    * fix the client and server classpath
+    * Move the servlet-api package for easier automated updates.
+    * Renaming the Jetty7AppServer to remove the version number.
+    * Fix up failing htmlunitdriver test.
+    * Simulating window.getPosition and setPosition operations
+    * Simulating switchTo().window by name
+    * Fixing test to switch back to the original window after opening a new one.
+    * Implementing standard-compliant window operations
+    * Implementing standard-compliant getSize, getPosition and getPositionInView
+    * Deleting marionette tcp connector
+    * remove unused css transform code from location in view
+    * use BasicHttpRequest instead of EnclosingRequest
+    * htmlunit passes the httponly cookie test
+    * fix maven dependency of htmlunit driver on the support package
+    * don't replace a platform specified to the add browser method, like the TODO says
+    * Simulating submit operation for standard compliant drivers
+    * Making sendKeys more backward compatible (because i18n tests)
+    * Change buils to builds
+    * Unignoring marionette tests passed after sendKeys rework
+    * Fixing getSize operation broken by copy-paste from getLocation
+    * Reworking sendKeys to send characters one by one, this is standard compliant behavior
+    * Making switchTo().window more standard compliant
+    * Making getLocation and getSize standard compliant
+    * Making timeout setting methods standard compliant
+    * Fixing "no such alert" error mapping
+    * Making findElement(s) commands standard compliant (except for link text locators)
+    * java: fix log string for RemoteTargetLocator#defaultContent
+    * Update check to see if we are speaking to a W3C remote end point
+    * specificationLevel is defined in http://w3c.github.io/webdriver/webdriver-spec.html#capabilities
+    * use exception message.  no method overload exists for log.severe
+    * Upgrade HtmlUnit 2.18
+    * ReflectionBackendDriverSupplier: two arguments Capabilities
+    * HtmlUnitMouse: no need to .focus()
+    * Fix HtmlUnitWebElement.getCssValue
+    * AMO requires the max version be an actual release version number
+    * Correcting IE driver build process to create executables runnable on Windows XP Fixes issue #936.
+    * Improve comments and error message on scrolling_test#testScrollingAccountsForScrollbarWidths.
+    * Java client side support for launch_app command of chromedriver:
+    * Add "additionalCommands" support to DriverCommandExecutor.
+    * Use directExecutor().
+    * Updating IE driver C++ code to use Visual Studio 2015.
+
+Grid:
+    * Run grid tests using Buck.
+    * removing '-debug' command line parameter for grid hub, it isn't used anywhere.
+    * adding edge icon for grid
+
+
+v2.47.0
+=======
+
+** Java 7 is now requried, but you really should be on 8, since 7 is EOL **
+
+
+WebDriver:
+* Supports native events for Firefox version 31 (immediately previous
+  ESR). Native event support has been discontinued for versions of
+  Firefox later than 33. Synthetic events tested on Firefox versions 31
+  (immediately previous ESR), 38 (immediately previous release and current
+  ESR), and 39 (current release).
+* Beta Alert.AuthenticateUsing api implementation added, beta testing with IE.
+* Added TakesScreenshot to WebElement.
+* (provided by Microsoft) Added language bindings for Microsoft Edge browser
+* Make it possible for users to override how the Lock is obtained with Firefox.
+* (provided by Ahmed Ashour) Added implementation of Alert for HtmlUnit driver.
+* (provided by Ahmed Ashour) Fixed findElementByXPath for HtmlUnit driver to
+  work for XML pages.
+* (provided by Ahmed Ashour) Fixed HtmlUnit driver to allow for manipulating
+  elements in SVG documents.
+* (provided by Ahmed Ashour) Fixed HtmlUnit driver so that deleteAllCookies
+  deletes cookies only for the current domain, matching other implementations.
+* (provided by Tamás Buka) Created an overload to
+  ExpectedConditions.frameToBeAvailableAndSwitchToIt support to index and
+  WebElement so that WebDriverWait can use this mode to switch frames.
+* (provided by Joshua Bruning) Allow access to local profiler logs. An
+  exception may be thrown if the WebDriver server does not recognize profiler
+  logs. In this case, the user should be able to see the local profiler logs.
+* (provided by Sergey Tikhomirov) Changed visibility of isDecoratableList
+  method of DefaultFieldDecorator to protected for use with custom PageFactory
+  implementations.
+* Froze javascript.enabled property in Firefox profiles
+* FIXED #426: (provided by Anand Jayaram) Default the hub port to 4444, if no
+  port was provided.
+* FIXED #638: Disabled HTTP Public Key Pinning (HPKP) when the
+  webdriver_accept_untrusted_certs capability is set. As of Firefox 39, Firefox
+  ignores certificate overrides if the domain's certificate is pinned.
+* FIXED #644: (provided by Brett Randall) Modified ErrorHandler to tolerate
+  non-Number lineNumber, and also attempts to safely parse a non-Number Object
+  if it receives a non-Number. If absent or non-numeric it now continues to
+  build the StackTraceElement (instead of aborting that frame) and uses the
+  conventional -1 for lineNumber.
+* FIXED #658: Disable reading list info panel in Firefox.
+
+Server:
+* Added a guard that prevents starting "IE instead of Opera" (or some other
+  unwanted browser that obviously does not match the desired capabilities).
+  Previously if a new session request is forwarded to a node it results in a
+  driver instance creation in any case. For example, let's suppose a user
+  starts a node with -browser browserName=opera option, and there is no
+  operadriver in the classpath. Then the user requests a new remote driver with
+  browserName=opera. The hub forwards the request to the node, and the node
+  attempts to find the "best matching" driver provider. As far as opera is not
+  available, it can start any other browser. Because "best matching" does not
+  imply matching. The new guard prevents this unwanted behavior.
+
+Grid:
+* Added support to grid for Microsoft Edge driver
+* (provided by Dima Kovalenko) Sort Grid Proxies in order of least busy to
+  busiest. This should prevent situation where one node is running multiple
+  sessions while several nodes are completely idle.
+
+RC:
+* Removed start of Firefox with -silent option to prevent crash in Firefox.
+
+IDE:
+* FIXED #570: Add ability to record elements that do not have href attributes.
+
+v2.46.0
+=======
+
+Important changes in this release:
+
+* Supports native events for Firefox version 31 (immediately previous
+  ESR). Native event support has been discontinued for versions of
+  Firefox later than 33. Synthetic events tested on Firefox versions 31
+  (immediately previous ESR), 37 (immediately previous release), and 38
+  (current release and current ESR).
+* Remove all support from both webdriver and RC for Presto-based
+  Opera. Blink-based Opera is still supported!
+* Added beta Marionette driver (for Firefox OS and recent desktop
+  releases).
+* Fixing critical selenium server error caused by a user registering a
+  driver class compiled with a higher Java version than the server is
+  running (eg: server runs with Java 7, but the driver is comopiled to
+  target Java 8)
+* FirefoxDriver: now supported on OpenBSD (added by minusf@gmail.com)
+* HtmlUnitDriver: Updated to HtmlUnit 2.17. Requires Java 7 or above to work.
+
+Other notable changes:
+
+* Added ability to clear file input fields for Firefox.
+* Fix bug in Safari where Selenium updated the page under test in some
+  circumstances.
+* HtmlUnit: do not disable mouse notifications when js is disabled,
+  css is also related to this information (only partly implemented in
+  HtmlUnit at the moment)
+* Updated htmlunitdriver to use htmlunit 2.17
+* Upgraded commons-exec from 1.1 to 1.3
+* Changed capability name from pageLoadingStrategy to pageLoadStrategy
+* FIX: Google Code issue #7749: Add Get/Set network connection
+  commands to JsonHttpCommandHandler to be able to use commands in
+  selenium grid.
+* Allow clients to specify TCP timeouts in the remote webdriver.
+* Allow the chrome binary passed in capabilities to have a higher
+  priority than node configuration.
+* ChromeDriver: Added ability to pass whitelisted-ips option to the
+  chromedriver
+* Implement lazy loopback detection. This provides ~10x speed
+  improvement of selenium server startup.
+* Allow loading option descriptions from JSON file instead of
+  Properties, allowing the server to manage order of options in the
+  help message
+* SafariDriver: In SafariDriver's page script, copy window properties
+  to goog.global. (provided by juangj@google.com)
+* Add a method toList that allows converting CompositeAction to JSON
+* FirefoxDriver: Skip the profile cleaning step when launching Firefox
+* Implement both integer (legacy) and string (standard) response status
+  for the JSON wire protocol
+* FirefoxDriver: Disable https://wiki.mozilla.org/Advocacy/heartbeat
+  Firefox 37+ feature in browser sessions started by FirefoxDriver.
+* FirefoxDriver: Added getters to FirefoxProfile to allow reading
+  preset preference values
+* PageFactory: Changed default value of how part of @FindBy annotation
+  from ID to UNSET, but treat them equivalent to ensure backward
+  compatibility
+* PageFactory: Provide ability to use custom annotations. (Provided
+  by Artem Koshelev)
+* Use DaemonExecutor from commons-exec instead of DefaultExecutor.
+  Fixes Google Code issue 4734. (Provided by Richard Atkins)
+* FirefoxDriver and Java language bindings now handle both legacy and
+  W3C specification dialects of element reference serialization in the
+  JSON wire protocol.
+* FirefoxDriver:  Don't force garbage collection in httpd.js for
+  Firefox when connections are closed
+
+v2.45.0
+=======
+
+Important changes in this release:
+
+* Native events in Firefox relied on an API that Mozilla no longer
+  provides. As such, fall back to synthesized events on recent Firefox
+  versions.
+
+Other changes:
+
+* When Selenium is unable to interact with an element, such as the
+  case when an element is missing or disabled, this change will output
+  exactly how Selenium is attempting to locate the element, such as
+  the XPath or id of the element. This greatly speeds up
+  troubleshooting issues, as the exception message clearly states what
+  element is broken/missing for common problems like an
+  ElementNotFoundException.
+* improve ByCssSelector#toString
+* Remove automatic installation of the SafariDriver in Java.
+* Complete Selenium Java Server support for Blink based Opera
+* Upgrading PhantomJS driver
+* Pull HttpClient implementation details out of HttpCommandExecutor.
+* Fix issue 8254: Extensions were incorrectly transferred between
+  Windows client and Linux grid node, because ZipEntry had incorrect
+  name with '\' as separators.
+* Adding capabilities and browser type for Opera Blink, and
+  configuring tests to run in Opera Blink
+* Adding support for Blink-based Opera to Java binding
+* Adding Yosemite platform
+* Allowing to set an arbitrary platform capability even if it can't be
+  converted to Platform enum. Non-standard platform values can cause
+  matching issues on Grid, but they can be usable for third-party Grid
+  implementations
+* Taking XML namespaces into account when searching by XPath. Checked
+  to work in Firefox. Chrome supports namespaces out of the box. Need
+  to update IE and Safari drivers to use the updated atom and test
+  them carefully.
+
+v2.44.0
+=======
+
+  * Updating Native events to support Firefox 24, 31, 32 and 33
+  * Update calls to deprecated guava methods.
+  * Remove the deprecated DatabaseStorage interface. And callers. Note that the browser implementations may still have an implementation of these interfaces, but nothing in the main project implements it so we should be okay.
+  * Bump the version of guava to 18
+  * Bringing MarionetteConnection in line with the current marionette state (FF33)
+  * Add new tests for some wait conditions Also add the ExpectedConditionsTest to the test suite.
+  * Update FindBy annotations description
+  * Moving last part of browserlaunchers package from client to server
+  * Moving Proxies utility class to server
+  * Moving LauncherUtils to the server
+  * Moving utility method isScriptFile to the only class where it is needed
+  * Deleting tests for removed deprecated classes
+  * Moving more RC stuff to the server
+  * Moving tests too
+  * Moving proxy management stuff to the server, it is used in RC browser launchers only
+  * Using asMap as well as toMap to convert an object to Json
+  * Using JsonNull.INSTANCE instead of null
+  * Removing deprecated classes
+  * Log stacktrace. Adds more info on catch to be put into the log instead of just console.  This will help debug issues when one has access to grid hub log but no access to console.
+  * Remove unused static import of Ignore.Driver.HTMLUNIT.
+  * Remove obsolete ChromeOptions code.
+  * trim() HTTP response content because some drivers send back a response containing trailing null bytes, which the GSON parser does not like.
+  * If JsonParser.parse() fails to parse a string obtained from a reflective call to a toJson() method, assume it is a primitive string.
+        This is the case for, e.g., FirefoxProfile.toJson(), which returns a base64-encoded zip file. That string likely contains at least one '/', which the Gson parser rejects.
+  * Fixing SessionId from json converter to better handle the case of null sessionId
+  * Fix the Eclipse config. The new gson dependency wasn't added. Now is :) Also switched a call in HtmlUnitWebElement to use guava rather than commons-lang since that's already included in the build configs for both Buck and CrazyFun.
+  * Get the Buck build working again.
+  * HtmlUnit: add text to the end of input fields. This makes the htmlunit driver work as the other drivers do.
+  * HtmlUnit: Fix getAttribute for dynamic properties.
+  * Enable Html5CapabilitiesTest for HtmlUnit
+  * Fix classpath for running tests in eclipse This allows the htmlunitdriver tests to run in Eclipse.
+  * Fixing broken CrossDomainRpcLoader
+  * Implementing autoconverion of platform in Capabilities on write
+  * Moving from org.json to gson because the license. Fixes issue 7956
+  * Revert "Bump the version of webbit to 0.4.15"
+  * Optimizing finding multiple elements by id by using CSS selectors if available. Fixes issue 7682
+  * Fixing WDBS compatibility with IE5. Fixes issue 7938
+  * HtmlUnitDriver: Initial code cleanup.
+  * Eclipse classpath fixes for htmlunit.
+  * Deflake a test.
+
+v2.43.1
+=======
+
+  * Fixing socketlock bug with reusing the same profile multiple times
+
+v2.43.0
+=======
+WebDriver:
+
+  * Updating Native events to support Firefox 24, 31 and 32
+  * Add note on stale element checks and a WebElement represents a DOM element
+  * Upgrade third party dependency JavaScript-XPath to 0.1.12
+  * Fix example code: "using(-Chrome)DriverExecutable"
+  * Make event_firing_test.html pass in Firefox 24 ESR.
+  * Fix an error propagation bug when a command fails from bad inputs.
+  * Handle the case where a proxied element from PageFactory causes a FluentWait to timeout.
+  * Integrating the Microsoft Internet Explorer driver implementation
+  * Allow subclasses of HttpCommandExecutor to extend it at runtime.
+  * Handle the case where executeScript returns an HTMLDocument.
+  * IEDriver crashes in WaitUntilElementFocused() because of null pointer. Fixes issue #7577
+  * Deprecate the original RC interface in Selenium.
+    As part of Selenium 3.0, we shall be moving the original RC interface to a
+    legacy JAR that will be available as a separate download. As the first step
+    in this process, the original "Selenium" interface is being marked as
+    deprecated.
+  * Run FirefoxDriver tests with Buck.
+  * Bump timeout for tests since a suite is also a test.
+  * Run htmlunit-driver tests with Buck.
+  * Run the ignored tests printer with Buck.
+  * Get org.openqa.selenium.SmallTests building with Buck.
+  * Working around limitations in subpixel precision event handling.
+
+    The bug/limitation where browser supports subpixel precision for elements but not for dispatched events was found in both modern Chrome (http://crbug.com/396380) and Firefox (?) browsers.
+    (IE doesn't seem to be affected: before and including IE9 - no subpixel for elements and events; from ie10 - subpixel is supported for both elements and events).
+
+    This test was lucky so far (mostly?) and didn't hit this issue, until Chrome 37 that enabled subpixel text scaling by default.
+
+    This change makes *sure* elements have subpixel coordinates (if only browser supports'em) and then it makes sure this test doesn't fail because of that (while still testing selenium atoms).
+
+    While there, I moved asserts from event handlers into the normal test flow so jsunit can properly attribute assertion failures to specific test methods.
+  * Updating prebuilt libs for windows
+  * Re-add the rubyzip jar
+  * updating prebuilts for linux
+  * Updating to gecko 32
+  * Log formatter should be able to work with empty keys array. Fixes issue 7357
+  * Fixing infinite read from socket. Fixes issue 7814
+  * WDBS: safe check for window.localStorage
+  * Driver should operate cookies for the current frame, not the topmost one. Fixes issue 7799 in
+    Firefox
+  * Actually supporting promised Id for webdriver.WebElement.
+  * Adding more checks for JS functions removed from IE11. Fixes issue 7803
+  * Fixing use of deprecated API in httpclient
+  * Fixing use of deprecated API in guava
+  * Update Closure library to head and compiler to the latest release
+  * Implementing ability to use FirefoxDriver on a machine where localhost is not the first alias for
+    127.0.0.1. Fixes issue 3280
+  * Handle null and empty paths the same as /
+  * fixing maven build, adding reference to jetty-rc-repacked-5
+  * adding pom and info on uploading jetty-repacked-5 to maven central
+  * Adding checks for JS functions removed from IE11. Fixes issue 7780
+  * Deleting what appears to be unused deps.
+  * Add more options to the Builder API (every common, settable capability should be covered).
+    * Require calling Builder.usingServer(url) to use a remote server. If this is not called, the
+     builder will attempt to create a client locally, throwing an error if it can't (e.g. for IE).
+    * Add browser specific constructors to simplify creating a client without the Builder.
+    Fixes issue 7593
+  * Updating json-cpp lib and replacing mongoose web server with civetweb.
+  * Safari is flaky. Reducing timeout to fail faster when we're going to fail.
+  * Catch driver start-up failures.
+  * Add explicit API for configuring log prefs rather than forcing users to rely on
+    magic capability strings.
+  * Clean up internal Firefox logging API.
+  * Use LogLevelMapping to convert JSON wire protocol name to Level instance.
+  * Make the jettyMaxThreads parameter actually be effective
+  * Fix NullPointerException when File#listFiles() returns null. Fixes issue #1934
+  * Making WDBS.start command a no-op if it was instantiated with an already started driver. Fixes issue 3993
+  * Handling possible exception in stringification of window.location. Fixes issue 3908
+* Modified IE driver server to more closely follow W3C spec
+
+    This commit includes a number of changes designed to bring the IE driver
+    into closer alignment with the W3C WebDriver specification. It provides
+    no functional changes to the driver, nor does it change any external-
+    facing API. The changes are:
+     * Changed webdriver::Server to examine the response from the newSession
+       command for the session ID rather than a two-stage process. The
+       webdriver::Server::DispatchCommand method now calls the
+       InitializeSession method directly when processing the newSession
+       command.
+     * Removed the now-obsolete webdriver::Server::CreateSession method.
+     * Added a Serialize/Deserialize method pair on the webdriver::Command
+       class (renaming the Populate method to Deserialize).
+     * Revamped the serialization of webdriver::Command to use 'name' instead
+       of 'command' for the command name.
+     * Added a session ID member to the webdriver::Command object.
+     * Modified the webdriver::Command object to no longer draw distinction
+       between parameters passed in as part of the URL substitution and those
+       passed in as part of the JSON payload in the body.
+     * Modified webdriver::CommandHandler::ExecuteInternal (and all subclass
+       implementations to use a single parameters map instead of the dual
+       URL tokens/JSON payload parameters maps used previously.
+  * Propagate webdriver_firefox_port preference to FirefoxDriver, was being ignored. Fixes issue 5172
+  * Adding a new selenium server option -logLongForm to log more details to the console. Fixes issue 6645
+  * Handling possible IllegalStateException while cleaning orphaned and timed out sessions. Fixes issue 6771
+  * Setting forwarded content for CommandListener afterCommand handler. Fixes issue 7443
+  * Fixing the list of extensions to search for an executable on Windows, and logging process startup
+    errors. Fixes issue 7514
+  * Setting layout.css.devPixelsPerPx to 1.0 if native events are enabled only. Fixes issue 7445
+  * BODY element is always shown/displayed.
+    related section in the W3C spec:
+    https://dvcs.w3.org/hg/webdriver/raw-file/default/webdriver-spec.html#determining-if-an-element-is-displayed
+  * Implementing switchToParentFrame support in atoms
+  * Setting HtmlUnit to emulate FF24 by default
+  * Updating HtmlUnit to 2.15
+  * Stop polluting the log with stacktraces. Fixes issue 7460
+  * Returning less specific platform info from firefox driver. Fixes issue 3354
+  * Adding driver info into TimeoutException thrown by WebDriverWait. Fixes issue 7429
+  * Implementing switchToParentFrame command for IE driver
+  * Adding URL endpoint for switchToParentFrame
+
+v2.42.2
+=======
+WebDriver:
+
+  * errorHandler needs to be instantiated. Fixing NPE with IEDriver Issue #7415
+
+v2.42.1
+=======
+WebDriver:
+
+  * resorting context endpoints, belong with mobile spec
+  * re-added Context endpoints to java client
+  * allow custom ErrorHandler for HTTPCommandExecutor
+  * fixing toJSON of chrome options where equal options become unequal.
+
+v2.42.0
+=======
+WebDriver:
+
+  * updating firefox prebuilts, thanks jleyba for fixing the build!
+  * Use PRUnichar for Gecko < 29, char16_t otherwise.
+  * Updating third_party/py/jython.jar to Jython 2.5.3
+  * Removing unused functions
+  * Implementing more straightforward way to send keyboard events in synthesized mode. Fixes typing into number inputs and rich text editors (like tinymce)
+  * Fixing interactions API in Firefox to be able to move mouse to elements in frames using native events. Fixes issue 7253
+  * Removing unused import
+  * Refactoring: moving an auxiliary class from the top level to inner class
+  * Removing outdated getValue command handler
+  * Change ClearElement to be a subclass of WebElementHandler instead of WebDriverHandler
+  * Removing outdated (unused) command constants
+  * Fixing clicks on invisible elements in HtmlUnitDriver broken by ElementNotVisibleException being a subclass of InvalidElementStateException
+  * Click after move with offset should use last mouse position
+  * Adding new interface methods to the stubs
+  * Preserve wrapped test function's string representation for Mocah's BDD interface.
+  * Fixing IE driver to allow JavaScript objects with property names with spaces
+  * Ignoring IE6-only test failure for CSS
+  * Bump the hmltunit version to 2.14
+  * Remove a class of our which replicates HTTP status codes already given meaningful names in the standard JRE.
+  * Updating version match for native libs in firefox plugin manifest file
+  * Updating native events dll for FF28
+  * Implement ability to load driver providers using ServiceLoader. A user can add new providers or override existing ones. To use this ability a user should:
+  * Refactoring the process of driver instances creation to use a new DriverProvider interface. DefaultDriverProvider wraps the current logic -- creating instances using reflection. This is a step to implement ability to load additional providers using ServiceLoader that can add new providers or override existing ones.
+  * Ruby: Fix for extensions whose install.rdf uses an attribute for em:id (issue 5978)
+  * fixes issue for locating newly installed chrome versions
+  * Fixing IE driver crash when clicking on link that opens a new window.
+  * Properly configure the http client in the presence of user credentials.
+  * java json converter chooses Long (Number base class). Fixing RemoteNetworkConnection
+  * SUPPORTS_BROWSER_CONNECTION was removed, missed a reference
+  * Clean up use deprecated methods & classes.
+  * ElementNotVisibleException is a type of InvalidElementStateException.
+  * Tweak messaging on SafariDriver client page to better reflect what is happening. Also added a log message pointing users to the toolbar button that opens the driver log page.
+  * Remove some no-op calls to deprecated functions.
+  * Pull the logic for converting Command/Response pairs to and frame HTTP request/response pairs into a common codec instead of duplicating the logic on the client and server.
+  * Change some tests to use Alert#accept() instead of Alert#dismiss() to get rid of alert dialogs. This is a workaround to ChromeDriver issue 764:
+  * When running tests against the remote server, ignore two tests that use required capabilities. The remote server only supports desired capabilities on new session requests.
+  * Update two tests to work when running with a remote server, where the original js error will be the root exception, but not necessarily the second error in the cause chain.
+  * Test if we need to skip cookie tests for lack of a valid domain name before calling a method that asserts we have a valid domain name.
+  * Convert HttpRequest/Response to POJOs; handle all conversion to and from HttpServletRequest/Response inside DriverServlet.
+  * Every command handler returns ResultType.SUCCESS and those handlers that return an actual value do so through a level of indirection. This commit changes command handlers to just return results directly to the caller, making it possible to delete a lot of unnecessary code.
+  * Move static resource serving code into DriverServlet. It is not part of the JSON wire protocol and including it in the command dispatcher complicates planned refactoring and other code cleanup.
+  * Mobile - Network Connection implementation for Java and Python.
+  * ChromeDriver 2.10.267517 binds to the loopback address instead of 0.0.0.0, so only attempt to connect using the loopback address.
+  * Code comment changes for wait()
+  * added task name to SCHEDULE_TASK event
+  * Eclipse compiler update for Java 8 support
+  * Updating naive user agent string checks to account for IE11
+  * Adding Windows 8.1 detection to Platform.extractFromSysProperty
+  * retry a test failure if there was a 'sauce' issue, like we exceeded the total time a test session is allowed to take.
+  * adding Windows 8.1 platform, so we can use it in saucelabs for IE11 testing
+  * Remove deprecated functions on webdriver.promise.Promise class * Use templates with webdriver.promise.Promise to improve types   documentation.
+  * Loosen input type to webdriver.stacktrace.getStack_ to account for an rare condition in FF 28+ where the Error() constructor returns undefined (not sure what causes it, just know it happens)
+  * Add ability to save an abitrary base64 string as a screenshot from a WebDriverJS test running in a browser.
+  * When Firefox is configured to accept all SSL certs (which is the default behavior), we need to set a time offset to prevent Firefox from using HSTS (HTTP Strict Transport Security). If we don't do this, Firefox will pre-fetch the certs for sites that should always be accessed over HTTPS and allows Firefox to catch man-in-the-middle attacks. While this is A Good Thing for users, it prevents WebDriver from accepting self-signed certs for these domains (e.g. when they are accessed through a HTTPS proxy).
+  * Remove unnecessary dependency on bouncycastle.
+  * Making ChromeDriver directly implement the interfaces representing features it implements.
+  * Updating build process for Firefox native events components to use gecko 29 SDK
+  * Updating buck version to latest OSS release
+  * Use addEventListener if possible. Fixes issue 6680
+  * Packaging webdriven selenium (emulator) to client-combined jar. Fixes issue 7206
+  * Don't use system path separators when computing URL paths.
+  * Make Cookie serializable
+  * Ignoring a test for HtmlUnitDriver that can't be run due to HtmlUnit restrictions
+  * Allowing FindBy, FindBys, FindAll annotations on types
+  * Minor cleanup FirefoxBinary.java
+  * Adding Firefox native event version support to CHANGELOG
+  * Adding version number to the capabilities returned by htmlunitdriver. Fixes issue 7110
+  * Implementing augmentation indicator as an annotation
+  * Error handling for startSession is handled in the parent class now.
+  * Remove deprecated functions.
+  * Revert "Fixing Java 8 incompatibility caused by use of old jruby" because it breaks java 7 compatibility :(
+  * Fixing Java 8 incompatibility caused by use of old jruby
+  * Export logging API from main webdriver module.
+  * Setting pixel density to be independent from OS settings. Fixes issue 6112
+
+v2.41.0
+=======
+WebDriver:
+ * Update to support native events for Firefox 28 (removed native event
+   support for Firefox 26). Native events are now supported for the
+   following Firefox versions:
+
+   17 (immediately previous ESR release)
+   24 (current ESR release)
+   27 (immediately previous release
+   28 (current release)
+
+ * Fixed capabilities to be sent properly encoded. For instance,
+   capabilities for mobile have copyright signs.
+ * Renamed some commands in the Firefox driver to prepare for Selenium
+   3. This essentially means that we're mirroring the names of the
+   commands in the function names within the driver. Also implemented
+   handling a Selenium 3 style "sessionId" in a Command received by a
+   Selenium 2 server.
+ * Implemented support for switching context as described here:
+   http://code.google.com/p/selenium/source/browse/spec-draft.md?repo=mobile#133.
+   This feature will be used by mobile WebDriver users to switch
+   between different contexts like the native or the webview UI element
+   tree. The feature is end to end tested with latest Selendroid
+   snapshot version (6a126ab). In the langauge bindings, this is
+   implemented as a role-based interface. Subclasses of RemoteWEbDriver
+   that need this should extend TargetLocator and use covariant return
+   types to keep everything happy and sweet.
+ * Removed InternetExplorerDriver constructor that accepts
+   WindowsProxyManager as a parameter. Proxy management moved to
+   IEDriverServer and WindowsProxyManager is used for RC only now.
+ * Removed use of VK_ENTER since its been removed from Firefox. PUA
+   code uses VK_RETURN now like Mozilla Tools.
+ * Added switch to parent frame command to the wire protocol and API.
+ * Added httpOnly flag to Cookie JSON object.
+ * (on behalf of Tobias Lidskog): Added property for silencing
+   chromedriver. The Java property "webdriver.chrome.silentOutput" is
+   now used to set the default value for silent mode in chromedriver
+   using the ChromeDriverService class. This is analogous to the
+   existing system property for controlling verbose mode.
+ * (on behalf of Yi Zeng): Updated download link to googleapis.com
+ * Reduced the visibility of a deprecated class in the htmlunit driver.
+ * Removed deprecated FirefoxProfile.setProxyPreferences method.
+ * Removed deprecated ChromeOptions.setExperimentalOptions
+ * FIXED: 4843: (on behalf of Jonatan Kronqvist): Regard all modifier
+   keys in SingleKeyAction. An earlier commit added META, but COMMAND
+   and LEFT_* were left out as they were misinterpreted as aliases,
+   which they aren't (they onlyuse the enum definition to get the same
+   character code of the keys).
+ * FIXED: 5331: Added javadoc to JavascriptExecutor executeAsyncScript
+   about the default timeout. Also added some extra information on
+   troubleshooting common issues.
+ * FIXED: 7014: Fixed parameters parsing.
+ * FIXED: 7033: Fixed javadoc.
+
+WebDriverJS:
+ * FIXED: 7105: Properly bind "this" for beforeEach/it/afterEach in
+   mocha integration.
+
+Grid:
+ * Modified to ignore exceptions during the clean-up process if failing
+   to start a RemoteWebDriver instance.
+ * FIXED: 6770: Setting a timeout when Jetty has low resources to
+   prevent hub from hanging.
+ * FIXED: 6771: If a session times out and the browser was never
+   started, it should still be cleaned up on the hub side.
+   BeforeRelease should then be a no-op and not throw.
+ * FIXED: 6772: Added a configuration parameter to set the number of
+   threads Jetty uses. Default is -1, which implements the current
+   behavior (255 threads from Jetty's default settings)
+ * FIXED 6773: Consuming the request in all cases to properly release
+   resources.
+ * FIXED: 6811: Clean up immediately if starting a driver or session
+   errors in RemoteWebDriver.
+ * FIXED: 6878: Actually pass the response body to CommandListener
+   implementations, per the interface contract.
+ * FIXED: 7047: Updated a grid timeout property that seems to have been
+   overlooked in a previous cleanup.
+
+RC:
+ * Added lost quotes in JSON format (RC).
+ * Removed old version of Selenium RC emulation and leaving the new one
+   in place.
+
+v2.40.0
+=======
+WebDriver:
+ * Update to support native events for Firefox 27 (removed native event
+   support for Firefox 25).
+ * Removed the iPhone driver. Also leaving the atoms available, so that
+   appium and iosdriver can use them.
+ * Deleted the client side of the AndroidDriver. Note that the atoms
+   are still left in place so that Selendroid can still be compiled.
+ * Make the RemoteWebDriver implement TakesScreenshot. There's only one
+   driver that doesn't implement the interface (the HtmUnitDriver) and
+   this is the most common cause for using the Augmenter, which isn't
+   very discoverable.
+ * Imported PhantomJSDriver 1.1.0, removing 1.0.4 (previous version).
+ * Implemented augmentation of previously augmented instances
+ * Fixed JdkAugmenter's inability to add interfaces that are already implemented
+ * Removed org.openqa.selenium.net.INetAddress, an unnecessary abstraction
+   around java.net.InetAddress.
+ * (on behalf of Tobias Lidskog) Add ability to send --silent flag to
+   chromedriver.
+   when building an inverted predicate.
+ * Implemented part of advanced user interactions using injected atoms
+ * Fixed HtmlUnitDriver to handle timeout exception on refresh.
+ * Implemented page load timeouts in Firefox without stopping page
+   loading.
+ * Implemented pageLoadingStrategy capability in Firefox.
+ * Migrated the WebDriverBackedSelenium to
+   com.thoughtworks.selenium.webdriven. This also leaves behind a
+   deprecated implementation of each of the key interfaces to ease
+   migration for users.
+ * Implemented proper error code for the case of invalid css selector
+   empty class name, and compound class name in atoms.
+ * Implemented alert and confirmation handling in WDBS (Java)
+ * Throw a more descriptive error when typing in certain types of input
+   elements in Chrome. Starting with Chrome 33, certain types of input
+   elements do not support the selection API (in fact, they throw when
+   you try to access the property). This prevents us from fully
+   simulating typing in the atoms.
+ * FIXED: 2397: (on behalf of TommyBeadle) Fixed exception handling
+ * FIXED: 3991: Add Keys.chord(Iterable<CharSequence>) as a utility
+   method.
+ * FIXED: 4606: Stop web page loading after timeout.
+ * FIXED: 4843: (on behalf of Jonatan Kronqvist) Keys.META is now
+   regarded as modifier key in SingleKeyAction. Keys.META, Keys.COMMAND,
+   Keys.LEFT_ALT, Keys.LEFT_CONTROL and Keys.LEFT_SHIFT are now also
+   regarded as modifier keys in SingleKeyAction (because of their
+   aliases).
+ * FIXED: 5397: Disabled validation of cookies loaded from the browser.
+   If the browser could parse the cookie we are to be able to provide
+   this information to the user even if the cookie is inalid.
+ * FIXED: 5859: Implemented keyDownNative, keyUpNative and
+   keyPressNative in WDBS. These commands are implemented via Actions.
+ * FIXED: 6512: When the host is unknown, make the HtmlUnitDriver
+   return an error page.
+ * FIXED: 6657: Make the LoggingPreferences implement Serializable.
+ * FIXED: 6681: Preventing augmentation of subclasses of RemoteWebDriver. Fixes
+ * FIXED: 6830: (on behalf of GeorgeKlinich) Urlencoding result
+   returned by server implementation of WebDriverBackedSelenium.
+ * FIXED: 6834: Creating sesion cookie if expiry is not set. Fixes issue 6834
+ * FIXED: 6947: Script timeout should get reset even when async
+   callback is called synchronously.
+
+WebDriverJS:
+ * For consistency with Closure's new promise API, use thenCatch()
+   and thenFinally() instead of addCallback(), addErrback(), et al.
+ * ResultType.EXCEPTION and ResultType.ERROR are handled the exact same way,
+   so remove one of them and simplify some code.
+ * Treat promise.fulfill/reject as no-ops instead of throwing if the
+   promise has already been resolved.
+ * Added some utility functions to simplify working with arrays of
+   promises.
+ * FIXED: 6826: Add support for custom locators in webdriverjs.
+
+Grid:
+ * FIXED: 4589: Restrict the host where grid hub is listening if -host
+   option is specified.
+ * FIXED: 6445: Shorten string representation of capabilities in the
+   hub log and grid console.
+
+RC:
+ * Deprecated browser launchers for dead versions of firefox.
+
 v2.39.0
 =======
 WebDriver:
@@ -144,7 +983,7 @@ WebDriver:
 Grid:
   * Added ability to fetch slotCounts from /grid/api/hub. The resource
     looks like this:
-    
+
         { "slotCounts": { "total": 20, "free": 8 } }
 
   * Added ability to fetch newSessionRequestCount from the
@@ -219,7 +1058,7 @@ WebDriver:
     webelement.
 
 WebDriver JS:
-  * When capturing console output, guard against user scripts that 
+  * When capturing console output, guard against user scripts that
     redefine the console global.
   * Improved logging in the test client.
   * Use goog.labs.testing.assertThat for the assertThat library.
@@ -291,11 +1130,11 @@ Grid:
   * Addressed memory leaks caused by per-session logging.
   * FIXED: 3001: Making Selenium the default protocol if a node was
     started with "-role rc" option.
-  
+
 RC:
   * FIXED: 3636: selenium.fireEvent works with the webdriver-backed
      selenium and IE.
-  
+
 v2.32.0
 =======
 
@@ -358,12 +1197,12 @@ WebDriver:
 JS:
   * Update WebDriverJS to support parallel flows.  This change renames
    several low-level classes and functions in the promise module:
-    
+
       promise.Application                                 -> promise.ControlFlow
         #schedule(string, function)                       ->   #execute(function, [string])
         #scheduleTimeout(string, number)                  ->   #timeout(number, [string])
         #scheduleWait(string, function, number, [string]) ->   #wait(function, number, [string])
-   
+
     The old schedule* functions are still present, but will print a
     warning message if called. They will be removed in 2.31.
 
@@ -437,7 +1276,7 @@ v2.27.0
 =======
 
 WebDriver:
-  * Added support for native events for Firefox 17. 
+  * Added support for native events for Firefox 17.
   * Added support for ghostdriver (PhantomJS)
   * Adding new capability "enableElementCacheCleanup" to the IE
     driver. When set to true, the IE driver will clean the
@@ -495,7 +1334,7 @@ v2.26.0
 WebDriver:
   * Updated OperaDriver to 0.15.
   * Added transparency support to the Color class.
-  * Increased lock time a bit for the FirefoxDriver to make tests more 
+  * Increased lock time a bit for the FirefoxDriver to make tests more
     stable on Windows.
   * Added the enablePersistenHover capability to allow the user to specify
     whether to use the persistent hover thread in the IE driver. Defaults
@@ -508,7 +1347,7 @@ WebDriver:
   * Fixed SafariDriver to allow calling .quit() consecutively without error.
   * Modified FirefoxDriver to use atoms to switch between frames.
   * FIXED: 4535: Hover still does not work perfectly in IE.
-  * FIXED: 4676: Unable to fire javascript events into SVG's. 
+  * FIXED: 4676: Unable to fire javascript events into SVG's.
   * FIXED: 4320: Impossible to IE run tests in parallel via TestNG.
   * FIXED: 4309: 'Could not convert Native argument arg 0' error with Firefox.
   * FIXED: 4593: Alert.accept() Cancels the Resend Alert/Dialog Box.
@@ -640,7 +1479,7 @@ WebDriver:
   * IE can use synthesized events if the capability
     "enableNativeEvents" is set to false. This is experimental and not
     expected to work properly.
-  * Native events added for Firefox 12. 
+  * Native events added for Firefox 12.
   * Native events retained for Firefox 10, 11, and 3.x
   * Selenium-backed WebDriver can now return WebElements from
     executeScript.
@@ -669,7 +1508,7 @@ Grid:
 Atoms:
   * bot.actions.type now works as expected in Firefox 12.
   * Introduced better mouse and keyboard abstractions
-  
+
 
 v2.21.0
 =======
@@ -691,7 +1530,7 @@ Grid:
   * Significant changes in the timeout strategy0 between hub, nodes and browser.
     See http://code.google.com/p/selenium/wiki/Grid2 section on timeouts.
     Compatibility note: It is recommended to at least update the nodes
-    to 2.21. Upgrading only the hub will effectively disable the 
+    to 2.21. Upgrading only the hub will effectively disable the
     browser-death timeout and is *not* recommended.
   * Improved error messages on console
   * Content length issue solved, Issue 2362
@@ -705,12 +1544,12 @@ Server:
     differentiate between browser hang and client gone (which is
     -timeout <timeout>)
     - System property -Dselenium.server.timeout removed, use -timeout instead.
-    See http://code.google.com/p/selenium/wiki/RemoteWebDriverServer 
+    See http://code.google.com/p/selenium/wiki/RemoteWebDriverServer
     for further details.
     * Issue 3577
 
 
-v2.20.0 
+v2.20.0
 =======
 
 WebDriver:
@@ -755,7 +1594,7 @@ Atoms:
 v2.19.0
 =======
 
-WebDriver: 
+WebDriver:
   * Server-side implementation of the webdriver-backed selenium.
   * "sendKeys" works in the webdriver-backed selenium when using
     safari.
@@ -852,7 +1691,7 @@ RC:
 v2.16.0
 =======
 
-WebDriver: 
+WebDriver:
   * Native events enabled for Firefox 9
   * The FirefoxDriver now enables apps to use offline storage by
     default.
@@ -895,18 +1734,18 @@ RC:
   * WebDriverCommandProcessor has all constructors depending on the
     (deprecated) SuppliesWebDriver class marked as deprecated. Will be
     deleted in the next release.
- 
-Automation Atoms: 
+
+Automation Atoms:
   * Bug fixes and updates
   * Included a touchscreen abstraction
- 
- 
+
+
 v2.15.0
 =======
 Project:
   * Code donation from Google.
 
-WebDriver: 
+WebDriver:
   * Now supports up to and including Firefox 11.
   * Changed order of FirefoxProfile initialization attempts on a
     remote host: 1) try to load from capabilities, 2) try to load
@@ -958,9 +1797,9 @@ Server:
   * Memory leak fixed
 
 Grid:
-  * New beta console added.  
+  * New beta console added.
   * Grid nodes were leaking even more memory that regular server
-    nodes.  
+    nodes.
   * Fixed a scenario that used to lead to "session = null" errors.
   * Now support iOS nodes.
 
@@ -1006,7 +1845,7 @@ v2.12.0
 =======
 
 RC
-  * Disabled web security checks for Chrome by default. 
+  * Disabled web security checks for Chrome by default.
   * Actually reenabling *safariproxy.
 
 WebDriver
@@ -1189,7 +2028,7 @@ WebDriver
 
 Grid
   * FIXED: Thread Safety Issues
-  
+
 
 
 v2.4.0
@@ -1212,7 +2051,7 @@ WebDriver:
 
 Selenium:
   * Firefox 8 support.
-  
+
 
 v2.3.0
 ======
@@ -1261,1904 +2100,5 @@ Grid:
   * Track when a session has become orphaned.  I.e., when the client sends no
     commands after the initial session creation.  This almost always indicates
     the client is no longer connected and the session is unusable immediately.
-commit 65288aaf32f12dacccfe67403a0c9ac00ac26f33
-Author: Jim <james.evans@salesforce.com>
-Date:   Thu Oct 17 11:06:16 2013 -0400
 
-    Updating javadocs for 2.36 release
 
-commit 22bd47212e63c28f1cd1397c9f58a5f8e577d2f8
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Thu Oct 17 11:00:51 2013 -0400
-
-    Bumping version numbers for 2.36 release
-
-commit 8245d32a8a6773e7bf388021c2567ee247f793b1
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Thu Oct 17 16:02:56 2013 +0400
-
-    Temporarily disabling testShouldThrowIfUrlIsMalformed in sauce
-
-commit bcf336999af09bbbc20ce5a11c5483bc05802f66
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Thu Oct 17 12:36:01 2013 +0400
-
-    Updating htmlunit to 2.13
-
-commit f262ad8433f3c867b0d6ce5b2ce445cd46498887
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Thu Oct 17 00:30:16 2013 +0400
-
-    Adding a new test for opening malformed URLs
-
-commit 686eb681d7cd7ebac6c6beb4c62dcd8a48a7d387
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Wed Oct 16 17:57:52 2013 -0400
-
-    Skipping IE6 JavaScript tests for features not supported by IE6
-
-commit a6fe66659707cb321b3f2ec24b11d369d0d2d85c
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Wed Oct 16 16:11:59 2013 -0400
-
-    Fixing IE driver bug in getting element location
-
-commit 7f8cda4ffbc695322087b81590834e71960b19b0
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Wed Oct 16 13:43:07 2013 -0400
-
-    No, really fix compile error in Java PositionAndSizeTest.java
-
-commit 1a6483a8c44983f71b35e283981c3c75b1c0be56
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Wed Oct 16 13:36:06 2013 -0400
-
-    Fixing compile error in Java PositionAndSizeTest.java
-
-commit a9068a8581ef65053780ea0d5e29a073714fd898
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Wed Oct 16 13:26:04 2013 -0400
-
-    Ignoring invalid test for IE6.
-    
-    IE6 doesn't handle fixed-position elements correctly.
-
-commit 98195bcc48340d807a61d8f4c77f1fab276d898b
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Wed Oct 16 13:25:36 2013 -0400
-
-    Updating IE prebuilts
-
-commit 5cf3f9809c93d9b014a719669f1dd23c32a32b73
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Wed Oct 16 13:05:15 2013 -0400
-
-    Updating .NET tests to remove RenderedWebElementTest
-    
-    This makes the .NET tests more aligned with the Java test suite.
-
-commit 7db297c0b66bb597a071a64abc49b0a8e1a50a83
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Wed Oct 16 13:02:33 2013 -0400
-
-    Adding padding for IE < 8 for getting invisible element location
-    
-    Element location returns a position 2 pixels off for invisible elements on
-    IE 6 and 7.
-
-commit a2e5c1f0f1cece1a7dd90b1f3e2b5340f63a6b7f
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Wed Oct 16 12:59:16 2013 -0400
-
-    Moving handling of non-integer element size in IE10 to correct place
-    
-    This change partially reverts revision 26bee3e99aa6, and moves the
-    rounding of the size to integer values to
-    webdriver.atoms.inject.dom.getSize.
-
-commit 408d97fe79517fc365ac37b9cb071d624b40323b
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Oct 16 19:38:29 2013 +0400
-
-    Increasing max supported FF version up to 27.*
-
-commit 4a8191c370a5e6242e3638829e7e026baa9a7059
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Oct 16 18:40:38 2013 +0400
-
-    Updating httpclient to 4.3
-
-commit 6a31be1419807b7a6ea32db8958324a0ace80f26
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Tue Oct 15 16:21:51 2013 -0700
-
-    Remove trailing whitespace
-
-commit c378f5f654eefb85735730c4b68667a2fb7864a7
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Tue Oct 15 15:33:25 2013 -0700
-
-    Whitespace and import clean-up.
-
-commit 373881473fed5da249b84acf8cd46ceccbe75a5b
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Tue Oct 15 15:16:59 2013 -0700
-
-    Whitespace change to test CI is picking up changes again.
-
-commit 11514161c2db3a9e8ed70a8b5aff77f49d3502ac
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Tue Oct 15 13:50:04 2013 -0700
-
-    Bump js binding version to 2.36
-
-commit 8653277f2a3d71178cd1e28a9916959838e2a6df
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Tue Oct 15 16:43:28 2013 -0400
-
-    Missed a .NET assembly version
-
-commit 94fe68349f5c5e99dd6a1c58a7d3013ea0f0b417
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Tue Oct 15 16:42:36 2013 -0400
-
-    Bumping .NET bindings assembly versions for impending 2.36 release
-
-commit 8efd62de62b36bd75ffb11ebbc697f2a5b584074
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Mon Oct 14 13:51:12 2013 -0700
-
-    Return an empty string instead of "null" when the browserName and version
-    capabilities are not set.
-
-commit a0ffb84653747fa159f6d08d01483457acc752a0
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Mon Oct 14 10:14:12 2013 -0700
-
-    Stop propagation of the webdriver-evaluate custom event when executing user
-    supplied JavaScript. Without this change, the event handler will trigger
-    twice for async scripts, causing the driver to attempt to evaluate the user
-    script twice, leading to unpredictable behavior.
-
-commit 5e9ea0e21d0ea1325ff9677c3bbd12b52d519234
-Author: Samit Badle <Samit.Badle@gmail.com>
-Date:   Sun Oct 13 14:05:16 2013 +0200
-
-    Fix Selenium IDE icon not appearing on the toolbar for some users. Fixes issue #5712
-
-commit 7e373abc81aefc305b57832adf67df31d9754a77
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Fri Oct 11 16:32:24 2013 +0400
-
-    Fixing Javadoc for getAttribute. Fixes issue 2443
-
-commit be1a4e3930a7a5130c745e688796f3c1a03fdc25
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Fri Oct 11 12:47:12 2013 +0400
-
-    Adding a new pause action to the interactions API (java binding)
-
-commit a28a6322ad40465b14b409fc4843bc76b7c75251
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Fri Oct 11 11:29:50 2013 +0400
-
-    Refactoring
-
-commit 30d8bd61998f548f777d7cdb1c3d0e83a39237a6
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Thu Oct 10 21:24:27 2013 +0400
-
-    Code cleanup
-
-commit e4e960239dd0cd28ecd53e18b79f9b57f85253a4
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Thu Oct 10 17:08:09 2013 -0700
-
-    Allow args to passed to the JVM using the jvmArgs option.
-    
-    Fixes issue 6346.
-
-commit ce1ee07f792adcba887b5da62103b1fa70db57ff
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Thu Oct 10 16:51:02 2013 -0700
-
-    The Augmenter does not appear to work in the Android server, so fall back to basic adapters (which will yield more useful stack traces on errors anyway).
-
-commit caa57c0af5bbf99a432028106043bcfb9442b93d
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Thu Oct 10 10:44:56 2013 -0700
-
-    Improve support for using the HTML5 APIs through the remote
-    server by augmenting the session driver before attempting to
-    access HTML5 capabilities.  If the driver does not support the
-    requested feature, throw an UnsupportedCommandException instead of
-    a ClassCastException.
-
-commit 0a4fae0a83b8694399da3a87aceab7526acfff75
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Thu Oct 10 12:44:27 2013 -0400
-
-    Fixing HTML dialog logic for self-closing documents.
-    
-    HTML dialog windows opened using showModalDialog() have no way to
-    properly notify of their closing. The IE driver attempts to detect
-    closing of these windows by listening for user-initiated actions,
-    either by calling the WebDriver close method, or clicking on an
-    element that causes the dialog to close. This commit adds logic to
-    the method used for getting all window handles to validate the
-    existence of any HTML dialog windows, properly notifying the driver
-    if the OS-level window handle is no longer valid. Fixes issue #6249.
-
-commit 2cc5f4ae358e415778b21c927377d1d799a6eafd
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Thu Oct 10 11:10:56 2013 -0400
-
-    Fixing HTML dialog logic for redirected documents.
-    
-    Getting the parent window of an HTML dialog's document can fail,
-    especially if the document changed out from under us before we could get
-    the window reference. The canonical case for this is a redirect using
-    JavaScript. Now we will sleep for a shorttime, then retry to obtain the
-    reference to the window object. Fixes issue #6224.
-
-commit 67316f71b0748a1464daaebc67a39a9865d2200e
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Thu Oct 10 08:08:49 2013 -0400
-
-    Increasing IEDriverServer logging when waiting for navigation
-    
-    This commit adds more detailed logging while the driver is waiting for a
-    page navigation to complete. It provides log lines for all of the cases
-    where the driver would consider the navigation to be incomplete, in
-    addition to logging the actual values for ready states when not found to
-    be 'complete'.
-
-commit f9fc279f1d77d54bd7e470b6f66ad6421f0077fc
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Wed Oct 9 13:49:28 2013 -0400
-
-    Simplifying setting of bot.userAgent.WINDOWS_PHONE per review comment
-
-commit abccd5425e758242b1b728fe7e4e260ef77b3f1f
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Wed Oct 9 12:50:50 2013 -0400
-
-    Do not issue click for option elements on Windows Phone
-
-commit fc7d57f62e1903d218e108721f8902464585b707
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Wed Oct 9 11:51:10 2013 -0400
-
-    Adding attribute to C# generated atoms file to allow skipping static code analysis
-
-commit a26523f1adff1205ec01c4373ba20e3390307d9d
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Fri Sep 27 11:48:33 2013 -0400
-
-    Updating C# atoms creation to use static properties instead of fields
-
-commit 061a29a87adc276734ef0a9113a63c36a820bdae
-Author: Brett Porter <brett@apache.org>
-Date:   Wed Oct 9 16:36:01 2013 +1100
-
-    fix for small typo in variable in error message
-
-commit c779ac5250c2346a46dd2c50768269d5e37e49b8
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Tue Oct 8 13:38:32 2013 -0700
-
-    When registering the FirefoxDriver's binary components, do not use multiple
-    appversion constraints, as form a logic or:
-    https://developer.mozilla.org/en-US/docs/Chrome_Registration#appversion
-    
-    Instead, use appversion+platform to designate what version of each
-    binary-component to load
-
-commit 2680b7e443e1fb50dacae737ee3adcfe93d2ffcd
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Fri Oct 4 13:46:47 2013 -0700
-
-    Change a test to use embedded resources if available. If the resource is not
-    found in the (e.g. running from an IDE), it will fall back to the old
-    behavior of building it directly.
-
-commit 9cbe465b10d5db26194d073289ca3e54ee94aeb5
-Author: Jari Bakken <jari.bakken@gmail.com>
-Date:   Thu Oct 3 16:58:04 2013 +0200
-
-    Add ability to fetch slotCounts from /grid/api/hub:
-    
-    The resource looks like this:
-    
-      { "slotCounts": { "total": 20, "free": 8 } }
-
-commit 9b49f2f46ed0a3c744e2b5232994207e7dd7ab50
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Thu Oct 3 21:06:43 2013 +0400
-
-    Makes native events on by default for IE.
-    
-    Fixes issue #4695.
-
-commit 11846cea7b1e01509b1725d3c7965b7f4c562e5c
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Thu Oct 3 20:57:26 2013 +0400
-
-    Makes default capabilities sets minimally consistent for all bindings.
-    
-    What's done:
-    
-    1. C# binding
-    * fix htmlunitwithjs caps
-    * fix platform for chrome caps
-    
-    2. java binding:
-    * add htmlunitwithjs caps
-    
-    3. javascript binding:
-    * fix ipad, iphone browser names
-    * add htmlunit, htmlunitwithjs caps
-    
-    4. Python binding:
-    * fix platform for safari caps
-    
-    5. Ruby binding:
-    * adds htmlunitwithjs caps
-
-commit 4fdbf48e023d4b5d053cdd0bd4501528bd59b7e2
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Thu Oct 3 19:24:24 2013 +0400
-
-    Adds ability to set opacity for Color object (on behalf of Mark Collin).
-    
-    It allows to use Color if color data have different channels
-    for colors and opacity, i.e. each input color has
-    hex "#ABC" and Z opacity value.
-    
-    Fixes issue #4735.
-
-commit 8eedb3023dba70c454455e7f95b8360471844416
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Wed Oct 2 18:34:16 2013 +0400
-
-    Adds test case for issue #4301
-
-commit adacc9dcf70800290f3566bacf945a45ed42658c
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Tue Oct 1 18:38:54 2013 +0400
-
-    Fixes some server and client javadocs.
-    
-    Fixes issue #4290.
-
-commit 68ae867e03c148c0352978d89a9a47e07858e2d9
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Mon Sep 30 19:19:01 2013 -0400
-
-    Exposing webdriver.atoms.inject.executeScript and .executeAsyncScript as atoms
-
-commit c1b72668a78a0c37e185ca786c339b553498662e
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Mon Sep 30 19:04:41 2013 -0400
-
-    Updating JSDoc type annotations to correct closure compilation
-
-commit 02f2c08e3fde0d944672762edbc1c84250aecaa9
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Mon Sep 30 17:30:38 2013 -0400
-
-    Updating injectible atoms to be aware of window context
-    
-    This allows the functions in dom.js and action.js to be able to take an
-    optional window argument. If omitted, the functions use the top-level
-    window context.
-
-commit 714bff3249ba083a4b36eb3ee4af97fc13130ac3
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Mon Sep 30 13:44:39 2013 -0400
-
-    Exposing bot.inject.unwrapValue
-
-commit 26bee3e99aa6498b88d442dfa34286ed624e5044
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Mon Sep 30 17:26:02 2013 -0400
-
-    Resolving floating point values for getSize in IE10
-    
-    Changing bot.dom.getClientRect() to force return of integer sizes for each
-    dimension of the rectangle.
-
-commit 365b60a0737d7c159056fbc0ee762bf2598abf15
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Fri Sep 27 15:00:25 2013 -0700
-
-    White space change to test push
-
-commit 3771e304b6fb7889b1bb237a134d32bb935a6916
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Fri Sep 27 13:45:59 2013 -0700
-
-    Update webdriver.atoms.inject.locators.* to support finding elements
-    in another window or frame. The search operation can no longer be
-    piped through bot.inject.executeScript since it violates the contract
-    of only referencing symbols defined in the context of the target
-    frame.
-
-commit 7a90f730f3935117636663c2272d1f8132caa6ba
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Fri Sep 27 09:41:41 2013 -0700
-
-    Pushing some changes as 2.35.2
-
-commit 6b0f50446bbe92e47671e0a844739bdf1b8517ec
-Author: Jari Bakken <jari.bakken@gmail.com>
-Date:   Fri Sep 27 14:45:49 2013 +0200
-
-    Add ability to fetch newSessionRequestCount from the /grid/api/hub resource.
-
-commit 1b5b7980665ce4f85733baacdb1682b4b05ed696
-Author: Jari Bakken <jari.bakken@gmail.com>
-Date:   Fri Sep 27 14:44:24 2013 +0200
-
-    Slight cleanup of HubStatusServlet
-
-commit fcf708fa74e2e5c2115b7c63781d5797e6b626e4
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Fri Sep 27 00:48:28 2013 +0400
-
-    Another attempt to prevent log message duplication on the console, without
-    deleting all handlers
-
-commit 16cbdf2a6a71078acec73033063fbea920383a3c
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Wed Sep 25 09:36:13 2013 -0700
-
-    Add a few more tests for webdriver.atoms.inject.executeScript
-
-commit 0ff44ccc9aa327082bd00d5d0235d9078c607d03
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Sep 25 11:15:27 2013 +0400
-
-    Implementing elementScrollBehavior capability in FirefoxDriver
-
-commit 92ca8eeee3e3d4c09e68740a80187ed6cbbb9d2f
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Tue Sep 24 18:41:55 2013 -0400
-
-    Updating crazy-fun javascript compiler to output C#
-
-commit 0bbedede736205ab2cde45d1e8feb8279defb0b5
-Author: Simon Stewart <simon.m.stewart@gmail.com>
-Date:   Tue Sep 24 12:21:59 2013 +0100
-
-    Bumping the version of wgxpath, which also means bumping the android apk.
-
-commit 822467eb7b4733476e24e158f6e06cb909ab01db
-Author: Simon Stewart <simon.m.stewart@gmail.com>
-Date:   Tue Sep 24 10:47:17 2013 +0100
-
-    Bumping the atoms version used by the android apk
-
-commit ef01820d2a07fd60455fc712fee6281f0f5ae0e9
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Mon Sep 23 12:35:17 2013 -0700
-
-    Do not use SauceDriver to check the effective platform as that will
-    fail when running locally
-
-commit 03272459696c1ae34f74dcd7d92c0acaa8e5512e
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Fri Sep 20 15:24:21 2013 -0700
-
-    Pushing atoms changes.
-    - Reconciling the many "scroll into view" functions in bot.dom
-    - Allow typing on an element that is already in focus, even if it is not
-      "interactable" (e.g. page JS focused an offscreen DIV)
-    - Lint clean-up
-
-commit cbd1789babfdce8d5b6fa100d561ab6394a9be0c
-Author: Kevin Menard <nirvdrum@gmail.com>
-Date:   Sun Sep 22 19:25:27 2013 -0400
-
-    Don't remove log handlers since this makes it impossible to customize the logging system.
-    
-    This effectively reverts bcc284686ce7b994ac47308b52b87d292cfabe2f.
-
-commit e80f9ca58ddddc0dbfeb02e4d3350fbb7c301609
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Fri Sep 20 22:48:04 2013 +0400
-
-    Fixing getLocation to work on scrolled pages
-
-commit 2259144613bf5cf111a900616744e4b203af3c66
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Fri Sep 20 19:05:21 2013 +0400
-
-    Makes subclasses of By serializable.
-    
-    Fixes issue #2670.
-
-commit 6fc251e8afd9cef62a72bba5a71b1bdf02ad5d1d
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Fri Sep 20 14:22:53 2013 +0400
-
-    Adds noProxy info to Proxy JSON object information
-
-commit f0f0a744cf7f38b1ceb828e8951b11093c49fdbf
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Fri Sep 20 14:22:24 2013 +0400
-
-    Deletes httpsProxy usage which is duplicate of sslProxy.
-
-commit 6011f1a9c62fe27182d552e18fda2471771f5b43
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Thu Sep 19 14:41:31 2013 +0400
-
-    Adding more informative error message. Fixes issue 6293
-
-commit c94c3153619452c1881c90788f82e8100fa2f465
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Thu Sep 19 13:52:20 2013 +0400
-
-    Ignorin newly added tests in Opera
-
-commit bfc98c5e3096995339e3a54ed84d473b09f329b0
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Thu Sep 19 02:46:13 2013 +0400
-
-    Implementing a safer way to convert objects to string
-
-commit 808f0e73b66cf6fa2b83097bd5299c4716bb4ac7
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Thu Sep 19 02:02:43 2013 +0400
-
-    Adding tests for clicks to wrapped inline elements (a and span)
-
-commit 5ee7d7fcf79adaaa5aba71af8588e9b627de7d95
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Thu Sep 19 00:27:53 2013 +0400
-
-    Tests should not depend on external pages, even Google :)
-
-commit 44e1e5d0d9c1bda6795672fd8ad13f5521416e9d
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Thu Sep 19 00:15:55 2013 +0400
-
-    Renaming a test method
-
-commit 3d4f2b980b529a21c847604ea6cc016b5ae9aee0
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Thu Sep 19 00:15:08 2013 +0400
-
-    Removing a reference to a deleted test class
-
-commit 32e6a44103e46c91607b04778902f07abe335463
-Author: Simon Stewart <simon.m.stewart@gmail.com>
-Date:   Wed Sep 18 17:57:57 2013 +0100
-
-    Bump the guava version to 15.
-
-commit 7ff4763f38a6d6cefee2c37c0de7b7ae12b9c50a
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Wed Sep 18 12:03:54 2013 -0400
-
-    Adding ability to set additional ChromeOptions in the .NET bindings
-    
-    This allows the ability to set user profile preferences and local state
-    preferences using the ChromeOptions class. The new
-    AddUserProfilePreference and AddLocalStatePreference methods correspond to
-    the "prefs" and "localState" capabilities documented in the chromedriver
-    documentation. Note that the values passed in to these methods must be
-    JSON-serializable, and no validation is done on these values at present.
-    We now also allow setting the "detach" capability, which allows the user
-    to specify that Chrome remain running after chromedriver.exe has quit.
-    
-    This commit also removes legacy code for the obsolete chrome.binary and
-    chrome.switches capabilities, and changes the command line arguments to
-    chromedriver.exe to include two hyphens, instead of one (e.g., "--silent"
-    instead of "-silent").
-
-commit d7b7e7f9f6ed6073caeb30d9260f3940027bbe09
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Sep 18 18:44:19 2013 +0400
-
-    Fixing possible ClassCastException if version is an integer number
-
-commit 097339ca1c05b510707d1845ab9c27874a6142f5
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Sep 18 11:14:24 2013 +0400
-
-    I hope I've found at last the test that causes other tests to fail!
-
-commit 5839b33000706b4851f9404b17dddda66551cb52
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Sep 18 10:27:30 2013 +0400
-
-    Avoid situation when a link continues on the next line, this case should
-    be covered by a separate test
-
-commit be8de96a5c15a2068244c68a65b92857eeff1137
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Sep 18 00:43:10 2013 +0400
-
-    Marking another test as suspicious to crash FF on Linux with native events
-
-commit 07d5fcf72f39821c19412b568779a1f6acbf449f
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Tue Sep 17 18:37:48 2013 +0400
-
-    Cleaning imports
-
-commit e3aed2c0bb4a06bfc73e458ceb1519a65a868fab
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Tue Sep 17 12:57:39 2013 -0400
-
-    Attempting to fix crashes with Firefox 24
-    
-    The extension manifest specifies two binaries for version 24. Attempting
-    this crashes the browser on Windows (unknown on Linux). Commenting one of
-    the binary components for version 24 avoids the crash.
-
-commit 3debd9bb469ff5e40d3b1f86812bb717eb7717ff
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Tue Sep 17 01:25:57 2013 +0400
-
-    Fixing autoscrolling for elements located in frames
-
-commit 47d931d8c0f1ff3d2277c79f08d8c031d74de375
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Mon Sep 16 09:42:15 2013 -0700
-
-    Include executeAsyncScript in the Android atoms.
-
-commit bb0f61e2a0ba69d9357068b769b6553b4def3205
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Mon Sep 16 14:45:08 2013 +0400
-
-    Adding a new test (that fails in Firefox)
-
-commit de668225abc94c42deb8c70fc6f39726e9e80d0b
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Mon Sep 16 12:02:42 2013 +0400
-
-    Reimplementing a sample page for the test
-    testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUs to avoid
-    false alarms
-
-commit 40172d5409e4970ab3268080593b56d045f55790
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Sat Sep 14 15:45:04 2013 +0400
-
-    Updating prebuilt linux libs for Firefox
-
-commit 80170dcafcfe6f74110050f68f58aaa021240d17
-Author: Seva Lotoshnikov <sevalo@google.com>
-Date:   Thu Sep 12 22:09:33 2013 -0700
-
-    Fixing a bug with accidental comparison a variable with itself.
-    
-    Signed-off-by: Simon Stewart <simon.m.stewart@gmail.com>
-
-commit bb4296be40d0fc044302bce8474ce2f795ccbb8a
-Author: Seva Lotoshnikov <sevalo@google.com>
-Date:   Sat Sep 7 11:16:36 2013 -0700
-
-    No-op cleanup. Disabling executable bits for a bunch of non-executable files.
-    
-    Signed-off-by: Jason Leyba <jmleyba@gmail.com>
-
-commit 395fc78490e0fd66ffd2cccb7458cae7eeb54bbf
-Author: Seva Lotoshnikov <sevalo@google.com>
-Date:   Tue Sep 10 02:54:33 2013 -0700
-
-    Adding explicit dependencies on stuff java_libraries depend
-    
-    Signed-off-by: Jason Leyba <jmleyba@gmail.com>
-
-commit 5c5fa807258354ef90d54e6c3e6fc0919700a4fc
-Author: Seva Lotoshnikov <sevalo@google.com>
-Date:   Wed Sep 11 17:14:09 2013 -0700
-
-    No-op cleanup. Replaced direct usages of Hamcrest implementation classes (those are located differently in different versions of Hamcrest) with using Matchers' factory methods.
-    
-    Signed-off-by: Jason Leyba <jmleyba@gmail.com>
-
-commit 7173ef9c4bd9d3618efdc08ca10fefdcb31de71e
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Thu Sep 12 09:12:18 2013 -0700
-
-    Pass command line arguments to the Selenium server instead of to the JVM.
-    
-    Fixes issue 6200.
-
-commit f6bba4fb9e67f23c3e2af84441bb5d555381d58f
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Thu Sep 12 18:53:14 2013 +0400
-
-    Revert "Updating linux native events prebuilts for Firefox"
-    
-    This reverts commit 33ae3b40288ea3a46561a9024b1793f1c16e300b.
-
-commit 834c31a6777c44d6eb801b0320aae22add1fc637
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Thu Sep 12 18:17:03 2013 +0400
-
-    Converts offsets/coordinates/speeds to Integers in more safe way in Selenium grid node handlers
-
-commit 71923b5e99328a8140fa73c050cdb2de7a6689f0
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Thu Sep 12 15:39:08 2013 +0400
-
-    Fixes logical misprint for touchScroll operation of remote driver
-
-commit fc395f18551dbf26faedb6fa722d23931b700cbd
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Thu Sep 12 15:37:51 2013 +0400
-
-    Converts all offsets/coordinates/speeds into integers
-
-commit 622b4445f2d8aafced07a48395e3c287e13936dc
-Author: Julien Phalip <jphalip@gmail.com>
-Date:   Fri Sep 6 23:39:01 2013 -0500
-
-    Added WebDriver for Safari to python bindings. This fixes 5352.
-
-commit 702f08df8a30cb7ed0c7976ef0c1307273d25ae0
-Author: Jayakumar Chinnappan <jayakumareee21@gmail.com>
-Date:   Thu Sep 12 11:13:22 2013 +0530
-
-    Changing the way test file pattern is specified. Fixes the issue when running test targets with py3 on Windows.
-
-commit 0624de655e02cc732ac9b80d482bafbb4a9781e5
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Thu Sep 12 02:53:35 2013 +0400
-
-    Making an attempt to fix
-    testShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs, it fails
-    because a button is hidden behind the border of a non-scrollable iframe
-
-commit 9816dfb15c3747af14308c69213c9949723eb272
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Wed Sep 11 16:04:48 2013 -0400
-
-    Updating Windows native event prebuilts for Firefox
-
-commit 33ae3b40288ea3a46561a9024b1793f1c16e300b
-Author: Jim <james.evans@salesforce.com>
-Date:   Wed Sep 11 16:02:49 2013 -0400
-
-    Updating linux native events prebuilts for Firefox
-
-commit 04af1b86ab3faafaf23edf36d9b44d45821c4d46
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Sep 11 13:57:34 2013 +0400
-
-    Adding more debug prints to sauce driver provider
-
-commit 2b6b34fa91c68cbb2efa53ea8139ea21507f956b
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Sep 11 13:56:54 2013 +0400
-
-    Adding a check that suite file has extention .html. Fixes issue 1759
-
-commit 5d8ff93e7140f90b26c481612220a4939b33e630
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Sep 11 12:02:51 2013 +0400
-
-    Ignoring a recently added test that fails in IE
-
-commit 9b379b1a4e430babf2bd12e4ca6873381ae7e493
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Sep 11 11:56:50 2013 +0400
-
-    Lowercasing tagnames
-
-commit 675ae1e370cdb2da00da05d8c07106f1a7c049c7
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Sep 11 11:48:15 2013 +0400
-
-    Adding a sleep between attempts to set connection to sauce
-
-commit bfa5c47d0b395902983a3e017cdab8a08f934f1d
-Author: Luke Inman-Semerau <luke.semerau@gmail.com>
-Date:   Tue Sep 10 21:56:42 2013 -0700
-
-    Bumping build numbers in prep for FF24 to be released. (prebuilts on all platforms need building)
-
-commit 254db7f2561fc9801496b5ff85ff7e8843036c03
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Tue Sep 10 16:39:31 2013 -0700
-
-    Introduce a mechanism for injecting a custom WebDriver provider into the
-    Java test suite. This can be accomplished in one of two ways:
-      - Using the -Dselenium.external.serverUrl system property to specfiy the
-        URL of an external WebDriver server to run tests against. This server
-        *must* conform to the JSON wire protocol.
-    
-      - Using the -Dselenium.external.supplierClass system property to
-        specify the fully qualified name of a custom Supplier<WebDriver>
-        implementation that can be found on the classpath. The designated class
-        must have a public constructor that accepts two Capabilities objects
-        as arguments for the desired and required capabilities, respectively.
-    
-    Sample usage:
-    
-    // Run the remote suite against an existing server:
-    ./go test_remote jvmargs="-Dselenium.external.serverUrl=http://localhost:1234/wd/hub" log=true
-
-commit 57675ffbee984f060b32db9b010baabd0a86002c
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Tue Sep 10 15:50:59 2013 -0700
-
-    Move //java/client/test/keystore next to the only two classes that use it.
-
-commit bb35efef8ba4ed1c991ce092433d96aa622281d7
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Tue Sep 10 22:50:19 2013 +0400
-
-    Fixing native interaction tests broken by the previous commit
-
-commit 86df38d185c5ee68d145a238fd21ec840b036b64
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Tue Sep 10 19:28:49 2013 +0400
-
-    Fixing drag-n-drop for elements in frames in Firefox with native events
-
-commit bfcbbedb442415c79a6b5ececf402b8ff6776790
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Tue Sep 10 16:24:11 2013 +0400
-
-    Fixes drag and drop by offset behaviour in python binding as in all another bindings
-
-commit ef4e0428733e8a6a42718ee04ca59907f2ba1635
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Mon Sep 9 17:48:52 2013 +0400
-
-    Avoid adding webdriver extension to the profile if we use marionette, and
-    use a random port
-
-commit fe02f7862a5f6ef5c3ac9dc26a3c6216f0c77ce2
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Mon Sep 9 17:48:06 2013 +0400
-
-    Adding a bunch of new (negative) tests for findElement(s)
-
-commit 9bc36a18a67333bd7124d9fbdc108331038b92c7
-Author: Samit Badle <Samit.Badle@gmail.com>
-Date:   Tue Sep 10 00:32:12 2013 +0200
-
-    getting ready for Selenium IDE 2.4.0 release
-
-commit 4d5b02d2011bf04003de0a059824170ac4e472b2
-Author: Samit Badle <Samit.Badle@gmail.com>
-Date:   Mon Sep 9 19:45:27 2013 +0200
-
-    Clear stored history for Base URLs, test cases and test suites. Fixes issue #6135
-
-commit f8e0b5459009a7c0974e2387fc96591c5ab791e2
-Author: Samit Badle <Samit.Badle@gmail.com>
-Date:   Mon Sep 9 19:18:09 2013 +0200
-
-    special keys shortened in Selenium IDE
-
-commit 2d334bb7fb6d52fe8af0787134c366d2976636c6
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Mon Sep 9 18:57:52 2013 +0400
-
-    Adds test case issue #4241
-
-commit b90b63142eb2bccb3820aae4867237ccf76f7769
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Mon Sep 9 18:15:24 2013 +0400
-
-    Add testcase for issue #6228. Improves message for MoveTargetOfBounds exception
-
-commit de2a1a7f1126000fa70dc073b2ca56acf660a914
-Author: Samit Badle <Samit.Badle@gmail.com>
-Date:   Mon Sep 9 12:26:28 2013 +0200
-
-    Adding support for plugins to provide user extensions that can handle webdriver playback. Fixes issue #5675
-
-commit 755fee15fa5dc4c59ceded29e70ec244d729c0da
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Mon Sep 9 14:28:38 2013 +0400
-
-    Fixes affecting of default Chrome desired capabilities by launching local Chrome.
-    
-    Fixes issue #6231.
-
-commit 921ea967fe3ffc502fce668da3104d731fb6a962
-Author: Samit Badle <Samit.Badle@gmail.com>
-Date:   Mon Sep 9 11:38:31 2013 +0200
-
-    setting the value of a field is best done using type command in Selenium IDE
-
-commit c208129443cbd3ff41afb5e2aeaba125a68e9d51
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Sat Sep 7 19:45:19 2013 +0400
-
-    Fixes initialization of Proxy by capabilities when proxyType is set. This new behaviour is the same as at all another bindings.
-
-commit e18d45a5dad340b465a70b4b6f0ffa15afae2da2
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Sat Sep 7 19:16:34 2013 +0400
-
-    Updates wire for new SOCKS Proxy information
-
-commit 3da6c1ae658d7b54ebdc0b6a7a2e1fb6471326bb
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Sat Sep 7 18:52:42 2013 +0400
-
-    Adds missed HTMLUnit proxy test file
-
-commit 7ec802699d1b09708ce1c69c57c081ae20e25e66
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Sat Sep 7 18:51:26 2013 +0400
-
-    Add missed build dependency
-
-commit 11f3c0e2933a3366c7257ad2e2e734a1d2685362
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Sat Sep 7 18:50:58 2013 +0400
-
-    Implements for HtmlUnitDriver a support of SOCKS proxy and bypass proxy addresses.
-    
-    What's done:
-    * support of SOCKS proxy address.
-    * support of bypass proxy hosts (noProxy) for HTTP and SOCKS proxies.
-    * tests
-    
-    Now you could specify proxy settings using capabilities,
-    Proxy object or directly calling methods for existed driver.
-    
-    Be note that bypass proxy hosts should be a string of hosts delimited by comma
-    and each host needs to be Java regex pattern.
-
-commit 0aa9068d3fa4407fa81ef2cd9aee7c0c58d43f50
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Sat Sep 7 18:44:43 2013 +0400
-
-    Enables support of SOCKS proxy at Firefox profile. This method is deprecated due the same is implemented inside fxdriver but i think still used.
-
-commit 9d31a2baa0fa732e366f9d8685ecd601a7daea43
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Sat Sep 7 18:40:22 2013 +0400
-
-    Enables SOCKS proxy support for Dotnet binding, fix set proxy type guard, makes noProxy value as JsonProperty, fixes exception message at proxy type validation
-
-commit a3c63e8d5ec7ab66eb9e15ec5bc54fdb33c6079a
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Sat Sep 7 16:50:01 2013 +0400
-
-    Adds tests for Proxy, fixes some guards for Socks credentials methods, fix guard for setProxyType method
-
-commit 495bcbabd07c2107ed940c0087e84bbb024c4284
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Sat Sep 7 15:04:38 2013 +0400
-
-    Enables SOCKS proxy support for Python binding
-
-commit 06c104d68f957cbcb01a1b040308d6142c4ed1aa
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Sat Sep 7 14:12:42 2013 +0400
-
-    Enables SOCKS proxy support for Ruby binding
-
-commit bf46161bae7e1b8ee47a10facaa991eb9ea10380
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Sat Sep 7 13:24:03 2013 +0400
-
-    Enables support of socksProxy capability at Fxdriver
-
-commit efe2243a99d16cf268f6b705beb5184d81a735bb
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Fri Sep 6 13:58:39 2013 -0400
-
-    Updating IE driver to latest automation atoms
-    
-    Fixes issue with SVG elements caused by changes to atoms.
-
-commit a1d690c7e05726c131661b00994b60cb7ebb5c83
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Fri Sep 6 16:40:58 2013 +0400
-
-    Refactoring tests for driver.findElement(s), the next step is adding some
-    new tests, especially negative ones
-
-commit f972d7d4d7485fa1d7dd923c3897dbce2b57fd38
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Thu Sep 5 22:13:24 2013 +0400
-
-    The final round of moving tests around
-
-commit c466c884b5c3dfb5bf4d935e6875ba39a763becb
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Fri Sep 6 12:30:11 2013 +0400
-
-    Handles case when Windows Registry does not have information about Firefox binary.
-    
-    In this case result is empty string which leads to IndexError.
-    Fixed by handling empty result.
-    
-    For such system configuration the default Firefox location
-    at %PROGRAMFILES% / %PROGRAMFILES(X86)% will be searched.
-    
-    Fixes issue #6165.
-
-commit 63a0a47ee0b7d1abf330a218021180c573d3c4f7
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Fri Sep 6 07:11:20 2013 +0400
-
-    Adds support for opera_binary capability of test slot.
-    
-    Now it's possible to specify opera_binary inside slot capabilities.
-    Cpability opera.binary passed in new session request has bigger priority than
-    opera_binary - as it's implemented for firefox_binary.
-    
-    Test case for *_binary support is extended.
-    
-    Fixes issue #6123.
-
-commit f48f97f39ac7f4ce349a2a83838e277e4cfc0b73
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Thu Sep 5 19:01:00 2013 -0700
-
-    Support configuring a Selenium server without the default set of driver configurations.
-
-commit 6b4ffabdebaee883a6a84de9ca091acf9d4c0dec
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Thu Sep 5 18:58:57 2013 -0700
-
-    Fix support for svg documents in the atoms
-
-commit 085be5e5bcc2adc9862c8afc5ea628d3dbe85a67
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Fri Sep 6 03:37:09 2013 +0400
-
-    Fixes quoting of cmd argument contains space for PhantmJS.
-    
-    Fixes issue #6163.
-
-commit 5b09d83bc6c0a1d8b128f8d92d6166e4655c3ba2
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Fri Sep 6 00:42:59 2013 +0400
-
-    Enables screesnhot and input abilities for Safari driver at Ruby binding
-
-commit 12bf983bac2aea611a0c526fbb751a39dd37b9fd
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Thu Sep 5 19:12:52 2013 +0400
-
-    Validates passed locator for find_element(s) methods.
-    
-    Tests for driver/element find_element(s) methods are added.
-    
-    Fixes issue #5690.
-
-commit f4a77f26befb60966371423aba6c48d81653a1b4
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Thu Sep 5 18:26:55 2013 +0400
-
-    More test refactoring (moving test cases to more appropriate classes)
-
-commit 1a2a14c40c4f79c7cd8b8d1d8aef50ec908f2f76
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Thu Sep 5 17:45:22 2013 +0400
-
-    Ignore failed test until issue will be fixed at js atom
-
-commit 62c7bff1462fc9ba371795714f75dcde012610f0
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Thu Sep 5 17:19:20 2013 +0400
-
-    Adds new test case for issue #6072
-
-commit 9655d18064b120070d5064dc0020b0a4b8c7cde4
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Thu Sep 5 14:24:31 2013 +0400
-
-    Disable iframe-related TakesScreenshot test for Chrome
-
-commit bc87deab4cdec999164631344cbd0ef3c770c37f
-Author: Seva Lotoshnikov <sevalo@google.com>
-Date:   Thu Aug 29 02:03:38 2013 -0700
-
-    Adding support for /status, /sessions commands to Python bindings. Python source file modes cleanup: 755->744.
-    
-    Signed-off-by: Luke Inman-Semerau <luke.semerau@gmail.com>
-
-commit 36be17715e2c077928c52d78a711133edee88cee
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Sep 4 23:52:59 2013 +0400
-
-    Resorting more tests to reduce fragmentation
-
-commit 52acffa7323b615a3d4bd8ef41fdfd29714e1bf4
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Sep 4 23:33:26 2013 +0400
-
-    Moving a test for getTitle to a more appropriate class
-
-commit fdf6ad8ce1fa79daed04698bd33a9288f4e6ad79
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Sep 4 23:29:50 2013 +0400
-
-    Moving all (2) test methods from OpacityTest to VisibilityTest to decrease
-    test fragmentation
-
-commit b7cb90976b544a806f89b675470760f55ff4afe6
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Sep 4 23:09:04 2013 +0400
-
-    Removing a duplicated test
-
-commit 4ea7d71b268758d1b3e98305cbc95c5ac7efd59c
-Author: Jari Bakken <jari.bakken@gmail.com>
-Date:   Wed Sep 4 14:18:39 2013 +0200
-
-    Add license to the gem spec.
-
-commit e03ee47b1b7a0c5d1bc3c0d2bd322c512ccf1cc6
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Sep 4 14:52:35 2013 +0400
-
-    Skipping a test that fails on Linux in Firefox with native events
-
-commit d6a1e7ec91118852e1767067d150f9486319230e
-Author: Kevin Menard <nirvdrum@gmail.com>
-Date:   Wed Sep 4 05:15:07 2013 -0400
-
-    Partially revert 2edd481 since it can cause the entire hub to deadlock if BaseRemoteProxy#getStatus blocks.
-
-commit 929c9332024bef9cfef25b4de3dedcd53a5aafdc
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Tue Sep 3 14:19:25 2013 -0700
-
-    Account for the scrollbar size when computing an element's container dimensions for scrolling
-
-commit 03343e51fef7897f8914a774ae451022eb37232c
-Author: ddavison <daniel.jj.davison@gmail.com>
-Date:   Sat Aug 31 03:36:25 2013 -0400
-
-    logo should refresh page, and seperate help link should exist
-    
-    Signed-off-by: Luke Inman-Semerau <luke.semerau@gmail.com>
-
-commit aa67ba6b0cb9856a24f4ae223c4d91566e2e415c
-Author: Luke Inman-Semerau <luke.semerau@gmail.com>
-Date:   Thu Aug 29 10:43:30 2013 -0700
-
-    chromedriver download is not in the selenium GC project. Updating python exception message
-
-commit 1759e94f9e5d5b3a061950d6a4ab074402e411ca
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Thu Aug 29 11:40:46 2013 +0400
-
-    Disabling cut-n-paste tests in Firefox on Linux with native events
-
-commit f3020fdb9abcb8030c8c52016398d1faf541fcc5
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Thu Aug 29 11:21:27 2013 +0400
-
-    Making window maximized when running JS tests
-
-commit 474d147cf314e17ee08b7ac3471747f75ac7cb73
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Thu Aug 29 02:59:11 2013 +0400
-
-    Revert setting small (800x600) window size, it breaks overflow_test
-
-commit b9ff327b3ce69914f5624c94ce33a4161f8e9fb3
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Aug 28 22:42:45 2013 +0400
-
-    Simplifying code. No functional changes
-
-commit a25cc95ed32c469682875d9b61bc08fb8eba8a30
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Aug 28 22:30:52 2013 +0400
-
-    Extracting a new utility method that scrolls frames
-
-commit 523b2da1f230d8f79dc255d3eafd6e5e1237e243
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Aug 28 20:54:52 2013 +0400
-
-    Removing an unused method
-
-commit 7b6579e9e3d31a9fd93744c0609bbe6e1c58b0f5
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Aug 28 20:38:49 2013 +0400
-
-    Simplifying element location/size calculation for image maps as
-    bot.dom.getClientRect already implements it
-
-commit a9617d6097dc9b5bc0adfe7c6c36d40389df5a94
-Author: Simon Stewart <simon.m.stewart@gmail.com>
-Date:   Wed Aug 28 16:19:43 2013 +0100
-
-    Breaking a dependency on SimpleJSON for the logging API in Java.
-    
-    We do this by removing the 'toJson' method and replacing it with a 'toMap' one.
-    The BeanToJsonConverter has been converted to handle this case.
-
-commit af5e1ea1e43600cc2318339e93de53c43a6487c8
-Author: Simon Stewart <simon.m.stewart@gmail.com>
-Date:   Wed Aug 28 16:02:36 2013 +0100
-
-    Updating reference to operadriver jar for IJ. No logical changes.
-
-commit b740566d3ac3c6b318b447f0cb2177f599455ad9
-Author: Simon Stewart <simon.m.stewart@gmail.com>
-Date:   Wed Aug 28 15:00:31 2013 +0100
-
-    Bumping buck version again.
-
-commit 5b60eb950acc9b265513c6ad411f12f675aef8b4
-Author: AutomatedTester <dburns@mozilla.com>
-Date:   Wed Aug 28 14:29:21 2013 +0100
-
-    Removing hidden attribute code, I dont know why my initial tests failed in the past. Fixes issue 6177
-
-commit 4905bb1bd94f184a7892bd69258e1d9048c11376
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Tue Aug 27 15:00:50 2013 -0700
-
-    Bump version to 2.35.1
-
-commit 13dff729531717781dccfffd14fc7b6011be1223
-Author: Dima Kovalenko <dima@groupon.com>
-Date:   Tue May 14 14:00:15 2013 -0400
-
-    Adding HOST and IP to the exception returned to the client to make grid easier to debug
-    
-    Signed-off-by: Luke Inman-Semerau <luke.semerau@gmail.com>
-
-commit 4e408afe8ec08e1ef35ecb480d9d22bf54476a21
-Author: Alexander Bayandin <a.bayandin@gmail.com>
-Date:   Sun Aug 11 22:45:20 2013 +0700
-
-    Fix old links to svn repository
-    
-    Signed-off-by: Luke Inman-Semerau <luke.semerau@gmail.com>
-
-commit 73d11bdabc811348e102b31cfe750b07845bbcb7
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Tue Aug 27 14:04:47 2013 -0400
-
-    IEDriverServer version number change only for public release to downloads page.
-
-commit ddb653df828276a6bb01b5d8caadd93bc71bf603
-Author: Corey Goldberg <cgoldberg@gmail.com>
-Date:   Tue Aug 27 12:17:45 2013 -0400
-
-    fixed pip link in python readme and index
-    
-    Signed-off-by: Luke Inman-Semerau <luke.semerau@gmail.com>
-
-commit 546d69207e8c7e4eb507e0b94ba4c5f43ce693c1
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Tue Aug 27 15:10:20 2013 +0400
-
-    Unignoring a test that passes locally in Firefox
-
-commit eb65930ec32ec329877d261aa31d05181ff29eba
-Author: Corey Goldberg <cgoldberg@gmail.com>
-Date:   Wed Aug 21 11:53:06 2013 -0400
-
-    updated python README
-    
-    copied README contents to index.rst
-    
-    Signed-off-by: Luke Inman-Semerau <luke.semerau@gmail.com>
-
-commit 37dfb6885701c6c3fd403d67b1c654fd15840feb
-Author: Jari Bakken <jari.bakken@gmail.com>
-Date:   Mon Aug 26 20:30:29 2013 +0200
-
-    Bump to 2.36.0.dev, depend on rubyzip ~> 1.0.0
-
-commit d1e041e2863f02587a54f251c4eb57aa950c70a7
-Author: Jari Bakken <jari.bakken@gmail.com>
-Date:   Mon Aug 26 19:48:27 2013 +0200
-
-    Ruby: release 2.35.1 with a strict pre-1.0 rubyzip dependency.
-
-commit ae38ca3526774a3222d4f5becbb5714c25e0bc3f
-Author: Jari Bakken <jari.bakken@gmail.com>
-Date:   Fri Aug 23 01:43:14 2013 +0200
-
-    Remove unused require
-    
-    Requiring iconv prevents the build from running on Ruby 2.0
-
-commit e797f6eb0dddc73ed7f9dd78c3ebba7424bca7e1
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Mon Aug 26 20:18:20 2013 +0400
-
-    Fixing frame scrolling, second try
-
-commit 2d22cc09ff66c1e8ec23bac08ab8a98acfb7bc5c
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Sat Aug 24 16:06:43 2013 -0700
-
-    Replace jmock and easymock with mockito, which tends to yield less verbose tests.
-
-commit 99c2a3d8beaa5ee5b539957f14415a442079b7df
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Sat Aug 24 14:15:52 2013 +0400
-
-    Revert "Fixing one of the tests broken by recent atoms update (scrolling to an"
-    It broke more tests than fixed.
-    This reverts commit 9eeebf520f937989962c96985107c121ae3897cc.
-
-commit 9eeebf520f937989962c96985107c121ae3897cc
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Sat Aug 24 13:17:01 2013 +0400
-
-    Fixing one of the tests broken by recent atoms update (scrolling to an
-    element in a frame that is out of view)
-
-commit 44b6779c282f9a5751df3c6536f07705fc6ca3bf
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Sat Aug 24 11:24:44 2013 +0400
-
-    Unignoring tests that are green locally. Fixes issue 3722
-
-commit 730693e9b63e8efb542b5c5535e7dfc5d3394e2d
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Fri Aug 23 23:53:32 2013 +0400
-
-    Improving javadoc to correspond to the Specification
-
-commit 7e9d12175d490a2420e430d6cd7f93df92b157ff
-Author: Andreas Tolf Tolfsen <andreastt@opera.com>
-Date:   Fri Aug 23 11:55:00 2013 +0200
-
-    Upgrade operadriver to 1.5, compatible with 2.35.0
-
-commit 81e8e5ced93d64dd0c5c81c2fabd67b143816786
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Sun Aug 18 15:36:27 2013 -0700
-
-    Prevent a NPE
-
-commit 9ae35724ea9448f220b848ca1a9c52690ded3e7a
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Thu Aug 22 00:21:53 2013 +0400
-
-    Ignoring a failed test in Opera
-
-commit 0a9d94c26da8a89bad1f6fa2abba57604319aa1b
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Thu Aug 22 00:18:37 2013 +0400
-
-    Adding some debug prints tp understand why CI does not pass correct
-    parameters to sauce and does not attempt to reconnect on session start
-    failure
-
-commit e1e60436c2d8efc7e8190e6fdc1cb9f9f14978f5
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Aug 21 23:01:59 2013 +0400
-
-    Dumb mistake, chrome is not IE :(
-
-commit 7cdb44137145caecf6bdd8ee712188fa73d27558
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Wed Aug 21 12:10:23 2013 -0400
-
-    Take document mode into account when getting size of view port of IE.
-    
-    When clicking elements in IE, we need to know if the element is in the
-    view port, and this includes scroll bar calculations. However for sites
-    that attempt to hide the vertical scroll bar in IE, this may result in
-    different sizes based on the document rendering mode. Includes tests for
-    clicking on a link at the very bottom of the view port.
-
-commit b9ea4dba0b767e5e13599102b47df7907c1ea262
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Aug 21 18:52:03 2013 +0400
-
-    Run chrome tests on CI with chromedriver 2.2
-
-commit aba8a3bac281cc98624cc6f8a7d13a2df5855397
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Aug 21 18:24:13 2013 +0400
-
-    Fixing a Safari test that uses a deprecated (and already removed) property
-
-commit 9f9e1de49b6c25b1a75170fa0f4fce79e6bd2fe9
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Aug 21 11:11:24 2013 +0400
-
-    Revert "Fixing findElement to throw NoSuchElementException instead of
-    StaleElementReferenceException". It was too vague and premature solution.
-    
-    This reverts commit c51550c542ab31337cc6f7b4fc8f47bb356d0386.
-
-commit c0f42809675343c54f2f3aabb91de22505529c04
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Aug 21 04:33:47 2013 +0400
-
-    Using sendMouseEvent if there is no sendMouseEventToWindow, it is not
-    present in Firefox 3. Fixes issue 6099
-
-commit c51550c542ab31337cc6f7b4fc8f47bb356d0386
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Wed Aug 21 04:32:08 2013 +0400
-
-    Fixing findElement to throw NoSuchElementException instead of
-    StaleElementReferenceException. Fixes issue 6093
-
-commit be6eed865f0745542658f62570605b7c203c5257
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Tue Aug 20 16:58:46 2013 -0400
-
-    Refactored calculations to the size of the visible view port.
-    
-    There are circumstances where IE can have no vertical scroll bar. In
-    these cases, the IE driver would assume there was a vertical scroll
-    bar, which would make the actual width of the document larger than the
-    computed width of the window. This, in turn, would make the driver
-    assume there was a horizontal scroll bar, which would imply that
-    absolutely-positioned elements at the bottom of the page would not be
-    seen as clickable.
-
-commit ec190cd375e782709645580d909720d3f0cd82db
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Tue Aug 20 15:40:04 2013 +0400
-
-    Fixing HtmlUnitDriver to enter RETURN and ENTER to a text area. Fixes
-    issue 5890
-
-commit b0d8b72a6d93b6ea4ae4f2368fd998c37f4cb23b
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Tue Aug 20 00:58:45 2013 +0400
-
-    Applies UI restriction for Global Atom Table during creation process under Windows.
-    
-    Done:
-    * apply UI restrictions to process job: using own global atoms table
-    * improve logging during errors: more error information
-    * move some hardcode to Kernel32 space
-    
-    Should fix issue #5342.
-
-commit 74cf79278170fc635bd0ab570e27e171ff8bd896
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Sun Aug 18 11:26:19 2013 -0700
-
-    Improve a test failure message.
-
-commit 3be0659975f1783ee72ac1686b5d94fd164f21ed
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Sun Aug 18 11:26:00 2013 -0700
-
-    Filter out browser specific tests when that browser is not currently selected for testing.
-
-commit 2b88acb6d81bb4206ecd2f176c5a17ab191b2f13
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Sun Aug 18 11:04:24 2013 -0700
-
-    Fix minor formatting bug
-
-commit fe4038b6fe88a3b7db2cc88627be6fff420fea8e
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Sat Aug 17 12:10:49 2013 -0700
-
-    Removing deprecated capability keys and other minor code cleanup.
-
-commit df5c367085558ef82a064f3851c3df9a07cf5cff
-Author: Samit Badle <Samit.Badle@gmail.com>
-Date:   Sat Aug 17 14:44:28 2013 +0200
-
-    Refactoring usages of Preferences.save into Preferences.setAndSave in Selenium IDE
-
-commit 8c52d7d26b140213dc6c55f7121555d7b6acef75
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Sat Aug 17 08:34:33 2013 -0400
-
-    Fixing .git-fixfiles script for changed directory name. Fixes issue #6119.
-
-commit 158a7a3fceb42e2254e9b95be522d723250284aa
-Author: Samit Badle <Samit.Badle@gmail.com>
-Date:   Sat Aug 17 00:51:59 2013 +0200
-
-    Selenium IDE will automatically reopen last test suite or case when developer tools are activated
-
-commit 757d336317652394ad339951867f21cfe089fa5c
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Fri Aug 16 11:53:17 2013 -0700
-
-    Syncing js changes, primarily refinements to visibility/overflow computations.
-    This change makes two java changes to support running JS tests:
-    - Restrict the window size when running JS tests as this matters for a lot
-      of the overflow tests and not every browser supports window.resizeTo
-    - When launching Opera, ensure geolocation is enabled by default
-
-commit 165c765fd303c52576d11e81d957e154837cc9ab
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Thu Aug 15 14:37:36 2013 -0700
-
-    Fix browser-based webdriverjs for Firefox.
-    
-    Fixes issue 6097.
-
-commit cd5e8a08208fb3d8c4bcbd4c0999b12a87d7a5d1
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Thu Aug 15 15:06:57 2013 -0400
-
-    Clearing out the last vestiges of the old IE build targets
-
-commit 00a8dc27e38217a2f5836b6079620447f191f31c
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Thu Aug 15 14:52:11 2013 -0400
-
-    Updating rakefile for changed paths.
-
-commit 6d3901eea11c0410dd60af582f20c747b6af2892
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Thu Aug 15 14:38:37 2013 -0400
-
-    Removing last remnants of old IE build target names
-
-commit b99ff84da1116ac9681b529f71b72dfc54549c0a
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Thu Aug 15 14:27:09 2013 -0400
-
-    Correcting one more instance of directory change
-
-commit 33a1e24917c8c5cc993b1345abb8e0549968ab5d
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Thu Aug 15 20:19:04 2013 +0400
-
-    Unignorind several tests for Chrome that pass locally
-
-commit 16a6c30036f694537cdb4ad69c26a99a3622ef4b
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Thu Aug 15 20:04:00 2013 +0400
-
-    Unignoring a test in Chrome that was linked to a fixed issue 2764
-
-commit ac6566c387baae5e0fcffb690d1e9722e188e635
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Thu Aug 15 20:03:19 2013 +0400
-
-    Minor modifications in IDEA project configs
-
-commit c73baaca0a0ed6d79d5343b2ebda2f91f101187e
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Thu Aug 15 19:41:52 2013 +0400
-
-    Adding ability to set Chrome extensions by using base64 encoded strings for Java/Ruby/Python bindings.
-    
-    See revision 5a44887ac8b99e9863787c33ecde13a048b65e5f
-    
-    Fixes issue #4013.
-
-commit 91319c7c05ab24ce87d240382ce040a4a7053a43
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Thu Aug 15 10:30:14 2013 -0400
-
-    Tweaking addition of Chrome extensions in .NET
-    
-    Use a local list instead of the class-level member variable to prevent
-    file-based extensions (.crx files) from being added more than once.
-
-commit ab422d2e7bd3aa43e1f403aeec3c13a3cc0abbb4
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Thu Aug 15 10:27:09 2013 -0400
-
-    StyleCop changes for .NET. No functional changes.
-
-commit 5a44887ac8b99e9863787c33ecde13a048b65e5f
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Thu Aug 15 10:25:36 2013 -0400
-
-    Adding ability to set Chrome extensions by using base64 encoded strings.
-    
-    Previously, you could only install extensions by using a path to a .crx
-    file. Now you can embed the extension as a base64-encoded string, without
-    having it persisted to the disk at all.
-
-commit 85de6ddfd3ff827803f82edfb6cc8c3b898bada7
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Thu Aug 15 09:12:20 2013 -0400
-
-    Fixing broken build with incorrect path names
-
-commit fbd9df9cf52c37358354ea606fe2eaef08f8606a
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Thu Aug 15 07:51:50 2013 -0400
-
-    Modifying build process for C++ components built with Visual Studio.
-    
-    Breaking out individual build artifacts to use individual build.desc
-    files. Also renaming directory to lower-case to conform to project norms.
-
-commit 3e8628be266ef55f02a0467842701c3d5f99709b
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Thu Aug 15 06:47:03 2013 -0400
-
-    Updating .NET C# project files.
-
-commit 5269f088d23204e1356d8eecdb990ee60f717b19
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Thu Aug 15 14:33:48 2013 +0400
-
-    Better fix of "invalid NSResolver" that works for browsers that do not
-    support document.createNSResolver (guess, what's the name of this browser?)
-
-commit c6109270250490c1c345d3723977784506060b04
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Thu Aug 15 13:25:23 2013 +0400
-
-    Fixes Java porting error with Select.select_by_visible_text
-    
-    There was a Java to Python porting error.
-    
-    In Java if nothing was found by passed visible text all options
-    with text equals to passed visible text.
-    In Python if nothing was found by passed visible text all options
-    _contains_ first nonempty part of passed visible text are selected.
-    So in Python you could check options by word of visible text.
-    In Java/C#/Ruby you could not do it.
-    
-    Also tests for this behaviour are removed.
-    
-    Fixes issue #3910.
-
-commit 1ba58ad0b09f63189e742a53f9306c1b319e3dab
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Wed Aug 14 18:49:58 2013 -0400
-
-    Removing unnecessary JSON converter for char arrays in .NET.
-
-commit 7da094f39f9b6d52ea47d3d37e0ab28bd01f01d4
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Wed Aug 14 18:48:06 2013 -0400
-
-    Reorganizing .NET bindings code structure.
-    
-    Embraces the concept of one build.desc file per buildable artifact. Also
-    renames directories to make build targets easier to type.
-
-commit 196dbbe31042ae8da3bd73ce3baf08aa996bf36d
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Thu Aug 15 00:30:24 2013 +0400
-
-    Unignoring a passed test in IE and Chrome
-
-commit 49ced2678bb1e0fef9da5f98fced69e7d390af2b
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Wed Aug 14 23:52:49 2013 +0400
-
-    Disables supplementary input checks for Opera and native linux FF; disable stdout logging; try to fix I18nTest.testShouldBeAbleToReturnTheTextInAPage at IE10
-
-commit 516616d076e348906239333cdcc40f464697dfac
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Wed Aug 14 19:01:00 2013 +0400
-
-    Fixes unregistering of android/ios nodes from hub due too strict checking of result /wd/hub/status. Returning by node 200 response code (or 404 for RC) is enough for understanding that node is alive.
-
-commit 2f2cdf39c4c1ca1322a50b00f7d7757eab7cdc4a
-Author: Simon Stewart <simon.m.stewart@gmail.com>
-Date:   Wed Aug 14 15:57:30 2013 +0100
-
-    Only send a webbit response once.
-    
-    Without this fix, webbit will flush the responses whenever "end" is called.
-    This causes sane http clients to freak out. We don't want sane things
-    freaking out. So let's not do that.
-
-commit 1cfa129ff7f89f99323b3fd40aa5b1c7c3d36eff
-Author: Simon Stewart <simon.m.stewart@gmail.com>
-Date:   Wed Aug 14 14:08:08 2013 +0100
-
-    Bumping buck to the latest version.
-    
-    This includes a change that allows tests using jmock to work as expected. Green bar!
-
-commit 19c2586f4a6b038a61d6571fa00a0fab3feadef9
-Author: Jari Bakken <jari.bakken@gmail.com>
-Date:   Wed Aug 14 13:00:55 2013 +0200
-
-    Bump Ruby version to 2.35.0
-
-commit ea103349979364dcbb2b8dba225d9e876216fcdc
-Author: Samit Badle <Samit.Badle@gmail.com>
-Date:   Wed Aug 14 00:12:18 2013 +0200
-
-    Fixing is* commands in Webdriver playback in Selenium IDE
-
-commit a34758c3ba61087aa1b92eceec7cc9b652c25b50
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Tue Aug 13 20:47:32 2013 +0400
-
-    Improves logging for registration default drivers at node
-
-commit abe0cf8b954576bf88d17f39259ba3fb98c4ebdd
-Author: Andreas Tolf Tolfsen <andreastt@opera.com>
-Date:   Tue Aug 13 17:57:22 2013 +0200
-
-    Document new Keyboard interface
-
-commit 1bd781eaf073c0a98f1c6a9e7d86a06fb1cbc12f
-Author: Andreas Tolf Tolfsen <andreastt@opera.com>
-Date:   Tue Aug 13 17:56:56 2013 +0200
-
-    Ignore root-level Eclipse project file
-
-commit 0dcb892fab4b56614c2cfe15625f334b37162044
-Author: Andreas Tolf Tolfsen <andreastt@opera.com>
-Date:   Tue Aug 13 17:56:02 2013 +0200
-
-    Ignore gtags files
-
-commit 85152130998a7956a3bc1e0117d20b9c603067d2
-Author: Andreas Tolf Tolfsen <andreastt@opera.com>
-Date:   Tue Aug 13 17:14:39 2013 +0200
-
-    Update operadriver to temporary 2.35 API
-    
-    Since the selenium-java Maven artifact has not been pushed I've not
-    been able to push operadriver 1.5 (since Maven does the tagging and
-    version pushing…).  This JAR will mostly be indentical to the 1.5 one
-    which wil come soon.
-
-commit 922768f8f07764a949ddbd783d87d6c55bd12238
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Fri Aug 9 02:29:33 2013 +0400
-
-    Disabling new tests in HtmlUnit that does not support 'hidden' html5 attribute
-
-commit 4234b472a0756924a47d256d27bf956e695bcf77
-Author: Luke Inman-Semerau <luke.semerau@gmail.com>
-Date:   Mon Aug 12 22:12:32 2013 -0700
-
-    updating pydocs for 2.35
-
-commit 9b5b84fdb6a52f8e3029caea13da0795e798c313
-Author: Luke Inman-Semerau <luke.semerau@gmail.com>
-Date:   Mon Aug 12 22:07:05 2013 -0700
-
-    bumping versions, releasing py 2.35
-
-commit f0978e40b9beaf5500ef676ab798f3f954902f7e
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Tue Aug 13 08:15:28 2013 +0400
-
-    Updates docstrings for InternetExplorerDriver.
-    
-    Fixes issue #5983.
-
-commit da4616a8d148328d2f8c888a9a2b1b5110c37a4a
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Tue Aug 13 05:49:10 2013 +0400
-
-    Ignores frame which can not be get by IHTMLFramesCollection2::item
-    during waiting for page load complete.
-    
-    It prevents infinite page load at IE9 for page with frameset
-    without cols and rows specified.
-    
-    Test case is added.
-    
-    Fixes issue 3211.
-
-commit 9a9e856cbb39080c419d47132122cb188c6c6d68
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Tue Aug 13 03:54:12 2013 +0400
-
-    flick is supposed to pass xspeed/yspeed (not xSpeed/ySpeed) on the wire.
-    
-    Fixes issue 5660.
-
-commit f373ba0bcd061e9d8cec90de0a43c94910a407a8
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Tue Aug 13 03:06:08 2013 +0400
-
-    Strips leading and trailing whitespaces for -browser parts.
-    
-    Fixes issue 5882.
-
-commit 9a58c3ddd53fd055d0a604394995f0df71f1c328
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Tue Aug 13 02:54:16 2013 +0400
-
-    fixes reading Chrome binary extension file in text mode
-
-commit 822bb91a996c804d92469a3e286f421bc20ded0b
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Mon Aug 12 19:14:22 2013 -0400
-
-    Correcting version number in IE driver CHANGELOG
-
-commit a27be1efb1d58c6d8be14072e91e0796e144d7bd
-Author: Samit Badle <Samit.Badle@gmail.com>
-Date:   Tue Aug 13 00:58:02 2013 +0200
-
-    Implementing WaitFor* and WaitForNot* commands in Selenium IDE Webdriver playback. Fixes issue #5913
-
-commit 257d96aaea40003cb978992db37dc2e005b4ddf7
-Author: Samit Badle <Samit.Badle@gmail.com>
-Date:   Sun Aug 11 13:35:07 2013 +0200
-
-    Getting ready to support more webdriver commands in Selenium IDE
-
-commit bf461773f67d0e7b73cd812f7a6bdec632136cfe
-Author: Jason Leyba <jmleyba@gmail.com>
-Date:   Mon Aug 12 15:57:40 2013 -0700
-
-    Change webdriverjs example scripts to use chromedriver directly instead of
-    starting the standalone java server.
-    
-    Fixes issue 6090.
-
-commit b613c27a11b4c8eb11a84c523a3589d873658b48
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Mon Aug 12 18:35:19 2013 -0400
-
-    Update to correct active element finding when using synthetic events.
-    
-    Fixes issue #6088.
-
-commit 69f8403ad2b730de559f19379d6809576a7f1e72
-Author: Jason Leyba <jleyba@google.com>
-Date:   Mon Aug 12 15:09:12 2013 -0700
-
-    Bump webdriverjs bindings to 2.35.0
-
-commit 86ff9d22e06eca2b100732f82f35f1cab512b43a
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Tue Aug 13 00:41:49 2013 +0400
-
-    comment TakesScreenshot for failed browsers; comment testEnteringSupplementaryCharacters for Chrome and IE < 10
-
-commit db9ebba962088d06e2fa3de6dab953a46cc8f2b5
-Author: Jim <james.evans@salesforce.com>
-Date:   Mon Aug 12 16:18:45 2013 -0400
-
-    Updating javadocs for 2.35.
-
-commit 8d1c7f60a329db6e914cd66298a3b0155e366c0d
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Mon Aug 12 22:47:45 2013 +0400
-
-    Limits screenshot at fxdriver by 32767 pixels.
-    
-    Done:
-    * add limit 32767 pixels for screenshot sizes
-    * improve logging at screenshot errors
-    * update and cleanup TakesScreenshotTest test code
-    * enable TakesScreenshot for Sauce test driver
-    
-    Fixes issue 5674.
-
-commit 165e9af6780a63f861732218eec48f265266bfb1
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Tue Aug 6 23:14:41 2013 +0400
-
-    Implement test for issue #5069
-
-commit 040dd4d53f133a722431731d517876a4946bbbb8
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Mon Aug 5 23:51:04 2013 +0400
-
-    Remove duplicate 'get screenshot as file' methods.
-    
-    Add method 'get_screenshot_as_png' to allow get screenshot image binary data.
-    
-    Reuse code with these 3 methods.
-
-commit 8c6cb1503271521c92d0a3fca8df7b55c3301b2c
-Author: Alexandr Savchuk <a.u.savchuk@gmail.com>
-Date:   Mon Aug 5 23:46:56 2013 +0400
-
-    Remove duplicate and declared in parent code: create_web_element
-
-commit 003d691b7314a2248a6f3e8951e4d9375bc09ccf
-Author: Jim Evans <james.h.evans.jr@gmail.com>
-Date:   Mon Aug 12 14:15:29 2013 -0400
-
-    Updating .NET docs for 2.35.0

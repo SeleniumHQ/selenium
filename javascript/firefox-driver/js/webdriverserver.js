@@ -1,20 +1,19 @@
-/*
- Copyright 2007-2009 WebDriver committers
- Copyright 2007-2009 Google Inc.
- Portions copyright 2011 Software Freedom Conservancy
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 goog.provide('WebDriverServer');
 
@@ -24,6 +23,8 @@ goog.require('Utils');
 goog.require('WebElement');
 goog.require('fxdriver.logging');
 goog.require('fxdriver.moz');
+goog.require('goog.log');
+
 
 /**
  * @constructor
@@ -34,7 +35,6 @@ WebDriverServer = function() {
   Components.classes['@mozilla.org/network/server-socket;1'].
       createInstance(Components.interfaces.nsIServerSocket);
   this.generator = fxdriver.moz.getService('@mozilla.org/uuid-generator;1', 'nsIUUIDGenerator');
-  this.enableNativeEvents = null;
 
   // Force our cert override service to be loaded - otherwise, it will not be
   // loaded and cause a "too deep recursion" error.
@@ -46,22 +46,26 @@ WebDriverServer = function() {
   try {
     this.server_ = Utils.newInstance('@mozilla.org/server/jshttp;1', 'nsIHttpServer');
   } catch (e) {
-    fxdriver.logging.warning(e);
+    goog.log.warning(WebDriverServer.LOG_, 'Failed to create HTTP server', e);
   }
 
-  this.server_.registerGlobHandler('.*/hub/.*', { handle: function(request, response) {
+  this.server_.registerPrefixHandler('/hub/', { handle: function(request, response) {
     response.processAsync();
-    dispatcher_.dispatch(new Request(request), new Response(response));
+    dispatcher_.dispatch(
+        new fxdriver.Request(request), new fxdriver.Response(response));
   }});
 };
 
 
+/**
+ * @private {goog.log.Logger}
+ * @const
+ */
+WebDriverServer.LOG_ = fxdriver.logging.getLogger('fxdriver.WebDriverServer');
+
+
 WebDriverServer.prototype.newDriver = function(window) {
-  if (!this.enableNativeEvents) {
-    this.enableNativeEvents = Utils.useNativeEvents();
-    fxdriver.logging.info('Using native events: ' + this.enableNativeEvents);
-  }
-  window.fxdriver = new FirefoxDriver(this, this.enableNativeEvents, window);
+  window.fxdriver = new FirefoxDriver(this, window);
   return window.fxdriver;
 };
 
@@ -82,6 +86,12 @@ WebDriverServer.prototype.startListening = function(port) {
 
   if (!this.isListening) {
     this.server_.start(port);
+    if (prefs.prefHasUserValue('webdriver_firefox_allowed_hosts')) {
+      var hosts = prefs.getCharPref('webdriver_firefox_allowed_hosts').split(',');
+      for (var i in hosts) {
+        this.server_.identity.add("http", hosts[i], port);
+      }
+    }
     this.isListening = true;
   }
 };

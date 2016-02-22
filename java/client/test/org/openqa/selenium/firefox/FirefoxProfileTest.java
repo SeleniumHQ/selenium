@@ -1,28 +1,36 @@
-/*
-Copyright 2007-2009 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.firefox;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.Proxy;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.testing.InProject;
+import org.openqa.selenium.testing.drivers.Firebug;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -33,12 +41,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
+@RunWith(JUnit4.class)
 public class FirefoxProfileTest {
   private static final String FIREBUG_PATH = "third_party/firebug/firebug-1.5.0-fx.xpi";
   private static final String FIREBUG_RESOURCE_PATH =
@@ -55,71 +58,50 @@ public class FirefoxProfileTest {
   public void shouldQuoteStringsWhenSettingStringProperties() throws Exception {
     profile.setPreference("cheese", "brie");
 
-    List<String> props = readGeneratedProperties(profile);
-    boolean seenCheese = false;
-    for (String line : props) {
-      if (line.contains("cheese") && line.contains("\"brie\"")) {
-        seenCheese = true;
-      }
-    }
+    assertPreferenceValueEquals("cheese", "\"brie\"");
+  }
 
-    assertTrue(seenCheese);
+  @Test
+  public void getStringPreferenceShouldReturnUserSuppliedValueWhenSet() throws Exception {
+    String key = "cheese";
+    String value = "brie";
+    profile.setPreference(key, value);
+
+    String defaultValue = "edam";
+    assertEquals(value, profile.getStringPreference(key, defaultValue));
+  }
+
+  @Test
+  public void getStringPreferenceShouldReturnDefaultValueWhenSet() throws Exception {
+    String key = "cheese";
+
+    String defaultValue = "brie";
+    assertEquals(defaultValue, profile.getStringPreference(key, defaultValue));
   }
 
   @Test
   public void shouldSetIntegerPreferences() throws Exception {
     profile.setPreference("cheese", 1234);
 
-    List<String> props = readGeneratedProperties(profile);
-    boolean seenCheese = false;
-    for (String line : props) {
-      if (line.contains("cheese") && line.contains(", 1234)")) {
-        seenCheese = true;
-      }
-    }
-
-    assertTrue("Did not see integer value being set correctly", seenCheese);
+    assertPreferenceValueEquals("cheese", 1234);
   }
 
   @Test
-  public void manualProxy() throws Exception {
-    profile.setProxyPreferences(
-        new Proxy()
-            .setHttpProxy("foo:123")
-            .setFtpProxy("bar:234")
-            .setSslProxy("baz:345")
-            .setNoProxy("localhost"));
-    List<String> prefLines = readGeneratedProperties(profile);
-    String prefs = new ArrayList<String>(prefLines).toString();
-    assertThat(prefs, containsString("network.proxy.http\", \"foo\""));
-    assertThat(prefs, containsString("network.proxy.http_port\", 123"));
-    assertThat(prefs, containsString("network.proxy.ftp\", \"bar\""));
-    assertThat(prefs, containsString("network.proxy.ftp_port\", 234"));
-    assertThat(prefs, containsString("network.proxy.ssl\", \"baz\""));
-    assertThat(prefs, containsString("network.proxy.ssl_port\", 345"));
-    assertThat(prefs, containsString("network.proxy.no_proxies_on\", \"localhost\""));
-    assertThat(prefs, containsString("network.proxy.type\", 1"));
+  public void getIntegerPreferenceShouldReturnUserSuppliedValueWhenSet() throws Exception {
+    String key = "cheese";
+    int value = 1234;
+    profile.setPreference(key, value);
+
+    int defaultValue = -42;
+    assertEquals(1234, profile.getIntegerPreference(key, defaultValue));
   }
 
   @Test
-  public void proxyAutoconfigUrl() throws Exception {
-    profile.setProxyPreferences(
-        new Proxy()
-            .setProxyAutoconfigUrl("http://foo/bar.pac"));
-    List<String> prefLines = readGeneratedProperties(profile);
-    String prefs = new ArrayList<String>(prefLines).toString();
-    assertThat(prefs, containsString("network.proxy.autoconfig_url\", \"http://foo/bar.pac\""));
-    assertThat(prefs, containsString("network.proxy.type\", 2"));
-  }
+  public void getIntegerPreferenceShouldReturnDefaultValueWhenSet() throws Exception {
+    String key = "cheese";
 
-  @Test
-  public void proxyAutodetect() throws Exception {
-    profile.setProxyPreferences(
-        new Proxy()
-            .setAutodetect(true));
-    List<String> prefLines = readGeneratedProperties(profile);
-    String prefs = new ArrayList<String>(prefLines).toString();
-    assertThat(prefs, containsString("network.proxy.type\", 4"));
+    int defaultValue = 42;
+    assertEquals(defaultValue, profile.getIntegerPreference(key, defaultValue));
   }
 
   @Test
@@ -127,6 +109,42 @@ public class FirefoxProfileTest {
     profile.setPreference("cheese", false);
 
     assertPreferenceValueEquals("cheese", false);
+  }
+
+  @Test
+  public void getBooleanPreferenceShouldReturnUserSuppliedValueWhenSet() throws Exception {
+    String key = "cheese";
+    boolean value = true;
+    profile.setPreference(key, value);
+
+    boolean defaultValue = false;
+    assertEquals(value, profile.getBooleanPreference(key, defaultValue));
+  }
+
+  @Test
+  public void getBooleanPreferenceShouldReturnDefaultValueWhenSet() throws Exception {
+    String key = "cheese";
+
+    boolean defaultValue = true;
+    assertEquals(defaultValue, profile.getBooleanPreference(key, defaultValue));
+  }
+
+  @Test
+  public void shouldSetDefaultPreferences() throws Exception {
+    assertPreferenceValueEquals("network.http.phishy-userpass-length", 255);
+  }
+
+  @Test
+
+  public void shouldNotResetFrozenPreferences() throws Exception {
+    try {
+      profile.setPreference("network.http.phishy-userpass-length", 1024);
+      fail("Should not be able to reset a frozen preference");
+    } catch (IllegalArgumentException ex) {
+      // expected
+    }
+
+    assertPreferenceValueEquals("network.http.phishy-userpass-length", 255);
   }
 
   @Test
@@ -152,7 +170,7 @@ public class FirefoxProfileTest {
   @Test
   public void shouldInstallExtensionUsingClasspath() throws IOException {
     FirefoxProfile profile = new FirefoxProfile();
-    profile.addExtension(FirefoxProfileTest.class, FIREBUG_RESOURCE_PATH);
+    profile.addExtension(Firebug.class, FIREBUG_RESOURCE_PATH);
     File profileDir = profile.layoutOnDisk();
     File extensionDir = new File(profileDir, "extensions/firebug@software.joehewitt.com");
     assertTrue(extensionDir.exists());
@@ -182,7 +200,7 @@ public class FirefoxProfileTest {
     File prefs = new File(generatedProfile, "user.js");
     BufferedReader reader = new BufferedReader(new FileReader(prefs));
 
-    List<String> prefLines = new ArrayList<String>();
+    List<String> prefLines = new ArrayList<>();
     for (String line = reader.readLine(); line != null; line = reader.readLine()) {
       prefLines.add(line);
     }

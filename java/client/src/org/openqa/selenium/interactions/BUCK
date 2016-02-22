@@ -1,12 +1,17 @@
 java_library(name = 'interactions',
   srcs = [
+    'ActionChainExecutor.java',
     'Actions.java',
-  ] + glob(['*Action.java', 'internal/*Action.java']),
-  export_deps = True,
-  deps = [
+    'CanPerformActionChain.java',
+  ] + glob(['*Action.java', 'internal/*Action.java', 'touch/*.java']),
+  exported_deps = [
     ':core',
     ':exceptions',
     '//java/client/src/org/openqa/selenium:core',
+  ],
+  deps = [
+    ':core',
+    '//third_party/java/guava:guava',
   ],
   visibility = ['PUBLIC'],
 )
@@ -38,6 +43,7 @@ java_library(name = 'exceptions',
   ],
   visibility = [
     '//java/client/src/org/openqa/selenium:webdriver-api',
+    '//java/client/src/org/openqa/selenium:core',
     '//java/client/src/org/openqa/selenium/remote:remote',
   ],
 )

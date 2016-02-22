@@ -6,5 +6,5 @@ java_library(name = "net",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium:webdriver-api",
-    "//third_party/java/guava-libraries",
+    "//third_party/java/guava",
   ])

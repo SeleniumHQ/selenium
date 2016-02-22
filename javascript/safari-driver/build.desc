@@ -11,6 +11,7 @@ js_library(
     deps = [
         "//javascript/safari-driver/message:message",
         "//javascript/webdriver:base_lib",
+        "//javascript/webdriver:logging_lib",
     ])
 
 # Binary that may be used by a language binding to establish a connection
@@ -58,10 +59,10 @@ js_binary(
 
         "--jscomp_warning=checkTypes",
 
+        "--language_in=ECMASCRIPT6_STRICT",
+        "--language_out=ECMASCRIPT5_STRICT",
         "--output_wrapper='%output%;window.onload = init;'",
         "--third_party=false",
-
-        "--create_name_map_files=true"
     ])
 
 # Binary for the debug/logging window.
@@ -104,6 +105,8 @@ js_binary(
         "--jscomp_error=uselessCode",
         "--jscomp_error=visibility",
 
+        "--language_in=ECMASCRIPT6_STRICT",
+        "--language_out=ECMASCRIPT5_STRICT",
         "--output_wrapper='%output%;safaridriver.debug.init();'",
         "--third_party=false",
     ],
@@ -158,6 +161,8 @@ js_binary(
         "--jscomp_error=uselessCode",
         "--jscomp_error=visibility",
 
+        "--language_in=ECMASCRIPT6_STRICT",
+        "--language_out=ECMASCRIPT5_STRICT",
         "--output_wrapper='%output%;safaridriver.extension.init();'",
         "--third_party=false",
     ],
@@ -211,13 +216,14 @@ js_module_binary(
 
         "--jscomp_warning=checkTypes",
 
+        "--language_in=ECMASCRIPT6_STRICT",
+        "--language_out=ECMASCRIPT5_STRICT",
         "--module_wrapper='base:%s;init();'",
         "--module_wrapper='commands:MODULES.injected_commands = function() {%s};'",
 
         "--third_party=false",
 
         "--compilation_level=ADVANCED_OPTIMIZATIONS",
-        "--create_name_map_files=true"
     ])
 
 
@@ -270,13 +276,14 @@ js_module_binary(
         "--jscomp_error=uselessCode",
         "--jscomp_error=visibility",
 
+        "--language_in=ECMASCRIPT6_STRICT",
+        "--language_out=ECMASCRIPT5_STRICT",
         "--module_wrapper='base:MODULES.page_base = function(){%s;this.init();};'",
         "--module_wrapper='element:MODULES.page_element = function() {%s};'",
         "--module_wrapper='script:MODULES.page_script = function() {%s};'",
         "--third_party=false",
 
         "--compilation_level=ADVANCED_OPTIMIZATIONS",
-        "--create_name_map_files=true"
     ])
 
 

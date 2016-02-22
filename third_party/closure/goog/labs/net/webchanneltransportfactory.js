@@ -21,14 +21,17 @@
 goog.provide('goog.net.createWebChannelTransport');
 
 goog.require('goog.functions');
-goog.require('goog.net.WebChannelBaseTransport');
+goog.require('goog.labs.net.webChannel.WebChannelBaseTransport');
 
 
 /**
  * Create a new WebChannelTransport instance using the default implementation.
+ * Throws an error message if no default transport available in the current
+ * environment.
  *
  * @return {!goog.net.WebChannelTransport} the newly created transport instance.
  */
 goog.net.createWebChannelTransport =
     /** @type {function(): !goog.net.WebChannelTransport} */ (
-    goog.partial(goog.functions.create, goog.net.WebChannelBaseTransport));
+    goog.partial(goog.functions.create,
+                 goog.labs.net.webChannel.WebChannelBaseTransport));

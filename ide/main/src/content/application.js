@@ -222,9 +222,10 @@ Application.prototype = {
      */
     addTestCase: function(path) {
         if (path) {
-		if (this._loadTestCase(FileUtils.getFile(path))) {
-			this.testSuite.addTestCaseFromContent(this.getTestCase());
-			this.setTestCase(this.getTestCase());
+          var testCase = this._loadTestCase(FileUtils.getFile(path));
+		if (testCase) {
+			this.testSuite.addTestCaseFromContent(testCase);
+			this.setTestCase(testCase);
 		}
         }else {
 		//Samit: Enh: Allow multiple test cases to be added in one operation
@@ -236,9 +237,10 @@ Application.prototype = {
 			var files = fp.files;
 			while (files.hasMoreElements()) {
 				try {
-					if (this._loadTestCase(files.getNext().QueryInterface(Components.interfaces.nsILocalFile))) {
-					    this.testSuite.addTestCaseFromContent(this.getTestCase());
-					    this.setTestCase(this.getTestCase());
+          testCase = this._loadTestCase(files.getNext().QueryInterface(Components.interfaces.nsILocalFile));
+					if (testCase) {
+					    this.testSuite.addTestCaseFromContent(testCase);
+					    this.setTestCase(testCase);
 					}
 				}catch(error) {
                                     this.log.error("AddTestCase: "+error);
@@ -263,8 +265,9 @@ Application.prototype = {
         }
         if (file) {
             try {
-                if (this._loadTestCase(file, null, true)) {
-                    this.setTestCaseWithNewSuite(this.getTestCase());
+                var testCase = this._loadTestCase(file, null, true);
+                if (testCase) {
+                    this.setTestCaseWithNewSuite(testCase);
                 }
             } catch(errorCase) {
                 //Samit: Enh: Try to handle the common error of trying to open a test suite
@@ -292,10 +295,13 @@ Application.prototype = {
             this.setTestCase(testCase.content);
         } else {
             try {
-                this._loadTestCase(testCase.getFile(), function(test) {
+                var content = this._loadTestCase(testCase.getFile(), function(test) {
                         test.title = testCase.getTitle(); // load title from suite
                         testCase.content = test;
                     }, true);
+                if (content) {
+                  this.setTestCase(content);
+                }
             } catch(error) {
                 if (error.name && error.name == "NS_ERROR_FILE_NOT_FOUND") {
                     alert("The test case does not exist. You should probably remove it from the suite. The path specified is " + testCase.getFile().path );
@@ -317,9 +323,9 @@ Application.prototype = {
             }
             if (testCase != null) {
                 if (testCaseHandler) testCaseHandler(testCase);
-                this.setTestCase(testCase);
-                this.addRecentTestCase(testCase);
-                return true;
+//                this.setTestCase(testCase);
+//                this.addRecentTestCase(testCase);
+                return testCase;
             }
             return false;
         } catch (error) {

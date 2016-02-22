@@ -7,33 +7,29 @@
   goog.require('bot.Keyboard');
   goog.require('bot.Keyboard.Key');
   goog.require('bot.dom');
+  goog.require('goog.Promise');
   goog.require('goog.dom');
   goog.require('goog.events');
   goog.require('goog.events.EventType');
-  goog.require('goog.testing.AsyncTestCase');
   goog.require('goog.testing.jsunit');
 </script>
 <body>
 <script type="text/javascript">
-  var asyncTestCase = null;
-
-  // In Opera 11.5+, synthetic keypresses currently exhibit flaky failures:
-  // http://code.google.com/p/selenium/issues/detail?id=3068
-  // Test methods below are skipped for these versions.
-  var BROKEN_KEYPRESS = goog.userAgent.OPERA &&
-    bot.userAgent.isEngineVersion(11.5);
-
   var submitFired;
   var wasSubmitted;
+  var waitForSubmit;
 
-  function submitted() {
-    wasSubmitted = true;
-    asyncTestCase.continueTesting();
-  }
+  var submitted = goog.nullFunction;
 
   function setUp() {
     submitFired = false;
     wasSubmitted = false;
+    waitForSubmit = new goog.Promise(function(done) {
+      submitted = function() {
+        wasSubmitted = true;
+        done();
+      };
+    });
   }
 
   function submitForm(formName, opt_cancelSubmit) {
@@ -51,89 +47,53 @@
   }
 
   function testTwoTextboxesAndOneSubmitIsSubmitted() {
-    if (BROKEN_KEYPRESS) {
-      return;
-    }
-    asyncTestCase.waitForAsync('if this times out, the form did not submit');
     submitForm('form1');
-    assertTrue(submitFired);
+    return waitForSubmit.then(function() {
+      assertTrue(submitFired);
+    });
   }
 
   function testOneTextboxesAndOneSubmitIsSubmitted() {
-    if (BROKEN_KEYPRESS) {
-      return;
-    }
-    asyncTestCase.waitForAsync('if this times out, the form did not submit');
     submitForm('form2');
-    assertTrue(submitFired);
-  }
-
-  function testTwoTextboxesAndNoSubmitIsNotSubmitted() {
-    if (BROKEN_KEYPRESS) {
-      return;
-    }
-    // Form is only submitted on Safari 4 or prior versions.
-    var submitExpected = goog.userAgent.WEBKIT &&
-        !bot.userAgent.isEngineVersion(534);
-    if (submitExpected) {
-      asyncTestCase.waitForAsync('if this times out, the form did not submit');
-    }
-    submitForm('form3');
-    assertEquals(submitExpected, submitFired);
-    if (!submitExpected) {
-      assertFalse(wasSubmitted);
-    }
+    return waitForSubmit.then(function() {
+      assertTrue(submitFired);
+    });
   }
 
   function testOneTextboxesAndNoSubmitIsSubmitted() {
-    if (BROKEN_KEYPRESS) {
-      return;
-    }
-    asyncTestCase.waitForAsync('if this times out, the form did not submit');
     submitForm('form4');
-    assertTrue(submitFired);
+    return waitForSubmit.then(function() {
+      assertTrue(submitFired);
+    });
   }
 
   function testTwoTextboxesAndTwoSubmitsIsSubmitted() {
-    if (BROKEN_KEYPRESS) {
-      return;
-    }
-    asyncTestCase.waitForAsync('if this times out, the form did not submit');
     submitForm('form5');
-    assertTrue(submitFired);
+    return waitForSubmit.then(function() {
+      assertTrue(submitFired);
+    });
   }
 
   function testKeyDownCancelNotSubmitted() {
-    if (BROKEN_KEYPRESS) {
-      return;
-    }
     submitForm('form6');
     assertFalse(submitFired);
     assertFalse(wasSubmitted);
   }
 
   function testKeyPressCancelNotSubmitted() {
-    if (BROKEN_KEYPRESS) {
-      return;
-    }
     submitForm('form7');
     assertFalse(submitFired);
     assertFalse(wasSubmitted);
   }
 
   function testKeyUpCancelSubmitted() {
-    if (BROKEN_KEYPRESS) {
-      return;
-    }
-    asyncTestCase.waitForAsync('if this times out, the form did not submit');
     submitForm('form8');
-    assertTrue(submitFired);
+    return waitForSubmit.then(function() {
+      assertTrue(submitFired);
+    });
   }
 
   function testCancelSubmitFiredNotSubmitted() {
-    if (BROKEN_KEYPRESS) {
-      return;
-    }
     submitForm('form9', true);
     assertTrue(submitFired);
   }
@@ -176,8 +136,5 @@
   <input type="text" id="form9text1"></input><br/>
   <input type="submit" value="submit"></input><br/>
 </form>
-<script type="text/javascript">
-  asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
-</script>
 </body>
 </html>

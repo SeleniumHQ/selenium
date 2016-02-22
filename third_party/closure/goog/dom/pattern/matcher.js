@@ -45,30 +45,24 @@ goog.require('goog.iter');
  * all matches eventually.
  *
  * @constructor
+ * @final
  */
 goog.dom.pattern.Matcher = function() {
+  /**
+   * Array of patterns to attempt to match in parallel.
+   *
+   * @private {Array<goog.dom.pattern.AbstractPattern>}
+   */
   this.patterns_ = [];
+
+  /**
+   * Array of callbacks to call when a pattern is matched.  The indexing is the
+   * same as the {@link #patterns_} array.
+   *
+   * @private {Array<Function>}
+   */
   this.callbacks_ = [];
 };
-
-
-/**
- * Array of patterns to attempt to match in parallel.
- *
- * @type {Array.<goog.dom.pattern.AbstractPattern>}
- * @private
- */
-goog.dom.pattern.Matcher.prototype.patterns_;
-
-
-/**
- * Array of callbacks to call when a pattern is matched.  The indexing is the
- * same as the {@link #patterns_} array.
- *
- * @type {Array.<Function>}
- * @private
- */
-goog.dom.pattern.Matcher.prototype.callbacks_;
 
 
 /**

@@ -124,6 +124,7 @@ goog.require('goog.userAgent');
  *     capture phase (defaults to false).
  * @constructor
  * @extends {goog.events.EventTarget}
+ * @final
  */
 goog.events.KeyHandler = function(opt_element, opt_capture) {
   goog.events.EventTarget.call(this);
@@ -279,6 +280,7 @@ goog.events.KeyHandler.keyIdentifier_ = {
  * @private
  */
 goog.events.KeyHandler.USES_KEYDOWN_ = goog.userAgent.IE ||
+    goog.userAgent.EDGE ||
     goog.userAgent.WEBKIT && goog.userAgent.isVersionOrHigher('525');
 
 
@@ -304,14 +306,12 @@ goog.events.KeyHandler.prototype.handleKeyDown_ = function(e) {
   // Ctrl-Tab and Alt-Tab can cause the focus to be moved to another window
   // before we've caught a key-up event.  If the last-key was one of these we
   // reset the state.
-
-  if (goog.userAgent.WEBKIT) {
+  if (goog.userAgent.WEBKIT || goog.userAgent.EDGE) {
     if (this.lastKey_ == goog.events.KeyCodes.CTRL && !e.ctrlKey ||
         this.lastKey_ == goog.events.KeyCodes.ALT && !e.altKey ||
         goog.userAgent.MAC &&
         this.lastKey_ == goog.events.KeyCodes.META && !e.metaKey) {
-      this.lastKey_ = -1;
-      this.keyCode_ = -1;
+      this.resetState();
     }
   }
 
@@ -330,9 +330,7 @@ goog.events.KeyHandler.prototype.handleKeyDown_ = function(e) {
           this.lastKey_, e.shiftKey, e.ctrlKey, e.altKey)) {
     this.handleEvent(e);
   } else {
-    this.keyCode_ = goog.userAgent.GECKO ?
-        goog.events.KeyCodes.normalizeGeckoKeyCode(e.keyCode) :
-        e.keyCode;
+    this.keyCode_ = goog.events.KeyCodes.normalizeKeyCode(e.keyCode);
     if (goog.events.KeyHandler.SAVE_ALT_FOR_KEYPRESS_) {
       this.altKey_ = e.altKey;
     }
@@ -384,7 +382,7 @@ goog.events.KeyHandler.prototype.handleEvent = function(e) {
 
   // Safari reports the character code in the keyCode field for keypress
   // events but also has a charCode field.
-  } else if (goog.userAgent.WEBKIT &&
+  } else if ((goog.userAgent.WEBKIT || goog.userAgent.EDGE) &&
       e.type == goog.events.EventType.KEYPRESS) {
     keyCode = this.keyCode_;
     charCode = be.charCode >= 0 && be.charCode < 63232 &&
@@ -392,7 +390,7 @@ goog.events.KeyHandler.prototype.handleEvent = function(e) {
             be.charCode : 0;
 
   // Opera reports the keycode or the character code in the keyCode field.
-  } else if (goog.userAgent.OPERA) {
+  } else if (goog.userAgent.OPERA && !goog.userAgent.WEBKIT) {
     keyCode = this.keyCode_;
     charCode = goog.events.KeyCodes.isCharacterKey(keyCode) ?
         be.keyCode : 0;
@@ -413,6 +411,7 @@ goog.events.KeyHandler.prototype.handleEvent = function(e) {
     }
   }
 
+  keyCode = goog.events.KeyCodes.normalizeKeyCode(keyCode);
   var key = keyCode;
   var keyIdentifier = be.keyIdentifier;
 
@@ -529,6 +528,7 @@ goog.events.KeyHandler.prototype.disposeInternal = function() {
  * @param {Event} browserEvent Browser event object.
  * @constructor
  * @extends {goog.events.BrowserEvent}
+ * @final
  */
 goog.events.KeyEvent = function(keyCode, charCode, repeat, browserEvent) {
   goog.events.BrowserEvent.call(this, browserEvent);

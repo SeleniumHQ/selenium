@@ -1,21 +1,25 @@
-// Copyright 2011 Software Freedom Conservancy. All Rights Reserved.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 goog.provide('webdriver.http.CorsClient');
 
-goog.require('goog.json');
+goog.require('webdriver.http.Client');
 goog.require('webdriver.http.Response');
+goog.require('webdriver.promise');
 
 
 
@@ -47,10 +51,10 @@ goog.require('webdriver.http.Response');
  *     This limitation appears to be intentional and is documented in WebKit's
  *     Layout tests:
  *     //LayoutTests/http/tests/xmlhttprequest/access-control-and-redirects.html
- *   <li>If the server does not return a 2xx response, IE and Opera's
- *     implementations will fire the XDomainRequest/XMLHttpRequest object's
+ *   <li>If the server does not return a 2xx response, IE
+ *     implementation will fire the XDomainRequest/XMLHttpRequest object's
  *     onerror handler, but without the corresponding response text returned by
- *     the server. This renders IE and Opera incapable of handling command
+ *     the server. This renders IE incapable of handling command
  *     failures in the standard JSON protocol.
  * </ul>
  *
@@ -58,7 +62,7 @@ goog.require('webdriver.http.Response');
  * @constructor
  * @implements {webdriver.http.Client}
  * @see <a href="http://www.w3.org/TR/cors/">CORS Spec</a>
- * @see <a href="http://code.google.com/p/selenium/wiki/JsonWireProtocol">
+ * @see <a href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol">
  *     JSON wire protocol</a>
  */
 webdriver.http.CorsClient = function(url) {
@@ -93,20 +97,20 @@ webdriver.http.CorsClient.isAvailable = function() {
 
 
 /** @override */
-webdriver.http.CorsClient.prototype.send = function(request, callback) {
-  try {
+webdriver.http.CorsClient.prototype.send = function(request) {
+    var url = this.url_;
+  return new webdriver.promise.Promise(function(fulfill, reject) {
     var xhr = new (typeof XDomainRequest !== 'undefined' ?
         XDomainRequest : XMLHttpRequest);
-    xhr.open('POST', this.url_, true);
+    xhr.open('POST', url, true);
 
     xhr.onload = function() {
-      callback(null, webdriver.http.Response.fromXmlHttpRequest(
+      fulfill(webdriver.http.Response.fromXmlHttpRequest(
           /** @type {!XMLHttpRequest} */ (xhr)));
     };
 
-    var url = this.url_;
     xhr.onerror = function() {
-      callback(Error([
+      reject(Error([
         'Unable to send request: POST ', url,
         '\nPerhaps the server did not respond to the preflight request ',
         'with valid access control headers?'
@@ -119,12 +123,10 @@ webdriver.http.CorsClient.prototype.send = function(request, callback) {
     // optimized away by the compiler, which leaves us where we were before.
     xhr.onprogress = xhr.ontimeout = function() {};
 
-    xhr.send(goog.json.serialize({
+    xhr.send(JSON.stringify({
       'method': request.method,
       'path': request.path,
       'data': request.data
     }));
-  } catch (ex) {
-    callback(ex);
-  }
+  });
 };

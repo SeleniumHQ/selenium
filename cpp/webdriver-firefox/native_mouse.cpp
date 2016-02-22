@@ -39,7 +39,11 @@
 #define WD_RESULT int
 #endif
 
+#ifdef WEBDRIVER_GECKO_USES_ISUPPORTS1
 NS_IMPL_ISUPPORTS1(nsNativeMouse, nsINativeMouse)
+#else
+NS_IMPL_ISUPPORTS(nsNativeMouse, nsINativeMouse)
+#endif
 
 nsNativeMouse::nsNativeMouse()
 {

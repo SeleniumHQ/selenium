@@ -13,9 +13,9 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.38.0</string>
+	<string>2.48.0</string>
 	<key>CFBundleVersion</key>
-	<string>2.38.0</string>
+	<string>2.48.0</string>
 	<key>Chrome</key>
 	<dict>
 		<key>Database Quota</key>
@@ -61,6 +61,6 @@
 		</dict>
 	</dict>
 	<key>Website</key>
-	<string>http://code.google.com/p/selenium</string>
+	<string>https://github.com/SeleniumHQ/selenium</string>
 </dict>
 </plist>

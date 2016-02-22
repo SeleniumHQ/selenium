@@ -191,12 +191,6 @@ js_fragment(
     deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(
-    name = "is_online",
-    function = "bot.connection.isOnline",
-    module = "bot.connection",
-    deps = [ "//javascript/atoms:all_js" ])
-
-js_fragment(
     name = "get_current_position",
     function = "bot.geolocation.getCurrentPosition",
     module = "bot.geolocation",

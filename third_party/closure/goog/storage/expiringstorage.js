@@ -20,8 +20,6 @@
 goog.provide('goog.storage.ExpiringStorage');
 
 goog.require('goog.storage.RichStorage');
-goog.require('goog.storage.RichStorage.Wrapper');
-goog.require('goog.storage.mechanism.Mechanism');
 
 
 
@@ -31,10 +29,11 @@ goog.require('goog.storage.mechanism.Mechanism');
  * @param {!goog.storage.mechanism.Mechanism} mechanism The underlying
  *     storage mechanism.
  * @constructor
+ * @struct
  * @extends {goog.storage.RichStorage}
  */
 goog.storage.ExpiringStorage = function(mechanism) {
-  goog.base(this, mechanism);
+  goog.storage.ExpiringStorage.base(this, 'constructor', mechanism);
 };
 goog.inherits(goog.storage.ExpiringStorage, goog.storage.RichStorage);
 
@@ -117,7 +116,7 @@ goog.storage.ExpiringStorage.prototype.set = function(
     }
     wrapper[goog.storage.ExpiringStorage.CREATION_TIME_KEY] = goog.now();
   }
-  goog.base(this, 'set', key, wrapper);
+  goog.storage.ExpiringStorage.base(this, 'set', key, wrapper);
 };
 
 
@@ -130,7 +129,7 @@ goog.storage.ExpiringStorage.prototype.set = function(
  * @override
  */
 goog.storage.ExpiringStorage.prototype.getWrapper = function(key, opt_expired) {
-  var wrapper = goog.base(this, 'getWrapper', key);
+  var wrapper = goog.storage.ExpiringStorage.base(this, 'getWrapper', key);
   if (!wrapper) {
     return undefined;
   }

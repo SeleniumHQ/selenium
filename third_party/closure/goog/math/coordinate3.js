@@ -28,6 +28,7 @@ goog.provide('goog.math.Coordinate3');
  * @param {number=} opt_x X coordinate, defaults to 0.
  * @param {number=} opt_y Y coordinate, defaults to 0.
  * @param {number=} opt_z Z coordinate, defaults to 0.
+ * @struct
  * @constructor
  */
 goog.math.Coordinate3 = function(opt_x, opt_y, opt_z) {
@@ -144,7 +145,7 @@ goog.math.Coordinate3.difference = function(a, b) {
 /**
  * Returns the contents of this coordinate as a 3 value Array.
  *
- * @return {!Array.<number>} A new array.
+ * @return {!Array<number>} A new array.
  */
 goog.math.Coordinate3.prototype.toArray = function() {
   return [this.x, this.y, this.z];
@@ -156,7 +157,7 @@ goog.math.Coordinate3.prototype.toArray = function() {
  * passed in is not an array, not array-like, or not of the right length, an
  * error is thrown.
  *
- * @param {Array.<number>} a Array of numbers to become a coordinate.
+ * @param {Array<number>} a Array of numbers to become a coordinate.
  * @return {!goog.math.Coordinate3} A new coordinate from the array values.
  * @throws {Error} When the oject passed in is not valid.
  */

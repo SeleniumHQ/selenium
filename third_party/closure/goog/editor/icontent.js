@@ -19,12 +19,14 @@
  * strings and document.write instead of DOM manipulation, because
  * iframe-loading is a performance bottleneck.
  *
+ * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.editor.icontent');
 goog.provide('goog.editor.icontent.FieldFormatInfo');
 goog.provide('goog.editor.icontent.FieldStyleInfo');
 
+goog.require('goog.dom');
 goog.require('goog.editor.BrowserFeature');
 goog.require('goog.style');
 goog.require('goog.userAgent');
@@ -42,6 +44,7 @@ goog.require('goog.userAgent');
  * @param {Object=} opt_extraStyles Other style attributes for the field,
  *     represented as a map of strings.
  * @constructor
+ * @final
  */
 goog.editor.icontent.FieldFormatInfo = function(fieldId, standards, blended,
     fixedHeight, opt_extraStyles) {
@@ -60,6 +63,7 @@ goog.editor.icontent.FieldFormatInfo = function(fieldId, standards, blended,
  * @param {Element} wrapper The wrapper div around a field.
  * @param {string} css The css for a field.
  * @constructor
+ * @final
  */
 goog.editor.icontent.FieldStyleInfo = function(wrapper, css) {
   this.wrapper_ = wrapper;

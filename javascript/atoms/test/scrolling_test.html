@@ -7,6 +7,9 @@
     goog.require('bot.action');
     goog.require('bot.dom');
     goog.require('goog.dom');
+    goog.require('goog.labs.userAgent.browser');
+    goog.require('goog.labs.userAgent.device');
+    goog.require('goog.labs.userAgent.platform');
     goog.require('goog.math.Coordinate');
     goog.require('goog.testing.ExpectedFailures');
     goog.require('goog.testing.jsunit');
@@ -38,8 +41,15 @@
     function testScrollsElementInToViewIfRequired() {
       bot.action.scrollIntoView(findElement({id: 'offscreen'}));
 
-      expectedFailures.expectFailureFor(goog.userAgent.product.ANDROID,
-        'Android doesn\'t currently provide scrolling information');
+      expectedFailures.expectFailureFor(
+        goog.userAgent.product.ANDROID ||
+            goog.labs.userAgent.browser.isChrome() &&
+            goog.labs.userAgent.platform.isAndroid() &&
+            goog.labs.userAgent.browser.isVersionOrHigher('40') &&
+            !goog.labs.userAgent.browser.isVersionOrHigher('41'),
+        'Android doesn\'t currently provide scrolling information. ' +
+        'Chrome for Android regressed in m40, but was fixed in m41: ' +
+        'https://code.google.com/p/chromium/issues/detail?id=448404');
       expectedFailures.run(function() {
         assertNotEquals(0, getTopLevelParent().scrollLeft);
       });
@@ -130,7 +140,7 @@
 
       bot.action.scrollIntoView(element);
 
-      expectedFailures.expectFailureFor(goog.userAgent.product.ANDROID && 
+      expectedFailures.expectFailureFor(goog.userAgent.product.ANDROID &&
           !bot.userAgent.isProductVersion(4.1),
           'Android pre-Jellybean doesn\'t provide scrolling information');
       expectedFailures.run(function() {
@@ -151,10 +161,21 @@
 
       bot.action.scrollIntoView(element);
 
+      expectedFailures.expectFailureFor(
+        goog.userAgent.product.ANDROID ||
+            goog.labs.userAgent.browser.isChrome() &&
+            goog.labs.userAgent.platform.isAndroid() &&
+            goog.labs.userAgent.browser.isVersionOrHigher('40') &&
+            !goog.labs.userAgent.browser.isVersionOrHigher('41'),
+        'Android doesn\'t currently provide scrolling information. ' +
+        'Chrome for Android regressed in m40, but was fixed in m41: ' +
+        'https://code.google.com/p/chromium/issues/detail?id=448404');
+      expectedFailures.run(function() {
+        assertNotEquals(0, getTopLevelParent().scrollLeft);
+      });
       expectedFailures.expectFailureFor(goog.userAgent.product.ANDROID,
         'Android doesn\'t currently provide scrolling information');
       expectedFailures.run(function() {
-        assertNotEquals(0, getTopLevelParent().scrollLeft);
         assertNotEquals(0, frameDocument.body.scrollLeft);
         assertNotEquals(0, top.scrollLeft);
         assertNotEquals(0, middle.scrollLeft);
@@ -188,24 +209,35 @@
       bot.action.scrollIntoView(elem, new goog.math.Coordinate(75, 75));
       var rectAfter = bot.dom.getClientRect(elem);
 
-      // If the scrollbar isn't taken into account, the minimum scrolling
-      // needed would be 26 pixels, to bring the full pixel into view.
-      // This should fail on mobile since the scrollbars aren't shown.
+      var horizontalScroll = rectBefore.left - rectAfter.left;
+      var verticalScroll = rectBefore.top - rectAfter.top;
+
+      // In the absence of a scrollbar, the minimum scrolling needed to bring
+      // the full pixel into view would be 26 pixels. There is a scrollbar,
+      // however; scrollIntoView should scroll 26px plus the scrollbar
+      // width/height.
+      
+      // This should fail on mobile and tablet since the scrollbars aren't shown.
       // This should also fail on IE6 since scrolling only happens to
       // exactly the scrollbar width, which is 17 by default on Windows XP.
       expectedFailures.expectFailureFor(
-          goog.userAgent.MOBILE ||
-          (goog.userAgent.IE && !goog.userAgent.isVersion(7)));
+          goog.labs.userAgent.device.isMobile() || goog.labs.userAgent.device.isTablet() ||
+            (goog.userAgent.IE && !goog.userAgent.isVersion(7)));
+
       expectedFailures.run(function() {
-        assertTrue('horizontal scroll did not account for scrollbar',
-            rectBefore.left - rectAfter.left > 26);
-        assertTrue('vertical scroll did not account for scrollbar',
-            rectBefore.top - rectAfter.top > 26);
+        assertTrue('Horizontal scroll did not account for scrollbar. ' +
+            'It scrolled ' + horizontalScroll + 'px, but should have ' +
+            'scrolled at least 26px plus the scrollbar width.',
+            horizontalScroll > 26);
+        assertTrue('Vertical scroll did not account for scrollbar. ' +
+            'It scrolled ' + verticalScroll + 'px, but should have ' +
+            'scrolled at least 26px plus the scrollbar height.',
+            verticalScroll > 26);
       });
     }
   </script>
   <div style="position: absolute; left: 150px; top: 100px; border: 2px yellow solid;"><a id="onscreen">Onscreen</a></div>
-  <div style="position: absolute; left: 3000px; border: 2px orange solid;"><a id="offscreen">Offscreen</a></div>
+  <div style="position: absolute; left: 8000px; border: 2px orange solid;"><a id="offscreen">Offscreen</a></div>
   <div style="overflow: hidden; width: 50px; height: 30px; border: 2px blue solid;" id="hidden-by-overflow-container">
     <a style="margin-left: 100px;" id="hidden-by-overflow">Hidden</a></div>
   </div>
@@ -235,7 +267,7 @@
   </div>
 
   <iframe src="testdata/scrolling_iframe.html" style="width: 200px; height: 100px;" id="scrollable-iframe"></iframe>
-  <div style="position: absolute; left: 3000px; top: 200px; border: 2px orange solid;">
+  <div style="position: absolute; left: 8000px; top: 200px; border: 2px orange solid;">
     <iframe src="testdata/scrolling_iframe.html" style="width: 200px; height: 100px;" id="offscreen-scrollable-iframe"></iframe>
   </div>
 

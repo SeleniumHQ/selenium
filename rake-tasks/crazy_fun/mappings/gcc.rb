@@ -216,6 +216,12 @@ class Build < BaseGcc
         std = ""
       end
       base_compiler_args = "-Wall -fPIC -fshort-wchar -std=c++#{std} -Dunix -D__STDC_LIMIT_MACROS -I cpp/webdriver-interactions -I cpp/imehandler/common -I #{gecko_sdk}include -I #{gecko_sdk}include/nspr " + "`pkg-config gtk+-2.0 --cflags`"
+      if (args[:geckoversion].to_i < 29)
+        base_compiler_args += " -DWEBDRIVER_LEGACY_GECKO"
+      end
+      if (args[:geckoversion].to_i < 31)
+        base_compiler_args += " -DWEBDRIVER_GECKO_USES_ISUPPORTS1"
+      end
       compiler_args = [args[:args], base_compiler_args].join " "
       if (args[:geckoversion].to_i < 22)
         linker_args = "-Wall -fshort-wchar -fno-rtti -fno-exceptions -shared -fPIC -L#{gecko_sdk}lib -L#{gecko_sdk}bin -Wl,-rpath-link,#{gecko_sdk}bin -l#{xpcom_lib} -lxpcom -lnspr4 -lrt `pkg-config gtk+-2.0 --libs`"

@@ -1,19 +1,19 @@
-/*
-Copyright 2010 Selenium committers
-Copyright 2010 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.os;
 
@@ -100,6 +100,8 @@ public class CommandLine {
   }
 
   /**
+   * @param executable executable name to be found
+   * @return string of the path of the executable
    * @deprecated Use the commandline itself to execute your command.
    */
   @Deprecated
@@ -119,6 +121,14 @@ public class CommandLine {
   public void waitFor() {
     try {
       process.waitFor();
+    } catch (InterruptedException e) {
+      throw new WebDriverException(e);
+    }
+  }
+
+  public void waitFor(long timeout) {
+    try {
+      process.waitFor(timeout);
     } catch (InterruptedException e) {
       throw new WebDriverException(e);
     }
@@ -144,10 +154,10 @@ public class CommandLine {
   public int destroy() {
     return process.destroy();
   }
-  
+
   /**
    * Check whether the current command is still executing.
-   * 
+   *
    * @return true if the current command is still executing, false otherwise
    */
   public boolean isRunning() {
@@ -169,5 +179,9 @@ public class CommandLine {
 
   public void copyOutputTo(OutputStream out) {
     process.copyOutputTo(out);
+  }
+
+  public void checkForError() {
+    process.checkForError();
   }
 }

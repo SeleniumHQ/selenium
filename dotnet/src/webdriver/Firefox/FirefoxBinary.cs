@@ -1,9 +1,9 @@
 ﻿// <copyright file="FirefoxBinary.cs" company="WebDriver Committers">
-// Copyright 2007-2011 WebDriver committers
-// Copyright 2007-2011 Google Inc.
-// Portions copyright 2011 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -21,11 +21,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading;
 using OpenQA.Selenium.Firefox.Internal;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -34,25 +34,20 @@ namespace OpenQA.Selenium.Firefox
     /// </summary>
     /// <remarks>The <see cref="FirefoxBinary"/> class is responsible for instantiating the
     /// Firefox process, and the operating system environment in which it runs.</remarks>
-    public class FirefoxBinary
+    public class FirefoxBinary : IDisposable
     {
-        #region Constants
-        private const string NoFocusLibraryName = "x_ignore_nofocus.so"; 
-        #endregion
-
-        #region Private members
+        private const string NoFocusLibraryName = "x_ignore_nofocus.so";
         private Dictionary<string, string> extraEnv = new Dictionary<string, string>();
         private Executable executable;
         private Process process;
         private TimeSpan timeout = TimeSpan.FromSeconds(45);
-        #endregion
+        private bool isDisposed = false;
 
-        #region Constructors
         /// <summary>
         /// Initializes a new instance of the <see cref="FirefoxBinary"/> class.
         /// </summary>
-        public FirefoxBinary() :
-            this(null)
+        public FirefoxBinary()
+            : this(null)
         {
         }
 
@@ -63,18 +58,6 @@ namespace OpenQA.Selenium.Firefox
         public FirefoxBinary(string pathToFirefoxBinary)
         {
             this.executable = new Executable(pathToFirefoxBinary);
-        } 
-        #endregion
-
-        #region Public properties
-        /// <summary>
-        /// Gets or sets the timeout (in milliseconds) to wait for command execution.
-        /// </summary>
-        [Obsolete("Timeouts should be expressed as a TimeSpan. Use the Timeout property instead")]
-        public long TimeoutInMilliseconds
-        {
-            get { return Convert.ToInt64(this.Timeout.TotalMilliseconds); }
-            set { this.Timeout = TimeSpan.FromMilliseconds(value); }
         }
 
         /// <summary>
@@ -86,18 +69,6 @@ namespace OpenQA.Selenium.Firefox
             set { this.timeout = value; }
         }
 
-        /// <summary>
-        /// Gets all console output of the binary.
-        /// </summary>
-        /// <remarks>Output retrieval is non-destructive and non-blocking.</remarks>
-        [Obsolete("This property is largely unused, and will be removed in a future revision")]
-        public string ConsoleOutput
-        {
-            get { return string.Empty; }
-        } 
-        #endregion
-
-        #region Support properties
         /// <summary>
         /// Gets the <see cref="Executable"/> associated with this <see cref="FirefoxBinary"/>.
         /// </summary>
@@ -121,8 +92,7 @@ namespace OpenQA.Selenium.Firefox
         protected Dictionary<string, string> ExtraEnvironmentVariables
         {
             get { return this.extraEnv; }
-        } 
-        #endregion
+        }
 
         /// <summary>
         /// Starts Firefox using the specified profile and command-line arguments.
@@ -136,7 +106,7 @@ namespace OpenQA.Selenium.Firefox
             {
                 throw new ArgumentNullException("profile", "profile cannot be null");
             }
-            
+
             if (commandLineArguments == null)
             {
                 commandLineArguments = new string[] { };
@@ -159,28 +129,28 @@ namespace OpenQA.Selenium.Firefox
                 commandLineArgs.Append(" ").Append(commandLineArg);
             }
 
-            Process builder = new Process();
-            builder.StartInfo.FileName = this.BinaryExecutable.ExecutablePath;
-            builder.StartInfo.Arguments = commandLineArgs.ToString();
-            builder.StartInfo.UseShellExecute = false;
+            this.process = new Process();
+            this.process.StartInfo.FileName = this.BinaryExecutable.ExecutablePath;
+            this.process.StartInfo.Arguments = commandLineArgs.ToString();
+            this.process.StartInfo.UseShellExecute = false;
 
             foreach (string environmentVar in this.extraEnv.Keys)
             {
-                if (builder.StartInfo.EnvironmentVariables.ContainsKey(environmentVar))
+                if (this.process.StartInfo.EnvironmentVariables.ContainsKey(environmentVar))
                 {
-                    builder.StartInfo.EnvironmentVariables[environmentVar] = this.extraEnv[environmentVar];
+                    this.process.StartInfo.EnvironmentVariables[environmentVar] = this.extraEnv[environmentVar];
                 }
                 else
                 {
-                    builder.StartInfo.EnvironmentVariables.Add(environmentVar, this.extraEnv[environmentVar]);
+                    this.process.StartInfo.EnvironmentVariables.Add(environmentVar, this.extraEnv[environmentVar]);
                 }
             }
 
-            this.BinaryExecutable.SetLibraryPath(builder);
+            this.BinaryExecutable.SetLibraryPath(this.process);
 
-            this.StartFirefoxProcess(builder);
+            this.StartFirefoxProcess();
 
-            this.CopeWithTheStrangenessOfTheMac(builder);
+            this.CopeWithTheStrangenessOfTheMac();
         }
 
         /// <summary>
@@ -206,21 +176,6 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Creates a named profile for Firefox.
-        /// </summary>
-        /// <param name="profileName">The name of the profile to create.</param>
-        [SecurityPermission(SecurityAction.Demand)]
-        public void CreateProfile(string profileName)
-        {
-            Process builder = new Process();
-            builder.StartInfo.FileName = this.executable.ExecutablePath;
-            builder.StartInfo.Arguments = "--verbose -CreateProfile " + profileName;
-            builder.StartInfo.EnvironmentVariables.Add("MOZ_NO_REMOTE", "1");
-
-            this.StartFirefoxProcess(builder);
-        }
-
-        /// <summary>
         /// Waits for the process to complete execution.
         /// </summary>
         [SecurityPermission(SecurityAction.Demand)]
@@ -230,58 +185,18 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Initializes the binary with the specified profile.
+        /// Releases all resources used by the <see cref="FirefoxBinary"/>.
         /// </summary>
-        /// <param name="profile">The <see cref="FirefoxProfile"/> to use to initialize the binary.</param>
-        public void Clean(FirefoxProfile profile)
+        public void Dispose()
         {
-            if (profile == null)
-            {
-                throw new ArgumentNullException("profile", "profile cannot be null");
-            }
-
-            this.StartProfile(profile, "-silent");
-            try
-            {
-                this.WaitForProcessExit();
-            }
-            catch (ThreadInterruptedException e)
-            {
-                throw new WebDriverException("Thread was interrupted", e);
-            }
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
-        /// Stops the execution of this <see cref="FirefoxBinary"/>, terminating the process if necessary.
+        /// Returns a <see cref="string">String</see> that represents the current <see cref="object">Object</see>.
         /// </summary>
-        [SecurityPermission(SecurityAction.Demand)]
-        public void Quit()
-        {
-            // Suicide watch: First,  a second to see if the process will die on 
-            // it's own (we will likely have asked the process to kill itself just 
-            // before calling this method).
-            if (this.process != null)
-            {
-                if (!this.process.HasExited)
-                {
-                    System.Threading.Thread.Sleep(1000);
-                }
-
-                // Murder option: The process is still alive, so kill it.
-                if (!this.process.HasExited)
-                {
-                    this.process.Kill();
-                }
-
-                this.process.Dispose();
-                this.process = null;
-            }
-        }
-
-        /// <summary>
-        /// Returns a <see cref="System.String">String</see> that represents the current <see cref="System.Object">Object</see>.
-        /// </summary>
-        /// <returns>A <see cref="System.String">String</see> that represents the current <see cref="System.Object">Object</see>.</returns>
+        /// <returns>A <see cref="string">String</see> that represents the current <see cref="object">Object</see>.</returns>
         public override string ToString()
         {
             return "FirefoxBinary(" + this.executable.ExecutablePath + ")";
@@ -290,17 +205,48 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Starts the Firefox process.
         /// </summary>
-        /// <param name="builder">A <see cref="Process"/> object used to start Firefox.</param>
         [SecurityPermission(SecurityAction.Demand)]
-        protected void StartFirefoxProcess(Process builder)
+        protected void StartFirefoxProcess()
         {
-            if (builder == null)
-            {
-                throw new ArgumentNullException("builder", "builder cannot be null");
-            }
-
-            this.process = builder;
             this.process.Start();
+        }
+
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="FirefoxBinary"/> and optionally
+        /// releases the managed resources.
+        /// </summary>
+        /// <param name="disposing"><see langword="true"/> to release managed and resources;
+        /// <see langword="false"/> to only release unmanaged resources.</param>
+        [SecurityPermission(SecurityAction.Demand)]
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.isDisposed)
+            {
+                if (disposing)
+                {
+                    // Suicide watch: First,  a second to see if the process will die on
+                    // it's own (we will likely have asked the process to kill itself just
+                    // before calling this method).
+                    if (this.process != null)
+                    {
+                        if (!this.process.HasExited)
+                        {
+                            System.Threading.Thread.Sleep(1000);
+                        }
+
+                        // Murder option: The process is still alive, so kill it.
+                        if (!this.process.HasExited)
+                        {
+                            this.process.Kill();
+                        }
+
+                        this.process.Dispose();
+                        this.process = null;
+                    }
+                }
+
+                this.isDisposed = true;
+            }
         }
 
         private static void Sleep(int timeInMilliseconds)
@@ -331,28 +277,23 @@ namespace OpenQA.Selenium.Firefox
             {
                 string outSoPath = Path.Combine(profile.ProfileDirectory, path);
                 string file = Path.Combine(outSoPath, noFocusSoName);
-
                 string resourceName = string.Format(CultureInfo.InvariantCulture, "WebDriver.FirefoxNoFocus.{0}.dll", path);
-                Assembly executingAssembly = Assembly.GetExecutingAssembly();
-
-                List<string> resourceNames = new List<string>(executingAssembly.GetManifestResourceNames());
-                if (resourceNames.Contains(resourceName))
+                if (ResourceUtilities.IsValidResourceName(resourceName))
                 {
-                    Stream libraryStream = executingAssembly.GetManifestResourceStream(resourceName);
-
-                    Directory.CreateDirectory(outSoPath);
-                    using (FileStream outputStream = File.Create(file))
+                    using (Stream libraryStream = ResourceUtilities.GetResourceStream(noFocusSoName, resourceName))
                     {
-                        byte[] buffer = new byte[1000];
-                        int bytesRead = libraryStream.Read(buffer, 0, buffer.Length);
-                        while (bytesRead > 0)
+                        Directory.CreateDirectory(outSoPath);
+                        using (FileStream outputStream = File.Create(file))
                         {
-                            outputStream.Write(buffer, 0, bytesRead);
-                            bytesRead = libraryStream.Read(buffer, 0, buffer.Length);
+                            byte[] buffer = new byte[1000];
+                            int bytesRead = libraryStream.Read(buffer, 0, buffer.Length);
+                            while (bytesRead > 0)
+                            {
+                                outputStream.Write(buffer, 0, bytesRead);
+                                bytesRead = libraryStream.Read(buffer, 0, buffer.Length);
+                            }
                         }
                     }
-
-                    libraryStream.Close();
                 }
 
                 if (!File.Exists(file))
@@ -375,7 +316,7 @@ namespace OpenQA.Selenium.Firefox
             string existingLdLibPath = Environment.GetEnvironmentVariable("LD_LIBRARY_PATH");
 
             // The returned new ld lib path is terminated with ':'
-            string newLdLibPath = ExtractAndCheck(profile, NoFocusLibraryName, "x86", "amd64");
+            string newLdLibPath = ExtractAndCheck(profile, NoFocusLibraryName, "x86", "x64");
             if (!string.IsNullOrEmpty(existingLdLibPath))
             {
                 newLdLibPath += existingLdLibPath;
@@ -389,7 +330,7 @@ namespace OpenQA.Selenium.Firefox
         }
 
         [SecurityPermission(SecurityAction.Demand)]
-        private void CopeWithTheStrangenessOfTheMac(Process builder)
+        private void CopeWithTheStrangenessOfTheMac()
         {
             if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Mac))
             {
@@ -409,7 +350,7 @@ namespace OpenQA.Selenium.Firefox
                     // TODO(simon): This is utterly bogus. We should do something far smarter
                     System.Threading.Thread.Sleep(10000);
 
-                    this.StartFirefoxProcess(builder);
+                    this.StartFirefoxProcess();
                 }
                 catch (ThreadStateException)
                 {
@@ -428,7 +369,7 @@ namespace OpenQA.Selenium.Firefox
 
                     StringBuilder message = new StringBuilder("Unable to start firefox cleanly.\n");
                     message.Append("Exit value: ").Append(this.process.ExitCode.ToString(CultureInfo.InvariantCulture)).Append("\n");
-                    message.Append("Ran from: ").Append(builder.StartInfo.FileName).Append("\n");
+                    message.Append("Ran from: ").Append(this.process.StartInfo.FileName).Append("\n");
                     throw new WebDriverException(message.ToString());
                 }
                 catch (ThreadStateException)

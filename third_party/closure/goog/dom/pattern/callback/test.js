@@ -27,33 +27,30 @@ goog.require('goog.iter.StopIteration');
 /**
  * Callback class for testing for at least one match.
  * @constructor
+ * @final
  */
 goog.dom.pattern.callback.Test = function() {
+  /**
+   * Whether or not the pattern matched.
+   *
+   * @type {boolean}
+   */
+  this.matched = false;
+
+  /**
+   * The callback function.  Suitable as a callback for
+   * {@link goog.dom.pattern.Matcher}.
+   * @private {Function}
+   */
+  this.callback_ = null;
 };
-
-
-/**
- * Whether or not the pattern matched.
- *
- * @type {boolean}
- */
-goog.dom.pattern.callback.Test.prototype.matched = false;
-
-
-/**
- * The callback function.  Suitable as a callback for
- * {@link goog.dom.pattern.Matcher}.
- * @type {Function}
- * @private
- */
-goog.dom.pattern.callback.Test.prototype.callback_ = null;
 
 
 /**
  * Get a bound callback function that is suitable as a callback for
  * {@link goog.dom.pattern.Matcher}.
  *
- * @return {Function} A callback function.
+ * @return {!Function} A callback function.
  */
 goog.dom.pattern.callback.Test.prototype.getCallback = function() {
   if (!this.callback_) {

@@ -22,6 +22,7 @@ goog.provide('goog.spell.SpellCheck');
 goog.provide('goog.spell.SpellCheck.WordChangedEvent');
 
 goog.require('goog.Timer');
+goog.require('goog.events.Event');
 goog.require('goog.events.EventTarget');
 goog.require('goog.structs.Set');
 
@@ -39,6 +40,7 @@ goog.require('goog.structs.Set');
  * @param {string=} opt_language Content language.
  * @constructor
  * @extends {goog.events.EventTarget}
+ * @final
  */
 goog.spell.SpellCheck = function(opt_lookupFunction, opt_language) {
   goog.events.EventTarget.call(this);
@@ -347,7 +349,7 @@ goog.spell.SpellCheck.prototype.processPending_ = function() {
 /**
  * Callback for lookup function.
  *
- * @param {Array.<Array>} data Data array. Each word is represented by an
+ * @param {Array<Array<?>>} data Data array. Each word is represented by an
  *     array containing the word, the status and optionally an array of
  *     suggestions. Passing null indicates that the operation failed.
  * @private
@@ -394,7 +396,7 @@ goog.spell.SpellCheck.prototype.lookupCallback_ = function(data) {
  *
  * @param {string} word Word to set status for.
  * @param {goog.spell.SpellCheck.WordStatus} status Status of word.
- * @param {Array.<string>=} opt_suggestions Suggestions.
+ * @param {Array<string>=} opt_suggestions Suggestions.
  *
  * Example:
  * obj.setWordStatus('word', VALID);
@@ -411,7 +413,7 @@ goog.spell.SpellCheck.prototype.setWordStatus =
  *
  * @param {string} word Word to set status for.
  * @param {goog.spell.SpellCheck.WordStatus} status Status of word.
- * @param {Array.<string>=} opt_suggestions Suggestions.
+ * @param {Array<string>=} opt_suggestions Suggestions.
  * @private
  */
 goog.spell.SpellCheck.prototype.setWordStatus_ =
@@ -429,7 +431,7 @@ goog.spell.SpellCheck.prototype.setWordStatus_ =
  * Returns suggestions for the given word.
  *
  * @param {string} word Word to get suggestions for.
- * @return {Array.<string>} An array of suggestions for the given word.
+ * @return {Array<string>} An array of suggestions for the given word.
  */
 goog.spell.SpellCheck.prototype.getSuggestions = function(word) {
   var cacheEntry = this.cache_[word];
@@ -455,6 +457,7 @@ goog.spell.SpellCheck.prototype.getSuggestions = function(word) {
  * @param {goog.spell.SpellCheck.WordStatus} status Status of word.
  * @extends {goog.events.Event}
  * @constructor
+ * @final
  */
 goog.spell.SpellCheck.WordChangedEvent = function(target, word, status) {
   goog.events.Event.call(this, goog.spell.SpellCheck.EventType.WORD_CHANGED,

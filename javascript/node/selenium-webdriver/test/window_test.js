@@ -1,29 +1,34 @@
-// Copyright 2013 Selenium committers
-// Copyright 2013 Software Freedom Conservancy
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-//     You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 'use strict';
 
-var assert = require('../testing/assert'),
-    test = require('../lib/test'),
-    Browser = test.Browser;
+var Browser = require('..').Browser,
+    assert = require('../testing/assert'),
+    test = require('../lib/test');
 
 
 test.suite(function(env) {
   var driver;
-  beforeEach(function() {
-    driver = env.driver;
+
+  test.before(function() { driver = env.builder().build(); });
+  test.after(function() { driver.quit(); });
+
+  test.beforeEach(function() {
     driver.switchTo().defaultContent();
   });
 
@@ -49,13 +54,20 @@ test.suite(function(env) {
       driver.manage().window().setPosition(position.x + 10, position.y + 10);
 
       // For phantomjs, setPosition is a no-op and the "window" stays at (0, 0)
-      if (env.browser === Browser.PHANTOMJS) {
+      if (env.currentBrowser() === Browser.PHANTOM_JS) {
         driver.manage().window().getPosition().then(function(position) {
           assert(position.x).equalTo(0);
           assert(position.y).equalTo(0);
         });
       } else {
-        driver.wait(forPositionToBe(position.x + 10, position.y + 10), 1000);
+        var dx = position.x + 10;
+        var dy = position.y + 10;
+        // On OSX, Safari position's the window relative to below the menubar
+        // at the top of the screen, which is 23 pixels tall.
+        if (env.currentBrowser() === Browser.SAFARI &&
+            process.platform === 'darwin') {
+          dy += 23;
+        }
       }
     });
   });
@@ -68,13 +80,21 @@ test.suite(function(env) {
       driver.manage().window().setPosition(position.x + 10, position.y + 10);
 
       // For phantomjs, setPosition is a no-op and the "window" stays at (0, 0)
-      if (env.browser === Browser.PHANTOMJS) {
+      if (env.currentBrowser() === Browser.PHANTOM_JS) {
         driver.manage().window().getPosition().then(function(position) {
           assert(position.x).equalTo(0);
           assert(position.y).equalTo(0);
         });
       } else {
-        driver.wait(forPositionToBe(position.x + 10, position.y + 10), 1000);
+        var dx = position.x + 10;
+        var dy = position.y + 10;
+        // On OSX, Safari position's the window relative to below the menubar
+        // at the top of the screen, which is 23 pixels tall.
+        if (env.currentBrowser() === Browser.SAFARI &&
+            process.platform === 'darwin') {
+          dy += 23;
+        }
+        driver.wait(forPositionToBe(dx, dy), 1000);
       }
     });
   });
@@ -83,7 +103,7 @@ test.suite(function(env) {
     driver.manage().window().getSize().then(function(size) {
       driver.manage().window().setSize(size.width + dx, size.height + dy);
       driver.wait(forSizeToBe(size.width + dx, size.height + dy), 1000);
-    })
+    });
   }
 
   function forSizeToBe(w, h) {
@@ -100,7 +120,8 @@ test.suite(function(env) {
         return position.x === x &&
             // On OSX, the window height may be bumped down 22px for the top
             // status bar.
-           (position.y >= y && position.y <= (y + 22));
+            // On Linux, Opera's window position will be off by 28px.
+           (position.y >= y && position.y <= (y + 28));
       });
     };
   }

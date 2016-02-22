@@ -44,6 +44,7 @@
 goog.provide('goog.ui.Menu');
 goog.provide('goog.ui.Menu.EventType');
 
+goog.require('goog.dom.TagName');
 goog.require('goog.math.Coordinate');
 goog.require('goog.string');
 goog.require('goog.style');
@@ -81,6 +82,7 @@ goog.ui.Menu = function(opt_domHelper, opt_renderer) {
   this.setFocusable(false);
 };
 goog.inherits(goog.ui.Menu, goog.ui.Container);
+goog.tagUnsealableClass(goog.ui.Menu);
 
 
 // TODO(robbyw): Remove this and all references to it.
@@ -125,7 +127,7 @@ goog.ui.Menu.prototype.openingCoords;
 
 
 /**
- * Whether the menu can move the focus to it's key event target when it is
+ * Whether the menu can move the focus to its key event target when it is
  * shown.  Default = true
  * @type {boolean}
  * @private
@@ -255,7 +257,7 @@ goog.ui.Menu.prototype.getItemCount = function() {
 
 /**
  * Returns an array containing the menu items contained in the menu.
- * @return {Array.<goog.ui.MenuItem>} An array of menu items.
+ * @return {!Array<goog.ui.MenuItem>} An array of menu items.
  * @deprecated Use getChildAt, forEachChild, and getChildCount.
  */
 goog.ui.Menu.prototype.getItems = function() {
@@ -422,7 +424,7 @@ goog.ui.Menu.prototype.decorateInternal = function(element) {
 
 /** @override */
 goog.ui.Menu.prototype.handleKeyEventInternal = function(e) {
-  var handled = goog.base(this, 'handleKeyEventInternal', e);
+  var handled = goog.ui.Menu.base(this, 'handleKeyEventInternal', e);
   if (!handled) {
     // Loop through all child components, and for each menu item call its
     // key event handler so that keyboard mnemonics can be handled.
@@ -444,7 +446,7 @@ goog.ui.Menu.prototype.handleKeyEventInternal = function(e) {
 
 /** @override */
 goog.ui.Menu.prototype.setHighlightedIndex = function(index) {
-  goog.base(this, 'setHighlightedIndex', index);
+  goog.ui.Menu.base(this, 'setHighlightedIndex', index);
 
   // Bring the highlighted item into view. This has no effect if the menu is not
   // scrollable.
@@ -463,8 +465,9 @@ goog.ui.Menu.prototype.setHighlightedIndex = function(index) {
  */
 goog.ui.Menu.prototype.decorateContent = function(element) {
   var renderer = this.getRenderer();
-  var contentElements = this.getDomHelper().getElementsByTagNameAndClass('div',
-      goog.getCssName(renderer.getCssClass(), 'content'), element);
+  var contentElements = this.getDomHelper().getElementsByTagNameAndClass(
+      goog.dom.TagName.DIV, goog.getCssName(renderer.getCssClass(), 'content'),
+      element);
 
   // Some versions of IE do not like it when you access this nodeList
   // with invalid indices. See

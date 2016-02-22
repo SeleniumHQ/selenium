@@ -1,0 +1,22 @@
+csharp_library(
+  name = 'webdriver',
+  dll_name = 'WebDriver.dll',
+  framework_ver = 'net40',
+  srcs = glob(['**/*.cs']),
+  resources = {
+    'WebDriver.FirefoxExt.zip': '//javascript/firefox-driver:webdriver',
+    'WebDriver.FirefoxExt.zip': '//javascript/firefox-driver:webdriver',
+    'WebDriver.FirefoxPreferences': '//javascript/firefox-driver:webdriver_prefs',
+#    'WebDriver.FirefoxNoFocus.x86.dll': '//cpp:noblur',
+#    'WebDriver.FirefoxNoFocus.x64.dll': '//cpp:noblur64',
+  },
+  deps = [
+    'System.dll',
+    'System.Core.dll',
+    'System.Data.dll',
+    'System.Drawing.dll',
+    'System.Xml.dll',
+    '//third_party/dotnet/json-net-6.0r2/Net40:json'
+  ],
+)
+

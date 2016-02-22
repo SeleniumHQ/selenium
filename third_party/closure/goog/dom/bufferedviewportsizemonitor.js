@@ -44,10 +44,17 @@ goog.require('goog.events.EventType');
  *     value defaults to {@link #RESIZE_EVENT_DELAY_MS_}.
  * @constructor
  * @extends {goog.events.EventTarget}
+ * @final
  */
 goog.dom.BufferedViewportSizeMonitor = function(
     viewportSizeMonitor, opt_bufferMs) {
-  goog.base(this);
+  goog.dom.BufferedViewportSizeMonitor.base(this, 'constructor');
+
+  /**
+   * Delay for the resize event.
+   * @private {goog.async.Delay}
+   */
+  this.resizeDelay_;
 
   /**
    * The underlying viewport size monitor.
@@ -97,14 +104,6 @@ goog.dom.BufferedViewportSizeMonitor.EventType = {
 
 
 /**
- * Delay for the resize event.
- * @type {goog.async.Delay}
- * @private
- */
-goog.dom.BufferedViewportSizeMonitor.prototype.resizeDelay_;
-
-
-/**
  * Default number of milliseconds to wait after a resize event to relayout the
  * page.
  * @type {number}
@@ -118,7 +117,7 @@ goog.dom.BufferedViewportSizeMonitor.RESIZE_EVENT_DELAY_MS_ = 100;
 goog.dom.BufferedViewportSizeMonitor.prototype.disposeInternal =
     function() {
   goog.events.unlistenByKey(this.listenerKey_);
-  goog.base(this, 'disposeInternal');
+  goog.dom.BufferedViewportSizeMonitor.base(this, 'disposeInternal');
 };
 
 

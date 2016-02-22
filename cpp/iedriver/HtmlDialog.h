@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -20,7 +23,6 @@
 #include <mshtmdid.h>
 #include "DocumentHost.h"
 #include "messages.h"
-#include "BrowserFactory.h"
 
 namespace webdriver {
 
@@ -47,11 +49,14 @@ class HtmlDialog : public DocumentHost, public IDispEventSimpleImpl<1, HtmlDialo
   STDMETHOD_(void, OnBeforeUnload)(IHTMLEventObj* pEvtObj);
   STDMETHOD_(void, OnLoad)(IHTMLEventObj* pEvtObj);
 
+  void GetDocument(const bool force_top_level_document,
+                   IHTMLDocument2** doc);
   void GetDocument(IHTMLDocument2** doc);
   void Close(void);
-  bool Wait(void);
+  bool Wait(const std::string& page_load_strategy);
   bool IsBusy(void);
-  HWND GetWindowHandle(void);
+  HWND GetContentWindowHandle(void);
+  HWND GetBrowserWindowHandle(void);
   std::string GetWindowName(void);
   std::string GetTitle(void);
   std::string GetBrowserUrl(void);

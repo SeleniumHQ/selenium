@@ -1,38 +1,84 @@
-require File.expand_path("../spec_helper", __FILE__)
+# encoding: utf-8
+#
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+require_relative 'spec_helper'
 
 describe "Element" do
+  before do
+    compliant_on :browser => :safari do
+      sleep 0.5 # Some kind of race condition preventing initial navigation; only on safari
+    end
+  end
 
   it "should click" do
     driver.navigate.to url_for("formPage.html")
     driver.find_element(:id, "imageButton").click
   end
 
-  it "should submit" do
-    driver.navigate.to url_for("formPage.html")
-    driver.find_element(:id, "submitButton").submit
+  compliant_on :browser => [:chrome, :firefox] do
+    it "should raise if different element receives click" do
+      driver.navigate.to url_for("click_tests/overlapping_elements.html")
+      expect { driver.find_element(:id, "contents").click }
+        .to raise_error(Selenium::WebDriver::Error::UnknownError,
+          /Element is not clickable at point \(\d+, \d+\)\. Other element would receive the click: <div id="over"><\/div>/)
+    end
+  end
+
+  compliant_on :browser => [:firefox] do
+    it "should not raise if element is only partially covered" do
+      driver.navigate.to url_for("click_tests/overlapping_elements.html")
+      expect { driver.find_element(:id, "other_contents").click }.not_to raise_error
+    end
+  end
+
+  # Marionette BUG - AutomatedTester: "known bug with execute script"
+  not_compliant_on :browser => :marionette do
+    it "should submit" do
+      driver.navigate.to url_for("formPage.html")
+      wait_for_element(:id => "submitButton")
+      driver.find_element(:id, "submitButton").submit
+    end
   end
 
   it "should send string keys" do
     driver.navigate.to url_for("formPage.html")
+    wait_for_element(:id => "working")
     driver.find_element(:id, "working").send_keys("foo", "bar")
   end
 
-  not_compliant_on :browser => [:android, :iphone, :safari] do
+  not_compliant_on :browser => [:android, :iphone] do
     it "should send key presses" do
       driver.navigate.to url_for("javascriptPage.html")
       key_reporter = driver.find_element(:id, 'keyReporter')
 
       key_reporter.send_keys("Tet", :arrow_left, "s")
-      key_reporter.attribute('value').should == "Test"
+      expect(key_reporter.attribute('value')).to eq("Test")
     end
   end
 
-  not_compliant_on :browser => [:opera, :android, :iphone, :safari] do
+  # PhantomJS on windows issue: https://github.com/ariya/phantomjs/issues/10993
+  not_compliant_on :browser => [:android, :iphone, :safari, :edge, :marionette, :phantomjs] do
     it "should handle file uploads" do
       driver.navigate.to url_for("formPage.html")
 
       element = driver.find_element(:id, 'upload')
-      element.attribute('value').should be_empty
+      expect(element.attribute('value')).to be_empty
 
       file = Tempfile.new('file-upload')
       path = file.path
@@ -40,18 +86,18 @@ describe "Element" do
 
       element.send_keys path
 
-      element.attribute('value').should include(File.basename(path))
+      expect(element.attribute('value')).to include(File.basename(path))
     end
   end
 
   it "should get attribute value" do
     driver.navigate.to url_for("formPage.html")
-    driver.find_element(:id, "withText").attribute("rows").should == "5"
+    expect(driver.find_element(:id, "withText").attribute("rows")).to eq("5")
   end
 
   it "should return nil for non-existent attributes" do
     driver.navigate.to url_for("formPage.html")
-    driver.find_element(:id, "withText").attribute("nonexistent").should be_nil
+    expect(driver.find_element(:id, "withText").attribute("nonexistent")).to be_nil
   end
 
   it "should clear" do
@@ -68,46 +114,46 @@ describe "Element" do
 
       cheese.click
 
-      cheese.should be_selected
-      peas.should_not be_selected
+      expect(cheese).to be_selected
+      expect(peas).not_to be_selected
 
       peas.click
 
-      peas.should be_selected
-      cheese.should_not be_selected
+      expect(peas).to be_selected
+      expect(cheese).not_to be_selected
     end
   end
 
   it "should get enabled" do
     driver.navigate.to url_for("formPage.html")
-    driver.find_element(:id, "notWorking").should_not be_enabled
+    expect(driver.find_element(:id, "notWorking")).not_to be_enabled
   end
 
   it "should get text" do
     driver.navigate.to url_for("xhtmlTest.html")
-    driver.find_element(:class, "header").text.should == "XHTML Might Be The Future"
+    expect(driver.find_element(:class, "header").text).to eq("XHTML Might Be The Future")
   end
 
   it "should get displayed" do
     driver.navigate.to url_for("xhtmlTest.html")
-    driver.find_element(:class, "header").should be_displayed
+    expect(driver.find_element(:class, "header")).to be_displayed
   end
 
   it "should get location" do
     driver.navigate.to url_for("xhtmlTest.html")
     loc = driver.find_element(:class, "header").location
 
-    loc.x.should >= 1
-    loc.y.should >= 1
+    expect(loc.x).to be >= 1
+    expect(loc.y).to be >= 1
   end
 
-  not_compliant_on :browser => [:iphone] do
+  not_compliant_on :browser => :iphone do
     it "should get location once scrolled into view" do
       driver.navigate.to url_for("javascriptPage.html")
       loc = driver.find_element(:id, 'keyUp').location_once_scrolled_into_view
 
-      loc.x.should >= 1
-      loc.y.should >= 0 # can be 0 if scrolled to the top
+      expect(loc.x).to be >= 1
+      expect(loc.y).to be >= 0 # can be 0 if scrolled to the top
     end
   end
 
@@ -115,11 +161,11 @@ describe "Element" do
     driver.navigate.to url_for("xhtmlTest.html")
     size = driver.find_element(:class, "header").size
 
-    size.width.should > 0
-    size.height.should > 0
+    expect(size.width).to be > 0
+    expect(size.height).to be > 0
   end
 
-  compliant_on :driver => [:ie, :chrome] do # Firefox w/native events: issue 1771
+  not_compliant_on :browser => [:safari, :marionette] do
     it "should drag and drop" do
       driver.navigate.to url_for("dragAndDropTest.html")
 
@@ -130,11 +176,11 @@ describe "Element" do
                     drag_and_drop(img2, img1).
                     perform
 
-      img1.location.should == img2.location
+      expect(img1.location).to eq(img2.location)
     end
   end
 
-  not_compliant_on :browser => [:android] do # android returns 'green'
+  not_compliant_on :browser => :android do # android returns 'green'
     it "should get css property" do
       driver.navigate.to url_for("javascriptPage.html")
       element = driver.find_element(:id, "green-parent")
@@ -143,49 +189,46 @@ describe "Element" do
       style2 = element.style("background-color") # backwards compatibility
 
       acceptable = ["rgb(0, 128, 0)", "#008000", 'rgba(0,128,0,1)', 'rgba(0, 128, 0, 1)']
-      acceptable.should include(style1, style2)
+      expect(acceptable).to include(style1, style2)
     end
   end
 
   it "should know when two elements are equal" do
     driver.navigate.to url_for("simpleTest.html")
 
-    body  = driver.find_element(:tag_name, 'body')
+    body = driver.find_element(:tag_name, 'body')
     xbody = driver.find_element(:xpath, "//body")
 
-    body.should == xbody
-    body.should eql(xbody)
+    expect(body).to eq(xbody)
+    expect(body).to eql(xbody)
   end
 
-  not_compliant_on :browser => :phantomjs do
-    it "should know when two elements are not equal" do
-      driver.navigate.to url_for("simpleTest.html")
+  it "should know when two elements are not equal" do
+    driver.navigate.to url_for("simpleTest.html")
 
-      elements = driver.find_elements(:tag_name, 'p')
-      p1 = elements.fetch(0)
-      p2 = elements.fetch(1)
+    elements = driver.find_elements(:tag_name, 'p')
+    p1 = elements.fetch(0)
+    p2 = elements.fetch(1)
 
-      p1.should_not == p2
-      p1.should_not eql(p2)
-    end
+    expect(p1).not_to eq(p2)
+    expect(p1).not_to eql(p2)
   end
 
   it "should return the same #hash for equal elements when found by Driver#find_element" do
     driver.navigate.to url_for("simpleTest.html")
 
-    body  = driver.find_element(:tag_name, 'body')
+    body = driver.find_element(:tag_name, 'body')
     xbody = driver.find_element(:xpath, "//body")
 
-    body.hash.should == xbody.hash
+    expect(body.hash).to eq(xbody.hash)
   end
 
   it "should return the same #hash for equal elements when found by Driver#find_elements" do
     driver.navigate.to url_for("simpleTest.html")
 
-    body  = driver.find_elements(:tag_name, 'body').fetch(0)
+    body = driver.find_elements(:tag_name, 'body').fetch(0)
     xbody = driver.find_elements(:xpath, "//body").fetch(0)
 
-    body.hash.should == xbody.hash
+    expect(body.hash).to eq(xbody.hash)
   end
-
 end

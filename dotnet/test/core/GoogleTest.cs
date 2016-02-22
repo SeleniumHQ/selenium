@@ -14,13 +14,12 @@
  *  limitations under the License.
  *
  */
-using System;
 using NUnit.Framework;
 using Selenium;
 
 namespace ThoughtWorks.Selenium.IntegrationTests
 {
-	[TestFixture]
+    [TestFixture]
     [Ignore("Integration tests require set up of a Selenium server.")]
     public class GoogleTest
 	{

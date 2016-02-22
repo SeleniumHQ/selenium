@@ -1,23 +1,24 @@
-/*
- * Copyright 2011 Software Freedom Conservancy.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.server;
 
 import static java.lang.String.format;
+import static org.openqa.grid.shared.CliUtils.printWrappedLine;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,7 +30,6 @@ import org.openqa.jetty.http.handler.SecurityHandler;
 import org.openqa.jetty.jetty.Server;
 import org.openqa.jetty.jetty.servlet.ServletHandler;
 import org.openqa.jetty.util.MultiException;
-import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.internal.BuildInfo;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.server.DefaultDriverSessions;
@@ -38,11 +38,13 @@ import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.LoggingOptions;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
-import org.openqa.selenium.server.cli.RemoteControlLauncher;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
+import org.openqa.selenium.server.browserlaunchers.Sleeper;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
 import org.openqa.selenium.server.htmlrunner.SeleniumHTMLRunnerResultsHandler;
 import org.openqa.selenium.server.htmlrunner.SingleTestSuiteResourceHandler;
+import org.openqa.grid.shared.GridNodeServer;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -53,36 +55,34 @@ import java.io.InputStreamReader;
 import java.net.BindException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+
+import javax.servlet.Servlet;
 
 /**
  * Provides a server that can launch/terminate browsers and can receive remote Selenium commands
  * over HTTP and send them on to the browser.
- * <p/>
  * <p>
  * To run Selenium Server, run:
- * <p/>
  * <blockquote>
  * <code>java -jar selenium-server-1.0-SNAPSHOT.jar [-port 4444] [-interactive] [-timeout 1800]</code>
  * </blockquote>
- * <p/>
  * <p>
  * Where <code>-port</code> specifies the port you wish to run the Server on (default is 4444).
- * <p/>
  * <p>
  * Where <code>-timeout</code> specifies the number of seconds that you allow data to wait all in
  * the communications queues before an exception is thrown.
- * <p/>
  * <p>
  * Using the <code>-interactive</code> flag will start the server in Interactive mode. In this mode
- * you can type remote Selenium commands on the command line (e.g. cmd=open&1=http://www.yahoo.com).
+ * you can type remote Selenium commands on the command line (e.g. cmd=open&amp;1=http://www.yahoo.com).
  * You may also interactively specify commands to run on a particular "browser session" (see below)
- * like this: <blockquote><code>cmd=open&1=http://www.yahoo.com&sessionId=1234</code></blockquote>
- * </p>
- * <p/>
+ * like this: <blockquote><code>cmd=open&amp;1=http://www.yahoo.com&amp;sessionId=1234</code></blockquote>
  * <p>
  * The server accepts three types of HTTP requests on its port:
- * <p/>
  * <ol>
  * <li><b>Client-Configured Proxy Requests</b>: By configuring your browser to use the Selenium
  * Server as an HTTP proxy, you can use the Selenium Server as a web proxy. This allows the server
@@ -90,12 +90,12 @@ import java.util.Properties;
  * <li><b>Remote Browser Commands</b>: If the browser goes to
  * "/selenium-server/RemoteRunner.html?sessionId=1234" on any website via the Client-Configured
  * Proxy, it will ask the Selenium Server for work to do, like this: <blockquote>
- * <code>http://www.yahoo.com/selenium-server/driver/?seleniumStart=true&sessionId=1234</code>
+ * <code>http://www.yahoo.com/selenium-server/driver/?seleniumStart=true&amp;sessionId=1234</code>
  * </blockquote> The driver will then reply with a command to run in the body of the HTTP response,
  * e.g. "|open|http://www.yahoo.com||". Once the browser is done with this request, the browser will
  * issue a new request for more work, this time reporting the results of the previous
  * command:<blockquote>
- * <code>http://www.yahoo.com/selenium-server/driver/?commandResult=OK&sessionId=1234</code>
+ * <code>http://www.yahoo.com/selenium-server/driver/?commandResult=OK&amp;sessionId=1234</code>
  * </blockquote> The action list is listed in selenium-api.js. Normal actions like "doClick" will
  * return "OK" if clicking was successful, or some other error string if there was an error.
  * Assertions like assertTextPresent or verifyTextPresent will return "PASSED" if the assertion was
@@ -103,7 +103,7 @@ import java.util.Properties;
  * the result of the get command. "getAllLinks" will return a comma-delimited list of links.</li>
  * <li><b>Driver Commands</b>: Clients may send commands to the Selenium Server over HTTP. Command
  * requests should look like this:<blockquote>
- * <code>http://localhost:4444/selenium-server/driver/?commandRequest=|open|http://www.yahoo.com||&sessionId=1234</code>
+ * <code>http://localhost:4444/selenium-server/driver/?commandRequest=|open|http://www.yahoo.com||&amp;sessionId=1234</code>
  * </blockquote> The Selenium Server will not respond to the HTTP request until the browser has
  * finished performing the requested command; when it does, it will reply with the result of the
  * command (e.g. "OK" or "PASSED") in the body of the HTTP response. (Note that
@@ -123,7 +123,6 @@ import java.util.Properties;
  * "/selenium-server/RemoteRunner.html?sessionId=###" where "###" is the sessionId number. Only
  * commands that are associated with the specified sessionId will be run by this browser.
  * </p>
- * <p/>
  * <p>
  * <i>browserString</i> may be any one of the following:
  * <ul>
@@ -171,32 +170,29 @@ import java.util.Properties;
  * </ul>
  * <p>
  * Example:<blockquote>
- * <code>cmd=getNewBrowserSession&1=*firefox&2=http://www.google.com
- * <br/>Got result: 1140738083345
- * <br/>cmd=open&1=http://www.google.com&sessionId=1140738083345
- * <br/>Got result: OK
- * <br/>cmd=type&1=q&2=hello world&sessionId=1140738083345
- * <br/>Got result: OK
- * <br/>cmd=testComplete&sessionId=1140738083345
- * <br/>Got result: OK
+ * <code>cmd=getNewBrowserSession&amp;1=*firefox&amp;2=http://www.google.com
+ * <br>Got result: 1140738083345
+ * <br>cmd=open&amp;1=http://www.google.com&amp;sessionId=1140738083345
+ * <br>Got result: OK
+ * <br>cmd=type&amp;1=q&amp;2=hello world&amp;sessionId=1140738083345
+ * <br>Got result: OK
+ * <br>cmd=testComplete&amp;sessionId=1140738083345
+ * <br>Got result: OK
  * </code></blockquote>
- * </p>
- * <p/>
- * <h4>The "null" session</h4>
- * <p/>
+ * <h1>The "null" session</h1>
  * <p>
  * If you open a browser manually and do not specify a session ID, it will look for commands using
  * the "null" session. You may then similarly send commands to this browser by not specifying a
  * sessionId when issuing commands.
- * </p>
  *
  * @author plightbo
  */
-public class SeleniumServer implements SslCertificateGenerator {
+public class SeleniumServer implements SslCertificateGenerator, GridNodeServer {
 
   private Log LOGGER;
 
   private Server server;
+  private BrowserLauncherFactory browserLauncherFactory;
   private SeleniumDriverResourceHandler driver;
   private SeleniumHTMLRunnerResultsHandler postResultsHandler;
   private StaticContentHandler staticContentHandler;
@@ -205,7 +201,6 @@ public class SeleniumServer implements SslCertificateGenerator {
   private static final NetworkUtils networkUtils = new NetworkUtils();
 
   private ProxyHandler proxyHandler;
-
 
   public static int DEFAULT_JETTY_THREADS = 512;
   // Number of jetty threads for the server
@@ -234,7 +229,7 @@ public class SeleniumServer implements SslCertificateGenerator {
     final RemoteControlConfiguration configuration;
     final SeleniumServer seleniumProxy;
 
-    configuration = RemoteControlLauncher.parseLauncherOptions(args);
+    configuration = parseLauncherOptions(args);
     checkArgsSanity(configuration);
 
     System.setProperty("org.openqa.jetty.http.HttpRequest.maxFormContentSize", "0"); // default max
@@ -243,10 +238,35 @@ public class SeleniumServer implements SslCertificateGenerator {
                                                                                      // infinite
     seleniumProxy = new SeleniumServer(slowResourceProperty(), configuration);
     seleniumProxy.boot();
+
+    // todo: This is still buggy because it should resolve to external port
+    seleniumProxy.LOGGER.info(
+      format("RemoteWebDriver instances should connect to: http://%s:%d/wd/hub",
+             networkUtils.getPrivateLocalAddress(), seleniumProxy.getPort()));
   }
 
   public SeleniumServer() throws Exception {
     this(slowResourceProperty(), new RemoteControlConfiguration());
+  }
+
+  public SeleniumServer(Map<String, Object> configurationAsMap) throws Exception {
+    this(slowResourceProperty(), mapToRemoteControlConfiguration(configurationAsMap));
+    String servletsStr = (String) configurationAsMap.get("servlets");
+    if (servletsStr != null) {
+      registerExtraServlets(Arrays.asList(servletsStr.split(",")));
+    }
+  }
+
+  private static RemoteControlConfiguration mapToRemoteControlConfiguration(Map<String, Object> configurationAsMap) {
+    List<String> params = new ArrayList<>();
+    for (String key : configurationAsMap.keySet()) {
+      params.add("-" + key);
+
+      if (!configurationAsMap.get(key).toString().trim().isEmpty()) {
+        params.add("" + configurationAsMap.get(key));
+      }
+    }
+    return parseLauncherOptions(params.toArray(new String[params.size()]));
   }
 
   public SeleniumServer(RemoteControlConfiguration configuration) throws Exception {
@@ -271,6 +291,7 @@ public class SeleniumServer implements SslCertificateGenerator {
     this.configuration = configuration;
     debugMode = configuration.isDebugMode();
     jettyThreads = configuration.getJettyThreads();
+    System.setProperty("org.openqa.jetty.http.HttpRequest.maxFormContentSize", "0");
     LOGGER = configureLogging(configuration.getLoggingOptions(), debugMode);
     logStartupInfo();
     sanitizeProxyConfiguration();
@@ -338,8 +359,8 @@ public class SeleniumServer implements SslCertificateGenerator {
     String coreRevision = p.getProperty("selenium.core.revision");
     BuildInfo info = new BuildInfo();
     LOGGER.info(String.format(
-        "v%s%s, with Core v%s%s. Built from revision %s",
-        rcVersion, rcRevision, coreVersion, coreRevision, info.getBuildRevision()));
+      "v%s%s, with Core v%s%s. Built from revision %s",
+      rcVersion, rcRevision, coreVersion, coreRevision, info.getBuildRevision()));
   }
 
 
@@ -371,7 +392,8 @@ public class SeleniumServer implements SslCertificateGenerator {
     // Associate the SeleniumDriverResourceHandler with the /selenium-server/driver context
     HttpContext driverContext = new HttpContext();
     driverContext.setContextPath("/selenium-server/driver");
-    driver = new SeleniumDriverResourceHandler(this, webdriverSessions);
+    browserLauncherFactory = new BrowserLauncherFactory(webdriverSessions);
+    driver = new SeleniumDriverResourceHandler(this, browserLauncherFactory);
     context.addHandler(driver);
     return driverContext;
   }
@@ -396,10 +418,6 @@ public class SeleniumServer implements SslCertificateGenerator {
     ServletHandler handler = new ServletHandler();
     handler.addServlet("WebDriver remote server", "/hub/*", DriverServlet.class.getName());
     webdriverContext.addHandler(handler);
-
-    LOGGER.info(format("RemoteWebDriver instances should connect to: http://%s:%d/wd/hub",
-        networkUtils.getPrivateLocalAddress(), getPort())); // todo: This is still buggy because it
-                                                            // should resolve to external port
 
     return webdriverContext;
   }
@@ -562,6 +580,10 @@ public class SeleniumServer implements SslCertificateGenerator {
     return configuration;
   }
 
+  public BrowserLauncherFactory getBrowserLauncherFactory() {
+    return browserLauncherFactory;
+  }
+
   public int getPort() {
     return configuration.getPort();
   }
@@ -573,9 +595,42 @@ public class SeleniumServer implements SslCertificateGenerator {
    *
    * @return the internal Jetty server, pre-configured with the /selenium-server context as well as
    *         the proxy server on /
+   * @deprecated
    */
+  @Deprecated
   public Server getServer() {
     return server;
+  }
+
+  public void registerExtraServlets(List<String> servlets) {
+    HttpContext extra = new HttpContext();
+
+    extra.setContextPath("/extra");
+    ServletHandler handler = new ServletHandler();
+    handler.addServlet("/resources/*", ResourceServlet.class.getName());
+
+    for (String s : servlets) {
+      Class<? extends Servlet> servletClass = createServlet(s);
+      if (servletClass != null) {
+        String path = "/" + servletClass.getSimpleName() + "/*";
+        String clazz = servletClass.getCanonicalName();
+        handler.addServlet(path, clazz);
+        LOGGER.info("started extra node servlet visible at : http://xxx:"
+                    + configuration.getPort() + "/extra" + path);
+      }
+    }
+    extra.addHandler(handler);
+    server.addContext(extra);
+  }
+
+  private Class<? extends Servlet> createServlet(String className) {
+    try {
+      return Class.forName(className).asSubclass(Servlet.class);
+    } catch (ClassNotFoundException e) {
+      LOGGER.error(
+        "The specified class : " + className + " cannot be instantiated " + e.getMessage());
+    }
+    return null;
   }
 
   public InputStream getResourceAsStream(String path) throws IOException {
@@ -584,6 +639,7 @@ public class SeleniumServer implements SslCertificateGenerator {
 
   /**
    * Registers a running browser session
+   * @param sessionInfo session info
    */
   public void registerBrowserSession(BrowserSessionInfo sessionInfo) {
     driver.registerBrowserSession(sessionInfo);
@@ -591,6 +647,7 @@ public class SeleniumServer implements SslCertificateGenerator {
 
   /**
    * De-registers a previously registered running browser session
+   * @param sessionInfo session info
    */
   public void deregisterBrowserSession(BrowserSessionInfo sessionInfo) {
     driver.deregisterBrowserSession(sessionInfo);
@@ -611,12 +668,12 @@ public class SeleniumServer implements SslCertificateGenerator {
       String suiteFilePath = getRequiredSystemProperty("htmlSuite.suiteFilePath");
       File suiteFile = new File(suiteFilePath).getCanonicalFile();
       if (!suiteFile.exists()) {
-        RemoteControlLauncher.usage("Can't find HTML Suite file:" + suiteFile);
+        usage("Can't find HTML Suite file:" + suiteFile);
         System.exit(1);
       }
       String fileName = suiteFile.getName();
       if (! (fileName.endsWith(".html") || fileName.endsWith(".htm") || fileName.endsWith(".xhtml"))) {
-        RemoteControlLauncher.usage("Suite file must have extension .html or .htm or .xhtml");
+        usage("Suite file must have extension .html or .htm or .xhtml");
         System.exit(1);
       }
       addNewStaticContent(suiteFile.getParentFile());
@@ -626,13 +683,13 @@ public class SeleniumServer implements SslCertificateGenerator {
       File resultFile = new File(resultFilePath);
       File resultDir = resultFile.getParentFile();
       if ((resultDir != null) && !resultDir.exists() && !resultDir.mkdirs()) {
-        RemoteControlLauncher.usage("can't create directory for result file " + resultFilePath);
+        usage("can't create directory for result file " + resultFilePath);
         System.exit(1);
       }
       resultFile.createNewFile();
 
       if (!resultFile.canWrite()) {
-        RemoteControlLauncher.usage("can't write to result file " + resultFilePath);
+        usage("can't write to result file " + resultFilePath);
         System.exit(1);
       }
 
@@ -690,11 +747,13 @@ public class SeleniumServer implements SslCertificateGenerator {
               userInput);
       Thread t = new Thread(new Runnable() { // Thread safety reviewed
         public void run() {
+
+          InputStream is = null;
           try {
             LOGGER.info("---> Requesting " + url.toString());
             URLConnection conn = url.openConnection();
             conn.connect();
-            InputStream is = conn.getInputStream();
+            is = conn.getInputStream();
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             byte[] buffer = new byte[2048];
             int length;
@@ -714,6 +773,17 @@ public class SeleniumServer implements SslCertificateGenerator {
             System.err.println(e.getMessage());
             if (debugMode) {
               e.printStackTrace();
+            }
+          } finally {
+            if (is != null) {
+              try {
+                is.close();
+              } catch (IOException e) {
+                System.err.println(e.getMessage());
+                if (debugMode) {
+                  e.printStackTrace();
+                }
+              }
             }
           }
         }
@@ -742,8 +812,8 @@ public class SeleniumServer implements SslCertificateGenerator {
     if (!configuration.getProxyInjectionModeArg() &&
         (InjectionHelper.userContentTransformationsExist() ||
         InjectionHelper.userJsInjectionsExist())) {
-      RemoteControlLauncher.usage("-userJsInjection and -userContentTransformation are only " +
-          "valid in combination with -proxyInjectionMode");
+      usage("-userJsInjection and -userContentTransformation are only " +
+            "valid in combination with -proxyInjectionMode");
       System.exit(1);
     }
   }
@@ -785,10 +855,287 @@ public class SeleniumServer implements SslCertificateGenerator {
   private String getRequiredSystemProperty(String name) {
     String value = System.getProperty(name);
     if (value == null) {
-      RemoteControlLauncher.usage("expected property " + name + " to be defined");
+      usage("expected property " + name + " to be defined");
       System.exit(1);
     }
     return value;
+  }
+
+
+  public static void usage(String msg) {
+    if (msg != null) {
+      System.out.println(msg);
+    }
+    String INDENT = "  ";
+    String INDENT2X = INDENT + INDENT;
+    printWrappedLine("", "Usage: java -jar selenium-server.jar [-interactive] [options]\n");
+    printWrappedLine(INDENT,
+                     "-port <nnnn>: the port number the selenium server should use (default 4444)");
+    printWrappedLine(INDENT,
+                     "-timeout <nnnn>: an integer number of seconds we should allow a client to be idle");
+    printWrappedLine(INDENT,
+                     "-browserTimeout <nnnn>: an integer number of seconds a browser is allowed to hang");
+    printWrappedLine(INDENT,
+                     "-interactive: puts you into interactive mode.  See the tutorial for more details");
+    printWrappedLine(
+      INDENT,
+      "-singleWindow: puts you into a mode where the test web site executes in a frame. This mode should only be selected if the application under test does not use frames.");
+    printWrappedLine(
+      INDENT,
+      "-profilesLocation: Specifies the directory that holds the profiles that java clients can use to start up selenium.  Currently supported for Firefox only.");
+    printWrappedLine(
+      INDENT,
+      "-forcedBrowserMode <browser>: sets the browser mode to a single argument (e.g. \"*iexplore\") for all sessions, no matter what is passed to getNewBrowserSession");
+
+
+    printWrappedLine(
+      INDENT,
+      "-forcedBrowserModeRestOfLine <browser>: sets the browser mode to all the remaining tokens on the line (e.g. \"*custom /some/random/place/iexplore.exe\") for all sessions, no matter what is passed to getNewBrowserSession");
+    printWrappedLine(INDENT,
+                     "-userExtensions <file>: indicates a JavaScript file that will be loaded into selenium");
+    printWrappedLine(INDENT,
+                     "-browserSessionReuse: stops re-initialization and spawning of the browser between tests");
+    printWrappedLine(
+      INDENT,
+      "-avoidProxy: By default, we proxy every browser request; set this flag to make the browser use our proxy only for URLs containing '/selenium-server'");
+    printWrappedLine(
+      INDENT,
+      "-firefoxProfileTemplate <dir>: normally, we generate a fresh empty Firefox profile every time we launch.  You can specify a directory to make us copy your profile directory instead.");
+    printWrappedLine(INDENT,
+                     "-debug: puts you into debug mode, with more trace information and diagnostics on the console");
+    printWrappedLine(
+      INDENT,
+      "-browserSideLog: enables logging on the browser side; logging messages will be transmitted to the server.  This can affect performance.");
+    printWrappedLine(
+      INDENT,
+      "-ensureCleanSession: If the browser does not have user profiles, make sure every new session has no artifacts from previous sessions.  For example, enabling this option will cause all user cookies to be archived before launching IE, and restored after IE is closed.");
+    printWrappedLine(
+      INDENT,
+      "-trustAllSSLCertificates: Forces the Selenium proxy to trust all SSL certificates.  This doesn't work in browsers that don't use the Selenium proxy.");
+    printWrappedLine(INDENT,
+                     "-log <logFileName>: writes lots of debug information out to a log file and disables logging to console");
+    printWrappedLine(INDENT,
+                     "-logLongForm: writes information out to console in long format (for debugging purpose)");
+    printWrappedLine(
+      INDENT,
+      "-htmlSuite <browser> <startURL> <suiteFile> <resultFile>: Run a single HTML Selenese (Selenium Core) suite and then exit immediately, using the specified browser (e.g. \"*firefox\") on the specified URL (e.g. \"http://www.google.com\").  You need to specify the absolute path to the HTML test suite as well as the path to the HTML results file we'll generate.");
+    printWrappedLine(
+      INDENT,
+      "-proxyInjectionMode: puts you into proxy injection mode, a mode where the selenium server acts as a proxy server "
+      +
+      "for all content going to the test application.  Under this mode, multiple domains can be visited, and the "
+      +
+      "following additional flags are supported:\n");
+    printWrappedLine(
+      INDENT2X,
+      "-dontInjectRegex <regex>: an optional regular expression that proxy injection mode can use to know when to bypss injection");
+    printWrappedLine(INDENT2X,
+                     "-userJsInjection <file>: specifies a JavaScript file which will then be injected into all pages");
+    printWrappedLine(
+      INDENT2X,
+      "-userContentTransformation <regex> <replacement>: a regular expression which is matched "
+      +
+      "against all test HTML content; the second is a string which will replace matches.  These flags can be used any "
+      +
+      "number of times.  A simple example of how this could be useful: if you add \"-userContentTransformation https http\" "
+      +
+      "then all \"https\" strings in the HTML of the test application will be changed to be \"http\".");
+    printWrappedLine(
+      "",
+      "\nThis synopsis lists options available in standalone role only. To get help on the options available for other roles run the server with -help option and the corresponding -role option value.");
+  }
+
+  public static RemoteControlConfiguration parseLauncherOptions(String[] args) {
+    RemoteControlConfiguration configuration;
+    configuration = new RemoteControlConfiguration();
+    configuration.setPort(RemoteControlConfiguration.getDefaultPort());
+    for (int i = 0; i < args.length; i++) {
+      String arg = args[i];
+      if ("-h".equalsIgnoreCase(arg) || "-help".equalsIgnoreCase(arg)) {
+        usage(null);
+        System.exit(1);
+      } else if ("-defaultBrowserString".equalsIgnoreCase(arg)) {
+        usage("-defaultBrowserString has been renamed -forcedBrowserMode");
+      } else if ("-forcedBrowserMode".equalsIgnoreCase(arg)) {
+        configuration.setForcedBrowserMode(getArg(args, ++i));
+        if (i < args.length) {
+          System.err
+            .println("Warning: -forcedBrowserMode no longer consumes all remaining arguments on line (use -forcedBrowserModeRestOfLine for that)");
+        }
+      } else if ("-forcedBrowserModeRestOfLine".equalsIgnoreCase(arg)) {
+        for (i++; i < args.length; i++) {
+          if (null == configuration.getForcedBrowserMode()) {
+            configuration.setForcedBrowserMode("");
+          } else {
+            configuration.setForcedBrowserMode(configuration.getForcedBrowserMode() + " ");
+          }
+          configuration.setForcedBrowserMode(configuration.getForcedBrowserMode() + args[i]);
+        }
+      } else if ("-log".equalsIgnoreCase(arg)) {
+        configuration.setLogOutFileName(getArg(args, ++i));
+      } else if ("-captureLogsOnQuit".equalsIgnoreCase(arg)) {
+        configuration.setCaptureLogsOnQuit(true);
+      } else if ("-port".equalsIgnoreCase(arg)) {
+        configuration.setPort(Integer.parseInt(getArg(args, ++i)));
+      } else if ("-multiWindow".equalsIgnoreCase(arg)) {
+        configuration.setSingleWindow(!true);
+      } else if ("-singleWindow".equalsIgnoreCase(arg)) {
+        configuration.setSingleWindow(!false);
+      } else if ("-profilesLocation".equalsIgnoreCase(arg)) {
+        File profilesLocation = new File(getArg(args, ++i));
+        if (!profilesLocation.exists()) {
+          System.err.println("Specified profile location directory does not exist: " +
+                             profilesLocation);
+          System.exit(1);
+        }
+        configuration.setProfilesLocation(profilesLocation);
+      } else if ("-avoidProxy".equalsIgnoreCase(arg)) {
+        configuration.setAvoidProxy(true);
+      } else if ("-proxyInjectionMode".equalsIgnoreCase(arg)) {
+        configuration.setProxyInjectionModeArg(true);
+        // proxyInjectionMode implies singleWindow mode
+        configuration.setSingleWindow(!false);
+      } else if ("-portDriversShouldContact".equalsIgnoreCase(arg)) {
+        // to facilitate tcptrace interception of interaction between
+        // injected js and the selenium server
+        configuration.setPortDriversShouldContact(Integer.parseInt(getArg(args, ++i)));
+      } else if ("-noBrowserSessionReuse".equalsIgnoreCase(arg)) {
+        configuration.setReuseBrowserSessions(false);
+      } else if ("-browserSessionReuse".equalsIgnoreCase(arg)) {
+        configuration.setReuseBrowserSessions(true);
+      } else if ("-firefoxProfileTemplate".equalsIgnoreCase(arg)) {
+        configuration.setFirefoxProfileTemplate(new File(getArg(args, ++i)));
+        if (!configuration.getFirefoxProfileTemplate().exists()) {
+          System.err.println("Firefox profile template doesn't exist: " +
+                             configuration.getFirefoxProfileTemplate().getAbsolutePath());
+          System.exit(1);
+        }
+      } else if ("-ensureCleanSession".equalsIgnoreCase(arg)) {
+        configuration.setEnsureCleanSession(true);
+      } else if ("-dontInjectRegex".equalsIgnoreCase(arg)) {
+        configuration.setDontInjectRegex(getArg(args, ++i));
+      } else if ("-browserSideLog".equalsIgnoreCase(arg)) {
+        configuration.setBrowserSideLogEnabled(true);
+      } else if ("-debug".equalsIgnoreCase(arg)) {
+        configuration.setDebugMode(true);
+      } else if ("-debugURL".equalsIgnoreCase(arg)) {
+        configuration.setDebugURL(getArg(args, ++i));
+      } else if ("-timeout".equalsIgnoreCase(arg)) {
+        configuration.setTimeoutInSeconds(Integer.parseInt(getArg(args, ++i)));
+      } else if ("-jettyThreads".equalsIgnoreCase(arg)) {
+        int jettyThreadsCount = Integer.parseInt(getArg(args, ++i));
+
+        // Set the number of jetty threads before we construct the instance
+        configuration.setJettyThreads(jettyThreadsCount);
+      } else if ("-trustAllSSLCertificates".equalsIgnoreCase(arg)) {
+        configuration.setTrustAllSSLCertificates(true);
+      } else if ("-userJsInjection".equalsIgnoreCase(arg)) {
+        configuration.setUserJSInjection(true);
+        if (!InjectionHelper.addUserJsInjectionFile(getArg(args, ++i))) {
+          usage(null);
+          System.exit(1);
+        }
+      } else if ("-userContentTransformation".equalsIgnoreCase(arg)) {
+        if (!InjectionHelper.addUserContentTransformation(getArg(args, ++i), getArg(args, ++i))) {
+          usage(null);
+          System.exit(1);
+        }
+      } else if ("-userExtensions".equalsIgnoreCase(arg)) {
+        configuration.setUserExtensions(new File(getArg(args, ++i)));
+        if (!configuration.getUserExtensions().exists()) {
+          System.err.println("User Extensions file doesn't exist: " +
+                             configuration.getUserExtensions().getAbsolutePath());
+          System.exit(1);
+        }
+        if (!"user-extensions.js".equalsIgnoreCase(configuration.getUserExtensions().getName())) {
+          System.err.println("User extensions file MUST be called \"user-extensions.js\": " +
+                             configuration.getUserExtensions().getAbsolutePath());
+          System.exit(1);
+        }
+      } else if ("-selfTest".equalsIgnoreCase(arg)) {
+        configuration.setSelfTest(true);
+        configuration.setSelfTestDir(new File(getArg(args, ++i)));
+        configuration.getSelfTestDir().mkdirs();
+      } else if ("-htmlSuite".equalsIgnoreCase(arg)) {
+        try {
+          System.setProperty("htmlSuite.browserString", args[++i]);
+          System.setProperty("htmlSuite.startURL", args[++i]);
+          System.setProperty("htmlSuite.suiteFilePath", args[++i]);
+          System.setProperty("htmlSuite.resultFilePath", args[++i]);
+        } catch (ArrayIndexOutOfBoundsException e) {
+          System.err.println("Not enough command line arguments for -htmlSuite");
+          System.err.println("-htmlSuite requires you to specify:");
+          System.err.println("* browserString (e.g. \"*firefox\")");
+          System.err.println("* startURL (e.g. \"http://www.google.com\")");
+          System.err.println("* suiteFile (e.g. \"c:\\absolute\\path\\to\\my\\HTMLSuite.html\")");
+          System.err.println("* resultFile (e.g. \"c:\\absolute\\path\\to\\my\\results.html\")");
+          System.exit(1);
+        }
+        configuration.setHTMLSuite(true);
+      } else if ("-interactive".equalsIgnoreCase(arg)) {
+        configuration.setTimeoutInSeconds(Integer.MAX_VALUE);
+        configuration.setInteractive(true);
+      } else if ("-honor-system-proxy".equals(arg)) {
+        configuration.setHonorSystemProxy(true);
+      } else if (arg.startsWith("-D")) {
+        setSystemProperty(arg);
+      } /*
+         * else { usage("unrecognized argument " + arg); System.exit(1); }
+         */
+    }
+    if (configuration.userJSInjection() && !configuration.getProxyInjectionModeArg()) {
+      System.err.println("User js injection can only be used w/ -proxyInjectionMode");
+      System.exit(1);
+    }
+    if (configuration.getProfilesLocation() != null &&
+        configuration.getFirefoxProfileTemplate() != null) {
+      System.err.println("Cannot specify both a profileDirectory and a firefoxProfileTemplate");
+      System.exit(1);
+    }
+
+    if (null == configuration.getForcedBrowserMode()) {
+      if (null != System.getProperty("selenium.defaultBrowserString")) {
+        System.err
+          .println("The selenium.defaultBrowserString property is no longer supported; use selenium.forcedBrowserMode instead.");
+        System.exit(-1);
+      }
+      configuration.setForcedBrowserMode(System.getProperty("selenium.forcedBrowserMode"));
+    }
+
+    if (!configuration.getProxyInjectionModeArg() &&
+        System.getProperty("selenium.proxyInjectionMode") != null) {
+      configuration.setProxyInjectionModeArg("true".equals(System
+                                                             .getProperty("selenium.proxyInjectionMode")));
+    }
+    if (!configuration.isBrowserSideLogEnabled() &&
+        System.getProperty("selenium.browserSideLog") != null) {
+      configuration.setBrowserSideLogEnabled("true".equals(System
+                                                             .getProperty("selenium.browserSideLog")));
+    }
+
+    if (!configuration.isDebugMode() && System.getProperty("selenium.debugMode") != null) {
+      configuration.setDebugMode("true".equals(System.getProperty("selenium.debugMode")));
+    }
+    return configuration;
+  }
+
+  private static String getArg(String[] args, int i) {
+    if (i >= args.length) {
+      usage("expected at least one more argument");
+      System.exit(-1);
+    }
+    return args[i];
+  }
+
+  private static void setSystemProperty(String arg) {
+    if (arg.indexOf('=') == -1) {
+      usage("poorly formatted Java property setting (I expect to see '=') " + arg);
+      System.exit(1);
+    }
+    String property = arg.replaceFirst("-D", "").replaceFirst("=.*", "");
+    String value = arg.replaceFirst("[^=]*=", "");
+    System.err.println("Setting system property " + property + " to " + value);
+    System.setProperty(property, value);
   }
 
 }

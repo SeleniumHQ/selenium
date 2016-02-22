@@ -1,19 +1,19 @@
-/*
- * Copyright 2011 Software Freedom Conservancy
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 // Although it's generally better web development practice not to use
 // browser-detection (feature detection is better), the subtle browser
@@ -32,12 +32,6 @@ var BrowserVersion = function() {
         this.isVista = true;
     }
 
-    if (window.opera != null) {
-        this.browser = BrowserVersion.OPERA;
-        this.isOpera = true;
-        return;
-    }
-    
     var _getQueryParameter = function(searchKey) {
         var str = location.search.substr(1);
         if (str == null) return null;
@@ -51,9 +45,9 @@ var BrowserVersion = function() {
         }
         return null;
     };
-    
+
     var self = this;
-    
+
     var checkChrome = function() {
         var loc = window.document.location.href;
         try {
@@ -72,11 +66,11 @@ var BrowserVersion = function() {
                 self.isChrome = false;
             }
         }
-        
-        
+
+
     };
-    
-    
+
+
 
     if (this.name == "Microsoft Internet Explorer") {
         this.browser = BrowserVersion.IE;
@@ -154,7 +148,6 @@ var BrowserVersion = function() {
     this.browser = BrowserVersion.UNKNOWN;
 };
 
-BrowserVersion.OPERA = "Opera";
 BrowserVersion.IE = "IE";
 BrowserVersion.KONQUEROR = "Konqueror";
 BrowserVersion.SAFARI = "Safari";

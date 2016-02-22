@@ -1,9 +1,9 @@
 ﻿// <copyright file="DriverCommand.cs" company="WebDriver Committers">
-// Copyright 2007-2011 WebDriver committers
-// Copyright 2007-2011 Google Inc.
-// Portions copyright 2011 Software Freedom Conservancy
-//
-// Licensed under the Apache License = string.Empty; Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License = string.Empty; Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -89,8 +89,13 @@ namespace OpenQA.Selenium.Remote
         public static readonly string GetAllCookies = "getCookies";
 
         /// <summary>
+        /// Represents getting cookie command
+        /// </summary>
+        public static readonly string GetCookie = "getCookie";
+
+        /// <summary>
         /// Represents deleting a cookie command
-        /// </summary>        
+        /// </summary>
         public static readonly string DeleteCookie = "deleteCookie";
 
         /// <summary>
@@ -139,6 +144,11 @@ namespace OpenQA.Selenium.Remote
         public static readonly string SendKeysToElement = "sendKeysToElement";
 
         /// <summary>
+        /// Represents TapElement command
+        /// </summary>
+        public static readonly string TapElement = "tapElement";
+
+        /// <summary>
         /// Represents SubmitElement command
         /// </summary>
         public static readonly string SubmitElement = "submitElement";
@@ -162,6 +172,11 @@ namespace OpenQA.Selenium.Remote
         /// Represents SwitchToFrame command
         /// </summary>
         public static readonly string SwitchToFrame = "switchToFrame";
+
+        /// <summary>
+        /// Represents SwitchToParentFrame command
+        /// </summary>
+        public static readonly string SwitchToParentFrame = "switchToParentFrame";
 
         /// <summary>
         /// Represents GetActiveElement command
@@ -234,9 +249,19 @@ namespace OpenQA.Selenium.Remote
         public static readonly string GetElementSize = "getElementSize";
 
         /// <summary>
+        /// Represents GetElementRect command
+        /// </summary>
+        public static readonly string GetElementRect = "getElementRect";
+
+        /// <summary>
         /// Represents GetElementAttribute command
         /// </summary>
         public static readonly string GetElementAttribute = "getElementAttribute";
+
+        /// <summary>
+        /// Represents GetElementProperty command
+        /// </summary>
+        public static readonly string GetElementProperty = "getElementProperty";
 
         /// <summary>
         /// Represents GetElementValueOfCSSProperty command
@@ -252,6 +277,11 @@ namespace OpenQA.Selenium.Remote
         /// Represents Screenshot command
         /// </summary>
         public static readonly string Screenshot = "screenshot";
+
+        /// <summary>
+        /// Represents the ElementScreenshot command
+        /// </summary>
+        public static readonly string ElementScreenshot = "elementScreenshot";
 
         /// <summary>
         /// Represents GetOrientation command
@@ -289,6 +319,11 @@ namespace OpenQA.Selenium.Remote
         public static readonly string MaximizeWindow = "maximizeWindow";
 
         /// <summary>
+        /// Represents FullScreenWindow command
+        /// </summary>
+        public static readonly string FullScreenWindow = "fullScreenWindow";
+
+        /// <summary>
         /// Represents the DismissAlert command
         /// </summary>
         public static readonly string DismissAlert = "dismissAlert";
@@ -309,6 +344,11 @@ namespace OpenQA.Selenium.Remote
         public static readonly string SetAlertValue = "setAlertValue";
 
         /// <summary>
+        /// Represents the Authenticate command
+        /// </summary>
+        public static readonly string SetAlertCredentials = "setAlertCredentials";
+
+        /// <summary>
         /// Represents the ImplicitlyWait command
         /// </summary>
         public static readonly string ImplicitlyWait = "implicitlyWait";
@@ -322,6 +362,11 @@ namespace OpenQA.Selenium.Remote
         /// Represents the SetTimeout command
         /// </summary>
         public static readonly string SetTimeout = "setTimeout";
+
+        /// <summary>
+        /// Represents the Actions command.
+        /// </summary>
+        public static readonly string Actions = "actions";
 
         /// <summary>
         /// Represents the MouseClick command.
@@ -397,5 +442,100 @@ namespace OpenQA.Selenium.Remote
         /// Represents the TouchFlick command.
         /// </summary>
         public static readonly string TouchFlick = "touchFlick";
+
+        /// <summary>
+        /// Represents the GetLocation command.
+        /// </summary>
+        public static readonly string GetLocation = "getLocation";
+
+        /// <summary>
+        /// Represents the SetLocation command.
+        /// </summary>
+        public static readonly string SetLocation = "setLocation";
+
+        /// <summary>
+        /// Represents the GetAppCache command.
+        /// </summary>
+        public static readonly string GetAppCache = "getAppCache";
+
+        /// <summary>
+        /// Represents the application cache GetStatus command.
+        /// </summary>
+        public static readonly string GetAppCacheStatus = "getStatus";
+
+        /// <summary>
+        /// Represents the ClearAppCache command.
+        /// </summary>
+        public static readonly string ClearAppCache = "clearAppCache";
+
+        /// <summary>
+        /// Represents the GetLocalStorageItem command.
+        /// </summary>
+        public static readonly string GetLocalStorageItem = "getLocalStorageItem";
+
+        /// <summary>
+        /// Represents the GetLocalStorageKeys command.
+        /// </summary>
+        public static readonly string GetLocalStorageKeys = "getLocalStorageKeys";
+
+        /// <summary>
+        /// Represents the SetLocalStorageItem command.
+        /// </summary>
+        public static readonly string SetLocalStorageItem = "setLocalStorageItem";
+
+        /// <summary>
+        /// Represents the RemoveLocalStorageItem command.
+        /// </summary>
+        public static readonly string RemoveLocalStorageItem = "removeLocalStorageItem";
+
+        /// <summary>
+        /// Represents the ClearLocalStorage command.
+        /// </summary>
+        public static readonly string ClearLocalStorage = "clearLocalStorage";
+
+        /// <summary>
+        /// Represents the GetLocalStorageSize command.
+        /// </summary>
+        public static readonly string GetLocalStorageSize = "getLocalStorageSize";
+
+        /// <summary>
+        /// Represents the GetSessionStorageItem command.
+        /// </summary>
+        public static readonly string GetSessionStorageItem = "getSessionStorageItem";
+
+        /// <summary>
+        /// Represents the GetSessionStorageKeys command.
+        /// </summary>
+        public static readonly string GetSessionStorageKeys = "getSessionStorageKeys";
+
+        /// <summary>
+        /// Represents the SetSessionStorageItem command.
+        /// </summary>
+        public static readonly string SetSessionStorageItem = "setSessionStorageItem";
+
+        /// <summary>
+        /// Represents the RemoveSessionStorageItem command.
+        /// </summary>
+        public static readonly string RemoveSessionStorageItem = "removeSessionStorageItem";
+
+        /// <summary>
+        /// Represents the ClearSessionStorage command.
+        /// </summary>
+        public static readonly string ClearSessionStorage = "clearSessionStorage";
+
+        /// <summary>
+        /// Represents the GetSessionStorageSize command.
+        /// </summary>
+        public static readonly string GetSessionStorageSize = "getSessionStorageSize";
+
+        /// <summary>
+        /// Represents the GetAvailableLogTypes command.
+        /// </summary>
+        public static readonly string GetAvailableLogTypes = "getAvailableLogTypes";
+
+        /// <summary>
+        /// Represents the GetLog command.
+        /// </summary>
+        public static readonly string GetLog = "getLog";
     }
 }

@@ -87,7 +87,7 @@ goog.format.JsonPrettyPrinter.prototype.format = function(json) {
     return '';
   }
   if (goog.isString(json)) {
-    if (goog.string.isEmpty(json)) {
+    if (goog.string.isEmptyOrWhitespace(json)) {
       return '';
     }
     // Try to coerce a string into a JSON object.
@@ -362,6 +362,7 @@ goog.format.JsonPrettyPrinter.TextDelimiters.prototype.indent = 2;
  * to an HTML <code>&lt;pre&gt;</code> or <code>&lt;code&gt;</code> element.
  * @constructor
  * @extends {goog.format.JsonPrettyPrinter.TextDelimiters}
+ * @final
  */
 goog.format.JsonPrettyPrinter.HtmlDelimiters = function() {
   goog.format.JsonPrettyPrinter.TextDelimiters.call(this);
@@ -401,8 +402,8 @@ goog.format.JsonPrettyPrinter.HtmlDelimiters.prototype.postName = '</span>';
  */
 goog.format.JsonPrettyPrinter.HtmlDelimiters.prototype.preValue =
     '<span class="' +
-    goog.getCssName('goog-jsonprettyprinter-propertyvalue') +
-    '-%s">';
+    goog.getCssName('goog-jsonprettyprinter-propertyvalue-%s') +
+    '">';
 
 
 /**

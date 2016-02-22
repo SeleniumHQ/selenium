@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 
 namespace OpenQA.Selenium
@@ -12,13 +9,13 @@ namespace OpenQA.Selenium
         private const string FileHtml = "<div>" + LoremIpsumText + "</div>";
         private System.IO.FileInfo testFile;
 
-        [SetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
             CreateTempFile(FileHtml);
         }
 
-        [TearDown]
+        [OneTimeTearDown]
         public void Teardown()
         {
             if (testFile != null && testFile.Exists)
@@ -40,6 +37,24 @@ namespace OpenQA.Selenium
 
             IWebElement body = driver.FindElement(By.XPath("//body"));
             Assert.IsTrue(LoremIpsumText == body.Text, "Page source is: " + driver.PageSource);
+            driver.Url = "about:blank";
+        }
+
+        [Test]
+        [Category("Javascript")]
+        [IgnoreBrowser(Browser.WindowsPhone, "Does not yet support file uploads")]
+        //[IgnoreBrowser(Browser.IE, "Transparent file upload element not yet handled")]
+        public void ShouldAllowFileUploadingUsingTransparentUploadElement()
+        {
+            driver.Url = transparentUploadPage;
+            driver.FindElement(By.Id("upload")).SendKeys(testFile.FullName);
+            driver.FindElement(By.Id("go")).Submit();
+
+            driver.SwitchTo().Frame("upload_target");
+
+            IWebElement body = driver.FindElement(By.XPath("//body"));
+            Assert.IsTrue(LoremIpsumText == body.Text, "Page source is: " + driver.PageSource);
+            driver.Url = "about:blank";
         }
 
         private void CreateTempFile(string content)

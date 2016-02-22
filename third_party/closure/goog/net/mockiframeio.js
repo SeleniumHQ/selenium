@@ -32,6 +32,7 @@ goog.require('goog.net.IframeIo');
  *     events.
  * @constructor
  * @extends {goog.events.EventTarget}
+ * @final
  */
 goog.net.MockIFrameIo = function(testQueue) {
   goog.events.EventTarget.call(this);
@@ -93,6 +94,18 @@ goog.net.MockIFrameIo.prototype.lastCustomError_ = null;
  * @private
  */
 goog.net.MockIFrameIo.prototype.lastUri_ = null;
+
+
+/** @private {Function} */
+goog.net.MockIFrameIo.prototype.errorChecker_;
+
+
+/** @private {boolean} */
+goog.net.MockIFrameIo.prototype.success_;
+
+
+/** @private {boolean} */
+goog.net.MockIFrameIo.prototype.complete_;
 
 
 /**
@@ -293,27 +306,3 @@ goog.net.MockIFrameIo.prototype.setErrorChecker = function(fn) {
 goog.net.MockIFrameIo.prototype.getErrorChecker = function() {
   return this.errorChecker_;
 };
-
-
-/**
- * Returns the number of milliseconds after which an incomplete request will be
- * aborted, or 0 if no timeout is set.
- * @return {number} Timeout interval in milliseconds.
- */
-goog.net.MockIFrameIo.prototype.getTimeoutInterval = function() {
-  return this.timeoutInterval_;
-};
-
-
-/**
- * Sets the number of milliseconds after which an incomplete request will be
- * aborted and a {@link goog.net.EventType.TIMEOUT} event raised; 0 means no
- * timeout is set.
- * @param {number} ms Timeout interval in milliseconds; 0 means none.
- */
-goog.net.MockIFrameIo.prototype.setTimeoutInterval = function(ms) {
-  // TODO (pupius) - never used - doesn't look like timeouts were implemented
-  this.timeoutInterval_ = Math.max(0, ms);
-};
-
-

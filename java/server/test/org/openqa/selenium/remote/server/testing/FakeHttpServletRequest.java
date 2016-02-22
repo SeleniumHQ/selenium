@@ -1,26 +1,28 @@
-/*
- Copyright 2011 Software Freedom Conservancy.
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.remote.server.testing;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.Collection;
@@ -29,11 +31,21 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.AsyncContext;
+import javax.servlet.DispatcherType;
+import javax.servlet.ReadListener;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpUpgradeHandler;
+import javax.servlet.http.Part;
 
 public class FakeHttpServletRequest extends HeaderContainer
     implements HttpServletRequest {
@@ -43,7 +55,27 @@ public class FakeHttpServletRequest extends HeaderContainer
   private final Map<String, String> parameters;
   private final String method;
 
-  private BufferedReader reader;
+  private ServletInputStream inputStream = new ServletInputStream() {
+    @Override
+    public boolean isFinished() {
+      return false;
+    }
+
+    @Override
+    public boolean isReady() {
+      return true;
+    }
+
+    @Override
+    public void setReadListener(ReadListener readListener) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int read() throws IOException {
+      return 0;
+    }
+  };
 
   public FakeHttpServletRequest(String method, UrlInfo requestUrl) {
     this.attributes = Maps.newHashMap();
@@ -53,14 +85,42 @@ public class FakeHttpServletRequest extends HeaderContainer
 
     setBody("");
   }
-  
+
   public void setParameters(Map<String, String> parameters) {
     this.parameters.clear();
     this.parameters.putAll(parameters);
   }
 
-  public void setBody(String data) {
-    this.reader = new BufferedReader(new StringReader(data));
+  public void setBody(final String data) {
+    this.inputStream = new ServletInputStream() {
+      private final ByteArrayInputStream delegate =
+          new ByteArrayInputStream(data.getBytes(Charsets.UTF_8));
+
+      @Override
+      public void close() throws IOException {
+        delegate.close();
+      }
+
+      @Override
+      public int read() throws IOException {
+        return delegate.read();
+      }
+
+      @Override
+      public boolean isFinished() {
+        return false;
+      }
+
+      @Override
+      public boolean isReady() {
+        return true;
+      }
+
+      @Override
+      public void setReadListener(ReadListener readListener) {
+        throw new UnsupportedOperationException();
+      }
+    };
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -174,14 +234,22 @@ public class FakeHttpServletRequest extends HeaderContainer
   }
 
   public ServletInputStream getInputStream() throws IOException {
-    throw new UnsupportedOperationException();
+    return inputStream;
+  }
+
+  public Enumeration<String> getHeaders(String name) {
+    return Collections.enumeration(getHeaders().get(name.toLowerCase()));
+  }
+
+  public Enumeration<String> getHeaderNames() {
+    return Collections.enumeration(getHeaders().keySet());
   }
 
   public String getParameter(String s) {
     return parameters.get(s);
   }
 
-  public Enumeration getParameterNames() {
+  public Enumeration<String> getParameterNames() {
     return Collections.enumeration(parameters.keySet());
   }
 
@@ -211,7 +279,7 @@ public class FakeHttpServletRequest extends HeaderContainer
   }
 
   public BufferedReader getReader() throws IOException {
-    return reader;
+    throw new UnsupportedOperationException();
   }
 
   public String getRemoteAddr() {
@@ -269,6 +337,83 @@ public class FakeHttpServletRequest extends HeaderContainer
   }
 
   public int getLocalPort() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public String changeSessionId() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public boolean authenticate(HttpServletResponse response) throws IOException, ServletException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void login(String username, String password) throws ServletException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void logout() throws ServletException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public Collection<Part> getParts() throws IOException, ServletException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public Part getPart(String name) throws IOException, ServletException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public <T extends HttpUpgradeHandler> T upgrade(Class<T> handlerClass)
+    throws IOException, ServletException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public long getContentLengthLong() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public ServletContext getServletContext() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public AsyncContext startAsync() throws IllegalStateException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse)
+    throws IllegalStateException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public boolean isAsyncStarted() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public boolean isAsyncSupported() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public AsyncContext getAsyncContext() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public DispatcherType getDispatcherType() {
     throw new UnsupportedOperationException();
   }
 }

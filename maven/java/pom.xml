@@ -19,6 +19,11 @@
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-edge-driver</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-htmlunit-driver</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -43,20 +48,9 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.webbitserver</groupId>
-            <artifactId>webbit</artifactId>
-        </dependency>
-        <!-- We need JUnit for SeleneseTestCase ... -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <!-- We need TestNG for SeleneseTestNgHelper ... -->
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <optional>true</optional>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-leg-rc</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
@@ -80,6 +74,7 @@
                                             <or>
                                                 <present targetdir="../api/src/main/java" />
                                                 <present targetdir="../chrome-driver/src/main/java" />
+                                                <present targetdir="../edge-driver/src/main/java" />
                                                 <present targetdir="../firefox-driver/src/main/java" />
                                                 <present targetdir="../htmlunit-driver/src/main/java" />
                                                 <present targetdir="../ie-driver/src/main/java" />
@@ -87,28 +82,11 @@
                                                 <present targetdir="../remote-driver/src/main/java" />
                                                 <present targetdir="../safari-driver/src/main/java" />
                                                 <present targetdir="../support/src/main/java" />
+                                                <present targetdir="../leg-rc/src/main/java" />
                                             </or>
                                         </not>
                                     </fileset>
                                 </copy>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>copy_resource_files</id>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <tasks>
-                                <!-- Extract *.js files from client-combined-nodeps.jar to target/classes ... -->
-                                <unjar src="../../build/java/client/src/org/openqa/selenium/client-combined-nodeps.jar" dest="target/classes">
-                                    <patternset>
-                                        <include name="**/seleniumemulation/selenium_atoms/*.js" />
-                                        <include name="**/seleniumemulation/scripts/*.js" />
-                                    </patternset>
-                                </unjar>
                             </tasks>
                         </configuration>
                         <goals>

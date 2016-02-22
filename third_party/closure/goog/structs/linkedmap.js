@@ -58,22 +58,31 @@ goog.require('goog.structs.Map');
  * @param {boolean=} opt_cache When set, the LinkedMap stores items in order
  *     from most recently used to least recently used, instead of insertion
  *     order.
+ * @param {function(string, VALUE)=} opt_evictionCallback Called with the
+ *     removed stringified key as the first argument and value as the second
+ *     argument after the key was evicted from the LRU because the max count
+ *     was reached.
  * @constructor
+ * @template KEY, VALUE
  */
-goog.structs.LinkedMap = function(opt_maxCount, opt_cache) {
+goog.structs.LinkedMap = function(opt_maxCount, opt_cache,
+    opt_evictionCallback) {
   /**
    * The maximum number of entries to allow, or null if there is no limit.
-   * @type {?number}
-   * @private
+   * @private {?number}
    */
   this.maxCount_ = opt_maxCount || null;
 
-  /**
-   * @type {boolean}
-   * @private
-   */
+  /** @private @const {boolean} */
   this.cache_ = !!opt_cache;
 
+  /** @private {function(string, VALUE)|undefined} */
+  this.evictionCallback_ = opt_evictionCallback;
+
+  /**
+   * @private @const {!goog.structs.Map<string,
+   *     goog.structs.LinkedMap.Node_<string, VALUE>>}
+   */
   this.map_ = new goog.structs.Map();
 
   this.head_ = new goog.structs.LinkedMap.Node_('', undefined);
@@ -84,11 +93,12 @@ goog.structs.LinkedMap = function(opt_maxCount, opt_cache) {
 /**
  * Finds a node and updates it to be the most recently used.
  * @param {string} key The key of the node.
- * @return {goog.structs.LinkedMap.Node_} The node or null if not found.
+ * @return {goog.structs.LinkedMap.Node_<string, VALUE>} The node or null if not
+ *     found.
  * @private
  */
 goog.structs.LinkedMap.prototype.findAndMoveToTop_ = function(key) {
-  var node = /** @type {goog.structs.LinkedMap.Node_} */ (this.map_.get(key));
+  var node = this.map_.get(key);
   if (node) {
     if (this.cache_) {
       node.remove();
@@ -103,9 +113,9 @@ goog.structs.LinkedMap.prototype.findAndMoveToTop_ = function(key) {
  * Retrieves the value for a given key. If this is a caching LinkedMap, the
  * entry will become the most recently used.
  * @param {string} key The key to retrieve the value for.
- * @param {*=} opt_val A default value that will be returned if the key is
+ * @param {VALUE=} opt_val A default value that will be returned if the key is
  *     not found, defaults to undefined.
- * @return {*} The retrieved value.
+ * @return {VALUE} The retrieved value.
  */
 goog.structs.LinkedMap.prototype.get = function(key, opt_val) {
   var node = this.findAndMoveToTop_(key);
@@ -117,9 +127,9 @@ goog.structs.LinkedMap.prototype.get = function(key, opt_val) {
  * Retrieves the value for a given key without updating the entry to be the
  * most recently used.
  * @param {string} key The key to retrieve the value for.
- * @param {*=} opt_val A default value that will be returned if the key is
+ * @param {VALUE=} opt_val A default value that will be returned if the key is
  *     not found.
- * @return {*} The retrieved value.
+ * @return {VALUE} The retrieved value.
  */
 goog.structs.LinkedMap.prototype.peekValue = function(key, opt_val) {
   var node = this.map_.get(key);
@@ -130,9 +140,8 @@ goog.structs.LinkedMap.prototype.peekValue = function(key, opt_val) {
 /**
  * Sets a value for a given key. If this is a caching LinkedMap, this entry
  * will become the most recently used.
- * @param {string} key The key to retrieve the value for.
- * @param {*} value A default value that will be returned if the key is
- *     not found.
+ * @param {string} key Key with which the specified value is to be associated.
+ * @param {VALUE} value Value to be associated with the specified key.
  */
 goog.structs.LinkedMap.prototype.set = function(key, value) {
   var node = this.findAndMoveToTop_(key);
@@ -148,7 +157,7 @@ goog.structs.LinkedMap.prototype.set = function(key, value) {
 
 /**
  * Returns the value of the first node without making any modifications.
- * @return {*} The value of the first node or undefined if the map is empty.
+ * @return {VALUE} The value of the first node or undefined if the map is empty.
  */
 goog.structs.LinkedMap.prototype.peek = function() {
   return this.head_.next.value;
@@ -157,7 +166,7 @@ goog.structs.LinkedMap.prototype.peek = function() {
 
 /**
  * Returns the value of the last node without making any modifications.
- * @return {*} The value of the last node or undefined if the map is empty.
+ * @return {VALUE} The value of the last node or undefined if the map is empty.
  */
 goog.structs.LinkedMap.prototype.peekLast = function() {
   return this.head_.prev.value;
@@ -166,7 +175,8 @@ goog.structs.LinkedMap.prototype.peekLast = function() {
 
 /**
  * Removes the first node from the list and returns its value.
- * @return {*} The value of the popped node, or undefined if the map was empty.
+ * @return {VALUE} The value of the popped node, or undefined if the map was
+ *     empty.
  */
 goog.structs.LinkedMap.prototype.shift = function() {
   return this.popNode_(this.head_.next);
@@ -175,7 +185,8 @@ goog.structs.LinkedMap.prototype.shift = function() {
 
 /**
  * Removes the last node from the list and returns its value.
- * @return {*} The value of the popped node, or undefined if the map was empty.
+ * @return {VALUE} The value of the popped node, or undefined if the map was
+ *     empty.
  */
 goog.structs.LinkedMap.prototype.pop = function() {
   return this.popNode_(this.head_.prev);
@@ -189,7 +200,7 @@ goog.structs.LinkedMap.prototype.pop = function() {
  *     found.
  */
 goog.structs.LinkedMap.prototype.remove = function(key) {
-  var node = /** @type {goog.structs.LinkedMap.Node_} */ (this.map_.get(key));
+  var node = this.map_.get(key);
   if (node) {
     this.removeNode(node);
     return true;
@@ -201,7 +212,8 @@ goog.structs.LinkedMap.prototype.remove = function(key) {
 /**
  * Removes a node from the {@code LinkedMap}. It can be overridden to do
  * further cleanup such as disposing of the node value.
- * @param {!goog.structs.LinkedMap.Node_} node The node to remove.
+ * @param {!goog.structs.LinkedMap.Node_<string, VALUE>} node The node to
+ *     remove.
  * @protected
  */
 goog.structs.LinkedMap.prototype.removeNode = function(node) {
@@ -211,7 +223,10 @@ goog.structs.LinkedMap.prototype.removeNode = function(node) {
 
 
 /**
- * @return {number} The number of items currently in the LinkedMap.
+ * @return {number} The number of items currently in the LinkedMap. Sub classes
+ *     may override this to change how items are counted (e.g. to introduce
+ *     per item weight). Truncation will always proceed as long as the count
+ *     returned from this method is higher than the max count for this map.
  */
 goog.structs.LinkedMap.prototype.getCount = function() {
   return this.map_.getCount();
@@ -223,6 +238,19 @@ goog.structs.LinkedMap.prototype.getCount = function() {
  */
 goog.structs.LinkedMap.prototype.isEmpty = function() {
   return this.map_.isEmpty();
+};
+
+
+/**
+ * Sets a callback that fires when an entry is evicted because max entry
+ * count is reached. The callback is called with the removed stringified key
+ * as the first argument and value as the second argument after the key was
+ * evicted from the LRU because the max count was reached.
+ * @param {function(string, VALUE)} evictionCallback
+ */
+goog.structs.LinkedMap.prototype.setEvictionCallback =
+    function(evictionCallback) {
+  this.evictionCallback_ = evictionCallback;
 };
 
 
@@ -240,7 +268,7 @@ goog.structs.LinkedMap.prototype.setMaxCount = function(maxCount) {
 
 
 /**
- * @return {!Array.<string>} The list of the keys in the appropriate order for
+ * @return {!Array<string>} The list of the keys in the appropriate order for
  *     this LinkedMap.
  */
 goog.structs.LinkedMap.prototype.getKeys = function() {
@@ -251,7 +279,7 @@ goog.structs.LinkedMap.prototype.getKeys = function() {
 
 
 /**
- * @return {!Array} The list of the values in the appropriate order for
+ * @return {!Array<VALUE>} The list of the values in the appropriate order for
  *     this LinkedMap.
  */
 goog.structs.LinkedMap.prototype.getValues = function() {
@@ -264,7 +292,7 @@ goog.structs.LinkedMap.prototype.getValues = function() {
 /**
  * Tests whether a provided value is currently in the LinkedMap. This does not
  * affect item ordering in cache-style LinkedMaps.
- * @param {Object} value The value to check for.
+ * @param {VALUE} value The value to check for.
  * @return {boolean} Whether the value is in the LinkedMap.
  */
 goog.structs.LinkedMap.prototype.contains = function(value) {
@@ -297,10 +325,9 @@ goog.structs.LinkedMap.prototype.clear = function() {
  * Calls a function on each item in the LinkedMap.
  *
  * @see goog.structs.forEach
- * @param {Function} f The function to call for each item. The function takes
- *     three arguments: the value, the key, and the LinkedMap.
- * @param {Object=} opt_obj The object context to use as "this" for the
- *     function.
+ * @param {function(this:T, VALUE, KEY, goog.structs.LinkedMap<KEY, VALUE>)} f
+ * @param {T=} opt_obj The value of "this" inside f.
+ * @template T
  */
 goog.structs.LinkedMap.prototype.forEach = function(f, opt_obj) {
   for (var n = this.head_.next; n != this.head_; n = n.next) {
@@ -314,12 +341,15 @@ goog.structs.LinkedMap.prototype.forEach = function(f, opt_obj) {
  * those calls in an array.
  *
  * @see goog.structs.map
- * @param {!Function} f The function to call for each item. The function takes
+ * @param {function(this:T, VALUE, KEY,
+ *         goog.structs.LinkedMap<KEY, VALUE>): RESULT} f
+ *     The function to call for each item. The function takes
  *     three arguments: the value, the key, and the LinkedMap.
- * @param {Object=} opt_obj The object context to use as "this" for the
+ * @param {T=} opt_obj The object context to use as "this" for the
  *     function.
- * @return {!Array} The results of the function calls for each item in the
- *     LinkedMap.
+ * @return {!Array<RESULT>} The results of the function calls for each item in
+ *     the LinkedMap.
+ * @template T,RESULT
  */
 goog.structs.LinkedMap.prototype.map = function(f, opt_obj) {
   var rv = [];
@@ -335,13 +365,16 @@ goog.structs.LinkedMap.prototype.map = function(f, opt_obj) {
  * those function calls returns a true-like value.
  *
  * @see goog.structs.some
- * @param {Function} f The function to call for each item. The function takes
+ * @param {function(this:T, VALUE, KEY,
+ *         goog.structs.LinkedMap<KEY, VALUE>):boolean} f
+ *     The function to call for each item. The function takes
  *     three arguments: the value, the key, and the LinkedMap, and returns a
  *     boolean.
- * @param {Object=} opt_obj The object context to use as "this" for the
+ * @param {T=} opt_obj The object context to use as "this" for the
  *     function.
  * @return {boolean} Whether f evaluates to true for at least one item in the
  *     LinkedMap.
+ * @template T
  */
 goog.structs.LinkedMap.prototype.some = function(f, opt_obj) {
   for (var n = this.head_.next; n != this.head_; n = n.next) {
@@ -358,12 +391,15 @@ goog.structs.LinkedMap.prototype.some = function(f, opt_obj) {
  * function call returns a true-like value.
  *
  * @see goog.structs.some
- * @param {Function} f The function to call for each item. The function takes
+ * @param {function(this:T, VALUE, KEY,
+ *         goog.structs.LinkedMap<KEY, VALUE>):boolean} f
+ *     The function to call for each item. The function takes
  *     three arguments: the value, the key, and the Cache, and returns a
  *     boolean.
- * @param {Object=} opt_obj The object context to use as "this" for the
+ * @param {T=} opt_obj The object context to use as "this" for the
  *     function.
  * @return {boolean} Whether f evaluates to true for every item in the Cache.
+ * @template T
  */
 goog.structs.LinkedMap.prototype.every = function(f, opt_obj) {
   for (var n = this.head_.next; n != this.head_; n = n.next) {
@@ -380,7 +416,7 @@ goog.structs.LinkedMap.prototype.every = function(f, opt_obj) {
  * the head of the list, otherwise they are appended to the tail. If there is a
  * maximum size, the list will be truncated if necessary.
  *
- * @param {goog.structs.LinkedMap.Node_} node The item to insert.
+ * @param {goog.structs.LinkedMap.Node_<string, VALUE>} node The item to insert.
  * @private
  */
 goog.structs.LinkedMap.prototype.insert_ = function(node) {
@@ -412,8 +448,12 @@ goog.structs.LinkedMap.prototype.insert_ = function(node) {
  * @private
  */
 goog.structs.LinkedMap.prototype.truncate_ = function(count) {
-  for (var i = this.map_.getCount(); i > count; i--) {
-    this.removeNode(this.cache_ ? this.head_.prev : this.head_.next);
+  while (this.getCount() > count) {
+    var toRemove = this.cache_ ? this.head_.prev : this.head_.next;
+    this.removeNode(toRemove);
+    if (this.evictionCallback_) {
+      this.evictionCallback_(toRemove.key, toRemove.value);
+    }
   }
 };
 
@@ -421,8 +461,9 @@ goog.structs.LinkedMap.prototype.truncate_ = function(count) {
 /**
  * Removes the node from the LinkedMap if it is not the head, and returns
  * the node's value.
- * @param {!goog.structs.LinkedMap.Node_} node The item to remove.
- * @return {*} The value of the popped node.
+ * @param {!goog.structs.LinkedMap.Node_<string, VALUE>} node The item to
+ *     remove.
+ * @return {VALUE} The value of the popped node.
  * @private
  */
 goog.structs.LinkedMap.prototype.popNode_ = function(node) {
@@ -436,27 +477,31 @@ goog.structs.LinkedMap.prototype.popNode_ = function(node) {
 
 /**
  * Internal class for a doubly-linked list node containing a key/value pair.
- * @param {string} key The key.
- * @param {*} value The value.
+ * @param {KEY} key The key.
+ * @param {VALUE} value The value.
  * @constructor
+ * @template KEY, VALUE
  * @private
  */
 goog.structs.LinkedMap.Node_ = function(key, value) {
+  /** @type {KEY} */
   this.key = key;
+
+  /** @type {VALUE} */
   this.value = value;
 };
 
 
 /**
  * The next node in the list.
- * @type {!goog.structs.LinkedMap.Node_}
+ * @type {!goog.structs.LinkedMap.Node_<KEY, VALUE>}
  */
 goog.structs.LinkedMap.Node_.prototype.next;
 
 
 /**
  * The previous node in the list.
- * @type {!goog.structs.LinkedMap.Node_}
+ * @type {!goog.structs.LinkedMap.Node_<KEY, VALUE>}
  */
 goog.structs.LinkedMap.Node_.prototype.prev;
 

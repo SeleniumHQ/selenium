@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -17,11 +20,11 @@
 #include <map>
 #include <memory>
 #include <string>
-#include "json.h"
 #include "command_handler.h"
 #include "command.h"
 #include "Element.h"
 #include "response.h"
+#include "Script.h"
 
 #define BROWSER_NAME_CAPABILITY "browserName"
 #define BROWSER_VERSION_CAPABILITY "version"
@@ -33,6 +36,7 @@
 #define CSS_SELECTOR_ENABLED_CAPABILITY "cssSelectorsEnabled"
 #define NATIVE_EVENTS_CAPABILITY "nativeEvents"
 #define PROXY_CAPABILITY "proxy"
+#define PAGE_LOAD_STRATEGY_CAPABILITY "pageLoadStrategy"
 #define IGNORE_PROTECTED_MODE_CAPABILITY "ignoreProtectedModeSettings"
 #define IGNORE_ZOOM_SETTING_CAPABILITY "ignoreZoomSetting"
 #define INITIAL_BROWSER_URL_CAPABILITY "initialBrowserUrl"
@@ -46,6 +50,8 @@
 #define USE_PER_PROCESS_PROXY_CAPABILITY "ie.usePerProcessProxy"
 #define ENSURE_CLEAN_SESSION_CAPABILITY "ie.ensureCleanSession"
 #define FORCE_SHELL_WINDOWS_API_CAPABILITY "ie.forceShellWindowsApi"
+#define FILE_UPLOAD_DIALOG_TIMEOUT_CAPABILITY "ie.fileUploadDialogTimeout"
+#define ENABLE_FULL_PAGE_SCREENSHOT_CAPABILITY "ie.enableFullPageScreenshot"
 
 using namespace std;
 
@@ -62,7 +68,6 @@ class IECommandHandler : public CommandHandler<IECommandExecutor> {
 
  protected:
   virtual void ExecuteInternal(const IECommandExecutor& executor,
-                               const LocatorMap& locator_parameters,
                                const ParametersMap& command_parameters,
                                Response* response);
   int GetElement(const IECommandExecutor& executor,

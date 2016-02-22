@@ -1,17 +1,19 @@
-// Copyright 2010 WebDriver committers
-// Copyright 2010 Google Inc.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 
 /**
@@ -36,7 +38,7 @@ goog.require('webdriver.Key');
  */
 webdriver.atoms.element.isSelected = function(element) {
   // Although this method looks unloved, its compiled form is used by
-  // the Chrome and OperaDrivers.
+  // Chrome.
   if (!bot.dom.isSelectable(element)) {
     return false;
   }
@@ -160,6 +162,19 @@ webdriver.atoms.element.getAttribute = function(element, attribute) {
     return /** @type {?string} */ (value);
   }
 
+  if ('spellcheck' == name) {
+    value = bot.dom.getAttribute(element, name);
+    if (!goog.isNull(value)) {
+      if (value.toLowerCase() == 'false') {
+        return 'false';
+      } else if (value.toLowerCase() == 'true') {
+        return 'true';
+      }
+    }
+    // coerce the property value to a string
+    return bot.dom.getProperty(element, name) + '';
+  }
+
   var propName = webdriver.atoms.element.PROPERTY_ALIASES_[attribute] ||
       attribute;
   if (goog.array.contains(webdriver.atoms.element.BOOLEAN_PROPERTIES_, name)) {
@@ -255,10 +270,16 @@ webdriver.atoms.element.isInHead_ = function(element) {
 
 /**
  * @param {!Element} element The element to get the text from.
+ * @param {boolean=} opt_inComposedDom Whether to get text in the composed DOM;
+ *     defaults to false.
  * @return {string} The visible text or an empty string.
  */
-webdriver.atoms.element.getText = function(element) {
-  return bot.dom.getVisibleText(element);
+webdriver.atoms.element.getText = function(element, opt_inComposedDom) {
+  if (!!opt_inComposedDom) {
+    return bot.dom.getVisibleTextInComposedDom(element);
+  } else {
+    return bot.dom.getVisibleText(element);
+  }
 };
 
 
@@ -274,7 +295,7 @@ webdriver.atoms.element.getText = function(element) {
  * @param {boolean=} opt_persistModifiers Whether modifier keys should remain
  *     pressed when this function ends.
  * @see bot.action.type
- * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol
+ * @see https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
  */
 webdriver.atoms.element.type = function(
     element, keys, opt_keyboard, opt_persistModifiers) {

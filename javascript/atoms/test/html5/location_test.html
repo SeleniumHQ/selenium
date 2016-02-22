@@ -9,26 +9,35 @@
     goog.require('bot.html5');
     goog.require('bot.test');
     goog.require('bot.userAgent');
-    goog.require('goog.testing.AsyncTestCase');
+    goog.require('goog.Promise');
+    goog.require('goog.labs.userAgent.platform');
+    goog.require('goog.testing.TestCase');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
     goog.require('goog.userAgent.product');
   </script>
 
   <script type="text/javascript">
-    var asyncTestCase = null;
-
-    // WebDriver does not enable geolocation for Android (b/5787618).
-    // WebDriver does not enable geolocation for Firefox (b/5787180).
-    // WebDriver does not enable geolocation for IE 9 (b/5817463).
+    // WebDriver does not enable geolocation for Android.
+    // WebDriver does not enable geolocation for Edge.
+    // WebDriver does not enable geolocation for Firefox.
+    // WebDriver does not enable geolocation for IE 9.
     // WebDriver does not enable geolocation for Safari.
     var GEOLOCATION_NOT_WORKING =
         !bot.html5.isSupported(bot.html5.API.GEOLOCATION) ||
         goog.userAgent.product.ANDROID ||
+        goog.userAgent.product.EDGE ||
         goog.userAgent.product.FIREFOX ||
         goog.userAgent.product.SAFARI ||
+        // Geolocation is blocked by user consent screen on Chrome for Android.
+        (goog.labs.userAgent.platform.isAndroid() &&
+            goog.userAgent.product.CHROME) ||
         bot.userAgent.IE_DOC_9;
 
+
+    function setUpPage() {
+      goog.testing.TestCase.getActiveTestCase().promiseTimeout = 10000; // 10s
+    }
 
     /**
      * This method checks if the device location
@@ -39,36 +48,32 @@
       if (GEOLOCATION_NOT_WORKING) {
         return;
       }
-
-      function onSuccess(position) {
-        asyncTestCase.continueTesting();
-        //5s (default timeout) should definitely be sufficient
-        //to retrieve a position.
-      }
-
-      function onError(error) {
-        switch (error.code) {
-          case error.POSITION_UNAVAILABLE:
-            // Some test machines run on a private ip address range where
-            // location is not be available, so do not consider this case as an
-            // error.
-            break;
-          case error.PERMISSION_DENIED:
-            fail('User denied the request for Geolocation.');
-          case error.TIMEOUT:
-            fail('When enabled, location should be known within 10s');
-          default:
-            fail('An unknown error occurred. ' + error.message);
+      return new goog.Promise(function(success, fail) {
+        try {
+          bot.geolocation.getCurrentPosition(success, function(error) {
+            switch (error.code) {
+              case error.POSITION_UNAVAILABLE:
+                // Some test machines run on a private ip address range where
+                // location is not be available, so do not consider this case
+                // as an error.
+                success();
+                return;
+              case error.PERMISSION_DENIED:
+                fail('User denied the request for Geolocation.');
+                return;
+              case error.TIMEOUT:
+                fail('When enabled, location should be known within ' +
+                    (bot.geolocation.DEFAULT_OPTIONS.timeout / 1000) + 's');
+                return;
+              default:
+                fail('An unknown error occurred. ' + error.message);
+                return;
+            }
+          });
+        } catch (e) {
+          assertEquals(e.code, bot.ErrorCode.UNKNOWN_ERROR);
         }
-        asyncTestCase.continueTesting();
-      }
-
-      try {
-        bot.geolocation.getCurrentPosition(onSuccess, onError);
-        asyncTestCase.waitForAsync('geolocation.getCurrentPosition');
-      } catch (e) {
-        assertEquals(e.code, bot.ErrorCode.UNKNOWN_ERROR);
-      }
+      });
     }
 
     /**
@@ -91,30 +96,23 @@
         timeout: 0
       };
 
-      function onSuccess(position) {
-        asyncTestCase.continueTesting();
-        fail('Location within 0s timeout interval and 0s max age fails');
-      }
-
-      function onError(error) {
-        asyncTestCase.continueTesting();
-      }
-
-      try {
-        bot.geolocation.getCurrentPosition(onSuccess, onError, posOptions);
-        asyncTestCase.waitForAsync('geolocation.getCurrentPosition');
-      } catch (e) {
-        assertEquals(e.code, bot.ErrorCode.UNKNOWN_ERROR);
-      }
+      return new goog.Promise(function(success, fail) {
+        try {
+          bot.geolocation.getCurrentPosition(
+            goog.partial(fail,
+                'Location within 0s timeout interval and 0s max age fails'),
+            success,
+            posOptions);
+        } catch (e) {
+          assertEquals(e.code, bot.ErrorCode.UNKNOWN_ERROR);
+          success();
+        }
+      });
     }
 
     // TODO: Add more tests to check the returned value.
   </script>
 </head>
 <body>
-  <script type="text/javascript">
-    asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
-    asyncTestCase.stepTimeout = 15 * 1000;
-  </script>
 </body>
 </html>

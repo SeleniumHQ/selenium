@@ -9,6 +9,7 @@
     goog.require('bot.userAgent');
     goog.require('bot.window');
     goog.require('goog.dom');
+    goog.require('goog.labs.userAgent.device');
     goog.require('goog.math');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
@@ -49,10 +50,6 @@
         var PADDING = 80;
         assertTrue(size.width + PADDING > expectedSize.width);
         assertTrue(size.height + PADDING > expectedSize.height);
-      } else if (goog.userAgent.product.ANDROID) {
-        // Android popup's have a fixed size.
-        assertEquals(320, size.width);
-        assertEquals(240, size.height);
       } else {
         assertEquals(expectedSize.width, size.width);
         assertEquals(expectedSize.height, size.height);
@@ -60,6 +57,9 @@
     }
 
     function testSetSize() {
+      if (!goog.labs.userAgent.device.isDesktop()) {
+         return;
+      }
       var size = new goog.math.Size(350, 450);
       bot.window.setSize(size);
       verifySize(size);

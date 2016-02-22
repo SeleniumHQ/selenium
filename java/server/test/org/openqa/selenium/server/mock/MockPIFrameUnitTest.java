@@ -1,19 +1,19 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.server.mock;
 
@@ -63,8 +63,8 @@ public class MockPIFrameUnitTest {
     configuration.setProxyInjectionModeArg(true);
 
     server = new SeleniumServer(false, configuration);
+    server.getBrowserLauncherFactory().addBrowserLauncher("dummy", DummyBrowserLauncher.class);
     server.start();
-    BrowserLauncherFactory.addBrowserLauncher("dummy", DummyBrowserLauncher.class);
     InjectionHelper.setFailOnError(false);
     LOGGER.info("Starting " + name.getMethodName());
   }
@@ -108,7 +108,7 @@ public class MockPIFrameUnitTest {
 
   /**
    * start a basic browser session
-   * 
+   *
    * @return the currently running MockPIFrame
    */
   public MockPIFrame startSession() {
@@ -408,7 +408,7 @@ public class MockPIFrameUnitTest {
    * which provides the expected string in the last assert, does not receive the same timeout as a
    * parameter as is set here. This test may need to be more explicit about which timeout is truly
    * being set and testing the timeout values along the way.
-   * 
+   *
    * @throws Exception
    */
   @Test
@@ -544,7 +544,7 @@ public class MockPIFrameUnitTest {
 
   /**
    * Open "frames.html", which we'll imagine has two subFrames: subFrame0 and subFrame1
-   * 
+   *
    * @return a set containing a top frame and two subframes
    */
   public SmallFrameSet openSubFrames() {
@@ -651,7 +651,7 @@ public class MockPIFrameUnitTest {
    * Extracts a sessionId from the DummyBrowserLauncher, so we can use it in our tests. Note that
    * the original driver request won't be resolved until some MockPIFrame is launched with the new
    * sessionId, so we need to extract it prior to calling getNewBrowserSession.getResult().
-   * 
+   *
    * @param getNewBrowserSession a not-yet-resolved request to get a new browser session; used to
    *        get an error message if we're forced to give up
    * @return the sessionId of the requested session

@@ -30,6 +30,7 @@ goog.require('goog.graphics.ext.StrokeAndFillElement');
  * @param {goog.graphics.ext.Group} group Parent for this element.
  * @constructor
  * @extends {goog.graphics.ext.StrokeAndFillElement}
+ * @final
  */
 goog.graphics.ext.Rectangle = function(group) {
   // Initialize with some stock values.

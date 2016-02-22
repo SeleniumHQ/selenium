@@ -23,7 +23,6 @@
 
 goog.provide('goog.ui.FilterObservingMenuItem');
 
-goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.FilterObservingMenuItemRenderer');
 goog.require('goog.ui.MenuItem');
 goog.require('goog.ui.registry');
@@ -49,6 +48,7 @@ goog.ui.FilterObservingMenuItem = function(content, opt_model, opt_domHelper,
       opt_renderer || new goog.ui.FilterObservingMenuItemRenderer());
 };
 goog.inherits(goog.ui.FilterObservingMenuItem, goog.ui.MenuItem);
+goog.tagUnsealableClass(goog.ui.FilterObservingMenuItem);
 
 
 /**

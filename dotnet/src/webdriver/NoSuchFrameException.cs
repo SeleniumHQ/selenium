@@ -1,9 +1,9 @@
 // <copyright file="NoSuchFrameException.cs" company="WebDriver Committers">
-// Copyright 2007-2011 WebDriver committers
-// Copyright 2007-2011 Google Inc.
-// Portions copyright 2011 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -17,9 +17,7 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
 
 namespace OpenQA.Selenium
 {
@@ -38,7 +36,7 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NoSuchFrameException"/> class with 
+        /// Initializes a new instance of the <see cref="NoSuchFrameException"/> class with
         /// a specified error message.
         /// </summary>
         /// <param name="message">The message that describes the error.</param>
@@ -63,9 +61,9 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Initializes a new instance of the <see cref="NoSuchFrameException"/> class with serialized data.
         /// </summary>
-        /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized 
+        /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized
         /// object data about the exception being thrown.</param>
-        /// <param name="context">The <see cref="StreamingContext"/> that contains contextual 
+        /// <param name="context">The <see cref="StreamingContext"/> that contains contextual
         /// information about the source or destination.</param>
         protected NoSuchFrameException(SerializationInfo info, StreamingContext context)
             : base(info, context)

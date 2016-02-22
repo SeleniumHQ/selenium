@@ -1,32 +1,37 @@
-#Copyright 2007-2009 WebDriver committers
-#Copyright 2007-2009 Google Inc.
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-#Licensed under the Apache License, Version 2.0 (the "License");
-#you may not use this file except in compliance with the License.
-#You may obtain a copy of the License at
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-#Unless required by applicable law or agreed to in writing, software
-#distributed under the License is distributed on an "AS IS" BASIS,
-#WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#See the License for the specific language governing permissions and
-#limitations under the License.
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
 
 import pytest
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.common.exceptions import ElementNotVisibleException
 from selenium.common.exceptions import InvalidElementStateException
 from selenium.common.exceptions import NoAlertPresentException
+from selenium.common.exceptions import UnexpectedAlertPresentException
 
 import unittest
 
-@pytest.mark.ignore_opera
-class AlertsTest(unittest.TestCase):
 
+class AlertsTest(unittest.TestCase):
     def testShouldBeAbleToOverrideTheWindowAlertMethod(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support alerts")
         self._loadPage("alerts")
         self.driver.execute_script(
             "window.alert = function(msg) { document.getElementById('text').innerHTML = msg; }")
@@ -43,6 +48,8 @@ class AlertsTest(unittest.TestCase):
             raise e
 
     def testShouldAllowUsersToAcceptAnAlertManually(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support alerts")
         self._loadPage("alerts")
         self.driver.find_element(by=By.ID, value="alert").click()
         alert = self._waitForAlert()
@@ -51,6 +58,8 @@ class AlertsTest(unittest.TestCase):
         self.assertEqual("Testing Alerts", self.driver.title)
 
     def testShouldAllowUsersToAcceptAnAlertWithNoTextManually(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support alerts")
         self._loadPage("alerts")
         self.driver.find_element(By.ID,"empty-alert").click();
         alert = self._waitForAlert()
@@ -60,6 +69,8 @@ class AlertsTest(unittest.TestCase):
         self.assertEqual("Testing Alerts", self.driver.title)
 
     def testShouldGetTextOfAlertOpenedInSetTimeout(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support alerts")
         self._loadPage("alerts")
         self.driver.find_element_by_id("slow-alert").click()
 
@@ -75,6 +86,8 @@ class AlertsTest(unittest.TestCase):
 
     @pytest.mark.ignore_chrome
     def testShouldAllowUsersToDismissAnAlertManually(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support alerts")
         self._loadPage("alerts")
         self.driver.find_element(by=By.ID, value="alert").click()
         alert = self._waitForAlert()
@@ -83,6 +96,8 @@ class AlertsTest(unittest.TestCase):
         self.assertEqual("Testing Alerts", self.driver.title)
 
     def testShouldAllowAUserToAcceptAPrompt(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support alerts")
         self._loadPage("alerts")
         self.driver.find_element(by=By.ID, value="prompt").click()
         alert = self._waitForAlert()
@@ -92,6 +107,8 @@ class AlertsTest(unittest.TestCase):
         self.assertEqual("Testing Alerts", self.driver.title)
 
     def testShouldAllowAUserToDismissAPrompt(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support alerts")
         self._loadPage("alerts")
         self.driver.find_element(by=By.ID, value="prompt").click()
         alert = self._waitForAlert()
@@ -101,6 +118,8 @@ class AlertsTest(unittest.TestCase):
         self.assertEqual("Testing Alerts", self.driver.title)
 
     def testShouldAllowAUserToSetTheValueOfAPrompt(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support alerts")
         self._loadPage("alerts")
         self.driver.find_element(by=By.ID, value="prompt").click()
         alert = self._waitForAlert()
@@ -111,6 +130,8 @@ class AlertsTest(unittest.TestCase):
         self.assertEqual("cheese", result)
 
     def testSettingTheValueOfAnAlertThrows(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support alerts")
         self._loadPage("alerts")
         self.driver.find_element(By.ID,"alert").click();
 
@@ -126,6 +147,8 @@ class AlertsTest(unittest.TestCase):
             alert.accept()
 
     def testAlertShouldNotAllowAdditionalCommandsIfDimissed(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support alerts")
         self._loadPage("alerts");
         self.driver.find_element(By.ID, "alert").click()
 
@@ -139,8 +162,10 @@ class AlertsTest(unittest.TestCase):
             pass
 
     def testShouldAllowUsersToAcceptAnAlertInAFrame(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support alerts")
         self._loadPage("alerts")
-        self.driver.switch_to_frame("iframeWithAlert")
+        self.driver.switch_to.frame(self.driver.find_element(By.NAME, "iframeWithAlert"))
         self.driver.find_element_by_id("alertInFrame").click()
 
         alert = self._waitForAlert()
@@ -149,9 +174,11 @@ class AlertsTest(unittest.TestCase):
         self.assertEqual("Testing Alerts", self.driver.title)
 
     def testShouldAllowUsersToAcceptAnAlertInANestedFrame(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support alerts")
         self._loadPage("alerts")
-        self.driver.switch_to_frame("iframeWithIframe")
-        self.driver.switch_to_frame("iframeWithAlert")
+        self.driver.switch_to.frame(self.driver.find_element(By.NAME, "iframeWithIframe"))
+        self.driver.switch_to.frame(self.driver.find_element(By.NAME, "iframeWithAlert"))
 
         self.driver.find_element_by_id("alertInFrame").click()
 
@@ -165,6 +192,8 @@ class AlertsTest(unittest.TestCase):
         # //TODO(David) Complete this test
 
     def testPromptShouldUseDefaultValueIfNoKeysSent(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support alerts")
         self._loadPage("alerts")
         self.driver.find_element(By.ID, "prompt-with-default").click()
 
@@ -175,6 +204,8 @@ class AlertsTest(unittest.TestCase):
         self.assertEqual("This is a default value", txt)
 
     def testPromptShouldHaveNullValueIfDismissed(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support alerts")
         self._loadPage("alerts")
         self.driver.find_element(By.ID, "prompt-with-default").click()
         alert = self._waitForAlert()
@@ -183,6 +214,8 @@ class AlertsTest(unittest.TestCase):
         self.assertEqual("null", self.driver.find_element(By.ID, "text").text)
 
     def testHandlesTwoAlertsFromOneInteraction(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support alerts")
         self._loadPage("alerts")
 
         self.driver.find_element(By.ID, "double-prompt").click()
@@ -198,6 +231,8 @@ class AlertsTest(unittest.TestCase):
         self.assertEqual(self.driver.find_element(By.ID, "text1").text, "brie")
         self.assertEqual(self.driver.find_element(By.ID, "text2").text, "cheddar")
     def testShouldHandleAlertOnPageLoad(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support alerts")
         self._loadPage("alerts")
         self.driver.find_element(By.ID, "open-page-with-onload-alert").click()
         alert = self._waitForAlert()
@@ -207,18 +242,34 @@ class AlertsTest(unittest.TestCase):
         self.assertEquals("onload", value)
 
     def testShouldAllowTheUserToGetTheTextOfAnAlert(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support alerts")
         self._loadPage("alerts")
         self.driver.find_element(by=By.ID, value="alert").click()
         alert = self._waitForAlert()
         value = alert.text
         alert.accept()
         self.assertEqual("cheese", value)
-    
+
+    def testUnexpectedAlertPresentExceptionContainsAlertText(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support alerts")
+        self._loadPage("alerts")
+        self.driver.find_element(by=By.ID, value="alert").click()
+        alert = self._waitForAlert()
+        value = alert.text
+        try:
+            self._loadPage("simpleTest")
+            raise Exception("UnexpectedAlertPresentException should have been thrown")
+        except UnexpectedAlertPresentException as uape:
+            self.assertEquals(value, uape.alert_text)
+            self.assertTrue(str(uape).startswith("Alert Text: %s" % value))
+
     def _waitForAlert(self):
         return WebDriverWait(self.driver, 3).until(EC.alert_is_present())
 
     def _pageURL(self, name):
-        return "http://localhost:%d/%s.html" % (self.webserver.port, name)
+        return self.webserver.where_is(name + '.html')
 
     def _loadSimplePage(self):
         self._loadPage("simpleTest")
@@ -226,7 +277,7 @@ class AlertsTest(unittest.TestCase):
     def _loadPage(self, name):
         try:
             # just in case a previous test left open an alert
-            self.driver.switch_to_alert().dismiss()
+            self.driver.switch_to.alert().dismiss()
         except:
             pass
         self.driver.get(self._pageURL(name))

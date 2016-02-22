@@ -6,43 +6,35 @@
   <script type="text/javascript">
     goog.require('bot.userAgent');
     goog.require('bot.window');
+    goog.require('goog.Promise');
     goog.require('goog.math.Coordinate');
-    goog.require('goog.testing.AsyncTestCase');
     goog.require('goog.testing.jsunit');
   </script>
   <script type="text/javascript">
-    var asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
-
     function verifyScroll(expectedScroll) {
-      if (goog.userAgent.product.ANDROID) {
-        // ANDROID always returns zero.
-        expectedScroll.x = 0;
-        expectedScroll.y = 0;
-      }
       var actualScroll = bot.window.getScroll();
       assertEquals(expectedScroll.x, actualScroll.x);
       assertEquals(expectedScroll.y, actualScroll.y);
     }
 
-    function testGetScroll() {
+    function testScrolling() {
+      // Initial page scroll should be (0, 0).
       var pos = bot.window.getScroll();
       verifyScroll(new goog.math.Coordinate(0, 0));
-    }
 
-    function testSetScroll() {
-      var pos = new goog.math.Coordinate(25, 50);
+      pos = new goog.math.Coordinate(25, 50);
       bot.window.setScroll(pos);
 
-      if (bot.userAgent.SAFARI_6) {
-        asyncTestCase.waitForAsync(
-          'Safari requires an async timeout for scroll effects to apply');
-        setTimeout(function() {
-          verifyScroll(pos);
-          asyncTestCase.continueTesting();
-        }, 100);
-      } else {
+      // Yield to ensure all browsers apply the scrolling change.
+      // Relying on the implicit tick in a promise resolution is enough.
+      return goog.Promise.resolve().then(function() {
+        // For some reason Android stock browser and webview do not apply
+        // the full scroll.
+        if (goog.userAgent.product.ANDROID) {
+          pos = new goog.math.Coordinate(24, 48);
+        }
         verifyScroll(pos);
-      }
+      });
     }
 
     function testSetScrollUsingGetScroll() {
@@ -52,7 +44,7 @@
     }
   </script>
 </head>
-<body style="width: 4000px; height: 4000px; padding: 0px;margin: 0px;">
+<body style="width: 8000px; height: 8000px; padding: 0px;margin: 0px;">
   Hello
 </body>
 </html>

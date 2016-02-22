@@ -4,5 +4,4 @@ java_library(name = "corebased",
   deps = [
     "//java/client/src/com/thoughtworks/selenium",
     "//java/client/test/com/thoughtworks/selenium:test",
-    "//third_party/java/testng",
   ])

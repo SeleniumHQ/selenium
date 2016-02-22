@@ -1,18 +1,19 @@
-#!/usr/bin/python
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-# Copyright 2011 Software Freedom Conservancy.
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
@@ -64,6 +65,7 @@ class EventFiringWebDriver(object):
         if not isinstance(event_listener, AbstractEventListener):
             raise WebDriverException("Event listener must be a subclass of AbstractEventListener")
         self._driver = driver
+        self._driver._wrap_value = self._wrap_value
         self._listener = event_listener
         
     @property
@@ -167,7 +169,12 @@ class EventFiringWebDriver(object):
             return [self._unwrap_element_args(item) for item in args]
         else:
             return args
-        
+
+    def _wrap_value(self, value):
+        if isinstance(value, EventFiringWebElement):
+            return WebDriver._wrap_value(self._driver, value.wrapped_element)
+        return WebDriver._wrap_value(self._driver, value)
+
     def __setattr__(self, item, value):
         if item.startswith("_") or not hasattr(self._driver, item):
             object.__setattr__(self, item, value)

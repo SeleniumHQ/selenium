@@ -1,4 +1,19 @@
-#!/usr/bin/python
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
 
 # Copyright 2008-2009 WebDriver committers
 # Copyright 2008-2009 Google Inc.
@@ -43,7 +58,7 @@ class ApiExampleTest (unittest.TestCase):
     def testGetCurrentUrl(self):
         self._loadSimplePage()
         url = self.driver.current_url
-        self.assertEquals("http://localhost:%d/simpleTest.html" % self.webserver.port, url)
+        self.assertEquals(self.webserver.where_is('simpleTest.html'), url)
 
     def testFindElementsByXPath(self):
         self._loadSimplePage()
@@ -131,12 +146,12 @@ class ApiExampleTest (unittest.TestCase):
         self._loadPage("xhtmlTest")
         self.driver.find_element_by_link_text("Open new window").click()
         self.assertEquals(title_1, self.driver.title)
-        wait.until(lambda dr: dr.switch_to_window("result") is None)
+        wait.until(lambda dr: dr.switch_to.window("result") is None)
         self.assertEquals(title_2, self.driver.title)
 
     def testSwitchFrameByName(self):
         self._loadPage("frameset")
-        self.driver.switch_to_frame("third")
+        self.driver.switch_to.frame(self.driver.find_element_by_name("third"))
         checkbox = self.driver.find_element_by_id("checky")
         checkbox.click()
         checkbox.submit()
@@ -175,7 +190,8 @@ class ApiExampleTest (unittest.TestCase):
         self._loadPage(page)
         elem = self.driver.find_element_by_id("id1")
         attr = elem.get_attribute("href")
-        self.assertEquals("http://localhost:%d/xhtmlTest.html#" % self.webserver.port, attr)
+
+        self.assertEquals(self.webserver.where_is('xhtmlTest.html#'), attr)
 
     def testGetImplicitAttribute(self):
         self._loadPage("nestedElements")
@@ -224,6 +240,8 @@ class ApiExampleTest (unittest.TestCase):
         self.assertFalse(not_visible, "Should not be visible")
 
     def testMoveWindowPosition(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support moving the window position")
         self._loadPage("blank")
         loc = self.driver.get_window_position()
         # note can't test 0,0 since some OS's dont allow that location
@@ -252,19 +270,20 @@ class ApiExampleTest (unittest.TestCase):
         self.assertEquals(size['width'], newSize[0])
         self.assertEquals(size['height'], newSize[1])
 
+    @pytest.mark.ignore_marionette
     def testGetLogTypes(self):
         self._loadPage("blank")
         self.assertTrue(isinstance(self.driver.log_types, list))
 
+    @pytest.mark.ignore_marionette
     def testGetLog(self):
         self._loadPage("blank")
         for log_type in self.driver.log_types:
             log = self.driver.get_log(log_type)
             self.assertTrue(isinstance(log, list))
-            self.assertTrue(log)
 
     def _pageURL(self, name):
-        return "http://localhost:%d/%s.html" % (self.webserver.port, name)
+        return self.webserver.where_is(name + '.html')
 
     def _loadSimplePage(self):
         self._loadPage("simpleTest")

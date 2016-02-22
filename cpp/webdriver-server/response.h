@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -34,11 +37,17 @@ class Response {
 
   Json::Value value(void) const { return this->value_; }
 
+  std::string session_id(void) const { return this->session_id_; }
+
   void SetResponse(const int status_code, const Json::Value& response_value);
   void SetSuccessResponse(const Json::Value& response_value);
+  void SetNewSessionResponse(const std::string& new_session_id,
+                             const Json::Value& response_value);
   void SetErrorResponse(const int error_code, const std::string& message);
 
  private:
+  int ConvertStatusToCode(const std::string& status_string);
+
   // The status code of the response, indicating success or failure.
   int status_code_;
   // The ID of the session on which the command was executed.

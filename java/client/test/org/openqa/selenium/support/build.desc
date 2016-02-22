@@ -11,7 +11,7 @@ java_library(name = "tests",
     "//java/client/test/org/openqa/selenium/support/events:test",
     "//java/client/test/org/openqa/selenium/support/pagefactory:test",
     "//java/client/test/org/openqa/selenium/support/ui:test",
-    "//java/client/test/org/openqa/selenium/testing:tests",
+    "//third_party/java/junit",
     "//third_party/java/mockito",
   ])
 
@@ -21,7 +21,6 @@ java_test(name = "SmallTests",
   ],
   deps = [
     ":tests",
-    "//third_party/java/junit",
   ])
 
 java_test(name = "LargeTests",
@@ -33,5 +32,4 @@ java_test(name = "LargeTests",
   ],
   deps = [
     ":tests",
-    "//third_party/java/junit",
   ])

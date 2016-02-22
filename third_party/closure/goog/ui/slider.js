@@ -17,17 +17,24 @@
  * range by dragging a thumb. The selected value is exposed through getValue().
  *
  * To decorate, the slider should be bound to an element with the class name
- * 'goog-slider-[vertical / horizontal]' containing a child with the classname
- * 'goog-slider-thumb'.
+ * 'goog-slider' containing a child with the class name 'goog-slider-thumb',
+ * whose position is set to relative.
+ * Note that you won't be able to see these elements unless they are styled.
+ *
+ * Slider orientation is horizontal by default.
+ * Use setOrientation(goog.ui.Slider.Orientation.VERTICAL) for a vertical
+ * slider.
  *
  * Decorate Example:
- * <div id="slider" class="goog-slider-horizontal">
- *   <div class="goog-twothumbslider-thumb">
+ * <div id="slider" class="goog-slider">
+ *   <div class="goog-slider-thumb"></div>
  * </div>
- * <script>
  *
- * var slider = new goog.ui.Slider;
- * slider.decorate(document.getElementById('slider'));
+ * JavaScript code:
+ * <code>
+ *   var slider = new goog.ui.Slider;
+ *   slider.decorate(document.getElementById('slider'));
+ * </code>
  *
  * @author arv@google.com (Erik Arvidsson)
  * @see ../demos/slider.html
@@ -43,22 +50,25 @@ goog.provide('goog.ui.Slider.Orientation');
 goog.require('goog.a11y.aria');
 goog.require('goog.a11y.aria.Role');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.ui.SliderBase');
-goog.require('goog.ui.SliderBase.Orientation');
 
 
 
 /**
  * This creates a slider object.
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
+ * @param {(function(number):?string)=} opt_labelFn An optional function mapping
+ *     slider values to a description of the value.
  * @constructor
  * @extends {goog.ui.SliderBase}
  */
-goog.ui.Slider = function(opt_domHelper) {
-  goog.ui.SliderBase.call(this, opt_domHelper);
+goog.ui.Slider = function(opt_domHelper, opt_labelFn) {
+  goog.ui.SliderBase.call(this, opt_domHelper, opt_labelFn);
   this.rangeModel.setExtent(0);
 };
 goog.inherits(goog.ui.Slider, goog.ui.SliderBase);
+goog.tagUnsealableClass(goog.ui.Slider);
 
 
 /**
@@ -115,13 +125,12 @@ goog.ui.Slider.prototype.createThumbs = function() {
 
 /**
  * Creates the thumb element.
- * @return {HTMLDivElement} The created thumb element.
+ * @return {!HTMLDivElement} The created thumb element.
  * @private
  */
 goog.ui.Slider.prototype.createThumb_ = function() {
-  var thumb =
-      this.getDomHelper().createDom('div', goog.ui.Slider.THUMB_CSS_CLASS);
+  var thumb = this.getDomHelper().createDom(goog.dom.TagName.DIV,
+                                            goog.ui.Slider.THUMB_CSS_CLASS);
   goog.a11y.aria.setRole(thumb, goog.a11y.aria.Role.BUTTON);
-  return /** @type {HTMLDivElement} */ (thumb);
+  return /** @type {!HTMLDivElement} */ (thumb);
 };
-

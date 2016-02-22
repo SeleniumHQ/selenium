@@ -1,0 +1,55 @@
+<?xml-stylesheet href="chrome://global/skin" type="text/css"?>
+<!--
+Copyright 2014 Samit Badle
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<!DOCTYPE dialog [
+        <!ENTITY % browserDTD SYSTEM "chrome://browser/locale/browser.dtd">
+        %browserDTD;
+        ]>
+<dialog buttons="accept,cancel"
+        id="selenium-ide-diag-info"
+        title="Diagnostic Information"
+        width="520"
+        height="600"
+        onload="init()"
+        ondialogaccept="return submitInfo();"
+        ondialogcancel="return cancelSubmit();"
+        buttonlabelaccept="Submit"
+        defaultButton=""
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+    <script type="application/x-javascript" src="chrome://selenium-ide/content/browser/mozilla/prompt-service.js"/>
+    <script type="application/x-javascript" src="chrome://selenium-ide/content/health/diag-info.js"/>
+    <vbox flex="1">
+        <groupbox flex="1">
+            <caption label="Diagnostic Information"/>
+            <textbox id="diag" flex="1" multiline="true" readonly="true"/>
+        </groupbox>
+        <description>
+            Sometimes the diagnostic information can contain sensitive information like passwords contained in error messages. Please check and replace all sensitive information by replacing it with ***** using the text box below.
+        </description>
+        <hbox align="center">
+            <textbox id="mask" multiline="false" flex="1"/>
+            <button id="mask-button" label="Replace" tooltiptext="Mask sensitive information" oncommand="mask()"/>
+        </hbox>
+        <separator class="groove-thin"/>
+        <description>
+            The information will be sent to a public server.
+        </description>
+        <hbox align="center">
+            <checkbox id="consent" label="I consent that this information can be made available publicly"/>
+        </hbox>
+    </vbox>
+</dialog>

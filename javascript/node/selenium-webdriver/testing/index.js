@@ -1,81 +1,73 @@
-// Copyright 2013 Selenium committers
-// Copyright 2013 Software Freedom Conservancy
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-//     You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview Provides wrappers around the following global functions from
- * Mocha's BDD interface:
- *     after
- *     afterEach
- *     before
- *     beforeEach
- *     it
- *     it.only
- *     it.skip
- *     xit
+ * [Mocha's BDD interface](https://github.com/mochajs/mocha):
  *
- * The provided wrappers leverage the webdriver.promise.ControlFlow to simplify
- * writing asynchronous tests:
+ * - after
+ * - afterEach
+ * - before
+ * - beforeEach
+ * - it
+ * - it.only
+ * - it.skip
+ * - xit
  *
- * var webdriver = require('selenium-webdriver'),
- *     remote = require('selenium-webdriver/remote'),
- *     test = require('selenium-webdriver/testing');
+ * The provided wrappers leverage the {@link webdriver.promise.ControlFlow}
+ * to simplify writing asynchronous tests:
  *
- * test.describe('Google Search', function() {
- *   var driver, server;
+ *     var By = require('selenium-webdriver').By,
+ *         until = require('selenium-webdriver').until,
+ *         firefox = require('selenium-webdriver/firefox'),
+ *         test = require('selenium-webdriver/testing');
  *
- *   test.before(function() {
- *     server = new remote.SeleniumServer({
- *       jar: 'path/to/selenium-server-standalone.jar'
- *     });
- *     server.start();
+ *     test.describe('Google Search', function() {
+ *       var driver;
  *
- *     driver = new webdriver.Builder().
- *         withCapabilities({'browserName': 'firefox'}).
- *         usingServer(server.address()).
- *         build();
- *   });
- *
- *   test.after(function() {
- *     driver.quit();
- *     server.stop();
- *   });
- *
- *   test.it('should append query to title', function() {
- *     driver.get('http://www.google.com');
- *     driver.findElement(webdriver.By.name('q')).sendKeys('webdriver');
- *     driver.findElement(webdriver.By.name('btnG')).click();
- *     driver.wait(function() {
- *       return driver.getTitle().then(function(title) {
- *         return 'webdriver - Google Search' === title;
+ *       test.before(function() {
+ *         driver = new firefox.Driver();
  *       });
- *     }, 1000, 'Waiting for title to update');
- *   });
- * });
+ *
+ *       test.after(function() {
+ *         driver.quit();
+ *       });
+ *
+ *       test.it('should append query to title', function() {
+ *         driver.get('http://www.google.com/ncr');
+ *         driver.findElement(By.name('q')).sendKeys('webdriver');
+ *         driver.findElement(By.name('btnG')).click();
+ *         driver.wait(until.titleIs('webdriver - Google Search'), 1000);
+ *       });
+ *     });
  *
  * You may conditionally suppress a test function using the exported
  * "ignore" function. If the provided predicate returns true, the attached
  * test case will be skipped:
  *
- *   test.ignore(maybe()).it('is flaky', function() {
- *     if (Math.random() < 0.5) throw Error();
- *   });
+ *     test.ignore(maybe()).it('is flaky', function() {
+ *       if (Math.random() < 0.5) throw Error();
+ *     });
  *
- *   function maybe() { return Math.random() < 0.5; }
+ *     function maybe() { return Math.random() < 0.5; }
  */
 
-var flow = require('..').promise.controlFlow();
+var promise = require('..').promise;
+var flow = promise.controlFlow();
 
 
 /**
@@ -99,26 +91,67 @@ function seal(fn) {
  */
 function wrapped(globalFn) {
   return function() {
-    switch (arguments.length) {
-      case 1:
-        globalFn(asyncTestFn(arguments[0]));
-        break;
-
-      case 2:
-        globalFn(arguments[0], asyncTestFn(arguments[1]));
-        break;
-
-      default:
-        throw Error('Invalid # arguments: ' + arguments.length);
+    if (arguments.length === 1) {
+      return globalFn(makeAsyncTestFn(arguments[0]));
+    }
+    else if (arguments.length === 2) {
+      return globalFn(arguments[0], makeAsyncTestFn(arguments[1]));
+    }
+    else {
+      throw Error('Invalid # arguments: ' + arguments.length);
     }
   };
+}
 
-  function asyncTestFn(fn) {
-    return function(done) {
-      this.timeout(0);
-      flow.execute(fn).then(seal(done), done);
+/**
+ * Make a wrapper to invoke caller's test function, fn.  Run the test function
+ * within a ControlFlow.
+ *
+ * Should preserve the semantics of Mocha's Runnable.prototype.run (See
+ * https://github.com/mochajs/mocha/blob/master/lib/runnable.js#L192)
+ *
+ * @param {Function} fn
+ * @return {Function}
+ */
+function makeAsyncTestFn(fn) {
+  var async = fn.length > 0; // if test function expects a callback, its "async"
+
+  var ret = /** @type {function(this: mocha.Context)}*/ (function(done) {
+    var runnable = this.runnable();
+    var mochaCallback = runnable.callback;
+    runnable.callback = function() {
+      flow.reset();
+      return mochaCallback.apply(this, arguments);
     };
-  }
+
+    var testFn = fn.bind(this);
+    flow.execute(function controlFlowExecute() {
+      return new promise.Promise(function(fulfill, reject) {
+        if (async) {
+          // If testFn is async (it expects a done callback), resolve the promise of this
+          // test whenever that callback says to.  Any promises returned from testFn are
+          // ignored.
+          testFn(function testFnDoneCallback(err) {
+            if (err) {
+              reject(err);
+            } else {
+              fulfill();
+            }
+          });
+        } else {
+          // Without a callback, testFn can return a promise, or it will
+          // be assumed to have completed synchronously
+          fulfill(testFn());
+        }
+      }, flow);
+    }, runnable.fullTitle()).then(seal(done), done);
+  });
+
+  ret.toString = function() {
+    return fn.toString();
+  };
+
+  return ret;
 }
 
 
@@ -127,8 +160,8 @@ function wrapped(globalFn) {
  * true.
  * @param {function(): boolean} predicateFn A predicate to call to determine
  *     if the test should be suppressed. This function MUST be synchronous.
- * @return {!Object} An object with wrapped versions of exports.it and
- *     exports.describe that ignore tests as indicated by the predicate.
+ * @return {!Object} An object with wrapped versions of {@link #it()} and
+ *     {@link #describe()} that ignore tests as indicated by the predicate.
  */
 function ignore(predicateFn) {
   var describe = wrap(exports.xdescribe, exports.describe);
@@ -157,17 +190,79 @@ function ignore(predicateFn) {
 // PUBLIC API
 
 
+/**
+ * @return {!promise.ControlFlow} the control flow instance used by this module
+ *     to coordinate test actions.
+ */
+exports.controlFlow = function(){
+  return flow;
+};
+
+
+/**
+ * Registers a new test suite.
+ * @param {string} name The suite name.
+ * @param {function()=} fn The suite function, or {@code undefined} to define
+ *     a pending test suite.
+ */
 exports.describe = global.describe;
+
+/**
+ * Defines a suppressed test suite.
+ * @param {string} name The suite name.
+ * @param {function()=} fn The suite function, or {@code undefined} to define
+ *     a pending test suite.
+ */
 exports.xdescribe = global.xdescribe;
 exports.describe.skip = global.describe.skip;
 
+/**
+ * Register a function to call after the current suite finishes.
+ * @param {function()} fn .
+ */
 exports.after = wrapped(global.after);
+
+/**
+ * Register a function to call after each test in a suite.
+ * @param {function()} fn .
+ */
 exports.afterEach = wrapped(global.afterEach);
+
+/**
+ * Register a function to call before the current suite starts.
+ * @param {function()} fn .
+ */
 exports.before = wrapped(global.before);
+
+/**
+ * Register a function to call before each test in a suite.
+ * @param {function()} fn .
+ */
 exports.beforeEach = wrapped(global.beforeEach);
 
+/**
+ * Add a test to the current suite.
+ * @param {string} name The test name.
+ * @param {function()=} fn The test function, or {@code undefined} to define
+ *     a pending test case.
+ */
 exports.it = wrapped(global.it);
-exports.it.only = exports.iit = wrapped(global.it.only);
-exports.it.skip = exports.xit = wrapped(global.xit);
+
+/**
+ * An alias for {@link #it()} that flags the test as the only one that should
+ * be run within the current suite.
+ * @param {string} name The test name.
+ * @param {function()=} fn The test function, or {@code undefined} to define
+ *     a pending test case.
+ */
+exports.iit = exports.it.only = wrapped(global.it.only);
+
+/**
+ * Adds a test to the current suite while suppressing it so it is not run.
+ * @param {string} name The test name.
+ * @param {function()=} fn The test function, or {@code undefined} to define
+ *     a pending test case.
+ */
+exports.xit = exports.it.skip = wrapped(global.xit);
 
 exports.ignore = ignore;

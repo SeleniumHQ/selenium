@@ -1,0 +1,19 @@
+java_library(name = 'environment',
+  srcs = glob(['*.java', 'webserver/*.java'], excludes = ['**/*Test.java']),
+  deps = [
+    '//java/client/src/org/openqa/selenium:codecs',
+    '//java/client/src/org/openqa/selenium:webdriver-api',
+    '//java/client/src/org/openqa/selenium/io:io',
+    '//java/client/src/org/openqa/selenium/net:net',
+    '//java/client/test/org/openqa/selenium/testing:helpers',
+    '//third_party/java/commons-fileupload:commons-fileupload',
+    '//third_party/java/guava:guava',
+    '//third_party/java/httpcomponents:httpclient',
+    '//third_party/java/jetty:jetty',
+    '//third_party/java/servlet:servlet-api',
+  ],
+  visibility = [
+    '//java/client/test/...',
+    '//java/server/test/...',
+  ],
+)

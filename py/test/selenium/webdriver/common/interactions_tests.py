@@ -1,19 +1,19 @@
-#!/usr/bin/python
-
-# Copyright 2011 WebDriver committers
-# Copyright 2011 Google Inc.
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
 
 """Tests for advanced user interactions."""
 import unittest
@@ -90,7 +90,7 @@ class AdvancedUserInteractionTest(unittest.TestCase):
         move = ActionChains(self.driver) \
             .move_to_element(dropInto)
         drop = ActionChains(self.driver).release(dropInto)
-    
+
         holdDrag.perform()
         move.perform()
         drop.perform()
@@ -114,6 +114,8 @@ class AdvancedUserInteractionTest(unittest.TestCase):
     def testContextClick(self):
         """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
         self._loadPage("javascriptPage")
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver has an issue here")
         toContextClick = self.driver.find_element_by_id("doubleClickField")
 
         contextClick = ActionChains(self.driver) \
@@ -143,7 +145,7 @@ class AdvancedUserInteractionTest(unittest.TestCase):
         try:
             move = ActionChains(self.driver) \
                 .move_to_element(None)
-      
+
             move.perform()
             self.fail("Shouldn't be allowed to click on null element.")
         except AttributeError:
@@ -169,10 +171,12 @@ class AdvancedUserInteractionTest(unittest.TestCase):
         resultElement = self.driver.find_element_by_id("result")
         self.assertEqual("roquefort parmigiano cheddar", resultElement.text)
 
-    @pytest.mark.ignore_chrome 
+    @pytest.mark.ignore_chrome
     def testSelectingMultipleItems(self):
         """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest."""
         self._loadPage("selectableItems")
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not seem to select all the elements")
         reportingElement = self.driver.find_element_by_id("infodiv")
         self.assertEqual("no info", reportingElement.text)
 
@@ -194,6 +198,8 @@ class AdvancedUserInteractionTest(unittest.TestCase):
 
     @pytest.mark.ignore_chrome
     def testMovingMouseBackAndForthPastViewPort(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not seem to trigger the events")
         self._before()
         self._loadPage("veryLargeCanvas")
 
@@ -232,7 +238,7 @@ class AdvancedUserInteractionTest(unittest.TestCase):
           .perform()
         expectedEvents += " Fourth"
         wait.until(expectedEventsFired)
-    
+
     def testSendingKeysToActiveElementWithModifier(self):
         self._loadPage("formPage")
         e = self.driver.find_element_by_id("working")
@@ -243,12 +249,12 @@ class AdvancedUserInteractionTest(unittest.TestCase):
           .send_keys("abc")\
           .key_up(Keys.SHIFT)\
           .perform()
-        
+
         self.assertEqual("ABC", e.get_attribute('value'))
 
 
     def _pageURL(self, name):
-        return "http://localhost:%d/%s.html" % (self.webserver.port, name)
+        return self.webserver.where_is(name + '.html')
 
     def _loadSimplePage(self):
         self._loadPage("simpleTest")

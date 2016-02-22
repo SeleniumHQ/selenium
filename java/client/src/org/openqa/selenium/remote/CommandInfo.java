@@ -1,58 +1,38 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 package org.openqa.selenium.remote;
 
-import org.apache.http.client.methods.HttpUriRequest;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.net.Urls;
-
-import java.net.URL;
+import org.openqa.selenium.remote.http.HttpMethod;
 
 public class CommandInfo {
-
   private final String url;
-  private final HttpVerb verb;
+  private final HttpMethod method;
 
-  public CommandInfo(String url, HttpVerb verb) {
+  public CommandInfo(String url, HttpMethod method) {
     this.url = url;
-    this.verb = verb;
+    this.method = method;
   }
 
-  HttpUriRequest getMethod(URL base, Command command) {
-    StringBuilder urlBuilder = new StringBuilder();
-
-    urlBuilder.append(base.toExternalForm().replaceAll("/$", ""));
-    for (String part : url.split("/")) {
-      if (part.length() == 0) {
-        continue;
-      }
-
-      urlBuilder.append("/");
-      if (part.startsWith(":")) {
-        String value = get(part.substring(1), command);
-        if (value != null) {
-          urlBuilder.append(get(part.substring(1), command));
-        }
-      } else {
-        urlBuilder.append(part);
-      }
-    }
-
-    return verb.createMethod(urlBuilder.toString());
+  String getUrl() {
+    return url;
   }
 
-  private String get(String propertyName, Command command) {
-    if ("sessionId".equals(propertyName)) {
-      SessionId id = command.getSessionId();
-      if (id == null) {
-        throw new WebDriverException("Session ID may not be null");
-      }
-      return id.toString();
-    }
-
-    // Attempt to extract the property name from the parameters
-    Object value = command.getParameters().get(propertyName);
-    if (value != null) {
-      return Urls.urlEncode(String.valueOf(value));
-    }
-    return null;
+  HttpMethod getMethod() {
+    return method;
   }
 }

@@ -1,4 +1,8 @@
 
+rename(name = "sizzle",
+  deps = ["//third_party/js/sizzle:js"],
+  out = "sizzle.js")
+
 java_library(name = "webdriven",
   srcs = [
     "ExplodingSupplier.java",
@@ -13,6 +17,7 @@ java_library(name = "webdriven",
   embedded = [
     "htmlutils.js",
     "injectableSelenium.js",
+    ":sizzle",
     "//javascript/selenium-atoms:findElement",
     "//javascript/selenium-atoms:findOption",
     "//javascript/selenium-atoms:fireEvent",
@@ -25,7 +30,6 @@ java_library(name = "webdriven",
     "//javascript/selenium-atoms:isTextPresent",
     "//javascript/selenium-atoms:isVisible",
     "//javascript/selenium-atoms:type",
-    "//third_party/js/sizzle:sizzle",
   ])
 
 
@@ -38,10 +42,12 @@ java_library(name = "emulation-api",
     "ScriptMutator.java",
     "SeleneseCommand.java",
     "SeleniumMutator.java",
+    "Timer.java",
     "VariableDeclaration.java",
+    "Windows.java",
   ],
   deps = [
     "//java/client/src/com/thoughtworks/selenium:api",
     "//java/client/src/org/openqa/selenium:webdriver-api",
-    "//third_party/java/guava-libraries",
+    "//third_party/java/guava",
   ])

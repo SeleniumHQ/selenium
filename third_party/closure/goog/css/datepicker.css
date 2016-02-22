@@ -115,11 +115,17 @@ td.goog-date-picker-none-cont {
 }
 
 .goog-date-picker-month {
-  width: 11ex;
+  min-width: 11ex;
+  white-space: nowrap;
 }
 
 .goog-date-picker-year {
-  width: 6ex;
+  min-width: 6ex;
+  white-space: nowrap;
+}
+
+.goog-date-picker-monthyear {
+  white-space: nowrap;
 }
 
 .goog-date-picker table {

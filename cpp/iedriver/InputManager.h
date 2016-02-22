@@ -1,5 +1,8 @@
-// Copyright 2013 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -16,14 +19,23 @@
 
 #include <vector>
 #include "DocumentHost.h"
-#include "ElementRepository.h"
-#include "json.h"
-#include "keycodes.h"
 
 #define USER_INTERACTION_MUTEX_NAME L"WebDriverUserInteractionMutex"
 #define WAIT_TIME_IN_MILLISECONDS_PER_INPUT_EVENT 100
 
 namespace webdriver {
+
+struct KeyInfo {
+  WORD key_code;
+  UINT scan_code;
+  bool is_extended_key;
+  bool is_webdriver_key;
+};
+
+// Forward declaration of classes to avoid
+// circular include files.
+class ElementRepository;
+class InteractionsManager;
 
 class InputManager {
  public:
@@ -47,6 +59,9 @@ class InputManager {
                      Json::Value keystroke_array,
                      bool auto_release_modifier_keys);
   bool SetFocusToBrowser(BrowserHandle browser_wrapper);
+
+  void SetPersistentEvents(bool is_firing);
+  void StopPersistentEvents(void);
 
   bool enable_native_events(void) const { return this->use_native_events_; }
   void set_enable_native_events(const bool enable_native_events) { 
@@ -89,10 +104,13 @@ class InputManager {
                                 int* normalized_y);
   void AddMouseInput(HWND window_handle, long flag, int x, int y);
   void AddKeyboardInput(HWND window_handle, wchar_t character);
+
+  void CreateKeyboardInputItem(KeyInfo key_info, DWORD initial_flags, bool is_generating_keyup);
+
+  bool IsModifierKey(wchar_t character);
+
+  KeyInfo GetKeyInfo(HWND windows_handle, wchar_t character);
   
-  void InstallInputEventHooks(void);
-  void UninstallInputEventHooks(void);
-  HHOOK InstallWindowsHook(std::string hook_procedure_name, int hook_type);
   bool WaitForInputEventProcessing(int input_count);
 
   bool use_native_events_;
@@ -110,10 +128,9 @@ class InputManager {
   CComVariant mouse_state_;
 
   ElementRepository* element_map_;
+  InteractionsManager* interactions_manager_;
 
   std::vector<INPUT> inputs_;
-  HHOOK keyboard_hook_handle_;
-  HHOOK mouse_hook_handle_;
 };
 
 } // namespace webdriver

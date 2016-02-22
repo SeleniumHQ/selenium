@@ -2,8 +2,8 @@ package cybervillains.ca;
 
 import org.bouncycastle.jcajce.provider.config.ConfigurableProvider;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.openqa.selenium.security.CertificateGenerator;
-import org.openqa.selenium.security.KeyAndCert;
+import org.openqa.selenium.server.security.CertificateGenerator;
+import org.openqa.selenium.server.security.KeyAndCert;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,6 +39,7 @@ import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.security.spec.DSAParameterSpec;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,21 +47,21 @@ import javax.crypto.spec.DHParameterSpec;
 
 /**
  * This is the main entry point into the Cybervillains CA.
- * 
+ *
  * This class handles generation, storage and the persistent mapping of input to duplicated
  * certificates and mapped public keys.
- * 
+ *
  * Default setting is to immediately persist changes to the store by writing out the keystore and
  * mapping file every time a new certificate is added. This behavior can be disabled if desired, to
  * enhance performance or allow temporary testing without modifying the certificate store.
- * 
- *************************************************************************************** 
+ *
+ ***************************************************************************************
  * Copyright (c) 2007, Information Security Partners, LLC All rights reserved.
- * 
+ *
  * In a special exception, Selenium/OpenQA is allowed to use this code under the Apache License 2.0.
- * 
+ *
  * @author Brad Hill
- * 
+ *
  */
 public class KeyStoreManager {
 
@@ -162,7 +163,7 @@ public class KeyStoreManager {
 
       if (!privKeys.exists())
       {
-        _rememberedPrivateKeys = new HashMap<PublicKey, PrivateKey>();
+        _rememberedPrivateKeys = new HashMap<>();
       }
       else
       {
@@ -177,7 +178,7 @@ public class KeyStoreManager {
 
       if (!pubKeys.exists())
       {
-        _mappedPublicKeys = new HashMap<PublicKey, PublicKey>();
+        _mappedPublicKeys = new HashMap<>();
       }
       else
       {
@@ -251,7 +252,7 @@ public class KeyStoreManager {
 
       if (!file.exists())
       {
-        _certMap = new HashMap<String, String>();
+        _certMap = new HashMap<>();
       }
       else
       {
@@ -281,7 +282,7 @@ public class KeyStoreManager {
 
       if (!file.exists())
       {
-        _subjectMap = new HashMap<String, String>();
+        _subjectMap = new HashMap<>();
       }
       else
       {
@@ -384,10 +385,13 @@ public class KeyStoreManager {
 
   /**
    * Stores a new certificate and its associated private key in the keystore.
-   * 
-   * @throws KeyStoreException
-   * @throws CertificateException
-   * @throws NoSuchAlgorithmException
+   *
+   * @param hostname host name
+   * @param cert certificate
+   * @param privKey private key
+   * @throws KeyStoreException key store exception
+   * @throws CertificateException certificate exception
+   * @throws NoSuchAlgorithmException no such algorithm
    */
   public synchronized void addCertAndPrivateKey(String hostname, final X509Certificate cert,
       final PrivateKey privKey)
@@ -409,16 +413,16 @@ public class KeyStoreManager {
 
   /**
    * Writes the keystore and certificate/keypair mappings to disk.
-   * 
-   * @throws KeyStoreException
-   * @throws NoSuchAlgorithmException
-   * @throws CertificateException
+   *
+   * @throws KeyStoreException key store exception
+   * @throws CertificateException certificate exception
+   * @throws NoSuchAlgorithmException no such algorithm
    */
   public synchronized void persist() throws KeyStoreException, NoSuchAlgorithmException,
       CertificateException {
-    try
-    {
-      FileOutputStream kso = new FileOutputStream(new File(root, _caPrivateKeystore));
+    FileOutputStream kso = null;
+    try {
+      kso = new FileOutputStream(new File(root, _caPrivateKeystore));
       _ks.store(kso, _keystorepass);
       kso.flush();
       kso.close();
@@ -426,17 +430,26 @@ public class KeyStoreManager {
       persistSubjectMap();
       persistKeyPairMap();
       persistPublicKeyMap();
-    } catch (IOException ioe)
-    {
+    } catch (IOException ioe) {
       ioe.printStackTrace();
+    } finally {
+      if (kso != null) {
+        try {
+          kso.close();
+        } catch (IOException e) {
+          log.log(Level.WARNING, "Unable to close " + _caPrivateKeystore, e);
+        }
+      }
     }
   }
 
   /**
    * Returns the aliased certificate. Certificates are aliased by their SHA1 digest.
-   * 
+   *
    * @see ThumbprintUtil
-   * @throws KeyStoreException
+   * @param alias alias
+   * @throws KeyStoreException keystore exception
+   * @return certificate
    */
   public synchronized X509Certificate getCertificateByAlias(final String alias)
       throws KeyStoreException {
@@ -445,18 +458,20 @@ public class KeyStoreManager {
 
   /**
    * Returns the aliased certificate. Certificates are aliased by their hostname.
-   * 
+   *
    * @see ThumbprintUtil
-   * @throws KeyStoreException
-   * @throws UnrecoverableKeyException
-   * @throws NoSuchProviderException
-   * @throws NoSuchAlgorithmException
-   * @throws CertificateException
-   * @throws SignatureException
-   * @throws CertificateNotYetValidException
-   * @throws CertificateExpiredException
-   * @throws InvalidKeyException
-   * @throws CertificateParsingException
+   * @param hostname host name
+   * @throws KeyStoreException keystore
+   * @throws UnrecoverableKeyException unrecoverable key
+   * @throws NoSuchProviderException no such provider
+   * @throws NoSuchAlgorithmException no such algorithm
+   * @throws CertificateException certificate
+   * @throws SignatureException signature
+   * @throws CertificateNotYetValidException certificate not yet valid
+   * @throws CertificateExpiredException certificate expired
+   * @throws InvalidKeyException invalid key
+   * @throws CertificateParsingException certificate parsing
+   * @return certificate
    */
   public synchronized X509Certificate getCertificateByHostname(final String hostname)
       throws KeyStoreException, InvalidKeyException, SignatureException, CertificateException,
@@ -472,8 +487,9 @@ public class KeyStoreManager {
 
   /**
    * Gets the authority root signing cert.
-   * 
-   * @throws KeyStoreException
+   *
+   * @throws KeyStoreException keystore
+   * @return certificate
    */
   public synchronized X509Certificate getSigningCert() throws KeyStoreException {
     return _caCert;
@@ -481,10 +497,11 @@ public class KeyStoreManager {
 
   /**
    * Gets the authority private signing key.
-   * 
-   * @throws KeyStoreException
-   * @throws NoSuchAlgorithmException
-   * @throws UnrecoverableKeyException
+   *
+   * @throws KeyStoreException key store exception
+   * @throws UnrecoverableKeyException unrecoverable key
+   * @throws NoSuchAlgorithmException no such algorithm
+   * @return private key
    */
   public synchronized PrivateKey getSigningPrivateKey() throws KeyStoreException,
       NoSuchAlgorithmException, UnrecoverableKeyException {
@@ -495,17 +512,16 @@ public class KeyStoreManager {
    * This method returns the mapped certificate for a hostname, or generates a "standard" SSL server
    * certificate issued by the CA to the supplied subject if no mapping has been created. This is
    * not a true duplication, just a shortcut method that is adequate for web browsers.
-   * 
-   * @throws CertificateParsingException
-   * @throws InvalidKeyException
-   * @throws CertificateExpiredException
-   * @throws CertificateNotYetValidException
-   * @throws SignatureException
-   * @throws CertificateException
-   * @throws NoSuchAlgorithmException
-   * @throws NoSuchProviderException
-   * @throws KeyStoreException
-   * @throws UnrecoverableKeyException
+   *
+   * @throws KeyStoreException keystore
+   * @throws UnrecoverableKeyException unrecoverable key
+   * @throws NoSuchProviderException no such provider
+   * @throws NoSuchAlgorithmException no such algorithm
+   * @throws CertificateException certificate
+   * @throws SignatureException signature
+   * @throws InvalidKeyException invalid key
+   * @param hostname host name
+   * @return mapped certificate
    */
   public X509Certificate getMappedCertificateForHostname(String hostname)
       throws InvalidKeyException, SignatureException, CertificateException,
@@ -544,43 +560,17 @@ public class KeyStoreManager {
   }
 
   private synchronized void persistCertMap() {
-    try {
-      ObjectOutput out =
-          new ObjectOutputStream(new FileOutputStream(new File(root, CERTMAP_SER_FILE)));
-      out.writeObject(_certMap);
-      out.flush();
-      out.close();
-    } catch (FileNotFoundException e) {
-      // writing, this shouldn't happen...
-      e.printStackTrace();
-    } catch (IOException e) {
-      // big problem!
-      e.printStackTrace();
-      throw new Error(e);
-    }
+    persistMap(new File(root, CERTMAP_SER_FILE), _certMap);
   }
 
 
 
   private synchronized void persistSubjectMap() {
-    try {
-      ObjectOutput out =
-          new ObjectOutputStream(new FileOutputStream(new File(root, SUBJMAP_SER_FILE)));
-      out.writeObject(_subjectMap);
-      out.flush();
-      out.close();
-    } catch (FileNotFoundException e) {
-      // writing, this shouldn't happen...
-      e.printStackTrace();
-    } catch (IOException e) {
-      // big problem!
-      e.printStackTrace();
-      throw new Error(e);
-    }
+    persistMap(new File(root, SUBJMAP_SER_FILE), _subjectMap);
   }
 
   /**
-   * Generate an RSA Key Pair
+   * @return Generated RSA Key Pair
    */
   public KeyPair getRSAKeyPair()
   {
@@ -591,29 +581,19 @@ public class KeyStoreManager {
   }
 
   private synchronized void persistPublicKeyMap() {
-    try {
-      ObjectOutput out =
-          new ObjectOutputStream(new FileOutputStream(new File(root, PUB_KEYMAP_SER_FILE)));
-      out.writeObject(_mappedPublicKeys);
-      out.flush();
-      out.close();
-    } catch (FileNotFoundException e) {
-      // writing, won't happen
-      e.printStackTrace();
-    } catch (IOException e) {
-      // very bad
-      e.printStackTrace();
-      throw new Error(e);
-    }
+    persistMap(new File(root, PUB_KEYMAP_SER_FILE), _mappedPublicKeys);
   }
 
   private synchronized void persistKeyPairMap() {
+    persistMap(new File(root, KEYMAP_SER_FILE), _rememberedPrivateKeys);
+  }
+
+  private void persistMap(File outputFile, Map<?, ?> toPersist) {
+    ObjectOutput out = null;
     try {
-      ObjectOutput out =
-          new ObjectOutputStream(new FileOutputStream(new File(root, KEYMAP_SER_FILE)));
-      out.writeObject(_rememberedPrivateKeys);
+      out = new ObjectOutputStream(new FileOutputStream(outputFile));
+      out.writeObject(toPersist);
       out.flush();
-      out.close();
     } catch (FileNotFoundException e) {
       // writing, won't happen.
       e.printStackTrace();
@@ -621,6 +601,15 @@ public class KeyStoreManager {
       // very bad
       e.printStackTrace();
       throw new Error(e);
+    } finally {
+      if (out != null) {
+        try {
+          out.close();
+        } catch (IOException e) {
+          // Nothing sane to do.
+          log.log(Level.WARNING, "Unable to close " + outputFile.getName(), e);
+        }
+      }
     }
   }
 

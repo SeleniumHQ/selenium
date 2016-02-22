@@ -1,25 +1,24 @@
 java_test(name = 'small-tests',
   srcs = [
-    'ColorTest.java',
-    'ThreadGuardTest.java',
-    'events/EventFiringWebDriverTest.java',
-    'pagefactory/AjaxElementLocatorTest.java',
-    'pagefactory/AnnotationsTest.java',
-    'pagefactory/ByChainedTest.java',
-    'pagefactory/DefaultElementLocatorTest.java',
-    'pagefactory/DefaultFieldDecoratorTest.java',
-    'pagefactory/internal/LocatingElementHandlerTest.java',
-    'pagefactory/internal/LocatingElementListHandlerTest.java',
+    'SmallTests.java',
+  ],
+  deps = [
+    ':tests',
+    '//third_party/java/junit:junit',
+  ],
+  visibility = [
+    '//java/client/test/org/openqa/selenium:small-tests',
+  ],
+)
+
+java_library(name = 'tests',
+  srcs = glob(['**/*Test.java']) + [
     'ui/FakeClock.java',
     'ui/TickingClock.java',
-    'ui/FluentWaitTest.java',
-    'ui/LoadableComponentTest.java',
-    'ui/SelectTest.java',
-    'ui/SlowLoadableComponentTest.java',
-    'ui/WebDriverWaitTest.java',
   ],
   deps = [
     '//java/client/src/org/openqa/selenium:webdriver-api',
+    '//java/client/src/org/openqa/selenium/remote:remote',
     '//java/client/src/org/openqa/selenium/support:page-factory',
     '//java/client/src/org/openqa/selenium/support:support',
     '//java/client/src/org/openqa/selenium/support/events:events',
@@ -27,9 +26,14 @@ java_test(name = 'small-tests',
     '//java/client/src/org/openqa/selenium/support/ui:components',
     '//java/client/src/org/openqa/selenium/support/ui:elements',
     '//java/client/src/org/openqa/selenium/support/ui:wait',
-    '//java/client/test/org/openqa/selenium:doubles',
+    '//java/client/test/org/openqa/selenium:helpers',
+    '//java/client/test/org/openqa/selenium/testing:test-base',
+    '//third_party/java/guava:guava',
     '//third_party/java/hamcrest:hamcrest',
     '//third_party/java/junit:junit',
     '//third_party/java/mockito:mockito',
   ],
+  visibility = [
+    '//java/client/test/org/openqa/selenium:tests',
+  ]
 )

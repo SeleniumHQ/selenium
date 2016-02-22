@@ -12,6 +12,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         private Mockery mocks;
         private ISearchContext mockDriver;
         private IWebElement mockElement;
+        private IWebDriver mockExplicitDriver;
 
         [SetUp]
         public void SetUp()
@@ -19,6 +20,7 @@ namespace OpenQA.Selenium.Support.PageObjects
             mocks = new Mockery();
             mockDriver = mocks.NewMock<ISearchContext>();
             mockElement = mocks.NewMock<IWebElement>();
+            mockExplicitDriver = mocks.NewMock<IWebDriver>();
         }
         
         [TearDown]
@@ -199,55 +201,67 @@ namespace OpenQA.Selenium.Support.PageObjects
             
             var page = new CustomByNotFoundPage();
             PageFactory.InitElements(mockDriver, page);
-            Assert.Throws(typeof(NoSuchElementException), page.customFoundElement.Clear);
+            Assert.Throws<NoSuchElementException>(page.customFoundElement.Clear);
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "descendent of", MatchType = MessageMatch.Contains)]
         public void UsingCustomByWithInvalidSuperClass()
         {
             var page = new InvalidCustomFinderTypePage();
-            PageFactory.InitElements(mockDriver, page);
+            Assert.Throws<ArgumentException>(() => PageFactory.InitElements(mockDriver, page), "descendent of");
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "How.Custom", MatchType = MessageMatch.Contains)]
         public void UsingCustomByWithNoClass()
         {
             var page = new NoCustomFinderClassPage();
-            PageFactory.InitElements(mockDriver, page);
+            Assert.Throws<ArgumentException>(() => PageFactory.InitElements(mockDriver, page), "How.Custom");
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "constructor", MatchType = MessageMatch.Contains)]
         public void UsingCustomByWithInvalidCtor()
         {
             var page = new InvalidCtorCustomByPage();
-            PageFactory.InitElements(mockDriver, page);
+            Assert.Throws<ArgumentException>(() => PageFactory.InitElements(mockDriver, page), "constructor");
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "is not IWebElement or IList<IWebElement>", MatchType = MessageMatch.Contains)]
         public void ThrowsIfElementTypeIsInvalid()
         {
             var page = new InvalidElementTypePage();
-            PageFactory.InitElements(mockDriver, page);
+            Assert.Throws<ArgumentException>(() => PageFactory.InitElements(mockDriver, page), "is not IWebElement or IList<IWebElement>");
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "is not IWebElement or IList<IWebElement>", MatchType = MessageMatch.Contains)]
         public void ThrowsIfElementCollectionTypeIsInvalid()
         {
             var page = new InvalidCollectionTypePage();
-            PageFactory.InitElements(mockDriver, page);
+            Assert.Throws<ArgumentException>(() => PageFactory.InitElements(mockDriver, page), "is not IWebElement or IList<IWebElement>");
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "is not IWebElement or IList<IWebElement>", MatchType = MessageMatch.Contains)]
         public void ThrowsIfConcreteCollectionTypeIsUsed()
         {
             var page = new ConcreteCollectionTypePage();
-            PageFactory.InitElements(mockDriver, page);
+            Assert.Throws<ArgumentException>(() => PageFactory.InitElements(mockDriver, page), "is not IWebElement or IList<IWebElement>");
+        }
+
+        [Test]
+        public void CanUseGenericInitElementsWithWebDriverConstructor()
+        {
+            WebDriverConstructorPage page = PageFactory.InitElements<WebDriverConstructorPage>(mockExplicitDriver);
+        }
+
+        [Test]
+        public void CanNotUseGenericInitElementWithInvalidConstructor()
+        {
+            Assert.Throws<ArgumentException>(() => { InvalidConstructorPage page = PageFactory.InitElements<InvalidConstructorPage>(mockExplicitDriver); }, "constructor for the specified class containing a single argument of type IWebDriver");
+        }
+
+        [Test]
+        public void CanNotUseGenericInitElementWithParameterlessConstructor()
+        {
+            Assert.Throws<ArgumentException>(() => { ParameterlessConstructorPage page = PageFactory.InitElements<ParameterlessConstructorPage>(mockExplicitDriver); }, "constructor for the specified class containing a single argument of type IWebDriver");
         }
 
         #region Test helper methods
@@ -298,6 +312,36 @@ namespace OpenQA.Selenium.Support.PageObjects
         #region Page classes for tests
         #pragma warning disable 649 //We set fields through reflection, so expect an always-null warning
 
+        internal class WebDriverConstructorPage
+        {
+            [FindsBy(How = How.Name, Using = "someForm")]
+            public IWebElement formElement;
+            
+            public WebDriverConstructorPage(IWebDriver driver)
+            {
+            }
+        }
+
+        internal class ParameterlessConstructorPage
+        {
+            [FindsBy(How = How.Name, Using = "someForm")]
+            public IWebElement formElement;
+            
+            public ParameterlessConstructorPage()
+            {
+            }
+        }
+
+        internal class InvalidConstructorPage
+        {
+            [FindsBy(How = How.Name, Using = "someForm")]
+            public IWebElement formElement;
+
+            public InvalidConstructorPage(string message)
+            {
+            }
+        }
+
         internal class Page
         {
             [FindsBy(How = How.Name, Using = "someForm")]
@@ -335,7 +379,6 @@ namespace OpenQA.Selenium.Support.PageObjects
 
         private class SubClassToPrivatePage : PrivatePage
         {
-            
         }
 
         private class AbstractParent

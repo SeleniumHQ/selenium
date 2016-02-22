@@ -1,5 +1,5 @@
 <!ENTITY selenium-ide.name "Selenium IDE">
-<!ENTITY selenium-ide.version "2.5.0">
+<!ENTITY selenium-ide.version "2.9.0">
 <!ENTITY selenium-ide.sidebar.title "&selenium-ide.name; &selenium-ide.version;">
 <!ENTITY selenium-ide.standalone.title "&selenium-ide.name; &selenium-ide.version;">
 
@@ -45,6 +45,8 @@
 
 <!ENTITY helpDocumentation.label "Documentation">
 <!ENTITY helpReportIssue.label "Signaler le problème">
+<!ENTITY helpSearchIssues.label "Search Issues">
+<!ENTITY helpSubmitDiagInfo.label "Submit Diagnostic Information">
 <!ENTITY helpReleaseNotes.label "Notes de version">
 <!ENTITY helpBlog.label "Selenium officiel Blog">
 <!ENTITY helpWebsite.label "Site officiel Selenium">
@@ -67,6 +69,7 @@
 <!ENTITY contextMenu.breakpoint.label "Ins&#233;rer / Retirer un point d'arr&#234;t">
 <!ENTITY contextMenu.startpoint.label "D&#233;finir / Retirer le point de d&#233;part">
 <!ENTITY contextMenu.execCommand.label "Ex&#233;cuter cette commande">
+<!ENTITY contextMenu.playSuiteHere.label "Play test suite from here">
 
 <!ENTITY uiReference.label "UI-Element">
 <!ENTITY rollupReference.label "Combinaison">

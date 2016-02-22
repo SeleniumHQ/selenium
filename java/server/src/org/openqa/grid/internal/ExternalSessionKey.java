@@ -1,24 +1,26 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.internal;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+
 import org.openqa.grid.internal.exception.NewSessionException;
 
 public class ExternalSessionKey {
@@ -57,14 +59,14 @@ public class ExternalSessionKey {
   public int hashCode() {
     return key.hashCode();
   }
-  
+
   public static ExternalSessionKey fromSe1Request(String piece){
     if (piece.startsWith("sessionId=")) {
       return new ExternalSessionKey(piece.replace("sessionId=", ""));
     }
     return null;
   }
-  
+
   /**
    * extract the session xxx from http://host:port/a/b/c/session/xxx/...
    *
@@ -98,16 +100,16 @@ public class ExternalSessionKey {
    */
   public static ExternalSessionKey fromJsonResponseBody(String responseBody) {
     try {
-      JSONObject json = new JSONObject(responseBody);
-      if (!json.has("sessionId") || json.isNull("sessionId")) {
+      JsonObject json = new JsonParser().parse(responseBody).getAsJsonObject();
+      if (!json.has("sessionId") || json.get("sessionId").isJsonNull()) {
         return null;
       }
-      return new ExternalSessionKey(json.getString("sessionId"));
-    } catch (JSONException e) {
+      return new ExternalSessionKey(json.get("sessionId").getAsString());
+    } catch (JsonSyntaxException e) {
       return null;
     }
   }
-  
+
   /**
    * extract the external key from the server response for a selenium1 new session request.
    * @param responseBody the response from the server
@@ -120,7 +122,7 @@ public class ExternalSessionKey {
     }else {
       throw new NewSessionException("The server returned an error : "+responseBody);
     }
-    
+
   }
 
   public static ExternalSessionKey fromString(String keyString){

@@ -1,2 +1,0 @@
-java_library(name = "servlet-api",
-  deps = [ "servlet-api-2.5-6.1.9.jar" ])

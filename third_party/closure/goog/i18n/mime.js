@@ -76,7 +76,7 @@ goog.i18n.mime.encode = function(str, opt_noquote) {
 /**
  * Get an array of UTF-8 hex codes for a given character.
  * @param {string} c The matched character.
- * @return {!Array.<string>} A hex array representing the character.
+ * @return {!Array<string>} A hex array representing the character.
  */
 goog.i18n.mime.getHexCharArray = function(c) {
   var i = c.charCodeAt(0);

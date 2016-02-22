@@ -32,7 +32,7 @@ java_library(
     deps = [
         ":api",
         "//java/client/src/org/openqa/selenium:base",
-        "//third_party/java/guava-libraries",
-        "//third_party/java/json",
+        "//third_party/java/guava",
+        "//third_party/java/gson",
     ])
 

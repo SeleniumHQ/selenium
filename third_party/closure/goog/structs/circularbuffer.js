@@ -30,37 +30,34 @@ goog.provide('goog.structs.CircularBuffer');
  * Class for CircularBuffer.
  * @param {number=} opt_maxSize The maximum size of the buffer.
  * @constructor
+ * @template T
  */
 goog.structs.CircularBuffer = function(opt_maxSize) {
   /**
+   * Index of the next element in the circular array structure.
+   * @private {number}
+   */
+  this.nextPtr_ = 0;
+
+  /**
    * Maximum size of the the circular array structure.
-   * @type {number}
-   * @private
+   * @private {number}
    */
   this.maxSize_ = opt_maxSize || 100;
 
   /**
    * Underlying array for the CircularBuffer.
-   * @type {Array}
-   * @private
+   * @private {!Array<T>}
    */
   this.buff_ = [];
 };
 
 
 /**
- * Index of the next element in the circular array structure.
- * @type {number}
- * @private
- */
-goog.structs.CircularBuffer.prototype.nextPtr_ = 0;
-
-
-/**
  * Adds an item to the buffer. May remove the oldest item if the buffer is at
  * max size.
- * @param {*} item The item to add.
- * @return {*} The removed old item, if the buffer is at max size.
+ * @param {T} item The item to add.
+ * @return {T|undefined} The removed old item, if the buffer is at max size.
  *     Return undefined, otherwise.
  */
 goog.structs.CircularBuffer.prototype.add = function(item) {
@@ -75,7 +72,7 @@ goog.structs.CircularBuffer.prototype.add = function(item) {
  * Returns the item at the specified index.
  * @param {number} index The index of the item. The index of an item can change
  *     after calls to {@code add()} if the buffer is at maximum size.
- * @return {*} The item at the specified index.
+ * @return {T} The item at the specified index.
  */
 goog.structs.CircularBuffer.prototype.get = function(index) {
   index = this.normalizeIndex_(index);
@@ -87,7 +84,7 @@ goog.structs.CircularBuffer.prototype.get = function(index) {
  * Sets the item at the specified index.
  * @param {number} index The index of the item. The index of an item can change
  *     after calls to {@code add()} if the buffer is at maximum size.
- * @param {*} item The item to add.
+ * @param {T} item The item to add.
  */
 goog.structs.CircularBuffer.prototype.set = function(index, item) {
   index = this.normalizeIndex_(index);
@@ -121,9 +118,7 @@ goog.structs.CircularBuffer.prototype.clear = function() {
 };
 
 
-/**
- * @return {Array} The values in the buffer.
- */
+/** @return {!Array<T>} The values in the buffer. */
 goog.structs.CircularBuffer.prototype.getValues = function() {
   // getNewestValues returns all the values if the maxCount parameter is the
   // count
@@ -135,22 +130,20 @@ goog.structs.CircularBuffer.prototype.getValues = function() {
  * Returns the newest values in the buffer up to {@code count}.
  * @param {number} maxCount The maximum number of values to get. Should be a
  *     positive number.
- * @return {Array} The newest values in the buffer up to {@code count}.
+ * @return {!Array<T>} The newest values in the buffer up to {@code count}.
  */
 goog.structs.CircularBuffer.prototype.getNewestValues = function(maxCount) {
   var l = this.getCount();
   var start = this.getCount() - maxCount;
   var rv = [];
   for (var i = start; i < l; i++) {
-    rv[i] = this.get(i);
+    rv.push(this.get(i));
   }
   return rv;
 };
 
 
-/**
- * @return {Array} The indexes in the buffer.
- */
+/** @return {!Array<number>} The indexes in the buffer. */
 goog.structs.CircularBuffer.prototype.getKeys = function() {
   var rv = [];
   var l = this.getCount();
@@ -173,7 +166,7 @@ goog.structs.CircularBuffer.prototype.containsKey = function(key) {
 
 /**
  * Whether the buffer contains the given value.
- * @param {*} value The value to check for.
+ * @param {T} value The value to check for.
  * @return {boolean} Whether the buffer contains the given value.
  */
 goog.structs.CircularBuffer.prototype.containsValue = function(value) {
@@ -189,8 +182,8 @@ goog.structs.CircularBuffer.prototype.containsValue = function(value) {
 
 /**
  * Returns the last item inserted into the buffer.
- * @return {*} The last item inserted into the buffer, or null if the buffer is
- *     empty.
+ * @return {T|null} The last item inserted into the buffer,
+ *     or null if the buffer is empty.
  */
 goog.structs.CircularBuffer.prototype.getLast = function() {
   if (this.getCount() == 0) {

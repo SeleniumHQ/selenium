@@ -17,8 +17,8 @@
             <artifactId>cglib-nodep</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
@@ -43,7 +43,7 @@
             </dependency>
             <dependency>
               <groupId>net.java.dev.jna</groupId>
-              <artifactId>platform</artifactId>
+              <artifactId>jna-platform</artifactId>
             </dependency>
     </dependencies>
 
@@ -63,9 +63,9 @@
                                     <fileset dir="../../java/client/src">
                                         <include name="org/openqa/selenium/browserlaunchers/**/*.java" />
                                         <include name="org/openqa/selenium/io/**/*.java" />
+                                        <include name="org/openqa/selenium/mobile/**/*.java" />
                                         <include name="org/openqa/selenium/os/**/*.java" />
                                         <include name="org/openqa/selenium/net/**/*.java" />
-                                        <include name="org/openqa/selenium/profiler/**/*.java" />
                                         <include name="org/openqa/selenium/remote/**/*.java" />
                                         <not><present targetdir="../api/src/main/java" /></not>
                                     </fileset>

@@ -1,20 +1,19 @@
-/*
- Copyright 2007-2010 WebDriver committers
- Copyright 2007-2010 Google Inc.
- Portions copyright 2011 Software Freedom Conservancy
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 goog.provide('wdSessionStoreService');
 
@@ -22,6 +21,7 @@ goog.require('fxdriver.logging');
 goog.require('fxdriver.modals');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.proxy');
+goog.require('goog.log');
 goog.require('goog.object');
 goog.require('wdSession');
 
@@ -43,6 +43,14 @@ wdSessionStoreService = function() {
    */
   this.sessions_ = {};
 };
+
+
+/**
+ * @private {goog.log.Logger}
+ * @const
+ */
+wdSessionStoreService.LOG_ = fxdriver.logging.getLogger(
+    'fxdriver.wdSessionStoreService');
 
 
 /**
@@ -82,7 +90,7 @@ wdSessionStoreService.prototype.QueryInterface = function(aIID) {
  * @param {!FirefoxDriver} driver The driver instance.
  * @return {wdSession} A new WebDriver session.
  */
-wdSessionStoreService.prototype.createSession = function(response, desiredCaps, 
+wdSessionStoreService.prototype.createSession = function(response, desiredCaps,
   requiredCaps, driver) {
   var id = Components.classes['@mozilla.org/uuid-generator;1'].
       getService(Components.interfaces.nsIUUIDGenerator).
@@ -126,7 +134,7 @@ wdSessionStoreService.prototype.createSession = function(response, desiredCaps,
  * @param {Object.<*>} requiredCaps The required capabilities.
  * @return {*} The setting for the capability.
  */
-wdSessionStoreService.prototype.extractCapabilitySetting_ = function(name, 
+wdSessionStoreService.prototype.extractCapabilitySetting_ = function(name,
   desiredCaps, requiredCaps) {
   var setting = desiredCaps[name];
   if (requiredCaps && requiredCaps[name] !== undefined) {
@@ -150,8 +158,7 @@ wdSessionStoreService.READ_ONLY_CAPABILITIES_ = {
 
 /**
  * Read-write capabilities for FirefoxDriver corresponding to (boolean)
- * profile preferences. NB! the native events capability is not mapped to a
- * Firefox preferences.
+ * profile preferences.
  * @type {!Object.<string, string>}
  * @const
  */
@@ -159,11 +166,13 @@ wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING = {
   'webStorageEnabled': 'dom.storage.enabled',
   'applicationCacheEnabled': 'browser.cache.offline.enable',
   'databaseEnabled': 'dom.indexedDB.enabled',
+  'elementScrollBehavior' : 'webdriver.elementScrollBehavior',
+  'overlappingCheckDisabled' : 'webdriver.overlappingCheckDisabled',
   'locationContextEnabled': 'geo.enabled',
   'browserConnectionEnabled': 'dom.network.enabled',
   'acceptSslCerts': 'webdriver_accept_untrusted_certs',
-  'nativeEvents' : 'webdriver_enable_native_events',
-  'pageLoadingStrategy' : 'webdriver.load.strategy'
+  'pageLoadingStrategy' : 'webdriver.load.strategy',
+  'pageLoadStrategy' : 'webdriver.load.strategy'
 };
 // TODO: Don't save firefox specific capability acceptSslCerts as preferences.
 
@@ -174,9 +183,10 @@ wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING = {
  * @param {!FirefoxDriver} driver The driver instance.
  * @private
  */
-wdSessionStoreService.prototype.configure_ = function(response, desiredCaps, 
+wdSessionStoreService.prototype.configure_ = function(response, desiredCaps,
     requiredCaps, driver) {
-  fxdriver.logging.info('Setting preferences based on required capabilities');
+  goog.log.info(wdSessionStoreService.LOG_,
+      'Setting preferences based on required capabilities');
   this.configureCapabilities_(desiredCaps, driver);
 
   if (!requiredCaps) {
@@ -189,7 +199,7 @@ wdSessionStoreService.prototype.configure_ = function(response, desiredCaps,
     if (key in wdSessionStoreService.READ_ONLY_CAPABILITIES_ &&
         value != wdSessionStoreService.READ_ONLY_CAPABILITIES_[key]) {
       var msg = 'Required capability ' + key + ' cannot be set to ' + value;
-      fxdriver.logging.info(msg);
+      goog.log.info(wdSessionStoreService.LOG_, msg);
       response.sendError(new WebDriverError(bot.ErrorCode.SESSION_NOT_CREATED,
         msg));
       wdSession.quitBrowser(0);
@@ -211,15 +221,12 @@ wdSessionStoreService.prototype.configureCapabilities_ = function(capabilities,
   goog.object.forEach(capabilities, function(value, key) {
     if (key in wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING) {
       var pref = wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING[key];
-      fxdriver.logging.info('Setting capability ' +
-                            key + ' (' + pref + ') to ' + value);
+      goog.log.info(wdSessionStoreService.LOG_,
+          'Setting capability ' + key + ' (' + pref + ') to ' + value);
       if (goog.isBoolean(value)) {
         prefStore.setBoolPref(pref, value);
       } else {
         prefStore.setCharPref(pref, value);
-      }
-      if (key == 'nativeEvents') {
-        driver.enableNativeEvents = value;
       }
     }
   });

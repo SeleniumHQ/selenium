@@ -11,7 +11,8 @@
     goog.require('bot.window');
     goog.require('goog.dom');
     goog.require('goog.events');
-    goog.require('goog.testing.AsyncTestCase');
+    goog.require('goog.Promise');
+    goog.require('goog.testing.TestCase');
     goog.require('goog.testing.asserts');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
@@ -22,49 +23,35 @@
 <body>
 <iframe id="frame"></iframe>
 <script type="text/javascript">
-  var asyncTestCase = null;
   var frame = null;
   var popup = null;
-  var callback = null;
+  var resolver = null;
 
-  // We have been unable to make the async tests non-flaky on IE9 / Win7.
-  // TODO: Re-enable for IE9 if stability improves.
-  var SKIP_ASYNC = goog.userAgent.IE && goog.userAgent.isVersionOrHigher(9) &&
-      !goog.userAgent.isVersionOrHigher(10) && goog.userAgent.platform.isVersion(6.1);
-
-  if (!SKIP_ASYNC) {
-    asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
-    // Set longer timeout due both to slowness in the Android emulator and
-    // slowness in the loading of popup windows in all browsers.
-    asyncTestCase.stepTimeout = 5000;
-
+  var initFrame = new goog.Promise(function(ready) {
     // On Android WebView, window.open will cause a dialog prompt and prevent
-    // the page from loading. On Opera, the driver incorrectly executes script
-    // on the popup window instead of the original (b/7684695). The IE10 VM image
-    // is too slow to test using popups without substantial flakiness. For these
+    // the page from loading. For these
     // browsers, we test history in an iframe instead of a popup, which limits
     // the history properties we can reliably check.
-    // TODO: Use popups on Opera once b/7684695 is fixed.
-    // TODO: Enable for IE 10 if image speed is improved.
-    if (goog.userAgent.product.ANDROID ||
-        goog.userAgent.OPERA ||
-        bot.userAgent.IE_DOC_10) {
+    if (goog.userAgent.product.ANDROID) {
       // A bug in prior versions of WebKit (persisting into Safari 5) causes the
       // initial page of an iframe to not enter the browser history, so we
       // initialize the iframe to a dummy page and the test cases here do not
       // make any assertions about this page being in the browser history.
       frame = bot.locators.findElement({'id': 'frame'});
       goog.events.listen(frame, 'load', notifyLoaded);
-      continueAfterLoad('waiting for initial page load', function() {
+      waitForLoad().then(function() {
         bot.setWindow(goog.dom.getFrameContentWindow(frame));
+        ready();
       });
       frame.src = 'testdata/history_page0.html';
+    } else {
+      ready();
     }
-  }
+  });
 
-  function continueAfterLoad(desc, fn) {
-    asyncTestCase.waitForAsync(desc);
-    callback = fn;
+  function waitForLoad() {
+    resolver = goog.Promise.withResolver();
+    return resolver.promise;
   }
 
   function notifyLoaded() {
@@ -74,17 +61,18 @@
     bot.getWindow().onunload = goog.nullFunction;
 
     window.setTimeout(function() {
-      asyncTestCase.continueTesting();
-
-      // In some browsers, an error thrown outside of a test function will not
-      // be caught and cause the test to fail, so we catch and set a flag that
-      // is later caught during tearDown and causes the test to fail then.
-      try {
-        callback();
-      } catch (e) {
-        fail(e.toString());
-      }
+      resolver.resolve();
     }, 0);
+  }
+
+  function setUpPage() {
+    goog.testing.TestCase.getActiveTestCase().promiseTimeout = 30000; // 30s
+  }
+
+  function setUp() {
+    // setUpPage does not wait on returned promises, so return a promise from
+    // each setUp to make sure we wait for the initial frame setup.
+    return initFrame;
   }
 
   function tearDown() {
@@ -94,10 +82,10 @@
     }
   }
 
-  function load(url, fn) {
+  function load(url) {
     var loc = window.location.href;
     url = loc.substring(0, loc.lastIndexOf('/') + 1) + url;
-    continueAfterLoad('waiting for window to load ' + url, fn);
+    var loaded = waitForLoad();
     if (popup || frame) {
       assertNotEquals('bot.setWindow() not called', bot.getWindow(), window);
       bot.getWindow().location.href = url;
@@ -106,16 +94,19 @@
       assertTrue('window.open() failed: is a pop-up blocker enabled?', !!popup);
       bot.setWindow(popup);
     }
+    return loaded;
   }
 
-  function back(numPages, fn) {
-    continueAfterLoad('waiting for browser to go back ' + numPages, fn);
+  function back(numPages) {
+    var loaded = waitForLoad();
     bot.window.back(numPages);
+    return loaded;
   }
 
-  function forward(numPages, fn) {
-    continueAfterLoad('waiting for browser to go forward ' + numPages, fn);
+  function forward(numPages) {
+    var loaded = waitForLoad();
     bot.window.forward(numPages);
+    return loaded;
   }
 
   function assertUrlContains(str) {
@@ -132,52 +123,36 @@
   function testErrorThrowWhenNumPagesNotLessThanHistoryLength() {
     // If not testing with popups, cannot check this property reliably,
     // because we cannot guarantee the history stack starts fresh.
-    if (SKIP_ASYNC || !popup) {
+    if (!popup) {
       return;
     }
-    load('testdata/history_page1.html', function() {
-      load('testdata/history_page2.html', function() {
-        assertThrows(goog.partial(bot.window.back, 3));
-        if (!goog.userAgent.OPERA &&
-            (!goog.userAgent.WEBKIT || bot.userAgent.isEngineVersion('533'))) {
-          assertThrows(goog.partial(bot.window.forward, 3));
-        }
-      });
+    return load('testdata/history_page1.html').then(function() {
+      return load('testdata/history_page2.html');
+    }).then(function() {
+      assertThrows(goog.partial(bot.window.back, 3));
+      if (!goog.userAgent.WEBKIT || bot.userAgent.isEngineVersion('533')) {
+        assertThrows(goog.partial(bot.window.forward, 3));
+      }
     });
   }
 
   function testBackForwardOnePage() {
-    if (SKIP_ASYNC) {
-      return;
-    }
-    load('testdata/history_page1.html', function() {
-      load('testdata/history_page2.html', function() {
-        back(1, function() {
-          assertUrlContains('history_page1.html');
-          forward(1, function() {
-            assertUrlContains('history_page2.html');
-          });
-        });
-      });
-    });
+    return load('testdata/history_page1.html').
+        then(goog.partial(load, 'testdata/history_page2.html')).
+        then(goog.partial(back, 1)).
+        then(goog.partial(assertUrlContains, 'history_page1.html')).
+        then(goog.partial(forward, 1)).
+        then(goog.partial(assertUrlContains, 'history_page2.html'));
   }
 
   function testBackForwardMultiplePages() {
-    if (SKIP_ASYNC) {
-      return;
-    }
-    load('testdata/history_page1.html', function() {
-      load('testdata/history_page2.html', function() {
-        load('testdata/history_page3.html', function() {
-          back(2, function() {
-            assertUrlContains('history_page1.html');
-            forward(2, function() {
-              assertUrlContains('history_page3.html');
-            });
-          });
-        });
-      });
-    });
+    return load('testdata/history_page1.html').
+        then(goog.partial(load, 'testdata/history_page2.html')).
+        then(goog.partial(load, 'testdata/history_page3.html')).
+        then(goog.partial(back, 2)).
+        then(goog.partial(assertUrlContains, 'history_page1.html')).
+        then(goog.partial(forward, 2)).
+        then(goog.partial(assertUrlContains, 'history_page3.html'));
   }
 </script>
 </body>

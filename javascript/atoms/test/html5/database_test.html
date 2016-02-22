@@ -7,18 +7,16 @@
     goog.require('bot');
     goog.require('bot.html5');
     goog.require('bot.storage.database');
-    goog.require('goog.testing.AsyncTestCase');
+    goog.require('goog.Promise');
     goog.require('goog.testing.jsunit');
   </script>
-
   <script type='text/javascript'>
-    var asyncTestCase = null;
-
-    // WebDriver does not enable database on Android ICS (b/6373564).
     var DATABASE_NOT_WORKING =
         !bot.html5.isSupported(bot.html5.API.DATABASE) ||
         (goog.userAgent.product.ANDROID && bot.userAgent.isProductVersion(4) &&
             !bot.userAgent.isProductVersion(5));
+
+    var createdDatabase;
 
     /**
      * Initial function to create the database. I use the top-level window
@@ -26,38 +24,37 @@
      * This function must not fail or throw error for of the test functions.
      */
     function setUpPage() {
-      if (DATABASE_NOT_WORKING) {
-        return;
-      }
+      createdDatabase = new goog.Promise(function(success, failure) {
+        if (DATABASE_NOT_WORKING) {
+          success();
+          return;
+        }
 
-      try {
-        var win = bot.getWindow();
-        var db = win.openDatabase('testDB', '1.0', 'db name', 5 * 1024 * 1024);
-        db.transaction(transactionCallback, errorCallback, successCallback);
-        asyncTestCase.waitForAsync('testExecuteSqlWithSelectAll');
-      } catch (e) {
-        throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR, e.message);
-      }
+        try {
+          var win = bot.getWindow();
+          // Keep the DB size below 5 MB. Above that size, Safari will prompt
+          // for permission and cause this test to hang.
+          var db = win.openDatabase('testDB', '1.0', 'db name', 2 * 1024 * 1024);
+          db.transaction(function(tx) {
+            tx.executeSql('CREATE TABLE IF NOT EXISTS docids (id INTEGER ' +
+                'PRIMARY KEY, name TEXT, owner TEXT)');
+            tx.executeSql('INSERT OR REPLACE INTO docids VALUES (11, "aa", "Manager")');
+            tx.executeSql('INSERT OR REPLACE INTO docids VALUES (1, "aabb", "Eng-A")');
+            tx.executeSql('INSERT OR REPLACE INTO docids VALUES (31, "abc", "Eng-B")');
+            tx.executeSql('INSERT OR REPLACE INTO docids VALUES (0, "aabb", "Eng-A")');
+            tx.executeSql('INSERT OR REPLACE INTO docids VALUES (2, "yyy", "Eng-D")');
+            tx.executeSql('INSERT OR REPLACE INTO docids VALUES (3, "zzz", "Eng-A")');
+            tx.executeSql('INSERT OR REPLACE INTO docids VALUES (90, "aabb", "Eng-E")');
+          }, failure, success);
+        } catch (e) {
+          failure(e);
+        }
+      });
+    }
 
-      function errorCallback(error) {
-        throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR, error.message);
-      }
 
-      function successCallback(error) {
-        asyncTestCase.continueTesting();
-      }
-
-      function transactionCallback(tx) {
-        tx.executeSql('CREATE TABLE IF NOT EXISTS docids (id INTEGER ' +
-            'PRIMARY KEY, name TEXT, owner TEXT)');
-        tx.executeSql('INSERT OR REPLACE INTO docids VALUES (11, "aa", "Manager")');
-        tx.executeSql('INSERT OR REPLACE INTO docids VALUES (1, "aabb", "Eng-A")');
-        tx.executeSql('INSERT OR REPLACE INTO docids VALUES (31, "abc", "Eng-B")');
-        tx.executeSql('INSERT OR REPLACE INTO docids VALUES (0, "aabb", "Eng-A")');
-        tx.executeSql('INSERT OR REPLACE INTO docids VALUES (2, "yyy", "Eng-D")');
-        tx.executeSql('INSERT OR REPLACE INTO docids VALUES (3, "zzz", "Eng-A")');
-        tx.executeSql('INSERT OR REPLACE INTO docids VALUES (90, "aabb", "Eng-E")');
-      }
+    function setUp() {
+      return createdDatabase;  // setUpPage does not wait on returned promises.
     }
 
 
@@ -117,33 +114,20 @@
         return;
       }
 
-      try {
+      return new goog.Promise(function(success, failure) {
+        var onQueryResult = function() {
+          failure('Transaction should not succeed with invalid SQL statement');
+        };
+        var onTxSuccess = onQueryResult;
+        var onTxFailure = success;
+
         // WITH is errorneously used instead of WHERE
         bot.storage.database.executeSql('testDB',
-            'SELECT * from docids WITH id = 1', [], queryResultCallback,
-            txErrorCallback, txSuccessCallback);
-      } catch (e) {
-        var errMsg = 'No exception should be raised on opening the database; ' +
-                'otherwise be handled by callback';
-        fail(errMsg);
-        return;
-      }
-
-      asyncTestCase.waitForAsync('testExecuteSqlWithInvalidSqlStatement');
-
-      function queryResultCallback(tx, result) {
-        //assertEquals(result.rows.length, 1);
-        fail('Transaction should not succeed with invalid SQL statement');
-      }
-
-      function txErrorCallback(error) {
-        asyncTestCase.continueTesting();
-      }
-
-      function txSuccessCallback() {
-        asyncTestCase.continueTesting();
-        fail('Transaction should not succeed with invalid SQL statement');
-      }
+            'SELECT * from docids WITH id = 1', [],
+            onQueryResult,
+            onTxFailure,
+            onTxSuccess);
+      });
     }
 
 
@@ -152,35 +136,21 @@
         return;
       }
 
-      try {
+      return new goog.Promise(function(success, failure) {
         bot.storage.database.executeSql('testDB',
             'SELECT id from docids WHERE owner = ? AND name = ?',
-            ['Eng-A', 'aabb'], queryResultCallback, txErrorCallback,
-            txSuccessCallback);
-      } catch (e) {
-        var errMsg = 'No exception should be raised on opening the database; ' +
-                        'otherwise it must be handled by callback';
-        fail(errMsg);
-        return;
-      }
-
-      asyncTestCase.waitForAsync('testExecuteSqlWithInvalidSqlStatement');
-
-      function queryResultCallback(tx, result) {
+            ['Eng-A', 'aabb'],
+            function(tx, result) {
+              success(result);
+            },
+            goog.partial(failure, 'Transaction should succeed, not fail'),
+            goog.nullFunction);
+      }).then(function(result) {
         assertEquals(result.rows.length, 2);
         assertEquals(result.rowsAffected, 0);
         assertEquals(result.rows[0].id, 0);
         assertEquals(result.rows[1].id, 1);
-      }
-
-      function txErrorCallback(error) {
-        asyncTestCase.continueTesting();
-        fail('Transaction should succeed, not fail');
-      }
-
-      function txSuccessCallback() {
-        asyncTestCase.continueTesting();
-      }
+      });
     }
 
 
@@ -190,75 +160,41 @@
       }
 
       //Grouping insert and delete together to keep no side-effect later.
-      executeSqlInsert();
-      executeSqlDelete();
+      return executeSqlInsert().then(executeSqlDelete);
     }
 
     function executeSqlInsert() {
-      try {
+      return new goog.Promise(function(success, fail) {
         bot.storage.database.executeSql('testDB',
             'INSERT OR REPLACE INTO docids (id, name, owner) VALUES (?, ?, ?)',
-            [999, 'file1', 'Eng-L'], queryResultCallback, txErrorCallback,
-            txSuccessCallback);
-      } catch (e) {
-        var errMsg = 'No exception should be raised on opening the database; ' +
-                        'otherwise it must be handled by callback';
-        fail(errMsg);
-        return;
-      }
-
-      asyncTestCase.waitForAsync('testExecuteSqlInsert');
-
-      function queryResultCallback(tx, result) {
+            [999, 'file1', 'Eng-L'],
+            function(tx, result) {
+              success(result);
+            },
+            goog.partial(fail, 'Transaction should succeed, not fail'),
+            goog.nullFunction);
+      }).then(function(result) {
         assertEquals(result.rowsAffected, 1);
         assertEquals(result.rows.length, 0);
-      }
-
-      function txErrorCallback(error) {
-        asyncTestCase.continueTesting();
-        fail('Transaction should succeed, not fail');
-      }
-
-      function txSuccessCallback() {
-        asyncTestCase.continueTesting();
-      }
+      });
     }
 
     function executeSqlDelete() {
-      try {
+      return new goog.Promise(function(success, fail) {
         bot.storage.database.executeSql('testDB',
             'DELETE FROM docids WHERE id=999',
-            [], queryResultCallback, txErrorCallback,
-            txSuccessCallback);
-      } catch (e) {
-        var errMsg = 'No exception should be raised on opening the database; ' +
-                        'otherwise it must be handled by callback';
-        fail(errMsg);
-        return;
-      }
-
-      asyncTestCase.waitForAsync('testExecuteSqlInsert');
-
-      function queryResultCallback(tx, result) {
+            [],
+            function(tx, result) {
+              success(result);
+            },
+            goog.partial(fail, 'Transaction should succeed, not fail'),
+            goog.nullFunction);
+      }).then(function(result) {
         assertEquals(result.rowsAffected, 1);
         assertEquals(result.rows.length, 0);
-      }
-
-      function txErrorCallback(error) {
-        asyncTestCase.continueTesting();
-        fail('Transaction should succeed, not fail');
-      }
-
-      function txSuccessCallback() {
-        asyncTestCase.continueTesting();
-      }
+      });
     }
   </script>
 </head>
-<body>
-<script type="text/javascript">
-  asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
-  asyncTestCase.stepTimeout = 15 * 1000;
-</script>
-</body>
+<body></body>
 </html>

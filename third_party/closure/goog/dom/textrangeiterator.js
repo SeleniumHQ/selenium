@@ -21,6 +21,7 @@
 goog.provide('goog.dom.TextRangeIterator');
 
 goog.require('goog.array');
+goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.RangeIterator');
 goog.require('goog.dom.TagName');
@@ -43,9 +44,34 @@ goog.require('goog.iter.StopIteration');
  * @param {boolean=} opt_reverse Whether to traverse nodes in reverse.
  * @constructor
  * @extends {goog.dom.RangeIterator}
+ * @final
  */
 goog.dom.TextRangeIterator = function(startNode, startOffset, endNode,
     endOffset, opt_reverse) {
+  /**
+   * The first node in the selection.
+   * @private {Node}
+   */
+  this.startNode_ = null;
+
+  /**
+   * The last node in the selection.
+   * @private {Node}
+   */
+  this.endNode_ = null;
+
+  /**
+   * The offset within the first node in the selection.
+   * @private {number}
+   */
+  this.startOffset_ = 0;
+
+  /**
+   * The offset within the last node in the selection.
+   * @private {number}
+   */
+  this.endOffset_ = 0;
+
   var goNext;
 
   if (startNode) {
@@ -57,7 +83,7 @@ goog.dom.TextRangeIterator = function(startNode, startOffset, endNode,
     // Skip to the offset nodes - being careful to special case BRs since these
     // have no children but still can appear as the startContainer of a range.
     if (startNode.nodeType == goog.dom.NodeType.ELEMENT &&
-        startNode.tagName != goog.dom.TagName.BR) {
+        /** @type {!Element} */ (startNode).tagName != goog.dom.TagName.BR) {
       var startChildren = startNode.childNodes;
       var candidate = startChildren[startOffset];
       if (candidate) {
@@ -83,8 +109,9 @@ goog.dom.TextRangeIterator = function(startNode, startOffset, endNode,
     }
   }
 
-  goog.dom.RangeIterator.call(this, opt_reverse ? this.endNode_ :
-      this.startNode_, opt_reverse);
+  goog.dom.TextRangeIterator.base(
+      this, 'constructor', opt_reverse ? this.endNode_ : this.startNode_,
+      opt_reverse);
 
   if (goNext) {
     try {
@@ -97,38 +124,6 @@ goog.dom.TextRangeIterator = function(startNode, startOffset, endNode,
   }
 };
 goog.inherits(goog.dom.TextRangeIterator, goog.dom.RangeIterator);
-
-
-/**
- * The first node in the selection.
- * @type {Node}
- * @private
- */
-goog.dom.TextRangeIterator.prototype.startNode_ = null;
-
-
-/**
- * The last node in the selection.
- * @type {Node}
- * @private
- */
-goog.dom.TextRangeIterator.prototype.endNode_ = null;
-
-
-/**
- * The offset within the first node in the selection.
- * @type {number}
- * @private
- */
-goog.dom.TextRangeIterator.prototype.startOffset_ = 0;
-
-
-/**
- * The offset within the last node in the selection.
- * @type {number}
- * @private
- */
-goog.dom.TextRangeIterator.prototype.endOffset_ = 0;
 
 
 /** @override */
@@ -233,7 +228,7 @@ goog.dom.TextRangeIterator.prototype.copyFrom = function(other) {
 
 
 /**
- * @return {goog.dom.TextRangeIterator} An identical iterator.
+ * @return {!goog.dom.TextRangeIterator} An identical iterator.
  * @override
  */
 goog.dom.TextRangeIterator.prototype.clone = function() {

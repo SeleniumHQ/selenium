@@ -37,6 +37,7 @@ goog.require('goog.userAgent');
  * A plugin to handle removing formatting from selected text.
  * @constructor
  * @extends {goog.editor.Plugin}
+ * @final
  */
 goog.editor.plugins.RemoveFormatting = function() {
   goog.editor.Plugin.call(this);
@@ -71,7 +72,7 @@ goog.editor.plugins.RemoveFormatting.BLOCK_RE_ =
 
 /**
  * Appends a new line to a string buffer.
- * @param {Array.<string>} sb The string buffer to add to.
+ * @param {Array<string>} sb The string buffer to add to.
  * @private
  */
 goog.editor.plugins.RemoveFormatting.appendNewline_ = function(sb) {
@@ -86,7 +87,7 @@ goog.editor.plugins.RemoveFormatting.appendNewline_ = function(sb) {
  *    range as the beginning of the new range.
  * @param {goog.dom.AbstractRange} endRange Use the end point of this
  *    range as the end of the new range.
- * @return {goog.dom.AbstractRange} The new range.
+ * @return {!goog.dom.AbstractRange} The new range.
  * @private
  */
 goog.editor.plugins.RemoveFormatting.createRangeDelimitedByRanges_ = function(
@@ -336,7 +337,7 @@ goog.editor.plugins.RemoveFormatting.prototype.pasteHtml_ = function(html) {
  * @private
  */
 goog.editor.plugins.RemoveFormatting.prototype.getHtmlText_ = function(range) {
-  var div = this.getFieldDomHelper().createDom('div');
+  var div = this.getFieldDomHelper().createDom(goog.dom.TagName.DIV);
   var textRange = range.getBrowserRangeObject();
 
   if (goog.editor.BrowserFeature.HAS_W3C_RANGES) {
@@ -379,7 +380,7 @@ goog.editor.plugins.RemoveFormatting.prototype.getHtmlText_ = function(range) {
  * @param {goog.dom.AbstractRange} range The range to adjust.
  * @param {Node} startInTable Table node that the range starts in.
  * @param {Node} endInTable Table node that the range ends in.
- * @return {goog.dom.SavedCaretRange} Range to use to restore the
+ * @return {!goog.dom.SavedCaretRange} Range to use to restore the
  *     selection after we run our custom remove formatting.
  * @private
  */
@@ -581,7 +582,7 @@ goog.editor.plugins.RemoveFormatting.prototype.convertSelectedHtmlText_ =
  */
 goog.editor.plugins.RemoveFormatting.prototype.removeFormattingWorker_ =
     function(html) {
-  var el = goog.dom.createElement('div');
+  var el = goog.dom.createElement(goog.dom.TagName.DIV);
   el.innerHTML = html;
 
   // Put everything into a string buffer to avoid lots of expensive string

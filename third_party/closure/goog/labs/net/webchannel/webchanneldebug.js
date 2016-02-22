@@ -16,7 +16,7 @@
  * @fileoverview Provides a utility for tracing and debugging WebChannel
  *     requests.
  *
- * @visibility {//visibility:private}
+ * @visibility {:internal}
  */
 
 
@@ -31,6 +31,8 @@ goog.require('goog.log');
  * Logs and keeps a buffer of debugging info for the Channel.
  *
  * @constructor
+ * @struct
+ * @final
  */
 goog.labs.net.webChannel.WebChannelDebug = function() {
   /**
@@ -44,14 +46,6 @@ goog.labs.net.webChannel.WebChannelDebug = function() {
 
 goog.scope(function() {
 var WebChannelDebug = goog.labs.net.webChannel.WebChannelDebug;
-
-
-/**
- * The normal response for forward channel requests.
- * Used only before version 8 of the protocol.
- * @type {string}
- */
-WebChannelDebug.MAGIC_RESPONSE_COOKIE = 'y2f%';
 
 
 /**
@@ -122,46 +116,6 @@ WebChannelDebug.prototype.xmlHttpChannelResponseText =
 
 
 /**
- * Logs a Trident ActiveX request.
- * @param {string} verb The request type (GET/POST).
- * @param {goog.Uri} uri The request destination.
- * @param {string|number|undefined} id The request id.
- * @param {number} attempt Which attempt # the request was.
- */
-WebChannelDebug.prototype.tridentChannelRequest =
-    function(verb, uri, id, attempt) {
-  this.info(
-      'TRIDENT REQ (' + id + ') [ attempt ' + attempt + ']: ' +
-      verb + '\n' + uri);
-};
-
-
-/**
- * Logs the response text received from a Trident ActiveX request.
- * @param {string|number|undefined} id The request id.
- * @param {string} responseText The response text.
- */
-WebChannelDebug.prototype.tridentChannelResponseText =
-    function(id, responseText) {
-  this.info(
-      'TRIDENT TEXT (' + id + '): ' +
-      this.redactResponse_(responseText));
-};
-
-
-/**
- * Logs the done response received from a Trident ActiveX request.
- * @param {string|number|undefined} id The request id.
- * @param {boolean} successful Whether the request was successful.
- */
-WebChannelDebug.prototype.tridentChannelResponseDone =
-    function(id, successful) {
-  this.info(
-      'TRIDENT TEXT (' + id + '): ' + successful ? 'success' : 'failure');
-};
-
-
-/**
  * Logs a request timeout.
  * @param {goog.Uri} uri The uri that timed out.
  */
@@ -224,10 +178,8 @@ WebChannelDebug.prototype.severe = function(text) {
  * @private
  */
 WebChannelDebug.prototype.redactResponse_ = function(responseText) {
-  // first check if it's not JS - the only non-JS should be the magic cookie
-  if (!responseText ||
-      responseText == WebChannelDebug.MAGIC_RESPONSE_COOKIE) {
-    return responseText;
+  if (!responseText) {
+    return null;
   }
   /** @preserveTry */
   try {
@@ -250,7 +202,7 @@ WebChannelDebug.prototype.redactResponse_ = function(responseText) {
 
 /**
  * Removes data from a response array that may be sensitive.
- * @param {Array} array The array to clean.
+ * @param {!Array<?>} array The array to clean.
  * @private
  */
 WebChannelDebug.prototype.maybeRedactArray_ = function(array) {

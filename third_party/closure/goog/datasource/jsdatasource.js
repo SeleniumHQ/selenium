@@ -24,6 +24,7 @@ goog.provide('goog.ds.JsPropertyDataSource');
 goog.require('goog.ds.BaseDataNode');
 goog.require('goog.ds.BasicNodeList');
 goog.require('goog.ds.DataManager');
+goog.require('goog.ds.DataNode');
 goog.require('goog.ds.EmptyNodeList');
 goog.require('goog.ds.LoadState');
 
@@ -55,7 +56,7 @@ goog.ds.JsDataSource = function(root, dataName, opt_parent) {
  * The root JS object. Can be null.
  * @type {*}
  * @protected
- * @suppress {underscore}
+ * @suppress {underscore|visibility}
  */
 goog.ds.JsDataSource.prototype.root_;
 
@@ -410,6 +411,7 @@ goog.ds.JsDataSource.prototype.isList = function() {
  *
  * @constructor
  * @extends {goog.ds.BaseDataNode}
+ * @final
  */
 goog.ds.JsPropertyDataSource = function(parent, dataName, opt_parentDataNode) {
   goog.ds.BaseDataNode.call(this);

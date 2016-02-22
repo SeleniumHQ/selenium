@@ -1,19 +1,19 @@
-/*
- * Copyright 2011 Software Freedom Conservancy.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package com.thoughtworks.selenium;
 
@@ -22,7 +22,10 @@ import org.openqa.selenium.Capabilities;
 /**
  * The default implementation of the Selenium interface; <i>end users will primarily interact with
  * this object.</i>
+ *
+ * @deprecated The RC interface will be removed in Selenium 3.0. Please migrate to using WebDriver.
  */
+@Deprecated
 public class DefaultSelenium implements Selenium {
 
   protected CommandProcessor commandProcessor;
@@ -30,7 +33,7 @@ public class DefaultSelenium implements Selenium {
   /**
    * Uses a CommandBridgeClient, specifying a server host/port, a command to launch the browser, and
    * a starting URL for the browser.
-   * 
+   *
    * <p>
    * <i>browserStartCommand</i> may be any one of the following:
    * <ul>
@@ -56,7 +59,7 @@ public class DefaultSelenium implements Selenium {
    * up to you to configure it correctly. At a minimum, you'll need to configure your browser to use
    * the Selenium Server as a proxy, and disable all browser-specific prompting.
    * </ul>
-   * 
+   *
    * @param serverHost the host name on which the Selenium Server resides
    * @param serverPort the port on which the Selenium Server is listening
    * @param browserStartCommand the command string used to launch the browser, e.g. "*firefox",
@@ -76,7 +79,9 @@ public class DefaultSelenium implements Selenium {
     return new HttpCommandProcessor(serverHost, serverPort, browserStartCommand, browserURL);
   }
 
-  /** Uses an arbitrary CommandProcessor */
+  /** Uses an arbitrary CommandProcessor
+   *  @param processor Command Processor to use
+   */
   public DefaultSelenium(CommandProcessor processor) {
     this.commandProcessor = processor;
   }
@@ -86,7 +91,7 @@ public class DefaultSelenium implements Selenium {
    * will be in-play the next time a session is created; that is, typically the next time
    * <code>start()</code> is invoked (and <code>getNewBrowserSession</code> is sent to the RC under
    * the sheets).
-   * 
+   *
    * @param extensionJs a string representing the extra extension javascript to include in the
    *        browser session. This is in addition to any specified via the -userExtensions switch
    *        when starting the RC.

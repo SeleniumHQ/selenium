@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -31,7 +34,6 @@ class FindElementCommandHandler : public IECommandHandler {
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
-                       const LocatorMap& locator_parameters,
                        const ParametersMap& command_parameters,
                        Response* response) {
     ParametersMap::const_iterator using_parameter_iterator = command_parameters.find("using");
@@ -63,27 +65,21 @@ class FindElementCommandHandler : public IECommandHandler {
           response->SetSuccessResponse(found_element);
           return;
         }
-        if(status_code == EINVALIDSELECTOR) {
-          response->SetErrorResponse(status_code,
-            "The xpath expression '" + value + "' cannot be evaluated or does not" +
-            "result in a WebElement");
-          return;
-        }
-        if (status_code == EUNHANDLEDERROR) {
-          response->SetErrorResponse(status_code, 
-            "Unknown finder mechanism: " + mechanism);
-          return;
-        }
         if (status_code == ENOSUCHWINDOW) {
           response->SetErrorResponse(status_code, "Unable to find element on closed window");
           return;
         }
+        if (status_code != ENOSUCHELEMENT) {
+          response->SetErrorResponse(status_code, found_element.asString());
+          return;
+        }
+
         // Release the thread so that the browser doesn't starve.
         ::Sleep(FIND_ELEMENT_WAIT_TIME_IN_MILLISECONDS);
       } while (clock() < end);
 
       response->SetErrorResponse(status_code, 
-        "Unable to find element with " + mechanism + " == " + value);
+          "Unable to find element with " + mechanism + " == " + value);
       return;
     }
   }

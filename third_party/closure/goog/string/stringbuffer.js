@@ -63,7 +63,7 @@ goog.string.StringBuffer.prototype.set = function(s) {
  * @param {*=} opt_a2 Optional second string.
  * @param {...*} var_args Other items to append,
  *     e.g., sb.append('foo', 'bar', 'baz').
- * @return {goog.string.StringBuffer} This same StringBuffer object.
+ * @return {!goog.string.StringBuffer} This same StringBuffer object.
  * @suppress {duplicate}
  */
 goog.string.StringBuffer.prototype.append = function(a1, opt_a2, var_args) {

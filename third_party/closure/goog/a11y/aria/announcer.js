@@ -21,10 +21,12 @@
 goog.provide('goog.a11y.aria.Announcer');
 
 goog.require('goog.Disposable');
+goog.require('goog.Timer');
 goog.require('goog.a11y.aria');
 goog.require('goog.a11y.aria.LivePriority');
 goog.require('goog.a11y.aria.State');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.object');
 
 
@@ -36,9 +38,10 @@ goog.require('goog.object');
  * @param {goog.dom.DomHelper=} opt_domHelper DOM helper.
  * @constructor
  * @extends {goog.Disposable}
+ * @final
  */
 goog.a11y.aria.Announcer = function(opt_domHelper) {
-  goog.base(this);
+  goog.a11y.aria.Announcer.base(this, 'constructor');
 
   /**
    * @type {goog.dom.DomHelper}
@@ -49,7 +52,7 @@ goog.a11y.aria.Announcer = function(opt_domHelper) {
   /**
    * Map of priority to live region elements to use for communicating updates.
    * Elements are created on demand.
-   * @type {Object.<goog.a11y.aria.LivePriority, Element>}
+   * @type {Object<goog.a11y.aria.LivePriority, !Element>}
    * @private
    */
   this.liveRegions_ = {};
@@ -63,7 +66,7 @@ goog.a11y.aria.Announcer.prototype.disposeInternal = function() {
       this.liveRegions_, this.domHelper_.removeNode, this.domHelper_);
   this.liveRegions_ = null;
   this.domHelper_ = null;
-  goog.base(this, 'disposeInternal');
+  goog.a11y.aria.Announcer.base(this, 'disposeInternal');
 };
 
 
@@ -75,23 +78,35 @@ goog.a11y.aria.Announcer.prototype.disposeInternal = function() {
  *     message. Defaults to POLITE.
  */
 goog.a11y.aria.Announcer.prototype.say = function(message, opt_priority) {
-  goog.dom.setTextContent(this.getLiveRegion_(
-      opt_priority || goog.a11y.aria.LivePriority.POLITE), message);
+  var priority = opt_priority || goog.a11y.aria.LivePriority.POLITE;
+  var liveRegion = this.getLiveRegion_(priority);
+  // Resets text content to force a DOM mutation (so that the setTextContent
+  // post-timeout function will be noticed by the screen reader). This is to
+  // avoid the problem of when the same message is "said" twice, which doesn't
+  // trigger a DOM mutation.
+  goog.dom.setTextContent(liveRegion, '');
+  // Uses non-zero timer to make VoiceOver and NVDA work
+  goog.Timer.callOnce(function() {
+    goog.dom.setTextContent(liveRegion, message);
+  }, 1);
 };
 
 
 /**
  * Returns an aria-live region that can be used to communicate announcements.
  * @param {!goog.a11y.aria.LivePriority} priority The required priority.
- * @return {Element} A live region of the requested priority.
+ * @return {!Element} A live region of the requested priority.
  * @private
  */
 goog.a11y.aria.Announcer.prototype.getLiveRegion_ = function(priority) {
-  if (this.liveRegions_[priority]) {
-    return this.liveRegions_[priority];
+  var liveRegion = this.liveRegions_[priority];
+  if (liveRegion) {
+    // Make sure the live region is not aria-hidden.
+    goog.a11y.aria.removeState(liveRegion, goog.a11y.aria.State.HIDDEN);
+    return liveRegion;
   }
-  var liveRegion;
-  liveRegion = this.domHelper_.createElement('div');
+
+  liveRegion = this.domHelper_.createElement(goog.dom.TagName.DIV);
   // Note that IE has a habit of declaring things that aren't display:none as
   // invisible to third-party tools like JAWs, so we can't just use height:0.
   liveRegion.style.position = 'absolute';

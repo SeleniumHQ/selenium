@@ -17,6 +17,7 @@
  * interface that allows for playing and stopping a transition. It adds
  * a simple event model with BEGIN and END event.
  *
+ * @author chrishenry@google.com (Chris Henry)
  */
 
 goog.provide('goog.fx.Transition');
@@ -64,12 +65,14 @@ goog.fx.Transition.EventType = {
 
 
 /**
+ * @type {function()}
  * Plays the transition.
  */
 goog.fx.Transition.prototype.play;
 
 
 /**
+ * @type {function()}
  * Stops the transition.
  */
 goog.fx.Transition.prototype.stop;

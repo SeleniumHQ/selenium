@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using System.Drawing;
 using OpenQA.Selenium.Environment;
@@ -75,34 +73,31 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [ExpectedException(typeof(ElementNotVisibleException))]
         public void ShouldNotBeAbleToClickOnAnElementThatIsNotDisplayed()
         {
             driver.Url = javascriptPage;
             IWebElement element = driver.FindElement(By.Id("unclickable"));
-            element.Click();
+            Assert.Throws<ElementNotVisibleException>(() => element.Click());
         }
 
         [Test]
         [Category("Javascript")]
-        [ExpectedException(typeof(ElementNotVisibleException))]
         public void ShouldNotBeAbleToTypeAnElementThatIsNotDisplayed()
         {
             driver.Url = javascriptPage;
             IWebElement element = driver.FindElement(By.Id("unclickable"));
-            element.SendKeys("You don't see me");
+            Assert.Throws<ElementNotVisibleException>(() => element.SendKeys("You don't see me"));
 
             Assert.AreNotEqual(element.GetAttribute("value"), "You don't see me");
         }
 
         [Test]
         [Category("Javascript")]
-        [ExpectedException(typeof(ElementNotVisibleException))]
         public void ShouldNotBeAbleToSelectAnElementThatIsNotDisplayed()
         {
             driver.Url = javascriptPage;
             IWebElement element = driver.FindElement(By.Id("untogglable"));
-            element.Click();
+            Assert.Throws<ElementNotVisibleException>(() => element.Click());
         }
 
         [Test]

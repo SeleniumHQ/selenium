@@ -26,6 +26,9 @@
 goog.provide('goog.userAgent.product.isVersion');
 
 
+goog.require('goog.labs.userAgent.platform');
+goog.require('goog.string');
+goog.require('goog.userAgent');
 goog.require('goog.userAgent.product');
 
 
@@ -44,7 +47,8 @@ goog.userAgent.product.determineVersion_ = function() {
     return goog.userAgent.product.getFirstRegExpGroup_(/Firefox\/([0-9.]+)/);
   }
 
-  if (goog.userAgent.product.IE || goog.userAgent.product.OPERA) {
+  if (goog.userAgent.product.IE || goog.userAgent.product.EDGE ||
+      goog.userAgent.product.OPERA) {
     return goog.userAgent.VERSION;
   }
 
@@ -53,7 +57,9 @@ goog.userAgent.product.determineVersion_ = function() {
     return goog.userAgent.product.getFirstRegExpGroup_(/Chrome\/([0-9.]+)/);
   }
 
-  if (goog.userAgent.product.SAFARI) {
+  // This replicates legacy logic, which considered Safari and iOS to be
+  // different products.
+  if (goog.userAgent.product.SAFARI && !goog.labs.userAgent.platform.isIos()) {
     // Version/5.0.3
     //
     // NOTE: Before version 3, Safari did not report a product version number.
@@ -87,8 +93,6 @@ goog.userAgent.product.determineVersion_ = function() {
     }
 
     return goog.userAgent.product.getFirstRegExpGroup_(/Version\/([0-9.]+)/);
-  } else if (goog.userAgent.product.CAMINO) {
-    return goog.userAgent.product.getFirstRegExpGroup_(/Camino\/([0-9.]+)/);
   }
 
   return '';
@@ -110,7 +114,7 @@ goog.userAgent.product.getFirstRegExpGroup_ = function(re) {
 /**
  * Run regexp's exec() on the userAgent string.
  * @param {!RegExp} re Regular expression.
- * @return {Array} A result array, or null for no match.
+ * @return {Array<?>} A result array, or null for no match.
  * @private
  */
 goog.userAgent.product.execRegExp_ = function(re) {

@@ -1,5 +1,0 @@
-
-java_library(name = "google-protobuffers",
-  deps = [
-    "protobuf-java-2.4.1.jar",
-  ])

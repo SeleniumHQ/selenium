@@ -1,35 +1,35 @@
-// Copyright 2013 Selenium committers
-// Copyright 2013 Software Freedom Conservancy
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-//     You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 'use strict';
 
 var http = require('http'),
     url = require('url');
 
-var promise = require('..').promise,
+var Browser = require('..').Browser,
+    promise = require('..').promise,
     proxy = require('../proxy'),
     assert = require('../testing/assert'),
     test = require('../lib/test'),
     Server = require('../lib/test/httpserver').Server,
-    Browser = test.Browser,
     Pages = test.Pages;
 
 
 test.suite(function(env) {
-  env.autoCreateDriver = false;
-
   function writeResponse(res, body, encoding, contentType) {
     res.writeHead(200, {
       'Content-Length': Buffer.byteLength(body, encoding),
@@ -78,23 +78,35 @@ test.suite(function(env) {
     ].join(''), 'utf8', 'text/html; charset=UTF-8');
   });
 
-  test.before(proxyServer.start.bind(proxyServer));
-  test.before(helloServer.start.bind(helloServer));
-  test.before(goodbyeServer.start.bind(helloServer));
+  // Cannot pass start directly to mocha's before, as mocha will interpret the optional
+  // port parameter as an async callback parameter.
+  function mkStartFunc(server) {
+    return function() {
+      return server.start();
+    };
+  }
+
+
+  test.before(mkStartFunc(proxyServer));
+  test.before(mkStartFunc(helloServer));
+  test.before(mkStartFunc(goodbyeServer));
 
   test.after(proxyServer.stop.bind(proxyServer));
   test.after(helloServer.stop.bind(helloServer));
   test.after(goodbyeServer.stop.bind(goodbyeServer));
 
-  test.afterEach(env.dispose.bind(env));
+  var driver;
+  test.beforeEach(function() { driver = null; });
+  test.afterEach(function() { driver && driver.quit(); });
 
-  test.ignore(env.browsers(Browser.SAFARI)).  // Proxy support not implemented.
+  // Proxy support not implemented.
+  test.ignore(env.browsers(Browser.IE, Browser.OPERA, Browser.SAFARI)).
   describe('manual proxy settings', function() {
     // phantomjs 1.9.1 in webdriver mode does not appear to respect proxy
     // settings.
-    test.ignore(env.browsers(Browser.PHANTOMJS)).
+    test.ignore(env.browsers(Browser.PHANTOM_JS)).
     it('can configure HTTP proxy host', function() {
-      var driver = env.builder().
+      driver = env.builder().
           setProxy(proxy.manual({
             http: proxyServer.host()
           })).
@@ -107,9 +119,9 @@ test.suite(function(env) {
     });
 
     // PhantomJS does not support bypassing the proxy for individual hosts.
-    test.ignore(env.browsers(Browser.PHANTOMJS)).
+    test.ignore(env.browsers(Browser.PHANTOM_JS)).
     it('can bypass proxy for specific hosts', function() {
-      var driver = env.builder().
+      driver = env.builder().
           setProxy(proxy.manual({
             http: proxyServer.host(),
             bypass: helloServer.host()
@@ -132,10 +144,11 @@ test.suite(function(env) {
 
   // PhantomJS does not support PAC file proxy configuration.
   // Safari does not support proxies.
-  test.ignore(env.browsers(Browser.PHANTOMJS, Browser.SAFARI)).
+  test.ignore(env.browsers(
+      Browser.IE, Browser.OPERA, Browser.PHANTOM_JS, Browser.SAFARI)).
   describe('pac proxy settings', function() {
     test.it('can configure proxy through PAC file', function() {
-      var driver = env.builder().
+      driver = env.builder().
           setProxy(proxy.pac(proxyServer.url('/proxy.pac'))).
           build();
 

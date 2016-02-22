@@ -1,9 +1,9 @@
 ﻿// <copyright file="WebSocketConnection.cs" company="WebDriver Committers">
-// Copyright 2007-2012 WebDriver committers
-// Copyright 2007-2012 Google Inc.
-// Portions copyright 2012 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -221,6 +221,11 @@ namespace OpenQA.Selenium.Safari.Internal
         /// <param name="e">A <see cref="StandardHttpRequestReceivedEventArgs"/> that contains the event data.</param>
         protected void OnStandardHttpRequestReceived(StandardHttpRequestReceivedEventArgs e)
         {
+            if (e == null)
+            {
+                throw new ArgumentNullException("e", "Event arguments cannot be null");
+            }
+
             if (this.StandardHttpRequestReceived != null)
             {
                 // The event handler is to be fired, so set the Handled
@@ -266,9 +271,9 @@ namespace OpenQA.Selenium.Safari.Internal
             this.Socket.Receive(buffer, 0);
         }
 
-        private void CreateHandler(IEnumerable<byte> data)
+        private void CreateHandler(IEnumerable<byte> dataToParse)
         {
-            var request = this.parser.Parse(data.ToArray(), this.scheme);
+            var request = this.parser.Parse(dataToParse.ToArray(), this.scheme);
             if (request == null)
             {
                 return;
@@ -302,7 +307,7 @@ namespace OpenQA.Selenium.Safari.Internal
             this.SendBytes(handshake);
             this.OnOpen(new ConnectionEventArgs(this));
         }
-        
+
         private void HandleReadError(Exception e)
         {
             if (e.InnerException != null)

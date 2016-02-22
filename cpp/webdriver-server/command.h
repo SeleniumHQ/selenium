@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -23,19 +26,16 @@
 
 namespace webdriver {
 
-typedef std::map<std::string, std::string> LocatorMap;
 typedef std::map<std::string, Json::Value> ParametersMap;
 
 class Command {
  public:
   Command(void);
   virtual ~Command(void);
-  void Populate(const std::string& json_command);
+  std::string Serialize(void);
+  void Deserialize(const std::string& json);
 
   std::string command_type(void) const { return this->command_type_; }
-  LocatorMap locator_parameters(void) const {
-    return this->locator_parameters_;
-  }
   ParametersMap command_parameters(void) const {
     return this->command_parameters_;
   }
@@ -43,8 +43,8 @@ class Command {
  private:
   // The type of command this represents.
   std::string command_type_;
-  // Locator parameters derived from the URL of the command request.
-  LocatorMap locator_parameters_;
+  // Session ID for this command.
+  std::string session_id_;
   // Command parameters passed as JSON in the body of the request.
   ParametersMap command_parameters_;
 

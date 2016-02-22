@@ -1,3 +1,20 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 package org.openqa.selenium.testing;
 
 import java.util.ArrayList;
@@ -32,7 +49,7 @@ public class ParallelSuite extends Suite {
         JUnit4TestBase.removeDriver();
       }
     });
-    
+
     for (final Runner runner : getChildren()) {
       threadPool.execute(new Runnable() {
         @Override
@@ -64,11 +81,11 @@ public class ParallelSuite extends Suite {
    */
   private static class ThreadPool {
     private final List<Thread> threads;
-    private final ConcurrentLinkedQueue<Runnable> tasks = new ConcurrentLinkedQueue<Runnable>();
+    private final ConcurrentLinkedQueue<Runnable> tasks = new ConcurrentLinkedQueue<>();
     private volatile boolean isStopped = false;
 
     public ThreadPool(int threadCount, final Runnable perThreadCleanup) {
-      threads = new ArrayList<Thread>(threadCount);
+      threads = new ArrayList<>(threadCount);
       for (int i = 0; i < threadCount; ++i) {
         Thread thread = new Thread() {
           @Override

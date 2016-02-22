@@ -11,6 +11,7 @@
     goog.require('goog.dom');
     goog.require('goog.style');
     goog.require('goog.testing.jsunit');
+    goog.require('goog.testing.ExpectedFailures');
     goog.require('goog.userAgent');
   </script>
 
@@ -63,11 +64,14 @@
     }
 
     function testAreaWithDefaultShape() {
-      // IE doesn't support shape="default".
-      if (!goog.userAgent.IE) {
+      var expect = new goog.testing.ExpectedFailures();
+      expect.expectFailureFor(goog.userAgent.IE || goog.userAgent.EDGE,
+          "IE and Edge don't support shape=default");
+
+      expect.run(function() {
         var e = document.getElementById('default');
         assertClientRect(e, 300, 25, 200, 100);
-      }
+      });
     }
 
     function testAreaWithRectShape() {

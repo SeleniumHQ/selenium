@@ -26,10 +26,12 @@ goog.require('goog.dom.NodeType');
 goog.require('goog.dom.xml');
 goog.require('goog.ds.BasicNodeList');
 goog.require('goog.ds.DataManager');
+goog.require('goog.ds.DataNode');
 goog.require('goog.ds.LoadState');
 goog.require('goog.ds.logger');
 goog.require('goog.net.XhrIo');
 goog.require('goog.string');
+
 
 
 /**
@@ -293,12 +295,13 @@ goog.ds.XmlDataSource.createChildlessDocument_ = function() {
  * A URI of an empty string will mean that no request is made
  * and the data source will be a single, empty node.
  *
- * @param {(string,goog.Uri)} uri URL of the XMLHttpRequest.
+ * @param {(string|goog.Uri)} uri URL of the XMLHttpRequest.
  * @param {string} name Name of the datasource.
  *
  * implements goog.ds.XmlHttpDataSource.
  * @constructor
  * @extends {goog.ds.XmlDataSource}
+ * @final
  */
 goog.ds.XmlHttpDataSource = function(uri, name) {
   goog.ds.XmlDataSource.call(this, null, null, name);
@@ -325,7 +328,7 @@ goog.ds.XmlHttpDataSource.prototype.loadState_ = goog.ds.LoadState.NOT_LOADED;
  */
 goog.ds.XmlHttpDataSource.prototype.load = function() {
   if (this.uri_) {
-    goog.ds.logger.info('Sending XML request for DataSource ' +
+    goog.log.info(goog.ds.logger, 'Sending XML request for DataSource ' +
         this.getDataName() + ' to ' + this.uri_);
     this.loadState_ = goog.ds.LoadState.LOADING;
 
@@ -371,7 +374,8 @@ goog.ds.XmlHttpDataSource.prototype.complete_ = function(e) {
  * @private
  */
 goog.ds.XmlHttpDataSource.prototype.success_ = function(xhr) {
-  goog.ds.logger.info('Got data for DataSource ' + this.getDataName());
+  goog.log.info(goog.ds.logger,
+      'Got data for DataSource ' + this.getDataName());
   var xml = xhr.getResponseXml();
 
   // Fix for case where IE returns valid XML as text but
@@ -401,7 +405,7 @@ goog.ds.XmlHttpDataSource.prototype.success_ = function(xhr) {
  * @private
  */
 goog.ds.XmlHttpDataSource.prototype.failure_ = function() {
-  goog.ds.logger.info('Data retrieve failed for DataSource ' +
+  goog.log.info(goog.ds.logger, 'Data retrieve failed for DataSource ' +
       this.getDataName());
 
   this.loadState_ = goog.ds.LoadState.FAILED;

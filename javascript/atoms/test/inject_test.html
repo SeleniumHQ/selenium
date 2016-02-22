@@ -26,10 +26,10 @@ limitations under the License.
     goog.require('bot.inject.cache');
     goog.require('bot.json');
     goog.require('bot.userAgent');
+    goog.require('goog.Promise');
     goog.require('goog.dom');
     goog.require('goog.dom.TagName');
     goog.require('goog.events');
-    goog.require('goog.testing.AsyncTestCase');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
     goog.require('goog.userAgent.product');
@@ -42,11 +42,11 @@ limitations under the License.
   <script type="text/javascript">
     goog.global.MY_GLOBAL_CONSTANT = 123;
 
-    // We need to use an AsyncTestCase since a few of the tests require a
-    // window.setTimeout delay for the conditions under test.
-    var asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
-
     var frame, frameWin, frameDoc;
+
+    function setUpPage() {
+      goog.testing.TestCase.getActiveTestCase().promiseTimeout = 30000; // 30s
+    }
 
     function setUp() {
       frame = goog.dom.$('test-frame');
@@ -273,13 +273,13 @@ limitations under the License.
       var id = bot.inject.cache.addElement(frameDoc.body);
       assertEquals(frameDoc.body, bot.inject.cache.getElement(id, frameDoc));
 
-      asyncTestCase.waitForAsync('Waiting for frame to reload');
-      goog.events.listenOnce(frame, 'load', function() {
-        asyncTestCase.continueTesting();
+      return new goog.Promise(function(loaded) {
+        goog.events.listenOnce(frame, 'load', loaded);
+        frameWin.location.reload();
+      }).then(function() {
         frameDoc = goog.dom.getFrameContentDocument(frame);
         assertThrows(goog.partial(bot.inject.cache.getElement, id, frameDoc));
       });
-      frameWin.location.reload();
     }
 
 
@@ -313,90 +313,83 @@ limitations under the License.
 
 
     function testShouldBeAbleToExecuteAsyncScript() {
-      function onDone(result) {
-        asyncTestCase.continueTesting();
+      return new goog.Promise(function(done) {
+        bot.inject.executeAsyncScript(
+            'window.setTimeout(goog.partial(arguments[0], 1), 10)',
+            [], 250, done);
+      }).then(function(result) {
         assertTrue(goog.object.containsKey(result, 'status'));
         assertEquals(bot.ErrorCode.SUCCESS, result['status']);
         assertTrue(goog.object.containsKey(result, 'value'));
         assertEquals(1, result['value']);
-      }
-
-      asyncTestCase.waitForAsync('callback');
-      bot.inject.executeAsyncScript(
-          'window.setTimeout(goog.partial(arguments[0], 1), 10)',
-          [], 250, onDone);
+      });
     }
 
 
     function testShouldBeAbleToExecuteAsyncScriptThatCallsbackSynchronously() {
-      function onDone(result) {
-        asyncTestCase.continueTesting();
+      return new goog.Promise(function(done) {
+        bot.inject.executeAsyncScript('arguments[0](1)', [], 0, done);
+      }).then(function(result) {
         assertTrue(goog.object.containsKey(result, 'status'));
         assertEquals(bot.ErrorCode.SUCCESS, result['status']);
         assertTrue(goog.object.containsKey(result, 'value'));
         assertEquals(1, result['value']);
-      }
-
-      asyncTestCase.waitForAsync('callback');
-      bot.inject.executeAsyncScript('arguments[0](1)', [], 0, onDone);
+      });
     }
 
 
     function testShouldBeAbleToExecuteAsyncFunc() {
-      function onDone(result) {
-        asyncTestCase.continueTesting();
+      return new goog.Promise(function(done) {
+        bot.inject.executeAsyncScript(
+            function(callback) { callback(1) }, [], 0, done);
+      }).then(function(result) {
         assertTrue(goog.object.containsKey(result, 'status'));
         assertEquals(bot.ErrorCode.SUCCESS, result['status']);
         assertTrue(goog.object.containsKey(result, 'value'));
         assertEquals(1, result['value']);
-      }
-
-      asyncTestCase.waitForAsync('callback');
-      bot.inject.executeAsyncScript(
-          function(callback) { callback(1) }, [], 0, onDone);
+      });
     }
 
 
     function testShouldThrowOnExecuteAsyncException() {
-      function onDone(result) {
-        asyncTestCase.continueTesting();
+      return new goog.Promise(function(done) {
+        bot.inject.executeAsyncScript('nosuchfunc()', [], 0, done);
+      }).then(function(result) {
         assertTrue(goog.object.containsKey(result, 'status'));
         assertEquals(bot.ErrorCode.UNKNOWN_ERROR, result['status']);
-      }
-
-      asyncTestCase.waitForAsync('callback');
-      bot.inject.executeAsyncScript('nosuchfunc()', [], 0, onDone);
+      });
     }
 
 
     function testShouldTimeoutInExecuteAsync() {
-      function onDone(result) {
-        asyncTestCase.continueTesting();
+      return new goog.Promise(function(done) {
+        bot.inject.executeAsyncScript('', [], 0, done);
+      }).then(function(result) {
         assertTrue(goog.object.containsKey(result, 'status'));
         assertEquals(bot.ErrorCode.SCRIPT_TIMEOUT, result['status']);
-      }
-
-      asyncTestCase.waitForAsync('callback');
-      bot.inject.executeAsyncScript('', [], 0, onDone);
+      });
     }
 
 
     function testShouldBeAbleToStringifyResult() {
-      function onDone(jsonResult) {
-        asyncTestCase.continueTesting();
+      return new goog.Promise(function(done) {
+        bot.inject.executeAsyncScript('', [], 0, done, true);
+      }).then(function(jsonResult) {
         var result = bot.json.parse(jsonResult);
         assertTrue(goog.object.containsKey(result, 'status'));
         assertEquals(bot.ErrorCode.SCRIPT_TIMEOUT, result['status']);
-      }
-
-      asyncTestCase.waitForAsync('callback');
-      bot.inject.executeAsyncScript('', [], 0, onDone, true);
+      });
     }
 
 
     function testShouldBeAbleToWrapAndUnwrapInExecuteAsyncScript() {
-      function onDone(result) {
-        asyncTestCase.continueTesting();
+      return new goog.Promise(function(done) {
+        var id = bot.inject.cache.addElement(document.body);
+        var args = [{}];
+        args[0][bot.inject.ELEMENT_KEY] = id;
+        bot.inject.executeAsyncScript(
+            'arguments[1](arguments[0])', args, 0, done);
+      }).then(function(result) {
         assertTrue(goog.object.containsKey(result, 'status'));
         assertEquals(bot.ErrorCode.SUCCESS, result['status']);
 
@@ -405,14 +398,7 @@ limitations under the License.
             bot.inject.ELEMENT_KEY));
         assertEquals(document.body, bot.inject.cache.getElement(
             result['value'][bot.inject.ELEMENT_KEY]));
-      }
-
-      var id = bot.inject.cache.addElement(document.body);
-      var args = [{}];
-      args[0][bot.inject.ELEMENT_KEY] = id;
-      asyncTestCase.waitForAsync('callback');
-      var result = bot.inject.executeAsyncScript(
-          'arguments[1](arguments[0])', args, 0, onDone);
+      });
     }
 
     function testShouldExecuteAsyncScriptsInTheContextOfTheSpecifiedWindow() {
@@ -424,8 +410,17 @@ limitations under the License.
         return;
       }
 
-      function onDone(result) {
-        asyncTestCase.continueTesting();
+      return new goog.Promise(function(done) {
+        bot.inject.executeAsyncScript(function(callback) {
+          callback({
+            'this == window': (this == window),
+            'this == top': (this == window.top),
+            'typeof window.MY_GLOBAL_CONSTANT': (typeof MY_GLOBAL_CONSTANT),
+            'typeof window.top.MY_GLOBAL_CONSTANT':
+                (typeof window.top.MY_GLOBAL_CONSTANT)
+          });
+        }, [], 0, done, false, frameWin);
+      }).then(function(result) {
         var jsonResult = bot.json.stringify(result);
 
         assertTrue(jsonResult, goog.object.containsKey(result, 'status'));
@@ -440,18 +435,7 @@ limitations under the License.
                      value['typeof window.MY_GLOBAL_CONSTANT']);
         assertEquals(jsonResult, 'number',
                      value['typeof window.top.MY_GLOBAL_CONSTANT']);
-      }
-
-      asyncTestCase.waitForAsync('callback');
-      bot.inject.executeAsyncScript(function(callback) {
-        callback({
-          'this == window': (this == window),
-          'this == top': (this == window.top),
-          'typeof window.MY_GLOBAL_CONSTANT': (typeof MY_GLOBAL_CONSTANT),
-          'typeof window.top.MY_GLOBAL_CONSTANT':
-              (typeof window.top.MY_GLOBAL_CONSTANT)
-        });
-      }, [], 0, onDone, false, frameWin);
+      });
     }
 
     function testShouldExecuteScriptsInTheContextOfTheSpecifiedWindow() {
@@ -498,19 +482,15 @@ limitations under the License.
     }
 
     function testCorrectlyUnwrapsFunctionArgsForInjectedAsyncScripts() {
-      function onDone(result) {
-        asyncTestCase.continueTesting();
-
+      return new goog.Promise(function(done) {
+        bot.inject.executeAsyncScript(function() {
+          var callback = arguments[arguments.length - 1];
+          callback(arguments[0]());
+        }, [function() {return 1;}], 0, done, false);
+      }).then(function(result) {
         assertEquals(bot.ErrorCode.SUCCESS, result['status']);
         assertEquals(1, result['value']);
-      }
-
-      asyncTestCase.waitForAsync('bot.inject.executeAsyncScript');
-
-      var result = bot.inject.executeAsyncScript(function() {
-        var callback = arguments[arguments.length - 1];
-        callback(arguments[0]());
-      }, [function() {return 1;}], 0, onDone, false);
+      });
     }
 
     function testCorrectlyUnwrapsArgsForInjectedScripts() {
@@ -545,9 +525,11 @@ limitations under the License.
       }
       var wrapped = bot.inject.wrapValue(frameDoc.body);
 
-      function onDone(result) {
-        asyncTestCase.continueTesting();
-
+      return new goog.Promise(function(done) {
+        bot.inject.executeAsyncScript(function(element, callback) {
+          callback([element, element.tagName.toUpperCase()]);
+        }, [wrapped], 0, done, false, frameWin);
+      }).then(function(result) {
         assertEquals(bot.ErrorCode.SUCCESS, result['status']);
 
         var value = result['value'];
@@ -560,12 +542,7 @@ limitations under the License.
                      value[0][bot.inject.ELEMENT_KEY]);
 
         assertEquals(goog.dom.TagName.BODY, value[1]);
-      }
-
-      asyncTestCase.waitForAsync('bot.inject.executeAsyncScript');
-      bot.inject.executeAsyncScript(function(element, callback) {
-        callback([element, element.tagName.toUpperCase()]);
-      }, [wrapped], 0, onDone, false, frameWin);
+      });
     }
 
     function testExecuteScriptShouldBeAbleToRecurseOnItself() {

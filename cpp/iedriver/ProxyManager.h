@@ -1,5 +1,8 @@
-// Copyright 2013 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -15,7 +18,12 @@
 #define WEBDRIVER_IE_PROXYMANAGER_H_
 
 #include <string>
-#include "json.h"
+
+// Forward declaration of classes to avoid
+// circular include files.
+namespace Json {
+  class Value;
+} // namespace Json
 
 namespace webdriver {
 
@@ -25,6 +33,9 @@ struct ProxySettings {
   std::string http_proxy;
   std::string ftp_proxy;
   std::string ssl_proxy;
+  std::string socks_proxy;
+  std::string socks_user_name;
+  std::string socks_password;
   std::string proxy_autoconfig_url;
 };
 
@@ -43,8 +54,10 @@ class ProxyManager {
  private:
   void SetPerProcessProxySettings(HWND browser_window_handle);
   void SetGlobalProxySettings(void);
+  void SetProxyAuthentication(const std::wstring& user_name, const std::wstring& password);
   void GetCurrentProxySettings(void);
   void GetCurrentProxyType(void);
+  void GetCurrentProxyAuthentication(void);
   void RestoreProxySettings(void);
 
   std::wstring BuildProxySettingsString(void);
@@ -57,15 +70,20 @@ class ProxyManager {
   std::wstring current_autoconfig_url_;
   std::wstring current_proxy_server_;
   std::wstring current_proxy_bypass_list_;
+  std::wstring current_socks_user_name_;
+  std::wstring current_socks_password_;
 
-  //std::string proxy_settings_;
   std::string proxy_type_;
   std::string http_proxy_;
   std::string ftp_proxy_;
   std::string ssl_proxy_;
+  std::string socks_proxy_;
+  std::string socks_user_name_;
+  std::string socks_password_;
   std::string proxy_autoconfigure_url_;
   bool use_per_process_proxy_;
   bool is_proxy_modified_;
+  bool is_proxy_authorization_modified_;
 };
 
 } // namespace webdriver

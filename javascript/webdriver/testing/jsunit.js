@@ -1,16 +1,19 @@
-// Copyright 2011 Software Freedom Conservancy. All Rights Reserved.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview File to include for turning any HTML file page into a WebDriver
@@ -74,6 +77,16 @@ webdriver.testing.jsunit.TestRunner.prototype.execute = function() {
   }
   this.screenshotCacheEl_.innerHTML = '';
   this.client_.sendInitEvent();
+
+  // This check adapted from goog.testing.TestRunner.prototype.execute.
+  if (this.isStrict() && this.testCase.getCount() == 0) {
+    this.client_.sendErrorEvent(
+        'No tests found in given test case: ' + this.testCase.getName() + ' ' +
+        'By default, the test runner fails if a test case has no tests. ' +
+        'To modify this behavior, see goog.testing.TestRunner\'s ' +
+        'setStrict() method.');
+  }
+
   this.testCase.setCompletedCallback(goog.bind(this.onComplete_, this));
   this.testCase.runTests();
 };
@@ -264,6 +277,35 @@ webdriver.testing.jsunit.TestRunner.prototype.takeScreenshot = function(
     }
     return png;
   });
+};
+
+
+/**
+ * Sends a base64 encoded PNG image to the server to be saved in the test
+ * outputs.
+ * @param {string} data The base64 encoded PNG image to be sent to the server.
+ * @param {string=} opt_label An optional debug label to identify the
+ *     screenshot with.
+ */
+webdriver.testing.jsunit.TestRunner.prototype.saveImage = function(
+    data, opt_label) {
+  if (!this.isInitialized()) {
+    throw Error(
+        'The test runner must be initialized before it may be used to' +
+        ' save images');
+  }
+
+  this.client_.sendScreenshotEvent(data, opt_label);
+
+  var img = document.createElement('img');
+  img.src = 'data:image/png;base64,' + data;
+  img.style.border = '1px solid black';
+  img.style.maxWidth = '500px';
+  this.screenshotCacheEl_.appendChild(img);
+
+  if (this.testCase) {
+    this.testCase.saveMessage('[SCREENSHOT] ' + (opt_label || '<Not Labeled>'));
+  }
 };
 
 

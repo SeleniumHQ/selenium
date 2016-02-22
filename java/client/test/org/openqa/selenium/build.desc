@@ -1,7 +1,6 @@
 java_library(name = "selenium",
   deps = [
     ":base",
-    "//java/client/src/org/openqa/selenium/htmlunit",
     "//java/client/src/org/openqa/selenium/firefox",
     "//java/client/src/org/openqa/selenium/remote",
   ])
@@ -20,15 +19,9 @@ java_library(name = "build",
 java_library(name = "base",
   srcs = [
     "Messages.java",
-    "NeedsDriver.java",
-    "NeedsFreshDriver.java",
-    "NoDriverAfterTest.java",
     "Pages.java",
     "ParallelTestRunner.java",
     "StubDriver.java",
-    "StubElement.java",
-    "StubTargetLocator.java",
-    "StubRenderedWebElement.java",
     "WaitingConditions.java",
   ],
   embedded = [
@@ -66,20 +59,20 @@ java_library(name = "tests",
   deps = [
     ":base",
     "//java/client/src/org/openqa/selenium/interactions",
-    "//java/client/src/org/openqa/selenium/internal/seleniumemulation:api",
+    "//java/client/src/com/thoughtworks/selenium/webdriven:webdriven",
     "//java/client/src/org/openqa/selenium/net",
     "//java/client/src/org/openqa/selenium/remote:common",
     "//java/client/src/org/openqa/selenium/support/ui:wait",
+    "//java/client/test/com/thoughtworks/selenium/webdriven:small_tests",
     "//java/client/test/org/openqa/selenium/environment",
     "//java/client/test/org/openqa/selenium/testing:junit_4",
     "//java/client/test/org/openqa/selenium/testing:proxy",
-    "//java/client/test/org/openqa/selenium/testing:tests",
     "//java/client/test/org/openqa/selenium/testing:util",
-    "//java/client/test/org/openqa/selenium/v1:small_tests",
+    "//java/client/test/org/openqa/selenium/testing/drivers:tests",
+    "//java/client/test/org/openqa/selenium/support:tests",
     "//third_party/java/commons-io",
     "//third_party/java/junit",
     "//third_party/java/mockito",
-    "//third_party/java/webbit",
   ])
 
 java_test(name = "SmallTests",
@@ -92,7 +85,7 @@ java_test(name = "SmallTests",
 
 java_test(name = "RcBrowserLauncherTests",
   scs = [
-    "browserlaunchers/RcBrowserLauncherTests.java",
+    "browserlaunchers/locators/RcBrowserLauncherTests.java",
   ],
   deps = [
     ":tests",
@@ -101,7 +94,7 @@ java_test(name = "RcBrowserLauncherTests",
 java_binary(name = "dump-ignores",
   deps = [
     ":tests",
-    "//third_party/java/guava-libraries",
+    "//third_party/java/guava",
     "//third_party/java/junit",
   ],
   main_class = "org.openqa.selenium.internal.IgnoredTestPrinter"

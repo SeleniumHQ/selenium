@@ -1,7 +1,23 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 package org.openqa.selenium.remote.server.handler.html5;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
@@ -19,8 +35,6 @@ import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.html5.AppCacheStatus;
 import org.openqa.selenium.html5.ApplicationCache;
-import org.openqa.selenium.html5.BrowserConnection;
-import org.openqa.selenium.html5.DatabaseStorage;
 import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.html5.LocationContext;
@@ -41,9 +55,7 @@ public class UtilsTest {
   public void returnsInputDriverIfRequestedFeatureIsImplementedDirectly() {
     WebDriver driver = mock(Html5Driver.class);
     assertSame(driver, Utils.getApplicationCache(driver));
-    assertSame(driver, Utils.getBrowserConnection(driver));
     assertSame(driver, Utils.getLocationContext(driver));
-    assertSame(driver, Utils.getDatabaseStorage(driver));
     assertSame(driver, Utils.getWebStorage(driver));
   }
 
@@ -58,21 +70,7 @@ public class UtilsTest {
     }
 
     try {
-      Utils.getBrowserConnection(driver);
-      fail();
-    } catch (UnsupportedCommandException expected) {
-      // Do nothing.
-    }
-
-    try {
       Utils.getLocationContext(driver);
-      fail();
-    } catch (UnsupportedCommandException expected) {
-      // Do nothing.
-    }
-
-    try {
-      Utils.getDatabaseStorage(driver);
       fail();
     } catch (UnsupportedCommandException expected) {
       // Do nothing.
@@ -98,23 +96,6 @@ public class UtilsTest {
 
     ApplicationCache cache = Utils.getApplicationCache(driver);
     assertEquals(AppCacheStatus.CHECKING, cache.getStatus());
-  }
-
-  @Test
-  public void providesRemoteAccessToBrowserConnection() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(CapabilityType.SUPPORTS_BROWSER_CONNECTION, true);
-
-    CapableDriver driver = mock(CapableDriver.class);
-    when(driver.getCapabilities()).thenReturn(caps);
-    when(driver.execute(DriverCommand.IS_BROWSER_ONLINE, null)).thenReturn(false);
-
-    BrowserConnection connection = Utils.getBrowserConnection(driver);
-    assertFalse(connection.isOnline());
-
-    reset(driver);
-    connection.setOnline(true);
-    verify(driver).execute(DriverCommand.SET_BROWSER_ONLINE, ImmutableMap.of("state", true));
   }
 
   @Test
@@ -164,7 +145,6 @@ public class UtilsTest {
   interface CapableDriver extends WebDriver, ExecuteMethod, HasCapabilities {
   }
 
-  interface Html5Driver extends WebDriver, ApplicationCache, BrowserConnection, LocationContext,
-      DatabaseStorage, WebStorage {
+  interface Html5Driver extends WebDriver, ApplicationCache, LocationContext, WebStorage {
   }
 }

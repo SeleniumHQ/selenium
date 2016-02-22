@@ -18,8 +18,6 @@
  * DO NOT USE THIS FILE DIRECTLY.  Use goog.dom.Range instead.
  *
  * @author robbyw@google.com (Robby Walker)
- * @author ojan@google.com (Ojan Vafai)
- * @author jparent@google.com (Julie Parent)
  */
 
 
@@ -95,14 +93,7 @@ goog.dom.browserrange.AbstractRange.prototype.getStartOffset =
  *     and offset.
  */
 goog.dom.browserrange.AbstractRange.prototype.getStartPosition = function() {
-  goog.asserts.assert(this.range_.getClientRects,
-      'Getting selection coordinates is not supported.');
-
-  var rects = this.range_.getClientRects();
-  if (rects.length) {
-    return new goog.math.Coordinate(rects[0]['left'], rects[0]['top']);
-  }
-  return null;
+  return this.getPosition_(true);
 };
 
 
@@ -129,13 +120,25 @@ goog.dom.browserrange.AbstractRange.prototype.getEndOffset =
  *     and offset.
  */
 goog.dom.browserrange.AbstractRange.prototype.getEndPosition = function() {
+  return this.getPosition_(false);
+};
+
+
+/**
+ * @param {boolean} start Whether to get the position of the start or end.
+ * @return {goog.math.Coordinate} The coordinate of the selection point.
+ * @private
+ */
+goog.dom.browserrange.AbstractRange.prototype.getPosition_ = function(start) {
   goog.asserts.assert(this.range_.getClientRects,
       'Getting selection coordinates is not supported.');
 
   var rects = this.range_.getClientRects();
   if (rects.length) {
-    var lastRect = goog.array.peek(rects);
-    return new goog.math.Coordinate(lastRect['right'], lastRect['bottom']);
+    var r = start ? rects[0] : goog.array.peek(rects);
+    return new goog.math.Coordinate(
+        start ? r.left : r.right,
+        start ? r.top : r.bottom);
   }
   return null;
 };
@@ -172,7 +175,7 @@ goog.dom.browserrange.AbstractRange.prototype.containsRange =
 
   var range = abstractRange.getBrowserRange();
   var start = goog.dom.RangeEndpoint.START, end = goog.dom.RangeEndpoint.END;
-  /** {@preserveTry} */
+  /** @preserveTry */
   try {
     if (checkPartial) {
       // There are two ways to not overlap.  Being before, and being after.
@@ -277,7 +280,7 @@ goog.dom.browserrange.AbstractRange.prototype.getValidHtml =
  * Returns a RangeIterator over the contents of the range.  Regardless of the
  * direction of the range, the iterator will move in document order.
  * @param {boolean=} opt_keys Unused for this iterator.
- * @return {goog.dom.RangeIterator} An iterator over tags in the range.
+ * @return {!goog.dom.RangeIterator} An iterator over tags in the range.
  */
 goog.dom.browserrange.AbstractRange.prototype.__iterator__ = function(
     opt_keys) {

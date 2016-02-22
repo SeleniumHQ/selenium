@@ -24,6 +24,7 @@ goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.Range');
+goog.require('goog.dom.TagName');
 goog.require('goog.editor.BrowserFeature');
 goog.require('goog.editor.Command');
 goog.require('goog.editor.node');
@@ -40,6 +41,7 @@ goog.require('goog.uri.utils.ComponentIndex');
  * @param {HTMLAnchorElement} anchor The anchor element.
  * @param {boolean} isNew Whether this is a new link.
  * @constructor
+ * @final
  */
 goog.editor.Link = function(anchor, isNew) {
   /**
@@ -60,7 +62,7 @@ goog.editor.Link = function(anchor, isNew) {
   /**
    * Any extra anchors created by the browser from a selection in the same
    * operation that created the primary link
-   * @type {!Array.<HTMLAnchorElement>}
+   * @type {!Array<HTMLAnchorElement>}
    * @private
    */
   this.extraAnchors_ = [];
@@ -76,7 +78,7 @@ goog.editor.Link.prototype.getAnchor = function() {
 
 
 /**
- * @return {!Array.<HTMLAnchorElement>} The extra anchor elements, if any,
+ * @return {!Array<HTMLAnchorElement>} The extra anchor elements, if any,
  *     created by the browser from a selection.
  */
 goog.editor.Link.prototype.getExtraAnchors = function() {
@@ -89,7 +91,14 @@ goog.editor.Link.prototype.getExtraAnchors = function() {
  */
 goog.editor.Link.prototype.getCurrentText = function() {
   if (!this.currentText_) {
-    this.currentText_ = goog.dom.getRawTextContent(this.getAnchor());
+    var anchor = this.getAnchor();
+
+    var leaf = goog.editor.node.getLeftMostLeaf(anchor);
+    if (leaf.tagName && leaf.tagName == goog.dom.TagName.IMG) {
+      this.currentText_ = leaf.getAttribute('alt');
+    } else {
+      this.currentText_ = goog.dom.getRawTextContent(this.getAnchor());
+    }
   }
   return this.currentText_;
 };
@@ -141,18 +150,22 @@ goog.editor.Link.prototype.setTextAndUrl = function(newText, newUrl) {
   var currentText = this.getCurrentText();
   if (newText != currentText) {
     var leaf = goog.editor.node.getLeftMostLeaf(anchor);
-    if (leaf.nodeType == goog.dom.NodeType.TEXT) {
-      leaf = leaf.parentNode;
+
+    if (leaf.tagName && leaf.tagName == goog.dom.TagName.IMG) {
+      leaf.setAttribute('alt', newText ? newText : '');
+    } else {
+      if (leaf.nodeType == goog.dom.NodeType.TEXT) {
+        leaf = leaf.parentNode;
+      }
+
+      if (goog.dom.getRawTextContent(leaf) != currentText) {
+        leaf = anchor;
+      }
+
+      goog.dom.removeChildren(leaf);
+      var domHelper = goog.dom.getDomHelper(leaf);
+      goog.dom.appendChild(leaf, domHelper.createTextNode(newText));
     }
-
-    if (goog.dom.getRawTextContent(leaf) != currentText) {
-      leaf = anchor;
-    }
-
-    goog.dom.removeChildren(leaf);
-
-    var domHelper = goog.dom.getDomHelper(leaf);
-    goog.dom.appendChild(leaf, domHelper.createTextNode(newText));
 
     // The text changed, so force getCurrentText to recompute.
     this.currentText_ = null;
@@ -219,7 +232,7 @@ goog.editor.Link.prototype.updateLinkDisplay_ = function(field, url) {
  *     a valid link address.
  */
 goog.editor.Link.prototype.getValidLinkFromText = function() {
-  var text = this.getCurrentText();
+  var text = goog.string.trim(this.getCurrentText());
   if (goog.editor.Link.isLikelyUrl(text)) {
     if (text.search(/:/) < 0) {
       return 'http://' + goog.string.trimLeft(text);
@@ -252,9 +265,9 @@ goog.editor.Link.prototype.finishLinkCreation = function(field) {
  * @param {HTMLAnchorElement} anchor The anchor element.
  * @param {string} url The initial URL.
  * @param {string=} opt_target The target.
- * @param {Array.<HTMLAnchorElement>=} opt_extraAnchors Extra anchors created
+ * @param {Array<HTMLAnchorElement>=} opt_extraAnchors Extra anchors created
  *     by the browser when parsing a selection.
- * @return {goog.editor.Link} The link.
+ * @return {!goog.editor.Link} The link.
  */
 goog.editor.Link.createNewLink = function(anchor, url, opt_target,
     opt_extraAnchors) {
@@ -268,6 +281,24 @@ goog.editor.Link.createNewLink = function(anchor, url, opt_target,
     link.extraAnchors_ = opt_extraAnchors;
   }
 
+  return link;
+};
+
+
+/**
+ * Initialize a new link using text in anchor, or empty string if there is no
+ * likely url in the anchor.
+ * @param {HTMLAnchorElement} anchor The anchor element with likely url content.
+ * @param {string=} opt_target The target.
+ * @return {!goog.editor.Link} The link.
+ */
+goog.editor.Link.createNewLinkFromText = function(anchor, opt_target) {
+  var link = new goog.editor.Link(anchor, true);
+  var text = link.getValidLinkFromText();
+  link.initializeUrl(text ? text : '');
+  if (opt_target) {
+    anchor.target = opt_target;
+  }
   return link;
 };
 

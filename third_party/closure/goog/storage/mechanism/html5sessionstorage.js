@@ -29,6 +29,7 @@ goog.require('goog.storage.mechanism.HTML5WebStorage');
  * Provides a storage mechanism that uses HTML5 session storage.
  *
  * @constructor
+ * @struct
  * @extends {goog.storage.mechanism.HTML5WebStorage}
  */
 goog.storage.mechanism.HTML5SessionStorage = function() {
@@ -40,7 +41,7 @@ goog.storage.mechanism.HTML5SessionStorage = function() {
     // in local mode in Firefox throws 'Operation is not supported' exception.
     storage = window.sessionStorage || null;
   } catch (e) {}
-  goog.base(this, storage);
+  goog.storage.mechanism.HTML5SessionStorage.base(this, 'constructor', storage);
 };
 goog.inherits(goog.storage.mechanism.HTML5SessionStorage,
               goog.storage.mechanism.HTML5WebStorage);

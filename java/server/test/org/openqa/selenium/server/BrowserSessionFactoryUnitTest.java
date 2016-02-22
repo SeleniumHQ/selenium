@@ -1,19 +1,19 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 
 package org.openqa.selenium.server;
@@ -39,9 +39,9 @@ import org.openqa.selenium.remote.server.log.LoggingOptions;
 import org.openqa.selenium.remote.server.log.StdOutHandler;
 import org.openqa.selenium.remote.server.log.TerseFormatter;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
-import org.openqa.selenium.server.browserlaunchers.DummyLauncher;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -81,7 +81,7 @@ public class BrowserSessionFactoryUnitTest {
     final RemoteControlConfiguration configuration;
 
     BrowserLauncherFactory blf = mock(BrowserLauncherFactory.class);
-    DummyLauncher launcherMock = mock(DummyLauncher.class);
+    BrowserLauncher launcherMock = mock(BrowserLauncher.class);
 
     configuration = new RemoteControlConfiguration();
     configuration.setTimeoutInSeconds(1);
@@ -260,7 +260,7 @@ public class BrowserSessionFactoryUnitTest {
   }
 
   private Set<BrowserSessionInfo> getTestSessionSet() {
-    Set<BrowserSessionInfo> infos = new HashSet<BrowserSessionInfo>();
+    Set<BrowserSessionInfo> infos = new HashSet<>();
     BrowserSessionInfo info1 = getTestSession1();
     infos.add(info1);
     BrowserSessionInfo info2 = getTestSession2();
@@ -269,13 +269,13 @@ public class BrowserSessionFactoryUnitTest {
   }
 
   private BrowserSessionInfo getTestSession1() {
-    DummyLauncher mockLauncher1 = new DummyLauncher();
+    BrowserLauncher mockLauncher1 = mock(BrowserLauncher.class);
     return new BrowserSessionInfo(
         SESSION_ID_1, BROWSER_1, BASEURL1, mockLauncher1, null);
   }
 
   private BrowserSessionInfo getTestSession2() {
-    DummyLauncher mockLauncher2 = new DummyLauncher();
+    BrowserLauncher mockLauncher2 = mock(BrowserLauncher.class);
     return new BrowserSessionInfo(
         SESSION_ID_2, BROWSER2, BASEURL2, mockLauncher2, null);
   }

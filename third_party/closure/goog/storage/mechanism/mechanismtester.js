@@ -23,9 +23,8 @@
 goog.provide('goog.storage.mechanism.mechanismTester');
 
 goog.require('goog.storage.mechanism.ErrorCode');
-goog.require('goog.storage.mechanism.HTML5LocalStorage');
-goog.require('goog.storage.mechanism.Mechanism');
 goog.require('goog.testing.asserts');
+goog.require('goog.userAgent');
 goog.require('goog.userAgent.product');
 goog.require('goog.userAgent.product.isVersion');
 goog.setTestOnly('goog.storage.mechanism.mechanismTester');

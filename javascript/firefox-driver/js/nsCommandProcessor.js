@@ -1,20 +1,19 @@
-/*
- Copyright 2007-2009 WebDriver committers
- Copyright 2007-2009 Google Inc.
- Portions copyright 2011 Software Freedom Conservancy
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview Contains a Javascript implementation for
@@ -22,6 +21,8 @@
  *     the content page as a global property so that it can be used from
  *     unpriviledged code.
  */
+
+goog.provide('fxdriver.CommandResponse');
 
 goog.require('FirefoxDriver');
 goog.require('Utils');
@@ -36,14 +37,8 @@ goog.require('fxdriver.modals');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.profiler');
 goog.require('goog.array');
+goog.require('goog.log');
 goog.require('wdSessionStoreService');
-
-
-/**
- * When this component is loaded, load the necessary subscripts.
- */
-(function() {
-})();
 
 
 /**
@@ -53,7 +48,7 @@ goog.require('wdSessionStoreService');
  *     to.
  * @constructor
  */
-var Response = function(command, responseHandler) {
+fxdriver.CommandResponse = function(command, responseHandler) {
   this.statusBarLabel_ = null;
   this.responseHandler_ = responseHandler;
   this.json_ = {
@@ -69,7 +64,7 @@ var Response = function(command, responseHandler) {
   this.session = null;
 };
 
-Response.prototype = {
+fxdriver.CommandResponse.prototype = {
 
   /**
    * Updates the extension status label to indicate we are about to execute a
@@ -133,8 +128,8 @@ Response.prototype = {
  * @param {FirefoxDriver} driver The FirefoxDriver instance to execute the
  *     command with.
  * @param {Object} command JSON object describing the command to execute.
- * @param {Response} response The response object to send the command response
- *     in.
+ * @param {fxdriver.CommandResponse} response The response object to send the
+ *     command response in.
  * @param {Number} opt_sleepDelay The amount of time to wait before attempting
  *     the command again if the window is not ready.
  * @constructor
@@ -179,6 +174,14 @@ var DelayedCommand = function(driver, command, response, opt_sleepDelay) {
  */
 DelayedCommand.DEFAULT_SLEEP_DELAY = 100;
 
+
+/**
+ * @private {goog.log.Logger}
+ * @const
+ */
+DelayedCommand.LOG_ = fxdriver.logging.getLogger('fxdriver.DelayedCommand');
+
+
 /**
  * Executes the command after the specified delay.
  * @param {Number} ms The delay in milliseconds.
@@ -219,7 +222,8 @@ DelayedCommand.prototype.shouldDelayExecutionForPendingRequest_ = function() {
         // This may happen for pages that use WebSockets.
         // See https://bugzilla.mozilla.org/show_bug.cgi?id=765618
 
-        fxdriver.logging.info('Ignoring non-nsIRequest: ' + rawRequest);
+        goog.log.info(DelayedCommand.LOG_,
+                      'Ignoring non-nsIRequest: ' + rawRequest);
         continue;
       }
 
@@ -243,8 +247,9 @@ DelayedCommand.prototype.shouldDelayExecutionForPendingRequest_ = function() {
     }
 
     if (numPending && !hasOnLoadBlocker) {
-      fxdriver.logging.info('Ignoring pending about:document-onload-blocker ' +
-        'request');
+      goog.log.info(DelayedCommand.LOG_,
+                    'Ignoring pending about:document-onload-blocker ' +
+                    'request');
       // If we only have one pending request and it is not a
       // document-onload-blocker, we need to wait.  We do not wait for
       // document-onload-blocker requests since these are created when
@@ -323,9 +328,10 @@ DelayedCommand.prototype.executeInternal_ = function() {
               DelayedCommand.execTimer.setTimeout(toExecute, 100);
           } else {
             if (!e.isWebDriverError) {
-              fxdriver.logging.error('Exception caught by driver: ' + name +
-                '(' + parameters + ')');
-              fxdriver.logging.error(e);
+              goog.log.error(
+                  DelayedCommand.LOG_,
+                  'Exception caught by driver: ' + name + '(' + parameters + ')',
+                  e);
             }
             response.sendError(e);
           }
@@ -334,9 +340,9 @@ DelayedCommand.prototype.executeInternal_ = function() {
       toExecute();
     } catch (e) {
       if (!e.isWebDriverError) {
-        fxdriver.logging.error('Exception caught by driver: ' +
-          this.command_.name + '(' + this.command_.parameters + ')');
-        fxdriver.logging.error(e);
+        goog.log.error(DelayedCommand.LOG_,
+            'Exception caught by driver: ' + this.command_.name +
+            '(' + this.command_.parameters + ')', e);
       }
       this.response_.sendError(e);
     }
@@ -351,15 +357,17 @@ DelayedCommand.prototype.executeInternal_ = function() {
  * @constructor
  */
 var nsCommandProcessor = function() {
-  // Since we only support 3.0+, this check is enough to see if we're on 3.0
-  if (!bot.userAgent.isProductVersion('3.5')) {
-    eval(Utils.loadUrl('resource://fxdriver/json2.js'));
-  }
-
   this.wrappedJSObject = this;
   this.wm = Components.classes['@mozilla.org/appshell/window-mediator;1'].
       getService(Components.interfaces.nsIWindowMediator);
 };
+
+/**
+ * @private {goog.log.Logger}
+ * @const
+ */
+nsCommandProcessor.LOG_ = fxdriver.logging.getLogger(
+    'fxdriver.nsCommandProcessor');
 
 /**
  * Flags for the {@code nsIClassInfo} interface.
@@ -396,7 +404,7 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
     return;
   }
 
-  response = new Response(command, responseHandler);
+  response = new fxdriver.CommandResponse(command, responseHandler);
 
   // These commands do not require a session.
   if (command.name == 'newSession' ||
@@ -404,7 +412,8 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
       command.name == 'getStatus' ||
       command.name == 'getWindowHandles') {
 
-    fxdriver.logging.info('Received command: ' + command.name);
+    goog.log.info(nsCommandProcessor.LOG_,
+        'Received command: ' + command.name);
 
     try {
       this[command.name](response, command.parameters);
@@ -421,7 +430,6 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
     return;
   }
 
-  sessionId = sessionId.value;
   try {
     response.session = Components.
       classes['@googlecode.com/webdriver/wdsessionstoreservice;1'].
@@ -435,7 +443,7 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
     return;
   }
 
-  fxdriver.logging.info('Received command: ' + command.name);
+  goog.log.info(nsCommandProcessor.LOG_, 'Received command: ' + command.name);
 
   if (command.name == 'getSessionCapabilities' ||
       command.name == 'switchToWindow' ||
@@ -454,10 +462,16 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
     return;
   }
 
-  var contentWindow = sessionWindow.getBrowser().contentWindow;
-  if (!contentWindow) {
-    response.sendError(new WebDriverError(bot.ErrorCode.NO_SUCH_WINDOW,
+  try {
+    var contentWindow = sessionWindow.getBrowser().contentWindow;
+    if (!contentWindow) {
+      response.sendError(new WebDriverError(bot.ErrorCode.NO_SUCH_WINDOW,
         'Window not found. The browser window may have been closed.'));
+      return;
+    }
+  } catch (ff45) {
+    response.sendError(new WebDriverError(bot.ErrorCode.NO_SUCH_WINDOW,
+      'Window not found. The browser window may have been closed.'));
     return;
   }
 
@@ -469,24 +483,22 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
       var modalText = driver.modalOpen;
       var unexpectedAlertBehaviour = fxdriver.modals.getUnexpectedAlertBehaviour();
       switch (unexpectedAlertBehaviour) {
-          case 'accept':
-            fxdriver.modals.acceptAlert(driver);
-            break;
+        case 'accept':
+          fxdriver.modals.closeUnhandledAlert(response, driver, true);
+          break;
 
-          case 'ignore':
-            // do nothing, ignore the alert
-            break;
+        case 'ignore':
+          // do nothing, ignore the alert
+          response.sendError(new WebDriverError(bot.ErrorCode.UNEXPECTED_ALERT_OPEN,
+              'Modal dialog present', {alert: {text: modalText}}));
+          break;
 
-          // Dismiss is the default
-          case 'dismiss':
-          default:
-            fxdriver.modals.dismissAlert(driver);
-            break;
+        // Dismiss is the default
+        case 'dismiss':
+        default:
+          fxdriver.modals.closeUnhandledAlert(response, driver, false);
+          break;
       }
-      fxdriver.logging.error('Sending error from command ' +
-        command.name + ' with alertText: ' + modalText);
-      response.sendError(new WebDriverError(bot.ErrorCode.MODAL_DIALOG_OPENED,
-          'Modal dialog present', {alert: {text: modalText}}));
       return;
     }
   }
@@ -494,21 +506,22 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
   if (typeof driver[command.name] != 'function' && typeof WebElement[command.name] != 'function') {
     response.sendError(new WebDriverError(bot.ErrorCode.UNKNOWN_COMMAND,
         'Unrecognised command: ' + command.name));
-    fxdriver.logging.error('Unknown command: ' + command.name);
+    goog.log.error(nsCommandProcessor.LOG_,
+        'Unknown command: ' + command.name);
     return;
   }
 
-  if(command.name == 'get') {
+  if(command.name == 'get' || command.name == 'refresh') {
     response.session.setWaitForPageLoad(false);
   }
 
   // TODO: should we delay commands if the page is reloaded on itself?
-//  var pageLoadingTimeout = response.session.getPageLoadTimeout();
+//  var pageLoadTimeout = response.session.getPageLoadTimeout();
 //  var shouldWaitForPageLoad = response.session.getWaitForPageLoad();
-//  if (pageLoadingTimeout != 0 && shouldWaitForPageLoad) {
+//  if (pageLoadTimeout != 0 && shouldWaitForPageLoad) {
 //    driver.window.setTimeout(function () {
 //      response.session.setWaitForPageLoad(false);
-//    }, pageLoadingTimeout);
+//    }, pageLoadTimeout);
 //  }
 
   response.startCommand(sessionWindow);
@@ -518,8 +531,8 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
 
 /**
  * Changes the context of the caller to the specified window.
- * @param {Response} response The response object to send the command response
- *     in.
+ * @param {fxdriver.CommandResponse} response The response object to send the
+ *     command response in.
  * @param {{name: string}} parameters The command parameters.
  * @param {number} opt_searchAttempt Which attempt this is at finding the
  *     window to switch to.
@@ -536,10 +549,6 @@ nsCommandProcessor.prototype.switchToWindow = function(response, parameters,
 
   var windowFound = this.searchWindows_('navigator:browser', function(win) {
     if (matches(win, lookFor)) {
-      // Create a switch indicator file so the native events library
-      // will know a window switch is in progress and will indeed
-      // switch focus.
-      notifyOfSwitchToWindow(win.top.fxdriver.id);
       win.focus();
       if (win.top.fxdriver) {
         response.session.setChromeWindow(win.top);
@@ -579,16 +588,14 @@ nsCommandProcessor.prototype.switchToWindow = function(response, parameters,
 
 /**
  * Retrieves a list of all known FirefoxDriver windows.
- * @param {Response} response The response object to send the command response
- *     in.
+ * @param {fxdriver.CommandResponse} response The response object to send the
+ *     command response in.
  */
 nsCommandProcessor.prototype.getWindowHandles = function(response) {
   var res = [];
   this.searchWindows_('navigator:browser', function(win) {
     if (win.top && win.top.fxdriver) {
       res.push(win.top.fxdriver.id);
-    } else if (win.content) {
-      res.push(win.content.name);
     }
   });
   response.value = res;
@@ -599,7 +606,8 @@ nsCommandProcessor.prototype.getWindowHandles = function(response) {
 /**
  * Retrieves the log for the given type.
  *
- * @param {!Response} response The response object to send the response in.
+ * @param {!fxdriver.CommandResponse} response The response object to send the
+ *     response in.
  * @param {!Object.<string, *>} parameters The parameters for the call.
  */
 nsCommandProcessor.prototype.getLog = function(response, parameters) {
@@ -618,10 +626,11 @@ nsCommandProcessor.prototype.getLog = function(response, parameters) {
 /**
  * Retrieves available log types.
  *
- * @param {!Response} response The response object to send the response in.
+ * @param {!fxdriver.CommandResponse} response The response object to send the
+ *     response in.
  * @param {Object.<string, *>} parameters The parameters for the call.
  */
-nsCommandProcessor.prototype.getAvailableLogTypes = function(response, 
+nsCommandProcessor.prototype.getAvailableLogTypes = function(response,
     parameters) {
   response.value = fxdriver.logging.getAvailableLogTypes();
   response.send();
@@ -653,7 +662,8 @@ nsCommandProcessor.prototype.searchWindows_ = function(search_criteria,
 
 /**
  * Responds with general status information about this process.
- * @param {Response} response The object to send the command response in.
+ * @param {fxdriver.CommandResponse} response The object to send the command
+ *     response in.
  */
 nsCommandProcessor.prototype.getStatus = function(response) {
   var xulRuntime = Components.classes['@mozilla.org/xre/app-info;1'].
@@ -686,7 +696,8 @@ nsCommandProcessor.prototype.getStatus = function(response) {
 
 /**
  * Locates the most recently used FirefoxDriver window.
- * @param {Response} response The object to send the command response in.
+ * @param {fxdriver.CommandResponse} response The object to send the command
+ *     response in.
  */
 nsCommandProcessor.prototype.newSession = function(response, parameters) {
   var win = this.wm.getMostRecentWindow('navigator:browser');
@@ -713,7 +724,8 @@ nsCommandProcessor.prototype.newSession = function(response, parameters) {
     response.session = session;
     response.sessionId = session.getId();
 
-    fxdriver.logging.info('Created a new session with id: ' + session.getId());
+    goog.log.info(nsCommandProcessor.LOG_,
+        'Created a new session with id: ' + session.getId());
     this.getSessionCapabilities(response);
   }
 
@@ -723,7 +735,8 @@ nsCommandProcessor.prototype.newSession = function(response, parameters) {
 
 /**
  * Describes a session.
- * @param {Response} response The object to send the command response in.
+ * @param {fxdriver.CommandResponse} response The object to send the command
+ *     response in.
  */
 nsCommandProcessor.prototype.getSessionCapabilities = function(response) {
   var appInfo = Components.classes['@mozilla.org/xre/app-info;1'].
@@ -735,9 +748,9 @@ nsCommandProcessor.prototype.getSessionCapabilities = function(response) {
     'browserName': 'firefox',
     'handlesAlerts': true,
     'javascriptEnabled': true,
-    'nativeEvents': Utils.useNativeEvents(),
+    'nativeEvents': false,
     // See https://developer.mozilla.org/en/OS_TARGET
-    'platform': xulRuntime.OS,
+    'platform': (xulRuntime.OS == 'WINNT' ? 'WINDOWS' : xulRuntime.OS),
     'rotatable': false,
     'takesScreenshot': true,
     'version': appInfo.version
@@ -746,14 +759,18 @@ nsCommandProcessor.prototype.getSessionCapabilities = function(response) {
   var prefStore = fxdriver.moz.getService('@mozilla.org/preferences-service;1',
       'nsIPrefService');
   for (var cap in wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING) {
-    if (cap == 'nativeEvents') continue;
     var pref = wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING[cap];
     try {
       response.value[cap] = prefStore.getBoolPref(pref);
     } catch (e) {
-      // An exception is thrown if the saught preference is not available.
-      // For instance, a Firefox version not supporting HTML5 will not have
-      // a preference for webStorageEnabled.
+      try {
+        response.value[cap] = prefStore.getIntPref(pref);
+      } catch (e) {
+        try {
+          response.value[cap] = prefStore.getCharPref(pref);
+        } catch (e) {
+        }
+      }
     }
   }
 
@@ -763,7 +780,8 @@ nsCommandProcessor.prototype.getSessionCapabilities = function(response) {
 
 /**
  * Forcefully shuts down the Firefox application.
- * @param {Response} response The object to send the command response in.
+ * @param {fxdriver.CommandResponse} response The object to send the command
+ *     response in.
  */
 nsCommandProcessor.prototype.quit = function(response) {
   // Go ahead and respond to the command request to acknowledge that we are

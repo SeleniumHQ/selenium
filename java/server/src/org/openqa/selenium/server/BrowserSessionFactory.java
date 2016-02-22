@@ -1,26 +1,26 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 
 package org.openqa.selenium.server;
 
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.BrowserLauncher;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
@@ -39,10 +39,10 @@ import java.util.logging.Logger;
 
 /**
  * Manages browser sessions, their creation, and their closure.
- * <p/>
+ * <p>
  * Maintains a cache of unused and available browser sessions in case the server is reusing
  * sessions. Also manages the creation and finalization of all browser sessions.
- * 
+ *
  * @author jbevan@google.com (Jennifer Bevan)
  */
 public class BrowserSessionFactory {
@@ -71,7 +71,7 @@ public class BrowserSessionFactory {
 
   /**
    * Constructor for testing purposes.
-   * 
+   *
    * @param blf an injected BrowserLauncherFactory.
    * @param cleanupInterval the time between idle available session cleaning sweeps.
    * @param maxIdleSessionTime the max time in ms for an available session to be idle.
@@ -90,13 +90,14 @@ public class BrowserSessionFactory {
 
   /**
    * Gets a new browser session, using the SeleniumServer static fields to populate parameters.
-   * 
-   * @param browserString
-   * @param startURL
+   *
+   * @param browserString browser name string
+   * @param startURL starting url
    * @param extensionJs per-session user extension Javascript
    * @param configuration Remote Control configuration. Cannot be null.
+   * @param browserConfigurations capabilities of requested browser
    * @return the BrowserSessionInfo for the new browser session.
-   * @throws RemoteCommandException
+   * @throws RemoteCommandException remote command exception if new session fails
    */
   public BrowserSessionInfo getNewBrowserSession(String browserString, String startURL,
       String extensionJs, Capabilities browserConfigurations,
@@ -110,15 +111,16 @@ public class BrowserSessionFactory {
 
   /**
    * Gets a new browser session
-   * 
-   * @param browserString
-   * @param startURL
+   *
+   * @param browserString browser name string
+   * @param startURL starting url
    * @param extensionJs per-session user extension Javascript
    * @param configuration Remote Control configuration. Cannot be null.
    * @param useCached if a cached session should be used if one is available
    * @param ensureClean if a clean session (e.g. no previous cookies) is required.
+   * @param browserConfigurations capabilities of requested browser
    * @return the BrowserSessionInfo for the new browser session.
-   * @throws RemoteCommandException
+   * @throws RemoteCommandException remote command exception if new session fails
    */
   protected BrowserSessionInfo getNewBrowserSession(String browserString, String startURL,
       String extensionJs, Capabilities browserConfigurations,
@@ -155,12 +157,13 @@ public class BrowserSessionFactory {
 
   /**
    * Ends all browser sessions.
-   * <p/>
+   * <p>
    * Active and available but inactive sessions are ended.
+   * @param configuration remote control configuration
    */
   protected void endAllBrowserSessions(RemoteControlConfiguration configuration) {
     boolean done = false;
-    Set<BrowserSessionInfo> allSessions = new HashSet<BrowserSessionInfo>();
+    Set<BrowserSessionInfo> allSessions = new HashSet<>();
     while (!done) {
       // to avoid concurrent modification exceptions...
       synchronized (activeSessions) {
@@ -186,7 +189,7 @@ public class BrowserSessionFactory {
 
   /**
    * Ends a browser session, using SeleniumServer static fields to populate parameters.
-   * 
+   *
    * @param sessionId the id of the session to be ended
    * @param configuration Remote Control configuration. Cannot be null.
    */
@@ -196,7 +199,8 @@ public class BrowserSessionFactory {
 
   /**
    * Ends a browser session, using SeleniumServer static fields to populate parameters.
-   * 
+   *
+   * @param forceClose if the session should not be reused
    * @param sessionId the id of the session to be ended
    * @param configuration Remote Control configuration. Cannot be null.
    */
@@ -207,7 +211,8 @@ public class BrowserSessionFactory {
 
   /**
    * Ends a browser session.
-   * 
+   *
+   * @param forceClose if the session should not be reused
    * @param sessionId the id of the session to be ended
    * @param configuration Remote Control configuration. Cannot be null.
    * @param ensureClean if clean sessions (e.g. no leftover cookies) are required.
@@ -256,7 +261,7 @@ public class BrowserSessionFactory {
   /**
    * Shuts down this browser session's launcher and clears out its session data (if session is not
    * null).
-   * 
+   *
    * @param sessionInfo the browser session to end.
    */
   protected void shutdownBrowserAndClearSessionData(BrowserSessionInfo sessionInfo) {
@@ -271,7 +276,7 @@ public class BrowserSessionFactory {
 
   /**
    * Rewrites the given browser string based on server settings.
-   * 
+   *
    * @param inputString the input browser string
    * @return a possibly-modified browser string.
    * @throws IllegalArgumentException if inputString is null.
@@ -304,7 +309,7 @@ public class BrowserSessionFactory {
 
   /**
    * Retrieves an available, unused session from the cache.
-   * 
+   *
    * @param browserString the necessary browser for a suitable session
    * @param baseUrl the necessary baseUrl for a suitable session
    * @return the session info of the cached session, null if none found.
@@ -327,10 +332,10 @@ public class BrowserSessionFactory {
 
   /**
    * Isolated dependency
-   * 
-   * @param sessionId
-   * @param port
-   * @param configuration
+   *
+   * @param sessionId session id
+   * @param port port
+   * @param configuration Remote Control Configuration
    * @return a new FrameGroupCommandQueueSet instance
    */
   protected FrameGroupCommandQueueSet makeQueueSet(String sessionId, int port,
@@ -341,8 +346,8 @@ public class BrowserSessionFactory {
 
   /**
    * Isolated dependency
-   * 
-   * @param sessionId
+   *
+   * @param sessionId session id
    * @return an existing FrameGroupCommandQueueSet instance
    */
   protected FrameGroupCommandQueueSet getQueueSet(String sessionId) {
@@ -351,11 +356,12 @@ public class BrowserSessionFactory {
 
   /**
    * Creates and tries to open a new session.
-   * 
-   * @param browserString
-   * @param startURL
-   * @param extensionJs
+   *
+   * @param browserString browser name string
+   * @param startURL starting url
+   * @param extensionJs per-session user extension javascript
    * @param configuration Remote Control configuration. Cannot be null.
+   * @param browserConfiguration capabilities of requested browser
    * @param ensureClean if a clean session is required
    * @return the BrowserSessionInfo of the new session.
    * @throws RemoteCommandException if the browser failed to launch and request work in the required
@@ -398,7 +404,7 @@ public class BrowserSessionFactory {
     perSessionLogHandler.attachToCurrentThread(new SessionId(sessionId));
     try {
       launcher.launchRemoteSession(startURL);
-      queueSet.waitForLoad(configuration.getTimeoutInSeconds() * 1000l);
+      queueSet.waitForLoad(configuration.getTimeoutInSeconds() * 1000L);
 
       // TODO DGF log4j only
       // NDC.push("sessionId="+sessionId);
@@ -424,12 +430,13 @@ public class BrowserSessionFactory {
 
   /**
    * Adds a browser session that was not created by this factory to the set of active sessions.
-   * <p/>
+   * <p>
    * Allows for creation of unmanaged sessions (i.e. no FrameGroupCommandQueueSet) for task such as
    * running the HTML tests (see HTMLLauncher.java). All fields other than session are required to
    * be non-null.
-   * 
+   *
    * @param sessionInfo the session info to register.
+   * @return true if session was registered
    */
   protected boolean registerExternalSession(BrowserSessionInfo sessionInfo) {
     boolean result = false;
@@ -442,7 +449,7 @@ public class BrowserSessionFactory {
 
   /**
    * Removes a previously registered external browser session from the list of active sessions.
-   * 
+   *
    * @param sessionInfo the session to remove.
    */
   protected void deregisterExternalSession(BrowserSessionInfo sessionInfo) {
@@ -451,7 +458,7 @@ public class BrowserSessionFactory {
 
   /**
    * Looks up a session in the named set by session id
-   * 
+   *
    * @param sessionId the session id to find
    * @param set the Set to inspect
    * @return the matching BrowserSessionInfo or null if not found.
@@ -472,7 +479,7 @@ public class BrowserSessionFactory {
 
   /**
    * Looks up a session in the named set by browser string and base URL
-   * 
+   *
    * @param browserString the browser string to match
    * @param baseUrl the base URL to match.
    * @param set the Set to inspect
@@ -509,6 +516,8 @@ public class BrowserSessionFactory {
 
   /**
    * for testing only
+   * @param sessionId session id
+   * @return true if it has one
    */
   protected boolean hasActiveSession(String sessionId) {
     BrowserSessionInfo info = lookupInfoBySessionId(sessionId, activeSessions);
@@ -517,6 +526,8 @@ public class BrowserSessionFactory {
 
   /**
    * for testing only
+   * @param sessionId session id
+   * @return true if it has one
    */
   protected boolean hasAvailableSession(String sessionId) {
     BrowserSessionInfo info = lookupInfoBySessionId(sessionId, availableSessions);
@@ -525,6 +536,7 @@ public class BrowserSessionFactory {
 
   /**
    * for testing only
+   * @param sessionInfo browser session info
    */
   protected void addToAvailableSessions(BrowserSessionInfo sessionInfo) {
     availableSessions.add(sessionInfo);
@@ -532,7 +544,7 @@ public class BrowserSessionFactory {
 
   /**
    * Collection class to hold the objects associated with a browser session.
-   * 
+   *
    * @author jbevan@google.com (Jennifer Bevan)
    */
   public static class BrowserSessionInfo {
@@ -558,7 +570,7 @@ public class BrowserSessionFactory {
     /**
      * Browser sessions require the session id, the browser, the base URL, and the launcher. They
      * don't actually require the session to be set up as a FrameGroupCommandQueueSet.
-     * 
+     *
      * @param sessionInfo the sessionInfo to validate.
      * @return true if all fields excepting session are non-null.
      */
@@ -573,7 +585,7 @@ public class BrowserSessionFactory {
 
   /**
    * TimerTask that looks for unused sessions in the availableSessions collection.
-   * 
+   *
    * @author jbevan@google.com (Jennifer Bevan)
    */
   protected class CleanupTask extends TimerTask {

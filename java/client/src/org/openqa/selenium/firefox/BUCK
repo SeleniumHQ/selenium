@@ -1,19 +1,19 @@
 java_library(name = 'firefox',
+  maven_coords = 'org.seleniumhq.selenium:selenium-firefox-driver:jar:2.49.0',
   srcs = glob(['*.java', 'internal/*.java']),
   resources = [
     ':prefs',
-    '//javascript/firefox-driver:webdriver',
+    ':webdriver.xpi',
   ],
   deps = [
     ':prefs',
     '//java/client/src/org/openqa/selenium:webdriver-api',
-    '//java/client/src/org/openqa/selenium/browserlaunchers:proxies',
     '//java/client/src/org/openqa/selenium/io:io',
     '//java/client/src/org/openqa/selenium/net:net',
     '//java/client/src/org/openqa/selenium/os:os',
     '//java/client/src/org/openqa/selenium/remote:remote',
-    '//third_party/java/guava-libraries:guava-libraries',
-    '//third_party/java/json:json',
+    '//java/client/src/org/openqa/selenium/remote/service:service',
+    '//third_party/java/guava:guava',
   ],
   visibility = [ 'PUBLIC' ],
 )
@@ -21,4 +21,8 @@ java_library(name = 'firefox',
 export_file(name = 'prefs',
   src = '//javascript/firefox-driver:webdriver_prefs',
   out = 'webdriver_prefs.json',
+)
+
+export_file(name = 'webdriver.xpi',
+  src = '//javascript/firefox-driver:webdriver',
 )

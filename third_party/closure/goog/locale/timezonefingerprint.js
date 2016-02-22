@@ -34,7 +34,7 @@ goog.provide('goog.locale.TimeZoneFingerprint');
 
 /**
  * Time zone fingerprint mapping to time zone list.
- * @enum {Array.<string>}
+ * @enum {!Array<string>}
  */
 goog.locale.TimeZoneFingerprint = {
   919994368: ['CA-America/Halifax', 'CA-America/Glace_Bay', 'GL-America/Thule',
@@ -201,7 +201,7 @@ goog.locale.TimeZoneFingerprint = {
   680176266: ['RU-Asia/Krasnoyarsk'],
   1465210176: ['US-America/Anchorage'],
   805312908: ['NI-America/Managua'],
-  492088530: ['AU-Australia/Currie', 'AU-Australia/Hobart'],
+  492088530: ['AU-Australia/Hobart', 'AU-Australia/Currie'],
   901076366: ['BR-America/Campo_Grande', 'BR-America/Cuiaba'],
   943019406: ['CL-America/Santiago', 'AQ-Antarctica/Palmer'],
   928339288: ['US-America/New_York', 'CA-America/Montreal',

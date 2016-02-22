@@ -17,7 +17,7 @@
  * @fileoverview A class representing a set of test functions that use
  * asynchronous functions that cannot be meaningfully mocked.
  *
- * To create a Google-compatable JsUnit test using this test case, put the
+ * To create a Google-compatible JsUnit test using this test case, put the
  * following snippet in your test:
  *
  *   var asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
@@ -47,6 +47,14 @@
  *   // Returning here would cause the next test to be run.
  *   asyncTestCase.waitForAsync('just kidding, still running.');
  *   // Returning here would *not* cause the next test to be run.
+ *
+ * The test runner can also be made to wait for more than one asynchronous
+ * event with:
+ *
+ *   asyncTestCase.waitForSignals(n);
+ *
+ * The next test will not start until asyncTestCase.signal() is called n times,
+ * or the test step timeout is exceeded.
  *
  * This class supports asynchronous behaviour in all test functions except for
  * tearDownPage. If such support is needed, it can be added.
@@ -103,13 +111,12 @@ goog.provide('goog.testing.AsyncTestCase');
 goog.provide('goog.testing.AsyncTestCase.ControlBreakingException');
 
 goog.require('goog.testing.TestCase');
-goog.require('goog.testing.TestCase.Test');
 goog.require('goog.testing.asserts');
 
 
 
 /**
- * A test case that is capable of running tests the contain asynchronous logic.
+ * A test case that is capable of running tests that contain asynchronous logic.
  * @param {string=} opt_name A descriptive name for the test case.
  * @extends {goog.testing.TestCase}
  * @constructor
@@ -133,14 +140,20 @@ goog.testing.AsyncTestCase.TopStackFuncResult_;
  * An exception class used solely for control flow.
  * @param {string=} opt_message Error message.
  * @constructor
+ * @extends {Error}
+ * @final
  */
 goog.testing.AsyncTestCase.ControlBreakingException = function(opt_message) {
+  goog.testing.AsyncTestCase.ControlBreakingException.base(
+      this, 'constructor', opt_message);
+
   /**
    * The exception message.
    * @type {string}
    */
   this.message = opt_message || '';
 };
+goog.inherits(goog.testing.AsyncTestCase.ControlBreakingException, Error);
 
 
 /**
@@ -235,7 +248,7 @@ goog.testing.AsyncTestCase.prototype.curStepName_ = '';
  * @type {Function|undefined}
  * @private
  */
-goog.testing.AsyncTestCase.prototype.nextStepFunc;
+goog.testing.AsyncTestCase.prototype.nextStepFunc_;
 
 
 /**
@@ -285,6 +298,23 @@ goog.testing.AsyncTestCase.prototype.inException_ = false;
  * @private
  */
 goog.testing.AsyncTestCase.prototype.isReady_ = true;
+
+
+/**
+ * Number of signals to wait for before continuing testing when waitForSignals
+ * is used.
+ * @type {number}
+ * @private
+ */
+goog.testing.AsyncTestCase.prototype.expectedSignalCount_ = 0;
+
+
+/**
+ * Number of signals received.
+ * @type {number}
+ * @private
+ */
+goog.testing.AsyncTestCase.prototype.receivedSignalCount_ = 0;
 
 
 /**
@@ -349,6 +379,19 @@ goog.testing.AsyncTestCase.prototype.waitForAsync = function(opt_name) {
  * Continue with the next step in the test cycle.
  */
 goog.testing.AsyncTestCase.prototype.continueTesting = function() {
+  if (this.receivedSignalCount_ < this.expectedSignalCount_) {
+    var remaining = this.expectedSignalCount_ - this.receivedSignalCount_;
+    throw Error('Still waiting for ' + remaining + ' signals.');
+  }
+  this.endCurrentStep_();
+};
+
+
+/**
+ * Ends the current test step and queues the next test step to run.
+ * @private
+ */
+goog.testing.AsyncTestCase.prototype.endCurrentStep_ = function() {
   if (!this.isReady_) {
     // We are a potential entry point, so we pump.
     this.isReady_ = true;
@@ -356,6 +399,37 @@ goog.testing.AsyncTestCase.prototype.continueTesting = function() {
     // Run this in a setTimeout so that the caller has a chance to call
     // waitForAsync() again before we continue.
     this.timeout(goog.bind(this.pump_, this, null), 0);
+  }
+};
+
+
+/**
+ * Informs the testcase not to continue to the next step in the test cycle
+ * until signal is called the specified number of times. Within a test, this
+ * function behaves additively if called multiple times; the number of signals
+ * to wait for will be the sum of all expected number of signals this function
+ * was called with.
+ * @param {number} times The number of signals to receive before
+ *    continuing testing.
+ * @param {string=} opt_name A description of what we are waiting for.
+ */
+goog.testing.AsyncTestCase.prototype.waitForSignals =
+    function(times, opt_name) {
+  this.expectedSignalCount_ += times;
+  if (this.receivedSignalCount_ < this.expectedSignalCount_) {
+    this.waitForAsync(opt_name);
+  }
+};
+
+
+/**
+ * Signals once to continue with the test. If this is the last signal that the
+ * test was waiting on, call continueTesting.
+ */
+goog.testing.AsyncTestCase.prototype.signal = function() {
+  if (++this.receivedSignalCount_ === this.expectedSignalCount_ &&
+      this.expectedSignalCount_ > 0) {
+    this.endCurrentStep_();
   }
 };
 
@@ -514,7 +588,7 @@ goog.testing.AsyncTestCase.prototype.doAsyncErrorTearDown_ = function() {
     // We get here if tearDown is throwing the error.
     // Upon calling continueTesting, the inline function 'doAsyncError' (set
     // below) is run.
-    this.continueTesting();
+    this.endCurrentStep_();
   } else {
     this.inException_ = true;
     this.isReady_ = true;
@@ -733,7 +807,7 @@ goog.testing.AsyncTestCase.prototype.pump_ = function(opt_doFirst) {
       // If the max run time is exceeded call this function again async so as
       // not to block the browser.
       var delta = this.now() - this.getBatchTime();
-      if (delta > goog.testing.TestCase.MAX_RUN_TIME &&
+      if (delta > goog.testing.TestCase.maxRunTime &&
           !topFuncResult.controlBreakingExceptionThrown) {
         this.saveMessage('Breaking async');
         var self = this;
@@ -764,6 +838,8 @@ goog.testing.AsyncTestCase.prototype.doSetUpPage_ = function() {
  * @private
  */
 goog.testing.AsyncTestCase.prototype.doIteration_ = function() {
+  this.expectedSignalCount_ = 0;
+  this.receivedSignalCount_ = 0;
   this.activeTest = this.next();
   if (this.activeTest && this.running) {
     this.result_.runCount++;

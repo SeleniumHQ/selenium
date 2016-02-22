@@ -1,9 +1,9 @@
 // <copyright file="SocketWrapper.cs" company="WebDriver Committers">
-// Copyright 2007-2012 WebDriver committers
-// Copyright 2007-2012 Google Inc.
-// Portions copyright 2012 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -21,10 +21,8 @@ using System.IO;
 using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
-using System.Runtime.Remoting.Messaging;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
-using System.Threading;
 
 namespace OpenQA.Selenium.Safari.Internal
 {
@@ -36,14 +34,31 @@ namespace OpenQA.Selenium.Safari.Internal
         private readonly Socket underlyingSocket;
         private bool disposed;
         private Stream stream;
-        
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SocketWrapper"/> class.
+        /// </summary>
+        public SocketWrapper()
+        {
+            this.underlyingSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
+            if (this.underlyingSocket.Connected)
+            {
+                this.stream = new NetworkStream(this.underlyingSocket);
+            }
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SocketWrapper"/> class.
         /// </summary>
         /// <param name="socket">The <see cref="Socket"/> to wrap.</param>
         public SocketWrapper(Socket socket)
         {
-            this.underlyingSocket = socket;
+            if (socket == null)
+            {
+                throw new ArgumentNullException("socket", "Socket to wrap must not be null");
+            }
+
+            this.underlyingSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
             if (this.underlyingSocket.Connected)
             {
                 this.stream = new NetworkStream(this.underlyingSocket);
@@ -132,6 +147,11 @@ namespace OpenQA.Selenium.Safari.Internal
         /// <param name="buffer">The data to be sent.</param>
         public void Send(byte[] buffer)
         {
+            if (buffer == null)
+            {
+                throw new ArgumentNullException("buffer", "Buffer to send must not be null");
+            }
+
             this.stream.BeginWrite(buffer, 0, buffer.Length, this.OnDataSend, null);
         }
 
@@ -142,6 +162,11 @@ namespace OpenQA.Selenium.Safari.Internal
         /// <param name="offset">The offset into the buffer at which the data will be read.</param>
         public void Receive(byte[] buffer, int offset)
         {
+            if (buffer == null)
+            {
+                throw new ArgumentNullException("buffer", "Buffer to receive must not be null");
+            }
+
             this.stream.BeginRead(buffer, offset, buffer.Length, this.OnDataReceive, buffer);
         }
 
@@ -296,10 +321,10 @@ namespace OpenQA.Selenium.Safari.Internal
         }
 
         /// <summary>
-        /// Releases the unmanaged resources used by the <see cref="SocketWrapper"/> and optionally 
+        /// Releases the unmanaged resources used by the <see cref="SocketWrapper"/> and optionally
         /// releases the managed resources.
         /// </summary>
-        /// <param name="disposing"><see langword="true"/> to release managed and resources; 
+        /// <param name="disposing"><see langword="true"/> to release managed and resources;
         /// <see langword="false"/> to only release unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {

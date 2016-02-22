@@ -29,20 +29,31 @@ namespace :ci do
       body = infile.read
     end
 
-    uri = URI.parse(upload_url)
-    request = Net::HTTP::Post.new(uri.request_uri)
-    request.basic_auth(username, apikey)
-    request["Content-Type"] = "application/octet-stream"
-    request.body = body
-    http = net_http.new(uri.host, uri.port)
-    http.read_timeout = 60 * 5 # 5 min
-    response = http.request(request)
-    metadata = JSON.parse(response.body)
-    local_digest = Digest::MD5.hexdigest(body)
-    if metadata['md5'] == local_digest
-      puts "file successfully uploaded: #{metadata['filename']}"
-    else
-      puts "issues uploading file: #{response.code} - #{response.body}"
+    for i in 0..5
+      uri = URI.parse(upload_url)
+      request = Net::HTTP::Post.new(uri.request_uri)
+      request.basic_auth(username, apikey)
+      request["Content-Type"] = "application/octet-stream"
+      request.body = body
+      http = net_http.new(uri.host, uri.port)
+      http.read_timeout = 60 * 5 # 5 min
+      begin
+        response = http.request(request)
+      rescue => error
+        puts "issue uploading file: #{error}"
+        next
+      end
+      metadata = JSON.parse(response.body)
+      local_digest = Digest::MD5.hexdigest(body)
+      if metadata['md5'] == local_digest
+        puts "file successfully uploaded: #{metadata['filename']}"
+      else
+        puts "issues uploading file: #{response.code} - #{response.body}"
+      end
+      break
+    end
+    if i == 5
+      raise "failed to upload to saucelabs after numerous retries"
     end
   end
 end

@@ -5,7 +5,8 @@
 # Also, if only one browser, B, is listed in browsers:
 #   :name:run is created as a synonym for :name_B:run
 #
-# Currently, pulling in other tests through deps is limited to deps declared in the same build.desc file
+# Currently, pulling in other tests through deps
+# is limited to deps declared in the same build.desc file
 
 py_test(
   name = "firefox_test",
@@ -18,11 +19,20 @@ py_test(
   browsers = [ "ff" ])
 
 py_test(
+  name = "marionette_test",
+  deps = [ ":test_ff" ],
+  browsers = [ "marionette" ])
+
+py_test(
   name = "phantomjs_test",
   gd_specific_tests = [ "test/selenium/webdriver/phantomjs/*_tests.py" ],
   deps = [ ":test_phantomjs" ],
   browsers = [ "phantomjs" ])
 
+py_test(
+  name = "blackberry_test",
+  deps = [ ":test_blackberry" ],
+  browsers = [ "blackberry" ])
 
 py_test(
   name = "chrome_test",
@@ -31,15 +41,14 @@ py_test(
   browsers = [ "chrome" ])
 
 py_test(
-  name = "opera_test",
-  opera_specific_tests = [ "test/selenium/webdriver/opera/*_tests.py" ],
-  deps = [ ":test_opera" ],
-  browsers = [ "opera" ])
-
-py_test(
   name = "ie_test",
   deps = [ ":test_ie" ],
   browsers = [ "ie" ])
+
+py_test(
+  name = "edge_test",
+  deps = [":test_edge"],
+  browsers = [ "edge"])
 
 py_test(
   name = "remote_firefox_test",
@@ -55,8 +64,8 @@ py_test(
 py_env(
   name = "test_env",
   packages = [
-    "third_party/py/py-1.4.13.tar.gz",
-    "third_party/py/pytest-2.3.4.zip",
+    "third_party/py/py-1.4.31-py2.py3-none-any.whl",
+    "third_party/py/pytest-2.8.6-py2.py3-none-any.whl",
   ],
   dest = "build/python")
 
@@ -69,24 +78,26 @@ py_test(
   browsers = [
     "chrome",
     "ff",
+    "marionette",
     "ie",
+    "edge",
+    "blackberry",
     "phantomjs",
     "remote_firefox",
-    "opera",
     "safari",
   ])
 
 py_docs(
   name = "docs",
   source_folder = "py/docs/source",
-  target_folder = "docs/api/py",
+  target_folder = "build/docs/api/py",
   deps = [ "//py:test_env_docs" ]
 )
 
 py_env(
   name = "test_env_docs",
   packages = [
-    "third_party/py/py-1.4.13.tar.gz",
+    "third_party/py/py-1.4.26.tar.gz",
     "third_party/py/docutils-0.11.tar.gz",
     "third_party/py/Jinja2-2.7.tar.gz",
     "third_party/py/MarkupSafe-0.18.tar.gz",
@@ -94,4 +105,12 @@ py_env(
     "third_party/py/Sphinx-1.2b1.tar.gz",
   ],
   dest = "build/python"
+)
+
+py_install(
+  name = "install"
+)
+
+py_prep(
+  name = "prep"
 )

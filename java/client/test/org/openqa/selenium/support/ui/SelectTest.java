@@ -1,31 +1,23 @@
-/*
-Copyright 2007-2009 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.support.ui;
 
-import org.junit.Test;
-import org.mockito.Mockito;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebElement;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -36,27 +28,30 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.mockito.Mockito;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebElement;
+
+import java.util.Collections;
+import java.util.List;
+
+@RunWith(JUnit4.class)
 public class SelectTest{
 
-  @Test
+  @Test(expected = UnexpectedTagNameException.class)
   public void shouldThrowAnExceptionIfTheElementIsNotASelectElement() {
     final WebElement element = mock(WebElement.class);
     when(element.getTagName()).thenReturn("a");
 
-    try {
-      new Select(element);
-      fail("Should not have passed");
-    } catch (UnexpectedTagNameException e) {
-      // This is expected
-    }
+    new Select(element);
   }
 
-  private Select selectElementWithMultipleEqualTo(final String value) {
-    final WebElement element = mock(WebElement.class);
-    when(element.getTagName()).thenReturn("select");
-    when(element.getAttribute("multiple")).thenReturn(value);
-
-    return new Select(element);
+  private Select selectElementWithMultipleEqualTo(final String multipleAttribute) {
+    return new Select(mockSelectWebElement(multipleAttribute));
   }
 
   @Test
@@ -72,41 +67,53 @@ public class SelectTest{
   }
 
   @Test
-  public void shouldNotIndicateThatANormalSelectSupportsMulitpleOptions() {
+  public void shouldNotIndicateThatANormalSelectSupportsMultipleOptions() {
     Select select = selectElementWithMultipleEqualTo(null);
 
     assertFalse(select.isMultiple());
   }
 
-  @Test
-  public void shouldReturnAllOptionsWhenAsked() {
+  private WebElement mockSelectWebElement(String multiple) {
     final WebElement element = mock(WebElement.class);
-    final List<WebElement> options = Collections.emptyList();
-
     when(element.getTagName()).thenReturn("select");
-    when(element.getAttribute("multiple")).thenReturn("multiple");
+    when(element.getAttribute("multiple")).thenReturn(multiple);
+    return element;
+  }
+
+  private Select selectWithOptions(List<WebElement> options) {
+    final WebElement element = mockSelectWebElement("multiple");
     when(element.findElements(By.tagName("option"))).thenReturn(options);
 
-    Select select = new Select(element);
-    List<WebElement> returnedOptions = select.getOptions();
+    return new Select(element);
+  }
 
-    assertSame(options, returnedOptions);
+  @Test
+  public void shouldReturnAllOptionsWhenAsked() {
+    final List<WebElement> expectedOptions = Collections.emptyList();
+    Select select = selectWithOptions(expectedOptions);
+
+    assertSame(expectedOptions, select.getOptions());
+  }
+
+  private WebElement mockOption(String name, boolean isSelected) {
+    final WebElement optionBad = mock(WebElement.class, name);
+    when(optionBad.isSelected()).thenReturn(isSelected);
+    return optionBad;
+  }
+
+  private WebElement mockOption(String name, boolean isSelected, int index) {
+    WebElement option = mockOption(name, isSelected);
+    when(option.getAttribute("index")).thenReturn(String.valueOf(index));
+    return option;
   }
 
   @Test
   public void shouldReturnOptionsWhichAreSelected() {
-    final WebElement element = mock(WebElement.class);
-    final WebElement optionGood = mock(WebElement.class, "good");
-    final WebElement optionBad = mock(WebElement.class, "bad");
-    final List<WebElement> options = Arrays.asList(optionBad, optionGood);
+    final WebElement optionGood = mockOption("good", true);
+    final WebElement optionBad = mockOption("bad", false);
+    final List<WebElement> options = asList(optionBad, optionGood);
 
-    when(element.getTagName()).thenReturn("select");
-    when(element.getAttribute("multiple")).thenReturn("multiple");
-    when(element.findElements(By.tagName("option"))).thenReturn(options);
-    when(optionBad.isSelected()).thenReturn(false);
-    when(optionGood.isSelected()).thenReturn(true);
-
-    Select select = new Select(element);
+    Select select = selectWithOptions(options);
     List<WebElement> returnedOptions = select.getAllSelectedOptions();
 
     assertEquals(1, returnedOptions.size());
@@ -115,54 +122,31 @@ public class SelectTest{
 
   @Test
   public void shouldReturnFirstSelectedOptions() {
-    final WebElement element = mock(WebElement.class);
-    final WebElement firstOption = mock(WebElement.class, "first");
-    final WebElement secondOption = mock(WebElement.class, "second");
-    final List<WebElement> options = Arrays.asList(firstOption, secondOption);
+    final WebElement firstOption = mockOption("first", true);
+    final WebElement secondOption = mockOption("second", true);
+    final List<WebElement> options = asList(firstOption, secondOption);
 
-    when(element.getTagName()).thenReturn("select");
-    when(element.getAttribute("multiple")).thenReturn("multiple");
-    when(element.findElements(By.tagName("option"))).thenReturn(options);
-    when(firstOption.isSelected()).thenReturn(true);
-    when(secondOption.isSelected()).thenReturn(true);
-
-    Select select = new Select(element);
+    Select select = selectWithOptions(options);
     WebElement firstSelected = select.getFirstSelectedOption();
 
     assertSame(firstOption, firstSelected);
   }
 
-  @Test
+  @Test(expected = NoSuchElementException.class)
   public void shouldThrowANoSuchElementExceptionIfNothingIsSelected() {
-    final WebElement element = mock(WebElement.class);
-    final WebElement firstOption = mock(WebElement.class, "first");
-    final List<WebElement> options = Arrays.asList(firstOption);
+    final WebElement firstOption = mockOption("first", false);
+    Select select = selectWithOptions(asList(firstOption));
 
-    when(element.getTagName()).thenReturn("select");
-    when(element.getAttribute("multiple")).thenReturn("multiple");
-    when(element.findElements(By.tagName("option"))).thenReturn(options);
-
-    Select select = new Select(element);
-
-    try {
-      select.getFirstSelectedOption();
-      fail();
-    } catch (NoSuchElementException e) {
-      // this is expected
-    }
+    select.getFirstSelectedOption();
   }
 
   @Test
   public void shouldAllowOptionsToBeSelectedByVisibleText() {
-    final WebElement element = mock(WebElement.class);
-    final WebElement firstOption = mock(WebElement.class, "first");
-    final List<WebElement> options = Arrays.asList(firstOption);
+    final WebElement firstOption = mockOption("first", false);
 
-    when(element.getTagName()).thenReturn("select");
-    when(element.getAttribute("multiple")).thenReturn("multiple");
+    final WebElement element = mockSelectWebElement("multiple");
     when(element.findElements(By.xpath(".//option[normalize-space(.) = \"fish\"]")))
-        .thenReturn(options);
-    when(firstOption.isSelected()).thenReturn(false);
+        .thenReturn(asList(firstOption));
 
     Select select = new Select(element);
     select.selectByVisibleText("fish");
@@ -172,20 +156,10 @@ public class SelectTest{
 
   @Test
   public void shouldAllowOptionsToBeSelectedByIndex() {
-    final WebElement element = mock(WebElement.class);
-    final WebElement firstOption = mock(WebElement.class, "first");
-    final WebElement secondOption = mock(WebElement.class, "second");
-    final List<WebElement> options = Arrays.asList(firstOption, secondOption);
+    final WebElement firstOption = mockOption("first", true, 0);
+    final WebElement secondOption = mockOption("second", false, 1);
 
-    when(element.getTagName()).thenReturn("select");
-    when(element.getAttribute("multiple")).thenReturn("multiple");
-    when(element.findElements(By.tagName("option"))).thenReturn(options);
-    when(firstOption.getAttribute("index")).thenReturn("0");
-    when(firstOption.isSelected()).thenReturn(true);
-    when(secondOption.getAttribute("index")).thenReturn("1");
-    when(secondOption.isSelected()).thenReturn(false);
-
-    Select select = new Select(element);
+    Select select = selectWithOptions(asList(firstOption, secondOption));
     select.selectByIndex(1);
 
     verify(firstOption, never()).click();
@@ -194,14 +168,11 @@ public class SelectTest{
 
   @Test
   public void shouldAllowOptionsToBeSelectedByReturnedValue() {
-    final WebElement element = mock(WebElement.class);
-    final WebElement firstOption = mock(WebElement.class, "first");
-    final List<WebElement> options = Arrays.asList(firstOption);
+    final WebElement firstOption = mockOption("first", false);
 
-    when(element.getTagName()).thenReturn("select");
-    when(element.getAttribute("multiple")).thenReturn("multiple");
-    when(element.findElements(By.xpath(".//option[@value = \"b\"]"))).thenReturn(options);
-    when(firstOption.isSelected()).thenReturn(false);
+    final WebElement element = mockSelectWebElement("multiple");
+    when(element.findElements(By.xpath(".//option[@value = \"b\"]"))).thenReturn(
+        asList(firstOption));
 
     Select select = new Select(element);
     select.selectByValue("b");
@@ -211,48 +182,30 @@ public class SelectTest{
 
   @Test
   public void shouldAllowUserToDeselectAllWhenSelectSupportsMultipleSelections() {
-    final WebElement element = mock(WebElement.class);
-    final WebElement firstOption = mock(WebElement.class, "first");
-    final WebElement secondOption = mock(WebElement.class, "second");
-    final List<WebElement> options = Arrays.asList(firstOption, secondOption);
+    final WebElement firstOption = mockOption("first", true);
+    final WebElement secondOption = mockOption("second", false);
 
-    when(element.getTagName()).thenReturn("select");
-    when(element.getAttribute("multiple")).thenReturn("multiple");
-    when(element.findElements(By.tagName("option"))).thenReturn(options);
-    when(firstOption.isSelected()).thenReturn(true);
-    when(secondOption.isSelected()).thenReturn(false);
-
-    Select select = new Select(element);
+    Select select = selectWithOptions(asList(firstOption, secondOption));
     select.deselectAll();
 
     verify(firstOption).click();
     verify(secondOption, never()).click();
   }
 
-  @Test
+  @Test(expected = UnsupportedOperationException.class)
   public void shouldNotAllowUserToDeselectAllWhenSelectDoesNotSupportMultipleSelections() {
     Select select = selectElementWithMultipleEqualTo(null);
-    try {
-      select.deselectAll();
-      fail();
-    } catch (UnsupportedOperationException e) {
-      // expected
-    }
+    select.deselectAll();
   }
 
   @Test
   public void shouldAllowUserToDeselectOptionsByVisibleText() {
-    final WebElement element = mock(WebElement.class);
-    final WebElement firstOption = mock(WebElement.class, "first");
-    final WebElement secondOption = mock(WebElement.class, "second");
-    final List<WebElement> options = Arrays.asList(firstOption, secondOption);
+    final WebElement firstOption = mockOption("first", true);
+    final WebElement secondOption = mockOption("second", false);
 
-    when(element.getTagName()).thenReturn("select");
-    when(element.getAttribute("multiple")).thenReturn("multiple");
+    final WebElement element = mockSelectWebElement("multiple");
     when(element.findElements(By.xpath(".//option[normalize-space(.) = \"b\"]")))
-        .thenReturn(options);
-    when(firstOption.isSelected()).thenReturn(true);
-    when(secondOption.isSelected()).thenReturn(false);
+        .thenReturn(asList(firstOption, secondOption));
 
     Select select = new Select(element);
     select.deselectByVisibleText("b");
@@ -263,19 +216,10 @@ public class SelectTest{
 
   @Test
   public void shouldAllowOptionsToBeDeselectedByIndex() {
-    final WebElement element = mock(WebElement.class);
-    final WebElement firstOption = mock(WebElement.class, "first");
-    final WebElement secondOption = mock(WebElement.class, "second");
-    final List<WebElement> options = Arrays.asList(firstOption, secondOption);
+    final WebElement firstOption = mockOption("first", true, 2);
+    final WebElement secondOption = mockOption("second", false, 1);
 
-    when(element.getTagName()).thenReturn("select");
-    when(element.getAttribute("multiple")).thenReturn("multiple");
-    when(element.findElements(By.tagName("option"))).thenReturn(options);
-    when(firstOption.getAttribute("index")).thenReturn("2");
-    when(firstOption.isSelected()).thenReturn(true);
-    when(secondOption.getAttribute("index")).thenReturn("1");
-
-    Select select = new Select(element);
+    Select select = selectWithOptions(asList(firstOption, secondOption));
     select.deselectByIndex(2);
 
     verify(firstOption).click();
@@ -284,17 +228,12 @@ public class SelectTest{
 
   @Test
   public void shouldAllowOptionsToBeDeselectedByReturnedValue() {
-    final WebElement element = mock(WebElement.class);
-    final WebElement firstOption = mock(WebElement.class, "first");
-    final WebElement secondOption = mock(WebElement.class, "third");
-    final List<WebElement> options = Arrays.asList(firstOption, secondOption);
+    final WebElement firstOption = mockOption("first", true);
+    final WebElement secondOption = mockOption("third", false);
 
-    when(element.getTagName()).thenReturn("select");
-    when(element.getAttribute("multiple")).thenReturn("multiple");
+    final WebElement element = mockSelectWebElement("multiple");
     when(element.findElements(By.xpath(".//option[@value = \"b\"]")))
-        .thenReturn(options);
-    when(firstOption.isSelected()).thenReturn(true);
-    when(secondOption.isSelected()).thenReturn(false);
+        .thenReturn(asList(firstOption, secondOption));
 
     Select select = new Select(element);
     select.deselectByValue("b");
@@ -304,41 +243,12 @@ public class SelectTest{
   }
 
   @Test
-  public void shouldConvertAnUnquotedStringIntoOneWithQuotes() {
-    assertEquals("\"foo\"", escapeQuotes("foo"));
-  }
-
-  @Test
-  public void shouldConvertAStringWithATickIntoOneWithQuotes() {
-    assertEquals("\"f'oo\"", escapeQuotes("f'oo"));
-  }
-
-  @Test
-  public void shouldConvertAStringWithAQuotIntoOneWithTicks() {
-    assertEquals("'f\"oo'", escapeQuotes("f\"oo"));
-  }
-
-  @Test
-  public void shouldProvideConcatenatedStringsWhenStringToEscapeContainsTicksAndQuotes() {
-    assertEquals("concat(\"f\", '\"', \"o'o\")", escapeQuotes("f\"o'o"));
-  }
-
-  /**
-   * Tests that escapeQuotes returns concatenated strings when the given
-   * string contains a tick and and ends with a quote.
-   */
-  @Test
-  public void shouldProvideConcatenatedStringsWhenStringEndsWithQuote() {
-    assertEquals("concat(\"Bar \", '\"', \"Rock'n'Roll\", '\"')", escapeQuotes("Bar \"Rock'n'Roll\""));
-  }
-
-  @Test
   public void shouldFallBackToSlowLooksUpsWhenGetByVisibleTextFailsAndThereIsASpace() {
-    final WebElement element = mock(WebElement.class);
     final WebElement firstOption = mock(WebElement.class, "first");
     final By xpath1 = By.xpath(".//option[normalize-space(.) = \"foo bar\"]");
     final By xpath2 = By.xpath(".//option[contains(., \"foo\")]");
 
+    final WebElement element = mockSelectWebElement("multiple");
     when(element.getTagName()).thenReturn("select");
     when(element.getAttribute("multiple")).thenReturn("false");
     when(element.findElements(xpath1)).thenReturn(Collections.<WebElement>emptyList());
@@ -353,42 +263,15 @@ public class SelectTest{
 
   @Test
   public void shouldIndicateWhetherASelectIsMultipleCorrectly() {
-    final WebElement element1 = mock(WebElement.class, "false1");
-    final WebElement element2 = mock(WebElement.class, "false2");
-    final WebElement element3 = mock(WebElement.class, "true1");
-    final WebElement element4 = mock(WebElement.class, "true2");
-
-    when(element1.getTagName()).thenReturn("select");
-    when(element1.getAttribute("multiple")).thenReturn("false");
-
-    when(element2.getTagName()).thenReturn("select");
-    when(element2.getAttribute("multiple")).thenReturn(null);
-
-    when(element3.getTagName()).thenReturn("select");
-    when(element3.getAttribute("multiple")).thenReturn("true");
-
-    when(element4.getTagName()).thenReturn("select");
-    when(element4.getAttribute("multiple")).thenReturn("multiple");
-
-    Select select1 = new Select(element1);
-    assertFalse(select1.isMultiple());
-
-    Select select2 = new Select(element2);
-    assertFalse(select2.isMultiple());
-
-    Select select3 = new Select(element3);
-    assertTrue(select3.isMultiple());
-
-    Select select4 = new Select(element4);
-    assertTrue(select4.isMultiple());
+    assertFalse(selectElementWithMultipleEqualTo("false").isMultiple());
+    assertFalse(selectElementWithMultipleEqualTo(null).isMultiple());
+    assertTrue(selectElementWithMultipleEqualTo("true").isMultiple());
+    assertTrue(selectElementWithMultipleEqualTo("multiple").isMultiple());
   }
 
   @Test
   public void shouldThrowAnExceptionIfThereAreNoElementsToSelect() {
-    final WebElement element = mock(WebElement.class);
-
-    when(element.getTagName()).thenReturn("select");
-    when(element.getAttribute("multiple")).thenReturn("false");
+    final WebElement element = mockSelectWebElement("false");
     when(element.findElements(Mockito.<By>any())).thenReturn(Collections.<WebElement>emptyList());
 
     Select select = new Select(element);
@@ -410,14 +293,5 @@ public class SelectTest{
       fail("Was not meant to pass");
     } catch (NoSuchElementException ignored) {
     }
-  }
-
-  private String escapeQuotes(String text) {
-    final WebElement element = mock(WebElement.class);
-
-    when(element.getTagName()).thenReturn("select");
-    when(element.getAttribute("multiple")).thenReturn("multiple");
-
-    return new Select(element).escapeQuotes(text);
   }
 }

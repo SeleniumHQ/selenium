@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Net.Sockets;
-using System.Text;
 using System.Net;
 
 namespace OpenQA.Selenium.Environment
@@ -11,6 +8,7 @@ namespace OpenQA.Selenium.Environment
         string protocol;
         string hostName;
         string port;
+        string securePort;
         string path;
         string alternateHostName;
 
@@ -34,6 +32,7 @@ namespace OpenQA.Selenium.Environment
             protocol = EnvironmentManager.GetSettingValue("Protocol");
             hostName = EnvironmentManager.GetSettingValue("HostName");
             port = EnvironmentManager.GetSettingValue("Port");
+            securePort = EnvironmentManager.GetSettingValue("SecurePort");
             // TODO(andre.nogueira): Remove trailing / from folder
             path = EnvironmentManager.GetSettingValue("Folder");
             //Use the first IPv4 address that we find
@@ -76,7 +75,7 @@ namespace OpenQA.Selenium.Environment
         public string WhereIsSecure(string page)
         {
             string location = string.Empty;
-            location = "https://" + hostName + ":" + port + "/" + path + "/" + page;
+            location = "https://" + hostName + ":" + securePort + "/" + path + "/" + page;
 
             return location;
         }

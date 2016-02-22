@@ -28,9 +28,11 @@ goog.require('goog.fx.Animation');
 
 /**
  * This animation class is used to animate a CSS sprite (moving a background
- * image).  This moves through a series of images in a single image sprite and
- * loops the animation when done.  You should set up the
- * {@code background-image} and size in a CSS rule for the relevant element.
+ * image).  This moves through a series of images in a single image sprite. By
+ * default, the animation loops when done.  Looping can be disabled by setting
+ * {@code opt_disableLoop} and results in the animation stopping on the last
+ * image in the image sprite.  You should set up the {@code background-image}
+ * and size in a CSS rule for the relevant element.
  *
  * @param {Element} element The HTML element to animate the background for.
  * @param {goog.math.Size} size The size of one image in the image sprite.
@@ -44,15 +46,21 @@ goog.require('goog.fx.Animation');
  * @param {function(number) : number=} opt_acc Acceleration function,
  *    returns 0-1 for inputs 0-1.  This can be used to make certain frames be
  *    shown for a longer period of time.
+ * @param {boolean=} opt_disableLoop Whether the animation should be halted
+ *    after a single loop of the images in the sprite.
  *
  * @constructor
+ * @struct
  * @extends {goog.fx.Animation}
+ * @final
  */
-goog.fx.CssSpriteAnimation = function(element, size, box, time, opt_acc) {
+goog.fx.CssSpriteAnimation = function(element, size, box, time, opt_acc,
+    opt_disableLoop) {
   var start = [box.left, box.top];
   // We never draw for the end so we do not need to subtract for the size
   var end = [box.right, box.bottom];
-  goog.base(this, start, end, time, opt_acc);
+  goog.fx.CssSpriteAnimation.base(
+      this, 'constructor', start, end, time, opt_acc);
 
   /**
    * HTML element that will be used in the animation.
@@ -67,6 +75,14 @@ goog.fx.CssSpriteAnimation = function(element, size, box, time, opt_acc) {
    * @private
    */
   this.size_ = size;
+
+  /**
+   * Whether the animation should be halted after a single loop of the images
+   * in the sprite.
+   * @type {boolean}
+   * @private
+   */
+  this.disableLoop_ = !!opt_disableLoop;
 };
 goog.inherits(goog.fx.CssSpriteAnimation, goog.fx.Animation);
 
@@ -78,14 +94,16 @@ goog.fx.CssSpriteAnimation.prototype.onAnimate = function() {
   var y = -Math.floor(this.coords[1] / this.size_.height) * this.size_.height;
   this.element_.style.backgroundPosition = x + 'px ' + y + 'px';
 
-  goog.base(this, 'onAnimate');
+  goog.fx.CssSpriteAnimation.base(this, 'onAnimate');
 };
 
 
 /** @override */
 goog.fx.CssSpriteAnimation.prototype.onFinish = function() {
-  this.play(true);
-  goog.base(this, 'onFinish');
+  if (!this.disableLoop_) {
+    this.play(true);
+  }
+  goog.fx.CssSpriteAnimation.base(this, 'onFinish');
 };
 
 

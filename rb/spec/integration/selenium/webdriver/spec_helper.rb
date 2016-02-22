@@ -1,10 +1,29 @@
+# encoding: utf-8
+#
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 require 'rubygems'
 require 'time'
 require 'rspec'
 require 'ci/reporter/rspec'
 
 require 'selenium-webdriver'
-require 'selenium/webdriver/spec_support'
+require_relative 'spec_support'
 
 include Selenium
 
@@ -17,8 +36,13 @@ end
 RSpec.configure do |c|
   c.include(WebDriver::SpecSupport::Helpers)
   c.before(:suite) do
+    Selenium::WebDriver::Firefox::Binary.path = ENV['MARIONETTE_PATH'] if GlobalTestEnv.browser == :marionette && ENV['MARIONETTE_PATH']
     if GlobalTestEnv.driver == :remote
-      GlobalTestEnv.remote_server.start
+      server = GlobalTestEnv.remote_server
+      if GlobalTestEnv.browser == :marionette
+        server << "-Dwebdriver.firefox.bin=#{ENV['MARIONETTE_PATH']}"
+      end
+      server.start
     end
   end
 

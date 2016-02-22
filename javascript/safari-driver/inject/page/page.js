@@ -1,17 +1,19 @@
-// Copyright 2012 Selenium committers
-// Copyright 2012 Software Freedom Conservancy
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview Defines utilities for exchanging messages between the
@@ -25,7 +27,7 @@ goog.require('bot.ErrorCode');
 goog.require('bot.response');
 goog.require('goog.array');
 goog.require('goog.debug.LogManager');
-goog.require('goog.debug.Logger');
+goog.require('goog.log');
 goog.require('safaridriver.dom');
 goog.require('safaridriver.inject.CommandRegistry');
 goog.require('safaridriver.inject.Encoder');
@@ -42,11 +44,10 @@ goog.require('webdriver.promise');
 
 
 /**
- * @private {!goog.debug.Logger}
+ * @private {goog.log.Logger}
  * @const
  */
-safaridriver.inject.page.LOG_ = goog.debug.Logger.getLogger(
-    'safaridriver.inject.page');
+safaridriver.inject.page.LOG_ = goog.log.getLogger('safaridriver.inject.page');
 
 
 /**
@@ -62,12 +63,20 @@ safaridriver.inject.page.encoder;
 safaridriver.inject.page.init = function() {
   goog.debug.LogManager.getRoot().setLevel(goog.debug.Logger.Level.INFO);
 
+  // The page script is installed with an empty 'this' object, to avoid
+  // polluting the global namespace. But we still want Closure libraries to be
+  // able to read the properties of window that would normally be in
+  // goog.global, so we copy those into goog.global.
+  if (window != goog.global) {
+    copyWindowPropertiesTo(goog.global);
+  }
+
   var handler = new safaridriver.logging.ForwardingHandler(window);
   handler.captureConsoleOutput();
 
   safaridriver.inject.page.modules.init();
 
-  safaridriver.inject.page.LOG_.config(
+  goog.log.fine(safaridriver.inject.page.LOG_,
       'Loaded page script for ' + window.location);
 
   var messageTarget = new safaridriver.message.MessageTarget(window, true);
@@ -79,7 +88,7 @@ safaridriver.inject.page.init = function() {
       new safaridriver.inject.Encoder(messageTarget);
 
   var message = new safaridriver.message.Load(window !== window.top);
-  safaridriver.inject.page.LOG_.config('Sending ' + message);
+  goog.log.fine(safaridriver.inject.page.LOG_,'Sending ' + message);
   message.send(window);
 
   wrapDialogFunction('alert', safaridriver.inject.page.wrappedAlert_);
@@ -95,6 +104,17 @@ safaridriver.inject.page.init = function() {
     window[name].toString = function() {
       return oldFn.toString();
     };
+  }
+
+  function copyWindowPropertiesTo(obj) {
+    goog.array.forEach(Object.getOwnPropertyNames(window), function(name) {
+      if (!(name in obj)) {
+        var descriptor = Object.getOwnPropertyDescriptor(window, name);
+        if (descriptor) {
+          Object.defineProperty(obj, name, descriptor);
+        }
+      }
+    });
   }
 };
 goog.exportSymbol('init', safaridriver.inject.page.init);
@@ -191,7 +211,7 @@ safaridriver.inject.page.sendAlert_ = function(dialog, var_args) {
     }
   }
 
-  safaridriver.inject.page.LOG_.config('Sending alert notification; ' +
+  goog.log.fine(safaridriver.inject.page.LOG_, 'Sending alert notification; ' +
       'type: ' + dialog.name + ', text: ' + alertText);
 
   var message = new safaridriver.message.Alert(alertText, blocksUiThread);
@@ -199,13 +219,13 @@ safaridriver.inject.page.sendAlert_ = function(dialog, var_args) {
 
   if (ignoreAlert == '1') {
     if (dialog !== safaridriver.inject.page.NativeDialog_.BEFOREUNLOAD) {
-      safaridriver.inject.page.LOG_.config('Invoking native alert');
+      goog.log.fine(safaridriver.inject.page.LOG_, 'Invoking native alert');
       return nativeFn.apply(window, args);
     }
     return null;  // Return and let onbeforeunload be called as usual.
   }
 
-  safaridriver.inject.page.LOG_.info('Dismissing unexpected alert');
+  goog.log.info(safaridriver.inject.page.LOG_, 'Dismissing unexpected alert');
   var response;
   switch (dialog.name) {
     case safaridriver.inject.page.NativeDialog_.BEFOREUNLOAD.name:
@@ -239,7 +259,7 @@ safaridriver.inject.page.sendAlert_ = function(dialog, var_args) {
 /**
  * Handles command messages from the injected script.
  * @param {!safaridriver.message.Command} message The command message.
- * @param {!MessageEvent} e The original message event.
+ * @param {!MessageEvent.<*>} e The original message event.
  * @throws {Error} If the command is not supported by this script.
  * @private
  */
@@ -249,29 +269,26 @@ safaridriver.inject.page.onCommand_ = function(message, e) {
   }
 
   var command = message.getCommand();
-
-  var response = new webdriver.promise.Deferred();
-  // When the response is resolved, we want to wrap it up in a message and
-  // send it back to the injected script. This does all that.
-  response.then(function(value) {
-    var encodedValue = safaridriver.inject.page.encoder.encode(value);
-    // If the command result contains any DOM elements from another
-    // document, the encoded value will contain promises that will resolve
-    // once the owner documents have encoded the elements. Therefore, we
-    // must wait for those to resolve.
-    return webdriver.promise.fullyResolved(encodedValue);
-  }).then(bot.response.createResponse, bot.response.createErrorResponse).
-      then(function(response) {
+  safaridriver.inject.CommandRegistry.getInstance()
+      .execute(command, goog.global)
+      // When the response is resolved, we want to wrap it up in a message and
+      // send it back to the injected script. This does all that.
+      .then(function(value) {
+        var encodedValue = safaridriver.inject.page.encoder.encode(value);
+        // If the command result contains any DOM elements from another
+        // document, the encoded value will contain promises that will resolve
+        // once the owner documents have encoded the elements. Therefore, we
+        // must wait for those to resolve.
+        return webdriver.promise.fullyResolved(encodedValue);
+      })
+      .then(bot.response.createResponse, bot.response.createErrorResponse)
+      .then(function(response) {
         var responseMessage = new safaridriver.message.Response(
             command.getId(), response);
-        safaridriver.inject.page.LOG_.config(
+        goog.log.fine(safaridriver.inject.page.LOG_,
             'Sending ' + command.getName() + ' response: ' + responseMessage);
         responseMessage.send(window);
       });
-
-  safaridriver.inject.CommandRegistry.getInstance()
-      .execute(command, goog.global)
-      .then(response.fulfill, response.reject);
 };
 
 

@@ -22,7 +22,7 @@
 goog.provide('goog.ui.TabRenderer');
 
 goog.require('goog.a11y.aria.Role');
-goog.require('goog.ui.Component.State');
+goog.require('goog.ui.Component');
 goog.require('goog.ui.ControlRenderer');
 
 

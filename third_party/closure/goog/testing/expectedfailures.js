@@ -21,11 +21,11 @@
 goog.provide('goog.testing.ExpectedFailures');
 
 goog.require('goog.debug.DivConsole');
-goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('goog.log');
 goog.require('goog.style');
 goog.require('goog.testing.JsUnitException');
 goog.require('goog.testing.TestCase');
@@ -58,6 +58,7 @@ goog.require('goog.testing.asserts');
  * </pre>
  *
  * @constructor
+ * @final
  */
 goog.testing.ExpectedFailures = function() {
   goog.testing.ExpectedFailures.setUpConsole_();
@@ -75,11 +76,11 @@ goog.testing.ExpectedFailures.console_ = null;
 
 /**
  * Logger for the expected failures.
- * @type {goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @private
  */
 goog.testing.ExpectedFailures.prototype.logger_ =
-    goog.debug.Logger.getLogger('goog.testing.ExpectedFailures');
+    goog.log.getLogger('goog.testing.ExpectedFailures');
 
 
 /**
@@ -100,7 +101,7 @@ goog.testing.ExpectedFailures.prototype.failureMessage_;
 
 /**
  * An array of suppressed failures.
- * @type {Array}
+ * @type {Array<!Error>}
  * @private
  */
 goog.testing.ExpectedFailures.prototype.suppressedFailures_;
@@ -128,9 +129,9 @@ goog.testing.ExpectedFailures.setUpConsole_ = function() {
     });
 
     goog.testing.ExpectedFailures.console_ = new goog.debug.DivConsole(div);
-    goog.testing.ExpectedFailures.prototype.logger_.addHandler(
+    goog.log.addHandler(goog.testing.ExpectedFailures.prototype.logger_,
         goog.bind(goog.style.setElementShown, null, div, true));
-    goog.testing.ExpectedFailures.prototype.logger_.addHandler(
+    goog.log.addHandler(goog.testing.ExpectedFailures.prototype.logger_,
         goog.bind(goog.testing.ExpectedFailures.console_.addLogRecord,
             goog.testing.ExpectedFailures.console_));
   }
@@ -169,7 +170,7 @@ goog.testing.ExpectedFailures.prototype.isExceptionExpected = function(ex) {
  */
 goog.testing.ExpectedFailures.prototype.handleException = function(ex) {
   if (this.isExceptionExpected(ex)) {
-    this.logger_.info('Suppressing test failure in ' +
+    goog.log.info(this.logger_, 'Suppressing test failure in ' +
         goog.testing.TestCase.currentTestName + ':' +
         (this.failureMessage_ ? '\n(' + this.failureMessage_ + ')' : ''),
         ex);
@@ -219,7 +220,7 @@ goog.testing.ExpectedFailures.prototype.getExpectationMessage_ = function() {
  */
 goog.testing.ExpectedFailures.prototype.handleTearDown = function() {
   if (this.expectingFailure_ && !this.suppressedFailures_.length) {
-    this.logger_.warning(this.getExpectationMessage_());
+    goog.log.warning(this.logger_, this.getExpectationMessage_());
   }
   this.reset_();
 };

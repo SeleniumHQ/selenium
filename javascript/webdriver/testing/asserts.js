@@ -1,16 +1,19 @@
-// Copyright 2011 Software Freedom Conservancy. All Rights Reserved.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview Assertions and expectation utilities for use in WebDriver test
@@ -373,7 +376,7 @@ webdriver.testing.Assertion.prototype.isFalse = function() {
  * @extends {webdriver.testing.Assertion}
  */
 webdriver.testing.NegatedAssertion = function(value) {
-  goog.base(this, value);
+  webdriver.testing.NegatedAssertion.base(this, 'constructor', value);
   this.value = value;
 };
 goog.inherits(
@@ -384,10 +387,9 @@ goog.inherits(
 webdriver.testing.NegatedAssertion.prototype.apply = function(
     matcher, opt_message) {
   matcher = new goog.labs.testing.IsNotMatcher(matcher);
-  return goog.base(this, 'apply', matcher, opt_message);
+  return webdriver.testing.NegatedAssertion.base(this, 'apply', matcher,
+                                                 opt_message);
 };
-
-
 
 /**
  * Creates a new assertion.

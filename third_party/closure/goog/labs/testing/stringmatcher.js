@@ -20,7 +20,6 @@
 
 goog.provide('goog.labs.testing.ContainsStringMatcher');
 goog.provide('goog.labs.testing.EndsWithMatcher');
-goog.provide('goog.labs.testing.EqualToIgnoringCaseMatcher');
 goog.provide('goog.labs.testing.EqualToIgnoringWhitespaceMatcher');
 goog.provide('goog.labs.testing.EqualsMatcher');
 goog.provide('goog.labs.testing.RegexMatcher');
@@ -40,7 +39,9 @@ goog.require('goog.string');
  * @param {string} value The expected string.
  *
  * @constructor
+ * @struct
  * @implements {goog.labs.testing.Matcher}
+ * @final
  */
 goog.labs.testing.ContainsStringMatcher = function(value) {
   /**
@@ -79,7 +80,9 @@ goog.labs.testing.ContainsStringMatcher.prototype.describe =
  * @param {string} value The expected string.
  *
  * @constructor
+ * @struct
  * @implements {goog.labs.testing.Matcher}
+ * @final
  */
 goog.labs.testing.EndsWithMatcher = function(value) {
   /**
@@ -117,7 +120,9 @@ goog.labs.testing.EndsWithMatcher.prototype.describe =
  * @param {string} value The expected string.
  *
  * @constructor
+ * @struct
  * @implements {goog.labs.testing.Matcher}
+ * @final
  */
 goog.labs.testing.EqualToIgnoringWhitespaceMatcher = function(value) {
   /**
@@ -158,7 +163,9 @@ goog.labs.testing.EqualToIgnoringWhitespaceMatcher.prototype.describe =
  * @param {string} value The expected string.
  *
  * @constructor
+ * @struct
  * @implements {goog.labs.testing.Matcher}
+ * @final
  */
 goog.labs.testing.EqualsMatcher = function(value) {
   /**
@@ -196,7 +203,9 @@ goog.labs.testing.EqualsMatcher.prototype.describe =
  * @param {!RegExp} regex The expected regex.
  *
  * @constructor
+ * @struct
  * @implements {goog.labs.testing.Matcher}
+ * @final
  */
 goog.labs.testing.RegexMatcher = function(regex) {
   /**
@@ -235,7 +244,9 @@ goog.labs.testing.RegexMatcher.prototype.describe =
  * @param {string} value The expected string.
  *
  * @constructor
+ * @struct
  * @implements {goog.labs.testing.Matcher}
+ * @final
  */
 goog.labs.testing.StartsWithMatcher = function(value) {
   /**
@@ -270,14 +281,16 @@ goog.labs.testing.StartsWithMatcher.prototype.describe =
 /**
  * The StringContainsInOrdermatcher.
  *
- * @param {Array.<string>} values The expected string values.
+ * @param {Array<string>} values The expected string values.
  *
  * @constructor
+ * @struct
  * @implements {goog.labs.testing.Matcher}
+ * @final
  */
 goog.labs.testing.StringContainsInOrderMatcher = function(values) {
   /**
-   * @type {Array.<string>}
+   * @type {Array<string>}
    * @private
    */
   this.values_ = values;
@@ -392,7 +405,7 @@ function startsWith(value) {
 /**
  * Matches a string that contains the given strings in order.
  *
- * @param {Array.<string>} values The expected value.
+ * @param {Array<string>} values The expected value.
  *
  * @return {!goog.labs.testing.StringContainsInOrderMatcher} A
  *     StringContainsInOrderMatcher.

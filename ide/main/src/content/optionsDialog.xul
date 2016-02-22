@@ -88,6 +88,7 @@ limitations under the License.
         <checkbox id="recordAssertTitle" label="&options.recordAssertTitle.description;"/>
         <checkbox id="recordAbsoluteURL" label="&options.recordAbsoluteURL.description;"/>
         <checkbox id="showDeveloperTools" label="&options.showDeveloperTools.description;" oncommand="updateReloadButton(this.checked)"/>
+        <checkbox id="visualEye" label="Visual assist (restart of Selenium IDE is required)"/>
         <checkbox id="enableExperimentalFeatures" label="&options.enableExperimentalFeatures.label;"/>
         <checkbox id="disableFormatChangeMsg" label="&options.disableFormatChangeMsg.label;"/>
         <checkbox id="recordOnOpen" label="&options.recordOnOpen.description;"/>
@@ -129,22 +130,23 @@ limitations under the License.
         </hbox>
       </tabpanel>
       <tabpanel orient="vertical" id="locatorBuildersPanel">
-        <hbox flex="1">
+        <vbox flex="1">
+          <description>Drag and drop the locator builders on the left to change their order</description>
           <hbox flex="1">
-            <listbox id="locatorBuilder-list" flex="1" width="100"/>
+            <vbox flex="1">
+              <listbox id="locatorBuilder-list" flex="1" width="170"/>
+            </vbox>
+            <splitter id="locatorBuildersPanelSplitter" collapse="after">
+              <grippy/>
+            </splitter>
+            <vbox flex="1" width="230">
+              <label id="locatorBuilder-name"/>
+              <box id="locatorBuilder-info"/>
+              <box id="locatorBuilder-config"/>
+              <box id="locatorBuilder-help"/>
+            </vbox>
           </hbox>
-          <splitter id="locatorBuildersPanelSplitter" collapse="after">
-            <grippy/>
-          </splitter>
-          <vbox flex="1" width="300">
-            <label id="locatorBuilder-name"/>
-            <box id="locatorBuilder-info"/>
-            <box id="locatorBuilder-config"/>
-            <box id="locatorBuilder-help">
-              <description>Drag and drop the locator builders on the left to change their order</description>
-            </box>
-          </vbox>
-        </hbox>
+        </vbox>
       </tabpanel>
       <tabpanel orient="vertical" id="webDriverPanel">
         <description class="tip"></description>
@@ -154,7 +156,7 @@ limitations under the License.
         <hbox>
           <textbox id="webDriverBrowserString" multiline="false" flex="1"/>
         </hbox>
-        <description class="tip">Browser choices: android, chrome, firefox, htmlunit, internet explorer, iPhone, iPad, opera</description>
+        <description class="tip">Browser choices: android, chrome, firefox, htmlunit, internet explorer, iPhone, iPad</description>
         <label class="text-link" href="http://blog.reallysimplethoughts.com/?p=561" value="How to use WebDriver playback?" />
       </tabpanel>
     </tabpanels>

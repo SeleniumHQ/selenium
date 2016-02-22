@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -30,7 +33,6 @@ class SwitchToFrameCommandHandler : public IECommandHandler {
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
-                       const LocatorMap& locator_parameters,
                        const ParametersMap& command_parameters,
                        Response* response) {
     Json::Value frame_id = Json::Value::null;
@@ -51,7 +53,13 @@ class SwitchToFrameCommandHandler : public IECommandHandler {
     if (frame_id.isNull()) {
       status_code = browser_wrapper->SetFocusedFrameByElement(NULL);
     } else if (frame_id.isObject()) {
-      Json::Value element_id = frame_id.get("ELEMENT", Json::Value::null);
+      // TODO: Remove the check for "ELEMENT" once all target bindings 
+      // have been updated to use spec-compliant protocol.
+      Json::Value element_id = frame_id.get("element-6066-11e4-a52e-4f735466cecf", Json::Value::null);
+      if (element_id.isNull()) {
+        element_id = frame_id.get("ELEMENT", Json::Value::null);
+      }
+
       if (element_id.isNull()) {
         status_code = ENOSUCHFRAME;
       } else {

@@ -20,11 +20,10 @@
 
 goog.provide('goog.messaging.BufferedChannel');
 
+goog.require('goog.Disposable');
 goog.require('goog.Timer');
-goog.require('goog.Uri');
-goog.require('goog.debug.Error');
-goog.require('goog.debug.Logger');
 goog.require('goog.events');
+goog.require('goog.log');
 goog.require('goog.messaging.MessageChannel');
 goog.require('goog.messaging.MultiChannel');
 
@@ -43,6 +42,7 @@ goog.require('goog.messaging.MultiChannel');
  * @constructor
  * @extends {goog.Disposable}
  * @implements {goog.messaging.MessageChannel};
+ * @final
  */
 goog.messaging.BufferedChannel = function(messageChannel, opt_interval) {
   goog.Disposable.call(this);
@@ -50,7 +50,7 @@ goog.messaging.BufferedChannel = function(messageChannel, opt_interval) {
   /**
    * Buffer of messages to be sent when the channel's peer is ready.
    *
-   * @type {Array.<Object>}
+   * @type {Array<Object>}
    * @private
    */
   this.buffer_ = [];
@@ -170,11 +170,11 @@ goog.messaging.BufferedChannel.prototype.isPeerReady = function() {
 /**
  * Logger.
  *
- * @type {goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @const
  * @private
  */
-goog.messaging.BufferedChannel.prototype.logger_ = goog.debug.Logger.getLogger(
+goog.messaging.BufferedChannel.prototype.logger_ = goog.log.getLogger(
     'goog.messaging.bufferedchannel');
 
 
@@ -236,7 +236,7 @@ goog.messaging.BufferedChannel.prototype.send = function(serviceName, payload) {
   if (this.isPeerReady()) {
     this.userChannel_.send(serviceName, payload);
   } else {
-    goog.messaging.BufferedChannel.prototype.logger_.fine(
+    goog.log.fine(goog.messaging.BufferedChannel.prototype.logger_,
         'buffering message ' + serviceName);
     this.buffer_.push({serviceName: serviceName, payload: payload});
   }
@@ -271,7 +271,7 @@ goog.messaging.BufferedChannel.prototype.setPeerReady_ = function(
   this.sendReadyPing_();
   for (var i = 0; i < this.buffer_.length; i++) {
     var message = this.buffer_[i];
-    goog.messaging.BufferedChannel.prototype.logger_.fine(
+    goog.log.fine(goog.messaging.BufferedChannel.prototype.logger_,
         'sending buffered message ' + message.serviceName);
     this.userChannel_.send(message.serviceName, message.payload);
   }
@@ -283,5 +283,5 @@ goog.messaging.BufferedChannel.prototype.setPeerReady_ = function(
 goog.messaging.BufferedChannel.prototype.disposeInternal = function() {
   goog.dispose(this.multiChannel_);
   goog.dispose(this.timer_);
-  goog.base(this, 'disposeInternal');
+  goog.messaging.BufferedChannel.base(this, 'disposeInternal');
 };

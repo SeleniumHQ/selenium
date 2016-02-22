@@ -50,6 +50,7 @@ goog.require('goog.testing.mockmatchers');
  * This is a class that represents an expectation.
  * @param {string} name The name of the method for this expectation.
  * @constructor
+ * @final
  */
 goog.testing.MockExpectation = function(name) {
   /**
@@ -60,7 +61,7 @@ goog.testing.MockExpectation = function(name) {
 
   /**
    * An array of error messages for expectations not met.
-   * @type {Array}
+   * @type {Array<string>}
    */
   this.errorMessages = [];
 };
@@ -96,7 +97,7 @@ goog.testing.MockExpectation.prototype.exceptionToThrow;
 
 /**
  * The arguments that are expected to be passed to this function
- * @type {Array.<*>}
+ * @type {Array<*>}
  */
 goog.testing.MockExpectation.prototype.argumentList;
 
@@ -170,7 +171,10 @@ goog.testing.Mock = function(objectToMock, opt_mockStaticMethods,
   }
   if (opt_createProxy && !opt_mockStaticMethods &&
       goog.isFunction(objectToMock)) {
-    /** @constructor */
+    /**
+ * @constructor
+ * @final
+ */
     var tempCtor = function() {};
     goog.inherits(tempCtor, objectToMock);
     this.$proxy = new tempCtor();
@@ -215,7 +219,7 @@ goog.testing.Mock.STRICT = 0;
  * Object prototype.
  * Basically a copy of goog.object.PROTOTYPE_FIELDS_.
  * @const
- * @type {!Array.<string>}
+ * @type {!Array<string>}
  * @private
  */
 goog.testing.Mock.PROTOTYPE_FIELDS_ = [
@@ -306,12 +310,12 @@ goog.testing.Mock.prototype.$initializeFunctions_ = function(objectToMock) {
 
 
 /**
- * Registers a verfifier function to use when verifying method argument lists.
+ * Registers a verifier function to use when verifying method argument lists.
  * @param {string} methodName The name of the method for which the verifierFn
  *     should be used.
  * @param {Function} fn Argument list verifier function.  Should take 2 argument
  *     arrays as arguments, and return true if they are considered equivalent.
- * @return {goog.testing.Mock} This mock object.
+ * @return {!goog.testing.Mock} This mock object.
  */
 goog.testing.Mock.prototype.$registerArgumentListVerifier = function(methodName,
                                                                      fn) {
@@ -358,7 +362,7 @@ goog.testing.Mock.prototype.$recordExpectation = function() {};
  * subclass. The subclass must find the pending expectation and return the
  * correct value.
  * @param {string} name The name of the method being called.
- * @param {Array} args The arguments to the method.
+ * @param {Array<?>} args The arguments to the method.
  * @return {*} The return expected by the mock.
  * @protected
  */
@@ -384,7 +388,7 @@ goog.testing.Mock.prototype.$maybeThrow = function(expectation) {
  * Otherwise, if the expectation expects to throw, it will throw.
  * Otherwise, this method will return defined value.
  * @param {goog.testing.MockExpectation} expectation The expectation.
- * @param {Array} args The arguments to the method.
+ * @param {Array<?>} args The arguments to the method.
  * @return {*} The return value expected by the mock.
  */
 goog.testing.Mock.prototype.$do = function(expectation, args) {
@@ -400,7 +404,7 @@ goog.testing.Mock.prototype.$do = function(expectation, args) {
 /**
  * Specifies a return value for the currently pending expectation.
  * @param {*} val The return value.
- * @return {goog.testing.Mock} This mock object.
+ * @return {!goog.testing.Mock} This mock object.
  */
 goog.testing.Mock.prototype.$returns = function(val) {
   this.$pendingExpectation.returnValue = val;
@@ -411,7 +415,7 @@ goog.testing.Mock.prototype.$returns = function(val) {
 /**
  * Specifies a value for the currently pending expectation to throw.
  * @param {*} val The value to throw.
- * @return {goog.testing.Mock} This mock object.
+ * @return {!goog.testing.Mock} This mock object.
  */
 goog.testing.Mock.prototype.$throws = function(val) {
   this.$pendingExpectation.exceptionToThrow = val;
@@ -424,7 +428,7 @@ goog.testing.Mock.prototype.$throws = function(val) {
  * Note, that using this method overrides declarations made
  * using $returns() and $throws() methods.
  * @param {Function} func The function to call.
- * @return {goog.testing.Mock} This mock object.
+ * @return {!goog.testing.Mock} This mock object.
  */
 goog.testing.Mock.prototype.$does = function(func) {
   this.$pendingExpectation.toDo = func;
@@ -434,7 +438,7 @@ goog.testing.Mock.prototype.$does = function(func) {
 
 /**
  * Allows the expectation to be called 0 or 1 times.
- * @return {goog.testing.Mock} This mock object.
+ * @return {!goog.testing.Mock} This mock object.
  */
 goog.testing.Mock.prototype.$atMostOnce = function() {
   this.$pendingExpectation.minCalls = 0;
@@ -446,7 +450,7 @@ goog.testing.Mock.prototype.$atMostOnce = function() {
 /**
  * Allows the expectation to be called any number of times, as long as it's
  * called once.
- * @return {goog.testing.Mock} This mock object.
+ * @return {!goog.testing.Mock} This mock object.
  */
 goog.testing.Mock.prototype.$atLeastOnce = function() {
   this.$pendingExpectation.maxCalls = Infinity;
@@ -455,8 +459,30 @@ goog.testing.Mock.prototype.$atLeastOnce = function() {
 
 
 /**
+ * Allows the expectation to be called exactly once.
+ * @return {!goog.testing.Mock} This mock object.
+ */
+goog.testing.Mock.prototype.$once = function() {
+  this.$pendingExpectation.minCalls = 1;
+  this.$pendingExpectation.maxCalls = 1;
+  return this;
+};
+
+
+/**
+ * Disallows the expectation from being called.
+ * @return {!goog.testing.Mock} This mock object.
+ */
+goog.testing.Mock.prototype.$never = function() {
+  this.$pendingExpectation.minCalls = 0;
+  this.$pendingExpectation.maxCalls = 0;
+  return this;
+};
+
+
+/**
  * Allows the expectation to be called any number of times.
- * @return {goog.testing.Mock} This mock object.
+ * @return {!goog.testing.Mock} This mock object.
  */
 goog.testing.Mock.prototype.$anyTimes = function() {
   this.$pendingExpectation.minCalls = 0;
@@ -468,7 +494,7 @@ goog.testing.Mock.prototype.$anyTimes = function() {
 /**
  * Specifies the number of times the expectation should be called.
  * @param {number} times The number of times this method will be called.
- * @return {goog.testing.Mock} This mock object.
+ * @return {!goog.testing.Mock} This mock object.
  */
 goog.testing.Mock.prototype.$times = function(times) {
   this.$pendingExpectation.minCalls = times;
@@ -552,7 +578,7 @@ goog.testing.Mock.prototype.$verify = function() {
  * Verifies that a method call matches an expectation.
  * @param {goog.testing.MockExpectation} expectation The expectation to check.
  * @param {string} name The name of the called method.
- * @param {Array.<*>?} args The arguments passed to the mock.
+ * @param {Array<*>?} args The arguments passed to the mock.
  * @return {boolean} Whether the call matches the expectation.
  */
 goog.testing.Mock.prototype.$verifyCall = function(expectation, name, args) {
@@ -571,7 +597,7 @@ goog.testing.Mock.prototype.$verifyCall = function(expectation, name, args) {
 /**
  * Render the provided argument array to a string to help
  * clients with debugging tests.
- * @param {Array.<*>?} args The arguments passed to the mock.
+ * @param {Array<*>?} args The arguments passed to the mock.
  * @return {string} Human-readable string.
  */
 goog.testing.Mock.prototype.$argumentsAsString = function(args) {
@@ -590,7 +616,7 @@ goog.testing.Mock.prototype.$argumentsAsString = function(args) {
 /**
  * Throw an exception based on an incorrect method call.
  * @param {string} name Name of method called.
- * @param {Array.<*>?} args Arguments passed to the mock.
+ * @param {Array<*>?} args Arguments passed to the mock.
  * @param {goog.testing.MockExpectation=} opt_expectation Expected next call,
  *     if any.
  */

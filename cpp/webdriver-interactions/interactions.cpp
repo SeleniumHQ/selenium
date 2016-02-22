@@ -1,10 +1,11 @@
 /*
-   Copyright 2007-2009 WebDriver committers
-   Copyright 2007-2009 Google Inc.
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements. See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership. The SFC licenses this file
+to you under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
 http://www.apache.org/licenses/LICENSE-2.0
 
@@ -21,11 +22,12 @@ limitations under the License.
 #include <string>
 #include <iostream>
 
-#include "errorcodes.h"
 #include "interactions.h"
 #include "interactions_common.h"
 #include "logging.h"
 #include "event_firing_thread.h"
+
+#define ENULLPOINTER 22
 
 using namespace std;
 
@@ -356,7 +358,11 @@ static HKL attachInputToIEThread(HWND directInputTo)
 	hook = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC) &GetMessageProc,
 			moduleHandle, ieWinThreadId);
 
-	// Attach to the IE thread so we can send keys to it.
+  if (hook == NULL) {
+    LOGERR(WARN) << "Unable to set Windows hook. Individual keystrokes will be very slow";
+  }
+
+  // Attach to the IE thread so we can send keys to it.
 	if (ieWinThreadId != currThreadId) {
 		AttachThreadInput(currThreadId, ieWinThreadId, true);
 	}

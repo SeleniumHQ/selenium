@@ -30,6 +30,7 @@
  *   </li>
  * </ol>
  *
+ * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.testing.ShardingTestCase');
@@ -44,11 +45,13 @@ goog.require('goog.testing.TestCase');
  * @param {number} shardIndex Shard index for this page,
  *     <strong>1-indexed</strong>.
  * @param {number} numShards Number of shards to split up test cases into.
+ * @param {string=} opt_name The name of the test case.
  * @extends {goog.testing.TestCase}
  * @constructor
+ * @final
  */
 goog.testing.ShardingTestCase = function(shardIndex, numShards, opt_name) {
-  goog.base(this, opt_name);
+  goog.testing.ShardingTestCase.base(this, 'constructor', opt_name);
 
   goog.asserts.assert(shardIndex > 0, 'Shard index should be positive');
   goog.asserts.assert(numShards > 0, 'Number of shards should be positive');
@@ -99,7 +102,7 @@ goog.testing.ShardingTestCase.prototype.runTests = function() {
   }
 
   // Call original runTests method to execute the tests.
-  goog.base(this, 'runTests');
+  goog.testing.ShardingTestCase.base(this, 'runTests');
 };
 
 
@@ -110,9 +113,9 @@ goog.testing.ShardingTestCase.prototype.runTests = function() {
  */
 goog.testing.ShardingTestCase.shardByFileName = function(opt_name) {
   var path = window.location.pathname;
-  var shardMatch = path.match(/_(\d+)of(\d+)_test\.html/);
+  var shardMatch = path.match(/_(\d+)of(\d+)_test\.(js|html)/);
   goog.asserts.assert(shardMatch,
-      'Filename must be of the form "foo_1of5_test.html"');
+      'Filename must be of the form "foo_1of5_test.{js,html}"');
   var shardIndex = parseInt(shardMatch[1], 10);
   var numShards = parseInt(shardMatch[2], 10);
 

@@ -21,6 +21,19 @@ BROWSERS = {
     },
     :browser_name => "firefox",
   },
+  "marionette" => {
+    :python => {
+      :ignore => "marionette", # py.test string used for ignoring
+      :dir => "firefox", # Directory to put tests in/read tests from
+      :file_string => "marionette", # Browser-string to use in test filenames
+      :class => "Firefox", # As per py/selenium/webdriver/__init__.py
+    },
+    :java => {
+      :class => "org.openqa.selenium.firefox.SynthesizedFirefoxDriver",
+      :deps => [ "//java/client/test/org/openqa/selenium/testing/drivers" ]
+    },
+    :browser_name => "firefox",
+  },
   "ie" => {
     :python => {
       :ignore => "ie",
@@ -33,6 +46,16 @@ BROWSERS = {
       :deps => [ "//java/client/src/org/openqa/selenium/ie:ie", "//cpp/iedriverserver:win32" ]
     },
     :browser_name => "internet explorer",
+    :available => windows?
+  },
+  "edge" => {
+    :python => {
+      :ignore => "edge",
+      :dir => "edge",
+      :file_string => "edge",
+      :class => "Edge"
+    },
+    :browser_name => "MicrosoftEdge",
     :available => windows?
   },
   "chrome" => {
@@ -49,19 +72,15 @@ BROWSERS = {
     :browser_name => "chrome",
     :available => chrome?
   },
-  "opera" => {
+  "blackberry" => {
     :python => {
-      :ignore => "opera",
-      :dir => "opera",
-      :file_string => "opera",
-      :class => "Opera"
+      :ignore => "blackberry",
+      :dir => "blackberry",
+      :file_string => "blackberry",
+      :class => "BlackBerry",
+      :constructor_args => "device_password='password'"
     },
-    :java => {
-      :class => "com.opera.core.systems.OperaDriver",
-      :deps => [ "//third_party/java/opera-driver" ]
-    },
-    :browser_name => "opera",
-    :available => opera?
+    :browser_name => "blackberry"
   },
   "phantomjs" => {
     :python => {

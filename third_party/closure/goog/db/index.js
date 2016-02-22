@@ -36,6 +36,7 @@ goog.require('goog.debug');
  *
  * @param {!IDBIndex} index Underlying IDBIndex object.
  * @constructor
+ * @final
  */
 goog.db.Index = function(index) {
   /**

@@ -1,5 +1,5 @@
 prebuilt_jar(name = 'commons-collections',
-  binary_jar = 'commons-collections-3.2.1.jar',
+  binary_jar = 'commons-collections-3.2.2.jar',
   visibility = [
     '//third_party/java/...',
   ],

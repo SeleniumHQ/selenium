@@ -22,11 +22,12 @@ goog.provide('goog.editor.plugins.LinkBubble.Action');
 
 goog.require('goog.array');
 goog.require('goog.dom');
-goog.require('goog.editor.BrowserFeature');
+goog.require('goog.dom.Range');
+goog.require('goog.dom.TagName');
 goog.require('goog.editor.Command');
 goog.require('goog.editor.Link');
 goog.require('goog.editor.plugins.AbstractBubblePlugin');
-goog.require('goog.editor.range');
+goog.require('goog.functions');
 goog.require('goog.string');
 goog.require('goog.style');
 goog.require('goog.ui.editor.messages');
@@ -43,25 +44,25 @@ goog.require('goog.window');
  * @extends {goog.editor.plugins.AbstractBubblePlugin}
  */
 goog.editor.plugins.LinkBubble = function(var_args) {
-  goog.base(this);
+  goog.editor.plugins.LinkBubble.base(this, 'constructor');
 
   /**
    * List of extra actions supported by the bubble.
-   * @type {Array.<!goog.editor.plugins.LinkBubble.Action>}
+   * @type {Array<!goog.editor.plugins.LinkBubble.Action>}
    * @private
    */
   this.extraActions_ = goog.array.toArray(arguments);
 
   /**
    * List of spans corresponding to the extra actions.
-   * @type {Array.<!Element>}
+   * @type {Array<!Element>}
    * @private
    */
   this.actionSpans_ = [];
 
   /**
    * A list of whitelisted URL schemes which are safe to open.
-   * @type {Array.<string>}
+   * @type {Array<string>}
    * @private
    */
   this.safeToOpenSchemes_ = ['http', 'https', 'ftp'];
@@ -138,19 +139,29 @@ goog.editor.plugins.LinkBubble.LINK_DIV_ID_ = 'tr_link-div';
  * @desc Text label for link that lets the user click it to see where the link
  *     this bubble is for point to.
  */
-var MSG_LINK_BUBBLE_TEST_LINK = goog.getMsg('Go to link: ');
+goog.editor.plugins.LinkBubble.MSG_LINK_BUBBLE_TEST_LINK = goog.getMsg(
+    'Go to link: ');
 
 
 /**
  * @desc Label that pops up a dialog to change the link.
  */
-var MSG_LINK_BUBBLE_CHANGE = goog.getMsg('Change');
+goog.editor.plugins.LinkBubble.MSG_LINK_BUBBLE_CHANGE = goog.getMsg(
+    'Change');
 
 
 /**
  * @desc Label that allow the user to remove this link.
  */
-var MSG_LINK_BUBBLE_REMOVE = goog.getMsg('Remove');
+goog.editor.plugins.LinkBubble.MSG_LINK_BUBBLE_REMOVE = goog.getMsg(
+    'Remove');
+
+
+/**
+ * @desc Message shown in a link bubble when the link is not a valid url.
+ */
+goog.editor.plugins.LinkBubble.MSG_INVALID_URL_LINK_BUBBLE = goog.getMsg(
+    'invalid url');
 
 
 /**
@@ -208,7 +219,7 @@ goog.editor.plugins.LinkBubble.prototype.setBlockOpeningUnsafeSchemes =
  * Schemes should all be in lowercase. If the plugin is set to block opening
  * unsafe schemes, user-entered URLs will be converted to lowercase and checked
  * against this list. The whitelist has no effect if blocking is not enabled.
- * @param {Array.<string>} schemes String array of URL schemes to allow (http,
+ * @param {Array<string>} schemes String array of URL schemes to allow (http,
  *     https, etc.).
  */
 goog.editor.plugins.LinkBubble.prototype.setSafeToOpenSchemes =
@@ -245,8 +256,10 @@ goog.editor.plugins.LinkBubble.prototype.execCommandInternal =
  */
 goog.editor.plugins.LinkBubble.prototype.updateLink_ = function() {
   var targetEl = this.getTargetElement();
-  this.closeBubble();
-  this.createBubble(targetEl);
+  if (targetEl) {
+    this.closeBubble();
+    this.createBubble(targetEl);
+  }
 };
 
 
@@ -314,6 +327,16 @@ goog.editor.plugins.LinkBubble.prototype.getBubbleTitle = function() {
 };
 
 
+/**
+ * Returns the message to display for testing a link.
+ * @return {string} The message for testing a link.
+ * @protected
+ */
+goog.editor.plugins.LinkBubble.prototype.getTestLinkMessage = function() {
+  return goog.editor.plugins.LinkBubble.MSG_LINK_BUBBLE_TEST_LINK;
+};
+
+
 /** @override */
 goog.editor.plugins.LinkBubble.prototype.createBubbleContents = function(
     bubbleContainer) {
@@ -336,7 +359,7 @@ goog.editor.plugins.LinkBubble.prototype.createBubbleContents = function(
   } else {
     var testMsgSpan = this.dom_.createDom(goog.dom.TagName.SPAN,
         {id: goog.editor.plugins.LinkBubble.TEST_LINK_SPAN_ID_},
-        MSG_LINK_BUBBLE_TEST_LINK);
+        this.getTestLinkMessage());
     linkTextSpan = this.dom_.createDom(goog.dom.TagName.SPAN,
         {
           id: goog.editor.plugins.LinkBubble.LINK_TEXT_ID_,
@@ -354,7 +377,8 @@ goog.editor.plugins.LinkBubble.prototype.createBubbleContents = function(
   var changeLinkSpan = this.createLinkOption(
       goog.editor.plugins.LinkBubble.CHANGE_LINK_SPAN_ID_);
   this.createLink(goog.editor.plugins.LinkBubble.CHANGE_LINK_ID_,
-      MSG_LINK_BUBBLE_CHANGE, this.showLinkDialog_, changeLinkSpan);
+      goog.editor.plugins.LinkBubble.MSG_LINK_BUBBLE_CHANGE,
+      this.showLinkDialog_, changeLinkSpan);
 
   // This function is called multiple times - we have to reset the array.
   this.actionSpans_ = [];
@@ -372,7 +396,8 @@ goog.editor.plugins.LinkBubble.prototype.createBubbleContents = function(
   var removeLinkSpan = this.createLinkOption(
       goog.editor.plugins.LinkBubble.DELETE_LINK_SPAN_ID_);
   this.createLink(goog.editor.plugins.LinkBubble.DELETE_LINK_ID_,
-      MSG_LINK_BUBBLE_REMOVE, this.deleteLink_, removeLinkSpan);
+      goog.editor.plugins.LinkBubble.MSG_LINK_BUBBLE_REMOVE,
+      this.deleteLink_, removeLinkSpan);
 
   this.onShow();
 
@@ -392,14 +417,19 @@ goog.editor.plugins.LinkBubble.prototype.createBubbleContents = function(
 /**
  * Tests the link by opening it in a new tab/window. Should be used as the
  * click event handler for the test pseudo-link.
+ * @param {!Event=} opt_event If passed in, the event will be stopped.
  * @protected
  */
-goog.editor.plugins.LinkBubble.prototype.testLink = function() {
+goog.editor.plugins.LinkBubble.prototype.testLink = function(opt_event) {
   goog.window.open(this.getTestLinkAction_(),
       {
         'target': '_blank',
         'noreferrer': this.stopReferrerLeaks_
       }, this.getFieldObject().getAppWindow());
+  if (opt_event) {
+    opt_event.stopPropagation();
+    opt_event.preventDefault();
+  }
 };
 
 
@@ -415,7 +445,7 @@ goog.editor.plugins.LinkBubble.prototype.isInvalidUrl = goog.functions.FALSE;
 
 /**
  * Gets the text to display for a link, based on the type of link
- * @return {Object} Returns an object of the form:
+ * @return {!Object} Returns an object of the form:
  *     {linkText: displayTextForLinkTarget, valid: ifTheLinkIsValid}.
  * @private
  */
@@ -424,11 +454,8 @@ goog.editor.plugins.LinkBubble.prototype.getLinkToTextObj_ = function() {
   var targetUrl = this.getTargetUrl();
 
   if (this.isInvalidUrl(targetUrl)) {
-    /**
-     * @desc Message shown in a link bubble when the link is not a valid url.
-     */
-    var MSG_INVALID_URL_LINK_BUBBLE = goog.getMsg('invalid url');
-    targetUrl = MSG_INVALID_URL_LINK_BUBBLE;
+
+    targetUrl = goog.editor.plugins.LinkBubble.MSG_INVALID_URL_LINK_BUBBLE;
     isError = true;
   } else if (goog.editor.Link.isMailto(targetUrl)) {
     targetUrl = targetUrl.substring(7); // 7 == "mailto:".length
@@ -458,15 +485,23 @@ goog.editor.plugins.LinkBubble.prototype.showLinkDialog_ = function(e) {
 
 /**
  * Deletes the link associated with the bubble
+ * @param {goog.events.BrowserEvent} e The event.
  * @private
  */
-goog.editor.plugins.LinkBubble.prototype.deleteLink_ = function() {
+goog.editor.plugins.LinkBubble.prototype.deleteLink_ = function(e) {
+  // Needed when this occurs due to an ENTER key event, else the editor receives
+  // the key press and inserts a newline.
+  e.preventDefault();
+
   this.getFieldObject().dispatchBeforeChange();
 
   var link = this.getTargetElement();
   var child = link.lastChild;
   goog.dom.flattenElement(link);
-  goog.editor.range.placeCursorNextTo(child, false);
+
+  var range = goog.dom.Range.createFromNodeContents(child);
+  range.collapse(false);
+  range.select();
 
   this.closeBubble();
 
@@ -551,6 +586,7 @@ goog.editor.plugins.LinkBubble.prototype.isSafeSchemeToOpen_ =
  * @param {function(string):void} actionFn Action function to run when the
  *     action is clicked.  Takes the current target URL as a parameter.
  * @constructor
+ * @final
  */
 goog.editor.plugins.LinkBubble.Action = function(spanId, linkId, message,
     toShowFn, actionFn) {

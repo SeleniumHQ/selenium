@@ -1,17 +1,19 @@
-# Copyright 2008-2009 WebDriver committers
-# Copyright 2008-2009 Google Inc.
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
 
 """
 Exceptions that may happen in all the webdriver code.
@@ -28,13 +30,12 @@ class WebDriverException(Exception):
         self.stacktrace = stacktrace
 
     def __str__(self):
-        exception_msg = "Message: %s " % repr(self.msg)
+        exception_msg = "Message: %s\n" % self.msg
         if self.screen is not None:
-            exception_msg = "%s; Screenshot: available via screen " \
-                % exception_msg
+            exception_msg += "Screenshot: available via screen\n"
         if self.stacktrace is not None:
-            exception_msg = "%s; Stacktrace: %s " \
-                % (exception_msg, str("\n" + "\n".join(self.stacktrace)))
+            stacktrace = "\n".join(self.stacktrace)
+            exception_msg += "Stacktrace:\n%s" % stacktrace
         return exception_msg
 
 class ErrorInResponseException(WebDriverException):
@@ -124,7 +125,12 @@ class UnexpectedAlertPresentException(WebDriverException):
     Usually raised when when an expected modal is blocking webdriver form executing any 
     more commands.
     """
-    pass
+    def __init__(self, msg=None, screen=None, stacktrace=None, alert_text=None):
+        super(UnexpectedAlertPresentException, self).__init__(msg, screen, stacktrace)
+        self.alert_text = alert_text
+
+    def __str__(self):
+        return "Alert Text: %s\n%s" % (self.alert_text, str(super(WebDriverException, self)))
 
 class NoAlertPresentException(WebDriverException):
     """

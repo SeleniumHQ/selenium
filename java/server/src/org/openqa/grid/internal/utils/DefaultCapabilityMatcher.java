@@ -1,18 +1,19 @@
-/*
-Copyright 2007-2011 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.internal.utils;
 
@@ -26,7 +27,7 @@ import java.util.logging.Logger;
 
 /**
  * Default (naive) implementation of the capability matcher.
- * <p/>
+ * <p>
  * The default capability matcher will look at all the key from the request do not start with _ and
  * will try to find a node that has at least those capabilities.
  */
@@ -35,8 +36,7 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
   private static final Logger log = Logger.getLogger(DefaultCapabilityMatcher.class.getName());
   private static final String GRID_TOKEN = "_";
 
-  // temporary fix to only check to most meaningful desiredCapability params
-  private final List<String> toConsider = new ArrayList<String>();
+  protected final List<String> toConsider = new ArrayList<>();
 
   public DefaultCapabilityMatcher() {
     toConsider.add(CapabilityType.PLATFORM);
@@ -46,6 +46,13 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
 
   }
 
+  /**
+   * @param capabilityName capability name to have grid match requested with test slot
+   */
+  public void addToConsider(String capabilityName) {
+    toConsider.add(capabilityName);
+  }
+
   public boolean matches(Map<String, Object> nodeCapability, Map<String, Object> requestedCapability) {
     if (nodeCapability == null || requestedCapability == null) {
       return false;
@@ -53,7 +60,6 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
     for (String key : requestedCapability.keySet()) {
       // ignore capabilities that are targeted at grid internal for the
       // matching
-      // TODO freynaud only consider version, browser and OS for now
       if (!key.startsWith(GRID_TOKEN) && toConsider.contains(key)) {
         if (requestedCapability.get(key) != null) {
           String value = requestedCapability.get(key).toString();

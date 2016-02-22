@@ -1,6 +1,6 @@
 java_library(name = "testng",
   deps = [ 
-    "testng-6.8.5.jar",
+    "testng-6.9.9.jar",
     "//third_party/java/beanshell",
-    "//third_party/java/jcommander",
+    "//third_party/java/beust:jcommander",
    ])

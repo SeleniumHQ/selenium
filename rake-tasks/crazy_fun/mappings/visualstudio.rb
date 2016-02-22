@@ -411,10 +411,6 @@ module CrazyFunDotNet
 
         doc_sources = resolve_doc_sources(dir, args[:srcs])
 
-        if ENV['DXROOT'].nil?
-          fail "Sandcastle documentation tools not found. Documentation will not be created."
-        end
-
         if ENV['SHFBROOT'].nil?
           fail "Sandcastle Help File Builder not found. Documentation will not be created."
         end
@@ -490,7 +486,7 @@ module CrazyFunDotNet
         nuspec_task.owners = "Software Freedom Conservancy"
         nuspec_task.title = args[:title] unless args[:title].nil?
         nuspec_task.summary = args[:summary] unless args[:summary].nil?
-        nuspec_task.projectUrl = "http://code.google.com/p/selenium/"
+        nuspec_task.projectUrl = "https://github.com/SeleniumHQ/selenium"
         nuspec_task.licenseUrl = "http://www.apache.org/licenses/LICENSE-2.0"
         nuspec_task.iconUrl = "http://seleniumhq.org/images/big-logo.png"
         nuspec_task.requireLicenseAcceptance = "false"

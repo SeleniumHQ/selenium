@@ -23,9 +23,11 @@
 
 goog.provide('goog.net.xpc.FrameElementMethodTransport');
 
+goog.require('goog.log');
 goog.require('goog.net.xpc');
 goog.require('goog.net.xpc.CrossPageChannelRole');
 goog.require('goog.net.xpc.Transport');
+goog.require('goog.net.xpc.TransportTypes');
 
 
 
@@ -42,9 +44,11 @@ goog.require('goog.net.xpc.Transport');
  *     the correct window.
  * @constructor
  * @extends {goog.net.xpc.Transport}
+ * @final
  */
 goog.net.xpc.FrameElementMethodTransport = function(channel, opt_domHelper) {
-  goog.base(this, opt_domHelper);
+  goog.net.xpc.FrameElementMethodTransport.base(
+      this, 'constructor', opt_domHelper);
 
   /**
    * The channel this transport belongs to.
@@ -59,7 +63,7 @@ goog.net.xpc.FrameElementMethodTransport = function(channel, opt_domHelper) {
 
   /**
    * Array for queued messages.
-   * @type {Array}
+   * @type {Array<{serviceName: string, payload: string}>}
    * @private
    */
   this.queue_ = [];
@@ -82,6 +86,18 @@ goog.inherits(goog.net.xpc.FrameElementMethodTransport, goog.net.xpc.Transport);
  */
 goog.net.xpc.FrameElementMethodTransport.prototype.transportType =
     goog.net.xpc.TransportTypes.FRAME_ELEMENT_METHOD;
+
+
+/** @private */
+goog.net.xpc.FrameElementMethodTransport.prototype.attemptSetupCb_;
+
+
+/** @private */
+goog.net.xpc.FrameElementMethodTransport.prototype.outgoing_;
+
+
+/** @private */
+goog.net.xpc.FrameElementMethodTransport.prototype.iframeElm_;
 
 
 /**
@@ -163,7 +179,7 @@ goog.net.xpc.FrameElementMethodTransport.prototype.attemptSetup_ = function() {
     }
   }
   catch (e) {
-    goog.net.xpc.logger.severe(
+    goog.log.error(goog.net.xpc.logger,
         'exception caught while attempting setup: ' + e);
   }
   // retry necessary?

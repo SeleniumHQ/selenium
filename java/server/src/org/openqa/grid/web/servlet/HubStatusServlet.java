@@ -1,26 +1,30 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 
 package org.openqa.grid.web.servlet;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
@@ -39,21 +43,21 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * API to query the hub config remotely.
- * 
+ *
  * use the API by sending a GET to grid/api/hub/
- * with the content of the request in JSON,specifying the 
- * parameters you're interesting in, for instance, to get 
+ * with the content of the request in JSON,specifying the
+ * parameters you're interesting in, for instance, to get
  * the timeout of the hub and the registered servlets :
- * 
+ *
  * {"configuration":
  *      [
  *      "timeout",
  *      "servlets"
  *      ]
  * }
- * 
+ *
  * if no param is specified, all params known to the hub are returned.
- * 
+ *
  * {"configuration": []  }
  *
  */
@@ -80,67 +84,70 @@ public class HubStatusServlet extends RegistryBasedServlet {
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
     response.setStatus(200);
-    JSONObject res;
+    JsonObject res;
     try {
       res = getResponse(request);
       response.getWriter().print(res);
       response.getWriter().close();
-    } catch (JSONException e) {
+    } catch (JsonSyntaxException e) {
       throw new GridException(e.getMessage());
     }
 
   }
 
-  private JSONObject getResponse(HttpServletRequest request) throws IOException, JSONException {
-    JSONObject res = new JSONObject();
-    res.put("success", true);
+  private JsonObject getResponse(HttpServletRequest request) throws IOException {
+    JsonObject res = new JsonObject();
+    res.addProperty("success", true);
     try {
       if (request.getInputStream() != null) {
-        JSONObject requestJSON = getRequestJSON(request);
-        JSONArray keys = requestJSON != null ? requestJSON.getJSONArray("configuration") : null;
+        JsonObject requestJSON = getRequestJSON(request);
+        JsonArray keys = requestJSON != null
+                         ? requestJSON.get("configuration").getAsJsonArray()
+                         : null;
 
         Set<String> paramsToReturn;
         Registry registry = getRegistry();
         Map<String,Object> allParams = registry.getConfiguration().getAllParams();
 
-        if (requestJSON == null || keys.length() == 0) {
+        if (requestJSON == null || keys.size() == 0) {
           paramsToReturn = allParams.keySet();
         } else {
-          paramsToReturn = new HashSet<String>();
-          for (int i = 0; i < keys.length(); i++) {
-            paramsToReturn.add(keys.getString(i));
+          paramsToReturn = new HashSet<>();
+          for (int i = 0; i < keys.size(); i++) {
+            paramsToReturn.add(keys.get(i).getAsString());
           }
         }
 
         if (paramsToReturn.contains("newSessionRequestCount")) {
-          res.put("newSessionRequestCount", registry.getNewSessionRequestCount());
+          res.addProperty("newSessionRequestCount", registry.getNewSessionRequestCount());
           paramsToReturn.remove("newSessionRequestCount");
         }
 
         if (paramsToReturn.contains("slotCounts")) {
-          res.put("slotCounts", getSlotCounts());
+          res.add("slotCounts", getSlotCounts());
           paramsToReturn.remove("slotCounts");
         }
 
         for (String key : paramsToReturn) {
           Object value = allParams.get(key);
           if (value == null) {
-            res.put(key, JSONObject.NULL);
+            res.add(key, JsonNull.INSTANCE);
           } else {
-            res.put(key, value);
+            res.add(key, new Gson().toJsonTree(value));
           }
 
         }
       }
     } catch (Exception e) {
-      res.put("success", false);
-      res.put("msg", e.getMessage());
+      res.remove("success");
+      res.addProperty("success", false);
+      res.addProperty("msg", e.getMessage());
     }
     return res;
 
   }
 
-  private JSONObject getSlotCounts() throws JSONException {
+  private JsonObject getSlotCounts() {
     int freeSlots = 0;
     int totalSlots = 0;
 
@@ -154,16 +161,16 @@ public class HubStatusServlet extends RegistryBasedServlet {
       }
     }
 
-    JSONObject result = new JSONObject();
+    JsonObject result = new JsonObject();
 
-    result.put("free", freeSlots);
-    result.put("total", totalSlots);
+    result.addProperty("free", freeSlots);
+    result.addProperty("total", totalSlots);
 
     return result;
   }
 
-  private JSONObject getRequestJSON(HttpServletRequest request) throws IOException, JSONException {
-    JSONObject requestJSON = null;
+  private JsonObject getRequestJSON(HttpServletRequest request) throws IOException {
+    JsonObject requestJSON = null;
     BufferedReader rd = new BufferedReader(new InputStreamReader(request.getInputStream()));
     StringBuilder s = new StringBuilder();
     String line;
@@ -173,7 +180,7 @@ public class HubStatusServlet extends RegistryBasedServlet {
     rd.close();
     String json = s.toString();
     if (!"".equals(json)) {
-      requestJSON = new JSONObject(json);
+      requestJSON = new JsonParser().parse(json).getAsJsonObject();
     }
     return requestJSON;
   }

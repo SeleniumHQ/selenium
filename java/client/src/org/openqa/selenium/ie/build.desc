@@ -3,9 +3,7 @@ java_library(name = "ie",
   srcs  = [ "*.java" ],
   deps = [
     "//cpp/iedriverserver:sizzle",
-    "//java/client/src/org/openqa/selenium/browserlaunchers:windows_proxy_manager",
     "//java/client/src/org/openqa/selenium/net",
     "//java/client/src/org/openqa/selenium/remote",
     "//java/client/src/org/openqa/selenium/remote/service",
-    "//third_party/java/jna",
   ])

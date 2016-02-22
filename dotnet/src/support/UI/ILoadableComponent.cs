@@ -1,9 +1,9 @@
 ﻿// <copyright file="ILoadableComponent.cs" company="WebDriver Committers">
-// Copyright 2007-2011 WebDriver committers
-// Copyright 2007-2011 Google Inc.
-// Portions copyright 2011 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -16,13 +16,11 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-
 namespace OpenQA.Selenium.Support.UI
 {
     /// <summary>
     /// Interface allows for the component to be used in Nested Component scenarios such that the
-    /// child component class does not have to declare the generic type of the parent explicitly. 
+    /// child component class does not have to declare the generic type of the parent explicitly.
     /// </summary>
     /// <example>
     /// public class HypotheticalLoadableComponent : LoadableComponent&lt;T&gt; {
@@ -31,7 +29,7 @@ namespace OpenQA.Selenium.Support.UI
     ///     this.parent = parent;
     ///   }
     ///   protected void EvaluateLoadedStatus() { //code to determine loaded state }
-    ///   protected void ExecuteLoad() { 
+    ///   protected void ExecuteLoad() {
     ///     parent.Load();  //loads the parent
     ///     //code to load this component
     ///   }

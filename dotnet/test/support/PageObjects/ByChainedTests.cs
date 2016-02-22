@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using NMock2;
 using NUnit.Framework;
-using OpenQA.Selenium.Internal;
 using Is = NUnit.Framework.Is;
 
 namespace OpenQA.Selenium.Support.PageObjects
@@ -10,14 +9,13 @@ namespace OpenQA.Selenium.Support.PageObjects
     public class ByChainedTests
     {
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void FindElementZeroBy()
         {
             Mockery mock = new Mockery();
             IAllDriver driver = mock.NewMock<IAllDriver>();
 
             ByChained by = new ByChained();
-            by.FindElement(driver);
+            Assert.Throws<NoSuchElementException>(() => by.FindElement(driver));
         }
 
         [Test]
@@ -214,17 +212,6 @@ namespace OpenQA.Selenium.Support.PageObjects
         {
             Assert.That(new ByChained(By.Id("cheese"), By.Name("photo")),
                 Is.EqualTo(new ByChained(By.Id("cheese"), By.Name("photo"))));
-        }
-
-        public interface IAllDriver :
-            IFindsById, IFindsByLinkText, IFindsByName, IFindsByXPath, ISearchContext, IWebDriver
-        {
-            // Place holder
-        }
-
-        public interface IAllElement : IWebElement
-        {
-            // Place holder
         }
     }
 }

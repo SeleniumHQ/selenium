@@ -1,19 +1,19 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.internal;
 
@@ -66,7 +66,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Represent a running test for the hub/registry. A test session is created when a TestSlot becomes
- * available for a test. <p/> The session is destroyed when the test ends ( ended by the client or
+ * available for a test. <p> The session is destroyed when the test ends ( ended by the client or
  * timed out)
  */
 @SuppressWarnings("JavaDoc")
@@ -91,7 +91,7 @@ public class TestSession {
     return internalKey;
   }
 
-  /**
+  /*
    * Creates a test session on the specified testSlot.
    */
   public TestSession(TestSlot slot, Map<String, Object> requestedCapabilities,
@@ -104,7 +104,7 @@ public class TestSession {
   }
 
   /**
-   * the capabilities the client requested. It will match the TestSlot capabilities, but is not
+   * @return the capabilities the client requested. It will match the TestSlot capabilities, but is not
    * equals.
    */
   public Map<String, Object> getRequestedCapabilities() {
@@ -123,6 +123,7 @@ public class TestSession {
 
   /**
    * associate this session to the session provided by the remote.
+   * @param externalKey external session key
    */
   public void setExternalKey(ExternalSessionKey externalKey) {
     this.externalKey = externalKey;
@@ -203,7 +204,7 @@ public class TestSession {
     return slot.getProxy().getHttpClientFactory().getGridHttpClient(browserTimeout, browserTimeout);
   }
 
-  /**
+  /*
    * forwards the request to the node.
    */
   public String forward(SeleniumBasedRequest request, HttpServletResponse response,
@@ -226,32 +227,30 @@ public class TestSession {
 
       HttpResponse proxyResponse = sendRequestToNode(proxyRequest);
       lastActivity = timeSource.currentTimeInMillis();
-
-      final int statusCode = proxyResponse.getStatusLine().getStatusCode();
-      response.setStatus(statusCode);
-      processResponseHeaders(request, response, slot.getRemoteURL(), proxyResponse);
-
-      byte[] consumedNewWebDriverSessionBody = null;
-      if (statusCode != HttpServletResponse.SC_INTERNAL_SERVER_ERROR &&
-          statusCode != HttpServletResponse.SC_NOT_FOUND) {
-        consumedNewWebDriverSessionBody = updateHubIfNewWebDriverSession(request, proxyResponse);
-      }
-      if (newSessionRequest && statusCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR) {
-        removeIncompleteNewSessionRequest();
-      }
-      if (statusCode == HttpServletResponse.SC_NOT_FOUND) {
-        removeSessionBrowserTimeout();
-      }
-
       HttpEntity responseBody = proxyResponse.getEntity();
-      byte[] contentBeingForwarded = null;
-      if (responseBody != null) {
-        try {
+      try {
+        final int statusCode = proxyResponse.getStatusLine().getStatusCode();
+        response.setStatus(statusCode);
+        processResponseHeaders(request, response, slot.getRemoteURL(), proxyResponse);
+
+        byte[] consumedNewWebDriverSessionBody = null;
+        if (statusCode != HttpServletResponse.SC_INTERNAL_SERVER_ERROR &&
+            statusCode != HttpServletResponse.SC_NOT_FOUND) {
+          consumedNewWebDriverSessionBody = updateHubIfNewWebDriverSession(request, proxyResponse);
+        }
+        if (newSessionRequest && statusCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR) {
+          removeIncompleteNewSessionRequest();
+        }
+        if (statusCode == HttpServletResponse.SC_NOT_FOUND) {
+          removeSessionBrowserTimeout();
+        }
+
+        byte[] contentBeingForwarded = null;
+        if (responseBody != null) {
           InputStream in;
           if (consumedNewWebDriverSessionBody == null) {
             in = responseBody.getContent();
-            if (request.getRequestType() == RequestType.START_SESSION
-                && request instanceof LegacySeleniumRequest) {
+            if (request.getRequestType() == RequestType.START_SESSION && request instanceof LegacySeleniumRequest) {
               res = getResponseUtf8Content(in);
 
               updateHubNewSeleniumSession(res);
@@ -263,20 +262,25 @@ public class TestSession {
           }
 
           final byte[] bytes = drainInputStream(in);
-          writeRawBody(response, bytes);
-
-        } finally {
-          EntityUtils.consume(responseBody);
+          contentBeingForwarded = bytes;
         }
 
-      }
+        if (slot.getProxy() instanceof CommandListener) {
+          SeleniumBasedResponse wrappedResponse = new SeleniumBasedResponse(response);
+          wrappedResponse.setForwardedContent(contentBeingForwarded);
+          ((CommandListener) slot.getProxy()).afterCommand(this, request, wrappedResponse);
+          contentBeingForwarded = wrappedResponse.getForwardedContentAsByteArray();
+        }
 
-      if (slot.getProxy() instanceof CommandListener) {
-        SeleniumBasedResponse wrappedResponse = new SeleniumBasedResponse(response);
-        wrappedResponse.setForwardedContent(contentBeingForwarded);
-        ((CommandListener) slot.getProxy()).afterCommand(this, request, wrappedResponse);
+        if (contentBeingForwarded != null) {
+          writeRawBody(response, contentBeingForwarded);
+        }
+        response.flushBuffer();
+      } finally {
+        EntityUtils.consume(responseBody);
       }
       response.flushBuffer();
+
       return res;
     } finally {
       forwardingRequest = false;
@@ -502,6 +506,7 @@ public class TestSession {
   /**
    * Allow you to retrieve an object previously stored on the test session.
    *
+   * @param key key
    * @return the object you stored
    */
   public Object get(String key) {
@@ -512,6 +517,7 @@ public class TestSession {
    * Allows you to store an object on the test session.
    *
    * @param key a non-null string
+   * @param value value object
    */
   public void put(String key, Object value) {
     objects.put(key, value);
@@ -544,25 +550,34 @@ public class TestSession {
     }
 
     HttpHost host = new HttpHost(remoteURL.getHost(), remoteURL.getPort());
-
+    HttpEntity responseBody = null;
     boolean ok;
     try {
       HttpClient client = getClient();
       HttpResponse response = client.execute(host, request);
+      responseBody = response.getEntity();
       int code = response.getStatusLine().getStatusCode();
       ok = (code >= 200) && (code <= 299);
     } catch (Throwable e) {
       ok = false;
       // corrupted or the something else already sent the DELETE.
-      log.severe("Error releasing. Server corrupted ?");
+      log.severe("Unable to send DELETE request for the current session " + e.getMessage());
+    } finally {
+      try {
+        EntityUtils.consume(responseBody);
+      } catch (IOException e) {
+        log.warning("Consuming the response body when DELETE to the node " + e.getMessage());
+      }
     }
     return ok;
   }
 
 
   /**
-   * allow to bypass time out for this session. ignore = true => the session will not time out.
+   * allow to bypass time out for this session. ignore = true =&gt; the session will not time out.
    * setIgnoreTimeout(true) also update the lastActivity to now.
+   *
+   * @param ignore true to ignore the timeout
    */
   public void setIgnoreTimeout(boolean ignore) {
     if (!ignore) {

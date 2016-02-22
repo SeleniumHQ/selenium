@@ -1,3 +1,142 @@
+Selenium 2.52.0
+* Fixing case where UnexpectedAlertException doesn't get the alert_text in the error object
+* Firefox: Actually use launch_browser timeout Fixes #1300
+
+Selenium 2.51.1
+* correcting bundling issue missing README.rst file
+
+Selenium 2.51.0
+* Firefox updates (see java changelog)
+
+Selenium 2.50.1
+* Fixing error message handling. Fixes issue #1497
+* Fixing error message handling. Fixes issue #1507
+* Update webelement to handle W3C commands for size/location and rect
+* rewrite click scrolling tests to match the Java ones
+
+Selenium 2.50.0
+* handle potential URLError from sending shutdown, set self.process to None after it's already been quit
+* Add support for submit() with W3C compliant endpoint
+
+Selenium 2.49.1
+* Ensure you can close stream before attempting to close it.
+* message response may cause json loads ValueError when it's not actually json
+  and just a string (like the message that occurs when firefox driver thinks
+  another element will receive the click)
+* Cleanup some error handling when sniffing what protocol you are speaking
+
+Selenium 2.49.0
+* Have Firefox service write to a file instead of PIPE
+* on osx for firefox, fallback to checking homebrew install, if the default isn't there
+* Added Firefox path variable for string placeholder
+* Update README to show Python 3.2+
+* refactoring all the service classes to use a common one.
+* Add Firefox specific command to switch context between Browser content and Browser chrome
+* updating files after go copyright:update
+* Use specificationLevel to know that we are speaking GeckoDriver
+* Bug fixes: #1294, #1186
+
+Selenium 2.48.0
+* Update error pulling to match spec when we encounter a spec compliant browser.
+* Disable tests that are not working with Marionette when running Marionette tests
+* Add the ability to run python marionette tests
+* Python 3 compatibility for remote Authorization
+* changing casing of children finding tests
+
+Selenium 2.47.3
+* Bring back py 3 support
+
+Selenium 2.47.2
+* Fix running Edge driver locally on win10
+* adding repr to WebDriver and WebElement
+
+Selenium 2.47.1
+* Fix the issue of deleting the profile when shutting down Firefox
+* WebElement __eq__ compares against more types
+* Issues fixed: 850
+
+Selenium 2.47.0
+* Add in support for when communicating with a Spec compliant browsers
+* Initial support for Edge using EdgeDriver
+* Issues fixed: 818
+
+Selenium 2.46.1
+* Adding ability to make remote call for webelement screenshots in accordance to the W3C spec
+* Adding api to authenticate HTTP Auth modal dialogs via driver.switch_to.alert (beta)
+* Add rebeccapurple to Color Object
+* Add element screenshot
+* Add service handler and minimal update to driver to use service for Marionette
+* Add the ability to start FirefoxDriver backed with Marionette via a capability
+* support socket timeout for connections
+* free_port checks if port is available on all interfaces
+* Allow error handling to handle both current errors and w3c errors
+* Update find_elements to match spec
+* phantomjs: service: remove unused import of signal
+* phantomjs: add port information to WebDriverException
+* Issues fixed (Github): 478, 612, 734, 780
+
+Selenium 2.46.0
+* Firefox support up to 38
+* BlackBerry browser support
+* remove Presto-Opera support
+* firefox extension extraction fixes
+* process management fixes with phantomjs
+* Comparing remote web element for equality does not require a remote command
+* Issues Fixed: (gcode) 8493, 8521, 8498, 8274, 8497, 5923
+* Issues Fixed: (github) 401
+
+Selenium 2.45.0
+* Firefox support up to 35, support for native events up to 34.
+* Make Opera driver support also the new Blink based Opera
+* README: Fix the Yahoo example
+* WebElement docstring fixes
+* Add debugger_address option to the ChromeDriver options list to optionally instruct ChromeDriver to wait for the target devtools instance to be started at a given host:ip
+* Set default value for PhantomJS process reference
+* Allow setting of FileDetector for send_keys
+* Pass info to TimeoutException in WebDriverWait
+* Issues Fixed: 8065, 8310, 8539
+
+Selenium 2.44.0
+* (previous release person forgot to add release notes! DAVID!)
+
+Selenium 2.43.0
+* Expand WebElement.get_attribute API docs
+* firefox may be installed without admininstrator privileges
+    and therefore there may be no HKEY_LOCAL_MACHINE entry. Issue #7784
+* UnexpectedAlertPresentException should contain the alert text in python too. Issue #7745
+* don't mutate the global 'ignored exceptions', take a copy of the globally specified ones, change the
+  global to be a tuple instead. Issue #7725
+* raise exception when the firefox binary isn't actually found, which usually implies the upgrade failed (on windows) Issue #6092 ,#6847
+* Fixing NameError: global name 'options' is not defined.
+* Remove unused import subprocess.PIPE
+* Redirect Firefox output to /dev/null by default Fixes Issue #7677
+* More flexible management of http timeouts in Selenium RC python client
+* Generate Python API docs for selenium.webdriver.chrome.options. Fixes issue #7471
+* Use 127.0.0.1 as localhost name resolving might fail on some systems
+
+Selenium 2.42.1
+* Fixed Py3 issues
+* Make firefox_binary.py and firefox_profile.py not executable
+* Make exceptions Python 3 compatible
+
+Selenium 2.42
+* Support for Firefox 29 Native Events
+* "remote_url" and "remote_browser" parameters for "./go test_remote".
+* missing __init__ in new android module
+* issue #7304 Fix memory leak caused by __del__ in PhantomJS
+* File upload using remotedriver on python3
+* Updating xpi install to align with mozprofile
+* command_executor should also support unicode strings as well.
+
+Selenium 2.41
+* Support for Firefox 28
+* deprecating switch_to_* in favour of driver.switch_to.*
+
+Selenium 2.40
+* Support for Firefox 27
+* Fixes related to http connection
+* Fix for phantomjs running on windows #6736
+
 Selenium 2.39
 * Support for Firefox 26
 
@@ -265,5 +404,3 @@ Selenium 2 Beta 2
 * Improved IEDriver
 * Basic Authentication support for Selenium 2
 * Ability to have multiple Firefox instances
-
-

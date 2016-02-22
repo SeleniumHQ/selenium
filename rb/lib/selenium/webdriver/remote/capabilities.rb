@@ -1,3 +1,22 @@
+# encoding: utf-8
+#
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 module Selenium
   module WebDriver
     module Remote
@@ -43,10 +62,11 @@ module Selenium
         class << self
           def android(opts = {})
             new({
-              :browser_name     => "android",
-              :platform         => :android,
-              :rotatable        => true,
-              :takes_screenshot => true
+              :browser_name       => "android",
+              :platform           => :android,
+              :javascript_enabled => true,
+              :rotatable          => true,
+              :takes_screenshot   => true
             }.merge(opts))
           end
 
@@ -54,11 +74,19 @@ module Selenium
             new({
               :browser_name          => "chrome",
               :javascript_enabled    => true,
-              :css_selectors_enabled => true
-            }.merge(opts))
+              :css_selectors_enabled => true,
+              :loggingPrefs => {:browser => "ALL",
+                                :driver => "ALL"}
+                }.merge(opts))
+          end
+
+          def edge(opts = {})
+            W3CCapabilities.edge(opts)
           end
 
           def firefox(opts = {})
+            return W3CCapabilities.firefox(opts) if opts[:marionette]
+
             new({
               :browser_name          => "firefox",
               :javascript_enabled    => true,
@@ -107,15 +135,6 @@ module Selenium
             }.merge(opts))
           end
 
-          def opera(opts = {})
-            new({
-              :browser_name          => "opera",
-              :javascript_enabled    => true,
-              :takes_screenshot      => true,
-              :css_selectors_enabled => true
-            }.merge(opts))
-          end
-
           def phantomjs(opts = {})
             new({
               :browser_name          => "phantomjs",
@@ -128,6 +147,7 @@ module Selenium
           def safari(opts = {})
             new({
               :browser_name          => "safari",
+              :platform              => :mac,
               :javascript_enabled    => true,
               :takes_screenshot      => true,
               :css_selectors_enabled => true

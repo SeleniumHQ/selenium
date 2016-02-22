@@ -1,10 +1,10 @@
-js_deps(name = "deps",
+js_library(name = "all_js",
   srcs = [
     "*.js",
     "*/*.js",
   ],
   deps = [
-    "//javascript/atoms:deps",
+    "//javascript/atoms:all_js",
     "//javascript/webdriver:key_lib",
   ])
 
@@ -18,7 +18,7 @@ js_binary(name = "inputs",
   ],
   no_format = "true",
   deps = [
-      ":deps",
+      ":all_js",
   ])
 
 js_library(name = "atoms_lib",

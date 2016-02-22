@@ -1,24 +1,16 @@
 java_library(name = 'xml',
-  deps = [
-    ':xalan',
-    ':xerces',
+  exported_deps = [
+    '//third_party/java/xalan:xalan',
+    '//third_party/java/xerces:xerces',
     ':apis',
   ],
-  export_deps = True,
   visibility = [
     '//java/client/src/org/openqa/selenium/htmlunit:htmlunit',
     '//third_party/java/...',
   ],
 )
 
-prebuilt_jar(name = 'xalan',
-  binary_jar = 'xalan-2.7.1.jar',
-)
-
-prebuilt_jar(name = 'xerces',
-  binary_jar = 'xercesImpl-2.10.0.jar',
-)
-
 prebuilt_jar(name = 'apis',
   binary_jar = 'xml-apis-1.4.01.jar',
+  source_jar = 'xml-apis-1.4.01-sources.jar',
 )

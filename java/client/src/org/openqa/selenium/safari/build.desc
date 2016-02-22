@@ -9,11 +9,10 @@ java_library(name = "safari",
     "//java/client/src/org/openqa/selenium/net",
     "//java/client/src/org/openqa/selenium/os",
     "//java/client/src/org/openqa/selenium/remote",
-    "//third_party/java/guava-libraries",
-    "//third_party/java/json",
+    "//third_party/java/guava",
+    "//third_party/java/gson",
     "//third_party/java/netty",
   ],
   embedded = [
     "//javascript/safari-driver:client",
-    "//javascript/safari-driver/prebuilt:SafariDriver",
   ])

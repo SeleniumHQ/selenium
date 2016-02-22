@@ -1,19 +1,19 @@
-/*
-* Copyright 2011 Software Freedom Conservancy
-*
-*  Licensed under the Apache License, Version 2.0 (the "License");
-*  you may not use this file except in compliance with the License.
-*  You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-*  Unless required by applicable law or agreed to in writing, software
-*  distributed under the License is distributed on an "AS IS" BASIS,
-*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-*  See the License for the specific language governing permissions and
-*  limitations under the License.
-*
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 // An object representing the current test, used external
 var currentTest = null; // TODO: get rid of this global, which mirrors the htmlTestRunner.currentTest
@@ -54,7 +54,7 @@ objectExtend(HtmlTestRunner.prototype, {
         if (selenium == null) {
             var appWindow = self._getApplicationWindow();
             try { appWindow.location; }
-            catch (e) { 
+            catch (e) {
                 // when reloading, we may be pointing at an old window (Perm Denied)
                 setTimeout(fnBind(function() {
                     self.loadSuiteFrame();
@@ -112,7 +112,7 @@ objectExtend(HtmlTestRunner.prototype, {
             var testCaseLoaded = fnBind(function(){this.testCaseLoaded=true;},this);
             var testNumber = 0;
             if (this.controlPanel.getTestNumber() != null){
-                var testNumber = this.controlPanel.getTestNumber() - 1; 
+                var testNumber = this.controlPanel.getTestNumber() - 1;
             }
             this.getTestSuite().getSuiteRows()[testNumber].loadTestCase(testCaseLoaded);
         }
@@ -138,6 +138,83 @@ objectExtend(HtmlTestRunner.prototype, {
         this.getTestSuite().reset();
         this.runAllTests = true;
         this.runNextTest();
+
+      var add_sendkeys_key = function(key, unicodeChar, alias, botKey) {
+        botKey = botKey || key;
+        if (bot.Keyboard.Keys[botKey]) {
+          storedVars['KEY_' + key] = unicodeChar;
+          if (alias) {
+            storedVars['KEY_' + alias] = unicodeChar;
+          }
+          return true;
+        }
+        return false;
+      };
+
+      build_sendkeys_maps = function() {
+
+//  add_sendkeys_key("NULL", '\uE000');
+//  add_sendkeys_key("CANCEL", '\uE001'); // ^break
+//  add_sendkeys_key("HELP", '\uE002');
+        add_sendkeys_key("BACKSPACE", '\uE003', "BKSP");
+        add_sendkeys_key("TAB", '\uE004');
+//  add_sendkeys_key("CLEAR", '\uE005');
+//  add_sendkeys_key("RETURN", '\uE006');
+        add_sendkeys_key("ENTER", '\uE007');
+        add_sendkeys_key("SHIFT", '\uE008');
+        add_sendkeys_key("CONTROL", '\uE009', "CTRL");
+        add_sendkeys_key("ALT", '\uE00A');
+        add_sendkeys_key("PAUSE", '\uE00B');
+        add_sendkeys_key("ESC", '\uE00C', "ESCAPE");
+        add_sendkeys_key("SPACE", '\uE00D');
+        add_sendkeys_key("PAGE_UP", '\uE00E', "PGUP");
+        add_sendkeys_key("PAGE_DOWN", '\uE00F', "PGDN");
+        add_sendkeys_key("END", '\uE010');
+        add_sendkeys_key("HOME", '\uE011');
+        add_sendkeys_key("LEFT", '\uE012');
+        add_sendkeys_key("UP", '\uE013');
+        add_sendkeys_key("RIGHT", '\uE014');
+        add_sendkeys_key("DOWN", '\uE015');
+        add_sendkeys_key("INSERT", '\uE016', "INS");
+        add_sendkeys_key("DELETE", '\uE017', "DEL");
+        add_sendkeys_key("SEMICOLON", '\uE018');
+        add_sendkeys_key("EQUALS", '\uE019');
+
+        add_sendkeys_key("NUMPAD0", '\uE01A', "N0", "NUM_ZERO");  // number pad keys
+        add_sendkeys_key("NUMPAD1", '\uE01B', "N1", "NUM_ONE");
+        add_sendkeys_key("NUMPAD2", '\uE01C', "N2", "NUM_TWO");
+        add_sendkeys_key("NUMPAD3", '\uE01D', "N3", "NUM_THREE");
+        add_sendkeys_key("NUMPAD4", '\uE01E', "N4", "NUM_FOUR");
+        add_sendkeys_key("NUMPAD5", '\uE01F', "N5", "NUM_FIVE");
+        add_sendkeys_key("NUMPAD6", '\uE020', "N6", "NUM_SIX");
+        add_sendkeys_key("NUMPAD7", '\uE021', "N7", "NUM_SEVEN");
+        add_sendkeys_key("NUMPAD8", '\uE022', "N8", "NUM_EIGHT");
+        add_sendkeys_key("NUMPAD9", '\uE023', "N9", "NUM_NINE");
+        add_sendkeys_key("MULTIPLY", '\uE024', "MUL", "NUM_MULTIPLY");
+        add_sendkeys_key("ADD", '\uE025', "PLUS", "NUM_PLUS");
+        add_sendkeys_key("SEPARATOR", '\uE026', "SEP");
+        add_sendkeys_key("SUBTRACT", '\uE027', "MINUS", "NUM_MINUS");
+        add_sendkeys_key("DECIMAL", '\uE028', "PERIOD", "NUM_PERIOD");
+        add_sendkeys_key("DIVIDE", '\uE029', "DIV", "NUM_DIVISION");
+
+        add_sendkeys_key("F1", '\uE031');  // function keys
+        add_sendkeys_key("F2", '\uE032');
+        add_sendkeys_key("F3", '\uE033');
+        add_sendkeys_key("F4", '\uE034');
+        add_sendkeys_key("F5", '\uE035');
+        add_sendkeys_key("F6", '\uE036');
+        add_sendkeys_key("F7", '\uE037');
+        add_sendkeys_key("F8", '\uE038');
+        add_sendkeys_key("F9", '\uE039');
+        add_sendkeys_key("F10", '\uE03A');
+        add_sendkeys_key("F11", '\uE03B');
+        add_sendkeys_key("F12", '\uE03C');
+
+        add_sendkeys_key("META", '\uE03D', "COMMAND");
+
+      };
+
+      build_sendkeys_maps();
     },
 
     runNextTest: function () {
@@ -230,7 +307,7 @@ objectExtend(SeleniumFrame.prototype, {
         var isHTA = browserVersion.isHTA || false;
         // DGF TODO multiWindow
         location += (location.indexOf("?") == -1 ? "?" : "&");
-        location += "thisIsChrome=" + isChrome + "&thisIsHTA=" + isHTA; 
+        location += "thisIsChrome=" + isChrome + "&thisIsHTA=" + isHTA;
         if (browserVersion.isSafari) {
             // safari doesn't reload the page when the location equals to current location.
             // hence, set the location to blank so that the page will reload automatically.
@@ -414,7 +491,7 @@ objectExtend(HtmlTestRunnerControlPanel.prototype, {
     getAutoUrl: function() {
         return this._getQueryParameter("autoURL");
     },
-    
+
     getDefaultLogLevel: function() {
         return this._getQueryParameter("defaultLogLevel");
     },
@@ -645,7 +722,7 @@ objectExtend(HtmlTestSuite.prototype, {
             var rowElement = testTable.rows[rowNum];
             result.push(new HtmlTestSuiteRow(rowElement, testFrame, this));
         }
-        
+
         // process the unsuited rows as well
         for (var tableNum = 1; tableNum < sel$A(this.suiteDocument.getElementsByTagName("table")).length; tableNum++) {
             testTable = tables[tableNum];
@@ -835,9 +912,9 @@ objectExtend(SeleniumTestResult.prototype, {
         for (var i = 0; i < form.elements.length; i++) {
             inputs[form.elements[i].name] = form.elements[i].value;
         }
-        
+
         var objFSO = new ActiveXObject("Scripting.FileSystemObject")
-        
+
         // DGF get CSS
         var styles = "";
         try {
@@ -852,10 +929,10 @@ objectExtend(SeleniumTestResult.prototype, {
                 styles = xhr.responseText;
             }
         } catch (e) {}
-        
+
         var scriptFile = objFSO.CreateTextFile(fileName);
-        
-        
+
+
         scriptFile.WriteLine("<html><head><title>Test suite results</title><style>");
         scriptFile.WriteLine(styles);
         scriptFile.WriteLine("</style>");
@@ -870,7 +947,7 @@ objectExtend(SeleniumTestResult.prototype, {
              "<tr>\n<td>numCommandErrors:</td>\n<td>" + inputs["numCommandErrors"] + "</td>\n</tr>\n" +
              "<tr>\n<td>" + inputs["suite"] + "</td>\n<td>&nbsp;</td>\n</tr></table><table>");
         var testNum = inputs["numTestTotal"];
-        
+
         for (var rowNum = 1; rowNum <= testNum; rowNum++) {
             scriptFile.WriteLine("<tr>\n<td>" + inputs["testTable." + rowNum] + "</td>\n<td>&nbsp;</td>\n</tr>");
         }
@@ -902,7 +979,7 @@ objectExtend(HtmlTestCase.prototype, {
                 this.pathname = this.testWindow.location.pathname;
             }
         } catch (e) {}
-            
+
         this.htmlTestSuiteRow = htmlTestSuiteRow;
         this.headerRow = new TitleRow(this.testDocument.getElementsByTagName("tr")[0]);
         this.commandRows = this._collectCommandRows();
@@ -1339,7 +1416,7 @@ Selenium.prototype.assertSelected = function(selectLocator, optionLocator) {
 
 Selenium.prototype.assertFailureOnNext = function(message) {
     /**
-     * Tell Selenium to expect a failure on the next command execution. 
+     * Tell Selenium to expect a failure on the next command execution.
      * @param message The failure message we should expect.  This command will fail if the wrong failure message appears.
      */
     if (!message) {
@@ -1353,7 +1430,7 @@ Selenium.prototype.assertFailureOnNext = function(message) {
 
 Selenium.prototype.assertErrorOnNext = function(message) {
     /**
-     * Tell Selenium to expect an error on the next command execution. 
+     * Tell Selenium to expect an error on the next command execution.
      * @param message The error message we should expect.  This command will fail if the wrong error message appears.
      */
      // This command temporarily installs a CommandFactory that generates

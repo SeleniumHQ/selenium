@@ -29,6 +29,7 @@ goog.require('goog.testing.mockmatchers.ArgumentMatcher');
  * @param {string} type The single type the event argument must be of.
  * @constructor
  * @extends {goog.testing.mockmatchers.ArgumentMatcher}
+ * @final
  */
 goog.testing.events.EventMatcher = function(type) {
   goog.testing.mockmatchers.ArgumentMatcher.call(this,

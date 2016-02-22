@@ -1,18 +1,19 @@
-/*
- Copyright 2011 Software Freedom Conservancy.
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.remote.server;
 
@@ -23,12 +24,13 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
 import com.google.common.base.Supplier;
-import com.google.common.collect.Iterators;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
@@ -40,8 +42,7 @@ import org.openqa.selenium.remote.server.testing.FakeHttpServletRequest;
 import org.openqa.selenium.remote.server.testing.FakeHttpServletResponse;
 import org.openqa.selenium.remote.server.testing.TestSessions;
 import org.openqa.selenium.remote.server.testing.UrlInfo;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.seleniumhq.jetty7.server.handler.ContextHandler;
+import org.seleniumhq.jetty9.server.handler.ContextHandler;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -50,8 +51,9 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
+@RunWith(JUnit4.class)
 public class DriverServletTest {
-  
+
   private static final String BASE_URL = "http://localhost:4444";
   private static final String CONTEXT_PATH = "/wd/hub";
 
@@ -79,8 +81,6 @@ public class DriverServletTest {
         final ContextHandler.Context servletContext = new ContextHandler().getServletContext();
         servletContext.setInitParameter("webdriver.server.session.timeout", "18");
         servletContext.setInitParameter("webdriver.server.browser.timeout", "2");
-        servletContext.setAttribute(RemoteControlConfiguration.KEY,
-                                    new RemoteControlConfiguration());
         return servletContext;
       }
 
@@ -95,16 +95,17 @@ public class DriverServletTest {
   }
 
   @Test
-  public void navigateToUrlCommandHandler() throws IOException, ServletException, JSONException {
+  public void navigateToUrlCommandHandler() throws IOException, ServletException {
     final SessionId sessionId = createSession();
 
     WebDriver driver = testSessions.get(sessionId).getDriver();
 
+    JsonObject json = new JsonObject();
+    json.addProperty("url", "http://www.google.com");
     FakeHttpServletResponse response = sendCommand("POST",
-        String.format("/session/%s/url", sessionId),
-        new JSONObject().put("url", "http://www.google.com"));
+        String.format("/session/%s/url", sessionId), json);
 
-    assertEquals(HttpServletResponse.SC_NO_CONTENT, response.getStatus());
+    assertEquals(HttpServletResponse.SC_OK, response.getStatus());
 
     verify(driver).get("http://www.google.com");
   }
@@ -112,64 +113,79 @@ public class DriverServletTest {
   @Test
   public void reportsBadRequestForMalformedCrossDomainRpcs()
       throws IOException, ServletException {
-    FakeHttpServletResponse response = sendCommand("POST", "/xdrpc",
-        new JSONObject());
+    FakeHttpServletResponse response = sendCommand("POST", "/xdrpc", new JsonObject());
 
     assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
     assertEquals("Missing required parameter: method\r\n", response.getBody());
   }
 
   @Test
-  public void handlesWelformedAndSuccessfulCrossDomainRpcs()
-      throws IOException, ServletException, JSONException {
+  public void handlesWellFormedAndSuccessfulCrossDomainRpcs()
+      throws IOException, ServletException {
     final SessionId sessionId = createSession();
 
     WebDriver driver = testSessions.get(sessionId).getDriver();
 
-    FakeHttpServletResponse response = sendCommand("POST", "/xdrpc",
-        new JSONObject()
-            .put("method", "POST")
-            .put("path", String.format("/session/%s/url", sessionId))
-            .put("data", new JSONObject()
-                .put("url", "http://www.google.com")));
+    JsonObject json = new JsonObject();
+    json.addProperty("method", "POST");
+    json.addProperty("path", String.format("/session/%s/url", sessionId));
+    JsonObject data = new JsonObject();
+    data.addProperty("url", "http://www.google.com");
+    json.add("data", data);
+    FakeHttpServletResponse response = sendCommand("POST", "/xdrpc", json);
 
     verify(driver).get("http://www.google.com");
     assertEquals(HttpServletResponse.SC_OK, response.getStatus());
-    assertEquals("application/json; charset=UTF-8",
+    assertEquals("application/json; charset=utf-8",
         response.getHeader("content-type"));
 
-    JSONObject jsonResponse = new JSONObject(response.getBody());
-    assertEquals(ErrorCodes.SUCCESS, jsonResponse.getInt("status"));
-    assertEquals(sessionId.toString(), jsonResponse.getString("sessionId"));
-    assertTrue(jsonResponse.isNull("value"));
+    JsonObject jsonResponse = new JsonParser().parse(response.getBody()).getAsJsonObject();
+    assertEquals(ErrorCodes.SUCCESS, jsonResponse.get("status").getAsInt());
+    assertEquals(sessionId.toString(), jsonResponse.get("sessionId").getAsString());
+    assertTrue(jsonResponse.get("value").isJsonNull());
   }
 
   @Test
   public void doesNotRedirectForNewSessionsRequestedViaCrossDomainRpc()
-      throws JSONException, IOException, ServletException {
-    FakeHttpServletResponse response = sendCommand("POST",
-        String.format("/xdrpc"),
-        new JSONObject()
-            .put("method", "POST")
-            .put("path", "/session")
-            .put("data", new JSONObject()
-                .put("desiredCapabilities", new JSONObject()
-                    .put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX)
-                    .put(CapabilityType.VERSION, true))));
+      throws IOException, ServletException {
+    JsonObject json = new JsonObject();
+    json.addProperty("method", "POST");
+    json.addProperty("path", "/session");
+    JsonObject caps = new JsonObject();
+    caps.addProperty(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
+    caps.addProperty(CapabilityType.VERSION, true);
+    JsonObject data = new JsonObject();
+    data.add("desiredCapabilities", caps);
+    json.add("data", data);
+    FakeHttpServletResponse response = sendCommand("POST", "/xdrpc", json);
 
     assertEquals(HttpServletResponse.SC_OK, response.getStatus());
-    assertEquals("application/json; charset=UTF-8",
+    assertEquals("application/json; charset=utf-8",
         response.getHeader("content-type"));
 
-    JSONObject jsonResponse = new JSONObject(response.getBody());
-    assertEquals(ErrorCodes.SUCCESS, jsonResponse.getInt("status"));
-    assertFalse(jsonResponse.isNull("sessionId"));
+    JsonObject jsonResponse = new JsonParser().parse(response.getBody()).getAsJsonObject();
+    assertEquals(ErrorCodes.SUCCESS, jsonResponse.get("status").getAsInt());
+    assertFalse(jsonResponse.get("sessionId").isJsonNull());
 
-    JSONObject value = jsonResponse.getJSONObject("value");
+    JsonObject value = jsonResponse.get("value").getAsJsonObject();
     // values: browsername, version, remote session id.
-    assertEquals(3, Iterators.size(value.keys()));
-    assertEquals(BrowserType.FIREFOX, value.getString(CapabilityType.BROWSER_NAME));
-    assertTrue(value.getBoolean(CapabilityType.VERSION));
+    assertEquals(3, value.entrySet().size());
+    assertEquals(BrowserType.FIREFOX, value.get(CapabilityType.BROWSER_NAME).getAsString());
+    assertTrue(value.get(CapabilityType.VERSION).getAsBoolean());
+  }
+
+  @Test
+  public void handlesInvalidCommandsToRootOfDriverService()
+      throws IOException, ServletException {
+    // Command path will be null in servlet API when request is to the context root (e.g. /wd/hub).
+    FakeHttpServletResponse response = sendCommand("POST", null, new JsonObject());
+    assertEquals(500, response.getStatus());
+
+    JsonObject jsonResponse = new JsonParser().parse(response.getBody()).getAsJsonObject();
+    assertEquals(ErrorCodes.UNHANDLED_ERROR, jsonResponse.get("status").getAsInt());
+
+    JsonObject value = jsonResponse.get("value").getAsJsonObject();
+    assertTrue(value.get("message").getAsString().startsWith("POST /"));
   }
 
   private SessionId createSession() throws IOException, ServletException {
@@ -185,9 +201,9 @@ public class DriverServletTest {
     assertFalse(sessionId.isEmpty());
     return new SessionId(sessionId);
   }
-  
+
   private FakeHttpServletResponse sendCommand(String method, String commandPath,
-      JSONObject parameters) throws IOException, ServletException {
+      JsonObject parameters) throws IOException, ServletException {
     FakeHttpServletRequest request = new FakeHttpServletRequest(method, createUrl(commandPath));
     if (parameters != null) {
       request.setBody(parameters.toString());
@@ -212,7 +228,7 @@ public class DriverServletTest {
   }
 
   @Test
-  public void timeouts() throws IOException, ServletException, JSONException {
+  public void timeouts() throws IOException, ServletException {
     assertEquals(2000, browserTimeout);
     assertEquals(18000, clientTimeout);
   }

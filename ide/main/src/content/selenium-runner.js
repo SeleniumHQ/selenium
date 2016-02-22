@@ -107,8 +107,6 @@ Selenium.prototype.doStore = function(value, varName) {
 storedVars.nbsp = String.fromCharCode(160);
 storedVars.space = ' ';
 
-var unicodeToKeys = {};
-
 function build_sendkeys_maps() {
 
 //  add_sendkeys_key("NULL", '\uE000');
@@ -179,7 +177,6 @@ function add_sendkeys_key(key, unicodeChar, alias, botKey) {
     if (alias) {
       storedVars['KEY_' + alias] = unicodeChar;
     }
-    unicodeToKeys[unicodeChar] = bot.Keyboard.Keys[botKey];
     return true;
   }
   return false;
@@ -240,6 +237,7 @@ objectExtend(IDETestLoop.prototype, {
       LOG.error(result.failureMessage);
       testCase.debugContext.failed = true;
       testCase.debugContext.currentCommand().result = 'failed';
+      testCase.debugContext.currentCommand().failureMessage = result.failureMessage;
     } else if (result.passed) {
       testCase.debugContext.currentCommand().result = 'passed';
     } else {
@@ -259,6 +257,7 @@ objectExtend(IDETestLoop.prototype, {
       LOG.debug("commandError");
       testCase.debugContext.failed = true;
       testCase.debugContext.currentCommand().result = 'failed';
+      testCase.debugContext.currentCommand().failureMessage = errorMessage;
       editor.view.rowUpdated(testCase.debugContext.debugIndex);
     }
   },
@@ -282,6 +281,30 @@ objectExtend(IDETestLoop.prototype, {
     var failed = testCase.debugContext.failed;
     testCase.debugContext.reset();
     if (this.handler && this.handler.testComplete) this.handler.testComplete(failed);
+  },
+
+  // overide _executeCurrentCommand so we can collect stats of the commands executed
+  _executeCurrentCommand : function() {
+    /**
+     * Execute the current command.
+     *
+     * @return a function which will be used to determine when
+     * execution can continue, or null if we can continue immediately
+     */
+    var command = this.currentCommand;
+    LOG.info("Executing: |" + command.command + " | " + command.target + " | " + command.value + " |");
+
+    var handler = this.commandFactory.getCommandHandler(command.command);
+    if (handler == null) {
+      throw new SeleniumError("Unknown command: '" + command.command + "'");
+    }
+
+    command.target = selenium.preprocessParameter(command.target);
+    command.value = selenium.preprocessParameter(command.value);
+    LOG.debug("Command found, going to execute " + command.command);
+    updateStats(command.command);
+    this.result = handler.execute(selenium, command);
+    this.waitForCondition = this.result.terminationCondition;
   },
 
   pause: function() {

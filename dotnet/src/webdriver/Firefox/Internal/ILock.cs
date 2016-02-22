@@ -1,9 +1,9 @@
 ﻿// <copyright file="ILock.cs" company="WebDriver Committers">
-// Copyright 2007-2011 WebDriver committers
-// Copyright 2007-2011 Google Inc.
-// Portions copyright 2011 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -17,13 +17,11 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace OpenQA.Selenium.Firefox.Internal
 {
     /// <summary>
-    /// Defines the interface through which the mutex port for establishing communication 
+    /// Defines the interface through which the mutex port for establishing communication
     /// with the WebDriver extension can be locked.
     /// </summary>
     internal interface ILock : IDisposable
@@ -31,7 +29,7 @@ namespace OpenQA.Selenium.Firefox.Internal
         /// <summary>
         /// Locks the mutex port.
         /// </summary>
-        /// <param name="timeoutInMilliseconds">The amount of time (in milliseconds) to wait for 
+        /// <param name="timeoutInMilliseconds">The amount of time (in milliseconds) to wait for
         /// the mutex port to become available.</param>
         [Obsolete("Timeouts should be expressed as a TimeSpan. Use the LockObject overload taking a TimeSpan parameter instead")]
         void LockObject(long timeoutInMilliseconds);
@@ -39,7 +37,7 @@ namespace OpenQA.Selenium.Firefox.Internal
         /// <summary>
         /// Locks the mutex port.
         /// </summary>
-        /// <param name="timeout">The <see cref="TimeSpan"/> describing the amount of time to wait for 
+        /// <param name="timeout">The <see cref="TimeSpan"/> describing the amount of time to wait for
         /// the mutex port to become available.</param>
         void LockObject(TimeSpan timeout);
 

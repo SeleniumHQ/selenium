@@ -1,19 +1,19 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 
 package org.openqa.selenium.server.mock;
@@ -30,7 +30,7 @@ import java.util.logging.Logger;
  * Base class to perform out-of-thread HTTP requests. We use these to start a request X, then start
  * a request Y, then get the result of request X. (e.g. driver requests "click", browser requests
  * "OK" [requesting more work], server replies "OK" to the driver.)
- * 
+ *
  * @author Dan Fabulich
  * @see BrowserRequest
  * @see DriverRequest
@@ -146,7 +146,7 @@ public abstract class AsyncHttpRequest {
   /**
    * Tests if this request is still active. A thread is alive if it has been started and has not yet
    * died.
-   * 
+   *
    * @return <code>true</code> if this thread is alive; <code>false</code> otherwise.
    */
   public boolean isAlive() {

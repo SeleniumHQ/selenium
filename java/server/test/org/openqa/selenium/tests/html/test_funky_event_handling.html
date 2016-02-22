@@ -13,7 +13,7 @@
                 }
            };
            
-           if (window.addEventListener && !window.opera) {
+           if (window.addEventListener) {
                 parent.addEventListener("click", handler, false);
             } else if (window.attachEvent) {
                 parent.attachEvent("onclick", handler);

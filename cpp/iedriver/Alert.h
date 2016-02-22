@@ -1,5 +1,8 @@
-// Copyright 2012 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -30,13 +33,17 @@ class Alert {
 
   int Accept(void);
   int Dismiss(void);
-  int SendKeys(std::string keys);
+  int SendKeys(const std::string& keys);
   std::string GetText(void);
+  int SetUserName(const std::string& username);
+  int SetPassword(const std::string& password);
 
   bool is_standard_alert(void) const { return this->is_standard_alert_; }
+  bool is_security_alert(void) const { return this->is_security_alert_; }
 
  private:
   typedef bool (__cdecl *ISBUTTONMATCHPROC)(HWND); 
+  typedef bool (__cdecl *ISEDITMATCHPROC)(HWND); 
 
   struct DialogButtonInfo {
     HWND button_handle;
@@ -56,24 +63,40 @@ class Alert {
     int excluded_control_id;
   };
 
+  struct TextBoxFindInfo {
+    HWND textbox_handle;
+    ISEDITMATCHPROC match_proc;
+  };
+
   enum BUTTON_TYPE {
     OK,
     CANCEL
   };
 
+  int SendKeysInternal(const std::string& keys,
+                       TextBoxFindInfo* text_box_find_info);
+
   DialogButtonInfo GetDialogButton(BUTTON_TYPE button_type);
   int ClickAlertButton(DialogButtonInfo button_info);
+  std::string GetStandardDialogText(void);
+  std::string GetDirectUIDialogText(void);
+  HWND GetDirectUIChild(void);
+  IAccessible* GetChildWithRole(IAccessible* parent, long expected_role, int index);
 
   static bool IsOKButton(HWND button_handle);
   static bool IsCancelButton(HWND button_handle);
+  static bool IsSimpleEdit(HWND edit_handle);
+  static bool IsPasswordEdit(HWND edit_handle);
   static BOOL CALLBACK FindDialogButton(HWND hwnd, LPARAM arg);
   static BOOL CALLBACK FindTextBox(HWND hwnd, LPARAM arg);
   static BOOL CALLBACK FindTextLabel(HWND hwnd, LPARAM arg);
   static BOOL CALLBACK FindDirectUIChild(HWND hwnd, LPARAM arg);
+  static BOOL CALLBACK FindTextBoxes(HWND hwnd, LPARAM arg);
 
   HWND alert_handle_;
   BrowserHandle browser_;
   bool is_standard_alert_;
+  bool is_security_alert_;
 };
 
 

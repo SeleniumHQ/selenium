@@ -1,20 +1,23 @@
-// Copyright 2011 Software Freedom Conservancy. All Rights Reserved.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview Utilities for working with WebDriver response objects.
- * @see: http://code.google.com/p/selenium/wiki/JsonWireProtocol#Responses
+ * @see: hhttps://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#responses
  */
 
 goog.provide('bot.response');
@@ -27,7 +30,7 @@ goog.require('bot.ErrorCode');
 /**
  * Type definition for a response object, as defined by the JSON wire protocol.
  * @typedef {{status: bot.ErrorCode, value: (*|{message: string})}}
- * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol#Responses
+ * @see https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#responses
  */
 bot.response.ResponseObject;
 
@@ -87,7 +90,7 @@ bot.response.createErrorResponse = function(error) {
  *     check.
  * @return {!bot.response.ResponseObject} The checked response object.
  * @throws {bot.Error} If the response describes an error.
- * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol#Failed_Commands
+ * @see https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#failed-commands
  */
 bot.response.checkResponse = function(responseObj) {
   var status = responseObj['status'];

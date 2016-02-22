@@ -16,6 +16,7 @@
  * @fileoverview Utilties for working with DOM nodes related to rich text
  * editing.  Many of these are not general enough to go into goog.dom.
  *
+ * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.editor.node');
@@ -210,7 +211,7 @@ goog.editor.node.getChildHelper_ = function(parent, isReversed) {
   return (!parent || parent.nodeType != goog.dom.NodeType.ELEMENT) ? null :
       /** @type {Node} */ (goog.editor.node.getFirstValue_(goog.iter.filter(
           new goog.dom.iter.ChildIterator(
-              /** @type {Element} */ (parent), isReversed),
+              /** @type {!Element} */ (parent), isReversed),
           goog.editor.node.isImportant)));
 };
 
@@ -270,6 +271,7 @@ goog.editor.node.isEmpty = function(node, opt_prohibitSingleNbsp) {
   var nodeData = goog.dom.getRawTextContent(node);
 
   if (node.getElementsByTagName) {
+    node = /** @type {!Element} */ (node);
     for (var tag in goog.editor.node.NON_EMPTY_TAGS_) {
       if (node.tagName == tag || node.getElementsByTagName(tag).length > 0) {
         return false;
@@ -339,7 +341,8 @@ goog.editor.node.findHighestMatchingAncestor = function(node, hasProperty) {
  * @return {boolean} Whether the node is a block-level node.
  */
 goog.editor.node.isBlockTag = function(node) {
-  return !!goog.editor.node.BLOCK_TAG_NAMES_[node.tagName];
+  return !!goog.editor.node.BLOCK_TAG_NAMES_[
+    /** @type {!Element} */ (node).tagName];
 };
 
 

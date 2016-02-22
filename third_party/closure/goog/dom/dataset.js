@@ -17,11 +17,25 @@
  * an Element's dataset.
  * See {@link http://www.w3.org/TR/html5/Overview.html#dom-dataset}.
  *
+ * @author nicksay@google.com (Alex Nicksay)
  */
 
 goog.provide('goog.dom.dataset');
 
 goog.require('goog.string');
+goog.require('goog.userAgent.product');
+
+
+/**
+ * Whether using the dataset property is allowed.  In IE (up to and including
+ * IE 11), setting element.dataset in JS does not propagate values to CSS,
+ * breaking expressions such as `content: attr(data-content)` that would
+ * otherwise work.
+ * See {@link https://github.com/google/closure-library/issues/396}.
+ * @const
+ * @private
+ */
+goog.dom.dataset.ALLOWED_ = !goog.userAgent.product.IE;
 
 
 /**
@@ -42,7 +56,7 @@ goog.dom.dataset.PREFIX_ = 'data-';
  * @param {string} value Value for the custom data attribute.
  */
 goog.dom.dataset.set = function(element, key, value) {
-  if (element.dataset) {
+  if (goog.dom.dataset.ALLOWED_ && element.dataset) {
     element.dataset[key] = value;
   } else {
     element.setAttribute(
@@ -60,7 +74,12 @@ goog.dom.dataset.set = function(element, key, value) {
  * @return {?string} The attribute value, if it exists.
  */
 goog.dom.dataset.get = function(element, key) {
-  if (element.dataset) {
+  if (goog.dom.dataset.ALLOWED_ && element.dataset) {
+    // Android browser (non-chrome) returns the empty string for
+    // element.dataset['doesNotExist'].
+    if (!(key in element.dataset)) {
+      return null;
+    }
     return element.dataset[key];
   } else {
     return element.getAttribute(goog.dom.dataset.PREFIX_ +
@@ -76,7 +95,7 @@ goog.dom.dataset.get = function(element, key) {
  * @param {string} key Key for the custom data attribute.
  */
 goog.dom.dataset.remove = function(element, key) {
-  if (element.dataset) {
+  if (goog.dom.dataset.ALLOWED_ && element.dataset) {
     delete element.dataset[key];
   } else {
     element.removeAttribute(goog.dom.dataset.PREFIX_ +
@@ -91,10 +110,10 @@ goog.dom.dataset.remove = function(element, key) {
  *
  * @param {Element} element DOM node to get the custom data attribute from.
  * @param {string} key Key for the custom data attribute.
- * @return {boolean} Whether the attibute exists.
+ * @return {boolean} Whether the attribute exists.
  */
 goog.dom.dataset.has = function(element, key) {
-  if (element.dataset) {
+  if (goog.dom.dataset.ALLOWED_ && element.dataset) {
     return key in element.dataset;
   } else if (element.hasAttribute) {
     return element.hasAttribute(goog.dom.dataset.PREFIX_ +
@@ -116,7 +135,7 @@ goog.dom.dataset.has = function(element, key) {
  *     respective values.
  */
 goog.dom.dataset.getAll = function(element) {
-  if (element.dataset) {
+  if (goog.dom.dataset.ALLOWED_ && element.dataset) {
     return element.dataset;
   } else {
     var dataset = {};

@@ -1,137 +1,62 @@
-// Copyright 2011 Software Freedom Conservancy. All Rights Reserved.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 goog.provide('webdriver.test.testutil');
+goog.provide('webdriver.test.testutil.StubError');
 
 goog.require('goog.array');
-goog.require('goog.json');
+goog.require('goog.debug.Error');
 goog.require('goog.string');
-goog.require('goog.testing.MockClock');
 goog.require('goog.testing.recordFunction');
 goog.require('webdriver.stacktrace');
 
 
-/** @type {?goog.testing.MockClock} */
-webdriver.test.testutil.clock = null;
+
+/**
+ * A custom error used for testing.
+ * @param {string=} opt_msg The error message to use.
+ * @constructor
+ * @extends {goog.debug.Error}
+ * @final
+ */
+webdriver.test.testutil.StubError = function(opt_msg) {
+  webdriver.test.testutil.StubError.base(this, 'constructor', opt_msg);
+};
+goog.inherits(webdriver.test.testutil.StubError, goog.debug.Error);
+
+
+/** @override */
+webdriver.test.testutil.StubError.prototype.name = 'StubError';
+
 
 /** @type {Array.<!string>} */
 webdriver.test.testutil.messages = [];
-
-/** @type {!Error} */
-webdriver.test.testutil.STUB_ERROR = new Error('ouch');
-webdriver.test.testutil.STUB_ERROR.stack = '(stub error; stack irrelevant)';
 
 webdriver.test.testutil.getStackTrace = function() {
   return webdriver.stacktrace.get();
 };
 
 webdriver.test.testutil.throwStubError = function() {
-  throw webdriver.test.testutil.STUB_ERROR;
+  throw new webdriver.test.testutil.StubError;
 };
 
 webdriver.test.testutil.assertIsStubError = function(error) {
-  assertEquals(webdriver.test.testutil.STUB_ERROR, error);
-};
-
-webdriver.test.testutil.createMockClock = function() {
-  webdriver.test.testutil.clock = new goog.testing.MockClock(true);
-
-  /* Patch to work around the following bug with mock clock:
-   *   function testNewZeroBasedTimeoutsRunInNextEventLoopAfterExistingTasks() {
-   *     var events = [];
-   *     setInterval(function() { events.push('a'); }, 1);
-   *     setTimeout(function() { events.push('b'); }, 0);
-   *     clock.tick();
-   *     assertEquals('ab', events.join(''));
-   *   }
-   */
-  goog.testing.MockClock.insert_ = function(timeout, queue) {
-    if (timeout.runAtMillis === goog.now() && timeout.millis === 0) {
-      timeout.runAtMillis += 1;
-    }
-    // Original goog.testing.MockClock.insert_ follows.
-    for (var i = queue.length; i != 0; i--) {
-      if (queue[i - 1].runAtMillis > timeout.runAtMillis) {
-        break;
-      }
-      queue[i] = queue[i - 1];
-    }
-    queue[i] = timeout;
-  };
-
-  /* Patch to work around the following bug with mock clock:
-   *   function testZeroBasedTimeoutsRunInNextEventLoop() {
-   *     var count = 0;
-   *     setTimeout(function() {
-   *       count += 1;
-   *       setTimeout(function() { count += 1; }, 0);
-   *       setTimeout(function() { count += 1; }, 0);
-   *     }, 0);
-   *     clock.tick();
-   *     assertEquals(1, count);  // Fails; count == 3
-   *     clock.tick();
-   *     assertEquals(3, count);
-   *   }
-   */
-  webdriver.test.testutil.clock.runFunctionsWithinRange_ = function(endTime) {
-    var adjustedEndTime = endTime - this.timeoutDelay_;
-
-    // Repeatedly pop off the last item since the queue is always sorted.
-    // Stop once we've collected all timeouts that should run.
-    var timeouts = [];
-    while (this.queue_.length &&
-        this.queue_[this.queue_.length - 1].runAtMillis <= adjustedEndTime) {
-      timeouts.push(this.queue_.pop());
-    }
-
-    // Now run all timeouts that are within range.
-    while (timeouts.length) {
-      var timeout = timeouts.shift();
-
-      if (!(timeout.timeoutKey in this.deletedKeys_)) {
-        // Only move time forwards.
-        this.nowMillis_ = Math.max(this.nowMillis_,
-            timeout.runAtMillis + this.timeoutDelay_);
-        // Call timeout in global scope and pass the timeout key as
-        // the argument.
-        timeout.funcToCall.call(goog.global, timeout.timeoutKey);
-        // In case the interval was cleared in the funcToCall
-        if (timeout.recurring) {
-          this.scheduleFunction_(
-              timeout.timeoutKey, timeout.funcToCall, timeout.millis, true);
-        }
-      }
-    }
-  };
-
-  return webdriver.test.testutil.clock;
-};
-
-
-/**
- * Advances the clock by one tick.
- * @param {number=} opt_n The number of ticks to advance the clock. If not
- *     specified, will advance the clock once for every timeout made.
- *     Assumes all timeouts are 0-based.
- */
-webdriver.test.testutil.consumeTimeouts = function(opt_n) {
-  // webdriver.promise and webdriver.application only schedule 0 timeouts to
-  // yield until the next available event loop.
-  for (var i = 0;
-       i < (opt_n || webdriver.test.testutil.clock.getTimeoutsMade()); i++) {
-    webdriver.test.testutil.clock.tick();
-  }
+  assertTrue(error + ' is not an instanceof StubError',
+      error instanceof webdriver.test.testutil.StubError);
 };
 
 
@@ -278,7 +203,7 @@ webdriver.test.testutil.callbackPair = function(opt_callback, opt_errback) {
 
 webdriver.test.testutil.assertObjectEquals = function(expected, actual) {
   assertObjectEquals(
-      'Expected: ' + goog.json.serialize(expected) + '\n' +
-      'Actual:   ' + goog.json.serialize(actual),
+      'Expected: ' + JSON.stringify(expected) + '\n' +
+      'Actual:   ' + JSON.stringify(actual),
       expected, actual);
 };

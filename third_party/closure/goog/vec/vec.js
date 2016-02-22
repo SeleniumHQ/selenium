@@ -40,25 +40,25 @@ goog.require('goog.vec.Float64Array');
 // Numbers.
 
 
-/** @typedef {Float32Array} */
+/** @typedef {!Float32Array} */
 goog.vec.Float32;
 
 
-/** @typedef {Float64Array} */
+/** @typedef {!Float64Array} */
 goog.vec.Float64;
 
 
-/** @typedef {Array.<number>} */
+/** @typedef {!Array<number>} */
 goog.vec.Number;
 
 
-/** @typedef {goog.vec.Float32|goog.vec.Float64|goog.vec.Number} */
+/** @typedef {!goog.vec.Float32|!goog.vec.Float64|!goog.vec.Number} */
 goog.vec.AnyType;
 
 
 /**
  * @deprecated Use AnyType.
- * @typedef {Float32Array|Array.<number>}
+ * @typedef {!Float32Array|!Array<number>}
  */
 goog.vec.ArrayType;
 

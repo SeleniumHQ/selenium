@@ -3,7 +3,7 @@
 
     <Description about="urn:mozilla:install-manifest">
         <em:id>fxdriver@googlecode.com</em:id>
-        <em:version>2.39.0</em:version>
+        <em:version>2.52.0</em:version>
         <em:type>2</em:type>
         <em:name>Firefox WebDriver</em:name>
         <em:description>WebDriver implementation for Firefox</em:description>
@@ -15,17 +15,15 @@
             <Description>
                 <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
                 <em:minVersion>3.0</em:minVersion>
-                <em:maxVersion>31.*</em:maxVersion>
+                <em:maxVersion>47.0</em:maxVersion>
             </Description>
         </em:targetApplication>
 
-        <!-- Platforms where we're not compiling the native events -->
         <em:targetPlatform>Darwin</em:targetPlatform>
         <em:targetPlatform>SunOS</em:targetPlatform>
         <em:targetPlatform>FreeBSD</em:targetPlatform>
-        
-        <!-- Platforms where we are -->
-        <em:targetPlatform>WINNT_x86-msvc</em:targetPlatform>
+        <em:targetPlatform>OpenBSD</em:targetPlatform>
+        <em:targetPlatform>WINNT</em:targetPlatform>
         <em:targetPlatform>Linux</em:targetPlatform>
 
         <!-- We're probably missing lots of platforms here -->

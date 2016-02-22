@@ -1,25 +1,24 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.server.htmlrunner;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.BrowserLauncher;
-import org.openqa.selenium.browserlaunchers.Sleeper;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -30,6 +29,7 @@ import org.openqa.selenium.server.SeleniumCommandTimedOutException;
 import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
+import org.openqa.selenium.server.browserlaunchers.Sleeper;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -40,10 +40,10 @@ import java.util.logging.Logger;
 
 /**
  * Runs HTML Selenium test suites.
- * 
- * 
+ *
+ *
  * @author dfabulich
- * 
+ *
  */
 public class HTMLLauncher implements HTMLResultsListener {
 
@@ -57,7 +57,7 @@ public class HTMLLauncher implements HTMLResultsListener {
 
   /**
    * Launches a single HTML Selenium test suite.
-   * 
+   *
    * @param browser - the browserString ("*firefox", "*iexplore" or an executable path)
    * @param browserURL - the start URL for the browser
    * @param suiteURL - the relative URL to the HTML suite
@@ -101,7 +101,7 @@ public class HTMLLauncher implements HTMLResultsListener {
 
   /**
    * Launches a single HTML Selenium test suite.
-   * 
+   *
    * @param browser - the browserString ("*firefox", "*iexplore" or an executable path)
    * @param browserURL - the start URL for the browser
    * @param suiteURL - the relative URL to the HTML suite
@@ -118,7 +118,7 @@ public class HTMLLauncher implements HTMLResultsListener {
     if (!outputFile.canWrite()) {
       throw new IOException("Can't write to outputFile: " + outputFile.getAbsolutePath());
     }
-    long timeoutInMs = 1000l * timeoutInSeconds;
+    long timeoutInMs = 1000L * timeoutInSeconds;
     if (timeoutInMs < 0) {
       log.warning("Looks like the timeout overflowed, so resetting it to the maximum.");
       timeoutInMs = Long.MAX_VALUE;
@@ -162,7 +162,7 @@ public class HTMLLauncher implements HTMLResultsListener {
 
   /**
    * Launches a single HTML Selenium test suite.
-   * 
+   *
    * @param browser - the browserString ("*firefox", "*iexplore" or an executable path)
    * @param browserURL - the start URL for the browser
    * @param suiteFile - a file containing the HTML suite to run

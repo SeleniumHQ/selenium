@@ -22,7 +22,7 @@
 goog.provide('goog.debug.logRecordSerializer');
 
 goog.require('goog.debug.LogRecord');
-goog.require('goog.debug.Logger.Level');
+goog.require('goog.debug.Logger');
 goog.require('goog.json');
 goog.require('goog.object');
 
@@ -39,8 +39,7 @@ goog.debug.logRecordSerializer.Param_ = {
   MSG: 'm',
   LOGGER_NAME: 'n',
   SEQUENCE_NUMBER: 's',
-  EXCEPTION: 'e',
-  EXCEPTION_TEXT: 'et'
+  EXCEPTION: 'e'
 };
 
 
@@ -59,8 +58,7 @@ goog.debug.logRecordSerializer.serialize = function(record) {
       param.MSG, record.getMessage(),
       param.LOGGER_NAME, record.getLoggerName(),
       param.SEQUENCE_NUMBER, record.getSequenceNumber(),
-      param.EXCEPTION, record.getException(),
-      param.EXCEPTION_TEXT, record.getExceptionText()));
+      param.EXCEPTION, record.getException() && record.getException().message));
 };
 
 
@@ -99,8 +97,10 @@ goog.debug.logRecordSerializer.reconstitute_ = function(o) {
 
   var ret = new goog.debug.LogRecord(level, o[param.MSG],
       o[param.LOGGER_NAME], o[param.TIME], o[param.SEQUENCE_NUMBER]);
-  ret.setException(o[param.EXCEPTION]);
-  ret.setExceptionText(o[param.EXCEPTION_TEXT]);
+  var exceptionMessage = o[param.EXCEPTION];
+  if (goog.isDefAndNotNull(exceptionMessage)) {
+    ret.setException(new Error(exceptionMessage));
+  }
   return ret;
 };
 
@@ -108,7 +108,7 @@ goog.debug.logRecordSerializer.reconstitute_ = function(o) {
 /**
  * @param {string} name The name of the log level to return.
  * @param {number} value The numeric value of the log level to return.
- * @return {goog.debug.Logger.Level} Returns a goog.debug.Logger.Level with
+ * @return {!goog.debug.Logger.Level} Returns a goog.debug.Logger.Level with
  *     the specified name and value.  If the name and value match a predefined
  *     log level, that instance will be returned, otherwise a new one will be
  *     created.

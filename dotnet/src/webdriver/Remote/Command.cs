@@ -1,9 +1,9 @@
 ﻿// <copyright file="Command.cs" company="WebDriver Committers">
-// Copyright 2007-2011 WebDriver committers
-// Copyright 2007-2011 Google Inc.
-// Portions copyright 2011 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -31,7 +31,7 @@ namespace OpenQA.Selenium.Remote
         private Dictionary<string, object> commandParameters = new Dictionary<string, object>();
 
         /// <summary>
-        /// Initializes a new instance of the Command class using a command name and a JSON-encoded string for the parameters.
+        /// Initializes a new instance of the <see cref="Command"/> class using a command name and a JSON-encoded string for the parameters.
         /// </summary>
         /// <param name="name">Name of the command</param>
         /// <param name="jsonParameters">Parameters for the command as a JSON-encoded string.</param>
@@ -41,7 +41,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Initializes a new instance of the Command class for a Session
+        /// Initializes a new instance of the <see cref="Command"/> class for a Session
         /// </summary>
         /// <param name="sessionId">Session ID the driver is using</param>
         /// <param name="name">Name of the command</param>
@@ -94,13 +94,18 @@ namespace OpenQA.Selenium.Remote
                 string parametersString = string.Empty;
                 if (this.commandParameters != null && this.commandParameters.Count > 0)
                 {
-                    parametersString = JsonConvert.SerializeObject(this.commandParameters, new JsonConverter[] { new CookieJsonConverter(), new DesiredCapabilitiesJsonConverter() });
+                    parametersString = JsonConvert.SerializeObject(this.commandParameters);
+                }
+
+                if (string.IsNullOrEmpty(parametersString))
+                {
+                    parametersString = "{}";
                 }
 
                 return parametersString;
             }
         }
-        
+
         /// <summary>
         /// Returns a string of the Command object
         /// </summary>

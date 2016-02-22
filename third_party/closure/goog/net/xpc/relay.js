@@ -20,6 +20,7 @@
  *
  */
 
+/** @suppress {extraProvide} */
 goog.provide('goog.net.xpc.relay');
 
 (function() {

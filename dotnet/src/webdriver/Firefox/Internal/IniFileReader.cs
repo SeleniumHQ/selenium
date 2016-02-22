@@ -1,9 +1,9 @@
 ﻿// <copyright file="IniFileReader.cs" company="WebDriver Committers">
-// Copyright 2007-2011 WebDriver committers
-// Copyright 2007-2011 Google Inc.
-// Portions copyright 2011 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -19,9 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.IO;
-using System.Text;
 
 namespace OpenQA.Selenium.Firefox.Internal
 {
@@ -30,11 +28,8 @@ namespace OpenQA.Selenium.Firefox.Internal
     /// </summary>
     internal class IniFileReader
     {
-        #region Private members
-        private Dictionary<string, Dictionary<string, string>> iniFileStore = new Dictionary<string, Dictionary<string, string>>(); 
-        #endregion
+        private Dictionary<string, Dictionary<string, string>> iniFileStore = new Dictionary<string, Dictionary<string, string>>();
 
-        #region Constructor
         /// <summary>
         /// Initializes a new instance of the <see cref="IniFileReader"/> class.
         /// </summary>
@@ -85,10 +80,8 @@ namespace OpenQA.Selenium.Firefox.Internal
             }
 
             this.iniFileStore.Add(sectionName, section);
-        } 
-        #endregion
+        }
 
-        #region Properties
         /// <summary>
         /// Gets a <see cref="ReadOnlyCollection{T}"/> containing the names of the sections in the .INI file.
         /// </summary>
@@ -99,10 +92,8 @@ namespace OpenQA.Selenium.Firefox.Internal
                 List<string> keyList = new List<string>(this.iniFileStore.Keys);
                 return new ReadOnlyCollection<string>(keyList);
             }
-        } 
-        #endregion
+        }
 
-        #region Methods
         /// <summary>
         /// Gets a value from the .INI file.
         /// </summary>
@@ -139,6 +130,5 @@ namespace OpenQA.Selenium.Firefox.Internal
 
             return section[lowerCaseValueName];
         }
-        #endregion
     }
 }

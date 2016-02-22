@@ -1,35 +1,40 @@
-/*
-Copyright 2007-2009 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Cookie {
+public class Cookie implements Serializable {
+  private static final long serialVersionUID = 4115876353625612383L;
+
   private final String name;
   private final String value;
   private final String path;
   private final String domain;
   private final Date expiry;
   private final boolean isSecure;
+  private final boolean isHttpOnly;
 
   /**
-   * Creates an insecure cookie with no domain specified.
-   * 
+   * Creates an insecure non-httpOnly cookie with no domain specified.
+   *
    * @param name The name of the cookie; may not be null or an empty string.
    * @param value The cookie value; may not be null.
    * @param path The path the cookie is visible to. If left blank or set to null, will be set to
@@ -42,8 +47,8 @@ public class Cookie {
   }
 
   /**
-   * Creates an insecure cookie.
-   * 
+   * Creates an insecure non-httpOnly cookie.
+   *
    * @param name The name of the cookie; may not be null or an empty string.
    * @param value The cookie value; may not be null.
    * @param domain The domain the cookie is visible to.
@@ -57,8 +62,8 @@ public class Cookie {
   }
 
   /**
-   * Creates a cookie.
-   * 
+   * Creates a non-httpOnly cookie.
+   *
    * @param name The name of the cookie; may not be null or an empty string.
    * @param value The cookie value; may not be null.
    * @param domain The domain the cookie is visible to.
@@ -68,13 +73,31 @@ public class Cookie {
    * @param isSecure Whether this cookie requires a secure connection.
    */
   public Cookie(String name, String value, String domain, String path, Date expiry,
-      boolean isSecure) {
+                boolean isSecure) {
+    this(name, value, domain, path, expiry, isSecure, false);
+  }
+
+  /**
+   * Creates a cookie.
+   *
+   * @param name The name of the cookie; may not be null or an empty string.
+   * @param value The cookie value; may not be null.
+   * @param domain The domain the cookie is visible to.
+   * @param path The path the cookie is visible to. If left blank or set to null, will be set to
+   *        "/".
+   * @param expiry The cookie's expiration date; may be null.
+   * @param isSecure Whether this cookie requires a secure connection.
+   * @param isHttpOnly Whether this cookie is a httpOnly cooke.
+   */
+  public Cookie(String name, String value, String domain, String path, Date expiry,
+      boolean isSecure, boolean isHttpOnly) {
     this.name = name;
     this.value = value;
     this.path = path == null || "".equals(path) ? "/" : path;
 
     this.domain = stripPort(domain);
     this.isSecure = isSecure;
+    this.isHttpOnly = isHttpOnly;
 
     if (expiry != null) {
       // Expiration date is specified in seconds since (UTC) epoch time, so truncate the date.
@@ -86,7 +109,7 @@ public class Cookie {
 
   /**
    * Create a cookie for the default path with the given name and value with no expiry set.
-   * 
+   *
    * @param name The cookie's name
    * @param value The cookie's value
    */
@@ -96,7 +119,7 @@ public class Cookie {
 
   /**
    * Create a cookie.
-   * 
+   *
    * @param name The cookie's name
    * @param value The cookie's value
    * @param path The path the cookie is for
@@ -123,6 +146,10 @@ public class Cookie {
 
   public boolean isSecure() {
     return isSecure;
+  }
+
+  public boolean isHttpOnly() {
+    return isHttpOnly;
   }
 
   public Date getExpiry() {
@@ -193,6 +220,7 @@ public class Cookie {
     private String domain;
     private Date expiry;
     private boolean secure;
+    private boolean httpOnly;
 
     public Builder(String name, String value) {
       this.name = name;
@@ -219,8 +247,13 @@ public class Cookie {
       return this;
     }
 
+    public Builder isHttpOnly(boolean httpOnly) {
+      this.httpOnly = httpOnly;
+      return this;
+    }
+
     public Cookie build() {
-      return new Cookie(name, value, domain, path, expiry, secure);
+      return new Cookie(name, value, domain, path, expiry, secure, httpOnly);
     }
   }
 }

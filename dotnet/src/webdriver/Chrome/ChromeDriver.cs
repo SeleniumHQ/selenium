@@ -1,9 +1,9 @@
 // <copyright file="ChromeDriver.cs" company="WebDriver Committers">
-// Copyright 2007-2011 WebDriver committers
-// Copyright 2007-2011 Google Inc.
-// Portions copyright 2011 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -17,9 +17,6 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Chrome
@@ -53,18 +50,17 @@ namespace OpenQA.Selenium.Chrome
     ///     public void TearDown()
     ///     {
     ///         driver.Quit();
-    ///     } 
+    ///     }
     /// }
     /// </code>
     /// </example>
-    public class ChromeDriver : RemoteWebDriver, ITakesScreenshot
+    public class ChromeDriver : RemoteWebDriver
     {
         /// <summary>
         /// Accept untrusted SSL Certificates
         /// </summary>
         public static readonly bool AcceptUntrustedCertificates = true;
 
-        #region Constructors
         /// <summary>
         /// Initializes a new instance of the <see cref="ChromeDriver"/> class.
         /// </summary>
@@ -83,7 +79,16 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ChromeDriver"/> class using the specified path 
+        /// Initializes a new instance of the <see cref="ChromeDriver"/> class using the specified driver service.
+        /// </summary>
+        /// <param name="service">The <see cref="ChromeDriverService"/> used to initialize the driver.</param>
+        public ChromeDriver(ChromeDriverService service)
+            : this(service, new ChromeOptions())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChromeDriver"/> class using the specified path
         /// to the directory containing ChromeDriver.exe.
         /// </summary>
         /// <param name="chromeDriverDirectory">The full path to the directory containing ChromeDriver.exe.</param>
@@ -116,7 +121,7 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ChromeDriver"/> class using the specified 
+        /// Initializes a new instance of the <see cref="ChromeDriver"/> class using the specified
         /// <see cref="ChromeDriverService"/> and options.
         /// </summary>
         /// <param name="service">The <see cref="ChromeDriverService"/> to use.</param>
@@ -133,19 +138,18 @@ namespace OpenQA.Selenium.Chrome
         /// <param name="options">The <see cref="ChromeOptions"/> to be used with the Chrome driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public ChromeDriver(ChromeDriverService service, ChromeOptions options, TimeSpan commandTimeout)
-            : base(new DriverServiceCommandExecutor(service, commandTimeout), options.ToCapabilities())
+            : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
         }
-        #endregion
 
         /// <summary>
-        /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting 
-        /// sequences of keystrokes representing file paths and names. 
+        /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting
+        /// sequences of keystrokes representing file paths and names.
         /// </summary>
         /// <remarks>The Chrome driver does not allow a file detector to be set,
-        /// as the server component of the Chrome driver (ChromeDriver.exe) only 
+        /// as the server component of the Chrome driver (ChromeDriver.exe) only
         /// allows uploads from the local computer environment. Attempting to set
-        /// this property has no effect, but does not throw an exception. If you 
+        /// this property has no effect, but does not throw an exception. If you
         /// are attempting to run the Chrome driver remotely, use <see cref="RemoteWebDriver"/>
         /// in conjunction with a standalone WebDriver server.</remarks>
         public override IFileDetector FileDetector
@@ -154,20 +158,14 @@ namespace OpenQA.Selenium.Chrome
             set { }
         }
 
-        #region ITakesScreenshot Members
-        /// <summary>
-        /// Gets a <see cref="Screenshot"/> object representing the image of the page on the screen.
-        /// </summary>
-        /// <returns>A <see cref="Screenshot"/> object containing the image.</returns>
-        public Screenshot GetScreenshot()
+        private static ICapabilities ConvertOptionsToCapabilities(ChromeOptions options)
         {
-            // Get the screenshot as base64.
-            Response screenshotResponse = this.Execute(DriverCommand.Screenshot, null);
-            string base64 = screenshotResponse.Value.ToString();
+            if (options == null)
+            {
+                throw new ArgumentNullException("options", "options must not be null");
+            }
 
-            // ... and convert it.
-            return new Screenshot(base64);
+            return options.ToCapabilities();
         }
-        #endregion
     }
 }

@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using OpenQA.Selenium.Internal;
 
@@ -42,11 +39,10 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void ShouldThrowExceptionOnNonExistingElement()
         {
             driver.Url = simpleTestPage;
-            driver.FindElement(By.Id("doesnotexist"));
+            Assert.Throws<NoSuchElementException>(() => driver.FindElement(By.Id("doesnotexist")));
         }
 
         [Test]

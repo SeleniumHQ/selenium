@@ -7,14 +7,12 @@
     goog.require('bot');
     goog.require('bot.html5');
     goog.require('goog.json');
-    goog.require('goog.testing.AsyncTestCase');
+    goog.require('goog.Promise');
     goog.require('goog.testing.jsunit');
     goog.require('webdriver.atoms.inject.storage.database');
   </script>
 
   <script type='text/javascript'>
-    var asyncTestCase = null;
-
     /**
      * Initial function to create the database. I use the top-level window
      * to create the database.
@@ -24,35 +22,30 @@
       if (!bot.html5.isSupported(bot.html5.API.DATABASE)) {
         return;
       }
-
-      try {
+      return new goog.Promise(function(success, fail) {
         var win = bot.getWindow();
-        var db = win.openDatabase('testDB', '1.0', 'db name', 5*1024*1024);
-        db.transaction(transactionCallback, errorCallback, successCallback);
-        asyncTestCase.waitForAsync('insertEntriesInDatabase');
-      } catch (e) {
-        throw new bot.Error(bot.ErrorCode.SQL_DATABASE_ERROR, e.message);
-      }
-
-      function errorCallback(error) {
-        throw new bot.Error(bot.ErrorCode.SQL_DATABASE_ERROR, error.message);
-      }
-
-      function successCallback(error) {
-        asyncTestCase.continueTesting();
-      }
-
-      function transactionCallback(tx) {
-        tx.executeSql('CREATE TABLE IF NOT EXISTS docids (id INTEGER \
-            PRIMARY KEY, name TEXT, owner TEXT)');
-        tx.executeSql('INSERT OR REPLACE INTO docids VALUES (11, "aa", "Manager")');
-        tx.executeSql('INSERT OR REPLACE INTO docids VALUES (1, "aabb", "Eng-A")');
-        tx.executeSql('INSERT OR REPLACE INTO docids VALUES (31, "abc", "Eng-B")');
-        tx.executeSql('INSERT OR REPLACE INTO docids VALUES (0, "aabb", "Eng-A")');
-        tx.executeSql('INSERT OR REPLACE INTO docids VALUES (2, "yyy", "Eng-D")');
-        tx.executeSql('INSERT OR REPLACE INTO docids VALUES (3, "zzz", "Eng-A")');
-        tx.executeSql('INSERT OR REPLACE INTO docids VALUES (90, "aabb", "Eng-E")');
-      }
+        // Keep the DB size below 5 MB. Above that size, Safari will prompt for
+        // permission and cause this test to hang.
+        var db = win.openDatabase('testDB', '1.0', 'db name', 2 * 1024 * 1024);
+        db.transaction(function(tx) {
+          tx.executeSql('CREATE TABLE IF NOT EXISTS docids (id INTEGER \
+              PRIMARY KEY, name TEXT, owner TEXT)');
+          tx.executeSql(
+            'INSERT OR REPLACE INTO docids VALUES (11, "aa", "Manager")');
+          tx.executeSql(
+            'INSERT OR REPLACE INTO docids VALUES (1, "aabb", "Eng-A")');
+          tx.executeSql(
+            'INSERT OR REPLACE INTO docids VALUES (31, "abc", "Eng-B")');
+          tx.executeSql(
+            'INSERT OR REPLACE INTO docids VALUES (0, "aabb", "Eng-A")');
+          tx.executeSql(
+            'INSERT OR REPLACE INTO docids VALUES (2, "yyy", "Eng-D")');
+          tx.executeSql(
+            'INSERT OR REPLACE INTO docids VALUES (3, "zzz", "Eng-A")');
+          tx.executeSql(
+            'INSERT OR REPLACE INTO docids VALUES (90, "aabb", "Eng-E")');
+        }, fail, success);
+      });
     }
 
     function testExecuteSqlWithErrorWrapsErrorInJsonResult() {
@@ -60,45 +53,34 @@
         return;
       }
 
-      var onDone = function(result) {
+      return new goog.Promise(function(onDone) {
+        // WITH is errorneously used instead of WHERE
+        webdriver.atoms.inject.storage.database.executeSql(
+            'testDB',
+            'SELECT * from docids WITH id = 1',
+             [], onDone);
+      }).then(function(result) {
         assertEquals(bot.ErrorCode.SQL_DATABASE_ERROR,
             goog.json.parse(result)["status"]);
-        asyncTestCase.continueTesting();
-      }
-
-      // WITH is errorneously used instead of WHERE
-      webdriver.atoms.inject.storage.database.executeSql(
-          'testDB',
-          'SELECT * from docids WITH id = 1',
-           [], onDone);
-
-      asyncTestCase.waitForAsync('WaitingForOnDone');
+      });
     }
 
     function testExecuteSqlReturnsSuccessInJsonResult() {
       if (!bot.html5.isSupported(bot.html5.API.DATABASE)) {
         return;
       }
-
-      var onDone = function(result) {
+      return new goog.Promise(function(onDone) {
+        webdriver.atoms.inject.storage.database.executeSql(
+            'testDB',
+            'SELECT * from docids WHERE id = 1',
+             [], onDone);
+      }).then(function(result) {
         assertEquals(bot.ErrorCode.SUCCESS,
             goog.json.parse(result)["status"]);
-        asyncTestCase.continueTesting();
-      }
-
-      webdriver.atoms.inject.storage.database.executeSql(
-          'testDB',
-          'SELECT * from docids WHERE id = 1',
-           [], onDone);
-
-      asyncTestCase.waitForAsync('WaitingForOnDone');
+      });
     }
   </script>
 </head>
 <body>
-<script>
-  asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
-  asyncTestCase.stepTimeout = 15 * 1000;
-</script>
 </body>
 </html>

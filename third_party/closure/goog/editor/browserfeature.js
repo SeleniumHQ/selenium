@@ -28,7 +28,7 @@ goog.require('goog.userAgent.product.isVersion');
 /**
  * Maps browser quirks to boolean values, detailing what the current
  * browser supports.
- * @type {Object}
+ * @const
  */
 goog.editor.BrowserFeature = {
   // Whether this browser uses the IE TextRange object.
@@ -37,7 +37,7 @@ goog.editor.BrowserFeature = {
   // Whether this browser uses the W3C standard Range object.
   // Assumes IE higher versions will be compliance with W3C standard.
   HAS_W3C_RANGES: goog.userAgent.GECKO || goog.userAgent.WEBKIT ||
-      goog.userAgent.OPERA ||
+      goog.userAgent.OPERA || goog.userAgent.EDGE ||
       (goog.userAgent.IE && goog.userAgent.isDocumentModeOrHigher(9)),
 
   // Has the contentEditable attribute, which makes nodes editable.
@@ -55,7 +55,7 @@ goog.editor.BrowserFeature = {
   // If we ever hope to support FF3/contentEditable, all 3 of these issues
   // will need answers. Most just involve refactoring at our end.
   HAS_CONTENT_EDITABLE: goog.userAgent.IE || goog.userAgent.WEBKIT ||
-      goog.userAgent.OPERA ||
+      goog.userAgent.OPERA || goog.userAgent.EDGE ||
       (goog.editor.defines.USE_CONTENTEDITABLE_IN_FIREFOX_3 &&
        goog.userAgent.GECKO && goog.userAgent.isVersionOrHigher('1.9')),
 
@@ -200,7 +200,7 @@ goog.editor.BrowserFeature = {
 
   // Whether to use keydown for key listening (uses keypress otherwise). Taken
   // from goog.events.KeyHandler.
-  USES_KEYDOWN: goog.userAgent.IE ||
+  USES_KEYDOWN: goog.userAgent.IE || goog.userAgent.EDGE ||
       goog.userAgent.WEBKIT && goog.userAgent.isVersionOrHigher('525'),
 
   // Whether this browser converts spaces to non-breaking spaces when calling
@@ -258,7 +258,8 @@ goog.editor.BrowserFeature = {
       (goog.userAgent.GECKO &&
        goog.userAgent.isVersionOrHigher('2.0')) ||
       (goog.userAgent.IE &&
-       goog.userAgent.isVersionOrHigher('10')),
+       goog.userAgent.isVersionOrHigher('10')) ||
+      goog.userAgent.EDGE,
 
   // Version of Opera that supports the opera-defaultBlock execCommand to change
   // the default block inserted when [return] is pressed. Note that this only is

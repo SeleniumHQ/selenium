@@ -1,18 +1,19 @@
-/*
-Copyright 2007-2009 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.support.pagefactory;
 
@@ -33,10 +34,10 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 /**
- * Default decorator for use with PageFactory. Will decorate 1) all of the
- * WebElement fields and 2) List<WebElement> fields that have {@literal @FindBy}, {@literal @FindBys},
- * or {@literal @FindAll} annotation with a proxy that locates the elements using the passed
- * in ElementLocatorFactory.
+ * Default decorator for use with PageFactory. Will decorate 1) all of the WebElement fields and 2)
+ * List&lt;WebElement&gt; fields that have {@literal @FindBy}, {@literal @FindBys}, or
+ * {@literal @FindAll} annotation with a proxy that locates the elements using the passed in
+ * ElementLocatorFactory.
  */
 public class DefaultFieldDecorator implements FieldDecorator {
 
@@ -66,7 +67,7 @@ public class DefaultFieldDecorator implements FieldDecorator {
     }
   }
 
-  private boolean isDecoratableList(Field field) {
+  protected boolean isDecoratableList(Field field) {
     if (!List.class.isAssignableFrom(field.getType())) {
       return false;
     }
@@ -98,7 +99,7 @@ public class DefaultFieldDecorator implements FieldDecorator {
 
     WebElement proxy;
     proxy = (WebElement) Proxy.newProxyInstance(
-        loader, new Class[] {WebElement.class, WrapsElement.class, Locatable.class}, handler);
+        loader, new Class[]{WebElement.class, WrapsElement.class, Locatable.class}, handler);
     return proxy;
   }
 
@@ -108,8 +109,8 @@ public class DefaultFieldDecorator implements FieldDecorator {
 
     List<WebElement> proxy;
     proxy = (List<WebElement>) Proxy.newProxyInstance(
-        loader, new Class[] {List.class}, handler);
+        loader, new Class[]{List.class}, handler);
     return proxy;
   }
-  
+
 }

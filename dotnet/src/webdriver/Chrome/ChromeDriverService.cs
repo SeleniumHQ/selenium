@@ -1,9 +1,9 @@
 ﻿// <copyright file="ChromeDriverService.cs" company="WebDriver Committers">
-// Copyright 2007-2011 WebDriver committers
-// Copyright 2007-2011 Google Inc.
-// Portions copyright 2011 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -17,9 +17,7 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Text;
 using OpenQA.Selenium.Internal;
 
@@ -30,16 +28,18 @@ namespace OpenQA.Selenium.Chrome
     /// </summary>
     public sealed class ChromeDriverService : DriverService
     {
-        private const string ChromeDriverServiceFileName = "chromedriver.exe";
+        private const string DefaultChromeDriverServiceExecutableName = "chromedriver";
+
         private static readonly Uri ChromeDriverDownloadUrl = new Uri("http://chromedriver.storage.googleapis.com/index.html");
         private string logPath = string.Empty;
         private string urlPathPrefix = string.Empty;
         private string portServerAddress = string.Empty;
+        private string whitelistedIpAddresses = string.Empty;
         private int adbPort = -1;
         private bool enableVerboseLogging;
 
         /// <summary>
-        /// Initializes a new instance of the ChromeDriverService class.
+        /// Initializes a new instance of the <see cref="ChromeDriverService"/> class.
         /// </summary>
         /// <param name="executablePath">The full path to the ChromeDriver executable.</param>
         /// <param name="executableFileName">The file name of the ChromeDriver executable.</param>
@@ -96,6 +96,17 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
+        /// Gets or sets the comma-delimited list of IP addresses that are approved to
+        /// connect to this instance of the Chrome driver. Defaults to an empty string,
+        /// which means only the local loopback address can connect.
+        /// </summary>
+        public string WhitelistedIPAddresses
+        {
+            get { return this.whitelistedIpAddresses; }
+            set { this.whitelistedIpAddresses = value; }
+        }
+
+        /// <summary>
         /// Gets the command-line arguments for the driver service.
         /// </summary>
         protected override string CommandLineArguments
@@ -133,6 +144,11 @@ namespace OpenQA.Selenium.Chrome
                     argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --port-server={0}", this.portServerAddress);
                 }
 
+                if (!string.IsNullOrEmpty(this.whitelistedIpAddresses))
+                {
+                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -whitelisted-ips={0}", this.whitelistedIpAddresses));
+                }
+
                 return argsBuilder.ToString();
             }
         }
@@ -143,7 +159,7 @@ namespace OpenQA.Selenium.Chrome
         /// <returns>A ChromeDriverService that implements default settings.</returns>
         public static ChromeDriverService CreateDefaultService()
         {
-            string serviceDirectory = DriverService.FindDriverServiceExecutable(ChromeDriverServiceFileName, ChromeDriverDownloadUrl);
+            string serviceDirectory = DriverService.FindDriverServiceExecutable(ChromeDriverServiceFileName(), ChromeDriverDownloadUrl);
             return CreateDefaultService(serviceDirectory);
         }
 
@@ -154,7 +170,7 @@ namespace OpenQA.Selenium.Chrome
         /// <returns>A ChromeDriverService using a random port.</returns>
         public static ChromeDriverService CreateDefaultService(string driverPath)
         {
-            return CreateDefaultService(driverPath, ChromeDriverServiceFileName);
+            return CreateDefaultService(driverPath, ChromeDriverServiceFileName());
         }
 
         /// <summary>
@@ -166,6 +182,48 @@ namespace OpenQA.Selenium.Chrome
         public static ChromeDriverService CreateDefaultService(string driverPath, string driverExecutableFileName)
         {
             return new ChromeDriverService(driverPath, driverExecutableFileName, PortUtilities.FindFreePort());
+        }
+
+        /// <summary>
+        /// Returns the Chrome driver filename for the currently running platform
+        /// </summary>
+        /// <returns>The file name of the Chrome driver service executable.</returns>
+        private static string ChromeDriverServiceFileName()
+        {
+            string fileName = DefaultChromeDriverServiceExecutableName;
+
+            // Unfortunately, detecting the currently running platform isn't as
+            // straightforward as you might hope.
+            // See: http://mono.wikia.com/wiki/Detecting_the_execution_platform
+            // and https://msdn.microsoft.com/en-us/library/3a8hyw88(v=vs.110).aspx
+            const int PlatformMonoUnixValue = 128;
+
+            switch (Environment.OSVersion.Platform)
+            {
+                case PlatformID.Win32NT:
+                case PlatformID.Win32S:
+                case PlatformID.Win32Windows:
+                case PlatformID.WinCE:
+                    fileName += ".exe";
+                    break;
+
+                case PlatformID.MacOSX:
+                case PlatformID.Unix:
+                    break;
+
+                // Don't handle the Xbox case. Let default handle it.
+                // case PlatformID.Xbox:
+                //     break;
+                default:
+                    if ((int)Environment.OSVersion.Platform == PlatformMonoUnixValue)
+                    {
+                        break;
+                    }
+
+                    throw new WebDriverException("Unsupported platform: " + Environment.OSVersion.Platform);
+            }
+
+            return fileName;
         }
     }
 }

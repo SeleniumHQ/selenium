@@ -1,17 +1,19 @@
-// Copyright 2011 WebDriver committers
-// Copyright 2011 Google Inc.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview The file contains the base class for input devices such as
@@ -140,11 +142,12 @@ bot.Device.prototype.fireKeyboardEvent = function(type, args) {
  *     element is not interactable, such as the case of a mousemove or
  *     mouseover event that immediately follows a mouseout.
  * @param {?number=} opt_pointerId The pointerId associated with the event.
+ * @param {?number=} opt_count Number of clicks that have been performed.
  * @return {boolean} Whether the event fired successfully; false if cancelled.
  * @protected
  */
 bot.Device.prototype.fireMouseEvent = function(type, coord, button,
-    opt_related, opt_wheelDelta, opt_force, opt_pointerId)  {
+    opt_related, opt_wheelDelta, opt_force, opt_pointerId, opt_count)  {
   if (!opt_force && !bot.dom.isInteractable(this.element_)) {
     return false;
   }
@@ -165,7 +168,8 @@ bot.Device.prototype.fireMouseEvent = function(type, coord, button,
     shiftKey: this.modifiersState.isShiftPressed(),
     metaKey: this.modifiersState.isMetaPressed(),
     wheelDelta: opt_wheelDelta || 0,
-    relatedTarget: opt_related || null
+    relatedTarget: opt_related || null,
+    count: opt_count || 1
   };
 
   var pointerId = opt_pointerId || bot.Device.MOUSE_MS_POINTER_ID;
@@ -210,6 +214,7 @@ bot.Device.prototype.fireTouchEvent = function(type, id, coord, opt_id2,
     scale: 0,
     rotation: 0
   };
+  var pageOffset = goog.dom.getDomHelper(this.element_).getDocumentScroll();
 
   function addTouch(identifier, coords) {
     // Android devices leave identifier to zero.
@@ -220,8 +225,8 @@ bot.Device.prototype.fireTouchEvent = function(type, id, coord, opt_id2,
       screenY: coords.y,
       clientX: coords.x,
       clientY: coords.y,
-      pageX: coords.x,
-      pageY: coords.y
+      pageX: coords.x + pageOffset.x,
+      pageY: coords.y + pageOffset.y
     };
 
     args.changedTouches.push(touch);
@@ -346,17 +351,6 @@ bot.Device.prototype.getTargetOfOptionMouseEvent_ = function(type) {
     }
   }
 
-  // Opera only skips mouseovers and contextmenus on single selects.
-  if (goog.userAgent.OPERA) {
-    switch (type) {
-      case bot.events.EventType.CONTEXTMENU:
-      case bot.events.EventType.MOUSEOVER:
-        return this.select_.multiple ? this.element_ : null;
-      default:
-        return this.element_;
-    }
-  }
-
   // WebKit always fires on the option element of multi-selects.
   // On single-selects, it either fires on the parent or not at all.
   if (goog.userAgent.WEBKIT) {
@@ -380,19 +374,23 @@ bot.Device.prototype.getTargetOfOptionMouseEvent_ = function(type) {
  *
  * @param {!goog.math.Coordinate} coord The coordinate where event will fire.
  * @param {number} button The mouse button value for the event.
+ * @param {boolean=} opt_force Whether the click should occur even if the
+ *     element is not interactable, such as when an element is hidden by a
+ *     mouseup handler.
  * @param {?number=} opt_pointerId The pointer id associated with the click.
  * @protected
  */
-bot.Device.prototype.clickElement = function(coord, button, opt_pointerId) {
-  if (!bot.dom.isInteractable(this.element_)) {
+bot.Device.prototype.clickElement = function(coord, button, opt_force,
+                                             opt_pointerId) {
+  if (!opt_force && !bot.dom.isInteractable(this.element_)) {
     return;
   }
 
   // bot.events.fire(element, 'click') can trigger all onclick events, but may
   // not follow links (FORM.action or A.href).
-  //     TAG      IE   GECKO  WebKit Opera
-  // A(href)      No    No     Yes    Yes
-  // FORM(action) No    Yes    Yes    Yes
+  //     TAG      IE   GECKO  WebKit
+  // A(href)      No    No     Yes
+  // FORM(action) No    Yes    Yes
   var targetLink = null;
   var targetButton = null;
   if (!bot.Device.ALWAYS_FOLLOWS_LINKS_ON_CLICK_) {
@@ -431,7 +429,8 @@ bot.Device.prototype.clickElement = function(coord, button, opt_pointerId) {
   }
 
   var performDefault = this.fireMouseEvent(
-      bot.events.EventType.CLICK, coord, button, null, 0, false, opt_pointerId);
+      bot.events.EventType.CLICK, coord, button, null, 0, opt_force,
+      opt_pointerId);
   if (!performDefault) {
     return;
   }
@@ -493,15 +492,7 @@ bot.Device.prototype.focusOnElement = function() {
   // Try to focus on the element.
   if (goog.isFunction(elementToFocus.focus) ||
       goog.userAgent.IE && goog.isObject(elementToFocus.focus)) {
-    // Opera fires focus events on hidden elements (e.g. that are hidden after
-    // mousedown in a click sequence), but as of Opera 11 the focus() command
-    // does not, so we fire a focus event on the hidden element explicitly.
-    if (goog.userAgent.OPERA && bot.userAgent.isEngineVersion(11) &&
-        !bot.dom.isShown(elementToFocus)) {
-      bot.events.fire(elementToFocus, bot.events.EventType.FOCUS);
-    } else {
-      elementToFocus.focus();
-    }
+    elementToFocus.focus();
     return true;
   }
 
@@ -516,7 +507,7 @@ bot.Device.prototype.focusOnElement = function() {
  * @const
  */
 bot.Device.ALWAYS_FOLLOWS_LINKS_ON_CLICK_ =
-    goog.userAgent.WEBKIT || goog.userAgent.OPERA ||
+    goog.userAgent.WEBKIT ||
     (bot.userAgent.FIREFOX_EXTENSION && bot.userAgent.isProductVersion(3.6));
 
 
@@ -625,8 +616,9 @@ bot.Device.prototype.maybeToggleOption = function() {
     return;
   }
 
-  // TODO: in a multiselect, clicking an option without the shift key down
-  // should deselect all other selected options.
+  // TODO: In a multiselect, clicking an option without the ctrl key down
+  // should deselect all other selected options. Right now multiselect click
+  // works as ctrl+click should (and unit tests written so that they pass).
 
   this.element_.selected = !wasSelected;
   // Only WebKit fires the change event itself and only for multi-selects,
@@ -656,10 +648,6 @@ bot.Device.prototype.toggleRadioButtonOrCheckbox_ = function(wasChecked) {
     return;
   }
   this.element_.checked = !wasChecked;
-  // Only Opera versions < 11 do not fire the change event themselves.
-  if (goog.userAgent.OPERA && !bot.userAgent.isEngineVersion(11)) {
-    bot.events.fire(this.element_, bot.events.EventType.CHANGE);
-  }
 };
 
 

@@ -83,6 +83,11 @@ js_fragment(name = "default_content",
   function = "webdriver.atoms.inject.frame.defaultContent",
   deps = ["//javascript/webdriver/atoms/inject:deps"])
 
+js_fragment(name = "get_parent_frame",
+  module = "webdriver.atoms.inject.frame",
+  function = "webdriver.atoms.inject.frame.parentFrame",
+  deps = ["//javascript/webdriver/atoms/inject:deps"])
+
 js_fragment(name = "get_frame_window",
   module = "webdriver.atoms.inject.frame",
   function = "webdriver.atoms.inject.frame.getFrameWindow",

@@ -1,19 +1,19 @@
-/*
-Copyright 2007-2012 Selenium committers
-Copyright 2013 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium;
 
@@ -23,7 +23,7 @@ import java.util.Arrays;
  * Representations of pressable keys that aren't text.  These are stored in the Unicode PUA (Private
  * Use Area) code points, 0xE000-0xF8FF.
  *
- * @see <a href="http://www.google.com.au/search?&q=unicode+pua&btnG=Search">http://www.google.com.au/search?&q=unicode+pua&btnG=Search</a>
+ * @see <a href="http://www.google.com.au/search?&amp;q=unicode+pua&amp;btnG=Search">http://www.google.com.au/search?&amp;q=unicode+pua&amp;btnG=Search</a>
  */
 public enum Keys implements CharSequence {
 
@@ -142,6 +142,9 @@ public enum Keys implements CharSequence {
    * (CTRL/ALT/SHIFT/etc) release via a keyup event.
    *
    * Issue: http://code.google.com/p/webdriver/issues/detail?id=79
+   *
+   * @param value characters to send
+   * @return String representation of the char sequence
    */
   public static String chord(CharSequence... value) {
     return chord(Arrays.asList(value));
@@ -149,6 +152,8 @@ public enum Keys implements CharSequence {
 
   /**
    * @see #chord(CharSequence...)
+   * @param value characters to send
+   * @return String representation of the char sequence
    */
   public static String chord(Iterable<CharSequence> value) {
     StringBuilder builder = new StringBuilder();

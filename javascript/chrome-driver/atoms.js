@@ -1,17 +1,19 @@
-// Copyright 2011 WebDriver committers
-// Copyright 2011 Google Inc.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview Chrome specific atoms.
@@ -20,12 +22,20 @@
 
 goog.provide('webdriver.chrome');
 
+goog.require('bot.dom');
+goog.require('bot.locators');
 goog.require('goog.dom');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Rect');
 goog.require('goog.math.Size');
 goog.require('goog.style');
 
+/**
+ * True if shadow dom is enabled.
+ * @const
+ * @type {boolean}
+ */
+var SHADOW_DOM_ENABLED = typeof ShadowRoot === 'function';
 
 /**
  * Returns the minimum required offsets to scroll a given region into view.
@@ -108,8 +118,16 @@ webdriver.chrome.scrollIntoView_ = function(elem, region, center) {
     scrollable.scrollTop += scroll.y;
   }
 
+  function getContainer(elem) {
+    var container = elem.parentNode;
+    if (SHADOW_DOM_ENABLED && (container instanceof ShadowRoot)) {
+      container = elem.host;
+    }
+    return container;
+  }
+
   var doc = goog.dom.getOwnerDocument(elem);
-  var container = elem.parentNode;
+  var container = getContainer(elem);
   var offset;
   while (container &&
          container != doc.documentElement &&
@@ -119,7 +137,7 @@ webdriver.chrome.scrollIntoView_ = function(elem, region, center) {
     var containerSize = new goog.math.Size(container.clientWidth,
                                            container.clientHeight);
     scrollHelper(container, containerSize, offset, region, center);
-    container = container.parentNode;
+    container = getContainer(container);
   }
 
   offset = goog.style.getClientPosition(elem);
@@ -187,7 +205,7 @@ webdriver.chrome.getFirstClientRect = function(elem) {
  * at the given location. Useful for debugging test clicking issues.
  *
  * @param {!Element} elem The element to use.
- * @param {!goog.math.Coordinate} coord, The coordinate to use.
+ * @param {!goog.math.Coordinate} coord The coordinate to use.
  * @return {{clickable:boolean, message: (string|undefined)}} Object containing
  *     a boolean "clickable" property, as to whether it can be clicked, and an
  *     optional "message" string property, which contains any warning/error
@@ -206,7 +224,14 @@ webdriver.chrome.isElementClickable = function(elem, coord) {
     return dict;
   }
 
-  var elemAtPoint = elem.ownerDocument.elementFromPoint(coord.x, coord.y);
+  // get the outermost ancestor of the element. This will be either the document
+  // or a shadow root.
+  var owner = elem;
+  while (owner.parentNode) {
+    owner = owner.parentNode;
+  }
+
+  var elemAtPoint = owner.elementFromPoint(coord.x, coord.y);
   if (elemAtPoint == elem)
     return makeResult(true);
 
@@ -255,4 +280,88 @@ webdriver.chrome.getPageZoom = function(elem) {
   var width = Math.max(
       docElem.clientWidth, docElem.offsetWidth, docElem.scrollWidth);
   return doc.width / width;
+};
+
+/**
+ * Determines whether an element is what a user would call "shown". Mainly based
+ * on bot.dom.isShown, but with extra intelligence regarding shadow DOM.
+ *
+ * @param {!Element} elem The element to consider.
+ * @param {boolean=} opt_inComposedDom Whether to check if the element is shown
+ *     within the composed DOM; defaults to false.
+ * @param {boolean=} opt_ignoreOpacity Whether to ignore the element's opacity
+ *     when determining whether it is shown; defaults to false.
+ * @return {boolean} Whether or not the element is visible.
+ */
+webdriver.chrome.isElementDisplayed = function(elem,
+                                               opt_inComposedDom,
+                                               opt_ignoreOpacity) {
+  if (!!opt_inComposedDom) {
+    if (!bot.dom.isShownInComposedDom(elem, opt_ignoreOpacity)) {
+      return false;
+    }
+  } else {
+    if (!bot.dom.isShown(elem, opt_ignoreOpacity)) {
+      return false;
+    }
+  }
+  // if it's not invisible then check if the element is within the shadow DOM
+  // of an invisible element, using recursive calls to this function
+  if (SHADOW_DOM_ENABLED) {
+    var topLevelNode = elem;
+    while (topLevelNode.parentNode) {
+      topLevelNode = topLevelNode.parentNode;
+    }
+    if (topLevelNode instanceof ShadowRoot) {
+      return webdriver.chrome.isElementDisplayed(topLevelNode.host,
+                                                 opt_inComposedDom);
+    }
+  }
+  // if it's not invisible, or in a shadow DOM, then it's definitely visible
+  return true;
+};
+
+/**
+ * Same as bot.locators.findElement (description copied below), but
+ * with workarounds for shadow DOM.
+ *
+ * Find the first element in the DOM matching the target. The target
+ * object should have a single key, the name of which determines the
+ * locator strategy and the value of which gives the value to be
+ * searched for. For example {id: 'foo'} indicates that the first
+ * element on the DOM with the ID 'foo' should be returned.
+ *
+ * @param {!Object} target The selector to search for.
+ * @param {(Document|Element)=} opt_root The node from which to start the
+ *     search. If not specified, will use {@code document} as the root.
+ * @return {Element} The first matching element found in the DOM, or null if no
+ *     such element could be found.
+ */
+webdriver.chrome.findElement = function(target, opt_root) {
+  // This works fine if opt_root is outside of a shadow DOM, but for various
+  // (presumably performance-based) reasons, it works by getting opt_root's
+  // owning document, searching that, and then checking if the result is owned
+  // by opt_root. Searching the owning document for a child of a shadow root
+  // obviously doesn't work. However we try the performance-optimised version
+  // first...
+  var elem = bot.locators.findElement(target, opt_root);
+  if (elem) {
+    return elem;
+  }
+  // If we didn't find anything using that method, check to see if opt_root
+  // is within a shadow DOM...
+  if (SHADOW_DOM_ENABLED && opt_root) {
+    var topLevelNode = opt_root;
+    while (topLevelNode.parentNode) {
+      topLevelNode = topLevelNode.parentNode;
+    }
+    if (topLevelNode instanceof ShadowRoot) {
+      // findElement_s_ works fine if passed an root that's in a shadow root.
+      elem = bot.locators.findElements(target, opt_root)[0];
+      if (elem) {
+        return elem;
+      }
+    }
+  }
+  return null;
 };

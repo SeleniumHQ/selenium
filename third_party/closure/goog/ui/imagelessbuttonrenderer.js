@@ -27,9 +27,10 @@
 
 goog.provide('goog.ui.ImagelessButtonRenderer');
 
-goog.require('goog.dom.classes');
+goog.require('goog.dom.TagName');
+goog.require('goog.dom.classlist');
 goog.require('goog.ui.Button');
-goog.require('goog.ui.ControlContent');
+goog.require('goog.ui.Component');
 goog.require('goog.ui.CustomButtonRenderer');
 goog.require('goog.ui.INLINE_BLOCK_CLASSNAME');
 goog.require('goog.ui.registry');
@@ -41,6 +42,8 @@ goog.require('goog.ui.registry');
  * almost arbitrary HTML content, will flow like inline elements, but can be
  * styled like block-level elements.
  *
+ * @deprecated These contain a lot of unnecessary DOM for modern user agents.
+ *     Please use a simpler button renderer like css3buttonrenderer.
  * @constructor
  * @extends {goog.ui.CustomButtonRenderer}
  */
@@ -117,15 +120,15 @@ goog.ui.ImagelessButtonRenderer.prototype.createButton = function(content,
                                                                   dom) {
   var baseClass = this.getCssClass();
   var inlineBlock = goog.ui.INLINE_BLOCK_CLASSNAME + ' ';
-  return dom.createDom('div',
+  return dom.createDom(goog.dom.TagName.DIV,
       inlineBlock + goog.getCssName(baseClass, 'outer-box'),
-      dom.createDom('div',
+      dom.createDom(goog.dom.TagName.DIV,
           inlineBlock + goog.getCssName(baseClass, 'inner-box'),
-          dom.createDom('div', goog.getCssName(baseClass, 'pos'),
-              dom.createDom('div', goog.getCssName(baseClass, 'top-shadow'),
-                  '\u00A0'),
-              dom.createDom('div', goog.getCssName(baseClass, 'content'),
-                  content))));
+          dom.createDom(goog.dom.TagName.DIV, goog.getCssName(baseClass, 'pos'),
+              dom.createDom(goog.dom.TagName.DIV,
+                            goog.getCssName(baseClass, 'top-shadow'), '\u00A0'),
+              dom.createDom(goog.dom.TagName.DIV,
+                            goog.getCssName(baseClass, 'content'), content))));
 };
 
 
@@ -142,25 +145,26 @@ goog.ui.ImagelessButtonRenderer.prototype.hasBoxStructure = function(
     button, element) {
   var outer = button.getDomHelper().getFirstElementChild(element);
   var outerClassName = goog.getCssName(this.getCssClass(), 'outer-box');
-  if (outer && goog.dom.classes.has(outer, outerClassName)) {
+  if (outer && goog.dom.classlist.contains(outer, outerClassName)) {
 
     var inner = button.getDomHelper().getFirstElementChild(outer);
     var innerClassName = goog.getCssName(this.getCssClass(), 'inner-box');
-    if (inner && goog.dom.classes.has(inner, innerClassName)) {
+    if (inner && goog.dom.classlist.contains(inner, innerClassName)) {
 
       var pos = button.getDomHelper().getFirstElementChild(inner);
       var posClassName = goog.getCssName(this.getCssClass(), 'pos');
-      if (pos && goog.dom.classes.has(pos, posClassName)) {
+      if (pos && goog.dom.classlist.contains(pos, posClassName)) {
 
         var shadow = button.getDomHelper().getFirstElementChild(pos);
         var shadowClassName = goog.getCssName(
             this.getCssClass(), 'top-shadow');
-        if (shadow && goog.dom.classes.has(shadow, shadowClassName)) {
+        if (shadow && goog.dom.classlist.contains(shadow, shadowClassName)) {
 
           var content = button.getDomHelper().getNextElementSibling(shadow);
           var contentClassName = goog.getCssName(
               this.getCssClass(), 'content');
-          if (content && goog.dom.classes.has(content, contentClassName)) {
+          if (content &&
+              goog.dom.classlist.contains(content, contentClassName)) {
             // We have a proper box structure.
             return true;
           }

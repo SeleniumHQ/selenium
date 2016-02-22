@@ -17,8 +17,8 @@
             <artifactId>guava</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
         </dependency>
     </dependencies>
 
@@ -48,9 +48,6 @@
                                         <exclude name="org/openqa/selenium/WebDriverBackedSelenium.java" />
                                         <exclude name="org/openqa/selenium/WebDriverCommandProcessor.java" />
                                         <include name="org/openqa/selenium/logging/**/*.java" />
-                                        <include name="org/openqa/selenium/browserlaunchers/CapabilityType.java" />
-                                        <include name="org/openqa/selenium/browserlaunchers/DoNotUseProxyPac.java" />
-                                        <include name="org/openqa/selenium/browserlaunchers/Proxies.java" />
                                         <include name="org/openqa/selenium/html5/*.java" />
                                         <include name="org/openqa/selenium/interactions/**/*.java" />
                                         <include name="org/openqa/selenium/internal/*.java" />
@@ -58,6 +55,7 @@
                                         <include name="org/openqa/selenium/remote/BrowserType.java" />
                                         <include name="org/openqa/selenium/remote/CapabilityType.java" />
                                         <include name="org/openqa/selenium/remote/DesiredCapabilities.java" />
+                                        <include name="org/openqa/selenium/remote/SessionNotFoundException.java" />
                                     </fileset>
                                 </copy>
                             </tasks>

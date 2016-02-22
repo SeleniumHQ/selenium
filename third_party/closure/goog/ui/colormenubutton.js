@@ -44,7 +44,7 @@ goog.require('goog.ui.registry');
  *     should contain at least one {@link goog.ui.ColorPalette} if present.
  * @param {goog.ui.MenuButtonRenderer=} opt_renderer Button renderer;
  *     defaults to {@link goog.ui.ColorMenuButtonRenderer}.
- * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM hepler, used for
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
  * @constructor
  * @extends {goog.ui.MenuButton}
@@ -103,11 +103,11 @@ goog.ui.ColorMenuButton.NO_COLOR = 'none';
 /**
  * Factory method that creates and returns a new {@link goog.ui.Menu} instance
  * containing default color palettes.
- * @param {Array.<goog.ui.Control>=} opt_extraItems Optional extra menu items to
+ * @param {Array<goog.ui.Control>=} opt_extraItems Optional extra menu items to
  *     add before the color palettes.
- * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM hepler, used for
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
- * @return {goog.ui.Menu} Color menu.
+ * @return {!goog.ui.Menu} Color menu.
  */
 goog.ui.ColorMenuButton.newColorMenu = function(opt_extraItems, opt_domHelper) {
   var menu = new goog.ui.Menu(opt_domHelper);
@@ -130,7 +130,7 @@ goog.ui.ColorMenuButton.newColorMenu = function(opt_extraItems, opt_domHelper) {
 
 /**
  * Returns the currently selected color (null if none).
- * @return {?string} The selected color.
+ * @return {string} The selected color.
  */
 goog.ui.ColorMenuButton.prototype.getSelectedColor = function() {
   return /** @type {string} */ (this.getValue());

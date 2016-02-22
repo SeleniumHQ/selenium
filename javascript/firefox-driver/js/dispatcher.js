@@ -1,30 +1,33 @@
-/*
- Copyright 2007-2010 WebDriver committers
- Copyright 2007-2010 Google Inc.
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
-
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 goog.provide('Dispatcher');
 goog.provide('Resource');
 
-goog.require('Request');
-goog.require('Response');
+goog.require('fxdriver.Request');
+goog.require('fxdriver.Response');
 goog.require('Utils');
 goog.require('bot.ErrorCode');
 goog.require('fxdriver.error');
-goog.require('fxdriver.logging');
+goog.require('goog.log');
+
+goog.scope(function() {
+var Request = fxdriver.Request;
+var Response = fxdriver.Response;
 
 
 /**
@@ -33,6 +36,7 @@ goog.require('fxdriver.logging');
  */
 Dispatcher = function() {
   this.resources_ = [];
+  this.log_ = goog.log.getLogger('fxdriver.Dispatcher');
   this.init_();
 };
 
@@ -60,9 +64,7 @@ Dispatcher.executeAs = function(name) {
   return function(request, response) {
     var json = {
       'name': name,
-      'sessionId': {
-        'value': request.getAttribute('sessionId')
-      },
+      'sessionId': request.getAttribute('sessionId'),
       'parameters': JSON.parse(request.getBody() || '{}')
     };
 
@@ -199,13 +201,16 @@ Dispatcher.prototype.init_ = function() {
       on(Request.Method.GET, Dispatcher.executeAs('isElementDisplayed'));
 
   this.bind_('/session/:sessionId/element/:id/location').
-      on(Request.Method.GET, Dispatcher.executeAs('getElementLocation'));
+      on(Request.Method.GET, Dispatcher.executeAs('getElementRect'));
   this.bind_('/session/:sessionId/element/:id/location_in_view').
       on(Request.Method.GET, Dispatcher.executeAs(
           'getElementLocationOnceScrolledIntoView'));
 
   this.bind_('/session/:sessionId/element/:id/size').
-      on(Request.Method.GET, Dispatcher.executeAs('getElementSize'));
+      on(Request.Method.GET, Dispatcher.executeAs('getElementRect'));
+
+  this.bind_('/session/:sessionId/element/:id/rect').
+      on(Request.Method.GET, Dispatcher.executeAs('getElementRect'));
 
   this.bind_('/session/:sessionId/element/:id/css/:propertyName').
       on(Request.Method.GET,
@@ -225,6 +230,8 @@ Dispatcher.prototype.init_ = function() {
 
   this.bind_('/session/:sessionId/frame').
       on(Request.Method.POST, Dispatcher.executeAs('switchToFrame'));
+  this.bind_('/session/:sessionId/frame/parent').
+      on(Request.Method.POST, Dispatcher.executeAs('switchToParentFrame'));
   this.bind_('/session/:sessionId/window').
       on(Request.Method.POST, Dispatcher.executeAs('switchToWindow')).
       on(Request.Method.DELETE, Dispatcher.executeAs('close'));
@@ -261,11 +268,11 @@ Dispatcher.prototype.init_ = function() {
   this.bind_('/session/:sessionId/element/:id/click').
       on(Request.Method.POST, Dispatcher.executeAs('clickElement'));
   this.bind_('/session/:sessionId/moveto').
-      on(Request.Method.POST, Dispatcher.executeAs('mouseMove'));
+      on(Request.Method.POST, Dispatcher.executeAs('mouseMoveTo'));
   this.bind_('/session/:sessionId/buttondown').
-      on(Request.Method.POST, Dispatcher.executeAs('mouseDown'));
+      on(Request.Method.POST, Dispatcher.executeAs('mouseButtonDown'));
   this.bind_('/session/:sessionId/buttonup').
-      on(Request.Method.POST, Dispatcher.executeAs('mouseUp'));
+      on(Request.Method.POST, Dispatcher.executeAs('mouseButtonUp'));
   this.bind_('/session/:sessionId/click').
       on(Request.Method.POST, Dispatcher.executeAs('mouseClick'));
   this.bind_('/session/:sessionId/doubleclick').
@@ -281,9 +288,6 @@ Dispatcher.prototype.init_ = function() {
       on(Request.Method.GET, Dispatcher.executeAs('getAvailableLogTypes'));
 
   // HTML 5
-  this.bind_('/session/:sessionId/browser_connection').
-      on(Request.Method.GET, Dispatcher.executeAs('isOnline'));
-
   this.bind_('/session/:sessionId/application_cache/status').
       on(Request.Method.GET, Dispatcher.executeAs('getAppCacheStatus'));
 
@@ -341,7 +345,7 @@ Dispatcher.prototype.dispatch = function(request, response) {
       bestMatchResource.setRequestAttributes(request);
       bestMatchResource.handle(request, response);
     } catch (ex) {
-      fxdriver.logging.error(ex);
+      goog.log.error(this.log_, 'Error processing request', ex);
       response.sendError(Response.INTERNAL_ERROR, JSON.stringify({
         status: bot.ErrorCode.UNKNOWN_ERROR,
         value: fxdriver.error.toJSON(ex)
@@ -533,3 +537,4 @@ Resource.prototype.getAllowedMethods_ = function() {
 
   return allowed.join(',');
 };
+});  // goog.scope

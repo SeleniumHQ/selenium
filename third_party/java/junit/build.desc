@@ -1,5 +1,5 @@
 java_library(name = "junit",
   deps = [
-    "junit-dep-4.11.jar",
+    "junit-4.12.jar",
     "//third_party/java/hamcrest",
   ])

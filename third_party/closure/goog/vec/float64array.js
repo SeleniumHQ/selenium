@@ -36,9 +36,10 @@ goog.provide('goog.vec.Float64Array');
  *     The length of the array, or an array to initialize the contents of the
  *     new Float64Array.
  * @constructor
+ * @final
  */
 goog.vec.Float64Array = function(p0) {
-  this.length = p0.length || p0;
+  this.length = /** @type {number} */ (p0.length || p0);
   for (var i = 0; i < this.length; i++) {
     this[i] = p0[i] || 0;
   }
@@ -65,7 +66,7 @@ goog.vec.Float64Array.prototype.BYTES_PER_ELEMENT = 8;
 
 /**
  * Sets elements of the array.
- * @param {Array.<number>|Float64Array} values The array of values.
+ * @param {Array<number>|Float64Array} values The array of values.
  * @param {number=} opt_offset The offset in this array to start.
  */
 goog.vec.Float64Array.prototype.set = function(values, opt_offset) {

@@ -1,18 +1,19 @@
-/*
- * Copyright 2011 Software Freedom Conservancy
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 var Logger = function() {
     this.logWindow = null;
@@ -29,7 +30,7 @@ Logger.prototype = {
     },
 
     pendingMessages: new Array(),
-    
+
     threshold: "info",
 
     setLogLevelThreshold: function(logLevel) {
@@ -48,7 +49,7 @@ Logger.prototype = {
         }
         return this.logWindow;
     },
-    
+
     openLogWindow: function() {
         this.logWindow = window.open(
             getDocumentBase(document) + "SeleniumLog.html?startingThreshold="+this.threshold, "SeleniumLog",
@@ -56,15 +57,15 @@ Logger.prototype = {
         );
         this.logWindow.moveTo(window.screenX + 1210, window.screenY + window.outerHeight - 1400);
         if (browserVersion.appearsToBeBrokenInitialIE6) {
-	// I would really prefer for the message to immediately appear in the log window, the instant the user requests that the log window be 
-        	// visible.  But when I initially coded it this way, thou message simply didn't appear unless I stepped through the code with a debugger.  
+	// I would really prefer for the message to immediately appear in the log window, the instant the user requests that the log window be
+        	// visible.  But when I initially coded it this way, thou message simply didn't appear unless I stepped through the code with a debugger.
         	// So obviously there is some timing issue here which I don't have the patience to figure out.
         	var pendingMessage = new LogMessage("warn", "You appear to be running an unpatched IE 6, which is not stable and can crash due to memory problems.  We recommend you run Windows update to install a more stable version of IE.");
             this.pendingMessages.push(pendingMessage);
         }
         return this.logWindow;
     },
-    
+
     show: function() {
         if (! this.getLogWindow()) {
             this.openLogWindow();
@@ -108,7 +109,7 @@ Logger.prototype = {
                 logWindow.append(logLevel + "("+(new Date().getTime())+"): " + message, logLevel);
             }
         } else {
-            // TODO these logging messages are never flushed, which creates 
+            // TODO these logging messages are never flushed, which creates
             //   an enormous array of strings that never stops growing.
             //   there should at least be a way to clear the messages!
             this.pendingMessages.push(new LogMessage(logLevel, message));

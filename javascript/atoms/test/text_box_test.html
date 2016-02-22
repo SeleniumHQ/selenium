@@ -230,22 +230,23 @@ function testListItem() {
 }
 
 
-// TODO: tests for display: run-in
-
-
 function testRunIn_followedByBlock() {
-  // - Firefox does not implement display:run-in,
-  // see https://bugzilla.mozilla.org/show_bug.cgi?id=2056
+  // Currently, only IE supports this use of display:run-in, having supported it
+  // starting with IE 8. See http://quirksmode.org/css/css2/display.html. The
+  // Android native browser also supports it.
   //
-  // - Blink removed display:run-in support, effective with Chrome 32.
-  // see https://code.google.com/p/chromium/issues/detail?id=260388
-  //
-  // IE<8 does not support display:run-in,
-  // see http://quirksmode.org/css/css2/display.html
+  // No other major desktop browsers support this now:
+  // - Firefox has never supported it.
+  //   See https://bugzilla.mozilla.org/show_bug.cgi?id=2056
+  // - Blink removed support, effective with Chrome 32.
+  //   See https://code.google.com/p/chromium/issues/detail?id=260388
+  // - Safari appears to have dropped support in Safari 7.1.
+  // - Edge does not support it.
   var supportsRunIn =
-      !goog.userAgent.GECKO &&
-      !(goog.userAgent.product.CHROME && bot.userAgent.isProductVersion(32)) &&
-      !(goog.userAgent.IE && !bot.userAgent.isProductVersion(8));
+      (goog.userAgent.IE && bot.userAgent.isProductVersion(8)) ||
+      (goog.userAgent.product.CHROME && !bot.userAgent.isProductVersion(32)) ||
+      (goog.userAgent.product.SAFARI && !bot.userAgent.isProductVersion(7.1)) ||
+      (goog.userAgent.product.ANDROID);
 
   var expectedText = supportsRunIn ? 'Hello, world.' : 'Hello\n, world.';
   new DisplayBoxTester('run-in').

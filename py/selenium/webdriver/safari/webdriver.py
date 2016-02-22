@@ -1,18 +1,19 @@
-#!/usr/bin/python
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-# Copyright 2011-2013 Sofware freedom conservancy
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
 
 import base64
 
@@ -33,7 +34,7 @@ class WebDriver(RemoteWebDriver):
     """
 
     def __init__(self, executable_path=None, port=0,
-                 desired_capabilities=DesiredCapabilities.SAFARI):
+                 desired_capabilities=DesiredCapabilities.SAFARI, quiet=False):
         """
         Creates a new instance of the Safari driver.
 
@@ -51,7 +52,7 @@ class WebDriver(RemoteWebDriver):
             except:
                 raise Exception("No executable path given, please add one to Environment Variable \
                 'SELENIUM_SERVER_JAR'")
-        self.service = Service(executable_path, port=port)
+        self.service = Service(executable_path, port=port, quiet=quiet)
         self.service.start()
 
         RemoteWebDriver.__init__(self,

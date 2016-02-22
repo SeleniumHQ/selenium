@@ -1,16 +1,12 @@
 using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Reflection;
-using System.Text;
-using OpenQA.Selenium;
 using System.IO;
 
 namespace OpenQA.Selenium.Environment
 {
     public class EnvironmentManager
     {
-        private static readonly EnvironmentManager instance = new EnvironmentManager();
+        private static EnvironmentManager instance;
         private Type driverType;
         private Browser browser;
         private IWebDriver driver;
@@ -21,6 +17,7 @@ namespace OpenQA.Selenium.Environment
 
         private EnvironmentManager()
         {
+            string configFile = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
             // TODO(andre.nogueira): Error checking to guard against malformed config files
             string driverClassName = GetSettingValue("Driver");
             string assemblyName = GetSettingValue("Assembly");
@@ -31,18 +28,7 @@ namespace OpenQA.Selenium.Environment
 
             urlBuilder = new UrlBuilder();
 
-            Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            string assemblyLocation = executingAssembly.Location;
-
-            // If we're shadow copying,. fiddle with 
-            // the codebase instead 
-            if (AppDomain.CurrentDomain.ShadowCopyFiles)
-            {
-                Uri uri = new Uri(executingAssembly.CodeBase);
-                assemblyLocation = uri.LocalPath;
-            }
-
-            string currentDirectory = Path.GetDirectoryName(assemblyLocation);
+            string currentDirectory = this.CurrentDirectory;
             DirectoryInfo info = new DirectoryInfo(currentDirectory);
             while (info != info.Root && string.Compare(info.Name, "build", StringComparison.OrdinalIgnoreCase) != 0)
             {
@@ -80,6 +66,26 @@ namespace OpenQA.Selenium.Environment
             get { return browser; }
         }
 
+        public string CurrentDirectory
+        {
+            get
+            {
+                Assembly executingAssembly = Assembly.GetExecutingAssembly();
+                string assemblyLocation = executingAssembly.Location;
+
+                // If we're shadow copying,. fiddle with 
+                // the codebase instead 
+                if (AppDomain.CurrentDomain.ShadowCopyFiles)
+                {
+                    Uri uri = new Uri(executingAssembly.CodeBase);
+                    assemblyLocation = uri.LocalPath;
+                }
+
+                string currentDirectory = Path.GetDirectoryName(assemblyLocation);
+                return currentDirectory;
+            }
+        }
+        
         public TestWebServer WebServer
         {
             get { return webServer; }
@@ -132,6 +138,11 @@ namespace OpenQA.Selenium.Environment
         {
             get
             {
+                if (instance == null)
+                {
+                    instance = new EnvironmentManager();
+                }
+
                 return instance;
             }
         }

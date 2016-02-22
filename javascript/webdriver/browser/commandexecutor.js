@@ -1,3 +1,20 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 /**
  * @fileoverview Defines a pure-JavaScript CommandExecutor implementation.
  */
@@ -82,26 +99,22 @@ webdriver.browser.CommandExecutor.prototype.disposeInternal = function() {
 
 
 /** @override */
-webdriver.browser.CommandExecutor.prototype.execute = function(
-    command, callback) {
+webdriver.browser.CommandExecutor.prototype.execute = function(command) {
   if (this.isDisposed()) {
-    callback(Error('Executor was disposed'));
-    return;
+    return webdriver.promise.rejected(Error('Executor was disposed'));
   }
 
   if (this.window_.closed) {
-    callback(new bot.Error(
+    return webdriver.promise.rejected(new bot.Error(
         bot.ErrorCode.NO_SUCH_WINDOW, 'The window has closed'));
-    return;
   }
 
   var handler = webdriver.browser.CommandExecutor.COMMAND_MAP_[
       command.getName()];
   if (!handler) {
-    callback(new bot.Error(
+    return webdriver.promise.rejected(new bot.Error(
         bot.ErrorCode.UNKNOWN_COMMAND,
         'Unsupported command: ' + command.getName()));
-    return;
   }
 
   var executeCommand = goog.bind(function() {
@@ -112,20 +125,15 @@ webdriver.browser.CommandExecutor.prototype.execute = function(
       callback(ex);
       return;
     }
-
-    // TODO: abort on dispose?
-    webdriver.promise.when(
-        result,
-        bot.response.createResponse,
-        bot.response.createErrorResponse).
-        then(goog.partial(callback, null));
+    return webdriver.promise.fulfilled(result)
+        .then(bot.response.createResponse, bot.response.createErrorResponse);
   }, this);
 
   if (this.loadingDeferred_) {
     goog.log.info(this.log_, 'Waiting for window to load');
-    this.loadingDeferred_.then(executeCommand, callback);
+    return this.loadingDeferred_.then(executeCommand);
   } else {
-    executeCommand();
+    return executeCommand();
   }
 };
 
@@ -430,6 +438,21 @@ webdriver.browser.CommandExecutor.prototype.sendKeysToElement_ = function(
 
 
 /**
+ * Tests whether an element is displayed on the page.
+ * @param {!webdriver.Command} command The command.
+ * @return {boolean} Whether the element is displayed.
+ * @throws {bot.Error} If the element reference is no longer valid.
+ * @private
+ */
+webdriver.browser.CommandExecutor.prototype.isElementDisplayed_ = function(
+    command) {
+  var id = command.getParameter('id')[bot.inject.ELEMENT_KEY];
+  var el = bot.inject.cache.getElement(id, this.window_.document);
+  return bot.dom.isShown(el);
+};
+
+
+/**
  * Executes a user-supplier snippet of JavaScript in the context of the page
  * under test.
  * @param {!webdriver.Command} command The command.
@@ -530,4 +553,5 @@ map[name.GET_ELEMENT_ATTRIBUTE] = proto.getElementAttribute_;
 map[name.GET_ELEMENT_TEXT] = proto.getElementText_;
 map[name.GET_ELEMENT_TAG_NAME] = proto.getElementTagName_;
 map[name.SEND_KEYS_TO_ELEMENT] = proto.sendKeysToElement_;
+map[name.IS_ELEMENT_DISPLAYED] = proto.isElementDisplayed_;
 });  // goog.scope

@@ -1,19 +1,19 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.internal;
 
@@ -21,8 +21,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.openqa.grid.common.RegistrationRequest.APP;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.mock.GridHelper;
@@ -41,10 +41,10 @@ public class PriorityTestLoad {
 
   private final static int MAX = 100;
 
-  private static Registry registry;
+  private Registry registry;
 
   // priority rule : the request with the highest priority goes first.
-  private static Prioritizer highestNumberHasPriority = new Prioritizer() {
+  private Prioritizer highestNumberHasPriority = new Prioritizer() {
     public int compareTo(Map<String, Object> a, Map<String, Object> b) {
       int priorityA = Integer.parseInt(a.get("_priority").toString());
       int priorityB = Integer.parseInt(b.get("_priority").toString());
@@ -52,25 +52,28 @@ public class PriorityTestLoad {
     }
   };
 
-  static Map<String, Object> ff = new HashMap<String, Object>();
-  static RemoteProxy p1;
-  static List<RequestHandler> requests = new ArrayList<RequestHandler>();
+  private Map<String, Object> ff = new HashMap<>();
+  private List<RequestHandler> requests = new ArrayList<>();
+
+  private volatile boolean reqDone = false;
 
   /**
    * create a hub with 1 FF
-   * 
+   *
    * @throws InterruptedException
    */
-  @BeforeClass
-  public static void setup() throws InterruptedException {
+  @Before
+  public void setup() throws InterruptedException {
     registry = Registry.newInstance();
     registry.setPrioritizer(highestNumberHasPriority);
     ff.put(APP, "FF");
-    p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);
+    RemoteProxy
+      p1 =
+      RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);
     registry.add(p1);
 
     for (int i = 1; i <= MAX; i++) {
-      Map<String, Object> cap = new HashMap<String, Object>();
+      Map<String, Object> cap = new HashMap<>();
       cap.put(APP, "FF");
       cap.put("_priority", i);
       RequestHandler req = GridHelper.createNewSessionHandler(registry, cap);
@@ -102,9 +105,6 @@ public class PriorityTestLoad {
     registry.terminateSynchronousFOR_TEST_ONLY(session);
   }
 
-  private static volatile boolean reqDone = false;
-
-
   // validate that the one with priority MAX has been assigned a proxy
   @Test(timeout = 5000)
   public void validate() throws InterruptedException {
@@ -121,8 +121,8 @@ public class PriorityTestLoad {
         MAX);
   }
 
-  @AfterClass
-  public static void teardown() {
+  @After
+  public void teardown() {
     registry.stop();
   }
 

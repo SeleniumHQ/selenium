@@ -27,18 +27,19 @@ goog.require('goog.Disposable');
 /**
  * Class for unit testing code that uses Math.random.
  *
- * @param {Array.<number>} sequence The sequence of numbers to return.
+ * @param {Array<number>} sequence The sequence of numbers to return.
  * @param {boolean=} opt_install Whether to install the MockRandom at
  *     construction time.
  * @extends {goog.Disposable}
  * @constructor
+ * @final
  */
 goog.testing.MockRandom = function(sequence, opt_install) {
   goog.Disposable.call(this);
 
   /**
    * The sequence of numbers to be returned by calls to random()
-   * @type {Array.<number>}
+   * @type {Array<number>}
    * @private
    */
   this.sequence_ = sequence || [];
@@ -49,6 +50,14 @@ goog.testing.MockRandom = function(sequence, opt_install) {
    * @private
    */
   this.mathRandom_ = Math.random;
+
+  /**
+   * Whether to throw an exception when Math.random() is called when there is
+   * nothing left in the sequence.
+   * @type {boolean}
+   * @private
+   */
+  this.strictlyFromSequence_ = false;
 
   if (opt_install) {
     this.install();
@@ -78,10 +87,18 @@ goog.testing.MockRandom.prototype.install = function() {
 
 /**
  * @return {number} The next number in the sequence. If there are no more values
- *     left, this will return a random number.
+ *     left, this will return a random number, unless
+ *     {@code this.strictlyFromSequence_} is true, in which case an error will
+ *     be thrown.
  */
 goog.testing.MockRandom.prototype.random = function() {
-  return this.hasMoreValues() ? this.sequence_.shift() : this.mathRandom_();
+  if (this.hasMoreValues()) {
+    return this.sequence_.shift();
+  }
+  if (this.strictlyFromSequence_) {
+    throw new Error('No numbers left in sequence.');
+  }
+  return this.mathRandom_();
 };
 
 
@@ -95,7 +112,7 @@ goog.testing.MockRandom.prototype.hasMoreValues = function() {
 
 /**
  * Injects new numbers into the beginning of the sequence.
- * @param {Array.<number>|number} values Number or array of numbers to inject.
+ * @param {Array<number>|number} values Number or array of numbers to inject.
  */
 goog.testing.MockRandom.prototype.inject = function(values) {
   if (goog.isArray(values)) {
@@ -123,4 +140,14 @@ goog.testing.MockRandom.prototype.disposeInternal = function() {
   delete this.sequence_;
   delete this.mathRandom_;
   goog.testing.MockRandom.superClass_.disposeInternal.call(this);
+};
+
+
+/**
+ * @param {boolean} strictlyFromSequence Whether to throw an exception when
+ *     Math.random() is called when there is nothing left in the sequence.
+ */
+goog.testing.MockRandom.prototype.setStrictlyFromSequence =
+    function(strictlyFromSequence) {
+  this.strictlyFromSequence_ = strictlyFromSequence;
 };

@@ -16,12 +16,12 @@
  * @fileoverview Utilities for manipulating a form and elements.
  *
  * @author arv@google.com (Erik Arvidsson)
- * @author jonp@google.com (Jon Perlow)
- * @author elsigh@google.com (Lindsey Simon)
  */
 
 goog.provide('goog.dom.forms');
 
+goog.require('goog.dom.InputType');
+goog.require('goog.dom.TagName');
 goog.require('goog.structs.Map');
 
 
@@ -29,8 +29,8 @@ goog.require('goog.structs.Map');
  * Returns form data as a map of name to value arrays. This doesn't
  * support file inputs.
  * @param {HTMLFormElement} form The form.
- * @return {!goog.structs.Map} A map of the form data as form name to arrays of
- *     values.
+ * @return {!goog.structs.Map<string, !Array<string>>} A map of the form data
+ *     as field name to arrays of values.
  */
 goog.dom.forms.getFormDataMap = function(form) {
   var map = new goog.structs.Map();
@@ -75,20 +75,20 @@ goog.dom.forms.getFormDataHelper_ = function(form, result, fnAppend) {
         (el.form != form) ||
         el.disabled ||
         // HTMLFieldSetElement has a form property but no value.
-        el.tagName.toLowerCase() == 'fieldset') {
+        el.tagName == goog.dom.TagName.FIELDSET) {
       continue;
     }
 
     var name = el.name;
     switch (el.type.toLowerCase()) {
-      case 'file':
+      case goog.dom.InputType.FILE:
         // file inputs are not supported
-      case 'submit':
-      case 'reset':
-      case 'button':
+      case goog.dom.InputType.SUBMIT:
+      case goog.dom.InputType.RESET:
+      case goog.dom.InputType.BUTTON:
         // don't submit these
         break;
-      case 'select-multiple':
+      case goog.dom.InputType.SELECT_MULTIPLE:
         var values = goog.dom.forms.getValue(el);
         if (values != null) {
           for (var value, j = 0; value = values[j]; j++) {
@@ -105,9 +105,10 @@ goog.dom.forms.getFormDataHelper_ = function(form, result, fnAppend) {
   }
 
   // input[type=image] are not included in the elements collection
-  var inputs = form.getElementsByTagName('input');
+  var inputs = form.getElementsByTagName(goog.dom.TagName.INPUT);
   for (var input, i = 0; input = inputs[i]; i++) {
-    if (input.form == form && input.type.toLowerCase() == 'image') {
+    if (input.form == form &&
+        input.type.toLowerCase() == goog.dom.InputType.IMAGE) {
       name = input.name;
       fnAppend(result, name, input.value);
       fnAppend(result, name + '.x', '0');
@@ -119,7 +120,7 @@ goog.dom.forms.getFormDataHelper_ = function(form, result, fnAppend) {
 
 /**
  * Adds the name/value pair to the map.
- * @param {goog.structs.Map} map The map to add to.
+ * @param {!goog.structs.Map<string, !Array<string>>} map The map to add to.
  * @param {string} name The name.
  * @param {string} value The value.
  * @private
@@ -136,7 +137,7 @@ goog.dom.forms.addFormDataToMap_ = function(map, name, value) {
 
 /**
  * Adds a name/value pair to an string buffer array in the form 'name=value'.
- * @param {Array} sb The string buffer array for storing data.
+ * @param {Array<string>} sb The string buffer array for storing data.
  * @param {string} name The name.
  * @param {string} value The value.
  * @private
@@ -154,7 +155,8 @@ goog.dom.forms.addFormDataToStringBuffer_ = function(sb, name, value) {
 goog.dom.forms.hasFileInput = function(form) {
   var els = form.elements;
   for (var el, i = 0; el = els[i]; i++) {
-    if (!el.disabled && el.type && el.type.toLowerCase() == 'file') {
+    if (!el.disabled && el.type &&
+        el.type.toLowerCase() == goog.dom.InputType.FILE) {
       return true;
     }
   }
@@ -169,7 +171,7 @@ goog.dom.forms.hasFileInput = function(form) {
  */
 goog.dom.forms.setDisabled = function(el, disabled) {
   // disable all elements in a form
-  if (el.tagName == 'FORM') {
+  if (el.tagName == goog.dom.TagName.FORM) {
     var els = el.elements;
     for (var i = 0; el = els[i]; i++) {
       goog.dom.forms.setDisabled(el, disabled);
@@ -223,7 +225,7 @@ goog.dom.forms.hasValueByName = function(form, name) {
 /**
  * Gets the current value of any element with a type.
  * @param {Element} el The element.
- * @return {string|Array.<string>|null} The current value of the element
+ * @return {string|Array<string>|null} The current value of the element
  *     (or null).
  */
 goog.dom.forms.getValue = function(el) {
@@ -232,12 +234,12 @@ goog.dom.forms.getValue = function(el) {
     return null;
   }
   switch (type.toLowerCase()) {
-    case 'checkbox':
-    case 'radio':
+    case goog.dom.InputType.CHECKBOX:
+    case goog.dom.InputType.RADIO:
       return goog.dom.forms.getInputChecked_(el);
-    case 'select-one':
+    case goog.dom.InputType.SELECT_ONE:
       return goog.dom.forms.getSelectSingle_(el);
-    case 'select-multiple':
+    case goog.dom.InputType.SELECT_MULTIPLE:
       return goog.dom.forms.getSelectMultiple_(el);
     default:
       return goog.isDef(el.value) ? el.value : null;
@@ -249,6 +251,7 @@ goog.dom.forms.getValue = function(el) {
  * Alias for goog.dom.form.element.getValue
  * @type {Function}
  * @deprecated Use {@link goog.dom.forms.getValue} instead.
+ * @suppress {missingProvide}
  */
 goog.dom.$F = goog.dom.forms.getValue;
 
@@ -260,7 +263,7 @@ goog.dom.$F = goog.dom.forms.getValue;
  * @param {HTMLFormElement} form The form element.
  * @param {string} name Name of an input to the form.
  *
- * @return {Array.<string>|string|null} The value of the form element, or
+ * @return {Array<string>|string|null} The value of the form element, or
  *     null if the form element does not exist or has no value.
  */
 goog.dom.forms.getValueByName = function(form, name) {
@@ -308,7 +311,7 @@ goog.dom.forms.getSelectSingle_ = function(el) {
 /**
  * Gets the current value of a select-multiple element.
  * @param {Element} el The element.
- * @return {Array.<string>?} The value of the form element (or null).
+ * @return {Array<string>?} The value of the form element (or null).
  * @private
  */
 goog.dom.forms.getSelectMultiple_ = function(el) {
@@ -333,18 +336,18 @@ goog.dom.forms.setValue = function(el, opt_value) {
   var type = el.type;
   if (goog.isDef(type)) {
     switch (type.toLowerCase()) {
-      case 'checkbox':
-      case 'radio':
+      case goog.dom.InputType.CHECKBOX:
+      case goog.dom.InputType.RADIO:
         goog.dom.forms.setInputChecked_(el,
             /** @type {string} */ (opt_value));
         break;
-      case 'select-one':
+      case goog.dom.InputType.SELECT_ONE:
         goog.dom.forms.setSelectSingle_(el,
             /** @type {string} */ (opt_value));
         break;
-      case 'select-multiple':
+      case goog.dom.InputType.SELECT_MULTIPLE:
         goog.dom.forms.setSelectMultiple_(el,
-            /** @type {Array} */ (opt_value));
+            /** @type {Array<string>} */ (opt_value));
         break;
       default:
         el.value = goog.isDefAndNotNull(opt_value) ? opt_value : '';
@@ -364,7 +367,7 @@ goog.dom.forms.setValue = function(el, opt_value) {
  * @private
  */
 goog.dom.forms.setInputChecked_ = function(el, opt_value) {
-  el.checked = opt_value ? 'checked' : null;
+  el.checked = opt_value;
 };
 
 
@@ -391,7 +394,7 @@ goog.dom.forms.setSelectSingle_ = function(el, opt_value) {
 /**
  * Sets the value of a select-multiple element.
  * @param {Element} el The element.
- * @param {Array.<string>|string=} opt_value The value of the selected option
+ * @param {Array<string>|string=} opt_value The value of the selected option
  *     element(s).
  * @private
  */

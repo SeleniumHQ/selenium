@@ -17,7 +17,6 @@
  *
  * @author arv@google.com (Erik Arvidsson)
  * @author eae@google.com (Emil A Eklund)
- * @author jonp@google.com (Jon Perlow)
  *
  * This is a based on the webfx tree control. See file comment in
  * treecontrol.js.
@@ -31,7 +30,7 @@ goog.require('goog.ui.tree.BaseNode');
 
 /**
  * A single node in the tree.
- * @param {string} html The html content of the node label.
+ * @param {string|!goog.html.SafeHtml} html The html content of the node label.
  * @param {Object=} opt_config The configuration for the tree. See
  *    goog.ui.tree.TreeControl.defaultConfig. If not specified, a default config
  *    will be used.
@@ -46,21 +45,13 @@ goog.inherits(goog.ui.tree.TreeNode, goog.ui.tree.BaseNode);
 
 
 /**
- * The tree the item is in. Cached on demand from the parent.
- * @type {goog.ui.tree.TreeControl?}
- * @private
- */
-goog.ui.tree.TreeNode.prototype.tree_ = null;
-
-
-/**
  * Returns the tree.
- * @return {goog.ui.tree.TreeControl?} The tree.
+ * @return {?goog.ui.tree.TreeControl} The tree.
  * @override
  */
 goog.ui.tree.TreeNode.prototype.getTree = function() {
-  if (this.tree_) {
-    return this.tree_;
+  if (this.tree) {
+    return this.tree;
   }
   var parent = this.getParent();
   if (parent) {
@@ -81,11 +72,13 @@ goog.ui.tree.TreeNode.prototype.getTree = function() {
  */
 goog.ui.tree.TreeNode.prototype.getCalculatedIconClass = function() {
   var expanded = this.getExpanded();
-  if (expanded && this.expandedIconClass_) {
-    return this.expandedIconClass_;
+  var expandedIconClass = this.getExpandedIconClass();
+  if (expanded && expandedIconClass) {
+    return expandedIconClass;
   }
-  if (!expanded && this.iconClass_) {
-    return this.iconClass_;
+  var iconClass = this.getIconClass();
+  if (!expanded && iconClass) {
+    return iconClass;
   }
 
   // fall back on default icons

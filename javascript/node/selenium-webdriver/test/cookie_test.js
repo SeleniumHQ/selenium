@@ -1,17 +1,19 @@
-// Copyright 2013 Selenium committers
-// Copyright 2013 Software Freedom Conservancy
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-//     You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 'use strict';
 
@@ -20,13 +22,20 @@ var assert = require('assert'),
 
 var test = require('../lib/test'),
     fileserver = require('../lib/test/fileserver'),
-    Browser = test.Browser,
+    Browser = require('..').Browser,
     Pages = test.Pages;
 
 
 test.suite(function(env) {
   var driver;
-  beforeEach(function() { driver = env.driver; });
+
+  test.before(function() {
+    driver = env.builder().build();
+  });
+
+  test.after(function() {
+    driver.quit();
+  });
 
   test.ignore(env.browsers(Browser.SAFARI)).  // Cookie handling is broken.
   describe('Cookie Management;', function() {
@@ -56,7 +65,7 @@ test.suite(function(env) {
       assertHasCookies(cookie1, cookie2);
     });
 
-    test.ignore(env.browsers(Browser.OPERA)).
+    test.ignore(env.browsers(Browser.IE)).
     it('only returns cookies visible to the current page', function() {
       var cookie1 = createCookieSpec();
       var cookie2 = createCookieSpec();
@@ -141,8 +150,7 @@ test.suite(function(env) {
       assertHasCookies();
     });
 
-    test.ignore(env.browsers(
-        Browser.ANDROID, Browser.FIREFOX, Browser.IE, Browser.OPERA)).
+    test.ignore(env.browsers(Browser.ANDROID, Browser.FIREFOX, Browser.IE)).
     it('should retain cookie expiry', function() {
       var cookie = createCookieSpec();
       var expirationDelay = 5 * 1000;

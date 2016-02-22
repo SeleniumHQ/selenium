@@ -19,6 +19,7 @@
  * This is a goog.editor.Field, but with blending and sizing capabilities,
  * and avoids using an iframe whenever possible.
  *
+ * @author nicksantos@google.com (Nick Santos)
  * @see ../demos/editor/seamlessfield.html
  */
 
@@ -26,10 +27,10 @@
 goog.provide('goog.editor.SeamlessField');
 
 goog.require('goog.cssom.iframe.style');
-goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('goog.dom.Range');
 goog.require('goog.dom.TagName');
+goog.require('goog.dom.safe');
 goog.require('goog.editor.BrowserFeature');
 goog.require('goog.editor.Field');
 goog.require('goog.editor.icontent');
@@ -38,6 +39,9 @@ goog.require('goog.editor.icontent.FieldStyleInfo');
 goog.require('goog.editor.node');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('goog.html.uncheckedconversions');
+goog.require('goog.log');
+goog.require('goog.string.Const');
 goog.require('goog.style');
 
 
@@ -64,7 +68,7 @@ goog.inherits(goog.editor.SeamlessField, goog.editor.Field);
  * @override
  */
 goog.editor.SeamlessField.prototype.logger =
-    goog.debug.Logger.getLogger('goog.editor.SeamlessField');
+    goog.log.getLogger('goog.editor.SeamlessField');
 
 // Functions dealing with field sizing.
 
@@ -202,7 +206,7 @@ goog.editor.SeamlessField.prototype.sizeIframeToBodyHeightGecko_ = function() {
 goog.editor.SeamlessField.prototype.getIframeBodyHeightGecko_ = function() {
   var ifr = this.getEditableIframe();
   var body = ifr.contentDocument.body;
-  var htmlElement = body.parentNode;
+  var htmlElement = /** @type {!HTMLElement} */ (body.parentNode);
 
 
   // If the iframe's height is 0, then the offsetHeight/scrollHeight of the
@@ -268,7 +272,7 @@ goog.editor.SeamlessField.prototype.sizeIframeToWrapperGecko_ = function() {
     var resized = false;
     if (ifr && field) {
       var fieldPaddingBox;
-      var widthDiv = ifr.parentNode;
+      var widthDiv = /** @type {!HTMLElement} */ (ifr.parentNode);
 
       var width = widthDiv.offsetWidth;
       if (parseInt(goog.style.getStyle(ifr, 'width'), 10) != width) {
@@ -417,7 +421,7 @@ goog.editor.SeamlessField.prototype.inheritBlendedCSS = function() {
   }
   var field = this.getElement();
   var head = goog.dom.getDomHelper(field).getElementsByTagNameAndClass(
-      'head')[0];
+      goog.dom.TagName.HEAD)[0];
   if (head) {
     // We created this <head>, and we know the only thing we put in there
     // is a <style> block.  So it's safe to blow away all the children
@@ -679,7 +683,11 @@ goog.editor.SeamlessField.prototype.attachIframe = function(iframe) {
     var doc = iframe.contentWindow.document;
     if (goog.editor.node.isStandardsMode(iframe.ownerDocument)) {
       doc.open();
-      doc.write('<!DOCTYPE HTML><html></html>');
+      var emptyHtml = goog.html.uncheckedconversions
+          .safeHtmlFromStringKnownToSatisfyTypeContract(
+              goog.string.Const.from('HTML from constant string'),
+              '<!DOCTYPE HTML><html></html>');
+      goog.dom.safe.documentWrite(doc, emptyHtml);
       doc.close();
     }
   }
@@ -734,5 +742,5 @@ goog.editor.SeamlessField.prototype.clearListeners = function() {
   goog.events.unlistenByKey(this.listenForDragOverEventKey_);
   goog.events.unlistenByKey(this.listenForIframeLoadEventKey_);
 
-  goog.base(this, 'clearListeners');
+  goog.editor.SeamlessField.base(this, 'clearListeners');
 };

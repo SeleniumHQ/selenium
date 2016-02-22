@@ -1,5 +1,0 @@
-prebuilt_jar(name = 'guava-libraries',
-  binary_jar = 'guava-15.0.jar',
-  source_jar = 'guava-15.0-sources.jar',
-  visibility = ['PUBLIC'],
-)

@@ -32,6 +32,7 @@ goog.require('goog.testing.messaging.MockMessageChannel');
  *     the mock message channels.
  * @constructor
  * @implements {goog.messaging.PortNetwork}
+ * @final
  */
 goog.testing.messaging.MockPortNetwork = function(mockControl) {
   /**
@@ -43,7 +44,7 @@ goog.testing.messaging.MockPortNetwork = function(mockControl) {
 
   /**
    * The mock ports that have been created.
-   * @type {!Object.<!goog.testing.messaging.MockMessageChannel>}
+   * @type {!Object<!goog.testing.messaging.MockMessageChannel>}
    * @private
    */
   this.ports_ = {};

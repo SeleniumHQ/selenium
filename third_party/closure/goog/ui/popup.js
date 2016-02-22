@@ -15,30 +15,14 @@
 /**
  * @fileoverview Definition of the Popup class.
  *
+ * @author eae@google.com (Emil A Eklund)
  * @see ../demos/popup.html
  */
 
 goog.provide('goog.ui.Popup');
-goog.provide('goog.ui.Popup.AbsolutePosition');
-goog.provide('goog.ui.Popup.AnchoredPosition');
-goog.provide('goog.ui.Popup.AnchoredViewPortPosition');
-goog.provide('goog.ui.Popup.ClientPosition');
-goog.provide('goog.ui.Popup.Corner');
-goog.provide('goog.ui.Popup.Overflow');
-goog.provide('goog.ui.Popup.ViewPortClientPosition');
-goog.provide('goog.ui.Popup.ViewPortPosition');
 
 goog.require('goog.math.Box');
-goog.require('goog.positioning');
-goog.require('goog.positioning.AbsolutePosition');
-goog.require('goog.positioning.AnchoredPosition');
-goog.require('goog.positioning.AnchoredViewportPosition');
-goog.require('goog.positioning.ClientPosition');
 goog.require('goog.positioning.Corner');
-goog.require('goog.positioning.Overflow');
-goog.require('goog.positioning.OverflowStatus');
-goog.require('goog.positioning.ViewportClientPosition');
-goog.require('goog.positioning.ViewportPosition');
 goog.require('goog.style');
 goog.require('goog.ui.PopupBase');
 
@@ -74,35 +58,13 @@ goog.ui.Popup = function(opt_element, opt_position) {
    *
    * @type {goog.positioning.AbstractPosition|undefined}
    * @protected
-   * @suppress {underscore}
+   * @suppress {underscore|visibility}
    */
   this.position_ = opt_position || undefined;
   goog.ui.PopupBase.call(this, opt_element);
 };
 goog.inherits(goog.ui.Popup, goog.ui.PopupBase);
-
-
-/**
- * Enum for representing an element corner for positioning the popup.
- *
- * @enum {number}
- *
- * @deprecated Use {@link goog.positioning.Corner} instead, this alias will be
- *     removed at the end of Q1 2009.
- */
-goog.ui.Popup.Corner = goog.positioning.Corner;
-
-
-/**
- * Enum for representing position handling in cases where the element would be
- * positioned outside the viewport.
- *
- * @enum {number}
- *
- * @deprecated Use {@link goog.positioning.Overflow} instead, this alias will be
- *     removed at the end of Q1 2009.
- */
-goog.ui.Popup.Overflow = goog.positioning.Overflow;
+goog.tagUnsealableClass(goog.ui.Popup);
 
 
 /**
@@ -221,126 +183,3 @@ goog.ui.Popup.prototype.reposition = function() {
     goog.style.setElementShown(el, false);
   }
 };
-
-
-
-/**
- * Encapsulates a popup position where the popup is anchored at a corner of
- * an element.
- *
- * When using AnchoredPosition, it is recommended that the popup element
- * specified in the Popup constructor or Popup.setElement be absolutely
- * positioned.
- *
- * @param {Element} element The element to anchor the popup at.
- * @param {goog.positioning.Corner} corner The corner of the element to anchor
- *     the popup at.
- * @constructor
- * @extends {goog.positioning.AbstractPosition}
- *
- * @deprecated Use {@link goog.positioning.AnchoredPosition} instead, this
- *     alias will be removed at the end of Q1 2009.
- */
-goog.ui.Popup.AnchoredPosition = goog.positioning.AnchoredPosition;
-
-
-
-/**
- * Encapsulates a popup position where the popup is anchored at a corner of
- * an element. The corners are swapped if dictated by the viewport. For instance
- * if a popup is anchored with its top left corner to the bottom left corner of
- * the anchor the popup is either displayed below the anchor (as specified) or
- * above it if there's not enough room to display it below.
- *
- * When using AnchoredPosition, it is recommended that the popup element
- * specified in the Popup constructor or Popup.setElement be absolutely
- * positioned.
- *
- * @param {Element} element The element to anchor the popup at.
- * @param {goog.positioning.Corner} corner The corner of the element to anchor
- *    the popup at.
- * @param {boolean=} opt_adjust Whether the positioning should be adjusted until
- *    the element fits inside the viewport even if that means that the anchored
- *    corners are ignored.
- * @constructor
- * @extends {goog.ui.Popup.AnchoredPosition}
- *
- * @deprecated Use {@link goog.positioning.AnchoredViewportPosition} instead,
- *     this alias will be removed at the end of Q1 2009.
- */
-goog.ui.Popup.AnchoredViewPortPosition =
-    goog.positioning.AnchoredViewportPosition;
-
-
-
-/**
- * Encapsulates a popup position where the popup absolutely positioned by
- * setting the left/top style elements directly to the specified values.
- * The position is generally relative to the element's offsetParent. Normally,
- * this is the document body, but can be another element if the popup element
- * is scoped by an element with relative position.
- *
- * @param {number|!goog.math.Coordinate} arg1 Left position or coordinate.
- * @param {number=} opt_arg2 Top position.
- * @constructor
- * @extends {goog.positioning.AbstractPosition}
- *
- * @deprecated Use {@link goog.positioning.AbsolutePosition} instead, this alias
- *     will be removed at the end of Q1 2009.
- */
-goog.ui.Popup.AbsolutePosition = goog.positioning.AbsolutePosition;
-
-
-
-/**
- * Encapsulates a popup position where the popup is positioned according to
- * coordinates relative to the  element's view port (page). This calculates the
- * correct position to use even if the element is relatively positioned to some
- * other element.
- *
- * @param {number|!goog.math.Coordinate} arg1 Left position or coordinate.
- * @param {number=} opt_arg2 Top position.
- * @constructor
- * @extends {goog.ui.Popup.AbsolutePosition}
- *
- * @deprecated Use {@link goog.positioning.ViewPortPosition} instead, this alias
- *     will be removed at the end of Q1 2009.
- */
-goog.ui.Popup.ViewPortPosition = goog.positioning.ViewportPosition;
-
-
-
-/**
- * Encapsulates a popup position where the popup is positioned relative to the
- * window (client) coordinates. This calculates the correct position to
- * use even if the element is relatively positioned to some other element. This
- * is for trying to position an element at the spot of the mouse cursor in
- * a MOUSEMOVE event. Just use the event.clientX and event.clientY as the
- * parameters.
- *
- * @param {number|!goog.math.Coordinate} arg1 Left position or coordinate.
- * @param {number=} opt_arg2 Top position.
- * @constructor
- * @extends {goog.ui.Popup.AbsolutePosition}
- *
- * @deprecated Use {@link goog.positioning.ClientPosition} instead, this alias
- *     will be removed at the end of Q1 2009.
- */
-goog.ui.Popup.ClientPosition = goog.positioning.ClientPosition;
-
-
-
-/**
- * Encapsulates a popup position where the popup is positioned relative to the
- * window (client) coordinates, and made to stay within the viewport.
- *
- * @param {number|!goog.math.Coordinate} arg1 Left position or coordinate.
- * @param {number=} opt_arg2 Top position if arg1 is a number representing the
- *     left position, ignored otherwise.
- * @constructor
- * @extends {goog.ui.Popup.ClientPosition}
- *
- * @deprecated Use {@link goog.positioning.ViewPortClientPosition} instead, this
- *     alias will be removed at the end of Q1 2009.
- */
-goog.ui.Popup.ViewPortClientPosition = goog.positioning.ViewportClientPosition;

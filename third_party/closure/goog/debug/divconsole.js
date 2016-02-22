@@ -21,6 +21,9 @@ goog.provide('goog.debug.DivConsole');
 
 goog.require('goog.debug.HtmlFormatter');
 goog.require('goog.debug.LogManager');
+goog.require('goog.dom.TagName');
+goog.require('goog.dom.safe');
+goog.require('goog.html.SafeHtml');
 goog.require('goog.style');
 
 
@@ -90,12 +93,16 @@ goog.debug.DivConsole.prototype.setCapturing = function(capturing) {
  * @param {goog.debug.LogRecord} logRecord The log entry.
  */
 goog.debug.DivConsole.prototype.addLogRecord = function(logRecord) {
+  if (!logRecord) {
+    return;
+  }
   var scroll = this.element_.scrollHeight - this.element_.scrollTop -
       this.element_.clientHeight <= 100;
 
-  var div = this.elementOwnerDocument_.createElement('div');
+  var div = this.elementOwnerDocument_.createElement(goog.dom.TagName.DIV);
   div.className = 'logmsg';
-  div.innerHTML = this.formatter_.formatRecord(logRecord);
+  goog.dom.safe.setInnerHtml(
+      div, this.formatter_.formatRecordAsHtml(logRecord));
   this.element_.appendChild(div);
 
   if (scroll) {
@@ -107,7 +114,7 @@ goog.debug.DivConsole.prototype.addLogRecord = function(logRecord) {
 /**
  * Gets the formatter for outputting to the console. The default formatter
  * is an instance of goog.debug.HtmlFormatter
- * @return {goog.debug.Formatter} The formatter in use.
+ * @return {!goog.debug.Formatter} The formatter in use.
  */
 goog.debug.DivConsole.prototype.getFormatter = function() {
   return this.formatter_;
@@ -116,7 +123,7 @@ goog.debug.DivConsole.prototype.getFormatter = function() {
 
 /**
  * Sets the formatter for outputting to the console.
- * @param {goog.debug.Formatter} formatter The formatter to use.
+ * @param {goog.debug.HtmlFormatter} formatter The formatter to use.
  */
 goog.debug.DivConsole.prototype.setFormatter = function(formatter) {
   this.formatter_ = formatter;
@@ -127,7 +134,7 @@ goog.debug.DivConsole.prototype.setFormatter = function(formatter) {
  * Adds a separator to the debug window.
  */
 goog.debug.DivConsole.prototype.addSeparator = function() {
-  var div = this.elementOwnerDocument_.createElement('div');
+  var div = this.elementOwnerDocument_.createElement(goog.dom.TagName.DIV);
   div.className = 'logmsg logsep';
   this.element_.appendChild(div);
 };
@@ -137,5 +144,7 @@ goog.debug.DivConsole.prototype.addSeparator = function() {
  * Clears the console.
  */
 goog.debug.DivConsole.prototype.clear = function() {
-  this.element_.innerHTML = '';
+  if (this.element_) {
+    goog.dom.safe.setInnerHtml(this.element_, goog.html.SafeHtml.EMPTY);
+  }
 };

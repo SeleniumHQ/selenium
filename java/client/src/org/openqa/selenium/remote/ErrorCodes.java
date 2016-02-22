@@ -1,19 +1,19 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 
 package org.openqa.selenium.remote;
@@ -44,7 +44,7 @@ import java.util.Map;
 
 /**
  * Defines common error codes for the wire protocol.
- * 
+ *
  * @author jmleyba@gmail.com (Jason Leyba)
  */
 public class ErrorCodes {
@@ -110,16 +110,29 @@ public class ErrorCodes {
       .put(SUCCESS, "success")
       .put(TIMEOUT, "timeout")
       .put(UNABLE_TO_SET_COOKIE, "unable to set cookie")
-      .put(UNEXPECTED_ALERT_PRESENT, "no such alert") // @Beta: not sure if this is the right name
+      .put(NO_ALERT_PRESENT, "no such alert")
       .put(UNHANDLED_ERROR, "unhandled error")
       .put(UNKNOWN_COMMAND, "unknown command")
       .put(XPATH_LOOKUP_ERROR, "invalid selector")
       .build();
 
+  private static Map<String, Integer> stateToStatus;
+  static {
+    ImmutableMap.Builder<String, Integer> builder = ImmutableMap.<String, Integer>builder();
+    for (Map.Entry<Integer, String> pair : statusToState.entrySet()) {
+      // Ignore duplicate "invalid selector" codes
+      if (! pair.getValue().equals("invalid selector") || pair.getKey() == INVALID_SELECTOR_ERROR) {
+        builder.put(pair.getValue(), pair.getKey());
+      }
+    }
+    builder.put("invalid session id", NO_SUCH_SESSION); // for W3C compatibility
+    stateToStatus = builder.build();
+  }
+
   /**
    * Returns the exception type that corresponds to the given {@code statusCode}. All unrecognized
    * status codes will be mapped to {@link WebDriverException WebDriverException.class}.
-   * 
+   *
    * @param statusCode The status code to convert.
    * @return The exception type that corresponds to the provided status code or {@code null} if
    *         {@code statusCode == 0}.
@@ -179,7 +192,7 @@ public class ErrorCodes {
 
   /**
    * Converts a thrown error into the corresponding status code.
-   * 
+   *
    * @param thrown The thrown error.
    * @return The corresponding status code for the given thrown error.
    */
@@ -227,7 +240,7 @@ public class ErrorCodes {
 
   /**
    * Tests if the {@code thrown} error can be mapped to one of WebDriver's well defined error codes.
-   * 
+   *
    * @param thrown The error to test.
    * @return Whether the error can be mapped to a status code.
    */
@@ -236,8 +249,12 @@ public class ErrorCodes {
     return statusCode != SUCCESS && statusCode != UNHANDLED_ERROR;
   }
 
-  @Beta
-  public String toState(int status) {
+  public static String toState(Integer status) {
     return statusToState.get(status);
+  }
+
+  public static int toStatus(String state) {
+    Integer status = stateToStatus.get(state);
+    return status != null ? status : UNHANDLED_ERROR;
   }
 }

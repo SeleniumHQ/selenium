@@ -1,18 +1,19 @@
-/*
-Copyright 2007-2009 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.support;
 
@@ -23,18 +24,27 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.pagefactory.FieldDecorator;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.TickingClock;
+import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.lang.reflect.Field;
 import java.util.List;
 
 public class PageFactoryTest {
 
-  private WebDriver driver = null;
+  private WebDriver driver;
 
   @Test
   public void shouldProxyElementsInAnInstantiatedPage() {
@@ -141,7 +151,7 @@ public class PageFactoryTest {
 
     assertThat(page.objects, is(nullValue()));
   }
-  
+
   @Test
   public void shouldNotDecorateUnTypedLists() {
     UnmarkedListPage page = new UnmarkedListPage();
@@ -173,6 +183,21 @@ public class PageFactoryTest {
     } catch (IllegalArgumentException e) {
       // this is expected
     }
+  }
+
+  @Test(expected = TimeoutException.class)
+  public void shouldNotThrowANoSuchElementExceptionWhenUsedWithAFluentWait() {
+    driver = mock(WebDriver.class);
+    when(driver.findElement(Mockito.<By>any())).thenThrow(new NoSuchElementException("because"));
+
+    TickingClock clock = new TickingClock(10);
+    Wait<WebDriver> wait = new WebDriverWait(driver, clock, clock, 1, 1001);
+
+    PublicPage page = new PublicPage();
+    PageFactory.initElements(driver, page);
+    WebElement element = page.q;
+
+    wait.until(ExpectedConditions.visibilityOf(element));
   }
 
   public static class PublicPage {

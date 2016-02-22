@@ -6,16 +6,15 @@
   <script type="text/javascript">
     goog.require('bot.action');
     goog.require('bot.locators');
+    goog.require('goog.Promise');
     goog.require('goog.Uri');
     goog.require('goog.dom');
     goog.require('goog.events');
     goog.require('goog.events.EventType');
-    goog.require('goog.testing.AsyncTestCase');
     goog.require('goog.testing.jsunit');
   </script>
   <script type="text/javascript">
     var findElement = bot.locators.findElement;
-    var asyncTestCase = null;
 
     function checkActionCompatibility(action) {
       if (action == bot.action.tap) {
@@ -27,12 +26,10 @@
     function setUp() {
       var iframe = findElement({id: 'iframe'});
       var iframeWindow = goog.dom.getFrameContentWindow(iframe);
-      goog.events.listen(iframe, 'load', function() {
-        asyncTestCase.continueTesting();
+      return new goog.Promise(function(done) {
+        goog.events.listenOnce(iframe, 'load', done);
+        iframeWindow.location = buildAbsoluteUrl('/testdata/click_iframe.html');
       });
-
-      iframeWindow.location = buildAbsoluteUrl('/testdata/click_iframe.html');
-      asyncTestCase.waitForAsync('Waiting for the page to load');
     }
 
    function doesNotSubmitFormWhenEventDefaultPrevented(action) {
@@ -94,16 +91,14 @@
       var clickTarget = findElement({'id': 'submitForm'}, iframeDoc);
       var targetHref = buildAbsoluteUrl('/testdata/click_destination.html');
 
-      // As the iframe loads asyncronously we need to wait to check out
-      // if the url matches the expected one.
-      goog.events.listenOnce(iframe, 'load', function() {
+      return new goog.Promise(function(done) {
+        // As the iframe loads asyncronously we need to wait to check out
+        // if the url matches the expected one.
+        goog.events.listenOnce(iframe, 'load', done);
+        action(clickTarget);
+      }).then(function() {
         assertContains(targetHref, iframeWindow.location.href);
-        asyncTestCase.continueTesting();
       });
-
-      action(clickTarget);
-
-      asyncTestCase.waitForAsync('Waiting for the target frame to load');
     }
 
     var testClickSubmitExecutesDefaultHandler =
@@ -122,14 +117,12 @@
       var clickTarget = findElement({'id': 'buttonText'}, iframeDoc);
       var targetHref = buildAbsoluteUrl('/testdata/click_destination.html');
 
-      goog.events.listenOnce(iframe, 'load', function() {
+      return new goog.Promise(function(done) {
+        goog.events.listenOnce(iframe, 'load', done);
+        action(clickTarget);
+      }).then(function() {
         assertContains(targetHref, iframeWindow.location.href);
-        asyncTestCase.continueTesting();
       });
-
-      action(clickTarget);
-
-      asyncTestCase.waitForAsync('Waiting for the target frame to load');
     }
 
     var testClickSubmitButtonTag =
@@ -147,16 +140,14 @@
       var iframeWindow = goog.dom.getFrameContentWindow(iframe);
       var clickTarget = findElement({'id': 'submitForm'}, iframeDoc);
 
-      // As the iframe loads asyncronously we need to wait to check out
-      // if the url matches the expected one.
-      goog.events.listenOnce(iframe, 'load', function() {
+      return new goog.Promise(function(done) {
+        // As the iframe loads asyncronously we need to wait to check out
+        // if the url matches the expected one.
+        goog.events.listenOnce(iframe, 'load', done);
+        action(clickTarget);
+      }).then(function() {
         assertContains('submitButton=Submit', iframeWindow.location.href);
-        asyncTestCase.continueTesting();
       });
-
-      action(clickTarget);
-
-      asyncTestCase.waitForAsync('Waiting for the target frame to load');
     }
 
     var testClickFormWithCorrectSubmitButton =
@@ -174,16 +165,5 @@
 <body>
   <iframe id="iframe" src="testdata/click_iframe.html">
   </iframe>
-  <script>
-    asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
-    // Android needs a longer timeout due to emulator slowness.
-    // Opera 12 and IE9+ are sometimes slow to load new iframe pages.
-    if (goog.userAgent.product.ANDROID || bot.userAgent.IE_DOC_9) {
-      asyncTestCase.stepTimeout = 5000;
-    } else if (goog.userAgent.product.OPERA &&
-               bot.userAgent.isEngineVersion(12)) {
-      asyncTestCase.stepTimeout = 2000;
-    }
-  </script>
 </body>
 </html>

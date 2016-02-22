@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -17,7 +20,6 @@
 #ifndef WEBDRIVER_SERVER_SESSION_H_
 #define WEBDRIVER_SERVER_SESSION_H_
 
-#include <memory>
 #include <string>
 
 namespace webdriver {
@@ -32,7 +34,7 @@ class Session {
   virtual bool ExecuteCommand(const std::string& serialized_command,
                               std::string* serialized_response) = 0;
 
-  std::string session_id(void) const { return this->session_id_; }
+  //std::string session_id(void) const { return this->session_id_; }
 
  protected:
   void set_session_id(const std::string& id) { this->session_id_ = id; }
@@ -43,8 +45,6 @@ class Session {
 
   DISALLOW_COPY_AND_ASSIGN(Session);
 };
-
-typedef std::tr1::shared_ptr<Session> SessionHandle;
 
 }  // namespace webdriver
 

@@ -1,20 +1,3 @@
-node_module(
-  name = "selenium-webdriver",
-  srcdir = "selenium-webdriver",
-  deps = [
-    "//javascript/webdriver:asserts_lib",
-    "//javascript/webdriver:webdriver_lib",
-  ],
-  content_roots = [
-    "javascript",
-    "third_party/closure"
-  ],
-  resources = [
-    { "COPYING" : "/COPYING" },
-    { "third_party/closure/LICENSE" : "goog/LICENSE" },
-    { "common/src/web/" : "test/data/" },
-  ],
-  exclude_resources = [
-     "common/src/web/Bin",
-     "\.gitignore",
-  ])
+rake_task(name = "selenium-webdriver",
+  task_name = "node:deploy",
+  out = "javascript/node/selenium-webdriver")

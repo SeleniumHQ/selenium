@@ -1,18 +1,19 @@
-/*
-Copyright 2011 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.interactions;
 
@@ -25,7 +26,7 @@ public interface TouchScreen {
 
   /**
    * Allows the execution of single tap on the screen, analogous to click using a Mouse.
-   * 
+   *
    * @param where The location on the screen. Typically a {@link org.openqa.selenium.WebElement}
    */
   void singleTap(Coordinates where);
@@ -67,21 +68,21 @@ public interface TouchScreen {
 
   /**
    * Allows the execution of double tapon the screen, analogous to double click using a Mouse.
-   * 
+   *
    * @param where The coordinates of the element to double tap
    */
   void doubleTap(Coordinates where);
 
   /**
    * Allows the execution of long press gestures.
-   * 
+   *
    * @param where The coordinate of the element to long press
    */
   void longPress(Coordinates where);
 
   /**
    * Allows the view to be scrolled by an x and y offset.
-   * 
+   *
    * @param xOffset The horizontal offset relative to the viewport
    * @param yOffset The vertical offset relative to the viewport
    */
@@ -89,7 +90,7 @@ public interface TouchScreen {
 
   /**
    * Sends a flick gesture to the current view.
-   * 
+   *
    * @param xSpeed The horizontal speed in pixels/second
    * @param ySpeed The vertical speed in pixels/second
    */
@@ -97,10 +98,11 @@ public interface TouchScreen {
 
   /**
    * Allows the execution of flick gestures starting in a location's element.
-   * 
+   *
    * @param where The coordinate of the element to flick on
    * @param xOffset The x offset relative to the viewport
    * @param yOffset The y offset relative to the viewport
+   * @param speed speed to flick, 0 = normal, 1 = fast, 2 = slow
    */
   void flick(Coordinates where, int xOffset, int yOffset, int speed);
 }

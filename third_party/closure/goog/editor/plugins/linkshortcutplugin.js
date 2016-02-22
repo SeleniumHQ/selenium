@@ -20,9 +20,7 @@
 goog.provide('goog.editor.plugins.LinkShortcutPlugin');
 
 goog.require('goog.editor.Command');
-goog.require('goog.editor.Link');
 goog.require('goog.editor.Plugin');
-goog.require('goog.string');
 
 
 
@@ -30,9 +28,10 @@ goog.require('goog.string');
  * Plugin to add a keyboard shortcut for the link command
  * @constructor
  * @extends {goog.editor.Plugin}
+ * @final
  */
 goog.editor.plugins.LinkShortcutPlugin = function() {
-  goog.base(this);
+  goog.editor.plugins.LinkShortcutPlugin.base(this, 'constructor');
 };
 goog.inherits(goog.editor.plugins.LinkShortcutPlugin, goog.editor.Plugin);
 
@@ -48,7 +47,6 @@ goog.editor.plugins.LinkShortcutPlugin.prototype.getTrogClassId = function() {
  */
 goog.editor.plugins.LinkShortcutPlugin.prototype.handleKeyboardShortcut =
     function(e, key, isModifierPressed) {
-  var command;
   if (isModifierPressed && key == 'k' && !e.shiftKey) {
     var link = /** @type {goog.editor.Link?} */ (
         this.getFieldObject().execCommand(goog.editor.Command.LINK));

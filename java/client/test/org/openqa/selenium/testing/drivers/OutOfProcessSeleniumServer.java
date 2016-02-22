@@ -1,19 +1,19 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.testing.drivers;
 
@@ -47,16 +47,16 @@ public class OutOfProcessSeleniumServer {
   private String baseUrl;
   private CommandLine command;
   private boolean captureLogs = false;
-  
-  /**
-   * Creates an out of process server with log capture enabled.
-   * 
-   * @return The new server.
-   */
+
   public void enableLogCapture() {
     captureLogs = true;
   }
 
+  /**
+   * Creates an out of process server with log capture enabled.
+   *
+   * @return The new server.
+   */
   public OutOfProcessSeleniumServer start() {
     log.info("Got a request to start a new selenium server");
     if (command != null) {
@@ -82,7 +82,7 @@ public class OutOfProcessSeleniumServer {
       cmdLine.add("-captureLogsOnQuit");
     }
     command = new CommandLine(cmdLine.toArray(new String[cmdLine.size()]));
-    
+
     if (Boolean.getBoolean("webdriver.development")) {
       command.copyOutputTo(System.err);
     }
@@ -101,7 +101,7 @@ public class OutOfProcessSeleniumServer {
     } catch (MalformedURLException e) {
       throw Throwables.propagate(e);
     }
-    
+
     return this;
   }
 
@@ -138,7 +138,7 @@ public class OutOfProcessSeleniumServer {
 
     return "";
   }
-  
+
   public URL getWebDriverUrl() {
     try {
       return new URL(baseUrl + "/wd/hub");

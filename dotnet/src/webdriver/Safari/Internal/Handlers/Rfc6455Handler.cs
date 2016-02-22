@@ -1,9 +1,9 @@
 // <copyright file="Rfc6455Handler.cs" company="WebDriver Committers">
-// Copyright 2007-2012 WebDriver committers
-// Copyright 2007-2012 Google Inc.
-// Portions copyright 2012 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -17,7 +17,6 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -59,13 +58,13 @@ namespace OpenQA.Selenium.Safari.Internal.Handlers
         /// </summary>
         protected override void ProcessReceivedData()
         {
-            while (Data.Count >= 2)
+            while (this.Data.Count >= 2)
             {
-                var isFinal = (Data[0] & 128) != 0;
-                var reservedBits = Data[0] & 112;
-                var frameType = (FrameType)(Data[0] & 15);
-                var isMasked = (Data[1] & 128) != 0;
-                var length = Data[1] & 127;
+                var isFinal = (this.Data[0] & 128) != 0;
+                var reservedBits = this.Data[0] & 112;
+                var frameType = (FrameType)(this.Data[0] & 15);
+                var isMasked = (this.Data[1] & 128) != 0;
+                var length = this.Data[1] & 127;
 
                 if (!isMasked
                     || !Enum.IsDefined(typeof(FrameType), frameType)
@@ -80,24 +79,24 @@ namespace OpenQA.Selenium.Safari.Internal.Handlers
 
                 if (length == 127)
                 {
-                    if (Data.Count < index + 8)
-                    {
-                        // Not complete
-                        return;
-                    }
-                    
-                    payloadLength = Data.Skip(index).Take(8).ToArray().ToLittleEndianInt32();
-                    index += 8;
-                }
-                else if (length == 126)
-                {
-                    if (Data.Count < index + 2)
+                    if (this.Data.Count < index + 8)
                     {
                         // Not complete
                         return;
                     }
 
-                    payloadLength = Data.Skip(index).Take(2).ToArray().ToLittleEndianInt32();
+                    payloadLength = this.Data.Skip(index).Take(8).ToArray().ToLittleEndianInt32();
+                    index += 8;
+                }
+                else if (length == 126)
+                {
+                    if (this.Data.Count < index + 2)
+                    {
+                        // Not complete
+                        return;
+                    }
+
+                    payloadLength = this.Data.Skip(index).Take(2).ToArray().ToLittleEndianInt32();
                     index += 2;
                 }
                 else
@@ -105,28 +104,28 @@ namespace OpenQA.Selenium.Safari.Internal.Handlers
                     payloadLength = length;
                 }
 
-                if (Data.Count < index + 4)
+                if (this.Data.Count < index + 4)
                 {
                     // Not complete
                     return;
                 }
 
-                var maskBytes = Data.Skip(index).Take(4).ToArray();
+                var maskBytes = this.Data.Skip(index).Take(4).ToArray();
 
                 index += 4;
-                if (Data.Count < index + payloadLength)
+                if (this.Data.Count < index + payloadLength)
                 {
                     // Not complete
                     return;
                 }
 
-                var payload = Data
+                var payload = this.Data
                                 .Skip(index)
                                 .Take(payloadLength)
                                 .Select((x, i) => (byte)(x ^ maskBytes[i % 4]));
 
                 this.readState.Data.AddRange(payload);
-                Data.RemoveRange(0, index + payloadLength);
+                this.Data.RemoveRange(0, index + payloadLength);
 
                 if (frameType != FrameType.Continuation)
                 {
@@ -195,40 +194,49 @@ namespace OpenQA.Selenium.Safari.Internal.Handlers
 
         private static byte[] ConstructFrame(byte[] payload, FrameType frameType)
         {
-            var memoryStream = new MemoryStream();
-            byte op = Convert.ToByte(Convert.ToByte(frameType, CultureInfo.InvariantCulture) + 128, CultureInfo.InvariantCulture);
-
-            memoryStream.WriteByte(op);
-
-            if (payload.Length > ushort.MaxValue)
+            byte[] frame = { 0 };
+            using (var memoryStream = new MemoryStream())
             {
-                memoryStream.WriteByte(127);
-                var lengthBytes = Convert.ToUInt64(payload.Length).ToBigEndianByteArray();
-                memoryStream.Write(lengthBytes, 0, lengthBytes.Length);
-            }
-            else if (payload.Length > 125)
-            {
-                memoryStream.WriteByte(126);
-                var lengthBytes = Convert.ToUInt16(payload.Length).ToBigEndianByteArray();
-                memoryStream.Write(lengthBytes, 0, lengthBytes.Length);
-            }
-            else
-            {
-                memoryStream.WriteByte(Convert.ToByte(payload.Length, CultureInfo.InvariantCulture));
+                byte op = Convert.ToByte(Convert.ToByte(frameType, CultureInfo.InvariantCulture) + 128, CultureInfo.InvariantCulture);
+
+                memoryStream.WriteByte(op);
+
+                if (payload.Length > ushort.MaxValue)
+                {
+                    memoryStream.WriteByte(127);
+                    var lengthBytes = Convert.ToUInt64(payload.Length).ToBigEndianByteArray();
+                    memoryStream.Write(lengthBytes, 0, lengthBytes.Length);
+                }
+                else if (payload.Length > 125)
+                {
+                    memoryStream.WriteByte(126);
+                    var lengthBytes = Convert.ToUInt16(payload.Length).ToBigEndianByteArray();
+                    memoryStream.Write(lengthBytes, 0, lengthBytes.Length);
+                }
+                else
+                {
+                    memoryStream.WriteByte(Convert.ToByte(payload.Length, CultureInfo.InvariantCulture));
+                }
+
+                memoryStream.Write(payload, 0, payload.Length);
+
+                frame = memoryStream.ToArray();
             }
 
-            memoryStream.Write(payload, 0, payload.Length);
-
-            return memoryStream.ToArray();
+            return frame;
         }
 
         private static string CreateResponseKey(string requestKey)
         {
+            byte[] responseKeyBytes = { 0 };
             var combined = requestKey + WebSocketResponseGuid;
 
-            var bytes = SHA1.Create().ComputeHash(Encoding.ASCII.GetBytes(combined));
+            using (SHA1 hashAlgorithm = SHA1.Create())
+            {
+                responseKeyBytes = hashAlgorithm.ComputeHash(Encoding.ASCII.GetBytes(combined));
+            }
 
-            return Convert.ToBase64String(bytes);
+            return Convert.ToBase64String(responseKeyBytes);
         }
 
         private static string ReadUTF8PayloadData(byte[] bytes)

@@ -26,8 +26,61 @@ var FileUtils = {
         .getService(Components.interfaces.nsIProperties)
         .get("TmpD", Components.interfaces.nsILocalFile);
     },
-	
-    getUnicodeConverter: function(encoding) {
+
+  getFile: function(path) {
+    var file = Components.classes['@mozilla.org/file/local;1'].createInstance(Components.interfaces.nsILocalFile);
+    file.initWithPath(path);
+    return file;
+  },
+
+  fileExists: function(path) {
+    return path !== null && path.length > 0 && this.getFile(path).exists();
+  },
+
+  createFolder: function(folder) {
+    if (folder && !folder.exists()) {
+      folder.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0755);
+    }
+    return folder;
+  },
+
+  getSeleniumIDEFolder: function(relativePath, create) {
+    var folder = this.getProfileDir();
+    folder.append("selenium-ide");
+    if (relativePath) {
+      folder.appendRelativePath(relativePath);
+    }
+    return create ? this.createFolder(folder) : folder;
+  },
+
+  getStoredFile: function(relativePath, prefix, suffix) {
+    var folder = this.getSeleniumIDEFolder(relativePath, true);
+    var filename = (prefix || '') + (suffix || '');
+    if (filename.length > 0) {
+      folder.append(filename);
+    }
+    return folder;
+  },
+
+  _pad2: function(num) {
+    return num < 10 ? '0' + num : num;
+  },
+
+  getTimeStamp: function() {
+    var d = new Date();
+    return d.getFullYear() +
+           '-' + this._pad2( d.getMonth() + 1 ) +
+           '-' + this._pad2( d.getDate() ) +
+           '_' + this._pad2( d.getHours() ) +
+           '-' + this._pad2( d.getMinutes() ) +
+           '-' + this._pad2( d.getSeconds() );
+  },
+
+  getStoredTimeStampedFile: function(relativePath, prefix, suffix) {
+    return this.getStoredFile(relativePath, (prefix || '') + this.getTimeStamp(), suffix);
+  },
+
+  getUnicodeConverter: function(encoding) {
         var unicodeConverter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"].createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
         try {
             unicodeConverter.charset = encoding;
@@ -36,20 +89,40 @@ var FileUtils = {
         }
         return unicodeConverter;
     },
-	
-    openFileOutputStream: function(file) {
+
+  openFileOutputStream: function(file) {
         var stream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
         stream.init(file, 0x02 | 0x08 | 0x20, 420, 0);
         return stream;
     },
 
-    openFileInputStream: function(file) {
-        var stream = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream);
-        stream.init(file, 0x01, 00004, 0);
-        var sis = Components.classes["@mozilla.org/scriptableinputstream;1"].createInstance(Components.interfaces.nsIScriptableInputStream);
-        sis.init(stream);
-        return sis;
-    },
+  openUTF8FileOutputStream: function(file) {
+    var converter = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
+    converter.init(this.openFileOutputStream(file), "UTF-8", 0, 0);
+    return converter;
+  },
+
+  writeUTF8nsIFile: function(file, data) {
+    this.createFolder(file.parent);
+    var converter = this.openUTF8FileOutputStream(file);
+    converter.writeString(data);
+    converter.close();
+    return file.path;
+  },
+
+  writeUTF8File: function(filename, data) {
+    return this.writeUTF8nsIFile(this.getFile(filename), data);
+  },
+
+  writeStoredFile: function(filename, data) {
+    //StoredFiles are stored in the selenium ide folder under the Firefox profile
+    return this.writeUTF8nsIFile(this.getSeleniumIDEFolder(filename), data);
+  },
+
+  writeJSONStoredFile: function(filename, data) {
+    //StoredFiles are stored in the selenium ide folder under the Firefox profile
+    return this.writeStoredFile(filename, JSON.stringify(data));
+  },
 
     openURLInputStream: function(url) {
         const ioService = Components.classes['@mozilla.org/network/io-service;1'].getService(Components.interfaces.nsIIOService);
@@ -59,6 +132,21 @@ var FileUtils = {
         return sis;
     },
 
+  readURL: function(url) {
+    var stream = this.openURLInputStream(url);
+    var content = stream.read(stream.available());
+    stream.close();
+    return content;
+  },
+
+  openFileInputStream: function(file) {
+    var stream = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream);
+    stream.init(file, 0x01, 00004, 0);
+    var sis = Components.classes["@mozilla.org/scriptableinputstream;1"].createInstance(Components.interfaces.nsIScriptableInputStream);
+    sis.init(stream);
+    return sis;
+  },
+
     readFile: function(file) {
         var stream = this.openFileInputStream(file);
         var content = stream.read(stream.available());
@@ -66,27 +154,30 @@ var FileUtils = {
         return content;
     },
 
-    readURL: function(url) {
-        var stream = this.openURLInputStream(url);
-        var content = stream.read(stream.available());
-        stream.close();
-        return content;
-    },
+  readStoredFile: function(filename, defaultData) {
+    //StoredFiles are stored in the selenium ide folder under the Firefox profile
+    var file = this.getSeleniumIDEFolder(filename);
+    if (file.exists()) {
+      var conv = this.getUnicodeConverter("UTF-8");
+      return conv.ConvertToUnicode(this.readFile(file));
+    }
+    return defaultData;
+  },
 
-    getFile: function(path) {
-        var file = Components.classes['@mozilla.org/file/local;1'].createInstance(Components.interfaces.nsILocalFile);
-        file.initWithPath(path);
-        return file;
-    },
-
-    fileExists: function(path) {
-        return path !== null && path.length > 0 && this.getFile(path).exists();
-    },
+  readJSONStoredFile: function(filename, defaultData) {
+    //StoredFiles are stored in the selenium ide folder under the Firefox profile
+    var data = this.readStoredFile(filename);
+    return data ? JSON.parse(data) : defaultData;
+  },
 
     fileURI: function(file) {
         return Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService).
         newFileURI(file).spec;
     },
+
+  getSafeFilename: function(filename) {
+    return filename ? filename.replace(/[^ _~,.0-9A-Za-z-]/g, '-') : '';
+  },
 
     splitPath: function(file) {
         var max = 100;
@@ -139,4 +230,4 @@ var FileUtils = {
         mergedFile.appendRelativePath(cleanPath.join(fileSep));
         return mergedFile;
     }
-}
+};

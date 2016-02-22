@@ -21,6 +21,7 @@
 goog.provide('goog.styleScrollbarTester');
 
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.style');
 goog.require('goog.testing.asserts');
 goog.setTestOnly('goog.styleScrollbarTester');
@@ -35,7 +36,8 @@ function testScrollbarWidth() {
   assertTrue(width > 0);
 
   var outer = goog.dom.getElement('test-scrollbarwidth');
-  var inner = goog.dom.getElementsByTagNameAndClass('div', null, outer)[0];
+  var inner = goog.dom.getElementsByTagNameAndClass(goog.dom.TagName.DIV,
+                                                    null, outer)[0];
   assertTrue('should have a scroll bar',
       hasVerticalScroll(outer));
   assertTrue('should have a scroll bar',

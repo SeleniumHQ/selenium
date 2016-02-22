@@ -53,8 +53,11 @@ void notify_of_close_window(PRInt32 windowId);
 #endif
 #endif // BUILD_ON_UNIX
 
-
+#ifdef WEBDRIVER_GECKO_USES_ISUPPORTS1
 NS_IMPL_ISUPPORTS1(nsNativeEvents, nsINativeEvents)
+#else
+NS_IMPL_ISUPPORTS(nsNativeEvents, nsINativeEvents)
+#endif
 
 nsNativeEvents::nsNativeEvents()
 {

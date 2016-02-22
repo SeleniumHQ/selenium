@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -12,6 +15,10 @@
 // limitations under the License.
 
 #include "IECommandExecutor.h"
+#include <algorithm>
+#include <ctime>
+#include <vector>
+#include "CommandExecutor.h"
 #include "logging.h"
 #include "CommandHandlers/AcceptAlertCommandHandler.h"
 #include "CommandHandlers/AddCookieCommandHandler.h"
@@ -65,6 +72,7 @@
 #include "CommandHandlers/SendKeysCommandHandler.h"
 #include "CommandHandlers/SendKeysToActiveElementCommandHandler.h"
 #include "CommandHandlers/SendKeysToAlertCommandHandler.h"
+#include "CommandHandlers/SetAlertCredentialsCommandHandler.h"
 #include "CommandHandlers/SetAsyncScriptTimeoutCommandHandler.h"
 #include "CommandHandlers/SetImplicitWaitTimeoutCommandHandler.h"
 #include "CommandHandlers/SetTimeoutCommandHandler.h"
@@ -72,7 +80,9 @@
 #include "CommandHandlers/SetWindowSizeCommandHandler.h"
 #include "CommandHandlers/SubmitElementCommandHandler.h"
 #include "CommandHandlers/SwitchToFrameCommandHandler.h"
+#include "CommandHandlers/SwitchToParentFrameCommandHandler.h"
 #include "CommandHandlers/SwitchToWindowCommandHandler.h"
+#include "HtmlDialog.h"
 #include "StringUtilities.h"
 
 namespace webdriver {
@@ -115,6 +125,10 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->implicit_wait_timeout_ = 0;
   this->async_script_timeout_ = -1;
   this->page_load_timeout_ = -1;
+  this->is_waiting_ = false;
+  this->page_load_strategy_ = "normal";
+  this->file_upload_dialog_timeout_ = 1000;
+  this->enable_full_page_screenshot_ = true;
 
   this->input_manager_ = new InputManager();
   this->input_manager_->Initialize(&this->managed_elements_);
@@ -151,7 +165,7 @@ LRESULT IECommandExecutor::OnSetCommand(UINT uMsg,
   LOG(TRACE) << "Entering IECommandExecutor::OnSetCommand";
 
   LPCSTR json_command = reinterpret_cast<LPCSTR>(lParam);
-  this->current_command_.Populate(json_command);
+  this->current_command_.Deserialize(json_command);
   return 0;
 }
 
@@ -210,7 +224,7 @@ LRESULT IECommandExecutor::OnWait(UINT uMsg,
       this->is_waiting_ = false;
       browser->set_wait_required(false);
     } else {
-      this->is_waiting_ = !(browser->Wait());
+      this->is_waiting_ = !(browser->Wait(this->page_load_strategy_));
       if (this->is_waiting_) {
         // If we are still waiting, we need to wait a bit then post a message to
         // ourselves to run the wait again. However, we can't wait using Sleep()
@@ -244,12 +258,22 @@ LRESULT IECommandExecutor::OnBrowserNewWindow(UINT uMsg,
   LOG(TRACE) << "Entering IECommandExecutor::OnBrowserNewWindow";
 
   IWebBrowser2* browser = this->factory_->CreateBrowser();
+  if (browser == NULL) {
+    // No browser was created, so we have to bail early.
+    // Check the log for the HRESULT why.
+    return 1;
+  }
   BrowserHandle new_window_wrapper(new Browser(browser, NULL, this->m_hWnd));
-  // TODO: This is a big assumption that this will work. We need a test case
-  // to validate that it will or won't.
-  SHANDLE_PTR hwnd;
-  browser->get_HWND(&hwnd);
-  this->proxy_manager_->SetProxySettings(reinterpret_cast<HWND>(hwnd));
+  // It is acceptable to set the proxy settings here, as the newly-created
+  // browser window has not yet been navigated to any page. Only after the
+  // interface has been marshaled back across the thread boundary to the
+  // NewWindow3 event handler will the navigation begin, which ensures that
+  // even the initial navigation will get captured by the proxy, if one is
+  // set.
+  // N.B. DocumentHost::GetBrowserWindowHandle returns the tab window handle
+  // for IE 7 and above, and the top-level window for IE6. This is the window
+  // required for setting the proxy settings.
+  this->proxy_manager_->SetProxySettings(new_window_wrapper->GetBrowserWindowHandle());
   this->AddManagedBrowser(new_window_wrapper);
   LPSTREAM* stream = reinterpret_cast<LPSTREAM*>(lParam);
   HRESULT hr = ::CoMarshalInterThreadInterfaceInStream(IID_IWebBrowser2,
@@ -336,6 +360,14 @@ LRESULT IECommandExecutor::OnNewHtmlDialog(UINT uMsg,
   } else {
     LOG(WARN) << "Unable to get document from dialog";
   }
+  return 0;
+}
+
+LRESULT IECommandExecutor::OnQuit(UINT uMsg,
+                                  WPARAM wParam,
+                                  LPARAM lParam,
+                                  BOOL& bHandled) {
+  this->input_manager_->StopPersistentEvents();
   return 0;
 }
 
@@ -474,7 +506,8 @@ void IECommandExecutor::DispatchCommand() {
           if (command_type == webdriver::CommandType::GetAlertText ||
               command_type == webdriver::CommandType::SendKeysToAlert ||
               command_type == webdriver::CommandType::AcceptAlert ||
-              command_type == webdriver::CommandType::DismissAlert) {
+              command_type == webdriver::CommandType::DismissAlert ||
+              command_type == webdriver::CommandType::SetAlertCredentials) {
             LOG(DEBUG) << "Alert is detected, and the sent command is valid";
           } else {
             LOG(DEBUG) << "Unexpected alert is detected, and the sent command is invalid when an alert is present";
@@ -487,7 +520,7 @@ void IECommandExecutor::DispatchCommand() {
               Json::Value response_value;
               response_value["message"] = "Modal dialog present";
               response_value["alert"]["text"] = alert_text;
-              response.SetResponse(EMODALDIALOGOPENED, response_value);
+              response.SetResponse(EUNEXPECTEDALERTOPEN, response_value);
               this->serialized_response_ = response.Serialize();
               return;
             } else {
@@ -554,7 +587,7 @@ std::string IECommandExecutor::HandleUnexpectedAlert(BrowserHandle browser,
     // If a quit command was issued, we should not ignore an unhandled
     // alert, even if the alert behavior is set to "ignore".
     LOG(DEBUG) << "Automatically dismissing the alert";
-    if (dialog.is_standard_alert()) {
+    if (dialog.is_standard_alert() || dialog.is_security_alert()) {
       dialog.Dismiss();
     } else {
       // The dialog was non-standard. The most common case of this is
@@ -641,11 +674,11 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
     return ENOSUCHDRIVER;
   }
   // Set persistent hover functionality in the interactions implementation. 
-  setEnablePersistentHover(this->enable_persistent_hover_);
+  this->input_manager_->SetPersistentEvents(this->enable_persistent_hover_);
   LOG(INFO) << "Persistent hovering set to: " << this->enable_persistent_hover_;
   if (!this->enable_persistent_hover_) {
     LOG(INFO) << "Stopping previously-running persistent event thread.";
-    stopPersistentEventFiring();
+    this->input_manager_->StopPersistentEvents();
   }
 
   this->proxy_manager_->SetProxySettings(process_window_info.hwndBrowser);
@@ -654,6 +687,10 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
                                     this->m_hWnd));
 
   this->AddManagedBrowser(wrapper);
+  bool is_busy = wrapper->IsBusy();
+  if (is_busy) {
+    LOG(WARN) << "Browser was launched and attached to, but is still busy.";
+  }
   return WD_SUCCESS;
 }
 
@@ -761,6 +798,7 @@ void IECommandExecutor::PopulateCommandHandlers() {
   this->command_handlers_[webdriver::CommandType::GetWindowHandles] = CommandHandlerHandle(new GetAllWindowHandlesCommandHandler);
   this->command_handlers_[webdriver::CommandType::SwitchToWindow] = CommandHandlerHandle(new SwitchToWindowCommandHandler);
   this->command_handlers_[webdriver::CommandType::SwitchToFrame] = CommandHandlerHandle(new SwitchToFrameCommandHandler);
+  this->command_handlers_[webdriver::CommandType::SwitchToParentFrame] = CommandHandlerHandle(new SwitchToParentFrameCommandHandler);
   this->command_handlers_[webdriver::CommandType::Get] = CommandHandlerHandle(new GoToUrlCommandHandler);
   this->command_handlers_[webdriver::CommandType::GoForward] = CommandHandlerHandle(new GoForwardCommandHandler);
   this->command_handlers_[webdriver::CommandType::GoBack] = CommandHandlerHandle(new GoBackCommandHandler);
@@ -807,6 +845,7 @@ void IECommandExecutor::PopulateCommandHandlers() {
   this->command_handlers_[webdriver::CommandType::DismissAlert] = CommandHandlerHandle(new DismissAlertCommandHandler);
   this->command_handlers_[webdriver::CommandType::GetAlertText] = CommandHandlerHandle(new GetAlertTextCommandHandler);
   this->command_handlers_[webdriver::CommandType::SendKeysToAlert] = CommandHandlerHandle(new SendKeysToAlertCommandHandler);
+  this->command_handlers_[webdriver::CommandType::SetAlertCredentials] = CommandHandlerHandle(new SetAlertCredentialsCommandHandler);
 
   this->command_handlers_[webdriver::CommandType::MouseMoveTo] = CommandHandlerHandle(new MouseMoveToCommandHandler);
   this->command_handlers_[webdriver::CommandType::MouseClick] = CommandHandlerHandle(new MouseClickCommandHandler);

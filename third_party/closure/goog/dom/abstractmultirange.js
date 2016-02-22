@@ -17,7 +17,6 @@
  * sub-ranges.
  *
  * @author robbyw@google.com (Robby Walker)
- * @author jparent@google.com (Julie Parent)
  */
 
 

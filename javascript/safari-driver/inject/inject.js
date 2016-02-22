@@ -1,17 +1,19 @@
-// Copyright 2012 Selenium committers
-// Copyright 2012 Software Freedom Conservancy
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview Script injected into each page when its DOM has fully loaded.
@@ -21,7 +23,7 @@ goog.provide('safaridriver.inject');
 
 goog.require('bot.inject');
 goog.require('goog.debug.LogManager');
-goog.require('goog.debug.Logger');
+goog.require('goog.log');
 goog.require('safaridriver.inject.Tab');
 goog.require('safaridriver.inject.commands.module');
 goog.require('safaridriver.inject.message');
@@ -33,10 +35,10 @@ goog.require('safaridriver.message.Response');
 
 
 /**
- * @type {!goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @const
  */
-safaridriver.inject.LOG = goog.debug.Logger.getLogger('safaridriver.inject');
+safaridriver.inject.LOG = goog.log.getLogger('safaridriver.inject');
 
 
 /** Initializes this injected script. */
@@ -63,7 +65,7 @@ goog.exportSymbol('init', safaridriver.inject.init);
 /**
  * Forwards connection requests from the content page to the extension.
  * @param {!safaridriver.message.Message} message The connect message.
- * @param {!MessageEvent} e The original message event.
+ * @param {!MessageEvent.<*>} e The original message event.
  * @private
  */
 safaridriver.inject.onConnect_ = function(message, e) {
@@ -71,7 +73,7 @@ safaridriver.inject.onConnect_ = function(message, e) {
       !safaridriver.inject.message.isFromFrame(e)) {
     return;
   }
-  safaridriver.inject.LOG.info(
+  goog.log.info(safaridriver.inject.LOG,
       'Content page has requested a WebDriver client connection to ' +
           message.getUrl());
   var response = message.sendSync(safari.self.tab);
@@ -81,12 +83,12 @@ safaridriver.inject.onConnect_ = function(message, e) {
 
 /**
  * @param {!safaridriver.inject.message.Encode} message The message.
- * @param {!MessageEvent} e The original message event.
+ * @param {!MessageEvent.<*>} e The original message event.
  * @private
  */
 safaridriver.inject.onEncode_ = function(message, e) {
   if (!e.source) {
-    safaridriver.inject.LOG.severe('Not looking up element: ' +
+    goog.log.error(safaridriver.inject.LOG, 'Not looking up element: ' +
         message.getLocator() + '; no window to respond to!');
     return;
   }

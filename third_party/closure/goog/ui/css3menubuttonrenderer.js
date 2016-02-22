@@ -24,8 +24,6 @@
  * Tested and verified to work in Gecko 1.9.2+ and WebKit 528+.
  *
  * @author eae@google.com (Emil A Eklund)
- * @author slightlyoff@google.com (Alex Russell)
- * @author dalewis@google.com (Darren Lewis)
  * @see ../demos/css3menubutton.html
  */
 
@@ -33,7 +31,6 @@ goog.provide('goog.ui.Css3MenuButtonRenderer');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
-goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.INLINE_BLOCK_CLASSNAME');
 goog.require('goog.ui.MenuButton');
 goog.require('goog.ui.MenuButtonRenderer');
@@ -48,6 +45,7 @@ goog.require('goog.ui.registry');
  *
  * @constructor
  * @extends {goog.ui.MenuButtonRenderer}
+ * @final
  */
 goog.ui.Css3MenuButtonRenderer = function() {
   goog.ui.MenuButtonRenderer.call(this);
@@ -109,18 +107,21 @@ goog.ui.Css3MenuButtonRenderer.prototype.canDecorate = function(element) {
  * @param {goog.ui.ControlContent} content Text caption or DOM structure to wrap
  *     in a box.
  * @param {goog.dom.DomHelper} dom DOM helper, used for document interaction.
- * @return {Element} Pseudo-rounded-corner box containing the content.
+ * @return {!Element} Pseudo-rounded-corner box containing the content.
  * @override
  */
 goog.ui.Css3MenuButtonRenderer.prototype.createButton = function(content, dom) {
   var baseClass = this.getCssClass();
   var inlineBlock = goog.ui.INLINE_BLOCK_CLASSNAME + ' ';
-  return dom.createDom('div', inlineBlock,
-      dom.createDom('div', [goog.getCssName(baseClass, 'caption'),
-                            goog.getCssName('goog-inline-block')],
+  return dom.createDom(goog.dom.TagName.DIV, inlineBlock,
+      dom.createDom(goog.dom.TagName.DIV, [
+                         goog.getCssName(baseClass, 'caption'),
+                         goog.getCssName('goog-inline-block')
+                    ],
                     content),
-      dom.createDom('div', [goog.getCssName(baseClass, 'dropdown'),
-                            goog.getCssName('goog-inline-block')]));
+      dom.createDom(goog.dom.TagName.DIV, [
+                         goog.getCssName(baseClass, 'dropdown'),
+                         goog.getCssName('goog-inline-block')]));
 };
 
 
@@ -145,4 +146,3 @@ goog.ui.registry.setDecoratorByClassName(
       return new goog.ui.MenuButton(null, null,
           goog.ui.Css3MenuButtonRenderer.getInstance());
     });
-

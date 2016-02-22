@@ -1,3 +1,0 @@
-
-java_library(name = "guava-libraries",
-  deps = [ "guava-15.0.jar" ])

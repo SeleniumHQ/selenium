@@ -18,10 +18,9 @@
 
 goog.provide('goog.proto2.Serializer');
 
-goog.require('goog.proto2.Descriptor');
+goog.require('goog.asserts');
 goog.require('goog.proto2.FieldDescriptor');
 goog.require('goog.proto2.Message');
-goog.require('goog.proto2.Util');
 
 
 
@@ -53,9 +52,10 @@ goog.proto2.Serializer.prototype.serialize = goog.abstractMethod;
 
 
 /**
- * Returns the serialized form of the given value for the given field
- * if the field is a Message or Group and returns the value unchanged
- * otherwise.
+ * Returns the serialized form of the given value for the given field if the
+ * field is a Message or Group and returns the value unchanged otherwise, except
+ * for Infinity, -Infinity and NaN numerical values which are converted to
+ * string representation.
  *
  * @param {goog.proto2.FieldDescriptor} field The field from which this
  *     value came.
@@ -68,6 +68,8 @@ goog.proto2.Serializer.prototype.serialize = goog.abstractMethod;
 goog.proto2.Serializer.prototype.getSerializedValue = function(field, value) {
   if (field.isCompositeType()) {
     return this.serialize(/** @type {goog.proto2.Message} */ (value));
+  } else if (goog.isNumber(value) && !isFinite(value)) {
+    return value.toString();
   } else {
     return value;
   }
@@ -81,12 +83,12 @@ goog.proto2.Serializer.prototype.getSerializedValue = function(field, value) {
  *     to be created.
  * @param {*} data The data of the message.
  *
- * @return {goog.proto2.Message} The message created.
+ * @return {!goog.proto2.Message} The message created.
  */
 goog.proto2.Serializer.prototype.deserialize = function(descriptor, data) {
   var message = descriptor.createMessageInstance();
   this.deserializeTo(message, data);
-  goog.proto2.Util.assert(message instanceof goog.proto2.Message);
+  goog.asserts.assert(message instanceof goog.proto2.Message);
   return message;
 };
 
@@ -159,8 +161,14 @@ goog.proto2.Serializer.prototype.getDeserializedValue = function(field, value) {
       return String(value);
     }
   } else if (nativeType === Number) {
-    // JSON strings are sometimes used for large integer numeric values.
+    // JSON strings are sometimes used for large integer numeric values, as well
+    // as Infinity, -Infinity and NaN.
     if (goog.isString(value)) {
+      // Handle +/- Infinity and NaN values.
+      if (value === 'Infinity' || value === '-Infinity' || value === 'NaN') {
+        return Number(value);
+      }
+
       // Validate the string.  If the string is not an integral number, we would
       // rather have an assertion or error in the caller than a mysterious NaN
       // value.

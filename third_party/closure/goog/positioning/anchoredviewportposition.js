@@ -20,10 +20,8 @@
 
 goog.provide('goog.positioning.AnchoredViewportPosition');
 
-goog.require('goog.math.Box');
 goog.require('goog.positioning');
 goog.require('goog.positioning.AnchoredPosition');
-goog.require('goog.positioning.Corner');
 goog.require('goog.positioning.Overflow');
 goog.require('goog.positioning.OverflowStatus');
 

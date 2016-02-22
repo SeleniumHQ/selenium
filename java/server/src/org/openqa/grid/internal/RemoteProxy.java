@@ -1,24 +1,24 @@
-
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.internal;
 
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
+
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Proxy to a remote server executing the tests. <p/> The proxy keeps a state of what is happening
+ * Proxy to a remote server executing the tests. <p> The proxy keeps a state of what is happening
  * on the remote server and knows if a new test can be run on the remote server. There are several
  * reasons why a test could not be run on the specified remote server, for instance: if the
  * RemoteProxy decides the remote server has reached the maximum number of concurrent sessions, or
@@ -98,7 +98,7 @@ public interface RemoteProxy extends Comparable<RemoteProxy> {
   /**
    * Returns the maximum number of concurrent tests that can run on this node.  NB: this number can be less than
    * the number of test slots because a test slot only indicates what type of test session can be run on the remote.
-   * I.e., a node may allow N different <em>types</em> of tests, but only allow M tests to run at once, for M <= N.
+   * I.e., a node may allow N different <em>types</em> of tests, but only allow M tests to run at once, for M &lt;= N.
    *
    * @return Maximum number of concurrent tests that can run on this node.
    */
@@ -159,13 +159,13 @@ public interface RemoteProxy extends Comparable<RemoteProxy> {
    *
    * @throws GridException if the node is down.
    */
-  JSONObject getStatus() throws GridException;
+  JsonObject getStatus() throws GridException;
 
   /**
    * Checks if the node has the capability requested.
-   * <br /><br />
+   * <br>
    * The definition of "has" is defined by {@link CapabilityMatcher#matches(Map, Map)}
-   * <br /><br />
+   * <br>
    * <code>hasCapability = true</code> doesn't mean the test cast start just now, only that the proxy will be
    * able to run a test requiring that capability at some point.
    *
@@ -182,11 +182,11 @@ public interface RemoteProxy extends Comparable<RemoteProxy> {
    * @return <code>true</code> if the node has any test slots in use.
    */
   boolean isBusy();
-  
-  
+
+
   /**
    * Return how much resources are currently used on the proxy. Default implementation is runningTests / maxTests
-   * on the proxy. For a proxy with more knowledge about its resources, a finer implementation can also take into 
+   * on the proxy. For a proxy with more knowledge about its resources, a finer implementation can also take into
    * account CPU usage, RAM usage etc.
    * @return the percentage of the available resource used. Can be greater than 100 if the grid is under heavy load.
    */

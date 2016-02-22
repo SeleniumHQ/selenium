@@ -2,10 +2,13 @@
 <html>
 <head>
   <title>touchscreen_test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.Touchscreen');
     goog.require('bot.action');
+    goog.require('bot.dom');
+    goog.require('goog.Promise');
     goog.require('goog.events');
     goog.require('goog.events.EventType');
     goog.require('goog.math.Coordinate');
@@ -18,6 +21,7 @@
     var lowerTarget;
     var innerCaptureTarget;
     var noTouchTarget;
+    var coordsTarget;
 
     var touchscreen;
     var events = [];
@@ -45,6 +49,7 @@
       captureTarget = document.getElementById('captureTarget');
       innerCaptureTarget = document.getElementById('innerCaptureTarget');
       noTouchTarget = document.getElementById('notouch');
+      coordsTarget = document.getElementById('coordsTarget');
     }
 
     function setUp() {
@@ -55,6 +60,7 @@
       goog.events.removeAll(captureTarget);
       goog.events.removeAll(innerCaptureTarget);
       goog.events.removeAll(noTouchTarget);
+      goog.events.removeAll(coordsTarget);
 
       goog.events.listen(target, TOUCH_EVENTS, function(e) {
         events.push(e.type);
@@ -80,6 +86,16 @@
       goog.events.listen(noTouchTarget, TOUCH_EVENTS, function(e) {
         events.push(e.type);
         events.push(e.target);
+      });
+      goog.events.listen(coordsTarget, goog.events.EventType.TOUCHSTART,
+                         function(e) {
+        var event = e.getBrowserEvent();
+        if (event.changedTouches.length == 1) {
+          events.push(event.changedTouches[0].clientX);
+          events.push(event.changedTouches[0].clientY);
+          events.push(event.changedTouches[0].pageX);
+          events.push(event.changedTouches[0].pageY);
+        }
       });
     }
 
@@ -413,6 +429,70 @@
       assertThrows('Pressing when already pressed should throw an exception',
                    goog.bind(touchscreen.press, touchscreen));
     }
+
+    function testPreventDefaultOnTouchstart() {
+      if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
+        return;
+      }
+      goog.events.listen(target, goog.events.EventType.TOUCHSTART, function(e) {
+        e.preventDefault();
+      });
+      touchscreen.move(target, new goog.math.Coordinate(0, 0));
+      touchscreen.press();
+      touchscreen.release();
+      if (bot.userAgent.IE_DOC_10) {
+        assertEvents(msPointerDownEvents(target),
+                     msPointerUpEventsWithClick(target));
+      } else {
+        assertEvents([goog.events.EventType.TOUCHSTART, target, 1,
+                      goog.events.EventType.TOUCHEND, target, 1]);
+      }
+    }
+
+    function testPreventDefaultOnTouchend() {
+      if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
+        return;
+      }
+      goog.events.listen(target, goog.events.EventType.TOUCHEND, function(e) {
+        e.preventDefault();
+      });
+      touchscreen.move(target, new goog.math.Coordinate(0, 0));
+      touchscreen.press();
+      touchscreen.release();
+      if (bot.userAgent.IE_DOC_10) {
+        assertEvents(msPointerDownEvents(target),
+                     msPointerUpEventsWithClick(target));
+      } else {
+        var events = [goog.events.EventType.TOUCHSTART, target, 1,
+                      goog.events.EventType.TOUCHEND, target, 1];
+        if (!bot.userAgent.IOS && !goog.userAgent.product.CHROME) {
+          events.push(goog.events.EventType.MOUSEMOVE, target,
+                      goog.events.EventType.MOUSEDOWN, target,
+                      goog.events.EventType.MOUSEUP, target,
+                      goog.events.EventType.CLICK, target);
+        }
+        assertEvents(events);
+      }
+    }
+
+    function testTouchEventCoords() {
+      if (!bot.events.SUPPORTS_TOUCH_EVENTS || bot.userAgent.IE_DOC_10) {
+        return;
+      }
+      window.scrollTo(20, 30);
+      // Yield to ensure all browsers apply the scrolling change.
+      // Relying on the implicit tick in a promise resolution is enough.
+      return goog.Promise.resolve().then(function() {
+        var coords = bot.dom.getClientRect(coordsTarget);
+        touchscreen.move(coordsTarget, new goog.math.Coordinate(0, 0));
+        touchscreen.press();
+        touchscreen.release();
+        // The client coords of the touch event should be the top left of the
+        // target and the page coords should include the scroll offset.
+        assertEvents([coords.left, coords.top,
+                      coords.left + 20, coords.top + 30]);
+      });
+    }
   </script>
 </head>
 <body>
@@ -456,6 +536,13 @@
               top:50px;
               -ms-touch-action:auto">
     no touch
+  </div>
+  <div id="coordsTarget"
+       style="background-color:magenta;
+              width:8000px;
+              height:8000px;
+              -ms-touch-action:none">
+    coords target
   </div>
 </body>
 </html>

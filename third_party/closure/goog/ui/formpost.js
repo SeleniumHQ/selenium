@@ -16,14 +16,16 @@
  * @fileoverview Utility for making the browser submit a hidden form, which can
  * be used to effect a POST from JavaScript.
  *
+ * @author dpb@google.com (David P. Baker)
  */
 
 goog.provide('goog.ui.FormPost');
 
 goog.require('goog.array');
+goog.require('goog.dom.InputType');
 goog.require('goog.dom.TagName');
-goog.require('goog.string');
-goog.require('goog.string.StringBuffer');
+goog.require('goog.dom.safe');
+goog.require('goog.html.SafeHtml');
 goog.require('goog.ui.Component');
 
 
@@ -33,6 +35,7 @@ goog.require('goog.ui.Component');
  * @constructor
  * @extends {goog.ui.Component}
  * @param {goog.dom.DomHelper=} opt_dom The DOM helper.
+ * @final
  */
 goog.ui.FormPost = function(opt_dom) {
   goog.ui.Component.call(this, opt_dom);
@@ -73,37 +76,35 @@ goog.ui.FormPost.prototype.post = function(parameters, opt_url, opt_target) {
 
 /**
  * Creates hidden inputs in a form to match parameters.
- * @param {Element} form The form element.
+ * @param {!Element} form The form element.
  * @param {Object} parameters Object with parameter values. Values can be
  *     strings, numbers, or arrays of strings or numbers.
  * @private
  */
 goog.ui.FormPost.prototype.setParameters_ = function(form, parameters) {
-  var name, value, sb = new goog.string.StringBuffer();
+  var name, value, html = [];
   for (name in parameters) {
     value = parameters[name];
     if (goog.isArrayLike(value)) {
-      goog.array.forEach(value, goog.bind(this.appendInput_, this, sb, name));
+      goog.array.forEach(value, goog.bind(function(innerValue) {
+        html.push(this.createInput_(name, String(innerValue)));
+      }, this));
     } else {
-      this.appendInput_(sb, name, value);
+      html.push(this.createInput_(name, String(value)));
     }
   }
-  form.innerHTML = sb.toString();
+  goog.dom.safe.setInnerHtml(form, goog.html.SafeHtml.concat(html));
 };
 
 
 /**
- * Appends a hidden <INPUT> tag to a string buffer.
- * @param {goog.string.StringBuffer} out A string buffer.
+ * Creates a hidden <input> tag.
  * @param {string} name The name of the input.
  * @param {string} value The value of the input.
+ * @return {!goog.html.SafeHtml}
  * @private
  */
-goog.ui.FormPost.prototype.appendInput_ = function(out, name, value) {
-  out.append(
-      '<input type="hidden" name="',
-      goog.string.htmlEscape(name),
-      '" value="',
-      goog.string.htmlEscape(value),
-      '">');
+goog.ui.FormPost.prototype.createInput_ = function(name, value) {
+  return goog.html.SafeHtml.create('input',
+      {'type': goog.dom.InputType.HIDDEN, 'name': name, 'value': value});
 };

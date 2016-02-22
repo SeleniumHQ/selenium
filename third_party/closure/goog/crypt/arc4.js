@@ -39,11 +39,13 @@ goog.require('goog.asserts');
 /**
  * ARC4 streamcipher implementation.
  * @constructor
+ * @final
+ * @struct
  */
 goog.crypt.Arc4 = function() {
   /**
    * A permutation of all 256 possible bytes.
-   * @type {Array.<number>}
+   * @type {Array<number>}
    * @private
    */
   this.state_ = [];
@@ -66,7 +68,7 @@ goog.crypt.Arc4 = function() {
 
 /**
  * Initialize the cipher for use with new key.
- * @param {Array.<number>} key A byte array containing the key.
+ * @param {Array<number>} key A byte array containing the key.
  * @param {number=} opt_length Indicates # of bytes to take from the key.
  */
 goog.crypt.Arc4.prototype.setKey = function(key, opt_length) {
@@ -135,7 +137,7 @@ goog.crypt.Arc4.prototype.discard = function(length) {
 
 /**
  * En- or decrypt (same operation for streamciphers like ARC4)
- * @param {Array.<number>|Uint8Array} data The data to be xor-ed in place.
+ * @param {Array<number>|Uint8Array} data The data to be xor-ed in place.
  * @param {number=} opt_length The number of bytes to crypt.
  */
 goog.crypt.Arc4.prototype.crypt = function(data, opt_length) {

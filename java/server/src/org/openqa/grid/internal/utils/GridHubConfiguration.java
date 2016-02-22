@@ -1,31 +1,32 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 package org.openqa.grid.internal.utils;
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
-import static org.openqa.grid.internal.utils.ServerJsonValues.BROWSER_TIMEOUT;
-import static org.openqa.grid.internal.utils.ServerJsonValues.CLIENT_TIMEOUT;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.openqa.grid.common.CommandLineOptionHelper;
 import org.openqa.grid.common.JSONConfigurationUtils;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.listeners.Prioritizer;
+import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.FileInputStream;
@@ -36,7 +37,6 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -70,12 +70,12 @@ public class GridHubConfiguration {
    * list of extra servlets this hub will display. Allows to present custom view of the hub for
    * monitoring and management purpose
    */
-  private List<String> servlets = new ArrayList<String>();
+  private List<String> servlets = new ArrayList<>();
 
   /**
    * name <-> browser mapping from grid1
    */
-  private Map<String, String> grid1Mapping = new HashMap<String, String>();
+  private Map<String, String> grid1Mapping = new HashMap<>();
 
   /**
    * to specify the order in which the new session request will be handled.
@@ -100,11 +100,11 @@ public class GridHubConfiguration {
   private String logFilename;
 
   /**
-   * to specify that logging level should be set to Level.DEBUG
+   * max number of thread for Jetty. Default is normally 255.
    */
-  private boolean isDebug = false;
+  private int jettyMaxThreads = -1;
 
-  private Map<String, Object> allParams = new HashMap<String, Object>();
+  private Map<String, Object> allParams = new HashMap<>();
 
   /**
    * original command line param, useful for debugging
@@ -113,14 +113,15 @@ public class GridHubConfiguration {
   private String grid1Yml = null;
   private String grid2JSON = null;
 
+
   public GridHubConfiguration() {
     loadDefault();
   }
 
   /**
    * builds a grid configuration from the parameters passed command line.
-   * 
-   * @param args
+   *
+   * @param args command line arguments
    * @return A GridHubConfiguration object with options from the grid1 and/or
    *         grid2 config file(s), plus any command line option overrides.
    */
@@ -180,14 +181,17 @@ public class GridHubConfiguration {
     if (helper.isParamPresent("-port")) {
       port = Integer.parseInt(helper.getParamValue("-port"));
     }
+    if (helper.isParamPresent("-jettyMaxThreads")) {
+      jettyMaxThreads = Integer.parseInt(helper.getParamValue("-jettyMaxThreads"));
+    }
     if (helper.isParamPresent("-cleanUpCycle")) {
       cleanupCycle = Integer.parseInt(helper.getParamValue("-cleanUpCycle"));
     }
-    if (helper.isParamPresent(CLIENT_TIMEOUT.getAsParam())) {
-      setTimeout(Integer.parseInt(helper.getParamValue(CLIENT_TIMEOUT.getAsParam())) * 1000);
+    if (helper.isParamPresent("-timeout")) {
+      setTimeout(Integer.parseInt(helper.getParamValue("-timeout")) * 1000);
     }
-    if (helper.isParamPresent(BROWSER_TIMEOUT.getAsParam())) {
-      setBrowserTimeout(Integer.parseInt(helper.getParamValue(BROWSER_TIMEOUT.getAsParam())) * 1000);
+    if (helper.isParamPresent("-browserTimeout")) {
+      setBrowserTimeout(Integer.parseInt(helper.getParamValue("-browserTimeout")) * 1000);
     }
     if (helper.isParamPresent("-newSessionWaitTimeout")) {
       newSessionWaitTimeout = Integer.parseInt(helper.getParamValue("-newSessionWaitTimeout"));
@@ -208,10 +212,6 @@ public class GridHubConfiguration {
     if (helper.isParamPresent("-log")) {
       logFilename = helper.getParamValue("-log");
     }
-    if (helper.isParamPresent("-debug")) {
-      isDebug = true;
-    }
-
   }
 
   /**
@@ -278,60 +278,56 @@ public class GridHubConfiguration {
   public void loadFromJSON(String resource) {
 
     try {
-      JSONObject o = JSONConfigurationUtils.loadJSON(resource);
+      JsonObject o = JSONConfigurationUtils.loadJSON(resource);
 
       // handling the core config.
-      if (o.has(RegistrationRequest.HOST) && !o.isNull(RegistrationRequest.HOST)) {
-        host = o.getString(RegistrationRequest.HOST);
+      if (o.has(RegistrationRequest.HOST) && !o.get(RegistrationRequest.HOST).isJsonNull()) {
+        host = o.get(RegistrationRequest.HOST).getAsString();
       }
-      if (o.has(RegistrationRequest.PORT) && !o.isNull(RegistrationRequest.PORT)) {
-        port = o.getInt(RegistrationRequest.PORT);
+      if (o.has(RegistrationRequest.PORT) && !o.get(RegistrationRequest.PORT).isJsonNull()) {
+        port = o.get(RegistrationRequest.PORT).getAsInt();
       }
       if (o.has(RegistrationRequest.CLEAN_UP_CYCLE) &&
-          !o.isNull(RegistrationRequest.CLEAN_UP_CYCLE)) {
-        cleanupCycle = o.getInt(RegistrationRequest.CLEAN_UP_CYCLE);
+          !o.get(RegistrationRequest.CLEAN_UP_CYCLE).isJsonNull()) {
+        cleanupCycle = o.get(RegistrationRequest.CLEAN_UP_CYCLE).getAsInt();
       }
-      if (o.has(RegistrationRequest.TIME_OUT) && !o.isNull(RegistrationRequest.TIME_OUT)) {
-        setTimeout(o.getInt(RegistrationRequest.TIME_OUT));
+      if (o.has(RegistrationRequest.TIME_OUT) && !o.get(RegistrationRequest.TIME_OUT).isJsonNull()) {
+        setTimeout(o.get(RegistrationRequest.TIME_OUT).getAsInt());
       }
-      if (o.has(RegistrationRequest.BROWSER_TIME_OUT) && !o.isNull(RegistrationRequest.BROWSER_TIME_OUT)) {
-        setBrowserTimeout(o.getInt(RegistrationRequest.BROWSER_TIME_OUT));
+      if (o.has(RegistrationRequest.BROWSER_TIME_OUT)
+          && !o.get(RegistrationRequest.BROWSER_TIME_OUT).isJsonNull()) {
+        setBrowserTimeout(o.get(RegistrationRequest.BROWSER_TIME_OUT).getAsInt());
       }
-      if (o.has("newSessionWaitTimeout") && !o.isNull("newSessionWaitTimeout")) {
-        newSessionWaitTimeout = o.getInt("newSessionWaitTimeout");
+      if (o.has("newSessionWaitTimeout") && !o.get("newSessionWaitTimeout").isJsonNull()) {
+        newSessionWaitTimeout = o.get("newSessionWaitTimeout").getAsInt();
       }
-      if (o.has(RegistrationRequest.SERVLETS) && !o.isNull(RegistrationRequest.SERVLETS)) {
-        JSONArray jsservlets = o.getJSONArray(RegistrationRequest.SERVLETS);
-        for (int i = 0; i < jsservlets.length(); i++) {
-          servlets.add(jsservlets.getString(i));
+      if (o.has(RegistrationRequest.SERVLETS) && !o.get(RegistrationRequest.SERVLETS).isJsonNull()) {
+        JsonArray jsservlets = o.get(RegistrationRequest.SERVLETS).getAsJsonArray();
+        for (int i = 0; i < jsservlets.size(); i++) {
+          servlets.add(jsservlets.get(i).getAsString());
         }
       }
-      if (o.has("prioritizer") && !o.isNull("prioritizer")) {
-        String prioritizerClass = o.getString("prioritizer");
-        setPrioritizer(prioritizerClass);
+      if (o.has("jettyMaxThreads") && !o.get("jettyMaxThreads").isJsonNull()) {
+        jettyMaxThreads = o.get("jettyMaxThreads").getAsInt();
       }
-      if (o.has("capabilityMatcher") && !o.isNull("capabilityMatcher")) {
-        String capabilityMatcherClass = o.getString("capabilityMatcher");
-        setCapabilityMatcher(capabilityMatcherClass);
+      if (o.has("prioritizer") && !o.get("prioritizer").isJsonNull()) {
+        setPrioritizer(o.get("prioritizer").getAsString());
       }
-      if (o.has("throwOnCapabilityNotPresent") && !o.isNull("throwOnCapabilityNotPresent")) {
-        throwOnCapabilityNotPresent = o.getBoolean("throwOnCapabilityNotPresent");
+      if (o.has("capabilityMatcher") && !o.get("capabilityMatcher").isJsonNull()) {
+        setCapabilityMatcher(o.get("capabilityMatcher").getAsString());
+      }
+      if (o.has("throwOnCapabilityNotPresent") && !o.get("throwOnCapabilityNotPresent").isJsonNull()) {
+        throwOnCapabilityNotPresent = o.get("throwOnCapabilityNotPresent").getAsBoolean();
       }
 
       // store them all.
-      for (Iterator iterator = o.keys(); iterator.hasNext();) {
-        String key = (String) iterator.next();
-        Object value = o.get(key);
-        if (value instanceof JSONArray) {
-          JSONArray a = (JSONArray) value;
-          List<String> as = new ArrayList<String>();
-          for (int i = 0; i < a.length(); i++) {
-            as.add(a.getString(i));
-          }
-          allParams.put(key, as);
-        } else {
-          allParams.put(key, o.get(key));
+      for (Map.Entry<String, JsonElement> entry : o.entrySet()) {
+        Object value = new JsonToBeanConverter().convert(Object.class, entry.getValue());
+        // For backward compatibility numbers should be converted to integers
+        if (value instanceof Long) {
+          value = ((Long) value).intValue();
         }
+        allParams.put(entry.getKey(), value);
       }
 
     } catch (Throwable e) {
@@ -353,15 +349,15 @@ public class GridHubConfiguration {
   }
 
   public int getTimeout() {
-    return getIntWith0Default(CLIENT_TIMEOUT);
+    return getIntWith0Default(RegistrationRequest.TIME_OUT);
   }
 
   public int getBrowserTimeout() {
-    return getIntWith0Default(BROWSER_TIMEOUT);
+    return getIntWith0Default(RegistrationRequest.BROWSER_TIME_OUT);
   }
 
   public void setBrowserTimeout(int browserTimeout) {
-      put(BROWSER_TIMEOUT, browserTimeout);
+      put(RegistrationRequest.BROWSER_TIME_OUT, browserTimeout);
   }
 
   public int getNewSessionWaitTimeout() {
@@ -374,10 +370,6 @@ public class GridHubConfiguration {
 
   public String getLogFilename() {
     return logFilename;
-  }
-
-  public boolean isDebug() {
-    return isDebug;
   }
 
   public Map<String, String> getGrid1Mapping() {
@@ -406,24 +398,20 @@ public class GridHubConfiguration {
 
   public void setCleanupCycle(int cleanupCycle) {
     this.cleanupCycle = cleanupCycle;
+    put(RegistrationRequest.CLEAN_UP_CYCLE, cleanupCycle);
   }
 
   public void setTimeout(int timeout) {
-    put(CLIENT_TIMEOUT, timeout);
+    put(RegistrationRequest.TIME_OUT, timeout);
   }
 
-  private void put(JsonKey key, Object value){
-    allParams.put(key.getKey(), value);
+  private void put(String key, Object value){
+    allParams.put(key, value);
   }
 
-  private <T> T get(JsonKey jsonKey) {
+  private Integer getIntWith0Default(String jsonKey) {
     //noinspection unchecked
-    return (T) allParams.get(jsonKey.getKey());
-  }
-
-  private Integer getIntWith0Default(JsonKey jsonKey) {
-    //noinspection unchecked
-    final Object o = allParams.get(jsonKey.getKey());
+    final Object o = allParams.get(jsonKey);
     if (o instanceof  String){
       return Integer.parseInt((String) o);
     }
@@ -503,7 +491,7 @@ public class GridHubConfiguration {
     }
     b.append("\n\n");
     b.append("all params :\n");
-    List<String> keys = new ArrayList<String>();
+    List<String> keys = new ArrayList<>();
     keys.addAll(allParams.keySet());
     Collections.sort(keys);
     for (String s : keys) {
@@ -516,4 +504,7 @@ public class GridHubConfiguration {
     return allParams;
   }
 
+  public int getJettyMaxThreads() {
+    return jettyMaxThreads;
+  }
 }

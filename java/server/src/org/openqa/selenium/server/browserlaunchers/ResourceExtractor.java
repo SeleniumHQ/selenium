@@ -1,19 +1,19 @@
-/*
-Copyright 2006-2012 Selenium committers
-Copyright 2006-2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.server.browserlaunchers;
 
@@ -21,7 +21,6 @@ import com.google.common.io.ByteStreams;
 import com.google.common.io.Resources;
 
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.server.ClassPathResource;
 
@@ -70,29 +69,50 @@ public class ResourceExtractor {
 
   private static void extractResourcePathFromJar(Class cl, File jarFile, String resourcePath,
       File dest) throws IOException {
-    ZipFile z = new ZipFile(jarFile, ZipFile.OPEN_READ);
-    String zipStyleResourcePath = resourcePath.substring(1) + "/";
-    ZipEntry ze = z.getEntry(zipStyleResourcePath);
-    log.fine("Extracting " + resourcePath + " to " + dest.getAbsolutePath());
-    if (ze != null) {
-      // DGF If it's a directory, then we need to look at all the entries
-      for (Enumeration entries = z.entries(); entries.hasMoreElements();) {
-        ze = (ZipEntry) entries.nextElement();
-        if (ze.getName().startsWith(zipStyleResourcePath)) {
-          String relativePath = ze.getName().substring(zipStyleResourcePath.length());
-          File destFile = new File(dest, relativePath);
-          if (ze.isDirectory()) {
-            destFile.mkdirs();
-          } else {
-            FileOutputStream fos = new FileOutputStream(destFile);
-            copyStream(z.getInputStream(ze), fos);
+    ZipFile z = null;
+
+    try {
+      z = new ZipFile(jarFile, ZipFile.OPEN_READ);
+      String zipStyleResourcePath = resourcePath.substring(1) + "/";
+      ZipEntry ze = z.getEntry(zipStyleResourcePath);
+      log.fine("Extracting " + resourcePath + " to " + dest.getAbsolutePath());
+      if (ze != null) {
+        // DGF If it's a directory, then we need to look at all the entries
+        for (Enumeration entries = z.entries(); entries.hasMoreElements(); ) {
+          ze = (ZipEntry) entries.nextElement();
+          if (ze.getName().startsWith(zipStyleResourcePath)) {
+            String relativePath = ze.getName().substring(zipStyleResourcePath.length());
+            File destFile = new File(dest, relativePath);
+            if (ze.isDirectory()) {
+              destFile.mkdirs();
+            } else {
+              FileOutputStream fos = null;
+              try {
+                fos = new FileOutputStream(destFile);
+                copyStream(z.getInputStream(ze), fos);
+              } finally {
+                if (fos != null) {
+                  fos.close();
+                }
+              }
+            }
+          }
+        }
+      } else {
+        FileOutputStream fos = null;
+        try {
+          fos = new FileOutputStream(dest);
+          copyStream(ClassPathResource.getSeleniumResourceAsStream(resourcePath), fos);
+        } finally {
+          if (fos != null) {
+            fos.close();
           }
         }
       }
-    } else {
-      FileOutputStream fos = new FileOutputStream(dest);
-      copyStream(ClassPathResource.getSeleniumResourceAsStream(resourcePath), fos);
-
+    } finally {
+      if (z != null) {
+        z.close();
+      }
     }
   }
 
@@ -113,7 +133,7 @@ public class ResourceExtractor {
     }
     String jarFileURI = resourceFilePath.substring(0, index).replace(" ", "%20");
     if (Platform.getCurrent().is(Platform.WINDOWS) && jarFileURI.startsWith("file://")) {
-      // Java uses non-standard representation of UNC paths  
+      // Java uses non-standard representation of UNC paths
       jarFileURI = jarFileURI.replaceFirst("file://", "file:////");
     }
     try {

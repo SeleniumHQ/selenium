@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using NMock2;
 using NUnit.Framework;
-using System.Collections;
 using System.Collections.ObjectModel;
 using OpenQA.Selenium.Internal;
 

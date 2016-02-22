@@ -1,3 +1,22 @@
+# encoding: utf-8
+#
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 require File.expand_path("../../spec_helper", __FILE__)
 
 module Selenium
@@ -14,28 +33,29 @@ module Selenium
 
         it "uses the user-provided path if set" do
           Platform.stub(:os => :unix)
-          Platform.stub(:assert_executable).with("/some/path")
+          allow(Platform).to receive(:assert_executable).with("/some/path")
           Chrome.driver_path = "/some/path"
 
-          ChildProcess.should_receive(:build).
-                       with { |*args| args.first.should == "/some/path" }.
-                       and_return(mock_process)
+          expect(ChildProcess).to receive(:build) do |*args|
+            expect(args.first).to eq("/some/path")
+            mock_process
+          end
 
-          Service.default_service
+          Service.default_service.send(:start_process)
         end
 
         it "finds the Chrome server binary by searching PATH" do
           Platform.stub(:os => :unix)
-          Platform.should_receive(:find_binary).once.and_return("/some/path")
-          Platform.should_receive(:assert_executable).with("/some/path")
+          expect(Platform).to receive(:find_binary).once.and_return("/some/path")
+          expect(Platform).to receive(:assert_executable).with("/some/path")
 
-          Service.executable_path.should == "/some/path"
+          expect(Service.executable_path).to eq("/some/path")
         end
 
         it "raises a nice error if the server binary can't be found" do
-          Platform.stub(:find_binary).and_return(nil)
+          allow(Platform).to receive(:find_binary).and_return(nil)
 
-          lambda { Service.executable_path }.should raise_error(Error::WebDriverError, /code\.google\.com/)
+          expect { Service.executable_path }.to raise_error(Error::WebDriverError, /github.com\/SeleniumHQ/)
         end
 
       end

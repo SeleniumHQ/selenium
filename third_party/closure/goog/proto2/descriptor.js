@@ -20,8 +20,9 @@ goog.provide('goog.proto2.Descriptor');
 goog.provide('goog.proto2.Metadata');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.object');
-goog.require('goog.proto2.Util');
+goog.require('goog.string');
 
 
 /**
@@ -40,10 +41,11 @@ goog.proto2.Metadata;
  *      the message class that this descriptor describes.
  * @param {!goog.proto2.Metadata} metadata The metadata about the message that
  *      will be used to construct this descriptor.
- * @param {Array.<!goog.proto2.FieldDescriptor>} fields The fields of the
+ * @param {Array<!goog.proto2.FieldDescriptor>} fields The fields of the
  *      message described by this descriptor.
  *
  * @constructor
+ * @final
  */
 goog.proto2.Descriptor = function(messageType, metadata, fields) {
 
@@ -73,7 +75,7 @@ goog.proto2.Descriptor = function(messageType, metadata, fields) {
 
   /**
    * The fields of the message described by this descriptor.
-   * @type {!Object.<number, !goog.proto2.FieldDescriptor>}
+   * @type {!Object<number, !goog.proto2.FieldDescriptor>}
    * @private
    */
   this.fields_ = {};
@@ -123,7 +125,7 @@ goog.proto2.Descriptor.prototype.getContainingType = function() {
  * Returns the fields in the message described by this descriptor ordered by
  * tag.
  *
- * @return {!Array.<!goog.proto2.FieldDescriptor>} The array of field
+ * @return {!Array<!goog.proto2.FieldDescriptor>} The array of field
  *     descriptors.
  */
 goog.proto2.Descriptor.prototype.getFields = function() {
@@ -150,7 +152,7 @@ goog.proto2.Descriptor.prototype.getFields = function() {
  * the actual, internal, fields map for performance reasons, and changing the
  * map can result in undefined behavior of this library.
  *
- * @return {!Object.<number, !goog.proto2.FieldDescriptor>} The field map.
+ * @return {!Object<number, !goog.proto2.FieldDescriptor>} The field map.
  */
 goog.proto2.Descriptor.prototype.getFieldsMap = function() {
   return this.fields_;
@@ -184,7 +186,7 @@ goog.proto2.Descriptor.prototype.findFieldByName = function(name) {
  * @return {goog.proto2.FieldDescriptor} The field found, if any.
  */
 goog.proto2.Descriptor.prototype.findFieldByTag = function(tag) {
-  goog.proto2.Util.assert(goog.string.isNumeric(tag));
+  goog.asserts.assert(goog.string.isNumeric(tag));
   return this.fields_[parseInt(tag, 10)] || null;
 };
 

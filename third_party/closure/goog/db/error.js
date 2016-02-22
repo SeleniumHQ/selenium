@@ -37,6 +37,7 @@ goog.require('goog.debug.Error');
  * @param {string=} opt_message Additional message.
  * @constructor
  * @extends {goog.debug.Error}
+ * @final
  */
 goog.db.Error = function(error, context, opt_message) {
   var errorCode = null;
@@ -68,7 +69,7 @@ goog.db.Error = function(error, context, opt_message) {
   if (opt_message) {
     msg += ', ' + opt_message;
   }
-  goog.base(this, msg);
+  goog.db.Error.base(this, 'constructor', msg);
 };
 goog.inherits(goog.db.Error, goog.debug.Error);
 
@@ -89,9 +90,11 @@ goog.db.Error.prototype.getName = function()  {
  *
  * @constructor
  * @extends {goog.debug.Error}
+ * @final
  */
 goog.db.Error.VersionChangeBlockedError = function() {
-  goog.base(this, 'Version change blocked');
+  goog.db.Error.VersionChangeBlockedError.base(
+      this, 'constructor', 'Version change blocked');
 };
 goog.inherits(goog.db.Error.VersionChangeBlockedError, goog.debug.Error);
 
@@ -116,11 +119,11 @@ goog.db.Error.DatabaseErrorCode_ = {
   TRANSACTION_INACTIVE_ERR: 7,
   ABORT_ERR: 8,
   READ_ONLY_ERR: 9,
-  TRANSIENT_ERR: 11,
-  TIMEOUT_ERR: 10,
-  QUOTA_ERR: 11,
-  INVALID_ACCESS_ERR: 12,
-  INVALID_STATE_ERR: 13
+  TRANSIENT_ERR: 10,
+  TIMEOUT_ERR: 11,
+  QUOTA_ERR: 12,
+  INVALID_ACCESS_ERR: 13,
+  INVALID_STATE_ERR: 14
 };
 
 
@@ -345,13 +348,15 @@ goog.db.Error.fromRequest = function(request, message) {
  */
 goog.db.Error.fromException = function(ex, message) {
   if ('name' in ex) {
-    // Chrome 21 and before.
-    return new goog.db.Error(/** @type {!DOMError} */ (ex), message);
-  } else if ('code' in ex) {
     // Chrome 22+.
+    var errorMessage = message + ': ' + ex.message;
+    return new goog.db.Error(/** @type {!DOMError} */ (ex), errorMessage);
+  } else if ('code' in ex) {
+    // Chrome 21 and before.
     var errorName = goog.db.Error.getName(ex.code);
+    var errorMessage = message + ': ' + ex.message;
     return new goog.db.Error(
-        /** @type {!DOMError} */ ({name: errorName}), message);
+        /** @type {!DOMError} */ ({name: errorName}), errorMessage);
   } else {
     return new goog.db.Error(/** @type {!DOMError} */ (
         {name: goog.db.Error.ErrorName.UNKNOWN_ERR}), message);

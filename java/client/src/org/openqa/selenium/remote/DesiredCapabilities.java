@@ -1,18 +1,19 @@
-/*
-Copyright 2007-2009 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.remote;
 
@@ -26,17 +27,18 @@ import com.google.common.collect.Maps;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.logging.LogLevelMapping;
 import org.openqa.selenium.logging.LoggingPreferences;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 @SuppressWarnings("serial")
 public class DesiredCapabilities implements Serializable, Capabilities {
-  private final Map<String, Object> capabilities = new HashMap<String, Object>();
+  private final Map<String, Object> capabilities = new HashMap<>();
 
   public DesiredCapabilities(String browser, String version, Platform platform) {
     setCapability(BROWSER_NAME, browser);
@@ -49,21 +51,25 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   public DesiredCapabilities(Map<String, ?> rawMap) {
+    capabilities.putAll(rawMap);
+
     if (rawMap.containsKey(LOGGING_PREFS) && rawMap.get(LOGGING_PREFS) instanceof Map) {
       LoggingPreferences prefs = new LoggingPreferences();
       Map<String, String> prefsMap = (Map<String, String>) rawMap.get(LOGGING_PREFS);
 
       for (String logType : prefsMap.keySet()) {
-        prefs.enable(logType, Level.parse(prefsMap.get(logType)));
+        prefs.enable(logType, LogLevelMapping.toLevel(prefsMap.get(logType)));
       }
       capabilities.put(LOGGING_PREFS, prefs);
-      // So it does not get added twice
-      rawMap.remove(LOGGING_PREFS);
     }
-    capabilities.putAll(rawMap);
+
     Object value = capabilities.get(PLATFORM);
     if (value instanceof String) {
-      capabilities.put(PLATFORM, Platform.valueOf((String) value));
+      try {
+        capabilities.put(PLATFORM, Platform.fromString((String) value));
+      } catch (WebDriverException ex) {
+        // unrecognized platform, fallback to string
+      }
     }
   }
 
@@ -149,8 +155,8 @@ public class DesiredCapabilities implements Serializable, Capabilities {
    * extraCapabilities object.
    *
    * @param extraCapabilities Additional capabilities to be added.
+   * @return DesiredCapabilities after the merge
    */
-
   public DesiredCapabilities merge(
       org.openqa.selenium.Capabilities extraCapabilities) {
     if (extraCapabilities != null) {
@@ -164,7 +170,15 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   public void setCapability(String capabilityName, String value) {
-    capabilities.put(capabilityName, value);
+    if (PLATFORM.equals(capabilityName)) {
+      try {
+        capabilities.put(capabilityName, Platform.fromString(value));
+      } catch (WebDriverException ex) {
+        capabilities.put(capabilityName, value);
+      }
+    } else {
+      capabilities.put(capabilityName, value);
+    }
   }
 
   public void setCapability(String capabilityName, Platform value) {
@@ -172,7 +186,11 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   public void setCapability(String key, Object value) {
-    capabilities.put(key, value);
+    if (PLATFORM.equals(key) && value instanceof String) {
+      capabilities.put(key, Platform.fromString((String) value));
+    } else {
+      capabilities.put(key, value);
+    }
   }
 
   public Map<String, ?> asMap() {
@@ -202,6 +220,9 @@ public class DesiredCapabilities implements Serializable, Capabilities {
     return capabilities;
   }
 
+  public static DesiredCapabilities edge() {
+    return new DesiredCapabilities(BrowserType.EDGE, "", Platform.WINDOWS);
+  }
   public static DesiredCapabilities internetExplorer() {
     DesiredCapabilities capabilities = new DesiredCapabilities(
         BrowserType.IE, "", Platform.WINDOWS);
@@ -217,12 +238,21 @@ public class DesiredCapabilities implements Serializable, Capabilities {
     return new DesiredCapabilities(BrowserType.IPAD, "", Platform.MAC);
   }
 
+  /**
+   * @return DesiredCapabilities for opera
+   * @deprecated Use #operaBlink
+   */
+  @Deprecated
   public static DesiredCapabilities opera() {
     return new DesiredCapabilities(BrowserType.OPERA, "", Platform.ANY);
   }
 
+  public static DesiredCapabilities operaBlink() {
+    return new DesiredCapabilities(BrowserType.OPERA_BLINK, "", Platform.ANY);
+  }
+
   public static DesiredCapabilities safari() {
-    return new DesiredCapabilities(BrowserType.SAFARI, "", Platform.ANY);
+    return new DesiredCapabilities(BrowserType.SAFARI, "", Platform.MAC);
   }
 
   public static DesiredCapabilities phantomjs() {

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace OpenQA.Selenium
 {
@@ -39,9 +36,17 @@ namespace OpenQA.Selenium
             return GetUserAgent(driver).Contains("Firefox");
         }
 
+        public static bool IsMarionette(IWebDriver driver)
+        {
+            Firefox.FirefoxDriver firefoxDriver = driver as Firefox.FirefoxDriver;
+
+            return firefoxDriver != null && firefoxDriver.IsMarionette;
+        }
+
         public static bool IsInternetExplorer(IWebDriver driver)
         {
-            return GetUserAgent(driver).Contains("MSIE");
+            string userAgent = GetUserAgent(driver);
+            return userAgent.Contains("MSIE") || userAgent.Contains("Trident");
         }
 
         public static bool IsIE6(IWebDriver driver)
@@ -85,6 +90,21 @@ namespace OpenQA.Selenium
             {
                 return false;
             }
+        }
+
+        public static bool IsNativeEventsEnabled(IWebDriver driver)
+        {
+            IHasCapabilities hasCaps = driver as IHasCapabilities;
+            if (hasCaps != null)
+            {
+                object cap = hasCaps.Capabilities.GetCapability(OpenQA.Selenium.Remote.CapabilityType.HasNativeEvents);
+                if (cap != null && cap is bool)
+                {
+                    return (bool)cap;
+                }
+            }
+
+            return false;
         }
     }
 }

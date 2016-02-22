@@ -19,13 +19,12 @@
  * using CSS background tiling instead of as a grid of nodes.
  *
  * @author robbyw@google.com (Robby Walker)
- * @author abefettig@google.com (Abe Fettig)
  */
 
 goog.provide('goog.ui.DimensionPickerRenderer');
 
-goog.require('goog.a11y.aria');
-goog.require('goog.a11y.aria.State');
+goog.require('goog.a11y.aria.Announcer');
+goog.require('goog.a11y.aria.LivePriority');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.i18n.bidi');
@@ -45,6 +44,9 @@ goog.require('goog.userAgent');
  */
 goog.ui.DimensionPickerRenderer = function() {
   goog.ui.ControlRenderer.call(this);
+
+  /** @private {goog.a11y.aria.Announcer} */
+  this.announcer_ = new goog.a11y.aria.Announcer();
 };
 goog.inherits(goog.ui.DimensionPickerRenderer, goog.ui.ControlRenderer);
 goog.addSingletonGetter(goog.ui.DimensionPickerRenderer);
@@ -198,14 +200,17 @@ goog.ui.DimensionPickerRenderer.prototype.addElementContents_ = function(
 /**
  * Creates a div and adds the appropriate contents to it.
  * @param {goog.ui.Control} control Picker to render.
- * @return {Element} Root element for the palette.
+ * @return {!Element} Root element for the palette.
  * @override
  */
 goog.ui.DimensionPickerRenderer.prototype.createDom = function(control) {
   var palette = /** @type {goog.ui.DimensionPicker} */ (control);
   var classNames = this.getClassNames(palette);
+  // Hide the element from screen readers so they don't announce "1 of 1" for
+  // the perceived number of items in the palette.
   var element = palette.getDomHelper().createDom(goog.dom.TagName.DIV, {
-    'class' : classNames ? classNames.join(' ') : ''
+    'class': classNames ? classNames.join(' ') : '',
+    'aria-hidden': 'true'
   });
   this.addElementContents_(palette, element);
   this.updateSize(palette, element);
@@ -295,7 +300,6 @@ goog.ui.DimensionPickerRenderer.prototype.setHighlightedSize = function(
     style.right = '0';
   }
 
-  // Update the aria label.
   /**
    * @desc The dimension of the columns and rows currently selected in the
    * dimension picker, as text that can be spoken by a screen reader.
@@ -303,8 +307,8 @@ goog.ui.DimensionPickerRenderer.prototype.setHighlightedSize = function(
   var MSG_DIMENSION_PICKER_HIGHLIGHTED_DIMENSIONS = goog.getMsg(
       '{$numCols} by {$numRows}',
       {'numCols': columns, 'numRows': rows});
-  goog.a11y.aria.setState(element, goog.a11y.aria.State.LABEL,
-      MSG_DIMENSION_PICKER_HIGHLIGHTED_DIMENSIONS);
+  this.announcer_.say(MSG_DIMENSION_PICKER_HIGHLIGHTED_DIMENSIONS,
+      goog.a11y.aria.LivePriority.ASSERTIVE);
 
   // Update the size text.
   goog.dom.setTextContent(this.getStatusDiv_(element),

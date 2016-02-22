@@ -1,19 +1,19 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 
 package org.openqa.selenium.firefox.internal;
@@ -22,15 +22,17 @@ import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.WindowsUtils;
-import org.openqa.selenium.remote.internal.CircularOutputStream;
+import org.openqa.selenium.io.CircularOutputStream;
 
 import java.io.File;
 import java.io.OutputStream;
 import java.util.Map;
 
 import static org.openqa.selenium.Platform.MAC;
+import static org.openqa.selenium.Platform.UNIX;
 import static org.openqa.selenium.Platform.WINDOWS;
 
 /**
@@ -100,7 +102,7 @@ public class Executable {
     // Last, add the contents of the specified system property, defaulting to the binary's path.
 
     // On Snow Leopard, beware of problems the sqlite library
-    String firefoxLibraryPath = System.getProperty("webdriver.firefox.library.path",
+    String firefoxLibraryPath = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LIBRARY_PATH,
         binary.getAbsoluteFile().getParentFile().getAbsolutePath());
     if (Platform.getCurrent().is(Platform.MAC) && Platform.getCurrent().getMinorVersion() > 5) {
       libraryPath.append(libraryPath).append(File.pathSeparator);
@@ -117,7 +119,7 @@ public class Executable {
    * be found.
    */
   private static File locateFirefoxBinaryFromSystemProperty() {
-    String binaryName = System.getProperty("webdriver.firefox.bin");
+    String binaryName = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_BINARY);
     if (binaryName == null)
       return null;
 
@@ -141,11 +143,8 @@ public class Executable {
       return binary;
 
     throw new WebDriverException(
-        String
-            .format(
-                "\"webdriver.firefox.bin\" property set, but unable to locate the requested binary: %s",
-                binaryName
-            ));
+        String.format("'%s' property set, but unable to locate the requested binary: %s",
+                      FirefoxDriver.SystemProperty.BROWSER_BINARY, binaryName));
   }
 
   /**
@@ -161,16 +160,28 @@ public class Executable {
 
     } else if (current.is(MAC)) {
       binary = new File("/Applications/Firefox.app/Contents/MacOS/firefox-bin");
+      // fall back to homebrew install location if default is not found
+      if (!binary.exists()) {
+        binary = new File(System.getProperty("user.home") + binary.getAbsolutePath());
+      }
     }
 
     if (binary != null && binary.exists()) {
       return binary;
     }
 
+    if (current.is(UNIX)) {
+      String systemFirefox = CommandLine.find("firefox-bin");
+      if (systemFirefox != null) {
+        return new File(systemFirefox);
+      }
+    }
+
     String systemFirefox = CommandLine.find("firefox");
     if (systemFirefox != null) {
       return new File(systemFirefox);
     }
+
     return null;
   }
 
@@ -200,7 +211,7 @@ public class Executable {
   }
 
   public OutputStream getDefaultOutputStream() {
-    String firefoxLogFile = System.getProperty("webdriver.firefox.logfile");
+    String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
     if ("/dev/stdout".equals(firefoxLogFile)) {
       return System.out;
     }

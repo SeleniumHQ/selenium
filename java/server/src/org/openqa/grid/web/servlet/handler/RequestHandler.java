@@ -1,19 +1,19 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.web.servlet.handler;
 
@@ -41,7 +41,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * Base stuff to handle the request coming from a remote. 
+ * Base stuff to handle the request coming from a remote.
  *
  * Threading notes; RequestHandlers are instantiated per-request, run on the servlet container
  * thread. The instance is also accessed by the matcher thread.
@@ -61,8 +61,8 @@ public class RequestHandler implements Comparable<RequestHandler> {
   private static final Logger log = Logger.getLogger(RequestHandler.class.getName());
   private final Thread waitingThread;
 
-  
-  
+
+
 
   public  RequestHandler(SeleniumBasedRequest request, HttpServletResponse response,
       Registry registry) {
@@ -78,6 +78,7 @@ public class RequestHandler implements Comparable<RequestHandler> {
    * Forward the new session request to the TestSession that has been assigned, and parse the
    * response to extract and return the external key assigned by the remote.
    *
+   * @param session session
    * @throws NewSessionException in case anything wrong happens during the new session process.
    */
   public void forwardNewSessionRequestAndUpdateRegistry(TestSession session)
@@ -108,7 +109,7 @@ public class RequestHandler implements Comparable<RequestHandler> {
           registry.addNewSessionRequest(this);
           waitForSessionBound();
           beforeSessionEvent();
-          forwardNewSessionRequestAndUpdateRegistry(session);  
+          forwardNewSessionRequestAndUpdateRegistry(session);
         } catch (Exception e) {
           cleanup();
           throw new GridException("Error forwarding the new session " + e.getMessage(), e);
@@ -178,6 +179,7 @@ public class RequestHandler implements Comparable<RequestHandler> {
   /**
    * wait for the registry to match the request with a TestSlot.
    *
+   * @throws InterruptedException Interrupted exception
    * @throws TimeoutException if the request reaches the new session wait timeout before being
    *                          assigned.
    */
@@ -196,14 +198,14 @@ public class RequestHandler implements Comparable<RequestHandler> {
   }
 
   /**
-   * the SeleniumBasedRequest this handler is processing.
+   * @return the SeleniumBasedRequest this handler is processing.
    */
   public SeleniumBasedRequest getRequest() {
     return request;
   }
 
   /**
-   * the HttpServletResponse the handler is writing to.
+   * @return the HttpServletResponse the handler is writing to.
    */
   public HttpServletResponse getResponse() {
     return response;
@@ -241,7 +243,7 @@ public class RequestHandler implements Comparable<RequestHandler> {
   }
 
   /**
-   * return the session from the server ( = opaque handle used by the server to determine where to
+   * @return the session from the server ( = opaque handle used by the server to determine where to
    * route session-specific commands from the JSON wire protocol ). will be null until the request
    * has been processed.
    */
@@ -260,7 +262,8 @@ public class RequestHandler implements Comparable<RequestHandler> {
   @Override
   public String toString() {
     StringBuilder b = new StringBuilder();
-    b.append("session :").append(session).append(" , ");
+    b.append("session:").append(session).append(", ");
+    b.append("caps: ").append(request.getDesiredCapabilities());
     b.append("\n");
     return b.toString();
   }

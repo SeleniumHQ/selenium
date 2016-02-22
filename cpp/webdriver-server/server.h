@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -17,27 +20,35 @@
 #ifndef WEBDRIVER_SERVER_SERVER_H_
 #define WEBDRIVER_SERVER_SERVER_H_
 
-#include <vector>
 #include <map>
-#include <sstream>
 #include <string>
+#include <vector>
+#if defined(_WIN32)
+#include <memory>
+#else
+#include <tr1/memory>
+#endif
+#include "civetweb.h"
 #include "command_types.h"
-#include "mongoose.h"
 #include "response.h"
-#include "session.h"
 
 namespace webdriver {
+
+class UriInfo;
+class Session;
+
+typedef std::tr1::shared_ptr<Session> SessionHandle;
 
 class Server {
  public:
   explicit Server(const int port);
   Server(const int port, const std::string& host);
   Server(const int port, const std::string& host, const std::string& log_level, const std::string& log_file);
+  Server(const int port, const std::string& host, const std::string& log_level, const std::string& log_file, const std::string& acl);
   virtual ~Server(void);
 
-  static void* OnHttpEvent(enum mg_event event_raised,
-                           struct mg_connection* conn,
-                           const struct mg_request_info* request_info);
+  static int OnNewHttpRequest(struct mg_connection* conn);
+
   bool Start(void);
   void Stop(void);
   int ProcessRequest(struct mg_connection* conn,
@@ -59,13 +70,15 @@ class Server {
 
  private:
   typedef std::map<std::string, SessionHandle> SessionMap;
-  typedef std::map<std::string, std::string> VerbMap;
-  typedef std::map<std::string, VerbMap> UrlMap;
+  typedef std::map<std::string, std::tr1::shared_ptr<UriInfo> > UrlMap;
 
   void Initialize(const int port,
                   const std::string& host,
                   const std::string& log_level,
-                  const std::string& log_file);
+                  const std::string& log_file,
+                  const std::string& acl);
+
+  void ProcessWhitelist(const std::string& whitelist);
 
   std::string ListSessions(void);
   std::string LookupCommand(const std::string& uri,
@@ -75,7 +88,6 @@ class Server {
   std::string DispatchCommand(const std::string& url,
                               const std::string& http_verb,
                               const std::string& command_body);
-  std::string CreateSession(void);
   void ShutDownSession(const std::string& session_id);
   std::string ReadRequestBody(struct mg_connection* conn,
                               const struct mg_request_info* request_info);
@@ -85,10 +97,6 @@ class Server {
                            const struct mg_request_info* request_info,
                            const std::string& serialized_response);
   void PopulateCommandRepository(void);
-  bool IsCommandMatch(const std::string& uri,
-                      const std::string& url_template,
-                      std::vector<std::string>* locator_param_names,
-                      std::vector<std::string>* locator_param_values);
   std::string ConstructLocatorParameterJson(std::vector<std::string> locator_param_names,
                                             std::vector<std::string> locator_param_values,
                                             std::string* session_id);
@@ -119,6 +127,9 @@ class Server {
   int port_;
   // The host IP address to which the server should bind.
   std::string host_;
+  // List of whitelisted IPv4 addresses allowed to connect
+  // to this server.
+  std::vector<std::string> whitelist_;
   // The map of all command URIs (URL and HTTP verb), and 
   // the corresponding numerical value of the command.
   UrlMap commands_;

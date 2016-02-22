@@ -1,3 +1,22 @@
+# encoding: utf-8
+#
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 module Selenium
   module WebDriver
     module Firefox
@@ -44,7 +63,14 @@ module Selenium
         end
 
         def wait
-          @process.poll_for_exit(WAIT_TIMEOUT) if @process
+          return unless @process
+
+          begin
+            @process.poll_for_exit(WAIT_TIMEOUT)
+          rescue ChildProcess::TimeoutError => e
+            @process.stop
+            raise e
+          end
         end
 
         private
@@ -123,6 +149,19 @@ module Selenium
             @path
           end
 
+          def version
+            @version = case Platform.os
+                         when :macosx
+                           `#{path} -v`.strip[/[^\s]*$/][/^\d+/].to_i
+                         when :windows
+                           `\"#{path}\" -v | more`.strip[/[^\s]*$/][/^\d+/].to_i
+                         when :linux
+                           `#{path} -v`.strip[/[^\s]*$/][/^\d+/].to_i
+                         else
+                           0
+                         end
+          end
+
           private
 
           def windows_path
@@ -131,6 +170,7 @@ module Selenium
 
           def macosx_path
             path = "/Applications/Firefox.app/Contents/MacOS/firefox-bin"
+            path = File.expand_path("~/Applications/Firefox.app/Contents/MacOS/firefox-bin") unless File.exist?(path)
             path = Platform.find_binary("firefox-bin") unless File.exist?(path)
 
             path

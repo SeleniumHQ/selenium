@@ -19,7 +19,8 @@
 
 goog.provide('goog.ui.ColorButtonRenderer');
 
-goog.require('goog.dom.classes');
+goog.require('goog.asserts');
+goog.require('goog.dom.classlist');
 goog.require('goog.functions');
 goog.require('goog.ui.ColorMenuButtonRenderer');
 
@@ -31,9 +32,10 @@ goog.require('goog.ui.ColorMenuButtonRenderer');
  *
  * @constructor
  * @extends {goog.ui.ColorMenuButtonRenderer}
+ * @final
  */
 goog.ui.ColorButtonRenderer = function() {
-  goog.base(this);
+  goog.ui.ColorButtonRenderer.base(this, 'constructor');
 
   /**
    * @override
@@ -56,17 +58,18 @@ goog.ui.ColorButtonRenderer.CSS_CLASS = goog.getCssName('goog-color-button');
 
 /** @override */
 goog.ui.ColorButtonRenderer.prototype.createCaption = function(content, dom) {
-  var caption = goog.base(this, 'createCaption', content, dom);
-  goog.dom.classes.add(caption, goog.ui.ColorButtonRenderer.CSS_CLASS);
+  var caption = goog.ui.ColorButtonRenderer.base(
+      this, 'createCaption', content, dom);
+  goog.asserts.assert(caption);
+  goog.dom.classlist.add(caption, goog.ui.ColorButtonRenderer.CSS_CLASS);
   return caption;
 };
 
 
 /** @override */
 goog.ui.ColorButtonRenderer.prototype.initializeDom = function(button) {
-  goog.base(this, 'initializeDom', button);
-  goog.dom.classes.add(button.getElement(),
+  goog.ui.ColorButtonRenderer.base(this, 'initializeDom', button);
+  goog.dom.classlist.add(
+      goog.asserts.assert(button.getElement()),
       goog.ui.ColorButtonRenderer.CSS_CLASS);
 };
-
-

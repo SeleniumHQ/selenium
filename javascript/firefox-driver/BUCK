@@ -3,102 +3,78 @@ export_file(name = 'webdriver_prefs',
   src = 'webdriver.json',
   visibility = [
     '//java/client/src/org/openqa/selenium/firefox:prefs',
+	'//dotnet/src/webdriver:webdriver',
   ],
 )
 
 
-mozilla_extension(name = "webdriver",
+mozilla_extension(name = 'webdriver',
   content = [
-    "extension/content/fxdriver.xul",
-    "extension/content/fx4driver.xul",
+    'extension/content/fxdriver.xul',
+    'extension/content/fx4driver.xul',
   ] + glob(['extension/content/**/*.js']),
   components = [
-    "extension/components/httpd.js",
-    ":bad-cert-listener",
-    ":command-processor",
-    ":command-processor-xpt",
-    ":coordinates-xpt",
-    ":modifier-keys",
-    ":modifier-keys-xpt",
-    ":driver-component",
-    ":httpd-xpt",
-    ":mouse-xpt",
-    ":prompt-service",
-    ":response-handler-xpt",
-    ":session",
-    ":session-store",
-    ":status-xpt",
-    ":synthetic-mouse",
-    "//cpp:native-events-xpt",
-    "//cpp:native-mouse-xpt",
-    "//cpp:native-keyboard-xpt",
-    "//cpp:native-ime-xpt",
+    'extension/components/httpd.js',
+    ':bad-cert-listener',
+    ':command-processor',
+    ':command-processor-xpt',
+    ':coordinates-xpt',
+    ':modifier-keys',
+    ':modifier-keys-xpt',
+    ':driver-component',
+    ':httpd-xpt',
+    ':mouse-xpt',
+    ':prompt-service',
+    ':response-handler-xpt',
+    ':session',
+    ':session-store',
+    ':status-xpt',
+    ':synthetic-mouse',
+  ],
+  platforms = [
+    ':winnt-x86-msvc',
   ],
   resources = [
     ':js-resources',
-    ':platform-resources',
-#    { "//cpp/webdriver-firefox:previous_esr" : "platform/WINNT_x86-msvc/components/webdriver-firefox-esr-previous.dll" },
-#    { "//cpp/webdriver-firefox:latest_esr" : "platform/WINNT_x86-msvc/components/webdriver-firefox-esr-latest.dll" },
-#    { "//cpp/webdriver-firefox:previous" : "platform/WINNT_x86-msvc/components/webdriver-firefox-previous.dll" },
-#    { "//cpp/webdriver-firefox:latest" : "platform/WINNT_x86-msvc/components/webdriver-firefox-latest.dll" },
-#    { "//cpp:imehandler_dll" : "platform/WINNT_x86-msvc/components/imehandler.dll" },
-#    { "//cpp:webdriver_firefox_esr_previous" : "platform/Linux_x86-gcc3/components/libwebdriver-firefox-esr-previous.so" },
-#    { "//cpp:webdriver_firefox_esr_previous_64" : "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-esr-previous.so" },
-#    { "//cpp:webdriver_firefox_esr_latest" : "platform/Linux_x86-gcc3/components/libwebdriver-firefox-esr-latest.so" },
-#    { "//cpp:webdriver_firefox_esr_latest_64" : "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-esr-latest.so" },
-#    { "//cpp:webdriver_firefox_previous" : "platform/Linux_x86-gcc3/components/libwebdriver-firefox-previous.so" },
-#    { "//cpp:webdriver_firefox_latest" : "platform/Linux_x86-gcc3/components/libwebdriver-firefox-latest.so" },
-#    { "//cpp:webdriver_firefox_previous_64" : "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-previous.so" },
-#    { "//cpp:webdriver_firefox_latest_64" : "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-latest.so" },
-#    { ":web-element-cache" : "resource/modules/web-element-cache.js" },
-#    { "js/timer.js" : "resource/modules/timer.js" },
-#    { "js/evaluate.js" : "resource/evaluate.js" },
-#    { "js/json2.js" : "resource/json2.js" },
   ],
-  chrome = "extension/chrome.manifest",
-  install = "extension/install.rdf",
+  chrome = 'extension/chrome.manifest',
+  install = 'extension/install.rdf',
   visibility = [
     'PUBLIC',
   ]
 )
 
-# The following genrules grossly abuse how buck is meant to work, since they create a directory as
-# their output rather than a single file.
-# TODO(simon): Fix this nonsense.
-
-genrule(name = 'js-resources',
-  out = 'resource',
-  bash = 'rm -rf $OUT && mkdir -p $TMP/resource/modules &&\
-    cp $(location :web-element-cache) $TMP/resource/modules/web-element-cache.js &&\
-    cp $SRCDIR/js/timer.js $TMP/resource/modules/timer.js &&\
-    cp $SRCDIR/js/evaluate.js $TMP/resource/evaluate.js &&\
-    cp $SRCDIR/js/json2.js $TMP/resource/json2.js &&\
-    mv $TMP $OUT',
+# There has to be less attractive way of creating a zip. Ho hum.
+zip_file(name = 'js-resources',
+  out = 'js-resources.src.zip',
   srcs = [
-    'js/evaluate.js',
-    'js/json2.js',
-    'js/timer.js',
+    ':evaluate.js',
+    ':modules',
   ],
-  deps = [
+)
+
+folder(name = 'modules',
+  srcs = [
+    ':timer.js',
     ':web-element-cache',
   ],
 )
 
-genrule(name = 'platform-resources',
-  out = 'platform',
-  bash = 'rm -rf $OUT && mkdir -p $TMP/platform/WINNT_x86-msvc/components && \
-      cp $(location //cpp/webdriver-firefox:previous-esr) $TMP/platform/WINNT_x86-msvc/components/webdriver-firefox-esr-previous.dll &&\
-      cp $(location //cpp/webdriver-firefox:latest-esr) $TMP/platform/WINNT_x86-msvc/components/webdriver-firefox-esr-latest.dll &&\
-      cp $(location //cpp/webdriver-firefox:previous) $TMP/platform/WINNT_x86-msvc/components/webdriver-firefox-previous.dll &&\
-      cp $(location //cpp/webdriver-firefox:latest) $TMP/platform/WINNT_x86-msvc/components/webdriver-firefox-latest.dll &&\
-      cp $(location //cpp:imehandler-dll) $TMP/platform/WINNT_x86-msvc/components/imehandler.dll &&\
-      mv $TMP $OUT',
-  deps = [
-    '//cpp:imehandler-dll',
-    '//cpp/webdriver-firefox:previous-esr',
-    '//cpp/webdriver-firefox:latest-esr',
-    '//cpp/webdriver-firefox:previous',
-    '//cpp/webdriver-firefox:latest',
+export_file(name = 'evaluate.js',
+  src = 'js/evaluate.js',
+)
+
+folder(name = 'winnt-x86-msvc',
+  out = 'WINNT_x86-msvc',
+  srcs = [
+    ':win-components',
+  ],
+)
+
+folder(name = 'win-components',
+  out = 'components',
+  srcs = [
+    '//cpp/prebuilt:imehandler-dll',
   ],
 )
 
@@ -177,6 +153,7 @@ js_binary(name = 'command-processor',
   ],
   deps = [
     ':error',
+    ':events',
     ':firefoxdriver',
     ':logging',
     ':modals',
@@ -185,7 +162,7 @@ js_binary(name = 'command-processor',
     ':timer',
     ':utils',
     ':webelement',
-    '//javascript/atoms:error-lib',
+    '//javascript/atoms:errors',
     '//javascript/atoms:json',
     '//javascript/atoms:locators',
     '//third_party/closure:closure',
@@ -193,22 +170,25 @@ js_binary(name = 'command-processor',
 )
 
 
-js_binary(name = "driver-component",
+js_binary(name = 'driver-component',
   srcs = [
-    "js/driver-component.js",
+    'js/driver-component.js',
   ],
   defines = [
-    "goog.userAgent.ASSUME_GECKO=true",
+    'goog.userAgent.ASSUME_GECKO=true',
   ],
   flags = [
-    "--language_in=ECMASCRIPT5",
+    '--language_in=ECMASCRIPT5',
   ],
   externs = [
-    "js/externs.js",
+    'js/externs.js',
   ],
   deps = [
-    ":webdriver-server",
-    ":webelement",
+    ':dispatcher',
+    ':events',
+    ':firefoxdriver',
+    ':webdriver-server',
+    ':webelement',
   ],
 )
 
@@ -305,7 +285,7 @@ js_binary(name = 'synthetic-mouse',
     '//javascript/atoms:action',
     '//javascript/atoms:devices',
     '//javascript/atoms:dom',
-    '//javascript/atoms:error-lib',
+    '//javascript/atoms:errors',
     '//javascript/atoms:events',
     '//javascript/atoms:window',
     '//third_party/closure:closure',
@@ -328,7 +308,7 @@ js_binary(name = 'web-element-cache',
     ':firefox-utils',
     ':moz',
     ':utils',
-    '//javascript/atoms:error-lib',
+    '//javascript/atoms:errors',
     '//third_party/closure:closure',
   ],
 )
@@ -344,7 +324,7 @@ js_library(name = 'dispatcher',
     ':request',
     ':response',
     ':utils',
-    '//javascript/atoms:error-lib',
+    '//javascript/atoms:errors',
   ],
 )
 
@@ -374,6 +354,8 @@ js_library(name = 'files',
     'js/files.js',
   ],
   deps = [
+    ':error',
+    '//javascript/atoms:errors',
     '//third_party/closure:closure',
   ],
 )
@@ -385,7 +367,7 @@ js_library(name = 'firefox-utils',
   ],
   deps = [
     ':moz',
-    '//javascript/atoms:error-lib',
+    '//javascript/atoms:errors',
     '//javascript/atoms:json',
     '//third_party/closure:closure',
   ],
@@ -405,6 +387,7 @@ js_library(name = 'firefoxdriver',
     ':screenshooter',
     ':timer',
     ':utils',
+    ':webelement',
     ':web-loading-listener',
     '//javascript/atoms:dom',
     '//javascript/atoms:html5',
@@ -422,7 +405,9 @@ js_library(name = 'logging',
   ],
   deps = [
     ':files',
+    ':moz',
     ':prefs',
+    '//javascript/webdriver:logging',
     '//third_party/closure:closure',
   ],
 )
@@ -436,7 +421,7 @@ js_library(name = 'modals',
     ':moz',
     ':timer',
     ':utils',
-    '//javascript/atoms:error-lib',
+    '//javascript/atoms:errors',
   ],
 )
 
@@ -444,7 +429,6 @@ js_library(name = 'modals',
 js_library(name = 'moz',
   srcs = [ 'js/moz.js' ],
   deps = [
-    ':logging',
     '//javascript/atoms:json',
     '//third_party/closure:closure',
   ],
@@ -507,13 +491,15 @@ js_library(name = 'screenshooter',
   ],
 )
 
-
 js_library(name = 'timer',
   srcs = [
-    'js/timer.js',
+    ':timer.js',
   ],
 )
 
+export_file(name = 'timer.js',
+  src = 'js/timer.js',
+)
 
 js_library(name = 'utils',
   srcs = [
@@ -558,7 +544,7 @@ js_library(name = 'webelement',
     ':web-loading-listener',
     '//javascript/atoms:action',
     '//javascript/atoms:dom',
-    '//javascript/atoms:error-lib',
+    '//javascript/atoms:errors',
     '//javascript/webdriver/atoms:atoms-lib',
     '//third_party/closure:closure',
   ],

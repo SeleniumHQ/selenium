@@ -1,19 +1,19 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.web.servlet;
 
@@ -147,8 +147,8 @@ public class ConsoleServlet extends RegistryBasedServlet {
 
   /**
    * retracing how the hub config was built to help debugging.
-   * 
-   * @return
+   *
+   * @return html representation of the hub config
    */
   private String getConfigInfo(boolean verbose) {
     StringBuilder builder = new StringBuilder();
@@ -200,7 +200,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
   }
 
   private String key(String key) {
-    return "<abbr title='" + GridDocHelper.getGridParam(key) + "'>" + key + " : </abbr>";
+    return "<abbr title='" + GridDocHelper.getHubParam(key) + "'>" + key + " : </abbr>";
   }
 
   private String prettyHtmlPrint(GridHubConfiguration config) {
@@ -234,7 +234,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
     }
     b.append("</br></br>");
     b.append("<u>all params :</u></br></br>");
-    List<String> keys = new ArrayList<String>();
+    List<String> keys = new ArrayList<>();
     keys.addAll(config.getAllParams().keySet());
     Collections.sort(keys);
     for (String s : keys) {

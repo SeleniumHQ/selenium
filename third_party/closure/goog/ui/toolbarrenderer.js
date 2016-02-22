@@ -21,7 +21,8 @@
 goog.provide('goog.ui.ToolbarRenderer');
 
 goog.require('goog.a11y.aria.Role');
-goog.require('goog.ui.Container.Orientation');
+goog.require('goog.dom.TagName');
+goog.require('goog.ui.Container');
 goog.require('goog.ui.ContainerRenderer');
 goog.require('goog.ui.Separator');
 goog.require('goog.ui.ToolbarSeparatorRenderer');
@@ -35,7 +36,7 @@ goog.require('goog.ui.ToolbarSeparatorRenderer');
  * @extends {goog.ui.ContainerRenderer}
  */
 goog.ui.ToolbarRenderer = function() {
-  goog.ui.ContainerRenderer.call(this);
+  goog.ui.ContainerRenderer.call(this, goog.a11y.aria.Role.TOOLBAR);
 };
 goog.inherits(goog.ui.ToolbarRenderer, goog.ui.ContainerRenderer);
 goog.addSingletonGetter(goog.ui.ToolbarRenderer);
@@ -50,16 +51,6 @@ goog.ui.ToolbarRenderer.CSS_CLASS = goog.getCssName('goog-toolbar');
 
 
 /**
- * Returns the ARIA role to be applied to toolbar/menubar.
- * @return {string} ARIA role.
- * @override
- */
-goog.ui.ToolbarRenderer.prototype.getAriaRole = function() {
-  return goog.a11y.aria.Role.TOOLBAR;
-};
-
-
-/**
  * Inspects the element, and creates an instance of {@link goog.ui.Control} or
  * an appropriate subclass best suited to decorate it.  Overrides the superclass
  * implementation by recognizing HR elements as separators.
@@ -69,7 +60,7 @@ goog.ui.ToolbarRenderer.prototype.getAriaRole = function() {
  * @override
  */
 goog.ui.ToolbarRenderer.prototype.getDecoratorForChild = function(element) {
-  return element.tagName == 'HR' ?
+  return element.tagName == goog.dom.TagName.HR ?
       new goog.ui.Separator(goog.ui.ToolbarSeparatorRenderer.getInstance()) :
       goog.ui.ToolbarRenderer.superClass_.getDecoratorForChild.call(this,
           element);

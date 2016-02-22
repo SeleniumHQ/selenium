@@ -1,5 +1,8 @@
-// Copyright 2013 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -15,18 +18,10 @@
 #include <algorithm>
 #include <vector>
 #include <wininet.h>
+#include "json.h"
 #include "logging.h"
 #include "messages.h"
-
-// Define a shared data segment.  Variables in this segment can be
-// shared across processes that load this DLL.
-#pragma data_seg("PROCSHARED")
-HHOOK window_proc_hook = NULL;
-int proxy_string_buffer_size;
-wchar_t proxy_string[512];
-#pragma data_seg()
-
-#pragma comment(linker, "/section:PROCSHARED,RWS")
+#include "HookProcessor.h"
 
 #define WD_PROXY_TYPE_DIRECT "direct"
 #define WD_PROXY_TYPE_SYSTEM "system"
@@ -35,28 +30,6 @@ wchar_t proxy_string[512];
 #define WD_PROXY_TYPE_AUTODETECT "autodetect"
 
 namespace webdriver {
-
-class CopyDataHolderWindow : public CWindowImpl<CopyDataHolderWindow> {
- public:
-  DECLARE_WND_CLASS(L"CopyDataHolderWindow")
-  BEGIN_MSG_MAP(CopyDataHolderWindow)
-  END_MSG_MAP()
-
-  LRESULT CopyData(std::wstring data_to_copy, HWND destination_window_handle) {
-    std::vector<wchar_t> buffer;
-    StringUtilities::ToBuffer(data_to_copy, &buffer);
-
-    COPYDATASTRUCT data;
-    data.dwData = 1;
-    data.cbData = sizeof(wchar_t) * static_cast<int>(buffer.size());
-    data.lpData = &buffer[0];
-    LRESULT result = ::SendMessage(destination_window_handle,
-                                   WM_COPYDATA,
-                                   reinterpret_cast<WPARAM>(this->m_hWnd),
-                                   reinterpret_cast<LPARAM>(&data));
-    return result;
-  }
-};
 
 ProxyManager::ProxyManager(void) {
 }
@@ -79,8 +52,12 @@ void ProxyManager::Initialize(ProxySettings settings) {
   this->http_proxy_ = settings.http_proxy;
   this->ftp_proxy_ = settings.ftp_proxy;
   this->ssl_proxy_ = settings.ssl_proxy;
+  this->socks_proxy_ = settings.socks_proxy;
+  this->socks_user_name_ = settings.socks_user_name;
+  this->socks_password_ = settings.socks_password;
   this->proxy_autoconfigure_url_ = settings.proxy_autoconfig_url;
   this->is_proxy_modified_ = false;
+  this->is_proxy_authorization_modified_ = false;
   if (this->proxy_type_ == WD_PROXY_TYPE_SYSTEM ||
       this->proxy_type_ == WD_PROXY_TYPE_DIRECT ||
       this->proxy_type_ == WD_PROXY_TYPE_MANUAL) {
@@ -94,6 +71,8 @@ void ProxyManager::Initialize(ProxySettings settings) {
   this->current_autoconfig_url_ = L"";
   this->current_proxy_auto_detect_flags_ = 0;
   this->current_proxy_server_ = L"";
+  this->current_socks_user_name_ = L"";
+  this->current_socks_password_ = L"";
   this->current_proxy_type_ = 0;
   this->current_proxy_bypass_list_ = L"";
 }
@@ -133,6 +112,15 @@ Json::Value ProxyManager::GetProxyAsJson() {
     if (this->ssl_proxy_.size() > 0) {
       proxy_value["sslProxy"] = this->ssl_proxy_;
     }
+    if (this->socks_proxy_.size() > 0) {
+      proxy_value["socksProxy"] = this->socks_proxy_;
+      if (this->socks_user_name_.size() > 0) {
+        proxy_value["socksUsername"] = this->socks_user_name_;
+      }
+      if (this->socks_password_.size() > 0) {
+        proxy_value["socksPassword"] = this->socks_password_;
+      }
+    }
   } else if (this->proxy_type_ == WD_PROXY_TYPE_AUTOCONFIGURE) {
     proxy_value["proxyAutoconfigUrl"] = this->proxy_autoconfigure_url_;
   }
@@ -158,6 +146,12 @@ std::wstring ProxyManager::BuildProxySettingsString() {
       }
       proxy_string.append("https=").append(this->ssl_proxy_);
     }
+    if (this->socks_proxy_.size() > 0) {
+      if (proxy_string.size() > 0) {
+        proxy_string.append(" ");
+      }
+      proxy_string.append("socks=").append(this->socks_proxy_);
+    }
   } else if (this->proxy_type_ == WD_PROXY_TYPE_AUTOCONFIGURE) {
     proxy_string = this->proxy_autoconfigure_url_;
   } else {
@@ -169,6 +163,7 @@ std::wstring ProxyManager::BuildProxySettingsString() {
 
 void ProxyManager::RestoreProxySettings() {
   LOG(TRACE) << "ProxyManager::RestoreProxySettings";
+  bool settings_restored = (!this->use_per_process_proxy_ && this->is_proxy_modified_) || this->is_proxy_authorization_modified_;
   if (!this->use_per_process_proxy_ && this->is_proxy_modified_) {
     INTERNET_PER_CONN_OPTION_LIST option_list;
     std::vector<INTERNET_PER_CONN_OPTION> restore_options(5);
@@ -208,12 +203,18 @@ void ProxyManager::RestoreProxySettings() {
     if (!success) {
       LOGERR(WARN) << "InternetSetOption failed setting INTERNET_OPTION_PER_CONNECTION_OPTION";
     }
-    success = ::InternetSetOption(NULL,
-                                  INTERNET_OPTION_PROXY_SETTINGS_CHANGED,
-                                  NULL,
-                                  0);
     this->is_proxy_modified_ = false;
-    if (!success) {
+  }
+  if (this->is_proxy_authorization_modified_) {
+    this->SetProxyAuthentication(this->current_socks_user_name_, this->current_socks_password_);
+    this->is_proxy_authorization_modified_ = false;
+  }
+  if (settings_restored) {
+    BOOL notify_success = ::InternetSetOption(NULL,
+                                              INTERNET_OPTION_PROXY_SETTINGS_CHANGED,
+                                              NULL,
+                                              0);
+    if (!notify_success) {
       LOGERR(WARN) << "InternetSetOption failed setting INTERNET_OPTION_PROXY_SETTINGS_CHANGED";
     }
   }
@@ -222,23 +223,46 @@ void ProxyManager::RestoreProxySettings() {
 void ProxyManager::SetPerProcessProxySettings(HWND browser_window_handle) {
   LOG(TRACE) << "ProxyManager::SetPerProcessProxySettings";
   std::wstring proxy = this->BuildProxySettingsString();
-  CopyDataHolderWindow holder;
-  holder.Create(/*HWND*/ HWND_MESSAGE,
-                /*_U_RECT rect*/ CWindow::rcDefault,
-                /*LPCTSTR szWindowName*/ NULL,
-                /*DWORD dwStyle*/ NULL,
-                /*DWORD dwExStyle*/ NULL,
-                /*_U_MENUorID MenuOrID*/ 0U,
-                /*LPVOID lpCreateParam*/ NULL);
-  bool hooked = ProxyManager::InstallWindowsHook(browser_window_handle);
-  LRESULT result = holder.CopyData(proxy, browser_window_handle);
-  result = ::SendMessage(browser_window_handle,
-                         WD_CHANGE_PROXY,
-                         NULL,
-                         NULL);
-  LOG(INFO) << "SendMessage result? " << result;
-  ProxyManager::UninstallWindowsHook();
-  holder.DestroyWindow();
+
+  HookSettings hook_settings;
+  hook_settings.window_handle = browser_window_handle;
+  hook_settings.hook_procedure_name = "SetProxyWndProc";
+  hook_settings.hook_procedure_type = WH_CALLWNDPROC;
+  hook_settings.communication_type = OneWay;
+
+  HookProcessor hook;
+  if (!hook.CanSetWindowsHook(browser_window_handle)) {
+    LOG(WARN) << "Proxy will not be set! There is a mismatch in the "
+              << "bitness between the driver and browser. In particular, "
+              << "be sure you are not attempting to use a 64-bit "
+              << "IEDriverServer.exe against IE 10 or 11, even on 64-bit "
+              << "Windows.";
+  }
+  hook.Initialize(hook_settings);
+  hook.PushData(proxy);
+  LRESULT result = ::SendMessage(browser_window_handle,
+                                 WD_CHANGE_PROXY,
+                                 NULL,
+                                 NULL);
+
+  if (this->socks_proxy_.size() > 0 && 
+      (this->socks_user_name_.size() > 0 || this->socks_password_.size() > 0)) {
+    LOG(WARN) << "Windows APIs provide no way to set proxy user name and "
+              << "password on a per-process basis. Setting global setting.";
+
+    this->SetProxyAuthentication(StringUtilities::ToWString(this->socks_user_name_),
+                                 StringUtilities::ToWString(this->socks_password_));
+    this->is_proxy_authorization_modified_ = true;
+    
+    // Notify WinINet clients that the proxy options have changed.
+    BOOL success = ::InternetSetOption(NULL,
+                                       INTERNET_OPTION_PROXY_SETTINGS_CHANGED,
+                                       NULL,
+                                       0);
+    if (!success) {
+      LOGERR(WARN) << "InternetSetOption failed setting INTERNET_OPTION_PROXY_SETTINGS_CHANGED";
+    }
+  }
 }
 
 void ProxyManager::SetGlobalProxySettings() {
@@ -286,12 +310,42 @@ void ProxyManager::SetGlobalProxySettings() {
   if (!success) {
     LOGERR(WARN) << "InternetSetOption failed setting INTERNET_OPTION_PER_CONNECTION_OPTION";
   }
+
+  // Only set proxy authentication for SOCKS proxies, and
+  // where the user name and password have been specified.
+  if (this->socks_proxy_.size() > 0 &&
+      (this->socks_user_name_.size() > 0 || this->socks_password_.size() > 0)) {
+    this->SetProxyAuthentication(StringUtilities::ToWString(this->socks_user_name_),
+                                 StringUtilities::ToWString(this->socks_password_));
+    this->is_proxy_authorization_modified_ = true;
+  }
+
   success = ::InternetSetOption(NULL,
                                 INTERNET_OPTION_PROXY_SETTINGS_CHANGED,
                                 NULL,
                                 0);
   if (!success) {
     LOGERR(WARN) << "InternetSetOption failed setting INTERNET_OPTION_PROXY_SETTINGS_CHANGED";
+  }
+}
+
+void ProxyManager::SetProxyAuthentication(const std::wstring& user_name,
+                                          const std::wstring& password) {
+  LOG(TRACE) << "ProxyManager::SetProxyAuthentication";
+  BOOL success = ::InternetSetOption(NULL,
+                                     INTERNET_OPTION_PROXY_USERNAME,
+                                     const_cast<wchar_t*>(user_name.c_str()),
+                                     static_cast<int>(user_name.size()) + 1);
+  if (!success) {
+    LOGERR(WARN) << "InternetSetOption failed setting INTERNET_OPTION_PROXY_USERNAME";
+  }
+
+  success = ::InternetSetOption(NULL,
+                                INTERNET_OPTION_PROXY_PASSWORD,
+                                const_cast<wchar_t*>(password.c_str()),
+                                static_cast<int>(password.size()) + 1);
+  if (!success) {
+    LOGERR(WARN) << "InternetSetOption failed setting INTERNET_OPTION_PROXY_PASSWORD";
   }
 }
 
@@ -337,6 +391,28 @@ void ProxyManager::GetCurrentProxySettings() {
     this->current_proxy_server_ = options_to_get[3].Value.pszValue;
     ::GlobalFree(options_to_get[3].Value.pszValue);
   }
+
+  this->GetCurrentProxyAuthentication();
+}
+
+void ProxyManager::GetCurrentProxyAuthentication() {
+  LOG(TRACE) << "ProxyManager::GetCurrentProxyAuthentication";
+
+  DWORD user_name_length = 0;
+  BOOL success = ::InternetQueryOption(NULL, INTERNET_OPTION_PROXY_USERNAME, NULL, &user_name_length);
+  if (user_name_length > 0) {
+    std::vector<wchar_t> user_name(user_name_length);
+    success = ::InternetQueryOption(NULL, INTERNET_OPTION_PROXY_USERNAME, &user_name[0], &user_name_length);
+    this->current_socks_user_name_ = &user_name[0];
+  }
+
+  DWORD password_length = 0;
+  success = ::InternetQueryOption(NULL, INTERNET_OPTION_PROXY_PASSWORD, NULL, &password_length);
+  if (password_length > 0) {
+    std::vector<wchar_t> password(password_length);
+    success = ::InternetQueryOption(NULL, INTERNET_OPTION_PROXY_PASSWORD, &password[0], &password_length);
+    this->current_socks_password_ = &password[0];
+  }
 }
 
 void ProxyManager::GetCurrentProxyType() {
@@ -375,58 +451,25 @@ void ProxyManager::GetCurrentProxyType() {
   }
 }
 
-bool ProxyManager::InstallWindowsHook(HWND window_handle) {
-  LOG(TRACE) << "Entering WindowsProcedureOverride::InstallWindowsHook";
-
-  HINSTANCE instance_handle = _AtlBaseModule.GetModuleInstance();
-
-  FARPROC hook_procedure_address = ::GetProcAddress(instance_handle, "OverrideWndProc");
-  if (hook_procedure_address == NULL || hook_procedure_address == 0) {
-    LOGERR(WARN) << "Unable to get address of hook procedure to override main window proc";
-    return false;
-  }
-  HOOKPROC hook_procedure = reinterpret_cast<HOOKPROC>(hook_procedure_address);
-
-  // Install the Windows hook.
-  DWORD thread_id = ::GetWindowThreadProcessId(window_handle, NULL);
-  window_proc_hook = ::SetWindowsHookEx(WH_CALLWNDPROC,
-                                        hook_procedure,
-                                        instance_handle,
-                                        thread_id);
-  if (window_proc_hook == NULL) {      
-    LOGERR(WARN) << "Unable to set windows hook to override main window proc";
-    return false;
-  }
-  return true;
-}
-
-void ProxyManager::UninstallWindowsHook() {
-  ::UnhookWindowsHookEx(window_proc_hook);
-}
-
 } // namespace webdriver
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-// Many thanks to sunnyandy for helping out with this approach. What we're 
-// doing here is setting up a Windows hook to see incoming messages to the
-// IEFrame's message processor. Once we find one is the message we want,
-// we inject our own message processor into the IEFrame process to handle 
-// that one message. 
-//
-// See the discussion here: http://www.codeguru.com/forum/showthread.php?p=1889928
-LRESULT CALLBACK OverrideWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK SetProxyWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
   CWPSTRUCT* call_window_proc_struct = reinterpret_cast<CWPSTRUCT*>(lParam);
   if (WM_COPYDATA == call_window_proc_struct->message) {
     COPYDATASTRUCT* data = reinterpret_cast<COPYDATASTRUCT*>(call_window_proc_struct->lParam);
-    proxy_string_buffer_size = data->cbData;
-    wcscpy_s(proxy_string, data->cbData, reinterpret_cast<LPCWSTR>(data->lpData));
+    webdriver::HookProcessor::CopyDataToBuffer(data->cbData, data->lpData);
   } else if (WD_CHANGE_PROXY == call_window_proc_struct->message) {
-    std::wstring proxy = proxy_string;
+    // Allocate a buffer of the length of the data in the shared memory buffer,
+    // plus one extra wide char, to account for the null terminator.
+    int multibyte_buffer_size = webdriver::HookProcessor::GetDataBufferSize() + sizeof(wchar_t);
+    std::vector<char> multibyte_buffer(multibyte_buffer_size);
+    std::wstring proxy = webdriver::HookProcessor::CopyWStringFromBuffer();
+
     INTERNET_PROXY_INFO proxy_info;
-    std::vector<char> multibyte_buffer(proxy_string_buffer_size * 2);
     if (proxy == L"direct") {
       proxy_info.dwAccessType = INTERNET_OPEN_TYPE_DIRECT;
       proxy_info.lpszProxy = L"";
@@ -435,10 +478,12 @@ LRESULT CALLBACK OverrideWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
       // multi-byte strings, not Unicode strings. Since the INTERNET_PROXY_INFO
       // struct hard-codes to LPCTSTR, and that translates into LPCWSTR for the
       // compiler settings we use, we must use the multi-byte version here.
+      // Note that for the count of input characters, we can use -1, since
+      // we've forced the string to be null-terminated.
       ::WideCharToMultiByte(CP_UTF8,
                             0,
-                            proxy_string,
-                            proxy_string_buffer_size / sizeof(wchar_t),
+                            proxy.c_str(),
+                            -1,
                             &multibyte_buffer[0],
                             static_cast<int>(multibyte_buffer.size()),
                             NULL,
@@ -454,7 +499,7 @@ LRESULT CALLBACK OverrideWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
                                          0);
   }
 
-  return ::CallNextHookEx(window_proc_hook, nCode, wParam, lParam);
+  return ::CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 
 #ifdef __cplusplus

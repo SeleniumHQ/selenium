@@ -1,21 +1,23 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.selenium;
+
+import com.google.common.collect.ImmutableMap;
 
 import org.openqa.grid.common.CommandLineOptionHelper;
 import org.openqa.grid.common.GridDocHelper;
@@ -28,7 +30,7 @@ import org.openqa.grid.web.Hub;
 import org.openqa.selenium.remote.server.log.LoggingOptions;
 import org.openqa.selenium.remote.server.log.TerseFormatter;
 import org.openqa.selenium.server.SeleniumServer;
-import org.openqa.selenium.server.cli.RemoteControlLauncher;
+import org.openqa.grid.shared.CliUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,16 +44,120 @@ public class GridLauncher {
 
   private static final Logger log = Logger.getLogger(GridLauncher.class.getName());
 
-  public static void main(String[] args) throws Exception {
+  public interface GridItemLauncher {
+    void launch(String[] args, Logger log) throws Exception;
+    void printUsage();
+  }
 
+  private static ImmutableMap<GridRole, GridItemLauncher> launchers
+    = new ImmutableMap.Builder<GridRole, GridItemLauncher>()
+      .put(GridRole.NOT_GRID, new GridItemLauncher() {
+        @Override
+        public void launch(String[] args, Logger log) throws Exception {
+          log.info("Launching a standalone Selenium Server");
+          SeleniumServer.main(args);
+          log.info("Selenium Server is up and running");
+        }
+
+        @Override
+        public void printUsage() {
+          String separator = "\n-------------------------------\n";
+          SeleniumServer.usage(separator + "Running as a standalone server:" + separator);
+        }
+      })
+    .put(GridRole.HUB, new GridItemLauncher() {
+      @Override
+      public void launch(String[] args, Logger log) throws Exception {
+        log.info("Launching Selenium Grid hub");
+        GridHubConfiguration c = GridHubConfiguration.build(args);
+        Hub h = new Hub(c);
+        h.start();
+        log.info("Nodes should register to " + h.getRegistrationURL());
+        log.info("Selenium Grid hub is up and running");
+      }
+
+      @Override
+      public void printUsage() {
+        String separator = "\n-------------------------------\n";
+        GridDocHelper.printHubHelp(separator + "Running as a grid hub:" + separator, false);
+      }
+    })
+    .put(GridRole.NODE, new GridItemLauncher() {
+      @Override
+      public void launch(String[] args, Logger log) throws Exception {
+        log.info("Launching a Selenium Grid node");
+        RegistrationRequest c = RegistrationRequest.build(args);
+        SelfRegisteringRemote remote = new SelfRegisteringRemote(c);
+        remote.setRemoteServer(new SeleniumServer(c.getConfiguration()));
+        remote.startRemoteServer();
+        log.info("Selenium Grid node is up and ready to register to the hub");
+        remote.startRegistrationProcess();
+      }
+
+      @Override
+      public void printUsage() {
+        String separator = "\n-------------------------------\n";
+        GridDocHelper.printNodeHelp(separator + "Running as a grid node:" + separator, false);
+      }
+    })
+    .build();
+
+  public static void main(String[] args) throws Exception {
     CommandLineOptionHelper helper = new CommandLineOptionHelper(args);
-    if (helper.isParamPresent("-help") || helper.isParamPresent("-h")){
-      String separator = "\n----------------------------------\n";
-      RemoteControlLauncher.usage(separator+"To use as a standalone server"+separator);
-      GridDocHelper.printHelp(separator+"To use in a grid environment :"+separator,false);
+    GridRole role = GridRole.find(args);
+
+    if (role == null) {
+      printInfoAboutRoles(helper);
       return;
     }
 
+    if (helper.isParamPresent("-help") || helper.isParamPresent("-h")) {
+      if (launchers.containsKey(role)) {
+        launchers.get(role).printUsage();
+      } else {
+        printInfoAboutRoles(helper);
+      }
+      return;
+    }
+
+    configureLogging(helper);
+
+    if (launchers.containsKey(role)) {
+      try {
+        launchers.get(role).launch(args, log);
+      } catch (Exception e) {
+        launchers.get(role).printUsage();
+        e.printStackTrace();
+      }
+    } else {
+      throw new GridConfigurationException("Unknown role: " + role);
+    }
+  }
+
+  private static void printInfoAboutRoles(CommandLineOptionHelper helper) {
+    if (helper.hasParamValue("-role")) {
+      CliUtils.printWrappedLine(
+        "",
+        "Error: the role '" + helper.getParamValue("-role") + "' does not match a recognized server role\n");
+    } else {
+      CliUtils.printWrappedLine(
+        "",
+        "Error: -role option needs to be followed by the value that defines role of this component in the grid\n");
+    }
+    System.out.println(
+      "Selenium server can run in one of the following roles:\n" +
+      "  hub         as a hub of a Selenium grid\n" +
+      "  node        as a node of a Selenium grid\n" +
+      "  standalone  as a standalone server not being a part of a grid\n" +
+      "\n" +
+      "If -role option is omitted the server runs standalone\n");
+    CliUtils.printWrappedLine(
+      "",
+      "To get help on the options available for a specific role run the server"
+      + " with -help option and the corresponding -role option value");
+  }
+
+  private static void configureLogging(CommandLineOptionHelper helper) {
     Level logLevel =
         helper.isParamPresent("-debug")
         ? Level.FINE
@@ -60,6 +166,7 @@ public class GridLauncher {
       logLevel = Level.INFO;
     }
     Logger.getLogger("").setLevel(logLevel);
+    Logger.getLogger("org.openqa.jetty").setLevel(Level.WARNING);
 
     String logFilename =
         helper.isParamPresent("-log")
@@ -80,46 +187,13 @@ public class GridLauncher {
         throw new RuntimeException(e);
       }
     } else {
+      boolean logLongForm = helper.isParamPresent("-logLongForm");
       for (Handler handler : Logger.getLogger("").getHandlers()) {
         if (handler instanceof ConsoleHandler) {
           handler.setLevel(logLevel);
+          handler.setFormatter(new TerseFormatter(logLongForm));
         }
       }
     }
-
-    GridRole role = GridRole.find(args);
-
-    switch (role) {
-      case NOT_GRID:
-        log.info("Launching a standalone server");
-        SeleniumServer.main(args);
-        break;
-      case HUB:
-        log.info("Launching a selenium grid server");
-        try {
-          GridHubConfiguration c = GridHubConfiguration.build(args);
-          Hub h = new Hub(c);
-          h.start();
-        } catch (GridConfigurationException e) {
-          GridDocHelper.printHelp(e.getMessage());
-          e.printStackTrace();
-        }
-        break;
-      case NODE:
-        log.info("Launching a selenium grid node");
-        try {
-          RegistrationRequest c = RegistrationRequest.build(args);
-          SelfRegisteringRemote remote = new SelfRegisteringRemote(c);
-          remote.startRemoteServer();
-          remote.startRegistrationProcess();
-        } catch (GridConfigurationException e) {
-          GridDocHelper.printHelp(e.getMessage());
-          e.printStackTrace();
-        }
-        break;
-      default:
-        throw new RuntimeException("NI");
-    }
   }
-
 }

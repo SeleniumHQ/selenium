@@ -1,6 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// <copyright file="AlertOverride.cs" company="WebDriver Committers">
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// </copyright>
+
 using OpenQA.Selenium;
 
 namespace Selenium.Internal
@@ -27,7 +42,11 @@ namespace Selenium.Internal
         public void ReplaceAlertMethod()
         {
             ((IJavaScriptExecutor)this.driver).ExecuteScript(
-                "if (window.localStorage) { " +
+                "var canUseLocalStorage = false; " +
+                "try { canUseLocalStorage = !!window.localStorage; } catch(ex) { /* probe failed */ } " +
+                "var canUseJSON = false; " +
+                "try { canUseJSON = !!JSON; } catch(ex) { /* probe failed */ } " +
+                "if (canUseLocalStorage && canUseJSON) { " +
                 "  window.localStorage.setItem('__webdriverAlerts', JSON.stringify([])); " +
                 "  window.alert = function(msg) { " +
                 "    var alerts = JSON.parse(window.localStorage.getItem('__webdriverAlerts')); " +
@@ -69,7 +88,11 @@ namespace Selenium.Internal
         public string GetNextAlert()
         {
             string result = (string)((IJavaScriptExecutor)this.driver).ExecuteScript(
-                "if (window.localStorage) { " +
+                "var canUseLocalStorage = false; " +
+                "try { canUseLocalStorage = !!window.localStorage; } catch(ex) { /* probe failed */ } " +
+                "var canUseJSON = false; " +
+                "try { canUseJSON = !!JSON; } catch(ex) { /* probe failed */ } " +
+                "if (canUseLocalStorage && canUseJSON) { " +
                 "  if (!('__webdriverAlerts' in window.localStorage)) { return null } " +
                 "  var alerts = JSON.parse(window.localStorage.getItem('__webdriverAlerts')); " +
                 "  if (! alerts) { return null } " +
@@ -101,7 +124,11 @@ namespace Selenium.Internal
         {
             bool alertPresent = false;
             object alertResult = ((IJavaScriptExecutor)this.driver).ExecuteScript(
-                "if (window.localStorage) { " +
+                "var canUseLocalStorage = false; " +
+                "try { canUseLocalStorage = !!window.localStorage; } catch(ex) { /* probe failed */ } " +
+                "var canUseJSON = false; " +
+                "try { canUseJSON = !!JSON; } catch(ex) { /* probe failed */ } " +
+                "if (canUseLocalStorage && canUseJSON) { " +
                 "  if (!('__webdriverAlerts' in window.localStorage)) { return false } " +
                 "  var alerts = JSON.parse(window.localStorage.getItem('__webdriverAlerts')); " +
                 "  return alerts && alerts.length > 0; " +
@@ -124,7 +151,11 @@ namespace Selenium.Internal
         public string GetNextConfirmation()
         {
             string result = (string)((IJavaScriptExecutor)this.driver).ExecuteScript(
-                "if (window.localStorage) { " +
+                "var canUseLocalStorage = false; " +
+                "try { canUseLocalStorage = !!window.localStorage; } catch(ex) { /* probe failed */ } " +
+                "var canUseJSON = false; " +
+                "try { canUseJSON = !!JSON; } catch(ex) { /* probe failed */ } " +
+                "if (canUseLocalStorage && canUseJSON) { " +
                 "  if (!('__webdriverConfirms' in window.localStorage)) { return null } " +
                 "  var confirms = JSON.parse(window.localStorage.getItem('__webdriverConfirms')); " +
                 "  if (! confirms) { return null } " +
@@ -154,7 +185,11 @@ namespace Selenium.Internal
         {
             bool confirmPresent = false;
             object confirmResult = ((IJavaScriptExecutor)this.driver).ExecuteScript(
-                "if (window.localStorage) { " +
+                "var canUseLocalStorage = false; " +
+                "try { canUseLocalStorage = !!window.localStorage; } catch(ex) { /* probe failed */ } " +
+                "var canUseJSON = false; " +
+                "try { canUseJSON = !!JSON; } catch(ex) { /* probe failed */ } " +
+                "if (canUseLocalStorage && canUseJSON) { " +
                 "  if (!('__webdriverConfirms' in window.localStorage)) { return false } " +
                 "  var confirms = JSON.parse(window.localStorage.getItem('__webdriverConfirms')); " +
                 "  return confirms && confirms.length > 0; " +

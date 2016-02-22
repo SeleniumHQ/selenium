@@ -334,18 +334,24 @@ function TargetSelecter(callback, cleanupCallback) {
 }
 
 TargetSelecter.prototype.cleanup = function () {
-  if (this.div) {
-    if (this.div.parentNode) {
-      this.div.parentNode.removeChild(this.div);
+  try {
+    if (this.div) {
+      if (this.div.parentNode) {
+        this.div.parentNode.removeChild(this.div);
+      }
+      this.div = null;
     }
-    this.div = null;
+    if (this.win) {
+      var doc = this.win.document;
+      doc.removeEventListener("mousemove", this, true);
+      doc.removeEventListener("click", this, true);
+    }
+  } catch (e) {
+    if (e != "TypeError: can't access dead object") {
+      throw e;
+    }
   }
-  if (this.win) {
-    var doc = this.win.document;
-    doc.removeEventListener("mousemove", this, true);
-    doc.removeEventListener("click", this, true);
-    this.win = null;
-  }
+  this.win = null;
   if (this.cleanupCallback) {
     this.cleanupCallback();
   }

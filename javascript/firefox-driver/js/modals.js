@@ -1,19 +1,19 @@
-/*
- Copyright 2010 WebDriver committers
- Copyright 2010 Google Inc.
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview Methods for dealing with modal dialogs.
@@ -24,16 +24,24 @@ goog.provide('fxdriver.modals');
 goog.require('WebDriverError');
 goog.require('bot.ErrorCode');
 goog.require('fxdriver.Timer');
-goog.require('fxdriver.logging');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.utils');
+goog.require('goog.log');
+
+
+/**
+ * @private {goog.log.Logger}
+ * @const
+ */
+fxdriver.modals.LOG_ = goog.log.getLogger('fxdriver.modals');
+
 
 fxdriver.modals.isModalPresent = function(callback, timeout) {
     fxdriver.modaltimer = new fxdriver.Timer();
     fxdriver.modaltimer.runWhenTrue(
     function() {
       var modal = fxdriver.modals.find_();
-      return modal && modal.document;
+      return modal && modal.document && modal.document.getElementsByTagName('dialog')[0];
     },
     function() { callback(true) },
     timeout,
@@ -54,7 +62,8 @@ fxdriver.modals.dismissAlert = function(driver) {
   var button = fxdriver.modals.findButton_(modal, 'cancel');
 
   if (!button) {
-    fxdriver.logging.info('No cancel button Falling back to the accept button');
+    goog.log.info(fxdriver.modals.LOG_,
+        'No cancel button Falling back to the accept button');
     button = fxdriver.modals.findButton_(modal, 'accept');
   }
 
@@ -147,41 +156,23 @@ fxdriver.modals.findAssociatedDriver_ = function(window) {
   }
 
   // There's no meaningful way we can reach this.
-  fxdriver.logging.info('Unable to find the associated driver');
+  goog.log.info(fxdriver.modals.LOG_,
+      'Unable to find the associated driver');
   return undefined;
 };
 
 fxdriver.modals.signalOpenModal = function(parent, text) {
-  fxdriver.logging.info('signalOpenModal');
+  goog.log.info(fxdriver.modals.LOG_, 'signalOpenModal');
   // Try to grab the top level window
   var driver = fxdriver.modals.findAssociatedDriver_(parent);
   if (driver && driver.response_) {
     fxdriver.modals.setFlag(driver, text);
     var res = driver.response_;
-    if (driver.response_.name == 'executeAsyncScript' && !driver.response_.responseSent_) {
+    if (res.name == 'executeAsyncScript' && !res.responseSent_) {
       // Special case handling. If a modal is open when executeAsyncScript
       // tries to respond with a result, it doesn't do anything, so that this
       // codepath can be followed.
-      fxdriver.modals.isModalPresent(function(present) {
-        var errorMessage = 'Unexpected modal dialog (text: ' + text + ')';
-        if (present) {
-          try {
-            fxdriver.modals.dismissAlert(driver);
-          } catch (e) {
-            errorMessage +=
-                ' The alert could not be closed. The browser may be in a ' +
-                'wildly inconsistent state, and the alert may still be ' +
-                'open. This is not good. If you can reliably reproduce this' +
-                ', please report a new issue at ' +
-                'https://code.google.com/p/selenium/issues/entry ' +
-                'with reproduction steps. Exception message: ' + e;
-          }
-        } else {
-          errorMessage += ' The alert disappeared before it could be closed.';
-        }
-        res.sendError(new WebDriverError(bot.ErrorCode.MODAL_DIALOG_OPENED,
-            errorMessage, {alert: {text: text}}));
-      }, 2000);
+      fxdriver.modals.closeUnhandledAlert(res, driver, false);
     } else {
       // We hope that modals can only be opened by actions which don't pay
       // attention to the results of the command. Given this, the only ways we
@@ -241,4 +232,33 @@ fxdriver.modals.getUnexpectedAlertBehaviour = function() {
 
   var raw = prefs.getCharPref('webdriver_unexpected_alert_behaviour');
   return fxdriver.modals.asAcceptableAlertValue(raw);
+};
+
+
+fxdriver.modals.closeUnhandledAlert = function(response, driver, accept) {
+  var text = driver.modalOpen;
+  fxdriver.modals.isModalPresent(function(present) {
+    var errorMessage = 'Unexpected modal dialog (text: ' + text + ')';
+    if (present) {
+      try {
+        if (accept) {
+          fxdriver.modals.acceptAlert(driver);
+        } else {
+          fxdriver.modals.dismissAlert(driver);
+        }
+      } catch (e) {
+        errorMessage +=
+        ' The alert could not be closed. The browser may be in a ' +
+        'wildly inconsistent state, and the alert may still be ' +
+        'open. This is not good. If you can reliably reproduce this' +
+        ', please report a new issue at ' +
+        'https://github.com/SeleniumHQ/selenium/issues ' +
+        'with reproduction steps. Exception message: ' + e;
+      }
+    } else {
+      errorMessage += ' The alert disappeared before it could be closed.';
+    }
+    response.sendError(new WebDriverError(bot.ErrorCode.UNEXPECTED_ALERT_OPEN,
+                                     errorMessage, {alert: {text: text}}));
+  }, 2000);
 };

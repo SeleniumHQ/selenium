@@ -44,37 +44,63 @@ goog.require('goog.math');
  * @constructor
  */
 goog.i18n.NumberFormat = function(pattern, opt_currency, opt_currencyStyle) {
+  /** @private {string} */
   this.intlCurrencyCode_ = opt_currency ||
       goog.i18n.NumberFormatSymbols.DEF_CURRENCY_CODE;
 
+  /** @private {number} */
   this.currencyStyle_ = opt_currencyStyle ||
       goog.i18n.NumberFormat.CurrencyStyle.LOCAL;
 
+  /** @private {number} */
   this.maximumIntegerDigits_ = 40;
+  /** @private {number} */
   this.minimumIntegerDigits_ = 1;
+  /** @private {number} */
   this.significantDigits_ = 0; // invariant, <= maximumFractionDigits
+  /** @private {number} */
   this.maximumFractionDigits_ = 3; // invariant, >= minFractionDigits
+  /** @private {number} */
   this.minimumFractionDigits_ = 0;
+  /** @private {number} */
   this.minExponentDigits_ = 0;
+  /** @private {boolean} */
   this.useSignForPositiveExponent_ = false;
 
-  /*
+  /**
    * Whether to show trailing zeros in the fraction when significantDigits_ is
    * positive.
    * @private {boolean}
    */
   this.showTrailingZeros_ = false;
 
+  /** @private {string} */
   this.positivePrefix_ = '';
+  /** @private {string} */
   this.positiveSuffix_ = '';
+  /** @private {string} */
   this.negativePrefix_ = '-';
+  /** @private {string} */
   this.negativeSuffix_ = '';
 
   // The multiplier for use in percent, per mille, etc.
+  /** @private {number} */
   this.multiplier_ = 1;
-  this.groupingSize_ = 3;
+
+  /**
+   * The grouping array is used to store the values of each number group
+   * following left of the decimal place. For example, a number group with
+   * goog.i18n.NumberFormat('#,##,###') should have [3,2] where 2 is the
+   * repeated number group following a fixed number grouping of size 3.
+   * @private {!Array<number>}
+   */
+  this.groupingArray_ = [];
+
+  /** @private {boolean} */
   this.decimalSeparatorAlwaysShown_ = false;
+  /** @private {boolean} */
   this.useExponentialNotation_ = false;
+  /** @private {goog.i18n.NumberFormat.CompactStyle} */
   this.compactStyle_ = goog.i18n.NumberFormat.CompactStyle.NONE;
 
   /**
@@ -84,6 +110,9 @@ goog.i18n.NumberFormat = function(pattern, opt_currency, opt_currencyStyle) {
    * @private
    */
   this.baseFormattingNumber_ = null;
+
+  /** @private {string} */
+  this.pattern_;
 
   if (typeof pattern == 'number') {
     this.applyStandardPattern_(pattern);
@@ -159,34 +188,33 @@ goog.i18n.NumberFormat.isEnforceAsciiDigits = function() {
 /**
  * Sets minimum number of fraction digits.
  * @param {number} min the minimum.
+ * @return {!goog.i18n.NumberFormat} Reference to this NumberFormat object.
  */
 goog.i18n.NumberFormat.prototype.setMinimumFractionDigits = function(min) {
-  if (min > this.maximumFractionDigits_) {
-    throw Error('Min value must be less than max value');
-  }
   if (this.significantDigits_ > 0 && min > 0) {
     throw Error(
         'Can\'t combine significant digits and minimum fraction digits');
   }
   this.minimumFractionDigits_ = min;
+  return this;
 };
 
 
 /**
  * Sets maximum number of fraction digits.
  * @param {number} max the maximum.
+ * @return {!goog.i18n.NumberFormat} Reference to this NumberFormat object.
  */
 goog.i18n.NumberFormat.prototype.setMaximumFractionDigits = function(max) {
-  if (this.minimumFractionDigits_ > max) {
-    throw Error('Min value must be less than max value');
-  }
   this.maximumFractionDigits_ = max;
+  return this;
 };
 
 
 /**
  * Sets number of significant digits to show. Only fractions will be rounded.
  * @param {number} number The number of significant digits to include.
+ * @return {!goog.i18n.NumberFormat} Reference to this NumberFormat object.
  */
 goog.i18n.NumberFormat.prototype.setSignificantDigits = function(number) {
   if (this.minimumFractionDigits_ > 0 && number >= 0) {
@@ -194,6 +222,7 @@ goog.i18n.NumberFormat.prototype.setSignificantDigits = function(number) {
         'Can\'t combine significant digits and minimum fraction digits');
   }
   this.significantDigits_ = number;
+  return this;
 };
 
 
@@ -211,10 +240,12 @@ goog.i18n.NumberFormat.prototype.getSignificantDigits = function() {
  * is positive. If this is true and significantDigits_ is 2, 1 will be formatted
  * as '1.0'.
  * @param {boolean} showTrailingZeros Whether trailing zeros should be shown.
+ * @return {!goog.i18n.NumberFormat} Reference to this NumberFormat object.
  */
 goog.i18n.NumberFormat.prototype.setShowTrailingZeros =
     function(showTrailingZeros) {
   this.showTrailingZeros_ = showTrailingZeros;
+  return this;
 };
 
 
@@ -233,12 +264,24 @@ goog.i18n.NumberFormat.prototype.setShowTrailingZeros =
  *
  * @param {?number} baseFormattingNumber The number to base formatting on, or
  * null if formatting should not be based on another number.
+ * @return {!goog.i18n.NumberFormat} Reference to this NumberFormat object.
  */
 goog.i18n.NumberFormat.prototype.setBaseFormatting =
     function(baseFormattingNumber) {
   goog.asserts.assert(goog.isNull(baseFormattingNumber) ||
       isFinite(baseFormattingNumber));
   this.baseFormattingNumber_ = baseFormattingNumber;
+  return this;
+};
+
+
+/**
+ * Gets the number on which compact formatting is currently based, or null if
+ * no such number is set. See setBaseFormatting() for more information.
+ * @return {?number}
+ */
+goog.i18n.NumberFormat.prototype.getBaseFormatting = function() {
+  return this.baseFormattingNumber_;
 };
 
 
@@ -331,7 +374,7 @@ goog.i18n.NumberFormat.prototype.applyCompactStyle_ = function(style) {
  * parsing stops after the call. If an error occurs, opt_pos won't be updated.
  *
  * @param {string} text The string to be parsed.
- * @param {Array.<number>=} opt_pos Position to pass in and get back.
+ * @param {Array<number>=} opt_pos Position to pass in and get back.
  * @return {number} Parsed number. This throws an error if the text cannot be
  *     parsed.
  */
@@ -342,7 +385,6 @@ goog.i18n.NumberFormat.prototype.parse = function(text, opt_pos) {
     throw Error('Parsing of compact numbers is unimplemented');
   }
 
-  var start = pos[0];
   var ret = NaN;
 
   // we don't want to handle 2 kind of space in parsing, normalize it to nbsp
@@ -396,7 +438,7 @@ goog.i18n.NumberFormat.prototype.parse = function(text, opt_pos) {
  * handle locale specific decimal, grouping, exponent and digits.
  *
  * @param {string} text The text that need to be parsed.
- * @param {Array.<number>} pos  In/out parsing position. In case of failure,
+ * @param {Array<number>} pos  In/out parsing position. In case of failure,
  *    pos value won't be changed.
  * @return {number} Number value, or NaN if nothing can be parsed.
  * @private
@@ -528,7 +570,7 @@ goog.i18n.NumberFormat.prototype.roundNumber_ = function(number) {
   var power = Math.pow(10, this.maximumFractionDigits_);
   var shiftedNumber = this.significantDigits_ <= 0 ?
       Math.round(number * power) :
-      Math.floor(this.roundToSignificantDigits_(
+      Math.round(this.roundToSignificantDigits_(
           number * power,
           this.significantDigits_,
           this.maximumFractionDigits_));
@@ -546,16 +588,175 @@ goog.i18n.NumberFormat.prototype.roundNumber_ = function(number) {
 
 
 /**
+ * Formats a number with the appropriate groupings when there are repeating
+ * digits present. Repeating digits exists when the length of the digits left
+ * of the decimal place exceeds the number of non-repeating digits.
+ *
+ * Formats a number by iterating through the integer number (intPart) from the
+ * most left of the decimal place by inserting the appropriate number grouping
+ * separator for the repeating digits until all of the repeating digits is
+ * iterated. Then iterate through the non-repeating digits by inserting the
+ * appropriate number grouping separator until all the non-repeating digits
+ * is iterated through.
+ *
+ * In the number grouping concept, anything left of the decimal
+ * place is followed by non-repeating digits and then repeating digits. If the
+ * pattern is #,##,###, then we first (from the left of the decimal place) have
+ * a non-repeating digit of size 3 followed by repeating digits of size 2
+ * separated by a thousand separator. If the length of the digits are six or
+ * more, there may be repeating digits required. For example, the value of
+ * 12345678 would format as 1,23,45,678 where the repeating digit is length 2.
+ *
+ * @param {!Array<string>} parts An array to build the 'parts' of the formatted
+ *  number including the values and separators.
+ * @param {number} zeroCode The value of the zero digit whether or not
+ *  goog.i18n.NumberFormat.enforceAsciiDigits_ is enforced.
+ * @param {string} intPart The integer representation of the number to be
+ *  formatted and referenced.
+ * @param {!Array<number>} groupingArray The array of numbers to determine the
+ *  grouping of repeated and non-repeated digits.
+ * @param {number} repeatedDigitLen The length of the repeated digits left of
+ *  the non-repeating digits left of the decimal.
+ * @return {!Array<string>} Returns the resulting parts variable containing
+ *  how numbers are to be grouped and appear.
+ * @private
+ */
+goog.i18n.NumberFormat.formatNumberGroupingRepeatingDigitsParts_ =
+    function(parts, zeroCode, intPart, groupingArray, repeatedDigitLen) {
+  // Keep track of how much has been completed on the non repeated groups
+  var nonRepeatedGroupCompleteCount = 0;
+  var currentGroupSizeIndex = 0;
+  var currentGroupSize = 0;
+
+  var grouping = goog.i18n.NumberFormatSymbols.GROUP_SEP;
+  var digitLen = intPart.length;
+
+  // There are repeating digits and non-repeating digits
+  for (var i = 0; i < digitLen; i++) {
+    parts.push(String.fromCharCode(zeroCode + intPart.charAt(i) * 1));
+    if (digitLen - i > 1) {
+      currentGroupSize = groupingArray[currentGroupSizeIndex];
+      if (i < repeatedDigitLen) {
+        // Process the left side (the repeated number groups)
+        var repeatedDigitIndex = repeatedDigitLen - i;
+        // Edge case if there's a number grouping asking for "1" group at
+        // a time; otherwise, if the remainder is 1, there's the separator
+        if (currentGroupSize === 1 ||
+            (currentGroupSize > 0 &&
+            (repeatedDigitIndex % currentGroupSize) === 1)) {
+          parts.push(grouping);
+        }
+      } else if (currentGroupSizeIndex < groupingArray.length) {
+        // Process the right side (the non-repeated fixed number groups)
+        if (i === repeatedDigitLen) {
+          // Increase the group index because a separator
+          // has previously added in the earlier logic
+          currentGroupSizeIndex += 1;
+        } else if (
+            currentGroupSize === i - repeatedDigitLen -
+            nonRepeatedGroupCompleteCount + 1) {
+          // Otherwise, just iterate to the right side and
+          // add a separator once the length matches to the expected
+          parts.push(grouping);
+          // Keep track of what has been completed on the right
+          nonRepeatedGroupCompleteCount += currentGroupSize;
+          currentGroupSizeIndex += 1; // Get to the next number grouping
+        }
+      }
+    }
+  }
+  return parts;
+};
+
+
+/**
+ * Formats a number with the appropriate groupings when there are no repeating
+ * digits present. Non-repeating digits exists when the length of the digits
+ * left of the decimal place is equal or lesser than the length of
+ * non-repeating digits.
+ *
+ * Formats a number by iterating through the integer number (intPart) from the
+ * right most non-repeating number group of the decimal place. For each group,
+ * inserting the appropriate number grouping separator for the non-repeating
+ * digits until the number is completely iterated.
+ *
+ * In the number grouping concept, anything left of the decimal
+ * place is followed by non-repeating digits and then repeating digits. If the
+ * pattern is #,##,###, then we first (from the left of the decimal place) have
+ * a non-repeating digit of size 3 followed by repeating digits of size 2
+ * separated by a thousand separator. If the length of the digits are five or
+ * less, there won't be any repeating digits required. For example, the value
+ * of 12345 would be formatted as 12,345 where the non-repeating digit is of
+ * length 3.
+ *
+ * @param {!Array<string>} parts An array to build the 'parts' of the formatted
+ *  number including the values and separators.
+ * @param {number} zeroCode The value of the zero digit whether or not
+ *  goog.i18n.NumberFormat.enforceAsciiDigits_ is enforced.
+ * @param {string} intPart The integer representation of the number to be
+ *  formatted and referenced.
+ * @param {!Array<number>} groupingArray The array of numbers to determine the
+ *  grouping of repeated and non-repeated digits.
+ * @return {!Array<string>} Returns the resulting parts variable containing
+ *  how numbers are to be grouped and appear.
+ * @private
+ */
+goog.i18n.NumberFormat.formatNumberGroupingNonRepeatingDigitsParts_ =
+    function(parts, zeroCode, intPart, groupingArray) {
+  // Keep track of how much has been completed on the non repeated groups
+  var grouping = goog.i18n.NumberFormatSymbols.GROUP_SEP;
+  var currentGroupSizeIndex;
+  var currentGroupSize = 0;
+  var digitLenLeft = intPart.length;
+  var rightToLeftParts = [];
+
+  // Start from the right most non-repeating group and work inwards
+  for (currentGroupSizeIndex = groupingArray.length - 1;
+       currentGroupSizeIndex >= 0 && digitLenLeft > 0;
+       currentGroupSizeIndex--) {
+    currentGroupSize = groupingArray[currentGroupSizeIndex];
+    // Iterate from the right most digit
+    for (var rightDigitIndex = 0;
+         rightDigitIndex < currentGroupSize && (
+         (digitLenLeft - rightDigitIndex - 1) >= 0);
+         rightDigitIndex++) {
+      rightToLeftParts.push(
+          String.fromCharCode(
+              zeroCode + intPart.charAt(
+                  digitLenLeft - rightDigitIndex - 1) * 1));
+    }
+    // Update the number of digits left
+    digitLenLeft -= currentGroupSize;
+    if (digitLenLeft > 0) {
+      rightToLeftParts.push(grouping);
+    }
+  }
+  // Reverse and push onto the remaining parts
+  parts.push.apply(parts, rightToLeftParts.reverse());
+
+  return parts;
+};
+
+
+/**
  * Formats a Number in fraction format.
  *
  * @param {number} number
  * @param {number} minIntDigits Minimum integer digits.
- * @param {Array} parts This array holds the pieces of formatted string.
+ * @param {Array<string>} parts
+ *     This array holds the pieces of formatted string.
  *     This function will add its formatted pieces to the array.
  * @private
  */
 goog.i18n.NumberFormat.prototype.subformatFixed_ =
     function(number, minIntDigits, parts) {
+  if (this.minimumFractionDigits_ > this.maximumFractionDigits_) {
+    throw Error('Min value must be less than max value');
+  }
+
+  if (!parts) {
+    parts = [];
+  }
 
   var rounded = this.roundNumber_(number);
   var power = Math.pow(10, this.maximumFractionDigits_);
@@ -584,24 +785,37 @@ goog.i18n.NumberFormat.prototype.subformatFixed_ =
   intPart = translatableInt + intPart;
 
   var decimal = goog.i18n.NumberFormatSymbols.DECIMAL_SEP;
-  var grouping = goog.i18n.NumberFormatSymbols.GROUP_SEP;
   var zeroCode = goog.i18n.NumberFormat.enforceAsciiDigits_ ?
-                 48  /* ascii '0' */ :
-                 goog.i18n.NumberFormatSymbols.ZERO_DIGIT.charCodeAt(0);
+      48  /* ascii '0' */ :
+      goog.i18n.NumberFormatSymbols.ZERO_DIGIT.charCodeAt(0);
   var digitLen = intPart.length;
+  var nonRepeatedGroupCount = 0;
 
   if (intValue > 0 || minIntDigits > 0) {
     for (var i = digitLen; i < minIntDigits; i++) {
       parts.push(String.fromCharCode(zeroCode));
     }
 
-    for (var i = 0; i < digitLen; i++) {
-      parts.push(String.fromCharCode(zeroCode + intPart.charAt(i) * 1));
-
-      if (digitLen - i > 1 && this.groupingSize_ > 0 &&
-          ((digitLen - i) % this.groupingSize_ == 1)) {
-        parts.push(grouping);
+    // If there's more than 1 number grouping,
+    // figure out the length of the non-repeated groupings (on the right)
+    if (this.groupingArray_.length >= 2) {
+      for (var j = 1; j < this.groupingArray_.length; j++) {
+        nonRepeatedGroupCount += this.groupingArray_[j];
       }
+    }
+
+    // Anything left of the fixed number grouping is repeated,
+    // figure out the length of repeated groupings (on the left)
+    var repeatedDigitLen = digitLen - nonRepeatedGroupCount;
+    if (repeatedDigitLen > 0) {
+      // There are repeating digits and non-repeating digits
+      parts = goog.i18n.NumberFormat.formatNumberGroupingRepeatingDigitsParts_(
+          parts, zeroCode, intPart, this.groupingArray_, repeatedDigitLen);
+    } else {
+      // There are no repeating digits and only non-repeating digits
+      parts =
+          goog.i18n.NumberFormat.formatNumberGroupingNonRepeatingDigitsParts_(
+          parts, zeroCode, intPart, this.groupingArray_);
     }
   } else if (!fractionPresent) {
     // If there is no fraction present, and we haven't printed any
@@ -631,7 +845,7 @@ goog.i18n.NumberFormat.prototype.subformatFixed_ =
  * Formats exponent part of a Number.
  *
  * @param {number} exponent Exponential value.
- * @param {Array.<string>} parts The array that holds the pieces of formatted
+ * @param {Array<string>} parts The array that holds the pieces of formatted
  *     string. This function will append more formatted pieces to the array.
  * @private
  */
@@ -647,7 +861,7 @@ goog.i18n.NumberFormat.prototype.addExponentPart_ = function(exponent, parts) {
 
   var exponentDigits = '' + exponent;
   var zeroChar = goog.i18n.NumberFormat.enforceAsciiDigits_ ? '0' :
-                 goog.i18n.NumberFormatSymbols.ZERO_DIGIT;
+      goog.i18n.NumberFormatSymbols.ZERO_DIGIT;
   for (var i = exponentDigits.length; i < this.minExponentDigits_; i++) {
     parts.push(zeroChar);
   }
@@ -658,8 +872,8 @@ goog.i18n.NumberFormat.prototype.addExponentPart_ = function(exponent, parts) {
 /**
  * Formats Number in exponential format.
  *
- * @param {number} number Value need to be formated.
- * @param {Array.<string>} parts The array that holds the pieces of formatted
+ * @param {number} number Value need to be formatted.
+ * @param {Array<string>} parts The array that holds the pieces of formatted
  *     string. This function will append more formatted pieces to the array.
  * @private
  */
@@ -826,7 +1040,7 @@ goog.i18n.NumberFormat.QUOTE_ = '\'';
  * Parses affix part of pattern.
  *
  * @param {string} pattern Pattern string that need to be parsed.
- * @param {Array.<number>} pos One element position array to set and receive
+ * @param {Array<number>} pos One element position array to set and receive
  *     parsing position.
  *
  * @return {string} Affix received from parsing.
@@ -913,7 +1127,7 @@ goog.i18n.NumberFormat.prototype.parseAffix_ = function(pattern, pos) {
  * Parses the trunk part of a pattern.
  *
  * @param {string} pattern Pattern string that need to be parsed.
- * @param {Array.<number>} pos One element position array to set and receive
+ * @param {Array<number>} pos One element position array to set and receive
  *     parsing position.
  * @private
  */
@@ -923,7 +1137,6 @@ goog.i18n.NumberFormat.prototype.parseTrunk_ = function(pattern, pos) {
   var zeroDigitCount = 0;
   var digitRightCount = 0;
   var groupingCount = -1;
-
   var len = pattern.length;
   for (var loop = true; pos[0] < len && loop; pos[0]++) {
     var ch = pattern.charAt(pos[0]);
@@ -948,19 +1161,22 @@ goog.i18n.NumberFormat.prototype.parseTrunk_ = function(pattern, pos) {
         }
         break;
       case goog.i18n.NumberFormat.PATTERN_GROUPING_SEPARATOR_:
+        if (groupingCount > 0) {
+          this.groupingArray_.push(groupingCount);
+        }
         groupingCount = 0;
         break;
       case goog.i18n.NumberFormat.PATTERN_DECIMAL_SEPARATOR_:
         if (decimalPos >= 0) {
           throw Error('Multiple decimal separators in pattern "' +
-                      pattern + '"');
+              pattern + '"');
         }
         decimalPos = digitLeftCount + zeroDigitCount + digitRightCount;
         break;
       case goog.i18n.NumberFormat.PATTERN_EXPONENT_:
         if (this.useExponentialNotation_) {
           throw Error('Multiple exponential symbols in pattern "' +
-                      pattern + '"');
+              pattern + '"');
         }
         this.useExponentialNotation_ = true;
         this.minExponentDigits_ = 0;
@@ -975,7 +1191,7 @@ goog.i18n.NumberFormat.prototype.parseTrunk_ = function(pattern, pos) {
         // Use lookahead to parse out the exponential part
         // of the pattern, then jump into phase 2.
         while ((pos[0] + 1) < len && pattern.charAt(pos[0] + 1) ==
-               goog.i18n.NumberFormat.PATTERN_ZERO_DIGIT_) {
+            goog.i18n.NumberFormat.PATTERN_ZERO_DIGIT_) {
           pos[0]++;
           this.minExponentDigits_++;
         }
@@ -1007,7 +1223,7 @@ goog.i18n.NumberFormat.prototype.parseTrunk_ = function(pattern, pos) {
   // Do syntax checking on the digits.
   if (decimalPos < 0 && digitRightCount > 0 ||
       decimalPos >= 0 && (decimalPos < digitLeftCount ||
-                          decimalPos > digitLeftCount + zeroDigitCount) ||
+      decimalPos > digitLeftCount + zeroDigitCount) ||
       groupingCount == 0) {
     throw Error('Malformed pattern "' + pattern + '"');
   }
@@ -1035,9 +1251,10 @@ goog.i18n.NumberFormat.prototype.parseTrunk_ = function(pattern, pos) {
     }
   }
 
-  this.groupingSize_ = Math.max(0, groupingCount);
+  // Add another number grouping at the end
+  this.groupingArray_.push(Math.max(0, groupingCount));
   this.decimalSeparatorAlwaysShown_ = decimalPos == 0 ||
-                                      decimalPos == totalDigits;
+      decimalPos == totalDigits;
 };
 
 

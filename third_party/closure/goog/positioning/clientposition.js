@@ -15,14 +15,15 @@
 /**
  * @fileoverview Client positioning class.
  *
+ * @author eae@google.com (Emil A Eklund)
+ * @author chrishenry@google.com (Chris Henry)
  */
 
 goog.provide('goog.positioning.ClientPosition');
 
 goog.require('goog.asserts');
-goog.require('goog.math.Box');
+goog.require('goog.dom');
 goog.require('goog.math.Coordinate');
-goog.require('goog.math.Size');
 goog.require('goog.positioning');
 goog.require('goog.positioning.AbstractPosition');
 goog.require('goog.style');

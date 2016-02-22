@@ -1,9 +1,11 @@
 <component name="libraryTable">
   <library name="commons-logging">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/commons-logging/commons-logging-1.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/commons-logging/commons-logging-1.2.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/third_party/java/commons-logging/commons-logging-1.2-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

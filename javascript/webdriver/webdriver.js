@@ -1,25 +1,31 @@
-// Copyright 2011 Software Freedom Conservancy. All Rights Reserved.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview The heart of the WebDriver JavaScript API.
  */
 
 goog.provide('webdriver.Alert');
+goog.provide('webdriver.AlertPromise');
+goog.provide('webdriver.FileDetector');
 goog.provide('webdriver.UnhandledAlertError');
 goog.provide('webdriver.WebDriver');
 goog.provide('webdriver.WebElement');
+goog.provide('webdriver.WebElementPromise');
 
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
@@ -31,9 +37,12 @@ goog.require('webdriver.Command');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.Key');
 goog.require('webdriver.Locator');
+goog.require('webdriver.Serializable');
 goog.require('webdriver.Session');
+goog.require('webdriver.TouchSequence');
 goog.require('webdriver.logging');
 goog.require('webdriver.promise');
+goog.require('webdriver.until');
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -52,16 +61,15 @@ goog.require('webdriver.promise');
  * object to manipulate the command result or catch an expected error. Any
  * commands scheduled with a callback are considered sub-commands and will
  * execute before the next command in the current frame. For example:
- * <pre><code>
- *   var message = [];
- *   driver.call(message.push, message, 'a').then(function() {
- *     driver.call(message.push, message, 'b');
- *   });
- *   driver.call(message.push, message, 'c');
- *   driver.call(function() {
- *     alert('message is abc? ' + (message.join('') == 'abc'));
- *   });
- * </code></pre>
+ *
+ *     var message = [];
+ *     driver.call(message.push, message, 'a').then(function() {
+ *       driver.call(message.push, message, 'b');
+ *     });
+ *     driver.call(message.push, message, 'c');
+ *     driver.call(function() {
+ *       alert('message is abc? ' + (message.join('') == 'abc'));
+ *     });
  *
  * @param {!(webdriver.Session|webdriver.promise.Promise)} session Either a
  *     known session or a promise that will be resolved to a session.
@@ -81,6 +89,9 @@ webdriver.WebDriver = function(session, executor, opt_flow) {
 
   /** @private {!webdriver.promise.ControlFlow} */
   this.flow_ = opt_flow || webdriver.promise.controlFlow();
+
+  /** @private {webdriver.FileDetector} */
+  this.fileDetector_ = null;
 };
 
 
@@ -89,13 +100,17 @@ webdriver.WebDriver = function(session, executor, opt_flow) {
  * @param {!webdriver.CommandExecutor} executor Command executor to use when
  *     querying for session details.
  * @param {string} sessionId ID of the session to attach to.
+ * @param {webdriver.promise.ControlFlow=} opt_flow The control flow all driver
+ *     commands should execute under. Defaults to the
+ *     {@link webdriver.promise.controlFlow() currently active}  control flow.
  * @return {!webdriver.WebDriver} A new client for the specified session.
  */
-webdriver.WebDriver.attachToSession = function(executor, sessionId) {
+webdriver.WebDriver.attachToSession = function(executor, sessionId, opt_flow) {
   return webdriver.WebDriver.acquireSession_(executor,
       new webdriver.Command(webdriver.CommandName.DESCRIBE_SESSION).
           setParameter('sessionId', sessionId),
-      'WebDriver.attachToSession()');
+      'WebDriver.attachToSession()',
+      opt_flow);
 };
 
 
@@ -105,13 +120,19 @@ webdriver.WebDriver.attachToSession = function(executor, sessionId) {
  *     session with.
  * @param {!webdriver.Capabilities} desiredCapabilities The desired
  *     capabilities for the new session.
+ * @param {webdriver.promise.ControlFlow=} opt_flow The control flow all driver
+ *     commands should execute under, including the initial session creation.
+ *     Defaults to the {@link webdriver.promise.controlFlow() currently active}
+ *     control flow.
  * @return {!webdriver.WebDriver} The driver for the newly created session.
  */
-webdriver.WebDriver.createSession = function(executor, desiredCapabilities) {
+webdriver.WebDriver.createSession = function(
+    executor, desiredCapabilities, opt_flow) {
   return webdriver.WebDriver.acquireSession_(executor,
       new webdriver.Command(webdriver.CommandName.NEW_SESSION).
           setParameter('desiredCapabilities', desiredCapabilities),
-      'WebDriver.createSession()');
+      'WebDriver.createSession()',
+      opt_flow);
 };
 
 
@@ -124,11 +145,16 @@ webdriver.WebDriver.createSession = function(executor, desiredCapabilities) {
  * @param {!webdriver.Command} command The command to send to fetch the session
  *     details.
  * @param {string} description A descriptive debug label for this action.
+ * @param {webdriver.promise.ControlFlow=} opt_flow The control flow all driver
+ *     commands should execute under. Defaults to the
+ *     {@link webdriver.promise.controlFlow() currently active} control flow.
  * @return {!webdriver.WebDriver} A new WebDriver client for the session.
  * @private
  */
-webdriver.WebDriver.acquireSession_ = function(executor, command, description) {
-  var session = webdriver.promise.controlFlow().execute(function() {
+webdriver.WebDriver.acquireSession_ = function(
+    executor, command, description, opt_flow) {
+  var flow = opt_flow || webdriver.promise.controlFlow();
+  var session = flow.execute(function() {
     return webdriver.WebDriver.executeCommand_(executor, command).
         then(function(response) {
           bot.response.checkResponse(response);
@@ -136,7 +162,7 @@ webdriver.WebDriver.acquireSession_ = function(executor, command, description) {
               response['value']);
         });
   }, description);
-  return new webdriver.WebDriver(session, executor);
+  return new webdriver.WebDriver(session, executor, flow);
 };
 
 
@@ -144,48 +170,101 @@ webdriver.WebDriver.acquireSession_ = function(executor, command, description) {
  * Converts an object to its JSON representation in the WebDriver wire protocol.
  * When converting values of type object, the following steps will be taken:
  * <ol>
- * <li>if the object provides a "toWireValue" function, the return value will
- *     be returned in its fully resolved state (e.g. this function may return
- *     promise values)</li>
- * <li>if the object provides a "toJSON" function, the return value of this
- *     function will be returned</li>
+ * <li>if the object is a WebElement, the return value will be the element's
+ *     server ID
+ * <li>if the object is a Serializable, its
+ *     {@link webdriver.Serializable#serialize} function will be invoked and
+ *     this algorithm will recursively be applied to the result
+ * <li>if the object provides a "toJSON" function, this algorithm will
+ *     recursively be applied to the result of that function
  * <li>otherwise, the value of each key will be recursively converted according
- *     to the rules above.</li>
+ *     to the rules above.
  * </ol>
  *
  * @param {*} obj The object to convert.
- * @return {!webdriver.promise.Promise} A promise that will resolve to the
+ * @return {!webdriver.promise.Promise.<?>} A promise that will resolve to the
  *     input value's JSON representation.
  * @private
- * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol
+ * @see https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
  */
 webdriver.WebDriver.toWireValue_ = function(obj) {
-  switch (goog.typeOf(obj)) {
-    case 'array':
-      return webdriver.promise.fullyResolved(
-          goog.array.map(/** @type {!Array} */ (obj),
-              webdriver.WebDriver.toWireValue_));
-    case 'object':
-      if (goog.isFunction(obj.toWireValue)) {
-        return webdriver.promise.fullyResolved(obj.toWireValue());
+  if (webdriver.promise.isPromise(obj)) {
+    return obj.then(webdriver.WebDriver.toWireValue_);
+  }
+  return webdriver.promise.fulfilled(convertValue(obj));
+
+  function convertValue(value) {
+    switch (goog.typeOf(value)) {
+      case 'array':
+        return convertKeys(value, true);
+      case 'object':
+        // NB: WebElement is a Serializable, but we know its serialized form
+        // is a promise for its wire format. This is a micro optimization to
+        // avoid creating extra promises by recursing on the promised id.
+        if (value instanceof webdriver.WebElement) {
+          return value.getId();
+        }
+        if (value instanceof webdriver.Serializable) {
+          return webdriver.WebDriver.toWireValue_(value.serialize());
+        }
+        if (goog.isFunction(value.toJSON)) {
+          return webdriver.WebDriver.toWireValue_(value.toJSON());
+        }
+        if (goog.isNumber(value.nodeType) && goog.isString(value.nodeName)) {
+          throw new TypeError(
+              'Invalid argument type: ' + value.nodeName +
+              '(' + value.nodeType + ')');
+        }
+        return convertKeys(value, false);
+      case 'function':
+        return '' + value;
+      case 'undefined':
+        return null;
+      default:
+        return value;
+    }
+  }
+
+  function convertKeys(obj, isArray) {
+    var numKeys = isArray ? obj.length : goog.object.getCount(obj);
+    var ret = isArray ? new Array(numKeys) : {};
+    if (!numKeys) {
+      return webdriver.promise.fulfilled(ret);
+    }
+
+    var numResolved = 0;
+    var done = webdriver.promise.defer();
+
+    // forEach will stop iteration at undefined, where we want to convert
+    // these to null and keep iterating.
+    var forEachKey = !isArray ? goog.object.forEach : function(arr, fn) {
+      var n = arr.length;
+      for (var i = 0; i < n; i++) {
+        fn(arr[i], i);
       }
-      if (goog.isFunction(obj.toJSON)) {
-        return webdriver.promise.fulfilled(obj.toJSON());
+    };
+
+    forEachKey(obj, function(value, key) {
+      if (webdriver.promise.isPromise(value)) {
+        value.then(webdriver.WebDriver.toWireValue_).
+            then(setValue, done.reject);
+      } else {
+        webdriver.promise.asap(convertValue(value), setValue, done.reject);
       }
-      if (goog.isNumber(obj.nodeType) && goog.isString(obj.nodeName)) {
-        throw Error([
-          'Invalid argument type: ', obj.nodeName, '(', obj.nodeType, ')'
-        ].join(''));
+
+      function setValue(value) {
+        ret[key] = value;
+        maybeFulfill();
       }
-      return webdriver.promise.fullyResolved(
-          goog.object.map(/** @type {!Object} */ (obj),
-              webdriver.WebDriver.toWireValue_));
-    case 'function':
-      return webdriver.promise.fulfilled('' + obj);
-    case 'undefined':
-      return webdriver.promise.fulfilled(null);
-    default:
-      return webdriver.promise.fulfilled(obj);
+    });
+
+    return done.promise;
+
+    function maybeFulfill() {
+      if (++numResolved === numKeys) {
+        done.fulfill(ret);
+      }
+    }
   }
 };
 
@@ -200,7 +279,7 @@ webdriver.WebDriver.toWireValue_ = function(obj) {
  *     parent of any unwrapped {@code webdriver.WebElement} values.
  * @param {*} value The value to convert.
  * @return {*} The converted value.
- * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol
+ * @see https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
  * @private
  */
 webdriver.WebDriver.fromWireValue_ = function(driver, value) {
@@ -209,8 +288,7 @@ webdriver.WebDriver.fromWireValue_ = function(driver, value) {
         goog.partial(webdriver.WebDriver.fromWireValue_, driver));
   } else if (value && goog.isObject(value) && !goog.isFunction(value)) {
     if (webdriver.WebElement.ELEMENT_KEY in value) {
-      value = new webdriver.WebElement(driver,
-          value[webdriver.WebElement.ELEMENT_KEY]);
+      value = new webdriver.WebElement(driver, value);
     } else {
       value = goog.object.map(/**@type {!Object}*/ (value),
           goog.partial(webdriver.WebDriver.fromWireValue_, driver));
@@ -230,12 +308,10 @@ webdriver.WebDriver.fromWireValue_ = function(driver, value) {
  * @private
  */
 webdriver.WebDriver.executeCommand_ = function(executor, command) {
-  return webdriver.promise.fullyResolved(command.getParameters()).
-      then(webdriver.WebDriver.toWireValue_).
+  return webdriver.WebDriver.toWireValue_(command.getParameters()).
       then(function(parameters) {
         command.setParameters(parameters);
-        return webdriver.promise.checkedNodeCall(
-            goog.bind(executor.execute, executor, command));
+        return executor.execute(command);
       });
 };
 
@@ -254,8 +330,9 @@ webdriver.WebDriver.prototype.controlFlow = function() {
  * {@code webdriver.CommandExecutor}.
  * @param {!webdriver.Command} command The command to schedule.
  * @param {string} description A description of the command for debugging.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with
- *     the command result.
+ * @return {!webdriver.promise.Promise.<T>} A promise that will be resolved
+ *     with the command result.
+ * @template T
  */
 webdriver.WebDriver.prototype.schedule = function(command, description) {
   var self = this;
@@ -263,22 +340,46 @@ webdriver.WebDriver.prototype.schedule = function(command, description) {
   checkHasNotQuit();
   command.setParameter('sessionId', this.session_);
 
+  // If any of the command parameters are rejected promises, those
+  // rejections may be reported as unhandled before the control flow
+  // attempts to execute the command. To ensure parameters errors
+  // propagate through the command itself, we resolve all of the
+  // command parameters now, but suppress any errors until the ControlFlow
+  // actually executes the command. This addresses scenarios like catching
+  // an element not found error in:
+  //
+  //     driver.findElement(By.id('foo')).click().thenCatch(function(e) {
+  //       if (e.code === bot.ErrorCode.NO_SUCH_ELEMENT) {
+  //         // Do something.
+  //       }
+  //     });
+  var prepCommand = webdriver.WebDriver.toWireValue_(command.getParameters());
+  prepCommand.thenCatch(goog.nullFunction);
+
   var flow = this.flow_;
+  var executor = this.executor_;
   return flow.execute(function() {
     // A call to WebDriver.quit() may have been scheduled in the same event
     // loop as this |command|, which would prevent us from detecting that the
     // driver has quit above.  Therefore, we need to make another quick check.
     // We still check above so we can fail as early as possible.
     checkHasNotQuit();
-    return webdriver.WebDriver.executeCommand_(self.executor_, command);
+
+    // Retrieve resolved command parameters; any previously suppressed errors
+    // will now propagate up through the control flow as part of the command
+    // execution.
+    return prepCommand.then(function(parameters) {
+      command.setParameters(parameters);
+      return executor.execute(command);
+    });
   }, description).then(function(response) {
     try {
       bot.response.checkResponse(response);
     } catch (ex) {
       var value = response['value'];
-      if (ex.code === bot.ErrorCode.MODAL_DIALOG_OPENED) {
+      if (ex.code === bot.ErrorCode.UNEXPECTED_ALERT_OPEN) {
         var text = value && value['alert'] ? value['alert']['text'] : '';
-        throw new webdriver.UnhandledAlertError(ex.message,
+        throw new webdriver.UnhandledAlertError(ex.message, text,
             new webdriver.Alert(self, text));
       }
       throw ex;
@@ -296,13 +397,24 @@ webdriver.WebDriver.prototype.schedule = function(command, description) {
 };
 
 
+/**
+ * Sets the {@linkplain webdriver.FileDetector file detector} that should be
+ * used with this instance.
+ * @param {webdriver.FileDetector} detector The detector to use or {@code null}.
+ */
+webdriver.WebDriver.prototype.setFileDetector = function(detector) {
+  this.fileDetector_ = detector;
+};
+
+
 // ----------------------------------------------------------------------------
 // Client command functions:
 // ----------------------------------------------------------------------------
 
 
 /**
- * @return {!webdriver.promise.Promise} A promise for this client's session.
+ * @return {!webdriver.promise.Promise.<!webdriver.Session>} A promise for this
+ *     client's session.
  */
 webdriver.WebDriver.prototype.getSession = function() {
   return webdriver.promise.when(this.session_);
@@ -310,8 +422,8 @@ webdriver.WebDriver.prototype.getSession = function() {
 
 
 /**
- * @return {!webdriver.promise.Promise} A promise that will resolve with the
- *     this instance's capabilities.
+ * @return {!webdriver.promise.Promise.<!webdriver.Capabilities>} A promise
+ *     that will resolve with the this instance's capabilities.
  */
 webdriver.WebDriver.prototype.getCapabilities = function() {
   return webdriver.promise.when(this.session_, function(session) {
@@ -321,26 +433,11 @@ webdriver.WebDriver.prototype.getCapabilities = function() {
 
 
 /**
- * Returns a promise for one of this driver's capabilities.
- * @param {string} name The name of the capability to query.
- * @return {!webdriver.promise.Promise} A promise that will resolve with the
- *     given capability once its value is ready.
- * @deprecated Use {@link #getCapabilities()}; this function will be removed
- *     in 2.35.0.
- */
-webdriver.WebDriver.prototype.getCapability = function(name) {
-  return webdriver.promise.when(this.session_, function(session) {
-    return session.getCapabilities().get(name);
-  });
-};
-
-
-/**
  * Schedules a command to quit the current session. After calling quit, this
  * instance will be invalidated and may no longer be used to issue commands
  * against the browser.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when
- *     the command has completed.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when the command has completed.
  */
 webdriver.WebDriver.prototype.quit = function() {
   var result = this.schedule(
@@ -358,17 +455,34 @@ webdriver.WebDriver.prototype.quit = function() {
  * Creates a new action sequence using this driver. The sequence will not be
  * scheduled for execution until {@link webdriver.ActionSequence#perform} is
  * called. Example:
- * <pre><code>
- *   driver.actions().
- *       mouseDown(element1).
- *       mouseMove(element2).
- *       mouseUp().
- *       perform();
- * </code></pre>
+ *
+ *     driver.actions().
+ *         mouseDown(element1).
+ *         mouseMove(element2).
+ *         mouseUp().
+ *         perform();
+ *
  * @return {!webdriver.ActionSequence} A new action sequence for this instance.
  */
 webdriver.WebDriver.prototype.actions = function() {
   return new webdriver.ActionSequence(this);
+};
+
+
+/**
+ * Creates a new touch sequence using this driver. The sequence will not be
+ * scheduled for execution until {@link webdriver.TouchSequence#perform} is
+ * called. Example:
+ *
+ *     driver.touchActions().
+ *         tap(element1).
+ *         doubleTap(element2).
+ *         perform();
+ *
+ * @return {!webdriver.TouchSequence} A new touch sequence for this instance.
+ */
+webdriver.WebDriver.prototype.touchActions = function() {
+  return new webdriver.TouchSequence(this);
 };
 
 
@@ -394,29 +508,30 @@ webdriver.WebDriver.prototype.actions = function() {
  * If the script has a return value (i.e. if the script contains a return
  * statement), then the following steps will be taken for resolving this
  * functions return value:
- * <ul>
- * <li>For a HTML element, the value will resolve to a
- *     {@code webdriver.WebElement}</li>
- * <li>Null and undefined return values will resolve to null</li>
- * <li>Booleans, numbers, and strings will resolve as is</li>
- * <li>Functions will resolve to their string representation</li>
- * <li>For arrays and objects, each member item will be converted according to
- *     the rules above</li>
- * </ul>
+ *
+ * - For a HTML element, the value will resolve to a
+ *     {@link webdriver.WebElement}
+ * - Null and undefined return values will resolve to null</li>
+ * - Booleans, numbers, and strings will resolve as is</li>
+ * - Functions will resolve to their string representation</li>
+ * - For arrays and objects, each member item will be converted according to
+ *     the rules above
  *
  * @param {!(string|Function)} script The script to execute.
  * @param {...*} var_args The arguments to pass to the script.
- * @return {!webdriver.promise.Promise} A promise that will resolve to the
+ * @return {!webdriver.promise.Promise.<T>} A promise that will resolve to the
  *    scripts return value.
+ * @template T
  */
 webdriver.WebDriver.prototype.executeScript = function(script, var_args) {
   if (goog.isFunction(script)) {
     script = 'return (' + script + ').apply(null, arguments);';
   }
+  var args = arguments.length > 1 ? goog.array.slice(arguments, 1) : [];
   return this.schedule(
       new webdriver.Command(webdriver.CommandName.EXECUTE_SCRIPT).
           setParameter('script', script).
-          setParameter('args', goog.array.slice(arguments, 1)),
+          setParameter('args', args),
       'WebDriver.executeScript()');
 };
 
@@ -434,71 +549,68 @@ webdriver.WebDriver.prototype.executeScript = function(script, var_args) {
  * Arrays and objects may also be used as script arguments as long as each item
  * adheres to the types previously mentioned.
  *
- * Unlike executing synchronous JavaScript with
- * {@code webdriver.WebDriver.prototype.executeScript}, scripts executed with
- * this function must explicitly signal they are finished by invoking the
- * provided callback. This callback will always be injected into the
- * executed function as the last argument, and thus may be referenced with
- * {@code arguments[arguments.length - 1]}. The following steps will be taken
- * for resolving this functions return value against the first argument to the
- * script's callback function:
- * <ul>
- * <li>For a HTML element, the value will resolve to a
- *     {@code webdriver.WebElement}</li>
- * <li>Null and undefined return values will resolve to null</li>
- * <li>Booleans, numbers, and strings will resolve as is</li>
- * <li>Functions will resolve to their string representation</li>
- * <li>For arrays and objects, each member item will be converted according to
- *     the rules above</li>
- * </ul>
+ * Unlike executing synchronous JavaScript with {@link #executeScript},
+ * scripts executed with this function must explicitly signal they are finished
+ * by invoking the provided callback. This callback will always be injected
+ * into the executed function as the last argument, and thus may be referenced
+ * with {@code arguments[arguments.length - 1]}. The following steps will be
+ * taken for resolving this functions return value against the first argument
+ * to the script's callback function:
  *
- * Example #1: Performing a sleep that is synchronized with the currently
+ * - For a HTML element, the value will resolve to a
+ *     {@link webdriver.WebElement}
+ * - Null and undefined return values will resolve to null
+ * - Booleans, numbers, and strings will resolve as is
+ * - Functions will resolve to their string representation
+ * - For arrays and objects, each member item will be converted according to
+ *     the rules above
+ *
+ * __Example #1:__ Performing a sleep that is synchronized with the currently
  * selected window:
- * <code><pre>
- * var start = new Date().getTime();
- * driver.executeAsyncScript(
- *     'window.setTimeout(arguments[arguments.length - 1], 500);').
- *     then(function() {
- *       console.log('Elapsed time: ' + (new Date().getTime() - start) + ' ms');
- *     });
- * </pre></code>
  *
- * Example #2: Synchronizing a test with an AJAX application:
- * <code><pre>
- * var button = driver.findElement(By.id('compose-button'));
- * button.click();
- * driver.executeAsyncScript(
- *     'var callback = arguments[arguments.length - 1];' +
- *     'mailClient.getComposeWindowWidget().onload(callback);');
- * driver.switchTo().frame('composeWidget');
- * driver.findElement(By.id('to')).sendKEys('dog@example.com');
- * </pre></code>
+ *     var start = new Date().getTime();
+ *     driver.executeAsyncScript(
+ *         'window.setTimeout(arguments[arguments.length - 1], 500);').
+ *         then(function() {
+ *           console.log(
+ *               'Elapsed time: ' + (new Date().getTime() - start) + ' ms');
+ *         });
  *
- * Example #3: Injecting a XMLHttpRequest and waiting for the result. In this
- * example, the inject script is specified with a function literal. When using
- * this format, the function is converted to a string for injection, so it
+ * __Example #2:__ Synchronizing a test with an AJAX application:
+ *
+ *     var button = driver.findElement(By.id('compose-button'));
+ *     button.click();
+ *     driver.executeAsyncScript(
+ *         'var callback = arguments[arguments.length - 1];' +
+ *         'mailClient.getComposeWindowWidget().onload(callback);');
+ *     driver.switchTo().frame('composeWidget');
+ *     driver.findElement(By.id('to')).sendKeys('dog@example.com');
+ *
+ * __Example #3:__ Injecting a XMLHttpRequest and waiting for the result. In
+ * this example, the inject script is specified with a function literal. When
+ * using this format, the function is converted to a string for injection, so it
  * should not reference any symbols not defined in the scope of the page under
  * test.
- * <code><pre>
- * driver.executeAsyncScript(function() {
- *   var callback = arguments[arguments.length - 1];
- *   var xhr = new XMLHttpRequest();
- *   xhr.open("GET", "/resource/data.json", true);
- *   xhr.onreadystatechange = function() {
- *     if (xhr.readyState == 4) {
- *       callback(xhr.resposneText);
- *     }
- *   }
- *   xhr.send('');
- * }).then(function(str) {
- *   console.log(JSON.parse(str)['food']);
- * });
- * </pre></code>
+ *
+ *     driver.executeAsyncScript(function() {
+ *       var callback = arguments[arguments.length - 1];
+ *       var xhr = new XMLHttpRequest();
+ *       xhr.open("GET", "/resource/data.json", true);
+ *       xhr.onreadystatechange = function() {
+ *         if (xhr.readyState == 4) {
+ *           callback(xhr.responseText);
+ *         }
+ *       };
+ *       xhr.send('');
+ *     }).then(function(str) {
+ *       console.log(JSON.parse(str)['food']);
+ *     });
  *
  * @param {!(string|Function)} script The script to execute.
  * @param {...*} var_args The arguments to pass to the script.
- * @return {!webdriver.promise.Promise} A promise that will resolve to the
+ * @return {!webdriver.promise.Promise.<T>} A promise that will resolve to the
  *    scripts return value.
+ * @template T
  */
 webdriver.WebDriver.prototype.executeAsyncScript = function(script, var_args) {
   if (goog.isFunction(script)) {
@@ -514,17 +626,23 @@ webdriver.WebDriver.prototype.executeAsyncScript = function(script, var_args) {
 
 /**
  * Schedules a command to execute a custom function.
- * @param {!Function} fn The function to execute.
+ * @param {function(...): (T|webdriver.promise.Promise.<T>)} fn The function to
+ *     execute.
  * @param {Object=} opt_scope The object in whose scope to execute the function.
  * @param {...*} var_args Any arguments to pass to the function.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with the
- *     function's result.
+ * @return {!webdriver.promise.Promise.<T>} A promise that will be resolved'
+ *     with the function's result.
+ * @template T
  */
 webdriver.WebDriver.prototype.call = function(fn, opt_scope, var_args) {
   var args = goog.array.slice(arguments, 2);
   var flow = this.flow_;
   return flow.execute(function() {
     return webdriver.promise.fullyResolved(args).then(function(args) {
+      if (webdriver.promise.isGenerator(fn)) {
+        args.unshift(fn, opt_scope);
+        return webdriver.promise.consume.apply(null, args);
+      }
       return fn.apply(opt_scope, args);
     });
   }, 'WebDriver.call(' + (fn.name || 'function') + ')');
@@ -532,26 +650,81 @@ webdriver.WebDriver.prototype.call = function(fn, opt_scope, var_args) {
 
 
 /**
- * Schedules a command to wait for a condition to hold, as defined by some
- * user supplied function. If any errors occur while evaluating the wait, they
- * will be allowed to propagate.
- * @param {function():boolean} fn The function to evaluate as a wait condition.
- * @param {number} timeout How long to wait for the condition to be true.
+ * Schedules a command to wait for a condition to hold. The condition may be
+ * specified by a {@link webdriver.until.Condition}, as a custom function, or
+ * as a {@link webdriver.promise.Promise}.
+ *
+ * For a {@link webdriver.until.Condition} or function, the wait will repeatedly
+ * evaluate the condition until it returns a truthy value. If any errors occur
+ * while evaluating the condition, they will be allowed to propagate. In the
+ * event a condition returns a {@link webdriver.promise.Promise promise}, the
+ * polling loop will wait for it to be resolved and use the resolved value for
+ * whether the condition has been satisified. Note the resolution time for
+ * a promise is factored into whether a wait has timed out.
+ *
+ * *Example:* waiting up to 10 seconds for an element to be present and visible
+ * on the page.
+ *
+ *     var button = driver.wait(until.elementLocated(By.id('foo')), 10000);
+ *     button.click();
+ *
+ * This function may also be used to block the command flow on the resolution
+ * of a {@link webdriver.promise.Promise promise}. When given a promise, the
+ * command will simply wait for its resolution before completing. A timeout may
+ * be provided to fail the command if the promise does not resolve before the
+ * timeout expires.
+ *
+ * *Example:* Suppose you have a function, `startTestServer`, that returns a
+ * promise for when a server is ready for requests. You can block a `WebDriver`
+ * client on this promise with:
+ *
+ *     var started = startTestServer();
+ *     driver.wait(started, 5 * 1000, 'Server should start within 5 seconds');
+ *     driver.get(getServerUrl());
+ *
+ * @param {!(webdriver.promise.Promise<T>|
+ *           webdriver.until.Condition<T>|
+ *           function(!webdriver.WebDriver): T)} condition The condition to
+ *     wait on, defined as a promise, condition object, or  a function to
+ *     evaluate as a condition.
+ * @param {number=} opt_timeout How long to wait for the condition to be true.
  * @param {string=} opt_message An optional message to use if the wait times
  *     out.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when the
- *     wait condition has been satisfied.
+ * @return {!webdriver.promise.Promise<T>} A promise that will be fulfilled
+ *     with the first truthy value returned by the condition function, or
+ *     rejected if the condition times out.
+ * @template T
  */
-webdriver.WebDriver.prototype.wait = function(fn, timeout, opt_message) {
-  return this.flow_.wait(fn, timeout, opt_message);
+webdriver.WebDriver.prototype.wait = function(
+    condition, opt_timeout, opt_message) {
+  if (webdriver.promise.isPromise(condition)) {
+    return this.flow_.wait(
+        /** @type {!webdriver.promise.Promise} */(condition),
+        opt_timeout, opt_message);
+  }
+
+  var message = opt_message;
+  var fn = /** @type {!Function} */(condition);
+  if (condition instanceof webdriver.until.Condition) {
+    message = message || condition.description();
+    fn = condition.fn;
+  }
+
+  var driver = this;
+  return this.flow_.wait(function() {
+    if (webdriver.promise.isGenerator(fn)) {
+      return webdriver.promise.consume(fn, null, [driver]);
+    }
+    return fn(driver);
+  }, opt_timeout, message);
 };
 
 
 /**
  * Schedules a command to make the driver sleep for the given amount of time.
  * @param {number} ms The amount of time, in milliseconds, to sleep.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when the
- *     sleep has finished.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when the sleep has finished.
  */
 webdriver.WebDriver.prototype.sleep = function(ms) {
   return this.flow_.timeout(ms, 'WebDriver.sleep(' + ms + ')');
@@ -560,8 +733,8 @@ webdriver.WebDriver.prototype.sleep = function(ms) {
 
 /**
  * Schedules a command to retrieve they current window handle.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with the
- *     current window handle.
+ * @return {!webdriver.promise.Promise.<string>} A promise that will be
+ *     resolved with the current window handle.
  */
 webdriver.WebDriver.prototype.getWindowHandle = function() {
   return this.schedule(
@@ -572,8 +745,8 @@ webdriver.WebDriver.prototype.getWindowHandle = function() {
 
 /**
  * Schedules a command to retrieve the current list of available window handles.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with an
- *     array of window handles.
+ * @return {!webdriver.promise.Promise.<!Array.<string>>} A promise that will
+ *     be resolved with an array of window handles.
  */
 webdriver.WebDriver.prototype.getAllWindowHandles = function() {
   return this.schedule(
@@ -587,20 +760,20 @@ webdriver.WebDriver.prototype.getAllWindowHandles = function() {
  * returned is a representation of the underlying DOM: do not expect it to be
  * formatted or escaped in the same way as the response sent from the web
  * server.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with the
- *     current page source.
+ * @return {!webdriver.promise.Promise.<string>} A promise that will be
+ *     resolved with the current page source.
  */
 webdriver.WebDriver.prototype.getPageSource = function() {
   return this.schedule(
       new webdriver.Command(webdriver.CommandName.GET_PAGE_SOURCE),
-      'WebDriver.getAllWindowHandles()');
+      'WebDriver.getPageSource()');
 };
 
 
 /**
  * Schedules a command to close the current window.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when
- *     this command has completed.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when this command has completed.
  */
 webdriver.WebDriver.prototype.close = function() {
   return this.schedule(new webdriver.Command(webdriver.CommandName.CLOSE),
@@ -611,8 +784,8 @@ webdriver.WebDriver.prototype.close = function() {
 /**
  * Schedules a command to navigate to the given URL.
  * @param {string} url The fully qualified URL to open.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when the
- *     document has finished loading.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when the document has finished loading.
  */
 webdriver.WebDriver.prototype.get = function(url) {
   return this.navigate().to(url);
@@ -621,8 +794,8 @@ webdriver.WebDriver.prototype.get = function(url) {
 
 /**
  * Schedules a command to retrieve the URL of the current page.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with the
- *     current URL.
+ * @return {!webdriver.promise.Promise.<string>} A promise that will be
+ *     resolved with the current URL.
  */
 webdriver.WebDriver.prototype.getCurrentUrl = function() {
   return this.schedule(
@@ -633,8 +806,8 @@ webdriver.WebDriver.prototype.getCurrentUrl = function() {
 
 /**
  * Schedules a command to retrieve the current page's title.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with the
- *     current page's title.
+ * @return {!webdriver.promise.Promise.<string>} A promise that will be
+ *     resolved with the current page's title.
  */
 webdriver.WebDriver.prototype.getTitle = function() {
   return this.schedule(new webdriver.Command(webdriver.CommandName.GET_TITLE),
@@ -644,23 +817,37 @@ webdriver.WebDriver.prototype.getTitle = function() {
 
 /**
  * Schedule a command to find an element on the page. If the element cannot be
- * found, a {@code bot.ErrorCode.NO_SUCH_ELEMENT} result will be returned
+ * found, a {@link bot.ErrorCode.NO_SUCH_ELEMENT} result will be returned
  * by the driver. Unlike other commands, this error cannot be suppressed. In
  * other words, scheduling a command to find an element doubles as an assert
  * that the element is present on the page. To test whether an element is
- * present on the page, use {@code #isElementPresent} instead.
+ * present on the page, use {@link #isElementPresent} instead.
  *
- * <p>The search criteria for find an element may either be a
- * {@code webdriver.Locator} object, or a simple JSON object whose sole key
- * is one of the accepted locator strategies, as defined by
- * {@code webdriver.Locator.Strategy}. For example, the following two statements
+ * The search criteria for an element may be defined using one of the
+ * factories in the {@link webdriver.By} namespace, or as a short-hand
+ * {@link webdriver.By.Hash} object. For example, the following two statements
  * are equivalent:
- * <code><pre>
- * var e1 = driver.findElement(By.id('foo'));
- * var e2 = driver.findElement({id:'foo'});
- * </pre></code>
  *
- * <p>When running in the browser, a WebDriver cannot manipulate DOM elements
+ *     var e1 = driver.findElement(By.id('foo'));
+ *     var e2 = driver.findElement({id:'foo'});
+ *
+ * You may also provide a custom locator function, which takes as input
+ * this WebDriver instance and returns a {@link webdriver.WebElement}, or a
+ * promise that will resolve to a WebElement. For example, to find the first
+ * visible link on a page, you could write:
+ *
+ *     var link = driver.findElement(firstVisibleLink);
+ *
+ *     function firstVisibleLink(driver) {
+ *       var links = driver.findElements(By.tagName('a'));
+ *       return webdriver.promise.filter(links, function(link) {
+ *         return links.isDisplayed();
+ *       }).then(function(visibleLinks) {
+ *         return visibleLinks[0];
+ *       });
+ *     }
+ *
+ * When running in the browser, a WebDriver cannot manipulate DOM elements
  * directly; it may do so only through a {@link webdriver.WebElement} reference.
  * This function may be used to generate a WebElement from a DOM element. A
  * reference to the DOM element will be stored in a known location and this
@@ -669,42 +856,28 @@ webdriver.WebDriver.prototype.getTitle = function() {
  * one this instance is currently focused on), a
  * {@link bot.ErrorCode.NO_SUCH_ELEMENT} error will be returned.
  *
- * @param {!(webdriver.Locator|Object.<string>|Element)} locatorOrElement The
- *     locator strategy to use when searching for the element, or the actual
- *     DOM element to be located by the server.
- * @param {...} var_args Arguments to pass to {@code #executeScript} if using a
- *     JavaScript locator.  Otherwise ignored.
+ * @param {!(webdriver.Locator|webdriver.By.Hash|Element|Function)} locator The
+ *     locator to use.
  * @return {!webdriver.WebElement} A WebElement that can be used to issue
  *     commands against the located element. If the element is not found, the
  *     element will be invalidated and all scheduled commands aborted.
  */
-webdriver.WebDriver.prototype.findElement = function(locatorOrElement,
-                                                     var_args) {
+webdriver.WebDriver.prototype.findElement = function(locator) {
   var id;
-  if (locatorOrElement.nodeType === 1 && locatorOrElement.ownerDocument) {
-    var element = /** @type {!Element} */ (locatorOrElement);
-    id = this.findDomElement_(element).
-        then(function(elements) {
-          if (!elements.length) {
-            throw new bot.Error(bot.ErrorCode.NO_SUCH_ELEMENT,
-                'Unable to locate element. Is WebDriver focused on its ' +
-                    'ownerDocument\'s frame?');
-          }
-          return elements[0];
-        });
+  if ('nodeType' in locator && 'ownerDocument' in locator) {
+    var element = /** @type {!Element} */ (locator);
+    id = this.findDomElement_(element).then(function(element) {
+      if (!element) {
+        throw new bot.Error(bot.ErrorCode.NO_SUCH_ELEMENT,
+            'Unable to locate element. Is WebDriver focused on its ' +
+                'ownerDocument\'s frame?');
+      }
+      return element;
+    });
   } else {
-    var locator = webdriver.Locator.checkLocator(locatorOrElement);
-    if (locator.using == 'js') {
-      var args = goog.array.slice(arguments, 1);
-      goog.array.splice(args, 0, 0, locator.value);
-
-      id = this.executeScript.apply(this, args).
-          then(function(value) {
-            if (!(value instanceof webdriver.WebElement)) {
-              throw new Error('JS locator script result was not a WebElement');
-            }
-            return value;
-          });
+    locator = webdriver.Locator.checkLocator(locator);
+    if (goog.isFunction(locator)) {
+      id = this.findElementInternal_(locator, this);
     } else {
       var command = new webdriver.Command(webdriver.CommandName.FIND_ELEMENT).
           setParameter('using', locator.using).
@@ -712,7 +885,29 @@ webdriver.WebDriver.prototype.findElement = function(locatorOrElement,
       id = this.schedule(command, 'WebDriver.findElement(' + locator + ')');
     }
   }
-  return new webdriver.WebElement(this, id);
+  return new webdriver.WebElementPromise(this, id);
+};
+
+
+/**
+ * @param {!Function} locatorFn The locator function to use.
+ * @param {!(webdriver.WebDriver|webdriver.WebElement)} context The search
+ *     context.
+ * @return {!webdriver.promise.Promise.<!webdriver.WebElement>} A
+ *     promise that will resolve to a list of WebElements.
+ * @private
+ */
+webdriver.WebDriver.prototype.findElementInternal_ = function(
+    locatorFn, context) {
+  return this.call(goog.partial(locatorFn, context)).then(function(result) {
+    if (goog.isArray(result)) {
+      result = result[0];
+    }
+    if (!(result instanceof webdriver.WebElement)) {
+      throw new TypeError('Custom locator did not return a WebElement');
+    }
+    return result;
+  });
 };
 
 
@@ -725,8 +920,9 @@ webdriver.WebDriver.prototype.findElement = function(locatorOrElement,
  * ownerDocument's window+frame.
 
  * @param {!Element} element The element to locate.
- * @return {!webdriver.promise.Promise} A promise that will be resolved
- *     with the located WebElement.
+ * @return {!webdriver.promise.Promise.<webdriver.WebElement>} A promise that
+ *     will be fulfilled with the located element, or null if the element
+ *     could not be found.
  * @private
  */
 webdriver.WebDriver.prototype.findDomElement_ = function(element) {
@@ -748,82 +944,87 @@ webdriver.WebDriver.prototype.findDomElement_ = function(element) {
 
     var element = store[id];
     if (!element || element[id] !== id) {
-      return [];
+      return null;
     }
-    return [element];
+    return element;
   }
 
-  return this.executeScript(lookupElement, id).
-      then(function(value) {
-        cleanUp();
-        if (value.length && !(value[0] instanceof webdriver.WebElement)) {
-          throw new Error('JS locator script result was not a WebElement');
-        }
-        return value;
-      }, cleanUp);
+  /** @type {!webdriver.promise.Promise.<webdriver.WebElement>} */
+  var foundElement = this.executeScript(lookupElement, id);
+  foundElement.thenFinally(cleanUp);
+  return foundElement;
 };
 
 
 /**
  * Schedules a command to test if an element is present on the page.
  *
- * <p>If given a DOM element, this function will check if it belongs to the
+ * If given a DOM element, this function will check if it belongs to the
  * document the driver is currently focused on. Otherwise, the function will
  * test if at least one element can be found with the given search criteria.
  *
- * @param {!(webdriver.Locator|Object.<string>|Element)} locatorOrElement The
- *     locator strategy to use when searching for the element, or the actual
+ * @param {!(webdriver.Locator|webdriver.By.Hash|Element|
+ *           Function)} locatorOrElement The locator to use, or the actual
  *     DOM element to be located by the server.
- * @param {...} var_args Arguments to pass to {@code #executeScript} if using a
- *     JavaScript locator.  Otherwise ignored.
- * @return {!webdriver.promise.Promise} A promise that will resolve to whether
- *     the element is present on the page.
+ * @return {!webdriver.promise.Promise.<boolean>} A promise that will resolve
+ *     with whether the element is present on the page.
  */
-webdriver.WebDriver.prototype.isElementPresent = function(locatorOrElement,
-                                                          var_args) {
-  var findElement =
-      locatorOrElement.nodeType === 1 && locatorOrElement.ownerDocument ?
-          this.findDomElement_(/** @type {!Element} */ (locatorOrElement)) :
-          this.findElements.apply(this, arguments);
-  return findElement.then(function(result) {
-    return !!result.length;
-  });
+webdriver.WebDriver.prototype.isElementPresent = function(locatorOrElement) {
+  if ('nodeType' in locatorOrElement && 'ownerDocument' in locatorOrElement) {
+    return this.findDomElement_(/** @type {!Element} */ (locatorOrElement)).
+        then(function(result) { return !!result; });
+  } else {
+    return this.findElements.apply(this, arguments).then(function(result) {
+      return !!result.length;
+    });
+  }
 };
 
 
 /**
  * Schedule a command to search for multiple elements on the page.
  *
- * @param {webdriver.Locator|Object.<string>} locator The locator
+ * @param {!(webdriver.Locator|webdriver.By.Hash|Function)} locator The locator
  *     strategy to use when searching for the element.
- * @param {...} var_args Arguments to pass to {@code #executeScript} if using a
- *     JavaScript locator.  Otherwise ignored.
- * @return {!webdriver.promise.Promise} A promise that will be resolved to an
- *     array of the located {@link webdriver.WebElement}s.
+ * @return {!webdriver.promise.Promise.<!Array.<!webdriver.WebElement>>} A
+ *     promise that will resolve to an array of WebElements.
  */
-webdriver.WebDriver.prototype.findElements = function(locator, var_args) {
+webdriver.WebDriver.prototype.findElements = function(locator) {
   locator = webdriver.Locator.checkLocator(locator);
-  if (locator.using == 'js') {
-    var args = goog.array.slice(arguments, 1);
-    goog.array.splice(args, 0, 0, locator.value);
-
-    return this.executeScript.apply(this, args).
-        then(function(value) {
-          if (value instanceof webdriver.WebElement) {
-            return [value];
-          } else if (!goog.isArray(value)) {
-            return [];
-          }
-          return goog.array.filter(value, function(item) {
-            return item instanceof webdriver.WebElement;
-          });
-        });
+  if (goog.isFunction(locator)) {
+    return this.findElementsInternal_(locator, this);
   } else {
     var command = new webdriver.Command(webdriver.CommandName.FIND_ELEMENTS).
         setParameter('using', locator.using).
         setParameter('value', locator.value);
     return this.schedule(command, 'WebDriver.findElements(' + locator + ')');
   }
+};
+
+
+/**
+ * @param {!Function} locatorFn The locator function to use.
+ * @param {!(webdriver.WebDriver|webdriver.WebElement)} context The search
+ *     context.
+ * @return {!webdriver.promise.Promise.<!Array.<!webdriver.WebElement>>} A
+ *     promise that will resolve to an array of WebElements.
+ * @private
+ */
+webdriver.WebDriver.prototype.findElementsInternal_ = function(
+    locatorFn, context) {
+  return this.call(goog.partial(locatorFn, context)).then(function(result) {
+    if (result instanceof webdriver.WebElement) {
+      return [result];
+    }
+
+    if (!goog.isArray(result)) {
+      return [];
+    }
+
+    return goog.array.filter(result, function(item) {
+      return item instanceof webdriver.WebElement;
+    });
+  });
 };
 
 
@@ -837,8 +1038,8 @@ webdriver.WebDriver.prototype.findElements = function(locator, var_args) {
  *   <li>The screenshot of the entire display containing the browser
  * </ol>
  *
- * @return {!webdriver.promise.Promise} A promise that will be resolved to the
- *     screenshot as a base-64 encoded PNG.
+ * @return {!webdriver.promise.Promise.<string>} A promise that will be
+ *     resolved to the screenshot as a base-64 encoded PNG.
  */
 webdriver.WebDriver.prototype.takeScreenshot = function() {
   return this.schedule(new webdriver.Command(webdriver.CommandName.SCREENSHOT),
@@ -889,8 +1090,8 @@ webdriver.WebDriver.Navigation = function(driver) {
 /**
  * Schedules a command to navigate to a new URL.
  * @param {string} url The URL to navigate to.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when the
- *     URL has been loaded.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when the URL has been loaded.
  */
 webdriver.WebDriver.Navigation.prototype.to = function(url) {
   return this.driver_.schedule(
@@ -902,8 +1103,8 @@ webdriver.WebDriver.Navigation.prototype.to = function(url) {
 
 /**
  * Schedules a command to move backwards in the browser history.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when the
- *     navigation event has completed.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when the navigation event has completed.
  */
 webdriver.WebDriver.Navigation.prototype.back = function() {
   return this.driver_.schedule(
@@ -914,8 +1115,8 @@ webdriver.WebDriver.Navigation.prototype.back = function() {
 
 /**
  * Schedules a command to move forwards in the browser history.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when the
- *     navigation event has completed.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when the navigation event has completed.
  */
 webdriver.WebDriver.Navigation.prototype.forward = function() {
   return this.driver_.schedule(
@@ -926,8 +1127,8 @@ webdriver.WebDriver.Navigation.prototype.forward = function() {
 
 /**
  * Schedules a command to refresh the current page.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when the
- *     navigation event has completed.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when the navigation event has completed.
  */
 webdriver.WebDriver.Navigation.prototype.refresh = function() {
   return this.driver_.schedule(
@@ -950,6 +1151,21 @@ webdriver.WebDriver.Options = function(driver) {
 
 
 /**
+ * A JSON description of a browser cookie.
+ * @typedef {{
+ *     name: string,
+ *     value: string,
+ *     path: (string|undefined),
+ *     domain: (string|undefined),
+ *     secure: (boolean|undefined),
+ *     expiry: (number|undefined)
+ * }}
+ * @see https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#cookie-json-object
+ */
+webdriver.WebDriver.Options.Cookie;
+
+
+/**
  * Schedules a command to add a cookie.
  * @param {string} name The cookie name.
  * @param {string} value The cookie value.
@@ -958,8 +1174,8 @@ webdriver.WebDriver.Options = function(driver) {
  * @param {boolean=} opt_isSecure Whether the cookie is secure.
  * @param {(number|!Date)=} opt_expiry When the cookie expires. If specified as
  *     a number, should be in milliseconds since midnight, January 1, 1970 UTC.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when the
- *     cookie has been added to the page.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when the cookie has been added to the page.
  */
 webdriver.WebDriver.Options.prototype.addCookie = function(
     name, value, opt_path, opt_domain, opt_isSecure, opt_expiry) {
@@ -1008,8 +1224,8 @@ webdriver.WebDriver.Options.prototype.addCookie = function(
 
 /**
  * Schedules a command to delete all cookies visible to the current page.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when all
- *     cookies have been deleted.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when all cookies have been deleted.
  */
 webdriver.WebDriver.Options.prototype.deleteAllCookies = function() {
   return this.driver_.schedule(
@@ -1023,8 +1239,8 @@ webdriver.WebDriver.Options.prototype.deleteAllCookies = function() {
  * a no-op if there is no cookie with the given name visible to the current
  * page.
  * @param {string} name The name of the cookie to delete.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when the
- *     cookie has been deleted.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when the cookie has been deleted.
  */
 webdriver.WebDriver.Options.prototype.deleteCookie = function(name) {
   return this.driver_.schedule(
@@ -1038,9 +1254,10 @@ webdriver.WebDriver.Options.prototype.deleteCookie = function(name) {
  * Schedules a command to retrieve all cookies visible to the current page.
  * Each cookie will be returned as a JSON object as described by the WebDriver
  * wire protocol.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with the
- *     cookies visible to the current page.
- * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol#Cookie_JSON_Object
+ * @return {!webdriver.promise.Promise.<
+ *     !Array.<webdriver.WebDriver.Options.Cookie>>} A promise that will be
+ *     resolved with the cookies visible to the current page.
+ * @see https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#cookie-json-object
  */
 webdriver.WebDriver.Options.prototype.getCookies = function() {
   return this.driver_.schedule(
@@ -1054,9 +1271,10 @@ webdriver.WebDriver.Options.prototype.getCookies = function() {
  * if there is no such cookie. The cookie will be returned as a JSON object as
  * described by the WebDriver wire protocol.
  * @param {string} name The name of the cookie to retrieve.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with the
- *     named cookie, or {@code null} if there is no such cookie.
- * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol#Cookie_JSON_Object
+ * @return {!webdriver.promise.Promise.<?webdriver.WebDriver.Options.Cookie>} A
+ *     promise that will be resolved with the named cookie, or {@code null}
+ *     if there is no such cookie.
+ * @see https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#cookie-json-object
  */
 webdriver.WebDriver.Options.prototype.getCookie = function(name) {
   return this.getCookies().then(function(cookies) {
@@ -1110,23 +1328,23 @@ webdriver.WebDriver.Timeouts = function(driver) {
 /**
  * Specifies the amount of time the driver should wait when searching for an
  * element if it is not immediately present.
- * <p/>
+ *
  * When searching for a single element, the driver should poll the page
  * until the element has been found, or this timeout expires before failing
- * with a {@code bot.ErrorCode.NO_SUCH_ELEMENT} error. When searching
+ * with a {@link bot.ErrorCode.NO_SUCH_ELEMENT} error. When searching
  * for multiple elements, the driver should poll the page until at least one
  * element has been found or this timeout has expired.
- * <p/>
+ *
  * Setting the wait timeout to 0 (its default value), disables implicit
  * waiting.
- * <p/>
+ *
  * Increasing the implicit wait timeout should be used judiciously as it
  * will have an adverse effect on test run time, especially when used with
  * slower location strategies like XPath.
  *
  * @param {number} ms The amount of time to wait, in milliseconds.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when the
- *     implicit wait timeout has been set.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when the implicit wait timeout has been set.
  */
 webdriver.WebDriver.Timeouts.prototype.implicitlyWait = function(ms) {
   return this.driver_.schedule(
@@ -1142,8 +1360,8 @@ webdriver.WebDriver.Timeouts.prototype.implicitlyWait = function(ms) {
  * equal to 0, the script will be allowed to run indefinitely.
  *
  * @param {number} ms The amount of time to wait, in milliseconds.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when the
- *     script timeout has been set.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when the script timeout has been set.
  */
 webdriver.WebDriver.Timeouts.prototype.setScriptTimeout = function(ms) {
   return this.driver_.schedule(
@@ -1157,8 +1375,8 @@ webdriver.WebDriver.Timeouts.prototype.setScriptTimeout = function(ms) {
  * Sets the amount of time to wait for a page load to complete before returning
  * an error.  If the timeout is negative, page loads may be indefinite.
  * @param {number} ms The amount of time to wait, in milliseconds.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when
- *     the timeout has been set.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when the timeout has been set.
  */
 webdriver.WebDriver.Timeouts.prototype.pageLoadTimeout = function(ms) {
   return this.driver_.schedule(
@@ -1185,8 +1403,9 @@ webdriver.WebDriver.Window = function(driver) {
 /**
  * Retrieves the window's current position, relative to the top left corner of
  * the screen.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with the
- *     window's position in the form of a {x:number, y:number} object literal.
+ * @return {!webdriver.promise.Promise.<{x: number, y: number}>} A promise that
+ *     will be resolved with the window's position in the form of a
+ *     {x:number, y:number} object literal.
  */
 webdriver.WebDriver.Window.prototype.getPosition = function() {
   return this.driver_.schedule(
@@ -1202,8 +1421,8 @@ webdriver.WebDriver.Window.prototype.getPosition = function() {
  *     of the screen.
  * @param {number} y The desired vertical position, relative to the top of the
  *     of the screen.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when the
- *     command has completed.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when the command has completed.
  */
 webdriver.WebDriver.Window.prototype.setPosition = function(x, y) {
   return this.driver_.schedule(
@@ -1217,9 +1436,9 @@ webdriver.WebDriver.Window.prototype.setPosition = function(x, y) {
 
 /**
  * Retrieves the window's current size.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with the
- *     window's size in the form of a {width:number, height:number} object
- *     literal.
+ * @return {!webdriver.promise.Promise.<{width: number, height: number}>} A
+ *     promise that will be resolved with the window's size in the form of a
+ *     {width:number, height:number} object literal.
  */
 webdriver.WebDriver.Window.prototype.getSize = function() {
   return this.driver_.schedule(
@@ -1233,8 +1452,8 @@ webdriver.WebDriver.Window.prototype.getSize = function() {
  * Resizes the current window.
  * @param {number} width The desired window width.
  * @param {number} height The desired window height.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when the
- *     command has completed.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when the command has completed.
  */
 webdriver.WebDriver.Window.prototype.setSize = function(width, height) {
   return this.driver_.schedule(
@@ -1248,8 +1467,8 @@ webdriver.WebDriver.Window.prototype.setSize = function(width, height) {
 
 /**
  * Maximizes the current window.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when the
- *     command has completed.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when the command has completed.
  */
 webdriver.WebDriver.Window.prototype.maximize = function() {
   return this.driver_.schedule(
@@ -1274,11 +1493,10 @@ webdriver.WebDriver.Logs = function(driver) {
 /**
  * Fetches available log entries for the given type.
  *
- * <p/>Note that log buffers are reset after each call, meaning that
- * available log entries correspond to those entries not yet returned for a
- * given log type. In practice, this means that this call will return the
- * available log entries since the last call, or from the start of the
- * session.
+ * Note that log buffers are reset after each call, meaning that available
+ * log entries correspond to those entries not yet returned for a given log
+ * type. In practice, this means that this call will return the available log
+ * entries since the last call, or from the start of the session.
  *
  * @param {!webdriver.logging.Type} type The desired log type.
  * @return {!webdriver.promise.Promise.<!Array.<!webdriver.logging.Entry>>} A
@@ -1294,7 +1512,8 @@ webdriver.WebDriver.Logs.prototype.get = function(type) {
         return goog.array.map(entries, function(entry) {
           if (!(entry instanceof webdriver.logging.Entry)) {
             return new webdriver.logging.Entry(
-                entry['level'], entry['message'], entry['timestamp']);
+                entry['level'], entry['message'], entry['timestamp'],
+                entry['type']);
           }
           return entry;
         });
@@ -1331,21 +1550,21 @@ webdriver.WebDriver.TargetLocator = function(driver) {
  * Schedules a command retrieve the {@code document.activeElement} element on
  * the current document, or {@code document.body} if activeElement is not
  * available.
- * @return {!webdriver.WebElement} The active element.
+ * @return {!webdriver.WebElementPromise} The active element.
  */
 webdriver.WebDriver.TargetLocator.prototype.activeElement = function() {
   var id = this.driver_.schedule(
       new webdriver.Command(webdriver.CommandName.GET_ACTIVE_ELEMENT),
       'WebDriver.switchTo().activeElement()');
-  return new webdriver.WebElement(this.driver_, id);
+  return new webdriver.WebElementPromise(this.driver_, id);
 };
 
 
 /**
  * Schedules a command to switch focus of all future commands to the first frame
  * on the page.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when the
- *     driver has changed focus to the default content.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when the driver has changed focus to the default content.
  */
 webdriver.WebDriver.TargetLocator.prototype.defaultContent = function() {
   return this.driver_.schedule(
@@ -1358,20 +1577,22 @@ webdriver.WebDriver.TargetLocator.prototype.defaultContent = function() {
 /**
  * Schedules a command to switch the focus of all future commands to another
  * frame on the page.
- * <p/>
+ *
  * If the frame is specified by a number, the command will switch to the frame
- * by its (zero-based) index into the {@code window.frames} collection.
- * <p/>
+ * by its (zero-based) index into
+ * [window.frames](https://developer.mozilla.org/en-US/docs/Web/API/Window.frames).
+ *
  * If the frame is specified by a string, the command will select the frame by
  * its name or ID. To select sub-frames, simply separate the frame names/IDs by
  * dots. As an example, "main.child" will select the frame with the name "main"
  * and then its child "child".
- * <p/>
+ *
  * If the specified frame can not be found, the deferred result will errback
- * with a {@code bot.ErrorCode.NO_SUCH_FRAME} error.
+ * with a {@link bot.ErrorCode.NO_SUCH_FRAME} error.
+ *
  * @param {string|number} nameOrIndex The frame locator.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when the
- *     driver has changed focus to the specified frame.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when the driver has changed focus to the specified frame.
  */
 webdriver.WebDriver.TargetLocator.prototype.frame = function(nameOrIndex) {
   return this.driver_.schedule(
@@ -1384,14 +1605,15 @@ webdriver.WebDriver.TargetLocator.prototype.frame = function(nameOrIndex) {
 /**
  * Schedules a command to switch the focus of all future commands to another
  * window. Windows may be specified by their {@code window.name} attribute or
- * by its handle (as returned by {@code webdriver.WebDriver#getWindowHandles}).
- * <p/>
+ * by its handle (as returned by {@link webdriver.WebDriver#getWindowHandles}).
+ *
  * If the specificed window can not be found, the deferred result will errback
- * with a {@code bot.ErrorCode.NO_SUCH_WINDOW} error.
+ * with a {@link bot.ErrorCode.NO_SUCH_WINDOW} error.
+ *
  * @param {string} nameOrHandle The name or window handle of the window to
  *     switch focus to.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when the
- *     driver has changed focus to the specified window.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when the driver has changed focus to the specified window.
  */
 webdriver.WebDriver.TargetLocator.prototype.window = function(nameOrHandle) {
   return this.driver_.schedule(
@@ -1403,15 +1625,18 @@ webdriver.WebDriver.TargetLocator.prototype.window = function(nameOrHandle) {
 
 /**
  * Schedules a command to change focus to the active alert dialog. This command
- * will return a {@link bot.ErrorCode.NO_MODAL_DIALOG_OPEN} error if a modal
- * dialog is not currently open.
- * @return {!webdriver.Alert} The open alert.
+ * will return a {@link bot.ErrorCode.NO_SUCH_ALERT} error if an alert dialog
+ * is not currently open.
+ * @return {!webdriver.AlertPromise} The open alert.
  */
 webdriver.WebDriver.TargetLocator.prototype.alert = function() {
   var text = this.driver_.schedule(
       new webdriver.Command(webdriver.CommandName.GET_ALERT_TEXT),
       'WebDriver.switchTo().alert()');
-  return new webdriver.Alert(this.driver_, text);
+  var driver = this.driver_;
+  return new webdriver.AlertPromise(driver, text.then(function(text) {
+    return new webdriver.Alert(driver, text);
+  }));
 };
 
 
@@ -1449,75 +1674,52 @@ webdriver.Key.chord = function(var_args) {
 
 /**
  * Represents a DOM element. WebElements can be found by searching from the
- * document root using a {@code webdriver.WebDriver} instance, or by searching
- * under another {@code webdriver.WebElement}:
- * <pre><code>
- *   driver.get('http://www.google.com');
- *   var searchForm = driver.findElement(By.tagName('form'));
- *   var searchBox = searchForm.findElement(By.name('q'));
- *   searchBox.sendKeys('webdriver');
- * </code></pre>
+ * document root using a {@link webdriver.WebDriver} instance, or by searching
+ * under another WebElement:
+ *
+ *     driver.get('http://www.google.com');
+ *     var searchForm = driver.findElement(By.tagName('form'));
+ *     var searchBox = searchForm.findElement(By.name('q'));
+ *     searchBox.sendKeys('webdriver');
  *
  * The WebElement is implemented as a promise for compatibility with the promise
  * API. It will always resolve itself when its internal state has been fully
  * resolved and commands may be issued against the element. This can be used to
  * catch errors when an element cannot be located on the page:
- * <pre><code>
- *   driver.findElement(By.id('not-there')).then(function(element) {
- *     alert('Found an element that was not expected to be there!');
- *   }, function(error) {
- *     alert('The element was not found, as expected');
- *   });
- * </code></pre>
+ *
+ *     driver.findElement(By.id('not-there')).then(function(element) {
+ *       alert('Found an element that was not expected to be there!');
+ *     }, function(error) {
+ *       alert('The element was not found, as expected');
+ *     });
  *
  * @param {!webdriver.WebDriver} driver The parent WebDriver instance for this
  *     element.
- * @param {!(string|webdriver.promise.Promise)} id Either the opaque ID for the
- *     underlying DOM element assigned by the server, or a promise that will
- *     resolve to that ID or another WebElement.
+ * @param {!(webdriver.promise.Promise.<webdriver.WebElement.Id>|
+ *           webdriver.WebElement.Id)} id The server-assigned opaque ID for the
+ *     underlying DOM element.
  * @constructor
- * @extends {webdriver.promise.Deferred}
+ * @extends {webdriver.Serializable.<webdriver.WebElement.Id>}
  */
 webdriver.WebElement = function(driver, id) {
-  webdriver.promise.Deferred.call(this, null, driver.controlFlow());
+  webdriver.Serializable.call(this);
 
-  /**
-   * The parent WebDriver instance for this element.
-   * @private {!webdriver.WebDriver}
-   */
+  /** @private {!webdriver.WebDriver} */
   this.driver_ = driver;
 
-  // This class is responsible for resolving itself; delete the resolve and
-  // reject methods so they may not be accessed by consumers of this class.
-  var fulfill = goog.partial(this.fulfill, this);
-  var reject = this.reject;
-  delete this.promise;
-  delete this.fulfill;
-  delete this.reject;
-
-  /**
-   * A promise that resolves to the JSON representation of this WebElement's
-   * ID, as defined by the WebDriver wire protocol.
-   * @private {!webdriver.promise.Promise}
-   * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol
-   */
-  this.id_ = webdriver.promise.when(id, function(id) {
-    if (id instanceof webdriver.WebElement) {
-      return id.id_;
-    } else if (goog.isDef(id[webdriver.WebElement.ELEMENT_KEY])) {
-      return id;
-    }
-
-    var json = {};
-    json[webdriver.WebElement.ELEMENT_KEY] = id;
-    return json;
-  });
-
-  // This WebElement should not be resolved until its ID has been
-  // fully resolved.
-  this.id_.then(fulfill, reject);
+  /** @private {!webdriver.promise.Promise.<webdriver.WebElement.Id>} */
+  this.id_ = id instanceof webdriver.promise.Promise ?
+      id : webdriver.promise.fulfilled(id);
 };
-goog.inherits(webdriver.WebElement, webdriver.promise.Deferred);
+goog.inherits(webdriver.WebElement, webdriver.Serializable);
+
+
+/**
+ * Wire protocol definition of a WebElement ID.
+ * @typedef {{ELEMENT: string}}
+ * @see https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
+ */
+webdriver.WebElement.Id;
 
 
 /**
@@ -1533,14 +1735,15 @@ webdriver.WebElement.ELEMENT_KEY = 'ELEMENT';
  * Compares to WebElements for equality.
  * @param {!webdriver.WebElement} a A WebElement.
  * @param {!webdriver.WebElement} b A WebElement.
- * @return {!webdriver.promise.Promise} A promise that will be resolved to
- *     whether the two WebElements are equal.
+ * @return {!webdriver.promise.Promise.<boolean>} A promise that will be
+ *     resolved to whether the two WebElements are equal.
  */
 webdriver.WebElement.equals = function(a, b) {
   if (a == b) {
     return webdriver.promise.fulfilled(true);
   }
-  return webdriver.promise.fullyResolved([a.id_, b.id_]).then(function(ids) {
+  var ids = [a.getId(), b.getId()];
+  return webdriver.promise.all(ids).then(function(ids) {
     // If the two element's have the same ID, they should be considered
     // equal. Otherwise, they may still be equivalent, but we'll need to
     // ask the server to check for us.
@@ -1549,10 +1752,10 @@ webdriver.WebElement.equals = function(a, b) {
       return true;
     }
 
-    var command = new webdriver.Command(
-        webdriver.CommandName.ELEMENT_EQUALS);
-    command.setParameter('other', b);
-    return a.schedule_(command, 'webdriver.WebElement.equals()');
+    var command = new webdriver.Command(webdriver.CommandName.ELEMENT_EQUALS);
+    command.setParameter('id', ids[0]);
+    command.setParameter('other', ids[1]);
+    return a.driver_.schedule(command, 'webdriver.WebElement.equals()');
   });
 };
 
@@ -1566,12 +1769,32 @@ webdriver.WebElement.prototype.getDriver = function() {
 
 
 /**
- * @return {!webdriver.promise.Promise} A promise that resolves to this
- *     element's JSON representation as defined by the WebDriver wire protocol.
- * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol
+ * @return {!webdriver.promise.Promise.<webdriver.WebElement.Id>} A promise
+ *     that resolves to this element's JSON representation as defined by the
+ *     WebDriver wire protocol.
+ * @see https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
  */
-webdriver.WebElement.prototype.toWireValue = function() {
+webdriver.WebElement.prototype.getId = function() {
   return this.id_;
+};
+
+
+/**
+ * Returns the raw ID string ID for this element.
+ * @return {!webdriver.promise.Promise<string>} A promise that resolves to this
+ *     element's raw ID as a string value.
+ * @package
+ */
+webdriver.WebElement.prototype.getRawId = function() {
+  return this.getId().then(function(value) {
+    return value['ELEMENT'];
+  });
+};
+
+
+/** @override */
+webdriver.WebElement.prototype.serialize = function() {
+  return this.getId();
 };
 
 
@@ -1581,57 +1804,69 @@ webdriver.WebElement.prototype.toWireValue = function() {
  * under the "id" key.
  * @param {!webdriver.Command} command The command to schedule.
  * @param {string} description A description of the command for debugging.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with
- *     the command result.
+ * @return {!webdriver.promise.Promise.<T>} A promise that will be resolved
+ *     with the command result.
+ * @template T
  * @see webdriver.WebDriver.prototype.schedule
  * @private
  */
 webdriver.WebElement.prototype.schedule_ = function(command, description) {
-  command.setParameter('id', this.id_);
+  command.setParameter('id', this.getId());
   return this.driver_.schedule(command, description);
 };
 
 
 /**
  * Schedule a command to find a descendant of this element. If the element
- * cannot be found, a {@code bot.ErrorCode.NO_SUCH_ELEMENT} result will
+ * cannot be found, a {@link bot.ErrorCode.NO_SUCH_ELEMENT} result will
  * be returned by the driver. Unlike other commands, this error cannot be
  * suppressed. In other words, scheduling a command to find an element doubles
  * as an assert that the element is present on the page. To test whether an
- * element is present on the page, use {@code #isElementPresent} instead.
- * <p/>
- * The search criteria for find an element may either be a
- * {@code webdriver.Locator} object, or a simple JSON object whose sole key
- * is one of the accepted locator strategies, as defined by
- * {@code webdriver.Locator.Strategy}. For example, the following two
- * statements are equivalent:
- * <code><pre>
- * var e1 = element.findElement(By.id('foo'));
- * var e2 = element.findElement({id:'foo'});
- * </pre></code>
- * <p/>
- * Note that JS locator searches cannot be restricted to a subtree. All such
- * searches are delegated to this instance's parent WebDriver.
+ * element is present on the page, use {@link #isElementPresent} instead.
  *
- * @param {webdriver.Locator|Object.<string>} locator The locator
- *     strategy to use when searching for the element.
- * @param {...} var_args Arguments to pass to {@code WebDriver#executeScript} if
- *     using a JavaScript locator.  Otherwise ignored.
- * @return {webdriver.WebElement} A WebElement that can be used to issue
+ * The search criteria for an element may be defined using one of the
+ * factories in the {@link webdriver.By} namespace, or as a short-hand
+ * {@link webdriver.By.Hash} object. For example, the following two statements
+ * are equivalent:
+ *
+ *     var e1 = element.findElement(By.id('foo'));
+ *     var e2 = element.findElement({id:'foo'});
+ *
+ * You may also provide a custom locator function, which takes as input
+ * this WebDriver instance and returns a {@link webdriver.WebElement}, or a
+ * promise that will resolve to a WebElement. For example, to find the first
+ * visible link on a page, you could write:
+ *
+ *     var link = element.findElement(firstVisibleLink);
+ *
+ *     function firstVisibleLink(element) {
+ *       var links = element.findElements(By.tagName('a'));
+ *       return webdriver.promise.filter(links, function(link) {
+ *         return links.isDisplayed();
+ *       }).then(function(visibleLinks) {
+ *         return visibleLinks[0];
+ *       });
+ *     }
+ *
+ * @param {!(webdriver.Locator|webdriver.By.Hash|Function)} locator The
+ *     locator strategy to use when searching for the element.
+ * @return {!webdriver.WebElement} A WebElement that can be used to issue
  *     commands against the located element. If the element is not found, the
  *     element will be invalidated and all scheduled commands aborted.
  */
-webdriver.WebElement.prototype.findElement = function(locator, var_args) {
+webdriver.WebElement.prototype.findElement = function(locator) {
   locator = webdriver.Locator.checkLocator(locator);
-  if (locator.using == 'js') {
-    return this.driver_.findElement.apply(this.driver_, arguments);
+  var id;
+  if (goog.isFunction(locator)) {
+    id = this.driver_.findElementInternal_(locator, this);
+  } else {
+    var command = new webdriver.Command(
+        webdriver.CommandName.FIND_CHILD_ELEMENT).
+        setParameter('using', locator.using).
+        setParameter('value', locator.value);
+    id = this.schedule_(command, 'WebElement.findElement(' + locator + ')');
   }
-
-  var command = new webdriver.Command(webdriver.CommandName.FIND_CHILD_ELEMENT).
-      setParameter('using', locator.using).
-      setParameter('value', locator.value);
-  var id = this.schedule_(command, 'WebElement.findElement(' + locator + ')');
-  return new webdriver.WebElement(this.driver_, id);
+  return new webdriver.WebElementPromise(this.driver_, id);
 };
 
 
@@ -1639,58 +1874,45 @@ webdriver.WebElement.prototype.findElement = function(locator, var_args) {
  * Schedules a command to test if there is at least one descendant of this
  * element that matches the given search criteria.
  *
- * <p>Note that JS locator searches cannot be restricted to a subtree of the
- * DOM. All such searches are delegated to this instance's parent WebDriver.
- *
- * @param {webdriver.Locator|Object.<string>} locator The locator
- *     strategy to use when searching for the element.
- * @param {...} var_args Arguments to pass to {@code WebDriver#executeScript} if
- *     using a JavaScript locator.  Otherwise ignored.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with
- *     whether an element could be located on the page.
+ * @param {!(webdriver.Locator|webdriver.By.Hash|Function)} locator The
+ *     locator strategy to use when searching for the element.
+ * @return {!webdriver.promise.Promise.<boolean>} A promise that will be
+ *     resolved with whether an element could be located on the page.
  */
-webdriver.WebElement.prototype.isElementPresent = function(locator, var_args) {
-  locator = webdriver.Locator.checkLocator(locator);
-  if (locator.using == 'js') {
-    return this.driver_.isElementPresent.apply(this.driver_, arguments);
-  }
-  return this.findElements.apply(this, arguments).then(function(result) {
+webdriver.WebElement.prototype.isElementPresent = function(locator) {
+  return this.findElements(locator).then(function(result) {
     return !!result.length;
   });
 };
 
 
 /**
- * Schedules a command to find all of the descendants of this element that match
- * the given search criteria.
- * <p/>
- * Note that JS locator searches cannot be restricted to a subtree. All such
- * searches are delegated to this instance's parent WebDriver.
+ * Schedules a command to find all of the descendants of this element that
+ * match the given search criteria.
  *
- * @param {webdriver.Locator|Object.<string>} locator The locator
- *     strategy to use when searching for the elements.
- * @param {...} var_args Arguments to pass to {@code WebDriver#executeScript} if
- *     using a JavaScript locator.  Otherwise ignored.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with an
- *     array of located {@link webdriver.WebElement}s.
+ * @param {!(webdriver.Locator|webdriver.By.Hash|Function)} locator The
+ *     locator strategy to use when searching for the elements.
+ * @return {!webdriver.promise.Promise.<!Array.<!webdriver.WebElement>>} A
+ *     promise that will resolve to an array of WebElements.
  */
-webdriver.WebElement.prototype.findElements = function(locator, var_args) {
+webdriver.WebElement.prototype.findElements = function(locator) {
   locator = webdriver.Locator.checkLocator(locator);
-  if (locator.using == 'js') {
-    return this.driver_.findElements.apply(this.driver_, arguments);
+  if (goog.isFunction(locator)) {
+    return this.driver_.findElementsInternal_(locator, this);
+  } else {
+    var command = new webdriver.Command(
+        webdriver.CommandName.FIND_CHILD_ELEMENTS).
+        setParameter('using', locator.using).
+        setParameter('value', locator.value);
+    return this.schedule_(command, 'WebElement.findElements(' + locator + ')');
   }
-  var command =
-      new webdriver.Command(webdriver.CommandName.FIND_CHILD_ELEMENTS).
-          setParameter('using', locator.using).
-          setParameter('value', locator.value);
-  return this.schedule_(command, 'WebElement.findElements(' + locator + ')');
 };
 
 
 /**
  * Schedules a command to click on this element.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when
- *     the click command has completed.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when the click command has completed.
  */
 webdriver.WebElement.prototype.click = function() {
   return this.schedule_(
@@ -1702,64 +1924,93 @@ webdriver.WebElement.prototype.click = function() {
 /**
  * Schedules a command to type a sequence on the DOM element represented by this
  * instance.
- * <p/>
+ *
  * Modifier keys (SHIFT, CONTROL, ALT, META) are stateful; once a modifier is
  * processed in the keysequence, that key state is toggled until one of the
  * following occurs:
- * <ul>
- * <li>The modifier key is encountered again in the sequence. At this point the
- * state of the key is toggled (along with the appropriate keyup/down events).
- * </li>
- * <li>The {@code webdriver.Key.NULL} key is encountered in the sequence. When
- * this key is encountered, all modifier keys current in the down state are
- * released (with accompanying keyup events). The NULL key can be used to
- * simulate common keyboard shortcuts:
- * <code><pre>
- *     element.sendKeys("text was",
- *                      webdriver.Key.CONTROL, "a", webdriver.Key.NULL,
- *                      "now text is");
- *     // Alternatively:
- *     element.sendKeys("text was",
- *                      webdriver.Key.chord(webdriver.Key.CONTROL, "a"),
- *                      "now text is");
- * </pre></code></li>
- * <li>The end of the keysequence is encountered. When there are no more keys
- * to type, all depressed modifier keys are released (with accompanying keyup
- * events).
- * </li>
- * </ul>
- * <strong>Note:</strong> On browsers where native keyboard events are not yet
- * supported (e.g. Firefox on OS X), key events will be synthesized. Special
+ *
+ * - The modifier key is encountered again in the sequence. At this point the
+ *   state of the key is toggled (along with the appropriate keyup/down events).
+ * - The {@link webdriver.Key.NULL} key is encountered in the sequence. When
+ *   this key is encountered, all modifier keys current in the down state are
+ *   released (with accompanying keyup events). The NULL key can be used to
+ *   simulate common keyboard shortcuts:
+ *
+ *         element.sendKeys("text was",
+ *                          webdriver.Key.CONTROL, "a", webdriver.Key.NULL,
+ *                          "now text is");
+ *         // Alternatively:
+ *         element.sendKeys("text was",
+ *                          webdriver.Key.chord(webdriver.Key.CONTROL, "a"),
+ *                          "now text is");
+ *
+ * - The end of the keysequence is encountered. When there are no more keys
+ *   to type, all depressed modifier keys are released (with accompanying keyup
+ *   events).
+ *
+ * If this element is a file input ({@code <input type="file">}), the
+ * specified key sequence should specify the path to the file to attach to
+ * the element. This is analgous to the user clicking "Browse..." and entering
+ * the path into the file select dialog.
+ *
+ *     var form = driver.findElement(By.css('form'));
+ *     var element = form.findElement(By.css('input[type=file]'));
+ *     element.sendKeys('/path/to/file.txt');
+ *     form.submit();
+ *
+ * For uploads to function correctly, the entered path must reference a file
+ * on the _browser's_ machine, not the local machine running this script. When
+ * running against a remote Selenium server, a {@link webdriver.FileDetector}
+ * may be used to transparently copy files to the remote machine before
+ * attempting to upload them in the browser.
+ *
+ * __Note:__ On browsers where native keyboard events are not supported
+ * (e.g. Firefox on OS X), key events will be synthesized. Special
  * punctionation keys will be synthesized according to a standard QWERTY en-us
  * keyboard layout.
  *
- * @param {...string} var_args The sequence of keys to
- *     type. All arguments will be joined into a single sequence (var_args is
- *     permitted for convenience).
- * @return {!webdriver.promise.Promise} A promise that will be resolved when all
- *     keys have been typed.
+ * @param {...(string|!webdriver.promise.Promise<string>)} var_args The sequence
+ *     of keys to type. All arguments will be joined into a single sequence.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when all keys have been typed.
  */
 webdriver.WebElement.prototype.sendKeys = function(var_args) {
   // Coerce every argument to a string. This protects us from users that
   // ignore the jsdoc and give us a number (which ends up causing problems on
   // the server, which requires strings).
-  var keys = webdriver.promise.fullyResolved(goog.array.slice(arguments, 0)).
-      then(function(args) {
-        return goog.array.map(goog.array.slice(args, 0), function(key) {
-          return key + '';
-        });
+  var keys = webdriver.promise.all(goog.array.slice(arguments, 0)).
+      then(function(keys) {
+        return goog.array.map(keys, String);
       });
-  return this.schedule_(
-      new webdriver.Command(webdriver.CommandName.SEND_KEYS_TO_ELEMENT).
-          setParameter('value', keys),
-      'WebElement.sendKeys(' + keys + ')');
+  if (!this.driver_.fileDetector_) {
+    return this.schedule_(
+        new webdriver.Command(webdriver.CommandName.SEND_KEYS_TO_ELEMENT).
+            setParameter('value', keys),
+        'WebElement.sendKeys()');
+  }
+
+  // Suppress unhandled rejection errors until the flow executes the command.
+  keys.thenCatch(goog.nullFunction);
+
+  var element = this;
+  return this.driver_.flow_.execute(function() {
+    return keys.then(function(keys) {
+      return element.driver_.fileDetector_
+          .handleFile(element.driver_, keys.join(''));
+    }).then(function(keys) {
+      return element.schedule_(
+          new webdriver.Command(webdriver.CommandName.SEND_KEYS_TO_ELEMENT).
+              setParameter('value', [keys]),
+          'WebElement.sendKeys()');
+    });
+  }, 'WebElement.sendKeys()');
 };
 
 
 /**
  * Schedules a command to query for the tag/node name of this element.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with the
- *     element's tag name.
+ * @return {!webdriver.promise.Promise.<string>} A promise that will be
+ *     resolved with the element's tag name.
  */
 webdriver.WebElement.prototype.getTagName = function() {
   return this.schedule_(
@@ -1774,14 +2025,14 @@ webdriver.WebElement.prototype.getTagName = function() {
  * its parent, the parent will be queried for its value.  Where possible, color
  * values will be converted to their hex representation (e.g. #00ff00 instead of
  * rgb(0, 255, 0)).
- * <p/>
- * <em>Warning:</em> the value returned will be as the browser interprets it, so
+ *
+ * _Warning:_ the value returned will be as the browser interprets it, so
  * it may be tricky to form a proper assertion.
  *
  * @param {string} cssStyleProperty The name of the CSS style property to look
  *     up.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with the
- *     requested CSS value.
+ * @return {!webdriver.promise.Promise.<string>} A promise that will be
+ *     resolved with the requested CSS value.
  */
 webdriver.WebElement.prototype.getCssValue = function(cssStyleProperty) {
   var name = webdriver.CommandName.GET_ELEMENT_VALUE_OF_CSS_PROPERTY;
@@ -1803,23 +2054,23 @@ webdriver.WebElement.prototype.getCssValue = function(cssStyleProperty) {
  * text representation with a trailing semi-colon. The following are deemed to
  * be "boolean" attributes and will return either "true" or null:
  *
- * <p>async, autofocus, autoplay, checked, compact, complete, controls, declare,
+ * async, autofocus, autoplay, checked, compact, complete, controls, declare,
  * defaultchecked, defaultselected, defer, disabled, draggable, ended,
  * formnovalidate, hidden, indeterminate, iscontenteditable, ismap, itemscope,
  * loop, multiple, muted, nohref, noresize, noshade, novalidate, nowrap, open,
  * paused, pubdate, readonly, required, reversed, scoped, seamless, seeking,
  * selected, spellcheck, truespeed, willvalidate
  *
- * <p>Finally, the following commonly mis-capitalized attribute/property names
+ * Finally, the following commonly mis-capitalized attribute/property names
  * are evaluated as expected:
- * <ul>
- *   <li>"class"
- *   <li>"readonly"
- * </ul>
+ *
+ * - "class"
+ * - "readonly"
+ *
  * @param {string} attributeName The name of the attribute to query.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with the
- *     attribute's value. The returned value will always be either a string or
- *     null.
+ * @return {!webdriver.promise.Promise.<?string>} A promise that will be
+ *     resolved with the attribute's value. The returned value will always be
+ *     either a string or null.
  */
 webdriver.WebElement.prototype.getAttribute = function(attributeName) {
   return this.schedule_(
@@ -1832,8 +2083,8 @@ webdriver.WebElement.prototype.getAttribute = function(attributeName) {
 /**
  * Get the visible (i.e. not hidden by CSS) innerText of this element, including
  * sub-elements, without any leading or trailing whitespace.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with the
- *     element's visible text.
+ * @return {!webdriver.promise.Promise.<string>} A promise that will be
+ *     resolved with the element's visible text.
  */
 webdriver.WebElement.prototype.getText = function() {
   return this.schedule_(
@@ -1845,8 +2096,9 @@ webdriver.WebElement.prototype.getText = function() {
 /**
  * Schedules a command to compute the size of this element's bounding box, in
  * pixels.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with the
- *     element's size as a {@code {width:number, height:number}} object.
+ * @return {!webdriver.promise.Promise.<{width: number, height: number}>} A
+ *     promise that will be resolved with the element's size as a
+ *     {@code {width:number, height:number}} object.
  */
 webdriver.WebElement.prototype.getSize = function() {
   return this.schedule_(
@@ -1857,8 +2109,9 @@ webdriver.WebElement.prototype.getSize = function() {
 
 /**
  * Schedules a command to compute the location of this element in page space.
- * @return {!webdriver.promise.Promise} A promise that will be resolved to the
- *     element's location as a {@code {x:number, y:number}} object.
+ * @return {!webdriver.promise.Promise.<{x: number, y: number}>} A promise that
+ *     will be resolved to the element's location as a
+ *     {@code {x:number, y:number}} object.
  */
 webdriver.WebElement.prototype.getLocation = function() {
   return this.schedule_(
@@ -1870,8 +2123,8 @@ webdriver.WebElement.prototype.getLocation = function() {
 /**
  * Schedules a command to query whether the DOM element represented by this
  * instance is enabled, as dicted by the {@code disabled} attribute.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with
- *     whether this element is currently enabled.
+ * @return {!webdriver.promise.Promise.<boolean>} A promise that will be
+ *     resolved with whether this element is currently enabled.
  */
 webdriver.WebElement.prototype.isEnabled = function() {
   return this.schedule_(
@@ -1882,8 +2135,8 @@ webdriver.WebElement.prototype.isEnabled = function() {
 
 /**
  * Schedules a command to query whether this element is selected.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with
- *     whether this element is currently selected.
+ * @return {!webdriver.promise.Promise.<boolean>} A promise that will be
+ *     resolved with whether this element is currently selected.
  */
 webdriver.WebElement.prototype.isSelected = function() {
   return this.schedule_(
@@ -1896,8 +2149,8 @@ webdriver.WebElement.prototype.isSelected = function() {
  * Schedules a command to submit the form containing this element (or this
  * element if it is a FORM element). This command is a no-op if the element is
  * not contained in a form.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when
- *     the form has been submitted.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when the form has been submitted.
  */
 webdriver.WebElement.prototype.submit = function() {
   return this.schedule_(
@@ -1910,8 +2163,8 @@ webdriver.WebElement.prototype.submit = function() {
  * Schedules a command to clear the {@code value} of this element. This command
  * has no effect if the underlying DOM element is neither a text INPUT element
  * nor a TEXTAREA element.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when
- *     the element has been cleared.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when the element has been cleared.
  */
 webdriver.WebElement.prototype.clear = function() {
   return this.schedule_(
@@ -1922,8 +2175,8 @@ webdriver.WebElement.prototype.clear = function() {
 
 /**
  * Schedules a command to test whether this element is currently displayed.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with
- *     whether this element is currently visible on the page.
+ * @return {!webdriver.promise.Promise.<boolean>} A promise that will be
+ *     resolved with whether this element is currently visible on the page.
  */
 webdriver.WebElement.prototype.isDisplayed = function() {
   return this.schedule_(
@@ -1933,9 +2186,28 @@ webdriver.WebElement.prototype.isDisplayed = function() {
 
 
 /**
+ * Take a screenshot of the visible region encompassed by this element's
+ * bounding rectangle.
+ *
+ * @param {boolean=} opt_scroll Optional argument that indicates whether the
+ *     element should be scrolled into view before taking a screenshot. Defaults
+ *     to false.
+ * @return {!webdriver.promise.Promise.<string>} A promise that will be
+ *     resolved to the screenshot as a base-64 encoded PNG.
+ */
+webdriver.WebElement.prototype.takeScreenshot = function(opt_scroll) {
+  var scroll = !!opt_scroll;
+  return this.schedule_(
+      new webdriver.Command(webdriver.CommandName.TAKE_ELEMENT_SCREENSHOT)
+          .setParameter('scroll', scroll),
+      'WebElement.takeScreenshot(' + scroll + ')');
+};
+
+
+/**
  * Schedules a command to retrieve the outer HTML of this element.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with
- *     the element's outer HTML.
+ * @return {!webdriver.promise.Promise.<string>} A promise that will be
+ *     resolved with the element's outer HTML.
  */
 webdriver.WebElement.prototype.getOuterHtml = function() {
   return this.driver_.executeScript(function() {
@@ -1953,13 +2225,69 @@ webdriver.WebElement.prototype.getOuterHtml = function() {
 
 /**
  * Schedules a command to retrieve the inner HTML of this element.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with the
- *     element's inner HTML.
+ * @return {!webdriver.promise.Promise.<string>} A promise that will be
+ *     resolved with the element's inner HTML.
  */
 webdriver.WebElement.prototype.getInnerHtml = function() {
   return this.driver_.executeScript('return arguments[0].innerHTML', this);
 };
 
+
+
+/**
+ * WebElementPromise is a promise that will be fulfilled with a WebElement.
+ * This serves as a forward proxy on WebElement, allowing calls to be
+ * scheduled without directly on this instance before the underlying
+ * WebElement has been fulfilled. In other words, the following two statements
+ * are equivalent:
+ *
+ *     driver.findElement({id: 'my-button'}).click();
+ *     driver.findElement({id: 'my-button'}).then(function(el) {
+ *       return el.click();
+ *     });
+ *
+ * @param {!webdriver.WebDriver} driver The parent WebDriver instance for this
+ *     element.
+ * @param {!webdriver.promise.Promise.<!webdriver.WebElement>} el A promise
+ *     that will resolve to the promised element.
+ * @constructor
+ * @extends {webdriver.WebElement}
+ * @implements {webdriver.promise.Thenable.<!webdriver.WebElement>}
+ * @final
+ */
+webdriver.WebElementPromise = function(driver, el) {
+  webdriver.WebElement.call(this, driver, {'ELEMENT': 'unused'});
+
+  /** @override */
+  this.cancel = goog.bind(el.cancel, el);
+
+  /** @override */
+  this.isPending = goog.bind(el.isPending, el);
+
+  /** @override */
+  this.then = goog.bind(el.then, el);
+
+  /** @override */
+  this.catch = goog.bind(el.catch, el);
+
+  /** @override */
+  this.thenCatch = goog.bind(el.thenCatch, el);
+
+  /** @override */
+  this.thenFinally = goog.bind(el.thenFinally, el);
+
+  /**
+   * Defers returning the element ID until the wrapped WebElement has been
+   * resolved.
+   * @override
+   */
+  this.getId = function() {
+    return el.then(function(el) {
+      return el.getId();
+    });
+  };
+};
+goog.inherits(webdriver.WebElementPromise, webdriver.WebElement);
 
 
 /**
@@ -1969,40 +2297,23 @@ webdriver.WebElement.prototype.getInnerHtml = function() {
  * case of {@code prompt}).
  * @param {!webdriver.WebDriver} driver The driver controlling the browser this
  *     alert is attached to.
- * @param {!(string|webdriver.promise.Promise)} text Either the message text
- *     displayed with this alert, or a promise that will be resolved to said
- *     text.
+ * @param {string} text The message text displayed with this alert.
  * @constructor
- * @extends {webdriver.promise.Deferred}
  */
 webdriver.Alert = function(driver, text) {
-  goog.base(this, null, driver.controlFlow());
-
   /** @private {!webdriver.WebDriver} */
   this.driver_ = driver;
 
-  // This class is responsible for resolving itself; delete the resolve and
-  // reject methods so they may not be accessed by consumers of this class.
-  var fulfill = goog.partial(this.fulfill, this);
-  var reject = this.reject;
-  delete this.promise;
-  delete this.fulfill;
-  delete this.reject;
-
-  /** @private {!webdriver.promise.Promise} */
+  /** @private {!webdriver.promise.Promise.<string>} */
   this.text_ = webdriver.promise.when(text);
-
-  // Make sure this instance is resolved when its displayed text is.
-  this.text_.then(fulfill, reject);
 };
-goog.inherits(webdriver.Alert, webdriver.promise.Deferred);
 
 
 /**
  * Retrieves the message text displayed with this alert. For instance, if the
  * alert were opened with alert("hello"), then this would return "hello".
- * @return {!webdriver.promise.Promise} A promise that will be resolved to the
- *     text displayed with this alert.
+ * @return {!webdriver.promise.Promise.<string>} A promise that will be
+ *     resolved to the text displayed with this alert.
  */
 webdriver.Alert.prototype.getText = function() {
   return this.text_;
@@ -2011,8 +2322,8 @@ webdriver.Alert.prototype.getText = function() {
 
 /**
  * Accepts this alert.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when
- *     this command has completed.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when this command has completed.
  */
 webdriver.Alert.prototype.accept = function() {
   return this.driver_.schedule(
@@ -2023,8 +2334,8 @@ webdriver.Alert.prototype.accept = function() {
 
 /**
  * Dismisses this alert.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when
- *     this command has completed.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when this command has completed.
  */
 webdriver.Alert.prototype.dismiss = function() {
   return this.driver_.schedule(
@@ -2038,8 +2349,8 @@ webdriver.Alert.prototype.dismiss = function() {
  * the underlying alert does not support response text (e.g. window.alert and
  * window.confirm).
  * @param {string} text The text to set.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when
- *     this command has completed.
+ * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
+ *     when this command has completed.
  */
 webdriver.Alert.prototype.sendKeys = function(text) {
   return this.driver_.schedule(
@@ -2051,15 +2362,105 @@ webdriver.Alert.prototype.sendKeys = function(text) {
 
 
 /**
+ * AlertPromise is a promise that will be fulfilled with an Alert. This promise
+ * serves as a forward proxy on an Alert, allowing calls to be scheduled
+ * directly on this instance before the underlying Alert has been fulfilled. In
+ * other words, the following two statements are equivalent:
+ *
+ *     driver.switchTo().alert().dismiss();
+ *     driver.switchTo().alert().then(function(alert) {
+ *       return alert.dismiss();
+ *     });
+ *
+ * @param {!webdriver.WebDriver} driver The driver controlling the browser this
+ *     alert is attached to.
+ * @param {!webdriver.promise.Thenable.<!webdriver.Alert>} alert A thenable
+ *     that will be fulfilled with the promised alert.
+ * @constructor
+ * @extends {webdriver.Alert}
+ * @implements {webdriver.promise.Thenable.<!webdriver.Alert>}
+ * @final
+ */
+webdriver.AlertPromise = function(driver, alert) {
+  webdriver.Alert.call(this, driver, 'unused');
+
+  /** @override */
+  this.cancel = goog.bind(alert.cancel, alert);
+
+  /** @override */
+  this.isPending = goog.bind(alert.isPending, alert);
+
+  /** @override */
+  this.then = goog.bind(alert.then, alert);
+
+  /** @override */
+  this.catch = goog.bind(alert.catch, alert);
+
+  /** @override */
+  this.thenCatch = goog.bind(alert.thenCatch, alert);
+
+  /** @override */
+  this.thenFinally = goog.bind(alert.thenFinally, alert);
+
+  /**
+   * Defer returning text until the promised alert has been resolved.
+   * @override
+   */
+  this.getText = function() {
+    return alert.then(function(alert) {
+      return alert.getText();
+    });
+  };
+
+  /**
+   * Defers action until the alert has been located.
+   * @override
+   */
+  this.accept = function() {
+    return alert.then(function(alert) {
+      return alert.accept();
+    });
+  };
+
+  /**
+   * Defers action until the alert has been located.
+   * @override
+   */
+  this.dismiss = function() {
+    return alert.then(function(alert) {
+      return alert.dismiss();
+    });
+  };
+
+  /**
+   * Defers action until the alert has been located.
+   * @override
+   */
+  this.sendKeys = function(text) {
+    return alert.then(function(alert) {
+      return alert.sendKeys(text);
+    });
+  };
+};
+goog.inherits(webdriver.AlertPromise, webdriver.Alert);
+
+
+
+/**
  * An error returned to indicate that there is an unhandled modal dialog on the
  * current page.
  * @param {string} message The error message.
+ * @param {string} text The text displayed with the unhandled alert.
  * @param {!webdriver.Alert} alert The alert handle.
  * @constructor
  * @extends {bot.Error}
  */
-webdriver.UnhandledAlertError = function(message, alert) {
-  goog.base(this, bot.ErrorCode.MODAL_DIALOG_OPENED, message);
+webdriver.UnhandledAlertError = function(message, text, alert) {
+  webdriver.UnhandledAlertError.base(
+      this, 'constructor', bot.ErrorCode.UNEXPECTED_ALERT_OPEN, message);
+
+  /** @private {string} */
+  this.text_ = text;
 
   /** @private {!webdriver.Alert} */
   this.alert_ = alert;
@@ -2068,8 +2469,47 @@ goog.inherits(webdriver.UnhandledAlertError, bot.Error);
 
 
 /**
- * @return {!webdriver.Alert} The open alert.
+ * @return {string} The text displayed with the unhandled alert.
  */
-webdriver.UnhandledAlertError.prototype.getAlert = function() {
-  return this.alert_;
+webdriver.UnhandledAlertError.prototype.getAlertText = function() {
+  return this.text_;
 };
+
+
+
+/**
+ * Used with {@link webdriver.WebElement#sendKeys WebElement#sendKeys} on file
+ * input elements ({@code <input type="file">}) to detect when the entered key
+ * sequence defines the path to a file.
+ *
+ * By default, {@linkplain webdriver.WebElement WebElement's} will enter all
+ * key sequences exactly as entered. You may set a
+ * {@linkplain webdriver.WebDriver#setFileDetector file detector} on the parent
+ * WebDriver instance to define custom behavior for handling file elements. Of
+ * particular note is the {@link selenium-webdriver/remote.FileDetector}, which
+ * should be used when running against a remote
+ * [Selenium Server](http://docs.seleniumhq.org/download/).
+ */
+webdriver.FileDetector = goog.defineClass(null, {
+  /** @constructor */
+  constructor: function() {},
+
+  /**
+   * Handles the file specified by the given path, preparing it for use with
+   * the current browser. If the path does not refer to a valid file, it will
+   * be returned unchanged, otherwisee a path suitable for use with the current
+   * browser will be returned.
+   *
+   * This default implementation is a no-op. Subtypes may override this
+   * function for custom tailored file handling.
+   *
+   * @param {!webdriver.WebDriver} driver The driver for the current browser.
+   * @param {string} path The path to process.
+   * @return {!webdriver.promise.Promise<string>} A promise for the processed
+   *     file path.
+   * @package
+   */
+  handleFile: function(driver, path) {
+    return webdriver.promise.fulfilled(path);
+  }
+});

@@ -19,8 +19,6 @@
  * DO NOT USE THIS FILE DIRECTLY.  Use goog.dom.Range instead.
  *
  * @author robbyw@google.com (Robby Walker)
- * @author ojan@google.com (Ojan Vafai)
- * @author jparent@google.com (Julie Parent)
  *
  * @supported IE6, IE7, FF1.5+, Safari.
  */
@@ -30,6 +28,7 @@ goog.provide('goog.dom.browserrange');
 goog.provide('goog.dom.browserrange.Error');
 
 goog.require('goog.dom');
+goog.require('goog.dom.BrowserFeature');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.browserrange.GeckoRange');
 goog.require('goog.dom.browserrange.IeRange');
@@ -56,10 +55,10 @@ goog.dom.browserrange.Error = {
 /**
  * Static method that returns the proper type of browser range.
  * @param {Range|TextRange} range A browser range object.
- * @return {goog.dom.browserrange.AbstractRange} A wrapper object.
+ * @return {!goog.dom.browserrange.AbstractRange} A wrapper object.
  */
 goog.dom.browserrange.createRange = function(range) {
-  if (goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(9)) {
+  if (goog.dom.BrowserFeature.LEGACY_IE_RANGES) {
     return new goog.dom.browserrange.IeRange(
         /** @type {TextRange} */ (range),
         goog.dom.getOwnerDocument(range.parentElement()));
@@ -83,7 +82,7 @@ goog.dom.browserrange.createRange = function(range) {
 /**
  * Static method that returns the proper type of browser range.
  * @param {Node} node The node to select.
- * @return {goog.dom.browserrange.AbstractRange} A wrapper object.
+ * @return {!goog.dom.browserrange.AbstractRange} A wrapper object.
  */
 goog.dom.browserrange.createRangeFromNodeContents = function(node) {
   if (goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(9)) {
@@ -111,7 +110,7 @@ goog.dom.browserrange.createRangeFromNodeContents = function(node) {
  * @param {number} endOffset The offset within the node to end.  This is
  *     either the index into the childNodes array for element endNodes or
  *     the index into the character array for text endNodes.
- * @return {goog.dom.browserrange.AbstractRange} A wrapper object.
+ * @return {!goog.dom.browserrange.AbstractRange} A wrapper object.
  */
 goog.dom.browserrange.createRangeFromNodes = function(startNode, startOffset,
     endNode, endOffset) {

@@ -42,14 +42,14 @@ import java.util.logging.Logger;
  * <p>
  * Manages sets of CommandQueues corresponding to windows and frames in a single browser session.
  * </p>
- * 
+ *
  * @author nelsons
  */
 public class FrameGroupCommandQueueSet {
   private static final Logger log = Logger.getLogger(FrameGroupCommandQueueSet.class.getName());
 
   static private final Map<String, FrameGroupCommandQueueSet> queueSets =
-      new ConcurrentHashMap<String, FrameGroupCommandQueueSet>();
+      new ConcurrentHashMap<>();
   static private Lock dataLock = new ReentrantLock(); //
   static private Condition resultArrivedOnAnyQueue = dataLock.newCondition();
 
@@ -74,9 +74,9 @@ public class FrameGroupCommandQueueSet {
 
   private final Set<File> tempFilesForSession = Collections.synchronizedSet(new HashSet<File>());
   private Map<String, CommandQueue> uniqueIdToCommandQueue =
-      new ConcurrentHashMap<String, CommandQueue>();
+      new ConcurrentHashMap<>();
 
-  private Map<String, Boolean> frameAddressToJustLoaded = new ConcurrentHashMap<String, Boolean>();
+  private Map<String, Boolean> frameAddressToJustLoaded = new ConcurrentHashMap<>();
 
   private int pageLoadTimeoutInMilliseconds = 30000;
   private AtomicInteger millisecondDelayBetweenOperations;
@@ -93,7 +93,7 @@ public class FrameGroupCommandQueueSet {
    * Queues which will not be used anymore, but which cannot be immediately destroyed because their
    * corresponding windows may still be listening.
    */
-  private Set<CommandQueue> orphanedQueues = new HashSet<CommandQueue>();
+  private Set<CommandQueue> orphanedQueues = new HashSet<>();
 
   public static final String DEFAULT_LOCAL_FRAME_ADDRESS = "top";
   /**
@@ -212,7 +212,7 @@ public class FrameGroupCommandQueueSet {
   }
 
 
-  /**
+  /*
    * Retrieves a FrameGroupCommandQueueSet for the specified sessionId
    */
   static public FrameGroupCommandQueueSet getQueueSet(String sessionId) {
@@ -228,7 +228,7 @@ public class FrameGroupCommandQueueSet {
     return queueSet;
   }
 
-  /**
+  /*
    * Creates a FrameGroupCommandQueueSet for the specifed sessionId
    */
   static public FrameGroupCommandQueueSet makeQueueSet(String sessionId,
@@ -244,7 +244,7 @@ public class FrameGroupCommandQueueSet {
     }
   }
 
-  /**
+  /*
    * Deletes the specified FrameGroupCommandQueueSet
    */
   static public void clearQueueSet(String sessionId) {
@@ -273,7 +273,7 @@ public class FrameGroupCommandQueueSet {
 
   /**
    * Sets this frame group's speed, and updates all command queues to use this speed.
-   * 
+   *
    * @param i millisecond delay between queue operations
    */
   protected void setSpeed(int i) {
@@ -285,7 +285,7 @@ public class FrameGroupCommandQueueSet {
 
   /**
    * Returns the delay for this frame group's command queues
-   * 
+   *
    * @return millisecond delay between queue operations
    */
   protected int getSpeed() {
@@ -295,7 +295,7 @@ public class FrameGroupCommandQueueSet {
   /**
    * Schedules the specified command to be retrieved by the next call to handle command result, and
    * returns the result of that command.
-   * 
+   *
    * @param command - the remote command verb
    * @param arg - the first remote argument (meaning depends on the verb)
    * @param value - the second remote argument
@@ -347,7 +347,7 @@ public class FrameGroupCommandQueueSet {
           // an exception then we should simply return the
           // command result
           uniqueId =
-              waitForLoad(waitingForThisWindowName, "top", (int) (timeoutInMilliseconds / 1000l));
+              waitForLoad(waitingForThisWindowName, "top", (int) (timeoutInMilliseconds / 1000L));
 
           // if (!result.equals("OK")) {
           // return result;
@@ -371,7 +371,7 @@ public class FrameGroupCommandQueueSet {
         try {
           result =
               waitForLoad(currentWindowName, waitingForThisFrameName,
-                  (int) (timeoutInMilliseconds / 1000l));
+                  (int) (timeoutInMilliseconds / 1000L));
         } catch (RemoteCommandException e) {
           return e.getMessage();
         }
@@ -437,8 +437,9 @@ public class FrameGroupCommandQueueSet {
 
   /**
    * Generates a CSV string from the given string array.
-   * 
+   *
    * @param stringArray Array of strings to generate a CSV.
+   * @return CSV formatted string
    */
   public String getStringArrayAccessorCSV(String[] stringArray) {
     StringBuffer sb = new StringBuffer();
@@ -479,7 +480,7 @@ public class FrameGroupCommandQueueSet {
     }
 
     Set<String> frameAddressSet = uniqueIdToCommandQueue.keySet();
-    List<String> windowTitles = new ArrayList<String>();
+    List<String> windowTitles = new ArrayList<>();
 
     // Find all window names in the set of frame addresses
     for (String uniqueId : frameAddressSet) {
@@ -500,7 +501,7 @@ public class FrameGroupCommandQueueSet {
 
   /**
    * Get a window title in the given CommandQueue.
-   * 
+   *
    * @param queue CommandQueue to get the title from.
    * @return Returns the title if it is found.
    * @throws WindowClosedException
@@ -530,7 +531,7 @@ public class FrameGroupCommandQueueSet {
   public String waitForLoad(long timeoutInMilliseconds) throws RemoteCommandException {
     final String uniqueId;
 
-    int timeoutInSeconds = (int) (timeoutInMilliseconds / 1000l);
+    int timeoutInSeconds = (int) (timeoutInMilliseconds / 1000L);
     if (timeoutInSeconds == 0) {
       timeoutInSeconds = 1;
     }
@@ -581,9 +582,10 @@ public class FrameGroupCommandQueueSet {
   /**
    * Waits on the condition, making sure to wait at least as many seconds as specified, unless the
    * condition is signaled first.
-   * 
-   * @param condition
-   * @param numSeconds
+   *
+   * @param condition the condition to wait upon
+   * @param numSeconds timeout to wait for the condition
+   * @return result of the condition evaluated otherwise false if numSeconds reached
    */
   protected static boolean waitUntilSignalOrNumSecondsPassed(Condition condition, int numSeconds) {
     boolean result = false;
@@ -631,10 +633,10 @@ public class FrameGroupCommandQueueSet {
 
   /**
    * Does uniqueId point at a window that matches 'windowName'/'localFrame'?
-   * 
-   * @param uniqueId
-   * @param windowName
-   * @param localFrame
+   *
+   * @param uniqueId unique id
+   * @param windowName window name
+   * @param localFrame local frame
    * @return True if the frame addressed by uniqueId is addressable by window name 'windowName' and
    *         local frame address 'localFrame'.
    */
@@ -684,12 +686,12 @@ public class FrameGroupCommandQueueSet {
    * <p>
    * Accepts a command reply, and retrieves the next command to run.
    * </p>
-   * 
+   *
    * @param commandResult - the reply from the previous command, or null
    * @param incomingFrameAddress - frame from which the reply came
-   * @param uniqueId
-   * @param justLoaded
-   * @param jsWindowNameVars
+   * @param uniqueId unique id
+   * @param justLoaded whether to mark just loaded or not
+   * @param jsWindowNameVars javascript window name variables
    * @return - the next command to run
    */
   public RemoteCommand handleCommandResult(String commandResult, FrameAddress incomingFrameAddress,

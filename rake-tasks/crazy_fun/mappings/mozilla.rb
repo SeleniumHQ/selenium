@@ -99,9 +99,6 @@ end
 class AddDependencies < BaseXpt
   def handle(fun, dir, args)
     out_file = Rake::Task[xpt_name(dir, args)]
-
-    # For now, depend on gecko-2
-    out_file.enhance [ gecko_sdk_path("2") ]
   end
 end
   

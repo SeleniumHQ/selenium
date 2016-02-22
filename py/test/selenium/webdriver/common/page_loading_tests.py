@@ -1,35 +1,38 @@
-# Copyright 2008-2009 WebDriver committers
-# Copyright 2008-2009 Google Inc.
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-#     http:#www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
 
 import unittest
 import pytest
 
 from selenium.webdriver.common.by import By
 
+@pytest.mark.ignore_marionette
 class PageLoadingTests(unittest.TestCase):
 
     def testShouldWaitForDocumentToBeLoaded(self):
         self._loadSimplePage()
-        
+
         self.assertEqual(self.driver.title, "Hello WebDriver")
-  
+
     # Disabled till Java WebServer is used
     #def testShouldFollowRedirectsSentInTheHttpResponseHeaders(self):
     #    self.driver.get(pages.redirectPage);
     #    self.assertEqual(self.driver.title, "We Arrive Here")
-  
+
     # Disabled till the Java WebServer is used
     #def testShouldFollowMetaRedirects(self):
     #    self._loadPage("metaRedirect")
@@ -48,7 +51,7 @@ class PageLoadingTests(unittest.TestCase):
           self.driver.get("http://www.thisurldoesnotexist.comx/")
         except ValueError:
             pass
-    
+
     @pytest.mark.ignore_safari
     def testShouldReturnWhenGettingAUrlThatDoesNotConnect(self):
         # Here's hoping that there's nothing here. There shouldn't be
@@ -57,7 +60,7 @@ class PageLoadingTests(unittest.TestCase):
       #@Ignore({IE, IPHONE, SELENESE})
       #def testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
       #  self.driver.get(pages.framesetPage);
-    
+
       #  self.driver.switchTo().frame(0);
       #  WebElement pageNumber = self.driver.findElement(By.xpath("#span[@id='pageNumber']"));
       #  self.assertEqual((pageNumber.getText().trim(), equalTo("1"));
@@ -109,7 +112,6 @@ class PageLoadingTests(unittest.TestCase):
 
     @pytest.mark.ignore_ie
     def testShouldNotHangifDocumentOpenCallIsNeverFollowedByDocumentCloseCall(self):
-        ''' See http://code.google.com/p/selenium/issues/detail?id=208 '''
         self._loadPage("document_write_in_onload")
         self.driver.find_element(By.XPATH, "//body")
 
@@ -121,11 +123,10 @@ class PageLoadingTests(unittest.TestCase):
         self.assertEqual(self.driver.title, "XHTML Test Page")
 
     def _pageURL(self, name):
-        return "http://localhost:%d/%s.html" % (self.webserver.port, name)
+        return self.webserver.where_is(name + '.html')
 
     def _loadSimplePage(self):
         self._loadPage("simpleTest")
 
     def _loadPage(self, name):
         self.driver.get(self._pageURL(name))
-

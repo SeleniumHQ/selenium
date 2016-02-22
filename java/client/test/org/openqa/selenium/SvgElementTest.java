@@ -1,48 +1,41 @@
-/*
-Copyright 2007-2012 Selenium committers
-Portions copyright 2011-2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium;
-
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
-import static org.openqa.selenium.testing.TestUtilities.isFirefox30;
-import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 
-@Ignore(value = {HTMLUNIT, OPERA, OPERA_MOBILE},
-        reason = "HtmlUnit: SVG interaction is only implemented in rendered browsers")
+import org.junit.Test;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
+
+import java.util.List;
+
 public class SvgElementTest extends JUnit4TestBase {
 
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldClickOnGraphVisualElements() {
     assumeFalse("IE version < 9 doesn't support SVG", isOldIe(driver));
-    assumeFalse("Firefox 3.0 with native events doesn't support SVG",
-                isFirefox30(driver) && isNativeEventsEnabled(driver));
 
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.cssSelector("svg"));
@@ -73,11 +66,10 @@ public class SvgElementTest extends JUnit4TestBase {
     return null;
   }
 
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldClickOnGraphTextElements() {
     assumeFalse("IE version < 9 doesn't support SVG", isOldIe(driver));
-    assumeFalse("Firefox 3.0 with native events doesn't support SVG",
-                isFirefox30(driver) && isNativeEventsEnabled(driver));
 
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.cssSelector("svg"));

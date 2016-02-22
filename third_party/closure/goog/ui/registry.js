@@ -19,7 +19,8 @@
 
 goog.provide('goog.ui.registry');
 
-goog.require('goog.dom.classes');
+goog.require('goog.asserts');
+goog.require('goog.dom.classlist');
 
 
 /**
@@ -121,13 +122,17 @@ goog.ui.registry.setDecoratorByClassName = function(className, decoratorFn) {
 /**
  * Returns an instance of {@link goog.ui.Component} or a subclass suitable to
  * decorate the given element, based on its CSS class.
+ *
+ * TODO(nnaze): Type of element should be {!Element}.
+ *
  * @param {Element} element Element to decorate.
  * @return {goog.ui.Component?} Component to decorate the element (null if
  *     none).
  */
 goog.ui.registry.getDecorator = function(element) {
   var decorator;
-  var classNames = goog.dom.classes.get(element);
+  goog.asserts.assert(element);
+  var classNames = goog.dom.classlist.get(element);
   for (var i = 0, len = classNames.length; i < len; i++) {
     if ((decorator = goog.ui.registry.getDecoratorByClassName(classNames[i]))) {
       return decorator;

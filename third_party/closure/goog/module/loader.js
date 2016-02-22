@@ -25,7 +25,11 @@ goog.provide('goog.module.Loader');
 
 goog.require('goog.Timer');
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
+/** @suppress {extraRequire} */
+goog.require('goog.module');
 goog.require('goog.object');
 
 
@@ -37,6 +41,7 @@ goog.require('goog.object');
  * the goog.module.Loader instance.
  *
  * @constructor
+ * @final
  */
 goog.module.Loader = function() {
   /**
@@ -79,12 +84,84 @@ goog.module.Loader = function() {
    * unknown. The modules that are requested before init() are
    * therefore stored in this array, and they are loaded at init()
    * time.
-   * @type {Array.<string>}
+   * @type {Array<string>}
    * @private
    */
   this.pendingBeforeInit_ = [];
 };
 goog.addSingletonGetter(goog.module.Loader);
+
+
+/**
+ * Wrapper of goog.module.Loader.require() for use in modules.
+ * See method goog.module.Loader.require() for
+ * explanation of params.
+ *
+ * @param {string} module The name of the module. Usually, the value
+ *     is defined as a constant whose name starts with MOD_.
+ * @param {number|string} symbol The ID of the symbol. Usually, the value is
+ *     defined as a constant whose name starts with SYM_.
+ * @param {Function} callback This function will be called with the
+ *     resolved symbol as the argument once the module is loaded.
+ */
+goog.module.Loader.require = function(module, symbol, callback) {
+  goog.module.Loader.getInstance().require(module, symbol, callback);
+};
+
+
+/**
+ * Wrapper of goog.module.Loader.provide() for use in modules
+ * See method goog.module.Loader.provide() for explanation of params.
+ *
+ * @param {string} module The name of the module. Cf. parameter module
+ *     of method require().
+ * @param {number|string=} opt_symbol The symbol being defined, or nothing
+ *     when all symbols of the module are defined. Cf. parameter symbol of
+ *     method require().
+ * @param {Object=} opt_object The object bound to the symbol, or nothing when
+ *     all symbols of the module are defined.
+ */
+goog.module.Loader.provide = function(module, opt_symbol, opt_object) {
+  goog.module.Loader.getInstance().provide(
+      module, opt_symbol, opt_object);
+};
+
+
+/**
+ * Wrapper of init() so that we only need to export this single
+ * identifier instead of three. See method goog.module.Loader.init() for
+ * explanation of param.
+ *
+ * @param {string} urlBase The URL of the base library.
+ * @param {Function=} opt_urlFunction Function that creates the URL for the
+ *     module file. It will be passed the base URL for module files and the
+ *     module name and should return the fully-formed URL to the module file to
+ *     load.
+ */
+goog.module.Loader.init = function(urlBase, opt_urlFunction) {
+  goog.module.Loader.getInstance().init(urlBase, opt_urlFunction);
+};
+
+
+/**
+ * Produces a function that delegates all its arguments to a
+ * dynamically loaded function. This is used to export dynamically
+ * loaded functions.
+ *
+ * @param {string} module The module to load from.
+ * @param {number|string} symbol The ID of the symbol to load from the module.
+ *     This symbol must resolve to a function.
+ * @return {!Function} A function that forwards all its arguments to
+ *     the dynamically loaded function specified by module and symbol.
+ */
+goog.module.Loader.loaderCall = function(module, symbol) {
+  return function() {
+    var args = arguments;
+    goog.module.Loader.require(module, symbol, function(f) {
+      f.apply(null, args);
+    });
+  };
+};
 
 
 /**
@@ -253,6 +330,7 @@ goog.module.Loader.prototype.load_ = function(module) {
       return;
     }
 
+    goog.asserts.assertString(this.urlBase_);
     var url = this.getModuleUrl_(this.urlBase_, module);
 
     // Check if specified URL is already in flight
@@ -262,7 +340,7 @@ goog.module.Loader.prototype.load_ = function(module) {
       return;
     }
 
-    var s = goog.dom.createDom('script',
+    var s = goog.dom.createDom(goog.dom.TagName.SCRIPT,
         {'type': 'text/javascript', 'src': url});
     document.body.appendChild(s);
   }, 0, this);

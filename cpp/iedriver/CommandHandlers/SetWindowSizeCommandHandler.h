@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -30,13 +33,12 @@ class SetWindowSizeCommandHandler : public IECommandHandler {
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
-                       const LocatorMap& locator_parameters,
                        const ParametersMap& command_parameters,
                        Response* response) {
-    LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("windowHandle");
+    ParametersMap::const_iterator id_parameter_iterator = command_parameters.find("windowHandle");
     ParametersMap::const_iterator width_parameter_iterator = command_parameters.find("width");
     ParametersMap::const_iterator height_parameter_iterator = command_parameters.find("height");
-    if (id_parameter_iterator == locator_parameters.end()) {
+    if (id_parameter_iterator == command_parameters.end()) {
       response->SetErrorResponse(400, "Missing parameter in URL: windowHandle");
       return;
     } else if (width_parameter_iterator == command_parameters.end()) {
@@ -49,7 +51,7 @@ class SetWindowSizeCommandHandler : public IECommandHandler {
       int status_code = WD_SUCCESS;
       int width = width_parameter_iterator->second.asInt();
       int height = height_parameter_iterator->second.asInt();
-      std::string window_id = id_parameter_iterator->second;
+      std::string window_id = id_parameter_iterator->second.asString();
 
       BrowserHandle browser_wrapper;
       if (window_id == "current") {

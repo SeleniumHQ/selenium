@@ -4,7 +4,7 @@
     <Description about="urn:mozilla:install-manifest">
         <em:id>{a6fd85ed-e919-4a43-a5af-8da18bda539f}</em:id>
         <em:name>Selenium IDE</em:name>
-        <em:version>2.5.0</em:version>
+        <em:version>2.9.0</em:version>
         <em:creator>Shinya Kasatani</em:creator>
         <em:developer>Adam Goucher</em:developer>
         <em:developer>Samit Badle</em:developer>
@@ -20,7 +20,7 @@
           <Description>
             <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id> <!-- firefox -->
             <em:minVersion>3.6.*</em:minVersion>
-            <em:maxVersion>26.*</em:maxVersion>
+            <em:maxVersion>34.*</em:maxVersion>
           </Description>
         </em:targetApplication>
 

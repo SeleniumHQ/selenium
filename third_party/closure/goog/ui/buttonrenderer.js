@@ -24,9 +24,8 @@ goog.require('goog.a11y.aria');
 goog.require('goog.a11y.aria.Role');
 goog.require('goog.a11y.aria.State');
 goog.require('goog.asserts');
-goog.require('goog.string');
 goog.require('goog.ui.ButtonSide');
-goog.require('goog.ui.Component.State');
+goog.require('goog.ui.Component');
 goog.require('goog.ui.ControlRenderer');
 
 
@@ -96,7 +95,8 @@ goog.ui.ButtonRenderer.prototype.updateAriaState = function(element, state,
     default:
     case goog.ui.Component.State.OPENED:
     case goog.ui.Component.State.DISABLED:
-      goog.base(this, 'updateAriaState', element, state, enable);
+      goog.ui.ButtonRenderer.base(
+          this, 'updateAriaState', element, state, enable);
       break;
   }
 };
@@ -104,7 +104,7 @@ goog.ui.ButtonRenderer.prototype.updateAriaState = function(element, state,
 
 /** @override */
 goog.ui.ButtonRenderer.prototype.createDom = function(button) {
-  var element = goog.base(this, 'createDom', button);
+  var element = goog.ui.ButtonRenderer.base(this, 'createDom', button);
   this.setTooltip(element, button.getTooltip());
 
   var value = button.getValue();
@@ -178,10 +178,14 @@ goog.ui.ButtonRenderer.prototype.getTooltip = function(element) {
  * @protected
  */
 goog.ui.ButtonRenderer.prototype.setTooltip = function(element, tooltip) {
-  // Don't set a title attribute if there isn't a tooltip. Blank title
-  // attributes can be interpreted incorrectly by screen readers.
-  if (element && tooltip) {
-    element.title = tooltip;
+  if (element) {
+    // Don't set a title attribute if there isn't a tooltip. Blank title
+    // attributes can be interpreted incorrectly by screen readers.
+    if (tooltip) {
+      element.title = tooltip;
+    } else {
+      element.removeAttribute('title');
+    }
   }
 };
 

@@ -1,16 +1,19 @@
-// Copyright 2012 Software Freedom Conservancy. All Rights Reserved.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview A utility class for working with test windows.
@@ -19,24 +22,23 @@
 goog.provide('webdriver.testing.Window');
 
 goog.require('goog.string');
-goog.require('webdriver.promise.Promise');
+goog.require('webdriver.promise');
 
 
 
 /**
  * Class for managing a window.
  *
- * <p>This class is implemented as a promise so consumers may register
+ * This class is implemented as a promise so consumers may register
  * callbacks on it to handle situations where the window fails to open.
  *
  * For example:
- * <pre><code>
- *   var testWindow = webdriver.testing.Window.create(driver);
- *   // Throw a custom error when the window fails to open.
- *   testWindow.addErrback(function(e) {
- *     throw Error('Failed to open test window: ' + e);
- *   });
- * </code></pre>
+ *
+ *     var testWindow = webdriver.testing.Window.create(driver);
+ *     // Throw a custom error when the window fails to open.
+ *     testWindow.thenCatch(function(e) {
+ *       throw Error('Failed to open test window: ' + e);
+ *     });
  *
  * @param {!webdriver.WebDriver} driver The driver to use.
  * @param {(string|!webdriver.promise.Promise)} handle Either the managed
@@ -47,7 +49,9 @@ goog.require('webdriver.promise.Promise');
  * @extends {webdriver.promise.Promise}
  */
 webdriver.testing.Window = function(driver, handle, opt_window) {
-  webdriver.promise.Promise.call(this);
+  webdriver.promise.Promise.call(this, function(fulfill, reject) {
+    handle.then(fulfill, reject);
+  });
 
   /** @private {!webdriver.WebDriver} */
   this.driver_ = driver;
@@ -150,12 +154,6 @@ webdriver.testing.Window.focusOnWindow = function(driver, opt_window) {
 /** @override */
 webdriver.testing.Window.prototype.cancel = function() {
   return this.handle_.cancel();
-};
-
-
-/** @override */
-webdriver.testing.Window.prototype.then = function(callback, errback) {
-  return this.handle_.then(callback, errback);
 };
 
 

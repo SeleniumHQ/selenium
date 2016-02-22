@@ -47,6 +47,7 @@ goog.require('goog.string');
  *
  * @param {string=} opt_expr The string expression.
  * @constructor
+ * @final
  */
 goog.ds.Expr = function(opt_expr) {
   if (opt_expr) {
@@ -311,7 +312,7 @@ goog.ds.Expr.prototype.canBeEmpty_ = false;
 /**
  * The parsed paths in the expression
  *
- * @type {Array.<string>}
+ * @type {Array<string>}
  * @private
  */
 goog.ds.Expr.prototype.parts_ = [];

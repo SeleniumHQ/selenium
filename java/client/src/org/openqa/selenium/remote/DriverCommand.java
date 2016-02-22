@@ -1,32 +1,33 @@
-/*
-Copyright 2007-2011 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.remote;
 
 /**
  * An empty interface defining constants for the standard commands defined in the WebDriver JSON
  * wire protocol.
- * 
+ *
  * @author jmleyba@gmail.com (Jason Leyba)
  */
 public interface DriverCommand {
   String GET_ALL_SESSIONS = "getAllSessions";
   String GET_CAPABILITIES = "getCapabilities";
   String NEW_SESSION = "newSession";
-  
+
   String STATUS = "status";
 
   String CLOSE = "close";
@@ -38,8 +39,8 @@ public interface DriverCommand {
   String REFRESH = "refresh";
 
   String ADD_COOKIE = "addCookie";
-  String GET_COOKIE = "getCookie";
   String GET_ALL_COOKIES = "getCookies";
+  String GET_COOKIE = "getCookie";
   String DELETE_COOKIE = "deleteCookie";
   String DELETE_ALL_COOKIES = "deleteAllCookies";
 
@@ -50,7 +51,6 @@ public interface DriverCommand {
 
   String CLEAR_ELEMENT = "clearElement";
   String CLICK_ELEMENT = "clickElement";
-  String HOVER_OVER_ELEMENT = "hoverOverElement";
   String SEND_KEYS_TO_ELEMENT = "sendKeysToElement";
   String SEND_KEYS_TO_ACTIVE_ELEMENT = "sendKeysToActiveElement";
   String SUBMIT_ELEMENT = "submitElement";
@@ -58,9 +58,16 @@ public interface DriverCommand {
 
   String GET_CURRENT_WINDOW_HANDLE = "getCurrentWindowHandle";
   String GET_WINDOW_HANDLES = "getWindowHandles";
+  String GET_WINDOW_HANDLES_W3C = "getWindowHandlesW3C";
+  String GET_CURRENT_WINDOW_HANDLE_W3C = "getCurrentWindowHandleW3C";
+
+  String GET_CURRENT_CONTEXT_HANDLE = "getCurrentContextHandle";
+  String GET_CONTEXT_HANDLES = "getContextHandles";
 
   String SWITCH_TO_WINDOW = "switchToWindow";
+  String SWITCH_TO_CONTEXT = "switchToContext";
   String SWITCH_TO_FRAME = "switchToFrame";
+  String SWITCH_TO_PARENT_FRAME = "switchToParentFrame";
   String GET_ACTIVE_ELEMENT = "getActiveElement";
 
   String GET_CURRENT_URL = "getCurrentUrl";
@@ -69,17 +76,15 @@ public interface DriverCommand {
 
   String EXECUTE_SCRIPT = "executeScript";
   String EXECUTE_ASYNC_SCRIPT = "executeAsyncScript";
-
-  String SET_BROWSER_VISIBLE = "setBrowserVisible";
-  String IS_BROWSER_VISIBLE = "isBrowserVisible";
+  String EXECUTE_SCRIPT_W3C = "executeScriptW3C";
+  String EXECUTE_ASYNC_SCRIPT_W3C = "executeAsyncScriptW3C";
 
   String GET_ELEMENT_TEXT = "getElementText";
-  String GET_ELEMENT_VALUE = "getElementValue";
   String GET_ELEMENT_TAG_NAME = "getElementTagName";
-  String DRAG_ELEMENT = "dragElement";
   String IS_ELEMENT_SELECTED = "isElementSelected";
   String IS_ELEMENT_ENABLED = "isElementEnabled";
   String IS_ELEMENT_DISPLAYED = "isElementDisplayed";
+  String GET_ELEMENT_RECT = "getElementRect";
   String GET_ELEMENT_LOCATION = "getElementLocation";
   String GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW = "getElementLocationOnceScrolledIntoView";
   String GET_ELEMENT_SIZE = "getElementSize";
@@ -88,18 +93,23 @@ public interface DriverCommand {
   String ELEMENT_EQUALS = "elementEquals";
 
   String SCREENSHOT = "screenshot";
+  String ELEMENT_SCREENSHOT = "elementScreenshot";
 
-  String GET_ALERT = "getAlert";
   String ACCEPT_ALERT = "acceptAlert";
   String DISMISS_ALERT = "dismissAlert";
   String GET_ALERT_TEXT = "getAlertText";
   String SET_ALERT_VALUE = "setAlertValue";
+  String SET_ALERT_CREDENTIALS = "setAlertCredentials";
+
+  String ACCEPT_ALERT_W3C = "acceptAlertW3C";
+  String DISMISS_ALERT_W3C = "dimissAlertW3C";
+  String GET_ALERT_TEXT_W3C = "getAlertTextW3C";
+  String SET_ALERT_VALUE_W3C = "setAlertValueW3C";
 
   String SET_TIMEOUT = "setTimeout";
   String IMPLICITLY_WAIT = "implicitlyWait";
   String SET_SCRIPT_TIMEOUT = "setScriptTimeout";
 
-  String EXECUTE_SQL = "executeSQL";
   String GET_LOCATION = "getLocation";
   String SET_LOCATION = "setLocation";
   String GET_APP_CACHE = "getAppCache";
@@ -125,6 +135,8 @@ public interface DriverCommand {
   String SET_SCREEN_ORIENTATION = "setScreenOrientation";
   String GET_SCREEN_ORIENTATION = "getScreenOrientation";
 
+  String ACTION_CHAIN = "actionChain";
+
   // These belong to the Advanced user interactions - an element is
   // optional for these commands.
   String CLICK = "mouseClick";
@@ -132,7 +144,6 @@ public interface DriverCommand {
   String MOUSE_DOWN = "mouseButtonDown";
   String MOUSE_UP = "mouseButtonUp";
   String MOVE_TO = "mouseMoveTo";
-  String SEND_KEYS_TO_SESSION = "sendKeys";
 
   // Those allow interactions with the Input Methods installed on
   // the system.
@@ -152,14 +163,25 @@ public interface DriverCommand {
   String TOUCH_LONG_PRESS = "touchLongPress";
   String TOUCH_FLICK = "touchFlick";
 
-  // Window API (beta)
+  // Window API
   String SET_WINDOW_SIZE = "setWindowSize";
   String SET_WINDOW_POSITION = "setWindowPosition";
   String GET_WINDOW_SIZE = "getWindowSize";
   String GET_WINDOW_POSITION = "getWindowPosition";
   String MAXIMIZE_WINDOW = "maximizeWindow";
 
+  // W3C compatible Window API
+  String SET_CURRENT_WINDOW_SIZE = "setCurrentWindowSize";
+  String GET_CURRENT_WINDOW_SIZE = "getCurrentWindowSize";
+  String MAXIMIZE_CURRENT_WINDOW = "maximizeCurrentWindow";
+  String FULLSCREEN_CURRENT_WINDOW = "fullscreenCurrentWindow";
+
   // Logging API
   String GET_AVAILABLE_LOG_TYPES = "getAvailableLogTypes";
   String GET_LOG = "getLog";
+  String GET_SESSION_LOGS = "getSessionLogs";
+
+  // Mobile API
+  String GET_NETWORK_CONNECTION = "getNetworkConnection";
+  String SET_NETWORK_CONNECTION = "setNetworkConnection";
 }

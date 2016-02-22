@@ -22,12 +22,12 @@
 
 goog.provide('goog.ui.PopupColorPicker');
 
-goog.require('goog.dom.classes');
+goog.require('goog.asserts');
+goog.require('goog.dom.classlist');
 goog.require('goog.events.EventType');
 goog.require('goog.positioning.AnchoredPosition');
 goog.require('goog.positioning.Corner');
 goog.require('goog.ui.ColorPicker');
-goog.require('goog.ui.ColorPicker.EventType');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.Popup');
 
@@ -50,6 +50,7 @@ goog.ui.PopupColorPicker = function(opt_domHelper, opt_colorPicker) {
   }
 };
 goog.inherits(goog.ui.PopupColorPicker, goog.ui.Component);
+goog.tagUnsealableClass(goog.ui.PopupColorPicker);
 
 
 /**
@@ -102,6 +103,10 @@ goog.ui.PopupColorPicker.prototype.popupCorner_ =
 goog.ui.PopupColorPicker.prototype.lastTarget_ = null;
 
 
+/** @private {boolean} */
+goog.ui.PopupColorPicker.prototype.rememberSelection_;
+
+
 /**
  * Whether the color picker can move the focus to its key event target when it
  * is shown.  The default is true.  Setting to false can break keyboard
@@ -130,12 +135,21 @@ goog.ui.PopupColorPicker.prototype.focusable_ = true;
 goog.ui.PopupColorPicker.prototype.toggleMode_ = true;
 
 
+/**
+ * If true, the colorpicker will appear on hover.
+ * @type {boolean}
+ * @private
+ */
+goog.ui.PopupColorPicker.prototype.showOnHover_ = false;
+
+
 /** @override */
 goog.ui.PopupColorPicker.prototype.createDom = function() {
   goog.ui.PopupColorPicker.superClass_.createDom.call(this);
   this.popup_ = new goog.ui.Popup(this.getElement());
   this.popup_.setPinnedCorner(this.pinnedCorner_);
-  goog.dom.classes.set(this.getElement(),
+  goog.dom.classlist.set(
+      goog.asserts.assert(this.getElement()),
       goog.getCssName('goog-popupcolorpicker'));
   this.getElement().unselectable = 'on';
 };
@@ -251,8 +265,13 @@ goog.ui.PopupColorPicker.prototype.getLastTarget = function() {
  * @param {Element} element The element to attach to.
  */
 goog.ui.PopupColorPicker.prototype.attach = function(element) {
-  this.getHandler().listen(element, goog.events.EventType.MOUSEDOWN,
-      this.show_);
+  if (this.showOnHover_) {
+    this.getHandler().listen(element, goog.events.EventType.MOUSEOVER,
+                             this.show_);
+  } else {
+    this.getHandler().listen(element, goog.events.EventType.MOUSEDOWN,
+                             this.show_);
+  }
 };
 
 
@@ -261,8 +280,13 @@ goog.ui.PopupColorPicker.prototype.attach = function(element) {
  * @param {Element} element The element to detach from.
  */
 goog.ui.PopupColorPicker.prototype.detach = function(element) {
-  this.getHandler().unlisten(element, goog.events.EventType.MOUSEDOWN,
-      this.show_);
+  if (this.showOnHover_) {
+    this.getHandler().unlisten(element, goog.events.EventType.MOUSEOVER,
+                               this.show_);
+  } else {
+    this.getHandler().unlisten(element, goog.events.EventType.MOUSEOVER,
+                               this.show_);
+  }
 };
 
 
@@ -349,7 +373,7 @@ goog.ui.PopupColorPicker.prototype.getRememberSelection = function() {
 /**
  * Add an array of colors to the colors displayed by the color picker.
  * Does not add duplicated colors.
- * @param {Array.<string>} colors The array of colors to be added.
+ * @param {Array<string>} colors The array of colors to be added.
  */
 goog.ui.PopupColorPicker.prototype.addColors = function(colors) {
 
@@ -384,6 +408,15 @@ goog.ui.PopupColorPicker.prototype.setPinnedCorner = function(corner) {
  */
 goog.ui.PopupColorPicker.prototype.setPopupCorner = function(corner) {
   this.popupCorner_ = corner;
+};
+
+
+/**
+ * Sets whether the popup shows up on hover. By default, appears on click.
+ * @param {boolean} showOnHover True if popup should appear on hover.
+ */
+goog.ui.PopupColorPicker.prototype.setShowOnHover = function(showOnHover) {
+  this.showOnHover_ = showOnHover;
 };
 
 

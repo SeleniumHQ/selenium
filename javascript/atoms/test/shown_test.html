@@ -40,9 +40,9 @@
       expectedFailures = new goog.testing.ExpectedFailures();
     }
 
-
     function tearDown() {
       expectedFailures.handleTearDown();
+      goog.style.setStyle(document.body, 'display', 'block');
       goog.style.setStyle(document.body, 'overflow', 'auto');
     }
 
@@ -50,6 +50,15 @@
       assertThrows(function() {
         isShown(undefined);
       });
+    }
+
+    function testBodyShown() {
+      assertTrue(isShown(document.body));
+    }
+
+    function testBodyAlwaysShown() {
+      goog.style.setStyle(document.body, 'display', 'none');
+      assertTrue("BODY element must *always* be shown", isShown(document.body));
     }
 
     function testCanDetermineIfAnElementIsShownOrNot() {
@@ -329,6 +338,15 @@
       assertFalse(isShown(target));
     }
 
+    function testOverflowHiddenWithFixedPositionChild() {
+      var target = findElement({id: 'overflowHiddenWithFixedPositionChild'});
+      var child = findElement({id: 'fixedPositionChild'});
+      goog.dom.removeChildren(child);
+      assertFalse(isShown(target));
+      goog.dom.setTextContent(child, 'some content');
+      assertTrue(isShown(target));
+    }
+
     function testThatElementIsShownWithZIndex() {
       assertTrue(isShown(findElement({id: 'bug5109'})));
     }
@@ -347,6 +365,29 @@
       expectedFailures.run(function() {
         assertFalse(isShown(elem));
       });
+    }
+
+    function testTableRowDefaultVisibility() {
+      var elem = findElement({id: 'visible-row'});
+      assertTrue(isShown(elem));
+      assertTrue(isShown(elem.firstChild));
+    }
+
+    function testTableRowCollapsedVisibility() {
+      expectedFailures.expectFailureFor(
+          (goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(8)),
+          'IE does not support visibilty:collapsed until IE8');
+      var elem = findElement({id: 'collapsed-row'});
+      expectedFailures.run(function() {
+        assertFalse(isShown(elem));
+        assertFalse(isShown(elem.firstChild));
+      });
+    }
+
+    function testVisibleTableRowAfterCollapsedRow() {
+      var elem = findElement({id: 'post-collapsed-row'});
+      assertTrue(isShown(elem));
+      assertTrue(isShown(elem.firstChild));
     }
   </script>
 
@@ -500,6 +541,13 @@
   This is a zero height/width div and overflow hidden
 </div>
 
+<div style="overflow:hidden; height:0; width:0;">
+  <div id="overflowHiddenWithFixedPositionChild">
+    This is a zero height/width div and overflow hidden
+    <div id="fixedPositionChild" style="position:fixed"></div>
+  </div>
+</div>
+
 <div style="position:relative;
             width:300px;
             height:300px;
@@ -523,5 +571,10 @@
   </div>
 </div>
 <div id='html5hidden' hidden>This is not visible</div>
+<table>
+<tr id="visible-row"><td>a</td></tr>
+<tr id="collapsed-row" style="visibility:collapse"><td>b</td></tr>
+<tr id="post-collapsed-row"><td>c</td></tr>
+</table>
 </body>
 </html>

@@ -9,7 +9,7 @@ java_library(
     '//java/client/src/org/openqa/selenium/os:os',
     '//java/client/src/org/openqa/selenium/remote:api',
     '//java/client/src/org/openqa/selenium/remote:remote',
-    '//third_party/java/guava-libraries:guava-libraries',
+    '//third_party/java/guava:guava',
   ],
   visibility = ['PUBLIC'],
 )

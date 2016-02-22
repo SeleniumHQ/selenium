@@ -45,6 +45,8 @@ goog.provide('goog.testing.FunctionCall');
 goog.provide('goog.testing.recordConstructor');
 goog.provide('goog.testing.recordFunction');
 
+goog.require('goog.testing.asserts');
+
 
 /**
  * Wraps the function into another one which calls the inner function and
@@ -80,12 +82,24 @@ goog.testing.recordFunction = function(opt_f) {
   };
 
   /**
-   * @return {!Array.<!goog.testing.FunctionCall>} All calls of the recorded
+   * Asserts that the function was called {@code expected} times.
+   * @param {number} expected The expected number of calls.
+   */
+  recordedFunction.assertCallCount = function(expected) {
+    var actual = calls.length;
+    assertEquals(
+        'Expected ' + expected + ' call(s), but was ' + actual + '.',
+        expected, actual);
+  };
+
+  /**
+   * @return {!Array<!goog.testing.FunctionCall>} All calls of the recorded
    *     function.
    */
   recordedFunction.getCalls = function() {
     return calls;
   };
+
 
   /**
    * @return {goog.testing.FunctionCall} Last call of the recorded function or
@@ -168,7 +182,7 @@ goog.testing.FunctionCall.prototype.getThis = function() {
 
 
 /**
- * @return {!Array} Arguments of the called function.
+ * @return {!Array<?>} Arguments of the called function.
  */
 goog.testing.FunctionCall.prototype.getArguments = function() {
   return this.arguments_;

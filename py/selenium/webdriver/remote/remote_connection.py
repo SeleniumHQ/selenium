@@ -1,16 +1,19 @@
-# Copyright 2008-2013 Software Freedom Conservancy
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
 
 import logging
 import socket
@@ -126,18 +129,44 @@ class HttpErrorHandler(url_request.HTTPDefaultErrorHandler):
 
 
 class RemoteConnection(object):
-    """
-    A connection with the Remote WebDriver server.
+    """A connection with the Remote WebDriver server.
 
     Communicates with the server using the WebDriver wire protocol:
-    http://code.google.com/p/selenium/wiki/JsonWireProtocol
-    """
-    def __init__(self, remote_server_addr, keep_alive=False):
+    https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol"""
+
+    _timeout = socket._GLOBAL_DEFAULT_TIMEOUT
+
+    @classmethod
+    def get_timeout(cls):
+        """
+        :Returns:
+        Timeout value in seconds for all http requests made to the Remote Connection
+        """
+        return None if cls._timeout == socket._GLOBAL_DEFAULT_TIMEOUT else cls._timeout
+
+    @classmethod
+    def set_timeout(cls, timeout):
+        """
+        Override the default timeout
+
+        :Args:
+        - timeout - timeout value for http requests in seconds
+        """
+        cls._timeout = timeout
+
+    @classmethod
+    def reset_timeout(cls):
+        """
+        Reset the http request timeout to socket._GLOBAL_DEFAULT_TIMEOUT
+        """
+        cls._timeout = socket._GLOBAL_DEFAULT_TIMEOUT
+
+    def __init__(self, remote_server_addr, keep_alive=False, resolve_ip=True):
         # Attempt to resolve the hostname and get an IP address.
         self.keep_alive = keep_alive
         parsed_url = parse.urlparse(remote_server_addr)
         addr = ""
-        if parsed_url.hostname:
+        if parsed_url.hostname and resolve_ip:
             try:
                 netloc = socket.gethostbyname(parsed_url.hostname)
                 addr = netloc
@@ -156,7 +185,9 @@ class RemoteConnection(object):
 
         self._url = remote_server_addr
         if keep_alive:
-            self._conn = httplib.HTTPConnection(str(addr), str(parsed_url.port))
+            self._conn = httplib.HTTPConnection(
+                str(addr), str(parsed_url.port), timeout=self._timeout)
+
         self._commands = {
             Command.STATUS: ('GET', '/status'),
             Command.NEW_SESSION: ('POST', '/session'),
@@ -175,9 +206,7 @@ class RemoteConnection(object):
             Command.GET_TITLE: ('GET', '/session/$sessionId/title'),
             Command.GET_PAGE_SOURCE: ('GET', '/session/$sessionId/source'),
             Command.SCREENSHOT: ('GET', '/session/$sessionId/screenshot'),
-            Command.SET_BROWSER_VISIBLE:
-                ('POST', '/session/$sessionId/visible'),
-            Command.IS_BROWSER_VISIBLE: ('GET', '/session/$sessionId/visible'),
+            Command.ELEMENT_SCREENSHOT: ('GET', '/session/$sessionId/screenshot/$id'),
             Command.FIND_ELEMENT: ('POST', '/session/$sessionId/element'),
             Command.FIND_ELEMENTS: ('POST', '/session/$sessionId/elements'),
             Command.GET_ACTIVE_ELEMENT:
@@ -213,6 +242,8 @@ class RemoteConnection(object):
                 ('GET', '/session/$sessionId/element/$id/location_in_view'),
             Command.GET_ELEMENT_SIZE:
                 ('GET', '/session/$sessionId/element/$id/size'),
+            Command.GET_ELEMENT_RECT:
+                ('GET', '/session/$sessionId/element/$id/rect'),
             Command.GET_ELEMENT_ATTRIBUTE:
                 ('GET', '/session/$sessionId/element/$id/attribute/$name'),
             Command.ELEMENT_EQUALS:
@@ -224,6 +255,7 @@ class RemoteConnection(object):
             Command.DELETE_COOKIE:
                 ('DELETE', '/session/$sessionId/cookie/$name'),
             Command.SWITCH_TO_FRAME: ('POST', '/session/$sessionId/frame'),
+            Command.SWITCH_TO_PARENT_FRAME: ('POST', '/session/$sessionId/frame/parent'),
             Command.SWITCH_TO_WINDOW: ('POST', '/session/$sessionId/window'),
             Command.CLOSE: ('DELETE', '/session/$sessionId/window'),
             Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY:
@@ -243,6 +275,8 @@ class RemoteConnection(object):
                 ('POST', '/session/$sessionId/alert_text'),
             Command.GET_ALERT_TEXT:
                 ('GET', '/session/$sessionId/alert_text'),
+            Command.SET_ALERT_CREDENTIALS:
+                ('POST', '/session/$sessionId/alert/credentials'),
             Command.CLICK:
                 ('POST', '/session/$sessionId/click'),
             Command.DOUBLE_CLICK:
@@ -255,14 +289,20 @@ class RemoteConnection(object):
                 ('POST', '/session/$sessionId/moveto'),
             Command.GET_WINDOW_SIZE:
                 ('GET', '/session/$sessionId/window/$windowHandle/size'),
+            Command.W3C_GET_WINDOW_SIZE:
+                ('GET', '/session/$sessionId/window/size'),
             Command.SET_WINDOW_SIZE:
                 ('POST', '/session/$sessionId/window/$windowHandle/size'),
+            Command.W3C_SET_WINDOW_SIZE:
+                ('POST', '/session/$sessionId/window/size'),
             Command.GET_WINDOW_POSITION:
                 ('GET', '/session/$sessionId/window/$windowHandle/position'),
             Command.SET_WINDOW_POSITION:
                 ('POST', '/session/$sessionId/window/$windowHandle/position'),
             Command.MAXIMIZE_WINDOW:
                 ('POST', '/session/$sessionId/window/$windowHandle/maximize'),
+            Command.W3C_MAXIMIZE_WINDOW:
+                ('POST', '/session/$sessionId/window/maximize'),
             Command.SET_SCREEN_ORIENTATION:
                 ('POST', '/session/$sessionId/orientation'),
             Command.GET_SCREEN_ORIENTATION:
@@ -295,10 +335,10 @@ class RemoteConnection(object):
                 ('GET', '/session/$sessionId/application_cache/status'),
             Command.CLEAR_APP_CACHE:
                 ('DELETE', '/session/$sessionId/application_cache/clear'),
-            Command.IS_BROWSER_ONLINE:
-                ('GET', '/session/$sessionId/browser_connection'),
-            Command.SET_BROWSER_ONLINE:
-                ('POST', '/session/$sessionId/browser_connection'),
+            Command.GET_NETWORK_CONNECTION:
+                ('GET', '/session/$sessionId/network_connection'),
+            Command.SET_NETWORK_CONNECTION:
+                ('POST', '/session/$sessionId/network_connection'),
             Command.GET_LOCAL_STORAGE_ITEM:
                 ('GET', '/session/$sessionId/local_storage/key/$key'),
             Command.REMOVE_LOCAL_STORAGE_ITEM:
@@ -327,6 +367,12 @@ class RemoteConnection(object):
                 ('POST', '/session/$sessionId/log'),
             Command.GET_AVAILABLE_LOG_TYPES:
                 ('GET', '/session/$sessionId/log/types'),
+            Command.CURRENT_CONTEXT_HANDLE:
+                ('GET', '/session/$sessionId/context'),
+            Command.CONTEXT_HANDLES:
+                ('GET', '/session/$sessionId/contexts'),
+            Command.SWITCH_TO_CONTEXT:
+                ('POST', '/session/$sessionId/context'),
         }
 
     def execute(self, command, params):
@@ -370,15 +416,15 @@ class RemoteConnection(object):
                        "Content-type": "application/json;charset=\"UTF-8\"",
                        "Accept": "application/json"}
             if parsed_url.username:
-                auth = base64.standard_b64encode('%s:%s' %
-                       (parsed_url.username, parsed_url.password)).replace('\n', '')
+                auth = base64.standard_b64encode(('%s:%s' %
+                       (parsed_url.username, parsed_url.password)).encode('ascii')).decode('ascii').replace('\n', '')
                 headers["Authorization"] = "Basic %s" % auth
             if body and method != 'POST' and method != 'PUT':
                 body = None
             try:
                 self._conn.request(method, parsed_url.path, body, headers)
                 resp = self._conn.getresponse()
-            except httplib.HTTPException:
+            except (httplib.HTTPException, socket.error):
                 self._conn.close()
                 raise
 
@@ -414,7 +460,7 @@ class RemoteConnection(object):
             else:
                 opener = url_request.build_opener(url_request.HTTPRedirectHandler(),
                                                   HttpErrorHandler())
-            resp = opener.open(request)
+            resp = opener.open(request, timeout=self._timeout)
             statuscode = resp.code
             if not hasattr(resp, 'getheader'):
                 if hasattr(resp.headers, 'getheader'):
@@ -424,11 +470,11 @@ class RemoteConnection(object):
 
         data = resp.read()
         try:
-            if 399 < statuscode < 500:
-                return {'status': statuscode, 'value': data}
             if 300 <= statuscode < 304:
                 return self._request('GET', resp.getheader('location'))
             body = data.decode('utf-8').replace('\x00', '').strip()
+            if 399 < statuscode <= 500:
+                return {'status': statuscode, 'value': body}
             content_type = []
             if resp.getheader('Content-Type') is not None:
                 content_type = resp.getheader('Content-Type').split(';')
@@ -444,8 +490,6 @@ class RemoteConnection(object):
 
                 assert type(data) is dict, (
                     'Invalid server response body: %s' % body)
-                assert 'status' in data, (
-                    'Invalid server response; no status: %s' % body)
                 # Some of the drivers incorrectly return a response
                 # with no 'value' field when they should return null.
                 if 'value' not in data:

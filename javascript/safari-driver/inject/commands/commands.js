@@ -1,17 +1,19 @@
-// Copyright 2012 Selenium committers
-// Copyright 2012 Software Freedom Conservancy
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 
 /**
@@ -31,7 +33,7 @@ goog.require('bot.inject.cache');
 goog.require('bot.locators');
 goog.require('bot.window');
 goog.require('goog.array');
-goog.require('goog.debug.Logger');
+goog.require('goog.log');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
 goog.require('goog.net.cookies');
@@ -42,10 +44,10 @@ goog.require('webdriver.atoms.element');
 
 
 /**
- * @private {!goog.debug.Logger}
+ * @private {goog.log.Logger}
  * @const
  */
-safaridriver.inject.commands.LOG_ = goog.debug.Logger.getLogger(
+safaridriver.inject.commands.LOG_ = goog.log.getLogger(
     'safaridriver.inject.commands');
 
 
@@ -425,20 +427,21 @@ safaridriver.inject.commands.switchToFrame = function(command) {
   var id = command.getParameter('id');
   var frameWindow;
   if (goog.isNull(id)) {
-    safaridriver.inject.commands.LOG_.info('Resetting focus to window.top');
+    goog.log.info(safaridriver.inject.commands.LOG_,
+        'Resetting focus to window.top');
     frameWindow = window.top;
   } else if (goog.isString(id)) {
-    safaridriver.inject.commands.LOG_.info(
+    goog.log.info(safaridriver.inject.commands.LOG_,
         'Switching to frame by name or ID: ' + id);
     frameWindow = bot.frame.findFrameByNameOrId(/** @type {string} */ (id));
   } else if (goog.isNumber(id)) {
-    safaridriver.inject.commands.LOG_.info(
+    goog.log.info(safaridriver.inject.commands.LOG_,
         'Switching to frame by index: ' + id);
     frameWindow = bot.frame.findFrameByIndex(/** @type {number} */ (id));
   } else {
     var elementKey = /** @type {string} */ (id[bot.inject.ELEMENT_KEY]);
-    safaridriver.inject.commands.LOG_.info('Switching to frame by ' +
-        'WebElement: ' + elementKey);
+    goog.log.info(safaridriver.inject.commands.LOG_,
+        'Switching to frame by WebElement: ' + elementKey);
     // ID must be a WebElement. Pull it from the cache.
     var frameElement = bot.inject.cache.getElement(elementKey);
     frameWindow = bot.frame.getFrameWindow(

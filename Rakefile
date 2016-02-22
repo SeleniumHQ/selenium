@@ -39,6 +39,7 @@ require 'rake-tasks/selenium'
 require 'rake-tasks/se-ide'
 require 'rake-tasks/ie_code_generator'
 require 'rake-tasks/ci'
+require 'rake-tasks/copyright'
 
 require 'rake-tasks/gecko_sdks'
 
@@ -49,9 +50,9 @@ end
 verbose($DEBUG)
 
 def version
-  "2.39.0"
+  "2.52.0"
 end
-ide_version = "1.10.0"
+ide_version = "2.8.0"
 
 # The build system used by webdriver is layered on top of rake, and we call it
 # "crazy fun" for no readily apparent reason.
@@ -99,15 +100,37 @@ crazy_fun.create_tasks(Dir["**/build.desc"])
 # build can also be done here. For example, here we set the default task
 task :default => [:test]
 
-
-task :all => [:'selenium-java']
+task :all => [
+  :"selenium-java",
+  "//java/client/test/org/openqa/selenium/environment/webserver:webserver:uber"
+]
 task :all_zip => [:'selenium-java_zip']
+task :tests => [
+  "//java/client/test/org/openqa/selenium/htmlunit:test_basic",
+  "//java/client/test/org/openqa/selenium/htmlunit:test_js",
+  "//java/client/test/org/openqa/selenium/firefox:test_synthesized",
+  "//java/client/test/org/openqa/selenium/ie:test",
+  "//java/client/test/org/openqa/selenium/chrome:test",
+  "//java/client/test/org/openqa/selenium/opera:test_blink",
+  "//java/client/test/org/openqa/selenium/lift:test",
+  "//java/client/test/org/openqa/selenium/support:SmallTests",
+  "//java/client/test/org/openqa/selenium/support:LargeTests",
+  "//java/client/test/org/openqa/selenium/remote:common-tests",
+  "//java/client/test/org/openqa/selenium/remote:client-tests",
+  "//java/server/test/org/openqa/selenium/remote/server/log:test",
+  "//java/server/test/org/openqa/selenium/remote/server:small-tests",
+]
 task :chrome => [ "//java/client/src/org/openqa/selenium/chrome" ]
 task :common_core => [ "//common:core" ]
 task :grid => [ "//java/server/src/org/openqa/grid/selenium" ]
-task :htmlunit => [ "//java/client/src/org/openqa/selenium/htmlunit" ]
 task :ie => [ "//java/client/src/org/openqa/selenium/ie" ]
-task :firefox => [ "//java/client/src/org/openqa/selenium/firefox" ]
+task :firefox => [
+  "//cpp:noblur",
+  "//cpp:noblur64",
+  "//cpp:imehandler",
+  "//cpp:imehandler64",
+  "//java/client/src/org/openqa/selenium/firefox"
+]
 task :'debug-server' => "//java/client/test/org/openqa/selenium/environment/webserver:WebServer:run"
 task :remote => [:remote_common, :remote_server, :remote_client]
 task :remote_common => ["//java/client/src/org/openqa/selenium/remote:common"]
@@ -127,6 +150,8 @@ task :support => [
 desc 'Build the standalone server'
 task 'selenium-server-standalone' => '//java/server/src/org/openqa/grid/selenium:selenium:uber'
 
+task 'selenium-server-standalone-v3' => '//java/server/src/org/openqa/grid/selenium:selenium-v3:uber'
+
 task :ide => [ "//ide:selenium-ide-multi" ]
 task :ide_proxy_setup => [ "//javascript/selenium-atoms", "se_ide:setup_proxy" ]
 task :ide_proxy_remove => [ "se_ide:remove_proxy" ]
@@ -135,6 +160,7 @@ task :ide_bamboo => ["se_ide:assemble_ide_in_bamboo"]
 task :test_javascript => [
   '//javascript/atoms:test:run',
   '//javascript/webdriver:test:run',
+  '//javascript/webdriver:es6_test:run',
   '//javascript/selenium-atoms:test:run',
   '//javascript/selenium-core:test:run']
 task :test_chrome => [ "//java/client/test/org/openqa/selenium/chrome:test:run" ]
@@ -154,15 +180,12 @@ task :test_grid => [
 task :test_ie => [ "//java/client/test/org/openqa/selenium/ie:test:run" ]
 task :test_jobbie => [ :test_ie ]
 task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test_synthesized:run" ]
-if (!mac?)
-  task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test_native:run" ]
-end
-task :test_opera => [ "//java/client/test/org/openqa/selenium/opera:test:run" ]
-task :test_opera_mobile => [ "//java/client/test/org/openqa/selenium/opera/mobile:test:run" ]
-task :test_remote_server => [ '//java/server/test/org/openqa/selenium/remote/server:test:run' ]
+task :test_opera => [ "//java/client/test/org/openqa/selenium/opera:test_blink:run" ]
+task :test_remote_server => [ '//java/server/test/org/openqa/selenium/remote/server:small-tests:run' ]
 task :test_remote => [
   '//java/client/test/org/openqa/selenium/remote:common-tests:run',
   '//java/client/test/org/openqa/selenium/remote:client-tests:run',
+  '//java/client/test/org/openqa/selenium/remote:remote-driver-tests:run',
   :test_remote_server
 ]
 task :test_safari => [ "//java/client/test/org/openqa/selenium/safari:test:run" ]
@@ -213,7 +236,6 @@ if (opera?)
   task :test_java_webdriver => [:test_opera]
 end
 
-
 task :test_java => [
   "//java/client/test/org/openqa/selenium/atoms:test:run",
   "//java/client/test/org/openqa/selenium:SmallTests:run",
@@ -226,13 +248,21 @@ task :test_java => [
 task :test_rb => [
   "//rb:unit-test",
   "//rb:rc-client-unit-test",
-  "//rb:firefox-test",
-  "//rb:remote-test",
   "//rb:rc-client-integration-test",
- ("//rb:ie-test" if windows?),
   "//rb:chrome-test",
-  "//rb:safari-test",
-  "//rb:phantomjs-test"
+  "//rb:firefox-test",
+  "//rb:phantomjs-test",
+  "//rb:remote-chrome-test",
+  "//rb:remote-firefox-test",
+  "//rb:remote-phantomjs-test",
+  ("//rb:marionette-test" if ENV['MARIONETTE_PATH']),
+  ("//rb:remote-marionette-test" if ENV['MARIONETTE_PATH']),
+  ("//rb:safari-test" if mac?),
+  ("//rb:remote-safari-test" if mac?),
+  ("//rb:ie-test" if windows?),
+  ("//rb:remote-ie-test" if windows?),
+  ("//rb:edge-test" if windows?),
+  ("//rb:remote-edge-test" if windows?)
 ].compact
 
 task :test_py => [ :py_prep_for_install_release, "//py:firefox_test:run" ]
@@ -249,8 +279,7 @@ if (python?)
   task :test => [ :test_py ]
 end
 
-
-task :build => [:all, :remote, :selenium]
+task :build => [:all, :firefox, :remote, :selenium, :tests]
 
 desc 'Clean build artifacts.'
 task :clean do
@@ -277,194 +306,6 @@ ie_generate_type_mapping(:name => "ie_result_type_java",
 
 
 GeckoSDKs.new do |sdks|
-  sdks.add 'third_party/gecko-1.9.2/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/3.6.23/sdk/xulrunner-3.6.23.en-US.linux-i686.sdk.tar.bz2',
-           'f13055d2b793b6ab32797cc292f18de4'
-
-  sdks.add 'third_party/gecko-2/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.linux-i686.sdk.tar.bz2',
-           '1ec6039ee99596551845f27d4bc83436'
-
-  sdks.add 'third_party/gecko-2/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.linux-x86_64.sdk.tar.bz2',
-           '101eb57d3f76f77e9c94d3cb25a8d56c'
-
-  sdks.add 'third_party/gecko-2/mac',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.mac-x86_64.sdk.tar.bz2',
-           'ac2ddb114107680fe75ee712cddf1ab4'
-
-  sdks.add 'third_party/gecko-2/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.win32.sdk.zip',
-           '5cfa95a2d46334ce6283a772eff19382'
-
-  sdks.add 'third_party/gecko-10/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/10.0/sdk/xulrunner-10.0.en-US.linux-i686.sdk.tar.bz2',
-           '9ce89327cab356bc133675e5307cbdd3'
-
-  sdks.add 'third_party/gecko-10/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/10.0/sdk/xulrunner-10.0.en-US.linux-x86_64.sdk.tar.bz2',
-           '251cd1529050aa656a633a26883f12ac'
-
-  sdks.add 'third_party/gecko-10/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/10.0/sdk/xulrunner-10.0.en-US.win32.sdk.zip',
-           'c160fb382345282603ded4bf87abff45'
-
-  sdks.add 'third_party/gecko-11/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/11.0/sdk/xulrunner-11.0.en-US.linux-i686.sdk.tar.bz2',
-           '917b8cba75988a3943773519d2b74228'
-
-  sdks.add 'third_party/gecko-11/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/11.0/sdk/xulrunner-11.0.en-US.linux-x86_64.sdk.tar.bz2',
-           'f5e84aa2ec8a1ce13ed50ad2c311ae9e'
-
-  sdks.add 'third_party/gecko-11/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/11.0/sdk/xulrunner-11.0.en-US.win32.sdk.zip',
-           '783dcb0b01a849836c9e3627a87d2dc4'
-
-  sdks.add 'third_party/gecko-12/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/12.0/sdk/xulrunner-12.0.en-US.linux-i686.sdk.tar.bz2',
-           '7a355c79aeffd975e9c4a4da407e0b78'
-
-  sdks.add 'third_party/gecko-12/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/12.0/sdk/xulrunner-12.0.en-US.linux-x86_64.sdk.tar.bz2',
-           'e9cfc4708a551235e3223cf5b3cc771e'
-
-  sdks.add 'third_party/gecko-12/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/12.0/sdk/xulrunner-12.0.en-US.win32.sdk.zip',
-           '18daaa5a06bea14f811351bbb0723092'
-
-  sdks.add 'third_party/gecko-13/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/13.0/sdk/xulrunner-13.0.en-US.linux-i686.sdk.tar.bz2',
-           'da05198bf5d7452f7ac3c43d894a1779'
-
-  sdks.add 'third_party/gecko-13/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/13.0/sdk/xulrunner-13.0.en-US.linux-x86_64.sdk.tar.bz2',
-           '68886fdc8ea8361e6243d8318d7210b8'
-
-  sdks.add 'third_party/gecko-13/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/13.0/sdk/xulrunner-13.0.en-US.win32.sdk.zip',
-           '8d613999d51be945c7498c9d63946dcc'
-
-  sdks.add 'third_party/gecko-14/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/14.0.1/sdk/xulrunner-14.0.1.en-US.linux-i686.sdk.tar.bz2',
-           '8af526ccdd0cf1c41fc825d19218fac8'
-
-  sdks.add 'third_party/gecko-14/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/14.0.1/sdk/xulrunner-14.0.1.en-US.linux-x86_64.sdk.tar.bz2',
-           '246ec6eff6b2ce90a14bf29f3a2f529d'
-
-  sdks.add 'third_party/gecko-14/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/14.0.1/sdk/xulrunner-14.0.1.en-US.win32.sdk.zip',
-           'ace1b22a31a3566f92755c5464868cb3'
-
-  sdks.add 'third_party/gecko-15/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/15.0.1/sdk/xulrunner-15.0.1.en-US.linux-i686.sdk.tar.bz2',
-           '4c72e60b1af10a5c46a4fae4082d3358'
-
-  sdks.add 'third_party/gecko-15/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/15.0.1/sdk/xulrunner-15.0.1.en-US.linux-x86_64.sdk.tar.bz2',
-           '28bb789e3c49e1510fc085b07e87deae'
-
-  sdks.add 'third_party/gecko-15/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/15.0.1/sdk/xulrunner-15.0.1.en-US.win32.sdk.zip',
-           '1273ae07fe999c6f4cd3768fb100f741'
-
-  sdks.add 'third_party/gecko-16/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/16.0.2/sdk/xulrunner-16.0.2.en-US.linux-i686.sdk.tar.bz2',
-           '600018d47b803d36abdbb2c12d0aa0d5'
-
-  sdks.add 'third_party/gecko-16/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/16.0.2/sdk/xulrunner-16.0.2.en-US.linux-x86_64.sdk.tar.bz2',
-           'f2bcdce0c60bb59dba7492dcc38aac0d'
-
-  sdks.add 'third_party/gecko-16/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/16.0.2/sdk/xulrunner-16.0.2.en-US.win32.sdk.zip',
-           'dc016c839bdcab13c95a5bee65008055'
-
-  sdks.add 'third_party/gecko-17/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/17.0/sdk/xulrunner-17.0.en-US.linux-i686.sdk.tar.bz2',
-           '78629c1187112b8daf09d60d5fbd44c1'
-
-  sdks.add 'third_party/gecko-17/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/17.0/sdk/xulrunner-17.0.en-US.linux-x86_64.sdk.tar.bz2',
-           '7c4fff0850516934b493e46e8c40c247'
-
-  sdks.add 'third_party/gecko-17/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/17.0/sdk/xulrunner-17.0.en-US.win32.sdk.zip',
-           '5c0a467a581778bda72a6a3daea2f8f0'
-
-  sdks.add 'third_party/gecko-18/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/18.0.2/sdk/xulrunner-18.0.2.en-US.linux-i686.sdk.tar.bz2',
-           'd8a67c4c841a26b3af3dcb98e06bef18'
-
-  sdks.add 'third_party/gecko-18/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/18.0.2/sdk/xulrunner-18.0.2.en-US.linux-x86_64.sdk.tar.bz2',
-           '655ed52cff27a8afacee180eceaa2f3d'
-
-  sdks.add 'third_party/gecko-18/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/18.0.2/sdk/xulrunner-18.0.2.en-US.win32.sdk.zip',
-           'ce4965e2660052c6a06ad50a10b3f97d'
-
-  sdks.add 'third_party/gecko-19/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/19.0/sdk/xulrunner-19.0.en-US.linux-i686.sdk.tar.bz2',
-           '9e7decd8866eb7b66afe6ed1a0e8d941'
-
-  sdks.add 'third_party/gecko-19/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/19.0/sdk/xulrunner-19.0.en-US.linux-x86_64.sdk.tar.bz2',
-           'fb27bc9cbf9109469f0247c1ba1812e5'
-
-  sdks.add 'third_party/gecko-19/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/19.0/sdk/xulrunner-19.0.en-US.win32.sdk.zip',
-           '44e7c7f9dda4dc08a294d66c504361be'
-
-  sdks.add 'third_party/gecko-20/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/20.0/sdk/xulrunner-20.0.en-US.linux-i686.sdk.tar.bz2',
-           '5da7a8870d35f6b8535ed8d24f5c09ba'
-
-  sdks.add 'third_party/gecko-20/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/20.0/sdk/xulrunner-20.0.en-US.linux-x86_64.sdk.tar.bz2',
-           'b2659dfd81011e77ae7dcabb2dbed4e6'
-
-  sdks.add 'third_party/gecko-20/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/20.0/sdk/xulrunner-20.0.en-US.win32.sdk.zip',
-           'c1808d3dcf55ba3cdbb774cbf5148071'
-
-  sdks.add 'third_party/gecko-21/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/21.0/sdk/xulrunner-21.0.en-US.linux-i686.sdk.tar.bz2',
-           'ae88daa3a2d9a94f634ee69604e31fba'
-
-  sdks.add 'third_party/gecko-21/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/21.0/sdk/xulrunner-21.0.en-US.linux-x86_64.sdk.tar.bz2',
-           '76bdfe044fd62a1085bb49df035b6a93'
-
-  sdks.add 'third_party/gecko-21/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/21.0/sdk/xulrunner-21.0.en-US.win32.sdk.zip',
-           '246304f40c6b970b7a0c53305452630d'
-
-  sdks.add 'third_party/gecko-22/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/22.0/sdk/xulrunner-22.0.en-US.linux-i686.sdk.tar.bz2',
-           '39fde24e395bf49d2e74d31b60c7e514'
-
-  sdks.add 'third_party/gecko-22/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/22.0/sdk/xulrunner-22.0.en-US.linux-x86_64.sdk.tar.bz2',
-           'a8d41f23fad4fa6a2d534b10daf9ab97'
-
-  sdks.add 'third_party/gecko-22/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/22.0/sdk/xulrunner-22.0.en-US.win32.sdk.zip',
-           '2f9cd784be008aa2b18231a365d6b59a'
-
-  sdks.add 'third_party/gecko-23/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/23.0/sdk/xulrunner-23.0.en-US.linux-i686.sdk.tar.bz2',
-           '19cf2596c01fe981f72a5726104e4f06'
-
-  sdks.add 'third_party/gecko-23/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/23.0/sdk/xulrunner-23.0.en-US.linux-x86_64.sdk.tar.bz2',
-           '17dec0f03d6c3c793a6d532dabfd0124'
-
-  sdks.add 'third_party/gecko-23/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/23.0/sdk/xulrunner-23.0.en-US.win32.sdk.zip',
-           'f5e5945ee9a541fca65f3f9355160104'
-
   sdks.add 'third_party/gecko-24/linux',
            'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/24.0/sdk/xulrunner-24.0.en-US.linux-i686.sdk.tar.bz2',
            '669ef73966d0401f77c0a429f194535c'
@@ -477,29 +318,42 @@ GeckoSDKs.new do |sdks|
            'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/24.0/sdk/xulrunner-24.0.en-US.win32.sdk.zip',
            '29d8fcf397038930a4220b7d60bb3cbf'
 
-  sdks.add 'third_party/gecko-25/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/25.0/sdk/xulrunner-25.0.en-US.linux-i686.sdk.tar.bz2',
-           '879f79424299a14ede90032b2839ae2f'
+  sdks.add 'third_party/gecko-31/linux',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/31.0/sdk/xulrunner-31.0.en-US.linux-i686.sdk.tar.bz2',
+           'e20ce46e69ed36e20aa4faefe3022698'
 
-  sdks.add 'third_party/gecko-25/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/25.0/sdk/xulrunner-25.0.en-US.linux-x86_64.sdk.tar.bz2',
-           '46614a6fb18f4978a1df701a2feb275a'
+  sdks.add 'third_party/gecko-31/linux64',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/31.0/sdk/xulrunner-31.0.en-US.linux-x86_64.sdk.tar.bz2',
+           '548ff61bb3a45d0bf645eee7f46e8024'
 
-  sdks.add 'third_party/gecko-25/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/25.0/sdk/xulrunner-25.0.en-US.win32.sdk.zip',
-           '9dcc079405984ae01f40da51920ae737'
+  sdks.add 'third_party/gecko-31/win32',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/31.0/sdk/xulrunner-31.0.en-US.win32.sdk.zip',
+           'e8d7d9bd67b957bb627de7d3269d240b'
 
-  sdks.add 'third_party/gecko-26/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/26.0/sdk/xulrunner-26.0.en-US.linux-i686.sdk.tar.bz2',
-           'a2553aa77512772544d3e48b3303754e'
+  sdks.add 'third_party/gecko-33/linux',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/33.0/sdk/xulrunner-33.0.en-US.linux-i686.sdk.tar.bz2',
+           'c9b7dede14b9a86060cff0fdf5303c0c'
 
-  sdks.add 'third_party/gecko-26/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/26.0/sdk/xulrunner-26.0.en-US.linux-x86_64.sdk.tar.bz2',
-           '11eb859c67f3540f5331a0c124f9197d'
+  sdks.add 'third_party/gecko-33/linux64',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/33.0/sdk/xulrunner-33.0.en-US.linux-x86_64.sdk.tar.bz2',
+           'b7bd9617941c430ffc962f19673a4157'
 
-  sdks.add 'third_party/gecko-26/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/26.0/sdk/xulrunner-26.0.en-US.win32.sdk.zip',
-           '5df776bf4feb107392ac32c90652dcb8'
+  sdks.add 'third_party/gecko-33/win32',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/33.0/sdk/xulrunner-33.0.en-US.win32.sdk.zip',
+           'c03b4ec0596a8ea275c788616fbfaa6b'
+
+  sdks.add 'third_party/gecko-34/linux',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/34.0/sdk/xulrunner-34.0.en-US.linux-i686.sdk.tar.bz2',
+           '41021581fb2a6e7c2a4dd4eb838ed67f'
+
+  sdks.add 'third_party/gecko-34/linux64',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/34.0/sdk/xulrunner-34.0.en-US.linux-x86_64.sdk.tar.bz2',
+           '75e3dde3f68ca6ca7c2f3ec50b51396b'
+
+  sdks.add 'third_party/gecko-34/win32',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/34.0/sdk/xulrunner-34.0.en-US.win32.sdk.zip',
+           '7a613e5e9503e54205dd16de5c1e9aea'
+
 end
 
 task :'selenium-server_zip' do
@@ -524,7 +378,7 @@ end
                 :browser => v )
 end
 
-task :javadocs => [:common, :firefox, :htmlunit, :ie, :remote, :support, :chrome, :selenium] do
+task :javadocs => [:common, :firefox, :ie, :remote, :support, :chrome, :selenium] do
   mkdir_p "build/javadoc"
    sourcepath = ""
    classpath = '.'
@@ -532,6 +386,9 @@ task :javadocs => [:common, :firefox, :htmlunit, :ie, :remote, :support, :chrome
      classpath << ":" + jar unless jar.to_s =~ /.*-src.*\.jar/
    end
    [File.join(%w(java client src))].each do |m|
+     sourcepath += File::PATH_SEPARATOR + m
+   end
+   [File.join(%w(java server src))].each do |m|
      sourcepath += File::PATH_SEPARATOR + m
    end
    p sourcepath
@@ -544,49 +401,22 @@ task :javadocs => [:common, :firefox, :htmlunit, :ie, :remote, :support, :chrome
    sh cmd
 end
 
-task :py_prep_for_install_release => ["//javascript/firefox-driver:webdriver", :chrome, "//javascript/firefox-driver:webdriver_prefs"] do
-    if python? then
-
-        firefox_py_home = "py/selenium/webdriver/firefox/"
-        firefox_build_dir = 'build/javascript/firefox-driver/'
-        x86 = firefox_py_home + "x86/"
-        amd64 = firefox_py_home + "amd64/"
-
-        if (windows?) then
-            firefox_build_dir = firefox_build_dir.gsub(/\//, "\\")
-            firefox_py_home = firefox_py_home .gsub(/\//, "\\")
-            x86 = x86.gsub(/\//,"\\")
-            amd64 = amd64.gsub(/\//,"\\")
-        end
-
-        mkdir_p x86 unless File.exists?(x86)
-        mkdir_p amd64 unless File.exists?(amd64)
-
-        cp "cpp/prebuilt/i386/libnoblur.so", x86+"x_ignore_nofocus.so", :verbose => true
-        cp "cpp/prebuilt/amd64/libnoblur64.so", amd64+"x_ignore_nofocus.so", :verbose => true
-
-        cp firefox_build_dir + "webdriver.xpi" , firefox_py_home, :verbose => true
-        cp firefox_build_dir + "webdriver_prefs.json" , firefox_py_home, :verbose => true
-    end
-end
+task :py_prep_for_install_release => [
+  "//javascript/firefox-driver:webdriver",
+  :chrome,
+  "//javascript/firefox-driver:webdriver_prefs",
+  "//py:prep"
+]
 
 task :py_docs => "//py:docs"
 
-task :py_install => :py_prep_for_install_release do
-    sh "python setup.py install"
-end
+task :py_install =>  "//py:install"
 
 task :py_release => :py_prep_for_install_release do
     sh "grep -v test setup.py > setup_release.py; mv setup_release.py setup.py"
     sh "python setup.py sdist upload"
+    sh "python setup.py bdist_wheel upload"
     sh "git checkout setup.py"
-end
-
-
-task :test_selenium_py => [:'selenium-core', :'selenium-server-standalone'] do
-    if python? then
-        sh "python2.6 selenium/test/py/runtests.py", :verbose => true
-    end
 end
 
 file "cpp/iedriver/sizzle.h" => [ "//third_party/js/sizzle:sizzle:header" ] do
@@ -622,29 +452,22 @@ task :ios_driver => [
 ]
 
 file "build/javascript/deps.js" => FileList[
-    "third_party/closure/goog/**/*.js",
+  "third_party/closure/goog/**/*.js",
 	"third_party/js/wgxpath/**/*.js",
-    "javascript/*/**/*.js",  # Don't depend on js files directly in javascript/
+  "javascript/*/**/*.js",  # Don't depend on js files directly in javascript/
   ] do
-  our_cmd = "java -jar third_party/py/jython.jar third_party/closure/bin/calcdeps.py "
-  our_cmd << "--output_mode=deps --path=javascript --path=third_party/js/wgxpath "
-  our_cmd << "--dep=third_party/closure/goog"
 
-  # Generate the deps. The file paths will be as they appear on the filesystem,
-  # but for our tests, the WebDriverJS source files are served from /js/src and
-  # the Closure Library source is under /third_party/closure/goog, so we need
-  # to modify the generated paths to match that scheme.
-  output = ""
-  io = IO.popen(our_cmd)
-    io.each do |line|
-      line = line.gsub("\\\\", "/")
-      output << line.gsub(/common\/(.*)\/js/, 'js/\1')
-    end
+  puts "Scanning deps"
+  deps = Javascript::ClosureDeps.new
+  Dir["javascript/*/**/*.js"].
+      reject {|f| f[/javascript\/node/]}.
+      each {|f| deps.parse_file(f)}
+  Dir["third_party/js/wgxpath/**/*.js"].each {|f| deps.parse_file(f)}
 
   built_deps = "build/javascript/deps.js"
   puts "Writing #{built_deps}"
   mkdir_p File.dirname(built_deps)
-  File.open(built_deps, "w") do |f| f.write(output); end
+  deps.write_deps(built_deps)
   cp built_deps, "javascript/deps.js"
 end
 
@@ -652,14 +475,58 @@ desc "Calculate dependencies required for testing the automation atoms"
 task :calcdeps => "build/javascript/deps.js"
 
 task :test_webdriverjs => [
-  "//javascript/webdriver:test:run"
+  "//javascript/webdriver:es6_test:run"
 ]
 
 desc "Generate a single file with WebDriverJS' public API"
 task :webdriverjs => [ "//javascript/webdriver:webdriver" ]
 
+desc "Repack jetty"
+task "repack-jetty" => "build/third_party/java/jetty/jetty-repacked.jar"
+
+# Expose the repack task to CrazyFun.
+task "//third_party/java/jetty:repacked" => "build/third_party/java/jetty/jetty-repacked.jar"
+
+file "build/third_party/java/jetty/jetty-repacked.jar" => [
+   "third_party/java/jetty/jetty-continuation-9.2.13.v20150730.jar",
+   "third_party/java/jetty/jetty-http-9.2.13.v20150730.jar",
+   "third_party/java/jetty/jetty-io-9.2.13.v20150730.jar",
+   "third_party/java/jetty/jetty-jmx-9.2.13.v20150730.jar",
+   "third_party/java/jetty/jetty-security-9.2.13.v20150730.jar",
+   "third_party/java/jetty/jetty-server-9.2.13.v20150730.jar",
+   "third_party/java/jetty/jetty-servlet-9.2.13.v20150730.jar",
+   "third_party/java/jetty/jetty-servlets-9.2.13.v20150730.jar",
+   "third_party/java/jetty/jetty-util-9.2.13.v20150730.jar"
+ ] do |t|
+   print "Repacking jetty\n"
+   root = File.join("build", "third_party", "java", "jetty")
+   jarjar = File.join("third_party", "java", "jarjar", "jarjar-1.4.jar")
+   rules = File.join("third_party", "java", "jetty", "jetty-repack-rules")
+   temp = File.join(root, "temp")
+
+   # First, process the files
+   mkdir_p root
+   mkdir_p temp
+
+   t.prerequisites.each do |pre|
+     filename = File.basename(pre, ".jar")
+     out = File.join(root, "#{filename}-repacked.jar")
+     `java -jar #{jarjar} process #{rules} #{pre} #{out}`
+     `cd #{temp} && jar xf #{File.join("..", File.basename(out))}`
+   end
+
+   # Now, merge them
+   `cd #{temp} && jar cvf #{File.join("..", "jetty-repacked.jar")} *`
+
+   # And copy the artifact to third_party so that eclipse users can be made happy
+   cp "build/third_party/java/jetty/jetty-repacked.jar", "third_party/java/jetty/jetty-repacked.jar"
+end
+
+task
+
 task :release => [
     :clean,
+    :build,
     '//java/server/src/org/openqa/selenium/server:server:zip',
     '//java/server/src/org/openqa/grid/selenium:selenium:zip',
     '//java/client/src/org/openqa/selenium:client-combined:zip',
@@ -682,7 +549,9 @@ task :release => [
     rm_rf temp
     deep = File.join(temp, "/selenium-#{version}")
     mkdir_p deep
-    cp 'java/CHANGELOG', deep
+    cp "java/CHANGELOG", deep
+    cp "NOTICE", deep
+    cp "LICENSE", deep
 
     sh "cd #{deep} && jar xf ../../#{File.basename(zip)}"
     renames.each do |from, to|
@@ -704,6 +573,55 @@ task :release => [
   cp "build/java/client/src/org/openqa/selenium/client-combined.zip", "build/dist/selenium-java-#{version}.zip"
 end
 
+task "release-v3" => [
+    :clean,
+    :build,
+    '//java/server/src/org/openqa/selenium/remote/server:server:zip',
+    '//java/server/src/org/openqa/grid/selenium:selenium-v3:zip',
+    '//java/client/src/org/openqa/selenium:client-combined-v3:zip',
+  ] do |t|
+  # Unzip each of the deps and rename the pieces that need renaming
+  renames = {
+    "client-combined-v3-nodeps-srcs.jar" => "selenium-java-v3-#{version}-srcs.jar",
+    "client-combined-v3-nodeps.jar" => "selenium-java-v3-#{version}.jar",
+    "selenium-v3-nodeps-srcs.jar" => "selenium-server-v3-#{version}-srcs.jar",
+    "selenium-v3-nodeps.jar" => "selenium-server-v3-#{version}.jar",
+    "selenium-v3-standalone.jar" => "selenium-server-v3-standalone-#{version}.jar",
+  }
+
+  t.prerequisites.each do |pre|
+    zip = Rake::Task[pre].out
+
+    next unless zip =~ /\.zip$/
+
+    temp =  zip + "rename"
+    rm_rf temp
+    deep = File.join(temp, "/selenium-#{version}")
+    mkdir_p deep
+    cp "java/CHANGELOG", deep
+    cp "NOTICE", deep
+    cp "LICENSE", deep
+
+    sh "cd #{deep} && jar xf ../../#{File.basename(zip)}"
+    renames.each do |from, to|
+      src = File.join(deep, from)
+      next unless File.exists?(src)
+
+      mv src, File.join(deep, to)
+    end
+    rm_f File.join(deep, "client-combined-v3-standalone.jar")
+    rm zip
+    sh "cd #{temp} && jar cMf ../#{File.basename(zip)} *"
+
+    rm_rf temp
+  end
+
+  mkdir_p "build/dist"
+  cp "build/java/server/src/org/openqa/grid/selenium/selenium-v3-standalone.jar", "build/dist/selenium-server-v3-standalone-#{version}.jar"
+  cp "build/java/server/src/org/openqa/grid/selenium/selenium-v3.zip", "build/dist/selenium-server-v3-#{version}.zip"
+  cp "build/java/client/src/org/openqa/selenium/client-combined-v3.zip", "build/dist/selenium-java-v3-#{version}.zip"
+end
+
 task :push_release => [:release] do
   py = "java -jar third_party/py/jython.jar"
   if (python?)
@@ -718,7 +636,7 @@ task :push_release => [:release] do
   [
     {:file => "build/dist/selenium-server-standalone-#{version}.jar", :description => "Use this if you want to use the Selenium RC or Remote WebDriver or use Grid 2 without needing any additional dependencies"},
     {:file => "build/dist/selenium-server-#{version}.zip", :description => "All variants of the Selenium Server: stand-alone, jar with dependencies and sources."},
-    {:file => "build/dist/selenium-java-#{version}.zip", :description => "The Java bindings for Selenium 2, including the WebDriver API and the Selenium RC clients. Download this if you plan on just using the client-side pieces of Selenium"}
+    {:file => "build/dist/selenium-java-#{version}.zip", :description => "The Java bindings for Selenium 2, including the WebDriver API clients. Download this if you want to use WebDriver API and the Selenium RC clients. Download this if you plan on just using the client-side pieces of Selenium"},
   ].each do |file|
     puts "Uploading file #{file[:file]}..."
     sh "#{py} third_party/py/googlecode/googlecode_upload.py -s '#{file[:description]}' -p selenium #{file[:file]} -l Featured -u #{googlecode_username} -w #{googlecode_password}"
@@ -741,25 +659,41 @@ namespace :docs do
     sh "svn propset svn:mime-type text/css #{Dir['docs/api/**/*.css'].join ' '}"
   end
 
-  task :js do
+  task :js => [ "//javascript/node:selenium-webdriver" ] do
     # First, delete the old docs.
     rm_rf "docs/api/javascript"
 
-    cmd = "java -jar third_party/java/dossier/dossier-0.2.1.jar"
-    cmd << " --closure_library third_party/closure/goog"
-    cmd << " -o docs/api/javascript"
-    cmd << " -s javascript/atoms"
-    cmd << " -s javascript/webdriver"
-    cmd << " -s third_party/js/wgxpath"
-    cmd << " -x javascript/atoms/test"
-    cmd << " -x javascript/node"  # TODO(jleyba): Include this.
-    cmd << " -x javascript/webdriver/exports"
-    cmd << " -x javascript/webdriver/externs"
-    cmd << " -x javascript/webdriver/test"
-    cmd << " -x javascript/webdriver/test_e2e"
-    cmd << " -x third_party/js/wgxpath/test_js_deps.js"
+    mkdir_p "docs/api/javascript"
+    cp_r "build/javascript/node/selenium-webdriver/docs/.", "docs/api/javascript"
+  end
+end
+
+namespace :node do
+  task :deploy => [
+    "//cpp:noblur",
+    "//cpp:noblur64",
+    "//javascript/firefox-driver:webdriver",
+    "//javascript/safari-driver:client",
+  ] do
+    cmd =  "node javascript/node/deploy.js" <<
+        " --output=build/javascript/node/selenium-webdriver" <<
+        " --resource=LICENSE:/LICENSE" <<
+        " --resource=NOTICE:/NOTICE" <<
+        " --resource=javascript/firefox-driver/webdriver.json:firefox/webdriver.json" <<
+        " --resource=build/cpp/amd64/libnoblur64.so:firefox/amd64/libnoblur64.so" <<
+        " --resource=build/cpp/i386/libnoblur.so:firefox/i386/libnoblur.so" <<
+        " --resource=build/javascript/firefox-driver/webdriver.xpi:firefox/webdriver.xpi" <<
+        " --resource=build/javascript/safari-driver/client.js:safari/client.js" <<
+        " --resource=common/src/web/:test/data/" <<
+        " --exclude_resource=common/src/web/Bin" <<
+        " --exclude_resource=.gitignore" <<
+        " --src=javascript/node/selenium-webdriver"
 
     sh cmd
+  end
+
+  task :docs do
+    sh "node javascript/node/gendocs.js"
   end
 end
 
@@ -810,8 +744,7 @@ namespace :marionette do
 
   # This task takes all the relevant Marionette atom dependencies
   # (listed in func_lookup) and concatenates them to a single atoms.js
-  # file, where each atom is assigned to a custom function name
-  # matching the Marionette protocol.
+  # file.
   #
   # The function names are defined in the func_lookup dictionary of
   # target to name.
@@ -827,13 +760,17 @@ namespace :marionette do
     b = StringIO.new
     b << File.read("javascript/marionette/COPYING") << "\n"
     b << "\n"
+    b << "const EXPORTED_SYMBOLS = [\"atoms\"];" << "\n"
+    b << "\n"
+    b << "function atoms() {};" << "\n"
+    b << "\n"
 
     task.prerequisites.each do |target|
       out = Rake::Task[target].out
       atom = File.read(out).chop
 
-      b << "// target #{target}\n"
-      b << "var #{func_lookup[target]} = #{atom};\n"
+      b << "// target #{target}" << "\n"
+      b << "atoms.#{func_lookup[target]} = #{atom};" << "\n"
       b << "\n"
     end
 
@@ -848,6 +785,40 @@ end
 task :authors do
   puts "Generating AUTHORS file"
   sh "(git log --use-mailmap --format='%aN <%aE>' ; cat .OLD_AUTHORS) | sort -uf > AUTHORS"
+end
+
+namespace :copyright do
+  task :update do
+    Copyright.Update(
+        FileList["javascript/**/*.js"].exclude(
+            "javascript/atoms/test/jquery.min.js",
+            "javascript/firefox-driver/extension/components/httpd.js",
+            "javascript/jsunit/**/*.js",
+            "javascript/node/selenium-webdriver/node_modules/**/*.js",
+            "javascript/selenium-core/lib/**/*.js",
+            "javascript/selenium-core/scripts/ui-element.js",
+            "javascript/selenium-core/scripts/ui-map-sample.js",
+            "javascript/selenium-core/scripts/user-extensions.js",
+            "javascript/selenium-core/scripts/xmlextras.js",
+            "javascript/selenium-core/xpath/**/*.js"))
+    Copyright.Update(
+        FileList["py/**/*.py"],
+        :style => "#")
+    Copyright.Update(
+      FileList["rb/**/*.rb"].exclude(
+          "rb/spec/integration/selenium/client/api/screenshot_spec.rb"),
+      :style => "#",
+      :prefix => "# encoding: utf-8\n#\n")
+    Copyright.Update(
+        FileList["java/**/*.java"].exclude(
+            "java/client/src/org/openqa/selenium/internal/Base64Encoder.java",
+            "java/client/test/org/openqa/selenium/internal/Base64EncoderTest.java",
+            "java/server/src/cybervillains/**/*.java",
+            "java/server/src/org/openqa/selenium/server/FrameGroupCommandQueueSet.java",
+            "java/server/src/org/openqa/selenium/server/FutureFileResource.java",
+            "java/server/src/org/openqa/selenium/server/ProxyHandler.java"
+            ))
+  end
 end
 
 at_exit do

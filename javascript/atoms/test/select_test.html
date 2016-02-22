@@ -189,9 +189,21 @@
     }
 
     var testClickCanToggleOptionsInAMultiSelect =
+        // Disabled on Chrome due to
+        // https://code.google.com/p/chromedriver/issues/detail?id=1073
+        // Disabled on Safari due to
+        // https://github.com/SeleniumHQ/selenium/issues/461
+        (goog.userAgent.product.CHROME || goog.userAgent.product.SAFARI) ?
+        goog.nullFunction :
         goog.partial(canToggleOptionsInAMultiSelect, bot.action.click);
 
     var testTapCanToggleOptionsInAMultiSelect =
+        // Disabled on Chrome due to
+        // https://code.google.com/p/chromedriver/issues/detail?id=1073
+        // Disabled on Safari due to
+        // https://github.com/SeleniumHQ/selenium/issues/461
+        (goog.userAgent.product.CHROME || goog.userAgent.product.SAFARI) ?
+        goog.nullFunction :
         goog.partial(canToggleOptionsInAMultiSelect, bot.action.tap);
 
     function canToggleCheckboxes(action) {
@@ -263,7 +275,6 @@
       expectChanges(radioButtons[0]);
 
       action(radioButtons[0]);
-
       assertChanges(0);
       assertTrue(bot.dom.isSelected(radioButtons[0]));
     }
@@ -322,9 +333,19 @@
     }
 
     var testClickCanSelectOptionWhenDefaultPrevented =
+        // Disabled on Safari due to
+        // https://github.com/SeleniumHQ/selenium/issues/461
+        goog.userAgent.product.SAFARI ?
+        goog.nullFunction :
         goog.partial(canSelectOptionWhenDefaultPrevented, bot.action.click);
 
     var testTapCanSelectOptionWhenDefaultPrevented =
+        // Disabled on Chrome due to
+        // https://code.google.com/p/chromedriver/issues/detail?id=1073
+        // Disabled on Safari due to
+        // https://github.com/SeleniumHQ/selenium/issues/461
+        (goog.userAgent.product.CHROME || goog.userAgent.product.SAFARI) ?
+        goog.nullFunction :
         goog.partial(canSelectOptionWhenDefaultPrevented, bot.action.tap);
 
     function cannotSelectCheckboxWhenDefaultPrevented(action) {
@@ -339,11 +360,24 @@
 
       action(elem);
 
-      // WebKit and IE9 standards mode fire change events when the
-      // checkbox isn't toggled.
-      assertChanges(
-          goog.userAgent.WEBKIT || bot.userAgent.IE_DOC_9 ? 1 : 0);
+      // Some browsers fire change events when the checkbox isn't toggled.
+      assertChanges(firesChangeEventIfNotToggled() ? 1 : 0);
       assertFalse(bot.dom.isSelected(elem));
+    }
+
+    function firesChangeEventIfNotToggled() {
+      if (goog.userAgent.product.CHROME && bot.userAgent.isProductVersion(45)) {
+        // Chrome 45 and above do not fire the change event.
+        return false;
+      } else if (goog.userAgent.WEBKIT || bot.userAgent.IE_DOC_9 ||
+                 goog.userAgent.EDGE) {
+        // Other browsers with goog.userAgent.WEBKIT fire the change event.
+        // IE 9 standards mode fires the change event.
+        return true;
+      }
+
+      // All other browsers do not fire the change event.
+      return false;
     }
 
     var testClickCannotSelectCheckboxWhenDefaultPrevented =
@@ -365,16 +399,16 @@
 
       action(elem);
 
-      // WebKit and Firefox < 11 select a radio button even when the handler
-      // prevents the default; IE and Opera do not.
-      if (goog.userAgent.WEBKIT ||
-          (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion(11))) {
-        // Gecko does toggle the radio button, but doesn't fire a change event.
-        assertChanges(goog.userAgent.GECKO ? 0 : 1);
+      // Chrome < 39 and WebKit select a radio button even when the handler
+      // prevents the default; IE does not.
+      if ((goog.userAgent.product.CHROME &&
+           !bot.userAgent.isProductVersion(39)) ||
+          (goog.userAgent.WEBKIT && !goog.userAgent.product.CHROME)) {
+        assertChanges(1);
         assertTrue(bot.dom.isSelected(elem));
       } else {
-        // IE9 standards mode still fires the change event.
-        assertChanges(bot.userAgent.IE_DOC_9 ? 1 : 0);
+        // Some browsers fire change events when the checkbox isn't toggled.
+        assertChanges(firesChangeEventIfNotToggled() ? 1 : 0);
         assertFalse(bot.dom.isSelected(elem));
       }
     }
@@ -515,9 +549,19 @@
     }
 
     var testClickTogglesByTheTimeChangeEventFires =
+        // Disabled on Safari due to
+        // https://github.com/SeleniumHQ/selenium/issues/461
+        goog.userAgent.product.SAFARI ?
+        goog.nullFunction :
         goog.partial(togglesByTheTimeChangeEventFires, bot.action.click);
 
     var testTapTogglesByTheTimeChangeEventFires =
+        // Disabled on Chrome due to
+        // https://code.google.com/p/chromedriver/issues/detail?id=1073
+        // Disabled on Safari due to
+        // https://github.com/SeleniumHQ/selenium/issues/461
+        (goog.userAgent.product.CHROME || goog.userAgent.product.SAFARI) ?
+        goog.nullFunction :
         goog.partial(togglesByTheTimeChangeEventFires, bot.action.tap);
   </script>
 </head>

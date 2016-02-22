@@ -23,7 +23,6 @@ goog.provide('goog.storage.mechanism.mechanismfactory');
 goog.require('goog.storage.mechanism.HTML5LocalStorage');
 goog.require('goog.storage.mechanism.HTML5SessionStorage');
 goog.require('goog.storage.mechanism.IEUserData');
-goog.require('goog.storage.mechanism.IterableMechanism');
 goog.require('goog.storage.mechanism.PrefixedMechanism');
 
 

@@ -1,16 +1,19 @@
-// Copyright 2011 Software Freedom Conservancy. All Rights Reserved.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview Contains several classes for handling commands.
@@ -160,6 +163,7 @@ webdriver.CommandName = {
   ELEMENT_EQUALS: 'elementEquals',
 
   SCREENSHOT: 'screenshot',
+  TAKE_ELEMENT_SCREENSHOT: 'takeElementScreenshot',
   IMPLICITLY_WAIT: 'implicitlyWait',
   SET_SCRIPT_TIMEOUT: 'setScriptTimeout',
   SET_TIMEOUT: 'setTimeout',
@@ -199,9 +203,9 @@ webdriver.CommandName = {
   // optional for these commands.
   CLICK: 'mouseClick',
   DOUBLE_CLICK: 'mouseDoubleClick',
-  MOUSE_DOWN: 'mouseDown',
-  MOUSE_UP: 'mouseUp',
-  MOVE_TO: 'mouseMove',
+  MOUSE_DOWN: 'mouseButtonDown',
+  MOUSE_UP: 'mouseButtonUp',
+  MOVE_TO: 'mouseMoveTo',
   SEND_KEYS_TO_ACTIVE_ELEMENT: 'sendKeysToActiveElement',
 
   // These belong to the Advanced Touch API
@@ -216,13 +220,16 @@ webdriver.CommandName = {
 
   GET_AVAILABLE_LOG_TYPES: 'getAvailableLogTypes',
   GET_LOG: 'getLog',
-  GET_SESSION_LOGS: 'getSessionLogs'
+  GET_SESSION_LOGS: 'getSessionLogs',
+
+  // Non-standard commands used by the standalone Selenium server.
+  UPLOAD_FILE: 'uploadFile'
 };
 
 
 
 /**
- * Handles the execution of {@code webdriver.Command} objects.
+ * Handles the execution of WebDriver {@link webdriver.Command commands}.
  * @interface
  */
 webdriver.CommandExecutor = function() {};
@@ -234,7 +241,7 @@ webdriver.CommandExecutor = function() {};
  * Otherwise, the callback will be invoked with a null Error and non-null
  * {@link bot.response.ResponseObject} object.
  * @param {!webdriver.Command} command The command to execute.
- * @param {function(Error, !bot.response.ResponseObject=)} callback the function
- *     to invoke when the command response is ready.
+ * @return {!webdriver.promise.Promise<!bot.response.ResponseObject>} A promise
+ *     that will be fulfilled with the command result.
  */
 webdriver.CommandExecutor.prototype.execute = goog.abstractMethod;

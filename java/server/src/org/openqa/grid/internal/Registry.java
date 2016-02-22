@@ -1,19 +1,19 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.internal;
 
@@ -49,7 +49,7 @@ import java.util.logging.Logger;
 public class Registry {
 
   public static final String KEY = Registry.class.getName();
-  private static final Logger log = Logger.getLogger(Registry.class.getName());
+  private static final Logger LOG = Logger.getLogger(Registry.class.getName());
 
   // lock for anything modifying the tests session currently running on this
   // registry.
@@ -81,7 +81,7 @@ public class Registry {
     proxies = new ProxySet(config.isThrowOnCapabilityNotPresent());
     this.matcherThread.setUncaughtExceptionHandler(new UncaughtExceptionHandler());
   }
-  
+
 
   @SuppressWarnings({"NullableProblems"})
   public static Registry newInstance() {
@@ -173,8 +173,8 @@ public class Registry {
     // an empty TestSlot list, which doesn't figure into the proxy equivalence check.  Since we want to free up
     // those test sessions, we need to operate on that original object.
     if (proxies.contains(proxy)) {
-      log.warning(String.format(
-          "Proxy '%s' was previously registered.  Cleaning up any stale test sessions.", proxy));
+      LOG.warning(String.format(
+        "Cleaning up stale test sessions on the unregistered node %s", proxy));
 
       final RemoteProxy p = proxies.remove(proxy);
       for (TestSlot slot : p.getTestSlots()) {
@@ -186,6 +186,8 @@ public class Registry {
 
   /**
    * Releases the test slot, WITHOUT running any listener.
+   * @param testSlot test slot to be released
+   * @param reason reason for termination
    */
   public void forceRelease(TestSlot testSlot, SessionTerminationReason reason) {
     if (testSlot.getSession() == null) {
@@ -270,9 +272,9 @@ public class Registry {
         // Just make sure we delete anything that is logged on this thread from memory
         LoggingManager.perSessionLogHandler().clearThreadTempLogs();
       } catch (InterruptedException e) {
-        log.info("Shutting down registry.");
+        LOG.info("Shutting down registry.");
       } catch (Throwable t) {
-        log.log(Level.SEVERE, "Unhandled exception in Matcher thread.", t);
+        LOG.log(Level.SEVERE, "Unhandled exception in Matcher thread.", t);
       }
     }
 
@@ -316,7 +318,7 @@ public class Registry {
       release(session1, reason);
       return;
     }
-    log.warning("Tried to release session with internal key " + internalKey +
+    LOG.warning("Tried to release session with internal key " + internalKey +
                 " but couldn't find it.");
   }
 
@@ -330,14 +332,14 @@ public class Registry {
     if (proxy == null) {
       return;
     }
-    log.fine("adding  " + proxy);
+    LOG.info("Registered a node " + proxy);
     try {
       lock.lock();
 
       removeIfPresent(proxy);
 
       if (registeringProxies.contains(proxy)) {
-        log.warning(String.format("Proxy '%s' is already queued for registration.", proxy));
+        LOG.warning(String.format("Proxy '%s' is already queued for registration.", proxy));
 
         return;
       }
@@ -354,7 +356,7 @@ public class Registry {
         ((RegistrationListener) proxy).beforeRegistration();
       }
     } catch (Throwable t) {
-      log.severe("Error running the registration listener on " + proxy + ", " + t.getMessage());
+      LOG.severe("Error running the registration listener on " + proxy + ", " + t.getMessage());
       t.printStackTrace();
       listenerOk = false;
     }
@@ -378,7 +380,7 @@ public class Registry {
   /**
    * If throwOnCapabilityNotPresent is set to true, the hub will reject test request for a
    * capability that is not on the grid. No exception will be thrown if the capability is present
-   * but busy. <p/> If set to false, the test will be queued hoping a new proxy will register later
+   * but busy. <p> If set to false, the test will be queued hoping a new proxy will register later
    * offering that capability.
    *
    * @param throwOnCapabilityNotPresent true to throw if capability not present
@@ -465,7 +467,7 @@ public class Registry {
   private static class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
 
     public void uncaughtException(Thread t, Throwable e) {
-      log.log(Level.SEVERE, "Matcher thread dying due to unhandled exception.", e);
+      LOG.log(Level.SEVERE, "Matcher thread dying due to unhandled exception.", e);
     }
   }
   public CapabilityMatcher getCapabilityMatcher() {

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="projectSettings">
+    <option name="alternativeWorkingDirPath" value="" />
+    <option name="localAnalysisScripName" value="&lt;NO LOCAL ANALYSIS&gt;" />
+    <option name="resources">
+      <list>
+        <Resource>
+          <option name="creationDate" value="1432240681000" />
+          <option name="date" value="1432240667000" />
+          <option name="description" value="" />
+          <option name="id" value="2" />
+          <option name="key" value="org.openqa.selenium:java_client" />
+          <option name="longName" value="Java Client" />
+          <option name="name" value="Java Client" />
+          <option name="qualifier" value="BRC" />
+          <option name="scope" value="PRJ" />
+          <option name="version" value="2.0" />
+        </Resource>
+        <Resource>
+          <option name="creationDate" value="1432240681000" />
+          <option name="date" value="1432240667000" />
+          <option name="description" value="" />
+          <option name="id" value="3" />
+          <option name="key" value="org.openqa.selenium:java_server" />
+          <option name="longName" value="Java Server" />
+          <option name="name" value="Java Server" />
+          <option name="qualifier" value="BRC" />
+          <option name="scope" value="PRJ" />
+          <option name="version" value="2.0" />
+        </Resource>
+      </list>
+    </option>
+    <option name="serverName" value="localhost" />
+    <option name="useAlternativeWorkingDir" value="false" />
+    <option name="workingDirSelection" value="&lt;MODULE&gt;" />
+  </component>
+</project>

@@ -24,7 +24,7 @@ goog.provide('goog.debug.errorHandlerWeakDep');
 
 /**
  * Dummy object to work around undefined properties compiler warning.
- * @type {Object}
+ * @type {!Object<string,Function>}
  */
 goog.debug.errorHandlerWeakDep = {
   /**

@@ -33,6 +33,7 @@ goog.require('goog.dom.browserrange.W3cRange');
  * @param {Range} range The range object.
  * @constructor
  * @extends {goog.dom.browserrange.W3cRange}
+ * @final
  */
 goog.dom.browserrange.GeckoRange = function(range) {
   goog.dom.browserrange.W3cRange.call(this, range);
@@ -43,7 +44,7 @@ goog.inherits(goog.dom.browserrange.GeckoRange, goog.dom.browserrange.W3cRange);
 /**
  * Creates a range object that selects the given node's text.
  * @param {Node} node The node to select.
- * @return {goog.dom.browserrange.GeckoRange} A Gecko range wrapper object.
+ * @return {!goog.dom.browserrange.GeckoRange} A Gecko range wrapper object.
  */
 goog.dom.browserrange.GeckoRange.createFromNodeContents = function(node) {
   return new goog.dom.browserrange.GeckoRange(
@@ -57,7 +58,7 @@ goog.dom.browserrange.GeckoRange.createFromNodeContents = function(node) {
  * @param {number} startOffset The offset within the node to start.
  * @param {Node} endNode The node to end with.
  * @param {number} endOffset The offset within the node to end.
- * @return {goog.dom.browserrange.GeckoRange} A wrapper object.
+ * @return {!goog.dom.browserrange.GeckoRange} A wrapper object.
  */
 goog.dom.browserrange.GeckoRange.createFromNodes = function(startNode,
     startOffset, endNode, endOffset) {
@@ -75,7 +76,8 @@ goog.dom.browserrange.GeckoRange.prototype.selectInternal = function(
     // collapsed and forward ranges.  This works around
     // https://bugzilla.mozilla.org/show_bug.cgi?id=773137, and is tested by
     // range_test.html's testFocusedElementDisappears.
-    goog.base(this, 'selectInternal', selection, reversed);
+    goog.dom.browserrange.GeckoRange.base(
+        this, 'selectInternal', selection, reversed);
   } else {
     // Reversed selection -- start with a caret on the end node, and extend it
     // back to the start.  Unfortunately, collapse() fails when focus is

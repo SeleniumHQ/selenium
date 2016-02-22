@@ -195,10 +195,10 @@ objectExtend(SuiteTreeView.prototype, {
         getRowProperties: function(row, props) {
             if (this.selection.isSelected(row)) return;
             var testCase = this.getTestSuite().tests[row];
-            if (testCase.testResult) {
-                if (testCase.testResult == 'passed') {
+            if (testCase.testResult && testCase.testResult.summary) {
+                if (testCase.testResult.summary == 'passed') {
                     return XulUtils.setProperty(props, "commandPassed");
-                } else if (testCase.testResult == 'failed') {
+                } else if (testCase.testResult.summary == 'failed') {
                     return XulUtils.setProperty(props, "commandFailed");
                 }
             }

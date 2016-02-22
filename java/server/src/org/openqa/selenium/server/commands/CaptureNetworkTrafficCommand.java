@@ -1,19 +1,19 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 
 package org.openqa.selenium.server.commands;
@@ -53,7 +53,7 @@ public class CaptureNetworkTrafficCommand extends Command {
 
     if ("json".equalsIgnoreCase(type)) {
       /*
-       * 
+       *
        * [{ statusCode: 200, method: 'GET', url: 'http://foo.com/index.html', bytes: 12422, start:
        * '2009-03-15T14:23:00.000-0700', end: '2009-03-15T14:23:00.102-0700', timeInMillis: 102,
        * requestHeaders: [{ name: 'Foo', value: 'Bar' }], responseHeaders: [{ name: 'Baz', value:
@@ -132,7 +132,7 @@ public class CaptureNetworkTrafficCommand extends Command {
       /*
        * 200 GET http://foo.com/index.html 12422 bytes 102ms (2009-03-15T14:23:00.000-0700 -
        * 2009-03-15T14:23:00.102-0700)
-       * 
+       *
        * Request Headers - Foo => Bar Response Headers - Baz => Blah
        * ================================================================
        */
@@ -199,34 +199,24 @@ public class CaptureNetworkTrafficCommand extends Command {
   }
 
   private String jsonKey(final String key) {
-    final StringBuilder ret = new StringBuilder();
-
-    ret.append("  \"").append(key).append("\"").append(":");
-
-    return ret.toString();
+    return "  \"" + key + "\"" + ":";
   }
 
   private Object json(String s) {
-    return escape(s);
+    if(s==null)
+      return null;
+    StringBuffer sb = new StringBuffer();
+    sb.append("\"");
+    escape(s, sb);
+    sb.append("\"");
+    return sb.toString();
   }
 
   // -------------- Copied from JSONValue -------------------
   /**
    * Escape quotes, \, /, \r, \n, \b, \f, \t and other control characters (U+0000 through U+001F).
-   * @param s
-   * @return
-   */
-  private static String escape(String s){
-    if(s==null)
-      return null;
-    StringBuffer sb = new StringBuffer();
-    escape(s, sb);
-    return sb.toString();
-  }
-
-  /**
    * @param s - Must not be null.
-   * @param sb
+   * @param sb string buffer originating string is copied to
    */
   private static void escape(String s, StringBuffer sb) {
     final int len = s.length();
@@ -282,8 +272,8 @@ public class CaptureNetworkTrafficCommand extends Command {
     private Date start;
     private Date end;
     private long bytes;
-    private List<Header> requestHeaders = new ArrayList<Header>();
-    private List<Header> responseHeaders = new ArrayList<Header>();
+    private List<Header> requestHeaders = new ArrayList<>();
+    private List<Header> responseHeaders = new ArrayList<>();
 
     public Entry(String method, String url) {
       this.method = method;

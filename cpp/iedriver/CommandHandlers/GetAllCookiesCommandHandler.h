@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -17,6 +20,7 @@
 #include "../Browser.h"
 #include "../IECommandHandler.h"
 #include "../IECommandExecutor.h"
+#include "../BrowserCookie.h"
 
 namespace webdriver {
 
@@ -30,7 +34,6 @@ class GetAllCookiesCommandHandler : public IECommandHandler {
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
-                       const LocatorMap& locator_parameters,
                        const ParametersMap& command_parameters,
                        Response* response) {
     Json::Value response_value(Json::arrayValue);
@@ -41,15 +44,22 @@ class GetAllCookiesCommandHandler : public IECommandHandler {
       return;
     }
 
-    std::map<std::string, std::string> cookies;
-    browser_wrapper->GetCookies(&cookies);
-    std::map<std::string, std::string>::const_iterator it = cookies.begin();
+    std::vector<BrowserCookie> cookies;
+    status_code = browser_wrapper->cookie_manager()->GetCookies(
+        browser_wrapper->GetCurrentUrl(),
+        &cookies);
+    if (status_code == EUNHANDLEDERROR) {
+      std::string error = "Could not retrieve cookies. The most common cause ";
+      error.append("of this error is a mismatch in the bitness between the ");
+      error.append("driver and browser. In particular, be sure you are not ");
+      error.append("attempting to use a 64-bit IEDriverServer.exe against ");
+      error.append("IE 10 or 11, even on 64-bit Windows.");
+      response->SetErrorResponse(status_code, error);
+      return;
+    }
+    std::vector<BrowserCookie>::iterator it = cookies.begin();
     for (; it != cookies.end(); ++it) {
-      Json::Value cookie;
-      cookie["name"] = it->first;
-      cookie["value"] = it->second;
-      cookie["secure"] = false;
-      response_value.append(cookie);
+      response_value.append(it->ToJson());
     }
 
     response->SetSuccessResponse(response_value);

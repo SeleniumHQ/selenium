@@ -1,3 +1,22 @@
+# encoding: utf-8
+#
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 module Selenium
   module WebDriver
     module Safari
@@ -6,19 +25,14 @@ module Selenium
         COMMAND_TIMEOUT = 60
 
         def initialize(opts = {})
-          port              = Integer(opts[:port] || PortProber.random)
-          timeout           = Integer(opts[:timeout] || COMMAND_TIMEOUT)
-          custom_data_dir   = opts[:custom_data_dir]
-          install_extension = opts.fetch(:install_extension) { true }
+          command_timeout = Integer(opts[:timeout] || COMMAND_TIMEOUT)
+          safari_options  = opts.delete(:options) || Safari::Options.new(opts)
+          capabilities    = merge_capabilities(opts, safari_options)
 
           @command_id ||= 0
 
-          if install_extension
-            @extension = Extension.new(:custom_data_dir => custom_data_dir)
-            @extension.install
-          end
-
-          @server = Server.new(port, timeout)
+          # TODO: handle safari_opts['cleanSession']
+          @server = Server.new(safari_options.port, command_timeout)
           @server.start
 
           @safari = Browser.new
@@ -26,7 +40,7 @@ module Selenium
 
           @server.wait_for_connection
 
-          super(:desired_capabilities => :safari)
+          super(desired_capabilities: capabilities)
         end
 
         def quit
@@ -34,7 +48,6 @@ module Selenium
 
           @server.stop
           @safari.stop
-          @extension && @extension.uninstall
         end
 
         def driver_extensions
@@ -75,8 +88,8 @@ module Selenium
             raise Error.for_code(status_code), response['value']['message']
           end
 
-          if raw['id'] != @command_id.to_s
-            raise Error::WebDriverError, "response id does not match command id"
+          if raw['id'].to_s != @command_id.to_s
+            raise Error::WebDriverError, "response id does not match command id: #{raw['id']} != #{@command_id}"
           end
 
           response
@@ -91,7 +104,7 @@ module Selenium
 
         def prepare_connect_file
           # TODO: use tempfile?
-          path = File.join(Dir.tmpdir, "safaridriver-#{Time.now.to_i}.html")
+          path = File.join(Dir.tmpdir, "safaridriver-#{Time.now.usec}.html")
 
           File.open(path, 'w') do |io|
             io << "<!DOCTYPE html><script>window.location = '#{@server.uri}';</script>"
@@ -103,8 +116,20 @@ module Selenium
           path
         end
 
-      end
+        def merge_capabilities(opts, safari_options)
+          caps  = safari_options.to_capabilities
+          other = opts[:desired_capabilities]
 
-    end
-  end
-end
+          if other
+            other = opts[:desired_capabilities].as_json
+            caps['safari.options'].merge!(other.delete('safari.options') || {})
+            caps.merge!(other)
+          end
+
+          caps
+        end
+
+      end # Bridge
+    end # Safari
+  end # WebDriver
+end # Selenium

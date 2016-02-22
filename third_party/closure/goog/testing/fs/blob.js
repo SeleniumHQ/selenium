@@ -57,17 +57,36 @@ goog.testing.fs.Blob.prototype.size;
 
 
 /**
+ * Creates a blob with bytes of a blob ranging from the optional start
+ * parameter up to but not including the optional end parameter, and with a type
+ * attribute that is the value of the optional contentType parameter.
  * @see http://www.w3.org/TR/FileAPI/#dfn-slice
- * @param {number} start The start byte offset.
- * @param {number} length The number of bytes to slice.
+ * @param {number=} opt_start The start byte offset.
+ * @param {number=} opt_end The end point of a slice.
  * @param {string=} opt_contentType The type of the resulting Blob.
- * @return {!goog.testing.fs.Blob} The result of the slice operation.
+ * @return {!goog.testing.fs.Blob} The result blob of the slice operation.
  */
 goog.testing.fs.Blob.prototype.slice = function(
-    start, length, opt_contentType) {
-  start = Math.max(0, start);
+    opt_start, opt_end, opt_contentType) {
+  var relativeStart;
+  if (goog.isNumber(opt_start)) {
+    relativeStart = (opt_start < 0) ?
+        Math.max(this.data_.length + opt_start, 0) :
+        Math.min(opt_start, this.data_.length);
+  } else {
+    relativeStart = 0;
+  }
+  var relativeEnd;
+  if (goog.isNumber(opt_end)) {
+    relativeEnd = (opt_end < 0) ?
+        Math.max(this.data_.length + opt_end, 0) :
+        Math.min(opt_end, this.data_.length);
+  } else {
+    relativeEnd = this.data_.length;
+  }
+  var span = Math.max(relativeEnd - relativeStart, 0);
   return new goog.testing.fs.Blob(
-      this.data_.substring(start, start + Math.max(length, 0)),
+      this.data_.substr(relativeStart, span),
       opt_contentType);
 };
 
@@ -82,7 +101,7 @@ goog.testing.fs.Blob.prototype.toString = function() {
 
 
 /**
- * @return {ArrayBuffer} The string data encapsulated by the blob as an
+ * @return {!ArrayBuffer} The string data encapsulated by the blob as an
  *     ArrayBuffer.
  */
 goog.testing.fs.Blob.prototype.toArrayBuffer = function() {

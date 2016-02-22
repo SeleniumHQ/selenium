@@ -1,19 +1,19 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 
 package org.openqa.selenium.server;
@@ -27,7 +27,7 @@ import java.io.Reader;
 import java.io.Writer;
 
 public class ModifiedIO {
-  /**
+  /*
    * Copy Stream in to Stream out until EOF or exception.
    */
   public static long copy(InputStream in, OutputStream out)
@@ -42,8 +42,12 @@ public class ModifiedIO {
 
   /**
    * Copy Stream in to Stream for byteCount bytes or until EOF or exception.
-   * 
+   *
+   * @param in input stream
+   * @param out output stream
+   * @param byteCount buffer size to read
    * @return Copied bytes count or -1 if no bytes were read *and* EOF was reached
+   * @throws IOException i/o exception
    */
   public static long copy(InputStream in,
                           OutputStream out,
@@ -83,7 +87,7 @@ public class ModifiedIO {
     return returnVal;
   }
 
-  /**
+  /*
    * Copy Reader to Writer for byteCount bytes or until EOF or exception.
    */
   public static long copy(Reader in,

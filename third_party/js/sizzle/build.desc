@@ -1,3 +1,7 @@
 
-js_deps(name = "sizzle",
+js_library(name = "sizzle",
   srcs = [ "sizzle.js" ])
+
+export_file(name = "js",
+  srcs = [ "sizzle.js" ])
+

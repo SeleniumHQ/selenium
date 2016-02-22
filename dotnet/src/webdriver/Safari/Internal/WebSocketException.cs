@@ -1,9 +1,9 @@
 // <copyright file="WebSocketException.cs" company="WebDriver Committers">
-// Copyright 2007-2012 WebDriver committers
-// Copyright 2007-2012 Google Inc.
-// Portions copyright 2012 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -18,7 +18,6 @@
 
 using System;
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 namespace OpenQA.Selenium.Safari.Internal
 {
@@ -102,11 +101,11 @@ namespace OpenQA.Selenium.Safari.Internal
             : base(info, context)
         {
         }
-        
+
         /// <summary>
         /// Gets the status code.
         /// </summary>
-        public int StatusCode 
+        public int StatusCode
         {
             get { return this.statusCode; }
         }

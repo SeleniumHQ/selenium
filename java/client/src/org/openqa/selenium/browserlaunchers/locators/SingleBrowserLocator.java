@@ -1,28 +1,30 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 
 package org.openqa.selenium.browserlaunchers.locators;
 
-import org.openqa.selenium.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.io.IOUtils;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.WindowsUtils;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.logging.Logger;
 
 /**
@@ -163,7 +165,7 @@ public abstract class SingleBrowserLocator implements BrowserLocator {
       return null;
     }
 
-    if (LauncherUtils.isScriptFile(launcher)) {
+    if (isScriptFile(launcher)) {
       log.warning("Caution: '" +
           launcher.getAbsolutePath() +
           "': file is a script file, not a real executable.  The browser environment is no longer fully under RC control");
@@ -187,6 +189,25 @@ public abstract class SingleBrowserLocator implements BrowserLocator {
     currentLibraryPath = WindowsUtils.loadEnvironment().getProperty(libraryPathEnvironmentVariable);
 
     return currentLibraryPath + File.pathSeparator + launcherPath.getParent();
+  }
+
+  protected boolean isScriptFile(File aFile) {
+    final char firstTwoChars[] = new char[2];
+    FileReader reader = null;
+    int charsRead;
+
+    try {
+      reader = new FileReader(aFile);
+      charsRead = reader.read(firstTwoChars);
+      if (2 != charsRead) {
+        return false;
+      }
+      return (firstTwoChars[0] == '#' && firstTwoChars[1] == '!');
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    } finally {
+      IOUtils.closeQuietly(reader);
+    }
   }
 
 }

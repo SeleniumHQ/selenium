@@ -3,5 +3,5 @@
 # rule allows us to have js_* targets that depend on nothing but Closure
 # itself.
 
-js_deps(name = "closure",
+js_library(name = "closure",
   srcs = "goog/base.js")

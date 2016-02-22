@@ -20,11 +20,10 @@
  * <br>
  * Note: this does not guarantee the correctness of {@code keyCode} or
  * {@code charCode}, or attempt to unify them across browsers. See
- * {@code goog.events.KeyHandler} for that functionality.<br>
+ * {@code goog.events.KeyHandler} for that functionality<br>
  * <br>
  * Known issues:
  * <ul>
- * <li>Does not trigger for drop events on Opera due to browser bug.
  * <li>IE doesn't have native support for input event. WebKit before version 531
  *     doesn't have support for textareas. For those browsers an emulation mode
  *     based on key, clipboard and drop events is used. Thus this event won't
@@ -39,7 +38,7 @@ goog.provide('goog.events.InputHandler');
 goog.provide('goog.events.InputHandler.EventType');
 
 goog.require('goog.Timer');
-goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
@@ -57,7 +56,14 @@ goog.require('goog.userAgent');
  * @extends {goog.events.EventTarget}
  */
 goog.events.InputHandler = function(element) {
-  goog.base(this);
+  goog.events.InputHandler.base(this, 'constructor');
+
+  /**
+   * Id of a timer used to postpone firing input event in emulation mode.
+   * @type {?number}
+   * @private
+   */
+  this.timer_ = null;
 
   /**
    * The element that you want to listen for input events on.
@@ -75,12 +81,12 @@ goog.events.InputHandler = function(element) {
   //   event.
   // IE9 supports input events when characters are inserted, but not deleted.
   // WebKit before version 531 did not support input events for textareas.
-  var emulateInputEvents = goog.userAgent.IE ||
+  var emulateInputEvents = goog.userAgent.IE || goog.userAgent.EDGE ||
       (goog.userAgent.WEBKIT && !goog.userAgent.isVersionOrHigher('531') &&
-          element.tagName == 'TEXTAREA');
+          element.tagName == goog.dom.TagName.TEXTAREA);
 
   /**
-   * @type {goog.events.EventHandler}
+   * @type {goog.events.EventHandler<!goog.events.InputHandler>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -112,32 +118,25 @@ goog.events.InputHandler.EventType = {
 
 
 /**
- * Id of a timer used to postpone firing input event in emulation mode.
- * @type {?number}
- * @private
- */
-goog.events.InputHandler.prototype.timer_ = null;
-
-
-/**
  * This handles the underlying events and dispatches a new event as needed.
  * @param {goog.events.BrowserEvent} e The underlying browser event.
  */
 goog.events.InputHandler.prototype.handleEvent = function(e) {
   if (e.type == 'input') {
+    // http://stackoverflow.com/questions/18389732/changing-placeholder-triggers-input-event-in-ie-10
+    // IE 10+ fires an input event when there are inputs with placeholders.
+    // It fires the event with keycode 0, so if we detect it we don't
+    // propagate the input event.
+    if (goog.userAgent.IE && goog.userAgent.isVersionOrHigher(10) &&
+        e.keyCode == 0 && e.charCode == 0) {
+      return;
+    }
     // This event happens after all the other events we listen to, so cancel
     // an asynchronous event dispatch if we have it queued up.  Otherwise, we
     // will end up firing an extra event.
     this.cancelTimerIfSet_();
 
-    // Unlike other browsers, Opera fires an extra input event when an element
-    // is blurred after the user has input into it. Since Opera doesn't fire
-    // input event on drop, it's enough to check whether element still has focus
-    // to suppress bogus notification.
-    if (!goog.userAgent.OPERA || this.element_ ==
-        goog.dom.getOwnerDocument(this.element_).activeElement) {
-      this.dispatchEvent(this.createInputEvent_(e));
-    }
+    this.dispatchEvent(this.createInputEvent_(e));
   } else {
     // Filter out key events that don't modify text.
     if (e.type == 'keydown' &&
@@ -194,7 +193,7 @@ goog.events.InputHandler.prototype.cancelTimerIfSet_ = function() {
 /**
  * Creates an input event from the browser event.
  * @param {goog.events.BrowserEvent} be A browser event.
- * @return {goog.events.BrowserEvent} An input event.
+ * @return {!goog.events.BrowserEvent} An input event.
  * @private
  */
 goog.events.InputHandler.prototype.createInputEvent_ = function(be) {
@@ -206,7 +205,7 @@ goog.events.InputHandler.prototype.createInputEvent_ = function(be) {
 
 /** @override */
 goog.events.InputHandler.prototype.disposeInternal = function() {
-  goog.base(this, 'disposeInternal');
+  goog.events.InputHandler.base(this, 'disposeInternal');
   this.eventHandler_.dispose();
   this.cancelTimerIfSet_();
   delete this.element_;

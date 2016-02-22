@@ -48,7 +48,9 @@ goog.events.Listener = function(
   this.listener = listener;
 
   /**
-   * Proxy for callback that passes through {@link goog.events#HandleEvent_}.
+   * A wrapper over the original listener. This is used solely to
+   * handle native browser events (it is used to simulate the capture
+   * phase and to patch the event object).
    * @type {Function}
    */
   this.proxy = proxy;

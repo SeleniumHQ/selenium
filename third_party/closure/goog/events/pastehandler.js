@@ -38,12 +38,12 @@ goog.provide('goog.events.PasteHandler.State');
 
 goog.require('goog.Timer');
 goog.require('goog.async.ConditionalDelay');
-goog.require('goog.debug.Logger');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
+goog.require('goog.log');
 goog.require('goog.userAgent');
 
 
@@ -78,7 +78,7 @@ goog.events.PasteHandler = function(element) {
 
   /**
    * Handler for events.
-   * @type {goog.events.EventHandler}
+   * @type {goog.events.EventHandler<!goog.events.PasteHandler>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -94,6 +94,7 @@ goog.events.PasteHandler = function(element) {
 
   if (goog.userAgent.WEBKIT ||
       goog.userAgent.IE ||
+      goog.userAgent.EDGE ||
       goog.userAgent.GECKO && goog.userAgent.isVersionOrHigher('1.9')) {
     // Most modern browsers support the paste event.
     this.eventHandler_.listen(element, goog.events.EventType.PASTE,
@@ -201,11 +202,11 @@ goog.events.PasteHandler.prototype.previousEvent_;
 
 /**
  * A logger, used to help us debug the algorithm.
- * @type {goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @private
  */
 goog.events.PasteHandler.prototype.logger_ =
-    goog.debug.Logger.getLogger('goog.events.PasteHandler');
+    goog.log.getLogger('goog.events.PasteHandler');
 
 
 /** @override */
@@ -230,8 +231,10 @@ goog.events.PasteHandler.prototype.getState = function() {
 
 /**
  * Returns the event handler.
- * @return {goog.events.EventHandler} The event handler.
+ * @return {goog.events.EventHandler<T>} The event handler.
  * @protected
+ * @this {T}
+ * @template T
  */
 goog.events.PasteHandler.prototype.getEventHandler = function() {
   return this.eventHandler_;
@@ -249,7 +252,7 @@ goog.events.PasteHandler.prototype.checkUpdatedText_ = function() {
   if (this.oldValue_ == this.element_.value) {
     return false;
   }
-  this.logger_.info('detected textchange after paste');
+  goog.log.info(this.logger_, 'detected textchange after paste');
   this.dispatchEvent(goog.events.PasteHandler.EventType.AFTER_PASTE);
   return true;
 };
@@ -346,12 +349,12 @@ goog.events.PasteHandler.prototype.handleEvent_ = function(e) {
       break;
     }
     default: {
-      this.logger_.severe('invalid ' + this.state_ + ' state');
+      goog.log.error(this.logger_, 'invalid ' + this.state_ + ' state');
     }
   }
   this.lastTime_ = goog.now();
   this.oldValue_ = this.element_.value;
-  this.logger_.info(e.type + ' -> ' + this.state_);
+  goog.log.info(this.logger_, e.type + ' -> ' + this.state_);
   this.previousEvent_ = e.type;
 };
 
@@ -382,13 +385,14 @@ goog.events.PasteHandler.prototype.handleUnderInit_ = function(e) {
     case goog.events.EventType.MOUSEOVER: {
       this.state_ = goog.events.PasteHandler.State.INIT;
       if (this.element_.value != this.oldValue_) {
-        this.logger_.info('paste by dragdrop while on init!');
+        goog.log.info(this.logger_, 'paste by dragdrop while on init!');
         this.dispatch_(e);
       }
       break;
     }
     default: {
-      this.logger_.severe('unexpected event ' + e.type + 'during init');
+      goog.log.error(this.logger_,
+          'unexpected event ' + e.type + 'during init');
     }
   }
 };
@@ -433,7 +437,7 @@ goog.events.PasteHandler.prototype.handleUnderFocused_ = function(e) {
               MANDATORY_MS_BETWEEN_INPUT_EVENTS_TIE_BREAKER;
       if (goog.now() > minimumMilisecondsBetweenInputEvents ||
           this.previousEvent_ == goog.events.EventType.FOCUS) {
-        this.logger_.info('paste by textchange while focused!');
+        goog.log.info(this.logger_, 'paste by textchange while focused!');
         this.dispatch_(e);
       }
       break;
@@ -443,7 +447,7 @@ goog.events.PasteHandler.prototype.handleUnderFocused_ = function(e) {
       break;
     }
     case goog.events.EventType.KEYDOWN: {
-      this.logger_.info('key down ... looking for ctrl+v');
+      goog.log.info(this.logger_, 'key down ... looking for ctrl+v');
       // Opera + MAC does not set e.ctrlKey. Instead, it gives me e.keyCode = 0.
       // http://www.quirksmode.org/js/keys.html
       if (goog.userAgent.MAC && goog.userAgent.OPERA && e.keyCode == 0 ||
@@ -455,13 +459,14 @@ goog.events.PasteHandler.prototype.handleUnderFocused_ = function(e) {
     }
     case goog.events.EventType.MOUSEOVER: {
       if (this.element_.value != this.oldValue_) {
-        this.logger_.info('paste by dragdrop while focused!');
+        goog.log.info(this.logger_, 'paste by dragdrop while focused!');
         this.dispatch_(e);
       }
       break;
     }
     default: {
-      this.logger_.severe('unexpected event ' + e.type + ' during focused');
+      goog.log.error(this.logger_,
+          'unexpected event ' + e.type + ' during focused');
     }
   }
 };
@@ -493,20 +498,21 @@ goog.events.PasteHandler.prototype.handleUnderTyping_ = function(e) {
       if (e.ctrlKey && e.keyCode == goog.events.KeyCodes.V ||
           e.shiftKey && e.keyCode == goog.events.KeyCodes.INSERT ||
           e.metaKey && e.keyCode == goog.events.KeyCodes.V) {
-        this.logger_.info('paste by ctrl+v while keypressed!');
+        goog.log.info(this.logger_, 'paste by ctrl+v while keypressed!');
         this.dispatch_(e);
       }
       break;
     }
     case goog.events.EventType.MOUSEOVER: {
       if (this.element_.value != this.oldValue_) {
-        this.logger_.info('paste by dragdrop while keypressed!');
+        goog.log.info(this.logger_, 'paste by dragdrop while keypressed!');
         this.dispatch_(e);
       }
       break;
     }
     default: {
-      this.logger_.severe('unexpected event ' + e.type + ' during keypressed');
+      goog.log.error(this.logger_,
+          'unexpected event ' + e.type + ' during keypressed');
     }
   }
 };

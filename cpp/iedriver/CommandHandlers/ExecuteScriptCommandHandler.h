@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -30,7 +33,6 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
 
  protected:
   virtual void ExecuteInternal(const IECommandExecutor& executor,
-                               const LocatorMap& locator_parameters,
                                const ParametersMap& command_parameters,
                                Response* response) {
     ParametersMap::const_iterator script_parameter_iterator = command_parameters.find("script");
@@ -119,8 +121,14 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
     } else if (arg.isArray()) {
       status_code = this->WalkArray(executor, script_wrapper, arg);
     } else if (arg.isObject()) {
-      if (arg.isMember("ELEMENT")) {
-        std::string element_id = arg["ELEMENT"].asString();
+      // TODO: Remove the check for "ELEMENT" once all target bindings 
+      // have been updated to use spec-compliant protocol.
+      std::string element_marker_property_name = "element-6066-11e4-a52e-4f735466cecf";
+      if (!arg.isMember(element_marker_property_name)) {
+        element_marker_property_name = "ELEMENT";
+      }
+      if (arg.isMember(element_marker_property_name)) {
+        std::string element_id = arg[element_marker_property_name].asString();
 
         ElementHandle element_wrapper;
         status_code = this->GetElement(executor, element_id, &element_wrapper);
@@ -196,7 +204,7 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
       }
       std::string counter_string = std::to_string(static_cast<long long>(counter));
       std::string name = it.memberName();
-      object_script += name + ":arguments[" + counter_string + "]";
+      object_script += "\"" + name + "\"" + ":arguments[" + counter_string + "]";
       ++counter;
     }
     object_script += "};}})();";

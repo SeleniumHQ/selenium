@@ -1,19 +1,19 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 
 package org.openqa.selenium.server;
@@ -43,10 +43,10 @@ public class InjectionHelper {
   private static boolean tryToInjectInHead = false;
   private static String injectionHtml = "/core/scripts/injection.html";
   private static HashMap<String, HashMap<String, String>> jsStateInitializersBySessionId =
-      new HashMap<String, HashMap<String, String>>();
-  private static HashMap<String, String> sessionIdToUniqueId = new HashMap<String, String>();
+      new HashMap<>();
+  private static HashMap<String, String> sessionIdToUniqueId = new HashMap<>();
 
-  private static HashMap<String, String> contentTransformations = new HashMap<String, String>();
+  private static HashMap<String, String> contentTransformations = new HashMap<>();
   private static List<String> userJsInjectionFiles = new LinkedList<String>();
 
   public static void setBrowserSideLogEnabled(boolean browserSideLogEnabled) {
@@ -135,7 +135,7 @@ public class InjectionHelper {
         appendFileContent(sb, "/core/xpath/xmltoken.js");
         appendFileContent(sb, "/core/xpath/dom.js");
         appendFileContent(sb, "/core/xpath/xpath.js");
-        appendFileContent(sb, "/core/xpath/javascript-xpath-0.1.11.js");
+        appendFileContent(sb, "/core/xpath/javascript-xpath-0.1.12.js");
         appendFileContent(sb, "/core/scripts/user-extensions.js");
       } catch (Exception e) {
         if (failOnError) {
@@ -170,7 +170,7 @@ public class InjectionHelper {
     writeScriptTag(os, "/core/xpath/xmltoken.js");
     writeScriptTag(os, "/core/xpath/dom.js");
     writeScriptTag(os, "/core/xpath/xpath.js");
-    writeScriptTag(os, "/core/xpath/javascript-xpath-0.1.11.js");
+    writeScriptTag(os, "/core/xpath/javascript-xpath-0.1.12.js");
     writeScriptTag(os, "/core/scripts/user-extensions.js");
   }
 
@@ -296,8 +296,6 @@ public class InjectionHelper {
       // (int) 187
       // (int)(new String(buf)).charAt(2)
       // (int) 191
-      // (new String(buf)).charAt(2)
-      // (char) ¿
       // (int)(new String(buf)).charAt(3)
       // (int) 10
       //
@@ -312,10 +310,10 @@ public class InjectionHelper {
 
   /**
    * read bufLen bytes into buf (unless EOF is seen first) from in.
-   * 
-   * @param in
-   * @param buf
-   * @param bufLen
+   *
+   * @param in input stream
+   * @param buf buffer to read into
+   * @param bufLen max size to read
    * @return number of bytes read
    * @throws IOException
    */

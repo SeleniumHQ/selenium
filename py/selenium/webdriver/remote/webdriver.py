@@ -1,28 +1,35 @@
-# Copyright 2008-2013 Software freedom conservancy
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-"""
-The WebDriver implementation.
-"""
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+"""The WebDriver implementation."""
+
 import base64
+import warnings
+
 from .command import Command
 from .webelement import WebElement
 from .remote_connection import RemoteConnection
 from .errorhandler import ErrorHandler
+from .switch_to import SwitchTo
+from .mobile import Mobile
+from .file_detector import FileDetector, LocalFileDetector
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 
 try:
@@ -30,18 +37,20 @@ try:
 except NameError:
     pass
 
+
 class WebDriver(object):
     """
     Controls a browser by sending commands to a remote server.
-    This server is expected to be running the WebDriver wire protocol as defined
-    here: http://code.google.com/p/selenium/wiki/JsonWireProtocol
+    This server is expected to be running the WebDriver wire protocol
+    as defined at
+    https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
 
     :Attributes:
-     - command_executor - The command.CommandExecutor object used to execute commands.
-     - error_handler - errorhandler.ErrorHandler object used to verify that the server did not return an error.
-     - session_id - The session ID to send with every command.
-     - capabilities - A dictionary of capabilities of the underlying browser for this instance's session.
-     - proxy - A selenium.webdriver.common.proxy.Proxy object, to specify a proxy for the browser to use.
+     - session_id - String ID of the browser session started and controlled by this WebDriver.
+     - capabilities - Dictionaty of effective capabilities of this browser session as returned
+         by the remote server. See https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities
+     - command_executor - remote_connection.RemoteConnection object used to execute commands.
+     - error_handler - errorhandler.ErrorHandler object used to handle errors.
     """
 
     def __init__(self, command_executor='http://127.0.0.1:4444/wd/hub',
@@ -50,9 +59,16 @@ class WebDriver(object):
         Create a new driver that will issue commands using the wire protocol.
 
         :Args:
-         - command_executor - Either a command.CommandExecutor object or a string that specifies the URL of a remote server to send commands to.
-         - desired_capabilities - Dictionary holding predefined values for starting a browser
-         - browser_profile - A selenium.webdriver.firefox.firefox_profile.FirefoxProfile object.  Only used if Firefox is requested.
+         - command_executor - Either a string representing URL of the remote server or a custom
+             remote_connection.RemoteConnection object. Defaults to 'http://127.0.0.1:4444/wd/hub'.
+         - desired_capabilities - A dictionary of capabilities to request when
+             starting the browser session. Required parameter.
+         - browser_profile - A selenium.webdriver.firefox.firefox_profile.FirefoxProfile object.
+             Only used if Firefox is requested. Optional.
+         - proxy - A selenium.webdriver.common.proxy.Proxy object. The browser session will
+             be started with given proxy settings, if possible. Optional.
+         - keep_alive - Whether to configure remote_connection.RemoteConnection to use
+             HTTP keep-alive. Defaults to False.
         """
         if desired_capabilities is None:
             raise WebDriverException("Desired Capabilities can't be None")
@@ -61,7 +77,7 @@ class WebDriver(object):
         if proxy is not None:
             proxy.add_to_capabilities(desired_capabilities)
         self.command_executor = command_executor
-        if type(self.command_executor) is bytes or type(self.command_executor) is str:
+        if type(self.command_executor) is bytes or isinstance(self.command_executor, str):
             self.command_executor = RemoteConnection(command_executor, keep_alive=keep_alive)
         self._is_remote = True
         self.session_id = None
@@ -69,6 +85,18 @@ class WebDriver(object):
         self.error_handler = ErrorHandler()
         self.start_client()
         self.start_session(desired_capabilities, browser_profile)
+        self._switch_to = SwitchTo(self)
+        self._mobile = Mobile(self)
+        self.file_detector = LocalFileDetector()
+
+    def __repr__(self):
+        return '<{0.__module__}.{0.__name__} (session="{1}")>'.format(
+            type(self), self.session_id)
+
+
+    @property
+    def mobile(self):
+        return self._mobile
 
     @property
     def name(self):
@@ -115,6 +143,9 @@ class WebDriver(object):
         self.session_id = response['sessionId']
         self.capabilities = response['value']
 
+        # Quick check to see if we have a W3C Compliant browser
+        self.w3c = "specificationLevel" in self.capabilities
+
     def _wrap_value(self, value):
         if isinstance(value, dict):
             converted = {}
@@ -122,7 +153,7 @@ class WebDriver(object):
                 converted[key] = self._wrap_value(val)
             return converted
         elif isinstance(value, WebElement):
-            return {'ELEMENT': value.id}
+            return {'ELEMENT': value.id, 'element-6066-11e4-a52e-4f735466cecf': value.id}
         elif isinstance(value, list):
             return list(self._wrap_value(item) for item in value)
         else:
@@ -132,11 +163,16 @@ class WebDriver(object):
         """
         Creates a web element with the specified element_id.
         """
-        return WebElement(self, element_id)
+        return WebElement(self, element_id, w3c=self.w3c)
 
     def _unwrap_value(self, value):
-        if isinstance(value, dict) and 'ELEMENT' in value:
-            return self.create_web_element(value['ELEMENT'])
+        if isinstance(value, dict) and ('ELEMENT' in value or 'element-6066-11e4-a52e-4f735466cecf' in value):
+            wrapped_id = value.get('ELEMENT', None)
+            if wrapped_id:
+                return self.create_web_element(value['ELEMENT'])
+            else:
+                return self.create_web_element(value['element-6066-11e4-a52e-4f735466cecf'])
+
         elif isinstance(value, list):
             return list(self._unwrap_value(item) for item in value)
         else:
@@ -153,10 +189,11 @@ class WebDriver(object):
         :Returns:
           The command's JSON response loaded into a dictionary object.
         """
-        if not params:
-            params = {'sessionId': self.session_id}
-        elif 'sessionId' not in params:
-            params['sessionId'] = self.session_id
+        if self.session_id is not None:
+            if not params:
+                params = {'sessionId': self.session_id}
+            elif 'sessionId' not in params:
+                params['sessionId'] = self.session_id
 
         params = self._wrap_value(params)
         response = self.command_executor.execute(driver_command, params)
@@ -204,7 +241,7 @@ class WebDriver(object):
          - id\_ - The id of the elements to be found.
 
         :Usage:
-            driver.find_element_by_id('foo')
+            driver.find_elements_by_id('foo')
         """
         return self.find_elements(by=By.ID, value=id_)
 
@@ -372,7 +409,7 @@ class WebDriver(object):
          - css_selector: The css selector to use when finding elements.
 
         :Usage:
-            driver.find_element_by_css_selector('#foo')
+            driver.find_elements_by_css_selector('.foo')
         """
         return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
 
@@ -387,10 +424,6 @@ class WebDriver(object):
         :Usage:
             driver.execute_script('document.title')
         """
-        if len(args) == 1:
-            converted_args = args[0]
-        else:
-            converted_args = list(args)
         converted_args = list(args)
         return self.execute(Command.EXECUTE_SCRIPT,
             {'script': script, 'args':converted_args})['value']
@@ -406,10 +439,6 @@ class WebDriver(object):
         :Usage:
             driver.execute_async_script('document.title')
         """
-        if len(args) == 1:
-            converted_args = args[0]
-        else:
-            converted_args = list(args)
         converted_args = list(args)
         return self.execute(Command.EXECUTE_ASYNC_SCRIPT,
             {'script': script, 'args':converted_args})['value']
@@ -479,62 +508,45 @@ class WebDriver(object):
         """
         Maximizes the current window that webdriver is using
         """
-        self.execute(Command.MAXIMIZE_WINDOW, {"windowHandle": "current"})
+        command = Command.MAXIMIZE_WINDOW
+        if self.w3c:
+            command = Command.W3C_MAXIMIZE_WINDOW
+        self.execute(command, {"windowHandle": "current"})
+
+    @property
+    def switch_to(self):
+        return self._switch_to
 
     #Target Locators
     def switch_to_active_element(self):
+        """ Deprecated use driver.switch_to.active_element
         """
-        Returns the element with focus, or BODY if nothing has focus.
-
-        :Usage:
-            driver.switch_to_active_element()
-        """
-        return self.execute(Command.GET_ACTIVE_ELEMENT)['value']
+        warnings.warn("use driver.switch_to.active_element instead", DeprecationWarning)
+        return self._switch_to.active_element
 
     def switch_to_window(self, window_name):
+        """ Deprecated use driver.switch_to.window
         """
-        Switches focus to the specified window.
-
-        :Args:
-         - window_name: The name or window handle of the window to switch to.
-
-        :Usage:
-            driver.switch_to_window('main')
-        """
-        self.execute(Command.SWITCH_TO_WINDOW, {'name': window_name})
+        warnings.warn("use driver.switch_to.window instead", DeprecationWarning)
+        self._switch_to.window(window_name)
 
     def switch_to_frame(self, frame_reference):
+        """ Deprecated use driver.switch_to.frame
         """
-        Switches focus to the specified frame, by index, name, or webelement.
-
-        :Args:
-         - frame_reference: The name of the window to switch to, an integer representing the index,
-                            or a webelement that is an (i)frame to switch to.
-
-        :Usage:
-            driver.switch_to_frame('frame_name')
-            driver.switch_to_frame(1)
-            driver.switch_to_frame(driver.find_elements_by_tag_name("iframe")[0])
-        """
-        self.execute(Command.SWITCH_TO_FRAME, {'id': frame_reference})
+        warnings.warn("use driver.switch_to.frame instead", DeprecationWarning)
+        self._switch_to.frame(frame_reference)
 
     def switch_to_default_content(self):
+        """ Deprecated use driver.switch_to.default_content
         """
-        Switch focus to the default frame.
-
-        :Usage:
-            driver.switch_to_default_content()
-        """
-        self.execute(Command.SWITCH_TO_FRAME, {'id': None})
+        warnings.warn("use driver.switch_to.default_content instead", DeprecationWarning)
+        self._switch_to.default_content()
 
     def switch_to_alert(self):
+        """ Deprecated use driver.switch_to.alert
         """
-        Switches focus to an alert on the page.
-
-        :Usage:
-            driver.switch_to_alert()
-        """
-        return Alert(self)
+        warnings.warn("use driver.switch_to.alert instead", DeprecationWarning)
+        return self._switch_to.alert
 
     #Navigation
     def back(self):
@@ -635,7 +647,11 @@ class WebDriver(object):
         :Usage:
             driver.implicitly_wait(30)
         """
-        self.execute(Command.IMPLICIT_WAIT, {'ms': float(time_to_wait) * 1000})
+        if self.w3c:
+            self.execute(Command.SET_TIMEOUTS,
+                         {'ms': float(time_to_wait) * 1000, 'type':'implicit'})
+        else:
+            self.execute(Command.IMPLICIT_WAIT, {'ms': float(time_to_wait) * 1000})
 
     def set_script_timeout(self, time_to_wait):
         """
@@ -648,8 +664,12 @@ class WebDriver(object):
         :Usage:
             driver.set_script_timeout(30)
         """
-        self.execute(Command.SET_SCRIPT_TIMEOUT,
-            {'ms': float(time_to_wait) * 1000})
+        if self.w3c:
+            self.execute(Command.SET_TIMEOUTS,
+                         {'ms': float(time_to_wait) * 1000, 'type':'script'})
+        else:
+            self.execute(Command.SET_SCRIPT_TIMEOUT,
+                         {'ms': float(time_to_wait) * 1000})
 
     def set_page_load_timeout(self, time_to_wait):
         """
@@ -676,7 +696,18 @@ class WebDriver(object):
         """
         if not By.is_valid(by) or not isinstance(value, str):
             raise InvalidSelectorException("Invalid locator values passed in")
-
+        if self.w3c:
+            if by == By.ID:
+                by = By.CSS_SELECTOR
+                value = '[id="%s"]' % value
+            elif by == By.TAG_NAME:
+                by = By.CSS_SELECTOR
+            elif by == By.CLASS_NAME:
+                by = By.CSS_SELECTOR
+                value = ".%s" % value
+            elif by == By.NAME:
+                by = By.CSS_SELECTOR
+                value = '[name="%s"]' % value
         return self.execute(Command.FIND_ELEMENT,
                              {'using': by, 'value': value})['value']
 
@@ -691,6 +722,18 @@ class WebDriver(object):
         """
         if not By.is_valid(by) or not isinstance(value, str):
             raise InvalidSelectorException("Invalid locator values passed in")
+        if self.w3c:
+            if by == By.ID:
+                by = By.CSS_SELECTOR
+                value = '[id="%s"]' % value
+            elif by == By.TAG_NAME:
+                by = By.CSS_SELECTOR
+            elif by == By.CLASS_NAME:
+                by = By.CSS_SELECTOR
+                value = ".%s" % value
+            elif by == By.NAME:
+                by = By.CSS_SELECTOR
+                value = '[name="%s"]' % value
 
         return self.execute(Command.FIND_ELEMENTS,
                              {'using': by, 'value': value})['value']
@@ -754,7 +797,10 @@ class WebDriver(object):
         :Usage:
             driver.set_window_size(800,600)
         """
-        self.execute(Command.SET_WINDOW_SIZE, {'width': int(width), 'height': int(height),
+        command = Command.SET_WINDOW_SIZE
+        if self.w3c:
+            command = Command.W3C_SET_WINDOW_SIZE
+        self.execute(command, {'width': int(width), 'height': int(height),
           'windowHandle': windowHandle})
 
     def get_window_size(self, windowHandle='current'):
@@ -764,8 +810,16 @@ class WebDriver(object):
         :Usage:
             driver.get_window_size()
         """
-        return self.execute(Command.GET_WINDOW_SIZE,
-            {'windowHandle': windowHandle})['value']
+        command = Command.GET_WINDOW_SIZE
+        if self.w3c:
+            command = Command.W3C_GET_WINDOW_SIZE
+        size = self.execute(command,
+            {'windowHandle': windowHandle})
+
+        if size.get('value', None) != None:
+            return size['value']
+        else:
+            return size
 
     def set_window_position(self, x, y, windowHandle='current'):
         """
@@ -792,6 +846,29 @@ class WebDriver(object):
             {'windowHandle': windowHandle})['value']
 
     @property
+    def file_detector(self):
+        return self._file_detector
+
+    @file_detector.setter
+    def file_detector(self, detector):
+        """
+        Set the file detector to be used when sending keyboard input.
+        By default, this is set to a file detector that does nothing.
+
+        see FileDetector
+        see LocalFileDetector
+        see UselessFileDetector
+
+        :Args:
+         - detector: The detector to use. Must not be None.
+        """
+        if detector == None:
+            raise WebDriverException("You may not set a file detector that is null")
+        if not isinstance(detector, FileDetector):
+            raise WebDriverException("Detector has to be instance of FileDetector")
+        self._file_detector = detector;
+
+    @property
     def orientation(self):
         """
         Gets the current orientation of the device
@@ -814,13 +891,9 @@ class WebDriver(object):
         """
         allowed_values = ['LANDSCAPE', 'PORTRAIT']
         if value.upper() in allowed_values:
-            self.execute(Command.SET_SCREEN_ORIENTATION, {'orientation': value})['value']
+            self.execute(Command.SET_SCREEN_ORIENTATION, {'orientation': value})
         else:
             raise WebDriverException("You can only set the orientation to 'LANDSCAPE' and 'PORTRAIT'")
-
-    def is_online(self):
-        """ Returns a boolean if the browser is online or offline"""
-        return self.execute(Command.IS_BROWSER_ONLINE)['value']
 
     @property
     def application_cache(self):

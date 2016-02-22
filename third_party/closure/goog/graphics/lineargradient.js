@@ -44,6 +44,7 @@ goog.require('goog.graphics.Fill');
  * @deprecated goog.graphics is deprecated. It existed to abstract over browser
  *     differences before the canvas tag was widely supported.  See
  *     http://en.wikipedia.org/wiki/Canvas_element for details.
+ * @final
  */
 goog.graphics.LinearGradient =
     function(x1, y1, x2, y2, color1, color2, opt_opacity1, opt_opacity2) {

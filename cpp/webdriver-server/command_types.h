@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -31,7 +34,7 @@ namespace CommandType {
   const std::string GoForward = "goForward";
   const std::string Refresh = "refresh";
   const std::string AddCookie = "addCookie";
-  const std::string GetAllCookies = "getAllCookies";
+  const std::string GetAllCookies = "getCookie";
   const std::string DeleteCookie = "deleteCookie";
   const std::string DeleteAllCookies = "deleteAllCookies";
   const std::string FindElement = "findElement";
@@ -39,14 +42,15 @@ namespace CommandType {
   const std::string FindChildElement = "findChildElement";
   const std::string FindChildElements = "findChildElements";
   const std::string DescribeElement = "describeElement";
-  const std::string ClearElement = "clearElement";
-  const std::string ClickElement = "clickElement";
-  const std::string SendKeysToElement = "sendKeysToElement";
+  const std::string ClearElement = "clear";
+  const std::string ClickElement = "click";
+  const std::string SendKeysToElement = "sendKeys";
   const std::string SubmitElement = "submit";
-  const std::string GetCurrentWindowHandle = "getCurrentWindowHandle";
+  const std::string GetCurrentWindowHandle = "getWindowHandle";
   const std::string GetWindowHandles = "getWindowHandles";
   const std::string SwitchToWindow = "switchToWindow";
   const std::string SwitchToFrame = "switchToFrame";
+  const std::string SwitchToParentFrame = "switchToParentFrame";
   const std::string GetActiveElement = "getActiveElement";
   const std::string GetCurrentUrl = "getCurrentUrl";
   const std::string GetPageSource = "getPageSource";
@@ -56,19 +60,19 @@ namespace CommandType {
   const std::string GetElementText = "getElementText";
   const std::string GetElementValue = "getElementValue";
   const std::string GetElementTagName = "getElementTagName";
-  const std::string IsElementSelected = "isElementSelected";
-  const std::string IsElementEnabled = "isElementEnabled";
-  const std::string IsElementDisplayed = "isElementDisplayed";
+  const std::string IsElementSelected = "isSelected";
+  const std::string IsElementEnabled = "isEnabled";
+  const std::string IsElementDisplayed = "isDisplayed";
   const std::string GetElementLocation = "getElementLocation";
   const std::string GetElementLocationOnceScrolledIntoView = "getElementLocationInView";
   const std::string GetElementSize = "getElementSize";
-  const std::string GetElementAttribute = "getAttribute";
+  const std::string GetElementAttribute = "getElementAttribute";
   const std::string GetElementValueOfCssProperty = "getValueOfCssProperty";
   const std::string ElementEquals = "elementEquals";
-  const std::string Screenshot = "screenshot";
+  const std::string Screenshot = "takeScreenshot";
   const std::string ImplicitlyWait = "implicitlyWait";
   const std::string SetAsyncScriptTimeout = "setAsyncScriptTimeout";
-  const std::string SetTimeout = "setTimeout";
+  const std::string SetTimeout = "timeouts";
   const std::string GetOrientation = "getOrientation";
   const std::string SetOrientation = "setOrientation";
 
@@ -78,17 +82,18 @@ namespace CommandType {
   const std::string SetWindowPosition = "setWindowPosition";
   const std::string MaximizeWindow = "maximizeWindow";
 
-  const std::string AcceptAlert = "acceptAlert";
-  const std::string DismissAlert = "dismissAlert";
-  const std::string GetAlertText = "getAlertText";
+  const std::string AcceptAlert = "accept";
+  const std::string DismissAlert = "dismiss";
+  const std::string GetAlertText = "getText";
   const std::string SendKeysToAlert = "sendKeysToAlert";
+  const std::string SetAlertCredentials = "setAlertCredentials";
 
   const std::string SendKeysToActiveElement = "sendKeysToActiveElement";
-  const std::string MouseMoveTo = "mouseMoveTo";
+  const std::string MouseMoveTo = "moveTo";
   const std::string MouseClick = "mouseClick";
-  const std::string MouseDoubleClick = "mouseDoubleClick";
-  const std::string MouseButtonDown = "mouseButtonDown";
-  const std::string MouseButtonUp = "mouseButtonUp";
+  const std::string MouseDoubleClick = "doubleClick";
+  const std::string MouseButtonDown = "buttonDown";
+  const std::string MouseButtonUp = "buttonUp";
 
   const std::string ListAvailableImeEngines = "listAvailableImeEngines";
   const std::string GetActiveImeEngine = "getActiveImeEngine";
@@ -96,13 +101,13 @@ namespace CommandType {
   const std::string ActivateImeEngine = "activateImeEngine";
   const std::string DeactivateImeEngine = "deactivateImeEngine";
 
-  const std::string TouchClick = "touchClick";
-  const std::string TouchDown = "touchDown";
-  const std::string TouchUp = "touchUp";
+  const std::string TouchClick = "tap";
+  const std::string TouchDown = "press";
+  const std::string TouchUp = "release";
   const std::string TouchMove = "touchMove";
   const std::string TouchScroll = "touchScroll";
   const std::string TouchDoubleClick = "touchDoubleClick";
-  const std::string TouchLongClick = "touchLongClick";
+  const std::string TouchLongClick = "longPress";
   const std::string TouchFlick = "touchFlick";
 }
 

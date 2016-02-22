@@ -7,5 +7,5 @@ java_library(name = "service",
     "//java/client/src/org/openqa/selenium/net",
     "//java/client/src/org/openqa/selenium/os",
     "//java/client/src/org/openqa/selenium/remote",
-    "//third_party/java/guava-libraries",
+    "//third_party/java/guava",
   ])

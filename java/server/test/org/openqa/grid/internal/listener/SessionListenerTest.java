@@ -1,19 +1,19 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.internal.listener;
 
@@ -63,12 +63,12 @@ public class SessionListenerTest {
   }
 
   static RegistrationRequest req = null;
-  static Map<String, Object> app1 = new HashMap<String, Object>();
+  static Map<String, Object> app1 = new HashMap<>();
 
   @BeforeClass
   public static void prepare() {
     app1.put(APP, "app1");
-    Map<String, Object> config = new HashMap<String, Object>();
+    Map<String, Object> config = new HashMap<>();
     config.put(ID, "abc");
     req = new RegistrationRequest();
     req.addDesiredCapability(app1);
@@ -248,15 +248,15 @@ public class SessionListenerTest {
 
   /**
    * using a proxy that times out instantly and spends a long time in the after method. check
-   * aftermethod cannot be excecuted twice for a session.
+   * aftermethod cannot be executed twice for a session.
    */
   @Test
   public void doubleRelease() throws InterruptedException {
     RegistrationRequest req = new RegistrationRequest();
-    Map<String, Object> cap = new HashMap<String, Object>();
+    Map<String, Object> cap = new HashMap<>();
     cap.put(APP, "app1");
 
-    Map<String, Object> config = new HashMap<String, Object>();
+    Map<String, Object> config = new HashMap<>();
     config.put(TIME_OUT, 1);
     config.put(CLEAN_UP_CYCLE, 1);
     config.put(MAX_SESSION, 2);

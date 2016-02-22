@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -31,13 +34,12 @@ class FindChildElementCommandHandler : public IECommandHandler {
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
-                       const LocatorMap& locator_parameters,
                        const ParametersMap& command_parameters,
                        Response* response) {
-    LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
+    ParametersMap::const_iterator id_parameter_iterator = command_parameters.find("id");
     ParametersMap::const_iterator using_parameter_iterator = command_parameters.find("using");
     ParametersMap::const_iterator value_parameter_iterator = command_parameters.find("value");
-    if (id_parameter_iterator == locator_parameters.end()) {
+    if (id_parameter_iterator == command_parameters.end()) {
       response->SetErrorResponse(400, "Missing parameter in URL: id");
       return;
     } else if (using_parameter_iterator == command_parameters.end()) {
@@ -49,7 +51,7 @@ class FindChildElementCommandHandler : public IECommandHandler {
     } else {
       std::string mechanism = using_parameter_iterator->second.asString();
       std::string value = value_parameter_iterator->second.asString();
-      std::string element_id = id_parameter_iterator->second;
+      std::string element_id = id_parameter_iterator->second.asString();
 
       ElementHandle parent_element_wrapper;
       int status_code = this->GetElement(executor,
@@ -74,28 +76,22 @@ class FindChildElementCommandHandler : public IECommandHandler {
             response->SetSuccessResponse(found_element);
             return;
           }
-          if(status_code == EINVALIDSELECTOR){
-            response->SetErrorResponse(status_code,
-              "The xpath expression '" + value + "' cannot be evaluated or does not" +
-              "result in a WebElement");
-            return;
-          } 
-          if (status_code == EUNHANDLEDERROR) {
-            response->SetErrorResponse(status_code,
-              "Unknown finder mechanism: " + mechanism);
-            return;
-          }
           if (status_code == ENOSUCHWINDOW) {
             response->SetErrorResponse(status_code, "Unable to find element on closed window");
             return;
           }
+          if (status_code != ENOSUCHELEMENT) {
+            response->SetErrorResponse(status_code, found_element.asString());
+            return;
+          }
+
           // Release the thread so that the browser doesn't starve.
           ::Sleep(FIND_ELEMENT_WAIT_TIME_IN_MILLISECONDS);
         } while (clock() < end);
 
         // This code is executed when status_code == ENOSUCHELEMENT
         response->SetErrorResponse(status_code, 
-          "Unable to find element with " + mechanism + " == " + value);
+            "Unable to find element with " + mechanism + " == " + value);
       } else {
         response->SetErrorResponse(status_code, "Element is no longer valid");
         return;

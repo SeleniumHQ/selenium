@@ -1,18 +1,19 @@
-#!/usr/bin/python
-
-# Copyright 2011 Software Freedom Conservancy.
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
 
 import pytest
 import unittest
@@ -37,6 +38,7 @@ singleSelectValuesWithSpaces = { 'name': 'select_with_spaces', 'values': ['One',
 multiSelectValues1  = { 'name': 'multi', 'values': ['Eggs', 'Ham', 'Sausages', 'Onion gravy']}
 multiSelectValues2  = { 'name': 'select_empty_multiple', 'values': ['select_1', 'select_2', 'select_3', 'select_4']}
 
+@pytest.mark.ignore_marionette
 class WebDriverSelectSupportTests(unittest.TestCase):
 
     def testSelectByIndexSingle(self):
@@ -61,7 +63,7 @@ class WebDriverSelectSupportTests(unittest.TestCase):
             pass # should get this exception
 
     def testSelectByValueSingle(self):
-        if self.driver.capabilities['browserName'] == 'chrome': 
+        if self.driver.capabilities['browserName'] == 'chrome':
             pytest.xfail("chrome currently doesn't allow css selectors with comma's in them that are not compound");
         self._loadPage("formPage")
 
@@ -94,6 +96,8 @@ class WebDriverSelectSupportTests(unittest.TestCase):
                 self.assertEqual(sel.first_selected_option.text, select['values'][x])
 
     def testSelectByVisibleTextShouldNormalizeSpaces(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs does not normalize spaces in text");
         self._loadPage("formPage")
 
         for select in [singleSelectValuesWithSpaces]:
@@ -304,9 +308,35 @@ class WebDriverSelectSupportTests(unittest.TestCase):
         except UnexpectedTagNameException:
           pass
 
+    def testDeselectByIndexNonExistent(self):
+        self._loadPage("formPage")
+        for select in [multiSelectValues1, multiSelectValues2]:
+            try:
+                Select(self.driver.find_element(By.NAME, select['name'])).deselect_by_index(10)
+                raise Exception("Should have gotten an NoSuchElementException to be raised.")
+            except NoSuchElementException:
+                pass # should get this exception
+
+    def testDeselectByValueNonExistent(self):
+        self._loadPage("formPage")
+        for select in [multiSelectValues1, multiSelectValues2]:
+            try:
+                Select(self.driver.find_element(By.NAME, select['name'])).deselect_by_value('not there')
+                raise Exception("Should have gotten an NoSuchElementException to be raised.")
+            except NoSuchElementException:
+                pass # should get this exception
+
+    def testDeselectByTextNonExistent(self):
+        self._loadPage("formPage")
+        for select in [multiSelectValues1, multiSelectValues2]:
+            try:
+                Select(self.driver.find_element(By.NAME, select['name'])).deselect_by_visible_text('not there')
+                raise Exception("Should have gotten an NoSuchElementException to be raised.")
+            except NoSuchElementException:
+                pass # should get this exception
+
     def _pageURL(self, name):
-        return "http://localhost:%d/%s.html" % (self.webserver.port, name)
+        return self.webserver.where_is(name + '.html')
 
     def _loadPage(self, name):
         self.driver.get(self._pageURL(name))
-

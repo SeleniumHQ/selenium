@@ -15,6 +15,7 @@
 /**
  * @fileoverview Basic animation controls.
  *
+ * @author arv@google.com (Erik Arvidsson)
  */
 goog.provide('goog.fx.anim');
 goog.provide('goog.fx.anim.Animated');
@@ -55,7 +56,7 @@ goog.fx.anim.TIMEOUT = goog.async.AnimationDelay.TIMEOUT;
 /**
  * A map of animations which should be cycled on the global timer.
  *
- * @type {Object.<number, goog.fx.anim.Animated>}
+ * @type {Object<number, goog.fx.anim.Animated>}
  * @private
  */
 goog.fx.anim.activeAnimations_ = {};

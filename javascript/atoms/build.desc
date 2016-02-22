@@ -1,7 +1,7 @@
 
 js_binary(name = "atoms",
   deps = [
-    ":deps",
+    ":all_js",
   ])
 
 js_library(name = "all_js",
@@ -31,24 +31,13 @@ js_library(name = "json",
     "userAgent.js"
   ])
 
-js_deps(name = "deps",
-  srcs = [
-    "*.js",
-    "locators/*.js",
-    "html5/*.js",
-  ],
-  deps = [
-    "//third_party/js/wgxpath:wgxpath",
-    "//third_party/closure",
-  ])
-
 js_test(name = "test",
   srcs = [
     "test/*_test.html",
     "test/html5/*_test.html",
   ],
   deps = [
-    ":deps",
+    ":all_js",
     "//java/client/test/org/openqa/selenium/javascript",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
   ])

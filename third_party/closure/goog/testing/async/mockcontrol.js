@@ -60,6 +60,7 @@ goog.require('goog.testing.mockmatchers.IgnoreArgument');
  *
  * @param {goog.testing.MockControl} mockControl The parent MockControl.
  * @constructor
+ * @final
  */
 goog.testing.async.MockControl = function(mockControl) {
   /**
@@ -76,7 +77,7 @@ goog.testing.async.MockControl = function(mockControl) {
  * callback when it is.
  *
  * @param {string} name The name of the callback mock.
- * @param {function(...[*]) : *} callback The wrapped callback. This will be
+ * @param {function(...*) : *} callback The wrapped callback. This will be
  *     called when the returned function is called.
  * @param {Object=} opt_selfObj The object which this should point to when the
  *     callback is run.
@@ -113,7 +114,7 @@ goog.testing.async.MockControl.prototype.createCallbackMock = function(
  *
  * @param {string} message A message to print if the arguments are wrong.
  * @param {...*} var_args The arguments to assert.
- * @return {function(...[*]) : void} The mock callback.
+ * @return {function(...*) : void} The mock callback.
  */
 goog.testing.async.MockControl.prototype.asyncAssertEquals = function(
     message, var_args) {

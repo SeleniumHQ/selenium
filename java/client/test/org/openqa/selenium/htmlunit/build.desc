@@ -1,13 +1,10 @@
 java_library(name = "tests",
   srcs = [
-    "HtmlUnitCapabilitiesTest.java",
     "HtmlUnitSpecificTests.java",
-    "InputKeysContainerTest.java",
     "ToStringTest.java",
-    "HtmlUnitProxyTest.java",
   ],
   deps = [
-    "//java/client/src/org/openqa/selenium/htmlunit",
+    "//third_party/java/htmlunit",
     "//java/client/test/org/openqa/selenium:tests"
   ])
 

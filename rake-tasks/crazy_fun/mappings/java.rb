@@ -55,8 +55,8 @@ module CrazyFunJava
 
   def self.ant
     @ant ||= (
-      require 'third_party/java/eclipse_compiler/ecj-3.5.2.jar'
-      require 'third_party/java/junit/junit-dep-4.11.jar'
+      require 'third_party/java/eclipse_compiler/ecj-4.3.2.jar'
+      require 'third_party/java/junit/junit-4.12.jar'
 
       Ant.load_bundled
 
@@ -67,9 +67,9 @@ module CrazyFunJava
       :classpath => 'third_party/java/jarjar/jarjar-1.4.jar'
       ant.taskdef :resource  => 'testngtasks' do |t|
         t.classpath do |cp|
-          cp.pathelement :location => 'third_party/java/testng/testng-6.8.5.jar'
+          cp.pathelement :location => 'third_party/java/testng/testng-6.9.9.jar'
           cp.pathelement :location => 'third_party/java/jcommander/jcommander-1.29.jar'
-          cp.pathelement :location => 'third_party/java/beanshell/bsh-1.3.0.jar'
+          cp.pathelement :location => 'third_party/java/beanshell/bsh-2.0b4.jar'
         end
       end
 
@@ -318,8 +318,8 @@ module CrazyFunJava
             :optimize             => true,
             :debug                => true,
             :nowarn               => true,
-            :source               => '1.6',
-            :target               => '1.6'
+            :source               => '1.7',
+            :target               => '1.7'
           ) { |ant|
             ant.classpath(:refid => "#{args[:name]}.path")
 
@@ -525,6 +525,14 @@ module CrazyFunJava
                 ant.sysproperty :key => 'webdriver.firefox.bin', :value => firefox
               end
 
+              if remote_url
+                ant.sysproperty :key => 'selenium.external.serverUrl', :value => remote_url
+                ant.sysproperty :key => 'selenium.browser.remote', :value => 'true'
+                if remote_browser
+                  ant.sysproperty :key => 'selenium.browser', :value => remote_browser
+                end
+              end
+
               if marionette?
                 ant.sysproperty :key => 'webdriver.firefox.marionette', :value => 'true'
               end
@@ -535,6 +543,10 @@ module CrazyFunJava
 
               if ignored_only?
                 ant.sysproperty :key => 'ignored_only', :value => 'true'
+              end
+
+              if local_only?
+                ant.sysproperty :key => 'local_only', :value => 'true'
               end
 
               # Log levels can be any of {'DEBUG', 'INFO', 'WARNING', 'ERROR'}
@@ -616,6 +628,14 @@ module CrazyFunJava
       return ENV['firefox']
     end
 
+    def remote_url
+      return ENV['remote_url']
+    end
+
+    def remote_browser
+      return ENV['remote_browser']
+    end
+
     def jvm_args
       return ENV['jvmargs']
     end
@@ -633,6 +653,11 @@ module CrazyFunJava
     def ignored_only?
       # we set ignored_only true if the commandline argument is set and it is not 'false'
       !([nil, 'false'].include? ENV['ignoredonly'])
+    end
+
+    def local_only?
+      # we set local_only true if the commandline argument is set and it is not 'false'
+      !([nil, 'false'].include? ENV['localonly'])
     end
 
     def leave_running?
@@ -884,7 +909,6 @@ module CrazyFunJava
         temp = zip + "temp"
         mkdir_p File.join(temp, "libs")
 
-        cp Rake::Task[uber].out, temp
         cp Rake::Task[project].out, temp
         cp Rake::Task[srcs].out, temp
 

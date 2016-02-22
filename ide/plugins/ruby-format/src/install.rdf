@@ -4,7 +4,7 @@
     <Description about="urn:mozilla:install-manifest">
         <em:id>rubyformatters@seleniumhq.org</em:id>
         <em:name>Selenium IDE: Ruby Formatters</em:name>
-        <em:version>2.5.0</em:version>
+        <em:version>2.9.0</em:version>
         <em:creator>Adam Goucher</em:creator>
         <em:developer>Samit Badle</em:developer>
         <em:description>Ruby code formatters for Selenium IDE</em:description>
@@ -15,8 +15,8 @@
         <em:targetApplication>
           <Description>
             <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id> <!-- firefox -->
-            <em:minVersion>3.0</em:minVersion>
-            <em:maxVersion>26.*</em:maxVersion>
+            <em:minVersion>3.6.*</em:minVersion>
+            <em:maxVersion>34.*</em:maxVersion>
           </Description>
         </em:targetApplication>
         

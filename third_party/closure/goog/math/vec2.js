@@ -36,6 +36,7 @@ goog.require('goog.math.Coordinate');
  *
  * @param {number} x The x coordinate for the vector.
  * @param {number} y The y coordinate for the vector.
+ * @struct
  * @constructor
  * @extends {goog.math.Coordinate}
  */
@@ -266,6 +267,17 @@ goog.math.Vec2.difference = function(a, b) {
  */
 goog.math.Vec2.dot = function(a, b) {
   return a.x * b.x + a.y * b.y;
+};
+
+
+/**
+ * Returns the determinant of two vectors.
+ * @param {!goog.math.Vec2} a The first vector.
+ * @param {!goog.math.Vec2} b The second vector.
+ * @return {number} The determinant of the two vectors.
+ */
+goog.math.Vec2.determinant = function(a, b) {
+  return a.x * b.y - a.y * b.x;
 };
 
 

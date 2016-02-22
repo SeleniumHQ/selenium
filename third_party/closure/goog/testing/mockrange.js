@@ -31,6 +31,7 @@ goog.require('goog.testing.LooseMock');
  * behavior of iterating through all of an object's properties.
  * @constructor
  * @extends {goog.testing.LooseMock}
+ * @final
  */
 goog.testing.MockRange = function() {
   goog.testing.LooseMock.call(this, goog.testing.MockRange.ConcreteRange_);

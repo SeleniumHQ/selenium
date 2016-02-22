@@ -20,7 +20,10 @@
 
 
 goog.provide('goog.Disposable');
+/** @suppress {extraProvide} */
 goog.provide('goog.dispose');
+/** @suppress {extraProvide} */
+goog.provide('goog.disposeAll');
 
 goog.require('goog.disposable.IDisposable');
 
@@ -36,9 +39,14 @@ goog.require('goog.disposable.IDisposable');
  */
 goog.Disposable = function() {
   if (goog.Disposable.MONITORING_MODE != goog.Disposable.MonitoringMode.OFF) {
-    this.creationStack = new Error().stack;
+    if (goog.Disposable.INCLUDE_STACK_ON_CREATION) {
+      this.creationStack = new Error().stack;
+    }
     goog.Disposable.instances_[goog.getUid(this)] = this;
   }
+  // Support sealing
+  this.disposed_ = this.disposed_;
+  this.onDisposeCallbacks_ = this.onDisposeCallbacks_;
 };
 
 
@@ -53,7 +61,7 @@ goog.Disposable.MonitoringMode = {
   /**
    * Creating and disposing the goog.Disposable instances is monitored. All
    * disposable objects need to call the {@code goog.Disposable} base
-   * constructor. The PERMANENT mode must bet switched on before creating any
+   * constructor. The PERMANENT mode must be switched on before creating any
    * goog.Disposable instances.
    */
   PERMANENT: 1,
@@ -77,16 +85,23 @@ goog.define('goog.Disposable.MONITORING_MODE', 0);
 
 
 /**
+ * @define {boolean} Whether to attach creation stack to each created disposable
+ *     instance; This is only relevant for when MonitoringMode != OFF.
+ */
+goog.define('goog.Disposable.INCLUDE_STACK_ON_CREATION', true);
+
+
+/**
  * Maps the unique ID of every undisposed {@code goog.Disposable} object to
  * the object itself.
- * @type {!Object.<number, !goog.Disposable>}
+ * @type {!Object<number, !goog.Disposable>}
  * @private
  */
 goog.Disposable.instances_ = {};
 
 
 /**
- * @return {!Array.<!goog.Disposable>} All {@code goog.Disposable} objects that
+ * @return {!Array<!goog.Disposable>} All {@code goog.Disposable} objects that
  *     haven't been disposed of.
  */
 goog.Disposable.getUndisposedObjects = function() {
@@ -118,7 +133,7 @@ goog.Disposable.prototype.disposed_ = false;
 
 /**
  * Callbacks to invoke when this object is disposed.
- * @type {Array.<!Function>}
+ * @type {Array<!Function>}
  * @private
  */
 goog.Disposable.prototype.onDisposeCallbacks_;
@@ -127,7 +142,7 @@ goog.Disposable.prototype.onDisposeCallbacks_;
 /**
  * If monitoring the goog.Disposable instances is enabled, stores the creation
  * stack trace of the Disposable instance.
- * @type {string}
+ * @const {string}
  */
 goog.Disposable.prototype.creationStack;
 
@@ -191,16 +206,23 @@ goog.Disposable.prototype.registerDisposable = function(disposable) {
 
 /**
  * Invokes a callback function when this object is disposed. Callbacks are
- * invoked in the order in which they were added.
+ * invoked in the order in which they were added. If a callback is added to
+ * an already disposed Disposable, it will be called immediately.
  * @param {function(this:T):?} callback The callback function.
  * @param {T=} opt_scope An optional scope to call the callback in.
  * @template T
  */
 goog.Disposable.prototype.addOnDisposeCallback = function(callback, opt_scope) {
+  if (this.disposed_) {
+    callback.call(opt_scope);
+    return;
+  }
   if (!this.onDisposeCallbacks_) {
     this.onDisposeCallbacks_ = [];
   }
-  this.onDisposeCallbacks_.push(goog.bind(callback, opt_scope));
+
+  this.onDisposeCallbacks_.push(
+      goog.isDef(opt_scope) ? goog.bind(callback, opt_scope) : callback);
 };
 
 
@@ -214,7 +236,7 @@ goog.Disposable.prototype.addOnDisposeCallback = function(callback, opt_scope) {
  * For example:
  * <pre>
  *   mypackage.MyClass = function() {
- *     goog.base(this);
+ *     mypackage.MyClass.base(this, 'constructor');
  *     // Constructor logic specific to MyClass.
  *     ...
  *   };
@@ -225,7 +247,7 @@ goog.Disposable.prototype.addOnDisposeCallback = function(callback, opt_scope) {
  *     ...
  *     // Call superclass's disposeInternal at the end of the subclass's, like
  *     // in C++, to avoid hard-to-catch issues.
- *     goog.base(this, 'disposeInternal');
+ *     mypackage.MyClass.base(this, 'disposeInternal');
  *   };
  * </pre>
  * @protected

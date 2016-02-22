@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using System.Drawing;
 using System.Text.RegularExpressions;
-using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium.Interactions
 {
@@ -17,7 +15,7 @@ namespace OpenQA.Selenium.Interactions
         [IgnoreBrowser(Browser.Android, "Mobile browser does not support drag-and-drop")]
         [IgnoreBrowser(Browser.IPhone, "Mobile browser does not support drag-and-drop")]
         [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
-        public void DragAndDrop()
+        public void DragAndDropRelative()
         {
             driver.Url = dragAndDropPage;
             IWebElement img = driver.FindElement(By.Id("test1"));
@@ -49,6 +47,69 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [Category("Javascript")]
+        public void DragAndDropToElementInIframe()
+        {
+            driver.Url = iframePage;
+            IWebElement iframe = driver.FindElement(By.TagName("iframe"));
+            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].src = arguments[1]", iframe,
+                                                        dragAndDropPage);
+            driver.SwitchTo().Frame(0);
+            IWebElement img1 = WaitFor<IWebElement>(() =>
+                {
+                    try
+                    {
+                        IWebElement element1 = driver.FindElement(By.Id("test1"));
+                        return element1;
+                    }
+                    catch (NoSuchElementException)
+                    {
+                        return null;
+                    }
+                }, "Element with ID 'test1' not found");
+
+            IWebElement img2 = driver.FindElement(By.Id("test2"));
+            new Actions(driver).DragAndDrop(img2, img1).Perform();
+            Assert.AreEqual(img1.Location, img2.Location);
+        }
+
+        [Test]
+        [Category("Javascript")]
+        public void DragAndDropElementWithOffsetInIframeAtBottom()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("iframeAtBottom.html");
+
+            IWebElement iframe = driver.FindElement(By.TagName("iframe"));
+            driver.SwitchTo().Frame(iframe);
+
+            IWebElement img1 = driver.FindElement(By.Id("test1"));
+            Point initial = img1.Location;
+
+            new Actions(driver).DragAndDropToOffset(img1, 20, 20).Perform();
+            initial.Offset(20, 20);
+            Assert.AreEqual(initial, img1.Location);
+        }
+
+        [Test]
+        [Category("Javascript")]
+        public void DragAndDropElementWithOffsetInScrolledDiv()
+        {
+            if (TestUtilities.IsFirefox(driver) && TestUtilities.IsNativeEventsEnabled(driver))
+            {
+                return;
+            }
+
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("dragAndDropInsideScrolledDiv.html");
+
+            IWebElement el = driver.FindElement(By.Id("test1"));
+            Point initial = el.Location;
+
+            new Actions(driver).DragAndDropToOffset(el, 3700, 3700).Perform();
+            initial.Offset(3700, 3700);
+            Assert.AreEqual(initial, el.Location);
+        }
+
+        [Test]
+        [Category("Javascript")]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Android, "Mobile browser does not support drag-and-drop")]
         [IgnoreBrowser(Browser.IPhone, "Mobile browser does not support drag-and-drop")]
@@ -57,8 +118,10 @@ namespace OpenQA.Selenium.Interactions
         {
             driver.Url = dragAndDropPage;
             IWebElement img = driver.FindElement(By.Id("test3"));
-            Point expectedLocation = drag(img, img.Location, 100, 100);
-            Assert.AreEqual(expectedLocation, img.Location);
+            Point startLocation = img.Location;
+            Point expectedLocation = drag(img, startLocation, 100, 100);
+            Point endLocation = img.Location;
+            Assert.AreEqual(expectedLocation, endLocation);
         }
 
         [Test]
@@ -197,6 +260,24 @@ namespace OpenQA.Selenium.Interactions
             new Actions(driver).DragAndDropToOffset(toDrag, 0, yOffset).Perform();
 
             Assert.AreEqual(dragTo.Location, toDrag.Location);
+        }
+
+        //[Test]
+        public void MemoryTest()
+        {
+            driver.Url = dragAndDropPage;
+            IWebElement img1 = driver.FindElement(By.Id("test1"));
+            IWebElement img2 = driver.FindElement(By.Id("test2"));
+            System.Threading.Thread.Sleep(1000);
+            for (int i = 0; i < 500; i++)
+            {
+                string foo = img1.GetAttribute("id");
+                //img1 = driver.FindElement(By.Id("test1"));
+                //Actions a = new Actions(driver);
+                //a.MoveToElement(img1).Perform();
+            }
+
+            driver.Url = simpleTestPage;
         }
 
         private Point drag(IWebElement elem, Point initialLocation, int moveRightBy, int moveDownBy)

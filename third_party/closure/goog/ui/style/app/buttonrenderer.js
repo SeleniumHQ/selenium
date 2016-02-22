@@ -28,9 +28,9 @@
 
 goog.provide('goog.ui.style.app.ButtonRenderer');
 
-goog.require('goog.dom.classes');
+goog.require('goog.dom.TagName');
+goog.require('goog.dom.classlist');
 goog.require('goog.ui.Button');
-goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.CustomButtonRenderer');
 goog.require('goog.ui.INLINE_BLOCK_CLASSNAME');
 goog.require('goog.ui.registry');
@@ -64,7 +64,7 @@ goog.ui.style.app.ButtonRenderer.CSS_CLASS = goog.getCssName('goog-button');
  * Array of arrays of CSS classes that we want composite classes added and
  * removed for in IE6 and lower as a workaround for lack of multi-class CSS
  * selector support.
- * @type {Array.<Array.<string>>}
+ * @type {Array<Array<string>>}
  */
 goog.ui.style.app.ButtonRenderer.IE6_CLASS_COMBINATIONS = [];
 
@@ -118,14 +118,16 @@ goog.ui.style.app.ButtonRenderer.prototype.createButton = function(content,
   var baseClass = this.getStructuralCssClass();
   var inlineBlock = goog.ui.INLINE_BLOCK_CLASSNAME + ' ';
   return dom.createDom(
-      'div', inlineBlock + goog.getCssName(baseClass, 'outer-box'),
+      goog.dom.TagName.DIV,
+      inlineBlock + goog.getCssName(baseClass, 'outer-box'),
       dom.createDom(
-          'div', inlineBlock + goog.getCssName(baseClass, 'inner-box'),
-          dom.createDom('div', goog.getCssName(baseClass, 'pos'),
-              dom.createDom(
-                  'div', goog.getCssName(baseClass, 'top-shadow'), '\u00A0'),
-              dom.createDom(
-                  'div', goog.getCssName(baseClass, 'content'), content))));
+          goog.dom.TagName.DIV,
+          inlineBlock + goog.getCssName(baseClass, 'inner-box'),
+          dom.createDom(goog.dom.TagName.DIV, goog.getCssName(baseClass, 'pos'),
+              dom.createDom(goog.dom.TagName.DIV,
+                            goog.getCssName(baseClass, 'top-shadow'), '\u00A0'),
+              dom.createDom(goog.dom.TagName.DIV,
+                            goog.getCssName(baseClass, 'content'), content))));
 };
 
 
@@ -144,23 +146,24 @@ goog.ui.style.app.ButtonRenderer.prototype.hasBoxStructure = function(
   var baseClass = this.getStructuralCssClass();
   var outer = button.getDomHelper().getFirstElementChild(element);
   var outerClassName = goog.getCssName(baseClass, 'outer-box');
-  if (outer && goog.dom.classes.has(outer, outerClassName)) {
+  if (outer && goog.dom.classlist.contains(outer, outerClassName)) {
 
     var inner = button.getDomHelper().getFirstElementChild(outer);
     var innerClassName = goog.getCssName(baseClass, 'inner-box');
-    if (inner && goog.dom.classes.has(inner, innerClassName)) {
+    if (inner && goog.dom.classlist.contains(inner, innerClassName)) {
 
       var pos = button.getDomHelper().getFirstElementChild(inner);
       var posClassName = goog.getCssName(baseClass, 'pos');
-      if (pos && goog.dom.classes.has(pos, posClassName)) {
+      if (pos && goog.dom.classlist.contains(pos, posClassName)) {
 
         var shadow = button.getDomHelper().getFirstElementChild(pos);
         var shadowClassName = goog.getCssName(baseClass, 'top-shadow');
-        if (shadow && goog.dom.classes.has(shadow, shadowClassName)) {
+        if (shadow && goog.dom.classlist.contains(shadow, shadowClassName)) {
 
           var content = button.getDomHelper().getNextElementSibling(shadow);
           var contentClassName = goog.getCssName(baseClass, 'content');
-          if (content && goog.dom.classes.has(content, contentClassName)) {
+          if (content &&
+              goog.dom.classlist.contains(content, contentClassName)) {
             // We have a proper box structure.
             return true;
           }

@@ -15,61 +15,69 @@ mozilla_lib(name = "webdriver_firefox_esr_previous",
     "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
+  args = "-Icpp/webdriver-server",
   arch = "i386",
-  geckoversion="17")
+  geckoversion="24")
 
 mozilla_lib(name = "webdriver_firefox_esr_previous_64",
   srcs = [ 
     "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
+  args = "-Icpp/webdriver-server",
   arch = "amd64",
-  geckoversion="17")
+  geckoversion="24")
 
 mozilla_lib(name = "webdriver_firefox_esr_latest",
   srcs = [ 
     "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
+  args = "-Icpp/webdriver-server",
   arch = "i386",
-  geckoversion="24")
+  geckoversion="31")
 
 mozilla_lib(name = "webdriver_firefox_esr_latest_64",
   srcs = [ 
     "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
+  args = "-Icpp/webdriver-server",
   arch = "amd64",
-  geckoversion="24")
+  geckoversion="31")
 
 
 mozilla_lib(name = "webdriver_firefox_previous",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
+  args = "-Icpp/webdriver-server",
   arch = "i386",
-  geckoversion="25")
+  geckoversion="33")
 
 mozilla_lib(name = "webdriver_firefox_previous_64",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
+  args = "-Icpp/webdriver-server",
   arch = "amd64",
-  geckoversion="25")
+  geckoversion="33")
 
 mozilla_lib(name = "webdriver_firefox_latest",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
+  args = "-Icpp/webdriver-server",
   arch = "i386",
-  geckoversion="26")
+  geckoversion="34")
 
 mozilla_lib(name = "webdriver_firefox_latest_64",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
+  args = "-Icpp/webdriver-server",
   arch = "amd64",
-  geckoversion="26")
+  geckoversion="34")
 
 gcc_library(name = "noblur",
   srcs = [ "linux-specific/*.c" ],

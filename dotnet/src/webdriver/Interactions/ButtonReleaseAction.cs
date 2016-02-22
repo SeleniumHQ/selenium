@@ -1,9 +1,9 @@
 ﻿// <copyright file="ButtonReleaseAction.cs" company="WebDriver Committers">
-// Copyright 2007-2011 WebDriver committers
-// Copyright 2007-2011 Google Inc.
-// Portions copyright 2011 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -16,9 +16,6 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using OpenQA.Selenium.Interactions.Internal;
 
 namespace OpenQA.Selenium.Interactions
@@ -28,8 +25,8 @@ namespace OpenQA.Selenium.Interactions
     /// </summary>
     /// <remarks>
     /// This action can be called for an element different than the one
-    /// ClickAndHoldAction was called for. However, if this action is 
-    /// performed out of sequence (without holding down the mouse button, 
+    /// ClickAndHoldAction was called for. However, if this action is
+    /// performed out of sequence (without holding down the mouse button,
     /// for example) the results will be different.
     /// </remarks>
     internal class ButtonReleaseAction : MouseAction, IAction
@@ -44,18 +41,15 @@ namespace OpenQA.Selenium.Interactions
         {
         }
 
-        #region IAction Members
         /// <summary>
         /// Performs this action.
         /// </summary>
         public void Perform()
         {
-            // Releases the mouse button currently left held. 
+            // Releases the mouse button currently left held.
             // between browsers.
             this.MoveToLocation();
             this.Mouse.MouseUp(this.ActionLocation);
         }
-
-        #endregion
     }
 }

@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 
@@ -28,11 +25,10 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void FindingAnElementOnAPlainTextPageWillNeverWork()
         {
             driver.Url = textPage;
-            driver.FindElement(By.Id("foo"));
+            Assert.Throws<NoSuchElementException>(() => driver.FindElement(By.Id("foo")));
         }
 
         [Test]
@@ -43,13 +39,12 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IPhone, "iPhone allows addition of cookie on text pages")]
         [IgnoreBrowser(Browser.Opera, "Opera allows addition of cookie on text pages")]
         [IgnoreBrowser(Browser.Android, "Android allows addition of cookie on text pages")]
-        [ExpectedException(typeof(WebDriverException))]
         public void ShouldThrowExceptionWhenAddingCookieToAPageThatIsNotHtml()
         {
             driver.Url = textPage;
 
             Cookie cookie = new Cookie("hello", "goodbye");
-            driver.Manage().Cookies.AddCookie(cookie);
+            Assert.Throws<WebDriverException>(() => driver.Manage().Cookies.AddCookie(cookie));
         }
     }
 }

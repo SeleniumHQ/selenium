@@ -7,7 +7,6 @@ java_library(name = "common",
   deps = [
     "//java/client/src/org/openqa/selenium/net",
     "//java/client/src/org/openqa/selenium/remote:common",
-    "//java/server/src/org/openqa/selenium/server:base",
-    "//third_party/java/guava-libraries",
-    "//third_party/java/json",
+    "//java/server/src/org/openqa/grid/shared:cli",
+    "//third_party/java/guava",
   ])

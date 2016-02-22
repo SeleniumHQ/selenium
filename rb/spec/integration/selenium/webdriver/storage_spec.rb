@@ -1,9 +1,29 @@
-require File.expand_path("../spec_helper", __FILE__)
+# encoding: utf-8
+#
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+require_relative 'spec_helper'
 
 module Selenium::WebDriver::DriverExtensions
+
   describe HasWebStorage do
 
-    compliant_on :browser => [:android] do
+    compliant_on :browser => [:chrome, :marionette] do
       shared_examples_for 'web storage' do
         before {
           driver.navigate.to url_for("clicks.html")
@@ -11,14 +31,14 @@ module Selenium::WebDriver::DriverExtensions
         }
 
         it "can get and set items" do
-          storage.should be_empty
+          expect(storage).to be_empty
           storage['foo'] = 'bar'
-          storage['foo'].should == 'bar'
+          expect(storage['foo']).to eq('bar')
 
           storage['foo1'] = 'bar1'
-          storage['foo1'].should == 'bar1'
+          expect(storage['foo1']).to eq('bar1')
 
-          storage.size.should == 2
+          expect(storage.size).to eq(2)
         end
 
         it "can get all keys" do
@@ -26,8 +46,8 @@ module Selenium::WebDriver::DriverExtensions
           storage['foo2'] = 'bar2'
           storage['foo3'] = 'bar3'
 
-          storage.size.should == 3
-          storage.keys.should == %w[foo1 foo2 foo3]
+          expect(storage.size).to eq(3)
+          expect(storage.keys).to include('foo1', 'foo2', 'foo3')
         end
 
         it "can clear all items" do
@@ -35,10 +55,10 @@ module Selenium::WebDriver::DriverExtensions
           storage['foo2'] = 'bar2'
           storage['foo3'] = 'bar3'
 
-          storage.size.should == 3
+          expect(storage.size).to eq(3)
           storage.clear
-          storage.size.should == 0
-          storage.keys.should be_empty
+          expect(storage.size).to eq(0)
+          expect(storage.keys).to be_empty
         end
 
         it "can delete an item" do
@@ -46,15 +66,15 @@ module Selenium::WebDriver::DriverExtensions
           storage['foo2'] = 'bar2'
           storage['foo3'] = 'bar3'
 
-          storage.size.should == 3
-          storage.delete('foo1').should == 'bar1'
-          storage.size.should == 2
+          expect(storage.size).to eq(3)
+          storage.delete('foo1')
+          expect(storage.size).to eq(2)
         end
 
         it "knows if a key is set" do
-          storage.should_not have_key('foo1')
+          expect(storage).not_to have_key('foo1')
           storage['foo1'] = 'bar1'
-          storage.should have_key('foo1')
+          expect(storage).to have_key('foo1')
         end
 
         it "is Enumerable" do
@@ -62,22 +82,22 @@ module Selenium::WebDriver::DriverExtensions
           storage['foo2'] = 'bar2'
           storage['foo3'] = 'bar3'
 
-          storage.to_a.should == [
+          expect(storage.to_a).to include(
                                   ['foo1', 'bar1'],
                                   ['foo2', 'bar2'],
                                   ['foo3', 'bar3']
-                                 ]
+                                 )
         end
 
         it "can fetch an item" do
           storage['foo1'] = 'bar1'
-          storage.fetch('foo1').should == 'bar1'
+          expect(storage.fetch('foo1')).to eq('bar1')
         end
 
         it "raises IndexError on missing key" do
-          lambda do
+          expect do
             storage.fetch('no-such-key')
-          end.should raise_error(IndexError, /missing key/)
+          end.to raise_error(IndexError, /missing key/)
         end
       end
 
@@ -91,6 +111,5 @@ module Selenium::WebDriver::DriverExtensions
         it_behaves_like 'web storage'
       end
     end
-
   end
 end

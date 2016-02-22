@@ -1,23 +1,21 @@
-/*
- Copyright 2007-2009 WebDriver committers
- Copyright 2007-2009 Google Inc.
- Portions copyright 2011 Software Freedom Conservancy
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 goog.provide('Utils');
-goog.provide('WebDriverError');
 
 goog.require('WebLoadingListener');
 goog.require('bot.ErrorCode');
@@ -28,90 +26,22 @@ goog.require('fxdriver.moz');
 goog.require('fxdriver.utils');
 goog.require('fxdriver.error');
 goog.require('goog.dom');
+goog.require('goog.log');
 goog.require('goog.string');
 goog.require('goog.style');
 
 
 /**
- * A WebDriver error.
- * @param {!number} code The error code.
- * @param {!string|Error} messageOrError The error message, or another Error to
- *     propagate.
- * @param {!Object=} additional Additional fields bearing useful information.
- * @constructor
+ * @private {goog.log.Logger}
+ * @const
  */
-WebDriverError = function(code, messageOrError, additional) {
-  var message;
-  var stack;
-  if (messageOrError instanceof Error) {
-    message = messageOrError.message;
-    stack = messageOrError.stack;
-  } else {
-    message = messageOrError.toString();
-    stack = Error(message).stack.split('\n');
-    stack.shift();
-    stack = stack.join('\n');
-  }
-
-  this.additionalFields = [];
-
-  if (!!additional) {
-    for (var field in additional) {
-      this.additionalFields.push(field);
-      this[field] = additional[field];
-    }
-  }
-
-  /**
-   * This error's status code.
-   * @type {!number}
-   */
-  this.code = code;
-
-  /**
-   * This error's message.
-   * @type {string}
-   */
-  this.message = message;
-
-  /**
-   * Captures a stack trace for when this error was thrown.
-   * @type {string}
-   */
-  this.stack = stack;
-
-  /**
-   * Used to identify this class since instanceof will not work across
-   * component boundaries.
-   * @type {!boolean}
-   */
-  this.isWebDriverError = true;
-};
-
-function notifyOfCloseWindow(windowId) {
-  windowId = windowId || 0;
-  if (Utils.useNativeEvents()) {
-    var events = Utils.getNativeEvents();
-    if (events) {
-      events.notifyOfCloseWindow(windowId);
-    }
-  }
-}
-
-function notifyOfSwitchToWindow(windowId) {
-  if (Utils.useNativeEvents()) {
-    var events = Utils.getNativeEvents();
-    if (events) {
-      events.notifyOfSwitchToWindow(windowId);
-    }
-  }
-}
+Utils.LOG_ = fxdriver.logging.getLogger('fxdriver.Utils');
 
 Utils.newInstance = function(className, interfaceName) {
   var clazz = Components.classes[className];
 
   if (!clazz) {
-    fxdriver.logging.warning('Unable to find class: ' + className);
+    goog.log.warning(Utils.LOG_, 'Unable to find class: ' + className);
     return undefined;
   }
   var iface = Components.interfaces[interfaceName];
@@ -119,8 +49,9 @@ Utils.newInstance = function(className, interfaceName) {
   try {
     return clazz.createInstance(iface);
   } catch (e) {
-    fxdriver.logging.warning('Cannot create: ' + className + ' from ' + interfaceName);
-    fxdriver.logging.warning(e);
+    goog.log.warning(Utils.LOG_,
+        'Cannot create: ' + className + ' from ' + interfaceName,
+        e);
     throw e;
   }
 };
@@ -158,7 +89,7 @@ Utils.getActiveElement = function(doc) {
 
 Utils.addToKnownElements = function(element) {
   var cache = {};
-  Components.utils['import']('resource://fxdriver/modules/web_element_cache.js', cache);
+  Components.utils['import']('resource://fxdriver/modules/web-element-cache.js', cache);
 
   return cache.put(element);
 };
@@ -166,7 +97,7 @@ Utils.addToKnownElements = function(element) {
 
 Utils.getElementAt = function(index, currentDoc) {
   var cache = {};
-  Components.utils['import']('resource://fxdriver/modules/web_element_cache.js', cache);
+  Components.utils['import']('resource://fxdriver/modules/web-element-cache.js', cache);
 
   return cache.get(index, currentDoc);
 };
@@ -199,57 +130,15 @@ Utils.getNativeComponent = function(componentId, componentInterface) {
     var obj = Components.classes[componentId].createInstance();
     return obj.QueryInterface(componentInterface);
   } catch (e) {
-    fxdriver.logging.warning('Unable to find native component: ' + componentId);
-    fxdriver.logging.warning(e);
-    // Unable to retrieve native events. No biggie, because we fall back to
-    // synthesis later
     return undefined;
   }
-};
-
-Utils.getNativeEvents = function() {
-  return Utils.getNativeComponent('@openqa.org/nativeevents;1', Components.interfaces.nsINativeEvents);
-};
-
-Utils.getNativeMouse = function() {
-  return Utils.getNativeComponent('@openqa.org/nativemouse;1', Components.interfaces.nsINativeMouse);
-};
-
-Utils.getNativeKeyboard = function() {
-  return Utils.getNativeComponent('@openqa.org/nativekeyboard;1', Components.interfaces.nsINativeKeyboard);
 };
 
 Utils.getNativeIME = function() {
   return Utils.getNativeComponent('@openqa.org/nativeime;1', Components.interfaces.nsINativeIME);
 };
 
-Utils.getNodeForNativeEvents = function(element) {
-  try {
-    // This stuff changes between releases.
-    // Do as much up-front work in JS as possible
-    var retrieval = Utils.newInstance(
-        '@mozilla.org/accessibleRetrieval;1', 'nsIAccessibleRetrieval');
-    var accessible = retrieval.getAccessibleFor(element.ownerDocument);
-    var accessibleDoc =
-        accessible.QueryInterface(Components.interfaces.nsIAccessibleDocument);
-    return accessibleDoc.QueryInterface(Components.interfaces.nsISupports);
-  } catch (e) {
-    // Unable to retrieve the accessible doc
-    return undefined;
-  }
-};
-
-Utils.useNativeEvents = function() {
-  var prefs =
-    fxdriver.moz.getService('@mozilla.org/preferences-service;1', 'nsIPrefBranch');
-  var enableNativeEvents =
-    prefs.prefHasUserValue('webdriver_enable_native_events') ?
-    prefs.getBoolPref('webdriver_enable_native_events') : false;
-
-  return !!(enableNativeEvents && Utils.getNativeEvents());
-};
-
-Utils.getPageLoadingStrategy = function() {
+Utils.getPageLoadStrategy = function() {
   var prefs =
       fxdriver.moz.getService('@mozilla.org/preferences-service;1', 'nsIPrefBranch');
   return prefs.prefHasUserValue('webdriver.load.strategy') ?
@@ -264,7 +153,7 @@ Utils.initWebLoadingListener = function(respond, opt_window) {
   // Wait for the reload to finish before sending the response.
   new WebLoadingListener(browser, function(timedOut, opt_stopWaiting) {
     // Reset to the top window.
-    respond.session.setWindow(topWindow);
+    respond.session.setWindow(browser.contentWindow);
     if (opt_stopWaiting) {
       respond.session.setWaitForPageLoad(false);
     }
@@ -278,32 +167,17 @@ Utils.initWebLoadingListener = function(respond, opt_window) {
   }, respond.session.getPageLoadTimeout(), window);
 };
 
-Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseModifiers,
+Utils.type = function(session, element, text, jsTimer, releaseModifiers,
     opt_keysState) {
 
+  var doc = session.getDocument();
   // For consistency between native and synthesized events, convert common
   // escape sequences to their Key enum aliases.
   text = text.replace(/[\b]/g, '\uE003').   // DOM_VK_BACK_SPACE
       replace(/\t/g, '\uE004').                           // DOM_VK_TAB
       replace(/(\r\n|\n|\r)/g, '\uE006');                 // DOM_VK_RETURN
 
-  var obj = Utils.getNativeKeyboard();
-  var node = Utils.getNodeForNativeEvents(element);
-  var thmgr_cls = Components.classes['@mozilla.org/thread-manager;1'];
-  var isUsingNativeEvents = opt_useNativeEvents && obj && node && thmgr_cls;
-
-  if (isUsingNativeEvents) {
-    var pageUnloadedIndicator = Utils.getPageUnloadedIndicator(element);
-
-    // Now do the native thing.
-    obj.sendKeys(node, text, releaseModifiers);
-
-    Utils.waitForNativeEventsProcessing(element, Utils.getNativeEvents(), pageUnloadedIndicator, jsTimer);
-
-    return;
-  }
-
-  fxdriver.logging.info('Doing sendKeys in a non-native way...');
+  goog.log.info(Utils.LOG_, 'Doing sendKeys...');
   var controlKey = false;
   var shiftKey = false;
   var altKey = false;
@@ -327,26 +201,26 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
     if (c == '\uE000') {
       if (controlKey) {
         var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
-        Utils.keyEvent(doc, element, 'keyup', kCode, 0,
-            controlKey = false, shiftKey, altKey, metaKey, false);
+        Utils.keyEvent(session, element, 'keyup', kCode, 0,
+                       controlKey = false, shiftKey, altKey, metaKey);
       }
 
       if (shiftKey) {
         var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
-        Utils.keyEvent(doc, element, 'keyup', kCode, 0,
-            controlKey, shiftKey = false, altKey, metaKey, false);
+        Utils.keyEvent(session, element, 'keyup', kCode, 0,
+                       controlKey, shiftKey = false, altKey, metaKey);
       }
 
       if (altKey) {
         var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
-        Utils.keyEvent(doc, element, 'keyup', kCode, 0,
-            controlKey, shiftKey, altKey = false, metaKey, false);
+        Utils.keyEvent(session, element, 'keyup', kCode, 0,
+                       controlKey, shiftKey, altKey = false, metaKey);
       }
 
       if (metaKey) {
         var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_META;
-        Utils.keyEvent(doc, element, 'keyup', kCode, 0,
-            controlKey, shiftKey, altKey, metaKey = false, false);
+        Utils.keyEvent(session, element, 'keyup', kCode, 0,
+                       controlKey, shiftKey, altKey, metaKey = false);
       }
 
       continue;
@@ -371,7 +245,7 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
     } else if (c == '\uE006') {
       keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RETURN;
     } else if (c == '\uE007') {
-      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ENTER;
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RETURN;
     } else if (c == '\uE008') {
       keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
       shiftKey = !shiftKey;
@@ -517,6 +391,36 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
     } else if (c == '\'' || c == '"') {
       keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_QUOTE;
       charCode = c.charCodeAt(0);
+    } else if (c == '^') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CIRCUMFLEX;
+      charCode = c.charCodeAt(0);
+    } else if (c == '!') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_EXCLAMATION;
+      charCode = c.charCodeAt(0);
+    } else if (c == '#') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_HASH;
+      charCode = c.charCodeAt(0);
+    } else if (c == '$') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_DOLLAR;
+      charCode = c.charCodeAt(0);
+    } else if (c == '%') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_PERCENT;
+      charCode = c.charCodeAt(0);
+    } else if (c == '&') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_AMPERSAND;
+      charCode = c.charCodeAt(0);
+    } else if (c == '_') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_UNDERSCORE;
+      charCode = c.charCodeAt(0);
+    } else if (c == '-') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_HYPHEN_MINUS;
+      charCode = c.charCodeAt(0);
+    } else if (c == '(') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_OPEN_BRACKET;
+      charCode = c.charCodeAt(0);
+    } else if (c == ')') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CLOSE_BRACKET;
+      charCode = c.charCodeAt(0);
     } else {
       keyCode = upper.charCodeAt(i);
       charCode = text.charCodeAt(i);
@@ -525,8 +429,8 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
     // generate modifier key event if needed, and continue
 
     if (modifierEvent) {
-      Utils.keyEvent(doc, element, modifierEvent, keyCode, 0,
-          controlKey, shiftKey, altKey, metaKey, false);
+      Utils.keyEvent(session, element, modifierEvent, keyCode, 0,
+                     controlKey, shiftKey, altKey, metaKey);
       continue;
     }
 
@@ -539,8 +443,8 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
 
     if (needsShift && !shiftKey) {
       var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
-      Utils.keyEvent(doc, element, 'keydown', kCode, 0,
-          controlKey, true, altKey, metaKey, false);
+      Utils.keyEvent(session, element, 'keydown', kCode, 0,
+                     controlKey, true, altKey, metaKey);
       Utils.shiftCount += 1;
     }
 
@@ -560,7 +464,7 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
           var mapTo = '~!@#$%^&*()_+{}|:"<>?';
 
           var value = String.fromCharCode(charCode).
-              replace(/([\[\\\.])/g, '\\$1');
+            replace(/([\[\\\.])/g, '\\$1');
           var index = mapFrom.search(value);
           if (index >= 0) {
             charCode = mapTo.charCodeAt(index);
@@ -570,21 +474,23 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
     }
 
     var accepted =
-        Utils.keyEvent(doc, element, 'keydown', keyCode, 0,
-            controlKey, needsShift || shiftKey, altKey, metaKey, false);
+      Utils.keyEvent(session, element, 'keydown', keyCode, 0,
+                     controlKey, needsShift || shiftKey, altKey, metaKey);
 
-    Utils.keyEvent(doc, element, 'keypress', pressCode, charCode,
-        controlKey, needsShift || shiftKey, altKey, metaKey, !accepted);
+    if (accepted) {
+      Utils.keyEvent(session, element, 'keypress', pressCode, charCode,
+                     controlKey, needsShift || shiftKey, altKey, metaKey);
+    }
 
-    Utils.keyEvent(doc, element, 'keyup', keyCode, 0,
-        controlKey, needsShift || shiftKey, altKey, metaKey, false);
+    Utils.keyEvent(session, element, 'keyup', keyCode, 0,
+                   controlKey, needsShift || shiftKey, altKey, metaKey);
 
     // shift up if needed
 
     if (needsShift && !shiftKey) {
       var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
-      Utils.keyEvent(doc, element, 'keyup', kCode, 0,
-          controlKey, false, altKey, metaKey, false);
+      Utils.keyEvent(session, element, 'keyup', kCode, 0,
+                     controlKey, false, altKey, metaKey);
     }
   }
 
@@ -592,26 +498,26 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
 
   if (controlKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
-    Utils.keyEvent(doc, element, 'keyup', kCode, 0,
-        controlKey = false, shiftKey, altKey, metaKey, false);
+    Utils.keyEvent(session, element, 'keyup', kCode, 0,
+                   controlKey = false, shiftKey, altKey, metaKey);
   }
 
   if (shiftKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
-    Utils.keyEvent(doc, element, 'keyup', kCode, 0,
-        controlKey, shiftKey = false, altKey, metaKey, false);
+    Utils.keyEvent(session, element, 'keyup', kCode, 0,
+                   controlKey, shiftKey = false, altKey, metaKey);
   }
 
   if (altKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
-    Utils.keyEvent(doc, element, 'keyup', kCode, 0,
-        controlKey, shiftKey, altKey = false, metaKey, false);
+    Utils.keyEvent(session, element, 'keyup', kCode, 0,
+                   controlKey, shiftKey, altKey = false, metaKey);
   }
 
   if (metaKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_META;
-    Utils.keyEvent(doc, element, 'keyup', kCode, 0,
-        controlKey, shiftKey, altKey, metaKey = false, false);
+    Utils.keyEvent(session, element, 'keyup', kCode, 0,
+                   controlKey, shiftKey, altKey, metaKey = false);
   }
 
   if (opt_keysState) {
@@ -623,9 +529,10 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
 };
 
 
-Utils.keyEvent = function(doc, element, type, keyCode, charCode,
-                          controlState, shiftState, altState, metaState,
-                          shouldPreventDefault) {
+Utils.keyEvent = function(session, element, type, keyCode, charCode,
+                          controlState, shiftState, altState, metaState) {
+
+  var doc = session.getDocument();
   // Silently bail out if the element is no longer attached to the DOM.
   var isAttachedToDom = goog.dom.getAncestor(element, function(node) {
     return node === element.ownerDocument.documentElement;
@@ -635,27 +542,25 @@ Utils.keyEvent = function(doc, element, type, keyCode, charCode,
     return false;
   }
 
-  var keyboardEvent = doc.createEvent('KeyEvents');
-  keyboardEvent.initKeyEvent(
-      type,             // in DOMString typeArg,
-      true,             // in boolean canBubbleArg
-      true,             // in boolean cancelableArg
-      doc.defaultView,  // in nsIDOMAbstractView viewArg
-      controlState,     // in boolean ctrlKeyArg
-      altState,         // in boolean altKeyArg
-      shiftState,       // in boolean shiftKeyArg
-      metaState,        // in boolean metaKeyArg
-      keyCode,          // in unsigned long keyCodeArg
-      charCode);        // in unsigned long charCodeArg
+  var windowUtils = session.getChromeWindow()
+      .QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+      .getInterface(Components.interfaces.nsIDOMWindowUtils);
 
-  if (shouldPreventDefault) {
-    keyboardEvent.preventDefault();
+  var modifiers = 0;
+  if (controlState) {
+    modifiers += windowUtils.MODIFIER_CONTROL;
+  }
+  if (altState) {
+    modifiers += windowUtils.MODIFIER_ALT;
+  }
+  if (shiftState) {
+    modifiers += windowUtils.MODIFIER_SHIFT;
+  }
+  if (metaState) {
+    modifiers += windowUtils.MODIFIER_META;
   }
 
-  return doc.defaultView
-      .QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-      .getInterface(Components.interfaces.nsIDOMWindowUtils)
-      .dispatchDOMEventViaPresShell(element, keyboardEvent, true);
+  return windowUtils.sendKeyEvent(type, keyCode, charCode, modifiers, 0);
 };
 
 
@@ -664,24 +569,6 @@ Utils.fireHtmlEvent = function(element, eventName) {
   var e = doc.createEvent('HTMLEvents');
   e.initEvent(eventName, true, true);
   return element.dispatchEvent(e);
-};
-
-
-Utils.fireMouseEventOn = function(element, eventName, clientX, clientY) {
-  Utils.triggerMouseEvent(element, eventName, clientX, clientY);
-};
-
-
-Utils.triggerMouseEvent = function(element, eventType, clientX, clientY) {
-  var event = element.ownerDocument.createEvent('MouseEvents');
-  var view = element.ownerDocument.defaultView;
-
-  clientX = clientX || 0;
-  clientY = clientY || 0;
-
-  event.initMouseEvent(eventType, true, true, view, 1, 0, 0, clientX, clientY,
-      false, false, false, false, 0, element);
-  element.dispatchEvent(event);
 };
 
 
@@ -744,7 +631,8 @@ Utils.getBrowserSpecificOffset = function(inBrowser) {
     var rect = inBrowser.getBoundingClientRect();
     browserSpecificYOffset += rect.top;
     browserSpecificXOffset += rect.left;
-    fxdriver.logging.info('Browser-specific offset (X,Y): ' + browserSpecificXOffset
+    goog.log.info(Utils.LOG_,
+        'Browser-specific offset (X,Y): ' + browserSpecificXOffset
         + ', ' + browserSpecificYOffset);
   }
 
@@ -755,6 +643,12 @@ Utils.getBrowserSpecificOffset = function(inBrowser) {
 Utils.scrollIntoView = function(element, opt_elementScrollBehavior, opt_coords) {
   if (!Utils.isInView(element, opt_coords)) {
     element.scrollIntoView(opt_elementScrollBehavior);
+  }
+  var overflow = bot.dom.getOverflowState(element, opt_coords);
+  if (overflow != bot.dom.OverflowState.NONE) {
+    if (element.scrollIntoView) {
+      element.scrollIntoView(opt_elementScrollBehavior);
+    }
   }
   return bot.action.scrollIntoView(element, opt_coords);
 };
@@ -791,6 +685,99 @@ Utils.isInView = function(element, opt_coords) {
 Utils.getLocationOnceScrolledIntoView = function(element, opt_elementScrollBehavior, opt_onlyFirstRect) {
   Utils.scrollIntoView(element, opt_elementScrollBehavior);
   return Utils.getLocationRelativeToWindowHandle(element, opt_onlyFirstRect);
+};
+
+
+Utils.getClickablePoint = function(element) {
+  element = element.wrappedJSObject ? element.wrappedJSObject : element;
+  var rect = bot.dom.getClientRect(element);
+
+  var rects = goog.array.filter(element.getClientRects(), function(r) {
+    return r.width != 0 && r.height != 0;
+  });
+
+  var isClickableAt = function(coord) {
+    // get the outermost ancestor of the element. This will be either the document
+    // or a shadow root.
+    var owner = element;
+    while (owner.parentNode) {
+      owner = owner.parentNode;
+    }
+
+    var elementAtPoint = owner.elementFromPoint(coord.x, coord.y);
+
+    // element may be huge, so coordinates are outside the viewport
+    if (elementAtPoint === null) {
+      return true;
+    }
+
+    if (element == elementAtPoint) {
+      return true;
+    }
+
+    // allow clicks to element descendants
+    var parentElemIter = elementAtPoint.parentNode;
+    while (parentElemIter) {
+      if (parentElemIter == element) {
+        return true;
+      }
+      parentElemIter = parentElemIter.parentNode;
+    }
+
+    // elementFromPoint does not appear to be reliable. This will catch
+    // other cases where the parent element is found instead.
+    // ex.  <button><span/><button>, click on span, but elementFromPoint
+    //      returned the button element.
+    parentElemIter = element.parentNode;
+    while (parentElemIter) {
+      if (parentElemIter == elementAtPoint) {
+        return true;
+      }
+      parentElemIter = parentElemIter.parentNode;
+    }
+  };
+
+  var rectPointRelativeToView = function(x, y, r) {
+    return { x: r.left + x, y: r.top + y }
+  };
+
+  var rectPointRelativeToMainRect = function(x, y, r) {
+    return { x: r.left - rect.left + x, y: r.top - rect.top + y }
+  };
+
+  var findClickablePoint = function(r) {
+    var offsets = [
+      { x: Math.floor(r.width / 2), y: Math.floor(r.height / 2) },
+      { x: 0, y: 0 },
+      { x: r.width - 1, y: 0 },
+      { x: 0,  y: r.height - 1 },
+      { x: r.width - 1, y: r.height - 1}
+    ]
+
+    return goog.array.find(offsets, function(offset){
+      return isClickableAt(rectPointRelativeToView(offset.x, offset.y, r));
+    })
+  };
+
+  if (rects.length > 1) {
+    goog.log.warning(Utils.LOG_, 'Multirect element ', rects.length);
+    for (var i = 0; i < rects.length; i++) {
+      var p = findClickablePoint(rects[i]);
+      if (p){
+        goog.log.warning(Utils.LOG_, 'Found clickable point in rect ' + rects[i]);
+        return rectPointRelativeToMainRect(p.x, p.y, rects[i]);
+      }
+    }
+  }
+
+  // Fallback to the main rect
+  var p = findClickablePoint(rect);
+  if (p) {
+    return p;
+  }
+
+  // Expected to return a point so if there is no clickable point return middle
+  return { x: Math.floor(rect.width / 2), y: Math.floor(rect.height / 2) };
 };
 
 
@@ -855,7 +842,7 @@ Utils.wrapResult = function(result, doc) {
       }
 
       // There's got to be a more intelligent way of detecting this.
-      if (result['tagName']) {
+      if (result.nodeType == 1 && result['tagName']) {
         return {'ELEMENT': Utils.addToKnownElements(result)};
       }
 
@@ -872,6 +859,11 @@ Utils.wrapResult = function(result, doc) {
         return array;
       }
 
+      // Document. Grab the document element.
+      if (result.nodeType == 9) {
+        return Utils.wrapResult(result.documentElement);
+      }
+
       try {
         var nodeList = result.QueryInterface(CI.nsIDOMNodeList);
         var array = [];
@@ -880,7 +872,7 @@ Utils.wrapResult = function(result, doc) {
         }
         return array;
       } catch (ignored) {
-        fxdriver.logging.warning(ignored);
+        goog.log.warning(Utils.LOG_, 'Error wrapping NodeList', ignored);
       }
 
       try {
@@ -889,12 +881,12 @@ Utils.wrapResult = function(result, doc) {
           try {
             return fxdriver.error.toJSON(result);
           } catch (ignored2) {
-            fxdriver.logging.info(ignored2);
+            goog.log.info(Utils.LOG_, 'Error', ignored2);
             return result.toString();
           }
         }
       } catch (ignored) {
-        fxdriver.logging.info(ignored);
+        goog.log.info(Utils.LOG_, 'Error', ignored);
       }
 
       var convertedObj = {};
@@ -910,7 +902,7 @@ Utils.wrapResult = function(result, doc) {
 
 
 Utils.loadUrl = function(url) {
-  fxdriver.logging.info('Loading: ' + url);
+  goog.log.info(Utils.LOG_, 'Loading: ' + url);
   var ioService = fxdriver.moz.getService('@mozilla.org/network/io-service;1', 'nsIIOService');
   var channel = ioService.newChannel(url, null, null);
   var channelStream = channel.open();
@@ -933,7 +925,7 @@ Utils.loadUrl = function(url) {
   scriptableStream.close();
   channelStream.close();
 
-  fxdriver.logging.info('Done reading: ' + url);
+  goog.log.info(Utils.LOG_, 'Done reading: ' + url);
   return text;
 };
 
@@ -960,7 +952,7 @@ Utils.installWindowCloseListener = function(respond) {
 
 
       if (target == source) {
-        fxdriver.logging.info('Window was closed.');
+        goog.log.info(Utils.LOG_, 'Window was closed.');
         respond.send();
       }
     }
@@ -975,7 +967,7 @@ Utils.installClickListener = function(respond, WebLoadingListener) {
   var currentWindow = respond.session.getWindow();
 
   var clickListener = new WebLoadingListener(browser, function(timedOut) {
-    fxdriver.logging.info('New page loading.');
+    goog.log.info(Utils.LOG_, 'New page loading.');
 
     var currentWindowGone;
 
@@ -994,8 +986,9 @@ Utils.installClickListener = function(respond, WebLoadingListener) {
     }
 
     if (currentWindowGone) {
-     fxdriver.logging.info('Detected page load in top window; changing session focus from ' +
-                           'frame to new top window.');
+      goog.log.info(Utils.LOG_,
+          'Detected page load in top window; changing session focus from ' +
+          'frame to new top window.');
      respond.session.setWindow(browser.contentWindow);
     }
     if (timedOut) {
@@ -1017,7 +1010,7 @@ Utils.installClickListener = function(respond, WebLoadingListener) {
     var docLoaderService = browser.webProgress;
     if (!docLoaderService.isLoadingDocument) {
       WebLoadingListener.removeListener(browser, clickListener);
-      fxdriver.logging.info('Not loading document anymore.');
+      goog.log.info(Utils.LOG_, 'Not loading document anymore.');
       respond.send();
     }
   };
@@ -1026,86 +1019,13 @@ Utils.installClickListener = function(respond, WebLoadingListener) {
   if (contentWindow.closed) {
     // Nulls out the session; client will have to switch to another
     // window on their own.
-    fxdriver.logging.info('Content window closed.');
+    goog.log.info(Utils.LOG_, 'Content window closed.');
     respond.send();
     return;
   }
   contentWindow.setTimeout(checkForLoad, 50);
 };
 
-Utils.waitForNativeEventsProcessing = function(element, nativeEvents, pageUnloadedData, jsTimer) {
-  var thmgr_cls = Components.classes['@mozilla.org/thread-manager;1'];
-  var node = Utils.getNodeForNativeEvents(element);
-
-  var hasEvents = {};
-  var threadmgr =
-      thmgr_cls.getService(Components.interfaces.nsIThreadManager);
-  var thread = threadmgr.currentThread;
-
-  do {
-
-    // This sleep is needed so that Firefox on Linux will manage to process
-    // all of the keyboard events before returning control to the caller
-    // code (otherwise the caller may not find all of the keystrokes it
-    // has entered).
-    var doneNativeEventWait = false;
-
-    var callback = function() {
-      fxdriver.logging.info('Done native event wait.');
-      doneNativeEventWait = true;
-    };
-
-    jsTimer.setTimeout(callback, 100);
-
-    nativeEvents.hasUnhandledEvents(node, hasEvents);
-
-    fxdriver.logging.info('Pending native events: ' + hasEvents.value);
-    var numEventsProcessed = 0;
-    // Do it as long as the timeout function has not been called and the
-    // page has not been unloaded. If the page has been unloaded, there is no
-    // point in waiting for other native events to be processed in this page
-    // as they "belong" to the next page.
-    while ((!doneNativeEventWait) && (hasEvents.value) &&
-           (!pageUnloadedData.wasUnloaded) && (numEventsProcessed < 350)) {
-      thread.processNextEvent(true);
-      numEventsProcessed += 1;
-    }
-    fxdriver.logging.info('Extra events processed: ' + numEventsProcessed +
-                 ' Page Unloaded: ' + pageUnloadedData.wasUnloaded);
-
-  } while ((hasEvents.value == true) && (!pageUnloadedData.wasUnloaded));
-  fxdriver.logging.info('Done main loop.');
-
-  if (pageUnloadedData.wasUnloaded) {
-      fxdriver.logging.info('Page has been reloaded while waiting for native events to '
-          + 'be processed. Remaining events? ' + hasEvents.value);
-  } else {
-    Utils.removePageUnloadEventListener(element, pageUnloadedData);
-  }
-
-  // It is possible that, even though the native code reports all of the
-  // keyboard events are out of the GDK event queue, the process is not done.
-  // These keyboard events are converted into Javascript events - and not all
-  // of them may have been processed. In fact, this is the common case when
-  // the sleep timeout above is less than 500 msec.
-  // The appropriate thing to do is process all the remaining JS events.
-  // Only existing events in the queue should be processed - hence the call
-  // to processNextEvent with false.
-
-  var numExtraEventsProcessed = 0;
-  var hasMoreEvents = thread.processNextEvent(false);
-  // A safety net to prevent the code from endlessly staying in this loop,
-  // in case there is some source of events that's constantly generating them.
-  var MAX_EXTRA_EVENTS_TO_PROCESS = 200;
-
-  while ((hasMoreEvents) &&
-      (numExtraEventsProcessed < MAX_EXTRA_EVENTS_TO_PROCESS)) {
-    hasMoreEvents = thread.processNextEvent(false);
-    numExtraEventsProcessed += 1;
-  }
-
-  fxdriver.logging.info('Done extra event loop, ' + numExtraEventsProcessed);
-};
 
 Utils.getPageUnloadedIndicator = function(element) {
   var toReturn = {
@@ -1178,7 +1098,15 @@ Utils.isSVG = function(doc) {
 };
 
 Utils.getMainDocumentElement = function(doc) {
-  if (Utils.isSVG(doc))
-    return doc.documentElement;
-  return doc.body;
+  try {
+    if (Utils.isSVG(doc))
+      return doc.documentElement;
+    return doc.body;
+  } catch (ex) {
+    if (ex instanceof TypeError) {
+      return null;
+    } else {
+      throw ex;
+    }
+  }
 };

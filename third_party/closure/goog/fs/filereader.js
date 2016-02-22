@@ -22,7 +22,6 @@ goog.provide('goog.fs.FileReader.EventType');
 goog.provide('goog.fs.FileReader.ReadyState');
 
 goog.require('goog.async.Deferred');
-goog.require('goog.events.Event');
 goog.require('goog.events.EventTarget');
 goog.require('goog.fs.Error');
 goog.require('goog.fs.ProgressEvent');
@@ -35,9 +34,10 @@ goog.require('goog.fs.ProgressEvent');
  *
  * @constructor
  * @extends {goog.events.EventTarget}
+ * @final
  */
 goog.fs.FileReader = function() {
-  goog.base(this);
+  goog.fs.FileReader.base(this, 'constructor');
 
   /**
    * The underlying FileReader object.
@@ -123,7 +123,7 @@ goog.fs.FileReader.prototype.abort = function() {
   try {
     this.reader_.abort();
   } catch (e) {
-    throw new goog.fs.Error(e.code, 'aborting read');
+    throw new goog.fs.Error(e, 'aborting read');
   }
 };
 
@@ -149,7 +149,7 @@ goog.fs.FileReader.prototype.getResult = function() {
  */
 goog.fs.FileReader.prototype.getError = function() {
   return this.reader_.error &&
-      new goog.fs.Error(this.reader_.error.code, 'reading file');
+      new goog.fs.Error(this.reader_.error, 'reading file');
 };
 
 
@@ -166,7 +166,7 @@ goog.fs.FileReader.prototype.dispatchProgressEvent_ = function(event) {
 
 /** @override */
 goog.fs.FileReader.prototype.disposeInternal = function() {
-  goog.base(this, 'disposeInternal');
+  goog.fs.FileReader.base(this, 'disposeInternal');
   delete this.reader_;
 };
 
@@ -273,7 +273,7 @@ goog.fs.FileReader.readAsDataUrl = function(blob) {
  */
 goog.fs.FileReader.createDeferred_ = function(reader) {
   var deferred = new goog.async.Deferred();
-  reader.addEventListener(goog.fs.FileReader.EventType.LOAD_END,
+  reader.listen(goog.fs.FileReader.EventType.LOAD_END,
       goog.partial(function(d, r, e) {
         var result = r.getResult();
         var error = r.getError();

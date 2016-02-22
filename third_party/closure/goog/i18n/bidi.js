@@ -21,6 +21,9 @@
  * Namespace for bidi supporting functions.
  */
 goog.provide('goog.i18n.bidi');
+goog.provide('goog.i18n.bidi.Dir');
+goog.provide('goog.i18n.bidi.DirectionalString');
+goog.provide('goog.i18n.bidi.Format');
 
 
 /**
@@ -57,15 +60,26 @@ goog.define('goog.i18n.bidi.FORCE_RTL', false);
  * TODO(user): write a test that checks that this is a compile-time constant.
  */
 goog.i18n.bidi.IS_RTL = goog.i18n.bidi.FORCE_RTL ||
-    (goog.LOCALE.substring(0, 2).toLowerCase() == 'ar' ||
-     goog.LOCALE.substring(0, 2).toLowerCase() == 'fa' ||
-     goog.LOCALE.substring(0, 2).toLowerCase() == 'he' ||
-     goog.LOCALE.substring(0, 2).toLowerCase() == 'iw' ||
-     goog.LOCALE.substring(0, 2).toLowerCase() == 'ur' ||
-     goog.LOCALE.substring(0, 2).toLowerCase() == 'yi') &&
-    (goog.LOCALE.length == 2 ||
-     goog.LOCALE.substring(2, 3) == '-' ||
-     goog.LOCALE.substring(2, 3) == '_');
+    (
+        (goog.LOCALE.substring(0, 2).toLowerCase() == 'ar' ||
+         goog.LOCALE.substring(0, 2).toLowerCase() == 'fa' ||
+         goog.LOCALE.substring(0, 2).toLowerCase() == 'he' ||
+         goog.LOCALE.substring(0, 2).toLowerCase() == 'iw' ||
+         goog.LOCALE.substring(0, 2).toLowerCase() == 'ps' ||
+         goog.LOCALE.substring(0, 2).toLowerCase() == 'sd' ||
+         goog.LOCALE.substring(0, 2).toLowerCase() == 'ug' ||
+         goog.LOCALE.substring(0, 2).toLowerCase() == 'ur' ||
+         goog.LOCALE.substring(0, 2).toLowerCase() == 'yi') &&
+        (goog.LOCALE.length == 2 ||
+         goog.LOCALE.substring(2, 3) == '-' ||
+         goog.LOCALE.substring(2, 3) == '_')
+    ) || (
+        goog.LOCALE.length >= 3 &&
+        goog.LOCALE.substring(0, 3).toLowerCase() == 'ckb' &&
+        (goog.LOCALE.length == 3 ||
+         goog.LOCALE.substring(3, 4) == '-' ||
+         goog.LOCALE.substring(3, 4) == '_')
+    );
 
 
 /**
@@ -91,9 +105,20 @@ goog.i18n.bidi.Format = {
  * @enum {number}
  */
 goog.i18n.bidi.Dir = {
+  /**
+   * Left-to-right.
+   */
+  LTR: 1,
+
+  /**
+   * Right-to-left.
+   */
   RTL: -1,
-  UNKNOWN: 0,
-  LTR: 1
+
+  /**
+   * Neither left-to-right nor right-to-left.
+   */
+  NEUTRAL: 0
 };
 
 
@@ -132,19 +157,28 @@ goog.i18n.bidi.I18N_LEFT = goog.i18n.bidi.IS_RTL ? goog.i18n.bidi.RIGHT :
  * constant. Useful for interaction with different standards of directionality
  * representation.
  *
- * @param {goog.i18n.bidi.Dir|number|boolean} givenDir Directionality given in
- *     one of the following formats:
+ * @param {goog.i18n.bidi.Dir|number|boolean|null} givenDir Directionality given
+ *     in one of the following formats:
  *     1. A goog.i18n.bidi.Dir constant.
- *     2. A number (positive = LRT, negative = RTL, 0 = unknown).
+ *     2. A number (positive = LTR, negative = RTL, 0 = neutral).
  *     3. A boolean (true = RTL, false = LTR).
- * @return {goog.i18n.bidi.Dir} A goog.i18n.bidi.Dir constant matching the given
- *     directionality.
+ *     4. A null for unknown directionality.
+ * @param {boolean=} opt_noNeutral Whether a givenDir of zero or
+ *     goog.i18n.bidi.Dir.NEUTRAL should be treated as null, i.e. unknown, in
+ *     order to preserve legacy behavior.
+ * @return {?goog.i18n.bidi.Dir} A goog.i18n.bidi.Dir constant matching the
+ *     given directionality. If given null, returns null (i.e. unknown).
  */
-goog.i18n.bidi.toDir = function(givenDir) {
+goog.i18n.bidi.toDir = function(givenDir, opt_noNeutral) {
   if (typeof givenDir == 'number') {
+    // This includes the non-null goog.i18n.bidi.Dir case.
     return givenDir > 0 ? goog.i18n.bidi.Dir.LTR :
-        givenDir < 0 ? goog.i18n.bidi.Dir.RTL : goog.i18n.bidi.Dir.UNKNOWN;
+        givenDir < 0 ? goog.i18n.bidi.Dir.RTL :
+        opt_noNeutral ? null : goog.i18n.bidi.Dir.NEUTRAL;
+  } else if (givenDir == null) {
+    return null;
   } else {
+    // Must be typeof givenDir == 'boolean'.
     return givenDir ? goog.i18n.bidi.Dir.RTL : goog.i18n.bidi.Dir.LTR;
   }
 };
@@ -159,7 +193,7 @@ goog.i18n.bidi.toDir = function(givenDir) {
  */
 goog.i18n.bidi.ltrChars_ =
     'A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02B8\u0300-\u0590\u0800-\u1FFF' +
-    '\u2C00-\uFB1C\uFE00-\uFE6F\uFEFD-\uFFFF';
+    '\u200E\u2C00-\uFB1C\uFE00-\uFE6F\uFEFD-\uFFFF';
 
 
 /**
@@ -169,7 +203,8 @@ goog.i18n.bidi.ltrChars_ =
  * @type {string}
  * @private
  */
-goog.i18n.bidi.rtlChars_ = '\u0591-\u07FF\uFB1D-\uFDFF\uFE70-\uFEFC';
+goog.i18n.bidi.rtlChars_ =
+    '\u0591-\u06EF\u06FA-\u07FF\u200F\uFB1D-\uFDFF\uFE70-\uFEFC';
 
 
 /**
@@ -196,7 +231,7 @@ goog.i18n.bidi.htmlSkipReg_ = /<[^>]*>|&[^;]+;/g;
  * @private
  */
 goog.i18n.bidi.stripHtmlIfNeeded_ = function(str, opt_isStripNeeded) {
-  return opt_isStripNeeded ? str.replace(goog.i18n.bidi.htmlSkipReg_, ' ') :
+  return opt_isStripNeeded ? str.replace(goog.i18n.bidi.htmlSkipReg_, '') :
       str;
 };
 
@@ -477,7 +512,8 @@ goog.i18n.bidi.isRtlExitText = goog.i18n.bidi.endsWithRtl;
  * @private
  */
 goog.i18n.bidi.rtlLocalesRe_ = new RegExp(
-    '^(ar|dv|he|iw|fa|nqo|ps|sd|ug|ur|yi|.*[-_](Arab|Hebr|Thaa|Nkoo|Tfng))' +
+    '^(ar|ckb|dv|he|iw|fa|nqo|ps|sd|ug|ur|yi|' +
+    '.*[-_](Arab|Hebr|Thaa|Nkoo|Tfng))' +
     '(?!.*[-_](Latn|Cyrl)($|-|_))($|-|_)',
     'i');
 
@@ -498,7 +534,7 @@ goog.i18n.bidi.rtlLocalesRe_ = new RegExp(
  * The languages usually written in a right-to-left script are taken as those
  * with Suppress-Script: Hebr|Arab|Thaa|Nkoo|Tfng  in
  * http://www.iana.org/assignments/language-subtag-registry,
- * as well as Sindhi (sd) and Uyghur (ug).
+ * as well as Central (or Sorani) Kurdish (ckb), Sindhi (sd) and Uyghur (ug).
  * Other subtags of the language code, e.g. regions like EG (Egypt), are
  * ignored.
  * @param {string} lang BCP 47 (a.k.a III) language code.
@@ -720,10 +756,20 @@ goog.i18n.bidi.wordSeparatorRe_ = /\s+/;
  * Regular expression to check if a string contains any numerals. Used to
  * differentiate between completely neutral strings and those containing
  * numbers, which are weakly LTR.
+ *
+ * Native Arabic digits (\u0660 - \u0669) are not included because although they
+ * do flow left-to-right inside a number, this is the case even if the  overall
+ * directionality is RTL, and a mathematical expression using these digits is
+ * supposed to flow right-to-left overall, including unary plus and minus
+ * appearing to the right of a number, and this does depend on the overall
+ * directionality being RTL. The digits used in Farsi (\u06F0 - \u06F9), on the
+ * other hand, are included, since Farsi math (including unary plus and minus)
+ * does flow left-to-right.
+ *
  * @type {RegExp}
  * @private
  */
-goog.i18n.bidi.hasNumeralsRe_ = /\d/;
+goog.i18n.bidi.hasNumeralsRe_ = /[\d\u06f0-\u06f9]/;
 
 
 /**
@@ -767,7 +813,7 @@ goog.i18n.bidi.estimateDirection = function(str, opt_isHtml) {
   }
 
   return totalCount == 0 ?
-      (hasWeaklyLtr ? goog.i18n.bidi.Dir.LTR : goog.i18n.bidi.Dir.UNKNOWN) :
+      (hasWeaklyLtr ? goog.i18n.bidi.Dir.LTR : goog.i18n.bidi.Dir.NEUTRAL) :
       (rtlCount / totalCount > goog.i18n.bidi.rtlDetectionThreshold_ ?
           goog.i18n.bidi.Dir.RTL : goog.i18n.bidi.Dir.LTR);
 };
@@ -789,18 +835,74 @@ goog.i18n.bidi.detectRtlDirectionality = function(str, opt_isHtml) {
 
 /**
  * Sets text input element's directionality and text alignment based on a
- * given directionality.
+ * given directionality. Does nothing if the given directionality is unknown or
+ * neutral.
  * @param {Element} element Input field element to set directionality to.
- * @param {goog.i18n.bidi.Dir|number|boolean} dir Desired directionality, given
- *     in one of the following formats:
+ * @param {goog.i18n.bidi.Dir|number|boolean|null} dir Desired directionality,
+ *     given in one of the following formats:
  *     1. A goog.i18n.bidi.Dir constant.
- *     2. A number (positive = LRT, negative = RTL, 0 = unknown).
+ *     2. A number (positive = LRT, negative = RTL, 0 = neutral).
  *     3. A boolean (true = RTL, false = LTR).
+ *     4. A null for unknown directionality.
  */
 goog.i18n.bidi.setElementDirAndAlign = function(element, dir) {
-  if (element &&
-      (dir = goog.i18n.bidi.toDir(dir)) != goog.i18n.bidi.Dir.UNKNOWN) {
-    element.style.textAlign = dir == goog.i18n.bidi.Dir.RTL ? 'right' : 'left';
-    element.dir = dir == goog.i18n.bidi.Dir.RTL ? 'rtl' : 'ltr';
+  if (element) {
+    dir = goog.i18n.bidi.toDir(dir);
+    if (dir) {
+      element.style.textAlign =
+          dir == goog.i18n.bidi.Dir.RTL ?
+          goog.i18n.bidi.RIGHT : goog.i18n.bidi.LEFT;
+      element.dir = dir == goog.i18n.bidi.Dir.RTL ? 'rtl' : 'ltr';
+    }
   }
 };
+
+
+/**
+ * Sets element dir based on estimated directionality of the given text.
+ * @param {!Element} element
+ * @param {string} text
+ */
+goog.i18n.bidi.setElementDirByTextDirectionality = function(element, text) {
+  switch (goog.i18n.bidi.estimateDirection(text)) {
+    case (goog.i18n.bidi.Dir.LTR):
+      element.dir = 'ltr';
+      break;
+    case (goog.i18n.bidi.Dir.RTL):
+      element.dir = 'rtl';
+      break;
+    default:
+      // Default for no direction, inherit from document.
+      element.removeAttribute('dir');
+  }
+};
+
+
+
+/**
+ * Strings that have an (optional) known direction.
+ *
+ * Implementations of this interface are string-like objects that carry an
+ * attached direction, if known.
+ * @interface
+ */
+goog.i18n.bidi.DirectionalString = function() {};
+
+
+/**
+ * Interface marker of the DirectionalString interface.
+ *
+ * This property can be used to determine at runtime whether or not an object
+ * implements this interface.  All implementations of this interface set this
+ * property to {@code true}.
+ * @type {boolean}
+ */
+goog.i18n.bidi.DirectionalString.prototype.
+    implementsGoogI18nBidiDirectionalString;
+
+
+/**
+ * Retrieves this object's known direction (if any).
+ * @return {?goog.i18n.bidi.Dir} The known direction. Null if unknown.
+ */
+goog.i18n.bidi.DirectionalString.prototype.getDirection;

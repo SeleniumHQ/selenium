@@ -42,7 +42,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\..\build\cli\Debug\WebDriver.xml</DocumentationFile>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>WebDriver.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -52,7 +52,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\..\build\cli\Release\WebDriver.xml</DocumentationFile>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>WebDriver.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -61,33 +61,48 @@
     <AssemblyOriginatorKeyFile>..\..\..\WebDriver.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ionic.Zip">
-      <HintPath>..\..\..\third_party\dotnet\dotnetzip-1.9\Ionic.Zip.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\third_party\dotnet\json-net-4.5r11\Net40\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\third_party\dotnet\json-net-6.0r2\Net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Android\AndroidDriver.cs" />
     <Compile Include="By.cs" />
+    <Compile Include="Chrome\ChromeMobileEmulationDeviceSettings.cs" />
+    <Compile Include="Chrome\ChromePerformanceLoggingPreferences.cs" />
     <Compile Include="DefaultFileDetector.cs" />
+    <Compile Include="DriverOptions.cs" />
+    <Compile Include="Edge\EdgeDriver.cs" />
+    <Compile Include="Edge\EdgeDriverService.cs" />
+    <Compile Include="Edge\EdgeOptions.cs" />
+    <Compile Include="Edge\EdgeWebElement.cs" />
+    <Compile Include="Firefox\FirefoxDriverService.cs" />
+    <Compile Include="Firefox\FirefoxDriverCommandExecutor.cs" />
+    <Compile Include="Firefox\FirefoxDriverServer.cs" />
+    <Compile Include="Firefox\FirefoxOptions.cs" />
+    <Compile Include="Html5\AppCacheStatus.cs" />
+    <Compile Include="Html5\IApplicationCache.cs" />
+    <Compile Include="Html5\IHasApplicationCache.cs" />
+    <Compile Include="Html5\IHasWebStorage.cs" />
+    <Compile Include="Html5\ILocalStorage.cs" />
+    <Compile Include="Html5\ISessionStorage.cs" />
+    <Compile Include="Html5\IWebStorage.cs" />
+    <Compile Include="Html5\Location.cs" />
     <Compile Include="IAllowsFileDetection.cs" />
+    <Compile Include="IE\InternetExplorerDriverEngine.cs" />
     <Compile Include="IFileDetector.cs" />
+    <Compile Include="Html5\IHasLocationContext.cs" />
+    <Compile Include="ILogs.cs" />
+    <Compile Include="LogEntry.cs" />
+    <Compile Include="LogLevel.cs" />
+    <Compile Include="LogType.cs" />
+    <Compile Include="Remote\IHasSessionId.cs" />
     <Compile Include="IHasTouchScreen.cs" />
     <Compile Include="Interactions\ScreenMoveAction.cs" />
     <Compile Include="Interactions\ScreenReleaseAction.cs" />
@@ -99,15 +114,33 @@
     <Compile Include="Interactions\TouchAction.cs" />
     <Compile Include="Interactions\SingleTapAction.cs" />
     <Compile Include="Interactions\TouchActions.cs" />
+    <Compile Include="Internal\ZipStorer.cs">
+      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
+    </Compile>
     <Compile Include="ITouchScreen.cs" />
+    <Compile Include="Html5\ILocationContext.cs" />
+    <Compile Include="Opera\OperaDriver.cs" />
+    <Compile Include="Opera\OperaDriverService.cs" />
+    <Compile Include="Opera\OperaOptions.cs" />
+    <Compile Include="Opera\OperaWebElement.cs" />
     <Compile Include="PhantomJS\CommandLineArgumentNameAttribute.cs" />
     <Compile Include="PhantomJS\PhantomJSDriver.cs" />
     <Compile Include="PhantomJS\PhantomJSDriverService.cs" />
     <Compile Include="PhantomJS\PhantomJSOptions.cs" />
     <Compile Include="PhantomJS\PhantomJSWebElement.cs" />
+    <Compile Include="Remote\RemoteLogs.cs" />
+    <Compile Include="Remote\W3CWireProtocolCommandInfoRepository.cs" />
+    <Compile Include="Remote\WebDriverError.cs" />
+    <Compile Include="Remote\WebDriverWireProtocolCommandInfoRepository.cs" />
+    <Compile Include="Remote\ICommandServer.cs" />
+    <Compile Include="Remote\JsonConverters\ResponseValueJsonConverter.cs" />
     <Compile Include="Remote\LocalFileDetector.cs" />
+    <Compile Include="Remote\RemoteApplicationCache.cs" />
+    <Compile Include="Remote\RemoteLocalStorage.cs" />
+    <Compile Include="Remote\RemoteLocationContext.cs" />
+    <Compile Include="Remote\RemoteSessionStorage.cs" />
     <Compile Include="Remote\RemoteTouchScreen.cs" />
-    <Compile Include="Safari\SafariDriverExtension.cs" />
+    <Compile Include="Remote\RemoteWebStorage.cs" />
     <Compile Include="Safari\SafariOptions.cs" />
     <Compile Include="WebDriverTimeoutException.cs" />
     <Compile Include="IE\InternetExplorerDriverLogLevel.cs" />
@@ -133,9 +166,7 @@
     <Compile Include="Firefox\FirefoxProfile.cs" />
     <Compile Include="Firefox\FirefoxProfileManager.cs" />
     <Compile Include="Firefox\FirefoxWebElement.cs" />
-    <Compile Include="Firefox\IExtensionConnection.cs" />
     <Compile Include="Firefox\Internal\Executable.cs" />
-    <Compile Include="Firefox\Internal\ExtensionConnection.cs" />
     <Compile Include="Firefox\Internal\ILock.cs" />
     <Compile Include="Firefox\Internal\IniFileReader.cs" />
     <Compile Include="Firefox\Internal\SocketLock.cs" />
@@ -150,7 +181,6 @@
     <Compile Include="IHasInputDevices.cs" />
     <Compile Include="IJavascriptExecutor.cs" />
     <Compile Include="IKeyboard.cs" />
-    <Compile Include="IllegalLocatorException.cs" />
     <Compile Include="ILocatable.cs" />
     <Compile Include="IMouse.cs" />
     <Compile Include="INavigation.cs" />
@@ -215,10 +245,6 @@
     <Compile Include="Remote\ErrorResponse.cs" />
     <Compile Include="Remote\HttpCommandExecutor.cs" />
     <Compile Include="Remote\ICommandExecutor.cs" />
-    <Compile Include="Remote\JsonConverters\CookieJsonConverter.cs" />
-    <Compile Include="Remote\JsonConverters\DesiredCapabilitiesJsonConverter.cs" />
-    <Compile Include="Remote\JsonConverters\PlatformJsonConverter.cs" />
-    <Compile Include="Remote\JsonConverters\ResponseValueJsonConverter.cs" />
     <Compile Include="Remote\RemoteAlert.cs" />
     <Compile Include="Remote\RemoteCookieJar.cs" />
     <Compile Include="Remote\RemoteCoordinates.cs" />
@@ -296,7 +322,14 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="WebDriver.ruleset" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\..\..\third_party\dotnet\stylecop\StyleCop.Analyzers.1.0.0-rc3\analyzers\dotnet\cs\Newtonsoft.Json.dll" />
+    <Analyzer Include="..\..\..\third_party\dotnet\stylecop\StyleCop.Analyzers.1.0.0-rc3\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\..\..\third_party\dotnet\stylecop\StyleCop.Analyzers.1.0.0-rc3\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -309,44 +342,37 @@
     <PostBuildEvent>if %25PROCESSOR_ARCHITECTURE%25 == x86 (
   if not defined PROCESSOR_ARCHITEW6432 (
     echo Detected 32-bit platform
-    if exist "$(SolutionDir)build\cpp\Win32\$(ConfigurationName)\IEDriverServer.exe" (
-      echo Found IE 32-bit native binary, copying from Win32 build target $(SolutionDir)build\cpp\Win32\$(ConfigurationName)\IEDriverServer.exe
-      copy /y "$(SolutionDir)build\cpp\Win32\$(ConfigurationName)\IEDriverServer.exe" "$(TargetDir)" &gt; NUL
+    if exist "$(ProjectDir)..\..\..\build\cpp\Win32\$(ConfigurationName)\IEDriverServer.exe" (
+      echo Found IE 32-bit native binary, copying from Win32 build target $(ProjectDir)..\..\..\build\cpp\Win32\$(ConfigurationName)\IEDriverServer.exe
+      copy /y "$(ProjectDir)..\..\..\build\cpp\Win32\$(ConfigurationName)\IEDriverServer.exe" "$(TargetDir)" &gt; NUL
     ) else (
-      echo Missing IE 32-bit native binary, copying from Win32 prebuilt location $(SolutionDir)cpp\prebuilt\Win32\Release\IEDriverServer.exe
-      copy /y "$(SolutionDir)cpp\prebuilt\Win32\Release\IEDriverServer.exe" "$(TargetDir)" &gt; NUL
+      echo Missing IE 32-bit native binary, copying from Win32 prebuilt location $(ProjectDir)..\..\..\cpp\prebuilt\Win32\Release\IEDriverServer.exe
+      copy /y "$(ProjectDir)..\..\..\cpp\prebuilt\Win32\Release\IEDriverServer.exe" "$(TargetDir)" &gt; NUL
     )
     goto end
   )
 )
 
 echo Detected 64-bit platform
-if exist "$(SolutionDir)build\cpp\x64\$(ConfigurationName)\IEDriverServer.exe" (
-  echo Found IE 64-bit native binary, copying from x64 build target $(SolutionDir)build\cpp\x64\$(ConfigurationName)\IEDriverServer.exe
-  copy /y "$(SolutionDir)build\cpp\x64\$(ConfigurationName)\IEDriverServer.exe" "$(TargetDir)" &gt; NUL
+if exist "$(ProjectDir)..\..\..\build\cpp\x64\$(ConfigurationName)\IEDriverServer.exe" (
+  echo Found IE 64-bit native binary, copying from x64 build target $(ProjectDir)..\..\..\build\cpp\x64\$(ConfigurationName)\IEDriverServer.exe
+  copy /y "$(ProjectDir)..\..\..\build\cpp\x64\$(ConfigurationName)\IEDriverServer.exe" "$(TargetDir)" &gt; NUL
 ) else (
-  echo Missing IE 64-bit native binary, copying from x64 prebuilt location $(SolutionDir)cpp\prebuilt\x64\Release\IEDriverServer.exe
-  copy /y "$(SolutionDir)cpp\prebuilt\x64\Release\IEDriverServer.exe" "$(TargetDir)" &gt; NUL
+  echo Missing IE 64-bit native binary, copying from x64 prebuilt location $(ProjectDir)..\..\..\cpp\prebuilt\x64\Release\IEDriverServer.exe
+  copy /y "$(ProjectDir)..\..\..\cpp\prebuilt\x64\Release\IEDriverServer.exe" "$(TargetDir)" &gt; NUL
 )
 
 :end
-if exist $(SolutionDir)build\javascript\firefox-driver\webdriver.xpi (
-  echo Copying Firefox extension from $(SolutionDir)build\javascript\firefox-driver\webdriver.xpi
-  copy /y $(SolutionDir)build\javascript\firefox-driver\webdriver.xpi $(TargetDir) &gt; NUL
+if exist "$(ProjectDir)..\..\..\build\javascript\firefox-driver\webdriver.xpi" (
+  echo Copying Firefox extension from $(ProjectDir)..\..\..\build\javascript\firefox-driver\webdriver.xpi
+  copy /y "$(ProjectDir)..\..\..\build\javascript\firefox-driver\webdriver.xpi" "$(TargetDir)" &gt; NUL
 ) else (
-  echo WARN: No Firefox extension found at $(SolutionDir)build\javascript\firefox-driver\webdriver.xpi
+  echo WARN: No Firefox extension found at $(ProjectDir)..\..\..\build\javascript\firefox-driver\webdriver.xpi
 )
 
-echo Copying Firefox preferences file from $(SolutionDir)javascript\firefox-driver\webdriver.json
-copy /y $(SolutionDir)javascript\firefox-driver\webdriver.json $(TargetDir) &gt; NUL
+echo Copying Firefox preferences file from $(ProjectDir)..\..\..\javascript\firefox-driver\webdriver.json
+copy /y "$(ProjectDir)..\..\..\javascript\firefox-driver\webdriver.json" "$(TargetDir)" &gt; NUL
 
-if exist $(SolutionDir)build\javascript\safari-driver\SafariDriver.safariextension\SafariDriver.safariextz (
-  echo Copying Safari extension from $(SolutionDir)build\javascript\safari-driver\SafariDriver.safariextension\SafariDriver.safariextz
-  copy /y $(SolutionDir)build\javascript\safari-driver\SafariDriver.safariextension\SafariDriver.safariextz $(TargetDir) &gt; NUL
-) else (
-  echo Copying Safari extension from prebuilt location $(SolutionDir)javascript\safari-driver\prebuilt\SafariDriver.safariextz
-  copy /y $(SolutionDir)javascript\safari-driver\prebuilt\SafariDriver.safariextz $(TargetDir) &gt; NUL
-)
 </PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -18,6 +18,7 @@
  */
 goog.provide('goog.ui.CookieEditor');
 
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events.EventType');
@@ -33,9 +34,10 @@ goog.require('goog.ui.Component');
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
  * @constructor
  * @extends {goog.ui.Component}
+ * @final
  */
 goog.ui.CookieEditor = function(opt_domHelper) {
-  goog.base(this, opt_domHelper);
+  goog.ui.CookieEditor.base(this, 'constructor', opt_domHelper);
 };
 goog.inherits(goog.ui.CookieEditor, goog.ui.Component);
 
@@ -103,14 +105,15 @@ goog.ui.CookieEditor.prototype.canDecorate = function() {
 /** @override */
 goog.ui.CookieEditor.prototype.createDom = function() {
   // Debug-only, so we don't need i18n.
-  this.clearButtonElem_ = /** @type {HTMLButtonElement} */ (goog.dom.createDom(
+  this.clearButtonElem_ = /** @type {!HTMLButtonElement} */ (goog.dom.createDom(
       goog.dom.TagName.BUTTON, /* attributes */ null, 'Clear'));
-  this.updateButtonElem_ = /** @type {HTMLButtonElement} */ (goog.dom.createDom(
-      goog.dom.TagName.BUTTON, /* attributes */ null, 'Update'));
+  this.updateButtonElem_ =
+      /** @type {!HTMLButtonElement} */ (goog.dom.createDom(
+          goog.dom.TagName.BUTTON, /* attributes */ null, 'Update'));
   var value = this.cookieKey_ && goog.net.cookies.get(this.cookieKey_);
-  this.textAreaElem_ = /** @type {HTMLTextAreaElement} */ (goog.dom.createDom(
+  this.textAreaElem_ = /** @type {!HTMLTextAreaElement} */ (goog.dom.createDom(
       goog.dom.TagName.TEXTAREA, /* attibutes */ null, value || ''));
-  this.valueWarningElem_ = /** @type {HTMLSpanElement} */ (goog.dom.createDom(
+  this.valueWarningElem_ = /** @type {!HTMLSpanElement} */ (goog.dom.createDom(
       goog.dom.TagName.SPAN, /* attibutes */ {
         'style': 'display:none;color:red'
       }, 'Invalid cookie value.'));
@@ -127,7 +130,7 @@ goog.ui.CookieEditor.prototype.createDom = function() {
 
 /** @override */
 goog.ui.CookieEditor.prototype.enterDocument = function() {
-  goog.base(this, 'enterDocument');
+  goog.ui.CookieEditor.base(this, 'enterDocument');
   this.getHandler().listen(this.clearButtonElem_,
       goog.events.EventType.CLICK,
       this.handleClear_);

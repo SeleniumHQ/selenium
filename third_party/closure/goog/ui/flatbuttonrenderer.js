@@ -20,9 +20,10 @@
 
 goog.provide('goog.ui.FlatButtonRenderer');
 
-goog.require('goog.a11y.aria');
 goog.require('goog.a11y.aria.Role');
-goog.require('goog.dom.classes');
+goog.require('goog.asserts');
+goog.require('goog.dom.TagName');
+goog.require('goog.dom.classlist');
 goog.require('goog.ui.Button');
 goog.require('goog.ui.ButtonRenderer');
 goog.require('goog.ui.INLINE_BLOCK_CLASSNAME');
@@ -58,7 +59,7 @@ goog.ui.FlatButtonRenderer.CSS_CLASS = goog.getCssName('goog-flat-button');
  * to it, and the button's disabled attribute set or cleared as needed.
  * Overrides {@link goog.ui.ButtonRenderer#createDom}.
  * @param {goog.ui.Control} button Button to render.
- * @return {Element} Root element for the button.
+ * @return {!Element} Root element for the button.
  * @override
  */
 goog.ui.FlatButtonRenderer.prototype.createDom = function(button) {
@@ -67,9 +68,8 @@ goog.ui.FlatButtonRenderer.prototype.createDom = function(button) {
     'class': goog.ui.INLINE_BLOCK_CLASSNAME + ' ' + classNames.join(' ')
   };
   var element = button.getDomHelper().createDom(
-      'div', attributes, button.getContent());
+      goog.dom.TagName.DIV, attributes, button.getContent());
   this.setTooltip(element, button.getTooltip());
-  this.setAriaStates(button, element);
   return element;
 };
 
@@ -93,7 +93,7 @@ goog.ui.FlatButtonRenderer.prototype.getAriaRole = function() {
  * @override
  */
 goog.ui.FlatButtonRenderer.prototype.canDecorate = function(element) {
-  return element.tagName == 'DIV';
+  return element.tagName == goog.dom.TagName.DIV;
 };
 
 
@@ -108,7 +108,8 @@ goog.ui.FlatButtonRenderer.prototype.canDecorate = function(element) {
  * @override
  */
 goog.ui.FlatButtonRenderer.prototype.decorate = function(button, element) {
-  goog.dom.classes.add(element, goog.ui.INLINE_BLOCK_CLASSNAME);
+  goog.asserts.assert(element);
+  goog.dom.classlist.add(element, goog.ui.INLINE_BLOCK_CLASSNAME);
   return goog.ui.FlatButtonRenderer.superClass_.decorate.call(this, button,
       element);
 };

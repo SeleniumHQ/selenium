@@ -1,17 +1,19 @@
-// Copyright 2011 WebDriver committers
-// Copyright 2011 Google Inc.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview Helper function to determine which HTML5 features are
@@ -47,30 +49,30 @@ bot.html5.API = {
 
 
 /**
- * True if the current browser is IE8.
+ * True if the current browser is IE version 8 or earlier.
  * @private {boolean}
  * @const
  */
-bot.html5.IS_IE8_ = goog.userAgent.IE &&
-    bot.userAgent.isEngineVersion(8) && !bot.userAgent.isEngineVersion(9);
+bot.html5.IS_IE8_OR_EARLIER_ = goog.userAgent.IE &&
+    !bot.userAgent.isEngineVersion(9);
 
 
 /**
- * True if the current browser is Safari 4.
+ * True if the current browser is Safari version 4 or earlier.
  * @private {boolean}
  * @const
  */
-bot.html5.IS_SAFARI4_ = goog.userAgent.product.SAFARI &&
-    bot.userAgent.isProductVersion(4) && !bot.userAgent.isProductVersion(5);
+bot.html5.IS_SAFARI4_OR_EARLIER_ = goog.userAgent.product.SAFARI &&
+    !bot.userAgent.isProductVersion(5);
 
 
 /**
- * True if the browser is Android 2.2 (Froyo).
+ * True if the browser is Android version 2.2 (Froyo) or earlier.
  * @private {boolean}
  * @const
  */
-bot.html5.IS_ANDROID_FROYO_ = goog.userAgent.product.ANDROID &&
-    bot.userAgent.isProductVersion(2.2) && !bot.userAgent.isProductVersion(2.3);
+bot.html5.IS_ANDROID_FROYO_OR_EARLIER_ = goog.userAgent.product.ANDROID &&
+    !bot.userAgent.isProductVersion(2.3);
 
 
 /**
@@ -98,7 +100,7 @@ bot.html5.isSupported = function(api, opt_window) {
   switch (api) {
     case bot.html5.API.APPCACHE:
       // IE8 does not support application cache, though the APIs exist.
-      if (bot.html5.IS_IE8_) {
+      if (bot.html5.IS_IE8_OR_EARLIER_) {
         return false;
       }
       return goog.isDefAndNotNull(win.applicationCache);
@@ -109,11 +111,11 @@ bot.html5.isSupported = function(api, opt_window) {
 
     case bot.html5.API.DATABASE:
       // Safari4 database API does not allow writes.
-      if (bot.html5.IS_SAFARI4_) {
+      if (bot.html5.IS_SAFARI4_OR_EARLIER_) {
         return false;
       }
       // Android Froyo does not support database, though the APIs exist.
-      if (bot.html5.IS_ANDROID_FROYO_) {
+      if (bot.html5.IS_ANDROID_FROYO_OR_EARLIER_) {
         return false;
       }
       return goog.isDefAndNotNull(win.openDatabase);
@@ -129,14 +131,14 @@ bot.html5.isSupported = function(api, opt_window) {
 
     case bot.html5.API.LOCAL_STORAGE:
       // IE8 does not support local storage, though the APIs exist.
-      if (bot.html5.IS_IE8_) {
+      if (bot.html5.IS_IE8_OR_EARLIER_) {
         return false;
       }
       return goog.isDefAndNotNull(win.localStorage);
 
     case bot.html5.API.SESSION_STORAGE:
       // IE8 does not support session storage, though the APIs exist.
-      if (bot.html5.IS_IE8_) {
+      if (bot.html5.IS_IE8_OR_EARLIER_) {
         return false;
       }
       return goog.isDefAndNotNull(win.sessionStorage) &&

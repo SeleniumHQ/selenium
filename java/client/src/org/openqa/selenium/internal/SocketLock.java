@@ -1,18 +1,19 @@
-/*
-Copyright 2007-2009 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.internal;
 
@@ -27,7 +28,7 @@ import java.net.SocketException;
 /**
  * Implements {@link org.openqa.selenium.internal.Lock} via an implementation that uses a well-known
  * server socket.
- * 
+ *
  * @author gregory.block@gmail.com (Gregory Block)
  */
 public class SocketLock implements Lock {
@@ -53,7 +54,7 @@ public class SocketLock implements Lock {
   /**
    * Constructs a new SocketLock. Attempts to lock the lock will attempt to acquire the specified
    * port number, and wait for it to become free.
-   * 
+   *
    * @param lockPort the port number to lock
    */
   public SocketLock(int lockPort) {
@@ -63,7 +64,7 @@ public class SocketLock implements Lock {
   /**
    * Constructs a new SocketLock. Attempts to lock the lock will attempt to acquire the specified
    * port number, and wait for it to become free.
-   * 
+   *
    * @param address The port to lock.
    */
   public SocketLock(InetSocketAddress address) {
@@ -72,7 +73,7 @@ public class SocketLock implements Lock {
   }
 
   /**
-   * @inheritDoc
+   *
    */
   public void lock(long timeoutInMillis) throws WebDriverException {
     synchronized (syncObject) {
@@ -102,7 +103,7 @@ public class SocketLock implements Lock {
   }
 
   /**
-   * @inheritDoc
+   *
    */
   public void unlock() {
     try {
@@ -114,7 +115,7 @@ public class SocketLock implements Lock {
 
   /**
    * Test to see if the lock is free. Returns instantaneously.
-   * 
+   *
    * @param address the address to attempt to bind to
    * @return true if the lock is locked; false if it is not
    * @throws IOException if something goes catastrophically wrong with the socket
@@ -128,5 +129,13 @@ public class SocketLock implements Lock {
     } catch (SocketException e) {
       return false;
     }
+  }
+
+  /**
+   * Gets the port number that is being-locked.
+   * @return port locked
+   */
+  public int getLockPort(){
+    return this.address.getPort();
   }
 }

@@ -49,11 +49,12 @@
 
 goog.provide('goog.cssom.iframe.style');
 
+goog.require('goog.asserts');
 goog.require('goog.cssom');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.string');
 goog.require('goog.style');
 goog.require('goog.userAgent');
@@ -118,7 +119,7 @@ goog.cssom.iframe.style.CssRuleSet_ = function() {
   /**
    * Array of CssSelector objects, one for each selector.
    * Example: [h1, h2]
-   * @type {Array.<goog.cssom.iframe.style.CssSelector_>}
+   * @type {Array<goog.cssom.iframe.style.CssSelector_>}
    */
   this.selectors = [];
 };
@@ -138,7 +139,7 @@ goog.cssom.iframe.style.CssRuleSet_.prototype.initializeFromCssRule =
     return false;
   }
   var selector;
-  var declarations;
+  var declarations = '';
   if (ruleStyle &&
       (selector = cssRule.selectorText) &&
       (declarations = ruleStyle.cssText)) {
@@ -191,7 +192,7 @@ goog.cssom.iframe.style.CssRuleSet_.prototype.setSelectorsFromString =
 
 /**
  * Make a copy of this ruleset.
- * @return {goog.cssom.iframe.style.CssRuleSet_} A new CssRuleSet containing
+ * @return {!goog.cssom.iframe.style.CssRuleSet_} A new CssRuleSet containing
  *     the same data as this one.
  */
 goog.cssom.iframe.style.CssRuleSet_.prototype.clone = function() {
@@ -230,7 +231,7 @@ goog.cssom.iframe.style.CssRuleSet_.prototype.setDeclarationTextFromObject =
  * Serializes this CssRuleSet_ into an array as a series of strings.
  * The array can then be join()-ed to get a string representation
  * of this ruleset.
- * @param {Array.<string>} array The array to which to append strings.
+ * @param {Array<string>} array The array to which to append strings.
  */
 goog.cssom.iframe.style.CssRuleSet_.prototype.writeToArray = function(array) {
   var selectorCount = this.selectors.length;
@@ -304,13 +305,6 @@ goog.cssom.iframe.style.makeColorRuleImportant_ = function(cssText) {
  * @private
  */
 goog.cssom.iframe.style.CssSelector_ = function(opt_selectorString) {
-  /**
-   * Array of CssSelectorPart objects representing the parts of this selector
-   * Example: for the selector 'body h1' the parts would be [body, h1].
-   * @type {Array.<goog.cssom.iframe.style.CssSelectorPart_>}
-   * @private
-   */
-  this.parts_ = [];
 
   /**
    * Object to track ancestry matches to speed up repeatedly testing this
@@ -525,7 +519,7 @@ goog.cssom.iframe.style.NodeAncestry_ = function(el) {
     var className = node.className;
     var classNamesLookup = {};
     if (className) {
-      var classNames = goog.dom.classes.get(node);
+      var classNames = goog.dom.classlist.get(goog.asserts.assertElement(node));
       for (var i = 0; i < classNames.length; i++) {
         classNamesLookup[classNames[i]] = 1;
       }
@@ -537,7 +531,7 @@ goog.cssom.iframe.style.NodeAncestry_ = function(el) {
   /**
    * Array of nodes in order of hierarchy from the top of the document
    * to the node passed to the constructor
-   * @type {Array.<Node>}
+   * @type {Array<Node>}
    */
   this.nodes = nodes;
 
@@ -566,7 +560,7 @@ goog.cssom.iframe.style.resetDomCache = function() {
 /**
  * Inspects a document and returns all active rule sets
  * @param {Document} doc The document from which to read CSS rules.
- * @return {Array.<goog.cssom.iframe.style.CssRuleSet_>} An array of CssRuleSet
+ * @return {!Array<goog.cssom.iframe.style.CssRuleSet_>} An array of CssRuleSet
  *     objects representing all the active rule sets in the document.
  * @private
  */
@@ -622,7 +616,7 @@ goog.cssom.iframe.style.ruleSetCache_.loadRuleSetsForDocument = function(doc) {
  * Retrieves the array of css rulesets for this document. A cached
  * version will be used when possible.
  * @param {Document} doc The document for which to get rulesets.
- * @return {Array.<goog.cssom.iframe.style.CssRuleSet_>} An array of CssRuleSet
+ * @return {!Array<goog.cssom.iframe.style.CssRuleSet_>} An array of CssRuleSet
  *     objects representing the css rule sets in the supplied document.
  */
 goog.cssom.iframe.style.ruleSetCache_.getRuleSetsForDocument = function(doc) {
@@ -647,7 +641,7 @@ goog.cssom.iframe.style.ruleSetCache_.getRuleSetsForDocument = function(doc) {
  * Array of CSS properties that are inherited by child nodes, according to
  * the CSS 2.1 spec. Properties that may be set to relative values, such
  * as font-size, and line-height, are omitted.
- * @type {Array.<string>}
+ * @type {Array<string>}
  * @private
  */
 goog.cssom.iframe.style.inheritedProperties_ = [
@@ -679,7 +673,7 @@ goog.cssom.iframe.style.inheritedProperties_ = [
 
 /**
  * Array of CSS 2.1 properties that directly effect text nodes.
- * @type {Array.<string>}
+ * @type {Array<string>}
  * @private
  */
 goog.cssom.iframe.style.textProperties_ = [
@@ -783,7 +777,6 @@ goog.cssom.iframe.style.getElementContext = function(
   // Insert a new ruleset, setting the current inheritable styles of this
   // element as the defaults for everything under in the frame.
   var defaultPropertiesRuleSet = new goog.cssom.iframe.style.CssRuleSet_();
-  var declarationParts = [];
   var computedStyle = goog.cssom.iframe.style.getComputedStyleObject_(element);
 
   // Copy inheritable styles so they are applied to everything under HTML.
@@ -894,7 +887,7 @@ goog.cssom.iframe.style.valueWithUnitsRegEx_ = /^(-?)([0-9]+)([a-z]*|%)/;
  * Given an object containing a set of styles, returns a two-element array
  * containing the values of background-position-x and background-position-y.
  * @param {Object} styleObject Object from which to read style properties.
- * @return {Array.<string>} The background-position values in the order [x, y].
+ * @return {Array<string>} The background-position values in the order [x, y].
  * @private
  */
 goog.cssom.iframe.style.getBackgroundXYValues_ = function(styleObject) {
@@ -922,7 +915,7 @@ goog.cssom.iframe.style.getBackgroundXYValues_ = function(styleObject) {
  * has a transparent background what you're going to see through it is its
  * ancestors.
  * @param {Element} element The element from which to copy background styles.
- * @return {Object} Object containing background* properties.
+ * @return {!Object} Object containing background* properties.
  */
 goog.cssom.iframe.style.getBackgroundContext = function(element) {
   var propertyValues = {
@@ -937,10 +930,10 @@ goog.cssom.iframe.style.getBackgroundContext = function(element) {
   // because backgrounds farther up the chain won't be visible.
   // (This implementation is not sophisticated enough to handle opacity,
   // or multple layered partially-transparent background images.)
-  while ((ancestor = ancestor.parentNode) &&
+  while ((ancestor = /** @type {!Element} */ (ancestor.parentNode)) &&
          ancestor.nodeType == goog.dom.NodeType.ELEMENT) {
-    var computedStyle = goog.cssom.iframe.style.getComputedStyleObject_(
-        /** @type {Element} */ (ancestor));
+    var computedStyle =
+        goog.cssom.iframe.style.getComputedStyleObject_(ancestor);
     // Copy background color if a non-transparent value is found.
     var backgroundColorValue = computedStyle['backgroundColor'];
     if (!goog.cssom.iframe.style.isTransparentValue_(backgroundColorValue)) {
@@ -961,14 +954,12 @@ goog.cssom.iframe.style.getBackgroundContext = function(element) {
             element, currentIframeWindow);
         var frameElement = currentIframeWindow.frameElement;
         var iframeRelativePosition = goog.style.getRelativePosition(
-            /** @type {Element} */ (frameElement),
-            /** @type {Element} */ (ancestor));
+            /** @type {!Element} */ (frameElement), ancestor);
         var iframeBorders = goog.style.getBorderBox(frameElement);
         relativePosition.x += iframeRelativePosition.x + iframeBorders.left;
         relativePosition.y += iframeRelativePosition.y + iframeBorders.top;
       } else {
-        relativePosition = goog.style.getRelativePosition(
-            element, /** @type {Element} */ (ancestor));
+        relativePosition = goog.style.getRelativePosition(element, ancestor);
       }
       var backgroundXYValues = goog.cssom.iframe.style.getBackgroundXYValues_(
           computedStyle);

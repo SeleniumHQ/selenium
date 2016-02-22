@@ -33,6 +33,7 @@ goog.require('goog.string');
  * Object that can serialize objects or values to a protocol buffer string.
  * @constructor
  * @extends {goog.json.Serializer}
+ * @final
  */
 goog.proto.Serializer = function() {
   goog.json.Serializer.call(this);
@@ -43,8 +44,8 @@ goog.inherits(goog.proto.Serializer, goog.json.Serializer);
 /**
  * Serializes an array to a protocol buffer string. This overrides the JSON
  * method to output empty slots when the value is null or undefined.
- * @param {Array} arr The array to serialize.
- * @param {Array} sb Array used as a string builder.
+ * @param {Array<*>} arr The array to serialize.
+ * @param {Array<string>} sb Array used as a string builder.
  * @override
  */
 goog.proto.Serializer.prototype.serializeArray = function(arr, sb) {
@@ -61,7 +62,7 @@ goog.proto.Serializer.prototype.serializeArray = function(arr, sb) {
         emptySlots = 0;
       }
       sb.push(sep);
-      this.serialize_(arr[i], sb);
+      this.serializeInternal(arr[i], sb);
       sep = ',';
     }
   }

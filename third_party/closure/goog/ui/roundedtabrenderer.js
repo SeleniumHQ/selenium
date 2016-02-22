@@ -21,8 +21,9 @@
 goog.provide('goog.ui.RoundedTabRenderer');
 
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.ui.Tab');
-goog.require('goog.ui.TabBar.Location');
+goog.require('goog.ui.TabBar');
 goog.require('goog.ui.TabRenderer');
 goog.require('goog.ui.registry');
 
@@ -32,6 +33,7 @@ goog.require('goog.ui.registry');
  * Rounded corner tab renderer for {@link goog.ui.Tab}s.
  * @constructor
  * @extends {goog.ui.TabRenderer}
+ * @final
  */
 goog.ui.RoundedTabRenderer = function() {
   goog.ui.TabRenderer.call(this);
@@ -122,7 +124,7 @@ goog.ui.RoundedTabRenderer.prototype.decorate = function(tab, element) {
  *     to display as the tab's caption.
  * @param {goog.ui.TabBar.Location} location Tab bar location relative to the
  *     tab contents.
- * @return {Element} Table implementing a rounded corner tab.
+ * @return {!Element} Table implementing a rounded corner tab.
  * @protected
  */
 goog.ui.RoundedTabRenderer.prototype.createTab = function(dom, caption,
@@ -139,11 +141,11 @@ goog.ui.RoundedTabRenderer.prototype.createTab = function(dom, caption,
     rows.push(this.createEdge(dom, /* isTopEdge */ false));
   }
 
-  return dom.createDom('table', {
+  return dom.createDom(goog.dom.TagName.TABLE, {
     'cellPadding': 0,
     'cellSpacing': 0,
     'className': goog.getCssName(this.getStructuralCssClass(), 'table')
-  }, dom.createDom('tbody', null, rows));
+  }, dom.createDom(goog.dom.TagName.TBODY, null, rows));
 };
 
 
@@ -152,15 +154,15 @@ goog.ui.RoundedTabRenderer.prototype.createTab = function(dom, caption,
  * @param {goog.dom.DomHelper} dom DOM helper to use for element construction.
  * @param {goog.ui.ControlContent} caption Text caption or DOM structure
  *     to display as the tab's caption.
- * @return {Element} Tab caption table row.
+ * @return {!Element} Tab caption table row.
  * @protected
  */
 goog.ui.RoundedTabRenderer.prototype.createCaption = function(dom, caption) {
   var baseClass = this.getStructuralCssClass();
-  return dom.createDom('tr', null,
-      dom.createDom('td', {'noWrap': true},
-          dom.createDom('div', goog.getCssName(baseClass, 'caption'),
-              caption)));
+  return dom.createDom(goog.dom.TagName.TR, null,
+      dom.createDom(goog.dom.TagName.TD, {'noWrap': true},
+          dom.createDom(goog.dom.TagName.DIV,
+                        goog.getCssName(baseClass, 'caption'), caption)));
 };
 
 
@@ -168,15 +170,17 @@ goog.ui.RoundedTabRenderer.prototype.createCaption = function(dom, caption) {
  * Creates a table row implementing a rounded tab edge.
  * @param {goog.dom.DomHelper} dom DOM helper to use for element construction.
  * @param {boolean} isTopEdge Whether to create a top or bottom edge.
- * @return {Element} Rounded tab edge table row.
+ * @return {!Element} Rounded tab edge table row.
  * @protected
  */
 goog.ui.RoundedTabRenderer.prototype.createEdge = function(dom, isTopEdge) {
   var baseClass = this.getStructuralCssClass();
-  var inner = dom.createDom('div', goog.getCssName(baseClass, 'inner-edge'));
-  var outer = dom.createDom('div', goog.getCssName(baseClass, 'outer-edge'));
-  return dom.createDom('tr', null,
-      dom.createDom('td', {'noWrap': true},
+  var inner = dom.createDom(goog.dom.TagName.DIV,
+                            goog.getCssName(baseClass, 'inner-edge'));
+  var outer = dom.createDom(goog.dom.TagName.DIV,
+                            goog.getCssName(baseClass, 'outer-edge'));
+  return dom.createDom(goog.dom.TagName.TR, null,
+      dom.createDom(goog.dom.TagName.TD, {'noWrap': true},
           isTopEdge ? [outer, inner] : [inner, outer]));
 };
 
@@ -185,7 +189,7 @@ goog.ui.RoundedTabRenderer.prototype.createEdge = function(dom, isTopEdge) {
 goog.ui.RoundedTabRenderer.prototype.getContentElement = function(element) {
   var baseClass = this.getStructuralCssClass();
   return element && goog.dom.getElementsByTagNameAndClass(
-      'div', goog.getCssName(baseClass, 'caption'), element)[0];
+      goog.dom.TagName.DIV, goog.getCssName(baseClass, 'caption'), element)[0];
 };
 
 

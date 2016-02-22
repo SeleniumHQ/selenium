@@ -1,18 +1,19 @@
-/*
-Copyright 2007-2009 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.remote.server;
 
@@ -27,13 +28,12 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.html5.ApplicationCache;
-import org.openqa.selenium.html5.BrowserConnection;
-import org.openqa.selenium.html5.DatabaseStorage;
 import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.interactions.HasTouchScreen;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.mobile.NetworkConnection;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
@@ -70,39 +70,45 @@ public class DefaultSession implements Session {
   private final KnownElements knownElements;
   private final ThreadPoolExecutor executor;
   private final Capabilities capabilities; // todo: Investigate memory model implications of map
+  private final Clock clock;
   // elements inside capabilities.
   private volatile String base64EncodedImage;
   private volatile long lastAccess;
   private volatile Thread inUseWithThread = null;
-  private final BrowserCreator browserCreator;
   private TemporaryFilesystem tempFs;
 
   // This method is to avoid constructor escape of partially constructed session object
-  public static Session createSession(DriverFactory factory,
-                                      SessionId sessionId, Capabilities capabilities)
-      throws Exception {
+  public static Session createSession(DriverFactory factory, SessionId sessionId,
+                                      Capabilities capabilities) throws Exception {
+    return createSession(factory, new SystemClock(), sessionId, capabilities);
+  }
+
+  // This method is to avoid constructor escape of partially constructed session object
+  public static Session createSession(DriverFactory factory, Clock clock, SessionId sessionId,
+                                      Capabilities capabilities) throws Exception {
     File tmpDir = new File(System.getProperty("java.io.tmpdir"), sessionId.toString());
     if (!tmpDir.mkdir()) {
       throw new WebDriverException("Cannot create temp directory: " + tmpDir);
     }
     TemporaryFilesystem tempFs = TemporaryFilesystem.getTmpFsBasedOn(tmpDir);
 
-    return new DefaultSession(factory, tempFs, sessionId, capabilities);
+    return new DefaultSession(factory, tempFs, clock, sessionId, capabilities);
   }
 
   @VisibleForTesting
-  public static Session createSession(DriverFactory factory, TemporaryFilesystem tempFs,
+  public static Session createSession(DriverFactory factory, TemporaryFilesystem tempFs, Clock clock,
                                       SessionId sessionId, Capabilities capabilities)
       throws Exception {
-    return new DefaultSession(factory, tempFs, sessionId, capabilities);
+    return new DefaultSession(factory, tempFs, clock, sessionId, capabilities);
   }
 
-  private DefaultSession(final DriverFactory factory, TemporaryFilesystem tempFs,
+  private DefaultSession(final DriverFactory factory, TemporaryFilesystem tempFs, Clock clock,
                          SessionId sessionId, final Capabilities capabilities) throws Exception {
     this.knownElements = new KnownElements();
     this.sessionId = sessionId;
     this.tempFs = tempFs;
-    browserCreator = new BrowserCreator(factory, capabilities);
+    this.clock = clock;
+    final BrowserCreator browserCreator = new BrowserCreator(factory, capabilities);
     final FutureTask<EventFiringWebDriver> webDriverFutureTask =
         new FutureTask<EventFiringWebDriver>(browserCreator);
     executor = new ThreadPoolExecutor(1, 1,
@@ -142,11 +148,11 @@ public class DefaultSession implements Session {
    * Touches the session.
    */
   public void updateLastAccessTime() {
-    lastAccess = System.currentTimeMillis();
+    lastAccess = clock.now();
   }
 
   public boolean isTimedOut(long timeout) {
-    return timeout > 0 && (lastAccess + timeout) < System.currentTimeMillis();
+    return timeout > 0 && (lastAccess + timeout) < clock.now();
   }
 
   public void close() {
@@ -237,17 +243,14 @@ public class DefaultSession implements Session {
       if (instance instanceof TakesScreenshot) {
         caps.setCapability(CapabilityType.TAKES_SCREENSHOT, true);
       }
-      if (instance instanceof DatabaseStorage) {
-        caps.setCapability(CapabilityType.SUPPORTS_SQL_DATABASE, true);
-      }
       if (instance instanceof LocationContext) {
         caps.setCapability(CapabilityType.SUPPORTS_LOCATION_CONTEXT, true);
       }
       if (instance instanceof ApplicationCache) {
         caps.setCapability(CapabilityType.SUPPORTS_APPLICATION_CACHE, true);
       }
-      if (instance instanceof BrowserConnection) {
-        caps.setCapability(CapabilityType.SUPPORTS_BROWSER_CONNECTION, true);
+      if (instance instanceof NetworkConnection) {
+        caps.setCapability(CapabilityType.SUPPORTS_NETWORK_CONNECTION, true);
       }
       if (instance instanceof WebStorage) {
         caps.setCapability(CapabilityType.SUPPORTS_WEB_STORAGE, true);

@@ -24,7 +24,7 @@ goog.require('goog.a11y.aria.State');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.events.Event');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.string');
@@ -51,16 +51,18 @@ goog.require('goog.userAgent');
  * @constructor
  * @extends {goog.ui.MenuBase}
  * @deprecated Use goog.ui.PopupMenu.
+ * @final
  */
 goog.ui.AttachableMenu = function(opt_element) {
   goog.ui.MenuBase.call(this, opt_element);
 };
 goog.inherits(goog.ui.AttachableMenu, goog.ui.MenuBase);
+goog.tagUnsealableClass(goog.ui.AttachableMenu);
 
 
 /**
  * The currently selected element (mouse was moved over it or keyboard arrows)
- * @type {Element}
+ * @type {HTMLElement}
  * @private
  */
 goog.ui.AttachableMenu.prototype.selectedElement_ = null;
@@ -153,17 +155,18 @@ goog.ui.AttachableMenu.prototype.getSelectedItem = function() {
 
 /** @override */
 goog.ui.AttachableMenu.prototype.setSelectedItem = function(obj) {
-  var elt = /** @type {Element} */ (obj);
+  var elt = /** @type {HTMLElement} */ (obj);
   if (this.selectedElement_) {
-    goog.dom.classes.remove(this.selectedElement_, this.selectedItemClassName_);
+    goog.dom.classlist.remove(this.selectedElement_,
+        this.selectedItemClassName_);
   }
 
   this.selectedElement_ = elt;
 
-  var el = this.getElement();
+  var el = /** @type {HTMLElement} */ (this.getElement());
   goog.asserts.assert(el, 'The attachable menu DOM element cannot be null.');
   if (this.selectedElement_) {
-    goog.dom.classes.add(this.selectedElement_, this.selectedItemClassName_);
+    goog.dom.classlist.add(this.selectedElement_, this.selectedItemClassName_);
 
     if (elt.id) {
       // Update activedescendant to reflect the new selection. ARIA roles for
@@ -206,7 +209,7 @@ goog.ui.AttachableMenu.prototype.showPopupElement = function() {
 /**
  * Called after the menu is shown.
  * @protected
- * @suppress {underscore}
+ * @suppress {underscore|visibility}
  * @override
  */
 goog.ui.AttachableMenu.prototype.onShow_ = function() {
@@ -442,12 +445,12 @@ goog.ui.AttachableMenu.prototype.onItemSelected_ = function(opt_item) {
 
 /**
  * Returns whether the specified element is a menu item.
- * @param {Element|undefined} elt The element to find a menu item ancestor of.
+ * @param {Element} elt The element to find a menu item ancestor of.
  * @return {boolean} Whether the specified element is a menu item.
  * @private
  */
 goog.ui.AttachableMenu.prototype.isMenuItem_ = function(elt) {
-  return !!elt && goog.dom.classes.has(elt, this.itemClassName_);
+  return !!elt && goog.dom.classlist.contains(elt, this.itemClassName_);
 };
 
 

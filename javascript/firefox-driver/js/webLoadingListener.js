@@ -1,28 +1,28 @@
-/*
- Copyright 2007-2009 WebDriver committers
- Copyright 2007-2009 Google Inc.
- Portions copyright 2011 Software Freedom Conservancy
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 goog.provide('WebLoadingListener');
 goog.provide('fxdriver.io');
 
 goog.require('fxdriver.Timer');
-goog.require('fxdriver.moz');
-
 goog.require('fxdriver.logging');
+goog.require('fxdriver.moz');
+goog.require('goog.log');
+
 
 /**
  * @param {string} current The URL the browser is currently on.
@@ -91,6 +91,13 @@ function PatientListener(browser, onComplete, opt_window) {
   this.win = opt_window;
   this.active = true;
 }
+
+/**
+ * @private {goog.log.Logger}
+ * @const
+ */
+PatientListener.LOG_ = fxdriver.logging.getLogger('fxdriver.PatientListener');
+
 PatientListener.prototype = new DoNothing();
 
 
@@ -100,7 +107,7 @@ PatientListener.prototype.onStateChange = function(webProgress, request, flags) 
   }
 
   if (flags & STATE_STOP) {
-    fxdriver.logging.info('request status is ' + request.status);
+    goog.log.info(PatientListener.LOG_, 'request status is ' + request.status);
     if (request.URI) {
       this.active = false;
 
@@ -124,6 +131,16 @@ function ImpatientListener(browser, onComplete, opt_window) {
   this.onComplete = onComplete;
   this.win = opt_window || null;
 }
+
+
+/**
+ * @private {goog.log.Logger}
+ * @const
+ */
+ImpatientListener.LOG_ = fxdriver.logging.getLogger(
+    'fxdriver.ImpatientListener');
+
+
 ImpatientListener.prototype = new PatientListener();
 
 ImpatientListener.prototype.onProgressChange = function(webProgress) {
@@ -143,7 +160,7 @@ ImpatientListener.prototype.onProgressChange = function(webProgress) {
   var readyState = this.win.document && this.win.document.readyState;
   var location = this.win.document.location;
 
-  fxdriver.logging.info('readyState is ' + readyState);
+  goog.log.info(ImpatientListener.LOG_, 'readyState is ' + readyState);
 
   if (('complete' == readyState || 'interactive' == readyState) &&
       (location != 'about:blank')) {
@@ -155,7 +172,7 @@ ImpatientListener.prototype.onProgressChange = function(webProgress) {
     if (bot.userAgent.isProductVersion('4')) {
       WebLoadingListener.removeListener(this.browser, this);
     }
-    this.onComplete();
+    this.onComplete(false, true);
   }
 
   return 0;
@@ -175,7 +192,7 @@ var prefs = Components.classes['@mozilla.org/preferences-service;1']
  * @return {!nsIWebProgressListener} The new listener.
  */
 function buildHandler(browser, toCall, opt_window) {
-  var strategy = Utils.getPageLoadingStrategy();
+  var strategy = Utils.getPageLoadStrategy();
   if ('normal' == strategy) {
     return new PatientListener(browser, toCall, opt_window);
   }
@@ -183,7 +200,8 @@ function buildHandler(browser, toCall, opt_window) {
     return new ImpatientListener(browser, toCall, opt_window);
   }
 
-  fxdriver.logging.warning('Unsupported page loading strategy: ' + strategy);
+  var log = fxdriver.logging.getLogger('fxdriver.WebLoadingListener');
+  goog.log.warning(log, 'Unsupported page loading strategy: ' + strategy);
   // Fall back to 'normal' strategy
   return new PatientListener(browser, toCall, opt_window);
 }
@@ -200,16 +218,16 @@ var loadingListenerTimer;
  * @constructor
  */
 WebLoadingListener = function(browser, toCall, timeout, opt_window) {
-  var strategy = Utils.getPageLoadingStrategy();
+  var strategy = Utils.getPageLoadStrategy();
   if ('none' == strategy) {
     toCall(false, true);
     return;
   }
 
   loadingListenerTimer = new fxdriver.Timer();
-  var func = function(timedOut) {
+  var func = function(timedOut, opt_stopWaiting) {
     loadingListenerTimer.cancel();
-    toCall(timedOut);
+    toCall(timedOut, opt_stopWaiting);
   };
 
   /** @type {!nsIWebProgressListener} */
@@ -222,7 +240,9 @@ WebLoadingListener = function(browser, toCall, timeout, opt_window) {
 
   var handler = this.handler;
   loadingListenerTimer.setTimeout(function() {
-    browser.removeProgressListener(handler);
+    if (browser.removeProgressListener) {
+      browser.removeProgressListener(handler);
+    }
     func(true);
   }, timeout);
 };
@@ -233,5 +253,7 @@ WebLoadingListener = function(browser, toCall, timeout, opt_window) {
  * @param {!WebLoadingListener} listener The listener to remove.
  */
 WebLoadingListener.removeListener = function(browser, listener) {
-  browser.removeProgressListener(listener.handler);
+  if (browser.removeProgressListener && listener.handler) {
+    browser.removeProgressListener(listener.handler);
+  }
 };

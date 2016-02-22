@@ -33,7 +33,7 @@ goog.require('goog.events.EventType');
 /**
  * Single-selection model.  Dispatches a {@link goog.events.EventType.SELECT}
  * event when a selection is made.
- * @param {Array.<Object>=} opt_items Array of items; defaults to empty.
+ * @param {Array<Object>=} opt_items Array of items; defaults to empty.
  * @extends {goog.events.EventTarget}
  * @constructor
  */
@@ -44,13 +44,14 @@ goog.ui.SelectionModel = function(opt_items) {
    * Array of items controlled by the selection model.  If the items support
    * the {@code setSelected(Boolean)} interface, they will be (de)selected
    * as needed.
-   * @type {!Array.<Object>}
+   * @type {!Array<Object>}
    * @private
    */
   this.items_ = [];
   this.addItems(opt_items);
 };
 goog.inherits(goog.ui.SelectionModel, goog.events.EventTarget);
+goog.tagUnsealableClass(goog.ui.SelectionModel);
 
 
 /**
@@ -146,7 +147,7 @@ goog.ui.SelectionModel.prototype.getItemAt = function(index) {
 /**
  * Bulk-adds items to the selection model.  This is more efficient than calling
  * {@link #addItem} for each new item.
- * @param {Array.<Object>|undefined} items New items to add.
+ * @param {Array<Object>|undefined} items New items to add.
  */
 goog.ui.SelectionModel.prototype.addItems = function(items) {
   if (items) {
@@ -215,7 +216,7 @@ goog.ui.SelectionModel.prototype.getSelectedItem = function() {
 
 
 /**
- * @return {!Array.<Object>} All items in the selection model.
+ * @return {!Array<Object>} All items in the selection model.
  */
 goog.ui.SelectionModel.prototype.getItems = function() {
   return goog.array.clone(this.items_);

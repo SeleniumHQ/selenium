@@ -40,7 +40,11 @@
 #define WD_RESULT int
 #endif
 
+#ifdef WEBDRIVER_GECKO_USES_ISUPPORTS1
 NS_IMPL_ISUPPORTS1(nsNativeKeyboard, nsINativeKeyboard)
+#else
+NS_IMPL_ISUPPORTS(nsNativeKeyboard, nsINativeKeyboard)
+#endif
 
 nsNativeKeyboard::nsNativeKeyboard()
 {
@@ -53,7 +57,11 @@ nsNativeKeyboard::~nsNativeKeyboard()
 
 /* void SendKeys (in nsISupports aNode, in wstring value); */
 NS_IMETHODIMP nsNativeKeyboard::SendKeys(nsISupports *aNode,
+#ifdef WEBDRIVER_LEGACY_GECKO
     const PRUnichar *value,
+#else
+    const char16_t *value,
+#endif  // WEBDRIVER_LEGACY_GECKO
     bool releaseModifiers)
 {
   LOG(DEBUG) << "---------- Got to start of callback. aNode: " << aNode

@@ -1,30 +1,43 @@
 {
-    "name": "selenium-webdriver",
-    "version": "2.39.0",
-    "description": "The official WebDriver JavaScript bindings from the Selenium project",
-    "keywords": [
-        "automation",
-        "selenium",
-        "testing",
-        "webdriver",
-        "webdriverjs"
-    ],
-    "homepage": "https://code.google.com/p/selenium/",
-    "bugs": {
-        "url": "https://code.google.com/p/selenium/issues/list"
-    },
-    "main": "./index",
-    "repository": {
-        "type": "git",
-        "url": "https://code.google.com/p/selenium/"
-    },
-    "engines": {
-        "node": ">= 0.8.x"
-    },
-    "devDependencies" : {
-        "mocha" : "~1.10.0"
-    },
-    "scripts": {
-        "test": "node_modules/mocha/bin/mocha -R list --recursive test"
-    }
+  "name": "selenium-webdriver",
+  "version": "2.53.0-dev",
+  "description": "The official WebDriver JavaScript bindings from the Selenium project",
+  "license": "Apache-2.0",
+  "keywords": [
+    "automation",
+    "selenium",
+    "testing",
+    "webdriver",
+    "webdriverjs"
+  ],
+  "homepage": "https://github.com/SeleniumHQ/selenium",
+  "bugs": {
+    "url": "https://github.com/SeleniumHQ/selenium/issues"
+  },
+  "main": "./index",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SeleniumHQ/selenium.git"
+  },
+  "engines": {
+    "node": ">= 4.2.x"
+  },
+  "dependencies": {
+    "adm-zip": "0.4.4",
+    "rimraf": "^2.2.8",
+    "tmp": "0.0.24",
+    "ws": "^1.0.1",
+    "xml2js": "0.4.4"
+  },
+  "devDependencies": {
+    "express": "^4.11.2",
+    "mocha": ">= 1.21.x",
+    "multer": "^0.1.7",
+    "promises-aplus-tests": "^2.1.0",
+    "serve-index": "^1.6.1",
+    "sinon": "^1.17.2"
+  },
+  "scripts": {
+    "test": "mocha --harmony -t 600000 --recursive test"
+  }
 }

@@ -1,3 +1,168 @@
+2.52.0 (2016-02-12)
+===================
+
+No Ruby changes in this release.
+
+2.51.0 (2016-02-05)
+===================
+
+No Ruby changes in this release.
+
+2.50.0 (2016-01-27)
+===================
+
+Firefox:
+ * Fix bug for locating binary in local path  (issue 1523, thanks Gopal Patel)
+
+2.49.0 (2016-01-13)
+===================
+
+Ruby:
+  * support for SessionNotCreatedError (thanks Alexander Bayandin)
+
+Safari:
+  * Limit support to OS X (issue 1186)
+  * support for multiple concurrent drivers
+
+PhantomJS:
+  * Implement Socket locking
+
+IE:
+  * support for multiple concurrent drivers
+
+Chrome:
+  * prevent 404 error when shutting down Chrome service (thanks Fumiaki MATSUSHIMA)
+  * logging turned on by default
+  * support local storage capabilities
+
+Firefox:
+  * support setting the location of Firefox binary to use when run locally
+  * add default lookup of Homebrew Cask default directory (issue 1437)
+
+W3C Specification:
+  * support for using with Remote WebDriver
+  * implement window size command
+  * implement window position command
+  * implement element size command
+  * implement element position command
+  * implement full screen window command
+  * implement page source command
+
+2.48.1 (2015-10-13)
+===================
+
+Firefox:
+  * Mozilla's Wires Driver for Marionette works with Remote WebDriver
+
+2.48.0 (2015-10-07)
+===================
+
+Firefox:
+  * Initial implementation of Mozilla's Wires Driver for Marionette; Supported in version 43 and higher
+
+Edge:
+  * Fix execution with Remote Server
+  * Fix Javascript Execution
+  * Implement Alert Handling
+  * Implement Window Switching
+
+Ruby:
+  * Initial implementation of W3C WebDriver syntax to support Mozilla Wires
+  * Change to RSpec expect syntax
+  * Specs can be run from relative directories
+
+
+2.47.1 (2015-07-31)
+===================
+
+Edge:
+  * Initial implementation of Microsoft's EdgeDriver
+
+
+2.47.0 (2015-07-29)
+===================
+
+Safari:
+  * Remove support for installing additional extensions due to architectural changes introduced with Safari 7
+
+2.46.2 (2015-06-05)
+===================
+* Fix encoding issue which prevents Element#send_keys to work on Ruby < 2.0 (#621)
+
+2.46.1 (2015-06-04)
+===================
+  * Fix aborted rubygems.org release
+
+2.46.0 (2015-06-04)
+===================
+
+Firefox:
+  * Support for Firefox 38
+  * Fix performance bug by not forcing garbage collection in httpd.js
+
+Chrome:
+  * Fixed ChromeDriver port race condition (#449 - thanks Jason Anderson)
+
+Ruby changes:
+  * Retry binding to ports unavailable by EADDRNOTAVAIL (#394).
+  * Remove Presto-Opera support (Blink-based Opera still supported)
+
+2.45.0 (2015-02-28)
+===================
+
+Firefox:
+  * Native events in Firefox relied on an API that Mozilla no longer
+    provides. As such, fall back to synthesized events on recent Firefox
+    versions.
+
+Ruby changes:
+  * Allow switching windows when current window is closed (thanks Titus Fortner).
+  * Add :javascript_enabled to Android capabilities.
+
+2.44.0 (2014-10-05)
+===================
+
+No Ruby changes in this release.
+
+Firefox:
+  * Native event support for Firefox 24, 31, 32 and 33
+
+2.43.0 (2014-09-09)
+===================
+
+* Make sure UnhandledAlertErrors includes the alert text if provided by the driver.
+* Firefox
+  - Make sure the browser process is properly killed if silent startup hangs (#7392)
+  - native events support for Firefox 24, 31 and 32
+* Loosen websocket dependency to ~> 1.0
+* Add support for `switch_to.parent_frame` (thanks abotalov)
+* Fix download location for Selenium::Server.{latest,get} (#7049 - thanks marekj)
+
+2.42.0 (2014-05-23)
+===================
+
+Firefox:
+  * Fix for extensions whose install.rdf uses an attribute for em:id (#5978)
+  * Support for Firefox 29 Native Events
+
+2.41.0 (2014-03-28)
+===================
+
+* Removed dead browser visibility methods.
+* Firefox:
+  * Native events support for Firefox 28 (removed support for 26)
+
+2.40.0 (2014-02-19)
+===================
+
+* Fix bug where FileReaper would not reap files added in a child process
+* Document AbstractEventListener (#5994)
+* Safari:
+  * Add Safari::Options + clean up Safari extension handling (#6382)
+  * Add support for user extensions (#6815)
+* Firefox:
+  * Support native events for Firefox 27 + removed native event support for Firefox 25
+
 2.39.0 (2013-12-17)
 ===================
 
@@ -264,7 +429,7 @@ IE:
 
 * Add Selenium::WebDriver::Window#maximize (#3489)
 * Safari:
-  * New driver! See http://code.google.com/p/selenium/wiki/SafariDriver.
+  * New driver! See https://github.com/SeleniumHQ/selenium/wiki/SafariDriver.
 * Firefox:
   * Significant stability improvements.
   * Native events support for Firefox 11
@@ -610,7 +775,7 @@ IE:
 0.2.0 (2011-04-22)
 ==================
 
-* Update Ruby bindings to use the rewritten Chrome driver (see http://code.google.com/p/selenium/wiki/ChromeDriver).
+* Update Ruby bindings to use the rewritten Chrome driver (see https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver).
 * Add deprecation warning for WebDriver::Element#value (use Element#attribute("value") instead).
 * Change the default timeout for Wait instances to 5 seconds.
 * Fix bug where locators would fail if Object.prototype had been modified.

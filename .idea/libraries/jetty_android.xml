@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="jetty-android">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-repacked-7.6.1.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

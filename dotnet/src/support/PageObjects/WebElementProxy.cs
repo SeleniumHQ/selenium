@@ -1,8 +1,9 @@
 ﻿// <copyright file="WebElementProxy.cs" company="WebDriver Committers">
-// Copyright 2007-2013 WebDriver committers
-// Portions copyright 2013 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -17,251 +18,89 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using OpenQA.Selenium.Interactions.Internal;
+using System.Reflection;
+using System.Runtime.Remoting.Messaging;
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Support.PageObjects
 {
     /// <summary>
-    /// Represents a proxy class for an element to be used with the PageFactory.
+    /// Intercepts the request to a single <see cref="IWebElement"/>
     /// </summary>
-    internal class WebElementProxy : IWebElement, ILocatable, IWrapsElement
+    internal sealed class WebElementProxy : WebDriverObjectProxy, IWrapsElement
     {
-        private readonly ISearchContext searchContext;
-        private readonly IEnumerable<By> bys;
-        private readonly bool cache;
         private IWebElement cachedElement;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WebElementProxy"/> class.
         /// </summary>
-        /// <param name="searchContext">The driver used to search for elements.</param>
-        /// <param name="bys">The list of methods by which to search for the element.</param>
+        /// <param name="classToProxy">The <see cref="Type"/> of object for which to create a proxy.</param>
+        /// <param name="locator">The <see cref="IElementLocator"/> implementation that determines
+        /// how elements are located.</param>
+        /// <param name="bys">The list of methods by which to search for the elements.</param>
         /// <param name="cache"><see langword="true"/> to cache the lookup to the element; otherwise, <see langword="false"/>.</param>
-        internal WebElementProxy(ISearchContext searchContext, IEnumerable<By> bys, bool cache)
-        {
-            this.searchContext = searchContext;
-            this.bys = bys;
-            this.cache = cache;
-        }
-
-        /// <summary>
-        /// Prevents a default instance of the <see cref="WebElementProxy"/> class from being created.
-        /// </summary>
-        private WebElementProxy()
+        private WebElementProxy(Type classToProxy, IElementLocator locator, IEnumerable<By> bys, bool cache)
+            : base(classToProxy, locator, bys, cache)
         {
         }
 
         /// <summary>
-        /// Gets the tag name of this element.
-        /// </summary>
-        public string TagName
-        {
-            get { return this.WrappedElement.TagName; }
-        }
-
-        /// <summary>
-        /// Gets the innerText of this element, without any leading or trailing whitespace,
-        /// and with other whitespace collapsed.
-        /// </summary>
-        public string Text
-        {
-            get { return this.WrappedElement.Text; }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether or not this element is enabled.
-        /// </summary>
-        public bool Enabled
-        {
-            get { return this.WrappedElement.Enabled; }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether or not this element is selected.
-        /// </summary>
-        public bool Selected
-        {
-            get { return this.WrappedElement.Selected; }
-        }
-
-        /// <summary>
-        /// Gets a <see cref="Point"/> object containing the coordinates of the upper-left corner
-        /// of this element relative to the upper-left corner of the page.
-        /// </summary>
-        public Point Location
-        {
-            get { return this.WrappedElement.Location; }
-        }
-
-        /// <summary>
-        /// Gets a <see cref="Size"/> object containing the height and width of this element.
-        /// </summary>
-        public Size Size
-        {
-            get { return this.WrappedElement.Size; }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether or not this element is displayed.
-        /// </summary>
-        public bool Displayed
-        {
-            get { return this.WrappedElement.Displayed; }
-        }
-
-        /// <summary>
-        /// Gets the location of an element on the screen, scrolling it into view
-        /// if it is not currently on the screen.
-        /// </summary>
-        public Point LocationOnScreenOnceScrolledIntoView
-        {
-            get
-            {
-                ILocatable locatable = this.WrappedElement as ILocatable;
-                return locatable.LocationOnScreenOnceScrolledIntoView;
-            }
-        }
-
-        /// <summary>
-        /// Gets the coordinates identifying the location of this element using
-        /// various frames of reference.
-        /// </summary>
-        public ICoordinates Coordinates
-        {
-            get
-            {
-                ILocatable locatable = this.WrappedElement as ILocatable;
-                return locatable.Coordinates;
-            }
-        }
-
-        /// <summary>
-        /// Gets the interface through which the user can discover if there is an underlying element to be used.
+        /// Gets the <see cref="IWebElement"/> wrapped by this object.
         /// </summary>
         public IWebElement WrappedElement
         {
+            get { return this.Element; }
+        }
+
+        /// <summary>
+        /// Gets the IWebElement object this proxy represents, returning a cached one if requested.
+        /// </summary>
+        private IWebElement Element
+        {
             get
             {
-                if (this.cache && this.cachedElement != null)
+                if (!this.Cache || this.cachedElement == null)
                 {
-                    return this.cachedElement;
+                    this.cachedElement = this.Locator.LocateElement(this.Bys);
                 }
 
-                string errorString = null;
-                foreach (var by in this.bys)
-                {
-                    try
-                    {
-                        this.cachedElement = this.searchContext.FindElement(by);
-                        return this.cachedElement;
-                    }
-                    catch (NoSuchElementException)
-                    {
-                        errorString = (errorString == null ? "Could not find element by: " : errorString + ", or: ") + by;
-                    }
-                }
-
-                throw new NoSuchElementException(errorString);
+                return this.cachedElement;
             }
         }
 
         /// <summary>
-        /// Clears the content of this element.
+        /// Creates an object used to proxy calls to properties and methods of an <see cref="IWebElement"/> object.
         /// </summary>
-        public void Clear()
+        /// <param name="classToProxy">The <see cref="Type"/> of object for which to create a proxy.</param>
+        /// <param name="locator">The <see cref="IElementLocator"/> implementation that
+        /// determines how elements are located.</param>
+        /// <param name="bys">The list of methods by which to search for the elements.</param>
+        /// <param name="cacheLookups"><see langword="true"/> to cache the lookup to the element; otherwise, <see langword="false"/>.</param>
+        /// <returns>An object used to proxy calls to properties and methods of the list of <see cref="IWebElement"/> objects.</returns>
+        public static object CreateProxy(Type classToProxy, IElementLocator locator, IEnumerable<By> bys, bool cacheLookups)
         {
-            this.WrappedElement.Clear();
+            return new WebElementProxy(classToProxy, locator, bys, cacheLookups).GetTransparentProxy();
         }
 
         /// <summary>
-        /// Simulates typing text into the element.
+        /// Invokes the method that is specified in the provided <see cref="IMessage"/> on the
+        /// object that is represented by the current instance.
         /// </summary>
-        /// <param name="text">The keys to send to the element.</param>
-        public void SendKeys(string text)
+        /// <param name="msg">An <see cref="IMessage"/> that contains a dictionary of
+        /// information about the method call. </param>
+        /// <returns>The message returned by the invoked method, containing the return value and any
+        /// out or ref parameters.</returns>
+        public override IMessage Invoke(IMessage msg)
         {
-            this.WrappedElement.SendKeys(text);
-        }
+            var element = this.Element;
+            IMethodCallMessage methodCallMessage = msg as IMethodCallMessage;
 
-        /// <summary>
-        /// Submits this element to the web server.
-        /// </summary>
-        public void Submit()
-        {
-            this.WrappedElement.Submit();
-        }
+            if (typeof(IWrapsElement).IsAssignableFrom((methodCallMessage.MethodBase as MethodInfo).DeclaringType))
+            {
+                return new ReturnMessage(element, null, 0, methodCallMessage.LogicalCallContext, methodCallMessage);
+            }
 
-        /// <summary>
-        /// Clicks this element. 
-        /// </summary>
-        public void Click()
-        {
-            this.WrappedElement.Click();
-        }
-
-        /// <summary>
-        /// Gets the value of the specified attribute for this element.
-        /// </summary>
-        /// <param name="attributeName">The attribute name to retrieve the value of.</param>
-        /// <returns>The value of the attribute. Returns <see langword="null"/> if the attribute does not exist.</returns>
-        public string GetAttribute(string attributeName)
-        {
-            return this.WrappedElement.GetAttribute(attributeName);
-        }
-
-        /// <summary>
-        /// Gets the value of a CSS property of this element.
-        /// </summary>
-        /// <param name="propertyName">The property name to retrieve the value of.</param>
-        /// <returns>The value of the CSS property.</returns>
-        public string GetCssValue(string propertyName)
-        {
-            return this.WrappedElement.GetCssValue(propertyName);
-        }
-
-        /// <summary>
-        /// Finds the first <see cref="IWebElement"/> using the given method. 
-        /// </summary>
-        /// <param name="by">The locating mechanism to use.</param>
-        /// <returns>The first matching <see cref="IWebElement"/> on the current context.</returns>
-        public IWebElement FindElement(By by)
-        {
-            return this.WrappedElement.FindElement(by);
-        }
-
-        /// <summary>
-        /// Finds all <see cref="IWebElement">IWebElements</see> within the current context 
-        /// using the given mechanism.
-        /// </summary>
-        /// <param name="by">The locating mechanism to use.</param>
-        /// <returns>A <see cref="ReadOnlyCollection{T}"/> of all <see cref="IWebElement">WebElements</see>
-        /// matching the current criteria, or an empty list if nothing matches.</returns>
-        public ReadOnlyCollection<IWebElement> FindElements(By by)
-        {
-            return this.WrappedElement.FindElements(by);
-        }
-
-        /// <summary>
-        /// Determines whether the specified object is equal to the current object.
-        /// </summary>
-        /// <param name="obj">The object to compare with the current object. </param>
-        /// <returns><see langword="true"/> if the specified object is equal to the current object; otherwise, <see langword="false"/>.</returns>
-        public override bool Equals(object obj)
-        {
-            return this.WrappedElement.Equals(obj);
-        }
-
-        /// <summary>
-        /// Serves as a hash function for a particular type.
-        /// </summary>
-        /// <returns>A hash code for the current object.</returns>
-        public override int GetHashCode()
-        {
-            return this.WrappedElement.GetHashCode();
+            return WebDriverObjectProxy.InvokeMethod(methodCallMessage, element);
         }
     }
 }

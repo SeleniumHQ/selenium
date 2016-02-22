@@ -22,14 +22,14 @@ import java.util.Date;
 
 /**
  * Methods for creating certificates.
- * 
+ *
  * *************************************************************************************** Copyright
  * (c) 2007, Information Security Partners, LLC All rights reserved.
- * 
+ *
  * In a special exception, Selenium/OpenQA is allowed to use this code under the Apache License 2.0.
- * 
+ *
  * @author Brad Hill
- * 
+ *
  */
 public class CertificateCreator {
 
@@ -40,12 +40,15 @@ public class CertificateCreator {
 
   /**
    * Creates a typical Certification Authority (CA) certificate.
-   * 
-   * @throws SecurityException
-   * @throws InvalidKeyException
-   * @throws NoSuchProviderException
-   * @throws NoSuchAlgorithmException
-   * @throws CertificateException
+   *
+   * @throws SecurityException a security exception
+   * @throws InvalidKeyException an invalid key exception
+   * @throws NoSuchProviderException provider is invalid
+   * @throws NoSuchAlgorithmException algorithm exception
+   * @throws CertificateException a problem with the certificate
+   * @throws SignatureException signature exception
+   * @param keyPair keyPair for the certificate
+   * @return a X509 Certificate
    */
   @SuppressWarnings("deprecation")
   public static X509Certificate createTypicalMasterCert(final KeyPair keyPair)

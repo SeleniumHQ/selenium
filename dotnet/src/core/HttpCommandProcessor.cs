@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Software Freedom Conservancy.
+ * Copyright 2015 Software Freedom Conservancy.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,14 +21,13 @@ using System.Net;
 using System.Threading;
 using System.Collections;
 using System.Text;
-using Selenium;
 
 namespace Selenium
 {
-	/// <summary>
-	/// Sends commands and retrieves results via HTTP.
-	/// </summary>
-	public class HttpCommandProcessor : ICommandProcessor
+    /// <summary>
+    /// Sends commands and retrieves results via HTTP.
+    /// </summary>
+    public class HttpCommandProcessor : ICommandProcessor
 	{
 		private readonly string url;
 		private string sessionId;
@@ -150,6 +149,7 @@ namespace Selenium
         /// <summary>
         /// Sets the extension Javascript to be used in the created session
         /// </summary>
+        /// <param name="extensionJs">The extension JavaScript to use.</param>
         public void SetExtensionJs(string extensionJs) 
         {
             this.extensionJs = extensionJs;

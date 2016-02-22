@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -12,10 +15,13 @@
 // limitations under the License.
 
 #include "DocumentHost.h"
-#include "Generated/cookies.h"
+#include "BrowserCookie.h"
+#include "BrowserFactory.h"
+#include "CookieManager.h"
 #include "logging.h"
 #include "messages.h"
 #include "RegistryUtilities.h"
+#include "Script.h"
 
 namespace webdriver {
 
@@ -51,9 +57,12 @@ DocumentHost::DocumentHost(HWND hwnd, HWND executor_handle) {
   this->is_closing_ = false;
   this->wait_required_ = false;
   this->focused_frame_window_ = NULL;
+  this->cookie_manager_ = new CookieManager();
+  this->cookie_manager_->Initialize(this->window_handle_);
 }
 
 DocumentHost::~DocumentHost(void) {
+  delete this->cookie_manager_;
 }
 
 std::string DocumentHost::GetCurrentUrl() {
@@ -74,7 +83,7 @@ std::string DocumentHost::GetCurrentUrl() {
     return "";
   }
 
-  std::wstring converted_url = url;
+  std::wstring converted_url(url, ::SysStringLen(url));
   std::string current_url = StringUtilities::ToString(converted_url);
   return current_url;
 }
@@ -156,6 +165,34 @@ int DocumentHost::SetFocusedFrameByIndex(const int frame_index) {
   return this->SetFocusedFrameByIdentifier(frame_identifier);
 }
 
+void DocumentHost::SetFocusedFrameToParent() {
+  LOG(TRACE) << "Entering DocumentHost::SetFocusedFrameToParent";
+  // Three possible outcomes.
+  // Outcome 1: Already at top-level browsing context. No-op.
+  if (this->focused_frame_window_ != NULL) {
+    CComPtr<IHTMLWindow2> parent_window;
+    HRESULT hr = this->focused_frame_window_->get_parent(&parent_window);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "IHTMLWindow2::get_parent call failed.";
+    }
+    CComPtr<IHTMLWindow2> top_window;
+    hr = this->focused_frame_window_->get_top(&top_window);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "IHTMLWindow2::get_top call failed.";
+    }
+    if (top_window.IsEqualObject(parent_window)) {
+      // Outcome 2: Focus is on a frame one level deep, making the
+      // parent the top-level browsing context. Set focused frame
+      // pointer to NULL.
+      this->focused_frame_window_ = NULL;
+    } else {
+      // Outcome 3: Focus is on a frame more than one level deep.
+      // Set focused frame pointer to parent frame.
+      this->focused_frame_window_ = parent_window;
+    }
+  }
+}
+
 int DocumentHost::SetFocusedFrameByIdentifier(VARIANT frame_identifier) {
   LOG(TRACE) << "Entering DocumentHost::SetFocusedFrameByIdentifier";
 
@@ -197,84 +234,6 @@ int DocumentHost::SetFocusedFrameByIdentifier(VARIANT frame_identifier) {
   return WD_SUCCESS;
 }
 
-void DocumentHost::GetCookies(std::map<std::string, std::string>* cookies) {
-  LOG(TRACE) << "Entering DocumentHost::GetCookies";
-
-  CComPtr<IHTMLDocument2> doc;
-  this->GetDocument(&doc);
-
-  if (!doc) {
-    LOG(WARN) << "Unable to get document";
-    return;
-  }
-
-  CComBSTR cookie_bstr;
-  HRESULT hr = doc->get_cookie(&cookie_bstr);
-  if (!cookie_bstr) {
-    LOG(WARN) << "Unable to get cookie str, call to IHTMLDocument2::get_cookie failed";
-    cookie_bstr = L"";
-  }
-
-  std::wstring cookie_string = cookie_bstr;
-  while (cookie_string.size() > 0) {
-    size_t cookie_delimiter_pos = cookie_string.find(L"; ");
-    std::wstring cookie = cookie_string.substr(0, cookie_delimiter_pos);
-    if (cookie_delimiter_pos == std::wstring::npos) {
-      cookie_string = L"";
-    } else {
-      cookie_string = cookie_string.substr(cookie_delimiter_pos + 2);
-    }
-    size_t cookie_separator_pos(cookie.find_first_of(L"="));
-    std::string cookie_name(StringUtilities::ToString(cookie.substr(0, cookie_separator_pos)));
-    std::string cookie_value(StringUtilities::ToString(cookie.substr(cookie_separator_pos + 1)));
-    cookies->insert(std::pair<std::string, std::string>(cookie_name, cookie_value));
-  }
-}
-
-int DocumentHost::AddCookie(const std::string& cookie) {
-  LOG(TRACE) << "Entering DocumentHost::AddCookie";
-
-  CComBSTR cookie_bstr = StringUtilities::ToWString(cookie.c_str()).c_str();
-
-  CComPtr<IHTMLDocument2> doc;
-  this->GetDocument(&doc);
-
-  if (!doc) {
-    LOG(WARN) << "Unable to get document";
-    return EUNHANDLEDERROR;
-  }
-
-  if (!this->IsHtmlPage(doc)) {
-    LOG(WARN) << "Unable to add cookie, document does not appear to be an HTML page";
-    return ENOSUCHDOCUMENT;
-  }
-
-  HRESULT hr = doc->put_cookie(cookie_bstr);
-  if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Unable to put cookie to document, call to IHTMLDocument2::put_cookie failed";
-    return EUNHANDLEDERROR;
-  }
-
-  return WD_SUCCESS;
-}
-
-int DocumentHost::DeleteCookie(const std::string& cookie_name) {
-  LOG(TRACE) << "Entering DocumentHost::DeleteCookie";
-
-  // Construct the delete cookie script
-  std::wstring script_source;
-  for (int i = 0; DELETECOOKIES[i]; i++) {
-    script_source += DELETECOOKIES[i];
-  }
-
-  CComPtr<IHTMLDocument2> doc;
-  this->GetDocument(&doc);
-  Script script_wrapper(doc, script_source, 1);
-  script_wrapper.AddArgument(cookie_name);
-  int status_code = script_wrapper.Execute();
-  return status_code;
-}
-
 void DocumentHost::PostQuitMessage() {
   LOG(TRACE) << "Entering DocumentHost::PostQuitMessage";
 
@@ -286,59 +245,6 @@ void DocumentHost::PostQuitMessage() {
                 WD_BROWSER_QUIT,
                 NULL,
                 reinterpret_cast<LPARAM>(message_payload));
-}
-
-bool DocumentHost::IsHtmlPage(IHTMLDocument2* doc) {
-  LOG(TRACE) << "Entering DocumentHost::IsHtmlPage";
-
-  CComBSTR type;
-  if (!SUCCEEDED(doc->get_mimeType(&type))) {
-    LOG(WARN) << "Unable to get mime type for document, call to IHTMLDocument2::get_mimeType failed";
-    return false;
-  }
-
-  // Call once to get the required buffer size, then again to fill
-  // the buffer.
-  DWORD mime_type_name_buffer_size = 0;
-  HRESULT hr = ::AssocQueryString(0,
-                                  ASSOCSTR_FRIENDLYDOCNAME,
-                                  L".htm",
-                                  NULL,
-                                  NULL,
-                                  &mime_type_name_buffer_size);
-
-  std::vector<wchar_t> mime_type_name_buffer(mime_type_name_buffer_size);
-  hr = ::AssocQueryString(0,
-                          ASSOCSTR_FRIENDLYDOCNAME,
-                          L".htm",
-                          NULL,
-                          &mime_type_name_buffer[0],
-                          &mime_type_name_buffer_size);
-
-  if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Call to AssocQueryString failed in getting friendly name of .htm documents";
-    return false;
-  }
-
-  std::wstring mime_type_name = &mime_type_name_buffer[0];
-  std::wstring type_string = type;
-  if (type_string == mime_type_name) {
-    return true;
-  }
-
-  // If the user set Firefox as a default browser at any point, the MIME type
-  // appears to be "sticky". This isn't elegant, but it appears to alleviate
-  // the worst symptoms. Tested by using both Safari and Opera as the default
-  // browser, even after setting IE as the default after Firefox (so the chain
-  // of defaults looks like (IE -> Firefox -> IE -> Opera)
-
-  if (L"Firefox HTML Document" == mime_type_name) {
-    LOG(INFO) << "It looks like Firefox was once the default browser. " 
-              << "Guessing the page type from mime type alone";
-    return true;
-  }
-
-  return false;
 }
 
 HWND DocumentHost::FindContentWindowHandle(HWND top_level_window_handle) {

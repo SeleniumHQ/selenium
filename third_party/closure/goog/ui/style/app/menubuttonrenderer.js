@@ -17,7 +17,6 @@
  * subclasses.
  *
  * @author attila@google.com (Attila Bodis)
- * @author gveen@google.com (Greg Veen)
  */
 
 goog.provide('goog.ui.style.app.MenuButtonRenderer');
@@ -25,8 +24,8 @@ goog.provide('goog.ui.style.app.MenuButtonRenderer');
 goog.require('goog.a11y.aria.Role');
 goog.require('goog.array');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.style');
-goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.Menu');
 goog.require('goog.ui.MenuRenderer');
 goog.require('goog.ui.style.app.ButtonRenderer');
@@ -39,6 +38,7 @@ goog.require('goog.ui.style.app.ButtonRenderer');
  * dropdown element into the content element after the specified content.
  * @constructor
  * @extends {goog.ui.style.app.ButtonRenderer}
+ * @final
  */
 goog.ui.style.app.MenuButtonRenderer = function() {
   goog.ui.style.app.ButtonRenderer.call(this);
@@ -61,7 +61,7 @@ goog.ui.style.app.MenuButtonRenderer.CSS_CLASS =
  * Array of arrays of CSS classes that we want composite classes added and
  * removed for in IE6 and lower as a workaround for lack of multi-class CSS
  * selector support.
- * @type {Array.<Array.<string>>}
+ * @type {Array<Array<string>>}
  */
 goog.ui.style.app.MenuButtonRenderer.IE6_CLASS_COMBINATIONS = [
   [goog.getCssName('goog-button-base-rtl'),
@@ -195,11 +195,12 @@ goog.ui.style.app.MenuButtonRenderer.prototype.setContent = function(element,
  * Inserts dropdown element as last child of existing content.
  * @param {goog.ui.ControlContent} content Text caption or DOM structure.
  * @param {goog.dom.DomHelper} dom DOM helper, used for document ineraction.
- * @return {Array.<Node>} DOM structure to be set as the button's content.
+ * @return {Array<Node>} DOM structure to be set as the button's content.
  */
 goog.ui.style.app.MenuButtonRenderer.prototype.createContentWithDropdown =
     function(content, dom) {
-  var caption = dom.createDom('div', null, content, this.createDropdown(dom));
+  var caption = dom.createDom(goog.dom.TagName.DIV, null, content,
+                              this.createDropdown(dom));
   return goog.array.toArray(caption.childNodes);
 };
 
@@ -212,7 +213,8 @@ goog.ui.style.app.MenuButtonRenderer.prototype.createContentWithDropdown =
  * @return {Element} Dropdown element.
  */
 goog.ui.style.app.MenuButtonRenderer.prototype.createDropdown = function(dom) {
-  return dom.createDom('div', goog.getCssName(this.getCssClass(), 'dropdown'));
+  return dom.createDom(goog.dom.TagName.DIV,
+                       goog.getCssName(this.getCssClass(), 'dropdown'));
 };
 
 

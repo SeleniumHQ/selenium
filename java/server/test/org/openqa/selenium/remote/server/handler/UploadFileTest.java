@@ -1,24 +1,27 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
@@ -27,29 +30,36 @@ import com.google.common.io.Files;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.DefaultSession;
+import org.openqa.selenium.remote.server.DriverFactory;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.StubDriverFactory;
+import org.openqa.selenium.remote.server.SystemClock;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
+@RunWith(JUnit4.class)
 public class UploadFileTest {
 
-  private StubDriverFactory driverFactory;
+  private DriverFactory driverFactory;
   private TemporaryFilesystem tempFs;
   private SessionId sessionId;
   private File tempDir;
 
   @Before
   public void setUp() {
-    driverFactory = new StubDriverFactory();
+    driverFactory = mock(DriverFactory.class);
+    when(driverFactory.newInstance(any(Capabilities.class))).thenReturn(mock(WebDriver.class));
     tempDir = Files.createTempDir();
     sessionId = new SessionId("foo");
     tempFs = TemporaryFilesystem.getTmpFsBasedOn(tempDir);
@@ -63,7 +73,7 @@ public class UploadFileTest {
 
   @Test
   public void shouldWriteABase64EncodedZippedFileToDiskAndKeepName() throws Exception {
-    Session session = DefaultSession.createSession(driverFactory, tempFs, sessionId, DesiredCapabilities.firefox());
+    Session session = DefaultSession.createSession(driverFactory, tempFs, new SystemClock(), sessionId, DesiredCapabilities.firefox());
 
     File tempFile = touch(null, "foo");
     String encoded = new Zip().zipFile(tempFile.getParentFile(), tempFile);
@@ -71,8 +81,7 @@ public class UploadFileTest {
     UploadFile uploadFile = new UploadFile(session);
     Map<String, Object> args = ImmutableMap.of("file", (Object) encoded);
     uploadFile.setJsonParameters(args);
-    uploadFile.call();
-    String path = (String) uploadFile.getResponse().getValue();
+    String path = uploadFile.call();
 
     assertTrue(new File(path).exists());
     assertTrue(path.endsWith(tempFile.getName()));
@@ -80,7 +89,7 @@ public class UploadFileTest {
 
   @Test
   public void shouldThrowAnExceptionIfMoreThanOneFileIsSent() throws Exception {
-    Session session = DefaultSession.createSession(driverFactory, tempFs, sessionId, DesiredCapabilities.firefox());
+    Session session = DefaultSession.createSession(driverFactory, tempFs, new SystemClock(), sessionId, DesiredCapabilities.firefox());
     File baseDir = Files.createTempDir();
 
     touch(baseDir, "example");

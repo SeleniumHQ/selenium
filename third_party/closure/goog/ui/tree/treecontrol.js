@@ -18,8 +18,6 @@
  *
  * @author arv@google.com (Erik Arvidsson)
  * @author eae@google.com (Emil A Eklund)
- * @author jonp@google.com (Jon Perlow)
- * @author annams@google.com (Srinivas Annam)
  *
  * This is a based on the webfx tree control. It since been updated to add
  * typeahead support, as well as accessibility support using ARIA framework.
@@ -31,12 +29,12 @@ goog.provide('goog.ui.tree.TreeControl');
 
 goog.require('goog.a11y.aria');
 goog.require('goog.asserts');
-goog.require('goog.debug.Logger');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.events.EventType');
 goog.require('goog.events.FocusHandler');
 goog.require('goog.events.KeyHandler');
-goog.require('goog.events.KeyHandler.EventType');
+goog.require('goog.html.SafeHtml');
+goog.require('goog.log');
 goog.require('goog.ui.tree.BaseNode');
 goog.require('goog.ui.tree.TreeNode');
 goog.require('goog.ui.tree.TypeAhead');
@@ -47,7 +45,7 @@ goog.require('goog.userAgent');
 /**
  * This creates a TreeControl object. A tree control provides a way to
  * view a hierarchical set of data.
- * @param {string} html The HTML content of the node label.
+ * @param {string|!goog.html.SafeHtml} html The HTML content of the node label.
  * @param {Object=} opt_config The configuration for the tree. See
  *    goog.ui.tree.TreeControl.defaultConfig. If not specified, a default config
  *    will be used.
@@ -77,7 +75,7 @@ goog.ui.tree.TreeControl = function(html, opt_config, opt_domHelper) {
       // works since IE6SP1
       document.execCommand('BackgroundImageCache', false, true);
     } catch (e) {
-      this.logger_.warning('Failed to enable background image cache');
+      goog.log.warning(this.logger_, 'Failed to enable background image cache');
     }
   }
 };
@@ -102,11 +100,11 @@ goog.ui.tree.TreeControl.prototype.focusHandler_ = null;
 
 /**
  * Logger
- * @type {goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @private
  */
 goog.ui.tree.TreeControl.prototype.logger_ =
-    goog.debug.Logger.getLogger('goog.ui.tree.TreeControl');
+    goog.log.getLogger('goog.ui.tree.TreeControl');
 
 
 /**
@@ -187,7 +185,9 @@ goog.ui.tree.TreeControl.prototype.reveal = function() {
  */
 goog.ui.tree.TreeControl.prototype.handleFocus_ = function(e) {
   this.focused_ = true;
-  goog.dom.classes.add(this.getElement(), 'focused');
+  goog.dom.classlist.add(
+      goog.asserts.assert(this.getElement()),
+      goog.getCssName('focused'));
 
   if (this.selectedItem_) {
     this.selectedItem_.select();
@@ -202,7 +202,9 @@ goog.ui.tree.TreeControl.prototype.handleFocus_ = function(e) {
  */
 goog.ui.tree.TreeControl.prototype.handleBlur_ = function(e) {
   this.focused_ = false;
-  goog.dom.classes.remove(this.getElement(), 'focused');
+  goog.dom.classlist.remove(
+      goog.asserts.assert(this.getElement()),
+      goog.getCssName('focused'));
 };
 
 
@@ -232,9 +234,9 @@ goog.ui.tree.TreeControl.prototype.setExpanded = function(expanded) {
 
 
 /** @override */
-goog.ui.tree.TreeControl.prototype.getExpandIconHtml = function() {
+goog.ui.tree.TreeControl.prototype.getExpandIconSafeHtml = function() {
   // no expand icon for root element
-  return '';
+  return goog.html.SafeHtml.EMPTY;
 };
 
 
@@ -272,11 +274,13 @@ goog.ui.tree.TreeControl.prototype.getRowClassName = function() {
  */
 goog.ui.tree.TreeControl.prototype.getCalculatedIconClass = function() {
   var expanded = this.getExpanded();
-  if (expanded && this.expandedIconClass_) {
-    return this.expandedIconClass_;
+  var expandedIconClass = this.getExpandedIconClass();
+  if (expanded && expandedIconClass) {
+    return expandedIconClass;
   }
-  if (!expanded && this.iconClass_) {
-    return this.iconClass_;
+  var iconClass = this.getIconClass();
+  if (!expanded && iconClass) {
+    return iconClass;
   }
 
   // fall back on default icons
@@ -357,8 +361,12 @@ goog.ui.tree.TreeControl.prototype.updateLinesAndExpandIcons_ = function() {
   var tree = this;
   var showLines = tree.getShowLines();
   var showRootLines = tree.getShowRootLines();
-  // Recursively walk through all nodes and update the class names of the
-  // expand icon and the children element.
+
+  /**
+   * Recursively walk through all nodes and update the class names of the
+   * expand icon and the children element.
+   * @param {!goog.ui.tree.BaseNode} node
+   */
   function updateShowLines(node) {
     var childrenEl = node.getChildrenElement();
     if (childrenEl) {
@@ -523,7 +531,7 @@ goog.ui.tree.TreeControl.prototype.detachEvents_ = function() {
  * @private
  */
 goog.ui.tree.TreeControl.prototype.handleMouseEvent_ = function(e) {
-  this.logger_.fine('Received event ' + e.type);
+  goog.log.fine(this.logger_, 'Received event ' + e.type);
   var node = this.getNodeFromEvent_(e);
   if (node) {
     switch (e.type) {
@@ -590,15 +598,12 @@ goog.ui.tree.TreeControl.prototype.getNodeFromEvent_ = function(e) {
 
 /**
  * Creates a new tree node using the same config as the root.
- * @param {string} html The html content of the node label.
- * @return {goog.ui.tree.TreeNode} The new item.
+ * @param {string=} opt_html The HTML content of the node label.
+ * @return {!goog.ui.tree.TreeNode} The new item.
  */
-goog.ui.tree.TreeControl.prototype.createNode = function(html) {
-  // Some projects call createNode without arguments which causes failure.
-  // See http://goto/misuse-createnode
-  // TODO(user): Fix them and remove the html || '' workaround.
-  return new goog.ui.tree.TreeNode(html || '', this.getConfig(),
-      this.getDomHelper());
+goog.ui.tree.TreeControl.prototype.createNode = function(opt_html) {
+  return new goog.ui.tree.TreeNode(opt_html || goog.html.SafeHtml.EMPTY,
+      this.getConfig(), this.getDomHelper());
 };
 
 
@@ -634,31 +639,4 @@ goog.ui.tree.TreeControl.prototype.clearTypeAhead = function() {
 /**
  * A default configuration for the tree.
  */
-goog.ui.tree.TreeControl.defaultConfig = {
-  indentWidth: 19,
-  cssRoot: goog.getCssName('goog-tree-root') + ' ' +
-      goog.getCssName('goog-tree-item'),
-  cssHideRoot: goog.getCssName('goog-tree-hide-root'),
-  cssItem: goog.getCssName('goog-tree-item'),
-  cssChildren: goog.getCssName('goog-tree-children'),
-  cssChildrenNoLines: goog.getCssName('goog-tree-children-nolines'),
-  cssTreeRow: goog.getCssName('goog-tree-row'),
-  cssItemLabel: goog.getCssName('goog-tree-item-label'),
-  cssTreeIcon: goog.getCssName('goog-tree-icon'),
-  cssExpandTreeIcon: goog.getCssName('goog-tree-expand-icon'),
-  cssExpandTreeIconPlus: goog.getCssName('goog-tree-expand-icon-plus'),
-  cssExpandTreeIconMinus: goog.getCssName('goog-tree-expand-icon-minus'),
-  cssExpandTreeIconTPlus: goog.getCssName('goog-tree-expand-icon-tplus'),
-  cssExpandTreeIconTMinus: goog.getCssName('goog-tree-expand-icon-tminus'),
-  cssExpandTreeIconLPlus: goog.getCssName('goog-tree-expand-icon-lplus'),
-  cssExpandTreeIconLMinus: goog.getCssName('goog-tree-expand-icon-lminus'),
-  cssExpandTreeIconT: goog.getCssName('goog-tree-expand-icon-t'),
-  cssExpandTreeIconL: goog.getCssName('goog-tree-expand-icon-l'),
-  cssExpandTreeIconBlank: goog.getCssName('goog-tree-expand-icon-blank'),
-  cssExpandedFolderIcon: goog.getCssName('goog-tree-expanded-folder-icon'),
-  cssCollapsedFolderIcon: goog.getCssName('goog-tree-collapsed-folder-icon'),
-  cssFileIcon: goog.getCssName('goog-tree-file-icon'),
-  cssExpandedRootIcon: goog.getCssName('goog-tree-expanded-folder-icon'),
-  cssCollapsedRootIcon: goog.getCssName('goog-tree-collapsed-folder-icon'),
-  cssSelectedRow: goog.getCssName('selected')
-};
+goog.ui.tree.TreeControl.defaultConfig = goog.ui.tree.BaseNode.defaultConfig;

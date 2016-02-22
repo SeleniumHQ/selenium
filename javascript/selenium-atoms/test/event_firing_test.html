@@ -15,11 +15,38 @@
     <script type="text/javascript">
         var fired;
 
-        // These should work, they just dosn't.
-        var CLICKING_WITH_COORDINATES_BROKEN = goog.userAgent.product.SAFARI ||
-            goog.userAgent.product.ANDROID ||
-            (goog.userAgent.product.OPERA &&
-             bot.userAgent.isEngineVersion(12));
+        // These should work, they just don't.
+        var CLICKING_WITH_COORDINATES_BROKEN =
+            goog.userAgent.product.SAFARI || goog.userAgent.product.ANDROID;
+
+        // Some browsers support subpixel element locations but not (yet) subpixel events:
+        // Chrome: http://crbug.com/396380
+        // Firefox: (bugreport?).
+        // In such browsers, when events with subpixel coordinates are dispatched,
+        // their coordinates lose the fractional part.
+        // Note, IE behavior isn't problematic as far as this test is concerned:
+        // in IE9 and below both elements and events are pixel-precise while IE10, IE11
+        // (and, possbly, later) support both subpixel elements and events.
+        var SUBPIXEL_PRECISION_SUPPORTED = !CLICKING_WITH_COORDINATES_BROKEN &&
+            !goog.userAgent.product.CHROME && !goog.userAgent.product.FIREFOX;
+
+        function expectedEventCoordinate(elementTopLeftCorner, offset) {
+          // TODO: Delete next 'if' statement when Selenium stops supporting Firefox 24 ESR.
+          if (goog.userAgent.product.FIREFOX &&
+              bot.userAgent.isProductVersion(24) &&
+              !bot.userAgent.isProductVersion(25)) {
+            // Firefox 24 ESR events have coordinates of the offset
+            // (relative to top-left corner of the element; not of the viewport).
+            return offset;
+          }
+
+          if (SUBPIXEL_PRECISION_SUPPORTED) {
+            return elementTopLeftCorner + offset;
+          } else {
+            // When browser doesn't support subpixel (for event coords) it truncates to integers.
+            return Math.floor(elementTopLeftCorner + offset);
+          }
+        }
 
         function setUp() {
           fired = false;
@@ -65,16 +92,19 @@
           var offsetY = 7;
 
           var fired = false;
+          var eventClientX, eventClientY;
           goog.events.listenOnce(mouseTarget, goog.events.EventType.MOUSEUP, function(e) {
             fired = true;
-            assertEquals(clickLocation.left + offsetX, e.clientX);
-            assertEquals(clickLocation.top + offsetY, e.clientY);
+            eventClientX = e.clientX;
+            eventClientY = e.clientY;
           });
 
           core.events.fireAt(
               'id=location', 'mouseup', offsetX + ',' + offsetY);
 
           assertTrue(fired);
+          assertEquals(expectedEventCoordinate(clickLocation.left, offsetX), eventClientX);
+          assertEquals(expectedEventCoordinate(clickLocation.top, offsetY), eventClientY);
         }
 
         function testFiringEventsAtAParticularLocationWillDefaultToTopLeft() {
@@ -85,15 +115,18 @@
           var clickLocation = goog.style.getBounds(mouseTarget);
 
           var fired = false;
+          var eventClientX, eventClientY;
           goog.events.listenOnce(mouseTarget, goog.events.EventType.MOUSEUP, function(e) {
             fired = true;
-            assertEquals(clickLocation.left, e.clientX);
-            assertEquals(clickLocation.top, e.clientY);
+            eventClientX = e.clientX;
+            eventClientY = e.clientY;
           });
 
           core.events.fireAt('id=location', goog.events.EventType.MOUSEUP);
 
           assertTrue(fired);
+          assertEquals(expectedEventCoordinate(clickLocation.left, 0), eventClientX);
+          assertEquals(expectedEventCoordinate(clickLocation.top, 0), eventClientY);
         }
 
         function testCanOverrideTheValueOfAnInputElement() {
@@ -123,6 +156,9 @@
   <p id="target">This is the target</p>
 
   <form action="#" action="get">
+    <!-- Padding insures input's coordinates fractional if only browser supports subpixel. -->
+    <div style="height: 20.37px;">subpixel padding top</div>
+    <div style="display: inline-block; width: 200.97px;">subpixel padding left</div>
     <label for="location">Click me:</label><input id="location" /><br/>
   </form>
 </body>

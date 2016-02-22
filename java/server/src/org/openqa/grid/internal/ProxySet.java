@@ -1,19 +1,19 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.internal;
 
@@ -25,6 +25,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -94,7 +95,7 @@ public class ProxySet implements Iterable<RemoteProxy> {
   }
 
   public List<RemoteProxy> getBusyProxies() {
-    List<RemoteProxy> res = new ArrayList<RemoteProxy>();
+    List<RemoteProxy> res = new ArrayList<>();
     for (RemoteProxy proxy : proxies) {
       if (proxy.isBusy()) {
         res.add(proxy);
@@ -120,11 +121,22 @@ public class ProxySet implements Iterable<RemoteProxy> {
     return proxies.isEmpty();
   }
 
-  private List<RemoteProxy> getSorted() {
-    List<RemoteProxy> sorted = new ArrayList<RemoteProxy>(proxies);
-    Collections.sort(sorted);
+  public List<RemoteProxy> getSorted() {
+    List<RemoteProxy> sorted = new ArrayList<>(proxies);
+    Collections.sort(sorted, proxyComparator);
     return sorted;
   }
+
+  private Comparator<RemoteProxy> proxyComparator = new Comparator<RemoteProxy>() {
+    @Override
+    public int compare(RemoteProxy o1, RemoteProxy o2) {
+      double p1used = (o1.getTotalUsed() * 1.0) / o1.getTestSlots().size();
+      double p2used = (o2.getTotalUsed() * 1.0) / o2.getTestSlots().size();
+
+      if (p1used == p2used) return 0;
+      return p1used < p2used? -1 : 1;
+    }
+  };
 
   public TestSession getNewSession(Map<String, Object> desiredCapabilities) {
     // sort the proxies first, by default by total number of

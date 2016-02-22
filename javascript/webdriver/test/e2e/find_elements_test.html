@@ -150,17 +150,19 @@ function testFindingElements_manyByPartialLinkText() {
 function testFindingElements_manyByTagName() {
   driver.get('testdata/locate_elements.html');
   driver.findElements({tagName: 'a'}).then(function(elements) {
-    assert(elements.length).equalTo(11);
-    for (var i = 0; i < 5; ++i) {
+    assert(elements.length).equalTo(13);
+    assert(elements[0].getInnerHtml()).equalTo('this link is not visible');
+    assert(elements[1].getInnerHtml()).equalTo('neither is this one');
+    for (var i = 2; i < 7; ++i) {
       assert(elements[i].getText()).
       equalTo('this is a link', 'index: ' + i);
     }
-    assert(elements[5].getText()).equalTo('unrelated');
-    assert(elements[6].getAttribute('id')).equalTo('empty-link');
-    assert(elements[7].getAttribute('alt')).equalTo('has, a comma');
-    assert(elements[8].getText()).equalTo('another link');
-    assert(elements[9].getAttribute('name')).equalTo('contained_one');
-    assert(elements[10].getAttribute('name')).equalTo('contained_two');
+    assert(elements[7].getText()).equalTo('unrelated');
+    assert(elements[8].getAttribute('id')).equalTo('empty-link');
+    assert(elements[9].getAttribute('alt')).equalTo('has, a comma');
+    assert(elements[10].getText()).equalTo('another link');
+    assert(elements[11].getAttribute('name')).equalTo('contained_one');
+    assert(elements[12].getAttribute('name')).equalTo('contained_two');
   });
 }
 
@@ -174,4 +176,38 @@ function testFindingElements_manyByXPath() {
         assert(elements[1].getAttribute('name')).equalTo('foo');
       });
 }
+
+
+function testFindingElements_oneWithCustomLocator() {
+  driver.get('testdata/locate_elements.html');
+  var link = driver.findElement(function() {
+    var links = driver.findElements({tagName: 'a'});
+    return webdriver.promise.filter(links, function(link) {
+      return link.isDisplayed().then(function(displayed) {
+        return !displayed;
+      });
+    });
+  });
+  assert(link.getInnerHtml()).equalTo('this link is not visible');
+}
+
+
+function testFindingElements_manyWithCustomLocator() {
+  driver.get('testdata/locate_elements.html');
+  driver.findElements(function() {
+    var links = driver.findElements({tagName: 'a'});
+    return webdriver.promise.filter(links, function(link) {
+      return link.isDisplayed().then(function(displayed) {
+        return !displayed;
+      });
+    });
+  }).then(function(links) {
+    assert(links.length).equalTo(3);
+    assert(links[0].getInnerHtml()).equalTo('this link is not visible');
+    assert(links[1].getInnerHtml()).equalTo('neither is this one');
+    assert(links[2].getAttribute('id')).equalTo('empty-link');
+  });
+}
+
+
 </script>
