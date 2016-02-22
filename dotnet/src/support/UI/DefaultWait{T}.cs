@@ -63,7 +63,7 @@ namespace OpenQA.Selenium.Support.UI
 
             if (clock == null)
             {
-                throw new ArgumentNullException("clock", "input cannot be null");
+                throw new ArgumentNullException("clock", "clock cannot be null");
             }
 
             this.input = input;
