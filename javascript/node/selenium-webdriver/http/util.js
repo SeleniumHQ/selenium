@@ -24,6 +24,7 @@
 const Executor = require('./index').Executor,
     HttpClient = require('./index').HttpClient,
     HttpRequest = require('./index').Request,
+    error = require('../error'),
     Command = require('../lib/command').Command,
     CommandName = require('../lib/command').Name,
     promise = require('../lib/promise');
@@ -73,7 +74,14 @@ exports.waitForServer = function(url, timeout) {
     return getStatus(url).then(ready.fulfill, onError);
   }
 
-  function onError() {
+  function onError(e) {
+    // Some servers don't support the status command. If they are able to
+    // response with an error, then can consider the server ready.
+    if (e instanceof error.UnsupportedOperationError) {
+      ready.fulfill();
+      return;
+    }
+
     if (Date.now() - start > timeout) {
       ready.reject(
           Error('Timed out waiting for the WebDriver server at ' + url));

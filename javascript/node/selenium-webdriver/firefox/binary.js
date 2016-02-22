@@ -47,19 +47,26 @@ const NO_FOCUS_LIB_AMD64 = isDevMode ?
 
 const X_IGNORE_NO_FOCUS_LIB = 'x_ignore_nofocus.so';
 
-var foundBinary = null;
+
+let foundBinary = null;
+let foundDevBinary = null;
 
 
 /**
  * Checks the default Windows Firefox locations in Program Files.
+ *
+ * @param {boolean=} opt_dev Whether to find the Developer Edition.
  * @return {!Promise<?string>} A promise for the located executable.
  *     The promise will resolve to {@code null} if Firefox was not found.
  */
-function defaultWindowsLocation() {
+function defaultWindowsLocation(opt_dev) {
   var files = [
     process.env['PROGRAMFILES'] || 'C:\\Program Files',
     process.env['PROGRAMFILES(X86)'] || 'C:\\Program Files (x86)'
   ].map(function(prefix) {
+    if (opt_dev) {
+      return path.join(prefix, 'Firefox Developer Edition\\firefox.exe');
+    }
     return path.join(prefix, 'Mozilla Firefox\\firefox.exe');
   });
   return io.exists(files[0]).then(function(exists) {
@@ -72,31 +79,47 @@ function defaultWindowsLocation() {
 
 /**
  * Locates the Firefox binary for the current system.
- * @return {!promise.Promise.<string>} A promise for the located binary. The
- *     promise will be rejected if Firefox cannot be located.
+ *
+ * @param {boolean=} opt_dev Whether to find the Developer Edition. This only
+ *     used on Windows and OSX.
+ * @return {!Promise<string>} A promise for the located binary. The promise will
+ *     be rejected if Firefox cannot be located.
  */
-function findFirefox() {
-  if (foundBinary) {
+function findFirefox(opt_dev) {
+  if (opt_dev && foundDevBinary) {
+    return foundDevBinary;
+  }
+
+  if (!opt_dev && foundBinary) {
     return foundBinary;
   }
 
+  let found;
   if (process.platform === 'darwin') {
-    var osxExe =  '/Applications/Firefox.app/Contents/MacOS/firefox-bin';
-    foundBinary = io.exists(osxExe).then(function(exists) {
-      return exists ? osxExe : null;
-    });
+    let exe = opt_dev
+        ? '/Applications/FirefoxDeveloperEdition.app/Contents/MacOS/firefox-bin'
+        : '/Applications/Firefox.app/Contents/MacOS/firefox-bin';
+    found = io.exists(exe).then(exists => exists ? exe : null);
+
   } else if (process.platform === 'win32') {
-    foundBinary = defaultWindowsLocation();
+    found = defaultWindowsLocation(opt_dev);
+
   } else {
-    foundBinary = promise.fulfilled(io.findInPath('firefox'));
+    found = Promise.resolve(io.findInPath('firefox'));
   }
 
-  return foundBinary = foundBinary.then(function(found) {
+  found = found.then(found => {
     if (found) {
       return found;
     }
     throw Error('Could not locate Firefox on the current system');
   });
+
+  if (opt_dev) {
+    return foundDevBinary = found;
+  } else {
+    return foundBinary = found;
+  }
 }
 
 
@@ -136,12 +159,17 @@ function installNoFocusLibs(profileDir) {
  * Provides a mechanism to configure and launch Firefox in a subprocess for
  * use with WebDriver.
  *
+ * If created _without_ a path for the Firefox binary to use, this class will
+ * attempt to find Firefox when {@link #launch()} is called. For OSX and
+ * Windows, this class will look for Firefox in the current platform's default
+ * installation location (e.g. /Applications/Firefox.app on OSX). For all other
+ * platforms, the Firefox executable must be available on your system `PATH`.
+ *
  * @final
  */
 class Binary {
   /**
-   * @param {string=} opt_exe Path to the Firefox binary to use. If not
-   *     specified, will attempt to locate Firefox on the current system.
+   * @param {string=} opt_exe Path to the Firefox binary to use.
    */
   constructor(opt_exe) {
     /** @private {(string|undefined)} */
@@ -157,6 +185,9 @@ class Binary {
       MOZ_NO_REMOTE: '1',
       NO_EM_RESTART: '1'
     });
+
+    /** @private {boolean} */
+    this.devEdition_ = false;
   }
 
   /**
@@ -175,6 +206,34 @@ class Binary {
   }
 
   /**
+   * Specifies whether to use Firefox Developer Edition instead of the normal
+   * stable channel. Setting this option has no effect if this instance was
+   * created with a path to a specific Firefox binary.
+   *
+   * This method has no effect on Unix systems where the Firefox application
+   * has the same (default) name regardless of version.
+   *
+   * @param {boolean=} opt_use Whether to use the developer edition. Defaults to
+   *     true.
+   */
+  useDevEdition(opt_use) {
+    this.devEdition_ = opt_use === undefined || !!opt_use;
+  }
+
+  /**
+   * Returns a promise for the Firefox executable used by this instance. The
+   * returned promise will be immediately resolved if the user supplied an
+   * executable path when this instance was created. Otherwise, an attempt will
+   * be made to find Firefox on the current system.
+   *
+   * @return {!promise.Promise<string>} a promise for the path to the Firefox
+   *     executable used by this instance.
+   */
+  locate() {
+    return promise.fulfilled(this.exe_ || findFirefox(this.devEdition_));
+  }
+
+  /**
    * Launches Firefox and returns a promise that will be fulfilled when the
    * process terminates.
    * @param {string} profile Path to the profile directory to use.
@@ -187,7 +246,7 @@ class Binary {
 
     let args = ['-foreground'].concat(this.args_);
 
-    return promise.when(this.exe_ || findFirefox(), function(firefox) {
+    return this.locate().then(function(firefox) {
       if (process.platform === 'win32' || process.platform === 'darwin') {
         return exec(firefox, {args: args, env: env});
       }
@@ -209,7 +268,7 @@ class Binary {
    *     representation.
    */
   [Symbols.serialize]() {
-    return promise.fulfilled(this.exe_ || findFirefox());
+    return this.locate();
   }
 }
 

@@ -477,7 +477,11 @@ class Executor {
         return new Session(parsed['sessionId'], parsed['value']);
       }
 
-      return parsed ? (parsed['value'] || null) : parsed;
+      if (parsed) {
+        let value = parsed['value'];
+        return typeof value === 'undefined' ? null : value;
+      }
+      return parsed;
     });
   }
 }
@@ -516,7 +520,7 @@ function parseHttpResponse(httpResponse, w3c) {
       if (httpResponse.status < 200) {
         // This should never happen, but throw the raw response so
         // users report it.
-        throw error.WebDriverError(
+        throw new error.WebDriverError(
             `Unexpected HTTP response:\n${httpResponse}`);
       }
     } else {
@@ -539,7 +543,7 @@ function parseHttpResponse(httpResponse, w3c) {
     throw new error.WebDriverError(value);
   }
 
-  return value ? {value: value} : null;
+  return {value: value || null};
 }
 
 

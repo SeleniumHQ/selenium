@@ -2,6 +2,10 @@
 
 ### Change Summary
 
+* Added preliminary support for Marionette, Mozilla's WebDriver implementation
+   for Firefox. Marionette may be enabled via the API,
+   `firefox.Options#useMarionette`, or by setting the `SELENIUM_MARIONETTE`
+   environment variable.
 * Moved all logic for parsing and interpreting responses from the remote end
    into the individual `command.Executor` implementations.
 * For consistency with the other Selenium language bindings,

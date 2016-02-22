@@ -341,6 +341,29 @@ describe('Executor', function() {
       });
     });
 
+    describe('falsy values', function() {
+      test(0);
+      test(false);
+      test('');
+
+      function test(value) {
+        it(`value=${value}`, function() {
+          var command = new Command(CommandName.GET_CURRENT_URL)
+              .setParameter('sessionId', 's123');
+
+          send.returns(Promise.resolve(
+              new HttpResponse(200, {},
+                  JSON.stringify({status: 0, value: value}))));
+
+          return executor.execute(command).then(function(response) {
+             assertSent('GET', '/session/s123/url', {},
+                 [['Accept', 'application/json; charset=utf-8']]);
+             assert.strictEqual(response, value);
+          });
+        });
+      }
+    });
+
     it('handles non-object JSON', function() {
       var command = new Command(CommandName.GET_CURRENT_URL)
           .setParameter('sessionId', 's123');

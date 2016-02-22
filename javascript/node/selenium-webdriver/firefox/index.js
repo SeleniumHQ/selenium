@@ -107,14 +107,44 @@ const Binary = require('./binary').Binary,
     promise = require('../lib/promise'),
     webdriver = require('../lib/webdriver'),
     net = require('../net'),
-    portprober = require('../net/portprober');
+    portprober = require('../net/portprober'),
+    remote = require('../remote');
+
+
+/**
+ * Firefox-specific capability keys. Users should use the {@linkplain Options}
+ * class instead of referencing these keys directly. _These keys are considered
+ * implementation details and may be removed or changed at any time._
+ *
+ * @enum {string}
+ */
+const Capability = {
+  /**
+   * Defines the Firefox binary to use. May be set to either a
+   * {@linkplain Binary} instance, or a string path to the Firefox executable.
+   */
+  BINARY: 'firefox_binary',
+
+  /**
+   * Specifies whether to use Mozilla's Marionette, or the legacy FirefoxDriver
+   * from the Selenium project. Defaults to false.
+   */
+  MARIONETTE: 'marionette',
+
+  /**
+   * Defines the Firefox profile to use. May be set to either a
+   * {@linkplain Profile} instance, or to a base-64 encoded zip of a profile
+   * directory.
+   */
+  PROFILE: 'firefox_profile'
+};
 
 
 /**
  * Configuration options for the FirefoxDriver.
  */
 class Options {
-    constructor() {
+  constructor() {
     /** @private {Profile} */
     this.profile_ = null;
 
@@ -126,6 +156,9 @@ class Options {
 
     /** @private {?capabilities.ProxyConfig} */
     this.proxy_ = null;
+
+    /** @private {boolean} */
+    this.marionette_ = false;
   }
 
   /**
@@ -181,6 +214,16 @@ class Options {
   }
 
   /**
+   * Sets whether to use Mozilla's Marionette to drive the browser.
+   *
+   * @see https://developer.mozilla.org/en-US/docs/Mozilla/QA/Marionette/WebDriver
+   */
+  useMarionette(marionette) {
+    this.marionette_ = marionette;
+    return this;
+  }
+
+  /**
    * Converts these options to a {@link capabilities.Capabilities} instance.
    *
    * @return {!capabilities.Capabilities} A new capabilities object.
@@ -194,13 +237,81 @@ class Options {
       caps.set(capabilities.Capability.PROXY, this.proxy_);
     }
     if (this.binary_) {
-      caps.set('firefox_binary', this.binary_);
+      caps.set(Capability.BINARY, this.binary_);
     }
     if (this.profile_) {
-      caps.set('firefox_profile', this.profile_);
+      caps.set(Capability.PROFILE, this.profile_);
     }
+    caps.set(Capability.MARIONETTE, this.marionette_);
     return caps;
   }
+}
+
+
+const WIRES_EXE = process.platform === 'win32' ? 'wires.exe' : 'wires';
+
+
+/**
+ * @return {string} .
+ * @throws {Error}
+ */
+function findWires() {
+  let exe = io.findInPath(WIRES_EXE, true);
+  if (!exe) {
+    throw Error(
+      'The ' + WIRES_EXE + ' executable could not be found on the current ' +
+      'PATH. Please download the latest version from ' +
+      'https://developer.mozilla.org/en-US/docs/Mozilla/QA/Marionette/' +
+      'WebDriver and ensure it can be found on your PATH.');
+  }
+  return exe;
+}
+
+
+/**
+ * @param {(string|!Binary)} binary .
+ * @return {!remote.DriverService} .
+ */
+function createWiresService(binary) {
+    // Firefox's Developer Edition is currently required for Marionette.
+  let exe;
+  if (typeof binary === 'string') {
+    exe = Promise.resolve(binary);
+  } else {
+    binary.useDevEdition();
+    exe = binary.locate();
+  }
+
+  let wires = findWires();
+  let port =  portprober.findFreePort();
+  return new remote.DriverService(wires, {
+    loopback: true,
+    port: port,
+    args: promise.all([exe, port]).then(args => {
+      return ['-b', args[0], '--webdriver-port', args[1]];
+    })
+    // ,stdio: 'inherit'
+  });
+}
+
+
+/**
+ * @param {(Profile|string)} profile The profile to prepare.
+ * @param {number} port The port the FirefoxDriver should listen on.
+ * @return {!Promise<string>} a promise for the path to the profile directory.
+ */
+function prepareProfile(profile, port) {
+  if (typeof profile === 'string') {
+    return decodeProfile(/** @type {string} */(profile)).then(dir => {
+      profile = new Profile(dir);
+      profile.setPreference('webdriver_firefox_port', port);
+      return profile.writeToDisk();
+    });
+  }
+
+  profile = profile || new Profile;
+  profile.setPreference('webdriver_firefox_port', port);
+  return profile.writeToDisk();
 }
 
 
@@ -224,60 +335,62 @@ class Driver extends webdriver.WebDriver {
       caps = new capabilities.Capabilities(opt_config);
     }
 
-    let binary = caps.get('firefox_binary') || new Binary();
+    let binary = caps.get(Capability.BINARY) || new Binary();
+    caps.delete(Capability.BINARY);
     if (typeof binary === 'string') {
       binary = new Binary(binary);
     }
 
-    let profile = caps.get('firefox_profile') || new Profile();
+    let profile = new Profile;
+    if (caps.has(Capability.PROFILE)) {
+      profile = caps.get(Capability.PROFILE);
+      caps.delete(Capability.PROFILE);
+    }
 
-    caps.set('firefox_binary', null);
-    caps.set('firefox_profile', null);
-
-    let self;  // Cannot assign to 'this' until after we call super.
     let freePort = portprober.findFreePort();
-    let command = freePort.then(function(port) {
-      if (typeof profile === 'string') {
-        return decodeProfile(profile).then(function(dir) {
-          var profile = new Profile(dir);
-          profile.setPreference('webdriver_firefox_port', port);
-          return profile.writeToDisk();
-        });
-      } else {
-        profile.setPreference('webdriver_firefox_port', port);
-        return profile.writeToDisk();
-      }
-    }).then(function(profileDir) {
-      self.profilePath_ = profileDir;
-      return binary.launch(profileDir);
-    });
+    let serverUrl, onQuit;
 
-    let serverUrl = command
-        .then(function() { return freePort; })
-        .then(function(/** number */port) {
-          var serverUrl = url.format({
-            protocol: 'http',
-            hostname: net.getLoopbackAddress(),
-            port: port + '',
-            pathname: '/hub'
+    if (caps.get(Capability.MARIONETTE)
+        || /^1|true$/i.test(process.env['SELENIUM_MARIONETTE'])) {
+      let service = createWiresService(binary);
+      serverUrl = service.start();
+      onQuit = () => service.kill();
+
+    } else {
+      let preparedProfile =
+          freePort.then(port => prepareProfile(profile, port));
+      let command = preparedProfile.then(dir => binary.launch(dir));
+
+      serverUrl = command.then(() => freePort)
+          .then(function(/** number */port) {
+            let serverUrl = url.format({
+              protocol: 'http',
+              hostname: net.getLoopbackAddress(),
+              port: port + '',
+              pathname: '/hub'
+            });
+            let ready = httpUtil.waitForServer(serverUrl, 45 * 1000);
+            return ready.then(() => serverUrl);
           });
 
-          return httpUtil.waitForServer(serverUrl, 45 * 1000).then(function() {
-            return serverUrl;
-          });
-        });
+      onQuit = function() {
+        return command.then(command => {
+          command.kill();
+          return command.result();
+        }).thenFinally(() => preparedProfile.then(io.rmDir));
+      };
+    }
 
-    var executor = executors.createExecutor(serverUrl);
-    var driver = webdriver.WebDriver.createSession(executor, caps, opt_flow);
+    let executor = executors.createExecutor(serverUrl);
+    let driver = webdriver.WebDriver.createSession(executor, caps, opt_flow);
+    super(driver.getSession(), executor, driver.controlFlow());
 
-    super(driver.getSession(), executor, opt_flow);
-    self = this;
+    let boundQuit = this.quit.bind(this);
 
-    /** @private {?string} */
-    this.profilePath_ = null;
-
-    /** @private */
-    this.command_ = command;
+    /** @override */
+    this.quit = function() {
+      return boundQuit().thenFinally(onQuit);
+    };
   }
 
   /**
@@ -286,27 +399,6 @@ class Driver extends webdriver.WebDriver {
    * @override
    */
   setFileDetector() {
-  }
-
-  /** @override */
-  quit() {
-    // TODO: use super.quit when closure compiler knows how to transpile it.
-    // let superQuit = super.quit;
-    return this.call(function() {
-      let self = this;
-      return webdriver.WebDriver.prototype.quit.call(this)
-          .thenFinally(function() {
-            return self.command_.then(function(command) {
-              command.kill();
-              return command.result();
-            });
-          })
-          .thenFinally(function() {
-            if (self.profilePath_) {
-              return io.rmDir(self.profilePath_);
-            }
-          });
-    }, this);
   }
 }
 
