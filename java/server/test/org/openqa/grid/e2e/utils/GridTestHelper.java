@@ -92,9 +92,9 @@ public class GridTestHelper {
     return hub;
   }
 
-  public static void getRemoteWebDriver(DesiredCapabilities caps, Hub hub)
+  public static RemoteWebDriver getRemoteWebDriver(DesiredCapabilities caps, Hub hub)
       throws MalformedURLException {
-    new RemoteWebDriver(getGridDriver(hub), caps);
+    return new RemoteWebDriver(getGridDriver(hub), caps);
   }
 
   public static URL getGridDriver(Hub hub) throws MalformedURLException {
