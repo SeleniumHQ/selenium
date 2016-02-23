@@ -75,8 +75,20 @@ int ElementFinder::FindElement(const IECommandExecutor& executor,
       Json::Value atom_value = atom_result["value"];
       status_code = atom_status_code;
       *found_element = atom_result["value"];
-    } else {
-      *found_element = "A JavaScript error was encountered executing the findElement atom.";
+    }
+    else {
+      // Hitting a JavaScript error with the atom is an unrecoverable
+      // error. The most common case of this for IE is when there is a
+      // page refresh, navigation, or similar, and the driver is polling
+      // for element presence. The calling code can't do anything about
+      // it, so we might as well just log and return the "no such element"
+      // error code. In the common case, this means that the error will be
+      // transitory, and will sort itself out once the DOM returns to normal
+      // after the page transition is completed. Note carefully that this
+      // is an extreme hack, and has the potential to be papering over a
+      // very serious problem in the driver.
+      status_code = ENOSUCHELEMENT;
+      LOG(WARN) << "A JavaScript error was encountered executing the findElement atom.";
     }
   } else {
     LOG(WARN) << "Unable to get browser";
@@ -132,7 +144,15 @@ int ElementFinder::FindElements(const IECommandExecutor& executor,
       status_code = atom_status_code;
       *found_elements = atom_result["value"];
     } else {
-      *found_elements = "A JavaScript error was encountered executing the findElements atom.";
+      // Hitting a JavaScript error with the atom is an unrecoverable
+      // error. The most common case of this for IE is when there is a
+      // page refresh, navigation, or similar, and the driver is polling
+      // for element presence. The calling code can't do anything about
+      // it, so we might as well just log and return In the common case,
+      // this means that the error will be transitory, and will sort
+      // itself out once the DOM returns to normal after the page transition
+      // is completed.
+      LOG(WARN) << "A JavaScript error was encountered executing the findElements atom.";
     }
   } else {
     LOG(WARN) << "Unable to get browser";
