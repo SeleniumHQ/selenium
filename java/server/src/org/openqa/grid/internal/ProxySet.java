@@ -70,12 +70,16 @@ public class ProxySet implements Iterable<RemoteProxy> {
 
   /**
    * Removes the specified instance from the proxySet
-   * @param proxy The proxy to remove, must be present in this set
+   * 
+   * @param proxy
+   *          The proxy to remove, must be present in this set
    * @return The instance that was removed. Not null.
    */
   public RemoteProxy remove(RemoteProxy proxy) {
-    // Find the original proxy. While the supplied one is logically equivalent, it may be a fresh object with
-    // an empty TestSlot list, which doesn't figure into the proxy equivalence check.  Since we want to free up
+    // Find the original proxy. While the supplied one is logically equivalent,
+    // it may be a fresh object with
+    // an empty TestSlot list, which doesn't figure into the proxy equivalence
+    // check. Since we want to free up
     // those test sessions, we need to operate on that original object.
     for (RemoteProxy p : proxies) {
       if (p.equals(proxy)) {
@@ -118,28 +122,27 @@ public class ProxySet implements Iterable<RemoteProxy> {
     return null;
   }
 
-
   public boolean isEmpty() {
     return proxies.isEmpty();
   }
 
-  public TestSession getNewSession(Map<String, Object> desiredCapabilities) {   
-    // sorting is not working, use a linked list to always put the last used node at the end
+  public TestSession getNewSession(Map<String, Object> desiredCapabilities) {
+    // sorting is not working, use a linked list to always put the last used
+    // node at the end
     log.info("Available nodes: " + nextProxyToUse);
 
-    for (RemoteProxy proxy : nextProxyToUse) {
-      TestSession session = proxy.getNewSession(desiredCapabilities);
-      if (session != null) {
-        synchronized(nextProxyToUse) {
+    synchronized (nextProxyToUse) {
+      for (RemoteProxy proxy : nextProxyToUse) {
+        TestSession session = proxy.getNewSession(desiredCapabilities);
+        if (session != null) {
           nextProxyToUse.remove(proxy);
           nextProxyToUse.add(proxy);
-//          nextProxyToUse.add(nextProxyToUse.size(), proxy);
+          return session;
         }
-        return session;
       }
     }
     return null;
-}
+  }
 
   public Iterator<RemoteProxy> iterator() {
     return proxies.iterator();
@@ -152,8 +155,7 @@ public class ProxySet implements Iterable<RemoteProxy> {
   public void verifyAbilityToHandleDesiredCapabilities(Map<String, Object> desiredCapabilities) {
     if (proxies.isEmpty()) {
       if (throwOnCapabilityNotPresent) {
-        throw new GridException("Empty pool of VM for setup "
-                                + new DesiredCapabilities(desiredCapabilities));
+        throw new GridException("Empty pool of VM for setup " + new DesiredCapabilities(desiredCapabilities));
       } else {
         log.warning("Empty pool of nodes.");
       }
@@ -163,8 +165,7 @@ public class ProxySet implements Iterable<RemoteProxy> {
       if (throwOnCapabilityNotPresent) {
         throw new CapabilityNotPresentOnTheGridException(desiredCapabilities);
       } else {
-        log.warning("grid doesn't contain " + new DesiredCapabilities(desiredCapabilities) +
-                    " at the moment.");
+        log.warning("grid doesn't contain " + new DesiredCapabilities(desiredCapabilities) + " at the moment.");
       }
 
     }
