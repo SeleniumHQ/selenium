@@ -319,18 +319,15 @@ class WebElement(object):
             local_file = self.parent.file_detector.is_local_file(*value)
             if local_file is not None:
                 value = self._upload(local_file)
-
         typing = []
         for val in value:
             if isinstance(val, Keys):
                 typing.append(val)
-            elif isinstance(val, Number):
-                val = val.__str__()
-                for i in range(len(val)):
-                    typing.append(val[i])
             else:
-                for i in range(len(val)):
-                    typing.append(val[i])
+                if isinstance(val, Number):
+                    val = val.__str__()
+                for i in val:
+                    typing.append(i)
         self._execute(Command.SEND_KEYS_TO_ELEMENT, {'value': typing})
 
     # RenderedWebElement Items
