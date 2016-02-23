@@ -84,7 +84,9 @@ public class ProxySet implements Iterable<RemoteProxy> {
     for (RemoteProxy p : proxies) {
       if (p.equals(proxy)) {
         proxies.remove(p);
-        nextProxyToUse.remove(p);
+        synchronized (nextProxyToUse) {
+          nextProxyToUse.remove(p);
+        }
         return p;
       }
     }
@@ -93,7 +95,9 @@ public class ProxySet implements Iterable<RemoteProxy> {
 
   public void add(RemoteProxy proxy) {
     proxies.add(proxy);
-    nextProxyToUse.add(proxy);
+    synchronized (nextProxyToUse) {
+      nextProxyToUse.add(proxy);
+    }
   }
 
   public boolean contains(RemoteProxy o) {
