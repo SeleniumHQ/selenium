@@ -275,10 +275,6 @@ class ActionChains(object):
             element.send_keys(*keys_to_send))
         return self
 
-    def _keys_to_typing(self, value):
-        """DEPRECATED: Wrapper here just in case someone has been using this."""
-        return keys_to_typing(value)
-
     # Context manager so ActionChains can be used in a 'with .. as' statements.
     def __enter__(self):
         return self # Return created instance of self.
