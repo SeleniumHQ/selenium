@@ -26,7 +26,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     StandardSeleniumTests.class,
-    HtmlUnitSpecificTests.class
 })
 public class JavascriptEnabledHtmlUnitDriverTests {
 

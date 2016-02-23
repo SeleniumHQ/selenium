@@ -1,15 +1,3 @@
-java_library(name = 'htmlunit-specific-tests',
-  srcs = glob(['*Test.java']) + ['HtmlUnitSpecificTests.java',],
-  deps = [
-    '//java/client/src/org/openqa/selenium/remote:capabilities',
-    '//java/client/src/org/openqa/selenium:webdriver-api',
-    '//java/client/test/org/openqa/selenium/testing:test-base',
-    '//third_party/java/htmlunit:htmlunit',
-    '//third_party/java/hamcrest:hamcrest',
-    '//third_party/java/junit:junit',
-  ],
-)
-
 java_test(name = 'htmlunit',
   srcs = [
     'JavascriptEnabledHtmlUnitDriverTests.java',
@@ -18,7 +6,6 @@ java_test(name = 'htmlunit',
     '-Dselenium.browser=htmlunit_js',
   ],
   deps = [
-    ':htmlunit-specific-tests',
     '//java/client/test/org/openqa/selenium:tests',
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//java/client/src/org/openqa/selenium:webdriver-api',
@@ -36,7 +23,6 @@ java_test(name = 'htmlunit-no-js',
     '-Dselenium.browser=htmlunit',
   ],
   deps = [
-    ':htmlunit-specific-tests',
     '//java/client/test/org/openqa/selenium:tests',
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//java/client/src/org/openqa/selenium:webdriver-api',
