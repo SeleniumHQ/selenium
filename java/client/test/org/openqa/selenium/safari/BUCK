@@ -13,7 +13,7 @@ java_test(name = 'safari',
 )
 
 java_library(name = 'tests',
-  srcs = glob(['*Test.java']) + ['SafariTestBase.java'],
+  srcs = glob(['*Test.java']),
   deps = [
     '//java/client/src/org/openqa/selenium:webdriver-api',
     '//java/client/src/org/openqa/selenium/remote:remote',

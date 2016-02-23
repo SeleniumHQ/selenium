@@ -1,3 +1,11 @@
+prebuilt_jar(name = 'htmlunit-driver',
+  binary_jar = 'selenium-htmlunit-driver-2.52.0.jar',
+  deps = [
+    ':htmlunit',
+  ],
+  visibility = ['PUBLIC'],
+)
+
 prebuilt_jar(name = 'htmlunit',
   binary_jar = 'htmlunit-2.18.jar',
   source_jar = 'htmlunit-2.18-sources.jar',
@@ -13,13 +21,16 @@ prebuilt_jar(name = 'htmlunit',
     '//third_party/java/websocket:websocket-client',
     '//third_party/java/xml:xml',
   ],
-  visibility = ['PUBLIC'],
+  visibility = [
+    '//java/client/test/org/openqa/selenium/htmlunit:',
+    '//java/client/test/org/openqa/selenium/testing:test-base',
+  ],
 )
 
 prebuilt_jar(name = 'js-core',
   binary_jar = 'htmlunit-core-js-2.17.jar',
   source_jar = 'htmlunit-core-js-2.17-sources.jar',
   visibility = [
-    '//java/client/src/org/openqa/selenium/htmlunit:htmlunit',
+#    '//java/client/src/org/openqa/selenium/htmlunit:htmlunit',
   ],
 )

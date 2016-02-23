@@ -33,7 +33,6 @@ import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
@@ -216,9 +215,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   @Test
   public void testShouldBeAbleToGetTheLocationOfAnElement() {
     assumeTrue(driver instanceof JavascriptExecutor);
-    if (driver instanceof HtmlUnitDriver) {
-      assumeTrue(((HtmlUnitDriver) driver).isJavascriptEnabled());
-    }
+    assumeTrue(((HasCapabilities) driver).getCapabilities().isJavascriptEnabled());
 
     driver.get(pages.javascriptPage);
 
