@@ -191,4 +191,9 @@ public interface RemoteProxy extends Comparable<RemoteProxy> {
    * @return the percentage of the available resource used. Can be greater than 100 if the grid is under heavy load.
    */
   float getResourceUsageInPercent();
+
+  /**
+   * @return the time the latest session was started on a TestSlot, -1 if no sessions were started.
+   */
+  long getLastSessionStart();
 }

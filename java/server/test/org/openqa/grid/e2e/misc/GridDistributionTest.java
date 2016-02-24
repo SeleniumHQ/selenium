@@ -35,7 +35,9 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.server.SeleniumServer;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class GridDistributionTest {
 
@@ -114,8 +116,70 @@ public class GridDistributionTest {
     }
   }
 
-  @AfterClass
-  public static void stop() throws Exception {
+  @Test
+  public void testLeastRecentlyUsedNodesPickedFirst() throws Throwable {
+    ProxySet ps = hub.getRegistry().getAllProxies();
+
+    for (int i=0; i < 4; i++) {
+      drivers.add(GridTestHelper.getRemoteWebDriver(DesiredCapabilities.chrome(), hub));
+    }
+
+    Set<String> chosenNodes = new HashSet<>();
+
+    for (RemoteProxy p : ps) {
+      for (TestSlot ts : p.getTestSlots()) {
+        if (ts.getSession() != null) {
+          chosenNodes.add(p.getRemoteHost().toString());
+          break;
+        }
+      }
+    }
+
+    stopDrivers(drivers);
+
+    for (int i=0; i < 4; i++) {
+      drivers.add(GridTestHelper.getRemoteWebDriver(DesiredCapabilities.chrome(), hub));
+    }
+
+    for (RemoteProxy p : ps) {
+      for (TestSlot ts : p.getTestSlots()) {
+        if (ts.getSession() != null) {
+          Assert.assertFalse("Should not be immediately reused: " + p.getRemoteHost().toString() + " previously used nodes: " + chosenNodes,
+                             chosenNodes.contains(p.getRemoteHost().toString()));
+          break;
+        }
+      }
+    }
+
+    chosenNodes.clear();
+
+    for (RemoteProxy p : ps) {
+      for (TestSlot ts : p.getTestSlots()) {
+        if (ts.getSession() != null) {
+          chosenNodes.add(p.getRemoteHost().toString());
+          break;
+        }
+      }
+    }
+
+    stopDrivers(drivers);
+
+    for (int i=0; i < 4; i++) {
+      drivers.add(GridTestHelper.getRemoteWebDriver(DesiredCapabilities.chrome(), hub));
+    }
+
+    for (RemoteProxy p : ps) {
+      for (TestSlot ts : p.getTestSlots()) {
+        if (ts.getSession() != null) {
+          Assert.assertFalse("Should not be immediately reused: " + p.getRemoteHost().toString() + " previously used nodes: " + chosenNodes,
+                             chosenNodes.contains(p.getRemoteHost().toString()));
+          break;
+        }
+      }
+    }
+  }
+
+  private static void stopDrivers(List<WebDriver> drivers) {
     for (WebDriver driver : drivers) {
       try {
         driver.quit();
@@ -123,6 +187,12 @@ public class GridDistributionTest {
         System.out.println(e.toString());
       }
     }
+    drivers.clear();
+  }
+
+  @AfterClass
+  public static void stop() throws Exception {
+    stopDrivers(drivers);
     hub.stop();
   }
 }

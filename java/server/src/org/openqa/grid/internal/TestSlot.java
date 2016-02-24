@@ -23,6 +23,7 @@ import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
+import org.openqa.selenium.remote.server.SystemClock;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -61,6 +62,7 @@ public class TestSlot {
   private volatile TestSession currentSession;
   volatile boolean beingReleased = false;
   private boolean showWarning = false;
+  private long lastSessionStart = -1;
 
 
   public TestSlot(RemoteProxy proxy, SeleniumProtocol protocol, String path,
@@ -110,6 +112,7 @@ public class TestSlot {
           log.info("Trying to create a new session on test slot " + this.capabilities);
           TestSession session = new TestSession(this, desiredCapabilities, new DefaultTimeSource());
           currentSession = session;
+          lastSessionStart = System.currentTimeMillis();
           return session;
         } else {
           return null;
@@ -246,5 +249,12 @@ public class TestSlot {
     } catch (MalformedURLException e) {
       throw new GridException("Configuration error for the node." + u + " isn't a valid URL");
     }
+  }
+
+  /**
+   * @return System.currentTimeMillis() of when the session was started, otherwise -1
+   */
+  public long getLastSessionStart() {
+    return lastSessionStart;
   }
 }

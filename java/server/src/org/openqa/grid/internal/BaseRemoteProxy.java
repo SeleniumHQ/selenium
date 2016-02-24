@@ -563,4 +563,12 @@ public class BaseRemoteProxy implements RemoteProxy {
   public float getResourceUsageInPercent() {
     return 100 * (float)getTotalUsed() / (float)getMaxNumberOfConcurrentTestSessions();
   }
+
+  public long getLastSessionStart() {
+    long last = -1;
+    for (TestSlot slot : testSlots) {
+      last = Math.max(last, slot.getLastSessionStart());
+    }
+    return last;
+  }
 }
