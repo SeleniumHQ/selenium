@@ -281,7 +281,7 @@ module Selenium
       #
 
       def to_json(*args)
-        WebDriver.json_dump as_json
+        JSON.generate as_json
       end
 
       #

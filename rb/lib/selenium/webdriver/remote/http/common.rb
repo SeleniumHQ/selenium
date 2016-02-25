@@ -43,7 +43,7 @@ module Selenium
             headers['Cache-Control'] = "no-cache" if verb == :get
 
             if command_hash
-              payload                   = WebDriver.json_dump(command_hash)
+              payload                   = JSON.generate(command_hash)
               headers["Content-Type"]   = "#{CONTENT_TYPE}; charset=utf-8"
               headers["Content-Length"] = payload.bytesize.to_s if [:post, :put].include?(verb)
 
@@ -75,7 +75,7 @@ module Selenium
 
             if content_type.include? CONTENT_TYPE
               raise Error::WebDriverError, "empty body: #{content_type.inspect} (#{code})\n#{body}" if body.empty?
-              Response.new(code, WebDriver.json_load(body))
+              Response.new(code, JSON.parse(body))
             elsif code == 204
               Response.new(code)
             else

@@ -1,3 +1,9 @@
+2.53.0 (Unreleased)
+===================
+
+Ruby:
+  * Removed dependency on "multi_json" (issue 1632)
+
 2.52.0 (2016-02-12)
 ===================
 

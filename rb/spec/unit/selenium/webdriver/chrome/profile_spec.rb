@@ -63,7 +63,7 @@ module Selenium
 
           model_profile.layout_on_disk
 
-          result = WebDriver.json_load(mock_io.string)
+          result = JSON.parse(mock_io.string)
 
           expect(result['autofill']['enabled']).to eq(false)
           expect(result['some']['other']['pref']).to eq(123)

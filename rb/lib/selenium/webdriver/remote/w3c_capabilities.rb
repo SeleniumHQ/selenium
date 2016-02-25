@@ -199,7 +199,7 @@ module Selenium
         end
 
         def to_json(*args)
-          WebDriver.json_dump as_json
+          JSON.generate as_json
         end
 
         def ==(other)

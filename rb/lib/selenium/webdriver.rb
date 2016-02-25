@@ -21,14 +21,12 @@ require 'childprocess'
 require 'tmpdir'
 require 'fileutils'
 require 'date'
+require 'json'
 
-require 'multi_json'
 require 'selenium/webdriver/common'
 
 module Selenium
   module WebDriver
-    extend JsonHelper
-
     Point     = Struct.new(:x, :y)
     Dimension = Struct.new(:width, :height)
     Location  = Struct.new(:latitude, :longitude, :altitude)

@@ -44,7 +44,7 @@ module Selenium
         end
 
         def send(command)
-          json = WebDriver.json_dump(command)
+          json = JSON.generate(command)
           puts ">>> #{json}" if $DEBUG
 
           frame = WebSocket::Frame::Outgoing::Server.new(:version => @version, :data => json, :type => :text)
@@ -76,7 +76,7 @@ module Selenium
 
           puts "<<< #{msg}" if $DEBUG
 
-          WebDriver.json_load msg.to_s
+          JSON.parse msg.to_s
         end
 
         def ws_uri

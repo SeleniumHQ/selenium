@@ -29,7 +29,7 @@ module Selenium
         end
 
         it "raises WebDriverError if uploading non-files" do
-          request_body = WebDriver.json_dump(:sessionId => '11123', :value => {})
+          request_body = JSON.generate(:sessionId => '11123', :value => {})
           headers = {'Content-Type' => 'application/json'}
           stub_request(:post, "http://127.0.0.1:4444/wd/hub/session").to_return(
             :status => 200, :body => request_body, :headers => headers)
