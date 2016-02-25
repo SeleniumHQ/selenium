@@ -75,6 +75,7 @@
     <Compile Include="Events\WebDriverNavigationEventArgs.cs" />
     <Compile Include="Events\WebDriverScriptEventArgs.cs" />
     <Compile Include="Events\WebElementEventArgs.cs" />
+    <Compile Include="Events\WebElementValueEventArgs.cs" />
     <Compile Include="Extensions\WebDriverExtensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="PageObjects\ByAll.cs" />

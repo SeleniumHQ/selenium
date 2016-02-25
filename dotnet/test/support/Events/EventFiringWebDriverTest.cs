@@ -80,6 +80,29 @@ Clicked
         }
 
         [Test]
+        public void ShouldFireValueChangedEvent()
+        {
+            Expect.Once.On(mockDriver).Method("FindElement").With(By.Name("foo")).Will(Return.Value(mockElement));
+            Expect.Once.On(mockElement).Method("Clear");
+            Expect.Once.On(mockElement).Method("SendKeys").With("Dummy Text");
+
+            EventFiringWebDriver firingDriver = new EventFiringWebDriver(mockDriver);
+            firingDriver.ElementValueChanging += (sender, e) => log.AppendFormat("ValueChanging '{0}'", e.Value).AppendLine();
+            firingDriver.ElementValueChanged += (sender, e) => log.AppendFormat("ValueChanged '{0}'", e.Value).AppendLine();
+
+            var element = firingDriver.FindElement(By.Name("foo"));
+            element.Clear();
+            element.SendKeys("Dummy Text");
+
+            string expectedLog = @"ValueChanging ''
+ValueChanged ''
+ValueChanging 'Dummy Text'
+ValueChanged 'Dummy Text'
+";
+            Assert.AreEqual(expectedLog, log.ToString());
+        }
+
+        [Test]
         public void ShouldFireFindByEvent()
         {
             IList<IWebElement> driverElements = new List<IWebElement>();
