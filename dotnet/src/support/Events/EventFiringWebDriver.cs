@@ -84,12 +84,12 @@ namespace OpenQA.Selenium.Support.Events
         /// <summary>
         /// Fires before the driver changes the value of an element via Clear(), SendKeys() or Toggle().
         /// </summary>
-        public event EventHandler<WebElementEventArgs> ElementValueChanging;
+        public event EventHandler<WebElementValueEventArgs> ElementValueChanging;
 
         /// <summary>
         /// Fires after the driver has changed the value of an element via Clear(), SendKeys() or Toggle().
         /// </summary>
-        public event EventHandler<WebElementEventArgs> ElementValueChanged;
+        public event EventHandler<WebElementValueEventArgs> ElementValueChanged;
 
         /// <summary>
         /// Fires before the driver starts to find an element.
@@ -621,7 +621,17 @@ namespace OpenQA.Selenium.Support.Events
         /// Raises the <see cref="ElementValueChanging"/> event.
         /// </summary>
         /// <param name="e">A <see cref="WebElementEventArgs"/> that contains the event data.</param>
+        [Obsolete("Use the new overload that takes a WebElementValueEventArgs argument")]
         protected virtual void OnElementValueChanging(WebElementEventArgs e)
+        {
+            this.OnElementValueChanging(new WebElementValueEventArgs(e.Driver, e.Element, null));
+        }
+
+        /// <summary>
+        /// Raises the <see cref="ElementValueChanging"/> event.
+        /// </summary>
+        /// <param name="e">A <see cref="WebElementValueEventArgs"/> that contains the event data.</param>
+        protected virtual void OnElementValueChanging(WebElementValueEventArgs e)
         {
             if (this.ElementValueChanging != null)
             {
@@ -633,7 +643,17 @@ namespace OpenQA.Selenium.Support.Events
         /// Raises the <see cref="ElementValueChanged"/> event.
         /// </summary>
         /// <param name="e">A <see cref="WebElementEventArgs"/> that contains the event data.</param>
+        [Obsolete("Use the new overload that takes a WebElementValueEventArgs argument")]
         protected virtual void OnElementValueChanged(WebElementEventArgs e)
+        {
+            this.OnElementValueChanged(e);
+        }
+
+        /// <summary>
+        /// Raises the <see cref="ElementValueChanged"/> event.
+        /// </summary>
+        /// <param name="e">A <see cref="WebElementValueEventArgs"/> that contains the event data.</param>
+        protected virtual void OnElementValueChanged(WebElementValueEventArgs e)
         {
             if (this.ElementValueChanged != null)
             {
@@ -1337,7 +1357,7 @@ namespace OpenQA.Selenium.Support.Events
             {
                 try
                 {
-                    WebElementEventArgs e = new WebElementEventArgs(this.parentDriver.WrappedDriver, this.underlyingElement);
+                    WebElementValueEventArgs e = new WebElementValueEventArgs(this.parentDriver.WrappedDriver, this.underlyingElement, null);
                     this.parentDriver.OnElementValueChanging(e);
                     this.underlyingElement.Clear();
                     this.parentDriver.OnElementValueChanged(e);
@@ -1357,7 +1377,7 @@ namespace OpenQA.Selenium.Support.Events
             {
                 try
                 {
-                    WebElementEventArgs e = new WebElementEventArgs(this.parentDriver.WrappedDriver, this.underlyingElement);
+                    WebElementValueEventArgs e = new WebElementValueEventArgs(this.parentDriver.WrappedDriver, this.underlyingElement, text);
                     this.parentDriver.OnElementValueChanging(e);
                     this.underlyingElement.SendKeys(text);
                     this.parentDriver.OnElementValueChanged(e);
