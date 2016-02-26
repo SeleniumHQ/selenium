@@ -21,11 +21,11 @@
 
 'use strict';
 
-const error = require('../error');
 const actions = require('./actions');
 const by = require('./by');
 const Capabilities = require('./capabilities').Capabilities;
 const command = require('./command');
+const error = require('./error');
 const input = require('./input');
 const logging = require('./logging');
 const Session = require('./session').Session;

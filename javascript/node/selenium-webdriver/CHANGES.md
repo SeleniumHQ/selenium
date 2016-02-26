@@ -17,6 +17,8 @@
 * Added support for W3C-spec compliant servers.
 * For consistent naming, deprecating `error.InvalidSessionIdError` in favor of
     `error.NoSuchSessionError`.
+* Moved the `error` module to `lib/error` so all core modules are co-located.
+   The top-level `error` module will be removed in v3.0.
 
 ### Changes for W3C WebDriver Spec Compliance
 

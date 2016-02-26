@@ -25,8 +25,8 @@
 const http = require('http');
 const url = require('url');
 
-const error = require('../error');
 const cmd = require('../lib/command');
+const error = require('../lib/error');
 const logging = require('../lib/logging');
 const promise = require('../lib/promise');
 const Session = require('../lib/session').Session;

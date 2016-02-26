@@ -23,11 +23,11 @@
 'use strict';
 
 const builder = require('./builder');
-const error = require('./error');
 const actions = require('./lib/actions');
 const by = require('./lib/by');
 const capabilities = require('./lib/capabilities');
 const command = require('./lib/command');
+const error = require('./lib/error');
 const events = require('./lib/events');
 const input = require('./lib/input');
 const logging = require('./lib/logging');

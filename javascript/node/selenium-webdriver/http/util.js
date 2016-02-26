@@ -24,9 +24,9 @@
 const Executor = require('./index').Executor,
     HttpClient = require('./index').HttpClient,
     HttpRequest = require('./index').Request,
-    error = require('../error'),
     Command = require('../lib/command').Command,
     CommandName = require('../lib/command').Name,
+    error = require('../lib/error'),
     promise = require('../lib/promise');
 
 

@@ -18,8 +18,8 @@
 'use strict';
 
 const command = require('./command');
+const error = require('./error');
 const input = require('./input');
-const error = require('../error');
 
 
 /**

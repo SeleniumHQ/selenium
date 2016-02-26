@@ -19,7 +19,7 @@
 
 describe('error', function() {
   let assert = require('assert');
-  let error = require('../error');
+  let error = require('../../lib/error');
 
   describe('checkResponse', function() {
     it('defaults to WebDriverError if type is unrecognized', function() {

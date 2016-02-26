@@ -43,7 +43,7 @@
 
 const by = require('./by');
 const By = require('./by').By;
-const error = require('../error');
+const error = require('./error');
 
 
 /**
