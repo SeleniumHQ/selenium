@@ -1,3 +1,20 @@
+/**
+ * @license
+ * Copyright 2014 Software Freedom Conservancy
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -38,7 +55,8 @@ goog.require('goog.array');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Vec2');
 goog.require('goog.style');
-
+goog.require('goog.userAgent');
+goog.require('goog.userAgent.product');
 
 /**
  * Throws an exception if an element is not shown to the user, ignoring its
@@ -75,27 +93,41 @@ bot.action.checkInteractable_ = function(element) {
 
 
 /**
- * Clears the given {@code element} if it is a editable text field.
+ * Clears the given {@code element} if it is a editable or selectable field.
  *
  * @param {!Element} element The element to clear.
- * @throws {bot.Error} If the element is not an editable text field.
+ * @throws {bot.Error} If the element is not an editable or selectable field.
  */
 bot.action.clear = function(element) {
   bot.action.checkInteractable_(element);
   if (!bot.dom.isEditable(element)) {
-    throw new bot.Error(bot.ErrorCode.INVALID_ELEMENT_STATE,
-        'Element must be user-editable in order to clear it.');
+    if (!bot.dom.isSelectable(element)) {
+      throw new bot.Error(bot.ErrorCode.INVALID_ELEMENT_STATE,
+          'Element must be user-editable in order to clear it.');
+    }
   }
 
   bot.action.LegacyDevice_.focusOnElement(element);
+  if (bot.dom.isSelectable(element)) {
+    // If radio or checkbox is checked, then set the checkedness to false.
+    // https://w3c.github.io/webdriver/webdriver-spec.html#element-clear
+    if (bot.dom.isSelected(element)) {
+      element.checked = false;
+      bot.events.fire(element, bot.events.EventType.CHANGE);
+    }
+  }
+
   if (element.value) {
     element.value = '';
     bot.events.fire(element, bot.events.EventType.CHANGE);
-  } else if (bot.dom.isElement(element, goog.dom.TagName.INPUT) &&
-             (element.getAttribute('type') && element.getAttribute('type').toLowerCase() == "number")) {
-    // number input fields that have invalid inputs
-    // report their value as empty string with no way to tell if there is a
-    // current value or not
+  } else if (bot.dom.isEditable(element) && !bot.dom.isTextual(element)) {
+    // Number input (non-textual) type having invalid input return value as
+    // empty string in both Chrome as well as in Firefox with no way to tell if
+    // there is a current value or not and other editable input (non-textual)
+    // types such as date, month, week when have invalid inputs return their
+    // value as empty string in Chrome & non empty string in Firefox. Such
+    // discrepancy is observed because Firefox does not support these types.
+    // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Browser_compatibility
     element.value = '';
   }
 
@@ -132,9 +164,9 @@ bot.action.focusOnElement = function(element) {
  *
  * @param {!Element} element The element receiving the event.
  * @param {(string|!bot.Keyboard.Key|!Array.<(string|!bot.Keyboard.Key)>)}
- *    values Value or values to type on the element.
+ *     values Value or values to type on the element.
  * @param {bot.Keyboard=} opt_keyboard Keyboard to use; if not provided,
- *    constructs one.
+ *     constructs one.
  * @param {boolean=} opt_persistModifiers Whether modifier keys should remain
  *     pressed when this function ends.
  * @throws {bot.Error} If the element cannot be interacted with.
@@ -184,7 +216,7 @@ bot.action.type = function(
   // chrome implements this, but desktop Safari doesn't, what's webkit again?
   if ((!(goog.userAgent.product.SAFARI && !goog.userAgent.MOBILE)) &&
       goog.userAgent.WEBKIT && element.type == 'date') {
-    var val = goog.isArray(values)? values = values.join("") : values;
+    var val = goog.isArray(values) ? values = values.join('') : values;
     var datePattern = /\d{4}-\d{2}-\d{2}/;
     if (val.match(datePattern)) {
       // The following events get fired on iOS first
@@ -241,7 +273,7 @@ bot.action.submit = function(element) {
  *
  * @param {!Element} element The element to click.
  * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
- *   element.
+ *     element.
  * @param {bot.Mouse=} opt_mouse Mouse to use; if not provided, constructs one.
  * @throws {bot.Error} If the element cannot be interacted with.
  */
@@ -257,10 +289,10 @@ bot.action.moveMouse = function(element, opt_coords, opt_mouse) {
  *
  * @param {!Element} element The element to click.
  * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
- *   element.
+ *     element.
  * @param {bot.Mouse=} opt_mouse Mouse to use; if not provided, constructs one.
- * @param {boolean=} opt_force Whether the release event should be fired even if the
- *     element is not interactable.
+ * @param {boolean=} opt_force Whether the release event should be fired even
+ *     if the element is not interactable.
  * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.click = function(element, opt_coords, opt_mouse, opt_force) {
@@ -277,7 +309,7 @@ bot.action.click = function(element, opt_coords, opt_mouse, opt_force) {
  *
  * @param {!Element} element The element to click.
  * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
- *   element.
+ *     element.
  * @param {bot.Mouse=} opt_mouse Mouse to use; if not provided, constructs one.
  * @throws {bot.Error} If the element cannot be interacted with.
  */
@@ -295,7 +327,7 @@ bot.action.rightClick = function(element, opt_coords, opt_mouse) {
  *
  * @param {!Element} element The element to click.
  * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
- *   element.
+ *     element.
  * @param {bot.Mouse=} opt_mouse Mouse to use; if not provided, constructs one.
  * @throws {bot.Error} If the element cannot be interacted with.
  */
@@ -315,7 +347,7 @@ bot.action.doubleClick = function(element, opt_coords, opt_mouse) {
  *
  * @param {!Element} element The element to click.
  * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
- *   element.
+ *     element.
  * @param {bot.Mouse=} opt_mouse Mouse to use; if not provided, constructs one.
  * @throws {bot.Error} If the element cannot be interacted with.
  */
@@ -333,9 +365,9 @@ bot.action.doubleClick2 = function(element, opt_coords, opt_mouse) {
  *
  * @param {!Element} element The element to scroll the mouse wheel on.
  * @param {number} ticks Number of ticks to scroll the mouse wheel; a positive
- *   number scrolls down and a negative scrolls up.
+ *     number scrolls down and a negative scrolls up.
  * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
- *   element.
+ *     element.
  * @param {bot.Mouse=} opt_mouse Mouse to use; if not provided, constructs one.
  * @throws {bot.Error} If the element cannot be interacted with.
  */
@@ -356,7 +388,7 @@ bot.action.scrollMouse = function(element, ticks, opt_coords, opt_mouse) {
  * @param {number=} opt_steps The number of steps that should occur as part of
  *     the drag, default is 2.
  * @param {goog.math.Coordinate=} opt_coords Drag start position relative to the
- *   element.
+ *     element.
  * @param {bot.Mouse=} opt_mouse Mouse to use; if not provided, constructs one.
  * @throws {bot.Error} If the element cannot be interacted with.
  */
@@ -391,9 +423,9 @@ bot.action.drag = function(element, dx, dy, opt_steps, opt_coords, opt_mouse) {
  *
  * @param {!Element} element The element to tap.
  * @param {goog.math.Coordinate=} opt_coords Finger position relative to the
- *   target.
+ *     target.
  * @param {bot.Touchscreen=} opt_touchscreen Touchscreen to use; if not
- *    provided, constructs one.
+ *     provided, constructs one.
  * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.tap = function(element, opt_coords, opt_touchscreen) {
@@ -414,9 +446,9 @@ bot.action.tap = function(element, opt_coords, opt_touchscreen) {
  * @param {number=} opt_steps The number of steps that should occurs as part of
  *     the swipe, default is 2.
  * @param {goog.math.Coordinate=} opt_coords Swipe start position relative to
- *   the element.
+ *     the element.
  * @param {bot.Touchscreen=} opt_touchscreen Touchscreen to use; if not
- *    provided, constructs one.
+ *     provided, constructs one.
  * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.swipe = function(element, dx, dy, opt_steps, opt_coords,
@@ -456,9 +488,9 @@ bot.action.swipe = function(element, dx, dy, opt_steps, opt_coords,
  * @param {!Element} element The element to pinch.
  * @param {number} distance The distance by which to pinch the element.
  * @param {goog.math.Coordinate=} opt_coords Position relative to the element
- *   at the center of the pinch.
+ *     at the center of the pinch.
  * @param {bot.Touchscreen=} opt_touchscreen Touchscreen to use; if not
- *    provided, constructs one.
+ *     provided, constructs one.
  * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.pinch = function(element, distance, opt_coords, opt_touchscreen) {
@@ -494,9 +526,9 @@ bot.action.pinch = function(element, distance, opt_coords, opt_touchscreen) {
  * @param {!Element} element The element to rotate.
  * @param {number} angle The angle by which to rotate the element.
  * @param {goog.math.Coordinate=} opt_coords Position relative to the element
- *   at the center of the rotation.
+ *     at the center of the rotation.
  * @param {bot.Touchscreen=} opt_touchscreen Touchscreen to use; if not
- *    provided, constructs one.
+ *     provided, constructs one.
  * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.rotate = function(element, angle, opt_coords, opt_touchscreen) {
@@ -529,13 +561,13 @@ bot.action.rotate = function(element, angle, opt_coords, opt_touchscreen) {
  *
  * @param {!Element} element Element to interact with.
  * @param {function(goog.math.Vec2)} transformStart Function to transform the
- *   maximum offset vector to the starting offset vector.
+ *     maximum offset vector to the starting offset vector.
  * @param {function(goog.math.Vec2)} transformHalf Function to transform the
- *   offset vector halfway to its destination.
+ *     offset vector halfway to its destination.
  * @param {goog.math.Coordinate=} opt_coords Position relative to the element
- *   at the center of the pinch.
+ *     at the center of the pinch.
  * @param {bot.Touchscreen=} opt_touchscreen Touchscreen to use; if not
- *    provided, constructs one.
+ *     provided, constructs one.
  * @private
  */
 bot.action.multiTouchAction_ = function(element, transformStart, transformHalf,
