@@ -49,8 +49,10 @@ if (ENV['debug'] == 'true')
 end
 verbose($DEBUG)
 
+release_version = "2.53"
+
 def version
-  "2.52.0"
+  "#{release_version}.0"
 end
 ide_version = "2.8.0"
 
@@ -306,18 +308,6 @@ ie_generate_type_mapping(:name => "ie_result_type_java",
 
 
 GeckoSDKs.new do |sdks|
-  sdks.add 'third_party/gecko-24/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/24.0/sdk/xulrunner-24.0.en-US.linux-i686.sdk.tar.bz2',
-           '669ef73966d0401f77c0a429f194535c'
-
-  sdks.add 'third_party/gecko-24/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/24.0/sdk/xulrunner-24.0.en-US.linux-x86_64.sdk.tar.bz2',
-           '5d58e46da74c49cb50cd45edbcb86ccd'
-
-  sdks.add 'third_party/gecko-24/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/24.0/sdk/xulrunner-24.0.en-US.win32.sdk.zip',
-           '29d8fcf397038930a4220b7d60bb3cbf'
-
   sdks.add 'third_party/gecko-31/linux',
            'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/31.0/sdk/xulrunner-31.0.en-US.linux-i686.sdk.tar.bz2',
            'e20ce46e69ed36e20aa4faefe3022698'
@@ -329,31 +319,6 @@ GeckoSDKs.new do |sdks|
   sdks.add 'third_party/gecko-31/win32',
            'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/31.0/sdk/xulrunner-31.0.en-US.win32.sdk.zip',
            'e8d7d9bd67b957bb627de7d3269d240b'
-
-  sdks.add 'third_party/gecko-33/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/33.0/sdk/xulrunner-33.0.en-US.linux-i686.sdk.tar.bz2',
-           'c9b7dede14b9a86060cff0fdf5303c0c'
-
-  sdks.add 'third_party/gecko-33/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/33.0/sdk/xulrunner-33.0.en-US.linux-x86_64.sdk.tar.bz2',
-           'b7bd9617941c430ffc962f19673a4157'
-
-  sdks.add 'third_party/gecko-33/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/33.0/sdk/xulrunner-33.0.en-US.win32.sdk.zip',
-           'c03b4ec0596a8ea275c788616fbfaa6b'
-
-  sdks.add 'third_party/gecko-34/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/34.0/sdk/xulrunner-34.0.en-US.linux-i686.sdk.tar.bz2',
-           '41021581fb2a6e7c2a4dd4eb838ed67f'
-
-  sdks.add 'third_party/gecko-34/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/34.0/sdk/xulrunner-34.0.en-US.linux-x86_64.sdk.tar.bz2',
-           '75e3dde3f68ca6ca7c2f3ec50b51396b'
-
-  sdks.add 'third_party/gecko-34/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/34.0/sdk/xulrunner-34.0.en-US.win32.sdk.zip',
-           '7a613e5e9503e54205dd16de5c1e9aea'
-
 end
 
 task :'selenium-server_zip' do
@@ -628,19 +593,7 @@ task :push_release => [:release] do
     py = "python"
   end
 
-  print "Enter your googlecode username:"
-  googlecode_username = STDIN.gets.chomp
-  print "Enter your googlecode password (NOT your gmail password, the one you use for svn, available at https://code.google.com/hosting/settings):"
-  googlecode_password = STDIN.gets.chomp
-
-  [
-    {:file => "build/dist/selenium-server-standalone-#{version}.jar", :description => "Use this if you want to use the Selenium RC or Remote WebDriver or use Grid 2 without needing any additional dependencies"},
-    {:file => "build/dist/selenium-server-#{version}.zip", :description => "All variants of the Selenium Server: stand-alone, jar with dependencies and sources."},
-    {:file => "build/dist/selenium-java-#{version}.zip", :description => "The Java bindings for Selenium 2, including the WebDriver API clients. Download this if you want to use WebDriver API and the Selenium RC clients. Download this if you plan on just using the client-side pieces of Selenium"},
-  ].each do |file|
-    puts "Uploading file #{file[:file]}..."
-    sh "#{py} third_party/py/googlecode/googlecode_upload.py -s '#{file[:description]}' -p selenium #{file[:file]} -l Featured -u #{googlecode_username} -w #{googlecode_password}"
-  end
+  sh "#{py} third_party/py/googlestorage/publish_release.py --project_id google.com:webdriver --bucket selenium-release --acl public-read --publish_version #{release_version} --publish build/dist/selenium-server-standalone-#{version}.jar build/dist/selenium-server-#{version}.zip build/dist/selenium-java-#{version}.zip"
 end
 
 desc 'Build the selenium client jars'
