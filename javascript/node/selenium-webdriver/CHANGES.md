@@ -19,6 +19,8 @@
     `error.NoSuchSessionError`.
 * Moved the `error` module to `lib/error` so all core modules are co-located.
    The top-level `error` module will be removed in v3.0.
+* Moved `until.Condition` and `until.WebElementCondition` to the webdriver
+   module to break a circular dependency.
 
 ### Changes for W3C WebDriver Spec Compliance
 

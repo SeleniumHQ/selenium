@@ -44,65 +44,16 @@
 const by = require('./by');
 const By = require('./by').By;
 const error = require('./error');
+const webdriver = require('./webdriver'),
+    Condition = webdriver.Condition,
+    WebElementCondition = webdriver.WebElementCondition;
 
 
-/**
- * Defines a condition for use with WebDriver's
- * {@linkplain ./webdriver.WebDriver#wait wait command}.
- *
- * @template OUT
- */
-class Condition {
-  /**
-   * @param {string} message A descriptive error message. Should complete the
-   *     sentence "Waiting [...]"
-   * @param {function(!./webdriver.WebDriver): OUT} fn The condition function to
-   *     evaluate on each iteration of the wait loop.
-   */
-  constructor(message, fn) {
-    /** @private {string} */
-    this.description_ = 'Waiting ' + message;
-
-    /** @type {function(!./webdriver.WebDriver): OUT} */
-    this.fn = fn;
-  }
-
-  /** @return {string} A description of this condition. */
-  description() {
-    return this.description_;
-  }
-}
-
-/**
- * @typedef {!(./webdriver.WebElement|
- *             ./promise.Promise<!./webdriver.WebElement>)}
- */
-var ElementConditionResult;
-
-
-/**
- * Defines a condition that will result in a
- * {@link ./webdriver.WebElement WebElement}.
- *
- * @extends {Condition<ElementConditionResult>}
- */
-class WebElementCondition extends Condition {
-  /**
-   * @param {string} message A descriptive error message. Should complete the
-   *     sentence "Waiting [...]"
-   * @param {function(!./webdriver.WebDriver): ElementConditionResult} fn The
-   *     condition function to evaluate on each iteration of the wait loop.
-   */
-  constructor(message, fn) {
-    super(message, fn);
-  }
-}
-
-
-// PUBLIC API
-
-
+/** @deprecated Use {@link webdriver.Condition} instead. */
 exports.Condition = Condition;
+
+
+/** @deprecated Use {@link webdriver.WebElementCondition} instead. */
 exports.WebElementCondition = WebElementCondition;
 
 
@@ -127,9 +78,6 @@ exports.WebElementCondition = WebElementCondition;
  * @return {!Condition<boolean>} A new condition.
  */
 exports.ableToSwitchToFrame = function ableToSwitchToFrame(frame) {
-  // Not at top-level to avoid circular dependency.
-  const webdriver = require('./webdriver');
-
   var condition;
   if (typeof frame === 'number' || frame instanceof webdriver.WebElement) {
     condition = attemptToSwitchFrames;

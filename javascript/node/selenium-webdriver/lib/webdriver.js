@@ -31,8 +31,53 @@ const logging = require('./logging');
 const Session = require('./session').Session;
 const Symbols = require('./symbols');
 const promise = require('./promise');
-const until = require('./until');
 
+
+/**
+ * Defines a condition for use with WebDriver's {@linkplain WebDriver#wait wait
+ * command}.
+ *
+ * @template OUT
+ */
+class Condition {
+  /**
+   * @param {string} message A descriptive error message. Should complete the
+   *     sentence "Waiting [...]"
+   * @param {function(!WebDriver): OUT} fn The condition function to
+   *     evaluate on each iteration of the wait loop.
+   */
+  constructor(message, fn) {
+    /** @private {string} */
+    this.description_ = 'Waiting ' + message;
+
+    /** @type {function(!WebDriver): OUT} */
+    this.fn = fn;
+  }
+
+  /** @return {string} A description of this condition. */
+  description() {
+    return this.description_;
+  }
+}
+
+
+/**
+ * Defines a condition that will result in a {@link WebElement}.
+ *
+ * @extends {Condition<!(WebElement|promise.Promise<!WebElement>)>}
+ */
+class WebElementCondition extends Condition {
+  /**
+   * @param {string} message A descriptive error message. Should complete the
+   *     sentence "Waiting [...]"
+   * @param {function(!WebDriver): !(WebElement|promise.Promise<!WebElement>)}
+   *     fn The condition function to evaluate on each iteration of the wait
+   *     loop.
+   */
+  constructor(message, fn) {
+    super(message, fn);
+  }
+}
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -601,10 +646,10 @@ class WebDriver {
 
   /**
    * Schedules a command to wait for a condition to hold. The condition may be
-   * specified by a {@link until.Condition}, as a custom function, or as any
+   * specified by a {@link Condition}, as a custom function, or as any
    * promise-like thenable.
    *
-   * For a {@link until.Condition} or function, the wait will repeatedly
+   * For a {@link Condition} or function, the wait will repeatedly
    * evaluate the condition until it returns a truthy value. If any errors occur
    * while evaluating the condition, they will be allowed to propagate. In the
    * event a condition returns a {@link promise.Promise promise}, the polling
@@ -612,11 +657,11 @@ class WebDriver {
    * the condition has been satisified. Note the resolution time for a promise
    * is factored into whether a wait has timed out.
    *
-   * Note, if the provided condition is a {@link until.WebElementCondition}, then
+   * Note, if the provided condition is a {@link WebElementCondition}, then
    * the wait will return a {@link WebElementPromise} that will resolve to the
    * element that satisified the condition.
    *
-   * *Example:* waiting up to 10 seconds for an element to be present on the
+   * _Example:_ waiting up to 10 seconds for an element to be present on the
    * page.
    *
    *     var button = driver.wait(until.elementLocated(By.id('foo')), 10000);
@@ -628,7 +673,7 @@ class WebDriver {
    * to fail the command if the promise does not resolve before the timeout
    * expires.
    *
-   * *Example:* Suppose you have a function, `startTestServer`, that returns a
+   * _Example:_ Suppose you have a function, `startTestServer`, that returns a
    * promise for when a server is ready for requests. You can block a WebDriver
    * client on this promise with:
    *
@@ -637,7 +682,7 @@ class WebDriver {
    *     driver.get(getServerUrl());
    *
    * @param {!(promise.Promise<T>|
-   *           until.Condition<T>|
+   *           Condition<T>|
    *           function(!WebDriver): T)} condition The condition to
    *     wait on, defined as a promise, condition object, or  a function to
    *     evaluate as a condition.
@@ -647,7 +692,7 @@ class WebDriver {
    * @return {!(promise.Promise<T>|WebElementPromise)} A promise that will be
    *     resolved with the first truthy value returned by the condition
    *     function, or rejected if the condition times out. If the input
-   *     input condition is an instance of a {@link until.WebElementCondition},
+   *     input condition is an instance of a {@link WebElementCondition},
    *     the returned value will be a {@link WebElementPromise}.
    * @template T
    */
@@ -660,7 +705,7 @@ class WebDriver {
 
     var message = opt_message;
     var fn = /** @type {!Function} */(condition);
-    if (condition instanceof until.Condition) {
+    if (condition instanceof Condition) {
       message = message || condition.description();
       fn = condition.fn;
     }
@@ -673,7 +718,7 @@ class WebDriver {
       return fn(driver);
     }, opt_timeout, message);
 
-    if (condition instanceof until.WebElementCondition) {
+    if (condition instanceof WebElementCondition) {
       result = new WebElementPromise(this, result.then(function(value) {
         if (!(value instanceof WebElement)) {
           throw TypeError(
@@ -2341,6 +2386,7 @@ promise.Thenable.addImplementation(AlertPromise);
 
 exports.Alert = Alert;
 exports.AlertPromise = AlertPromise;
+exports.Condition = Condition;
 exports.Logs = Logs;
 exports.Navigation = Navigation;
 exports.Options = Options;
@@ -2350,5 +2396,6 @@ exports.Timeouts = Timeouts;
 exports.UnhandledAlertError = error.UnexpectedAlertOpenError;
 exports.WebDriver = WebDriver;
 exports.WebElement = WebElement;
+exports.WebElementCondition = WebElementCondition;
 exports.WebElementPromise = WebElementPromise;
 exports.Window = Window;
