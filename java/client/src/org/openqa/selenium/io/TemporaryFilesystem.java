@@ -145,6 +145,10 @@ public class TemporaryFilesystem {
   }
 
   public boolean deleteBaseDir() {
-    return baseDir.delete();
+    boolean wasDeleted = baseDir.delete();
+    if (wasDeleted) {
+      Runtime.getRuntime().removeShutdownHook(shutdownHook);
+    }
+    return wasDeleted;
   }
 }
