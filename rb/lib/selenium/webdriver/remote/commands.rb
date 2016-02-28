@@ -77,7 +77,8 @@ class Selenium::WebDriver::Remote::Bridge
   command :acceptAlert,                            :post,    "session/:session_id/accept_alert"
   command :getAlertText,                           :get,     "session/:session_id/alert_text"
   command :setAlertValue,                          :post,    "session/:session_id/alert_text"
-
+  command :setAuthentication                       :post,    "session/:session_id/alert/credentials"
+  
   #
   # target locator
   #
