@@ -331,4 +331,25 @@ describe "Selenium::WebDriver::TargetLocator" do
       end
     end
   end
+  
+  # basic auth alerts (PR /selenium/issues/1698)
+  compliant_on :browser => :ie do
+    describe "basic auth alerts" do
+
+      it "allows the user to send valid credentials to an alert" do
+        driver.navigate.to url_for("basicAuth")
+        driver.switch_to.alert.authenticate("test", "test")
+
+        expect(driver.find_element(tag_name: "h1").text).to eq("authorized")
+      end
+
+      it "raises an UnhandledAlertError if invalid credentials are used" do
+        driver.navigate.to url_for("basicAuth")
+        driver.switch_to.alert.authenticate("invalid", "invalid")
+      
+        error = Selenium::WebDriver::Error::UnhandledAlertError
+        expect{driver.find_element(tag_name: "h1").text}.to raise_error(error)
+      end  
+    end
+  end
 end

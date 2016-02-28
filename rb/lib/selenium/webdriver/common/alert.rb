@@ -43,6 +43,11 @@ module Selenium
       def text
         @bridge.getAlertText
       end
+      
+      def authenticate(username, password)
+        @bridge.setAuthentication username: username, password: password
+        accept
+      end
 
     end # Alert
   end # WebDriver
