@@ -146,7 +146,7 @@ public class TemporaryFilesystem {
 
   public boolean deleteBaseDir() {
     boolean wasDeleted = baseDir.delete();
-    if (wasDeleted) {
+    if (! baseDir.exists()) {
       Runtime.getRuntime().removeShutdownHook(shutdownHook);
     }
     return wasDeleted;
