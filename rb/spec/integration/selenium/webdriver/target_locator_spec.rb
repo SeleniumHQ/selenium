@@ -340,9 +340,16 @@ describe "Selenium::WebDriver::TargetLocator" do
         driver.navigate.to url_for("basicAuth")
         driver.switch_to.alert.authenticate("test", "test")
 
-        expect(driver.find_element(tag_name: "h1").text.to eq("authorized")
+        expect(driver.find_element(tag_name: "h1").text).to eq("authorized")
       end
+
+      it "raises an UnhandledAlertError if invalid credentials are used" do
+        driver.navigate.to url_for("basicAuth")
+        driver.switch_to.alert.authenticate("invalid", "invalid")
       
+        error = Selenium::WebDriver::Error::UnhandledAlertError
+        expect{driver.find_element(tag_name: "h1").text}.to raise_error(error)
+      end  
     end
   end
 end
