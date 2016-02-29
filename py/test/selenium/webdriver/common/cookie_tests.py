@@ -38,12 +38,16 @@ class CookieTest(unittest.TestCase):
         self.driver.delete_all_cookies()
 
     def testAddCookie(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs' and self.driver.capabilities['version'].startswith('2.1'):
+            pytest.xfail("phantomjs driver 2.1 broke adding cookies")
         self.driver.execute_script("return document.cookie")
         self.driver.add_cookie(self.COOKIE_A)
         cookie_returned = str(self.driver.execute_script("return document.cookie"))
         self.assertTrue(self.COOKIE_A["name"] in cookie_returned)
 
     def testAddingACookieThatExpiredInThePast(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs' and self.driver.capabilities['version'].startswith('2.1'):
+            pytest.xfail("phantomjs driver 2.1 broke adding cookies")
         if self.driver.name == 'internet explorer':
             pytest.skip("Issue needs investigating")
         cookie = self.COOKIE_A.copy()
@@ -54,11 +58,15 @@ class CookieTest(unittest.TestCase):
        
 
     def testDeleteAllCookie(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs' and self.driver.capabilities['version'].startswith('2.1'):
+            pytest.xfail("phantomjs driver 2.1 broke adding cookies")
         self.driver.add_cookie(utils.convert_cookie_to_json(self.COOKIE_A))
         self.driver.delete_all_cookies()
         self.assertFalse(self.driver.get_cookies())
 
     def testDeleteCookie(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs' and self.driver.capabilities['version'].startswith('2.1'):
+            pytest.xfail("phantomjs driver 2.1 broke adding cookies")
         self.driver.add_cookie(utils.convert_cookie_to_json(self.COOKIE_A))
         self.driver.delete_cookie("foo")
         self.assertFalse(self.driver.get_cookies())
@@ -71,6 +79,8 @@ class CookieTest(unittest.TestCase):
         self.assertEquals("set", cookie["value"])
 
     def testGetAllCookies(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs' and self.driver.capabilities['version'].startswith('2.1'):
+            pytest.xfail("phantomjs driver 2.1 broke adding cookies")
         key1 = "key_%d" % int(random.random()*10000000)
         key2 = "key_%d" % int(random.random()*10000000)
     
@@ -90,6 +100,8 @@ class CookieTest(unittest.TestCase):
         self.assertEquals(count + 2, len(cookies))
     
     def testShouldNotDeleteCookiesWithASimilarName(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs' and self.driver.capabilities['version'].startswith('2.1'):
+            pytest.xfail("phantomjs driver 2.1 broke adding cookies")
         cookieOneName = "fish"
         cookie1 = {"name" :cookieOneName,
                     "value":"cod"}
