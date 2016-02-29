@@ -91,6 +91,7 @@ module Selenium
       end
 
       compliant_on :browser => [:marionette, :edge] do
+        # Edge: Not Yet - https://dev.windows.com/en-us/microsoft-edge/platform/status/webdriver/details/
         not_compliant_on :browser => [:marionette, :edge] do
           it "can make window full screen" do
             window.maximize

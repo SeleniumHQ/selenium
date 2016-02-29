@@ -24,9 +24,9 @@ module Selenium
       module LegacySupport
 
           # These are commands Edge is still using from JSON Wire Protocol
-        [:executeScript, :executeAsyncScript, :submitElement, :doubleClick, :mouseDown, :mouseUp, :mouseMoveTo,
-         :click, :sendKeysToActiveElement, :getWindowHandles, :getCurrentWindowHandle, :getWindowSize,
-         :setWindowSize, :getWindowPosition, :setWindowPosition, :maximizeWindow].each do |cmd|
+        [:executeScript, :executeAsyncScript, :submitElement, :doubleClick, :mouseDown, :mouseUp, :mouseMoveTo, :click,
+         :sendKeysToActiveElement, :getWindowHandles, :getCurrentWindowHandle, :getWindowSize, :setWindowSize,
+         :getWindowPosition, :setWindowPosition, :maximizeWindow, :getAlertText, :dismissAlert].each do |cmd|
           jwp = Remote::Bridge::COMMANDS[cmd]
           Remote::W3CBridge.command(cmd, jwp.first, jwp.last)
         end
