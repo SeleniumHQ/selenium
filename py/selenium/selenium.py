@@ -29,6 +29,12 @@ try:
 except ImportError:
     import urllib as urllib_parse
 
+try:
+    unicode
+except NameError:
+    unicode = str
+
+
 class selenium(object):
     """
     Defines an object that runs Selenium commands.
