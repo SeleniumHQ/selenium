@@ -64,7 +64,7 @@ public class HttpClientFactory {
     httpClient = createHttpClient(null, connectionTimeout, socketTimeout);
   }
 
-  private static HttpClientConnectionManager getClientConnectionManager() {
+  protected static HttpClientConnectionManager getClientConnectionManager() {
     Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder
         .<ConnectionSocketFactory>create()
         .register("http", PlainConnectionSocketFactory.getSocketFactory())
@@ -127,14 +127,14 @@ public class HttpClientFactory {
         .build();
   }
 
-  private SocketConfig createSocketConfig(int socketTimeout) {
+  protected SocketConfig createSocketConfig(int socketTimeout) {
     return SocketConfig.custom()
         .setSoReuseAddress(true)
         .setSoTimeout(socketTimeout)
         .build();
   }
 
-  private RequestConfig createRequestConfig(int connectionTimeout, int socketTimeout) {
+  protected RequestConfig createRequestConfig(int connectionTimeout, int socketTimeout) {
     return RequestConfig.custom()
         .setStaleConnectionCheckEnabled(true)
         .setConnectTimeout(connectionTimeout)
@@ -142,7 +142,7 @@ public class HttpClientFactory {
         .build();
   }
 
-  private HttpRoutePlanner createRoutePlanner() {
+  protected HttpRoutePlanner createRoutePlanner() {
     return new SystemDefaultRoutePlanner(
         new DefaultSchemePortResolver(), ProxySelector.getDefault());
   }
