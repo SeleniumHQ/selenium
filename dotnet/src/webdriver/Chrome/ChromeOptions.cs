@@ -686,6 +686,8 @@ namespace OpenQA.Selenium.Chrome
                 {
                     deviceMetrics["touch"] = this.mobileEmulationDeviceSettings.EnableTouchEvents;
                 }
+
+                mobileEmulationSettings["deviceMetrics"] = deviceMetrics;
             }
 
             return mobileEmulationSettings;
