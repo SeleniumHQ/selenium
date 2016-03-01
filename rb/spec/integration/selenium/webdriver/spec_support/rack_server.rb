@@ -112,6 +112,8 @@ module Selenium
         end
 
         class TestApp
+          BASIC_AUTH_CREDENTIALS = %w[test test].freeze
+
           def initialize(file_root)
             @static = Rack::File.new(file_root)
           end
@@ -120,15 +122,31 @@ module Selenium
             case env['PATH_INFO']
             when "/common/upload"
               req = Rack::Request.new(env)
+              body = req['upload'][:tempfile].read
 
-              status = 200
-              header = {"Content-Type" => "text/html"}
-              body   = req['upload'][:tempfile].read
+              [200, {"Content-Type" => "text/html"}, [body]]
+            when "/basicAuth"
+              if authorized?(env)
+                status = 200
+                header = {"Content-Type" => "text/html"}
+                body = "<h1>authorized</h1>"
+              else
+                status = 401
+                header = {"WWW-Authenticate" => 'Basic realm="basic-auth-test"'}
+                body = "Login please"
+              end
 
               [status, header, [body]]
             else
               @static.call env
             end
+          end
+
+          private
+
+          def authorized?(env)
+            auth = Rack::Auth::Basic::Request.new(env)
+            auth.provided? && auth.basic? && auth.credentials && auth.credentials == BASIC_AUTH_CREDENTIALS
           end
         end
 
