@@ -278,10 +278,10 @@ public class ConsoleServlet extends RegistryBasedServlet {
     b.append(key("port")).append(config.getPort()).append("</br>");
     b.append(key("cleanUpCycle")).append(config.getCleanupCycle()).append("</br>");
     b.append(key("timeout")).append(
-      ConfigPrinter.printConfigValue(RegistrationRequest.TIME_OUT, String.valueOf(config.getTimeout())))
+      ConfigPrinter.printConfigValue(RegistrationRequest.TIME_OUT, config.getTimeout()))
       .append("</br>");
     b.append(key("browserTimeout")).append(
-      ConfigPrinter.printConfigValue(RegistrationRequest.BROWSER_TIME_OUT, String.valueOf(config.getBrowserTimeout())))
+      ConfigPrinter.printConfigValue(RegistrationRequest.BROWSER_TIME_OUT, config.getBrowserTimeout()))
       .append("</br>");
     b.append(key("newSessionWaitTimeout")).append(config.getNewSessionWaitTimeout())
         .append("</br>");
@@ -307,7 +307,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
     keys.addAll(config.getAllParams().keySet());
     Collections.sort(keys);
     for (String s : keys) {
-      String value = ConfigPrinter.printConfigValue(s, String.valueOf(config.getAllParams().get(s)));
+      String value = ConfigPrinter.printConfigValue(s, config.getAllParams().get(s));
       b.append(key(s.replaceFirst("-", ""))).append(value).append("</br>");
     }
     b.append("</br>");

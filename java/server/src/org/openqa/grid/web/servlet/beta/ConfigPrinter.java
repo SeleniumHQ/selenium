@@ -17,25 +17,36 @@
 
 package org.openqa.grid.web.servlet.beta;
 
+import com.google.common.collect.ImmutableSet;
+
 import org.openqa.grid.common.RegistrationRequest;
 
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class ConfigPrinter {
 
-  public static String printConfigValue(String configKey, String configValue) {
-    return configValue != null && configKeyShouldBePrintedInSeconds(configKey)
-           ? printSecondsFromMillis(Integer.valueOf(configValue))
-           : configValue;
+  private static final Set<String> CONFIG_KEYS_TO_BE_PRINTED_IN_SECONDS =
+    ImmutableSet.of(RegistrationRequest.BROWSER_TIME_OUT,
+                    RegistrationRequest.TIME_OUT);
+
+
+  public static String printConfigValue(String configKey, Object configValue) {
+    if (configValue == null) {
+      return null;
+    }
+
+    return configKeyShouldBePrintedInSeconds(configKey)
+           ? printSecondsFromMillis(Long.valueOf(String.valueOf(configValue)))
+           : String.valueOf(configValue);
   }
 
   private static boolean configKeyShouldBePrintedInSeconds(String configKey) {
-    return RegistrationRequest.BROWSER_TIME_OUT.equals(configKey)
-           || RegistrationRequest.TIME_OUT.equals(configKey);
+    return CONFIG_KEYS_TO_BE_PRINTED_IN_SECONDS.contains(configKey);
   }
 
-  private static String printSecondsFromMillis(int millis) {
-    return String.format("%ds", (int) TimeUnit.MILLISECONDS.toSeconds((long) millis));
+  private static String printSecondsFromMillis(long millis) {
+    return String.format("%ds", TimeUnit.MILLISECONDS.toSeconds(millis));
   }
 
 }

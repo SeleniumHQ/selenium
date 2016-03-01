@@ -14,19 +14,19 @@ public class ConfigPrinterTest {
 
   @Test
   public void thatTimeoutIsReturnedInSeconds() {
-    String timeout = ConfigPrinter.printConfigValue("timeout", "30000");
+    String timeout = ConfigPrinter.printConfigValue("timeout", 30000);
     assertEquals("30s", timeout);
   }
 
   @Test
   public void thatBrowserTimeoutIsReturnedInSeconds() {
-    String timeout = ConfigPrinter.printConfigValue("browserTimeout", "30000");
+    String timeout = ConfigPrinter.printConfigValue("browserTimeout", 30000);
     assertEquals("30s", timeout);
   }
 
   @Test
   public void thatConfigValueIsNotChanged() {
-    String maxSession = ConfigPrinter.printConfigValue("maxSession", "1");
+    String maxSession = ConfigPrinter.printConfigValue("maxSession", 1);
     assertEquals("1", maxSession);
   }
 }
