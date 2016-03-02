@@ -14,28 +14,23 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-package org.openqa.selenium.remote;
 
-import org.openqa.selenium.NoSuchSessionException;
+package org.openqa.selenium;
 
 /**
- * Indicates that the session is not found (either terminated or not started).
- *
- * @deprecated Use {@link NoSuchSessionException NoSuchSessionException} instead
+ * Thrown by any command being called after {@link WebDriver#quit() WebDriver.quit()}.
  */
-@Deprecated
-public class SessionNotFoundException extends NoSuchSessionException {
+public class NoSuchSessionException extends NotFoundException {
 
-  public SessionNotFoundException() {
-    super();
+  public NoSuchSessionException() {
   }
 
-  public SessionNotFoundException(String message) {
-    super(message);
+  public NoSuchSessionException(String reason) {
+    super(reason);
   }
 
-  public SessionNotFoundException(String message, Throwable cause) {
-    super(message, cause);
+  public NoSuchSessionException(String reason, Throwable cause) {
+    super(reason, cause);
   }
 
 }
