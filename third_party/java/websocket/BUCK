@@ -1,15 +1,15 @@
 prebuilt_jar(
   name = 'websocket-api',
-  maven_coords = 'org.eclipse.jetty.websocket:websocket-api:jar:9.2.13.v20150730',
-  binary_jar = 'websocket-api-9.2.13.v20150730.jar',
-  source_jar = 'websocket-api-9.2.13.v20150730-sources.jar',
+  maven_coords = 'org.eclipse.jetty.websocket:websocket-api:jar:9.2.15.v20160210',
+  binary_jar = 'websocket-api-9.2.15.v20160210.jar',
+  source_jar = 'websocket-api-9.2.15.v20160210-sources.jar',
 )
 
 prebuilt_jar(
   name = 'websocket-client',
-  maven_coords = 'org.eclipse.jetty.websocket:websocket-client:jar:9.2.13.v20150730',
-  binary_jar = 'websocket-client-9.2.13.v20150730.jar',
-  source_jar = 'websocket-client-9.2.13.v20150730-sources.jar',
+  maven_coords = 'org.eclipse.jetty.websocket:websocket-client:jar:9.2.15.v20160210',
+  binary_jar = 'websocket-client-9.2.15.v20160210.jar',
+  source_jar = 'websocket-client-9.2.15.v20160210-sources.jar',
   deps = [
     ':websocket-common',
     '//third_party/java/jetty:jetty-io',
@@ -22,9 +22,9 @@ prebuilt_jar(
 
 prebuilt_jar(
   name = 'websocket-common',
-  maven_coords = 'org.eclipse.jetty.websocket:websocket-common:jar:9.2.13.v20150730',
-  binary_jar = 'websocket-common-9.2.13.v20150730.jar',
-  source_jar = 'websocket-common-9.2.13.v20150730-sources.jar',
+  maven_coords = 'org.eclipse.jetty.websocket:websocket-common:jar:9.2.15.v20160210',
+  binary_jar = 'websocket-common-9.2.15.v20160210.jar',
+  source_jar = 'websocket-common-9.2.15.v20160210-sources.jar',
   deps = [
     ':websocket-api',
     '//third_party/java/jetty:jetty-io',

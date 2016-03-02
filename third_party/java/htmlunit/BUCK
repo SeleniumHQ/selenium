@@ -1,5 +1,5 @@
 prebuilt_jar(name = 'htmlunit-driver',
-  binary_jar = 'selenium-htmlunit-driver-2.52.0.jar',
+  binary_jar = 'htmlunit-driver-2.20.0-SNAPSHOT.jar',
   deps = [
     ':htmlunit',
   ],
@@ -7,8 +7,8 @@ prebuilt_jar(name = 'htmlunit-driver',
 )
 
 prebuilt_jar(name = 'htmlunit',
-  binary_jar = 'htmlunit-2.18.jar',
-  source_jar = 'htmlunit-2.18-sources.jar',
+  binary_jar = 'htmlunit-2.20.jar',
+  source_jar = 'htmlunit-2.20-sources.jar',
   deps = [
     ':js-core',
     '//third_party/java/httpcomponents:httpclient',
