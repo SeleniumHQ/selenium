@@ -18,6 +18,7 @@
 #define WEBDRIVER_IE_SENDKEYSCOMMANDHANDLER_H_
 
 #include <ctime>
+#include <iomanip>
 #include "../Browser.h"
 #include "../IECommandHandler.h"
 #include "../IECommandExecutor.h"
@@ -234,7 +235,9 @@ class SendKeysCommandHandler : public IECommandHandler {
       return false;
     }
 
-    LOG(DEBUG) << "Found file upload dialog. Window has caption '"
+    LOG(DEBUG) << "Found file upload dialog with handle "
+               << StringUtilities::Format("0x%08X", dialog_window_handle)
+               << ". Window has caption '"
                << WindowUtilities::GetWindowCaption(dialog_window_handle)
                << "' Starting to look for file name edit control.";
     return SendKeysToFileUploadAlert(dialog_window_handle, data->text);
