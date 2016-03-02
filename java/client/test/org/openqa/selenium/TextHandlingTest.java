@@ -243,7 +243,6 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, equalTo(""));
   }
 
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldNotTrimSpacesWhenLineWraps() {
     driver.get(pages.simpleTestPage);
