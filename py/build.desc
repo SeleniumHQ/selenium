@@ -97,7 +97,7 @@ py_docs(
 py_env(
   name = "test_env_docs",
   packages = [
-    "third_party/py/py-1.4.26.tar.gz",
+    "third_party/py/py-1.4.31-py2.py3-none-any.whl",
     "third_party/py/docutils-0.11.tar.gz",
     "third_party/py/Jinja2-2.7.tar.gz",
     "third_party/py/MarkupSafe-0.18.tar.gz",
