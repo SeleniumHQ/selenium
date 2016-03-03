@@ -286,7 +286,7 @@ public class VisibilityTest extends JUnit4TestBase {
    *      http://code.google.com/p/selenium/issues/detail?id=1610</a>
    */
   @Ignore({IE, MARIONETTE})
-  @NotYetImplemented(HTMLUNIT)
+  @JavascriptEnabled // element.getCssValue() requires Javascript in HtmlUnit
   @Test
   public void testShouldBeAbleToClickOnElementsWithOpacityZero() {
     driver.get(pages.clickJacker);
