@@ -385,8 +385,10 @@ public class FirefoxProfile {
 
   public String toJson() throws IOException {
     File generatedProfile = layoutOnDisk();
-
-    return new Zip().zip(generatedProfile);
+    String profileJsonStr = new Zip().zip(generatedProfile);
+    clean(generatedProfile);
+    
+    return profileJsonStr;
   }
 
   public static FirefoxProfile fromJson(String json) throws IOException {
