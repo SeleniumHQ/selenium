@@ -37,7 +37,6 @@ import static org.openqa.selenium.testing.TestUtilities.isIe7;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
 import java.io.File;
@@ -296,7 +295,6 @@ public class FormHandlingTest extends JUnit4TestBase {
 
   @Ignore(value = {IE, SAFARI},
           reason = "IE: failed; Others: untested")
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testCanClickOnAnExternalSubmitButton() {
     checkSubmitButton("external_explicit_submit");
@@ -304,7 +302,6 @@ public class FormHandlingTest extends JUnit4TestBase {
 
   @Ignore(value = {IE, SAFARI},
       reason = "IE: failed; Others: untested")
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testCanClickOnAnExternalImplicitSubmitButton() {
     checkSubmitButton("external_implicit_submit");

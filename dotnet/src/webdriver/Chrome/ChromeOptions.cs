@@ -653,12 +653,6 @@ namespace OpenQA.Selenium.Chrome
             string tracingCategories = this.perfLoggingPreferences.TracingCategories;
             if (!string.IsNullOrEmpty(tracingCategories))
             {
-                // Adding both 'tracingCategories' and 'traceCategories' to the dictionary.
-                // The ChromeDriver documentation indicates one of these is correct; user
-                // reports indicate the other is correct. Until the proper preference name
-                // is validated by the Chromium development team, we'll send both, as the
-                // extraneous one should be ignored by the driver.
-                perfLoggingPrefsDictionary["tracingCategories"] = tracingCategories;
                 perfLoggingPrefsDictionary["traceCategories"] = tracingCategories;
             }
 
@@ -686,6 +680,8 @@ namespace OpenQA.Selenium.Chrome
                 {
                     deviceMetrics["touch"] = this.mobileEmulationDeviceSettings.EnableTouchEvents;
                 }
+
+                mobileEmulationSettings["deviceMetrics"] = deviceMetrics;
             }
 
             return mobileEmulationSettings;

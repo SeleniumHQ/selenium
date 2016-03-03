@@ -16,12 +16,15 @@
 // under the License.
 package org.openqa.selenium.remote;
 
-import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.NoSuchSessionException;
 
 /**
  * Indicates that the session is not found (either terminated or not started).
+ *
+ * @deprecated Use {@link NoSuchSessionException NoSuchSessionException} instead
  */
-public class SessionNotFoundException extends WebDriverException {
+@Deprecated
+public class SessionNotFoundException extends NoSuchSessionException {
 
   public SessionNotFoundException() {
     super();
@@ -29,6 +32,10 @@ public class SessionNotFoundException extends WebDriverException {
 
   public SessionNotFoundException(String message) {
     super(message);
+  }
+
+  public SessionNotFoundException(String message, Throwable cause) {
+    super(message, cause);
   }
 
 }

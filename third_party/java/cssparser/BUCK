@@ -1,6 +1,6 @@
 prebuilt_jar(name = 'cssparser',
-  binary_jar = 'cssparser-0.9.16.jar',
-  source_jar = 'cssparser-0.9.16-sources.jar',
+  binary_jar = 'cssparser-0.9.18.jar',
+  source_jar = 'cssparser-0.9.18-sources.jar',
   deps = [
     '//third_party/java/css:sac',
   ],

@@ -9,6 +9,11 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.52.1.1
+=========
+ * Updated JavaScript automation atoms.
+ * Added logging of found dialog window handle for file upload dialog.
+
 v2.52.1.0
 =========
  * Updated JavaScript automation atoms, including update to wgxpath library.

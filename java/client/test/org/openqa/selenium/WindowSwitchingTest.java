@@ -209,7 +209,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore(MARIONETTE)
-  @NotYetImplemented(HTMLUNIT)
   public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang()
       throws Exception {
     assumeFalse(Browser.detect() == Browser.opera &&
@@ -250,7 +249,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore(MARIONETTE)
-  @NotYetImplemented(HTMLUNIT)
   public void testCanCallGetWindowHandlesAfterClosingAWindow() throws Exception {
     assumeFalse(Browser.detect() == Browser.opera &&
                 TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));

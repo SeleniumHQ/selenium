@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
 import java.util.List;
@@ -38,6 +39,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 
 public class ElementAttributeTest extends JUnit4TestBase {
@@ -318,6 +320,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(HTMLUNIT)
   public void testGetAttributeDoesNotReturnAnObjectForSvgProperties() {
     assumeFalse("IE before 9 doesn't support SVG", TestUtilities.isOldIe(driver));
 

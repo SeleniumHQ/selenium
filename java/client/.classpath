@@ -7,9 +7,9 @@
 	<classpathentry kind="lib" path="/third-party/java/hamcrest/hamcrest-core-1.3.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/hamcrest/hamcrest-library-1.3.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/guava/guava-19.0.jar" sourcepath="/third-party/java/guava/guava-19.0-sources.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/htmlunit/htmlunit-2.18.jar" sourcepath="/third-party/java/htmlunit/htmlunit-2.18-sources.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/htmlunit/htmlunit-core-js-2.17.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/htmlunit/selenium-htmlunit-driver-2.52.0.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/htmlunit/htmlunit-2.20.jar" sourcepath="/third-party/java/htmlunit/htmlunit-2.20-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/htmlunit/htmlunit-core-js-2.17.jar" />
+	<classpathentry kind="lib" path="/third-party/java/htmlunit/htmlunit-driver-2.20.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/jna/jna-4.1.0.jar" sourcepath="/third-party/java/jna/jna-4.1.0-src.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/jna/jna-platform-4.1.0.jar" sourcepath="/third-party/java/jna/jna-platform-4.1.0-src.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/commons-exec/commons-exec-1.3.jar" sourcepath="/third-party/java/commons-exec/commons-exec-1.3-sources.jar"/>
@@ -26,7 +26,7 @@
 	<classpathentry kind="lib" path="/third-party/java/commons/commons-lang3-3.4.jar" sourcepath="/third-party/java/commons/commons-lang3-3.4-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/httpcomponents/httpmime-4.5.jar" sourcepath="/third-party/java/httpcomponents/httpmime-4.5-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/commons-collections/commons-collections-3.2.1.jar" sourcepath="/third-party/java/commons-collections/commons-collections-3.2.1-sources.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/cssparser/cssparser-0.9.16.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/cssparser/cssparser-0.9.18.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/xerces/xercesImpl-2.11.0.jar" sourcepath="/third-party/java/xerces/xercesImpl-2.11.0-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/xalan/xalan-2.7.2.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/commons-fileupload/commons-fileupload-1.2.2.jar" sourcepath="/third-party/java/commons-fileupload/commons-fileupload-1.2.2-src.jar"/>

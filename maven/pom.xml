@@ -97,7 +97,7 @@
                 <role>Committer</role>
             </roles>
         </developer>
-        <!-- A complete list can be found here: http://code.google.com/p/selenium/people/list -->
+        <!-- A complete list can be found here: https://github.com/SeleniumHQ/selenium/blob/master/AUTHORS -->
     </developers>
 
     <profiles>

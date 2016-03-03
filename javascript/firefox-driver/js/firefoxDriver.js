@@ -1172,11 +1172,9 @@ FirefoxDriver.prototype.mouseDoubleClick = function(respond, parameters) {
 FirefoxDriver.prototype.sendKeysToActiveElement = function(respond, parameters) {
   Utils.installWindowCloseListener(respond);
 
-  var currentlyActiveElement = Utils.getActiveElement(respond.session.getDocument());
-
-  var useElement = currentlyActiveElement;
-  var tagName = useElement.tagName.toLowerCase();
-  if (tagName == 'body' && useElement.ownerDocument.defaultView.frameElement) {
+  var useElement = Utils.getActiveElement(respond.session.getDocument());
+  if (useElement && useElement.tagName.toLowerCase() == 'body'
+      && useElement.ownerDocument.defaultView.frameElement) {
     useElement.ownerDocument.defaultView.focus();
 
     // Turns out, this is what we should be using as the target
