@@ -348,8 +348,11 @@ describe "Selenium::WebDriver::TargetLocator" do
         driver.switch_to.alert.authenticate("invalid", "invalid")
       
         error = Selenium::WebDriver::Error::UnhandledAlertError
-        expect{driver.find_element(tag_name: "h1").text}.to raise_error(error)
-      end  
+        expect{ driver.find_element(tag_name: "h1").text }.to raise_error(error)
+      end
+      
+      after { reset_driver! }
+      
     end
   end
 end
