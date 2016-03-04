@@ -68,6 +68,17 @@ module Selenium
           Bridge.new(:clean_session => true)
         end
 
+        it 'accepts the cleanSession Safari option' do
+          expect(server).to receive(:send) do |payload|
+            payload[:command][:parameters][:desiredCapabilities]['safari.options']['cleanSession'].should == true
+          end
+
+          expect(browser).to receive(:start) do |*args|
+            args.should include('--resetSafari')
+          end
+
+          Bridge.new(:clean_session => true)
+        end
       end
     end
   end
