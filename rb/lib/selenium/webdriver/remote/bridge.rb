@@ -169,6 +169,10 @@ module Selenium
         def getAlertText
           execute :getAlertText
         end
+        
+        def setAuthentication(credentials)
+          execute :setAuthentication, {}, credentials
+        end
 
         #
         # navigation
