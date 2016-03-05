@@ -31,11 +31,11 @@ import org.apache.http.message.BasicHttpRequest;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.common.exception.GridException;
+import org.openqa.grid.shared.GridNodeServer;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 import org.openqa.selenium.remote.server.log.LoggingManager;
-import org.openqa.grid.shared.GridNodeServer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -216,6 +216,15 @@ public class SelfRegisteringRemote {
 
         BasicHttpEntityEnclosingRequest r =
             new BasicHttpEntityEnclosingRequest("POST", registration.toExternalForm());
+        int port = Integer.parseInt(nodeConfig.getConfigAsString(RegistrationRequest.PORT));
+        if (port == 0) {
+          port = server.getRealPort();
+          Map<String, Object> config = nodeConfig.getConfiguration();
+          config.put(RegistrationRequest.PORT,server.getRealPort());
+          URL url = new URL(nodeConfig.getConfigAsString(RegistrationRequest.REMOTE_HOST));
+          String newUrl = "http://" + url.getHost() + ":" + port;
+          config.put(RegistrationRequest.REMOTE_HOST, newUrl);
+        }
         String json = nodeConfig.toJSON();
         r.setEntity(new StringEntity(json,"UTF-8"));
 
