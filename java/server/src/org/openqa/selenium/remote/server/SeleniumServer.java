@@ -20,6 +20,7 @@ package org.openqa.selenium.remote.server;
 import com.beust.jcommander.JCommander;
 
 import org.openqa.grid.shared.GridNodeServer;
+import org.openqa.jetty.http.SocketListener;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
 import org.seleniumhq.jetty9.server.Connector;
@@ -58,6 +59,14 @@ public class SeleniumServer implements GridNodeServer {
   public SeleniumServer(int port) {
     this.port = port;
   }
+  public int getRealPort() {
+    if (server.isStarted()) {
+      ServerConnector socket = (ServerConnector)server.getConnectors()[0];
+      return socket.getPort();
+    }
+    return this.port;
+  }
+
 
   private void addRcSupport(ServletContextHandler handler) {
     try {

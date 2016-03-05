@@ -18,9 +18,14 @@
 package org.openqa.selenium.server;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.Test;
+import org.openqa.selenium.net.PortProber;
+
+import java.io.IOException;
+import java.net.ServerSocket;
 
 /**
  * Unit tests for SeleniumServer.
@@ -64,6 +69,42 @@ public class SeleniumServerUnitTest {
 
     assertEquals("Jetty threads given is not correct.",
         positiveJettyThreads, server.getJettyThreads());
+  }
+
+  @Test
+  public void testServerStartupWhenPortExplicitlyZeroed() throws Exception {
+    RemoteControlConfiguration configuration = new RemoteControlConfiguration();
+    configuration.setPort(0);
+    SeleniumServer server = null;
+    try {
+      server = new SeleniumServer(configuration);
+      server.start();
+      assertTrue("Ensure that Jetty server spawns on a valid port", server.getRealPort() != 0);
+      assertTrue("Ensure that Jetty server is listening on the port", isPortUsed(server.getRealPort()));
+    } finally {
+      if (server != null) {
+        server.stop();
+      }
+    }
+  }
+
+  private boolean isPortUsed(int port) {
+    boolean used = false;
+    ServerSocket socket = null;
+    try {
+      socket = new ServerSocket(port);
+    } catch (IOException e) {
+      used = true;
+    } finally {
+      if (socket != null) {
+        try {
+          socket.close();
+        } catch (IOException e) {
+
+        }
+      }
+    }
+    return used;
   }
 
   // /**

@@ -588,6 +588,14 @@ public class SeleniumServer implements SslCertificateGenerator, GridNodeServer {
     return configuration.getPort();
   }
 
+  public int getRealPort() {
+    if (server.isStarted()) {
+      SocketListener socket = (SocketListener) server.getListeners()[0];
+      return socket.getPort();
+    }
+    return getPort();
+  }
+
   /**
    * Exposes the internal Jetty server used by Selenium. This lets users add their own webapp to the
    * Selenium Server jetty instance. It is also a minor violation of encapsulation principles (what
