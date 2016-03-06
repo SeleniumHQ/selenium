@@ -220,12 +220,12 @@ module Selenium
         end
 
         def create_chrome_driver
-          binary = ENV['chrome_binary']
+          binary = ENV['CHROME_BINARY']
           if binary
             WebDriver::Chrome.path = binary
           end
 
-          server = ENV['chromedriver'] || ENV['chrome_server']
+          server = ENV['CHROMEDRIVER'] || ENV['chrome_server']
           if server
             WebDriver::Chrome.driver_path = server
           end
@@ -239,7 +239,7 @@ module Selenium
         end
 
         def create_phantomjs_driver
-          binary = ENV['phantomjs_binary']
+          binary = ENV['PHANTOMJS_BINARY']
           if binary
             WebDriver::PhantomJS.path = binary
           end
