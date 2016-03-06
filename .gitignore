@@ -75,6 +75,7 @@ GSYMS
 GTAGS
 Gemfile.lock
 /rb/.bundle
+/rb/.idea
 .sonar/
 .idea/sonarIssues.xml
 .idea/inspectionProfiles/profiles_settings.xml
