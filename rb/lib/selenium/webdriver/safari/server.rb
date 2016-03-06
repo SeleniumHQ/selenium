@@ -101,7 +101,9 @@ Server: safaridriver-ruby
 
         HEADERS.gsub!("\n", "\r\n")
 
-        HTML = "<!DOCTYPE html><script>#{Safari.resource_path.join('client.js').read}</script>"
+        def html
+          "<!DOCTYPE html><script>#{Safari.resource_path.join('client.js').read}</script>"
+        end
 
         def process_initial_http_request
           http = @server.accept
@@ -121,7 +123,7 @@ Server: safaridriver-ruby
           else
             http << HEADERS % [200, 'OK']
             http << "\r\n\r\n"
-            http << HTML
+            http << html
             http.close
           end
         end

@@ -200,14 +200,12 @@ module Selenium
         end
 
         def create_firefox_driver
-          if native_events?
-            profile = WebDriver::Firefox::Profile.new
-            profile.native_events = true
-
-            WebDriver::Driver.for :firefox, :profile => profile
-          else
-            WebDriver::Driver.for :firefox
+          binary = ENV['FIREFOX_BINARY']
+          if binary
+            WebDriver::Firefox.path = binary
           end
+
+          WebDriver::Driver.for :firefox
         end
 
         def create_marionette_driver
