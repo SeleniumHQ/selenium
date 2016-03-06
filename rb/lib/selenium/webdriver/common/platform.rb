@@ -61,6 +61,14 @@ module Selenium
         )
       end
 
+      def ci
+        if ENV['TRAVIS']
+          :travis
+        elsif ENV['JENKINS']
+          :jenkins
+        end
+      end
+
       def bitsize
         @bitsize ||= (
           if defined?(FFI::Platform::ADDRESS_SIZE)
