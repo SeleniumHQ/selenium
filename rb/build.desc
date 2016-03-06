@@ -11,7 +11,6 @@ rubygem(
     "//rb:iphone",
     "//rb:phantomjs",
     "//rb:remote",
-    "//rb:rc-client",
     "//rb:safari"
   ]
 )
@@ -32,7 +31,6 @@ ruby_library(name = "common",
     "lib/selenium/webdriver/common.rb",
     "lib/selenium/webdriver.rb",
     "lib/selenium/server.rb",
-    "lib/selenium/rake/server_task.rb",
     "lib/selenium-webdriver.rb",
     "selenium-webdriver.gemspec",
     "Gemfile",
@@ -222,7 +220,7 @@ ruby_test(name = "remote",
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+    "//java/server/src/org/openqa/selenium/remote/server:standalone-server",
     ":remote"
   ]
 )
@@ -234,7 +232,7 @@ ruby_test(name = "remote-chrome",
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+    "//java/server/src/org/openqa/selenium/remote/server:standalone-server",
     ":remote"
   ]
 )
@@ -246,7 +244,7 @@ ruby_test(name = "remote-firefox",
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+    "//java/server/src/org/openqa/selenium/remote/server:standalone-server",
     ":remote"
   ]
 )
@@ -258,7 +256,7 @@ ruby_test(name = "remote-phantomjs",
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+    "//java/server/src/org/openqa/selenium/remote/server:standalone-server",
     ":remote"
   ]
 )
@@ -270,7 +268,7 @@ ruby_test(name = "remote-safari",
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+    "//java/server/src/org/openqa/selenium/remote/server:standalone-server",
     ":remote"
   ]
 )
@@ -282,7 +280,7 @@ ruby_test(name = "remote-ie",
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+    "//java/server/src/org/openqa/selenium/remote/server:standalone-server",
     ":remote"
   ]
 )
@@ -294,7 +292,7 @@ ruby_test(name = "remote-edge",
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+    "//java/server/src/org/openqa/selenium/remote/server:standalone-server",
     ":edge"
   ]
 )
@@ -306,7 +304,7 @@ ruby_test(name = "remote-marionette",
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+    "//java/server/src/org/openqa/selenium/remote/server:standalone-server",
     ":remote",
     ":firefox"
   ]
@@ -319,7 +317,7 @@ ruby_library(name = "safari",
   ],
   deps = [
     ":common",
-    ":remote",
+    ":remote"
   ],
   resources = [
     { "//javascript/safari-driver:client": "rb/lib/selenium/webdriver/safari/resources/client.js"}
@@ -337,22 +335,9 @@ ruby_test(name = "safari",
   ]
 )
 
-ruby_library(name = "rc-client",
-  srcs = [
-    "lib/selenium/client/**/*.rb",
-    "lib/selenium/client.rb",
-    "lib/selenium-client.rb",
-    "lib/selenium/rspec/**/*.rb",
-  ],
-  deps = [
-    ":common"
-  ]
-)
-
 ruby_test(name = "unit",
   srcs = [
     "spec/unit/selenium/webdriver/**/*_spec.rb",
-    "spec/unit/selenium/rake/*_spec.rb",
     "spec/unit/selenium/*_spec.rb",
   ],
   include = ["rb/spec/unit", "build/rb/lib"],
@@ -367,36 +352,6 @@ ruby_test(name = "unit",
     ":remote",
     ":safari",
     ":phantomjs",
-    ":support",
-  ]
-)
-
-ruby_test(name = "rc-client-unit",
-  srcs = [
-    "spec/unit/selenium/client/**/*_spec.rb"
-  ],
-  include = [
-    "build/rb/lib",
-    "rb/spec/unit"
-  ],
-  deps = [
-    ":rc-client"
-  ]
-)
-
-ruby_test(name = "rc-client-integration",
-  srcs = [
-    "spec/integration/selenium/client/api/*_spec.rb",
-    "spec/integration/selenium/client/reporting/*_spec.rb",
-    "spec/integration/selenium/client/smoke/*_spec.rb"
-  ],
-  include = [
-    "build/rb/lib",
-    "rb/spec/integration"
-  ],
-  deps = [
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
-    ":rc-client",
-    ":remote"
+    ":support"
   ]
 )

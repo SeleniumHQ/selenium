@@ -250,8 +250,6 @@ task :test_java => [
 
 task :test_rb => [
   "//rb:unit-test",
-  "//rb:rc-client-unit-test",
-  "//rb:rc-client-integration-test",
   "//rb:chrome-test",
   "//rb:firefox-test",
   "//rb:phantomjs-test",
