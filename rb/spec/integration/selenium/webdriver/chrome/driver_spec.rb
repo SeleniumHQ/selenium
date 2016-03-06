@@ -26,17 +26,15 @@ module Selenium
       compliant_on :browser => :chrome do
         describe Driver do
 
-          not_compliant_on :ci => :travis do
-            it "should accept an array of custom command line arguments" do
-              begin
-                driver = Selenium::WebDriver.for :chrome, :args => ["--user-agent=foo;bar"]
-                driver.navigate.to url_for("click_jacker.html")
+          it "should accept an array of custom command line arguments" do
+            begin
+              driver = Selenium::WebDriver.for :chrome, :args => ["--user-agent=foo;bar"]
+              driver.navigate.to url_for("click_jacker.html")
 
-                ua = driver.execute_script "return window.navigator.userAgent"
-                expect(ua).to eq("foo;bar")
-              ensure
-                driver.quit if driver
-              end
+              ua = driver.execute_script "return window.navigator.userAgent"
+              expect(ua).to eq("foo;bar")
+            ensure
+              driver.quit if driver
             end
           end
 
@@ -46,9 +44,7 @@ module Selenium
             }.to raise_error(ArgumentError)
           end
 
-          not_compliant_on :ci => :travis do
-            it_behaves_like "driver that can be started concurrently", :chrome
-          end
+          it_behaves_like "driver that can be started concurrently", :chrome
         end
       end
 
