@@ -48,8 +48,14 @@ module Selenium
           end
         end
 
+        #
+        # Backward compatibility
+        #
+
         alias_method :version, :browser_version
+        alias_method :version=, :browser_version=
         alias_method :platform, :platform_name
+        alias_method :platform=, :platform_name=
 
         #
         # Convenience methods for the common choices.
