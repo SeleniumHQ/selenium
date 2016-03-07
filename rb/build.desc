@@ -295,7 +295,7 @@ ruby_test(name = "remote-edge",
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
-    ":remote"
+    ":edge"
   ]
 )
 
