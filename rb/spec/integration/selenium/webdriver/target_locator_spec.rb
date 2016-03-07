@@ -323,6 +323,8 @@ describe "Selenium::WebDriver::TargetLocator" do
   compliant_on :browser => :ie do
     describe "basic auth alerts" do
 
+      after { reset_driver! }
+
       it "allows the user to send valid credentials to an alert" do
         driver.navigate.to url_for("basicAuth")
         driver.switch_to.alert.authenticate("test", "test")
@@ -334,10 +336,11 @@ describe "Selenium::WebDriver::TargetLocator" do
         driver.navigate.to url_for("basicAuth")
         driver.switch_to.alert.authenticate("invalid", "invalid")
 
-        expect { driver.switch_to.alert.dismiss }.to_not raise_error(error)
-      end
+        wait = Selenium::WebDriver::Wait.new(:timeout => 5, :ignore => Selenium::WebDriver::Error::NoSuchAlertError)
+        wait.until { driver.switch_to.alert }
 
-      after { reset_driver! }
+        expect { driver.switch_to.alert.dismiss }.to_not raise_error
+      end
 
     end
   end
