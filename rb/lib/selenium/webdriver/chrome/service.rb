@@ -80,7 +80,6 @@ module Selenium
 
             http.get("/shutdown")
           end
-
         ensure
           stop_process
         end

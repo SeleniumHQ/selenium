@@ -79,11 +79,8 @@ module Selenium
 
             http.head("/shutdown")
           end
-
-          @process.poll_for_exit STOP_TIMEOUT
-        rescue ChildProcess::TimeoutError
         ensure
-          @process.stop STOP_TIMEOUT
+          stop_process
         end
 
         def uri
@@ -100,6 +97,12 @@ module Selenium
 
           @process.io.inherit! if $DEBUG || Platform.os == :windows
           @process.start
+        end
+
+        def stop_process
+          @process.poll_for_exit STOP_TIMEOUT
+        rescue ChildProcess::TimeoutError
+          @process.stop STOP_TIMEOUT
         end
 
         def connect_until_stable

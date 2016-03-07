@@ -75,12 +75,8 @@ module Selenium
 
             http.get("/shutdown")
           end
-
-          @process.poll_for_exit STOP_TIMEOUT
-        rescue ChildProcess::TimeoutError
         ensure
-          @process.stop STOP_TIMEOUT
-
+          stop_process
           if Platform.jruby? && !$DEBUG
             @process.io.close rescue nil
           end
@@ -108,6 +104,12 @@ module Selenium
           end
 
           @process.start
+        end
+
+        def stop_process
+          @process.poll_for_exit STOP_TIMEOUT
+        rescue ChildProcess::TimeoutError
+          @process.stop STOP_TIMEOUT
         end
 
         def connect_until_stable
