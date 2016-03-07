@@ -21,6 +21,8 @@
    The top-level `error` module will be removed in v3.0.
 * Moved `until.Condition` and `until.WebElementCondition` to the webdriver
    module to break a circular dependency.
+* FIXED: `io.findInPath()` will no longer match against directories that have
+   the same basename as the target file.
 
 ### Changes for W3C WebDriver Spec Compliance
 

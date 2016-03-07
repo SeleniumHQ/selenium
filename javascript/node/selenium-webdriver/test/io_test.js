@@ -229,4 +229,59 @@ describe('io', function() {
       });
     });
   });
+
+  describe('findInPath', function() {
+    const savedPathEnv = process.env['PATH'];
+    afterEach(() => process.env['PATH'] = savedPathEnv);
+
+    const cwd = process.cwd;
+    afterEach(() => process.cwd = cwd);
+
+    let dirs;
+    beforeEach(() => {
+      return Promise.all([io.tmpDir(), io.tmpDir(), io.tmpDir()]).then(arr => {
+        dirs = arr;
+        process.env['PATH'] = arr.join(path.delimiter);
+      });
+    });
+
+    it('returns null if file cannot be found', () => {
+      assert.strictEqual(io.findInPath('foo.txt'), null);
+    });
+
+    it('can find file on path', () => {
+      let filePath = path.join(dirs[1], 'foo.txt');
+      fs.writeFileSync(filePath, 'hi');
+
+      assert.strictEqual(io.findInPath('foo.txt'), filePath);
+    });
+
+    it('returns null if file is in a subdir of a directory on the path', () => {
+      let subDir = path.join(dirs[2], 'sub');
+      fs.mkdirSync(subDir);
+
+      let filePath = path.join(subDir, 'foo.txt');
+      fs.writeFileSync(filePath, 'hi');
+
+      assert.strictEqual(io.findInPath('foo.txt'), null);
+    });
+
+    it('does not match on directories', () => {
+      fs.mkdirSync(path.join(dirs[2], 'sub'));
+      assert.strictEqual(io.findInPath('sub'), null);
+    });
+
+    it('will look in cwd first if requested', () => {
+      return io.tmpDir().then(fakeCwd => {
+        process.cwd = () => fakeCwd;
+
+        let theFile = path.join(fakeCwd, 'foo.txt');
+
+        fs.writeFileSync(path.join(dirs[1], 'foo.txt'), 'hi');
+        fs.writeFileSync(theFile, 'bye');
+
+        assert.strictEqual(io.findInPath('foo.txt', true), theFile);
+      });
+    });
+  });
 });
