@@ -35,7 +35,7 @@ script:
   - export PY_FILES_CHANGED=`git diff --name-only $TRAVIS_COMMIT_RANGE | grep ^py/`
   - export RB_FILES_CHANGED=`git diff --name-only $TRAVIS_COMMIT_RANGE | grep ^rb/`
 
-  - ./go clean
+  - ./go clean build
   - |
     if [[ $PY_FILES_CHANGED == py/* ]]; then
       pip install --user virtualenv
