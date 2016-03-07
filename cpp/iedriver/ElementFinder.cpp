@@ -148,10 +148,12 @@ int ElementFinder::FindElements(const IECommandExecutor& executor,
       // error. The most common case of this for IE is when there is a
       // page refresh, navigation, or similar, and the driver is polling
       // for element presence. The calling code can't do anything about
-      // it, so we might as well just log and return In the common case,
+      // it, so we might as well just log and return. In the common case,
       // this means that the error will be transitory, and will sort
       // itself out once the DOM returns to normal after the page transition
-      // is completed.
+      // is completed. Return an empty array, and a success error code.
+      status_code = WD_SUCCESS;
+      *found_elements = Json::Value(Json::arrayValue);
       LOG(WARN) << "A JavaScript error was encountered executing the findElements atom.";
     }
   } else {

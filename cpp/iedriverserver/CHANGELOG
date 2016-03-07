@@ -9,6 +9,18 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.52.2.0
+=========
+ * Updated IE driver to not error on findElements JavaScript atom errors.
+   Hitting a JavaScript error with the atom is an unrecoverable error. The
+   most common case of this for IE is when there is a page refresh,
+   navigation, or similar, and the driver is polling for element presence.
+   The calling code can't do anything about it, so we might as well just log
+   and return success with an empty list. This was fixed in 2.52.1 for the
+   "find single element" case, but was not completely fixed for the "find
+   multiple elements" case. As before, this is an extreme hack, and has the
+   potential to be masking a very serious problem in the driver.
+
 v2.52.1.1
 =========
  * Updated JavaScript automation atoms.
