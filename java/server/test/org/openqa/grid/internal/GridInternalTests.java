@@ -23,6 +23,7 @@ import org.openqa.grid.internal.configuration.Grid1ConfigurationLoaderTest;
 import org.openqa.grid.internal.listener.RegistrationListenerTest;
 import org.openqa.grid.internal.listener.SessionListenerTest;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcherTest;
+import org.openqa.grid.internal.utils.SelfRegisteringRemoteTest;
 import org.openqa.grid.plugin.RemoteProxyInheritanceTest;
 
 @RunWith(Suite.class)
@@ -47,7 +48,8 @@ import org.openqa.grid.plugin.RemoteProxyInheritanceTest;
     StatusServletTests.class,
     Grid1ConfigurationLoaderTest.class,
     UserDefinedCapabilityMatcherTests.class,
-    GridShutdownTest.class
+    GridShutdownTest.class,
+    SelfRegisteringRemoteTest.class
 })
 public class GridInternalTests {
 }

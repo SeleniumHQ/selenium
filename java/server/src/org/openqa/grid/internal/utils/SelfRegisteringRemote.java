@@ -216,15 +216,7 @@ public class SelfRegisteringRemote {
 
         BasicHttpEntityEnclosingRequest r =
             new BasicHttpEntityEnclosingRequest("POST", registration.toExternalForm());
-        int port = Integer.parseInt(nodeConfig.getConfigAsString(RegistrationRequest.PORT));
-        if (port == 0) {
-          port = server.getRealPort();
-          Map<String, Object> config = nodeConfig.getConfiguration();
-          config.put(RegistrationRequest.PORT,server.getRealPort());
-          URL url = new URL(nodeConfig.getConfigAsString(RegistrationRequest.REMOTE_HOST));
-          String newUrl = "http://" + url.getHost() + ":" + port;
-          config.put(RegistrationRequest.REMOTE_HOST, newUrl);
-        }
+        updateConfigWithRealPort();
         String json = nodeConfig.toJSON();
         r.setEntity(new StringEntity(json,"UTF-8"));
 
@@ -243,6 +235,19 @@ public class SelfRegisteringRemote {
       LOG.fine("The node is already present on the hub. Skipping registration.");
     }
 
+  }
+
+  void updateConfigWithRealPort() throws MalformedURLException {
+    int port = Integer.parseInt(nodeConfig.getConfigAsString(RegistrationRequest.PORT));
+    if (port != 0) {
+      return;
+    }
+    port = server.getRealPort();
+    Map<String, Object> config = nodeConfig.getConfiguration();
+    config.put(RegistrationRequest.PORT, server.getRealPort());
+    URL url = new URL(nodeConfig.getConfigAsString(RegistrationRequest.REMOTE_HOST));
+    String newUrl = url.getProtocol() + "://" + url.getHost() + ":" + port;
+    config.put(RegistrationRequest.REMOTE_HOST, newUrl);
   }
 
   /**
