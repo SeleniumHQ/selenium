@@ -71,7 +71,7 @@ bot.locators.id.single = function(target, root) {
  * @param {string} target The id to search for.
  * @param {!(Document|Element)} root The document or element to perform the
  *     search under.
- * @return {!goog.array.ArrayLike} All matching elements, or an empty list.
+ * @return {!IArrayLike} All matching elements, or an empty list.
  */
 bot.locators.id.many = function(target, root) {
   if (!target) {

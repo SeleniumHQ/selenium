@@ -108,7 +108,7 @@ safaridriver.inject.commands.getPageSource = function() {
 /**
  * Defines an element locating command.
  * @param {function(!Object, (Document|Element)=):
- *     (Element|!goog.array.ArrayLike.<Element>)} locatorFn The locator function
+ *     (Element|!IArrayLike.<Element>)} locatorFn The locator function
  *     that should be used.
  * @return {function(!safaridriver.Command): !bot.response.ResponseObject} The
  *     locator command function.

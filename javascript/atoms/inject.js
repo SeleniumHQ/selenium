@@ -110,7 +110,7 @@ bot.inject.wrapValue = function(value) {
       return value.toString();
 
     case 'array':
-      return goog.array.map(/**@type {goog.array.ArrayLike}*/ (value),
+      return goog.array.map(/**@type {IArrayLike}*/ (value),
           bot.inject.wrapValue);
 
     case 'object':
@@ -141,7 +141,7 @@ bot.inject.wrapValue = function(value) {
       }
 
       if (goog.isArrayLike(value)) {
-        return goog.array.map(/**@type {goog.array.ArrayLike}*/ (value),
+        return goog.array.map(/**@type {IArrayLike}*/ (value),
             bot.inject.wrapValue);
       }
 
@@ -165,7 +165,7 @@ bot.inject.wrapValue = function(value) {
  */
 bot.inject.unwrapValue = function(value, opt_doc) {
   if (goog.isArray(value)) {
-    return goog.array.map(/**@type {goog.array.ArrayLike}*/ (value),
+    return goog.array.map(/**@type {IArrayLike}*/ (value),
         function(v) { return bot.inject.unwrapValue(v, opt_doc); });
   } else if (goog.isObject(value)) {
     if (typeof value == 'function') {

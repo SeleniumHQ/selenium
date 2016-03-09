@@ -161,7 +161,7 @@ safaridriver.inject.Encoder.prototype.encode = function(value) {
 
       // Check for a NodeList.
       if (goog.isArrayLike(value)) {
-        return goog.array.map(/** @type {!goog.array.ArrayLike} */ (value),
+        return goog.array.map(/** @type {!IArrayLike} */ (value),
             this.encode, this);
       }
 
