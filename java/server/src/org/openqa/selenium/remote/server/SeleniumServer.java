@@ -98,12 +98,8 @@ public class SeleniumServer implements GridNodeServer {
     handler.setContextPath("/");
     handler.addServlet(DriverServlet.class, "/wd/hub/*");
 
-    if (browserTimeout > 0) {
-      handler.setInitParameter(DriverServlet.BROWSER_TIMEOUT_PARAMETER, String.valueOf(browserTimeout));
-    }
-    if (sessionTimeout > 0) {
-      handler.setInitParameter(DriverServlet.SESSION_TIMEOUT_PARAMETER, String.valueOf(sessionTimeout));
-    }
+    handler.setInitParameter(DriverServlet.BROWSER_TIMEOUT_PARAMETER, String.valueOf(browserTimeout));
+    handler.setInitParameter(DriverServlet.SESSION_TIMEOUT_PARAMETER, String.valueOf(sessionTimeout));
 
     addRcSupport(handler);
 
