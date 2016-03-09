@@ -68,7 +68,7 @@ webdriver.testing.ContainsMatcher.prototype.matches = function(actualValue) {
         actualValue, /** @type {string} */(this.value_));
   } else {
     return goog.array.contains(
-        /** @type {goog.array.ArrayLike} */(actualValue), this.value_);
+        /** @type {IArrayLike} */(actualValue), this.value_);
   }
 };
 

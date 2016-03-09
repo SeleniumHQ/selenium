@@ -63,7 +63,7 @@ bot.locators.linkText.single_ = function(target, root, opt_isPartial) {
  *     search under.
  * @param {boolean} opt_isPartial Whether the link text needs to be matched
  *     only partially.
- * @return {goog.array.ArrayLike} All matching elements, or an empty list.
+ * @return {IArrayLike} All matching elements, or an empty list.
  * @private
  */
 bot.locators.linkText.many_ = function(target, root, opt_isPartial) {
@@ -102,7 +102,7 @@ bot.locators.linkText.single = function(target, root) {
  * @param {string} target The link text to search for.
  * @param {!(Document|Element)} root The document or element to perform the
  *     search under.
- * @return {goog.array.ArrayLike} All matching elements, or an empty list.
+ * @return {IArrayLike} All matching elements, or an empty list.
  */
 bot.locators.linkText.many = function(target, root) {
   return bot.locators.linkText.many_(target, root, false);
@@ -127,7 +127,7 @@ bot.locators.partialLinkText.single = function(target, root) {
  * @param {string} target The link text to search for.
  * @param {!(Document|Element)} root The document or element to perform the
  *     search under.
- * @return {goog.array.ArrayLike} All matching elements, or an empty list.
+ * @return {IArrayLike} All matching elements, or an empty list.
  */
 bot.locators.partialLinkText.many = function(target, root) {
   return bot.locators.linkText.many_(target, root, true);
