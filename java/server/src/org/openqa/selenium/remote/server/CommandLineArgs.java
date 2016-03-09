@@ -32,8 +32,8 @@ public class CommandLineArgs {
 
   @Parameter(
     names = "-browserTimeout",
-    description = "Number of seconds a browser is allowed to hang (0 means indefinite).")
-  int browserTimeout;
+    description = "Number of seconds a browser is allowed to hang (0 means indefinite) while a command is running (example: driver.get(url)). If set, must be greater than or equal to 60. When the timeout is reached while a command is processing, the session will quit.")
+  int browserTimeout = 0;
 
   @Parameter(
     names = "-jettyThreads",
@@ -46,7 +46,7 @@ public class CommandLineArgs {
   int port = 4444;
 
   @Parameter(
-    names = "-timeout",
-    description = "Number of seconds we should allow a client to be idle (0 means indefinite).")
-  int timeout;
+    names = {"-timeout", "-sessionTimeout"},
+    description = "Number of seconds we should allow a client to be idle (0 means indefinite) between commands. Session will quit when timeout is reached. Default is 1800 (30 minutes).")
+  int timeout = 1800;
 }

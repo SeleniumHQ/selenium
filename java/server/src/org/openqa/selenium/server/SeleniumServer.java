@@ -411,8 +411,8 @@ public class SeleniumServer implements SslCertificateGenerator, GridNodeServer {
     } else {
       browserTimeout /= 1000;
     }
-    webdriverContext.setInitParameter("webdriver.server.session.timeout", String.valueOf(sessionTimeout));
-    webdriverContext.setInitParameter("webdriver.server.browser.timeout", String.valueOf(browserTimeout));
+    webdriverContext.setInitParameter(DriverServlet.SESSION_TIMEOUT_PARAMETER, String.valueOf(sessionTimeout));
+    webdriverContext.setInitParameter(DriverServlet.BROWSER_TIMEOUT_PARAMETER, String.valueOf(browserTimeout));
     webdriverContext.setAttribute(DriverServlet.SESSIONS_KEY, webDriverSessions);
     webdriverContext.setContextPath("/wd");
     ServletHandler handler = new ServletHandler();

@@ -41,6 +41,8 @@ public class SeleniumServer implements GridNodeServer {
   private int threadCount;
   private Server server;
   private DefaultDriverSessions driverSessions;
+  private int browserTimeout = 0;
+  private int sessionTimeout = 0;
 
   private Thread shutDownHook;
   /**
@@ -70,8 +72,16 @@ public class SeleniumServer implements GridNodeServer {
     }
   }
 
-  private void setThreadCount(int threadCount) {
+  public void setThreadCount(int threadCount) {
     this.threadCount = threadCount;
+  }
+
+  public void setBrowserTimeout(int browserTimeout) {
+    this.browserTimeout = browserTimeout;
+  }
+
+  public void setSessionTimeout(int timeout) {
+    this.sessionTimeout = timeout;
   }
 
   public void boot() {
@@ -87,6 +97,14 @@ public class SeleniumServer implements GridNodeServer {
     handler.setAttribute(DriverServlet.SESSIONS_KEY, driverSessions);
     handler.setContextPath("/");
     handler.addServlet(DriverServlet.class, "/wd/hub/*");
+
+    if (browserTimeout > 0) {
+      handler.setInitParameter(DriverServlet.BROWSER_TIMEOUT_PARAMETER, String.valueOf(browserTimeout));
+    }
+    if (sessionTimeout > 0) {
+      handler.setInitParameter(DriverServlet.SESSION_TIMEOUT_PARAMETER, String.valueOf(sessionTimeout));
+    }
+
     addRcSupport(handler);
 
     server.setHandler(handler);
@@ -191,6 +209,8 @@ public class SeleniumServer implements GridNodeServer {
 
     SeleniumServer server = new SeleniumServer(args.port);
     server.setThreadCount(args.jettyThreads);
+    server.setBrowserTimeout(args.browserTimeout);
+    server.setSessionTimeout(args.timeout);
     server.boot();
   }
 

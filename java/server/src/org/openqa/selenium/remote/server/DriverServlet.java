@@ -52,6 +52,8 @@ import javax.servlet.http.HttpServletResponse;
 
 public class DriverServlet extends HttpServlet {
   public static final String SESSIONS_KEY = DriverServlet.class.getName() + ".sessions";
+  public static final String SESSION_TIMEOUT_PARAMETER = "webdriver.server.session.timeout";
+  public static final String BROWSER_TIMEOUT_PARAMETER = "webdriver.server.browser.timeout";
 
   private static final String CROSS_DOMAIN_RPC_PATH = "/xdrpc";
 
@@ -81,8 +83,8 @@ public class DriverServlet extends HttpServlet {
     DriverSessions driverSessions = sessionsSupplier.get();
     commandHandler = new JsonHttpCommandHandler(driverSessions, logger);
 
-    long sessionTimeOutInMs = getValueToUseInMs("webdriver.server.session.timeout", 1800);
-    long browserTimeoutInMs = getValueToUseInMs("webdriver.server.browser.timeout", 0);
+    long sessionTimeOutInMs = getValueToUseInMs(SESSION_TIMEOUT_PARAMETER, 1800);
+    long browserTimeoutInMs = getValueToUseInMs(BROWSER_TIMEOUT_PARAMETER, 0);
 
     if (sessionTimeOutInMs > 0 || browserTimeoutInMs > 0) {
       createSessionCleaner(logger, driverSessions, sessionTimeOutInMs, browserTimeoutInMs);
