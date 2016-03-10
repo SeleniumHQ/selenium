@@ -53,9 +53,13 @@ class WebDriver(RemoteWebDriver):
         if capabilities is None:
             capabilities = DesiredCapabilities.FIREFOX
 
+        if self.binary is None:
+            self.binary = capabilities.get("binary") or FirefoxBinary()
+
         # marionette
         if capabilities.get("marionette"):
-            self.binary = capabilities.get("binary")
+            if isinstance(self.binary, FirefoxBinary):
+                self.binary = self.binary._get_firefox_start_cmd()
             self.service = Service(executable_path, firefox_binary=self.binary)
             self.service.start()
 
@@ -68,9 +72,6 @@ class WebDriver(RemoteWebDriver):
                 keep_alive=True)
         else:
             # Oh well... sometimes the old way is the best way.
-            if self.binary is None:
-                self.binary = FirefoxBinary()
-
             if proxy is not None:
                 proxy.add_to_capabilities(capabilities)
 
