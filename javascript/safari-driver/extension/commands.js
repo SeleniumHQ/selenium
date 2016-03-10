@@ -111,9 +111,16 @@ safaridriver.extension.commands.getWindowHandles = function(session) {
  */
 safaridriver.extension.commands.takeScreenshot = function(session) {
   return new webdriver.promise.Promise(function(fulfill) {
-    session.getCommandTab().visibleContentsAsDataURL(function(dataUrl) {
-      fulfill(dataUrl.substring('data:image/png;base64,'.length));
-    });
+
+
+      var CommandName = webdriver.CommandName;
+      session.getCommandTab().send(new safaridriver.Command("getCanvasUrl",CommandName.GET_CANVAS_URL),200);
+
+        /*
+        session.getCommandTab().visibleContentsAsDataURL(function(dataUrl) {
+            fulfill(dataUrl.substring('data:image/png;base64,'.length));
+        });
+        */
   });
 };
 

@@ -161,6 +161,7 @@ map[CommandName.SET_ALERT_TEXT] = commands.handleNoAlertsPresent;
 
 map[CommandName.GET_AVAILABLE_LOG_TYPES] = commands.getAvailableLogTypes;
 map[CommandName.GET_LOG] = commands.getLogs;
+map[CommandName.GET_CANVAS_URL] = commands.sendCommand;
 });  // goog.scope
 
 

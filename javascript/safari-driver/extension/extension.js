@@ -220,6 +220,10 @@ safaridriver.extension.onCommand_ = function(e) {
 safaridriver.extension.onMessage_ = function(e) {
   var isSynchronous = e.name === 'canLoad';
   var message = safaridriver.message.fromEvent(e);
+  console.log("Event is")
+  console.log(e)
+  console.log("Messa ge is")
+  console.log(message)
   var type = message.getType();
   switch (type) {
     case safaridriver.message.Command.TYPE:

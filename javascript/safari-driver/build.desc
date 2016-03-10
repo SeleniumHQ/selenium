@@ -182,6 +182,7 @@ js_module_binary(
     modules = [
         "//javascript/safari-driver/inject:base",
         "//javascript/safari-driver/inject:commands",
+        "//javascript/safari-driver/inject:canvas",
     ],
     externs = [
         "externs/common.js",
@@ -220,6 +221,7 @@ js_module_binary(
         "--language_out=ECMASCRIPT5_STRICT",
         "--module_wrapper='base:%s;init();'",
         "--module_wrapper='commands:MODULES.injected_commands = function() {%s};'",
+        "--module_wrapper='canvas:%s;init();'",
 
         "--third_party=false",
 

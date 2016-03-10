@@ -63,3 +63,15 @@ js_module(
         ":commandregistry",
         "//javascript/webdriver/atoms:atoms_lib",
     ])
+
+js_module(
+    name="canvas",
+    srcs = [
+        "canvas/inject.js",
+        "canvas/module.js",
+        "canvas/command.js",
+        "canvas/html2canvas.js"
+       ],
+    module_deps = [":base"]
+)
+
