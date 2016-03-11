@@ -2135,7 +2135,7 @@ class WebElement {
    */
   getOuterHtml() {
     return this.driver_.executeScript(function() {
-      var element = arguments[0];
+      var element = /** @type {!Element} */(arguments[0]);
       if ('outerHTML' in element) {
         return element.outerHTML;
       } else {

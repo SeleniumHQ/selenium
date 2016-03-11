@@ -308,8 +308,22 @@ test.suite(function(env) {
       });
     });
 
-  });
+    describe('getInnerHtml', function() {
+      test.it('returns element innerHTML using executeScript', function() {
+        let html = driver.findElement(By.css('div.request')).getInnerHtml();
+        assert(html).equalTo('GET /common/echo HTTP/1.1');
+      });
+    });
 
+    describe('getOuterHtml', function() {
+      test.it('returns element outerHTML using executeScript', function() {
+        let html = driver.findElement(By.css('div.request')).getOuterHtml();
+        assert(html)
+            .equalTo('<div class="request">GET /common/echo HTTP/1.1</div>');
+      });
+    });
+  });
+  
   function verifyJson(expected) {
     return function(actual) {
       assert(JSON.stringify(actual)).equalTo(JSON.stringify(expected));
