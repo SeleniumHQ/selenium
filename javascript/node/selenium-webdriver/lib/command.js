@@ -159,6 +159,7 @@ const Name = {
   DISMISS_ALERT: 'dismissAlert',
   GET_ALERT_TEXT: 'getAlertText',
   SET_ALERT_TEXT: 'setAlertValue',
+  SET_ALERT_CREDENTIALS: 'setAlertCredentials',
 
   EXECUTE_SQL: 'executeSQL',
   GET_LOCATION: 'getLocation',

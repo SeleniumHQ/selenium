@@ -21,6 +21,8 @@
    The top-level `error` module will be removed in v3.0.
 * Moved `until.Condition` and `until.WebElementCondition` to the webdriver
    module to break a circular dependency.
+* Added support for setting the username and password in basic auth pop-up
+   dialogs (currently IE only).
 * FIXED: `io.findInPath()` will no longer match against directories that have
    the same basename as the target file.
 * FIXED: `phantomjs.Driver` now takes a third argument that defines the path to
