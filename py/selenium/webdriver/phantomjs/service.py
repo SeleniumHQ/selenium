@@ -43,7 +43,7 @@ class Service(service.Service):
             log_path = "ghostdriver.log"
         if not self._args_contain("--cookies-file="):
             self._cookie_temp_file = tempfile.mkstemp()[1]
-            self.service_args.append("cookies-file=" + self._cookie_temp_file)
+            self.service_args.append("--cookies-file=" + self._cookie_temp_file)
         else:
             self._cookie_temp_file = None
 
