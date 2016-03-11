@@ -23,6 +23,9 @@
    module to break a circular dependency.
 * FIXED: `io.findInPath()` will no longer match against directories that have
    the same basename as the target file.
+* FIXED: `phantomjs.Driver` now takes a third argument that defines the path to
+   a log file to use for the phantomjs executable's output. This may be quickly
+   set at runtime with the `SELENIUM_PHANTOMJS_LOG` environment variable.
 
 ### Changes for W3C WebDriver Spec Compliance
 
