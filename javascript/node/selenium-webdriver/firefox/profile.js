@@ -199,8 +199,8 @@ function decode(data) {
 
 
 /**
- * Models a Firefox proifle directory for use with the FirefoxDriver. The
- * {@code Proifle} directory uses an in-memory model until {@link #writeToDisk}
+ * Models a Firefox profile directory for use with the FirefoxDriver. The
+ * {@code Profile} directory uses an in-memory model until {@link #writeToDisk}
  * is called.
  */
 class Profile {
