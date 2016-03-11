@@ -33,6 +33,8 @@ class WebDriverError extends Error {
   /**
    * @return {number} the legacy numeric code for this class of error.
    * @deprecated
+   * @suppress {deprecated} Ignore warnings about reference to deprecated
+   *     ErrorCode type.
    */
   static get code() {
     return ErrorCode.UNKNOWN_ERROR;
@@ -57,7 +59,7 @@ class ElementNotSelectableError extends WebDriverError {
     super(opt_error);
   }
 
-  /** @override */
+  /** @override @suppress {deprecated} */
   static get code() {
     return ErrorCode.ELEMENT_NOT_SELECTABLE;
   }
@@ -74,7 +76,7 @@ class ElementNotVisibleError extends WebDriverError {
     super(opt_error);
   }
 
-  /** @override */
+  /** @override @suppress {deprecated} */
   static get code() {
     return ErrorCode.ELEMENT_NOT_VISIBLE;
   }
@@ -102,7 +104,7 @@ class InvalidCookieDomainError extends WebDriverError {
     super(opt_error);
   }
 
-  /** @override */
+  /** @override @suppress {deprecated} */
   static get code() {
     return ErrorCode.INVALID_COOKIE_DOMAIN;
   }
@@ -118,7 +120,7 @@ class InvalidElementCoordinatesError extends WebDriverError {
     super(opt_error);
   }
 
-  /** @override */
+  /** @override @suppress {deprecated} */
   static get code() {
     return ErrorCode.INVALID_ELEMENT_COORDINATES;
   }
@@ -136,7 +138,7 @@ class InvalidElementStateError extends WebDriverError {
     super(opt_error);
   }
 
-  /** @override */
+  /** @override @suppress {deprecated} */
   static get code() {
     return ErrorCode.INVALID_ELEMENT_STATE;
   }
@@ -152,7 +154,7 @@ class InvalidSelectorError extends WebDriverError {
     super(opt_error);
   }
 
-  /** @override */
+  /** @override @suppress {deprecated} */
   static get code() {
     return ErrorCode.INVALID_SELECTOR_ERROR;
   }
@@ -190,7 +192,7 @@ class JavascriptError extends WebDriverError {
     super(opt_error);
   }
 
-  /** @override */
+  /** @override @suppress {deprecated} */
   static get code() {
     return ErrorCode.JAVASCRIPT_ERROR;
   }
@@ -207,7 +209,7 @@ class MoveTargetOutOfBoundsError extends WebDriverError {
     super(opt_error);
   }
 
-  /** @override */
+  /** @override @suppress {deprecated} */
   static get code() {
     return ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS;
   }
@@ -223,7 +225,7 @@ class NoSuchAlertError extends WebDriverError {
     super(opt_error);
   }
 
-  /** @override */
+  /** @override @suppress {deprecated} */
   static get code() {
     return ErrorCode.NO_SUCH_ALERT;
   }
@@ -240,7 +242,7 @@ class NoSuchElementError extends WebDriverError {
     super(opt_error);
   }
 
-  /** @override */
+  /** @override @suppress {deprecated} */
   static get code() {
     return ErrorCode.NO_SUCH_ELEMENT;
   }
@@ -257,7 +259,7 @@ class NoSuchFrameError extends WebDriverError {
     super(opt_error);
   }
 
-  /** @override */
+  /** @override @suppress {deprecated} */
   static get code() {
     return ErrorCode.NO_SUCH_FRAME;
   }
@@ -274,7 +276,7 @@ class NoSuchWindowError extends WebDriverError {
     super(opt_error);
   }
 
-  /** @override */
+  /** @override @suppress {deprecated} */
   static get code() {
     return ErrorCode.NO_SUCH_WINDOW;
   }
@@ -290,7 +292,7 @@ class ScriptTimeoutError extends WebDriverError {
     super(opt_error);
   }
 
-  /** @override */
+  /** @override @suppress {deprecated} */
   static get code() {
     return ErrorCode.SCRIPT_TIMEOUT;
   }
@@ -306,7 +308,7 @@ class SessionNotCreatedError extends WebDriverError {
     super(opt_error);
   }
 
-  /** @override */
+  /** @override @suppress {deprecated} */
   static get code() {
     return ErrorCode.SESSION_NOT_CREATED;
   }
@@ -324,7 +326,7 @@ class StaleElementReferenceError extends WebDriverError {
     super(opt_error);
   }
 
-  /** @override */
+  /** @override @suppress {deprecated} */
   static get code() {
     return ErrorCode.STALE_ELEMENT_REFERENCE;
   }
@@ -340,7 +342,7 @@ class TimeoutError extends WebDriverError {
     super(opt_error);
   }
 
-  /** @override */
+  /** @override @suppress {deprecated} */
   static get code() {
     return ErrorCode.TIMEOUT;
   }
@@ -356,7 +358,7 @@ class UnableToSetCookieError extends WebDriverError {
     super(opt_error);
   }
 
-  /** @override */
+  /** @override @suppress {deprecated} */
   static get code() {
     return ErrorCode.UNABLE_TO_SET_COOKIE;
   }
@@ -389,7 +391,7 @@ class UnexpectedAlertOpenError extends WebDriverError {
     this.text_ = opt_text;
   }
 
-  /** @override */
+  /** @override @suppress {deprecated} */
   static get code() {
     return ErrorCode.UNEXPECTED_ALERT_OPEN;
   }
@@ -413,7 +415,7 @@ class UnknownCommandError extends WebDriverError {
     super(opt_error);
   }
 
-  /** @override */
+  /** @override @suppress {deprecated} */
   static get code() {
     return ErrorCode.UNSUPPORTED_OPERATION;
   }
@@ -430,7 +432,7 @@ class UnknownMethodError extends WebDriverError {
     super(opt_error);
   }
 
-  /** @override */
+  /** @override @suppress {deprecated} */
   static get code() {
     return ErrorCode.UNSUPPORTED_OPERATION;
   }
@@ -446,7 +448,7 @@ class UnsupportedOperationError extends WebDriverError {
     super(opt_error);
   }
 
-  /** @override */
+  /** @override @suppress {deprecated} */
   static get code() {
     return ErrorCode.UNSUPPORTED_OPERATION;
   }
