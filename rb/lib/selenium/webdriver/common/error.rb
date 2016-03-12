@@ -217,7 +217,7 @@ module Selenium
           return Errors[code - 1] if code.is_a? Fixnum
 
           klass_name = code.split(' ').map(&:capitalize).join
-          Error.const_get("#{klass_name}Error")
+          Error.const_get("#{klass_name.gsub('Error','')}Error")
         rescue NameError
           WebDriverError
         end
