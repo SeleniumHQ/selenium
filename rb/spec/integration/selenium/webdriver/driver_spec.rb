@@ -282,8 +282,8 @@ describe "Driver" do
       end
 
       # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1849991/
-      not_compliant_on({:browser => [:edge, :marionette]},
-                       {:driver => :remote, :browser => :phantomjs}) do
+      not_compliant_on({:driver => :remote, :browser => [:marionette, :phantomjs]},
+                       {:browser => :edge}) do
         it "times out if the callback is not invoked" do
           expect {
             # Script is expected to be async and explicitly callback, so this should timeout.

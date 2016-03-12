@@ -30,6 +30,10 @@ module Selenium
           GlobalTestEnv.reset_driver!(time)
         end
 
+        def quit_driver
+          GlobalTestEnv.quit_driver
+        end
+
         def ensure_single_window
           GlobalTestEnv.ensure_single_window
         end

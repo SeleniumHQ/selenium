@@ -26,9 +26,7 @@ describe "Selenium::WebDriver::TargetLocator" do
 
   let(:new_window) { driver.window_handles.find { |handle| handle != driver.window_handle } }
 
-  # Marionette Bug -
-  # POST /session/f7082a32-e685-2843-ad2c-5bb6f376dac5/element/active
-  # did not match a known command
+  # https://github.com/jgraham/wires/issues/52
   not_compliant_on :browser => :marionette do
     it "should find the active element" do
       driver.navigate.to url_for("xhtmlTest.html")

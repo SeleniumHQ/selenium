@@ -91,6 +91,14 @@ module Selenium
           )
         end
 
+        def reset_remote_server
+          if defined?(@remote_server)
+            @remote_server.stop
+          end
+          @remote_server = nil
+          remote_server
+        end
+
         def remote_server?
           !@remote_server.nil?
         end
@@ -201,14 +209,15 @@ module Selenium
 
         def create_firefox_driver
           binary = ENV['FIREFOX_BINARY']
-          if binary
-            WebDriver::Firefox.path = binary
-          end
+          WebDriver::Firefox.path = binary if binary
 
           WebDriver::Driver.for :firefox
         end
 
         def create_marionette_driver
+          binary = ENV['MARIONETTE_BINARY']
+          WebDriver::Firefox.path = binary if binary
+
           WebDriver.for :firefox, :marionette => true
         end
 
