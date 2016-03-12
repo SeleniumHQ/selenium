@@ -30,7 +30,7 @@
  *   SELENIUM_SERVER_JAR=/path/to/selenium-server-standalone.jar \
  *     node selenium-webdriver/example/google_search.js
  *
- *   // Target a remove Selenium server
+ *   // Target a remote Selenium server
  *   SELENIUM_REMOTE_URL=http://www.example.com:4444/wd/hub \
  *     node selenium-webdriver/example/google_search.js
  */
