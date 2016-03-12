@@ -69,14 +69,16 @@ exports.direct = function() {
  * @return {!ProxyConfig} A new proxy configuration object.
  */
 exports.manual = function(options) {
-  return {
+  // TODO(jleyba): Figure out why the Closure compiler does not think this is
+  // a ProxyConfig record without the cast.
+  return /** @type {!ProxyConfig} */({
     proxyType: 'manual',
     ftpProxy: options.ftp,
     httpProxy: options.http,
     sslProxy: options.https,
     noProxy: util.isArray(options.bypass) ?
         options.bypass.join(',') : options.bypass
-  };
+  });
 };
 
 

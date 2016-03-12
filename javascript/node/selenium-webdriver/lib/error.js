@@ -552,6 +552,33 @@ const ERROR_CODE_TO_TYPE = new Map([
     ['unsupported operation', UnsupportedOperationError]]);
 
 
+const TYPE_TO_ERROR_CODE = new Map;
+ERROR_CODE_TO_TYPE.forEach((value, key) => {
+  TYPE_TO_ERROR_CODE.set(value, key);
+});
+
+
+
+/**
+ * @param {*} err The error to encode.
+ * @return {{error: string, message: string}} the encoded error.
+ */
+function encodeError(err) {
+  let type = WebDriverError;
+  if (err instanceof WebDriverError
+      && TYPE_TO_ERROR_CODE.has(err.constructor)) {
+    type = err.constructor;
+  }
+
+  let message = err instanceof Error
+      ? err.message
+      : err + '';
+
+  let code = /** @type {string} */(TYPE_TO_ERROR_CODE.get(type));
+  return {'error': code, 'message': message};
+}
+
+
 /**
  * Checks a response object from a server that adheres to the W3C WebDriver
  * protocol.
@@ -626,35 +653,38 @@ function checkLegacyResponse(responseObj) {
 // PUBLIC API
 
 
-exports.ErrorCode = ErrorCode;
+module.exports = {
+  ErrorCode: ErrorCode,
 
-exports.WebDriverError = WebDriverError;
-exports.ElementNotSelectableError = ElementNotSelectableError;
-exports.ElementNotVisibleError = ElementNotVisibleError;
-exports.InvalidArgumentError = InvalidArgumentError;
-exports.InvalidCookieDomainError = InvalidCookieDomainError;
-exports.InvalidElementCoordinatesError = InvalidElementCoordinatesError;
-exports.InvalidElementStateError = InvalidElementStateError;
-exports.InvalidSelectorError = InvalidSelectorError;
-exports.InvalidSessionIdError = InvalidSessionIdError;
-exports.JavascriptError = JavascriptError;
-exports.MoveTargetOutOfBoundsError = MoveTargetOutOfBoundsError;
-exports.NoSuchAlertError = NoSuchAlertError;
-exports.NoSuchElementError = NoSuchElementError;
-exports.NoSuchFrameError = NoSuchFrameError;
-exports.NoSuchSessionError = NoSuchSessionError;
-exports.NoSuchWindowError = NoSuchWindowError;
-exports.ScriptTimeoutError = ScriptTimeoutError;
-exports.SessionNotCreatedError = SessionNotCreatedError;
-exports.StaleElementReferenceError = StaleElementReferenceError;
-exports.TimeoutError = TimeoutError;
-exports.UnableToSetCookieError = UnableToSetCookieError;
-exports.UnableToCaptureScreenError = UnableToCaptureScreenError;
-exports.UnexpectedAlertOpenError = UnexpectedAlertOpenError;
-exports.UnknownCommandError = UnknownCommandError;
-exports.UnknownMethodError = UnknownMethodError;
-exports.UnsupportedOperationError = UnsupportedOperationError;
+  WebDriverError: WebDriverError,
+  ElementNotSelectableError: ElementNotSelectableError,
+  ElementNotVisibleError: ElementNotVisibleError,
+  InvalidArgumentError: InvalidArgumentError,
+  InvalidCookieDomainError: InvalidCookieDomainError,
+  InvalidElementCoordinatesError: InvalidElementCoordinatesError,
+  InvalidElementStateError: InvalidElementStateError,
+  InvalidSelectorError: InvalidSelectorError,
+  InvalidSessionIdError: InvalidSessionIdError,
+  JavascriptError: JavascriptError,
+  MoveTargetOutOfBoundsError: MoveTargetOutOfBoundsError,
+  NoSuchAlertError: NoSuchAlertError,
+  NoSuchElementError: NoSuchElementError,
+  NoSuchFrameError: NoSuchFrameError,
+  NoSuchSessionError: NoSuchSessionError,
+  NoSuchWindowError: NoSuchWindowError,
+  ScriptTimeoutError: ScriptTimeoutError,
+  SessionNotCreatedError: SessionNotCreatedError,
+  StaleElementReferenceError: StaleElementReferenceError,
+  TimeoutError: TimeoutError,
+  UnableToSetCookieError: UnableToSetCookieError,
+  UnableToCaptureScreenError: UnableToCaptureScreenError,
+  UnexpectedAlertOpenError: UnexpectedAlertOpenError,
+  UnknownCommandError: UnknownCommandError,
+  UnknownMethodError: UnknownMethodError,
+  UnsupportedOperationError: UnsupportedOperationError,
 
-exports.checkResponse = checkResponse;
-exports.checkLegacyResponse = checkLegacyResponse;
-exports.throwDecodedError = throwDecodedError;
+  checkResponse: checkResponse,
+  checkLegacyResponse: checkLegacyResponse,
+  encodeError: encodeError,
+  throwDecodedError: throwDecodedError,
+};

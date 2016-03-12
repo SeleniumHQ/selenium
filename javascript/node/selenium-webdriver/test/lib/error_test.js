@@ -77,6 +77,58 @@ describe('error', function() {
     }
   });
 
+  describe('encodeError', function() {
+    describe('defaults to an unknown error', function() {
+      it('for a generic error value', function() {
+        runTest('hi', 'unknown error', 'hi');
+        runTest(1, 'unknown error', '1');
+        runTest({}, 'unknown error', '[object Object]');
+      });
+
+      it('for a generic Error object', function() {
+        runTest(Error('oops'), 'unknown error', 'oops');
+        runTest(TypeError('bad value'), 'unknown error', 'bad value');
+      });
+    });
+
+    test(error.WebDriverError, 'unknown error');
+    test(error.ElementNotSelectableError, 'element not selectable');
+    test(error.ElementNotVisibleError, 'element not visible');
+    test(error.InvalidArgumentError, 'invalid argument');
+    test(error.InvalidCookieDomainError, 'invalid cookie domain');
+    test(error.InvalidElementStateError, 'invalid element state');
+    test(error.InvalidSelectorError, 'invalid selector');
+    test(error.NoSuchSessionError, 'invalid session id');
+    test(error.JavascriptError, 'javascript error');
+    test(error.MoveTargetOutOfBoundsError, 'move target out of bounds');
+    test(error.NoSuchAlertError, 'no such alert');
+    test(error.NoSuchElementError, 'no such element');
+    test(error.NoSuchFrameError, 'no such frame');
+    test(error.NoSuchWindowError, 'no such window');
+    test(error.ScriptTimeoutError, 'script timeout');
+    test(error.SessionNotCreatedError, 'session not created');
+    test(error.StaleElementReferenceError, 'stale element reference');
+    test(error.TimeoutError, 'timeout');
+    test(error.UnableToSetCookieError, 'unable to set cookie');
+    test(error.UnableToCaptureScreenError, 'unable to capture screen');
+    test(error.UnexpectedAlertOpenError, 'unexpected alert open');
+    test(error.UnknownCommandError, 'unknown command');
+    test(error.UnknownMethodError, 'unknown method');
+    test(error.UnsupportedOperationError, 'unsupported operation');
+
+    function test(ctor, code) {
+      it(`${ctor.name} => "${code}"`, () => {
+        runTest(new ctor('oops'), code, 'oops');
+      });
+    }
+
+    function runTest(err, code, message) {
+      let obj = error.encodeError(err);
+      assert.strictEqual(obj['error'], code);
+      assert.strictEqual(obj['message'], message);
+    }
+  });
+
   describe('throwDecodedError', function() {
     it('defaults to WebDriverError if type is unrecognized', function() {
       assert.throws(

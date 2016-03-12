@@ -258,7 +258,9 @@ class DeferredExecutor {
 // PUBLIC API
 
 
-exports.Command = Command;
-exports.Name = Name;
-exports.Executor = Executor;
-exports.DeferredExecutor = DeferredExecutor;
+module.exports = {
+  Command: Command,
+  Name: Name,
+  Executor: Executor,
+  DeferredExecutor: DeferredExecutor
+};

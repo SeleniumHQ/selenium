@@ -607,7 +607,7 @@ const NativePromise = Promise;
  * Whether to append traces of `then` to rejection errors.
  * @type {boolean}
  */
-exports.LONG_STACK_TRACES = false;  // TODO: this should not be CONSTANT_CASE
+var LONG_STACK_TRACES = false;  // TODO: this should not be CONSTANT_CASE
 
 
 /** @const */
@@ -994,7 +994,7 @@ const CANCEL_HANDLER_SYMBOL = Symbol('on cancel');
  * @template T
  * @see http://promises-aplus.github.io/promises-spec/
  */
-const ManagedPromise = class Promise {
+class ManagedPromise {
   /**
    * @param {function(
    *           function((T|IThenable<T>|Thenable)=),
@@ -1013,8 +1013,8 @@ const ManagedPromise = class Promise {
 
     /** @private {Error} */
     this.stack_ = null;
-    if (exports.LONG_STACK_TRACES) {
-      this.stack_ = captureStackTrace('Promise', 'new', this.constructor);
+    if (LONG_STACK_TRACES) {
+      this.stack_ = captureStackTrace('ManagedPromise', 'new', this.constructor);
     }
 
     /** @private {ManagedPromise<?>} */
@@ -1289,7 +1289,7 @@ const ManagedPromise = class Promise {
         this.flow_,
         this.invokeCallback_.bind(this, callback, errback),
         name,
-        exports.LONG_STACK_TRACES ? {name: 'Promise', top: fn} : undefined);
+        LONG_STACK_TRACES ? {name: 'Promise', top: fn} : undefined);
     cb.promise.parent_ = this;
 
     if (this.state_ !== PromiseState.PENDING &&
@@ -2742,7 +2742,7 @@ class TaskQueue extends events.EventEmitter {
     }
     this.state_ = TaskQueueState.STARTED;
 
-    if (this.pending_ != null || this.processUnhandledRejections_()) {
+    if (this.pending_ !== null || this.processUnhandledRejections_()) {
       return;
     }
 
@@ -3067,27 +3067,32 @@ function consume(generatorFn, opt_self, var_args) {
 // PUBLIC API
 
 
-exports.CancellationError = CancellationError;
-exports.ControlFlow = ControlFlow;
-exports.Deferred = Deferred;
-exports.MultipleUnhandledRejectionError = MultipleUnhandledRejectionError;
-exports.Thenable = Thenable;
-exports.Promise = ManagedPromise;
-exports.all = all;
-exports.asap = asap;
-exports.captureStackTrace = captureStackTrace;
-exports.checkedNodeCall = checkedNodeCall;
-exports.consume = consume;
-exports.controlFlow = controlFlow;
-exports.createFlow = createFlow;
-exports.defer = defer;
-exports.delayed = delayed;
-exports.filter = filter;
-exports.fulfilled = fulfilled;
-exports.fullyResolved = fullyResolved;
-exports.isGenerator = isGenerator;
-exports.isPromise = isPromise;
-exports.map = map;
-exports.rejected = rejected;
-exports.setDefaultFlow = setDefaultFlow;
-exports.when = when;
+module.exports = {
+  CancellationError: CancellationError,
+  ControlFlow: ControlFlow,
+  Deferred: Deferred,
+  MultipleUnhandledRejectionError: MultipleUnhandledRejectionError,
+  Thenable: Thenable,
+  Promise: ManagedPromise,
+  all: all,
+  asap: asap,
+  captureStackTrace: captureStackTrace,
+  checkedNodeCall: checkedNodeCall,
+  consume: consume,
+  controlFlow: controlFlow,
+  createFlow: createFlow,
+  defer: defer,
+  delayed: delayed,
+  filter: filter,
+  fulfilled: fulfilled,
+  fullyResolved: fullyResolved,
+  isGenerator: isGenerator,
+  isPromise: isPromise,
+  map: map,
+  rejected: rejected,
+  setDefaultFlow: setDefaultFlow,
+  when: when,
+
+  get LONG_STACK_TRACES() { return LONG_STACK_TRACES; },
+  set LONG_STACK_TRACES(v) { LONG_STACK_TRACES = v; },
+};

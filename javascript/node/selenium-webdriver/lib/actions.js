@@ -590,5 +590,7 @@ class TouchSequence {
 
 // PUBLIC API
 
-exports.ActionSequence = ActionSequence;
-exports.TouchSequence = TouchSequence;
+module.exports = {
+  ActionSequence: ActionSequence,
+  TouchSequence: TouchSequence,
+};

@@ -206,5 +206,7 @@ class EventEmitter {
 // PUBLIC API
 
 
-exports.EventEmitter = EventEmitter;
-exports.Listener = Listener;
+module.exports = {
+  EventEmitter: EventEmitter,
+  Listener: Listener
+};

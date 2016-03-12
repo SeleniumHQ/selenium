@@ -167,6 +167,8 @@ class FileDetector {
 // PUBLIC API
 
 
-exports.Button = Button;
-exports.Key = Key;
-exports.FileDetector = FileDetector;
+module.exports = {
+  Button: Button,
+  Key: Key,
+  FileDetector: FileDetector
+};

@@ -271,6 +271,7 @@ function check(locator) {
 
 // PUBLIC API
 
-
-exports.By = By;
-exports.checkedLocator = check;
+module.exports = {
+  By: By,
+  checkedLocator: check,
+};

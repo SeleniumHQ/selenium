@@ -1636,10 +1636,13 @@ class WebElement {
 
   /**
    * @param {string} id The raw ID.
+   * @param {boolean=} opt_noLegacy Whether to exclude the legacy element key.
    * @return {!Object} The element ID for use with WebDriver's wire protocol.
    */
-  static buildId(id) {
-    return {[ELEMENT_ID_KEY]: id, [LEGACY_ELEMENT_ID_KEY]: id};
+  static buildId(id, opt_noLegacy) {
+    return opt_noLegacy
+        ? {[ELEMENT_ID_KEY]: id}
+        : {[ELEMENT_ID_KEY]: id, [LEGACY_ELEMENT_ID_KEY]: id};
   }
 
   /**
@@ -2411,18 +2414,20 @@ promise.Thenable.addImplementation(AlertPromise);
 // PUBLIC API
 
 
-exports.Alert = Alert;
-exports.AlertPromise = AlertPromise;
-exports.Condition = Condition;
-exports.Logs = Logs;
-exports.Navigation = Navigation;
-exports.Options = Options;
-exports.TargetLocator = TargetLocator;
-exports.Timeouts = Timeouts;
-/** @deprecated Use {@link error.UnexpectedAlertOpenError} instead. */
-exports.UnhandledAlertError = error.UnexpectedAlertOpenError;
-exports.WebDriver = WebDriver;
-exports.WebElement = WebElement;
-exports.WebElementCondition = WebElementCondition;
-exports.WebElementPromise = WebElementPromise;
-exports.Window = Window;
+module.exports = {
+  Alert: Alert,
+  AlertPromise: AlertPromise,
+  Condition: Condition,
+  Logs: Logs,
+  Navigation: Navigation,
+  Options: Options,
+  TargetLocator: TargetLocator,
+  Timeouts: Timeouts,
+  /** @deprecated Use {@link error.UnexpectedAlertOpenError} instead. */
+  UnhandledAlertError: error.UnexpectedAlertOpenError,
+  WebDriver: WebDriver,
+  WebElement: WebElement,
+  WebElementCondition: WebElementCondition,
+  WebElementPromise: WebElementPromise,
+  Window: Window
+};
