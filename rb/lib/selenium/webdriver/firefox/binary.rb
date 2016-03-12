@@ -128,6 +128,10 @@ module Selenium
             @path = path
           end
 
+          def reset_path!
+            @path = nil
+          end
+
           def path
             @path ||= case Platform.os
                       when :macosx

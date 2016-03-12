@@ -38,7 +38,17 @@ module Selenium
           :proxy => nil
         }
 
-        DEFAULTS.each_key do |key|
+        KNOWN = [
+            :remote_session_id,
+            :specification_level,
+            :xul_app_id,
+            :raise_accessibility_exceptions,
+            :rotatable,
+            :app_build_id,
+            :device
+        ]
+
+        (DEFAULTS.keys + KNOWN).each do |key|
           define_method key do
             @capabilities.fetch(key)
           end
@@ -94,19 +104,20 @@ module Selenium
             data = data.dup
 
             # Convert due to Remote Driver implementation
-            data["browserVersion"] = data.delete("version") if data["version"]
-            data["platformName"] = data.delete("platform") if data["platform"]
+            data["browserVersion"] = data.delete("version") if data.key? "version"
+            data["platformName"] = data.delete("platform") if data.key? "platform"
 
             caps = new
-            caps.browser_name = data.delete("browserName") if data["browserName"]
-            caps.browser_version = data.delete("browserVersion") if data["browserVersion"]
-            caps.platform_name = data.delete("platformName") if data["platformName"]
-            caps.platform_version = data.delete("platformVersion") if data["platformVersion"]
-            caps.accept_ssl_certs = data.delete("acceptSslCerts") if data["acceptSslCerts"]
-            caps.takes_screenshot = data.delete("takesScreenshot") if data["takesScreenshot"]
-            caps.takes_element_screenshot = data.delete("takesElementScreenshot") if data["takesElementScreenshot"]
-            caps.page_load_strategy = data.delete("pageLoadStrategy") if data["pageloadStrategy"]
-            caps.proxy = Proxy.json_create(data['proxy']) if data['proxy']
+            caps.browser_name = data.delete("browserName") if data.key? "browserName"
+            caps.browser_version = data.delete("browserVersion") if data.key? "browserVersion"
+            caps.platform_name = data.delete("platformName") if data.key? "platformName"
+            caps.platform_version = data.delete("platformVersion") if data.key? "platformVersion"
+            caps.accept_ssl_certs = data.delete("acceptSslCerts") if data.key? "acceptSslCerts"
+            caps.takes_screenshot = data.delete("takesScreenshot") if data.key? "takesScreenshot"
+            caps.takes_element_screenshot = data.delete("takesElementScreenshot") if data.key? "takesElementScreenshot"
+            caps.page_load_strategy = data.delete("pageLoadStrategy") if data.key? "pageloadStrategy"
+            proxy = data.delete('proxy')
+            caps.proxy = Proxy.json_create(proxy) unless proxy.empty?
 
             # Remote Server Specific
             caps[:remote_session_id] = data.delete('webdriver.remote.sessionid')
@@ -116,7 +127,7 @@ module Selenium
             data.delete('cssSelectorsEnabled')
 
             # Marionette Specific
-            caps[:specification_level] = data.delete("specificaionLevel")
+            caps[:specification_level] = data.delete("specificationLevel")
             caps[:xul_app_id] = data.delete("XULappId")
             caps[:raise_accessibility_exceptions] = data.delete('raisesAccessibilityExceptions')
             caps[:rotatable] = data.delete('rotatable')

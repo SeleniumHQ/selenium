@@ -65,7 +65,7 @@ class Selenium::WebDriver::Remote::W3CBridge
   command :findElements,               :post,    "session/:session_id/elements"
   command :findChildElement,           :post,    "session/:session_id/element/:id/element"
   command :findChildElements,          :post,    "session/:session_id/element/:id/elements"
-  command :getActiveElement,           :post,    "session/:session_id/element/active"
+  command :getActiveElement,           :get,     "session/:session_id/element/active"
   command :isElementSelected,          :get,     "session/:session_id/element/:id/selected"
   command :getElementAttribute,        :get,     "session/:session_id/element/:id/attribute/:name"
   command :getElementProperty,         :get,     "session/:session_id/element/:id/property/:name"
