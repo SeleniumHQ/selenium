@@ -32,8 +32,9 @@ import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
 import org.openqa.selenium.server.browserlaunchers.Sleeper;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,6 +49,17 @@ import java.util.logging.Logger;
 public class HTMLLauncher implements HTMLResultsListener {
 
   static Logger log = Logger.getLogger(HTMLLauncher.class.getName());
+
+  /**
+   * Specify encoding for html result. Default is UTF-8.
+   */
+  private static final String HTML_RESULT_ENCODING;
+  private static final String HTML_RESULT_ENCODING_SYSTEM_PROPERTY = "org.openqa.selenium.server.htmlrunner.result.encoding";
+  static {
+    String encoding = System.getProperty(HTML_RESULT_ENCODING_SYSTEM_PROPERTY);
+    HTML_RESULT_ENCODING = encoding != null ? encoding : "UTF-8";
+  }
+
   private SeleniumServer remoteControl;
   private HTMLTestResults results;
 
@@ -87,14 +99,16 @@ public class HTMLLauncher implements HTMLResultsListener {
     }
   }
 
-  protected FileWriter getFileWriter(File outputFile) throws IOException {
-    return new FileWriter(outputFile);
-  }
-
+  /**
+   * Writes HTML Result to output file. By default uses UTF-8 encoding.
+   * Could be owerrided by {@link #HTML_RESULT_ENCODING_SYSTEM_PROPERTY}
+   * @param outputFile output file write to
+   * @throws IOException
+   */
   protected void writeResults(File outputFile) throws IOException {
     if (outputFile != null) {
-      FileWriter fw = getFileWriter(outputFile);
-      results.write(fw);
+      OutputStreamWriter fw = new OutputStreamWriter(new FileOutputStream(outputFile), HTML_RESULT_ENCODING);
+      results.write(fw, HTML_RESULT_ENCODING);
       fw.close();
     }
   }

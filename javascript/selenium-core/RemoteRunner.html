@@ -17,8 +17,7 @@ Copyright 2011 Software Freedom Conservancy
 -->
 <HTA:APPLICATION ID="SeleniumHTARunner" APPLICATIONNAME="Selenium" >
 <head>
-<meta content="text/html; charset=ISO-8859-1"
-http-equiv="content-type">
+<meta content="text/html; charset=UTF-8" http-equiv="content-type">
 <title>Selenium Remote Control</title>
 <link rel="stylesheet" type="text/css" href="selenium.css" />
 <script type="text/javascript" src="scripts/xmlextras.js"></script>
@@ -56,7 +55,7 @@ http-equiv="content-type">
 
 <body onLoad="setTimeout(function(){runSeleniumTest();},1000)" onUnload="cleanUp()">
 
-<table border="1" style="height: 100%; width: 100%;">               
+<table border="1" style="height: 100%; width: 100%;">
   <tr>
     <td width="50%">
       <table>
@@ -71,7 +70,7 @@ http-equiv="content-type">
             <button type="button" onclick="LOG.show();">
               Show Log
             </button>
-            <label><INPUT TYPE="CHECKBOX" NAME="FASTMODE" VALUE="YES" onmouseup="slowClicked()"> Slow Mode</label>			
+            <label><INPUT TYPE="CHECKBOX" NAME="FASTMODE" VALUE="YES" onmouseup="slowClicked()"> Slow Mode</label>
           </fieldset>
 
           </form>

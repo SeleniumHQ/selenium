@@ -898,7 +898,20 @@ objectExtend(SeleniumTestResult.prototype, {
         if (this.controlPanel.shouldSaveResultsToFile()) {
             this._saveToFile(resultsUrl, form);
         } else {
-            form.submit();
+          /**
+           * standard form.submit() does not support adding charset to application/x-www-form-urlencoded content-type.
+           * using ajax request instead
+           */
+          jQueryWrapper = new JQueryWrapper();
+          formData = jQueryWrapper.init(form).serialize();
+
+          jQueryWrapper.jQuery.ajax({
+            type: form.method,
+            url: form.action,
+            contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
+            data:  formData,
+            async: false
+          });
         }
         document.body.removeChild(form);
         if (this.controlPanel.closeAfterTests()) {

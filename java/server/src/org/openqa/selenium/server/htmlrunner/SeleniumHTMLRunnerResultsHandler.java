@@ -102,8 +102,8 @@ public class SeleniumHTMLRunnerResultsHandler implements HttpHandler {
   private void processResults(HTMLTestResults results, HttpResponse res) throws IOException {
     res.setContentType("text/html");
     OutputStream out = res.getOutputStream();
-    Writer writer = new OutputStreamWriter(out, StringUtil.__ISO_8859_1);
-    results.write(writer);
+    Writer writer = new OutputStreamWriter(out, StringUtil.__UTF_8);
+    results.write(writer, StringUtil.__UTF_8);
     writer.flush();
   }
 

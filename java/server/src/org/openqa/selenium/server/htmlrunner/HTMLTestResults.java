@@ -45,8 +45,19 @@ public class HTMLTestResults {
   private final String log;
   private final HTMLSuiteResult suite;
 
-  private static final String HEADER = "<html>\n" +
-      "<head><style type='text/css'>\n" +
+  /**
+   * HTML header template placeholder for encoding
+   */
+  private static final String HEADER_TEMPLATE_ENCODING_PLACEHOLDER = "${html.encoding}";
+
+  /**
+   * HTML header template.
+   * Contains {@link #HEADER_TEMPLATE_ENCODING_PLACEHOLDER} placeholder that should be replaced
+   */
+  private static final String HEADER_TEMPLATE = "<html>\n" +
+      "<head>\n" +
+      "<meta content=\"text/html;charset="+HEADER_TEMPLATE_ENCODING_PLACEHOLDER+"\" http-equiv=\"content-type\">\n" +
+      "<style type='text/css'>\n" +
       "body, table {\n" +
       "    font-family: Verdana, Arial, sans-serif;\n" +
       "    font-size: 12;\n" +
@@ -170,8 +181,15 @@ public class HTMLTestResults {
     return Integer.parseInt(numTestPasses) + Integer.parseInt(numTestFailures);
   }
 
-  public void write(Writer out) throws IOException {
-    out.write(HEADER);
+  /**
+   * Writes html result to output.
+   * Adds given encoding to html meta header
+   * @param out output write to
+   * @param encoding html encoding
+   * @throws IOException
+   */
+  public void write(Writer out, String encoding) throws IOException {
+    out.write(HEADER_TEMPLATE.replace(HEADER_TEMPLATE_ENCODING_PLACEHOLDER, encoding));
     out.write(MessageFormat.format(SUMMARY_HTML,
         result,
         totalTime,
