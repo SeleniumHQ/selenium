@@ -155,7 +155,7 @@ task :support => [
 desc 'Build the standalone server'
 task 'selenium-server-standalone' => '//java/server/src/org/openqa/grid/selenium:selenium:uber'
 
-task 'selenium-server-standalone-v3' => '//java/server/src/org/openqa/grid/selenium:selenium-v3:uber'
+task 'selenium-server-standalone-v3' => '//java/server/src/org/openqa/grid/selenium:selenium:uber'
 
 task :ide => [ "//ide:selenium-ide-multi" ]
 task :ide_proxy_setup => [ "//javascript/selenium-atoms", "se_ide:setup_proxy" ]
@@ -545,16 +545,16 @@ task "release-v3" => [
     :clean,
     :build,
     '//java/server/src/org/openqa/selenium/remote/server:server:zip',
-    '//java/server/src/org/openqa/grid/selenium:selenium-v3:zip',
+    '//java/server/src/org/openqa/grid/selenium:selenium:zip',
     '//java/client/src/org/openqa/selenium:client-combined-v3:zip',
   ] do |t|
   # Unzip each of the deps and rename the pieces that need renaming
   renames = {
     "client-combined-v3-nodeps-srcs.jar" => "selenium-java-v3-#{version}-srcs.jar",
     "client-combined-v3-nodeps.jar" => "selenium-java-v3-#{version}.jar",
-    "selenium-v3-nodeps-srcs.jar" => "selenium-server-v3-#{version}-srcs.jar",
-    "selenium-v3-nodeps.jar" => "selenium-server-v3-#{version}.jar",
-    "selenium-v3-standalone.jar" => "selenium-server-v3-standalone-#{version}.jar",
+    "selenium-nodeps-srcs.jar" => "selenium-server-v3-#{version}-srcs.jar",
+    "selenium-nodeps.jar" => "selenium-server-v3-#{version}.jar",
+    "selenium-standalone.jar" => "selenium-server-v3-standalone-#{version}.jar",
   }
 
   t.prerequisites.each do |pre|
@@ -585,8 +585,8 @@ task "release-v3" => [
   end
 
   mkdir_p "build/dist"
-  cp "build/java/server/src/org/openqa/grid/selenium/selenium-v3-standalone.jar", "build/dist/selenium-server-v3-standalone-#{version}.jar"
-  cp "build/java/server/src/org/openqa/grid/selenium/selenium-v3.zip", "build/dist/selenium-server-v3-#{version}.zip"
+  cp "build/java/server/src/org/openqa/grid/selenium/selenium-standalone.jar", "build/dist/selenium-server-v3-standalone-#{version}.jar"
+  cp "build/java/server/src/org/openqa/grid/selenium/selenium.zip", "build/dist/selenium-server-v3-#{version}.zip"
   cp "build/java/client/src/org/openqa/selenium/client-combined-v3.zip", "build/dist/selenium-java-v3-#{version}.zip"
 end
 

@@ -18,7 +18,6 @@
 package org.openqa.grid.internal;
 
 import static org.junit.Assert.assertNotNull;
-import static org.openqa.grid.common.RegistrationRequest.APP;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -26,6 +25,7 @@ import org.junit.Test;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,32 +63,32 @@ public class PriorityTest {
    * @throws InterruptedException
    */
   @BeforeClass
-  public static void setup() throws InterruptedException {
+  public static void setup() throws Exception {
     registry = Registry.newInstance();
-    registry.setPrioritizer(highestNumberHasPriority);
-    ff.put(APP, "FF");
+    registry.getConfiguration().prioritizer = highestNumberHasPriority;
+    ff.put(CapabilityType.APPLICATION_NAME, "FF");
     p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);
     registry.add(p1);
 
     // create 5 sessionRequest, with priority =1 .. 5
     Map<String, Object> ff1 = new HashMap<>();
-    ff1.put(APP, "FF");
+    ff1.put(CapabilityType.APPLICATION_NAME, "FF");
     ff1.put("_priority", 1);
 
     Map<String, Object> ff2 = new HashMap<>();
-    ff2.put(APP, "FF");
+    ff2.put(CapabilityType.APPLICATION_NAME, "FF");
     ff2.put("_priority", 2);
 
     Map<String, Object> ff3 = new HashMap<>();
-    ff3.put(APP, "FF");
+    ff3.put(CapabilityType.APPLICATION_NAME, "FF");
     ff3.put("_priority", 3);
 
     Map<String, Object> ff4 = new HashMap<>();
-    ff4.put(APP, "FF");
+    ff4.put(CapabilityType.APPLICATION_NAME, "FF");
     ff4.put("_priority", 4);
 
     Map<String, Object> ff5 = new HashMap<>();
-    ff5.put(APP, "FF");
+    ff5.put(CapabilityType.APPLICATION_NAME, "FF");
     ff5.put("_priority", 5);
 
     newSessionRequest1 = GridHelper.createNewSessionHandler(registry, ff1);

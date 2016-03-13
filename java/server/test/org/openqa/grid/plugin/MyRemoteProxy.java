@@ -28,8 +28,8 @@ public class MyRemoteProxy extends BaseRemoteProxy {
 
   public MyRemoteProxy(RegistrationRequest request, Registry registry) {
     super(request, registry);
-    custom1 = request.getConfiguration().get("Custom1").toString();
-    custom2 = request.getConfiguration().get("Custom2").toString();
+    custom1 = request.getConfiguration().custom.get("Custom1");
+    custom2 = request.getConfiguration().custom.get("Custom2");
   }
 
   public String getCustom1() {

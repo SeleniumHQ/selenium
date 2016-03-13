@@ -19,10 +19,10 @@ package org.openqa.grid.internal;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.grid.common.RegistrationRequest.APP;
 
 import org.junit.Test;
 import org.openqa.grid.common.SeleniumProtocol;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +35,7 @@ public class TestSessionTest {
     Registry registry = Registry.newInstance();
     try {
       Map<String, Object> ff = new HashMap<>();
-      ff.put(APP, "FF");
+      ff.put(CapabilityType.APPLICATION_NAME, "FF");
       RemoteProxy p1 =
           RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);
       registry.add(p1);
@@ -60,7 +60,7 @@ public class TestSessionTest {
     Registry registry = Registry.newInstance();
     try {
       Map<String, Object> ff = new HashMap<>();
-      ff.put(APP, "FF");
+      ff.put(CapabilityType.APPLICATION_NAME, "FF");
       RemoteProxy p1 =
           RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);
       registry.add(p1);

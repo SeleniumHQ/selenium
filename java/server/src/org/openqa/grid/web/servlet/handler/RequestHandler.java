@@ -187,8 +187,8 @@ public class RequestHandler implements Comparable<RequestHandler> {
     // Maintain compatibility with Grid 1.x, which had the ability to
     // specify how long to wait before canceling
     // a request.
-    if (registry.getNewSessionWaitTimeout() != -1) {
-      if (!sessionAssigned.await(registry.getNewSessionWaitTimeout(), TimeUnit.MILLISECONDS)) {
+    if (registry.getConfiguration().newSessionWaitTimeout > 0) {
+      if (!sessionAssigned.await(registry.getConfiguration().newSessionWaitTimeout, TimeUnit.MILLISECONDS)) {
         throw new TimeoutException("Request timed out waiting for a node to become available.");
       }
     } else {
@@ -211,19 +211,14 @@ public class RequestHandler implements Comparable<RequestHandler> {
     return response;
   }
 
-
-
   public int compareTo(RequestHandler o) {
-    Prioritizer prioritizer = registry.getPrioritizer();
-    if (prioritizer != null) {
-      return prioritizer.compareTo(this.getRequest().getDesiredCapabilities(), o.getRequest()
+    if (registry.getConfiguration().prioritizer != null) {
+      return registry.getConfiguration().prioritizer.compareTo(this.getRequest().getDesiredCapabilities(), o.getRequest()
           .getDesiredCapabilities());
     } else {
       return 0;
     }
   }
-
-
 
   protected void setSession(TestSession session) {
     this.session = session;

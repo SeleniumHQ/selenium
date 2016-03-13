@@ -19,13 +19,13 @@ package org.openqa.grid.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.openqa.grid.common.RegistrationRequest.APP;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,9 +52,9 @@ public class AddingProxyAgainFreesResources {
    * @throws InterruptedException
    */
   @BeforeClass
-  public static void setup() throws InterruptedException {
+  public static void setup() throws Exception {
     registry = Registry.newInstance();
-    ff.put(APP, "FF");
+    ff.put(CapabilityType.APPLICATION_NAME, "FF");
     p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);
     registry.add(p1);
 

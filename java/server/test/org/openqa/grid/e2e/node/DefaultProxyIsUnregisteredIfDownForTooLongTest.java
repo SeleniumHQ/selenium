@@ -28,7 +28,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.GridRole;
-import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.Registry;
@@ -36,7 +35,7 @@ import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 import org.openqa.grid.web.Hub;
-import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.remote.server.SeleniumServer;
 import org.openqa.selenium.support.ui.FluentWait;
 
 import java.util.Iterator;
@@ -58,13 +57,13 @@ public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
     remote = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
 
     // check if the node is up every 900 ms
-    remote.getConfiguration().put(RegistrationRequest.NODE_POLLING, 900);
+    remote.getConfiguration().nodePolling = 900;
     // unregister the proxy is it's down for more than 10 sec in a row.
-    remote.getConfiguration().put(RegistrationRequest.UNREGISTER_IF_STILL_DOWN_AFTER, 10000);
+    remote.getConfiguration().unregisterIfStillDownAfter = 10000;
     // mark as down after 3 tries
-    remote.getConfiguration().put(RegistrationRequest.DOWN_POLLING_LIMIT, 3);
+    remote.getConfiguration().downPollingLimit = 3;
     // limit connection and socket timeout for node alive check up to
-    remote.getConfiguration().put(RegistrationRequest.STATUS_CHECK_TIMEOUT, 100);
+    remote.getConfiguration().nodeStatusCheckTimeout = 100;
     // add browser
     remote.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
 

@@ -19,8 +19,6 @@ package org.openqa.grid.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +27,7 @@ import org.openqa.grid.common.exception.CapabilityNotPresentOnTheGridException;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.listeners.RegistrationListener;
 import org.openqa.grid.internal.mock.GridHelper;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.CapabilityType;
 
@@ -44,7 +43,7 @@ public class RegistryTest {
 
 
   @Test
-  public void addProxy() {
+  public void addProxy() throws Exception {
     Registry registry = Registry.newInstance();
     RemoteProxy p1 =
         RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine1:4444/", registry);
@@ -66,7 +65,7 @@ public class RegistryTest {
   }
 
   @Test
-  public void addDuppedProxy() {
+  public void addDuppedProxy() throws Exception {
     Registry registry = Registry.newInstance();
     RemoteProxy p1 =
         RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine1:4444/", registry);
@@ -95,11 +94,12 @@ public class RegistryTest {
 
   @Before
   public void prepareReqRequest() {
-    Map<String, Object> config = new HashMap<>();
+    GridNodeConfiguration config = new GridNodeConfiguration();
     app1.put(CapabilityType.BROWSER_NAME, "app1");
     app2.put(CapabilityType.BROWSER_NAME, "app2");
-    config.put(REMOTE_HOST, "http://machine1:4444");
-    config.put(MAX_SESSION, 5);
+    config.host = "machine1";
+    config.port = 4444;
+    config.maxSession = 5;
     req = new RegistrationRequest();
     req.addDesiredCapability(app1);
     req.setConfiguration(config);

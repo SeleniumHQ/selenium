@@ -876,15 +876,7 @@ public class SeleniumServer implements SslCertificateGenerator, GridNodeServer {
     }
     String INDENT = "  ";
     String INDENT2X = INDENT + INDENT;
-    printWrappedLine("", "Usage: java -jar selenium-server.jar [-interactive] [options]\n");
-    printWrappedLine(INDENT,
-                     "-port <nnnn>: the port number the selenium server should use (default 4444)");
-    printWrappedLine(INDENT,
-                     "-timeout <nnnn>: an integer number of seconds we should allow a client to be idle");
-    printWrappedLine(INDENT,
-                     "-browserTimeout <nnnn>: an integer number of seconds a browser is allowed to hang");
-    printWrappedLine(INDENT,
-                     "-interactive: puts you into interactive mode.  See the tutorial for more details");
+    printWrappedLine("", "Usage: java -jar selenium-server.jar [options]\n");
     printWrappedLine(
       INDENT,
       "-singleWindow: puts you into a mode where the test web site executes in a frame. This mode should only be selected if the application under test does not use frames.");

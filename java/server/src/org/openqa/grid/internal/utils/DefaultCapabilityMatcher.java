@@ -42,7 +42,7 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
     toConsider.add(CapabilityType.PLATFORM);
     toConsider.add(CapabilityType.BROWSER_NAME);
     toConsider.add(CapabilityType.VERSION);
-    toConsider.add("applicationName");
+    toConsider.add(CapabilityType.APPLICATION_NAME);
 
   }
 

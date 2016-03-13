@@ -18,13 +18,13 @@
 package org.openqa.grid.internal;
 
 import static org.junit.Assert.assertEquals;
-import static org.openqa.grid.common.RegistrationRequest.APP;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,10 +51,10 @@ public class ConcurrencyLockTest {
    * create a hub with 1 IE and 1 FF
    */
   @BeforeClass
-  public static void setup() {
+  public static void setup() throws Exception {
     registry = Registry.newInstance();
-    ie.put(APP, "IE");
-    ff.put(APP, "FF");
+    ie.put(CapabilityType.APPLICATION_NAME, "IE");
+    ff.put(CapabilityType.APPLICATION_NAME, "FF");
 
     RemoteProxy p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ie, "http://machine1:4444", registry);
     RemoteProxy p2 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine2:4444", registry);
@@ -103,7 +103,7 @@ public class ConcurrencyLockTest {
 
     MockedRequestHandler newSessionHandler =GridHelper.createNewSessionHandler(registry, cap);
 
-    if (cap.get(APP).equals("FF")) {
+    if (cap.get(CapabilityType.APPLICATION_NAME).equals("FF")) {
       // start the FF right away
       newSessionHandler.process();
       TestSession s = newSessionHandler.getSession();

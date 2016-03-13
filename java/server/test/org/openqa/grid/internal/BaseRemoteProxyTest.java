@@ -20,14 +20,19 @@ package org.openqa.grid.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.grid.common.RegistrationRequest.APP;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
+
+import com.google.gson.Gson;
+
+import com.beust.jcommander.JCommander;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridException;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.JsonToBeanConverter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,10 +49,10 @@ public class BaseRemoteProxyTest {
   private static Registry registry = Registry.newInstance();
 
   @BeforeClass
-  public static void setup() {
+  public static void setup() throws Exception {
 
-    app1Capability.put(APP, "app1");
-    app2Capability.put(APP, "app2");
+    app1Capability.put(CapabilityType.APPLICATION_NAME, "app1");
+    app2Capability.put(CapabilityType.APPLICATION_NAME, "app2");
 
     p1 =
         RemoteProxyFactory
@@ -69,10 +74,9 @@ public class BaseRemoteProxyTest {
   @Test(expected = GridException.class)
   public void create() {
     Map<String, Object> cap = new HashMap<>();
-    cap.put(APP, "corrupted");
+    cap.put(CapabilityType.APPLICATION_NAME, "corrupted");
 
-    Map<String, Object> config = new HashMap<>();
-    config.put(REMOTE_HOST, "ebay.com");
+    GridNodeConfiguration config = new Gson().fromJson("{\"remoteHost\":\"ebay.com\"}", GridNodeConfiguration.class);
 
     RegistrationRequest request = new RegistrationRequest();
     request.addDesiredCapability(cap);
@@ -84,35 +88,18 @@ public class BaseRemoteProxyTest {
   @Test
   public void proxyConfigIsInheritedFromRegistry() {
     Registry registry = Registry.newInstance();
-    registry.getConfiguration().getAllParams().put("String", "my string");
-    registry.getConfiguration().getAllParams().put("Boolean", true);
-    registry.getConfiguration().getAllParams().put("Integer", 42);
+    registry.getConfiguration().cleanUpCycle = 42;
+    registry.getConfiguration().timeout = 4200;
 
-    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver", "-A", "valueA","-host","localhost");
-    req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
-
-    RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
-
-    assertEquals("my string", p.getConfig().get("String"));
-    assertEquals(true, p.getConfig().get("Boolean"));
-    assertEquals(42, p.getConfig().get("Integer"));
-    assertEquals("valueA", p.getConfig().get("A"));
-
-  }
-
-
-  @Test
-  public void proxyConfigOverWritesRegistryConfig() {
-    Registry registry = Registry.newInstance();
-    registry.getConfiguration().getAllParams().put("A", "A1");
-
-    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver", "-A", "A2","-host","localhost");
-    req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
+    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
+    new JCommander(nodeConfiguration, "-role", "webdriver", "-timeout", "100", "-cleanUpCycle", "100");
+    RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
+    req.getConfiguration().proxy = null;
 
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 
-    assertEquals("A2", p.getConfig().get("A"));
-
+    assertEquals(42, p.getConfig().cleanUpCycle.longValue());
+    assertEquals(4200, p.getConfig().timeout.longValue());
   }
 
   @Test
@@ -120,8 +107,10 @@ public class BaseRemoteProxyTest {
     String remoteHost ="http://machine1:5555";
     Registry registry = Registry.newInstance();
 
-    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-"+RegistrationRequest.REMOTE_HOST, remoteHost,"-host","localhost");
-    req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
+    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
+    new JCommander(nodeConfiguration, "-role", "webdriver","-host", "machine1", "-port", "5555");
+    RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
+    req.getConfiguration().proxy = null;
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 
     assertEquals(remoteHost, p.getId());
@@ -130,10 +119,11 @@ public class BaseRemoteProxyTest {
 
   @Test
   public void proxyWithIdSpecified() {
-    String remoteHost ="http://machine1:5555";
     Registry registry = Registry.newInstance();
-    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-"+RegistrationRequest.REMOTE_HOST, remoteHost,"-"+RegistrationRequest.ID, "abc","-host","localhost");
-    req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
+    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
+    new JCommander(nodeConfiguration, "-role", "webdriver","-host", "machine1", "-port", "5555","-id", "abc");
+    RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
+    req.getConfiguration().proxy = null;
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 
     assertEquals("abc", p.getId());
@@ -142,10 +132,11 @@ public class BaseRemoteProxyTest {
 
   @Test
   public void timeouts() {
-    String remoteHost ="http://machine1:5555";
     Registry registry = Registry.newInstance();
-    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-"+RegistrationRequest.REMOTE_HOST, remoteHost,"-"+RegistrationRequest.ID, "abc", "-timeout", "23", "-browserTimeout", "12","-host","localhost");
-    req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
+    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
+    new JCommander(nodeConfiguration, "-role", "webdriver","-host", "machine1", "-port", "5555","-id", "abc","-timeout", "23", "-browserTimeout", "12");
+    RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
+    req.getConfiguration().proxy = null;
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
     assertEquals(23000, p.getTimeOut());
   }

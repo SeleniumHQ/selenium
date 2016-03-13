@@ -17,12 +17,10 @@
 
 package org.openqa.grid.internal.utils;
 
-import static org.openqa.grid.common.RegistrationRequest.APP;
-import static org.openqa.grid.common.RegistrationRequest.BROWSER;
-
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.TestSlot;
+import org.openqa.selenium.remote.CapabilityType;
 
 /**
  * Default html render that doesn't assume anything about a proxy ( in particular, it doesn't assume
@@ -54,8 +52,8 @@ public class DefaultHtmlRenderer implements HtmlRenderer {
         .append("</b> concurrent tests from : </u><br>");
 
     for (TestSlot slot : proxy.getTestSlots()) {
-      builder.append(slot.getCapabilities().containsKey(BROWSER) ? slot.getCapabilities().get(
-          BROWSER) : slot.getCapabilities().get(APP));
+      builder.append(slot.getCapabilities().containsKey(CapabilityType.BROWSER_NAME) ? slot.getCapabilities().get(
+        CapabilityType.BROWSER_NAME) : slot.getCapabilities().get(CapabilityType.APPLICATION_NAME));
       builder.append("protocol:"+slot.getProtocol()+"<br>");
       TestSession session = slot.getSession();
       builder.append(session == null ? "(free)" : "(busy, session " + session + ")");

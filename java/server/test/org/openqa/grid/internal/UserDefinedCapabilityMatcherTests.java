@@ -20,10 +20,13 @@ package org.openqa.grid.internal;
 
 import static org.junit.Assert.assertEquals;
 
+import com.beust.jcommander.JCommander;
+
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.Hub;
 
 public class UserDefinedCapabilityMatcherTests {
@@ -31,8 +34,10 @@ public class UserDefinedCapabilityMatcherTests {
   @Test
   public void defaultsToDefaultMatcher() {
     Registry registry = Registry.newInstance();
-    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-"+RegistrationRequest.ID, "abc","-host","localhost");
-    req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
+    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
+    new JCommander(nodeConfiguration, "-role", "webdriver","-id", "abc","-host","localhost");
+    RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
+    req.getConfiguration().proxy = null;
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 
     assertEquals(DefaultCapabilityMatcher.class, p.getCapabilityHelper().getClass());
@@ -43,11 +48,12 @@ public class UserDefinedCapabilityMatcherTests {
   @Test
   public void capabilityMatcherCanBeSpecified() {
     GridHubConfiguration hubConfig = new GridHubConfiguration();
-    String myMatcherClass = MyCapabilityMatcher.class.getCanonicalName();
-    hubConfig.setCapabilityMatcher(myMatcherClass);
+    hubConfig.capabilityMatcher = new MyCapabilityMatcher();
     Registry registry = Registry.newInstance((Hub)null,hubConfig);
-    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-"+RegistrationRequest.ID, "abc","-host","localhost");
-    req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
+    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
+    new JCommander(nodeConfiguration, "-role", "webdriver","-id", "abc","-host","localhost");
+    RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
+    req.getConfiguration().proxy = null;
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 
     assertEquals(MyCapabilityMatcher.class, p.getCapabilityHelper().getClass());

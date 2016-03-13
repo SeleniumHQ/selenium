@@ -18,19 +18,18 @@
 package org.openqa.grid.internal;
 
 import static org.junit.Assert.assertEquals;
-import static org.openqa.grid.common.RegistrationRequest.APP;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class SmokeTest {
@@ -47,10 +46,10 @@ public class SmokeTest {
    * create a hub with 1 IE and 1 FF
    */
   @Before
-  public void setup() {
+  public void setup() throws Exception {
     registry = Registry.newInstance();
-    ie.put(APP, "IE");
-    ff.put(APP, "FF");
+    ie.put(CapabilityType.APPLICATION_NAME, "IE");
+    ff.put(CapabilityType.APPLICATION_NAME, "FF");
 
     RemoteProxy p1 =
       RemoteProxyFactory.getNewBasicRemoteProxy(ie, "http://machine1:4444", registry);
