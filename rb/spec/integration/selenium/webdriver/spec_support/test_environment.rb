@@ -215,7 +215,7 @@ module Selenium
         end
 
         def create_marionette_driver
-          binary = ENV['MARIONETTE_BINARY']
+          binary = ENV['FIREFOX_BINARY']
           WebDriver::Firefox.path = binary if binary
 
           WebDriver.for :firefox, :marionette => true

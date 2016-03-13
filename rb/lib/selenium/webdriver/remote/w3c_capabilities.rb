@@ -117,7 +117,7 @@ module Selenium
             caps.takes_element_screenshot = data.delete("takesElementScreenshot") if data.key? "takesElementScreenshot"
             caps.page_load_strategy = data.delete("pageLoadStrategy") if data.key? "pageloadStrategy"
             proxy = data.delete('proxy')
-            caps.proxy = Proxy.json_create(proxy) unless proxy.empty?
+            caps.proxy = Proxy.json_create(proxy) unless proxy.nil? || proxy.empty?
 
             # Remote Server Specific
             caps[:remote_session_id] = data.delete('webdriver.remote.sessionid')

@@ -112,14 +112,12 @@ module Selenium
         compliant_on :browser => :marionette do
           # This passes in isolation, but can not run in suite due to combination of
           # https://bugzilla.mozilla.org/show_bug.cgi?id=1228107 & https://github.com/SeleniumHQ/selenium/issues/1150
-          not_compliant_on :driver => :remote do
-            it "Uses Wires when setting marionette option in driver initialization" do
-              @opt[:marionette] = true
-              driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
+          it "Uses Wires when setting marionette option in driver initialization" do
+            @opt[:marionette] = true
+            driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
 
-              expect(driver1.capabilities[:takes_element_screenshot]).to_not be_nil
-              driver1.quit
-            end
+            expect(driver1.capabilities[:takes_element_screenshot]).to_not be_nil
+            driver1.quit
           end
         end
 

@@ -28,9 +28,12 @@ describe "Selenium::WebDriver::TargetLocator" do
 
   # https://github.com/jgraham/wires/issues/52
   not_compliant_on :browser => :marionette do
-    it "should find the active element" do
-      driver.navigate.to url_for("xhtmlTest.html")
-      expect(driver.switch_to.active_element).to be_an_instance_of(WebDriver::Element)
+    # https://github.com/SeleniumHQ/selenium/issues/1795
+    not_compliant_on :driver => :remote, :browser => [:edge, :marionette] do
+      it "should find the active element" do
+        driver.navigate.to url_for("xhtmlTest.html")
+        expect(driver.switch_to.active_element).to be_an_instance_of(WebDriver::Element)
+      end
     end
   end
 
