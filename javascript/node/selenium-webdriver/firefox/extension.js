@@ -78,6 +78,10 @@ function install(extension, dir) {
  */
 var AddonDetails;
 
+/** @typedef {{$: !Object<string, string>}} */
+var RdfRoot;
+
+
 
 /**
  * Extracts the details needed to install an add-on.
@@ -119,7 +123,7 @@ function getDetails(addonPath) {
       throw new AddonFormatError('Malformed manifest for add-on ' + addonPath);
     }
 
-    var namespaces = doc[keys[0]].$;
+    var namespaces = /** @type {!RdfRoot} */(doc[keys[0]]).$;
     var id = '';
     Object.keys(namespaces).some(function(ns) {
       if (namespaces[ns] !== url) {

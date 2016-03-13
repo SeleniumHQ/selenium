@@ -18,7 +18,6 @@
 'use strict';
 
 const AdmZip = require('adm-zip'),
-    AdmConstants = require('adm-zip/util/constants'),
     fs = require('fs'),
     path = require('path'),
     url = require('url'),
@@ -36,36 +35,69 @@ const httpUtil = require('../http/util'),
 
 
 /**
- * Configuration options for a DriverService instance.
+ * A record object that defines the configuration options for a DriverService
+ * instance.
  *
- * - `loopback` - Whether the service should only be accessed on this host's
- *     loopback address.
- * - `hostname` - The host name to access the server on. If this option is
- *     specified, the `loopback` option will be ignored.
- * - `port` - The port to start the server on (must be > 0). If the port is
- *     provided as a promise, the service will wait for the promise to resolve
- *     before starting.
- * - `args` - The arguments to pass to the service. If a promise is provided,
- *     the service will wait for it to resolve before starting.
- * - `path` - The base path on the server for the WebDriver wire protocol
- *     (e.g. '/wd/hub'). Defaults to '/'.
- * - `env` - The environment variables that should be visible to the server
- *     process. Defaults to inheriting the current process's environment.
- * - `stdio` - IO configuration for the spawned server process. For more
- *     information, refer to the documentation of `child_process.spawn`.
- *
- * @typedef {{
- *   loopback: (boolean|undefined),
- *   hostname: (string|undefined),
- *   port: (number|!promise.Promise<number>),
- *   args: !(Array<string>|promise.Promise<!Array<string>>),
- *   path: (string|undefined|null),
- *   env: (Object<string, string>|undefined),
- *   stdio: (string|!Array<string|number|!stream.Stream|null|undefined>|
- *           undefined)
- * }}
+ * @record
  */
-var ServiceOptions;
+function ServiceOptions() {}
+
+/**
+ * Whether the service should only be accessed on this host's loopback address.
+ *
+ * @type {(boolean|undefined)}
+ */
+ServiceOptions.prototype.loopback;
+
+/**
+ * The host name to access the server on. If this option is specified, the
+ * {@link #loopback} option will be ignored.
+ *
+ * @type {(string|undefined)}
+ */
+ServiceOptions.prototype.hostname;
+
+/**
+ * The port to start the server on (must be > 0). If the port is provided as a
+ * promise, the service will wait for the promise to resolve before starting.
+ *
+ * @type {(number|!promise.Promise<number>)}
+ */
+ServiceOptions.prototype.port;
+
+/**
+ * The arguments to pass to the service. If a promise is provided, the service
+ * will wait for it to resolve before starting.
+ *
+ * @type {!(Array<string>|promise.Promise<!Array<string>>)}
+ */
+ServiceOptions.prototype.args;
+
+/**
+ * The base path on the server for the WebDriver wire protocol (e.g. '/wd/hub').
+ * Defaults to '/'.
+ *
+ * @type {(string|undefined|null)}
+ */
+ServiceOptions.prototype.path;
+
+/**
+ * The environment variables that should be visible to the server process.
+ * Defaults to inheriting the current process's environment.
+ *
+ * @type {(Object<string, string>|undefined)}
+ */
+ServiceOptions.prototype.env;
+
+/**
+ * IO configuration for the spawned server process. For more information, refer
+ * to the documentation of `child_process.spawn`.
+ *
+ * @type {(string|!Array<string|number|!stream.Stream|null|undefined>|
+ *         undefined)}
+ * @see https://nodejs.org/dist/latest-v4.x/docs/api/child_process.html#child_process_options_stdio
+ */
+ServiceOptions.prototype.stdio;
 
 
 /**
@@ -358,7 +390,8 @@ class FileDetector extends input.FileDetector {
 
       var zip = new AdmZip();
       zip.addLocalFile(filePath);
-      zip.getEntries()[0].header.method = AdmConstants.STORED;
+      // Stored compression, see https://en.wikipedia.org/wiki/Zip_(file_format)
+      zip.getEntries()[0].header.method = 0;
 
       var command = new cmd.Command(cmd.Name.UPLOAD_FILE)
           .setParameter('file', zip.toBuffer().toString('base64'));
@@ -379,3 +412,4 @@ class FileDetector extends input.FileDetector {
 exports.DriverService = DriverService;
 exports.FileDetector = FileDetector;
 exports.SeleniumServer = SeleniumServer;
+exports.ServiceOptions = ServiceOptions;  // Exported for API docs.
