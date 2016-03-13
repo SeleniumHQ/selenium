@@ -86,30 +86,26 @@ public class StandaloneConfiguration {
     // role, port, log, debug and help are not merged, they are only consumed by the immediately running node and can't affect a remote
   }
 
-  public String toString(String prefix, String separator, String postfix) {
+  public String toString(String format) {
     StringBuilder sb = new StringBuilder();
-    sb.append(toString(prefix, separator, postfix, "browserTimeout", browserTimeout));
-    sb.append(toString(prefix, separator, postfix, "debug", debug));
-    sb.append(toString(prefix, separator, postfix, "help", help));
-    sb.append(toString(prefix, separator, postfix, "jettyThreads", jettyThreads));
-    sb.append(toString(prefix, separator, postfix, "log", log));
-    sb.append(toString(prefix, separator, postfix, "logLongForm", logLongForm));
-    sb.append(toString(prefix, separator, postfix, "port", port));
-    sb.append(toString(prefix, separator, postfix, "role", role));
-    sb.append(toString(prefix, separator, postfix, "timeout", timeout));
+    sb.append(toString(format, "browserTimeout", browserTimeout));
+    sb.append(toString(format, "debug", debug));
+    sb.append(toString(format, "help", help));
+    sb.append(toString(format, "jettyThreads", jettyThreads));
+    sb.append(toString(format, "log", log));
+    sb.append(toString(format, "logLongForm", logLongForm));
+    sb.append(toString(format, "port", port));
+    sb.append(toString(format, "role", role));
+    sb.append(toString(format, "timeout", timeout));
     return sb.toString();
   }
 
   @Override
   public String toString() {
-    return toString(" -", " ", null);
+    return toString(" -%1$s %2$s");
   }
 
-  public String toHTML(String tag, String separator) {
-    return toString(String.format("<%s>", tag), separator, String.format("</%s>", tag));
-  }
-
-  public StringBuilder toString(String prefix, String valueDelimeter, String postfix, String name, Object value) {
+  public StringBuilder toString(String format, String name, Object value) {
     StringBuilder sb = new StringBuilder();
     List iterator;
     if (value instanceof List) {
@@ -119,16 +115,7 @@ public class StandaloneConfiguration {
     }
     for (Object v : iterator) {
       if (value != null) {
-        if (prefix != null)
-          sb.append(prefix);
-        sb.append(name);
-        if (valueDelimeter != null)
-          sb.append(valueDelimeter);
-        sb.append(value);
-        if (postfix != null)
-          sb.append(postfix);
-        if (postfix != null)
-          sb.append(postfix);
+        sb.append(String.format(format, name, value));
       }
     }
     return sb;

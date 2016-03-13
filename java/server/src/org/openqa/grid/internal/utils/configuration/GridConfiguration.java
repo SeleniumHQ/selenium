@@ -83,14 +83,14 @@ public class GridConfiguration extends StandaloneConfiguration {
   }
 
   @Override
-  public String toString(String prefix, String separator, String postfix) {
+  public String toString(String format) {
     StringBuilder sb = new StringBuilder();
-    sb.append(super.toString(prefix, separator, postfix));
-    sb.append(toString(prefix, separator, postfix, "cleanUpCycle", cleanUpCycle));
-    sb.append(toString(prefix, separator, postfix, "custom", custom));
-    sb.append(toString(prefix, separator, postfix, "host", host));
-    sb.append(toString(prefix, separator, postfix, "maxSession", maxSession));
-    sb.append(toString(prefix, separator, postfix, "servlets", servlets));
+    sb.append(super.toString(format));
+    sb.append(toString(format, "cleanUpCycle", cleanUpCycle));
+    sb.append(toString(format, "custom", custom));
+    sb.append(toString(format, "host", host));
+    sb.append(toString(format, "maxSession", maxSession));
+    sb.append(toString(format, "servlets", servlets));
     return sb.toString();
   }
 }

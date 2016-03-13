@@ -241,37 +241,8 @@ public class ConsoleServlet extends RegistryBasedServlet {
     return builder.toString();
   }
 
-  private String htmlOf(String param, Object value) {
-    return "<abbr title='" + param + "'>" + param
-             + " : </abbr>" + String.valueOf(value);
-  }
-
   private String prettyHtmlPrint(GridHubConfiguration config) {
-    StringBuilder b = new StringBuilder();
-
-    b.append(htmlOf("host", config.host)).append("</br>");
-    b.append(htmlOf("port", config.port)).append("</br>");
-    b.append(htmlOf("cleanUpCycle", config.cleanUpCycle)).append("</br>");
-    b.append(htmlOf("timeout", config.timeout)).append("</br>");
-    b.append(htmlOf("browserTimeout", config.browserTimeout)).append("</br>");
-
-    b.append(htmlOf("newSessionWaitTimeout", config.newSessionWaitTimeout))
-      .append("</br>");
-    b.append(htmlOf("throwOnCapabilityNotPresent", config.throwOnCapabilityNotPresent))
-      .append("</br>");
-
-    b.append(htmlOf("capabilityMatcher",
-                    config.matcher == null ? "null" : config.matcher
-                      .getClass().getCanonicalName())).append("</br>");
-    b.append(
-      htmlOf("prioritizer", config.prioritizer == null ? "null" : config.prioritizer.getClass()
-        .getCanonicalName())).append("</br>");
-    b.append(htmlOf("servlets", ""));
-    for (String s : config.servlets) {
-      b.append(s).append(",");
-    }
-    b.append("</br>");
-    return b.toString();
+    return config.toString("<abbr title='%1$s'>%1$s : </abbr>%2$s</br>");
   }
 
   private void getVersion() {

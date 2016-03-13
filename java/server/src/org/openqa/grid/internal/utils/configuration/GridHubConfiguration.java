@@ -129,15 +129,15 @@ public class GridHubConfiguration extends GridConfiguration {
   }
 
   @Override
-  public String toString(String prefix, String separator, String postfix) {
+  public String toString(String format) {
     StringBuilder sb = new StringBuilder();
-    sb.append(super.toString(prefix, separator, postfix));
-    sb.append(toString(prefix, separator, postfix, "hubConfig", hubConfig));
-    sb.append(toString(prefix, separator, postfix, "jettyMaxThreads", jettyMaxThreads));
-    sb.append(toString(prefix, separator, postfix, "matcher", matcher));
-    sb.append(toString(prefix, separator, postfix, "newSessionWaitTimeout", newSessionWaitTimeout));
-    sb.append(toString(prefix, separator, postfix, "prioritizer", prioritizer));
-    sb.append(toString(prefix, separator, postfix, "throwOnCapabilityNotPresent", throwOnCapabilityNotPresent));
+    sb.append(super.toString(format));
+    sb.append(String.format(format, "hubConfig", hubConfig));
+    sb.append(toString(format, "jettyMaxThreads", jettyMaxThreads));
+    sb.append(toString(format, "matcher", matcher));
+    sb.append(toString(format, "newSessionWaitTimeout", newSessionWaitTimeout));
+    sb.append(toString(format, "prioritizer", prioritizer));
+    sb.append(toString(format, "throwOnCapabilityNotPresent", throwOnCapabilityNotPresent));
     return sb.toString();
   }
 }

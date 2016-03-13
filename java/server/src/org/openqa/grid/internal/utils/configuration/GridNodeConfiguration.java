@@ -182,22 +182,22 @@ public class GridNodeConfiguration extends GridConfiguration {
   }
 
   @Override
-  public String toString(String prefix, String separator, String postfix) {
+  public String toString(String format) {
     StringBuilder sb = new StringBuilder();
-    sb.append(super.toString(prefix, separator, postfix));
+    sb.append(super.toString(format));
     // id, remoteHost are not command line parameters, excluding from this?
-    sb.append(toString(prefix, separator, postfix, "browser", browser));
-    sb.append(toString(prefix, separator, postfix, "downPollingLimit", downPollingLimit));
-    sb.append(toString(prefix, separator, postfix, "hub", hub));
-    sb.append(toString(prefix, separator, postfix, "hubHost", hubHost));
-    sb.append(toString(prefix, separator, postfix, "hubPort", hubPort));
-    sb.append(toString(prefix, separator, postfix, "nodeConfigFile", nodeConfigFile));
-    sb.append(toString(prefix, separator, postfix, "nodePolling", nodePolling));
-    sb.append(toString(prefix, separator, postfix, "nodeStatusCheckTimeout", nodeStatusCheckTimeout));
-    sb.append(toString(prefix, separator, postfix, "proxy", proxy));
-    sb.append(toString(prefix, separator, postfix, "register", register));
-    sb.append(toString(prefix, separator, postfix, "registerCycle", registerCycle));
-    sb.append(toString(prefix, separator, postfix, "unregisterIfStillDownAfter", unregisterIfStillDownAfter));
+    sb.append(toString(format, "browser", browser));
+    sb.append(toString(format, "downPollingLimit", downPollingLimit));
+    sb.append(toString(format, "hub", hub));
+    sb.append(toString(format, "hubHost", hubHost));
+    sb.append(toString(format, "hubPort", hubPort));
+    sb.append(toString(format, "nodeConfigFile", nodeConfigFile));
+    sb.append(toString(format, "nodePolling", nodePolling));
+    sb.append(toString(format, "nodeStatusCheckTimeout", nodeStatusCheckTimeout));
+    sb.append(toString(format, "proxy", proxy));
+    sb.append(toString(format, "register", register));
+    sb.append(toString(format, "registerCycle", registerCycle));
+    sb.append(toString(format, "unregisterIfStillDownAfter", unregisterIfStillDownAfter));
     return sb.toString();
   }
 }
