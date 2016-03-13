@@ -19,13 +19,9 @@ package org.openqa.grid.internal.utils;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.grid.common.RegistrationRequest.BROWSER;
-import static org.openqa.grid.common.RegistrationRequest.PLATFORM;
-import static org.openqa.grid.common.RegistrationRequest.VERSION;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
@@ -50,17 +46,17 @@ public class DefaultCapabilityMatcherTest {
 
   @BeforeClass
   public static void build() {
-    tl.put(RegistrationRequest.APP, "A");
-    tl.put(RegistrationRequest.VERSION, null);
-    firefox.put(BROWSER, "B");
-    firefox.put(PLATFORM, "XP");
+    tl.put(CapabilityType.APPLICATION_NAME, "A");
+    tl.put(CapabilityType.VERSION, null);
+    firefox.put(CapabilityType.BROWSER_NAME, "B");
+    firefox.put(CapabilityType.PLATFORM, "XP");
 
-    tl2.put(RegistrationRequest.APP, "A");
-    tl2.put(RegistrationRequest.VERSION, "8.5.100.7");
+    tl2.put(CapabilityType.APPLICATION_NAME, "A");
+    tl2.put(CapabilityType.VERSION, "8.5.100.7");
 
-    firefox2.put(BROWSER, "B");
-    firefox2.put(PLATFORM, "Vista");
-    firefox2.put(VERSION, "3.6");
+    firefox2.put(CapabilityType.BROWSER_NAME, "B");
+    firefox2.put(CapabilityType.PLATFORM, "Vista");
+    firefox2.put(CapabilityType.VERSION, "3.6");
 
     exotic.put("numberOfHead", 2);
   }

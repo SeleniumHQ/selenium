@@ -18,9 +18,8 @@
 package org.openqa.grid.plugin;
 
 import static org.junit.Assert.assertEquals;
-import static org.openqa.grid.common.RegistrationRequest.APP;
-import static org.openqa.grid.common.RegistrationRequest.ID;
-import static org.openqa.grid.common.RegistrationRequest.PROXY_CLASS;
+
+import com.beust.jcommander.JCommander;
 
 import org.junit.After;
 import org.junit.Test;
@@ -28,6 +27,8 @@ import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.BaseRemoteProxy;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.security.InvalidParameterException;
 import java.util.HashMap;
@@ -38,14 +39,15 @@ public class RemoteProxyInheritanceTest {
 
   @Test
   public void defaultToRemoteProxy() {
-    RegistrationRequest res = RegistrationRequest.build("-role", "webdriver", "-host", "localhost");
+    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
+    new JCommander(nodeConfiguration, "-role", "webdriver", "-host", "localhost");
+    RegistrationRequest res = RegistrationRequest.build(nodeConfiguration);
     res.getCapabilities().clear();
     RegistrationRequest req = res;
 
     Map<String, Object> app1 = new HashMap<>();
-    Map<String, Object> config = new HashMap<>();
-    app1.put(APP, "app1");
-    config.put(ID, "abc");
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    app1.put(CapabilityType.APPLICATION_NAME, "app1");
 
     req.addDesiredCapability(app1);
     req.setConfiguration(config);
@@ -58,13 +60,12 @@ public class RemoteProxyInheritanceTest {
   @Test
   public void existing() {
     Map<String, Object> app1 = new HashMap<>();
-    Map<String, Object> config = new HashMap<>();
-    app1.put(APP, "app1");
-    config.put(PROXY_CLASS, "org.openqa.grid.plugin.MyRemoteProxy");
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    app1.put(CapabilityType.APPLICATION_NAME, "app1");
+    config.proxy = "org.openqa.grid.plugin.MyRemoteProxy";
 
-    config.put("Custom1", "A");
-    config.put("Custom2", "B");
-    config.put(ID, "abc");
+    config.custom.put("Custom1", "A");
+    config.custom.put("Custom2", "B");
 
     RegistrationRequest req = new RegistrationRequest();
     req.addDesiredCapability(app1);
@@ -76,16 +77,16 @@ public class RemoteProxyInheritanceTest {
     MyRemoteProxy myRemoteProxy = (MyRemoteProxy) p;
     assertEquals("A", myRemoteProxy.getCustom1());
     assertEquals("B", myRemoteProxy.getCustom2());
-    assertEquals("A", myRemoteProxy.getConfig().get("Custom1"));
-    assertEquals("B", myRemoteProxy.getConfig().get("Custom2"));
+    assertEquals("A", myRemoteProxy.getConfig().custom.get("Custom1"));
+    assertEquals("B", myRemoteProxy.getConfig().custom.get("Custom2"));
   }
 
   @Test(expected = InvalidParameterException.class)
   public void notExisting() {
     Map<String, Object> app1 = new HashMap<>();
-    Map<String, Object> config = new HashMap<>();
-    app1.put(APP, "app1");
-    config.put(PROXY_CLASS, "I Don't exist");
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    app1.put(CapabilityType.APPLICATION_NAME, "app1");
+    config.proxy = "I Don't exist";
 
     RegistrationRequest req = new RegistrationRequest();
     req.addDesiredCapability(app1);
@@ -97,9 +98,9 @@ public class RemoteProxyInheritanceTest {
   @Test(expected = InvalidParameterException.class)
   public void notExtendingProxyExisting() {
     Map<String, Object> app1 = new HashMap<>();
-    Map<String, Object> config = new HashMap<>();
-    app1.put(APP, "app1");
-    config.put(PROXY_CLASS, "java.lang.String");
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    app1.put(CapabilityType.APPLICATION_NAME, "app1");
+    config.proxy = "java.lang.String";
 
     RegistrationRequest req = new RegistrationRequest();
     req.addDesiredCapability(app1);
@@ -112,9 +113,9 @@ public class RemoteProxyInheritanceTest {
   @Test(expected = InvalidParameterException.class)
   public void badConfig() {
     Map<String, Object> app1 = new HashMap<>();
-    Map<String, Object> config = new HashMap<>();
-    app1.put(APP, "app1");
-    config.put(PROXY_CLASS, "I Don't exist");
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    app1.put(CapabilityType.APPLICATION_NAME, "app1");
+    config.proxy = "I Don't exist";
 
     RegistrationRequest req = new RegistrationRequest();
     req.addDesiredCapability(app1);

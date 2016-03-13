@@ -19,52 +19,29 @@ package org.openqa.grid.selenium.proxy;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.grid.common.RegistrationRequest.ID;
+
+import com.beust.jcommander.JCommander;
 
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.BaseRemoteProxy;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 
 import java.util.HashMap;
-import java.util.Map;
 
 
 public class DefaultRemoteProxyTest {
 
-  @Test(expected = IllegalArgumentException.class)
-  public void invalidNodePollingValue() {
-    Map<String, Object> config = new HashMap<>();
-    config.put(ID, "abc");
-    config.put(RegistrationRequest.NODE_POLLING, "abc");
-
-    RegistrationRequest req = new RegistrationRequest();
-    req.setConfiguration(config);
-
-    new DefaultRemoteProxy(req, Registry.newInstance());
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void invalidUnregisterIfStillDownValue() {
-    Map<String, Object> config = new HashMap<>();
-    config.put(ID, "abc");
-    config.put(RegistrationRequest.NODE_POLLING, 100);
-    config.put(RegistrationRequest.UNREGISTER_IF_STILL_DOWN_AFTER, "abc");
-
-    RegistrationRequest req = new RegistrationRequest();
-    req.setConfiguration(config);
-
-    new DefaultRemoteProxy(req, Registry.newInstance());
-  }
-
   @Test
   public void proxyTimeout() throws InterruptedException {
     Registry registry = Registry.newInstance();
-    registry.getConfiguration().getAllParams().put(RegistrationRequest.TIME_OUT, 1);
-    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver", "-A", "valueA");
-    req.getConfiguration().put(ID, "abc");
-    req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, DefaultRemoteProxy.class.getName());
+    registry.getConfiguration().timeout = 1;
+    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
+    new JCommander(nodeConfiguration, "-role", "webdriver");
+    RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
+    req.getConfiguration().proxy = DefaultRemoteProxy.class.getName();
 
     BaseRemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
     TestSession newSession = p.getNewSession(new HashMap<String, Object>());

@@ -38,7 +38,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.mock.GridHelper;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.net.PortProber;
@@ -69,18 +70,17 @@ public class StatusServletTests {
   @Before
   public void setup() throws Exception {
     GridHubConfiguration c = new GridHubConfiguration();
-    c.getAllParams().put(RegistrationRequest.TIME_OUT, 12345);
-    c.setPort(PortProber.findFreePort());
-    c.setHost("localhost");
+    c.timeout = 12345;
+    c.port = PortProber.findFreePort();
+    c.host = "localhost";
     hub = new Hub(c);
     Registry registry = hub.getRegistry();
     httpClientFactory = new HttpClientFactory();
-    hubApi = new URL("http://" + hub.getHost() + ":" + hub.getPort() + "/grid/api/hub");
-    proxyApi = new URL("http://" + hub.getHost() + ":" + hub.getPort() + "/grid/api/proxy");
-    testSessionApi =
-        new URL("http://" + hub.getHost() + ":" + hub.getPort() + "/grid/api/testsession");
+    hubApi = hub.getUrl("/grid/api/hub");
+    proxyApi = hub.getUrl("/grid/api/proxy");
+    testSessionApi = hub.getUrl("/grid/api/testsession");
 
-    host = new HttpHost(hub.getHost(), hub.getPort());
+    host = new HttpHost(hub.getConfiguration().host, hub.getConfiguration().port);
 
     hub.start();
 
@@ -97,8 +97,9 @@ public class StatusServletTests {
     capability.put(CapabilityType.BROWSER_NAME, "custom app");
     req.addDesiredCapability(capability);
 
-    Map<String, Object> config = new HashMap<>();
-    config.put(RegistrationRequest.REMOTE_HOST, "http://machine5:4444");
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    config.host = "machine5";
+    config.port = 4444;
     req.setConfiguration(config);
     RemoteProxy customProxy = new MyCustomProxy(req, registry);
 
@@ -252,9 +253,9 @@ public class StatusServletTests {
     JsonObject j = new JsonObject();
 
     JsonArray keys = new JsonArray();
-    keys.add(new JsonPrimitive(RegistrationRequest.TIME_OUT));
+    keys.add(new JsonPrimitive("timeout"));
     keys.add(new JsonPrimitive("I'm not a valid key"));
-    keys.add(new JsonPrimitive(RegistrationRequest.SERVLETS));
+    keys.add(new JsonPrimitive("servlets"));
 
     j.add("configuration", keys);
     r.setEntity(new StringEntity(j.toString()));
@@ -264,9 +265,9 @@ public class StatusServletTests {
     JsonObject o = extractObject(response);
 
     assertTrue(o.get("success").getAsBoolean());
-    assertEquals(12345, o.get(RegistrationRequest.TIME_OUT).getAsInt());
+    assertEquals(12345, o.get("timeout").getAsInt());
     assertTrue(o.get("I'm not a valid key").isJsonNull());
-    assertEquals(0, o.get(RegistrationRequest.SERVLETS).getAsJsonArray().size());
+    assertEquals(0, o.get("servlets").getAsJsonArray().size());
     assertFalse(o.has("capabilityMatcher"));
 
   }

@@ -298,6 +298,17 @@ public class JsonToBeanConverter {
 
       Method write = property.getWriteMethod();
       if (write == null) {
+        // no setter available, but it could have a Field.
+        if (property.getField() == null) {
+          continue;
+        }
+        Class<?> type = property.getField().getType();
+        try {
+          property.getField().setAccessible(true);
+          property.getField().set(t, convert(type, value, depth + 1));
+        } catch (IllegalAccessException e) {
+          throw propertyWriteException(property, value, type, e);
+        }
         continue;
       }
 

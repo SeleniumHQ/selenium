@@ -17,6 +17,8 @@
 
 package org.openqa.grid.internal.utils;
 
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
+
 import java.util.Map;
 
 /**

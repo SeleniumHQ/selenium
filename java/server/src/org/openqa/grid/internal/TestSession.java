@@ -195,7 +195,7 @@ public class TestSession {
 
   private HttpClient getClient() {
     Registry reg = slot.getProxy().getRegistry();
-    int browserTimeout = reg.getConfiguration().getBrowserTimeout();
+    int browserTimeout = reg.getConfiguration().browserTimeout;
     if (browserTimeout > 0){
       final int selenium_server_cleanup_cycle = browserTimeout / 10;
       browserTimeout += (selenium_server_cleanup_cycle + MAX_NETWORK_LATENCY);
@@ -495,7 +495,7 @@ public class TestSession {
         String wrongPath = returnedLocation.getPath();
         String correctPath = wrongPath.replace(driverPath, "");
         Hub hub = slot.getProxy().getRegistry().getHub();
-        String location = "http://" + hub.getHost() + ":" + hub.getPort() + pathSpec + correctPath;
+        String location = "http://" + hub.getConfiguration().host + ":" + hub.getConfiguration().port + pathSpec + correctPath;
         response.setHeader(name, location);
       } else {
         response.setHeader(name, value);

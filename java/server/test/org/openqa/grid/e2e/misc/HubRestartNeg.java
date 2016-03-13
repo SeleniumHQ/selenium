@@ -27,11 +27,11 @@ import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.remote.server.SeleniumServer;
 
 /**
  * by specifing a RegistrationRequest.REGISTER_CYCLE= -1 , the node to not try to register against
@@ -49,15 +49,15 @@ public class HubRestartNeg {
 
   @BeforeClass
   public static void prepare() throws Exception {
-    config.setHost("localhost");
-    config.setPort(PortProber.findFreePort());
+    config.host = "localhost";
+    config.port = PortProber.findFreePort();
     hub = new Hub(config);
     registry = hub.getRegistry();
     hub.start();
 
     remote = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
 
-    remote.getConfiguration().put(RegistrationRequest.REGISTER_CYCLE, -1);
+    remote.getConfiguration().registerCycle = -1;
 
     remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
     remote.startRemoteServer();
@@ -68,7 +68,7 @@ public class HubRestartNeg {
   public void nodeRegisterAgain() throws Exception {
 
     // every 5 sec, the node register themselves again.
-    assertEquals(remote.getConfiguration().get(RegistrationRequest.REGISTER_CYCLE), -1);
+    assertEquals(remote.getConfiguration().registerCycle.longValue(), -1);
     remote.startRegistrationProcess();
 
     // should be up

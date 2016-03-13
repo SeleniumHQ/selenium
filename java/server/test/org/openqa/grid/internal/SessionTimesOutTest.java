@@ -23,17 +23,15 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.grid.common.RegistrationRequest.APP;
-import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
-import static org.openqa.grid.common.RegistrationRequest.ID;
-import static org.openqa.grid.common.RegistrationRequest.TIME_OUT;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.mock.GridHelper;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,18 +46,17 @@ public class SessionTimesOutTest {
   @Before
   public void setup() {
 
-    app1.put(APP, "app1");
+    app1.put(CapabilityType.APPLICATION_NAME, "app1");
     req.addDesiredCapability(app1);
 
-    Map<String, Object> config = new HashMap<>();
+    GridNodeConfiguration config = new GridNodeConfiguration();
     // a test is timed out is inactive for more than 0.5 sec.
-    config.put(TIME_OUT, 50);
+    config.timeout = 50;
 
     // every 0.5 sec, the proxy check is something has timed out.
-    config.put(CLEAN_UP_CYCLE, 400);
+    config.cleanUpCycle = 400;
 
-    config.put(ID, "abc");
-    config.put("host", "localhost");
+    config.host = "localhost";
 
     req.setConfiguration(config);
   }
@@ -232,14 +229,13 @@ public class SessionTimesOutTest {
 
         RegistrationRequest req = new RegistrationRequest();
         Map<String, Object> app1 = new HashMap<>();
-        app1.put(APP, "app1");
+        app1.put(CapabilityType.APPLICATION_NAME, "app1");
         req.addDesiredCapability(app1);
-        Map<String, Object> config = new HashMap<>();
+        GridNodeConfiguration config = new GridNodeConfiguration();
 
-        config.put(TIME_OUT, timeout);
-        config.put(CLEAN_UP_CYCLE, cycle);
-        config.put(ID, "abc");
-        config.put("host", "localhost");
+        config.timeout = timeout;
+        config.cleanUpCycle = cycle;
+        config.host = "localhost";
 
         req.setConfiguration(config);
 

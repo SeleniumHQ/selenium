@@ -20,10 +20,9 @@ package org.openqa.grid.web.servlet.beta;
 
 import com.google.common.io.ByteStreams;
 
-import org.openqa.grid.common.GridDocHelper;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -225,84 +224,51 @@ public class ConsoleServlet extends RegistryBasedServlet {
     if (verbose) {
 
       GridHubConfiguration tmp = new GridHubConfiguration();
-      tmp.loadDefault();
 
       builder.append("<b>Config details :</b><br/>");
       builder.append("<b>hub launched with :</b>");
-      for (int i = 0; i < config.getArgs().length; i++) {
-        builder.append(config.getArgs()[i]).append(" ");
-      }
+      builder.append(config.toString());
 
       builder.append("<br/><b>the final configuration comes from :</b><br/>");
       builder.append("<b>the default :</b><br/>");
       builder.append(prettyHtmlPrint(tmp));
 
-      builder.append("<b>updated with grid1 config :</b>");
-      if (config.getGrid1Yml() != null) {
-        builder.append(config.getGrid1Yml()).append("<br/>");
-        tmp.loadFromGridYml(config.getGrid1Yml());
-        builder.append(prettyHtmlPrint(tmp));
-      } else {
-        builder
-            .append("No grid1 file specified. To specify one, use -grid1Yml XXX.yml where XXX.yml is a grid1 config file</br>");
-      }
-
-      builder.append("<br/><b>updated with grid2 config : </b>");
-      if (config.getGrid2JSON() != null) {
-        builder.append(config.getGrid2JSON()).append("<br/>");
-        tmp.loadFromJSON(config.getGrid2JSON());
-        builder.append(prettyHtmlPrint(tmp));
-      } else {
-        builder
-            .append("No hub config file specified. To specify one, use -hubConfig XXX.json where XXX.json is a hub config file</br>");
-      }
-
       builder.append("<br/><b>updated with params :</b></br>");
-      tmp.loadFromCommandLine(config.getArgs());
+      tmp.merge(config);
       builder.append(prettyHtmlPrint(tmp));
     }
     builder.append("</div>");
     return builder.toString();
   }
 
-  private String key(String key) {
-    return "<abbr title='" + GridDocHelper.getHubParam(key) + "'>" + key + " : </abbr>";
+  private String htmlOf(String param, Object value) {
+    return "<abbr title='" + param + "'>" + param
+             + " : </abbr>" + String.valueOf(value);
   }
 
   private String prettyHtmlPrint(GridHubConfiguration config) {
     StringBuilder b = new StringBuilder();
 
-    b.append(key("host")).append(config.getHost()).append("</br>");
-    b.append(key("port")).append(config.getPort()).append("</br>");
-    b.append(key("cleanUpCycle")).append(config.getCleanupCycle()).append("</br>");
-    b.append(key("timeout")).append(config.getTimeout()).append("</br>");
-    b.append(key("browserTimeout")).append(config.getBrowserTimeout()).append("</br>");
+    b.append(htmlOf("host", config.host)).append("</br>");
+    b.append(htmlOf("port", config.port)).append("</br>");
+    b.append(htmlOf("cleanUpCycle", config.cleanUpCycle)).append("</br>");
+    b.append(htmlOf("timeout", config.timeout)).append("</br>");
+    b.append(htmlOf("browserTimeout", config.browserTimeout)).append("</br>");
 
-    b.append(key("newSessionWaitTimeout")).append(config.getNewSessionWaitTimeout())
-        .append("</br>");
-    b.append(key("grid1Mapping")).append(config.getGrid1Mapping()).append("</br>");
-    b.append(key("throwOnCapabilityNotPresent")).append(config.isThrowOnCapabilityNotPresent())
-        .append("</br>");
+    b.append(htmlOf("newSessionWaitTimeout", config.newSessionWaitTimeout))
+      .append("</br>");
+    b.append(htmlOf("throwOnCapabilityNotPresent", config.throwOnCapabilityNotPresent))
+      .append("</br>");
 
-    b.append(key("capabilityMatcher"))
-        .append(
-            config.getCapabilityMatcher() == null ? "null" : config.getCapabilityMatcher()
-                .getClass().getCanonicalName()).append("</br>");
-    b.append(key("prioritizer"))
-        .append(
-            config.getPrioritizer() == null ? "null" : config.getPrioritizer().getClass()
-                .getCanonicalName()).append("</br>");
-    b.append(key("servlets"));
-    for (String s : config.getServlets()) {
-      b.append(s.getClass().getCanonicalName()).append(",");
-    }
-    b.append("</br></br>");
-    b.append("<u>all params :</u></br></br>");
-    List<String> keys = new ArrayList<>();
-    keys.addAll(config.getAllParams().keySet());
-    Collections.sort(keys);
-    for (String s : keys) {
-      b.append(key(s.replaceFirst("-", ""))).append(config.getAllParams().get(s)).append("</br>");
+    b.append(htmlOf("capabilityMatcher",
+                    config.matcher == null ? "null" : config.matcher
+                      .getClass().getCanonicalName())).append("</br>");
+    b.append(
+      htmlOf("prioritizer", config.prioritizer == null ? "null" : config.prioritizer.getClass()
+        .getCanonicalName())).append("</br>");
+    b.append(htmlOf("servlets", ""));
+    for (String s : config.servlets) {
+      b.append(s).append(",");
     }
     b.append("</br>");
     return b.toString();

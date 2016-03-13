@@ -20,7 +20,7 @@ package org.openqa.grid.web;
 import com.google.common.collect.Maps;
 
 import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.web.servlet.DisplayHelpServlet;
 import org.openqa.grid.web.servlet.DriverServlet;
 import org.openqa.grid.web.servlet.Grid1HeartbeatServlet;
@@ -55,9 +55,7 @@ public class Hub {
 
   private static final Logger log = Logger.getLogger(Hub.class.getName());
 
-  private final int port;
-  private final String host;
-  private final int maxThread;
+  private GridHubConfiguration config;
   private final boolean isHostRestricted;
   private final Registry registry;
   private final Map<String, Class<? extends Servlet>> extraServlet = Maps.newHashMap();
@@ -77,22 +75,19 @@ public class Hub {
     return registry;
   }
 
-  public Hub(GridHubConfiguration config) {
+  public Hub(GridHubConfiguration gridHubConfiguration) {
     registry = Registry.newInstance(this, config);
 
-    maxThread = config.getJettyMaxThreads();
-
-    if (config.getHost() != null) {
-      host = config.getHost();
+    config = gridHubConfiguration;
+    if (config.host != null) {
       isHostRestricted = true;
     } else {
       NetworkUtils utils = new NetworkUtils();
-      host = utils.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
+      config.host = utils.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
       isHostRestricted = false;
     }
-    this.port = config.getPort();
 
-    for (String s : config.getServlets()) {
+    for (String s : config.servlets) {
       Class<? extends Servlet> servletClass = ExtraServletUtil.createServlet(s);
       if (servletClass != null) {
         String path = "/grid/admin/" + servletClass.getSimpleName() + "/*";
@@ -107,9 +102,9 @@ public class Hub {
 
   private void initServer() {
     try {
-      if (maxThread>0){
+      if (config.jettyMaxThreads>0){
         QueuedThreadPool pool = new QueuedThreadPool();
-        pool.setMaxThreads(maxThread);
+        pool.setMaxThreads(config.jettyMaxThreads);
         server = new Server(pool);
       } else {
         server = new Server();
@@ -117,12 +112,12 @@ public class Hub {
 
       HttpConfiguration httpConfig = new HttpConfiguration();
       httpConfig.setSecureScheme("https");
-      httpConfig.setSecurePort(getPort());
+      httpConfig.setSecurePort(config.port);
 
-      log.info("Will listen on " + port);
+      log.info("Will listen on " + config.port);
 
       ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
-      http.setPort(port);
+      http.setPort(config.port);
 
       server.addConnector(http);
 //      if (isHostRestricted) {
@@ -150,7 +145,6 @@ public class Hub {
 
       root.addServlet(ConsoleServlet.class.getName(), "/grid/console/*");
       root.addServlet(ConsoleServlet.class.getName(), "/grid/beta/console/*");
-      root.addServlet(org.openqa.grid.web.servlet.ConsoleServlet.class.getName(), "/grid/old/console/*");
       root.addServlet(RegistrationServlet.class.getName(), "/grid/register/*");
       // TODO remove at some point. Here for backward compatibility of
       // tests etc.
@@ -179,12 +173,8 @@ public class Hub {
     }
   }
 
-  public int getPort() {
-    return port;
-  }
-
-  public String getHost() {
-    return host;
+  public GridHubConfiguration getConfiguration() {
+    return config;
   }
 
   public void start() throws Exception {
@@ -198,14 +188,22 @@ public class Hub {
 
   public URL getUrl() {
     try {
-      return new URL("http://" + getHost() + ":" + getPort());
+      return new URL("http://" + config.host + ":" + config.port);
+    } catch (MalformedURLException e) {
+      throw new RuntimeException(e.getMessage());
+    }
+  }
+
+  public URL getUrl(String path) {
+    try {
+      return new URL("http://" + config.host + ":" + config.port + path);
     } catch (MalformedURLException e) {
       throw new RuntimeException(e.getMessage());
     }
   }
 
   public URL getRegistrationURL() {
-    String uri = "http://" + getHost() + ":" + getPort() + "/grid/register/";
+    String uri = "http://" + config.host + ":" + config.port + "/grid/register/";
     try {
       return new URL(uri);
     } catch (MalformedURLException e) {

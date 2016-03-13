@@ -19,15 +19,14 @@ package org.openqa.grid.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.openqa.grid.common.RegistrationRequest.APP;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,17 +54,17 @@ public class DefaultToFIFOPriorityTest {
    * @throws InterruptedException
    */
   @Before
-  public void setup() throws InterruptedException {
+  public void setup() throws Exception {
     registry = Registry.newInstance();
-    registry.setPrioritizer(fifo);
-    ff.put(APP, "FF");
+    registry.getConfiguration().prioritizer = fifo;
+    ff.put(CapabilityType.APPLICATION_NAME, "FF");
     RemoteProxy p1 =
       RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);
     registry.add(p1);
 
     for (int i = 1; i <= MAX; i++) {
       Map<String, Object> cap = new HashMap<>();
-      cap.put(APP, "FF");
+      cap.put(CapabilityType.APPLICATION_NAME, "FF");
       cap.put("_priority", i);
       MockedRequestHandler req = GridHelper.createNewSessionHandler(registry, cap);
       requests.add(req);

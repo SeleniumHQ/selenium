@@ -35,6 +35,7 @@ public interface CapabilityType {
   String PROXY = "proxy";
   String SUPPORTS_WEB_STORAGE = "webStorageEnabled";
   String ROTATABLE = "rotatable";
+  String APPLICATION_NAME = "applicationName";
   // Enable this capability to accept all SSL certs by defaults.
   String ACCEPT_SSL_CERTS = "acceptSslCerts";
   String HAS_NATIVE_EVENTS = "nativeEvents";

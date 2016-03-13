@@ -20,13 +20,13 @@ package org.openqa.grid.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.grid.common.RegistrationRequest.APP;
 import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
 
 import org.junit.Test;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,10 +37,10 @@ import java.util.concurrent.CountDownLatch;
 public class GridShutdownTest {
 
   @Test(timeout = 5000)
-  public void shutdown() throws InterruptedException {
+  public void shutdown() throws Exception {
 
     final Map<String, Object> ff = new HashMap<>();
-    ff.put(APP, "FF");
+    ff.put(CapabilityType.APPLICATION_NAME, "FF");
     ff.put(MAX_INSTANCES, 1);
 
     final Registry registry = Registry.newInstance();
