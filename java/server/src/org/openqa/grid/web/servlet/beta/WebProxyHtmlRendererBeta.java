@@ -90,7 +90,7 @@ public class WebProxyHtmlRendererBeta implements HtmlRenderer {
   private String tabConfig() {
     StringBuilder builder = new StringBuilder();
     builder.append("<div type='config' class='content_detail'>");
-    builder.append(proxy.getConfig().toHTML("p", ":"));
+    builder.append(proxy.getConfig().toString("<p>%1$s: %2$s</p>"));
     builder.append("</div>");
     return builder.toString();
   }

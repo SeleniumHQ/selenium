@@ -76,7 +76,7 @@ public class Hub {
   }
 
   public Hub(GridHubConfiguration gridHubConfiguration) {
-    registry = Registry.newInstance(this, config);
+    registry = Registry.newInstance(this, gridHubConfiguration);
 
     config = gridHubConfiguration;
     if (config.host != null) {
@@ -87,12 +87,14 @@ public class Hub {
       isHostRestricted = false;
     }
 
-    for (String s : config.servlets) {
-      Class<? extends Servlet> servletClass = ExtraServletUtil.createServlet(s);
-      if (servletClass != null) {
-        String path = "/grid/admin/" + servletClass.getSimpleName() + "/*";
-        log.info("binding " + servletClass.getCanonicalName() + " to " + path);
-        addServlet(path, servletClass);
+    if (config.servlets != null) {
+      for (String s : config.servlets) {
+        Class<? extends Servlet> servletClass = ExtraServletUtil.createServlet(s);
+        if (servletClass != null) {
+          String path = "/grid/admin/" + servletClass.getSimpleName() + "/*";
+          log.info("binding " + servletClass.getCanonicalName() + " to " + path);
+          addServlet(path, servletClass);
+        }
       }
     }
 
