@@ -173,6 +173,8 @@ public class RegistrationRequest {
     }
 
     res.configuration.merge(configuration);
+    res.configuration.host = configuration.host;
+    res.configuration.port = configuration.port;
 
     res.addPlatformInfoToCapabilities();
 

@@ -270,7 +270,7 @@ public class SessionListenerTest {
       r.process();
       TestSession session = r.getSession();
 
-      Thread.sleep(150);
+      Thread.sleep(1005);
       // the session has timed out -> doing the long after method.
       assertEquals(session.get("after"), true);
 

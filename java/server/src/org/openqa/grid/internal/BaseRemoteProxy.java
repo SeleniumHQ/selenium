@@ -108,6 +108,8 @@ public class BaseRemoteProxy implements RemoteProxy {
     // the registry is the 'hub' configuration, which takes precedence.
     // merging last overrides any other values.
     this.config.merge(registry.getConfiguration());
+    this.config.host = request.getConfiguration().host;
+    this.config.port = request.getConfiguration().port;
 
     String url = config.getRemoteHost();
     String id = config.id;
