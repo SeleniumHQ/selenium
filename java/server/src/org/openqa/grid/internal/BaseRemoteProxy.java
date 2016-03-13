@@ -87,7 +87,7 @@ public class BaseRemoteProxy implements RemoteProxy {
   }
 
   public CapabilityMatcher getCapabilityHelper() {
-    return registry.getConfiguration().matcher;
+    return registry.getConfiguration().capabilityMatcher;
   }
 
 

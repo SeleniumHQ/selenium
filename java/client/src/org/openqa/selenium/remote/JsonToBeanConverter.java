@@ -305,8 +305,17 @@ public class JsonToBeanConverter {
         Class<?> type = property.getField().getType();
         try {
           property.getField().setAccessible(true);
-          property.getField().set(t, convert(type, value, depth + 1));
+          Object val = convert(type, value, depth + 1);
+          if (type.isInstance(val)) {
+            property.getField().set(t, val);
+          } else if (val instanceof String){
+            property.getField().set(t, Class.forName((String)val).newInstance());
+          }
         } catch (IllegalAccessException e) {
+          throw propertyWriteException(property, value, type, e);
+        } catch (ClassNotFoundException e) {
+          throw propertyWriteException(property, value, type, e);
+        } catch (InstantiationException e) {
           throw propertyWriteException(property, value, type, e);
         }
         continue;

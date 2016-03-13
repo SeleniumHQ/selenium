@@ -299,8 +299,7 @@ public class StatusServletTests {
     assertTrue(o.get("success").getAsBoolean());
     assertEquals("org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
                  o.get("capabilityMatcher").getAsString());
-    assertTrue(o.get("prioritizer").isJsonNull());
-
+    assertNull(o.get("prioritizer"));
   }
 
   @Test
@@ -318,7 +317,7 @@ public class StatusServletTests {
     assertTrue(o.get("success").getAsBoolean());
     assertEquals("org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
                  o.get("capabilityMatcher").getAsString());
-    assertTrue(o.get("prioritizer").isJsonNull());
+    assertNull(o.get("prioritizer"));
   }
 
   @Test

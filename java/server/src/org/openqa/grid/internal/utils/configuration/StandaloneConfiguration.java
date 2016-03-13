@@ -17,6 +17,9 @@
 
 package org.openqa.grid.internal.utils.configuration;
 
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+
 import com.beust.jcommander.Parameter;
 
 import java.util.Arrays;
@@ -119,5 +122,14 @@ public class StandaloneConfiguration {
       }
     }
     return sb;
+  }
+
+  public JsonElement toJson() {
+    GsonBuilder builder = new GsonBuilder();
+    addJsonTypeAdapter(builder);
+    return builder.create().toJsonTree(this);
+  }
+
+  protected void addJsonTypeAdapter(GsonBuilder builder) {
   }
 }

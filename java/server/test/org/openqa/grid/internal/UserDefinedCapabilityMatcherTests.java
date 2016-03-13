@@ -48,7 +48,7 @@ public class UserDefinedCapabilityMatcherTests {
   @Test
   public void capabilityMatcherCanBeSpecified() {
     GridHubConfiguration hubConfig = new GridHubConfiguration();
-    hubConfig.matcher = new MyCapabilityMatcher();
+    hubConfig.capabilityMatcher = new MyCapabilityMatcher();
     Registry registry = Registry.newInstance((Hub)null,hubConfig);
     GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
     new JCommander(nodeConfiguration, "-role", "webdriver","-id", "abc","-host","localhost");
