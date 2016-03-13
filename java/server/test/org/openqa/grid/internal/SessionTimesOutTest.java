@@ -32,6 +32,7 @@ import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.server.SystemClock;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,11 +51,11 @@ public class SessionTimesOutTest {
     req.addDesiredCapability(app1);
 
     GridNodeConfiguration config = new GridNodeConfiguration();
-    // a test is timed out is inactive for more than 0.5 sec.
-    config.timeout = 50;
+    // a test is timed out is inactive for more than 1 sec.
+    config.timeout = 1;
 
-    // every 0.5 sec, the proxy check is something has timed out.
-    config.cleanUpCycle = 400;
+    // every 0.1 sec, the proxy check is something has timed out.
+    config.cleanUpCycle = 100;
 
     config.host = "localhost";
 
@@ -74,7 +75,7 @@ public class SessionTimesOutTest {
   /**
    * check that the proxy is freed after it times out.
    */
-  @Test(timeout = 3000)
+  @Test(timeout = 10000)
   public void testTimeout() throws InterruptedException {
 
     Registry registry = Registry.newInstance();
@@ -88,7 +89,7 @@ public class SessionTimesOutTest {
       newSessionRequest.process();
       TestSession session = newSessionRequest.getSession();
       // wait for a timeout
-      Thread.sleep(500);
+      Thread.sleep(1000);
 
       RequestHandler newSessionRequest2 = GridHelper.createNewSessionHandler(registry, app1);
       newSessionRequest2.process();
@@ -131,7 +132,7 @@ public class SessionTimesOutTest {
       newSessionRequest.process();
       TestSession session = newSessionRequest.getSession();
       // timeout cleanup will start
-      Thread.sleep(500);
+      Thread.sleep(1100);
       // but the session finishes before the timeout cleanup finishes
       registry.terminate(session, SessionTerminationReason.CLIENT_STOPPED_SESSION);
 
@@ -216,12 +217,13 @@ public class SessionTimesOutTest {
   public void stupidConfig() throws InterruptedException {
     Object[][] configs = new Object[][]{
         // correct config, just to check something happens
-        {5, 5},
+        {1, 5},
         // and invalid ones
         {-1, 5}, {5, -1}, {-1, -1}, {0, 0}};
     java.util.List<Registry> registryList = new ArrayList<>();
     try {
       for (Object[] c : configs) {
+        // timeout is in seconds
         int timeout = (Integer) c[0];
         int cycle = (Integer) c[1];
         Registry registry = Registry.newInstance();
@@ -246,10 +248,11 @@ public class SessionTimesOutTest {
         newSessionRequest.process();
         TestSession session = newSessionRequest.getSession();
         // wait -> timed out and released.
-        Thread.sleep(500);
+        Thread.sleep(Math.max(1010, Math.min(0, timeout * 1000 + cycle)));
         boolean shouldTimeout = timeout > 0 && cycle > 0;
 
         if (shouldTimeout) {
+          System.out.println(String.format("Should timeout with this set timeout: %d seconds, cleanUpCycle: %d ms", timeout, cycle));
           assertEquals(session.get("FLAG"), true);
           assertNull(session.getSlot().getSession());
         } else {
