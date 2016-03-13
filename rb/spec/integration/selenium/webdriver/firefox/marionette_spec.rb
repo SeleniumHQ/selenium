@@ -112,7 +112,7 @@ module Selenium
         compliant_on :browser => :marionette do
           # This passes in isolation, but can not run in suite due to combination of
           # https://bugzilla.mozilla.org/show_bug.cgi?id=1228107 & https://github.com/SeleniumHQ/selenium/issues/1150
-          not_compliant_on :driver => :remsote do
+          not_compliant_on :driver => :remote do
             it "Uses Wires when setting marionette option in driver initialization" do
               @opt[:marionette] = true
               driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
@@ -143,7 +143,7 @@ module Selenium
 
       compliant_on :browser => :marionette do
         # These pass in isolation, but can not run in suite due to https://github.com/SeleniumHQ/selenium/issues/1150
-        not_compliant_on :driver => :remsote do
+        not_compliant_on :driver => :remote do
           context "when designated firefox binary does not include Marionette" do
             let(:message) { /Marionette is not supported in Firefox Version \d\d/ }
 
