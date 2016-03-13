@@ -187,11 +187,7 @@ public class Hub {
   }
 
   public URL getUrl() {
-    try {
-      return new URL("http://" + config.host + ":" + config.port);
-    } catch (MalformedURLException e) {
-      throw new RuntimeException(e.getMessage());
-    }
+    return getUrl("");
   }
 
   public URL getUrl(String path) {
@@ -203,12 +199,7 @@ public class Hub {
   }
 
   public URL getRegistrationURL() {
-    String uri = "http://" + config.host + ":" + config.port + "/grid/register/";
-    try {
-      return new URL(uri);
-    } catch (MalformedURLException e) {
-      throw new RuntimeException(e);
-    }
+    return getUrl("/grid/register/");
   }
 
 }
