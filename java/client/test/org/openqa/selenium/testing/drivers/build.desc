@@ -32,6 +32,7 @@ java_library(name = "drivers",
     "//javascript/firefox-driver:webdriver",
     "//third_party/java/guava",
     "//third_party/java/junit",
+    "//third_party/java/phantomjs-driver:phantomjs-driver"
   ])
 
 java_library(name = "test_selenium_server",

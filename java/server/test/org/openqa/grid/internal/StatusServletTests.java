@@ -20,6 +20,7 @@ package org.openqa.grid.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import com.google.gson.JsonArray;
@@ -266,8 +267,8 @@ public class StatusServletTests {
 
     assertTrue(o.get("success").getAsBoolean());
     assertEquals(12345, o.get("timeout").getAsInt());
-    assertTrue(o.get("I'm not a valid key").isJsonNull());
-    assertEquals(0, o.get("servlets").getAsJsonArray().size());
+    assertNull(o.get("I'm not a valid key"));
+    assertNull(o.get("servlets"));
     assertFalse(o.has("capabilityMatcher"));
 
   }
