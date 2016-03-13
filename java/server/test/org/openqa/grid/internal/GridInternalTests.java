@@ -37,7 +37,6 @@ import org.openqa.grid.plugin.RemoteProxyInheritanceTest;
     PriorityTest.class,
     ParallelTest.class,
     LoadBalancedTests.class,
-    DefaultToFIFOPriorityTest.class,
     ConcurrencyLockTest.class,
     AddingProxyAgainFreesResources.class,
     DefaultCapabilityMatcherTest.class,

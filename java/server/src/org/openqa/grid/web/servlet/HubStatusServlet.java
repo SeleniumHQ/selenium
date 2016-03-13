@@ -112,6 +112,13 @@ public class HubStatusServlet extends RegistryBasedServlet {
             res.add(entry.getKey(), entry.getValue());
           }
         }
+        if (keysToReturn == null || keysToReturn.isEmpty() || keysToReturn.contains("newSessionRequestCount")) {
+          res.addProperty("newSessionRequestCount", registry.getNewSessionRequestCount());
+        }
+
+        if (keysToReturn == null || keysToReturn.isEmpty() || keysToReturn.contains("slotCounts")) {
+          res.add("slotCounts", getSlotCounts());
+        }
       }
     } catch (Exception e) {
       res.remove("success");
