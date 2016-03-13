@@ -281,7 +281,7 @@ public class BaseRemoteProxy implements RemoteProxy {
       TestSession session = slot.getSession();
       if (session != null) {
         long inactivity = session.getInactivityTime();
-        boolean hasTimedOut = inactivity > (config.timeout * 1000);
+        boolean hasTimedOut = inactivity > getTimeOut();
         if (hasTimedOut) {
           if (!session.isForwardingRequest()) {
             log.logp(Level.WARNING, "SessionCleanup", null,
