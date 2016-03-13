@@ -44,6 +44,10 @@ module Selenium
       end
 
       def start
+        if @process && @process.alive?
+          raise "already started: #{uri.inspect} #{@executable_path.inspect}"
+        end
+
         Platform.exit_hook { stop } # make sure we don't leave the server running
 
         socket_lock.locked do

@@ -34,8 +34,8 @@ module Selenium
           else
             args = opts.delete(:args) || caps['phantomjs.cli.args']
 
-            @service = Service.default_service
-            @service.start(args)
+            @service = Service.default_service(*args)
+            @service.start
 
             url = @service.uri
           end
