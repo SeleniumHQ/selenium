@@ -495,8 +495,7 @@ public class TestSession {
         String wrongPath = returnedLocation.getPath();
         String correctPath = wrongPath.replace(driverPath, "");
         Hub hub = slot.getProxy().getRegistry().getHub();
-        String location = "http://" + hub.getConfiguration().host + ":" + hub.getConfiguration().port + pathSpec + correctPath;
-        response.setHeader(name, location);
+        response.setHeader(name, hub.getUrl(pathSpec + correctPath).toString());
       } else {
         response.setHeader(name, value);
       }
