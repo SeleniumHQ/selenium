@@ -22,8 +22,8 @@ import com.google.common.io.ByteStreams;
 
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.HtmlRenderer;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -31,9 +31,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+import java.util.jar.Manifest;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -45,7 +45,6 @@ public class ConsoleServlet extends RegistryBasedServlet {
   private static final long serialVersionUID = 8484071790930378855L;
   private static final Logger log = Logger.getLogger(ConsoleServlet.class.getName());
   private static String coreVersion;
-  private static String coreRevision;
 
   public ConsoleServlet() {
     this(null);
@@ -198,7 +197,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
     builder.append("<div id='header'>");
     builder.append("<h1><a href='/grid/console'>Selenium</a></h1>");
     builder.append("<h2>Grid Console v.");
-    builder.append(coreVersion).append(coreRevision);
+    builder.append(coreVersion);
     builder.append("</h2>");
     builder.append("<div><a id='helplink' target='_blank' href='https://github.com/SeleniumHQ/selenium/wiki/Grid2'>Help</a></div>");
     builder.append("</div>");
@@ -249,20 +248,16 @@ public class ConsoleServlet extends RegistryBasedServlet {
     final Properties p = new Properties();
 
     InputStream stream =
-        Thread.currentThread().getContextClassLoader().getResourceAsStream("VERSION.txt");
+        Thread.currentThread().getContextClassLoader().getResourceAsStream("META-INF/MANIFEST.MF");
     if (stream == null) {
       log.severe("Couldn't determine version number");
       return;
     }
     try {
-      p.load(stream);
+      Manifest manifest = new Manifest(stream);
+      coreVersion = manifest.getMainAttributes().getValue("Selenium-Version");
     } catch (IOException e) {
       log.severe("Cannot load version from VERSION.txt" + e.getMessage());
-    }
-    coreVersion = p.getProperty("selenium.core.version");
-    coreRevision = p.getProperty("selenium.core.revision");
-    if (coreVersion == null) {
-      log.severe("Cannot load selenium.core.version from VERSION.txt");
     }
   }
 

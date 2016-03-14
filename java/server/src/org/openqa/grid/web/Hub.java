@@ -87,6 +87,10 @@ public class Hub {
       isHostRestricted = false;
     }
 
+    if (config.port == null) {
+      config.port = 4444;
+    }
+
     if (config.servlets != null) {
       for (String s : config.servlets) {
         Class<? extends Servlet> servletClass = ExtraServletUtil.createServlet(s);
@@ -171,7 +175,7 @@ public class Hub {
       }
 
     } catch (Throwable e) {
-      throw new RuntimeException("Error initializing the hub" + e.getMessage(), e);
+      throw new RuntimeException("Error initializing the hub " + e.getMessage(), e);
     }
   }
 

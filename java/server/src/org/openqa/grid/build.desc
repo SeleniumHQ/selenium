@@ -9,6 +9,7 @@ java_library(name = "grid",
   ],
   embedded = [
     "images/",
+    "common/defaults/",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium:webdriver-api",

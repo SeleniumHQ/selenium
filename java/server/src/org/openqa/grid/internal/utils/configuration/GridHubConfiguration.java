@@ -142,7 +142,7 @@ public class GridHubConfiguration extends GridConfiguration {
     sb.append(toString(format, "jettyMaxThreads", jettyMaxThreads));
     sb.append(toString(format, "capabilityMatcher", capabilityMatcher.getClass().getCanonicalName()));
     sb.append(toString(format, "newSessionWaitTimeout", newSessionWaitTimeout));
-    sb.append(toString(format, "prioritizer", prioritizer.getClass().getCanonicalName()));
+    sb.append(toString(format, "prioritizer", prioritizer != null? prioritizer.getClass().getCanonicalName(): null));
     sb.append(toString(format, "throwOnCapabilityNotPresent", throwOnCapabilityNotPresent));
     return sb.toString();
   }
