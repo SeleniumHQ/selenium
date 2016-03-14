@@ -35,12 +35,28 @@ require 'selenium/webdriver/firefox/service'
 module Selenium
   module WebDriver
     module Firefox
-
       DEFAULT_PORT                    = 7055
       DEFAULT_ENABLE_NATIVE_EVENTS    = Platform.os == :windows
       DEFAULT_SECURE_SSL              = false
       DEFAULT_ASSUME_UNTRUSTED_ISSUER = true
       DEFAULT_LOAD_NO_FOCUS_LIB       = false
+
+      MISSING_TEXT = "Unable to find Mozilla Wires. Please download the executable from https://github.com/jgraham/wires/releases"
+
+      def self.driver_path=(path)
+        Platform.assert_executable path
+        @driver_path = path
+      end
+
+      def self.driver_path
+        @driver_path ||= begin
+          path = Platform.find_binary("wires")
+          path or raise Error::WebDriverError, MISSING_TEXT
+          Platform.assert_executable path
+
+          path
+        end
+      end
 
       def self.path=(path)
         Binary.path = path

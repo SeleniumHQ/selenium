@@ -24,8 +24,8 @@ require 'selenium/webdriver/phantomjs/bridge'
 
 module Selenium
   module WebDriver
-
     module PhantomJS
+      MISSING_TEXT = "Unable to find phantomjs executable."
 
       def self.path=(path)
         Platform.assert_executable path
@@ -33,7 +33,13 @@ module Selenium
       end
 
       def self.path
-        @path ||= Platform.find_binary("phantomjs")
+        @path ||= begin
+          path = Platform.find_binary("phantomjs")
+          path or raise Error::WebDriverError, MISSING_TEXT
+          Platform.assert_executable path
+
+          path
+        end
       end
 
     end # PhantomJS

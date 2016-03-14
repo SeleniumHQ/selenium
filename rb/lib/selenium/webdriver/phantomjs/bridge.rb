@@ -21,8 +21,10 @@ module Selenium
   module WebDriver
     module PhantomJS
 
-
+      #
       # @api private
+      #
+
       class Bridge < Remote::Bridge
 
         def initialize(opts = {})

@@ -27,20 +27,14 @@ module Selenium
 
       class Service < WebDriver::Service
         DEFAULT_PORT = 9515
-        MISSING_TEXT = "Unable to find the chromedriver executable. Please download the server from http://chromedriver.storage.googleapis.com/index.html and place it somewhere on your PATH. More info at https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver."
 
         def self.executable_path
-          @executable_path ||= (
-            path = Platform.find_binary "chromedriver"
-            path or raise Error::WebDriverError, MISSING_TEXT
-            Platform.assert_executable path
-
-            path
-          )
+          warn "Selenium::WebDriver::Chrome::Service.executable_path is deprecated, please use Selenium::WebDriver::Chrome.driver_path instead"
+          Chrome.driver_path
         end
 
         def self.default_service(*extra_args)
-          new executable_path, DEFAULT_PORT, *extra_args
+          new Chrome.driver_path, DEFAULT_PORT, *extra_args
         end
 
         private

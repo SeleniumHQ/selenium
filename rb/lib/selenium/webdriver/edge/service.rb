@@ -26,21 +26,15 @@ module Selenium
       #
 
       class Service
-        DEFAULT_PORT        = 17556
-        MISSING_TEXT        = "Unable to find MicrosoftWebDriver. Please download the server from https://www.microsoft.com/en-us/download/details.aspx?id=48212. More info at https://github.com/SeleniumHQ/selenium/wiki/MicrosoftWebDriver."
+        DEFAULT_PORT = 17556
 
         def self.executable_path
-          @executable_path ||= (
-            path = Platform.find_binary "MicrosoftWebDriver"
-            path or raise Error::WebDriverError, MISSING_TEXT
-            Platform.assert_executable path
-
-            path
-          )
+          warn "Selenium::WebDriver::Edge::Service.executable_path is deprecated, please use Selenium::WebDriver::Edge.driver_path instead"
+          Edge.driver_path
         end
 
         def self.default_service(*extra_args)
-          new executable_path, DEFAULT_PORT, *extra_args
+          new Edge.driver_path, DEFAULT_PORT, *extra_args
         end
 
         private

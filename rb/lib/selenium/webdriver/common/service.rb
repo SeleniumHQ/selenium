@@ -37,11 +37,6 @@ module Selenium
       SOCKET_LOCK_TIMEOUT = 45
       STOP_TIMEOUT        = 5
 
-      def self.executable_path=(path)
-        Platform.assert_executable path
-        @executable_path = path
-      end
-
       def initialize(executable_path, port, *extra_args)
         @executable_path = executable_path
         @host            = Platform.localhost

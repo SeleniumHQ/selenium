@@ -27,20 +27,14 @@ module Selenium
 
       class Service < WebDriver::Service
         DEFAULT_PORT = 8910
-        MISSING_TEXT = "Unable to find phantomjs executable."
 
         def self.executable_path
-          @executable_path ||= (
-            path = PhantomJS.path
-            path or raise Error::WebDriverError, MISSING_TEXT
-            Platform.assert_executable path
-
-            path
-          )
+          warn "Selenium::WebDriver::PhantomJS::Service.executable_path is deprecated, please use Selenium::WebDriver::PhantomJS.path instead"
+          PhantomJS.path
         end
 
         def self.default_service(*extra_args)
-          new executable_path, DEFAULT_PORT, *extra_args
+          new PhantomJS.path, DEFAULT_PORT, *extra_args
         end
 
         private
