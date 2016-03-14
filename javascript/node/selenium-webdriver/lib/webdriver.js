@@ -2135,6 +2135,7 @@ class WebElement {
    * Schedules a command to retrieve the outer HTML of this element.
    * @return {!promise.Promise<string>} A promise that will be
    *     resolved with the element's outer HTML.
+   * @deprecated Use {@link WebDriver#executeScript()}
    */
   getOuterHtml() {
     return this.driver_.executeScript(function() {
@@ -2153,6 +2154,7 @@ class WebElement {
    * Schedules a command to retrieve the inner HTML of this element.
    * @return {!promise.Promise<string>} A promise that will be
    *     resolved with the element's inner HTML.
+   * @deprecated Use {@link WebDriver#executeScript()}
    */
   getInnerHtml() {
     return this.driver_.executeScript('return arguments[0].innerHTML', this);

@@ -23,6 +23,7 @@
    module to break a circular dependency.
 * Added support for setting the username and password in basic auth pop-up
    dialogs (currently IE only).
+* Deprecated `WebElement#getInnerHtml()` and `WebEleemnt#getOuterHtml()`
 * FIXED: `io.findInPath()` will no longer match against directories that have
    the same basename as the target file.
 * FIXED: `phantomjs.Driver` now takes a third argument that defines the path to
