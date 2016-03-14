@@ -209,10 +209,10 @@ public class GridNodeConfiguration extends GridConfiguration {
   public String toString(String format) {
     StringBuilder sb = new StringBuilder();
     sb.append(super.toString(format));
-    // id, remoteHost are not command line parameters, excluding from this?
     sb.append(toString(format, "browser", browser));
     sb.append(toString(format, "downPollingLimit", downPollingLimit));
     sb.append(toString(format, "hub", hub));
+    sb.append(toString(format, "id", id));
     sb.append(toString(format, "hubHost", hubHost));
     sb.append(toString(format, "hubPort", hubPort));
     sb.append(toString(format, "nodeConfigFile", nodeConfigFile));
@@ -221,6 +221,7 @@ public class GridNodeConfiguration extends GridConfiguration {
     sb.append(toString(format, "proxy", proxy));
     sb.append(toString(format, "register", register));
     sb.append(toString(format, "registerCycle", registerCycle));
+    sb.append(toString(format, "remoteHost", remoteHost));
     sb.append(toString(format, "unregisterIfStillDownAfter", unregisterIfStillDownAfter));
     return sb.toString();
   }

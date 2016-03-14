@@ -148,7 +148,7 @@ public class GridHubConfiguration extends GridConfiguration {
   public String toString(String format) {
     StringBuilder sb = new StringBuilder();
     sb.append(super.toString(format));
-    sb.append(String.format(format, "hubConfig", hubConfig));
+    sb.append(toString(format, "hubConfig", hubConfig));
     sb.append(toString(format, "jettyMaxThreads", jettyMaxThreads));
     sb.append(toString(format, "capabilityMatcher", capabilityMatcher.getClass().getCanonicalName()));
     sb.append(toString(format, "newSessionWaitTimeout", newSessionWaitTimeout));
