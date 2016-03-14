@@ -68,12 +68,7 @@ module Selenium
         end
 
         def stop_server
-          Net::HTTP.start(@host, @port) do |http|
-            http.open_timeout = STOP_TIMEOUT / 2
-            http.read_timeout = STOP_TIMEOUT / 2
-
-            http.head("/shutdown")
-          end
+          connect_to_server { |http| http.head("/shutdown") }
         end
 
         def connect_until_stable

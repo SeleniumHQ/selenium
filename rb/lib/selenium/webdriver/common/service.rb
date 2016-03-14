@@ -71,6 +71,15 @@ module Selenium
 
       private
 
+      def connect_to_server
+        Net::HTTP.start(@host, @port) do |http|
+          http.open_timeout = STOP_TIMEOUT / 2
+          http.read_timeout = STOP_TIMEOUT / 2
+
+          yield http
+        end
+      end
+
       def find_free_port
         @port = PortProber.above(@port)
       end
