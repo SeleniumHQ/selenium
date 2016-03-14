@@ -268,7 +268,7 @@ public class StatusServletTests {
     assertTrue(o.get("success").getAsBoolean());
     assertEquals(12345, o.get("timeout").getAsInt());
     assertNull(o.get("I'm not a valid key"));
-    assertNull(o.get("servlets"));
+    assertTrue(o.getAsJsonArray("servlets").size() == 0);
     assertFalse(o.has("capabilityMatcher"));
 
   }

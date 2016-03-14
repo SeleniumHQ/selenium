@@ -76,10 +76,16 @@ public class GridConfiguration extends StandaloneConfiguration {
   public void merge(GridConfiguration other) {
     super.merge(other);
     // don't merge 'host'
-    if (other.cleanUpCycle != null) cleanUpCycle = other.cleanUpCycle;
+    if (other.cleanUpCycle != null) {
+      cleanUpCycle = other.cleanUpCycle;
+    }
     custom.putAll(other.custom);
-    if (other.maxSession != 1) maxSession = other.maxSession;
-    if (other.servlets != null) servlets = other.servlets;
+    if (other.maxSession != 1) {
+      maxSession = other.maxSession;
+    }
+    if (other.servlets != null) {
+      servlets = other.servlets;
+    }
   }
 
   @Override

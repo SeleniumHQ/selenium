@@ -89,7 +89,9 @@ public class GridHubConfiguration extends GridConfiguration {
   public static GridHubConfiguration loadFromJSON(JsonObject json) {
 
     try {
-      return new JsonToBeanConverter().convert(GridHubConfiguration.class, json);
+      GsonBuilder builder = new GsonBuilder();
+      GridHubConfiguration.staticAddJsonTypeAdapter(builder);
+      return builder.create().fromJson(json, GridHubConfiguration.class);
     } catch (Throwable e) {
       throw new GridConfigurationException("Error with the JSON of the config : " + e.getMessage(),
                                            e);
@@ -127,11 +129,19 @@ public class GridHubConfiguration extends GridConfiguration {
 
   public void merge(GridHubConfiguration other) {
     super.merge(other);
-    if (other.jettyMaxThreads != null) jettyMaxThreads = other.jettyMaxThreads;
+    if (other.jettyMaxThreads != null) {
+      jettyMaxThreads = other.jettyMaxThreads;
+    }
     capabilityMatcher = other.capabilityMatcher;
-    if (other.newSessionWaitTimeout != null) newSessionWaitTimeout = other.newSessionWaitTimeout;
-    if (other.prioritizer != null) prioritizer = other.prioritizer;
-    if (other.throwOnCapabilityNotPresent != throwOnCapabilityNotPresent) throwOnCapabilityNotPresent = other.throwOnCapabilityNotPresent;
+    if (other.newSessionWaitTimeout != null) {
+      newSessionWaitTimeout = other.newSessionWaitTimeout;
+    }
+    if (other.prioritizer != null) {
+      prioritizer = other.prioritizer;
+    }
+    if (other.throwOnCapabilityNotPresent != throwOnCapabilityNotPresent) {
+      throwOnCapabilityNotPresent = other.throwOnCapabilityNotPresent;
+    }
   }
 
   @Override
@@ -150,11 +160,14 @@ public class GridHubConfiguration extends GridConfiguration {
   @Override
   protected void addJsonTypeAdapter(GsonBuilder builder) {
     super.addJsonTypeAdapter(builder);
+    GridHubConfiguration.staticAddJsonTypeAdapter(builder);
+  }
+  protected static void staticAddJsonTypeAdapter(GsonBuilder builder) {
     builder.registerTypeAdapter(CapabilityMatcher.class, new CapabilityMatcherAdapter().nullSafe());
     builder.registerTypeAdapter(Prioritizer.class, new PrioritizerAdapter().nullSafe());
   }
 
-  protected class SimpleClassNameAdapter<T> extends TypeAdapter<T> {
+  protected static class SimpleClassNameAdapter<T> extends TypeAdapter<T> {
     @Override
     public void write(JsonWriter out, T value) throws IOException {
       out.value(value.getClass().getCanonicalName());
@@ -170,8 +183,8 @@ public class GridHubConfiguration extends GridConfiguration {
     }
   }
 
-  protected class CapabilityMatcherAdapter extends SimpleClassNameAdapter<CapabilityMatcher> {
+  protected static class CapabilityMatcherAdapter extends SimpleClassNameAdapter<CapabilityMatcher> {
   }
-  protected class PrioritizerAdapter extends SimpleClassNameAdapter<Prioritizer> {
+  protected static class PrioritizerAdapter extends SimpleClassNameAdapter<Prioritizer> {
   }
 }

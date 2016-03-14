@@ -167,18 +167,42 @@ public class GridNodeConfiguration extends GridConfiguration {
 
   public void merge(GridNodeConfiguration other) {
     super.merge(other);
-    if (other.browser != null) browser = other.browser;
-    if (other.downPollingLimit != null) downPollingLimit = other.downPollingLimit;
-    if (other.hubHost != null) hubHost = other.hubHost;
-    if (other.hubPort != null) hubPort = other.hubPort;
-    if (other.id != null) id = other.id;
-    if (other.nodePolling != null) nodePolling = other.nodePolling;
-    if (other.nodeStatusCheckTimeout != null) nodeStatusCheckTimeout = other.nodeStatusCheckTimeout;
-    if (other.proxy != null) proxy = other.proxy;
-    if (other.register != null) register = other.register;
-    if (other.registerCycle != null) registerCycle = other.registerCycle;
-    if (other.remoteHost != null) remoteHost = other.remoteHost;
-    if (other.unregisterIfStillDownAfter != null) unregisterIfStillDownAfter = other.unregisterIfStillDownAfter;
+    if (other.browser != null) {
+      browser = other.browser;
+    }
+    if (other.downPollingLimit != null) {
+      downPollingLimit = other.downPollingLimit;
+    }
+    if (other.hubHost != null) {
+      hubHost = other.hubHost;
+    }
+    if (other.hubPort != null) {
+      hubPort = other.hubPort;
+    }
+    if (other.id != null) {
+      id = other.id;
+    }
+    if (other.nodePolling != null) {
+      nodePolling = other.nodePolling;
+    }
+    if (other.nodeStatusCheckTimeout != null) {
+      nodeStatusCheckTimeout = other.nodeStatusCheckTimeout;
+    }
+    if (other.proxy != null) {
+      proxy = other.proxy;
+    }
+    if (other.register != null) {
+      register = other.register;
+    }
+    if (other.registerCycle != null) {
+      registerCycle = other.registerCycle;
+    }
+    if (other.remoteHost != null) {
+      remoteHost = other.remoteHost;
+    }
+    if (other.unregisterIfStillDownAfter != null) {
+      unregisterIfStillDownAfter = other.unregisterIfStillDownAfter;
+    }
   }
 
   @Override

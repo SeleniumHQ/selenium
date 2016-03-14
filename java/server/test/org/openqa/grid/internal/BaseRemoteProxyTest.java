@@ -76,7 +76,7 @@ public class BaseRemoteProxyTest {
     Map<String, Object> cap = new HashMap<>();
     cap.put(CapabilityType.APPLICATION_NAME, "corrupted");
 
-    GridNodeConfiguration config = new JsonToBeanConverter().convert(GridNodeConfiguration.class, "{\"remoteHost\":\"ebay.com\"}");
+    GridNodeConfiguration config = new Gson().fromJson("{\"remoteHost\":\"ebay.com\"}", GridNodeConfiguration.class);
 
     RegistrationRequest request = new RegistrationRequest();
     request.addDesiredCapability(cap);
@@ -119,7 +119,6 @@ public class BaseRemoteProxyTest {
 
   @Test
   public void proxyWithIdSpecified() {
-    String remoteHost ="http://machine1:5555";
     Registry registry = Registry.newInstance();
     GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
     new JCommander(nodeConfiguration, "-role", "webdriver","-host", "machine1", "-port", "5555","-id", "abc");
@@ -133,7 +132,6 @@ public class BaseRemoteProxyTest {
 
   @Test
   public void timeouts() {
-    String remoteHost ="http://machine1:5555";
     Registry registry = Registry.newInstance();
     GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
     new JCommander(nodeConfiguration, "-role", "webdriver","-host", "machine1", "-port", "5555","-id", "abc","-timeout", "23", "-browserTimeout", "12");

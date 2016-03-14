@@ -29,10 +29,13 @@ public enum GridRole {
       case "webdriver":
       case "node":
         return NODE;
+
       case "hub":
         return HUB;
+
       case "standalone":
         return NOT_GRID;
+
       default:
         return null;
     }

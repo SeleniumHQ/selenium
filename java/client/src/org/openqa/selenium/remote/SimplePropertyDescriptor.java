@@ -30,11 +30,10 @@ public class SimplePropertyDescriptor {
   public SimplePropertyDescriptor() {
   }
 
-  public SimplePropertyDescriptor(String name, Method readMethod, Method writeMethod, Field field) {
+  public SimplePropertyDescriptor(String name, Method readMethod, Method writeMethod) {
     this.name = name;
     this.readMethod = readMethod;
     this.writeMethod = writeMethod;
-    this.field = field;
   }
 
   public String getName() {
@@ -49,10 +48,6 @@ public class SimplePropertyDescriptor {
     return writeMethod;
   }
 
-  public Field getField() {
-    return field;
-  }
-
   public static SimplePropertyDescriptor[] getPropertyDescriptors(Class<? extends Object> clazz) {
     HashMap<String, SimplePropertyDescriptor> properties = new HashMap<>();
     for (Method m : clazz.getMethods()) {
@@ -62,7 +57,7 @@ public class SimplePropertyDescriptor {
         if (properties.containsKey(propertyName))
           properties.get(propertyName).readMethod = m;
         else
-          properties.put(propertyName, new SimplePropertyDescriptor(propertyName, m, null, null));
+          properties.put(propertyName, new SimplePropertyDescriptor(propertyName, m, null));
       }
       if (methodName.length() <= 3) {
         continue;
@@ -72,21 +67,13 @@ public class SimplePropertyDescriptor {
         if (properties.containsKey(propertyName))
           properties.get(propertyName).readMethod = m;
         else
-          properties.put(propertyName, new SimplePropertyDescriptor(propertyName, m, null, null));
+          properties.put(propertyName, new SimplePropertyDescriptor(propertyName, m, null));
       }
       if (methodName.startsWith("set")) {
         if (properties.containsKey(propertyName))
           properties.get(propertyName).writeMethod = m;
         else
-          properties.put(propertyName, new SimplePropertyDescriptor(propertyName, null, m, null));
-      }
-    }
-    for (Field f: clazz.getDeclaredFields()) {
-      String fieldName = f.getName();
-      if (properties.containsKey(fieldName)) {
-        properties.get(fieldName).field = f;
-      } else {
-        properties.put(fieldName, new SimplePropertyDescriptor(fieldName, null, null, f));
+          properties.put(propertyName, new SimplePropertyDescriptor(propertyName, null, m));
       }
     }
     SimplePropertyDescriptor[] pdsArray = new SimplePropertyDescriptor[properties.size()];

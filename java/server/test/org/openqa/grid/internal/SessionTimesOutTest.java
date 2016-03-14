@@ -122,6 +122,8 @@ public class SessionTimesOutTest {
   @Test(timeout = 5000)
   public void testTimeoutSlow() throws InterruptedException {
     Registry registry = Registry.newInstance();
+    registry.getConfiguration().timeout = 1800;
+    registry.getConfiguration().cleanUpCycle = null;
     RemoteProxy p1 = new MyRemoteProxyTimeoutSlow(req, registry);
     p1.setupTimeoutListener();
 
@@ -237,6 +239,8 @@ public class SessionTimesOutTest {
 
         config.timeout = timeout;
         config.cleanUpCycle = cycle;
+        registry.getConfiguration().cleanUpCycle = cycle;
+        registry.getConfiguration().timeout = timeout;
         config.host = "localhost";
 
         req.setConfiguration(config);

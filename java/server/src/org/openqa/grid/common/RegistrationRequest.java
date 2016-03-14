@@ -18,6 +18,7 @@
 package org.openqa.grid.common;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -128,31 +129,35 @@ public class RegistrationRequest {
    */
   @SuppressWarnings("unchecked")
   // JSON lib
-  public static RegistrationRequest getNewInstance(String json) {
+  public static RegistrationRequest getNewInstance(String json) throws JsonSyntaxException {
     RegistrationRequest request = new RegistrationRequest();
-    try {
-      JsonObject o = new JsonParser().parse(json).getAsJsonObject();
+    JsonObject o = new JsonParser().parse(json).getAsJsonObject();
 
-      if (o.has("name")) request.setName(o.get("name").getAsString());
-      if (o.has("description")) request.setDescription(o.get("description").getAsString());
-
-      JsonObject config = o.get("configuration").getAsJsonObject();
-      GridNodeConfiguration configuration = new JsonToBeanConverter().convert(GridNodeConfiguration.class, config);
-      request.setConfiguration(configuration);
-
-      if (o.has("id")) request.configuration.id = o.get("id").getAsString();
-
-      JsonArray capabilities = o.get("capabilities").getAsJsonArray();
-
-      for (int i = 0; i < capabilities.size(); i++) {
-        DesiredCapabilities cap = new JsonToBeanConverter()
-            .convert(DesiredCapabilities.class, capabilities.get(i));
-        request.capabilities.add(cap);
-      }
-      return request;
-    } catch (JsonSyntaxException e) {
-      return null;
+    if (o.has("name")) {
+      request.setName(o.get("name").getAsString());
     }
+    if (o.has("description")) {
+      request.setDescription(o.get("description").getAsString());
+    }
+
+    JsonObject config = o.get("configuration").getAsJsonObject();
+    GridNodeConfiguration
+      configuration =
+      new JsonToBeanConverter().convert(GridNodeConfiguration.class, config);
+    request.setConfiguration(configuration);
+
+    if (o.has("id")) {
+      request.configuration.id = o.get("id").getAsString();
+    }
+
+    JsonArray capabilities = o.get("capabilities").getAsJsonArray();
+
+    for (int i = 0; i < capabilities.size(); i++) {
+      DesiredCapabilities cap = new JsonToBeanConverter()
+        .convert(DesiredCapabilities.class, capabilities.get(i));
+      request.capabilities.add(cap);
+    }
+    return request;
   }
 
   /**
@@ -229,7 +234,7 @@ public class RegistrationRequest {
         addPlatformInfoToCapabilities();
       }
 
-      GridNodeConfiguration loadedConfiguration = new JsonToBeanConverter().convert(GridNodeConfiguration.class, base.get("configuration"));
+      GridNodeConfiguration loadedConfiguration = new Gson().fromJson(base.get("configuration"), GridNodeConfiguration.class);
       configuration.merge(loadedConfiguration);
 
 

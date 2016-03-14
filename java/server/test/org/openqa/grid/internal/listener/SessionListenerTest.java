@@ -261,6 +261,7 @@ public class SessionListenerTest {
     req.setConfiguration(config);
 
     Registry registry = Registry.newInstance();
+    registry.getConfiguration().cleanUpCycle = config.cleanUpCycle;
     try {
       final SlowAfterSession proxy = new SlowAfterSession(req, registry);
       proxy.setupTimeoutListener();

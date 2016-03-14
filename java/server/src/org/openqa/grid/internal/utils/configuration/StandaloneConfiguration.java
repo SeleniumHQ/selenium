@@ -83,9 +83,15 @@ public class StandaloneConfiguration {
    * @param other
    */
   public void merge(StandaloneConfiguration other) {
-    if (other.browserTimeout != null) browserTimeout = other.browserTimeout;
-    if (other.jettyThreads != null) jettyThreads = other.jettyThreads;
-    if (other.timeout != 1800) timeout = other.timeout;
+    if (other.browserTimeout != null) {
+      browserTimeout = other.browserTimeout;
+    }
+    if (other.jettyThreads != null) {
+      jettyThreads = other.jettyThreads;
+    }
+    if (other.timeout != 1800) {
+      timeout = other.timeout;
+    }
     // role, port, log, debug and help are not merged, they are only consumed by the immediately running node and can't affect a remote
   }
 
