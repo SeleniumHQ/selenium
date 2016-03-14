@@ -80,12 +80,7 @@ module Selenium
       end
 
       def stop_server
-        Net::HTTP.start(@host, @port) do |http|
-          http.open_timeout = STOP_TIMEOUT / 2
-          http.read_timeout = STOP_TIMEOUT / 2
-
-          http.get("/shutdown")
-        end
+        raise NotImplementedError, "subclass responsibility"
       end
 
       def stop_process
@@ -102,6 +97,6 @@ module Selenium
         @socket_lock ||= SocketLock.new(@port - 1, SOCKET_LOCK_TIMEOUT)
       end
 
-    end # Chrome
+    end # Service
   end # WebDriver
-end # Service
+end # Selenium

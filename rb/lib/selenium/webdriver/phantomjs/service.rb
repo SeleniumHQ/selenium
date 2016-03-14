@@ -66,6 +66,15 @@ module Selenium
           end
         end
 
+        def stop_server
+          Net::HTTP.start(@host, @port) do |http|
+            http.open_timeout = STOP_TIMEOUT / 2
+            http.read_timeout = STOP_TIMEOUT / 2
+
+            http.get("/shutdown")
+          end
+        end
+
         def connect_until_stable
           socket_poller = SocketPoller.new @host, @port, START_TIMEOUT
 
@@ -77,4 +86,4 @@ module Selenium
       end # Service
     end # PhantomJS
   end # WebDriver
-end # Service
+end # Selenium
