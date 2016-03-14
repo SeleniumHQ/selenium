@@ -21,6 +21,14 @@ module Selenium
   module WebDriver
 
     #
+    # Base class implementing default behavior of service object,
+    # responsible for starting and stopping driver implementations.
+    #
+    # Subclasses must implement the following private methods:
+    #   * #start_process
+    #   * #stop_server
+    #   * #cannot_connect_error_text
+    #
     # @api private
     #
 
@@ -99,6 +107,12 @@ module Selenium
       end
 
       def connect_until_stable
+        socket_poller = SocketPoller.new @host, @port, START_TIMEOUT
+        return if socket_poller.connected?
+        raise Error::WebDriverError, cannot_connect_error_text
+      end
+
+      def cannot_connect_error_text
         raise NotImplementedError, "subclass responsibility"
       end
 
