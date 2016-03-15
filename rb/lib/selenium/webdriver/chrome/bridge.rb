@@ -30,7 +30,7 @@ module Selenium
           if opts.has_key?(:url)
             url = opts.delete(:url)
           else
-            @service = Service.default_service(*extract_service_args(opts))
+            @service = Service.new(Chrome.driver_path, Service::DEFAULT_PORT, *extract_service_args(opts))
             @service.start
 
             url = @service.uri

@@ -28,8 +28,9 @@ module Selenium
           caps = opts[:desired_capabilities] ||= Remote::W3CCapabilities.firefox
           Binary.path = caps[:firefox_binary] if caps[:firefox_binary]
 
-          @service = Service.default_service(*extract_service_args(opts))
+          @service = Service.new(Firefox.driver_path, Service::DEFAULT_PORT, *extract_service_args(opts))
           @service.start
+
           opts[:url] = @service.uri
 
           super

@@ -28,10 +28,6 @@ module Selenium
       class Service
         DEFAULT_PORT = 17556
 
-        def self.default_service(*extra_args)
-          new Edge.driver_path, DEFAULT_PORT, *extra_args
-        end
-
         private
 
         def stop_server

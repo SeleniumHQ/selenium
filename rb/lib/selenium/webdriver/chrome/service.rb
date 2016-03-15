@@ -28,10 +28,6 @@ module Selenium
       class Service < WebDriver::Service
         DEFAULT_PORT = 9515
 
-        def self.default_service(*extra_args)
-          new Chrome.driver_path, DEFAULT_PORT, *extra_args
-        end
-
         private
 
         def start_process
