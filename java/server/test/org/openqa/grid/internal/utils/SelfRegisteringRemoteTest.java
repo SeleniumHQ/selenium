@@ -27,14 +27,12 @@ public class SelfRegisteringRemoteTest {
     };
     RegistrationRequest config = new RegistrationRequest();
     config.setRole(GridRole.NODE);
-    config.getConfiguration().put(RegistrationRequest.HUB_HOST, "localhost");
-    config.getConfiguration().put(RegistrationRequest.HUB_PORT, 4444);
-    config.getConfiguration().put(RegistrationRequest.PORT, 0);
-    config.getConfiguration().put(RegistrationRequest.REMOTE_HOST, "http://localhost:0/");
+    config.getConfiguration().port = 0;
+    config.getConfiguration().hub = "http://locahost:4444";
     SelfRegisteringRemote remote = new SelfRegisteringRemote(config);
     remote.setRemoteServer(server);
     remote.updateConfigWithRealPort();
-    String host = (String) remote.getConfiguration().get(RegistrationRequest.REMOTE_HOST);
+    String host = (String) remote.getConfiguration().getRemoteHost();
     assertEquals("Ensure that the remote host is updated properly",
                  "http://localhost:" + server.getRealPort(), host);
 
