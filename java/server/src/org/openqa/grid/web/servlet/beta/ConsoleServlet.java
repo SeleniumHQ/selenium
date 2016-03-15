@@ -30,6 +30,8 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -245,20 +247,23 @@ public class ConsoleServlet extends RegistryBasedServlet {
   }
 
   private void getVersion() {
-    final Properties p = new Properties();
-
-    InputStream stream =
-        Thread.currentThread().getContextClassLoader().getResourceAsStream("META-INF/MANIFEST.MF");
+    InputStream stream = null;
+    try {
+      String classPath = this.getClass().getResource(this.getClass().getSimpleName() + ".class").toString();
+      String manifest = classPath.substring(0, classPath.lastIndexOf("!") + 1) + "/META-INF/MANIFEST.MF";
+      stream = new URL(manifest).openStream();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     if (stream == null) {
       log.severe("Couldn't determine version number");
       return;
     }
     try {
       Manifest manifest = new Manifest(stream);
-      coreVersion = manifest.getMainAttributes().getValue("Selenium-Version");
+      coreVersion = manifest.getEntries().get("Build-Info").getValue("Selenium-Version");
     } catch (IOException e) {
       log.severe("Cannot load version from VERSION.txt" + e.getMessage());
     }
   }
-
 }

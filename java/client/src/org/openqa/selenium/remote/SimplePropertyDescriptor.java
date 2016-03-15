@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
@@ -25,7 +24,6 @@ public class SimplePropertyDescriptor {
   private String name;
   private Method readMethod;
   private Method writeMethod;
-  private Field field;
 
   public SimplePropertyDescriptor() {
   }
