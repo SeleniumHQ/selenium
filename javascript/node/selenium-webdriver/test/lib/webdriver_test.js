@@ -415,7 +415,7 @@ describe('WebDriver', function() {
 
     var driver = executor.createDriver();
     driver.switchTo().window('foo')
-        .thenCatch(v => assert.strictEqual(v, e));
+        .catch(v => assert.strictEqual(v, e));
     driver.getTitle();
     return waitForIdle();
   });
@@ -441,7 +441,7 @@ describe('WebDriver', function() {
 
     var driver = executor.createDriver();
     return driver.switchTo().window('foo').
-        thenCatch(function() { return new StubError; });
+        catch(function() { return new StubError; });
         then(assertIsStubError);
   });
 
@@ -452,7 +452,7 @@ describe('WebDriver', function() {
         end();
 
     var driver = executor.createDriver();
-    driver.switchTo().window('foo').thenCatch(throwStubError);
+    driver.switchTo().window('foo').catch(throwStubError);
 
     return waitForAbort().then(assertIsStubError);
   });
@@ -562,7 +562,7 @@ describe('WebDriver', function() {
 
       var driver = executor.createDriver();
       driver.getTitle().then(function() {
-        driver.switchTo().window('foo').thenCatch(function() {});
+        driver.switchTo().window('foo').catch(function() {});
       });
       driver.close();
 
@@ -582,7 +582,7 @@ describe('WebDriver', function() {
           then(function() {
             return driver.switchTo().window('foo');
           }).
-          thenCatch(v => assert.strictEqual(v, e));
+          catch(v => assert.strictEqual(v, e));
 
       return waitForIdle();
     });
@@ -602,7 +602,7 @@ describe('WebDriver', function() {
             then(function() {
               return driver.switchTo().window('foo');
             }).
-            thenCatch(function() {});
+            catch(function() {});
         driver.close();
       });
 
@@ -640,7 +640,7 @@ describe('WebDriver', function() {
 
       var driver = executor.createDriver();
       driver.switchTo().window('foo').
-          thenCatch(function(e) {
+          catch(function(e) {
             assertIsStubError(e);
             count += 1;
             return driver.getCurrentUrl();
@@ -1143,7 +1143,7 @@ describe('WebDriver', function() {
       let executor = new FakeExecutor();
 
       var arg = promise.rejected(new StubError);
-      arg.thenCatch(function() {});  // Suppress default handler.
+      arg.catch(function() {});  // Suppress default handler.
 
       var driver = executor.createDriver();
       return driver.executeScript(function() {}, arg).
@@ -1154,7 +1154,7 @@ describe('WebDriver', function() {
   describe('executeAsyncScript', function() {
     it('failsIfArgumentIsARejectedPromise', function() {
       var arg = promise.rejected(new StubError);
-      arg.thenCatch(function() {});  // Suppress default handler.
+      arg.catch(function() {});  // Suppress default handler.
 
       var driver = new FakeExecutor().createDriver();
       return driver.executeAsyncScript(function() {}, arg).
@@ -1543,7 +1543,7 @@ describe('WebDriver', function() {
 
     it('failsIfAnInputElementCouldNotBeFound', function() {
       var id = promise.rejected(new StubError);
-      id.thenCatch(function() {});  // Suppress default handler.
+      id.catch(function() {});  // Suppress default handler.
 
       var driver = new FakeExecutor().createDriver();
       var a = new WebElement(driver, 'foo');
@@ -1783,7 +1783,7 @@ describe('WebDriver', function() {
           mouseDown().
           mouseUp().
           perform().
-          thenCatch(assertIsStubError);
+          catch(assertIsStubError);
     });
 
     describe('mouseMove', function() {
@@ -1871,7 +1871,7 @@ describe('WebDriver', function() {
           touchActions().
           scroll({x: 3, y: 4}).
           perform().
-          thenCatch(assertIsStubError);
+          catch(assertIsStubError);
     });
 
     it('testTouchActionSequence', function() {

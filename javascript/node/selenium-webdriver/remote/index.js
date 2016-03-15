@@ -237,7 +237,7 @@ class DriverService {
         return new promise.Promise(function(fulfill, reject) {
           var ready = httpUtil.waitForServer(serverUrl, timeout)
               .then(fulfill, reject);
-          earlyTermination.thenCatch(function(e) {
+          earlyTermination.catch(function(e) {
             ready.cancel(/** @type {Error} */(e));
             reject(Error(e.message));
           });

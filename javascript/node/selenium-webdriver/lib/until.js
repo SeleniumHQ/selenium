@@ -114,7 +114,7 @@ exports.ableToSwitchToFrame = function ableToSwitchToFrame(frame) {
  */
 exports.alertIsPresent = function alertIsPresent() {
   return new Condition('for alert to be present', function(driver) {
-    return driver.switchTo().alert().thenCatch(function(e) {
+    return driver.switchTo().alert().catch(function(e) {
       if (!(e instanceof error.NoSuchAlertError)) {
         throw e;
       }

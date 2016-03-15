@@ -53,7 +53,7 @@ function findSystemPortRange() {
   }
   var range = process.platform === 'win32' ?
       findWindowsPortRange() : findUnixPortRange();
-  return systemRange = range.thenCatch(function() {
+  return systemRange = range.catch(function() {
     return DEFAULT_IANA_RANGE;
   });
 }
@@ -154,7 +154,7 @@ function findWindowsPortRange() {
 function isFree(port, opt_host) {
   var result = promise.defer();
 
-  result.promise.thenCatch(function(e) {
+  result.promise.catch(function(e) {
     if (e instanceof promise.CancellationError) {
       server.close();
     }

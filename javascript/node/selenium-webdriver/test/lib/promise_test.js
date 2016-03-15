@@ -57,7 +57,7 @@ describe('promise', function() {
 
   function createRejectedPromise(reason) {
     var p = promise.rejected(reason);
-    p.thenCatch(function() {});
+    p.catch(function() {});
     return p;
   }
 
@@ -85,7 +85,7 @@ describe('promise', function() {
     it('returnsOwnPromiseIfNoCallbacksWereGiven', function() {
       var deferred = new promise.Deferred();
       assert.equal(deferred.promise, deferred.promise.then());
-      assert.equal(deferred.promise, deferred.promise.thenCatch());
+      assert.equal(deferred.promise, deferred.promise.catch());
       assert.equal(deferred.promise, promise.when(deferred.promise));
     });
 
@@ -105,7 +105,7 @@ describe('promise', function() {
       var done = callbackHelper(assertIsStubError);
       return promise.rejected(new StubError).
           thenFinally(function() {}).
-          thenCatch(done).
+          catch(done).
           thenFinally(done.assertCalled);
     });
 
@@ -113,7 +113,7 @@ describe('promise', function() {
       var done = callbackHelper(assertIsStubError);
       return promise.rejected(new Error('original')).
           thenFinally(throwStubError).
-          thenCatch(done).
+          catch(done).
           thenFinally(done.assertCalled);
     });
 
@@ -121,7 +121,7 @@ describe('promise', function() {
       var done = callbackHelper(assertIsStubError);
       return promise.fulfilled().
           thenFinally(throwStubError).
-          thenCatch(done).
+          catch(done).
           thenFinally(done.assertCalled);
     });
 
@@ -131,7 +131,7 @@ describe('promise', function() {
           thenFinally(function() {
             return promise.rejected(new StubError);
           }).
-          thenCatch(done).
+          catch(done).
           thenFinally(done.assertCalled);
     });
   });
@@ -900,7 +900,7 @@ describe('promise', function() {
         assert.notEqual(originalStack, e.stack);
         assert.equal(e.stack.indexOf(originalStack), 0,
             'should start with original stack');
-        assert.deepEqual(['From: Promise: new'], getStackMessages(e));
+        assert.deepEqual(['From: ManagedPromise: new'], getStackMessages(e));
       });
     });
 
@@ -920,7 +920,7 @@ describe('promise', function() {
         assert.notEqual(originalStack, e.stack);
         assert.equal(e.stack.indexOf(originalStack), 0,
             'should start with original stack');
-        assert.deepEqual(['From: Promise: new'], getStackMessages(e));
+        assert.deepEqual(['From: ManagedPromise: new'], getStackMessages(e));
       });
     });
 
@@ -939,9 +939,9 @@ describe('promise', function() {
         }
       }).
       then(fail).
-      thenCatch(function(e) { throw e; }).
+      catch(function(e) { throw e; }).
       then(fail).
-      thenCatch(function(e) { throw e; }).
+      catch(function(e) { throw e; }).
       then(fail, function(e) {
         assert.equal(error, e);
         if (typeof originalStack !== 'string') {
@@ -951,7 +951,7 @@ describe('promise', function() {
         assert.equal(e.stack.indexOf(originalStack), 0,
             'should start with original stack');
         assert.deepEqual([
-          'From: Promise: new',
+          'From: ManagedPromise: new',
           'From: Promise: then',
           'From: Promise: catch',
           'From: Promise: then',
@@ -977,7 +977,7 @@ describe('promise', function() {
               throw e;
             }
           }).
-          thenCatch(function(e) { throw e; }).
+          catch(function(e) { throw e; }).
           then(fail, function(e) {
             assert.equal(error, e);
             if (typeof originalStack !== 'string') {
