@@ -1,9 +1,16 @@
-2.53.0 (Unreleased)
+2.53.0 (2016-03-15)
 ===================
 
 Ruby:
   * Removed dependency on "multi_json" (issue 1632)
   * Properly handle namespaces in install manifest of Firefox add-ons (issue 1143)
+  * Improve error handling when stopping browsers (thanks bsedat)
+  * Fix deselecting options in select lists (thanks glib-briia)
+  * Fix w3c error handling
+  * Update w3c Capabilities support
+
+IE:
+  * support for alert credentials (issue #1698, thanks Alan Baird & trabulmonkee)
 
 2.52.0 (2016-02-12)
 ===================
