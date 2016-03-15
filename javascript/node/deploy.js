@@ -28,6 +28,7 @@ var assert = require('assert'),
     vm = require('vm');
 
 var optparse = require('./optparse');
+var gendocs = require('./gendocs');
 
 
 /**
@@ -121,71 +122,6 @@ function copyResources(outputDirPath, resources, exclusions) {
 }
 
 
-function generateDocs(outputDir, callback) {
-  var libDir = path.join(outputDir, 'lib');
-
-  var excludedDirs = [
-    path.join(outputDir, 'example'),
-    path.join(libDir, 'test'),
-    path.join(outputDir, 'test')
-  ];
-
-  var excludedFiles = [
-    path.join(libDir, 'safari/client.js'),
-  ];
-
-  var endsWith = function(str, suffix) {
-    var l = str.length - suffix.length;
-    return l >= 0 && str.indexOf(suffix, l) == l;
-  };
-
-  var getFiles = function(dir) {
-    var files = [];
-    fs.readdirSync(dir).forEach(function(file) {
-      file = path.join(dir, file);
-      if (fs.statSync(file).isDirectory() &&
-          excludedDirs.indexOf(file) == -1) {
-        files = files.concat(getFiles(file));
-      } else if (endsWith(path.basename(file), '.js') &&
-          excludedFiles.indexOf(file) == -1) {
-        files.push(file);
-      }
-    });
-    return files;
-  };
-
-  var moduleFiles = getFiles(outputDir).filter(function(file) {
-    return file.indexOf(path.join(outputDir, 'test')) == -1;
-  });
-
-  var output = outputDir + '-docs';
-  var config = {
-    'output': output,
-    'customPages': [
-      {'name': 'Changes', 'path': path.join(outputDir, 'CHANGES.md')}
-    ],
-    'readme': path.join(outputDir, 'README.md'),
-    'language': 'ES6_STRICT',
-    'modules': moduleFiles,
-    'excludes': [
-      path.join(outputDir, 'docs'),
-      path.join(outputDir, 'node_modules')
-    ],
-    'typeFilters': ['goog']
-  };
-
-  var configFile = output + '.json';
-  fs.writeFileSync(configFile, JSON.stringify(config), 'utf8');
-
-  var command = [
-      'java -jar', path.join(
-          __dirname, '../../third_party/java/dossier/dossier-0.7.2.jar'),
-      '-c', configFile
-  ].join(' ');
-  child_process.exec(command, callback);
-}
-
-
 function main() {
   var parser = new optparse.OptionParser().
       path('output', { help: 'Path to the output directory' }).
@@ -219,9 +155,8 @@ function main() {
   console.log('Copying resource files...');
   copyResources(options.output, options.resource, options.exclude_resource);
   console.log('Generating documentation...');
-  generateDocs(options.output, function(e) {
-    if (e) throw e;
-    console.log('ALL DONE');
+  gendocs().then(() => console.log('ALL DONE'), function(e) {
+    setTimeout(() => {throw e}, 0);
   });
 }
 
