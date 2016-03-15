@@ -62,7 +62,7 @@ public class NodeTimeOutTest {
     node = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
     node.addBrowser(GridTestHelper.getSelenium1FirefoxCapability(), 1);
     node.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
-    node.setTimeout(5000, 2000);
+    node.setTimeout(1, 100);
     node.setRemoteServer(new SeleniumServer(node.getConfiguration()));
     node.startRemoteServer();
     node.sendRegistrationRequest();
@@ -76,7 +76,7 @@ public class NodeTimeOutTest {
     DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
     WebDriver driver = new RemoteWebDriver(new URL(hub.getUrl() + "/wd/hub"), caps);
     driver.get(url);
-    assertEquals(driver.getTitle(), "Grid overview");
+    assertEquals(driver.getTitle(), "Grid Console");
     wait.until(new Function<Object, Integer>() {
       @Override
       public Integer apply(Object input) {
