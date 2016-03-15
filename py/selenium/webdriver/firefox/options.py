@@ -15,11 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import os
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
-import base64
 
 
 class Options(object):
