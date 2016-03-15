@@ -373,13 +373,13 @@ class WebDriver {
     // actually executes the command. This addresses scenarios like catching
     // an element not found error in:
     //
-    //     driver.findElement(By.id('foo')).click().thenCatch(function(e) {
+    //     driver.findElement(By.id('foo')).click().catch(function(e) {
     //       if (e instanceof NoSuchElementError) {
     //         // Do something.
     //       }
     //     });
     var prepCommand = toWireValue(command.getParameters());
-    prepCommand.thenCatch(function() {});
+    prepCommand.catch(function() {});
 
     var flow = this.flow_;
     var executor = this.executor_;
@@ -447,7 +447,7 @@ class WebDriver {
         'WebDriver.quit()');
     // Delete our session ID when the quit command finishes; this will allow us to
     // throw an error when attemnpting to use a driver post-quit.
-    return result.thenFinally(() => delete this.session_);
+    return promise.thenFinally(result, () => delete this.session_);
   }
 
   /**
@@ -926,7 +926,7 @@ class WebDriver {
           setParameter('using', locator.using).
           setParameter('value', locator.value);
       let res = this.schedule(cmd, 'WebDriver.findElements(' + locator + ')');
-      return res.thenCatch(function(e) {
+      return res.catch(function(e) {
         if (e instanceof error.NoSuchElementError) {
           return [];
         }
@@ -1930,7 +1930,7 @@ class WebElement {
     }
 
     // Suppress unhandled rejection errors until the flow executes the command.
-    keys.thenCatch(function() {});
+    keys.catch(function() {});
 
     var element = this;
     return this.driver_.flow_.execute(function() {
@@ -2200,10 +2200,10 @@ class WebElementPromise extends WebElement {
     this.catch = el.catch.bind(el);
 
     /** @override */
-    this.thenCatch = el.thenCatch.bind(el);
+    this.thenCatch = el.catch.bind(el);
 
     /** @override */
-    this.thenFinally = el.thenFinally.bind(el);
+    this.thenFinally = (cb) => promise.thenFinally(el, cb);
 
     /**
      * Defers returning the element ID until the wrapped WebElement has been
@@ -2354,10 +2354,10 @@ class AlertPromise extends Alert {
     this.catch = alert.catch.bind(alert);
 
     /** @override */
-    this.thenCatch = alert.thenCatch.bind(alert);
+    this.thenCatch = alert.catch.bind(alert);
 
     /** @override */
-    this.thenFinally = alert.thenFinally.bind(alert);
+    this.thenFinally = (cb) => promise.thenFinally(alert, cb);
 
     /**
      * Defer returning text until the promised alert has been resolved.

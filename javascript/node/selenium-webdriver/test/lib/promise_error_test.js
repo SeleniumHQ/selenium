@@ -362,11 +362,11 @@ describe('promise error handling', function() {
     it('start with normal promise', function() {
       var error = Error('an error');
       return promise.rejected(error).
-          thenCatch(function(e) {
+          catch(function(e) {
             assert.equal(e, error);
             throw new StubError;
           }).
-          thenCatch(assertIsStubError);
+          catch(assertIsStubError);
     });
 
     it('start with task result', function() {
@@ -374,17 +374,17 @@ describe('promise error handling', function() {
       return flow.execute(function() {
         throw error;
       }).
-      thenCatch(function(e) {
+      catch(function(e) {
         assert.equal(e, error);
         throw new StubError;
       }).
-      thenCatch(assertIsStubError);
+      catch(assertIsStubError);
     });
 
     it('start with normal promise; uncaught error', function() {
       var error = Error('an error');
       promise.rejected(error).
-          thenCatch(function(e) {
+          catch(function(e) {
             assert.equal(e, error);
             throw new StubError;
           });
@@ -396,7 +396,7 @@ describe('promise error handling', function() {
       flow.execute(function() {
         throw error;
       }).
-      thenCatch(function(e) {
+      catch(function(e) {
         assert.equal(e, error);
         throw new StubError;
       });
@@ -429,7 +429,7 @@ describe('promise error handling', function() {
 
     it('promise was rejected', function() {
       var toThrow = promise.rejected(new StubError);
-      toThrow.thenCatch(function() {});  // For tearDown.
+      toThrow.catch(function() {});  // For tearDown.
       flow.execute(function() {
         throw toThrow;
       }).then(assert.fail, function(e) {
@@ -756,7 +756,7 @@ describe('promise error handling', function() {
     }).then(function(error) {
       assert.ok(error instanceof promise.CancellationError);
       assert.ok(!task.isPending());
-      return task.thenCatch(function(error) {
+      return task.catch(function(error) {
         assert.ok(error instanceof promise.CancellationError);
       });
     });

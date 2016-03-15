@@ -581,7 +581,7 @@ describe('promise control flow', function() {
           then(function() {
             return scheduleAction('b', throwStubError);
           }).
-          thenCatch(errback);
+          catch(errback);
       return waitForIdle().then(function() {
         assert(errback.called);
         assertIsStubError(errback.getCall(0).args[0]);
@@ -596,7 +596,7 @@ describe('promise control flow', function() {
             throw new StubError;
           });
         });
-      }).thenCatch(errback);
+      }).catch(errback);
       schedule('d');
       return waitForIdle().
           then(function() {
@@ -1921,7 +1921,7 @@ describe('promise control flow', function() {
       return waitForIdle().then(function() {
         assert.ok(!called);
         assertFlowHistory();
-        return task1.thenCatch(function(e) {
+        return task1.catch(function(e) {
           assert.ok(e instanceof promise.CancellationError);
           assert.equal('no soup for you', e.message);
         });
@@ -1939,7 +1939,7 @@ describe('promise control flow', function() {
       return waitForIdle().then(function() {
         assert.ok(!called);
         assertFlowHistory('a', 'c');
-        return task2.thenCatch(function(e) {
+        return task2.catch(function(e) {
           assert.ok(e instanceof promise.CancellationError);
           assert.equal('no soup for you', e.message);
         });
@@ -1954,7 +1954,7 @@ describe('promise control flow', function() {
       return waitForIdle().then(function() {
         assert.ok(!called);
         assertFlowHistory();
-        return task.thenCatch(function(e) {
+        return task.catch(function(e) {
           assert.ok(e instanceof promise.CancellationError);
         });
       });
@@ -1972,7 +1972,7 @@ describe('promise control flow', function() {
       return waitForIdle().then(function() {
         assert.deepEqual([], seen);
         assertFlowHistory();
-        return task.thenCatch(function(e) {
+        return task.catch(function(e) {
           assert.ok(e instanceof promise.CancellationError);
         });
       });
@@ -1990,7 +1990,7 @@ describe('promise control flow', function() {
       return waitForIdle().then(function() {
         assert.ok(!called);
         assertFlowHistory('a', 'c');
-        return task.thenCatch(function(e) {
+        return task.catch(function(e) {
           assert.ok(e instanceof promise.CancellationError);
           assert.equal('no soup for you', e.message);
         });
@@ -2014,19 +2014,19 @@ describe('promise control flow', function() {
       // Since the outerTask is cancelled below, innerTask should be cancelled
       // with a DiscardedTaskError, which means its callbacks are silently
       // dropped - so this should never execute.
-      innerTask.thenCatch(function(e) {
+      innerTask.catch(function(e) {
         order.push(2);
       });
     });
     schedule('b');
 
-    outerTask.thenCatch(function(e) {
+    outerTask.catch(function(e) {
       order.push(3);
       assert.ok(e instanceof promise.CancellationError);
       assert.equal('no soup for you', e.message);
     });
 
-    unresolved.promise.thenCatch(function(e) {
+    unresolved.promise.catch(function(e) {
       order.push(4);
       assert.ok(e instanceof promise.CancellationError);
     });

@@ -47,7 +47,7 @@ test.suite(function(env) {
     test.it('fails if script throws', function() {
       execute('throw new Error("boom")')
           .then(function() { throw shoudlHaveFailed; })
-          .thenCatch(function(e) {
+          .catch(function(e) {
             // The java WebDriver server adds a bunch of crap to error messages.
             // Error message will just be "JavaScript error" for IE.
             assert(e.message).matches(/.*(JavaScript error|boom).*/);
@@ -57,7 +57,7 @@ test.suite(function(env) {
     test.it('fails if script does not parse', function() {
       execute('throw function\\*')
           .then(function() { throw shoudlHaveFailed; })
-          .thenCatch(function(e) {
+          .catch(function(e) {
             assert(e).notEqualTo(shouldHaveFailed);
           });
     });
@@ -323,7 +323,7 @@ test.suite(function(env) {
       });
     });
   });
-  
+
   function verifyJson(expected) {
     return function(actual) {
       assert(JSON.stringify(actual)).equalTo(JSON.stringify(expected));

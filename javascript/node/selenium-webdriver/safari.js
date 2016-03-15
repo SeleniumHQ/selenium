@@ -414,7 +414,7 @@ class CommandExecutor {
       }));
     }
     var self = this;
-    return promise.all(tasks).thenFinally(function() {
+    return promise.thenFinally(promise.all(tasks), function() {
       self.server_ = null;
       self.socket_ = null;
       self.safari_ = null;
