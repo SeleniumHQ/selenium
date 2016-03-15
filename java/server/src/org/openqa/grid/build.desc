@@ -1,23 +1,25 @@
 
 java_library(name = "grid",
   srcs = [
+    "common/**/*.java",
     "internal/**/*.java",
+    "shared/**/*.java",
     "web/**/*.java",
     "selenium/proxy/**/*.java",
   ],
   embedded = [
     "images/",
+    "common/defaults/",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium:webdriver-api",
     "//java/client/src/org/openqa/selenium/chrome",
-    "//java/server/src/org/openqa/grid/common",
-    "//java/server/src/org/openqa/grid/shared:interfaces",
     "//java/server/src/org/openqa/selenium/remote/server",
     "//third_party/java/httpcomponents:httpclient",
     "//third_party/java/guava",
     "//third_party/java/jcip_annotations",
     "//third_party/java/yaml",
-    "//third_party/java/jetty"
+    "//third_party/java/jetty",
+    "//third_party/java/beust:jcommander"
   ])
 

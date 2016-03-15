@@ -20,8 +20,6 @@ package org.openqa.grid.internal.listener;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.grid.common.RegistrationRequest.APP;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +29,9 @@ import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.RegistrationListener;
 import org.openqa.grid.internal.mock.GridHelper;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,10 +62,10 @@ public class RegistrationListenerTest {
 
   @Before
   public void prepareReqRequest() {
-    Map<String, Object> config = new HashMap<>();
-    app1.put(APP, "app1");
-    config.put(REMOTE_HOST, "http://machine1:4444");
-    config.put("host","localhost");
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    app1.put(CapabilityType.APPLICATION_NAME, "app1");
+    config.host = "machine1";
+    config.port = 4444;
     req = new RegistrationRequest();
     req.addDesiredCapability(app1);
     req.setConfiguration(config);

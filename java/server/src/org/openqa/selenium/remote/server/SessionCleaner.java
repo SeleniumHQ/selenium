@@ -58,6 +58,8 @@ class SessionCleaner extends Thread {   // Thread safety reviewed
     long lowestNonZero = Math.min((insideBrowserTimeout > 0) ? insideBrowserTimeout : clientGoneTimeout,
                                   clientGoneTimeout > 0 ? clientGoneTimeout : insideBrowserTimeout);
     this.sleepInterval = lowestNonZero / 10;
+
+    log.info(String.format("SessionCleaner initialized with insideBrowserTimeout %d and clientGoneTimeout %d polling every %d", this.insideBrowserTimeout, this.clientGoneTimeout, sleepInterval));
   }
 
 

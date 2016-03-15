@@ -17,13 +17,15 @@
 
 package org.openqa.grid.internal.utils;
 
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
+
 import java.util.Map;
 
 /**
  * Used to find out if a capabilities requested by the client matches something on the remote and
  * should be forwarded by the grid.
  *
- * {@link GridHubConfiguration#setCapabilityMatcher(CapabilityMatcher)}
+ * {@link GridHubConfiguration#capabilityMatcher}
  */
 public interface CapabilityMatcher {
   public boolean matches(Map<String, Object> currentCapability,

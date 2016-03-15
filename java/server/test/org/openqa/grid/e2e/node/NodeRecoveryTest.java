@@ -26,13 +26,13 @@ import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.remote.server.SeleniumServer;
 
 import java.net.URL;
 
@@ -54,8 +54,8 @@ public class NodeRecoveryTest {
   @BeforeClass
   public static void setup() throws Exception {
     GridHubConfiguration config = new GridHubConfiguration();
-    config.setHost("localhost");
-    config.setPort(PortProber.findFreePort());
+    config.host = "localhost";
+    config.port = PortProber.findFreePort();
     hub = new Hub(config);
 
     hub.start();
@@ -80,7 +80,7 @@ public class NodeRecoveryTest {
       assertEquals(p.getTimeOut(), originalTimeout);
     }
 
-    URL hubURL = new URL("http://" + hub.getHost() + ":" + hub.getPort());
+    URL hubURL = new URL("http://" + hub.getConfiguration().host + ":" + hub.getConfiguration().port);
 
     DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
     new RemoteWebDriver(new URL(hubURL + "/grid/driver"), caps);

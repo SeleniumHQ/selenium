@@ -83,14 +83,13 @@ export_file(name = 'style',
 
 java_library(name = 'standalone-server-lib',
   srcs = [
-    'CommandLineArgs.java',
     'SeleniumServer.java',
   ],
   deps = [
     ':server',
     ':sessions',
     '//java/client/src/org/openqa/selenium/remote:api',
-    '//java/server/src/org/openqa/grid/shared:interfaces',
+    '//java/server/src/org/openqa/grid',
     '//third_party/java/beust:jcommander',
     '//third_party/java/jetty:jetty',
     '//third_party/java/servlet:servlet-api',

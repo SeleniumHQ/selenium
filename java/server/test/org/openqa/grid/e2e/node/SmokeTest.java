@@ -38,7 +38,7 @@ import org.openqa.grid.web.Hub;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.remote.server.SeleniumServer;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -65,7 +65,7 @@ public class SmokeTest {
     remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
     remote.startRemoteServer();
 
-    remote.getConfiguration().put(RegistrationRequest.TIME_OUT, -1);
+    remote.getConfiguration().timeout = -1;
     remote.sendRegistrationRequest();
     RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
   }
@@ -81,26 +81,6 @@ public class SmokeTest {
     } finally {
       if (driver != null) {
         driver.quit();
-      }
-    }
-  }
-
-
-  @Ignore
-  @Test
-  public void firefoxOnSelenium() throws MalformedURLException {
-    Selenium selenium = null;
-    try {
-      selenium = new DefaultSelenium(hub.getHost(), hub.getPort(), "*firefox", hub.getUrl() + "");
-      assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
-      selenium.start();
-      assertEquals(hub.getRegistry().getActiveSessions().size(), 1);
-      selenium.open(hub.getUrl() + "/grid/console");
-      assertEquals(selenium.getTitle(), "Grid Console");
-
-    } finally {
-      if (selenium != null) {
-        selenium.stop();
       }
     }
   }

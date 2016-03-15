@@ -29,7 +29,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.remote.server.SeleniumServer;
 
 import java.net.MalformedURLException;
 import java.net.URL;

@@ -23,17 +23,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.grid.common.RegistrationRequest.APP;
-import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
-import static org.openqa.grid.common.RegistrationRequest.ID;
-import static org.openqa.grid.common.RegistrationRequest.TIME_OUT;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.mock.GridHelper;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.server.SystemClock;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,18 +47,17 @@ public class SessionTimesOutTest {
   @Before
   public void setup() {
 
-    app1.put(APP, "app1");
+    app1.put(CapabilityType.APPLICATION_NAME, "app1");
     req.addDesiredCapability(app1);
 
-    Map<String, Object> config = new HashMap<>();
-    // a test is timed out is inactive for more than 0.5 sec.
-    config.put(TIME_OUT, 50);
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    // a test is timed out is inactive for more than 1 sec.
+    config.timeout = 1;
 
-    // every 0.5 sec, the proxy check is something has timed out.
-    config.put(CLEAN_UP_CYCLE, 400);
+    // every 0.1 sec, the proxy check is something has timed out.
+    config.cleanUpCycle = 100;
 
-    config.put(ID, "abc");
-    config.put("host", "localhost");
+    config.host = "localhost";
 
     req.setConfiguration(config);
   }
@@ -77,7 +75,7 @@ public class SessionTimesOutTest {
   /**
    * check that the proxy is freed after it times out.
    */
-  @Test(timeout = 3000)
+  @Test(timeout = 10000)
   public void testTimeout() throws InterruptedException {
 
     Registry registry = Registry.newInstance();
@@ -91,7 +89,7 @@ public class SessionTimesOutTest {
       newSessionRequest.process();
       TestSession session = newSessionRequest.getSession();
       // wait for a timeout
-      Thread.sleep(500);
+      Thread.sleep(1000);
 
       RequestHandler newSessionRequest2 = GridHelper.createNewSessionHandler(registry, app1);
       newSessionRequest2.process();
@@ -124,6 +122,8 @@ public class SessionTimesOutTest {
   @Test(timeout = 5000)
   public void testTimeoutSlow() throws InterruptedException {
     Registry registry = Registry.newInstance();
+    registry.getConfiguration().timeout = 1800;
+    registry.getConfiguration().cleanUpCycle = null;
     RemoteProxy p1 = new MyRemoteProxyTimeoutSlow(req, registry);
     p1.setupTimeoutListener();
 
@@ -134,7 +134,7 @@ public class SessionTimesOutTest {
       newSessionRequest.process();
       TestSession session = newSessionRequest.getSession();
       // timeout cleanup will start
-      Thread.sleep(500);
+      Thread.sleep(1100);
       // but the session finishes before the timeout cleanup finishes
       registry.terminate(session, SessionTerminationReason.CLIENT_STOPPED_SESSION);
 
@@ -219,12 +219,13 @@ public class SessionTimesOutTest {
   public void stupidConfig() throws InterruptedException {
     Object[][] configs = new Object[][]{
         // correct config, just to check something happens
-        {5, 5},
+        {1, 5},
         // and invalid ones
         {-1, 5}, {5, -1}, {-1, -1}, {0, 0}};
     java.util.List<Registry> registryList = new ArrayList<>();
     try {
       for (Object[] c : configs) {
+        // timeout is in seconds
         int timeout = (Integer) c[0];
         int cycle = (Integer) c[1];
         Registry registry = Registry.newInstance();
@@ -232,14 +233,15 @@ public class SessionTimesOutTest {
 
         RegistrationRequest req = new RegistrationRequest();
         Map<String, Object> app1 = new HashMap<>();
-        app1.put(APP, "app1");
+        app1.put(CapabilityType.APPLICATION_NAME, "app1");
         req.addDesiredCapability(app1);
-        Map<String, Object> config = new HashMap<>();
+        GridNodeConfiguration config = new GridNodeConfiguration();
 
-        config.put(TIME_OUT, timeout);
-        config.put(CLEAN_UP_CYCLE, cycle);
-        config.put(ID, "abc");
-        config.put("host", "localhost");
+        config.timeout = timeout;
+        config.cleanUpCycle = cycle;
+        registry.getConfiguration().cleanUpCycle = cycle;
+        registry.getConfiguration().timeout = timeout;
+        config.host = "localhost";
 
         req.setConfiguration(config);
 
@@ -250,10 +252,11 @@ public class SessionTimesOutTest {
         newSessionRequest.process();
         TestSession session = newSessionRequest.getSession();
         // wait -> timed out and released.
-        Thread.sleep(500);
+        Thread.sleep(Math.max(1010, Math.min(0, timeout * 1000 + cycle)));
         boolean shouldTimeout = timeout > 0 && cycle > 0;
 
         if (shouldTimeout) {
+          System.out.println(String.format("Should timeout with this set timeout: %d seconds, cleanUpCycle: %d ms", timeout, cycle));
           assertEquals(session.get("FLAG"), true);
           assertNull(session.getSlot().getSession());
         } else {

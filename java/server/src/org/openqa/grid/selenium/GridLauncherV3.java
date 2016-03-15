@@ -19,13 +19,15 @@ package org.openqa.grid.selenium;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.openqa.grid.common.CommandLineOptionHelper;
-import org.openqa.grid.common.GridDocHelper;
+import com.beust.jcommander.JCommander;
+
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridConfigurationException;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
+import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.grid.shared.CliUtils;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.remote.server.SeleniumServer;
@@ -44,101 +46,92 @@ public class GridLauncherV3 {
 
   private static final Logger log = Logger.getLogger(GridLauncherV3.class.getName());
 
-  public interface GridItemLauncher {
-    void launch(String[] args, Logger log) throws Exception;
-    void printUsage();
+  public static abstract class GridItemLauncher {
+    protected Object configuration;
+    abstract void setConfiguration(String[] args);
+    abstract void launch() throws Exception;
+    void printUsage() {
+      new JCommander(configuration).usage();
+    }
   }
 
   private static ImmutableMap<GridRole, GridItemLauncher> launchers
     = new ImmutableMap.Builder<GridRole, GridItemLauncher>()
       .put(GridRole.NOT_GRID, new GridItemLauncher() {
-        @Override
-        public void launch(String[] args, Logger log) throws Exception {
-          log.info("Launching a standalone Selenium Server");
-          SeleniumServer.main(args);
-          log.info("Selenium Server is up and running");
+        public void setConfiguration(String[] args) {
+          configuration = new StandaloneConfiguration();
+          new JCommander(configuration, args);
         }
-
-        @Override
-        public void printUsage() {
-          String separator = "\n-------------------------------\n";
-          SeleniumServer.usage(separator + "Running as a standalone server:" + separator);
+        public void launch() throws Exception {
+          log.info("Launching a standalone Selenium Server");
+          SeleniumServer server = new SeleniumServer((StandaloneConfiguration)configuration);
+          server.boot();
+          log.info("Selenium Server is up and running");
         }
       })
     .put(GridRole.HUB, new GridItemLauncher() {
-      @Override
-      public void launch(String[] args, Logger log) throws Exception {
+      public void setConfiguration(String[] args) {
+        configuration = new GridHubConfiguration();
+        new JCommander(configuration, args);
+      }
+      public void launch() throws Exception {
         log.info("Launching Selenium Grid hub");
-        GridHubConfiguration c = GridHubConfiguration.build(args);
-        Hub h = new Hub(c);
+        Hub h = new Hub((GridHubConfiguration)configuration);
         h.start();
         log.info("Nodes should register to " + h.getRegistrationURL());
         log.info("Selenium Grid hub is up and running");
       }
-
-      @Override
-      public void printUsage() {
-        String separator = "\n-------------------------------\n";
-        GridDocHelper.printHubHelp(separator + "Running as a grid hub:" + separator, false);
-      }
     })
     .put(GridRole.NODE, new GridItemLauncher() {
-      @Override
-      public void launch(String[] args, Logger log) throws Exception {
+      public void setConfiguration(String[] args) {
+        configuration = new GridNodeConfiguration();
+        new JCommander(configuration, args);
+      }
+      public void launch() throws Exception {
         log.info("Launching a Selenium Grid node");
-        RegistrationRequest c = RegistrationRequest.build(args);
+        RegistrationRequest c = RegistrationRequest.build((GridNodeConfiguration)configuration);
         SelfRegisteringRemote remote = new SelfRegisteringRemote(c);
-        remote.setRemoteServer(new SeleniumServer(c.getConfigAsInt("port", 4444)));
+        remote.setRemoteServer(new SeleniumServer((StandaloneConfiguration)configuration));
         remote.startRemoteServer();
         log.info("Selenium Grid node is up and ready to register to the hub");
         remote.startRegistrationProcess();
-      }
-
-      @Override
-      public void printUsage() {
-        String separator = "\n-------------------------------\n";
-        GridDocHelper.printNodeHelp(separator + "Running as a grid node:" + separator, false);
       }
     })
     .build();
 
   public static void main(String[] args) throws Exception {
-    CommandLineOptionHelper helper = new CommandLineOptionHelper(args);
-    GridRole role = GridRole.find(args);
+    StandaloneConfiguration configuration = new StandaloneConfiguration();
+    new JCommander(configuration, args);
+
+    GridRole role = GridRole.get(configuration.role);
 
     if (role == null) {
-      printInfoAboutRoles(helper);
+      printInfoAboutRoles(configuration.role);
       return;
     }
 
-    if (helper.isParamPresent("-help") || helper.isParamPresent("-h")) {
-      if (launchers.containsKey(role)) {
-        launchers.get(role).printUsage();
-      } else {
-        printInfoAboutRoles(helper);
-      }
+    launchers.get(role).setConfiguration(args);
+
+    if (configuration.help) {
+      launchers.get(role).printUsage();
       return;
     }
 
-    configureLogging(helper);
+    configureLogging(configuration);
 
-    if (launchers.containsKey(role)) {
-      try {
-        launchers.get(role).launch(args, log);
-      } catch (Exception e) {
-        launchers.get(role).printUsage();
-        e.printStackTrace();
-      }
-    } else {
-      throw new GridConfigurationException("Unknown role: " + role);
+    try {
+      launchers.get(role).launch();
+    } catch (Exception e) {
+      launchers.get(role).printUsage();
+      e.printStackTrace();
     }
   }
 
-  private static void printInfoAboutRoles(CommandLineOptionHelper helper) {
-    if (helper.hasParamValue("-role")) {
+  private static void printInfoAboutRoles(String roleCommandLineArg) {
+    if (roleCommandLineArg != null) {
       CliUtils.printWrappedLine(
         "",
-        "Error: the role '" + helper.getParamValue("-role") + "' does not match a recognized server role\n");
+        "Error: the role '" + roleCommandLineArg + "' does not match a recognized server role: node/hub/standalone\n");
     } else {
       CliUtils.printWrappedLine(
         "",
@@ -157,9 +150,9 @@ public class GridLauncherV3 {
       + " with -help option and the corresponding -role option value");
   }
 
-  private static void configureLogging(CommandLineOptionHelper helper) {
+  private static void configureLogging(StandaloneConfiguration configuration) {
     Level logLevel =
-        helper.isParamPresent("-debug")
+        configuration.debug
         ? Level.FINE
         : LoggingOptions.getDefaultLogLevel();
     if (logLevel == null) {
@@ -169,8 +162,8 @@ public class GridLauncherV3 {
     Logger.getLogger("org.openqa.jetty").setLevel(Level.WARNING);
 
     String logFilename =
-        helper.isParamPresent("-log")
-        ? helper.getParamValue("-log")
+        configuration.log != null
+        ? configuration.log
         : LoggingOptions.getDefaultLogOutFile();
     if (logFilename != null) {
       for (Handler handler : Logger.getLogger("").getHandlers()) {
@@ -187,11 +180,10 @@ public class GridLauncherV3 {
         throw new RuntimeException(e);
       }
     } else {
-      boolean logLongForm = helper.isParamPresent("-logLongForm");
       for (Handler handler : Logger.getLogger("").getHandlers()) {
         if (handler instanceof ConsoleHandler) {
           handler.setLevel(logLevel);
-          handler.setFormatter(new TerseFormatter(logLongForm));
+          handler.setFormatter(new TerseFormatter(configuration.logLongForm));
         }
       }
     }

@@ -19,36 +19,36 @@ package org.openqa.grid.internal.utils;
 
 import static org.junit.Assert.assertEquals;
 
+import com.beust.jcommander.JCommander;
+
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 
 public class GridHubConfigurationTest {
 
   @Test
   public void testGetTimeout() throws Exception {
     GridHubConfiguration gridHubConfiguration = new GridHubConfiguration();
-    assertEquals(300000, gridHubConfiguration.getTimeout()); // From DefaultHub.json file
-    gridHubConfiguration.setTimeout(123);
-    assertEquals(123, gridHubConfiguration.getTimeout());
-    assertEquals(123,gridHubConfiguration.getAllParams().get(RegistrationRequest.TIME_OUT));
+    assertEquals(300000, gridHubConfiguration.timeout.longValue()); // From DefaultHub.json file
+    gridHubConfiguration.timeout = 123;
+    assertEquals(123, gridHubConfiguration.timeout.longValue());
   }
 
   @Test
   public void testGetBrowserTimeout() throws Exception {
     GridHubConfiguration gridHubConfiguration = new GridHubConfiguration();
-    assertEquals(0, gridHubConfiguration.getBrowserTimeout());// From DefaultHub.json file
-    gridHubConfiguration.setBrowserTimeout(1233);
-    assertEquals(1233, gridHubConfiguration.getBrowserTimeout());
-    assertEquals(1233,gridHubConfiguration.getAllParams().get(RegistrationRequest.BROWSER_TIME_OUT));
-
+    assertEquals(0, gridHubConfiguration.browserTimeout.longValue());// From DefaultHub.json file
+    gridHubConfiguration.browserTimeout = 1233;
+    assertEquals(1233, gridHubConfiguration.browserTimeout.longValue());
   }
 
   @Test
   public void commandLineParsing() throws Exception {
     GridHubConfiguration gridHubConfiguration = new GridHubConfiguration();
     String[] args = "-timeout 32123 -browserTimeout 456".split(" ");
-    gridHubConfiguration.loadFromCommandLine(args);
-    assertEquals(32123000, gridHubConfiguration.getTimeout());
-    assertEquals(456000, gridHubConfiguration.getBrowserTimeout());
+    new JCommander(gridHubConfiguration, args);
+    assertEquals(32123000, gridHubConfiguration.timeout.longValue());
+    assertEquals(456000, gridHubConfiguration.browserTimeout.longValue());
   }
 }

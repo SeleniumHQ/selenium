@@ -60,7 +60,7 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
       }
 
       if (DesiredCapabilities.firefox().getBrowserName().equals(desiredCapsToUse.getBrowserName())) {
-        boolean isMarionette = Boolean.getBoolean("webdriver.firefox.marionette");
+        boolean isMarionette = Boolean.getBoolean(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE);
         if (!isMarionette) {
           if (isInDevMode()) {
             copyFirefoxDriverDefaultsToOutputDir();

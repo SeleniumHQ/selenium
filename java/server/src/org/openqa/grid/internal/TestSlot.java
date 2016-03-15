@@ -22,8 +22,7 @@ import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
-import org.openqa.selenium.remote.server.SystemClock;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 
 import java.net.MalformedURLException;
 import java.net.URL;

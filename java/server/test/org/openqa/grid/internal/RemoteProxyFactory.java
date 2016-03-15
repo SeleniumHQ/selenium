@@ -18,9 +18,11 @@
 package org.openqa.grid.internal;
 
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import java.util.HashMap;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
@@ -36,18 +38,20 @@ public class RemoteProxyFactory {
    * @param registry
    * @return
    */
-  public static RemoteProxy getNewBasicRemoteProxy(String browser, String url, Registry registry) {
+  public static RemoteProxy getNewBasicRemoteProxy(String browser, String url, Registry registry) throws MalformedURLException {
 
-    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-host","localhost");
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    URL u = new URL(url);
+    config.host = u.getHost();
+    config.port = u.getPort();
+    config.role = "webdriver";
+    RegistrationRequest req = RegistrationRequest.build(config);
     req.getCapabilities().clear();
 
     DesiredCapabilities capability = new DesiredCapabilities();
     capability.setBrowserName(browser);
     req.addDesiredCapability(capability);
 
-    Map<String, Object> config = new HashMap<>();
-    config.put(RegistrationRequest.REMOTE_HOST, url);
-    req.setConfiguration(config);
     return createProxy(registry, req);
 
   }
@@ -62,13 +66,16 @@ public class RemoteProxyFactory {
    * @return
    */
   public static RemoteProxy getNewBasicRemoteProxy(Map<String, Object> cap, String url,
-                                                   Registry registry) {
-    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver", "-host", "localhost",
-                                                        "-" + RegistrationRequest.HUB_HOST,
-                                                        "localhost");
+                                                   Registry registry) throws MalformedURLException {
+    GridNodeConfiguration configuration = new GridNodeConfiguration();
+    configuration.role = "webdriver";
+    URL u = new URL(url);
+    configuration.host = u.getHost();
+    configuration.port = u.getPort();
+    configuration.hub = "http://localhost:4444";
+    RegistrationRequest req = RegistrationRequest.build(configuration);
     req.getCapabilities().clear();
     req.addDesiredCapability(cap);
-    req.getConfiguration().put(RegistrationRequest.REMOTE_HOST, url);
     return createProxy(registry, req);
 
   }
@@ -83,17 +90,19 @@ public class RemoteProxyFactory {
    * @return
    */
   public static RemoteProxy getNewBasicRemoteProxy(List<Map<String, Object>> caps, String url,
-      Registry registry) {
+      Registry registry) throws MalformedURLException {
 
-    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-host","localhost",
-                                                        "-" + RegistrationRequest.HUB_HOST,
-                                                        "localhost");
+    GridNodeConfiguration configuration = new GridNodeConfiguration();
+    configuration.role = "webdriver";
+    URL u = new URL(url);
+    configuration.host = u.getHost();
+    configuration.port = u.getPort();
+    configuration.hub = "http://localhost:4444";
+    RegistrationRequest req = RegistrationRequest.build(configuration);
     req.getCapabilities().clear();
     for (Map<String, Object> c : caps) {
       req.addDesiredCapability(c);
     }
-
-    req.getConfiguration().put(RegistrationRequest.REMOTE_HOST, url);
     return createProxy(registry, req);
 
   }
