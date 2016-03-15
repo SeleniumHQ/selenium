@@ -11,10 +11,12 @@ java_test(name = 'common',
 java_library(name = 'tests',
   srcs = glob(['*.java'], excludes = SUITES),
   deps = [
-    '//java/server/src/org/openqa/grid/common:common',
+    '//java/server/src/org/openqa/grid:grid',
     '//java/client/src/org/openqa/selenium:platform',
     '//java/client/src/org/openqa/selenium:webdriver-api',
     '//java/client/src/org/openqa/selenium/remote:capabilities',
+    '//third_party/java/beust:jcommander',
+    '//third_party/java/gson:gson',
     '//third_party/java/junit:junit',
   ],
 )
