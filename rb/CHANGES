@@ -3,6 +3,7 @@
 
 Ruby:
   * Removed dependency on "multi_json" (issue 1632)
+  * Properly handle namespaces in install manifest of Firefox add-ons (issue 1143)
 
 2.52.0 (2016-02-12)
 ===================

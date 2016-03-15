@@ -21,8 +21,13 @@ module Selenium
   module WebDriver
     module Firefox
 
+      #
       # @api private
+      #
+
       class Extension
+        NAMESPACE = 'http://www.mozilla.org/2004/em-rdf#'
+
         def initialize(path)
           unless File.exist?(path)
             raise Error::WebDriverError, "could not find extension at #{path.inspect}"
@@ -61,20 +66,17 @@ module Selenium
         def read_id_from_install_rdf(directory)
           rdf_path = File.join(directory, "install.rdf")
           doc = REXML::Document.new(File.read(rdf_path))
+          namespace = doc.root.namespaces.key(NAMESPACE)
 
-          id_node = REXML::XPath.first(doc, "//em:id")
+          if namespace
+            id_node = REXML::XPath.first(doc, "//#{namespace}:id")
+            return id_node.text if id_node
 
-          if id_node
-            id_node.text
-          else
-            attr_node = REXML::XPath.first(doc, "//@em:id")
-
-            if attr_node.nil?
-              raise Error::WebDriverError, "cannot locate extension id in #{rdf_path}"
-            end
-
-            attr_node.value
+            attr_node = REXML::XPath.first(doc, "//@#{namespace}:id")
+            return attr_node.value if attr_node
           end
+
+          raise Error::WebDriverError, "cannot locate extension id in #{rdf_path}"
         end
 
       end # Extension
