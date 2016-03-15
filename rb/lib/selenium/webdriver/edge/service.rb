@@ -28,11 +28,6 @@ module Selenium
       class Service
         DEFAULT_PORT = 17556
 
-        def self.executable_path
-          warn "Selenium::WebDriver::Edge::Service.executable_path is deprecated, please use Selenium::WebDriver::Edge.driver_path instead"
-          Edge.driver_path
-        end
-
         def self.default_service(*extra_args)
           new Edge.driver_path, DEFAULT_PORT, *extra_args
         end

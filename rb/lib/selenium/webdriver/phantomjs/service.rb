@@ -28,11 +28,6 @@ module Selenium
       class Service < WebDriver::Service
         DEFAULT_PORT = 8910
 
-        def self.executable_path
-          warn "Selenium::WebDriver::PhantomJS::Service.executable_path is deprecated, please use Selenium::WebDriver::PhantomJS.path instead"
-          PhantomJS.path
-        end
-
         def self.default_service(*extra_args)
           new PhantomJS.path, DEFAULT_PORT, *extra_args
         end

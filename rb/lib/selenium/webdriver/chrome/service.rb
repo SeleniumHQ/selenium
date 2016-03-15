@@ -28,11 +28,6 @@ module Selenium
       class Service < WebDriver::Service
         DEFAULT_PORT = 9515
 
-        def self.executable_path
-          warn "Selenium::WebDriver::Chrome::Service.executable_path is deprecated, please use Selenium::WebDriver::Chrome.driver_path instead"
-          Chrome.driver_path
-        end
-
         def self.default_service(*extra_args)
           new Chrome.driver_path, DEFAULT_PORT, *extra_args
         end

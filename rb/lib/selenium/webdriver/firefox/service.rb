@@ -28,11 +28,6 @@ module Selenium
       class Service < WebDriver::Service
         DEFAULT_PORT = 4444
 
-        def self.executable_path
-          warn "Selenium::WebDriver::Firefox::Service.executable_path is deprecated, please use Selenium::WebDriver::Firefox.driver_path instead"
-          Firefox.driver_path
-        end
-
         def self.default_service(*extra_args)
           new Firefox.driver_path, DEFAULT_PORT, *extra_args
         end
