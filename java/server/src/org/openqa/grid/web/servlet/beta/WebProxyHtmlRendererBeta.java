@@ -95,8 +95,8 @@ public class WebProxyHtmlRendererBeta implements HtmlRenderer {
     for (String key : config.keySet()) {
       builder.append("<p>");
       builder.append(key);
-      builder.append(":");
-      builder.append(config.get(key));
+      builder.append(" : ");
+      builder.append(ConfigPrinter.printConfigValue(key, config.get(key)));
       builder.append("</p>");
     }
 

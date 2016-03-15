@@ -21,6 +21,7 @@ package org.openqa.grid.web.servlet.beta;
 import com.google.common.io.ByteStreams;
 
 import org.openqa.grid.common.GridDocHelper;
+import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
@@ -35,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -275,9 +277,12 @@ public class ConsoleServlet extends RegistryBasedServlet {
     b.append(key("host")).append(config.getHost()).append("</br>");
     b.append(key("port")).append(config.getPort()).append("</br>");
     b.append(key("cleanUpCycle")).append(config.getCleanupCycle()).append("</br>");
-    b.append(key("timeout")).append(config.getTimeout()).append("</br>");
-    b.append(key("browserTimeout")).append(config.getBrowserTimeout()).append("</br>");
-
+    b.append(key("timeout")).append(
+      ConfigPrinter.printConfigValue(RegistrationRequest.TIME_OUT, config.getTimeout()))
+      .append("</br>");
+    b.append(key("browserTimeout")).append(
+      ConfigPrinter.printConfigValue(RegistrationRequest.BROWSER_TIME_OUT, config.getBrowserTimeout()))
+      .append("</br>");
     b.append(key("newSessionWaitTimeout")).append(config.getNewSessionWaitTimeout())
         .append("</br>");
     b.append(key("grid1Mapping")).append(config.getGrid1Mapping()).append("</br>");
@@ -302,7 +307,8 @@ public class ConsoleServlet extends RegistryBasedServlet {
     keys.addAll(config.getAllParams().keySet());
     Collections.sort(keys);
     for (String s : keys) {
-      b.append(key(s.replaceFirst("-", ""))).append(config.getAllParams().get(s)).append("</br>");
+      String value = ConfigPrinter.printConfigValue(s, config.getAllParams().get(s));
+      b.append(key(s.replaceFirst("-", ""))).append(value).append("</br>");
     }
     b.append("</br>");
     return b.toString();
