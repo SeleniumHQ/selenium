@@ -43,7 +43,7 @@
 #define ZOOM_SETTING_ERROR_MESSAGE "Browser zoom level was set to %d%%. It should be set to 100%%"
 #define ATTACH_TIMEOUT_ERROR_MESSAGE "Could not find an Internet Explorer window belonging to the process with ID %d within %d milliseconds."
 #define ATTACH_FAILURE_ERROR_MESSAGE "Found browser window using ShellWindows API, but could not attach to the browser IWebBrowser2 object."
-#define CREATEPROCESS_REGISTRY_ERROR_MESSAGE "Unable to use CreateProcess() API. To use CreateProcess() with Internet Explorer 8 or higher, the value of registry setting in HEKY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\TabProcGrowth must be '0'."
+#define CREATEPROCESS_REGISTRY_ERROR_MESSAGE "Unable to use CreateProcess() API. To use CreateProcess() with Internet Explorer 8 or higher, the value of registry setting in HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\TabProcGrowth must be '0'."
 
 #define ZONE_MY_COMPUTER L"0"
 #define ZONE_LOCAL_INTRANET L"1"
