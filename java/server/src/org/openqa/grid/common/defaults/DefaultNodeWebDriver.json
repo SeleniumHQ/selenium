@@ -26,7 +26,6 @@
     "host": "localhost",
     "register": true,
     "registerCycle": 5000,
-    "hubPort": 4444,
-    "hubHost": "localhost"
+    "hub": "http://localhost:4444"
   }
 }

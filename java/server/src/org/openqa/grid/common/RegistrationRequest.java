@@ -138,7 +138,7 @@ public class RegistrationRequest {
     JsonObject config = o.get("configuration").getAsJsonObject();
     GridNodeConfiguration
       configuration =
-      new JsonToBeanConverter().convert(GridNodeConfiguration.class, config);
+      new Gson().fromJson(config, GridNodeConfiguration.class);
     request.setConfiguration(configuration);
 
     if (o.has("id")) {

@@ -173,6 +173,9 @@ public class GridNodeConfiguration extends GridConfiguration {
     if (other.downPollingLimit != null) {
       downPollingLimit = other.downPollingLimit;
     }
+    if (other.hub != null) {
+      hub = other.hub;
+    }
     if (other.hubHost != null) {
       hubHost = other.hubHost;
     }

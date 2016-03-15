@@ -110,6 +110,8 @@ public class BaseRemoteProxy implements RemoteProxy {
     this.config.merge(registry.getConfiguration());
     this.config.host = request.getConfiguration().host;
     this.config.port = request.getConfiguration().port;
+    // custom configurations from the remote need to 'override' the hub
+    this.config.custom.putAll(request.getConfiguration().custom);
 
     String url = config.getRemoteHost();
     String id = config.id;
