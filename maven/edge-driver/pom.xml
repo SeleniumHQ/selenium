@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.seleniumhq.selenium</groupId>
         <artifactId>selenium-parent</artifactId>
-        <version>2.0-SNAPSHOT</version>
+        <version>3.0-beta1-SNAPSHOT</version>
     </parent>
     <artifactId>selenium-edge-driver</artifactId>
     <name>selenium-edge-driver</name>
