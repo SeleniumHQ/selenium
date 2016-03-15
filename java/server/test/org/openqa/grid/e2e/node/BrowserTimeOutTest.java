@@ -51,7 +51,7 @@ public class BrowserTimeOutTest {
     gridHubConfiguration.port = PortProber.findFreePort();
     gridHubConfiguration.host = "localhost";
 
-    gridHubConfiguration.browserTimeout = 10000;
+    gridHubConfiguration.browserTimeout = 5;
     gridHubConfiguration.servlets = Arrays.asList("org.openqa.grid.e2e.node.SlowServlet");
     hub = GridTestHelper.getHub(gridHubConfiguration);
 

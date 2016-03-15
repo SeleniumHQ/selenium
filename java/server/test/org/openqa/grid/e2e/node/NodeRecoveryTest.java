@@ -48,8 +48,8 @@ public class NodeRecoveryTest {
   private static Hub hub;
   private static SelfRegisteringRemote node;
 
-  private static int originalTimeout = 3000;
-  private static int newtimeout = 20000;
+  private static int originalTimeout = 3;
+  private static int newtimeout = 20;
 
   @BeforeClass
   public static void setup() throws Exception {
@@ -64,20 +64,19 @@ public class NodeRecoveryTest {
     // register a selenium 1 with a timeout of 3 sec
 
     node.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
-    node.setTimeout(originalTimeout, 1000);
+    node.setTimeout(originalTimeout, 100);
     node.setRemoteServer(new SeleniumServer(node.getConfiguration()));
     node.startRemoteServer();
     node.sendRegistrationRequest();
     RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
   }
 
-  @Ignore
   @Test
   public void nodeServerCanStopAndRestart() throws Exception {
 
     assertEquals(hub.getRegistry().getAllProxies().size(), 1);
     for (RemoteProxy p : hub.getRegistry().getAllProxies()) {
-      assertEquals(p.getTimeOut(), originalTimeout);
+      assertEquals(p.getTimeOut(), originalTimeout * 1000);
     }
 
     URL hubURL = new URL("http://" + hub.getConfiguration().host + ":" + hub.getConfiguration().port);
@@ -90,15 +89,15 @@ public class NodeRecoveryTest {
 
 
     // change its config.
-    node.setTimeout(newtimeout, 1000);
+    node.setTimeout(newtimeout, 100);
 
     // restart it
     node.setRemoteServer(new SeleniumServer(node.getConfiguration()));
     node.startRemoteServer();
     node.sendRegistrationRequest();
 
-    // wait for 5 sec : the timeout of the original node should be reached, and the session freed
-    Thread.sleep(5000);
+    // the timeout of the original node should be reached, and the session freed
+    Thread.sleep(originalTimeout * 1000 + 100);
 
     assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
 
@@ -107,7 +106,7 @@ public class NodeRecoveryTest {
 
     for (RemoteProxy p : hub.getRegistry().getAllProxies()) {
       System.out.println(p);
-      assertEquals(p.getTimeOut(), newtimeout);
+      assertEquals(p.getTimeOut(), newtimeout * 1000);
     }
 
   }

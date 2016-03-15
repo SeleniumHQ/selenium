@@ -76,8 +76,8 @@ public class SmokeTest {
     try {
       DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
       driver = new RemoteWebDriver(new URL(hub.getUrl() + "/wd/hub"), caps);
-      driver.get(hub.getUrl() + "/grid/old/console");
-      assertEquals(driver.getTitle(), "Grid overview");
+      driver.get(hub.getUrl() + "/grid/console");
+      assertEquals(driver.getTitle(), "Grid Console");
     } finally {
       if (driver != null) {
         driver.quit();
