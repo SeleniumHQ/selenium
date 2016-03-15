@@ -21,22 +21,20 @@ module Selenium
   module WebDriver
     module Edge
 
+      #
       # @api private
+      #
+
       class Bridge < Remote::W3CBridge
 
         def initialize(opts = {})
-
           http_client = opts.delete(:http_client)
 
           if opts.has_key?(:url)
             url = opts.delete(:url)
           else
             @service = Service.new(Edge.driver_path, Service::DEFAULT_PORT, *extract_service_args(opts))
-
-            if @service.instance_variable_get("@host") == "127.0.0.1"
-              @service.instance_variable_set("@host", 'localhost')
-            end
-
+            @service.host = 'localhost' if @service.host == '127.0.0.1'
             @service.start
 
             url = @service.uri

@@ -37,6 +37,8 @@ module Selenium
       SOCKET_LOCK_TIMEOUT = 45
       STOP_TIMEOUT        = 5
 
+      attr_accessor :host
+
       def initialize(executable_path, port, *extra_args)
         @executable_path = executable_path
         @host            = Platform.localhost
