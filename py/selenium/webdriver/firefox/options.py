@@ -92,7 +92,7 @@ class Options(object):
         if self.binary_location:
             firefox_options["binary"] = self.binary_location
         if self._profile:
-            firefox_options["profile"] = self._profile
+            firefox_options["profile"] = self._profile.encoded
         firefox_options["args"] = self.arguments
 
         firefox["requiredCapabilities"] = firefox_options
