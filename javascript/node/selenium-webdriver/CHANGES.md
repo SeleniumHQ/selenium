@@ -1,3 +1,8 @@
+## v2.53.1
+
+* FIXED: for consistency with the other language bindings, `remote.FileDetector`
+    will ignore paths that refer to a directory.
+
 ## v2.53.0
 
 ### Change Summary
