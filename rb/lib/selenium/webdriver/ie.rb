@@ -17,23 +17,28 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'selenium/webdriver/ie/server'
+require 'selenium/webdriver/ie/bridge'
+
 module Selenium
   module WebDriver
-
-    # @api private
     module IE
+      MISSING_TEXT = "Unable to find standalone executable. Please download the IEDriverServer from http://selenium-release.storage.googleapis.com/index.html and place the executable on your PATH."
+
       def self.driver_path=(path)
         Platform.assert_executable path
         @driver_path = path
       end
 
       def self.driver_path
-        @driver_path ||= nil
-      end
+        @driver_path ||= begin
+          path = Platform.find_binary("IEDriverServer")
+          path or raise Error::WebDriverError, MISSING_TEXT
+          Platform.assert_executable path
 
+          path
+        end
+      end
     end # IE
   end # WebDriver
 end # Selenium
-
-require 'selenium/webdriver/ie/server'
-require 'selenium/webdriver/ie/bridge'

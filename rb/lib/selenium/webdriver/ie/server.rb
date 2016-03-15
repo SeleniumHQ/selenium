@@ -29,16 +29,9 @@ module Selenium
 
         STOP_TIMEOUT        = 5
         SOCKET_LOCK_TIMEOUT = 45
-        MISSING_TEXT        = "Unable to find standalone executable. Please download the IEDriverServer from http://selenium-release.storage.googleapis.com/index.html and place the executable on your PATH."
 
         def self.get(opts = {})
-          binary = IE.driver_path || Platform.find_binary("IEDriverServer")
-
-          if binary
-            new binary, opts
-          else
-            raise Error::WebDriverError, MISSING_TEXT
-          end
+          new IE.driver_path, opts
         end
 
         attr_accessor :log_level, :log_file
