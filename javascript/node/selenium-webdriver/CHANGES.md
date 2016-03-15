@@ -1,4 +1,4 @@
-## v2.53.0-dev
+## v2.53.0
 
 ### Change Summary
 
