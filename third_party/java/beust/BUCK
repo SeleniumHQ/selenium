@@ -4,6 +4,8 @@ prebuilt_jar(
   binary_jar = 'jcommander-1.48.jar',
   source_jar = 'jcommander-1.48-sources.jar',
   visibility = [
+    '//java/server/src/org/openqa/grid:grid',
+    '//java/server/src/org/openqa/grid/selenium:classes',
     '//java/server/src/org/openqa/selenium/remote/server:standalone-server-lib',
     '//third_party/java/testng:testng'
   ],
