@@ -80,6 +80,8 @@ public class RegistrationServlet extends RegistryBasedServlet {
     GridNodeConfiguration nodeConfig = new GridNodeConfiguration();
     nodeConfig.merge(hubConfig);
     nodeConfig.merge(server.getConfiguration());
+    nodeConfig.host = server.getConfiguration().host;
+    nodeConfig.port = server.getConfiguration().port;
     server.setConfiguration(nodeConfig);
 
     final RemoteProxy proxy = BaseRemoteProxy.getNewInstance(server, getRegistry());
