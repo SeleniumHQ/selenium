@@ -31,7 +31,7 @@ module Selenium
           if opts.has_key?(:url)
             url = opts.delete(:url)
           else
-            @service = Service.default_service(*extract_service_args(opts))
+            @service = Service.new(Edge.driver_path, Service::DEFAULT_PORT, *extract_service_args(opts))
 
             if @service.instance_variable_get("@host") == "127.0.0.1"
               @service.instance_variable_set("@host", 'localhost')

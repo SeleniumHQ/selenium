@@ -47,7 +47,7 @@ module Selenium
       end
 
       def start
-        if @process && @process.alive?
+        if process_running?
           raise "already started: #{uri.inspect} #{@executable_path.inspect}"
         end
 
@@ -61,8 +61,7 @@ module Selenium
       end
 
       def stop
-        return if @process.nil? || @process.exited?
-
+        return if process_exited?
         stop_server
       ensure
         stop_process
@@ -99,6 +98,14 @@ module Selenium
         @process.poll_for_exit STOP_TIMEOUT
       rescue ChildProcess::TimeoutError
         @process.stop STOP_TIMEOUT
+      end
+
+      def process_running?
+        @process && @process.alive?
+      end
+
+      def process_exited?
+        @process.nil? || @process.exited?
       end
 
       def connect_until_stable
