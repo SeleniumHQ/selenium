@@ -1,7 +1,7 @@
 [java]
   src_roots = /java/client/src, /java/client/test, /java/server/src, /java/server/test
-  source_level = 7
-  target_level = 7
+  source_level = 8 
+  target_level = 8
 
 [project]
   ignore = \
