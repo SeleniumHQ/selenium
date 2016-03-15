@@ -1,3 +1,12 @@
+Selenium 2.53.0
+* Adding Options object for use with Python FirefoxDriver
+* Fixed improper usage of super in exceptions module
+* create a temp file for cookies in phantomjs if not specified
+* Pass in the executable that FirefoxBinary finds to the service if there isnt one passed in as a kwarg or capability
+* Applied some DRY and extracted out the keys_to_typing()
+* Fix deselecting options in <select>
+
+
 Selenium 2.52.0
 * Fixing case where UnexpectedAlertException doesn't get the alert_text in the error object
 * Firefox: Actually use launch_browser timeout Fixes #1300

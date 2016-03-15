@@ -1,3 +1,28 @@
+v2.53.0
+=======
+
+FINAL 2.X RELEASE.
+
+No more HtmlUnitDriver... Moved to a subproject https://github.com/SeleniumHQ/htmlunit-driver
+
+Java:
+    * Query Selenium Server to retrieve actual running port.  Fixes #1299
+    * Upgrading HtmlUnit to 2.20
+    * Java: Introducing NoSuchSessionException in the core API
+    * Fixing memory leak in TemporaryFileSystem Fixes #1679
+    * Fixing rectangle dimension, and adding equals and hashCode
+    * Java: Adding a new W3C-compatible string error code
+    * Add support to listen "refresh" events. Fixes #1584
+    * extended ExpectedConditions with a list of new ones. New logic operators + conditions for css and html attributes
+    * Java: Deleting webbit a test server
+Grid:
+    * cleanup cycle needs to be persisted to allMap, since that's where it's read from in other places. this stuff needs some cleanup...
+    * adding grid e2e distribution test
+    * fix mixed content issue
+    * when sorting nodes for consideration, also take into account last time accessed for a more even distribution across nodes over the lifetime of the grid.
+    * Also fix using the RemoteProxy's getResourceUsageInPercent instead of calculating it in the sort.  Fixes #1673
+    * make HttpClientFactory private methods protected to allow one to extend / override.
+
 v2.52.0
 =======
 
