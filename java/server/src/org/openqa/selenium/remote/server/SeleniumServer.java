@@ -21,7 +21,6 @@ import com.beust.jcommander.JCommander;
 
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.grid.shared.GridNodeServer;
-import org.openqa.jetty.http.SocketListener;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
 import org.seleniumhq.jetty9.server.Connector;
@@ -62,7 +61,7 @@ public class SeleniumServer implements GridNodeServer {
       ServerConnector socket = (ServerConnector)server.getConnectors()[0];
       return socket.getPort();
     }
-    return this.port;
+    return configuration.port;
   }
 
 
