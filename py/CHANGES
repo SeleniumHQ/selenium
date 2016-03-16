@@ -1,3 +1,7 @@
+Selenium 2.53.1
+* Fix basestring reference to work with python 3. Fixes #1820
+* Correct Length conditional when filtering in PhantomJS. Fixes #1817
+
 Selenium 2.53.0
 * Adding Options object for use with Python FirefoxDriver
 * Fixed improper usage of super in exceptions module
