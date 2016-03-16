@@ -21,6 +21,11 @@ try:
 except ImportError:
     import httplib as http_client
 
+try:
+    basestring
+except NameError:  # Python 3.x
+    basestring = str
+
 import shutil
 import socket
 import sys
