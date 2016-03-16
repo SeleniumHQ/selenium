@@ -60,7 +60,7 @@ public class Issue1586 {
   public void test() throws MalformedURLException {
     WebDriver driver = null;
     try {
-      driver = new RemoteWebDriver(new URL(hub.getUrl() + "/grid/driver"), GridTestHelper.getDefaultBrowserCapability());
+      driver = new RemoteWebDriver(hub.getWebDriverHubRequestURL(), GridTestHelper.getDefaultBrowserCapability());
       for (int i = 0; i < 20; i++) {
         driver.get("https://github.com/SeleniumHQ/selenium");
         WebElement keywordInput = driver.findElement(By.name("q"));

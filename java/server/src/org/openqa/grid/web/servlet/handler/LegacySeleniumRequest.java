@@ -17,7 +17,6 @@
 
 package org.openqa.grid.web.servlet.handler;
 
-import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
@@ -27,7 +26,6 @@ import org.openqa.selenium.remote.CapabilityType;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 

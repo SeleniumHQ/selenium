@@ -67,8 +67,8 @@ public class WebDriverPriorityDemo {
     registry = hub.getRegistry();
 
     hubURL = hub.getUrl();
-    driverURL = new URL(hubURL + "/grid/driver");
-    consoleURL = new URL(hubURL + "/grid/console");
+    driverURL = hub.getWebDriverHubRequestURL();
+    consoleURL = hub.getConsoleURL();
 
     // assigning a priority rule where requests with the flag "important" go first.
     registry.getConfiguration().prioritizer = new Prioritizer() {

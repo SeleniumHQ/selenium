@@ -101,9 +101,6 @@ public class Hub {
         }
       }
     }
-
-    initServer();
-
   }
 
   private void initServer() {
@@ -150,23 +147,22 @@ public class Hub {
       root.addServlet(DisplayHelpServlet.class.getName(), "/*");
 
       root.addServlet(ConsoleServlet.class.getName(), "/grid/console/*");
-      root.addServlet(ConsoleServlet.class.getName(), "/grid/beta/console/*");
+
       root.addServlet(RegistrationServlet.class.getName(), "/grid/register/*");
-      // TODO remove at some point. Here for backward compatibility of
-      // tests etc.
-      root.addServlet(DriverServlet.class.getName(), "/grid/driver/*");
+
       root.addServlet(DriverServlet.class.getName(), "/wd/hub/*");
       root.addServlet(DriverServlet.class.getName(), "/selenium-server/driver/*");
+
       root.addServlet(ResourceServlet.class.getName(), "/grid/resources/*");
 
       root.addServlet(ProxyStatusServlet.class.getName(), "/grid/api/proxy/*");
+
       root.addServlet(HubStatusServlet.class.getName(), "/grid/api/hub/*");
+
       root.addServlet(TestSessionStatusServlet.class.getName(), "/grid/api/testsession/*");
+
       root.addServlet(LifecycleServlet.class.getName(), "/lifecycle-manager/*");
 
-      // Selenium Grid 1.0 compatibility routes for older nodes trying to
-      // work with the newer hub.
-      root.addServlet(RegistrationServlet.class.getName(), "/registration-manager/register/*");
       root.addServlet(Grid1HeartbeatServlet.class.getName(), "/heartbeat");
 
       // Load any additional servlets provided by the user.
@@ -206,6 +202,17 @@ public class Hub {
 
   public URL getRegistrationURL() {
     return getUrl("/grid/register/");
+  }
+
+  /**
+   * @return URL one would use to request a new WebDriver session on this hub.
+   */
+  public URL getWebDriverHubRequestURL() {
+    return getUrl("/wd/hub");
+  }
+
+  public URL getConsoleURL() {
+    return getUrl("/grid/console");
   }
 
 }

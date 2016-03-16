@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 public class WebDriverRequestFactory implements SeleniumBasedRequestFactory {
   public SeleniumBasedRequest createFromRequest(HttpServletRequest request, Registry registry) {
     String path = request.getServletPath();
-    if (! ("/grid/driver".equals(path) || "/wd/hub".equals(path))) {
+    if (!"/wd/hub".equals(path)) {
       return null;
     }
     return new WebDriverRequest(request, registry);

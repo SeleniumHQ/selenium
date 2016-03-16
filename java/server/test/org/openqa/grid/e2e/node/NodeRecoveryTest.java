@@ -79,10 +79,8 @@ public class NodeRecoveryTest {
       assertEquals(p.getTimeOut(), originalTimeout * 1000);
     }
 
-    URL hubURL = new URL("http://" + hub.getConfiguration().host + ":" + hub.getConfiguration().port);
-
     DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
-    new RemoteWebDriver(new URL(hubURL + "/grid/driver"), caps);
+    new RemoteWebDriver(hub.getWebDriverHubRequestURL(), caps);
 
     // kill the node
     node.stopRemoteServer();

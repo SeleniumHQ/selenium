@@ -65,8 +65,8 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
 
   private static List<SeleniumBasedRequestFactory> requestFactories =
     new ImmutableList.Builder<SeleniumBasedRequestFactory>()
-      .add(new LegacySeleniumRequestFactory())
       .add(new WebDriverRequestFactory())
+      .add(new LegacySeleniumRequestFactory())
       .build();
 
   public static SeleniumBasedRequest createFromRequest(HttpServletRequest request, Registry registry) {

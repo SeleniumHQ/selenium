@@ -70,9 +70,9 @@ public class BrowserTimeOutTest {
 
   @Test
   public void testWebDriverTimesOut() throws InterruptedException, MalformedURLException {
-    String url = "http://" + hub.getConfiguration().host + ":" + hub.getConfiguration().port + "/grid/admin/SlowServlet";
+    String url = hub.getUrl("/grid/admin/SlowServlet").toExternalForm();
     DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
-    WebDriver driver = new RemoteWebDriver(new URL(hub.getUrl() + "/wd/hub"), caps);
+    WebDriver driver = new RemoteWebDriver(hub.getWebDriverHubRequestURL(), caps);
 
     try {
       driver.get(url);

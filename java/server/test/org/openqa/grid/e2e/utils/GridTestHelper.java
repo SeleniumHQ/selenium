@@ -22,8 +22,8 @@ import com.beust.jcommander.JCommander;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
-import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.PortProber;
@@ -87,10 +87,6 @@ public class GridTestHelper {
 
   public static RemoteWebDriver getRemoteWebDriver(DesiredCapabilities caps, Hub hub)
       throws MalformedURLException {
-    return new RemoteWebDriver(getGridDriver(hub), caps);
-  }
-
-  public static URL getGridDriver(Hub hub) throws MalformedURLException {
-    return new URL(hub.getUrl() + "/grid/driver");
+    return new RemoteWebDriver(hub.getWebDriverHubRequestURL(), caps);
   }
 }
