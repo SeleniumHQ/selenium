@@ -34,6 +34,12 @@ from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from .service import Service
 from .options import Options
 
+try:
+    basestring
+except NameError:
+    # Python 3
+    basestring = str
+    
 
 class WebDriver(RemoteWebDriver):
 
