@@ -46,7 +46,9 @@ public class HTMLTestResults {
   private final HTMLSuiteResult suite;
 
   private static final String HEADER = "<html>\n" +
-      "<head><style type='text/css'>\n" +
+      "<head>\n"+
+      "<meta charset=\"UTF-8\">\n"+
+      "<style type='text/css'>\n" +
       "body, table {\n" +
       "    font-family: Verdana, Arial, sans-serif;\n" +
       "    font-size: 12;\n" +
