@@ -9,6 +9,12 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.53.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+ * (on behalf of Nathan Isom) Fixed spelling in IE driver registry path 
+   for use in error messages.
+
 v2.52.2.0
 =========
  * Updated IE driver to not error on findElements JavaScript atom errors.
