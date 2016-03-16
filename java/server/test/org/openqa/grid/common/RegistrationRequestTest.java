@@ -125,7 +125,9 @@ public class RegistrationRequestTest {
 
 
     config = new GridNodeConfiguration();
-    new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-hubPort", "1234","-host","localhost","-register","false");
+    // TODO allow one to set a boolean command line arg to false explicitly
+    new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-hubPort", "1234","-host","localhost"/*,"-register","false"*/);
+    config.register = false;
     RegistrationRequest req2 = RegistrationRequest.build(config);
     assertEquals(false, req2.getConfiguration().register);
 

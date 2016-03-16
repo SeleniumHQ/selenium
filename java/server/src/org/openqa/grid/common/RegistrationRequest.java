@@ -173,9 +173,14 @@ public class RegistrationRequest {
     }
 
     res.configuration.merge(configuration);
-    res.configuration.host = configuration.host;
-    res.configuration.port = configuration.port;
+    if (configuration.host != null) {
+      res.configuration.host = configuration.host;
+    }
+    if (configuration.port != null) {
+      res.configuration.port = configuration.port;
+    }
 
+    res.role = GridRole.get(configuration.role);
     res.addPlatformInfoToCapabilities();
 
     for (DesiredCapabilities cap : res.capabilities) {
@@ -218,6 +223,12 @@ public class RegistrationRequest {
 
       GridNodeConfiguration loadedConfiguration = new Gson().fromJson(base.get("configuration"), GridNodeConfiguration.class);
       configuration.merge(loadedConfiguration);
+      if (loadedConfiguration.host != null) {
+        configuration.host = loadedConfiguration.host;
+      }
+      if (loadedConfiguration.port != null) {
+        configuration.port = loadedConfiguration.port;
+      }
 
 
     } catch (Throwable e) {
