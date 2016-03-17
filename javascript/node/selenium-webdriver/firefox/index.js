@@ -378,9 +378,7 @@ class Driver extends webdriver.WebDriver {
           command.kill();
           return command.result();
         });
-        return promise.thenFinally(
-            finishCommand,
-            () => preparedProfile.then(io.rmDir));
+        return finishCommand.finally(() => preparedProfile.then(io.rmDir));
       };
     }
 

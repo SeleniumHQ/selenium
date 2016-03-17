@@ -445,9 +445,9 @@ class WebDriver {
     var result = this.schedule(
         new command.Command(command.Name.QUIT),
         'WebDriver.quit()');
-    // Delete our session ID when the quit command finishes; this will allow us to
-    // throw an error when attemnpting to use a driver post-quit.
-    return promise.thenFinally(result, () => delete this.session_);
+    // Delete our session ID when the quit command finishes; this will allow us
+    // to throw an error when attemnpting to use a driver post-quit.
+    return result.finally(() => delete this.session_);
   }
 
   /**
@@ -1961,8 +1961,8 @@ class WebElement {
    * Schedules a command to query for the computed style of the element
    * represented by this instance. If the element inherits the named style from
    * its parent, the parent will be queried for its value.  Where possible, color
-   * values will be converted to their hex representation (e.g. #00ff00 instead of
-   * rgb(0, 255, 0)).
+   * values will be converted to their hex representation (e.g. #00ff00 instead
+   * of rgb(0, 255, 0)).
    *
    * _Warning:_ the value returned will be as the browser interprets it, so
    * it may be tricky to form a proper assertion.
@@ -1983,10 +1983,10 @@ class WebElement {
   /**
    * Schedules a command to query for the value of the given attribute of the
    * element. Will return the current value, even if it has been modified after
-   * the page has been loaded. More exactly, this method will return the value of
-   * the given attribute, unless that attribute is not present, in which case the
-   * value of the property with the same name is returned. If neither value is
-   * set, null is returned (for example, the "value" property of a textarea
+   * the page has been loaded. More exactly, this method will return the value
+   * of the given attribute, unless that attribute is not present, in which case
+   * the value of the property with the same name is returned. If neither value
+   * is set, null is returned (for example, the "value" property of a textarea
    * element). The "style" attribute is converted as best can be to a
    * text representation with a trailing semi-colon. The following are deemed to
    * be "boolean" attributes and will return either "true" or null:
@@ -2017,8 +2017,9 @@ class WebElement {
   }
 
   /**
-   * Get the visible (i.e. not hidden by CSS) innerText of this element, including
-   * sub-elements, without any leading or trailing whitespace.
+   * Get the visible (i.e. not hidden by CSS) innerText of this element,
+   * including sub-elements, without any leading or trailing whitespace.
+   *
    * @return {!promise.Promise<string>} A promise that will be
    *     resolved with the element's visible text.
    */
@@ -2203,7 +2204,10 @@ class WebElementPromise extends WebElement {
     this.thenCatch = el.catch.bind(el);
 
     /** @override */
-    this.thenFinally = (cb) => promise.thenFinally(el, cb);
+    this.finally = el.finally.bind(el);
+
+    /** @override */
+    this.thenFinally = el.finally.bind(el);
 
     /**
      * Defers returning the element ID until the wrapped WebElement has been
@@ -2357,7 +2361,10 @@ class AlertPromise extends Alert {
     this.thenCatch = alert.catch.bind(alert);
 
     /** @override */
-    this.thenFinally = (cb) => promise.thenFinally(alert, cb);
+    this.finally = alert.finally.bind(alert);
+
+    /** @override */
+    this.thenFinally = alert.finally.bind(alert);
 
     /**
      * Defer returning text until the promised alert has been resolved.
