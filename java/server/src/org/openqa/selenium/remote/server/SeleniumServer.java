@@ -96,8 +96,14 @@ public class SeleniumServer implements GridNodeServer {
     handler.setContextPath("/");
     handler.addServlet(DriverServlet.class, "/wd/hub/*");
 
-    handler.setInitParameter(DriverServlet.BROWSER_TIMEOUT_PARAMETER, String.valueOf(configuration.browserTimeout));
-    handler.setInitParameter(DriverServlet.SESSION_TIMEOUT_PARAMETER, String.valueOf(configuration.timeout));
+    if (configuration.browserTimeout != null) {
+      handler.setInitParameter(DriverServlet.BROWSER_TIMEOUT_PARAMETER,
+                               String.valueOf(configuration.browserTimeout));
+    }
+    if (configuration.timeout != null) {
+      handler.setInitParameter(DriverServlet.SESSION_TIMEOUT_PARAMETER,
+                               String.valueOf(configuration.timeout));
+    }
 
     addRcSupport(handler);
 
@@ -107,6 +113,9 @@ public class SeleniumServer implements GridNodeServer {
     httpConfig.setSecureScheme("https");
 
     ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
+    if (configuration.port == null) {
+      configuration.port = 4444;
+    }
     http.setPort(configuration.port);
     http.setIdleTimeout(500000);
 
