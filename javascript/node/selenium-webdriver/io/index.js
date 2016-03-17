@@ -138,8 +138,9 @@ exports.exists = function(aPath) {
     let type = typeof aPath;
     if (type !== 'string') {
       reject(TypeError(`expected string path, but got ${type}`));
+    } else {
+      fs.exists(aPath, fulfill);
     }
-    fs.exists(aPath, fulfill);
   });
 };
 
