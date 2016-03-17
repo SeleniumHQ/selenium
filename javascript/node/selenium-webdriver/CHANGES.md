@@ -1,5 +1,7 @@
 ## v2.53.2
 
+* Changed `io.exists()` to return a rejected promise if the input path is not
+   a string
 * Deprecated `Promise#thenFinally()` - use `Promise#finally()`. The thenFinally
    shim added to the promise module in v2.53.0 will be removed in v3.0
    Sorry for the churn!

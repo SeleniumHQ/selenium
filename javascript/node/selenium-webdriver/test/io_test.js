@@ -165,6 +165,12 @@ describe('io', function() {
       });
     });
 
+    it('returns a rejected promise if input value is invalid', function() {
+      return io.exists(undefined).then(
+          () => assert.fail('should have failed'),
+          e => assert.ok(e instanceof TypeError));
+    });
+
     it('works for directories', function() {
       return io.exists(dir).then(assert.ok);
     });
