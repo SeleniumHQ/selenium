@@ -936,6 +936,44 @@ class Thenable {
    *     }
    *
    *     // Asynchronous promise API:
+   *     doAsynchronousWork().finally(cleanUp);
+   *
+   * __Note:__ similar to the {@code finally} clause, if the registered
+   * callback returns a rejected promise or throws an error, it will silently
+   * replace the rejection error (if any) from this promise:
+   *
+   *     try {
+   *       throw Error('one');
+   *     } finally {
+   *       throw Error('two');  // Hides Error: one
+   *     }
+   *
+   *     promise.rejected(Error('one'))
+   *         .finally(function() {
+   *           throw Error('two');  // Hides Error: one
+   *         });
+   *
+   * @param {function(): (R|IThenable<R>)} callback The function to call when
+   *     this promise is resolved.
+   * @return {!ManagedPromise<R>} A promise that will be fulfilled
+   *     with the callback result.
+   * @template R
+   */
+  finally(callback) {}
+
+  /**
+   * Registers a listener to invoke when this promise is resolved, regardless
+   * of whether the promise's value was successfully computed. This function
+   * is synonymous with the {@code finally} clause in a synchronous API:
+   *
+   *     // Synchronous API:
+   *     try {
+   *       doSynchronousWork();
+   *     } finally {
+   *       cleanUp();
+   *     }
+   *
+   *     // Asynchronous promise API:
    *     doAsynchronousWork().thenFinally(cleanUp);
    *
    * __Note:__ similar to the {@code finally} clause, if the registered
@@ -957,14 +995,10 @@ class Thenable {
    *     to call when this promise is resolved.
    * @return {!ManagedPromise<R>} A promise that will be fulfilled
    *     with the callback result.
-   * @deprecated thenFinally has been deprecated to help make WebDriver's
-   *     managed promises API compatible with native promises. The functionality
-   *     provided by this method is now offered for any promise implementation
-   *     using the {@link thenFinally} function in the promise module.
+   * @deprecated Use {@link #finally()} instead.
    * @template R
    */
-  thenFinally(callback) {}
-}
+  thenFinally(callback) {}}
 
 
 /**
@@ -1252,14 +1286,8 @@ class ManagedPromise {
     return this.catch(errback);
   }
 
-  /**
-   * @override
-   * @deprecated thenFinally has been deprecated to help make WebDriver's
-   *     managed promises API compatible with native promises. The functionality
-   *     provided by this method is now offered for any promise implementation
-   *     using the {@link thenFinally} function in the promise module.
-   */
-  thenFinally(callback) {
+  /** @override */
+  finally(callback) {
     var error;
     var mustThrow = false;
     return this.then(function() {
@@ -1273,6 +1301,14 @@ class ManagedPromise {
         throw error;
       }
     });
+  }
+
+  /**
+   * @override
+   * @deprecated Use {@link #finally()} instead.
+   */
+  thenFinally(callback) {
+    return this.finally(callback);
   }
 
   /**
@@ -1448,6 +1484,14 @@ class Deferred {
   thenFinally(opt_cb) {
     return this.promise.thenFinally(opt_cb);
   }
+
+  /**
+   * @override
+   * @deprecated Use {@code finally} from the promise property directly.
+   */
+  finally(opt_cb) {
+    return this.promise.finally(opt_cb);
+  }
 }
 Thenable.addImplementation(Deferred);
 
@@ -1490,6 +1534,7 @@ Thenable.addImplementation(Deferred);
  *     promise will inherit the value of the original input if the callback
  *     does not throw or return a rejected promise.
  * @template PROMISE_TYPE
+ * @deprecated
  */
 function thenFinally(promise, callback) {
   if (!isPromise(promise)) {
