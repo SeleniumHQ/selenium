@@ -134,7 +134,11 @@ exports.copyDir = function(src, dst, opt_exclude) {
  * @return {!Promise<boolean>} A promise for whether the file exists.
  */
 exports.exists = function(aPath) {
-  return new Promise(function(fulfill) {
+  return new Promise(function(fulfill, reject) {
+    let type = typeof aPath;
+    if (type !== 'string') {
+      reject(TypeError(`expected string path, but got ${type}`));
+    }
     fs.exists(aPath, fulfill);
   });
 };
