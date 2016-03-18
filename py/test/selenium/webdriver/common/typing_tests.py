@@ -78,6 +78,12 @@ class TypingTests(unittest.TestCase):
         keyReporter.send_keys(Keys.ARROW_LEFT)
         self.assertEqual(keyReporter.get_attribute("value"), "")
 
+    def testListOfArrowKeysShouldNotBePrintable(self):
+        self._loadPage("javascriptPage")
+        keyReporter = self.driver.find_element(by=By.ID, value="keyReporter")
+        keyReporter.send_keys([Keys.ARROW_LEFT])
+        self.assertEqual(keyReporter.get_attribute("value"), "")
+
     def testShouldBeAbleToUseArrowKeys(self):
         self._loadPage("javascriptPage")
         keyReporter = self.driver.find_element(by=By.ID, value="keyReporter")
