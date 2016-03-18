@@ -18,7 +18,9 @@
 """
 The Utils methods.
 """
+
 import socket
+from selenium.webdriver.common.keys import Keys
 
 try:
     basestring
@@ -83,13 +85,13 @@ def keys_to_typing(value):
     """Processes the values that will be typed in the element."""
     typing = []
     for val in value:
-        # If it is a non-string object, make it a string
-        if not isinstance(val, basestring):
-            # This str() call enables for abstraction if one has a custom object that has some
-            # UI representation to implement __str__() to return the representation, making it
-            # possible to pass that object to the filling methods.
+        if isinstance(val, Keys):
+            typing.append(val)
+        elif isinstance(val, int):
             val = str(val)
-        # Then just add the separate characters in the list
-        # ['e'].extend('asdf')  =>  ['e', 'a', 's', 'd', 'f']
-        typing.extend(val)
+            for i in range(len(val)):
+                typing.append(val[i])
+        else:
+            for i in range(len(val)):
+                typing.append(val[i])
     return typing
