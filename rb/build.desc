@@ -209,6 +209,7 @@ ruby_library(name = "remote",
     "lib/selenium/webdriver/remote.rb"
   ],
   deps = [
+    "//java/server/src/org/openqa/grid/selenium:selenium:uber",
     ":common"
   ]
 )
@@ -220,7 +221,6 @@ ruby_test(name = "remote",
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [
-    "//java/server/src/org/openqa/selenium/remote/server:standalone-server",
     ":remote"
   ]
 )
@@ -232,7 +232,6 @@ ruby_test(name = "remote-chrome",
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [
-    "//java/server/src/org/openqa/selenium/remote/server:standalone-server",
     ":remote"
   ]
 )
@@ -244,7 +243,6 @@ ruby_test(name = "remote-firefox",
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [
-    "//java/server/src/org/openqa/selenium/remote/server:standalone-server",
     ":remote"
   ]
 )
@@ -256,7 +254,6 @@ ruby_test(name = "remote-phantomjs",
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [
-    "//java/server/src/org/openqa/selenium/remote/server:standalone-server",
     ":remote"
   ]
 )
@@ -268,7 +265,6 @@ ruby_test(name = "remote-safari",
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [
-    "//java/server/src/org/openqa/selenium/remote/server:standalone-server",
     ":remote"
   ]
 )
@@ -280,7 +276,6 @@ ruby_test(name = "remote-ie",
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [
-    "//java/server/src/org/openqa/selenium/remote/server:standalone-server",
     ":remote"
   ]
 )
@@ -292,7 +287,6 @@ ruby_test(name = "remote-edge",
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [
-    "//java/server/src/org/openqa/selenium/remote/server:standalone-server",
     ":edge"
   ]
 )
@@ -304,7 +298,6 @@ ruby_test(name = "remote-marionette",
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [
-    "//java/server/src/org/openqa/selenium/remote/server:standalone-server",
     ":remote",
     ":firefox"
   ]
