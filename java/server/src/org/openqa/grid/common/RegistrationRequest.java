@@ -26,6 +26,7 @@ import com.google.gson.JsonSyntaxException;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 
@@ -176,6 +177,7 @@ public class RegistrationRequest {
     if (configuration.host != null) {
       res.configuration.host = configuration.host;
     }
+    res.configuration.host = guessHost(res.configuration.host);
     if (configuration.port != null) {
       res.configuration.port = configuration.port;
     }
@@ -198,6 +200,18 @@ public class RegistrationRequest {
       if (cap.getPlatform() == null) {
         cap.setPlatform(current);
       }
+    }
+  }
+
+  private static String guessHost(String host) {
+    if (host == null || "ip".equalsIgnoreCase(host)) {
+      NetworkUtils util = new NetworkUtils();
+      return util.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
+    } else if ("host".equalsIgnoreCase(host)) {
+      NetworkUtils util = new NetworkUtils();
+      return util.getIp4NonLoopbackAddressOfThisMachine().getHostName();
+    } else {
+      return host;
     }
   }
 
