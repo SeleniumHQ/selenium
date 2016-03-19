@@ -16,8 +16,6 @@
 // under the License.
 package org.openqa.selenium.server.browserlaunchers;
 
-import com.google.common.base.Throwables;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.locators.InternetExplorerLocator;
@@ -69,7 +67,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     try {
       setupSystem(url);
     } catch (IOException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
     log.info("Launching Internet Explorer...");
 

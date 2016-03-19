@@ -18,7 +18,6 @@
 package com.thoughtworks.selenium.webdriven;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Throwables;
 import com.google.common.io.Resources;
 
 import org.openqa.selenium.JavascriptExecutor;
@@ -111,7 +110,7 @@ public class JavascriptLibrary {
     try {
       return Resources.toString(url, Charsets.UTF_8);
     } catch (IOException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 }

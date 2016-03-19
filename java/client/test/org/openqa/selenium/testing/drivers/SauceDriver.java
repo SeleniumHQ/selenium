@@ -19,7 +19,6 @@ package org.openqa.selenium.testing.drivers;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
@@ -93,9 +92,8 @@ public class SauceDriver extends RemoteWebDriver {
     try {
       return new URL(String.format("http://%s:%s@%s/wd/hub", sauceUsername, sauceKey, sauceUrl));
     } catch (MalformedURLException e) {
-      Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
-    throw new IllegalStateException("Should have returned or thrown");
   }
 
   private static Capabilities munge(Capabilities desiredCapabilities, String seleniumVersion, String browserVersion, Platform platform) {

@@ -20,7 +20,6 @@ package org.openqa.selenium.server;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.net.PortProber.pollPort;
 
-import com.google.common.base.Throwables;
 import com.google.common.io.ByteStreams;
 
 import org.junit.AfterClass;
@@ -87,7 +86,7 @@ public class SeleniumServerProxyTest {
       byte[] bytes = ByteStreams.toByteArray(client.getInputStream());
       return new String(bytes);
     } catch (IOException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 }

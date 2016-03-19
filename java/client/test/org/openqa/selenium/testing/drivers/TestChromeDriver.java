@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import com.google.common.base.Throwables;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.chrome.ChromeDriverService;
@@ -53,7 +51,7 @@ public class TestChromeDriver extends RemoteWebDriver {
       try {
         service.start();
       } catch (IOException e) {
-        throw Throwables.propagate(e);
+        throw new RuntimeException(e);
       }
 
       // Fugly.

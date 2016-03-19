@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
@@ -692,7 +691,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       if (getCapabilities() != null) {
         ex.addInfo("Capabilities", getCapabilities().toString());
       }
-      Throwables.propagate(ex);
+      throw ex;
     }
     return response;
   }

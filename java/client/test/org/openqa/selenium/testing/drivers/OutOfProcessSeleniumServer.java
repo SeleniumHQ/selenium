@@ -133,17 +133,15 @@ public class OutOfProcessSeleniumServer {
     try {
       return Files.readFirstLine(new File(classpathFile), Charset.defaultCharset());
     } catch (IOException e) {
-      Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
-
-    return "";
   }
 
   public URL getWebDriverUrl() {
     try {
       return new URL(baseUrl + "/wd/hub");
     } catch (MalformedURLException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 }
