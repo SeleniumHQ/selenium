@@ -23,10 +23,8 @@ module Selenium
   module WebDriver
 
     describe Firefox do
-      def restart_remote_server(path = nil)
+      def restart_remote_server
         server = GlobalTestEnv.reset_remote_server
-        server << "-Dwebdriver.firefox.marionette=true"
-        server << "-Dwebdriver.firefox.bin=#{path}" if path
         server.start
         server.webdriver_url
       end
@@ -67,30 +65,28 @@ module Selenium
           end
         end
 
-        it "takes a binary path as an argument" do
-          pending "Set ENV['ALT_MARIONETTE_BINARY'] to test this" unless ENV['ALT_MARIONETTE_BINARY']
+        not_compliant_on :driver => :remote do
+          it "takes a binary path as an argument" do
+            pending "Set ENV['ALT_MARIONETTE_BINARY'] to test this" unless ENV['ALT_MARIONETTE_BINARY']
 
-          begin
-            @opt[:marionette] = true
-            driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
+            begin
+              @opt[:marionette] = true
+              driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
 
-            default_version = driver1.capabilities.version
-            expect { driver1.capabilities.specification_level }.to_not raise_exception NoMethodError
-            driver1.quit
+              default_version = driver1.capabilities.version
+              expect { driver1.capabilities.specification_level }.to_not raise_exception NoMethodError
+              driver1.quit
 
-            if GlobalTestEnv.driver == :remote
-              @opt[:url] = restart_remote_server(ENV['ALT_MARIONETTE_BINARY'])
+              caps = Remote::Capabilities.firefox(:firefox_binary => ENV['ALT_MARIONETTE_BINARY'])
+              @opt[:desired_capabilities] = caps
+              driver2 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
+
+              expect(driver2.capabilities.version).to_not eql(default_version)
+              expect { driver2.capabilities.specification_level }.to_not raise_exception NoMethodError
+              driver2.quit
+            ensure
+              Firefox::Binary.reset_path!
             end
-
-            caps = Remote::Capabilities.firefox(:firefox_binary => ENV['ALT_MARIONETTE_BINARY'])
-            @opt[:desired_capabilities] = caps
-            driver2 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
-
-            expect(driver2.capabilities.version).to_not be == default_version
-            expect { driver2.capabilities.specification_level }.to_not raise_exception NoMethodError
-            driver2.quit
-          ensure
-            Firefox::Binary.reset_path!
           end
         end
       end

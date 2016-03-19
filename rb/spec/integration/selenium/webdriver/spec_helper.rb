@@ -37,11 +37,7 @@ RSpec.configure do |c|
   c.include(WebDriver::SpecSupport::Helpers)
   c.before(:suite) do
     if GlobalTestEnv.driver == :remote
-      server = GlobalTestEnv.remote_server
-      if GlobalTestEnv.browser == :marionette
-        server << "-webdriver.firefox.marionette=true"
-      end
-      server.start
+      GlobalTestEnv.remote_server.start
     end
   end
 
