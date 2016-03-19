@@ -96,7 +96,7 @@ public class AugmenterTest extends BaseAugmenterTest {
             try {
               return method.invoke(driver, args);
             } catch (IllegalAccessException e) {
-              throw Throwables.propagate(e);
+              throw new RuntimeException(e);
             } catch (InvocationTargetException e) {
               throw Throwables.propagate(e.getTargetException());
             }

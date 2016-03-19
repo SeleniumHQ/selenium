@@ -18,7 +18,6 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Throwables;
 
 import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.SeleniumException;
@@ -116,7 +115,7 @@ public class DrivenSeleniumLauncher implements BrowserLauncher {
       try {
         serverThread.join();
       } catch (InterruptedException e) {
-        Throwables.propagate(e);
+        throw new RuntimeException(e);
       }
     }
   }

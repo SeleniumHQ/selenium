@@ -28,7 +28,6 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.RunnerBuilder;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Throwables;
 
 public class ParallelSuite extends Suite {
   public static final String PARALLELIZATION_ENV_VAR_NAME = "PARALLEL_DRIVER_COUNT";
@@ -61,7 +60,7 @@ public class ParallelSuite extends Suite {
     try {
       threadPool.shutdownAndWait();
     } catch (InterruptedException e) {
-      Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 

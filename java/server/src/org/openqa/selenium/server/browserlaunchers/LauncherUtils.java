@@ -18,8 +18,6 @@
 
 package org.openqa.selenium.server.browserlaunchers;
 
-import com.google.common.base.Throwables;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.net.Urls;
@@ -205,7 +203,7 @@ public class LauncherUtils {
     try {
       FileHandler.copy(sourceFile, destFile);
     } catch (IOException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 
@@ -214,7 +212,7 @@ public class LauncherUtils {
     try {
       FileHandler.copy(source, dest);
     } catch (IOException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 

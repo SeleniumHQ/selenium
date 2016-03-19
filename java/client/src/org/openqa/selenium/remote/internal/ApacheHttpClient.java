@@ -20,8 +20,6 @@ package org.openqa.selenium.remote.internal;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.http.protocol.HttpCoreContext.HTTP_TARGET_HOST;
 
-import com.google.common.base.Throwables;
-
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
@@ -148,7 +146,7 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
       try {
         Thread.sleep(2000);
       } catch (InterruptedException ie) {
-        throw Throwables.propagate(ie);
+        throw new RuntimeException(ie);
       }
     } catch (NoHttpResponseException e) {
       // If we get this, there's a chance we've used all the remote ephemeral sockets
@@ -156,7 +154,7 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
       try {
         Thread.sleep(2000);
       } catch (InterruptedException ie) {
-        throw Throwables.propagate(ie);
+        throw new RuntimeException(ie);
       }
     }
     return client.execute(targetHost, httpMethod, context);

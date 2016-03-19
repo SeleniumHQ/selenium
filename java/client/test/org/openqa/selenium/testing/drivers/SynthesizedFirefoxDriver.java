@@ -89,7 +89,7 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
         try {
           Firebug.addTo(profile);
         } catch (IOException e) {
-          throw Throwables.propagate(e);
+          throw new RuntimeException(e);
         }
       }
 

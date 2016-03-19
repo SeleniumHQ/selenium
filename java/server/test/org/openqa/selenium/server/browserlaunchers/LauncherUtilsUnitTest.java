@@ -18,7 +18,6 @@
 
 package org.openqa.selenium.server.browserlaunchers;
 
-import com.google.common.base.Throwables;
 import com.google.common.io.Files;
 
 import org.junit.Test;
@@ -446,7 +445,7 @@ public class LauncherUtilsUnitTest {
     try {
       return Files.toString(new File(path), Charset.defaultCharset());
     } catch (IOException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 }

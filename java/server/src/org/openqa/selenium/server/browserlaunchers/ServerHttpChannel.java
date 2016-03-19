@@ -18,7 +18,6 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
 import com.google.common.io.ByteStreams;
 import com.google.gson.JsonElement;
@@ -77,7 +76,7 @@ public class ServerHttpChannel implements Runnable {
       // And fall out the bottom of the run method. Don't clean up, just in
       // case.
     } catch (IOException e) {
-      Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 

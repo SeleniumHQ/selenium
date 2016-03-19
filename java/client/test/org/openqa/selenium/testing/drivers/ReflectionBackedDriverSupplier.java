@@ -138,7 +138,7 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
     try {
       return Class.forName(className).asSubclass(WebDriver.class);
     } catch (ClassNotFoundException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 
