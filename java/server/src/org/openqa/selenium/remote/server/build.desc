@@ -17,9 +17,8 @@ java_library(name = "real-server",
 java_library(name = "server",
   deps = [
     ":server_core",
+    "//java/client/src/org/openqa/selenium:client-combined-v3",
     "//java/client/src/org/openqa/selenium:webdriver-api",
-    "//java/client/src/org/openqa/selenium/ie",
-    "//java/client/src/org/openqa/selenium/firefox",
   ])
 
 java_library(name = "restish",
