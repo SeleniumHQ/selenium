@@ -8,7 +8,7 @@ Selenium
 .. currentmodule:: selenium
 .. autosummary::
    :toctree: selenium
-   
+
    selenium
 
 Common
@@ -50,6 +50,7 @@ Webdriver.support
    selenium.webdriver.support.event_firing_webdriver
    selenium.webdriver.support.expected_conditions
    selenium.webdriver.support.select
+   selenium.webdriver.support.page_objects
    selenium.webdriver.support.wait
 
 Webdriver.chrome
