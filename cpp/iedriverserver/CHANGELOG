@@ -9,6 +9,17 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.53.0.1
+=========
+ * Modified wait algorithm to respect page load strategy for 
+   IWebBrowser2::ReadyState. Prior to this commit, the driver would only
+   respect the page load strategy for document.readyState, not for the
+   browser COM object. This means that, for example, when IE has an info
+   bar being displayed (like when downloading a file), the driver will wait
+   indefinitely, since the IWebBrowser2 object's ReadyState property will
+   never cycle over to "complete," topping out at "interactive." Fixes issues
+   #999 and #1843.
+
 v2.53.0.0
 =========
  * Release to synchronize with release of Selenium project.
