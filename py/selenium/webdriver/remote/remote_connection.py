@@ -168,8 +168,14 @@ class RemoteConnection(object):
         addr = ""
         if parsed_url.hostname and resolve_ip:
             try:
-                netloc = socket.gethostbyname(parsed_url.hostname)
-                addr = netloc
+                addrs = socket.getaddrinfo(
+                    parsed_url.hostname,
+                    0,
+                    0,
+                    socket.SOCK_STREAM,
+                    socket.IPPROTO_TCP)
+                sockaddr = addrs[0][-1]
+                addr = netloc = sockaddr[0]
                 if parsed_url.port:
                     netloc += ':%d' % parsed_url.port
                 if parsed_url.username:
@@ -180,7 +186,7 @@ class RemoteConnection(object):
                 remote_server_addr = parse.urlunparse(
                     (parsed_url.scheme, netloc, parsed_url.path,
                      parsed_url.params, parsed_url.query, parsed_url.fragment))
-            except socket.gaierror:
+            except (socket.gaierror, IndexError):
                 LOGGER.info('Could not get IP address for host: %s' % parsed_url.hostname)
 
         self._url = remote_server_addr
