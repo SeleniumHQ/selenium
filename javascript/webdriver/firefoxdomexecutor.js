@@ -129,9 +129,15 @@ webdriver.FirefoxDomExecutor.prototype.execute = function(command) {
   event.initEvent(webdriver.FirefoxDomExecutor.EventType_.COMMAND,
       /*canBubble=*/true, /*cancelable=*/true);
 
+  // The API for execute() is async, we need to promise the result.
+  // Running in the browser, the response will be synchronous with
+  // the dispatchEvent() call. Since we want to clear the pendingCommand_,
+  // save its promise for the API return.
+  var pseudoAsync = this.pendingCommand_.deferred.promise;
+
   this.docElement_.dispatchEvent(event);
 
-  return this.pendingCommand_.deferred.promise;
+  return pseudoAsync;
 };
 
 
