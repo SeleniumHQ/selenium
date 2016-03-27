@@ -20,6 +20,7 @@
 require 'zip'
 require 'tempfile'
 require 'find'
+require 'base64'
 
 module Selenium
   module WebDriver

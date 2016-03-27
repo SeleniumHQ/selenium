@@ -17,8 +17,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/common/core_ext/dir'
-require 'selenium/webdriver/common/core_ext/base64'
 require 'selenium/webdriver/common/w3c_error'
 require 'selenium/webdriver/common/error'
 require 'selenium/webdriver/common/platform'

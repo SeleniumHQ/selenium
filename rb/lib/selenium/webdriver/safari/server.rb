@@ -130,7 +130,7 @@ Server: safaridriver-ruby
 
         def process_handshake
           @ws = @server.accept
-          hs  = WebSocket::Handshake::Server.new
+          hs = WebSocket::Handshake::Server.new
 
           req = ''
           until hs.finished?
@@ -159,12 +159,7 @@ Server: safaridriver-ruby
         end
 
         def encode_form_component(str)
-          if URI.respond_to?(:encode_www_form_component) # >= 1.9
-            URI.encode_www_form_component(str)
-          else
-            # best effort for 1.8
-            str.gsub(":", '%3A').gsub('/', '%2F')
-          end
+          URI.encode_www_form_component(str)
         end
 
         private

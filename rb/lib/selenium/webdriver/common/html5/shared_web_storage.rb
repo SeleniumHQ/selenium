@@ -38,8 +38,7 @@ module Selenium
           if block_given?
             yield key
           else
-            # should be KeyError, but it's 1.9-specific
-            raise IndexError, "missing key #{key.inspect}"
+            raise KeyError, "missing key #{key.inspect}"
           end
         end
 
