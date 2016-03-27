@@ -168,8 +168,11 @@ class RemoteConnection(object):
         addr = ""
         if parsed_url.hostname and resolve_ip:
             try:
-                netloc = socket.gethostbyname(parsed_url.hostname)
-                addr = netloc
+                if parsed_url.scheme == "https":
+                    addr = netloc = parsed_url.hostname
+                else:
+                    netloc = socket.gethostbyname(parsed_url.hostname)
+                    addr = netloc
                 if parsed_url.port:
                     netloc += ':%d' % parsed_url.port
                 if parsed_url.username:
