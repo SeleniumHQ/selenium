@@ -579,7 +579,7 @@ public class ReferrerTest extends JUnit4TestBase {
     }
 
     @Override
-    public void handle(String s, org.seleniumhq.jetty9.server.Request baseRequest, HttpServletRequest request,
+    public void handle(String s, Request baseRequest, HttpServletRequest request,
                        HttpServletResponse response) throws IOException, ServletException {
       if (request.getRequestURI().endsWith("/favicon.ico")) {
         response.setStatus(204);
