@@ -78,6 +78,12 @@ public class StandaloneConfiguration {
     description = "<Integer> the timeout in seconds before the hub automatically ends a test that hasn't had any activity in the last X seconds. The browser will be released for another test to use. This typically takes care of the client crashes. For grid hub/node roles, CleanUpCycle must also be set. Default is 1800 (30 minutes)")
   public Integer timeout = 1800;
 
+  @Parameter(
+    names = {"-avoidProxy"},
+    description = "DO NOT USE. Hack to allow selenium 3.0 server run in saucelabs"
+  )
+  private Boolean avoidProxy;
+
   /**
    * copy another configuration's values into this one if they are set.
    * @param other
