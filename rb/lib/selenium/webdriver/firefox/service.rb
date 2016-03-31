@@ -81,6 +81,9 @@ module Selenium
           end
         ensure
           stop_process
+          if Platform.windows? && !$DEBUG
+            @process.io.close rescue nil
+          end
         end
 
         def uri
@@ -95,7 +98,14 @@ module Selenium
           server_command = [@executable_path, "--binary=#{Firefox::Binary.path}", "--webdriver-port=#{@port}", *@extra_args]
           @process       = ChildProcess.build(*server_command)
 
-          @process.io.inherit! if $DEBUG || Platform.os == :windows
+          if $DEBUG == true
+            @process.io.inherit!
+          elsif Platform.windows?
+            # workaround stdio inheritance issue
+            # https://github.com/jgraham/wires/issues/48
+            @process.io.stdout = @process.io.stderr = File.new(Platform.null_device, 'w')
+          end
+
           @process.start
         end
 
