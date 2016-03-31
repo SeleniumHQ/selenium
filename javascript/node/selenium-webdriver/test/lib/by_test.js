@@ -72,6 +72,18 @@ describe('by', function() {
         assert.equal('css selector', locator.using);
         assert.equal('*[name="foo\\"bar\\""]', locator.value);
       });
+
+      it('escapes the name when it starts with a number', function() {
+        let locator = by.By.name('123foo"bar"')
+        assert.equal('css selector', locator.using);
+        assert.equal('*[name="\\31 23foo\\"bar\\""]', locator.value);
+      });
+
+      it('escapes the name when it starts with a negative number', function() {
+        let locator = by.By.name('-123foo"bar"')
+        assert.equal('css selector', locator.using);
+        assert.equal('*[name="-\\31 23foo\\"bar\\""]', locator.value);
+      });
     });
   });
 
