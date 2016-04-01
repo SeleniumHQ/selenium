@@ -100,8 +100,10 @@ wgxpath.NameTest.prototype.matches = function(node) {
       type != goog.dom.NodeType.ATTRIBUTE) {
     return false;
   }
+  // TODO(moz): Investigate if node.localName is necessary.
+  var localName = goog.isDef(node.localName) ? node.localName : node.nodeName;
   if (this.name_ != wgxpath.NameTest.WILDCARD &&
-      this.name_ != node.localName.toLowerCase()) {
+      this.name_ != localName.toLowerCase()) {
     return false;
   } else {
     if (this.namespaceUri_ == wgxpath.NameTest.WILDCARD) {

@@ -48,10 +48,9 @@ goog.require('wgxpath.nsResolver');
 /**
  * Enum for XPathResult types.
  *
- * @private
  * @enum {number}
  */
-wgxpath.XPathResultType_ = {
+wgxpath.XPathResultType = {
   ANY_TYPE: 0,
   NUMBER_TYPE: 1,
   STRING_TYPE: 2,
@@ -115,44 +114,44 @@ wgxpath.XPathExpression_ = function(expr, nsResolver) {
  * @private
  */
 wgxpath.XPathResult_ = function(value, type) {
-  if (type == wgxpath.XPathResultType_.ANY_TYPE) {
+  if (type == wgxpath.XPathResultType.ANY_TYPE) {
     if (value instanceof wgxpath.NodeSet) {
-      type = wgxpath.XPathResultType_.UNORDERED_NODE_ITERATOR_TYPE;
+      type = wgxpath.XPathResultType.UNORDERED_NODE_ITERATOR_TYPE;
     } else if (typeof value == 'string') {
-      type = wgxpath.XPathResultType_.STRING_TYPE;
+      type = wgxpath.XPathResultType.STRING_TYPE;
     } else if (typeof value == 'number') {
-      type = wgxpath.XPathResultType_.NUMBER_TYPE;
+      type = wgxpath.XPathResultType.NUMBER_TYPE;
     } else if (typeof value == 'boolean') {
-      type = wgxpath.XPathResultType_.BOOLEAN_TYPE;
+      type = wgxpath.XPathResultType.BOOLEAN_TYPE;
     } else {
       throw Error('Unexpected evaluation result.');
     }
   }
-  if (type != wgxpath.XPathResultType_.STRING_TYPE &&
-      type != wgxpath.XPathResultType_.NUMBER_TYPE &&
-      type != wgxpath.XPathResultType_.BOOLEAN_TYPE &&
+  if (type != wgxpath.XPathResultType.STRING_TYPE &&
+      type != wgxpath.XPathResultType.NUMBER_TYPE &&
+      type != wgxpath.XPathResultType.BOOLEAN_TYPE &&
       !(value instanceof wgxpath.NodeSet)) {
     throw Error('value could not be converted to the specified type');
   }
   this['resultType'] = type;
   var nodes;
   switch (type) {
-    case wgxpath.XPathResultType_.STRING_TYPE:
+    case wgxpath.XPathResultType.STRING_TYPE:
       this['stringValue'] = (value instanceof wgxpath.NodeSet) ?
           value.string() : '' + value;
       break;
-    case wgxpath.XPathResultType_.NUMBER_TYPE:
+    case wgxpath.XPathResultType.NUMBER_TYPE:
       this['numberValue'] = (value instanceof wgxpath.NodeSet) ?
           value.number() : +value;
       break;
-    case wgxpath.XPathResultType_.BOOLEAN_TYPE:
+    case wgxpath.XPathResultType.BOOLEAN_TYPE:
       this['booleanValue'] = (value instanceof wgxpath.NodeSet) ?
           value.getLength() > 0 : !!value;
       break;
-    case wgxpath.XPathResultType_.UNORDERED_NODE_ITERATOR_TYPE:
-    case wgxpath.XPathResultType_.ORDERED_NODE_ITERATOR_TYPE:
-    case wgxpath.XPathResultType_.UNORDERED_NODE_SNAPSHOT_TYPE:
-    case wgxpath.XPathResultType_.ORDERED_NODE_SNAPSHOT_TYPE:
+    case wgxpath.XPathResultType.UNORDERED_NODE_ITERATOR_TYPE:
+    case wgxpath.XPathResultType.ORDERED_NODE_ITERATOR_TYPE:
+    case wgxpath.XPathResultType.UNORDERED_NODE_SNAPSHOT_TYPE:
+    case wgxpath.XPathResultType.ORDERED_NODE_SNAPSHOT_TYPE:
       var iter = value.iterator();
       nodes = [];
       for (var node = iter.next(); node; node = iter.next()) {
@@ -162,8 +161,8 @@ wgxpath.XPathResult_ = function(value, type) {
       this['snapshotLength'] = value.getLength();
       this['invalidIteratorState'] = false;
       break;
-    case wgxpath.XPathResultType_.ANY_UNORDERED_NODE_TYPE:
-    case wgxpath.XPathResultType_.FIRST_ORDERED_NODE_TYPE:
+    case wgxpath.XPathResultType.ANY_UNORDERED_NODE_TYPE:
+    case wgxpath.XPathResultType.FIRST_ORDERED_NODE_TYPE:
       var firstNode = value.getFirst();
       this['singleNodeValue'] =
           firstNode instanceof wgxpath.IEAttrWrapper ?
@@ -174,36 +173,36 @@ wgxpath.XPathResult_ = function(value, type) {
   }
   var index = 0;
   this['iterateNext'] = function() {
-    if (type != wgxpath.XPathResultType_.UNORDERED_NODE_ITERATOR_TYPE &&
-        type != wgxpath.XPathResultType_.ORDERED_NODE_ITERATOR_TYPE) {
+    if (type != wgxpath.XPathResultType.UNORDERED_NODE_ITERATOR_TYPE &&
+        type != wgxpath.XPathResultType.ORDERED_NODE_ITERATOR_TYPE) {
       throw Error('iterateNext called with wrong result type');
     }
     return (index >= nodes.length) ? null : nodes[index++];
   };
   this['snapshotItem'] = function(i) {
-    if (type != wgxpath.XPathResultType_.UNORDERED_NODE_SNAPSHOT_TYPE &&
-        type != wgxpath.XPathResultType_.ORDERED_NODE_SNAPSHOT_TYPE) {
+    if (type != wgxpath.XPathResultType.UNORDERED_NODE_SNAPSHOT_TYPE &&
+        type != wgxpath.XPathResultType.ORDERED_NODE_SNAPSHOT_TYPE) {
       throw Error('snapshotItem called with wrong result type');
     }
     return (i >= nodes.length || i < 0) ? null : nodes[i];
   };
 };
-wgxpath.XPathResult_['ANY_TYPE'] = wgxpath.XPathResultType_.ANY_TYPE;
-wgxpath.XPathResult_['NUMBER_TYPE'] = wgxpath.XPathResultType_.NUMBER_TYPE;
-wgxpath.XPathResult_['STRING_TYPE'] = wgxpath.XPathResultType_.STRING_TYPE;
-wgxpath.XPathResult_['BOOLEAN_TYPE'] = wgxpath.XPathResultType_.BOOLEAN_TYPE;
+wgxpath.XPathResult_['ANY_TYPE'] = wgxpath.XPathResultType.ANY_TYPE;
+wgxpath.XPathResult_['NUMBER_TYPE'] = wgxpath.XPathResultType.NUMBER_TYPE;
+wgxpath.XPathResult_['STRING_TYPE'] = wgxpath.XPathResultType.STRING_TYPE;
+wgxpath.XPathResult_['BOOLEAN_TYPE'] = wgxpath.XPathResultType.BOOLEAN_TYPE;
 wgxpath.XPathResult_['UNORDERED_NODE_ITERATOR_TYPE'] =
-    wgxpath.XPathResultType_.UNORDERED_NODE_ITERATOR_TYPE;
+    wgxpath.XPathResultType.UNORDERED_NODE_ITERATOR_TYPE;
 wgxpath.XPathResult_['ORDERED_NODE_ITERATOR_TYPE'] =
-    wgxpath.XPathResultType_.ORDERED_NODE_ITERATOR_TYPE;
+    wgxpath.XPathResultType.ORDERED_NODE_ITERATOR_TYPE;
 wgxpath.XPathResult_['UNORDERED_NODE_SNAPSHOT_TYPE'] =
-    wgxpath.XPathResultType_.UNORDERED_NODE_SNAPSHOT_TYPE;
+    wgxpath.XPathResultType.UNORDERED_NODE_SNAPSHOT_TYPE;
 wgxpath.XPathResult_['ORDERED_NODE_SNAPSHOT_TYPE'] =
-    wgxpath.XPathResultType_.ORDERED_NODE_SNAPSHOT_TYPE;
+    wgxpath.XPathResultType.ORDERED_NODE_SNAPSHOT_TYPE;
 wgxpath.XPathResult_['ANY_UNORDERED_NODE_TYPE'] =
-    wgxpath.XPathResultType_.ANY_UNORDERED_NODE_TYPE;
+    wgxpath.XPathResultType.ANY_UNORDERED_NODE_TYPE;
 wgxpath.XPathResult_['FIRST_ORDERED_NODE_TYPE'] =
-    wgxpath.XPathResultType_.FIRST_ORDERED_NODE_TYPE;
+    wgxpath.XPathResultType.FIRST_ORDERED_NODE_TYPE;
 
 
 
@@ -230,7 +229,7 @@ wgxpath.XPathNSResolver_ = function(node) {
  */
 wgxpath.install = function(opt_win, opt_force) {
   var win = opt_win || goog.global;
-  var doc = win.document;
+  var doc = (win.Document && win.Document.prototype) || win.document;
 
   // Unless opt_force is true, installation is a noop if native XPath is
   // available.
