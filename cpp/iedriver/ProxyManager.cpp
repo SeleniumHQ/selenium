@@ -32,6 +32,25 @@
 namespace webdriver {
 
 ProxyManager::ProxyManager(void) {
+  this->proxy_type_ = "";
+  this->http_proxy_ = "";
+  this->ftp_proxy_ = "";
+  this->ssl_proxy_ = "";
+  this->socks_proxy_ = "";
+  this->socks_user_name_ = "";
+  this->socks_password_ = "";
+  this->proxy_autoconfigure_url_ = "";
+  this->is_proxy_modified_ = false;
+  this->is_proxy_authorization_modified_ = false;
+  this->use_per_process_proxy_ = false;
+
+  this->current_autoconfig_url_ = L"";
+  this->current_proxy_auto_detect_flags_ = 0;
+  this->current_proxy_server_ = L"";
+  this->current_socks_user_name_ = L"";
+  this->current_socks_password_ = L"";
+  this->current_proxy_type_ = 0;
+  this->current_proxy_bypass_list_ = L"";
 }
 
 ProxyManager::~ProxyManager(void) {
@@ -56,8 +75,6 @@ void ProxyManager::Initialize(ProxySettings settings) {
   this->socks_user_name_ = settings.socks_user_name;
   this->socks_password_ = settings.socks_password;
   this->proxy_autoconfigure_url_ = settings.proxy_autoconfig_url;
-  this->is_proxy_modified_ = false;
-  this->is_proxy_authorization_modified_ = false;
   if (this->proxy_type_ == WD_PROXY_TYPE_SYSTEM ||
       this->proxy_type_ == WD_PROXY_TYPE_DIRECT ||
       this->proxy_type_ == WD_PROXY_TYPE_MANUAL) {
@@ -67,14 +84,6 @@ void ProxyManager::Initialize(ProxySettings settings) {
     // system proxy, direct connection, or with a manually specified proxy.
     this->use_per_process_proxy_ = false;
   }
-
-  this->current_autoconfig_url_ = L"";
-  this->current_proxy_auto_detect_flags_ = 0;
-  this->current_proxy_server_ = L"";
-  this->current_socks_user_name_ = L"";
-  this->current_socks_password_ = L"";
-  this->current_proxy_type_ = 0;
-  this->current_proxy_bypass_list_ = L"";
 }
 
 void ProxyManager::SetProxySettings(HWND browser_window_handle) {

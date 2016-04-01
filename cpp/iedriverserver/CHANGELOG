@@ -9,6 +9,11 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.53.1.0
+=========
+ * Updates to JavaScript automation atoms, including update to wgxpath.
+ * IE driver no longer returns proxy capability unless a proxy is requested.
+
 v2.53.0.1
 =========
  * Modified wait algorithm to respect page load strategy for 

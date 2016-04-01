@@ -152,9 +152,10 @@ class NewSessionCommandHandler : public IECommandHandler {
         proxy_settings.proxy_autoconfig_url = autoconfig_url;
         Json::Value use_per_process_proxy = this->GetCapability(it->second, USE_PER_PROCESS_PROXY_CAPABILITY, Json::booleanValue, false);
         proxy_settings.use_per_process_proxy = use_per_process_proxy.asBool();
+
+        mutable_executor.proxy_manager()->Initialize(proxy_settings);
+        returned_capabilities[PROXY_CAPABILITY] = executor.proxy_manager()->GetProxyAsJson();
       }
-      mutable_executor.proxy_manager()->Initialize(proxy_settings);
-      returned_capabilities[PROXY_CAPABILITY] = executor.proxy_manager()->GetProxyAsJson();
     }
     std::string create_browser_error_message = "";
     int result_code = mutable_executor.CreateNewBrowser(&create_browser_error_message);
