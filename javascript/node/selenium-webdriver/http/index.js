@@ -23,6 +23,7 @@
 'use strict';
 
 const http = require('http');
+const https = require('https');
 const url = require('url');
 
 const cmd = require('../lib/command');
@@ -233,13 +234,15 @@ class HttpClient {
      * @private {{auth: (?string|undefined),
      *            host: string,
      *            path: (?string|undefined),
-     *            port: (?string|undefined)}}
+     *            port: (?string|undefined),
+     *            protocol: (?string|undefined)}}
      */
     this.options_ = {
       auth: parsedUrl.auth,
       host: parsedUrl.hostname,
       path: parsedUrl.pathname,
-      port: parsedUrl.port
+      port: parsedUrl.port,
+      protocol: parsedUrl.protocol
     };
   }
 
@@ -279,6 +282,7 @@ class HttpClient {
       auth: this.options_.auth,
       host: this.options_.host,
       port: this.options_.port,
+      protocol: this.options_.protocol,
       path: path,
       headers: headers
     };
@@ -321,7 +325,8 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy) {
     }
   }
 
-  var request = http.request(options, function(response) {
+  let requestFn = options.protocol === 'https:' ? https.request : http.request;
+  var request = requestFn(options, function onResponse(response) {
     if (response.statusCode == 302 || response.statusCode == 303) {
       try {
         var location = url.parse(response.headers['location']);
@@ -344,6 +349,7 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy) {
         host: location.hostname,
         path: location.pathname + (location.search || ''),
         port: location.port,
+        protocol: location.protocol,
         headers: {
           'Accept': 'application/json; charset=utf-8'
         }
