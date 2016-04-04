@@ -82,10 +82,15 @@ class Service(object):
                 )
         count = 0
         while not self.is_connectable():
-            count += 1
-            time.sleep(1)
+            # Check is process finished with non-zero exit code.
+            if self.process.poll():
+                raise WebDriverException(
+                    "Process terminated with non-zero status: %s" %
+                    self.process.returncode)
             if count == 30:
                 raise WebDriverException("Can not connect to the Service %s" % self.path)
+            count += 1
+            time.sleep(1)
 
     def is_connectable(self):
         return utils.is_connectable(self.port)
