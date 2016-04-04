@@ -40,7 +40,6 @@ java_library(name = "util",
 java_library(name = "junit_4",
   srcs = [
     "JUnit4TestBase.java",
-    "ParallelSuite.java",
     "SeleniumTestRunner.java",
     "NotYetImplemented.java",
   ],

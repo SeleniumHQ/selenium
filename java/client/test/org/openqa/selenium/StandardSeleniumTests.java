@@ -21,20 +21,18 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.html5.Html5Tests;
 import org.openqa.selenium.interactions.InteractionTests;
 import org.openqa.selenium.logging.AvailableLogsTest;
 import org.openqa.selenium.logging.GetLogsTest;
-import org.openqa.selenium.logging.PerformanceLoggingTest;
 import org.openqa.selenium.logging.PerformanceLogTypeTest;
+import org.openqa.selenium.logging.PerformanceLoggingTest;
 import org.openqa.selenium.support.ui.SelectElementTest;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.ParallelSuite;
 
-@RunWith(ParallelSuite.class)
+@RunWith(Suite.class)
 @Suite.SuiteClasses({
     AlertsTest.class,
     AtomsInjectionTest.class,

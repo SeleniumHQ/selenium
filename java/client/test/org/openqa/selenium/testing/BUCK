@@ -35,7 +35,6 @@ java_library(name = 'helpers',
 java_library(name = 'test-base',
   srcs = [
     'JUnit4TestBase.java',
-    'ParallelSuite.java',
     'ProxyServer.java',
     'SeleniumTestRunner.java',
     'TestUtilities.java',
