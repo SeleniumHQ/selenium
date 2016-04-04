@@ -58,10 +58,11 @@ public class SlowLoadableComponentTest {
     FakeClock clock = new FakeClock();
     try {
       new BasicSlowLoader(clock, 2).get();
-      fail();
     } catch (Error e) {
       // We expect to time out
+      return;
     }
+    fail();
   }
 
   @Test
