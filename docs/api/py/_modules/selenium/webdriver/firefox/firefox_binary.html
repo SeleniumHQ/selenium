@@ -107,14 +107,14 @@
 <div class="viewcode-block" id="FirefoxBinary.add_command_line_options"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_binary.html#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.add_command_line_options">[docs]</a>    <span class="k">def</span> <span class="nf">add_command_line_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">command_line</span> <span class="o">=</span> <span class="n">args</span>
 </div>
-<div class="viewcode-block" id="FirefoxBinary.launch_browser"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_binary.html#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.launch_browser">[docs]</a>    <span class="k">def</span> <span class="nf">launch_browser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="p">):</span>
+<div class="viewcode-block" id="FirefoxBinary.launch_browser"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_binary.html#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.launch_browser">[docs]</a>    <span class="k">def</span> <span class="nf">launch_browser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Launches the browser for the given profile name.</span>
 <span class="sd">        It is assumed the profile already exists.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">profile</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_start_from_profile_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_wait_until_connectable</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wait_until_connectable</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="FirefoxBinary.kill"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_binary.html#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.kill">[docs]</a>    <span class="k">def</span> <span class="nf">kill</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Kill the browser.</span>
@@ -138,7 +138,7 @@
             <span class="n">command</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">STDOUT</span><span class="p">,</span>
             <span class="n">env</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_firefox_env</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_wait_until_connectable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_wait_until_connectable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Blocks until the extension is connectable in the firefox.&quot;&quot;&quot;</span>
         <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">while</span> <span class="ow">not</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_connectable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">port</span><span class="p">):</span>
@@ -147,7 +147,7 @@
                 <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;The browser appears to have exited &quot;</span>
                       <span class="s">&quot;before we could connect. If you specified a log_file in &quot;</span>
                       <span class="s">&quot;the FirefoxBinary constructor, check it for details.&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">30</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="n">timeout</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
                 <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;Can&#39;t load the profile. Profile &quot;</span>
                       <span class="s">&quot;Dir: </span><span class="si">%s</span><span class="s"> If you specified a log_file in the &quot;</span>

@@ -142,10 +142,16 @@
 <div class="viewcode-block" id="Service.send_remote_shutdown_command"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.service.html#selenium.webdriver.common.service.Service.send_remote_shutdown_command">[docs]</a>    <span class="k">def</span> <span class="nf">send_remote_shutdown_command</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">request</span> <span class="k">as</span> <span class="n">url_request</span>
+            <span class="n">URLError</span> <span class="o">=</span> <span class="n">url_request</span><span class="o">.</span><span class="n">URLError</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">urllib2</span> <span class="kn">as</span> <span class="nn">url_request</span>
+            <span class="kn">import</span> <span class="nn">urllib2</span>
+            <span class="n">URLError</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">URLError</span>
 
-        <span class="n">url_request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s">&quot;http://127.0.0.1:</span><span class="si">%d</span><span class="s">/shutdown&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">url_request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s">&quot;http://127.0.0.1:</span><span class="si">%d</span><span class="s">/shutdown&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">URLError</span><span class="p">:</span>
+            <span class="k">return</span>
         <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_connectable</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">30</span><span class="p">:</span>
@@ -166,15 +172,24 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">send_remote_shutdown_command</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">send_remote_shutdown_command</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">pass</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">stream</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="p">,</span>
+                               <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span>
+                               <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">stderr</span><span class="p">]:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">stream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                        <span class="k">pass</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
             <span class="c"># kill may not be available under windows environment</span>
             <span class="k">pass</span>

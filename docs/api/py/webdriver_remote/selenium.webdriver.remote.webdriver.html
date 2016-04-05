@@ -49,7 +49,7 @@
 <p>The WebDriver implementation.</p>
 <dl class="class">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver">
-<em class="property">class </em><tt class="descclassname">selenium.webdriver.remote.webdriver.</tt><tt class="descname">WebDriver</tt><big>(</big><em>command_executor='http://127.0.0.1:4444/wd/hub'</em>, <em>desired_capabilities=None</em>, <em>browser_profile=None</em>, <em>proxy=None</em>, <em>keep_alive=False</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">selenium.webdriver.remote.webdriver.</tt><tt class="descname">WebDriver</tt><big>(</big><em>command_executor='http://127.0.0.1:4444/wd/hub'</em>, <em>desired_capabilities=None</em>, <em>browser_profile=None</em>, <em>proxy=None</em>, <em>keep_alive=False</em>, <em>file_detector=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Controls a browser by sending commands to a remote server.
 This server is expected to be running the WebDriver wire protocol
 as defined at
@@ -109,6 +109,12 @@ as defined at
 <li><dl class="first docutils">
 <dt>keep_alive - Whether to configure remote_connection.RemoteConnection to use</dt>
 <dd><p class="first last">HTTP keep-alive. Defaults to False.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>file_detector - Pass custom file detector object during instantiation. If None,</dt>
+<dd><p class="first last">then default LocalFileDetector() will be used.</p>
 </dd>
 </dl>
 </li>
@@ -314,6 +320,43 @@ driver.add_cookie({&#8216;name&#8217; : &#8216;foo&#8217;, &#8216;value&#8217; :
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.file_detector">
 <tt class="descname">file_detector</tt><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.file_detector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.file_detector" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webdriver.WebDriver.file_detector_context">
+<tt class="descname">file_detector_context</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.file_detector_context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.file_detector_context" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overrides the current file detector (if necessary) in limited context.
+Ensures the original file detector is set afterwards.</p>
+<p>Example:</p>
+<dl class="docutils">
+<dt>with webdriver.file_detector_context(UselessFileDetector):</dt>
+<dd>someinput.send_keys(&#8216;/etc/hosts&#8217;)</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last">
+<li><dl class="first docutils">
+<dt>file_detector_class - Class of the desired file detector. If the class is different</dt>
+<dd><p class="first last">from the current file_detector, then the class is instantiated with args and kwargs
+and used as a file detector during the duration of the context manager.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>args - Optional arguments that get passed to the file detector class during</dt>
+<dd><p class="first last">instantiation.</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">kwargs - Keyword arguments, passed the same way as args.</p>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.find_element">

@@ -83,6 +83,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">firefox_profile</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">firefox_binary</span>
         <span class="n">HOST</span> <span class="o">=</span> <span class="n">host</span>
+        <span class="n">timeout</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">FirefoxBinary</span><span class="p">()</span>
 
@@ -95,7 +97,7 @@
         
         <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">add_extension</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">binary</span><span class="o">.</span><span class="n">launch_browser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">binary</span><span class="o">.</span><span class="n">launch_browser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
         <span class="n">_URL</span> <span class="o">=</span> <span class="s">&quot;http://</span><span class="si">%s</span><span class="s">:</span><span class="si">%d</span><span class="s">/hub&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">HOST</span><span class="p">,</span> <span class="n">PORT</span><span class="p">)</span>
         <span class="n">RemoteConnection</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">_URL</span><span class="p">,</span> <span class="n">keep_alive</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>

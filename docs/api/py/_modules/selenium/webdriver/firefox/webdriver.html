@@ -70,16 +70,23 @@
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">httplib</span> <span class="kn">as</span> <span class="nn">http_client</span>
 
+<span class="k">try</span><span class="p">:</span>
+    <span class="nb">basestring</span>
+<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>  <span class="c"># Python 3.x</span>
+    <span class="nb">basestring</span> <span class="o">=</span> <span class="nb">str</span>
+
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">socket</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+
 <span class="kn">from</span> <span class="nn">.firefox_binary</span> <span class="kn">import</span> <span class="n">FirefoxBinary</span>
-<span class="kn">from</span> <span class="nn">.service</span> <span class="kn">import</span> <span class="n">Service</span>
+<span class="kn">from</span> <span class="nn">.remote_connection</span> <span class="kn">import</span> <span class="n">FirefoxRemoteConnection</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.desired_capabilities</span> <span class="kn">import</span> <span class="n">DesiredCapabilities</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.firefox.extension_connection</span> <span class="kn">import</span> <span class="n">ExtensionConnection</span>
-<span class="kn">from</span> <span class="nn">.remote_connection</span> <span class="kn">import</span> <span class="n">FirefoxRemoteConnection</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.firefox.firefox_profile</span> <span class="kn">import</span> <span class="n">FirefoxProfile</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.remote.webdriver</span> <span class="kn">import</span> <span class="n">WebDriver</span> <span class="k">as</span> <span class="n">RemoteWebDriver</span>
+<span class="kn">from</span> <span class="nn">.service</span> <span class="kn">import</span> <span class="n">Service</span>
+<span class="kn">from</span> <span class="nn">.options</span> <span class="kn">import</span> <span class="n">Options</span>
 
 
 <div class="viewcode-block" id="WebDriver"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver">[docs]</a><span class="k">class</span> <span class="nc">WebDriver</span><span class="p">(</span><span class="n">RemoteWebDriver</span><span class="p">):</span>
@@ -88,44 +95,63 @@
     <span class="n">NATIVE_EVENTS_ALLOWED</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">!=</span> <span class="s">&quot;darwin&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firefox_profile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">firefox_binary</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
-                 <span class="n">capabilities</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">proxy</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">executable_path</span><span class="o">=</span><span class="s">&#39;wires&#39;</span><span class="p">):</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">firefox_binary</span>
+                 <span class="n">capabilities</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">proxy</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">executable_path</span><span class="o">=</span><span class="s">&quot;wires&quot;</span><span class="p">,</span> <span class="n">firefox_options</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">firefox_profile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">firefox_binary</span>
+        <span class="k">if</span> <span class="n">firefox_options</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">FirefoxProfile</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">FirefoxProfile</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">native_events_enabled</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">NATIVE_EVENTS_ALLOWED</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">native_events_enabled</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">native_events_enabled</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">NATIVE_EVENTS_ALLOWED</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">native_events_enabled</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">capabilities</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">capabilities</span> <span class="o">=</span> <span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">FIREFOX</span>
+            <span class="k">if</span> <span class="n">capabilities</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">capabilities</span> <span class="o">=</span> <span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">FIREFOX</span>
 
-        <span class="k">if</span> <span class="s">&quot;marionette&quot;</span> <span class="ow">in</span> <span class="n">capabilities</span> <span class="ow">and</span> <span class="n">capabilities</span><span class="p">[</span><span class="s">&#39;marionette&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
-            <span class="c"># Let&#39;s use Marionette! WOOOOHOOOOO!</span>
-            <span class="k">if</span> <span class="s">&quot;binary&quot;</span> <span class="ow">in</span> <span class="n">capabilities</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">capabilities</span><span class="p">[</span><span class="s">&quot;binary&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">capabilities</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;binary&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">FirefoxBinary</span><span class="p">()</span>
+
+            <span class="n">firefox_options</span> <span class="o">=</span> <span class="n">Options</span><span class="p">()</span>
+            <span class="n">firefox_options</span><span class="o">.</span><span class="n">binary_location</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binary</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary</span><span class="o">.</span><span class="n">_get_firefox_start_cmd</span><span class="p">()</span>
+            <span class="n">firefox_options</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">capabilities</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">capabilities</span> <span class="o">=</span> <span class="n">firefox_options</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">capabilities</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">firefox_options</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">())</span>
+
+        <span class="c"># marionette</span>
+        <span class="k">if</span> <span class="n">capabilities</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;marionette&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">firefox_options</span><span class="o">.</span><span class="n">binary_location</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">firefox_options</span><span class="o">.</span><span class="n">binary_location</span><span class="p">,</span> <span class="n">FirefoxBinary</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">firefox_options</span><span class="o">.</span><span class="n">binary_location</span><span class="o">.</span><span class="n">_get_firefox_start_cmd</span><span class="p">()</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span><span class="n">executable_path</span><span class="p">,</span> <span class="n">firefox_binary</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">binary</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
-            <span class="n">RemoteWebDriver</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                <span class="n">command_executor</span><span class="o">=</span><span class="n">FirefoxRemoteConnection</span><span class="p">(</span>
-                    <span class="n">remote_server_addr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">service_url</span><span class="p">),</span>
+            <span class="n">executor</span> <span class="o">=</span> <span class="n">FirefoxRemoteConnection</span><span class="p">(</span>
+                <span class="n">remote_server_addr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">service_url</span><span class="p">)</span>
+            <span class="n">RemoteWebDriver</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">command_executor</span><span class="o">=</span><span class="n">executor</span><span class="p">,</span>
                 <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">capabilities</span><span class="p">,</span>
                 <span class="n">keep_alive</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-
         <span class="k">else</span><span class="p">:</span>
             <span class="c"># Oh well... sometimes the old way is the best way.</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">FirefoxBinary</span><span class="p">()</span>
-
             <span class="k">if</span> <span class="n">proxy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="n">proxy</span><span class="o">.</span><span class="n">add_to_capabilities</span><span class="p">(</span><span class="n">capabilities</span><span class="p">)</span>
 
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">firefox_options</span><span class="o">.</span><span class="n">binary_location</span> <span class="ow">or</span> <span class="n">FirefoxBinary</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">firefox_options</span><span class="o">.</span><span class="n">profile</span> <span class="ow">or</span> <span class="n">FirefoxProfile</span><span class="p">()</span>
+
+            <span class="n">executor</span> <span class="o">=</span> <span class="n">ExtensionConnection</span><span class="p">(</span><span class="s">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">binary</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
             <span class="n">RemoteWebDriver</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-            <span class="n">command_executor</span><span class="o">=</span><span class="n">ExtensionConnection</span><span class="p">(</span><span class="s">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">binary</span><span class="p">,</span> <span class="n">timeout</span><span class="p">),</span>
+                <span class="n">command_executor</span><span class="o">=</span><span class="n">executor</span><span class="p">,</span>
             <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">capabilities</span><span class="p">,</span>
             <span class="n">keep_alive</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 

@@ -120,6 +120,8 @@
 
 <span class="sd">           :Args:</span>
 <span class="sd">            - value - The value to match against</span>
+<span class="sd">            </span>
+<span class="sd">           throws NoSuchElementException If there is no option with specisied value in SELECT</span>
 <span class="sd">           &quot;&quot;&quot;</span>
         <span class="n">css</span> <span class="o">=</span> <span class="s">&quot;option[value =</span><span class="si">%s</span><span class="s">]&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_escapeString</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="n">opts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="n">css</span><span class="p">)</span>
@@ -138,17 +140,15 @@
 
 <span class="sd">           :Args:</span>
 <span class="sd">            - index - The option at this index will be selected </span>
+<span class="sd">            </span>
+<span class="sd">           throws NoSuchElementException If there is no option with specisied index in SELECT</span>
 <span class="sd">           &quot;&quot;&quot;</span>
         <span class="n">match</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-        <span class="n">matched</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s">&quot;index&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">match</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_setSelected</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_multiple</span><span class="p">:</span>
-                    <span class="k">return</span>
-                <span class="n">matched</span> <span class="o">=</span> <span class="bp">True</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">matched</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="s">&quot;Could not locate element with index </span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">index</span><span class="p">)</span>
+                <span class="k">return</span>
+        <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="s">&quot;Could not locate element with index </span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">index</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Select.select_by_visible_text"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.select.html#selenium.webdriver.support.select.Select.select_by_visible_text">[docs]</a>    <span class="k">def</span> <span class="nf">select_by_visible_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Select all options that display text matching the argument. That is, when given &quot;Bar&quot; this</span>
@@ -158,6 +158,8 @@
 <span class="sd">             </span>
 <span class="sd">           :Args:</span>
 <span class="sd">            - text - The visible text to match against</span>
+<span class="sd">            </span>
+<span class="sd">            throws NoSuchElementException If there is no option with specisied text in SELECT</span>
 <span class="sd">           &quot;&quot;&quot;</span>
         <span class="n">xpath</span> <span class="o">=</span> <span class="s">&quot;.//option[normalize-space(.) = </span><span class="si">%s</span><span class="s">]&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_escapeString</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
         <span class="n">opts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="n">xpath</span><span class="p">)</span>
@@ -202,26 +204,36 @@
 <span class="sd">             </span>
 <span class="sd">           :Args:</span>
 <span class="sd">            - value - The value to match against</span>
+<span class="sd">            </span>
+<span class="sd">            throws NoSuchElementException If there is no option with specisied value in SELECT</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_multiple</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;You may only deselect options of a multi-select&quot;</span><span class="p">)</span>
+        <span class="n">matched</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="n">css</span> <span class="o">=</span> <span class="s">&quot;option[value = </span><span class="si">%s</span><span class="s">]&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_escapeString</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="n">opts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="n">css</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="n">opts</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_unsetSelected</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
-</div>
+            <span class="n">matched</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">matched</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="s">&quot;Could not locate element with value: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">value</span><span class="p">)</span>
+			</div>
 <div class="viewcode-block" id="Select.deselect_by_index"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.select.html#selenium.webdriver.support.select.Select.deselect_by_index">[docs]</a>    <span class="k">def</span> <span class="nf">deselect_by_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Deselect the option at the given index. This is done by examing the &quot;index&quot; attribute of an</span>
 <span class="sd">           element, and not merely by counting.</span>
 
 <span class="sd">           :Args:</span>
 <span class="sd">            - index - The option at this index will be deselected</span>
+<span class="sd">            </span>
+<span class="sd">            throws NoSuchElementException If there is no option with specisied index in SELECT</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_multiple</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;You may only deselect options of a multi-select&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s">&quot;index&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_unsetSelected</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
+                <span class="k">return</span>
+        <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="s">&quot;Could not locate element with index </span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">index</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Select.deselect_by_visible_text"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.select.html#selenium.webdriver.support.select.Select.deselect_by_visible_text">[docs]</a>    <span class="k">def</span> <span class="nf">deselect_by_visible_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Deselect all options that display text matching the argument. That is, when given &quot;Bar&quot; this</span>
@@ -234,10 +246,14 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_multiple</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;You may only deselect options of a multi-select&quot;</span><span class="p">)</span>
+        <span class="n">matched</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="n">xpath</span> <span class="o">=</span> <span class="s">&quot;.//option[normalize-space(.) = </span><span class="si">%s</span><span class="s">]&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_escapeString</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
         <span class="n">opts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="n">xpath</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="n">opts</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_unsetSelected</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
+            <span class="n">matched</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">matched</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="s">&quot;Could not locate element with visible text: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">text</span><span class="p">)</span>
 </div>
     <span class="k">def</span> <span class="nf">_setSelected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">option</span><span class="o">.</span><span class="n">is_selected</span><span class="p">():</span>

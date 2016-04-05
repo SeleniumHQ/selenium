@@ -63,6 +63,8 @@
 <span class="c"># KIND, either express or implied.  See the License for the</span>
 <span class="c"># specific language governing permissions and limitations</span>
 <span class="c"># under the License.</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common</span> <span class="kn">import</span> <span class="n">service</span>
 
 
@@ -88,9 +90,17 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">service_args</span><span class="o">=</span><span class="n">service_args</span><span class="p">[:]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">log_path</span><span class="p">:</span>
             <span class="n">log_path</span> <span class="o">=</span> <span class="s">&quot;ghostdriver.log&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args_contain</span><span class="p">(</span><span class="s">&quot;--cookies-file=&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cookie_temp_file_handle</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cookie_temp_file</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">service_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;--cookies-file=&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cookie_temp_file</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cookie_temp_file</span> <span class="o">=</span> <span class="bp">None</span>
 
         <span class="n">service</span><span class="o">.</span><span class="n">Service</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable_path</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span> <span class="n">log_file</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="n">log_path</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">))</span>
 
+
+    <span class="k">def</span> <span class="nf">_args_contain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">arg</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">service_args</span><span class="p">)))</span> <span class="o">&gt;</span> <span class="mi">0</span>
 
 <div class="viewcode-block" id="Service.command_line_args"><a class="viewcode-back" href="../../../../webdriver_phantomjs/selenium.webdriver.phantomjs.service.html#selenium.webdriver.phantomjs.service.Service.command_line_args">[docs]</a>    <span class="k">def</span> <span class="nf">command_line_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">service_args</span> <span class="o">+</span> <span class="p">[</span><span class="s">&quot;--webdriver=</span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">]</span>
@@ -103,7 +113,9 @@
         <span class="k">return</span> <span class="s">&quot;http://localhost:</span><span class="si">%d</span><span class="s">/wd/hub&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span>
 </div>
 <div class="viewcode-block" id="Service.send_remote_shutdown_command"><a class="viewcode-back" href="../../../../webdriver_phantomjs/selenium.webdriver.phantomjs.service.html#selenium.webdriver.phantomjs.service.Service.send_remote_shutdown_command">[docs]</a>    <span class="k">def</span> <span class="nf">send_remote_shutdown_command</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span></div></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cookie_temp_file</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cookie_temp_file_handle</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cookie_temp_file</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>

@@ -90,9 +90,10 @@ element, and not merely by counting.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
 <li>index - The option at this index will be deselected</li>
 </ul>
+<p class="last">throws NoSuchElementException If there is no option with specisied index in SELECT</p>
 </td>
 </tr>
 </tbody>
@@ -110,9 +111,10 @@ would deselect an option like:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
 <li>value - The value to match against</li>
 </ul>
+<p class="last">throws NoSuchElementException If there is no option with specisied value in SELECT</p>
 </td>
 </tr>
 </tbody>
@@ -167,6 +169,7 @@ element, and not merely by counting.</p>
 </tr>
 </tbody>
 </table>
+<p>throws NoSuchElementException If there is no option with specisied index in SELECT</p>
 </dd></dl>
 
 <dl class="method">
@@ -186,6 +189,7 @@ would select an option like:</p>
 </tr>
 </tbody>
 </table>
+<p>throws NoSuchElementException If there is no option with specisied value in SELECT</p>
 </dd></dl>
 
 <dl class="method">
@@ -199,9 +203,10 @@ would select an option like:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
 <li>text - The visible text to match against</li>
 </ul>
+<p class="last">throws NoSuchElementException If there is no option with specisied text in SELECT</p>
 </td>
 </tr>
 </tbody>
