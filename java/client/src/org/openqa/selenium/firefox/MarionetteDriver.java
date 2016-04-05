@@ -27,8 +27,11 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 /**
  * An implementation of the {#link WebDriver} interface that drives Firefox using Marionette interface.
+ *
+ * @deprecated One should use FirefoxDriver with capability marionette = true or false respectively.
  */
 @Beta
+@Deprecated
 public class MarionetteDriver extends RemoteWebDriver {
 
   /**

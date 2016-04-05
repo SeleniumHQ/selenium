@@ -115,10 +115,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
 
     try {
-      startClient();
+      startClient(desiredCapabilities, requiredCapabilities);
     } catch (RuntimeException e) {
       try {
-        stopClient();
+        stopClient(desiredCapabilities, requiredCapabilities);
       } catch (Exception ignored) {
         // Ignore the clean-up exception. We'll propagate the original failure.
       }
@@ -236,6 +236,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   @SuppressWarnings({"unchecked"})
   protected void startSession(Capabilities desiredCapabilities,
       Capabilities requiredCapabilities) {
+    System.out.println("startSession " + desiredCapabilities);
 
     ImmutableMap.Builder<String, Capabilities> paramBuilder =
         new ImmutableMap.Builder<String, Capabilities>();
@@ -286,9 +287,26 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   /**
-   * Method called after executing a {@link #quit()} command. Subtypes
+   * Method called before {@link #startSession(Capabilities) starting a new session}. The default
+   * implementation is a no-op, but subtypes should override this method to define custom behavior.
+   */
+  protected void startClient(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
+    startClient();
+  }
+
+  /**
+   * Method called after executing a {@link #quit()} command. The default implementation is a no-op,
+   * but subtypes should override this method to define custom behavior.
    */
   protected void stopClient() {
+  }
+
+  /**
+   * Method called after executing a {@link #quit()} command. The default implementation is a no-op,
+   * but subtypes should override this method to define custom behavior.
+   */
+  protected void stopClient(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
+    stopClient();
   }
 
   public ErrorHandler getErrorHandler() {

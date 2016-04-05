@@ -28,6 +28,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.common.primitives.Booleans;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
@@ -51,6 +52,7 @@ import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionNotFoundException;
+import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 import java.io.File;
 import java.io.IOException;
@@ -102,6 +104,7 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
 
   public static final String BINARY = "firefox_binary";
   public static final String PROFILE = "firefox_profile";
+  public static final String MARIONETTE = "marionette";
 
   // For now, only enable native events on Windows
   public static final boolean DEFAULT_ENABLE_NATIVE_EVENTS = Platform.getCurrent().is(WINDOWS);
@@ -127,11 +130,13 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   public FirefoxDriver(Capabilities desiredCapabilities) {
     this(getBinary(desiredCapabilities), extractProfile(desiredCapabilities, null),
         desiredCapabilities);
+    System.out.println("FirefoxDriver " + desiredCapabilities);
   }
 
   public FirefoxDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
     this(getBinary(desiredCapabilities), extractProfile(desiredCapabilities, requiredCapabilities),
         desiredCapabilities, requiredCapabilities);
+    System.out.println("FirefoxDriver " + desiredCapabilities + " " + requiredCapabilities);
   }
 
   private static FirefoxProfile extractProfile(Capabilities desiredCapabilities,
@@ -213,10 +218,23 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
 
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile,
       Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
-    super(new LazyCommandExecutor(binary, profile),
+    super(createCommandExecutor(desiredCapabilities, binary, profile),
           dropCapabilities(desiredCapabilities, BINARY, PROFILE),
           dropCapabilities(requiredCapabilities, BINARY, PROFILE));
     this.binary = binary;
+  }
+
+  private static final CommandExecutor createCommandExecutor(Capabilities desiredCapabilities,
+                                                             FirefoxBinary binary,
+                                                             FirefoxProfile profile) {
+    Object marionette = desiredCapabilities.getCapability(MARIONETTE);
+    if (marionette != null && marionette instanceof Boolean && !(Boolean) marionette) {
+      return new LazyCommandExecutor(binary, profile);
+    } else {
+      GeckoDriverService.Builder builder = new GeckoDriverService.Builder();
+      builder.usingPort(0);
+      return new DriverCommandExecutor(builder.build());
+    }
   }
 
   @Override
@@ -258,19 +276,27 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     };
   }
 
+  private boolean isLegacy(Capabilities desiredCapabilities) {
+    Object marionette = desiredCapabilities.getCapability(MARIONETTE);
+    return marionette != null && marionette instanceof Boolean && ! (Boolean) marionette;
+  }
+
   @Override
-  protected void startClient() {
-    LazyCommandExecutor exe = (LazyCommandExecutor) getCommandExecutor();
-    FirefoxProfile profileToUse = getProfile(exe.profile);
+  protected void startClient(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
+    if (isLegacy(desiredCapabilities)) {
+      LazyCommandExecutor exe = (LazyCommandExecutor) getCommandExecutor();
+      FirefoxProfile profileToUse = getProfile(exe.profile);
 
-    // TODO(simon): Make this not sinfully ugly
-    ExtensionConnection connection = connectTo(exe.binary, profileToUse, "localhost");
-    exe.setConnection(connection);
+      // TODO(simon): Make this not sinfully ugly
+      ExtensionConnection connection = connectTo(exe.binary, profileToUse, "localhost");
+      exe.setConnection(connection);
 
-    try {
-      connection.start();
-    } catch (IOException e) {
-      throw new WebDriverException("An error occurred while connecting to Firefox", e);
+      try {
+        connection.start();
+      } catch (IOException e) {
+        throw new WebDriverException("An error occurred while connecting to Firefox", e);
+      }
+
     }
   }
 
@@ -306,8 +332,10 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   }
 
   @Override
-  protected void stopClient() {
-    ((LazyCommandExecutor) this.getCommandExecutor()).quit();
+  protected void stopClient(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
+    if (isLegacy(desiredCapabilities)) {
+      ((LazyCommandExecutor) this.getCommandExecutor()).quit();
+    }
   }
 
   /**
