@@ -104,7 +104,17 @@
 <li><a href="../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">org.openqa.selenium.WebDriverException</a></li>
 <li>
 <ul class="inheritance">
+<li><a href="../../../../org/openqa/selenium/NotFoundException.html" title="class in org.openqa.selenium">org.openqa.selenium.NotFoundException</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="../../../../org/openqa/selenium/NoSuchSessionException.html" title="class in org.openqa.selenium">org.openqa.selenium.NoSuchSessionException</a></li>
+<li>
+<ul class="inheritance">
 <li>org.openqa.selenium.remote.SessionNotFoundException</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -124,9 +134,13 @@
 <dd>java.io.Serializable</dd>
 </dl>
 <hr>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/NoSuchSessionException.html" title="class in org.openqa.selenium"><code>NoSuchSessionException</code></a> instead</span></div>
+</div>
 <br>
-<pre>public class <span class="typeNameLabel">SessionNotFoundException</span>
-extends <a href="../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></pre>
+<pre>@Deprecated
+public class <span class="typeNameLabel">SessionNotFoundException</span>
+extends <a href="../../../../org/openqa/selenium/NoSuchSessionException.html" title="class in org.openqa.selenium">NoSuchSessionException</a></pre>
 <div class="block">Indicates that the session is not found (either terminated or not started).</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
@@ -165,10 +179,20 @@ extends <a href="../../../../org/openqa/selenium/WebDriverException.html" title=
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/SessionNotFoundException.html#SessionNotFoundException--">SessionNotFoundException</a></span>()</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/SessionNotFoundException.html#SessionNotFoundException--">SessionNotFoundException</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/SessionNotFoundException.html#SessionNotFoundException-java.lang.String-">SessionNotFoundException</a></span>(java.lang.String&nbsp;message)</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/SessionNotFoundException.html#SessionNotFoundException-java.lang.String-">SessionNotFoundException</a></span>(java.lang.String&nbsp;message)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/SessionNotFoundException.html#SessionNotFoundException-java.lang.String-java.lang.Throwable-">SessionNotFoundException</a></span>(java.lang.String&nbsp;message,
+                        java.lang.Throwable&nbsp;cause)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -221,15 +245,28 @@ extends <a href="../../../../org/openqa/selenium/WebDriverException.html" title=
 <li class="blockList">
 <h4>SessionNotFoundException</h4>
 <pre>public&nbsp;SessionNotFoundException()</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 <a name="SessionNotFoundException-java.lang.String-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>SessionNotFoundException</h4>
 <pre>public&nbsp;SessionNotFoundException(java.lang.String&nbsp;message)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+</li>
+</ul>
+<a name="SessionNotFoundException-java.lang.String-java.lang.Throwable-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>SessionNotFoundException</h4>
+<pre>public&nbsp;SessionNotFoundException(java.lang.String&nbsp;message,
+                                java.lang.Throwable&nbsp;cause)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 </li>

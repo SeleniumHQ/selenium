@@ -73,9 +73,9 @@
 <ul>
 <li><a href="#interface">Deprecated Interfaces</a></li>
 <li><a href="#class">Deprecated Classes</a></li>
+<li><a href="#exception">Deprecated Exceptions</a></li>
 <li><a href="#field">Deprecated Fields</a></li>
 <li><a href="#method">Deprecated Methods</a></li>
-<li><a href="#constructor">Deprecated Constructors</a></li>
 </ul>
 </div>
 <div class="contentContainer"><a name="interface">
@@ -148,6 +148,26 @@
 </table>
 </li>
 </ul>
+<a name="exception">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<table class="deprecatedSummary" border="0" cellpadding="3" cellspacing="0" summary="Deprecated Exceptions table, listing deprecated exceptions, and an explanation">
+<caption><span>Deprecated Exceptions</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Exceptions and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/remote/SessionNotFoundException.html" title="class in org.openqa.selenium.remote">org.openqa.selenium.remote.SessionNotFoundException</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/NoSuchSessionException.html" title="class in org.openqa.selenium"><code>NoSuchSessionException</code></a> instead</span></div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
 <a name="field">
 <!--   -->
 </a>
@@ -169,16 +189,11 @@
 <td class="colOne"><a href="org/openqa/selenium/remote/CapabilityType.html#ENABLE_PERSISTENT_HOVERING">org.openqa.selenium.remote.CapabilityType.ENABLE_PERSISTENT_HOVERING</a></td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><a href="org/openqa/selenium/firefox/internal/NewProfileExtensionConnection.html#FIREFOX_DRIVER_XPI_PROPERTY">org.openqa.selenium.firefox.internal.NewProfileExtensionConnection.FIREFOX_DRIVER_XPI_PROPERTY</a>
-<div class="block"><span class="deprecationComment">Use FirefoxDriver.SystemProperty.DRIVER_XPI_PROPERTY instead</span></div>
-</td>
-</tr>
-<tr class="altColor">
 <td class="colOne"><a href="org/openqa/selenium/remote/BrowserType.html#OPERA">org.openqa.selenium.remote.BrowserType.OPERA</a>
 <div class="block"><span class="deprecationComment">Use OPERA_BLINK</span></div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colOne"><a href="org/openqa/selenium/remote/CapabilityType.html#PAGE_LOADING_STRATEGY">org.openqa.selenium.remote.CapabilityType.PAGE_LOADING_STRATEGY</a>
 <div class="block"><span class="deprecationComment">Use PAGE_LOAD_STRATEGY instead</span></div>
 </td>
@@ -234,26 +249,6 @@
 <tr class="rowColor">
 <td class="colOne"><a href="org/openqa/selenium/support/ui/ExpectedConditions.html#textToBePresentInElement-org.openqa.selenium.By-java.lang.String-">org.openqa.selenium.support.ui.ExpectedConditions.textToBePresentInElement(By, String)</a>
 <div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/support/ui/ExpectedConditions.html#textToBePresentInElementLocated-org.openqa.selenium.By-java.lang.String-"><code>ExpectedConditions.textToBePresentInElementLocated(By, String)</code></a> instead</span></div>
-</td>
-</tr>
-</tbody>
-</table>
-</li>
-</ul>
-<a name="constructor">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<table class="deprecatedSummary" border="0" cellpadding="3" cellspacing="0" summary="Deprecated Constructors table, listing deprecated constructors, and an explanation">
-<caption><span>Deprecated Constructors</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colOne" scope="col">Constructor and Description</th>
-</tr>
-<tbody>
-<tr class="altColor">
-<td class="colOne"><a href="org/openqa/selenium/htmlunit/HtmlUnitMouse.html#HtmlUnitMouse-org.openqa.selenium.htmlunit.HtmlUnitDriver-org.openqa.selenium.htmlunit.HtmlUnitKeyboard-">org.openqa.selenium.htmlunit.HtmlUnitMouse(HtmlUnitDriver, HtmlUnitKeyboard)</a>
-<div class="block"><span class="deprecationComment">as of 2.47.0, please use <a href="org/openqa/selenium/htmlunit/HtmlUnitMouse.html#HtmlUnitMouse-org.openqa.selenium.htmlunit.HtmlUnitKeyboard-"><code>HtmlUnitMouse.HtmlUnitMouse(HtmlUnitKeyboard)</code></a> instead</span></div>
 </td>
 </tr>
 </tbody>

@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6};
+var methods = {"i0":6,"i1":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -121,9 +121,7 @@ var activeTableTab = "activeTableTab";
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static interface&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a></span></code>
-<div class="block">Creates HttpClient instances.</div>
-</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a></span></code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -141,6 +139,12 @@ var activeTableTab = "activeTableTab";
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpClient.html#close--">close</a></span>()</code>
+<div class="block">Closes the connections associated with this client.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpClient.html#execute-org.openqa.selenium.remote.http.HttpRequest-boolean-">execute</a></span>(<a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
        boolean&nbsp;followRedirects)</code>
@@ -165,7 +169,7 @@ var activeTableTab = "activeTableTab";
 <a name="execute-org.openqa.selenium.remote.http.HttpRequest-boolean-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>execute</h4>
 <pre><a href="../../../../../org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a>&nbsp;execute(<a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
@@ -178,6 +182,21 @@ var activeTableTab = "activeTableTab";
 <dd><code>followRedirects</code> - whether to automatically follow redirects.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the final response.</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.io.IOException</code> - if an I/O error occurs.</dd>
+</dl>
+</li>
+</ul>
+<a name="close--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>close</h4>
+<pre>void&nbsp;close()
+    throws java.io.IOException</pre>
+<div class="block">Closes the connections associated with this client.</div>
+<dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.io.IOException</code> - if an I/O error occurs.</dd>
 </dl>
