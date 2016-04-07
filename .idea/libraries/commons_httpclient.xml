@@ -1,15 +1,15 @@
 <component name="libraryTable">
   <library name="commons-httpclient">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/httpcomponents/httpmime-4.5.jar!/" />
-      <root url="jar://$PROJECT_DIR$/third_party/java/httpcomponents/httpclient-4.5.1.jar!/" />
-      <root url="jar://$PROJECT_DIR$/third_party/java/httpcomponents/httpcore-4.4.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/httpcomponents/httpmime-4.5.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/httpcomponents/httpclient-4.5.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/httpcomponents/httpcore-4.4.4.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/httpcomponents/httpmime-4.5-sources.jar!/" />
-      <root url="jar://$PROJECT_DIR$/third_party/java/httpcomponents/httpclient-4.5.1-sources.jar!/" />
-      <root url="jar://$PROJECT_DIR$/third_party/java/httpcomponents/httpcore-4.4.3-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/httpcomponents/httpmime-4.5.2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/httpcomponents/httpclient-4.5.2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/httpcomponents/httpcore-4.4.4-sources.jar!/" />
     </SOURCES>
   </library>
 </component>
