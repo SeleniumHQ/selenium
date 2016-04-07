@@ -3,7 +3,6 @@ java_library(name = "httpclient",
     "httpclient-4.5.2.jar",
     "httpcore-4.4.4.jar",
     "httpmime-4.5.2.jar",
-    "//third_party/java/apache-mime4j",
     "//third_party/java/commons-codec",
     "//third_party/java/commons-logging"
   ])

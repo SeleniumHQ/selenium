@@ -6,7 +6,6 @@ java_library(
     ':mime',
   ],
   deps = [
-    '//third_party/java/apache-mime4j:apache-mime4j',
     '//third_party/java/commons-logging:commons-logging'
   ],
   visibility = ['PUBLIC'],
