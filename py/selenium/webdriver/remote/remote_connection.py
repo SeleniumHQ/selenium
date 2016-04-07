@@ -29,57 +29,12 @@ except ImportError: # above is available in py3+, below is py2.7
     import urllib2 as url_request
     import urlparse as parse
 
+from selenium.webdriver.common import utils as common_utils
 from .command import Command
 from .errorhandler import ErrorCode
 from . import utils
 
 LOGGER = logging.getLogger(__name__)
-
-
-def _resolve_ip(host):
-  """Resolve a hostname to an IP, preferring IPv4 addresses.
-
-  We prefer IPv4 so that we don't change behavior from previous IPv4-only
-  implementations, and because some drivers (e.g., FirefoxDriver) do not support
-  IPv6 connections.
-
-  :Args:
-  - host - A hostname.
-
-  :Returns:
-  A single IP address, as a string. If any IPv4 address is found, one is
-  returned. Otherwise, if any IPv6 address is found, one is returned. If
-  neither, then None is returned.
-
-  """
-  try:
-      addrinfos = socket.getaddrinfo(host, None)
-  except socket.gaierror:
-      return None
-
-  ip = None
-  for family, _, _, _, sockaddr in addrinfos:
-      if family == socket.AF_INET:
-          return sockaddr[0]
-      if not ip and family == socket.AF_INET6:
-          ip = sockaddr[0]
-  return ip
-
-
-def _join_host_port(host, port):
-  """Joins a hostname and port together.
-
-  This is a minimal implementation intended to cope with IPv6 literals. For
-  example, _join_host_port('::1', 80) == '[::1]:80'.
-
-  :Args:
-  - host - A hostname.
-  - port - An integer port.
-
-  """
-  if ':' in host and not host.startswith('['):
-    return '[%s]:%d' % (host, port)
-  return '%s:%d' % (host, port)
 
 
 class Request(url_request.Request):
@@ -213,12 +168,13 @@ class RemoteConnection(object):
         parsed_url = parse.urlparse(remote_server_addr)
         addr = ""
         if parsed_url.hostname and resolve_ip:
-            ip = _resolve_ip(parsed_url.hostname)
+            ip = common_utils.resolve_ip(parsed_url.hostname)
             if ip:
                 netloc = ip
                 addr = netloc
                 if parsed_url.port:
-                    netloc = _join_host_port(netloc, parsed_url.port)
+                    netloc = common_utils.join_host_port(netloc,
+                                                         parsed_url.port)
                 if parsed_url.username:
                     auth = parsed_url.username
                     if parsed_url.password:

@@ -41,7 +41,7 @@ class Service(object):
         """
         Gets the url of the Service
         """
-        return "http://localhost:%d" % self.port
+        return "http://%s" % utils.join_host_port('localhost', self.port)
 
     def command_line_args(self):
         raise NotImplemented("This method needs to be implemented in a sub class")
@@ -100,7 +100,7 @@ class Service(object):
             URLError = urllib2.URLError
 
         try:
-            url_request.urlopen("http://127.0.0.1:%d/shutdown" % self.port)
+            url_request.urlopen("%s/shutdown" % self.service_url)
         except URLError:
             return
         count = 0
