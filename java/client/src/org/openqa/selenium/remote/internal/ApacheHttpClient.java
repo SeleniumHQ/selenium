@@ -33,6 +33,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
@@ -46,7 +47,6 @@ import java.net.BindException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.concurrent.TimeUnit;
 
 public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpClient {
 
@@ -54,9 +54,9 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
 
   private final URL url;
   private final HttpHost targetHost;
-  private final HttpClient client;
+  private final CloseableHttpClient client;
 
-  public ApacheHttpClient(HttpClient client, URL url) {
+  public ApacheHttpClient(CloseableHttpClient client, URL url) {
     this.client = checkNotNull(client, "null HttpClient");
     this.url = checkNotNull(url, "null URL");
 
@@ -234,7 +234,7 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
     @Override
     public org.openqa.selenium.remote.http.HttpClient createClient(URL url) {
       checkNotNull(url, "null URL");
-      HttpClient client;
+      CloseableHttpClient client;
       if (url.getUserInfo() != null) {
         UsernamePasswordCredentials credentials =
             new UsernamePasswordCredentials(url.getUserInfo());
@@ -252,10 +252,10 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
       return defaultClientFactory;
     }
   }
-  
+
   @Override
 	public void close() throws IOException {
-	  client.getConnectionManager().closeIdleConnections(0, TimeUnit.SECONDS);		
+	  client.close();
 	}
-  
+
 }

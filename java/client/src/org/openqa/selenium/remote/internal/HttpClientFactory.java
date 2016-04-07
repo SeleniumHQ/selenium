@@ -78,7 +78,7 @@ public class HttpClientFactory {
     return cm;
   }
 
-  public HttpClient getHttpClient() {
+  public CloseableHttpClient getHttpClient() {
     return httpClient;
   }
 
