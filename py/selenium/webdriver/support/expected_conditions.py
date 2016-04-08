@@ -262,7 +262,6 @@ class alert_is_present(object):
     def __call__(self, driver):
         try:
             alert = driver.switch_to.alert
-            alert.text
             return alert
         except NoAlertPresentException:
             return False
