@@ -76,9 +76,36 @@ describe('Capabilities', function() {
     assert.equal('def', caps.get('abc'));
   });
 
-  it('can be serialized', function() {
-    let m = new Map([['one', 123], ['abc', 'def']]);
-    let caps = new Capabilities(m);
-    assert.deepEqual({one: 123, abc: 'def'}, caps[Symbols.serialize]());
+  describe('serialize', function() {
+    it('works for simple capabilities', function() {
+      let m = new Map([['one', 123], ['abc', 'def']]);
+      let caps = new Capabilities(m);
+      assert.deepEqual({one: 123, abc: 'def'}, caps[Symbols.serialize]());
+    });
+
+    it('does not omit capabilities set to a false-like value', function() {
+      let caps = new Capabilities;
+      caps.set('bool', false);
+      caps.set('number', 0);
+      caps.set('string', '');
+
+      assert.deepEqual(
+          {bool: false, number: 0, string: ''},
+          caps[Symbols.serialize]());
+    });
+
+    it('omits capabilities with a null value', function() {
+      let caps = new Capabilities;
+      caps.set('foo', null);
+      caps.set('bar', 123);
+      assert.deepEqual({bar: 123}, caps[Symbols.serialize]());
+    });
+
+    it('omits capabilities with an undefined value', function() {
+      let caps = new Capabilities;
+      caps.set('foo', undefined);
+      caps.set('bar', 123);
+      assert.deepEqual({bar: 123}, caps[Symbols.serialize]());
+    });
   });
 });
