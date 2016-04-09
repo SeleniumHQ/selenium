@@ -11,7 +11,6 @@ export_file(name = 'webdriver_prefs',
 mozilla_extension(name = 'webdriver',
   content = [
     'extension/content/fxdriver.xul',
-    'extension/content/fx4driver.xul',
   ] + glob(['extension/content/**/*.js']),
   components = [
     'extension/components/httpd.js',
