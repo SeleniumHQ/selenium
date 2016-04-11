@@ -168,13 +168,15 @@ public abstract class JUnit4TestBase implements WrapsDriver {
     }
 
     private void dealWithSauceFailureIfNecessary(Throwable t) {
-      if (!(t instanceof AssumptionViolatedException) && t.getMessage() != null
-          && (t.getMessage().contains("sauce") || t.getMessage().contains("Sauce"))) {
-        removeDriver();
+      String message = t.getMessage();
+      if (!(t instanceof AssumptionViolatedException) && message != null
+          && (message.contains("sauce") || message.contains("Sauce"))) {
         try {
+          removeDriver();
           createDriver();
         } catch (Exception e) {
-          throw new RuntimeException("Exception creating driver, after Sauce-detected exception", e);
+          t.addSuppressed(e);
+          throw new RuntimeException("Sauce-related failure. Tried re-creating the driver, but that failed too.", t);
         }
       } else {
         throw Throwables.propagate(t);
