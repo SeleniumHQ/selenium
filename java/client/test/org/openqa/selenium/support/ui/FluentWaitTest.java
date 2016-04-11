@@ -172,7 +172,8 @@ public class FluentWaitTest {
   @Test
   public void timeoutMessageIncludesCustomMessage() {
     TimeoutException expected = new TimeoutException(
-      "Timed out after 0 seconds: Expected custom timeout message");
+        "Expected condition failed: Expected custom timeout message "
+        + "(tried for 0 second(s) with 500 MILLISECONDS interval)");
 
     when(mockClock.laterBy(0L)).thenReturn(2L);
     when(mockCondition.apply(mockDriver)).thenReturn(null);
@@ -195,7 +196,8 @@ public class FluentWaitTest {
   @Test
   public void timeoutMessageIncludesCustomMessageEvaluatedOnFailure() {
     TimeoutException expected = new TimeoutException(
-      "Timed out after 0 seconds: external state");
+        "Expected condition failed: external state "
+        + "(tried for 0 second(s) with 500 MILLISECONDS interval)");
 
     when(mockClock.laterBy(0L)).thenReturn(2L);
     when(mockCondition.apply(mockDriver)).thenReturn(null);
@@ -223,7 +225,8 @@ public class FluentWaitTest {
   @Test
   public void timeoutMessageIncludesToStringOfCondition() {
     TimeoutException expected = new TimeoutException(
-      "Timed out after 0 seconds waiting for toString called");
+        "Expected condition failed: waiting for toString called "
+        + "(tried for 0 second(s) with 500 MILLISECONDS interval)");
 
     Function<Object, Boolean> condition = new Function<Object, Boolean>() {
       public Boolean apply(Object ignored) {
