@@ -111,7 +111,7 @@ script provided with `selenium-webdriver`.
 ## Documentation
 
 API documentation is available online from the [Selenium project][api].
-Addition resources include
+Additional resources include
 
 - the #selenium channel on freenode IRC
 - the [selenium-users@googlegroups.com][users] list
@@ -213,7 +213,7 @@ specific language governing permissions and limitations
 under the License.
 
 [LTS]: https://github.com/nodejs/LTS
-[api]: http://seleniumhq.github.io/selenium/docs/api/javascript/
+[api]: http://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/
 [cla]: http://goo.gl/qC50R
 [chrome]: http://chromedriver.storage.googleapis.com/index.html
 [gh]: https://github.com/SeleniumHQ/selenium/
