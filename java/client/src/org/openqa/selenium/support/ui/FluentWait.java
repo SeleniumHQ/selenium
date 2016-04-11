@@ -253,11 +253,10 @@ public class FluentWait<T> implements Wait<T> {
         String message = messageSupplier != null ?
             messageSupplier.get() : null;
 
-        String toAppend = message == null ?
-            " waiting for " + isTrue.toString() : ": " + message;
-
-        String timeoutMessage = String.format("Timed out after %d seconds%s",
-            timeout.in(SECONDS), toAppend);
+        String timeoutMessage = String.format(
+            "Expected condition failed: %s (tried for %d second(s) with %s interval)",
+            message == null ? "waiting for " + isTrue : message,
+            timeout.in(SECONDS), interval);
         throw timeoutException(timeoutMessage, lastException);
       }
 
