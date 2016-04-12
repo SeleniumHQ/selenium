@@ -431,7 +431,7 @@ function serialize(caps) {
   let ret = {};
   for (let key of caps.keys()) {
     let cap = caps.get(key);
-    if (cap) {
+    if (cap !== undefined) {
       ret[key] = cap;
     }
   }
