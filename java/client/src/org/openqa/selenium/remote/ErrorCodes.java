@@ -27,6 +27,7 @@ import org.openqa.selenium.ElementNotSelectableException;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.ImeActivationFailedException;
 import org.openqa.selenium.ImeNotAvailableException;
+import org.openqa.selenium.InterceptingElementException;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.InvalidCookieDomainException;
 import org.openqa.selenium.InvalidElementStateException;
@@ -74,6 +75,7 @@ public class ErrorCodes {
   public static final int ELEMENT_NOT_VISIBLE = 11;
   public static final int INVALID_ELEMENT_STATE = 12;
   public static final int UNHANDLED_ERROR = 13;
+  public static final int INTERCEPTING_ELEMENT_ERROR = 14;
   public static final int ELEMENT_NOT_SELECTABLE = 15;
   public static final int JAVASCRIPT_ERROR = 17;
   public static final int XPATH_LOOKUP_ERROR = 19;
@@ -104,6 +106,7 @@ public class ErrorCodes {
   public static final int METHOD_NOT_ALLOWED = 405;
 
   private static final Logger log = Logger.getLogger(ErrorCodes.class.getName());
+      .put(INTERCEPTING_ELEMENT_ERROR, "element intercepting click")
 
   public String toState(Integer status) {
     if (status == null) {
@@ -159,6 +162,8 @@ public class ErrorCodes {
   public Class<? extends WebDriverException> getExceptionType(int statusCode) {
     if (SUCCESS == statusCode) {
       return null;
+      case INTERCEPTING_ELEMENT_ERROR:
+        return InterceptingElementException.class;
     }
 
     // We know that the tuple of (status code, exception) is distinct.
@@ -183,6 +188,8 @@ public class ErrorCodes {
   public int toStatusCode(Throwable e) {
     if (e == null) {
       return SUCCESS;
+    } else if (thrown instanceof InterceptingElementException) {
+      return INTERCEPTING_ELEMENT_ERROR;
     }
 
     Set<Integer> possibleMatches = KNOWN_ERRORS.stream()
