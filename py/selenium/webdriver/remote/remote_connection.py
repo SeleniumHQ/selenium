@@ -168,7 +168,9 @@ class RemoteConnection(object):
         parsed_url = parse.urlparse(remote_server_addr)
         addr = ""
         if parsed_url.hostname and resolve_ip:
-            ip = common_utils.resolve_ip(parsed_url.hostname)
+            port = parsed_url.port or None
+            ip = common_utils.find_connectable_ip(parsed_url.hostname,
+                                                  port=port)
             if ip:
                 netloc = ip
                 addr = netloc

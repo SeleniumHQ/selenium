@@ -39,15 +39,19 @@ def free_port():
     free_socket.close()
     return port
 
-def resolve_ip(host):
+def find_connectable_ip(host, port=None):
     """Resolve a hostname to an IP, preferring IPv4 addresses.
 
     We prefer IPv4 so that we don't change behavior from previous IPv4-only
     implementations, and because some drivers (e.g., FirefoxDriver) do not
     support IPv6 connections.
 
+    If the optional port number is provided, only IPs that listen on the given
+    port are considered.
+
     :Args:
     - host - A hostname.
+    - port - Optional port number.
 
     :Returns:
     A single IP address, as a string. If any IPv4 address is found, one is
@@ -62,9 +66,13 @@ def resolve_ip(host):
 
     ip = None
     for family, _, _, _, sockaddr in addrinfos:
-        if family == socket.AF_INET:
+        connectable = True
+        if port:
+            connectable = is_connectable(port, sockaddr[0])
+
+        if connectable and family == socket.AF_INET:
             return sockaddr[0]
-        if not ip and family == socket.AF_INET6:
+        if connectable and not ip and family == socket.AF_INET6:
             ip = sockaddr[0]
     return ip
 
