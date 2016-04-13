@@ -19,11 +19,9 @@ package org.openqa.selenium.testing.drivers;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
 import static org.openqa.selenium.testing.DevMode.isInDevMode;
 import static org.openqa.selenium.testing.InProject.locate;
 
-import com.google.common.base.Throwables;
 import com.google.common.io.Files;
 
 import org.openqa.selenium.Build;
@@ -61,6 +59,11 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
       return null;
     }
     DesiredCapabilities tweaked = new DesiredCapabilities(desiredCaps);
+
+    if (!Boolean.TRUE.equals(tweaked.getCapability(MARIONETTE))) {
+      tweaked.setCapability(MARIONETTE, false);
+    }
+
     if (tweaked.getCapability(PROFILE) == null) {
       tweaked.setCapability(PROFILE, createTemporaryProfile());
     } else {
