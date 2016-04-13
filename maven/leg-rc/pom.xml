@@ -6,46 +6,28 @@
     <parent>
         <groupId>org.seleniumhq.selenium</groupId>
         <artifactId>selenium-parent</artifactId>
-        <version>2.0-SNAPSHOT</version>
+        <version>3.0-beta1-SNAPSHOT</version>
     </parent>
-    <artifactId>selenium-java</artifactId>
-    <name>selenium-java</name>
+    <artifactId>selenium-leg-rc</artifactId>
+    <name>selenium-leg-rc</name>
 
     <dependencies>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-chrome-driver</artifactId>
+            <artifactId>selenium-remote-driver</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- We need JUnit for SeleneseTestCase ... -->
         <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-edge-driver</artifactId>
-            <version>${project.version}</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <optional>true</optional>
         </dependency>
+        <!-- We need TestNG for SeleneseTestNgHelper ... -->
         <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-firefox-driver</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-ie-driver</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-safari-driver</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-support</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-leg-rc</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 
@@ -69,19 +51,35 @@
                                             <or>
                                                 <present targetdir="../api/src/main/java" />
                                                 <present targetdir="../chrome-driver/src/main/java" />
-                                                <present targetdir="../edge-driver/src/main/java" />
                                                 <present targetdir="../firefox-driver/src/main/java" />
                                                 <present targetdir="../htmlunit-driver/src/main/java" />
                                                 <present targetdir="../ie-driver/src/main/java" />
                                                 <present targetdir="../iphone-driver/src/main/java" />
                                                 <present targetdir="../remote-driver/src/main/java" />
                                                 <present targetdir="../safari-driver/src/main/java" />
+                                                <present targetdir="../edge-driver/src/main/java" />
                                                 <present targetdir="../support/src/main/java" />
-                                                <present targetdir="../leg-rc/src/main/java" />
                                             </or>
                                         </not>
                                     </fileset>
                                 </copy>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>copy_resource_files</id>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <tasks>
+                                <!-- Extract *.js files from client-combined-nodeps.jar to target/classes ... -->
+                                <unjar src="../../build/java/client/src/com/thoughtworks/selenium/webdriven/webdriven.jar" dest="target/classes">
+                                    <patternset>
+                                        <include name="**/webdriven/*.js" />
+                                    </patternset>
+                                </unjar>
                             </tasks>
                         </configuration>
                         <goals>

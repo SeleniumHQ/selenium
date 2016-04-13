@@ -42,6 +42,11 @@
             <artifactId>selenium-support</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-leg-rc</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

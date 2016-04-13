@@ -134,6 +134,7 @@
         <module>safari-driver</module>
         <module>server</module>
         <module>support</module>
+        <module>leg-rc</module>
     </modules>
 
     <dependencyManagement>
