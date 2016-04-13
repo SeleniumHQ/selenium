@@ -21,6 +21,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static org.openqa.selenium.remote.DriverCommand.GET_ALL_SESSIONS;
 import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
 import static org.openqa.selenium.remote.DriverCommand.QUIT;
+import static org.openqa.selenium.remote.DriverCommand.STATUS;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -130,7 +131,8 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
         return new Response();
       }
       if (!GET_ALL_SESSIONS.equals(command.getName())
-          && !NEW_SESSION.equals(command.getName())) {
+          && !NEW_SESSION.equals(command.getName())
+          && !STATUS.equals(command.getName())) {
         throw new SessionNotFoundException(
             "Session ID is null. Using WebDriver after calling quit()?");
       }
