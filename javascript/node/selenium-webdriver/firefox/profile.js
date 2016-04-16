@@ -385,7 +385,10 @@ class Profile {
       var zip = new AdmZip();
       zip.addLocalFolder(dir, '');
       // Stored compression, see https://en.wikipedia.org/wiki/Zip_(file_format)
-      zip.getEntries()[0].header.method = 0;
+      zip.getEntries().forEach(function(entry) {
+        entry.header.method = 0;
+      });
+
       return io.tmpFile().then(function(file) {
         zip.writeZip(file);  // Sync! Why oh why :-(
         return promise.checkedNodeCall(fs.readFile, file);
