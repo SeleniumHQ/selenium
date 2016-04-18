@@ -72,7 +72,7 @@ class FirefoxBinary(object):
 
         This is useful when the browser is stuck.
         """
-        if self.process:
+        if self.process and self.process.poll() is None:
             self.process.kill()
             self.process.wait()
 

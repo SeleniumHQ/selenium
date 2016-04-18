@@ -40,6 +40,11 @@ class FirefoxLauncherTests (unittest.TestCase):
         self.webdriver2.quit()
         self.webdriver3.quit()
 
+    def test_that_we_can_quit_when_firefox_is_terminated(self):
+        self.webdriver = webdriver.Firefox()
+        self.webdriver.binary.kill()
+        self.webdriver.quit()
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     unittest.main()
