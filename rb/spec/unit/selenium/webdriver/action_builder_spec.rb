@@ -75,6 +75,19 @@ describe Selenium::WebDriver::ActionBuilder do
             context_click(element).perform
   end
 
+  it 'should move_to ignore floating point part of coordinate' do
+    expect(mouse).to receive(:move_to).with(element, -300, 400)
+
+    builder.move_to(element, -300.1, 400.1).perform
+  end
+
+  it 'should move_by ignore floating point part of coordinate' do
+    expect(mouse).to receive(:move_by).with(-300, 400)
+
+    builder.move_by(-300.1, 400.1).perform
+  end
+
+
   it "should drag and drop" do
     source = element
     target = Selenium::WebDriver::Element.new(bridge, 'element2')
