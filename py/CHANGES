@@ -1,3 +1,7 @@
+Selenium 2.53.2
+* Fix send keys when using PUA keys e.g. Keys.RIGHT #1839
+* Fix cookie file leak in PhantomJS #1854
+
 Selenium 2.53.1
 * Fix basestring reference to work with python 3. Fixes #1820
 * Correct Length conditional when filtering in PhantomJS. Fixes #1817
