@@ -14,9 +14,6 @@ Rake.application.instance_variable_set "@name", "go"
 orig_verbose = verbose
 verbose(false)
 
-# Buck integration
-require 'rake-tasks/buck'
-
 # The CrazyFun build grammar. There's no magic here, just ruby
 require 'rake-tasks/crazy_fun'
 require 'rake-tasks/crazy_fun/mappings/export'
@@ -101,6 +98,11 @@ end
 # rake tasks from them. These tasks are normal rake tasks, and can be invoked
 # from rake.
 crazy_fun.create_tasks(Dir["**/build.desc"])
+
+# Buck integration. Loaded after CrazyFun has initialized all the tasks it'll handle.
+# This is because the buck integration creates a rule for "//.*"
+require 'rake-tasks/buck'
+
 
 # Notice that because we're using rake, anything you can do in a normal rake
 # build can also be done here. For example, here we set the default task
