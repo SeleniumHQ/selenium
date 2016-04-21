@@ -12,7 +12,7 @@ module Buck
           stdin.close
 
           while line = stderr.gets
-            if command == 'build'
+            if command == 'build' || command == 'test'
               puts line
             end
             err += line
@@ -95,10 +95,22 @@ def buck(*args, &block)
   Buck::enhance_task(task)
 end
 
+rule /\/\/.*:run/ => [ proc {|task_name| task_name[0..-5]} ] do |task|
+  Buck::enhance_task(task)
+
+  short = task.name[0..-5]
+
+  task.enhance do
+    Buck::buck_cmd.call('test', short)
+  end
+end
+
 rule /\/\/.*/ do |task|
   # Task is a FileTask, but that's not what we need. Instead, just delegate down to buck in all
   # cases where the rule was not created by CrazyFun. Rules created by the "rule" method will
   # be a FileTask, whereas those created by CrazyFun are normal rake Tasks.
+
+  puts "Making things the old way: #{task.name}"
 
   if task.class == Rake::FileTask && !task.out
     task.enhance do
