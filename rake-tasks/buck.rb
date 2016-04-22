@@ -28,6 +28,11 @@ module Buck
 #          end
         end
 
+        # Because we can't get the exit code, hackily parse the output
+        if err.index('FAILED') != nil
+          raise "Buck build failed"
+        end
+
         block.call(output.to_s) if block
       }
     )
