@@ -48,6 +48,10 @@ function getAddress(loopback, opt_family) {
   }
   interfaces = interfaces || os.networkInterfaces();
   for (var key in interfaces) {
+    if (!interfaces.hasOwnProperty(key)) {
+      continue;
+    }
+
     interfaces[key].forEach(function(ipAddress) {
       if (ipAddress.family === family &&
           ipAddress.internal === loopback) {
