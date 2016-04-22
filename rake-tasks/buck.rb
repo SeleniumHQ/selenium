@@ -110,8 +110,6 @@ rule /\/\/.*/ do |task|
   # cases where the rule was not created by CrazyFun. Rules created by the "rule" method will
   # be a FileTask, whereas those created by CrazyFun are normal rake Tasks.
 
-  puts "Making things the old way: #{task.name}"
-
   if task.class == Rake::FileTask && !task.out
     task.enhance do
       Buck::buck_cmd.call('build', task.name)
