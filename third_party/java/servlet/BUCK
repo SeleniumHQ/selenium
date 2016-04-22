@@ -16,7 +16,7 @@ prebuilt_jar(name = 'servlet-api',
     '//java/server/src/org/openqa/selenium/remote/server:server',
 
     # Including the tests
-    '//java/server/test/org/openqa/grid/...',
+    '//java/server/test/org/openqa/...',
 
     # Everything declared in the jetty BUCK file.
     '//third_party/java/jetty:',

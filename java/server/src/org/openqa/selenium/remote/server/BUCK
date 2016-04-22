@@ -14,7 +14,7 @@ java_library(name = 'sessions',
   visibility = [
     '//java/server/src/com/thoughtworks/selenium/webdriven:rc-emulation-servlet',
     '//java/server/src/org/openqa/selenium/server:server',
-    '//java/server/test/com/thoughtworks/selenium/webdriven:webdriven',
+    '//java/server/test/...',
   ],
 )
 
@@ -63,8 +63,7 @@ java_library(name = 'server',
     '//java/server/src/org/openqa/grid/selenium:classes',
     '//java/server/src/com/thoughtworks/selenium/webdriven:rc-emulation-servlet',
     '//java/server/src/org/openqa/selenium/server:server',
-    '//java/server/test/com/thoughtworks/selenium/webdriven:webdriven',
-    '//java/server/test/org/openqa/grid:test',
+    '//java/server/test/...',
   ],
 )
 

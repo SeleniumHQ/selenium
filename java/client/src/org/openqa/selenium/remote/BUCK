@@ -32,6 +32,7 @@ java_library(
 
 java_library(name = 'augmenter',
   srcs = [
+    'Augmenter.java',
     'AugmenterProvider.java',
     'AddFindsByCss.java',
     'AddFindsChildByCss.java',
@@ -39,6 +40,7 @@ java_library(name = 'augmenter',
     'AddRotatable.java',
     'BaseAugmenter.java',
     'InterfaceImplementation.java',
+    'JdkAugmenter.java',
     'html5/AddApplicationCache.java',
     'html5/AddLocationContext.java',
     'html5/AddWebStorage.java',
@@ -47,7 +49,11 @@ java_library(name = 'augmenter',
   deps = [
     ':capabilities',
     ':remote',
+    '//third_party/java/cglib:cglib',
     '//third_party/java/guava:guava',
+  ],
+  visibility = [
+    '//java/client/test/...',
   ],
 )
 

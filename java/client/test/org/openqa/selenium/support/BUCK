@@ -11,6 +11,23 @@ java_test(name = 'small-tests',
   ],
 )
 
+java_test(name = 'large-tests',
+  srcs = [
+    'LargeTests.java',
+  ],
+  vm_args = [
+    '-Dselenium.browser=ff',
+  ],
+  deps = [
+    ':tests',
+    '//java/client/src/org/openqa/selenium/firefox:firefox',
+    '//java/client/src/org/openqa/selenium/remote:remote',
+    '//java/client/test/org/openqa/selenium/testing:test-base',
+    '//third_party/java/guava:guava',
+    '//third_party/java/junit:junit',
+  ],
+)
+
 java_library(name = 'tests',
   srcs = glob(['**/*Test.java']) + [
     'ui/FakeClock.java',

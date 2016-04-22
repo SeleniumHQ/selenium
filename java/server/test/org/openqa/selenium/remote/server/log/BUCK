@@ -1,0 +1,11 @@
+java_test(name = 'test',
+  srcs = glob(['*.java']),
+  deps = [
+    '//java/client/src/org/openqa/selenium/logging:api',
+    '//java/client/src/org/openqa/selenium/logging:logging',
+    '//java/client/src/org/openqa/selenium/remote:api',
+    '//java/server/src/org/openqa/selenium/remote/server/log:log',
+    '//third_party/java/junit:junit',
+  ],
+)
+

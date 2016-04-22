@@ -8,5 +8,6 @@ java_library(name = 'log',
   ],
   visibility = [
     '//java/server/src/...',
+    '//java/server/test/...',
   ],
 )
