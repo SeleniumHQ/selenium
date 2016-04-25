@@ -1,11 +1,51 @@
 require 'open3'
+require 'rake-tasks/checks'
 
 module Buck
+
+  def self.download
+    @@buck_bin ||= (
+      if File.exist?('.nobuckcheck') && present?('buck')
+        return "buck"
+      end
+
+      version = File.open('.buckversion').first.chomp
+      cached_hash = File.open('.buckhash').first.chomp
+
+      out = File.expand_path("~/.crazyfun/buck/#{version}/buck.pex")
+      out_hash = File.exist?(out) ? Digest::MD5.file(out).hexdigest : nil
+
+      if cached_hash == out_hash
+        return "python #{out}"
+      end
+
+      url = "https://github.com/SeleniumHQ/buck/releases/download/buck-release-#{version}/buck.pex"
+      out_dir = File.dirname out
+      FileUtils.mkdir_p(out_dir) unless File.exist?(out_dir)
+
+      # Cut-and-pasted from rake-tasks/crazy_fun/mappings/java.rb. We duplicate the code here so
+      # we can delete that file and have this continue working, but once we delete that file, we
+      # should also stop using this version of ant and just use the ant bundled with jruby.
+      dir = 'third_party/java/ant'
+      Dir[File.join(dir, '*.jar')].each { |jar| require jar }
+      # we set ANT_HOME to avoid JRuby trying to load its own Ant
+      ENV['ANT_HOME'] = dir
+      require "ant"
+
+      ant.get('src' => url, 'dest' => out, 'verbose' => true)
+      "python #{out}"
+    )
+  end
 
   def self.buck_cmd
     @@buck_cmd ||= (
       lambda { |command, target, &block|
-        cmd = "buck #{command} #{target}"
+        buck = Buck::download
+
+        cmd = "#{buck} #{command} #{target}"
+
+        puts cmd
+
         output = ''
         err = ''
         Open3.popen3(cmd) do |stdin, stdout, stderr, wait_thr|
