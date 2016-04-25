@@ -44,8 +44,6 @@ module Buck
 
         cmd = "#{buck} #{command} #{target}"
 
-        puts cmd
-
         output = ''
         err = ''
         Open3.popen3(cmd) do |stdin, stdout, stderr, wait_thr|
