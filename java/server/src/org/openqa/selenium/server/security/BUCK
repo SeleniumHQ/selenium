@@ -1,7 +1,7 @@
 java_library(name = 'security',
   srcs = glob(['*.java']),
   deps = [
-    '//java/client/src/org/openqa/selenium/io:io',
+    '//java/client/src/org/openqa/selenium:selenium',
     '//third_party/java/bouncycastle:bouncycastle',
     '//third_party/java/guava:guava',
   ],

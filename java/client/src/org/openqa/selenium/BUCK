@@ -1,13 +1,18 @@
-java_library(name = 'webdriver-api',
+java_library(name = 'selenium',
+  maven_coords = 'org.seleniumhq.selenium:selenium-java:2.49.0',
   exported_deps = [
     ':beta',
+    ':codecs',
     ':core',
     ':exceptions',
     ':platform',
     ':primitives',
     '//java/client/src/org/openqa/selenium/interactions:interactions',
-    '//java/client/src/org/openqa/selenium/interactions:exceptions',
+    '//java/client/src/org/openqa/selenium/io:io',
     '//java/client/src/org/openqa/selenium/logging:api',
+    '//java/client/src/org/openqa/selenium/logging:logging',
+    '//java/client/src/org/openqa/selenium/net:net',
+    '//java/client/src/org/openqa/selenium/os:os',
     '//java/client/src/org/openqa/selenium/security:security',
   ],
   visibility = ['PUBLIC'],
@@ -22,7 +27,7 @@ java_library(
 )
 
 java_library(name = 'core',
-  maven_coords = "org.seleniumhq.selenium:selenium-api:2.49.0",
+  maven_coords = 'org.seleniumhq.selenium:selenium-api:2.49.0',
   srcs = [
     'Alert.java',
     'By.java',
@@ -71,7 +76,12 @@ java_library(name = 'core',
 
 java_library(name = 'beta',
   srcs = [ 'Beta.java' ],
-  visibility = [ 'PUBLIC' ],
+  visibility = [
+    '//java/client/src/org/openqa/selenium/logging:api',
+    '//java/client/src/org/openqa/selenium/logging:logging',
+    '//java/client/src/org/openqa/selenium/os:os',
+    '//java/client/src/org/openqa/selenium/security:security',
+  ],
 )
 
 java_library(name = 'exceptions',
@@ -100,6 +110,8 @@ java_library(name = 'exceptions',
   visibility = [
     '//java/client/src/org/openqa/selenium/interactions:exceptions',
     '//java/client/src/org/openqa/selenium/io:io',
+    '//java/client/src/org/openqa/selenium/net:net',
+    '//java/client/src/org/openqa/selenium/os:os',
     '//java/client/test/org/openqa/selenium/testing:helpers',
   ],
 )
@@ -113,7 +125,11 @@ java_library(
   deps = [
     ':exceptions',
   ],
-  visibility = ['PUBLIC'],
+  visibility = [
+    '//java/client/src/org/openqa/selenium/io:io',
+    '//java/client/src/org/openqa/selenium/net:net',
+    '//java/client/src/org/openqa/selenium/os:os',
+  ],
 )
 
 java_library(name = 'primitives',
@@ -124,18 +140,5 @@ java_library(name = 'primitives',
   ],
   visibility = [
     '//java/client/src/org/openqa/selenium/interactions:core',
-  ],
-)
-
-java_binary(name = 'selenium-java',
-  deps = [
-    ':webdriver-api',
-    '//java/client/src/org/openqa/selenium/ie:ie',
-    '//java/client/src/org/openqa/selenium/chrome:chrome',
-    '//java/client/src/org/openqa/selenium/firefox:firefox',
-    '//java/client/src/org/openqa/selenium/lift:lift',
-    '//java/client/src/org/openqa/selenium/remote:remote',
-    '//java/client/src/org/openqa/selenium/safari:safari',
-    '//java/client/src/org/openqa/selenium/support:support',
   ],
 )

@@ -1,10 +1,8 @@
 java_library(name = 'locators',
   srcs = glob(['*.java']),
   deps = [
-    '//java/client/src/org/openqa/selenium/io:io',
-    '//java/client/src/org/openqa/selenium/os:os',
-    '//java/client/src/org/openqa/selenium/remote:capabilities',
-    '//java/client/src/org/openqa/selenium:platform',
+    '//java/client/src/org/openqa/selenium:selenium',
+    '//java/client/src/org/openqa/selenium/remote:remote',
     '//third_party/java/guava:guava',
   ],
   visibility = [

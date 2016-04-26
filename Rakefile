@@ -103,6 +103,18 @@ crazy_fun.create_tasks(Dir["**/build.desc"])
 # This is because the buck integration creates a rule for "//.*"
 require 'rake-tasks/buck'
 
+# Java targets required for release. These should all have the correct maven_coords set.
+JAVA_RELEASE_TARGETS = [
+  '//java/client/src/org/openqa/selenium:core',
+  '//java/client/src/org/openqa/selenium:selenium',
+  '//java/client/src/org/openqa/selenium/chrome:chrome',
+  '//java/client/src/org/openqa/selenium/edge:edge',
+  '//java/client/src/org/openqa/selenium/firefox:firefox',
+  '//java/client/src/org/openqa/selenium/ie:ie',
+  '//java/client/src/org/openqa/selenium/remote:remote',
+  '//java/client/src/org/openqa/selenium/safari:safari',
+]
+
 
 # Notice that because we're using rake, anything you can do in a normal rake
 # build can also be done here. For example, here we set the default task
@@ -526,7 +538,7 @@ task :push_release => [:release] do
 end
 
 desc 'Build the selenium client jars'
-task 'selenium-java' => '//java/client/src/org/openqa/selenium:client-combined-v3:project'
+task 'selenium-java' => '//java/client/src/org/openqa/selenium:selenium-java'
 
 desc 'Build and package Selenium IDE'
 task :release_ide  => [:ide] do

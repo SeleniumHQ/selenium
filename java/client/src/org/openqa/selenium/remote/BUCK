@@ -7,7 +7,6 @@ java_library(
     'Response.java',
     'SessionId.java',
   ],
-  visibility = ['PUBLIC'],
 )
 
 java_library(
@@ -18,11 +17,9 @@ java_library(
     'DesiredCapabilities.java',
   ],
   deps = [
-    '//java/client/src/org/openqa/selenium:webdriver-api',
-    '//java/client/src/org/openqa/selenium/logging:logging',
+    '//java/client/src/org/openqa/selenium:selenium',
     '//third_party/java/guava:guava',
   ],
-  visibility = ['PUBLIC'],
 )
 
 java_library(
@@ -49,6 +46,7 @@ java_library(name = 'augmenter',
   deps = [
     ':capabilities',
     ':remote',
+    '//java/client/src/org/openqa/selenium:selenium',
     '//third_party/java/cglib:cglib',
     '//third_party/java/guava:guava',
   ],
@@ -58,6 +56,7 @@ java_library(name = 'augmenter',
 )
 
 java_library(name = 'remote',
+  maven_coords = 'org.seleniumhq.selenium:remote-driver:2.49.0',
   srcs = [
     'BeanToJsonConverter.java',
     'CommandCodec.java',
@@ -104,18 +103,17 @@ java_library(name = 'remote',
     'internal/JsonToWebElementConverter.java',
     'internal/WebElementToJsonConverter.java',
     'mobile/RemoteNetworkConnection.java',
-  ],
+  ] + glob([
+    'service/*.java',
+  ]),
   exported_deps = [
     ':api',
     ':capabilities',
-    '//java/client/src/org/openqa/selenium:webdriver-api',
-    '//java/client/src/org/openqa/selenium/interactions:exceptions',
-    '//java/client/src/org/openqa/selenium/logging:logging',
+    '//java/client/src/org/openqa/selenium:selenium',
   ],
   deps = [
     ':http-session-id',
-    '//java/client/src/org/openqa/selenium/io:io',
-    '//java/client/src/org/openqa/selenium/net:net',
+    '//java/client/src/org/openqa/selenium:selenium',
     '//third_party/java/httpcomponents:httpclient',
     '//third_party/java/guava:guava',
     '//third_party/java/gson:gson',

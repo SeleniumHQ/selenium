@@ -2,8 +2,11 @@ java_library(
   name = 'net',
   srcs = glob(['*.java']),
   deps = [
-    '//java/client/src/org/openqa/selenium:webdriver-api',
+   '//java/client/src/org/openqa/selenium:exceptions',
+   '//java/client/src/org/openqa/selenium:platform',
     '//third_party/java/guava:guava',
   ],
-  visibility = ['PUBLIC'],
+  visibility = [
+    '//java/client/src/org/openqa/selenium:selenium',
+  ]
 )

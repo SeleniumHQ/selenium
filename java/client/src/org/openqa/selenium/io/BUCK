@@ -7,6 +7,9 @@ java_library(
     '//java/client/src/org/openqa/selenium:platform',
     '//third_party/java/guava:guava',
   ],
-  visibility = ['PUBLIC'],
+  visibility = [
+    '//java/client/src/org/openqa/selenium:selenium',
+    '//java/client/src/org/openqa/selenium/os:os',
+  ],
 )
 

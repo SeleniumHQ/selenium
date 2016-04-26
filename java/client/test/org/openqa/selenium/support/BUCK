@@ -34,7 +34,7 @@ java_library(name = 'tests',
     'ui/TickingClock.java',
   ],
   deps = [
-    '//java/client/src/org/openqa/selenium:webdriver-api',
+    '//java/client/src/org/openqa/selenium:selenium',
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//java/client/src/org/openqa/selenium/support:page-factory',
     '//java/client/src/org/openqa/selenium/support:support',
