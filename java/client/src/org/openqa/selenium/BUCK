@@ -1,5 +1,7 @@
+include_defs('//SELENIUM_VERSION')
+
 java_library(name = 'selenium',
-  maven_coords = 'org.seleniumhq.selenium:selenium-java:2.49.0',
+  maven_coords = 'org.seleniumhq.selenium:selenium-java:' + SE_VERSION,
   exported_deps = [
     ':beta',
     ':codecs',
@@ -27,7 +29,7 @@ java_library(
 )
 
 java_library(name = 'core',
-  maven_coords = 'org.seleniumhq.selenium:selenium-api:2.49.0',
+  maven_coords = 'org.seleniumhq.selenium:selenium-api:' + SE_VERSION,
   srcs = [
     'Alert.java',
     'By.java',

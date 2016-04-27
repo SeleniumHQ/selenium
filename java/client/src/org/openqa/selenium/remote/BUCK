@@ -1,3 +1,5 @@
+include_defs('//SELENIUM_VERSION')
+
 java_library(
   name = 'api',
   srcs = [
@@ -56,7 +58,7 @@ java_library(name = 'augmenter',
 )
 
 java_library(name = 'remote',
-  maven_coords = 'org.seleniumhq.selenium:remote-driver:2.49.0',
+  maven_coords = 'org.seleniumhq.selenium:remote-driver:' + SE_VERSION,
   srcs = [
     'BeanToJsonConverter.java',
     'CommandCodec.java',

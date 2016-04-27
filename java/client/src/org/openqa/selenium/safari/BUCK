@@ -1,5 +1,7 @@
+include_defs('//SELENIUM_VERSION')
+
 java_library(name = 'safari',
-  maven_coords = 'org.seleniumhq.selenium:selenium-safari-driver:2.49.0',
+  maven_coords = 'org.seleniumhq.selenium:selenium-safari-driver:' + SE_VERSION,
   srcs = glob(['*.java']),
   resources = [
     ':client',

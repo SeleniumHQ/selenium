@@ -1,5 +1,7 @@
+include_defs('//SELENIUM_VERSION')
+
 java_library(name = 'firefox',
-  maven_coords = 'org.seleniumhq.selenium:selenium-firefox-driver:jar:2.49.0',
+  maven_coords = 'org.seleniumhq.selenium:selenium-firefox-driver:jar:' + SE_VERSION,
   srcs = glob(['*.java', 'internal/*.java']),
   resources = [
     ':prefs',

@@ -1,5 +1,8 @@
+include_defs('//SELENIUM_VERSION')
+
 java_library(
   name = 'opera',
+  maven_coords = 'org.seleniumhq.selenium:selenium-opera-driver:' + SE_VERSION,
   srcs = glob(['*.java']),
   deps = [
     '//java/client/src/org/openqa/selenium:selenium',

@@ -1,6 +1,8 @@
+include_defs('//SELENIUM_VERSION')
+
 java_library(
   name = 'chrome',
-  maven_coords = 'org.seleniumhq.selenium:selenium-chrome-driver:2.49.0',
+  maven_coords = 'org.seleniumhq.selenium:selenium-chrome-driver:' + SE_VERSION,
   srcs = glob(['*.java']),
   deps = [
     '//java/client/src/org/openqa/selenium:selenium',

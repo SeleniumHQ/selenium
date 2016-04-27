@@ -1,5 +1,7 @@
+include_defs('//SELENIUM_VERSION')
+
 java_library(name = 'ie',
-  maven_coords = 'org.seleniumhq.selenium:selenium-ie-driver:2.49.0',
+  maven_coords = 'org.seleniumhq.selenium:selenium-ie-driver:' + SE_VERSION,
   srcs = glob(['*.java']),
   deps = [
     '//java/client/src/org/openqa/selenium:selenium',
