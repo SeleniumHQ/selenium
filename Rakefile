@@ -480,53 +480,62 @@ file "build/third_party/java/jetty/jetty-repacked.jar" => [
    cp "build/third_party/java/jetty/jetty-repacked.jar", "third_party/java/jetty/jetty-repacked.jar"
 end
 
-task "release" => [
+#task "release" => [
 #    :clean,
-    :build,
-    '//java/server/src/org/openqa/selenium/remote/server:server:zip',
-    '//java/server/src/org/openqa/grid/selenium:selenium:zip',
-    '//java/client/src/org/openqa/selenium:client-combined-v3:zip',
-  ] do |t|
-  # Unzip each of the deps and rename the pieces that need renaming
-  renames = {
-    "client-combined-v3-nodeps-srcs.jar" => "selenium-java-#{version}-srcs.jar",
-    "client-combined-v3-nodeps.jar" => "selenium-java-#{version}.jar",
-    "selenium-nodeps-srcs.jar" => "selenium-server-#{version}-srcs.jar",
-    "selenium-nodeps.jar" => "selenium-server-#{version}.jar",
-    "selenium-standalone.jar" => "selenium-server-standalone-#{version}.jar",
-  }
+#    :build,
+#    '//java/server/src/org/openqa/selenium/remote/server:server:zip',
+#    '//java/server/src/org/openqa/grid/selenium:selenium:zip',
+#    '//java/client/src/org/openqa/selenium:client-combined-v3:zip',
+#  ] do |t|
+#  # Unzip each of the deps and rename the pieces that need renaming
+#  renames = {
+#    "client-combined-v3-nodeps-srcs.jar" => "selenium-java-#{version}-srcs.jar",
+#    "client-combined-v3-nodeps.jar" => "selenium-java-#{version}.jar",
+#    "selenium-nodeps-srcs.jar" => "selenium-server-#{version}-srcs.jar",
+#    "selenium-nodeps.jar" => "selenium-server-#{version}.jar",
+#    "selenium-standalone.jar" => "selenium-server-standalone-#{version}.jar",
+#  }
+#
+#  t.prerequisites.each do |pre|
+#    zip = Rake::Task[pre].out
+#
+#    next unless zip =~ /\.zip$/
+#
+#    temp =  zip + "rename"
+#    rm_rf temp
+#    deep = File.join(temp, "/selenium-#{version}")
+#    mkdir_p deep
+#    cp "java/CHANGELOG", deep
+#    cp "NOTICE", deep
+#    cp "LICENSE", deep
+#
+#    sh "cd #{deep} && jar xf ../../#{File.basename(zip)}"
+#    renames.each do |from, to|
+#      src = File.join(deep, from)
+#      next unless File.exists?(src)
+#
+#      mv src, File.join(deep, to)
+#    end
+#    rm_f File.join(deep, "client-combined-v3-standalone.jar")
+#    rm zip
+#    sh "cd #{temp} && jar cMf ../#{File.basename(zip)} *"
+#
+#    rm_rf temp
+#  end
+#
+#  mkdir_p "build/dist"
+#  cp "build/java/server/src/org/openqa/grid/selenium/selenium-standalone.jar", "build/dist/selenium-server-standalone-#{version}.jar"
+#  cp "build/java/server/src/org/openqa/grid/selenium/selenium.zip", "build/dist/selenium-server-#{version}.zip"
+#  cp "build/java/client/src/org/openqa/selenium/client-combined-v3.zip", "build/dist/selenium-java-#{version}.zip"
+#end
 
-  t.prerequisites.each do |pre|
-    zip = Rake::Task[pre].out
+task :release => JAVA_RELEASE_TARGETS do |t|
+  puts t.prerequisites.join(', ')
 
-    next unless zip =~ /\.zip$/
-
-    temp =  zip + "rename"
-    rm_rf temp
-    deep = File.join(temp, "/selenium-#{version}")
-    mkdir_p deep
-    cp "java/CHANGELOG", deep
-    cp "NOTICE", deep
-    cp "LICENSE", deep
-
-    sh "cd #{deep} && jar xf ../../#{File.basename(zip)}"
-    renames.each do |from, to|
-      src = File.join(deep, from)
-      next unless File.exists?(src)
-
-      mv src, File.join(deep, to)
-    end
-    rm_f File.join(deep, "client-combined-v3-standalone.jar")
-    rm zip
-    sh "cd #{temp} && jar cMf ../#{File.basename(zip)} *"
-
-    rm_rf temp
+  t.prerequisites.each do |p|
+#    Buck::buck_cmd.call('publish', "--dry-run --to-maven-central #{p}")
+    Buck::buck_cmd.call('build', "#{p}")
   end
-
-  mkdir_p "build/dist"
-  cp "build/java/server/src/org/openqa/grid/selenium/selenium-standalone.jar", "build/dist/selenium-server-standalone-#{version}.jar"
-  cp "build/java/server/src/org/openqa/grid/selenium/selenium.zip", "build/dist/selenium-server-#{version}.zip"
-  cp "build/java/client/src/org/openqa/selenium/client-combined-v3.zip", "build/dist/selenium-java-#{version}.zip"
 end
 
 task :push_release => [:release] do

@@ -51,7 +51,7 @@ module Buck
           stdin.close
 
           while line = stderr.gets
-            if command == 'build' || command == 'test'
+            if command == 'build' || command == 'publish' || command == 'test'
               puts line
             end
             err += line
