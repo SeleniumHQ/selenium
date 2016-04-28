@@ -1,8 +1,12 @@
 ## Meta -
-OS: <!-- Windows 10? OSX? -->
-Selenium Version: <!-- 2.52.0, IDE, etc -->
-Browser: <!-- Google Chrome?  Firefox? -->
-Browser Version: <!-- e.g.: 49.0.2623.87 (64-bit) -->
+OS:  
+<!-- Windows 10? OSX? -->
+Selenium Version:  
+<!-- 2.52.0, IDE, etc -->
+Browser:  
+<!-- Google Chrome?  Firefox? -->
+Browser Version:  
+<!-- e.g.: 49.0.2623.87 (64-bit) -->
 
 ## Expected Behavior -
 
