@@ -7,6 +7,8 @@
    Sorry for the churn!
 * FIXED: capabilities serialization now properly handles undefined vs.
    false-like values.
+* FIXED: properly handle responses from the remote end in
+   `WebDriver.attachToSession`
 
 ## v2.53.1
 

@@ -471,15 +471,19 @@ class Executor {
       let parsed =
           parseHttpResponse(/** @type {!HttpResponse} */ (response), this.w3c);
 
-      if (command.getName() === cmd.Name.NEW_SESSION) {
+      if (command.getName() === cmd.Name.NEW_SESSION
+          || command.getName() === cmd.Name.DESCRIBE_SESSION) {
         if (!parsed || !parsed['sessionId']) {
           throw new error.WebDriverError(
               'Unable to parse new session response: ' + response.body);
         }
 
         // The remote end is a W3C compliant server if there is no `status`
-        // field in the response.
-        this.w3c = this.w3c || !('status' in parsed);
+        // field in the response. This is not appliable for the DESCRIBE_SESSION
+        // command, which is not defined in the W3C spec.
+        if (command.getName() === cmd.Name.NEW_SESSION) {
+          this.w3c = this.w3c || !('status' in parsed);
+        }
 
         return new Session(parsed['sessionId'], parsed['value']);
       }
