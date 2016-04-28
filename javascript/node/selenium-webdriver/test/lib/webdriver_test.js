@@ -272,6 +272,22 @@ describe('WebDriver', function() {
                 (actual) => assert.strictEqual(actual, e));
     });
 
+    it('remote end does not recognize DESCRIBE_SESSION command', function() {
+      let e = new error.UnknownCommandError;
+      let executor = new FakeExecutor().
+          expect(CName.DESCRIBE_SESSION).
+          withParameters({'sessionId': SESSION_ID}).
+          andReturnError(e).
+          end();
+
+      let driver = WebDriver.attachToSession(executor, SESSION_ID);
+      return driver.getSession().then(session => {
+        assert.ok(session instanceof Session);
+        assert.strictEqual(session.getId(), SESSION_ID);
+        assert.equal(session.getCapabilities().size, 0);
+      });
+    });
+
     it('usesActiveFlowByDefault', function() {
       let executor = new FakeExecutor().
           expect(CName.DESCRIBE_SESSION).

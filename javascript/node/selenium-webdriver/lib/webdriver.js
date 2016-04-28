@@ -88,30 +88,6 @@ class WebElementCondition extends Condition {
 
 
 /**
- * Sends a command to the server that is expected to return the details for a
- * {@link Session}. This may either be an existing session, or a newly created
- * one.
- *
- * @param {!command.Executor} executor Command executor to use when
- *     querying for session details.
- * @param {!command.Command} command The command to send to fetch the session
- *     details.
- * @param {string} description A descriptive debug label for this action.
- * @param {promise.ControlFlow=} opt_flow The control flow all driver
- *     commands should execute under. Defaults to the
- *     {@link promise.controlFlow() currently active} control flow.
- * @return {!WebDriver} A new WebDriver client for the session.
- */
-function acquireSession(executor, command, description, opt_flow) {
-  let flow = opt_flow || promise.controlFlow();
-  let session = flow.execute(function() {
-    return executeCommand(executor, command);
-  }, description);
-  return new WebDriver(session, executor, flow);
-}
-
-
-/**
  * Translates a command to its wire-protocol representation before passing it
  * to the given `executor` for execution.
  * @param {!command.Executor} executor The executor to use.
@@ -314,11 +290,24 @@ class WebDriver {
    * @return {!WebDriver} A new client for the specified session.
    */
   static attachToSession(executor, sessionId, opt_flow) {
-    return acquireSession(executor,
-        new command.Command(command.Name.DESCRIBE_SESSION).
-            setParameter('sessionId', sessionId),
-        'WebDriver.attachToSession()',
-        opt_flow);
+    let flow = opt_flow || promise.controlFlow();
+    let cmd = new command.Command(command.Name.DESCRIBE_SESSION)
+        .setParameter('sessionId', sessionId);
+    let session = flow.execute(
+        () => executeCommand(executor, cmd),
+        'WebDriver.attachToSession()');
+
+    session = session.catch(err => {
+      // The DESCRIBE_SESSION command is not supported by the W3C spec, so if
+      // we get back an unknown command, just return a session with unknown
+      // capabilities.
+      if (err instanceof error.UnknownCommandError) {
+        return new Session(sessionId, new Capabilities);
+      }
+      throw err;
+    });
+
+    return new WebDriver(session, executor, flow);
   }
 
   /**
@@ -334,11 +323,13 @@ class WebDriver {
    * @return {!WebDriver} The driver for the newly created session.
    */
   static createSession(executor, desiredCapabilities, opt_flow) {
-    return acquireSession(executor,
-        new command.Command(command.Name.NEW_SESSION).
-            setParameter('desiredCapabilities', desiredCapabilities),
-        'WebDriver.createSession()',
-        opt_flow);
+    let flow = opt_flow || promise.controlFlow();
+    let cmd = new command.Command(command.Name.NEW_SESSION)
+        .setParameter('desiredCapabilities', desiredCapabilities) ;
+    let session = flow.execute(
+        () => executeCommand(executor, cmd),
+        'WebDriver.createSession()');
+    return new WebDriver(session, executor, flow);
   }
 
   /**
@@ -416,6 +407,13 @@ class WebDriver {
    */
   setFileDetector(detector) {
     this.fileDetector_ = detector;
+  }
+
+  /**
+   * @return {!command.Executor} The command executor used by this instance.
+   */
+  getExecutor() {
+    return this.executor_;
   }
 
   /**
