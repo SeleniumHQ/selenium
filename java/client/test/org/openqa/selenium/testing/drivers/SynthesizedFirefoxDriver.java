@@ -22,6 +22,7 @@ import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.DevMode.isInDevMode;
 import static org.openqa.selenium.testing.InProject.locate;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 
 import org.openqa.selenium.Build;
@@ -38,11 +39,11 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
   private static boolean runBuild = true;
 
   public SynthesizedFirefoxDriver() {
-    super(createTemporaryProfile());
+    this(new DesiredCapabilities(), new DesiredCapabilities());
   }
 
   public SynthesizedFirefoxDriver(FirefoxProfile profile) throws IOException {
-    super(copyExtensionTo(profile));
+    this(new DesiredCapabilities(), new DesiredCapabilities(ImmutableMap.of(PROFILE, profile)));
   }
 
   public SynthesizedFirefoxDriver(Capabilities desiredCapabilities) {
