@@ -29,6 +29,7 @@ java_library(name = 'large-tests',
 
 java_library(name = 'helpers',
   srcs = [
+    'BuckBuild.java',
     'Build.java',
     'Pages.java',
     'ParallelTestRunner.java',
