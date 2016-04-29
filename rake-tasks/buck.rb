@@ -33,6 +33,7 @@ module Buck
       require "ant"
 
       ant.get('src' => url, 'dest' => out, 'verbose' => true)
+      File.chmod(0755, out)
       "python #{out}"
     )
   end
