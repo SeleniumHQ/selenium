@@ -25,6 +25,7 @@ import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 class SessionCleaner extends Thread {   // Thread safety reviewed
@@ -115,7 +116,8 @@ class SessionCleaner extends Thread {   // Thread safety reviewed
           try {
             deleteSession.call();
           } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.log(Level.WARNING, "Could not delete session " + session.getSessionId(), e);
+            continue;
           }
         }
 
