@@ -118,12 +118,13 @@ public class BuckBuild {
 
   private void downloadBuckPexIfNecessary(ImmutableList.Builder<String> builder)
     throws IOException {
-    String buckVersion = new String(Files.readAllBytes(Paths.get(".buckversion"))).trim();
+    Path projectRoot = InProject.locate("Rakefile").getParentFile().toPath();
+    String buckVersion = new String(Files.readAllBytes(projectRoot.resolve(".buckversion"))).trim();
 
     Path pex = Paths.get(
       StandardSystemProperty.USER_HOME.value(), ".crazyfun", "buck", buckVersion, "buck.pex");
 
-    String expectedHash = new String(Files.readAllBytes(Paths.get(".buckhash"))).trim();
+    String expectedHash = new String(Files.readAllBytes(projectRoot.resolve(".buckhash"))).trim();
     HashCode md5 = Files.exists(pex) ?
                    Hashing.md5().hashBytes(Files.readAllBytes(pex)) :
                    HashCode.fromString("aa");  // So we have a non-null value
