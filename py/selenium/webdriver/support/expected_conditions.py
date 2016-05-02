@@ -112,9 +112,8 @@ class visibility_of_all_elements_located(object):
         self.locator = locator
 
     def __call__(self, driver):
-        elements = _find_elements(driver, self.locator)
         visible_elements = []
-        for element in elements:
+        for element in _find_elements(driver, self.locator):
             if _element_if_visible(element) is not False:
                 visible_elements.append(element)
         return visible_elements
