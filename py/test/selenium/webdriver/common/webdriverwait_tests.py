@@ -72,7 +72,7 @@ class WebDriverWaitTest(unittest.TestCase):
 
     def testShouldFailToFindElementsWhenExplicitWaiting(self):
         self._loadPage("dynamic")
-        with self.assertRaises(TimeOutException):
+        with self.assertRaises(TimeoutException):
             elements = WebDriverWait(self.driver, 0.7).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "redbox")))
             
     def testShouldWaitUntilAtLeastOneVisibleElementsIsFoundWhenSearchingForMany(self):
@@ -89,7 +89,7 @@ class WebDriverWaitTest(unittest.TestCase):
 
     def testShouldFailToFindVisibleElementsWhenExplicitWaiting(self):
         self._loadPage("hidden_partially")
-        with self.assertRaises(TimeOutException):
+        with self.assertRaises(TimeoutException):
             elements = WebDriverWait(self.driver, 0.7).until(EC.visibility_of_all_elements_located((By.CLASS_NAME, "redbox")))
 
     def testShouldWaitOnlyAsLongAsTimeoutSpecifiedWhenImplicitWaitsAreSet(self):
