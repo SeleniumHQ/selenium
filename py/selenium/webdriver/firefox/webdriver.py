@@ -64,7 +64,7 @@ class WebDriver(RemoteWebDriver):
                 self.binary = capabilities.get("binary") or FirefoxBinary()
 
             firefox_options = Options()
-            firefox_options.binary_location = self.binary if isinstance(self.binary, basestring) else self.binary._get_firefox_start_cmd()
+            firefox_options.binary_location = self.binary if isinstance(self.binary, basestring) else self.binary._start_cmd
             firefox_options.profile = self.profile
         else:
             if capabilities is None:
@@ -94,7 +94,12 @@ class WebDriver(RemoteWebDriver):
                 proxy.add_to_capabilities(capabilities)
 
             if self.binary is None:
-                self.binary = firefox_options.binary_location or FirefoxBinary()
+                if firefox_options.binary_location:
+                    self.binary = FirefoxBinary(firefox_options.binary_location)
+                else:
+                    self.binary = FirefoxBinary()
+            elif isinstance(self.binary, basestring):
+                self.binary = FirefoxBinary(self.binary)
 
             if self.profile is None:
                 self.profile = firefox_options.profile or FirefoxProfile()
