@@ -74,10 +74,6 @@ class WebDriverWaitTest(unittest.TestCase):
         self._loadPage("dynamic")
         with self.assertRaises(TimeOutException):
             elements = WebDriverWait(self.driver, 0.7).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "redbox")))
-        except TimeoutException as e:
-            pass # we should get a timeout
-        except Exception as e:
-            self.fail("Expected TimeoutException but got " + str(e))
             
     def testShouldWaitUntilAtLeastOneVisibleElementsIsFoundWhenSearchingForMany(self):
         self._loadPage("hidden_partially")
