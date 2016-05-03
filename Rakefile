@@ -539,7 +539,7 @@ task :push_release => [:release] do
 end
 
 desc 'Build the selenium client jars'
-task 'selenium-java' => '//java/client/src/org/openqa/selenium:selenium-java'
+task 'selenium-java' => '//java/client/src/org/openqa/selenium:selenium'
 
 desc 'Build and package Selenium IDE'
 task :release_ide  => [:ide] do
