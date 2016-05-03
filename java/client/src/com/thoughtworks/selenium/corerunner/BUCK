@@ -23,5 +23,6 @@ java_library(
     '//third_party/java/guava:guava',
   ],
   visibility = [
+    '//java/server/src/com/thoughtworks/selenium:leg-rc',
   ],
 )

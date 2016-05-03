@@ -23,7 +23,7 @@ java_library(name = 'test',
     'plugin/**/*.java',
   ], excludes = SUITES),
   deps = [
-    '//java/client/src/com/thoughtworks/selenium:selenium',
+    '//java/client/src/com/thoughtworks/selenium:leg-rc',
     '//java/client/src/org/openqa/selenium:selenium',
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//java/server/src/org/openqa/grid:grid',

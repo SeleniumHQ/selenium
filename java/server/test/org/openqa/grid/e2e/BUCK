@@ -11,7 +11,7 @@ java_test(name = 'e2e',
 java_library(name = 'tests',
   srcs = glob(['**/*.java'], excludes = SUITES),
   deps = [
-    '//java/client/src/com/thoughtworks/selenium:selenium',
+    '//java/client/src/com/thoughtworks/selenium:leg-rc',
     '//java/client/src/org/openqa/selenium/chrome:chrome',
     '//java/client/src/org/openqa/selenium/firefox:firefox',
     '//java/client/src/org/openqa/selenium/remote:remote',

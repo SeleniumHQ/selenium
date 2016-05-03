@@ -1,0 +1,12 @@
+include_defs('//SELENIUM_VERSION')
+
+java_library(
+  name = 'leg-rc',
+  maven_coords = 'org.seleniumhq.selenium:selenium-java:' + SE_VERSION,
+  deps = [
+    '//java/client/src/com/thoughtworks/selenium:selenium',
+    '//java/client/src/com/thoughtworks/selenium/corerunner:corerunner',
+    '//java/server/src/com/thoughtworks/selenium/webdriven:rc-emulation-servlet',
+  ],
+)
+

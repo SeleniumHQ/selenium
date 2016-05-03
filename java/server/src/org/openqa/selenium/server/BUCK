@@ -1,7 +1,0 @@
-java_library(name = 'server',
-  srcs = glob(['htmlrunner/*.java']),
-  deps = [
-  ],
-  visibility = [
-  ],
-)

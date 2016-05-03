@@ -105,6 +105,7 @@ require 'rake-tasks/buck'
 
 # Java targets required for release. These should all have the correct maven_coords set.
 JAVA_RELEASE_TARGETS = [
+  '//java/client/src/com/thoughtworks/selenium:leg-rc',
   '//java/client/src/org/openqa/selenium:core',
   '//java/client/src/org/openqa/selenium:selenium',
   '//java/client/src/org/openqa/selenium/chrome:chrome',
@@ -114,6 +115,7 @@ JAVA_RELEASE_TARGETS = [
   '//java/client/src/org/openqa/selenium/opera:opera',
   '//java/client/src/org/openqa/selenium/remote:remote',
   '//java/client/src/org/openqa/selenium/safari:safari',
+  '//java/server/src/com/thoughtworks/selenium:leg-rc',
 ]
 
 
