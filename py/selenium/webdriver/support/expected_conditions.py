@@ -101,6 +101,18 @@ class presence_of_all_elements_located(object):
 
     def __call__(self, driver):
         return _find_elements(driver, self.locator)
+        
+class visibility_of_all_elements_located(object):
+    """ An expectation for checking that there is at least one element visible
+    on a web page.
+    locator is used to find the element
+    returns the list of WebElements once they are located
+    """
+    def __init__(self, locator):
+        self.locator = locator
+
+    def __call__(self, driver):
+        return [element for element in _find_elements(driver, self.locator) if _element_if_visible(element)]
 
 class text_to_be_present_in_element(object):
     """ An expectation for checking if the given text is present in the
