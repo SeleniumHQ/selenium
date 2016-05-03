@@ -78,6 +78,27 @@ class WebDriverWaitTest(unittest.TestCase):
             pass # we should get a timeout
         except Exception as e:
             self.fail("Expected TimeoutException but got " + str(e))
+            
+    def testShouldWaitUntilAtLeastOneVisibleElementsIsFoundWhenSearchingForMany(self):
+        self._loadPage("hidden_partially")
+        add_visible = self.driver.find_element_by_id("addVisible")
+        add_hidden = self.driver.find_element_by_id("addHidden")
+
+        add_visible.click()
+        add_visible.click()
+        add_hidden.click()
+
+        elements = WebDriverWait(self.driver, 2).until(EC.visibility_of_all_elements_located((By.CLASS_NAME, "redbox")))
+        self.assertTrue(len(elements) == 2)
+
+    def testShouldFailToFindVisibleElementsWhenExplicitWaiting(self):
+        self._loadPage("hidden_partially")
+        try:
+            elements = WebDriverWait(self.driver, 0.7).until(EC.visibility_of_all_elements_located((By.CLASS_NAME, "redbox")))
+        except TimeoutException as e:
+            pass # we should get a timeout
+        except Exception as e:
+            self.fail("Excepted TimeoutException but got " + str(e))
 
     def testShouldWaitOnlyAsLongAsTimeoutSpecifiedWhenImplicitWaitsAreSet(self):
         self._loadPage("dynamic")
