@@ -112,11 +112,7 @@ class visibility_of_all_elements_located(object):
         self.locator = locator
 
     def __call__(self, driver):
-        visible_elements = []
-        for element in _find_elements(driver, self.locator):
-            if _element_if_visible(element) is not False:
-                visible_elements.append(element)
-        return visible_elements
+        return [element for element in _find_elements(driver, self.locator) if _element_if_visible(element)]
 
 class text_to_be_present_in_element(object):
     """ An expectation for checking if the given text is present in the
