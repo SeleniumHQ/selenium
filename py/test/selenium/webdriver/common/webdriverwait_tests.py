@@ -84,13 +84,13 @@ class WebDriverWaitTest(unittest.TestCase):
         add_visible.click()
         add_hidden.click()
 
-        elements = WebDriverWait(self.driver, 2).until(EC.visibility_of_all_elements_located((By.CLASS_NAME, "redbox")))
+        elements = WebDriverWait(self.driver, 2).until(EC.visibility_of_any_elements_located((By.CLASS_NAME, "redbox")))
         self.assertTrue(len(elements) == 2)
 
     def testShouldFailToFindVisibleElementsWhenExplicitWaiting(self):
         self._loadPage("hidden_partially")
         with self.assertRaises(TimeoutException):
-            elements = WebDriverWait(self.driver, 0.7).until(EC.visibility_of_all_elements_located((By.CLASS_NAME, "redbox")))
+            elements = WebDriverWait(self.driver, 0.7).until(EC.visibility_of_any_elements_located((By.CLASS_NAME, "redbox")))
 
     def testShouldWaitOnlyAsLongAsTimeoutSpecifiedWhenImplicitWaitsAreSet(self):
         self._loadPage("dynamic")
