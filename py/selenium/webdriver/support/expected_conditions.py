@@ -102,7 +102,7 @@ class presence_of_all_elements_located(object):
     def __call__(self, driver):
         return _find_elements(driver, self.locator)
         
-class visibility_of_all_elements_located(object):
+class visibility_of_any_elements_located(object):
     """ An expectation for checking that there is at least one element visible
     on a web page.
     locator is used to find the element
