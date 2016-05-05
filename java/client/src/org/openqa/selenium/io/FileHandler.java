@@ -191,7 +191,7 @@ public class FileHandler {
       final long copied = Files.copy(from.toPath(), out);
       final long length = from.length();
       if (copied != length) {
-        throw new IOException("Could not transfer all bytes.");
+        throw new IOException("Could not transfer all bytes from " + from + " to " + to);
       }
     }
   }
