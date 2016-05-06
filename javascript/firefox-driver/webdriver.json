@@ -64,6 +64,7 @@
     "browser.newtabpage.enabled": false,
     "browser.startup.page": 0,
     "browser.startup.homepage": "about:blank",
+    "browser.startup.homepage_override.mstone": "ignore",
     "browser.usedOnWindows10.introURL": "about:blank",
     "dom.max_chrome_script_run_time": 30,
     "dom.max_script_run_time": 30,
