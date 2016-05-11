@@ -481,7 +481,7 @@ file "build/third_party/java/jetty/jetty-repacked.jar" => [
 end
 
 task "release" => [
-    :clean,
+#    :clean,
     :build,
     '//java/server/src/org/openqa/selenium/remote/server:server:zip',
     '//java/server/src/org/openqa/grid/selenium:selenium:zip',

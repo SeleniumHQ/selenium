@@ -18,117 +18,101 @@
 
 package org.openqa.selenium.server.htmlrunner;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.SeleniumServer;
-import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-
 public class HtmlLauncherUnitTest {
 
-  private SeleniumServer remoteControl;
-  private RemoteControlConfiguration configuration;
-  private File outputFile;
-  private HTMLTestResults results;
-  private HTMLLauncher launcher;
-
-  @Before
-  public void setUp() throws Exception {
-    remoteControl = mock(SeleniumServer.class);
-    configuration = mock(RemoteControlConfiguration.class);
-    results = mock(HTMLTestResults.class);
-    launcher = new HTMLLauncher(remoteControl) {
-      final BrowserLauncher browserLauncher = mock(BrowserLauncher.class);
-
-      @Override
-      protected BrowserLauncher getBrowserLauncher(String browser, String sessionId,
-          RemoteControlConfiguration configuration, Capabilities browserOptions) {
-        return browserLauncher;
-      }
-
-      @Override
-      protected void sleepTight(long timeoutInMs) {
-      }
-
-      @Override
-      protected void writeResults(File outputFile) throws IOException {
-      }
-
-    };
-    when(remoteControl.getConfiguration()).thenReturn(configuration);
-  }
-
-  private void expectOutputFileBehavior() throws Exception {
-    // Expecting behavior on strict mock
-    outputFile = mock(File.class);
-    when(outputFile.createNewFile()).thenReturn(true);
-    when(outputFile.canWrite()).thenReturn(true);
-  }
-
-  @Test(expected = IOException.class)
-  public void runHTMLSuite_throwsExceptionPriorToExecutionWhenOutputFileDoesntExist()
-      throws Exception {
-    // Expecting behavior on strict mock
-    outputFile = mock(File.class);
-    when(outputFile.createNewFile()).thenReturn(true);
-    when(outputFile.canWrite()).thenReturn(false);
-    when(outputFile.getAbsolutePath()).thenReturn("");
-
-    executeAndVerify();
-  }
-
-  @Test
-  public void runHTMLSuite_copiesRemoteControlConfigurationToBrowserOptions() throws Exception {
-    expectOutputFileBehavior();
-    executeAndVerify();
-    verify(configuration).copySettingsIntoBrowserOptions(any(Capabilities.class));
-  }
-
-  @Test
-  public void runHTMLSuite_writesTestResultsWithFileWriter() throws Exception {
-    expectOutputFileBehavior();
-
-    launcher = new HTMLLauncher(remoteControl) {
-      final BrowserLauncher browserLauncher = mock(BrowserLauncher.class);
-      final FileWriter writer = mock(FileWriter.class);
-
-      @Override
-      protected BrowserLauncher getBrowserLauncher(String browser, String sessionId,
-          RemoteControlConfiguration configuration, Capabilities browserOptions) {
-        return browserLauncher;
-      }
-
-      @Override
-      protected void sleepTight(long timeoutInMs) {
-      }
-
-      @Override
-      protected FileWriter getFileWriter(File outputFile)
-          throws IOException {
-        return writer;
-      }
-
-    };
-
-    executeAndVerify();
-    verify(results).write(any(FileWriter.class));
-  }
-
-  private void executeAndVerify() throws Exception {
-    when(results.getResult()).thenReturn("");
-
-    launcher.setResults(results);
-    launcher.runHTMLSuite("", "", "", outputFile, 5, true);
-  }
+//  private SeleniumServer remoteControl;
+//  private RemoteControlConfiguration configuration;
+//  private File outputFile;
+//  private HTMLTestResults results;
+//  private HTMLLauncher launcher;
+//
+//  @Before
+//  public void setUp() throws Exception {
+//    remoteControl = mock(SeleniumServer.class);
+//    configuration = mock(RemoteControlConfiguration.class);
+//    results = mock(HTMLTestResults.class);
+//    launcher = new HTMLLauncher(remoteControl) {
+//      final BrowserLauncher browserLauncher = mock(BrowserLauncher.class);
+//
+//      @Override
+//      protected BrowserLauncher getBrowserLauncher(String browser, String sessionId,
+//          RemoteControlConfiguration configuration, Capabilities browserOptions) {
+//        return browserLauncher;
+//      }
+//
+//      @Override
+//      protected void sleepTight(long timeoutInMs) {
+//      }
+//
+//      @Override
+//      protected void writeResults(File outputFile) throws IOException {
+//      }
+//
+//    };
+//    when(remoteControl.getConfiguration()).thenReturn(configuration);
+//  }
+//
+//  private void expectOutputFileBehavior() throws Exception {
+//    // Expecting behavior on strict mock
+//    outputFile = mock(File.class);
+//    when(outputFile.createNewFile()).thenReturn(true);
+//    when(outputFile.canWrite()).thenReturn(true);
+//  }
+//
+//  @Test(expected = IOException.class)
+//  public void runHTMLSuite_throwsExceptionPriorToExecutionWhenOutputFileDoesntExist()
+//      throws Exception {
+//    // Expecting behavior on strict mock
+//    outputFile = mock(File.class);
+//    when(outputFile.createNewFile()).thenReturn(true);
+//    when(outputFile.canWrite()).thenReturn(false);
+//    when(outputFile.getAbsolutePath()).thenReturn("");
+//
+//    executeAndVerify();
+//  }
+//
+//  @Test
+//  public void runHTMLSuite_copiesRemoteControlConfigurationToBrowserOptions() throws Exception {
+//    expectOutputFileBehavior();
+//    executeAndVerify();
+//    verify(configuration).copySettingsIntoBrowserOptions(any(Capabilities.class));
+//  }
+//
+//  @Test
+//  public void runHTMLSuite_writesTestResultsWithFileWriter() throws Exception {
+//    expectOutputFileBehavior();
+//
+//    launcher = new HTMLLauncher(remoteControl) {
+//      final BrowserLauncher browserLauncher = mock(BrowserLauncher.class);
+//      final FileWriter writer = mock(FileWriter.class);
+//
+//      @Override
+//      protected BrowserLauncher getBrowserLauncher(String browser, String sessionId,
+//          RemoteControlConfiguration configuration, Capabilities browserOptions) {
+//        return browserLauncher;
+//      }
+//
+//      @Override
+//      protected void sleepTight(long timeoutInMs) {
+//      }
+//
+//      @Override
+//      protected FileWriter getFileWriter(File outputFile)
+//          throws IOException {
+//        return writer;
+//      }
+//
+//    };
+//
+//    executeAndVerify();
+//    verify(results).write(any(FileWriter.class));
+//  }
+//
+//  private void executeAndVerify() throws Exception {
+//    when(results.getResult()).thenReturn("");
+//
+//    launcher.setResults(results);
+//    launcher.runHTMLSuite("", "", "", outputFile, 5, true);
+//  }
 
 }
