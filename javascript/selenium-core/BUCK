@@ -6,6 +6,7 @@ zip_file(
   ],
   visibility = [
     '//java/server/src/org/openqa/selenium/server:selenium-core',
+    '//java/server/test/org/openqa/selenium:core-scripts',
   ],
 )
 
