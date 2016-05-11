@@ -46,6 +46,7 @@
                                 <copy todir="src/main/java" includeEmptyDirs="false">
                                     <fileset dir="../../java/client/src">
                                         <include name="**/*.java" />
+                                        <exclude name="com/thoughtworks/selenium/corerunner/**/*" />
                                         <exclude name="org/openqa/selenium/environment/**/*" />
                                         <not>
                                             <or>
