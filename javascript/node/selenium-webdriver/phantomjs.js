@@ -71,6 +71,23 @@ const Command = {
  * @return {string} The located executable.
  * @throws {Error} If the executable cannot be found on the PATH, or if the
  *     provided executable path does not exist.
+ * 
+ *  __Using a Custom PhantomJS Binary__
+ * 
+ * If you have PhantomJS.exe placed somewhere other than the root of your project,
+ * you can build a custom Capability and attach the executable's location to the Capability
+ * 
+ * For example, if you're using the phantomjs-prebuilt module (https://www.npmjs.com/package/phantomjs-prebuilt) from npm:
+ * 
+ * //setup custom phantomJS capability
+ * var phantomjs_exe = require('phantomjs-prebuilt').path;
+ * var customPhantom = selenium.Capabilities.phantomjs();
+ * customPhantom.set("phantomjs.binary.path", phantomjs_exe);
+ * //build custom phantomJS driver
+ * var driver = new selenium.Builder().
+ *        withCapabilities(customPhantom).
+ *        build();
+ * 
  */
 function findExecutable(opt_exe) {
   var exe = opt_exe || io.findInPath(PHANTOMJS_EXE, true);
