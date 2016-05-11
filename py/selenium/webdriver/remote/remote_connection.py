@@ -166,7 +166,7 @@ class RemoteConnection(object):
         # Attempt to resolve the hostname and get an IP address.
         self.keep_alive = keep_alive
         parsed_url = parse.urlparse(remote_server_addr)
-        addr = parsed_url.hostname
+        addr = self.hostname = parsed_url.hostname
         if parsed_url.hostname and resolve_ip:
             port = parsed_url.port or None
             ip = common_utils.find_connectable_ip(parsed_url.hostname,
@@ -421,6 +421,8 @@ class RemoteConnection(object):
                        "User-Agent": "Python http auth",
                        "Content-type": "application/json;charset=\"UTF-8\"",
                        "Accept": "application/json"}
+            if self.hostname:
+                headers["Host"] = self.hostname
             if parsed_url.username:
                 auth = base64.standard_b64encode(('%s:%s' %
                        (parsed_url.username, parsed_url.password)).encode('ascii')).decode('ascii').replace('\n', '')
