@@ -31,9 +31,6 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
-import org.openqa.selenium.browserlaunchers.locators.BrowserLocator;
-import org.openqa.selenium.browserlaunchers.locators.SafariLocator;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.remote.BeanToJsonConverter;
@@ -62,7 +59,7 @@ class SafariDriverCommandExecutor implements CommandExecutor {
   private static final Logger log = Logger.getLogger(SafariDriverCommandExecutor.class.getName());
 
   private final SafariDriverServer server;
-  private final BrowserLocator browserLocator;
+  private final SafariLocator browserLocator;
   private final SessionData sessionData;
   private final boolean cleanSession;
 
@@ -97,7 +94,7 @@ class SafariDriverCommandExecutor implements CommandExecutor {
     }
 
     File connectFile = prepareConnectFile(server.getUri());
-    BrowserInstallation installation = browserLocator.findBrowserLocationOrFail();
+//    BrowserInstallation installation = browserLocator.findBrowserLocationOrFail();
 
     // Older versions of Safari could open a URL from the command line using "Safari -url $URL",
     // but this does not work on the latest versions (5.1.3). On Mac OS X, we can use
@@ -105,7 +102,7 @@ class SafariDriverCommandExecutor implements CommandExecutor {
     // HTML file that redirects to the base of our SafariDriverServer, which kicks off the
     // connection sequence.
     log.info("Launching Safari");
-    commandLine = new CommandLine(installation.launcherFilePath(), connectFile.getAbsolutePath());
+    commandLine = new CommandLine(browserLocator.launcherFilePath(), connectFile.getAbsolutePath());
     commandLine.executeAsync();
 
     Stopwatch stopwatch = Stopwatch.createStarted();

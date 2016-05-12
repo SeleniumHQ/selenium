@@ -4,7 +4,6 @@ java_library(name = "safari",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium:base",
-    "//java/client/src/org/openqa/selenium/browserlaunchers/locators",
     "//java/client/src/org/openqa/selenium/io",
     "//java/client/src/org/openqa/selenium/net",
     "//java/client/src/org/openqa/selenium/os",

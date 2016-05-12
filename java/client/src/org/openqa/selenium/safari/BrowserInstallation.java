@@ -15,15 +15,19 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.browserlaunchers.locators;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+package org.openqa.selenium.safari;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses(value = {
-    FirefoxLocatorUnitTest.class,
-    SingleBrowserLocatorUnitTest.class
-})
-public class RcBrowserLauncherTests {
+class BrowserInstallation {
+
+  private final String launcherFilePath;
+
+  public BrowserInstallation(String launcherFilePath) {
+    this.launcherFilePath = launcherFilePath;
+  }
+
+  public String launcherFilePath() {
+    return launcherFilePath;
+  }
+
 }
