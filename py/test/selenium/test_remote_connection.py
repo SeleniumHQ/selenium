@@ -52,7 +52,7 @@ class TestRemoteConnection(unittest.TestCase):
         self.rc.execute(Command.STATUS, {})
         self.mock_request.assert_called_with('GET', '/wd/hub/status', None, {
             'GET': '/wd/hub/status', 
-            'Host': 'grid.seleniumhq.org', 
+            'Host': REMOTE_HOST,
             'Accept': 'application/json', 
             'User-Agent': 'Python http auth', 
             'Connection': 'keep-alive', 
