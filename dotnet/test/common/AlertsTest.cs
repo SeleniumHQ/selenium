@@ -6,7 +6,6 @@ using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium
 {
-    [IgnoreBrowser(Browser.Edge)]
     [TestFixture]
     public class AlertsTest : DriverTestFixture
     {
@@ -722,6 +721,7 @@ namespace OpenQA.Selenium
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Firefox)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
@@ -743,6 +743,7 @@ namespace OpenQA.Selenium
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Firefox)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
@@ -762,6 +763,7 @@ namespace OpenQA.Selenium
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Firefox)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
