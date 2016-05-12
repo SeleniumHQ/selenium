@@ -66,11 +66,11 @@ class WebDriver(RemoteWebDriver):
             firefox_options = Options()
             firefox_options.binary_location = self.binary if isinstance(self.binary, basestring) else self.binary._get_firefox_start_cmd()
             firefox_options.profile = self.profile
+
+        if capabilities is None:
+            capabilities = firefox_options.to_capabilities()
         else:
-            if capabilities is None:
-                capabilities = firefox_options.to_capabilities()
-            else:
-                capabilities.update(firefox_options.to_capabilities())
+            capabilities.update(firefox_options.to_capabilities())
 
         # marionette
         if capabilities.get("marionette"):
