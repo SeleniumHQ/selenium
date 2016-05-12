@@ -116,11 +116,6 @@ JAVA_RELEASE_TARGETS = [
   '//java/client/src/org/openqa/selenium/remote:remote',
   '//java/client/src/org/openqa/selenium/safari:safari',
   '//java/server/src/com/thoughtworks/selenium:leg-rc',
-
-  # Until we mananage to migrate to Buck entirely.
-  '//java/server/src/org/openqa/grid/selenium:selenium:uber',
-  '//java/server/src/org/openqa/grid/selenium/selenium:zip',
-  '//java/client/src/org/openqa/selenium:client-combined-v3:zip',
 ]
 
 
@@ -536,10 +531,19 @@ end
 #  cp "build/java/client/src/org/openqa/selenium/client-combined-v3.zip", "build/dist/selenium-java-#{version}.zip"
 #end
 
-task :release => JAVA_RELEASE_TARGETS do |t|
+task :release => JAVA_RELEASE_TARGETS + [
+  # Until we mananage to migrate to Buck entirely.
+  '//java/server/src/org/openqa/grid/selenium:selenium:uber',
+  '//java/server/src/org/openqa/grid/selenium:selenium:zip',
+  '//java/client/src/org/openqa/selenium:client-combined-v3:zip',
+ ] do |t|
   puts t.prerequisites.join(', ')
 
   t.prerequisites.each do |p|
+     # Nasty hack to work around buck publish not knowing how to build crazy fun targets
+     if p.to_s.count(':') > 1
+       next
+     end
 #    Buck::buck_cmd.call('publish', "--dry-run --to-maven-central #{p}")
     Buck::buck_cmd.call('build', "#{p}")
   end
