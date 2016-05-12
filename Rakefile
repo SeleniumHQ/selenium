@@ -116,6 +116,11 @@ JAVA_RELEASE_TARGETS = [
   '//java/client/src/org/openqa/selenium/remote:remote',
   '//java/client/src/org/openqa/selenium/safari:safari',
   '//java/server/src/com/thoughtworks/selenium:leg-rc',
+
+  # Until we mananage to migrate to Buck entirely.
+  '//java/server/src/org/openqa/grid/selenium:selenium:uber',
+  '//java/server/src/org/openqa/grid/selenium/selenium:zip',
+  '//java/client/src/org/openqa/selenium:client-combined-v3:zip',
 ]
 
 
@@ -538,6 +543,11 @@ task :release => JAVA_RELEASE_TARGETS do |t|
 #    Buck::buck_cmd.call('publish', "--dry-run --to-maven-central #{p}")
     Buck::buck_cmd.call('build', "#{p}")
   end
+
+  mkdir_p "build/dist"
+  cp "build/java/server/src/org/openqa/grid/selenium/selenium-standalone.jar", "build/dist/selenium-server-standalone-#{version}.jar"
+  cp "build/java/server/src/org/openqa/grid/selenium/selenium.zip", "build/dist/selenium-server-#{version}.zip"
+  cp "build/java/client/src/org/openqa/selenium/client-combined-v3.zip", "build/dist/selenium-java-#{version}.zip"
 end
 
 task :push_release => [:release] do
