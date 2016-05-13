@@ -8,7 +8,7 @@ dotnet_test(name = "chrome",
     "System.Xml.dll",
     "//dotnet/src/webdriver:webdriver",
     "//dotnet/test/common:common",
-    "third_party/dotnet/nunit-3.0.1/net-4.0/nunit.framework.dll"
+    "third_party/dotnet/nunit-3.2.1/net-4.0/nunit.framework.dll"
   ],
   out = "WebDriver.Chrome.Tests.dll",
   files = [

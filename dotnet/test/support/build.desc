@@ -9,7 +9,7 @@ dotnet_test(name = "support",
     "//dotnet/src/support:support",
     "//dotnet/src/webdriver:webdriver",
     "//dotnet/test/common:common",
-    "third_party/dotnet/nunit-3.0.1/net-4.0/nunit.framework.dll",
+    "third_party/dotnet/nunit-3.2.1/net-4.0/nunit.framework.dll",
     "third_party/dotnet/nmock-2.0.0.44/NMock2.dll"
   ],
   out = "WebDriver.Support.Tests.dll",
