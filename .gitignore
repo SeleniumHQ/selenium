@@ -62,6 +62,7 @@ obj/
 *.sdf
 *.vs
 *.opendb
+*.VC.db
 *.aps
 Generated/
 ipch/
