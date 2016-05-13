@@ -31,7 +31,7 @@ java_library(name = "components",
 
 java_library(name = "elements",
   srcs = [
-    'ISelect.java',
+    "ISelect.java",
     "Select.java",
     "Quotes.java",
     "UnexpectedTagNameException.java",
