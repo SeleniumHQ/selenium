@@ -38,12 +38,19 @@ class TouchActions(object):
         self._driver = driver
         self._actions = []
 
+    def _reset_actions(self):
+        """
+        Empty list of current actions
+        """
+        self._actions = []
+
     def perform(self):
         """
         Performs all stored actions.
         """
         for action in self._actions:
             action()
+        self._reset_actions()
 
     def tap(self, on_element):
         """
