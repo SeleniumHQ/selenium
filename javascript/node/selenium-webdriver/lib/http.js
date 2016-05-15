@@ -30,7 +30,7 @@ const error = require('./error');
 const logging = require('./logging');
 const promise = require('./promise');
 const Session = require('./session').Session;
-
+const WebElement = require('./webdriver').WebElement;
 
 
 /**
@@ -409,13 +409,10 @@ function buildPath(path, parameters) {
       let key = pathParameters[i].substring(2);  // Trim the /:
       if (key in parameters) {
         let value = parameters[key];
-        // TODO: move webdriver.WebElement.ELEMENT definition to a
-        // common file so we can reference it here without pulling in all of
-        // webdriver.WebElement's dependencies.
-        if (value && value['ELEMENT']) {
+        if (WebElement.isId(value)) {
           // When inserting a WebElement into the URL, only use its ID value,
           // not the full JSON.
-          value = value['ELEMENT'];
+          value = WebElement.extractId(value);
         }
         path = path.replace(pathParameters[i], '/' + value);
         delete parameters[key];
