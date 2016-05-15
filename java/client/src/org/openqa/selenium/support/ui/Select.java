@@ -28,7 +28,7 @@ import java.util.StringTokenizer;
 /**
  * Models a SELECT tag, providing helper methods to select and deselect options.
  */
-public class Select {
+public class Select implements ISelect{
 
   private final WebElement element;
   private final boolean isMulti;
@@ -109,10 +109,11 @@ public class Select {
    * @param text The visible text to match against
    * @throws NoSuchElementException If no matching option elements are found
    */
+  @Override
   public void selectByVisibleText(String text) {
     // try to find the option via XPATH ...
     List<WebElement> options =
-        element.findElements(By.xpath(".//option[normalize-space(.) = " + Quotes.escape(text) + "]"));
+      element.findElements(By.xpath(".//option[normalize-space(.) = " + Quotes.escape(text) + "]"));
 
     boolean matched = false;
     for (WebElement option : options) {
@@ -132,8 +133,8 @@ public class Select {
       } else {
         // get candidates via XPATH ...
         candidates =
-            element.findElements(By.xpath(".//option[contains(., " +
-                Quotes.escape(subStringWithoutSpace) + ")]"));
+          element.findElements(By.xpath(".//option[contains(., " +
+                                        Quotes.escape(subStringWithoutSpace) + ")]"));
       }
       for (WebElement option : candidates) {
         if (text.equals(option.getText())) {
@@ -193,7 +194,7 @@ public class Select {
    */
   public void selectByValue(String value) {
     List<WebElement> options = element.findElements(By.xpath(
-        ".//option[@value = " + Quotes.escape(value) + "]"));
+      ".//option[@value = " + Quotes.escape(value) + "]"));
 
     boolean matched = false;
     for (WebElement option : options) {
@@ -217,7 +218,7 @@ public class Select {
   public void deselectAll() {
     if (!isMultiple()) {
       throw new UnsupportedOperationException(
-          "You may only deselect all options of a multi-select");
+        "You may only deselect all options of a multi-select");
     }
 
     for (WebElement option : getOptions()) {
@@ -238,11 +239,11 @@ public class Select {
   public void deselectByValue(String value) {
     if (!isMultiple()) {
       throw new UnsupportedOperationException(
-          "You may only deselect options of a multi-select");
+        "You may only deselect options of a multi-select");
     }
-    
+
     List<WebElement> options = element.findElements(By.xpath(
-        ".//option[@value = " + Quotes.escape(value) + "]"));
+      ".//option[@value = " + Quotes.escape(value) + "]"));
     boolean matched = false;
     for (WebElement option : options) {
       setSelected(option, false);
@@ -264,11 +265,11 @@ public class Select {
   public void deselectByIndex(int index) {
     if (!isMultiple()) {
       throw new UnsupportedOperationException(
-          "You may only deselect options of a multi-select");
+        "You may only deselect options of a multi-select");
     }
-    
+
     String match = String.valueOf(index);
-    
+
     for (WebElement option : getOptions()) {
       if (match.equals(option.getAttribute("index"))) {
         setSelected(option, false);
@@ -291,11 +292,11 @@ public class Select {
   public void deselectByVisibleText(String text) {
     if (!isMultiple()) {
       throw new UnsupportedOperationException(
-          "You may only deselect options of a multi-select");
+        "You may only deselect options of a multi-select");
     }
-    
+
     List<WebElement> options = element.findElements(By.xpath(
-        ".//option[normalize-space(.) = " + Quotes.escape(text) + "]"));
+      ".//option[normalize-space(.) = " + Quotes.escape(text) + "]"));
 
     boolean matched = false;
     for (WebElement option : options) {
