@@ -160,7 +160,6 @@ task :remote_common => ["//java/client/src/org/openqa/selenium/remote:common"]
 task :remote_client => ["//java/client/src/org/openqa/selenium/remote"]
 task :remote_server => ["//java/server/src/org/openqa/selenium/remote/server"]
 task :safari => [
-  "//javascript/safari-driver:SafariDriver",
   "//java/client/src/org/openqa/selenium/safari",
 ]
 task :server_lite => ["//java/server/src/org/openqa/selenium/server:server_lite"]
@@ -601,39 +600,10 @@ namespace :node do
 end
 
 namespace :safari do
-  desc "Build the SafariDriver extension"
-  task :extension => [ "//javascript/safari-driver:SafariDriver" ]
-
-  desc "Build the SafariDriver extension and java client"
+  desc "Build the SafariDriver java client"
   task :build => [
-    :extension,
     "//java/client/src/org/openqa/selenium/safari"
   ]
-
-  desc "Run JavaScript tests for Safari"
-  task :testjs => [
-      "//javascript/atoms:test_safari:run",
-      "//javascript/safari-driver:test:run",
-      "//javascript/selenium-atoms:test_safari:run",
-      "//javascript/webdriver:test_safari:run"
-  ]
-
-  desc "Run Java tests for Safari"
-  task :testjava => [
-      "//java/client/test/org/openqa/selenium/safari:test:run"
-  ]
-
-  desc "Run all SafariDriver tests"
-  task :test => [
-      "safari:testjs",
-      "safari:testjava"
-  ]
-
-  desc "Re-install the SafariDriver extension; OSX only"
-  task :reinstall => [ :extension ] do |t|
-    raise StandardError, "Task #{t.name} is only available on OSX" unless mac?
-    sh "osascript javascript/safari-driver/reinstall.scpt"
-  end
 end
 
 namespace :marionette do
