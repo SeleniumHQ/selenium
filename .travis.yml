@@ -41,6 +41,8 @@ script:
       pip install --user virtualenv
       export PATH=$PATH:$HOME/.local/bin
       ./go py_prep_for_install_release //py:phantomjs_test:run
+      pip install tox
+      tox -e py27,py34
     else
       echo 'no Python files changed - skipping Python test suite'
     fi

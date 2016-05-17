@@ -45,13 +45,7 @@ java/client/build/
 java/client/log.txt
 java/client/iedriver.log
 java/server/build/
-*.pyc
 dist/
-py/selenium/webdriver/firefox/amd64/
-py/selenium/webdriver/firefox/webdriver.xpi
-py/selenium/webdriver/firefox/webdriver_prefs.json
-py/selenium/webdriver/firefox/x86/
-py/docs/build/
 selenium.egg-info/
 third_party/java/jetty/jetty-repacked.jar
 *.user
@@ -83,3 +77,4 @@ Gemfile.lock
 .idea/inspectionProfiles/Project_Default.xml
 .idea/misc.xml
 third_party/py/googlestorage/client_secrets.json
+.tox
