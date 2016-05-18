@@ -16,43 +16,32 @@
 # under the License.
 
 
-import pytest
-
 from selenium import webdriver
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
-from selenium.test.selenium.webdriver.common.webserver import SimpleWebServer
 
 class TestMarionetteSpecific:
 
     def setup_method(self, method):
-        firefox_capabilities = DesiredCapabilities.FIREFOX
-        firefox_capabilities['marionette'] = True
-        self.driver = None
-        try:
-            self.driver = webdriver.Firefox(desired_capabilities=firefox_capabilities)
-        except Exception:
-            pass
+        capabilities = {'marionette': True}
+        self.driver = webdriver.Firefox(capabilities=capabilities)
 
         self.CHROME = 'chrome'
         self.CONTENT = 'content'
 
     def test_we_can_switch_context_to_chrome(self):
-        if self.driver is None:
-            pytest.skip("GeckoDriver was not found.")
         self.driver.set_context(self.CHROME)
-        self.driver.execute_script("var c = Components.classes; return 1;");
+        assert 1 == self.driver.execute_script("var c = Components.classes; return 1;")
 
     def teardown_method(self, method):
         try:
             self.driver.set_context(self.CONTENT)
             self.driver.quit()
         except:
-            pass # Don't care since we may have killed the browser above
+            pass  # Don't care since we may have killed the browser above
 
 
 def teardown_module(module):
     try:
         TestMarionetteSpecific.driver.quit()
     except:
-        pass # Don't Care since we may have killed the browser above
+        pass  # Don't Care since we may have killed the browser above
