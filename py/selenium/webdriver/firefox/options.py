@@ -90,7 +90,7 @@ class Options(object):
         if self.binary_location:
             required["binary"] = self.binary_location
         if self._profile:
-            required["profile"] = self._profile.encoded
+            required["firefox_profile"] = self._profile.encoded
         required["args"] = self.arguments
         capabilities = {"requiredCapabilities": required}
         return capabilities
