@@ -43,6 +43,7 @@ class TestFirefoxProfile:
 
     def test_that_we_can_accept_a_profile(self):
         profile1 = webdriver.FirefoxProfile()
+        profile1.set_preference("browser.startup.homepage_override.mstone", "")
         profile1.set_preference("startup.homepage_welcome_url",
             self.webserver.where_is('simpleTest.html'))
         profile1.update_preferences()
