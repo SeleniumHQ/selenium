@@ -16,7 +16,6 @@
 # under the License.
 
 from selenium.common.exceptions import WebDriverException
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 
 
@@ -87,14 +86,11 @@ class Options(object):
 
             returns a dictionary with everything
         """
-        firefox = DesiredCapabilities.FIREFOX.copy()
-        firefox_options = self._firefox_options
+        required = {}
         if self.binary_location:
-            firefox_options["binary"] = self.binary_location
+            required["binary"] = self.binary_location
         if self._profile:
-            firefox_options["profile"] = self._profile
-        firefox_options["args"] = self.arguments
-
-        firefox["requiredCapabilities"] = firefox_options
-
-        return firefox
+            required["profile"] = self._profile.encoded
+        required["args"] = self.arguments
+        capabilities = {"requiredCapabilities": required}
+        return capabilities
