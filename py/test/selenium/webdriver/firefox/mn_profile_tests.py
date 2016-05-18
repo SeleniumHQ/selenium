@@ -15,6 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import os
+
 import pytest
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -47,3 +49,9 @@ def profile():
 
 def test_profile_is_used(driver):
     assert 'about:' == driver.current_url
+
+
+def test_profile_is_deleted(driver, profile):
+    assert os.path.exists(profile.path)
+    driver.quit()
+    assert not os.path.exists(profile.path)
