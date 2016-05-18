@@ -16,38 +16,37 @@
 # under the License.
 
 
-import pytest
-
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 from selenium.test.selenium.webdriver.common.webserver import SimpleWebServer
+
 
 class TestOptions:
 
     def setup_method(self, method):
-        self.firefox_capabilities = DesiredCapabilities.FIREFOX
-        self.firefox_capabilities['marionette'] = True
-        self.driver = None
+        self.webserver = SimpleWebServer()
+        self.webserver.start()
 
     def test_we_can_pass_options(self):
+        capabilities = {'marionette': True}
         options = Options()
-        self.driver = webdriver.Firefox(firefox_options=options)
+        self.driver = webdriver.Firefox(
+            capabilities=capabilities,
+            firefox_options=options)
         self.driver.get(self.webserver.where_is('formPage.html'))
         self.driver.find_element_by_id("cheese")
 
     def teardown_method(self, method):
         try:
-
             self.driver.quit()
         except:
-            pass # Don't care since we may have killed the browser above
+            pass  # Don't care since we may have killed the browser above
+        self.webserver.stop()
 
 
 def teardown_module(module):
     try:
         TestOptions.driver.quit()
     except:
-        pass # Don't Care since we may have killed the browser above
+        pass  # Don't Care since we may have killed the browser above
