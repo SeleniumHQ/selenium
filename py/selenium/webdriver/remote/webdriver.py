@@ -167,11 +167,15 @@ class WebDriver(object):
          - javascript_enabled - Whether the new session should support JavaScript.
          - browser_profile - A selenium.webdriver.firefox.firefox_profile.FirefoxProfile object. Only used if Firefox is requested.
         """
+        capabilities = {}
+        for k, v in desired_capabilities.items():
+            if k not in ('desiredCapabilities', 'requiredCapabilities'):
+                capabilities.setdefault('desiredCapabilities', {})[k] = v
+            else:
+                capabilities[k] = v
         if browser_profile:
-            desired_capabilities['firefox_profile'] = browser_profile.encoded
-        response = self.execute(Command.NEW_SESSION, {
-            'desiredCapabilities': desired_capabilities,
-        })
+            capabilities['requiredCapabilities']['firefox_profile'] = browser_profile.encoded
+        response = self.execute(Command.NEW_SESSION, capabilities)
         self.session_id = response['sessionId']
         self.capabilities = response['value']
 
