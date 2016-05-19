@@ -52,7 +52,7 @@ class DesiredCapabilities(object):
         "version": "",
         "platform": "ANY",
         "javascriptEnabled": True,
-        "marionette": False,
+        "marionette": True,
     }
 
     INTERNETEXPLORER = {

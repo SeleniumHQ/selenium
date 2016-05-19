@@ -20,7 +20,7 @@ py_test(
 
 py_test(
   name = "marionette_test",
-  deps = [ ":test_ff" ],
+  deps = [ ":test_marionette" ],
   browsers = [ "marionette" ])
 
 py_test(

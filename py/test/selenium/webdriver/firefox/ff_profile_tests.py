@@ -37,7 +37,8 @@ from selenium.test.selenium.webdriver.common.webserver import SimpleWebServer
 class TestFirefoxProfile:
 
     def setup_method(self, method):
-        self.driver = webdriver.Firefox()
+        self.capabilities = {'marionette': False}
+        self.driver = webdriver.Firefox(capabilities=self.capabilities)
         self.webserver = SimpleWebServer()
         self.webserver.start()
 
@@ -49,7 +50,9 @@ class TestFirefoxProfile:
         profile1.update_preferences()
 
         profile2 = webdriver.FirefoxProfile(profile1.path)
-        driver = webdriver.Firefox(firefox_profile=profile2)
+        driver = webdriver.Firefox(
+            capabilities=self.capabilities,
+            firefox_profile=profile2)
         title = driver.title
         driver.quit()
         assert "Hello WebDriver" == title
