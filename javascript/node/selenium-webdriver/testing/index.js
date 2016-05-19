@@ -92,16 +92,25 @@ function seal(fn) {
 function wrapped(globalFn) {
   return function() {
     if (arguments.length === 1) {
-      return globalFn(makeAsyncTestFn(arguments[0]));
-    }
-    else if (arguments.length === 2) {
-      return globalFn(arguments[0], makeAsyncTestFn(arguments[1]));
-    }
-    else {
+      return globalFn(wrapArgument(arguments[0]));
+
+    } else if (arguments.length === 2) {
+      return globalFn(arguments[0], wrapArgument(arguments[1]));
+
+    } else {
       throw Error('Invalid # arguments: ' + arguments.length);
     }
   };
 }
+
+
+function wrapArgument(value) {
+  if (typeof value === 'function') {
+    return makeAsyncTestFn(value);
+  }
+  return value;
+}
+
 
 /**
  * Make a wrapper to invoke caller's test function, fn.  Run the test function
