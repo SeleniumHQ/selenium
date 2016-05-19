@@ -236,8 +236,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   @SuppressWarnings({"unchecked"})
   protected void startSession(Capabilities desiredCapabilities,
       Capabilities requiredCapabilities) {
-    System.out.println("startSession " + desiredCapabilities);
-
     ImmutableMap.Builder<String, Capabilities> paramBuilder =
         new ImmutableMap.Builder<String, Capabilities>();
     paramBuilder.put("desiredCapabilities", desiredCapabilities);
