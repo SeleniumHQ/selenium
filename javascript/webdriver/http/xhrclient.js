@@ -19,6 +19,7 @@
 
 goog.provide('webdriver.http.XhrClient');
 
+goog.require('goog.Promise');
 goog.require('goog.net.XmlHttp');
 goog.require('webdriver.http.Client');
 goog.require('webdriver.http.Response');
@@ -41,7 +42,7 @@ webdriver.http.XhrClient = function(url) {
 /** @override */
 webdriver.http.XhrClient.prototype.send = function(request) {
   var url = this.url_ + request.path;
-  return new webdriver.promise.Promise(function(fulfill, reject) {
+  return new goog.Promise(function(fulfill, reject) {
     var xhr = /** @type {!XMLHttpRequest} */ (goog.net.XmlHttp());
     xhr.open(request.method, url, true);
 

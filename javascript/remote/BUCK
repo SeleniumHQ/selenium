@@ -18,9 +18,7 @@ js_binary(name = 'client',
   srcs = glob(['*.js', 'ui/*.js',]),
   deps = [
     '//javascript/atoms:errors',
-    '//javascript/webdriver:base',
     '//javascript/webdriver:http',
-    '//javascript/webdriver:session',
     '//third_party/closure:closure',
   ],
   flags = [

@@ -433,13 +433,6 @@ end
 desc "Calculate dependencies required for testing the automation atoms"
 task :calcdeps => "build/javascript/deps.js"
 
-task :test_webdriverjs => [
-  "//javascript/webdriver:es6_test:run"
-]
-
-desc "Generate a single file with WebDriverJS' public API"
-task :webdriverjs => [ "//javascript/webdriver:webdriver" ]
-
 desc "Repack jetty"
 task "repack-jetty" => "build/third_party/java/jetty/jetty-repacked.jar"
 

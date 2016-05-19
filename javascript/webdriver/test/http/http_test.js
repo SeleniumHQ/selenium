@@ -16,6 +16,7 @@
 // under the License.
 
 goog.require('bot.ErrorCode');
+goog.require('goog.Promise');
 goog.require('goog.Uri');
 goog.require('goog.testing.MockControl');
 goog.require('goog.testing.jsunit');
@@ -23,7 +24,6 @@ goog.require('goog.userAgent');
 goog.require('webdriver.Command');
 goog.require('webdriver.http.Client');
 goog.require('webdriver.http.Executor');
-goog.require('webdriver.promise');
 goog.require('webdriver.test.testutil');
 
 // Alias for readability.
@@ -88,9 +88,9 @@ function response(status, headers, body) {
 function respondsWith(error, opt_response) {
   return function() {
     if (error) {
-      return webdriver.promise.rejected(error);
+      return goog.Promise.reject(error);
     } else {
-      return webdriver.promise.fulfilled(opt_response);
+      return goog.Promise.resolve(opt_response);
     }
   };
 }

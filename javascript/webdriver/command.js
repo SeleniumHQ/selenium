@@ -241,7 +241,7 @@ webdriver.CommandExecutor = function() {};
  * Otherwise, the callback will be invoked with a null Error and non-null
  * {@link bot.response.ResponseObject} object.
  * @param {!webdriver.Command} command The command to execute.
- * @return {!webdriver.promise.Promise<!bot.response.ResponseObject>} A promise
+ * @return {!goog.Promise<!bot.response.ResponseObject>} A promise
  *     that will be fulfilled with the command result.
  */
 webdriver.CommandExecutor.prototype.execute = goog.abstractMethod;
