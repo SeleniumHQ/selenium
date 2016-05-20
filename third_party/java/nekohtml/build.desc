@@ -1,4 +1,0 @@
-java_library(name = "nekohtml",
-  deps = [
-    "nekohtml-1.9.22.jar"
-  ])
