@@ -15,10 +15,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import pytest
 import unittest
+
+import pytest
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import InvalidSelectorException, NoSuchElementException
+from selenium.common.exceptions import (
+    InvalidSelectorException,
+    NoSuchElementException)
 
 
 class DriverElementFindingTests(unittest.TestCase):
@@ -48,11 +51,8 @@ class DriverElementFindingTests(unittest.TestCase):
 
     def test_Should_Not_Be_Able_To_Locate_By_Id_ASingle_Element_That_Does_Not_Exist(self):
         self._load_page("formPage")
-        try:
+        with pytest.raises(NoSuchElementException):
             self.driver.find_element(By.ID, "non_Existent_Button")
-            self.fail("Should have thrown NoSuchElementException")
-        except NoSuchElementException:
-            pass
 
     def test_Should_Not_Be_Able_To_Locate_By_Id_Multiple_Elements_That_Do_Not_Exist(self):
         self._load_page("formPage")
@@ -62,11 +62,8 @@ class DriverElementFindingTests(unittest.TestCase):
     @pytest.mark.ignore_phantomjs
     def test_Finding_ASingle_Element_By_Empty_Id_Should_Throw(self):
         self._load_page("formPage")
-        try:
+        with pytest.raises(NoSuchElementException):
             self.driver.find_element(By.ID, "")
-            self.fail("Should have thrown NoSuchElementException")
-        except NoSuchElementException:
-            pass
 
     @pytest.mark.ignore_phantomjs
     def test_Finding_Multiple_Elements_By_Empty_Id_Should_Return_Empty_List(self):
@@ -76,11 +73,8 @@ class DriverElementFindingTests(unittest.TestCase):
 
     def test_Finding_ASingle_Element_By_Id_With_Space_Should_Throw(self):
         self._load_page("formPage")
-        try:
+        with pytest.raises(NoSuchElementException):
             self.driver.find_element(By.ID, "nonexistent button")
-            self.fail("Should have thrown NoSuchElementException")
-        except NoSuchElementException:
-            pass
 
     def test_Finding_Multiple_Elements_By_Id_With_Space_Should_Return_Empty_List(self):
         self._load_page("formPage")
@@ -108,11 +102,8 @@ class DriverElementFindingTests(unittest.TestCase):
 
     def test_Should_Not_Be_Able_To_Locate_By_Name_ASingle_Element_That_Does_Not_Exist(self):
         self._load_page("formPage")
-        try:
+        with pytest.raises(NoSuchElementException):
             self.driver.find_element(By.NAME, "non_Existent_Button")
-            self.fail("Should have thrown NoSuchElementException")
-        except NoSuchElementException:
-            pass
 
     def test_Should_Not_Be_Able_To_Locate_By_Name_Multiple_Elements_That_Do_Not_Exist(self):
         self._load_page("formPage")
@@ -122,11 +113,8 @@ class DriverElementFindingTests(unittest.TestCase):
     @pytest.mark.ignore_phantomjs
     def test_Finding_ASingle_Element_By_Empty_Name_Should_Throw(self):
         self._load_page("formPage")
-        try:
+        with pytest.raises(NoSuchElementException):
             self.driver.find_element(By.NAME, "")
-            self.fail("Should have thrown a NoSuchElementException")
-        except NoSuchElementException:
-            pass
 
     @pytest.mark.ignore_phantomjs
     def test_Finding_Multiple_Elements_By_Empty_Name_Should_Return_Empty_List(self):
@@ -137,11 +125,8 @@ class DriverElementFindingTests(unittest.TestCase):
     #Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
     def test_Finding_ASingle_Element_By_Name_With_Space_Should_Throw(self):
         self._load_page("formPage")
-        try:
+        with pytest.raises(NoSuchElementException):
             self.driver.find_element(By.NAME, "nonexistent button")
-            self.fail("Should have thrown a NoSuchElementException")
-        except NoSuchElementException:
-            pass
 
     #Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
     def test_Finding_Multiple_Elements_By_Name_With_Space_Should_Return_Empty_List(self):
@@ -165,11 +150,8 @@ class DriverElementFindingTests(unittest.TestCase):
 
     def test_Should_Not_Be_Able_To_Locate_By_Tag_Name_ASingle_Element_That_Does_Not_Exist(self):
         self._load_page("formPage")
-        try:
+        with pytest.raises(NoSuchElementException):
             self.driver.find_element(By.TAG_NAME, "non_Existent_Button")
-            self.fail("Should have thrown a NoSuchElementException")
-        except NoSuchElementException:
-            pass
 
     def test_Should_Not_Be_Able_To_Locate_By_Tag_Name_Multiple_Elements_That_Do_Not_Exist(self):
         self._load_page("formPage")
@@ -179,28 +161,19 @@ class DriverElementFindingTests(unittest.TestCase):
     @pytest.mark.ignore_phantomjs
     def test_Finding_ASingle_Element_By_Empty_Tag_Name_Should_Throw(self):
         self._load_page("formPage")
-        try:
+        with pytest.raises(InvalidSelectorException):
             self.driver.find_element(By.TAG_NAME, "")
-            self.fail("Should have thrown an InvalidSelectorException")
-        except InvalidSelectorException:
-            pass
 
     @pytest.mark.ignore_phantomjs
     def test_Finding_Multiple_Elements_By_Empty_Tag_Name_Should_Return_Empty_List(self):
         self._load_page("formPage")
-        try:
+        with pytest.raises(InvalidSelectorException):
             self.driver.find_elements(By.TAG_NAME, "")
-            self.fail("Should have thrown an InvalidSelectorException")
-        except InvalidSelectorException:
-            pass
 
     def test_Finding_ASingle_Element_By_Tag_Name_With_Space_Should_Throw(self):
         self._load_page("formPage")
-        try:
+        with pytest.raises(NoSuchElementException):
             self.driver.find_element(By.TAG_NAME, "nonexistent button")
-            self.fail("Should have thrown a NoSuchElementException")
-        except NoSuchElementException:
-            pass
 
     def test_Finding_Multiple_Elements_By_Tag_Name_With_Space_Should_Return_Empty_List(self):
         self._load_page("formPage")
@@ -249,65 +222,44 @@ class DriverElementFindingTests(unittest.TestCase):
 
     def test_Should_Not_Find_Element_By_Class_When_The_Name_Queried_Is_Shorter_Than_Candidate_Name(self):
         self._load_page("xhtmlTest")
-        try:
+        with pytest.raises(NoSuchElementException):
             self.driver.find_element(By.CLASS_NAME, "name_B")
-            self.fail("Should have thrown a NoSuchElementException")
-        except NoSuchElementException:
-            pass
 
     @pytest.mark.ignore_phantomjs
     def test_Finding_ASingle_Element_By_Empty_Class_Name_Should_Throw(self):
         self._load_page("xhtmlTest")
-        try:
+        with pytest.raises(NoSuchElementException):
             self.driver.find_element(By.CLASS_NAME, "")
-            self.fail("Should have thrown a NoSuchElementException")
-        except NoSuchElementException:
-            pass
 
     @pytest.mark.ignore_phantomjs
     def test_Finding_Multiple_Elements_By_Empty_Class_Name_Should_Throw(self):
         self._load_page("xhtmlTest")
-        try:
+        with pytest.raises(NoSuchElementException):
             self.driver.find_elements(By.CLASS_NAME, "")
-            self.fail("Should have thrown a NoSuchElementException")
-        except NoSuchElementException:
-            pass
 
     @pytest.mark.ignore_phantomjs
     def test_Finding_ASingle_Element_By_Compound_Class_Name_Should_Throw(self):
         self._load_page("xhtmlTest")
-        try:
+        with pytest.raises(NoSuchElementException):
             self.driver.find_element(By.CLASS_NAME, "a b")
-            self.fail("Should have thrown a NoSuchElementException")
-        except NoSuchElementException:
-            pass
 
     @pytest.mark.ignore_phantomjs
     def test_Finding_Multiple_Elements_By_Compound_Class_Name_Should_Throw(self):
         self._load_page("xhtmlTest")
-        try:
+        with pytest.raises(NoSuchElementException):
             self.driver.find_elements(By.CLASS_NAME, "a b")
-            self.fail("Should have thrown a NoSuchElementException")
-        except NoSuchElementException:
-            pass
 
     @pytest.mark.ignore_phantomjs
     def test_Finding_ASingle_Element_By_Invalid_Class_Name_Should_Throw(self):
         self._load_page("xhtmlTest")
-        try:
+        with pytest.raises(NoSuchElementException):
             self.driver.find_element(By.CLASS_NAME, "!@#$%^&*")
-            self.fail("Should have thrown a NoSuchElementException")
-        except NoSuchElementException:
-            pass
 
     @pytest.mark.ignore_phantomjs
     def test_Finding_Multiple_Elements_By_Invalid_Class_Name_Should_Throw(self):
         self._load_page("xhtmlTest")
-        try:
+        with pytest.raises(NoSuchElementException):
             self.driver.find_elements(By.CLASS_NAME, "!@#$%^&*")
-            self.fail("Should have thrown a NoSuchElementException")
-        except NoSuchElementException:
-            pass
 
     # By.xpath positive
 
@@ -371,89 +323,61 @@ class DriverElementFindingTests(unittest.TestCase):
 
     def test_Should_Throw_An_Exception_When_There_Is_No_Link_To_Click(self):
         self._load_page("xhtmlTest")
-        try:
+        with pytest.raises(NoSuchElementException):
             self.driver.find_element(By.XPATH, "//a[@id='Not here']")
-            self.fail("Should have thrown a NoSuchElementException")
-        except NoSuchElementException:
-            pass
 
     #Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
 
     def test_Should_Throw_InvalidSelectorException_When_XPath_Is_Syntactically_Invalid_In_Driver_Find_Element(self):
         self._load_page("formPage")
-        try:
+        with pytest.raises(InvalidSelectorException):
             self.driver.find_element(By.XPATH, "this][isnot][valid")
-            self.fail("Should have thrown a InvalidSelectorException")
-        except InvalidSelectorException:
-            pass
 
     #Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
     def test_Should_Throw_InvalidSelectorException_When_XPath_Is_Syntactically_Invalid_In_Driver_Find_Elements(self):
         self._load_page("formPage")
-        try:
+        with pytest.raises(InvalidSelectorException):
             self.driver.find_elements(By.XPATH, "this][isnot][valid")
-            self.fail("Should have thrown a InvalidSelectorException")
-        except InvalidSelectorException:
-            pass
 
     #Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
     def test_Should_Throw_InvalidSelectorException_When_XPath_Is_Syntactically_Invalid_In_Element_Find_Element(self):
         self._load_page("formPage")
         body = self.driver.find_element(By.TAG_NAME, "body")
-        try:
+        with pytest.raises(InvalidSelectorException):
             body.find_element(By.XPATH, "this][isnot][valid")
-            self.fail("Should have thrown a InvalidSelectorException")
-        except InvalidSelectorException:
-            pass
 
     #Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
     def test_Should_Throw_InvalidSelectorException_When_XPath_Is_Syntactically_Invalid_In_Element_Find_Elements(self):
         self._load_page("formPage")
         body = self.driver.find_element(By.TAG_NAME, "body")
-        try:
+        with pytest.raises(InvalidSelectorException):
             body.find_elements(By.XPATH, "this][isnot][valid")
-            self.fail("Should have thrown a InvalidSelectorException")
-        except InvalidSelectorException:
-            pass
 
     #Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
     def test_Should_Throw_InvalidSelectorException_When_XPath_Returns_Wrong_Type_In_Driver_Find_Element(self):
         self._load_page("formPage")
-        try:
+        with pytest.raises(InvalidSelectorException):
             self.driver.find_element(By.XPATH, "count(//input)")
-            self.fail("Should have thrown a InvalidSelectorException")
-        except InvalidSelectorException:
-            pass
 
     #Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
     def test_Should_Throw_InvalidSelectorException_When_XPath_Returns_Wrong_Type_In_Driver_Find_Elements(self):
         self._load_page("formPage")
-        try:
+        with pytest.raises(InvalidSelectorException):
             self.driver.find_elements(By.XPATH, "count(//input)")
-            self.fail("Should have thrown a InvalidSelectorException")
-        except InvalidSelectorException:
-            pass
 
     #Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
     def test_Should_Throw_InvalidSelectorException_When_XPath_Returns_Wrong_Type_In_Element_Find_Element(self):
         self._load_page("formPage")
-
         body = self.driver.find_element(By.TAG_NAME, "body")
-        try:
+        with pytest.raises(InvalidSelectorException):
             body.find_element(By.XPATH, "count(//input)")
-            self.fail("Should have thrown a InvalidSelectorException")
-        except InvalidSelectorException:
-            pass
 
     #Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
     def test_Should_Throw_InvalidSelectorException_When_XPath_Returns_Wrong_Type_In_Element_Find_Elements(self):
         self._load_page("formPage")
         body = self.driver.find_element(By.TAG_NAME, "body")
-        try:
+        with pytest.raises(InvalidSelectorException):
             body.find_elements(By.XPATH, "count(//input)")
-            self.fail("Should have thrown a InvalidSelectorException")
-        except InvalidSelectorException:
-            pass
 
     # By.css_Selector positive
 
@@ -500,11 +424,8 @@ class DriverElementFindingTests(unittest.TestCase):
 
     def test_Should_Not_Find_Element_By_Css_Selector_When_There_Is_No_Such_Element(self):
         self._load_page("xhtmlTest")
-        try:
+        with pytest.raises(NoSuchElementException):
             self.driver.find_element(By.CSS_SELECTOR, ".there-is-no-such-class")
-            self.fail("Should have thrown a NoSuchElementException")
-        except NoSuchElementException:
-            pass
 
     def test_Should_Not_Find_Elements_By_Css_Selector_When_There_Is_No_Such_Element(self):
         self._load_page("xhtmlTest")
@@ -514,38 +435,26 @@ class DriverElementFindingTests(unittest.TestCase):
     @pytest.mark.ignore_phantomjs
     def test_Finding_ASingle_Element_By_Empty_Css_Selector_Should_Throw(self):
         self._load_page("xhtmlTest")
-        try:
+        with pytest.raises(NoSuchElementException):
             self.driver.find_element(By.CSS_SELECTOR, "")
-            self.fail("Should have thrown a NoSuchElementException")
-        except NoSuchElementException:
-            pass
 
     @pytest.mark.ignore_phantomjs
     def test_Finding_Multiple_Elements_By_Empty_Css_Selector_Should_Throw(self):
         self._load_page("xhtmlTest")
-        try:
+        with pytest.raises(NoSuchElementException):
             self.driver.find_elements(By.CSS_SELECTOR, "")
-            self.fail("Should have thrown a NoSuchElementException")
-        except NoSuchElementException:
-            pass
 
     @pytest.mark.ignore_phantomjs
     def test_Finding_ASingle_Element_By_Invalid_Css_Selector_Should_Throw(self):
         self._load_page("xhtmlTest")
-        try:
+        with pytest.raises(NoSuchElementException):
             self.driver.find_element(By.CSS_SELECTOR, "//a/b/c[@id='1']")
-            self.fail("Should have thrown a NoSuchElementException")
-        except NoSuchElementException:
-            pass
 
     @pytest.mark.ignore_phantomjs
     def test_Finding_Multiple_Elements_By_Invalid_Css_Selector_Should_Throw(self):
         self._load_page("xhtmlTest")
-        try:
+        with pytest.raises(NoSuchElementException):
             self.driver.find_elements(By.CSS_SELECTOR, "//a/b/c[@id='1']")
-            self.fail("Should have thrown a NoSuchElementException")
-        except NoSuchElementException:
-            pass
 
     # By.link_Text positive
 
@@ -595,11 +504,8 @@ class DriverElementFindingTests(unittest.TestCase):
 
     def test_Should_Not_Be_Able_To_Locate_By_Link_Text_ASingle_Element_That_Does_Not_Exist(self):
         self._load_page("xhtmlTest")
-        try:
+        with pytest.raises(NoSuchElementException):
             self.driver.find_element(By.LINK_TEXT, "Not here either")
-            self.fail("Should have thrown a NoSuchElementException")
-        except NoSuchElementException:
-            pass
 
     def test_Should_Not_Be_Able_To_Locate_By_Link_Text_Multiple_Elements_That_Do_Not_Exist(self):
         self._load_page("xhtmlTest")
@@ -661,11 +567,8 @@ class DriverElementFindingTests(unittest.TestCase):
 
     def test_Should_Not_Be_Able_To_Find_An_Element_On_ABlank_Page(self):
         self.driver.get("about:blank")
-        try:
+        with pytest.raises(NoSuchElementException):
             self.driver.find_element(By.TAG_NAME, "a")
-            self.fail("Should have thrown NoSuchElementException")
-        except NoSuchElementException:
-            pass
 
     def _page_url(self, name):
         return self.webserver.where_is(name + '.html')
