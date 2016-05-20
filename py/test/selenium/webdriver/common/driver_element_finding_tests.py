@@ -122,13 +122,11 @@ class DriverElementFindingTests(unittest.TestCase):
         elements = self.driver.find_elements(By.NAME, "")
         self.assertEqual(len(elements), 0)
 
-    #Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
     def test_Finding_ASingle_Element_By_Name_With_Space_Should_Throw(self):
         self._load_page("formPage")
         with pytest.raises(NoSuchElementException):
             self.driver.find_element(By.NAME, "nonexistent button")
 
-    #Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
     def test_Finding_Multiple_Elements_By_Name_With_Space_Should_Return_Empty_List(self):
         self._load_page("formPage")
         elements = self.driver.find_elements(By.NAME, "nonexistent button")
@@ -326,53 +324,44 @@ class DriverElementFindingTests(unittest.TestCase):
         with pytest.raises(NoSuchElementException):
             self.driver.find_element(By.XPATH, "//a[@id='Not here']")
 
-    #Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
-
     def test_Should_Throw_InvalidSelectorException_When_XPath_Is_Syntactically_Invalid_In_Driver_Find_Element(self):
         self._load_page("formPage")
         with pytest.raises(InvalidSelectorException):
             self.driver.find_element(By.XPATH, "this][isnot][valid")
 
-    #Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
     def test_Should_Throw_InvalidSelectorException_When_XPath_Is_Syntactically_Invalid_In_Driver_Find_Elements(self):
         self._load_page("formPage")
         with pytest.raises(InvalidSelectorException):
             self.driver.find_elements(By.XPATH, "this][isnot][valid")
 
-    #Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
     def test_Should_Throw_InvalidSelectorException_When_XPath_Is_Syntactically_Invalid_In_Element_Find_Element(self):
         self._load_page("formPage")
         body = self.driver.find_element(By.TAG_NAME, "body")
         with pytest.raises(InvalidSelectorException):
             body.find_element(By.XPATH, "this][isnot][valid")
 
-    #Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
     def test_Should_Throw_InvalidSelectorException_When_XPath_Is_Syntactically_Invalid_In_Element_Find_Elements(self):
         self._load_page("formPage")
         body = self.driver.find_element(By.TAG_NAME, "body")
         with pytest.raises(InvalidSelectorException):
             body.find_elements(By.XPATH, "this][isnot][valid")
 
-    #Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
     def test_Should_Throw_InvalidSelectorException_When_XPath_Returns_Wrong_Type_In_Driver_Find_Element(self):
         self._load_page("formPage")
         with pytest.raises(InvalidSelectorException):
             self.driver.find_element(By.XPATH, "count(//input)")
 
-    #Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
     def test_Should_Throw_InvalidSelectorException_When_XPath_Returns_Wrong_Type_In_Driver_Find_Elements(self):
         self._load_page("formPage")
         with pytest.raises(InvalidSelectorException):
             self.driver.find_elements(By.XPATH, "count(//input)")
 
-    #Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
     def test_Should_Throw_InvalidSelectorException_When_XPath_Returns_Wrong_Type_In_Element_Find_Element(self):
         self._load_page("formPage")
         body = self.driver.find_element(By.TAG_NAME, "body")
         with pytest.raises(InvalidSelectorException):
             body.find_element(By.XPATH, "count(//input)")
 
-    #Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
     def test_Should_Throw_InvalidSelectorException_When_XPath_Returns_Wrong_Type_In_Element_Find_Elements(self):
         self._load_page("formPage")
         body = self.driver.find_element(By.TAG_NAME, "body")
@@ -479,7 +468,6 @@ class DriverElementFindingTests(unittest.TestCase):
         self.assertEquals(1, len(elements))
         self.assertEqual(elements[0].get_attribute("id"), "linkWithEqualsSign")
 
-    #Ignore({MARIONETTE})
     def finds_By_Link_Text_On_Xhtml_Page(self):
         self.driver.get(self.webserver.where_is("actualXhtmlPage.xhtml"))
         link_Text = "Foo"
@@ -493,7 +481,6 @@ class DriverElementFindingTests(unittest.TestCase):
         res = elem.find_element(By.PARTIAL_LINK_TEXT, "link with formatting tags")
         self.assertEqual(res.text, "link with formatting tags")
 
-    #Ignore(MARIONETTE)
     def test_Driver_Can_Get_Link_By_Link_Test_Ignoring_Trailing_Whitespace(self):
         self._load_page("simpleTest")
         link = self.driver.find_element(By.LINK_TEXT, "link with trailing space")
