@@ -1,7 +1,7 @@
 java_library(name = "htmlunit",
   deps = [
-    "htmlunit-driver-2.20.0-SNAPSHOT.jar",
-    "htmlunit-2.20.jar",
+    "htmlunit-driver-2.21.jar",
+    "htmlunit-2.21.jar",
     "htmlunit-core-js-2.17.jar",
     "//third_party/java/commons:commons-lang",
     "//third_party/java/commons-collections",
