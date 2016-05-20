@@ -39,9 +39,9 @@
 	<classpathentry kind="lib" path="/third-party/java/slf4j/slf4j-api-1.6.6.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/slf4j/slf4j-jdk14-1.6.6.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/gson/gson-2.3.1.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/websocket/websocket-api-9.2.13.v20150730.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/websocket/websocket-client-9.2.13.v20150730.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/websocket/websocket-common-9.2.13.v20150730.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/websocket/websocket-api-9.2.15.v20160210.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/websocket/websocket-client-9.2.15.v20160210.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/websocket/websocket-common-9.2.15.v20160210.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/jetty/jetty-io-9.2.13.v20150730.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/jetty/jetty-util-9.2.13.v20150730.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/testng/testng-6.9.9.jar" sourcepath="/third-party/java/testng/testng-6.9.9-sources.jar"/>
