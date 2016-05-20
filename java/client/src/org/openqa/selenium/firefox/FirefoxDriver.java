@@ -130,13 +130,11 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   public FirefoxDriver(Capabilities desiredCapabilities) {
     this(getBinary(desiredCapabilities), extractProfile(desiredCapabilities, null),
         desiredCapabilities);
-    System.out.println("FirefoxDriver " + desiredCapabilities);
   }
 
   public FirefoxDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
     this(getBinary(desiredCapabilities), extractProfile(desiredCapabilities, requiredCapabilities),
         desiredCapabilities, requiredCapabilities);
-    System.out.println("FirefoxDriver " + desiredCapabilities + " " + requiredCapabilities);
   }
 
   private static FirefoxProfile extractProfile(Capabilities desiredCapabilities,
@@ -228,7 +226,7 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
                                                              FirefoxBinary binary,
                                                              FirefoxProfile profile) {
     Object marionette = desiredCapabilities.getCapability(MARIONETTE);
-    if (marionette != null && marionette instanceof Boolean && !(Boolean) marionette) {
+    if (marionette instanceof Boolean && !(Boolean) marionette) {
       return new LazyCommandExecutor(binary, profile);
     } else {
       GeckoDriverService.Builder builder = new GeckoDriverService.Builder();
