@@ -48,7 +48,7 @@ class ChildrenFindingTests(unittest.TestCase):
         self._load_page("nestedElements")
         element = self.driver.find_element_by_name("form2")
         children = element.find_elements_by_xpath("select/option")
-        self.assertEqual(len(children), 8);
+        self.assertEqual(len(children), 8)
         self.assertEqual(children[0].text, "One")
         self.assertEqual(children[1].text, "Two")
 
