@@ -115,7 +115,11 @@ exports.ableToSwitchToFrame = function ableToSwitchToFrame(frame) {
 exports.alertIsPresent = function alertIsPresent() {
   return new Condition('for alert to be present', function(driver) {
     return driver.switchTo().alert().catch(function(e) {
-      if (!(e instanceof error.NoSuchAlertError)) {
+      if (!(e instanceof error.NoSuchAlertError
+        // XXX: Workaround for GeckoDriver error `TypeError: can't convert null
+        // to object`. For more details, see
+        // https://github.com/SeleniumHQ/selenium/pull/2137
+        || e instanceof error.WebDriverError)) {
         throw e;
       }
     });
