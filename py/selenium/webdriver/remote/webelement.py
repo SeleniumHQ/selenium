@@ -26,7 +26,6 @@ import base64
 
 from .command import Command
 from selenium.common.exceptions import WebDriverException
-from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
 
@@ -457,9 +456,6 @@ class WebElement(object):
         return self._parent.execute(command, params)
 
     def find_element(self, by=By.ID, value=None):
-        if not By.is_valid(by) or not isinstance(value, str):
-            raise InvalidSelectorException("Invalid locator values passed in")
-
         if self._w3c:
             if by == By.ID:
                 by = By.CSS_SELECTOR
@@ -477,9 +473,6 @@ class WebElement(object):
                              {"using": by, "value": value})['value']
 
     def find_elements(self, by=By.ID, value=None):
-        if not By.is_valid(by) or not isinstance(value, str):
-            raise InvalidSelectorException("Invalid locator values passed in")
-
         if self._w3c:
             if by == By.ID:
                 by = By.CSS_SELECTOR

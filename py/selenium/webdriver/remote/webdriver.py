@@ -29,7 +29,6 @@ from .switch_to import SwitchTo
 from .mobile import Mobile
 from .file_detector import FileDetector, LocalFileDetector
 from selenium.common.exceptions import WebDriverException
-from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 
@@ -730,8 +729,6 @@ class WebDriver(object):
 
         :rtype: WebElement
         """
-        if not By.is_valid(by) or not isinstance(value, str):
-            raise InvalidSelectorException("Invalid locator values passed in")
         if self.w3c:
             if by == By.ID:
                 by = By.CSS_SELECTOR
@@ -756,8 +753,6 @@ class WebDriver(object):
 
         :rtype: list of WebElement
         """
-        if not By.is_valid(by) or not isinstance(value, str):
-            raise InvalidSelectorException("Invalid locator values passed in")
         if self.w3c:
             if by == By.ID:
                 by = By.CSS_SELECTOR
