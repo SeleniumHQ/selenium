@@ -206,21 +206,6 @@ class Binary {
   }
 
   /**
-   * Specifies whether to use Firefox Developer Edition instead of the normal
-   * stable channel. Setting this option has no effect if this instance was
-   * created with a path to a specific Firefox binary.
-   *
-   * This method has no effect on Unix systems where the Firefox application
-   * has the same (default) name regardless of version.
-   *
-   * @param {boolean=} opt_use Whether to use the developer edition. Defaults to
-   *     true.
-   */
-  useDevEdition(opt_use) {
-    this.devEdition_ = opt_use === undefined || !!opt_use;
-  }
-
-  /**
    * Returns a promise for the Firefox executable used by this instance. The
    * returned promise will be immediately resolved if the user supplied an
    * executable path when this instance was created. Otherwise, an attempt will
@@ -277,4 +262,3 @@ class Binary {
 
 
 exports.Binary = Binary;
-
