@@ -34,11 +34,8 @@ class ChildrenFindingTests(unittest.TestCase):
     def test_should_not_find_element_by_xpath(self):
         self._load_page("nestedElements")
         element = self.driver.find_element_by_name("form2")
-        try:
+        with pytest.raises(NoSuchElementException):
             element.find_element_by_xpath("select/x")
-            self.fail("Expected NoSuchElementException to have been thrown")
-        except NoSuchElementException as e:
-            pass
 
     def test_finding_dot_slash_elements_on_element_by_xpath_should_find_not_top_level_elements(self):
         self._load_simple_page()
@@ -101,11 +98,8 @@ class ChildrenFindingTests(unittest.TestCase):
     def test_should_find_element_by_id_when_no_match_in_context(self):
         self._load_page("nestedElements")
         element = self.driver.find_element_by_id("test_id_div")
-        try:
+        with pytest.raises(NoSuchElementException):
             element.find_element_by_id("test_id_out")
-            self.fail("Expected NoSuchElementException to have been thrown")
-        except NoSuchElementException as e:
-            pass
 
     def test_should_find_element_by_link_text(self):
         self._load_page("nestedElements")
