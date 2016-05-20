@@ -278,7 +278,7 @@ class DriverElementFindingTests(unittest.TestCase):
         xpath = "//node()[contains(@id,'id')]"
         self.assertEqual(len(self.driver.find_elements(By.XPATH, xpath)), 3)
 
-        xpath= "//node()[contains(@id,'nope')]"
+        xpath = "//node()[contains(@id,'nope')]"
         self.assertEqual(len(self.driver.find_elements(By.XPATH, xpath)), 0)
 
     def test_Should_Be_Able_To_Identify_Elements_By_Class(self):
