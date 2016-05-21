@@ -77,7 +77,7 @@ public class AlertOverride {
       );
   }
 
-  private void checkOverridesEnabled(){
+  private void checkOverridesEnabled() {
     checkState(enableOverrides,
           "Selenium alert overrides have been disabled; please use the underlying WebDriver API");
   }

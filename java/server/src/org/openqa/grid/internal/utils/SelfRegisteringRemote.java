@@ -61,7 +61,7 @@ public class SelfRegisteringRemote {
 
     try {
       GridHubConfiguration hubConfiguration = getHubConfiguration();
-      if (hubConfiguration.timeout != null){
+      if (hubConfiguration.timeout != null) {
         nodeConfig.getConfiguration().timeout = hubConfiguration.timeout;
       }
       if (hubConfiguration.browserTimeout != null) {

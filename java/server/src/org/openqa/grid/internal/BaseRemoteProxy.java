@@ -292,7 +292,7 @@ public class BaseRemoteProxy implements RemoteProxy {
                     + " has TIMED OUT due to client inactivity and will be released.");
             try {
               ((TimeoutListener) proxy).beforeRelease(session);
-            } catch(IllegalStateException ignore){
+            } catch(IllegalStateException ignore) {
               log.log(Level.WARNING, ignore.getMessage());
             }
             registry.terminate(session, SessionTerminationReason.TIMEOUT);
@@ -304,7 +304,7 @@ public class BaseRemoteProxy implements RemoteProxy {
               "session " + session + " has been ORPHANED and will be released");
           try {
             ((TimeoutListener) proxy).beforeRelease(session);
-          } catch(IllegalStateException ignore){
+          } catch(IllegalStateException ignore) {
             log.log(Level.WARNING, ignore.getMessage());
           }
           registry.terminate(session, SessionTerminationReason.ORPHAN);

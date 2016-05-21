@@ -91,7 +91,7 @@ public class DefaultElementLocator implements ElementLocator {
   }
 
   @Override
-  public String toString(){
+  public String toString() {
     return this.getClass().getSimpleName() + " '" + by + "'";
   }
 }

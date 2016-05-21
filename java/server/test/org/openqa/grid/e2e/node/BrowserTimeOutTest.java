@@ -76,7 +76,7 @@ public class BrowserTimeOutTest {
 
     try {
       driver.get(url);
-    } catch(WebDriverException ignore){
+    } catch(WebDriverException ignore) {
     } finally {
       RegistryTestHelper.waitForActiveTestSessionCount(hub.getRegistry(), 0);
     }

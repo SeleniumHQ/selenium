@@ -165,7 +165,7 @@ public class DefaultSession implements Session {
 
 
   public <X> X execute(final FutureTask<X> future) throws Exception {
-/*    if (executor.isShutdown()){
+/*    if (executor.isShutdown()) {
          throw new WebDriverException(sessionId + " is closed for further execution");
     } */
     executor.execute(new Runnable() {

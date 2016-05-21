@@ -156,7 +156,7 @@ public class ResultConfig {
     if (sessId == null) return;
     Session session = sessions.get(sessId);
     final boolean isTerminated = session == null;
-    if (isTerminated){
+    if (isTerminated) {
       throw new SessionNotFoundException();
     }
   }

@@ -105,7 +105,7 @@ public class Hub {
 
   private void initServer() {
     try {
-      if (config.jettyMaxThreads>0){
+      if (config.jettyMaxThreads>0) {
         QueuedThreadPool pool = new QueuedThreadPool();
         pool.setMaxThreads(config.jettyMaxThreads);
         server = new Server(pool);

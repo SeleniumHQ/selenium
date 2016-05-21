@@ -60,7 +60,7 @@ public class ExternalSessionKey {
     return key.hashCode();
   }
 
-  public static ExternalSessionKey fromSe1Request(String piece){
+  public static ExternalSessionKey fromSe1Request(String piece) {
     if (piece.startsWith("sessionId=")) {
       return new ExternalSessionKey(piece.replace("sessionId=", ""));
     }
@@ -73,7 +73,7 @@ public class ExternalSessionKey {
    * @param path The path to the session
    * @return the ExternalSessionKey provided by the remote., or null if the url didn't contain a session id
    */
-  public static ExternalSessionKey fromWebDriverRequest(String path){
+  public static ExternalSessionKey fromWebDriverRequest(String path) {
       int sessionIndex = path.indexOf("/session/");
       if (sessionIndex != -1) {
         sessionIndex += "/session/".length();
@@ -123,11 +123,11 @@ public class ExternalSessionKey {
     throw new NewSessionException("The server returned an error : "+responseBody);
   }
 
-  public static ExternalSessionKey fromString(String keyString){
+  public static ExternalSessionKey fromString(String keyString) {
     return new ExternalSessionKey(keyString);
   }
 
-  public static ExternalSessionKey fromJSON(String keyString){
+  public static ExternalSessionKey fromJSON(String keyString) {
     return new ExternalSessionKey(keyString);
   }
 

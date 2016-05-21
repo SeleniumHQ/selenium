@@ -178,7 +178,7 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
     setAttribute("Content-Length", content.length);
   }
 
-  public long getCreationTime(){
+  public long getCreationTime() {
     return timestamp;
   }
 

@@ -80,7 +80,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
                 method.invoke(eventListener, args);
               }
               return null;
-              } catch (InvocationTargetException e){
+              } catch (InvocationTargetException e) {
                 throw e.getTargetException();
               }
             }
