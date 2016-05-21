@@ -402,7 +402,7 @@ public abstract class By {
      * @param word name
      * @return XPath fragment
      */
-    private String containingWord(String attribute, String word) {
+    private static String containingWord(String attribute, String word) {
       return "contains(concat(' ',normalize-space(@" + attribute + "),' '),' "
           + word + " ')";
     }

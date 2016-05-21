@@ -504,7 +504,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertFalse(eventName + " fired: " + text, text.contains(eventName));
   }
 
-  private boolean browserNeedsFocusOnThisOs(WebDriver driver) {
+  private static boolean browserNeedsFocusOnThisOs(WebDriver driver) {
     // No browser yet demands focus on windows
     if (TestUtilities.getEffectivePlatform().is(Platform.WINDOWS))
       return false;
@@ -517,7 +517,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     return browserName.toLowerCase().contains("firefox");
   }
 
-  private String getBrowserName(WebDriver driver) {
+  private static String getBrowserName(WebDriver driver) {
     if (driver instanceof HasCapabilities) {
       return ((HasCapabilities) driver).getCapabilities().getBrowserName();
     }

@@ -152,7 +152,7 @@ public class Select implements ISelect{
     }
   }
 
-  private String getLongestSubstringWithoutSpace(String s) {
+  private static String getLongestSubstringWithoutSpace(String s) {
     String result = "";
     StringTokenizer st = new StringTokenizer(s, " ");
     while (st.hasMoreTokens()) {
@@ -318,7 +318,7 @@ public class Select implements ISelect{
    *          Indicates whether the option needs to be selected (true) or
    *          deselected (false)
    */
-  private void setSelected(WebElement option, boolean select) {
+  private static void setSelected(WebElement option, boolean select) {
     boolean isSelected=option.isSelected();
     if ((!isSelected && select) || (isSelected && !select)) {
       option.click();

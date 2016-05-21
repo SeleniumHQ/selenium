@@ -417,11 +417,11 @@ public class ErrorHandlerTest {
     }
   }
 
-  private Response createResponse(int status) {
+  private static Response createResponse(int status) {
     return createResponse(status, null);
   }
 
-  private Response createResponse(int status, Object value) {
+  private static Response createResponse(int status, Object value) {
     Response response = new Response();
     response.setStatus(status);
     response.setValue(value);

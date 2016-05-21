@@ -298,7 +298,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(labelText, matchesPattern("foo[\\n\\r]+bar"));
   }
 
-  private Matcher<String> matchesPattern(String javaRegex) {
+  private static Matcher<String> matchesPattern(String javaRegex) {
     final Pattern pattern = Pattern.compile(javaRegex);
 
     return new TypeSafeMatcher<String>() {

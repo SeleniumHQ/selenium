@@ -87,7 +87,7 @@ public class Augmenter extends BaseAugmenter {
     copyFields(clazz.getSuperclass(), source, target);
   }
 
-  private void copyField(Object source, Object target, Field field) {
+  private static void copyField(Object source, Object target, Field field) {
     if (Modifier.isFinal(field.getModifiers())) {
       return;
     }

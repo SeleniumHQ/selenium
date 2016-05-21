@@ -86,7 +86,7 @@ public class DefaultFieldDecoratorTest {
   @FindAll({@FindBy(tagName = "div"), @FindBy(tagName = "a")})
   private List<Object> list8;
 
-  private FieldDecorator createDecoratorWithNullLocator() {
+  private static FieldDecorator createDecoratorWithNullLocator() {
     return new DefaultFieldDecorator(new ElementLocatorFactory() {
       public ElementLocator createLocator(Field field) {
         return null;
@@ -94,7 +94,7 @@ public class DefaultFieldDecoratorTest {
     });
   }
 
-  private FieldDecorator createDecoratorWithDefaultLocator() {
+  private static FieldDecorator createDecoratorWithDefaultLocator() {
     return new DefaultFieldDecorator(
         new DefaultElementLocatorFactory(null));
   }

@@ -355,7 +355,7 @@ public class ReferrerTest extends JUnit4TestBase {
         proxyServer.getRequests());
   }
 
-  private void performNavigation(WebDriver driver, String firstUrl) {
+  private static void performNavigation(WebDriver driver, String firstUrl) {
     WebDriverWait wait = new WebDriverWait(driver, 5);
 
     driver.get(firstUrl);

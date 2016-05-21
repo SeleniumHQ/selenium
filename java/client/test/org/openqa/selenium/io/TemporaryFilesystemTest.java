@@ -158,7 +158,7 @@ public class TemporaryFilesystemTest {
     assertTrue("Directory should have been created in the provided temp dir.", isInOtherDir);
   }
 
-  private void createDummyFilesystemContent(File dir) throws IOException {
+  private static void createDummyFilesystemContent(File dir) throws IOException {
     assertTrue(dir.isDirectory());
     File.createTempFile("cleanup", "file", dir);
     File childDir = new File(dir, "child");

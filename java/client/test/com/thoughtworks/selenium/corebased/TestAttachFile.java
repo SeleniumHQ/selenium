@@ -43,7 +43,7 @@ public class TestAttachFile extends InternalSelenseTestBase {
     testFile = createTmpFile(FILE_HTML);
   }
 
-  private File createTmpFile(String content) throws IOException {
+  private static File createTmpFile(String content) throws IOException {
     File f = File.createTempFile("webdriver", "tmp");
     f.deleteOnExit();
     Files.write(content, f, Charsets.UTF_8);

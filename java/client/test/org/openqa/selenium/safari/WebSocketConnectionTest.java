@@ -324,7 +324,7 @@ public class WebSocketConnectionTest {
     return connection.send(message);
   }
 
-  private MessageEvent createMessageEvent(final Object message) {
+  private static MessageEvent createMessageEvent(final Object message) {
     return new MessageEvent() {
       @Override
       public Object getMessage() {

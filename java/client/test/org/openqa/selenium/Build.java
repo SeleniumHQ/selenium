@@ -80,7 +80,7 @@ public class Build {
     return builder;
   }
 
-  private void executeBuild(ProcessBuilder builder) throws Exception {
+  private static void executeBuild(ProcessBuilder builder) throws Exception {
     Process process = builder.start();
     BuildWatcher buildWatcher = new BuildWatcher(process);
     buildWatcher.start();

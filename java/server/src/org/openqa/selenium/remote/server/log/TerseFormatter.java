@@ -100,7 +100,7 @@ public class TerseFormatter extends Formatter {
   }
 
 
-  private String levelNumberToCommonsLevelName(Level level) {
+  private static String levelNumberToCommonsLevelName(Level level) {
     switch (level.intValue()) {
       case FINE:
         return "DEBUG";

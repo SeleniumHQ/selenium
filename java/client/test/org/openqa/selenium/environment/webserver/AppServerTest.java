@@ -151,7 +151,7 @@ public class AppServerTest {
     assertEquals(FILE_CONTENTS, body.getText());
   }
 
-  private void assertUrlHasContentType(String url, String appcacheMimeType) {
+  private static void assertUrlHasContentType(String url, String appcacheMimeType) {
     HttpClient httpclient = HttpClientBuilder.create().build();
     HttpGet httpget = new HttpGet(url);
     HttpResponse response;

@@ -266,7 +266,7 @@ public class Color {
           a);
     }
 
-    private double hueToRgb(double luminocity1, double luminocity2, double hue) {
+    private static double hueToRgb(double luminocity1, double luminocity2, double hue) {
       if (hue < 0.0) hue += 1;
       if (hue > 1.0) hue -= 1;
       if (hue < 1.0 / 6.0) return (luminocity1 + (luminocity2 - luminocity1) * 6.0 * hue);

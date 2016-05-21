@@ -274,7 +274,7 @@ public class BeanToJsonConverterTest {
     assertEquals("\"gnu/linux\"", json);
   }
 
-  private void verifyStackTraceInJson(String json, StackTraceElement[] stackTrace) {
+  private static void verifyStackTraceInJson(String json, StackTraceElement[] stackTrace) {
     int posOfLastStackTraceElement = 0;
     for (StackTraceElement e : stackTrace) {
       if (e.getFileName() != null) {

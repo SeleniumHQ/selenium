@@ -54,7 +54,7 @@ public class DefaultNetworkInterfaceProvider implements NetworkInterfaceProvider
     this.cachedInterfaces = Collections.unmodifiableList(result);
   }
 
-  private String getLocalInterfaceName() {
+  private static String getLocalInterfaceName() {
     if (Platform.getCurrent().is(Platform.MAC)) {
       return "lo0";
     }
@@ -72,7 +72,7 @@ public class DefaultNetworkInterfaceProvider implements NetworkInterfaceProvider
     }
   }
 
-  private NetworkInterface createInterface(java.net.NetworkInterface s) {
+  private static NetworkInterface createInterface(java.net.NetworkInterface s) {
     return new NetworkInterface(s);
   }
 }

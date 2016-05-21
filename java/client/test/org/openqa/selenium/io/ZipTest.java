@@ -152,7 +152,7 @@ public class ZipTest {
     }
   }
 
-  private void assertZipContains(File output, String s) throws IOException {
+  private static void assertZipContains(File output, String s) throws IOException {
     FileInputStream fis = new FileInputStream(output);
     ZipInputStream zis = new ZipInputStream(fis);
     try {
@@ -169,7 +169,7 @@ public class ZipTest {
     fail("File not in zip: " + s);
   }
 
-  private void touch(File file) throws IOException {
+  private static void touch(File file) throws IOException {
     File parent = file.getParentFile();
     if (!parent.exists()) {
       assertTrue(parent.mkdirs());

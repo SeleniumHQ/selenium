@@ -60,7 +60,7 @@ class SnapshotScreenListener extends AbstractWebDriverEventListener {
     }
   }
 
-  private void workAroundD3dBugInVista() {
+  private static void workAroundD3dBugInVista() {
     if (Platform.getCurrent().is(Platform.WINDOWS)) {
       System.setProperty("sun.java2d.d3d", "false");
     }

@@ -100,7 +100,7 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
     }
   }
 
-  private void copyFirefoxDriverDefaultsToOutputDir() throws IOException {
+  private static void copyFirefoxDriverDefaultsToOutputDir() throws IOException {
     File defaults = InProject.locate("javascript/firefox-driver/webdriver.json");
     File out = InProject.locate("java/client/build/production/org/openqa/selenium/firefox/FirefoxProfile.class").getParentFile();
     out = new File(out, "webdriver.json");
@@ -108,7 +108,7 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
   }
 
   // Cover your eyes
-  private Class<? extends WebDriver> mapToClass(Capabilities caps) {
+  private static Class<? extends WebDriver> mapToClass(Capabilities caps) {
     String name = caps == null ? "" : caps.getBrowserName();
     String className = null;
 

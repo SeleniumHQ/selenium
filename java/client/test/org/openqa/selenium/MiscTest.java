@@ -115,7 +115,7 @@ public class MiscTest extends JUnit4TestBase {
     }
   }
 
-  private String getGlobalVar(WebDriver driver, String var) {
+  private static String getGlobalVar(WebDriver driver, String var) {
     Object val = ((JavascriptExecutor) driver).executeScript("return window." + var + ";");
     return val == null ? "null" : val.toString();
   }

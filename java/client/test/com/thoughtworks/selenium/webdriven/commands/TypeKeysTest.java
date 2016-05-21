@@ -65,7 +65,7 @@ public class TypeKeysTest {
     verify(element).sendKeys(expected);
   }
 
-  private String newString(CharSequence... toType) {
+  private static String newString(CharSequence... toType) {
     StringBuilder builder = new StringBuilder();
     for (CharSequence key : toType) {
       builder.append(key);

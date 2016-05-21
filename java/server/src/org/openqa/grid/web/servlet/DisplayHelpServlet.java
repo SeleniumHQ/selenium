@@ -87,7 +87,7 @@ public class DisplayHelpServlet extends HttpServlet {
     }
   }
 
-  private void getVersion() {
+  private static void getVersion() {
     final Properties p = new Properties();
 
     InputStream stream =

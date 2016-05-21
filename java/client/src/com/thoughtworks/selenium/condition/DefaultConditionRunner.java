@@ -166,7 +166,7 @@ public class DefaultConditionRunner implements ConditionRunner {
       log(message);
     }
 
-    protected void log(String message) {
+    protected static void log(String message) {
       logger.info(new Date() + " - " + message);
     }
 
@@ -207,7 +207,7 @@ public class DefaultConditionRunner implements ConditionRunner {
     throwAssertionException(message);
   }
 
-  private void threadSleep(int interval) {
+  private static void threadSleep(int interval) {
     try {
       Thread.sleep(interval);
     } catch (InterruptedException ignore) {

@@ -77,7 +77,7 @@ public class WindowsUtilsUnitTest {
     assertFalse("taskkill should be found", "taskkill".equals(WindowsUtils.findTaskKill()));
   }
 
-  private void tryKill(String... cmd) throws Exception {
+  private static void tryKill(String... cmd) throws Exception {
     CommandLine cl = new CommandLine(cmd);
     cl.executeAsync();
     WindowsUtils.kill(cmd);

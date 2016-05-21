@@ -77,7 +77,7 @@ public class NewProfileExtensionConnectionTest {
     }
   }
 
-  private SocketLock makeLock() {
+  private static SocketLock makeLock() {
     return new SocketLock(4200);
   }
 }

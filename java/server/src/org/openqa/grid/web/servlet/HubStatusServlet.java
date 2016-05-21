@@ -151,7 +151,7 @@ public class HubStatusServlet extends RegistryBasedServlet {
     return result;
   }
 
-  private JsonObject getRequestJSON(HttpServletRequest request) throws IOException {
+  private static JsonObject getRequestJSON(HttpServletRequest request) throws IOException {
     JsonObject requestJSON = null;
     BufferedReader rd = new BufferedReader(new InputStreamReader(request.getInputStream()));
     StringBuilder s = new StringBuilder();

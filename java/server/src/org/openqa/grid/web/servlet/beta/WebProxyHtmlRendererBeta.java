@@ -125,7 +125,7 @@ public class WebProxyHtmlRendererBeta implements HtmlRenderer {
   }
 
   // the lines of icon representing the possible slots
-  private String getLines(SlotsLines lines) {
+  private static String getLines(SlotsLines lines) {
     StringBuilder builder = new StringBuilder();
     for (MiniCapability cap : lines.getLinesType()) {
       String icon = cap.getIcon();
@@ -143,7 +143,7 @@ public class WebProxyHtmlRendererBeta implements HtmlRenderer {
   }
 
   // icon ( or generic html if icon not available )
-  private String getSingleSlotHtml(TestSlot s, String icon) {
+  private static String getSingleSlotHtml(TestSlot s, String icon) {
     StringBuilder builder = new StringBuilder();
     TestSession session = s.getSession();
     if (icon != null) {
@@ -171,7 +171,7 @@ public class WebProxyHtmlRendererBeta implements HtmlRenderer {
   }
 
   // the tabs header.
-  private String nodeTabs() {
+  private static String nodeTabs() {
     StringBuilder builder = new StringBuilder();
     builder.append("<div class='tabs'>");
     builder.append("<ul>");

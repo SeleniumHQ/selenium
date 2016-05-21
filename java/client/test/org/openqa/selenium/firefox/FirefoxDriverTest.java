@@ -256,7 +256,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     return FirefoxDriver.DEFAULT_ENABLE_NATIVE_EVENTS;
   }
 
-  private void sleepBecauseWindowsTakeTimeToOpen() {
+  private static void sleepBecauseWindowsTakeTimeToOpen() {
     try {
       sleep(1000);
     } catch (InterruptedException e) {
@@ -407,7 +407,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     }
   }
 
-  private ExpectedCondition<Boolean> urlToBe(final String expectedUrl) {
+  private static ExpectedCondition<Boolean> urlToBe(final String expectedUrl) {
     return new ExpectedCondition<Boolean>() {
       @Override
       public Boolean apply(WebDriver driver) {
@@ -607,11 +607,11 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
 
 
-  private WebDriver newFirefoxDriver() {
+  private static WebDriver newFirefoxDriver() {
     return newFirefoxDriver(new FirefoxProfile());
   }
 
-  private WebDriver newFirefoxDriver(FirefoxProfile profile) {
+  private static WebDriver newFirefoxDriver(FirefoxProfile profile) {
     if (DevMode.isInDevMode()) {
       try {
         return new SynthesizedFirefoxDriver(profile);

@@ -82,7 +82,7 @@ public class HamcrestWebdriverTestCaseTest {
     assertThat(result, is(something));
   }
 
-  private HamcrestWebDriverTestCase createTestCase() {
+  private static HamcrestWebDriverTestCase createTestCase() {
     HamcrestWebDriverTestCase testcase = new HamcrestWebDriverTestCase() {
 
       @Override

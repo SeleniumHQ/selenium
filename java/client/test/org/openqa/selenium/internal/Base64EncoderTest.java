@@ -120,7 +120,7 @@ public class Base64EncoderTest {
     assertEquals(dumpBytes(expected), dumpBytes(actual));
   }
 
-  private String dumpBytes(byte bytes[]) {
+  private static String dumpBytes(byte bytes[]) {
     StringBuffer result = new StringBuffer();
     for (int i = 0; i < bytes.length; i++) {
       result.append(bytes[i]).append(' ');

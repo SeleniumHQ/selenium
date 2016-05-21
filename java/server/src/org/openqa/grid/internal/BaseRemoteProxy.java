@@ -165,7 +165,7 @@ public class BaseRemoteProxy implements RemoteProxy {
     this.testSlots = Collections.unmodifiableList(slots);
   }
 
-  private SeleniumProtocol getProtocol(DesiredCapabilities capability) {
+  private static SeleniumProtocol getProtocol(DesiredCapabilities capability) {
     String type = (String) capability.getCapability(SELENIUM_PROTOCOL);
 
     SeleniumProtocol protocol;
@@ -182,7 +182,7 @@ public class BaseRemoteProxy implements RemoteProxy {
     return protocol;
   }
 
-  private String getPath(DesiredCapabilities capability) {
+  private static String getPath(DesiredCapabilities capability) {
     String type = (String) capability.getCapability(PATH);
     if (type == null) {
       switch (getProtocol(capability)) {
@@ -217,8 +217,8 @@ public class BaseRemoteProxy implements RemoteProxy {
    * @param configuration2 The second configuration to merge (dominant)
    * @return The merged collection
    */
-  private Map<String, Object> mergeConfig(Map<String, Object> configuration1,
-                                          Map<String, Object> configuration2) {
+  private static Map<String, Object> mergeConfig(Map<String, Object> configuration1,
+                                                 Map<String, Object> configuration2) {
     Map<String, Object> res = new HashMap<>();
     res.putAll(configuration1);
 
@@ -526,7 +526,7 @@ public class BaseRemoteProxy implements RemoteProxy {
     }
   }
 
-  private JsonObject extractObject(HttpResponse resp) throws IOException {
+  private static JsonObject extractObject(HttpResponse resp) throws IOException {
     BufferedReader rd = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
     StringBuilder s = new StringBuilder();
     String line;

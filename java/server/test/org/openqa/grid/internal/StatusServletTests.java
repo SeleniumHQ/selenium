@@ -395,7 +395,7 @@ public class StatusServletTests {
     httpClientFactory.close();
   }
 
-  private JsonObject extractObject(HttpResponse resp) throws IOException {
+  private static JsonObject extractObject(HttpResponse resp) throws IOException {
     BufferedReader rd = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
     StringBuilder s = new StringBuilder();
     String line;

@@ -89,14 +89,14 @@ public class ElementEqualityTest extends JUnit4TestBase {
     checkIdEqualityIfRemote(second, element);
   }
 
-  private void checkIdEqualityIfRemote(WebElement first, WebElement second) {
+  private static void checkIdEqualityIfRemote(WebElement first, WebElement second) {
     String firstId = getId(unwrapIfNecessary(first));
     String secondId = getId(unwrapIfNecessary(second));
 
     assertEquals(firstId, secondId);
   }
 
-  private String getId(WebElement element) {
+  private static String getId(WebElement element) {
     if (!(element instanceof RemoteWebElement)) {
       System.err.println("Skipping remote element equality test - not a remote web driver");
       return null;
@@ -105,7 +105,7 @@ public class ElementEqualityTest extends JUnit4TestBase {
     return ((RemoteWebElement) element).getId();
   }
 
-  private WebElement unwrapIfNecessary(WebElement element) {
+  private static WebElement unwrapIfNecessary(WebElement element) {
     if (element instanceof WrapsElement) {
       return ((WrapsElement) element).getWrappedElement();
     }

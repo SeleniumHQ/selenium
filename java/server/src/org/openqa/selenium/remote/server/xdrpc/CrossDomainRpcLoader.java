@@ -64,7 +64,7 @@ public class CrossDomainRpcLoader {
         getField(json, Field.DATA));
   }
 
-  private String getField(JsonObject json, String key) {
+  private static String getField(JsonObject json, String key) {
     if (!json.has(key) || json.get(key).isJsonNull()) {
       throw new IllegalArgumentException("Missing required parameter: " + key);
     }

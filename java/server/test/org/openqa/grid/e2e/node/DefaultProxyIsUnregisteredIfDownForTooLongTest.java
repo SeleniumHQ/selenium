@@ -106,7 +106,7 @@ public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
     RegistryTestHelper.waitForNode(registry, 0);
   }
 
-  private Callable<Boolean> isUp(final DefaultRemoteProxy proxy) {
+  private static Callable<Boolean> isUp(final DefaultRemoteProxy proxy) {
     return new Callable<Boolean>() {
       public Boolean call() throws Exception {
         return ! proxy.isDown();
@@ -114,7 +114,7 @@ public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
     };
   }
 
-  private Callable<Boolean> isDown(final DefaultRemoteProxy proxy) {
+  private static Callable<Boolean> isDown(final DefaultRemoteProxy proxy) {
     return new Callable<Boolean>() {
       public Boolean call() throws Exception {
         return proxy.isDown();
@@ -143,7 +143,7 @@ public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
     hub.stop();
   }
 
-  private <V> void waitFor(final Callable<V> thing) {
+  private static <V> void waitFor(final Callable<V> thing) {
     new FluentWait<Object>("").withTimeout(30, SECONDS).until(new Function<Object, V>() {
 
       @Override

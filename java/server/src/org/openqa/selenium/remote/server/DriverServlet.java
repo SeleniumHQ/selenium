@@ -139,7 +139,7 @@ public class DriverServlet extends HttpServlet {
    * @param response The response to modify.
    * @see <a href="http://www.w3.org/TR/cors/">http://www.w3.org/TR/cors/</a>
    */
-  private void setAccessControlHeaders(HttpServletResponse response) {
+  private static void setAccessControlHeaders(HttpServletResponse response) {
     response.setHeader("Access-Control-Allow-Origin", "*");  // Real safe.
     response.setHeader("Access-Control-Allow-Methods", "DELETE,GET,HEAD,POST");
     response.setHeader("Access-Control-Allow-Headers", "Accept,Content-Type");
@@ -242,7 +242,7 @@ public class DriverServlet extends HttpServlet {
     return request;
   }
 
-  private void sendResponse(HttpResponse response, HttpServletResponse servletResponse)
+  private static void sendResponse(HttpResponse response, HttpServletResponse servletResponse)
       throws IOException {
     servletResponse.setStatus(response.getStatus());
     for (String name : response.getHeaderNames()) {
@@ -316,7 +316,7 @@ public class DriverServlet extends HttpServlet {
       output.close();
     }
 
-    private byte[] getResourceData(URL url) throws IOException {
+    private static byte[] getResourceData(URL url) throws IOException {
       InputStream stream = null;
       try {
         stream = url.openStream();

@@ -122,7 +122,7 @@ class SafariDriverCommandExecutor implements CommandExecutor {
     log.info(String.format("Driver connected in %d ms", stopwatch.elapsed(TimeUnit.MILLISECONDS)));
   }
 
-  private File prepareConnectFile(String serverUri) throws IOException {
+  private static File prepareConnectFile(String serverUri) throws IOException {
     File tmpDir = TemporaryFilesystem.getDefaultTmpFS()
         .createTempDir("anonymous", "safaridriver");
     File launchFile = new File(tmpDir, "connect.html");

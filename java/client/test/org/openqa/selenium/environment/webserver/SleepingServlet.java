@@ -48,7 +48,7 @@ public class SleepingServlet extends HttpServlet {
         String.format(RESPONSE_STRING_FORMAT, duration));
   }
 
-  private void reallySleep(long timeout){
+  private static void reallySleep(long timeout){
       long start = System.currentTimeMillis();
       try {
           Thread.sleep( timeout);

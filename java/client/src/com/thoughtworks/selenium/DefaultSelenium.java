@@ -74,7 +74,7 @@ public class DefaultSelenium implements Selenium {
         detectCommandProcessor(serverHost, serverPort, browserStartCommand, browserURL);
   }
 
-  private CommandProcessor detectCommandProcessor(String serverHost, int serverPort,
+  private static CommandProcessor detectCommandProcessor(String serverHost, int serverPort,
       String browserStartCommand, String browserURL) {
     return new HttpCommandProcessor(serverHost, serverPort, browserStartCommand, browserURL);
   }

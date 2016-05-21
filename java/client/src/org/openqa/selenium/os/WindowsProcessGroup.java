@@ -58,7 +58,7 @@ public class WindowsProcessGroup implements OsProcess {
     cmd = toExecute.toString();
   }
 
-  private String quote(String toQuote) {
+  private static String quote(String toQuote) {
     if (toQuote.indexOf(' ') != -1) {
       return '"' + toQuote + '"';
     }

@@ -31,7 +31,7 @@ import org.openqa.selenium.internal.Locatable;
  */
 public class TouchDoubleTapTest extends TouchTestBase {
 
-  private TouchActions getBuilder(WebDriver driver) {
+  private static TouchActions getBuilder(WebDriver driver) {
     return new TouchActions(driver);
   }
 

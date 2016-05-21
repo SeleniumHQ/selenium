@@ -226,7 +226,7 @@ public class JsonToBeanConverter {
     return (T) source; // Crap shoot here; probably a string.
   }
 
-  private Method getMethod(Class<?> clazz, String methodName) {
+  private static Method getMethod(Class<?> clazz, String methodName) {
     try {
       return clazz.getMethod(methodName, String.class);
     } catch (SecurityException e) {
@@ -238,11 +238,11 @@ public class JsonToBeanConverter {
     return null;
   }
 
-  private Object convertJsonPrimitive(JsonElement json) {
+  private static Object convertJsonPrimitive(JsonElement json) {
     return convertJsonPrimitive(json.getAsJsonPrimitive());
   }
 
-  private Object convertJsonPrimitive(JsonPrimitive json) {
+  private static Object convertJsonPrimitive(JsonPrimitive json) {
     if (json.isBoolean()) {
       return json.getAsBoolean();
     } else if (json.isNumber()) {
@@ -259,7 +259,7 @@ public class JsonToBeanConverter {
   }
 
   @SuppressWarnings("unchecked")
-  private Enum convertEnum(Class clazz, Object text) {
+  private static Enum convertEnum(Class clazz, Object text) {
     if (clazz.isEnum()) {
       if (text instanceof JsonElement) {
         return Enum.valueOf(clazz, (String) convertJsonPrimitive((JsonElement) text));
@@ -282,7 +282,7 @@ public class JsonToBeanConverter {
     return null;
   }
 
-  private boolean isEnum(Class<?> clazz, Object text) {
+  private static boolean isEnum(Class<?> clazz, Object text) {
     return clazz.isEnum() || text instanceof Enum<?>;
   }
 
@@ -320,7 +320,7 @@ public class JsonToBeanConverter {
     return t;
   }
 
-  private <T> T newInstance(Class<T> clazz) {
+  private static <T> T newInstance(Class<T> clazz) {
     try {
       return clazz.newInstance();
     } catch (InstantiationException e) {
@@ -330,7 +330,7 @@ public class JsonToBeanConverter {
     }
   }
 
-  private WebDriverException propertyWriteException(
+  private static WebDriverException propertyWriteException(
       SimplePropertyDescriptor property, Object value, Class<?> type, Throwable cause) {
     throw new WebDriverException(
         String.format("Property name: %s -> %s on class %s", property.getName(), value, type),
@@ -356,7 +356,7 @@ public class JsonToBeanConverter {
   }
 
 
-  private boolean isPrimitive(Class<?> clazz) {
+  private static boolean isPrimitive(Class<?> clazz) {
     if (clazz.isPrimitive()) {
       return true;
     }

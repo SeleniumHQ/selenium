@@ -73,7 +73,7 @@ public class FileExtension implements Extension {
     TemporaryFilesystem.getDefaultTmpFS().deleteTempDir(root);
   }
 
-  private File obtainRootDirectory(File extensionToInstall) throws IOException {
+  private static File obtainRootDirectory(File extensionToInstall) throws IOException {
     File root = extensionToInstall;
     if (!extensionToInstall.isDirectory()) {
       BufferedInputStream bis =
@@ -88,7 +88,7 @@ public class FileExtension implements Extension {
   }
 
 
-  private String readIdFromInstallRdf(File root) {
+  private static String readIdFromInstallRdf(File root) {
     try {
       File installRdf = new File(root, "install.rdf");
 

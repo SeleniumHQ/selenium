@@ -94,7 +94,7 @@ public class ParallelTestRunner {
     }
   }
 
-  private void interrupt(List<WorkerThread> threads) {
+  private static void interrupt(List<WorkerThread> threads) {
     for (WorkerThread thread : threads) {
       thread.interrupt();
     }

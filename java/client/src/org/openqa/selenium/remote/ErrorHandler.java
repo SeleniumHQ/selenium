@@ -174,7 +174,7 @@ public class ErrorHandler {
   }
 
   @SuppressWarnings("unchecked")
-  private UnhandledAlertException createUnhandledAlertException(Object value) {
+  private static UnhandledAlertException createUnhandledAlertException(Object value) {
     Map<String, Object> rawErrorData = (Map<String, Object>) value;
     if (rawErrorData.containsKey("alert") || rawErrorData.containsKey("alertText")) {
       Object alertText = rawErrorData.get("alertText");
@@ -191,7 +191,7 @@ public class ErrorHandler {
     return null;
   }
 
-  private String duration(long duration) {
+  private static String duration(long duration) {
     String prefix = "\nCommand duration or timeout: ";
     if (duration < 1000) {
       return prefix + duration + " milliseconds";
@@ -199,7 +199,7 @@ public class ErrorHandler {
     return prefix + (new BigDecimal(duration).divide(new BigDecimal(1000)).setScale(2, RoundingMode.HALF_UP)) + " seconds";
   }
 
-  private <T extends Throwable> T createThrowable(
+  private static <T extends Throwable> T createThrowable(
       Class<T> clazz, Class<?>[] parameterTypes, Object[] parameters) {
     try {
       Constructor<T> constructor = clazz.getConstructor(parameterTypes);

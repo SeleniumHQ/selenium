@@ -241,7 +241,7 @@ public class BeanToJsonConverter {
     }
   }
 
-  private Method getMethod(Object toConvert, String methodName) {
+  private static Method getMethod(Object toConvert, String methodName) {
     try {
       return toConvert.getClass().getMethod(methodName);
     } catch (SecurityException e) {

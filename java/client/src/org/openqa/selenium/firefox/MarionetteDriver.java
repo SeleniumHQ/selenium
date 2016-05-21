@@ -84,7 +84,7 @@ public class MarionetteDriver extends RemoteWebDriver {
       "via RemoteWebDriver");
   }
 
-  private GeckoDriverService setupService(int port) {
+  private static GeckoDriverService setupService(int port) {
     GeckoDriverService.Builder builder = new GeckoDriverService.Builder();
     builder.usingPort(port);
 

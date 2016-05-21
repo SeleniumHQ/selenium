@@ -97,7 +97,7 @@ public class DefaultDriverProvider implements DriverProvider {
     return callConstructor(getDriverClass(), capabilities);
   }
 
-  private WebDriver callConstructor(Class<? extends WebDriver> from, Capabilities capabilities) {
+  private static WebDriver callConstructor(Class<? extends WebDriver> from, Capabilities capabilities) {
     try {
       Constructor<? extends WebDriver> constructor = from.getConstructor(Capabilities.class);
       return constructor.newInstance(capabilities);

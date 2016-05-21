@@ -82,7 +82,7 @@ public class DomainHelper {
     return correct;
   }
 
-  private boolean isValidSubDomain(String hostname) {
+  private static boolean isValidSubDomain(String hostname) {
     /*
     * /etc/hosts needs to have e.g.
     *

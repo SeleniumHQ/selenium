@@ -204,7 +204,7 @@ public class WindowTest extends JUnit4TestBase {
     wait.until(windowHeightToBeGreaterThan(size));
   }
 
-  private ExpectedCondition<Boolean> windowSizeEqual(final Dimension size) {
+  private static ExpectedCondition<Boolean> windowSizeEqual(final Dimension size) {
     return new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         Dimension newSize = driver.manage().window().getSize();
@@ -215,7 +215,7 @@ public class WindowTest extends JUnit4TestBase {
     };
   }
 
-  private ExpectedCondition<Boolean> windowWidthToBeGreaterThan(final Dimension size) {
+  private static ExpectedCondition<Boolean> windowWidthToBeGreaterThan(final Dimension size) {
     return new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         Dimension newSize = driver.manage().window().getSize();
@@ -229,7 +229,7 @@ public class WindowTest extends JUnit4TestBase {
     };
   }
 
-  private ExpectedCondition<Boolean> windowHeightToBeGreaterThan(final Dimension size) {
+  private static ExpectedCondition<Boolean> windowHeightToBeGreaterThan(final Dimension size) {
     return new ExpectedCondition<Boolean>() {
       @Override
       public Boolean apply(WebDriver driver) {
@@ -243,7 +243,7 @@ public class WindowTest extends JUnit4TestBase {
       }
     };
   }
-  private ExpectedCondition<Boolean> xEqual(final Point targetPosition) {
+  private static ExpectedCondition<Boolean> xEqual(final Point targetPosition) {
     return new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         Point newPosition = driver.manage().window().getPosition();
@@ -256,7 +256,7 @@ public class WindowTest extends JUnit4TestBase {
     };
   }
 
-  private ExpectedCondition<Boolean> yEqual(final Point targetPosition) {
+  private static ExpectedCondition<Boolean> yEqual(final Point targetPosition) {
     return new ExpectedCondition<Boolean>() {
       @Override
       public Boolean apply(WebDriver driver) {

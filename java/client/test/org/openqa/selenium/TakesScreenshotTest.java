@@ -422,8 +422,8 @@ public class TakesScreenshotTest extends JUnit4TestBase {
    * @param nY           - grid size at Y dimension
    * @return set of colors in string hex presentation
    */
-  private Set<String> generateExpectedColors(final int initialColor, final int stepColor,
-                                             final int nX, final int nY) {
+  private static Set<String> generateExpectedColors(final int initialColor, final int stepColor,
+                                                    final int nX, final int nY) {
     Set<String> colors = new TreeSet<>();
     int cnt = 1;
     for (int i = 1; i < nX; i++) {
@@ -448,7 +448,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
    * @param stepY - interval in pixels b/w point in Y dimension
    * @return set of colors in string hex presentation
    */
-  private Set<String> scanActualColors(BufferedImage image, final int stepX, final int stepY) {
+  private static Set<String> scanActualColors(BufferedImage image, final int stepX, final int stepY) {
     Set<String> colors = new TreeSet<>();
 
     try {
@@ -482,7 +482,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
    * @param expectedColors - set of expected colors
    * @param actualColors   - set of actual colors
    */
-  private void compareColors(Set<String> expectedColors, Set<String> actualColors) {
+  private static void compareColors(Set<String> expectedColors, Set<String> actualColors) {
     assertFalse("Actual image has only black color", onlyBlack(actualColors));
     assertFalse("Actual image has only white color", onlyWhite(actualColors));
 
@@ -502,11 +502,11 @@ public class TakesScreenshotTest extends JUnit4TestBase {
     }
   }
 
-  private boolean onlyBlack(Set<String> colors) {
+  private static boolean onlyBlack(Set<String> colors) {
     return colors.size() == 1 && "#000000".equals(colors.toArray()[0]);
   }
 
-  private boolean onlyWhite(Set<String> colors) {
+  private static boolean onlyWhite(Set<String> colors) {
     return colors.size() == 1 && "#ffffff".equals(colors.toArray()[0]);
   }
 

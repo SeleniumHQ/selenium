@@ -154,7 +154,7 @@ public class ActionsTest {
     order.verifyNoMoreInteractions();
   }
 
-  private WebElement mockLocatableElementWithCoordinates(Coordinates coord) {
+  private static WebElement mockLocatableElementWithCoordinates(Coordinates coord) {
     WebElement element = mock(WebElement.class,
                               withSettings().extraInterfaces(Locatable.class));
     when(((Locatable) element).getCoordinates()).thenReturn(coord);

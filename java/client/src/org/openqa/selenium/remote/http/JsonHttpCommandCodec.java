@@ -317,7 +317,7 @@ public class JsonHttpCommandCodec implements CommandCodec<HttpRequest> {
     return new CommandSpec(HttpMethod.POST, path);
   }
 
-  private String buildUri(Command command, CommandSpec spec) {
+  private static String buildUri(Command command, CommandSpec spec) {
     StringBuilder builder = new StringBuilder();
     for (String part : spec.pathSegments) {
       if (part.isEmpty()) {
@@ -334,7 +334,7 @@ public class JsonHttpCommandCodec implements CommandCodec<HttpRequest> {
     return builder.toString();
   }
 
-  private String getParameter(String parameterName, Command command) {
+  private static String getParameter(String parameterName, Command command) {
     if ("sessionId".equals(parameterName)) {
       SessionId id = command.getSessionId();
       checkArgument(id != null, "Session ID may not be null for command %s", command.getName());

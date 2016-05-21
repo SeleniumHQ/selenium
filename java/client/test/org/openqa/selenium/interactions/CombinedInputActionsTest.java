@@ -250,7 +250,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     assertTrue(fuzzyPositionMatching(location.getX() + 20, location.getY() + 10, x, y));
   }
 
-  private boolean fuzzyPositionMatching(int expectedX, int expectedY, int actualX, int actualY) {
+  private static boolean fuzzyPositionMatching(int expectedX, int expectedY, int actualX, int actualY) {
     // Everything within 5 pixels range is OK
     final int ALLOWED_DEVIATION = 5;
     return Math.abs(expectedX - actualX) < ALLOWED_DEVIATION &&

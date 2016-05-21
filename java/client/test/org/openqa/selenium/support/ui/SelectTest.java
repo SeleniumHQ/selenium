@@ -50,7 +50,7 @@ public class SelectTest{
     new Select(element);
   }
 
-  private Select selectElementWithMultipleEqualTo(final String multipleAttribute) {
+  private static Select selectElementWithMultipleEqualTo(final String multipleAttribute) {
     return new Select(mockSelectWebElement(multipleAttribute));
   }
 
@@ -73,14 +73,14 @@ public class SelectTest{
     assertFalse(select.isMultiple());
   }
 
-  private WebElement mockSelectWebElement(String multiple) {
+  private static WebElement mockSelectWebElement(String multiple) {
     final WebElement element = mock(WebElement.class);
     when(element.getTagName()).thenReturn("select");
     when(element.getAttribute("multiple")).thenReturn(multiple);
     return element;
   }
 
-  private Select selectWithOptions(List<WebElement> options) {
+  private static Select selectWithOptions(List<WebElement> options) {
     final WebElement element = mockSelectWebElement("multiple");
     when(element.findElements(By.tagName("option"))).thenReturn(options);
 
@@ -95,13 +95,13 @@ public class SelectTest{
     assertSame(expectedOptions, select.getOptions());
   }
 
-  private WebElement mockOption(String name, boolean isSelected) {
+  private static WebElement mockOption(String name, boolean isSelected) {
     final WebElement optionBad = mock(WebElement.class, name);
     when(optionBad.isSelected()).thenReturn(isSelected);
     return optionBad;
   }
 
-  private WebElement mockOption(String name, boolean isSelected, int index) {
+  private static WebElement mockOption(String name, boolean isSelected, int index) {
     WebElement option = mockOption(name, isSelected);
     when(option.getAttribute("index")).thenReturn(String.valueOf(index));
     return option;

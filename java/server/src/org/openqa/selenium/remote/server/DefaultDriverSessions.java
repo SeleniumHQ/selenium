@@ -109,7 +109,7 @@ public class DefaultDriverSessions implements DriverSessions {
     factory.registerDriverProvider(provider);
   }
 
-  private boolean platformMatches(Platform current, Capabilities caps) {
+  private static boolean platformMatches(Platform current, Capabilities caps) {
     return caps.getPlatform() == null
            || caps.getPlatform() == Platform.ANY
            || current.is(caps.getPlatform());

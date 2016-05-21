@@ -157,7 +157,7 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
 
   }
 
-  private Object getValueByReflection(RemoteProxy proxy, String method) {
+  private static Object getValueByReflection(RemoteProxy proxy, String method) {
     Class<?>[] argsClass = new Class[] {};
     try {
       Method m = proxy.getClass().getDeclaredMethod(method, argsClass);
@@ -167,7 +167,7 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
     }
   }
 
-  private List<String> getExtraMethodsRequested(JsonObject request) {
+  private static List<String> getExtraMethodsRequested(JsonObject request) {
     List<String> res = new ArrayList<>();
 
     for (Map.Entry<String, JsonElement> entry : request.entrySet()) {

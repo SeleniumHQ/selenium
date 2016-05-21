@@ -320,11 +320,11 @@ public enum Platform {
     return ANY;
   }
 
-  private boolean isCurrentPlatform(String osName, String matchAgainst) {
+  private static boolean isCurrentPlatform(String osName, String matchAgainst) {
     return osName.contains(matchAgainst);
   }
 
-  private boolean isExactMatch(String osName, String matchAgainst) {
+  private static boolean isExactMatch(String osName, String matchAgainst) {
     return matchAgainst.equals(osName);
   }
 

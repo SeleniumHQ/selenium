@@ -165,7 +165,7 @@ public class TestCssLocators extends InternalSelenseTestBase {
     }
   }
 
-  private boolean isCapableOfAdvancedSelectors(Selenium selenium, boolean isIe) {
+  private static boolean isCapableOfAdvancedSelectors(Selenium selenium, boolean isIe) {
     String isFirefox = selenium.getEval("browserVersion.isFirefox;");
 
     String version = selenium.getEval("browserVersion.firefoxVersion");

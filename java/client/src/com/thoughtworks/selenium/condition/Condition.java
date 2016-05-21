@@ -57,7 +57,7 @@ public abstract class Condition {
     this.message = simulateStringDotFormatMethod(message, args);
   }
 
-  private String simulateStringDotFormatMethod(String message, Object[] args) {
+  private static String simulateStringDotFormatMethod(String message, Object[] args) {
     int vers = Integer.parseInt(System.getProperty("java.class.version").substring(0, 2));
     if (vers >= 49) {
       try {

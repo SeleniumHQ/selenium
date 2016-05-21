@@ -57,7 +57,7 @@ public class TestCursorPosition extends InternalSelenseTestBase {
     }
   }
 
-  private boolean isWindowInFocus(SeleniumException e) {
+  private static boolean isWindowInFocus(SeleniumException e) {
     if (e.getMessage().contains("There is no cursor on this page")) {
       System.out.println("Test failed because window does not have focus");
       return false;

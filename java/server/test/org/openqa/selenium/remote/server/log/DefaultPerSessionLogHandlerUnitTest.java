@@ -174,8 +174,8 @@ public class DefaultPerSessionLogHandlerUnitTest {
     assertNoMessageLoggedForSessionId(handler, sessionId);
   }
 
-  private void assertMessagesLoggedForSessionId(PerSessionLogHandler handler,
-                                                SessionId sessionId, String... expectedMessages)
+  private static void assertMessagesLoggedForSessionId(PerSessionLogHandler handler,
+                                                       SessionId sessionId, String... expectedMessages)
       throws IOException {
     StringBuilder expectedLogMessage = new StringBuilder(
         "\n<RC_Logs RC_Session_ID=");
@@ -192,12 +192,12 @@ public class DefaultPerSessionLogHandlerUnitTest {
                  loggedMessage);
   }
 
-  private void assertNoMessageLoggedForSessionId(
+  private static void assertNoMessageLoggedForSessionId(
       PerSessionLogHandler handler, SessionId sessionId) throws IOException {
     assertMessagesLoggedForSessionId(handler, sessionId);
   }
 
-  private PerSessionLogHandler createPerSessionLogHandler() {
+  private static PerSessionLogHandler createPerSessionLogHandler() {
     return new DefaultPerSessionLogHandler(CAPACITY, Level.INFO,
                                     new FormatterStub(), false);
   }
