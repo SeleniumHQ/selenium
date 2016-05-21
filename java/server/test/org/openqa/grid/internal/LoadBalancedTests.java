@@ -151,7 +151,7 @@ public class LoadBalancedTests {
 
 
     //release and check the resource are freed.
-    for (TestSession session : sessions){
+    for (TestSession session : sessions) {
       registry.terminateSynchronousFOR_TEST_ONLY(session);
     }
     assertEquals(50, proxy1.getResourceUsageInPercent(), 0f);

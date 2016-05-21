@@ -21,7 +21,7 @@ package org.openqa.grid.internal;
  * Provides access to System time.
  */
 public class DefaultTimeSource implements TimeSource {
-  public long currentTimeInMillis(){
+  public long currentTimeInMillis() {
     return System.currentTimeMillis();
   }
 }

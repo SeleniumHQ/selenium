@@ -94,7 +94,7 @@ public class ProxySetTest {
 
   }
 
-  public StubbedRemoteProxy buildStubbedRemoteProxy(Registry registry, int totalUsed){
+  public StubbedRemoteProxy buildStubbedRemoteProxy(Registry registry, int totalUsed) {
     GridNodeConfiguration config = new GridNodeConfiguration();
     config.host = "remote_host";
     config.port = totalUsed;
@@ -123,7 +123,7 @@ public class ProxySetTest {
     }
 
 
-    public void setTotalUsed(int count){
+    public void setTotalUsed(int count) {
       this.testsRunning = count;
     }
 

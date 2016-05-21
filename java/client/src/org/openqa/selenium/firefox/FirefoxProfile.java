@@ -148,7 +148,7 @@ public class FirefoxProfile {
 
   public String getStringPreference(String key, String defaultValue) {
     Object preference = additionalPrefs.getPreference(key);
-    if(preference != null && preference instanceof String){
+    if(preference != null && preference instanceof String) {
       return (String) preference;
     }
     return defaultValue;
@@ -156,7 +156,7 @@ public class FirefoxProfile {
 
   public int getIntegerPreference(String key, int defaultValue) {
     Object preference = additionalPrefs.getPreference(key);
-    if(preference != null && preference instanceof Integer){
+    if(preference != null && preference instanceof Integer) {
       return (Integer) preference;
     }
     return defaultValue;
@@ -164,7 +164,7 @@ public class FirefoxProfile {
 
   public boolean getBooleanPreference(String key, boolean defaultValue) {
     Object preference = additionalPrefs.getPreference(key);
-    if(preference != null && preference instanceof Boolean){
+    if(preference != null && preference instanceof Boolean) {
       return (Boolean) preference;
     }
     return defaultValue;

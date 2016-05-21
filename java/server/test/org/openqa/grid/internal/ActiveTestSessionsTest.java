@@ -81,7 +81,7 @@ public class ActiveTestSessionsTest {
     try {
       activeTestSessions.getExistingSession(testSession.getExternalKey());
       fail("should have thrown a session has been orphaned.");
-    }  catch (GridException e){
+    }  catch (GridException e) {
       assertTrue(e.getMessage().contains(SessionTerminationReason.ORPHAN.toString()));
     }
 

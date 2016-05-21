@@ -42,7 +42,7 @@ public class PortProber {
 
     if (current.is(Platform.LINUX)) {
        ephemeralRangeDetector = LinuxEphemeralPortRangeDetector.getInstance();
-     } else if (current.is(Platform.XP)){
+     } else if (current.is(Platform.XP)) {
        ephemeralRangeDetector = new OlderWindowsVersionEphemeralPortDetector();
     } else {
        ephemeralRangeDetector = new FixedIANAPortRange();
