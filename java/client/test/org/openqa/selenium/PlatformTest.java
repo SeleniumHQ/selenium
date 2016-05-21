@@ -115,7 +115,7 @@ public class PlatformTest {
                  Platform.WIN8_1, Platform.extractFromSysProperty("windows nt (unknown)", "6.3"));
   }
 
-  private void assertAllAre(Platform platform, String... osNames) {
+  private static void assertAllAre(Platform platform, String... osNames) {
     for (String osName : osNames) {
       Platform seen = Platform.extractFromSysProperty(osName);
       assertTrue(String.format("Expected %s, but got %s from %s", platform, seen, osName),

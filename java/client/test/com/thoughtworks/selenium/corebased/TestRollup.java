@@ -45,7 +45,7 @@ public class TestRollup extends InternalSelenseTestBase {
     selenium.removeScript("rollup");
   }
 
-  private String getRollupScript() {
+  private static String getRollupScript() {
     return "var rm = new RollupManager();\n"
         + "\n"
         + "rm.addRollupRule({\n"

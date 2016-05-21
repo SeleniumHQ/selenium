@@ -125,7 +125,7 @@ public class Windows {
     }
   }
 
-  private void selectWindowWithTitle(WebDriver driver, String title) {
+  private static void selectWindowWithTitle(WebDriver driver, String title) {
     String current = driver.getWindowHandle();
     for (String handle : driver.getWindowHandles()) {
       driver.switchTo().window(handle);

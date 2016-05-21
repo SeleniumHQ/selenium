@@ -149,7 +149,7 @@ public class PreferencesTest {
     preferences.setPreference("dom.max_script_run_time", 0);
   }
 
-  private boolean canSet(Preferences pref, String value) {
+  private static boolean canSet(Preferences pref, String value) {
     try {
       pref.setPreference("key", value);
       return true;

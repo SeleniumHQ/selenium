@@ -109,7 +109,7 @@ public class InternetExplorerDriverTest extends JUnit4TestBase {
     }
   }
 
-  private WebDriver newIeDriver() {
+  private static WebDriver newIeDriver() {
     return new WebDriverBuilder().get();
   }
 }

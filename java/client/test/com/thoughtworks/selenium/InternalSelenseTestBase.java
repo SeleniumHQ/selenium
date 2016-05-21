@@ -175,7 +175,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
     }
   };
 
-  private String determineBrowserName() {
+  private static String determineBrowserName() {
     String property = System.getProperty("selenium.browser");
     if (property == null) {
       return "*chrome";  // Default to firefox
@@ -267,7 +267,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
     checkForVerificationErrors();
   }
 
-  private String whereIs(String location) {
+  private static String whereIs(String location) {
     return GlobalTestEnvironment.get().getAppServer().whereIs(location);
   }
 

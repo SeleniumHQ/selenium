@@ -122,7 +122,7 @@ public class OutOfProcessSeleniumServer {
     command = null;
   }
 
-  private String buildServerAndClasspath() {
+  private static String buildServerAndClasspath() {
     new Build().of("//java/server/src/org/openqa/grid/selenium:selenium")
         .of("//java/server/src/org/openqa/grid/selenium:selenium:classpath")
         .go();

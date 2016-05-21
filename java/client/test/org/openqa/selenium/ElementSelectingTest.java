@@ -191,7 +191,7 @@ public class ElementSelectingTest extends JUnit4TestBase {
         element.isSelected(), is(isSelected));
   }
 
-  private void assertCannotSelect(WebElement element) {
+  private static void assertCannotSelect(WebElement element) {
     boolean previous = element.isSelected();
     element.click();
     assertEquals(previous, element.isSelected());

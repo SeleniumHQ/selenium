@@ -198,7 +198,7 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     hub.stop();
   }
 
-  private SeleniumBasedRequest getNewRequest(Map<String, Object> desiredCapability) {
+  private static SeleniumBasedRequest getNewRequest(Map<String, Object> desiredCapability) {
     HttpServletRequest httpreq = mock(HttpServletRequest.class);
     return new SeleniumBasedRequest(httpreq, registry, RequestType.START_SESSION, desiredCapability) {
 

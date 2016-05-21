@@ -92,7 +92,7 @@ public class NodeGoingDownAndUpTest {
     }
   }
 
-  private Function<Object, Boolean> isUp(final DefaultRemoteProxy proxy) {
+  private static Function<Object, Boolean> isUp(final DefaultRemoteProxy proxy) {
     return new Function<Object, Boolean>() {
       @Override
       public Boolean apply(Object input) {
@@ -101,7 +101,7 @@ public class NodeGoingDownAndUpTest {
     };
   }
 
-  private Function<Object, Boolean> isDown(final DefaultRemoteProxy proxy) {
+  private static Function<Object, Boolean> isDown(final DefaultRemoteProxy proxy) {
     return new Function<Object, Boolean>() {
       @Override
       public Boolean apply(Object input) {

@@ -107,7 +107,7 @@ public class UploadFileTest {
     }
   }
 
-  private File touch(File baseDir, String stem) throws IOException {
+  private static File touch(File baseDir, String stem) throws IOException {
     File tempFile = File.createTempFile(stem, ".txt", baseDir);
     tempFile.deleteOnExit();
     Files.write("I like cheese", tempFile, Charsets.UTF_8);

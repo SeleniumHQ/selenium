@@ -102,7 +102,7 @@ public class CrashWhenStartingBrowserTest {
     RegistryTestHelper.waitForActiveTestSessionCount(registry, 0);
   }
 
-  private Function<Object, Boolean> isUp(final DefaultRemoteProxy proxy) {
+  private static Function<Object, Boolean> isUp(final DefaultRemoteProxy proxy) {
     return new Function<Object, Boolean>() {
       @Override
       public Boolean apply(Object input) {

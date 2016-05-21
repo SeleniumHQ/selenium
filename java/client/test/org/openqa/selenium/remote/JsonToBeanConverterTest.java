@@ -246,7 +246,7 @@ public class JsonToBeanConverterTest {
     assertMapEntry(map, "expiry", TimeUnit.MILLISECONDS.toSeconds(date.getTime()));
   }
 
-  private void assertMapEntry(Map<?,?> map, String key, Object expected) {
+  private static void assertMapEntry(Map<?,?> map, String key, Object expected) {
     assertTrue("Missing key: " + key, map.containsKey(key));
     assertEquals("Wrong value for key: " + key + ": " + map.get(key).getClass().getName(),
                  expected, map.get(key));

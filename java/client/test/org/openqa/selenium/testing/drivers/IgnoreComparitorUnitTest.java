@@ -121,8 +121,8 @@ public class IgnoreComparitorUnitTest {
       CURRENT_PLATFORM_SET)));
   }
 
-  private Ignore ignoreForDriver(final Set<Driver> drivers,
-                                 final Set<Platform> platforms) {
+  private static Ignore ignoreForDriver(final Set<Driver> drivers,
+                                        final Set<Platform> platforms) {
     final Ignore ignore = mock(Ignore.class);
 
     when(ignore.value()).thenReturn(drivers.toArray(new Driver[drivers.size()]));

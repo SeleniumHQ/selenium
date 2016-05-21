@@ -52,7 +52,7 @@ public class KnownElements {
     return String.valueOf(nextId++);
   }
 
-  private WebElement proxyElement(final WebElement element, final String id) {
+  private static WebElement proxyElement(final WebElement element, final String id) {
     InvocationHandler handler = new InvocationHandler() {
       public Object invoke(Object object, Method method, Object[] objects) throws Throwable {
         if ("getId".equals(method.getName())) {

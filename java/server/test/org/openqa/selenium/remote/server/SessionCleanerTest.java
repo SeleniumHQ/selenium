@@ -83,9 +83,9 @@ public class SessionCleanerTest {
     testDone.countDown();
   }
 
-  private Runnable getRunnableThatMakesSessionBusy(final Session session,
-                                                   final CountDownLatch started,
-                                                   final CountDownLatch testDone) {
+  private static Runnable getRunnableThatMakesSessionBusy(final Session session,
+                                                          final CountDownLatch started,
+                                                          final CountDownLatch testDone) {
     return new Runnable(){
       public void run(){
         try {
@@ -124,7 +124,7 @@ public class SessionCleanerTest {
     sessionCleaner.stopCleaner();
   }
 
-  private void waitForAllSessionsToExpire(long time) throws InterruptedException {
+  private static void waitForAllSessionsToExpire(long time) throws InterruptedException {
     Thread.sleep(time);
   }
 
@@ -159,7 +159,7 @@ public class SessionCleanerTest {
     assertEquals(0, defaultDriverSessions.getSessions().size());
   }
 
-  private DriverSessions getDriverSessions(Clock clock) {
+  private static DriverSessions getDriverSessions(Clock clock) {
     DriverFactory factory = mock(DriverFactory.class);
     when(factory.newInstance(any(Capabilities.class))).thenReturn(mock(WebDriver.class));
     return new DefaultDriverSessions(Platform.LINUX, factory, clock);

@@ -95,7 +95,7 @@ public class ActiveTestSessionsTest {
                  activeTestSessions.findSessionByExternalKey(testSession.getExternalKey()));
   }
 
-  private TestSession createTestSession() {
+  private static TestSession createTestSession() {
     final HashMap<String, Object> capabilities = new HashMap<>();
     final TestSessionTest.TestTimeSource timeSource = new TestSessionTest.TestTimeSource();
     // Luckily we can pass null for TestSlot

@@ -133,7 +133,7 @@ public class FirefoxProfile {
     }
   }
 
-  private boolean getBooleanPreference(Preferences prefs, String key, boolean defaultValue) {
+  private static boolean getBooleanPreference(Preferences prefs, String key, boolean defaultValue) {
     Object value = prefs.getPreference(key);
     if (value == null) {
       return defaultValue;
@@ -170,7 +170,7 @@ public class FirefoxProfile {
     return defaultValue;
   }
 
-  private void verifyModel(File model) {
+  private static void verifyModel(File model) {
     if (model == null) {
       return;
     }
@@ -215,7 +215,7 @@ public class FirefoxProfile {
     extensions.put(name, extension);
   }
 
-  private String deriveExtensionName(String originalName) {
+  private static String deriveExtensionName(String originalName) {
     String[] pieces = originalName.replace('\\', '/').split("/");
 
     String name = pieces[pieces.length - 1];

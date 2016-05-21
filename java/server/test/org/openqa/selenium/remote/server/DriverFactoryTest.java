@@ -214,7 +214,7 @@ public class DriverFactoryTest {
     }
   }
 
-  private DriverProvider mockDriverProviderFor(Capabilities nojavascript) {
+  private static DriverProvider mockDriverProviderFor(Capabilities nojavascript) {
     DriverProvider nojavascriptProvider = mock(DriverProvider.class);
     when(nojavascriptProvider.getProvidedCapabilities()).thenReturn(nojavascript);
     when(nojavascriptProvider.canCreateDriverInstances()).thenReturn(true);

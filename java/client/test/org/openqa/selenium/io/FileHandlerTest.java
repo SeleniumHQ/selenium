@@ -90,7 +90,7 @@ public class FileHandlerTest {
     assertEquals(expected, seen);
   }
 
-  private File writeTestZip(File file, int files) throws IOException {
+  private static File writeTestZip(File file, int files) throws IOException {
     ZipOutputStream out = new ZipOutputStream(new FileOutputStream(file));
     for (int i = 0; i < files; i++) {
       writeTestZipEntry(out);
@@ -100,7 +100,7 @@ public class FileHandlerTest {
     return file;
   }
 
-  private ZipOutputStream writeTestZipEntry(ZipOutputStream out) throws IOException {
+  private static ZipOutputStream writeTestZipEntry(ZipOutputStream out) throws IOException {
     File testFile = writeTestFile(File.createTempFile("testZip", "file"));
     ZipEntry entry = new ZipEntry(testFile.getName());
     out.putNextEntry(entry);
@@ -114,7 +114,7 @@ public class FileHandlerTest {
     return out;
   }
 
-  private File writeTestFile(File file) throws IOException {
+  private static File writeTestFile(File file) throws IOException {
     byte[] byteArray = new byte[16384];
     new Random().nextBytes(byteArray);
     OutputStream out = new FileOutputStream(file);

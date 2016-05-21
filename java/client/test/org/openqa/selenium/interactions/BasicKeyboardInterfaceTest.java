@@ -48,7 +48,7 @@ import org.openqa.selenium.testing.TestUtilities;
     issues = {4136})
 public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
 
-  private Actions getBuilder(WebDriver driver) {
+  private static Actions getBuilder(WebDriver driver) {
     return new Actions(driver);
   }
 
@@ -265,7 +265,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     assertThat(keyReporter.getAttribute("value"), is(""));
   }
 
-  private void assertBackgroundColor(WebElement el, Colors expected) {
+  private static void assertBackgroundColor(WebElement el, Colors expected) {
     Color actual = Color.fromString(el.getCssValue("background-color"));
     assertThat(actual, is(expected.getColorValue()));
   }

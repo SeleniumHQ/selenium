@@ -155,19 +155,19 @@ public abstract class AbstractAnnotations {
     return null;
   }
 
-  private void assertValidFindBys(FindBys findBys) {
+  private static void assertValidFindBys(FindBys findBys) {
     for (FindBy findBy : findBys.value()) {
       assertValidFindBy(findBy);
     }
   }
 
-  private void assertValidFindAll(FindAll findBys) {
+  private static void assertValidFindAll(FindAll findBys) {
     for (FindBy findBy : findBys.value()) {
       assertValidFindBy(findBy);
     }
   }
 
-  private void assertValidFindBy(FindBy findBy) {
+  private static void assertValidFindBy(FindBy findBy) {
     if (findBy.how() != null) {
       if (findBy.using() == null) {
         throw new IllegalArgumentException(

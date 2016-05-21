@@ -168,21 +168,21 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
     }
   }
 
-  private void sendResponse(HttpServletResponse resp, String result) throws IOException {
+  private static void sendResponse(HttpServletResponse resp, String result) throws IOException {
     resp.setStatus(HttpServletResponse.SC_OK);
     resp.setCharacterEncoding(StandardCharsets.UTF_8.displayName());
     resp.getWriter().append("OK").append(result == null ? "" : "," + result);
     resp.flushBuffer();
   }
 
-  private void sendError(HttpServletResponse resp, String result) throws IOException {
+  private static void sendError(HttpServletResponse resp, String result) throws IOException {
     resp.setStatus(HttpServletResponse.SC_OK);
     resp.setCharacterEncoding(StandardCharsets.UTF_8.displayName());
     resp.getWriter().append("ERROR").append(result == null ? "" : ": " + result);
     resp.flushBuffer();
   }
 
-  private String[] deserializeArgs(HttpServletRequest req) {
+  private static String[] deserializeArgs(HttpServletRequest req) {
     // 5 was picked as the maximum length used by the `start` command
     List<String> args = new ArrayList<>();
     for (int i = 0; i < 5; i++) {

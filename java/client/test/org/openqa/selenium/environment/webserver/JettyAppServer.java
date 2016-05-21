@@ -123,12 +123,12 @@ public class JettyAppServer implements AppServer {
     listenSecurelyOn(getHttpsPort());
   }
 
-  private int getHttpPort() {
+  private static int getHttpPort() {
     String port = System.getenv(FIXED_HTTP_PORT_ENV_NAME);
     return port == null ? findFreePort() : Integer.parseInt(port);
   }
 
-  private int getHttpsPort() {
+  private static int getHttpsPort() {
     String port = System.getenv(FIXED_HTTPS_PORT_ENV_NAME);
     return port == null ? findFreePort() : Integer.parseInt(port);
   }

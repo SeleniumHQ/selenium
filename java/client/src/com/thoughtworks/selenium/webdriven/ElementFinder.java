@@ -129,7 +129,7 @@ public class ElementFinder {
     return null;
   }
 
-  private WebElement xpathWizardry(WebDriver driver, String xpath) {
+  private static WebElement xpathWizardry(WebDriver driver, String xpath) {
     try {
       return driver.findElement(By.xpath(xpath));
     } catch (WebDriverException ignored) {

@@ -128,7 +128,7 @@ public class HttpCommandProcessor implements CommandProcessor {
     }
   }
 
-  private String stringContentsOfInputStream(Reader rdr) throws IOException {
+  private static String stringContentsOfInputStream(Reader rdr) throws IOException {
     StringBuffer sb = new StringBuffer();
     int c;
     try {

@@ -122,7 +122,7 @@ public class WebDriverTestContext implements TestContext {
     return foundElements.iterator().next();
   }
 
-  private void failWith(String message) throws AssertionError {
+  private static void failWith(String message) throws AssertionError {
     throw new java.lang.AssertionError(message);
   }
 

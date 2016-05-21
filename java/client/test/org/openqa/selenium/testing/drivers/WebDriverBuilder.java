@@ -61,7 +61,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
     throw new RuntimeException("Cannot instantiate driver instance: " + desiredCapabilities);
   }
 
-  private void modifyLogLevel(WebDriver driver) {
+  private static void modifyLogLevel(WebDriver driver) {
     Class<?>[] args = {Level.class};
     Method setLogLevel;
     try {
@@ -79,7 +79,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
     }
   }
 
-  private List<Supplier<WebDriver>> getSuppliers(Capabilities desiredCaps,
+  private static List<Supplier<WebDriver>> getSuppliers(Capabilities desiredCaps,
       Capabilities requiredCaps) {
     List<Supplier<WebDriver>> suppliers = Lists.newArrayList();
     suppliers.add(new ExternalDriverSupplier(desiredCaps, requiredCaps));

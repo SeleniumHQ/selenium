@@ -101,7 +101,7 @@ public class CompoundMutator implements ScriptMutator {
     outputTo.append("');");
   }
 
-  private String escape(String escapee) {
+  private static String escape(String escapee) {
     return escapee
         .replace("\\", "\\\\")
         .replace("\n", "\\n")

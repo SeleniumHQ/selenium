@@ -204,7 +204,7 @@ public class InternetExplorerDriver extends RemoteWebDriver {
     }
   }
 
-  private InternetExplorerDriverService setupService(Capabilities caps, int port) {
+  private static InternetExplorerDriverService setupService(Capabilities caps, int port) {
     InternetExplorerDriverService.Builder builder = new InternetExplorerDriverService.Builder();
     builder.usingPort(port);
 

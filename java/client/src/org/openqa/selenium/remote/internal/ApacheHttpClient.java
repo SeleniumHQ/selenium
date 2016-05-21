@@ -92,7 +92,7 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
     return createResponse(response, context);
   }
 
-  private HttpResponse createResponse(
+  private static HttpResponse createResponse(
       org.apache.http.HttpResponse response, HttpContext context) throws IOException {
     HttpResponse internalResponse = new HttpResponse();
 
@@ -200,7 +200,7 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
     }
   }
 
-  private URI buildUri(HttpContext context, String location) throws URISyntaxException {
+  private static URI buildUri(HttpContext context, String location) throws URISyntaxException {
     URI uri;
     uri = new URI(location);
     if (!uri.isAbsolute()) {
@@ -210,7 +210,7 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
     return uri;
   }
 
-  private boolean isRedirect(org.apache.http.HttpResponse response) {
+  private static boolean isRedirect(org.apache.http.HttpResponse response) {
     int code = response.getStatusLine().getStatusCode();
 
     return (code == 301 || code == 302 || code == 303 || code == 307)

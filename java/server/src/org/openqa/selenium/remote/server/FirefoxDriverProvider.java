@@ -69,7 +69,7 @@ public class FirefoxDriverProvider implements DriverProvider {
     }
   }
 
-  private Class<? extends WebDriver> getDriverClass(String driverClassName) {
+  private static Class<? extends WebDriver> getDriverClass(String driverClassName) {
     try {
       return Class.forName(driverClassName).asSubclass(WebDriver.class);
     } catch (ClassNotFoundException e) {
@@ -84,7 +84,7 @@ public class FirefoxDriverProvider implements DriverProvider {
     }
   }
 
-  private WebDriver callConstructor(String driverClassName, Capabilities capabilities) {
+  private static WebDriver callConstructor(String driverClassName, Capabilities capabilities) {
     Class<? extends WebDriver> from = getDriverClass(driverClassName);
     try {
       Constructor<? extends WebDriver> constructor = from.getConstructor(Capabilities.class);

@@ -54,7 +54,7 @@ public class AttachFile extends SeleneseCommand<Void> {
     return null;
   }
 
-  private File downloadFile(String name) {
+  private static File downloadFile(String name) {
     URL url = getUrl(name);
 
     File dir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("attachFile", "dir");
@@ -80,7 +80,7 @@ public class AttachFile extends SeleneseCommand<Void> {
     return outputTo;
   }
 
-  private URL getUrl(String name) {
+  private static URL getUrl(String name) {
     try {
       return new URL(name);
     } catch (MalformedURLException e) {

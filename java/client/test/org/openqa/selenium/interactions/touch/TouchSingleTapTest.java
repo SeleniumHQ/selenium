@@ -32,7 +32,7 @@ import org.openqa.selenium.interactions.Action;
  */
 public class TouchSingleTapTest extends TouchTestBase {
 
-  private TouchActions getBuilder(WebDriver driver) {
+  private static TouchActions getBuilder(WebDriver driver) {
     return new TouchActions(driver);
   }
 

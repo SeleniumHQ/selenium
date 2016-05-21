@@ -42,7 +42,7 @@ public class CachedContentServlet extends HttpServlet {
   /**
    * Sets all the don't-cache headers on the HttpResponse
    */
-  private void setAlwaysCacheHeaders(HttpServletResponse resp) {
+  private static void setAlwaysCacheHeaders(HttpServletResponse resp) {
     resp.setHeader("Cache-Control", "max-age=29723626");
     Calendar calendar = Calendar.getInstance();
     calendar.add(Calendar.YEAR, 1);

@@ -194,7 +194,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
     return builder.toString();
   }
 
-  private Object getHeader() {
+  private static Object getHeader() {
     StringBuilder builder = new StringBuilder();
     builder.append("<div id='header'>");
     builder.append("<h1><a href='/grid/console'>Selenium</a></h1>");
@@ -242,7 +242,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
     return builder.toString();
   }
 
-  private String prettyHtmlPrint(GridHubConfiguration config) {
+  private static String prettyHtmlPrint(GridHubConfiguration config) {
     return config.toString("<abbr title='%1$s'>%1$s : </abbr>%2$s</br>");
   }
 

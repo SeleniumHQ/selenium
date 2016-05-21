@@ -30,7 +30,7 @@ import static org.junit.Assert.assertTrue;
  * Tests the basic scroll operations on touch enabled devices..
  */
 public class TouchScrollTest extends TouchTestBase {
-  private TouchActions getBuilder(WebDriver driver) {
+  private static TouchActions getBuilder(WebDriver driver) {
     return new TouchActions(driver);
   }
 

@@ -60,7 +60,7 @@ import java.util.Map;
     issues = {4136})
 public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
-  private Actions getBuilder(WebDriver driver) {
+  private static Actions getBuilder(WebDriver driver) {
     return new Actions(driver);
   }
 
@@ -118,7 +118,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
 
-  private boolean isElementAvailable(WebDriver driver, By locator) {
+  private static boolean isElementAvailable(WebDriver driver, By locator) {
     try {
       driver.findElement(locator);
       return true;
@@ -281,7 +281,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     wait.until(titleIs("We Arrive Here"));
   }
 
-  private int getFieldValue(Map<String, Object> sizeRect, String fieldName) {
+  private static int getFieldValue(Map<String, Object> sizeRect, String fieldName) {
     return (int) Double.parseDouble(sizeRect.get(fieldName).toString());
   }
 
@@ -515,7 +515,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
         Colors.GREEN.getColorValue(), Color.fromString(redbox.getCssValue("background-color")));
   }
 
-  private boolean fuzzyPositionMatching(int expectedX, int expectedY, String locationTouple) {
+  private static boolean fuzzyPositionMatching(int expectedX, int expectedY, String locationTouple) {
     String[] splitString = locationTouple.split(",");
     int gotX = Integer.parseInt(splitString[0].trim());
     int gotY = Integer.parseInt(splitString[1].trim());
@@ -527,7 +527,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   }
 
-  private ExpectedCondition<Boolean> fuzzyMatchingOfCoordinates(
+  private static ExpectedCondition<Boolean> fuzzyMatchingOfCoordinates(
       final WebElement element, final int x, final int y) {
     return new ExpectedCondition<Boolean>() {
       @Override

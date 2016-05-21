@@ -40,7 +40,7 @@ public class DisplayedMatcherTest {
     assertThat(element, is(not(displayed())));
   }
 
-  private WebElement createWebElementWithDisplayed(final boolean displayed) {
+  private static WebElement createWebElementWithDisplayed(final boolean displayed) {
     final WebElement element = mock(WebElement.class);
     when(element.isDisplayed()).thenReturn(displayed);
     return element;

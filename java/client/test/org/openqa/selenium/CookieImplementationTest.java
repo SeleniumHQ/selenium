@@ -503,7 +503,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertEquals(cookie2, retrieved);
   }
 
-  private String generateUniqueKey() {
+  private static String generateUniqueKey() {
     return String.format("key_%d", random.nextInt());
   }
 
@@ -569,7 +569,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     }
   }
 
-  private Date someTimeInTheFuture() {
+  private static Date someTimeInTheFuture() {
     return new Date(System.currentTimeMillis() + 100000);
   }
 

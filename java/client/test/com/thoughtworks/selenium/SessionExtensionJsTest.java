@@ -98,7 +98,7 @@ public class SessionExtensionJsTest {
     assertEquals("Click Page Target", privateSelenium.getTitle());
   }
 
-  private void runCommands(Selenium selenium) {
+  private static void runCommands(Selenium selenium) {
     selenium.start();
     selenium.open(TEST_URL);
     selenium.click("javascript{ 'l' + comeGetSome + 'k' }");

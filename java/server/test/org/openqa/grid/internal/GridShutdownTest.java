@@ -77,11 +77,11 @@ public class GridShutdownTest {
     assertTrue(getCurrentThreadCount() <= before);
   }
 
-  private int getCurrentThreadCount() {
+  private static int getCurrentThreadCount() {
     return Thread.currentThread().getThreadGroup().activeCount();
   }
 
-  private int numRequests() {
+  private static int numRequests() {
     return 5;
   }
 

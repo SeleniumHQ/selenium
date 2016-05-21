@@ -82,7 +82,7 @@ public class WaitForPageToLoad extends SeleneseCommand<Void> {
     return null;
   }
 
-  private void hesitate(long duration) {
+  private static void hesitate(long duration) {
     try {
       Thread.sleep(duration);
     } catch (InterruptedException e) {
@@ -90,7 +90,7 @@ public class WaitForPageToLoad extends SeleneseCommand<Void> {
     }
   }
 
-  private Wait getReadyStateUsingWait(final WebDriver driver) {
+  private static Wait getReadyStateUsingWait(final WebDriver driver) {
     return new Wait() {
       @Override
       public boolean until() {

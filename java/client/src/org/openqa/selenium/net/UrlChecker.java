@@ -151,7 +151,7 @@ public class UrlChecker {
     }
   }
 
-  private HttpURLConnection connectToUrl(URL url) throws IOException {
+  private static HttpURLConnection connectToUrl(URL url) throws IOException {
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
     connection.setConnectTimeout(CONNECT_TIMEOUT_MS);
     connection.setReadTimeout(READ_TIMEOUT_MS);

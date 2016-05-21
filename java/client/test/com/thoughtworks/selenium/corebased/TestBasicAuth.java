@@ -35,7 +35,7 @@ public class TestBasicAuth extends InternalSelenseTestBase {
     assertEquals(selenium.getTitle(), "Welcome");
   }
 
-  private String getUrl() throws MalformedURLException {
+  private static String getUrl() throws MalformedURLException {
     AppServer appServer = GlobalTestEnvironment.get().getAppServer();
     URL url = new URL(appServer.whereIs("/selenium-server/tests/html/basicAuth/index.html"));
 

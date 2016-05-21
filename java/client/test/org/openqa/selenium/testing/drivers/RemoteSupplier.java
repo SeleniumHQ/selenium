@@ -52,7 +52,7 @@ public class RemoteSupplier implements Supplier<WebDriver> {
     return driver;
   }
 
-  private synchronized  void startServer() {
+  private static synchronized void startServer() {
     if (started) {
       return;
     }

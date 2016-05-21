@@ -104,7 +104,7 @@ class SafariDriverChannelHandler extends SimpleChannelUpstreamHandler {
     e.getChannel().close();
   }
 
-  private void handleFaviconRequest(ChannelHandlerContext ctx, HttpRequest request) {
+  private static void handleFaviconRequest(ChannelHandlerContext ctx, HttpRequest request) {
     HttpResponse response = new DefaultHttpResponse(HttpVersion.HTTP_1_1,
         HttpResponseStatus.NO_CONTENT);
     response.setHeader(HttpHeaders.Names.CONTENT_LENGTH, 0);
@@ -184,7 +184,7 @@ class SafariDriverChannelHandler extends SimpleChannelUpstreamHandler {
     }
   }
 
-  private void sendNotAllowedResponse(ChannelHandlerContext ctx, HttpRequest request,
+  private static void sendNotAllowedResponse(ChannelHandlerContext ctx, HttpRequest request,
       HttpMethod... allowedMethods) {
     HttpResponse response = new DefaultHttpResponse(
         HttpVersion.HTTP_1_1, HttpResponseStatus.METHOD_NOT_ALLOWED);
@@ -193,7 +193,7 @@ class SafariDriverChannelHandler extends SimpleChannelUpstreamHandler {
     sendResponse(ctx, request, response);
   }
 
-  private void sendResponse(ChannelHandlerContext ctx, HttpRequest request, HttpResponse response) {
+  private static void sendResponse(ChannelHandlerContext ctx, HttpRequest request, HttpResponse response) {
     ChannelFuture future = ctx.getChannel().write(response);
     if (!HttpHeaders.isKeepAlive(request) || response.getStatus().getCode() != 200) {
       future.addListener(ChannelFutureListener.CLOSE);

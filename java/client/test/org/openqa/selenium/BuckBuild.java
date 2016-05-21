@@ -117,7 +117,7 @@ public class BuckBuild {
     return output;
   }
 
-  private void findBuck(Path projectRoot, ImmutableList.Builder<String> builder) throws IOException {
+  private static void findBuck(Path projectRoot, ImmutableList.Builder<String> builder) throws IOException {
     Path noBuckCheck = projectRoot.resolve(".nobuckcheck");
 
     // If there's a .nobuckcheck in the root of the file, and we can execute "buck", then assume
@@ -133,7 +133,7 @@ public class BuckBuild {
     downloadBuckPexIfNecessary(builder);
   }
 
-  private void downloadBuckPexIfNecessary(ImmutableList.Builder<String> builder)
+  private static void downloadBuckPexIfNecessary(ImmutableList.Builder<String> builder)
     throws IOException {
     Path projectRoot = InProject.locate("Rakefile").getParentFile().toPath();
     String buckVersion = new String(Files.readAllBytes(projectRoot.resolve(".buckversion"))).trim();

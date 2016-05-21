@@ -90,7 +90,7 @@ public class UploadTest extends JUnit4TestBase {
     assertEquals("", element.getAttribute("value"));
   }
 
-  private File createTmpFile(String content) throws IOException {
+  private static File createTmpFile(String content) throws IOException {
     File f = File.createTempFile("webdriver", "tmp");
     f.deleteOnExit();
     Files.write(content, f, Charsets.UTF_8);

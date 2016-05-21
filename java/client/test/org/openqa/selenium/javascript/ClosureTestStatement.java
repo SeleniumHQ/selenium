@@ -90,11 +90,11 @@ public class ClosureTestStatement extends Statement {
     }
   }
 
-  private boolean getBoolean(JavascriptExecutor executor, Query query) {
+  private static boolean getBoolean(JavascriptExecutor executor, Query query) {
     return (Boolean) executor.executeScript(query.script);
   }
 
-  private String getString(JavascriptExecutor executor, Query query) {
+  private static String getString(JavascriptExecutor executor, Query query) {
     return (String) executor.executeScript(query.script);
   }
 

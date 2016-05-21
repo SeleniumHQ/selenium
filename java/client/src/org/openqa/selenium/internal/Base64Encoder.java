@@ -83,7 +83,7 @@ public class Base64Encoder {
         }
     }
 
-    private int mapCharToInt(Reader input) throws IOException {
+    private static int mapCharToInt(Reader input) throws IOException {
         int c;
         while ((c = input.read()) != -1) {
             int result = REVERSE_MAPPING[c];

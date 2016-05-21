@@ -194,7 +194,7 @@ public class FirefoxProfileTest {
     assertTrue(FileHandler.readAsString(prefs).contains("i.like.cheese"));
   }
 
-  private List<String> readGeneratedProperties(FirefoxProfile profile) throws Exception {
+  private static List<String> readGeneratedProperties(FirefoxProfile profile) throws Exception {
     File generatedProfile = profile.layoutOnDisk();
 
     File prefs = new File(generatedProfile, "user.js");
@@ -252,7 +252,7 @@ public class FirefoxProfileTest {
     assertTrue("Did not see value being set correctly", seenKey);
   }
 
-  private Preferences parseUserPrefs(FirefoxProfile profile) throws IOException {
+  private static Preferences parseUserPrefs(FirefoxProfile profile) throws IOException {
     File directory = profile.layoutOnDisk();
     File userPrefs = new File(directory, "user.js");
     FileReader reader = new FileReader(userPrefs);

@@ -178,7 +178,7 @@ class Preferences {
     }
   }
 
-  private String valueAsPreference(Object value) {
+  private static String valueAsPreference(Object value) {
     if (value instanceof String) {
       return "\"" + escapeValueAsPreference((String) value) + "\"";
     } else {
@@ -187,11 +187,11 @@ class Preferences {
 
   }
 
-  private String escapeValueAsPreference(String value) {
+  private static String escapeValueAsPreference(String value) {
     return value.replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"");
   }
 
-  private Object preferenceAsValue(String toConvert) {
+  private static Object preferenceAsValue(String toConvert) {
     if (toConvert.startsWith("\"") && toConvert.endsWith("\"")) {
       return toConvert.substring(1, toConvert.length() - 1).replaceAll("\\\\\\\\", "\\\\");
     }
@@ -212,7 +212,7 @@ class Preferences {
     return allPrefs.get(key);
   }
 
-  private boolean isStringified(String value) {
+  private static boolean isStringified(String value) {
     // Assume we a string is stringified (i.e. wrapped in " ") when
     // the first character == " and the last character == "
     return value.startsWith("\"") && value.endsWith("\"");

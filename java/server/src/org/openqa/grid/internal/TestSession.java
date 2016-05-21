@@ -415,7 +415,7 @@ public class TestSession {
     return proxyRequest;
   }
 
-  private void writeRawBody(HttpServletResponse response, byte[] rawBody) throws IOException {
+  private static void writeRawBody(HttpServletResponse response, byte[] rawBody) throws IOException {
     OutputStream out = response.getOutputStream();
     try {
       // We need to set the Content-Length header before we write to the output stream. Usually
@@ -439,7 +439,7 @@ public class TestSession {
     }
   }
 
-  private byte[] drainInputStream(InputStream in) throws IOException {
+  private static byte[] drainInputStream(InputStream in) throws IOException {
     try {
       return ByteStreams.toByteArray(in);
     } finally {
@@ -447,7 +447,7 @@ public class TestSession {
     }
   }
 
-  private String getResponseUtf8Content(InputStream in) {
+  private static String getResponseUtf8Content(InputStream in) {
     String res;
     StringBuilder sb = new StringBuilder();
     String line;

@@ -92,7 +92,7 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
    * @param expected The array of expected strings.
    * @return true if a match was found for all expected strings, otherwise false.
    */
-  private boolean containsExpectedEntries(ImmutableList<LogEntry> entries, String[] expected) {
+  private static boolean containsExpectedEntries(ImmutableList<LogEntry> entries, String[] expected) {
     int index = 0;
     for (LogEntry entry : entries) {
       if (index == expected.length) {
@@ -122,11 +122,11 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
     }
   }
 
-  private LogEntries getProfilerEntries(WebDriver driver) {
+  private static LogEntries getProfilerEntries(WebDriver driver) {
     return driver.manage().logs().get(LogType.PROFILER);
   }
 
-  private ImmutableList<LogEntry> getProfilerEntriesOfType(final LogEntries entries,
+  private static ImmutableList<LogEntry> getProfilerEntriesOfType(final LogEntries entries,
       final EventType eventType) {
     return ImmutableList.copyOf(Iterables.filter(entries, new Predicate<LogEntry>() {
       public boolean apply(LogEntry entry) {

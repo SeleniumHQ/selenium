@@ -44,7 +44,7 @@ public class TestUIElementLocators extends InternalSelenseTestBase {
     selenium.removeScript("uimap");
   }
 
-  private String getUiMap() {
+  private static String getUiMap() {
     return "var map = new UIMap();\n"
         + "\n"
         + "map.addPageset({\n"

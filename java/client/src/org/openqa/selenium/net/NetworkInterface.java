@@ -74,7 +74,7 @@ public class NetworkInterface {
     return isLoopback;
   }
 
-  private boolean isLoopBackFromINetAddresses(Iterable<InetAddress> inetAddresses) {
+  private static boolean isLoopBackFromINetAddresses(Iterable<InetAddress> inetAddresses) {
     // Let's hope there's no such thing as network interfaces with mixed addresses ;)
     Iterator<InetAddress> iterator = inetAddresses.iterator();
     return iterator.hasNext() && iterator.next().isLoopbackAddress();

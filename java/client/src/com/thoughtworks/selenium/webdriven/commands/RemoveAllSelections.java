@@ -48,7 +48,7 @@ public class RemoveAllSelections extends SeleneseCommand<Void> {
     return null;
   }
 
-  private void removeAllSelections(List<WebElement> options) {
+  private static void removeAllSelections(List<WebElement> options) {
     for (WebElement option : options) {
       if (option.isSelected())
         option.click();

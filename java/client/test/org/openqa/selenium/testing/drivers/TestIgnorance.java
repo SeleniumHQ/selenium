@@ -111,7 +111,7 @@ public class TestIgnorance {
     return ignored;
   }
 
-  private boolean isIgnoredBecauseOfJUnit4Ignore(org.junit.Ignore annotation) {
+  private static boolean isIgnoredBecauseOfJUnit4Ignore(org.junit.Ignore annotation) {
     return annotation != null;
   }
 
@@ -145,7 +145,7 @@ public class TestIgnorance {
     return Platform.getCurrent();
   }
 
-  private boolean isIgnoredDueToBeingOnSauce(Description method) {
+  private static boolean isIgnoredDueToBeingOnSauce(Description method) {
     boolean isLocal = method.getAnnotation(NeedsLocalEnvironment.class) != null
                       || method.getTestClass().getAnnotation(NeedsLocalEnvironment.class) != null;
     if (SauceDriver.shouldUseSauce()) {
@@ -171,7 +171,7 @@ public class TestIgnorance {
     addIgnoresForBrowser(browser, ignoreComparator);
   }
 
-  private void addIgnoresForBrowser(Browser browser, IgnoreComparator comparator) {
+  private static void addIgnoresForBrowser(Browser browser, IgnoreComparator comparator) {
     if (Boolean.getBoolean("selenium.browser.remote") || SauceDriver.shouldUseSauce()) {
       comparator.addDriver(REMOTE);
     }
