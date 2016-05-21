@@ -183,33 +183,35 @@ exports.titleMatches = function titleMatches(regex) {
  * @param {string} url The expected page url.
  * @return {!Condition<boolean>} The new condition.
  */
-exports.urlIs = function urlIs(url){
+exports.urlIs = function urlIs(url) {
   return new Condition(
-    'for url to be ' + JSON.stringify(url),
-    function(driver) {
-      return driver.getCurrentUrl().then(function(u) {
-        return u === url;
+      'for URL to be ' + JSON.stringify(url),
+      function(driver) {
+        return driver.getCurrentUrl().then(function(u) {
+          return u === url;
+        });
       });
-    });
 };
+
 
 /**
  * Creates a condition that will wait for the current page's url to contain
  * the given substring.
  *
- * @param {string} substrUrl The substring that should be present in the page
- *     title.
+ * @param {string} substrUrl The substring that should be present in the current
+ *     URL.
  * @return {!Condition<boolean>} The new condition.
  */
 exports.urlContains = function urlContains(substrUrl) {
   return new Condition(
-      'for url to contain ' + JSON.stringify(substrUrl),
+      'for URL to contain ' + JSON.stringify(substrUrl),
       function(driver) {
         return driver.getCurrentUrl().then(function(url) {
           return url.indexOf(substrUrl) !== -1;
         });
-    });
+      });
 };
+
 
 /**
  * Creates a condition that will wait for the current page's url to match the
@@ -219,7 +221,7 @@ exports.urlContains = function urlContains(substrUrl) {
  * @return {!Condition<boolean>} The new condition.
  */
 exports.urlMatches = function urlMatches(regex) {
-  return new Condition('for url to match ' + regex, function(driver) {
+  return new Condition('for URL to match ' + regex, function(driver) {
     return driver.getCurrentUrl().then(function(url) {
       return regex.test(url);
     });

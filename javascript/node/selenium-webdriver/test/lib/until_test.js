@@ -174,7 +174,7 @@ describe('until', function() {
           assert.deepStrictEqual(titles, ['google']);
         });
   });
-  
+
   it('testUntilUrlIs', function() {
     var urls = ['http://www.foo.com', 'https://boo.com', 'http://docs.yes.com'];
     executor.on(CommandName.GET_CURRENT_URL, () => urls.shift());
@@ -183,16 +183,17 @@ describe('until', function() {
       assert.deepStrictEqual(urls, ['http://docs.yes.com']);
     });
   });
-  
+
   it('testUntilUrlContains', function() {
-    var urls = ['http://foo.com', 'https://groups.froogle.com', 'http://google.com'];
+    var urls =
+        ['http://foo.com', 'https://groups.froogle.com', 'http://google.com'];
     executor.on(CommandName.GET_CURRENT_URL, () => urls.shift());
 
     return driver.wait(until.urlContains('oogle.com'), 3000).then(function() {
       assert.deepStrictEqual(urls, ['http://google.com']);
     });
   });
-  
+
   it('testUntilUrlMatches', function() {
     var urls = ['foo', 'froogle', 'aaaabc', 'aabbbc', 'google'];
     executor.on(CommandName.GET_CURRENT_URL, () => urls.shift());

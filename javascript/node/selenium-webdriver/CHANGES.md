@@ -2,6 +2,8 @@
 
 * Allow users to set the agent used for HTTP connections through
    `builder.Builder#usingHttpAgent()`
+* Added new wait conditions: `until.urlIs()`, `until.urlContains()`,
+   `until.urlMatches()`
 
 ## v2.53.2
 
