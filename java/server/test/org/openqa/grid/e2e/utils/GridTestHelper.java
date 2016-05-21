@@ -67,9 +67,8 @@ public class GridTestHelper {
       DesiredCapabilities caps = new DesiredCapabilities();
       caps.setBrowserName(browser);
       return caps;
-    } else {
-      return DesiredCapabilities.htmlUnit();
     }
+    return DesiredCapabilities.htmlUnit();
   }
 
   public static Hub getHub() throws Exception {

@@ -38,13 +38,12 @@ class JavaScriptLoader {
     URL resourceUrl = JavaScriptLoader.class.getResource(resourcePath);
     if (resourceUrl != null) {
       return Resources.toString(resourceUrl, Charsets.UTF_8);
-    } else {
-      new Build().of(resourceTask).go();
-
-      File topDir = InProject.locate("Rakefile").getParentFile();
-      File builtFile = new File(topDir, taskToBuildOutput(resourceTask));
-      return Files.toString(builtFile, Charsets.UTF_8);
     }
+    new Build().of(resourceTask).go();
+
+    File topDir = InProject.locate("Rakefile").getParentFile();
+    File builtFile = new File(topDir, taskToBuildOutput(resourceTask));
+    return Files.toString(builtFile, Charsets.UTF_8);
   }
 
   static String taskToBuildOutput(String taskName) {

@@ -42,9 +42,8 @@ public class GetValue extends SeleneseCommand<String> {
     {
       if (element.getAttribute("checked") == null) {
         return "off";
-      } else {
-        return "on";
       }
+      return "on";
     }
 
     return element.getAttribute("value");

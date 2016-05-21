@@ -415,9 +415,8 @@ public class ExpectedConditions {
           String elementText = element.getAttribute("value");
           if (elementText != null) {
             return elementText.contains(text);
-          } else {
-            return false;
           }
+          return false;
         } catch (StaleElementReferenceException e) {
           return null;
         }
@@ -449,9 +448,8 @@ public class ExpectedConditions {
           String elementText = findElement(locator, driver).getAttribute("value");
           if (elementText != null) {
             return elementText.contains(text);
-          } else {
-            return false;
           }
+          return false;
         } catch (StaleElementReferenceException e) {
           return null;
         }
@@ -654,9 +652,8 @@ public class ExpectedConditions {
         try {
           if (element != null && element.isEnabled()) {
             return element;
-          } else {
-            return null;
           }
+          return null;
         } catch (StaleElementReferenceException e) {
           return null;
         }
@@ -688,9 +685,8 @@ public class ExpectedConditions {
         try {
           if (element != null && element.isEnabled()) {
             return element;
-          } else {
-            return null;
           }
+          return null;
         } catch (StaleElementReferenceException e) {
           return null;
         }
@@ -1537,9 +1533,8 @@ public class ExpectedConditions {
         }
         if (value instanceof String) {
           return ((String) value).isEmpty() ? null : value;
-        } else {
-          return value;
         }
+        return value;
       }
 
       @Override

@@ -172,19 +172,15 @@ public class ProxySet implements Iterable<RemoteProxy> {
       if (throwOnCapabilityNotPresent) {
         throw new GridException("Empty pool of VM for setup "
                                 + new DesiredCapabilities(desiredCapabilities));
-      } else {
-        log.warning("Empty pool of nodes.");
       }
-
+      log.warning("Empty pool of nodes.");
     }
     if (!hasCapability(desiredCapabilities)) {
       if (throwOnCapabilityNotPresent) {
         throw new CapabilityNotPresentOnTheGridException(desiredCapabilities);
-      } else {
-        log.warning("grid doesn't contain " + new DesiredCapabilities(desiredCapabilities) +
-                    " at the moment.");
       }
-
+      log.warning("grid doesn't contain " + new DesiredCapabilities(desiredCapabilities) +
+          " at the moment.");
     }
   }
 

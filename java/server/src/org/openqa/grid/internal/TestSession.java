@@ -140,10 +140,8 @@ public class TestSession {
   public long getInactivityTime() {
     if (ignoreTimeout) {
       return 0;
-    } else {
-      return timeSource.currentTimeInMillis() - lastActivity;
     }
-
+    return timeSource.currentTimeInMillis() - lastActivity;
   }
 
   public boolean isOrphaned() {
@@ -330,11 +328,10 @@ public class TestSession {
           }
           setExternalKey(key);
           return consumedData;
-        } else {
-          throw new GridException(
-              "new session request for webdriver should contain a location header "
-              + "or an 'application/json;charset=UTF-8' response body with the session ID.");
         }
+        throw new GridException(
+            "new session request for webdriver should contain a location header "
+            + "or an 'application/json;charset=UTF-8' response body with the session ID.");
       }
       ExternalSessionKey key = ExternalSessionKey.fromWebDriverRequest(h.getValue());
       setExternalKey(key);

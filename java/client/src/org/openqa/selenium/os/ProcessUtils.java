@@ -79,9 +79,8 @@ public class ProcessUtils {
   public static int killProcess(Process process) {
     if (thisIsWindows()) {
       return killWinProcess(process);
-    } else {
-      return killUnixProcess(process);
     }
+    return killUnixProcess(process);
   }
 
   private static int killUnixProcess(Process process) {

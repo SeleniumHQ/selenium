@@ -119,10 +119,8 @@ public class ExternalSessionKey {
   public static ExternalSessionKey fromResponseBody(String responseBody) throws NewSessionException {
     if (responseBody != null && responseBody.startsWith("OK,")) {
       return new ExternalSessionKey(responseBody.replace("OK,", ""));
-    }else {
-      throw new NewSessionException("The server returned an error : "+responseBody);
     }
-
+    throw new NewSessionException("The server returned an error : "+responseBody);
   }
 
   public static ExternalSessionKey fromString(String keyString){

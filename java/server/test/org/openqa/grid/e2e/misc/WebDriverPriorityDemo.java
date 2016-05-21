@@ -84,9 +84,8 @@ public class WebDriverPriorityDemo {
         }
         if (aImportant && !bImportant) {
           return -1;
-        } else {
-          return 1;
         }
+        return 1;
       }
     };
 

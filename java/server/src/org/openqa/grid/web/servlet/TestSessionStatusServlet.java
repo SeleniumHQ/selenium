@@ -112,17 +112,16 @@ public class TestSessionStatusServlet extends RegistryBasedServlet {
     if (testSession == null) {
       res.addProperty("msg", "Cannot find test slot running session " + session + " in the registry.");
       return res;
-    } else {
-      res.addProperty("msg", "slot found !");
-      res.remove("success");
-      res.addProperty("success", true);
-      res.addProperty("session", testSession.getExternalKey().getKey());
-      res.addProperty("internalKey", testSession.getInternalKey());
-      res.addProperty("inactivityTime", testSession.getInactivityTime());
-      RemoteProxy p = testSession.getSlot().getProxy();
-      res.addProperty("proxyId", p.getId());
-      return res;
     }
+    res.addProperty("msg", "slot found !");
+    res.remove("success");
+    res.addProperty("success", true);
+    res.addProperty("session", testSession.getExternalKey().getKey());
+    res.addProperty("internalKey", testSession.getInternalKey());
+    res.addProperty("inactivityTime", testSession.getInactivityTime());
+    RemoteProxy p = testSession.getSlot().getProxy();
+    res.addProperty("proxyId", p.getId());
+    return res;
   }
 
 }

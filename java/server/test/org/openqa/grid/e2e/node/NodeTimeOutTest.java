@@ -83,9 +83,8 @@ public class NodeTimeOutTest {
         Integer i = hub.getRegistry().getActiveSessions().size();
         if (i != 0) {
           return null;
-        } else {
-          return i;
         }
+        return i;
       }
     });
     assertEquals(hub.getRegistry().getActiveSessions().size(), 0);

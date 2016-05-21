@@ -81,8 +81,7 @@ public class LoggingOptions {
     final String logLevelProperty = System.getProperty("selenium.LOGGER.level");
     if (null == logLevelProperty) {
       return null;
-    } else {
-      return Level.parse(logLevelProperty);
     }
+    return Level.parse(logLevelProperty);
   }
 }

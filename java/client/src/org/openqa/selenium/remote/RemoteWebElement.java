@@ -230,17 +230,15 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   public WebElement findElementById(String using) {
     if (parent.getW3CStandardComplianceLevel() == 0) {
       return findElement("id", using);
-    } else {
-      return findElementByCssSelector("#" + RemoteWebDriver.cssEscape(using));
     }
+    return findElementByCssSelector("#" + RemoteWebDriver.cssEscape(using));
   }
 
   public List<WebElement> findElementsById(String using) {
     if (parent.getW3CStandardComplianceLevel() == 0) {
       return findElements("id", using);
-    } else {
-      return findElementsByCssSelector("#" + RemoteWebDriver.cssEscape(using));
     }
+    return findElementsByCssSelector("#" + RemoteWebDriver.cssEscape(using));
   }
 
   public WebElement findElementByLinkText(String using) {
@@ -254,33 +252,29 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   public WebElement findElementByName(String using) {
     if (parent.getW3CStandardComplianceLevel() == 0) {
       return findElement("name", using);
-    } else {
-      return findElementByCssSelector("*[name='" + using + "']");
     }
+    return findElementByCssSelector("*[name='" + using + "']");
   }
 
   public List<WebElement> findElementsByName(String using) {
     if (parent.getW3CStandardComplianceLevel() == 0) {
       return findElements("name", using);
-    } else {
-      return findElementsByCssSelector("*[name='" + using + "']");
     }
+    return findElementsByCssSelector("*[name='" + using + "']");
   }
 
   public WebElement findElementByClassName(String using) {
     if (parent.getW3CStandardComplianceLevel() == 0) {
       return findElement("class name", using);
-    } else {
-      return findElementByCssSelector("." + RemoteWebDriver.cssEscape(using));
     }
+    return findElementByCssSelector("." + RemoteWebDriver.cssEscape(using));
   }
 
   public List<WebElement> findElementsByClassName(String using) {
     if (parent.getW3CStandardComplianceLevel() == 0) {
       return findElements("class name", using);
-    } else {
-      return findElementsByCssSelector("." + RemoteWebDriver.cssEscape(using));
     }
+    return findElementsByCssSelector("." + RemoteWebDriver.cssEscape(using));
   }
 
   public WebElement findElementByCssSelector(String using) {
@@ -310,17 +304,15 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   public WebElement findElementByTagName(String using) {
     if (parent.getW3CStandardComplianceLevel() == 0) {
       return findElement("tag name", using);
-    } else {
-      return findElementByCssSelector(using);
     }
+    return findElementByCssSelector(using);
   }
 
   public List<WebElement> findElementsByTagName(String using) {
     if (parent.getW3CStandardComplianceLevel() == 0) {
       return findElements("tag name", using);
-    } else {
-      return findElementsByCssSelector(using);
     }
+    return findElementsByCssSelector(using);
   }
 
   protected Response execute(String command, Map<String, ?> parameters) {
@@ -421,15 +413,12 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
           @SuppressWarnings("unchecked")
           Map<String, Number> mapped = (Map<String, Number>) response.getValue();
           return new Point(mapped.get("x").intValue(), mapped.get("y").intValue());
-
-        } else {
-          @SuppressWarnings("unchecked")
-          Map<String, Number> mapped = (Map<String, Number>) parent.executeScript(
+        }
+        @SuppressWarnings("unchecked")
+        Map<String, Number> mapped = (Map<String, Number>) parent.executeScript(
             "return arguments[0].getBoundingClientRect()", RemoteWebElement.this);
 
-          return new Point(mapped.get("x").intValue(), mapped.get("y").intValue());
-        }
-
+        return new Point(mapped.get("x").intValue(), mapped.get("y").intValue());
       }
 
       public Point onPage() {

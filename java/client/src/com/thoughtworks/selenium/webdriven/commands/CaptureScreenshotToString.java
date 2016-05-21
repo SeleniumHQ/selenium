@@ -30,8 +30,7 @@ public class CaptureScreenshotToString extends SeleneseCommand<String> {
     if (driver instanceof TakesScreenshot) {
       TakesScreenshot tsDriver = (TakesScreenshot) driver;
       return tsDriver.getScreenshotAs(OutputType.BASE64);
-    } else {
-      throw new UnsupportedOperationException("WebDriver does not implement TakeScreenshot");
     }
+    throw new UnsupportedOperationException("WebDriver does not implement TakeScreenshot");
   }
 }

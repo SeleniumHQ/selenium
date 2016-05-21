@@ -109,10 +109,8 @@ public class BrowserNameUtils {
             .getResourceAsStream(path + name + ".png");
     if (in == null) {
       return null;
-    } else {
-      return "/grid/resources/" + path + name + ".png";
     }
-
+    return "/grid/resources/" + path + name + ".png";
   }
 
 }

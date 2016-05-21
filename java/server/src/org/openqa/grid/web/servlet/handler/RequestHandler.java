@@ -215,9 +215,8 @@ public class RequestHandler implements Comparable<RequestHandler> {
     if (registry.getConfiguration().prioritizer != null) {
       return registry.getConfiguration().prioritizer.compareTo(this.getRequest().getDesiredCapabilities(), o.getRequest()
           .getDesiredCapabilities());
-    } else {
-      return 0;
     }
+    return 0;
   }
 
   protected void setSession(TestSession session) {
@@ -245,9 +244,8 @@ public class RequestHandler implements Comparable<RequestHandler> {
   public ExternalSessionKey getServerSession() {
     if (session == null) {
       return null;
-    } else {
-      return session.getExternalKey();
     }
+    return session.getExternalKey();
   }
 
   public void stop() {

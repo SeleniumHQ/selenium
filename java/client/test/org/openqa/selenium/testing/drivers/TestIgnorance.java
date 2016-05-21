@@ -150,9 +150,8 @@ public class TestIgnorance {
                       || method.getTestClass().getAnnotation(NeedsLocalEnvironment.class) != null;
     if (SauceDriver.shouldUseSauce()) {
       return isLocal;
-    } else {
-      return Boolean.getBoolean("local_only") && !isLocal;
     }
+    return Boolean.getBoolean("local_only") && !isLocal;
   }
 
   private boolean isIgnoredDueToJavascript(JavascriptEnabled enabled) {

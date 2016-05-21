@@ -133,9 +133,8 @@ public class Finders {
           Iterator<WebElement> iter = collection.iterator();
           iter.hasNext();
           return Collections.singletonList(iter.next());
-        } else {
-          return collection;
         }
+        return collection;
       }
 
       @Override

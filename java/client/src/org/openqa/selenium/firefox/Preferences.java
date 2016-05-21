@@ -181,10 +181,8 @@ class Preferences {
   private String valueAsPreference(Object value) {
     if (value instanceof String) {
       return "\"" + escapeValueAsPreference((String) value) + "\"";
-    } else {
-      return escapeValueAsPreference(String.valueOf(value));
     }
-
+    return escapeValueAsPreference(String.valueOf(value));
   }
 
   private String escapeValueAsPreference(String value) {
