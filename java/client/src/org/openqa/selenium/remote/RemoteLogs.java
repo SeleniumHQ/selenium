@@ -103,7 +103,7 @@ public class RemoteLogs implements Logs {
     Object raw = executeMethod.execute(DriverCommand.GET_AVAILABLE_LOG_TYPES, null);
     @SuppressWarnings("unchecked")
     List<String> rawList = (List<String>) raw;
-    ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<String>();
+    ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<>();
     for (String logType : rawList) {
       builder.add(logType);
     }

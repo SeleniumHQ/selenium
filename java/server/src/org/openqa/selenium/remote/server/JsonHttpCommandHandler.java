@@ -48,7 +48,7 @@ public class JsonHttpCommandHandler {
   private final Logger log;
   private final JsonHttpCommandCodec commandCodec;
   private final JsonHttpResponseCodec responseCodec;
-  private final Map<String, ResultConfig> configs = new LinkedHashMap<String, ResultConfig>();
+  private final Map<String, ResultConfig> configs = new LinkedHashMap<>();
   private final ErrorCodes errorCodes = new ErrorCodes();
 
   public JsonHttpCommandHandler(DriverSessions sessions, Logger log) {

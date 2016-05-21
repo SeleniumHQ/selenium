@@ -156,7 +156,7 @@ class CapabilitiesComparator implements Comparator<Capabilities> {
     }
 
     static <T> CapabilityScorer<T> scoreAgainst(T value) {
-      return new CapabilityScorer<T>(value);
+      return new CapabilityScorer<>(value);
     }
   }
 
