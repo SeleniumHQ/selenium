@@ -177,6 +177,57 @@ exports.titleMatches = function titleMatches(regex) {
 
 
 /**
+ * Creates a condition that will wait for the current page's url to match the
+ * given value.
+ *
+ * @param {string} url The expected page url.
+ * @return {!Condition<boolean>} The new condition.
+ */
+exports.urlIs = function urlI(url){
+  return new Condition(
+    'for url to be ' + JSON.stringify(url),
+    function(driver) {
+      return driver.getCurrentUrl().then(function(u) {
+        return u === url;
+      });
+    });
+};
+
+/**
+ * Creates a condition that will wait for the current page's url to contain
+ * the given substring.
+ *
+ * @param {string} substrUrl The substring that should be present in the page
+ *     title.
+ * @return {!Condition<boolean>} The new condition.
+ */
+exports.urlContains = function urlContains(substrUrl) {
+  return new Condition(
+      'for url to contain ' + JSON.stringify(substrUrl),
+      function(driver) {
+        return driver.getCurrentUrl().then(function(url) {
+          return url.indexOf(substrUrl) !== -1;
+        });
+    });
+};
+
+/**
+ * Creates a condition that will wait for the current page's url to match the
+ * given regular expression.
+ *
+ * @param {!RegExp} regex The regular expression to test against.
+ * @return {!Condition<boolean>} The new condition.
+ */
+exports.urlMatches = function urlMatches(regex) {
+  return new Condition('for url to match ' + regex, function(driver) {
+    return driver.getCurrentUrl().then(function(url) {
+      return regex.test(url);
+    });
+  });
+};
+
+
+/**
  * Creates a condition that will loop until an element is
  * {@link ./webdriver.WebDriver#findElement found} with the given locator.
  *
