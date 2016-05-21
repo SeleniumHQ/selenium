@@ -143,9 +143,8 @@ public class HttpCommandProcessorUnitTest {
         throws IOException {
       if (throwIoeOnGetConnection) {
         throw new IOException("injected exception");
-      } else {
-        return super.getHttpUrlConnection(urlForServlet);
       }
+      return super.getHttpUrlConnection(urlForServlet);
     }
 
     @Override
@@ -153,9 +152,8 @@ public class HttpCommandProcessorUnitTest {
         throws IOException {
       if (throwIoeOnGetOutputStream) {
         throw new IOException("injected exception");
-      } else {
-        return new StringWriter(1024);
       }
+      return new StringWriter(1024);
     }
 
     @Override
@@ -163,9 +161,8 @@ public class HttpCommandProcessorUnitTest {
         throws IOException {
       if (throwIoeOnGetInputStream) {
         throw new IOException("injected exception");
-      } else {
-        return new StringReader(responseString);
       }
+      return new StringReader(responseString);
     }
 
     @Override

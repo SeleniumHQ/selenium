@@ -153,9 +153,8 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   public WebDriver getWrappedDriver() {
     if (driver instanceof WrapsDriver) {
       return ((WrapsDriver) driver).getWrappedDriver();
-    } else {
-      return driver;
     }
+    return driver;
   }
 
   public void get(String url) {
@@ -293,29 +292,26 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   public Keyboard getKeyboard() {
     if (driver instanceof HasInputDevices) {
       return new EventFiringKeyboard(driver, dispatcher);
-    } else {
-      throw new UnsupportedOperationException("Underlying driver does not implement advanced"
-          + " user interactions yet.");
     }
+    throw new UnsupportedOperationException("Underlying driver does not implement advanced"
+        + " user interactions yet.");
   }
 
   public Mouse getMouse() {
     if (driver instanceof HasInputDevices) {
       return new EventFiringMouse(driver, dispatcher);
-    } else {
-      throw new UnsupportedOperationException("Underlying driver does not implement advanced"
-          + " user interactions yet.");
     }
+    throw new UnsupportedOperationException("Underlying driver does not implement advanced"
+        + " user interactions yet.");
   }
 
   public TouchScreen getTouch() {
     if (driver instanceof HasTouchScreen) {
       return new EventFiringTouch(driver, dispatcher);
-    } else {
-      throw new UnsupportedOperationException("Underlying driver does not implement advanced"
-          + " user interactions yet.");
     }
-  }
+    throw new UnsupportedOperationException("Underlying driver does not implement advanced"
+        + " user interactions yet.");
+ }
 
   private class EventFiringWebElement implements WebElement, WrapsElement, WrapsDriver, Locatable {
 

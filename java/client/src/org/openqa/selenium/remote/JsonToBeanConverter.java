@@ -155,9 +155,8 @@ public class JsonToBeanConverter {
           ? new JsonParser().parse((String) source).getAsJsonObject() : (JsonElement) source;
       if (json.isJsonPrimitive()) {
         return (T) new SessionId(json.getAsString());
-      } else {
-        return (T) new SessionId(json.getAsJsonObject().get("value").getAsString());
       }
+      return (T) new SessionId(json.getAsJsonObject().get("value").getAsString());
     }
 
     if (Capabilities.class.isAssignableFrom(clazz)) {
@@ -248,9 +247,8 @@ public class JsonToBeanConverter {
     } else if (json.isNumber()) {
       if (json.getAsLong() == json.getAsDouble()) {
         return json.getAsLong();
-      } else {
-        return json.getAsDouble();
       }
+      return json.getAsDouble();
     } else if (json.isString()) {
       return json.getAsString();
     } else {
@@ -263,9 +261,8 @@ public class JsonToBeanConverter {
     if (clazz.isEnum()) {
       if (text instanceof JsonElement) {
         return Enum.valueOf(clazz, (String) convertJsonPrimitive((JsonElement) text));
-      } else {
-        return Enum.valueOf(clazz, String.valueOf(text));
       }
+      return Enum.valueOf(clazz, String.valueOf(text));
     }
 
     Class[] allClasses = clazz.getClasses();
@@ -273,9 +270,8 @@ public class JsonToBeanConverter {
       if (current.isEnum()) {
         if (text instanceof JsonElement) {
           return Enum.valueOf(current, (String) convertJsonPrimitive((JsonElement) text));
-        } else {
-          return Enum.valueOf(current, String.valueOf(text));
         }
+        return Enum.valueOf(current, String.valueOf(text));
       }
     }
 

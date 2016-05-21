@@ -103,12 +103,11 @@ class ActiveTestSessions {
           String msg = "Session [" + keyId + "] was terminated due to " + sessionTerminationReason;
           log.fine(msg);
           throw new GridException(msg);
-      } else {
-          String msg = "Session [" + keyId + "] not available and is not among the last 1000 terminated sessions.\n"
-                  + "Active sessions are" + this.unmodifiableSet();
-          log.fine(msg);
-          throw new GridException(msg);
       }
+      String msg = "Session [" + keyId + "] not available and is not among the last 1000 terminated sessions.\n"
+          + "Active sessions are" + this.unmodifiableSet();
+      log.fine(msg);
+      throw new GridException(msg);
     }
     return sessionByExternalKey;
   }

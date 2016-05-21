@@ -71,9 +71,8 @@ public class CrossDomainRpcLoader {
 
     if (json.get(key).isJsonPrimitive() && json.get(key).getAsJsonPrimitive().isString()) {
       return json.get(key).getAsString();
-    } else {
-      return json.get(key).toString();
     }
+    return json.get(key).toString();
   }
 
   /**

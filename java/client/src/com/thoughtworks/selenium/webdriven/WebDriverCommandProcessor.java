@@ -95,10 +95,9 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     if (driver != null) {
       if (maker != null) {
         throw new SeleniumException("You may not start more than one session at a time");
-      } else {
-        // The command processor was instantiated with an already started driver
-        return;
       }
+      // The command processor was instantiated with an already started driver
+      return;
     }
 
     driver = maker.get();

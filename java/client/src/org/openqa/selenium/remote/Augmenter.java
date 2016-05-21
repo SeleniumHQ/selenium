@@ -67,11 +67,10 @@ public class Augmenter extends BaseAugmenter {
             "org.openqa.selenium.remote.RemoteWebDriver$$EnhancerByCGLIB")) {
       return (RemoteWebDriver) driver;
 
-    } else {
-      logger.warning("Augmenter should be applied to the instances of @Augmentable classes " +
-                     "or previously augmented instances only");
-      return null;
     }
+    logger.warning("Augmenter should be applied to the instances of @Augmentable classes " +
+        "or previously augmented instances only");
+    return null;
   }
 
   private void copyFields(Class<?> clazz, Object source, Object target) {

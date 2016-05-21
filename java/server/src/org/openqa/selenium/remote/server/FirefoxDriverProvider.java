@@ -64,9 +64,8 @@ public class FirefoxDriverProvider implements DriverProvider {
     Object marionette = capabilities.getCapability("marionette");
     if (marionette != null && Boolean.valueOf(marionette.toString())) {
       return callConstructor("org.openqa.selenium.firefox.MarionetteDriver", capabilities);
-    } else {
-      return callConstructor("org.openqa.selenium.firefox.FirefoxDriver", capabilities);
     }
+    return callConstructor("org.openqa.selenium.firefox.FirefoxDriver", capabilities);
   }
 
   private Class<? extends WebDriver> getDriverClass(String driverClassName) {

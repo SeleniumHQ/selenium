@@ -193,9 +193,8 @@ public class BaseRemoteProxy implements RemoteProxy {
         default:
           throw new GridException("Protocol not supported.");
       }
-    } else {
-      return type;
     }
+    return type;
   }
 
   public void setupTimeoutListener() {
@@ -406,9 +405,8 @@ public class BaseRemoteProxy implements RemoteProxy {
       if (proxy instanceof RemoteProxy) {
         ((RemoteProxy) proxy).setupTimeoutListener();
         return (T) proxy;
-      } else {
-        throw new InvalidParameterException("Error: " + proxy.getClass() + " isn't a remote proxy");
       }
+      throw new InvalidParameterException("Error: " + proxy.getClass() + " isn't a remote proxy");
     } catch (InvocationTargetException e) {
       throw new InvalidParameterException("Error: " + e.getTargetException().getMessage());
     } catch (Exception e) {

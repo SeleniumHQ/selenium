@@ -151,11 +151,10 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
 
   @Override
   public int getContentLength() {
-    if (body == null){
+    if (body == null) {
       return 0;
-    }else {
-      return body.length;
     }
+    return body.length;
   }
 
   public String getBody() {
