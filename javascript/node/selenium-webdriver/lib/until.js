@@ -183,7 +183,7 @@ exports.titleMatches = function titleMatches(regex) {
  * @param {string} url The expected page url.
  * @return {!Condition<boolean>} The new condition.
  */
-exports.urlIs = function urlI(url){
+exports.urlIs = function urlIs(url){
   return new Condition(
     'for url to be ' + JSON.stringify(url),
     function(driver) {
