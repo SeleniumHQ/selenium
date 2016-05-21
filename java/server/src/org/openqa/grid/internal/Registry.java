@@ -59,7 +59,7 @@ public class Registry {
   private final HttpClientFactory httpClientFactory;
   private final NewSessionRequestQueue newSessionQueue;
   private final Matcher matcherThread = new Matcher();
-  private final List<RemoteProxy> registeringProxies = new CopyOnWriteArrayList<RemoteProxy>();
+  private final List<RemoteProxy> registeringProxies = new CopyOnWriteArrayList<>();
 
   private volatile boolean stop = false;
   // The following three variables need to be volatile because we expose a public setters

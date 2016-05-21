@@ -41,7 +41,7 @@ import java.util.logging.Logger;
 @ThreadSafe
 public class ProxySet implements Iterable<RemoteProxy> {
 
-  private final Set<RemoteProxy> proxies = new CopyOnWriteArraySet<RemoteProxy>();
+  private final Set<RemoteProxy> proxies = new CopyOnWriteArraySet<>();
 
   private static final Logger log = Logger.getLogger(ProxySet.class.getName());
   private volatile boolean throwOnCapabilityNotPresent = true;

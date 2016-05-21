@@ -89,7 +89,7 @@ public class SessionCleanerTest {
     return new Runnable() {
       public void run() {
         try {
-          session.execute(new FutureTask<Object>(new Callable<Object>()
+          session.execute(new FutureTask<>(new Callable<Object>()
          {
           public Object call() {
             try {

@@ -240,7 +240,7 @@ public class HTMLTestResults {
     }
 
     public List decodeListOfStrings(List list) {
-      List<String> decodedList = new LinkedList<String>();
+      List<String> decodedList = new LinkedList<>();
 
       for (Object o : list) {
         decodedList.add(decode((String) o));

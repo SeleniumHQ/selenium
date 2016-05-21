@@ -110,7 +110,7 @@ public class DefaultSession implements Session {
     this.clock = clock;
     final BrowserCreator browserCreator = new BrowserCreator(factory, capabilities);
     final FutureTask<EventFiringWebDriver> webDriverFutureTask =
-        new FutureTask<EventFiringWebDriver>(browserCreator);
+        new FutureTask<>(browserCreator);
     executor = new ThreadPoolExecutor(1, 1,
                                       600L, TimeUnit.SECONDS,
                                       new LinkedBlockingQueue<Runnable>());

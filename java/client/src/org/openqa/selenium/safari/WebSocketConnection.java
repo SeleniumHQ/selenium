@@ -50,7 +50,7 @@ class WebSocketConnection {
   private final Channel channel;
 
   private final AtomicReference<SettableFuture<String>> pendingResponse =
-      new AtomicReference<SettableFuture<String>>();
+      new AtomicReference<>();
 
   public WebSocketConnection(Channel channel) {
     this.channel = channel;

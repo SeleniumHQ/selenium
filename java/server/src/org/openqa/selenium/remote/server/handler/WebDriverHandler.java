@@ -40,7 +40,7 @@ public abstract class WebDriverHandler<T> implements RestishHandler<T>, Callable
 
   @Override
   public final T handle() throws Exception {
-    FutureTask<T> future = new FutureTask<T>(this);
+    FutureTask<T> future = new FutureTask<>(this);
     try {
       return getSession().execute(future);
     } catch (ExecutionException e) {

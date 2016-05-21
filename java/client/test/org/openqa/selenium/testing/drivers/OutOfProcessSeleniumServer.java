@@ -69,7 +69,7 @@ public class OutOfProcessSeleniumServer {
     String localAddress = new NetworkUtils().getPrivateLocalAddress();
     baseUrl = String.format("http://%s:%d", localAddress, port);
 
-    List<String> cmdLine = new LinkedList<String>();
+    List<String> cmdLine = new LinkedList<>();
     cmdLine.add("java");
     cmdLine.add("-cp");
     cmdLine.add(classPath);

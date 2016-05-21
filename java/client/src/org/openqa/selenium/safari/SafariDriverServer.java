@@ -47,7 +47,7 @@ class SafariDriverServer {
   private final int port;
 
   private final BlockingQueue<WebSocketConnection> connections =
-      new SynchronousQueue<WebSocketConnection>();
+      new SynchronousQueue<>();
 
   private ServerBootstrap bootstrap;
   private Channel serverChannel;

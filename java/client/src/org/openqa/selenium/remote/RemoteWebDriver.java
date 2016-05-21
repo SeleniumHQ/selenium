@@ -169,7 +169,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     keyboard = new RemoteKeyboard(executeMethod);
     mouse = new RemoteMouse(executeMethod);
 
-    ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<String>();
+    ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<>();
 
     boolean isProfilingEnabled = desiredCapabilities != null &&
         desiredCapabilities.is(CapabilityType.ENABLE_PROFILING_CAPABILITY);
@@ -237,7 +237,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   protected void startSession(Capabilities desiredCapabilities,
       Capabilities requiredCapabilities) {
     ImmutableMap.Builder<String, Capabilities> paramBuilder =
-        new ImmutableMap.Builder<String, Capabilities>();
+        new ImmutableMap.Builder<>();
     paramBuilder.put("desiredCapabilities", desiredCapabilities);
     if (requiredCapabilities != null) {
       paramBuilder.put("requiredCapabilities", requiredCapabilities);
@@ -546,7 +546,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     Object value = response.getValue();
     try {
       List<String> returnedValues = (List<String>) value;
-      return new LinkedHashSet<String>(returnedValues);
+      return new LinkedHashSet<>(returnedValues);
     } catch (ClassCastException ex) {
       throw new WebDriverException(
         "Returned value cannot be converted to List<String>: " + value, ex);
