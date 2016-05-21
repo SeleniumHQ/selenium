@@ -599,13 +599,13 @@ module Selenium
           case how
           when 'class name'
             how = 'css selector'
-            what = ".#{what}"
+            what = ".#{escape_css(what)}"
           when 'id'
             how = 'css selector'
-            what = "##{what}"
+            what = "##{escape_css(what)}"
           when 'name'
             how = 'css selector'
-            what = "*[name='#{what}']"
+            what = "*[name='#{escape_css(what)}']"
           when 'tag name'
             how = 'css selector'
           end
@@ -650,6 +650,20 @@ module Selenium
 
         def escaper
           @escaper ||= defined?(URI::Parser) ? URI::Parser.new : URI
+        end
+
+        ESCAPE_CSS_REGEXP = /(['"\\#.:;,!?+<>=~*^$|%&@`{}\-\[\]\(\)])/
+        UNICODE_CODE_POINT = 30
+
+        # Escapes invalid characters in CSS selector.
+        # @see https://mathiasbynens.be/notes/css-escapes
+        def escape_css(string)
+          string = string.gsub(ESCAPE_CSS_REGEXP) { |match| "\\#{match}" }
+          if !string.empty? && string[0] =~ /[[:digit:]]/
+            string = "\\#{UNICODE_CODE_POINT + Integer(string[0])} #{string[1..-1]}"
+          end
+
+          string
         end
 
       end # W3CBridge
