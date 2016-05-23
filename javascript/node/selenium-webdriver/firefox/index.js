@@ -247,19 +247,21 @@ class Options {
   }
 }
 
-
-const WIRES_EXE = process.platform === 'win32' ? 'wires.exe' : 'wires';
+// TODO: Wires is the old name of GeckoDriver. Rename to geckodriver, once the
+// first renamed version is out at
+// https://github.com/mozilla/geckodriver/releases
+const GECKO_DRIVER_EXE = process.platform === 'win32' ? 'wires.exe' : 'wires';
 
 
 /**
  * @return {string} .
  * @throws {Error}
  */
-function findWires() {
-  let exe = io.findInPath(WIRES_EXE, true);
+function findGeckoDriver() {
+  let exe = io.findInPath(GECKO_DRIVER_EXE, true);
   if (!exe) {
     throw Error(
-      'The ' + WIRES_EXE + ' executable could not be found on the current ' +
+      'The ' + GECKO_DRIVER_EXE + ' executable could not be found on the current ' +
       'PATH. Please download the latest version from ' +
       'https://developer.mozilla.org/en-US/docs/Mozilla/QA/Marionette/' +
       'WebDriver and ensure it can be found on your PATH.');
@@ -272,7 +274,7 @@ function findWires() {
  * @param {(string|!Binary)} binary .
  * @return {!remote.DriverService} .
  */
-function createWiresService(binary) {
+function createGeckoDriverService(binary) {
     // Firefox's Developer Edition is currently required for Marionette.
   let exe;
   if (typeof binary === 'string') {
@@ -282,9 +284,9 @@ function createWiresService(binary) {
     exe = binary.locate();
   }
 
-  let wires = findWires();
+  let geckoDriver = findGeckoDriver();
   let port =  portprober.findFreePort();
-  return new remote.DriverService(wires, {
+  return new remote.DriverService(geckoDriver, {
     loopback: true,
     port: port,
     args: promise.all([exe, port]).then(args => {
@@ -352,7 +354,7 @@ class Driver extends webdriver.WebDriver {
 
     if (caps.get(Capability.MARIONETTE)
         || /^1|true$/i.test(process.env['SELENIUM_MARIONETTE'])) {
-      let service = createWiresService(binary);
+      let service = createGeckoDriverService(binary);
       serverUrl = service.start();
       onQuit = () => service.kill();
 
