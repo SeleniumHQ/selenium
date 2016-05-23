@@ -145,6 +145,40 @@ describe('until', function() {
         return alert.dismiss();
       });
     });
+
+    // TODO: Remove once GeckoDriver doesn't throw this unwanted error.
+    // See https://github.com/SeleniumHQ/selenium/pull/2137
+    describe('workaround for GeckoDriver', function() {
+      it('doesNotFailWhenCannotConvertNullToObject', function() {
+        var count = 0;
+        executor.on(CommandName.GET_ALERT_TEXT, function() {
+          if (count++ < 3) {
+            throw new error.WebDriverError(`can't convert null to object`);
+          } else {
+            return true;
+          }
+        }).on(CommandName.DISMISS_ALERT, () => true);
+
+        return driver.wait(until.alertIsPresent(), 1000).then(function(alert) {
+          assert.equal(count, 4);
+          return alert.dismiss();
+        });
+      });
+
+      it('keepsRaisingRegularWebdriverError', function() {
+        var webDriverError = new error.WebDriverError;
+
+        executor.on(CommandName.GET_ALERT_TEXT, function() {
+          throw webDriverError;
+        });
+
+        return driver.wait(until.alertIsPresent(), 1000).then(function() {
+          throw new Error('driver did not fail against WebDriverError');
+        }, function(error) {
+          assert.equal(error, webDriverError);
+        });
+      })
+    });
   });
 
   it('testUntilTitleIs', function() {
