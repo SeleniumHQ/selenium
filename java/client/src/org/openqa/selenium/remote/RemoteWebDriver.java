@@ -676,6 +676,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
    * @param when        verb tense of "Execute" to prefix message
    */
   protected void log(SessionId sessionId, String commandName, Object toLog, When when) {
+    if (!logger.isLoggable(level)) {
+      return;
+    }
     String text = "" + toLog;
     if (commandName.equals(DriverCommand.EXECUTE_SCRIPT)
         || commandName.equals(DriverCommand.EXECUTE_ASYNC_SCRIPT)) {
