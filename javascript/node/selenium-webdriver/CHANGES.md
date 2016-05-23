@@ -5,6 +5,7 @@
 * Added new wait conditions: `until.urlIs()`, `until.urlContains()`,
    `until.urlMatches()`
 * Added work around for [GeckoDriver bug](https://bugzilla.mozilla.org/show_bug.cgi?id=1274924) raising a type conversion error
+* Removed the mandatory use of Firefox Dev Edition, when using Marionette driver
 
 ## v2.53.2
 
