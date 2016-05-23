@@ -679,7 +679,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     if (!logger.isLoggable(level)) {
       return;
     }
-    String text = "" + toLog;
+    String text = String.valueOf(toLog);
     if (commandName.equals(DriverCommand.EXECUTE_SCRIPT)
         || commandName.equals(DriverCommand.EXECUTE_ASYNC_SCRIPT)) {
       if (text.length() > 100 && Boolean.getBoolean("webdriver.remote.shorten_log_messages")) {
