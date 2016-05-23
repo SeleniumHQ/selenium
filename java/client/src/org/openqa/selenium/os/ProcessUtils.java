@@ -124,7 +124,7 @@ public class ProcessUtils {
     int exitValue;
 
     try {
-      killPID("" + getProcessId(process));
+      killPID(String.valueOf(getProcessId(process)));
       exitValue = waitForProcessDeath(process, 10000);
     } catch (Exception ex) {
       LOG.log(Level.WARNING, "Process refused to die after 10 seconds, and couldn't taskkill it", ex);
