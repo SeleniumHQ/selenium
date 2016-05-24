@@ -46,6 +46,27 @@ class title_contains(object):
     def __call__(self, driver):
         return self.title in driver.title
 
+class url_is(object):
+    """An expectation for checking the URL of a page.
+    url is the expected URL, which must be an exact match
+    returns True if the title matches, false otherwise."""
+    def __init__(self, url):
+        self.url = title
+
+    def __call__(self, driver):
+        return self.url == driver.current_url
+
+class url_contains(object):
+    """ An expectation for checking that the URL contains a case-sensitive
+    substring. url is the fragment of URL expected
+    returns True when the title matches, False otherwise
+    """
+    def __init__(self, url):
+        self.url = url
+
+    def __call__(self, driver):
+        return self.url in driver.current_url
+
 class presence_of_element_located(object):
     """ An expectation for checking that an element is present on the DOM
     of a page. This does not necessarily mean that the element is visible.
