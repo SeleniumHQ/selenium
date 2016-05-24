@@ -155,16 +155,14 @@ class ChildrenFindingTests(unittest.TestCase):
     def test_should_throw_an_error_if_user_passes_in_invalid_by(self):
         self._load_page("nestedElements")
         element = self.driver.find_element_by_name("form2")
-        with pytest.raises(WebDriverException) as excinfo:
+        with pytest.raises(WebDriverException):
             element.find_element("foo", "bar")
-        assert 'Unsupported locator strategy: foo' in str(excinfo.value)
 
     def test_should_throw_an_error_if_user_passes_in_invalid_by_when_find_elements(self):
         self._load_page("nestedElements")
         element = self.driver.find_element_by_name("form2")
-        with pytest.raises(WebDriverException) as excinfo:
+        with pytest.raises(WebDriverException):
             element.find_elements("foo", "bar")
-        assert 'Unsupported locator strategy: foo' in str(excinfo.value)
 
     def _page_url(self, name):
         return self.webserver.where_is(name + '.html')
