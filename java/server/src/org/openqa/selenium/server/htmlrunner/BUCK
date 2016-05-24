@@ -1,17 +1,16 @@
 java_binary(
   name = 'main',
-  main_class = 'com.thoughtworks.selenium.corerunner.Main',
+  main_class = 'org.openqa.selenium.server.htmlrunner.Main',
   deps = [
-    ':corerunner',
+    ':htmlrunner',
   ],
 )
 
 java_library(
-  name = 'corerunner',
+  name = 'htmlrunner',
   srcs = glob(['*.java']),
   deps = [
-    '//java/client/src/com/thoughtworks/selenium:selenium',
-    '//java/client/src/com/thoughtworks/selenium/webdriven:webdriven',
+    '//java/client/src/com/thoughtworks/selenium:leg-rc',
     '//java/client/src/org/openqa/selenium:selenium',
     '//java/client/src/org/openqa/selenium/chrome:chrome',
     '//java/client/src/org/openqa/selenium/edge:edge',

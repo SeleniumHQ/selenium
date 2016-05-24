@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package com.thoughtworks.selenium.corerunner;
+package org.openqa.selenium.server.htmlrunner;
 
 import static org.openqa.selenium.firefox.FirefoxDriver.MARIONETTE;
 
