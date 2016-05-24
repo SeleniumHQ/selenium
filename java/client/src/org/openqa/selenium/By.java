@@ -438,7 +438,7 @@ public abstract class By {
     public List<WebElement> findElements(SearchContext context) {
       if (context instanceof FindsByCssSelector) {
         return ((FindsByCssSelector) context)
-            .findElementsByCssSelector(selector);
+            .findElementsByCssSelector(cssSelector);
       }
 
       throw new WebDriverException(
