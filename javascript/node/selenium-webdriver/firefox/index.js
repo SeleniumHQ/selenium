@@ -275,14 +275,8 @@ function findGeckoDriver() {
  * @return {!remote.DriverService} .
  */
 function createGeckoDriverService(binary) {
-    // Firefox's Developer Edition is currently required for Marionette.
-  let exe;
-  if (typeof binary === 'string') {
-    exe = Promise.resolve(binary);
-  } else {
-    binary.useDevEdition();
-    exe = binary.locate();
-  }
+  let exe = typeof binary === 'string' ?
+    Promise.resolve(binary) : binary.locate();
 
   let geckoDriver = findGeckoDriver();
   let port =  portprober.findFreePort();
