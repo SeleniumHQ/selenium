@@ -51,7 +51,7 @@ class url_is(object):
     url is the expected URL, which must be an exact match
     returns True if the title matches, false otherwise."""
     def __init__(self, url):
-        self.url = title
+        self.url = url
 
     def __call__(self, driver):
         return self.url == driver.current_url
