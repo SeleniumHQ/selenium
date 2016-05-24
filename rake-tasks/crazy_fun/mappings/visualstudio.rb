@@ -384,13 +384,11 @@ module CrazyFunDotNet
       target = nunit "#{task_name}:run" do |nunit_task|
         mkdir_p test_log_dir
         puts "Testing: #{task_name}"
-        nunit_task.command = "third_party/dotnet/nunit-2.6.2/nunit-console.exe"
+        nunit_task.command = "third_party/dotnet/nunit-3.2.1/nunit3-console.exe"
         nunit_task.assemblies << [output_dir, args[:project]].join(File::SEPARATOR)
-        nunit_task.options << "/nologo"
-        nunit_task.options << "/nodots"
-        nunit_task.options << "/xml=#{[test_log_dir, args[:project]].join(File::SEPARATOR)}.xml"
-        nunit_task.output_redirect = "#{[test_log_dir, args[:project]].join(File::SEPARATOR)}.log"
-        nunit_task.ignore_test_fail = !([nil, 'true'].include? ENV['haltonfailure'])
+        nunit_task.options << "--agents=1"
+        nunit_task.options << "--noheader"
+        nunit_task.options << "--result=#{[test_log_dir, args[:project]].join(File::SEPARATOR)}.xml"
       end
 
       add_dependencies(target, dir, args[:deps])

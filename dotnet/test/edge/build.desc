@@ -1,0 +1,20 @@
+dotnet_test(name = "edge",
+  srcs = "**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Core.dll",
+    "System.Data.dll",
+    "System.Drawing.dll",
+    "System.Xml.dll",
+    "//dotnet/src/webdriver:webdriver",
+    "//dotnet/test/common:common",
+    "third_party/dotnet/nunit-3.2.1/net-4.0/nunit.framework.dll"
+  ],
+  out = "WebDriver.Edge.Tests.dll",
+  files = [
+    "WebDriver.Edge.Tests.config",
+    "WebDriver.Edge.Tests.nunit"
+  ],
+  project = "WebDriver.Edge.Tests.nunit",
+  omitdocxml = "true"
+)
