@@ -162,6 +162,30 @@ class WebDriverWaitTest(unittest.TestCase):
         except TimeoutException as e:
             pass
 
+    def testExpectedConditionUrlIs(self):
+        self._loadPage("blank")
+        WebDriverWait(self.driver, 1).until(EC.url_is("blank"))
+        self.driver.execute_script("setTimeout(function(){document.URL='not blank'}, 200)")
+        WebDriverWait(self.driver, 1).until(EC.url_is("not blank"))
+        self.assertEqual(self.driver.current_url, 'not blank')
+        try:
+            WebDriverWait(self.driver, 0.7).until(EC.url_is("blank"))
+            self.fail("Expected TimeoutException to have been thrown")
+        except TimeoutException as e:
+            pass
+
+    
+    def testExpectedConditionUrlContains(self):
+        self._loadPage("blank")
+        self.driver.execute_script("setTimeout(function(){document.URL='not blank'}, 200)")
+        WebDriverWait(self.driver, 1).until(EC.url_contains("not"))
+        self.assertEqual(self.driver.current_url, 'not blank')
+        try:
+            WebDriverWait(self.driver, 0.7).until(EC.url_contains("blanket"))
+            self.fail("Expected TimeoutException to have been thrown")
+        except TimeoutException as e:
+            pass
+    
     def testExpectedConditionVisibilityOfElementLocated(self):
         self._loadPage("javascriptPage")
         try:
