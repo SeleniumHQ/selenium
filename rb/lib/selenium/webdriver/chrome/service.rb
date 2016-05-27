@@ -99,6 +99,7 @@ module Selenium
           @process       = ChildProcess.build(*server_command)
 
           @process.io.inherit! if $DEBUG == true
+          @process.leader = true
           @process.start
         end
 
