@@ -81,11 +81,22 @@ class Service(object):
                 (os.path.basename(self.path), self.start_error_message, str(e))
                 )
         count = 0
-        while not self.is_connectable():
+        while True:
+            self.assert_process_still_running()
+            if self.is_connectable():
+                break
             count += 1
             time.sleep(1)
             if count == 30:
                 raise WebDriverException("Can not connect to the Service %s" % self.path)
+
+    def assert_process_still_running(self):
+        return_code = self.process.poll()
+        if return_code is not None:
+            raise WebDriverException(
+                'Service %s unexpectedly exited. Status code was: %s'
+                % (self.path, return_code)
+            )
 
     def is_connectable(self):
         return utils.is_connectable(self.port)
