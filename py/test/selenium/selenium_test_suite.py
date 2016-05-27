@@ -21,7 +21,6 @@ import unittest
 import test_default_server
 import test_google
 import test_i18n
-import test_remote_connection
 import sys
 
 def suite():
