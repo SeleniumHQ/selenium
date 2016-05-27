@@ -30,7 +30,6 @@ def suite():
         unittest.makeSuite(test_default_server.TestDefaultServer),
         unittest.makeSuite(test_google.TestGoogle),
         unittest.makeSuite(test_i18n.TestI18n),
-        unittest.makeSuite(test_remote_connection.TestRemoteConnection),
         ))
 
 if __name__ == "__main__":
