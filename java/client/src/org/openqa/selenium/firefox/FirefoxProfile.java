@@ -44,7 +44,8 @@ import java.io.StringReader;
 import java.net.URL;
 import java.util.Map;
 
-
+//A Very Useful Class to configure the required settings
+//to run Automation Script on Firefox Browser
 public class FirefoxProfile {
   public static final String PORT_PREFERENCE = "webdriver_firefox_port";
   public static final String ALLOWED_HOSTS_PREFERENCE = "webdriver_firefox_allowed_hosts";
