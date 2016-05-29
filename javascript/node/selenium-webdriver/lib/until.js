@@ -107,6 +107,37 @@ exports.ableToSwitchToFrame = function ableToSwitchToFrame(frame) {
 
 
 /**
+ * Creates a condition that will wait until the input driver is able to switch
+ * to the designated window. The target window may be specified as
+ *
+ * 1. a numeric index for the currently selected window.
+ * 2. a {@link ./webdriver.WebElement}, which must reference a window
+ *     element on the current page.
+ *
+ * Upon successful resolution of this condition, the driver will be left
+ * focused on the new frame.
+ *
+ * @param {!(number|./webdriver.WebElement)} window
+ *     The window identifier.
+ * @return {!Condition<boolean>} A new condition.
+ */
+exports.ableToSwitchToWindow = function ableToSwitchToWindow(window) {
+  if (typeof window !== 'number' && !(window instanceof webdriver.WebElement)) {
+    throw TypeError('window must be a number or WebElement');
+  }
+  return new Condition('to be able to switch to window', driver => {
+    return driver.switchTo().window(window).then(
+        function() { return true; },
+        function(e) {
+          if (!(e instanceof error.NoSuchWindowError)) {
+            throw e;
+          }
+        });
+  });
+};
+
+
+/**
  * Creates a condition that waits for an alert to be opened. Upon success, the
  * returned promise will be fulfilled with the handle for the opened alert.
  *
