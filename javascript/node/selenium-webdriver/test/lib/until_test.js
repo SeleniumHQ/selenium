@@ -122,6 +122,52 @@ describe('until', function() {
     });
   });
 
+  
+  describe('ableToSwitchToWindow', function() {
+    it('failsFastForNonSwitchErrors', function() {
+      let e = Error('boom');
+      executor.on(CommandName.SWITCH_TO_WINDOW, function() {
+        throw e;
+      });
+      return driver.wait(until.ableToSwitchToWindow(0), 100)
+          .then(fail, (e2) => assert.strictEqual(e2, e));
+    });
+
+    it('byIndex', function() {
+      executor.on(CommandName.SWITCH_TO_WINDOW, () => true);
+      return driver.wait(until.ableToSwitchToWindow(0), 100);
+    });
+
+    it('byWebElement', function() {
+      executor.on(CommandName.SWITCH_TO_WINDOW, () => true);
+      var el = new webdriver.WebElement(driver, {ELEMENT: 1234});
+      return driver.wait(until.ableToSwitchToWindow(el), 100);
+    });
+
+    it('byWebElementPromise', function() {
+      executor.on(CommandName.SWITCH_TO_WINDOW, () => true);
+      var el = new webdriver.WebElementPromise(driver,
+          promise.fulfilled(new webdriver.WebElement(driver, {ELEMENT: 1234})));
+      return driver.wait(until.ableToSwitchToWindow(el), 100);
+    });
+
+    it('timesOutIfNeverAbletoSwitchWindows', function() {
+      var count = 0;
+      executor.on(CommandName.SWITCH_TO_WINDOW, function() {
+        count += 1;
+        throw new error.NoSuchWindowError;
+      });
+
+      return driver.wait(until.ableToSwitchToWindow(0), 100)
+          .then(fail, function(e) {
+            assert.ok(count > 0);
+            assert.ok(
+                e.message.startsWith('Waiting to be able to switch to window'),
+                'Wrong message: ' + e.message);
+          });
+    });
+  });
+  
   describe('alertIsPresent', function() {
     it('failsFastForNonAlertSwitchErrors', function() {
       return driver.wait(until.alertIsPresent(), 100).then(fail, function(e) {
