@@ -1,3 +1,10 @@
+3.0 (Unreleased)
+
+Ruby:
+  * Chrome/GeckoDriver/PhantomJS/IE/Edge drivers are refactored to use standard
+    service class (issue 1797)
+  * Option `:timeout` was removed from IE server (issue 1797)
+
 2.53.0 (2016-03-15)
 ===================
 
