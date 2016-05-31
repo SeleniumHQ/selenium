@@ -17,28 +17,36 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/ie/bridge'
-require 'selenium/webdriver/ie/service'
-
 module Selenium
   module WebDriver
     module IE
-      MISSING_TEXT = "Unable to find standalone executable. Please download the IEDriverServer from http://selenium-release.storage.googleapis.com/index.html and place the executable on your PATH."
 
-      def self.driver_path=(path)
-        Platform.assert_executable path
-        @driver_path = path
-      end
+      #
+      # @api private
+      #
 
-      def self.driver_path
-        @driver_path ||= begin
-          path = Platform.find_binary("IEDriverServer")
-          path or raise Error::WebDriverError, MISSING_TEXT
-          Platform.assert_executable path
+      class Service < WebDriver::Service
+        DEFAULT_PORT = 5555
 
-          path
+        private
+
+        def stop_server
+          # server can only be stopped as process
         end
-      end
+
+        def start_process
+          server_command = [@executable_path, "--port=#{@port}", *@extra_args]
+          @process       = ChildProcess.new(*server_command)
+
+          @process.io.inherit! if $DEBUG
+          @process.start
+        end
+
+        def cannot_connect_error_text
+          "unable to connect to IE server #{@host}:#{@port}"
+        end
+
+      end # Server
     end # IE
   end # WebDriver
 end # Selenium
