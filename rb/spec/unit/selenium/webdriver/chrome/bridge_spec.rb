@@ -33,8 +33,9 @@ module Selenium
         before do
           @default_capabilities = Remote::Capabilities.chrome.as_json
 
+          allow(Chrome).to receive(:driver_path).and_return('/foo')
           allow(Remote::Capabilities).to receive(:chrome).and_return(caps)
-          allow(Service).to receive(:default_service).and_return(service)
+          allow(Service).to receive(:new).and_return(service)
         end
 
         it "sets the nativeEvents capability" do
@@ -94,7 +95,7 @@ module Selenium
         end
 
         it "uses the user-provided server URL if given" do
-          expect(Service).not_to receive(:default_service)
+          expect(Service).not_to receive(:new)
           expect(http).to receive(:server_url=).with(URI.parse("http://example.com"))
 
           Bridge.new(:http_client => http, :url => "http://example.com")
@@ -145,7 +146,7 @@ module Selenium
         end
 
         it 'accepts :service_log_path' do
-          expect(Service).to receive(:default_service).with("--log-path=/foo/bar")
+          expect(Service).to receive(:new).with(Chrome.driver_path, Service::DEFAULT_PORT, "--log-path=/foo/bar")
           Bridge.new(:http_client => http, :service_log_path => "/foo/bar")
         end
       end
@@ -153,4 +154,3 @@ module Selenium
     end # Chrome
   end # WebDriver
 end # Selenium
-
