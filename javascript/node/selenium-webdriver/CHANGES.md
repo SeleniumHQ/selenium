@@ -6,6 +6,7 @@
    `until.urlMatches()`
 * Added work around for [GeckoDriver bug](https://bugzilla.mozilla.org/show_bug.cgi?id=1274924) raising a type conversion error
 * Removed the mandatory use of Firefox Dev Edition, when using Marionette driver
+* Fixed timeouts' URL
 
 ## v2.53.2
 

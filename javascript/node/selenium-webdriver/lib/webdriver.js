@@ -1284,10 +1284,7 @@ class Timeouts {
    *     when the implicit wait timeout has been set.
    */
   implicitlyWait(ms) {
-    return this.driver_.schedule(
-        new command.Command(command.Name.IMPLICITLY_WAIT).
-            setParameter('ms', ms < 0 ? 0 : ms),
-        'WebDriver.manage().timeouts().implicitlyWait(' + ms + ')');
+    return this._scheduleCommand(ms, 'implicit', 'implicitlyWait');
   }
 
   /**
@@ -1300,10 +1297,7 @@ class Timeouts {
    *     when the script timeout has been set.
    */
   setScriptTimeout(ms) {
-    return this.driver_.schedule(
-        new command.Command(command.Name.SET_SCRIPT_TIMEOUT).
-            setParameter('ms', ms < 0 ? 0 : ms),
-        'WebDriver.manage().timeouts().setScriptTimeout(' + ms + ')');
+    return this._scheduleCommand(ms, 'script', 'setScriptTimeout');
   }
 
   /**
@@ -1316,11 +1310,15 @@ class Timeouts {
    *     when the timeout has been set.
    */
   pageLoadTimeout(ms) {
+    return this._scheduleCommand(ms, 'page load', 'pageLoadTimeout');
+  }
+
+  _scheduleCommand(ms, timeoutIdentifier, timeoutName) {
     return this.driver_.schedule(
         new command.Command(command.Name.SET_TIMEOUT).
-            setParameter('type', 'page load').
+            setParameter('type', timeoutIdentifier).
             setParameter('ms', ms),
-        'WebDriver.manage().timeouts().pageLoadTimeout(' + ms + ')');
+        `WebDriver.manage().timeouts().${timeoutName}(${ms})`);
   }
 }
 
