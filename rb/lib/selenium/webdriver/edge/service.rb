@@ -25,7 +25,7 @@ module Selenium
       # @api private
       #
 
-      class Service
+      class Service < WebDriver::Service
         DEFAULT_PORT = 17556
 
         private
