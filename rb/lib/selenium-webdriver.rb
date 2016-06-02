@@ -18,5 +18,3 @@
 # under the License.
 
 require 'selenium/webdriver'
-
-
