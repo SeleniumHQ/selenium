@@ -70,6 +70,16 @@ class VisibilityTests(unittest.TestCase):
         except ElementNotVisibleException as e:
             pass
 
+    def testShouldNotBeAbleToClickOnAnElementThatIsNotRendered(self):
+        self._loadPage("javascriptPage")
+        element = self.driver.find_element(by=By.ID, value="off-canvas")
+
+        try:
+            element.click()
+            self.fail("You should not be able to click on an invisible element")
+        except ElementNotVisibleException as e:
+            pass
+
     def testShouldNotBeAbleToToggleAnElementThatIsNotDisplayed(self):
         self._loadPage("javascriptPage")
         element = self.driver.find_element(by=By.ID, value="untogglable")
