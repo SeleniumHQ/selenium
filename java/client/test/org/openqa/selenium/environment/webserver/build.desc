@@ -36,6 +36,9 @@ java_test(name = "webserver_test",
   srcs = [
     "AppServerTest.java",
   ],
+  sysproperties = [
+    "-Dselenium.browser=ff",
+  ],
   deps = [
     ":webserver",
     "//java/client/src/org/openqa/selenium/chrome",

@@ -21,7 +21,9 @@ package org.openqa.selenium.environment.webserver;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
+import com.google.common.base.Charsets;
+import com.google.common.base.Throwables;
+import com.google.common.io.Files;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -35,16 +37,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Throwables;
-import com.google.common.io.Files;
+import java.io.File;
 
 @RunWith(JUnit4.class)
 public class AppServerTest {
@@ -54,8 +53,7 @@ public class AppServerTest {
 
   @BeforeClass
   public static void startDriver() throws Throwable {
-    System.setProperty("webdriver.chrome.driver", CommandLine.find("chromedriver"));
-    driver = new ChromeDriver();
+    driver = new WebDriverBuilder().get();
   }
 
   @Before
