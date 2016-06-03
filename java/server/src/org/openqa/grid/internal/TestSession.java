@@ -59,6 +59,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -193,13 +194,13 @@ public class TestSession {
 
   private HttpClient getClient() {
     Registry reg = slot.getProxy().getRegistry();
-    int browserTimeout = reg.getConfiguration().browserTimeout;
-    if (browserTimeout > 0) {
-      final int selenium_server_cleanup_cycle = browserTimeout / 10;
+    long browserTimeout = TimeUnit.SECONDS.toMillis(reg.getConfiguration().browserTimeout);
+    if (browserTimeout > 0){
+      final long selenium_server_cleanup_cycle = browserTimeout / 10;
       browserTimeout += (selenium_server_cleanup_cycle + MAX_NETWORK_LATENCY);
       browserTimeout *=2; // Lets not let this happen too often
     }
-    return slot.getProxy().getHttpClientFactory().getGridHttpClient(browserTimeout, browserTimeout);
+    return slot.getProxy().getHttpClientFactory().getGridHttpClient((int)browserTimeout, (int)browserTimeout);
   }
 
   /*
