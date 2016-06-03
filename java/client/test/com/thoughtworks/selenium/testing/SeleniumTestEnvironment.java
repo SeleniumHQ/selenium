@@ -19,17 +19,15 @@ package com.thoughtworks.selenium.testing;
 
 import com.google.common.collect.Lists;
 
-import org.openqa.selenium.Build;
-import org.openqa.selenium.testing.DevMode;
+import org.openqa.selenium.BuckBuild;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
 
-import java.io.File;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
@@ -41,12 +39,8 @@ public class SeleniumTestEnvironment implements TestEnvironment {
 
   public SeleniumTestEnvironment(int port, String... extraArgs) {
     try {
-      if (DevMode.isInDevMode()) {
-        new Build().of("//java/server/test/org/openqa/selenium:server-with-tests:uber").go();
-      }
-
-      File seleniumJar = InProject.locate(
-          "build/java/server/test/org/openqa/selenium/server-with-tests-standalone.jar");
+      Path serverJar = new BuckBuild()
+        .of("//java/server/test/org/openqa/selenium:server-with-tests").go();
 
       ArrayList<Object> args = Lists.newArrayList();
       if (Boolean.getBoolean("webdriver.debug")) {
@@ -55,7 +49,7 @@ public class SeleniumTestEnvironment implements TestEnvironment {
       }
 
       args.add("-jar");
-      args.add(seleniumJar.getAbsolutePath());
+      args.add(serverJar.toAbsolutePath().toString());
       args.add("-port");
       args.add(String.valueOf(port));
 
@@ -75,7 +69,7 @@ public class SeleniumTestEnvironment implements TestEnvironment {
       PortProber.pollPort(port);
       seleniumServerUrl = "http://localhost:" + port;
 
-      URL status = new URL(seleniumServerUrl + "/wd/hub/status");
+      URL status = new URL(seleniumServerUrl + "/tests");
       new UrlChecker().waitUntilAvailable(60, TimeUnit.SECONDS, status);
     } catch (Exception e) {
       throw new RuntimeException(e);

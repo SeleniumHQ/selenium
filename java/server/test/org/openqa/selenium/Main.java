@@ -17,6 +17,9 @@
 
 package org.openqa.selenium;
 
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
+
 import org.seleniumhq.jetty9.server.Connector;
 import org.seleniumhq.jetty9.server.Server;
 import org.seleniumhq.jetty9.server.ServerConnector;
@@ -25,14 +28,15 @@ import org.seleniumhq.jetty9.server.handler.HandlerList;
 import org.seleniumhq.jetty9.server.handler.ResourceHandler;
 import org.seleniumhq.jetty9.util.resource.Resource;
 
-import java.util.logging.Logger;
-
 public class Main {
 
   public static void main(String[] args) throws Exception {
+    Flags flags = new Flags();
+    new JCommander(flags, args);
+
     Server server = new Server();
     ServerConnector connector = new ServerConnector(server);
-    connector.setPort(8989);
+    connector.setPort(flags.port);
     server.setConnectors(new Connector[] {connector });
 
     HandlerList handlers = new HandlerList();
@@ -41,6 +45,7 @@ public class Main {
     context.setContextPath("/tests");
     ResourceHandler testHandler = new ResourceHandler();
     testHandler.setBaseResource(Resource.newClassPathResource("/tests"));
+    testHandler.setDirectoriesListed(true);
     context.setHandler(testHandler);
     handlers.addHandler(context);
 
@@ -53,5 +58,12 @@ public class Main {
 
     server.setHandler(handlers);
     server.start();
+  }
+
+  static class Flags {
+    @Parameter(
+      names = {"-port"},
+      description = "The port number the selenium server should use. Default's to 8989.")
+    public Integer port = 8989;
   }
 }

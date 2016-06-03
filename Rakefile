@@ -19,7 +19,6 @@ require 'rake-tasks/crazy_fun'
 require 'rake-tasks/crazy_fun/mappings/export'
 require 'rake-tasks/crazy_fun/mappings/folder'
 require 'rake-tasks/crazy_fun/mappings/gcc'
-require 'rake-tasks/crazy_fun/mappings/java'
 require 'rake-tasks/crazy_fun/mappings/javascript'
 require 'rake-tasks/crazy_fun/mappings/mozilla'
 require 'rake-tasks/crazy_fun/mappings/python'
@@ -34,7 +33,6 @@ require 'rake-tasks/checks'
 require 'rake-tasks/dotnet'
 require 'rake-tasks/zip'
 require 'rake-tasks/c'
-require 'rake-tasks/java'
 require 'rake-tasks/selenium'
 require 'rake-tasks/se-ide'
 require 'rake-tasks/ie_code_generator'
@@ -77,7 +75,6 @@ crazy_fun = CrazyFun.new
 ExportMappings.new.add_all(crazy_fun)
 FolderMappings.new.add_all(crazy_fun)
 GccMappings.new.add_all(crazy_fun)
-JavaMappings.new.add_all(crazy_fun)
 JavascriptMappings.new.add_all(crazy_fun)
 MozillaMappings.new.add_all(crazy_fun)
 PythonMappings.new.add_all(crazy_fun)
@@ -85,6 +82,8 @@ RakeMappings.new.add_all(crazy_fun)
 RenameMappings.new.add_all(crazy_fun)
 RubyMappings.new.add_all(crazy_fun)
 VisualStudioMappings.new.add_all(crazy_fun)
+
+# Allow old crazy fun targets to continue to exist
 
 # Not every platform supports building every binary needed, so we sometimes
 # need to fall back to prebuilt binaries. The prebuilt binaries are stored in
@@ -105,7 +104,6 @@ require 'rake-tasks/buck'
 
 # Java targets required for release. These should all have the correct maven_coords set.
 JAVA_RELEASE_TARGETS = [
-  '//java/client/src/com/thoughtworks/selenium:leg-rc',
   '//java/client/src/org/openqa/selenium:core',
   '//java/client/src/org/openqa/selenium:selenium',
   '//java/client/src/org/openqa/selenium/chrome:chrome',
@@ -125,26 +123,25 @@ task :default => [:test]
 
 task :all => [
   :"selenium-java",
-  "//java/client/test/org/openqa/selenium/environment/webserver:webserver:uber"
+  "//java/client/test/org/openqa/selenium/environment:webserver"
 ]
 task :all_zip => [:'selenium-java_zip']
 task :tests => [
-  "//java/client/test/org/openqa/selenium/htmlunit:test_basic",
-  "//java/client/test/org/openqa/selenium/htmlunit:test_js",
-  "//java/client/test/org/openqa/selenium/firefox:test_synthesized",
-  "//java/client/test/org/openqa/selenium/ie:test",
-  "//java/client/test/org/openqa/selenium/chrome:test",
-  "//java/client/test/org/openqa/selenium/opera:test_blink",
-  "//java/client/test/org/openqa/selenium/lift:test",
-  "//java/client/test/org/openqa/selenium/support:SmallTests",
-  "//java/client/test/org/openqa/selenium/support:LargeTests",
+  "//java/client/test/org/openqa/selenium/htmlunit:htmlunit",
+  "//java/client/test/org/openqa/selenium/htmlunit:htmlunit-no-js",
+  "//java/client/test/org/openqa/selenium/firefox:test-synthesized",
+  "//java/client/test/org/openqa/selenium/ie:ie",
+  "//java/client/test/org/openqa/selenium/chrome:chrome",
+  "//java/client/test/org/openqa/selenium/opera:opera",
+#  "//java/client/test/org/openqa/selenium/lift:test",
+  "//java/client/test/org/openqa/selenium/support:small-tests",
+  "//java/client/test/org/openqa/selenium/support:large-tests",
   "//java/client/test/org/openqa/selenium/remote:common-tests",
   "//java/client/test/org/openqa/selenium/remote:client-tests",
   "//java/server/test/org/openqa/selenium/remote/server/log:test",
   "//java/server/test/org/openqa/selenium/remote/server:small-tests",
 ]
 task :chrome => [ "//java/client/src/org/openqa/selenium/chrome" ]
-task :common_core => [ "//common:core" ]
 task :grid => [ "//java/server/src/org/openqa/grid/selenium" ]
 task :ie => [ "//java/client/src/org/openqa/selenium/ie" ]
 task :firefox => [
@@ -154,15 +151,13 @@ task :firefox => [
   "//cpp:imehandler64",
   "//java/client/src/org/openqa/selenium/firefox"
 ]
-task :'debug-server' => "//java/client/test/org/openqa/selenium/environment/webserver:WebServer:run"
-task :remote => [:remote_common, :remote_server, :remote_client]
-task :remote_common => ["//java/client/src/org/openqa/selenium/remote:common"]
+task :'debug-server' => "//java/client/test/org/openqa/selenium/environment:webserver:run"
+task :remote => [:remote_server, :remote_client]
 task :remote_client => ["//java/client/src/org/openqa/selenium/remote"]
 task :remote_server => ["//java/server/src/org/openqa/selenium/remote/server"]
 task :safari => [
   "//java/client/src/org/openqa/selenium/safari",
 ]
-task :server_lite => ["//java/server/src/org/openqa/selenium/server:server_lite"]
 task :selenium => [ "//java/client/src/org/openqa/selenium" ]
 task :support => [
   "//java/client/src/org/openqa/selenium/lift",
@@ -170,9 +165,9 @@ task :support => [
 ]
 
 desc 'Build the standalone server'
-task 'selenium-server-standalone' => '//java/server/src/org/openqa/grid/selenium:selenium:uber'
+task 'selenium-server-standalone' => '//java/server/src/org/openqa/grid/selenium:selenium'
 
-task 'selenium-server-standalone-v3' => '//java/server/src/org/openqa/grid/selenium:selenium:uber'
+task 'selenium-server-standalone-v3' => '//java/server/src/org/openqa/grid/selenium:selenium'
 
 task :ide => [ "//ide:selenium-ide-multi" ]
 task :ide_proxy_setup => [ "//javascript/selenium-atoms", "se_ide:setup_proxy" ]
@@ -185,24 +180,24 @@ task :test_javascript => [
   '//javascript/webdriver:es6_test:run',
   '//javascript/selenium-atoms:test:run',
   '//javascript/selenium-core:test:run']
-task :test_chrome => [ "//java/client/test/org/openqa/selenium/chrome:test:run" ]
+task :test_chrome => [ "//java/client/test/org/openqa/selenium/chrome:chrome:run" ]
 task :test_chrome_atoms => [
   '//javascript/atoms:test_chrome:run',
   '//javascript/chrome-driver:test:run',
   '//javascript/webdriver:test_chrome:run']
 task :test_htmlunit => [
-  "//java/client/test/org/openqa/selenium/htmlunit:test_basic:run",
-  "//java/client/test/org/openqa/selenium/htmlunit:test_js:run"
+  "//java/client/test/org/openqa/selenium/htmlunit:htmlunit-no-js:run",
+  "//java/client/test/org/openqa/selenium/htmlunit:htmlunit:run"
 ]
 task :test_grid => [
-  "//java/server/test/org/openqa/grid/common:test:run",
-  "//java/server/test/org/openqa/grid:test:run",
-  "//java/server/test/org/openqa/grid/e2e:test:run"
+  "//java/server/test/org/openqa/grid/common:common:run",
+  "//java/server/test/org/openqa/grid:grid:run",
+  "//java/server/test/org/openqa/grid/e2e:e2e:run"
 ]
-task :test_ie => [ "//java/client/test/org/openqa/selenium/ie:test:run" ]
+task :test_ie => [ "//java/client/test/org/openqa/selenium/ie:ie:run" ]
 task :test_jobbie => [ :test_ie ]
-task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test_synthesized:run" ]
-task :test_opera => [ "//java/client/test/org/openqa/selenium/opera:test_blink:run" ]
+task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test-synthesized:run" ]
+task :test_opera => [ "//java/client/test/org/openqa/selenium/opera:opera:run" ]
 task :test_remote_server => [ '//java/server/test/org/openqa/selenium/remote/server:small-tests:run' ]
 task :test_remote => [
   '//java/client/test/org/openqa/selenium/remote:common-tests:run',
@@ -210,37 +205,21 @@ task :test_remote => [
   '//java/client/test/org/openqa/selenium/remote:remote-driver-tests:run',
   :test_remote_server
 ]
-task :test_safari => [ "//java/client/test/org/openqa/selenium/safari:test:run" ]
-task :test_phantomjs => [ "//java/client/test/org/openqa/selenium/phantomjs:test:run" ]
+task :test_safari => [ "//java/client/test/org/openqa/selenium/safari:safari:run" ]
+task :test_phantomjs => [ "//java/client/test/org/openqa/selenium/phantomjs:phantomjs:run" ]
 task :test_support => [
-  "//java/client/test/org/openqa/selenium/lift:test:run",
-  "//java/client/test/org/openqa/selenium/support:SmallTests:run",
-  "//java/client/test/org/openqa/selenium/support:LargeTests:run"
+  "//java/client/test/org/openqa/selenium/lift:lift:run",
+  "//java/client/test/org/openqa/selenium/support:small-tests:run",
+  "//java/client/test/org/openqa/selenium/support:large-tests:run"
 ]
 
 # TODO(simon): test-core should go first, but it's changing the least for now.
-task :test_selenium => [ :'test-rc', :'test-v1-emulation', :'test-core']
+task :test_selenium => [ :'test-rc']
 
-task :'test-v1-emulation' => [ '//java/client/test/com/thoughtworks/selenium:firefox-emulation-test:run' ]
-task :'test-rc' => ['//java/client/test/org/openqa/selenium:RcBrowserLauncherTests:run',
-                    '//java/server/test/org/openqa/selenium/server:RcServerUnitTests:run',
-                    '//java/server/test/org/openqa/selenium/server:RcServerLargeTests:run',
-                    '//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run',
-                    '//java/client/test/com/thoughtworks/selenium:firefox-proxy-rc-test:run',
-                    '//java/client/test/com/thoughtworks/selenium:firefox-singlewindow-rc-test:run']
-task :'test-core' => [:'test-core-firefox']
+task :'test-rc' => ['//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run']
 
 if (windows?)
-  task :'test-v1-emulation' => ['//java/client/test/com/thoughtworks/selenium:ie-emulation-test:run']
-  task :'test-rc' => ['//java/client/test/com/thoughtworks/selenium:ie-rc-test:run',
-                      '//java/client/test/com/thoughtworks/selenium:ie-proxy-rc-test:run',
-                      '//java/client/test/com/thoughtworks/selenium:ie-singlewindow-rc-test:run']
-  task :'test-core' => [:'test-core-ie']
-# TODO(santi): why are these disabled?
-#elsif (mac?)
-#  task :'test-rc' => ['//java/client/test/com/thoughtworks/selenium:safari-rc-test:run',
-#                       '//java/client/test/com/thoughtworks/selenium:safari-proxy-rc-test:run']
-#  task :'test-core' => [:'test-core-safari']
+  task :'test-rc' => ['//java/client/test/com/thoughtworks/selenium:ie-rc-test:run']
 end
 
 task :test_java_webdriver => [
@@ -260,7 +239,7 @@ end
 
 task :test_java => [
   "//java/client/test/org/openqa/selenium/atoms:test:run",
-  "//java/client/test/org/openqa/selenium:SmallTests:run",
+  "//java/client/test/org/openqa/selenium:small-tests:run",
   :test_support,
   :test_java_webdriver,
   :test_selenium,
@@ -513,25 +492,22 @@ end
 
 task :release => JAVA_RELEASE_TARGETS + [
   # Until we mananage to migrate to Buck entirely.
-  '//java/server/src/org/openqa/grid/selenium:selenium:uber',
+  '//java/server/src/org/openqa/grid/selenium:selenium',
   '//java/server/src/org/openqa/grid/selenium:selenium:zip',
-  '//java/client/src/org/openqa/selenium:client-combined-v3:zip',
+  '//java/client/src/org/openqa/selenium:client-combined:zip',
  ] do |t|
   puts t.prerequisites.join(', ')
 
   t.prerequisites.each do |p|
-     # Nasty hack to work around buck publish not knowing how to build crazy fun targets
-     if p.to_s.count(':') > 1
-       next
-     end
-#    Buck::buck_cmd.call('publish', "--dry-run --to-maven-central #{p}")
-    Buck::buck_cmd.call('build', "#{p}")
+    if JAVA_RELEASE_TARGETS.include?(p)
+      Buck::buck_cmd.call('publish', ['--dry-run', '--to-maven-central', p])
+    end
   end
 
   mkdir_p "build/dist"
-  cp "build/java/server/src/org/openqa/grid/selenium/selenium-standalone.jar", "build/dist/selenium-server-standalone-#{version}.jar"
-  cp "build/java/server/src/org/openqa/grid/selenium/selenium.zip", "build/dist/selenium-server-#{version}.zip"
-  cp "build/java/client/src/org/openqa/selenium/client-combined-v3.zip", "build/dist/selenium-java-#{version}.zip"
+  cp Rake::Task['//java/server/src/org/openqa/grid/selenium:selenium'].out, "build/dist/selenium-server-standalone-#{version}.jar"
+  cp Rake::Task['//java/server/src/org/openqa/grid/selenium:selenium:zip'].out, "build/dist/selenium-server-#{version}.zip"
+  cp Rake::Task['//java/client/src/org/openqa/selenium:client-combined:zip'].out, "build/dist/selenium-java-#{version}.zip"
 end
 
 task :push_release => [:release] do

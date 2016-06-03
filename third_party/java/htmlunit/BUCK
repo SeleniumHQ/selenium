@@ -6,11 +6,12 @@ prebuilt_jar(name = 'htmlunit-driver',
   visibility = ['PUBLIC'],
 )
 
-prebuilt_jar(name = 'htmlunit',
-  binary_jar = 'htmlunit-2.21.jar',
-  source_jar = 'htmlunit-2.21-sources.jar',
-  deps = [
+java_library(name = 'htmlunit',
+  exported_deps = [
+    ':htmlunit-jar',
     ':js-core',
+  ],
+  deps = [
     ':neko-htmlunit',
     '//third_party/java/httpcomponents:httpclient',
     '//third_party/java/commons-collections:commons-collections',
@@ -22,21 +23,23 @@ prebuilt_jar(name = 'htmlunit',
     '//third_party/java/xml:xml',
   ],
   visibility = [
+    '//java/client/test/org/openqa/selenium/atoms:tests',
     '//java/client/test/org/openqa/selenium/htmlunit:',
     '//java/client/test/org/openqa/selenium/testing:test-base',
   ],
 )
 
+prebuilt_jar(name = 'htmlunit-jar',
+  binary_jar = 'htmlunit-2.21.jar',
+  source_jar = 'htmlunit-2.21-sources.jar',
+)
+
 prebuilt_jar(name = 'js-core',
   binary_jar = 'htmlunit-core-js-2.17.jar',
   source_jar = 'htmlunit-core-js-2.17-sources.jar',
-  visibility = [
-#    '//java/client/src/org/openqa/selenium/htmlunit:htmlunit',
-  ],
 )
 
 prebuilt_jar(name = 'neko-htmlunit',
   binary_jar = 'neko-htmlunit-2.21.jar',
   source_jar = 'neko-htmlunit-2.21-sources.jar',
-  visibility = [],
 )

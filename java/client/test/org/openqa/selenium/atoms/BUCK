@@ -1,0 +1,36 @@
+export_file(
+  name = 'execute_script',
+  out = 'execute_script.js',
+  src = '//javascript/atoms/fragments:execute_script',
+)
+
+export_file(
+  name = 'atoms_inputs',
+  out = 'atoms_inputs.js',
+  src = '//javascript/webdriver/atoms:inputs',
+)
+
+
+java_test(name = 'test',
+  srcs = [ 'AtomsRhinoTests.java' ],
+  resources = [
+     ':execute_script',
+    ':atoms_inputs',
+  ],
+  deps = [
+    ':tests',
+    '//third_party/java/junit:junit',
+  ])
+
+java_library(
+  name = 'tests',
+  srcs = glob(['*.java']),
+  deps = [
+    '//java/client/test/org/openqa/selenium/testing:helpers',
+    '//java/client/test/org/openqa/selenium:helpers',
+    '//third_party/java/htmlunit:htmlunit',
+    '//third_party/java/junit:junit',
+    '//third_party/java/guava:guava',
+    '//third_party/java/gson:gson',
+  ],
+)

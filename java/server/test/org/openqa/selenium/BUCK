@@ -4,6 +4,9 @@ java_binary(
   deps = [
     ':lib',
   ],
+  visibility = [
+    '//java/client/test/com/thoughtworks/selenium:tests',
+  ],
 )
 
 java_library(
@@ -12,6 +15,7 @@ java_library(
   deps = [
     ':core-scripts',
     ':tests',
+    '//third_party/java/beust:jcommander',
     '//third_party/java/jetty:jetty',
     '//third_party/java/servlet:servlet-api',
   ],

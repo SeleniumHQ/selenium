@@ -106,7 +106,7 @@ module Buck
   def self.find_buck_out(target)
     out = nil
 
-    Buck::buck_cmd.call('targets', "--show-output #{target}") do |output|
+    Buck::buck_cmd.call('targets', ['--show-output', target]) do |output|
       sections = output.chomp.split
       # Not all buck rules have an output file.
       if sections.size > 1
@@ -141,7 +141,7 @@ def buck(*args, &block)
 
   task = Rake::Task.task_defined?(name) ? Rake::Task[name] : Rake::Task.define_task(name)
   task.enhance prereqs do
-    Buck::buck_cmd.call('build', name)
+    Buck::buck_cmd.call('build', [name])
     block.call if block
   end
 
@@ -155,17 +155,64 @@ rule /\/\/.*:run/ => [ proc {|task_name| task_name[0..-5]} ] do |task|
 
   task.enhance do
     # Figure out if this is an executable or a test target.
-    Buck::buck_cmd.call('query', "#{short} --output-attributes buck.type") do |output|
+    Buck::buck_cmd.call('query', [short, '--output-attributes', 'buck.type']) do |output|
       hash = JSON.parse(output)
       type = hash[short]['buck.type']
       if type =~ /.*_test/
-        Buck::buck_cmd.call('test', short)
+        Buck::buck_cmd.call('test', [short])
       else
-        Buck::buck_cmd.call('run', "--verbose 5 #{short}")
+        Buck::buck_cmd.call('run', ['--verbose', '5', short])
       end
     end
   end
 end
+
+
+rule /\/\/.*:zip/ => [ proc {|task_name| task_name[0..-5]} ] do |task|
+  Buck::enhance_task(task)
+
+  short = task.name[0..-5]
+
+  task.enhance do
+    # Figure out if this is an executable or a test target.
+    Buck::buck_cmd.call('audit', ['classpath', short]) do |output|
+      third_party = []
+      first_party = []
+
+      output.lines do |line|
+        line.chomp!
+
+        if line =~ /gen\/third_party\/.*\.jar/
+          third_party.push(line)
+        elsif line =~ /gen\/java\/.*\.jar/
+          first_party.push(line)
+        end
+      end
+
+      dir, target = short[2..-1].split(':', 2)
+      working_dir = "buck-out/crazy-fun/#{dir}/#{target}_zip"
+      out = "buck-out/crazy-fun/#{dir}/#{target}.zip"
+      rm_rf working_dir
+      mkdir_p "#{working_dir}/lib"
+      mkdir_p "#{working_dir}/uber"
+
+      first_party.each do |jar|
+        sh "cd #{working_dir}/uber && jar xf #{jar}"
+      end
+      sh "cd #{working_dir}/uber && jar cMf ../#{target}-nodeps.jar *"
+      # TODO: Get the sources of all deps too and build the -src.jar
+      rm_rf "#{working_dir}/uber"
+
+      third_party.each do |jar|
+        cp jar, "#{working_dir}/lib"
+      end
+      sh "cd #{working_dir} && jar cMf #{File.expand_path(out)} *"
+
+      task.out = out
+    end
+  end
+end
+
 
 rule /\/\/.*/ do |task|
   # Task is a FileTask, but that's not what we need. Instead, just delegate down to buck in all
@@ -174,7 +221,7 @@ rule /\/\/.*/ do |task|
 
   if task.class == Rake::FileTask && !task.out
     task.enhance do
-      Buck::buck_cmd.call('build', task.name)
+      Buck::buck_cmd.call('build', [task.name])
     end
 
     Buck::enhance_task(task)

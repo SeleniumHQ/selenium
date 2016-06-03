@@ -1,0 +1,12 @@
+java_test(name = 'phantomjs',
+  srcs = [ 'PhantomJSDriverTests.java' ],
+  vm_args = [
+    '-Dselenium.browser=phantomjs',
+  ],
+  deps = [
+    '//java/client/src/org/openqa/selenium:selenium',
+    '//java/client/test/org/openqa/selenium:large-tests',
+    '//java/client/test/org/openqa/selenium/testing:test-base',
+    '//third_party/java/junit:junit',
+  ],
+)
