@@ -145,7 +145,16 @@ rule /\/\/.*:run/ => [ proc {|task_name| task_name[0..-5]} ] do |task|
   short = task.name[0..-5]
 
   task.enhance do
-    Buck::buck_cmd.call('test', short)
+    # Figure out if this is an executable or a test target.
+    Buck::buck_cmd.call('query', "#{short} --output-attributes buck.type") do |output|
+      hash = JSON.parse(output)
+      type = hash[short]['buck.type']
+      if type =~ /.*_test/
+        Buck::buck_cmd.call('test', short)
+      else
+        Buck::buck_cmd.call('run', "--verbose 5 #{short}")
+      end
+    end
   end
 end
 
