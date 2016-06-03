@@ -26,6 +26,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
 
 import org.junit.Before;
@@ -249,6 +250,33 @@ public class FluentWaitTest {
       assertEquals(expected.getMessage(), actual.getMessage());
     }
   }
+
+  public void timeoutMessageIncludesToStringOfPredicate() throws Exception {
+    TimeoutException expected = new TimeoutException(
+      "Timed out after 0 seconds waiting for toString called");
+
+    Predicate<Object> predicate = new Predicate<Object>() {
+      public boolean apply(Object ignored) {
+        return false;
+      }
+
+      @Override
+      public String toString() {
+        return "toString called";
+      }
+    };
+
+    FluentWait<Object> wait = new FluentWait<Object>("cheese")
+      .withTimeout(0, TimeUnit.MILLISECONDS);
+
+    try {
+      wait.until(predicate);
+      fail();
+    } catch (TimeoutException actual) {
+      assertEquals(expected.getMessage(), actual.getMessage());
+    }
+  }
+
 
   @Test
   public void canIgnoreThrowables() {
