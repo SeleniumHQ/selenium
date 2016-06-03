@@ -56,7 +56,7 @@ class WebDriver(RemoteWebDriver):
         self.binary = firefox_binary or capabilities.get("binary", FirefoxBinary())
 
         self.options = firefox_options or Options()
-        self.options.binary_location = self.binary if isinstance(self.binary, basestring) else self.binary._get_firefox_start_cmd()
+        self.options.binary_location = self.binary if isinstance(self.binary, basestring) else self.binary._start_cmd
         self.options.profile = self.profile
         capabilities.update(self.options.to_capabilities())
 
