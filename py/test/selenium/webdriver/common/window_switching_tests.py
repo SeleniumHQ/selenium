@@ -24,6 +24,7 @@ from selenium.webdriver.common.by import By
 
 class WindowSwitchingTests(unittest.TestCase):
 
+    @pytest.mark.ignore_marionette
     def testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations(self):
         self._loadPage("xhtmlTest")
         current = self.driver.current_window_handle
