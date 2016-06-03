@@ -20,6 +20,7 @@ py_test(
 
 py_test(
   name = "marionette_test",
+  marionette_specific_tests = [ "test/selenium/webdriver/firefox/mn_*_tests.py" ],
   deps = [ ":test_marionette" ],
   browsers = [ "marionette" ])
 
