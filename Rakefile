@@ -325,18 +325,6 @@ ie_generate_type_mapping(:name => "ie_result_type_java",
                          :out => "java/client/src/org/openqa/selenium/ie/IeReturnTypes.java")
 
 
-{"firefox" => "*chrome",
- "ie" => "*iexploreproxy",
- "opera" => "*opera",
- "safari" => "*safari"}.each_pair do |k,v|
-  selenium_test(:name => "test-core-#{k}",
-                :srcs => [ "common/test/js/core/*.js" ],
-                :deps => [
-                  "//java/server/test/org/openqa/selenium:server-with-tests:uber",
-                ],
-                :browser => v )
-end
-
 task :javadocs => [:common, :firefox, :ie, :remote, :support, :chrome, :selenium] do
   mkdir_p "build/javadoc"
    sourcepath = ""
