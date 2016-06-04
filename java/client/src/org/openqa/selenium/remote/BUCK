@@ -17,6 +17,7 @@ java_library(
     'BrowserType.java',
     'CapabilityType.java',
     'DesiredCapabilities.java',
+    'DesiredCapabilitiesBuilder.java',
   ],
   deps = [
     '//java/client/src/org/openqa/selenium:selenium',

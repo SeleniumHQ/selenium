@@ -294,4 +294,8 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   public int hashCode() {
     return capabilities.hashCode();
   }
+
+  public static DesiredCapabilitiesBuilder builder() {
+    return new DesiredCapabilitiesBuilder();
+  }
 }
