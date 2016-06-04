@@ -1,4 +1,5 @@
-require 'open3'
+require 'childprocess'
+require 'java'
 require 'rake-tasks/checks'
 
 module Buck
@@ -6,7 +7,7 @@ module Buck
   def self.download
     @@buck_bin ||= (
       if File.exist?('.nobuckcheck') && present?('buck')
-        return "buck"
+        return ["buck"]
       end
 
       version = File.open('.buckversion').first.chomp
@@ -16,7 +17,7 @@ module Buck
       out_hash = File.exist?(out) ? Digest::MD5.file(out).hexdigest : nil
 
       if cached_hash == out_hash
-        return "python #{out}"
+        return ["python", out]
       end
 
       url = "https://github.com/SeleniumHQ/buck/releases/download/buck-release-#{version}/buck.pex"
@@ -34,45 +35,53 @@ module Buck
 
       ant.get('src' => url, 'dest' => out, 'verbose' => true)
       File.chmod(0755, out)
-      "python #{out}"
+      ["python", out]
     )
   end
 
   def self.buck_cmd
     @@buck_cmd ||= (
-      lambda { |command, target, &block|
+      lambda { |command, args, &block|
+        args ||= []
         buck = Buck::download
 
-        cmd = "#{buck} #{command} #{target}"
+        buck.push(command)
+        buck.push(*args)
 
-        output = ''
-        err = ''
-        Open3.popen3(cmd) do |stdin, stdout, stderr, wait_thr|
-          stdin.close
+        pump_class = Class.new(Java::java.io.OutputStream) {
+          attr_writer :stream
 
-          while line = stderr.gets
-            if command == 'build' || command == 'publish' || command == 'test'
-              puts line
+          def initialize
+            @output = ''
+          end
+
+          def write(b)
+            if @stream
+              @stream.write(b)
             end
-            err += line
+            @output += b
           end
 
-          while line = stdout.gets
-            output += line
+          def output
+            @output
           end
+        }
 
-          # In jruby, wait_thr always appears to be nil. *sigh*
-#          if !wait_thr.value.success?
-#            raise "Unable to execute command: " + err.to_s
-#          end
+        err = ''
+        proc = ChildProcess.build(*buck)
+        proc.io.stdout = pump_class.new()
+        proc.io.stderr = pump_class.new()
+        if command == 'build' || command == 'publish' || command == 'test'
+          proc.io.stderr.stream = $stdout
         end
+        proc.start
+        proc.wait
 
-        # Because we can't get the exit code, hackily parse the output
-        if err.index('FAILED') != nil
+        if proc.exit_code != 0
           raise "Buck build failed"
         end
 
-        block.call(output.to_s) if block
+        block.call(proc.io.stdout.output) if block
       }
     )
 
