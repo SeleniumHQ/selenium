@@ -221,7 +221,7 @@ rule /\/\/.*/ do |task|
 
   if task.class == Rake::FileTask && !task.out
     task.enhance do
-      Buck::buck_cmd.call('build', [task.name])
+      Buck::buck_cmd.call('build', ['--deep', task.name])
     end
 
     Buck::enhance_task(task)
