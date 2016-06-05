@@ -18,8 +18,6 @@
 
 package org.openqa.selenium.io;
 
-import org.openqa.selenium.internal.Base64Encoder;
-
 import com.google.common.io.Closeables;
 
 import java.io.BufferedOutputStream;
@@ -31,6 +29,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Base64;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -59,7 +58,7 @@ public class Zip {
 
     try {
       zip(inputDir, bos);
-      return new Base64Encoder().encode(bos.toByteArray());
+      return Base64.getEncoder().encodeToString(bos.toByteArray());
     } finally {
       bos.close();
     }
@@ -73,7 +72,7 @@ public class Zip {
 
     try {
       addToZip(baseDir.getAbsolutePath(), zos, fileToCompress);
-      return new Base64Encoder().encode(bos.toByteArray());
+      return Base64.getEncoder().encodeToString(bos.toByteArray());
     } finally {
       zos.close();
       bos.close();
@@ -118,7 +117,7 @@ public class Zip {
   }
 
   public void unzip(String source, File outputDir) throws IOException {
-    byte[] bytes = new Base64Encoder().decode(source);
+    byte[] bytes = Base64.getDecoder().decode(source);
 
     ByteArrayInputStream bis = null;
     try {

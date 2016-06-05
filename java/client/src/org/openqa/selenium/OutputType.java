@@ -17,12 +17,11 @@
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.internal.Base64Encoder;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Base64;
 
 /**
  * Defines the output type for a screenshot. See org.openqa.selenium.Screenshot for usage and
@@ -41,7 +40,7 @@ public interface OutputType<T> {
     }
 
     public String convertFromPngBytes(byte[] png) {
-      return new Base64Encoder().encode(png);
+      return Base64.getEncoder().encodeToString(png);
     }
 
     public String toString() {
@@ -54,7 +53,7 @@ public interface OutputType<T> {
    */
   OutputType<byte[]> BYTES = new OutputType<byte[]>() {
     public byte[] convertFromBase64Png(String base64Png) {
-      return new Base64Encoder().decode(base64Png);
+      return Base64.getDecoder().decode(base64Png);
     }
 
     public byte[] convertFromPngBytes(byte[] png) {

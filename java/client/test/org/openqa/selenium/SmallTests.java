@@ -23,7 +23,6 @@ import org.openqa.selenium.interactions.IndividualMouseActionsTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.openqa.selenium.internal.Base64EncoderTest;
 import org.openqa.selenium.io.FileHandlerTest;
 import org.openqa.selenium.io.TemporaryFilesystemTest;
 import org.openqa.selenium.io.ZipTest;
@@ -38,7 +37,6 @@ import org.openqa.selenium.testing.drivers.IgnoreComparitorUnitTest;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     ActionsTest.class,
-    Base64EncoderTest.class,
     ByTest.class,
     CommandLineTest.class,
     CookieTest.class,
