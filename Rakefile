@@ -102,6 +102,11 @@ crazy_fun.create_tasks(Dir["**/build.desc"])
 # This is because the buck integration creates a rule for "//.*"
 require 'rake-tasks/buck'
 
+# Spoof tasks to get CI working with buck
+task '//java/client/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
+  '//java/client/test/org/openqa/selenium/environment:webserver'
+]
+
 # Java targets required for release. These should all have the correct maven_coords set.
 JAVA_RELEASE_TARGETS = [
   '//java/client/src/org/openqa/selenium:core',
