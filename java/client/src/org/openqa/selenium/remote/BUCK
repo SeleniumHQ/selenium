@@ -53,6 +53,7 @@ java_library(name = 'augmenter',
     '//third_party/java/guava:guava',
   ],
   visibility = [
+    '//java/client/src/org/openqa/selenium:client-combined',
     '//java/client/test/...',
   ],
 )
