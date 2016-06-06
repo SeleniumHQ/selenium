@@ -36,6 +36,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -284,9 +285,13 @@ public class FirefoxProfileTest {
                     - oldTempAnonymousDirCount);
   }
 
-  private int countTempFiles(File baseTempDir, String prefix, String suffix) {
-    return baseTempDir.listFiles(
-      (dir1, name) -> name.startsWith(prefix) && name.endsWith(suffix)).length;
+  private int countTempFiles(File baseTempDir, final String prefix, final String suffix) {
+    return baseTempDir.listFiles(new FilenameFilter() {
+      @Override
+      public boolean accept(File dir, String name) {
+        return name.startsWith(prefix) && name.endsWith(suffix);
+      }
+    }).length;
   }
 
   private File getBaseTempDir() {

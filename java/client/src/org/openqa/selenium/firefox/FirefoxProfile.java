@@ -405,7 +405,9 @@ public class FirefoxProfile {
   }
 
   public void cleanTemporaryFiles() {
-    temporaryFiles.forEach(this::clean);
+    for (File temporaryFile : temporaryFiles) {
+      clean(temporaryFile);
+    }
   }
 
   /**
