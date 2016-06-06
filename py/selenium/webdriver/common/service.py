@@ -59,7 +59,7 @@ class Service(object):
             cmd.extend(self.command_line_args())
             self.process = subprocess.Popen(cmd, env=self.env,
                                             close_fds=platform.system() != 'Windows',
-                                            stdout=self.log_file, stderr=self.log_file)
+                                            stdin=self.log_file, stdout=self.log_file, stderr=self.log_file)
         except TypeError:
             raise
         except OSError as err:
