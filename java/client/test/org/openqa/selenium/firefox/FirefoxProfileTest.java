@@ -43,9 +43,10 @@ import java.util.List;
 
 @RunWith(JUnit4.class)
 public class FirefoxProfileTest {
+
   private static final String FIREBUG_PATH = "third_party/firebug/firebug-1.5.0-fx.xpi";
   private static final String FIREBUG_RESOURCE_PATH =
-      "/org/openqa/selenium/testing/drivers/firebug-1.5.0-fx.xpi";
+    "/org/openqa/selenium/testing/drivers/firebug-1.5.0-fx.xpi";
 
   private FirefoxProfile profile;
 
@@ -230,7 +231,9 @@ public class FirefoxProfileTest {
 
   @Test
   public void backslashedCharsArePreservedWhenConvertingToAndFromJson() throws IOException {
-    String dir = "c:\\aaa\\bbb\\ccc\\ddd\\eee\\fff\\ggg\\hhh\\iii\\jjj\\kkk\\lll\\mmm\\nnn\\ooo\\ppp\\qqq\\rrr\\sss\\ttt\\uuu\\vvv\\www\\xxx\\yyy\\zzz";
+    String
+      dir =
+      "c:\\aaa\\bbb\\ccc\\ddd\\eee\\fff\\ggg\\hhh\\iii\\jjj\\kkk\\lll\\mmm\\nnn\\ooo\\ppp\\qqq\\rrr\\sss\\ttt\\uuu\\vvv\\www\\xxx\\yyy\\zzz";
     profile.setPreference("browser.download.dir", dir);
 
     String json = profile.toJson();
@@ -238,6 +241,58 @@ public class FirefoxProfileTest {
     Preferences parsedPrefs = parseUserPrefs(rebuilt);
 
     assertEquals(dir, parsedPrefs.getPreference("browser.download.dir"));
+  }
+
+  @Test
+  public void toJson_shouldDeleteAllCreatedTempDirs() throws IOException {
+    File baseTempDir = getBaseTempDir();
+
+    int oldTempDirCount = countTempFiles(baseTempDir, "anonymous", "webdriver-profile");
+
+    profile.toJson();
+    profile.toJson();
+
+    assertEquals(2, countTempFiles(baseTempDir, "anonymous", "webdriver-profile")
+                    - oldTempDirCount);
+
+    profile.cleanTemporaryFiles();
+
+    assertEquals(0, countTempFiles(baseTempDir, "anonymous", "webdriver-profile")
+                    - oldTempDirCount);
+  }
+
+  @Test
+  public void fromJson_shouldDeleteAllCreatedTempDirs() throws IOException {
+    File baseTempDir = getBaseTempDir();
+    int oldTempWebdriverDirCount = countTempFiles(baseTempDir, "webdriver", "duplicated");
+    int oldTempAnonymousDirCount = countTempFiles(baseTempDir, "anonymous", "webdriver-profile");
+
+    String json = profile.toJson();
+    FirefoxProfile firefoxProfile = FirefoxProfile.fromJson(json);
+    firefoxProfile.toJson();
+
+    assertEquals(1, countTempFiles(baseTempDir, "webdriver", "duplicated")
+                    - oldTempWebdriverDirCount);
+    assertEquals(2, countTempFiles(baseTempDir, "anonymous", "webdriver-profile")
+                    - oldTempAnonymousDirCount);
+
+    firefoxProfile.cleanTemporaryFiles();
+
+    assertEquals(0, countTempFiles(baseTempDir, "webdriver", "duplicated")
+                    - oldTempWebdriverDirCount);
+    assertEquals(1, countTempFiles(baseTempDir, "anonymous", "webdriver-profile")
+                    - oldTempAnonymousDirCount);
+  }
+
+  private int countTempFiles(File baseTempDir, String prefix, String suffix) {
+    return baseTempDir.listFiles(
+      (dir1, name) -> name.startsWith(prefix) && name.endsWith(suffix)).length;
+  }
+
+  private File getBaseTempDir() {
+    File tempDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("test", "firefoxProfile");
+    tempDir.deleteOnExit();
+    return tempDir.getParentFile();
   }
 
   private void assertPreferenceValueEquals(String key, Object value) throws Exception {
