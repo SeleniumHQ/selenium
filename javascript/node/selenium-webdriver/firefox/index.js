@@ -337,13 +337,6 @@ class Driver extends webdriver.WebDriver {
       binary = new Binary(binary);
     }
 
-    let profile = new Profile;
-    if (caps.has(Capability.PROFILE)) {
-      profile = caps.get(Capability.PROFILE);
-      caps.delete(Capability.PROFILE);
-    }
-
-    let freePort = portprober.findFreePort();
     let serverUrl, onQuit;
 
     if (caps.get(Capability.MARIONETTE)
@@ -353,6 +346,13 @@ class Driver extends webdriver.WebDriver {
       onQuit = () => service.kill();
 
     } else {
+      let profile = new Profile;
+      if (caps.has(Capability.PROFILE)) {
+        profile = caps.get(Capability.PROFILE);
+        caps.delete(Capability.PROFILE);
+      }
+
+      let freePort = portprober.findFreePort();
       let preparedProfile =
           freePort.then(port => prepareProfile(profile, port));
       let command = preparedProfile.then(dir => binary.launch(dir));
