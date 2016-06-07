@@ -243,11 +243,6 @@ can run all the javascript tests using:
 
 ## Maven POM files
 
-Ignore the [Maven](http://maven.apache.org/) POM file present in the
-same directory. It is only used for releasing to jars to Maven
-Repository (public or local), and is not considered the main build
-mechanism.
-
 Here is the [public Selenium Maven
 repository](http://repo1.maven.org/maven2/org/seleniumhq/selenium/).
 
@@ -302,13 +297,18 @@ and deploy into you local maven repository (`~/.m2/repository`), while
 skipping Selenium's own tests.
 
 ```sh
-./go release
-cd maven
-mvn clean install
+./go maven-dry-run
+```
+
+Read the build output to find the maven jars. You can also publish
+directly using Buck:
+
+```sh
+buck publish -r your-repo //java/client/src/org/openqa/selenium:selenium
 ```
 
 This sequence will push some seven or so jars into your local Maven
-repository with something like 'selenium-server-2.0-SNAPSHOT.jar' as
+repository with something like 'selenium-server-3.0-SNAPSHOT.jar' as
 the name.
 
 ## Useful Resources

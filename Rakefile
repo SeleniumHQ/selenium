@@ -493,6 +493,16 @@ end
 #  cp "build/java/client/src/org/openqa/selenium/client-combined-v3.zip", "build/dist/selenium-java-#{version}.zip"
 #end
 
+
+task :'maven-dry-run' => JAVA_RELEASE_TARGETS do |t|
+  t.prerequisites.each do |p|
+    if JAVA_RELEASE_TARGETS.include?(p)
+      Buck::buck_cmd.call('publish', ['--dry-run', '--to-maven-central', p])
+    end
+  end
+end
+
+
 task :release => JAVA_RELEASE_TARGETS + [
   # Until we mananage to migrate to Buck entirely.
   '//java/server/src/org/openqa/grid/selenium:selenium',
