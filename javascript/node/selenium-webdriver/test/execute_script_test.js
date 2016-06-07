@@ -18,6 +18,7 @@
 'use strict';
 
 var path = require('path');
+var fail = require('assert').fail;
 
 var webdriver = require('..'),
     Browser = webdriver.Browser,
@@ -322,6 +323,38 @@ test.suite(function(env) {
             .equalTo('<div class="request">GET /common/echo HTTP/1.1</div>');
       });
     });
+
+    describe('async timeouts', function() {
+      var TIMEOUT_IN_MS = 200;
+      var ACCEPTABLE_WAIT = TIMEOUT_IN_MS / 10;
+      var TOO_LONG_WAIT = TIMEOUT_IN_MS * 10;
+
+      before(function() {
+        return driver.manage().timeouts().setScriptTimeout(TIMEOUT_IN_MS)
+      });
+
+      test.it('does not fail if script execute in time', function() {
+        return executeTimeOutScript(ACCEPTABLE_WAIT);
+      });
+
+      test.it('fails if script took too long', function() {
+        return executeTimeOutScript(TOO_LONG_WAIT)
+          .then(function() {
+            fail('it should have timed out');
+          }).catch(function(e) {
+            assert(e.name).equalTo('ScriptTimeoutError');
+            assert(e.message).contains('Timed out waiting for async script \
+result after');
+          });
+      });
+
+      function executeTimeOutScript(sleepTime) {
+        return driver.executeAsyncScript(function(sleepTime) {
+          var callback = arguments[arguments.length - 1];
+          setTimeout(callback, sleepTime)
+        }, sleepTime);
+      }
+    })
   });
 
   function verifyJson(expected) {
