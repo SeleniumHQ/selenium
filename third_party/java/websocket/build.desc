@@ -1,9 +1,0 @@
-java_library(
-  name = "websocket-client",
-  deps = [
-    "websocket-api-9.2.15.v20160210.jar",
-    "websocket-client-9.2.15.v20160210.jar",
-    "websocket-common-9.2.15.v20160210.jar",
-    "//third_party/java/jetty",
-  ])
-

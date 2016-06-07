@@ -1,2 +1,0 @@
-java_library(name = "ant",
-  deps = [ "ant-1.8.2.jar" ])

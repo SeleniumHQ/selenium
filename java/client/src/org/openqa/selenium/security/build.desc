@@ -1,6 +1,0 @@
-
-java_library(name = "security",
-  srcs = [ "*.java" ],
-  deps = [
-    "//java/client/src/org/openqa/selenium:beta",
-  ])

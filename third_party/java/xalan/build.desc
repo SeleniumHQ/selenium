@@ -1,3 +1,0 @@
-java_library(name = "xalan",
-  deps = [ "xalan-2.7.2.jar", ])
-

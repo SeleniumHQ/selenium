@@ -1,9 +1,0 @@
-
-java_library(name = "test",
-  srcs = [ "*.java" ],
-  deps = [
-    "//java/client/src/org/openqa/selenium/support/events",
-    "//java/client/test/org/openqa/selenium:base",
-    "//java/client/test/org/openqa/selenium/testing:junit_4",
-    "//third_party/java/mockito",
-  ])

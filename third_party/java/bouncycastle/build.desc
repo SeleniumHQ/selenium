@@ -1,5 +1,0 @@
-java_library(name = "bouncycastle",
-  deps = [ 
-    "bcpkix-jdk15on-1.48.jar",
-    "bcprov-jdk15on-1.48.jar" 
-  ])

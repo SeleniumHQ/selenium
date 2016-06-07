@@ -1,5 +1,0 @@
-java_library(name = "base",
-  srcs = [
-    "**/*.java",
-  ])
-

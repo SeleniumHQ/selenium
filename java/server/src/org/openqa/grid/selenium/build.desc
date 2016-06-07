@@ -1,8 +1,0 @@
-
-java_binary(name = "selenium",
-  main_class = "org.openqa.grid.selenium.GridLauncherV3",
-  srcs = [ "GridLauncherV3.java" ],
-  deps = [
-    "//java/server/src/org/openqa/selenium/remote/server:real-server",
-    "//java/server/src/org/openqa/grid",
-  ])

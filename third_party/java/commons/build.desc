@@ -1,4 +1,0 @@
-java_library(name = "commons-lang",
-  deps = [
-    "commons-lang3-3.4.jar"
-  ])

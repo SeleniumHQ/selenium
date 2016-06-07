@@ -1,3 +1,0 @@
-
-java_library(name = "beanshell",
-  deps = [ "bsh-2.0b4.jar" ])

@@ -1,6 +1,0 @@
-
-java_library(name = "slf4j",
-  deps = [
-    "slf4j-api-1.6.6.jar",
-    "slf4j-jdk14-1.6.6.jar",
-  ])
