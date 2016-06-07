@@ -1,6 +1,6 @@
 dotnet_test(name = "webdriverbackedselenium",
   deps = [
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+    "//java/server/test/org/openqa/selenium:server-with-tests",
   ],
   srcs = "**/*.cs",
   refs = [

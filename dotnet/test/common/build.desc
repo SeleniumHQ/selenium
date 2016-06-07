@@ -1,6 +1,6 @@
 dotnet_library(name = "common",
   deps = [
-    "//java/client/test/org/openqa/selenium:tests:uber"
+    "//java/client/test/org/openqa/selenium:tests"
   ],
   srcs = "**/*.cs",
   refs = [

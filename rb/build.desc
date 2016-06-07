@@ -209,7 +209,7 @@ ruby_library(name = "remote",
     "lib/selenium/webdriver/remote.rb"
   ],
   deps = [
-    "//java/server/src/org/openqa/grid/selenium:selenium:uber",
+    "//java/server/src/org/openqa/grid/selenium:selenium",
     ":common"
   ]
 )

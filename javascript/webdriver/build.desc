@@ -38,7 +38,7 @@ js_test(name = "test",
   deps = [
     ":all_js",
     "//java/client/test/org/openqa/selenium/javascript",
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+    "//java/server/test/org/openqa/selenium:server-with-tests",
   ])
 
 # Tests that should only run in browsers with ES6 support.
@@ -50,7 +50,7 @@ js_test(name = "es6_test",
   deps = [
     ":http",
     "//java/client/test/org/openqa/selenium/javascript",
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+    "//java/server/test/org/openqa/selenium:server-with-tests",
   ],
   browsers = [
     "chrome",

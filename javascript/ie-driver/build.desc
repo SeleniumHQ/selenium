@@ -22,7 +22,7 @@ js_test(name = "test",
   deps = [
     ":deps",
     "//java/client/test/org/openqa/selenium/javascript",
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+    "//java/server/test/org/openqa/selenium:server-with-tests",
   ],
   browsers = [ "ie" ])
 
