@@ -16,16 +16,21 @@
 // under the License.
 
 /**
- * @fileoverview Defines a {@linkplain Driver WebDriver} client for the PhantomJS
- * web browser. By default, it is expected that the PhantomJS executable can be located on your [PATH](https://en.wikipedia.org/wiki/PATH_(variable))
- * 
+ * @fileoverview Defines a {@linkplain Driver WebDriver} client for the
+ * PhantomJS web browser. By default, it is expected that the PhantomJS
+ * executable can be located on your
+ * [PATH](https://en.wikipedia.org/wiki/PATH_(variable))
+ *
  *  __Using a Custom PhantomJS Binary__
- * 
- * If you have PhantomJS.exe placed somewhere other than the root of your working directory,
- * you can build a custom Capability and attach the executable's location to the Capability
- * 
- * For example, if you're using the [phantomjs-prebuilt](https://www.npmjs.com/package/phantomjs-prebuilt) module from npm:
- * 
+ *
+ * If you have PhantomJS.exe placed somewhere other than the root of your
+ * working directory, you can build a custom Capability and attach the
+ * executable's location to the Capability
+ *
+ * For example, if you're using the
+ * [phantomjs-prebuilt](https://www.npmjs.com/package/phantomjs-prebuilt) module
+ * from npm:
+ *
  *     //setup custom phantomJS capability
  *     var phantomjs_exe = require('phantomjs-prebuilt').path;
  *     var customPhantom = selenium.Capabilities.phantomjs();
@@ -36,7 +41,7 @@
  *            build();
  *
  */
- 
+
 'use strict';
 
 const fs = require('fs');
@@ -186,7 +191,8 @@ class Driver extends webdriver.WebDriver {
           if (proxy.httpProxy) {
             args.push(
                 '--proxy-type=http',
-                '--proxy=http://' + proxy.httpProxy);
+                '--proxy=' + proxy.httpProxy);
+            console.log(args);
           }
           break;
         case 'pac':
@@ -204,6 +210,7 @@ class Driver extends webdriver.WebDriver {
     var port = portprober.findFreePort();
     var service = new remote.DriverService(exe, {
       port: port,
+      stdio: 'inherit',
       args: promise.when(port, function(port) {
         args.push('--webdriver=' + port);
         return args;
