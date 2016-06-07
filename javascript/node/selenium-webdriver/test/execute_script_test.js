@@ -343,8 +343,6 @@ test.suite(function(env) {
             fail('it should have timed out');
           }).catch(function(e) {
             assert(e.name).equalTo('ScriptTimeoutError');
-            assert(e.message).contains('Timed out waiting for async script \
-result after');
           });
       });
 
