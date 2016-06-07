@@ -40,7 +40,6 @@ module Selenium
 
         KNOWN = [
             :remote_session_id,
-            :specification_level,
             :xul_app_id,
             :raise_accessibility_exceptions,
             :rotatable,
@@ -127,7 +126,6 @@ module Selenium
             data.delete('cssSelectorsEnabled')
 
             # Marionette Specific
-            caps[:specification_level] = data.delete("specificationLevel")
             caps[:xul_app_id] = data.delete("XULappId")
             caps[:raise_accessibility_exceptions] = data.delete('raisesAccessibilityExceptions')
             caps[:rotatable] = data.delete('rotatable')

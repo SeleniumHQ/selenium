@@ -57,7 +57,6 @@ module Selenium
             else
               expect(driver1.capabilities.remote_session_id).to be_nil
             end
-            expect(driver1.capabilities.specification_level).to be == '1'
             expect(driver1.capabilities.raise_accessibility_exceptions).to be == false
             expect(driver1.capabilities.rotatable).to be == false
           ensure
@@ -74,7 +73,7 @@ module Selenium
               driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
 
               default_version = driver1.capabilities.version
-              expect { driver1.capabilities.specification_level }.to_not raise_exception NoMethodError
+              expect { driver1.capabilities.browser_version }.to_not raise_exception NoMethodError
               driver1.quit
 
               caps = Remote::Capabilities.firefox(:firefox_binary => ENV['ALT_MARIONETTE_BINARY'])
@@ -82,7 +81,7 @@ module Selenium
               driver2 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
 
               expect(driver2.capabilities.version).to_not eql(default_version)
-              expect { driver2.capabilities.specification_level }.to_not raise_exception NoMethodError
+              expect { driver2.capabilities.browser_version }.to_not raise_exception NoMethodError
               driver2.quit
             ensure
               Firefox::Binary.reset_path!
@@ -122,7 +121,7 @@ module Selenium
           it "Does not use wires when marionette option is not set" do
             driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
 
-            expect { driver1.capabilities.specification_level }.to raise_exception NoMethodError
+            expect { driver1.capabilities.browser_version  }.to raise_exception NoMethodError
             driver1.quit
           end
         end
