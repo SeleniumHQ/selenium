@@ -363,9 +363,9 @@ class CommandExecutor {
     this.server_ = new Server();
 
     this.safari_ = this.server_.start().then(function(address) {
-      var tasks = cleanSession(
+      var tasks = /** @type {!Array<!IThenable>} */(cleanSession(
           /** @type {!Object} */(
-                command.getParameters()['desiredCapabilities']));
+                command.getParameters()['desiredCapabilities'])));
       tasks.push(
         findSafariExecutable(),
         createConnectFile(
