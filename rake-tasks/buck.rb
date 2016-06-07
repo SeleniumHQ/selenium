@@ -7,6 +7,7 @@ module Buck
   def self.download
     @@buck_bin ||= (
       if File.exist?('.nobuckcheck') && present?('buck')
+        # We'll assume the user knows how to kill buck themselves
         return ["buck"]
       end
 
@@ -17,6 +18,8 @@ module Buck
       out_hash = File.exist?(out) ? Digest::MD5.file(out).hexdigest : nil
 
       if cached_hash == out_hash
+        # Make sure we're running a pristine buck instance
+        sh "python #{out} kill"
         return ["python", out]
       end
 
@@ -35,6 +38,7 @@ module Buck
 
       ant.get('src' => url, 'dest' => out, 'verbose' => true)
       File.chmod(0755, out)
+      sh "python #{out} kill"
       ["python", out]
     )
   end
