@@ -135,39 +135,6 @@ module Selenium
         end
       end
 
-      compliant_on :browser => :marionette do
-        # These pass in isolation, but can not run in suite due to https://github.com/SeleniumHQ/selenium/issues/1150
-        context "when designated firefox binary does not include Marionette" do
-          let(:message) { /Marionette is not supported in Firefox Version \d\d/ }
-
-          before do
-            unless ENV['PRE_MARIONETTE_BINARY']
-              pending "Set ENV['PRE_MARIONETTE_BINARY'] to test features on firefox versions without marionette"
-            end
-          end
-
-          it "Raises Wires Exception when setting marionette option in capabilities" do
-            begin
-              caps = Selenium::WebDriver::Remote::Capabilities.firefox(:marionette => true,
-                                                                       :firefox_binary => ENV['PRE_MARIONETTE_BINARY'])
-              @opt.merge!(:desired_capabilities => caps)
-              expect { Selenium::WebDriver.for :firefox, @opt }.to raise_exception Error::WebDriverError, message
-            ensure
-              Firefox::Binary.reset_path!
-            end
-          end
-
-          it "Raises Wires Exception when setting marionette option in driver initialization" do
-            begin
-              caps = Selenium::WebDriver::Remote::Capabilities.firefox(:firefox_binary => ENV['PRE_MARIONETTE_BINARY'])
-              @opt.merge!(:marionette => true, :desired_capabilities => caps)
-              expect { Selenium::WebDriver.for :firefox, @opt }.to raise_exception Error::WebDriverError, message
-            ensure
-              Firefox::Binary.reset_path!
-            end
-          end
-        end
-      end
     end # Firefox
   end # WebDriver
 end # Selenium

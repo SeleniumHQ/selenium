@@ -1,14 +1,12 @@
 rubygem(
   gemspec = "build/rb/selenium-webdriver.gemspec",
   deps = [
-    "//rb:android",
     "//rb:chrome",
     "//rb:common",
     "//rb:support",
     "//rb:edge",
     "//rb:firefox",
     "//rb:ie",
-    "//rb:iphone",
     "//rb:phantomjs",
     "//rb:remote",
     "//rb:safari"
@@ -29,6 +27,8 @@ ruby_library(name = "common",
   srcs = [
     "lib/selenium/webdriver/common/**/*.rb",
     "lib/selenium/webdriver/common.rb",
+    "lib/selenium/webdriver/remote/**/*.rb",
+    "lib/selenium/webdriver/remote.rb",
     "lib/selenium/webdriver.rb",
     "lib/selenium/server.rb",
     "lib/selenium-webdriver.rb",
@@ -39,8 +39,7 @@ ruby_library(name = "common",
   ],
   resources = [
     { "../LICENSE" : "rb/LICENSE" }
-  ],
-  deps = [ "//java/client/test/org/openqa/selenium/environment" ]
+  ]
 )
 
 ruby_library(name = "support",
@@ -50,35 +49,12 @@ ruby_library(name = "support",
   ]
 )
 
-ruby_library(name = "android",
-  srcs = [
-    "lib/selenium/webdriver/android/**/*.rb",
-    "lib/selenium/webdriver/android.rb"
-  ],
-  deps = [
-    ":common",
-    ":remote"
-  ]
-)
-
-ruby_test(name = "android",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/android/**/*_spec.rb"
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [ ":android"  ]
-)
-
 ruby_library(name = "chrome",
   srcs = [
     "lib/selenium/webdriver/chrome/**/*.rb",
     "lib/selenium/webdriver/chrome.rb"
   ],
-  deps = [
-    ":common",
-    ":remote"
-  ]
+  deps = [":common"]
 )
 
 ruby_test(name = "chrome",
@@ -87,7 +63,7 @@ ruby_test(name = "chrome",
     "spec/integration/selenium/webdriver/chrome/**/*_spec.rb"
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [ ":chrome"  ]
+  deps = [":chrome"]
 )
 
 ruby_library(name = "edge",
@@ -95,10 +71,7 @@ ruby_library(name = "edge",
     "lib/selenium/webdriver/edge/**/*.rb",
     "lib/selenium/webdriver/edge.rb"
   ],
-  deps = [
-    ":common",
-    ":remote"
-  ]
+  deps = [":common"]
 )
 
 ruby_test(name = "edge",
@@ -108,15 +81,6 @@ ruby_test(name = "edge",
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [ ":edge"  ]
-)
-
-ruby_test(name = "marionette",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/firefox/**/*_spec.rb"
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [ ":firefox"  ]
 )
 
 ruby_library(name = "firefox",
@@ -130,7 +94,7 @@ ruby_library(name = "firefox",
     { "//cpp:noblur"    : "rb/lib/selenium/webdriver/firefox/native/linux/x86/x_ignore_nofocus.so" },
     { "//cpp:noblur64"  : "rb/lib/selenium/webdriver/firefox/native/linux/amd64/x_ignore_nofocus.so" }
   ],
-  deps = [ ":remote" ]
+  deps = [":common"]
 )
 
 ruby_test(name = "firefox",
@@ -147,10 +111,7 @@ ruby_library(name = "ie",
     "lib/selenium/webdriver/ie/**/*.rb",
     "lib/selenium/webdriver/ie.rb"
   ],
-  deps = [
-    ":common",
-    ":remote"
-  ]
+  deps = [":common"]
 )
 
 ruby_test(name = "ie",
@@ -162,24 +123,21 @@ ruby_test(name = "ie",
   deps = [ ":ie" ]
 )
 
-ruby_library(name = "iphone",
+ruby_library(name = "marionette",
   srcs = [
-    "lib/selenium/webdriver/iphone/**/*.rb",
-    "lib/selenium/webdriver/iphone.rb"
+    "lib/selenium/webdriver/firefox/**/*.rb",
+    "lib/selenium/webdriver/firefox.rb"
   ],
-  deps = [
-    ":common",
-    ":remote"
-  ]
+  deps = [":common"]
 )
 
-ruby_test(name = "iphone",
+ruby_test(name = "marionette",
   srcs = [
     "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/iphone/**/*_spec.rb"
+    "spec/integration/selenium/webdriver/firefox/**/*_spec.rb"
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [ ":iphone" ]
+  deps = [":marionette"]
 )
 
 ruby_library(name = "phantomjs",
@@ -187,9 +145,7 @@ ruby_library(name = "phantomjs",
     "lib/selenium/webdriver/phantomjs/**/*.rb",
     "lib/selenium/webdriver/phantomjs.rb"
   ],
-  deps = [
-    ":common"
-  ]
+  deps = [":common"]
 )
 
 ruby_test(name = "phantomjs",
@@ -198,10 +154,7 @@ ruby_test(name = "phantomjs",
     "spec/integration/selenium/webdriver/phantomjs/**/*_spec.rb"
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [
-    ":remote",
-    ":phantomjs"
-  ]
+  deps = [":phantomjs"]
 )
 ruby_library(name = "remote",
   srcs = [
@@ -220,9 +173,7 @@ ruby_test(name = "remote",
     "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [
-    ":remote"
-  ]
+  deps = [":remote"]
 )
 
 ruby_test(name = "remote-chrome",
@@ -231,67 +182,10 @@ ruby_test(name = "remote-chrome",
     "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [
-    ":remote"
-  ]
+  deps = [":remote"]
 )
 
 ruby_test(name = "remote-firefox",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [
-    ":remote"
-  ]
-)
-
-ruby_test(name = "remote-phantomjs",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [
-    ":remote"
-  ]
-)
-
-ruby_test(name = "remote-safari",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [
-    ":remote"
-  ]
-)
-
-ruby_test(name = "remote-ie",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [
-    ":remote"
-  ]
-)
-
-ruby_test(name = "remote-edge",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [
-    ":edge"
-  ]
-)
-
-ruby_test(name = "remote-marionette",
   srcs = [
     "spec/integration/selenium/webdriver/*_spec.rb",
     "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
@@ -303,15 +197,63 @@ ruby_test(name = "remote-marionette",
   ]
 )
 
+ruby_test(name = "remote-phantomjs",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
+  ],
+  include = ["rb/spec/integration", "build/rb/lib"],
+  deps = [":remote"]
+)
+
+ruby_test(name = "remote-safari",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
+  ],
+  include = ["rb/spec/integration", "build/rb/lib"],
+  deps = [
+    ":remote",
+    ":safari"
+  ]
+)
+
+ruby_test(name = "remote-ie",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
+  ],
+  include = ["rb/spec/integration", "build/rb/lib"],
+  deps = [":remote"]
+)
+
+ruby_test(name = "remote-edge",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
+  ],
+  include = ["rb/spec/integration", "build/rb/lib"],
+  deps = [
+    ":remote",
+    ":edge"
+  ]
+)
+
+ruby_test(name = "remote-marionette",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
+  ],
+  include = ["rb/spec/integration", "build/rb/lib"],
+  deps = [":remote"]
+)
+
 ruby_library(name = "safari",
   srcs = [
-    "lib/selenium/webdriver/safari/**/*.rb",
+    "lib/selenium/webdriver/safari/**/* .rb",
     "lib/selenium/webdriver/safari.rb"
   ],
-  deps = [
-    ":common",
-    ":remote"
-  ],
+  deps = [":common"],
   resources = [
     { "//javascript/safari-driver:client": "rb/lib/selenium/webdriver/safari/resources/client.js"}
   ]
@@ -323,9 +265,7 @@ ruby_test(name = "safari",
     "spec/integration/selenium/webdriver/safari/**/*_spec.rb"
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [
-    ":safari"
-  ]
+  deps = [":safari"]
 )
 
 ruby_test(name = "unit",
@@ -335,13 +275,11 @@ ruby_test(name = "unit",
   ],
   include = ["rb/spec/unit", "build/rb/lib"],
   deps = [
-    ":android",
     ":chrome",
     ":common",
     ":edge",
     ":firefox",
     ":ie",
-    ":iphone",
     ":remote",
     ":safari",
     ":phantomjs",

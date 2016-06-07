@@ -29,13 +29,12 @@ module Selenium
           @create_driver_error       = nil
           @create_driver_error_count = 0
 
-          # TODO: get rid of ENV
-          @driver = (ENV['WD_SPEC_DRIVER'] || raise("must set WD_SPEC_DRIVER")).strip.to_sym
+          @driver = (ENV['WD_SPEC_DRIVER'] || :chrome).strip.to_sym
         end
 
         def browser
           if driver == :remote
-            (ENV['WD_REMOTE_BROWSER'] || :firefox).to_sym
+            (ENV['WD_REMOTE_BROWSER'] || :chrome).to_sym
           else
             driver
           end
@@ -104,7 +103,7 @@ module Selenium
         end
 
         def remote_server_jar
-          @remote_server_jar ||= root.join("build/java/server/src/org/openqa/grid/selenium/selenium-standalone.jar").to_s
+          @remote_server_jar ||= root.join("buck-out/gen/java/server/src/org/openqa/grid/selenium/selenium.jar").to_s
         end
 
         def quit
