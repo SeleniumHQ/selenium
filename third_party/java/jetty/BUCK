@@ -2,6 +2,7 @@ java_library(
   name = 'jetty',
   exported_deps = [
     ':jetty-http-repacked',
+    ':jetty-security-repacked',
     ':jetty-server-repacked',
     ':jetty-servlet-repacked',
     ':jetty-servlets-repacked',
@@ -11,7 +12,6 @@ java_library(
     ':jetty-continuation-repacked',
     ':jetty-io-repacked',
     ':jetty-jmx-repacked',
-    ':jetty-security-repacked',
   ],
   visibility = [
     '//java/client/test/com/thoughtworks/selenium:tests',
@@ -22,6 +22,7 @@ java_library(
     '//java/server/test/org/openqa/selenium:lib',
     '//java/server/test/com/thoughtworks/selenium/webdriven:webdriven',
     '//java/server/test/org/openqa/selenium/remote/server:tests',
+    '//java/server/test/org/openqa/selenium/remote/server/auth:lib',
   ],
 )
 
