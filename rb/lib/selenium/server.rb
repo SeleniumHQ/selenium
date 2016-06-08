@@ -66,59 +66,74 @@ module Selenium
     # Download the given version of the selenium-server-standalone jar.
     #
 
-    def self.download(required_version)
-      required_version = latest if required_version == :latest
-      download_file_name = "selenium-server-standalone-#{required_version}.jar"
+    class << self
+      def download(required_version)
+        required_version = latest if required_version == :latest
+        download_file_name = "selenium-server-standalone-#{required_version}.jar"
 
-      if File.exists? download_file_name
-        return download_file_name
-      end
+        if File.exists? download_file_name
+          return download_file_name
+        end
 
-      begin
-        open(download_file_name, "wb") do |destination|
-          net_http.start("selenium-release.storage.googleapis.com") do |http|
-            resp = http.request_get("/#{required_version[/(\d+\.\d+)\./, 1]}/#{download_file_name}") do |response|
-              total = response.content_length
-              progress = 0
-              segment_count = 0
+        begin
+          open(download_file_name, "wb") do |destination|
+            net_http.start("selenium-release.storage.googleapis.com") do |http|
+              resp = http.request_get("/#{required_version[/(\d+\.\d+)\./, 1]}/#{download_file_name}") do |response|
+                total = response.content_length
+                progress = 0
+                segment_count = 0
 
-              response.read_body do |segment|
-                progress += segment.length
-                segment_count += 1
+                response.read_body do |segment|
+                  progress += segment.length
+                  segment_count += 1
 
-                if segment_count % 15 == 0
-                  percent = (progress.to_f / total.to_f) * 100
-                  print "#{CL_RESET}Downloading #{download_file_name}: #{percent.to_i}% (#{progress} / #{total})"
-                  segment_count = 0
+                  if segment_count % 15 == 0
+                    percent = (progress.to_f / total.to_f) * 100
+                    print "#{CL_RESET}Downloading #{download_file_name}: #{percent.to_i}% (#{progress} / #{total})"
+                    segment_count = 0
+                  end
+
+                  destination.write(segment)
                 end
+              end
 
-                destination.write(segment)
+              unless resp.kind_of? Net::HTTPSuccess
+                raise Error, "#{resp.code} for #{download_file_name}"
               end
             end
-
-            unless resp.kind_of? Net::HTTPSuccess
-              raise Error, "#{resp.code} for #{download_file_name}"
-            end
           end
+        rescue
+          FileUtils.rm download_file_name if File.exists? download_file_name
+          raise
         end
-      rescue
-        FileUtils.rm download_file_name if File.exists? download_file_name
-        raise
+
+        download_file_name
       end
 
-      download_file_name
-    end
+      #
+      # Ask Google Code what the latest selenium-server-standalone version is.
+      #
 
-    #
-    # Ask Google Code what the latest selenium-server-standalone version is.
-    #
+      def latest
+        require 'rexml/document'
+        net_http.start("selenium-release.storage.googleapis.com") do |http|
+          REXML::Document.new(http.get("/").body).root.get_elements("//Contents/Key").map { |e|
+            e.text[/selenium-server-standalone-(\d+\.\d+\.\d+)\.jar/, 1]
+          }.compact.max
+        end
+      end
 
-    def self.latest
-      require 'rexml/document'
-      net_http.start("selenium-release.storage.googleapis.com") do |http|
-        REXML::Document.new(http.get("/").body).root.get_elements("//Contents/Key").map { |e|
-          e.text[/selenium-server-standalone-(\d+\.\d+\.\d+)\.jar/, 1]
-        }.compact.max
+      def net_http
+        http_proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
+
+        if http_proxy
+          http_proxy = "http://#{http_proxy}" unless http_proxy.start_with?("http://")
+          uri = URI.parse(http_proxy)
+
+          Net::HTTP::Proxy(uri.host, uri.port)
+        else
+          Net::HTTP
+        end
       end
     end
 
@@ -203,19 +218,6 @@ module Selenium
     end
 
     private
-
-    def self.net_http
-      http_proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
-
-      if http_proxy
-        http_proxy = "http://#{http_proxy}" unless http_proxy.start_with?("http://")
-        uri = URI.parse(http_proxy)
-
-        Net::HTTP::Proxy(uri.host, uri.port)
-      else
-        Net::HTTP
-      end
-    end
 
     def stop_process
       return unless @process.alive?
