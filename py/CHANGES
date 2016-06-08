@@ -1,3 +1,7 @@
+Selenium 2.53.4
+*  Pass the firefox_profile as a desired capability in the Python client when using a remote server
+*  Avoid checking exception details for invalid locators due to differences in server implementations
+
 Selenium 2.53.3
  * Use the correct binary path when using Marionette
  * Fixed: Unhelpful error message when PhantomJS exits. (#2173 #2168)
