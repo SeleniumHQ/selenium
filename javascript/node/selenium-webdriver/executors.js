@@ -24,8 +24,7 @@
 
 const HttpClient = require('./http').HttpClient,
     HttpExecutor = require('./http').Executor,
-    DeferredExecutor = require('./lib/command').DeferredExecutor,
-    promise = require('./lib/promise');
+    DeferredExecutor = require('./lib/command').DeferredExecutor;
 
 
 // PUBLIC API
@@ -36,16 +35,16 @@ exports.DeferredExecutor = DeferredExecutor;
 
 /**
  * Creates a command executor that uses WebDriver's JSON wire protocol.
- * @param {(string|!promise.Promise<string>)} url The server's URL,
- *     or a promise that will resolve to that URL.
- * @param {http.Agent=} opt_agent (optional) The Http.Agent for the client to 
- *     use. 
+ * @param {(string|!Promise<string>)} url The server's URL, or a promise that
+ *     will resolve to that URL.
+ * @param {http.Agent=} opt_agent (optional) The Http.Agent for the client to
+ *     use.
  * @param {(string|null)=} opt_proxy (optional) The URL of the HTTP proxy for
  *     the client to use.
  * @returns {!./lib/command.Executor} The new command executor.
  */
 exports.createExecutor = function(url, opt_agent, opt_proxy) {
-  return new DeferredExecutor(promise.when(url, function(url) {
+  return new DeferredExecutor(url.then(url => {
     var client = new HttpClient(url, opt_agent, opt_proxy);
     return new HttpExecutor(client);
   }));

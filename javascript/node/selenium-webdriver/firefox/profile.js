@@ -28,7 +28,6 @@ const AdmZip = require('adm-zip'),
     vm = require('vm');
 
 const isDevMode = require('../lib/devmode'),
-    promise = require('../lib/promise'),
     Symbols = require('../lib/symbols'),
     io = require('../io'),
     extension = require('./extension');
@@ -70,34 +69,28 @@ function getDefaultPreferences() {
 /**
  * Parses a user.js file in a Firefox profile directory.
  * @param {string} f Path to the file to parse.
- * @return {!promise.Promise<!Object>} A promise for the parsed preferences as
+ * @return {!Promise<!Object>} A promise for the parsed preferences as
  *     a JSON object. If the file does not exist, an empty object will be
  *     returned.
  */
 function loadUserPrefs(f) {
-  var done = promise.defer();
-  fs.readFile(f, function(err, contents) {
-    if (err && err.code === 'ENOENT') {
-      done.fulfill({});
-      return;
-    }
-
-    if (err) {
-      done.reject(err);
-      return;
-    }
-
-    var prefs = {};
-    var context = vm.createContext({
-      'user_pref': function(key, value) {
-        prefs[key] = value;
-      }
-    });
-
-    vm.runInContext(/** @type {string} */(contents), context, f);
-    done.fulfill(prefs);
-  });
-  return done.promise;
+  return io.read(f).then(
+      function onSuccess(contents) {
+        var prefs = {};
+        var context = vm.createContext({
+          'user_pref': function(key, value) {
+            prefs[key] = value;
+          }
+        });
+        vm.runInContext(contents.toString(), context, f);
+        return prefs;
+      },
+      function onError(err) {
+        if (err && err.code === 'ENOENT') {
+          return {};
+        }
+        throw err;
+      });
 }
 
 
@@ -107,7 +100,7 @@ function loadUserPrefs(f) {
  *     overridden by user.js preferences in the template directory and the
  *     frozen preferences required by WebDriver.
  * @param {string} dir Path to the directory write the file to.
- * @return {!promise.Promise<string>} A promise for the profile directory,
+ * @return {!Promise<string>} A promise for the profile directory,
  *     to be fulfilled when user preferences have been written.
  */
 function writeUserPrefs(prefs, dir) {
@@ -121,11 +114,11 @@ function writeUserPrefs(prefs, dir) {
           JSON.stringify(prefs[key]) + ');';
     }).join('\n');
 
-    var done = promise.defer();
-    fs.writeFile(userPrefs, contents, function(err) {
-      err && done.reject(err) || done.fulfill(dir);
+    return new Promise((resolve, reject) => {
+      fs.writeFile(userPrefs, contents, function(err) {
+        err && reject(err) || resolve(dir);
+      });
     });
-    return done.promise;
   });
 };
 
@@ -148,11 +141,7 @@ function installExtensions(extensions, dir, opt_excludeWebDriverExt) {
   var extensionDir = path.join(dir, 'extensions');
 
   return new Promise(function(fulfill, reject) {
-    io.exists(extensionDir).then(function(exists) {
-      if (!exists) {
-        return promise.checkedNodeCall(fs.mkdir, extensionDir);
-      }
-    }).then(installNext);
+    io.mkdir(extensionDir).then(installNext, reject);
 
     function installNext() {
       if (next >= extensions.length) {
@@ -185,13 +174,13 @@ function installExtensions(extensions, dir, opt_excludeWebDriverExt) {
 function decode(data) {
   return io.tmpFile().then(function(file) {
     var buf = new Buffer(data, 'base64');
-    return promise.checkedNodeCall(fs.writeFile, file, buf).then(function() {
-      return io.tmpDir();
-    }).then(function(dir) {
-      var zip = new AdmZip(file);
-      zip.extractAllTo(dir);  // Sync only? Why?? :-(
-      return dir;
-    });
+    return io.write(file, buf)
+        .then(io.tmpDir)
+        .then(function(dir) {
+          var zip = new AdmZip(file);
+          zip.extractAllTo(dir);  // Sync only? Why?? :-(
+          return dir;
+        });
   });
 }
 
@@ -391,10 +380,10 @@ class Profile {
 
       return io.tmpFile().then(function(file) {
         zip.writeZip(file);  // Sync! Why oh why :-(
-        return promise.checkedNodeCall(fs.readFile, file);
+        return io.read(file);
       });
     }).then(function(data) {
-      return new Buffer(data).toString('base64');
+      return data.toString('base64');
     });
   }
 

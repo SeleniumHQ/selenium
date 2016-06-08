@@ -283,7 +283,7 @@ function createGeckoDriverService(binary) {
   return new remote.DriverService(geckoDriver, {
     loopback: true,
     port: port,
-    args: promise.all([exe, port]).then(args => {
+    args: Promise.all([exe, port]).then(args => {
       return ['-b', args[0], '--webdriver-port', args[1]];
     })
     // ,stdio: 'inherit'
@@ -370,11 +370,12 @@ class Driver extends webdriver.WebDriver {
           });
 
       onQuit = function() {
-        let finishCommand = command.then(command => {
+        return command.then(command => {
           command.kill();
-          return command.result();
+          return preparedProfile.then(io.rmDir)
+              .then(() => command.result(),
+                    () => command.result());
         });
-        return finishCommand.finally(() => preparedProfile.then(io.rmDir));
       };
     }
 
@@ -386,7 +387,7 @@ class Driver extends webdriver.WebDriver {
 
     /** @override */
     this.quit = function() {
-      return boundQuit().thenFinally(onQuit);
+      return boundQuit().finally(onQuit);
     };
   }
 

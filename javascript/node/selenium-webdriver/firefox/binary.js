@@ -28,7 +28,6 @@ const child = require('child_process'),
     util = require('util');
 
 const isDevMode = require('../lib/devmode'),
-    promise = require('../lib/promise'),
     Symbols = require('../lib/symbols'),
     io = require('../io'),
     exec = require('../io/exec');
@@ -126,28 +125,20 @@ function findFirefox(opt_dev) {
 /**
  * Copies the no focus libs into the given profile directory.
  * @param {string} profileDir Path to the profile directory to install into.
- * @return {!promise.Promise.<string>} The LD_LIBRARY_PATH prefix string to use
+ * @return {!Promise<string>} The LD_LIBRARY_PATH prefix string to use
  *     for the installed libs.
  */
 function installNoFocusLibs(profileDir) {
   var x86 = path.join(profileDir, 'x86');
   var amd64 = path.join(profileDir, 'amd64');
 
-  return mkdir(x86)
-      .then(copyLib.bind(null, NO_FOCUS_LIB_X86, x86))
-      .then(mkdir.bind(null, amd64))
-      .then(copyLib.bind(null, NO_FOCUS_LIB_AMD64, amd64))
+  return io.mkdir(x86)
+      .then(() => copyLib(NO_FOCUS_LIB_X86, x86))
+      .then(() => io.mkdir(amd64))
+      .then(() => copyLib(NO_FOCUS_LIB_AMD64, amd64))
       .then(function() {
         return x86 + ':' + amd64;
       });
-
-  function mkdir(dir) {
-    return io.exists(dir).then(function(exists) {
-      if (!exists) {
-        return promise.checkedNodeCall(fs.mkdir, dir);
-      }
-    });
-  }
 
   function copyLib(src, dir) {
     return io.copy(src, path.join(dir, X_IGNORE_NO_FOCUS_LIB));
@@ -226,19 +217,19 @@ class Binary {
    * executable path when this instance was created. Otherwise, an attempt will
    * be made to find Firefox on the current system.
    *
-   * @return {!promise.Promise<string>} a promise for the path to the Firefox
-   *     executable used by this instance.
+   * @return {!Promise<string>} a promise for the path to the Firefox executable
+   *     used by this instance.
    */
   locate() {
-    return promise.fulfilled(this.exe_ || findFirefox(this.devEdition_));
+    return Promise.resolve(this.exe_ || findFirefox(this.devEdition_));
   }
 
   /**
    * Launches Firefox and returns a promise that will be fulfilled when the
    * process terminates.
    * @param {string} profile Path to the profile directory to use.
-   * @return {!promise.Promise<!exec.Command>} A promise for the handle to the
-   *     started subprocess.
+   * @return {!Promise<!exec.Command>} A promise for the handle to the started
+   *     subprocess.
    */
   launch(profile) {
     let env = {};
@@ -264,8 +255,7 @@ class Binary {
    * the wire; all command line arguments and environment variables will be
    * discarded.
    *
-   * @return {!promise.Promise<string>} A promise for this binary's wire
-   *     representation.
+   * @return {!Promise<string>} A promise for this binary's wire representation.
    */
   [Symbols.serialize]() {
     return this.locate();

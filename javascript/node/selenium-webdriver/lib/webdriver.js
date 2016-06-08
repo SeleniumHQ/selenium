@@ -92,8 +92,7 @@ class WebElementCondition extends Condition {
  * to the given `executor` for execution.
  * @param {!command.Executor} executor The executor to use.
  * @param {!command.Command} command The command to execute.
- * @return {!promise.Promise} A promise that will resolve with the
- *     command response.
+ * @return {!Promise} A promise that will resolve with the command response.
  */
 function executeCommand(executor, command) {
   return toWireValue(command.getParameters()).
@@ -119,14 +118,14 @@ function executeCommand(executor, command) {
  * </ol>
  *
  * @param {*} obj The object to convert.
- * @return {!promise.Promise<?>} A promise that will resolve to the
- *     input value's JSON representation.
+ * @return {!Promise<?>} A promise that will resolve to the input value's JSON
+ *     representation.
  */
 function toWireValue(obj) {
   if (promise.isPromise(obj)) {
-    return obj.then(toWireValue);
+    return Promise.resolve(obj).then(toWireValue);
   }
-  return promise.fulfilled(convertValue(obj));
+  return Promise.resolve(convertValue(obj));
 }
 
 
@@ -163,7 +162,7 @@ function convertKeys(obj) {
   const numKeys = isArray ? obj.length : Object.keys(obj).length;
   const ret = isArray ? new Array(numKeys) : {};
   if (!numKeys) {
-    return promise.fulfilled(ret);
+    return Promise.resolve(ret);
   }
 
   let numResolved = 0;
@@ -180,7 +179,7 @@ function convertKeys(obj) {
     }
   }
 
-  return new promise.Promise(function(done, reject) {
+  return new Promise(function(done, reject) {
     forEachKey(obj, function(value, key) {
       if (promise.isPromise(value)) {
         value.then(toWireValue).then(setValue, reject);
@@ -267,7 +266,7 @@ class WebDriver {
    */
   constructor(session, executor, opt_flow) {
     /** @private {!promise.Promise<!Session>} */
-    this.session_ = promise.fulfilled(session);;
+    this.session_ = promise.fulfilled(session);
 
     /** @private {!command.Executor} */
     this.executor_ = executor;
@@ -294,19 +293,16 @@ class WebDriver {
     let cmd = new command.Command(command.Name.DESCRIBE_SESSION)
         .setParameter('sessionId', sessionId);
     let session = flow.execute(
-        () => executeCommand(executor, cmd),
+        () => executeCommand(executor, cmd).catch(err => {
+          // The DESCRIBE_SESSION command is not supported by the W3C spec, so
+          // if we get back an unknown command, just return a session with
+          // unknown capabilities.
+          if (err instanceof error.UnknownCommandError) {
+            return new Session(sessionId, new Capabilities);
+          }
+          throw err;
+        }),
         'WebDriver.attachToSession()');
-
-    session = session.catch(err => {
-      // The DESCRIBE_SESSION command is not supported by the W3C spec, so if
-      // we get back an unknown command, just return a session with unknown
-      // capabilities.
-      if (err instanceof error.UnknownCommandError) {
-        return new Session(sessionId, new Capabilities);
-      }
-      throw err;
-    });
-
     return new WebDriver(session, executor, flow);
   }
 
@@ -1904,7 +1900,7 @@ class WebElement {
     // Coerce every argument to a string. This protects us from users that
     // ignore the jsdoc and give us a number (which ends up causing problems on
     // the server, which requires strings).
-    let keys = promise.all(Array.prototype.slice.call(arguments, 0)).
+    let keys = Promise.all(Array.prototype.slice.call(arguments, 0)).
         then(keys => {
           let ret = [];
           keys.forEach(key => {

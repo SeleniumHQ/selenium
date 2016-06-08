@@ -285,7 +285,7 @@ class ServiceBuilder {
       // (or can we?), force the DriverService to use "localhost".
       hostname: 'localhost',
       port: port,
-      args: promise.fulfilled(port).then(function(port) {
+      args: Promise.resolve(port).then(function(port) {
         return args.concat('--port=' + port);
       }),
       env: this.env_,

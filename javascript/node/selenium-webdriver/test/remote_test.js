@@ -37,10 +37,8 @@ describe('DriverService', function() {
       });
     });
 
-    afterEach(function(done) {
-      service.kill().thenFinally(function() {
-        done();
-      });
+    afterEach(function() {
+      return service.kill();
     });
 
     it('fails if child-process dies', function(done) {

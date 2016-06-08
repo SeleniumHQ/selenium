@@ -130,11 +130,11 @@ const WEBDRIVER_TO_PHANTOMJS_LEVEL = new Map([
 
 /**
  * Creates a command executor with support for PhantomJS' custom commands.
- * @param {!promise.Promise<string>} url The server's URL.
+ * @param {!Promise<string>} url The server's URL.
  * @return {!command.Executor} The new command executor.
  */
 function createExecutor(url) {
-  return new executors.DeferredExecutor(url.then(function(url) {
+  return new executors.DeferredExecutor(url.then(url => {
     var client = new http.HttpClient(url);
     var executor = new http.Executor(client);
 
@@ -211,7 +211,7 @@ class Driver extends webdriver.WebDriver {
     var service = new remote.DriverService(exe, {
       port: port,
       stdio: 'inherit',
-      args: promise.when(port, function(port) {
+      args: Promise.resolve(port).then(function(port) {
         args.push('--webdriver=' + port);
         return args;
       })
@@ -226,7 +226,8 @@ class Driver extends webdriver.WebDriver {
 
     /** @override */
     this.quit = function() {
-      return boundQuit().thenFinally(service.kill.bind(service));
+      let killService = () => service.kill();
+      return boundQuit().then(killService, killService);
     };
   }
 

@@ -27,7 +27,6 @@ const https = require('https');
 const url = require('url');
 
 const httpLib = require('../lib/http');
-const promise = require('../lib/promise');
 
 
 /**
@@ -110,7 +109,7 @@ class HttpClient {
     }
 
     var proxy = this.proxy_;
-    return new promise.Promise(function(fulfill, reject) {
+    return new Promise(function(fulfill, reject) {
       sendRequest(options, fulfill, reject, data, proxy);
     });
   }

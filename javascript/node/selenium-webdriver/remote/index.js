@@ -24,6 +24,7 @@ const AdmZip = require('adm-zip'),
     util = require('util');
 
 const httpUtil = require('../http/util'),
+    io = require('../io'),
     exec = require('../io/exec'),
     cmd = require('../lib/command'),
     input = require('../lib/input'),
@@ -61,7 +62,7 @@ ServiceOptions.prototype.hostname;
  * The port to start the server on (must be > 0). If the port is provided as a
  * promise, the service will wait for the promise to resolve before starting.
  *
- * @type {(number|!promise.Promise<number>)}
+ * @type {(number|!IThenable<number>)}
  */
 ServiceOptions.prototype.port;
 
@@ -69,7 +70,7 @@ ServiceOptions.prototype.port;
  * The arguments to pass to the service. If a promise is provided, the service
  * will wait for it to resolve before starting.
  *
- * @type {!(Array<string>|promise.Promise<!Array<string>>)}
+ * @type {!(Array<string>|IThenable<!Array<string>>)}
  */
 ServiceOptions.prototype.args;
 
@@ -123,11 +124,11 @@ class DriverService {
     /** @private {(string|undefined)} */
     this.hostname_ = options.hostname;
 
-    /** @private {(number|!promise.Promise<number>)} */
+    /** @private {(number|!IThenable<number>)} */
     this.port_ = options.port;
 
     /**
-     * @private {!(Array<string>|promise.Promise<!Array<string>>)}
+     * @private {!(Array<string>|IThenable<!Array<string>>)}
      */
     this.args_ = options.args;
 
@@ -145,7 +146,7 @@ class DriverService {
     /**
      * A promise for the managed subprocess, or null if the server has not been
      * started yet. This promise will never be rejected.
-     * @private {promise.Deferred<!exec.Command>}
+     * @private {Promise<!exec.Command>}
      */
     this.command_ = null;
 
@@ -153,19 +154,18 @@ class DriverService {
      * Promise that resolves to the server's address or null if the server has
      * not been started. This promise will be rejected if the server terminates
      * before it starts accepting WebDriver requests.
-     * @private {promise.Deferred<string>}
+     * @private {Promise<string>}
      */
     this.address_ = null;
   }
 
   /**
-   * @return {!promise.Promise<string>} A promise that resolves to
-   *    the server's address.
+   * @return {!Promise<string>} A promise that resolves to the server's address.
    * @throws {Error} If the server has not been started.
    */
   address() {
     if (this.address_) {
-      return this.address_.promise;
+      return this.address_;
     }
     throw Error('Server has not been started.');
   }
@@ -183,85 +183,87 @@ class DriverService {
    * Starts the server if it is not already running.
    * @param {number=} opt_timeoutMs How long to wait, in milliseconds, for the
    *     server to start accepting requests. Defaults to 30 seconds.
-   * @return {!promise.Promise<string>} A promise that will resolve
-   *     to the server's base URL when it has started accepting requests. If the
-   *     timeout expires before the server has started, the promise will be
-   *     rejected.
+   * @return {!Promise<string>} A promise that will resolve to the server's base
+   *     URL when it has started accepting requests. If the timeout expires
+   *     before the server has started, the promise will be rejected.
    */
   start(opt_timeoutMs) {
     if (this.address_) {
-      return this.address_.promise;
+      return this.address_;
     }
 
     var timeout = opt_timeoutMs || DriverService.DEFAULT_START_TIMEOUT_MS;
-
     var self = this;
-    this.command_ = promise.defer();
-    this.address_ = promise.defer();
-    this.address_.fulfill(promise.when(this.port_, function(port) {
-      if (port <= 0) {
-        throw Error('Port must be > 0: ' + port);
-      }
-      return promise.when(self.args_, function(args) {
-        var command = exec(self.executable_, {
-          args: args,
-          env: self.env_,
-          stdio: self.stdio_
-        });
 
-        self.command_.fulfill(command);
+    let resolveCommand;
+    this.command_ = new Promise(resolve => resolveCommand = resolve);
 
-        var earlyTermination = command.result().then(function(result) {
-          var error = result.code == null ?
-              Error('Server was killed with ' + result.signal) :
-              Error('Server terminated early with status ' + result.code);
-          self.address_.reject(error);
-          self.address_ = null;
-          self.command_ = null;
-          throw error;
-        });
-
-        var hostname = self.hostname_;
-        if (!hostname) {
-          hostname = !self.loopbackOnly_ && net.getAddress()
-              || net.getLoopbackAddress();
+    this.address_ = new Promise((resolveAddress, rejectAddress) => {
+      resolveAddress(Promise.resolve(this.port_).then(function(port) {
+        if (port <= 0) {
+          throw Error('Port must be > 0: ' + port);
         }
-
-        var serverUrl = url.format({
-          protocol: 'http',
-          hostname: hostname,
-          port: port,
-          pathname: self.path_
-        });
-
-        return new promise.Promise(function(fulfill, reject) {
-          var ready = httpUtil.waitForServer(serverUrl, timeout)
-              .then(fulfill, reject);
-          earlyTermination.catch(function(e) {
-            ready.cancel(/** @type {Error} */(e));
-            reject(Error(e.message));
+        return Promise.resolve(self.args_).then(function(args) {
+          var command = exec(self.executable_, {
+            args: args,
+            env: self.env_,
+            stdio: self.stdio_
           });
-        }).then(function() {
-          return serverUrl;
-        });
-      });
-    }));
 
-    return this.address_.promise;
+          resolveCommand(command);
+
+          var earlyTermination = command.result().then(function(result) {
+            var error = result.code == null ?
+                Error('Server was killed with ' + result.signal) :
+                Error('Server terminated early with status ' + result.code);
+            rejectAddress(error);
+            self.address_ = null;
+            self.command_ = null;
+            throw error;
+          });
+
+          var hostname = self.hostname_;
+          if (!hostname) {
+            hostname = !self.loopbackOnly_ && net.getAddress()
+                || net.getLoopbackAddress();
+          }
+
+          var serverUrl = url.format({
+            protocol: 'http',
+            hostname: hostname,
+            port: port + '',
+            pathname: self.path_
+          });
+
+          return new Promise(function(fulfill, reject) {
+            var ready = httpUtil.waitForServer(serverUrl, timeout)
+                .then(fulfill, reject);
+            earlyTermination.catch(function(e) {
+              ready.cancel(/** @type {Error} */(e));
+              reject(Error(e.message));
+            });
+          }).then(function() {
+            return serverUrl;
+          });
+        });
+      }));
+    });
+
+    return this.address_;
   }
 
   /**
    * Stops the service if it is not currently running. This function will kill
    * the server immediately. To synchronize with the active control flow, use
    * {@link #stop()}.
-   * @return {!promise.Promise} A promise that will be resolved when
-   *     the server has been stopped.
+   * @return {!Promise} A promise that will be resolved when the server has been
+   *     stopped.
    */
   kill() {
     if (!this.address_ || !this.command_) {
-      return promise.fulfilled();  // Not currently running.
+      return Promise.resolve(); // Not currently running.
     }
-    return this.command_.promise.then(function(command) {
+    return this.command_.then(function(command) {
       command.kill('SIGTERM');
     });
   }
@@ -310,14 +312,14 @@ class SeleniumServer extends DriverService {
       throw Error('Port must be >= 0: ' + options.port);
     }
 
-    var port = options.port || portprober.findFreePort();
-    var args = promise.when(options.jvmArgs || [], function(jvmArgs) {
-      return promise.when(options.args || [], function(args) {
-        return promise.when(port, function(port) {
-          return jvmArgs.concat(['-jar', jar, '-port', port]).concat(args);
+    let port = options.port || portprober.findFreePort();
+    let args = Promise.all([port, options.jvmArgs || [], options.args || []])
+        .then(resolved => {
+          let port = resolved[0];
+          let jvmArgs = resolved[1];
+          let args = resolved[2];
+          return jvmArgs.concat('-jar', jar, '-port', port).concat(args);
         });
-      });
-    });
 
     super('java', {
       loopback: options.loopback,
@@ -392,7 +394,7 @@ class FileDetector extends input.FileDetector {
    * @override
    */
   handleFile(driver, file) {
-    return promise.checkedNodeCall(fs.stat, file).then(function(stats) {
+    return io.stat(file).then(function(stats) {
       if (stats.isDirectory()) {
         return file;  // Not a valid file, return original input.
       }

@@ -151,11 +151,11 @@ const Command = {
 
 /**
  * Creates a command executor with support for ChromeDriver's custom commands.
- * @param {!promise.Promise<string>} url The server's URL.
+ * @param {!Promise<string>} url The server's URL.
  * @return {!command.Executor} The new command executor.
  */
 function createExecutor(url) {
-  return new executors.DeferredExecutor(url.then(function(url) {
+  return new executors.DeferredExecutor(url.then(url => {
     let client = new http.HttpClient(url);
     let executor = new http.Executor(client);
     executor.defineCommand(
@@ -321,7 +321,7 @@ class ServiceBuilder {
       loopback: true,
       path: this.path_,
       port: port,
-      args: promise.when(port, function(port) {
+      args: Promise.resolve(port).then(function(port) {
         return args.concat('--port=' + port);
       }),
       env: this.env_,
@@ -746,8 +746,8 @@ class Options {
         if (Buffer.isBuffer(extension)) {
           return extension.toString('base64');
         }
-        return promise.checkedNodeCall(
-            fs.readFile, extension, 'base64');
+        return io.read(/** @type {string} */(extension))
+            .then(buffer => buffer.toString('base64'));
       });
     }
     return json;

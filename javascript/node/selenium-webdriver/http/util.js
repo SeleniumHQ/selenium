@@ -34,7 +34,7 @@ const Executor = require('./index').Executor,
 /**
  * Queries a WebDriver server for its current status.
  * @param {string} url Base URL of the server to query.
- * @return {!promise.Promise.<!Object>} A promise that resolves with
+ * @return {!Promise<!Object>} A promise that resolves with
  *     a hash of the server status.
  */
 function getStatus(url) {
@@ -51,7 +51,7 @@ function getStatus(url) {
 /**
  * Queries a WebDriver server for its current status.
  * @param {string} url Base URL of the server to query.
- * @return {!promise.Promise.<!Object>} A promise that resolves with
+ * @return {!Promise<!Object>} A promise that resolves with
  *     a hash of the server status.
  */
 exports.getStatus = getStatus;
@@ -71,7 +71,7 @@ exports.waitForServer = function(url, timeout) {
   return ready.promise;
 
   function checkServerStatus() {
-    return getStatus(url).then(ready.fulfill, onError);
+    return getStatus(url).then(status => ready.fulfill(status), onError);
   }
 
   function onError(e) {

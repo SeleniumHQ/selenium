@@ -290,4 +290,35 @@ describe('io', function() {
       });
     });
   });
+
+  describe('read', function() {
+    var tmpDir;
+
+    before(function() {
+      return io.tmpDir().then(function(d) {
+        tmpDir = d;
+
+        fs.writeFileSync(path.join(d, 'foo'), 'Hello, world');
+      });
+    });
+
+    it('can read a file', function() {
+      return io.read(path.join(tmpDir, 'foo')).then(buff => {
+        assert.ok(buff instanceof Buffer);
+        assert.equal('Hello, world', buff.toString());
+      });
+    });
+
+    it('catches errors from invalid input', function() {
+      return io.read(1234)
+          .then(() => assert.fail('should have failed'),
+                (e) => assert.ok(e instanceof TypeError));
+    });
+
+    it('rejects returned promise if file does not exist', function() {
+      return io.read(path.join(tmpDir, 'not-there'))
+          .then(() => assert.fail('should have failed'),
+                (e) => assert.equal('ENOENT', e.code));
+    });
+  });
 });

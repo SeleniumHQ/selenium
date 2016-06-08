@@ -217,7 +217,7 @@ class ServiceBuilder {
     return new remote.DriverService(this.exe_, {
       loopback: true,
       port: port,
-      args: promise.when(port, function(port) {
+      args: Promise.resolve(port).then(function(port) {
         return args.concat('--port=' + port);
       }),
       env: this.env_,
@@ -410,8 +410,8 @@ class Options {
         if (Buffer.isBuffer(extension)) {
           return extension.toString('base64');
         }
-        return promise.checkedNodeCall(
-            fs.readFile, extension, 'base64');
+        return io.read(/** @type {string} */(extension))
+            .then(buffer => buffer.toString('base64'));
       })
     };
     if (this.binary_) {

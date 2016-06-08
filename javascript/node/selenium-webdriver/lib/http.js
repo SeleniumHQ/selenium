@@ -28,7 +28,6 @@
 const cmd = require('./command');
 const error = require('./error');
 const logging = require('./logging');
-const promise = require('./promise');
 const Session = require('./session').Session;
 const WebElement = require('./webdriver').WebElement;
 
@@ -216,8 +215,8 @@ class Client {
    * final response.
    *
    * @param {!Request} httpRequest The request to send.
-   * @return {!promise.Promise<Response>} A promise that will be fulfilled
-   *     with the server's response.
+   * @return {!Promise<Response>} A promise that will be fulfilled with the
+   *     server's response.
    */
   send(httpRequest) {}
 }
