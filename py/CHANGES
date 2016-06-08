@@ -1,3 +1,14 @@
+Selenium 2.53.3
+ * Use the correct binary path when using Marionette
+ * Fixed: Unhelpful error message when PhantomJS exits. (#2173 #2168)
+ * Fix broken link to python documentation (#2159)
+ * Attempt to remove Firefox profile when using Marionette
+ * Ensure all capabilities are either within desiredCapabilities or requiredCapabilities
+ * Correct the expected capability name for the Firefox profile
+ * Add Firefox options to capabilities
+ * Visibility_of_all implies it only returns elements if all visible (#2052)
+ * Find visible elements (#2041)
+
 Selenium 2.53.2
 * Fix send keys when using PUA keys e.g. Keys.RIGHT #1839
 * Fix cookie file leak in PhantomJS #1854
