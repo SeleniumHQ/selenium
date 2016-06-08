@@ -23,7 +23,7 @@ module Selenium::WebDriver::DriverExtensions
 
   describe HasWebStorage do
 
-    compliant_on :browser => [:chrome, :marionette] do
+    compliant_on browser: [:chrome, :marionette] do
       shared_examples_for 'web storage' do
         before {
           driver.navigate.to url_for("clicks.html")

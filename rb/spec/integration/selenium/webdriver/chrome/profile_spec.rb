@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     module Chrome
 
-      compliant_on :browser => :chrome do
+      compliant_on browser: :chrome do
         describe Profile do
           let(:profile) { Profile.new }
 
@@ -66,10 +66,8 @@ module Selenium
             expect(profile).to receive(:layout_on_disk).and_return "ignored"
             expect(Zipper).to receive(:zip).and_return "ignored"
 
-            expect(profile.as_json()).to eq({
-              'zip' => "ignored",
-              'extensions' => [Base64.strict_encode64("test")]
-            })
+            expect(profile.as_json()).to eq('zip' => "ignored",
+                                            'extensions' => [Base64.strict_encode64("test")])
           end
 
           it "raises an error if the extension doesn't exist" do

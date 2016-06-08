@@ -47,7 +47,7 @@ module Selenium
         expect(new_size.height).to eq(target_height)
       end
 
-      not_compliant_on :browser => :marionette do
+      not_compliant_on browser: :marionette do
         it "gets the position of the current window" do
           pos = driver.manage.window.position
 
@@ -58,7 +58,7 @@ module Selenium
         end
       end
 
-      not_compliant_on :browser => [:phantomjs, :marionette, :safari] do
+      not_compliant_on browser: [:phantomjs, :marionette, :safari] do
         it "sets the position of the current window" do
           pos = window.position
 
@@ -76,7 +76,7 @@ module Selenium
       end
 
       # TODO - Create Window Manager guard
-      not_compliant_on :platform => :linux do
+      not_compliant_on platform: :linux do
         it "can maximize the current window" do
           window.size = old_size = Dimension.new(200, 200)
 
@@ -90,9 +90,9 @@ module Selenium
         end
       end
 
-      compliant_on :browser => [:marionette, :edge] do
+      compliant_on browser: [:marionette, :edge] do
         # Edge: Not Yet - https://dev.windows.com/en-us/microsoft-edge/platform/status/webdriver/details/
-        not_compliant_on :browser => [:marionette, :edge] do
+        not_compliant_on browser: [:marionette, :edge] do
           it "can make window full screen" do
             window.maximize
             old_size = window.size

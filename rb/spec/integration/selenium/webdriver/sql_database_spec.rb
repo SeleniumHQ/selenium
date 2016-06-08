@@ -28,10 +28,10 @@ describe "Driver" do
 
     before do
       driver.get url_for("html5Page.html")
-      wait.until { driver.find_element(:id => "db_completed") }
+      wait.until { driver.find_element(id: "db_completed") }
     end
 
-    compliant_on :browser => nil do
+    compliant_on browser: nil do
       it "includes inserted rows in the result set" do
         driver.execute_sql insert, "DocFoo"
         driver.execute_sql insert, "DocFooBar"

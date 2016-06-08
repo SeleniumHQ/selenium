@@ -33,8 +33,8 @@ module Selenium
           warn 'The Android driver is deprecated - please use either http://selendroid.io or http://appium.io instead.'
 
           remote_opts = {
-            :url                  => opts.fetch(:url, DEFAULT_URL),
-            :desired_capabilities => opts.fetch(:desired_capabilities, capabilities),
+            url: opts.fetch(:url, DEFAULT_URL),
+            desired_capabilities: opts.fetch(:desired_capabilities, capabilities),
           }
 
           remote_opts[:http_client] = opts[:http_client] if opts.has_key?(:http_client)

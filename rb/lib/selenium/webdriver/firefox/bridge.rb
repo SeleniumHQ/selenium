@@ -45,11 +45,11 @@ module Selenium
           caps.proxy = proxy if proxy
 
           remote_opts = {
-            :url                  => @launcher.url,
-            :desired_capabilities => caps
+            url: @launcher.url,
+            desired_capabilities: caps
           }
 
-          remote_opts.merge!(:http_client => http_client) if http_client
+          remote_opts.merge!(http_client: http_client) if http_client
 
           begin
             super(remote_opts)

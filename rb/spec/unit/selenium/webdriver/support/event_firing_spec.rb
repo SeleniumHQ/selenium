@@ -24,7 +24,7 @@ module Selenium
     module Support
 
       describe EventFiringBridge do
-        let(:bridge) { double(Remote::Bridge, :driver_extensions => []) }
+        let(:bridge) { double(Remote::Bridge, driver_extensions: []) }
         let(:listener) { double("EventListener") }
         let(:event_firing_bridge) { EventFiringBridge.new(bridge, listener) }
         let(:driver) { Driver.new(event_firing_bridge) }
@@ -64,7 +64,7 @@ module Selenium
             expect(bridge).to receive(:find_element_by).with('id', "foo", nil).and_return(element)
             expect(listener).to receive(:after_find).with('id', "foo", instance_of(Driver))
 
-            driver.find_element(:id => "foo")
+            driver.find_element(id: "foo")
           end
 
           it "fires events for find_elements" do
@@ -72,7 +72,7 @@ module Selenium
             expect(bridge).to receive(:find_elements_by).with('class name', "foo", nil).and_return([element])
             expect(listener).to receive(:after_find).with('class name', "foo", instance_of(Driver))
 
-            driver.find_elements(:class => "foo")
+            driver.find_elements(class: "foo")
           end
         end
 

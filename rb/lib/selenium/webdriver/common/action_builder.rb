@@ -46,8 +46,8 @@ module Selenium
 
       def initialize(mouse, keyboard)
         @devices    = {
-          :mouse    => mouse,
-          :keyboard => keyboard
+          mouse: mouse,
+          keyboard: keyboard
         }
 
         @actions  = []

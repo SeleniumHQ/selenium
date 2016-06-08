@@ -25,10 +25,10 @@ module Selenium
     module IE
 
       describe Bridge do
-        let(:resp)    { {"sessionId" => "foo", "value" => @default_capabilities.as_json }}
-        let(:service) { double(Service, :start => nil, :uri => "http://example.com") }
+        let(:resp)    { {"sessionId" => "foo", "value" => @default_capabilities.as_json}}
+        let(:service) { double(Service, start: nil, uri: "http://example.com") }
         let(:caps)    { {} }
-        let(:http)    { double(Remote::Http::Default, :call => resp).as_null_object   }
+        let(:http)    { double(Remote::Http::Default, call: resp).as_null_object   }
 
         before do
           @default_capabilities = Remote::Capabilities.internet_explorer
@@ -39,28 +39,28 @@ module Selenium
         end
 
         it "raises ArgumentError if passed invalid options" do
-          expect { Bridge.new(:foo => 'bar') }.to raise_error(ArgumentError)
+          expect { Bridge.new(foo: 'bar') }.to raise_error(ArgumentError)
         end
 
         it "accepts the :introduce_flakiness_by_ignoring_security_domains option" do
           Bridge.new(
-            :introduce_flakiness_by_ignoring_security_domains => true,
-            :http_client => http
+            introduce_flakiness_by_ignoring_security_domains: true,
+            http_client: http
           )
 
           expect(caps['ignoreProtectedModeSettings']).to be true
         end
 
         it "has native events enabled by default" do
-          Bridge.new(:http_client => http)
+          Bridge.new(http_client: http)
 
           expect(caps['nativeEvents']).to be true
         end
 
         it "can disable native events" do
           Bridge.new(
-            :native_events => false,
-            :http_client => http
+            native_events: false,
+            http_client: http
           )
 
           expect(caps['nativeEvents']).to be false
@@ -70,9 +70,9 @@ module Selenium
           expect(Service).to receive(:new).with(IE.driver_path, Service::DEFAULT_PORT, "--log-level=TRACE", "--log-file=/foo/bar")
 
           Bridge.new(
-            :log_level   => :trace,
-            :log_file    => '/foo/bar',
-            :http_client => http
+            log_level: :trace,
+            log_file: '/foo/bar',
+            http_client: http
           )
         end
 
@@ -80,8 +80,8 @@ module Selenium
           expect(Service).to receive(:new).with(IE.driver_path, Service::DEFAULT_PORT, "--implementation=VENDOR")
 
           Bridge.new(
-            :implementation => :vendor,
-            :http_client    => http
+            implementation: :vendor,
+            http_client: http
           )
         end
 
@@ -94,7 +94,7 @@ module Selenium
             resp
           end
 
-          Bridge.new(:http_client => http, :desired_capabilities => custom_caps)
+          Bridge.new(http_client: http, desired_capabilities: custom_caps)
         end
 
         it 'can override desired capabilities through direct arguments' do
@@ -107,9 +107,9 @@ module Selenium
           end
 
           Bridge.new(
-            :http_client => http,
-            :desired_capabilities => custom_caps,
-            :introduce_flakiness_by_ignoring_security_domains => true
+            http_client: http,
+            desired_capabilities: custom_caps,
+            introduce_flakiness_by_ignoring_security_domains: true
           )
         end
       end

@@ -27,9 +27,9 @@ describe "Selenium::WebDriver::TargetLocator" do
   let(:new_window) { driver.window_handles.find { |handle| handle != driver.window_handle } }
 
   # https://github.com/mozilla/geckodriver/issues/52
-  not_compliant_on :browser => :marionette do
+  not_compliant_on browser: :marionette do
     # https://github.com/SeleniumHQ/selenium/issues/1795
-    not_compliant_on :driver => :remote, :browser => [:edge, :marionette] do
+    not_compliant_on driver: :remote, browser: [:edge, :marionette] do
       it "should find the active element" do
         driver.navigate.to url_for("xhtmlTest.html")
         expect(driver.switch_to.active_element).to be_an_instance_of(WebDriver::Element)
@@ -47,22 +47,22 @@ describe "Selenium::WebDriver::TargetLocator" do
   it "should switch to a frame by Element" do
     driver.navigate.to url_for("iframes.html")
 
-    iframe = driver.find_element(:tag_name => "iframe")
+    iframe = driver.find_element(tag_name: "iframe")
     driver.switch_to.frame(iframe)
 
     expect(driver.find_element(:name, 'login')).to be_kind_of(WebDriver::Element)
   end
 
-  not_compliant_on :browser => [:safari, :phantomjs] do
+  not_compliant_on browser: [:safari, :phantomjs] do
     it "should switch to parent frame" do
       # For some reason Marionette loses control of itself here unless reset. Unable to isolate
-      compliant_on :driver => :marionette do
+      compliant_on driver: :marionette do
         reset_driver!
       end
 
       driver.navigate.to url_for("iframes.html")
 
-      iframe = driver.find_element(:tag_name => "iframe")
+      iframe = driver.find_element(tag_name: "iframe")
       driver.switch_to.frame(iframe)
 
       expect(driver.find_element(:name, 'login')).to be_kind_of(WebDriver::Element)
@@ -73,7 +73,7 @@ describe "Selenium::WebDriver::TargetLocator" do
   end
 
     # Safari Note - Ensure Popup Blocker turned off to prevent failures
-  not_compliant_on :browser => :iphone do
+  not_compliant_on browser: :iphone do
     it "should switch to a window and back when given a block" do
       driver.navigate.to url_for("xhtmlTest.html")
 
@@ -130,12 +130,12 @@ describe "Selenium::WebDriver::TargetLocator" do
     end
 
     # Marionette BUG: Automatically switches browsing context to new window when it opens.
-    not_compliant_on :browser => [:marionette, :ie] do
+    not_compliant_on browser: [:marionette, :ie] do
       context "with more than two windows" do
 
         it "should close current window when more than two windows exist" do
           driver.navigate.to url_for("xhtmlTest.html")
-          wait_for_element(:link => "Create a new anonymous window")
+          wait_for_element(link: "Create a new anonymous window")
           driver.find_element(:link, "Create a new anonymous window").click
           wait.until { driver.window_handles.size == 2 }
           driver.find_element(:link, "Open new window").click
@@ -147,7 +147,7 @@ describe "Selenium::WebDriver::TargetLocator" do
 
         it "should close another window when more than two windows exist" do
           driver.navigate.to url_for("xhtmlTest.html")
-          wait_for_element(:link => "Create a new anonymous window")
+          wait_for_element(link: "Create a new anonymous window")
           driver.find_element(:link, "Create a new anonymous window").click
           wait.until { driver.window_handles.size == 2 }
           driver.find_element(:link, "Open new window").click
@@ -161,7 +161,7 @@ describe "Selenium::WebDriver::TargetLocator" do
 
         it "should iterate over open windows when current window is not closed" do
           driver.navigate.to url_for("xhtmlTest.html")
-          wait_for_element(:link => "Create a new anonymous window")
+          wait_for_element(link: "Create a new anonymous window")
           driver.find_element(:link, "Create a new anonymous window").click
           wait.until { driver.window_handles.size == 2 }
           driver.find_element(:link, "Open new window").click
@@ -177,7 +177,7 @@ describe "Selenium::WebDriver::TargetLocator" do
 
         it "should iterate over open windows when current window is closed" do
           driver.navigate.to url_for("xhtmlTest.html")
-          wait_for_element(:link => "Create a new anonymous window")
+          wait_for_element(link: "Create a new anonymous window")
           driver.find_element(:link, "Create a new anonymous window").click
           wait.until { driver.window_handles.size == 2 }
           driver.find_element(:link, "Open new window").click
@@ -213,24 +213,24 @@ describe "Selenium::WebDriver::TargetLocator" do
     end
   end
 
-  not_compliant_on :browser => [:android, :iphone, :safari] do
+  not_compliant_on browser: [:android, :iphone, :safari] do
     it "should switch to default content" do
       driver.navigate.to url_for("iframes.html")
 
       driver.switch_to.frame 0
       driver.switch_to.default_content
 
-      driver.find_element(:id => "iframe_page_heading")
+      driver.find_element(id: "iframe_page_heading")
     end
   end
 
   # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1850030
-  not_compliant_on :browser => [:iphone, :safari, :phantomjs] do
+  not_compliant_on browser: [:iphone, :safari, :phantomjs] do
     describe "alerts" do
 
       it "allows the user to accept an alert" do
         driver.navigate.to url_for("alerts.html")
-        driver.find_element(:id => "alert").click
+        driver.find_element(id: "alert").click
 
         alert = wait_for_alert
         alert.accept
@@ -239,10 +239,10 @@ describe "Selenium::WebDriver::TargetLocator" do
         expect(driver.title).to eq("Testing Alerts")
       end
 
-      not_compliant_on :browser => :chrome, :platform => :macosx do
+      not_compliant_on browser: :chrome, platform: :macosx do
         it "allows the user to dismiss an alert" do
           driver.navigate.to url_for("alerts.html")
-          driver.find_element(:id => "alert").click
+          driver.find_element(id: "alert").click
 
           alert = wait_for_alert
           alert.dismiss
@@ -257,23 +257,23 @@ describe "Selenium::WebDriver::TargetLocator" do
       # InvalidArgumentError: 'message' not a string
       # When trying a string, error: keysToSend.join is not a function
       # Edge Under Consideration - https://dev.windows.com/en-us/microsoft-edge/platform/status/webdriver/details/
-      not_compliant_on :browser => [:marionette, :edge] do
+      not_compliant_on browser: [:marionette, :edge] do
         it "allows the user to set the value of a prompt" do
           driver.navigate.to url_for("alerts.html")
-          driver.find_element(:id => "prompt").click
+          driver.find_element(id: "prompt").click
 
           alert = wait_for_alert
           alert.send_keys "cheese"
           alert.accept
 
-          text = driver.find_element(:id => "text").text
+          text = driver.find_element(id: "text").text
           expect(text).to eq("cheese")
         end
       end
 
       it "allows the user to get the text of an alert" do
         driver.navigate.to url_for("alerts.html")
-        driver.find_element(:id => "alert").click
+        driver.find_element(id: "alert").click
 
         alert = wait_for_alert
         text = alert.text
@@ -284,9 +284,9 @@ describe "Selenium::WebDriver::TargetLocator" do
 
       it "raises when calling #text on a closed alert" do
         driver.navigate.to url_for("alerts.html")
-        wait_for_element(:id => "alert")
+        wait_for_element(id: "alert")
 
-        driver.find_element(:id => "alert").click
+        driver.find_element(id: "alert").click
 
         alert = wait_for_alert
         alert.accept
@@ -295,25 +295,25 @@ describe "Selenium::WebDriver::TargetLocator" do
         expect { alert.text }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError)
       end
 
-      not_compliant_on :browser => :ie do
+      not_compliant_on browser: :ie do
         it "raises NoAlertOpenError if no alert is present" do
           expect { driver.switch_to.alert }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError, /alert|modal/i)
         end
       end
 
-      not_compliant_on :browser => :marionette do
+      not_compliant_on browser: :marionette do
         it "raises an UnhandledAlertError if an alert has not been dealt with" do
           driver.navigate.to url_for("alerts.html")
-          driver.find_element(:id => "alert").click
+          driver.find_element(id: "alert").click
           wait_for_alert
 
           expect { driver.title }.to raise_error(Selenium::WebDriver::Error::UnhandledAlertError)
 
-          not_compliant_on :browser => [:firefox, :ie] do
+          not_compliant_on browser: [:firefox, :ie] do
             driver.switch_to.alert.accept
           end
 
-          compliant_on :browser => :firefox do
+          compliant_on browser: :firefox do
             reset_driver!
           end
         end
@@ -321,7 +321,7 @@ describe "Selenium::WebDriver::TargetLocator" do
     end
   end
 
-  compliant_on :browser => :ie do
+  compliant_on browser: :ie do
     describe "basic auth alerts" do
 
       after { reset_driver! }
@@ -337,7 +337,7 @@ describe "Selenium::WebDriver::TargetLocator" do
         driver.navigate.to url_for("basicAuth")
         driver.switch_to.alert.authenticate("invalid", "invalid")
 
-        wait = Selenium::WebDriver::Wait.new(:timeout => 5, :ignore => Selenium::WebDriver::Error::NoSuchAlertError)
+        wait = Selenium::WebDriver::Wait.new(timeout: 5, ignore: Selenium::WebDriver::Error::NoSuchAlertError)
         wait.until { driver.switch_to.alert }
 
         expect { driver.switch_to.alert.dismiss }.to_not raise_error

@@ -27,16 +27,16 @@ module Selenium
       class Capabilities
 
         DEFAULTS = {
-          :browser_name          => "",
-          :version               => "",
-          :platform              => :any,
-          :javascript_enabled    => false,
-          :css_selectors_enabled => false,
-          :takes_screenshot      => false,
-          :native_events         => false,
-          :rotatable             => false,
-          :firefox_profile       => nil,
-          :proxy                 => nil
+          browser_name: "",
+          version: "",
+          platform: :any,
+          javascript_enabled: false,
+          css_selectors_enabled: false,
+          takes_screenshot: false,
+          native_events: false,
+          rotatable: false,
+          firefox_profile: nil,
+          proxy: nil
         }
 
         DEFAULTS.each_key do |key|
@@ -62,22 +62,22 @@ module Selenium
         class << self
           def android(opts = {})
             new({
-              :browser_name       => "android",
-              :platform           => :android,
-              :javascript_enabled => true,
-              :rotatable          => true,
-              :takes_screenshot   => true
+              browser_name: "android",
+              platform: :android,
+              javascript_enabled: true,
+              rotatable: true,
+              takes_screenshot: true
             }.merge(opts))
           end
 
           def chrome(opts = {})
             new({
-              :browser_name          => "chrome",
-              :javascript_enabled    => true,
-              :css_selectors_enabled => true,
-              :loggingPrefs => {:browser => "ALL",
-                                :driver => "ALL"}
-                }.merge(opts))
+              browser_name: "chrome",
+              javascript_enabled: true,
+              css_selectors_enabled: true,
+              loggingPrefs: {browser: "ALL",
+                             driver: "ALL"}
+            }.merge(opts))
           end
 
           def edge(opts = {})
@@ -88,69 +88,69 @@ module Selenium
             return W3CCapabilities.firefox(opts) if opts[:marionette]
 
             new({
-              :browser_name          => "firefox",
-              :javascript_enabled    => true,
-              :takes_screenshot      => true,
-              :css_selectors_enabled => true
+              browser_name: "firefox",
+              javascript_enabled: true,
+              takes_screenshot: true,
+              css_selectors_enabled: true
             }.merge(opts))
           end
 
           def htmlunit(opts = {})
             new({
-              :browser_name => "htmlunit"
+              browser_name: "htmlunit"
             }.merge(opts))
           end
 
           def htmlunitwithjs(opts = {})
             new({
-              :browser_name => "htmlunit",
-              :javascript_enabled => true
+              browser_name: "htmlunit",
+              javascript_enabled: true
             }.merge(opts))
           end
 
           def internet_explorer(opts = {})
             new({
-              :browser_name          => "internet explorer",
-              :platform              => :windows,
-              :takes_screenshot      => true,
-              :css_selectors_enabled => true,
-              :native_events         => true
+              browser_name: "internet explorer",
+              platform: :windows,
+              takes_screenshot: true,
+              css_selectors_enabled: true,
+              native_events: true
             }.merge(opts))
           end
           alias_method :ie, :internet_explorer
 
           def iphone(opts = {})
             new({
-              :browser_name       => "iPhone",
-              :platform           => :mac,
-              :javascript_enabled => true
+              browser_name: "iPhone",
+              platform: :mac,
+              javascript_enabled: true
             }.merge(opts))
           end
 
           def ipad(opts = {})
             new({
-              :browser_name       => "iPad",
-              :platform           => :mac,
-              :javascript_enabled => true
+              browser_name: "iPad",
+              platform: :mac,
+              javascript_enabled: true
             }.merge(opts))
           end
 
           def phantomjs(opts = {})
             new({
-              :browser_name          => "phantomjs",
-              :javascript_enabled    => true,
-              :takes_screenshot      => true,
-              :css_selectors_enabled => true
+              browser_name: "phantomjs",
+              javascript_enabled: true,
+              takes_screenshot: true,
+              css_selectors_enabled: true
             }.merge(opts))
           end
 
           def safari(opts = {})
             new({
-              :browser_name          => "safari",
-              :platform              => :mac,
-              :javascript_enabled    => true,
-              :takes_screenshot      => true,
-              :css_selectors_enabled => true
+              browser_name: "safari",
+              platform: :mac,
+              javascript_enabled: true,
+              takes_screenshot: true,
+              css_selectors_enabled: true
             }.merge(opts))
           end
 

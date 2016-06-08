@@ -24,32 +24,32 @@ module Selenium
     describe Proxy do
       let :proxy_settings do # manual proxy settings
         {
-          :ftp            => "mythicalftpproxy:21",
-          :http           => "mythicalproxy:80",
-          :no_proxy       => "noproxy",
-          :ssl            => "mythicalsslproxy",
-          :socks          => "mythicalsocksproxy:65555",
-          :socks_username => "test",
-          :socks_password => "test",
+          ftp: "mythicalftpproxy:21",
+          http: "mythicalproxy:80",
+          no_proxy: "noproxy",
+          ssl: "mythicalsslproxy",
+          socks: "mythicalsocksproxy:65555",
+          socks_username: "test",
+          socks_password: "test",
         }
       end
 
       let :pac_proxy_settings do
         {
-          :pac         => "http://example.com/foo.pac",
+          pac: "http://example.com/foo.pac",
         }
       end
 
       it "raises ArgumentError if passed invalid options" do
-        expect { Proxy.new(:invalid_options => 'invalid') }.to raise_error(ArgumentError)
+        expect { Proxy.new(invalid_options: 'invalid') }.to raise_error(ArgumentError)
       end
 
       it "raises ArgumentError if passed an invalid proxy type" do
-        expect { Proxy.new(:type => :invalid) }.to raise_error(ArgumentError)
+        expect { Proxy.new(type: :invalid) }.to raise_error(ArgumentError)
       end
 
       it "raises ArgumentError if the proxy type is changed" do
-        proxy = Proxy.new(:type => :direct)
+        proxy = Proxy.new(type: :direct)
         expect { proxy.type = :system }.to raise_error(ArgumentError)
       end
 
@@ -86,14 +86,14 @@ module Selenium
       end
 
       it "should configure an auto-detected proxy" do
-        proxy_json = Proxy.new(:auto_detect => true).as_json
+        proxy_json = Proxy.new(auto_detect: true).as_json
 
         expect(proxy_json['proxyType']).to eq("AUTODETECT")
         expect(proxy_json['autodetect']).to be true
       end
 
       it "should only add settings that are not nil" do
-        settings = {:type => :manual, :http => "http proxy"}
+        settings = {type: :manual, http: "http proxy"}
 
         proxy = Proxy.new(settings)
         proxy_json = proxy.as_json

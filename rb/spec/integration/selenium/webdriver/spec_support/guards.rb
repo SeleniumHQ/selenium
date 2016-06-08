@@ -26,7 +26,7 @@ module Selenium
           def print_env
             puts "\nRunning Ruby specs:\n\n"
 
-            env = current_env.merge(:ruby => defined?(RUBY_DESCRIPTION) ? RUBY_DESCRIPTION : "ruby-#{RUBY_VERSION}")
+            env = current_env.merge(ruby: defined?(RUBY_DESCRIPTION) ? RUBY_DESCRIPTION : "ruby-#{RUBY_VERSION}")
 
             just = current_env.keys.map { |e| e.to_s.size }.max
             env.each do |key, value|
@@ -72,12 +72,12 @@ module Selenium
 
           def current_env
             {
-              :browser        => GlobalTestEnv.browser,
-              :driver         => GlobalTestEnv.driver,
-              :platform       => Platform.os,
-              :native         => GlobalTestEnv.native_events?,
-              :window_manager => !!ENV['DESKTOP_SESSION'],
-              :ci             => Platform.ci
+              browser: GlobalTestEnv.browser,
+              driver: GlobalTestEnv.driver,
+              platform: Platform.os,
+              native: GlobalTestEnv.native_events?,
+              window_manager: !!ENV['DESKTOP_SESSION'],
+              ci: Platform.ci
             }
           end
 
@@ -112,12 +112,12 @@ module Selenium
         end
 
         def not_compliant_on(*opts, &blk)
-          Guards.record(:not_compliant, opts, :file => caller.first)
+          Guards.record(:not_compliant, opts, file: caller.first)
           yield if GlobalTestEnv.unguarded? || !Guards.env_matches?(opts)
         end
 
         def compliant_on(*opts, &blk)
-          Guards.record(:compliant_on, opts, :file => caller.first)
+          Guards.record(:compliant_on, opts, file: caller.first)
           yield if GlobalTestEnv.unguarded? || Guards.env_matches?(opts)
         end
 

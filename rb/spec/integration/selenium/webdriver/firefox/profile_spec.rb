@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     module Firefox
 
-      compliant_on :driver => :firefox do
+      compliant_on driver: :firefox do
         describe Profile do
           let(:profile) { Profile.new }
 
@@ -105,10 +105,10 @@ module Selenium
 
           it "can configure a manual proxy" do
             proxy = Proxy.new(
-              :http     => "foo:123",
-              :ftp      => "bar:234",
-              :ssl      => "baz:345",
-              :no_proxy => "localhost"
+              http: "foo:123",
+              ftp: "bar:234",
+              ssl: "baz:345",
+              no_proxy: "localhost"
             )
 
             profile.proxy = proxy
@@ -128,7 +128,7 @@ module Selenium
           end
 
           it "can configure a PAC proxy" do
-            profile.proxy = Proxy.new(:pac => "http://foo/bar.pac")
+            profile.proxy = Proxy.new(pac: "http://foo/bar.pac")
             string = read_generated_prefs
 
             expect(string).to include('user_pref("network.proxy.autoconfig_url", "http://foo/bar.pac")')
@@ -136,7 +136,7 @@ module Selenium
           end
 
           it "can configure an auto-detected proxy" do
-            profile.proxy = Proxy.new(:auto_detect => true)
+            profile.proxy = Proxy.new(auto_detect: true)
             string = read_generated_prefs
 
             expect(string).to include('user_pref("network.proxy.type", 4)')
@@ -146,8 +146,8 @@ module Selenium
             profile['browser.startup.homepage'] = url_for("formPage.html")
 
             begin
-              driver_one = WebDriver.for(:firefox, :profile => profile)
-              driver_two = WebDriver.for(:firefox, :profile => profile)
+              driver_one = WebDriver.for(:firefox, profile: profile)
+              driver_two = WebDriver.for(:firefox, profile: profile)
             ensure
               driver_one.quit if driver_one
               driver_two.quit if driver_two

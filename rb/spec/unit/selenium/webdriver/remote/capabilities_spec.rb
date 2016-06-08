@@ -87,18 +87,18 @@ module Selenium
 
         it "should set the given proxy" do
           proxy = Proxy.new
-          capabilities = Capabilities.new(:proxy => proxy)
+          capabilities = Capabilities.new(proxy: proxy)
 
           expect(capabilities.proxy).to eq(proxy)
         end
 
         it "should accept a Hash" do
-          capabilities = Capabilities.new(:proxy => {:http => "foo:123"})
+          capabilities = Capabilities.new(proxy: {http: "foo:123"})
           expect(capabilities.proxy.http).to eq("foo:123")
         end
 
         it "should return a hash of the json properties to serialize" do
-          capabilities_hash = Capabilities.new(:proxy => {:http => "some value"}).as_json
+          capabilities_hash = Capabilities.new(proxy: {http: "some value"}).as_json
           proxy_hash = capabilities_hash["proxy"]
 
           expect(capabilities_hash["proxy"]).to be_kind_of(Hash)
@@ -120,12 +120,12 @@ module Selenium
         end
 
         it "can be serialized and deserialized to JSON" do
-          caps = Capabilities.new(:browser_name => "firefox", :custom_capability => true)
+          caps = Capabilities.new(browser_name: "firefox", custom_capability: true)
           expect(caps).to eq(Capabilities.json_create(caps.as_json))
         end
 
         it 'does not camel case the :firefox_binary capability' do
-          expect(Capabilities.new(:firefox_binary => "/foo/bar").as_json).to include('firefox_binary')
+          expect(Capabilities.new(firefox_binary: "/foo/bar").as_json).to include('firefox_binary')
         end
       end
     end

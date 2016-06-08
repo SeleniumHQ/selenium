@@ -45,7 +45,7 @@ RSpec.configure do |c|
     GlobalTestEnv.quit_driver
   end
 
-  c.filter_run :focus => true if ENV['focus']
+  c.filter_run focus: true if ENV['focus']
 end
 
 WebDriver::Platform.exit_hook { GlobalTestEnv.quit }

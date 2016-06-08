@@ -20,7 +20,7 @@
 module Selenium
   module WebDriver
     class TouchScreen
-      FLICK_SPEED = { :normal => 0, :fast => 1}
+      FLICK_SPEED = {normal: 0, fast: 1}
 
 
       #

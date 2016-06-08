@@ -43,11 +43,11 @@ module Selenium
           caps = create_capabilities(opts)
 
           remote_opts = {
-            :url                  => url,
-            :desired_capabilities => caps
+            url: url,
+            desired_capabilities: caps
           }
 
-          remote_opts.merge!(:http_client => http_client) if http_client
+          remote_opts.merge!(http_client: http_client) if http_client
           super(remote_opts)
         end
 

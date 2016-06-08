@@ -65,7 +65,7 @@ module Selenium
             expect(payload[:command][:parameters][:desiredCapabilities]['safari.options']['cleanSession']).to eq(true)
           end
 
-          Bridge.new(:clean_session => true)
+          Bridge.new(clean_session: true)
         end
 
       end

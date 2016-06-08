@@ -32,8 +32,8 @@ module Selenium
           warn 'The iPhone driver is deprecated - please use either http://appium.io/ or http://ios-driver.github.io/ios-driver/ instead'
 
           remote_opts = {
-            :url                  => opts.fetch(:url, DEFAULT_URL),
-            :desired_capabilities => opts.fetch(:desired_capabilities, capabilities),
+            url: opts.fetch(:url, DEFAULT_URL),
+            desired_capabilities: opts.fetch(:desired_capabilities, capabilities),
           }
 
           remote_opts[:http_client] = opts[:http_client] if opts.has_key?(:http_client)

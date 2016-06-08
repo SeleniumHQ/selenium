@@ -23,16 +23,16 @@ module Selenium
 
       # @api private
       FINDERS = {
-        :class             => 'class name',
-        :class_name        => 'class name',
-        :css               => 'css selector',
-        :id                => 'id',
-        :link              => 'link text',
-        :link_text         => 'link text',
-        :name              => 'name',
-        :partial_link_text => 'partial link text',
-        :tag_name          => 'tag name',
-        :xpath             => 'xpath',
+        class: 'class name',
+        class_name: 'class name',
+        css: 'css selector',
+        id: 'id',
+        link: 'link text',
+        link_text: 'link text',
+        name: 'name',
+        partial_link_text: 'partial link text',
+        tag_name: 'tag name',
+        xpath: 'xpath',
       }
 
       #

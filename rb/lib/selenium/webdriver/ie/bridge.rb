@@ -46,8 +46,8 @@ module Selenium
           caps['nativeEvents'] = native_events
 
           remote_opts = {
-            :url => @service.uri,
-            :desired_capabilities => caps
+            url: @service.uri,
+            desired_capabilities: caps
           }
           remote_opts[:http_client] = http_client if http_client
 

@@ -40,7 +40,7 @@ describe "Driver" do
     expect(driver.find_element(:id, 'dynamo').text).to eq("What's for dinner?")
   end
 
-  not_compliant_on :browser => :iphone do
+  not_compliant_on browser: :iphone do
     context "screenshots" do
 
       it "should save" do
@@ -134,14 +134,14 @@ describe "Driver" do
 
     it "should find elements with a hash selector" do
       driver.navigate.to url_for("xhtmlTest.html")
-      expect(driver.find_element(:class => "header").text).to eq("XHTML Might Be The Future")
+      expect(driver.find_element(class: "header").text).to eq("XHTML Might Be The Future")
     end
 
     it "should find elements with the shortcut syntax" do
       driver.navigate.to url_for("xhtmlTest.html")
 
       expect(driver[:id1]).to be_kind_of(WebDriver::Element)
-      expect(driver[:xpath => "//h1"]).to be_kind_of(WebDriver::Element)
+      expect(driver[xpath: "//h1"]).to be_kind_of(WebDriver::Element)
     end
   end
 
@@ -184,7 +184,7 @@ describe "Driver" do
       expect(element.text).to eq("Foo")
     end
 
-    not_compliant_on :browser => [:android] do
+    not_compliant_on browser: [:android] do
       it "should unwrap elements in deep objects" do
         driver.navigate.to url_for("xhtmlTest.html")
         result = driver.execute_script(<<-SCRIPT)
@@ -218,7 +218,7 @@ describe "Driver" do
     end
 
     # Marionette BUG - Not finding local javascript for execution
-    not_compliant_on :browser => :marionette do
+    not_compliant_on browser: :marionette do
       it "should be able to call functions on the page" do
         driver.navigate.to url_for("javascriptPage.html")
         driver.execute_script("displayMessage('I like cheese');")
@@ -263,7 +263,7 @@ describe "Driver" do
     end
   end
 
-  not_compliant_on :browser => [:iphone, :android] do
+  not_compliant_on browser: [:iphone, :android] do
     describe "execute async script" do
 
       before do
@@ -282,8 +282,8 @@ describe "Driver" do
       end
 
       # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1849991/
-      not_compliant_on({:driver => :remote, :browser => [:marionette, :phantomjs]},
-                       {:browser => :edge}) do
+      not_compliant_on({driver: :remote, browser: [:marionette, :phantomjs]},
+                       {browser: :edge}) do
         it "times out if the callback is not invoked" do
           expect {
             # Script is expected to be async and explicitly callback, so this should timeout.

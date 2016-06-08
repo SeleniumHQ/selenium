@@ -25,7 +25,7 @@ module Selenium
 
       describe Extension do
         before do
-          File.stub(:exist? => true)
+          File.stub(exist?: true)
         end
 
         let(:extension) {

@@ -129,7 +129,7 @@ module Selenium
 
               if proxy
                 proxy = "http://#{proxy}" unless proxy.start_with?("http://")
-                Proxy.new(:http => proxy, :no_proxy => no_proxy)
+                Proxy.new(http: proxy, no_proxy: no_proxy)
               end
             )
           end

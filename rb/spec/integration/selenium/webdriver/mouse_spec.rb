@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
 
     # Marionette BUG - Interactions Not Supported
-    not_compliant_on :browser => [:android, :iphone, :safari, :marionette] do
+    not_compliant_on browser: [:android, :iphone, :safari, :marionette] do
       describe Mouse do
 
         it "clicks an element" do
@@ -35,21 +35,21 @@ module Selenium
           driver.navigate.to url_for("droppableItems.html")
 
           draggable = long_wait.until {
-            driver.find_element(:id => "draggable")
+            driver.find_element(id: "draggable")
           }
 
-          droppable = driver.find_element(:id => "droppable")
+          droppable = driver.find_element(id: "droppable")
 
           driver.mouse.down draggable
           driver.mouse.move_to droppable
           driver.mouse.up droppable
 
-          text = droppable.find_element(:tag_name => "p").text
+          text = droppable.find_element(tag_name: "p").text
           expect(text).to eq("Dropped!")
         end
 
         # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1850023
-        not_compliant_on :browser => :edge do
+        not_compliant_on browser: :edge do
           it "double clicks an element" do
             driver.navigate.to url_for("javascriptPage.html")
             element = driver.find_element(:id, 'doubleClickField')
@@ -62,7 +62,7 @@ module Selenium
           end
         end
 
-        not_compliant_on :browser => :phantomjs do
+        not_compliant_on browser: :phantomjs do
           it "context clicks an element" do
             driver.navigate.to url_for("javascriptPage.html")
             element = driver.find_element(:id, 'doubleClickField')

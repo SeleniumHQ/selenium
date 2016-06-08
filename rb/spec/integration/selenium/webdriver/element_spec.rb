@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 describe "Element" do
   before do
-    compliant_on :browser => :safari do
+    compliant_on browser: :safari do
       sleep 0.5 # Some kind of race condition preventing initial navigation; only on safari
     end
   end
@@ -31,7 +31,7 @@ describe "Element" do
     driver.find_element(:id, "imageButton").click
   end
 
-  compliant_on :browser => [:chrome, :firefox] do
+  compliant_on browser: [:chrome, :firefox] do
     it "should raise if different element receives click" do
       driver.navigate.to url_for("click_tests/overlapping_elements.html")
       expect { driver.find_element(:id, "contents").click }
@@ -40,7 +40,7 @@ describe "Element" do
     end
   end
 
-  compliant_on :browser => [:firefox] do
+  compliant_on browser: [:firefox] do
     it "should not raise if element is only partially covered" do
       driver.navigate.to url_for("click_tests/overlapping_elements.html")
       expect { driver.find_element(:id, "other_contents").click }.not_to raise_error
@@ -48,21 +48,21 @@ describe "Element" do
   end
 
   # Marionette BUG - AutomatedTester: "known bug with execute script"
-  not_compliant_on :browser => :marionette do
+  not_compliant_on browser: :marionette do
     it "should submit" do
       driver.navigate.to url_for("formPage.html")
-      wait_for_element(:id => "submitButton")
+      wait_for_element(id: "submitButton")
       driver.find_element(:id, "submitButton").submit
     end
   end
 
   it "should send string keys" do
     driver.navigate.to url_for("formPage.html")
-    wait_for_element(:id => "working")
+    wait_for_element(id: "working")
     driver.find_element(:id, "working").send_keys("foo", "bar")
   end
 
-  not_compliant_on :browser => [:android, :iphone] do
+  not_compliant_on browser: [:android, :iphone] do
     it "should send key presses" do
       driver.navigate.to url_for("javascriptPage.html")
       key_reporter = driver.find_element(:id, 'keyReporter')
@@ -73,7 +73,7 @@ describe "Element" do
   end
 
   # PhantomJS on windows issue: https://github.com/ariya/phantomjs/issues/10993
-  not_compliant_on :browser => [:android, :iphone, :safari, :edge, :marionette, :phantomjs] do
+  not_compliant_on browser: [:android, :iphone, :safari, :edge, :marionette, :phantomjs] do
     it "should handle file uploads" do
       driver.navigate.to url_for("formPage.html")
 
@@ -105,7 +105,7 @@ describe "Element" do
     driver.find_element(:id, "withText").clear
   end
 
-  not_compliant_on :browser => :android do
+  not_compliant_on browser: :android do
     it "should get and set selected" do
       driver.navigate.to url_for("formPage.html")
 
@@ -147,7 +147,7 @@ describe "Element" do
     expect(loc.y).to be >= 1
   end
 
-  not_compliant_on :browser => :iphone do
+  not_compliant_on browser: :iphone do
     it "should get location once scrolled into view" do
       driver.navigate.to url_for("javascriptPage.html")
       loc = driver.find_element(:id, 'keyUp').location_once_scrolled_into_view
@@ -165,7 +165,7 @@ describe "Element" do
     expect(size.height).to be > 0
   end
 
-  not_compliant_on :browser => [:safari, :marionette] do
+  not_compliant_on browser: [:safari, :marionette] do
     it "should drag and drop" do
       driver.navigate.to url_for("dragAndDropTest.html")
 
@@ -180,7 +180,7 @@ describe "Element" do
     end
   end
 
-  not_compliant_on :browser => :android do # android returns 'green'
+  not_compliant_on browser: :android do # android returns 'green'
     it "should get css property" do
       driver.navigate.to url_for("javascriptPage.html")
       element = driver.find_element(:id, "green-parent")

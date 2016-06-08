@@ -25,9 +25,9 @@ module Selenium
     module Firefox
 
       describe Bridge do
-        let(:launcher) { double(Launcher, :launch => nil, :url => "http://localhost:4444/wd/hub") }
-        let(:resp) { {"sessionId" => "foo", "value" => @default_capabilities }}
-        let(:http) { double(Remote::Http::Default, :call => resp).as_null_object   }
+        let(:launcher) { double(Launcher, launch: nil, url: "http://localhost:4444/wd/hub") }
+        let(:resp) { {"sessionId" => "foo", "value" => @default_capabilities}}
+        let(:http) { double(Remote::Http::Default, call: resp).as_null_object   }
         let(:caps) { {} }
 
         before do
@@ -37,14 +37,14 @@ module Selenium
         end
 
         it "sets the proxy capability" do
-          proxy = Proxy.new(:http => "localhost:9090")
+          proxy = Proxy.new(http: "localhost:9090")
           expect(caps).to receive(:proxy=).with proxy
 
-          Bridge.new(:http_client => http, :proxy => proxy)
+          Bridge.new(http_client: http, proxy: proxy)
         end
 
         it "raises ArgumentError if passed invalid options" do
-          expect { Bridge.new(:foo => 'bar') }.to raise_error(ArgumentError)
+          expect { Bridge.new(foo: 'bar') }.to raise_error(ArgumentError)
         end
 
         it 'takes desired capabilities' do
@@ -56,7 +56,7 @@ module Selenium
             resp
           end
 
-          Bridge.new(:http_client => http, :desired_capabilities => custom_caps)
+          Bridge.new(http_client: http, desired_capabilities: custom_caps)
         end
       end
 

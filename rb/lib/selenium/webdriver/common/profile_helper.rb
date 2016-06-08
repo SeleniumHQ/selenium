@@ -48,7 +48,7 @@ module Selenium
 
         # TODO: must be a better way..
         FileUtils.rm_rf tmp_directory
-        FileUtils.mkdir_p File.dirname(tmp_directory), :mode => 0700
+        FileUtils.mkdir_p File.dirname(tmp_directory), mode: 0700
         FileUtils.cp_r directory, tmp_directory
 
         tmp_directory

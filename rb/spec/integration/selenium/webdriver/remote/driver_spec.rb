@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     module Remote
 
-      compliant_on :driver => :remote do
+      compliant_on driver: :remote do
         describe Driver do
           it "should expose session_id" do
             expect(driver.session_id).to be_kind_of(String)

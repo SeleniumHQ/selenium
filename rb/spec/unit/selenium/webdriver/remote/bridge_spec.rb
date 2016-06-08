@@ -25,14 +25,14 @@ module Selenium
 
       describe Bridge do
         it "raises ArgumentError if passed invalid options" do
-          expect { Bridge.new(:foo => 'bar') }.to raise_error(ArgumentError)
+          expect { Bridge.new(foo: 'bar') }.to raise_error(ArgumentError)
         end
 
         it "raises WebDriverError if uploading non-files" do
-          request_body = JSON.generate(:sessionId => '11123', :value => {})
+          request_body = JSON.generate(sessionId: '11123', value: {})
           headers = {'Content-Type' => 'application/json'}
           stub_request(:post, "http://127.0.0.1:4444/wd/hub/session").to_return(
-            :status => 200, :body => request_body, :headers => headers)
+            status: 200, body: request_body, headers: headers)
 
           bridge = Bridge.new
           expect { bridge.upload("NotAFile")}.to raise_error(Error::WebDriverError)

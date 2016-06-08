@@ -47,14 +47,14 @@ module Selenium
           json = JSON.generate(command)
           puts ">>> #{json}" if $DEBUG
 
-          frame = WebSocket::Frame::Outgoing::Server.new(:version => @version, :data => json, :type => :text)
+          frame = WebSocket::Frame::Outgoing::Server.new(version: @version, data: json, type: :text)
 
           @ws.write frame.to_s
           @ws.flush
         end
 
         def receive
-          @frame ||= WebSocket::Frame::Incoming::Server.new(:version => @version)
+          @frame ||= WebSocket::Frame::Incoming::Server.new(version: @version)
 
           until msg = @frame.next
             end_time = Time.now + @command_timeout

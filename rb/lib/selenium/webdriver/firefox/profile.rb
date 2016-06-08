@@ -26,11 +26,11 @@ module Selenium
         VALID_PREFERENCE_TYPES   = [TrueClass, FalseClass, Integer, Float, String]
         WEBDRIVER_EXTENSION_PATH = File.expand_path("#{WebDriver.root}/selenium/webdriver/firefox/extension/webdriver.xpi")
         WEBDRIVER_PREFS          = {
-          :native_events    => 'webdriver_enable_native_events',
-          :untrusted_certs  => 'webdriver_accept_untrusted_certs',
-          :untrusted_issuer => 'webdriver_assume_untrusted_issuer',
-          :port             => 'webdriver_firefox_port',
-          :log_file         => 'webdriver.log.file'
+          native_events: 'webdriver_enable_native_events',
+          untrusted_certs: 'webdriver_accept_untrusted_certs',
+          untrusted_issuer: 'webdriver_assume_untrusted_issuer',
+          port: 'webdriver_firefox_port',
+          log_file: 'webdriver.log.file'
         }
 
         attr_reader   :name, :log_file
@@ -209,7 +209,7 @@ module Selenium
           destination = File.join(directory, "extensions")
 
           @extensions.each do |name, extension|
-            p :extension => name if $DEBUG
+            p extension: name if $DEBUG
             extension.write_to(destination)
           end
         end

@@ -40,7 +40,7 @@ module Selenium
           end
 
           it "uses the specified proxy" do
-            client.proxy = Proxy.new(:http => "http://foo:bar@proxy.org:8080")
+            client.proxy = Proxy.new(http: "http://foo:bar@proxy.org:8080")
             http = client.send :http
 
             expect(http).to be_proxy
@@ -53,7 +53,7 @@ module Selenium
           end
 
           it "raises an error if the proxy is not an HTTP proxy" do
-            client.proxy = Proxy.new(:ftp => "ftp://example.com")
+            client.proxy = Proxy.new(ftp: "ftp://example.com")
             expect { client.send :http }.to raise_error(Error::WebDriverError)
           end
 

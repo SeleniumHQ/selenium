@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     module IE
 
-      compliant_on :browser => :ie do
+      compliant_on browser: :ie do
         describe Driver do
           it_behaves_like "driver that can be started concurrently", :ie
         end

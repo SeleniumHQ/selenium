@@ -35,7 +35,7 @@ module Selenium
 
         def start_with(profile, profile_path, *args)
           if Platform.cygwin?
-            profile_path = Platform.cygwin_path(profile_path, :windows => true)
+            profile_path = Platform.cygwin_path(profile_path, windows: true)
           elsif Platform.windows?
             profile_path = profile_path.gsub("/", "\\")
           end

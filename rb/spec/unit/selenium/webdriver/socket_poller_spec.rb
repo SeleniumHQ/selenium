@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     describe SocketPoller do
       let(:poller)         { Selenium::WebDriver::SocketPoller.new("localhost", 1234, 5, 0.05)  }
-      let(:socket)         { double Socket, :close => true}
+      let(:socket)         { double Socket, close: true}
 
       def setup_connect(*states)
         # TODO(jari): find a cleaner way to solve the platform-specific collaborators

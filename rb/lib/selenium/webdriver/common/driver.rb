@@ -274,7 +274,7 @@ module Selenium
 
       def [](sel)
         if sel.kind_of?(String) || sel.kind_of?(Symbol)
-          sel = { :id => sel }
+          sel = {id: sel}
         end
 
         find_element sel

@@ -94,12 +94,12 @@ module Selenium
       def all_cookies
         @bridge.getAllCookies.map do |cookie|
           {
-            :name    => cookie["name"],
-            :value   => cookie["value"],
-            :path    => cookie["path"],
-            :domain  => cookie["domain"] && strip_port(cookie["domain"]),
-            :expires => cookie["expiry"] && datetime_at(cookie['expiry']),
-            :secure  => cookie["secure"]
+            name: cookie["name"],
+            value: cookie["value"],
+            path: cookie["path"],
+            domain: cookie["domain"] && strip_port(cookie["domain"]),
+            expires: cookie["expiry"] && datetime_at(cookie['expiry']),
+            secure: cookie["secure"]
           }
         end
       end

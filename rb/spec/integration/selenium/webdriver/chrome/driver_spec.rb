@@ -23,12 +23,12 @@ module Selenium
   module WebDriver
     module Chrome
 
-      compliant_on :browser => :chrome do
+      compliant_on browser: :chrome do
         describe Driver do
 
           it "should accept an array of custom command line arguments" do
             begin
-              driver = Selenium::WebDriver.for :chrome, :args => ["--user-agent=foo;bar"]
+              driver = Selenium::WebDriver.for :chrome, args: ["--user-agent=foo;bar"]
               driver.navigate.to url_for("click_jacker.html")
 
               ua = driver.execute_script "return window.navigator.userAgent"
@@ -40,7 +40,7 @@ module Selenium
 
           it "should raise ArgumentError if :args is not an Array" do
             expect {
-              Selenium::WebDriver.for(:chrome, :args => "--foo")
+              Selenium::WebDriver.for(:chrome, args: "--foo")
             }.to raise_error(ArgumentError)
           end
 

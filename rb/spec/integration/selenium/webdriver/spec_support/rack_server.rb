@@ -50,7 +50,7 @@ module Selenium
         end
 
         def run
-          handler.run @app, :Host => @host, :Port => @port
+          handler.run @app, Host: @host, Port: @port
         end
 
         def where_is(file)

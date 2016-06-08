@@ -60,7 +60,7 @@ module Selenium
         private
 
         def create_session(desired_capabilities)
-          resp = raw_execute :newSession, {}, :desiredCapabilities => desired_capabilities
+          resp = raw_execute :newSession, {}, {desiredCapabilities: desired_capabilities}
           Remote::Capabilities.json_create resp.fetch('value')
         end
 
@@ -75,9 +75,9 @@ module Selenium
           params.merge!(command_hash) if command_hash
 
           @server.send(
-            :origin  => "webdriver",
-            :type    => "command",
-            :command => { :id => @command_id.to_s, :name => command, :parameters => params}
+            origin: "webdriver",
+            type: "command",
+            command: {id: @command_id.to_s, name: command, parameters: params}
           )
 
           raw = @server.receive

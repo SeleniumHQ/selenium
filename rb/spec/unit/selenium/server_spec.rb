@@ -22,7 +22,7 @@ require 'selenium/server'
 
 describe Selenium::Server do
   let(:mock_process) { double(ChildProcess).as_null_object }
-  let(:mock_poller)  { double("SocketPoller", :connected? => true, :closed? => true)}
+  let(:mock_poller)  { double("SocketPoller", connected?: true, closed?: true)}
 
   it "raises an error if the jar file does not exist" do
     expect {
@@ -37,7 +37,7 @@ describe Selenium::Server do
                  with("java", "-jar", "selenium-server-test.jar", "-port", "1234").
                  and_return(mock_process)
 
-    server = Selenium::Server.new("selenium-server-test.jar", :port => 1234, :background => true)
+    server = Selenium::Server.new("selenium-server-test.jar", port: 1234, background: true)
     allow(server).to receive(:socket).and_return(mock_poller)
 
     server.start
@@ -64,7 +64,7 @@ describe Selenium::Server do
                  with("java", "-jar", "selenium-server-test.jar", "-port", "4444", "foo", "bar").
                  and_return(mock_process)
 
-    server = Selenium::Server.new("selenium-server-test.jar", :background => true)
+    server = Selenium::Server.new("selenium-server-test.jar", background: true)
     allow(server).to receive(:socket).and_return(mock_poller)
 
     server << ["foo", "bar"]
@@ -76,7 +76,7 @@ describe Selenium::Server do
     required_version = '10.2.0'
     expected_download_file_name = "selenium-server-standalone-#{required_version}.jar"
 
-    stub_request(:get, "http://selenium-release.storage.googleapis.com/10.2/selenium-server-standalone-10.2.0.jar").to_return(:body => "this is pretending to be a jar file for testing purposes")
+    stub_request(:get, "http://selenium-release.storage.googleapis.com/10.2/selenium-server-standalone-10.2.0.jar").to_return(body: "this is pretending to be a jar file for testing purposes")
 
     begin
       actual_download_file_name = Selenium::Server.download(required_version)
@@ -90,7 +90,7 @@ describe Selenium::Server do
   it "gets a server instance and downloads the specified version" do
     required_version = '10.4.0'
     expected_download_file_name = "selenium-server-standalone-#{required_version}.jar"
-    expected_options = {:port => 5555}
+    expected_options = {port: 5555}
     fake_server = Object.new
 
     expect(Selenium::Server).to receive(:download).with(required_version).and_return(expected_download_file_name)
@@ -121,7 +121,7 @@ describe Selenium::Server do
   it "should know what the latest version available is" do
     latest_version = '2.42.2'
     example_xml ="<?xml version='1.0' encoding='UTF-8'?><ListBucketResult xmlns='http://doc.s3.amazonaws.com/2006-03-01'><Name>selenium-release</Name><Contents><Key>2.39/selenium-server-2.39.0.zip</Key></Contents><Contents><Key>2.42/selenium-server-standalone-#{latest_version}.jar</Key></Contents></ListBucketResult>"
-    stub_request(:get, "http://selenium-release.storage.googleapis.com/").to_return(:body => example_xml)
+    stub_request(:get, "http://selenium-release.storage.googleapis.com/").to_return(body: example_xml)
 
     expect(Selenium::Server.latest).to eq(latest_version)
   end
@@ -131,7 +131,7 @@ describe Selenium::Server do
     expected_download_file_name = "selenium-server-standalone-#{required_version}.jar"
 
     expect(Selenium::Server).to receive(:latest).and_return required_version
-    stub_request(:get, "http://selenium-release.storage.googleapis.com/#{minor_version}/#{expected_download_file_name}").to_return(:body => "this is pretending to be a jar file for testing purposes")
+    stub_request(:get, "http://selenium-release.storage.googleapis.com/#{minor_version}/#{expected_download_file_name}").to_return(body: "this is pretending to be a jar file for testing purposes")
 
     begin
       actual_download_file_name = Selenium::Server.download(:latest)
@@ -148,7 +148,7 @@ describe Selenium::Server do
     poller = double('SocketPoller')
     expect(poller).to receive(:connected?).and_return(false)
 
-    server = Selenium::Server.new("selenium-server-test.jar", :background => true)
+    server = Selenium::Server.new("selenium-server-test.jar", background: true)
     allow(server).to receive(:socket).and_return(poller)
 
     expect { server.start }.to raise_error(Selenium::Server::Error)

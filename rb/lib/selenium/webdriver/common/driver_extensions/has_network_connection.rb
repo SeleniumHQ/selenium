@@ -42,7 +42,7 @@ module Selenium
         private
 
         def type_to_values
-          {:airplane_mode => 1, :wifi => 2, :data => 4, :all => 6, :none => 0}
+          {airplane_mode: 1, wifi: 2, data: 4, all: 6, none: 0}
         end
 
         def values_to_type

@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     module Safari
 
-      compliant_on :browser => :safari do
+      compliant_on browser: :safari do
         describe Driver do
           it_behaves_like "driver that can be started concurrently", :safari
         end
