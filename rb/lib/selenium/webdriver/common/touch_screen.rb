@@ -114,9 +114,8 @@ module Selenium
       end
 
       def assert_element(element)
-        unless element.kind_of? Element
-          raise TypeError, "expected #{Element}, got #{element.inspect}:#{element.class}"
-        end
+        return if element.kind_of? Element
+        raise TypeError, "expected #{Element}, got #{element.inspect}:#{element.class}"
       end
 
     end # TouchScreen

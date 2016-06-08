@@ -130,9 +130,8 @@ module Selenium
         end
 
         def add_webdriver_extension
-          unless @extensions.has_key?(:webdriver)
-            add_extension(WEBDRIVER_EXTENSION_PATH, :webdriver)
-          end
+          return if @extensions.has_key?(:webdriver)
+          add_extension(WEBDRIVER_EXTENSION_PATH, :webdriver)
         end
 
         #

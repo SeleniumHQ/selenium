@@ -55,9 +55,8 @@ module Selenium
           sleep 0.1
         end
 
-        unless did_lock?
-          raise Error::WebDriverError, "unable to bind to locking port #{@port} within #{@timeout} seconds"
-        end
+        return if did_lock?
+        raise Error::WebDriverError, "unable to bind to locking port #{@port} within #{@timeout} seconds"
       end
 
       def release

@@ -252,15 +252,13 @@ module Selenium
     end
 
     def poll_for_service
-      unless socket.connected?
-        raise Error, "remote server not launched in #{@timeout} seconds"
-      end
+      return if socket.connected?
+      raise Error, "remote server not launched in #{@timeout} seconds"
     end
 
     def poll_for_shutdown
-      unless socket.closed?
-        raise Error, "remote server not stopped in #{@timeout} seconds"
-      end
+      return if socket.closed?
+      raise Error, "remote server not stopped in #{@timeout} seconds"
     end
 
     def socket

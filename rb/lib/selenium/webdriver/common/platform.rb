@@ -137,17 +137,15 @@ module Selenium
       end
 
       def assert_file(path)
-        unless File.file? path
-          raise Error::WebDriverError, "not a file: #{path.inspect}"
-        end
+        return if File.file? path
+        raise Error::WebDriverError, "not a file: #{path.inspect}"
       end
 
       def assert_executable(path)
         assert_file(path)
 
-        unless File.executable? path
-          raise Error::WebDriverError, "not executable: #{path.inspect}"
-        end
+        return if File.executable? path
+        raise Error::WebDriverError, "not executable: #{path.inspect}"
       end
 
       def exit_hook(&blk)

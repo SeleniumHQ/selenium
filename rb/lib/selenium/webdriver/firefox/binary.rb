@@ -93,9 +93,8 @@ module Selenium
 
           # ensure we're ok
           sleep 0.3
-          if @process.crashed?
-            raise Error::WebDriverError, "unable to start Firefox cleanly, args: #{args.inspect}"
-          end
+          return unless @process.crashed?
+          raise Error::WebDriverError, "unable to start Firefox cleanly, args: #{args.inspect}"
         end
 
         def modify_link_library_path(profile_path)

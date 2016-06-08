@@ -81,11 +81,8 @@ module Selenium
           begin
             sock.connect_nonblock sockaddr
           rescue Errno::EINPROGRESS
-            if IO.select(nil, [sock], nil, CONNECT_TIMEOUT)
-              retry
-            else
-              raise Errno::ECONNREFUSED
-            end
+            retry if IO.select(nil, [sock], nil, CONNECT_TIMEOUT)
+            raise Errno::ECONNREFUSED
           rescue *CONNECTED_ERRORS
             # yay!
           end

@@ -33,18 +33,18 @@ module Selenium
 
           def http
             @http ||= (
-              http = new_http_client
-              if server_url.scheme == "https"
-                http.use_ssl = true
-                http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-              end
+            http = new_http_client
+            if server_url.scheme == "https"
+              http.use_ssl = true
+              http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+            end
 
-              if @timeout
-                http.open_timeout = @timeout
-                http.read_timeout = @timeout
-              end
+            if @timeout
+              http.open_timeout = @timeout
+              http.read_timeout = @timeout
+            end
 
-              http
+            http
             )
           end
 
@@ -76,11 +76,8 @@ module Selenium
               retry
 
             rescue Errno::ECONNREFUSED => ex
-              if use_proxy?
-                raise ex.class, "using proxy: #{proxy.http}"
-              else
-                raise
-              end
+              raise ex.class, "using proxy: #{proxy.http}" if use_proxy?
+              raise
             end
 
             if response.kind_of? Net::HTTPRedirection
@@ -124,13 +121,13 @@ module Selenium
 
           def proxy
             @proxy ||= (
-              proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
-              no_proxy = ENV['no_proxy'] || ENV['NO_PROXY']
+            proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
+            no_proxy = ENV['no_proxy'] || ENV['NO_PROXY']
 
-              if proxy
-                proxy = "http://#{proxy}" unless proxy.start_with?("http://")
-                Proxy.new(http: proxy, no_proxy: no_proxy)
-              end
+            if proxy
+              proxy = "http://#{proxy}" unless proxy.start_with?("http://")
+              Proxy.new(http: proxy, no_proxy: no_proxy)
+            end
             )
           end
 
@@ -140,13 +137,13 @@ module Selenium
             if proxy.no_proxy
               ignored = proxy.no_proxy.split(",").any? do |host|
                 host == "*" ||
-                host == server_url.host || (
-                  begin
-                    IPAddr.new(host).include?(server_url.host)
-                  rescue ArgumentError
-                    false
-                  end
-                )
+                    host == server_url.host || (
+                begin
+                  IPAddr.new(host).include?(server_url.host)
+                rescue ArgumentError
+                  false
+                end
+                    )
 
               end
 

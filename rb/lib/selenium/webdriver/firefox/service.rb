@@ -47,9 +47,8 @@ module Selenium
 
         def stop_process
           super
-          if Platform.windows? && !$DEBUG
-            @process.io.close rescue nil
-          end
+          return unless Platform.windows? && !$DEBUG
+          @process.io.close rescue nil
         end
 
         def stop_server

@@ -59,10 +59,9 @@ module Selenium
         end
 
         def quit_driver
-          if @driver_instance
-            @driver_instance.quit
-            @driver_instance = nil
-          end
+          return unless @driver_instance
+          @driver_instance.quit
+          @driver_instance = nil
         end
 
         def new_driver_instance

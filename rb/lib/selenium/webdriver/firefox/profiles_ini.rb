@@ -65,9 +65,8 @@ module Selenium
             end
           end
 
-          if p = path_for(name, is_relative, path)
-            @profile_paths[name] = p
-          end
+          return unless p = path_for(name, is_relative, path)
+          @profile_paths[name] = p
         end
 
         def path_for(name, is_relative, path)

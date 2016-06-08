@@ -53,9 +53,8 @@ module Selenium
         self.socks_username = opts.delete(:socks_username) if opts.has_key? :socks_username
         self.socks_password = opts.delete(:socks_password) if opts.has_key? :socks_password
 
-        unless opts.empty?
-          raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
-        end
+        return if opts.empty?
+        raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
       end
 
       def ==(other)
