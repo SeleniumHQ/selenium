@@ -20,7 +20,7 @@ package org.openqa.selenium;
 /**
  * Thrown by any command being called after {@link WebDriver#quit() WebDriver.quit()}.
  */
-public class NoSuchSessionException extends NotFoundException {
+public class NoSuchSessionException extends WebDriverException {
 
   public NoSuchSessionException() {
   }
