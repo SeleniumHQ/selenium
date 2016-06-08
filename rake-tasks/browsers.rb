@@ -9,6 +9,7 @@ BROWSERS = {
       :dir => "firefox", # Directory to put tests in/read tests from
       :file_string => "ff", # Browser-string to use in test filenames
       :class => "Firefox", # As per py/selenium/webdriver/__init__.py
+      :constructor_args => "capabilities={'marionette': False}",
       :resources => [
         { "//javascript/firefox-driver:webdriver" => "selenium/webdriver/firefox/" },
         { "//cpp:noblur" => "selenium/webdriver/firefox/x86/x_ignore_nofocus.so" },
@@ -27,6 +28,7 @@ BROWSERS = {
       :dir => "firefox", # Directory to put tests in/read tests from
       :file_string => "marionette", # Browser-string to use in test filenames
       :class => "Firefox", # As per py/selenium/webdriver/__init__.py
+      :constructor_args => "capabilities={'marionette': True}",
     },
     :java => {
       :class => "org.openqa.selenium.firefox.SynthesizedFirefoxDriver",
