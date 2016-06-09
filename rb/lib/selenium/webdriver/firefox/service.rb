@@ -29,11 +29,11 @@ module Selenium
         SOCKET_LOCK_TIMEOUT = 45
         STOP_TIMEOUT        = 5
         DEFAULT_PORT        = 4444
-        MISSING_TEXT        = "Unable to find Mozilla Wires. Please download the executable from https://github.com/jgraham/wires/releases"
+        MISSING_TEXT        = "Unable to find geckodriver. Please download the executable from https://github.com/mozilla/geckodriver/releases"
 
         def self.executable_path
           @executable_path ||= (
-            path = Platform.find_binary "wires"
+            path = Platform.find_binary("geckodriver*") || Platform.find_binary("wires*")
             path or raise Error::WebDriverError, MISSING_TEXT
             Platform.assert_executable path
 
@@ -109,7 +109,7 @@ module Selenium
           @socket_poller = SocketPoller.new @host, @port, START_TIMEOUT
 
           unless @socket_poller.connected?
-            raise Error::WebDriverError, "unable to connect to Mozilla Wires #{@host}:#{@port}"
+            raise Error::WebDriverError, "unable to connect to Mozilla geckodriver #{@host}:#{@port}"
           end
         end
 
