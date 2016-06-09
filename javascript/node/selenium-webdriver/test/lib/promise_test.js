@@ -100,39 +100,39 @@ describe('promise', function() {
     });
   });
 
-  describe('thenFinally', function() {
+  describe('finally', function() {
     it('nonFailingCallbackDoesNotSuppressOriginalError', function() {
       var done = callbackHelper(assertIsStubError);
       return promise.rejected(new StubError).
-          thenFinally(function() {}).
+          finally(function() {}).
           catch(done).
-          thenFinally(done.assertCalled);
+          finally(done.assertCalled);
     });
 
     it('failingCallbackSuppressesOriginalError', function() {
       var done = callbackHelper(assertIsStubError);
       return promise.rejected(new Error('original')).
-          thenFinally(throwStubError).
+          finally(throwStubError).
           catch(done).
-          thenFinally(done.assertCalled);
+          finally(done.assertCalled);
     });
 
     it('callbackThrowsAfterFulfilledPromise', function() {
       var done = callbackHelper(assertIsStubError);
       return promise.fulfilled().
-          thenFinally(throwStubError).
+          finally(throwStubError).
           catch(done).
-          thenFinally(done.assertCalled);
+          finally(done.assertCalled);
     });
 
     it('callbackReturnsRejectedPromise', function() {
       var done = callbackHelper(assertIsStubError);
       return promise.fulfilled().
-          thenFinally(function() {
+          finally(function() {
             return promise.rejected(new StubError);
           }).
           catch(done).
-          thenFinally(done.assertCalled);
+          finally(done.assertCalled);
     });
   });
 
@@ -234,7 +234,7 @@ describe('promise', function() {
       assert.ok(aPromise.isPending());
       aPromise.cancel('just because');
 
-      return aPromise.thenFinally(callbacks.assertErrback);
+      return aPromise.finally(callbacks.assertErrback);
     });
   });
 

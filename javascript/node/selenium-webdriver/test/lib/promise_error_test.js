@@ -635,7 +635,7 @@ describe('promise error handling', function() {
         return flow.execute(function() {
           seen.push(2);
         });
-      }).thenFinally(function() {
+      }).finally(function() {
         seen.push(3);
       });
 
@@ -776,7 +776,7 @@ describe('promise error handling', function() {
     it('(b)', function() {
       var p1 = promise.fulfilled();
       var reason = promise.rejected('should not see me');
-      reason.thenCatch(function() {});  // For tearDown.
+      reason.catch(function() {});  // For tearDown.
       return p1.then(function() {
         throw reason;
       }).then(assert.fail, function(e) {

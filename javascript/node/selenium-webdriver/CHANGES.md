@@ -1,4 +1,4 @@
-## v2.54.0-dev
+## v3.0.0-dev
 
 * Allow users to set the agent used for HTTP connections through
    `builder.Builder#usingHttpAgent()`
@@ -9,8 +9,25 @@
 * Internal cleanup replacing uses of managed promises with native promises
 * Removed the mandatory use of Firefox Dev Edition, when using Marionette driver
 * Fixed timeouts' URL
-* Removed the deprecated `webdriver.UnhandledAlertError`, which was just an
-   alias for `error.UnexpectedAlertOpenError`
+* Removed deprecated modules:
+   - `selenium-webdriver/error` (use `selenium-webdriver/lib/error`,\
+     or the `error` property exported by `selenium-webdriver`)
+* Removed deprecated types:
+   - `error.InvalidSessionIdError` (use `error.NoSuchSessionError`)
+   - `executors.DeferredExecutor` (use `command.DeferredExecutor`)
+   - `until.Condition` (use `webdriver.Condition`)
+   - `until.WebElementCondition` (use `webdriver.WebElementCondition`)
+   - `webdriver.UnhandledAlertError` (use `error.UnexpectedAlertOpenError`)
+* Removed deprecated functions:
+   - `Promise#thenCatch()`
+   - `Promise#thenFinally()`
+   - `WebDriver#isElementPresent()`
+   - `WebElement#getInnerHtml()`
+   - `WebElement#getOuterHtml()`
+   - `WebElement#getRawId()`
+   - `WebElement#isElementPresent()`
+* Removed deprecated properties:
+   - `WebDriverError#code`
 
 
 ## v2.53.2

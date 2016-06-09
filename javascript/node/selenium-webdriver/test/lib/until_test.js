@@ -19,9 +19,9 @@
 
 const assert = require('assert');
 
-const error = require('../../error');
 const By = require('../../lib/by').By;
 const CommandName = require('../../lib/command').Name;
+const error = require('../../lib/error');
 const promise = require('../../lib/promise');
 const until = require('../../lib/until');
 const webdriver = require('../../lib/webdriver'),
@@ -447,7 +447,7 @@ describe('until', function() {
   describe('WebElementCondition', function() {
     it('fails if wait completes with a non-WebElement value', function() {
       let result = driver.wait(
-          new until.WebElementCondition('testing', () => 123), 1000);
+          new webdriver.WebElementCondition('testing', () => 123), 1000);
 
       return result.then(
           () => assert.fail('expected to fail'),

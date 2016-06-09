@@ -34,13 +34,13 @@ const url = require('url');
 const util = require('util');
 const ws = require('ws');
 
-const error = require('./error');
 const io = require('./io');
 const exec = require('./io/exec');
 const isDevMode = require('./lib/devmode');
 const Capabilities = require('./lib/capabilities').Capabilities;
 const Capability = require('./lib/capabilities').Capability;
 const command = require('./lib/command');
+const error = require('./lib/error');
 const logging = require('./lib/logging');
 const promise = require('./lib/promise');
 const Session = require('./lib/session').Session;

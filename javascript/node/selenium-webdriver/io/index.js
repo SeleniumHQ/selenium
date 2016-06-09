@@ -65,7 +65,7 @@ exports.rmDir = function(dirPath) {
       numAttempts += 1;
       rimraf(dirPath, function(err) {
         if (err) {
-          if (err.code === 'ENOTEMPTY' && numAttempts < 2) {
+          if (err.code && err.code === 'ENOTEMPTY' && numAttempts < 2) {
             attemptRm();
             return;
           }

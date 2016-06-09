@@ -883,28 +883,6 @@ class WebDriver {
   }
 
   /**
-   * Schedules a command to test if an element is present on the page.
-   *
-   * If given a DOM element, this function will check if it belongs to the
-   * document the driver is currently focused on. Otherwise, the function will
-   * test if at least one element can be found with the given search criteria.
-   *
-   * @param {!(by.By|Function)} locator The locator to use.
-   * @return {!promise.Promise<boolean>} A promise that will resolve
-   *     with whether the element is present on the page.
-   * @deprecated This method will be removed in Selenium 3.0 for consistency
-   *     with the other Selenium language bindings. This method is equivalent
-   *     to
-   *
-   *      driver.findElements(locator).then(e => !!e.length);
-   */
-  isElementPresent(locator) {
-    return this.findElements.apply(this, arguments).then(function(result) {
-      return !!result.length;
-    });
-  }
-
-  /**
    * Schedule a command to search for multiple elements on the page.
    *
    * @param {!(by.By|Function)} locator The locator to use.
@@ -1707,13 +1685,6 @@ class WebElement {
   }
 
   /**
-   * @deprecated Use {@link #getId()} instead.
-   */
-  getRawId() {
-    return this.getId();
-  }
-
-  /**
    * @return {!Object} Returns the serialized representation of this WebElement.
    */
   [Symbols.serialize]() {
@@ -1785,26 +1756,6 @@ class WebElement {
       id = this.schedule_(cmd, 'WebElement.findElement(' + locator + ')');
     }
     return new WebElementPromise(this.driver_, id);
-  }
-
-  /**
-   * Schedules a command to test if there is at least one descendant of this
-   * element that matches the given search criteria.
-   *
-   * @param {!(by.By|Function)} locator The locator strategy to use when
-   *     searching for the element.
-   * @return {!promise.Promise<boolean>} A promise that will be
-   *     resolved with whether an element could be located on the page.
-   * @deprecated This method will be removed in Selenium 3.0 for consistency
-   *     with the other Selenium language bindings. This method is equivalent
-   *     to
-   *
-   *      element.findElements(locator).then(e => !!e.length);
-   */
-  isElementPresent(locator) {
-    return this.findElements(locator).then(function(result) {
-      return !!result.length;
-    });
   }
 
   /**
@@ -2123,35 +2074,6 @@ class WebElement {
             .setParameter('scroll', scroll),
         'WebElement.takeScreenshot(' + scroll + ')');
   }
-
-  /**
-   * Schedules a command to retrieve the outer HTML of this element.
-   * @return {!promise.Promise<string>} A promise that will be
-   *     resolved with the element's outer HTML.
-   * @deprecated Use {@link WebDriver#executeScript()}
-   */
-  getOuterHtml() {
-    return this.driver_.executeScript(function() {
-      var element = /** @type {!Element} */(arguments[0]);
-      if ('outerHTML' in element) {
-        return element.outerHTML;
-      } else {
-        var div = element.ownerDocument.createElement('div');
-        div.appendChild(element.cloneNode(true));
-        return div.innerHTML;
-      }
-    }, this);
-  }
-
-  /**
-   * Schedules a command to retrieve the inner HTML of this element.
-   * @return {!promise.Promise<string>} A promise that will be
-   *     resolved with the element's inner HTML.
-   * @deprecated Use {@link WebDriver#executeScript()}
-   */
-  getInnerHtml() {
-    return this.driver_.executeScript('return arguments[0].innerHTML', this);
-  }
 }
 
 
@@ -2193,13 +2115,7 @@ class WebElementPromise extends WebElement {
     this.catch = el.catch.bind(el);
 
     /** @override */
-    this.thenCatch = el.catch.bind(el);
-
-    /** @override */
     this.finally = el.finally.bind(el);
-
-    /** @override */
-    this.thenFinally = el.finally.bind(el);
 
     /**
      * Defers returning the element ID until the wrapped WebElement has been
@@ -2350,13 +2266,7 @@ class AlertPromise extends Alert {
     this.catch = alert.catch.bind(alert);
 
     /** @override */
-    this.thenCatch = alert.catch.bind(alert);
-
-    /** @override */
     this.finally = alert.finally.bind(alert);
-
-    /** @override */
-    this.thenFinally = alert.finally.bind(alert);
 
     /**
      * Defer returning text until the promised alert has been resolved.

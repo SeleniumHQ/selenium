@@ -49,14 +49,6 @@ const webdriver = require('./webdriver'),
     WebElementCondition = webdriver.WebElementCondition;
 
 
-/** @deprecated Use {@link webdriver.Condition} instead. */
-exports.Condition = Condition;
-
-
-/** @deprecated Use {@link webdriver.WebElementCondition} instead. */
-exports.WebElementCondition = WebElementCondition;
-
-
 /**
  * Creates a condition that will wait until the input driver is able to switch
  * to the designated frame. The target frame may be specified as

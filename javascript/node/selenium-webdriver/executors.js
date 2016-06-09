@@ -30,9 +30,6 @@ const HttpClient = require('./http').HttpClient,
 // PUBLIC API
 
 
-/** @deprecated Use {@link ./lib/command.DeferredExecutor} instead. */
-exports.DeferredExecutor = DeferredExecutor;
-
 /**
  * Creates a command executor that uses WebDriver's JSON wire protocol.
  * @param {(string|!Promise<string>)} url The server's URL, or a promise that

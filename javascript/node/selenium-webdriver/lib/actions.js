@@ -144,7 +144,7 @@ class ActionSequence {
     if (typeof location.x === 'number') {
       setOffset(/** @type {{x: number, y: number}} */(location));
     } else {
-      cmd.setParameter('element', location.getRawId());
+      cmd.setParameter('element', location.getId());
       if (opt_offset) {
         setOffset(opt_offset);
       }

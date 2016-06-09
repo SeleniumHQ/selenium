@@ -19,9 +19,9 @@
 
 var Browser = require('..').Browser,
     By = require('..').By,
-    error = require('../error'),
     until = require('..').until,
     assert = require('../testing/assert'),
+    error = require('../lib/error'),
     test = require('../lib/test'),
     Pages = test.Pages;
 
@@ -152,7 +152,7 @@ test.suite(function(env) {
             }
           });
     }).then(resetPageLoad, function(err) {
-      resetPageLoad().thenFinally(function() {
+      resetPageLoad().finally(function() {
         throw err;
       });
     });

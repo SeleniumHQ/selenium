@@ -27,7 +27,6 @@ describe('error', function() {
           () => error.checkResponse({error: 'foo', message: 'hi there'}),
           (e) => {
             assert.equal(e.constructor, error.WebDriverError);
-            assert.equal(e.code, error.ErrorCode.UNKNOWN_ERROR);
             return true;
           });
     });
@@ -135,7 +134,6 @@ describe('error', function() {
           () => error.throwDecodedError({error: 'foo', message: 'hi there'}),
           (e) => {
             assert.equal(e.constructor, error.WebDriverError);
-            assert.equal(e.code, error.ErrorCode.UNKNOWN_ERROR);
             return true;
           });
     });
@@ -282,43 +280,6 @@ describe('error', function() {
               assert.equal(e.message, 'hi');
               return true;
             });
-      });
-    }
-  });
-
-  describe('WebDriverError types provide a legacy error code', function() {
-    check(error.WebDriverError, 'UNKNOWN_ERROR');
-    check(error.ElementNotSelectableError, 'ELEMENT_NOT_SELECTABLE');
-    check(error.ElementNotVisibleError, 'ELEMENT_NOT_VISIBLE');
-    check(error.InvalidArgumentError, 'UNKNOWN_ERROR');
-    check(error.InvalidCookieDomainError, 'INVALID_COOKIE_DOMAIN');
-    check(error.InvalidElementCoordinatesError, 'INVALID_ELEMENT_COORDINATES');
-    check(error.InvalidElementStateError, 'INVALID_ELEMENT_STATE');
-    check(error.InvalidSelectorError, 'INVALID_SELECTOR_ERROR');
-    check(error.NoSuchSessionError, 'UNKNOWN_ERROR');
-    check(error.JavascriptError, 'JAVASCRIPT_ERROR');
-    check(error.MoveTargetOutOfBoundsError, 'MOVE_TARGET_OUT_OF_BOUNDS');
-    check(error.NoSuchAlertError, 'NO_SUCH_ALERT');
-    check(error.NoSuchElementError, 'NO_SUCH_ELEMENT');
-    check(error.NoSuchFrameError, 'NO_SUCH_FRAME');
-    check(error.NoSuchWindowError, 'NO_SUCH_WINDOW');
-    check(error.ScriptTimeoutError, 'SCRIPT_TIMEOUT');
-    check(error.SessionNotCreatedError, 'SESSION_NOT_CREATED');
-    check(error.StaleElementReferenceError, 'STALE_ELEMENT_REFERENCE');
-    check(error.TimeoutError, 'TIMEOUT');
-    check(error.UnableToSetCookieError, 'UNABLE_TO_SET_COOKIE');
-    check(error.UnableToCaptureScreenError, 'UNKNOWN_ERROR');
-    check(error.UnexpectedAlertOpenError, 'UNEXPECTED_ALERT_OPEN');
-    check(error.UnknownCommandError, 'UNKNOWN_COMMAND');
-    check(error.UnknownMethodError, 'UNSUPPORTED_OPERATION');
-    check(error.UnsupportedOperationError, 'UNSUPPORTED_OPERATION');
-
-    function check(ctor, codeKey) {
-      it(`${ctor.name} => ${codeKey}`, function() {
-        let code = error.ErrorCode[codeKey];
-        let e = new ctor();
-        assert.equal(typeof e.code, 'number');
-        assert.equal(e.code, code);
       });
     }
   });

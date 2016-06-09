@@ -19,12 +19,11 @@
 
 const testutil = require('./testutil');
 
-const error = require('../../error');
-
 const By = require('../../lib/by').By;
 const Capabilities = require('../../lib/capabilities').Capabilities;
 const Executor = require('../../lib/command').Executor;
 const CName = require('../../lib/command').Name;
+const error = require('../../lib/error');
 const Button = require('../../lib/input').Button;
 const Key = require('../../lib/input').Key;
 const logging = require('../../lib/logging');
@@ -1314,68 +1313,6 @@ describe('WebDriver', function() {
     });
   });
 
-  describe('isElementPresent', function() {
-    it('elementNotFound', function() {
-      let executor = new FakeExecutor().
-          expect(CName.FIND_ELEMENTS,
-                 {using: 'css selector', value: '*[id="foo"]'}).
-          andReturnSuccess([]).
-          end();
-
-      var driver = executor.createDriver();
-      return driver.isElementPresent(By.id('foo'))
-          .then((found) => assert.ok(!found));
-    });
-
-    it('elementFound', function() {
-      let executor = new FakeExecutor().
-          expect(CName.FIND_ELEMENTS,
-                 {using: 'css selector', value: '*[id="foo"]'}).
-          andReturnSuccess([WebElement.buildId('bar')]).
-          end();
-
-      var driver = executor.createDriver();
-      return driver.isElementPresent(By.id('foo')).then(assert.ok);
-    });
-
-    it('letsErrorsPropagate', function() {
-      let executor = new FakeExecutor().
-          expect(CName.FIND_ELEMENTS,
-                 {using: 'css selector', value: '*[id="foo"]'}).
-          andReturnError(new StubError).
-          end();
-
-      var driver = executor.createDriver();
-      driver.isElementPresent(By.id('foo'));
-      return waitForAbort().then(assertIsStubError);
-    });
-
-    it('byJs', function() {
-      let executor = new FakeExecutor().
-          expect(CName.EXECUTE_SCRIPT, {'script': 'return 123', 'args': []}).
-          andReturnSuccess([WebElement.buildId('bar')]).
-          end();
-
-      var driver = executor.createDriver();
-      return driver.isElementPresent(By.js('return 123')).then(assert.ok);
-    });
-
-    it('byJs_canPassScriptArguments', function() {
-      var script = 'return document.getElementsByTagName(arguments[0]);';
-      let executor = new FakeExecutor().
-          expect(CName.EXECUTE_SCRIPT, {
-            'script': script,
-            'args': ['div']
-          }).
-          andReturnSuccess([WebElement.buildId('one')]).
-          end();
-
-      var driver = executor.createDriver();
-      driver.isElementPresent(By.js(script, 'div')).then(assert.ok);
-      return waitForIdle();
-    });
-  });
-
   describe('findElements', function() {
     it('returnsMultipleElements', function() {
       var ids = ['foo', 'bar', 'baz'];
@@ -1583,7 +1520,7 @@ describe('WebDriver', function() {
 
       var driver = executor.createDriver();
       driver.wait(function() {
-        return driver.isElementPresent(By.id('foo'));
+        return driver.findElements(By.id('foo')).then(els => els.length > 0);
       }, 200);
       return waitForIdle();
     });
@@ -1598,7 +1535,7 @@ describe('WebDriver', function() {
 
       var driver = executor.createDriver();
       return driver.wait(function() {
-        return driver.isElementPresent(By.id('foo'));
+        return driver.findElements(By.id('foo')).then(els => els.length > 0);
       }, 25).then(fail, function(e) {
         assert.equal('Wait timed out after ',
             e.message.substring(0, 'Wait timed out after '.length));
@@ -1615,7 +1552,7 @@ describe('WebDriver', function() {
 
       var driver = executor.createDriver();
       driver.wait(function() {
-        return driver.isElementPresent(By.id('foo'));
+        return driver.findElements(By.id('foo')).then(els => els.length > 0);
       }, 25);
       return waitForAbort().then(function(e) {
         assert.equal('Wait timed out after ',

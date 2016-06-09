@@ -134,7 +134,7 @@ const WEBDRIVER_TO_PHANTOMJS_LEVEL = new Map([
  * @return {!command.Executor} The new command executor.
  */
 function createExecutor(url) {
-  return new executors.DeferredExecutor(url.then(url => {
+  return new command.DeferredExecutor(url.then(url => {
     var client = new http.HttpClient(url);
     var executor = new http.Executor(client);
 

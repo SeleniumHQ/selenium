@@ -355,7 +355,7 @@ class Driver extends webdriver.WebDriver {
 
     /** @override */
     this.quit = function() {
-      return boundQuit().thenFinally(service.kill.bind(service));
+      return boundQuit().finally(service.kill.bind(service));
     };
   }
 

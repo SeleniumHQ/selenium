@@ -155,7 +155,7 @@ const Command = {
  * @return {!command.Executor} The new command executor.
  */
 function createExecutor(url) {
-  return new executors.DeferredExecutor(url.then(url => {
+  return new command.DeferredExecutor(url.then(url => {
     let client = new http.HttpClient(url);
     let executor = new http.Executor(client);
     executor.defineCommand(
