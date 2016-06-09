@@ -86,11 +86,11 @@ class Options(object):
 
             returns a dictionary with everything
         """
-        required = {}
+        desired = {}
         if self.binary_location:
-            required["binary"] = self.binary_location
+            desired["binary"] = self.binary_location
         if self._profile:
-            required["firefox_profile"] = self._profile.encoded
-        required["args"] = self.arguments
-        capabilities = {"requiredCapabilities": required}
+            desired["firefox_profile"] = self._profile.encoded
+        desired["args"] = self.arguments
+        capabilities = {"desiredCapabilities": desired}
         return capabilities
