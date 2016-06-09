@@ -95,9 +95,9 @@ describe "Selenium::WebDriver::TargetLocator" do
       wait.until { driver.window_handles.size == 2 }
       expect(driver.title).to eq("XHTML Test Page")
 
-      expect {
+      expect do
         driver.switch_to.window(new_window) { raise "foo" }
-      }.to raise_error(RuntimeError, "foo")
+      end.to raise_error(RuntimeError, "foo")
 
       expect(driver.title).to eq("XHTML Test Page")
     end
@@ -141,7 +141,7 @@ describe "Selenium::WebDriver::TargetLocator" do
           driver.find_element(:link, "Open new window").click
           wait.until { driver.window_handles.size == 3 }
 
-          driver.switch_to.window(driver.window_handle) {driver.close}
+          driver.switch_to.window(driver.window_handle) { driver.close }
           expect(driver.window_handles.size).to eq 2
         end
 

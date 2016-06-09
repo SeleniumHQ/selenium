@@ -25,7 +25,7 @@ module Selenium
     module IE
 
       describe Bridge do
-        let(:resp)    { {"sessionId" => "foo", "value" => @default_capabilities.as_json}}
+        let(:resp)    { {"sessionId" => "foo", "value" => @default_capabilities.as_json} }
         let(:service) { double(Service, start: nil, uri: "http://example.com") }
         let(:caps)    { {} }
         let(:http)    { double(Remote::Http::Default, call: resp).as_null_object   }

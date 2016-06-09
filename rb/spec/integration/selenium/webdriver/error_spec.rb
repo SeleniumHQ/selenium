@@ -24,9 +24,9 @@ describe Selenium::WebDriver::Error do
   it "should raise an appropriate error" do
     driver.navigate.to url_for("xhtmlTest.html")
 
-    expect {
+    expect do
       driver.find_element(:id, "nonexistant")
-    }.to raise_error(WebDriver::Error::NoSuchElementError)
+    end.to raise_error(WebDriver::Error::NoSuchElementError)
   end
 
   compliant_on({browser: :firefox},

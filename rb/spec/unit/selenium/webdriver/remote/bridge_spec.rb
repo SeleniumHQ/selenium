@@ -35,7 +35,7 @@ module Selenium
             status: 200, body: request_body, headers: headers)
 
           bridge = Bridge.new
-          expect { bridge.upload("NotAFile")}.to raise_error(Error::WebDriverError)
+          expect { bridge.upload("NotAFile") }.to raise_error(Error::WebDriverError)
         end
       end
 

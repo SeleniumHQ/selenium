@@ -359,9 +359,9 @@ module Selenium
       #
 
       def perform
-        @actions.each { |receiver, method, args|
+        @actions.each do |receiver, method, args|
           @devices.fetch(receiver).__send__(method, *args)
-        }
+        end
 
         nil
       end

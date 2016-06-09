@@ -31,37 +31,37 @@ module Selenium
       end
 
       it 'should raise a TimeOutError if the the timer runs out' do
-        expect {
+        expect do
           wait(timeout: 0.1).until { false }
-        }.to raise_error(Error::TimeOutError)
+        end.to raise_error(Error::TimeOutError)
       end
 
       it "should silently capture NoSuchElementErrors" do
         called = false
-        block = lambda {
+        block = lambda do
           if called
             true
           else
             called = true
             raise Error::NoSuchElementError
           end
-        }
+        end
 
         expect(wait.until(&block)).to be true
       end
 
       it "will use the message from any NoSuchElementError raised while waiting" do
-        block = lambda { raise Error::NoSuchElementError, "foo" }
+        block = -> { raise Error::NoSuchElementError, "foo" }
 
-        expect {
+        expect do
           wait(timeout: 0.5).until(&block)
-        }.to raise_error(Error::TimeOutError, /foo/)
+        end.to raise_error(Error::TimeOutError, /foo/)
       end
 
       it "should let users configure what exceptions to ignore" do
-        expect {
+        expect do
           wait(ignore: NoMethodError, timeout: 0.5).until { raise NoMethodError }
-        }.to raise_error(Error::TimeOutError, /NoMethodError/)
+        end.to raise_error(Error::TimeOutError, /NoMethodError/)
       end
     end
   end

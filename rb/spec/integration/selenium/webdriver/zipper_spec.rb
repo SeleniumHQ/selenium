@@ -40,9 +40,9 @@ module Selenium
         filename
       end
 
-      after {
+      after do
         FileUtils.rm_rf zip_file
-      }
+      end
 
       it "zips and unzips a folder" do
         create_file

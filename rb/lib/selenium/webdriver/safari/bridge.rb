@@ -97,7 +97,7 @@ module Selenium
 
         def camel_case(str)
           parts = str.split('_')
-          parts[1..-1].map { |e| e.capitalize! }
+          parts[1..-1].map(&:capitalize!)
 
           parts.join
         end

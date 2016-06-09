@@ -94,7 +94,7 @@ module Selenium
               raise ArgumentError, ":args must be an Array of Strings"
             end
 
-            chrome_options['args'] = args.map { |e| e.to_s }
+            chrome_options['args'] = args.map(&:to_s)
           end
 
           if profile

@@ -37,61 +37,61 @@ module Selenium
         end
 
         def get(url)
-          dispatch(:navigate_to, url, driver) {
+          dispatch(:navigate_to, url, driver) do
             @delegate.get(url)
-          }
+          end
         end
 
         def goForward
-          dispatch(:navigate_forward, driver) {
+          dispatch(:navigate_forward, driver) do
             @delegate.goForward
-          }
+          end
         end
 
         def goBack
-          dispatch(:navigate_back, driver) {
+          dispatch(:navigate_back, driver) do
             @delegate.goBack
-          }
+          end
         end
 
         def clickElement(ref)
-          dispatch(:click, create_element(ref), driver) {
+          dispatch(:click, create_element(ref), driver) do
             @delegate.clickElement(ref)
-          }
+          end
         end
 
         def clearElement(ref)
-          dispatch(:change_value_of, create_element(ref), driver) {
+          dispatch(:change_value_of, create_element(ref), driver) do
             @delegate.clearElement(ref)
-          }
+          end
         end
 
         def sendKeysToElement(ref, keys)
-          dispatch(:change_value_of, create_element(ref), driver) {
+          dispatch(:change_value_of, create_element(ref), driver) do
             @delegate.sendKeysToElement(ref, keys)
-          }
+          end
         end
 
         def find_element_by(how, what, parent = nil)
-          e = dispatch(:find, how, what, driver) {
+          e = dispatch(:find, how, what, driver) do
             @delegate.find_element_by how, what, parent
-          }
+          end
 
           Element.new self, e.ref
         end
 
         def find_elements_by(how, what, parent = nil)
-          es = dispatch(:find, how, what, driver) {
+          es = dispatch(:find, how, what, driver) do
             @delegate.find_elements_by(how, what, parent)
-          }
+          end
 
           es.map { |e| Element.new self, e.ref }
         end
 
         def executeScript(script, *args)
-          dispatch(:execute_script, script, driver) {
+          dispatch(:execute_script, script, driver) do
             @delegate.executeScript(script, *args)
-          }
+          end
         end
 
         def quit

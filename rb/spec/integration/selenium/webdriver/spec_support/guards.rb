@@ -88,15 +88,15 @@ module Selenium
           #   - guard this spec for Chrome on OSX and Firefox on any OS
 
           def env_matches?(opts)
-            res = opts.any? { |env|
-              env.all? { |key, value|
+            res = opts.any? do |env|
+              env.all? do |key, value|
                 if value.kind_of?(Array)
                   value.include? current_env[key]
                 else
                   value == current_env[key]
                 end
-              }
-            }
+              end
+            end
 
             p res => [opts, current_env] if @debug_guard
             res

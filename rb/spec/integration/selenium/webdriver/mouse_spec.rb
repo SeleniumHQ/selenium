@@ -34,9 +34,9 @@ module Selenium
         it "can drag and drop" do
           driver.navigate.to url_for("droppableItems.html")
 
-          draggable = long_wait.until {
+          draggable = long_wait.until do
             driver.find_element(id: "draggable")
-          }
+          end
 
           droppable = driver.find_element(id: "droppable")
 
@@ -56,9 +56,9 @@ module Selenium
 
             driver.mouse.double_click element
 
-            wait(5).until {
+            wait(5).until do
               element.attribute(:value) == 'DoubleClicked'
-            }
+            end
           end
         end
 
@@ -69,9 +69,9 @@ module Selenium
 
             driver.mouse.context_click element
 
-            wait(5).until {
+            wait(5).until do
               element.attribute(:value) == 'ContextClicked'
-            }
+            end
           end
         end
       end

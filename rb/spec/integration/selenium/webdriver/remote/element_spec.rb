@@ -25,7 +25,7 @@ module Selenium
     compliant_on driver: :remote do
       describe Element do
         before do
-          driver.file_detector = lambda { |str| __FILE__ }
+          driver.file_detector = ->(_str) { __FILE__ }
         end
 
         after do

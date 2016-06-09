@@ -39,9 +39,9 @@ module Selenium
           end
 
           it "should raise ArgumentError if :args is not an Array" do
-            expect {
+            expect do
               Selenium::WebDriver.for(:chrome, args: "--foo")
-            }.to raise_error(ArgumentError)
+            end.to raise_error(ArgumentError)
           end
 
           it_behaves_like "driver that can be started concurrently", :chrome

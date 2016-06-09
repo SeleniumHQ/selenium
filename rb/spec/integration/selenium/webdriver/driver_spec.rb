@@ -285,10 +285,10 @@ describe "Driver" do
       not_compliant_on({driver: :remote, browser: [:marionette, :phantomjs]},
                        {browser: :edge}) do
         it "times out if the callback is not invoked" do
-          expect {
+          expect do
             # Script is expected to be async and explicitly callback, so this should timeout.
             driver.execute_async_script "return 1 + 2;"
-          }.to raise_error(Selenium::WebDriver::Error::ScriptTimeoutError)
+          end.to raise_error(Selenium::WebDriver::Error::ScriptTimeoutError)
         end
       end
     end

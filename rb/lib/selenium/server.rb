@@ -115,9 +115,9 @@ module Selenium
       def latest
         require 'rexml/document'
         net_http.start("selenium-release.storage.googleapis.com") do |http|
-          REXML::Document.new(http.get("/").body).root.get_elements("//Contents/Key").map { |e|
+          REXML::Document.new(http.get("/").body).root.get_elements("//Contents/Key").map do |e|
             e.text[/selenium-server-standalone-(\d+\.\d+\.\d+)\.jar/, 1]
-          }.compact.max
+          end.compact.max
         end
       end
 

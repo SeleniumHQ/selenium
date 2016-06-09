@@ -19,7 +19,7 @@
 
 shared_examples_for "driver that can be started concurrently" do |browser_name|
   it "is started sequentially" do
-    expect {
+    expect do
       # start 5 drivers concurrently
       threads, drivers = [], []
 
@@ -45,6 +45,6 @@ shared_examples_for "driver that can be started concurrently" do |browser_name|
         driver.title # make any wire call
         driver.quit
       end
-    }.not_to raise_error
+    end.not_to raise_error
   end
 end

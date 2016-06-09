@@ -25,7 +25,7 @@ module Selenium
     module PhantomJS
       describe Bridge do
 
-        let(:resp)    { {"sessionId" => "foo", "value" => Remote::Capabilities.phantomjs.as_json}}
+        let(:resp)    { {"sessionId" => "foo", "value" => Remote::Capabilities.phantomjs.as_json} }
         let(:service) { double(Service, start: true, uri: "http://example.com") }
         let(:http)    { double(Remote::Http::Default, call: resp).as_null_object }
 
@@ -51,7 +51,7 @@ module Selenium
         it 'takes desired capabilities' do
           custom_caps = Remote::Capabilities.new(browser_name: 'foo')
 
-          expect(http).to receive(:call) do |verb, post, payload|
+          expect(http).to receive(:call) do |_verb, _post, payload|
             expect(payload[:desiredCapabilities]).to eq(custom_caps)
             resp
           end

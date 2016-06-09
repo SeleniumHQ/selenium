@@ -25,11 +25,11 @@ module Selenium::WebDriver::DriverExtensions
 
     compliant_on browser: :android do
       context "flick" do
-        before {
+        before do
           reset_driver!
           driver.get url_for("longContentPage.html")
           driver.rotation = :portrait
-        }
+        end
 
         it "can flick horizontally from element" do
           link = driver.find_element(id: "link1")
@@ -108,10 +108,10 @@ module Selenium::WebDriver::DriverExtensions
       end
 
       context "scroll" do
-        before {
+        before do
           reset_driver!
           driver.get url_for("longContentPage.html")
-        }
+        end
 
         compliant_on browser: nil do
           it "can scroll vertically from element" do

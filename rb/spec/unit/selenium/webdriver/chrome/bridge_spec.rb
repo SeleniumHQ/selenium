@@ -25,7 +25,7 @@ module Selenium
     module Chrome
 
       describe Bridge do
-        let(:resp)    { {"sessionId" => "foo", "value" => @default_capabilities}}
+        let(:resp)    { {"sessionId" => "foo", "value" => @default_capabilities} }
         let(:service) { double(Service, start: true, uri: "http://example.com") }
         let(:caps)    { {} }
         let(:http)    { double(Remote::Http::Default, call: resp).as_null_object   }
@@ -102,7 +102,7 @@ module Selenium
         end
 
         it "raises an ArgumentError if args is not an Array" do
-          expect { Bridge.new(args: "--foo=bar")}.to raise_error(ArgumentError)
+          expect { Bridge.new(args: "--foo=bar") }.to raise_error(ArgumentError)
         end
 
         it "uses the given profile" do

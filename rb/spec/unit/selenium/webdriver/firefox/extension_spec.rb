@@ -28,12 +28,12 @@ module Selenium
           File.stub(exist?: true)
         end
 
-        let(:extension) {
+        let(:extension) do
           ext = Extension.new('/foo')
           def ext.read_id(dir); read_id_from_install_rdf(dir); end
 
           ext
-        }
+        end
 
         it 'finds the rdf extension id as attribute' do
           allow(File).to receive(:read).with('/foo/install.rdf').and_return <<-XML

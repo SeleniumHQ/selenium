@@ -54,12 +54,12 @@ module Selenium
 
         def []=(key, value)
           parts = key.split(".")
-          parts[0..-2].inject(prefs) { |pr, k| pr[k] ||= {} }[parts.last] = value
+          parts[0..-2].inject(prefs) { |a, e| a[e] ||= {} }[parts.last] = value
         end
 
         def [](key)
           parts = key.split(".")
-          parts.inject(prefs) { |pr, k| pr.fetch(k) }
+          parts.inject(prefs) { |a, e| a.fetch(e) }
         end
 
         def layout_on_disk

@@ -384,7 +384,7 @@ module Selenium
         end
 
         def deleteAllCookies
-          getAllCookies.each { |cookie| deleteCookie(cookie['name'])}
+          getAllCookies.each { |cookie| deleteCookie(cookie['name']) }
         end
 
         #
@@ -635,9 +635,9 @@ module Selenium
           path[':session_id'] = @session_id if path.include?(":session_id")
 
           begin
-            opts.each { |key, value|
+            opts.each do |key, value|
               path[key.inspect] = escaper.escape(value.to_s)
-            }
+            end
           rescue IndexError
             raise ArgumentError, "#{opts.inspect} invalid for #{command.inspect}"
           end

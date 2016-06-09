@@ -25,10 +25,10 @@ module Selenium::WebDriver::DriverExtensions
 
     compliant_on browser: [:chrome, :marionette] do
       shared_examples_for 'web storage' do
-        before {
+        before do
           driver.navigate.to url_for("clicks.html")
           storage.clear
-        }
+        end
 
         it "can get and set items" do
           expect(storage).to be_empty

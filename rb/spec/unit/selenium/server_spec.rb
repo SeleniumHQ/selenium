@@ -22,12 +22,12 @@ require 'selenium/server'
 
 describe Selenium::Server do
   let(:mock_process) { double(ChildProcess).as_null_object }
-  let(:mock_poller)  { double("SocketPoller", connected?: true, closed?: true)}
+  let(:mock_poller)  { double("SocketPoller", connected?: true, closed?: true) }
 
   it "raises an error if the jar file does not exist" do
-    expect {
+    expect do
       Selenium::Server.new("doesnt-exist.jar")
-    }.to raise_error(Errno::ENOENT)
+    end.to raise_error(Errno::ENOENT)
   end
 
   it "uses the given jar file and port" do

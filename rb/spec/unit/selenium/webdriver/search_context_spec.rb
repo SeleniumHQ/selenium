@@ -30,7 +30,7 @@ describe "SearchContext" do
     end
   end
 
-  let(:element)        { double(:Element)}
+  let(:element)        { double(:Element) }
   let(:bridge)         { double(:Bridge).as_null_object   }
   let(:search_context) { TestSearchContext.new(bridge)  }
 
@@ -46,9 +46,9 @@ describe "SearchContext" do
     end
 
     it "raises an error if given an invalid 'by'" do
-      expect {
+      expect do
         search_context.find_element(foo: "bar")
-      }.to raise_error(ArgumentError, 'cannot find element by :foo')
+      end.to raise_error(ArgumentError, 'cannot find element by :foo')
     end
 
     it "does not modify the hash given" do
@@ -72,9 +72,9 @@ describe "SearchContext" do
     end
 
     it "raises an error if given an invalid 'by'" do
-      expect {
+      expect do
         search_context.find_elements(foo: "bar")
-      }.to raise_error(ArgumentError, 'cannot find elements by :foo')
+      end.to raise_error(ArgumentError, 'cannot find elements by :foo')
     end
   end
 end

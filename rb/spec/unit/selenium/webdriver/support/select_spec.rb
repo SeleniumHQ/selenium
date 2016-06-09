@@ -24,23 +24,23 @@ module Selenium
     module Support
 
       describe Select do
-        let(:select) {
+        let(:select) do
           double(Element, tag_name: 'select')
-        }
+        end
 
-        let(:multi_select) {
+        let(:multi_select) do
           s = double(Element, tag_name: 'select')
           allow(s).to receive(:attribute).with(:multiple).and_return "multiple"
 
           s
-        }
+        end
 
         it 'raises ArgumentError if passed a non-select Element' do
           link = double(Element, tag_name: "a")
 
-          expect {
+          expect do
             Select.new link
-          }.to raise_error(ArgumentError)
+          end.to raise_error(ArgumentError)
         end
 
         it 'indicates whether a select is multiple correctly' do
@@ -109,9 +109,9 @@ module Selenium
                          once.
                          and_return([option])
 
-          expect {
+          expect do
             Select.new(multi_select).first_selected_option
-          }.to raise_error(Error::NoSuchElementError)
+          end.to raise_error(Error::NoSuchElementError)
         end
 
         it 'allows options to be selected by visible text' do
@@ -173,9 +173,9 @@ module Selenium
         it 'can not deselect all when select does not support multiple selections' do
           expect(select).to receive(:attribute).with(:multiple).and_return nil
 
-          expect {
+          expect do
             Select.new(select).deselect_all
-          }.to raise_error(Error::UnsupportedOperationError)
+          end.to raise_error(Error::UnsupportedOperationError)
         end
 
         it 'can deselect options by visible text' do
@@ -245,17 +245,17 @@ module Selenium
 
           s = Select.new select
 
-          expect {
+          expect do
             s.select_by :index, 12
-          }.to raise_error(Error::NoSuchElementError)
+          end.to raise_error(Error::NoSuchElementError)
 
-          expect {
+          expect do
             s.select_by :value, 'not there'
-          }.to raise_error(Error::NoSuchElementError)
+          end.to raise_error(Error::NoSuchElementError)
 
-          expect {
+          expect do
             s.select_by :text, 'also not there'
-          }.to raise_error(Error::NoSuchElementError)
+          end.to raise_error(Error::NoSuchElementError)
         end
 
         it 'should raise NoSuchElementError if there are no selects to deselect' do
@@ -264,35 +264,35 @@ module Selenium
 
           s = Select.new multi_select
 
-          expect {
+          expect do
             s.deselect_by :index, 12
-          }.to raise_error(Error::NoSuchElementError)
+          end.to raise_error(Error::NoSuchElementError)
 
-          expect {
+          expect do
             s.deselect_by :value, 'not there'
-          }.to raise_error(Error::NoSuchElementError)
+          end.to raise_error(Error::NoSuchElementError)
 
-          expect {
+          expect do
             s.deselect_by :text, 'also not there'
-          }.to raise_error(Error::NoSuchElementError)
+          end.to raise_error(Error::NoSuchElementError)
         end
-		
+    
         it 'should raise UnsupportedOperationError if trying to deselect options in non-multiselect' do
           expect(select).to receive(:attribute).with(:multiple).and_return('false')
-		  
+      
           s = Select.new select
 
-          expect {
+          expect do
             s.deselect_by :index, 0
-          }.to raise_error(Error::UnsupportedOperationError)
+          end.to raise_error(Error::UnsupportedOperationError)
 
-          expect {
+          expect do
             s.deselect_by :value, 'not there'
-          }.to raise_error(Error::UnsupportedOperationError)
+          end.to raise_error(Error::UnsupportedOperationError)
 
-          expect {
+          expect do
             s.deselect_by :text, 'also not there'
-          }.to raise_error(Error::UnsupportedOperationError)
+          end.to raise_error(Error::UnsupportedOperationError)
         end
       end # Select
 

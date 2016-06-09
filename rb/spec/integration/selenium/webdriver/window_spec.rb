@@ -67,7 +67,7 @@ module Selenium
 
           window.position = Point.new(target_x, target_y)
 
-          wait.until {window.position.x != pos.x && window.position.y != pos.y}
+          wait.until { window.position.x != pos.x && window.position.y != pos.y }
 
           new_pos = window.position
           expect(new_pos.x).to eq(target_x)

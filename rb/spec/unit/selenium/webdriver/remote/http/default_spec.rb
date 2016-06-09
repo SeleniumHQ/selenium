@@ -24,12 +24,12 @@ module Selenium
     module Remote
       module Http
         describe Default do
-          let(:client) {
+          let(:client) do
             client = Default.new
             client.server_url = URI.parse("http://example.com")
 
             client
-          }
+          end
 
           it "uses the specified timeout" do
             client.timeout = 10
@@ -57,7 +57,7 @@ module Selenium
             expect { client.send :http }.to raise_error(Error::WebDriverError)
           end
 
-          ["http_proxy", "HTTP_PROXY"].each { |proxy_var|
+          ["http_proxy", "HTTP_PROXY"].each do |proxy_var|
             it "honors the #{proxy_var} environment varable" do
               with_env(proxy_var => "http://proxy.org:8080") do
                 http = client.send :http
@@ -77,7 +77,7 @@ module Selenium
                 expect(http.proxy_port).to eq(8080)
               end
             end
-          }
+          end
 
           ["no_proxy", "NO_PROXY"].each do |no_proxy_var|
             it "honors the #{no_proxy_var} environment variable when matching" do
@@ -128,9 +128,9 @@ module Selenium
               http = client.send :http
               expect(http).to receive(:request).and_raise Errno::ECONNREFUSED.new("Connection refused")
 
-              expect {
+              expect do
                 client.call :post, 'http://example.com/foo/bar', {}
-              }.to raise_error(Errno::ECONNREFUSED, %r[using proxy: http://localhost:1234])
+              end.to raise_error(Errno::ECONNREFUSED, %r[using proxy: http://localhost:1234])
             end
           end
 
