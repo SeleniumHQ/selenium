@@ -2424,8 +2424,6 @@ module.exports = {
   Options: Options,
   TargetLocator: TargetLocator,
   Timeouts: Timeouts,
-  /** @deprecated Use {@link error.UnexpectedAlertOpenError} instead. */
-  UnhandledAlertError: error.UnexpectedAlertOpenError,
   WebDriver: WebDriver,
   WebElement: WebElement,
   WebElementCondition: WebElementCondition,

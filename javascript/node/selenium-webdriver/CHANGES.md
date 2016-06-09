@@ -9,6 +9,9 @@
 * Internal cleanup replacing uses of managed promises with native promises
 * Removed the mandatory use of Firefox Dev Edition, when using Marionette driver
 * Fixed timeouts' URL
+* Removed the deprecated `webdriver.UnhandledAlertError`, which was just an
+   alias for `error.UnexpectedAlertOpenError`
+
 
 ## v2.53.2
 
