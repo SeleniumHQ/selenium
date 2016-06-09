@@ -158,7 +158,7 @@ class Options {
     this.proxy_ = null;
 
     /** @private {boolean} */
-    this.marionette_ = false;
+    this.marionette_ = true;
   }
 
   /**

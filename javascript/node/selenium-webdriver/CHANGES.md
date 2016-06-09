@@ -7,6 +7,7 @@
 * Added work around for [GeckoDriver bug](https://bugzilla.mozilla.org/show_bug.cgi?id=1274924) raising a type conversion error
 * Removed the mandatory use of Firefox Dev Edition, when using Marionette driver
 * Fixed timeouts' URL
+* Turn on marionette by default when creating new Firefox Options
 
 ## v2.53.2
 
