@@ -110,7 +110,7 @@ module Selenium
           when Symbol
             Keys[arg]
           when Array
-            arg = arg.map { |e| e.kind_of?(Symbol) ? Keys[e] : e }.join
+            arg = arg.map { |e| e.is_a?(Symbol) ? Keys[e] : e }.join
             arg << Keys[:null]
 
             arg

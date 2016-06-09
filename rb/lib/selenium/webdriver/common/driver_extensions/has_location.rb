@@ -26,7 +26,7 @@ module Selenium
         end
 
         def location=(loc)
-          unless loc.kind_of?(Location)
+          unless loc.is_a?(Location)
             raise TypeError, "expected #{Location}, got #{loc.inspect}:#{loc.class}"
           end
 

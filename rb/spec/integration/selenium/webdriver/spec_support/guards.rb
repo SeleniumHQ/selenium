@@ -89,7 +89,7 @@ module Selenium
           def env_matches?(opts)
             res = opts.any? do |env|
               env.all? do |key, value|
-                if value.kind_of?(Array)
+                if value.is_a?(Array)
                   value.include? current_env[key]
                 else
                   value == current_env[key]

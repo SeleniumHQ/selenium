@@ -49,7 +49,7 @@ module Selenium
           when Hash
             msg = val['message']
             return "unknown error" unless msg
-            msg << ": #{val['alert']['text'].inspect}" if val['alert'].kind_of?(Hash) && val['alert']['text']
+            msg << ": #{val['alert']['text'].inspect}" if val['alert'].is_a?(Hash) && val['alert']['text']
             msg << " (#{val['class']})" if val['class']
             msg
           when String
@@ -73,12 +73,12 @@ module Selenium
         end
 
         def add_backtrace(ex)
-          return unless value.kind_of?(Hash) && value['stackTrace']
+          return unless value.is_a?(Hash) && value['stackTrace']
 
           server_trace = value['stackTrace']
 
           backtrace = server_trace.map do |frame|
-            next unless frame.kind_of?(Hash)
+            next unless frame.is_a?(Hash)
 
             file = frame['fileName']
             line = frame['lineNumber']

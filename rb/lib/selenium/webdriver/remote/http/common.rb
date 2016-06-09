@@ -38,7 +38,7 @@ module Selenium
           end
 
           def call(verb, url, command_hash)
-            url      = server_url.merge(url) unless url.kind_of?(URI)
+            url      = server_url.merge(url) unless url.is_a?(URI)
             headers  = DEFAULT_HEADERS.dup
             headers['Cache-Control'] = "no-cache" if verb == :get
 

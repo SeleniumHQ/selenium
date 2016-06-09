@@ -163,13 +163,13 @@ module Selenium
             caps = new
             caps.browser_name          = data.delete("browserName")
             caps.version               = data.delete("version")
-            caps.platform              = data.delete("platform").downcase.to_sym if data.has_key?('platform')
+            caps.platform              = data.delete("platform").downcase.to_sym if data.key?('platform')
             caps.javascript_enabled    = data.delete("javascriptEnabled")
             caps.css_selectors_enabled = data.delete("cssSelectorsEnabled")
             caps.takes_screenshot      = data.delete("takesScreenshot")
             caps.native_events         = data.delete("nativeEvents")
             caps.rotatable             = data.delete("rotatable")
-            caps.proxy                 = Proxy.json_create(data['proxy']) if data.has_key?('proxy')
+            caps.proxy                 = Proxy.json_create(data['proxy']) if data.key?('proxy')
 
             # any remaining pairs will be added as is, with no conversion
             caps.merge!(data)
@@ -212,9 +212,9 @@ module Selenium
         end
 
         def merge!(other)
-          if other.respond_to?(:capabilities, true) && other.capabilities.kind_of?(Hash)
+          if other.respond_to?(:capabilities, true) && other.capabilities.is_a?(Hash)
             @capabilities.merge! other.capabilities
-          elsif other.kind_of? Hash
+          elsif other.is_a? Hash
             @capabilities.merge! other
           else
             raise ArgumentError, "argument should be a Hash or implement #capabilities"
@@ -263,7 +263,7 @@ module Selenium
         end
 
         def ==(other)
-          return false unless other.kind_of? self.class
+          return false unless other.is_a? self.class
           as_json == other.as_json
         end
         alias_method :eql?, :==

@@ -99,7 +99,7 @@ module Selenium
 
         def ==(other)
           return true if equal?(other)
-          return false unless other.kind_of?(self.class)
+          return false unless other.is_a?(self.class)
 
           [red, green, blue, alpha] == [other.red, other.green, other.blue, other.alpha]
         end

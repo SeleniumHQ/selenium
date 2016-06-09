@@ -108,11 +108,11 @@ module Selenium
         #
 
         def []=(key, value)
-          unless VALID_PREFERENCE_TYPES.any? { |e| value.kind_of? e }
+          unless VALID_PREFERENCE_TYPES.any? { |e| value.is_a? e }
             raise TypeError, "expected one of #{VALID_PREFERENCE_TYPES.inspect}, got #{value.inspect}:#{value.class}"
           end
 
-          if value.kind_of?(String) && Util.stringified?(value)
+          if value.is_a?(String) && Util.stringified?(value)
             raise ArgumentError, "preference values must be plain strings: #{key.inspect} => #{value.inspect}"
           end
 
@@ -129,7 +129,7 @@ module Selenium
         end
 
         def add_webdriver_extension
-          return if @extensions.has_key?(:webdriver)
+          return if @extensions.key?(:webdriver)
           add_extension(WEBDRIVER_EXTENSION_PATH, :webdriver)
         end
 
@@ -162,7 +162,7 @@ module Selenium
         end
 
         def proxy=(proxy)
-          unless proxy.kind_of? Proxy
+          unless proxy.is_a? Proxy
             raise TypeError, "expected #{Proxy.name}, got #{proxy.inspect}:#{proxy.class}"
           end
 

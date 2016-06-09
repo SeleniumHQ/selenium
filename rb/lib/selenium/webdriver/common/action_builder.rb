@@ -78,9 +78,7 @@ module Selenium
       #
 
       def key_down(*args)
-        if args.first.kind_of? Element
-          @actions << [:mouse, :click, [args.shift]]
-        end
+        @actions << [:mouse, :click, [args.shift]] if args.first.is_a? Element
 
         @actions << [:keyboard, :press, args]
         self
@@ -106,9 +104,7 @@ module Selenium
       #
 
       def key_up(*args)
-        if args.first.kind_of? Element
-          @actions << [:mouse, :click, [args.shift]]
-        end
+        @actions << [:mouse, :click, [args.shift]] if args.first.is_a? Element
 
         @actions << [:keyboard, :release, args]
         self
@@ -136,9 +132,7 @@ module Selenium
       #
 
       def send_keys(*args)
-        if args.first.kind_of? Element
-          @actions << [:mouse, :click, [args.shift]]
-        end
+        @actions << [:mouse, :click, [args.shift]] if args.first.is_a? Element
 
         @actions << [:keyboard, :send_keys, args]
         self

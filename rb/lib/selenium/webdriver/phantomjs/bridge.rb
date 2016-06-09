@@ -29,7 +29,7 @@ module Selenium
           http_client = opts.delete(:http_client)
           caps        = opts.delete(:desired_capabilities) { Remote::Capabilities.phantomjs }
 
-          if opts.has_key?(:url)
+          if opts.key?(:url)
             url = opts.delete(:url)
           else
             args = opts.delete(:args) || caps['phantomjs.cli.args']

@@ -42,23 +42,23 @@ module Selenium
       def initialize(opts = {})
         opts = opts.dup
 
-        self.type           = opts.delete(:type) if opts.has_key? :type
-        self.ftp            = opts.delete(:ftp) if opts.has_key? :ftp
-        self.http           = opts.delete(:http) if opts.has_key? :http
-        self.no_proxy       = opts.delete(:no_proxy) if opts.has_key? :no_proxy
-        self.ssl            = opts.delete(:ssl) if opts.has_key? :ssl
-        self.pac            = opts.delete(:pac) if opts.has_key? :pac
-        self.auto_detect    = opts.delete(:auto_detect) if opts.has_key? :auto_detect
-        self.socks          = opts.delete(:socks) if opts.has_key? :socks
-        self.socks_username = opts.delete(:socks_username) if opts.has_key? :socks_username
-        self.socks_password = opts.delete(:socks_password) if opts.has_key? :socks_password
+        self.type           = opts.delete(:type) if opts.key? :type
+        self.ftp            = opts.delete(:ftp) if opts.key? :ftp
+        self.http           = opts.delete(:http) if opts.key? :http
+        self.no_proxy       = opts.delete(:no_proxy) if opts.key? :no_proxy
+        self.ssl            = opts.delete(:ssl) if opts.key? :ssl
+        self.pac            = opts.delete(:pac) if opts.key? :pac
+        self.auto_detect    = opts.delete(:auto_detect) if opts.key? :auto_detect
+        self.socks          = opts.delete(:socks) if opts.key? :socks
+        self.socks_username = opts.delete(:socks_username) if opts.key? :socks_username
+        self.socks_password = opts.delete(:socks_password) if opts.key? :socks_password
 
         return if opts.empty?
         raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
       end
 
       def ==(other)
-        other.kind_of?(self.class) && as_json == other.as_json
+        other.is_a?(self.class) && as_json == other.as_json
       end
       alias_method :eql?, :==
 
@@ -108,7 +108,7 @@ module Selenium
       end
 
       def type=(type)
-        unless TYPES.has_key? type
+        unless TYPES.key? type
           raise ArgumentError, "invalid proxy type: #{type.inspect}, expected one of #{TYPES.keys.inspect}"
         end
 
@@ -147,16 +147,16 @@ module Selenium
 
           proxy = new
 
-          proxy.type           = data['proxyType'].downcase.to_sym if data.has_key? 'proxyType'
-          proxy.ftp            = data['ftpProxy'] if data.has_key? 'ftpProxy'
-          proxy.http           = data['httpProxy'] if data.has_key? 'httpProxy'
-          proxy.no_proxy       = data['noProxy'] if data.has_key? 'noProxy'
-          proxy.pac            = data['proxyAutoconfigUrl'] if data.has_key? 'proxyAutoconfigUrl'
-          proxy.ssl            = data['sslProxy'] if data.has_key? 'sslProxy'
-          proxy.auto_detect    = data['autodetect'] if data.has_key? 'autodetect'
-          proxy.socks          = data['socksProxy'] if data.has_key? 'socksProxy'
-          proxy.socks_username = data['socksUsername'] if data.has_key? 'socksUsername'
-          proxy.socks_password = data['socksPassword'] if data.has_key? 'socksPassword'
+          proxy.type           = data['proxyType'].downcase.to_sym if data.key? 'proxyType'
+          proxy.ftp            = data['ftpProxy'] if data.key? 'ftpProxy'
+          proxy.http           = data['httpProxy'] if data.key? 'httpProxy'
+          proxy.no_proxy       = data['noProxy'] if data.key? 'noProxy'
+          proxy.pac            = data['proxyAutoconfigUrl'] if data.key? 'proxyAutoconfigUrl'
+          proxy.ssl            = data['sslProxy'] if data.key? 'sslProxy'
+          proxy.auto_detect    = data['autodetect'] if data.key? 'autodetect'
+          proxy.socks          = data['socksProxy'] if data.key? 'socksProxy'
+          proxy.socks_username = data['socksUsername'] if data.key? 'socksUsername'
+          proxy.socks_password = data['socksPassword'] if data.key? 'socksPassword'
 
           proxy
         end

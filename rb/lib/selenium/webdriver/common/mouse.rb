@@ -80,7 +80,7 @@ module Selenium
       end
 
       def assert_element(element)
-        return if element.kind_of? Element
+        return if element.is_a? Element
         raise TypeError, "expected #{Element}, got #{element.inspect}:#{element.class}"
       end
     end # Mouse

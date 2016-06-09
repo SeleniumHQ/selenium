@@ -79,7 +79,7 @@ module Selenium
               raise
             end
 
-            if response.kind_of? Net::HTTPRedirection
+            if response.is_a? Net::HTTPRedirection
               raise Error::WebDriverError, "too many redirects" if redirects >= MAX_REDIRECTS
               request(:get, URI.parse(response['Location']), DEFAULT_HEADERS.dup, nil, redirects + 1)
             else

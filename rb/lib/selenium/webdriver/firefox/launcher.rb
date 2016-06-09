@@ -31,7 +31,7 @@ module Selenium
 
           raise Error::WebDriverError, "invalid port: #{@port}" if @port < 1
 
-          if profile.kind_of? Profile
+          if profile.is_a? Profile
             @profile = profile
           else
             @profile_name = profile

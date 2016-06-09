@@ -80,7 +80,7 @@ module Selenium
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
           end
 
-          uri = url.kind_of?(URI) ? url : URI.parse(url)
+          uri = url.is_a?(URI) ? url : URI.parse(url)
           uri.path += "/" unless uri.path =~ %r{\/$}
 
           http_client.server_url = uri

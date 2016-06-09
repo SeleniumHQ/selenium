@@ -269,7 +269,7 @@ module Selenium
       #
 
       def [](sel)
-        sel = {id: sel} if sel.kind_of?(String) || sel.kind_of?(Symbol)
+        sel = {id: sel} if sel.is_a?(String) || sel.is_a?(Symbol)
 
         find_element sel
       end
