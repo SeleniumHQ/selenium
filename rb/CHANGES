@@ -1,4 +1,11 @@
-2.53.0 (Unreleased)
+2.53.1 (2016-06-09)
+===================
+
+Firefox:
+  * Support for latest geckodriver (formerly wires)
+  * Escape selector when converting to CSS (issue 2235)
+
+2.53.0 (2016-03-16)
 ===================
 
 Ruby:
