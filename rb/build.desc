@@ -250,7 +250,7 @@ ruby_test(name = "remote-marionette",
 
 ruby_library(name = "safari",
   srcs = [
-    "lib/selenium/webdriver/safari/**/* .rb",
+    "lib/selenium/webdriver/safari/**/*.rb",
     "lib/selenium/webdriver/safari.rb"
   ],
   deps = [":common"],

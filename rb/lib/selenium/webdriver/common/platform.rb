@@ -91,12 +91,8 @@ module Selenium
         engine == :ironruby
       end
 
-      def ruby187?
-        !!(RUBY_VERSION =~ /^1\.8\.7/)
-      end
-
-      def ruby19?
-        !!(RUBY_VERSION =~ /^1\.9/)
+      def ruby_version
+        RUBY_VERSION
       end
 
       def windows?
@@ -230,16 +226,15 @@ module Selenium
 end # Selenium
 
 if __FILE__ == $0
-  p :engine      => Selenium::WebDriver::Platform.engine,
-    :os          => Selenium::WebDriver::Platform.os,
-    :ruby187?    => Selenium::WebDriver::Platform.ruby187?,
-    :ruby19?     => Selenium::WebDriver::Platform.ruby19?,
-    :jruby?      => Selenium::WebDriver::Platform.jruby?,
-    :windows?    => Selenium::WebDriver::Platform.windows?,
-    :home        => Selenium::WebDriver::Platform.home,
-    :bitsize     => Selenium::WebDriver::Platform.bitsize,
-    :localhost   => Selenium::WebDriver::Platform.localhost,
-    :ip          => Selenium::WebDriver::Platform.ip,
-    :interfaces  => Selenium::WebDriver::Platform.interfaces,
-    :null_device => Selenium::WebDriver::Platform.null_device
+  p :engine       => Selenium::WebDriver::Platform.engine,
+    :os           => Selenium::WebDriver::Platform.os,
+    :ruby_version => Selenium::WebDriver::Platform.ruby_version,
+    :jruby?       => Selenium::WebDriver::Platform.jruby?,
+    :windows?     => Selenium::WebDriver::Platform.windows?,
+    :home         => Selenium::WebDriver::Platform.home,
+    :bitsize      => Selenium::WebDriver::Platform.bitsize,
+    :localhost    => Selenium::WebDriver::Platform.localhost,
+    :ip           => Selenium::WebDriver::Platform.ip,
+    :interfaces   => Selenium::WebDriver::Platform.interfaces,
+    :null_device  => Selenium::WebDriver::Platform.null_device
 end
