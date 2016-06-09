@@ -32,8 +32,7 @@ module Selenium
         end
 
         def reap?
-          @reap = true unless defined?(@reap)
-          !!@reap
+          @reap = defined?(@reap) ? @reap : true
         end
 
         def tmp_files

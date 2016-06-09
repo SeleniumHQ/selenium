@@ -8,3 +8,6 @@ Style/SpaceInsideHashLiteralBraces:
 
 Style/BracesAroundHashParameters:
   EnforcedStyle: context_dependent
+
+Lint/AssignmentInCondition:
+  Enabled: false

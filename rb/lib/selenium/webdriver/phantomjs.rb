@@ -35,7 +35,7 @@ module Selenium
       def self.path
         @path ||= begin
           path = Platform.find_binary("phantomjs")
-          path or raise Error::WebDriverError, MISSING_TEXT
+          raise Error::WebDriverError, MISSING_TEXT unless path
           Platform.assert_executable path
 
           path

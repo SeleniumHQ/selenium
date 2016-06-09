@@ -252,11 +252,11 @@ module Selenium
       #
 
       def move_to(element, right_by = nil, down_by = nil)
-        if right_by && down_by
-          @actions << [:mouse, :move_to, [element, Integer(right_by), Integer(down_by)]]
-        else
-          @actions << [:mouse, :move_to, [element]]
-        end
+        @actions << if right_by && down_by
+                      [:mouse, :move_to, [element, Integer(right_by), Integer(down_by)]]
+                    else
+                      [:mouse, :move_to, [element]]
+                    end
 
         self
       end

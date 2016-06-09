@@ -74,7 +74,7 @@ module Selenium
       end
 
       def did_lock?
-        !!@server
+        !@server.nil?
       end
 
     end # SocketLock

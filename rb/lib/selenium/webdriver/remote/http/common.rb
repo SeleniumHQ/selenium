@@ -62,7 +62,8 @@ module Selenium
           private
 
           def server_url
-            @server_url or raise Error::WebDriverError, "server_url not set"
+            return @server_url if @server_url
+            raise Error::WebDriverError, "server_url not set"
           end
 
           def request(verb, url, headers, payload)

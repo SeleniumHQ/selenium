@@ -121,9 +121,10 @@ module Selenium
 
         def create_session(desired_capabilities)
           resp = raw_execute :newSession, {}, {desiredCapabilities: desired_capabilities}
-          @session_id = resp['sessionId'] or raise Error::WebDriverError, 'no sessionId in returned payload'
+          @session_id = resp['sessionId']
+          return W3CCapabilities.json_create resp['value'] if @session_id
 
-          W3CCapabilities.json_create resp['value']
+          raise Error::WebDriverError, 'no sessionId in returned payload'
         end
 
         def status
@@ -417,9 +418,7 @@ module Selenium
         def mouseMoveTo(element, x = nil, y = nil)
           params = {element: element}
 
-          if x && y
-            params.merge! xoffset: x, yoffset: y
-          end
+          params.merge! xoffset: x, yoffset: y if x && y
 
           execute :mouseMoveTo, {}, params
         end
@@ -568,11 +567,11 @@ module Selenium
         def find_element_by(how, what, parent = nil)
           how, what = convert_locators(how, what)
 
-          if parent
-            id = execute :findChildElement, {id: parent}, {using: how, value: what}
-          else
-            id = execute :findElement, {}, {using: how, value: what}
-          end
+          id = if parent
+            execute :findChildElement, {id: parent}, {using: how, value: what}
+               else
+            execute :findElement, {}, {using: how, value: what}
+               end
 
           Element.new self, element_id_from(id)
         end
@@ -580,11 +579,11 @@ module Selenium
         def find_elements_by(how, what, parent = nil)
           how, what = convert_locators(how, what)
 
-          if parent
-            ids = execute :findChildElements, {id: parent}, {using: how, value: what}
-          else
-            ids = execute :findElements, {}, {using: how, value: what}
-          end
+          ids = if parent
+            execute :findChildElements, {id: parent}, {using: how, value: what}
+                else
+            execute :findElements, {}, {using: how, value: what}
+                end
 
           ids.map { |id| Element.new self, element_id_from(id) }
         end

@@ -44,7 +44,7 @@ module Selenium
       end
 
       def element_id_from(id)
-        id['ELEMENT'] or id['element-6066-11e4-a52e-4f735466cecf']
+        id['ELEMENT'] || id['element-6066-11e4-a52e-4f735466cecf']
       end
 
       def parse_cookie_string(str)

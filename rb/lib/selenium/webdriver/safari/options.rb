@@ -30,7 +30,7 @@ module Selenium
         end
 
         def clean_session?
-          !!@clean_session
+          @clean_session == true
         end
 
         def to_capabilities

@@ -71,11 +71,11 @@ module Selenium
 
         def handler
           # can't use Platform here since it's being run as a file on Windows + IE.
-          if RUBY_PLATFORM =~ /mswin|msys|mingw32/
-            handlers = %w[mongrel webrick]
-          else
-            handlers = %w[thin mongrel webrick]
-          end
+          handlers = if RUBY_PLATFORM =~ /mswin|msys|mingw32/
+                       %w[mongrel webrick]
+                     else
+                       %w[thin mongrel webrick]
+                     end
 
           handler = handlers.find { |h| load_handler h }
           constant = handler == 'webrick' ? "WEBrick" : handler.capitalize

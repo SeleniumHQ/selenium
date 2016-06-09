@@ -34,7 +34,7 @@ module Selenium
           server_command = [@executable_path, "--webdriver=#{@port}", *@extra_args]
           @process = ChildProcess.build(*server_command.compact)
 
-          if $DEBUG == true
+          if $DEBUG
             @process.io.inherit!
           elsif Platform.jruby?
             # apparently we need to read the output for phantomjs to work on jruby

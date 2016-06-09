@@ -76,7 +76,6 @@ module Selenium
               driver: GlobalTestEnv.driver,
               platform: Platform.os,
               native: GlobalTestEnv.native_events?,
-              window_manager: !!ENV['DESKTOP_SESSION'],
               ci: Platform.ci
             }
           end

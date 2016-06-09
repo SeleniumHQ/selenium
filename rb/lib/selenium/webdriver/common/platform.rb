@@ -108,7 +108,8 @@ module Selenium
       end
 
       def cygwin?
-        !!(RUBY_PLATFORM =~ /cygwin/)
+        RUBY_PLATFORM =~ /cygwin/
+        !Regexp.last_match.nil?
       end
 
       def null_device

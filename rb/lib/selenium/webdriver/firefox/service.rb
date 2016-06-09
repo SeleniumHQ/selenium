@@ -34,7 +34,7 @@ module Selenium
           server_command = [@executable_path, "--binary=#{Firefox::Binary.path}", "--webdriver-port=#{@port}", *@extra_args]
           @process       = ChildProcess.build(*server_command)
 
-          if $DEBUG == true
+          if $DEBUG
             @process.io.inherit!
           elsif Platform.windows?
             # workaround stdio inheritance issue

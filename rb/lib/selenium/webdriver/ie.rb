@@ -33,7 +33,7 @@ module Selenium
       def self.driver_path
         @driver_path ||= begin
           path = Platform.find_binary("IEDriverServer")
-          path or raise Error::WebDriverError, MISSING_TEXT
+          raise Error::WebDriverError, MISSING_TEXT unless path
           Platform.assert_executable path
 
           path

@@ -68,9 +68,7 @@ module Selenium
         def mouseMoveTo(element, x = nil, y = nil)
           params = {element: element}
 
-          if x && y
-            params.merge! xoffset: x, yoffset: y
-          end
+          params.merge! xoffset: x, yoffset: y if x && y
 
           execute :mouseMoveTo, {}, params
         end

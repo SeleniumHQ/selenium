@@ -71,9 +71,7 @@ module Selenium
         required_version = latest if required_version == :latest
         download_file_name = "selenium-server-standalone-#{required_version}.jar"
 
-        if File.exists? download_file_name
-          return download_file_name
-        end
+        return download_file_name if File.exists? download_file_name
 
         begin
           open(download_file_name, "wb") do |destination|

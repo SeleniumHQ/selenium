@@ -52,7 +52,7 @@ module Selenium
         #
 
         def file_detector=(detector)
-          unless detector.nil? or detector.respond_to? :call
+          unless detector.nil? || detector.respond_to?(:call)
             raise ArgumentError, "detector must respond to #call"
           end
 

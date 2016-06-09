@@ -38,7 +38,7 @@ module Selenium
           server_command = [@executable_path, "--port=#{@port}", *@extra_args]
           @process       = ChildProcess.build(*server_command)
 
-          @process.io.inherit! if $DEBUG == true
+          @process.io.inherit! if $DEBUG
           @process.start
         end
 

@@ -176,11 +176,11 @@ module Selenium
             set_manual_proxy_preference "ssl", proxy.ssl
             set_manual_proxy_preference "socks", proxy.socks
 
-            if proxy.no_proxy
-              self["network.proxy.no_proxies_on"] = proxy.no_proxy
-            else
-              self["network.proxy.no_proxies_on"] = ""
-            end
+            self["network.proxy.no_proxies_on"] = if proxy.no_proxy
+                                                    proxy.no_proxy
+                                                  else
+                                                    ""
+                                                  end
           when :pac
             self['network.proxy.type'] = 2
             self['network.proxy.autoconfig_url'] = proxy.pac
@@ -256,12 +256,11 @@ module Selenium
           return prefs unless File.exist?(path)
 
           File.read(path).split("\n").each do |line|
-            if line =~ /user_pref\("([^"]+)"\s*,\s*(.+?)\);/
-              key, value = $1.strip, $2.strip
+            next unless line =~ /user_pref\("([^"]+)"\s*,\s*(.+?)\);/
+            key, value = $1.strip, $2.strip
 
-              # wrap the value in an array to make it a valid JSON string.
-              prefs[key] = JSON.parse("[#{value}]").first
-            end
+            # wrap the value in an array to make it a valid JSON string.
+            prefs[key] = JSON.parse("[#{value}]").first
           end
 
           prefs

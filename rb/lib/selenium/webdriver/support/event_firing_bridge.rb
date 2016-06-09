@@ -29,11 +29,11 @@ module Selenium
         def initialize(delegate, listener)
           @delegate = delegate
 
-          if listener.respond_to? :call
-            @listener = BlockEventListener.new(listener)
-          else
-            @listener = listener
-          end
+          @listener = if listener.respond_to? :call
+                        BlockEventListener.new(listener)
+                      else
+                        listener
+                      end
         end
 
         def get(url)
