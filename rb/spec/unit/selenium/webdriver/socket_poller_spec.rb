@@ -22,8 +22,8 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe SocketPoller do
-      let(:poller)         { Selenium::WebDriver::SocketPoller.new("localhost", 1234, 5, 0.05)  }
-      let(:socket)         { double Socket, close: true }
+      let(:poller) { Selenium::WebDriver::SocketPoller.new("localhost", 1234, 5, 0.05) }
+      let(:socket) { double Socket, close: true }
 
       def setup_connect(*states)
         # TODO(jari): find a cleaner way to solve the platform-specific collaborators
@@ -39,7 +39,7 @@ module Selenium
           allow(Socket).to receive(:new).and_return socket
           states.each do |state|
             expect(socket).to receive(:connect_nonblock).
-                   and_raise(state ? Errno::EISCONN.new("connection in progress") : Errno::ECONNREFUSED.new("connection refused"))
+              and_raise(state ? Errno::EISCONN.new("connection in progress") : Errno::ECONNREFUSED.new("connection refused"))
           end
         end
       end
@@ -81,7 +81,6 @@ module Selenium
           expect(poller).not_to be_closed
         end
       end
-
     end
   end
 end

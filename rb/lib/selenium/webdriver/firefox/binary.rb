@@ -20,10 +20,8 @@
 module Selenium
   module WebDriver
     module Firefox
-
       # @api private
       class Binary
-
         NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so"
         NO_FOCUS_LIBRARIES    = [
           ["#{WebDriver.root}/selenium/webdriver/firefox/native/linux/amd64/#{NO_FOCUS_LIBRARY_NAME}", "amd64/#{NO_FOCUS_LIBRARY_NAME}"],
@@ -115,7 +113,6 @@ module Selenium
         end
 
         class << self
-
           #
           # @api private
           #
@@ -194,7 +191,6 @@ module Selenium
           rescue Win32::Registry::Error
           end
         end # class << self
-
       end # Binary
     end # Firefox
   end # WebDriver

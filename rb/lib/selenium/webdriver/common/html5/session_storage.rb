@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module HTML5
-
       class SessionStorage
         include Enumerable
         include SharedWebStorage
@@ -56,7 +55,6 @@ module Selenium
         def initialize(bridge)
           @bridge = bridge
         end
-
       end # SessionStorage
     end # HTML5
   end # WebDriver

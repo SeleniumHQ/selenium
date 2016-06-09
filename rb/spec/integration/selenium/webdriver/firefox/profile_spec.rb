@@ -22,7 +22,6 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Firefox
-
       compliant_on driver: :firefox do
         describe Profile do
           let(:profile) { Profile.new }
@@ -158,4 +157,3 @@ module Selenium
     end # Firefox
   end # WebDriver
 end # Selenium
-

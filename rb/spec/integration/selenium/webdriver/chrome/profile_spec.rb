@@ -22,7 +22,6 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Chrome
-
       compliant_on browser: :chrome do
         describe Profile do
           let(:profile) { Profile.new }
@@ -80,4 +79,3 @@ module Selenium
     end # Chrome
   end # WebDriver
 end # Selenium
-

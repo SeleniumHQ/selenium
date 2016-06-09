@@ -20,10 +20,8 @@
 module Selenium
   module WebDriver
     module Edge
-
       module LegacySupport
-
-          # These are commands Edge is still using from JSON Wire Protocol
+        # These are commands Edge is still using from JSON Wire Protocol
         [:executeScript, :executeAsyncScript, :submitElement, :doubleClick, :mouseDown, :mouseUp, :mouseMoveTo, :click,
          :sendKeysToActiveElement, :getWindowHandles, :getCurrentWindowHandle, :getWindowSize, :setWindowSize, :getWindowPosition,
          :setWindowPosition, :maximizeWindow, :getAlertText, :acceptAlert, :dismissAlert].each do |cmd|
@@ -110,8 +108,6 @@ module Selenium
         def maximizeWindow(handle = :current)
           execute :maximizeWindow, window_handle: handle
         end
-
-
       end # LegacySupport
     end # Edge
   end # WebDriver

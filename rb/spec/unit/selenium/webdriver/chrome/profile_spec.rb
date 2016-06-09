@@ -19,11 +19,9 @@
 
 require File.expand_path("../../spec_helper", __FILE__)
 
-
 module Selenium
   module WebDriver
     module Chrome
-
       describe Profile do
         let(:profile) { Profile.new }
         let(:model) { "/some/path" }
@@ -46,14 +44,14 @@ module Selenium
 
         it "reads existing prefs" do
           expect(File).to receive(:read).with("/some/path/Default/Preferences").
-                                     and_return('{"autofill": {"enabled": false}}')
+            and_return('{"autofill": {"enabled": false}}')
 
           expect(model_profile['autofill.enabled']).to eq(false)
         end
 
         it "writes out prefs" do
           expect(File).to receive(:read).with("/some/path/Default/Preferences").
-                                     and_return('{"autofill": {"enabled": false}}')
+            and_return('{"autofill": {"enabled": false}}')
 
           model_profile['some.other.pref'] = 123
 
@@ -69,8 +67,6 @@ module Selenium
           expect(result['some']['other']['pref']).to eq(123)
         end
       end
-
     end # Chrome
   end # WebDriver
 end # Selenium
-

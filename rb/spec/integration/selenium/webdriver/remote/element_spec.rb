@@ -21,7 +21,6 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-
     compliant_on driver: :remote do
       describe Element do
         before do

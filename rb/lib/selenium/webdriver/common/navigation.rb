@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     class Navigation
-
       def initialize(bridge)
         @bridge = bridge
       end
@@ -56,7 +55,6 @@ module Selenium
       def refresh
         @bridge.refresh
       end
-
     end # Navigation
   end # WebDriver
 end # Selenium

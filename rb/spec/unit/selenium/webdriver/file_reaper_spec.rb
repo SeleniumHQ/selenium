@@ -68,7 +68,6 @@ module Selenium
           expect(tmp_file).to exist
         end
       end
-
     end
   end
 end

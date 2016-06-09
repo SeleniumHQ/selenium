@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Keys
-
       #
       # @see Element#send_keys
       # @see http://www.google.com.au/search?&q=unicode+pua&btnG=Search
@@ -120,7 +119,6 @@ module Selenium
           end
         end
       end
-
     end # Keys
   end # WebDriver
 end # Selenium

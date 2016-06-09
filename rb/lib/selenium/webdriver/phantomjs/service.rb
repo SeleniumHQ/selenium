@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module PhantomJS
-
       #
       # @api private
       #
@@ -57,7 +56,6 @@ module Selenium
         def cannot_connect_error_text
           "unable to connect to phantomjs @ #{uri} after #{START_TIMEOUT} seconds"
         end
-
       end # Service
     end # PhantomJS
   end # WebDriver

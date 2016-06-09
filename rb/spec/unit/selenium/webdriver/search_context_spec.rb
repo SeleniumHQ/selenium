@@ -31,8 +31,8 @@ describe "SearchContext" do
   end
 
   let(:element)        { double(:Element) }
-  let(:bridge)         { double(:Bridge).as_null_object   }
-  let(:search_context) { TestSearchContext.new(bridge)  }
+  let(:bridge)         { double(:Bridge).as_null_object }
+  let(:search_context) { TestSearchContext.new(bridge) }
 
   context "finding a single element" do
     it "accepts a hash" do

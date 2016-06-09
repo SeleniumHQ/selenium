@@ -19,13 +19,11 @@
 
 module Selenium
   module WebDriver
-
     #
     # @api private
     # @see ActionBuilder
 
     class Keyboard
-
       def initialize(bridge)
         @bridge = bridge
       end
@@ -66,7 +64,6 @@ module Selenium
         return if MODIFIERS.include? key
         raise ArgumentError, "#{key.inspect} is not a modifier key, expected one of #{MODIFIERS.inspect}"
       end
-
     end # Keyboard
   end # WebDriver
 end # Selenium

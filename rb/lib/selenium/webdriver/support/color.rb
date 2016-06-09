@@ -72,9 +72,9 @@ module Selenium
               hue -= 1 if hue > 1.0
 
               if hue < 1.0 / 6.0
-                 (lum1 + (lum2 - lum1) * 6.0 * hue)
+                (lum1 + (lum2 - lum1) * 6.0 * hue)
               elsif  hue < 1.0 / 2.0
-                 lum2
+                lum2
               elsif hue < 2.0 / 3.0
                 lum1 + (lum2 - lum1) * ((2.0 / 3.0) - hue) * 6.0
               else
@@ -89,7 +89,6 @@ module Selenium
 
           new (r * 255).round, (g * 255).round, (b * 255).round, a
         end
-
 
         def initialize(red, green, blue, alpha = 1)
           @red   = Integer(red)
@@ -122,7 +121,6 @@ module Selenium
         def hex
           "#%02x%02x%02x" % [red, green, blue]
         end
-
       end # Color
     end # Support
   end # WebDriver

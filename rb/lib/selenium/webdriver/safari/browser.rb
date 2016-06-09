@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Safari
-
       class Browser
         def start(*args)
           Platform.exit_hook { stop } # make sure we don't leave the browser running
@@ -33,7 +32,6 @@ module Selenium
         def stop
           @process.stop if @process
         end
-
       end # Browser
     end # Safari
   end # WebDriver

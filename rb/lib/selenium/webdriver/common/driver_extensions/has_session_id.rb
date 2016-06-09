@@ -19,14 +19,12 @@
 
 module Selenium
   module WebDriver
-
     #
     # @api private
     #
 
     module DriverExtensions
       module HasSessionId
-
         #
         # @return [String] the session id
         # @api public

@@ -22,7 +22,6 @@ require File.expand_path("../../spec_helper", __FILE__)
 module Selenium
   module WebDriver
     module Support
-
       describe EventFiringBridge do
         let(:bridge) { double(Remote::Bridge, driver_extensions: []) }
         let(:listener) { double("EventListener") }
@@ -124,7 +123,6 @@ module Selenium
           end
         end
       end
-
     end # Support
   end # WebDriver
 end # Selenium

@@ -21,7 +21,6 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-
     describe Firefox do
       def restart_remote_server
         server = GlobalTestEnv.reset_remote_server
@@ -44,14 +43,14 @@ module Selenium
           begin
             @opt[:marionette] = true
             driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
-            expect(driver1.capabilities.browser_version).to match /^\d\d\./
+            expect(driver1.capabilities.browser_version).to match(/^\d\d\./)
             expect(driver1.capabilities.platform_name).to_not be_nil
             expect(driver1.capabilities.platform_version).to_not be_nil
             expect(driver1.capabilities.accept_ssl_certs).to be == false
             expect(driver1.capabilities.page_load_strategy).to be == 'normal'
             expect(driver1.capabilities.proxy).to be_nil
             if GlobalTestEnv.driver == :remote
-              expect(driver1.capabilities.remote_session_id).to match /^\h{8}-\h{4}-\h{4}-\h{4}-\h{10}/
+              expect(driver1.capabilities.remote_session_id).to match(/^\h{8}-\h{4}-\h{4}-\h{4}-\h{10}/)
             else
               expect(driver1.capabilities.remote_session_id).to be_nil
             end
@@ -113,7 +112,7 @@ module Selenium
           it "Does not use geckodriver when marionette option is not set" do
             driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
 
-            expect { driver1.capabilities.browser_version  }.to raise_exception NoMethodError
+            expect { driver1.capabilities.browser_version }.to raise_exception NoMethodError
             driver1.quit
           end
         end
@@ -128,7 +127,6 @@ module Selenium
           end
         end
       end
-
     end # Firefox
   end # WebDriver
 end # Selenium

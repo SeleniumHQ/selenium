@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     class TargetLocator
-
       #
       # @api private
       #
@@ -107,7 +106,6 @@ module Selenium
       def alert
         Alert.new(@bridge)
       end
-
     end # TargetLocator
   end # WebDriver
-end  # Selenium
+end # Selenium

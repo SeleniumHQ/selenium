@@ -19,12 +19,10 @@
 
 require File.expand_path("../../spec_helper", __FILE__)
 
-
 module Selenium
   module WebDriver
     module PhantomJS
       describe Bridge do
-
         let(:resp)    { {"sessionId" => "foo", "value" => Remote::Capabilities.phantomjs.as_json} }
         let(:service) { double(Service, start: true, uri: "http://example.com") }
         let(:http)    { double(Remote::Http::Default, call: resp).as_null_object }
@@ -67,9 +65,7 @@ module Selenium
 
           Bridge.new(http_client: http, desired_capabilities: caps, args: %w[--foo --bar])
         end
-
       end
     end # PhantomJS
   end # WebDriver
 end # Selenium
-

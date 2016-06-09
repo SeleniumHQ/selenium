@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     class Logs
-
       #
       # @api private
       #
@@ -36,7 +35,6 @@ module Selenium
       def available_types
         @bridge.getAvailableLogTypes
       end
-
     end # Logs
   end # WebDriver
 end # Selenium

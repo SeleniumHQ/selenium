@@ -23,7 +23,6 @@ module Selenium
   module WebDriver
     module Remote
       describe Capabilities do
-
         it "has default capabilities for Android" do
           caps = Capabilities.android
           expect(caps.browser_name).to eq("android")

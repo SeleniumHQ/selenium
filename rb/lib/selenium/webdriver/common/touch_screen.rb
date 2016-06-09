@@ -22,7 +22,6 @@ module Selenium
     class TouchScreen
       FLICK_SPEED = {normal: 0, fast: 1}
 
-
       #
       # @api private
       #
@@ -94,7 +93,6 @@ module Selenium
         else
           raise ArgumentError, "wrong number of arguments, expected 2 or 4, got #{args.size}"
         end
-
       end
 
       private
@@ -117,7 +115,6 @@ module Selenium
         return if element.kind_of? Element
         raise TypeError, "expected #{Element}, got #{element.inspect}:#{element.class}"
       end
-
     end # TouchScreen
   end # WebDriver
 end # Selenium

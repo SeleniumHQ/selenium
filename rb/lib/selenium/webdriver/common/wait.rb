@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     class Wait
-
       DEFAULT_TIMEOUT  = 5
       DEFAULT_INTERVAL = 0.2
 
@@ -40,7 +39,6 @@ module Selenium
         @message  = opts[:message]
         @ignored  = Array(opts[:ignore] || Error::NoSuchElementError)
       end
-
 
       #
       # Wait until the given block returns a true value.
@@ -64,7 +62,6 @@ module Selenium
           sleep @interval
         end
 
-
         msg = if @message
                 @message.dup
               else
@@ -75,8 +72,6 @@ module Selenium
 
         raise Error::TimeOutError, msg
       end
-
     end # Wait
   end # WebDriver
 end # Selenium
-

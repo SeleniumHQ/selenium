@@ -33,7 +33,7 @@ module Selenium
       end
 
       def inspect
-        '#<%s:0x%x id=%s>' % [self.class, hash*2, @id.inspect]
+        '#<%s:0x%x id=%s>' % [self.class, hash * 2, @id.inspect]
       end
 
       def ==(other)
@@ -309,7 +309,6 @@ module Selenium
 
         tn == "option" || (tn == "input" && %w[radio checkbox].include?(type))
       end
-
     end # Element
   end # WebDriver
 end # Selenium

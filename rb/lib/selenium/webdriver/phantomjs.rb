@@ -41,7 +41,6 @@ module Selenium
           path
         end
       end
-
     end # PhantomJS
   end # WebDriver
 end # Selenium

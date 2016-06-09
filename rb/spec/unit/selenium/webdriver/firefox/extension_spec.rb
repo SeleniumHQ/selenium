@@ -22,7 +22,6 @@ require File.expand_path("../../spec_helper", __FILE__)
 module Selenium
   module WebDriver
     module Firefox
-
       describe Extension do
         before do
           File.stub(exist?: true)
@@ -82,7 +81,6 @@ module Selenium
           expect { extension.read_id('/foo') }.to raise_error(Error::WebDriverError)
         end
       end
-
     end # Firefox
   end # WebDriver
 end # Selenium

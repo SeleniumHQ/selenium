@@ -20,10 +20,8 @@
 module Selenium
   module WebDriver
     module Firefox
-
       # @api private
       class Bridge < Remote::Bridge
-
         def initialize(opts = {})
           port        = opts.delete(:port) || DEFAULT_PORT
           profile     = opts.delete(:profile)
@@ -82,7 +80,6 @@ module Selenium
         def create_launcher(port, profile)
           Launcher.new Binary.new, port, profile
         end
-
       end # Bridge
     end # Firefox
   end # WebDriver

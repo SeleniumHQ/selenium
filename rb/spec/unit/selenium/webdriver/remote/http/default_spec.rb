@@ -133,11 +133,8 @@ module Selenium
               end.to raise_error(Errno::ECONNREFUSED, %r[using proxy: http://localhost:1234])
             end
           end
-
         end
-
       end # Http
     end # Remote
   end # WebDriver
 end # Selenium
-

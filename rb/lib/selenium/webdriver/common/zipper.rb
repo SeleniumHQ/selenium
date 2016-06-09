@@ -29,11 +29,9 @@ module Selenium
     #
 
     module Zipper
-
       EXTENSIONS = %w[.zip .xpi]
 
       class << self
-
         def unzip(path)
           destination = Dir.mktmpdir("webdriver-unzip")
           FileReaper << destination
@@ -95,7 +93,6 @@ module Selenium
 
           zip.add entry, file
         end
-
       end
     end # Zipper
   end # WebDriver

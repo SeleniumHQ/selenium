@@ -19,7 +19,6 @@
 
 module Selenium
   module WebDriver
-
     #
     # Base class implementing default behavior of service object,
     # responsible for starting and stopping driver implementations.
@@ -123,7 +122,6 @@ module Selenium
       def socket_lock
         @socket_lock ||= SocketLock.new(@port - 1, SOCKET_LOCK_TIMEOUT)
       end
-
     end # Service
   end # WebDriver
 end # Selenium

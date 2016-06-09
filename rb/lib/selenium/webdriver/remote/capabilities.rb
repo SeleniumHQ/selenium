@@ -25,7 +25,6 @@ module Selenium
       # server is being asked to create.
       #
       class Capabilities
-
         DEFAULTS = {
           browser_name: "",
           version: "",
@@ -50,10 +49,10 @@ module Selenium
         end
 
         alias_method :css_selectors_enabled?, :css_selectors_enabled
-        alias_method :javascript_enabled?   , :javascript_enabled
-        alias_method :native_events?        , :native_events
-        alias_method :takes_screenshot?     , :takes_screenshot
-        alias_method :rotatable?            , :rotatable
+        alias_method :javascript_enabled?, :javascript_enabled
+        alias_method :native_events?, :native_events
+        alias_method :takes_screenshot?, :takes_screenshot
+        alias_method :rotatable?, :rotatable
 
         #
         # Convenience methods for the common choices.
@@ -280,7 +279,6 @@ module Selenium
         def camel_case(str)
           str.gsub(/_([a-z])/) { $1.upcase }
         end
-
       end # Capabilities
     end # Remote
   end # WebDriver

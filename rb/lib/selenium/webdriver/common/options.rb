@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     class Options
-
       #
       # @api private
       #
@@ -148,7 +147,6 @@ module Selenium
       def strip_port(str)
         str.split(":", 2).first
       end
-
     end # Options
   end # WebDriver
 end # Selenium

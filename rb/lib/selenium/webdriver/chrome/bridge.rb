@@ -20,10 +20,8 @@
 module Selenium
   module WebDriver
     module Chrome
-
       # @api private
       class Bridge < Remote::Bridge
-
         def initialize(opts = {})
           http_client = opts.delete(:http_client)
 
@@ -132,7 +130,6 @@ module Selenium
 
           args
         end
-
       end # Bridge
     end # Chrome
   end # WebDriver

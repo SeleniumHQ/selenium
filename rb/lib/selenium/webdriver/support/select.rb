@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     module Support
       class Select
-
         #
         # @param [Element] element The select element to use
         #
@@ -304,7 +303,7 @@ module Selenium
               parts = str.split('"', -1).map { |part| %{"#{part}"} }
 
               quoted = parts.join(%{, '"', }).
-                             gsub(/^"", |, ""$/, '')
+                       gsub(/^"", |, ""$/, '')
 
               "concat(#{quoted})"
             elsif str.include?('"')
@@ -315,7 +314,6 @@ module Selenium
               %{"#{str}"}
             end
           end
-
         end # Escaper
       end # Select
     end # Support

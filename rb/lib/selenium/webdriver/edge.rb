@@ -50,7 +50,6 @@ module Selenium
       def self.path
         @path ||= nil
       end
-
     end # Edge
   end # WebDriver
 end # Selenium

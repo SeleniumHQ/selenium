@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module HTML5
-
       class LocalStorage
         include SharedWebStorage
 
@@ -54,7 +53,6 @@ module Selenium
         def keys
           @bridge.getLocalStorageKeys.reverse
         end
-
       end # LocalStorage
     end # HTML5
   end # WebDriver

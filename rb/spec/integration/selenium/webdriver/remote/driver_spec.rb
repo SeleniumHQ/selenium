@@ -22,7 +22,6 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Remote
-
       compliant_on driver: :remote do
         describe Driver do
           it "should expose session_id" do
@@ -38,4 +37,3 @@ module Selenium
     end # Remote
   end # WebDriver
 end # Selenium
-

@@ -19,13 +19,11 @@
 
 module Selenium
   module WebDriver
-
     #
     # @api private
     #
 
     class SocketLock
-
       def initialize(port, timeout)
         @port    = port
         @timeout = timeout
@@ -76,7 +74,6 @@ module Selenium
       def did_lock?
         !@server.nil?
       end
-
     end # SocketLock
   end # WebDriver
 end # Selenium

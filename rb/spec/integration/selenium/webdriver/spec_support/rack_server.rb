@@ -24,7 +24,6 @@ module Selenium
   module WebDriver
     module SpecSupport
       class RackServer
-
         START_TIMEOUT = 30
 
         def initialize(path, port = nil)
@@ -148,7 +147,6 @@ module Selenium
             auth.provided? && auth.basic? && auth.credentials && auth.credentials == BASIC_AUTH_CREDENTIALS
           end
         end
-
       end # RackServer
     end # SpecSupport
   end # WebDriver

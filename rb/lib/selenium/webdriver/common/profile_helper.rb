@@ -19,7 +19,6 @@
 
 module Selenium
   module WebDriver
-
     #
     # @api private
     #
@@ -28,7 +27,6 @@ module Selenium
     #
 
     module ProfileHelper
-
       def self.included(base)
         base.extend ClassMethods
       end
@@ -80,7 +78,6 @@ module Selenium
           end
         end
       end # ClassMethods
-
     end # ProfileHelper
   end # WebDriver
 end # Selenium

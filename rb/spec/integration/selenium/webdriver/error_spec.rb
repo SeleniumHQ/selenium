@@ -20,7 +20,6 @@
 require_relative 'spec_helper'
 
 describe Selenium::WebDriver::Error do
-
   it "should raise an appropriate error" do
     driver.navigate.to url_for("xhtmlTest.html")
 

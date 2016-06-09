@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Firefox
-
       #
       # @api private
       #
@@ -78,7 +77,6 @@ module Selenium
 
           raise Error::WebDriverError, "cannot locate extension id in #{rdf_path}"
         end
-
       end # Extension
     end # Firefox
   end # WebDriver

@@ -22,7 +22,6 @@ require File.expand_path("../../spec_helper", __FILE__)
 module Selenium
   module WebDriver
     module Remote
-
       describe Bridge do
         it "raises ArgumentError if passed invalid options" do
           expect { Bridge.new(foo: 'bar') }.to raise_error(ArgumentError)
@@ -38,8 +37,6 @@ module Selenium
           expect { bridge.upload("NotAFile") }.to raise_error(Error::WebDriverError)
         end
       end
-
     end # Remote
   end # WebDriver
 end # Selenium
-

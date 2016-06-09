@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Remote
-
       #
       # Low level bridge to the remote server, through which the rest of the API works.
       #
@@ -170,7 +169,7 @@ module Selenium
         def getAlertText
           execute :getAlertText
         end
-        
+
         def setAuthentication(credentials)
           execute :setAuthentication, {}, credentials
         end
@@ -245,8 +244,8 @@ module Selenium
 
         def setWindowSize(width, height, handle = :current)
           execute :setWindowSize, {window_handle: handle},
-                                   {width: width,
-                                    height: height}
+                  {width: width,
+                   height: height}
         end
 
         def maximizeWindow(handle = :current)
@@ -261,7 +260,7 @@ module Selenium
 
         def setWindowPosition(x, y, handle = :current)
           execute :setWindowPosition, {window_handle: handle},
-                                       {x: x, y: y}
+                  {x: x, y: y}
         end
 
         def getWindowPosition(handle = :current)
@@ -496,7 +495,6 @@ module Selenium
                                     xoffset: right_by,
                                     yoffset: down_by,
                                     speed: speed}
-
         end
 
         def setScreenOrientation(orientation)
@@ -654,7 +652,6 @@ module Selenium
         def escaper
           @escaper ||= defined?(URI::Parser) ? URI::Parser.new : URI
         end
-
       end # Bridge
     end # Remote
   end # WebDriver

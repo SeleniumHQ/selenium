@@ -25,7 +25,6 @@ module Selenium
       # server is being asked to create.
       #
       class W3CCapabilities
-
         DEFAULTS = {
           browser_name: '',
           browser_version: :any,
@@ -37,12 +36,12 @@ module Selenium
         }
 
         KNOWN = [
-            :remote_session_id,
-            :xul_app_id,
-            :raise_accessibility_exceptions,
-            :rotatable,
-            :app_build_id,
-            :device
+          :remote_session_id,
+          :xul_app_id,
+          :raise_accessibility_exceptions,
+          :rotatable,
+          :app_build_id,
+          :device
         ]
 
         (DEFAULTS.keys + KNOWN).each do |key|
@@ -69,7 +68,6 @@ module Selenium
         #
 
         class << self
-
           def edge(opts = {})
             new({
               browser_name: "MicrosoftEdge",
@@ -229,7 +227,6 @@ module Selenium
         def camel_case(str)
           str.gsub(/_([a-z])/) { $1.upcase }
         end
-
       end # W3CCapabilities
     end # Remote
   end # WebDriver

@@ -20,10 +20,8 @@
 require_relative 'spec_helper'
 
 module Selenium::WebDriver::DriverExtensions
-
   compliant_on browser: nil do
     describe "HasApplicationCache" do
-
       it "gets the app cache status" do
         expect(driver.application_cache.status).to eq(:uncached)
 

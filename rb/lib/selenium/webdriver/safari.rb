@@ -23,7 +23,6 @@ require 'pathname'
 module Selenium
   module WebDriver
     module Safari
-
       class << self
         def path=(path)
           Platform.assert_executable(path)
@@ -53,7 +52,6 @@ module Selenium
           @resource_path ||= Pathname.new(File.expand_path("../safari/resources", __FILE__))
         end
       end
-
     end # Safari
   end # WebDriver
 end # Selenium
@@ -62,4 +60,3 @@ require 'selenium/webdriver/safari/browser'
 require 'selenium/webdriver/safari/server'
 require 'selenium/webdriver/safari/options'
 require 'selenium/webdriver/safari/bridge'
-

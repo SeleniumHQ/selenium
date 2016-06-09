@@ -20,10 +20,8 @@
 module Selenium
   module WebDriver
     module Firefox
-
       # @api private
       class ProfilesIni
-
         def initialize
           @ini_path = File.join(Util.app_data_path, "profiles.ini")
           @profile_paths = {}
@@ -73,7 +71,6 @@ module Selenium
           return unless [name, path].any?
           path = is_relative ? File.join(Util.app_data_path, path) : path
         end
-
       end # ProfilesIni
     end # Firefox
   end # WebDriver

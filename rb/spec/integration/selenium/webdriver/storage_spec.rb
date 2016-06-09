@@ -20,9 +20,7 @@
 require_relative 'spec_helper'
 
 module Selenium::WebDriver::DriverExtensions
-
   describe HasWebStorage do
-
     compliant_on browser: [:chrome, :marionette] do
       shared_examples_for 'web storage' do
         before do
@@ -86,7 +84,7 @@ module Selenium::WebDriver::DriverExtensions
                                   ['foo1', 'bar1'],
                                   ['foo2', 'bar2'],
                                   ['foo3', 'bar3']
-                                 )
+          )
         end
 
         it "can fetch an item" do

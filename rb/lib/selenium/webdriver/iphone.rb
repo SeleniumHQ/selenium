@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module IPhone
-
     end # IPhone
   end # WebDriver
 end # Selenium

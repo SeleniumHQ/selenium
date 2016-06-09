@@ -22,11 +22,9 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Firefox
-
       compliant_on browser: :firefox do
         describe Driver do
           describe ".new" do
-
             it "takes a binary path as an argument" do
               pending "Set ENV['ALT_FIREFOX_BINARY'] to test this" unless ENV['ALT_FIREFOX_BINARY']
 
@@ -60,10 +58,8 @@ module Selenium
           end
 
           it_behaves_like "driver that can be started concurrently", :firefox
-
         end # Driver
       end
-
     end # Firefox
   end # WebDriver
 end # Selenium

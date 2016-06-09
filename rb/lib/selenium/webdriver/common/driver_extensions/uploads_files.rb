@@ -19,14 +19,12 @@
 
 module Selenium
   module WebDriver
-
     #
     # @api private
     #
 
     module DriverExtensions
       module UploadsFiles
-
         #
         # Set the file detector to pass local files to a remote WebDriver.
         #
@@ -58,7 +56,6 @@ module Selenium
 
           bridge.file_detector = detector
         end
-
       end # UploadsFiles
     end # DriverExtensions
   end # WebDriver

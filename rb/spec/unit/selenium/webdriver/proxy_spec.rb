@@ -120,6 +120,5 @@ module Selenium
         expect(Proxy.json_create('proxyType' => 'UNSPECIFIED')).to be_nil
       end
     end
-
   end
 end

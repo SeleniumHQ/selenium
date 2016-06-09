@@ -20,13 +20,11 @@
 module Selenium
   module WebDriver
     module IE
-
       #
       # @api private
       #
 
       class Bridge < Remote::Bridge
-
         def initialize(opts = {})
           caps           = opts.delete(:desired_capabilities) { Remote::Capabilities.internet_explorer }
           port           = opts.delete(:port) { Service::DEFAULT_PORT }
@@ -77,7 +75,6 @@ module Selenium
           args << "--implementation=#{opts.delete(:implementation).to_s.upcase}" if opts[:implementation]
           args
         end
-
       end # Bridge
     end # IE
   end # WebDriver

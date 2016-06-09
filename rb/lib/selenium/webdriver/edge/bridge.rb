@@ -20,13 +20,11 @@
 module Selenium
   module WebDriver
     module Edge
-
       #
       # @api private
       #
 
       class Bridge < Remote::W3CBridge
-
         def initialize(opts = {})
           http_client = opts.delete(:http_client)
 
@@ -96,7 +94,6 @@ module Selenium
 
           args
         end
-
       end # Bridge
     end # Edge
   end # WebDriver

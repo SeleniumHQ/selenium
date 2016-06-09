@@ -20,10 +20,8 @@
 module Selenium
   module WebDriver
     module Firefox
-
       # @api private
       class W3CBridge < Remote::W3CBridge
-
         def initialize(opts = {})
           caps = opts[:desired_capabilities] ||= Remote::W3CCapabilities.firefox
           Binary.path = caps[:firefox_binary] if caps[:firefox_binary]
@@ -60,7 +58,6 @@ module Selenium
           service_log_path = opts.delete(:service_log_path)
           service_log_path ? ["--log-path=#{service_log_path}"] : []
         end
-
       end # W3CBridge
     end # Firefox
   end # WebDriver

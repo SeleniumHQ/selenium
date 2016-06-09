@@ -51,7 +51,6 @@ module Selenium
       def self.path
         @path ||= nil
       end
-
     end # Chrome
   end # WebDriver
 end # Selenium

@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module IE
-
       #
       # @api private
       #
@@ -45,7 +44,6 @@ module Selenium
         def cannot_connect_error_text
           "unable to connect to IE server #{@host}:#{@port}"
         end
-
       end # Server
     end # IE
   end # WebDriver

@@ -19,16 +19,14 @@
 
 require File.expand_path("../../spec_helper", __FILE__)
 
-
 module Selenium
   module WebDriver
     module Chrome
-
       describe Bridge do
         let(:resp)    { {"sessionId" => "foo", "value" => @default_capabilities} }
         let(:service) { double(Service, start: true, uri: "http://example.com") }
         let(:caps)    { {} }
-        let(:http)    { double(Remote::Http::Default, call: resp).as_null_object   }
+        let(:http)    { double(Remote::Http::Default, call: resp).as_null_object }
 
         before do
           @default_capabilities = Remote::Capabilities.chrome.as_json
@@ -150,7 +148,6 @@ module Selenium
           Bridge.new(http_client: http, service_log_path: "/foo/bar")
         end
       end
-
     end # Chrome
   end # WebDriver
 end # Selenium

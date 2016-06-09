@@ -20,7 +20,6 @@
 require_relative 'spec_helper'
 
 describe "Driver" do
-
   it "should get the page title" do
     driver.navigate.to url_for("xhtmlTest.html")
     expect(driver.title).to eq("XHTML Test Page")
@@ -42,7 +41,6 @@ describe "Driver" do
 
   not_compliant_on browser: :iphone do
     context "screenshots" do
-
       it "should save" do
         driver.navigate.to url_for("xhtmlTest.html")
         path = "screenshot_tmp.png"
@@ -71,7 +69,6 @@ describe "Driver" do
   end
 
   describe "one element" do
-
     it "should find by id" do
       driver.navigate.to url_for("xhtmlTest.html")
       element = driver.find_element(:id, "id1")
@@ -146,7 +143,6 @@ describe "Driver" do
   end
 
   describe "many elements" do
-
     it "should find by class name" do
       driver.navigate.to url_for("xhtmlTest.html")
       expect(driver.find_elements(:class, "nameC").size).to eq(2)
@@ -166,7 +162,6 @@ describe "Driver" do
   end
 
   describe "execute script" do
-
     it "should return strings" do
       driver.navigate.to url_for("xhtmlTest.html")
       expect(driver.execute_script("return document.title;")).to eq("XHTML Test Page")
@@ -265,7 +260,6 @@ describe "Driver" do
 
   not_compliant_on browser: [:iphone, :android] do
     describe "execute async script" do
-
       before do
         driver.manage.timeouts.script_timeout = 0
         driver.navigate.to url_for("ajaxy_page.html")

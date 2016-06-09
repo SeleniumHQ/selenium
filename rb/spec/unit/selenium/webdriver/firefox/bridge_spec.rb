@@ -19,15 +19,13 @@
 
 require File.expand_path("../../spec_helper", __FILE__)
 
-
 module Selenium
   module WebDriver
     module Firefox
-
       describe Bridge do
         let(:launcher) { double(Launcher, launch: nil, url: "http://localhost:4444/wd/hub") }
         let(:resp) { {"sessionId" => "foo", "value" => @default_capabilities} }
-        let(:http) { double(Remote::Http::Default, call: resp).as_null_object   }
+        let(:http) { double(Remote::Http::Default, call: resp).as_null_object }
         let(:caps) { {} }
 
         before do
@@ -59,8 +57,6 @@ module Selenium
           Bridge.new(http_client: http, desired_capabilities: custom_caps)
         end
       end
-
     end # Firefox
   end # WebDriver
 end # Selenium
-

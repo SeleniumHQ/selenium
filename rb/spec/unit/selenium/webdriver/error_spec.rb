@@ -22,7 +22,6 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Error do
-
       context "backwards compatibility" do
         it "aliases StaleElementReferenceError as ObsoleteElementError" do
           expect do
@@ -54,7 +53,6 @@ module Selenium
           end.to raise_error(Error::ElementNotDisplayedError)
         end
       end
-
     end
   end
 end

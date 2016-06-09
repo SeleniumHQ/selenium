@@ -25,7 +25,6 @@ module Selenium
       #
 
       class Bridge < Remote::Bridge
-
         DEFAULT_URL = "http://#{Platform.localhost}:3001/wd/hub/"
 
         def initialize(opts = {})
@@ -57,7 +56,6 @@ module Selenium
         def capabilities
           @capabilities ||= Remote::Capabilities.iphone
         end
-
       end # Bridge
     end # IPhone
   end # WebDriver

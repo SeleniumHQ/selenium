@@ -22,7 +22,6 @@ require 'json'
 module Selenium
   module WebDriver
     module Remote
-
       #
       # Low level bridge to the remote server, through which the rest of the API works.
       #
@@ -492,7 +491,6 @@ module Selenium
                                     xoffset: right_by,
                                     yoffset: down_by,
                                     speed: speed}
-
         end
 
         def setScreenOrientation(orientation)
@@ -571,9 +569,9 @@ module Selenium
           how, what = convert_locators(how, what)
 
           id = if parent
-            execute :findChildElement, {id: parent}, {using: how, value: what}
+                 execute :findChildElement, {id: parent}, {using: how, value: what}
                else
-            execute :findElement, {}, {using: how, value: what}
+                 execute :findElement, {}, {using: how, value: what}
                end
 
           Element.new self, element_id_from(id)
@@ -583,9 +581,9 @@ module Selenium
           how, what = convert_locators(how, what)
 
           ids = if parent
-            execute :findChildElements, {id: parent}, {using: how, value: what}
+                  execute :findChildElements, {id: parent}, {using: how, value: what}
                 else
-            execute :findElements, {}, {using: how, value: what}
+                  execute :findElements, {}, {using: how, value: what}
                 end
 
           ids.map { |id| Element.new self, element_id_from(id) }
@@ -663,7 +661,6 @@ module Selenium
 
           string
         end
-
       end # W3CBridge
     end # Remote
   end # WebDriver

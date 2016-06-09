@@ -31,7 +31,7 @@ module Selenium
           {
             'id' => '1',
             'response' => {
-              'sessionId' => 'opaque', "value" => @default_capabilities ,
+              'sessionId' => 'opaque', "value" => @default_capabilities,
               'status'    => 0
             },
           }
@@ -44,7 +44,6 @@ module Selenium
           allow(Server).to receive(:new).and_return(server)
           allow(Browser).to receive(:new).and_return(browser)
         end
-
 
         it 'takes desired capabilities' do
           custom_caps = Remote::Capabilities.new
@@ -67,7 +66,6 @@ module Selenium
 
           Bridge.new(clean_session: true)
         end
-
       end
     end
   end

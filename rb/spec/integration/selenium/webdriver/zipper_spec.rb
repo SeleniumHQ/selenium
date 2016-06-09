@@ -21,9 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-
     describe Zipper do
-
       #
       # TODO: clean this spec up
       #

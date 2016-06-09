@@ -20,9 +20,7 @@
 require_relative 'spec_helper'
 
 module Selenium::WebDriver::DriverExtensions
-
   describe HasTouchScreen do
-
     compliant_on browser: :android do
       context "flick" do
         before do
@@ -190,8 +188,6 @@ module Selenium::WebDriver::DriverExtensions
       context "long press" do
         it "can long press on an element"
       end
-
     end
   end
 end
-

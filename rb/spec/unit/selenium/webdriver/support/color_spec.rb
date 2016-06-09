@@ -129,10 +129,7 @@ module Selenium
 
           expect(h.values.sort).to eq([2, 3])
         end
-
       end
     end
   end
 end
-
-

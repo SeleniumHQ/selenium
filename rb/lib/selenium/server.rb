@@ -22,7 +22,6 @@ require 'selenium/webdriver/common/socket_poller'
 require 'net/http'
 
 module Selenium
-
   #
   # Wraps the remote server jar
   #
@@ -262,6 +261,5 @@ module Selenium
     def socket
       @socket ||= WebDriver::SocketPoller.new(@host, @port, @timeout)
     end
-
   end # Server
 end # Selenium

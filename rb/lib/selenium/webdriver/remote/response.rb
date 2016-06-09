@@ -20,10 +20,8 @@
 module Selenium
   module WebDriver
     module Remote
-
       # @api private
       class Response
-
         attr_reader :code, :payload
         attr_writer :payload
 
@@ -52,7 +50,7 @@ module Selenium
             msg = val['message']
             return "unknown error" unless msg
             msg << ": #{val['alert']['text'].inspect}" if val['alert'].kind_of?(Hash) && val['alert']['text']
-            msg << " (#{ val['class'] })" if val['class']
+            msg << " (#{val['class']})" if val['class']
             msg
           when String
             val
@@ -105,7 +103,6 @@ module Selenium
         def value
           @payload['value'] || @payload['message']
         end
-
       end # Response
     end # Remote
   end # WebDriver

@@ -55,7 +55,6 @@ module Selenium
       rescue SocketError, Errno::EADDRINUSE
         false
       end
-
     end # PortProber
   end # WebDriver
 end # Selenium

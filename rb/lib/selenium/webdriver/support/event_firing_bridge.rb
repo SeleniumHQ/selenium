@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Support
-
       #
       # @api private
       #
@@ -125,7 +124,6 @@ module Selenium
           @delegate.__send__(meth, *args, &blk)
         end
       end # EventFiringBridge
-
     end # Support
   end # WebDriver
 end # Selenium

@@ -23,7 +23,7 @@ describe Selenium::WebDriver::ActionBuilder do
   let(:bridge)      { double("Bridge").as_null_object }
   let(:keyboard)    { double(Selenium::WebDriver::Keyboard) }
   let(:mouse)       { double(Selenium::WebDriver::Mouse)    }
-  let(:element)     { Selenium::WebDriver::Element.new(bridge, 'element')  }
+  let(:element)     { Selenium::WebDriver::Element.new(bridge, 'element') }
   let(:builder)     { Selenium::WebDriver::ActionBuilder.new(mouse, keyboard) }
 
   it "should create all keyboard actions" do
@@ -32,8 +32,8 @@ describe Selenium::WebDriver::ActionBuilder do
     expect(keyboard).to receive(:release).with(:control)
 
     builder.key_down(:shift).
-            send_keys("abc").
-            key_up(:control).perform
+      send_keys("abc").
+      key_up(:control).perform
   end
 
   it "should pass an element to keyboard actions" do
@@ -54,9 +54,9 @@ describe Selenium::WebDriver::ActionBuilder do
     expect(mouse).to receive(:click).with(element3)
     expect(keyboard).to receive(:release).with(:control)
 
-    builder.key_down(element, :shift ).
-            send_keys(element2, "abc").
-            key_up(element3, :control).perform
+    builder.key_down(element, :shift).
+      send_keys(element2, "abc").
+      key_up(element3, :control).perform
   end
 
   it "should create all mouse actions" do
@@ -68,11 +68,11 @@ describe Selenium::WebDriver::ActionBuilder do
     expect(mouse).to receive(:context_click).with(element)
 
     builder.click_and_hold(element).
-            release(element).
-            click(element).
-            double_click(element).
-            move_to(element).
-            context_click(element).perform
+      release(element).
+      click(element).
+      double_click(element).
+      move_to(element).
+      context_click(element).perform
   end
 
   it 'should move_to ignore floating point part of coordinate' do
@@ -86,7 +86,6 @@ describe Selenium::WebDriver::ActionBuilder do
 
     builder.move_by(-300.1, 400.1).perform
   end
-
 
   it "should drag and drop" do
     source = element
@@ -115,8 +114,8 @@ describe Selenium::WebDriver::ActionBuilder do
     expect(mouse).to receive(:up)
 
     builder.click_and_hold(element).
-            move_by(-300, 400).
-            release.perform
+      move_by(-300, 400).
+      release.perform
   end
 
   it 'can click, hold and release at the current location' do
@@ -125,5 +124,4 @@ describe Selenium::WebDriver::ActionBuilder do
 
     builder.click_and_hold.release.perform
   end
-
 end

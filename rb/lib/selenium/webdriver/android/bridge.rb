@@ -20,13 +20,11 @@
 module Selenium
   module WebDriver
     module Android
-
       #
       # @api private
       #
 
       class Bridge < Remote::Bridge
-
         DEFAULT_URL = "http://#{Platform.localhost}:8080/wd/hub/"
 
         def initialize(opts = {})
@@ -61,7 +59,6 @@ module Selenium
         def capabilities
           @capabilities ||= Remote::Capabilities.android
         end
-
       end # Bridge
     end # Android
   end # WebDriver

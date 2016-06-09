@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     module SpecSupport
       class TestEnvironment
-
         attr_accessor :unguarded
         attr_reader :driver
 
@@ -80,7 +79,8 @@ module Selenium
 
         def remote_server
           @remote_server ||= (
-            Selenium::Server.new(remote_server_jar,
+            Selenium::Server.new(
+              remote_server_jar,
               port: PortProber.above(4444),
               log: $DEBUG,
               background: true,
@@ -194,7 +194,8 @@ module Selenium
         end
 
         def create_remote_driver
-          WebDriver::Driver.for(:remote,
+          WebDriver::Driver.for(
+            :remote,
             desired_capabilities: remote_capabilities,
             url: ENV['WD_REMOTE_URL'] || remote_server.webdriver_url,
             http_client: keep_alive_client || http_client
@@ -265,13 +266,12 @@ module Selenium
 
           Selenium::WebDriver::Remote::Http::Persistent.new
         rescue LoadError
-           # net-http-persistent not available
+          # net-http-persistent not available
         end
 
         def http_client
           Selenium::WebDriver::Remote::Http::Default.new
         end
-
       end # TestEnvironment
     end # SpecSupport
   end # WebDriver

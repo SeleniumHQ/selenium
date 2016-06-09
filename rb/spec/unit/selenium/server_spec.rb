@@ -34,8 +34,8 @@ describe Selenium::Server do
     expect(File).to receive(:exist?).with("selenium-server-test.jar").and_return(true)
 
     expect(ChildProcess).to receive(:build).
-                 with("java", "-jar", "selenium-server-test.jar", "-port", "1234").
-                 and_return(mock_process)
+      with("java", "-jar", "selenium-server-test.jar", "-port", "1234").
+      and_return(mock_process)
 
     server = Selenium::Server.new("selenium-server-test.jar", port: 1234, background: true)
     allow(server).to receive(:socket).and_return(mock_poller)
@@ -47,8 +47,8 @@ describe Selenium::Server do
     expect(File).to receive(:exist?).with("selenium-server-test.jar").and_return(true)
 
     expect(ChildProcess).to receive(:build).
-                 with("java", "-jar", "selenium-server-test.jar", "-port", "4444").
-                 and_return(mock_process)
+      with("java", "-jar", "selenium-server-test.jar", "-port", "4444").
+      and_return(mock_process)
 
     server = Selenium::Server.new("selenium-server-test.jar")
     allow(server).to receive(:socket).and_return(mock_poller)
@@ -61,8 +61,8 @@ describe Selenium::Server do
     expect(File).to receive(:exist?).with("selenium-server-test.jar").and_return(true)
 
     expect(ChildProcess).to receive(:build).
-                 with("java", "-jar", "selenium-server-test.jar", "-port", "4444", "foo", "bar").
-                 and_return(mock_process)
+      with("java", "-jar", "selenium-server-test.jar", "-port", "4444", "foo", "bar").
+      and_return(mock_process)
 
     server = Selenium::Server.new("selenium-server-test.jar", background: true)
     allow(server).to receive(:socket).and_return(mock_poller)
@@ -120,7 +120,7 @@ describe Selenium::Server do
 
   it "should know what the latest version available is" do
     latest_version = '2.42.2'
-    example_xml ="<?xml version='1.0' encoding='UTF-8'?><ListBucketResult xmlns='http://doc.s3.amazonaws.com/2006-03-01'><Name>selenium-release</Name><Contents><Key>2.39/selenium-server-2.39.0.zip</Key></Contents><Contents><Key>2.42/selenium-server-standalone-#{latest_version}.jar</Key></Contents></ListBucketResult>"
+    example_xml = "<?xml version='1.0' encoding='UTF-8'?><ListBucketResult xmlns='http://doc.s3.amazonaws.com/2006-03-01'><Name>selenium-release</Name><Contents><Key>2.39/selenium-server-2.39.0.zip</Key></Contents><Contents><Key>2.42/selenium-server-standalone-#{latest_version}.jar</Key></Contents></ListBucketResult>"
     stub_request(:get, "http://selenium-release.storage.googleapis.com/").to_return(body: example_xml)
 
     expect(Selenium::Server.latest).to eq(latest_version)

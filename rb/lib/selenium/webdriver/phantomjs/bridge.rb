@@ -20,13 +20,11 @@
 module Selenium
   module WebDriver
     module PhantomJS
-
       #
       # @api private
       #
 
       class Bridge < Remote::Bridge
-
         def initialize(opts = {})
           http_client = opts.delete(:http_client)
           caps        = opts.delete(:desired_capabilities) { Remote::Capabilities.phantomjs }
@@ -72,7 +70,6 @@ module Selenium
         ensure
           @service.stop if @service
         end
-
       end # Bridge
     end # PhantomJS
   end # WebDriver

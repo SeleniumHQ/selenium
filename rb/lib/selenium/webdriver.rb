@@ -83,6 +83,5 @@ module Selenium
     def self.for(*args)
       WebDriver::Driver.for(*args)
     end
-
   end # WebDriver
 end # Selenium

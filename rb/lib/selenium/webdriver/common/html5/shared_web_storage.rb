@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module HTML5
-
       module SharedWebStorage
         include Enumerable
 
@@ -47,7 +46,6 @@ module Selenium
             yield k, self[k]
           end
         end
-
       end # SharedWebStorage
     end # HTML5
   end # WebDriver

@@ -23,10 +23,8 @@ module Selenium
   module WebDriver
     module Remote
       module Http
-
         # @api private
         class Persistent < Default
-
           def close
             @http.shutdown if @http
           end
@@ -49,7 +47,6 @@ module Selenium
           def response_for(request)
             http.request server_url, request
           end
-
         end # Persistent
       end # Http
     end # Remote

@@ -72,7 +72,5 @@ describe "Driver" do
         expect(result.last_inserted_row_id).to eq(-1)
       end
     end
-
   end
 end
-

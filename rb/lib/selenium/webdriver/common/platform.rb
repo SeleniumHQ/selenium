@@ -22,10 +22,8 @@ require 'socket'
 
 module Selenium
   module WebDriver
-
     # @api private
     module Platform
-
       module_function
 
       def home
@@ -128,7 +126,7 @@ module Selenium
 
       def cygwin_path(path, opts = {})
         flags = []
-        opts.each { |k,v| flags << "--#{k}" if v }
+        opts.each { |k, v| flags << "--#{k}" if v }
 
         `cygpath #{flags.join ' '} "#{path}"`.strip
       end
@@ -222,7 +220,6 @@ module Selenium
 
         interfaces.compact.uniq
       end
-
     end # Platform
   end # WebDriver
 end # Selenium

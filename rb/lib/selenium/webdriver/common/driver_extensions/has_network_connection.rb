@@ -52,7 +52,6 @@ module Selenium
         def valid_type?(type)
           type_to_values.keys.include? type
         end
-
       end # HasNetworkConnection
     end # DriverExtensions
   end # WebDriver

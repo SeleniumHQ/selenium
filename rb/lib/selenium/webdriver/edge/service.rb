@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Edge
-
       #
       # @api private
       #
@@ -45,7 +44,6 @@ module Selenium
         def cannot_connect_error_text
           "unable to connect to MicrosoftWebDriver #{@host}:#{@port}"
         end
-
       end # Service
     end # Edge
   end # WebDriver

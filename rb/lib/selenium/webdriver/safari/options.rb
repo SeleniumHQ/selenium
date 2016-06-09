@@ -55,7 +55,6 @@ module Selenium
           @data_dir      = opts[:custom_data_dir] || opts[:data_dir]
           @clean_session = opts[:clean_session]
         end
-
       end # Options
     end # Safari
   end # WebDriver

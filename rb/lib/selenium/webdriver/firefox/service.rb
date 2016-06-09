@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Firefox
-
       #
       # @api private
       #
@@ -58,7 +57,6 @@ module Selenium
         def cannot_connect_error_text
           "unable to connect to Mozilla geckodriver #{@host}:#{@port}"
         end
-
       end # Service
     end # Firefox
   end # WebDriver

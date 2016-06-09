@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Chrome
-
       #
       # @private
       #
@@ -87,7 +86,7 @@ module Selenium
           prefs_file = prefs_file_for(dir)
 
           FileUtils.mkdir_p File.dirname(prefs_file)
-          File.open(prefs_file, "w") { |file| file << JSON.generate(prefs)  }
+          File.open(prefs_file, "w") { |file| file << JSON.generate(prefs) }
         end
 
         def prefs
@@ -103,7 +102,6 @@ module Selenium
           File.join dir, 'Default', 'Preferences'
         end
       end # Profile
-
     end # Chrome
   end # WebDriver
 end # Selenium

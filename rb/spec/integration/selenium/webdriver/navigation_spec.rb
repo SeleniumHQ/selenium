@@ -20,7 +20,6 @@
 require_relative 'spec_helper'
 
 describe "Navigation" do
-
   not_compliant_on browser: :safari do
     it "should navigate back and forward" do
       form_title   = "We Leave From Here"

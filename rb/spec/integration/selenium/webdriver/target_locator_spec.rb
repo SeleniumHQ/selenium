@@ -72,7 +72,7 @@ describe "Selenium::WebDriver::TargetLocator" do
     end
   end
 
-    # Safari Note - Ensure Popup Blocker turned off to prevent failures
+  # Safari Note - Ensure Popup Blocker turned off to prevent failures
   not_compliant_on browser: :iphone do
     it "should switch to a window and back when given a block" do
       driver.navigate.to url_for("xhtmlTest.html")
@@ -132,7 +132,6 @@ describe "Selenium::WebDriver::TargetLocator" do
     # Marionette BUG: Automatically switches browsing context to new window when it opens.
     not_compliant_on browser: [:marionette, :ie] do
       context "with more than two windows" do
-
         it "should close current window when more than two windows exist" do
           driver.navigate.to url_for("xhtmlTest.html")
           wait_for_element(link: "Create a new anonymous window")
@@ -227,7 +226,6 @@ describe "Selenium::WebDriver::TargetLocator" do
   # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1850030
   not_compliant_on browser: [:iphone, :safari, :phantomjs] do
     describe "alerts" do
-
       it "allows the user to accept an alert" do
         driver.navigate.to url_for("alerts.html")
         driver.find_element(id: "alert").click
@@ -323,7 +321,6 @@ describe "Selenium::WebDriver::TargetLocator" do
 
   compliant_on browser: :ie do
     describe "basic auth alerts" do
-
       after { reset_driver! }
 
       it "allows the user to send valid credentials to an alert" do
@@ -342,7 +339,6 @@ describe "Selenium::WebDriver::TargetLocator" do
 
         expect { driver.switch_to.alert.dismiss }.to_not raise_error
       end
-
     end
   end
 end

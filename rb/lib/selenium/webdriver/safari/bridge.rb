@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Safari
-
       class Bridge < Remote::Bridge
         COMMAND_TIMEOUT = 60
 
@@ -128,7 +127,6 @@ module Selenium
 
           caps
         end
-
       end # Bridge
     end # Safari
   end # WebDriver

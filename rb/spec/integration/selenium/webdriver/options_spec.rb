@@ -21,12 +21,9 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-
     describe Options do
-
       not_compliant_on browser: [:marionette, :ie, :edge] do
         describe 'logs' do
-
           compliant_on driver: :remote do
             it 'can fetch remote log types' do
               expect(driver.manage.logs.available_types).to include(:server, :client)
@@ -66,7 +63,6 @@ module Selenium
 
       not_compliant_on browser: :phantomjs do
         describe "cookie management" do
-
           it "should get all" do
             driver.navigate.to url_for("xhtmlTest.html")
             driver.manage.add_cookie name: "foo", value: "bar"

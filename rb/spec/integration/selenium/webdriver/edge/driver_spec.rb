@@ -22,7 +22,6 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Edge
-
       compliant_on browser: :edge do
         describe Driver do
           not_compliant_on browser: :edge do

@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Error
-
       class WebDriverError < StandardError; end
 
       #
@@ -187,8 +186,6 @@ module Selenium
       UnexpectedJavascriptError = JavascriptError
       NoAlertOpenError          = NoAlertPresentError
       ElementNotDisplayedError  = ElementNotVisibleError
-
-
     end # Error
   end # WebDriver
 end # Selenium

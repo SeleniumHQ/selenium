@@ -20,7 +20,6 @@
 require_relative 'spec_helper'
 
 describe "Timeouts" do
-
   context "implicit waits" do
     before do
       driver.manage.timeouts.implicit_wait = 0

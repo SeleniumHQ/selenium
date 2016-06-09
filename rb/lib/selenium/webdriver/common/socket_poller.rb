@@ -23,7 +23,6 @@ require 'socket'
 module Selenium
   module WebDriver
     class SocketPoller
-
       def initialize(host, port, timeout = 0, interval = 0.25)
         @host     = host
         @port     = Integer(port)
@@ -115,7 +114,6 @@ module Selenium
       def time_now
         Time.now
       end
-
     end # SocketPoller
   end # WebDriver
 end # Selenium

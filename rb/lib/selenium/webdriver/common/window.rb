@@ -19,13 +19,11 @@
 
 module Selenium
   module WebDriver
-
     #
     # @api beta This API may be changed or removed in a future release.
     #
 
     class Window
-
       #
       # @api private
       #
@@ -124,7 +122,6 @@ module Selenium
       def full_screen
         @bridge.fullscreenWindow
       end
-
     end # Window
   end # WebDriver
 end # Selenium

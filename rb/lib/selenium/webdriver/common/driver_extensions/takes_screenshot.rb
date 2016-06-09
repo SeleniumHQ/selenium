@@ -19,14 +19,12 @@
 
 module Selenium
   module WebDriver
-
     #
     # @api private
     #
 
     module DriverExtensions
       module TakesScreenshot
-
         #
         # Save a PNG screenshot to the given path
         #
@@ -55,7 +53,6 @@ module Selenium
             raise Error::UnsupportedOperationError, "unsupported format: #{format.inspect}"
           end
         end
-
       end # TakesScreenshot
     end # DriverExtensions
   end # WebDriver

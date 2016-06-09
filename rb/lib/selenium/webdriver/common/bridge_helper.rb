@@ -19,7 +19,6 @@
 
 module Selenium
   module WebDriver
-
     #
     # Shared across bridges
     #
@@ -27,7 +26,6 @@ module Selenium
     #
 
     module BridgeHelper
-
       def unwrap_script_result(arg)
         case arg
         when Array
@@ -80,7 +78,6 @@ module Selenium
 
         result
       end
-
     end # BridgeHelper
   end # WebDriver
 end # Selenium

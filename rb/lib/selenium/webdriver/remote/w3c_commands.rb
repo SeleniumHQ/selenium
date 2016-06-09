@@ -18,7 +18,6 @@
 # under the License.
 
 class Selenium::WebDriver::Remote::W3CBridge
-
   #
   # http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints
   #
@@ -29,7 +28,6 @@ class Selenium::WebDriver::Remote::W3CBridge
 
   command :newSession,                 :post,    "session"
   command :deleteSession,              :delete,  "session/:session_id"
-
 
   #
   # basic driver
@@ -103,7 +101,6 @@ class Selenium::WebDriver::Remote::W3CBridge
 
   command :actions,                    :post,    "session/:session_id/actions"
 
-
   #
   # Element Operations
   #
@@ -128,5 +125,4 @@ class Selenium::WebDriver::Remote::W3CBridge
 
   command :takeScreenshot,             :get,     "session/:session_id/screenshot"
   command :takeElementScreenshot,      :get,     "session/:session_id/element/:id/screenshot"
-
 end

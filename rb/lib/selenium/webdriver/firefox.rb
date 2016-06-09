@@ -61,7 +61,6 @@ module Selenium
       def self.path=(path)
         Binary.path = path
       end
-
     end # Firefox
   end # WebDriver
 end # Selenium

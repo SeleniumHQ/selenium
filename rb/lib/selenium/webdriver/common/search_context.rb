@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module SearchContext
-
       # @api private
       FINDERS = {
         class: 'class name',
@@ -111,7 +110,6 @@ module Selenium
           raise ArgumentError, "wrong number of arguments (#{args.size} for 2)"
         end
       end
-
     end # SearchContext
   end # WebDriver
 end # Selenium
