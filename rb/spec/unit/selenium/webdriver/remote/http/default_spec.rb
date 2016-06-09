@@ -57,7 +57,7 @@ module Selenium
             expect { client.send :http }.to raise_error(Error::WebDriverError)
           end
 
-          ["http_proxy", "HTTP_PROXY"].each do |proxy_var|
+          %w[http_proxy HTTP_PROXY].each do |proxy_var|
             it "honors the #{proxy_var} environment varable" do
               with_env(proxy_var => "http://proxy.org:8080") do
                 http = client.send :http
@@ -79,7 +79,7 @@ module Selenium
             end
           end
 
-          ["no_proxy", "NO_PROXY"].each do |no_proxy_var|
+          %w[no_proxy NO_PROXY].each do |no_proxy_var|
             it "honors the #{no_proxy_var} environment variable when matching" do
               with_env("HTTP_PROXY" => "proxy.org:8080", no_proxy_var => "example.com") do
                 http = client.send :http
@@ -130,7 +130,7 @@ module Selenium
 
               expect do
                 client.call :post, 'http://example.com/foo/bar', {}
-              end.to raise_error(Errno::ECONNREFUSED, %r[using proxy: http://localhost:1234])
+              end.to raise_error(Errno::ECONNREFUSED, %r{using proxy: http://localhost:1234})
             end
           end
         end

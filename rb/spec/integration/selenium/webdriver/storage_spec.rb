@@ -81,9 +81,9 @@ module Selenium::WebDriver::DriverExtensions
           storage['foo3'] = 'bar3'
 
           expect(storage.to_a).to include(
-                                  ['foo1', 'bar1'],
-                                  ['foo2', 'bar2'],
-                                  ['foo3', 'bar3']
+                                  %w[foo1 bar1],
+                                  %w[foo2 bar2],
+                                  %w[foo3 bar3]
           )
         end
 

@@ -27,7 +27,7 @@ describe "Driver" do
 
   it "should get the page source" do
     driver.navigate.to url_for("xhtmlTest.html")
-    expect(driver.page_source).to match(%r[<title>XHTML Test Page</title>]i)
+    expect(driver.page_source).to match(%r{<title>XHTML Test Page</title>}i)
   end
 
   it "should refresh the page" do

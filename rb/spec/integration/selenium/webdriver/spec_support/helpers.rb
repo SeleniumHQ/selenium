@@ -45,7 +45,7 @@ module Selenium
           return path unless WebDriver::Platform.os == :windows
 
           if GlobalTestEnv.browser == :ie
-            path = path[%r[file://(.*)], 1]
+            path = path[%r{file://(.*)}, 1]
             path.tr!("/", '\\')
 
             "file://#{path}"

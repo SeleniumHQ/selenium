@@ -11,3 +11,8 @@ Style/BracesAroundHashParameters:
 
 Lint/AssignmentInCondition:
   Enabled: false
+
+Style/PercentLiteralDelimiters:
+  PreferredDelimiters:
+    '%i': '[]'
+    '%w': '[]'

@@ -36,7 +36,7 @@ describe "Element" do
       driver.navigate.to url_for("click_tests/overlapping_elements.html")
       expect { driver.find_element(:id, "contents").click }
         .to raise_error(Selenium::WebDriver::Error::UnknownError,
-                        /Element is not clickable at point \(\d+, \d+\)\. Other element would receive the click: <div id="over"><\/div>/)
+                        %r{Element is not clickable at point \(\d+, \d+\)\. Other element would receive the click: <div id="over"><\/div>})
     end
   end
 

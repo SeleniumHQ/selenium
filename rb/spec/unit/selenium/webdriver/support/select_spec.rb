@@ -305,19 +305,19 @@ module Selenium
         end
 
         it 'double quotes a string that contains a single quote' do
-          expect(Select::Escaper.escape("f'oo")).to eq(%{"f'oo"})
+          expect(Select::Escaper.escape("f'oo")).to eq(%("f'oo"))
         end
 
         it 'single quotes a string that contains a double quote' do
-          expect(Select::Escaper.escape('f"oo')).to eq(%{'f"oo'})
+          expect(Select::Escaper.escape('f"oo')).to eq(%('f"oo'))
         end
 
         it 'provides concatenated strings when string to escape contains both single and double quotes' do
-          expect(Select::Escaper.escape(%{f"o'o})).to eq(%{concat("f", '"', "o'o")})
+          expect(Select::Escaper.escape(%(f"o'o))).to eq(%{concat("f", '"', "o'o")})
         end
 
         it 'provides concatenated strings when string ends with quote' do
-          expect(Select::Escaper.escape(%{'"})).to eq(%{concat("'", '"')})
+          expect(Select::Escaper.escape(%('"))).to eq(%{concat("'", '"')})
         end
       end # Select::Escaper
     end # Support

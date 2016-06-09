@@ -70,7 +70,7 @@ module Selenium
             profile["browser.startup.page"] = "http://example.com"
 
             string = read_generated_prefs
-            expect(string).to include(%Q{user_pref("browser.startup.page", "http://example.com")})
+            expect(string).to include(%{user_pref("browser.startup.page", "http://example.com")})
           end
 
           it "should raise an error if the value given is not a string, number or boolean" do

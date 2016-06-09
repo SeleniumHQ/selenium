@@ -67,7 +67,7 @@ describe Selenium::Server do
     server = Selenium::Server.new("selenium-server-test.jar", background: true)
     allow(server).to receive(:socket).and_return(mock_poller)
 
-    server << ["foo", "bar"]
+    server << %w[foo bar]
 
     server.start
   end
