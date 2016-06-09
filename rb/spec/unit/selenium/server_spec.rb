@@ -113,7 +113,7 @@ describe Selenium::Server do
     required_version = '10.2.0'
     expected_download_file_name = "selenium-server-standalone-#{required_version}.jar"
 
-    expect(File).to receive(:exists?).with(expected_download_file_name).and_return true
+    expect(File).to receive(:exist?).with(expected_download_file_name).and_return true
 
     Selenium::Server.download required_version
   end

@@ -235,7 +235,7 @@ module Selenium
         # @api private
         #
 
-        def as_json(opts = nil)
+        def as_json(*)
           hash = {}
 
           @capabilities.each do |key, value|
@@ -258,7 +258,7 @@ module Selenium
           hash
         end
 
-        def to_json(*args)
+        def to_json(*)
           JSON.generate as_json
         end
 

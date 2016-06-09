@@ -102,7 +102,7 @@ module Selenium
             @opt[:marionette] = true
             driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
 
-            expect(driver1.capabilities[:takes_element_screenshot]).to_not be_nil
+            expect(driver1.capabilities[:browser_version]).to_not be_nil
             driver1.quit
           end
         end

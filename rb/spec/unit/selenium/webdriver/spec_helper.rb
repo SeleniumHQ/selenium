@@ -29,7 +29,7 @@ require 'pathname'
 module Selenium
   module WebDriver
     module UnitSpecHelper
-      def with_env(hash, &blk)
+      def with_env(hash)
         hash.each { |k, v| ENV[k.to_s] = v.to_s }
         yield
       ensure

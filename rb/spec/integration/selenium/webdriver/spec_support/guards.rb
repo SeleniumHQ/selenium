@@ -102,19 +102,19 @@ module Selenium
           end
         end
 
-        def debug_guard(&blk)
+        def debug_guard
           @debug_guard = true
           yield
         ensure
           @debug_guard = false
         end
 
-        def not_compliant_on(*opts, &blk)
+        def not_compliant_on(*opts)
           Guards.record(:not_compliant, opts, file: caller.first)
           yield if GlobalTestEnv.unguarded? || !Guards.env_matches?(opts)
         end
 
-        def compliant_on(*opts, &blk)
+        def compliant_on(*opts)
           Guards.record(:compliant_on, opts, file: caller.first)
           yield if GlobalTestEnv.unguarded? || Guards.env_matches?(opts)
         end

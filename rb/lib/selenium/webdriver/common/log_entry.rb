@@ -28,7 +28,7 @@ module Selenium
         @message = message
       end
 
-      def as_json(opts = nil)
+      def as_json(*)
         {
           'level'     => level,
           'timestamp' => timestamp,

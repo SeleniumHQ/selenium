@@ -47,7 +47,7 @@ module Selenium
       # @return [Object] the result of the block
       #
 
-      def until(&blk)
+      def until
         end_time = Time.now + @timeout
         last_error = nil
 

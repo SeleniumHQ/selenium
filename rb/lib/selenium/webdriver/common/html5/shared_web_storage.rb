@@ -29,7 +29,7 @@ module Selenium
         alias_method :member?, :key?
         alias_method :has_key?, :key?
 
-        def fetch(key, &blk)
+        def fetch(key)
           return self[key] if self.key? key
           return yield(key) if block_given?
           raise KeyError, "missing key #{key.inspect}"
@@ -39,7 +39,7 @@ module Selenium
           size == 0
         end
 
-        def each(&blk)
+        def each
           return enum_for(:each) unless block_given?
 
           keys.each do |k|

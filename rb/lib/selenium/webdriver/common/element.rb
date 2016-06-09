@@ -280,7 +280,7 @@ module Selenium
       # @api private
       #
 
-      def to_json(*args)
+      def to_json(*)
         JSON.generate as_json
       end
 
@@ -290,7 +290,7 @@ module Selenium
       # @api private
       #
 
-      def as_json(opts = nil)
+      def as_json(*)
         {
           :ELEMENT => @id,
           "element-6066-11e4-a52e-4f735466cecf" => @id

@@ -119,7 +119,7 @@ module Selenium
         @type = type
       end
 
-      def as_json(opts = nil)
+      def as_json(*)
         json_result = {
           "proxyType" => TYPES[type]
         }
@@ -137,7 +137,7 @@ module Selenium
         json_result if json_result.length > 1
       end
 
-      def to_json(*args)
+      def to_json(*)
         JSON.generate as_json
       end
 
