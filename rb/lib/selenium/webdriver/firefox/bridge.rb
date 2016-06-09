@@ -49,7 +49,7 @@ module Selenium
             desired_capabilities: caps
           }
 
-          remote_opts.merge!(http_client: http_client) if http_client
+          remote_opts[:http_client] = http_client if http_client
 
           begin
             super(remote_opts)

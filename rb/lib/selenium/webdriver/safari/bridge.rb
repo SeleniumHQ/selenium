@@ -111,7 +111,7 @@ module Selenium
           end
 
           FileReaper << path
-          path.gsub! "/", "\\" if Platform.windows?
+          path.tr! "/", "\\" if Platform.windows?
 
           path
         end

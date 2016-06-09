@@ -82,7 +82,7 @@ describe "Element" do
 
       file = Tempfile.new('file-upload')
       path = file.path
-      path.gsub!("/", "\\") if WebDriver::Platform.windows?
+      path.tr!("/", "\\") if WebDriver::Platform.windows?
 
       element.send_keys path
 

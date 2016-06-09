@@ -92,7 +92,7 @@ module Selenium
         def browser
           @browser ||= (
             name = @capabilities.browser_name
-            name ? name.gsub(" ", "_").to_sym : 'unknown'
+            name ? name.tr(" ", "_").to_sym : 'unknown'
           )
         end
 
@@ -413,7 +413,10 @@ module Selenium
         def mouseMoveTo(element, x = nil, y = nil)
           params = {element: element}
 
-          params.merge! xoffset: x, yoffset: y if x && y
+          if x && y
+            params[:xoffset] = x
+            params[:yoffset] = y
+          end
 
           execute :mouseMoveTo, {}, params
         end

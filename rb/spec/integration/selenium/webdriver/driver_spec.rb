@@ -174,7 +174,7 @@ describe "Driver" do
 
     it "should return numbers" do
       driver.navigate.to url_for("xhtmlTest.html")
-      expect(driver.execute_script("return document.title.length;")).to eq("XHTML Test Page".length)
+      expect(driver.execute_script("return document.title.length;")).to eq(15)
     end
 
     it "should return elements" do

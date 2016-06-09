@@ -43,7 +43,7 @@ module Selenium
             desired_capabilities: caps
           }
 
-          remote_opts.merge!(http_client: http_client) if http_client
+          remote_opts[:http_client] = http_client if http_client
 
           super(remote_opts)
         end
@@ -100,8 +100,8 @@ module Selenium
           if profile
             data = profile.as_json
 
-            chrome_options.merge! 'profile'    => data['zip'],
-                                  'extensions' => data['extensions']
+            chrome_options['profile'] = data['zip']
+            chrome_options['extensions'] = data['extensions']
           end
 
           chrome_options['binary']                   = Chrome.path if Chrome.path

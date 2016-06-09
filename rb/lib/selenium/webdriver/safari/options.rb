@@ -35,7 +35,7 @@ module Selenium
 
         def to_capabilities
           caps = Remote::Capabilities.safari
-          caps.merge!('safari.options' => as_json)
+          caps['safari.options'] = as_json
 
           caps
         end
