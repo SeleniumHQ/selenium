@@ -32,8 +32,6 @@ module Selenium
           :platform_name => :any,
           :platform_version => :any,
           :accept_ssl_certs => false,
-          :takes_screenshot => false,
-          :takes_element_screenshot => false,
           :page_load_strategy => 'normal',
           :proxy => nil
         }
@@ -112,8 +110,6 @@ module Selenium
             caps.platform_name = data.delete("platformName") if data.key? "platformName"
             caps.platform_version = data.delete("platformVersion") if data.key? "platformVersion"
             caps.accept_ssl_certs = data.delete("acceptSslCerts") if data.key? "acceptSslCerts"
-            caps.takes_screenshot = data.delete("takesScreenshot") if data.key? "takesScreenshot"
-            caps.takes_element_screenshot = data.delete("takesElementScreenshot") if data.key? "takesElementScreenshot"
             caps.page_load_strategy = data.delete("pageLoadStrategy") if data.key? "pageloadStrategy"
             proxy = data.delete('proxy')
             caps.proxy = Proxy.json_create(proxy) unless proxy.nil? || proxy.empty?
@@ -144,8 +140,6 @@ module Selenium
         # @option :platform_name            [Symbol] one of :any, :win, :mac, or :x
         # @option :platform_version         [String] required platform version number
         # @option :accept_ssl_certs         [Boolean] does the driver accept SSL Cerfifications?
-        # @option :takes_screenshot         [Boolean] can this driver take screenshots?
-        # @option :takes_element_screenshot [Boolean] can this driver take element screenshots?
         # @option :proxy                    [Selenium::WebDriver::Proxy, Hash] proxy configuration
         #
         # @api public

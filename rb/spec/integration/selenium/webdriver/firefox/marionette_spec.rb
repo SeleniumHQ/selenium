@@ -48,8 +48,6 @@ module Selenium
             expect(driver1.capabilities.platform_name).to_not be_nil
             expect(driver1.capabilities.platform_version).to_not be_nil
             expect(driver1.capabilities.accept_ssl_certs).to be == false
-            expect(driver1.capabilities.takes_screenshot).to be == true
-            expect(driver1.capabilities.takes_element_screenshot).to be == true
             expect(driver1.capabilities.page_load_strategy).to be == 'normal'
             expect(driver1.capabilities.proxy).to be_nil
             if GlobalTestEnv.driver == :remote
@@ -90,46 +88,43 @@ module Selenium
         end
       end
 
-      context "when designated firefox binary includes Marionette" do
-        compliant_on :browser => :marionette do
-          # This passes in isolation, but can not run in suite due to combination of
-          # https://bugzilla.mozilla.org/show_bug.cgi?id=1228107 & https://github.com/SeleniumHQ/selenium/issues/1150
-          not_compliant_on :driver => :resmote do
-            it "Uses Wires when setting marionette option in capabilities" do
-              caps = Selenium::WebDriver::Remote::Capabilities.firefox(:marionette => true)
-              @opt[:desired_capabilities] = caps
-              expect { @driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt }.to_not raise_exception
-              @driver1.quit
-            end
-          end
+      compliant_on :browser => :marionette do
+        it "Uses geckodriver when setting marionette option in capabilities" do
+          caps = Selenium::WebDriver::Remote::Capabilities.firefox(:marionette => true)
+          @opt[:desired_capabilities] = caps
+          expect { @driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt }.to_not raise_exception
+          @driver1.quit
         end
 
         compliant_on :browser => :marionette do
           # This passes in isolation, but can not run in suite due to combination of
           # https://bugzilla.mozilla.org/show_bug.cgi?id=1228107 & https://github.com/SeleniumHQ/selenium/issues/1150
-          it "Uses Wires when setting marionette option in driver initialization" do
+          it "Uses geckodriver when setting marionette option in driver initialization" do
             @opt[:marionette] = true
             driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
 
-            expect(driver1.capabilities[:takes_element_screenshot]).to_not be_nil
+            expect(driver1.capabilities[:browser_version]).to_not be_nil
             driver1.quit
           end
         end
 
         # test with firefox due to https://bugzilla.mozilla.org/show_bug.cgi?id=1228121
         compliant_on :browser => :firefox do
-          it "Does not use wires when marionette option is not set" do
+          it "Does not use geckodriver when marionette option is not set" do
             driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
 
-            expect { driver1.capabilities.browser_version  }.to raise_exception NoMethodError
+            expect { driver1.capabilities.browser_version }.to raise_exception NoMethodError
             driver1.quit
           end
         end
 
         compliant_on :driver => :marionette do
-          context 'when shared example' do
-            before { driver }
-            it_behaves_like "driver that can be started concurrently", :marionette
+          # https://github.com/mozilla/geckodriver/issues/58
+          not_compliant_on :driver => :marionette do
+            context 'when shared example' do
+              before { driver }
+              it_behaves_like "driver that can be started concurrently", :marionette
+            end
           end
         end
       end

@@ -38,7 +38,7 @@ module Selenium
             @process.io.inherit!
           elsif Platform.windows?
             # workaround stdio inheritance issue
-            # https://github.com/jgraham/wires/issues/48
+            # https://github.com/mozilla/geckodriver/issues/48
             @process.io.stdout = @process.io.stderr = File.new(Platform.null_device, 'w')
           end
 
@@ -57,7 +57,7 @@ module Selenium
         end
 
         def cannot_connect_error_text
-          "unable to connect to Mozilla Wires #{@host}:#{@port}"
+          "unable to connect to Mozilla geckodriver #{@host}:#{@port}"
         end
 
       end # Service

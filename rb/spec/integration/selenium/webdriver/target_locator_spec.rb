@@ -26,7 +26,7 @@ describe "Selenium::WebDriver::TargetLocator" do
 
   let(:new_window) { driver.window_handles.find { |handle| handle != driver.window_handle } }
 
-  # https://github.com/jgraham/wires/issues/52
+  # https://github.com/mozilla/geckodriver/issues/52
   not_compliant_on :browser => :marionette do
     # https://github.com/SeleniumHQ/selenium/issues/1795
     not_compliant_on :driver => :remote, :browser => [:edge, :marionette] do
