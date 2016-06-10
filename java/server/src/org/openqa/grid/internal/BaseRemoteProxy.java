@@ -330,15 +330,15 @@ public class BaseRemoteProxy implements RemoteProxy {
   }
 
   public TestSession getNewSession(Map<String, Object> requestedCapability) {
-    log.info("Trying to create a new session on node " + this);
+    log.fine("Trying to create a new session on node " + this);
 
     if (!hasCapability(requestedCapability)) {
-      log.info("Node " + this + " has no matching capability");
+      log.fine("Node " + this + " has no matching capability");
       return null;
     }
     // any slot left at all?
     if (getTotalUsed() >= config.maxSession) {
-      log.info("Node " + this + " has no free slots");
+      log.fine("Node " + this + " has no free slots");
       return null;
     }
     // any slot left for the given app ?
