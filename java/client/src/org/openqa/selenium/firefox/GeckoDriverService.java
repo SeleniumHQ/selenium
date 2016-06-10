@@ -17,10 +17,13 @@
 
 package org.openqa.selenium.firefox;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.firefox.internal.Executable;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -66,7 +69,7 @@ public class GeckoDriverService extends DriverService {
 
   @Override
   protected void waitUntilAvailable() throws MalformedURLException {
-    return;
+    PortProber.waitForPortUp(getUrl().getPort(), 20, SECONDS);
   }
 
   /**
