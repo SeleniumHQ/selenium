@@ -37,6 +37,11 @@ class DriverElementFindingTests(unittest.TestCase):
         element = self.driver.find_element(By.ID, "2")
         self.assertEqual(element.get_attribute("id"), "2")
 
+    def test_should_be_able_to_find_an_element_with_css_escape(self):
+        self._load_page("idElements")
+        element = self.driver.find_element(By.ID, "with.dots")
+        self.assertEqual(element.get_attribute("id"), "with.dots")
+
     def test_Should_Be_Able_To_Find_Multiple_Elements_By_Id(self):
         self._load_page("nestedElements")
         elements = self.driver.find_elements(By.ID, "test_id")
