@@ -174,8 +174,8 @@ module Selenium
 
       def find_in_program_files(*binary_names)
         paths = [
-          ENV['PROGRAMFILES'] || "\\Program Files",
-          ENV['ProgramFiles(x86)'] || "\\Program Files (x86)"
+          ENV['PROGRAMFILES'] || '\\Program Files',
+          ENV['ProgramFiles(x86)'] || '\\Program Files (x86)'
         ]
 
         paths.each do |root|
@@ -189,7 +189,7 @@ module Selenium
       end
 
       def localhost
-        info = Socket.getaddrinfo "localhost", 80, Socket::AF_INET, Socket::SOCK_STREAM
+        info = Socket.getaddrinfo 'localhost', 80, Socket::AF_INET, Socket::SOCK_STREAM
 
         if info.empty?
           raise Error::WebDriverError, "unable to translate 'localhost' for TCP + IPv4"
@@ -215,8 +215,8 @@ module Selenium
       end
 
       def interfaces
-        interfaces = Socket.getaddrinfo("localhost", 8080).map { |e| e[3] }
-        interfaces += ["0.0.0.0", Platform.ip]
+        interfaces = Socket.getaddrinfo('localhost', 8080).map { |e| e[3] }
+        interfaces += ['0.0.0.0', Platform.ip]
 
         interfaces.compact.uniq
       end

@@ -79,7 +79,7 @@ module Selenium
           end
 
           uri = url.is_a?(URI) ? url : URI.parse(url)
-          uri.path += "/" unless uri.path =~ %r{\/$}
+          uri.path += '/' unless uri.path =~ %r{\/$}
 
           http_client.server_url = uri
 
@@ -92,7 +92,7 @@ module Selenium
         def browser
           @browser ||= (
             name = @capabilities.browser_name
-            name ? name.tr(" ", "_").to_sym : 'unknown'
+            name ? name.tr(' ', '_').to_sym : 'unknown'
           )
         end
 
@@ -116,7 +116,7 @@ module Selenium
         #
 
         def session_id
-          @session_id || raise(Error::WebDriverError, "no current session exists")
+          @session_id || raise(Error::WebDriverError, 'no current session exists')
         end
 
         def create_session(desired_capabilities)
@@ -615,7 +615,7 @@ module Selenium
 
         def assert_javascript_enabled
           return if capabilities.javascript_enabled?
-          raise Error::UnsupportedOperationError, "underlying webdriver instance does not support javascript"
+          raise Error::UnsupportedOperationError, 'underlying webdriver instance does not support javascript'
         end
 
         #
@@ -639,7 +639,7 @@ module Selenium
           verb, path = COMMANDS[command] || raise(ArgumentError, "unknown command: #{command.inspect}")
           path       = path.dup
 
-          path[':session_id'] = @session_id if path.include?(":session_id")
+          path[':session_id'] = @session_id if path.include?(':session_id')
 
           begin
             opts.each { |key, value| path[key.inspect] = escaper.escape(value.to_s) }

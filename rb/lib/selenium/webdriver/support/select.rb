@@ -28,12 +28,12 @@ module Selenium
         def initialize(element)
           tag_name = element.tag_name
 
-          unless tag_name.casecmp("select").zero?
+          unless tag_name.casecmp('select').zero?
             raise ArgumentError, "unexpected tag name #{tag_name.inspect}"
           end
 
           @element = element
-          @multi   = ![nil, "false"].include?(element.attribute(:multiple))
+          @multi   = ![nil, 'false'].include?(element.attribute(:multiple))
         end
 
         #

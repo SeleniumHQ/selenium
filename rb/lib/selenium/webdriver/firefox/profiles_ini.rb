@@ -23,7 +23,7 @@ module Selenium
       # @api private
       class ProfilesIni
         def initialize
-          @ini_path = File.join(Util.app_data_path, "profiles.ini")
+          @ini_path = File.join(Util.app_data_path, 'profiles.ini')
           @profile_paths = {}
 
           parse if File.exist?(@ini_path)
@@ -54,7 +54,7 @@ module Selenium
             when /^Name=(.+)$/
               name = Regexp.last_match(1).strip
             when /^IsRelative=(.+)$/
-              is_relative = Regexp.last_match(1).strip == "1"
+              is_relative = Regexp.last_match(1).strip == '1'
             when /^Path=(.+)$/
               path = Regexp.last_match(1).strip
             end

@@ -47,7 +47,7 @@ module Selenium
 
             # workaround for http://github.com/taf2/curb/issues/issue/40
             # curb will handle this for us anyway
-            headers.delete "Content-Length"
+            headers.delete 'Content-Length'
 
             client.headers = headers
 
@@ -59,10 +59,10 @@ module Selenium
             when :get
               client.http_get
             when :post
-              client.post_body = payload || ""
+              client.post_body = payload || ''
               client.http_post
             when :put
-              client.put_data = payload || ""
+              client.put_data = payload || ''
               client.http_put
             when :delete
               client.http_delete

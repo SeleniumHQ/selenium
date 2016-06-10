@@ -42,7 +42,7 @@ module Selenium
               proxy = URI.parse(url)
             end
 
-            Net::HTTP::Persistent.new "webdriver", proxy
+            Net::HTTP::Persistent.new 'webdriver', proxy
           end
 
           def response_for(request)

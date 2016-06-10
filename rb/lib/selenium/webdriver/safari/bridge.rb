@@ -74,8 +74,8 @@ module Selenium
           params.merge!(command_hash) if command_hash
 
           @server.send(
-            origin: "webdriver",
-            type: "command",
+            origin: 'webdriver',
+            type: 'command',
             command: {id: @command_id.to_s, name: command, parameters: params}
           )
 
@@ -110,7 +110,7 @@ module Selenium
           end
 
           FileReaper << path
-          path.tr! "/", "\\" if Platform.windows?
+          path.tr! '/', '\\' if Platform.windows?
 
           path
         end

@@ -82,7 +82,7 @@ module Selenium
           end
 
           uri = url.is_a?(URI) ? url : URI.parse(url)
-          uri.path += "/" unless uri.path =~ %r{\/$}
+          uri.path += '/' unless uri.path =~ %r{\/$}
 
           http_client.server_url = uri
 
@@ -94,7 +94,7 @@ module Selenium
         def browser
           @browser ||= (
             name = @capabilities.browser_name
-            name ? name.tr(" ", "_").to_sym : 'unknown'
+            name ? name.tr(' ', '_').to_sym : 'unknown'
           )
         end
 
@@ -116,7 +116,7 @@ module Selenium
         #
 
         def session_id
-          @session_id || raise(Error::WebDriverError, "no current session exists")
+          @session_id || raise(Error::WebDriverError, 'no current session exists')
         end
 
         def create_session(desired_capabilities)
@@ -190,9 +190,9 @@ module Selenium
         end
 
         def getPageSource
-          executeScript("var source = document.documentElement.outerHTML;" \
-                            "if (!source) { source = new XMLSerializer().serializeToString(document); }" \
-                            "return source;")
+          executeScript('var source = document.documentElement.outerHTML;' \
+                            'if (!source) { source = new XMLSerializer().serializeToString(document); }' \
+                            'return source;')
         end
 
         def switchToWindow(name)
@@ -293,7 +293,7 @@ module Selenium
         end
 
         def getLocalStorageKeys
-          executeScript("return Object.keys(localStorage)")
+          executeScript('return Object.keys(localStorage)')
         end
 
         def setLocalStorageItem(key, value)
@@ -301,11 +301,11 @@ module Selenium
         end
 
         def clearLocalStorage
-          executeScript("localStorage.clear()")
+          executeScript('localStorage.clear()')
         end
 
         def getLocalStorageSize
-          executeScript("return localStorage.length")
+          executeScript('return localStorage.length')
         end
 
         def getSessionStorageItem(key)
@@ -317,7 +317,7 @@ module Selenium
         end
 
         def getSessionStorageKeys
-          executeScript("return Object.keys(sessionStorage)")
+          executeScript('return Object.keys(sessionStorage)')
         end
 
         def setSessionStorageItem(key, value)
@@ -325,11 +325,11 @@ module Selenium
         end
 
         def clearSessionStorage
-          executeScript("sessionStorage.clear()")
+          executeScript('sessionStorage.clear()')
         end
 
         def getSessionStorageSize
-          executeScript("return sessionStorage.length")
+          executeScript('return sessionStorage.length')
         end
 
         def getLocation
@@ -442,7 +442,7 @@ module Selenium
         def submitElement(element)
           executeScript("var e = arguments[0].ownerDocument.createEvent('Event');" \
                             "e.initEvent('submit', true, true);" \
-                            "if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }", element)
+                            'if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }', element)
         end
 
         def dragElement(element, right_by, down_by)
@@ -631,7 +631,7 @@ module Selenium
           verb, path = COMMANDS[command] || raise(ArgumentError, "unknown command: #{command.inspect}")
           path       = path.dup
 
-          path[':session_id'] = @session_id if path.include?(":session_id")
+          path[':session_id'] = @session_id if path.include?(':session_id')
 
           begin
             opts.each do |key, value|

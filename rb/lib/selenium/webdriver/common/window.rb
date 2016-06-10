@@ -41,7 +41,7 @@ module Selenium
       def size=(dimension)
         unless dimension.respond_to?(:width) && dimension.respond_to?(:height)
           raise ArgumentError, "expected #{dimension.inspect}:#{dimension.class}" \
-                               " to respond to #width and #height"
+                               ' to respond to #width and #height'
         end
 
         @bridge.setWindowSize dimension.width, dimension.height
@@ -66,7 +66,7 @@ module Selenium
       def position=(point)
         unless point.respond_to?(:x) && point.respond_to?(:y)
           raise ArgumentError, "expected #{point.inspect}:#{point.class}" \
-                               " to respond to #x and #y"
+                               ' to respond to #x and #y'
         end
 
         @bridge.setWindowPosition point.x, point.y

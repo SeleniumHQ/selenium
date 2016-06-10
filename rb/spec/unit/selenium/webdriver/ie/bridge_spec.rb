@@ -17,14 +17,14 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path("../../spec_helper", __FILE__)
+require File.expand_path('../../spec_helper', __FILE__)
 
 module Selenium
   module WebDriver
     module IE
       describe Bridge do
-        let(:resp)    { {"sessionId" => "foo", "value" => @default_capabilities.as_json} }
-        let(:service) { double(Service, start: nil, uri: "http://example.com") }
+        let(:resp)    { {'sessionId' => 'foo', 'value' => @default_capabilities.as_json} }
+        let(:service) { double(Service, start: nil, uri: 'http://example.com') }
         let(:caps)    { {} }
         let(:http)    { double(Remote::Http::Default, call: resp).as_null_object }
 
@@ -36,11 +36,11 @@ module Selenium
           allow(Service).to receive(:new).and_return(service)
         end
 
-        it "raises ArgumentError if passed invalid options" do
+        it 'raises ArgumentError if passed invalid options' do
           expect { Bridge.new(foo: 'bar') }.to raise_error(ArgumentError)
         end
 
-        it "accepts the :introduce_flakiness_by_ignoring_security_domains option" do
+        it 'accepts the :introduce_flakiness_by_ignoring_security_domains option' do
           Bridge.new(
             introduce_flakiness_by_ignoring_security_domains: true,
             http_client: http
@@ -49,13 +49,13 @@ module Selenium
           expect(caps['ignoreProtectedModeSettings']).to be true
         end
 
-        it "has native events enabled by default" do
+        it 'has native events enabled by default' do
           Bridge.new(http_client: http)
 
           expect(caps['nativeEvents']).to be true
         end
 
-        it "can disable native events" do
+        it 'can disable native events' do
           Bridge.new(
             native_events: false,
             http_client: http
@@ -65,7 +65,7 @@ module Selenium
         end
 
         it 'sets the server log level and log file' do
-          expect(Service).to receive(:new).with(IE.driver_path, Service::DEFAULT_PORT, "--log-level=TRACE", "--log-file=/foo/bar")
+          expect(Service).to receive(:new).with(IE.driver_path, Service::DEFAULT_PORT, '--log-level=TRACE', '--log-file=/foo/bar')
 
           Bridge.new(
             log_level: :trace,
@@ -75,7 +75,7 @@ module Selenium
         end
 
         it 'should be able to set implementation' do
-          expect(Service).to receive(:new).with(IE.driver_path, Service::DEFAULT_PORT, "--implementation=VENDOR")
+          expect(Service).to receive(:new).with(IE.driver_path, Service::DEFAULT_PORT, '--implementation=VENDOR')
 
           Bridge.new(
             implementation: :vendor,

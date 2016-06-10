@@ -38,7 +38,7 @@ module Selenium
         end
 
         def stop_server
-          connect_to_server { |http| http.get("/shutdown") }
+          connect_to_server { |http| http.get('/shutdown') }
         end
 
         def cannot_connect_error_text

@@ -74,7 +74,7 @@ module Selenium
 
         def create_capabilities(opts)
           caps               = opts.delete(:desired_capabilities) { Remote::W3CCapabilities.edge }
-          page_load_strategy = opts.delete(:page_load_strategy) || "normal"
+          page_load_strategy = opts.delete(:page_load_strategy) || 'normal'
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"

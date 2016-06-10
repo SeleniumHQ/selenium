@@ -33,7 +33,7 @@ module Selenium
           def http
             @http ||= (
             http = new_http_client
-            if server_url.scheme == "https"
+            if server_url.scheme == 'https'
               http.use_ssl = true
               http.verify_mode = OpenSSL::SSL::VERIFY_NONE
             end
@@ -80,7 +80,7 @@ module Selenium
             end
 
             if response.is_a? Net::HTTPRedirection
-              raise Error::WebDriverError, "too many redirects" if redirects >= MAX_REDIRECTS
+              raise Error::WebDriverError, 'too many redirects' if redirects >= MAX_REDIRECTS
               request(:get, URI.parse(response['Location']), DEFAULT_HEADERS.dup, nil, redirects + 1)
             else
               create_response response.code, response.body, response.content_type
@@ -125,7 +125,7 @@ module Selenium
             no_proxy = ENV['no_proxy'] || ENV['NO_PROXY']
 
             if proxy
-              proxy = "http://#{proxy}" unless proxy.start_with?("http://")
+              proxy = "http://#{proxy}" unless proxy.start_with?('http://')
               Proxy.new(http: proxy, no_proxy: no_proxy)
             end
             )
@@ -135,8 +135,8 @@ module Selenium
             return false if proxy.nil?
 
             if proxy.no_proxy
-              ignored = proxy.no_proxy.split(",").any? do |host|
-                host == "*" ||
+              ignored = proxy.no_proxy.split(',').any? do |host|
+                host == '*' ||
                   host == server_url.host || (
                 begin
                   IPAddr.new(host).include?(server_url.host)

@@ -23,30 +23,30 @@ module Selenium
   module WebDriver
     module DriverExtensions
       compliant_on browser: nil do
-        describe "HasApplicationCache" do
-          it "gets the app cache status" do
+        describe 'HasApplicationCache' do
+          it 'gets the app cache status' do
             expect(driver.application_cache.status).to eq(:uncached)
 
             driver.online = false
-            driver.navigate.to url_for("html5Page.html")
+            driver.navigate.to url_for('html5Page.html')
 
             expect(browser.application_cache.status).to eq(:idle)
           end
 
-          it "loads from cache when offline" do
-            driver.get url_for("html5Page.html")
-            driver.get url_for("formPage.html")
+          it 'loads from cache when offline' do
+            driver.get url_for('html5Page.html')
+            driver.get url_for('formPage.html')
 
             driver.online = false
 
-            driver.get url_for("html5Page.html")
-            expect(driver.title).to eq("HTML5")
+            driver.get url_for('html5Page.html')
+            expect(driver.title).to eq('HTML5')
           end
 
-          it "gets the app cache entries" do
+          it 'gets the app cache entries' do
             # dependant on spec above?!
 
-            driver.get url_for("html5Page")
+            driver.get url_for('html5Page')
 
             entries = driver.application_cache.to_a
             expect(entries.size).to be > 2

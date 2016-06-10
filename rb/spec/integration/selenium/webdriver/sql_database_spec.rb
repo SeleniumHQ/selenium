@@ -22,21 +22,21 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Driver do
-      context "sql database" do
-        let(:select) { "SELECT * FROM docs" }
-        let(:insert) { "INSERT INTO docs(docname) VALUES (?)" }
-        let(:delete) { "DELETE from docs" }
+      context 'sql database' do
+        let(:select) { 'SELECT * FROM docs' }
+        let(:insert) { 'INSERT INTO docs(docname) VALUES (?)' }
+        let(:delete) { 'DELETE from docs' }
         let(:update) { "UPDATE docs SET docname='DocBar' WHERE docname='DocFooBar'" }
 
         before do
-          driver.get url_for("html5Page.html")
-          wait.until { driver.find_element(id: "db_completed") }
+          driver.get url_for('html5Page.html')
+          wait.until { driver.find_element(id: 'db_completed') }
         end
 
         compliant_on browser: nil do
-          it "includes inserted rows in the result set" do
-            driver.execute_sql insert, "DocFoo"
-            driver.execute_sql insert, "DocFooBar"
+          it 'includes inserted rows in the result set' do
+            driver.execute_sql insert, 'DocFoo'
+            driver.execute_sql insert, 'DocFooBar'
 
             result = driver.execute_sql select
             expect(result.rows.size).to eq(2)
@@ -49,8 +49,8 @@ module Selenium
             expect(result.rows.size).to eq(0)
           end
 
-          it "knows the number of rows affected" do
-            result = driver.execute_sql insert, "DocFooBar"
+          it 'knows the number of rows affected' do
+            result = driver.execute_sql insert, 'DocFooBar'
             expect(result.rows_affected).to eq(1)
 
             result = driver.execute_sql select
@@ -60,11 +60,11 @@ module Selenium
             expect(result.rows.affected).to eq(1)
           end
 
-          it "returns last inserted row id" do
+          it 'returns last inserted row id' do
             result = driver.execute_sql select
             expect(result.last_inserted_row_id).to eq(-1)
 
-            driver.execute_sql insert, "DocFoo"
+            driver.execute_sql insert, 'DocFoo'
             expect(result.last_inserted_row_id).not_to eq(-1)
 
             result = driver.execute_sql select

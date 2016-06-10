@@ -37,7 +37,7 @@ module Selenium
         end.to raise_error(Error::TimeOutError)
       end
 
-      it "should silently capture NoSuchElementErrors" do
+      it 'should silently capture NoSuchElementErrors' do
         called = false
         block = lambda do
           if called
@@ -51,15 +51,15 @@ module Selenium
         expect(wait.until(&block)).to be true
       end
 
-      it "will use the message from any NoSuchElementError raised while waiting" do
-        block = -> { raise Error::NoSuchElementError, "foo" }
+      it 'will use the message from any NoSuchElementError raised while waiting' do
+        block = -> { raise Error::NoSuchElementError, 'foo' }
 
         expect do
           wait(timeout: 0.5).until(&block)
         end.to raise_error(Error::TimeOutError, /foo/)
       end
 
-      it "should let users configure what exceptions to ignore" do
+      it 'should let users configure what exceptions to ignore' do
         expect do
           wait(ignore: NoMethodError, timeout: 0.5).until { raise NoMethodError }
         end.to raise_error(Error::TimeOutError, /NoMethodError/)

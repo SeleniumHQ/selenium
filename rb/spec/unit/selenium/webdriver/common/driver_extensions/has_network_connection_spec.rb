@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path("../../../spec_helper", __FILE__)
+require File.expand_path('../../../spec_helper', __FILE__)
 
 module Selenium
   module WebDriver
@@ -29,30 +29,30 @@ module Selenium
 
         let(:driver) { FakeDriver.new }
 
-        describe "#network_connection" do
-          it "returns the correct connection type" do
+        describe '#network_connection' do
+          it 'returns the correct connection type' do
             allow(@bridge).to receive(:getNetworkConnection) { 1 }
 
             expect(driver.network_connection_type).to eq :airplane_mode
           end
 
-          it "returns an unknown connection value" do
+          it 'returns an unknown connection value' do
             allow(@bridge).to receive(:getNetworkConnection) { 5 }
 
             expect(driver.network_connection_type).to eq 5
           end
         end
 
-        describe "#network_connection=" do
-          it "sends out the correct connection value" do
+        describe '#network_connection=' do
+          it 'sends out the correct connection value' do
             expect(@bridge).to receive(:setNetworkConnection).with(1)
 
             driver.network_connection_type = :airplane_mode
           end
 
-          it "returns an error when an invalid argument is given" do
+          it 'returns an error when an invalid argument is given' do
             expect { driver.network_connection_type = :something }
-              .to raise_error(ArgumentError, "Invalid connection type")
+              .to raise_error(ArgumentError, 'Invalid connection type')
           end
         end
       end

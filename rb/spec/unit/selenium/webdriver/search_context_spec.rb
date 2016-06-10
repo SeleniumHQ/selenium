@@ -36,46 +36,46 @@ module Selenium
       let(:bridge)         { double(:Bridge).as_null_object }
       let(:search_context) { TestSearchContext.new(bridge) }
 
-      context "finding a single element" do
-        it "accepts a hash" do
-          expect(bridge).to receive(:find_element_by).with('id', "bar", nil).and_return(element)
-          expect(search_context.find_element(id: "bar")).to eq(element)
+      context 'finding a single element' do
+        it 'accepts a hash' do
+          expect(bridge).to receive(:find_element_by).with('id', 'bar', nil).and_return(element)
+          expect(search_context.find_element(id: 'bar')).to eq(element)
         end
 
-        it "accepts two arguments" do
-          expect(bridge).to receive(:find_element_by).with('id', "bar", nil).and_return(element)
-          expect(search_context.find_element(:id, "bar")).to eq(element)
+        it 'accepts two arguments' do
+          expect(bridge).to receive(:find_element_by).with('id', 'bar', nil).and_return(element)
+          expect(search_context.find_element(:id, 'bar')).to eq(element)
         end
 
         it "raises an error if given an invalid 'by'" do
           expect do
-            search_context.find_element(foo: "bar")
+            search_context.find_element(foo: 'bar')
           end.to raise_error(ArgumentError, 'cannot find element by :foo')
         end
 
-        it "does not modify the hash given" do
-          selector = {id: "foo"}
+        it 'does not modify the hash given' do
+          selector = {id: 'foo'}
 
           search_context.find_element(selector)
 
-          expect(selector).to eq(id: "foo")
+          expect(selector).to eq(id: 'foo')
         end
       end
 
-      context "finding multiple elements" do
-        it "accepts a hash" do
-          expect(bridge).to receive(:find_elements_by).with('id', "bar", nil).and_return([])
-          expect(search_context.find_elements(id: "bar")).to eq([])
+      context 'finding multiple elements' do
+        it 'accepts a hash' do
+          expect(bridge).to receive(:find_elements_by).with('id', 'bar', nil).and_return([])
+          expect(search_context.find_elements(id: 'bar')).to eq([])
         end
 
-        it "accepts two arguments" do
-          expect(bridge).to receive(:find_elements_by).with('id', "bar", nil).and_return([])
-          expect(search_context.find_elements(:id, "bar")).to eq([])
+        it 'accepts two arguments' do
+          expect(bridge).to receive(:find_elements_by).with('id', 'bar', nil).and_return([])
+          expect(search_context.find_elements(:id, 'bar')).to eq([])
         end
 
         it "raises an error if given an invalid 'by'" do
           expect do
-            search_context.find_elements(foo: "bar")
+            search_context.find_elements(foo: 'bar')
           end.to raise_error(ArgumentError, 'cannot find elements by :foo')
         end
       end

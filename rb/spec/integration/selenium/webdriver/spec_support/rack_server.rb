@@ -77,7 +77,7 @@ module Selenium
                      end
 
           handler = handlers.find { |h| load_handler h }
-          constant = handler == 'webrick' ? "WEBrick" : handler.capitalize
+          constant = handler == 'webrick' ? 'WEBrick' : handler.capitalize
           Rack::Handler.const_get constant
         end
 
@@ -103,7 +103,7 @@ module Selenium
             # For IE, the combination of Windows + FFI + MRI seems to cause a
             # deadlock with the get() call and the server thread.
             # Workaround by running this file in a subprocess.
-            @process = ChildProcess.build("ruby", "-r", "rubygems", __FILE__, @path, @port.to_s).start
+            @process = ChildProcess.build('ruby', '-r', 'rubygems', __FILE__, @path, @port.to_s).start
           else
             start_threaded
           end
@@ -118,20 +118,20 @@ module Selenium
 
           def call(env)
             case env['PATH_INFO']
-            when "/common/upload"
+            when '/common/upload'
               req = Rack::Request.new(env)
               body = req['upload'][:tempfile].read
 
-              [200, {"Content-Type" => "text/html"}, [body]]
-            when "/basicAuth"
+              [200, {'Content-Type' => 'text/html'}, [body]]
+            when '/basicAuth'
               if authorized?(env)
                 status = 200
-                header = {"Content-Type" => "text/html"}
-                body = "<h1>authorized</h1>"
+                header = {'Content-Type' => 'text/html'}
+                body = '<h1>authorized</h1>'
               else
                 status = 401
-                header = {"WWW-Authenticate" => 'Basic realm="basic-auth-test"'}
-                body = "Login please"
+                header = {'WWW-Authenticate' => 'Basic realm="basic-auth-test"'}
+                body = 'Login please'
               end
 
               [status, header, [body]]

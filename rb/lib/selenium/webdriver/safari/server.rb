@@ -64,7 +64,7 @@ module Selenium
             rescue Errno::EWOULDBLOCK, Errno::EAGAIN
               now = Time.now
               if now >= end_time
-                raise Error::TimeOutError, "timed out waiting for Safari to respond"
+                raise Error::TimeOutError, 'timed out waiting for Safari to respond'
               end
 
               IO.select([@ws], nil, nil, end_time - now)
@@ -113,7 +113,7 @@ Server: safaridriver-ruby
           req = ''
           req << http.read(1) until req.include?("\r\n\r\n")
 
-          if !req.include?("?url=")
+          if !req.include?('?url=')
             http << format(headers, 302, 'Moved Temporarily')
             http << "Location: #{uri}?url=#{encode_form_component ws_uri}\r\n"
             http << "\r\n\r\n"
@@ -141,7 +141,7 @@ Server: safaridriver-ruby
           end
 
           unless hs.valid?
-            if req.include? "favicon.ico"
+            if req.include? 'favicon.ico'
               @ws.close
               process_handshake
               return

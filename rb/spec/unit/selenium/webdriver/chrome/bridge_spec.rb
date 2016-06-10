@@ -17,14 +17,14 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path("../../spec_helper", __FILE__)
+require File.expand_path('../../spec_helper', __FILE__)
 
 module Selenium
   module WebDriver
     module Chrome
       describe Bridge do
-        let(:resp)    { {"sessionId" => "foo", "value" => @default_capabilities} }
-        let(:service) { double(Service, start: true, uri: "http://example.com") }
+        let(:resp)    { {'sessionId' => 'foo', 'value' => @default_capabilities} }
+        let(:service) { double(Service, start: true, uri: 'http://example.com') }
         let(:caps)    { {} }
         let(:http)    { double(Remote::Http::Default, call: resp).as_null_object }
 
@@ -36,74 +36,74 @@ module Selenium
           allow(Service).to receive(:new).and_return(service)
         end
 
-        it "sets the nativeEvents capability" do
+        it 'sets the nativeEvents capability' do
           Bridge.new(http_client: http, native_events: true)
 
           expect(caps['chromeOptions']['nativeEvents']).to be true
           expect(caps['chrome.nativeEvents']).to be true
         end
 
-        it "sets the args capability" do
+        it 'sets the args capability' do
           Bridge.new(http_client: http, args: %w[--foo=bar])
 
           expect(caps['chromeOptions']['args']).to eq(%w[--foo=bar])
           expect(caps['chrome.switches']).to eq(%w[--foo=bar])
         end
 
-        it "sets the proxy capabilitiy" do
-          proxy = Proxy.new(http: "localhost:1234")
+        it 'sets the proxy capabilitiy' do
+          proxy = Proxy.new(http: 'localhost:1234')
           Bridge.new(http_client: http, proxy: proxy)
 
           expect(caps['proxy']).to eq(proxy)
         end
 
-        it "sets the chrome.verbose capability" do
+        it 'sets the chrome.verbose capability' do
           Bridge.new(http_client: http, verbose: true)
 
           expect(caps['chromeOptions']['verbose']).to be true
           expect(caps['chrome.verbose']).to be true
         end
 
-        it "sets the chrome.detach capability" do
+        it 'sets the chrome.detach capability' do
           Bridge.new(http_client: http) # true by default
 
           expect(caps['chromeOptions']['detach']).to be true
           expect(caps['chrome.detach']).to be true
         end
 
-        it "sets the prefs capability" do
-          Bridge.new(http_client: http, prefs: {foo: "bar"})
+        it 'sets the prefs capability' do
+          Bridge.new(http_client: http, prefs: {foo: 'bar'})
 
-          expect(caps['chromeOptions']['prefs']).to eq(foo: "bar")
-          expect(caps['chrome.prefs']).to eq(foo: "bar")
+          expect(caps['chromeOptions']['prefs']).to eq(foo: 'bar')
+          expect(caps['chrome.prefs']).to eq(foo: 'bar')
         end
 
-        it "lets the user override chrome.detach" do
+        it 'lets the user override chrome.detach' do
           Bridge.new(http_client: http, detach: false)
 
           expect(caps['chromeOptions']['detach']).to be false
           expect(caps['chrome.detach']).to be false
         end
 
-        it "lets the user override chrome.noWebsiteTestingDefaults" do
+        it 'lets the user override chrome.noWebsiteTestingDefaults' do
           Bridge.new(http_client: http, no_website_testing_defaults: true)
 
           expect(caps['chromeOptions']['noWebsiteTestingDefaults']).to be true
           expect(caps['chrome.noWebsiteTestingDefaults']).to be true
         end
 
-        it "uses the user-provided server URL if given" do
+        it 'uses the user-provided server URL if given' do
           expect(Service).not_to receive(:new)
-          expect(http).to receive(:server_url=).with(URI.parse("http://example.com"))
+          expect(http).to receive(:server_url=).with(URI.parse('http://example.com'))
 
-          Bridge.new(http_client: http, url: "http://example.com")
+          Bridge.new(http_client: http, url: 'http://example.com')
         end
 
-        it "raises an ArgumentError if args is not an Array" do
-          expect { Bridge.new(args: "--foo=bar") }.to raise_error(ArgumentError)
+        it 'raises an ArgumentError if args is not an Array' do
+          expect { Bridge.new(args: '--foo=bar') }.to raise_error(ArgumentError)
         end
 
-        it "uses the given profile" do
+        it 'uses the given profile' do
           profile = Profile.new
 
           profile['some_pref'] = true
@@ -144,8 +144,8 @@ module Selenium
         end
 
         it 'accepts :service_log_path' do
-          expect(Service).to receive(:new).with(Chrome.driver_path, Service::DEFAULT_PORT, "--log-path=/foo/bar")
-          Bridge.new(http_client: http, service_log_path: "/foo/bar")
+          expect(Service).to receive(:new).with(Chrome.driver_path, Service::DEFAULT_PORT, '--log-path=/foo/bar')
+          Bridge.new(http_client: http, service_log_path: '/foo/bar')
         end
       end
     end # Chrome

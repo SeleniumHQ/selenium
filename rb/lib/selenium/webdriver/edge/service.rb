@@ -30,7 +30,7 @@ module Selenium
         private
 
         def stop_server
-          connect_to_server { |http| http.head("/shutdown") }
+          connect_to_server { |http| http.head('/shutdown') }
         end
 
         def start_process

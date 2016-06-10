@@ -88,11 +88,11 @@ module Selenium
       end
 
       def start_process
-        raise NotImplementedError, "subclass responsibility"
+        raise NotImplementedError, 'subclass responsibility'
       end
 
       def stop_server
-        raise NotImplementedError, "subclass responsibility"
+        raise NotImplementedError, 'subclass responsibility'
       end
 
       def stop_process
@@ -116,7 +116,7 @@ module Selenium
       end
 
       def cannot_connect_error_text
-        raise NotImplementedError, "subclass responsibility"
+        raise NotImplementedError, 'subclass responsibility'
       end
 
       def socket_lock

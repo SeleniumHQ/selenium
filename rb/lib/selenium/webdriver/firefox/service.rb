@@ -55,7 +55,7 @@ module Selenium
         end
 
         def stop_server
-          connect_to_server { |http| http.head("/shutdown") }
+          connect_to_server { |http| http.head('/shutdown') }
         end
 
         def cannot_connect_error_text

@@ -51,7 +51,7 @@ module Selenium
 
         def file_detector=(detector)
           unless detector.nil? || detector.respond_to?(:call)
-            raise ArgumentError, "detector must respond to #call"
+            raise ArgumentError, 'detector must respond to #call'
           end
 
           bridge.file_detector = detector

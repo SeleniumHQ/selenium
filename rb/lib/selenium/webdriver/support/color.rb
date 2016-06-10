@@ -119,7 +119,7 @@ module Selenium
         end
 
         def hex
-          format "#%02x%02x%02x", red, green, blue
+          format '#%02x%02x%02x', red, green, blue
         end
       end # Color
     end # Support

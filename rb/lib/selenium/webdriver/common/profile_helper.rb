@@ -42,7 +42,7 @@ module Selenium
       private
 
       def create_tmp_copy(directory)
-        tmp_directory = Dir.mktmpdir("webdriver-rb-profilecopy")
+        tmp_directory = Dir.mktmpdir('webdriver-rb-profilecopy')
 
         # TODO: must be a better way..
         FileUtils.rm_rf tmp_directory
@@ -70,7 +70,7 @@ module Selenium
           tmp_dir = Dir.mktmpdir
           begin
             zip_path = File.join(tmp_dir, "webdriver-profile-duplicate-#{json.hash}.zip")
-            File.open(zip_path, "wb") { |zip_file| zip_file << Base64.decode64(data) }
+            File.open(zip_path, 'wb') { |zip_file| zip_file << Base64.decode64(data) }
 
             new Zipper.unzip(zip_path)
           ensure

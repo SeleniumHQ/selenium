@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path("../../spec_helper", __FILE__)
+require File.expand_path('../../spec_helper', __FILE__)
 
 module Selenium
   module WebDriver
@@ -31,7 +31,7 @@ module Selenium
           {
             'id' => '1',
             'response' => {
-              'sessionId' => 'opaque', "value" => @default_capabilities,
+              'sessionId' => 'opaque', 'value' => @default_capabilities,
               'status'    => 0
             }
           }

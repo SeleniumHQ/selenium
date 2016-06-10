@@ -22,32 +22,32 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Error do
-      context "backwards compatibility" do
-        it "aliases StaleElementReferenceError as ObsoleteElementError" do
+      context 'backwards compatibility' do
+        it 'aliases StaleElementReferenceError as ObsoleteElementError' do
           expect do
             raise Error::StaleElementReferenceError
           end.to raise_error(Error::ObsoleteElementError)
         end
 
-        it "aliases UnknownError as UnhandledError" do
+        it 'aliases UnknownError as UnhandledError' do
           expect do
             raise Error::UnknownError
           end.to raise_error(Error::UnhandledError)
         end
 
-        it "aliases JavascriptError as UnexpectedJavascriptError" do
+        it 'aliases JavascriptError as UnexpectedJavascriptError' do
           expect do
             raise Error::JavascriptError
           end.to raise_error(Error::UnexpectedJavascriptError)
         end
 
-        it "aliases NoAlertPresentError as NoAlertOpenError" do
+        it 'aliases NoAlertPresentError as NoAlertOpenError' do
           expect do
             raise Error::NoAlertPresentError
           end.to raise_error(Error::NoAlertOpenError)
         end
 
-        it "aliases ElementNotVisibleError as ElementNotDisplayedError" do
+        it 'aliases ElementNotVisibleError as ElementNotDisplayedError' do
           expect do
             raise Error::ElementNotVisibleError
           end.to raise_error(Error::ElementNotDisplayedError)

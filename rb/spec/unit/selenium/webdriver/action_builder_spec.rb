@@ -22,46 +22,46 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe ActionBuilder do
-      let(:bridge)      { double("Bridge").as_null_object }
+      let(:bridge)      { double('Bridge').as_null_object }
       let(:keyboard)    { double(Selenium::WebDriver::Keyboard) }
       let(:mouse)       { double(Selenium::WebDriver::Mouse)    }
       let(:element)     { Selenium::WebDriver::Element.new(bridge, 'element') }
       let(:builder)     { Selenium::WebDriver::ActionBuilder.new(mouse, keyboard) }
 
-      it "should create all keyboard actions" do
+      it 'should create all keyboard actions' do
         expect(keyboard).to receive(:press).with(:shift)
-        expect(keyboard).to receive(:send_keys).with("abc")
+        expect(keyboard).to receive(:send_keys).with('abc')
         expect(keyboard).to receive(:release).with(:control)
 
         builder.key_down(:shift)
-               .send_keys("abc")
+               .send_keys('abc')
                .key_up(:control).perform
       end
 
-      it "should pass an element to keyboard actions" do
+      it 'should pass an element to keyboard actions' do
         expect(mouse).to receive(:click).with(element)
         expect(keyboard).to receive(:press).with(:shift)
 
         builder.key_down(element, :shift).perform
       end
 
-      it "should allow supplying individual elements to keyboard actions" do
+      it 'should allow supplying individual elements to keyboard actions' do
         element2 = Selenium::WebDriver::Element.new(bridge, 'element2')
         element3 = Selenium::WebDriver::Element.new(bridge, 'element3')
 
         expect(mouse).to receive(:click).with(element)
         expect(keyboard).to receive(:press).with(:shift)
         expect(mouse).to receive(:click).with(element2)
-        expect(keyboard).to receive(:send_keys).with("abc")
+        expect(keyboard).to receive(:send_keys).with('abc')
         expect(mouse).to receive(:click).with(element3)
         expect(keyboard).to receive(:release).with(:control)
 
         builder.key_down(element, :shift)
-               .send_keys(element2, "abc")
+               .send_keys(element2, 'abc')
                .key_up(element3, :control).perform
       end
 
-      it "should create all mouse actions" do
+      it 'should create all mouse actions' do
         expect(mouse).to receive(:down).with(element)
         expect(mouse).to receive(:up).with(element)
         expect(mouse).to receive(:click).with(element)
@@ -89,7 +89,7 @@ module Selenium
         builder.move_by(-300.1, 400.1).perform
       end
 
-      it "should drag and drop" do
+      it 'should drag and drop' do
         source = element
         target = Selenium::WebDriver::Element.new(bridge, 'element2')
 
@@ -100,7 +100,7 @@ module Selenium
         builder.drag_and_drop(source, target).perform
       end
 
-      it "should drag and drop with offsets" do
+      it 'should drag and drop with offsets' do
         source = element
 
         expect(mouse).to receive(:down).with(source)
@@ -110,7 +110,7 @@ module Selenium
         builder.drag_and_drop_by(source, -300, 400).perform
       end
 
-      it "can move the mouse by coordinates" do
+      it 'can move the mouse by coordinates' do
         expect(mouse).to receive(:down).with(element)
         expect(mouse).to receive(:move_by).with(-300, 400)
         expect(mouse).to receive(:up)

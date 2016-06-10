@@ -78,10 +78,10 @@ module Selenium
             @additional_prefs  = {}
           else
             # TODO: clean this up
-            @native_events     = model_prefs.delete(WEBDRIVER_PREFS[:native_events]) == "true"
-            @secure_ssl        = model_prefs.delete(WEBDRIVER_PREFS[:untrusted_certs]) != "true"
-            @untrusted_issuer  = model_prefs.delete(WEBDRIVER_PREFS[:untrusted_issuer]) == "true"
-            @load_no_focus_lib = model_prefs.delete(WEBDRIVER_PREFS[:load_no_focus_lib]) == "true" # not stored in profile atm, so will always be false.
+            @native_events     = model_prefs.delete(WEBDRIVER_PREFS[:native_events]) == 'true'
+            @secure_ssl        = model_prefs.delete(WEBDRIVER_PREFS[:untrusted_certs]) != 'true'
+            @untrusted_issuer  = model_prefs.delete(WEBDRIVER_PREFS[:untrusted_issuer]) == 'true'
+            @load_no_focus_lib = model_prefs.delete(WEBDRIVER_PREFS[:load_no_focus_lib]) == 'true' # not stored in profile atm, so will always be false.
             @additional_prefs  = model_prefs
           end
 
@@ -89,7 +89,7 @@ module Selenium
         end
 
         def layout_on_disk
-          profile_dir = @model ? create_tmp_copy(@model) : Dir.mktmpdir("webdriver-profile")
+          profile_dir = @model ? create_tmp_copy(@model) : Dir.mktmpdir('webdriver-profile')
           FileReaper << profile_dir
 
           install_extensions(profile_dir)
@@ -170,15 +170,15 @@ module Selenium
           when :manual
             self['network.proxy.type'] = 1
 
-            set_manual_proxy_preference "ftp", proxy.ftp
-            set_manual_proxy_preference "http", proxy.http
-            set_manual_proxy_preference "ssl", proxy.ssl
-            set_manual_proxy_preference "socks", proxy.socks
+            set_manual_proxy_preference 'ftp', proxy.ftp
+            set_manual_proxy_preference 'http', proxy.http
+            set_manual_proxy_preference 'ssl', proxy.ssl
+            set_manual_proxy_preference 'socks', proxy.socks
 
-            self["network.proxy.no_proxies_on"] = if proxy.no_proxy
+            self['network.proxy.no_proxies_on'] = if proxy.no_proxy
                                                     proxy.no_proxy
                                                   else
-                                                    ""
+                                                    ''
                                                   end
           when :pac
             self['network.proxy.type'] = 2
@@ -197,14 +197,14 @@ module Selenium
         def set_manual_proxy_preference(key, value)
           return unless value
 
-          host, port = value.to_s.split(":", 2)
+          host, port = value.to_s.split(':', 2)
 
           self["network.proxy.#{key}"] = host
           self["network.proxy.#{key}_port"] = Integer(port) if port
         end
 
         def install_extensions(directory)
-          destination = File.join(directory, "extensions")
+          destination = File.join(directory, 'extensions')
 
           @extensions.each do |name, extension|
             p extension: name if $DEBUG
@@ -219,7 +219,7 @@ module Selenium
         end
 
         def delete_extensions_cache(directory)
-          FileUtils.rm_f File.join(directory, "extensions.cache")
+          FileUtils.rm_f File.join(directory, 'extensions.cache')
         end
 
         def delete_lock_files(directory)
@@ -245,7 +245,7 @@ module Selenium
           prefs[WEBDRIVER_PREFS[:untrusted_issuer]] = assume_untrusted_certificate_issuer?
 
           # If the user sets the home page, we should also start up there
-          prefs["startup.homepage_welcome_url"] = prefs["browser.startup.homepage"]
+          prefs['startup.homepage_welcome_url'] = prefs['browser.startup.homepage']
 
           write_prefs prefs, path
         end
@@ -267,7 +267,7 @@ module Selenium
         end
 
         def write_prefs(prefs, path)
-          File.open(path, "w") do |file|
+          File.open(path, 'w') do |file|
             prefs.each do |key, value|
               file.puts %{user_pref("#{key}", #{value.to_json});}
             end

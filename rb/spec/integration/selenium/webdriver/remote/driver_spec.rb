@@ -24,11 +24,11 @@ module Selenium
     module Remote
       compliant_on driver: :remote do
         describe Driver do
-          it "should expose session_id" do
+          it 'should expose session_id' do
             expect(driver.session_id).to be_kind_of(String)
           end
 
-          it "should expose remote status" do
+          it 'should expose remote status' do
             expect(driver).to be_kind_of(DriverExtensions::HasRemoteStatus)
             expect(driver.remote_status).to be_kind_of(Hash)
           end

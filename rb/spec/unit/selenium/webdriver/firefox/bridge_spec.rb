@@ -17,14 +17,14 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path("../../spec_helper", __FILE__)
+require File.expand_path('../../spec_helper', __FILE__)
 
 module Selenium
   module WebDriver
     module Firefox
       describe Bridge do
-        let(:launcher) { double(Launcher, launch: nil, url: "http://localhost:4444/wd/hub") }
-        let(:resp) { {"sessionId" => "foo", "value" => @default_capabilities} }
+        let(:launcher) { double(Launcher, launch: nil, url: 'http://localhost:4444/wd/hub') }
+        let(:resp) { {'sessionId' => 'foo', 'value' => @default_capabilities} }
         let(:http) { double(Remote::Http::Default, call: resp).as_null_object }
         let(:caps) { {} }
 
@@ -34,14 +34,14 @@ module Selenium
           allow(Launcher).to receive(:new).and_return(launcher)
         end
 
-        it "sets the proxy capability" do
-          proxy = Proxy.new(http: "localhost:9090")
+        it 'sets the proxy capability' do
+          proxy = Proxy.new(http: 'localhost:9090')
           expect(caps).to receive(:proxy=).with proxy
 
           Bridge.new(http_client: http, proxy: proxy)
         end
 
-        it "raises ArgumentError if passed invalid options" do
+        it 'raises ArgumentError if passed invalid options' do
           expect { Bridge.new(foo: 'bar') }.to raise_error(ArgumentError)
         end
 

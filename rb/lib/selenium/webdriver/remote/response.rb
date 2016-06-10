@@ -48,7 +48,7 @@ module Selenium
           case val
           when Hash
             msg = val['message']
-            return "unknown error" unless msg
+            return 'unknown error' unless msg
             msg << ": #{val['alert']['text'].inspect}" if val['alert'].is_a?(Hash) && val['alert']['text']
             msg << " (#{val['class']})" if val['class']
             msg

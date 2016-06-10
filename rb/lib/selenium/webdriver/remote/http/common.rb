@@ -23,8 +23,8 @@ module Selenium
       module Http
         class Common
           MAX_REDIRECTS   = 20 # same as chromium/gecko
-          CONTENT_TYPE    = "application/json".freeze
-          DEFAULT_HEADERS = {"Accept" => CONTENT_TYPE}.freeze
+          CONTENT_TYPE    = 'application/json'.freeze
+          DEFAULT_HEADERS = {'Accept' => CONTENT_TYPE}.freeze
 
           attr_accessor :timeout
           attr_writer :server_url
@@ -40,20 +40,20 @@ module Selenium
           def call(verb, url, command_hash)
             url      = server_url.merge(url) unless url.is_a?(URI)
             headers  = DEFAULT_HEADERS.dup
-            headers['Cache-Control'] = "no-cache" if verb == :get
+            headers['Cache-Control'] = 'no-cache' if verb == :get
 
             if command_hash
               payload                   = JSON.generate(command_hash)
-              headers["Content-Type"]   = "#{CONTENT_TYPE}; charset=utf-8"
-              headers["Content-Length"] = payload.bytesize.to_s if [:post, :put].include?(verb)
+              headers['Content-Type']   = "#{CONTENT_TYPE}; charset=utf-8"
+              headers['Content-Length'] = payload.bytesize.to_s if [:post, :put].include?(verb)
 
               if $DEBUG
                 puts "   >>> #{url} | #{payload}"
                 puts "     > #{headers.inspect}"
               end
             elsif verb == :post
-              payload = "{}"
-              headers["Content-Length"] = "2"
+              payload = '{}'
+              headers['Content-Length'] = '2'
             end
 
             request verb, url, headers, payload
@@ -63,11 +63,11 @@ module Selenium
 
           def server_url
             return @server_url if @server_url
-            raise Error::WebDriverError, "server_url not set"
+            raise Error::WebDriverError, 'server_url not set'
           end
 
           def request(*)
-            raise NotImplementedError, "subclass responsibility"
+            raise NotImplementedError, 'subclass responsibility'
           end
 
           def create_response(code, body, content_type)

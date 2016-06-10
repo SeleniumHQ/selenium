@@ -32,7 +32,7 @@ module Selenium
         end
 
         def network_connection_type=(connection_type)
-          raise ArgumentError, "Invalid connection type" unless valid_type? connection_type
+          raise ArgumentError, 'Invalid connection type' unless valid_type? connection_type
 
           connection_value = type_to_values[connection_type]
 

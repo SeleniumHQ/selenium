@@ -22,7 +22,7 @@ module Selenium
     module Firefox
       # @api private
       class Binary
-        NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so".freeze
+        NO_FOCUS_LIBRARY_NAME = 'x_ignore_nofocus.so'.freeze
         NO_FOCUS_LIBRARIES    = [
           ["#{WebDriver.root}/selenium/webdriver/firefox/native/linux/amd64/#{NO_FOCUS_LIBRARY_NAME}", "amd64/#{NO_FOCUS_LIBRARY_NAME}"],
           ["#{WebDriver.root}/selenium/webdriver/firefox/native/linux/x86/#{NO_FOCUS_LIBRARY_NAME}", "x86/#{NO_FOCUS_LIBRARY_NAME}"]
@@ -35,7 +35,7 @@ module Selenium
           if Platform.cygwin?
             profile_path = Platform.cygwin_path(profile_path, windows: true)
           elsif Platform.windows?
-            profile_path = profile_path.tr("/", "\\")
+            profile_path = profile_path.tr('/', '\\')
           end
 
           ENV['XRE_CONSOLE_LOG']           = profile.log_file if profile.log_file
@@ -74,7 +74,7 @@ module Selenium
         private
 
         def execute(*extra_args)
-          args = [self.class.path, "-no-remote"] + extra_args
+          args = [self.class.path, '-no-remote'] + extra_args
           @process = ChildProcess.build(*args)
           @process.io.inherit! if $DEBUG
           @process.start
@@ -165,13 +165,13 @@ module Selenium
           private
 
           def windows_path
-            windows_registry_path || Platform.find_in_program_files("\\Mozilla Firefox\\firefox.exe") || Platform.find_binary("firefox")
+            windows_registry_path || Platform.find_in_program_files('\\Mozilla Firefox\\firefox.exe') || Platform.find_binary('firefox')
           end
 
           def macosx_path
-            path = "/Applications/Firefox.app/Contents/MacOS/firefox-bin"
-            path = File.expand_path("~/Applications/Firefox.app/Contents/MacOS/firefox-bin") unless File.exist?(path)
-            path = Platform.find_binary("firefox-bin") unless File.exist?(path)
+            path = '/Applications/Firefox.app/Contents/MacOS/firefox-bin'
+            path = File.expand_path('~/Applications/Firefox.app/Contents/MacOS/firefox-bin') unless File.exist?(path)
+            path = Platform.find_binary('firefox-bin') unless File.exist?(path)
 
             path
           end
@@ -180,7 +180,7 @@ module Selenium
             require 'win32/registry'
 
             lm = Win32::Registry::HKEY_LOCAL_MACHINE
-            lm.open("SOFTWARE\\Mozilla\\Mozilla Firefox") do |reg|
+            lm.open('SOFTWARE\\Mozilla\\Mozilla Firefox') do |reg|
               main = lm.open("SOFTWARE\\Mozilla\\Mozilla Firefox\\#{reg.keys[0]}\\Main")
               entry = main.find { |key, _type, _data| key =~ /pathtoexe/i }
               return entry.last if entry

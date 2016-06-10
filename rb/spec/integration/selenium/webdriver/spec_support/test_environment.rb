@@ -70,7 +70,7 @@ module Selenium
 
         def app_server
           @app_server ||= (
-            s = RackServer.new(root.join("common/src/web").to_s)
+            s = RackServer.new(root.join('common/src/web').to_s)
             s.start
 
             s
@@ -98,7 +98,7 @@ module Selenium
         end
 
         def remote_server_jar
-          @remote_server_jar ||= root.join("buck-out/gen/java/server/src/org/openqa/grid/selenium/selenium.jar").to_s
+          @remote_server_jar ||= root.join('buck-out/gen/java/server/src/org/openqa/grid/selenium/selenium.jar').to_s
         end
 
         def quit
@@ -121,13 +121,13 @@ module Selenium
 
         def url_for(filename)
           url = app_server.where_is filename
-          url.sub!("127.0.0.1", "10.0.2.2") if browser == :android
+          url.sub!('127.0.0.1', '10.0.2.2') if browser == :android
 
           url
         end
 
         def root
-          @root ||= Pathname.new("../../../../../../../").expand_path(__FILE__)
+          @root ||= Pathname.new('../../../../../../../').expand_path(__FILE__)
         end
 
         private
@@ -227,7 +227,7 @@ module Selenium
           WebDriver::Chrome.driver_path = server if server
 
           args = []
-          args << "--no-sandbox" if ENV['TRAVIS']
+          args << '--no-sandbox' if ENV['TRAVIS']
 
           WebDriver::Driver.for :chrome,
                                 native_events: native_events?,
@@ -260,7 +260,7 @@ module Selenium
 
         def keep_alive_client
           require 'selenium/webdriver/remote/http/persistent'
-          STDERR.puts "INFO: using net-http-persistent"
+          STDERR.puts 'INFO: using net-http-persistent'
 
           Selenium::WebDriver::Remote::Http::Persistent.new
         rescue LoadError

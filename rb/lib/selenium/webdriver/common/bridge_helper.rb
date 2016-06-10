@@ -53,9 +53,9 @@ module Selenium
           'secure'  => false
         }
 
-        str.split(";").each do |attribute|
-          if attribute.include? "="
-            key, value = attribute.strip.split("=", 2)
+        str.split(';').each do |attribute|
+          if attribute.include? '='
+            key, value = attribute.strip.split('=', 2)
             if result['name'].empty?
               result['name']  = key
               result['value'] = value
@@ -64,11 +64,11 @@ module Selenium
             elsif key && value
               result[key] = value
             end
-          elsif attribute == "secure"
+          elsif attribute == 'secure'
             result['secure'] = true
           end
 
-          unless [nil, "", "0"].include?(result['expires'])
+          unless [nil, '', '0'].include?(result['expires'])
             # firefox stores expiry as number of seconds
             result['expires'] = Time.at(result['expires'].to_i)
           end

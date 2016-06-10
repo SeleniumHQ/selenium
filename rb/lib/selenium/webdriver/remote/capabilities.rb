@@ -26,8 +26,8 @@ module Selenium
       #
       class Capabilities
         DEFAULTS = {
-          browser_name: "",
-          version: "",
+          browser_name: '',
+          version: '',
           platform: :any,
           javascript_enabled: false,
           css_selectors_enabled: false,
@@ -61,7 +61,7 @@ module Selenium
         class << self
           def android(opts = {})
             new({
-              browser_name: "android",
+              browser_name: 'android',
               platform: :android,
               javascript_enabled: true,
               rotatable: true,
@@ -71,11 +71,11 @@ module Selenium
 
           def chrome(opts = {})
             new({
-              browser_name: "chrome",
+              browser_name: 'chrome',
               javascript_enabled: true,
               css_selectors_enabled: true,
-              loggingPrefs: {browser: "ALL",
-                             driver: "ALL"}
+              loggingPrefs: {browser: 'ALL',
+                             driver: 'ALL'}
             }.merge(opts))
           end
 
@@ -87,7 +87,7 @@ module Selenium
             return W3CCapabilities.firefox(opts) if opts[:marionette]
 
             new({
-              browser_name: "firefox",
+              browser_name: 'firefox',
               javascript_enabled: true,
               takes_screenshot: true,
               css_selectors_enabled: true
@@ -96,20 +96,20 @@ module Selenium
 
           def htmlunit(opts = {})
             new({
-              browser_name: "htmlunit"
+              browser_name: 'htmlunit'
             }.merge(opts))
           end
 
           def htmlunitwithjs(opts = {})
             new({
-              browser_name: "htmlunit",
+              browser_name: 'htmlunit',
               javascript_enabled: true
             }.merge(opts))
           end
 
           def internet_explorer(opts = {})
             new({
-              browser_name: "internet explorer",
+              browser_name: 'internet explorer',
               platform: :windows,
               takes_screenshot: true,
               css_selectors_enabled: true,
@@ -120,7 +120,7 @@ module Selenium
 
           def iphone(opts = {})
             new({
-              browser_name: "iPhone",
+              browser_name: 'iPhone',
               platform: :mac,
               javascript_enabled: true
             }.merge(opts))
@@ -128,7 +128,7 @@ module Selenium
 
           def ipad(opts = {})
             new({
-              browser_name: "iPad",
+              browser_name: 'iPad',
               platform: :mac,
               javascript_enabled: true
             }.merge(opts))
@@ -136,7 +136,7 @@ module Selenium
 
           def phantomjs(opts = {})
             new({
-              browser_name: "phantomjs",
+              browser_name: 'phantomjs',
               javascript_enabled: true,
               takes_screenshot: true,
               css_selectors_enabled: true
@@ -145,7 +145,7 @@ module Selenium
 
           def safari(opts = {})
             new({
-              browser_name: "safari",
+              browser_name: 'safari',
               platform: :mac,
               javascript_enabled: true,
               takes_screenshot: true,
@@ -161,14 +161,14 @@ module Selenium
             data = data.dup
 
             caps = new
-            caps.browser_name          = data.delete("browserName")
-            caps.version               = data.delete("version")
-            caps.platform              = data.delete("platform").downcase.to_sym if data.key?('platform')
-            caps.javascript_enabled    = data.delete("javascriptEnabled")
-            caps.css_selectors_enabled = data.delete("cssSelectorsEnabled")
-            caps.takes_screenshot      = data.delete("takesScreenshot")
-            caps.native_events         = data.delete("nativeEvents")
-            caps.rotatable             = data.delete("rotatable")
+            caps.browser_name          = data.delete('browserName')
+            caps.version               = data.delete('version')
+            caps.platform              = data.delete('platform').downcase.to_sym if data.key?('platform')
+            caps.javascript_enabled    = data.delete('javascriptEnabled')
+            caps.css_selectors_enabled = data.delete('cssSelectorsEnabled')
+            caps.takes_screenshot      = data.delete('takesScreenshot')
+            caps.native_events         = data.delete('nativeEvents')
+            caps.rotatable             = data.delete('rotatable')
             caps.proxy                 = Proxy.json_create(data['proxy']) if data.key?('proxy')
 
             # any remaining pairs will be added as is, with no conversion
@@ -217,7 +217,7 @@ module Selenium
           elsif other.is_a? Hash
             @capabilities.merge! other
           else
-            raise ArgumentError, "argument should be a Hash or implement #capabilities"
+            raise ArgumentError, 'argument should be a Hash or implement #capabilities'
           end
         end
 

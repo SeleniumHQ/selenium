@@ -21,11 +21,11 @@ module Selenium
   module WebDriver
     class Proxy
       TYPES = {
-        direct: "DIRECT",     # Direct connection, no proxy (default on Windows).
-        manual: "MANUAL",     # Manual proxy settings (e.g., for httpProxy).
-        pac: "PAC", # Proxy autoconfiguration from URL.
-        auto_detect: "AUTODETECT", # Proxy autodetection (presumably with WPAD).
-        system: "SYSTEM" # Use system settings (default on Linux).
+        direct: 'DIRECT',     # Direct connection, no proxy (default on Windows).
+        manual: 'MANUAL',     # Manual proxy settings (e.g., for httpProxy).
+        pac: 'PAC', # Proxy autoconfiguration from URL.
+        auto_detect: 'AUTODETECT', # Proxy autodetection (presumably with WPAD).
+        system: 'SYSTEM' # Use system settings (default on Linux).
       }.freeze
 
       attr_reader :type,
@@ -121,18 +121,18 @@ module Selenium
 
       def as_json(*)
         json_result = {
-          "proxyType" => TYPES[type]
+          'proxyType' => TYPES[type]
         }
 
-        json_result["ftpProxy"]           = ftp if ftp
-        json_result["httpProxy"]          = http if http
-        json_result["noProxy"]            = no_proxy if no_proxy
-        json_result["proxyAutoconfigUrl"] = pac if pac
-        json_result["sslProxy"]           = ssl if ssl
-        json_result["autodetect"]         = auto_detect if auto_detect
-        json_result["socksProxy"]         = socks if socks
-        json_result["socksUsername"]      = socks_username if socks_username
-        json_result["socksPassword"]      = socks_password if socks_password
+        json_result['ftpProxy']           = ftp if ftp
+        json_result['httpProxy']          = http if http
+        json_result['noProxy']            = no_proxy if no_proxy
+        json_result['proxyAutoconfigUrl'] = pac if pac
+        json_result['sslProxy']           = ssl if ssl
+        json_result['autodetect']         = auto_detect if auto_detect
+        json_result['socksProxy']         = socks if socks
+        json_result['socksUsername']      = socks_username if socks_username
+        json_result['socksPassword']      = socks_password if socks_password
 
         json_result if json_result.length > 1
       end

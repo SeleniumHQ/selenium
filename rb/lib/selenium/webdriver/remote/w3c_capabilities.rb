@@ -70,7 +70,7 @@ module Selenium
         class << self
           def edge(opts = {})
             new({
-              browser_name: "MicrosoftEdge",
+              browser_name: 'MicrosoftEdge',
               platform: :windows
             }.merge(opts))
           end
@@ -80,7 +80,7 @@ module Selenium
             opts[:platform_name] = opts.delete :platform
 
             new({
-              browser_name: "firefox",
+              browser_name: 'firefox',
               marionette: true
             }.merge(opts))
           end
@@ -99,16 +99,16 @@ module Selenium
             data = data.dup
 
             # Convert due to Remote Driver implementation
-            data["browserVersion"] = data.delete("version") if data.key? "version"
-            data["platformName"] = data.delete("platform") if data.key? "platform"
+            data['browserVersion'] = data.delete('version') if data.key? 'version'
+            data['platformName'] = data.delete('platform') if data.key? 'platform'
 
             caps = new
-            caps.browser_name = data.delete("browserName") if data.key? "browserName"
-            caps.browser_version = data.delete("browserVersion") if data.key? "browserVersion"
-            caps.platform_name = data.delete("platformName") if data.key? "platformName"
-            caps.platform_version = data.delete("platformVersion") if data.key? "platformVersion"
-            caps.accept_ssl_certs = data.delete("acceptSslCerts") if data.key? "acceptSslCerts"
-            caps.page_load_strategy = data.delete("pageLoadStrategy") if data.key? "pageloadStrategy"
+            caps.browser_name = data.delete('browserName') if data.key? 'browserName'
+            caps.browser_version = data.delete('browserVersion') if data.key? 'browserVersion'
+            caps.platform_name = data.delete('platformName') if data.key? 'platformName'
+            caps.platform_version = data.delete('platformVersion') if data.key? 'platformVersion'
+            caps.accept_ssl_certs = data.delete('acceptSslCerts') if data.key? 'acceptSslCerts'
+            caps.page_load_strategy = data.delete('pageLoadStrategy') if data.key? 'pageloadStrategy'
             proxy = data.delete('proxy')
             caps.proxy = Proxy.json_create(proxy) unless proxy.nil? || proxy.empty?
 
@@ -116,11 +116,11 @@ module Selenium
             caps[:remote_session_id] = data.delete('webdriver.remote.sessionid')
 
             # Obsolete capabilities returned by Remote Server
-            data.delete("javascriptEnabled")
+            data.delete('javascriptEnabled')
             data.delete('cssSelectorsEnabled')
 
             # Marionette Specific
-            caps[:xul_app_id] = data.delete("XULappId")
+            caps[:xul_app_id] = data.delete('XULappId')
             caps[:raise_accessibility_exceptions] = data.delete('raisesAccessibilityExceptions')
             caps[:rotatable] = data.delete('rotatable')
             caps[:app_build_id] = data.delete('appBuildId')
@@ -166,7 +166,7 @@ module Selenium
           elsif other.is_a? Hash
             @capabilities.merge! other
           else
-            raise ArgumentError, "argument should be a Hash or implement #capabilities"
+            raise ArgumentError, 'argument should be a Hash or implement #capabilities'
           end
         end
 

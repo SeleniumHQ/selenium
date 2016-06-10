@@ -39,7 +39,7 @@ module Selenium
       end
 
       compliant_on browser: :marionette do
-        it "creates default capabilities" do
+        it 'creates default capabilities' do
           begin
             @opt[:marionette] = true
             driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
@@ -62,7 +62,7 @@ module Selenium
         end
 
         not_compliant_on driver: :remote do
-          it "takes a binary path as an argument" do
+          it 'takes a binary path as an argument' do
             pending "Set ENV['ALT_MARIONETTE_BINARY'] to test this" unless ENV['ALT_MARIONETTE_BINARY']
 
             begin
@@ -88,7 +88,7 @@ module Selenium
       end
 
       compliant_on browser: :marionette do
-        it "Uses geckodriver when setting marionette option in capabilities" do
+        it 'Uses geckodriver when setting marionette option in capabilities' do
           caps = Selenium::WebDriver::Remote::Capabilities.firefox(marionette: true)
           @opt[:desired_capabilities] = caps
           expect { @driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt }.to_not raise_exception
@@ -98,7 +98,7 @@ module Selenium
         compliant_on browser: :marionette do
           # This passes in isolation, but can not run in suite due to combination of
           # https://bugzilla.mozilla.org/show_bug.cgi?id=1228107 & https://github.com/SeleniumHQ/selenium/issues/1150
-          it "Uses Wires when setting marionette option in driver initialization" do
+          it 'Uses Wires when setting marionette option in driver initialization' do
             @opt[:marionette] = true
             driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
 
@@ -109,7 +109,7 @@ module Selenium
 
         # test with firefox due to https://bugzilla.mozilla.org/show_bug.cgi?id=1228121
         compliant_on browser: :firefox do
-          it "Does not use geckodriver when marionette option is not set" do
+          it 'Does not use geckodriver when marionette option is not set' do
             driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
 
             expect { driver1.capabilities.browser_version }.to raise_exception NoMethodError
@@ -122,7 +122,7 @@ module Selenium
           not_compliant_on driver: :marionette do
             context 'when shared example' do
               before { driver }
-              it_behaves_like "driver that can be started concurrently", :marionette
+              it_behaves_like 'driver that can be started concurrently', :marionette
             end
           end
         end

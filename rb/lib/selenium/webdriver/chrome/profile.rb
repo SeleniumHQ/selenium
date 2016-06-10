@@ -52,17 +52,17 @@ module Selenium
         #
 
         def []=(key, value)
-          parts = key.split(".")
+          parts = key.split('.')
           parts[0..-2].inject(prefs) { |a, e| a[e] ||= {} }[parts.last] = value
         end
 
         def [](key)
-          parts = key.split(".")
+          parts = key.split('.')
           parts.inject(prefs) { |a, e| a.fetch(e) }
         end
 
         def layout_on_disk
-          dir = @model ? create_tmp_copy(@model) : Dir.mktmpdir("webdriver-chrome-profile")
+          dir = @model ? create_tmp_copy(@model) : Dir.mktmpdir('webdriver-chrome-profile')
           FileReaper << dir
 
           write_prefs_to dir
@@ -72,7 +72,7 @@ module Selenium
 
         def as_json(opts = nil)
           extensions = @extensions.map do |crx_path|
-            File.open(crx_path, "rb") { |crx_file| Base64.strict_encode64 crx_file.read }
+            File.open(crx_path, 'rb') { |crx_file| Base64.strict_encode64 crx_file.read }
           end
 
           extensions.concat(@encoded_extensions)
@@ -86,7 +86,7 @@ module Selenium
           prefs_file = prefs_file_for(dir)
 
           FileUtils.mkdir_p File.dirname(prefs_file)
-          File.open(prefs_file, "w") { |file| file << JSON.generate(prefs) }
+          File.open(prefs_file, 'w') { |file| file << JSON.generate(prefs) }
         end
 
         def prefs

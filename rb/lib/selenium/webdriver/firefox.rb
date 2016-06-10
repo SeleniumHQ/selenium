@@ -41,7 +41,7 @@ module Selenium
       DEFAULT_ASSUME_UNTRUSTED_ISSUER = true
       DEFAULT_LOAD_NO_FOCUS_LIB       = false
 
-      MISSING_TEXT = "Unable to find Mozilla geckodriver. Please download the executable from https://github.com/mozilla/geckodriver/releases".freeze
+      MISSING_TEXT = 'Unable to find Mozilla geckodriver. Please download the executable from https://github.com/mozilla/geckodriver/releases'.freeze
 
       def self.driver_path=(path)
         Platform.assert_executable path
@@ -50,7 +50,7 @@ module Selenium
 
       def self.driver_path
         @driver_path ||= begin
-          path = Platform.find_binary("geckodriver*") || Platform.find_binary("wires*")
+          path = Platform.find_binary('geckodriver*') || Platform.find_binary('wires*')
           raise Error::WebDriverError, MISSING_TEXT unless path
           Platform.assert_executable path
 

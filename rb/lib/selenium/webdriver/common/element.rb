@@ -294,7 +294,7 @@ module Selenium
       def as_json(*)
         {
           :ELEMENT => @id,
-          "element-6066-11e4-a52e-4f735466cecf" => @id
+          'element-6066-11e4-a52e-4f735466cecf' => @id
         }
       end
 
@@ -306,7 +306,7 @@ module Selenium
         tn = tag_name.downcase
         type = attribute(:type).to_s.downcase
 
-        tn == "option" || (tn == "input" && %w[radio checkbox].include?(type))
+        tn == 'option' || (tn == 'input' && %w[radio checkbox].include?(type))
       end
     end # Element
   end # WebDriver

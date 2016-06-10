@@ -46,11 +46,11 @@ module Selenium
 
           if GlobalTestEnv.browser == :ie
             path = path[%r{file://(.*)}, 1]
-            path.tr!("/", '\\')
+            path.tr!('/', '\\')
 
             "file://#{path}"
           else
-            path.sub(%r[file:/{0,2}], "file:///")
+            path.sub(%r[file:/{0,2}], 'file:///')
           end
         end
 

@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path("../../spec_helper", __FILE__)
+require File.expand_path('../../spec_helper', __FILE__)
 
 module Selenium
   module WebDriver
@@ -29,13 +29,13 @@ module Selenium
 
         let(:multi_select) do
           s = double(Element, tag_name: 'select')
-          allow(s).to receive(:attribute).with(:multiple).and_return "multiple"
+          allow(s).to receive(:attribute).with(:multiple).and_return 'multiple'
 
           s
         end
 
         it 'raises ArgumentError if passed a non-select Element' do
-          link = double(Element, tag_name: "a")
+          link = double(Element, tag_name: 'a')
 
           expect do
             Select.new link
@@ -44,16 +44,16 @@ module Selenium
 
         it 'indicates whether a select is multiple correctly' do
           selects = [
-            double(Element, tag_name: "select"),
-            double(Element, tag_name: "select"),
-            double(Element, tag_name: "select"),
-            double(Element, tag_name: "select")
+            double(Element, tag_name: 'select'),
+            double(Element, tag_name: 'select'),
+            double(Element, tag_name: 'select'),
+            double(Element, tag_name: 'select')
           ]
 
-          allow(selects[0]).to receive(:attribute).with(:multiple).and_return("false")
+          allow(selects[0]).to receive(:attribute).with(:multiple).and_return('false')
           allow(selects[1]).to receive(:attribute).with(:multiple).and_return(nil)
-          allow(selects[2]).to receive(:attribute).with(:multiple).and_return("true")
-          allow(selects[3]).to receive(:attribute).with(:multiple).and_return("multiple")
+          allow(selects[2]).to receive(:attribute).with(:multiple).and_return('true')
+          allow(selects[3]).to receive(:attribute).with(:multiple).and_return('multiple')
 
           expect(Select.new(selects[0])).not_to be_multiple
           expect(Select.new(selects[1])).not_to be_multiple
@@ -130,7 +130,7 @@ module Selenium
           first_option = double(Element, selected?: true)
           second_option = double(Element, selected?: false)
 
-          expect(first_option).to receive(:attribute).with(:index).and_return "0"
+          expect(first_option).to receive(:attribute).with(:index).and_return '0'
           expect(first_option).to receive(:click).never
 
           expect(second_option).to receive(:attribute).with(:index).and_return '1'
@@ -199,8 +199,8 @@ module Selenium
             .with(:tag_name, 'option')
             .and_return([first_option, second_option])
 
-          expect(first_option).to receive(:attribute).with(:index).and_return("2")
-          expect(second_option).to receive(:attribute).with(:index).and_return("1")
+          expect(first_option).to receive(:attribute).with(:index).and_return('2')
+          expect(second_option).to receive(:attribute).with(:index).and_return('1')
 
           expect(first_option).to receive(:click).once
           expect(second_option).to receive(:click).never

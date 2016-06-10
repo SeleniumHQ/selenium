@@ -17,14 +17,14 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path("../../spec_helper", __FILE__)
+require File.expand_path('../../spec_helper', __FILE__)
 
 module Selenium
   module WebDriver
     module PhantomJS
       describe Bridge do
-        let(:resp)    { {"sessionId" => "foo", "value" => Remote::Capabilities.phantomjs.as_json} }
-        let(:service) { double(Service, start: true, uri: "http://example.com") }
+        let(:resp)    { {'sessionId' => 'foo', 'value' => Remote::Capabilities.phantomjs.as_json} }
+        let(:service) { double(Service, start: true, uri: 'http://example.com') }
         let(:http)    { double(Remote::Http::Default, call: resp).as_null_object }
 
         before do

@@ -53,14 +53,14 @@ module Selenium
               GlobalTestEnv.driver,
               Platform.os,
               GlobalTestEnv.native_events?
-            ].join(".")
+            ].join('.')
 
             gs = guards[key]
 
             print "\n\nSpec guards for this implementation: "
 
             if gs.empty?
-              puts "none."
+              puts 'none.'
             else
               puts
               gs.each do |guard_name, data|

@@ -24,7 +24,7 @@ module Selenium
     module PhantomJS
       compliant_on browser: :phantomjs do
         describe Driver do
-          it_behaves_like "driver that can be started concurrently", :phantomjs
+          it_behaves_like 'driver that can be started concurrently', :phantomjs
         end
       end
     end # PhantomJS

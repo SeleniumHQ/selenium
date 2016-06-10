@@ -38,7 +38,7 @@ module Selenium
             @profile = nil
           end
 
-          @host = "127.0.0.1"
+          @host = '127.0.0.1'
         end
 
         def url
@@ -77,7 +77,7 @@ module Selenium
 
         def start
           assert_profile
-          @binary.start_with @profile, @profile_dir, "-foreground"
+          @binary.start_with @profile, @profile_dir, '-foreground'
         end
 
         def connect_until_stable
@@ -101,7 +101,7 @@ module Selenium
         end
 
         def assert_profile
-          raise Error::WebDriverError, "must create_profile first" unless @profile && @profile_dir
+          raise Error::WebDriverError, 'must create_profile first' unless @profile && @profile_dir
         end
 
         def socket_lock

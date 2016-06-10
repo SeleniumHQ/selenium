@@ -42,10 +42,10 @@ module Selenium
       #
 
       def add_cookie(opts = {})
-        raise ArgumentError, "name is required" unless opts[:name]
-        raise ArgumentError, "value is required" unless opts[:value]
+        raise ArgumentError, 'name is required' unless opts[:name]
+        raise ArgumentError, 'value is required' unless opts[:value]
 
-        opts[:path] ||= "/"
+        opts[:path] ||= '/'
         opts[:secure] ||= false
 
         obj = opts.delete(:expires)
@@ -92,12 +92,12 @@ module Selenium
       def all_cookies
         @bridge.getAllCookies.map do |cookie|
           {
-            name: cookie["name"],
-            value: cookie["value"],
-            path: cookie["path"],
-            domain: cookie["domain"] && strip_port(cookie["domain"]),
-            expires: cookie["expiry"] && datetime_at(cookie['expiry']),
-            secure: cookie["secure"]
+            name: cookie['name'],
+            value: cookie['value'],
+            path: cookie['path'],
+            domain: cookie['domain'] && strip_port(cookie['domain']),
+            expires: cookie['expiry'] && datetime_at(cookie['expiry']),
+            secure: cookie['secure']
           }
         end
       end
@@ -144,7 +144,7 @@ module Selenium
       end
 
       def strip_port(str)
-        str.split(":", 2).first
+        str.split(':', 2).first
       end
     end # Options
   end # WebDriver

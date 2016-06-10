@@ -25,42 +25,42 @@ module Selenium
     # Firefox BUG - https://github.com/SeleniumHQ/selenium/issues/1792
     not_compliant_on browser: [:android, :iphone, :safari, :marionette, :firefox] do
       describe Keyboard do
-        it "sends keys to the active element" do
-          driver.navigate.to url_for("bodyTypingTest.html")
+        it 'sends keys to the active element' do
+          driver.navigate.to url_for('bodyTypingTest.html')
 
-          driver.keyboard.send_keys "ab"
+          driver.keyboard.send_keys 'ab'
 
-          text = driver.find_element(id: "body_result").text.strip
-          expect(text).to eq("keypress keypress")
+          text = driver.find_element(id: 'body_result').text.strip
+          expect(text).to eq('keypress keypress')
 
-          expect(driver.find_element(id: "result").text.strip).to be_empty
+          expect(driver.find_element(id: 'result').text.strip).to be_empty
         end
 
-        it "can send keys with shift pressed" do
-          driver.navigate.to url_for("javascriptPage.html")
+        it 'can send keys with shift pressed' do
+          driver.navigate.to url_for('javascriptPage.html')
 
-          event_input = driver.find_element(id: "theworks")
-          keylogger = driver.find_element(id: "result")
+          event_input = driver.find_element(id: 'theworks')
+          keylogger = driver.find_element(id: 'result')
 
           driver.mouse.click event_input
 
           driver.keyboard.press :shift
-          driver.keyboard.send_keys "ab"
+          driver.keyboard.send_keys 'ab'
           driver.keyboard.release :shift
 
-          expect(event_input.attribute(:value)).to eq("AB")
+          expect(event_input.attribute(:value)).to eq('AB')
           expect(keylogger.text.strip).to match(/^(focus )?keydown keydown keypress keyup keydown keypress keyup keyup$/)
         end
 
-        it "raises an ArgumentError if the pressed key is not a modifier key" do
+        it 'raises an ArgumentError if the pressed key is not a modifier key' do
           expect { driver.keyboard.press :return }.to raise_error(ArgumentError)
         end
 
-        it "can press and release modifier keys" do
-          driver.navigate.to url_for("javascriptPage.html")
+        it 'can press and release modifier keys' do
+          driver.navigate.to url_for('javascriptPage.html')
 
-          event_input = driver.find_element(id: "theworks")
-          keylogger = driver.find_element(id: "result")
+          event_input = driver.find_element(id: 'theworks')
+          keylogger = driver.find_element(id: 'result')
 
           driver.mouse.click event_input
 

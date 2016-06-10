@@ -63,7 +63,7 @@ module Selenium
         end
 
         def read_id_from_install_rdf(directory)
-          rdf_path = File.join(directory, "install.rdf")
+          rdf_path = File.join(directory, 'install.rdf')
           doc = REXML::Document.new(File.read(rdf_path))
           namespace = doc.root.namespaces.key(NAMESPACE)
 

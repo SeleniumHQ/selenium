@@ -17,8 +17,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-shared_examples_for "driver that can be started concurrently" do |browser_name|
-  it "is started sequentially" do
+shared_examples_for 'driver that can be started concurrently' do |browser_name|
+  it 'is started sequentially' do
     expect do
       # start 5 drivers concurrently
       threads = []
