@@ -22,11 +22,11 @@ module Selenium
     module Firefox
       # @api private
       class Binary
-        NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so"
+        NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so".freeze
         NO_FOCUS_LIBRARIES    = [
           ["#{WebDriver.root}/selenium/webdriver/firefox/native/linux/amd64/#{NO_FOCUS_LIBRARY_NAME}", "amd64/#{NO_FOCUS_LIBRARY_NAME}"],
-          ["#{WebDriver.root}/selenium/webdriver/firefox/native/linux/x86/#{NO_FOCUS_LIBRARY_NAME}", "x86/#{NO_FOCUS_LIBRARY_NAME}"],
-        ]
+          ["#{WebDriver.root}/selenium/webdriver/firefox/native/linux/x86/#{NO_FOCUS_LIBRARY_NAME}", "x86/#{NO_FOCUS_LIBRARY_NAME}"]
+        ].freeze
 
         WAIT_TIMEOUT = 90
         QUIT_TIMEOUT = 5
@@ -182,9 +182,8 @@ module Selenium
             lm = Win32::Registry::HKEY_LOCAL_MACHINE
             lm.open("SOFTWARE\\Mozilla\\Mozilla Firefox") do |reg|
               main = lm.open("SOFTWARE\\Mozilla\\Mozilla Firefox\\#{reg.keys[0]}\\Main")
-              if entry = main.find { |key, _type, _data| key =~ /pathtoexe/i }
-                return entry.last
-              end
+              entry = main.find { |key, _type, _data| key =~ /pathtoexe/i }
+              return entry.last if entry
             end
           rescue LoadError
             # older JRuby or IronRuby does not have win32/registry

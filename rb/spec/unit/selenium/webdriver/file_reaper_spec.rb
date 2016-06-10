@@ -62,12 +62,16 @@ module Selenium
 
           FileReaper << tmp_file.to_s
 
-          pid = fork { FileReaper.reap!; exit; exit }
+          pid = fork do
+            FileReaper.reap!
+            exit
+            exit
+          end
           Process.wait pid
 
           expect(tmp_file).to exist
         end
       end
     end
-  end
-end
+  end # WebDriver
+end # Selenium

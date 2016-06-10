@@ -66,7 +66,7 @@ module Selenium
         private
 
         def assert_ok
-          e = error()
+          e = error
           raise e if e
           return unless @code.nil? || @code >= 400
           raise Error::ServerError, self
@@ -84,9 +84,8 @@ module Selenium
             line = frame['lineNumber']
             meth = frame['methodName']
 
-            if class_name = frame['className']
-              file = "#{class_name}(#{file})"
-            end
+            class_name = frame['className']
+            file = "#{class_name}(#{file})" if class_name
 
             meth = 'unknown' if meth.nil? || meth.empty?
 

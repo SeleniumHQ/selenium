@@ -58,7 +58,7 @@ module Selenium
           end
 
           it_behaves_like "driver that can be started concurrently", :firefox
-        end # Driver
+        end
       end
     end # Firefox
   end # WebDriver

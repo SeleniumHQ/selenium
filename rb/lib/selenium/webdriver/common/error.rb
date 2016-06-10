@@ -172,7 +172,7 @@ module Selenium
       class MoveTargetOutOfBoundsError < WebDriverError; end # 34
 
       # @api private
-      Errors = [
+      ERRORS = [
         IndexOutOfBoundsError,          # 1
         NoCollectionError,              # 2
         NoStringError,                  # 3
@@ -207,12 +207,12 @@ module Selenium
         InvalidSelectorError,           # 32
         SessionNotCreatedError,         # 33
         MoveTargetOutOfBoundsError      # 34
-      ]
+      ].freeze
 
       class << self
         def for_code(code)
           return if [nil, 0].include? code
-          return Errors[code - 1] if code.is_a? Fixnum
+          return ERRORS[code - 1] if code.is_a? Fixnum
 
           klass_name = code.split(' ').map(&:capitalize).join
           Error.const_get("#{klass_name.gsub('Error', '')}Error")

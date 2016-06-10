@@ -29,7 +29,7 @@ module Selenium
     #
 
     module Zipper
-      EXTENSIONS = %w[.zip .xpi]
+      EXTENSIONS = %w[.zip .xpi].freeze
 
       class << self
         def unzip(path)

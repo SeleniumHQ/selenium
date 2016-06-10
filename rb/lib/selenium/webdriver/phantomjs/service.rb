@@ -46,7 +46,11 @@ module Selenium
         def stop_process
           super
           return unless Platform.jruby? && !$DEBUG
-          @process.io.close rescue nil
+          begin
+            @process.io.close
+          rescue
+            nil
+          end
         end
 
         def stop_server

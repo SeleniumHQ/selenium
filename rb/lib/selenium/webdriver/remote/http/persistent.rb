@@ -35,8 +35,9 @@ module Selenium
             proxy = nil
 
             if @proxy
-              unless @proxy.respond_to?(:http) && url = @proxy.http
-                raise Error::WebDriverError, "expected HTTP proxy, got #{@proxy.inspect}"
+              unless @proxy.respond_to?(:http)
+                url = @proxy.http
+                raise Error::WebDriverError, "expected HTTP proxy, got #{@proxy.inspect}" unless url
               end
               proxy = URI.parse(url)
             end

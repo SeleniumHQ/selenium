@@ -33,7 +33,7 @@ module Selenium
             'response' => {
               'sessionId' => 'opaque', "value" => @default_capabilities,
               'status'    => 0
-            },
+            }
           }
         end
 
@@ -67,6 +67,6 @@ module Selenium
           Bridge.new(clean_session: true)
         end
       end
-    end
-  end
-end
+    end # Safari
+  end # WebDriver
+end # Selenium

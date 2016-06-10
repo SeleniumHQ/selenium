@@ -29,11 +29,12 @@ module Selenium
       #
 
       def initialize(bridge, id)
-        @bridge, @id = bridge, id
+        @bridge = bridge
+        @id = id
       end
 
       def inspect
-        '#<%s:0x%x id=%s>' % [self.class, hash * 2, @id.inspect]
+        format '#<%s:0x%x id=%s>', self.class, hash * 2, @id.inspect
       end
 
       def ==(other)
@@ -299,9 +300,7 @@ module Selenium
 
       private
 
-      def bridge
-        @bridge
-      end
+      attr_reader :bridge
 
       def selectable?
         tn = tag_name.downcase

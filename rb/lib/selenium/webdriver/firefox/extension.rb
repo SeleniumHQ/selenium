@@ -25,7 +25,7 @@ module Selenium
       #
 
       class Extension
-        NAMESPACE = 'http://www.mozilla.org/2004/em-rdf#'
+        NAMESPACE = 'http://www.mozilla.org/2004/em-rdf#'.freeze
 
         def initialize(path)
           unless File.exist?(path)
@@ -54,7 +54,7 @@ module Selenium
             @path
           else
             unless Zipper::EXTENSIONS.include? File.extname(@path)
-              raise Error::WebDriverError, "expected #{Zipper::EXTENSIONS.join(" or ")}, got #{@path.inspect}"
+              raise Error::WebDriverError, "expected #{Zipper::EXTENSIONS.join(' or ')}, got #{@path.inspect}"
             end
 
             @should_reap_root = true

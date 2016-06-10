@@ -55,7 +55,8 @@ module Selenium
         def receive
           @frame ||= WebSocket::Frame::Incoming::Server.new(version: @version)
 
-          until msg = @frame.next
+          msg = nil
+          until msg
             end_time = Time.now + @command_timeout
 
             begin
@@ -71,6 +72,7 @@ module Selenium
             end
 
             @frame << data
+            msg = @frame.next
           end
 
           puts "<<< #{msg}" if $DEBUG
@@ -92,13 +94,14 @@ module Selenium
           process_handshake
         end
 
-        HEADERS = <<-HEADERS
+        def headers
+          headers = <<-headers
 HTTP/1.1 %d %s
 Content-Type: text/html; charset=utf-8
 Server: safaridriver-ruby
-        HEADERS
-
-        HEADERS.gsub!("\n", "\r\n")
+          headers
+          headers.gsub!("\n", "\r\n")
+        end
 
         def html
           "<!DOCTYPE html><script>#{Safari.resource_path.join('client.js').read}</script>"
@@ -108,19 +111,17 @@ Server: safaridriver-ruby
           http = @server.accept
 
           req = ''
-          until req.include?("\r\n\r\n")
-            req << http.read(1)
-          end
+          req << http.read(1) until req.include?("\r\n\r\n")
 
           if !req.include?("?url=")
-            http << HEADERS % [302, 'Moved Temporarily']
+            http << format(headers, 302, 'Moved Temporarily')
             http << "Location: #{uri}?url=#{encode_form_component ws_uri}\r\n"
             http << "\r\n\r\n"
             http.close
 
             process_initial_http_request
           else
-            http << HEADERS % [200, 'OK']
+            http << format(headers, 200, 'OK')
             http << "\r\n\r\n"
             http << html
             http.close

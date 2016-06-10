@@ -50,26 +50,23 @@ module Selenium
           string.split("\n").each do |line|
             case line
             when /^\[Profile/
-              if p = path_for(name, is_relative, path)
-                @profile_paths[name] = p
-                name, path = nil
-              end
+              name, path = nil if path_for(name, is_relative, path)
             when /^Name=(.+)$/
-              name = $1.strip
+              name = Regexp.last_match(1).strip
             when /^IsRelative=(.+)$/
-              is_relative = $1.strip == "1"
+              is_relative = Regexp.last_match(1).strip == "1"
             when /^Path=(.+)$/
-              path = $1.strip
+              path = Regexp.last_match(1).strip
             end
           end
 
-          return unless p = path_for(name, is_relative, path)
-          @profile_paths[name] = p
+          p = path_for(name, is_relative, path)
+          @profile_paths[name] = p if p
         end
 
         def path_for(name, is_relative, path)
           return unless [name, path].any?
-          path = is_relative ? File.join(Util.app_data_path, path) : path
+          is_relative ? File.join(Util.app_data_path, path) : path
         end
       end # ProfilesIni
     end # Firefox

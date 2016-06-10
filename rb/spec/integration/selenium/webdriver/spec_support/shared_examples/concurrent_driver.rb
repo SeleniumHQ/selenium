@@ -21,7 +21,8 @@ shared_examples_for "driver that can be started concurrently" do |browser_name|
   it "is started sequentially" do
     expect do
       # start 5 drivers concurrently
-      threads, drivers = [], []
+      threads = []
+      drivers = []
 
       opt = {}
       if GlobalTestEnv.remote_server?

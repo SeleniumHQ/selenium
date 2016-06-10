@@ -30,13 +30,13 @@ module Selenium
           ssl: "mythicalsslproxy",
           socks: "mythicalsocksproxy:65555",
           socks_username: "test",
-          socks_password: "test",
+          socks_password: "test"
         }
       end
 
       let :pac_proxy_settings do
         {
-          pac: "http://example.com/foo.pac",
+          pac: "http://example.com/foo.pac"
         }
       end
 
@@ -120,5 +120,5 @@ module Selenium
         expect(Proxy.json_create('proxyType' => 'UNSPECIFIED')).to be_nil
       end
     end
-  end
-end
+  end # WebDriver
+end # Selenium

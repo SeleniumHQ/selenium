@@ -9,10 +9,36 @@ Style/SpaceInsideHashLiteralBraces:
 Style/BracesAroundHashParameters:
   EnforcedStyle: context_dependent
 
-Lint/AssignmentInCondition:
+Style/Alias:
+  EnforcedStyle: prefer_alias_method
+
+Lint/HandleExceptions:
   Enabled: false
 
 Style/PercentLiteralDelimiters:
   PreferredDelimiters:
     '%i': '[]'
     '%w': '[]'
+
+# Consider documenting all top-level classes and modules
+Style/Documentation:
+  Enabled: false
+
+# Port Integers do not need underscores
+Style/NumericLiterals:
+  Enabled: false
+
+# Bug
+Style/FileName:
+  Exclude:
+    - 'lib/selenium-webdriver.rb'
+
+# These need to be fixed
+Style/MutableConstant:
+  Exclude:
+    - 'lib/selenium/webdriver/remote/bridge.rb'
+    - 'lib/selenium/webdriver/remote/w3c_bridge.rb'
+
+# There shouldn't be any reason to use camel case instead of snake case here
+Style/MethodName:
+  Enabled: false

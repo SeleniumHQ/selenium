@@ -29,6 +29,7 @@ module Selenium
       class Bridge
         include BridgeHelper
 
+        # TODO: constant shouldn't be modified in class
         COMMANDS = {}
 
         #
@@ -214,7 +215,7 @@ module Selenium
           execute :switchToFrame, {}, {id: nil}
         end
 
-        QUIT_ERRORS = [IOError]
+        QUIT_ERRORS = [IOError].freeze
 
         def quit
           execute :quit
@@ -425,8 +426,9 @@ module Selenium
         end
 
         def sendKeysToElement(element, keys)
-          if @file_detector && local_file = @file_detector.call(keys)
-            keys = upload(local_file)
+          if @file_detector
+            local_file = @file_detector.call(keys)
+            keys = upload(local_file) if local_file
           end
 
           execute :sendKeysToElement, {id: element}, {value: Array(keys)}

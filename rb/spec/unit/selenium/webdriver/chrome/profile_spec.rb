@@ -43,15 +43,15 @@ module Selenium
         end
 
         it "reads existing prefs" do
-          expect(File).to receive(:read).with("/some/path/Default/Preferences").
-            and_return('{"autofill": {"enabled": false}}')
+          expect(File).to receive(:read).with("/some/path/Default/Preferences")
+            .and_return('{"autofill": {"enabled": false}}')
 
           expect(model_profile['autofill.enabled']).to eq(false)
         end
 
         it "writes out prefs" do
-          expect(File).to receive(:read).with("/some/path/Default/Preferences").
-            and_return('{"autofill": {"enabled": false}}')
+          expect(File).to receive(:read).with("/some/path/Default/Preferences")
+            .and_return('{"autofill": {"enabled": false}}')
 
           model_profile['some.other.pref'] = 123
 

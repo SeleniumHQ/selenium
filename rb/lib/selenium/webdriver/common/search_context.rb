@@ -31,8 +31,8 @@ module Selenium
         name: 'name',
         partial_link_text: 'partial link text',
         tag_name: 'tag name',
-        xpath: 'xpath',
-      }
+        xpath: 'xpath'
+      }.freeze
 
       #
       # Find the first element matching the given arguments.
@@ -53,9 +53,8 @@ module Selenium
       def find_element(*args)
         how, what = extract_args(args)
 
-        unless by = FINDERS[how.to_sym]
-          raise ArgumentError, "cannot find element by #{how.inspect}"
-        end
+        by = FINDERS[how.to_sym]
+        raise ArgumentError, "cannot find element by #{how.inspect}" unless by
 
         bridge.find_element_by by, what.to_s, ref
       rescue Selenium::WebDriver::Error::TimeOutError
@@ -76,9 +75,8 @@ module Selenium
       def find_elements(*args)
         how, what = extract_args(args)
 
-        unless by = FINDERS[how.to_sym]
-          raise ArgumentError, "cannot find elements by #{how.inspect}"
-        end
+        by = FINDERS[how.to_sym]
+        raise ArgumentError, "cannot find elements by #{how.inspect}" unless by
 
         bridge.find_elements_by by, what.to_s, ref
       rescue Selenium::WebDriver::Error::TimeOutError

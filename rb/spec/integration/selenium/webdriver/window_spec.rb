@@ -74,7 +74,7 @@ module Selenium
         end
       end
 
-      # TODO - Create Window Manager guard
+      # TODO: - Create Window Manager guard
       not_compliant_on platform: :linux do
         it "can maximize the current window" do
           window.size = old_size = Dimension.new(200, 200)
@@ -104,5 +104,5 @@ module Selenium
         end
       end
     end
-  end
-end
+  end # WebDriver
+end # Selenium

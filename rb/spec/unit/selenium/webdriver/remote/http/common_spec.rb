@@ -28,13 +28,13 @@ module Selenium
             common = Common.new
             common.server_url = URI.parse("http://server")
 
-            expect(common).to receive(:request).
-              with(:post, URI.parse("http://server/clear"),
-                   hash_including("Content-Length" => "2"), "{}")
+            expect(common).to receive(:request)
+              .with(:post, URI.parse("http://server/clear"),
+                    hash_including("Content-Length" => "2"), "{}")
 
             common.call(:post, "clear", nil)
           end
-        end # Common
+        end
       end # Http
     end # Remote
   end # WebDriver

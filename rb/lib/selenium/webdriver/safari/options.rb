@@ -44,7 +44,7 @@ module Selenium
           {
             'port'         => port,
             'dataDir'      => data_dir,
-            'cleanSession' => clean_session?,
+            'cleanSession' => clean_session?
           }
         end
 

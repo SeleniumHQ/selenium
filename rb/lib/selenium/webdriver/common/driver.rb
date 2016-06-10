@@ -96,7 +96,7 @@ module Selenium
       end
 
       def inspect
-        '#<%s:0x%x browser=%s>' % [self.class, hash * 2, bridge.browser.inspect]
+        format '#<%s:0x%x browser=%s>', self.class, hash * 2, bridge.browser.inspect
       end
 
       #
@@ -293,9 +293,7 @@ module Selenium
 
       private
 
-      def bridge
-        @bridge
-      end
+      attr_reader :bridge
     end # Driver
   end # WebDriver
 end # Selenium

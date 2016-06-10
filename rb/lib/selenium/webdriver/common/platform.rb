@@ -224,7 +224,7 @@ module Selenium
   end # WebDriver
 end # Selenium
 
-if __FILE__ == $0
+if __FILE__ == $PROGRAM_NAME
   p engine: Selenium::WebDriver::Platform.engine,
     os: Selenium::WebDriver::Platform.os,
     ruby_version: Selenium::WebDriver::Platform.ruby_version,

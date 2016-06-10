@@ -111,7 +111,8 @@ module Selenium
         end
 
         it "can merge capabilities" do
-          a, b = Capabilities.chrome, Capabilities.htmlunit
+          a = Capabilities.chrome
+          b = Capabilities.htmlunit
           a.merge!(b)
 
           expect(a.browser_name).to eq("htmlunit")
@@ -127,6 +128,6 @@ module Selenium
           expect(Capabilities.new(firefox_binary: "/foo/bar").as_json).to include('firefox_binary')
         end
       end
-    end
-  end
-end
+    end # Remote
+  end # WebDriver
+end # Selenium

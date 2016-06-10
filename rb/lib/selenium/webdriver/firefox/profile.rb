@@ -23,7 +23,7 @@ module Selenium
       class Profile
         include ProfileHelper
 
-        VALID_PREFERENCE_TYPES   = [TrueClass, FalseClass, Integer, Float, String]
+        VALID_PREFERENCE_TYPES   = [TrueClass, FalseClass, Integer, Float, String].freeze
         WEBDRIVER_EXTENSION_PATH = File.expand_path("#{WebDriver.root}/selenium/webdriver/firefox/extension/webdriver.xpi")
         WEBDRIVER_PREFS          = {
           native_events: 'webdriver_enable_native_events',
@@ -31,7 +31,7 @@ module Selenium
           untrusted_issuer: 'webdriver_assume_untrusted_issuer',
           port: 'webdriver_firefox_port',
           log_file: 'webdriver.log.file'
-        }
+        }.freeze
 
         attr_reader   :name, :log_file
         attr_writer   :secure_ssl, :native_events, :load_no_focus_lib
@@ -256,7 +256,8 @@ module Selenium
 
           File.read(path).split("\n").each do |line|
             next unless line =~ /user_pref\("([^"]+)"\s*,\s*(.+?)\);/
-            key, value = $1.strip, $2.strip
+            key = Regexp.last_match(1).strip
+            value = Regexp.last_match(2).strip
 
             # wrap the value in an array to make it a valid JSON string.
             prefs[key] = JSON.parse("[#{value}]").first

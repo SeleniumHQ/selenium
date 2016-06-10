@@ -152,6 +152,6 @@ module Selenium
   end # WebDriver
 end # Selenium
 
-if __FILE__ == $0
+if __FILE__ == $PROGRAM_NAME
   Selenium::WebDriver::SpecSupport::RackServer.new(ARGV[0], ARGV[1]).run
 end

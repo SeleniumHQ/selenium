@@ -48,9 +48,8 @@ module Selenium
         opts[:path] ||= "/"
         opts[:secure] ||= false
 
-        if obj = opts.delete(:expires)
-          opts[:expiry] = seconds_from(obj).to_i
-        end
+        obj = opts.delete(:expires)
+        opts[:expiry] = seconds_from(obj).to_i if obj
 
         @bridge.addCookie opts
       end

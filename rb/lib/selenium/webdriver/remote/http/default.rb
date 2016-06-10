@@ -105,7 +105,8 @@ module Selenium
 
           def new_http_client
             if use_proxy?
-              unless proxy.respond_to?(:http) && url = @proxy.http
+              url = @proxy.http
+              unless proxy.respond_to?(:http) && url
                 raise Error::WebDriverError, "expected HTTP proxy, got #{@proxy.inspect}"
               end
 
@@ -136,16 +137,16 @@ module Selenium
             if proxy.no_proxy
               ignored = proxy.no_proxy.split(",").any? do |host|
                 host == "*" ||
-                    host == server_url.host || (
+                  host == server_url.host || (
                 begin
                   IPAddr.new(host).include?(server_url.host)
                 rescue ArgumentError
                   false
                 end
-                    )
+                  )
               end
 
-              not ignored
+              !ignored
             else
               true
             end

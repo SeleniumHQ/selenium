@@ -89,7 +89,7 @@ module Selenium
         f12: "\ue03C",
         meta: "\ue03D",
         command: "\ue03D" # alias
-      }
+      }.freeze
 
       #
       # @api private

@@ -71,7 +71,7 @@ module Selenium
 
           expect(Color.from_string(hex).rgba).to eq(rgba)
 
-          hex = "#00ff33";
+          hex = "#00ff33"
           rgba = "rgba(0, 255, 51, 1)"
 
           expect(Color.from_string(hex).rgba).to eq(rgba)
@@ -94,7 +94,7 @@ module Selenium
           hsl = "hsl(100, 0%, 50%)"
           rgba = "rgba(128, 128, 128, 1)"
 
-          expect(Color.from_string(hsl).rgba).to eq("rgba(128, 128, 128, 1)")
+          expect(Color.from_string(hsl).rgba).to eq(rgba)
         end
 
         it "converts hsla to rgba" do
@@ -130,6 +130,6 @@ module Selenium
           expect(h.values.sort).to eq([2, 3])
         end
       end
-    end
-  end
-end
+    end # Support
+  end # WebDriver
+end # Selenium

@@ -25,7 +25,7 @@ require 'selenium/webdriver/phantomjs/bridge'
 module Selenium
   module WebDriver
     module PhantomJS
-      MISSING_TEXT = "Unable to find phantomjs executable."
+      MISSING_TEXT = "Unable to find phantomjs executable.".freeze
 
       def self.path=(path)
         Platform.assert_executable path

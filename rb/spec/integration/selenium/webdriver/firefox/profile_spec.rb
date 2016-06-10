@@ -27,7 +27,7 @@ module Selenium
           let(:profile) { Profile.new }
 
           def read_generated_prefs(from = nil)
-            prof = from || profile()
+            prof = from || profile
             dir = prof.layout_on_disk
 
             File.read(File.join(dir, 'user.js'))

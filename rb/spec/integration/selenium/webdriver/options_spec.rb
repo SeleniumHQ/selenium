@@ -113,5 +113,5 @@ module Selenium
         end
       end
     end
-  end
-end
+  end # WebDriver
+end # Selenium

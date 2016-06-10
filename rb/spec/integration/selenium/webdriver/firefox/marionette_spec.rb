@@ -127,6 +127,6 @@ module Selenium
           end
         end
       end
-    end # Firefox
+    end
   end # WebDriver
 end # Selenium

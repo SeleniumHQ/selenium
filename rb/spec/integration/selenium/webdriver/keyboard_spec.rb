@@ -70,7 +70,7 @@ module Selenium
           driver.keyboard.release :shift
           expect(keylogger.text).to match(/keyup *$/)
         end
-      end # Keyboard
+      end
     end
   end # WebDriver
 end # Selenium

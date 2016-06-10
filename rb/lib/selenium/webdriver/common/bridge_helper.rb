@@ -31,11 +31,9 @@ module Selenium
         when Array
           arg.map { |e| unwrap_script_result(e) }
         when Hash
-          if id = element_id_from(arg)
-            Element.new self, id
-          else
-            arg.each { |k, v| arg[k] = unwrap_script_result(v) }
-          end
+          id = element_id_from(arg)
+          return Element.new(self, id) if id
+          arg.each { |k, v| arg[k] = unwrap_script_result(v) }
         else
           arg
         end
@@ -62,7 +60,7 @@ module Selenium
               result['name']  = key
               result['value'] = value
             elsif key == 'domain' && value.strip =~ /^\.(.+)/
-              result['domain'] = $1
+              result['domain'] = Regexp.last_match(1)
             elsif key && value
               result[key] = value
             end

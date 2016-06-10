@@ -38,8 +38,8 @@ module Selenium
         else
           allow(Socket).to receive(:new).and_return socket
           states.each do |state|
-            expect(socket).to receive(:connect_nonblock).
-              and_raise(state ? Errno::EISCONN.new("connection in progress") : Errno::ECONNREFUSED.new("connection refused"))
+            expect(socket).to receive(:connect_nonblock)
+              .and_raise(state ? Errno::EISCONN.new("connection in progress") : Errno::ECONNREFUSED.new("connection refused"))
           end
         end
       end
@@ -82,5 +82,5 @@ module Selenium
         end
       end
     end
-  end
-end
+  end # WebDriver
+end # Selenium

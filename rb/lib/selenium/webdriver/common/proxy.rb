@@ -26,7 +26,7 @@ module Selenium
         pac: "PAC", # Proxy autoconfiguration from URL.
         auto_detect: "AUTODETECT", # Proxy autodetection (presumably with WPAD).
         system: "SYSTEM" # Use system settings (default on Linux).
-      }
+      }.freeze
 
       attr_reader :type,
                   :ftp,

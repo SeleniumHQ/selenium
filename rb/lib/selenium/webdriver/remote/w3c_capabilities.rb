@@ -33,7 +33,7 @@ module Selenium
           accept_ssl_certs: false,
           page_load_strategy: 'normal',
           proxy: nil
-        }
+        }.freeze
 
         KNOWN = [
           :remote_session_id,
@@ -42,7 +42,7 @@ module Selenium
           :rotatable,
           :app_build_id,
           :device
-        ]
+        ].freeze
 
         (DEFAULTS.keys + KNOWN).each do |key|
           define_method key do
@@ -71,7 +71,7 @@ module Selenium
           def edge(opts = {})
             new({
               browser_name: "MicrosoftEdge",
-              platform: :windows,
+              platform: :windows
             }.merge(opts))
           end
 
@@ -218,14 +218,12 @@ module Selenium
 
         protected
 
-        def capabilities
-          @capabilities
-        end
+        attr_reader :capabilities
 
         private
 
         def camel_case(str)
-          str.gsub(/_([a-z])/) { $1.upcase }
+          str.gsub(/_([a-z])/) { Regexp.last_match(1).upcase }
         end
       end # W3CCapabilities
     end # Remote

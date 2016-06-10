@@ -95,7 +95,8 @@ module Selenium
 
         context "executing scripts" do
           it "fires events for execute_script" do
-            script, arg = 'script', 'arg'
+            script = 'script'
+            arg = 'arg'
 
             expect(listener).to receive(:before_execute_script).with(script, instance_of(Driver))
             expect(bridge).to receive(:executeScript).with(script, arg)

@@ -234,8 +234,6 @@ module Selenium
           deselect_option opts.first
         end
 
-        private
-
         def select_option(option)
           option.click unless option.selected?
         end
@@ -302,8 +300,8 @@ module Selenium
             if str.include?('"') && str.include?("'")
               parts = str.split('"', -1).map { |part| %("#{part}") }
 
-              quoted = parts.join(%(, '"', )).
-                       gsub(/^"", |, ""$/, '')
+              quoted = parts.join(%(, '"', ))
+                            .gsub(/^"", |, ""$/, '')
 
               "concat(#{quoted})"
             elsif str.include?('"')

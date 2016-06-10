@@ -49,17 +49,17 @@ module Selenium
       #
 
       def closed?
-        with_timeout { not listening? }
+        with_timeout { !listening? }
       end
 
       private
 
       CONNECT_TIMEOUT = 5
 
-      NOT_CONNECTED_ERRORS = [Errno::ECONNREFUSED, Errno::ENOTCONN, SocketError]
+      NOT_CONNECTED_ERRORS = [Errno::ECONNREFUSED, Errno::ENOTCONN, SocketError].freeze
       NOT_CONNECTED_ERRORS << Errno::EPERM if Platform.cygwin?
 
-      CONNECTED_ERRORS = [Errno::EISCONN]
+      CONNECTED_ERRORS = [Errno::EISCONN].freeze
       CONNECTED_ERRORS << Errno::EINVAL if Platform.windows?
 
       if Platform.jruby?

@@ -23,8 +23,8 @@ module Selenium
       module Http
         class Common
           MAX_REDIRECTS   = 20 # same as chromium/gecko
-          CONTENT_TYPE    = "application/json"
-          DEFAULT_HEADERS = {"Accept" => CONTENT_TYPE}
+          CONTENT_TYPE    = "application/json".freeze
+          DEFAULT_HEADERS = {"Accept" => CONTENT_TYPE}.freeze
 
           attr_accessor :timeout
           attr_writer :server_url
@@ -71,7 +71,9 @@ module Selenium
           end
 
           def create_response(code, body, content_type)
-            code, body, content_type = code.to_i, body.to_s.strip, content_type.to_s
+            code = code.to_i
+            body = body.to_s.strip
+            content_type = content_type.to_s
             puts "<- #{body}\n" if $DEBUG
 
             if content_type.include? CONTENT_TYPE

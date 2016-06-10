@@ -20,7 +20,7 @@
 module Selenium
   module WebDriver
     class TouchScreen
-      FLICK_SPEED = {normal: 0, fast: 1}
+      FLICK_SPEED = {normal: 0, fast: 1}.freeze
 
       #
       # @api private
@@ -105,7 +105,8 @@ module Selenium
             raise ArgumentError, "expected #{point.inspect} to respond to :x and :y"
           end
 
-          x, y = point.x, point.y
+          x = point.x
+          y = point.y
         end
 
         [Integer(x), Integer(y)]

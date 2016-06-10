@@ -41,7 +41,7 @@ module Selenium
       DEFAULT_ASSUME_UNTRUSTED_ISSUER = true
       DEFAULT_LOAD_NO_FOCUS_LIB       = false
 
-      MISSING_TEXT = "Unable to find Mozilla geckodriver. Please download the executable from https://github.com/mozilla/geckodriver/releases"
+      MISSING_TEXT = "Unable to find Mozilla geckodriver. Please download the executable from https://github.com/mozilla/geckodriver/releases".freeze
 
       def self.driver_path=(path)
         Platform.assert_executable path
