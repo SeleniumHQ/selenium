@@ -962,12 +962,14 @@ const PromiseState = {
 
 
 /**
- * Internal symbol used to store a cancellation handler for
- * {@link ManagedPromise} objects. This is an internal implementation detail
- * used by the {@link TaskQueue} class to monitor for when a promise is
- * cancelled without generating an extra promise via then().
+ * Internal map used to store cancellation handlers for {@link ManagedPromise}
+ * objects. This is an internal implementation detail used by the
+ * {@link TaskQueue} class to monitor for when a promise is cancelled without
+ * generating an extra promise via then().
+ *
+ * @const {!WeakMap<!ManagedPromise, function(!CancellationError)>}
  */
-const CANCEL_HANDLER_SYMBOL = Symbol('on cancel');
+const ON_CANCEL_HANDLER = new WeakMap;
 
 
 /**
@@ -978,7 +980,6 @@ const CANCEL_HANDLER_SYMBOL = Symbol('on cancel');
  * resolved.
  *
  * @implements {Thenable<T>}
- * @unrestricted
  * @template T
  * @see http://promises-aplus.github.io/promises-spec/
  */
@@ -1005,7 +1006,7 @@ class ManagedPromise {
       this.stack_ = captureStackTrace('ManagedPromise', 'new', this.constructor);
     }
 
-    /** @private {ManagedPromise<?>} */
+    /** @private {Thenable<?>} */
     this.parent_ = null;
 
     /** @private {Array<!Task>} */
@@ -1022,9 +1023,6 @@ class ManagedPromise {
 
     /** @private {TaskQueue} */
     this.queue_ = null;
-
-    /** @private {(function(CancellationError)|null)} */
-    this[CANCEL_HANDLER_SYMBOL] = null;
 
     try {
       var self = this;
@@ -1071,6 +1069,7 @@ class ManagedPromise {
       if (Thenable.isImplementation(newValue)) {
         // 2.3.2
         newValue = /** @type {!Thenable} */(newValue);
+        this.parent_ = newValue;
         newValue.then(
             this.unblockAndResolve_.bind(this, PromiseState.FULFILLED),
             this.unblockAndResolve_.bind(this, PromiseState.REJECTED));
@@ -1164,7 +1163,7 @@ class ManagedPromise {
   scheduleNotifications_() {
     vlog(2, () => this + ' scheduling notifications', this);
 
-    this[CANCEL_HANDLER_SYMBOL] = null;
+    ON_CANCEL_HANDLER.delete(this);
     if (this.value_ instanceof CancellationError
         && this.value_.silent_) {
       this.callbacks_ = null;
@@ -1192,9 +1191,10 @@ class ManagedPromise {
       this.parent_.cancel(opt_reason);
     } else {
       var reason = CancellationError.wrap(opt_reason);
-      if (this[CANCEL_HANDLER_SYMBOL]) {
-        this[CANCEL_HANDLER_SYMBOL](reason);
-        this[CANCEL_HANDLER_SYMBOL] = null;
+      let onCancel = ON_CANCEL_HANDLER.get(this);
+      if (onCancel) {
+        onCancel(reason);
+        ON_CANCEL_HANDLER.delete(this);
       }
 
       if (this.state_ === PromiseState.BLOCKED) {
@@ -1205,6 +1205,9 @@ class ManagedPromise {
     }
 
     function canCancel(promise) {
+      if (!(promise instanceof ManagedPromise)) {
+        return Thenable.isImplementation(promise);
+      }
       return promise.state_ === PromiseState.PENDING
           || promise.state_ === PromiseState.BLOCKED;
     }
@@ -2566,8 +2569,9 @@ class TaskQueue extends events.EventEmitter {
 
     this.tasks_.push(task);
     task.queue = this;
-    task.promise[CANCEL_HANDLER_SYMBOL] =
-        this.onTaskCancelled_.bind(this, task);
+    ON_CANCEL_HANDLER.set(
+        task.promise,
+        (e) => this.onTaskCancelled_(task, e));
 
     vlog(1, () => this + '.enqueue(' + task + ')', this);
     vlog(2, () => this.flow_.toString(), this);
@@ -2600,7 +2604,9 @@ class TaskQueue extends events.EventEmitter {
         return;
       }
 
-      cb.promise[CANCEL_HANDLER_SYMBOL] = this.onTaskCancelled_.bind(this, cb);
+      ON_CANCEL_HANDLER.set(
+          cb.promise,
+          (e) => this.onTaskCancelled_(cb, e));
 
       if (cb.queue === this && this.tasks_.indexOf(cb) !== -1) {
         return;

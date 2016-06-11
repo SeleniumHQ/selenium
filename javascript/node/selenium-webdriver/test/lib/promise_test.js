@@ -147,16 +147,101 @@ describe('promise', function() {
       return res;
     });
 
-    it('canCancelADeferredFromAChainedPromise', function() {
-      var d = new promise.Deferred();
-      var p = d.promise.then(assert.fail, function(e) {
-        assert.ok(e instanceof promise.CancellationError);
-        assert.equal('because i said so', e.message);
-      });
-      var p2 = p.then(function() {}, assert.fail);
+    describe('can cancel original promise from its child;', function() {
+      it('child created by then()', function() {
+        var d = new promise.Deferred();
+        var p = d.promise.then(assert.fail, function(e) {
+          assert.ok(e instanceof promise.CancellationError);
+          assert.equal('because i said so', e.message);
+          return 123;
+        });
 
-      p.cancel('because i said so');
-      return p2;
+        p.cancel('because i said so');
+        return p.then(v => assert.equal(123, v));
+      });
+
+      it('child linked by resolving with parent', function() {
+        let parent = promise.defer();
+        let child = new promise.Promise(resolve => resolve(parent.promise));
+        child.cancel('all done');
+
+        return parent.promise.then(
+            () => assert.fail('expected a cancellation'),
+            e => {
+              assert.ok(e instanceof promise.CancellationError);
+              assert.equal('all done', e.message);
+            });
+      });
+
+      it('grand child through thenable chain', function() {
+        let p = new promise.Promise(function() {/* never resolve*/});
+
+        let noop = function() {};
+        let gc = p.then(noop).then(noop).then(noop);
+        gc.cancel('stop!');
+
+        return p.then(
+            () => assert.fail('expected to be cancelled'),
+            (e) => {
+              assert.ok(e instanceof promise.CancellationError);
+              assert.equal('stop!', e.message);
+            });
+      });
+
+      it('grand child through thenable chain started at resolve', function() {
+        function noop() {}
+
+        let parent = promise.defer();
+        let child = new promise.Promise(resolve => resolve(parent.promise));
+        let grandChild = child.then(noop).then(noop).then(noop);
+        grandChild.cancel('all done');
+
+        return parent.promise.then(
+            () => assert.fail('expected a cancellation'),
+            e => {
+              assert.ok(e instanceof promise.CancellationError);
+              assert.equal('all done', e.message);
+            });
+      });
+
+      it('"parent" is a Thenable', function() {
+        function noop() {}
+
+        class FakeThenable {
+          constructor(p) {
+            this.promise = p;
+          }
+
+          cancel(reason) {
+            this.promise.cancel(reason);
+          }
+
+          then(cb, eb) {
+            let result = this.promise.then(cb, eb);
+            return new FakeThenable(result);
+          }
+        }
+        promise.Thenable.addImplementation(FakeThenable);
+
+        let root = new promise.Promise(noop);
+        let thenable = new FakeThenable(root);
+        assert.ok(promise.Thenable.isImplementation(thenable));
+
+        let child = new promise.Promise(resolve => resolve(thenable));
+        assert.ok(child instanceof promise.Promise);
+        child.cancel('stop!');
+
+        function assertStopped(p) {
+          return p.then(
+              () => assert.fail('not stopped!'),
+              (e) => {
+                assert.ok(e instanceof promise.CancellationError);
+                assert.equal('stop!', e.message);
+              });
+        }
+
+        return assertStopped(child).then(() => assertStopped(root));
+      });
     });
 
     it('canCancelATimeout', function() {
@@ -165,6 +250,9 @@ describe('promise', function() {
       setTimeout(() => p.cancel(), 20);
       p.cancel();
       return p;
+    });
+
+    it('can cancel timeout from grandchild', function() {
     });
 
     it('cancelIsANoopOnceAPromiseHasBeenFulfilled', function() {
@@ -213,28 +301,6 @@ describe('promise', function() {
       callback.assertNotCalled();
       d.fulfill('hi');
       return result.then(callback.assertCalled);
-    });
-
-    it('canCancelReturnedPromise', function() {
-      var callbacks = callbackPair(null, function(e) {
-        assert.ok(e instanceof promise.CancellationError);
-        assert.equal('just because', e.message);
-      });
-
-      var promiseLike = {
-        then: function(cb, eb) {
-          this.callback = cb;
-          this.errback = eb;
-        }
-      };
-
-      var aPromise = promise.when(promiseLike,
-          callbacks.callback, callbacks.errback);
-
-      assert.ok(aPromise.isPending());
-      aPromise.cancel('just because');
-
-      return aPromise.finally(callbacks.assertErrback);
     });
   });
 
