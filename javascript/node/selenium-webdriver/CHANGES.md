@@ -9,6 +9,7 @@
 * Internal cleanup replacing uses of managed promises with native promises
 * Removed the mandatory use of Firefox Dev Edition, when using Marionette driver
 * Fixed timeouts' URL
+* `promise.Deferred` is no longer a thenable object.
 * Removed deprecated modules:
    - `selenium-webdriver/error` (use `selenium-webdriver/lib/error`,\
      or the `error` property exported by `selenium-webdriver`)
@@ -19,6 +20,11 @@
    - `until.WebElementCondition` (use `webdriver.WebElementCondition`)
    - `webdriver.UnhandledAlertError` (use `error.UnexpectedAlertOpenError`)
 * Removed deprecated functions:
+   - `Deferred#cancel()`
+   - `Deferred#catch()`
+   - `Deferred#finally()`
+   - `Deferred#isPending()`
+   - `Deferred#then()`
    - `Promise#thenCatch()`
    - `Promise#thenFinally()`
    - `WebDriver#isElementPresent()`

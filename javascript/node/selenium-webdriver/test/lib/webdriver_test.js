@@ -1563,12 +1563,12 @@ describe('WebDriver', function() {
 
   describe('alert handling', function() {
     it('alertResolvesWhenPromisedTextResolves', function() {
-      var textPromise = new promise.Deferred();
+      var deferredText = new promise.Deferred();
 
-      var alert = new AlertPromise({}, textPromise);
+      var alert = new AlertPromise({}, deferredText.promise);
       assert.ok(alert.isPending());
 
-      textPromise.fulfill(new Alert({}, 'foo'));
+      deferredText.fulfill(new Alert({}, 'foo'));
       return alert.getText().then(function(text) {
         assert.equal('foo', text);
       });

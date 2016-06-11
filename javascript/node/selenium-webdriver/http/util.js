@@ -87,7 +87,7 @@ exports.waitForServer = function(url, timeout) {
           Error('Timed out waiting for the WebDriver server at ' + url));
     } else {
       setTimeout(function() {
-        if (ready.isPending()) {
+        if (ready.promise.isPending()) {
           checkServerStatus();
         }
       }, 50);
@@ -122,7 +122,7 @@ exports.waitForUrl = function(url, timeout) {
           'Timed out waiting for the URL to return 2xx: ' + url));
     } else {
       setTimeout(function() {
-        if (ready.isPending()) {
+        if (ready.promise.isPending()) {
           testUrl();
         }
       }, 50);
@@ -130,7 +130,7 @@ exports.waitForUrl = function(url, timeout) {
   }
 
   function onResponse(response) {
-    if (!ready.isPending()) return;
+    if (!ready.promise.isPending()) return;
     if (response.status > 199 && response.status < 300) {
       return ready.fulfill();
     }

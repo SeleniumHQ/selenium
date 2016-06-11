@@ -65,10 +65,10 @@ describe('promise', function() {
     assertIsPromise(new promise.Promise(function(fulfill) {
       fulfill();
     }));
-    assertIsPromise(new promise.Deferred());
     assertIsPromise(new promise.Deferred().promise);
     assertIsPromise({then:function() {}});
 
+    assertNotPromise(new promise.Deferred());
     assertNotPromise(undefined);
     assertNotPromise(null);
     assertNotPromise('');
@@ -139,17 +139,17 @@ describe('promise', function() {
   describe('cancel', function() {
     it('passesTheCancellationReasonToReject', function() {
       var d = new promise.Deferred();
-      var res = d.then(assert.fail, function(e) {
+      var res = d.promise.then(assert.fail, function(e) {
         assert.ok(e instanceof promise.CancellationError);
         assert.equal('because i said so', e.message);
       });
-      d.cancel('because i said so');
+      d.promise.cancel('because i said so');
       return res;
     });
 
     it('canCancelADeferredFromAChainedPromise', function() {
       var d = new promise.Deferred();
-      var p = d.then(assert.fail, function(e) {
+      var p = d.promise.then(assert.fail, function(e) {
         assert.ok(e instanceof promise.CancellationError);
         assert.equal('because i said so', e.message);
       });
@@ -207,7 +207,7 @@ describe('promise', function() {
 
     it('WaitsForValueToBeResolvedBeforeInvokingCallback', function() {
       var d = new promise.Deferred(), callback;
-      let result = promise.when(d, callback = callbackHelper(function(value) {
+      let result = promise.when(d.promise, callback = callbackHelper(function(value) {
         assert.equal('hi', value);
       }));
       callback.assertNotCalled();
@@ -506,10 +506,11 @@ describe('promise', function() {
 
   describe('all', function() {
     it('(base case)', function() {
+      let defer = [promise.defer(), promise.defer()];
       var a = [
           0, 1,
-          promise.defer(),
-          promise.defer(),
+          defer[0].promise,
+          defer[1].promise,
           4, 5, 6
       ];
       delete a[5];
@@ -521,10 +522,10 @@ describe('promise', function() {
       var result = promise.all(a).then(pair.callback, pair.errback);
       pair.assertNeither();
 
-      a[2].fulfill(2);
+      defer[0].fulfill(2);
       pair.assertNeither();
 
-      a[3].fulfill(3);
+      defer[1].fulfill(3);
       return result.then(() => pair.assertCallback());
     });
 
@@ -533,14 +534,12 @@ describe('promise', function() {
     });
 
     it('usesFirstRejection', function() {
-      var a = [
-        promise.defer(),
-        promise.defer()
-      ];
+      let defer = [promise.defer(), promise.defer()];
+      let a = [defer[0].promise, defer[1].promise];
 
       var result = promise.all(a).then(assert.fail, assertIsStubError);
-      a[1].reject(new StubError);
-      setTimeout(() => a[0].reject(Error('ignored')), 0);
+      defer[1].reject(new StubError);
+      setTimeout(() => defer[0].reject(Error('ignored')), 0);
       return result;
     });
   });
@@ -587,7 +586,7 @@ describe('promise', function() {
 
     it('inputIsPromise', function() {
       var input = promise.defer();
-      var result = promise.map(input, function(value) {
+      var result = promise.map(input.promise, function(value) {
         return value + 1;
       });
 
@@ -739,7 +738,7 @@ describe('promise', function() {
 
     it('inputIsPromise', function() {
       var input = promise.defer();
-      var result = promise.filter(input, function(value) {
+      var result = promise.filter(input.promise, function(value) {
         return value > 1 && value < 3;
       });
 

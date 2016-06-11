@@ -1331,7 +1331,6 @@ Thenable.addImplementation(ManagedPromise);
  * the next turn of the event loop, the rejection will be passed to the
  * {@link ControlFlow} as an unhandled failure.
  *
- * @implements {Thenable<T>}
  * @template T
  */
 class Deferred {
@@ -1375,42 +1374,7 @@ class Deferred {
       reject(opt_reason);
     };
   }
-
-  /** @override */
-  isPending() {
-    return this.promise.isPending();
-  }
-
-  /** @override */
-  cancel(opt_reason) {
-    this.promise.cancel(opt_reason);
-  }
-
-  /**
-   * @override
-   * @deprecated Use {@code then} from the promise property directly.
-   */
-  then(opt_cb, opt_eb) {
-    return this.promise.then(opt_cb, opt_eb);
-  }
-
-  /**
-   * @override
-   * @deprecated Use {@lcode catch} from the promise property directly.
-   */
-  catch(opt_eb) {
-    return this.promise.catch(opt_eb);
-  }
-
-  /**
-   * @override
-   * @deprecated Use {@code finally} from the promise property directly.
-   */
-  finally(opt_cb) {
-    return this.promise.finally(opt_cb);
-  }
 }
-Thenable.addImplementation(Deferred);
 
 
 /**
@@ -2702,7 +2666,8 @@ class TaskQueue extends events.EventEmitter {
 
     if (this.pending_) {
       vlog(2, () => this + '.abort(); cancelling pending task', this);
-      this.pending_.task.cancel(/** @type {!CancellationError} */(error));
+      this.pending_.task.promise.cancel(
+          /** @type {!CancellationError} */(error));
 
     } else {
       vlog(2, () => this + '.abort(); emitting error event', this);
@@ -3018,7 +2983,7 @@ function consume(generatorFn, opt_self, var_args) {
   }
 
   function pump(fn, opt_arg) {
-    if (!deferred.isPending()) {
+    if (!deferred.promise.isPending()) {
       return;  // Defererd was cancelled; silently abort.
     }
 
