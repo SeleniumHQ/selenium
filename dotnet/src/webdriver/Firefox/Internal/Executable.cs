@@ -24,6 +24,7 @@ using System.Security.Permissions;
 using System.Text;
 using Microsoft.Win32;
 using OpenQA.Selenium.Internal;
+using WebDriver.Internal;
 
 namespace OpenQA.Selenium.Firefox.Internal
 {
@@ -159,8 +160,8 @@ namespace OpenQA.Selenium.Firefox.Internal
                     // doesn't have that member of the enum.
                     string[] windowsDefaultInstallLocations = new string[]
                     {
-                        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Mozilla Firefox"),
-                        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) + " (x86)", "Mozilla Firefox")
+                        Path.Combine(Host.GetProgramFilesFolder(), "Mozilla Firefox"),
+                        Path.Combine(Host.GetProgramFilesFolder() + " (x86)", "Mozilla Firefox")
                     };
 
                     binary = GetExecutablePathUsingDefaultInstallLocations(windowsDefaultInstallLocations, "Firefox.exe");
@@ -173,7 +174,7 @@ namespace OpenQA.Selenium.Firefox.Internal
                 string[] macDefaultInstallLocations = new string[]
                 {
                     "/Applications/Firefox.app/Contents/MacOS",
-                    string.Format(CultureInfo.InvariantCulture, "/Users/{0}/Applications/Firefox.app/Contents/MacOS", Environment.UserName)
+                    string.Format(CultureInfo.InvariantCulture, "/Users/{0}/Applications/Firefox.app/Contents/MacOS", Host.GetUserName())
                 };
 
                 binary = GetExecutablePathUsingDefaultInstallLocations(macDefaultInstallLocations, "firefox-bin");

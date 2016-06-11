@@ -180,7 +180,7 @@ namespace System.IO.Compression
 
             // Write file to zip (store)
             this.Store(ref zipFileEntry, sourceStream);
-            sourceStream.Close();
+            sourceStream.Dispose();
 
             this.UpdateCrcAndSizes(ref zipFileEntry);
 
