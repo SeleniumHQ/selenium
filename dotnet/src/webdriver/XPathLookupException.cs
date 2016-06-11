@@ -24,7 +24,9 @@ namespace OpenQA.Selenium
     /// <summary>
     /// The exception that is thrown when an error occurs during an XPath lookup.
     /// </summary>
+#if !NETSTANDARD1_5
     [Serializable]
+#endif
     public class XPathLookupException : WebDriverException
     {
         /// <summary>
@@ -58,6 +60,7 @@ namespace OpenQA.Selenium
         {
         }
 
+#if !NETSTANDARD1_5
         /// <summary>
         /// Initializes a new instance of the <see cref="XPathLookupException"/> class with serialized data.
         /// </summary>
@@ -69,5 +72,6 @@ namespace OpenQA.Selenium
             : base(info, context)
         {
         }
+#endif
     }
 }

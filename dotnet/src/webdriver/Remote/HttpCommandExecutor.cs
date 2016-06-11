@@ -115,7 +115,7 @@ namespace OpenQA.Selenium.Remote
                 request.ContentType = ContentTypeHeader;
                 Stream requestStream = request.GetRequestStream();
                 requestStream.Write(data, 0, data.Length);
-                requestStream.Close();
+                requestStream.Dispose();
             }
 
             Response toReturn = this.CreateResponse(request);
@@ -141,7 +141,7 @@ namespace OpenQA.Selenium.Remote
             Stream responseStream = webResponse.GetResponseStream();
             StreamReader responseStreamReader = new StreamReader(responseStream, Encoding.UTF8);
             string responseString = responseStreamReader.ReadToEnd();
-            responseStreamReader.Close();
+            responseStreamReader.Dispose();
 
             // The response string from the Java remote server has trailing null
             // characters. This is due to the fix for issue 288.

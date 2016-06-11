@@ -100,6 +100,10 @@
     <Compile Include="IFileDetector.cs" />
     <Compile Include="Html5\IHasLocationContext.cs" />
     <Compile Include="ILogs.cs" />
+    <Compile Include="Internal\Host.cs" />
+    <Compile Include="Internal\OperatingSystemFamily.cs" />
+    <Compile Include="Internal\ProcessStartInfoExtensions.cs" />
+    <Compile Include="Internal\WebRequestExtensions.cs" />
     <Compile Include="LogEntry.cs" />
     <Compile Include="LogLevel.cs" />
     <Compile Include="LogType.cs" />
