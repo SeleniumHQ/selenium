@@ -46,7 +46,11 @@ namespace OpenQA.Selenium.Internal
             }
             finally
             {
+#if !NETSTANDARD1_5
                 portSocket.Close();
+#else
+                portSocket.Dispose();
+#endif
             }
 
             return listeningPort;

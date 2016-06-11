@@ -109,6 +109,10 @@
     <Compile Include="Interactions\PauseInteraction.cs" />
     <Compile Include="Interactions\PointerInputDevice.cs" />
     <Compile Include="Internal\IActionExecutor.cs" />
+    <Compile Include="Internal\Host.cs" />
+    <Compile Include="Internal\OperatingSystemFamily.cs" />
+    <Compile Include="Internal\ProcessStartInfoExtensions.cs" />
+    <Compile Include="Internal\WebRequestExtensions.cs" />
     <Compile Include="LogEntry.cs" />
     <Compile Include="LogLevel.cs" />
     <Compile Include="LogType.cs" />

@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using OpenQA.Selenium.Firefox.Internal;
+using WebDriver.Internal;
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -80,13 +81,13 @@ namespace OpenQA.Selenium.Firefox
         private static string GetApplicationDataDirectory()
         {
             string appDataDirectory = string.Empty;
-            switch (Environment.OSVersion.Platform)
+            switch (Host.GetOperatingSystemFamily())
             {
-                case PlatformID.Unix:
+                case OperatingSystemFamily.Linux:
                     appDataDirectory = Path.Combine(".mozilla", "firefox");
                     break;
 
-                case PlatformID.MacOSX:
+                case OperatingSystemFamily.OSX:
                     appDataDirectory = Path.Combine("Library", Path.Combine("Application Support", "Firefox"));
                     break;
 
@@ -95,7 +96,7 @@ namespace OpenQA.Selenium.Firefox
                     break;
             }
 
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), appDataDirectory);
+            return Path.Combine(Host.GetApplicationDataFolder(), appDataDirectory);
         }
 
         private void ReadProfiles(string appDataDirectory)

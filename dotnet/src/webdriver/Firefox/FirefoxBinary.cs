@@ -255,9 +255,14 @@ namespace OpenQA.Selenium.Firefox
             {
                 Thread.Sleep(timeInMilliseconds);
             }
+#if !NETSTANDARD1_5
             catch (ThreadInterruptedException e)
             {
                 throw new WebDriverException("Thread was interrupted", e);
+            }
+#endif
+            finally
+            {
             }
         }
 

@@ -117,7 +117,11 @@ namespace OpenQA.Selenium.Firefox
             {
                 string installRdf = Path.Combine(root, "install.rdf");
                 XmlDocument rdfXmlDocument = new XmlDocument();
-                rdfXmlDocument.Load(installRdf);
+
+                using (Stream stream = File.OpenRead(installRdf))
+                {
+                    rdfXmlDocument.Load(stream);
+                }
 
                 XmlNamespaceManager rdfNamespaceManager = new XmlNamespaceManager(rdfXmlDocument.NameTable);
                 rdfNamespaceManager.AddNamespace("em", EmNamespaceUri);

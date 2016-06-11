@@ -17,6 +17,7 @@
 // </copyright>
 
 using System;
+using WebDriver.Internal;
 
 namespace OpenQA.Selenium
 {
@@ -99,12 +100,15 @@ namespace OpenQA.Selenium
 
         private Platform()
         {
+#if !NETSTANDARD1_5
             this.major = Environment.OSVersion.Version.Major;
             this.minor = Environment.OSVersion.Version.Minor;
+#endif
 
-            switch (Environment.OSVersion.Platform)
+            switch (Host.GetOperatingSystemFamily())
             {
-                case PlatformID.Win32NT:
+                case OperatingSystemFamily.Windows:
+#if !NETSTANDARD1_5
                     if (this.major == 5)
                     {
                         this.platformTypeValue = PlatformType.XP;
@@ -117,15 +121,17 @@ namespace OpenQA.Selenium
                     {
                         this.platformTypeValue = PlatformType.Windows;
                     }
-
+#else
+                    this.platformTypeValue = PlatformType.Windows;
+#endif
                     break;
 
                 // Thanks to a bug in Mono Mac and Linux will be treated the same  https://bugzilla.novell.com/show_bug.cgi?id=515570 but adding this in case
-                case PlatformID.MacOSX:
+                case OperatingSystemFamily.OSX:
                     this.platformTypeValue = PlatformType.Mac;
                     break;
 
-                case PlatformID.Unix:
+                case OperatingSystemFamily.Linux:
                     this.platformTypeValue = PlatformType.Unix;
                     break;
             }
