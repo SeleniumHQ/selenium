@@ -96,10 +96,17 @@ namespace OpenQA.Selenium.Firefox.Internal
             }
 
             // Check our extra env vars for the same var, and use it too.
+#if !NETSTANDARD1_5
             if (builder.StartInfo.EnvironmentVariables.ContainsKey(propertyName))
             {
                 libraryPath.Append(builder.StartInfo.EnvironmentVariables[propertyName]).Append(Path.PathSeparator);
             }
+#else
+            if (builder.StartInfo.Environment.ContainsKey(propertyName))
+            {
+                libraryPath.Append(builder.StartInfo.Environment[propertyName]).Append(Path.PathSeparator);
+            }
+#endif
 
             // Last, add the contents of the specified system property, defaulting to the binary's path.
             // On Snow Leopard, beware of problems the sqlite library
@@ -116,14 +123,7 @@ namespace OpenQA.Selenium.Firefox.Internal
             }
 
             // Add the library path to the builder.
-            if (builder.StartInfo.EnvironmentVariables.ContainsKey(propertyName))
-            {
-                builder.StartInfo.EnvironmentVariables[propertyName] = libraryPath.ToString();
-            }
-            else
-            {
-                builder.StartInfo.EnvironmentVariables.Add(propertyName, libraryPath.ToString());
-            }
+            builder.StartInfo.SetEnvironmentVariable(propertyName, libraryPath.ToString());
         }
 
         /// <summary>
