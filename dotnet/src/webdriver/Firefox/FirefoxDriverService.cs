@@ -21,6 +21,7 @@ using System.Globalization;
 using System.Net;
 using System.Text;
 using OpenQA.Selenium.Internal;
+using WebDriver.Internal;
 
 namespace OpenQA.Selenium.Firefox
 {
