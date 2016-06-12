@@ -26,6 +26,7 @@ using System.Text;
 using System.Threading;
 using OpenQA.Selenium.Firefox.Internal;
 using OpenQA.Selenium.Internal;
+using WebDriver.Internal;
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -136,14 +137,7 @@ namespace OpenQA.Selenium.Firefox
 
             foreach (string environmentVar in this.extraEnv.Keys)
             {
-                if (this.process.StartInfo.EnvironmentVariables.ContainsKey(environmentVar))
-                {
-                    this.process.StartInfo.EnvironmentVariables[environmentVar] = this.extraEnv[environmentVar];
-                }
-                else
-                {
-                    this.process.StartInfo.EnvironmentVariables.Add(environmentVar, this.extraEnv[environmentVar]);
-                }
+                this.process.StartInfo.SetEnvironmentVariable(environmentVar, this.extraEnv[environmentVar]);
             }
 
             this.BinaryExecutable.SetLibraryPath(this.process);

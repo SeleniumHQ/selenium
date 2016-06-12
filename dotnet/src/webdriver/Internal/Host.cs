@@ -95,6 +95,7 @@ namespace WebDriver.Internal
                     break;
 
                 case PlatformID.Xbox:
+                default:
                     return OperatingSystemFamily.Other;
             }
 #endif
