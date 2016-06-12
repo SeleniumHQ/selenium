@@ -10,6 +10,12 @@
 * Removed the mandatory use of Firefox Dev Edition, when using Marionette driver
 * Fixed timeouts' URL
 * `promise.Deferred` is no longer a thenable object.
+* `Options#addCookie()` now takes a record object instead of 7 individual
+  parameters. A TypeError will be thrown if addCookie() is called with invalid
+  arguments.
+* When adding cookies, the desired expiry must be provided as a Date or in
+  _seconds_ since epoch. When retrieving cookies, the expiration is always
+  returned in seconds.
 * Removed deprecated modules:
    - `selenium-webdriver/error` (use `selenium-webdriver/lib/error`,\
      or the `error` property exported by `selenium-webdriver`)

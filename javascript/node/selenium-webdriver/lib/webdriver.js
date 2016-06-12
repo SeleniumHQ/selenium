@@ -1043,11 +1043,7 @@ class Navigation {
  * Provides methods for managing browser and driver state.
  *
  * This class should never be instantiated directly. Insead, obtain an instance
- * with
- *
- *    webdriver.manage()
- *
- * @see WebDriver#manage()
+ * with {@linkplain WebDriver#manage() webdriver.manage()}.
  */
 class Options {
   /**
@@ -1061,47 +1057,62 @@ class Options {
 
   /**
    * Schedules a command to add a cookie.
-   * @param {string} name The cookie name.
-   * @param {string} value The cookie value.
-   * @param {string=} opt_path The cookie path.
-   * @param {string=} opt_domain The cookie domain.
-   * @param {boolean=} opt_isSecure Whether the cookie is secure.
-   * @param {(number|!Date)=} opt_expiry When the cookie expires. If specified
-   *     as a number, should be in milliseconds since midnight,
-   *     January 1, 1970 UTC.
+   *
+   * __Sample Usage:__
+   *
+   *     // Set a basic cookie.
+   *     driver.options().addCookie({name: 'foo', value: 'bar'});
+   *
+   *     // Set a cookie that expires in 10 minutes.
+   *     let expiry = new Date(Date.now() + (10 * 60 * 1000));
+   *     driver.options().addCookie({name: 'foo', value: 'bar', expiry});
+   *
+   *     // The cookie expiration may also be specified in seconds since epoch.
+   *     driver.options().addCookie({
+   *       name: 'foo',
+   *       value: 'bar',
+   *       expiry: Math.floor(Date.now() / 1000)
+   *     });
+   *
+   * @param {!Options.Cookie} spec Defines the cookie to add.
    * @return {!promise.Promise<void>} A promise that will be resolved
    *     when the cookie has been added to the page.
+   * @throws {error.InvalidArgumentError} if any of the cookie parameters are
+   *     invalid.
+   * @throws {TypeError} if `spec` is not a cookie object.
    */
-  addCookie(name, value, opt_path, opt_domain, opt_isSecure, opt_expiry) {
+  addCookie(spec) {
+    if (!spec || typeof spec !== 'object') {
+      throw TypeError('addCookie called with non-cookie parameter');
+    }
+
     // We do not allow '=' or ';' in the name.
+    let name = spec.name;
     if (/[;=]/.test(name)) {
       throw new error.InvalidArgumentError(
           'Invalid cookie name "' + name + '"');
     }
 
     // We do not allow ';' in value.
+    let value = spec.value;
     if (/;/.test(value)) {
       throw new error.InvalidArgumentError(
           'Invalid cookie value "' + value + '"');
     }
 
-    var cookieString = name + '=' + value +
-        (opt_domain ? ';domain=' + opt_domain : '') +
-        (opt_path ? ';path=' + opt_path : '') +
-        (opt_isSecure ? ';secure' : '');
+    let cookieString = name + '=' + value +
+        (spec.domain ? ';domain=' + spec.domain : '') +
+        (spec.path ? ';path=' + spec.path : '') +
+        (spec.secure ? ';secure' : '');
 
-    var expiry;
-    if (opt_expiry !== void(0)) {
-      var expiryDate;
-      if (typeof opt_expiry === 'number') {
-        expiryDate = new Date(opt_expiry);
-      } else {
-        expiryDate = /** @type {!Date} */ (opt_expiry);
-        opt_expiry = expiryDate.getTime();
-      }
-      cookieString += ';expires=' + expiryDate.toUTCString();
-      // Convert from milliseconds to seconds.
-      expiry = Math.floor(/** @type {number} */ (opt_expiry) / 1000);
+    let expiry;
+    if (typeof spec.expiry === 'number') {
+      spec.expiry = Math.floor(spec.expiry);
+      cookieString += ';expires=' + new Date(spec.expiry * 1000).toUTCString();
+    } else if (spec.expiry instanceof Date) {
+      let date = /** @type {!Date} */(spec.expiry);
+      expiry = Math.floor(date.getTime() / 1000);
+      cookieString += ';expires=' + date.toUTCString();
     }
 
     return this.driver_.schedule(
@@ -1109,9 +1120,9 @@ class Options {
             setParameter('cookie', {
               'name': name,
               'value': value,
-              'path': opt_path,
-              'domain': opt_domain,
-              'secure': !!opt_isSecure,
+              'path': spec.path,
+              'domain': spec.domain,
+              'secure': !!spec.secure,
               'expiry': expiry
             }),
         'WebDriver.manage().addCookie(' + cookieString + ')');
@@ -1129,8 +1140,8 @@ class Options {
   }
 
   /**
-   * Schedules a command to delete the cookie with the given name. This command is
-   * a no-op if there is no cookie with the given name visible to the current
+   * Schedules a command to delete the cookie with the given name. This command
+   * is a no-op if there is no cookie with the given name visible to the current
    * page.
    * @param {string} name The name of the cookie to delete.
    * @return {!promise.Promise<void>} A promise that will be resolved
@@ -1147,8 +1158,8 @@ class Options {
    * Schedules a command to retrieve all cookies visible to the current page.
    * Each cookie will be returned as a JSON object as described by the WebDriver
    * wire protocol.
-   * @return {!promise.Promise<!Array<WebDriver.Options.Cookie>>} A
-   *     promise that will be resolved with the cookies visible to the current page.
+   * @return {!promise.Promise<!Array<!Options.Cookie>>} A promise that will be
+   *     resolved with the cookies visible to the current browsing context.
    */
   getCookies() {
     return this.driver_.schedule(
@@ -1162,9 +1173,8 @@ class Options {
    * described by the WebDriver wire protocol.
    *
    * @param {string} name The name of the cookie to retrieve.
-   * @return {!promise.Promise<?WebDriver.Options.Cookie>} A promise
-   *     that will be resolved with the named cookie, or `null` if there is no
-   *     such cookie.
+   * @return {!promise.Promise<?Options.Cookie>} A promise that will be resolved
+   *     with the named cookie, or `null` if there is no such cookie.
    */
   getCookie(name) {
     return this.getCookies().then(function(cookies) {
@@ -1202,17 +1212,77 @@ class Options {
 
 
 /**
- * A JSON description of a browser cookie.
- * @typedef {{
- *     name: string,
- *     value: string,
- *     path: (string|undefined),
- *     domain: (string|undefined),
- *     secure: (boolean|undefined),
- *     expiry: (number|undefined)
- * }}
+ * A record object describing a browser cookie.
+ *
+ * @record
  */
-Options.Cookie;
+Options.Cookie = function() {};
+
+
+/**
+ * The name of the cookie.
+ *
+ * @type {string}
+ */
+Options.Cookie.prototype.name;
+
+
+/**
+ * The cookie value.
+ *
+ * @type {string}
+ */
+Options.Cookie.prototype.value;
+
+
+/**
+ * The cookie path. Defaults to "/" when adding a cookie.
+ *
+ * @type {(string|undefined)}
+ */
+Options.Cookie.prototype.path;
+
+
+/**
+ * The domain the cookie is visible to. Defaults to the current browsing
+ * context's document's URL when adding a cookie.
+ *
+ * @type {(string|undefined)}
+ */
+Options.Cookie.prototype.domain;
+
+
+/**
+ * Whether the cookie is a secure cookie. Defaults to false when adding a new
+ * cookie.
+ *
+ * @type {(boolean|undefined)}
+ */
+Options.Cookie.prototype.secure;
+
+
+/**
+ * Whether the cookie is an HTTP only cookie. Defaults to false when adding a
+ * new cookie.
+ *
+ * @type {(boolean|undefined)}
+ */
+Options.Cookie.prototype.httpOnly;
+
+
+/**
+ * When the cookie expires.
+ *
+ * When {@linkplain Options#addCookie() adding a cookie}, this may be specified
+ * in _seconds_ since Unix epoch (January 1, 1970). The expiry will default to
+ * 20 years in the future if omitted.
+ *
+ * The expiry is always returned in seconds since epoch when
+ * {@linkplain Options#getCookies() retrieving cookies} from the browser.
+ *
+ * @type {(!Date|number|undefined)}
+ */
+Options.Cookie.prototype.expiry;
 
 
 /**
