@@ -27,6 +27,7 @@ const webdriver = require('./lib/webdriver');
 const promise = require('./lib/promise');
 const opera = require('./opera');
 const phantomjs = require('./phantomjs');
+const remote = require('./remote');
 const safari = require('./safari');
 
 const Browser = capabilities.Browser;
@@ -41,14 +42,11 @@ var seleniumServer;
 /**
  * Starts an instance of the Selenium server if not yet running.
  * @param {string} jar Path to the server jar to use.
- * @return {!promise.Promise<string>} A promise for the server's
+ * @return {!Promise<string>} A promise for the server's
  *     addrss once started.
  */
 function startSeleniumServer(jar) {
   if (!seleniumServer) {
-    // Requiring 'chrome' above would create a cycle:
-    // index -> builder -> chrome -> index
-    var remote = require('./remote');
     seleniumServer = new remote.SeleniumServer(jar);
   }
   return seleniumServer.start();
@@ -201,7 +199,7 @@ class Builder {
     this.agent_ = agent;
     return this;
   }
-  
+
   /**
    * @return {http.Agent} The http agent used for each request
    */
