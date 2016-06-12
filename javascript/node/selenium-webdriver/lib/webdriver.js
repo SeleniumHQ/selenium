@@ -1107,7 +1107,7 @@ class Options {
 
     let expiry;
     if (typeof spec.expiry === 'number') {
-      spec.expiry = Math.floor(spec.expiry);
+      expiry = Math.floor(spec.expiry);
       cookieString += ';expires=' + new Date(spec.expiry * 1000).toUTCString();
     } else if (spec.expiry instanceof Date) {
       let date = /** @type {!Date} */(spec.expiry);
