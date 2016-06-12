@@ -1911,22 +1911,24 @@ class WebElement {
    * punctionation keys will be synthesized according to a standard QWERTY en-us
    * keyboard layout.
    *
-   * @param {...(string|!promise.Promise<string>)} var_args The
-   *     sequence of keys to type. All arguments will be joined into a single
+   * @param {...(number|string|!IThenable<(number|string)>)} var_args The
+   *     sequence of keys to type. Number keys may be referenced numerically or
+   *     by string (1 or '1'). All arguments will be joined into a single
    *     sequence.
    * @return {!promise.Promise<void>} A promise that will be resolved
    *     when all keys have been typed.
    */
   sendKeys(var_args) {
-    // Coerce every argument to a string. This protects us from users that
-    // ignore the jsdoc and give us a number (which ends up causing problems on
-    // the server, which requires strings).
     let keys = Promise.all(Array.prototype.slice.call(arguments, 0)).
         then(keys => {
           let ret = [];
           keys.forEach(key => {
-            if (typeof key !== 'string') {
+            let type = typeof key;
+            if (type === 'number') {
               key = String(key);
+            } else if (type !== 'string') {
+              throw TypeError(
+                  'each key must be a number of string; got ' + type);
             }
 
             // The W3C protocol requires keys to be specified as an array where
@@ -1935,6 +1937,7 @@ class WebElement {
           });
           return ret;
         });
+
     if (!this.driver_.fileDetector_) {
       return this.schedule_(
           new command.Command(command.Name.SEND_KEYS_TO_ELEMENT).
