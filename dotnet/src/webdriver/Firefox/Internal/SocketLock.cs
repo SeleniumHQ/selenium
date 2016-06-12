@@ -76,10 +76,12 @@ namespace OpenQA.Selenium.Firefox.Internal
 
                     Thread.Sleep(delayBetweenSocketChecks);
                 }
+#if !NETSTANDARD1_5
                 catch (ThreadInterruptedException e)
                 {
                     throw new WebDriverException("the thread was interrupted", e);
                 }
+#endif
                 catch (IOException e)
                 {
                     throw new WebDriverException("An unexpected error occurred", e);
@@ -152,11 +154,13 @@ namespace OpenQA.Selenium.Firefox.Internal
 
         private void PreventSocketInheritance()
         {
+#if !NETSTANDARD1_5
             // TODO (JimEvans): Handle the non-Windows case.
             if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows))
             {
                 NativeMethods.SetHandleInformation(this.lockSocket.Handle, NativeMethods.HandleInformation.Inherit | NativeMethods.HandleInformation.ProtectFromClose, NativeMethods.HandleInformation.None);
             }
+#endif
         }
     }
 }
