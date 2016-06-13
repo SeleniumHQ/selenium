@@ -28,16 +28,21 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Logger;
 
 public class CoreTestStep {
 
+  private static Logger LOG = Logger.getLogger("Selenium Core test step");
+
   private static ImmutableMap<String, SeleneseCommand> COMMANDS = buildCommands();
   private final SeleneseCommand seleneseCommand;
+  private final String command;
   private final String locator;
   private final String value;
 
   public CoreTestStep(String command, String locator, String value) {
     seleneseCommand = COMMANDS.get(command);
+    this.command = command;
     this.locator = locator;
     this.value = value;
 
@@ -47,6 +52,7 @@ public class CoreTestStep {
   }
 
   public void run(Results results, WebDriver driver, Selenium selenium) {
+    LOG.info(String.format("%s | %s \t|%s\t|", command, locator, value));
     seleneseCommand.execute(driver, selenium, locator, value);
   }
 
