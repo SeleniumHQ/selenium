@@ -46,7 +46,7 @@ class WebDriver(RemoteWebDriver):
 
     def __init__(self, firefox_profile=None, firefox_binary=None, timeout=30,
                  capabilities=None, proxy=None, executable_path="wires", firefox_options=None):
-        capabilities = capabilities or DesiredCapabilities.FIREFOX.copy()
+        capabilities = DesiredCapabilities.FIREFOX.copy()
 
         self.profile = firefox_profile or FirefoxProfile()
         self.profile.native_events_enabled = (

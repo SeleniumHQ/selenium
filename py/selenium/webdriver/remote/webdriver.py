@@ -198,7 +198,7 @@ class WebDriver(object):
         """
         Creates a web element with the specified element_id.
         """
-        return WebElement(self, element_id, w3c=self.w3c)
+        return WebElement(self, element_id, capabilities=self.capabilities)
 
     def _unwrap_value(self, value):
         if isinstance(value, dict) and ('ELEMENT' in value or 'element-6066-11e4-a52e-4f735466cecf' in value):

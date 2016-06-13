@@ -54,6 +54,7 @@ class DesiredCapabilities(object):
         "platform": "ANY",
         "javascriptEnabled": True,
         "marionette": True,
+        "binary": "/Users/dburns/development/mozilla-central/obj-ff-dbg.noindex/dist/Nightly.app/Contents/MacOS/firefox"
     }
 
     INTERNETEXPLORER = {
