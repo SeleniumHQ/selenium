@@ -89,7 +89,14 @@ public class CoreTestStep {
               throw new RuntimeException("Exceptionally unlikely to get here");
           }
         } catch (ReflectiveOperationException e) {
-          throw new RuntimeException(e);
+          for (Throwable cause = e; cause != null; cause = cause.getCause()) {
+            if (cause instanceof SeleniumException) {
+              throw (SeleniumException) cause;
+            }
+          }
+          throw new SeleniumException(
+            String.format("Unable to emulate %s ('%s', '%s')", method.getName(), locator, value),
+            e);
         }
       };
       commands.put(method.getName(), underlyingCommand);
@@ -180,6 +187,7 @@ public class CoreTestStep {
   }
 
   private interface SeleneseCommand {
-    Object execute(WebDriver driver, Selenium selenium, String locator, String value);
+    Object execute(WebDriver driver, Selenium selenium, String locator, String value)
+      throws SeleniumException;
   }
 }

@@ -22,6 +22,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.SeleniumException;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -44,7 +45,12 @@ public class CoreTestCase {
 
     List<CoreTestStep> steps = findCommands(driver);
     for (CoreTestStep step : steps) {
-      step.run(results, driver, selenium);
+      try {
+        step.run(results, driver, selenium);
+      } catch (SeleniumException e) {
+        results.addTestFailure();
+        return;
+      }
     }
   }
 

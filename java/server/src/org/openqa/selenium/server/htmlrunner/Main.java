@@ -88,6 +88,11 @@ public class Main {
       Results results = new Results();
       CoreTest test = new CoreTest(args[3]);
       test.run(results, driver, new WebDriverBackedSelenium(driver, args[2]));
+      if (results.isSuccessful()) {
+        System.out.println("SUCCESS");
+      } else {
+        System.out.println("FAILED");
+      }
     } finally {
       driver.quit();
     }
