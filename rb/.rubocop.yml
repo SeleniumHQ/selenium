@@ -42,3 +42,11 @@ Style/MutableConstant:
 # There shouldn't be any reason to use camel case instead of snake case here
 Style/MethodName:
   Enabled: false
+
+# Refactor Chrome::Bridge#create_capabilities
+Metrics/PerceivedComplexity:
+  Max: 16
+
+# Refactor Chrome::Bridge#create_capabilities
+Metrics/CyclomaticComplexity:
+  Max: 16

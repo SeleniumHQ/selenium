@@ -21,40 +21,52 @@ module Selenium
   module WebDriver
     class Proxy
       TYPES = {
-        direct: 'DIRECT',     # Direct connection, no proxy (default on Windows).
-        manual: 'MANUAL',     # Manual proxy settings (e.g., for httpProxy).
+        direct: 'DIRECT', # Direct connection, no proxy (default on Windows).
+        manual: 'MANUAL', # Manual proxy settings (e.g., for httpProxy).
         pac: 'PAC', # Proxy autoconfiguration from URL.
         auto_detect: 'AUTODETECT', # Proxy autodetection (presumably with WPAD).
         system: 'SYSTEM' # Use system settings (default on Linux).
       }.freeze
 
-      attr_reader :type,
-                  :ftp,
-                  :http,
-                  :socks,
-                  :socks_username,
-                  :socks_password,
-                  :no_proxy,
-                  :pac,
-                  :ssl,
-                  :auto_detect
+      ALLOWED = {type: 'proxyType',
+                 ftp: 'ftpProxy',
+                 http: 'httpProxy',
+                 no_proxy: 'noProxy',
+                 pac: 'proxyAutoconfigUrl',
+                 ssl: 'sslProxy',
+                 auto_detect: 'autodetect',
+                 socks: 'socksProxy',
+                 socks_username: 'socksUsername',
+                 socks_password: 'socksPassword'}.freeze
+
+      ALLOWED.keys.each { |t| attr_reader t }
+
+      def self.json_create(data)
+        data['proxyType'] = data['proxyType'].downcase.to_sym
+        return if data['proxyType'] == :unspecified
+
+        proxy = new
+
+        ALLOWED.each do |k, v|
+          proxy.send("#{k}=", data[v]) if data.key?(v)
+        end
+
+        proxy
+      end
 
       def initialize(opts = {})
-        opts = opts.dup
+        not_allowed = []
 
-        self.type           = opts.delete(:type) if opts.key? :type
-        self.ftp            = opts.delete(:ftp) if opts.key? :ftp
-        self.http           = opts.delete(:http) if opts.key? :http
-        self.no_proxy       = opts.delete(:no_proxy) if opts.key? :no_proxy
-        self.ssl            = opts.delete(:ssl) if opts.key? :ssl
-        self.pac            = opts.delete(:pac) if opts.key? :pac
-        self.auto_detect    = opts.delete(:auto_detect) if opts.key? :auto_detect
-        self.socks          = opts.delete(:socks) if opts.key? :socks
-        self.socks_username = opts.delete(:socks_username) if opts.key? :socks_username
-        self.socks_password = opts.delete(:socks_password) if opts.key? :socks_password
+        opts.each do |k, v|
+          if ALLOWED.key?(k)
+            send("#{k}=", v)
+          else
+            not_allowed << k
+          end
+        end
 
-        return if opts.empty?
-        raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
+        return if not_allowed.empty?
+        raise ArgumentError, "unknown option#{'s' if not_allowed.size != 1}: #{not_allowed.inspect}"
       end
 
       def ==(other)
@@ -121,18 +133,17 @@ module Selenium
 
       def as_json(*)
         json_result = {
-          'proxyType' => TYPES[type]
-        }
-
-        json_result['ftpProxy']           = ftp if ftp
-        json_result['httpProxy']          = http if http
-        json_result['noProxy']            = no_proxy if no_proxy
-        json_result['proxyAutoconfigUrl'] = pac if pac
-        json_result['sslProxy']           = ssl if ssl
-        json_result['autodetect']         = auto_detect if auto_detect
-        json_result['socksProxy']         = socks if socks
-        json_result['socksUsername']      = socks_username if socks_username
-        json_result['socksPassword']      = socks_password if socks_password
+          'proxyType' => TYPES[type],
+          'ftpProxy' => ftp,
+          'httpProxy' => http,
+          'noProxy' => no_proxy,
+          'proxyAutoconfigUrl' => pac,
+          'sslProxy' => ssl,
+          'autodetect' => auto_detect,
+          'socksProxy' => socks,
+          'socksUsername' => socks_username,
+          'socksPassword' => socks_password
+        }.delete_if { |_k, v| v.nil? }
 
         json_result if json_result.length > 1
       end
@@ -140,27 +151,6 @@ module Selenium
       def to_json(*)
         JSON.generate as_json
       end
-
-      class << self
-        def json_create(data)
-          return if data['proxyType'] == 'UNSPECIFIED'
-
-          proxy = new
-
-          proxy.type           = data['proxyType'].downcase.to_sym if data.key? 'proxyType'
-          proxy.ftp            = data['ftpProxy'] if data.key? 'ftpProxy'
-          proxy.http           = data['httpProxy'] if data.key? 'httpProxy'
-          proxy.no_proxy       = data['noProxy'] if data.key? 'noProxy'
-          proxy.pac            = data['proxyAutoconfigUrl'] if data.key? 'proxyAutoconfigUrl'
-          proxy.ssl            = data['sslProxy'] if data.key? 'sslProxy'
-          proxy.auto_detect    = data['autodetect'] if data.key? 'autodetect'
-          proxy.socks          = data['socksProxy'] if data.key? 'socksProxy'
-          proxy.socks_username = data['socksUsername'] if data.key? 'socksUsername'
-          proxy.socks_password = data['socksPassword'] if data.key? 'socksPassword'
-
-          proxy
-        end
-      end # class << self
     end # Proxy
   end # WebDriver
 end # Selenium
