@@ -54,4 +54,7 @@ java_library(
     '//third_party/java/mockito:mockito',
     '//third_party/java/servlet:servlet-api',
   ],
+  visibility = [
+    '//java/server/test/org/openqa/selenium/server/htmlrunner:htmlrunner',
+  ],
 )

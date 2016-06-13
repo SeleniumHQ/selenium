@@ -47,9 +47,12 @@ public class CoreTestCase {
     for (CoreTestStep step : steps) {
       try {
         step.run(results, driver, selenium);
+        Thread.sleep(2000);
       } catch (SeleniumException e) {
         results.addTestFailure();
         return;
+      } catch (InterruptedException e) {
+        e.printStackTrace();
       }
     }
   }

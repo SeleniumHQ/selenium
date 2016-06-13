@@ -158,7 +158,9 @@ public class HTMLLauncher implements HTMLResultsListener {
         }
       }
 
-      driver.quit();
+      if (driver != null) {
+        driver.quit();
+      }
     }
 
 //    if (results == null) {
