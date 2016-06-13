@@ -27,15 +27,28 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.internal.SocketLock;
+import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.opera.OperaDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariDriver;
+import org.seleniumhq.jetty9.server.Connector;
+import org.seleniumhq.jetty9.server.HttpConfiguration;
+import org.seleniumhq.jetty9.server.HttpConnectionFactory;
+import org.seleniumhq.jetty9.server.Server;
+import org.seleniumhq.jetty9.server.ServerConnector;
+import org.seleniumhq.jetty9.server.handler.ContextHandler;
+import org.seleniumhq.jetty9.server.handler.ResourceHandler;
+import org.seleniumhq.jetty9.util.resource.Resource;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,14 +61,11 @@ import java.util.logging.Logger;
  */
 public class HTMLLauncher implements HTMLResultsListener {
 
-  static Logger log = Logger.getLogger(HTMLLauncher.class.getName());
-//  private SeleniumServer remoteControl;
+  private static Logger log = Logger.getLogger(HTMLLauncher.class.getName());
+
+  private Server server;
 //  private HTMLTestResults results;
-//
-//  public HTMLLauncher(SeleniumServer remoteControl) {
-//    this.remoteControl = remoteControl;
-//  }
-//
+
   /**
    * Launches a single HTML Selenium test suite.
    *
@@ -136,6 +146,15 @@ public class HTMLLauncher implements HTMLResultsListener {
 
       return results.isSuccessful() ? "PASSED" : "FAILED";
     } finally {
+      if (server != null) {
+        try {
+          server.stop();
+        } catch (Exception e) {
+          // Nothing sane to do. Log the error and carry on
+          log.log(Level.INFO, "Exception shutting down server. You may ignore this.", e);
+        }
+      }
+
       driver.quit();
     }
 
@@ -192,6 +211,41 @@ public class HTMLLauncher implements HTMLResultsListener {
 
     if (suiteURL.startsWith("https://") || suiteURL.startsWith("http://")) {
       return verifySuiteUrl(new URL(suiteURL));
+    }
+
+    // Is the suiteURL a file?
+    Path path = Paths.get(suiteURL);
+    if (Files.exists(path)) {
+      // Not all drivers can read files from the disk, so we need to host the suite somewhere.
+      try (SocketLock lock = new SocketLock()) {
+        server = new Server();
+        HttpConfiguration httpConfig = new HttpConfiguration();
+
+        ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
+        int port = PortProber.findFreePort();
+        http.setPort(port);
+        http.setIdleTimeout(500000);
+        server.setConnectors(new Connector[]{http});
+
+        ResourceHandler handler = new ResourceHandler();
+        handler.setDirectoriesListed(true);
+        handler.setWelcomeFiles(new String[]{"index.html"});
+        handler.setBaseResource(Resource.newResource(path.toFile()));
+
+        ContextHandler context = new ContextHandler("/tests");
+        context.setHandler(handler);
+
+        server.setHandler(handler);
+        server.start();
+
+        PortProber.pollPort(port);
+
+        URL serverUrl = server.getURI().toURL();
+        return new URL(serverUrl.getProtocol(), serverUrl.getHost(), serverUrl.getPort(),
+                       "/tests/");
+      } catch (Exception e) {
+        throw new IOException(e);
+      }
     }
 
     // Well then, it must be a URL relative to whatever the browserUrl. Probe and find out.
