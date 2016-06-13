@@ -31,7 +31,7 @@ class ElementAttributeTests(unittest.TestCase):
         self._loadSimplePage()
         img = self.driver.find_element_by_id("invalidImgTag")
         img_attr = img.get_attribute("src")
-        self.assertTrue(img_attr is None)
+        self.assertEqual(img_attr, None)
 
     def testShouldReturnAnAbsoluteUrlWhenGettingSrcAttributeOfAValidImgTag(self):
         self._loadSimplePage()
@@ -130,14 +130,14 @@ class ElementAttributeTests(unittest.TestCase):
         initiallyNotSelected = self.driver.find_element_by_id("peas")
         initiallySelected = self.driver.find_element_by_id("cheese_and_peas")
 
-        self.assertTrue(neverSelected.get_attribute("selected") is None, "false")
-        self.assertTrue(initiallyNotSelected.get_attribute("selected") is None, "false")
-        self.assertEqual("true", initiallySelected.get_attribute("selected"), "true")
+        self.assertTrue(neverSelected.get_attribute("checked") is None, )
+        self.assertTrue(initiallyNotSelected.get_attribute("checked") is None, )
+        self.assertEqual("true", initiallySelected.get_attribute("checked"))
 
         initiallyNotSelected.click()
-        self.assertTrue(neverSelected.get_attribute("selected") is None)
-        self.assertEqual("true", initiallyNotSelected.get_attribute("selected"))
-        self.assertTrue(initiallySelected.get_attribute("selected") is None)
+        self.assertEqual(neverSelected.get_attribute("selected"), None)
+        self.assertEqual("true", initiallyNotSelected.get_attribute("checked"))
+        self.assertEqual(initiallySelected.get_attribute("checked"), None)
 
     def testShouldReturnTheValueOfSelectedForOptionsInSelectsEvenIfTheyLackThatAttribute(self):
         self._loadPage("formPage")
@@ -148,7 +148,7 @@ class ElementAttributeTests(unittest.TestCase):
         self.assertTrue(one.is_selected())
         self.assertFalse(two.is_selected())
         self.assertEqual("true", one.get_attribute("selected"))
-        self.assertTrue(two.get_attribute("selected") is None)
+        self.assertEqual(two.get_attribute("selected"), None)
 
     def testShouldReturnValueOfClassAttributeOfAnElement(self):
         self._loadPage("xhtmlTest")
@@ -235,8 +235,6 @@ class ElementAttributeTests(unittest.TestCase):
         self._loadPage("booleanAttributes")
         element1 = self.driver.find_element_by_id("working")
         self.assertEqual(None, element1.get_attribute("required"))
-        element2 = self.driver.find_element_by_id("wallace")
-        self.assertEqual(None, element2.get_attribute("nowrap"))
 
     @pytest.mark.ignore_ie
     def testShouldReturnTrueForPresentBooleanAttributes(self):
@@ -249,8 +247,6 @@ class ElementAttributeTests(unittest.TestCase):
         self.assertEqual("true", element3.get_attribute("required"))
         element4 = self.driver.find_element_by_id("textAreaRequired")
         self.assertEqual("true", element4.get_attribute("required"))
-        element5 = self.driver.find_element_by_id("unwrappable")
-        self.assertEqual("true", element5.get_attribute("nowrap"))
 
     def tesShouldGetUnicodeCharsFromAttribute(self):
         self._loadPage("formPage")
