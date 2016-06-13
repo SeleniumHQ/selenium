@@ -1,6 +1,6 @@
 java_binary(
   name = 'main',
-  main_class = 'org.openqa.selenium.server.htmlrunner.Main',
+  main_class = 'org.openqa.selenium.server.htmlrunner.HTMLLauncher',
   deps = [
     ':htmlrunner',
   ],
