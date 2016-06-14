@@ -52,7 +52,7 @@ const portprober = require('./net/portprober');
 /** @const */
 const CLIENT_PATH = isDevMode
     ? path.join(__dirname,
-        '../../../build/javascript/safari-driver/client.js')
+        '../../../buck-out/gen/javascript/safari-driver/client.js')
     : path.join(__dirname, 'lib/safari/client.js');
 
 
