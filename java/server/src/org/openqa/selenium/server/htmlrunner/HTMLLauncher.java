@@ -61,6 +61,9 @@ import java.util.logging.Logger;
  */
 public class HTMLLauncher implements HTMLResultsListener {
 
+  //    java -jar selenium-server-standalone-<version-number>.jar -htmlSuite "*firefox"
+  //    "http://www.google.com" "c:\absolute\path\to\my\HTMLSuite.html"
+  //    "c:\absolute\path\to\my\results.html"
   private static Logger log = Logger.getLogger(HTMLLauncher.class.getName());
 
   private Server server;

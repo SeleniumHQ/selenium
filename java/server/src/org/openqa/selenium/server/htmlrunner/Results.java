@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.server.htmlrunner;
 
-import com.thoughtworks.selenium.SeleniumException;
-
 public class Results {
 
   private boolean succeeded = true;
