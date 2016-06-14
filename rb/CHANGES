@@ -1,3 +1,9 @@
+2.53.3 (2016-06-14)
+===================
+
+Firefox:
+  * Fix bug with Firefox Binary & Marionette on Remote machines (issue 2281)
+
 2.53.2 (2016-06-13)
 ===================
 
