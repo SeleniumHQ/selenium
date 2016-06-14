@@ -23,6 +23,9 @@ import time
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
 
+if os.name == 'nt':
+    from win32process import CREATE_NO_WINDOW
+
 class Service(object):
 
     def __init__(self, executable, port=0, log_file=PIPE, env=None, start_error_message=""):
@@ -57,9 +60,14 @@ class Service(object):
         try:
             cmd = [self.path]
             cmd.extend(self.command_line_args())
-            self.process = subprocess.Popen(cmd, env=self.env,
+            if os.name == "nt":
+                self.process = subprocess.Popen(cmd, env=self.env, close_fds=platform.system() != 'Windows', shell=False, stdout=self.log_file, stderr=self.log_file, creationflags = CREATE_NO_WINDOW)
+            else:
+                self.process = subprocess.Popen(cmd, env=self.env,
                                             close_fds=platform.system() != 'Windows',
+											shell=False,
                                             stdout=self.log_file, stderr=self.log_file)
+
         except TypeError:
             raise
         except OSError as err:
