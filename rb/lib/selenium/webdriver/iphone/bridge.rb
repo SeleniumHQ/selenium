@@ -28,7 +28,9 @@ module Selenium
         DEFAULT_URL = "http://#{Platform.localhost}:3001/wd/hub/".freeze
 
         def initialize(opts = {})
-          warn 'The iPhone driver is deprecated - please use either http://appium.io/ or http://ios-driver.github.io/ios-driver/ instead'
+          warning = 'The iPhone driver is deprecated - please use either'
+          warning << 'http://appium.io/ or http://ios-driver.github.io/ios-driver/ instead'
+          warn warning
 
           remote_opts = {
             url: opts.fetch(:url, DEFAULT_URL),

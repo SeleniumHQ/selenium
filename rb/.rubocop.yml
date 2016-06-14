@@ -1,5 +1,3 @@
-inherit_from: .rubocop_todo.yml
-
 AllCops:
   TargetRubyVersion: 2.0
 
@@ -19,6 +17,9 @@ Style/PercentLiteralDelimiters:
   PreferredDelimiters:
     '%i': '[]'
     '%w': '[]'
+
+Style/RegexpLiteral:
+  EnforcedStyle: mixed
 
 # Consider documenting all top-level classes and modules
 Style/Documentation:
@@ -43,10 +44,43 @@ Style/MutableConstant:
 Style/MethodName:
   Enabled: false
 
-# Refactor Chrome::Bridge#create_capabilities
+# TODO: Refactor Chrome::Bridge#create_capabilities
 Metrics/PerceivedComplexity:
-  Max: 16
+  Max: 11
+  Exclude:
+    - 'lib/selenium/webdriver/chrome/bridge.rb'
 
-# Refactor Chrome::Bridge#create_capabilities
 Metrics/CyclomaticComplexity:
-  Max: 16
+  Max: 9
+  Exclude:
+    - 'lib/selenium/webdriver/chrome/bridge.rb'
+    - 'lib/selenium/webdriver/common/driver.rb'
+    - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
+
+Metrics/ClassLength:
+  Max: 140
+  Exclude:
+    - 'lib/selenium/webdriver/firefox/profile.rb'
+    - 'lib/selenium/webdriver/remote/bridge.rb'
+    - 'lib/selenium/webdriver/remote/capabilities.rb'
+    - 'lib/selenium/webdriver/remote/w3c_bridge.rb'
+    - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
+
+Metrics/AbcSize:
+  Max: 33
+  Exclude:
+    - 'lib/selenium/webdriver/chrome/bridge.rb'
+    - 'lib/selenium/webdriver/support/color.rb'
+
+Metrics/LineLength:
+  Max: 130
+
+Metrics/ModuleLength:
+  Exclude:
+    - 'lib/selenium/webdriver/common/platform.rb'
+    - 'spec/**/*'
+
+Metrics/MethodLength:
+  Max: 33
+  Exclude:
+    - 'lib/selenium/webdriver/chrome/bridge.rb'

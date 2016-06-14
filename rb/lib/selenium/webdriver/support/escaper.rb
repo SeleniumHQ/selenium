@@ -17,32 +17,27 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/ie/bridge'
-require 'selenium/webdriver/ie/service'
-
 module Selenium
   module WebDriver
-    module IE
-      MISSING_TEXT = <<-ERROR.tr("\n", '').freeze
-        Unable to find IEDriverServer. Please download the server from
-        http://selenium-release.storage.googleapis.com/index.html and place it
-        somewhere on your PATH. More info at https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver.
-      ERROR
+    module Support
+      module Escaper
+        def self.escape(str)
+          if str.include?('"') && str.include?("'")
+            parts = str.split('"', -1).map { |part| %("#{part}") }
 
-      def self.driver_path=(path)
-        Platform.assert_executable path
-        @driver_path = path
-      end
+            quoted = parts.join(%(, '"', ))
+                          .gsub(/^"", |, ""$/, '')
 
-      def self.driver_path
-        @driver_path ||= begin
-          path = Platform.find_binary('IEDriverServer')
-          raise Error::WebDriverError, MISSING_TEXT unless path
-          Platform.assert_executable path
-
-          path
+            "concat(#{quoted})"
+          elsif str.include?('"')
+            # escape string with just a quote into being single quoted: f"oo -> 'f"oo'
+            "'#{str}'"
+          else
+            # otherwise return the quoted string
+            %("#{str}")
+          end
         end
-      end
-    end # IE
+      end # Escaper
+    end # Support
   end # WebDriver
 end # Selenium

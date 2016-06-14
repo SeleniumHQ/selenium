@@ -251,7 +251,9 @@ module Selenium
         it 'should be able to pass element arguments' do
           driver.navigate.to url_for('javascriptPage.html')
           button = driver.find_element(:id, 'plainButton')
-          expect(driver.execute_script("arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'];", button)).to eq('plainButton')
+          js = "arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'];"
+          expect(driver.execute_script(js, button))
+            .to eq('plainButton')
         end
 
         it 'should be able to pass in multiple arguments' do

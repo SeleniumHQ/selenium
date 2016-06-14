@@ -85,7 +85,8 @@ module Selenium
 
           return if poller.connected?
           @binary.quit
-          raise Error::WebDriverError, "unable to obtain stable firefox connection in #{STABLE_CONNECTION_TIMEOUT} seconds (#{@host}:#{@port})"
+          error = "unable to obtain stable firefox connection in #{STABLE_CONNECTION_TIMEOUT} seconds (#{@host}:#{@port})"
+          raise Error::WebDriverError, error
         end
 
         def fetch_profile

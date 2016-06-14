@@ -49,7 +49,9 @@ module Selenium
               begin
                 profile = Selenium::WebDriver::Firefox::Profile.new
                 driver = Selenium::WebDriver.for :firefox, profile: profile
-                stored_profile = driver.instance_variable_get('@bridge').instance_variable_get('@launcher').instance_variable_get('@profile')
+                stored_profile = driver.instance_variable_get('@bridge')
+                                       .instance_variable_get('@launcher')
+                                       .instance_variable_get('@profile')
                 expect(stored_profile).to be == profile
               ensure
                 driver.quit if driver

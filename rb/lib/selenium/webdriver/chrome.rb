@@ -26,7 +26,11 @@ require 'selenium/webdriver/chrome/profile'
 module Selenium
   module WebDriver
     module Chrome
-      MISSING_TEXT = 'Unable to find the chromedriver executable. Please download the server from http://chromedriver.storage.googleapis.com/index.html and place it somewhere on your PATH. More info at https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver.'.freeze
+      MISSING_TEXT = <<-ERROR.tr("\n", '').freeze
+        Unable to find chromedriver. Please download the server from
+        http://chromedriver.storage.googleapis.com/index.html and place it
+        somewhere on your PATH. More info at https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver.
+      ERROR
 
       def self.driver_path=(path)
         Platform.assert_executable path

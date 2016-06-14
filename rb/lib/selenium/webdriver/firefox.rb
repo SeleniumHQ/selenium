@@ -35,13 +35,17 @@ require 'selenium/webdriver/firefox/service'
 module Selenium
   module WebDriver
     module Firefox
-      DEFAULT_PORT                    = 7055
-      DEFAULT_ENABLE_NATIVE_EVENTS    = Platform.os == :windows
-      DEFAULT_SECURE_SSL              = false
+      DEFAULT_PORT = 7055
+      DEFAULT_ENABLE_NATIVE_EVENTS = Platform.os == :windows
+      DEFAULT_SECURE_SSL = false
       DEFAULT_ASSUME_UNTRUSTED_ISSUER = true
-      DEFAULT_LOAD_NO_FOCUS_LIB       = false
+      DEFAULT_LOAD_NO_FOCUS_LIB = false
 
-      MISSING_TEXT = 'Unable to find Mozilla geckodriver. Please download the executable from https://github.com/mozilla/geckodriver/releases'.freeze
+      MISSING_TEXT = <<-ERROR.tr("\n", '').freeze
+        Unable to find Mozilla geckodriver. Please download the server from
+        https://github.com/mozilla/geckodriver/releases and place it
+        somewhere on your PATH. More info at https://developer.mozilla.org/en-US/docs/Mozilla/QA/Marionette/WebDriver.
+      ERROR
 
       def self.driver_path=(path)
         Platform.assert_executable path

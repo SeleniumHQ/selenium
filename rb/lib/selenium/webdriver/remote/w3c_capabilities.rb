@@ -44,17 +44,6 @@ module Selenium
           :device
         ].freeze
 
-        ALLOWED = {type: 'proxyType',
-                   ftp: 'ftpProxy',
-                   http: 'httpProxy',
-                   no_proxy: 'noProxy',
-                   pac: 'proxyAutoconfigUrl',
-                   ssl: 'sslProxy',
-                   auto_detect: 'autodetect',
-                   socks: 'socksProxy',
-                   socks_username: 'socksUsername',
-                   socks_password: 'socksPassword'}.freeze
-
         (DEFAULTS.keys + KNOWN).each do |key|
           define_method key do
             @capabilities.fetch(key)

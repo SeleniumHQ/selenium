@@ -23,6 +23,12 @@ require 'pathname'
 module Selenium
   module WebDriver
     module Safari
+      MISSING_TEXT = <<-ERROR.tr("\n", '').freeze
+        Unable to find safari extension. Please download the file from
+        http://www.seleniumhq.org/download/ and place it
+        somewhere on your PATH. More info at https://github.com/SeleniumHQ/selenium/wiki/SafariDriver.
+      ERROR
+
       class << self
         def path=(path)
           Platform.assert_executable(path)
@@ -41,7 +47,7 @@ module Selenium
                    end
 
             unless File.file?(path) && File.executable?(path)
-              raise Error::WebDriverError, 'unable to find the Safari executable, please set Selenium::WebDriver::Safari.path= or add it to your PATH.'
+              raise Error::WebDriverError, MISSING_TEXT
             end
 
             path

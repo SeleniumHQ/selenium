@@ -77,7 +77,8 @@ module Selenium
       required_version = '10.2.0'
       expected_download_file_name = "selenium-server-standalone-#{required_version}.jar"
 
-      stub_request(:get, 'http://selenium-release.storage.googleapis.com/10.2/selenium-server-standalone-10.2.0.jar').to_return(body: 'this is pretending to be a jar file for testing purposes')
+      stub_request(:get, 'http://selenium-release.storage.googleapis.com/10.2/selenium-server-standalone-10.2.0.jar')
+        .to_return(body: 'this is pretending to be a jar file for testing purposes')
 
       begin
         actual_download_file_name = Selenium::Server.download(required_version)
@@ -121,7 +122,12 @@ module Selenium
 
     it 'should know what the latest version available is' do
       latest_version = '2.42.2'
-      example_xml = "<?xml version='1.0' encoding='UTF-8'?><ListBucketResult xmlns='http://doc.s3.amazonaws.com/2006-03-01'><Name>selenium-release</Name><Contents><Key>2.39/selenium-server-2.39.0.zip</Key></Contents><Contents><Key>2.42/selenium-server-standalone-#{latest_version}.jar</Key></Contents></ListBucketResult>"
+      example_xml = "<?xml version='1.0' encoding='UTF-8'?><ListBucketResult "
+      example_xml << "xmlns='http://doc.s3.amazonaws.com/2006-03-01'><Name>"
+      example_xml << 'selenium-release</Name><Contents><Key>2.39/'
+      example_xml << 'selenium-server-2.39.0.zip</Key></Contents><Contents>'
+      example_xml << "<Key>2.42/selenium-server-standalone-#{latest_version}.jar"
+      example_xml << '</Key></Contents></ListBucketResult>'
       stub_request(:get, 'http://selenium-release.storage.googleapis.com/').to_return(body: example_xml)
 
       expect(Selenium::Server.latest).to eq(latest_version)
@@ -133,7 +139,8 @@ module Selenium
       expected_download_file_name = "selenium-server-standalone-#{required_version}.jar"
 
       expect(Selenium::Server).to receive(:latest).and_return required_version
-      stub_request(:get, "http://selenium-release.storage.googleapis.com/#{minor_version}/#{expected_download_file_name}").to_return(body: 'this is pretending to be a jar file for testing purposes')
+      stub_request(:get, "http://selenium-release.storage.googleapis.com/#{minor_version}/#{expected_download_file_name}")
+        .to_return(body: 'this is pretending to be a jar file for testing purposes')
 
       begin
         actual_download_file_name = Selenium::Server.download(:latest)

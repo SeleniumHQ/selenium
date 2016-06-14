@@ -33,7 +33,7 @@ module Selenium
           end
 
           @element = element
-          @multi   = ![nil, 'false'].include?(element.attribute(:multiple))
+          @multi = ![nil, 'false'].include?(element.attribute(:multiple))
         end
 
         #
@@ -168,31 +168,22 @@ module Selenium
         def select_by_text(text)
           opts = find_by_text text
 
-          if opts.empty?
-            raise Error::NoSuchElementError, "cannot locate element with text: #{text.inspect}"
-          end
-
-          select_options opts
+          return select_options(opts) unless opts.empty?
+          raise Error::NoSuchElementError, "cannot locate element with text: #{text.inspect}"
         end
 
         def select_by_index(index)
           opts = find_by_index index
 
-          if opts.empty?
-            raise Error::NoSuchElementError, "cannot locate element with index: #{index.inspect}"
-          end
-
-          select_option opts.first
+          return select_option(opts.first) unless opts.empty?
+          raise Error::NoSuchElementError, "cannot locate element with index: #{index.inspect}"
         end
 
         def select_by_value(value)
           opts = find_by_value value
 
-          if opts.empty?
-            raise Error::NoSuchElementError, "cannot locate option with value: #{value.inspect}"
-          end
-
-          select_options opts
+          return select_options(opts) unless opts.empty?
+          raise Error::NoSuchElementError, "cannot locate option with value: #{value.inspect}"
         end
 
         def deselect_by_text(text)
@@ -201,11 +192,8 @@ module Selenium
           end
           opts = find_by_text text
 
-          if opts.empty?
-            raise Error::NoSuchElementError, "cannot locate element with text: #{text.inspect}"
-          end
-
-          deselect_options opts
+          return deselect_options(opts) unless opts.empty?
+          raise Error::NoSuchElementError, "cannot locate element with text: #{text.inspect}"
         end
 
         def deselect_by_value(value)
@@ -214,11 +202,8 @@ module Selenium
           end
           opts = find_by_value value
 
-          if opts.empty?
-            raise Error::NoSuchElementError, "cannot locate option with value: #{value.inspect}"
-          end
-
-          deselect_options opts
+          return deselect_options(opts) unless opts.empty?
+          raise Error::NoSuchElementError, "cannot locate option with value: #{value.inspect}"
         end
 
         def deselect_by_index(index)
@@ -227,11 +212,8 @@ module Selenium
           end
           opts = find_by_index index
 
-          if opts.empty?
-            raise Error::NoSuchElementError, "cannot locate option with index: #{index}"
-          end
-
-          deselect_option opts.first
+          return deselect_option(opts.first) unless opts.empty?
+          raise Error::NoSuchElementError, "cannot locate option with index: #{index}"
         end
 
         def select_option(option)
@@ -262,57 +244,27 @@ module Selenium
           xpath = ".//option[normalize-space(.) = #{Escaper.escape text}]"
           opts = @element.find_elements(:xpath, xpath)
 
-          if opts.empty? && text =~ /\s+/
-            longest_word = text.split(/\s+/).max_by(&:length)
+          return opts unless opts.empty? && text =~ /\s+/
 
-            if longest_word.empty?
-              candidates = options
-            else
-              xpath = ".//option[contains(., #{Escaper.escape longest_word})]"
-              candidates = @element.find_elements(:xpath, xpath)
-            end
-
-            if multiple?
-              candidates.select { |option| text == option.text }
-            else
-              Array(candidates.find { |option| text == option.text })
-            end
+          longest_word = text.split(/\s+/).max_by(&:length)
+          if longest_word.empty?
+            candidates = options
           else
-            opts
+            xpath = ".//option[contains(., #{Escaper.escape longest_word})]"
+            candidates = @element.find_elements(:xpath, xpath)
           end
+
+          return Array(candidates.find { |option| text == option.text }) unless multiple?
+          candidates.select { |option| text == option.text }
         end
 
         def find_by_index(index)
-          index = index.to_s
-          options.select { |option| option.attribute(:index) == index }
+          options.select { |option| option.attribute(:index) == index.to_s }
         end
 
         def find_by_value(value)
           @element.find_elements(:xpath, ".//option[@value = #{Escaper.escape value}]")
         end
-
-        #
-        # @api private
-        #
-
-        module Escaper
-          def self.escape(str)
-            if str.include?('"') && str.include?("'")
-              parts = str.split('"', -1).map { |part| %("#{part}") }
-
-              quoted = parts.join(%(, '"', ))
-                            .gsub(/^"", |, ""$/, '')
-
-              "concat(#{quoted})"
-            elsif str.include?('"')
-              # escape string with just a quote into being single quoted: f"oo -> 'f"oo'
-              "'#{str}'"
-            else
-              # otherwise return the quoted string
-              %("#{str}")
-            end
-          end
-        end # Escaper
       end # Select
     end # Support
   end # WebDriver

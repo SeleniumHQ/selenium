@@ -21,14 +21,29 @@ module Selenium
   module WebDriver
     module Support
       class Color
-        RGB_PATTERN      = /^\s*rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)\s*$/
-        RGB_PCT_PATTERN  = /^\s*rgb\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*\)\s*$/
-        RGBA_PATTERN     = /^\s*rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(0|1|0\.\d+)\s*\)\s*$/
-        RGBA_PCT_PATTERN = /^\s*rgba\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(0|1|0\.\d+)\s*\)\s*$/
-        HEX_PATTERN      = /#(\h{2})(\h{2})(\h{2})/
-        HEX3_PATTERN     = /#(\h)(\h)(\h)/
-        HSL_PATTERN      = /^\s*hsl\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)\s*$/
-        HSLA_PATTERN     = /^\s*hsla\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*,\s*(0|1|0\.\d+)\s*\)\s*$/
+        RGB_PATTERN = %r{^\s*rgb\(\s*(\d{1,3})\s*,
+                          \s*(\d{1,3})\s*,
+                          \s*(\d{1,3})\s*\)\s*$}x
+        RGB_PCT_PATTERN = %r{^\s*rgb\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,
+                              \s*(\d{1,3}|\d{1,2}\.\d+)%\s*,
+                              \s*(\d{1,3}|\d{1,2}\.\d+)%\s*\)\s*$}x
+        RGBA_PATTERN = %r{^\s*rgba\(\s*(\d{1,3})\s*,
+                          \s*(\d{1,3})\s*,
+                          \s*(\d{1,3})\s*,
+                          \s*(0|1|0\.\d+)\s*\)\s*$}x
+        RGBA_PCT_PATTERN = %r{^\s*rgba\(\s*(\d{1,3}|\d{1,2}\.\d+)
+                              %\s*,\s*(\d{1,3}|\d{1,2}\.\d+)
+                              %\s*,\s*(\d{1,3}|\d{1,2}\.\d+)
+                              %\s*,\s*(0|1|0\.\d+)\s*\)\s*$}x
+        HEX_PATTERN = /#(\h{2})(\h{2})(\h{2})/
+        HEX3_PATTERN = /#(\h)(\h)(\h)/
+        HSL_PATTERN = %r{^\s*hsl\(\s*(\d{1,3})\s*,
+                         \s*(\d{1,3})%\s*,
+                         \s*(\d{1,3})%\s*\)\s*$}x
+        HSLA_PATTERN = %r{^\s*hsla\(\s*(\d{1,3})\s*,
+                          \s*(\d{1,3})%\s*,
+                          \s*(\d{1,3})%\s*,
+                          \s*(0|1|0\.\d+)\s*\)\s*$}x
 
         attr_reader :red, :green, :blue, :alpha
 
@@ -37,15 +52,19 @@ module Selenium
           when RGB_PATTERN
             new Regexp.last_match(1), Regexp.last_match(2), Regexp.last_match(3)
           when RGB_PCT_PATTERN
-            new(*[Regexp.last_match(1), Regexp.last_match(2), Regexp.last_match(3)].map { |e| Float(e) / 100 * 255 })
+            array = [Regexp.last_match(1), Regexp.last_match(2), Regexp.last_match(3)]
+            new(*array.map { |e| Float(e) / 100 * 255 })
           when RGBA_PATTERN
             new Regexp.last_match(1), Regexp.last_match(2), Regexp.last_match(3), Regexp.last_match(4)
           when RGBA_PCT_PATTERN
-            new(*[Regexp.last_match(1), Regexp.last_match(2), Regexp.last_match(3)].map { |e| Float(e) / 100 * 255 } << Regexp.last_match(4))
+            array = [Regexp.last_match(1), Regexp.last_match(2), Regexp.last_match(3)]
+            new(*array.map { |e| Float(e) / 100 * 255 } << Regexp.last_match(4))
           when HEX_PATTERN
-            new(*[Regexp.last_match(1), Regexp.last_match(2), Regexp.last_match(3)].map { |e| e.to_i(16) })
+            array = [Regexp.last_match(1), Regexp.last_match(2), Regexp.last_match(3)]
+            new(*array.map { |e| e.to_i(16) })
           when HEX3_PATTERN
-            new(*[Regexp.last_match(1), Regexp.last_match(2), Regexp.last_match(3)].map { |e| (e * 2).to_i(16) })
+            array = [Regexp.last_match(1), Regexp.last_match(2), Regexp.last_match(3)]
+            new(*array.map { |e| (e * 2).to_i(16) })
           when HSL_PATTERN, HSLA_PATTERN
             from_hsl($1, $2, $3, $4)
           else
@@ -67,33 +86,33 @@ module Selenium
             luminocity2 = (l < 0.5) ? l * (1 + s) : l + s - l * s
             luminocity1 = 2 * l - luminocity2
 
-            hue_to_rgb = lambda do |lum1, lum2, hue|
-              hue += 1 if hue < 0.0
-              hue -= 1 if hue > 1.0
-
-              if hue < 1.0 / 6.0
-                (lum1 + (lum2 - lum1) * 6.0 * hue)
-              elsif  hue < 1.0 / 2.0
-                lum2
-              elsif hue < 2.0 / 3.0
-                lum1 + (lum2 - lum1) * ((2.0 / 3.0) - hue) * 6.0
-              else
-                lum1
-              end
-            end
-
-            r = hue_to_rgb.call(luminocity1, luminocity2, h + 1.0 / 3.0)
-            g = hue_to_rgb.call(luminocity1, luminocity2, h)
-            b = hue_to_rgb.call(luminocity1, luminocity2, h - 1.0 / 3.0)
+            r = hue_to_rgb(luminocity1, luminocity2, h + 1.0 / 3.0)
+            g = hue_to_rgb(luminocity1, luminocity2, h)
+            b = hue_to_rgb(luminocity1, luminocity2, h - 1.0 / 3.0)
           end
 
           new (r * 255).round, (g * 255).round, (b * 255).round, a
         end
 
+        def self.hue_to_rgb(lum1, lum2, hue)
+          hue += 1 if hue < 0.0
+          hue -= 1 if hue > 1.0
+
+          if hue < 1.0 / 6.0
+            (lum1 + (lum2 - lum1) * 6.0 * hue)
+          elsif hue < 1.0 / 2.0
+            lum2
+          elsif hue < 2.0 / 3.0
+            lum1 + (lum2 - lum1) * ((2.0 / 3.0) - hue) * 6.0
+          else
+            lum1
+          end
+        end
+
         def initialize(red, green, blue, alpha = 1)
-          @red   = Integer(red)
+          @red = Integer(red)
           @green = Integer(green)
-          @blue  = Integer(blue)
+          @blue = Integer(blue)
           @alpha = Float(alpha)
         end
 

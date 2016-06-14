@@ -32,53 +32,40 @@ module Selenium
       end
 
       def engine
-        @engine ||= (
-          if defined? RUBY_ENGINE
-            RUBY_ENGINE.to_sym
-          else
-            :ruby
-          end
-        )
+        @engine ||= defined?(RUBY_ENGINE) ? RUBY_ENGINE.to_sym : :ruby
       end
 
       def os
-        @os ||= (
-          host_os = RbConfig::CONFIG['host_os']
-          case host_os
-          when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
-            :windows
-          when /darwin|mac os/
-            :macosx
-          when /linux/
-            :linux
-          when /solaris|bsd/
-            :unix
-          else
-            raise Error::WebDriverError, "unknown os: #{host_os.inspect}"
-          end
-        )
+        host_os = RbConfig::CONFIG['host_os']
+        @os ||= case host_os
+                when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
+                  :windows
+                when /darwin|mac os/
+                  :macosx
+                when /linux/
+                  :linux
+                when /solaris|bsd/
+                  :unix
+                else
+                  raise Error::WebDriverError, "unknown os: #{host_os.inspect}"
+                end
       end
 
       def ci
-        if ENV['TRAVIS']
-          :travis
-        elsif ENV['JENKINS']
-          :jenkins
-        end
+        return :travis if ENV['TRAVIS']
+        :jenkins if ENV['JENKINS']
       end
 
       def bitsize
-        @bitsize ||= (
-          if defined?(FFI::Platform::ADDRESS_SIZE)
-            FFI::Platform::ADDRESS_SIZE
-          elsif defined?(FFI)
-            FFI.type_size(:pointer) == 4 ? 32 : 64
-          elsif jruby?
-            Integer(ENV_JAVA['sun.arch.data.model'])
-          else
-            1.size == 4 ? 32 : 64
-          end
-        )
+        @bitsize ||= if defined?(FFI::Platform::ADDRESS_SIZE)
+                       FFI::Platform::ADDRESS_SIZE
+                     elsif defined?(FFI)
+                       FFI.type_size(:pointer) == 4 ? 32 : 64
+                     elsif jruby?
+                       Integer(ENV_JAVA['sun.arch.data.model'])
+                     else
+                       1.size == 4 ? 32 : 64
+                     end
       end
 
       def jruby?
@@ -111,13 +98,11 @@ module Selenium
       end
 
       def null_device
-        @null_device ||= (
-          if defined?(File::NULL)
-            File::NULL
-          else
-            Platform.windows? ? 'NUL' : '/dev/null'
-          end
-        )
+        @null_device ||= if defined?(File::NULL)
+                           File::NULL
+                         else
+                           Platform.windows? ? 'NUL' : '/dev/null'
+                         end
       end
 
       def wrap_in_quotes_if_necessary(str)
@@ -150,14 +135,11 @@ module Selenium
       def exit_hook
         pid = Process.pid
 
-        at_exit do
-          yield if Process.pid == pid
-        end
+        at_exit { yield if Process.pid == pid }
       end
 
       def find_binary(*binary_names)
         paths = ENV['PATH'].split(File::PATH_SEPARATOR)
-        binary_names.map! { |n| "#{n}.exe" } if windows?
 
         binary_names.each do |binary_name|
           paths.each do |path|
@@ -191,11 +173,8 @@ module Selenium
       def localhost
         info = Socket.getaddrinfo 'localhost', 80, Socket::AF_INET, Socket::SOCK_STREAM
 
-        if info.empty?
-          raise Error::WebDriverError, "unable to translate 'localhost' for TCP + IPv4"
-        end
-
-        info[0][3]
+        return info[0][3] unless info.empty?
+        raise Error::WebDriverError, "unable to translate 'localhost' for TCP + IPv4"
       end
 
       def ip

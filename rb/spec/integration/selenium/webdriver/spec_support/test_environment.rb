@@ -25,7 +25,7 @@ module Selenium
         attr_reader :driver
 
         def initialize
-          @create_driver_error       = nil
+          @create_driver_error = nil
           @create_driver_error_count = 0
 
           @driver = (ENV['WD_SPEC_DRIVER'] || :chrome).to_sym
@@ -133,25 +133,11 @@ module Selenium
         private
 
         def create_driver
-          instance = case driver
-                     when :remote
-                       create_remote_driver
-                     when :edge
-                       create_edge_driver
-                     when :firefox
-                       create_firefox_driver
-                     when :marionette
-                       create_marionette_driver
-                     when :chrome
-                       create_chrome_driver
-                     when :iphone
-                       create_iphone_driver
-                     when :safari
-                       create_safari_driver
-                     when :phantomjs
-                       create_phantomjs_driver
+          instance = if driver == :marionette
+                       create_firefox_driver(true)
                      else
-                       WebDriver::Driver.for driver
+                       method = "create_#{driver}_driver"
+                       defined?(method) ? send(method) : WebDriver::Driver.for(driver)
                      end
 
           @create_driver_error_count -= 1 unless @create_driver_error_count == 0
@@ -200,18 +186,12 @@ module Selenium
           )
         end
 
-        def create_firefox_driver
+        def create_firefox_driver(marionette = false)
+          opt = marionette ? {marionette: true} : {}
           binary = ENV['FIREFOX_BINARY']
           WebDriver::Firefox.path = binary if binary
 
-          WebDriver::Driver.for :firefox
-        end
-
-        def create_marionette_driver
-          binary = ENV['FIREFOX_BINARY']
-          WebDriver::Firefox.path = binary if binary
-
-          WebDriver.for :firefox, marionette: true
+          WebDriver::Driver.for :firefox, opt
         end
 
         def create_edge_driver
@@ -226,8 +206,7 @@ module Selenium
           server = ENV['CHROMEDRIVER'] || ENV['chrome_server']
           WebDriver::Chrome.driver_path = server if server
 
-          args = []
-          args << '--no-sandbox' if ENV['TRAVIS']
+          args = ENV['TRAVIS'] ? ['--no-sandbox'] : []
 
           WebDriver::Driver.for :chrome,
                                 native_events: native_events?,
@@ -237,25 +216,12 @@ module Selenium
         def create_phantomjs_driver
           binary = ENV['PHANTOMJS_BINARY']
           WebDriver::PhantomJS.path = binary if binary
-
           WebDriver::Driver.for :phantomjs
         end
 
-        def create_iphone_driver
-          url = ENV['iphone_url']
-          if url
-            WebDriver::Driver.for :iphone, url: url
-          else
-            WebDriver::Driver.for :iphone
-          end
-        end
-
         def create_safari_driver
-          if ENV['timeout']
-            WebDriver::Driver.for :safari, timeout: Integer(ENV['timeout'])
-          else
-            WebDriver::Driver.for :safari
-          end
+          return WebDriver::Driver.for :safari unless ENV['timeout']
+          WebDriver::Driver.for :safari, timeout: Integer(ENV['timeout'])
         end
 
         def keep_alive_client

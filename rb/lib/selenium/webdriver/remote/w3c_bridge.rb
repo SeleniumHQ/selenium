@@ -62,10 +62,7 @@ module Selenium
         #
 
         def initialize(opts = {})
-          if opts.fetch(:desired_capabilities, {})[:browser_name] == 'MicrosoftEdge'
-            require_relative '../edge/legacy_support'
-            extend Edge::LegacySupport
-          end
+          edge_check(opts)
 
           opts = opts.dup
 
@@ -96,6 +93,12 @@ module Selenium
             name = @capabilities.browser_name
             name ? name.tr(' ', '_').to_sym : 'unknown'
           )
+        end
+
+        def edge_check(opts)
+          return unless opts[:browser_name] && opts[:browser_name] == 'MicrosoftEdge'
+          require_relative '../edge/legacy_support'
+          extend Edge::LegacySupport
         end
 
         def driver_extensions

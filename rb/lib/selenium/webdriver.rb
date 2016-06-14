@@ -74,8 +74,9 @@ module Selenium
     #   WebDriver.for :firefox, :profile => Profile.new
     #   WebDriver.for :remote,  :url => "http://localhost:4444/wd/hub", :desired_capabilities => caps
     #
-    # One special argument is not passed on to the bridges, :listener. You can pass a listener for this option
-    # to get notified of WebDriver events. The passed object must respond to #call or implement the methods from AbstractEventListener.
+    # One special argument is not passed on to the bridges, :listener.
+    # You can pass a listener for this option to get notified of WebDriver events.
+    # The passed object must respond to #call or implement the methods from AbstractEventListener.
     #
     # @see Selenium::WebDriver::Support::AbstractEventListener
     #

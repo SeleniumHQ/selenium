@@ -81,7 +81,8 @@ module Selenium
             @native_events     = model_prefs.delete(WEBDRIVER_PREFS[:native_events]) == 'true'
             @secure_ssl        = model_prefs.delete(WEBDRIVER_PREFS[:untrusted_certs]) != 'true'
             @untrusted_issuer  = model_prefs.delete(WEBDRIVER_PREFS[:untrusted_issuer]) == 'true'
-            @load_no_focus_lib = model_prefs.delete(WEBDRIVER_PREFS[:load_no_focus_lib]) == 'true' # not stored in profile atm, so will always be false.
+            # not stored in profile atm, so will always be false.
+            @load_no_focus_lib = model_prefs.delete(WEBDRIVER_PREFS[:load_no_focus_lib]) == 'true'
             @additional_prefs  = model_prefs
           end
 
