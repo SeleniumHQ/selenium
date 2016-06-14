@@ -7,7 +7,7 @@ end
 
 Gem::Specification.new do |s|
   s.name    = "selenium-webdriver"
-  s.version = "2.53.2"
+  s.version = "2.53.3dev"
 
   s.authors     = ["Jari Bakken"]
   s.email       = "jari.bakken@gmail.com"
