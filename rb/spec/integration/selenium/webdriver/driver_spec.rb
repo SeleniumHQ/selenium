@@ -35,10 +35,10 @@ module Selenium
       it 'should refresh the page' do
         driver.navigate.to url_for('javascriptPage.html')
         sleep 1 # javascript takes too long to load
-        driver.find_element(:id, 'updatediv').click
-        expect(driver.find_element(:id, 'dynamo').text).to eq('Fish and chips!')
+        driver.find_element(id: 'updatediv').click
+        expect(driver.find_element(id: 'dynamo').text).to eq('Fish and chips!')
         driver.navigate.refresh
-        expect(driver.find_element(:id, 'dynamo').text).to eq("What's for dinner?")
+        expect(driver.find_element(id: 'dynamo').text).to eq("What's for dinner?")
       end
 
       not_compliant_on browser: :iphone do
@@ -73,46 +73,46 @@ module Selenium
       describe 'one element' do
         it 'should find by id' do
           driver.navigate.to url_for('xhtmlTest.html')
-          element = driver.find_element(:id, 'id1')
+          element = driver.find_element(id: 'id1')
           expect(element).to be_kind_of(WebDriver::Element)
           expect(element.text).to eq('Foo')
         end
 
         it 'should find by field name' do
           driver.navigate.to url_for('formPage.html')
-          expect(driver.find_element(:name, 'x').attribute('value')).to eq('name')
+          expect(driver.find_element(name: 'x').attribute('value')).to eq('name')
         end
 
         it 'should find by class name' do
           driver.navigate.to url_for('xhtmlTest.html')
-          expect(driver.find_element(:class, 'header').text).to eq('XHTML Might Be The Future')
+          expect(driver.find_element(class: 'header').text).to eq('XHTML Might Be The Future')
         end
 
         it 'should find by link text' do
           driver.navigate.to url_for('xhtmlTest.html')
-          expect(driver.find_element(:link, 'Foo').text).to eq('Foo')
+          expect(driver.find_element(link: 'Foo').text).to eq('Foo')
         end
 
         it 'should find by xpath' do
           driver.navigate.to url_for('xhtmlTest.html')
-          expect(driver.find_element(:xpath, '//h1').text).to eq('XHTML Might Be The Future')
+          expect(driver.find_element(xpath: '//h1').text).to eq('XHTML Might Be The Future')
         end
 
         it 'should find by css selector' do
           driver.navigate.to url_for('xhtmlTest.html')
-          expect(driver.find_element(:css, 'div.content').attribute('class')).to eq('content')
+          expect(driver.find_element(css: 'div.content').attribute('class')).to eq('content')
         end
 
         it 'should find by tag name' do
           driver.navigate.to url_for('xhtmlTest.html')
-          expect(driver.find_element(:tag_name, 'div').attribute('class')).to eq('navigation')
+          expect(driver.find_element(tag_name: 'div').attribute('class')).to eq('navigation')
         end
 
         it 'should find child element' do
           driver.navigate.to url_for('nestedElements.html')
 
-          element = driver.find_element(:name, 'form2')
-          child = element.find_element(:name, 'selectomatic')
+          element = driver.find_element(name: 'form2')
+          child = element.find_element(name: 'selectomatic')
 
           expect(child.attribute('id')).to eq('2')
         end
@@ -120,8 +120,8 @@ module Selenium
         it 'should find child element by tag name' do
           driver.navigate.to url_for('nestedElements.html')
 
-          element = driver.find_element(:name, 'form2')
-          child = element.find_element(:tag_name, 'select')
+          element = driver.find_element(name: 'form2')
+          child = element.find_element(tag_name: 'select')
 
           expect(child.attribute('id')).to eq('2')
         end
@@ -147,18 +147,18 @@ module Selenium
       describe 'many elements' do
         it 'should find by class name' do
           driver.navigate.to url_for('xhtmlTest.html')
-          expect(driver.find_elements(:class, 'nameC').size).to eq(2)
+          expect(driver.find_elements(class: 'nameC').size).to eq(2)
         end
 
         it 'should find by css selector' do
           driver.navigate.to url_for('xhtmlTest.html')
-          driver.find_elements(:css, 'p')
+          driver.find_elements(css: 'p')
         end
 
         it 'should find children by field name' do
           driver.navigate.to url_for('nestedElements.html')
-          element = driver.find_element(:name, 'form2')
-          children = element.find_elements(:name, 'selectomatic')
+          element = driver.find_element(name: 'form2')
+          children = element.find_elements(name: 'selectomatic')
           expect(children.size).to eq(2)
         end
       end
@@ -219,7 +219,7 @@ module Selenium
           it 'should be able to call functions on the page' do
             driver.navigate.to url_for('javascriptPage.html')
             driver.execute_script("displayMessage('I like cheese');")
-            expect(driver.find_element(:id, 'result').text.strip).to eq('I like cheese')
+            expect(driver.find_element(id: 'result').text.strip).to eq('I like cheese')
           end
         end
 
@@ -250,7 +250,7 @@ module Selenium
 
         it 'should be able to pass element arguments' do
           driver.navigate.to url_for('javascriptPage.html')
-          button = driver.find_element(:id, 'plainButton')
+          button = driver.find_element(id: 'plainButton')
           js = "arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'];"
           expect(driver.execute_script(js, button))
             .to eq('plainButton')

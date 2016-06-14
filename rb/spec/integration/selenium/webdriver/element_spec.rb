@@ -30,7 +30,7 @@ module Selenium
 
       it 'should click' do
         driver.navigate.to url_for('formPage.html')
-        driver.find_element(:id, 'imageButton').click
+        driver.find_element(id: 'imageButton').click
       end
 
       compliant_on browser: [:chrome, :firefox] do
@@ -38,7 +38,7 @@ module Selenium
           driver.navigate.to url_for('click_tests/overlapping_elements.html')
           element_error = 'Other element would receive the click: <div id="over"><\/div>'
           error = /Element is not clickable at point \(\d+, \d+\)\. #{element_error}/
-          expect { driver.find_element(:id, 'contents').click }
+          expect { driver.find_element(id: 'contents').click }
             .to raise_error(Selenium::WebDriver::Error::UnknownError, error)
         end
       end
@@ -46,7 +46,7 @@ module Selenium
       compliant_on browser: [:firefox] do
         it 'should not raise if element is only partially covered' do
           driver.navigate.to url_for('click_tests/overlapping_elements.html')
-          expect { driver.find_element(:id, 'other_contents').click }.not_to raise_error
+          expect { driver.find_element(id: 'other_contents').click }.not_to raise_error
         end
       end
 
@@ -55,20 +55,20 @@ module Selenium
         it 'should submit' do
           driver.navigate.to url_for('formPage.html')
           wait_for_element(id: 'submitButton')
-          driver.find_element(:id, 'submitButton').submit
+          driver.find_element(id: 'submitButton').submit
         end
       end
 
       it 'should send string keys' do
         driver.navigate.to url_for('formPage.html')
         wait_for_element(id: 'working')
-        driver.find_element(:id, 'working').send_keys('foo', 'bar')
+        driver.find_element(id: 'working').send_keys('foo', 'bar')
       end
 
       not_compliant_on browser: [:android, :iphone] do
         it 'should send key presses' do
           driver.navigate.to url_for('javascriptPage.html')
-          key_reporter = driver.find_element(:id, 'keyReporter')
+          key_reporter = driver.find_element(id: 'keyReporter')
 
           key_reporter.send_keys('Tet', :arrow_left, 's')
           expect(key_reporter.attribute('value')).to eq('Test')
@@ -80,7 +80,7 @@ module Selenium
         it 'should handle file uploads' do
           driver.navigate.to url_for('formPage.html')
 
-          element = driver.find_element(:id, 'upload')
+          element = driver.find_element(id: 'upload')
           expect(element.attribute('value')).to be_empty
 
           file = Tempfile.new('file-upload')
@@ -95,25 +95,25 @@ module Selenium
 
       it 'should get attribute value' do
         driver.navigate.to url_for('formPage.html')
-        expect(driver.find_element(:id, 'withText').attribute('rows')).to eq('5')
+        expect(driver.find_element(id: 'withText').attribute('rows')).to eq('5')
       end
 
       it 'should return nil for non-existent attributes' do
         driver.navigate.to url_for('formPage.html')
-        expect(driver.find_element(:id, 'withText').attribute('nonexistent')).to be_nil
+        expect(driver.find_element(id: 'withText').attribute('nonexistent')).to be_nil
       end
 
       it 'should clear' do
         driver.navigate.to url_for('formPage.html')
-        driver.find_element(:id, 'withText').clear
+        driver.find_element(id: 'withText').clear
       end
 
       not_compliant_on browser: :android do
         it 'should get and set selected' do
           driver.navigate.to url_for('formPage.html')
 
-          cheese = driver.find_element(:id, 'cheese')
-          peas = driver.find_element(:id, 'peas')
+          cheese = driver.find_element(id: 'cheese')
+          peas = driver.find_element(id: 'peas')
 
           cheese.click
 
@@ -129,22 +129,22 @@ module Selenium
 
       it 'should get enabled' do
         driver.navigate.to url_for('formPage.html')
-        expect(driver.find_element(:id, 'notWorking')).not_to be_enabled
+        expect(driver.find_element(id: 'notWorking')).not_to be_enabled
       end
 
       it 'should get text' do
         driver.navigate.to url_for('xhtmlTest.html')
-        expect(driver.find_element(:class, 'header').text).to eq('XHTML Might Be The Future')
+        expect(driver.find_element(class: 'header').text).to eq('XHTML Might Be The Future')
       end
 
       it 'should get displayed' do
         driver.navigate.to url_for('xhtmlTest.html')
-        expect(driver.find_element(:class, 'header')).to be_displayed
+        expect(driver.find_element(class: 'header')).to be_displayed
       end
 
       it 'should get location' do
         driver.navigate.to url_for('xhtmlTest.html')
-        loc = driver.find_element(:class, 'header').location
+        loc = driver.find_element(class: 'header').location
 
         expect(loc.x).to be >= 1
         expect(loc.y).to be >= 1
@@ -153,7 +153,7 @@ module Selenium
       not_compliant_on browser: :iphone do
         it 'should get location once scrolled into view' do
           driver.navigate.to url_for('javascriptPage.html')
-          loc = driver.find_element(:id, 'keyUp').location_once_scrolled_into_view
+          loc = driver.find_element(id: 'keyUp').location_once_scrolled_into_view
 
           expect(loc.x).to be >= 1
           expect(loc.y).to be >= 0 # can be 0 if scrolled to the top
@@ -162,7 +162,7 @@ module Selenium
 
       it 'should get size' do
         driver.navigate.to url_for('xhtmlTest.html')
-        size = driver.find_element(:class, 'header').size
+        size = driver.find_element(class: 'header').size
 
         expect(size.width).to be > 0
         expect(size.height).to be > 0
@@ -172,8 +172,8 @@ module Selenium
         it 'should drag and drop' do
           driver.navigate.to url_for('dragAndDropTest.html')
 
-          img1 = driver.find_element(:id, 'test1')
-          img2 = driver.find_element(:id, 'test2')
+          img1 = driver.find_element(id: 'test1')
+          img2 = driver.find_element(id: 'test2')
 
           driver.action.drag_and_drop_by(img1, 100, 100)
                 .drag_and_drop(img2, img1)
@@ -186,7 +186,7 @@ module Selenium
       not_compliant_on browser: :android do # android returns 'green'
         it 'should get css property' do
           driver.navigate.to url_for('javascriptPage.html')
-          element = driver.find_element(:id, 'green-parent')
+          element = driver.find_element(id: 'green-parent')
 
           style1 = element.css_value('background-color')
           style2 = element.style('background-color') # backwards compatibility
@@ -199,8 +199,8 @@ module Selenium
       it 'should know when two elements are equal' do
         driver.navigate.to url_for('simpleTest.html')
 
-        body = driver.find_element(:tag_name, 'body')
-        xbody = driver.find_element(:xpath, '//body')
+        body = driver.find_element(tag_name: 'body')
+        xbody = driver.find_element(xpath: '//body')
 
         expect(body).to eq(xbody)
         expect(body).to eql(xbody)
@@ -209,7 +209,7 @@ module Selenium
       it 'should know when two elements are not equal' do
         driver.navigate.to url_for('simpleTest.html')
 
-        elements = driver.find_elements(:tag_name, 'p')
+        elements = driver.find_elements(tag_name: 'p')
         p1 = elements.fetch(0)
         p2 = elements.fetch(1)
 
@@ -220,8 +220,8 @@ module Selenium
       it 'should return the same #hash for equal elements when found by Driver#find_element' do
         driver.navigate.to url_for('simpleTest.html')
 
-        body = driver.find_element(:tag_name, 'body')
-        xbody = driver.find_element(:xpath, '//body')
+        body = driver.find_element(tag_name: 'body')
+        xbody = driver.find_element(xpath: '//body')
 
         expect(body.hash).to eq(xbody.hash)
       end
@@ -229,8 +229,8 @@ module Selenium
       it 'should return the same #hash for equal elements when found by Driver#find_elements' do
         driver.navigate.to url_for('simpleTest.html')
 
-        body = driver.find_elements(:tag_name, 'body').fetch(0)
-        xbody = driver.find_elements(:xpath, '//body').fetch(0)
+        body = driver.find_elements(tag_name: 'body').fetch(0)
+        xbody = driver.find_elements(xpath: '//body').fetch(0)
 
         expect(body.hash).to eq(xbody.hash)
       end

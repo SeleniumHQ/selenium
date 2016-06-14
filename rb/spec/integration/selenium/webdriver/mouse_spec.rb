@@ -26,7 +26,7 @@ module Selenium
       describe Mouse do
         it 'clicks an element' do
           driver.navigate.to url_for('formPage.html')
-          driver.mouse.click driver.find_element(:id, 'imageButton')
+          driver.mouse.click driver.find_element(id: 'imageButton')
         end
 
         it 'can drag and drop' do
@@ -50,7 +50,7 @@ module Selenium
         not_compliant_on browser: :edge do
           it 'double clicks an element' do
             driver.navigate.to url_for('javascriptPage.html')
-            element = driver.find_element(:id, 'doubleClickField')
+            element = driver.find_element(id: 'doubleClickField')
 
             driver.mouse.double_click element
 
@@ -63,7 +63,7 @@ module Selenium
         not_compliant_on browser: :phantomjs do
           it 'context clicks an element' do
             driver.navigate.to url_for('javascriptPage.html')
-            element = driver.find_element(:id, 'doubleClickField')
+            element = driver.find_element(id: 'doubleClickField')
 
             driver.mouse.context_click element
 

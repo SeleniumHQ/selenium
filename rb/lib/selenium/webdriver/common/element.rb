@@ -64,7 +64,7 @@ module Selenium
       #
       # @example Click on a button
       #
-      #    driver.find_element(:tag_name, "button").click
+      #    driver.find_element(tag_name: "button").click
       #
       # @raise [StaleElementReferenceError] if the element no longer exists as
       #  defined
@@ -79,7 +79,7 @@ module Selenium
       #
       # @example Get the tagname of an INPUT element(returns "input")
       #
-      #    driver.find_element(:xpath, "//input").tag_name
+      #    driver.find_element(xpath: "//input").tag_name
       #
       # @return [String] The tag name of this element.
       #
@@ -248,13 +248,13 @@ module Selenium
       #-------------------------------- sugar  --------------------------------
 
       #
-      #   element.first(:id, 'foo')
+      #   element.first(id: 'foo')
       #
 
       alias_method :first, :find_element
 
       #
-      #   element.all(:class, 'bar')
+      #   element.all(class: 'bar')
       #
 
       alias_method :all, :find_elements

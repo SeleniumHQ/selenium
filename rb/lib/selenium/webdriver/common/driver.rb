@@ -239,13 +239,13 @@ module Selenium
       #-------------------------------- sugar  --------------------------------
 
       #
-      #   driver.first(:id, 'foo')
+      #   driver.first(id: 'foo')
       #
 
       alias_method :first, :find_element
 
       #
-      #   driver.all(:class, 'bar') #=> [#<WebDriver::Element:0x1011c3b88, ...]
+      #   driver.all(class: 'bar') #=> [#<WebDriver::Element:0x1011c3b88, ...]
       #
 
       alias_method :all, :find_elements

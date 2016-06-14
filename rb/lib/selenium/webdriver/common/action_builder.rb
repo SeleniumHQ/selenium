@@ -68,7 +68,7 @@ module Selenium
       #
       # @example Press a key on an element
       #
-      #    el = driver.find_element(:id, "some_id")
+      #    el = driver.find_element(id: "some_id")
       #    driver.action.key_down(el, :shift).perform
       #
       # @param [:shift, :alt, :control, :command, :meta] The key to press.
@@ -94,7 +94,7 @@ module Selenium
       #
       # @example Release a key from an element
       #
-      #   el = driver.find_element(:id, "some_id")
+      #   el = driver.find_element(id: "some_id")
       #   driver.action.key_up(el, :alt).perform
       #
       # @param [:shift, :alt, :control, :command, :meta] The modifier key to release.
@@ -119,7 +119,7 @@ module Selenium
       #
       # @example Send the text "help" to an element
       #
-      #   el = driver.find_element(:id, "some_id")
+      #   el = driver.find_element(id: "some_id")
       #   driver.action.send_keys(el, "help").perform
       #
       # @example Send the text "help" to the currently focused element
@@ -146,7 +146,7 @@ module Selenium
       #
       # @example Clicking and holding on some element
       #
-      #    el = driver.find_element(:id, "some_id")
+      #    el = driver.find_element(id: "some_id")
       #    driver.action.click_and_hold(el).perform
       #
       # @param [Selenium::WebDriver::Element] element the element to move to and click.
@@ -163,7 +163,7 @@ module Selenium
       #
       # @example Releasing an element after clicking and holding it
       #
-      #    el = driver.find_element(:id, "some_id")
+      #    el = driver.find_element(id: "some_id")
       #    driver.action.click_and_hold(el).release.perform
       #
       # @return [ActionBuilder] A self reference.
@@ -183,7 +183,7 @@ module Selenium
       #
       # @example Clicking on an element
       #
-      #    el = driver.find_element(:id, "some_id")
+      #    el = driver.find_element(id: "some_id")
       #    driver.action.click(el).perform
       #
       # @example Clicking at the current mouse position
@@ -206,7 +206,7 @@ module Selenium
       #
       # @example Double click an element
       #
-      #    el = driver.find_element(:id, "some_id")
+      #    el = driver.find_element(id: "some_id")
       #    driver.action.double_click(el).perform
       #
       # @param [Selenium::WebDriver::Element] element An optional element to move to.
@@ -227,12 +227,12 @@ module Selenium
       #
       # @example Scroll element into view and move the mouse to it
       #
-      #   el = driver.find_element(:id, "some_id")
+      #   el = driver.find_element(id: "some_id")
       #   driver.action.move_to(el).perform
       #
       # @example
       #
-      #   el = driver.find_element(:id, "some_id")
+      #   el = driver.find_element(id: "some_id")
       #   driver.action.move_to(el, 100, 100).perform
       #
       # @param [Selenium::WebDriver::Element] element to move to.
@@ -283,7 +283,7 @@ module Selenium
       #
       # @example Context-click at middle of given element
       #
-      #   el = driver.find_element(:id, "some_id")
+      #   el = driver.find_element(id: "some_id")
       #   driver.action.context_click(el).perform
       #
       # @param [Selenium::WebDriver::Element] element An element to context click.
@@ -302,8 +302,8 @@ module Selenium
       #
       # @example Drag and drop one element onto another
       #
-      #   el1 = driver.find_element(:id, "some_id1")
-      #   el2 = driver.find_element(:id, "some_id2")
+      #   el1 = driver.find_element(id: "some_id1")
+      #   el2 = driver.find_element(id: "some_id2")
       #   driver.action.drag_and_drop(el1, el2).perform
       #
       # @param [Selenium::WebDriver::Element] source element to emulate button down at.
@@ -326,7 +326,7 @@ module Selenium
       #
       # @example Drag and drop an element by offset
       #
-      #   el = driver.find_element(:id, "some_id1")
+      #   el = driver.find_element(id: "some_id1")
       #   driver.action.drag_and_drop_by(el, 100, 100).perform
       #
       # @param [Selenium::WebDriver::Element] source Element to emulate button down at.

@@ -44,7 +44,7 @@ module Selenium
 
         it 'accepts two arguments' do
           expect(bridge).to receive(:find_element_by).with('id', 'bar', nil).and_return(element)
-          expect(search_context.find_element(:id, 'bar')).to eq(element)
+          expect(search_context.find_element(id: 'bar')).to eq(element)
         end
 
         it "raises an error if given an invalid 'by'" do
@@ -70,7 +70,7 @@ module Selenium
 
         it 'accepts two arguments' do
           expect(bridge).to receive(:find_elements_by).with('id', 'bar', nil).and_return([])
-          expect(search_context.find_elements(:id, 'bar')).to eq([])
+          expect(search_context.find_elements(id: 'bar')).to eq([])
         end
 
         it "raises an error if given an invalid 'by'" do

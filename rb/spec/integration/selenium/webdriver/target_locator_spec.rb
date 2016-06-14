@@ -43,7 +43,7 @@ module Selenium
         driver.navigate.to url_for('iframes.html')
         driver.switch_to.frame('iframe1')
 
-        expect(driver.find_element(:name, 'login')).to be_kind_of(WebDriver::Element)
+        expect(driver.find_element(name: 'login')).to be_kind_of(WebDriver::Element)
       end
 
       it 'should switch to a frame by Element' do
@@ -52,7 +52,7 @@ module Selenium
         iframe = driver.find_element(tag_name: 'iframe')
         driver.switch_to.frame(iframe)
 
-        expect(driver.find_element(:name, 'login')).to be_kind_of(WebDriver::Element)
+        expect(driver.find_element(name: 'login')).to be_kind_of(WebDriver::Element)
       end
 
       not_compliant_on browser: [:safari, :phantomjs] do
@@ -67,10 +67,10 @@ module Selenium
           iframe = driver.find_element(tag_name: 'iframe')
           driver.switch_to.frame(iframe)
 
-          expect(driver.find_element(:name, 'login')).to be_kind_of(WebDriver::Element)
+          expect(driver.find_element(name: 'login')).to be_kind_of(WebDriver::Element)
 
           driver.switch_to.parent_frame
-          expect(driver.find_element(:id, 'iframe_page_heading')).to be_kind_of(WebDriver::Element)
+          expect(driver.find_element(id: 'iframe_page_heading')).to be_kind_of(WebDriver::Element)
         end
       end
 
@@ -79,7 +79,7 @@ module Selenium
         it 'should switch to a window and back when given a block' do
           driver.navigate.to url_for('xhtmlTest.html')
 
-          driver.find_element(:link, 'Open new window').click
+          driver.find_element(link: 'Open new window').click
           wait.until { driver.window_handles.size == 2 }
           expect(driver.title).to eq('XHTML Test Page')
 
@@ -93,7 +93,7 @@ module Selenium
         it 'should handle exceptions inside the block' do
           driver.navigate.to url_for('xhtmlTest.html')
 
-          driver.find_element(:link, 'Open new window').click
+          driver.find_element(link: 'Open new window').click
           wait.until { driver.window_handles.size == 2 }
           expect(driver.title).to eq('XHTML Test Page')
 
@@ -107,7 +107,7 @@ module Selenium
         it 'should switch to a window without a block' do
           driver.navigate.to url_for('xhtmlTest.html')
 
-          driver.find_element(:link, 'Open new window').click
+          driver.find_element(link: 'Open new window').click
           wait.until { driver.window_handles.size == 2 }
           expect(driver.title).to eq('XHTML Test Page')
 
@@ -118,7 +118,7 @@ module Selenium
         it 'should use the original window if the block closes the popup' do
           driver.navigate.to url_for('xhtmlTest.html')
 
-          driver.find_element(:link, 'Open new window').click
+          driver.find_element(link: 'Open new window').click
           wait.until { driver.window_handles.size == 2 }
           expect(driver.title).to eq('XHTML Test Page')
 
@@ -137,9 +137,9 @@ module Selenium
             it 'should close current window when more than two windows exist' do
               driver.navigate.to url_for('xhtmlTest.html')
               wait_for_element(link: 'Create a new anonymous window')
-              driver.find_element(:link, 'Create a new anonymous window').click
+              driver.find_element(link: 'Create a new anonymous window').click
               wait.until { driver.window_handles.size == 2 }
-              driver.find_element(:link, 'Open new window').click
+              driver.find_element(link: 'Open new window').click
               wait.until { driver.window_handles.size == 3 }
 
               driver.switch_to.window(driver.window_handle) { driver.close }
@@ -149,9 +149,9 @@ module Selenium
             it 'should close another window when more than two windows exist' do
               driver.navigate.to url_for('xhtmlTest.html')
               wait_for_element(link: 'Create a new anonymous window')
-              driver.find_element(:link, 'Create a new anonymous window').click
+              driver.find_element(link: 'Create a new anonymous window').click
               wait.until { driver.window_handles.size == 2 }
-              driver.find_element(:link, 'Open new window').click
+              driver.find_element(link: 'Open new window').click
               wait.until { driver.window_handles.size == 3 }
 
               window_to_close = driver.window_handles.last
@@ -163,9 +163,9 @@ module Selenium
             it 'should iterate over open windows when current window is not closed' do
               driver.navigate.to url_for('xhtmlTest.html')
               wait_for_element(link: 'Create a new anonymous window')
-              driver.find_element(:link, 'Create a new anonymous window').click
+              driver.find_element(link: 'Create a new anonymous window').click
               wait.until { driver.window_handles.size == 2 }
-              driver.find_element(:link, 'Open new window').click
+              driver.find_element(link: 'Open new window').click
               wait.until { driver.window_handles.size == 3 }
 
               matching_window = driver.window_handles.find do |wh|
@@ -179,9 +179,9 @@ module Selenium
             it 'should iterate over open windows when current window is closed' do
               driver.navigate.to url_for('xhtmlTest.html')
               wait_for_element(link: 'Create a new anonymous window')
-              driver.find_element(:link, 'Create a new anonymous window').click
+              driver.find_element(link: 'Create a new anonymous window').click
               wait.until { driver.window_handles.size == 2 }
-              driver.find_element(:link, 'Open new window').click
+              driver.find_element(link: 'Open new window').click
               wait.until { driver.window_handles.size == 3 }
 
               driver.close
@@ -198,7 +198,7 @@ module Selenium
 
         it 'should switch to a window and execute a block when current window is closed' do
           driver.navigate.to url_for('xhtmlTest.html')
-          driver.find_element(:link, 'Open new window').click
+          driver.find_element(link: 'Open new window').click
           wait.until { driver.window_handles.size == 2 }
 
           driver.switch_to.window(new_window)

@@ -30,7 +30,7 @@ describe 'Navigation' do
       driver.navigate.to form_url
       expect(driver.title).to eq(form_title)
 
-      driver.find_element(:id, 'imageButton').click
+      driver.find_element(id: 'imageButton').click
       wait.until { driver.title != form_title }
 
       expect(driver.current_url).to include(result_url)
@@ -51,7 +51,7 @@ describe 'Navigation' do
     changed_title = 'Changed'
 
     driver.navigate.to url_for('javascriptPage.html')
-    driver.find_element(:link_text, 'Change the page title!').click
+    driver.find_element(link_text: 'Change the page title!').click
     expect(driver.title).to eq(changed_title)
 
     driver.navigate.refresh

@@ -26,7 +26,7 @@ module Selenium
         driver.navigate.to url_for('xhtmlTest.html')
 
         expect do
-          driver.find_element(:id, 'nonexistant')
+          driver.find_element(id: 'nonexistant')
         end.to raise_error(WebDriver::Error::NoSuchElementError)
       end
 
@@ -39,7 +39,7 @@ module Selenium
           ex = nil
 
           begin
-            driver.find_element(:id, 'nonexistant')
+            driver.find_element(id: 'nonexistant')
           rescue => ex
             rescued = true
           end

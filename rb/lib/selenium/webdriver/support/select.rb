@@ -53,7 +53,7 @@ module Selenium
         #
 
         def options
-          @element.find_elements :tag_name, 'option'
+          @element.find_elements tag_name: 'option'
         end
 
         #
@@ -242,7 +242,7 @@ module Selenium
 
         def find_by_text(text)
           xpath = ".//option[normalize-space(.) = #{Escaper.escape text}]"
-          opts = @element.find_elements(:xpath, xpath)
+          opts = @element.find_elements(xpath: xpath)
 
           return opts unless opts.empty? && text =~ /\s+/
 
@@ -251,7 +251,7 @@ module Selenium
             candidates = options
           else
             xpath = ".//option[contains(., #{Escaper.escape longest_word})]"
-            candidates = @element.find_elements(:xpath, xpath)
+            candidates = @element.find_elements(xpath: xpath)
           end
 
           return Array(candidates.find { |option| text == option.text }) unless multiple?
@@ -263,7 +263,7 @@ module Selenium
         end
 
         def find_by_value(value)
-          @element.find_elements(:xpath, ".//option[@value = #{Escaper.escape value}]")
+          @element.find_elements(xpath: ".//option[@value = #{Escaper.escape value}]")
         end
       end # Select
     end # Support
