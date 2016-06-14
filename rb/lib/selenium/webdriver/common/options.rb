@@ -51,7 +51,7 @@ module Selenium
         obj = opts.delete(:expires)
         opts[:expiry] = seconds_from(obj).to_i if obj
 
-        @bridge.addCookie opts
+        @bridge.add_cookie opts
       end
 
       #
@@ -72,7 +72,7 @@ module Selenium
       #
 
       def delete_cookie(name)
-        @bridge.deleteCookie name
+        @bridge.delete_cookie name
       end
 
       #
@@ -80,7 +80,7 @@ module Selenium
       #
 
       def delete_all_cookies
-        @bridge.deleteAllCookies
+        @bridge.delete_all_cookies
       end
 
       #
@@ -90,7 +90,7 @@ module Selenium
       #
 
       def all_cookies
-        @bridge.getAllCookies.map do |cookie|
+        @bridge.cookies.map do |cookie|
           {
             name: cookie['name'],
             value: cookie['value'],

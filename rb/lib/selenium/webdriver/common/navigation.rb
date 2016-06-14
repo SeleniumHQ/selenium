@@ -37,7 +37,7 @@ module Selenium
       #
 
       def back
-        @bridge.goBack
+        @bridge.go_back
       end
 
       #
@@ -45,7 +45,7 @@ module Selenium
       #
 
       def forward
-        @bridge.goForward
+        @bridge.go_forward
       end
 
       #

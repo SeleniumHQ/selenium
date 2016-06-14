@@ -66,9 +66,9 @@ module Selenium
 
           opts = opts.dup
 
-          http_client          = opts.delete(:http_client) { Http::Default.new }
+          http_client = opts.delete(:http_client) { Http::Default.new }
           desired_capabilities = opts.delete(:desired_capabilities) { W3CCapabilities.firefox }
-          url                  = opts.delete(:url) { "http://#{Platform.localhost}:4444/wd/hub" }
+          url = opts.delete(:url) { "http://#{Platform.localhost}:4444/wd/hub" }
 
           desired_capabilities = W3CCapabilities.send(desired_capabilities) if desired_capabilities.is_a? Symbol
 
@@ -83,15 +83,15 @@ module Selenium
 
           http_client.server_url = uri
 
-          @http          = http_client
-          @capabilities  = create_session(desired_capabilities)
+          @http = http_client
+          @capabilities = create_session(desired_capabilities)
           @file_detector = nil
         end
 
         def browser
           @browser ||= (
-            name = @capabilities.browser_name
-            name ? name.tr(' ', '_').to_sym : 'unknown'
+          name = @capabilities.browser_name
+          name ? name.tr(' ', '_').to_sym : 'unknown'
           )
         end
 
@@ -140,15 +140,15 @@ module Selenium
           execute :get, {}, {url: url}
         end
 
-        def setImplicitWaitTimeout(milliseconds)
-          setTimeout('implicit', milliseconds)
+        def implicit_wait_timeout=(milliseconds)
+          timeout('implicit', milliseconds)
         end
 
-        def setScriptTimeout(milliseconds)
-          setTimeout('script', milliseconds)
+        def script_timeout=(milliseconds)
+          timeout('script', milliseconds)
         end
 
-        def setTimeout(type, milliseconds)
+        def timeout(type, milliseconds)
           execute :setTimeout, {}, {type: type, ms: milliseconds}
         end
 
@@ -156,19 +156,19 @@ module Selenium
         # alerts
         #
 
-        def acceptAlert
+        def accept_alert
           execute :acceptAlert
         end
 
-        def dismissAlert
+        def dismiss_alert
           execute :dismissAlert
         end
 
-        def setAlertValue(keys)
+        def alert=(keys)
           execute :sendAlertText, {}, {handler: 'prompt', message: keys}
         end
 
-        def getAlertText
+        def alert_text
           execute :getAlertText
         end
 
@@ -176,43 +176,43 @@ module Selenium
         # navigation
         #
 
-        def goBack
+        def go_back
           execute :back
         end
 
-        def goForward
+        def go_forward
           execute :forward
         end
 
-        def getCurrentUrl
+        def url
           execute :getCurrentUrl
         end
 
-        def getTitle
+        def title
           execute :getTitle
         end
 
-        def getPageSource
-          executeScript('var source = document.documentElement.outerHTML;' \
+        def page_source
+          execute_script('var source = document.documentElement.outerHTML;' \
                             'if (!source) { source = new XMLSerializer().serializeToString(document); }' \
                             'return source;')
         end
 
-        def switchToWindow(name)
+        def switch_to_window(name)
           execute :switchToWindow, {}, {handle: name}
         end
 
-        def switchToFrame(id)
+        def switch_to_frame(id)
           id = find_element_by('id', id) if id.is_a? String
           execute :switchToFrame, {}, {id: id}
         end
 
-        def switchToParentFrame
+        def switch_to_parent_frame
           execute :switchToParentFrame
         end
 
-        def switchToDefaultContent
-          switchToFrame nil
+        def switch_to_default_content
+          switch_to_frame nil
         end
 
         QUIT_ERRORS = [IOError].freeze
@@ -235,15 +235,15 @@ module Selenium
         # window handling
         #
 
-        def getWindowHandles
+        def window_handles
           execute :getWindowHandles
         end
 
-        def getCurrentWindowHandle
+        def window_handle
           execute :getWindowHandle
         end
 
-        def setWindowSize(width, height, handle = :current)
+        def resize_window(width, height, handle = :current)
           unless handle == :current
             raise Error::WebDriverError, 'Switch to desired window before changing its size'
           end
@@ -251,18 +251,18 @@ module Selenium
                                        height: height}
         end
 
-        def maximizeWindow(handle = :current)
+        def maximize_window(handle = :current)
           unless handle == :current
             raise Error::UnsupportedOperationError, 'Switch to desired window before changing its size'
           end
           execute :maximizeWindow
         end
 
-        def fullscreenWindow
+        def full_screen_window
           execute :fullscreenWindow
         end
 
-        def getWindowSize(handle = :current)
+        def window_size(handle = :current)
           unless handle == :current
             raise Error::UnsupportedOperationError, 'Switch to desired window before getting its size'
           end
@@ -271,15 +271,15 @@ module Selenium
           Dimension.new data['width'], data['height']
         end
 
-        def setWindowPosition(_x, _y, _handle = nil)
+        def reposition_window(_x, _y, _handle = nil)
           raise Error::UnsupportedOperationError, 'The W3C standard does not currently support setting the Window Position'
         end
 
-        def getWindowPosition(_handle = nil)
+        def window_position(_handle = nil)
           raise Error::UnsupportedOperationError, 'The W3C standard does not currently support getting the Window Position'
         end
 
-        def getScreenshot
+        def screenshot
           execute :takeScreenshot
         end
 
@@ -287,67 +287,67 @@ module Selenium
         # HTML 5
         #
 
-        def getLocalStorageItem(key)
-          executeScript("return localStorage.getItem('#{key}')")
+        def local_storage_item(key, value = nil)
+          if value
+            execute_script("localStorage.setItem('#{key}', '#{value}')")
+          else
+            execute_script("return localStorage.getItem('#{key}')")
+          end
         end
 
-        def removeLocalStorageItem(key)
-          executeScript("localStorage.removeItem('#{key}')")
+        def remove_local_storage_item(key)
+          execute_script("localStorage.removeItem('#{key}')")
         end
 
-        def getLocalStorageKeys
-          executeScript('return Object.keys(localStorage)')
+        def local_storage_keys
+          execute_script('return Object.keys(localStorage)')
         end
 
-        def setLocalStorageItem(key, value)
-          executeScript("localStorage.setItem('#{key}', '#{value}')")
+        def clear_local_storage
+          execute_script('localStorage.clear()')
         end
 
-        def clearLocalStorage
-          executeScript('localStorage.clear()')
+        def local_storage_size
+          execute_script('return localStorage.length')
         end
 
-        def getLocalStorageSize
-          executeScript('return localStorage.length')
+        def session_storage_item(key, value = nil)
+          if value
+            execute_script("sessionStorage.setItem('#{key}', '#{value}')")
+          else
+            execute_script("return sessionStorage.getItem('#{key}')")
+          end
         end
 
-        def getSessionStorageItem(key)
-          executeScript("return sessionStorage.getItem('#{key}')")
+        def remove_session_storage_item(key)
+          execute_script("sessionStorage.removeItem('#{key}')")
         end
 
-        def removeSessionStorageItem(key)
-          executeScript("sessionStorage.removeItem('#{key}')")
+        def session_storage_keys
+          execute_script('return Object.keys(sessionStorage)')
         end
 
-        def getSessionStorageKeys
-          executeScript('return Object.keys(sessionStorage)')
+        def clear_session_storage
+          execute_script('sessionStorage.clear()')
         end
 
-        def setSessionStorageItem(key, value)
-          executeScript("sessionStorage.setItem('#{key}', '#{value}')")
+        def session_storage_size
+          execute_script('return sessionStorage.length')
         end
 
-        def clearSessionStorage
-          executeScript('sessionStorage.clear()')
-        end
-
-        def getSessionStorageSize
-          executeScript('return sessionStorage.length')
-        end
-
-        def getLocation
+        def location
           raise Error::UnsupportedOperationError, 'The W3C standard does not currently support getting location'
         end
 
-        def setLocation(_lat, _lon, _alt)
+        def set_location(_lat, _lon, _alt)
           raise Error::UnsupportedOperationError, 'The W3C standard does not currently support setting location'
         end
 
-        def getNetworkConnection
+        def network_connection
           raise Error::UnsupportedOperationError, 'The W3C standard does not currently support getting network connection'
         end
 
-        def setNetworkConnection(_type)
+        def network_connection=(_type)
           raise Error::UnsupportedOperationError, 'The W3C standard does not currently support setting network connection'
         end
 
@@ -355,12 +355,12 @@ module Selenium
         # javascript execution
         #
 
-        def executeScript(script, *args)
+        def execute_script(script, *args)
           result = execute :executeScript, {}, {script: script, args: args}
           unwrap_script_result result
         end
 
-        def executeAsyncScript(script, *args)
+        def execute_async_script(script, *args)
           result = execute :executeAsyncScript, {}, {script: script, args: args}
           unwrap_script_result result
         end
@@ -369,32 +369,32 @@ module Selenium
         # cookies
         #
 
-        def addCookie(cookie)
+        def add_cookie(cookie)
           execute :addCookie, {}, {cookie: cookie}
         end
 
-        def deleteCookie(name)
+        def delete_cookie(name)
           execute :deleteCookie, name: name
         end
 
         # TODO: - write specs
-        def getCookie(name)
+        def cookie(name)
           execute :getCookie, name: name
         end
 
-        def getAllCookies
+        def cookies
           execute :getAllCookies
         end
 
-        def deleteAllCookies
-          getAllCookies.each { |cookie| deleteCookie(cookie['name']) }
+        def delete_all_cookies
+          cookies.each { |cookie| delete_cookie(cookie['name']) }
         end
 
         #
         # actions
         #
 
-        def clickElement(element)
+        def click_element(element)
           execute :elementClick, id: element
         end
 
@@ -402,23 +402,23 @@ module Selenium
           execute :click, {}, {button: 0}
         end
 
-        def doubleClick
+        def double_click
           execute :doubleClick
         end
 
-        def contextClick
+        def context_click
           execute :click, {}, {button: 2}
         end
 
-        def mouseDown
+        def mouse_down
           execute :mouseDown
         end
 
-        def mouseUp
+        def mouse_up
           execute :mouseUp
         end
 
-        def mouseMoveTo(element, x = nil, y = nil)
+        def mouse_move_to(element, x = nil, y = nil)
           params = {element: element}
 
           if x && y
@@ -429,54 +429,54 @@ module Selenium
           execute :mouseMoveTo, {}, params
         end
 
-        def sendKeysToActiveElement(keys)
-          sendKeysToElement(getActiveElement, keys)
+        def send_keys_to_active_element(keys)
+          send_keys_to_element(active_element, keys)
         end
 
         # TODO: - Implement file verification
-        def sendKeysToElement(element, keys)
+        def send_keys_to_element(element, keys)
           execute :elementSendKeys, {id: element}, {value: keys.join('').split(//)}
         end
 
-        def clearElement(element)
+        def clear_element(element)
           execute :elementClear, id: element
         end
 
-        def submitElement(element)
-          executeScript("var e = arguments[0].ownerDocument.createEvent('Event');" \
+        def submit_element(element)
+          execute_script("var e = arguments[0].ownerDocument.createEvent('Event');" \
                             "e.initEvent('submit', true, true);" \
                             'if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }', element)
         end
 
-        def dragElement(element, right_by, down_by)
+        def drag_element(element, right_by, down_by)
           execute :dragElement, {id: element}, {x: right_by, y: down_by}
         end
 
-        def touchSingleTap(element)
+        def touch_single_tap(element)
           execute :touchSingleTap, {}, {element: element}
         end
 
-        def touchDoubleTap(element)
+        def touch_double_tap(element)
           execute :touchDoubleTap, {}, {element: element}
         end
 
-        def touchLongPress(element)
+        def touch_long_press(element)
           execute :touchLongPress, {}, {element: element}
         end
 
-        def touchDown(x, y)
+        def touch_down(x, y)
           execute :touchDown, {}, {x: x, y: y}
         end
 
-        def touchUp(x, y)
+        def touch_up(x, y)
           execute :touchUp, {}, {x: x, y: y}
         end
 
-        def touchMove(x, y)
+        def touch_move(x, y)
           execute :touchMove, {}, {x: x, y: y}
         end
 
-        def touchScroll(element, x, y)
+        def touch_scroll(element, x, y)
           if element
             execute :touchScroll, {}, {element: element,
                                        xoffset: x,
@@ -486,22 +486,22 @@ module Selenium
           end
         end
 
-        def touchFlick(xspeed, yspeed)
+        def touch_flick(xspeed, yspeed)
           execute :touchFlick, {}, {xspeed: xspeed, yspeed: yspeed}
         end
 
-        def touchElementFlick(element, right_by, down_by, speed)
+        def touch_element_flick(element, right_by, down_by, speed)
           execute :touchFlick, {}, {element: element,
                                     xoffset: right_by,
                                     yoffset: down_by,
                                     speed: speed}
         end
 
-        def setScreenOrientation(orientation)
+        def screen_orientation=(orientation)
           execute :setScreenOrientation, {}, {orientation: orientation}
         end
 
-        def getScreenOrientation
+        def screen_orientation
           execute :getScreenOrientation
         end
 
@@ -509,54 +509,54 @@ module Selenium
         # element properties
         #
 
-        def getElementTagName(element)
+        def element_tag_name(element)
           execute :getElementTagName, id: element
         end
 
-        def getElementAttribute(element, name)
+        def element_attribute(element, name)
           execute :getElementAttribute, id: element, name: name
         end
 
-        def getElementValue(element)
+        def element_value(element)
           execute :getElementProperty, id: element, name: 'value'
         end
 
-        def getElementText(element)
+        def element_text(element)
           execute :getElementText, id: element
         end
 
-        def getElementLocation(element)
+        def element_location(element)
           data = execute :getElementRect, id: element
 
           Point.new data['x'], data['y']
         end
 
-        def getElementLocationOnceScrolledIntoView(element)
-          sendKeysToElement(element, [''])
-          getElementLocation(element)
+        def element_location_once_scrolled_into_view(element)
+          send_keys_to_element(element, [''])
+          element_location(element)
         end
 
-        def getElementSize(element)
+        def element_size(element)
           data = execute :getElementRect, id: element
 
           Dimension.new data['width'], data['height']
         end
 
-        def isElementEnabled(element)
+        def element_enabled?(element)
           execute :isElementEnabled, id: element
         end
 
-        def isElementSelected(element)
+        def element_selected?(element)
           execute :isElementSelected, id: element
         end
 
-        def isElementDisplayed(element)
+        def element_displayed?(element)
           jwp = Selenium::WebDriver::Remote::Bridge::COMMANDS[:isElementDisplayed]
           self.class.command(:isElementDisplayed, jwp.first, jwp.last)
           execute :isElementDisplayed, id: element
         end
 
-        def getElementValueOfCssProperty(element, prop)
+        def element_value_of_css_property(element, prop)
           execute :getElementCssValue, id: element, property_name: prop
         end
 
@@ -564,10 +564,11 @@ module Selenium
         # finding elements
         #
 
-        def getActiveElement
+        def active_element
           Element.new self, element_id_from(execute(:getActiveElement))
         end
-        alias_method :switchToActiveElement, :getActiveElement
+
+        alias_method :switch_to_active_element, :active_element
 
         def find_element_by(how, what, parent = nil)
           how, what = convert_locators(how, what)
@@ -632,7 +633,7 @@ module Selenium
 
         def raw_execute(command, opts = {}, command_hash = nil)
           verb, path = COMMANDS[command] || raise(ArgumentError, "unknown command: #{command.inspect}")
-          path       = path.dup
+          path = path.dup
 
           path[':session_id'] = @session_id if path.include?(':session_id')
 

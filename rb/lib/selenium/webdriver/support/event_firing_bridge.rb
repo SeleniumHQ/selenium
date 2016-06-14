@@ -41,33 +41,33 @@ module Selenium
           end
         end
 
-        def goForward
+        def go_forward
           dispatch(:navigate_forward, driver) do
-            @delegate.goForward
+            @delegate.go_forward
           end
         end
 
-        def goBack
+        def go_back
           dispatch(:navigate_back, driver) do
-            @delegate.goBack
+            @delegate.go_back
           end
         end
 
-        def clickElement(ref)
+        def click_element(ref)
           dispatch(:click, create_element(ref), driver) do
-            @delegate.clickElement(ref)
+            @delegate.click_element(ref)
           end
         end
 
-        def clearElement(ref)
+        def clear_element(ref)
           dispatch(:change_value_of, create_element(ref), driver) do
-            @delegate.clearElement(ref)
+            @delegate.clear_element(ref)
           end
         end
 
-        def sendKeysToElement(ref, keys)
+        def send_keys_to_element(ref, keys)
           dispatch(:change_value_of, create_element(ref), driver) do
-            @delegate.sendKeysToElement(ref, keys)
+            @delegate.send_keys_to_element(ref, keys)
           end
         end
 
@@ -87,9 +87,9 @@ module Selenium
           es.map { |e| Element.new self, e.ref }
         end
 
-        def executeScript(script, *args)
+        def execute_script(script, *args)
           dispatch(:execute_script, script, driver) do
-            @delegate.executeScript(script, *args)
+            @delegate.execute_script(script, *args)
           end
         end
 

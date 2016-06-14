@@ -141,7 +141,7 @@ module Selenium
       #
 
       def current_url
-        bridge.getCurrentUrl
+        bridge.url
       end
 
       #
@@ -151,7 +151,7 @@ module Selenium
       #
 
       def title
-        bridge.getTitle
+        bridge.title
       end
 
       #
@@ -161,7 +161,7 @@ module Selenium
       #
 
       def page_source
-        bridge.getPageSource
+        bridge.page_source
       end
 
       #
@@ -188,7 +188,7 @@ module Selenium
       #
 
       def window_handles
-        bridge.getWindowHandles
+        bridge.window_handles
       end
 
       #
@@ -198,7 +198,7 @@ module Selenium
       #
 
       def window_handle
-        bridge.getCurrentWindowHandle
+        bridge.window_handle
       end
 
       #
@@ -214,7 +214,7 @@ module Selenium
       #
 
       def execute_script(script, *args)
-        bridge.executeScript(script, *args)
+        bridge.execute_script(script, *args)
       end
 
       # Execute an asynchronous piece of JavaScript in the context of the
@@ -233,7 +233,7 @@ module Selenium
       #
 
       def execute_async_script(script, *args)
-        bridge.executeAsyncScript(script, *args)
+        bridge.execute_async_script(script, *args)
       end
 
       #-------------------------------- sugar  --------------------------------

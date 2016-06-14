@@ -22,7 +22,7 @@ module Selenium
     module DriverExtensions
       module HasLocation
         def location
-          @bridge.getLocation
+          @bridge.location
         end
 
         def location=(loc)
@@ -30,7 +30,7 @@ module Selenium
             raise TypeError, "expected #{Location}, got #{loc.inspect}:#{loc.class}"
           end
 
-          @bridge.setLocation loc.latitude, loc.longitude, loc.altitude
+          @bridge.set_location loc.latitude, loc.longitude, loc.altitude
         end
 
         def set_location(lat, lon, alt)

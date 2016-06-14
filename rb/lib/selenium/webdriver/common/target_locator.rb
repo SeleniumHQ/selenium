@@ -33,7 +33,7 @@ module Selenium
       #
 
       def frame(id)
-        @bridge.switchToFrame id
+        @bridge.switch_to_frame id
       end
 
       #
@@ -41,7 +41,7 @@ module Selenium
       #
 
       def parent_frame
-        @bridge.switchToParentFrame
+        @bridge.switch_to_parent_frame
       end
 
       #
@@ -57,27 +57,27 @@ module Selenium
       def window(id)
         if block_given?
           original = begin
-            @bridge.getCurrentWindowHandle
+            @bridge.window_handle
           rescue Error::NoSuchWindowError
             nil
           end
 
-          unless @bridge.getWindowHandles.include? id
+          unless @bridge.window_handles.include? id
             raise Error::NoSuchWindowError, "The specified identifier '#{id}' is not found in the window handle list"
           end
 
-          @bridge.switchToWindow id
+          @bridge.switch_to_window id
 
           begin
             returned = yield
           ensure
-            current_handles = @bridge.getWindowHandles
+            current_handles = @bridge.window_handles
             original = current_handles.first unless current_handles.include? original
-            @bridge.switchToWindow original
+            @bridge.switch_to_window original
             returned
           end
         else
-          @bridge.switchToWindow id
+          @bridge.switch_to_window id
         end
       end
 
@@ -88,7 +88,7 @@ module Selenium
       #
 
       def active_element
-        @bridge.switchToActiveElement
+        @bridge.switch_to_active_element
       end
 
       #
@@ -96,7 +96,7 @@ module Selenium
       #
 
       def default_content
-        @bridge.switchToDefaultContent
+        @bridge.switch_to_default_content
       end
 
       #

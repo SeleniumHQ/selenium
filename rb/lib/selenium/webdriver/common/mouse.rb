@@ -36,22 +36,22 @@ module Selenium
 
       def double_click(element = nil)
         move_if_needed element
-        @bridge.doubleClick
+        @bridge.double_click
       end
 
       def context_click(element = nil)
         move_if_needed element
-        @bridge.contextClick
+        @bridge.context_click
       end
 
       def down(element = nil)
         move_if_needed element
-        @bridge.mouseDown
+        @bridge.mouse_down
       end
 
       def up(element = nil)
         move_if_needed element
-        @bridge.mouseUp
+        @bridge.mouse_up
       end
 
       #
@@ -66,11 +66,11 @@ module Selenium
       def move_to(element, right_by = nil, down_by = nil)
         assert_element element
 
-        @bridge.mouseMoveTo element.ref, right_by, down_by
+        @bridge.mouse_move_to element.ref, right_by, down_by
       end
 
       def move_by(right_by, down_by)
-        @bridge.mouseMoveTo nil, Integer(right_by), Integer(down_by)
+        @bridge.mouse_move_to nil, Integer(right_by), Integer(down_by)
       end
 
       private

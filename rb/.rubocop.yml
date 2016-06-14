@@ -40,10 +40,6 @@ Style/MutableConstant:
     - 'lib/selenium/webdriver/remote/bridge.rb'
     - 'lib/selenium/webdriver/remote/w3c_bridge.rb'
 
-# There shouldn't be any reason to use camel case instead of snake case here
-Style/MethodName:
-  Enabled: false
-
 # TODO: Refactor Chrome::Bridge#create_capabilities
 Metrics/PerceivedComplexity:
   Max: 11

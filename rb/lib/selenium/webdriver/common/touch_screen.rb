@@ -32,43 +32,43 @@ module Selenium
 
       def single_tap(element)
         assert_element element
-        @bridge.touchSingleTap element.ref
+        @bridge.touch_single_tap element.ref
       end
 
       def double_tap(element)
         assert_element element
-        @bridge.touchDoubleTap element.ref
+        @bridge.touch_double_tap element.ref
       end
 
       def long_press(element)
         assert_element element
-        @bridge.touchLongPress element.ref
+        @bridge.touch_long_press element.ref
       end
 
       def down(x, y = nil)
         x, y = coords_from x, y
-        @bridge.touchDown x, y
+        @bridge.touch_down x, y
       end
 
       def up(x, y = nil)
         x, y = coords_from x, y
-        @bridge.touchUp x, y
+        @bridge.touch_up x, y
       end
 
       def move(x, y = nil)
         x, y = coords_from x, y
-        @bridge.touchMove x, y
+        @bridge.touch_move x, y
       end
 
       def scroll(*args)
         case args.size
         when 2
           x_offset, y_offset = args
-          @bridge.touchScroll nil, Integer(x_offset), Integer(y_offset)
+          @bridge.touch_scroll nil, Integer(x_offset), Integer(y_offset)
         when 3
           element, x_offset, y_offset = args
           assert_element element
-          @bridge.touchScroll element.ref, Integer(x_offset), Integer(y_offset)
+          @bridge.touch_scroll element.ref, Integer(x_offset), Integer(y_offset)
         else
           raise ArgumentError, "wrong number of arguments, expected 2..3, got #{args.size}"
         end
@@ -78,7 +78,7 @@ module Selenium
         case args.size
         when 2
           x_speed, y_speed = args
-          @bridge.touchFlick Integer(x_speed), Integer(y_speed)
+          @bridge.touch_flick Integer(x_speed), Integer(y_speed)
         when 4
           element, xoffset, yoffset, speed = args
 
@@ -89,7 +89,7 @@ module Selenium
             raise ArgumentError, "expected one of #{FLICK_SPEED.keys.inspect}, got #{speed.inspect}"
           end
 
-          @bridge.touchElementFlick element.ref, Integer(xoffset), Integer(yoffset), flick_speed
+          @bridge.touch_element_flick element.ref, Integer(xoffset), Integer(yoffset), flick_speed
         else
           raise ArgumentError, "wrong number of arguments, expected 2 or 4, got #{args.size}"
         end

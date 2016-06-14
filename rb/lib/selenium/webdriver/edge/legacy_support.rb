@@ -22,28 +22,30 @@ module Selenium
     module Edge
       module LegacySupport
         # These are commands Edge is still using from JSON Wire Protocol
-        [:executeScript, :executeAsyncScript, :submitElement, :doubleClick, :mouseDown, :mouseUp, :mouseMoveTo, :click,
-         :sendKeysToActiveElement, :getWindowHandles, :getCurrentWindowHandle, :getWindowSize, :setWindowSize, :getWindowPosition,
-         :setWindowPosition, :maximizeWindow, :getAlertText, :acceptAlert, :dismissAlert].each do |cmd|
+        %i[execute_script, execute_async_script, submit_element, double_click,
+           mouse_down, mouse_up, mouse_move_to, click,
+           send_keys_to_active_element, window_handles, window_handle,
+           window_size, resize_window, window_position, reposition_window,
+           maximize_window, alert_text, accept_alert, dismiss_alert].each do |cmd|
           jwp = Remote::Bridge::COMMANDS[cmd]
           Remote::W3CBridge.command(cmd, jwp.first, jwp.last)
         end
 
-        def executeScript(script, *args)
+        def execute_script(script, *args)
           result = execute :executeScript, {}, {script: script, args: args}
           unwrap_script_result result
         end
 
-        def executeAsyncScript(script, *args)
+        def execute_async_script(script, *args)
           result = execute :executeAsyncScript, {}, {script: script, args: args}
           unwrap_script_result result
         end
 
-        def submitElement(element)
+        def submit_element(element)
           execute :submitElement, id: element
         end
 
-        def doubleClick
+        def double_click
           execute :doubleClick
         end
 
@@ -51,19 +53,19 @@ module Selenium
           execute :click, {}, {button: 0}
         end
 
-        def contextClick
+        def context_click
           execute :click, {}, {button: 2}
         end
 
-        def mouseDown
+        def mouse_down
           execute :mouseDown
         end
 
-        def mouseUp
+        def mouse_up
           execute :mouseUp
         end
 
-        def mouseMoveTo(element, x = nil, y = nil)
+        def mouse_move_to(element, x = nil, y = nil)
           params = {element: element}
 
           if x && y
@@ -74,38 +76,38 @@ module Selenium
           execute :mouseMoveTo, {}, params
         end
 
-        def sendKeysToActiveElement(key)
+        def send_keys_to_active_element(key)
           execute :sendKeysToActiveElement, {}, {value: key}
         end
 
-        def getCurrentWindowHandle
+        def window_handle
           execute :getCurrentWindowHandle
         end
 
-        def getWindowSize(handle = :current)
+        def window_size(handle = :current)
           data = execute :getWindowSize, window_handle: handle
 
           Dimension.new data['width'], data['height']
         end
 
-        def setWindowSize(width, height, handle = :current)
+        def resize_window(width, height, handle = :current)
           execute :setWindowSize, {window_handle: handle},
                   {width: width,
                    height: height}
         end
 
-        def getWindowPosition(handle = :current)
+        def window_position(handle = :current)
           data = execute :getWindowPosition, window_handle: handle
 
           Point.new data['x'], data['y']
         end
 
-        def setWindowPosition(x, y, handle = :current)
+        def reposition_window(x, y, handle = :current)
           execute :setWindowPosition, {window_handle: handle},
                   {x: x, y: y}
         end
 
-        def maximizeWindow(handle = :current)
+        def maximize_window(handle = :current)
           execute :maximizeWindow, window_handle: handle
         end
       end # LegacySupport

@@ -42,7 +42,7 @@ module Selenium
 
           it 'fires events for navigate.back' do
             expect(listener).to receive(:before_navigate_back).with instance_of(Driver)
-            expect(bridge).to receive(:goBack)
+            expect(bridge).to receive(:go_back)
             expect(listener).to receive(:after_navigate_back).with instance_of(Driver)
 
             driver.navigate.back
@@ -50,7 +50,7 @@ module Selenium
 
           it 'fires events for navigate.forward' do
             expect(listener).to receive(:before_navigate_forward).with instance_of(Driver)
-            expect(bridge).to receive(:goForward)
+            expect(bridge).to receive(:go_forward)
             expect(listener).to receive(:after_navigate_forward).with instance_of(Driver)
 
             driver.navigate.forward
@@ -78,7 +78,7 @@ module Selenium
         context 'changing elements' do
           it 'fires events for send_keys' do
             expect(listener).to receive(:before_change_value_of).with(instance_of(Element), instance_of(Driver))
-            expect(bridge).to receive(:sendKeysToElement).with('ref', ['cheese'])
+            expect(bridge).to receive(:send_keys_to_element).with('ref', ['cheese'])
             expect(listener).to receive(:after_change_value_of).with(instance_of(Element), instance_of(Driver))
 
             element.send_keys 'cheese'
@@ -86,7 +86,7 @@ module Selenium
 
           it 'fires events for clear' do
             expect(listener).to receive(:before_change_value_of).with(instance_of(Element), instance_of(Driver))
-            expect(bridge).to receive(:clearElement).with('ref')
+            expect(bridge).to receive(:clear_element).with('ref')
             expect(listener).to receive(:after_change_value_of).with(instance_of(Element), instance_of(Driver))
 
             element.clear
@@ -99,7 +99,7 @@ module Selenium
             arg = 'arg'
 
             expect(listener).to receive(:before_execute_script).with(script, instance_of(Driver))
-            expect(bridge).to receive(:executeScript).with(script, arg)
+            expect(bridge).to receive(:execute_script).with(script, arg)
             expect(listener).to receive(:after_execute_script).with(script, instance_of(Driver))
 
             driver.execute_script script, arg

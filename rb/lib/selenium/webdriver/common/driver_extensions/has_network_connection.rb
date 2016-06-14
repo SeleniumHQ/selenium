@@ -22,7 +22,7 @@ module Selenium
     module DriverExtensions
       module HasNetworkConnection
         def network_connection_type
-          connection_value = @bridge.getNetworkConnection
+          connection_value = @bridge.network_connection
 
           connection_type = values_to_type[connection_value]
 
@@ -36,7 +36,7 @@ module Selenium
 
           connection_value = type_to_values[connection_type]
 
-          @bridge.setNetworkConnection connection_value
+          @bridge.network_connection = connection_value
         end
 
         private

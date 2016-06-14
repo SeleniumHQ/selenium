@@ -71,7 +71,7 @@ module Selenium
       #
 
       def click
-        bridge.clickElement @id
+        bridge.click_element @id
       end
 
       #
@@ -85,7 +85,7 @@ module Selenium
       #
 
       def tag_name
-        bridge.getElementTagName @id
+        bridge.element_tag_name @id
       end
 
       #
@@ -115,7 +115,7 @@ module Selenium
       #
 
       def attribute(name)
-        bridge.getElementAttribute @id, name
+        bridge.element_attribute @id, name
       end
 
       #
@@ -125,7 +125,7 @@ module Selenium
       #
 
       def text
-        bridge.getElementText @id
+        bridge.element_text @id
       end
 
       #
@@ -143,7 +143,7 @@ module Selenium
       #
 
       def send_keys(*args)
-        bridge.sendKeysToElement @id, Keys.encode(args)
+        bridge.send_keys_to_element @id, Keys.encode(args)
       end
       alias_method :send_key, :send_keys
 
@@ -158,7 +158,7 @@ module Selenium
       #
 
       def clear
-        bridge.clearElement @id
+        bridge.clear_element @id
       end
 
       #
@@ -168,7 +168,7 @@ module Selenium
       #
 
       def enabled?
-        bridge.isElementEnabled @id
+        bridge.element_enabled? @id
       end
 
       #
@@ -178,7 +178,7 @@ module Selenium
       #
 
       def selected?
-        bridge.isElementSelected @id
+        bridge.element_selected? @id
       end
 
       #
@@ -188,7 +188,7 @@ module Selenium
       #
 
       def displayed?
-        bridge.isElementDisplayed @id
+        bridge.element_displayed? @id
       end
 
       #
@@ -196,7 +196,7 @@ module Selenium
       #
 
       def submit
-        bridge.submitElement @id
+        bridge.submit_element @id
       end
 
       #
@@ -211,7 +211,7 @@ module Selenium
       #
 
       def css_value(prop)
-        bridge.getElementValueOfCssProperty @id, prop
+        bridge.element_value_of_css_property @id, prop
       end
       alias_method :style, :css_value
 
@@ -222,7 +222,7 @@ module Selenium
       #
 
       def location
-        bridge.getElementLocation @id
+        bridge.element_location @id
       end
 
       #
@@ -232,7 +232,7 @@ module Selenium
       #
 
       def location_once_scrolled_into_view
-        bridge.getElementLocationOnceScrolledIntoView @id
+        bridge.element_location_once_scrolled_into_view @id
       end
 
       #
@@ -242,7 +242,7 @@ module Selenium
       #
 
       def size
-        bridge.getElementSize @id
+        bridge.element_size @id
       end
 
       #-------------------------------- sugar  --------------------------------

@@ -29,11 +29,11 @@ module Selenium
       end
 
       def get(type)
-        @bridge.getLog type
+        @bridge.log type
       end
 
       def available_types
-        @bridge.getAvailableLogTypes
+        @bridge.available_log_types
       end
     end # Logs
   end # WebDriver
