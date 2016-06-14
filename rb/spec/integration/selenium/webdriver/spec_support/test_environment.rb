@@ -29,7 +29,7 @@ module Selenium
           @create_driver_error       = nil
           @create_driver_error_count = 0
 
-          @driver = (ENV['WD_SPEC_DRIVER'] || :chrome).strip.to_sym
+          @driver = (ENV['WD_SPEC_DRIVER'] || :chrome).to_sym
         end
 
         def browser

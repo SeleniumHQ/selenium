@@ -23,7 +23,11 @@ shared_examples_for "driver that can be started concurrently" do |browser_name|
       # start 5 drivers concurrently
       threads, drivers = [], []
 
-      opt = GlobalTestEnv.remote_server? ? {:url => GlobalTestEnv.remote_server.webdriver_url} : {}
+      opt = {}
+      if GlobalTestEnv.remote_server?
+        opt[:url] = GlobalTestEnv.remote_server.webdriver_url
+        opt[:desired_capabilities] = WebDriver::Remote::Capabilities.send(browser_name)
+      end
       opt[:marionette] = true if browser_name == :marionette
 
       5.times do
