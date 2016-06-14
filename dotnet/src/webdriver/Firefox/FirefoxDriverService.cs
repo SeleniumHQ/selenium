@@ -29,8 +29,8 @@ namespace OpenQA.Selenium.Firefox
     /// </summary>
     public sealed class FirefoxDriverService : DriverService
     {
-        private const string FirefoxDriverServiceFileName = "wires.exe";
-        private static readonly Uri FirefoxDriverDownloadUrl = new Uri("https://github.com/jgraham/wires/releases");
+        private const string FirefoxDriverServiceFileName = "geckodriver.exe";
+        private static readonly Uri FirefoxDriverDownloadUrl = new Uri("https://github.com/mozilla/geckodriver/releases");
         private string browserBinaryPath = @"C:\Program Files (x86)\Nightly\firefox.exe";
         private int browserCommunicationPort = -1;
 
