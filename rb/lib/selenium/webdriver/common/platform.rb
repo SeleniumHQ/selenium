@@ -164,7 +164,9 @@ module Selenium
 
         binary_names.each do |binary_name|
           paths.each do |path|
-            exe = Dir.glob(File.join(path, binary_name)).first
+            full_path = File.join(path, binary_name)
+            full_path.tr!('\\', '/') if windows?
+            exe = Dir.glob(full_path).first
             next unless exe
             return exe if File.executable?(exe)
           end
