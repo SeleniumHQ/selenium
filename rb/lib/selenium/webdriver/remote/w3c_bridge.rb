@@ -77,10 +77,6 @@ module Selenium
 
           desired_capabilities[:marionette] = opts.delete(:marionette) unless opts[:marionette].nil?
 
-          if desired_capabilities[:marionette] && Firefox::Binary.version < 45
-              raise Error::WebDriverError, "Marionette is not supported in Firefox Version #{Firefox::Binary.version}"
-          end
-
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
           end
