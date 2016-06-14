@@ -119,12 +119,9 @@ module Selenium
         end
 
         compliant_on :driver => :marionette do
-          # https://github.com/mozilla/geckodriver/issues/58
-          not_compliant_on :driver => :marionette do
-            context 'when shared example' do
-              before { driver }
-              it_behaves_like "driver that can be started concurrently", :marionette
-            end
+          context 'when shared example' do
+            before { driver }
+            it_behaves_like "driver that can be started concurrently", :marionette
           end
         end
       end
