@@ -54,12 +54,14 @@ class PositionAndSizeTest(unittest.TestCase):
         self.assertEqual(box.location, {"x": 10, "y": 10})
         self.assertEqual(self._get_location_on_page(By.ID,"box"), {"x": 10, "y": 10})
 
+    @pytest.mark.ignore_marionette
     def testShouldGetCoordinatesInViewPortOfAnElementInAFrame(self):
         self.driver.get(self.webserver.where_is("coordinates_tests/element_in_frame.html"))
         self.driver.switch_to_frame(self.driver.find_element(By.NAME, "ifr"))
         self.assertEqual(self._get_location_in_viewport(By.ID,"box"), {"x": 25, "y": 25})
         self.assertEqual(self._get_location_on_page(By.ID,"box"), {"x": 10, "y": 10})
 
+    @pytest.mark.ignore_marionette
     def testShouldGetCoordinatesInViewPortOfAnElementInANestedFrame(self):
         self.driver.get(self.webserver.where_is("coordinates_tests/element_in_nested_frame.html"))
         self.driver.switch_to_frame(self.driver.find_element(By.NAME, "ifr"))
