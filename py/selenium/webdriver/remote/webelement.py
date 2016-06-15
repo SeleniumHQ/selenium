@@ -368,8 +368,8 @@ class WebElement(object):
             old_loc = self._execute(Command.GET_ELEMENT_RECT)
         else:
             old_loc = self._execute(Command.GET_ELEMENT_LOCATION)['value']
-        new_loc = {"x": old_loc['x'],
-                   "y": old_loc['y']}
+        new_loc = {"x": round(old_loc['x']),
+                   "y": round(old_loc['y'])}
         return new_loc
 
     @property
