@@ -335,7 +335,14 @@ class WebElement(object):
         the element is not visible.
 
         """
-        return self._execute(Command.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW)['value']
+        if self._w3c:
+            old_loc = self._execute(Command.EXECUTE_SCRIPT,
+                {'script': "arguments[0].scrollIntoView(true); return arguments[0].getBoundingClientRect()",
+                'args':[self]})['value']
+            return {"x": round(old_loc['x']),
+                    "y": round(old_loc['y'])}
+        else:
+            return self._execute(Command.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW)['value']
 
     @property
     def size(self):
