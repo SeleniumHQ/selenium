@@ -17,6 +17,9 @@
 
 /**
  * @fileoverview Defines the {@linkplain Driver WebDriver} client for Firefox.
+ * Before using this module, you must download the latest
+ * [geckodriver release] and ensure it can be found on your system [PATH].
+ *
  * Each FirefoxDriver instance will be created with an anonymous profile,
  * ensuring browser historys do not share session data (cookies, history, cache,
  * offline storage, etc.)
@@ -90,6 +93,20 @@
  *         .usingServer('http://127.0.0.1:4444/wd/hub')
  *         .setFirefoxOptions(options)
  *         .build();
+ *
+ * __Testing Older Versions of Firefox__
+ *
+ * To test versions of Firefox prior to Firefox 47, you must disable the use of
+ * the geckodriver using the {@link Options} class.
+ *
+ *     var options = new firefox.Options().useGeckoDriver(false);
+ *     var driver = new firefox.Driver(options);
+ *
+ * Alternatively, you may disable the geckodriver at runtime by setting the
+ * environment variable `SELENIUM_MARIONETTE=false`.
+ *
+ * [geckodriver release]: https://github.com/mozilla/geckodriver/releases/
+ * [PATH]: http://en.wikipedia.org/wiki/PATH_%28variable%29
  */
 
 'use strict';
@@ -158,7 +175,7 @@ class Options {
     this.proxy_ = null;
 
     /** @private {boolean} */
-    this.marionette_ = false;
+    this.marionette_ = true;
   }
 
   /**
@@ -214,12 +231,14 @@ class Options {
   }
 
   /**
-   * Sets whether to use Mozilla's Marionette to drive the browser.
+   * Sets whether to use Mozilla's geckodriver to drive the browser. This option
+   * is enabled by default and required for Firefox 47+.
    *
-   * @see https://developer.mozilla.org/en-US/docs/Mozilla/QA/Marionette/WebDriver
+   * @param {boolean} enable Whether to enable the geckodriver.
+   * @see https://github.com/mozilla/geckodriver
    */
-  useMarionette(marionette) {
-    this.marionette_ = marionette;
+  useGeckoDriver(enable) {
+    this.marionette_ = enable;
     return this;
   }
 
@@ -247,10 +266,8 @@ class Options {
   }
 }
 
-// TODO: Wires is the old name of GeckoDriver. Rename to geckodriver, once the
-// first renamed version is out at
-// https://github.com/mozilla/geckodriver/releases
-const GECKO_DRIVER_EXE = process.platform === 'win32' ? 'wires.exe' : 'wires';
+const GECKO_DRIVER_EXE =
+    process.platform === 'win32' ? 'geckodriver.exe' : 'geckodriver';
 
 
 /**
@@ -263,7 +280,7 @@ function findGeckoDriver() {
     throw Error(
       'The ' + GECKO_DRIVER_EXE + ' executable could not be found on the current ' +
       'PATH. Please download the latest version from ' +
-      'https://developer.mozilla.org/en-US/docs/Mozilla/QA/Marionette/' +
+      'https://github.com/mozilla/geckodriver/releases/' +
       'WebDriver and ensure it can be found on your PATH.');
   }
   return exe;
@@ -339,8 +356,14 @@ class Driver extends webdriver.WebDriver {
 
     let serverUrl, onQuit;
 
-    if (caps.get(Capability.MARIONETTE)
-        || /^1|true$/i.test(process.env['SELENIUM_MARIONETTE'])) {
+    // Users must now explicitly disable marionette to use the legacy
+    // FirefoxDriver.
+    let noMarionette =
+        caps.get(Capability.MARIONETTE) === false
+            || /^0|false$/i.test(process.env['SELENIUM_MARIONETTE']);
+    let useMarionette = !noMarionette;
+
+    if (useMarionette) {
       let service = createGeckoDriverService(binary);
       serverUrl = service.start();
       onQuit = () => service.kill();

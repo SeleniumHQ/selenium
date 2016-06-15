@@ -53,5 +53,5 @@ test.suite(function(env) {
     });
   });
 
-// Currently only implemented in firefox.
-}, {browsers: ['firefox']});
+// Currently only implemented in legacy firefox.
+}, {browsers: ['legacy-firefox']});

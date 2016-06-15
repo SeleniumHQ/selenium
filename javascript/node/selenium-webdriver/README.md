@@ -10,20 +10,23 @@ Selenium may be installed via npm with
 
     npm install selenium-webdriver
 
-Out of the box, Selenium includes everything you need to work with Firefox. You
-will need to download additional components to work with the other major
-browsers. The drivers for Chrome, PhantomJS, Opera, and Microsoft's IE and Edge
-web browsers are all standalone executables that should be available on your
-[PATH](http://en.wikipedia.org/wiki/PATH_%28variable%29). The SafariDriver
-browser extension should be installed in your browser before using Selenium; we
-recommend disabling the extension when using the browser without Selenium or
-installing the extension in a profile only used for testing.
+You will need to download additional components to work with each of the major
+browsers. The drivers for Chrome, Firefox, PhantomJS, Opera, and 
+Microsoft's IE and Edge web browsers are all standalone executables that should
+be placed on your system [PATH]. The SafariDriverbrowser extension should be
+installed in your browser before using Selenium; we recommend disabling the
+extension when using the browser without Selenium or installing the extension in
+a profile only used for testing.
+
+> **NOTE:**  Mozilla's [geckodriver] is only required for Firefox 47+.
+> Everything you need for Firefox 38-46 is included with this package.
 
 | Browser           | Component                          |
 | ----------------- | ---------------------------------- |
 | Chrome            | [chromedriver(.exe)][chrome]       |
 | Internet Explorer | [IEDriverServer.exe][release]      |
 | Edge              | [MicrosoftWebDriver.msi][edge]     |
+| Firefox 47+       | [geckodriver(.exe)][geckodriver]   |
 | PhantomJS         | [phantomjs(.exe)][phantomjs]       |
 | Opera             | [operadriver(.exe)][opera]         |
 | Safari            | [SafariDriver.safariextz][release] |
@@ -213,6 +216,7 @@ specific language governing permissions and limitations
 under the License.
 
 [LTS]: https://github.com/nodejs/LTS
+[PATH]: http://en.wikipedia.org/wiki/PATH_%28variable%29
 [api]: http://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/
 [cla]: http://goo.gl/qC50R
 [chrome]: http://chromedriver.storage.googleapis.com/index.html
@@ -221,6 +225,7 @@ under the License.
 [opera]: https://github.com/operasoftware/operachromiumdriver/releases
 [phantomjs]: http://phantomjs.org/
 [edge]: http://go.microsoft.com/fwlink/?LinkId=619687
+[geckodriver]: https://github.com/mozilla/geckodriver/releases/
 [reduction]: http://www.webkit.org/quality/reduction.html
 [release]: http://selenium-release.storage.googleapis.com/index.html
 [users]: https://groups.google.com/forum/#!forum/selenium-users
