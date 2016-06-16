@@ -14,7 +14,7 @@ module Buck
       version = File.open('.buckversion').first.chomp
       cached_hash = File.open('.buckhash').first.chomp
 
-      out = File.expand_path("~/.crazyfun/buck/#{version}/buck.pex")
+      out = File.expand_path("buck-out/crazy-fun/#{version}/buck.pex")
       out_hash = File.exist?(out) ? Digest::MD5.file(out).hexdigest : nil
 
       if cached_hash == out_hash
