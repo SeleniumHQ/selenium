@@ -7,7 +7,7 @@ namespace OpenQA.Selenium.Environment
     public class RemoteSeleniumServer
     {
         private Process webserverProcess;
-        private string serverJarName = @"build\java\server\src\org\openqa\selenium\server\server-standalone.jar";
+        private string serverJarName = @"buck-out\gen\java\server\src\org\openqa\grid\selenium\selenium.jar";
         private string projectRootPath;
         private bool autoStart;
 
@@ -33,7 +33,7 @@ namespace OpenQA.Selenium.Environment
                 while (!isRunning && DateTime.Now < timeout)
                 {
                     // Poll until the webserver is correctly serving pages.
-                    HttpWebRequest request = WebRequest.Create("http://localhost:6000/selenium-server/driver?cmd=getLogMessages") as HttpWebRequest;
+                    HttpWebRequest request = WebRequest.Create("http://localhost:6000/wd/hub/status") as HttpWebRequest;
                     try
                     {
                         HttpWebResponse response = request.GetResponse() as HttpWebResponse;
