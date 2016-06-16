@@ -27,11 +27,11 @@ module Selenium
 
       class Service < WebDriver::Service
         DEFAULT_PORT = 4444
-
+        @@reserved_marionette_ports = []
         private
 
         def start_process
-          server_command = [@executable_path, "--binary=#{Firefox::Binary.path}", "--webdriver-port=#{@port}", *@extra_args]
+          server_command = [@executable_path, "--binary=#{Firefox::Binary.path}", "--webdriver-port=#{@port}", "--marionette-port=#{@marionette_port}", *@extra_args]
           @process       = ChildProcess.build(*server_command)
 
           if $DEBUG == true
@@ -54,12 +54,31 @@ module Selenium
 
         def stop_server
           connect_to_server { |http| http.head("/shutdown") }
+          @@reserved_marionette_ports.delete(@marionette_port)
         end
 
         def cannot_connect_error_text
           "unable to connect to Mozilla geckodriver #{@host}:#{@port}"
         end
 
+        def find_free_port
+          @port = find_free_unreserved_port(@port)
+          @marionette_port = find_free_unreserved_port(@port + 1)
+          @@reserved_marionette_ports << @marionette_port
+          @port
+        end
+
+        def find_free_unreserved_port(start_port)
+          loop do
+            start_port = PortProber.above(start_port)
+            break start_port unless port_reserved?(start_port)
+            start_port += 1
+          end
+        end
+
+        def port_reserved?(port)
+          @@reserved_marionette_ports.include? port
+        end
       end # Service
     end # Firefox
   end # WebDriver
