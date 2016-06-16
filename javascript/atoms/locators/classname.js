@@ -19,9 +19,7 @@ goog.provide('bot.locators.className');
 
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
-goog.require('goog.array');
 goog.require('goog.dom');
-goog.require('goog.dom.DomHelper');
 goog.require('goog.string');
 
 
