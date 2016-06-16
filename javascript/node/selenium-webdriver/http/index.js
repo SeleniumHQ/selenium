@@ -133,6 +133,7 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy) {
     var proxy = url.parse(opt_proxy);
 
     options.headers['Host'] = options.host;
+    options.path = 'http://' + options.host + options.path;
     options.host = proxy.hostname;
     options.port = proxy.port;
 
