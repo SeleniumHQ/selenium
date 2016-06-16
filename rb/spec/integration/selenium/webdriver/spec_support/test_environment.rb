@@ -133,12 +133,8 @@ module Selenium
         private
 
         def create_driver
-          instance = if driver == :marionette
-                       create_firefox_driver(true)
-                     else
-                       method = "create_#{driver}_driver"
-                       defined?(method) ? send(method) : WebDriver::Driver.for(driver)
-                     end
+          method = "create_#{driver}_driver"
+          instance = defined?(method) ? send(method) : WebDriver::Driver.for(driver)
 
           @create_driver_error_count -= 1 unless @create_driver_error_count == 0
           instance
@@ -149,15 +145,15 @@ module Selenium
         end
 
         def remote_capabilities
-          if browser == :marionette
-            caps = WebDriver::Remote::Capabilities.firefox(marionette: true)
-          else
-            caps = WebDriver::Remote::Capabilities.send(browser)
+          opt = {}
+          browser_name = browser == :marionette ? :firefox : browser
+          opt[:marionette] = false if browser == :firefox
 
-            unless caps.is_a? WebDriver::Remote::W3CCapabilities
-              caps.javascript_enabled = true
-              caps.css_selectors_enabled = true
-            end
+          caps = WebDriver::Remote::Capabilities.send(browser_name, opt)
+
+          unless caps.is_a? WebDriver::Remote::W3CCapabilities
+            caps.javascript_enabled = true
+            caps.css_selectors_enabled = true
           end
 
           caps
@@ -187,16 +183,15 @@ module Selenium
         end
 
         def create_firefox_driver(marionette = false)
-          opt = marionette ? {marionette: true} : {}
-          binary = ENV['FIREFOX_BINARY']
-          WebDriver::Firefox.path = binary if binary
+          opt = marionette ? {} : {marionette: false}
+          caps = WebDriver::Remote::Capabilities.firefox(opt)
+          WebDriver::Firefox.path = ENV['FIREFOX_BINARY'] if ENV['FIREFOX_BINARY']
 
-          WebDriver::Driver.for :firefox, opt
+          WebDriver::Driver.for :firefox, desired_capabilities: caps
         end
 
-        def create_edge_driver
-          caps = WebDriver::Remote::W3CCapabilities.edge
-          WebDriver.for :edge, desired_capabilities: caps
+        def create_marionette_driver
+          create_firefox_driver(true)
         end
 
         def create_chrome_driver

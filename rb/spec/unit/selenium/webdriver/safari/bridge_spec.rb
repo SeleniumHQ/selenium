@@ -23,7 +23,6 @@ module Selenium
   module WebDriver
     module Safari
       describe Bridge do
-        let(:caps)    { {} }
         let(:server)  { double(Server, receive: response).as_null_object }
         let(:browser) { double(Browser).as_null_object }
 
@@ -40,7 +39,6 @@ module Selenium
         before do
           @default_capabilities = Remote::Capabilities.safari.as_json
 
-          allow(Remote::Capabilities).to receive(:safari).and_return(caps)
           allow(Server).to receive(:new).and_return(server)
           allow(Browser).to receive(:new).and_return(browser)
         end

@@ -26,7 +26,7 @@ module Selenium
         let(:launcher) { double(Launcher, launch: nil, url: 'http://localhost:4444/wd/hub') }
         let(:resp) { {'sessionId' => 'foo', 'value' => @default_capabilities} }
         let(:http) { double(Remote::Http::Default, call: resp).as_null_object }
-        let(:caps) { {} }
+        let(:caps) { Remote::Capabilities.chrome }
 
         before do
           @default_capabilities = Remote::Capabilities.firefox.as_json

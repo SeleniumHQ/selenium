@@ -21,28 +21,30 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-    describe Firefox do
-      def restart_remote_server
-        server = GlobalTestEnv.reset_remote_server
-        server.start
-        server.webdriver_url
-      end
+    compliant_on browser: :marionette do
+      describe Firefox do
+        def restart_remote_server
+          server = GlobalTestEnv.reset_remote_server
+          server.start
+          server.webdriver_url
+        end
 
-      before(:all) do
-        driver
-        quit_driver
-      end
+        before(:all) do
+          driver
+          quit_driver
+        end
 
-      before do
-        @opt = {}
-        @opt[:url] = restart_remote_server if GlobalTestEnv.driver == :remote
-      end
+        before(:each) do
+          @opt = {}
+          @opt[:url] = restart_remote_server if GlobalTestEnv.driver == :remote
+        end
 
-      compliant_on browser: :marionette do
         it 'creates default capabilities' do
+          driver_name = GlobalTestEnv.driver
+          driver_name = :firefox if driver_name == :marionette
+
           begin
-            @opt[:marionette] = true
-            driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
+            driver1 = Selenium::WebDriver.for driver_name, @opt
             expect(driver1.capabilities.browser_version).to match(/^\d\d\./)
             expect(driver1.capabilities.platform_name).to_not be_nil
             expect(driver1.capabilities.platform_version).to_not be_nil
@@ -85,45 +87,24 @@ module Selenium
             end
           end
         end
-      end
 
-      compliant_on browser: :marionette do
-        it 'Uses geckodriver when setting marionette option in capabilities' do
-          caps = Selenium::WebDriver::Remote::Capabilities.firefox(marionette: true)
-          @opt[:desired_capabilities] = caps
-          expect { @driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt }.to_not raise_exception
-          @driver1.quit
-        end
-
-        compliant_on browser: :marionette do
-          # This passes in isolation, but can not run in suite due to combination of
-          # https://bugzilla.mozilla.org/show_bug.cgi?id=1228107 & https://github.com/SeleniumHQ/selenium/issues/1150
-          it 'Uses Wires when setting marionette option in driver initialization' do
-            @opt[:marionette] = true
-            driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
-
-            expect(driver1.capabilities[:browser_version]).to_not be_nil
-            driver1.quit
+        # https://github.com/mozilla/geckodriver/issues/58
+        not_compliant_on browser: :marionette do
+          context 'when shared example' do
+            it_behaves_like 'driver that can be started concurrently', :marionette
           end
         end
 
-        # test with firefox due to https://bugzilla.mozilla.org/show_bug.cgi?id=1228121
-        compliant_on browser: :firefox do
-          it 'Does not use geckodriver when marionette option is not set' do
+        # Test in isolation: https://bugzilla.mozilla.org/show_bug.cgi?id=1228121
+        not_compliant_on browser: :marionette do
+          it 'Does not use geckodriver when marionette option is set to false' do
+            caps = Remote::Capabilities.firefox(marionette: false)
+            @opt[:desired_capabilities] = caps
+
             driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
 
             expect { driver1.capabilities.browser_version }.to raise_exception NoMethodError
             driver1.quit
-          end
-        end
-
-        compliant_on driver: :marionette do
-          # https://github.com/mozilla/geckodriver/issues/58
-          not_compliant_on driver: :marionette do
-            context 'when shared example' do
-              before { driver }
-              it_behaves_like 'driver that can be started concurrently', :marionette
-            end
           end
         end
       end

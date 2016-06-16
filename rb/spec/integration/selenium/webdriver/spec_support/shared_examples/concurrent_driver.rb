@@ -19,6 +19,9 @@
 
 shared_examples_for 'driver that can be started concurrently' do |browser_name|
   it 'is started sequentially' do
+    marionette = browser_name == :firefox ? {marionette: false} : {}
+    browser_name = :firefox if browser_name == :marionette
+
     expect do
       # start 5 drivers concurrently
       threads = []
@@ -27,13 +30,18 @@ shared_examples_for 'driver that can be started concurrently' do |browser_name|
       opt = {}
       if GlobalTestEnv.remote_server?
         opt[:url] = GlobalTestEnv.remote_server.webdriver_url
-        opt[:desired_capabilities] = WebDriver::Remote::Capabilities.send(browser_name)
       end
-      opt[:marionette] = true if browser_name == :marionette
+
+      caps = if browser_name == :firefox
+               WebDriver::Remote::Capabilities.firefox(marionette)
+             else
+               WebDriver::Remote::Capabilities.send(browser_name)
+             end
+      opt[:desired_capabilities] = caps
 
       5.times do
         threads << Thread.new do
-          drivers << Selenium::WebDriver.for(GlobalTestEnv.driver, opt)
+          drivers << Selenium::WebDriver.for(GlobalTestEnv.driver, opt.dup)
         end
       end
 

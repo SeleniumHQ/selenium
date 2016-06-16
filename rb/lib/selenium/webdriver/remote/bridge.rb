@@ -135,7 +135,7 @@ module Selenium
           execute :get, {}, {url: url}
         end
 
-        def capabilities
+        def session_capabilities
           Capabilities.json_create execute(:getCapabilities)
         end
 

@@ -84,7 +84,7 @@ module Selenium
           end
 
           def firefox(opts = {})
-            return W3CCapabilities.firefox(opts) if opts[:marionette]
+            return W3CCapabilities.firefox(opts) unless opts[:marionette] == false
 
             new({
               browser_name: 'firefox',

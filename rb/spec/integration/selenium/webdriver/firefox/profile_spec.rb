@@ -145,8 +145,11 @@ module Selenium
             profile['browser.startup.homepage'] = url_for('formPage.html')
 
             begin
-              driver_one = WebDriver.for(:firefox, profile: profile)
-              driver_two = WebDriver.for(:firefox, profile: profile)
+              opt = {desired_capabilities: Remote::Capabilities.firefox(marionette: false),
+                     profile: profile}
+
+              driver_one = WebDriver.for(:firefox, opt.dup)
+              driver_two = WebDriver.for(:firefox, opt.dup)
             ensure
               driver_one.quit if driver_one
               driver_two.quit if driver_two
