@@ -66,7 +66,7 @@ module Selenium
             array = [Regexp.last_match(1), Regexp.last_match(2), Regexp.last_match(3)]
             new(*array.map { |e| (e * 2).to_i(16) })
           when HSL_PATTERN, HSLA_PATTERN
-            from_hsl($1, $2, $3, $4)
+            from_hsl(Regexp.last_match(1), Regexp.last_match(2), Regexp.last_match(3), Regexp.last_match(4))
           else
             raise ArgumentError, "could not convert #{str.inspect} into color"
           end

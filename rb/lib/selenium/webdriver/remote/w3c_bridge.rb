@@ -165,7 +165,7 @@ module Selenium
         end
 
         def alert=(keys)
-          execute :sendAlertText, {}, {handler: 'prompt', message: keys}
+          execute :sendAlertText, {}, {handler: 'prompt', text: keys}
         end
 
         def alert_text

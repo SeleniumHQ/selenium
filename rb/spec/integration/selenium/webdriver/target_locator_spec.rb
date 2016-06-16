@@ -131,7 +131,7 @@ module Selenium
           expect(driver.title).to eq('XHTML Test Page')
         end
 
-        # Marionette BUG: Automatically switches browsing context to new window when it opens.
+        # Marionette BUG - https://bugzilla.mozilla.org/show_bug.cgi?id=1280517
         not_compliant_on browser: [:marionette, :ie] do
           context 'with more than two windows' do
             it 'should close current window when more than two windows exist' do
@@ -252,10 +252,7 @@ module Selenium
             end
           end
 
-          # Marionette BUG - http://www.w3.org/TR/webdriver/#send-alert-text
-          # Says message should be an array (I think), but we're getting
-          # InvalidArgumentError: 'message' not a string
-          # When trying a string, error: keysToSend.join is not a function
+          # Marionette BUG - https://bugzilla.mozilla.org/show_bug.cgi?id=1255906
           # Edge Under Consideration - https://dev.windows.com/en-us/microsoft-edge/platform/status/webdriver/details/
           not_compliant_on browser: [:marionette, :edge] do
             it 'allows the user to set the value of a prompt' do
@@ -301,6 +298,7 @@ module Selenium
             end
           end
 
+          # Marionette BUG - https://bugzilla.mozilla.org/show_bug.cgi?id=1279211
           not_compliant_on browser: :marionette do
             it 'raises an UnhandledAlertError if an alert has not been dealt with' do
               driver.navigate.to url_for('alerts.html')

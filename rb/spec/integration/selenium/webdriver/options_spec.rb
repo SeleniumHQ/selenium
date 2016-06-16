@@ -95,7 +95,7 @@ module Selenium
             end
           end
 
-          # Marionette BUG - Failed to convert expiry to Date
+          # Marionette BUG - https://bugzilla.mozilla.org/show_bug.cgi?id=1256007
           not_compliant_on browser: [:android, :iphone, :safari, :marionette] do
             it 'should use DateTime for expires' do
               driver.navigate.to url_for('xhtmlTest.html')

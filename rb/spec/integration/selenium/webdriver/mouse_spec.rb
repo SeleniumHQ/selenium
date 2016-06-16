@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    # Marionette BUG - Interactions Not Supported
+    # Marionette - Waiting on implementation in httpd after spec section rewrite
     not_compliant_on browser: [:android, :iphone, :safari, :marionette] do
       describe Mouse do
         it 'clicks an element' do

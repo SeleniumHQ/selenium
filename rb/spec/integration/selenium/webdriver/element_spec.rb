@@ -76,6 +76,7 @@ module Selenium
       end
 
       # PhantomJS on windows issue: https://github.com/ariya/phantomjs/issues/10993
+      # Marionette BUG - https://bugzilla.mozilla.org/show_bug.cgi?id=1260233
       not_compliant_on browser: [:android, :iphone, :safari, :edge, :marionette, :phantomjs] do
         it 'should handle file uploads' do
           driver.navigate.to url_for('formPage.html')
@@ -168,6 +169,7 @@ module Selenium
         expect(size.height).to be > 0
       end
 
+      # Marionette - Waiting on implementation in httpd after spec section rewrite
       not_compliant_on browser: [:safari, :marionette] do
         it 'should drag and drop' do
           driver.navigate.to url_for('dragAndDropTest.html')

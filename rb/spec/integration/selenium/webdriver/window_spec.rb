@@ -89,6 +89,7 @@ module Selenium
         end
       end
 
+      # Marionette - https://bugzilla.mozilla.org/show_bug.cgi?id=1189749
       compliant_on browser: [:marionette, :edge] do
         # Edge: Not Yet - https://dev.windows.com/en-us/microsoft-edge/platform/status/webdriver/details/
         not_compliant_on browser: [:marionette, :edge] do

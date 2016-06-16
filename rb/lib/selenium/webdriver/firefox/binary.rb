@@ -121,7 +121,7 @@ module Selenium
                       when :windows
                         windows_path
                       when :linux, :unix
-                        Platform.find_binary("firefox3", "firefox2", "firefox") || "/usr/bin/firefox"
+                        Platform.find_binary('firefox3', 'firefox2', 'firefox') || '/usr/bin/firefox'
                       else
                         raise Error::WebDriverError, "unknown platform: #{Platform.os}"
                       end
