@@ -123,7 +123,11 @@ module Selenium
           resp = raw_execute :newSession, {}, :desiredCapabilities => desired_capabilities
           @session_id = resp['sessionId'] or raise Error::WebDriverError, 'no sessionId in returned payload'
 
-          Capabilities.json_create resp['value']
+          if resp.payload.has_key? 'value'
+            Capabilities.json_create resp['value']
+          elsif resp.payload.has_key? 'capabilities'
+            Capabilities.json_create resp['capabilities']
+          end
         end
 
         def status
@@ -169,7 +173,7 @@ module Selenium
         def getAlertText
           execute :getAlertText
         end
-        
+
         def setAuthentication(credentials)
           execute :setAuthentication, {}, credentials
         end

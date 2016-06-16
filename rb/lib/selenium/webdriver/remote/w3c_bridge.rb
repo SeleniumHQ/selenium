@@ -123,7 +123,7 @@ module Selenium
           resp = raw_execute :newSession, {}, :desiredCapabilities => desired_capabilities
           @session_id = resp['sessionId'] or raise Error::WebDriverError, 'no sessionId in returned payload'
 
-          W3CCapabilities.json_create resp['value']
+          W3CCapabilities.json_create resp['capabilities']
         end
 
         def status
