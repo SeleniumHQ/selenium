@@ -77,9 +77,10 @@ module Selenium
         command :isElementEnabled, :get, 'session/:session_id/element/:id/enabled'
 
         #
-        # script execution
+        # document handling
         #
 
+        command :getPageSource, :get, '/session/:session_id/source'
         command :executeScript, :post, 'session/:session_id/execute/sync'
         command :executeAsyncScript, :post, 'session/:session_id/execute/async'
 

@@ -133,9 +133,12 @@ module Selenium
         private
 
         def create_driver
-          method = "create_#{driver}_driver"
-          instance = defined?(method) ? send(method) : WebDriver::Driver.for(driver)
-
+          method = "create_#{driver}_driver".to_sym
+          instance = if private_methods.include?(method)
+                       send method
+                     else
+                       WebDriver::Driver.for(driver)
+                     end
           @create_driver_error_count -= 1 unless @create_driver_error_count == 0
           instance
         rescue => ex

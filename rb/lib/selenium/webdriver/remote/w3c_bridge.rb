@@ -96,7 +96,8 @@ module Selenium
         end
 
         def edge_check(opts)
-          return unless opts[:browser_name] && opts[:browser_name] == 'MicrosoftEdge'
+          caps = opts[:desired_capabilities]
+          return unless caps && caps[:browser_name] && caps[:browser_name] == 'MicrosoftEdge'
           require_relative '../edge/legacy_support'
           extend Edge::LegacySupport
         end
@@ -193,9 +194,7 @@ module Selenium
         end
 
         def page_source
-          execute_script('var source = document.documentElement.outerHTML;' \
-                            'if (!source) { source = new XMLSerializer().serializeToString(document); }' \
-                            'return source;')
+          execute :getPageSource
         end
 
         def switch_to_window(name)

@@ -183,7 +183,9 @@ ruby_test(name = "remote-chrome",
     "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [":remote"]
+  deps = [
+    ":remote",
+    ":chrome"]
 )
 
 ruby_test(name = "remote-firefox",
@@ -206,7 +208,10 @@ ruby_test(name = "remote-phantomjs",
     "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [":remote"]
+  deps = [
+    ":remote",
+    ":phantomjs"
+    ]
 )
 
 ruby_test(name = "remote-safari",
@@ -229,7 +234,10 @@ ruby_test(name = "remote-ie",
     "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [":remote"]
+  deps = [
+    ":remote",
+    ":ie"
+    ]
 )
 
 ruby_test(name = "remote-edge",
@@ -252,7 +260,10 @@ ruby_test(name = "remote-marionette",
     "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [":remote"]
+  deps = [
+    ":remote",
+    ":marionette"
+    ]
 )
 
 ruby_library(name = "safari",
