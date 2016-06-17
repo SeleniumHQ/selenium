@@ -126,10 +126,10 @@ JAVA_RELEASE_TARGETS = [
 # build can also be done here. For example, here we set the default task
 task :default => [:test]
 
-task :all => [
-  :"selenium-java",
-  "//java/client/test/org/openqa/selenium/environment:webserver"
-]
+task :all do
+  Rake::Task[:"selenium-java"].execute
+  Rake::Task["//java/client/test/org/openqa/selenium/environment:webserver"].execute
+end
 task :all_zip => [:'selenium-java_zip']
 task :tests => [
   "//java/client/test/org/openqa/selenium/htmlunit:htmlunit",
