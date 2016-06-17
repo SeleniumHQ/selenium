@@ -44,11 +44,13 @@ module Buck
   end
 
   def self.buck_cmd
-    @@buck_cmd ||= (
+    (
       lambda { |command, args, &block|
-        args ||= []
-        buck = Buck::download
+        buck = []
+        pex = Buck::download
+        buck.push(*pex)
 
+        args ||= []
         buck.push(command)
         buck.push(*args)
 
@@ -89,7 +91,6 @@ module Buck
       }
     )
 
-    #block.call(output) if block
   end
 
   def self.enhance_task(task)
