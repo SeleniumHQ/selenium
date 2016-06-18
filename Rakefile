@@ -281,13 +281,7 @@ if (python?)
   task :test => [ :test_py ]
 end
 
-task :build do
-  Rake::Task[:all].execute
-  Rake::Task[:firefox].execute
-  Rake::Task[:remote].execute
-  Rake::Task[:selenium].execute
-  Rake::Task[:tests].execute
-end
+task :build => [:all, :firefox, :remote, :selenium, :tests]
 
 desc 'Clean build artifacts.'
 task :clean do
