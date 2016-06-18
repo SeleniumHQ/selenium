@@ -1,0 +1,7 @@
+*.pyc
+__pycache__
+docs/build/
+selenium/webdriver/firefox/amd64/
+selenium/webdriver/firefox/webdriver.xpi
+selenium/webdriver/firefox/webdriver_prefs.json
+selenium/webdriver/firefox/x86/
