@@ -57,7 +57,6 @@ class WebElement(object):
         return '<{0.__module__}.{0.__name__} (session="{1}", element="{2}")>'.format(
             type(self), self._parent.session_id, self._id)
 
-
     @property
     def tag_name(self):
         """This element's ``tagName`` property."""
@@ -76,9 +75,10 @@ class WebElement(object):
         """Submits a form."""
         if self._w3c:
             form = self.find_element(By.XPATH, "./ancestor-or-self::form")
-            self._parent.execute_script("var e = arguments[0].ownerDocument.createEvent('Event');"
-                                       "e.initEvent('submit', true, true);"
-                                       "if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }", form)
+            self._parent.execute_script(
+                "var e = arguments[0].ownerDocument.createEvent('Event');"
+                "e.initEvent('submit', true, true);"
+                "if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }", form)
         else:
             self._execute(Command.SUBMIT_ELEMENT)
 
@@ -263,7 +263,6 @@ class WebElement(object):
         """
         return self.find_element(by=By.CLASS_NAME, value=name)
 
-
     def find_elements_by_class_name(self, name):
         """Finds a list of elements within this element's children by class name.
 
@@ -336,9 +335,9 @@ class WebElement(object):
 
         """
         if self._w3c:
-            old_loc = self._execute(Command.EXECUTE_SCRIPT,
-                {'script': "arguments[0].scrollIntoView(true); return arguments[0].getBoundingClientRect()",
-                'args':[self]})['value']
+            old_loc = self._execute(Command.EXECUTE_SCRIPT, {
+                'script': "arguments[0].scrollIntoView(true); return arguments[0].getBoundingClientRect()",
+                'args': [self]})['value']
             return {"x": round(old_loc['x']),
                     "y": round(old_loc['y'])}
         else:
@@ -358,8 +357,8 @@ class WebElement(object):
 
     def value_of_css_property(self, property_name):
         """The value of a CSS property."""
-        return self._execute(Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
-                        {'propertyName': property_name})['value']
+        return self._execute(Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY, {
+            'propertyName': property_name})['value']
 
     @property
     def location(self):
@@ -420,7 +419,6 @@ class WebElement(object):
         finally:
             del png
         return True
-
 
     @property
     def parent(self):
@@ -508,8 +506,7 @@ class WebElement(object):
         if not isinstance(content, str):
             content = content.decode('utf-8')
         try:
-            return self._execute(Command.UPLOAD_FILE,
-                            {'file': content})['value']
+            return self._execute(Command.UPLOAD_FILE, {'file': content})['value']
         except WebDriverException as e:
             if "Unrecognized command: POST" in e.__str__():
                 return filename

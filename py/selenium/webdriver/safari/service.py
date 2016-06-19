@@ -14,12 +14,13 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 from os import devnull
 import subprocess
-from subprocess import PIPE
 import time
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
+
 
 class Service(object):
     """
@@ -65,7 +66,7 @@ class Service(object):
             count += 1
             time.sleep(1)
             if count == 30:
-                 raise WebDriverException("Can not connect to the SafariDriver")
+                raise WebDriverException("Can not connect to the SafariDriver")
 
     @property
     def service_url(self):
@@ -84,4 +85,3 @@ class Service(object):
 
         self.process.kill()
         self.process.wait()
-

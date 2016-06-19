@@ -15,12 +15,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
+
 class ResultsPage(object):
     """This class models a google search result page."""
-    
+
     def __init__(self, driver):
         self._driver = driver
-        
+
     def is_loaded(self):
         return "/search" in self._driver.get_current_url()
 
@@ -34,4 +35,3 @@ class ResultsPage(object):
             if term in e.get_text():
                 return True
         return False
-

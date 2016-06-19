@@ -15,13 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import base64
-from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-from selenium.common.exceptions import WebDriverException
 from .remote_connection import ChromeRemoteConnection
 from .service import Service
 from .options import Options
+
 
 class WebDriver(RemoteWebDriver):
     """
@@ -56,12 +54,16 @@ class WebDriver(RemoteWebDriver):
             else:
                 desired_capabilities.update(chrome_options.to_capabilities())
 
-        self.service = Service(executable_path, port=port,
-            service_args=service_args, log_path=service_log_path)
+        self.service = Service(
+            executable_path,
+            port=port,
+            service_args=service_args,
+            log_path=service_log_path)
         self.service.start()
 
         try:
-            RemoteWebDriver.__init__(self,
+            RemoteWebDriver.__init__(
+                self,
                 command_executor=ChromeRemoteConnection(
                     remote_server_addr=self.service.service_url),
                 desired_capabilities=desired_capabilities)

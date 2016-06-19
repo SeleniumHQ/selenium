@@ -18,6 +18,7 @@
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException, UnexpectedTagNameException
 
+
 class Select:
 
     def __init__(self, webelement):
@@ -27,14 +28,14 @@ class Select:
 
         :Args:
          - webelement - element SELECT element to wrap
-        
+
         Example:
             from selenium.webdriver.support.ui import Select \n
             Select(driver.find_element_by_tag_name("select")).select_by_index(2)
         """
         if webelement.tag_name.lower() != "select":
             raise UnexpectedTagNameException(
-                "Select only works on <select> elements, not on <%s>" % 
+                "Select only works on <select> elements, not on <%s>" %
                 webelement.tag_name)
         self._el = webelement
         multi = self._el.get_attribute("multiple")
@@ -44,7 +45,7 @@ class Select:
     def options(self):
         """Returns a list of all options belonging to this select tag"""
         return self._el.find_elements(By.TAG_NAME, 'option')
-        
+
     @property
     def all_selected_options(self):
         """Returns a list of all selected options belonging to this select tag"""
@@ -71,7 +72,7 @@ class Select:
 
            :Args:
             - value - The value to match against
-            
+
            throws NoSuchElementException If there is no option with specisied value in SELECT
            """
         css = "option[value =%s]" % self._escapeString(value)
@@ -90,8 +91,8 @@ class Select:
            element, and not merely by counting.
 
            :Args:
-            - index - The option at this index will be selected 
-            
+            - index - The option at this index will be selected
+
            throws NoSuchElementException If there is no option with specisied index in SELECT
            """
         match = str(index)
@@ -104,12 +105,12 @@ class Select:
     def select_by_visible_text(self, text):
         """Select all options that display text matching the argument. That is, when given "Bar" this
            would select an option like:
-             
+
             <option value="foo">Bar</option>
-             
+
            :Args:
             - text - The visible text to match against
-            
+
             throws NoSuchElementException If there is no option with specisied text in SELECT
            """
         xpath = ".//option[normalize-space(.) = %s]" % self._escapeString(text)
@@ -150,12 +151,12 @@ class Select:
     def deselect_by_value(self, value):
         """Deselect all options that have a value matching the argument. That is, when given "foo" this
            would deselect an option like:
-             
+
             <option value="foo">Bar</option>
-             
+
            :Args:
             - value - The value to match against
-            
+
             throws NoSuchElementException If there is no option with specisied value in SELECT
         """
         if not self.is_multiple:
@@ -168,14 +169,14 @@ class Select:
             matched = True
         if not matched:
             raise NoSuchElementException("Could not locate element with value: %s" % value)
-			
+
     def deselect_by_index(self, index):
         """Deselect the option at the given index. This is done by examing the "index" attribute of an
            element, and not merely by counting.
 
            :Args:
             - index - The option at this index will be deselected
-            
+
             throws NoSuchElementException If there is no option with specisied index in SELECT
         """
         if not self.is_multiple:
@@ -189,7 +190,7 @@ class Select:
     def deselect_by_visible_text(self, text):
         """Deselect all options that display text matching the argument. That is, when given "Bar" this
            would deselect an option like:
-             
+
            <option value="foo">Bar</option>
 
            :Args:
@@ -213,7 +214,7 @@ class Select:
     def _unsetSelected(self, option):
         if option.is_selected():
             option.click()
-    
+
     def _escapeString(self, value):
         if '"' in value and "'" in value:
             substrings = value.split("\"")

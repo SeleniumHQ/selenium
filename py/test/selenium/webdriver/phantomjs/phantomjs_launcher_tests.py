@@ -24,25 +24,25 @@ from selenium import webdriver
 class PhantomJSLauncherTests(unittest.TestCase):
 
     def testLaunchAndCloseBrowserWithoutLeakingCookieTempFileDescriptor(self):
-        
+
         # psutil module is used to get num open file descritors across platforms
         self.p = psutil.Process()
 
         self.num_fds_samples = []
-        
+
         self.driver = webdriver.PhantomJS()
         self.driver.quit()
-        
-        self.num_fds_samples.append(self.p.num_fds())
-        
-        self.driver = webdriver.PhantomJS()
-        self.driver.quit()
-        
+
         self.num_fds_samples.append(self.p.num_fds())
 
         self.driver = webdriver.PhantomJS()
         self.driver.quit()
-        
+
+        self.num_fds_samples.append(self.p.num_fds())
+
+        self.driver = webdriver.PhantomJS()
+        self.driver.quit()
+
         self.num_fds_samples.append(self.p.num_fds())
 
         assert max(self.num_fds_samples) == min(self.num_fds_samples)

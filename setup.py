@@ -17,13 +17,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import sys
-
 from distutils.command.install import INSTALL_SCHEMES
-from os.path import dirname, join, isfile, abspath
+from os.path import dirname, join, abspath
 from setuptools import setup
 from setuptools.command.install import install
-from shutil import copy
 
 
 for scheme in INSTALL_SCHEMES.values():
@@ -34,10 +31,10 @@ setup_args = {
     'name': 'selenium',
     'version': "2.53.5",
     'description': 'Python bindings for Selenium',
-    'long_description': open(join(abspath(dirname(__file__)), "py", "README.rst")).read(),
+    'long_description':open(join(abspath(dirname(__file__)), "py", "README.rst")).read(),
     'url': 'https://github.com/SeleniumHQ/selenium/',
     'classifiers': ['Development Status :: 5 - Production/Stable',
-                   'Intended Audience :: Developers',
+                    'Intended Audience :: Developers',
                     'License :: OSI Approved :: Apache Software License',
                     'Operating System :: POSIX',
                     'Operating System :: Microsoft :: Windows',

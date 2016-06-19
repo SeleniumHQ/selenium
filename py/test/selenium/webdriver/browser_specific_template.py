@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+# flake8: noqa
 
 ##CUSTOM_TEST_IMPORT##
 from selenium import webdriver

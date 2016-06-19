@@ -53,7 +53,7 @@ class WindowSwitchingTests(unittest.TestCase):
             self.driver.switch_to.window("invalid name")
             self.fail("NoSuchWindowException expected")
         except NoSuchWindowException:
-            pass # Expected
+            pass  # Expected
 
         self.driver.switch_to.window(current)
 
@@ -62,17 +62,17 @@ class WindowSwitchingTests(unittest.TestCase):
     def testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle(self):
         self._loadPage("xhtmlTest")
         current = self.driver.current_window_handle
-        self.driver.find_element(By.LINK_TEXT,"Open new window").click()
+        self.driver.find_element(By.LINK_TEXT, "Open new window").click()
         handles = self.driver.window_handles
         handles.remove(current)
         self.driver.switch_to.window(handles[0])
         self.driver.close()
 
-        try :
+        try:
             self.driver.current_window_handle
             self.fail("NoSuchWindowException expected")
         except NoSuchWindowException:
-            pass # Expected.
+            pass  # Expected.
         finally:
             self.driver.switch_to.window(current)
 
@@ -83,23 +83,23 @@ class WindowSwitchingTests(unittest.TestCase):
         self._loadPage("xhtmlTest")
         current = self.driver.current_window_handle
 
-        self.driver.find_element(By.LINK_TEXT,"Open new window").click()
+        self.driver.find_element(By.LINK_TEXT, "Open new window").click()
         handles = self.driver.window_handles
         handles.remove(current)
         self.driver.switch_to.window(handles[0])
         self.driver.close()
         try:
-            try :
+            try:
                 self.driver.title
                 self.fail("NoSuchWindowException expected")
             except NoSuchWindowException:
-                pass # Expected.
+                pass  # Expected.
 
-            try :
+            try:
                 self.driver.find_element_by_tag_name("body")
                 self.fail("NoSuchWindowException expected")
             except NoSuchWindowException:
-                pass # Expected.
+                pass  # Expected.
         finally:
             self.driver.switch_to.window(current)
 
@@ -109,7 +109,7 @@ class WindowSwitchingTests(unittest.TestCase):
     def testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed(self):
         self._loadPage("xhtmlTest")
         current = self.driver.current_window_handle
-        self.driver.find_element(By.LINK_TEXT,"Open new window").click()
+        self.driver.find_element(By.LINK_TEXT, "Open new window").click()
 
         handles = self.driver.window_handles
         handles.remove(current)
@@ -117,11 +117,11 @@ class WindowSwitchingTests(unittest.TestCase):
         element = self.driver.find_element_by_tag_name("body")
         self.driver.close()
 
-        try :
+        try:
             element.text
             self.fail("NoSuchWindowException expected")
         except NoSuchWindowException:
-            pass # Expected.
+            pass  # Expected.
         finally:
             self.driver.switch_to.window(current)
 
@@ -201,7 +201,7 @@ class WindowSwitchingTests(unittest.TestCase):
             self.driver.find_element_by_id("close")
             self.fail("Should complain that driver not available but MUST NOT HANG!")
         except WebDriverException:
-            pass #this is expected
+            pass  # this is expected
         finally:
             self.driver.switch_to.window(current)
 

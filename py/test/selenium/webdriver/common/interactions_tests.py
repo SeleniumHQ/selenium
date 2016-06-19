@@ -23,14 +23,16 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 
+
 class AdvancedUserInteractionTest(unittest.TestCase):
+
     def _before(self):
         if self.driver.capabilities['browserName'] == 'firefox' and sys.platform == 'darwin':
             pytest.skip("native events not supported on Mac for Firefox")
 
     def performDragAndDropWithMouse(self):
         """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
-        #self._before()
+        # self._before()
         self._loadPage("draggableLists")
         dragReporter = self.driver.find_element_by_id("dragging_reports")
         toDrag = self.driver.find_element_by_id("rightitem-3")
@@ -101,7 +103,6 @@ class AdvancedUserInteractionTest(unittest.TestCase):
 
     def testDoubleClick(self):
         """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
-        #pytest.skip("doubleClick is failing server-side")
         self._loadPage("javascriptPage")
         toDoubleClick = self.driver.find_element_by_id("doubleClickField")
 
@@ -122,8 +123,7 @@ class AdvancedUserInteractionTest(unittest.TestCase):
             .context_click(toContextClick)
 
         contextClick.perform()
-        self.assertEqual("ContextClicked",
-            toContextClick.get_attribute('value'))
+        self.assertEqual("ContextClicked", toContextClick.get_attribute('value'))
 
     def testMoveAndClick(self):
         """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
@@ -149,7 +149,7 @@ class AdvancedUserInteractionTest(unittest.TestCase):
             move.perform()
             self.fail("Shouldn't be allowed to click on null element.")
         except AttributeError:
-            pass # Expected.
+            pass  # Expected.
 
     def _testClickingOnFormElements(self):
         """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest.
@@ -205,37 +205,40 @@ class AdvancedUserInteractionTest(unittest.TestCase):
 
         firstTarget = self.driver.find_element_by_id("r1")
         ActionChains(self.driver) \
-          .move_to_element(firstTarget) \
-          .click() \
-          .perform()
+            .move_to_element(firstTarget) \
+            .click() \
+            .perform()
         resultArea = self.driver.find_element_by_id("result")
         expectedEvents = "First"
         wait = WebDriverWait(resultArea, 15)
-        expectedEventsFired = lambda e : e.text == expectedEvents;
+
+        def expectedEventsFired(element):
+            return element.text == expectedEvents
+
         wait.until(expectedEventsFired)
 
         # Move to element with id 'r2', at (2500, 50) to (2580, 100).
         ActionChains(self.driver) \
-          .move_by_offset(2540 - 150, 75 - 125) \
-          .click() \
-          .perform()
+            .move_by_offset(2540 - 150, 75 - 125) \
+            .click() \
+            .perform()
 
-        expectedEvents += " Second";
+        expectedEvents += " Second"
         wait.until(expectedEventsFired)
 
         # Move to element with id 'r3' at (60, 1500) to (140, 1550).
         ActionChains(self.driver) \
-          .move_by_offset(100 - 2540, 1525 - 75) \
-          .click() \
-          .perform()
+            .move_by_offset(100 - 2540, 1525 - 75) \
+            .click() \
+            .perform()
         expectedEvents += " Third"
         wait.until(expectedEventsFired)
 
         # Move to element with id 'r4' at (220,180) to (320, 230).
         ActionChains(self.driver) \
-          .move_by_offset(270 - 100, 205 - 1525) \
-          .click() \
-          .perform()
+            .move_by_offset(270 - 100, 205 - 1525) \
+            .click() \
+            .perform()
         expectedEvents += " Fourth"
         wait.until(expectedEventsFired)
 
@@ -245,13 +248,12 @@ class AdvancedUserInteractionTest(unittest.TestCase):
         e.click()
 
         ActionChains(self.driver) \
-          .key_down(Keys.SHIFT) \
-          .send_keys("abc")\
-          .key_up(Keys.SHIFT)\
-          .perform()
+            .key_down(Keys.SHIFT) \
+            .send_keys("abc") \
+            .key_up(Keys.SHIFT) \
+            .perform()
 
         self.assertEqual("ABC", e.get_attribute('value'))
-
 
     def _pageURL(self, name):
         return self.webserver.where_is(name + '.html')

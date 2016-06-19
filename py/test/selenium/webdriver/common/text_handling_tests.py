@@ -19,6 +19,7 @@ import pytest
 import unittest
 from selenium.webdriver.common.by import By
 
+
 class TextHandlingTests(unittest.TestCase):
 
     newLine = "\n"
@@ -39,7 +40,7 @@ class TextHandlingTests(unittest.TestCase):
         self.assertTrue("More than one line of text" in text)
         self.assertTrue("and block level elements" in text)
 
-    #@Ignore(SELENESE)
+    # @Ignore(SELENESE)
     def testShouldIgnoreScriptElements(self):
         self._loadPage("javascriptEnhancedForm")
         labelForUsername = self.driver.find_element(by=By.ID, value="labelforusername")
@@ -76,7 +77,7 @@ class TextHandlingTests(unittest.TestCase):
 
         self.assertEqual(text, "This line has a non-breaking space")
 
-      #@Ignore({IPHONE, SELENESE})
+    # @Ignore({IPHONE, SELENESE})
     def testShouldTreatANonBreakingSpaceAsAnyOtherWhitespaceCharacterWhenCollapsingWhitespace(self):
         if self.driver.capabilities['browserName'] == 'chrome' and int(self.driver.capabilities['version'].split('.')[0]) < 16:
             pytest.skip("only works on chrome >= 16")
@@ -86,13 +87,12 @@ class TextHandlingTests(unittest.TestCase):
 
         self.assertEqual(text, "This line has a   non-breaking space and spaces")
 
-    #@Ignore(IPHONE)
+    # @Ignore(IPHONE)
     def testHavingInlineElementsShouldNotAffectHowTextIsReturned(self):
         self._loadSimplePage()
         text = self.driver.find_element(by=By.ID, value="inline").text
 
-        self.assertEqual(text,
-               "This line has text within elements that are meant to be displayed inline")
+        self.assertEqual(text, "This line has text within elements that are meant to be displayed inline")
 
     def testShouldReturnTheEntireTextOfInlineElements(self):
         self._loadSimplePage()
@@ -100,7 +100,7 @@ class TextHandlingTests(unittest.TestCase):
 
         self.assertEqual(text, "An inline element")
 
-    #@Ignore(value = {SELENESE, IPHONE, IE}, reason = "iPhone: sendKeys is broken")
+    # @Ignore(value = {SELENESE, IPHONE, IE}, reason = "iPhone: sendKeys is broken")
     def testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea(self):
         self._loadPage("formPage")
         textarea = self.driver.find_element(by=By.ID, value="withText")
@@ -155,14 +155,14 @@ class TextHandlingTests(unittest.TestCase):
 
         self.assertEqual(text, "line has text")
 
-    #@Ignore(value = {SELENESE, IPHONE})
+    # @Ignore(value = {SELENESE, IPHONE})
     def testReadALargeAmountOfData(self):
         self._loadPage("macbeth")
         source = self.driver.page_source.strip().lower()
 
         self.assertTrue(source.endswith("</html>"))
 
-    #@Ignore({SELENESE, IPHONE})
+    # @Ignore({SELENESE, IPHONE})
     def testShouldOnlyIncludeVisibleText(self):
         self._loadPage("javascriptPage")
 

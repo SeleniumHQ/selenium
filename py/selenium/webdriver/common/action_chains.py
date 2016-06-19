@@ -25,14 +25,14 @@ from .utils import keys_to_typing
 
 class ActionChains(object):
     """
-    ActionChains are a way to automate low level interactions such as 
+    ActionChains are a way to automate low level interactions such as
     mouse movements, mouse button actions, key press, and context menu interactions.
-    This is useful for doing more complex actions like hover over and drag and drop. 
+    This is useful for doing more complex actions like hover over and drag and drop.
 
     Generate user actions.
-       When you call methods for actions on the ActionChains object, 
-       the actions are stored in a queue in the ActionChains object. 
-       When you call perform(), the events are fired in the order they 
+       When you call methods for actions on the ActionChains object,
+       the actions are stored in a queue in the ActionChains object.
+       When you call perform(), the events are fired in the order they
        are queued up.
 
     ActionChains can be used in a chain pattern::
@@ -52,7 +52,7 @@ class ActionChains(object):
         actions.click(hidden_submenu)
         actions.perform()
 
-    Either way, the actions are performed in the order they are called, one after 
+    Either way, the actions are performed in the order they are called, one after
     another.
     """
 
@@ -81,9 +81,10 @@ class ActionChains(object):
          - on_element: The element to click.
            If None, clicks on current mouse position.
         """
-        if on_element: self.move_to_element(on_element)
-        self._actions.append(lambda:
-            self._driver.execute(Command.CLICK, {'button': 0}))
+        if on_element:
+            self.move_to_element(on_element)
+        self._actions.append(lambda: self._driver.execute(
+            Command.CLICK, {'button': 0}))
         return self
 
     def click_and_hold(self, on_element=None):
@@ -94,9 +95,10 @@ class ActionChains(object):
          - on_element: The element to mouse down.
            If None, clicks on current mouse position.
         """
-        if on_element: self.move_to_element(on_element)
-        self._actions.append(lambda:
-            self._driver.execute(Command.MOUSE_DOWN, {}))
+        if on_element:
+            self.move_to_element(on_element)
+        self._actions.append(lambda: self._driver.execute(
+            Command.MOUSE_DOWN, {}))
         return self
 
     def context_click(self, on_element=None):
@@ -107,9 +109,10 @@ class ActionChains(object):
          - on_element: The element to context-click.
            If None, clicks on current mouse position.
         """
-        if on_element: self.move_to_element(on_element)
-        self._actions.append(lambda:
-            self._driver.execute(Command.CLICK, {'button': 2}))
+        if on_element:
+            self.move_to_element(on_element)
+        self._actions.append(lambda: self._driver.execute(
+            Command.CLICK, {'button': 2}))
         return self
 
     def double_click(self, on_element=None):
@@ -120,9 +123,10 @@ class ActionChains(object):
          - on_element: The element to double-click.
            If None, clicks on current mouse position.
         """
-        if on_element: self.move_to_element(on_element)
-        self._actions.append(lambda:
-            self._driver.execute(Command.DOUBLE_CLICK, {}))
+        if on_element:
+            self.move_to_element(on_element)
+        self._actions.append(lambda: self._driver.execute(
+            Command.DOUBLE_CLICK, {}))
         return self
 
     def drag_and_drop(self, source, target):
@@ -162,16 +166,17 @@ class ActionChains(object):
          - value: The modifier key to send. Values are defined in `Keys` class.
          - element: The element to send keys.
            If None, sends a key to current focused element.
-        
+
         Example, pressing ctrl+c::
 
             ActionChains(driver).key_down(Keys.CONTROL).send_keys('c').key_up(Keys.CONTROL).perform()
 
         """
-        if element: self.click(element)
-        self._actions.append(lambda:
-            self._driver.execute(Command.SEND_KEYS_TO_ACTIVE_ELEMENT, {
-                "value": keys_to_typing(value) }))
+        if element:
+            self.click(element)
+        self._actions.append(lambda: self._driver.execute(
+            Command.SEND_KEYS_TO_ACTIVE_ELEMENT,
+            {"value": keys_to_typing(value)}))
         return self
 
     def key_up(self, value, element=None):
@@ -188,10 +193,11 @@ class ActionChains(object):
             ActionChains(driver).key_down(Keys.CONTROL).send_keys('c').key_up(Keys.CONTROL).perform()
 
         """
-        if element: self.click(element)
-        self._actions.append(lambda:
-            self._driver.execute(Command.SEND_KEYS_TO_ACTIVE_ELEMENT, {
-                "value": keys_to_typing(value) }))
+        if element:
+            self.click(element)
+        self._actions.append(lambda: self._driver.execute(
+            Command.SEND_KEYS_TO_ACTIVE_ELEMENT,
+            {"value": keys_to_typing(value)}))
         return self
 
     def move_by_offset(self, xoffset, yoffset):
@@ -202,8 +208,8 @@ class ActionChains(object):
          - xoffset: X offset to move to, as a positive or negative integer.
          - yoffset: Y offset to move to, as a positive or negative integer.
         """
-        self._actions.append(lambda:
-            self._driver.execute(Command.MOVE_TO, {
+        self._actions.append(lambda: self._driver.execute(
+            Command.MOVE_TO, {
                 'xoffset': int(xoffset),
                 'yoffset': int(yoffset)}))
         return self
@@ -215,8 +221,8 @@ class ActionChains(object):
         :Args:
          - to_element: The WebElement to move to.
         """
-        self._actions.append(lambda:
-            self._driver.execute(Command.MOVE_TO, {'element': to_element.id}))
+        self._actions.append(lambda: self._driver.execute(
+            Command.MOVE_TO, {'element': to_element.id}))
         return self
 
     def move_to_element_with_offset(self, to_element, xoffset, yoffset):
@@ -229,8 +235,8 @@ class ActionChains(object):
          - xoffset: X offset to move to.
          - yoffset: Y offset to move to.
         """
-        self._actions.append(lambda:
-            self._driver.execute(Command.MOVE_TO, {
+        self._actions.append(
+            lambda: self._driver.execute(Command.MOVE_TO, {
                 'element': to_element.id,
                 'xoffset': int(xoffset),
                 'yoffset': int(yoffset)}))
@@ -244,9 +250,9 @@ class ActionChains(object):
          - on_element: The element to mouse up.
            If None, releases on current mouse position.
         """
-        if on_element: self.move_to_element(on_element)
-        self._actions.append(lambda:
-            self._driver.execute(Command.MOUSE_UP, {}))
+        if on_element:
+            self.move_to_element(on_element)
+        self._actions.append(lambda: self._driver.execute(Command.MOUSE_UP, {}))
         return self
 
     def send_keys(self, *keys_to_send):
@@ -254,12 +260,11 @@ class ActionChains(object):
         Sends keys to current focused element.
 
         :Args:
-         - keys_to_send: The keys to send.  Modifier keys constants can be found in the 
+         - keys_to_send: The keys to send.  Modifier keys constants can be found in the
          'Keys' class.
         """
-        self._actions.append(lambda:
-            self._driver.execute(Command.SEND_KEYS_TO_ACTIVE_ELEMENT, 
-              { 'value': keys_to_typing(keys_to_send)}))
+        self._actions.append(lambda: self._driver.execute(
+            Command.SEND_KEYS_TO_ACTIVE_ELEMENT, {'value': keys_to_typing(keys_to_send)}))
         return self
 
     def send_keys_to_element(self, element, *keys_to_send):
@@ -268,16 +273,15 @@ class ActionChains(object):
 
         :Args:
          - element: The element to send keys.
-         - keys_to_send: The keys to send.  Modifier keys constants can be found in the 
+         - keys_to_send: The keys to send.  Modifier keys constants can be found in the
          'Keys' class.
         """
-        self._actions.append(lambda:
-            element.send_keys(*keys_to_send))
+        self._actions.append(lambda: element.send_keys(*keys_to_send))
         return self
 
     # Context manager so ActionChains can be used in a 'with .. as' statements.
     def __enter__(self):
-        return self # Return created instance of self.
+        return self  # Return created instance of self.
 
     def __exit__(self, _type, _value, _traceback):
-        pass # Do nothing, does not require additional cleanup.
+        pass  # Do nothing, does not require additional cleanup.

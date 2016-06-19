@@ -17,7 +17,6 @@
 
 from selenium.common.exceptions import ElementNotSelectableException
 from selenium.common.exceptions import ElementNotVisibleException
-from selenium.common.exceptions import InvalidCookieDomainException
 from selenium.common.exceptions import InvalidElementStateException
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.common.exceptions import ImeNotAvailableException
@@ -26,7 +25,6 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoSuchFrameException
 from selenium.common.exceptions import NoSuchWindowException
 from selenium.common.exceptions import StaleElementReferenceException
-from selenium.common.exceptions import UnableToSetCookieException
 from selenium.common.exceptions import UnexpectedAlertPresentException
 from selenium.common.exceptions import NoAlertPresentException
 from selenium.common.exceptions import ErrorInResponseException

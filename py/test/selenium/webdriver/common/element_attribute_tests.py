@@ -19,7 +19,6 @@ import unittest
 import pytest
 
 
-
 class ElementAttributeTests(unittest.TestCase):
 
     def testShouldReturnNullWhenGettingTheValueOfAnAttributeThatIsNotListed(self):
@@ -30,7 +29,7 @@ class ElementAttributeTests(unittest.TestCase):
 
     def testShouldReturnNullWhenGettingSrcAttributeOfInvalidImgTag(self):
         self._loadSimplePage()
-        img =  self.driver.find_element_by_id("invalidImgTag")
+        img = self.driver.find_element_by_id("invalidImgTag")
         img_attr = img.get_attribute("src")
         self.assertTrue(img_attr is None)
 
@@ -157,17 +156,14 @@ class ElementAttributeTests(unittest.TestCase):
         classname = heading.get_attribute("class")
         self.assertEqual("header", classname)
 
-
     # Disabled due to issues with Frames
-    #def testShouldReturnValueOfClassAttributeOfAnElementAfterSwitchingIFrame(self):
+    # def testShouldReturnValueOfClassAttributeOfAnElementAfterSwitchingIFrame(self):
     #    self._loadPage("iframes")
     #    self.driver.switch_to.frame("iframe1")
     #
     #    wallace = self.driver.find_element_by_xpath("//div[@id='wallace']")
     #    classname = wallace.get_attribute("class")
     #    self.assertEqual("gromit", classname)
-
-
 
     def testShouldReturnTheContentsOfATextAreaAsItsValue(self):
         self._loadPage("formPage")
@@ -210,8 +206,8 @@ class ElementAttributeTests(unittest.TestCase):
         self.assertEqual("th1", th1.get_attribute("id"))
         self.assertEqual("3", th1.get_attribute("colspan"))
 
-        self.assertEqual("td2", td2.get_attribute("id"));
-        self.assertEquals("2", td2.get_attribute("colspan"));
+        self.assertEqual("td2", td2.get_attribute("id"))
+        self.assertEquals("2", td2.get_attribute("colspan"))
 
     def testCanRetrieveTheCurrentValueOfATextFormField_textInput(self):
         self._loadPage("formPage")
@@ -226,6 +222,7 @@ class ElementAttributeTests(unittest.TestCase):
         self.assertEqual("", element.get_attribute("value"))
         element.send_keys("hello@example.com")
         self.assertEqual("hello@example.com", element.get_attribute("value"))
+
     def testCanRetrieveTheCurrentValueOfATextFormField_textArea(self):
         self._loadPage("formPage")
         element = self.driver.find_element_by_id("emptyTextArea")

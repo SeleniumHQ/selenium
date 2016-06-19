@@ -45,8 +45,7 @@ class SelectElementHandlingTests(unittest.TestCase):
 
         for i in range(len(options)):
             option = options[i]
-            self.assertTrue(option.is_selected(),
-            "Option at index is not selected but should be: " + str(i))
+            self.assertTrue(option.is_selected(), "Option at index is not selected but should be: " + str(i))
 
     def _pageURL(self, name):
         return self.webserver.where_is(name + '.html')

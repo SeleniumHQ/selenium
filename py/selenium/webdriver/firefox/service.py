@@ -15,8 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from subprocess import PIPE
-
 from selenium.webdriver.common import service
 
 
@@ -24,9 +22,8 @@ class Service(service.Service):
     """Object that manages the starting and stopping of the
     GeckoDriver."""
 
-    def __init__(
-        self, executable_path, firefox_binary=None, port=0, service_args=None,
-                 log_path="geckodriver.log", env=None):
+    def __init__(self, executable_path, firefox_binary=None, port=0,
+                 service_args=None, log_path="geckodriver.log", env=None):
         """Creates a new instance of the GeckoDriver remote service proxy.
 
         GeckoDriver provides a HTTP interface speaking the W3C WebDriver

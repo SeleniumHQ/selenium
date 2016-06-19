@@ -31,10 +31,8 @@ class ExecutingJavaScriptTests(unittest.TestCase):
 
         result = self.driver.execute_script("return document.title")
 
-        self.assertTrue(type(result) == str,
-            "The type of the result is %s" % type(result))
+        self.assertTrue(type(result) == str, "The type of the result is %s" % type(result))
         self.assertEqual("XHTML Test Page", result)
-
 
     def testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnInteger(self):
         self._loadPage("nestedElements")
@@ -43,8 +41,7 @@ class ExecutingJavaScriptTests(unittest.TestCase):
         self.assertTrue(type(result) == int)
         self.assertTrue(int(result) > 1)
 
-
-    #@Ignore(SELENESE)
+    # @Ignore(SELENESE)
     def testShouldBeAbleToExecuteSimpleJavascriptAndReturnAWebElement(self):
         self._loadPage("xhtmlTest")
 
@@ -53,7 +50,6 @@ class ExecutingJavaScriptTests(unittest.TestCase):
         self.assertTrue(result is not None)
         self.assertTrue(type(result) == WebElement)
         self.assertEqual("a", result.tag_name.lower())
-
 
     def testShouldBeAbleToExecuteSimpleJavascriptAndReturnABoolean(self):
         self._loadPage("xhtmlTest")
@@ -64,8 +60,7 @@ class ExecutingJavaScriptTests(unittest.TestCase):
         self.assertTrue(type(result) == bool)
         self.assertTrue(bool(result))
 
-
-    #@Ignore(SELENESE, IPHONE)
+    # @Ignore(SELENESE, IPHONE)
     def testShouldBeAbleToExecuteSimpleJavascriptAndAStringsArray(self):
         self._loadPage("javascriptPage")
         expectedResult = []
@@ -77,7 +72,7 @@ class ExecutingJavaScriptTests(unittest.TestCase):
 
         self.assertEqual(expectedResult, result)
 
-    #@Ignore(SELENESE, IPHONE)
+    # @Ignore(SELENESE, IPHONE)
     def testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnArray(self):
         self._loadPage("javascriptPage")
         expectedResult = []
@@ -98,12 +93,11 @@ class ExecutingJavaScriptTests(unittest.TestCase):
         self.assertTrue((type(result) == int))
         self.assertEqual(expectedResult, result)
 
-
     def testPassingAndReturningADoubleShouldReturnADecimal(self):
         self._loadPage("javascriptPage")
         expectedResult = 1.2
         result = self.driver.execute_script("return arguments[0]", expectedResult)
-        self.assertTrue( type(result) == float)
+        self.assertTrue(type(result) == float)
         self.assertEqual(expectedResult, result)
 
     def testShouldThrowAnExceptionWhenTheJavascriptIsBad(self):
@@ -112,9 +106,8 @@ class ExecutingJavaScriptTests(unittest.TestCase):
         try:
             self.driver.execute_script("return squiggle()")
             self.fail("Expected an exception")
-        except Exception as e:
+        except Exception:
             pass
-
 
     def testShouldBeAbleToCallFunctionsDefinedOnThePage(self):
         self._loadPage("javascriptPage")
@@ -129,7 +122,6 @@ class ExecutingJavaScriptTests(unittest.TestCase):
             "return arguments[0] == 'fish' ? 'fish' : 'not fish'", "fish")
 
         self.assertEqual("fish", value)
-
 
     def testShouldBeAbleToPassABooleanAnAsArgument(self):
         self._loadPage("javascriptPage")
@@ -158,7 +150,6 @@ class ExecutingJavaScriptTests(unittest.TestCase):
         length = int(self.driver.execute_script("return arguments[0].length", array))
         self.assertEqual(len(array), length)
 
-
     def testShouldBeAbleToPassACollectionAsArgument(self):
         self._loadPage("javascriptPage")
         collection = []
@@ -179,9 +170,9 @@ class ExecutingJavaScriptTests(unittest.TestCase):
     def testShouldThrowAnExceptionIfAnArgumentIsNotValid(self):
         self._loadPage("javascriptPage")
         try:
-            self.driver.execute_script("return arguments[0]", driver)
+            self.driver.execute_script("return arguments[0]", self.driver)
             self.fail("Exception should have been thrown")
-        except Exception as e:
+        except Exception:
             pass
 
     def testShouldBeAbleToPassInMoreThanOneArgument(self):
@@ -216,8 +207,7 @@ class ExecutingJavaScriptTests(unittest.TestCase):
         nums = [1, 2]
         args = {"bar": "test", "foo": nums}
 
-
-        res = self.driver.execute_script("return arguments[0]['foo'][1]", args);
+        res = self.driver.execute_script("return arguments[0]['foo'][1]", args)
 
         self.assertEqual(2, res)
 

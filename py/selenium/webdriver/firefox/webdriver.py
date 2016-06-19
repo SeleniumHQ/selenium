@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 try:
     import http.client as http_client
 except ImportError:
@@ -79,11 +78,11 @@ class WebDriver(RemoteWebDriver):
 
             executor = ExtensionConnection("127.0.0.1", self.profile,
                                            self.binary, timeout)
-            RemoteWebDriver.__init__(self,
+            RemoteWebDriver.__init__(
+                self,
                 command_executor=executor,
-            desired_capabilities=capabilities,
-            keep_alive=True)
-
+                desired_capabilities=capabilities,
+                keep_alive=True)
 
         self._is_remote = False
 

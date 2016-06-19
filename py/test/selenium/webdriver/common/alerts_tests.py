@@ -29,6 +29,7 @@ import unittest
 
 
 class AlertsTest(unittest.TestCase):
+
     def testShouldBeAbleToOverrideTheWindowAlertMethod(self):
         if self.driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs driver does not support alerts")
@@ -61,7 +62,7 @@ class AlertsTest(unittest.TestCase):
         if self.driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs driver does not support alerts")
         self._loadPage("alerts")
-        self.driver.find_element(By.ID,"empty-alert").click();
+        self.driver.find_element(By.ID, "empty-alert").click()
         alert = self._waitForAlert()
         alert.accept()
 
@@ -133,12 +134,12 @@ class AlertsTest(unittest.TestCase):
         if self.driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs driver does not support alerts")
         self._loadPage("alerts")
-        self.driver.find_element(By.ID,"alert").click();
+        self.driver.find_element(By.ID, "alert").click()
 
         alert = self._waitForAlert()
         try:
-            alert.send_keys("cheese");
-            self.fail("Expected exception");
+            alert.send_keys("cheese")
+            self.fail("Expected exception")
         except ElementNotVisibleException:
             pass
         except InvalidElementStateException:
@@ -149,7 +150,7 @@ class AlertsTest(unittest.TestCase):
     def testAlertShouldNotAllowAdditionalCommandsIfDimissed(self):
         if self.driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs driver does not support alerts")
-        self._loadPage("alerts");
+        self._loadPage("alerts")
         self.driver.find_element(By.ID, "alert").click()
 
         alert = self._waitForAlert()
@@ -226,10 +227,11 @@ class AlertsTest(unittest.TestCase):
 
         alert2 = self._waitForAlert()
         alert2.send_keys("cheddar")
-        alert2.accept();
+        alert2.accept()
 
         self.assertEqual(self.driver.find_element(By.ID, "text1").text, "brie")
         self.assertEqual(self.driver.find_element(By.ID, "text2").text, "cheddar")
+
     def testShouldHandleAlertOnPageLoad(self):
         if self.driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs driver does not support alerts")
