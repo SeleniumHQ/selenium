@@ -243,7 +243,7 @@ ruby_test(name = "remote-ie",
 ruby_test(name = "remote-edge",
   srcs = [
     "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/ie/**/*_spec.rb",
+    "spec/integration/selenium/webdriver/edge/**/*_spec.rb",
     "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
