@@ -17,7 +17,6 @@
 
 import base64
 import os
-import unittest
 import zipfile
 
 try:
@@ -34,6 +33,7 @@ from selenium import webdriver
 from selenium.webdriver.common.proxy import Proxy, ProxyType
 from selenium.test.selenium.webdriver.common.webserver import SimpleWebServer
 
+
 class TestFirefoxProfile:
 
     def setup_method(self, method):
@@ -45,8 +45,7 @@ class TestFirefoxProfile:
     def test_that_we_can_accept_a_profile(self):
         profile1 = webdriver.FirefoxProfile()
         profile1.set_preference("browser.startup.homepage_override.mstone", "")
-        profile1.set_preference("startup.homepage_welcome_url",
-            self.webserver.where_is('simpleTest.html'))
+        profile1.set_preference("startup.homepage_welcome_url", self.webserver.where_is('simpleTest.html'))
         profile1.update_preferences()
 
         profile2 = webdriver.FirefoxProfile(profile1.path)
@@ -76,7 +75,7 @@ class TestFirefoxProfile:
                 user_js = zip.read(entry)
                 for line in user_js.splitlines():
                     if line.startswith(b'user_pref("sample.preference",'):
-                        assert True == line.endswith(b'hi there");')
+                        assert line.endswith(b'hi there");')
             # there should be only one user.js
             break
         fp.close()
@@ -100,7 +99,7 @@ class TestFirefoxProfile:
                 user_js = zip.read(entry)
                 for line in user_js.splitlines():
                     if line.startswith(b'user_pref("sample.preference.2",'):
-                        assert True == line.endswith(b'hi there");')
+                        assert line.endswith(b'hi there");')
             # there should be only one user.js
             break
         fp.close()
@@ -121,7 +120,7 @@ class TestFirefoxProfile:
         profile = webdriver.FirefoxProfile()
         profile.set_preference("sample.bool.preference", True)
         profile.update_preferences()
-        assert True == profile.default_preferences["sample.bool.preference"]
+        assert profile.default_preferences["sample.bool.preference"] is True
 
     def test_that_we_delete_the_profile(self):
         path = self.driver.firefox_profile.path
@@ -133,7 +132,7 @@ class TestFirefoxProfile:
         self.profile1.accept_untrusted_certs = False
         self.profile2 = webdriver.FirefoxProfile()
         # Default is true. Should remain so.
-        assert self.profile2.default_preferences["webdriver_accept_untrusted_certs"] == True
+        assert self.profile2.default_preferences["webdriver_accept_untrusted_certs"] is True
 
     def test_none_proxy_is_set(self):
         # The setup gave us a browser but we dont need it
@@ -145,7 +144,7 @@ class TestFirefoxProfile:
         try:
             self.profile.set_proxy(proxy)
             assert False, "exception after passing empty proxy is expected"
-        except ValueError as e:
+        except ValueError:
             pass
 
         assert "network.proxy.type" not in self.profile.default_preferences
@@ -211,7 +210,7 @@ class TestFirefoxProfile:
         try:
             self.driver.quit()
         except:
-            pass #don't care since we may have killed the browser above
+            pass  # don't care since we may have killed the browser above
         self.webserver.stop()
 
     def _pageURL(self, name):
@@ -223,8 +222,9 @@ class TestFirefoxProfile:
     def _loadPage(self, name):
         self.driver.get(self._pageURL(name))
 
+
 def teardown_module(module):
     try:
         TestFirefoxProfile.driver.quit()
     except:
-        pass #Don't Care since we may have killed the browser above
+        pass  # Don't Care since we may have killed the browser above

@@ -14,10 +14,12 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from selenium.webdriver.common.html5.application_cache import ApplicationCache
 
 import unittest
+
 import pytest
+from selenium.webdriver.common.html5.application_cache import ApplicationCache
+
 
 class AppCacheTests(unittest.TestCase):
 
@@ -35,7 +37,6 @@ class AppCacheTests(unittest.TestCase):
             status = app_cache.status
 
         self.assertEquals(ApplicationCache.UNCACHED, app_cache.status)
-
 
     def _pageURL(self, name):
         return self.webserver.where_is(name + '.html')

@@ -19,6 +19,7 @@
 The Desired Capabilities implementation.
 """
 
+
 class DesiredCapabilities(object):
     """
     Set of default supported desired capabilities.
@@ -124,7 +125,7 @@ class DesiredCapabilities(object):
     }
 
     PHANTOMJS = {
-        "browserName":"phantomjs",
+        "browserName": "phantomjs",
         "version": "",
         "platform": "ANY",
         "javascriptEnabled": True,

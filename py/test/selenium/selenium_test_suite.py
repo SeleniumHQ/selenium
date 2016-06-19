@@ -17,19 +17,20 @@
 
 import unittest
 # Disabled because the site is down
-#import test_ajax_jsf
+# import test_ajax_jsf
 import test_default_server
 import test_google
 import test_i18n
 import sys
 
+
 def suite():
-    return unittest.TestSuite((\
-#        unittest.makeSuite(test_ajax_jsf.TestAjaxJSF),
+    return unittest.TestSuite((
+        # unittest.makeSuite(test_ajax_jsf.TestAjaxJSF),
         unittest.makeSuite(test_default_server.TestDefaultServer),
         unittest.makeSuite(test_google.TestGoogle),
-        unittest.makeSuite(test_i18n.TestI18n),
-        ))
+        unittest.makeSuite(test_i18n.TestI18n)
+    ))
 
 if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite())

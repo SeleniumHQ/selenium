@@ -18,10 +18,11 @@
 from selenium import selenium
 import unittest
 
+
 class TestGoogle(unittest.TestCase):
+
     def setUp(self):
-        self.selenium = selenium("localhost", \
-            4444, "*firefox", "http://www.google.com/webhp")
+        self.selenium = selenium("localhost", 4444, "*firefox", "http://www.google.com/webhp")
         self.selenium.start()
 
     def test_google(self):

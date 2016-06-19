@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 import errno
 import os
 import platform
@@ -22,6 +23,7 @@ from subprocess import PIPE
 import time
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
+
 
 class Service(object):
 
@@ -78,8 +80,7 @@ class Service(object):
         except Exception as e:
             raise WebDriverException(
                 "The executable %s needs to be available in the path. %s\n%s" %
-                (os.path.basename(self.path), self.start_error_message, str(e))
-                )
+                (os.path.basename(self.path), self.start_error_message, str(e)))
         count = 0
         while True:
             self.assert_process_still_running()

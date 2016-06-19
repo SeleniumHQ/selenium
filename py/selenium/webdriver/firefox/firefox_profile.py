@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 from __future__ import with_statement
 
 import base64
@@ -80,7 +81,7 @@ class FirefoxProfile(object):
         self.extensionsDir = os.path.join(self.profile_dir, "extensions")
         self.userPrefs = os.path.join(self.profile_dir, "user.js")
 
-    #Public Methods
+    # Public Methods
     def set_preference(self, key, value):
         """
         sets the preference that we want in the profile.
@@ -95,7 +96,7 @@ class FirefoxProfile(object):
             self.default_preferences[key] = value
         self._write_user_prefs(self.default_preferences)
 
-    #Properties
+    # Properties
 
     @property
     def path(self):
@@ -122,7 +123,7 @@ class FirefoxProfile(object):
             port = int(port)
             if port < 1 or port > 65535:
                 raise WebDriverException("Port number must be in the range 1..65535")
-        except (ValueError, TypeError) as e:
+        except (ValueError, TypeError):
             raise WebDriverException("Port needs to be an integer")
         self._port = port
         self.set_preference("webdriver_firefox_port", self._port)

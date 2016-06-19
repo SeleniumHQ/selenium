@@ -17,9 +17,9 @@
 
 from selenium.webdriver.remote.remote_connection import RemoteConnection
 
+
 class ChromeRemoteConnection(RemoteConnection):
 
     def __init__(self, remote_server_addr, keep_alive=True):
         RemoteConnection.__init__(self, remote_server_addr, keep_alive)
-        self._commands["launchApp"] = ('POST',
-            '/session/$sessionId/chromium/launch_app')
+        self._commands["launchApp"] = ('POST', '/session/$sessionId/chromium/launch_app')

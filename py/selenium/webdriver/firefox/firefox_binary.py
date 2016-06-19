@@ -46,8 +46,8 @@ class FirefoxBinary(object):
         if self._start_cmd is None:
             self._start_cmd = self._get_firefox_start_cmd()
         if not self._start_cmd.strip():
-          raise Exception("Failed to find firefox binary. You can set it by specifying the path to 'firefox_binary':\n\nfrom selenium.webdriver.firefox.firefox_binary import FirefoxBinary\n\n" +
-            "binary = FirefoxBinary('/path/to/binary')\ndriver = webdriver.Firefox(firefox_binary=binary)")
+            raise Exception("Failed to find firefox binary. You can set it by specifying the path to 'firefox_binary':\n\nfrom selenium.webdriver.firefox.firefox_binary import FirefoxBinary\n\n" +
+                            "binary = FirefoxBinary('/path/to/binary')\ndriver = webdriver.Firefox(firefox_binary=binary)")
         # Rather than modifying the environment of the calling Python process
         # copy it and modify as needed.
         self._firefox_env = os.environ.copy()
@@ -95,15 +95,17 @@ class FirefoxBinary(object):
         while not utils.is_connectable(self.profile.port):
             if self.process.poll() is not None:
                 # Browser has exited
-                raise WebDriverException("The browser appears to have exited "
-                      "before we could connect. If you specified a log_file in "
-                      "the FirefoxBinary constructor, check it for details.")
+                raise WebDriverException(
+                    "The browser appears to have exited "
+                    "before we could connect. If you specified a log_file in "
+                    "the FirefoxBinary constructor, check it for details.")
             if count >= timeout:
                 self.kill()
-                raise WebDriverException("Can't load the profile. Profile "
-                      "Dir: %s If you specified a log_file in the "
-                      "FirefoxBinary constructor, check it for details."
-                      % (self.profile.path))
+                raise WebDriverException(
+                    "Can't load the profile. Profile "
+                    "Dir: %s If you specified a log_file in the "
+                    "FirefoxBinary constructor, check it for details."
+                    % (self.profile.path))
             count += 1
             time.sleep(1)
         return True
@@ -114,10 +116,8 @@ class FirefoxBinary(object):
         except ImportError:
             from winreg import OpenKey, QueryValue, HKEY_LOCAL_MACHINE, HKEY_CURRENT_USER
         import shlex
-        keys = (
-           r"SOFTWARE\Classes\FirefoxHTML\shell\open\command",
-           r"SOFTWARE\Classes\Applications\firefox.exe\shell\open\command"
-        )
+        keys = (r"SOFTWARE\Classes\FirefoxHTML\shell\open\command",
+                r"SOFTWARE\Classes\Applications\firefox.exe\shell\open\command")
         command = ""
         for path in keys:
             try:
@@ -148,8 +148,7 @@ class FirefoxBinary(object):
             if not os.path.exists(start_cmd):
                 start_cmd = os.path.expanduser("~") + start_cmd
         elif platform.system() == "Windows":
-            start_cmd = (self._find_exe_in_registry() or
-                self._default_windows_location())
+            start_cmd = (self._find_exe_in_registry() or self._default_windows_location())
         elif platform.system() == 'Java' and os._name == 'nt':
             start_cmd = self._default_windows_location()
         else:
@@ -159,7 +158,8 @@ class FirefoxBinary(object):
                     break
             else:
                 # couldn't find firefox on the system path
-                raise RuntimeError("Could not find firefox in your system PATH." +
+                raise RuntimeError(
+                    "Could not find firefox in your system PATH." +
                     " Please specify the firefox binary location or install firefox")
         return start_cmd
 
@@ -192,9 +192,11 @@ class FirefoxBinary(object):
             if not os.path.exists(library_path):
                 os.makedirs(library_path)
             import shutil
-            shutil.copy(os.path.join(os.path.dirname(__file__), path,
-              self.NO_FOCUS_LIBRARY_NAME),
-              library_path)
+            shutil.copy(os.path.join(
+                os.path.dirname(__file__),
+                path,
+                self.NO_FOCUS_LIBRARY_NAME),
+                library_path)
             built_path += library_path + ":"
 
         return built_path

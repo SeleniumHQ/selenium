@@ -18,6 +18,7 @@
 import unittest
 from selenium.webdriver.common.proxy import Proxy, ProxyType
 
+
 class ProxyTests(unittest.TestCase):
 
     MANUAL_PROXY = {
@@ -85,14 +86,14 @@ class ProxyTests(unittest.TestCase):
         try:
             proxy.proxy_type = ProxyType.SYSTEM
             raise Exception("Change of already initialized proxy type should raise exception")
-        except Exception as e:
+        except Exception:
             pass
 
         proxy = Proxy(raw={'proxyType': ProxyType.DIRECT})
         try:
             proxy.proxy_type = ProxyType.SYSTEM
             raise Exception("Change of already initialized proxy type should raise exception")
-        except Exception as e:
+        except Exception:
             pass
 
     def testCanInitManualProxy(self):
@@ -107,13 +108,13 @@ class ProxyTests(unittest.TestCase):
         self.assertEqual(self.MANUAL_PROXY['socksUsername'], proxy.socksUsername)
         self.assertEqual(self.MANUAL_PROXY['socksPassword'], proxy.socksPassword)
 
-    def testCanAddAutodetectProxyToDesiredCapabilities(self):
+    def testCanInitAutodetectProxy(self):
         proxy = Proxy(raw=self.AUTODETECT_PROXY)
 
         self.assertEqual(ProxyType.AUTODETECT, proxy.proxy_type)
         self.assertEqual(self.AUTODETECT_PROXY['autodetect'], proxy.auto_detect)
 
-    def testCanAddPACProxyToDesiredCapabilities(self):
+    def testCanInitPACProxy(self):
         proxy = Proxy(raw=self.PAC_PROXY)
 
         self.assertEqual(ProxyType.PAC, proxy.proxy_type)
@@ -140,4 +141,3 @@ class ProxyTests(unittest.TestCase):
         proxy_capabilities['proxyType'] = 'UNSPECIFIED'
         expected_capabilities = {'proxy': proxy_capabilities}
         self.assertEqual(expected_capabilities, desired_capabilities)
-

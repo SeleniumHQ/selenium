@@ -19,6 +19,7 @@
 The Proxy implementation.
 """
 
+
 class ProxyTypeFactory:
     """
     Factory for proxy types.
@@ -27,6 +28,7 @@ class ProxyTypeFactory:
     @staticmethod
     def make(ff_value, string):
         return {'ff_value': ff_value, 'string': string}
+
 
 class ProxyType:
     """
@@ -37,13 +39,13 @@ class ProxyType:
        'string' is id of proxy type.
     """
 
-    DIRECT = ProxyTypeFactory.make(0, 'DIRECT')           # Direct connection, no proxy (default on Windows).
-    MANUAL = ProxyTypeFactory.make(1, 'MANUAL')           # Manual proxy settings (e.g., for httpProxy).
-    PAC = ProxyTypeFactory.make(2, 'PAC')                 # Proxy autoconfiguration from URL.
-    RESERVED_1 = ProxyTypeFactory.make(3, 'RESERVED1')    # Never used.
-    AUTODETECT = ProxyTypeFactory.make(4, 'AUTODETECT')   # Proxy autodetection (presumably with WPAD).
-    SYSTEM = ProxyTypeFactory.make(5, 'SYSTEM')           # Use system settings (default on Linux).
-    UNSPECIFIED = ProxyTypeFactory.make(6, 'UNSPECIFIED') # Not initialized (for internal use).
+    DIRECT = ProxyTypeFactory.make(0, 'DIRECT')  # Direct connection, no proxy (default on Windows).
+    MANUAL = ProxyTypeFactory.make(1, 'MANUAL')  # Manual proxy settings (e.g., for httpProxy).
+    PAC = ProxyTypeFactory.make(2, 'PAC')  # Proxy autoconfiguration from URL.
+    RESERVED_1 = ProxyTypeFactory.make(3, 'RESERVED1')  # Never used.
+    AUTODETECT = ProxyTypeFactory.make(4, 'AUTODETECT')  # Proxy autodetection (presumably with WPAD).
+    SYSTEM = ProxyTypeFactory.make(5, 'SYSTEM')  # Use system settings (default on Linux).
+    UNSPECIFIED = ProxyTypeFactory.make(6, 'UNSPECIFIED')  # Not initialized (for internal use).
 
     @classmethod
     def load(cls, value):
@@ -52,10 +54,13 @@ class ProxyType:
         value = str(value).upper()
         for attr in dir(cls):
             attr_value = getattr(cls, attr)
-            if isinstance(attr_value, dict) and 'string' in attr_value and \
-                attr_value['string'] is not None and attr_value['string'] == value:
+            if isinstance(attr_value, dict) and \
+                    'string' in attr_value and \
+                    attr_value['string'] is not None and \
+                    attr_value['string'] == value:
                 return attr_value
         raise Exception("No proxy type is found for %s" % (value))
+
 
 class Proxy(object):
     """
@@ -297,9 +302,7 @@ class Proxy(object):
 
     def _verify_proxy_type_compatibility(self, compatibleProxy):
         if self.proxyType != ProxyType.UNSPECIFIED and self.proxyType != compatibleProxy:
-            raise Exception(" Specified proxy type (%s) not compatible with current setting (%s)" % \
-                                                (compatibleProxy, self.proxyType))
-
+            raise Exception(" Specified proxy type (%s) not compatible with current setting (%s)" % (compatibleProxy, self.proxyType))
 
     def add_to_capabilities(self, capabilities):
         """

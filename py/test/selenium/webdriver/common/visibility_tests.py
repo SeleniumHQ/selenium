@@ -28,8 +28,7 @@ class VisibilityTests(unittest.TestCase):
 
         self.assertTrue(self.driver.find_element(by=By.ID, value="displayed").is_displayed())
         self.assertFalse(self.driver.find_element(by=By.ID, value="none").is_displayed())
-        self.assertFalse(self.driver.find_element(by=By.ID,
-            value="suppressedParagraph").is_displayed())
+        self.assertFalse(self.driver.find_element(by=By.ID, value="suppressedParagraph").is_displayed())
         self.assertFalse(self.driver.find_element(by=By.ID, value="hidden").is_displayed())
 
     def testVisibilityShouldTakeIntoAccountParentVisibility(self):
@@ -67,7 +66,7 @@ class VisibilityTests(unittest.TestCase):
         try:
             element.click()
             self.fail("You should not be able to click on an invisible element")
-        except ElementNotVisibleException as e:
+        except ElementNotVisibleException:
             pass
 
     def testShouldNotBeAbleToToggleAnElementThatIsNotDisplayed(self):
@@ -77,7 +76,7 @@ class VisibilityTests(unittest.TestCase):
         try:
             element.click()
             self.fail("You should not be able to click an invisible element")
-        except ElementNotVisibleException as e:
+        except ElementNotVisibleException:
             pass
 
     def testShouldNotBeAbleToSelectAnElementThatIsNotDisplayed(self):
@@ -87,7 +86,7 @@ class VisibilityTests(unittest.TestCase):
         try:
             element.click()
             self.fail("You should not be able to click an invisible element")
-        except ElementNotVisibleException as e:
+        except ElementNotVisibleException:
             pass
 
     def testShouldNotBeAbleToTypeAnElementThatIsNotDisplayed(self):
@@ -99,7 +98,7 @@ class VisibilityTests(unittest.TestCase):
         try:
             element.send_keys("You don't see me")
             self.fail("You should not be able to send keyboard input to an invisible element")
-        except ElementNotVisibleException as e:
+        except ElementNotVisibleException:
             pass
 
         self.assertTrue(element.get_attribute("value") is not "You don't see me")

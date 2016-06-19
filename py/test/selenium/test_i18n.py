@@ -20,7 +20,9 @@ from __future__ import unicode_literals
 from selenium import selenium
 import unittest
 
+
 class TestI18n(unittest.TestCase):
+
     def setUp(self):
         self.selenium = selenium("localhost", 4444, "*mock", "http://localhost:4444")
         self.selenium.start()

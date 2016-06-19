@@ -24,7 +24,7 @@ try:
     import http.client as httplib
     from urllib import request as url_request
     from urllib import parse
-except ImportError: # above is available in py3+, below is py2.7
+except ImportError:  # above is available in py3+, below is py2.7
     import httplib as httplib
     import urllib2 as url_request
     import urlparse as parse
@@ -422,8 +422,9 @@ class RemoteConnection(object):
                        "Content-type": "application/json;charset=\"UTF-8\"",
                        "Accept": "application/json"}
             if parsed_url.username:
-                auth = base64.standard_b64encode(('%s:%s' %
-                       (parsed_url.username, parsed_url.password)).encode('ascii')).decode('ascii').replace('\n', '')
+                auth = base64.standard_b64encode(('%s:%s' % (
+                    parsed_url.username,
+                    parsed_url.password)).encode('ascii')).decode('ascii').replace('\n', '')
                 headers["Authorization"] = "Basic %s" % auth
             if body and method != 'POST' and method != 'PUT':
                 body = None
@@ -441,12 +442,13 @@ class RemoteConnection(object):
                 netloc = parsed_url.hostname
                 if parsed_url.port:
                     netloc += ":%s" % parsed_url.port
-                cleaned_url = parse.urlunparse((parsed_url.scheme,
-                                                   netloc,
-                                                   parsed_url.path,
-                                                   parsed_url.params,
-                                                   parsed_url.query,
-                                                   parsed_url.fragment))
+                cleaned_url = parse.urlunparse((
+                    parsed_url.scheme,
+                    netloc,
+                    parsed_url.path,
+                    parsed_url.params,
+                    parsed_url.query,
+                    parsed_url.fragment))
                 password_manager = url_request.HTTPPasswordMgrWithDefaultRealm()
                 password_manager.add_password(None,
                                               "%s://%s" % (parsed_url.scheme, netloc),

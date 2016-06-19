@@ -20,6 +20,7 @@ from selenium import webdriver
 from selenium.test.selenium.webdriver.common import select_class_tests
 from selenium.test.selenium.webdriver.common.webserver import SimpleWebServer
 
+
 def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()

@@ -39,6 +39,7 @@ def free_port():
     free_socket.close()
     return port
 
+
 def find_connectable_ip(host, port=None):
     """Resolve a hostname to an IP, preferring IPv4 addresses.
 
@@ -110,6 +111,7 @@ def is_connectable(port, host="localhost"):
         if socket_:
             socket_.close()
     return result
+
 
 def is_url_connectable(port):
     """
