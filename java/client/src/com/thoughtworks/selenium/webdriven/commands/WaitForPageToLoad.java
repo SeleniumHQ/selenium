@@ -61,13 +61,7 @@ public class WaitForPageToLoad extends SeleneseCommand<Void> {
     } catch (WebDriverException e) {
       // Page might still be loading. Give it a chance to get some content.
       hesitate(500);
-      try {
-        result = ((JavascriptExecutor) driver).executeScript(
-            "return !!document['readyState'];");
-      } catch (WebDriverException e2) {
-        log.warning("Cannot determine whether page supports ready state. Abandoning wait.");
-        return null;
-      }
+      result = ((JavascriptExecutor) driver).executeScript("return !!document['readyState'];");
     }
 
     log.fine("Does browser support readyState: " + result);
@@ -101,6 +95,8 @@ public class WaitForPageToLoad extends SeleneseCommand<Void> {
           if (result != null && result instanceof Boolean && (Boolean) result) {
             return true;
           }
+        } catch (WebDriverException e) {
+          throw e;
         } catch (Exception e) {
           // Possible page reload. Fine
         }
