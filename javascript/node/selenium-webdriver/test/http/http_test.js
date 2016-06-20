@@ -19,6 +19,7 @@
 
 var assert = require('assert'),
     http = require('http'),
+    httpProxy = require('filternet'),
     url = require('url');
 
 var HttpClient = require('../../http').HttpClient,
@@ -83,6 +84,8 @@ describe('HttpClient', function() {
       res.end();
     }
   });
+
+  var proxyServer = httpProxy.createProxyServer({ port: 8080 });
 
   before(function() {
     return server.start();
@@ -156,20 +159,20 @@ describe('HttpClient', function() {
   it('proxies requests through the webdriver proxy', function() {
     var request = new HttpRequest('GET', '/proxy');
     var client = new HttpClient(
-        'http://another.server.com', undefined, server.url());
+        server.url(), undefined, 'http://localhost:8080');
     return client.send(request).then(function(response) {
-       assert.equal(200, response.status);
-       assert.equal(response.headers.get('host'), 'another.server.com');
+      assert.equal(200, response.status);
+      assert.equal(response.headers.get('host'), '127.0.0.1');
     });
   });
 
   it('proxies requests through the webdriver proxy on redirect', function() {
     var request = new HttpRequest('GET', '/proxy/redirect');
     var client = new HttpClient(
-        'http://another.server.com', undefined, server.url());
+        server.url(), undefined, 'http://localhost:8080');
     return client.send(request).then(function(response) {
       assert.equal(200, response.status);
-      assert.equal(response.headers.get('host'), 'another.server.com');
+      assert.equal(response.headers.get('host'), '127.0.0.1');
     });
   });
 });

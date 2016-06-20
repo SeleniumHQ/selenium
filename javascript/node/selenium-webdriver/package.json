@@ -35,7 +35,9 @@
     "multer": "^0.1.7",
     "promises-aplus-tests": "^2.1.0",
     "serve-index": "^1.6.1",
-    "sinon": "^1.17.2"
+    "sinon": "^1.17.2",
+    "bufferjs": "~1.0.0",
+    "filternet": "^0.0.2"
   },
   "scripts": {
     "test": "mocha --harmony -t 600000 --recursive test"
