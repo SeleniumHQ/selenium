@@ -32,7 +32,7 @@ class IeLauncherTests (unittest.TestCase):
         self.webdriver.close()
         self.webdriver.quit()
 
-    def test_we_can_launch_multiple_firefox_instances(self):
+    def test_we_can_launch_multiple_ie_instances(self):
         self.webdriver1 = webdriver.Ie()
         self.webdriver2 = webdriver.Ie()
         self.webdriver3 = webdriver.Ie()
