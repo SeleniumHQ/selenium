@@ -26,8 +26,25 @@ java_test(name = 'small-tests',
   ],
 )
 
+java_test(name = 'exception-tests',
+  srcs = [
+    'WebDriverExceptionTest.java',
+  ],
+  deps = [
+    '//java/client/src/org/openqa/selenium:selenium',
+    '//java/client/src/org/openqa/selenium/remote:remote',
+    '//java/client/src/com/thoughtworks/selenium/webdriven:webdriven',
+    '//java/client/src/com/thoughtworks/selenium/webdriven/commands:commands',
+    '//third_party/java/junit:junit',
+    '//third_party/java/mockito:mockito',
+    '//third_party/java/guava:guava',
+  ],
+)
+
 java_library(name = 'tests',
-  srcs = glob(['*Test.java'], excludes = ['ScriptMutatorTest.java','WebDriverBackedSeleniumLargeTest.java']),
+  srcs = glob(['*Test.java'], excludes = [
+    'ScriptMutatorTest.java','WebDriverBackedSeleniumLargeTest.java', 'WebDriverExceptionTest.java'
+  ]),
   deps = [
     '//java/client/src/com/thoughtworks/selenium:leg-rc',
     '//java/client/src/org/openqa/selenium:selenium',

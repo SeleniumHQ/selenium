@@ -9,5 +9,6 @@ java_library(name = 'commands',
   ],
   visibility = [
     '//java/client/src/com/thoughtworks/selenium/webdriven:webdriven',
+    '//java/client/test/com/thoughtworks/selenium/webdriven:exception-tests',
   ],
 )
