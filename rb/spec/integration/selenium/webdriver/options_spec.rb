@@ -74,7 +74,7 @@ module Selenium
             expect(cookies.first[:value]).to eq('bar')
           end
 
-          # Edge BUG - https://connect.microsoft.com/IE/feedbackdetail/view/1864122
+          # Edge BUG - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/5751773/
           not_compliant_on browser: :edge do
             it 'should delete one' do
               driver.navigate.to url_for('xhtmlTest.html')
@@ -84,7 +84,7 @@ module Selenium
             end
           end
 
-          # This is not a w3c supported spec
+          # Edge BUG - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/5751773/
           not_compliant_on browser: :edge do
             it 'should delete all' do
               driver.navigate.to url_for('xhtmlTest.html')

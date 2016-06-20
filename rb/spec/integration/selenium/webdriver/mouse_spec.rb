@@ -46,17 +46,14 @@ module Selenium
           expect(text).to eq('Dropped!')
         end
 
-        # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1850023
-        not_compliant_on browser: :edge do
-          it 'double clicks an element' do
-            driver.navigate.to url_for('javascriptPage.html')
-            element = driver.find_element(id: 'doubleClickField')
+        it 'double clicks an element' do
+          driver.navigate.to url_for('javascriptPage.html')
+          element = driver.find_element(id: 'doubleClickField')
 
-            driver.mouse.double_click element
+          driver.mouse.double_click element
 
-            wait(5).until do
-              element.attribute(:value) == 'DoubleClicked'
-            end
+          wait(5).until do
+            element.attribute(:value) == 'DoubleClicked'
           end
         end
 
