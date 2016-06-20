@@ -523,10 +523,31 @@ task :release => JAVA_RELEASE_TARGETS + [
   cp Rake::Task['//java/client/src/org/openqa/selenium:client-combined:zip'].out, "build/dist/selenium-java-#{version}.zip"
 end
 
+def read_user_pass_from_m2_settings
+    settings = File.read(ENV['HOME'] + "/.m2/settings.xml")
+    found_section = false
+    user = nil
+    pass = nil
+    settings.each_line do |line|
+        if !found_section
+            found_section = line.include? "<id>sonatype-nexus-staging</id>"
+        else
+            if user == nil and line.include? "<username>"
+              user = line.split("<username>")[1].split("</")[0]
+            elsif pass == nil and line.include? "<password>"
+              pass = line.split("<password>")[1].split("</")[0]
+            end
+        end
+    end
+
+    return [user, pass]
+end
+
 task :'publish-maven' => JAVA_RELEASE_TARGETS do |t|
   t.prerequisites.each do |p|
     if JAVA_RELEASE_TARGETS.include?(p)
-      Buck::buck_cmd.call('publish', ['--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', '--include-source', p])
+      creds = read_user_pass_from_m2_settings()
+      Buck::buck_cmd.call('publish', ['--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', '--include-source', '-u', creds[0], '-p', creds[1], p])
     end
   end
 end
