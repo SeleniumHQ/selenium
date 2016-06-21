@@ -154,3 +154,6 @@ class Command(object):
     CURRENT_CONTEXT_HANDLE = "getCurrentContextHandle"
     CONTEXT_HANDLES = "getContextHandles"
     SWITCH_TO_CONTEXT = "switchToContext"
+
+    # PhantomJS
+    EXECUTE_PHANTOM_JS = "executePhantomJS"

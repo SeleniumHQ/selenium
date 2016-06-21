@@ -379,6 +379,8 @@ class RemoteConnection(object):
                 ('GET', '/session/$sessionId/contexts'),
             Command.SWITCH_TO_CONTEXT:
                 ('POST', '/session/$sessionId/context'),
+            Command.EXECUTE_PHANTOM_JS:
+                ('POST', '/session/$sessionId/phantom/execute'),
         }
 
     def execute(self, command, params):
