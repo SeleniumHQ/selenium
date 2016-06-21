@@ -9,6 +9,7 @@
 * Internal cleanup replacing uses of managed promises with native promises
 * Removed the mandatory use of Firefox Dev Edition, when using Marionette driver
 * Fixed timeouts' URL
+* Properly send HTTP requests when using a WebDriver server proxy
 
 ### API Changes
 

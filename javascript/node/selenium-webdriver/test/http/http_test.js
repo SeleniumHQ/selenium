@@ -30,6 +30,8 @@ describe('HttpClient', function() {
   this.timeout(4 * 1000);
 
   var server = new Server(function(req, res) {
+    let parsedUrl = url.parse(req.url);
+
     if (req.method == 'GET' && req.url == '/echo') {
       res.writeHead(200, req.headers);
       res.end();
@@ -70,12 +72,19 @@ describe('HttpClient', function() {
       res.writeHead(200, {'content-type': 'text/plain'});
       res.end('Access granted!');
 
-    } else if (req.method == 'GET' && req.url == '/proxy') {
-      res.writeHead(200, req.headers);
+    } else if (req.method == 'GET'
+        && parsedUrl.pathname
+        && parsedUrl.pathname.endsWith('/proxy')) {
+      let headers = Object.assign({}, req.headers);
+      headers['x-proxy-request-uri'] = req.url;
+      res.writeHead(200, headers);
       res.end();
 
-    } else if (req.method == 'GET' && req.url == '/proxy/redirect') {
-      res.writeHead(303, {'Location': '/proxy'});
+    } else if (req.method == 'GET'
+        && parsedUrl.pathname
+        && parsedUrl.pathname.endsWith('/proxy/redirect')) {
+      let path = `/proxy${parsedUrl.search || ''}${parsedUrl.hash || ''}`;
+      res.writeHead(303, {'Location': path});
       res.end();
 
     } else {
@@ -153,23 +162,44 @@ describe('HttpClient', function() {
     });
   });
 
-  it('proxies requests through the webdriver proxy', function() {
-    var request = new HttpRequest('GET', '/proxy');
-    var client = new HttpClient(
-        'http://another.server.com', undefined, server.url());
-    return client.send(request).then(function(response) {
-       assert.equal(200, response.status);
-       assert.equal(response.headers.get('host'), 'another.server.com');
+  describe('with proxy', function() {
+    it('sends request to proxy with absolute URI', function() {
+      var request = new HttpRequest('GET', '/proxy');
+      var client = new HttpClient(
+          'http://another.server.com', undefined, server.url());
+      return client.send(request).then(function(response) {
+        assert.equal(200, response.status);
+        assert.equal(response.headers.get('host'), 'another.server.com');
+        assert.equal(
+            response.headers.get('x-proxy-request-uri'),
+            'http://another.server.com/proxy');
+      });
     });
-  });
 
-  it('proxies requests through the webdriver proxy on redirect', function() {
-    var request = new HttpRequest('GET', '/proxy/redirect');
-    var client = new HttpClient(
-        'http://another.server.com', undefined, server.url());
-    return client.send(request).then(function(response) {
-      assert.equal(200, response.status);
-      assert.equal(response.headers.get('host'), 'another.server.com');
+    it('uses proxy when following redirects', function() {
+      var request = new HttpRequest('GET', '/proxy/redirect');
+      var client = new HttpClient(
+          'http://another.server.com', undefined, server.url());
+      return client.send(request).then(function(response) {
+        assert.equal(200, response.status);
+        assert.equal(response.headers.get('host'), 'another.server.com');
+        assert.equal(
+            response.headers.get('x-proxy-request-uri'),
+            'http://another.server.com/proxy');
+      });
+    });
+
+    it('includes search and hash in redirect URI', function() {
+      var request = new HttpRequest('GET', '/proxy/redirect?foo#bar');
+      var client = new HttpClient(
+          'http://another.server.com', undefined, server.url());
+      return client.send(request).then(function(response) {
+        assert.equal(200, response.status);
+        assert.equal(response.headers.get('host'), 'another.server.com');
+        assert.equal(
+            response.headers.get('x-proxy-request-uri'),
+            'http://another.server.com/proxy?foo#bar');
+      });
     });
   });
 });

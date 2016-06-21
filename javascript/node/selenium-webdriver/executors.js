@@ -41,6 +41,7 @@ const HttpClient = require('./http').HttpClient,
  * @returns {!./lib/command.Executor} The new command executor.
  */
 exports.createExecutor = function(url, opt_agent, opt_proxy) {
+  url = Promise.resolve(url);
   return new DeferredExecutor(url.then(url => {
     var client = new HttpClient(url, opt_agent, opt_proxy);
     return new HttpExecutor(client);

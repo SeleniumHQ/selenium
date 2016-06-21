@@ -30,6 +30,36 @@ const httpLib = require('../lib/http');
 
 
 /**
+ * @typedef {{protocol: (?string|undefined),
+ *            auth: (?string|undefined),
+ *            hostname: (?string|undefined),
+ *            host: (?string|undefined),
+ *            port: (?string|undefined),
+ *            path: (?string|undefined),
+ *            pathname: (?string|undefined)}}
+ */
+var RequestOptions;
+
+
+/**
+ * @param {string} aUrl The request URL to parse.
+ * @return {RequestOptions} The request options.
+ * @throws {Error} if the URL does not include a hostname.
+ */
+function getRequestOptions(aUrl) {
+  let options = url.parse(aUrl);
+  if (!options.hostname) {
+    throw new Error('Invalid URL: ' + aUrl);
+  }
+  // Delete the search and has portions as they are not used.
+  options.search = null;
+  options.hash = null;
+  options.path = options.pathname;
+  return options;
+}
+
+
+/**
  * A basic HTTP client used to send messages to a remote end.
  *
  * @implements {httpLib.Client}
@@ -43,37 +73,24 @@ class HttpClient {
    *     server. Default is to use no proxy.
    */
   constructor(serverUrl, opt_agent, opt_proxy) {
-    let parsedUrl = url.parse(serverUrl);
-    if (!parsedUrl.hostname) {
-      throw new Error('Invalid server URL: ' + serverUrl);
-    }
-
     /** @private {http.Agent} */
     this.agent_ = opt_agent || null;
 
-    /** @private {?string} */
-    this.proxy_ = opt_proxy || null;
-
     /**
      * Base options for each request.
-     * @private {{auth: (?string|undefined),
-     *            host: string,
-     *            path: (?string|undefined),
-     *            port: (?string|undefined),
-     *            protocol: (?string|undefined)}}
+     * @private {RequestOptions}
      */
-    this.options_ = {
-      auth: parsedUrl.auth,
-      host: parsedUrl.hostname,
-      path: parsedUrl.pathname,
-      port: parsedUrl.port,
-      protocol: parsedUrl.protocol
-    };
+    this.options_ = getRequestOptions(serverUrl);
+
+    /**
+     * @private {?RequestOptions}
+     */
+    this.proxyOptions_ = opt_proxy ? getRequestOptions(opt_proxy) : null;
   }
 
   /** @override */
   send(httpRequest) {
-    var data;
+    let data;
 
     let headers = {};
     httpRequest.headers.forEach(function(value, name) {
@@ -87,30 +104,33 @@ class HttpClient {
       headers['Content-Type'] = 'application/json;charset=UTF-8';
     }
 
-    var path = this.options_.path;
-    if (path[path.length - 1] === '/' && httpRequest.path[0] === '/') {
+    let path = this.options_.path;
+    if (path.endsWith('/') && httpRequest.path.startsWith('/')) {
       path += httpRequest.path.substring(1);
     } else {
       path += httpRequest.path;
     }
+    let parsedPath = url.parse(path);
 
-    var options = {
+    let options = {
+      agent: this.agent_ || null,
       method: httpRequest.method,
+
       auth: this.options_.auth,
-      host: this.options_.host,
+      hostname: this.options_.hostname,
       port: this.options_.port,
       protocol: this.options_.protocol,
-      path: path,
-      headers: headers
+
+      path: parsedPath.path,
+      pathname: parsedPath.pathname,
+      search: parsedPath.search,
+      hash: parsedPath.hash,
+
+      headers,
     };
 
-    if (this.agent_) {
-      options.agent = this.agent_;
-    }
-
-    var proxy = this.proxy_;
-    return new Promise(function(fulfill, reject) {
-      sendRequest(options, fulfill, reject, data, proxy);
+    return new Promise((fulfill, reject) => {
+      sendRequest(options, fulfill, reject, data, this.proxyOptions_);
     });
   }
 }
@@ -123,17 +143,34 @@ class HttpClient {
  *     request succeeds.
  * @param {function(!Error)} onError The function to call if the request fails.
  * @param {?string=} opt_data The data to send with the request.
- * @param {?string=} opt_proxy The proxy server to use for the request.
+ * @param {?RequestOptions=} opt_proxy The proxy server to use for the request.
  */
 function sendRequest(options, onOk, onError, opt_data, opt_proxy) {
-  var host = options.host;
+  var hostname = options.hostname;
   var port = options.port;
 
   if (opt_proxy) {
-    var proxy = url.parse(opt_proxy);
+    let proxy = /** @type {RequestOptions} */(opt_proxy);
 
-    options.headers['Host'] = options.host;
-    options.host = proxy.hostname;
+    // RFC 2616, section 5.1.2:
+    // The absoluteURI form is REQUIRED when the request is being made to a
+    // proxy.
+    let absoluteUri = url.format(options);
+
+    // RFC 2616, section 14.23:
+    // An HTTP/1.1 proxy MUST ensure that any request message it forwards does
+    // contain an appropriate Host header field that identifies the service
+    // being requested by the proxy.
+    let targetHost = options.hostname
+    if (options.port) {
+      targetHost += ':' + options.port;
+    }
+
+    // Update the request options with our proxy info.
+    options.headers['Host'] = targetHost;
+    options.path = absoluteUri;
+    options.host = proxy.host;
+    options.hostname = proxy.hostname;
     options.port = proxy.port;
 
     if (proxy.auth) {
@@ -156,17 +193,20 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy) {
       }
 
       if (!location.hostname) {
-        location.hostname = host;
+        location.hostname = hostname;
         location.port = port;
       }
 
       request.abort();
       sendRequest({
         method: 'GET',
-        host: location.hostname,
-        path: location.pathname + (location.search || ''),
+        protocol: location.protocol || options.protocol,
+        hostname: location.hostname,
         port: location.port,
-        protocol: location.protocol,
+        path: location.path,
+        pathname: location.pathname,
+        search: location.search,
+        hash: location.hash,
         headers: {
           'Accept': 'application/json; charset=utf-8'
         }
