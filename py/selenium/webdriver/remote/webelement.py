@@ -421,6 +421,14 @@ class WebElement(object):
         return True
 
     @property
+    def parent(self):
+        """Internal reference to the WebDriver instance this element was found from."""
+        import warnings
+        warnings.warn("WebElement.parent is a deprecated alias, use WebElement.driver",
+                      DeprecationWarning, 2)
+        return self._driver
+
+    @property
     def driver(self):
         """Internal reference to the WebDriver instance this element was found from."""
         return self._driver

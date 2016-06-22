@@ -50,6 +50,19 @@ def return_value_if_exists(resp):
         return resp["value"]
 
 
+def get_root_parent(elem):
+    import warnings
+    warnings.warn("get_root_parent(WebElement) is a deprecated alias, use WebElement.parent",
+                  DeprecationWarning, 2)
+    parent = elem.parent
+    while True:
+        try:
+            parent.parent
+            parent = parent.parent
+        except AttributeError:
+            return parent
+
+
 def unzip_to_temp_dir(zip_file_name):
     """Unzip zipfile to a temporary directory.
 
