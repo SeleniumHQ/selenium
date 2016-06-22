@@ -31,6 +31,8 @@ from .file_detector import FileDetector, LocalFileDetector
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.expected_conditions import staleness_of
 
 try:
     str = basestring
@@ -725,6 +727,18 @@ class WebDriver(object):
         self.execute(Command.SET_TIMEOUTS, {
             'ms': float(time_to_wait) * 1000,
             'type': 'page load'})
+
+    @contextmanager
+    def wait_for_page_load(self, time_to_wait=10):
+        """
+        Context manager that will wait for the page
+        to load after executing the wrapped action.
+        Implemented by waiting for the previous page body to
+        go stale
+        """
+        old_page_body = self.find_element_by_tag_name('body')
+        yield
+        WebDriverWait(self, time_to_wait).until(staleness_of(old_page_body))
 
     def find_element(self, by=By.ID, value=None):
         """

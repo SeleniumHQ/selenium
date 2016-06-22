@@ -29,7 +29,6 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
 
-
 try:
     str = basestring
 except NameError:
@@ -67,9 +66,15 @@ class WebElement(object):
         """The text of the element."""
         return self._execute(Command.GET_ELEMENT_TEXT)['value']
 
-    def click(self):
-        """Clicks the element."""
-        self._execute(Command.CLICK_ELEMENT)
+
+    def click(self, wait_for_page_load=False):
+        """Clicks the element, optionally waiting until a new page loads"""
+        if wait_for_page_load:
+            with self.parent.wait_for_page_load():
+                self._execute(Command.CLICK_ELEMENT)
+        else:
+            self._execute(Command.CLICK_ELEMENT)
+
 
     def submit(self):
         """Submits a form."""
