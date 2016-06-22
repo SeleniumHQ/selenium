@@ -80,9 +80,9 @@ public class GeckoDriverService extends DriverService {
 
     @Override
     protected File findDefaultExecutable() {
-      return findExecutable("wires", GECKO_DRIVER_EXE_PROPERTY,
-          "https://github.com/jgraham/wires",
-          "https://github.com/jgraham/wires");
+      return findExecutable("geckodriver", GECKO_DRIVER_EXE_PROPERTY,
+          "https://github.com/mozilla/geckodriver",
+          "https://github.com/mozilla/geckodriver/releases");
     }
 
     @Override
