@@ -232,9 +232,9 @@ class ElementAttributeTests(unittest.TestCase):
 
     def testShouldIndicateWhenAnElementIsStale(self):
         self._loadPage("formPage")
-        element = self.driver.execute_script("return document.body.appendChild(document.createElement('temporary'));")
+        element = self.driver.find_element_by_id("emptyTextArea")
         self.assertFalse(element.is_stale())
-        self.driver.execute_script("arguments[0].parentNode.removeChild(arguments[0]);", element)
+        self._loadPage("tables")
         self.assertTrue(element.is_stale())
 
     @pytest.mark.ignore_chrome
