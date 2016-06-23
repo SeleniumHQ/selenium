@@ -230,6 +230,13 @@ class ElementAttributeTests(unittest.TestCase):
         element.send_keys("hello world")
         self.assertEqual("hello world", element.get_attribute("value"))
 
+    def testShouldIndicateWhenAnElementIsStale(self):
+        self._loadPage("formPage")
+        element = self.driver.execute_script("return document.body.appendChild(document.createElement('temporary'));")
+        self.assertFalse(element.is_stale())
+        self.driver.execute_script("arguments[0].parentNode.removeChild(arguments[0]);", element)
+        self.assertTrue(element.is_stale())
+
     @pytest.mark.ignore_chrome
     def testShouldReturnNullForNonPresentBooleanAttributes(self):
         self._loadPage("booleanAttributes")

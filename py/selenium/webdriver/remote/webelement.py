@@ -25,7 +25,7 @@ except ImportError:  # 3+
 import base64
 
 from .command import Command
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import WebDriverException, StaleElementReferenceException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
 
@@ -128,6 +128,14 @@ class WebElement(object):
     def is_enabled(self):
         """Returns whether the element is enabled."""
         return self._execute(Command.IS_ELEMENT_ENABLED)['value']
+
+    def is_stale(self):
+        """Returns whether the element is stale."""
+        try:
+            self.is_enabled()
+            return False
+        except StaleElementReferenceException:
+            return True
 
     def find_element_by_id(self, id_):
         """Finds element within this element's children by ID.
