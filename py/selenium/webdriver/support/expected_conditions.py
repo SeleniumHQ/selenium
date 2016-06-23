@@ -226,12 +226,7 @@ class staleness_of(object):
         self.element = element
 
     def __call__(self, ignored):
-        try:
-            # Calling any method forces a staleness check
-            self.element.is_enabled()
-            return False
-        except StaleElementReferenceException:
-            return True
+        return self.element.is_stale()
 
 
 class element_to_be_selected(object):
