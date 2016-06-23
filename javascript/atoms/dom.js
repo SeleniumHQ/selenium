@@ -173,15 +173,19 @@ bot.dom.FOCUSABLE_FORM_FIELDS_ = [
 
 /**
  * Returns whether a node is a focusable element.  An element may receive focus
- * if it is a form field or has a positive tabindex.
+ * if it is a form field, has a non-negative tabindex, or is editable.
  * @param {!Element} element The node to test.
  * @return {boolean} Whether the node is focusable.
  */
 bot.dom.isFocusable = function(element) {
-  return goog.array.some(bot.dom.FOCUSABLE_FORM_FIELDS_, function(tagName) {
+  return goog.array.some(bot.dom.FOCUSABLE_FORM_FIELDS_, tagNameMatches) ||
+      (bot.dom.getAttribute(element, 'tabindex') != null &&
+          Number(bot.dom.getProperty(element, 'tabIndex')) >= 0) ||
+      bot.dom.isEditable(element);
+
+  function tagNameMatches(tagName) {
     return element.tagName.toUpperCase() == tagName;
-  }) || (bot.dom.getAttribute(element, 'tabindex') != null &&
-         Number(bot.dom.getProperty(element, 'tabIndex')) >= 0);
+  }
 };
 
 
