@@ -128,8 +128,11 @@ public class HTMLLauncher implements HTMLResultsListener {
    */
   private String runHTMLSuite(String browser, String browserURL, String suiteURL, File outputFile,
       long timeoutInSeconds, boolean multiWindow, String defaultLogLevel) throws IOException {
-    outputFile.createNewFile();
-    if (!outputFile.canWrite()) {
+    File parent = outputFile.getParentFile();
+    if (parent != null && !parent.exists()) {
+      parent.mkdirs();
+    }
+    if (outputFile.exists() && !outputFile.canWrite()) {
       throw new IOException("Can't write to outputFile: " + outputFile.getAbsolutePath());
     }
     long timeoutInMs = 1000L * timeoutInSeconds;

@@ -24,6 +24,7 @@ import com.beust.jcommander.JCommander;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
+import org.openqa.grid.internal.utils.configuration.CoreRunnerConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
@@ -35,7 +36,7 @@ import org.openqa.selenium.remote.server.log.TerseFormatter;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.lang.reflect.Method;
 import java.util.function.Supplier;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
@@ -46,6 +47,8 @@ import java.util.logging.Logger;
 public class GridLauncherV3 {
 
   private static final Logger log = Logger.getLogger(GridLauncherV3.class.getName());
+  private static final String CORE_RUNNER_CLASS =
+    "org.openqa.selenium.server.htmlrunner.HTMLLauncher";
 
   private static abstract class GridItemLauncher {
     protected StandaloneConfiguration configuration;
@@ -57,53 +60,7 @@ public class GridLauncherV3 {
     }
   }
 
-  private static ImmutableMap<GridRole, Supplier<GridItemLauncher>> LAUNCHERS =
-    ImmutableMap.<GridRole, Supplier<GridItemLauncher>>builder()
-      .put(GridRole.NOT_GRID, () -> new GridItemLauncher() {
-        public void setConfiguration(String[] args) {
-          configuration = new StandaloneConfiguration();
-          new JCommander(configuration, args);
-          helpRequested = configuration.help;
-        }
-
-        public void launch() throws Exception {
-          log.info("Launching a standalone Selenium Server");
-          SeleniumServer server = new SeleniumServer(configuration);
-          server.boot();
-          log.info("Selenium Server is up and running");
-        }
-      })
-    .put(GridRole.HUB, () -> new GridItemLauncher() {
-      public void setConfiguration(String[] args) {
-        configuration = new GridHubConfiguration();
-        new JCommander(configuration, args);
-        helpRequested = configuration.help;
-      }
-      public void launch() throws Exception {
-        log.info("Launching Selenium Grid hub");
-        Hub h = new Hub((GridHubConfiguration) configuration);
-        h.start();
-        log.info("Nodes should register to " + h.getRegistrationURL());
-        log.info("Selenium Grid hub is up and running");
-      }
-    })
-    .put(GridRole.NODE, () -> new GridItemLauncher() {
-      public void setConfiguration(String[] args) {
-        configuration = new GridNodeConfiguration();
-        new JCommander(configuration, args);
-        helpRequested = configuration.help;
-      }
-      public void launch() throws Exception {
-        log.info("Launching a Selenium Grid node");
-        RegistrationRequest c = RegistrationRequest.build((GridNodeConfiguration) configuration);
-        SelfRegisteringRemote remote = new SelfRegisteringRemote(c);
-        remote.setRemoteServer(new SeleniumServer(configuration));
-        remote.startRemoteServer();
-        log.info("Selenium Grid node is up and ready to register to the hub");
-        remote.startRegistrationProcess();
-      }
-    })
-    .build();
+  private static ImmutableMap<String, Supplier<GridItemLauncher>> LAUNCHERS = buildLaunchers();
 
   public static void main(String[] args) throws Exception {
     GridItemLauncher launcher = buildLauncher(args);
@@ -135,6 +92,11 @@ public class GridLauncherV3 {
     String role = "standalone";
 
     for (int i = 0; i < args.length; i++) {
+      if (args[i].equals("-htmlSuite")) {
+        GridItemLauncher launcher = LAUNCHERS.get("corerunner").get();
+        launcher.setConfiguration(args);
+        return launcher;
+      }
       if (args[i].startsWith("-role=")) {
         role = args[i].substring("-role=".length());
       } else if (args[i].equals("-role")) {
@@ -223,5 +185,93 @@ public class GridLauncherV3 {
         }
       }
     }
+  }
+
+  private static ImmutableMap<String, Supplier<GridItemLauncher>> buildLaunchers() {
+    ImmutableMap.Builder<String, Supplier<GridItemLauncher>> launchers =
+      ImmutableMap.<String, Supplier<GridItemLauncher>>builder()
+        .put(GridRole.NOT_GRID.toString(), () -> new GridItemLauncher() {
+          public void setConfiguration(String[] args) {
+            configuration = new StandaloneConfiguration();
+            new JCommander(configuration, args);
+            helpRequested = configuration.help;
+          }
+
+          public void launch() throws Exception {
+            log.info("Launching a standalone Selenium Server");
+            SeleniumServer server = new SeleniumServer(configuration);
+            server.boot();
+            log.info("Selenium Server is up and running");
+          }
+        })
+        .put(GridRole.HUB.toString(), () -> new GridItemLauncher() {
+          public void setConfiguration(String[] args) {
+            configuration = new GridHubConfiguration();
+            new JCommander(configuration, args);
+            helpRequested = configuration.help;
+          }
+
+          public void launch() throws Exception {
+            log.info("Launching Selenium Grid hub");
+            Hub h = new Hub((GridHubConfiguration) configuration);
+            h.start();
+            log.info("Nodes should register to " + h.getRegistrationURL());
+            log.info("Selenium Grid hub is up and running");
+          }
+        })
+        .put(GridRole.NODE.toString(), () -> new GridItemLauncher() {
+          public void setConfiguration(String[] args) {
+            configuration = new GridNodeConfiguration();
+            new JCommander(configuration, args);
+            helpRequested = configuration.help;
+          }
+
+          public void launch() throws Exception {
+            log.info("Launching a Selenium Grid node");
+            RegistrationRequest
+              c =
+              RegistrationRequest.build((GridNodeConfiguration) configuration);
+            SelfRegisteringRemote remote = new SelfRegisteringRemote(c);
+            remote.setRemoteServer(new SeleniumServer(configuration));
+            remote.startRemoteServer();
+            log.info("Selenium Grid node is up and ready to register to the hub");
+            remote.startRegistrationProcess();
+          }
+        });
+
+    try {
+      Class.forName(CORE_RUNNER_CLASS, false, GridLauncherV3.class.getClassLoader());
+
+      launchers.put("corerunner", () -> new GridItemLauncher() {
+        @Override
+        void setConfiguration(String[] args) {
+          configuration = new CoreRunnerConfiguration();
+          new JCommander(configuration, args);
+          helpRequested = configuration.help;
+        }
+
+        @Override
+        void launch() throws Exception {
+          Class<?> coreRunnerClass = Class.forName(CORE_RUNNER_CLASS);
+          Object coreRunner = coreRunnerClass.newInstance();
+          Method mainInt = coreRunnerClass.getMethod("mainInt", String[].class);
+
+          CoreRunnerConfiguration runnerConfig = (CoreRunnerConfiguration) this.configuration;
+          String[] args = new String[] {
+            /* Results file */ runnerConfig.htmlSuite.get(3),
+            /* suite */ runnerConfig.htmlSuite.get(2),
+            /* start url */ runnerConfig.htmlSuite.get(1),
+            /* multi window */ "true",
+            /* browser string */ runnerConfig.htmlSuite.get(0),
+          };
+          Integer result = (Integer) mainInt.invoke(coreRunner, (Object) args);
+          System.exit(result);
+        }
+      });
+    } catch (ReflectiveOperationException e) {
+      // Do nothing. It's fine.
+    }
+
+    return launchers.build();
   }
 }
