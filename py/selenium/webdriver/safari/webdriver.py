@@ -33,7 +33,7 @@ class WebDriver(RemoteWebDriver):
     """
 
     def __init__(self, executable_path=None, port=0,
-                 desired_capabilities=DesiredCapabilities.SAFARI, quiet=False):
+                 desired_capabilities=DesiredCapabilities.SAFARI, quiet=False, use_legacy_driver=False):
         """
         Creates a new instance of the Safari driver.
 
@@ -45,13 +45,9 @@ class WebDriver(RemoteWebDriver):
          - port - port you would like the service to run, if left as 0, a free port will be found.
          - desired_capabilities: Dictionary object with desired capabilities (Can be used to provide various Safari switches).
         """
-        if executable_path is None:
-            try:
-                executable_path = os.environ["SELENIUM_SERVER_JAR"]
-            except:
-                raise Exception("No executable path given, please add one to Environment Variable \
-                'SELENIUM_SERVER_JAR'")
-        self.service = Service(executable_path, port=port, quiet=quiet)
+        if not executable_path is None:
+	    executable_path = os.environ.get("SELENIUM_SERVER_JAR")
+        self.service = Service(executable_path, port=port, quiet=quiet, use_legacy=use_legacy_driver)
         self.service.start()
 
         RemoteWebDriver.__init__(
