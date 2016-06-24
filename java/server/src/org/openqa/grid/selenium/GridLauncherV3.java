@@ -23,9 +23,8 @@ import com.beust.jcommander.JCommander;
 
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.common.exception.GridConfigurationException;
-import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.grid.shared.CliUtils;
@@ -36,6 +35,8 @@ import org.openqa.selenium.remote.server.log.TerseFormatter;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.function.Supplier;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -46,8 +47,9 @@ public class GridLauncherV3 {
 
   private static final Logger log = Logger.getLogger(GridLauncherV3.class.getName());
 
-  public static abstract class GridItemLauncher {
-    protected Object configuration;
+  private static abstract class GridItemLauncher {
+    protected StandaloneConfiguration configuration;
+    protected boolean helpRequested;
     abstract void setConfiguration(String[] args);
     abstract void launch() throws Exception;
     void printUsage() {
@@ -55,43 +57,47 @@ public class GridLauncherV3 {
     }
   }
 
-  private static ImmutableMap<GridRole, GridItemLauncher> launchers
-    = new ImmutableMap.Builder<GridRole, GridItemLauncher>()
-      .put(GridRole.NOT_GRID, new GridItemLauncher() {
+  private static ImmutableMap<GridRole, Supplier<GridItemLauncher>> LAUNCHERS =
+    ImmutableMap.<GridRole, Supplier<GridItemLauncher>>builder()
+      .put(GridRole.NOT_GRID, () -> new GridItemLauncher() {
         public void setConfiguration(String[] args) {
           configuration = new StandaloneConfiguration();
           new JCommander(configuration, args);
+          helpRequested = configuration.help;
         }
+
         public void launch() throws Exception {
           log.info("Launching a standalone Selenium Server");
-          SeleniumServer server = new SeleniumServer((StandaloneConfiguration)configuration);
+          SeleniumServer server = new SeleniumServer(configuration);
           server.boot();
           log.info("Selenium Server is up and running");
         }
       })
-    .put(GridRole.HUB, new GridItemLauncher() {
+    .put(GridRole.HUB, () -> new GridItemLauncher() {
       public void setConfiguration(String[] args) {
         configuration = new GridHubConfiguration();
         new JCommander(configuration, args);
+        helpRequested = configuration.help;
       }
       public void launch() throws Exception {
         log.info("Launching Selenium Grid hub");
-        Hub h = new Hub((GridHubConfiguration)configuration);
+        Hub h = new Hub((GridHubConfiguration) configuration);
         h.start();
         log.info("Nodes should register to " + h.getRegistrationURL());
         log.info("Selenium Grid hub is up and running");
       }
     })
-    .put(GridRole.NODE, new GridItemLauncher() {
+    .put(GridRole.NODE, () -> new GridItemLauncher() {
       public void setConfiguration(String[] args) {
         configuration = new GridNodeConfiguration();
         new JCommander(configuration, args);
+        helpRequested = configuration.help;
       }
       public void launch() throws Exception {
         log.info("Launching a Selenium Grid node");
-        RegistrationRequest c = RegistrationRequest.build((GridNodeConfiguration)configuration);
+        RegistrationRequest c = RegistrationRequest.build((GridNodeConfiguration) configuration);
         SelfRegisteringRemote remote = new SelfRegisteringRemote(c);
-        remote.setRemoteServer(new SeleniumServer((StandaloneConfiguration)configuration));
+        remote.setRemoteServer(new SeleniumServer(configuration));
         remote.startRemoteServer();
         log.info("Selenium Grid node is up and ready to register to the hub");
         remote.startRegistrationProcess();
@@ -100,31 +106,61 @@ public class GridLauncherV3 {
     .build();
 
   public static void main(String[] args) throws Exception {
-    StandaloneConfiguration configuration = new StandaloneConfiguration();
-    new JCommander(configuration, args);
-
-    GridRole role = GridRole.get(configuration.role);
-
-    if (role == null) {
-      printInfoAboutRoles(configuration.role);
+    GridItemLauncher launcher = buildLauncher(args);
+    if (launcher == null) {
       return;
     }
 
-    launchers.get(role).setConfiguration(args);
-
-    if (configuration.help) {
-      launchers.get(role).printUsage();
+    if (launcher.helpRequested) {
+      launcher.printUsage();
       return;
     }
 
-    configureLogging(configuration);
+    configureLogging(launcher.configuration);
 
     try {
-      launchers.get(role).launch();
+      launcher.launch();
     } catch (Exception e) {
-      launchers.get(role).printUsage();
+      launcher.printUsage();
       e.printStackTrace();
     }
+  }
+
+  /**
+   * From the {@code args}, builds a new {@link GridItemLauncher} and populates it properly.
+   *
+   * @return null if no role is found, or a properly populated {@link GridItemLauncher}.
+   */
+  private static GridItemLauncher buildLauncher(String[] args) {
+    String role = "standalone";
+
+    for (int i = 0; i < args.length; i++) {
+      if (args[i].startsWith("-role=")) {
+        role = args[i].substring("-role=".length());
+      } else if (args[i].equals("-role")) {
+        i++;  // Increment, because we're going to need this.
+        if (i < args.length) {
+          role = args[i];
+        } else {
+          role = null;  // Will cause us to print the usage information.
+        }
+      }
+    }
+
+    GridRole gridRole = GridRole.get(role);
+    if (gridRole == null) {
+      printInfoAboutRoles(role);
+      return null;
+    }
+
+    Supplier<GridItemLauncher> supplier = LAUNCHERS.get(gridRole);
+    if (supplier == null) {
+      System.err.println("Unknown role: " + gridRole);
+      return null;
+    }
+    GridItemLauncher toReturn = supplier.get();
+    toReturn.setConfiguration(args);
+    return toReturn;
   }
 
   private static void printInfoAboutRoles(String roleCommandLineArg) {
