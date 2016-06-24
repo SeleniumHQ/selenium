@@ -225,10 +225,13 @@ class clickability_of(object):
         self.element = element
 
     def __call__(self, driver):
-        element = visibility_of(self.element)(driver)
-        if element and element.is_enabled():
-            return element
-        else:
+        try:
+            element = visibility_of(self.element)(driver)
+            if element and element.is_enabled():
+                return element
+            else:
+                return False
+        except StaleElementReferenceException:
             return False
 
 
