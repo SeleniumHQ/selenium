@@ -251,6 +251,17 @@ class WebDriverWaitTest(unittest.TestCase):
         WebDriverWait(self.driver, 3.5).until(EC.invisibility_of_element_located((By.ID, 'clickToHide')))
         self.assertFalse(element.is_displayed())
 
+    def testExpectedConditionClickabilityOf(self):
+        self._loadPage("javascriptPage")
+        with self.assertRaises(TimeoutException):
+            element = self.driver.find_element_by_id('clickToHide')
+            WebDriverWait(self.driver, 0.7).until(EC.clickability_of(element))
+        self.driver.execute_script("delayedShowHide(200, true)")
+        element = self.driver.find_element_by_id('clickToHide')
+        WebDriverWait(self.driver, 0.7).until(EC.clickability_of(element)).click()
+        WebDriverWait(self.driver, 3.5).until(EC.invisibility_of_element_located((By.ID, 'clickToHide')))
+        self.assertFalse(element.is_displayed())
+
     def testExpectedConditionStalenessOf(self):
         self._loadPage('dynamicallyModifiedPage')
         element = self.driver.find_element_by_id('element-to-remove')

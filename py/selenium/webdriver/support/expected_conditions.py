@@ -217,6 +217,21 @@ class element_to_be_clickable(object):
             return False
 
 
+class clickability_of(object):
+    """ An Expectation for checking an element is visible and enabled such that
+    you can click it."""
+
+    def __init__(self, element):
+        self.element = element
+
+    def __call__(self, driver):
+        element = visibility_of(self.element)(driver)
+        if element and element.is_enabled():
+            return element
+        else:
+            return False
+
+
 class staleness_of(object):
     """ Wait until an element is no longer attached to the DOM.
     element is the element to wait for.
