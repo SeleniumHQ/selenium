@@ -1,9 +1,16 @@
 3.0 (Unreleased)
 
 Ruby:
+  * Remove support for RC client
+  * Remove support for Ruby < 2.0
+  * Update code to support designated style guidelines
   * Chrome/GeckoDriver/PhantomJS/IE/Edge drivers are refactored to use standard
     service class (issue 1797)
   * Option `:timeout` was removed from IE server (issue 1797)
+
+Firefox:
+  * Rename wires to geckodriver
+  * Change default usage from FirefoxDriver to geckodriver
 
 2.53.0 (2016-03-15)
 ===================
