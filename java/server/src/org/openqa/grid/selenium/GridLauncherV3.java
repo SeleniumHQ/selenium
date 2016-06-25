@@ -115,7 +115,7 @@ public class GridLauncherV3 {
       return null;
     }
 
-    Supplier<GridItemLauncher> supplier = LAUNCHERS.get(gridRole);
+    Supplier<GridItemLauncher> supplier = LAUNCHERS.get(gridRole.toString());
     if (supplier == null) {
       System.err.println("Unknown role: " + gridRole);
       return null;
