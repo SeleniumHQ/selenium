@@ -30,6 +30,7 @@ import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.grid.shared.CliUtils;
 import org.openqa.grid.web.Hub;
+import org.openqa.selenium.internal.BuildInfo;
 import org.openqa.selenium.remote.server.SeleniumServer;
 import org.openqa.selenium.remote.server.log.LoggingOptions;
 import org.openqa.selenium.remote.server.log.TerseFormatter;
@@ -75,6 +76,11 @@ public class GridLauncherV3 {
 
     configureLogging(launcher.configuration);
 
+    BuildInfo buildInfo = new BuildInfo();
+    log.info(String.format(
+      "Selenium build info: version: '%s', revision: '%s'",
+      buildInfo.getReleaseLabel(),
+      buildInfo.getBuildRevision()));
     try {
       launcher.launch();
     } catch (Exception e) {

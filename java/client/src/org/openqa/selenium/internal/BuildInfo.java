@@ -79,7 +79,7 @@ public class BuildInfo {
 
   /** @return The embedded release label or "unknown". */
   public String getReleaseLabel() {
-    return BUILD_PROPERTIES.getProperty("Selenium-Version", "unknown");
+    return BUILD_PROPERTIES.getProperty("Selenium-Version", "unknown").trim();
   }
 
   /** @return The embedded build revision or "unknown". */
