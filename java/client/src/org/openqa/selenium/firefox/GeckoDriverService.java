@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.firefox.internal.Executable;
+import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
@@ -80,9 +81,17 @@ public class GeckoDriverService extends DriverService {
 
     @Override
     protected File findDefaultExecutable() {
-      return findExecutable("geckodriver", GECKO_DRIVER_EXE_PROPERTY,
-          "https://github.com/mozilla/geckodriver",
-          "https://github.com/mozilla/geckodriver/releases");
+      // We should really look for geckodriver, but the old name was wires. Look for both.
+      try {
+        return findExecutable("geckodriver", GECKO_DRIVER_EXE_PROPERTY,
+                              "https://github.com/mozilla/geckodriver",
+                              "https://github.com/mozilla/geckodriver/releases");
+      } catch (IllegalStateException e) {
+        // Geckodriver not found. Fall back to wires
+        return findExecutable("wires", GECKO_DRIVER_EXE_PROPERTY,
+                              "https://github.com/mozilla/geckodriver",
+                              "https://github.com/mozilla/geckodriver/releases");
+      }
     }
 
     @Override
