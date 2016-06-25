@@ -1,8 +1,23 @@
+include_defs('//SELENIUM_VERSION')
+
+# Force a rebuild every time we're parsed.
+
 java_binary(name = 'selenium',
   main_class = 'org.openqa.grid.selenium.GridLauncherV3',
+  manifest_file = ':manifest',
+  merge_manifests = True,
   deps = [
     ':classes',
   ],
+)
+
+genrule(name = 'manifest',
+  out = 'build-info.mf',
+  cmd = "$(exe :generate-build-info) %s > $OUT" % (SE_VERSION),
+)
+
+python_binary(name = 'generate-build-info',
+  main = 'generate-build-info.py',
 )
 
 java_library(name = 'classes',
