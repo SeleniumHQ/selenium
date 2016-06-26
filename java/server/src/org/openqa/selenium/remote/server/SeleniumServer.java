@@ -56,6 +56,7 @@ public class SeleniumServer implements GridNodeServer {
   public SeleniumServer(StandaloneConfiguration configuration) {
     this.configuration = configuration;
   }
+
   public int getRealPort() {
     if (server.isStarted()) {
       ServerConnector socket = (ServerConnector)server.getConnectors()[0];
