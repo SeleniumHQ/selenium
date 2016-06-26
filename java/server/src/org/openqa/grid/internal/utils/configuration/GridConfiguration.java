@@ -28,32 +28,32 @@ public class GridConfiguration extends StandaloneConfiguration {
 
   @Parameter(
     names = "-cleanUpCycle",
-    description = "<Integer> in ms. How often a proxy on the hub will check for timed out thread. Must have timeout option specified also"
+    description = "<Integer> in ms : specifies how often the hub will poll running proxies for timed-out (i.e. hung) threads. Must also specify \"timeout\" option"
   )
   public Integer cleanUpCycle;
 
   @Parameter(
     names = "-custom",
-    description = "comma separated parameters for custom grid extensions. example: -custom myParamA=Value1,myParamB=Value2",
+    description = "<String> : NOT RECOMMENDED--may be deprecated to encourage proper servlet customization. Comma separated key=value pairs for custom grid extensions. example: -custom myParamA=Value1,myParamB=Value2",
     converter = CustomConverter.class
   )
   public Map<String, String> custom = new HashMap<>();
 
   @Parameter(
     names = "-host",
-    description =  "<IP | hostname> : usually not needed and determined automatically. For exotic network configuration, network with VPN, specifying the host might be necessary."
+    description =  "<String> IP or hostname : usually determined automatically. Most commonly useful in exotic network configurations (e.g. network with VPN)"
   )
   public String host;
 
   @Parameter(
     names = "-maxSession",
-    description = "<Integer> max number of tests that can run at the same time on the node, independently of the browser used."
+    description = "<Integer> max number of tests that can run at the same time on the node, irrespective of the browser used"
   )
   public Integer maxSession = 1;
 
   @Parameter(
     names = {"-servlet", "-servlets"},
-    description = "list of extra servlets this hub will display. Allows to present custom view of the hub for monitoring and management purpose. Specify multiple on the command line: -servlet tld.company.ServletA -servlet tld.company.ServletB. The servlet will accessible under the path  /grid/admin/ServletA /grid/admin/ServletB"
+    description = "<String> : list of extra servlets this hub will display. Allows to present custom view of the hub for monitoring and management purposes. Specify multiple on the command line: -servlet tld.company.ServletA -servlet tld.company.ServletB. The servlet must exist in the path: /grid/admin/ServletA /grid/admin/ServletB"
   )
   public List<String> servlets;
 

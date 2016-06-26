@@ -29,12 +29,13 @@ public class StandaloneConfiguration {
 
   @Parameter(
     names = "-browserTimeout",
-    description = "Number of seconds a browser is allowed to hang (0 means indefinite) while a command is running (example: driver.get(url)). If set, must be greater than or equal to 60. When the timeout is reached while a command is processing, the session will quit.")
+    description = "<Integer> in seconds : number of seconds a browser session is allowed to hang (0 means indefinite) while a WebDriver command is running (example: driver.get(url)). If the timeout is reached while a WebDriver command is still processing, the session will quit. Minimum value is 60. Default is 0"
+  )
   public Integer browserTimeout;
 
   @Parameter(
     names = "-debug",
-    description = "<Boolean> to enable LogLevel.FINE"
+    description = "<Boolean> : enables LogLevel.FINE. Default is false (if omitted)"
   )
   public boolean debug;
 
@@ -42,45 +43,49 @@ public class StandaloneConfiguration {
     names = {"--help", "-help", "-h"},
     help = true,
     hidden = true,
-    description = "This help.")
+    description = "Displays this help"
+  )
   public boolean help;
 
   @Parameter(
     names = "-jettyThreads",
-    hidden = true)
+    hidden = true
+  )
   public Integer jettyThreads;
 
   @Parameter(
     names = "-log",
-    description = "The filename to use for logging. Default value is null and indicates logging to STDOUT."
+    description = "<String> filename : the filename to use for logging. If omitted, will log to STDOUT"
   )
   public String log;
 
   @Parameter(
     names = "-logLongForm",
-    description = "if no log is specified, logLongForm can be set to enable longForm output to STDOUT. Default is false"
+    description = "<Boolean> : if specified, all log statements (including to log file from \"log\" parameter) will include the Thread ID"
   )
   public boolean logLongForm;
 
   @Parameter(
     names = {"-port"},
-    description = "The port number the selenium server should use. Default's to 4444. When role is a grid node default is 5555.")
+    description = "<Integer> : the port number the server will use. Defaults to [4444]. When \"role\" is a set to [node], default is [5555]"
+  )
   public Integer port;
 
   @Parameter(
     names = "-role",
-    description = "server role to run as. Options are hub, node, standalone. Default is standalone"
+    description = "<String> options are [hub], [node], or [standalone] : Default is [standalone]"
   )
-  public String role;
+  public String role = "standalone";
 
   @Parameter(
     names = {"-timeout", "-sessionTimeout"},
-    description = "<Integer> the timeout in seconds before the hub automatically ends a test that hasn't had any activity in the last X seconds. The browser will be released for another test to use. This typically takes care of the client crashes. For grid hub/node roles, CleanUpCycle must also be set. Default is 1800 (30 minutes)")
+    description = "<Integer> in seconds : Specifies the timeout before the hub automatically kills a session that hasn't had any activity in the last X seconds. The test slot will then be released for another test to use. This is typically used to take care of client crashes. For grid hub/node roles, cleanUpCycle must also be set. Default is 1800 (30 minutes)"
+  )
   public Integer timeout = 1800;
 
   @Parameter(
     names = {"-avoidProxy"},
-    description = "DO NOT USE. Hack to allow selenium 3.0 server run in saucelabs"
+    description = "DO NOT USE. Hack to allow selenium 3.0 server run in SauceLabs"
   )
   private Boolean avoidProxy;
 
