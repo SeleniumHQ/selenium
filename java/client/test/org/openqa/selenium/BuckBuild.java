@@ -98,7 +98,14 @@ public class BuckBuild {
     }
 
     String[] allLines = commandLine.getStdOut().split(LINE_SEPARATOR.value());
-    String lastLine = allLines[allLines.length -1 ];
+    String lastLine = null;
+    for (String line : allLines) {
+      if (line.startsWith(target)) {
+        lastLine = line;
+        break;
+      }
+    }
+    Preconditions.checkNotNull(lastLine);
 
     List<String> outputs = Splitter.on(' ').limit(2).splitToList(lastLine);
     if (outputs.size() != 2) {
@@ -137,8 +144,7 @@ public class BuckBuild {
     Path projectRoot = InProject.locate("Rakefile").getParentFile().toPath();
     String buckVersion = new String(Files.readAllBytes(projectRoot.resolve(".buckversion"))).trim();
 
-    File rootOfRepo = InProject.locate("Rakefile").getParentFile();
-    Path pex = rootOfRepo.toPath().resolve("buck-out/crazy-fun/" + buckVersion + "/buck.pex");
+    Path pex = projectRoot.resolve("buck-out/crazy-fun/" + buckVersion + "/buck.pex");
 
     String expectedHash = new String(Files.readAllBytes(projectRoot.resolve(".buckhash"))).trim();
     HashCode md5 = Files.exists(pex) ?
