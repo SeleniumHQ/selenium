@@ -19,7 +19,7 @@ module Buck
 
       if cached_hash == out_hash
         # Make sure we're running a pristine buck instance
-        sh "python #{out} kill"
+        sh "python \"#{out}\" kill"
         return ["python", out]
       end
 
@@ -38,7 +38,7 @@ module Buck
 
       ant.get('src' => url, 'dest' => out, 'verbose' => true)
       File.chmod(0755, out)
-      sh "python #{out} kill"
+      sh "python \"#{out}\" kill"
       ["python", out]
     )
   end
