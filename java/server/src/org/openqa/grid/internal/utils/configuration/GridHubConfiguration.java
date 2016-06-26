@@ -38,39 +38,39 @@ public class GridHubConfiguration extends GridConfiguration {
 
   @Parameter(
     names = "-hubConfig",
-    description =  "a JSON file following grid2 format that defines the hub properties."
+    description =  "<String> filename: a JSON file (following grid2 format), which defines the hub properties"
   )
   public String hubConfig;
 
   @Parameter(
     names = "-jettyMaxThreads",
-    description = "max number of thread for Jetty. Default is normally 255."
+    description = "<Integer> : max number of thread for Jetty. Default is 255"
   )
   public Integer jettyMaxThreads;
 
   @Parameter(
     names = {"-matcher", "-capabilityMatcher"},
-    description = "a class implementing the CapabilityMatcher interface. Defaults to org.openqa.grid.internal.utils.DefaultCapabilityMatcher. Specify the logic the hub will follow to define if a request can be assigned to a node.Change this class if you want to have the matching process use regular expression instead of exact match for the version of the browser for instance. All the nodes of a grid instance will use the same capabilityMatcher, defined by the registry.",
+    description = "<String> class name : a class implementing the CapabilityMatcher interface. Specifies the logic the hub will follow to define whether a request can be assigned to a node. For example, if you want to have the matching process use regular expressions instead of exact match when specifying browser version. ALL nodes of a grid ecosystem would then use the same capabilityMatcher, as defined here. Default is org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
     converter = CapabilityMatcherString.class
   )
   public CapabilityMatcher capabilityMatcher = new DefaultCapabilityMatcher();
 
   @Parameter(
     names = "-newSessionWaitTimeout",
-    description = "<Integer> milliseconds. Default to no timeout ( -1 ) the time in ms after which a new test waiting for a node to become available will time out.When that happens, the test will throw an exception before starting a browser."
+    description = "<Integer> in ms : The time after which a new test waiting for a node to become available will time out. When that happens, the test will throw an exception before attempting to start a browser. Defaults to no timeout ( -1 )"
   )
   public Integer newSessionWaitTimeout = -1;
 
   @Parameter(
     names = "-prioritizer",
-    description = "a class implementing the Prioritizer interface. Default to null ( no priority = FIFO ).Specify a custom prioritizer if you want to sort the order new session requests are processed when there is a queue.",
+    description = "<String> class name : a class implementing the Prioritizer interface. Specify a custom Prioritizer if you want to sort the order in which new session requests are processed when there is a queue. Default to null ( no priority = FIFO )",
     converter = PrioritizerString.class
   )
   public Prioritizer prioritizer = null;
 
   @Parameter(
     names = "-throwOnCapabilityNotPresent",
-    description = "<true | false> default to true. If true, the hub will reject test requests right away if no proxy is currently registered that can host that capability.Set it to false to have the request queued until a node supporting the capability is added to the grid."
+    description = "<Boolean> true or false : If true, the hub will reject all test requests if no compatible proxy is currently registered. If set to false, the request will queue until a node supporting the capability is registered with the grid. Default is true"
   )
   public Boolean throwOnCapabilityNotPresent = true;
 
@@ -103,7 +103,7 @@ public class GridHubConfiguration extends GridConfiguration {
       try {
         return (Prioritizer) Class.forName(prioritizerClass).newInstance();
       } catch (Throwable e) {
-        throw new GridConfigurationException("Error creating the prioritize from class " +
+        throw new GridConfigurationException("Error creating Prioritizer from class " +
                                              prioritizerClass + " : " + e.getMessage(), e);
       }
     }
@@ -115,7 +115,7 @@ public class GridHubConfiguration extends GridConfiguration {
       try {
         return (CapabilityMatcher) Class.forName(capabilityMatcherClass).newInstance();
       } catch (Throwable e) {
-        throw new GridConfigurationException("Error creating the prioritize from class " +
+        throw new GridConfigurationException("Error creating Prioritizer from class " +
                                              capabilityMatcherClass + " : " + e.getMessage(), e);
       }
     }

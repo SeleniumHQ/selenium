@@ -30,7 +30,7 @@ public class GridNodeConfiguration extends GridConfiguration {
 
   @Parameter(
     names = "-id",
-    description = "unique identifier for the node, not required and grid will set this to the remoteHost"
+    description = "<String> : unique identifier for the node. Not required--by default, grid will use the url of the remoteHost"
   )
   public String id;
 
@@ -39,74 +39,74 @@ public class GridNodeConfiguration extends GridConfiguration {
 
   @Parameter(
     names = "-browser",
-    description = "comma separated capability values. Example: -browser browserName=firefox,platform=linux -browser browserName=chrome,platform=linux",
+    description = "<String> : comma separated Capability values. Example: -browser browserName=firefox,platform=linux -browser browserName=chrome,platform=linux",
     converter = DesiredCapabilityConverter.class
   )
   public List<DesiredCapabilities> browser;
 
   @Parameter(
     names = "-downPollingLimit",
-    description = "<Integer> node is marked as down after downPollingLimit alive checks."
+    description = "<Integer> : node is marked as \"down\" if the node hasn't responded after the number of checks specified in [downPollingLimit]. Default is 2"
   )
   public Integer downPollingLimit;
 
   @Parameter(
     names = "-hub",
-    description = "<http://localhost:4444/grid/register> : the url that will be used to post the registration request. This option takes precedence over -hubHost and -hubPort options."
+    description = "<String> (e.g. http://localhost:4444/grid/register) : the url that will be used to post the registration request. This option takes precedence over -hubHost and -hubPort options"
   )
   public String hub;
 
   @Parameter(
     names = "-hubHost",
-    description = "<IP | hostname> : the host address of a hub the registration request should be sent to. Default to localhost. Option -hub takes precedence over this option."
+    description = "<String> IP or hostname : the host address of the hub we're attempting to register with. If \"role\" is set to [hub], this option will be ignored. Default is localhost"
   )
   String hubHost;
 
   @Parameter(
     names = "-hubPort",
-    description = "<Integer> : the port listened by a hub the registration request should be sent to. Default to 4444. Option -hub takes precedence over this option."
+    description = "<Integer> : the port of the hub we're attempting to register with. If \"role\" is set to [hub], this option will be ignored. Default to 4444"
   )
   Integer hubPort;
 
   @Parameter(
     names = "-nodeConfig",
-    description = "<file> json configuration file for the node, overrides default values."
+    description = "<String> filename : JSON configuration file for the node. Overrides default values"
   )
   public String nodeConfigFile;
 
   @Parameter(
     names = "-nodePolling",
-    description = "<Integer> in ms. Interval between alive checks of node how often the hub checks if the node is still alive."
+    description = "<Integer> in ms : specifies how often the hub will poll to see if the node is still responding"
   )
   public Integer nodePolling;
 
   @Parameter(
     names = "-nodeStatusCheckTimeout",
-    description = "<Integer> in ms. Connection and socket timeout which is used for node alive check."
+    description = "<Integer> in ms : connection/socket timeout, used for node \"nodePolling\" check"
   )
   public Integer nodeStatusCheckTimeout;
 
   @Parameter(
     names = "-proxy",
-    description = "<String> the class that will be used to represent the node. By default org.openqa.grid.selenium.proxy.DefaultRemoteProxy."
+    description = "<String> : the class used to represent the node proxy. Default is [org.openqa.grid.selenium.proxy.DefaultRemoteProxy]"
   )
   public String proxy;
 
   @Parameter(
     names = "-register",
-    description = "include this command line option if you want the node to automatically re-register itself with a grid hub if the hub becomes unavailable. Default is disabled."
+    description = "if specified, node will attempt to re-register itself automatically with its known grid hub if the hub becomes unavailable. Default is disabled"
   )
   public Boolean register;
 
   @Parameter(
     names = "-registerCycle",
-    description = "<Integer> how often in ms the node will try to register itself again.Allow to restart the hub without having to restart the nodes."
+    description = "<Integer> in ms : specifies how often the node will try to register itself again. Allows administrator to restart the hub without restarting (or risk orphaning) registered nodes. Must be specified with the \"-register\" option"
   )
   public Integer registerCycle;
 
   @Parameter(
     names = "-unregisterIfStillDownAfter",
-    description = "<Integer> in ms. If the node remains down for more than unregisterIfStillDownAfter millisec, it will disappear from the hub.Default is 1min."
+    description = "<Integer> in ms : if the node remains down for more than [unregisterIfStillDownAfter] ms, it will step attempting to re-register from the hub. Default is 6000 (1 minute)"
   )
   public Integer unregisterIfStillDownAfter;
 
