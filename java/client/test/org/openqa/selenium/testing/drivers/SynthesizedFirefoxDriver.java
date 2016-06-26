@@ -17,12 +17,15 @@
 
 package org.openqa.selenium.testing.drivers;
 
+import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.DevMode.isInDevMode;
 
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.BuckBuild;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -31,6 +34,7 @@ import org.openqa.selenium.testing.DevMode;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -89,7 +93,7 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
 
   private static FirefoxProfile createTemporaryProfile() {
     if (!isInDevMode()) {
-      FirefoxProfile profile = new FirefoxProfile();
+      FirefoxProfile profile = new CustomProfile();
 
       if (Boolean.getBoolean("webdriver.debug")) {
         try {
@@ -105,7 +109,7 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
     }
 
     try {
-      FirefoxProfile profile = new FirefoxProfile();
+      FirefoxProfile profile = new CustomProfile();
       if (Boolean.getBoolean("webdriver.debug")) {
 
         Firebug.addTo(profile);
@@ -147,6 +151,49 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
 
     profile.addExtension(ext);
     return profile;
+  }
+
+  private static class CustomProfile extends FirefoxProfile {
+
+    private static Path prefs;
+
+    @Override
+    protected Reader onlyOverrideThisIfYouKnowWhatYouAreDoing() {
+      try {
+        return super.onlyOverrideThisIfYouKnowWhatYouAreDoing();
+      } catch (RuntimeException e) {
+        if (!DevMode.isInDevMode()) {
+          throw e;
+        }
+      }
+
+      prefs = actuallyGetPrefsPath();
+
+      try {
+        return Files.newBufferedReader(prefs);
+      } catch (IOException e) {
+        fail(Throwables.getStackTraceAsString(e));
+        throw new RuntimeException(e);
+      }
+    }
+
+    private Path actuallyGetPrefsPath() {
+      if (prefs != null) {
+        return prefs;
+      }
+
+      synchronized (CustomProfile.class) {
+        if (prefs == null) {
+          try {
+            prefs = new BuckBuild().of("//javascript/firefox-driver:webdriver_prefs").go();
+          } catch (IOException ioe) {
+            throw new WebDriverException(ioe);
+          }
+        }
+      }
+
+      return prefs;
+    }
   }
 }
 
