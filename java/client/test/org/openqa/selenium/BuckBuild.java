@@ -138,8 +138,7 @@ public class BuckBuild {
     Path projectRoot = InProject.locate("Rakefile").getParentFile().toPath();
     String buckVersion = new String(Files.readAllBytes(projectRoot.resolve(".buckversion"))).trim();
 
-    Path pex = Paths.get(
-      StandardSystemProperty.USER_HOME.value(), ".crazyfun", "buck", buckVersion, "buck.pex");
+    Path pex = Paths.get("buck-out", "crazy-fun", buckVersion, "buck.pex");
 
     String expectedHash = new String(Files.readAllBytes(projectRoot.resolve(".buckhash"))).trim();
     HashCode md5 = Files.exists(pex) ?
