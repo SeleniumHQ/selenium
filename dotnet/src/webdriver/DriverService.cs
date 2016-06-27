@@ -21,7 +21,9 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Net;
+#if !NETSTANDARD1_5
 using System.Security.Permissions;
+#endif
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 using WebDriver.Internal;
@@ -104,7 +106,9 @@ namespace OpenQA.Selenium
         /// </summary>
         public bool IsRunning
         {
+#if !NETSTANDARD1_5
             [SecurityPermission(SecurityAction.Demand)]
+#endif
             get { return this.driverServiceProcess != null && !this.driverServiceProcess.HasExited; }
         }
 
@@ -220,7 +224,9 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Starts the DriverService.
         /// </summary>
+#if !NETSTANDARD1_5
         [SecurityPermission(SecurityAction.Demand)]
+#endif
         public void Start()
         {
             this.driverServiceProcess = new Process();
@@ -273,7 +279,9 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Stops the DriverService.
         /// </summary>
+#if !NETSTANDARD1_5
         [SecurityPermission(SecurityAction.Demand)]
+#endif
         private void Stop()
         {
             if (this.IsRunning)
