@@ -1,3 +1,6 @@
+Selenium 2.53.6
+* Updated the maxVersion of FirefoxDriver xpi maxVersion to work with Firefox 47.0.1
+
 Selenium 2.53.5
 * Handle capabilities better with Marionette and GeckoDriver
 
