@@ -29,10 +29,7 @@
 
 'use strict';
 
-var util = require('util');
-
 var ProxyConfig = require('./lib/capabilities').ProxyConfig;
-
 
 
 // PUBLIC API
@@ -76,7 +73,7 @@ exports.manual = function(options) {
     ftpProxy: options.ftp,
     httpProxy: options.http,
     sslProxy: options.https,
-    noProxy: util.isArray(options.bypass) ?
+    noProxy: Array.isArray(options.bypass) ?
         options.bypass.join(',') : options.bypass
   });
 };
