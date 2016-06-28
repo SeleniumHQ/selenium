@@ -80,7 +80,7 @@ To list all available targets, you can append the `-T` flag:
 
 Although the plan is to return to a vanilla build of Buck as soon as
 possible, we currently use a fork hosted at
-https://github.com/shs96c/buck To build using Buck, first clone that
+https://github.com/SeleniumHQ/buck To build using Buck, first clone that
 repo and build using ant. Then add Buck's "bin" directory to your
 PATH.
 
