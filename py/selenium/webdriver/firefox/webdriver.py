@@ -45,7 +45,7 @@ class WebDriver(RemoteWebDriver):
     NATIVE_EVENTS_ALLOWED = sys.platform != "darwin"
 
     def __init__(self, firefox_profile=None, firefox_binary=None, timeout=30,
-                 capabilities=None, proxy=None, executable_path="wires", firefox_options=None):
+                 capabilities=None, proxy=None, executable_path="geckodriver", firefox_options=None):
         capabilities = capabilities or DesiredCapabilities.FIREFOX.copy()
 
         self.profile = firefox_profile or FirefoxProfile()
