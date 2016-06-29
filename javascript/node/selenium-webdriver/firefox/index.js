@@ -354,6 +354,12 @@ class Driver extends webdriver.WebDriver {
       binary = new Binary(binary);
     }
 
+    let profile = new Profile();
+    if (caps.has(Capability.PROFILE)) {
+      profile = caps.get(Capability.PROFILE);
+      caps.delete(Capability.PROFILE);
+    }
+
     let serverUrl, onQuit;
 
     // Users must now explicitly disable marionette to use the legacy
@@ -367,14 +373,9 @@ class Driver extends webdriver.WebDriver {
       let service = createGeckoDriverService(binary);
       serverUrl = service.start();
       onQuit = () => service.kill();
+      caps.set(Capability.PROFILE, profile.encode());
 
     } else {
-      let profile = new Profile;
-      if (caps.has(Capability.PROFILE)) {
-        profile = caps.get(Capability.PROFILE);
-        caps.delete(Capability.PROFILE);
-      }
-
       let freePort = portprober.findFreePort();
       let preparedProfile =
           freePort.then(port => prepareProfile(profile, port));

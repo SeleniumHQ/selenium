@@ -188,8 +188,8 @@ function decode(data) {
 
 /**
  * Models a Firefox profile directory for use with the FirefoxDriver. The
- * {@code Profile} directory uses an in-memory model until {@link #writeToDisk}
- * is called.
+ * {@code Profile} directory uses an in-memory model until
+ * {@link #writeToDisk} or {@link #encode} is called.
  */
 class Profile {
   /**
@@ -366,8 +366,12 @@ class Profile {
   }
 
   /**
-   * Encodes this profile as a zipped, base64 encoded directory.
-   * @return {!Promise<string>} A promise for the encoded profile.
+   * Write profile to disk, compress its containing directory, and return
+   * it as a Base64 encoded string.
+   *
+   * @return {!Promise<string>} A promise for the encoded profile as
+   *     Base64 string.
+   *
    */
   encode() {
     return this.writeToDisk(true).then(function(dir) {
