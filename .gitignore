@@ -63,6 +63,7 @@ obj/
 *.vs
 *.opendb
 *.aps
+*.VC.db
 Generated/
 ipch/
 /iedriver.log
