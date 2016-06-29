@@ -164,7 +164,7 @@ void ShowUsage(void) {
              << std::endl
              << L"IEDriverServer [/port=<port>] [/host=<host>] [/log-level=<level>]" << std::endl
              << L"               [/log-file=<file>] [/extract-path=<path>] [/silent]" << std::endl
-             << L"               [/whitelisted-ips=<whitelisted-ips>]" << std::endl
+             << L"               [/whitelisted-ips=<whitelisted-ips>] [/version]" << std::endl
              << std::endl
              << L"  /port=<port>  Specifies the port on which the server will listen for" << std::endl
              << L"                commands. Defaults to 5555 if not specified." << std::endl
@@ -188,7 +188,9 @@ void ShowUsage(void) {
              << L"  /silent       Suppresses diagnostic output when the server is started." << std::endl
              << L"  /whitelisted-ips=<whitelisted-ips>" << std::endl
              << L"                Comma-separated whitelist of remote IPv4 addresses which" << std::endl
-             << L"                are allowed to connect to the WebDriver server." << std::endl;
+             << L"                are allowed to connect to the WebDriver server." << std::endl
+             << L"  /version      Displays version information and exits. All other arguments" << std::endl
+             << L"                are ignored." << std::endl;
 }
 
 int _tmain(int argc, _TCHAR* argv[]) {
@@ -263,78 +265,83 @@ int _tmain(int argc, _TCHAR* argv[]) {
                  implementation.begin(),
                  toupper);
 
+  if (args.is_version_requested()) {
+    std::wcout << L"IEDriverServer.exe"
+               << L" " << executable_version
+               << L" (" << executable_architecture << L")" << std::endl;
+  } else {
+    void* server_value = start_server_ex_proc(port,
+                                              host_address,
+                                              log_level,
+                                              log_file,
+                                              executable_version + L" (" + executable_architecture + L")",
+                                              implementation,
+                                              whitelist);
+    if (server_value == NULL) {
+      std::wcout << L"Failed to start the server with: "
+                 << L"port = '" << port << L"', "
+                 << L"host = '" << host_address << L"', "
+                 << L"log level = '" << log_level << L"', "
+                 << L"log file = '" << log_file << L"', "
+                 << L"whitelisted ips = '" << whitelist << L"'.";
+      return ERR_SERVER_START;
+    }
+    if (!silent) {
+      std::wcout << L"Started InternetExplorerDriver server"
+                 << L" (" << executable_architecture << L")"
+                 << std::endl;
+      std::wcout << executable_version
+                 << std::endl;
+      std::wcout << L"Listening on port " << port << std::endl;
+      if (host_address.size() > 0) {
+        std::wcout << L"Bound to network adapter with IP address " 
+                   << host_address
+                   << std::endl;
+      }
+      if (log_level.size() > 0) {
+        std::wcout << L"Log level is set to "
+                   << log_level
+                   << std::endl;
+      }
+      if (log_file.size() > 0) {
+        std::wcout << L"Log file is set to "
+                   << log_file
+                   << std::endl;
+      }
+      if (implementation.size() > 0) {
+        std::wcout << L"Driver implementation set to "
+                   << implementation
+                   << std::endl;
+      }
+      if (extraction_path_arg.size() > 0) {
+        std::wcout << L"Library extracted to "
+                   << extraction_path_arg
+                   << std::endl;
+      }
+      if (whitelist.size() > 0) {
+        std::wcout << L"IP addresses allowed to connect are "
+                   << whitelist
+                   << std::endl;
+      } else {
+        std::wcout << L"Only local connections are allowed"
+                   << std::endl;
+      }
+    }
 
-  void* server_value = start_server_ex_proc(port,
-                                            host_address,
-                                            log_level,
-                                            log_file,
-                                            executable_version + L" (" + executable_architecture + L")",
-                                            implementation,
-                                            whitelist);
-  if (server_value == NULL) {
-    std::wcout << L"Failed to start the server with: "
-               << L"port = '" << port << L"', "
-               << L"host = '" << host_address << L"', "
-               << L"log level = '" << log_level << L"', "
-               << L"log file = '" << log_file << L"', "
-               << L"whitelisted ips = '" << whitelist << L"'.";
-    return ERR_SERVER_START;
+    // Create the shutdown event and wait for it to be signaled.
+    DWORD process_id = ::GetCurrentProcessId();
+    vector<wchar_t> process_id_buffer(10);
+    _ltow_s(process_id, &process_id_buffer[0], process_id_buffer.size(), 10);
+    std::wstring process_id_string(&process_id_buffer[0]);
+    std::wstring event_name = IESERVER_SHUTDOWN_EVENT_NAME + process_id_string;
+    HANDLE event_handle = ::CreateEvent(NULL,
+                                        TRUE, 
+                                        FALSE,
+                                        event_name.c_str());
+    ::WaitForSingleObject(event_handle, INFINITE);
+    ::CloseHandle(event_handle);
+    stop_server_proc();
   }
-  if (!silent) {
-    std::wcout << L"Started InternetExplorerDriver server"
-               << L" (" << executable_architecture << L")"
-               << std::endl;
-    std::wcout << executable_version
-               << std::endl;
-    std::wcout << L"Listening on port " << port << std::endl;
-    if (host_address.size() > 0) {
-      std::wcout << L"Bound to network adapter with IP address " 
-                 << host_address
-                 << std::endl;
-    }
-    if (log_level.size() > 0) {
-      std::wcout << L"Log level is set to "
-                 << log_level
-                 << std::endl;
-    }
-    if (log_file.size() > 0) {
-      std::wcout << L"Log file is set to "
-                 << log_file
-                 << std::endl;
-    }
-    if (implementation.size() > 0) {
-      std::wcout << L"Driver implementation set to "
-                 << implementation
-                 << std::endl;
-    }
-    if (extraction_path_arg.size() > 0) {
-      std::wcout << L"Library extracted to "
-                 << extraction_path_arg
-                 << std::endl;
-    }
-    if (whitelist.size() > 0) {
-      std::wcout << L"IP addresses allowed to connect are "
-                 << whitelist
-                 << std::endl;
-    } else {
-      std::wcout << L"Only local connections are allowed"
-                 << std::endl;
-    }
-  }
-
-  // Create the shutdown event and wait for it to be signaled.
-  DWORD process_id = ::GetCurrentProcessId();
-  vector<wchar_t> process_id_buffer(10);
-  _ltow_s(process_id, &process_id_buffer[0], process_id_buffer.size(), 10);
-  std::wstring process_id_string(&process_id_buffer[0]);
-  std::wstring event_name = IESERVER_SHUTDOWN_EVENT_NAME + process_id_string;
-  HANDLE event_handle = ::CreateEvent(NULL,
-                                      TRUE, 
-                                      FALSE,
-                                      event_name.c_str());
-  ::WaitForSingleObject(event_handle, INFINITE);
-  ::CloseHandle(event_handle);
-  stop_server_proc();
 
   ::FreeLibrary(module_handle);
   ::DeleteFile(temp_file_name.c_str());
