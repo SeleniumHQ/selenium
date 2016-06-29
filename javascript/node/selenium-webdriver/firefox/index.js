@@ -297,11 +297,14 @@ function createGeckoDriverService(binary) {
 
   let geckoDriver = findGeckoDriver();
   let port =  portprober.findFreePort();
+  let marionettePort = portprober.findFreePort();
   return new remote.DriverService(geckoDriver, {
     loopback: true,
     port: port,
-    args: Promise.all([exe, port]).then(args => {
-      return ['-b', args[0], '--webdriver-port', args[1]];
+    args: Promise.all([exe, port, marionettePort]).then(args => {
+      return ['-b', args[0], 
+              '--webdriver-port', args[1],
+              '--marionette-port', args[2]];
     })
     // ,stdio: 'inherit'
   });
@@ -354,7 +357,7 @@ class Driver extends webdriver.WebDriver {
       binary = new Binary(binary);
     }
 
-    let profile = new Profile();
+    let profile;
     if (caps.has(Capability.PROFILE)) {
       profile = caps.get(Capability.PROFILE);
       caps.delete(Capability.PROFILE);
@@ -373,9 +376,14 @@ class Driver extends webdriver.WebDriver {
       let service = createGeckoDriverService(binary);
       serverUrl = service.start();
       onQuit = () => service.kill();
-      caps.set(Capability.PROFILE, profile.encode());
+
+      if (profile) {
+        caps.set(Capability.PROFILE, profile.encode());
+      }
 
     } else {
+      profile = profile || new Profile;
+
       let freePort = portprober.findFreePort();
       let preparedProfile =
           freePort.then(port => prepareProfile(profile, port));
