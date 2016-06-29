@@ -147,6 +147,10 @@ function TestEnvironment(browserName, server) {
     return server || remoteUrl;
   };
 
+  this.isMarionette = function() {
+    return !noMarionette;
+  };
+
   this.browsers = function(var_args) {
     var browsersToIgnore = Array.prototype.slice.apply(arguments, [0]);
     return browsers(browserName, browsersToIgnore);
