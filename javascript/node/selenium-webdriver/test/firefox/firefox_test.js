@@ -119,7 +119,8 @@ test.suite(function(env) {
         // refresh doesn't appear to work).
         driver.wait(function() {
           driver.get(url);
-          return driver.isElementPresent({id: 'jetpack-sample-banner'});
+          return driver.findElements({id: 'jetpack-sample-banner'})
+              .then(found => found.length > 0);
         }, 3000);
       }
     });
