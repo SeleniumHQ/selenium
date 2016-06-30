@@ -10,6 +10,7 @@
 * Removed the mandatory use of Firefox Dev Edition, when using Marionette driver
 * Fixed timeouts' URL
 * Properly send HTTP requests when using a WebDriver server proxy
+* Properly configure proxies when using the geckodriver
 
 ### API Changes
 

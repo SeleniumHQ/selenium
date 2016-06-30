@@ -331,6 +331,40 @@ function prepareProfile(profile, port) {
 }
 
 
+function normalizeProxyConfiguration(config) {
+  if ('manual' === config.proxyType) {
+    if (config.ftpProxy && !config.ftpProxyPort) {
+      let hostAndPort = net.splitHostAndPort(config.ftpProxy);
+      config.ftpProxy = hostAndPort.host;
+      config.ftpProxyPort = hostAndPort.port;
+    }
+
+    if (config.httpProxy && !config.httpProxyPort) {
+      let hostAndPort = net.splitHostAndPort(config.httpProxy);
+      config.httpProxy = hostAndPort.host;
+      config.httpProxyPort = hostAndPort.port;
+    }
+
+    if (config.sslProxy && !config.sslProxyPort) {
+      let hostAndPort = net.splitHostAndPort(config.sslProxy);
+      config.sslProxy = hostAndPort.host;
+      config.sslProxyPort = hostAndPort.port;
+    }
+
+    if (config.socksProxy && !config.socksProxyPort) {
+      let hostAndPort = net.splitHostAndPort(config.socksProxy);
+      config.socksProxy = hostAndPort.host;
+      config.socksProxyPort = hostAndPort.port;
+    }
+  } else if ('pac' === config.proxyType) {
+    if (config.proxyAutoconfigUrl && !config.pacUrl) {
+      config.pacUrl = config.proxyAutoconfigUrl;
+    }
+  }
+  return config;
+}
+
+
 /**
  * A WebDriver client for Firefox.
  */
@@ -381,6 +415,18 @@ class Driver extends webdriver.WebDriver {
         caps.set(Capability.PROFILE, profile.encode());
       }
 
+      if (caps.has(capabilities.Capability.PROXY)) {
+        let proxy = normalizeProxyConfiguration(
+            caps.get(capabilities.Capability.PROXY));
+
+        // Marionette requires proxy settings to be specified as required
+        // capabilities. See mozilla/geckodriver#97
+        let required = new capabilities.Capabilities()
+            .set(capabilities.Capability.PROXY, proxy);
+
+        caps.delete(capabilities.Capability.PROXY);
+        caps = {required, desired: caps};
+      }
     } else {
       profile = profile || new Profile;
 

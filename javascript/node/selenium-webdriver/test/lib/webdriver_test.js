@@ -345,6 +345,23 @@ describe('WebDriver', function() {
       return driver.getSession().then(v => assert.strictEqual(v, aSession));
     });
 
+    it('handles desired and requried capabilities', function() {
+      let aSession = new Session(SESSION_ID, {'browserName': 'firefox'});
+      let executor = new FakeExecutor().
+          expect(CName.NEW_SESSION).
+          withParameters({
+            'desiredCapabilities': {'foo': 'bar'},
+            'requiredCapabilities': {'bim': 'baz'}
+          }).
+          andReturnSuccess(aSession).
+          end();
+
+      let desired = new Capabilities().set('foo', 'bar');
+      let required = new Capabilities().set('bim', 'baz');
+      var driver = WebDriver.createSession(executor, {desired, required});
+      return driver.getSession().then(v => assert.strictEqual(v, aSession));
+    });
+
     it('failsToCreateSession', function() {
       let executor = new FakeExecutor().
           expect(CName.NEW_SESSION).
