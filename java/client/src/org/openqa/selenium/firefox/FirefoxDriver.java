@@ -325,7 +325,7 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   }
 
   protected Lock obtainLock(FirefoxProfile profile) {
-    return new SocketLock();
+    return new SocketLock(profile.getIntegerPreference(FirefoxProfile.PORT_PREFERENCE, SocketLock.DEFAULT_PORT - 1));
   }
 
   @Override
