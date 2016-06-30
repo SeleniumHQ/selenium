@@ -75,12 +75,10 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
         }
 
         try {
-          System.out.println("try 2 arg");
           return driverClass.getConstructor(Capabilities.class,
                                             Capabilities.class)
             .newInstance(desiredCapsToUse, requiredCapabilities);
         } catch (NoSuchMethodException ex) {
-          System.out.println("try 1 arg");
           return driverClass.getConstructor(Capabilities.class).newInstance(desiredCapsToUse);
         }
       }
