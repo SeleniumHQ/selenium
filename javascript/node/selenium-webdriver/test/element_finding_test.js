@@ -153,7 +153,9 @@ test.suite(function(env) {
                 });
           });
 
-      test.it('works on XHTML pages', function() {
+      // See https://github.com/mozilla/geckodriver/issues/137
+      test.ignore(browsers(Browser.FIREFOX)).
+      it('works on XHTML pages', function() {
         driver.get(test.whereIs('actualXhtmlPage.xhtml'));
 
         var el = driver.findElement(By.linkText('Foo'));
