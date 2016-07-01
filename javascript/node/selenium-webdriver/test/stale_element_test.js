@@ -48,7 +48,10 @@ test.suite(function(env) {
 
   test.it('an element found in a different frame is stale', function() {
     driver.get(Pages.missedJsReferencePage);
-    driver.switchTo().frame('inner');
+
+    var frame = driver.findElement(By.css('iframe[name="inner"]'));
+    driver.switchTo().frame(frame);
+
     var el = driver.findElement(By.id('oneline'));
     driver.switchTo().defaultContent();
     el.getText().then(fail, function(e) {

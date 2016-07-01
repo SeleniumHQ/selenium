@@ -207,7 +207,8 @@ test.suite(function(env) {
         assert(execute('return arguments.length', 1, 'a', false)).equalTo(3);
       });
 
-      test.it('can return arguments object as array', function() {
+      test.ignore(env.browsers(Browser.FIREFOX)).
+      it('can return arguments object as array', function() {
         execute('return arguments', 1, 'a', false).then(function(val) {
           assert(val.length).equalTo(3);
           assert(val[0]).equalTo(1);

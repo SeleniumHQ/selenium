@@ -23,6 +23,7 @@ var build = require('./build'),
     isDevMode = require('../devmode'),
     webdriver = require('../../'),
     flow = webdriver.promise.controlFlow(),
+    firefox = require('../../firefox'),
     remote = require('../../remote'),
     testing = require('../../testing'),
     fileserver = require('./fileserver');
@@ -159,6 +160,10 @@ function TestEnvironment(browserName, server) {
       var parts = browserName.split(/:/, 3);
 
       if (parts[0] === LEGACY_FIREFOX) {
+        var options = builder.getFirefoxOptions() || new firefox.Options();
+        options.useGeckoDriver(false);
+        builder.setFirefoxOptions(options);
+
         parts[0] = webdriver.Browser.FIREFOX;
       }
 
@@ -168,6 +173,7 @@ function TestEnvironment(browserName, server) {
       } else if (remoteUrl) {
         builder.usingServer(remoteUrl);
       }
+
       builder.disableEnvironmentOverrides();
       return realBuild.call(builder);
     };

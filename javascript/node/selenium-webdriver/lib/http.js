@@ -320,7 +320,9 @@ class Executor {
         return new Session(parsed['sessionId'], parsed['value']);
       }
 
-      if (parsed) {
+      if (parsed
+          && typeof parsed === 'object'
+          && 'value' in parsed) {
         let value = parsed['value'];
         return typeof value === 'undefined' ? null : value;
       }
@@ -349,7 +351,7 @@ function tryParse(str) {
  * @param {!Response} httpResponse The HTTP response to parse.
  * @param {boolean} w3c Whether the response should be processed using the
  *     W3C wire protocol.
- * @return {{value: ?}} The parsed response.
+ * @return {?} The parsed response.
  * @throws {WebDriverError} If the HTTP response is an error.
  */
 function parseHttpResponse(httpResponse, w3c) {
@@ -369,11 +371,7 @@ function parseHttpResponse(httpResponse, w3c) {
     } else {
       error.checkLegacyResponse(parsed);
     }
-
-    if (!parsed || typeof parsed !== 'object') {
-      parsed = {value: parsed};
-    }
-    return parsed
+    return parsed;
   }
 
   let value = httpResponse.body.replace(/\r\n/g, '\n');
@@ -386,7 +384,7 @@ function parseHttpResponse(httpResponse, w3c) {
     throw new error.WebDriverError(value);
   }
 
-  return {value: value || null};
+  return value || null;
 }
 
 

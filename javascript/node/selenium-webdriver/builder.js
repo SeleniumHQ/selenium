@@ -338,6 +338,14 @@ class Builder {
   }
 
   /**
+   * @return {firefox.Options} the Firefox specific options currently configured
+   *     for this instance.
+   */
+  getFirefoxOptions() {
+    return this.firefoxOptions_;
+  }
+
+  /**
    * Sets Opera specific {@linkplain opera.Options options} for drivers created
    * by this builder. Any logging or proxy settings defined on the given options
    * will take precedence over those set through {@link #setLoggingPrefs} and

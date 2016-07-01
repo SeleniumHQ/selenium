@@ -54,7 +54,9 @@ test.suite(function(env) {
     assert(driver.getTitle()).equalTo('We Arrive Here');
   });
 
-  test.it('should be able to get a fragment on the current page', function() {
+  // Skip Firefox; see https://bugzilla.mozilla.org/show_bug.cgi?id=1280300
+  test.ignore(browsers(Browser.FIREFOX)).
+  it('should be able to get a fragment on the current page', function() {
     driver.get(Pages.xhtmlTestPage);
     driver.get(Pages.xhtmlTestPage + '#text');
     driver.findElement(By.id('id1'));

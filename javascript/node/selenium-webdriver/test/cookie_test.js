@@ -151,7 +151,11 @@ test.suite(function(env) {
       assertHasCookies();
     });
 
-    test.ignore(env.browsers(Browser.ANDROID, Browser.FIREFOX, Browser.IE)).
+    test.ignore(env.browsers(
+        Browser.ANDROID,
+        Browser.FIREFOX,
+        'legacy-' + Browser.FIREFOX,
+        Browser.IE)).
     it('should retain cookie expiry', function() {
       let expirationDelay = 5 * 1000;
       let expiry = new Date(Date.now() + expirationDelay);

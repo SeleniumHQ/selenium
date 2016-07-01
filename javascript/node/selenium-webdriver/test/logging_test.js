@@ -29,8 +29,10 @@ test.suite(function(env) {
   //   - does not return proper log level for "browser" messages.
   //   - does not delete logs after retrieval
   // Logging API is not supported in IE.
+  // Logging API not supported in Marionette.
   // Tests depend on opening data URLs, which is broken in Safari (issue 7586)
-  test.ignore(env.browsers(Browser.PHANTOM_JS, Browser.IE, Browser.SAFARI)).
+  test.ignore(env.browsers(
+      Browser.PHANTOM_JS, Browser.IE, Browser.SAFARI, Browser.FIREFOX)).
   describe('logging', function() {
     var driver;
 
@@ -64,7 +66,7 @@ test.suite(function(env) {
     });
 
     // Firefox does not capture JS error console log messages.
-    test.ignore(env.browsers(Browser.FIREFOX)).
+    test.ignore(env.browsers(Browser.FIREFOX, 'legacy-firefox')).
     it('can be turned down', function() {
       var prefs = new logging.Preferences();
       prefs.setLevel(logging.Type.BROWSER, logging.Level.SEVERE);
@@ -87,7 +89,7 @@ test.suite(function(env) {
     });
 
     // Firefox does not capture JS error console log messages.
-    test.ignore(env.browsers(Browser.FIREFOX)).
+    test.ignore(env.browsers(Browser.FIREFOX, 'legacy-firefox')).
     it('can be made verbose', function() {
       var prefs = new logging.Preferences();
       prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
@@ -116,7 +118,7 @@ test.suite(function(env) {
     });
 
     // Firefox does not capture JS error console log messages.
-    test.ignore(env.browsers(Browser.FIREFOX)).
+    test.ignore(env.browsers(Browser.FIREFOX, 'legacy-firefox')).
     it('clears records after retrieval', function() {
       var prefs = new logging.Preferences();
       prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
