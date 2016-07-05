@@ -21,7 +21,8 @@ from selenium.webdriver.common.alert import Alert
 
 class SwitchTo:
     def __init__(self, driver):
-        self._driver = driver
+        from weakref import proxy
+        self._driver = proxy(driver)
 
     @property
     def active_element(self):
