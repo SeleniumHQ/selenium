@@ -1,3 +1,5 @@
+include_defs('//SELENIUM_VERSION')
+
 java_library(name = 'sessions',
   srcs = [
     'DriverSessions.java',
@@ -77,6 +79,7 @@ export_file(name = 'style',
 )
 
 java_library(name = 'standalone-server-lib',
+  maven_coords = 'org.seleniumhq.selenium:selenium-server:' + SE_VERSION,
   srcs = [
     'SeleniumServer.java',
   ],

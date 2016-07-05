@@ -111,6 +111,7 @@ task '//java/client/test/org/openqa/selenium/environment/webserver:webserver:ube
 JAVA_RELEASE_TARGETS = [
   '//java/client/src/org/openqa/selenium:core',
   '//java/client/src/org/openqa/selenium:selenium',
+  '//java/client/src/org/openqa/selenium/support:support',
   '//java/client/src/org/openqa/selenium/chrome:chrome',
   '//java/client/src/org/openqa/selenium/edge:edge',
   '//java/client/src/org/openqa/selenium/firefox:firefox',
@@ -119,6 +120,7 @@ JAVA_RELEASE_TARGETS = [
   '//java/client/src/org/openqa/selenium/remote:remote',
   '//java/client/src/org/openqa/selenium/safari:safari',
   '//java/server/src/com/thoughtworks/selenium:leg-rc',
+  '//java/server/src/org/openqa/selenium/remote/server:server',
 ]
 
 
@@ -547,7 +549,16 @@ task :'publish-maven' => JAVA_RELEASE_TARGETS do |t|
   t.prerequisites.each do |p|
     if JAVA_RELEASE_TARGETS.include?(p)
       creds = read_user_pass_from_m2_settings()
-      Buck::buck_cmd.call('publish', ['--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', '--include-source', '-u', creds[0], '-p', creds[1], p])
+      Buck::buck_cmd.call('publish', ['--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', '--include-source', '--include-javadoc', '-u', creds[0], '-p', creds[1], p])
+    end
+  end
+end
+
+task :'maven-install' => JAVA_RELEASE_TARGETS do |t|
+  t.prerequisites.each do |p|
+    if JAVA_RELEASE_TARGETS.include?(p)
+      creds = read_user_pass_from_m2_settings()
+      Buck::buck_cmd.call('publish', ['--remote-repo', "file://#{ENV['HOME']}/.m2/repository", '--include-source', '--include-javadoc', '-u', creds[0], '-p', creds[1], p, '-v', '10'])
     end
   end
 end
