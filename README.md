@@ -285,7 +285,7 @@ targets.
 ## Maven _per se_
 
 If it is not clear already, Selenium is not built with Maven, it is
-built with [Crazy-Fun](https://github.com/SeleniumHQ/selenium/wiki/Crazy-Fun-Build) 
+built with [Buck](https://github.com/SeleniumHQ/buck), 
 though that is invoked with *go* as outlined above so you do not really 
 have to learn too much about that.
 
@@ -297,10 +297,10 @@ and deploy into you local maven repository (`~/.m2/repository`), while
 skipping Selenium's own tests.
 
 ```sh
-./go maven-dry-run
+./go maven-install
 ```
 
-Read the build output to find the maven jars. You can also publish
+The maven jars should now be in your local ~/.m2/repository. You can also publish
 directly using Buck:
 
 ```sh

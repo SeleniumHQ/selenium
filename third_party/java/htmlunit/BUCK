@@ -1,4 +1,5 @@
 prebuilt_jar(name = 'htmlunit-driver',
+  maven_coords = 'org.seleniumhq.selenium:htmlunit-driver:2.21',
   binary_jar = 'htmlunit-driver-2.21.jar',
   deps = [
     ':htmlunit',

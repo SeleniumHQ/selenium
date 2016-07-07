@@ -1,5 +1,6 @@
 java_library(
   name = 'jetty',
+  maven_coords = 'org.seleniumhq.selenium:jetty-repacked:9.2.13.v20150730',
   exported_deps = [
     ':jetty-http-repacked',
     ':jetty-security-repacked',
@@ -26,21 +27,6 @@ java_library(
     '//java/server/test/org/openqa/selenium/remote/server/auth:lib',
   ],
 )
-
-prebuilt_jar(name = 'jetty-for-rc',
-  binary_jar = 'jetty-repacked-5.jar',
-   deps = [
-    '//third_party/java/commons-logging:commons-logging',
-    '//third_party/java/jasper:jasper',
-    '//third_party/java/mx4j:mx4j',
-    '//third_party/java/servlet:servlet-api',
-  ],
-  visibility = [
-    '//java/server/src/org/openqa/selenium/server:server',
-    '//java/server/src/org/openqa/grid:grid',
-    '//third_party/java/servlet:servlet-api'
-   ],
- )
  
 REPACK = [
   'jetty-continuation',
@@ -65,6 +51,7 @@ for i in REPACK:
 
   prebuilt_jar(
     name = out,
+    maven_coords = 'org.seleniumhq.selenium:%s:9.2.13.v20150730' % out,
     binary_jar = ':%s' % name
   )
 

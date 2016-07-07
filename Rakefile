@@ -120,7 +120,7 @@ JAVA_RELEASE_TARGETS = [
   '//java/client/src/org/openqa/selenium/remote:remote',
   '//java/client/src/org/openqa/selenium/safari:safari',
   '//java/server/src/com/thoughtworks/selenium:leg-rc',
-  '//java/server/src/org/openqa/selenium/remote/server:server',
+  '//java/server/src/org/openqa/selenium/remote/server:standalone-server-lib',
 ]
 
 
@@ -558,7 +558,7 @@ task :'maven-install' => JAVA_RELEASE_TARGETS do |t|
   t.prerequisites.each do |p|
     if JAVA_RELEASE_TARGETS.include?(p)
       creds = read_user_pass_from_m2_settings()
-      Buck::buck_cmd.call('publish', ['--remote-repo', "file://#{ENV['HOME']}/.m2/repository", '--include-source', '--include-javadoc', '-u', creds[0], '-p', creds[1], p, '-v', '10'])
+      Buck::buck_cmd.call('publish', ['--remote-repo', "file://#{ENV['HOME']}/.m2/repository", '--include-source', '--include-javadoc', '-u', creds[0], '-p', creds[1], p])
     end
   end
 end
