@@ -308,7 +308,7 @@ buck publish -r your-repo //java/client/src/org/openqa/selenium:selenium
 ```
 
 This sequence will push some seven or so jars into your local Maven
-repository with something like 'selenium-server-3.0-SNAPSHOT.jar' as
+repository with something like 'selenium-server-3.0.0.jar' as
 the name.
 
 ## Useful Resources
