@@ -117,9 +117,11 @@ const Binary = require('./binary').Binary,
     Profile = require('./profile').Profile,
     decodeProfile = require('./profile').decode,
     executors = require('../executors'),
+    http = require('../http'),
     httpUtil = require('../http/util'),
     io = require('../io'),
     capabilities = require('../lib/capabilities'),
+    command = require('../lib/command'),
     logging = require('../lib/logging'),
     promise = require('../lib/promise'),
     webdriver = require('../lib/webdriver'),
@@ -266,6 +268,23 @@ class Options {
   }
 }
 
+
+/**
+ * Enum of available command contexts.
+ *
+ * Command contexts are specific to Marionette, and may be used with the
+ * {@link #context=} method. Contexts allow you to direct all subsequent
+ * commands to either "content" (default) or "chrome". The latter gives
+ * you elevated security permissions.
+ *
+ * @enum {string}
+ */
+const Context = {
+  CONTENT: "content",
+  CHROME: "chrome",
+};
+
+
 const GECKO_DRIVER_EXE =
     process.platform === 'win32' ? 'geckodriver.exe' : 'geckodriver';
 
@@ -365,6 +384,36 @@ function normalizeProxyConfiguration(config) {
 }
 
 
+/** @enum {string} */
+const ExtensionCommand = {
+  GET_CONTEXT: 'getContext',
+  SET_CONTEXT: 'setContext',
+};
+
+
+/**
+ * Creates a command executor with support for Marionette's custom commands.
+ * @param {!Promise<string>} url The server's URL.
+ * @param {!command.Executor} The new command executor.
+ */
+function createExecutor(url) {
+  return new command.DeferredExecutor(url.then(url => {
+    let client = new http.HttpClient(url);
+    let executor = new http.Executor(client);
+
+    executor.defineCommand(
+        ExtensionCommand.GET_CONTEXT,
+        'GET',
+        '/session/:sessionId/moz/context');
+    executor.defineCommand(
+        ExtensionCommand.SET_CONTEXT,
+        'POST',
+        '/session/:sessionId/moz/context');
+
+    return executor;
+  }));
+}
+
 /**
  * A WebDriver client for Firefox.
  */
@@ -457,7 +506,7 @@ class Driver extends webdriver.WebDriver {
       };
     }
 
-    let executor = executors.createExecutor(serverUrl);
+    let executor = createExecutor(serverUrl);
     let driver = webdriver.WebDriver.createSession(executor, caps, opt_flow);
     super(driver.getSession(), executor, driver.controlFlow());
 
@@ -476,6 +525,38 @@ class Driver extends webdriver.WebDriver {
    */
   setFileDetector() {
   }
+
+  /**
+   * Get the context that is currently in effect.
+   *
+   * @return {!promise.Promise<Context>} Current context.
+   */
+  getContext() {
+    return this.schedule(
+        new command.Command(ExtensionCommand.GET_CONTEXT),
+        'get WebDriver.context');
+  }
+
+  /**
+   * Changes target context for commands between chrome- and content.
+   *
+   * Changing the current context has a stateful impact on all subsequent
+   * commands. The {@link Context.CONTENT} context has normal web
+   * platform document permissions, as if you would evaluate arbitrary
+   * JavaScript. The {@link Context.CHROME} context gets elevated
+   * permissions that lets you manipulate the browser chrome itself,
+   * with full access to the XUL toolkit.
+   *
+   * Use your powers wisely.
+   *
+   * @param {!promise.Promise<void>} ctx The context to switch to.
+   */
+  setContext(ctx) {
+    return this.schedule(
+        new command.Command(ExtensionCommand.SET_CONTEXT)
+            .setParameter("context", ctx),
+        'set WebDriver.context');
+  }
 }
 
 
@@ -483,6 +564,7 @@ class Driver extends webdriver.WebDriver {
 
 
 exports.Binary = Binary;
+exports.Context = Context;
 exports.Driver = Driver;
 exports.Options = Options;
 exports.Profile = Profile;
