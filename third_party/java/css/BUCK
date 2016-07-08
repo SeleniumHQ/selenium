@@ -1,7 +1,6 @@
 prebuilt_jar(name = 'sac',
   binary_jar = 'sac-1.3.jar',
   visibility = [
-    '//java/client/src/org/openqa/selenium/htmlunit:htmlunit',
     '//third_party/java/...',
   ],
 )

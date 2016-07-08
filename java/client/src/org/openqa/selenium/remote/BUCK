@@ -30,6 +30,7 @@ java_library(
 )
 
 java_library(name = 'augmenter',
+  maven_coords = 'org.seleniumhq.selenium:selenium-remote-driver:' + SE_VERSION,
   srcs = [
     'Augmenter.java',
     'AugmenterProvider.java',
@@ -59,7 +60,6 @@ java_library(name = 'augmenter',
 )
 
 java_library(name = 'remote',
-  maven_coords = 'org.seleniumhq.selenium:remote-driver:' + SE_VERSION,
   srcs = [
     'BeanToJsonConverter.java',
     'CommandCodec.java',
