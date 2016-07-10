@@ -21,5 +21,5 @@ import java.util.Iterator;
 import java.util.List;
 
 interface CoreStepFactory {
-  CoreStep create(Iterator<List<String>> remainingSteps, String locator, String value);
+  CoreStep create(String locator, String value);
 }

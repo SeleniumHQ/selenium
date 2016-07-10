@@ -68,7 +68,7 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
         continue;
       }
 
-      CoreStepFactory factory = ((remainingSteps, locator, value) -> (selenium) ->
+      CoreStepFactory factory = ((locator, value) -> (selenium) ->
         invokeMethod(method, selenium, buildArgs(method, locator, value)));
 
       factories.put(method.getName(), factory);
@@ -88,48 +88,62 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
       if (shortName != null && method.getParameterCount() < 2) {
         String negatedName = negateName(shortName);
 
-        factories.put("assert" + shortName, ((remainingSteps, locator, value) -> (selenium) -> {
+        factories.put("assert" + shortName, ((locator, value) -> (selenium) -> {
           Object seen = invokeMethod(method, selenium, buildArgs(method, locator, value));
           String expected = getExpectedValue(method, locator, value);
 
-          SeleneseTestBase.assertEquals(expected, seen);
-          return null;
+          try {
+            SeleneseTestBase.assertEquals(expected, seen);
+            return NextStepDecorator.IDENTITY;
+          } catch (AssertionError e) {
+            return NextStepDecorator.ASSERTION_FAILED;
+          }
         }));
 
-        factories.put("assert" + negatedName, ((remainingSteps, locator, value) -> (selenium) -> {
+        factories.put("assert" + negatedName, ((locator, value) -> (selenium) -> {
           Object seen = invokeMethod(method, selenium, buildArgs(method, locator, value));
           String expected = getExpectedValue(method, locator, value);
 
-          SeleneseTestBase.assertNotEquals(expected, seen);
-          return null;
+          try {
+            SeleneseTestBase.assertNotEquals(expected, seen);
+            return NextStepDecorator.IDENTITY;
+          } catch (AssertionError e) {
+            return NextStepDecorator.ASSERTION_FAILED;
+          }
         }));
 
-        factories.put("verify" + shortName, ((remainingSteps, locator, value) -> (selenium) -> {
+        factories.put("verify" + shortName, ((locator, value) -> (selenium) -> {
           Object seen = invokeMethod(method, selenium, buildArgs(method, locator, value));
           String expected = getExpectedValue(method, locator, value);
 
-          // TODO: Not this. Actual verification.
-          SeleneseTestBase.assertEquals(expected, seen);
-          return null;
+          try {
+            SeleneseTestBase.assertEquals(expected, seen);
+            return NextStepDecorator.IDENTITY;
+          } catch (AssertionError e) {
+            return NextStepDecorator.VERIFICATION_FAILED;
+          }
         }));
 
-        factories.put("verify" + negatedName, ((remainingSteps, locator, value) -> (selenium) -> {
+        factories.put("verify" + negatedName, ((locator, value) -> (selenium) -> {
           Object seen = invokeMethod(method, selenium, buildArgs(method, locator, value));
           String expected = getExpectedValue(method, locator, value);
 
-          // TODO: Not this. Actual verification.
-          SeleneseTestBase.assertNotEquals(expected, seen);
-          return null;
+          try {
+            SeleneseTestBase.assertNotEquals(expected, seen);
+            return NextStepDecorator.IDENTITY;
+          } catch (AssertionError e) {
+            return NextStepDecorator.VERIFICATION_FAILED;
+          }
         }));
       }
 
       factories.put(
         method.getName() + "AndWait",
-        ((remainingSteps, locator, value) -> (selenium -> {
+        ((locator, value) -> (selenium -> {
           Object result = invokeMethod(method, selenium, buildArgs(method, locator, value));
           // TODO: Hard coding this is obviously bogus
           selenium.waitForPageToLoad("30000");
-          return result;
+          return NextStepDecorator.IDENTITY;
         })));
     }
 
@@ -176,13 +190,14 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
     }
   }
 
-  private static Object invokeMethod(Method method, Selenium selenium, String[] args) {
+  private static NextStepDecorator invokeMethod(Method method, Selenium selenium, String[] args) {
     try {
-      return method.invoke(selenium, args);
+      method.invoke(selenium, args);
+      return NextStepDecorator.IDENTITY;
     } catch (ReflectiveOperationException e) {
       for (Throwable cause = e; cause != null; cause = cause.getCause()) {
         if (cause instanceof SeleniumException) {
-          throw (SeleniumException) cause;
+          return NextStepDecorator.ERROR(cause);
         }
       }
       throw new CoreRunnerError(

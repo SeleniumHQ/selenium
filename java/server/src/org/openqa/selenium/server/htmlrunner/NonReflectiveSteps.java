@@ -21,18 +21,14 @@ package org.openqa.selenium.server.htmlrunner;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.primitives.Booleans;
 
-import com.thoughtworks.selenium.SeleneseTestBase;
+import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 class NonReflectiveSteps {
   private static final Logger LOG = Logger.getLogger("Selenium Core Step");
-  private static final ImmutableMap<String, CoreStepFactory> wrappableSteps =
-    new ReflectivelyDiscoveredSteps().get();
 
   private static Supplier<ImmutableMap<String, CoreStepFactory>> STEPS =
     Suppliers.memoize(() -> build());
@@ -44,49 +40,47 @@ class NonReflectiveSteps {
   private static ImmutableMap<String, CoreStepFactory> build() {
     ImmutableMap.Builder<String, CoreStepFactory> steps = ImmutableMap.builder();
 
-    CoreStepFactory nextCommandFails = (remainingSteps, locator, value) -> {
-      if (!remainingSteps.hasNext()) {
-        throw new SeleniumException("Next command not present. Unable to assert failure");
-      }
-      List<String> toWrap = remainingSteps.next();
-      if (!wrappableSteps.containsKey(toWrap.get(0))) {
-        throw new SeleniumException("Unable to wrap: " + toWrap.get(0));
-      }
-
-      return (selenium -> {
-        Object result;
-
-        try {
-          result = wrappableSteps.get(toWrap.get(0)).create(null, locator, value).execute(selenium);
-        } catch (SeleniumException e) {
-          result = e.getMessage();
-        }
-
-        SeleneseTestBase.assertEquals(value, String.valueOf(result));
-        return null;
-      });
-    };
-    // Not ideal, but it'll help us move things forward
+    CoreStepFactory nextCommandFails = (locator, value) -> (selenium) -> new NextCommandFails();
     steps.put("assertErrorOnNext", nextCommandFails);
     steps.put("assertFailureOnNext", nextCommandFails);
 
-    steps.put("echo", ((remainingSteps, locator, value) -> (selenium) -> {
+    steps.put("echo", ((locator, value) -> (selenium) -> {
       LOG.info(locator);
-      return null;
+      return NextStepDecorator.IDENTITY;
     }));
 
-    steps.put("pause", ((remainingSteps, locator, value) -> (selenium) -> {
+    steps.put("pause", ((locator, value) -> (selenium) -> {
       try {
         long timeout = Long.parseLong(locator);
         Thread.sleep(timeout);
-        return null;
+        return NextStepDecorator.IDENTITY;
       } catch (NumberFormatException e) {
-        throw new SeleniumException("Unable to parse timeout: " + locator);
+        return NextStepDecorator.ERROR(
+          new SeleniumException("Unable to parse timeout: " + locator));
       } catch (InterruptedException e) {
         System.exit(255);
         throw new CoreRunnerError("We never get this far");
       }
     }));
     return steps.build();
+  }
+
+  private static class NextCommandFails extends NextStepDecorator {
+
+    @Override
+    public NextStepDecorator evaluate(CoreStep nextStep, Selenium selenium) {
+      NextStepDecorator actualResult = nextStep.execute(selenium);
+
+      // This is kind of fragile. Oh well.
+      if (actualResult.equals(NextStepDecorator.IDENTITY)) {
+        return NextStepDecorator.ASSERTION_FAILED;
+      }
+      return NextStepDecorator.IDENTITY;
+    }
+
+    @Override
+    public boolean isOkayToContinueTest() {
+      return true;
+    }
   }
 }

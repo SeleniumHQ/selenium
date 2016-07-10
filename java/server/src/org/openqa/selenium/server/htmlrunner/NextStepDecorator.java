@@ -17,8 +17,47 @@
 
 package org.openqa.selenium.server.htmlrunner;
 
+
 import com.thoughtworks.selenium.Selenium;
 
-public interface CoreStep {
-  NextStepDecorator execute(Selenium selenium);
+abstract class NextStepDecorator {
+
+  static NextStepDecorator IDENTITY = new NextStepDecorator() {
+
+    @Override
+    public boolean isOkayToContinueTest() {
+      return true;
+    }
+  };
+
+  static NextStepDecorator ASSERTION_FAILED = new NextStepDecorator() {
+
+    @Override
+    public boolean isOkayToContinueTest() {
+      return false;
+    }
+  };
+
+  static NextStepDecorator VERIFICATION_FAILED = new NextStepDecorator() {
+
+    @Override
+    public boolean isOkayToContinueTest() {
+      return true;
+    }
+  };
+
+  public abstract  boolean isOkayToContinueTest();
+
+  public NextStepDecorator evaluate(CoreStep nextStep, Selenium selenium) {
+    return nextStep.execute(selenium);
+  }
+
+  public static NextStepDecorator ERROR(Throwable cause) {
+    return new NextStepDecorator() {
+      @Override
+      public boolean isOkayToContinueTest() {
+        return false;
+      }
+    };
+  }
 }
