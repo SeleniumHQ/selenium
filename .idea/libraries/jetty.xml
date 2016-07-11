@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="jetty">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/build/third_party/java/jetty/jetty-repacked.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-repacked.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
