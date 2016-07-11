@@ -23,10 +23,8 @@ package org.openqa.selenium;
  * Example usage:
  *
  * <pre>
- * import static openqa.selenium.OutputType.*;
- *
- * File screenshotFile = ((Screenshot)driver).getScreenshotAs(file);
- * String screenshotBase64 = ((Screenshot)driver).getScreenshotAs(base64);
+ * File screenshotFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+ * String screenshotBase64 = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BASE64);
  * </pre>
  *
  * @see OutputType
@@ -47,7 +45,7 @@ public interface TakesScreenshot {
    * <p>For WebElement extending TakesScreenshot, this makes a best effort
    * depending on the browser to return the following in order of preference:
    *   - The entire content of the HTML element
-   *   - The visisble portion of the HTML element
+   *   - The visible portion of the HTML element
    *
    * @param <X> Return type for getScreenshotAs.
    * @param target target type, @see OutputType
