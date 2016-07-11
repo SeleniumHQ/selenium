@@ -24,8 +24,7 @@ import java.io.OutputStream;
 import java.util.Base64;
 
 /**
- * Defines the output type for a screenshot. See org.openqa.selenium.Screenshot for usage and
- * examples.
+ * Defines the output type for a screenshot.
  *
  * @see TakesScreenshot
  * @param <T> Type for the screenshot output.
