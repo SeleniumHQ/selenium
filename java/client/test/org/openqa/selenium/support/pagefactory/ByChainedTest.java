@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.support.pagefactory;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -188,6 +189,7 @@ public class ByChainedTest {
       fail("Expected NoSuchElementException!");
     } catch (NoSuchElementException e) {
       // Expected
+      assertThat(e.getMessage(), containsString("no elements found by the locator #1"));
     }
   }
 

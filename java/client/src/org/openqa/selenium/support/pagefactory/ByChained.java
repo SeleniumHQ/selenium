@@ -57,29 +57,35 @@ public class ByChained extends By implements Serializable {
       return context.findElement(bys[0]);
     }
 
-    List<WebElement> elements = bys[0].findElements(context);
-    for (WebElement element : elements) {
-      WebElement leftMostLeaf = findLeftMostLeaf(element, 1);
-      if (leftMostLeaf != null) {
-        return leftMostLeaf;
+    int maxDepthReached = 0;
+    for (WebElement element : bys[0].findElements(context)) {
+      try {
+        return findLeftMostLeaf(element, 1);
+      } catch (UnreachableMaxDepthException e) {
+        maxDepthReached = e.getDepthReached();
       }
     }
-    throw new NoSuchElementException("Cannot locate an element using " + toString());
+    throw new NoSuchElementException("Cannot locate an element using " + toString() +
+                                     ": no elements found by the locator #" + (maxDepthReached + 1)
+                                     + " in the chain: " + bys[maxDepthReached]);
   }
 
   private WebElement findLeftMostLeaf(WebElement root, int i) {
-    if (i == bys.length) { // reached max depth: found!
+    if (i == bys.length) { // max depth reached: found!
       return root;
     }
 
-    List<WebElement> children = root.findElements(bys[i]); // find elements at depth i
-    for (WebElement child : children) {
-      WebElement leftMostLeaf = findLeftMostLeaf(child, i + 1);
-      if (leftMostLeaf != null) {
-        return leftMostLeaf;
+    int maxDepthReached = i;
+    for (WebElement child : root.findElements(bys[i])) { // loop over the elements at the i-th level
+      try {
+        return findLeftMostLeaf(child, i + 1); // return as soon as we find the left-most element
+      } catch (UnreachableMaxDepthException e) {
+        if (e.getDepthReached() > maxDepthReached) {
+          maxDepthReached = e.getDepthReached();
+        }
       }
     }
-    return null; // wrong path: could not reach max depth
+    throw new UnreachableMaxDepthException(maxDepthReached);
   }
 
   @Override
@@ -119,4 +125,20 @@ public class ByChained extends By implements Serializable {
     return stringBuilder.toString();
   }
 
+  /**
+   * Thrown when a path in the tree does not lead to a leaf on the deepest level.
+   * In other words, when the path does not make use of all of the bys in the chain.
+   */
+  private static class UnreachableMaxDepthException extends RuntimeException {
+
+    private final int depthReached; // 0-based index
+
+    public UnreachableMaxDepthException(int depthReached) {
+      this.depthReached = depthReached;
+    }
+
+    public int getDepthReached() {
+      return depthReached;
+    }
+  }
 }
