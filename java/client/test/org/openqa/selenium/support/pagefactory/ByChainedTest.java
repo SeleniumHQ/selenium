@@ -73,6 +73,7 @@ public class ByChainedTest {
     elems12.add(elem2);
 
     when(driver.findElementsByName("cheese")).thenReturn(elems12);
+    when(driver.findElement(By.name("cheese"))).thenReturn(elem1);
 
     ByChained by = new ByChained(By.name("cheese"));
     assertThat(by.findElement(driver), equalTo(elem1));
@@ -99,6 +100,7 @@ public class ByChainedTest {
     final List<WebElement> elems = new ArrayList<>();
 
     when(driver.findElementsByName("cheese")).thenReturn(elems);
+    when(driver.findElement(By.name("cheese"))).thenThrow(new NoSuchElementException("simulated"));
 
     ByChained by = new ByChained(By.name("cheese"));
     try {
