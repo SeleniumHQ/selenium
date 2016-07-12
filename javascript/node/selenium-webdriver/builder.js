@@ -253,9 +253,10 @@ class Builder {
   }
 
   /**
-   * Sets the proxy configuration to use for WebDriver clients created by this
-   * builder. Any calls to {@link #withCapabilities} after this function will
+   * Sets the proxy configuration for the target browser.
+   * Any calls to {@link #withCapabilities} after this function will
    * overwrite these settings.
+   *
    * @param {!capabilities.ProxyConfig} config The configuration to use.
    * @return {!Builder} A self reference.
    */
