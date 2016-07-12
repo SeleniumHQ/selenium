@@ -20,7 +20,10 @@ package org.openqa.selenium.support.pagefactory;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
@@ -148,6 +151,11 @@ public class ByChainedTest {
 
     ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
     assertThat(by.findElement(driver), equalTo(elem3));
+
+    verify(elem2, never()).findElements(any(By.class));
+    verify(elem3, never()).findElements(any(By.class));
+    verify(elem4, never()).findElements(any(By.class));
+    verify(elem5, never()).findElements(any(By.class));
   }
 
   @Test
@@ -269,6 +277,31 @@ public class ByChainedTest {
 
     ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
     assertThat(by.findElements(driver), equalTo(elems5));
+  }
+
+  @Test
+  public void findElementTwoByEmptyChildren() {
+    final AllDriver driver = mock(AllDriver.class);
+    final WebElement elem1 = mock(WebElement.class, "webElement1");
+    final WebElement elem2 = mock(AllElement.class, "webElement2");
+
+    final List<WebElement> elems = new ArrayList<>();
+    final List<WebElement> elems12 = new ArrayList<>();
+    elems12.add(elem1);
+    elems12.add(elem2);
+
+    when(driver.findElementsByName("cheese")).thenReturn(elems12);
+    when(elem1.findElements(By.name("photo"))).thenReturn(elems);
+    when(elem2.findElements(By.name("photo"))).thenReturn(elems);
+
+    ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
+    try {
+      by.findElement(driver);
+      fail("should throw: the second by in the chain is not returning any elements");
+    } catch (NoSuchElementException e) {
+      // Expected
+      assertThat(e.getMessage(), containsString("no elements found by the locator #2"));
+    }
   }
 
   @Test
