@@ -54,7 +54,7 @@ public class ByChained extends By implements Serializable {
                                        + "no Bys were specified in this ByChained");
     }
     if (bys.length == 1) {
-      return context.findElement(bys[0]);
+      return bys[0].findElement(context);
     }
 
     int maxDepthReached = 0;

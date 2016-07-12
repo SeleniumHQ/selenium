@@ -71,13 +71,8 @@ public class ByChainedTest {
   public void findElementOneBy() {
     final AllDriver driver = mock(AllDriver.class);
     final WebElement elem1 = mock(WebElement.class, "webElement1");
-    final WebElement elem2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> elems12 = new ArrayList<>();
-    elems12.add(elem1);
-    elems12.add(elem2);
 
-    when(driver.findElementsByName("cheese")).thenReturn(elems12);
-    when(driver.findElement(By.name("cheese"))).thenReturn(elem1);
+    when(By.name("cheese").findElement(driver)).thenReturn(elem1);
 
     ByChained by = new ByChained(By.name("cheese"));
     assertThat(by.findElement(driver), equalTo(elem1));
@@ -101,10 +96,8 @@ public class ByChainedTest {
   @Test
   public void findElementOneByEmpty() {
     final AllDriver driver = mock(AllDriver.class);
-    final List<WebElement> elems = new ArrayList<>();
 
-    when(driver.findElementsByName("cheese")).thenReturn(elems);
-    when(driver.findElement(By.name("cheese"))).thenThrow(new NoSuchElementException("simulated"));
+    when(By.name("cheese").findElement(driver)).thenThrow(new NoSuchElementException("simulated"));
 
     ByChained by = new ByChained(By.name("cheese"));
     try {
