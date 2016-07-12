@@ -49,10 +49,37 @@ public class ByChained extends By implements Serializable {
 
   @Override
   public WebElement findElement(SearchContext context) {
-    List<WebElement> elements = findElements(context);
-    if (elements.isEmpty())
-      throw new NoSuchElementException("Cannot locate an element using " + toString());
-    return elements.get(0);
+    if (bys.length == 0) {
+      throw new NoSuchElementException("Cannot locate an element: "
+                                       + "no Bys were specified in this ByChained");
+    }
+    if (bys.length == 1) {
+      return context.findElement(bys[0]);
+    }
+
+    List<WebElement> elements = bys[0].findElements(context);
+    for (WebElement element : elements) {
+      WebElement leftMostLeaf = findLeftMostLeaf(element, 1);
+      if (leftMostLeaf != null) {
+        return leftMostLeaf;
+      }
+    }
+    throw new NoSuchElementException("Cannot locate an element using " + toString());
+  }
+
+  private WebElement findLeftMostLeaf(WebElement root, int i) {
+    if (i == bys.length) { // reached max depth: found!
+      return root;
+    }
+
+    List<WebElement> children = root.findElements(bys[i]); // find elements at depth i
+    for (WebElement child : children) {
+      WebElement leftMostLeaf = findLeftMostLeaf(child, i + 1);
+      if (leftMostLeaf != null) {
+        return leftMostLeaf;
+      }
+    }
+    return null; // wrong path: could not reach max depth
   }
 
   @Override
