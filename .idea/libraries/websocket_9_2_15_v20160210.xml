@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="websocket-9.2.15.v20160210">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/third_party/java/websocket/websocket-api-9.2.15.v20160210.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/websocket/websocket-client-9.2.15.v20160210.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/websocket/websocket-common-9.2.15.v20160210.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/third_party/java/websocket/websocket-client-9.2.15.v20160210-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/websocket/websocket-common-9.2.15.v20160210-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/websocket/websocket-api-9.2.15.v20160210-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

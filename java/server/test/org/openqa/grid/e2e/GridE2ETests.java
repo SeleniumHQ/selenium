@@ -27,6 +27,7 @@ import org.junit.runners.Suite;
 import org.openqa.grid.e2e.misc.ConfigInheritanceTest;
 import org.openqa.grid.e2e.misc.Grid1HeartbeatTest;
 import org.openqa.grid.e2e.misc.GridSerializeExceptionTest;
+import org.openqa.grid.e2e.misc.GridViaCommandLineTest;
 import org.openqa.grid.e2e.misc.HubRestart;
 import org.openqa.grid.e2e.misc.HubRestartNeg;
 import org.openqa.grid.e2e.misc.WebDriverPriorityDemo;
@@ -58,6 +59,7 @@ import org.openqa.grid.e2e.utils.ExtraServletUtilTest;
     NodeTimeOutTest.class,
     SmokeTest.class, // slow
     ExtraServletUtilTest.class,
+    GridViaCommandLineTest.class,
 })
 public class GridE2ETests {
 }

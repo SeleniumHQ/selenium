@@ -230,6 +230,9 @@ public class GridLauncherV3 {
             configuration = new GridNodeConfiguration();
             new JCommander(configuration, args);
             helpRequested = configuration.help;
+            if (configuration.port == null) {
+              configuration.port = 5555;
+            }
           }
 
           public void launch() throws Exception {

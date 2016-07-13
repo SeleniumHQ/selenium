@@ -106,7 +106,7 @@ public class RegistrationRequest {
     res.addProperty("id", configuration.id);
     res.addProperty("name", name);
     res.addProperty("description", description);
-    res.add("configuration", new Gson().toJsonTree(configuration));
+    res.add("configuration", configuration.toJson());
     JsonArray caps = new JsonArray();
     for (DesiredCapabilities c : capabilities) {
       caps.add(new Gson().toJsonTree(c.asMap()));
@@ -137,9 +137,7 @@ public class RegistrationRequest {
     }
 
     JsonObject config = o.get("configuration").getAsJsonObject();
-    GridNodeConfiguration
-      configuration =
-      new Gson().fromJson(config, GridNodeConfiguration.class);
+    GridNodeConfiguration configuration = GridNodeConfiguration.loadFromJSON(config);
     request.setConfiguration(configuration);
 
     if (o.has("id")) {
@@ -184,6 +182,10 @@ public class RegistrationRequest {
 
     res.role = GridRole.get(configuration.role);
     res.addPlatformInfoToCapabilities();
+
+    if (configuration.browser.size() > 0) {
+      res.capabilities = configuration.browser;
+    }
 
     for (DesiredCapabilities cap : res.capabilities) {
       if (cap.getCapability(SELENIUM_PROTOCOL) == null) {

@@ -17,16 +17,32 @@
 
 package org.openqa.grid.internal.utils.configuration;
 
-import com.beust.jcommander.IStringConverter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+
 import com.beust.jcommander.Parameter;
 
+import org.openqa.grid.common.exception.GridConfigurationException;
+import org.openqa.grid.internal.utils.configuration.converters.BrowserDesiredCapabilityConverter;
+import org.openqa.grid.internal.utils.configuration.converters.NoOpParameterSplitter;
+import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GridNodeConfiguration extends GridConfiguration {
+
+  // remoteHost is a generated value based on host / port specified, or read from JSON.
+  String remoteHost;
 
   @Parameter(
     names = "-id",
@@ -34,13 +50,12 @@ public class GridNodeConfiguration extends GridConfiguration {
   )
   public String id;
 
-  // remoteHost is a generated value based on host / port specified, or read from JSON.
-  String remoteHost;
-
   @Parameter(
     names = "-browser",
     description = "<String> : comma separated Capability values. Example: -browser browserName=firefox,platform=linux -browser browserName=chrome,platform=linux",
-    converter = DesiredCapabilityConverter.class
+    listConverter = BrowserDesiredCapabilityConverter.class,
+    converter = BrowserDesiredCapabilityConverter.class,
+    splitter = NoOpParameterSplitter.class
   )
   public List<DesiredCapabilities> browser;
 
@@ -153,18 +168,6 @@ public class GridNodeConfiguration extends GridConfiguration {
     }
   }
 
-  private class DesiredCapabilityConverter implements IStringConverter<DesiredCapabilities> {
-    @Override
-    public DesiredCapabilities convert(String value) {
-      DesiredCapabilities capabilities = new DesiredCapabilities();
-      for (String cap : value.split(",")) {
-        String[] pieces = cap.split("=");
-        capabilities.setCapability(pieces[0], pieces[1]);
-      }
-      return capabilities;
-    }
-  }
-
   public void merge(GridNodeConfiguration other) {
     super.merge(other);
     if (other.browser != null) {
@@ -227,5 +230,45 @@ public class GridNodeConfiguration extends GridConfiguration {
     sb.append(toString(format, "remoteHost", remoteHost));
     sb.append(toString(format, "unregisterIfStillDownAfter", unregisterIfStillDownAfter));
     return sb.toString();
+  }
+
+  /**
+   * @param json JsonObject to load configuration from
+   */
+  public static GridNodeConfiguration loadFromJSON(JsonObject json) {
+
+    try {
+      GsonBuilder builder = new GsonBuilder();
+      GridNodeConfiguration.staticAddJsonTypeAdapter(builder);
+      return builder.create().fromJson(json, GridNodeConfiguration.class);
+    } catch (Throwable e) {
+      throw new GridConfigurationException("Error with the JSON of the config : " + e.getMessage(),
+                                           e);
+    }
+  }
+
+  @Override
+  protected void addJsonTypeAdapter(GsonBuilder builder) {
+    super.addJsonTypeAdapter(builder);
+    GridNodeConfiguration.staticAddJsonTypeAdapter(builder);
+  }
+  protected static void staticAddJsonTypeAdapter(GsonBuilder builder) {
+    builder.registerTypeAdapter(DesiredCapabilities.class, new DesiredCapabilitiesAdapter().nullSafe());
+  }
+
+  protected static class DesiredCapabilitiesAdapter<T> extends TypeAdapter<DesiredCapabilities> {
+
+    @Override
+    public void write(JsonWriter jsonWriter, DesiredCapabilities t) throws IOException {
+      jsonWriter.value(String.format("{\"capabilities\":%s}", new BeanToJsonConverter().convert(t.asMap())));
+    }
+
+    @Override
+    public DesiredCapabilities read(JsonReader jsonReader) throws IOException {
+      Gson gson = new GsonBuilder().create();
+      Map<String, Map<String, Object>> capability = new HashMap<>();
+      capability = gson.fromJson(jsonReader.nextString(), capability.getClass());
+      return new DesiredCapabilities(capability.get("capabilities"));
+    }
   }
 }

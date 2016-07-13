@@ -56,11 +56,10 @@ public class SmokeTest {
         GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
     remote.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
 
-    DesiredCapabilities firefoxOnSeleniumCapability = new DesiredCapabilities();
-    firefoxOnSeleniumCapability.setBrowserName("*firefox");
-    firefoxOnSeleniumCapability.setCapability(RegistrationRequest.SELENIUM_PROTOCOL,SeleniumProtocol.Selenium);
+    DesiredCapabilities chromeOnSeleniumCapability = DesiredCapabilities.chrome();
+    chromeOnSeleniumCapability.setCapability(RegistrationRequest.SELENIUM_PROTOCOL,SeleniumProtocol.WebDriver);
 
-    remote.addBrowser(firefoxOnSeleniumCapability, 1);
+    remote.addBrowser(chromeOnSeleniumCapability, 1);
 
     remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
     remote.startRemoteServer();
@@ -71,10 +70,10 @@ public class SmokeTest {
   }
 
   @Test
-  public void firefoxOnWebDriver() throws MalformedURLException {
+  public void chromeOnWebDriver() throws MalformedURLException {
     WebDriver driver = null;
     try {
-      DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
+      DesiredCapabilities caps = DesiredCapabilities.chrome();
       driver = new RemoteWebDriver(hub.getWebDriverHubRequestURL(), caps);
       driver.get(hub.getConsoleURL().toString());
       assertEquals(driver.getTitle(), "Grid Console");
