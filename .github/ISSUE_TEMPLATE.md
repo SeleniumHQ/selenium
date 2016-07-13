@@ -6,8 +6,6 @@ Selenium Version:
 Browser:  
 <!-- Internet Explorer?  Firefox? 
 
-Firefox 47? Did you search for issues first? You're likely logging a duplicate bug of #2110
-
 If the issue is with Google Chrome consider logging an issue with chromedriver instead:
 https://sites.google.com/a/chromium.org/chromedriver/help
 
@@ -30,4 +28,7 @@ Browser Version:
 ## Actual Behavior -
 
 ## Steps to reproduce -
-<!-- Please be sure to include an SSCCE (Short, Self Contained, Correct [compilable] example) http://sscce.org/ -->
+<!-- 
+Please be sure to include an SSCCE (Short, Self Contained, Correct [compilable] example) http://sscce.org/ 
+If you can't provide a link to the page, consider creating a reproducible page on https://jsfiddle.net/
+-->
