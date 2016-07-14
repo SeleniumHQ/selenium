@@ -179,7 +179,8 @@ class WebDriver(object):
         self.capabilities = response['value']
 
         # Quick check to see if we have a W3C Compliant browser
-        self.w3c = "specificationLevel" in self.capabilities
+        if response.get('status') is None:
+            self.w3c = True
 
     def _wrap_value(self, value):
         if isinstance(value, dict):
