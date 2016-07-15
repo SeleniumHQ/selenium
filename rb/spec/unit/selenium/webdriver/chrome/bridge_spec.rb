@@ -64,11 +64,11 @@ module Selenium
           expect(caps['chrome.verbose']).to be true
         end
 
-        it 'sets the chrome.detach capability' do
-          Bridge.new(http_client: http) # true by default
+        it 'does not set the chrome.detach capability by default' do
+          Bridge.new(http_client: http)
 
-          expect(caps['chromeOptions']['detach']).to be true
-          expect(caps['chrome.detach']).to be true
+          expect(caps['chromeOptions']['detach']).to be nil
+          expect(caps['chrome.detach']).to be nil
         end
 
         it 'sets the prefs capability' do
@@ -79,10 +79,10 @@ module Selenium
         end
 
         it 'lets the user override chrome.detach' do
-          Bridge.new(http_client: http, detach: false)
+          Bridge.new(http_client: http, detach: true)
 
-          expect(caps['chromeOptions']['detach']).to be false
-          expect(caps['chrome.detach']).to be false
+          expect(caps['chromeOptions']['detach']).to be true
+          expect(caps['chrome.detach']).to be true
         end
 
         it 'lets the user override chrome.noWebsiteTestingDefaults' do

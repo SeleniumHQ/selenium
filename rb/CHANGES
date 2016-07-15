@@ -8,6 +8,9 @@ Ruby:
     service class (issue 1797)
   * Option `:timeout` was removed from IE server (issue 1797)
 
+Chrome:
+  * Remove override of default chromedriver behavior for chrome.detach (issue 2418)
+
 Firefox:
   * Rename wires to geckodriver
   * Change default usage from FirefoxDriver to geckodriver
