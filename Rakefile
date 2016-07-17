@@ -110,7 +110,6 @@ task '//java/client/test/org/openqa/selenium/environment/webserver:webserver:ube
 # Java targets required for release. These should all have the correct maven_coords set.
 JAVA_RELEASE_TARGETS = [
   '//java/client/src/org/openqa/selenium:core',
-  '//java/client/src/org/openqa/selenium:selenium',
   '//java/client/src/org/openqa/selenium/support:support',
   '//java/client/src/org/openqa/selenium/chrome:chrome',
   '//java/client/src/org/openqa/selenium/edge:edge',
@@ -119,6 +118,7 @@ JAVA_RELEASE_TARGETS = [
   '//java/client/src/org/openqa/selenium/opera:opera',
   '//java/client/src/org/openqa/selenium/remote:augmenter',
   '//java/client/src/org/openqa/selenium/safari:safari',
+  '//java/client/src/org/openqa/selenium:client-combined',
   '//java/server/src/com/thoughtworks/selenium:leg-rc',
   '//java/server/src/org/openqa/selenium/remote/server:standalone-server-lib',
 ]

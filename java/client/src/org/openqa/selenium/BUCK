@@ -1,7 +1,6 @@
 include_defs('//SELENIUM_VERSION')
 
 java_library(name = 'selenium',
-  maven_coords = 'org.seleniumhq.selenium:selenium-java:' + SE_VERSION,
   exported_deps = [
     ':beta',
     ':core',
@@ -137,6 +136,7 @@ java_library(name = 'primitives',
 
 java_library(
   name = 'client-combined',
+  maven_coords = 'org.seleniumhq.selenium:selenium-java:' + SE_VERSION,
   exported_deps = [
     "//java/client/src/org/openqa/selenium/chrome:chrome",
     "//java/client/src/org/openqa/selenium/firefox:firefox",
