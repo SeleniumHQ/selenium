@@ -183,6 +183,8 @@ public class JsonHttpCommandCodec implements CommandCodec<HttpRequest> {
 
     defineCommand(GET_SCREEN_ORIENTATION, get("/session/:sessionId/orientation"));
     defineCommand(SET_SCREEN_ORIENTATION, post("/session/:sessionId/orientation"));
+    defineCommand(GET_SCREEN_ROTATION, get("/session/:sessionId/rotation"));
+    defineCommand(SET_SCREEN_ROTATION, post("/session/:sessionId/rotation"));
 
     // Interactions-related commands.
     defineCommand(MOUSE_DOWN, post("/session/:sessionId/buttondown"));
