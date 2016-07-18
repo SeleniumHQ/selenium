@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.environment.webserver.AppServer;
+import org.openqa.selenium.os.CommandLine;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,9 +78,13 @@ public class CoreSelfTest {
   public static Iterable<String> parameters() {
     ImmutableSortedSet.Builder<String> browsers = ImmutableSortedSet.naturalOrder();
 
-    //    if (CommandLine.find("wires") != null) {
-    browsers.add("*firefox");
-    //    }
+    if (CommandLine.find("chromedriver") != null) {
+      browsers.add("*googlechrome");
+    }
+
+    if (CommandLine.find("wires") != null) {
+//      browsers.add("*firefox");
+    }
 
     switch (Platform.getCurrent().family()) {
       case MAC:
