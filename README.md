@@ -49,7 +49,7 @@ available on your `$PATH`.
 To build Selenium, in the same directory as this file:
 
 ```sh
-./go
+./go build
 ```
 
 The order of building modules is determined by the build system.
@@ -148,7 +148,7 @@ For an express build of the binaries we release run the following from
 the directory containing the `Rakefile`:
 
 ```sh
-./go clean release
+./go release
 ```
 
 All build output is placed under the `build` directory. The output can
