@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableMap;
 import com.thoughtworks.selenium.SeleneseTestBase;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
+import com.thoughtworks.selenium.Wait;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -222,6 +223,9 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
     } catch (ReflectiveOperationException e) {
       for (Throwable cause = e; cause != null; cause = cause.getCause()) {
         if (cause instanceof SeleniumException) {
+          return NextStepDecorator.ERROR(cause);
+        }
+        if (cause instanceof Wait.WaitTimedOutException) {
           return NextStepDecorator.ERROR(cause);
         }
       }

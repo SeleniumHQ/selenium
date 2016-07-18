@@ -31,7 +31,7 @@ class NonReflectiveSteps {
   private static final Logger LOG = Logger.getLogger("Selenium Core Step");
 
   private static Supplier<ImmutableMap<String, CoreStepFactory>> STEPS =
-    Suppliers.memoize(() -> build());
+    Suppliers.memoize(NonReflectiveSteps::build);
 
   public ImmutableMap<String, CoreStepFactory> get() {
     return STEPS.get();
@@ -42,9 +42,13 @@ class NonReflectiveSteps {
 
     CoreStepFactory nextCommandFails = (locator, value) ->
       (selenium, state) -> new NextCommandFails();
-
     steps.put("assertErrorOnNext", nextCommandFails);
     steps.put("assertFailureOnNext", nextCommandFails);
+
+    CoreStepFactory verifyNextCommandFails = (locator, value) ->
+      (selenium, state) -> new VerifyNextCommandFails();
+    steps.put("verifyErrorOnNext", verifyNextCommandFails);
+    steps.put("verifyFailureOnNext", verifyNextCommandFails);
 
     steps.put("echo", ((locator, value) -> (selenium, state) -> {
       LOG.info(locator);
@@ -82,6 +86,25 @@ class NonReflectiveSteps {
       // This is kind of fragile. Oh well.
       if (actualResult.equals(NextStepDecorator.IDENTITY)) {
         return NextStepDecorator.ASSERTION_FAILED;
+      }
+      return NextStepDecorator.IDENTITY;
+    }
+
+    @Override
+    public boolean isOkayToContinueTest() {
+      return true;
+    }
+  }
+
+  private static class VerifyNextCommandFails extends NextStepDecorator {
+
+    @Override
+    public NextStepDecorator evaluate(CoreStep nextStep, Selenium selenium, TestState state) {
+      NextStepDecorator actualResult = nextStep.execute(selenium, state);
+
+      // This is kind of fragile. Oh well.
+      if (actualResult.equals(NextStepDecorator.IDENTITY)) {
+        return NextStepDecorator.VERIFICATION_FAILED;
       }
       return NextStepDecorator.IDENTITY;
     }
