@@ -114,7 +114,7 @@ from https://github.com/facebook/watchman
 
 ## Requirements
 
-* [Java 7 JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+* [Java 8 JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 * `java` and `jar` on the PATH
 
 Although the build system is based on rake it's **strongly advised**
@@ -122,8 +122,8 @@ to rely on the version of JRuby in `third_party/` that is invoked by
 `go`.  The only developer type who would want to deviate from this is
 the “build maintainer” who's experimenting with a JRuby upgrade.
 
-Note that all Selenium Java artefacts are **built with Java 7
-(mandatory)**.  Those _will work with any Java >= 7_.
+Note that all Selenium Java artefacts are **built with Java 8
+(mandatory)**.  Those _will work with any Java >= 8_.
 
 ### Optional Requirements
 
