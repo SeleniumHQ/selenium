@@ -59,6 +59,8 @@ public class Results {
       } else {
         commandFailures++;
       }
+
+      log.append(stepResult.getStepLog()).append("\n");
     }
 
     if (passed) {

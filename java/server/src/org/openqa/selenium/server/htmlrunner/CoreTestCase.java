@@ -149,5 +149,9 @@ public class CoreTestCase {
     public boolean isFailure() {
       return !isSuccessful() && !isError();
     }
+
+    public String getStepLog() {
+      return step.toString();
+    }
   }
 }
