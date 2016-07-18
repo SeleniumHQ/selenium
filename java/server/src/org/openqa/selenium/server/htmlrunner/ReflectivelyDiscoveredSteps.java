@@ -68,7 +68,7 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
         continue;
       }
 
-      CoreStepFactory factory = ((locator, value) -> (selenium) ->
+      CoreStepFactory factory = ((locator, value) -> (selenium, state) ->
         invokeMethod(method, selenium, buildArgs(method, locator, value)));
 
       factories.put(method.getName(), factory);
@@ -77,20 +77,24 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
       // getFoo, assertFoo, verifyFoo, assertNotFoo, verifyNotFoo
       // storeFoo, waitForFoo, and waitForNotFoo.
       final String shortName;
+      boolean isAccessor;
       if (method.getName().startsWith("get")) {
         shortName = method.getName().substring("get".length());
+        isAccessor = true;
       } else if (method.getName().startsWith("is")) {
         shortName = method.getName().substring("is".length());
+        isAccessor = true;
       } else {
         shortName = null;
+        isAccessor = false;
       }
 
       if (shortName != null && method.getParameterCount() < 2) {
         String negatedName = negateName(shortName);
 
-        factories.put("assert" + shortName, ((locator, value) -> (selenium) -> {
+        factories.put("assert" + shortName, ((locator, value) -> (selenium, state) -> {
           Object seen = invokeMethod(method, selenium, buildArgs(method, locator, value));
-          String expected = getExpectedValue(method, locator, value);
+          String expected = getExpectedValue(method, state.expand(locator), state.expand(value));
 
           try {
             SeleneseTestBase.assertEquals(expected, seen);
@@ -100,7 +104,9 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
           }
         }));
 
-        factories.put("assert" + negatedName, ((locator, value) -> (selenium) -> {
+        factories.put("assert" + negatedName, ((loc, val) -> (selenium, state) -> {
+          String locator = state.expand(loc);
+          String value = state.expand(val);
           Object seen = invokeMethod(method, selenium, buildArgs(method, locator, value));
           String expected = getExpectedValue(method, locator, value);
 
@@ -112,7 +118,9 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
           }
         }));
 
-        factories.put("verify" + shortName, ((locator, value) -> (selenium) -> {
+        factories.put("verify" + shortName, ((loc, val) -> (selenium, state) -> {
+          String locator = state.expand(loc);
+          String value = state.expand(val);
           Object seen = invokeMethod(method, selenium, buildArgs(method, locator, value));
           String expected = getExpectedValue(method, locator, value);
 
@@ -124,7 +132,9 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
           }
         }));
 
-        factories.put("verify" + negatedName, ((locator, value) -> (selenium) -> {
+        factories.put("verify" + negatedName, ((loc, val) -> (selenium, state) -> {
+          String locator = state.expand(loc);
+          String value = state.expand(val);
           Object seen = invokeMethod(method, selenium, buildArgs(method, locator, value));
           String expected = getExpectedValue(method, locator, value);
 
@@ -137,14 +147,29 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
         }));
       }
 
+      if (isAccessor) {
+        factories.put(
+          "store" + shortName,
+          ((loc, val) -> (selenium, state) -> {
+            String locator = state.expand(loc);
+            String value = state.expand(val);
+            Object toStore = invokeMethod(method, selenium, buildArgs(method, locator, value));
+            state.store(locator, toStore);
+            return null;
+          }));
+      }
+
       factories.put(
         method.getName() + "AndWait",
-        ((locator, value) -> (selenium -> {
-          Object result = invokeMethod(method, selenium, buildArgs(method, locator, value));
+        ((locator, value) -> (selenium, state) -> {
+          invokeMethod(
+            method,
+            selenium,
+            buildArgs(method, state.expand(locator), state.expand(value)));
           // TODO: Hard coding this is obviously bogus
           selenium.waitForPageToLoad("30000");
           return NextStepDecorator.IDENTITY;
-        })));
+        }));
     }
 
     return factories.build();

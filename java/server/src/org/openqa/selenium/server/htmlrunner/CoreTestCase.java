@@ -55,11 +55,12 @@ public class CoreTestCase {
     }
 
     List<LoggableStep> steps = findCommands(driver);
+    TestState state = new TestState();
     List<StepResult> testResults = new ArrayList<>(steps.size());
     NextStepDecorator decorator = NextStepDecorator.IDENTITY;
     for (LoggableStep step : steps) {
       LOG.info(step.toString());
-      decorator = Preconditions.checkNotNull(decorator.evaluate(step, selenium), step);
+      decorator = Preconditions.checkNotNull(decorator.evaluate(step, selenium, state), step);
       testResults.add(new StepResult(step, null));
       if (!decorator.isOkayToContinueTest()) {
         break;
@@ -113,8 +114,8 @@ public class CoreTestCase {
     }
 
     @Override
-    public NextStepDecorator execute(Selenium selenium) {
-      return actualStep.execute(selenium);
+    public NextStepDecorator execute(Selenium selenium, TestState state) {
+      return actualStep.execute(selenium, state);
     }
 
     @Override

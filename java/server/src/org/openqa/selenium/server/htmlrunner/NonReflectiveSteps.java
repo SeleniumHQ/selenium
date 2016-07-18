@@ -40,36 +40,44 @@ class NonReflectiveSteps {
   private static ImmutableMap<String, CoreStepFactory> build() {
     ImmutableMap.Builder<String, CoreStepFactory> steps = ImmutableMap.builder();
 
-    CoreStepFactory nextCommandFails = (locator, value) -> (selenium) -> new NextCommandFails();
+    CoreStepFactory nextCommandFails = (locator, value) ->
+      (selenium, state) -> new NextCommandFails();
+
     steps.put("assertErrorOnNext", nextCommandFails);
     steps.put("assertFailureOnNext", nextCommandFails);
 
-    steps.put("echo", ((locator, value) -> (selenium) -> {
+    steps.put("echo", ((locator, value) -> (selenium, state) -> {
       LOG.info(locator);
       return NextStepDecorator.IDENTITY;
     }));
 
-    steps.put("pause", ((locator, value) -> (selenium) -> {
+    steps.put("pause", ((locator, value) -> (selenium, state) -> {
       try {
-        long timeout = Long.parseLong(locator);
+        long timeout = Long.parseLong(state.expand(locator));
         Thread.sleep(timeout);
         return NextStepDecorator.IDENTITY;
       } catch (NumberFormatException e) {
         return NextStepDecorator.ERROR(
-          new SeleniumException("Unable to parse timeout: " + locator));
+          new SeleniumException("Unable to parse timeout: " + state.expand(locator)));
       } catch (InterruptedException e) {
         System.exit(255);
         throw new CoreRunnerError("We never get this far");
       }
     }));
+
+    steps.put("store", (((locator, value) -> ((selenium, state) -> {
+      state.store(state.expand(locator), state.expand(value));
+      return null;
+    }))));
+
     return steps.build();
   }
 
   private static class NextCommandFails extends NextStepDecorator {
 
     @Override
-    public NextStepDecorator evaluate(CoreStep nextStep, Selenium selenium) {
-      NextStepDecorator actualResult = nextStep.execute(selenium);
+    public NextStepDecorator evaluate(CoreStep nextStep, Selenium selenium, TestState state) {
+      NextStepDecorator actualResult = nextStep.execute(selenium, state);
 
       // This is kind of fragile. Oh well.
       if (actualResult.equals(NextStepDecorator.IDENTITY)) {

@@ -48,8 +48,8 @@ abstract class NextStepDecorator {
 
   public abstract  boolean isOkayToContinueTest();
 
-  public NextStepDecorator evaluate(CoreStep nextStep, Selenium selenium) {
-    return nextStep.execute(selenium);
+  public NextStepDecorator evaluate(CoreStep nextStep, Selenium selenium, TestState state) {
+    return nextStep.execute(selenium, state);
   }
 
   public static NextStepDecorator ERROR(Throwable cause) {
