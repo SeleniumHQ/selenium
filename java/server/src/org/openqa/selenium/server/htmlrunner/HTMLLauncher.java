@@ -22,7 +22,10 @@ import static org.openqa.selenium.firefox.FirefoxDriver.MARIONETTE;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -43,12 +46,14 @@ import org.seleniumhq.jetty9.util.resource.Resource;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -146,9 +151,21 @@ public class HTMLLauncher implements HTMLResultsListener {
       driver = createDriver(browser);
       URL suiteUrl = determineSuiteUrl(browserURL, suiteURL);
 
+      driver.get(suiteUrl.toString());
       Selenium selenium = new WebDriverBackedSelenium(driver, browserURL);
-      Results results = new Results();
-      new CoreTest(suiteUrl.toString()).run(results, driver, selenium);
+      List<WebElement> allTables = driver.findElements(By.id("suiteTable"));
+      if (allTables.isEmpty()) {
+        throw new RuntimeException("Unable to find suite table: " + driver.getPageSource());
+      }
+      String rawSuite =
+        (String) ((JavascriptExecutor) driver).executeScript("return arguments[0].outerHTML", allTables.get(0));
+      Results results = new Results(rawSuite);
+      new CoreTestSuite(suiteUrl.toString()).run(results, driver, selenium);
+
+      HTMLTestResults htmlResults = results.toSuiteResult();
+      try (Writer writer = Files.newBufferedWriter(outputFile.toPath())) {
+        htmlResults.write(writer);
+      }
 
       return results.isSuccessful() ? "PASSED" : "FAILED";
     } finally {

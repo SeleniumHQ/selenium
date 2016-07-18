@@ -22,7 +22,7 @@ import com.thoughtworks.selenium.Selenium;
 
 abstract class NextStepDecorator {
 
-  static NextStepDecorator IDENTITY = new NextStepDecorator() {
+  static NextStepDecorator IDENTITY = new NextStepDecorator(null) {
 
     @Override
     public boolean isOkayToContinueTest() {
@@ -30,7 +30,7 @@ abstract class NextStepDecorator {
     }
   };
 
-  static NextStepDecorator ASSERTION_FAILED = new NextStepDecorator() {
+  static NextStepDecorator ASSERTION_FAILED = new NextStepDecorator(null) {
 
     @Override
     public boolean isOkayToContinueTest() {
@@ -38,7 +38,7 @@ abstract class NextStepDecorator {
     }
   };
 
-  static NextStepDecorator VERIFICATION_FAILED = new NextStepDecorator() {
+  static NextStepDecorator VERIFICATION_FAILED = new NextStepDecorator(null) {
 
     @Override
     public boolean isOkayToContinueTest() {
@@ -46,14 +46,28 @@ abstract class NextStepDecorator {
     }
   };
 
-  public abstract  boolean isOkayToContinueTest();
+  private final Throwable cause;
+
+  public NextStepDecorator() {
+    this(null);
+  }
+
+  public NextStepDecorator(Throwable cause) {
+    this.cause = cause;
+  }
+
+  public abstract boolean isOkayToContinueTest();
 
   public NextStepDecorator evaluate(CoreStep nextStep, Selenium selenium, TestState state) {
     return nextStep.execute(selenium, state);
   }
 
+  public Throwable getCause() {
+    return cause;
+  }
+
   public static NextStepDecorator ERROR(Throwable cause) {
-    return new NextStepDecorator() {
+    return new NextStepDecorator(cause) {
       @Override
       public boolean isOkayToContinueTest() {
         return false;

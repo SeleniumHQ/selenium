@@ -54,18 +54,23 @@ public class CoreTestCase {
       driver.get(url);
     }
 
+    String rawSource = driver.getPageSource();
     List<LoggableStep> steps = findCommands(driver);
     TestState state = new TestState();
-    List<StepResult> testResults = new ArrayList<>(steps.size());
+    List<StepResult> stepResults = new ArrayList<>(steps.size());
     NextStepDecorator decorator = NextStepDecorator.IDENTITY;
     for (LoggableStep step : steps) {
       LOG.info(step.toString());
       decorator = Preconditions.checkNotNull(decorator.evaluate(step, selenium, state), step);
-      testResults.add(new StepResult(step, null));
+      stepResults.add(new StepResult(step, decorator.getCause()));
       if (!decorator.isOkayToContinueTest()) {
         break;
+      } else {
+        stepResults.add(new StepResult(step, null));
       }
     }
+
+    results.addTest(rawSource, stepResults);
   }
 
   private List<LoggableStep> findCommands(WebDriver driver) {
@@ -124,7 +129,7 @@ public class CoreTestCase {
     }
   }
 
-  private static class StepResult {
+  static class StepResult {
     private final LoggableStep step;
     private final Throwable cause;
 

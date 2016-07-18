@@ -62,7 +62,7 @@ public class CoreTestSuite {
       allTables.get(0));
 
     for (String testUrl : allTestUrls) {
-      new CoreTest(testUrl).run(results, driver, selenium);
+      new CoreTestCase(testUrl).run(results, driver, selenium);
     }
   }
 }

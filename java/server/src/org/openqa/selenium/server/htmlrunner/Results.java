@@ -17,15 +17,71 @@
 
 package org.openqa.selenium.server.htmlrunner;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
+import org.openqa.selenium.internal.BuildInfo;
+
+import java.util.LinkedList;
+import java.util.List;
+
 public class Results {
 
+  private final String suiteSource;
+  private final List results = new LinkedList<>();
+  private final List<String> allTables = new LinkedList<>();
+  private final StringBuilder log = new StringBuilder();
+  private final long start = System.currentTimeMillis();
+
   private boolean succeeded = true;
+  private long numberOfPasses;
+  private long commandPasses;
+  private long commandFailures;
+  private long commandErrors;
+
+  public Results(String suiteSource) {
+    this.suiteSource = suiteSource;
+  }
 
   public boolean isSuccessful() {
     return succeeded;
   }
 
-  public void addTestFailure() {
-    succeeded = false;
+  public void addTest(String rawSource, List<CoreTestCase.StepResult> stepResults) {
+    allTables.add(rawSource);
+    boolean passed = true;
+    for (CoreTestCase.StepResult stepResult : stepResults) {
+      passed &= stepResult.isSuccessful();
+      if (stepResult.isSuccessful()) {
+        commandPasses++;
+      } else if (stepResult.isError()) {
+        commandErrors++;
+      } else {
+        commandFailures++;
+      }
+    }
+
+    if (passed) {
+      numberOfPasses++;
+    }
+  }
+
+  public HTMLTestResults toSuiteResult() {
+    BuildInfo buildInfo = new BuildInfo();
+
+    return new HTMLTestResults(
+      buildInfo.getReleaseLabel(),
+      buildInfo.getBuildRevision(),
+      isSuccessful() ? "PASS" : "FAIL",
+      String.valueOf(SECONDS.convert(System.currentTimeMillis() - start, MILLISECONDS)),
+      String.valueOf(results.size()),
+      String.valueOf(numberOfPasses),
+      String.valueOf(results.size() - numberOfPasses),
+      String.valueOf(commandPasses),
+      String.valueOf(commandFailures),
+      String.valueOf(commandErrors),
+      suiteSource,
+      allTables,
+      log.toString());
   }
 }
