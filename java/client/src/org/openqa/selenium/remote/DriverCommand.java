@@ -134,6 +134,8 @@ public interface DriverCommand {
 
   String SET_SCREEN_ORIENTATION = "setScreenOrientation";
   String GET_SCREEN_ORIENTATION = "getScreenOrientation";
+  String SET_SCREEN_ROTATION = "setScreenRotation";
+  String GET_SCREEN_ROTATION = "getScreenRotation";
 
   String ACTION_CHAIN = "actionChain";
 
