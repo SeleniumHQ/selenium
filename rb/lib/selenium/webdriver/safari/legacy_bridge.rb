@@ -20,8 +20,13 @@
 module Selenium
   module WebDriver
     module Safari
-      class Bridge < Remote::Bridge
+      # @api private
+      class LegacyBridge < Remote::Bridge
         COMMAND_TIMEOUT = 60
+
+        def self.legacy?
+          !File.exist?(Safari.driver_path)
+        end
 
         def initialize(opts = {})
           command_timeout = Integer(opts[:timeout] || COMMAND_TIMEOUT)

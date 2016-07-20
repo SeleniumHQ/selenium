@@ -57,6 +57,15 @@ module Selenium
         def resource_path
           @resource_path ||= Pathname.new(File.expand_path('../safari/resources', __FILE__))
         end
+
+        def driver_path=(path)
+          Platform.assert_executable path
+          @driver_path = path
+        end
+
+        def driver_path
+          @driver_path || '/usr/bin/safaridriver'
+        end
       end
     end # Safari
   end # WebDriver
@@ -65,4 +74,6 @@ end # Selenium
 require 'selenium/webdriver/safari/browser'
 require 'selenium/webdriver/safari/server'
 require 'selenium/webdriver/safari/options'
-require 'selenium/webdriver/safari/bridge'
+require 'selenium/webdriver/safari/legacy_bridge'
+require 'selenium/webdriver/safari/apple_bridge'
+require 'selenium/webdriver/safari/service'

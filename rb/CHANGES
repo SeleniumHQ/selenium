@@ -15,6 +15,9 @@ Firefox:
   * Rename wires to geckodriver
   * Change default usage from FirefoxDriver to geckodriver
 
+Safari:
+  * Initial support for Apple's Safari Driver in Sierra (issue #2475)
+
 2.53.0 (2016-03-15)
 ===================
 
