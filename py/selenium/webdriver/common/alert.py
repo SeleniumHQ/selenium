@@ -19,6 +19,7 @@
 The Alert implementation.
 """
 
+from selenium.webdriver.common.utils import keys_to_typing
 from selenium.webdriver.remote.command import Command
 
 
@@ -88,7 +89,10 @@ class Alert(object):
 
 
         """
-        self.driver.execute(Command.SET_ALERT_VALUE, {'text': keysToSend})
+        if self.driver.w3c:
+            self.driver.execute(Command.SET_ALERT_VALUE, {'value': keys_to_typing(keysToSend)})
+        else:
+            self.driver.execute(Command.SET_ALERT_VALUE, {'text': keysToSend})
 
     def authenticate(self, username, password):
         """
