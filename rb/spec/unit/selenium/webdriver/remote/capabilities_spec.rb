@@ -23,12 +23,6 @@ module Selenium
   module WebDriver
     module Remote
       describe Capabilities do
-        it 'has default capabilities for Android' do
-          caps = Capabilities.android
-          expect(caps.browser_name).to eq('android')
-          expect(caps.platform).to eq(:android)
-        end
-
         it 'has default capabilities for Chrome' do
           caps = Capabilities.chrome
           expect(caps.browser_name).to eq('chrome')
@@ -52,16 +46,6 @@ module Selenium
         it 'has default capabilities for Internet Explorer' do
           caps = Capabilities.internet_explorer
           expect(caps.browser_name).to eq('internet explorer')
-        end
-
-        it 'has default capabilities for iPhone' do
-          caps = Capabilities.iphone
-          expect(caps.browser_name).to eq('iPhone')
-        end
-
-        it 'has default capabilities for iPad' do
-          caps = Capabilities.ipad
-          expect(caps.browser_name).to eq('iPad')
         end
 
         it 'should default to no proxy' do

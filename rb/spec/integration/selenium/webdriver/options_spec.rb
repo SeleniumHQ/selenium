@@ -96,7 +96,7 @@ module Selenium
           end
 
           # Marionette BUG - https://bugzilla.mozilla.org/show_bug.cgi?id=1256007
-          not_compliant_on browser: [:android, :iphone, :safari, :marionette] do
+          not_compliant_on browser: [:safari, :marionette] do
             it 'should use DateTime for expires' do
               driver.navigate.to url_for('xhtmlTest.html')
 

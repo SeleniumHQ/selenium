@@ -18,6 +18,9 @@ Firefox:
 Safari:
   * Initial support for Apple's Safari Driver in Sierra (issue #2475)
 
+Android and iPhone:
+  * Remove support for deprecated classes (Issue #2476)
+
 2.53.0 (2016-03-15)
 ===================
 

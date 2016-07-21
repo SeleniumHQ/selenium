@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     # Marionette - Waiting on implementation in httpd after spec section rewrite
     # Firefox BUG - https://github.com/SeleniumHQ/selenium/issues/1792
-    not_compliant_on browser: [:android, :iphone, :safari, :marionette, :firefox] do
+    not_compliant_on browser: [:safari, :marionette, :firefox] do
       describe Keyboard do
         it 'sends keys to the active element' do
           driver.navigate.to url_for('bodyTypingTest.html')

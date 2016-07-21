@@ -62,10 +62,6 @@ module Selenium
                      Chrome::Bridge.new(opts)
                    when :edge
                      Edge::Bridge.new(opts)
-                   when :android
-                     Android::Bridge.new(opts)
-                   when :iphone
-                     IPhone::Bridge.new(opts)
                    when :phantomjs
                      PhantomJS::Bridge.new(opts)
                    when :safari

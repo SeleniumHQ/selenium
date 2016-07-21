@@ -327,7 +327,7 @@ module Selenium
         end
 
         def location
-          obj = execute(:getLocation) || {} # android returns null
+          obj = execute(:getLocation) || {}
           Location.new obj['latitude'], obj['longitude'], obj['altitude']
         end
 

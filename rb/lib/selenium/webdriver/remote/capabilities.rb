@@ -59,16 +59,6 @@ module Selenium
         #
 
         class << self
-          def android(opts = {})
-            new({
-              browser_name: 'android',
-              platform: :android,
-              javascript_enabled: true,
-              rotatable: true,
-              takes_screenshot: true
-            }.merge(opts))
-          end
-
           def chrome(opts = {})
             new({
               browser_name: 'chrome',
@@ -117,22 +107,6 @@ module Selenium
             }.merge(opts))
           end
           alias_method :ie, :internet_explorer
-
-          def iphone(opts = {})
-            new({
-              browser_name: 'iPhone',
-              platform: :mac,
-              javascript_enabled: true
-            }.merge(opts))
-          end
-
-          def ipad(opts = {})
-            new({
-              browser_name: 'iPad',
-              platform: :mac,
-              javascript_enabled: true
-            }.merge(opts))
-          end
 
           def phantomjs(opts = {})
             new({

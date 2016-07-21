@@ -65,19 +65,17 @@ module Selenium
         driver.find_element(id: 'working').send_keys('foo', 'bar')
       end
 
-      not_compliant_on browser: [:android, :iphone] do
-        it 'should send key presses' do
-          driver.navigate.to url_for('javascriptPage.html')
-          key_reporter = driver.find_element(id: 'keyReporter')
+      it 'should send key presses' do
+        driver.navigate.to url_for('javascriptPage.html')
+        key_reporter = driver.find_element(id: 'keyReporter')
 
-          key_reporter.send_keys('Tet', :arrow_left, 's')
-          expect(key_reporter.attribute('value')).to eq('Test')
-        end
+        key_reporter.send_keys('Tet', :arrow_left, 's')
+        expect(key_reporter.attribute('value')).to eq('Test')
       end
 
       # PhantomJS on windows issue: https://github.com/ariya/phantomjs/issues/10993
       # Marionette BUG - https://bugzilla.mozilla.org/show_bug.cgi?id=1260233
-      not_compliant_on browser: [:android, :iphone, :safari, :edge, :marionette, :phantomjs] do
+      not_compliant_on browser: [:safari, :edge, :marionette, :phantomjs] do
         it 'should handle file uploads' do
           driver.navigate.to url_for('formPage.html')
 
@@ -109,23 +107,21 @@ module Selenium
         driver.find_element(id: 'withText').clear
       end
 
-      not_compliant_on browser: :android do
-        it 'should get and set selected' do
-          driver.navigate.to url_for('formPage.html')
+      it 'should get and set selected' do
+        driver.navigate.to url_for('formPage.html')
 
-          cheese = driver.find_element(id: 'cheese')
-          peas = driver.find_element(id: 'peas')
+        cheese = driver.find_element(id: 'cheese')
+        peas = driver.find_element(id: 'peas')
 
-          cheese.click
+        cheese.click
 
-          expect(cheese).to be_selected
-          expect(peas).not_to be_selected
+        expect(cheese).to be_selected
+        expect(peas).not_to be_selected
 
-          peas.click
+        peas.click
 
-          expect(peas).to be_selected
-          expect(cheese).not_to be_selected
-        end
+        expect(peas).to be_selected
+        expect(cheese).not_to be_selected
       end
 
       it 'should get enabled' do
@@ -151,14 +147,12 @@ module Selenium
         expect(loc.y).to be >= 1
       end
 
-      not_compliant_on browser: :iphone do
-        it 'should get location once scrolled into view' do
-          driver.navigate.to url_for('javascriptPage.html')
-          loc = driver.find_element(id: 'keyUp').location_once_scrolled_into_view
+      it 'should get location once scrolled into view' do
+        driver.navigate.to url_for('javascriptPage.html')
+        loc = driver.find_element(id: 'keyUp').location_once_scrolled_into_view
 
-          expect(loc.x).to be >= 1
-          expect(loc.y).to be >= 0 # can be 0 if scrolled to the top
-        end
+        expect(loc.x).to be >= 1
+        expect(loc.y).to be >= 0 # can be 0 if scrolled to the top
       end
 
       it 'should get size' do
@@ -185,17 +179,15 @@ module Selenium
         end
       end
 
-      not_compliant_on browser: :android do # android returns 'green'
-        it 'should get css property' do
-          driver.navigate.to url_for('javascriptPage.html')
-          element = driver.find_element(id: 'green-parent')
+      it 'should get css property' do
+        driver.navigate.to url_for('javascriptPage.html')
+        element = driver.find_element(id: 'green-parent')
 
-          style1 = element.css_value('background-color')
-          style2 = element.style('background-color') # backwards compatibility
+        style1 = element.css_value('background-color')
+        style2 = element.style('background-color') # backwards compatibility
 
-          acceptable = ['rgb(0, 128, 0)', '#008000', 'rgba(0,128,0,1)', 'rgba(0, 128, 0, 1)']
-          expect(acceptable).to include(style1, style2)
-        end
+        acceptable = ['rgb(0, 128, 0)', '#008000', 'rgba(0,128,0,1)', 'rgba(0, 128, 0, 1)']
+        expect(acceptable).to include(style1, style2)
       end
 
       it 'should know when two elements are equal' do
