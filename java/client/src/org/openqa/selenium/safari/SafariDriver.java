@@ -96,18 +96,26 @@ public class SafariDriver extends RemoteWebDriver {
 
   @Override
   protected void startClient() {
-    SafariDriverCommandExecutor executor = (SafariDriverCommandExecutor) this.getCommandExecutor();
-    try {
-      executor.start();
-    } catch (IOException e) {
-      throw new WebDriverException(e);
+    CommandExecutor commandExecutor = this.getCommandExecutor();
+    if (commandExecutor instanceof SafariDriverCommandExecutor) {
+      try {
+        ((SafariDriverCommandExecutor)commandExecutor).start();
+      } catch (IOException e) {
+        throw new WebDriverException(e);
+      }
+    } else {
+      super.startClient();
     }
   }
 
   @Override
   protected void stopClient() {
-    SafariDriverCommandExecutor executor = (SafariDriverCommandExecutor) this.getCommandExecutor();
-    executor.stop();
+    CommandExecutor commandExecutor = this.getCommandExecutor();
+    if (commandExecutor instanceof SafariDriverCommandExecutor) {
+      ((SafariDriverCommandExecutor)commandExecutor).stop();
+    } else {
+      super.stopClient();
+    }
   }
 
   @Override
