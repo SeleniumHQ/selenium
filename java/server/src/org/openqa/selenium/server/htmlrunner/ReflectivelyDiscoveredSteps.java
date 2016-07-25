@@ -156,7 +156,7 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
             String value = state.expand(val);
             Object toStore = invokeMethod(method, selenium, buildArgs(method, locator, value));
             state.store(locator, toStore);
-            return null;
+            return NextStepDecorator.IDENTITY;
           }));
       }
 

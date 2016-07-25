@@ -115,7 +115,7 @@ class NonReflectiveSteps {
 
     steps.put("store", (((locator, value) -> ((selenium, state) -> {
       state.store(state.expand(locator), state.expand(value));
-      return null;
+      return NextStepDecorator.IDENTITY;
     }))));
 
     return steps.build();
