@@ -85,7 +85,7 @@ public class CoreTestCase {
       "      continue;\n" +
       "    }\n" +
       "    var cells = tables[i].rows[rowCount].cells;\n" +
-      "    toReturn.push([cells[0].textContent, cells[1].textContent, cells[2].textContent]);\n" +
+      "    toReturn.push([cells[0].textContent.trim(), cells[1].textContent, cells[2].textContent]);\n" +
       "  }\n" +
       "}\n" +
       "return toReturn;");
