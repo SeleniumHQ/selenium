@@ -11,6 +11,7 @@ java_library(
   srcs = glob(['*.java']),
   deps = [
     '//java/client/src/com/thoughtworks/selenium:leg-rc',
+    '//java/client/src/com/thoughtworks/selenium/webdriven:webdriven',
     '//java/client/src/org/openqa/selenium:selenium',
     '//java/client/src/org/openqa/selenium/chrome:chrome',
     '//java/client/src/org/openqa/selenium/edge:edge',

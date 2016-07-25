@@ -79,6 +79,9 @@ class TestState {
       lastEnd = matcher.end();
     }
 
+    // Now append the last part of the input
+    toReturn.append(toExpand.substring(lastEnd));
+
     return toReturn.toString();
   }
 }

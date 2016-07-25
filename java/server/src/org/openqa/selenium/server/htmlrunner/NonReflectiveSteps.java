@@ -24,6 +24,12 @@ import com.google.common.collect.ImmutableMap;
 
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
+import com.thoughtworks.selenium.webdriven.ElementFinder;
+import com.thoughtworks.selenium.webdriven.JavascriptLibrary;
+import com.thoughtworks.selenium.webdriven.commands.SeleniumSelect;
+
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.WrapsDriver;
 
 import java.util.logging.Logger;
 
@@ -49,6 +55,44 @@ class NonReflectiveSteps {
       (selenium, state) -> new VerifyNextCommandFails();
     steps.put("verifyErrorOnNext", verifyNextCommandFails);
     steps.put("verifyFailureOnNext", verifyNextCommandFails);
+
+    class SelectedOption implements CoreStep {
+
+      private final String locator;
+      private final String value;
+      private final NextStepDecorator onFailure;
+
+      public SelectedOption(String locator, String value, NextStepDecorator onFailure) {
+        this.locator = locator;
+        this.value = value;
+        this.onFailure = onFailure;
+      }
+
+      @Override
+      public NextStepDecorator execute(Selenium selenium, TestState state) {
+        JavascriptLibrary library = new JavascriptLibrary();
+        ElementFinder finder = new ElementFinder(library);
+        SeleniumSelect select = new SeleniumSelect(
+          library,
+          finder,
+          ((WrapsDriver) selenium).getWrappedDriver(),
+          locator);
+
+        WebElement element = select.findOption(value);
+        if (element == null) {
+          return onFailure;
+        }
+        return NextStepDecorator.IDENTITY;
+      }
+    }
+
+    steps.put(
+      "assertSelected",
+      ((locator, value) -> new SelectedOption(locator, value, NextStepDecorator.ASSERTION_FAILED)));
+    steps.put(
+      "verifySelected",
+      ((locator, value) ->
+         new SelectedOption(locator, value, NextStepDecorator.VERIFICATION_FAILED)));
 
     steps.put("echo", ((locator, value) -> (selenium, state) -> {
       LOG.info(locator);
