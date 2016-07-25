@@ -68,6 +68,7 @@ public class CoreTestCase {
       } else {
         stepResults.add(new StepResult(step, null));
       }
+      state.sleepTight();
     }
 
     results.addTest(rawSource, stepResults);

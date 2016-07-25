@@ -20,14 +20,26 @@ package org.openqa.selenium.server.htmlrunner;
 import static java.util.regex.Pattern.MULTILINE;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Throwables;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class TestState {
   private static Map<String, Object> storedValues = new HashMap<>();
+  private long commandTimeOut = TimeUnit.SECONDS.toMillis(30);
+  private long speed = 0;
+
+  public void sleepTight() {
+    try {
+      Thread.sleep(speed);
+    } catch (InterruptedException e) {
+      throw new RuntimeException("Unlikely: " + Throwables.getStackTraceAsString(e));
+    }
+  }
 
   public void store(String key, Object value) {
     storedValues.put(key, value);
@@ -63,8 +75,6 @@ class TestState {
     }
     return stringResult;
 };
-
-
      */
     Pattern toMatch = Pattern.compile("\\$\\{(\\w+)\\}", MULTILINE);
     Matcher matcher = toMatch.matcher(toExpand);
