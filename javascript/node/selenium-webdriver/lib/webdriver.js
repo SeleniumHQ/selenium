@@ -308,7 +308,7 @@ class WebDriver {
 
   /**
    * Creates a new WebDriver session.
-   * 
+   *
    * By default, the requested session `capabilities` are merely "desired" and
    * the remote end will still create a new session even if it cannot satisfy
    * all of the requested capabilities. You can query which capabilities a
@@ -777,7 +777,7 @@ class WebDriver {
   }
 
   /**
-   * Schedules a command to retrieve they current window handle.
+   * Schedules a command to retrieve the current window handle.
    * @return {!promise.Promise<string>} A promise that will be
    *     resolved with the current window handle.
    */
