@@ -28,7 +28,6 @@ import java.util.List;
 public class Results {
 
   private final String suiteSource;
-  private final List results = new LinkedList<>();
   private final List<String> allTables = new LinkedList<>();
   private final StringBuilder log = new StringBuilder();
   private final long start = System.currentTimeMillis();
@@ -66,6 +65,7 @@ public class Results {
     if (passed) {
       numberOfPasses++;
     }
+    succeeded &= passed;
   }
 
   public HTMLTestResults toSuiteResult() {
@@ -75,10 +75,10 @@ public class Results {
       buildInfo.getReleaseLabel(),
       buildInfo.getBuildRevision(),
       isSuccessful() ? "PASS" : "FAIL",
-      String.valueOf(SECONDS.convert(System.currentTimeMillis() - start, MILLISECONDS)),
-      String.valueOf(results.size()),
+      String.valueOf(System.currentTimeMillis() - start),
+      String.valueOf(allTables.size()),
       String.valueOf(numberOfPasses),
-      String.valueOf(results.size() - numberOfPasses),
+      String.valueOf(allTables.size() - numberOfPasses),
       String.valueOf(commandPasses),
       String.valueOf(commandFailures),
       String.valueOf(commandErrors),

@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.server.htmlrunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.ImmutableSortedSet;
@@ -60,18 +61,22 @@ public class CoreSelfTest {
   @Test
   public void executeTests() throws IOException {
     String testBase = server.whereIs("/selenium-server/tests");
-    File outputFile = File.createTempFile("core-test-suite", browser.replace('*', '-') + ".txt");
+    File outputFile = File.createTempFile("core-test-suite", browser.replace('*', '-') + ".html");
     assertTrue(outputFile.delete());
 
-    new HTMLLauncher().runHTMLSuite(browser,
-                    // We need to do this because the path relativizing code in java.net.URL is
-                    // clearly having a bad day. "/selenium-server/tests" appended to "../tests/"
-                    // ends up as "/tests" rather than "/selenium-server/tests" as you'd expect.
-                    testBase + "/TestSuite.html",
-                    testBase + "/TestSuite.html",
-                    outputFile,
-                    TimeUnit.MINUTES.toMillis(5),
-                    true);
+    String result = new HTMLLauncher()
+      .runHTMLSuite(
+        browser,
+        // We need to do this because the path relativizing code in java.net.URL is
+        // clearly having a bad day. "/selenium-server/tests" appended to "../tests/"
+        // ends up as "/tests" rather than "/selenium-server/tests" as you'd expect.
+        testBase + "/TestSuite.html",
+        testBase + "/TestSuite.html",
+        outputFile,
+        TimeUnit.MINUTES.toMillis(5),
+        true);
+
+    assertEquals("PASSED", result);
   }
 
   @Parameterized.Parameters
@@ -96,7 +101,6 @@ public class CoreSelfTest {
         break;
     }
 
-    System.out.println("browsers.build() = " + browsers.build());
     return browsers.build();
   }
 }
