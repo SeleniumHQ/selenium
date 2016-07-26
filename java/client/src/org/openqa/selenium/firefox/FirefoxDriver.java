@@ -216,17 +216,27 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
 
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile,
       Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
-    super(createCommandExecutor(desiredCapabilities, binary, profile),
+    this(createCommandExecutor(desiredCapabilities, binary, profile),
+         desiredCapabilities, requiredCapabilities);
+    this.binary = binary;
+  }
+
+  public FirefoxDriver(GeckoDriverService driverService, Capabilities desiredCapabilities,
+      Capabilities requiredCapabilities) {
+    this(new DriverCommandExecutor(driverService), desiredCapabilities, requiredCapabilities);
+  }
+
+  private FirefoxDriver(CommandExecutor executor, Capabilities desiredCapabilities,
+      Capabilities requiredCapabilities) {
+    super(executor,
           dropCapabilities(desiredCapabilities, BINARY, PROFILE),
           dropCapabilities(requiredCapabilities, BINARY, PROFILE));
-    this.binary = binary;
   }
 
   private static final CommandExecutor createCommandExecutor(Capabilities desiredCapabilities,
                                                              FirefoxBinary binary,
                                                              FirefoxProfile profile) {
-    Object marionette = desiredCapabilities.getCapability(MARIONETTE);
-    if (marionette instanceof Boolean && !(Boolean) marionette) {
+    if (isLegacy(desiredCapabilities)) {
       return new LazyCommandExecutor(binary, profile);
     }
     GeckoDriverService.Builder builder = new GeckoDriverService.Builder();
@@ -273,9 +283,9 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     };
   }
 
-  private boolean isLegacy(Capabilities desiredCapabilities) {
+  private static boolean isLegacy(Capabilities desiredCapabilities) {
     Object marionette = desiredCapabilities.getCapability(MARIONETTE);
-    return marionette != null && marionette instanceof Boolean && ! (Boolean) marionette;
+    return marionette instanceof Boolean && ! (Boolean) marionette;
   }
 
   @Override
