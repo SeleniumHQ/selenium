@@ -21,6 +21,7 @@ package org.openqa.selenium.server.htmlrunner;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.primitives.Booleans;
 
 import com.thoughtworks.selenium.SeleneseTestBase;
 import com.thoughtworks.selenium.Selenium;
@@ -90,12 +91,12 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
         isAccessor = false;
       }
 
-      if (shortName != null && method.getParameterCount() < 2) {
+      if (shortName != null && isAccessor) {
         String negatedName = negateName(shortName);
 
         factories.put("assert" + shortName, ((locator, value) -> (selenium, state) -> {
           Object seen = invokeMethod(method, selenium, buildArgs(method, locator, value));
-          String expected = getExpectedValue(method, state.expand(locator), state.expand(value));
+          Object expected = getExpectedValue(method, state.expand(locator), state.expand(value));
 
           try {
             SeleneseTestBase.assertEquals(expected, seen);
@@ -109,7 +110,7 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
           String locator = state.expand(loc);
           String value = state.expand(val);
           Object seen = invokeMethod(method, selenium, buildArgs(method, locator, value));
-          String expected = getExpectedValue(method, locator, value);
+          Object expected = getExpectedValue(method, locator, value);
 
           try {
             SeleneseTestBase.assertNotEquals(expected, seen);
@@ -123,7 +124,7 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
           String locator = state.expand(loc);
           String value = state.expand(val);
           Object seen = invokeMethod(method, selenium, buildArgs(method, locator, value));
-          String expected = getExpectedValue(method, locator, value);
+          Object expected = getExpectedValue(method, locator, value);
 
           try {
             SeleneseTestBase.assertEquals(expected, seen);
@@ -137,7 +138,7 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
           String locator = state.expand(loc);
           String value = state.expand(val);
           Object seen = invokeMethod(method, selenium, buildArgs(method, locator, value));
-          String expected = getExpectedValue(method, locator, value);
+          Object expected = getExpectedValue(method, locator, value);
 
           try {
             SeleneseTestBase.assertNotEquals(expected, seen);
@@ -233,7 +234,12 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
     return args;
   }
 
-  private static String getExpectedValue(Method method, String locator, String value) {
+  private static Object getExpectedValue(Method method, String locator, String value) {
+    Class<?> returnType = method.getReturnType();
+    if (returnType.equals(boolean.class) || returnType.equals(Boolean.class)) {
+      return true;
+    }
+
     switch (method.getParameterCount()) {
       case 0:
         return locator;
