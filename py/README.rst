@@ -7,7 +7,7 @@ Introduction
 
 Python language bindings for Selenium WebDriver.
 
-The `selenium` package is used automate web browser interaction from Python.
+The `selenium` package is used to automate web browser interaction from Python.
 
 +-----------+-----------------------------------------------------------------------------------+
 | **Home**: | http://www.seleniumhq.org                                                         |
