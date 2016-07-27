@@ -17,40 +17,37 @@
 
 package com.thoughtworks.selenium.webdriven.commands;
 
-import com.thoughtworks.selenium.SeleniumException;
-import com.thoughtworks.selenium.Wait;
+import com.thoughtworks.selenium.webdriven.ElementFinder;
+import com.thoughtworks.selenium.webdriven.JavascriptLibrary;
 import com.thoughtworks.selenium.webdriven.SeleneseCommand;
-import com.thoughtworks.selenium.webdriven.Windows;
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
 
-public class WaitForPopup extends SeleneseCommand<Void> {
-  private final Windows windows;
+public class SetCursorPosition extends SeleneseCommand<Void> {
 
-  public WaitForPopup(Windows windows) {
-    this.windows = windows;
+  private final JavascriptLibrary library;
+  private final ElementFinder finder;
+
+  public SetCursorPosition(JavascriptLibrary library, ElementFinder finder) {
+    this.library = library;
+    this.finder = finder;
   }
 
+
   @Override
-  protected Void handleSeleneseCommand(final WebDriver driver, final String windowID,
-      final String timeout) {
-    final long millis = toLong(timeout);
-    final String current = driver.getWindowHandle();
+  protected Void handleSeleneseCommand(WebDriver driver, String locator, String value) {
+    WebElement element = finder.findElement(driver, locator);
+    long position = toLong(value);
 
-    new Wait() {
-      @Override
-      public boolean until() {
-        try {
-          windows.selectPopUp(driver, windowID);
-          return !"about:blank".equals(driver.getCurrentUrl());
-        } catch (SeleniumException e) {
-          // Swallow
-        }
-        return false;
-      }
-    }.wait(String.format("Timed out waiting for %s. Waited %s", windowID, timeout), millis);
+    String setPosition = library.getSeleniumScript("getText.js");
 
-    driver.switchTo().window(current);
+    ((JavascriptExecutor) driver).executeScript(
+      "(" + setPosition + ")(arguments[0], arguments[1]);",
+      element,
+      position);
 
     return null;
   }

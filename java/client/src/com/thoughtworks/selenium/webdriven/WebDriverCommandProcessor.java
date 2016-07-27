@@ -239,6 +239,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("getConfirmation", new GetConfirmation(alertOverride));
     seleneseMethods.put("getCookie", new GetCookie());
     seleneseMethods.put("getCookieByName", new GetCookieByName());
+    seleneseMethods.put("getCursorPosition", new GetCursorPosition(elementFinder));
     seleneseMethods.put("getElementHeight", new GetElementHeight(elementFinder));
     seleneseMethods.put("getElementIndex", new GetElementIndex(elementFinder,
         javascriptLibrary));
@@ -319,6 +320,9 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("selectWindow", new SelectWindow(windows));
     seleneseMethods.put("setBrowserLogLevel", new NoOp(null));
     seleneseMethods.put("setContext", new NoOp(null));
+    seleneseMethods.put(
+      "setCursorPosition",
+      new SetCursorPosition(javascriptLibrary, elementFinder));
     seleneseMethods.put("setSpeed", new NoOp(null));
     seleneseMethods.put("setTimeout", new SetTimeout(timer));
     seleneseMethods.put("shiftKeyDown", new ShiftKeyDown(keyState));

@@ -23,11 +23,6 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
 public class AnswerOnNextPrompt extends SeleneseCommand<Void> {
-  private final boolean result;
-
-  public AnswerOnNextPrompt(boolean result) {
-    this.result = result;
-  }
 
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String locator, String value) {
@@ -37,11 +32,11 @@ public class AnswerOnNextPrompt extends SeleneseCommand<Void> {
         "var canUseJSON = false; " +
         "try { canUseJSON = !!JSON; } catch(ex) { /* probe failed */ } " +
         "if (canUseLocalStorage && canUseJSON) { " +
-        "  window.localStorage.setItem('__webdriverNextConfirm', JSON.stringify(arguments[0])); " +
+        "  window.localStorage.setItem('__webdriverNextPrompt', JSON.stringify(arguments[0])); " +
         "} else { " +
-        "  window.__webdriverNextConfirm = arguments[0];" +
-        "}"
-        , result);
+        "  window.__webdriverNextPrompt = arguments[0];" +
+        "}",
+        locator);
     return null;
   }
 }

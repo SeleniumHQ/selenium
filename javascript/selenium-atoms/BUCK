@@ -105,6 +105,13 @@ js_fragment(name = 'isVisible',
   visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:isVisible' ],
 )
 
+js_fragment(name = 'setCursorPosition',
+  module = 'core.text',
+  function = 'core.text.setCursorPosition',
+  deps = [':deps'],
+  visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:setCursorPosition' ],
+)
+
 js_fragment(name = 'type',
   module = 'core.events',
   function = 'core.events.setValue',
