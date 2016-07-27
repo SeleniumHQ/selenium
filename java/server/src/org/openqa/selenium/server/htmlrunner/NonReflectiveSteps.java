@@ -88,11 +88,16 @@ class NonReflectiveSteps {
 
     steps.put(
       "assertSelected",
-      ((locator, value) -> new SelectedOption(locator, value, NextStepDecorator.ASSERTION_FAILED)));
+      ((locator, value) -> new SelectedOption(
+        locator,
+        value,
+        NextStepDecorator.ASSERTION_FAILED(value + " not selected"))));
     steps.put(
       "verifySelected",
-      ((locator, value) ->
-         new SelectedOption(locator, value, NextStepDecorator.VERIFICATION_FAILED)));
+      ((locator, value) -> new SelectedOption(
+        locator,
+        value,
+        NextStepDecorator.VERIFICATION_FAILED(value + " not selected"))));
 
     steps.put("echo", ((locator, value) -> (selenium, state) -> {
       LOG.info(locator);
@@ -129,7 +134,7 @@ class NonReflectiveSteps {
 
       // This is kind of fragile. Oh well.
       if (actualResult.equals(NextStepDecorator.IDENTITY)) {
-        return NextStepDecorator.ASSERTION_FAILED;
+        return NextStepDecorator.ASSERTION_FAILED("Expected command to fail");
       }
       return NextStepDecorator.IDENTITY;
     }
@@ -148,7 +153,7 @@ class NonReflectiveSteps {
 
       // This is kind of fragile. Oh well.
       if (actualResult.equals(NextStepDecorator.IDENTITY)) {
-        return NextStepDecorator.VERIFICATION_FAILED;
+        return NextStepDecorator.VERIFICATION_FAILED("Expected command to fail");
       }
       return NextStepDecorator.IDENTITY;
     }

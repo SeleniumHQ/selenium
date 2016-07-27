@@ -18,6 +18,7 @@
 package org.openqa.selenium.server.htmlrunner;
 
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -54,8 +55,11 @@ public class CoreTestCase {
       driver.get(url);
     }
 
-    String rawSource = driver.getPageSource();
+    // Grabbing the steps modifies the underlying HTML...
     List<LoggableStep> steps = findCommands(driver);
+    // ... which we now grab so we can process it later.
+    String rawSource = getLoggableTests(driver);
+
     TestState state = new TestState();
     List<StepResult> stepResults = new ArrayList<>(steps.size());
     NextStepDecorator decorator = NextStepDecorator.IDENTITY;
@@ -65,13 +69,28 @@ public class CoreTestCase {
       stepResults.add(new StepResult(step, decorator.getCause()));
       if (!decorator.isOkayToContinueTest()) {
         break;
-      } else {
-        stepResults.add(new StepResult(step, null));
       }
       state.sleepTight();
     }
 
     results.addTest(rawSource, stepResults);
+  }
+
+  private String getLoggableTests(WebDriver driver) {
+    return (String) ((JavascriptExecutor) driver).executeScript(Joiner.on("\n").join(
+      "var resultHTML = document.body.innerHTML;",
+      "if (!resultHTML) { return ''; }",
+
+      "var trElement = document.createElement('tr');",
+      "var divElement = document.createElement('div');",
+      "divElement.innerHTML = resultHTML;",
+
+      "var cell = document.createElement('td');",
+      "cell.appendChild(divElement);",
+
+      "trElement.appendChild(cell);",
+
+      "return trElement.outerHTML;"));
   }
 
   private List<LoggableStep> findCommands(WebDriver driver) {
@@ -85,7 +104,9 @@ public class CoreTestCase {
       "      continue;\n" +
       "    }\n" +
       "    var cells = tables[i].rows[rowCount].cells;\n" +
-      "    toReturn.push([cells[0].textContent.trim(), cells[1].textContent, cells[2].textContent]);\n" +
+      "    toReturn.push([cells[0].textContent.trim(), cells[1].textContent.trim(), cells[2].textContent.trim()]);\n" +
+      // Now modify the row so we know we should add a result later
+      "    tables[i].rows[rowCount].className += 'insert-core-result';\n" +
       "  }\n" +
       "}\n" +
       "return toReturn;");
@@ -133,10 +154,26 @@ public class CoreTestCase {
   static class StepResult {
     private final LoggableStep step;
     private final Throwable cause;
+    private final String renderableClass;
 
     public StepResult(LoggableStep step, Throwable cause) {
       this.step = Preconditions.checkNotNull(step);
       this.cause = cause;
+
+      if (cause == null) {
+        // I think we can all agree this is shameful
+        if (step.command.startsWith("verify") || step.command.startsWith("assert")) {
+          this.renderableClass = "status_passed";
+        } else {
+          this.renderableClass = "status_done";
+        }
+      } else {
+        this.renderableClass = "status_failed";
+      }
+    }
+
+    public String getRenderableClass() {
+      return renderableClass;
     }
 
     public boolean isSuccessful() {

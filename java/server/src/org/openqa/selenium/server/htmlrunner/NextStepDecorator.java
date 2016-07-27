@@ -30,22 +30,6 @@ abstract class NextStepDecorator {
     }
   };
 
-  static NextStepDecorator ASSERTION_FAILED = new NextStepDecorator(null) {
-
-    @Override
-    public boolean isOkayToContinueTest() {
-      return false;
-    }
-  };
-
-  static NextStepDecorator VERIFICATION_FAILED = new NextStepDecorator(null) {
-
-    @Override
-    public boolean isOkayToContinueTest() {
-      return true;
-    }
-  };
-
   private final Throwable cause;
 
   public NextStepDecorator() {
@@ -74,4 +58,24 @@ abstract class NextStepDecorator {
       }
     };
   }
+
+  public static NextStepDecorator ASSERTION_FAILED(String message) {
+    return new NextStepDecorator(new AssertionError(message)) {
+      @Override
+      public boolean isOkayToContinueTest() {
+        return false;
+      }
+    };
+  }
+
+  public static NextStepDecorator VERIFICATION_FAILED(String message) {
+    return new NextStepDecorator(new AssertionError(message)) {
+      @Override
+      public boolean isOkayToContinueTest() {
+        return true;
+      }
+    };
+  }
+
+
 }

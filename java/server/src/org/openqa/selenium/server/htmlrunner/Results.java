@@ -17,13 +17,19 @@
 
 package org.openqa.selenium.server.htmlrunner;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 import org.openqa.selenium.internal.BuildInfo;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.html.HTML;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
 
 public class Results {
 
@@ -47,7 +53,6 @@ public class Results {
   }
 
   public void addTest(String rawSource, List<CoreTestCase.StepResult> stepResults) {
-    allTables.add(rawSource);
     boolean passed = true;
     for (CoreTestCase.StepResult stepResult : stepResults) {
       passed &= stepResult.isSuccessful();
@@ -66,6 +71,43 @@ public class Results {
       numberOfPasses++;
     }
     succeeded &= passed;
+
+    allTables.add(massage(rawSource, stepResults));
+  }
+
+  private String massage(
+    String rawSource,
+    List<CoreTestCase.StepResult> stepResults) {
+
+    Reader stringReader = new StringReader(rawSource);
+    HTMLEditorKit htmlKit = new HTMLEditorKit();
+    HTMLDocument doc = (HTMLDocument) htmlKit.createDefaultDocument();
+    HTMLEditorKit.Parser parser = doc.getParser();
+    doc.setAsynchronousLoadPriority(-1);
+    ElementCallback callback;
+    try {
+      final Iterator<CoreTestCase.StepResult> allResults = stepResults.iterator();
+      callback = new ElementCallback(allResults);
+      parser.parse(stringReader, callback, true);
+    } catch (IOException e) {
+      throw new RuntimeException("Unable to parse test table");
+    }
+
+    StringBuilder sb = new StringBuilder();
+    int previousPosition = rawSource.length();
+    for (int i = callback.tagPositions.size() - 1; i >= 0; i--) {
+      int pos = callback.tagPositions.get(i);
+      String toReplace = callback.originals.get(i);
+      String substitution = callback.substitutions.get(i);
+      String snippet = rawSource.substring(pos, previousPosition).replace('\\', '/');
+      String replaceSnippet = snippet.replaceFirst("\\Q" + toReplace + "\\E", substitution);
+      sb.insert(0, replaceSnippet);
+      previousPosition = pos;
+    }
+    String snippet = rawSource.substring(0, previousPosition);
+    sb.insert(0, snippet);
+
+    return sb.toString();
   }
 
   public HTMLTestResults toSuiteResult() {
@@ -85,5 +127,34 @@ public class Results {
       suiteSource,
       allTables,
       log.toString());
+  }
+
+  private static class ElementCallback extends HTMLEditorKit.ParserCallback {
+    private final List<Integer> tagPositions = new LinkedList<>();
+    private final List<String> originals = new LinkedList<>();
+    private final List<String> substitutions = new LinkedList<>();
+    private final Iterator<CoreTestCase.StepResult> allResults;
+
+    public ElementCallback(Iterator<CoreTestCase.StepResult> allResults) {
+      this.allResults = allResults;
+    }
+
+    @Override
+    public void handleStartTag(HTML.Tag tag, MutableAttributeSet attrs, int pos) {
+      if (allResults.hasNext() && HTML.Tag.TR.equals(tag)) {
+        Object rawAttr = attrs.getAttribute(HTML.Attribute.CLASS);
+        if (rawAttr != null) {
+          String classes = String.valueOf(rawAttr);
+          if (classes.contains("insert-core-result")) {
+            CoreTestCase.StepResult result = allResults.next();
+            originals.add(classes);
+            substitutions.add(classes.replace(
+              "insert-core-result",
+              result.getRenderableClass()));
+            tagPositions.add(pos);
+          }
+        }
+      }
+    }
   }
 }
