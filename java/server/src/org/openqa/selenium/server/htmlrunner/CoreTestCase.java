@@ -115,8 +115,8 @@ public class CoreTestCase {
     public LoggableStep(CoreStep toWrap, String command, String locator, String value) {
       this.actualStep = toWrap;
       this.command = command;
-      this.locator = locator;
-      this.value = value;
+      this.locator = locator.replace('\u00A0',' ');
+      this.value = value.replace('\u00A0',' ');
     }
 
     @Override
