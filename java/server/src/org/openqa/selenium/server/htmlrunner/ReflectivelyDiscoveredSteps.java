@@ -21,7 +21,6 @@ package org.openqa.selenium.server.htmlrunner;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.primitives.Booleans;
 
 import com.thoughtworks.selenium.SeleneseTestBase;
 import com.thoughtworks.selenium.Selenium;
@@ -41,7 +40,7 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
   private static final Logger LOG = Logger.getLogger("Selenium Core Step");
 
   private static Supplier<ImmutableMap<String, CoreStepFactory>> REFLECTIVE_STEPS =
-    Suppliers.memoize(() -> discover());
+    Suppliers.memoize(ReflectivelyDiscoveredSteps::discover);
 
   public ImmutableMap<String, CoreStepFactory> get() {
     return REFLECTIVE_STEPS.get();
@@ -91,7 +90,7 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
         isAccessor = false;
       }
 
-      if (shortName != null && isAccessor) {
+      if (shortName != null) {
         String negatedName = negateName(shortName);
 
         factories.put("assert" + shortName, ((locator, value) -> (selenium, state) -> {
