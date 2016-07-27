@@ -250,6 +250,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("getExpression", new GetExpression());
     seleneseMethods.put("getHtmlSource", new GetHtmlSource());
     seleneseMethods.put("getLocation", new GetLocation());
+    seleneseMethods.put("getMouseSpeed", new NoOp(10));
     seleneseMethods.put("getSelectedId", new FindFirstSelectedOptionProperty(javascriptLibrary,
         elementFinder, "id"));
     seleneseMethods.put("getSelectedIds", new FindSelectedOptionProperties(javascriptLibrary,
@@ -323,6 +324,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put(
       "setCursorPosition",
       new SetCursorPosition(javascriptLibrary, elementFinder));
+    seleneseMethods.put("setMouseSpeed", new NoOp(null));
     seleneseMethods.put("setSpeed", new NoOp(null));
     seleneseMethods.put("setTimeout", new SetTimeout(timer));
     seleneseMethods.put("shiftKeyDown", new ShiftKeyDown(keyState));
