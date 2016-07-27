@@ -161,7 +161,7 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
           }));
 
         factories.put(
-          "waitFor" + shortName.substring(0, 1).toUpperCase() + shortName.substring(1),
+          "waitFor" + shortName,
           (((locator, value) -> ((selenium, state) -> {
             new Wait() {
               @Override
@@ -174,7 +174,7 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
           }))));
 
         factories.put(
-          "waitForNot" + shortName.substring(0, 1).toUpperCase() + shortName.substring(1),
+          "waitFor" + negateName(shortName),
           (((locator, value) -> ((selenium, state) -> {
             try {
               new Wait() {
