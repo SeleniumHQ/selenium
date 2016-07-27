@@ -17,13 +17,14 @@
 
 package org.openqa.selenium;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
-import com.google.common.collect.ImmutableMap;
 
 /**
  * Defines an object which represents the three dimensional plane and how a device can be rotated about it.
  * Each of the axis is in positive degrees on the real number scale (0 <= deg <= 360).
- * 
+ *
  * Example Instantiation to rotate device to "Landscape Right":
  * DeviceRotation(0, 0, 90);
  */
@@ -43,11 +44,11 @@ public class DeviceRotation {
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		this.validateParameters(this.x, this.y, this.z);		
+		this.validateParameters(this.x, this.y, this.z);
 	}
-	
+
 	/**
-	 * Instantiate a DeviceRotation object based on a 
+	 * Instantiate a DeviceRotation object based on a
 	 * HashMap object where the keys are the axis x, y, and z respectively:
 	 * x : xVal
 	 * y : yVal
@@ -63,7 +64,7 @@ public class DeviceRotation {
 		this.z = map.get("z").intValue();
 		this.validateParameters(x, y, z);
 	}
-	
+
 	private void validateParameters(int x, int y, int z) {
 		if (x < 0 || y < 0 || z < 0) {
 			throw new IllegalArgumentException("DeviceRotation requires positive axis values: \nx = " + x + "\ny = " + y + "\nz = " + z);
@@ -71,7 +72,7 @@ public class DeviceRotation {
 			throw new IllegalArgumentException("DeviceRotation requires positive axis values under 360: \nx = " + x + "\ny = " + y + "\nz = " + z);
 		}
 	}
-	
+
 	/**
 	 * @return the x
 	 */
@@ -94,14 +95,18 @@ public class DeviceRotation {
 	}
 
 	/**
-	 * @return returns all axis mapped to an ImmutableMap
+	 * @return returns all axis mapped to a Map
 	 */
-	public ImmutableMap<String,Integer> parameters() {
-		return ImmutableMap.of("x", this.x, "y", this.y, "z", this.z);
+	public Map<String,Integer> parameters() {
+    HashMap<String, Integer> values = new HashMap<>();
+    values.put("x", this.x);
+    values.put("y", this.y);
+    values.put("z", this.z);
+    return Collections.unmodifiableMap(values);
 	}
-	
+
 	@Override
-	public boolean equals(Object o) 
+	public boolean equals(Object o)
 	{
 		if (!(o instanceof DeviceRotation)) {
 			return false;
@@ -109,7 +114,7 @@ public class DeviceRotation {
 		if (o == this) {
 			return true;
 		}
-		
+
 		DeviceRotation obj = (DeviceRotation)o;
 		if (obj.getX() != this.getX() || obj.getY() != this.getY() || obj.getZ() != this.getZ()) {
 			return false;
