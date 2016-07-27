@@ -205,6 +205,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("allowNativeXpath", new AllowNativeXPath());
     seleneseMethods.put("altKeyDown", new AltKeyDown(keyState));
     seleneseMethods.put("altKeyUp", new AltKeyUp(keyState));
+    seleneseMethods.put("answerOnNextPrompt", new AnswerOnNextPrompt());
     seleneseMethods.put("assignId", new AssignId(javascriptLibrary, elementFinder));
     seleneseMethods.put("attachFile", new AttachFile(elementFinder));
     seleneseMethods.put("captureScreenshotToString", new CaptureScreenshotToString());
@@ -281,6 +282,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("isEditable", new IsEditable(elementFinder));
     seleneseMethods.put("isElementPresent", new IsElementPresent(elementFinder));
     seleneseMethods.put("isOrdered", new IsOrdered(elementFinder, javascriptLibrary));
+    seleneseMethods.put("isPromptPresent", new IsPromptPresent(alertOverride));
     seleneseMethods.put("isSomethingSelected", new IsSomethingSelected(javascriptLibrary));
     seleneseMethods.put("isTextPresent", new IsTextPresent(javascriptLibrary));
     seleneseMethods.put("isVisible", new IsVisible(elementFinder));
