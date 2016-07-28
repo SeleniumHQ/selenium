@@ -204,7 +204,12 @@ rule /\/\/.*:zip/ => [ proc {|task_name| task_name[0..-5]} ] do |task|
       first_party.each do |jar|
         sh "cd #{working_dir}/uber && jar xf #{jar}"
       end
-      sh "cd #{working_dir}/uber && jar cMf ../#{target}-nodeps.jar *"
+
+      # TODO: Don't do this. It's sinful.
+      version = File.open('SELENIUM_VERSION', &:gets).chomp
+      version = eval(version)
+
+      sh "cd #{working_dir}/uber && jar cMf ../#{target}-#{version}-nodeps.jar *"
       # TODO: Get the sources of all deps too and build the -src.jar
       rm_rf "#{working_dir}/uber"
 

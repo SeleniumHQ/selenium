@@ -513,16 +513,20 @@ task :release => JAVA_RELEASE_TARGETS + [
  ] do |t|
   puts t.prerequisites.join(', ')
 
-  t.prerequisites.each do |p|
-    if JAVA_RELEASE_TARGETS.include?(p)
-      Buck::buck_cmd.call('publish', ['--dry-run', '--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', p])
-    end
-  end
+ t.prerequisites.each do |p|
+   if JAVA_RELEASE_TARGETS.include?(p)
+     Buck::buck_cmd.call('publish', ['--dry-run', '--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', p])
+   end
+ end
 
   mkdir_p "build/dist"
   cp Rake::Task['//java/server/src/org/openqa/grid/selenium:selenium'].out, "build/dist/selenium-server-standalone-#{version}.jar"
   cp Rake::Task['//java/server/src/org/openqa/grid/selenium:selenium:zip'].out, "build/dist/selenium-server-#{version}.zip"
+  `jar uf build/dist/selenium-server-#{version}.zip NOTICE LICENSE`
+  `cd java && jar uf ../build/dist/selenium-server-#{version}.zip CHANGELOG`
   cp Rake::Task['//java/client/src/org/openqa/selenium:client-combined:zip'].out, "build/dist/selenium-java-#{version}.zip"
+  `jar uf build/dist/selenium-java-#{version}.zip NOTICE LICENSE`
+  `cd java && jar uf ../build/dist/selenium-server-#{version}.zip CHANGELOG`
 end
 
 def read_user_pass_from_m2_settings
