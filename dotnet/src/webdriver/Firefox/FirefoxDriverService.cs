@@ -31,7 +31,7 @@ namespace OpenQA.Selenium.Firefox
     {
         private const string FirefoxDriverServiceFileName = "geckodriver.exe";
         private static readonly Uri FirefoxDriverDownloadUrl = new Uri("https://github.com/mozilla/geckodriver/releases");
-        private string browserBinaryPath = @"C:\Program Files (x86)\Nightly\firefox.exe";
+        private string browserBinaryPath = string.Empty;
         private int browserCommunicationPort = -1;
 
         /// <summary>

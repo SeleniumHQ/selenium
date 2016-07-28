@@ -98,15 +98,11 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         public static readonly bool AssumeUntrustedCertificateIssuer = true;
 
-        private FirefoxBinary binary;
-
-        private FirefoxProfile profile;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="FirefoxDriver"/> class.
         /// </summary>
         public FirefoxDriver()
-            : this(new FirefoxBinary(), null)
+            : this(new FirefoxOptions(null, null))
         {
         }
 
@@ -116,7 +112,7 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="profile">A <see cref="FirefoxProfile"/> object representing the profile settings
         /// to be used in starting Firefox.</param>
         public FirefoxDriver(FirefoxProfile profile)
-            : this(new FirefoxBinary(), profile)
+            : this(new FirefoxOptions(profile, null))
         {
         }
 
@@ -125,8 +121,9 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         /// <param name="capabilities">The <see cref="ICapabilities"/> object containing the desired
         /// capabilities of this FirefoxDriver.</param>
+        [Obsolete("FirefoxDriver should not be constructed with a raw ICapabilities or DesiredCapabilities object. Use FirefoxOptions instead. This constructor will be removed before the 3.0 release.")]
         public FirefoxDriver(ICapabilities capabilities)
-            : this(ExtractBinary(capabilities), ExtractProfile(capabilities), capabilities, RemoteWebDriver.DefaultCommandTimeout)
+            : this(CreateOptionsFromCapabilities(capabilities))
         {
         }
 
@@ -137,8 +134,9 @@ namespace OpenQA.Selenium.Firefox
         /// environmental settings used when running Firefox.</param>
         /// <param name="profile">A <see cref="FirefoxProfile"/> object representing the profile settings
         /// to be used in starting Firefox.</param>
+        [Obsolete("FirefoxDriver should not be constructed with a FirefoxBinary object. Use FirefoxOptions instead. This constructor will be removed before the 3.0 release.")]
         public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile)
-            : this(binary, profile, RemoteWebDriver.DefaultCommandTimeout)
+            : this(new FirefoxOptions(profile, binary))
         {
         }
 
@@ -150,8 +148,9 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="profile">A <see cref="FirefoxProfile"/> object representing the profile settings
         /// to be used in starting Firefox.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        [Obsolete("FirefoxDriver should not be constructed  with a FirefoxBinary object. Use FirefoxOptions instead. This constructor will be removed before the 3.0 release.")]
         public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, TimeSpan commandTimeout)
-            : this(binary, profile, DesiredCapabilities.Firefox(), commandTimeout)
+            : this(null, new FirefoxOptions(profile, binary), commandTimeout)
         {
         }
 
@@ -180,15 +179,8 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="options">The <see cref="FirefoxOptions"/> to be used with the Firefox driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public FirefoxDriver(FirefoxDriverService service, FirefoxOptions options, TimeSpan commandTimeout)
-            : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
+            : base(CreateExecutor(service, options, commandTimeout), ConvertOptionsToCapabilities(options))
         {
-        }
-
-        private FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, ICapabilities capabilities, TimeSpan commandTimeout)
-            : base(CreateExtensionConnection(binary, profile, commandTimeout), RemoveUnneededCapabilities(capabilities))
-        {
-            this.binary = binary;
-            this.profile = profile;
         }
 
         /// <summary>
@@ -219,22 +211,6 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Gets the FirefoxBinary and its details for subclasses
-        /// </summary>
-        protected FirefoxBinary Binary
-        {
-            get { return this.binary; }
-        }
-
-        /// <summary>
-        /// Gets the FirefoxProfile that is currently in use by subclasses
-        /// </summary>
-        protected FirefoxProfile Profile
-        {
-            get { return this.profile; }
-        }
-
-        /// <summary>
         /// In derived classes, the <see cref="PrepareEnvironment"/> method prepares the environment for test execution.
         /// </summary>
         protected virtual void PrepareEnvironment()
@@ -250,6 +226,98 @@ namespace OpenQA.Selenium.Firefox
         protected override RemoteWebElement CreateElement(string elementId)
         {
             return new FirefoxWebElement(this, elementId);
+        }
+
+        private static ICommandExecutor CreateExecutor(FirefoxDriverService service, FirefoxOptions options, TimeSpan commandTimeout)
+        {
+            ICommandExecutor executor = null;
+            if (options.UseLegacyImplementation)
+            {
+                // Note: If BrowserExecutableLocation is null or empty, the legacy driver
+                // will still do the right thing, and find Firefox in the default location.
+                FirefoxBinary binary = new FirefoxBinary(options.BrowserExecutableLocation);
+
+                FirefoxProfile profile = options.Profile;
+                if (profile == null)
+                {
+                    profile = new FirefoxProfile();
+                }
+
+                executor = CreateExtensionConnection(binary, profile, commandTimeout);
+            }
+            else
+            {
+                if (service == null)
+                {
+                    throw new ArgumentNullException("service", "You requested a service-based implementation, but passed in a null service object.");
+                }
+
+                return new DriverServiceCommandExecutor(service, commandTimeout);
+            }
+
+            return executor;
+        }
+
+        private static ICommandExecutor CreateExtensionConnection(FirefoxBinary binary, FirefoxProfile profile, TimeSpan commandTimeout)
+        {
+            FirefoxProfile profileToUse = profile;
+
+            string suggestedProfile = Environment.GetEnvironmentVariable("webdriver.firefox.profile");
+            if (profileToUse == null && suggestedProfile != null)
+            {
+                profileToUse = new FirefoxProfileManager().GetProfile(suggestedProfile);
+            }
+            else if (profileToUse == null)
+            {
+                profileToUse = new FirefoxProfile();
+            }
+
+            FirefoxDriverCommandExecutor executor = new FirefoxDriverCommandExecutor(binary, profileToUse, "localhost", commandTimeout);
+            return executor;
+        }
+
+        private static ICapabilities ConvertOptionsToCapabilities(FirefoxOptions options)
+        {
+            if (options == null)
+            {
+                throw new ArgumentNullException("options", "options must not be null");
+            }
+
+            ICapabilities capabilities = options.ToCapabilities();
+            if (options.UseLegacyImplementation)
+            {
+                capabilities = RemoveUnneededCapabilities(capabilities);
+            }
+
+            return capabilities;
+        }
+
+        private static ICapabilities RemoveUnneededCapabilities(ICapabilities capabilities)
+        {
+            DesiredCapabilities caps = capabilities as DesiredCapabilities;
+            caps.CapabilitiesDictionary.Remove(FirefoxDriver.ProfileCapabilityName);
+            caps.CapabilitiesDictionary.Remove(FirefoxDriver.BinaryCapabilityName);
+            return caps;
+        }
+
+        private static FirefoxOptions CreateOptionsFromCapabilities(ICapabilities capabilities)
+        {
+            // This is awkward and hacky. To be removed when the legacy driver is retired.
+            FirefoxBinary binary = ExtractBinary(capabilities);
+            FirefoxProfile profile = ExtractProfile(capabilities);
+            DesiredCapabilities desiredCaps = RemoveUnneededCapabilities(capabilities) as DesiredCapabilities;
+
+            FirefoxOptions options = new FirefoxOptions(profile, binary);
+            if (desiredCaps != null)
+            {
+                Dictionary<string, object> capsDictionary = desiredCaps.ToDictionary();
+                foreach (KeyValuePair<string, object> capability in capsDictionary)
+                {
+                    options.AddAdditionalCapability(capability.Key, capability.Value);
+                }
+            }
+
+            return options;
         }
 
         private static FirefoxBinary ExtractBinary(ICapabilities capabilities)
@@ -313,42 +381,6 @@ namespace OpenQA.Selenium.Firefox
             }
 
             return profile;
-        }
-
-        private static ICommandExecutor CreateExtensionConnection(FirefoxBinary binary, FirefoxProfile profile, TimeSpan commandTimeout)
-        {
-            FirefoxProfile profileToUse = profile;
-
-            string suggestedProfile = Environment.GetEnvironmentVariable("webdriver.firefox.profile");
-            if (profileToUse == null && suggestedProfile != null)
-            {
-                profileToUse = new FirefoxProfileManager().GetProfile(suggestedProfile);
-            }
-            else if (profileToUse == null)
-            {
-                profileToUse = new FirefoxProfile();
-            }
-
-            FirefoxDriverCommandExecutor executor = new FirefoxDriverCommandExecutor(binary, profileToUse, "localhost", commandTimeout);
-            return executor;
-        }
-
-        private static ICapabilities RemoveUnneededCapabilities(ICapabilities capabilities)
-        {
-            DesiredCapabilities caps = capabilities as DesiredCapabilities;
-            caps.CapabilitiesDictionary.Remove(FirefoxDriver.ProfileCapabilityName);
-            caps.CapabilitiesDictionary.Remove(FirefoxDriver.BinaryCapabilityName);
-            return caps;
-        }
-
-        private static ICapabilities ConvertOptionsToCapabilities(FirefoxOptions options)
-        {
-            if (options == null)
-            {
-                throw new ArgumentNullException("options", "options must not be null");
-            }
-
-            return options.ToCapabilities();
         }
     }
 }
