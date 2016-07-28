@@ -22,6 +22,7 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableMap;
 
+import com.thoughtworks.selenium.SeleneseTestBase;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
 import com.thoughtworks.selenium.webdriven.ElementFinder;
@@ -47,14 +48,16 @@ class NonReflectiveSteps {
     ImmutableMap.Builder<String, CoreStepFactory> steps = ImmutableMap.builder();
 
     CoreStepFactory nextCommandFails = (locator, value) ->
-      (selenium, state) -> new NextCommandFails();
+      (selenium, state) -> new NextCommandFails(state.expand(locator));
     steps.put("assertErrorOnNext", nextCommandFails);
     steps.put("assertFailureOnNext", nextCommandFails);
 
-    CoreStepFactory verifyNextCommandFails = (locator, value) ->
-      (selenium, state) -> new VerifyNextCommandFails();
-    steps.put("verifyErrorOnNext", verifyNextCommandFails);
-    steps.put("verifyFailureOnNext", verifyNextCommandFails);
+    steps.put(
+      "verifyErrorOnNext",
+      (locator, value) -> (selenium, state) -> new VerifyNextCommandFails(state.expand(locator)));
+    steps.put(
+      "verifyFailureOnNext",
+      (locator, value) -> (selenium, state) -> new VerifyNextCommandFails(state.expand(locator)));
 
     class SelectedOption implements CoreStep {
 
@@ -127,16 +130,31 @@ class NonReflectiveSteps {
   }
 
   private static class NextCommandFails extends NextStepDecorator {
+    private final String assertion;
+
+    public NextCommandFails(String assertion) {
+      this.assertion = assertion;
+    }
 
     @Override
     public NextStepDecorator evaluate(CoreStep nextStep, Selenium selenium, TestState state) {
       NextStepDecorator actualResult = nextStep.execute(selenium, state);
 
-      // This is kind of fragile. Oh well.
-      if (actualResult.equals(NextStepDecorator.IDENTITY)) {
+      Throwable cause = actualResult.getCause();
+      if (cause == null) {
         return NextStepDecorator.ASSERTION_FAILED("Expected command to fail");
       }
-      return NextStepDecorator.IDENTITY;
+
+      if (!(cause instanceof SeleniumException)) {
+        return actualResult;
+      }
+
+      try {
+        SeleneseTestBase.assertEquals(assertion, cause.getMessage());
+        return NextStepDecorator.IDENTITY;
+      } catch (AssertionError e) {
+        return NextStepDecorator.ASSERTION_FAILED(e.getMessage());
+      }
     }
 
     @Override
@@ -146,16 +164,31 @@ class NonReflectiveSteps {
   }
 
   private static class VerifyNextCommandFails extends NextStepDecorator {
+    private final String assertion;
+
+    public VerifyNextCommandFails(String assertion) {
+      this.assertion = assertion;
+    }
 
     @Override
     public NextStepDecorator evaluate(CoreStep nextStep, Selenium selenium, TestState state) {
       NextStepDecorator actualResult = nextStep.execute(selenium, state);
 
-      // This is kind of fragile. Oh well.
-      if (actualResult.equals(NextStepDecorator.IDENTITY)) {
+      Throwable cause = actualResult.getCause();
+      if (cause == null) {
         return NextStepDecorator.VERIFICATION_FAILED("Expected command to fail");
       }
-      return NextStepDecorator.IDENTITY;
+
+      if (!(cause instanceof SeleniumException)) {
+        return actualResult;
+      }
+
+      try {
+        SeleneseTestBase.assertEquals(assertion, cause.getMessage());
+        return NextStepDecorator.IDENTITY;
+      } catch (AssertionError e) {
+        return NextStepDecorator.VERIFICATION_FAILED(e.getMessage());
+      }
     }
 
     @Override
