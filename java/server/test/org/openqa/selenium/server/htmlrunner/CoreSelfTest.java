@@ -18,8 +18,8 @@
 package org.openqa.selenium.server.htmlrunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
+import com.google.common.base.StandardSystemProperty;
 import com.google.common.collect.ImmutableSortedSet;
 
 import com.thoughtworks.selenium.testing.SeleniumAppServer;
@@ -33,8 +33,10 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.os.CommandLine;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
 @RunWith(Parameterized.class)
@@ -61,8 +63,12 @@ public class CoreSelfTest {
   @Test
   public void executeTests() throws IOException {
     String testBase = server.whereIs("/selenium-server/tests");
-    File outputFile = File.createTempFile("core-test-suite", browser.replace('*', '-') + ".html");
-    assertTrue(outputFile.delete());
+    Path outputFile = Paths.get(StandardSystemProperty.JAVA_IO_TMPDIR.value())
+      .resolve("core-test-suite" + browser.replace('*', '-') + ".html");
+    if (Files.exists(outputFile)) {
+      Files.delete(outputFile);
+    }
+    Files.createDirectories(outputFile.getParent());
 
     String result = new HTMLLauncher()
       .runHTMLSuite(
@@ -72,7 +78,7 @@ public class CoreSelfTest {
         // ends up as "/tests" rather than "/selenium-server/tests" as you'd expect.
         testBase + "/TestSuite.html",
         testBase + "/TestSuite.html",
-        outputFile,
+        outputFile.toFile(),
         TimeUnit.MINUTES.toMillis(5),
         true);
 
@@ -87,8 +93,8 @@ public class CoreSelfTest {
       browsers.add("*googlechrome");
     }
 
-    if (CommandLine.find("wires") != null) {
-//      browsers.add("*firefox");
+    if (CommandLine.find("geckodriver") != null) {
+      browsers.add("*firefox");
     }
 
     switch (Platform.getCurrent().family()) {
@@ -97,7 +103,7 @@ public class CoreSelfTest {
         break;
 
       case WINDOWS:
-        browsers.add("*iexplore");
+        browsers.add("*MicrosoftEdge");
         break;
     }
 
