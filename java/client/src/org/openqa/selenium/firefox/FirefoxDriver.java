@@ -229,8 +229,8 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   private FirefoxDriver(CommandExecutor executor, Capabilities desiredCapabilities,
       Capabilities requiredCapabilities) {
     super(executor,
-          dropCapabilities(desiredCapabilities, BINARY, PROFILE),
-          dropCapabilities(requiredCapabilities, BINARY, PROFILE));
+          dropCapabilities(desiredCapabilities),
+          dropCapabilities(requiredCapabilities));
   }
 
   private static final CommandExecutor createCommandExecutor(Capabilities desiredCapabilities,
@@ -351,16 +351,23 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
    * Used for capabilities which aren't BeanToJson-convertable, and are only used by the local
    * launcher.
    */
-  private static Capabilities dropCapabilities(Capabilities capabilities, String... keysToRemove) {
+  private static Capabilities dropCapabilities(Capabilities capabilities) {
     if (capabilities == null) {
       return new DesiredCapabilities();
     }
-    final Set<String> toRemove = Sets.newHashSet(keysToRemove);
-    DesiredCapabilities caps = new DesiredCapabilities(Maps.filterKeys(capabilities.asMap(), new Predicate<String>() {
-      public boolean apply(String key) {
-        return !toRemove.contains(key);
-      }
-    }));
+
+    DesiredCapabilities caps;
+
+    if (isLegacy(capabilities)) {
+      final Set<String> toRemove = Sets.newHashSet(BINARY, PROFILE);
+      caps = new DesiredCapabilities(Maps.filterKeys(capabilities.asMap(), new Predicate<String>() {
+        public boolean apply(String key) {
+          return !toRemove.contains(key);
+        }
+      }));
+    } else {
+      caps = new DesiredCapabilities(capabilities);
+    }
 
     // Ensure that the proxy is in a state fit to be sent to the extension
     Proxy proxy = Proxy.extractFrom(capabilities);
