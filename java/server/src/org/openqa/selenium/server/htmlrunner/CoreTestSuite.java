@@ -35,7 +35,7 @@ public class CoreTestSuite {
     this.url = url;
   }
 
-  public void run(Results results, WebDriver driver, Selenium selenium) {
+  public Results run(WebDriver driver, Selenium selenium) {
     if (!url.equals(driver.getCurrentUrl())) {
       driver.get(url);
     }
@@ -56,13 +56,22 @@ public class CoreTestSuite {
       "  var allLinks = cell.getElementsByTagName('a');\n" +
       "  if (allLinks.length > 0) {\n" +
       "    toReturn.push(allLinks[0].href);\n" +
+      "    arguments[0].rows[i].className += 'insert-test-result';\n" +
       "  }\n" +
       "}\n" +
       "return toReturn;\n",
       allTables.get(0));
 
+    String rawSuite = (String) ((JavascriptExecutor) driver).executeScript(
+      "return arguments[0].outerHTML;",
+      allTables.get(0));
+
+    Results results = new Results(rawSuite);
+
     for (String testUrl : allTestUrls) {
       new CoreTestCase(testUrl).run(results, driver, selenium);
     }
+
+    return results;
   }
 }

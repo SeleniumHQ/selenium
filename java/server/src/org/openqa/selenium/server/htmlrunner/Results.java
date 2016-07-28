@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.server.htmlrunner;
 
+import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
+
 import org.openqa.selenium.internal.BuildInfo;
 
 import java.io.IOException;
@@ -35,6 +38,7 @@ public class Results {
 
   private final String suiteSource;
   private final List<String> allTables = new LinkedList<>();
+  private final List<Boolean> allResults = new LinkedList<>();
   private final StringBuilder log = new StringBuilder();
   private final long start = System.currentTimeMillis();
 
@@ -72,12 +76,16 @@ public class Results {
     }
     succeeded &= passed;
 
-    allTables.add(massage(rawSource, stepResults));
+    allTables.add(
+      massage(rawSource, "insert-core-result", stepResults, input -> input.getRenderableClass()));
+    allResults.add(passed);
   }
 
-  private String massage(
+  private <X> String massage(
     String rawSource,
-    List<CoreTestCase.StepResult> stepResults) {
+    String toSubstitute,
+    List<X> toConvert,
+    Function<X, String> transform) {
 
     Reader stringReader = new StringReader(rawSource);
     HTMLEditorKit htmlKit = new HTMLEditorKit();
@@ -86,8 +94,9 @@ public class Results {
     doc.setAsynchronousLoadPriority(-1);
     ElementCallback callback;
     try {
-      final Iterator<CoreTestCase.StepResult> allResults = stepResults.iterator();
-      callback = new ElementCallback(allResults);
+      callback = new ElementCallback(
+        toSubstitute,
+        FluentIterable.from(toConvert).transform(transform).iterator());
       parser.parse(stringReader, callback, true);
     } catch (IOException e) {
       throw new RuntimeException("Unable to parse test table");
@@ -124,18 +133,24 @@ public class Results {
       String.valueOf(commandPasses),
       String.valueOf(commandFailures),
       String.valueOf(commandErrors),
-      suiteSource,
+      massage(
+        suiteSource,
+        "insert-test-result",
+        allResults,
+        input -> input ? "status_passed" : "status_failed"),
       allTables,
       log.toString());
   }
 
   private static class ElementCallback extends HTMLEditorKit.ParserCallback {
+    private final String toSubstitute;
     private final List<Integer> tagPositions = new LinkedList<>();
     private final List<String> originals = new LinkedList<>();
     private final List<String> substitutions = new LinkedList<>();
-    private final Iterator<CoreTestCase.StepResult> allResults;
+    private final Iterator<String> allResults;
 
-    public ElementCallback(Iterator<CoreTestCase.StepResult> allResults) {
+    public ElementCallback(String toSubstitute, Iterator<String> allResults) {
+      this.toSubstitute = toSubstitute;
       this.allResults = allResults;
     }
 
@@ -145,12 +160,10 @@ public class Results {
         Object rawAttr = attrs.getAttribute(HTML.Attribute.CLASS);
         if (rawAttr != null) {
           String classes = String.valueOf(rawAttr);
-          if (classes.contains("insert-core-result")) {
-            CoreTestCase.StepResult result = allResults.next();
+          if (classes.contains(toSubstitute)) {
+            String result = allResults.next();
             originals.add(classes);
-            substitutions.add(classes.replace(
-              "insert-core-result",
-              result.getRenderableClass()));
+            substitutions.add(classes.replace(toSubstitute, result));
             tagPositions.add(pos);
           }
         }

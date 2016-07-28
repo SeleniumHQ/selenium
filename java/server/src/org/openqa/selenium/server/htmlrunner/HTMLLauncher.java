@@ -23,7 +23,6 @@ import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -157,10 +156,7 @@ public class HTMLLauncher implements HTMLResultsListener {
       if (allTables.isEmpty()) {
         throw new RuntimeException("Unable to find suite table: " + driver.getPageSource());
       }
-      String rawSuite =
-        (String) ((JavascriptExecutor) driver).executeScript("return arguments[0].outerHTML", allTables.get(0));
-      Results results = new Results(rawSuite);
-      new CoreTestSuite(suiteUrl.toString()).run(results, driver, selenium);
+      Results results = new CoreTestSuite(suiteUrl.toString()).run(driver, selenium);
 
       HTMLTestResults htmlResults = results.toSuiteResult();
       try (Writer writer = Files.newBufferedWriter(outputFile.toPath())) {
