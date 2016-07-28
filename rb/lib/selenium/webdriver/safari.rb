@@ -77,3 +77,5 @@ require 'selenium/webdriver/safari/options'
 require 'selenium/webdriver/safari/legacy_bridge'
 require 'selenium/webdriver/safari/apple_bridge'
 require 'selenium/webdriver/safari/service'
+
+Selenium::WebDriver::Safari::Bridge = Selenium::WebDriver::Safari::LegacyBridge
