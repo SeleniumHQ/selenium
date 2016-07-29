@@ -23,7 +23,7 @@ import java.util.Map;
 
 /**
  * Defines an object which represents the three dimensional plane and how a device can be rotated about it.
- * Each of the axis is in positive degrees on the real number scale (0 <= deg <= 360).
+ * Each of the axis is in positive degrees on the real number scale (0 &lt;= deg &lt;= 360).
  *
  * Example Instantiation to rotate device to "Landscape Right":
  * DeviceRotation(0, 0, 90);
