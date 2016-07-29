@@ -35,6 +35,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +58,7 @@ public class GridNodeConfiguration extends GridConfiguration {
     converter = BrowserDesiredCapabilityConverter.class,
     splitter = NoOpParameterSplitter.class
   )
-  public List<DesiredCapabilities> browser;
+  public List<DesiredCapabilities> browser = Arrays.asList();
 
   @Parameter(
     names = "-downPollingLimit",
