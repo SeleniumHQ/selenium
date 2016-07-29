@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":9,"i4":9,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
+var methods = {"i0":9,"i1":9,"i2":10,"i3":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -47,7 +47,7 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li>Prev&nbsp;Class</li>
+<li><a href="../../../../../org/openqa/selenium/server/htmlrunner/CoreTestSuite.html" title="class in org.openqa.selenium.server.htmlrunner"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li><a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLResultsListener.html" title="interface in org.openqa.selenium.server.htmlrunner"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
@@ -133,7 +133,7 @@ implements <a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLRes
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLLauncher.html#HTMLLauncher-org.openqa.selenium.server.SeleniumServer-">HTMLLauncher</a></span>(<a href="../../../../../org/openqa/selenium/server/SeleniumServer.html" title="class in org.openqa.selenium.server">SeleniumServer</a>&nbsp;remoteControl)</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLLauncher.html#HTMLLauncher--">HTMLLauncher</a></span>()</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -151,46 +151,20 @@ implements <a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLRes
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>protected <a href="../../../../../org/openqa/selenium/server/browserlaunchers/BrowserLauncher.html" title="interface in org.openqa.selenium.server.browserlaunchers">BrowserLauncher</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLLauncher.html#getBrowserLauncher-java.lang.String-java.lang.String-org.openqa.selenium.server.RemoteControlConfiguration-org.openqa.selenium.Capabilities-">getBrowserLauncher</a></span>(java.lang.String&nbsp;browser,
-                  java.lang.String&nbsp;sessionId,
-                  <a href="../../../../../org/openqa/selenium/server/RemoteControlConfiguration.html" title="class in org.openqa.selenium.server">RemoteControlConfiguration</a>&nbsp;configuration,
-                  <a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;browserOptions)</code>&nbsp;</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>protected java.io.FileWriter</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLLauncher.html#getFileWriter-java.io.File-">getFileWriter</a></span>(java.io.File&nbsp;outputFile)</code>&nbsp;</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLTestResults.html" title="class in org.openqa.selenium.server.htmlrunner">HTMLTestResults</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLLauncher.html#getResults--">getResults</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLLauncher.html#main-java.lang.String:A-">main</a></span>(java.lang.String[]&nbsp;args)</code>&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>static int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLLauncher.html#mainInt-java.lang.String...-">mainInt</a></span>(java.lang.String...&nbsp;args)</code>&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLLauncher.html#processResults-org.openqa.selenium.server.htmlrunner.HTMLTestResults-">processResults</a></span>(<a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLTestResults.html" title="class in org.openqa.selenium.server.htmlrunner">HTMLTestResults</a>&nbsp;resultsParm)</code>
 <div class="block">Accepts HTMLTestResults for later asynchronous handling</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLLauncher.html#runHTMLSuite-java.lang.String-java.lang.String-java.io.File-java.io.File-long-boolean-">runHTMLSuite</a></span>(java.lang.String&nbsp;browser,
-            java.lang.String&nbsp;browserURL,
-            java.io.File&nbsp;suiteFile,
-            java.io.File&nbsp;outputFile,
-            long&nbsp;timeoutInSeconds,
-            boolean&nbsp;multiWindow)</code>
-<div class="block">Launches a single HTML Selenium test suite.</div>
-</td>
-</tr>
-<tr id="i7" class="rowColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLLauncher.html#runHTMLSuite-java.lang.String-java.lang.String-java.lang.String-java.io.File-long-boolean-">runHTMLSuite</a></span>(java.lang.String&nbsp;browser,
             java.lang.String&nbsp;browserURL,
@@ -200,18 +174,6 @@ implements <a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLRes
             boolean&nbsp;multiWindow)</code>
 <div class="block">Launches a single HTML Selenium test suite.</div>
 </td>
-</tr>
-<tr id="i8" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLLauncher.html#setResults-org.openqa.selenium.server.htmlrunner.HTMLTestResults-">setResults</a></span>(<a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLTestResults.html" title="class in org.openqa.selenium.server.htmlrunner">HTMLTestResults</a>&nbsp;results)</code>&nbsp;</td>
-</tr>
-<tr id="i9" class="rowColor">
-<td class="colFirst"><code>protected void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLLauncher.html#sleepTight-long-">sleepTight</a></span>(long&nbsp;timeoutInMs)</code>&nbsp;</td>
-</tr>
-<tr id="i10" class="altColor">
-<td class="colFirst"><code>protected void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLLauncher.html#writeResults-java.io.File-">writeResults</a></span>(java.io.File&nbsp;outputFile)</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -235,13 +197,13 @@ implements <a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLRes
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="HTMLLauncher-org.openqa.selenium.server.SeleniumServer-">
+<a name="HTMLLauncher--">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>HTMLLauncher</h4>
-<pre>public&nbsp;HTMLLauncher(<a href="../../../../../org/openqa/selenium/server/SeleniumServer.html" title="class in org.openqa.selenium.server">SeleniumServer</a>&nbsp;remoteControl)</pre>
+<pre>public&nbsp;HTMLLauncher()</pre>
 </li>
 </ul>
 </li>
@@ -281,84 +243,6 @@ implements <a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLRes
 </dl>
 </li>
 </ul>
-<a name="getBrowserLauncher-java.lang.String-java.lang.String-org.openqa.selenium.server.RemoteControlConfiguration-org.openqa.selenium.Capabilities-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getBrowserLauncher</h4>
-<pre>protected&nbsp;<a href="../../../../../org/openqa/selenium/server/browserlaunchers/BrowserLauncher.html" title="interface in org.openqa.selenium.server.browserlaunchers">BrowserLauncher</a>&nbsp;getBrowserLauncher(java.lang.String&nbsp;browser,
-                                             java.lang.String&nbsp;sessionId,
-                                             <a href="../../../../../org/openqa/selenium/server/RemoteControlConfiguration.html" title="class in org.openqa.selenium.server">RemoteControlConfiguration</a>&nbsp;configuration,
-                                             <a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;browserOptions)</pre>
-</li>
-</ul>
-<a name="sleepTight-long-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>sleepTight</h4>
-<pre>protected&nbsp;void&nbsp;sleepTight(long&nbsp;timeoutInMs)</pre>
-</li>
-</ul>
-<a name="getFileWriter-java.io.File-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getFileWriter</h4>
-<pre>protected&nbsp;java.io.FileWriter&nbsp;getFileWriter(java.io.File&nbsp;outputFile)
-                                    throws java.io.IOException</pre>
-<dl>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code></dd>
-</dl>
-</li>
-</ul>
-<a name="writeResults-java.io.File-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>writeResults</h4>
-<pre>protected&nbsp;void&nbsp;writeResults(java.io.File&nbsp;outputFile)
-                     throws java.io.IOException</pre>
-<dl>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code></dd>
-</dl>
-</li>
-</ul>
-<a name="runHTMLSuite-java.lang.String-java.lang.String-java.io.File-java.io.File-long-boolean-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>runHTMLSuite</h4>
-<pre>public&nbsp;java.lang.String&nbsp;runHTMLSuite(java.lang.String&nbsp;browser,
-                                     java.lang.String&nbsp;browserURL,
-                                     java.io.File&nbsp;suiteFile,
-                                     java.io.File&nbsp;outputFile,
-                                     long&nbsp;timeoutInSeconds,
-                                     boolean&nbsp;multiWindow)
-                              throws java.io.IOException</pre>
-<div class="block">Launches a single HTML Selenium test suite.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>browser</code> - - the browserString ("*firefox", "*iexplore" or an executable path)</dd>
-<dd><code>browserURL</code> - - the start URL for the browser</dd>
-<dd><code>suiteFile</code> - - a file containing the HTML suite to run</dd>
-<dd><code>outputFile</code> - - The file to which we'll output the HTML results</dd>
-<dd><code>timeoutInSeconds</code> - - the amount of time (in seconds) to wait for the browser to finish</dd>
-<dd><code>multiWindow</code> - - whether to run the browser in multiWindow or else framed mode</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>PASSED or FAIL</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code> - if we can't write the output file</dd>
-</dl>
-</li>
-</ul>
 <a name="processResults-org.openqa.selenium.server.htmlrunner.HTMLTestResults-">
 <!--   -->
 </a>
@@ -390,7 +274,7 @@ implements <a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLRes
 <a name="main-java.lang.String:A-">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>main</h4>
 <pre>public static&nbsp;void&nbsp;main(java.lang.String[]&nbsp;args)
@@ -399,24 +283,6 @@ implements <a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLRes
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.lang.Exception</code></dd>
 </dl>
-</li>
-</ul>
-<a name="getResults--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getResults</h4>
-<pre>public&nbsp;<a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLTestResults.html" title="class in org.openqa.selenium.server.htmlrunner">HTMLTestResults</a>&nbsp;getResults()</pre>
-</li>
-</ul>
-<a name="setResults-org.openqa.selenium.server.htmlrunner.HTMLTestResults-">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>setResults</h4>
-<pre>public&nbsp;void&nbsp;setResults(<a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLTestResults.html" title="class in org.openqa.selenium.server.htmlrunner">HTMLTestResults</a>&nbsp;results)</pre>
 </li>
 </ul>
 </li>
@@ -446,7 +312,7 @@ implements <a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLRes
 </div>
 <div class="subNav">
 <ul class="navList">
-<li>Prev&nbsp;Class</li>
+<li><a href="../../../../../org/openqa/selenium/server/htmlrunner/CoreTestSuite.html" title="class in org.openqa.selenium.server.htmlrunner"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li><a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLResultsListener.html" title="interface in org.openqa.selenium.server.htmlrunner"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">

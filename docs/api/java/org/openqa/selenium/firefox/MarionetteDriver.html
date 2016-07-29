@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var methods = {"i0":42};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -115,8 +115,12 @@ var activeTableTab = "activeTableTab";
 <dd><a href="../../../../org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a>, <a href="../../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a>, <a href="../../../../org/openqa/selenium/internal/FindsByClassName.html" title="interface in org.openqa.selenium.internal">FindsByClassName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByCssSelector.html" title="interface in org.openqa.selenium.internal">FindsByCssSelector</a>, <a href="../../../../org/openqa/selenium/internal/FindsById.html" title="interface in org.openqa.selenium.internal">FindsById</a>, <a href="../../../../org/openqa/selenium/internal/FindsByLinkText.html" title="interface in org.openqa.selenium.internal">FindsByLinkText</a>, <a href="../../../../org/openqa/selenium/internal/FindsByName.html" title="interface in org.openqa.selenium.internal">FindsByName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByTagName.html" title="interface in org.openqa.selenium.internal">FindsByTagName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByXPath.html" title="interface in org.openqa.selenium.internal">FindsByXPath</a>, <a href="../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>, <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a>, <a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></dd>
 </dl>
 <hr>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">One should use FirefoxDriver with capability marionette = true or false respectively.</span></div>
+</div>
 <br>
 <pre><a href="../../../../org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium">@Beta</a>
+ @Deprecated
 public class <span class="typeNameLabel">MarionetteDriver</span>
 extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></pre>
 <div class="block">An implementation of the {#link WebDriver} interface that drives Firefox using Marionette interface.</div>
@@ -160,25 +164,37 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/MarionetteDriver.html#MarionetteDriver--">MarionetteDriver</a></span>()</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/MarionetteDriver.html#MarionetteDriver--">MarionetteDriver</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/MarionetteDriver.html#MarionetteDriver-org.openqa.selenium.Capabilities-">MarionetteDriver</a></span>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/MarionetteDriver.html#MarionetteDriver-org.openqa.selenium.Capabilities-">MarionetteDriver</a></span>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/MarionetteDriver.html#MarionetteDriver-org.openqa.selenium.firefox.GeckoDriverService-">MarionetteDriver</a></span>(<a href="../../../../org/openqa/selenium/firefox/GeckoDriverService.html" title="class in org.openqa.selenium.firefox">GeckoDriverService</a>&nbsp;service)</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/MarionetteDriver.html#MarionetteDriver-org.openqa.selenium.firefox.GeckoDriverService-">MarionetteDriver</a></span>(<a href="../../../../org/openqa/selenium/firefox/GeckoDriverService.html" title="class in org.openqa.selenium.firefox">GeckoDriverService</a>&nbsp;service)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/MarionetteDriver.html#MarionetteDriver-org.openqa.selenium.firefox.GeckoDriverService-org.openqa.selenium.Capabilities-">MarionetteDriver</a></span>(<a href="../../../../org/openqa/selenium/firefox/GeckoDriverService.html" title="class in org.openqa.selenium.firefox">GeckoDriverService</a>&nbsp;service,
-                <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code>&nbsp;</td>
+                <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/MarionetteDriver.html#MarionetteDriver-org.openqa.selenium.firefox.GeckoDriverService-org.openqa.selenium.Capabilities-int-">MarionetteDriver</a></span>(<a href="../../../../org/openqa/selenium/firefox/GeckoDriverService.html" title="class in org.openqa.selenium.firefox">GeckoDriverService</a>&nbsp;service,
                 <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
-                int&nbsp;port)</code>&nbsp;</td>
+                int&nbsp;port)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/MarionetteDriver.html#MarionetteDriver-int-">MarionetteDriver</a></span>(int&nbsp;port)</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/MarionetteDriver.html#MarionetteDriver-int-">MarionetteDriver</a></span>(int&nbsp;port)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -190,7 +206,7 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -198,6 +214,7 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/MarionetteDriver.html#setFileDetector-org.openqa.selenium.remote.FileDetector-">setFileDetector</a></span>(<a href="../../../../org/openqa/selenium/remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</a>&nbsp;detector)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Set the file detector to be used when sending keyboard input.</div>
 </td>
 </tr>
@@ -207,7 +224,7 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.remote.<a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></h3>
-<code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#close--">close</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#execute-java.lang.String-">execute</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#execute-java.lang.String-java.util.Map-">execute</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#executeAsyncScript-java.lang.String-java.lang.Object...-">executeAsyncScript</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#executeScript-java.lang.String-java.lang.Object...-">executeScript</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElement-org.openqa.selenium.By-">findElement</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElement-java.lang.String-java.lang.String-">findElement</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByClassName-java.lang.String-">findElementByClassName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByCssSelector-java.lang.String-">findElementByCssSelector</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementById-java.lang.String-">findElementById</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByLinkText-java.lang.String-">findElementByLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByName-java.lang.String-">findElementByName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByPartialLinkText-java.lang.String-">findElementByPartialLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByTagName-java.lang.String-">findElementByTagName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByXPath-java.lang.String-">findElementByXPath</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElements-org.openqa.selenium.By-">findElements</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElements-java.lang.String-java.lang.String-">findElements</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByClassName-java.lang.String-">findElementsByClassName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByCssSelector-java.lang.String-">findElementsByCssSelector</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsById-java.lang.String-">findElementsById</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByLinkText-java.lang.String-">findElementsByLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByName-java.lang.String-">findElementsByName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByPartialLinkText-java.lang.String-">findElementsByPartialLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByTagName-java.lang.String-">findElementsByTagName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByXPath-java.lang.String-">findElementsByXPath</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#get-java.lang.String-">get</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getCapabilities--">getCapabilities</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getCommandExecutor--">getCommandExecutor</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getCurrentUrl--">getCurrentUrl</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getElementConverter--">getElementConverter</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getErrorHandler--">getErrorHandler</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getExecuteMethod--">getExecuteMethod</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getFileDetector--">getFileDetector</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getKeyboard--">getKeyboard</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getMouse--">getMouse</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getPageSource--">getPageSource</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getScreenshotAs-org.openqa.selenium.OutputType-">getScreenshotAs</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getSessionId--">getSessionId</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getTitle--">getTitle</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getW3CStandardComplianceLevel--">getW3CStandardComplianceLevel</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getWindowHandle--">getWindowHandle</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getWindowHandles--">getWindowHandles</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#log-org.openqa.selenium.remote.SessionId-java.lang.String-java.lang.Object-org.openqa.selenium.remote.RemoteWebDriver.When-">log</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#manage--">manage</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#navigate--">navigate</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#quit--">quit</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setCommandExecutor-org.openqa.selenium.remote.CommandExecutor-">setCommandExecutor</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setElementConverter-org.openqa.selenium.remote.internal.JsonToWebElementConverter-">setElementConverter</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setErrorHandler-org.openqa.selenium.remote.ErrorHandler-">setErrorHandler</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setFoundBy-org.openqa.selenium.SearchContext-org.openqa.selenium.WebElement-java.lang.String-java.lang.String-">setFoundBy</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setLogLevel-java.util.logging.Level-">setLogLevel</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setSessionId-java.lang.String-">setSessionId</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startClient--">startClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startSession-org.openqa.selenium.Capabilities-">startSession</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startSession-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">startSession</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#stopClient--">stopClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#switchTo--">switchTo</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#toString--">toString</a></code></li>
+<code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#close--">close</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#execute-java.lang.String-">execute</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#execute-java.lang.String-java.util.Map-">execute</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#executeAsyncScript-java.lang.String-java.lang.Object...-">executeAsyncScript</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#executeScript-java.lang.String-java.lang.Object...-">executeScript</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElement-org.openqa.selenium.By-">findElement</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElement-java.lang.String-java.lang.String-">findElement</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByClassName-java.lang.String-">findElementByClassName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByCssSelector-java.lang.String-">findElementByCssSelector</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementById-java.lang.String-">findElementById</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByLinkText-java.lang.String-">findElementByLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByName-java.lang.String-">findElementByName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByPartialLinkText-java.lang.String-">findElementByPartialLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByTagName-java.lang.String-">findElementByTagName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByXPath-java.lang.String-">findElementByXPath</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElements-org.openqa.selenium.By-">findElements</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElements-java.lang.String-java.lang.String-">findElements</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByClassName-java.lang.String-">findElementsByClassName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByCssSelector-java.lang.String-">findElementsByCssSelector</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsById-java.lang.String-">findElementsById</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByLinkText-java.lang.String-">findElementsByLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByName-java.lang.String-">findElementsByName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByPartialLinkText-java.lang.String-">findElementsByPartialLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByTagName-java.lang.String-">findElementsByTagName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByXPath-java.lang.String-">findElementsByXPath</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#get-java.lang.String-">get</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getCapabilities--">getCapabilities</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getCommandExecutor--">getCommandExecutor</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getCurrentUrl--">getCurrentUrl</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getElementConverter--">getElementConverter</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getErrorHandler--">getErrorHandler</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getExecuteMethod--">getExecuteMethod</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getFileDetector--">getFileDetector</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getKeyboard--">getKeyboard</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getMouse--">getMouse</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getPageSource--">getPageSource</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getScreenshotAs-org.openqa.selenium.OutputType-">getScreenshotAs</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getSessionId--">getSessionId</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getTitle--">getTitle</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getW3CStandardComplianceLevel--">getW3CStandardComplianceLevel</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getWindowHandle--">getWindowHandle</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getWindowHandles--">getWindowHandles</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#log-org.openqa.selenium.remote.SessionId-java.lang.String-java.lang.Object-org.openqa.selenium.remote.RemoteWebDriver.When-">log</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#manage--">manage</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#navigate--">navigate</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#quit--">quit</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setCommandExecutor-org.openqa.selenium.remote.CommandExecutor-">setCommandExecutor</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setElementConverter-org.openqa.selenium.remote.internal.JsonToWebElementConverter-">setElementConverter</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setErrorHandler-org.openqa.selenium.remote.ErrorHandler-">setErrorHandler</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setFoundBy-org.openqa.selenium.SearchContext-org.openqa.selenium.WebElement-java.lang.String-java.lang.String-">setFoundBy</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setLogLevel-java.util.logging.Level-">setLogLevel</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setSessionId-java.lang.String-">setSessionId</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startClient--">startClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startClient-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">startClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startSession-org.openqa.selenium.Capabilities-">startSession</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startSession-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">startSession</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#stopClient--">stopClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#stopClient-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">stopClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#switchTo--">switchTo</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#toString--">toString</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -237,6 +254,7 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 <li class="blockList">
 <h4>MarionetteDriver</h4>
 <pre>public&nbsp;MarionetteDriver()</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 <a name="MarionetteDriver-org.openqa.selenium.Capabilities-">
@@ -246,6 +264,7 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 <li class="blockList">
 <h4>MarionetteDriver</h4>
 <pre>public&nbsp;MarionetteDriver(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 <a name="MarionetteDriver-int-">
@@ -255,6 +274,7 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 <li class="blockList">
 <h4>MarionetteDriver</h4>
 <pre>public&nbsp;MarionetteDriver(int&nbsp;port)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 <a name="MarionetteDriver-org.openqa.selenium.firefox.GeckoDriverService-">
@@ -264,6 +284,7 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 <li class="blockList">
 <h4>MarionetteDriver</h4>
 <pre>public&nbsp;MarionetteDriver(<a href="../../../../org/openqa/selenium/firefox/GeckoDriverService.html" title="class in org.openqa.selenium.firefox">GeckoDriverService</a>&nbsp;service)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 <a name="MarionetteDriver-org.openqa.selenium.firefox.GeckoDriverService-org.openqa.selenium.Capabilities-">
@@ -274,6 +295,7 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 <h4>MarionetteDriver</h4>
 <pre>public&nbsp;MarionetteDriver(<a href="../../../../org/openqa/selenium/firefox/GeckoDriverService.html" title="class in org.openqa.selenium.firefox">GeckoDriverService</a>&nbsp;service,
                         <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 <a name="MarionetteDriver-org.openqa.selenium.firefox.GeckoDriverService-org.openqa.selenium.Capabilities-int-">
@@ -285,6 +307,7 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 <pre>public&nbsp;MarionetteDriver(<a href="../../../../org/openqa/selenium/firefox/GeckoDriverService.html" title="class in org.openqa.selenium.firefox">GeckoDriverService</a>&nbsp;service,
                         <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
                         int&nbsp;port)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 </li>
@@ -302,6 +325,7 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 <li class="blockList">
 <h4>setFileDetector</h4>
 <pre>public&nbsp;void&nbsp;setFileDetector(<a href="../../../../org/openqa/selenium/remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</a>&nbsp;detector)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setFileDetector-org.openqa.selenium.remote.FileDetector-">RemoteWebDriver</a></code></span></div>
 <div class="block">Set the file detector to be used when sending keyboard input. By default, this is set to a file
  detector that does nothing.</div>

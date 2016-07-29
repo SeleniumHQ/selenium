@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -168,6 +168,12 @@ extends java.lang.Object</pre>
         int&nbsp;timeout,
         java.util.concurrent.TimeUnit&nbsp;unit)</code>&nbsp;</td>
 </tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/net/PortProber.html#waitForPortUp-int-int-java.util.concurrent.TimeUnit-">waitForPortUp</a></span>(int&nbsp;port,
+             int&nbsp;timeout,
+             java.util.concurrent.TimeUnit&nbsp;unit)</code>&nbsp;</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -254,12 +260,23 @@ extends java.lang.Object</pre>
 <a name="pollPort-int-int-java.util.concurrent.TimeUnit-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>pollPort</h4>
 <pre>public static&nbsp;boolean&nbsp;pollPort(int&nbsp;port,
                                int&nbsp;timeout,
                                java.util.concurrent.TimeUnit&nbsp;unit)</pre>
+</li>
+</ul>
+<a name="waitForPortUp-int-int-java.util.concurrent.TimeUnit-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>waitForPortUp</h4>
+<pre>public static&nbsp;void&nbsp;waitForPortUp(int&nbsp;port,
+                                 int&nbsp;timeout,
+                                 java.util.concurrent.TimeUnit&nbsp;unit)</pre>
 </li>
 </ul>
 </li>

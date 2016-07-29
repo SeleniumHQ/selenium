@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -107,13 +107,13 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../../org/openqa/selenium/internal/Lock.html" title="interface in org.openqa.selenium.internal">Lock</a></dd>
+<dd>java.io.Closeable, java.lang.AutoCloseable, <a href="../../../../org/openqa/selenium/internal/Lock.html" title="interface in org.openqa.selenium.internal">Lock</a></dd>
 </dl>
 <hr>
 <br>
 <pre>public class <span class="typeNameLabel">SocketLock</span>
 extends java.lang.Object
-implements <a href="../../../../org/openqa/selenium/internal/Lock.html" title="interface in org.openqa.selenium.internal">Lock</a></pre>
+implements java.io.Closeable, <a href="../../../../org/openqa/selenium/internal/Lock.html" title="interface in org.openqa.selenium.internal">Lock</a></pre>
 <div class="block">Implements <a href="../../../../org/openqa/selenium/internal/Lock.html" title="interface in org.openqa.selenium.internal"><code>Lock</code></a> via an implementation that uses a well-known
  server socket.</div>
 </li>
@@ -183,16 +183,20 @@ implements <a href="../../../../org/openqa/selenium/internal/Lock.html" title="i
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/internal/SocketLock.html#close--">close</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/internal/SocketLock.html#getLockPort--">getLockPort</a></span>()</code>
 <div class="block">Gets the port number that is being-locked.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/internal/SocketLock.html#lock-long-">lock</a></span>(long&nbsp;timeoutInMillis)</code>&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/internal/SocketLock.html#unlock--">unlock</a></span>()</code>&nbsp;</td>
 </tr>
@@ -301,6 +305,24 @@ implements <a href="../../../../org/openqa/selenium/internal/Lock.html" title="i
 <dd><code><a href="../../../../org/openqa/selenium/internal/Lock.html#lock-long-">lock</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/internal/Lock.html" title="interface in org.openqa.selenium.internal">Lock</a></code></dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></code></dd>
+</dl>
+</li>
+</ul>
+<a name="close--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>close</h4>
+<pre>public&nbsp;void&nbsp;close()
+           throws java.io.IOException</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code>close</code>&nbsp;in interface&nbsp;<code>java.io.Closeable</code></dd>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code>close</code>&nbsp;in interface&nbsp;<code>java.lang.AutoCloseable</code></dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.io.IOException</code></dd>
 </dl>
 </li>
 </ul>

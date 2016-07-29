@@ -124,8 +124,9 @@ var activeTableTab = "activeTableTab";
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/WebDriverEventListener.html#afterChangeValueOf-org.openqa.selenium.WebElement-org.openqa.selenium.WebDriver-">afterChangeValueOf</a></span>(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-                  <a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/WebDriverEventListener.html#afterChangeValueOf-org.openqa.selenium.WebElement-org.openqa.selenium.WebDriver-java.lang.CharSequence:A-">afterChangeValueOf</a></span>(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+                  <a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+                  java.lang.CharSequence[]&nbsp;keysToSend)</code>
 <div class="block">Called after <a href="../../../../../org/openqa/selenium/WebElement.html#clear--"><code>WebElement.clear()</code></a>, <a href="../../../../../org/openqa/selenium/WebElement.html#sendKeys-java.lang.CharSequence...-"><code>WebElement.sendKeys(...)</code></a>}.</div>
 </td>
 </tr>
@@ -180,8 +181,9 @@ var activeTableTab = "activeTableTab";
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/WebDriverEventListener.html#beforeChangeValueOf-org.openqa.selenium.WebElement-org.openqa.selenium.WebDriver-">beforeChangeValueOf</a></span>(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-                   <a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/WebDriverEventListener.html#beforeChangeValueOf-org.openqa.selenium.WebElement-org.openqa.selenium.WebDriver-java.lang.CharSequence:A-">beforeChangeValueOf</a></span>(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+                   <a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+                   java.lang.CharSequence[]&nbsp;keysToSend)</code>
 <div class="block">Called before <a href="../../../../../org/openqa/selenium/WebElement.html#clear--"><code>WebElement.clear()</code></a>, <a href="../../../../../org/openqa/selenium/WebElement.html#sendKeys-java.lang.CharSequence...-"><code>WebElement.sendKeys(...)</code></a>.</div>
 </td>
 </tr>
@@ -449,14 +451,15 @@ var activeTableTab = "activeTableTab";
 </dl>
 </li>
 </ul>
-<a name="beforeChangeValueOf-org.openqa.selenium.WebElement-org.openqa.selenium.WebDriver-">
+<a name="beforeChangeValueOf-org.openqa.selenium.WebElement-org.openqa.selenium.WebDriver-java.lang.CharSequence:A-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>beforeChangeValueOf</h4>
 <pre>void&nbsp;beforeChangeValueOf(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-                         <a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+                         <a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+                         java.lang.CharSequence[]&nbsp;keysToSend)</pre>
 <div class="block">Called before <a href="../../../../../org/openqa/selenium/WebElement.html#clear--"><code>WebElement.clear()</code></a>, <a href="../../../../../org/openqa/selenium/WebElement.html#sendKeys-java.lang.CharSequence...-"><code>WebElement.sendKeys(...)</code></a>.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -465,14 +468,15 @@ var activeTableTab = "activeTableTab";
 </dl>
 </li>
 </ul>
-<a name="afterChangeValueOf-org.openqa.selenium.WebElement-org.openqa.selenium.WebDriver-">
+<a name="afterChangeValueOf-org.openqa.selenium.WebElement-org.openqa.selenium.WebDriver-java.lang.CharSequence:A-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>afterChangeValueOf</h4>
 <pre>void&nbsp;afterChangeValueOf(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-                        <a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+                        <a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+                        java.lang.CharSequence[]&nbsp;keysToSend)</pre>
 <div class="block">Called after <a href="../../../../../org/openqa/selenium/WebElement.html#clear--"><code>WebElement.clear()</code></a>, <a href="../../../../../org/openqa/selenium/WebElement.html#sendKeys-java.lang.CharSequence...-"><code>WebElement.sendKeys(...)</code></a>}. Not called, if an exception is thrown.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>

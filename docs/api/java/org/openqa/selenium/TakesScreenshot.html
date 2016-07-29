@@ -113,10 +113,8 @@ var activeTableTab = "activeTableTab";
  Example usage:
 
  <pre>
- import static openqa.selenium.OutputType.*;
-
- File screenshotFile = ((Screenshot)driver).getScreenshotAs(file);
- String screenshotBase64 = ((Screenshot)driver).getScreenshotAs(base64);
+ File screenshotFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+ String screenshotBase64 = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BASE64);
  </pre></div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
@@ -183,7 +181,7 @@ var activeTableTab = "activeTableTab";
  <p>For WebElement extending TakesScreenshot, this makes a best effort
  depending on the browser to return the following in order of preference:
    - The entire content of the HTML element
-   - The visisble portion of the HTML element</div>
+   - The visible portion of the HTML element</div>
 <dl>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
 <dd><code>X</code> - Return type for getScreenshotAs.</dd>

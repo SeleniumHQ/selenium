@@ -3,7 +3,6 @@ com.thoughtworks.selenium.condition
 com.thoughtworks.selenium.webdriven
 com.thoughtworks.selenium.webdriven.commands
 org.openqa.selenium
-org.openqa.selenium.browserlaunchers.locators
 org.openqa.selenium.chrome
 org.openqa.selenium.edge
 org.openqa.selenium.firefox
@@ -41,11 +40,7 @@ org.openqa.selenium.remote.server.xdrpc
 org.openqa.selenium.remote.service
 org.openqa.selenium.safari
 org.openqa.selenium.security
-org.openqa.selenium.server
-org.openqa.selenium.server.browserlaunchers
-org.openqa.selenium.server.commands
 org.openqa.selenium.server.htmlrunner
-org.openqa.selenium.server.security
 org.openqa.selenium.support
 org.openqa.selenium.support.events
 org.openqa.selenium.support.events.internal

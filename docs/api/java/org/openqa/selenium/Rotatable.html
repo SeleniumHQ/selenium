@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":6};
+var methods = {"i0":6,"i1":6,"i2":6,"i3":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -128,9 +128,19 @@ var activeTableTab = "activeTableTab";
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Rotatable.html#rotate-org.openqa.selenium.DeviceRotation-">rotate</a></span>(<a href="../../../org/openqa/selenium/DeviceRotation.html" title="class in org.openqa.selenium">DeviceRotation</a>&nbsp;rotation)</code>
+<div class="block">Changes the rotation of the browser window.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Rotatable.html#rotate-org.openqa.selenium.ScreenOrientation-">rotate</a></span>(<a href="../../../org/openqa/selenium/ScreenOrientation.html" title="enum in org.openqa.selenium">ScreenOrientation</a>&nbsp;orientation)</code>
 <div class="block">Changes the orientation of the browser window.</div>
 </td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code><a href="../../../org/openqa/selenium/DeviceRotation.html" title="class in org.openqa.selenium">DeviceRotation</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Rotatable.html#rotation--">rotation</a></span>()</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -164,13 +174,40 @@ var activeTableTab = "activeTableTab";
 <a name="getOrientation--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getOrientation</h4>
 <pre><a href="../../../org/openqa/selenium/ScreenOrientation.html" title="enum in org.openqa.selenium">ScreenOrientation</a>&nbsp;getOrientation()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the current screen orientation of the browser</dd>
+</dl>
+</li>
+</ul>
+<a name="rotate-org.openqa.selenium.DeviceRotation-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>rotate</h4>
+<pre>void&nbsp;rotate(<a href="../../../org/openqa/selenium/DeviceRotation.html" title="class in org.openqa.selenium">DeviceRotation</a>&nbsp;rotation)</pre>
+<div class="block">Changes the rotation of the browser window.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>rotation</code> - </dd>
+</dl>
+</li>
+</ul>
+<a name="rotation--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>rotation</h4>
+<pre><a href="../../../org/openqa/selenium/DeviceRotation.html" title="class in org.openqa.selenium">DeviceRotation</a>&nbsp;rotation()</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>DeviceOrientation describing the current screen rotation of the browser window</dd>
 </dl>
 </li>
 </ul>

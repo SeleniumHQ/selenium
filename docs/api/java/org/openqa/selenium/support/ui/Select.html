@@ -105,10 +105,15 @@ var activeTableTab = "activeTableTab";
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
+<dl>
+<dt>All Implemented Interfaces:</dt>
+<dd><a href="../../../../../org/openqa/selenium/support/ui/ISelect.html" title="interface in org.openqa.selenium.support.ui">ISelect</a></dd>
+</dl>
 <hr>
 <br>
 <pre>public class <span class="typeNameLabel">Select</span>
-extends java.lang.Object</pre>
+extends java.lang.Object
+implements <a href="../../../../../org/openqa/selenium/support/ui/ISelect.html" title="interface in org.openqa.selenium.support.ui">ISelect</a></pre>
 <div class="block">Models a SELECT tag, providing helper methods to select and deselect options.</div>
 </li>
 </ul>
@@ -260,6 +265,8 @@ extends java.lang.Object</pre>
 <h4>isMultiple</h4>
 <pre>public&nbsp;boolean&nbsp;isMultiple()</pre>
 <dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/support/ui/ISelect.html#isMultiple--">isMultiple</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/support/ui/ISelect.html" title="interface in org.openqa.selenium.support.ui">ISelect</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>Whether this select element support selecting multiple options at the same time? This
          is done by checking the value of the "multiple" attribute.</dd>
@@ -274,6 +281,8 @@ extends java.lang.Object</pre>
 <h4>getOptions</h4>
 <pre>public&nbsp;java.util.List&lt;<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&nbsp;getOptions()</pre>
 <dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/support/ui/ISelect.html#getOptions--">getOptions</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/support/ui/ISelect.html" title="interface in org.openqa.selenium.support.ui">ISelect</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>All options belonging to this select tag</dd>
 </dl>
@@ -287,6 +296,8 @@ extends java.lang.Object</pre>
 <h4>getAllSelectedOptions</h4>
 <pre>public&nbsp;java.util.List&lt;<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&nbsp;getAllSelectedOptions()</pre>
 <dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/support/ui/ISelect.html#getAllSelectedOptions--">getAllSelectedOptions</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/support/ui/ISelect.html" title="interface in org.openqa.selenium.support.ui">ISelect</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>All selected options belonging to this select tag</dd>
 </dl>
@@ -300,6 +311,8 @@ extends java.lang.Object</pre>
 <h4>getFirstSelectedOption</h4>
 <pre>public&nbsp;<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;getFirstSelectedOption()</pre>
 <dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/support/ui/ISelect.html#getFirstSelectedOption--">getFirstSelectedOption</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/support/ui/ISelect.html" title="interface in org.openqa.selenium.support.ui">ISelect</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The first selected option in this select tag (or the currently selected option in a
          normal select)</dd>
@@ -320,6 +333,8 @@ extends java.lang.Object</pre>
 
  &lt;option value="foo"&gt;Bar&lt;/option&gt;</div>
 <dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/support/ui/ISelect.html#selectByVisibleText-java.lang.String-">selectByVisibleText</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/support/ui/ISelect.html" title="interface in org.openqa.selenium.support.ui">ISelect</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>text</code> - The visible text to match against</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
@@ -337,6 +352,8 @@ extends java.lang.Object</pre>
 <div class="block">Select the option at the given index. This is done by examining the "index" attribute of an
  element, and not merely by counting.</div>
 <dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/support/ui/ISelect.html#selectByIndex-int-">selectByIndex</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/support/ui/ISelect.html" title="interface in org.openqa.selenium.support.ui">ISelect</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>index</code> - The option at this index will be selected</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
@@ -356,6 +373,8 @@ extends java.lang.Object</pre>
 
  &lt;option value="foo"&gt;Bar&lt;/option&gt;</div>
 <dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/support/ui/ISelect.html#selectByValue-java.lang.String-">selectByValue</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/support/ui/ISelect.html" title="interface in org.openqa.selenium.support.ui">ISelect</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>value</code> - The value to match against</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
@@ -372,6 +391,8 @@ extends java.lang.Object</pre>
 <pre>public&nbsp;void&nbsp;deselectAll()</pre>
 <div class="block">Clear all selected entries. This is only valid when the SELECT supports multiple selections.</div>
 <dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/support/ui/ISelect.html#deselectAll--">deselectAll</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/support/ui/ISelect.html" title="interface in org.openqa.selenium.support.ui">ISelect</a></code></dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.lang.UnsupportedOperationException</code> - If the SELECT does not support multiple selections</dd>
 </dl>
@@ -389,6 +410,8 @@ extends java.lang.Object</pre>
 
  &lt;option value="foo"&gt;Bar&lt;/option&gt;</div>
 <dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/support/ui/ISelect.html#deselectByValue-java.lang.String-">deselectByValue</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/support/ui/ISelect.html" title="interface in org.openqa.selenium.support.ui">ISelect</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>value</code> - The value to match against</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
@@ -407,6 +430,8 @@ extends java.lang.Object</pre>
 <div class="block">Deselect the option at the given index. This is done by examining the "index" attribute of an
  element, and not merely by counting.</div>
 <dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/support/ui/ISelect.html#deselectByIndex-int-">deselectByIndex</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/support/ui/ISelect.html" title="interface in org.openqa.selenium.support.ui">ISelect</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>index</code> - The option at this index will be deselected</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
@@ -427,6 +452,8 @@ extends java.lang.Object</pre>
 
  &lt;option value="foo"&gt;Bar&lt;/option&gt;</div>
 <dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/support/ui/ISelect.html#deselectByVisibleText-java.lang.String-">deselectByVisibleText</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/support/ui/ISelect.html" title="interface in org.openqa.selenium.support.ui">ISelect</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>text</code> - The visible text to match against</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>

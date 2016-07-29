@@ -17,12 +17,6 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
-var altColor = "altColor";
-var rowColor = "rowColor";
-var tableTab = "tableTab";
-var activeTableTab = "activeTableTab";
 </script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -75,13 +69,13 @@ var activeTableTab = "activeTableTab";
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.summary">Method</a></li>
+<li><a href="#methods.inherited.from.class.java.lang.Object">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li>Method</li>
 </ul>
 </div>
 <a name="skip.navbar.top">
@@ -98,37 +92,19 @@ var activeTableTab = "activeTableTab";
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
-<li>org.openqa.jetty.http.handler.AbstractHttpHandler</li>
-<li>
-<ul class="inheritance">
-<li>org.openqa.jetty.http.handler.ResourceHandler</li>
-<li>
-<ul class="inheritance">
 <li>org.openqa.selenium.server.htmlrunner.SingleTestSuiteResourceHandler</li>
-</ul>
-</li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
-<dl>
-<dt>All Implemented Interfaces:</dt>
-<dd>java.io.Serializable, org.openqa.jetty.http.HttpHandler, org.openqa.jetty.util.LifeCycle</dd>
-</dl>
 <hr>
 <br>
 <pre>public class <span class="typeNameLabel">SingleTestSuiteResourceHandler</span>
-extends org.openqa.jetty.http.handler.ResourceHandler</pre>
+extends java.lang.Object</pre>
 <div class="block">Generates a test suite table designed to run a single Selenium test; to use it, point
  TestRunner.html to /singleTest/http://my.com/single/test.html</div>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../serialized-form.html#org.openqa.selenium.server.htmlrunner.SingleTestSuiteResourceHandler">Serialized Form</a></dd>
-</dl>
 </li>
 </ul>
 </div>
@@ -158,42 +134,12 @@ extends org.openqa.jetty.http.handler.ResourceHandler</pre>
 <!--   -->
 </a>
 <h3>Method Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Method and Description</th>
-</tr>
-<tr id="i0" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/server/htmlrunner/SingleTestSuiteResourceHandler.html#handle-java.lang.String-java.lang.String-org.openqa.jetty.http.HttpRequest-org.openqa.jetty.http.HttpResponse-">handle</a></span>(java.lang.String&nbsp;pathInContext,
-      java.lang.String&nbsp;pathParams,
-      org.openqa.jetty.http.HttpRequest&nbsp;request,
-      org.openqa.jetty.http.HttpResponse&nbsp;response)</code>
-<div class="block">Handles the HTTP request and generates the suite table</div>
-</td>
-</tr>
-</table>
-<ul class="blockList">
-<li class="blockList"><a name="methods.inherited.from.class.org.openqa.jetty.http.handler.ResourceHandler">
-<!--   -->
-</a>
-<h3>Methods inherited from class&nbsp;org.openqa.jetty.http.handler.ResourceHandler</h3>
-<code>getAllowedMethods, getAllowedString, getMinGzipLength, getRedirectWelcome, getResource, handleGet, isAcceptRanges, isDirAllowed, isMethodAllowed, sendData, setAcceptRanges, setAllowedMethods, setDirAllowed, setMinGzipLength, setRedirectWelcome, start, stop, writeHeaders</code></li>
-</ul>
-<ul class="blockList">
-<li class="blockList"><a name="methods.inherited.from.class.org.openqa.jetty.http.handler.AbstractHttpHandler">
-<!--   -->
-</a>
-<h3>Methods inherited from class&nbsp;org.openqa.jetty.http.handler.AbstractHttpHandler</h3>
-<code>getHttpContext, getName, handleTrace, initialize, isStarted, setName, toString</code></li>
-</ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;java.lang.Object</h3>
-<code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, wait, wait, wait</code></li>
+<code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
 </ul>
 </li>
 </ul>
@@ -216,38 +162,6 @@ extends org.openqa.jetty.http.handler.ResourceHandler</pre>
 <li class="blockList">
 <h4>SingleTestSuiteResourceHandler</h4>
 <pre>public&nbsp;SingleTestSuiteResourceHandler()</pre>
-</li>
-</ul>
-</li>
-</ul>
-<!-- ============ METHOD DETAIL ========== -->
-<ul class="blockList">
-<li class="blockList"><a name="method.detail">
-<!--   -->
-</a>
-<h3>Method Detail</h3>
-<a name="handle-java.lang.String-java.lang.String-org.openqa.jetty.http.HttpRequest-org.openqa.jetty.http.HttpResponse-">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>handle</h4>
-<pre>public&nbsp;void&nbsp;handle(java.lang.String&nbsp;pathInContext,
-                   java.lang.String&nbsp;pathParams,
-                   org.openqa.jetty.http.HttpRequest&nbsp;request,
-                   org.openqa.jetty.http.HttpResponse&nbsp;response)
-            throws org.openqa.jetty.http.HttpException,
-                   java.io.IOException</pre>
-<div class="block">Handles the HTTP request and generates the suite table</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code>handle</code>&nbsp;in interface&nbsp;<code>org.openqa.jetty.http.HttpHandler</code></dd>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code>handle</code>&nbsp;in class&nbsp;<code>org.openqa.jetty.http.handler.ResourceHandler</code></dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>org.openqa.jetty.http.HttpException</code></dd>
-<dd><code>java.io.IOException</code></dd>
-</dl>
 </li>
 </ul>
 </li>
@@ -305,13 +219,13 @@ extends org.openqa.jetty.http.handler.ResourceHandler</pre>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.summary">Method</a></li>
+<li><a href="#methods.inherited.from.class.java.lang.Object">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li>Method</li>
 </ul>
 </div>
 <a name="skip.navbar.bottom">

@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":9,"i3":10,"i4":10,"i5":10,"i6":10,"i7":9};
+var methods = {"i0":10,"i1":10,"i2":9,"i3":10,"i4":10,"i5":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -133,7 +133,7 @@ implements org.openqa.grid.shared.GridNodeServer</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/SeleniumServer.html#SeleniumServer-int-">SeleniumServer</a></span>(int&nbsp;port)</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/SeleniumServer.html#SeleniumServer-org.openqa.grid.internal.utils.configuration.StandaloneConfiguration-">SeleniumServer</a></span>(org.openqa.grid.internal.utils.configuration.StandaloneConfiguration&nbsp;configuration)</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -164,23 +164,15 @@ implements org.openqa.grid.shared.GridNodeServer</pre>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/SeleniumServer.html#setBrowserTimeout-int-">setBrowserTimeout</a></span>(int&nbsp;browserTimeout)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/SeleniumServer.html#setConfiguration-org.openqa.grid.internal.utils.configuration.StandaloneConfiguration-">setConfiguration</a></span>(org.openqa.grid.internal.utils.configuration.StandaloneConfiguration&nbsp;configuration)</code>&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/SeleniumServer.html#setSessionTimeout-int-">setSessionTimeout</a></span>(int&nbsp;timeout)</code>&nbsp;</td>
-</tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/SeleniumServer.html#setThreadCount-int-">setThreadCount</a></span>(int&nbsp;threadCount)</code>&nbsp;</td>
-</tr>
-<tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/SeleniumServer.html#stop--">stop</a></span>()</code>
 <div class="block">Stops the Jetty server</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/SeleniumServer.html#usage-java.lang.String-">usage</a></span>(java.lang.String&nbsp;msg)</code>&nbsp;</td>
 </tr>
@@ -206,13 +198,13 @@ implements org.openqa.grid.shared.GridNodeServer</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="SeleniumServer-int-">
+<a name="SeleniumServer-org.openqa.grid.internal.utils.configuration.StandaloneConfiguration-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>SeleniumServer</h4>
-<pre>public&nbsp;SeleniumServer(int&nbsp;port)</pre>
+<pre>public&nbsp;SeleniumServer(org.openqa.grid.internal.utils.configuration.StandaloneConfiguration&nbsp;configuration)</pre>
 </li>
 </ul>
 </li>
@@ -236,31 +228,13 @@ implements org.openqa.grid.shared.GridNodeServer</pre>
 </dl>
 </li>
 </ul>
-<a name="setThreadCount-int-">
+<a name="setConfiguration-org.openqa.grid.internal.utils.configuration.StandaloneConfiguration-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>setThreadCount</h4>
-<pre>public&nbsp;void&nbsp;setThreadCount(int&nbsp;threadCount)</pre>
-</li>
-</ul>
-<a name="setBrowserTimeout-int-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setBrowserTimeout</h4>
-<pre>public&nbsp;void&nbsp;setBrowserTimeout(int&nbsp;browserTimeout)</pre>
-</li>
-</ul>
-<a name="setSessionTimeout-int-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setSessionTimeout</h4>
-<pre>public&nbsp;void&nbsp;setSessionTimeout(int&nbsp;timeout)</pre>
+<h4>setConfiguration</h4>
+<pre>public&nbsp;void&nbsp;setConfiguration(org.openqa.grid.internal.utils.configuration.StandaloneConfiguration&nbsp;configuration)</pre>
 </li>
 </ul>
 <a name="boot--">
