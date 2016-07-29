@@ -100,7 +100,7 @@ public class GridNodeConfiguration extends GridConfiguration {
     names = "-nodeStatusCheckTimeout",
     description = "<Integer> in ms : connection/socket timeout, used for node \"nodePolling\" check"
   )
-  public Integer nodeStatusCheckTimeout;
+  public Integer nodeStatusCheckTimeout = 5000;
 
   @Parameter(
     names = "-proxy",
