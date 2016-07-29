@@ -50,7 +50,7 @@ def release_version
 end
 
 def version
-  "#{release_version}.0-beta1"
+  "#{release_version}.0-beta2"
 end
 
 ide_version = "2.8.0"
