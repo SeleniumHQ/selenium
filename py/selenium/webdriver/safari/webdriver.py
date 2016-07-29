@@ -46,7 +46,7 @@ class WebDriver(RemoteWebDriver):
          - desired_capabilities: Dictionary object with desired capabilities (Can be used to provide various Safari switches).
         """
         if not executable_path is None:
-	    executable_path = os.environ.get("SELENIUM_SERVER_JAR")
+            executable_path = os.environ.get("SELENIUM_SERVER_JAR")
         self.service = Service(executable_path, port=port, quiet=quiet, use_legacy=use_legacy_driver)
         self.service.start()
 
