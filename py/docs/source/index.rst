@@ -36,7 +36,7 @@ If you have `pip <http://www.pip-installer.org>`_ on your system, you can simply
 
     pip install -U selenium
 
-Alternately, you can download the source distribution from `PyPI <http://pypi.python.org/pypi/selenium>`_ (e.g. selenium-2.53.0.tar.gz), unarchive it, and run::
+Alternately, you can download the source distribution from `PyPI <http://pypi.python.org/pypi/selenium>`_ (e.g. selenium-3.0.0.b1.tar.gz), unarchive it, and run::
 
     python setup.py install
 
@@ -107,11 +107,11 @@ For normal WebDriver scripts (non-Remote), the Java server is not needed.
 
 However, to use Selenium Webdriver Remote or the legacy Selenium API (Selenium-RC), you need to also run the Selenium server.  The server requires a Java Runtime Environment (JRE).
 
-Download the server separately, from: http://selenium-release.storage.googleapis.com/2.53/selenium-server-standalone-2.53.0.jar
+Download the server separately, from: http://selenium-release.storage.googleapis.com/3.0-beta1/selenium-server-standalone-3.0.0-beta1jar
 
 Run the server from the command line::
 
-    java -jar selenium-server-standalone-2.53.0.jar
+    java -jar selenium-server-standalone-3.0.0-beta1.jar
 
 Then run your Python client scripts.
 

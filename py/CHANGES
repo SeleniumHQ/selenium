@@ -1,3 +1,22 @@
+Selenium 3.0.0.b1
+* Fix basestring reference to work with python 3. Fixes #1820
+* Correct Length conditional when filtering in PhantomJS. Fixes #1817
+* Fix send keys when using PUA keys e.g. Keys.RIGHT #1839
+* Fix cookie file leak in PhantomJS #1854
+* Use the correct binary path when using Marionette
+* Fixed: Unhelpful error message when PhantomJS exits. (#2173 #2168)
+* Fix broken link to python documentation (#2159)
+* Attempt to remove Firefox profile when using Marionette
+* Ensure all capabilities are either within desiredCapabilities or requiredCapabilities
+* Correct the expected capability name for the Firefox profile
+* Add Firefox options to capabilities
+* Visibility_of_all implies it only returns elements if all visible (#2052)
+* Find visible elements (#2041)
+*  Pass the firefox_profile as a desired capability in the Python client when using a remote server
+* Avoid checking exception details for invalid locators due to differences in server implementations
+* Handle capabilities better with Marionette and GeckoDriver
+* Updated the maxVersion of FirefoxDriver xpi maxVersion to work with Firefox 47.0.1
+
 Selenium 2.53.0
 * Adding Options object for use with Python FirefoxDriver
 * Fixed improper usage of super in exceptions module
