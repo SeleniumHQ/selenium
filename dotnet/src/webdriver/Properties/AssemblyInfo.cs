@@ -1,4 +1,5 @@
-﻿// <copyright file="AssemblyInfo.cs" company="WebDriver Committers">// Copyright 2007-2011 WebDriver committers
+﻿// <copyright file="AssemblyInfo.cs" company="WebDriver Committers">
+// Copyright 2007-2011 WebDriver committers
 // Copyright 2007-2011 Google Inc.
 // Portions copyright 2011 Software Freedom Conservancy
 //

@@ -1,3 +1,13 @@
+V3.0.0-beta1
+============
+ * The Mozilla-provided Marionette-based FirefoxDriver is now the default
+   implementation for automating Firefox. Additionally, this aligns the
+   FirefoxDriver class with other browser-specific implementations, using
+   a FirefoxOptions class for setting options for the browser session. 
+   Constructors of FirefoxDriver directly referencing FirefoxProfile or
+   FirefoxBinary have been marked as deprecated, and will be removed in a 
+   future release.
+
 v2.53.0
 =======
  * This will be the final full release in the 2.x series. There may be
