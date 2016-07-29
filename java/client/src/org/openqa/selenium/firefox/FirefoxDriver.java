@@ -97,7 +97,8 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     public static final String DRIVER_XPI_PROPERTY = "webdriver.firefox.driver";
 
     /**
-     * Boolean system property that instructs FirefoxDriver to use Marionette backend.
+     * Boolean system property that instructs FirefoxDriver to use Marionette backend,
+     * overrides any capabilities specified by the user
      */
     public static final String DRIVER_USE_MARIONETTE = "webdriver.firefox.marionette";
   }
@@ -284,8 +285,20 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   }
 
   private static boolean isLegacy(Capabilities desiredCapabilities) {
+    Boolean forceMarionette = forceMarionetteFromSystemProperty();
+    if (forceMarionette != null) {
+      return !forceMarionette;
+    }
     Object marionette = desiredCapabilities.getCapability(MARIONETTE);
     return marionette instanceof Boolean && ! (Boolean) marionette;
+  }
+
+  private static Boolean forceMarionetteFromSystemProperty() {
+    String useMarionette = System.getProperty(SystemProperty.DRIVER_USE_MARIONETTE);
+    if (useMarionette == null) {
+      return null;
+    }
+    return Boolean.valueOf(useMarionette);
   }
 
   @Override
