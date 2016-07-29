@@ -20,6 +20,7 @@ java_library(name = 'selenium',
 
 java_library(name = 'core',
   maven_coords = 'org.seleniumhq.selenium:selenium-api:' + SE_VERSION,
+  maven_pom_template = ':template-pom',
   srcs = [
     'Alert.java',
     'By.java',
@@ -138,6 +139,7 @@ java_library(name = 'primitives',
 java_library(
   name = 'client-combined',
   maven_coords = 'org.seleniumhq.selenium:selenium-java:' + SE_VERSION,
+  maven_pom_template = ':template-pom',
   exported_deps = [
     "//java/client/src/org/openqa/selenium/chrome:chrome",
     "//java/client/src/org/openqa/selenium/firefox:firefox",
@@ -152,4 +154,11 @@ java_library(
   visibility = [
     '//java/server/src/org/openqa/grid/selenium:classes',
   ],
+)
+
+export_file(
+  name = 'template-pom',
+  src = 'pom.xml',
+  out = 'pom.xml',
+  visibility = ['PUBLIC'],
 )

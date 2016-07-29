@@ -2,6 +2,7 @@ include_defs('//SELENIUM_VERSION')
 
 java_library(name = 'firefox',
   maven_coords = 'org.seleniumhq.selenium:selenium-firefox-driver:jar:' + SE_VERSION,
+  maven_pom_template = '//java/client/src/org/openqa/selenium:template-pom',
   srcs = glob(['*.java', 'internal/*.java']),
   resources = [
     ':prefs',

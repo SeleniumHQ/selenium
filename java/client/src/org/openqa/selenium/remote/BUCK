@@ -31,6 +31,7 @@ java_library(
 
 java_library(name = 'remote',
   maven_coords = 'org.seleniumhq.selenium:selenium-remote-driver:' + SE_VERSION,
+  maven_pom_template = '//java/client/src/org/openqa/selenium:template-pom',
   srcs = [
     'Augmenter.java',
     'AugmenterProvider.java',
