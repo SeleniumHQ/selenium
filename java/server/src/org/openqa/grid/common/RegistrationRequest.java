@@ -183,7 +183,7 @@ public class RegistrationRequest {
     res.role = GridRole.get(configuration.role);
     res.addPlatformInfoToCapabilities();
 
-    if (configuration.browser.size() > 0) {
+    if ( (configuration.browser != null) && (configuration.browser.size() > 0) ) {
       res.capabilities = configuration.browser;
     }
 
