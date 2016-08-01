@@ -321,8 +321,8 @@ function createGeckoDriverService(binary) {
     loopback: true,
     port: port,
     args: Promise.all([exe, port, marionettePort]).then(args => {
-      return ['-b', args[0], 
-              '--webdriver-port', args[1],
+      return ['-b', args[0],
+              '--port', args[1],
               '--marionette-port', args[2]];
     })
     // ,stdio: 'inherit'

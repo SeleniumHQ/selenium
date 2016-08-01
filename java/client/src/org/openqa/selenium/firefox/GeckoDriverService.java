@@ -97,7 +97,7 @@ public class GeckoDriverService extends DriverService {
     @Override
     protected ImmutableList<String> createArgs() {
       ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
-      argsBuilder.add(String.format("--webdriver-port=%d", getPort()));
+      argsBuilder.add(String.format("--port=%d", getPort()));
       if (getLogFile() != null) {
         argsBuilder.add(String.format("--log-file=\"%s\"", getLogFile().getAbsolutePath()));
       }

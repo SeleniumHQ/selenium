@@ -154,7 +154,7 @@ namespace OpenQA.Selenium.Firefox
 
                 if (this.Port > 0)
                 {
-                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --webdriver-port {0}", this.Port);
+                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --port {0}", this.Port);
                 }
 
                 if (!string.IsNullOrEmpty(this.browserBinaryPath))

@@ -30,7 +30,7 @@ module Selenium
         private
 
         def start_process
-          server_command = [@executable_path, "--binary=#{Firefox::Binary.path}", "--webdriver-port=#{@port}", *@extra_args]
+          server_command = [@executable_path, "--binary=#{Firefox::Binary.path}", "--port=#{@port}", *@extra_args]
           @process       = ChildProcess.build(*server_command)
 
           if $DEBUG
