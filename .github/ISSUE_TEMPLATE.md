@@ -6,6 +6,8 @@ Selenium Version:
 Browser:  
 <!-- Internet Explorer?  Firefox? 
 
+FIREFOX 48+ IS ONLY COMPATIBLE WITH GECKODRIVER. Any issue logged here for 48+ will be closed as a duplicate of #2559
+
 If the issue is with Google Chrome consider logging an issue with chromedriver instead:
 https://sites.google.com/a/chromium.org/chromedriver/help
 
