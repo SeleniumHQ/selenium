@@ -50,13 +50,10 @@ module Selenium
         end
       end
 
-      # Marionette BUG - AutomatedTester: "known bug with execute script"
-      not_compliant_on browser: :marionette do
-        it 'should submit' do
-          driver.navigate.to url_for('formPage.html')
-          wait_for_element(id: 'submitButton')
-          driver.find_element(id: 'submitButton').submit
-        end
+      it 'should submit' do
+        driver.navigate.to url_for('formPage.html')
+        wait_for_element(id: 'submitButton')
+        driver.find_element(id: 'submitButton').submit
       end
 
       it 'should send string keys' do
