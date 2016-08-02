@@ -362,7 +362,7 @@ public class TestSession {
                                                                           IOException {
     HttpClient client = getClient();
     URL remoteURL = slot.getRemoteURL();
-    HttpHost host = new HttpHost(remoteURL.getHost(), remoteURL.getPort());
+    HttpHost host = new HttpHost(remoteURL.getHost(), remoteURL.getPort(), remoteURL.getProtocol());
 
     return client.execute(host, proxyRequest);
   }
