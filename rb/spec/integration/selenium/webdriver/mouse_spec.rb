@@ -21,8 +21,8 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    # Marionette - Waiting on implementation in httpd after spec section rewrite
-    not_compliant_on browser: [:safari, :marionette] do
+    # Firefox - "Actions Endpoint Not Yet Implemented"
+    not_compliant_on browser: [:safari, :firefox] do
       describe Mouse do
         it 'clicks an element' do
           driver.navigate.to url_for('formPage.html')

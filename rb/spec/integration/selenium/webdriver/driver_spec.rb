@@ -210,13 +210,10 @@ module Selenium
           expect(driver.execute_script('return ["zero", "one", "two"];')).to eq(%w[zero one two])
         end
 
-        # Marionette BUG - Not finding local javascript for execution
-        not_compliant_on browser: :marionette do
-          it 'should be able to call functions on the page' do
-            driver.navigate.to url_for('javascriptPage.html')
-            driver.execute_script("displayMessage('I like cheese');")
-            expect(driver.find_element(id: 'result').text.strip).to eq('I like cheese')
-          end
+        it 'should be able to call functions on the page' do
+          driver.navigate.to url_for('javascriptPage.html')
+          driver.execute_script("displayMessage('I like cheese');")
+          expect(driver.find_element(id: 'result').text.strip).to eq('I like cheese')
         end
 
         it 'should be able to pass string arguments' do
@@ -275,7 +272,8 @@ module Selenium
         end
 
         # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1849991/
-        not_compliant_on({driver: :remote, browser: [:marionette, :phantomjs]},
+        # Firefox - https://github.com/SeleniumHQ/selenium/issues/2554
+        not_compliant_on({driver: :remote, browser: [:firefox, :phantomjs]},
                          {browser: :edge}) do
           it 'times out if the callback is not invoked' do
             expect do

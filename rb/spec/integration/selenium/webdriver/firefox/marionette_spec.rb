@@ -21,7 +21,7 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-    compliant_on browser: :marionette do
+    compliant_on browser: :firefox do
       describe Firefox do
         def restart_remote_server
           server = GlobalTestEnv.reset_remote_server
@@ -41,7 +41,7 @@ module Selenium
 
         it 'creates default capabilities' do
           driver_name = GlobalTestEnv.driver
-          driver_name = :firefox if driver_name == :marionette
+          driver_name = :firefox if driver_name == :firefox
 
           begin
             driver1 = Selenium::WebDriver.for driver_name, @opt
@@ -63,19 +63,19 @@ module Selenium
           end
         end
 
+        # Test this in isolation; Firefox doesn't like to switch between binaries in same session
         not_compliant_on driver: :remote do
           it 'takes a binary path as an argument' do
-            pending "Set ENV['ALT_MARIONETTE_BINARY'] to test this" unless ENV['ALT_MARIONETTE_BINARY']
+            pending "Set ENV['ALT_FIREFOX_BINARY'] to test this" unless ENV['ALT_FIREFOX_BINARY']
 
             begin
-              @opt[:marionette] = true
               driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
 
               default_version = driver1.capabilities.version
               expect { driver1.capabilities.browser_version }.to_not raise_exception NoMethodError
               driver1.quit
 
-              caps = Remote::Capabilities.firefox(firefox_binary: ENV['ALT_MARIONETTE_BINARY'])
+              caps = Remote::Capabilities.firefox(firefox_binary: ENV['ALT_FIREFOX_BINARY'])
               @opt[:desired_capabilities] = caps
               driver2 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
 
@@ -89,22 +89,9 @@ module Selenium
         end
 
         # https://github.com/mozilla/geckodriver/issues/58
-        not_compliant_on browser: :marionette do
+        not_compliant_on browser: :firefox do
           context 'when shared example' do
-            it_behaves_like 'driver that can be started concurrently', :marionette
-          end
-        end
-
-        # Test in isolation: https://bugzilla.mozilla.org/show_bug.cgi?id=1228121
-        not_compliant_on browser: :marionette do
-          it 'Does not use geckodriver when marionette option is set to false' do
-            caps = Remote::Capabilities.firefox(marionette: false)
-            @opt[:desired_capabilities] = caps
-
-            driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
-
-            expect { driver1.capabilities.browser_version }.to raise_exception NoMethodError
-            driver1.quit
+            it_behaves_like 'driver that can be started concurrently', :firefox
           end
         end
       end

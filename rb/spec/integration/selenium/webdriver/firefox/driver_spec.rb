@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Firefox
-      compliant_on browser: :firefox do
+      compliant_on browser: :ff_legacy do
         describe Driver do
           describe '.new' do
             before do

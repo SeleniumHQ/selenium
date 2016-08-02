@@ -143,7 +143,7 @@ module Selenium
             caps.takes_screenshot      = data.delete('takesScreenshot')
             caps.native_events         = data.delete('nativeEvents')
             caps.rotatable             = data.delete('rotatable')
-            caps.proxy                 = Proxy.json_create(data['proxy']) if data.key?('proxy')
+            caps.proxy                 = Proxy.json_create(data['proxy']) if data.key?('proxy') && !data['proxy'].empty?
 
             # any remaining pairs will be added as is, with no conversion
             caps.merge!(data)

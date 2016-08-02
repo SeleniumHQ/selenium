@@ -21,9 +21,8 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    # Marionette - Waiting on implementation in httpd after spec section rewrite
-    # Firefox BUG - https://github.com/SeleniumHQ/selenium/issues/1792
-    not_compliant_on browser: [:safari, :marionette, :firefox] do
+    # Firefox - "Actions Endpoint Not Yet Implemented"
+    not_compliant_on browser: [:safari, :ff_legacy, :firefox] do
       describe Keyboard do
         it 'sends keys to the active element' do
           driver.navigate.to url_for('bodyTypingTest.html')

@@ -28,14 +28,12 @@ module Selenium
 
       let(:new_window) { driver.window_handles.find { |handle| handle != driver.window_handle } }
 
-      # https://github.com/mozilla/geckodriver/issues/52
-      not_compliant_on browser: :marionette do
-        # https://github.com/SeleniumHQ/selenium/issues/1795
-        not_compliant_on driver: :remote, browser: [:edge, :marionette] do
-          it 'should find the active element' do
-            driver.navigate.to url_for('xhtmlTest.html')
-            expect(driver.switch_to.active_element).to be_an_instance_of(WebDriver::Element)
-          end
+      # Server - https://github.com/SeleniumHQ/selenium/issues/2555
+      # Server - https://github.com/SeleniumHQ/selenium/issues/1795
+      not_compliant_on driver: :remote, browser: [:edge, :firefox] do
+        it 'should find the active element' do
+          driver.navigate.to url_for('xhtmlTest.html')
+          expect(driver.switch_to.active_element).to be_an_instance_of(WebDriver::Element)
         end
       end
 
@@ -57,11 +55,6 @@ module Selenium
 
       not_compliant_on browser: [:safari, :phantomjs] do
         it 'should switch to parent frame' do
-          # For some reason Marionette loses control of itself here unless reset. Unable to isolate
-          compliant_on driver: :marionette do
-            reset_driver!
-          end
-
           driver.navigate.to url_for('iframes.html')
 
           iframe = driver.find_element(tag_name: 'iframe')
@@ -130,8 +123,8 @@ module Selenium
         expect(driver.title).to eq('XHTML Test Page')
       end
 
-      # Marionette BUG - https://bugzilla.mozilla.org/show_bug.cgi?id=1280517
-      not_compliant_on browser: [:marionette, :ie] do
+      # Firefox - https://bugzilla.mozilla.org/show_bug.cgi?id=1280517
+      not_compliant_on browser: [:firefox, :ie] do
         context 'with more than two windows' do
           it 'should close current window when more than two windows exist' do
             driver.navigate.to url_for('xhtmlTest.html')
@@ -250,9 +243,9 @@ module Selenium
             end
           end
 
-          # Marionette BUG - https://bugzilla.mozilla.org/show_bug.cgi?id=1255906
+          # Firefox - https://bugzilla.mozilla.org/show_bug.cgi?id=1255906
           # Edge Under Consideration - https://dev.windows.com/en-us/microsoft-edge/platform/status/webdriver/details/
-          not_compliant_on browser: [:marionette, :edge] do
+          not_compliant_on browser: [:firefox, :edge] do
             it 'allows the user to set the value of a prompt' do
               driver.navigate.to url_for('alerts.html')
               driver.find_element(id: 'prompt').click
@@ -296,8 +289,8 @@ module Selenium
             end
           end
 
-          # Marionette BUG - https://bugzilla.mozilla.org/show_bug.cgi?id=1279211
-          not_compliant_on browser: :marionette do
+          # Firefox - https://bugzilla.mozilla.org/show_bug.cgi?id=1279211
+          not_compliant_on browser: :firefox do
             it 'raises an UnhandledAlertError if an alert has not been dealt with' do
               driver.navigate.to url_for('alerts.html')
               driver.find_element(id: 'alert').click
@@ -305,11 +298,11 @@ module Selenium
 
               expect { driver.title }.to raise_error(Selenium::WebDriver::Error::UnhandledAlertError)
 
-              not_compliant_on browser: [:firefox, :ie] do
+              not_compliant_on browser: [:ff_legacy, :ie] do
                 driver.switch_to.alert.accept
               end
 
-              compliant_on browser: :firefox do
+              compliant_on browser: :ff_legacy do
                 reset_driver!
               end
             end

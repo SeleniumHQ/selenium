@@ -19,8 +19,8 @@
 
 shared_examples_for 'driver that can be started concurrently' do |browser_name|
   it 'is started sequentially' do
-    marionette = browser_name == :firefox ? {marionette: false} : {}
-    browser_name = :firefox if browser_name == :marionette
+    marionette = browser_name == :ff_legacy ? {marionette: false} : {}
+    browser_name = :firefox if browser_name == :ff_legacy
 
     expect do
       # start 5 drivers concurrently

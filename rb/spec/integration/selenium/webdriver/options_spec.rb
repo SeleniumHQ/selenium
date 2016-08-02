@@ -22,7 +22,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Options do
-      not_compliant_on browser: [:marionette, :ie, :edge] do
+      not_compliant_on browser: [:firefox, :ie, :edge] do
         describe 'logs' do
           compliant_on driver: :remote do
             it 'can fetch remote log types' do
@@ -38,7 +38,7 @@ module Selenium
           end
 
           # All other browsers show empty
-          compliant_on browser: :firefox do
+          compliant_on browser: [:firefox, :ff_legacy] do
             it 'can get the browser log' do
               driver.navigate.to url_for('simpleTest.html')
 
@@ -95,8 +95,8 @@ module Selenium
             end
           end
 
-          # Marionette BUG - https://bugzilla.mozilla.org/show_bug.cgi?id=1256007
-          not_compliant_on browser: [:safari, :marionette] do
+          # Firefox - https://bugzilla.mozilla.org/show_bug.cgi?id=1256007
+          not_compliant_on browser: [:safari, :firefox] do
             it 'should use DateTime for expires' do
               driver.navigate.to url_for('xhtmlTest.html')
 

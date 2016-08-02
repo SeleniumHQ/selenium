@@ -33,7 +33,7 @@ module Selenium
         driver.find_element(id: 'imageButton').click
       end
 
-      compliant_on browser: [:chrome, :firefox] do
+      compliant_on browser: [:chrome, :ff_legacy] do
         it 'should raise if different element receives click' do
           driver.navigate.to url_for('click_tests/overlapping_elements.html')
           element_error = 'Other element would receive the click: <div id="over"><\/div>'
@@ -43,7 +43,7 @@ module Selenium
         end
       end
 
-      compliant_on browser: [:firefox] do
+      compliant_on browser: [:firefox, :ff_legacy] do
         it 'should not raise if element is only partially covered' do
           driver.navigate.to url_for('click_tests/overlapping_elements.html')
           expect { driver.find_element(id: 'other_contents').click }.not_to raise_error
@@ -62,17 +62,20 @@ module Selenium
         driver.find_element(id: 'working').send_keys('foo', 'bar')
       end
 
-      it 'should send key presses' do
-        driver.navigate.to url_for('javascriptPage.html')
-        key_reporter = driver.find_element(id: 'keyReporter')
+      # Firefox - https://bugzilla.mozilla.org/show_bug.cgi?id=1260233
+      not_compliant_on browser: :firefox do
+        it 'should send key presses' do
+          driver.navigate.to url_for('javascriptPage.html')
+          key_reporter = driver.find_element(id: 'keyReporter')
 
-        key_reporter.send_keys('Tet', :arrow_left, 's')
-        expect(key_reporter.attribute('value')).to eq('Test')
+          key_reporter.send_keys('Tet', :arrow_left, 's')
+          expect(key_reporter.attribute('value')).to eq('Test')
+        end
       end
 
       # PhantomJS on windows issue: https://github.com/ariya/phantomjs/issues/10993
-      # Marionette BUG - https://bugzilla.mozilla.org/show_bug.cgi?id=1260233
-      not_compliant_on browser: [:safari, :edge, :marionette, :phantomjs] do
+      # Firefox - https://bugzilla.mozilla.org/show_bug.cgi?id=1260233
+      not_compliant_on browser: [:safari, :edge, :firefox, :phantomjs] do
         it 'should handle file uploads' do
           driver.navigate.to url_for('formPage.html')
 
@@ -160,8 +163,8 @@ module Selenium
         expect(size.height).to be > 0
       end
 
-      # Marionette - Waiting on implementation in httpd after spec section rewrite
-      not_compliant_on browser: [:safari, :marionette] do
+      # Firefox - "Actions Endpoint Not Yet Implemented"
+      not_compliant_on browser: [:safari, :firefox] do
         it 'should drag and drop' do
           driver.navigate.to url_for('dragAndDropTest.html')
 
