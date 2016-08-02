@@ -483,7 +483,7 @@ public class BaseRemoteProxy implements RemoteProxy {
     String url = getRemoteHost().toExternalForm() + "/wd/hub/status";
     BasicHttpRequest r = new BasicHttpRequest("GET", url);
     HttpClient client = getHttpClientFactory().getGridHttpClient(config.nodeStatusCheckTimeout, config.nodeStatusCheckTimeout);
-    HttpHost host = new HttpHost(getRemoteHost().getHost(), getRemoteHost().getPort());
+    HttpHost host = new HttpHost(getRemoteHost().getHost(), getRemoteHost().getPort(), getRemoteHost().getProtocol());
     HttpResponse response;
     String existingName = Thread.currentThread().getName();
     HttpEntity entity = null;
