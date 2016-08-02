@@ -116,7 +116,7 @@ JAVA_RELEASE_TARGETS = [
   '//java/client/src/org/openqa/selenium/firefox:firefox',
   '//java/client/src/org/openqa/selenium/ie:ie',
   '//java/client/src/org/openqa/selenium/opera:opera',
-  '//java/client/src/org/openqa/selenium/remote:augmenter',
+  '//java/client/src/org/openqa/selenium/remote:remote',
   '//java/client/src/org/openqa/selenium/safari:safari',
   '//java/client/src/org/openqa/selenium:client-combined',
   '//java/server/src/com/thoughtworks/selenium:leg-rc',
