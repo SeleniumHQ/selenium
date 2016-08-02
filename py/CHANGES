@@ -1,3 +1,6 @@
+Selenium 3.0.0.b2
+* Updated Marionette port argument to match other drivers.
+
 Selenium 3.0.0.b1
 * Fix basestring reference to work with python 3. Fixes #1820
 * Correct Length conditional when filtering in PhantomJS. Fixes #1817
