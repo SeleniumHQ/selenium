@@ -396,7 +396,7 @@ module Selenium
         #
 
         def click_element(element)
-          execute :elementClick, id: element
+          execute :elementClick, id: element.values.first
         end
 
         def click
@@ -436,11 +436,11 @@ module Selenium
 
         # TODO: - Implement file verification
         def send_keys_to_element(element, keys)
-          execute :elementSendKeys, {id: element}, {value: keys.join('').split(//)}
+          execute :elementSendKeys, {id: element.values.first}, {value: keys.join('').split(//)}
         end
 
         def clear_element(element)
-          execute :elementClear, id: element
+          execute :elementClear, id: element.values.first
         end
 
         def submit_element(element)
@@ -450,7 +450,7 @@ module Selenium
         end
 
         def drag_element(element, right_by, down_by)
-          execute :dragElement, {id: element}, {x: right_by, y: down_by}
+          execute :dragElement, {id: element.values.first}, {x: right_by, y: down_by}
         end
 
         def touch_single_tap(element)
@@ -511,23 +511,23 @@ module Selenium
         #
 
         def element_tag_name(element)
-          execute :getElementTagName, id: element
+          execute :getElementTagName, id: element.values.first
         end
 
         def element_attribute(element, name)
-          execute :getElementAttribute, id: element, name: name
+          execute :getElementAttribute, id: element.values.first, name: name
         end
 
         def element_value(element)
-          execute :getElementProperty, id: element, name: 'value'
+          execute :getElementProperty, id: element.values.first, name: 'value'
         end
 
         def element_text(element)
-          execute :getElementText, id: element
+          execute :getElementText, id: element.values.first
         end
 
         def element_location(element)
-          data = execute :getElementRect, id: element
+          data = execute :getElementRect, id: element.values.first
 
           Point.new data['x'], data['y']
         end
@@ -538,27 +538,27 @@ module Selenium
         end
 
         def element_size(element)
-          data = execute :getElementRect, id: element
+          data = execute :getElementRect, id: element.values.first
 
           Dimension.new data['width'], data['height']
         end
 
         def element_enabled?(element)
-          execute :isElementEnabled, id: element
+          execute :isElementEnabled, id: element.values.first
         end
 
         def element_selected?(element)
-          execute :isElementSelected, id: element
+          execute :isElementSelected, id: element.values.first
         end
 
         def element_displayed?(element)
           jwp = Selenium::WebDriver::Remote::Bridge::COMMANDS[:isElementDisplayed]
           self.class.command(:isElementDisplayed, jwp.first, jwp.last)
-          execute :isElementDisplayed, id: element
+          execute :isElementDisplayed, id: element.values.first
         end
 
         def element_value_of_css_property(element, prop)
-          execute :getElementCssValue, id: element, property_name: prop
+          execute :getElementCssValue, id: element.values.first, property_name: prop
         end
 
         #
@@ -575,19 +575,18 @@ module Selenium
           how, what = convert_locators(how, what)
 
           id = if parent
-                 execute :findChildElement, {id: parent}, {using: how, value: what}
+                 execute :findChildElement, {id: parent.values.first}, {using: how, value: what}
                else
                  execute :findElement, {}, {using: how, value: what}
                end
-
-          Element.new self, element_id_from(id)
+          Element.new self, id
         end
 
         def find_elements_by(how, what, parent = nil)
           how, what = convert_locators(how, what)
 
           ids = if parent
-                  execute :findChildElements, {id: parent}, {using: how, value: what}
+                  execute :findChildElements, {id: parent.values.first}, {using: how, value: what}
                 else
                   execute :findElements, {}, {using: how, value: what}
                 end

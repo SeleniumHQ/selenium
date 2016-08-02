@@ -292,10 +292,7 @@ module Selenium
       #
 
       def as_json(*)
-        {
-          :ELEMENT => @id,
-          'element-6066-11e4-a52e-4f735466cecf' => @id
-        }
+        @id.is_a?(Hash) ? @id : {:ELEMENT => @id}
       end
 
       private

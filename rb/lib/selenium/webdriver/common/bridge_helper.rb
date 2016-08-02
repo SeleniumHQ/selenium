@@ -31,8 +31,9 @@ module Selenium
         when Array
           arg.map { |e| unwrap_script_result(e) }
         when Hash
-          id = element_id_from(arg)
-          return Element.new(self, id) if id
+          element_id = element_id_from(arg)
+          element_id = arg if self.is_a?(Remote::W3CBridge) && element_id
+          return Element.new(self, element_id) if element_id
           arg.each { |k, v| arg[k] = unwrap_script_result(v) }
         else
           arg
