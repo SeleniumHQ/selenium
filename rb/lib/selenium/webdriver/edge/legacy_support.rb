@@ -42,7 +42,7 @@ module Selenium
         end
 
         def submit_element(element)
-          execute :submitElement, id: element
+          execute :submitElement, id: element['ELEMENT']
         end
 
         def double_click
@@ -66,7 +66,8 @@ module Selenium
         end
 
         def mouse_move_to(element, x = nil, y = nil)
-          params = {element: element}
+          element_id = element['ELEMENT'] if element
+          params = {element: element_id}
 
           if x && y
             params[:xoffset] = x
