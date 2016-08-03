@@ -549,21 +549,23 @@ def read_user_pass_from_m2_settings
     return [user, pass]
 end
 
-task :'publish-maven' => JAVA_RELEASE_TARGETS do |t|
-  t.prerequisites.each do |p|
-    if JAVA_RELEASE_TARGETS.include?(p)
-      puts "\n Enter Passphrase:"
-      passphrase = STDIN.gets.chomp
+task :'publish-maven' do
+  puts "\n Enter Passphrase:"
+  passphrase = STDIN.gets.chomp
 
-      creds = read_user_pass_from_m2_settings()
+  creds = read_user_pass_from_m2_settings()
+  JAVA_RELEASE_TARGETS.each do |p|
+    if JAVA_RELEASE_TARGETS.include?(p)
+      Buck::buck_cmd.call('build', [p])
       Buck::buck_cmd.call('publish', ['--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', '--include-source', '--include-javadoc', '-u', creds[0], '-p', creds[1], '--signing-passphrase', passphrase, p])
     end
   end
 end
 
-task :'maven-install' => JAVA_RELEASE_TARGETS do |t|
-  t.prerequisites.each do |p|
+task :'maven-install' do
+  JAVA_RELEASE_TARGETS.each do |p|
     if JAVA_RELEASE_TARGETS.include?(p)
+      Buck::buck_cmd.call('build', [p])
       Buck::buck_cmd.call('publish', ['--remote-repo', "file://#{ENV['HOME']}/.m2/repository", '--include-source', '--include-javadoc', p])
     end
   end
