@@ -570,7 +570,7 @@ module Selenium
         #
 
         def active_element
-          Element.new self, element_id_from(execute(:getActiveElement))
+          Element.new self, execute(:getActiveElement)
         end
 
         alias_method :switch_to_active_element, :active_element
@@ -595,7 +595,7 @@ module Selenium
                   execute :findElements, {}, {using: how, value: what}
                 end
 
-          ids.map { |id| Element.new self, element_id_from(id) }
+          ids.map { |id| Element.new self, id }
         end
 
         private
