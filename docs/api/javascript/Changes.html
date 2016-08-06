@@ -1,4 +1,92 @@
-<!DOCTYPE html><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><meta http-equiv="Content-Language" content="en"><meta http-equiv="X-UA-Compatible" content="IE=edge"><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><title>Changes</title><link href="dossier.css" rel="stylesheet" type="text/css"><header><button class="dossier-menu"><i class="material-icons">menu</i></button><form><input type="search" placeholder="Search" tabindex="1"><i class="material-icons">search</i></form></header><div class="content"><main><article class="page"><h2>v2.52.0</h2>
+<!DOCTYPE html><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><meta http-equiv="Content-Language" content="en"><meta http-equiv="X-UA-Compatible" content="IE=edge"><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><title>Changes</title><link href="dossier.css" rel="stylesheet" type="text/css"><header><button class="dossier-menu"><i class="material-icons">menu</i></button><form><input type="search" placeholder="Search" tabindex="1"><i class="material-icons">search</i></form></header><div class="content"><main><article class="page"><h2>v3.0.0-beta-1</h2>
+<ul><li>Allow users to set the agent used for HTTP connections through
+<code>builder.Builder#usingHttpAgent()</code></li><li>Added new wait conditions: <code>until.urlIs()</code>, <code>until.urlContains()</code>,
+<code>until.urlMatches()</code></li><li>Added work around for <a href="https://bugzilla.mozilla.org/show_bug.cgi?id&#61;1274924">GeckoDriver bug</a>
+raising a type conversion error</li><li>Internal cleanup replacing uses of managed promises with native promises</li><li>Removed the mandatory use of Firefox Dev Edition, when using Marionette driver</li><li>Fixed timeouts&#39; URL</li><li>Properly send HTTP requests when using a WebDriver server proxy</li><li>Properly configure proxies when using the geckodriver</li><li><code>http.Executor</code> now accepts a promised client. The <code>builder.Builder</code> class
+will now use this instead of a <code>command.DeferredExecutor</code> when creating
+WebDriver instances.</li><li>For Chrome and Firefox, the <code>builder.Builder</code> class will always return an
+instanceof <code>chrome.Driver</code> and <code>firefox.Driver</code>, respectively, even when
+configured to use a remote server (from <code>builder.Builder#usingServer(url)</code>,
+<code>SELENIUM_REMOTE_URL</code>, etc).</li></ul>
+<h3>API Changes</h3>
+<ul><li><code>promise.Deferred</code> is no longer a thenable object.</li><li><code>Options#addCookie()</code> now takes a record object instead of 7 individual
+parameters. A TypeError will be thrown if addCookie() is called with invalid
+arguments.</li><li>When adding cookies, the desired expiry must be provided as a Date or in
+<em>seconds</em> since epoch. When retrieving cookies, the expiration is always
+returned in seconds.</li><li>Renamed <code>firefox.Options#useMarionette</code> to <code>firefox.Options#useGeckoDriver</code></li><li>Removed deprecated modules:
+<ul><li><code>selenium-webdriver/error</code> (use <code>selenium-webdriver/lib/error</code>,<br />
+or the <code>error</code> property exported by <code>selenium-webdriver</code>)</li><li><code>selenium-webdriver/executors</code> — this was not previously deprecated, but
+is no longer used.</li></ul>
+</li><li>Removed deprecated types:
+<ul><li><code>command.DeferredExecutor</code> — this was not previously deprecated, but is no
+longer used. It can be trivially implemented by clients should it be
+needed.</li><li><code>error.InvalidSessionIdError</code> (use <code>error.NoSuchSessionError</code>)</li><li><code>executors.DeferredExecutor</code></li><li><code>until.Condition</code> (use <code>webdriver.Condition</code>)</li><li><code>until.WebElementCondition</code> (use <code>webdriver.WebElementCondition</code>)</li><li><code>webdriver.UnhandledAlertError</code> (use <code>error.UnexpectedAlertOpenError</code>)</li></ul>
+</li><li>Removed deprecated functions:
+<ul><li><code>Deferred#cancel()</code></li><li><code>Deferred#catch()</code></li><li><code>Deferred#finally()</code></li><li><code>Deferred#isPending()</code></li><li><code>Deferred#then()</code></li><li><code>Promise#thenCatch()</code></li><li><code>Promise#thenFinally()</code></li><li><code>WebDriver#isElementPresent()</code></li><li><code>WebElement#getInnerHtml()</code></li><li><code>WebElement#getOuterHtml()</code></li><li><code>WebElement#getRawId()</code></li><li><code>WebElement#isElementPresent()</code></li></ul>
+</li><li>Removed deprecated properties:
+<ul><li><code>WebDriverError#code</code></li></ul>
+</li></ul>
+<h2>v2.53.2</h2>
+<ul><li>Changed <code>io.exists()</code> to return a rejected promise if the input path is not
+a string</li><li>Deprecated <code>Promise#thenFinally()</code> - use <code>Promise#finally()</code>. The thenFinally
+shim added to the promise module in v2.53.0 will be removed in v3.0
+Sorry for the churn!</li><li>FIXED: capabilities serialization now properly handles undefined vs.
+false-like values.</li><li>FIXED: properly handle responses from the remote end in
+<code>WebDriver.attachToSession</code></li></ul>
+<h2>v2.53.1</h2>
+<ul><li>FIXED: for consistency with the other language bindings, <code>remote.FileDetector</code>
+will ignore paths that refer to a directory.</li></ul>
+<h2>v2.53.0</h2>
+<h3>Change Summary</h3>
+<ul><li>
+<p>Added preliminary support for Marionette, Mozilla&#39;s WebDriver implementation
+for Firefox. Marionette may be enabled via the API,
+<code>firefox.Options#useMarionette</code>, or by setting the <code>SELENIUM_MARIONETTE</code>
+environment variable.</p>
+</li><li>
+<p>Moved all logic for parsing and interpreting responses from the remote end
+into the individual <code>command.Executor</code> implementations.</p>
+</li><li>
+<p>For consistency with the other Selenium language bindings,
+<code>WebDriver#isElementPresent()</code> and <code>WebElement#isElementPresent()</code> have
+been deprecated. These methods will be removed in v3.0. Use the findElements
+command to test for the presence of an element:</p>
+<pre><code>driver.findElements(By.css(&#39;.foo&#39;)).then(found &#61;&gt; !!found.length);
+</code></pre>
+</li><li>
+<p>Added support for W3C-spec compliant servers.</p>
+</li><li>
+<p>For consistent naming, deprecating <code>error.InvalidSessionIdError</code> in favor of
+<code>error.NoSuchSessionError</code>.</p>
+</li><li>
+<p>Moved the <code>error</code> module to <code>lib/error</code> so all core modules are co-located.
+The top-level <code>error</code> module will be removed in v3.0.</p>
+</li><li>
+<p>Moved <code>until.Condition</code> and <code>until.WebElementCondition</code> to the webdriver
+module to break a circular dependency.</p>
+</li><li>
+<p>Added support for setting the username and password in basic auth pop-up
+dialogs (currently IE only).</p>
+</li><li>
+<p>Deprecated <code>WebElement#getInnerHtml()</code> and <code>WebEleemnt#getOuterHtml()</code></p>
+</li><li>
+<p>Deprecated <code>Promise#thenCatch()</code> - use <code>Promise#catch()</code> instead</p>
+</li><li>
+<p>Deprecated <code>Promise#thenFinally()</code> - use <code>promise.thenFinally()</code> instead</p>
+</li><li>
+<p>FIXED: <code>io.findInPath()</code> will no longer match against directories that have
+the same basename as the target file.</p>
+</li><li>
+<p>FIXED: <code>phantomjs.Driver</code> now takes a third argument that defines the path to
+a log file to use for the phantomjs executable&#39;s output. This may be quickly
+set at runtime with the <code>SELENIUM_PHANTOMJS_LOG</code> environment variable.</p>
+</li></ul>
+<h3>Changes for W3C WebDriver Spec Compliance</h3>
+<ul><li>Changed <code>element.sendKeys(...)</code> to send the key sequence as an array where
+each element defines a single key. The legacy wire protocol permits arrays
+where each element is a string of arbitrary length. This change is solely
+at the protocol level and should have no user-visible effect.</li></ul>
+<h2>v2.52.0</h2>
 <h3>Notice</h3>
 <p>Starting with v2.52.0, each release of selenium-webdriver will support the
 latest <em>minor</em> LTS and stable Node releases. All releases between the LTS and

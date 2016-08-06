@@ -6,21 +6,24 @@ interaction with the browser.</p>
 <p>Selenium may be installed via npm with</p>
 <pre><code>npm install selenium-webdriver
 </code></pre>
-<p>Out of the box, Selenium includes everything you need to work with Firefox. You
-will need to download additional components to work with the other major
-browsers. The drivers for Chrome, PhantomJS, Opera, and Microsoft&#39;s IE and Edge
-web browsers are all standalone executables that should be available on your
-<a href="http://en.wikipedia.org/wiki/PATH_%28variable%29">PATH</a>. The SafariDriver
-browser extension should be installed in your browser before using Selenium; we
-recommend disabling the extension when using the browser without Selenium or
-installing the extension in a profile only used for testing.</p>
-<table><thead><tr><th>Browser</th><th>Component</th></tr></thead><tbody><tr><td>Chrome</td><td><a href="http://chromedriver.storage.googleapis.com/index.html">chromedriver(.exe)</a></td></tr><tr><td>Internet Explorer</td><td><a href="http://selenium-release.storage.googleapis.com/index.html">IEDriverServer.exe</a></td></tr><tr><td>Edge</td><td><a href="http://go.microsoft.com/fwlink/?LinkId&#61;619687">MicrosoftWebDriver.msi</a></td></tr><tr><td>PhantomJS</td><td><a href="http://phantomjs.org/">phantomjs(.exe)</a></td></tr><tr><td>Opera</td><td><a href="https://github.com/operasoftware/operachromiumdriver/releases">operadriver(.exe)</a></td></tr><tr><td>Safari</td><td><a href="http://selenium-release.storage.googleapis.com/index.html">SafariDriver.safariextz</a></td></tr></tbody></table>
+<p>You will need to download additional components to work with each of the major
+browsers. The drivers for Chrome, Firefox, PhantomJS, Opera, and
+Microsoft&#39;s IE and Edge web browsers are all standalone executables that should
+be placed on your system <a href="http://en.wikipedia.org/wiki/PATH_%28variable%29">PATH</a>. The SafariDriverbrowser extension should be
+installed in your browser before using Selenium; we recommend disabling the
+extension when using the browser without Selenium or installing the extension in
+a profile only used for testing.</p>
+<blockquote>
+<p><strong>NOTE:</strong>  Mozilla&#39;s <a href="https://github.com/mozilla/geckodriver/releases/">geckodriver</a> is only required for Firefox 47&#43;.
+Everything you need for Firefox 38-46 is included with this package.</p>
+</blockquote>
+<table><thead><tr><th>Browser</th><th>Component</th></tr></thead><tbody><tr><td>Chrome</td><td><a href="http://chromedriver.storage.googleapis.com/index.html">chromedriver(.exe)</a></td></tr><tr><td>Internet Explorer</td><td><a href="http://selenium-release.storage.googleapis.com/index.html">IEDriverServer.exe</a></td></tr><tr><td>Edge</td><td><a href="http://go.microsoft.com/fwlink/?LinkId&#61;619687">MicrosoftWebDriver.msi</a></td></tr><tr><td>Firefox 47&#43;</td><td><a href="https://github.com/mozilla/geckodriver/releases/">geckodriver(.exe)</a></td></tr><tr><td>PhantomJS</td><td><a href="http://phantomjs.org/">phantomjs(.exe)</a></td></tr><tr><td>Opera</td><td><a href="https://github.com/operasoftware/operachromiumdriver/releases">operadriver(.exe)</a></td></tr><tr><td>Safari</td><td><a href="http://selenium-release.storage.googleapis.com/index.html">SafariDriver.safariextz</a></td></tr></tbody></table>
 <h2>Usage</h2>
 <p>The sample below and others are included in the <code>example</code> directory. You may
 also find the tests for selenium-webdriver informative.</p>
 <pre><code>var webdriver &#61; require(&#39;selenium-webdriver&#39;),
-    By &#61; require(&#39;selenium-webdriver&#39;).By,
-    until &#61; require(&#39;selenium-webdriver&#39;).until;
+    By &#61; webdriver.By,
+    until &#61; webdriver.until;
 
 var driver &#61; new webdriver.Builder()
     .forBrowser(&#39;firefox&#39;)
@@ -85,8 +88,8 @@ environment variable:</p>
 <p>You can experiment with these options using the <code>example/google_search.js</code>
 script provided with <code>selenium-webdriver</code>.</p>
 <h2>Documentation</h2>
-<p>API documentation is available online from the <a href="http://seleniumhq.github.io/selenium/docs/api/javascript/">Selenium project</a>.
-Addition resources include</p>
+<p>API documentation is available online from the <a href="http://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/">Selenium project</a>.
+Additional resources include</p>
 <ul><li>the #selenium channel on freenode IRC</li><li>the <a href="https://groups.google.com/forum/#!forum/selenium-users">selenium-users&#64;googlegroups.com</a> list</li><li><a href="http://www.seleniumhq.org/docs/">SeleniumHQ</a> documentation</li></ul>
 <h2>Contributing</h2>
 <p>Contributions are accepted either through <a href="https://github.com/SeleniumHQ/selenium/">GitHub</a> pull requests or patches
