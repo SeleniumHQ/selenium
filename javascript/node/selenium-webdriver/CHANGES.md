@@ -1,4 +1,4 @@
-## v3.0.0-dev
+## v3.0.0-beta-1
 
 * Allow users to set the agent used for HTTP connections through
    `builder.Builder#usingHttpAgent()`
