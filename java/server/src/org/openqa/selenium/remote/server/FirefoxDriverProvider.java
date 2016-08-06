@@ -28,7 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This driver provider that instantiates FirefoxDriver or MarionetteDriver.
+ * This driver provider that instantiates FirefoxDriver.
  */
 public class FirefoxDriverProvider implements DriverProvider {
 
@@ -61,10 +61,6 @@ public class FirefoxDriverProvider implements DriverProvider {
   @Override
   public WebDriver newInstance(Capabilities capabilities) {
     LOG.info("Creating a new session for " + capabilities);
-    Object marionette = capabilities.getCapability("marionette");
-    if (marionette != null && Boolean.valueOf(marionette.toString())) {
-      return callConstructor("org.openqa.selenium.firefox.MarionetteDriver", capabilities);
-    }
     return callConstructor("org.openqa.selenium.firefox.FirefoxDriver", capabilities);
   }
 
