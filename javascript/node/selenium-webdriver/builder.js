@@ -486,6 +486,15 @@ class Builder {
       let client = Promise.resolve(url)
           .then(url => new _http.HttpClient(url, this.agent_, this.proxy_));
       let executor = new _http.Executor(client);
+
+      if (browser === Browser.CHROME) {
+        return new chrome.Driver(capabilities, null, this.flow_, executor);
+      }
+
+      if (browser === Browser.FIREFOX) {
+        return new firefox.Driver(capabilities, this.flow_, executor);
+      }
+
       return WebDriver.createSession(executor, capabilities, this.flow_);
     }
 

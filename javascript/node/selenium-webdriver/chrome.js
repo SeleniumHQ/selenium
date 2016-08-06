@@ -156,10 +156,20 @@ const Command = {
 function createExecutor(url) {
   let client = url.then(url => new http.HttpClient(url));
   let executor = new http.Executor(client);
+  configureExecutor(executor);
+  return executor;
+}
+
+
+/**
+ * Configures the given executor with Chrome-specific commands.
+ * @param {!http.Executor} executor the executor to configure.
+ */
+function configureExecutor(executor) {
   executor.defineCommand(
       Command.LAUNCH_APP,
-      'POST', '/session/:sessionId/chromium/launch_app');
-  return executor;
+      'POST',
+      '/session/:sessionId/chromium/launch_app');
 }
 
 
@@ -763,10 +773,29 @@ class Driver extends webdriver.WebDriver {
    *     the {@linkplain #getDefaultService default service} by default.
    * @param {promise.ControlFlow=} opt_flow The control flow to use,
    *     or {@code null} to use the currently active flow.
+   * @param {http.Executor=} opt_executor A pre-configured command executor that
+   *     should be used to send commands to the remote end. The provided
+   *     executor should not be reused with other clients as its internal
+   *     command mappings will be updated to support Chrome-specific commands.
+   *
+   * You may provide either a custom executor or a driver service, but not both.
+   *
+   * @throws {Error} if both `opt_service` and `opt_executor` are provided.
    */
-  constructor(opt_config, opt_service, opt_flow) {
-    let service = opt_service || getDefaultService();
-    let executor = createExecutor(service.start());
+  constructor(opt_config, opt_service, opt_flow, opt_executor) {
+    if (opt_service && opt_executor) {
+      throw Error(
+          'Either a DriverService or Executor may be provided, but not both');
+    }
+
+    let executor;
+    if (opt_executor) {
+      executor = opt_executor;
+      configureExecutor(executor);
+    } else {
+      let service = opt_service || getDefaultService();
+      executor = createExecutor(service.start());
+    }
 
     let caps =
         opt_config instanceof Options ? opt_config.toCapabilities() :

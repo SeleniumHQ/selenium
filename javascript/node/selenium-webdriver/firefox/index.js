@@ -398,18 +398,27 @@ const ExtensionCommand = {
 function createExecutor(serverUrl) {
   let client = serverUrl.then(url => new http.HttpClient(url));
   let executor = new http.Executor(client);
+  configureExecutor(executor);
+  return executor;
+}
 
+
+/**
+ * Configures the given executor with Firefox-specific commands.
+ * @param {!http.Executor} executor the executor to configure.
+ */
+function configureExecutor(executor) {
   executor.defineCommand(
       ExtensionCommand.GET_CONTEXT,
       'GET',
       '/session/:sessionId/moz/context');
+
   executor.defineCommand(
       ExtensionCommand.SET_CONTEXT,
       'POST',
       '/session/:sessionId/moz/context');
-
-  return executor;
 }
+
 
 /**
  * A WebDriver client for Firefox.
@@ -422,8 +431,18 @@ class Driver extends webdriver.WebDriver {
    *    object.
    * @param {promise.ControlFlow=} opt_flow The flow to
    *     schedule commands through. Defaults to the active flow object.
+   * @param {http.Executor=} opt_executor A pre-configured command executor to
+   *     use for communicating with an externally managed remoted end (which is
+   *     assumed to already be running). The provided executor should not be
+   *     reused with other clients as its internal command mappings will be
+   *     updated to support Firefox-specific commands.
+   *
+   * _This parameter may only be used with Mozilla's GeckoDriver._
+   *
+   * @throws {Error} If a custom command executor is provided and the driver is
+   *     configured to use the legacy FirefoxDriver from the Selenium project.
    */
-  constructor(opt_config, opt_flow) {
+  constructor(opt_config, opt_flow, opt_executor) {
     let caps;
     if (opt_config instanceof Options) {
       caps = opt_config.toCapabilities();
@@ -453,9 +472,15 @@ class Driver extends webdriver.WebDriver {
     let useMarionette = !noMarionette;
 
     if (useMarionette) {
-      let service = createGeckoDriverService(binary);
-      serverUrl = service.start();
-      onQuit = () => service.kill();
+      if (opt_executor) {
+        configureExecutor(opt_executor);
+        serverUrl = Promise.reject(Error('unexpected variable use'));
+        onQuit = function noop() {};
+      } else {
+        let service = createGeckoDriverService(binary);
+        serverUrl = service.start();
+        onQuit = () => service.kill();
+      }
 
       if (profile) {
         caps.set(Capability.PROFILE, profile.encode());
@@ -474,6 +499,11 @@ class Driver extends webdriver.WebDriver {
         caps = {required, desired: caps};
       }
     } else {
+      if (opt_executor) {
+        throw Error('You may not use a custom command executor with the legacy'
+            + ' FirefoxDriver');
+      }
+
       profile = profile || new Profile;
 
       let freePort = portprober.findFreePort();
@@ -503,7 +533,7 @@ class Driver extends webdriver.WebDriver {
       };
     }
 
-    let executor = createExecutor(serverUrl);
+    let executor = opt_executor || createExecutor(serverUrl);
     let driver = webdriver.WebDriver.createSession(executor, caps, opt_flow);
     super(driver.getSession(), executor, driver.controlFlow());
 

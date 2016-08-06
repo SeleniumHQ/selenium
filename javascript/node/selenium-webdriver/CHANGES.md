@@ -12,8 +12,12 @@
 * Properly send HTTP requests when using a WebDriver server proxy
 * Properly configure proxies when using the geckodriver
 * `http.Executor` now accepts a promised client. The `builder.Builder` class
-  will now use this over a `command.DeferredExecutor` when creating WebDriver
-  instances.
+  will now use this instead of a `command.DeferredExecutor` when creating
+  WebDriver instances.
+* For Chrome and Firefox, the `builder.Builder` class will always return an
+  instanceof `chrome.Driver` and `firefox.Driver`, respectively, even when
+  configured to use a remote server (from `builder.Builder#usingServer(url)`,
+  `SELENIUM_REMOTE_URL`, etc).
 
 ### API Changes
 
