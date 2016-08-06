@@ -394,7 +394,7 @@ const ExtensionCommand = {
 /**
  * Creates a command executor with support for Marionette's custom commands.
  * @param {!Promise<string>} url The server's URL.
- * @param {!command.Executor} The new command executor.
+ * @return {!command.Executor} The new command executor.
  */
 function createExecutor(url) {
   return new command.DeferredExecutor(url.then(url => {
