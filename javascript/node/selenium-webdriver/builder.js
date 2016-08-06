@@ -19,8 +19,8 @@
 
 const chrome = require('./chrome');
 const edge = require('./edge');
-const executors = require('./executors');
 const firefox = require('./firefox');
+const _http = require('./http');
 const ie = require('./ie');
 const capabilities = require('./lib/capabilities');
 const webdriver = require('./lib/webdriver');
@@ -483,7 +483,9 @@ class Builder {
     }
 
     if (url) {
-      var executor = executors.createExecutor(url, this.agent_, this.proxy_);
+      let client = Promise.resolve(url)
+          .then(url => new _http.HttpClient(url, this.agent_, this.proxy_));
+      let executor = new _http.Executor(client);
       return WebDriver.createSession(executor, capabilities, this.flow_);
     }
 

@@ -117,8 +117,7 @@
 const fs = require('fs'),
     util = require('util');
 
-const executors = require('./executors'),
-    http = require('./http'),
+const http = require('./http'),
     io = require('./io'),
     Capabilities = require('./lib/capabilities').Capabilities,
     Capability = require('./lib/capabilities').Capability,
@@ -155,14 +154,12 @@ const Command = {
  * @return {!command.Executor} The new command executor.
  */
 function createExecutor(url) {
-  return new command.DeferredExecutor(url.then(url => {
-    let client = new http.HttpClient(url);
-    let executor = new http.Executor(client);
-    executor.defineCommand(
-        Command.LAUNCH_APP,
-        'POST', '/session/:sessionId/chromium/launch_app');
-    return executor;
-  }));
+  let client = url.then(url => new http.HttpClient(url));
+  let executor = new http.Executor(client);
+  executor.defineCommand(
+      Command.LAUNCH_APP,
+      'POST', '/session/:sessionId/chromium/launch_app');
+  return executor;
 }
 
 

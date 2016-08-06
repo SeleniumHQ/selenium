@@ -598,6 +598,20 @@ describe('http', function() {
       });
     });
 
+    it('accepts promised http clients', function() {
+      executor = new http.Executor(Promise.resolve(client));
+
+      var resp = JSON.stringify({sessionId: 'abc123'});
+      send.returns(Promise.resolve(new http.Response(200, {}, resp)));
+
+      let command = new Command(CommandName.NEW_SESSION);
+      return executor.execute(command).then(response => {
+         assertSent(
+             'POST', '/session', {},
+             [['Accept', 'application/json; charset=utf-8']]);
+      });
+    });
+
     function entries(map) {
       let entries = [];
       for (let e of map.entries()) {

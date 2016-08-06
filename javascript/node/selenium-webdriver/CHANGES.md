@@ -11,6 +11,9 @@
 * Fixed timeouts' URL
 * Properly send HTTP requests when using a WebDriver server proxy
 * Properly configure proxies when using the geckodriver
+* `http.Executor` now accepts a promised client. The `builder.Builder` class
+  will now use this over a `command.DeferredExecutor` when creating WebDriver
+  instances.
 
 ### API Changes
 
@@ -21,13 +24,18 @@
 * When adding cookies, the desired expiry must be provided as a Date or in
   _seconds_ since epoch. When retrieving cookies, the expiration is always
   returned in seconds.
-*  Renamed `firefox.Options#useMarionette` to `firefox.Options#useGeckoDriver`
+* Renamed `firefox.Options#useMarionette` to `firefox.Options#useGeckoDriver`
 * Removed deprecated modules:
    - `selenium-webdriver/error` (use `selenium-webdriver/lib/error`,\
      or the `error` property exported by `selenium-webdriver`)
+   - `selenium-webdriver/executors` — this was not previously deprecated, but
+     is no longer used.
 * Removed deprecated types:
+   - `command.DeferredExecutor` — this was not previously deprecated, but is no
+     longer used. It can be trivially implemented by clients should it be
+     needed.
    - `error.InvalidSessionIdError` (use `error.NoSuchSessionError`)
-   - `executors.DeferredExecutor` (use `command.DeferredExecutor`)
+   - `executors.DeferredExecutor`
    - `until.Condition` (use `webdriver.Condition`)
    - `until.WebElementCondition` (use `webdriver.WebElementCondition`)
    - `webdriver.UnhandledAlertError` (use `error.UnexpectedAlertOpenError`)

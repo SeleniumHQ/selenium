@@ -28,6 +28,7 @@
 const cmd = require('./command');
 const error = require('./error');
 const logging = require('./logging');
+const promise = require('./promise');
 const Session = require('./session').Session;
 const WebElement = require('./webdriver').WebElement;
 
@@ -222,6 +223,29 @@ class Client {
 }
 
 
+const CLIENTS =
+    /** !WeakMap<!Executor, !(Client|IThenable<!Client>)> */new WeakMap;
+
+
+/**
+ * Sends a request using the given executor.
+ * @param {!Executor} executor
+ * @param {!Request} request
+ * @return {!Promise<Response>}
+ */
+function doSend(executor, request) {
+  const client = CLIENTS.get(executor);
+  if (promise.isPromise(client)) {
+    return client.then(client => {
+      CLIENTS.set(executor, client);
+      return client.send(request);
+    });
+  } else {
+    return client.send(request);
+  }
+}
+
+
 /**
  * A command executor that communicates with the server using JSON over HTTP.
  *
@@ -237,12 +261,12 @@ class Client {
  */
 class Executor {
   /**
-   * @param {!Client} client The client to use for sending requests to the
-   *     server.
+   * @param {!(Client|IThenable<!Client>)} client The client to use for sending
+   *     requests to the server, or a promise-like object that will resolve to
+   *     to the client.
    */
   constructor(client) {
-    /** @private {!Client} */
-    this.client_ = client;
+    CLIENTS.set(this, client);
 
     /**
      * Whether this executor should use the W3C wire protocol. The executor
@@ -297,7 +321,7 @@ class Executor {
 
     let log = this.log_;
     log.finer(() => '>>>\n' + request);
-    return this.client_.send(request).then(response => {
+    return doSend(this, request).then(response => {
       log.finer(() => '<<<\n' + response);
 
       let parsed =

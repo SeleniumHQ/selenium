@@ -116,7 +116,6 @@ const url = require('url');
 const Binary = require('./binary').Binary,
     Profile = require('./profile').Profile,
     decodeProfile = require('./profile').decode,
-    executors = require('../executors'),
     http = require('../http'),
     httpUtil = require('../http/util'),
     io = require('../io'),
@@ -393,25 +392,23 @@ const ExtensionCommand = {
 
 /**
  * Creates a command executor with support for Marionette's custom commands.
- * @param {!Promise<string>} url The server's URL.
+ * @param {!Promise<string>} serverUrl The server's URL.
  * @return {!command.Executor} The new command executor.
  */
-function createExecutor(url) {
-  return new command.DeferredExecutor(url.then(url => {
-    let client = new http.HttpClient(url);
-    let executor = new http.Executor(client);
+function createExecutor(serverUrl) {
+  let client = serverUrl.then(url => new http.HttpClient(url));
+  let executor = new http.Executor(client);
 
-    executor.defineCommand(
-        ExtensionCommand.GET_CONTEXT,
-        'GET',
-        '/session/:sessionId/moz/context');
-    executor.defineCommand(
-        ExtensionCommand.SET_CONTEXT,
-        'POST',
-        '/session/:sessionId/moz/context');
+  executor.defineCommand(
+      ExtensionCommand.GET_CONTEXT,
+      'GET',
+      '/session/:sessionId/moz/context');
+  executor.defineCommand(
+      ExtensionCommand.SET_CONTEXT,
+      'POST',
+      '/session/:sessionId/moz/context');
 
-    return executor;
-  }));
+  return executor;
 }
 
 /**

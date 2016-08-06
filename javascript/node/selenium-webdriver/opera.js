@@ -74,7 +74,7 @@
 
 const fs = require('fs');
 
-const executors = require('./executors'),
+const http = require('./http'),
     io = require('./io'),
     capabilities = require('./lib/capabilities'),
     promise = require('./lib/promise'),
@@ -436,7 +436,8 @@ class Driver extends webdriver.WebDriver {
    */
   constructor(opt_config, opt_service, opt_flow) {
     var service = opt_service || getDefaultService();
-    var executor = executors.createExecutor(service.start());
+    var client = service.start().then(url => new http.HttpClient(url));
+    var executor = new http.Executor(client);
 
     var caps =
         opt_config instanceof Options ? opt_config.toCapabilities() :
