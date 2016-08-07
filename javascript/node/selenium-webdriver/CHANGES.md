@@ -1,3 +1,11 @@
+## v3.0.0-beta-2
+
+### API Changes
+
+* Moved the `builder.Builder` class into the main module (`selenium-webdriver`).
+* Removed the `builder` module.
+
+
 ## v3.0.0-beta-1
 
 * Allow users to set the agent used for HTTP connections through
