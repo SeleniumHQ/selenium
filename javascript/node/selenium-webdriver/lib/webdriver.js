@@ -1997,7 +1997,7 @@ class WebElement {
       }).then(function(keys) {
         return element.schedule_(
             new command.Command(command.Name.SEND_KEYS_TO_ELEMENT).
-                setParameter('value', [keys]),
+                setParameter('value', keys.split('')),
             'WebElement.sendKeys()');
       });
     }, 'WebElement.sendKeys()');

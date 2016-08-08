@@ -4,6 +4,8 @@
 
 * Moved the `builder.Builder` class into the main module (`selenium-webdriver`).
 * Removed the `builder` module.
+* Fix `webdriver.WebDriver#setFileDetector` when driving Chrome or Firefox on a
+  remote machine.
 
 
 ## v3.0.0-beta-1

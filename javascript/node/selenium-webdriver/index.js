@@ -68,6 +68,32 @@ function startSeleniumServer(jar) {
 
 
 /**
+ * {@linkplain webdriver.WebDriver#setFileDetector WebDriver's setFileDetector}
+ * method uses a non-standard command to transfer files from the local client
+ * to the remote end hosting the browser. Many of the WebDriver sub-types, like
+ * the {@link chrome.Driver} and {@link firefox.Driver}, do not support this
+ * command. Thus, these classes override the `setFileDetector` to no-op.
+ *
+ * This function uses a mixin to re-enable `setFileDetector` by calling the
+ * original method on the WebDriver prototype directly. This is used only when
+ * the builder creates a Chrome or Firefox instance that communicates with a
+ * remote end (and thus, support for remote file detectors is unknown).
+ *
+ * @param {function(new: webdriver.WebDriver, ...?)} ctor
+ * @return {function(new: webdriver.WebDriver, ...?)}
+ */
+function ensureFileDetectorsAreEnabled(ctor) {
+  const mixin = class extends ctor {
+    /** @param {input.FileDetector} detector */
+    setFileDetector(detector) {
+      webdriver.WebDriver.prototype.setFileDetector.call(this, detector);
+    }
+  };
+  return mixin;
+}
+
+
+/**
  * Creates new {@link webdriver.WebDriver WebDriver} instances. The environment
  * variables listed below may be used to override a builder's configuration,
  * allowing quick runtime changes.
@@ -487,7 +513,7 @@ class Builder {
     }
 
     // Check for a remote browser.
-    var url = this.url_;
+    let url = this.url_;
     if (!this.ignoreEnv_) {
       if (process.env.SELENIUM_REMOTE_URL) {
         url = process.env.SELENIUM_REMOTE_URL;
@@ -502,11 +528,13 @@ class Builder {
       let executor = new _http.Executor(client);
 
       if (browser === Browser.CHROME) {
-        return new chrome.Driver(capabilities, null, this.flow_, executor);
+        const driver = ensureFileDetectorsAreEnabled(chrome.Driver);
+        return new driver(capabilities, null, this.flow_, executor);
       }
 
       if (browser === Browser.FIREFOX) {
-        return new firefox.Driver(capabilities, this.flow_, executor);
+        const driver = ensureFileDetectorsAreEnabled(firefox.Driver);
+        return new driver(capabilities, this.flow_, executor);
       }
 
       return WebDriver.createSession(executor, capabilities, this.flow_);
