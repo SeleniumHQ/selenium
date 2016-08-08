@@ -47,7 +47,7 @@ test.suite(function(env) {
 
     test.it('fails if script throws', function() {
       execute('throw new Error("boom")')
-          .then(function() { throw shoudlHaveFailed; })
+          .then(function() { throw shouldHaveFailed; })
           .catch(function(e) {
             // The java WebDriver server adds a bunch of crap to error messages.
             // Error message will just be "JavaScript error" for IE.
@@ -57,7 +57,7 @@ test.suite(function(env) {
 
     test.it('fails if script does not parse', function() {
       execute('throw function\\*')
-          .then(function() { throw shoudlHaveFailed; })
+          .then(function() { throw shouldHaveFailed; })
           .catch(function(e) {
             assert(e).notEqualTo(shouldHaveFailed);
           });
