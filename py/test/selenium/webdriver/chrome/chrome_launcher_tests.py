@@ -15,34 +15,27 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import unittest
-import logging
-from selenium import webdriver
+from selenium.webdriver import Chrome
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
-class ChromeLauncherTests (unittest.TestCase):
+class TestChromeLauncher(object):
 
     def testLaunchAndCloseBrowser(self):
-        self.webdriver = webdriver.Chrome()
-        self.webdriver.quit()
+        driver = Chrome()
+        driver.quit()
 
     def test_we_can_launch_multiple_chrome_instances(self):
-        self.webdriver1 = webdriver.Chrome()
-        self.webdriver2 = webdriver.Chrome()
-        self.webdriver3 = webdriver.Chrome()
-        self.webdriver1.quit()
-        self.webdriver2.quit()
-        self.webdriver3.quit()
+        driver1 = Chrome()
+        driver2 = Chrome()
+        driver3 = Chrome()
+        driver1.quit()
+        driver2.quit()
+        driver3.quit()
 
     def test_launch_chrome_do_not_affect_default_capabilities(self):
         expected = DesiredCapabilities.CHROME.copy()
-        self.webdriver1 = webdriver.Chrome()
+        driver = Chrome()
         actual = DesiredCapabilities.CHROME.copy()
-        self.webdriver1.quit()
+        driver.quit()
         assert actual == expected
-
-
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    unittest.main()

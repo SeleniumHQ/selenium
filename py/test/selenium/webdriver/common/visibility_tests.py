@@ -16,132 +16,106 @@
 # under the License.
 
 import pytest
-import unittest
+
 from selenium.common.exceptions import ElementNotVisibleException
 from selenium.webdriver.common.by import By
 
 
-class VisibilityTests(unittest.TestCase):
+class TestVisibility(object):
 
-    def testShouldAllowTheUserToTellIfAnElementIsDisplayedOrNot(self):
-        self._loadPage("javascriptPage")
+    def testShouldAllowTheUserToTellIfAnElementIsDisplayedOrNot(self, driver, pages):
+        pages.load("javascriptPage.html")
 
-        self.assertTrue(self.driver.find_element(by=By.ID, value="displayed").is_displayed())
-        self.assertFalse(self.driver.find_element(by=By.ID, value="none").is_displayed())
-        self.assertFalse(self.driver.find_element(by=By.ID, value="suppressedParagraph").is_displayed())
-        self.assertFalse(self.driver.find_element(by=By.ID, value="hidden").is_displayed())
+        assert driver.find_element(by=By.ID, value="displayed").is_displayed() is True
+        assert driver.find_element(by=By.ID, value="none").is_displayed() is False
+        assert driver.find_element(by=By.ID, value="suppressedParagraph").is_displayed() is False
+        assert driver.find_element(by=By.ID, value="hidden").is_displayed() is False
 
-    def testVisibilityShouldTakeIntoAccountParentVisibility(self):
-        self._loadPage("javascriptPage")
+    def testVisibilityShouldTakeIntoAccountParentVisibility(self, driver, pages):
+        pages.load("javascriptPage.html")
 
-        childDiv = self.driver.find_element(by=By.ID, value="hiddenchild")
-        hiddenLink = self.driver.find_element(by=By.ID, value="hiddenlink")
+        childDiv = driver.find_element(by=By.ID, value="hiddenchild")
+        hiddenLink = driver.find_element(by=By.ID, value="hiddenlink")
 
-        self.assertFalse(childDiv.is_displayed())
-        self.assertFalse(hiddenLink.is_displayed())
+        assert childDiv.is_displayed() is False
+        assert hiddenLink.is_displayed() is False
 
-    def testShouldCountElementsAsVisibleIfStylePropertyHasBeenSet(self):
-        self._loadPage("javascriptPage")
-        shown = self.driver.find_element(by=By.ID, value="visibleSubElement")
-        self.assertTrue(shown.is_displayed())
+    def testShouldCountElementsAsVisibleIfStylePropertyHasBeenSet(self, driver, pages):
+        pages.load("javascriptPage.html")
+        shown = driver.find_element(by=By.ID, value="visibleSubElement")
+        assert shown.is_displayed() is True
 
-    def testShouldModifyTheVisibilityOfAnElementDynamically(self):
-        self._loadPage("javascriptPage")
-        element = self.driver.find_element(by=By.ID, value="hideMe")
-        self.assertTrue(element.is_displayed())
+    def testShouldModifyTheVisibilityOfAnElementDynamically(self, driver, pages):
+        pages.load("javascriptPage.html")
+        element = driver.find_element(by=By.ID, value="hideMe")
+        assert element.is_displayed() is True
         element.click()
-        self.assertFalse(element.is_displayed())
+        assert element.is_displayed() is False
 
-    def testHiddenInputElementsAreNeverVisible(self):
-        self._loadPage("javascriptPage")
+    def testHiddenInputElementsAreNeverVisible(self, driver, pages):
+        pages.load("javascriptPage.html")
 
-        shown = self.driver.find_element(by=By.NAME, value="hidden")
+        shown = driver.find_element(by=By.NAME, value="hidden")
 
-        self.assertFalse(shown.is_displayed())
+        assert shown.is_displayed() is False
 
-    def testShouldNotBeAbleToClickOnAnElementThatIsNotDisplayed(self):
-        self._loadPage("javascriptPage")
-        element = self.driver.find_element(by=By.ID, value="unclickable")
-
-        try:
+    def testShouldNotBeAbleToClickOnAnElementThatIsNotDisplayed(self, driver, pages):
+        pages.load("javascriptPage.html")
+        element = driver.find_element(by=By.ID, value="unclickable")
+        with pytest.raises(ElementNotVisibleException):
             element.click()
-            self.fail("You should not be able to click on an invisible element")
-        except ElementNotVisibleException:
-            pass
 
-    def testShouldNotBeAbleToToggleAnElementThatIsNotDisplayed(self):
-        self._loadPage("javascriptPage")
-        element = self.driver.find_element(by=By.ID, value="untogglable")
-
-        try:
+    def testShouldNotBeAbleToToggleAnElementThatIsNotDisplayed(self, driver, pages):
+        pages.load("javascriptPage.html")
+        element = driver.find_element(by=By.ID, value="untogglable")
+        with pytest.raises(ElementNotVisibleException):
             element.click()
-            self.fail("You should not be able to click an invisible element")
-        except ElementNotVisibleException:
-            pass
 
-    def testShouldNotBeAbleToSelectAnElementThatIsNotDisplayed(self):
-        self._loadPage("javascriptPage")
-        element = self.driver.find_element(by=By.ID, value="untogglable")
-
-        try:
+    def testShouldNotBeAbleToSelectAnElementThatIsNotDisplayed(self, driver, pages):
+        pages.load("javascriptPage.html")
+        element = driver.find_element(by=By.ID, value="untogglable")
+        with pytest.raises(ElementNotVisibleException):
             element.click()
-            self.fail("You should not be able to click an invisible element")
-        except ElementNotVisibleException:
-            pass
 
-    def testShouldNotBeAbleToTypeAnElementThatIsNotDisplayed(self):
-        if self.driver.capabilities['browserName'] == 'phantomjs':
+    def testShouldNotBeAbleToTypeAnElementThatIsNotDisplayed(self, driver, pages):
+        if driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs driver throws the wrong exception")
-        self._loadPage("javascriptPage")
-        element = self.driver.find_element(by=By.ID, value="unclickable")
-
-        try:
+        pages.load("javascriptPage.html")
+        element = driver.find_element(by=By.ID, value="unclickable")
+        with pytest.raises(ElementNotVisibleException):
             element.send_keys("You don't see me")
-            self.fail("You should not be able to send keyboard input to an invisible element")
-        except ElementNotVisibleException:
-            pass
+        assert element.get_attribute("value") != "You don't see me"
 
-        self.assertTrue(element.get_attribute("value") is not "You don't see me")
+    def testShouldSayElementsWithNegativeTransformAreNotDisplayed(self, driver, pages):
+        pages.load('cssTransform.html')
+        elementX = driver.find_element(By.ID, value='parentX')
+        assert elementX.is_displayed() is False
+        elementY = driver.find_element(By.ID, value='parentY')
+        assert elementY.is_displayed() is False
 
-    def testShouldSayElementsWithNegativeTransformAreNotDisplayed(self):
-        self._loadPage('cssTransform')
-        elementX = self.driver.find_element(By.ID, value='parentX')
-        self.assertFalse(elementX.is_displayed())
-        elementY = self.driver.find_element(By.ID, value='parentY')
-        self.assertFalse(elementY.is_displayed())
+    def testShouldSayElementsWithParentWithNegativeTransformAreNotDisplayed(self, driver, pages):
+        pages.load('cssTransform.html')
+        elementX = driver.find_element(By.ID, value='childX')
+        assert elementX.is_displayed() is False
+        elementY = driver.find_element(By.ID, value='childY')
+        assert elementY.is_displayed() is False
 
-    def testShouldSayElementsWithParentWithNegativeTransformAreNotDisplayed(self):
-        self._loadPage('cssTransform')
-        elementX = self.driver.find_element(By.ID, value='childX')
-        self.assertFalse(elementX.is_displayed())
-        elementY = self.driver.find_element(By.ID, value='childY')
-        self.assertFalse(elementY.is_displayed())
+    def testShouldSayElementWithZeroTransformIsVisible(self, driver, pages):
+        pages.load('cssTransform.html')
+        zero_tranform = driver.find_element(By.ID, 'zero-tranform')
+        assert zero_tranform.is_displayed() is True
 
-    def testShouldSayElementWithZeroTransformIsVisible(self):
-        self._loadPage('cssTransform')
-        zero_tranform = self.driver.find_element(By.ID, 'zero-tranform')
-        self.assertTrue(zero_tranform.is_displayed())
+    def testShouldSayElementIsVisibleWhenItHasNegativeTransformButElementisntInANegativeSpace(self, driver, pages):
+        pages.load('cssTransform2.html')
+        zero_tranform = driver.find_element(By.ID, 'negative-percentage-transformY')
+        assert zero_tranform.is_displayed() is True
 
-    def testShouldSayElementIsVisibleWhenItHasNegativeTransformButElementisntInANegativeSpace(self):
-        self._loadPage('cssTransform2')
-        zero_tranform = self.driver.find_element(By.ID, 'negative-percentage-transformY')
-        self.assertTrue(zero_tranform.is_displayed())
+    def testShouldShowElementNotVisibleWithHiddenAttribute(self, driver, pages):
+        pages.load('hidden.html')
+        singleHidden = driver.find_element(By.ID, 'singleHidden')
+        assert singleHidden.is_displayed() is False
 
-    def testShouldShowElementNotVisibleWithHiddenAttribute(self):
-        self._loadPage('hidden')
-        singleHidden = self.driver.find_element(By.ID, 'singleHidden')
-        self.assertFalse(singleHidden.is_displayed())
-
-    def testShouldShowElementNotVisibleWhenParentElementHasHiddenAttribute(self):
-        self._loadPage('hidden')
-        child = self.driver.find_element(By.ID, 'child')
-        self.assertFalse(child.is_displayed())
-
-    def _pageURL(self, name):
-        return self.webserver.where_is(name + '.html')
-
-    def _loadSimplePage(self):
-        self._loadPage("simpleTest")
-
-    def _loadPage(self, name):
-        self.driver.get(self._pageURL(name))
+    def testShouldShowElementNotVisibleWhenParentElementHasHiddenAttribute(self, driver, pages):
+        pages.load('hidden.html')
+        child = driver.find_element(By.ID, 'child')
+        assert child.is_displayed() is False

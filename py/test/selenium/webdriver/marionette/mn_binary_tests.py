@@ -16,31 +16,21 @@
 # under the License.
 
 import pytest
-from selenium import webdriver
+
+from selenium.webdriver import Firefox
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 
 
-class TestMarionetteBinary:
+class TestMarionetteBinary(object):
 
-    def test_invalid_binary_str(self):
-        capabilities = {'marionette': True}
+    def test_invalid_binary_str(self, capabilities):
         with pytest.raises(WebDriverException) as excinfo:
-            self.driver = webdriver.Firefox(
-                capabilities=capabilities,
-                firefox_binary='foo')
+            Firefox(capabilities=capabilities, firefox_binary='foo')
         assert 'entity not found' in str(excinfo.value)
 
-    def test_invalid_binary_obj(self):
-        capabilities = {'marionette': True}
+    def test_invalid_binary_obj(self, capabilities):
         with pytest.raises(WebDriverException) as excinfo:
-            self.driver = webdriver.Firefox(
-                capabilities=capabilities,
-                firefox_binary=FirefoxBinary(firefox_path='foo'))
+            binary = FirefoxBinary(firefox_path='foo')
+            Firefox(capabilities=capabilities, firefox_binary=binary)
         assert 'entity not found' in str(excinfo.value)
-
-    def teardown_method(self, method):
-        try:
-            self.driver.quit()
-        except Exception:
-            pass

@@ -15,24 +15,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import pytest
 
-from selenium.webdriver.common.html5.application_cache import ApplicationCache
+from selenium.webdriver import Firefox
 
 
-class TestAppCache(object):
+class TestMarionetteSpecific(object):
 
-    @pytest.mark.ignore_firefox
-    @pytest.mark.ignore_marionette
-    def testWeCanGetTheStatusOfTheAppCache(self, driver, pages):
-        if driver.capabilities['browserName'] == 'phantomjs':
-            pytest.xfail("phantomjs driver does not implement appcache")
-        pages.load('html5Page')
-        driver.implicitly_wait(2)
-        app_cache = driver.application_cache
-
-        status = app_cache.status
-        while status == ApplicationCache.DOWNLOADING:
-            status = app_cache.status
-
-        assert ApplicationCache.UNCACHED == app_cache.status
+    def test_we_can_switch_context_to_chrome(self, capabilities):
+        driver = Firefox(capabilities=capabilities)
+        driver.set_context('chrome')
+        assert 1 == driver.execute_script("var c = Components.classes; return 1;")

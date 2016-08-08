@@ -16,7 +16,7 @@
 # under the License.
 
 import pytest
-import unittest
+
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import TimeoutException
@@ -24,171 +24,155 @@ from selenium.webdriver.remote.webelement import WebElement
 
 
 @pytest.mark.ignore_phantomjs
-class ExecutingAsyncJavaScriptTests(unittest.TestCase):
+class TestExecutingAsyncJavaScript(object):
 
-    def testShouldNotTimeoutIfCallbackInvokedImmediately(self):
-        self._loadPage("ajaxy_page")
-        result = self.driver.execute_async_script("arguments[arguments.length - 1](123);")
-        self.assertTrue(type(result) == int)
-        self.assertEqual(123, result)
+    def testShouldNotTimeoutIfCallbackInvokedImmediately(self, driver, pages):
+        pages.load("ajaxy_page.html")
+        result = driver.execute_async_script("arguments[arguments.length - 1](123);")
+        assert type(result) == int
+        assert 123 == result
 
-    def testShouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NeitherNoneNorUndefined(self):
-        self._loadPage("ajaxy_page")
-        self.assertEqual(123, self.driver.execute_async_script(
-            "arguments[arguments.length - 1](123);"))
-        self.assertEqual("abc", self.driver.execute_async_script("arguments[arguments.length - 1]('abc');"))
-        self.assertFalse(bool(self.driver.execute_async_script("arguments[arguments.length - 1](false);")))
-        self.assertTrue(bool(self.driver.execute_async_script("arguments[arguments.length - 1](true);")))
+    def testShouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NeitherNoneNorUndefined(self, driver, pages):
+        pages.load("ajaxy_page.html")
+        assert 123 == driver.execute_async_script("arguments[arguments.length - 1](123);")
+        assert "abc" == driver.execute_async_script("arguments[arguments.length - 1]('abc');")
+        assert not bool(driver.execute_async_script("arguments[arguments.length - 1](false);"))
+        assert bool(driver.execute_async_script("arguments[arguments.length - 1](true);"))
 
     # @Ignore(value = SELENESE, reason = "SeleniumRC cannot return null values.")
-    def testShouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NullAndUndefined(self):
-        self._loadPage("ajaxy_page")
-        self.assertTrue(self.driver.execute_async_script("arguments[arguments.length - 1](null)") is None)
-        self.assertTrue(self.driver.execute_async_script("arguments[arguments.length - 1]()") is None)
+    def testShouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NullAndUndefined(self, driver, pages):
+        pages.load("ajaxy_page.html")
+        assert driver.execute_async_script("arguments[arguments.length - 1](null)") is None
+        assert driver.execute_async_script("arguments[arguments.length - 1]()") is None
 
     # @Ignore(value = SELENESE, reason = "Selenium cannot return arrays")
-    def testShouldBeAbleToReturnAnArrayLiteralFromAnAsyncScript(self):
-        self._loadPage("ajaxy_page")
-        result = self.driver.execute_async_script("arguments[arguments.length - 1]([]);")
-        self.assertTrue("Expected not to be null!", result is not None)
-        self.assertTrue(type(result) == list)
-        self.assertTrue(len(result) == 0)
+    def testShouldBeAbleToReturnAnArrayLiteralFromAnAsyncScript(self, driver, pages):
+        pages.load("ajaxy_page.html")
+        result = driver.execute_async_script("arguments[arguments.length - 1]([]);")
+        assert "Expected not to be null!", result is not None
+        assert type(result) == list
+        assert len(result) == 0
 
     # @Ignore(value = SELENESE, reason = "Selenium cannot return arrays")
-    def testShouldBeAbleToReturnAnArrayObjectFromAnAsyncScript(self):
-        self._loadPage("ajaxy_page")
-
-        result = self.driver.execute_async_script("arguments[arguments.length - 1](new Array());")
-        self.assertTrue("Expected not to be null!", result is not None)
-        self.assertTrue(type(result) == list)
-        self.assertTrue(len(result) == 0)
+    def testShouldBeAbleToReturnAnArrayObjectFromAnAsyncScript(self, driver, pages):
+        pages.load("ajaxy_page.html")
+        result = driver.execute_async_script("arguments[arguments.length - 1](new Array());")
+        assert "Expected not to be null!", result is not None
+        assert type(result) == list
+        assert len(result) == 0
 
     # @Ignore(value = ANDROID, SELENESE,
     #  reason = "Android does not properly handle arrays; Selenium cannot return arrays")
-    def testShouldBeAbleToReturnArraysOfPrimitivesFromAsyncScripts(self):
-        self._loadPage("ajaxy_page")
+    def testShouldBeAbleToReturnArraysOfPrimitivesFromAsyncScripts(self, driver, pages):
+        pages.load("ajaxy_page.html")
 
-        result = self.driver.execute_async_script(
+        result = driver.execute_async_script(
             "arguments[arguments.length - 1]([null, 123, 'abc', true, false]);")
 
-        self.assertTrue(result is not None)
-        self.assertTrue(type(result) == list)
-        self.assertFalse(bool(result.pop()))
-        self.assertTrue(bool(result.pop()))
-        self.assertEqual("abc", result.pop())
-        self.assertEqual(123, result.pop())
-        self.assertTrue(result.pop() is None)
-        self.assertTrue(len(result) == 0)
+        assert result is not None
+        assert type(result) == list
+        assert not bool(result.pop())
+        assert bool(result.pop())
+        assert "abc" == result.pop()
+        assert 123 == result.pop()
+        assert result.pop() is None
+        assert len(result) == 0
 
     # @Ignore(value = SELENESE, reason = "Selenium cannot return elements from scripts")
-    def testShouldBeAbleToReturnWebElementsFromAsyncScripts(self):
-        self._loadPage("ajaxy_page")
+    def testShouldBeAbleToReturnWebElementsFromAsyncScripts(self, driver, pages):
+        pages.load("ajaxy_page.html")
 
-        result = self.driver.execute_async_script("arguments[arguments.length - 1](document.body);")
-        self.assertTrue(type(result) == WebElement)
-        self.assertEqual("body", result.tag_name.lower())
+        result = driver.execute_async_script("arguments[arguments.length - 1](document.body);")
+        assert isinstance(result, WebElement)
+        assert "body" == result.tag_name.lower()
 
     # @Ignore(value = ANDROID, SELENESE,
     #  reason = "Android does not properly handle arrays; Selenium cannot return elements")
-    def testShouldBeAbleToReturnArraysOfWebElementsFromAsyncScripts(self):
-        self._loadPage("ajaxy_page")
+    def testShouldBeAbleToReturnArraysOfWebElementsFromAsyncScripts(self, driver, pages):
+        pages.load("ajaxy_page.html")
 
-        result = self.driver.execute_async_script(
+        result = driver.execute_async_script(
             "arguments[arguments.length - 1]([document.body, document.body]);")
-        self.assertTrue(result is not None)
-        self.assertTrue(type(result) == list)
+        assert result is not None
+        assert type(result) == list
 
         list_ = result
-        self.assertEqual(2, len(list_))
-        self.assertTrue(type(list_[0]) == WebElement)
-        self.assertTrue(type(list_[1]) == WebElement)
-        self.assertEqual("body", list_[0].tag_name)
-        # self.assertEqual(list_[0], list_[1])
+        assert 2 == len(list_)
+        assert isinstance(list_[0], WebElement)
+        assert isinstance(list_[1], WebElement)
+        assert "body" == list_[0].tag_name
+        # assert list_[0] == list_[1]
 
-    def testShouldTimeoutIfScriptDoesNotInvokeCallback(self):
-        self._loadPage("ajaxy_page")
-        try:
+    def testShouldTimeoutIfScriptDoesNotInvokeCallback(self, driver, pages):
+        pages.load("ajaxy_page.html")
+        with pytest.raises(TimeoutException):
             # Script is expected to be async and explicitly callback, so this should timeout.
-            self.driver.execute_async_script("return 1 + 2;")
-            self.fail("Should have thrown a TimeOutException!")
-        except TimeoutException:
-            pass
+            driver.execute_async_script("return 1 + 2;")
 
-    def testShouldTimeoutIfScriptDoesNotInvokeCallbackWithAZeroTimeout(self):
-        self._loadPage("ajaxy_page")
-        try:
-            self.driver.execute_async_script("window.setTimeout(function() {}, 0);")
-            self.fail("Should have thrown a TimeOutException!")
-        except TimeoutException:
-            pass
+    def testShouldTimeoutIfScriptDoesNotInvokeCallbackWithAZeroTimeout(self, driver, pages):
+        pages.load("ajaxy_page.html")
+        with pytest.raises(TimeoutException):
+            driver.execute_async_script("window.setTimeout(function() {}, 0);")
 
-    def testShouldNotTimeoutIfScriptCallsbackInsideAZeroTimeout(self):
-        self._loadPage("ajaxy_page")
-        self.driver.execute_async_script(
+    def testShouldNotTimeoutIfScriptCallsbackInsideAZeroTimeout(self, driver, pages):
+        pages.load("ajaxy_page.html")
+        driver.execute_async_script(
             """var callback = arguments[arguments.length - 1];
             window.setTimeout(function() { callback(123); }, 0)""")
 
-    def testShouldTimeoutIfScriptDoesNotInvokeCallbackWithLongTimeout(self):
-        self.driver.set_script_timeout(0.5)
-        self._loadPage("ajaxy_page")
-        try:
-            self.driver.execute_async_script(
+    def testShouldTimeoutIfScriptDoesNotInvokeCallbackWithLongTimeout(self, driver, pages):
+        driver.set_script_timeout(0.5)
+        pages.load("ajaxy_page.html")
+        with pytest.raises(TimeoutException):
+            driver.execute_async_script(
                 """var callback = arguments[arguments.length - 1];
                 window.setTimeout(callback, 1500);""")
-            self.fail("Should have thrown a TimeOutException!")
-        except TimeoutException:
-            pass
 
-    def testShouldDetectPageLoadsWhileWaitingOnAnAsyncScriptAndReturnAnError(self):
-        self._loadPage("ajaxy_page")
-        self.driver.set_script_timeout(0.1)
-        try:
-            self.driver.execute_async_script("window.location = '" + self._pageURL("dynamic") + "';")
-            self.fail('Should have throw a WebDriverException')
-        except WebDriverException:
-            pass
+    def testShouldDetectPageLoadsWhileWaitingOnAnAsyncScriptAndReturnAnError(self, driver, pages):
+        pages.load("ajaxy_page.html")
+        driver.set_script_timeout(0.1)
+        with pytest.raises(WebDriverException):
+            url = pages.url("dynamic.html")
+            driver.execute_async_script("window.location = '{0}';".format(url))
 
-    def testShouldCatchErrorsWhenExecutingInitialScript(self):
-        self._loadPage("ajaxy_page")
-        try:
-            self.driver.execute_async_script("throw Error('you should catch this!');")
-            self.fail("Should have thrown a WebDriverException")
-        except WebDriverException:
-            pass
+    def testShouldCatchErrorsWhenExecutingInitialScript(self, driver, pages):
+        pages.load("ajaxy_page.html")
+        with pytest.raises(WebDriverException):
+            driver.execute_async_script("throw Error('you should catch this!');")
 
     # @Ignore(value = ANDROID, CHROME,
     #  reason = "Android: Emulator is too slow and latency causes test to fall out of sync with app;"
     #      + "Chrome: Click is not working")
-    def testShouldBeAbleToExecuteAsynchronousScripts(self):
-        self._loadPage("ajaxy_page")
+    def testShouldBeAbleToExecuteAsynchronousScripts(self, driver, pages):
+        pages.load("ajaxy_page.html")
 
-        typer = self.driver.find_element(by=By.NAME, value="typer")
+        typer = driver.find_element(by=By.NAME, value="typer")
         typer.send_keys("bob")
-        self.assertEqual("bob", typer.get_attribute("value"))
+        assert "bob" == typer.get_attribute("value")
 
-        self.driver.find_element(by=By.ID, value="red").click()
-        self.driver.find_element(by=By.NAME, value="submit").click()
+        driver.find_element(by=By.ID, value="red").click()
+        driver.find_element(by=By.NAME, value="submit").click()
 
-        self.assertEqual(1, len(self.driver.find_elements(by=By.TAG_NAME, value='div')),
-                         "There should only be 1 DIV at this point, which is used for the butter message")
-        self.driver.set_script_timeout(10)
-        text = self.driver.execute_async_script(
+        assert 1 == len(driver.find_elements(by=By.TAG_NAME, value='div')), \
+            "There should only be 1 DIV at this point, which is used for the butter message"
+        driver.set_script_timeout(10)
+        text = driver.execute_async_script(
             """var callback = arguments[arguments.length - 1];
             window.registerListener(arguments[arguments.length - 1]);""")
-        self.assertEqual("bob", text)
-        self.assertEqual("", typer.get_attribute("value"))
+        assert "bob" == text
+        assert "" == typer.get_attribute("value")
 
-        self.assertEqual(2, len(self.driver.find_elements(by=By.TAG_NAME, value='div')),
-                         "There should be 1 DIV (for the butter message) + 1 DIV (for the new label)")
+        assert 2 == len(driver.find_elements(by=By.TAG_NAME, value='div')), \
+            "There should be 1 DIV (for the butter message) + 1 DIV (for the new label)"
 
-    def testShouldBeAbleToPassMultipleArgumentsToAsyncScripts(self):
-        self._loadPage("ajaxy_page")
-        result = self.driver.execute_async_script("""
+    def testShouldBeAbleToPassMultipleArgumentsToAsyncScripts(self, driver, pages):
+        pages.load("ajaxy_page.html")
+        result = driver.execute_async_script("""
             arguments[arguments.length - 1](arguments[0] + arguments[1]);""", 1, 2)
-        self.assertEqual(3, result)
+        assert 3 == result
 
     # TODO DavidBurns Disabled till Java WebServer is used
-    # def testShouldBeAbleToMakeXMLHttpRequestsAndWaitForTheResponse(self):
+    # def testShouldBeAbleToMakeXMLHttpRequestsAndWaitForTheResponse(self, driver, pages):
     #    script = """
     #        var url = arguments[0];
     #        var callback = arguments[arguments.length - 1];
@@ -212,17 +196,8 @@ class ExecutingAsyncJavaScriptTests(unittest.TestCase):
     #
     #        xhr.send('');""" # empty string to stop firefox 3 from choking
     #
-    #    self._loadPage("ajaxy_page")
-    #    self.driver.set_script_timeout(3)
-    #    response = self.driver.execute_async_script(script, pages.sleepingPage + "?time=2")
+    #    pages.load("ajaxy_page.html")
+    #    driver.set_script_timeout(3)
+    #    response = driver.execute_async_script(script, pages.sleepingPage + "?time=2")
     #    htm = "<html><head><title>Done</title></head><body>Slept for 2s</body></html>"
-    #    self.assertTrue(response.strip() == htm)
-
-    def _pageURL(self, name):
-        return self.webserver.where_is(name + '.html')
-
-    def _loadSimplePage(self):
-        self._loadPage("simpleTest")
-
-    def _loadPage(self, name):
-        self.driver.get(self._pageURL(name))
+    #    assert response.strip() == htm

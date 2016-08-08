@@ -15,34 +15,19 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import unittest
-import logging
-from selenium import webdriver
+from selenium.webdriver import Firefox
 
 
-class FirefoxLauncherTests (unittest.TestCase):
+class TestFirefoxLauncher(object):
 
-    def testLaunchAndCloseBrowser(self):
-        capabilities = {'marionette': False}
-        self.webdriver = webdriver.Firefox(capabilities=capabilities)
-        self.webdriver.quit()
+    def testDoubleClose(self, driver):
+        driver.close()
+        driver.close()
 
-    def testDoubleClose(self):
-        capabilities = {'marionette': False}
-        self.webdriver = webdriver.Firefox(capabilities=capabilities)
-        self.webdriver.close()
-        self.webdriver.close()
-        self.webdriver.quit()
-
-    def test_we_can_launch_multiple_firefox_instances(self):
-        capabilities = {'marionette': False}
-        self.webdriver1 = webdriver.Firefox(capabilities=capabilities)
-        self.webdriver2 = webdriver.Firefox(capabilities=capabilities)
-        self.webdriver3 = webdriver.Firefox(capabilities=capabilities)
-        self.webdriver1.quit()
-        self.webdriver2.quit()
-        self.webdriver3.quit()
-
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    unittest.main()
+    def test_we_can_launch_multiple_firefox_instances(self, capabilities):
+        driver1 = Firefox(capabilities=capabilities)
+        driver2 = Firefox(capabilities=capabilities)
+        driver3 = Firefox(capabilities=capabilities)
+        driver1.quit()
+        driver2.quit()
+        driver3.quit()

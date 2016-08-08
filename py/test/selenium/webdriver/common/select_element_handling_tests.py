@@ -15,45 +15,43 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import unittest
 from selenium.webdriver.common.by import By
 
 
-class SelectElementHandlingTests(unittest.TestCase):
+class TestSelectElementHandling(object):
 
-    def testShouldBePossibleToDeselectASingleOptionFromASelectWhichAllowsMultipleChoice(self):
-        self._loadPage("formPage")
-
-        multiSelect = self.driver.find_element(By.ID, "multi")
+    def testShouldBePossibleToDeselectASingleOptionFromASelectWhichAllowsMultipleChoice(self, driver, pages):
+        pages.load("formPage.html")
+        multiSelect = driver.find_element(By.ID, "multi")
         options = multiSelect.find_elements(By.TAG_NAME, "option")
 
         option = options[0]
-        self.assertTrue(option.is_selected())
+        assert option.is_selected() is True
         option.click()
-        self.assertFalse(option.is_selected())
+        assert option.is_selected() is False
         option.click()
-        self.assertTrue(option.is_selected())
+        assert option.is_selected() is True
 
         option = options[2]
-        self.assertTrue(option.is_selected())
+        assert option.is_selected() is True
 
-    def testShouldBeAbleToChangeTheSelectedOptionInASelec(self):
-        self._loadPage("formPage")
-        selectBox = self.driver.find_element(By.XPATH, "//select[@name='selectomatic']")
+    def testShouldBeAbleToChangeTheSelectedOptionInASelec(self, driver, pages):
+        pages.load("formPage.html")
+        selectBox = driver.find_element(By.XPATH, "//select[@name='selectomatic']")
         options = selectBox.find_elements(By.TAG_NAME, "option")
         one = options[0]
         two = options[1]
-        self.assertTrue(one.is_selected())
-        self.assertFalse(two.is_selected())
+        assert one.is_selected() is True
+        assert two.is_selected() is False
 
         two.click()
-        self.assertFalse(one.is_selected())
-        self.assertTrue(two.is_selected())
+        assert one.is_selected() is False
+        assert two.is_selected() is True
 
-    def testShouldBeAbleToSelectMoreThanOneOptionFromASelectWhichAllowsMultipleChoice(self):
-        self._loadPage("formPage")
+    def testShouldBeAbleToSelectMoreThanOneOptionFromASelectWhichAllowsMultipleChoice(self, driver, pages):
+        pages.load("formPage.html")
 
-        multiSelect = self.driver.find_element(By.ID, "multi")
+        multiSelect = driver.find_element(By.ID, "multi")
         options = multiSelect.find_elements(By.TAG_NAME, "option")
         for option in options:
             if not option.is_selected():
@@ -61,49 +59,35 @@ class SelectElementHandlingTests(unittest.TestCase):
 
         for i in range(len(options)):
             option = options[i]
-            self.assertTrue(option.is_selected(), "Option at index is not selected but should be: {0}".format(i))
+            assert option.is_selected() is True
 
-    def testShouldSelectFirstOptionaultIfNoneIsSelecte(self):
-        self._loadPage("formPage")
-        selectBox = self.driver.find_element(By.XPATH, "//select[@name='select-default']")
+    def testShouldSelectFirstOptionaultIfNoneIsSelecte(self, driver, pages):
+        pages.load("formPage.html")
+        selectBox = driver.find_element(By.XPATH, "//select[@name='select-default']")
         options = selectBox.find_elements(By.TAG_NAME, "option")
         one = options[0]
         two = options[1]
-        self.assertTrue(one.is_selected())
-        self.assertFalse(two.is_selected())
+        assert one.is_selected() is True
+        assert two.is_selected() is False
 
         two.click()
-        self.assertFalse(one.is_selected())
-        self.assertTrue(two.is_selected())
+        assert one.is_selected() is False
+        assert two.is_selected() is True
 
-    def testCanSelectElementsInOptGroup(self):
-        self._loadPage("selectPage")
-        element = self.driver.find_element(By.ID, "two-in-group")
+    def testCanSelectElementsInOptGroup(self, driver, pages):
+        pages.load("selectPage.html")
+        element = driver.find_element(By.ID, "two-in-group")
         element.click()
-        self.assertTrue(element.is_selected(), "Expected to be selected")
+        assert element.is_selected() is True
 
-    def testCanGetValueFromOptionViaAttributeWhenAttributeDoesntExis(self):
-        self._loadPage("formPage")
-        element = self.driver.find_element(By.CSS_SELECTOR, "select[name='select-default'] option")
-        self.assertEqual(element.get_attribute("value"), "One")
-        element = self.driver.find_element(By.ID, "blankOption")
-        self.assertEqual(element.get_attribute("value"), "")
+    def testCanGetValueFromOptionViaAttributeWhenAttributeDoesntExis(self, driver, pages):
+        pages.load("formPage.html")
+        element = driver.find_element(By.CSS_SELECTOR, "select[name='select-default'] option")
+        assert element.get_attribute("value") == "One"
+        element = driver.find_element(By.ID, "blankOption")
+        assert element.get_attribute("value") == ""
 
-    def testCanGetValueFromOptionViaAttributeWhenAttributeIsEmptyString(self):
-        self._loadPage("formPage")
-        element = self.driver.find_element(By.ID, "optionEmptyValueSet")
-        self.assertEqual(element.get_attribute("value"), "")
-
-    def _pageURL(self, name):
-        return self.webserver.where_is(name + '.html')
-
-    def _loadSimplePage(self):
-        self._loadPage("simpleTest")
-
-    def _loadPage(self, name):
-        try:
-            # just in case a previous test left open an alert
-            self.driver.switch_to.alert().dismiss()
-        except Exception:
-            pass
-        self.driver.get(self._pageURL(name))
+    def testCanGetValueFromOptionViaAttributeWhenAttributeIsEmptyString(self, driver, pages):
+        pages.load("formPage.html")
+        element = driver.find_element(By.ID, "optionEmptyValueSet")
+        assert element.get_attribute("value") == ""

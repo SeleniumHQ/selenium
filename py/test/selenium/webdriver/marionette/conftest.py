@@ -15,16 +15,19 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import unittest
-from . import test_i18n
-import sys
+import pytest
+
+from selenium.webdriver import Firefox
 
 
-def suite():
-    return unittest.TestSuite((
-        unittest.makeSuite(test_i18n.TestI18n),
-    ))
+@pytest.fixture
+def capabilities():
+    capabilities = {'marionette': True}
+    return capabilities
 
-if __name__ == "__main__":
-    result = unittest.TextTestRunner(verbosity=2).run(suite())
-    sys.exit(not result.wasSuccessful())
+
+@pytest.yield_fixture
+def driver(capabilities):
+    driver = Firefox(capabilities=capabilities)
+    yield driver
+    driver.quit()

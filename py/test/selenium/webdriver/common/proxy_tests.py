@@ -15,11 +15,12 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import unittest
+import pytest
+
 from selenium.webdriver.common.proxy import Proxy, ProxyType
 
 
-class ProxyTests(unittest.TestCase):
+class TestProxy(object):
 
     MANUAL_PROXY = {
         'httpProxy': 'some.url:1234',
@@ -55,7 +56,7 @@ class ProxyTests(unittest.TestCase):
         proxy_capabilities = self.MANUAL_PROXY.copy()
         proxy_capabilities['proxyType'] = 'MANUAL'
         expected_capabilities = {'proxy': proxy_capabilities}
-        self.assertEqual(expected_capabilities, desired_capabilities)
+        assert expected_capabilities == desired_capabilities
 
     def testCanAddAutodetectProxyToDesiredCapabilities(self):
         proxy = Proxy()
@@ -67,7 +68,7 @@ class ProxyTests(unittest.TestCase):
         proxy_capabilities = self.AUTODETECT_PROXY.copy()
         proxy_capabilities['proxyType'] = 'AUTODETECT'
         expected_capabilities = {'proxy': proxy_capabilities}
-        self.assertEqual(expected_capabilities, desired_capabilities)
+        assert expected_capabilities == desired_capabilities
 
     def testCanAddPACProxyToDesiredCapabilities(self):
         proxy = Proxy()
@@ -79,60 +80,51 @@ class ProxyTests(unittest.TestCase):
         proxy_capabilities = self.PAC_PROXY.copy()
         proxy_capabilities['proxyType'] = 'PAC'
         expected_capabilities = {'proxy': proxy_capabilities}
-        self.assertEqual(expected_capabilities, desired_capabilities)
+        assert expected_capabilities == desired_capabilities
 
     def testCanNotChangeInitializedProxyType(self):
         proxy = Proxy(raw={'proxyType': 'direct'})
-        try:
+        with pytest.raises(Exception):
             proxy.proxy_type = ProxyType.SYSTEM
-            raise Exception("Change of already initialized proxy type should raise exception")
-        except Exception:
-            pass
 
         proxy = Proxy(raw={'proxyType': ProxyType.DIRECT})
-        try:
+        with pytest.raises(Exception):
             proxy.proxy_type = ProxyType.SYSTEM
-            raise Exception("Change of already initialized proxy type should raise exception")
-        except Exception:
-            pass
 
     def testCanInitManualProxy(self):
         proxy = Proxy(raw=self.MANUAL_PROXY)
 
-        self.assertEqual(ProxyType.MANUAL, proxy.proxy_type)
-        self.assertEqual(self.MANUAL_PROXY['httpProxy'], proxy.http_proxy)
-        self.assertEqual(self.MANUAL_PROXY['ftpProxy'], proxy.ftp_proxy)
-        self.assertEqual(self.MANUAL_PROXY['noProxy'], proxy.no_proxy)
-        self.assertEqual(self.MANUAL_PROXY['sslProxy'], proxy.sslProxy)
-        self.assertEqual(self.MANUAL_PROXY['socksProxy'], proxy.socksProxy)
-        self.assertEqual(self.MANUAL_PROXY['socksUsername'], proxy.socksUsername)
-        self.assertEqual(self.MANUAL_PROXY['socksPassword'], proxy.socksPassword)
+        assert ProxyType.MANUAL == proxy.proxy_type
+        assert self.MANUAL_PROXY['httpProxy'] == proxy.http_proxy
+        assert self.MANUAL_PROXY['ftpProxy'] == proxy.ftp_proxy
+        assert self.MANUAL_PROXY['noProxy'] == proxy.no_proxy
+        assert self.MANUAL_PROXY['sslProxy'] == proxy.sslProxy
+        assert self.MANUAL_PROXY['socksProxy'] == proxy.socksProxy
+        assert self.MANUAL_PROXY['socksUsername'] == proxy.socksUsername
+        assert self.MANUAL_PROXY['socksPassword'] == proxy.socksPassword
 
     def testCanInitAutodetectProxy(self):
         proxy = Proxy(raw=self.AUTODETECT_PROXY)
-
-        self.assertEqual(ProxyType.AUTODETECT, proxy.proxy_type)
-        self.assertEqual(self.AUTODETECT_PROXY['autodetect'], proxy.auto_detect)
+        assert ProxyType.AUTODETECT == proxy.proxy_type
+        assert self.AUTODETECT_PROXY['autodetect'] == proxy.auto_detect
 
     def testCanInitPACProxy(self):
         proxy = Proxy(raw=self.PAC_PROXY)
-
-        self.assertEqual(ProxyType.PAC, proxy.proxy_type)
-        self.assertEqual(self.PAC_PROXY['proxyAutoconfigUrl'], proxy.proxy_autoconfig_url)
+        assert ProxyType.PAC == proxy.proxy_type
+        assert self.PAC_PROXY['proxyAutoconfigUrl'] == proxy.proxy_autoconfig_url
 
     def testCanInitEmptyProxy(self):
         proxy = Proxy()
-
-        self.assertEqual(ProxyType.UNSPECIFIED, proxy.proxy_type)
-        self.assertEqual('', proxy.http_proxy)
-        self.assertEqual('', proxy.ftp_proxy)
-        self.assertEqual('', proxy.no_proxy)
-        self.assertEqual('', proxy.sslProxy)
-        self.assertEqual('', proxy.socksProxy)
-        self.assertEqual('', proxy.socksUsername)
-        self.assertEqual('', proxy.socksPassword)
-        self.assertEqual(False, proxy.auto_detect)
-        self.assertEqual('', proxy.proxy_autoconfig_url)
+        assert ProxyType.UNSPECIFIED == proxy.proxy_type
+        assert '' == proxy.http_proxy
+        assert '' == proxy.ftp_proxy
+        assert '' == proxy.no_proxy
+        assert '' == proxy.sslProxy
+        assert '' == proxy.socksProxy
+        assert '' == proxy.socksUsername
+        assert '' == proxy.socksPassword
+        assert proxy.auto_detect is False
+        assert '' == proxy.proxy_autoconfig_url
 
         desired_capabilities = {}
         proxy.add_to_capabilities(desired_capabilities)
@@ -140,4 +132,4 @@ class ProxyTests(unittest.TestCase):
         proxy_capabilities = {}
         proxy_capabilities['proxyType'] = 'UNSPECIFIED'
         expected_capabilities = {'proxy': proxy_capabilities}
-        self.assertEqual(expected_capabilities, desired_capabilities)
+        assert expected_capabilities == desired_capabilities

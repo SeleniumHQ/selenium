@@ -15,27 +15,26 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import unittest
 from selenium.webdriver.support.wait import WebDriverWait
 
 
-class ClassReprTests(unittest.TestCase):
+class TestClassRepr(object):
 
-    def testShouldImplementReprForWebDriver(self):
-        driver_repr = repr(self.driver)
-        self.assertTrue(type(self.driver).__name__ in driver_repr)
-        self.assertTrue(self.driver.session_id in driver_repr)
+    def testShouldImplementReprForWebDriver(self, driver):
+        driver_repr = repr(driver)
+        assert type(driver).__name__ in driver_repr
+        assert driver.session_id in driver_repr
 
-    def testShouldImplementReprForWebElement(self):
-        self.driver.get(self.webserver.where_is('simpleTest.html'))
-        elem = self.driver.find_element_by_id("validImgTag")
+    def testShouldImplementReprForWebElement(self, driver, pages):
+        pages.load('simpleTest.html')
+        elem = driver.find_element_by_id("validImgTag")
         elem_repr = repr(elem)
-        self.assertTrue(type(elem).__name__ in elem_repr)
-        self.assertTrue(self.driver.session_id in elem_repr)
-        self.assertTrue(elem._id in elem_repr)
+        assert type(elem).__name__ in elem_repr
+        assert driver.session_id in elem_repr
+        assert elem._id in elem_repr
 
-    def testShouldImplementReprForWait(self):
-        wait = WebDriverWait(self.driver, 30)
+    def testShouldImplementReprForWait(self, driver):
+        wait = WebDriverWait(driver, 30)
         wait_repr = repr(wait)
-        self.assertTrue(type(wait).__name__ in wait_repr)
-        self.assertTrue(self.driver.session_id in wait_repr)
+        assert type(wait).__name__ in wait_repr
+        assert driver.session_id in wait_repr

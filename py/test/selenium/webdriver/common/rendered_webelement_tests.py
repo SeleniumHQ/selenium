@@ -15,65 +15,52 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import unittest
 import pytest
 
 from selenium.webdriver.common.by import By
 
 
-class RenderedWebElementTests(unittest.TestCase):
+class TestRenderedWebElement(object):
 
     @pytest.mark.ignore_chrome
-    def testShouldPickUpStyleOfAnElement(self):
-        self._loadPage("javascriptPage")
+    def testShouldPickUpStyleOfAnElement(self, driver, pages):
+        pages.load("javascriptPage.html")
 
-        element = self.driver.find_element(by=By.ID, value="green-parent")
+        element = driver.find_element(by=By.ID, value="green-parent")
         backgroundColour = element.value_of_css_property("background-color")
+        assert "rgba(0, 128, 0, 1)" == backgroundColour
 
-        self.assertEqual("rgba(0, 128, 0, 1)", backgroundColour)
-
-        element = self.driver.find_element(by=By.ID, value="red-item")
+        element = driver.find_element(by=By.ID, value="red-item")
         backgroundColour = element.value_of_css_property("background-color")
-
-        self.assertEqual("rgba(255, 0, 0, 1)", backgroundColour)
+        assert "rgba(255, 0, 0, 1)" == backgroundColour
 
     @pytest.mark.ignore_chrome
-    def testShouldAllowInheritedStylesToBeUsed(self):
-        if self.driver.capabilities['browserName'] == 'phantomjs':
+    def testShouldAllowInheritedStylesToBeUsed(self, driver, pages):
+        if driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs has an issue with getting the right value for background-color")
-        self._loadPage("javascriptPage")
+        pages.load("javascriptPage.html")
 
-        element = self.driver.find_element(by=By.ID, value="green-item")
+        element = driver.find_element(by=By.ID, value="green-item")
         backgroundColour = element.value_of_css_property("background-color")
+        assert "transparent" == backgroundColour
 
-        self.assertEqual("transparent", backgroundColour)
+    def testShouldCorrectlyIdentifyThatAnElementHasWidth(self, driver, pages):
+        pages.load("xhtmlTest.html")
 
-    def testShouldCorrectlyIdentifyThatAnElementHasWidth(self):
-        self._loadPage("xhtmlTest")
-
-        shrinko = self.driver.find_element(by=By.ID, value="linkId")
+        shrinko = driver.find_element(by=By.ID, value="linkId")
         size = shrinko.size
-        self.assertTrue(size["width"] > 0, "Width expected to be greater than 0")
-        self.assertTrue(size["height"] > 0, "Height expected to be greater than 0")
+        assert size["width"] > 0
+        assert size["height"] > 0
 
-    def testShouldBeAbleToDetermineTheRectOfAnElement(self):
-        if self.driver.capabilities['browserName'] == 'phantomjs':
+    def testShouldBeAbleToDetermineTheRectOfAnElement(self, driver, pages):
+        if driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs driver does not support rect command")
-        self._loadPage("xhtmlTest")
+        pages.load("xhtmlTest.html")
 
-        element = self.driver.find_element(By.ID, "username")
+        element = driver.find_element(By.ID, "username")
         rect = element.rect
 
-        self.assertTrue(rect["x"] > 0, "Element should not be in the top left")
-        self.assertTrue(rect["y"] > 0, "Element should not be in the top left")
-        self.assertTrue(rect["width"] > 0, "Width expected to be greater than 0")
-        self.assertTrue(rect["height"] > 0, "Height expected to be greater than 0")
-
-    def _pageURL(self, name):
-        return self.webserver.where_is(name + '.html')
-
-    def _loadSimplePage(self):
-        self._loadPage("simpleTest")
-
-    def _loadPage(self, name):
-        self.driver.get(self._pageURL(name))
+        assert rect["x"] > 0
+        assert rect["y"] > 0
+        assert rect["width"] > 0
+        assert rect["height"] > 0

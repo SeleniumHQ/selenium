@@ -15,43 +15,19 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import os
-
 import pytest
-from selenium import webdriver
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
+from selenium.webdriver import Firefox
 
 
 @pytest.fixture
 def capabilities():
-    capabilities = DesiredCapabilities.FIREFOX.copy()
-    capabilities['marionette'] = True
+    capabilities = {'marionette': False}
     return capabilities
 
 
 @pytest.yield_fixture
-def driver(capabilities, profile):
-    driver = webdriver.Firefox(
-        capabilities=capabilities,
-        firefox_profile=profile)
+def driver(capabilities):
+    driver = Firefox(capabilities=capabilities)
     yield driver
     driver.quit()
-
-
-@pytest.fixture
-def profile():
-    profile = webdriver.FirefoxProfile()
-    profile.set_preference('browser.startup.homepage_override.mstone', '')
-    profile.set_preference('startup.homepage_welcome_url', 'about:')
-    profile.update_preferences()
-    return profile
-
-
-def test_profile_is_used(driver):
-    assert 'about:' == driver.current_url
-
-
-def test_profile_is_deleted(driver, profile):
-    assert os.path.exists(profile.path)
-    driver.quit()
-    assert not os.path.exists(profile.path)

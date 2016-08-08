@@ -17,7 +17,7 @@
 
 import pytest
 from selenium import webdriver
-from selenium.test.selenium.common import utils
+from test.selenium.common import utils
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 

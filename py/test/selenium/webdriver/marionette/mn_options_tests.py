@@ -15,26 +15,25 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from selenium import selenium
-import unittest
+
+import pytest
+
+from selenium.webdriver import Firefox
+from selenium.webdriver.firefox.options import Options
 
 
-class TestGoogle(unittest.TestCase):
+@pytest.yield_fixture
+def driver(capabilities):
+    options = Options()
+    driver = Firefox(
+        capabilities=capabilities,
+        firefox_options=options)
+    yield driver
+    driver.quit()
 
-    def setUp(self):
-        self.selenium = selenium("localhost", 4444, "*firefox", "http://www.google.com/webhp")
-        self.selenium.start()
 
-    def test_google(self):
-        sel = self.selenium
-        sel.open("http://www.google.com/webhp")
-        sel.type("q", "hello world")
-        sel.click("btnG")
-        sel.wait_for_page_to_load(5000)
-        self.assertEqual("hello world - Google Search", sel.get_title())
+class TestOptions(object):
 
-    def tearDown(self):
-        self.selenium.stop()
-
-if __name__ == "__main__":
-    unittest.main()
+    def test_we_can_pass_options(self, driver, pages):
+        pages.load('formPage.html')
+        driver.find_element_by_id("cheese")

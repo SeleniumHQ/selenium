@@ -45,6 +45,8 @@ java/client/build/
 java/client/log.txt
 java/client/iedriver.log
 java/server/build/
+__pycache__
+.tox
 *.pyc
 dist/
 py/selenium/webdriver/firefox/amd64/
@@ -71,6 +73,7 @@ ipch/
 /iedriver.log
 /phantomjsdriver.log
 geckodriver.log
+ghostdriver.log
 .tags
 .ruby-version
 GPATH

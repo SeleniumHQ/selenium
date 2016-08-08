@@ -16,24 +16,6 @@
 # under the License.
 
 
-from selenium import webdriver
-from selenium.test.selenium.webdriver.common import select_class_tests
-from selenium.test.selenium.webdriver.common.webserver import SimpleWebServer
-
-
-def setup_module(module):
-    webserver = SimpleWebServer()
-    webserver.start()
-    FirefoxSelectElementHandlingTests.webserver = webserver
-    capabilities = {'marionette': False}
-    FirefoxSelectElementHandlingTests.driver = webdriver.Firefox(
-        capabilities=capabilities)
-
-
-class FirefoxSelectElementHandlingTests(select_class_tests.WebDriverSelectSupportTests):
-    pass
-
-
-def teardown_module(module):
-    FirefoxSelectElementHandlingTests.driver.quit()
-    FirefoxSelectElementHandlingTests.webserver.stop()
+def pytest_generate_tests(metafunc):
+    if 'driver' in metafunc.fixturenames and metafunc.config.option.drivers:
+        metafunc.parametrize('driver', metafunc.config.option.drivers, indirect=True)

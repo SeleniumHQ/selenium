@@ -14,3 +14,27 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
+import pytest
+
+from test.selenium.webdriver.common.webserver import SimpleWebServer
+from test.selenium.webdriver.common.network import get_lan_ip
+
+
+@pytest.yield_fixture(autouse=True, scope='session')
+def webserver():
+    webserver = SimpleWebServer(host=get_lan_ip())
+    webserver.start()
+    yield webserver
+    webserver.stop()
+
+
+@pytest.fixture
+def pages(driver, webserver):
+    class Pages(object):
+        def url(self, name):
+            return webserver.where_is(name)
+
+        def load(self, name):
+            driver.get(self.url(name))
+    return Pages()

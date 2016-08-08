@@ -39,7 +39,7 @@ def updir():
 
 LOGGER = logging.getLogger(__name__)
 WEBDRIVER = os.environ.get("WEBDRIVER", updir())
-HTML_ROOT = os.path.join(WEBDRIVER, "../../../../../../common/src/web")
+HTML_ROOT = os.path.join(WEBDRIVER, "../../../../common/src/web")
 if not os.path.isdir(HTML_ROOT):
     message = ("Can't find 'common_web' directory, try setting WEBDRIVER"
                " environment variable WEBDRIVER:" + WEBDRIVER + "  HTML_ROOT:" + HTML_ROOT)

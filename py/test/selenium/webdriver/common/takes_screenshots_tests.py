@@ -15,28 +15,18 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import unittest
 import base64
 import imghdr
 
 
-class ScreenshotTests(unittest.TestCase):
+class TestScreenshot(object):
 
-    def test_get_screenshot_as_base64(self):
-        self._loadSimplePage()
-        result = base64.b64decode(self.driver.get_screenshot_as_base64())
-        self.assertEqual(imghdr.what('', result), 'png')
+    def test_get_screenshot_as_base64(self, driver, pages):
+        pages.load("simpleTest.html")
+        result = base64.b64decode(driver.get_screenshot_as_base64())
+        assert imghdr.what('', result) == 'png'
 
-    def test_get_screenshot_as_png(self):
-        self._loadSimplePage()
-        result = self.driver.get_screenshot_as_png()
-        self.assertEqual(imghdr.what('', result), 'png')
-
-    def _pageURL(self, name):
-        return self.webserver.where_is(name + '.html')
-
-    def _loadSimplePage(self):
-        self._loadPage("simpleTest")
-
-    def _loadPage(self, name):
-        self.driver.get(self._pageURL(name))
+    def test_get_screenshot_as_png(self, driver, pages):
+        pages.load("simpleTest.html")
+        result = driver.get_screenshot_as_png()
+        assert imghdr.what('', result) == 'png'

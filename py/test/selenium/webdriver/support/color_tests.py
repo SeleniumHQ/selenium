@@ -15,11 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import unittest
 from selenium.webdriver.support.color import Color
 
 
-class ColorTests(unittest.TestCase):
+class TestColor(object):
 
     def test_rgb_to_rgb(self):
         rgb = "rgb(1, 2, 3)"

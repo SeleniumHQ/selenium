@@ -16,26 +16,6 @@
 # under the License.
 
 
-from selenium import webdriver
-
-
-class TestMarionetteLauncher:
-
-    def test_launch_and_close_browser(self):
-        capabilities = {'marionette': True}
-        self.driver = webdriver.Firefox(capabilities=capabilities)
-        assert 'appBuildId' in self.driver.capabilities
-        self.driver.quit()
-
-    def teardown_method(self, method):
-        try:
-            self.driver.quit()
-        except Exception:
-            pass
-
-
-def teardown_module(module):
-    try:
-        TestMarionetteLauncher.driver.quit()
-    except Exception:
-        pass
+def pytest_generate_tests(metafunc):
+    if 'driver' in metafunc.fixturenames and metafunc.config.option.drivers:
+        metafunc.parametrize('driver', metafunc.config.option.drivers, indirect=True)

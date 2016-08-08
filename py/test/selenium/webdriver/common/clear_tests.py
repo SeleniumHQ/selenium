@@ -15,76 +15,53 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import unittest
-
 import pytest
 
 from selenium.common.exceptions import InvalidElementStateException
 
 
 @pytest.mark.ignore_chrome
-class ClearTests(unittest.TestCase):
+class TestClear(object):
 
-    def testWritableTextInputShouldClear(self):
-        self._loadPage("readOnlyPage")
-        element = self.driver.find_element_by_id("writableTextInput")
+    def testWritableTextInputShouldClear(self, driver, pages):
+        pages.load("readOnlyPage.html")
+        element = driver.find_element_by_id("writableTextInput")
         element.clear()
-        self.assertEqual("", element.get_attribute("value"))
+        assert "" == element.get_attribute("value")
 
-    def testTextInputShouldNotClearWhenDisabled(self):
-        self._loadPage("readOnlyPage")
-        try:
-            element = self.driver.find_element_by_id("textInputnotenabled")
-            self.assertFalse(element.is_enabled())
+    def testTextInputShouldNotClearWhenDisabled(self, driver, pages):
+        pages.load("readOnlyPage.html")
+        element = driver.find_element_by_id("textInputnotenabled")
+        assert not element.is_enabled()
+        with pytest.raises(InvalidElementStateException):
             element.clear()
-            self.fail("Should not have been able to clear")
-        except InvalidElementStateException:
-            pass
 
-    def testTextInputShouldNotClearWhenReadOnly(self):
-        self._loadPage("readOnlyPage")
-        element = self.driver.find_element_by_id("readOnlyTextInput")
-        try:
+    def testTextInputShouldNotClearWhenReadOnly(self, driver, pages):
+        pages.load("readOnlyPage.html")
+        element = driver.find_element_by_id("readOnlyTextInput")
+        with pytest.raises(InvalidElementStateException):
             element.clear()
-            self.fail("Should not have been able to clear")
-        except InvalidElementStateException:
-            pass
 
-    def testWritableTextAreaShouldClear(self):
-        self._loadPage("readOnlyPage")
-        element = self.driver.find_element_by_id("writableTextArea")
+    def testWritableTextAreaShouldClear(self, driver, pages):
+        pages.load("readOnlyPage.html")
+        element = driver.find_element_by_id("writableTextArea")
         element.clear()
-        self.assertEqual("", element.get_attribute("value"))
+        assert "" == element.get_attribute("value")
 
-    def testTextAreaShouldNotClearWhenDisabled(self):
-        self._loadPage("readOnlyPage")
-        element = self.driver.find_element_by_id("textAreaNotenabled")
-        try:
+    def testTextAreaShouldNotClearWhenDisabled(self, driver, pages):
+        pages.load("readOnlyPage.html")
+        element = driver.find_element_by_id("textAreaNotenabled")
+        with pytest.raises(InvalidElementStateException):
             element.clear()
-            self.fail("Should not have been able to clear")
-        except InvalidElementStateException:
-            pass
 
-    def testTextAreaShouldNotClearWhenReadOnly(self):
-        self._loadPage("readOnlyPage")
-        element = self.driver.find_element_by_id("textAreaReadOnly")
-        try:
+    def testTextAreaShouldNotClearWhenReadOnly(self, driver, pages):
+        pages.load("readOnlyPage.html")
+        element = driver.find_element_by_id("textAreaReadOnly")
+        with pytest.raises(InvalidElementStateException):
             element.clear()
-            self.fail("Should not have been able to clear")
-        except InvalidElementStateException:
-            pass
 
-    def testContentEditableAreaShouldClear(self):
-        self._loadPage("readOnlyPage")
-        element = self.driver.find_element_by_id("content-editable")
+    def testContentEditableAreaShouldClear(self, driver, pages):
+        pages.load("readOnlyPage.html")
+        element = driver.find_element_by_id("content-editable")
         element.clear()
-        self.assertEqual("", element.text)
-
-    def _pageURL(self, name):
-        return self.webserver.where_is(name + '.html')
-
-    def _loadSimplePage(self):
-        self._loadPage("simpleTest")
-
-    def _loadPage(self, name):
-        self.driver.get(self._pageURL(name))
+        assert "" == element.text

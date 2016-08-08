@@ -15,28 +15,29 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import unittest
+import pytest
+
 from selenium.webdriver.common.by import By
 
 
-class ClickTest(unittest.TestCase):
+@pytest.fixture(autouse=True)
+def loadPage(pages):
+    pages.load("clicks.html")
 
-    def setUp(self):
-        self._loadPage("clicks")
 
-    def tearDown(self):
-        self.driver.delete_all_cookies()
+@pytest.fixture(autouse=True)
+def clearCookies(request, driver):
+    def fin():
+        driver.delete_all_cookies()
+    request.addfinalizer(fin)
 
-    def testAddingACookieThatExpiredInThePast(self):
-        self.driver.find_element(By.ID, "overflowLink").click()
-        self.assertEqual(self.driver.title, "XHTML Test Page")
 
-    def testClickingALinkMadeUpOfNumbersIsHandledCorrectly(self):
-        self.driver.find_element(By.LINK_TEXT, "333333").click()
-        self.assertEqual(self.driver.title, "XHTML Test Page")
+class TestClick(object):
 
-    def _loadPage(self, name):
-        self.driver.get(self._pageURL(name))
+    def testAddingACookieThatExpiredInThePast(self, driver):
+        driver.find_element(By.ID, "overflowLink").click()
+        assert driver.title == "XHTML Test Page"
 
-    def _pageURL(self, name):
-        return self.webserver.where_is(name + '.html')
+    def testClickingALinkMadeUpOfNumbersIsHandledCorrectly(self, driver):
+        driver.find_element(By.LINK_TEXT, "333333").click()
+        assert driver.title == "XHTML Test Page"
