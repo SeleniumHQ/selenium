@@ -19,6 +19,7 @@ import os
 from selenium.webdriver.common import service, utils
 from subprocess import PIPE
 
+
 class Service(service.Service):
     """
     Object that manages the starting and stopping of the SafariDriver
@@ -33,14 +34,16 @@ class Service(service.Service):
          - port : Port the service is running on """
 
         if not use_legacy and os.path.exists('/usr/bin/safaridriver'):
-          path = '/usr/bin/safaridriver'
-          self.legacy_driver = False
+            path = '/usr/bin/safaridriver'
+            self.legacy_driver = False
         else:
-          path = 'java'
-          self.standalone_jar = executable_path
-          self.legacy_driver = True
+            path = 'java'
+            self.standalone_jar = executable_path
+            self.legacy_driver = True
+
         if port == 0:
             port = utils.free_port()
+
         self.quiet = quiet
         log = PIPE
         if quiet:
@@ -49,7 +52,7 @@ class Service(service.Service):
 
     def command_line_args(self):
         if self.legacy_driver:
-          return ["-jar", self.standalone_jar, "-port", "%s" % self.port]
+            return ["-jar", self.standalone_jar, "-port", "%s" % self.port]
         return ["-p", "%s" % self.port]
 
     @property
@@ -58,7 +61,6 @@ class Service(service.Service):
         Gets the url of the SafariDriver Service
         """
         if not self.legacy_driver:
-          return "http://localhost:%d" % self.port
+            return "http://localhost:%d" % self.port
         else:
-          return "http://localhost:%d/wd/hub" % self.port
-
+            return "http://localhost:%d/wd/hub" % self.port
