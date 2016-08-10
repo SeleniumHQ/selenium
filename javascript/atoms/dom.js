@@ -33,6 +33,7 @@ goog.require('goog.dom.TagName');
 goog.require('goog.math');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Rect');
+goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.style');
 goog.require('goog.userAgent');
@@ -312,18 +313,18 @@ bot.dom.getAttribute = function(element, attributeName) {
 /**
  * List of elements that support the "disabled" attribute, as defined by the
  * HTML 4.01 specification.
- * @private {!Array.<goog.dom.TagName>}
+ * @private {!Object<string, boolean>}
  * @const
  * @see http://www.w3.org/TR/html401/interact/forms.html#h-17.12.1
  */
-bot.dom.DISABLED_ATTRIBUTE_SUPPORTED_ = [
+bot.dom.DISABLED_ATTRIBUTE_SUPPORTED_ = goog.object.createSet([
   goog.dom.TagName.BUTTON,
   goog.dom.TagName.INPUT,
   goog.dom.TagName.OPTGROUP,
   goog.dom.TagName.OPTION,
   goog.dom.TagName.SELECT,
   goog.dom.TagName.TEXTAREA
-];
+]);
 
 
 /**
@@ -334,7 +335,7 @@ bot.dom.DISABLED_ATTRIBUTE_SUPPORTED_ = [
  */
 bot.dom.isEnabled = function(el) {
   var tagName = el.tagName.toUpperCase();
-  if (!goog.array.contains(bot.dom.DISABLED_ATTRIBUTE_SUPPORTED_, tagName)) {
+  if (!bot.dom.DISABLED_ATTRIBUTE_SUPPORTED_[tagName]) {
     return true;
   }
 

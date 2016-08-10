@@ -515,7 +515,7 @@ limitations under the License.
       assertEquals(wrapped[bot.inject.ELEMENT_KEY],
                    value[0][bot.inject.ELEMENT_KEY]);
 
-      assertEquals(goog.dom.TagName.BODY, value[1]);
+      assertEquals(String(goog.dom.TagName.BODY), value[1]);
     }
 
     function testCorrectlyUnwrapsArgsForInjectedAsyncScripts() {
@@ -541,7 +541,7 @@ limitations under the License.
         assertEquals(wrapped[bot.inject.ELEMENT_KEY],
                      value[0][bot.inject.ELEMENT_KEY]);
 
-        assertEquals(goog.dom.TagName.BODY, value[1]);
+        assertEquals(String(goog.dom.TagName.BODY), value[1]);
       });
     }
 
