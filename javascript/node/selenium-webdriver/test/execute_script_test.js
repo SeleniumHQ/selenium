@@ -17,7 +17,6 @@
 
 'use strict';
 
-var path = require('path');
 var fail = require('assert').fail;
 
 var webdriver = require('..'),
