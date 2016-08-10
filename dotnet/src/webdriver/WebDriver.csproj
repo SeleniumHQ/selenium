@@ -86,6 +86,7 @@
     <Compile Include="Firefox\FirefoxDriverCommandExecutor.cs" />
     <Compile Include="Firefox\FirefoxDriverServer.cs" />
     <Compile Include="Firefox\FirefoxOptions.cs" />
+    <Compile Include="Firefox\FirefoxDriverLogLevel.cs" />
     <Compile Include="Html5\AppCacheStatus.cs" />
     <Compile Include="Html5\IApplicationCache.cs" />
     <Compile Include="Html5\IHasApplicationCache.cs" />
