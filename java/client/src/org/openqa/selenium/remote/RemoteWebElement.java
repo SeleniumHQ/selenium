@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
@@ -48,11 +49,20 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById, FindsByName,
                                          FindsByTagName, FindsByClassName, FindsByCssSelector,
                                          FindsByXPath, WrapsDriver, Locatable, HasIdentity,
                                          TakesScreenshot {
+
+  private static final Set<String> BOOLEAN_ATTRIBUTES = ImmutableSet.of(
+      "async", "autofocus", "autoplay", "checked", "compact", "complete", "controls", "declare",
+      "defaultchecked", "defaultselected", "defer", "disabled", "draggable", "ended",
+      "formnovalidate", "hidden", "indeterminate", "iscontenteditable", "ismap", "itemscope",
+      "loop", "multiple", "muted", "nohref", "noresize", "noshade", "novalidate", "nowrap", "open",
+      "paused", "pubdate", "readonly", "required", "reversed", "scoped", "seamless", "seeking",
+      "selected", "truespeed", "willvalidate");
 
   private String foundBy;
   protected String id;
@@ -146,13 +156,88 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public String getAttribute(String name) {
-    Object value =
+    if (parent.getW3CStandardComplianceLevel() == 0) {
+      return stringValueOf(
+          execute(DriverCommand.GET_ELEMENT_ATTRIBUTE, ImmutableMap.of("id", id, "name", name))
+          .getValue());
+    }
+
+    // Return a normalized version of the element's inline style. This excludes, e.g., properties
+    // inherited from parents or set via style sheets. This inline style is generally what people
+    // want when they ask for the "style" attribute; there is a separate WebDriver command for
+    // inspecting computed CSS properties.
+    if (name.equals("style")) {
+      return stringValueOf(parent.executeScript("return arguments[0].style.cssText", this));
+    }
+
+    // Special cases for selectable elements, i.e., radio buttons, checkboxes, and select options.
+    // When a user calls getAttribute("checked"), they generally want to know whether the element
+    // is *currently* checked, as opposed to the value of the "checked" attribute, which indicates
+    // the element's default checkedness.
+    if ("checked".equalsIgnoreCase(name) || "selected".equalsIgnoreCase(name)) {
+      String tagName = getTagName();
+      if ("option".equalsIgnoreCase(tagName)) {
+        return isSelected() ? "true" : null;
+      }
+      if ("input".equalsIgnoreCase(tagName)) {
+        String type = getAttribute("type");
+        if ("checkbox".equalsIgnoreCase(type) || "radio".equalsIgnoreCase(type)) {
+          return isSelected() ? "true" : null;
+        }
+      }
+    }
+
+    if (BOOLEAN_ATTRIBUTES.contains(name)) {
+      return getElementAttribute(name) != null ? "true" : null;
+    }
+
+    String attrValue = getElementProperty(name);
+    if ((attrValue != null && !attrValue.isEmpty()) || name.equals("value")) {
+      return attrValue;
+    }
+
+    attrValue = getElementAttribute(name);
+    if (attrValue != null) {
+      // We might be receiving a default value of the attribute (e.g., getting the "src" attribute
+      // for an <img> tag that lacks a src will return the empty string). If the attribute is
+      // absent, we are supposed to return null.
+      Object hasAttr =
+          parent.executeScript("return arguments[0].hasAttribute(arguments[1])", this, name);
+      if (hasAttr instanceof Boolean && !((Boolean) hasAttr)) {
+        attrValue = null;
+      }
+    }
+
+    return attrValue;
+  }
+
+  private String getElementAttribute(String name) {
+    return stringValueOf(
         execute(DriverCommand.GET_ELEMENT_ATTRIBUTE, ImmutableMap.of("id", id, "name", name))
-            .getValue();
-    if (value == null) {
+            .getValue());
+  }
+
+  private String getElementProperty(String name) {
+    try {
+      return stringValueOf(
+          execute(DriverCommand.GET_ELEMENT_PROPERTY, ImmutableMap.of("id", id, "name", name))
+              .getValue());
+    } catch (WebDriverException e) {
+      // In Firefox 48, Marionette returns a malformed response if the property is missing.
+      // https://bugzilla.mozilla.org/show_bug.cgi?id=1281397
+      // Delete this after we stop supporting Firefox 48.
+      if (e.getMessage().contains("Failed to find value field")) {
+        return null;
+      }
+      throw e;
+    }
+  }
+
+  private static String stringValueOf(Object o) {
+    if (o == null) {
       return null;
     }
-    return String.valueOf(value);
+    return String.valueOf(o);
   }
 
   public boolean isSelected() {

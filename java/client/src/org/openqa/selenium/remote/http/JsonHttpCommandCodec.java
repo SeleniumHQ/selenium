@@ -128,6 +128,7 @@ public class JsonHttpCommandCodec implements CommandCodec<HttpRequest> {
     defineCommand(FIND_ELEMENTS, post("/session/:sessionId/elements"));
     defineCommand(GET_ACTIVE_ELEMENT, post("/session/:sessionId/element/active"));
     defineCommand(GET_ELEMENT_ATTRIBUTE, get("/session/:sessionId/element/:id/attribute/:name"));
+    defineCommand(GET_ELEMENT_PROPERTY, get("/session/:sessionId/element/:id/property/:name"));
     defineCommand(CLICK_ELEMENT, post("/session/:sessionId/element/:id/click"));
     defineCommand(CLEAR_ELEMENT, post("/session/:sessionId/element/:id/clear"));
     defineCommand(

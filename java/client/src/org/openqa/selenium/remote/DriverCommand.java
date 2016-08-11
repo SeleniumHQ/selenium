@@ -89,6 +89,7 @@ public interface DriverCommand {
   String GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW = "getElementLocationOnceScrolledIntoView";
   String GET_ELEMENT_SIZE = "getElementSize";
   String GET_ELEMENT_ATTRIBUTE = "getElementAttribute";
+  String GET_ELEMENT_PROPERTY = "getElementProperty";
   String GET_ELEMENT_VALUE_OF_CSS_PROPERTY = "getElementValueOfCssProperty";
   String ELEMENT_EQUALS = "elementEquals";
 
