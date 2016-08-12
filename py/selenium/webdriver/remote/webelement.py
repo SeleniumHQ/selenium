@@ -159,8 +159,9 @@ class WebElement(object):
         else:
             resp = self._execute(Command.GET_ELEMENT_ATTRIBUTE, {'name': name})
             attributeValue = resp.get('value')
-            if name != 'value' and attributeValue.lower() in ('true', 'false'):
-                attributeValue = attributeValue.lower()
+            if attributeValue is not None:
+                if name != 'value' and attributeValue.lower() in ('true', 'false'):
+                    attributeValue = attributeValue.lower()
         return attributeValue
 
     def is_selected(self):
