@@ -53,11 +53,10 @@ class WebElement(object):
                           'readonly', 'allowfullscreen', 'selected', 'formnovalidate',
                           'multiple', 'autofocus', 'open', 'loop', 'autoplay']
 
-    def __init__(self, parent, id_, capabilities):
+    def __init__(self, parent, id_, w3c=False):
         self._parent = parent
         self._id = id_
-        self.capabilities = capabilities
-        self._w3c = "specificationLevel" in self.capabilities
+        self._w3c = w3c
 
     def __repr__(self):
         return '<{0.__module__}.{0.__name__} (session="{1}", element="{2}")>'.format(
