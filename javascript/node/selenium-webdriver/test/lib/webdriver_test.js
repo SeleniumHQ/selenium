@@ -1486,8 +1486,8 @@ describe('WebDriver', function() {
           expect(CName.FIND_ELEMENT,
                  {'using':'css selector', 'value':'*[id="foo"]'}).
               andReturnSuccess(WebElement.buildId('one')).
-          expect(CName.SEND_KEYS_TO_ELEMENT, {'id': 'one',
-                                              'value':['modified/path']}).
+          expect(CName.SEND_KEYS_TO_ELEMENT,
+                 {'id': 'one', 'value':'modified/path'.split('')}).
               andReturnSuccess().
           end();
 
