@@ -141,6 +141,7 @@ java_library(
   maven_coords = 'org.seleniumhq.selenium:selenium-java:' + SE_VERSION,
   maven_pom_template = ':template-pom',
   exported_deps = [
+    ":selenium",
     "//java/client/src/org/openqa/selenium/chrome:chrome",
     "//java/client/src/org/openqa/selenium/firefox:firefox",
     "//java/client/src/org/openqa/selenium/edge:edge",

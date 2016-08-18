@@ -9,5 +9,8 @@ java_library(
     '//java/server/src/org/openqa/selenium/server/htmlrunner:htmlrunner',
     '//java/server/src/com/thoughtworks/selenium/webdriven:rc-emulation-servlet',
   ],
+  visibility = [
+    '//java/server/src/org/openqa/grid/selenium:classes',
+  ],
 )
 
