@@ -879,32 +879,18 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     protected class RemoteWindow implements Window {
 
       public void setSize(Dimension targetSize) {
-        if (getW3CStandardComplianceLevel() == 0) {
-          execute(DriverCommand.SET_WINDOW_SIZE,
-                  ImmutableMap.of("windowHandle", "current",
-                                  "width", targetSize.width, "height", targetSize.height));
-        } else {
-          execute(DriverCommand.SET_CURRENT_WINDOW_SIZE,
-                  ImmutableMap.of("width", targetSize.width, "height", targetSize.height));
-        }
+        execute(DriverCommand.SET_CURRENT_WINDOW_SIZE,
+                ImmutableMap.of("width", targetSize.width, "height", targetSize.height));
       }
 
       public void setPosition(Point targetPosition) {
-        if (getW3CStandardComplianceLevel() == 0) {
-          execute(DriverCommand.SET_WINDOW_POSITION,
-                  ImmutableMap
-                    .of("windowHandle", "current", "x", targetPosition.x, "y", targetPosition.y));
-        } else {
-          executeScript("window.screenX = arguments[0]; window.screenY = arguments[1]",
-                        targetPosition.x, targetPosition.y);
-        }
+        execute(DriverCommand.SET_CURRENT_WINDOW_POSITION,
+                ImmutableMap.of("x", targetPosition.x, "y", targetPosition.y));
       }
 
       @SuppressWarnings({"unchecked"})
       public Dimension getSize() {
-        Response response = getW3CStandardComplianceLevel() == 0
-            ? execute(DriverCommand.GET_WINDOW_SIZE, ImmutableMap.of("windowHandle", "current"))
-            : execute(DriverCommand.GET_CURRENT_WINDOW_SIZE);
+        Response response = execute(DriverCommand.GET_CURRENT_WINDOW_SIZE);
 
         Map<String, Object> rawSize = (Map<String, Object>) response.getValue();
 
@@ -933,12 +919,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       }
 
       public void maximize() {
-        if (getW3CStandardComplianceLevel() == 0) {
-          execute(DriverCommand.MAXIMIZE_WINDOW,
-                  ImmutableMap.of("windowHandle", "current"));
-        } else {
-          execute(DriverCommand.MAXIMIZE_CURRENT_WINDOW);
-        }
+        execute(DriverCommand.MAXIMIZE_CURRENT_WINDOW);
       }
 
       public void fullscreen() {

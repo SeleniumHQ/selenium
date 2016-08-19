@@ -52,7 +52,7 @@ import java.util.Map;
  *
  * @see <a href="https://w3.org/tr/webdriver">W3C WebDriver spec</a>
  */
-public class AbstractHttpCommandCodec implements CommandCodec<HttpRequest> {
+public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpRequest> {
   private static final Splitter PATH_SPLITTER = Splitter.on('/').omitEmptyStrings();
   private static final String SESSION_ID_PARAM = "sessionId";
 
@@ -79,17 +79,9 @@ public class AbstractHttpCommandCodec implements CommandCodec<HttpRequest> {
     defineCommand(SWITCH_TO_WINDOW, post("/session/:sessionId/window"));
 
     defineCommand(GET_WINDOW_HANDLES, get("/session/:sessionId/window/handles"));
-    defineCommand(MAXIMIZE_WINDOW, post("/session/:sessionId/window/:windowHandle/maximize"));
-    defineCommand(GET_WINDOW_SIZE, get("/session/:sessionId/window/:windowHandle/size"));
-    defineCommand(SET_WINDOW_SIZE, post("/session/:sessionId/window/:windowHandle/size"));
     defineCommand(GET_WINDOW_POSITION, get("/session/:sessionId/window/:windowHandle/position"));
-    defineCommand(SET_WINDOW_POSITION, post("/session/:sessionId/window/:windowHandle/position"));
     defineCommand(GET_CURRENT_WINDOW_HANDLE, get("/session/:sessionId/window"));
-
-    defineCommand(MAXIMIZE_CURRENT_WINDOW, post("/session/:sessionId/window/maximize"));
     defineCommand(FULLSCREEN_CURRENT_WINDOW, post("/session/:sessionId/window/fullscreen"));
-    defineCommand(GET_CURRENT_WINDOW_SIZE, get("/session/:sessionId/window/size"));
-    defineCommand(SET_CURRENT_WINDOW_SIZE, post("/session/:sessionId/window/size"));
 
     defineCommand(GET_CURRENT_URL, get("/session/:sessionId/url"));
     defineCommand(GET, post("/session/:sessionId/url"));
@@ -204,12 +196,14 @@ public class AbstractHttpCommandCodec implements CommandCodec<HttpRequest> {
     if (spec == null) {
       throw new UnsupportedCommandException(command.getName());
     }
-    String uri = buildUri(command, spec);
+    Map<String, ?> parameters = amendParameters(command.getName(), command.getParameters());
+    String uri = buildUri(command.getName(), command.getSessionId(), parameters, spec);
 
     HttpRequest request = new HttpRequest(spec.method, uri);
 
     if (HttpMethod.POST == spec.method) {
-      String content = beanToJsonConverter.convert(command.getParameters());
+
+      String content = beanToJsonConverter.convert(parameters);
       byte[] data = content.getBytes(UTF_8);
 
       request.setHeader(CONTENT_LENGTH, String.valueOf(data.length));
@@ -223,6 +217,8 @@ public class AbstractHttpCommandCodec implements CommandCodec<HttpRequest> {
 
     return request;
   }
+
+  protected abstract Map<String,?> amendParameters(String name, Map<String, ?> parameters);
 
   @Override
   public Command decode(final HttpRequest encodedCommand) {
@@ -293,7 +289,11 @@ public class AbstractHttpCommandCodec implements CommandCodec<HttpRequest> {
     return new CommandSpec(HttpMethod.POST, path);
   }
 
-  private String buildUri(Command command, CommandSpec spec) {
+  private String buildUri(
+    String commandName,
+    SessionId sessionId,
+    Map<String, ?> parameters,
+    CommandSpec spec) {
     StringBuilder builder = new StringBuilder();
     for (String part : spec.pathSegments) {
       if (part.isEmpty()) {
@@ -302,7 +302,7 @@ public class AbstractHttpCommandCodec implements CommandCodec<HttpRequest> {
 
       builder.append("/");
       if (part.startsWith(":")) {
-        builder.append(getParameter(part.substring(1), command));
+        builder.append(getParameter(part.substring(1), commandName, sessionId, parameters));
       } else {
         builder.append(part);
       }
@@ -310,16 +310,20 @@ public class AbstractHttpCommandCodec implements CommandCodec<HttpRequest> {
     return builder.toString();
   }
 
-  private String getParameter(String parameterName, Command command) {
+  private String getParameter(
+    String parameterName,
+    String commandName,
+    SessionId sessionId,
+    Map<String, ?> parameters) {
     if ("sessionId".equals(parameterName)) {
-      SessionId id = command.getSessionId();
-      checkArgument(id != null, "Session ID may not be null for command %s", command.getName());
+      SessionId id = sessionId;
+      checkArgument(id != null, "Session ID may not be null for command %s", commandName);
       return id.toString();
     }
 
-    Object value = command.getParameters().get(parameterName);
+    Object value = parameters.get(parameterName);
     checkArgument(value != null,
-                  "Missing required parameter \"%s\" for command %s", parameterName, command.getName());
+                  "Missing required parameter \"%s\" for command %s", parameterName, commandName);
     return Urls.urlEncode(String.valueOf(value));
   }
 

@@ -22,7 +22,17 @@ import static org.openqa.selenium.remote.DriverCommand.DISMISS_ALERT;
 import static org.openqa.selenium.remote.DriverCommand.EXECUTE_ASYNC_SCRIPT;
 import static org.openqa.selenium.remote.DriverCommand.EXECUTE_SCRIPT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ALERT_TEXT;
+import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_SIZE;
+import static org.openqa.selenium.remote.DriverCommand.MAXIMIZE_CURRENT_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_VALUE;
+import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_POSITION;
+import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_SIZE;
+
+import com.google.common.collect.ImmutableMap;
+
+import org.openqa.selenium.remote.DriverCommand;
+
+import java.util.Map;
 
 /**
  * A command codec that adheres to the Selenium project's JSON/HTTP wire protocol.
@@ -33,6 +43,11 @@ import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_VALUE;
 public class JsonHttpCommandCodec extends AbstractHttpCommandCodec {
 
   public JsonHttpCommandCodec() {
+    defineCommand(MAXIMIZE_CURRENT_WINDOW, post("/session/:sessionId/window/:windowHandle/maximize"));
+    defineCommand(SET_CURRENT_WINDOW_POSITION, post("/session/:sessionId/window/:windowHandle/position"));
+    defineCommand(GET_CURRENT_WINDOW_SIZE, get("/session/:sessionId/window/:windowHandle/size"));
+    defineCommand(SET_CURRENT_WINDOW_SIZE, post("/session/:sessionId/window/:windowHandle/size"));
+
     defineCommand(ACCEPT_ALERT, post("/session/:sessionId/accept_alert"));
     defineCommand(DISMISS_ALERT, post("/session/:sessionId/dismiss_alert"));
     defineCommand(GET_ALERT_TEXT, get("/session/:sessionId/alert_text"));
@@ -40,5 +55,23 @@ public class JsonHttpCommandCodec extends AbstractHttpCommandCodec {
 
     defineCommand(EXECUTE_SCRIPT, post("/session/:sessionId/execute"));
     defineCommand(EXECUTE_ASYNC_SCRIPT, post("/session/:sessionId/execute_async"));
+  }
+
+  @Override
+  protected Map<String, ?> amendParameters(String name, Map<String, ?> parameters) {
+    switch (name) {
+      case DriverCommand.GET_CURRENT_WINDOW_SIZE:
+      case DriverCommand.MAXIMIZE_CURRENT_WINDOW:
+      case DriverCommand.SET_CURRENT_WINDOW_SIZE:
+      case DriverCommand.SET_CURRENT_WINDOW_POSITION:
+        return ImmutableMap.<String, Object>builder()
+          .putAll(parameters)
+          .put("windowHandle", "current")
+          .put("handle", "current")
+          .build();
+
+      default:
+        return parameters;
+    }
   }
 }

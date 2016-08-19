@@ -22,7 +22,20 @@ import static org.openqa.selenium.remote.DriverCommand.DISMISS_ALERT;
 import static org.openqa.selenium.remote.DriverCommand.EXECUTE_ASYNC_SCRIPT;
 import static org.openqa.selenium.remote.DriverCommand.EXECUTE_SCRIPT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ALERT_TEXT;
+import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_SIZE;
+import static org.openqa.selenium.remote.DriverCommand.MAXIMIZE_CURRENT_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_VALUE;
+import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_SIZE;
+import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_POSITION;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+
+import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
+
+import java.util.Map;
 
 /**
  * A command codec that adheres to the W3C's WebDriver wire protocol.
@@ -32,6 +45,12 @@ import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_VALUE;
 public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
   public W3CHttpCommandCodec() {
+    defineCommand(MAXIMIZE_CURRENT_WINDOW, post("/session/:sessionId/window/maximize"));
+    defineCommand(SET_CURRENT_WINDOW_POSITION, post("/session/:sessionId/execute/sync"));
+    defineCommand(GET_CURRENT_WINDOW_SIZE, get("/session/:sessionId/window/size"));
+    defineCommand(SET_CURRENT_WINDOW_SIZE, post("/session/:sessionId/window/size"));
+
+
     defineCommand(ACCEPT_ALERT, post("/session/:sessionId/alert/accept"));
     defineCommand(DISMISS_ALERT, post("/session/:sessionId/alert/dismiss"));
     defineCommand(GET_ALERT_TEXT, get("/session/:sessionId/alert/text"));
@@ -39,5 +58,31 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
     defineCommand(EXECUTE_SCRIPT, post("/session/:sessionId/execute/sync"));
     defineCommand(EXECUTE_ASYNC_SCRIPT, post("/session/:sessionId/execute/async"));
+  }
+
+  @Override
+  protected Map<String, ?> amendParameters(String name, Map<String, ?> parameters) {
+    switch (name) {
+      case DriverCommand.SET_CURRENT_WINDOW_POSITION:
+        return toScript(
+          "window.screenX = arguments[0]; window.screenY = arguments[1]",
+          parameters.get("x"),
+          parameters.get("y"));
+
+      default:
+        return parameters;
+    }
+  }
+
+  private Map<String, ?> toScript(String script, Object... args) {
+    // Escape the quote marks
+    script = script.replaceAll("\"", "\\\"");
+
+    Iterable<Object> convertedArgs = Iterables.transform(
+      Lists.newArrayList(args), new WebElementToJsonConverter());
+
+    return ImmutableMap.of(
+      "script", script,
+      "args", Lists.newArrayList(convertedArgs));
   }
 }

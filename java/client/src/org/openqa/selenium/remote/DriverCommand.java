@@ -158,11 +158,8 @@ public interface DriverCommand {
   String TOUCH_FLICK = "touchFlick";
 
   // Window API
-  String SET_WINDOW_SIZE = "setWindowSize";
-  String SET_WINDOW_POSITION = "setWindowPosition";
-  String GET_WINDOW_SIZE = "getWindowSize";
+  String SET_CURRENT_WINDOW_POSITION = "setWindowPosition";
   String GET_WINDOW_POSITION = "getWindowPosition";
-  String MAXIMIZE_WINDOW = "maximizeWindow";
 
   // W3C compatible Window API
   String SET_CURRENT_WINDOW_SIZE = "setCurrentWindowSize";
