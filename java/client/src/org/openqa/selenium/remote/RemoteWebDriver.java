@@ -490,13 +490,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   // Misc
 
   public String getPageSource() {
-    if (getW3CStandardComplianceLevel() == 0) {
-      return (String) execute(DriverCommand.GET_PAGE_SOURCE).getValue();
-    }
-    String script = "var source = document.documentElement.outerHTML; \n"
-                    + "if (!source) { source = new XMLSerializer().serializeToString(document); }\n"
-                    + "return source;";
-    return (String) executeScript(script);
+    return (String) execute(DriverCommand.GET_PAGE_SOURCE).getValue();
   }
 
   public void close() {
@@ -879,14 +873,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       @SuppressWarnings({"unchecked"})
       Map<String, Object> rawPoint;
       public Point getPosition() {
-        if (getW3CStandardComplianceLevel() == 0) {
-          Response response = execute(DriverCommand.GET_WINDOW_POSITION,
-                                      ImmutableMap.of("windowHandle", "current"));
-          rawPoint = (Map<String, Object>) response.getValue();
-        } else {
-          rawPoint = (Map<String, Object>) executeScript(
-              "return {x: window.screenX, y: window.screenY}");
-        }
+        Response response = execute(DriverCommand.GET_CURRENT_WINDOW_POSITION,
+                                    ImmutableMap.of("windowHandle", "current"));
+        rawPoint = (Map<String, Object>) response.getValue();
 
         int x = ((Number) rawPoint.get("x")).intValue();
         int y = ((Number) rawPoint.get("y")).intValue();
@@ -960,10 +949,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
 
     public WebDriver window(String windowHandleOrName) {
-      if (getW3CStandardComplianceLevel() == 0) {
-        execute(DriverCommand.SWITCH_TO_WINDOW, ImmutableMap.of("name", windowHandleOrName));
-        return RemoteWebDriver.this;
-      }
       try {
         execute(DriverCommand.SWITCH_TO_WINDOW, ImmutableMap.of("handle", windowHandleOrName));
         return RemoteWebDriver.this;

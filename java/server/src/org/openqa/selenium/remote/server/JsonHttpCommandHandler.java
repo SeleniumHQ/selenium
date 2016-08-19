@@ -266,7 +266,7 @@ public class JsonHttpCommandHandler {
 
     addNewMapping(GET_CURRENT_WINDOW_SIZE, GetWindowSize.class);
     addNewMapping(SET_CURRENT_WINDOW_SIZE, SetWindowSize.class);
-    addNewMapping(GET_WINDOW_POSITION, GetWindowPosition.class);
+    addNewMapping(GET_CURRENT_WINDOW_POSITION, GetWindowPosition.class);
     addNewMapping(SET_CURRENT_WINDOW_POSITION, SetWindowPosition.class);
     addNewMapping(MAXIMIZE_CURRENT_WINDOW, MaximizeWindow.class);
     addNewMapping(FULLSCREEN_CURRENT_WINDOW, FullscreenWindow.class);

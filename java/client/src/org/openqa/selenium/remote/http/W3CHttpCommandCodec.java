@@ -23,7 +23,9 @@ import static org.openqa.selenium.remote.DriverCommand.EXECUTE_ASYNC_SCRIPT;
 import static org.openqa.selenium.remote.DriverCommand.EXECUTE_SCRIPT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ALERT_TEXT;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_HANDLE;
+import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_POSITION;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_SIZE;
+import static org.openqa.selenium.remote.DriverCommand.GET_PAGE_SOURCE;
 import static org.openqa.selenium.remote.DriverCommand.GET_WINDOW_HANDLES;
 import static org.openqa.selenium.remote.DriverCommand.MAXIMIZE_CURRENT_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_VALUE;
@@ -49,20 +51,23 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
   public W3CHttpCommandCodec() {
 
-    defineCommand(GET_WINDOW_HANDLES, get("/session/:sessionId/window/handles"));
+    defineCommand(EXECUTE_SCRIPT, post("/session/:sessionId/execute/sync"));
+    defineCommand(EXECUTE_ASYNC_SCRIPT, post("/session/:sessionId/execute/async"));
+
+    defineCommand(GET_PAGE_SOURCE, post("/session/:sessionId/execute/sync"));
+
     defineCommand(MAXIMIZE_CURRENT_WINDOW, post("/session/:sessionId/window/maximize"));
+    defineCommand(GET_CURRENT_WINDOW_POSITION, get("/session/:sessionId/execute/sync"));
     defineCommand(SET_CURRENT_WINDOW_POSITION, post("/session/:sessionId/execute/sync"));
     defineCommand(GET_CURRENT_WINDOW_SIZE, get("/session/:sessionId/window/size"));
     defineCommand(SET_CURRENT_WINDOW_SIZE, post("/session/:sessionId/window/size"));
     defineCommand(GET_CURRENT_WINDOW_HANDLE, get("/session/:sessionId/window"));
+    defineCommand(GET_WINDOW_HANDLES, get("/session/:sessionId/window/handles"));
 
     defineCommand(ACCEPT_ALERT, post("/session/:sessionId/alert/accept"));
     defineCommand(DISMISS_ALERT, post("/session/:sessionId/alert/dismiss"));
     defineCommand(GET_ALERT_TEXT, get("/session/:sessionId/alert/text"));
     defineCommand(SET_ALERT_VALUE, post("/session/:sessionId/alert/text"));
-
-    defineCommand(EXECUTE_SCRIPT, post("/session/:sessionId/execute/sync"));
-    defineCommand(EXECUTE_ASYNC_SCRIPT, post("/session/:sessionId/execute/async"));
   }
 
   @Override
@@ -113,6 +118,15 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
         }
         return toReturn;
 
+
+      case GET_PAGE_SOURCE:
+        return toScript(
+          "var source = document.documentElement.outerHTML; \n" +
+          "if (!source) { source = new XMLSerializer().serializeToString(document); }\n" +
+          "return source;");
+
+      case DriverCommand.GET_CURRENT_WINDOW_POSITION:
+        return toScript("return {x: window.screenX, y: window.screenY}");
 
       case DriverCommand.SET_CURRENT_WINDOW_POSITION:
         return toScript(

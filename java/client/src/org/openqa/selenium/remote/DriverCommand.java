@@ -159,7 +159,7 @@ public interface DriverCommand {
 
   // Window API
   String SET_CURRENT_WINDOW_POSITION = "setWindowPosition";
-  String GET_WINDOW_POSITION = "getWindowPosition";
+  String GET_CURRENT_WINDOW_POSITION = "getWindowPosition";
 
   // W3C compatible Window API
   String SET_CURRENT_WINDOW_SIZE = "setCurrentWindowSize";
