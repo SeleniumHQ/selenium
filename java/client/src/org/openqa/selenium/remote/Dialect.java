@@ -17,7 +17,37 @@
 
 package org.openqa.selenium.remote;
 
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.JsonHttpCommandCodec;
+import org.openqa.selenium.remote.http.JsonHttpResponseCodec;
+import org.openqa.selenium.remote.http.W3CHttpCommandCodec;
+import org.openqa.selenium.remote.http.W3CHttpResponseCodec;
+
 public enum Dialect {
-  OSS,
-  W3C;
+  OSS {
+    @Override
+    public CommandCodec<HttpRequest> getCommandCodec() {
+      return new JsonHttpCommandCodec();
+    }
+
+    @Override
+    public ResponseCodec<HttpResponse> getResponseCodec() {
+      return new JsonHttpResponseCodec();
+    }
+  },
+  W3C {
+    @Override
+    public CommandCodec<HttpRequest> getCommandCodec() {
+      return new W3CHttpCommandCodec();
+    }
+
+    @Override
+    public ResponseCodec<HttpResponse> getResponseCodec() {
+      return new W3CHttpResponseCodec();
+    }
+  };
+
+  public abstract CommandCodec<HttpRequest> getCommandCodec();
+  public abstract ResponseCodec<HttpResponse> getResponseCodec();
 }

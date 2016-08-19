@@ -19,6 +19,7 @@ package org.openqa.selenium.remote;
 
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.http.HttpMethod;
 
 /**
  * Converts {@link Command} objects to and from another representation.
@@ -44,4 +45,9 @@ public interface CommandCodec<T> {
    * @throws UnsupportedCommandException If the command is not supported by this codec.
    */
   Command decode(T encodedCommand);
+
+  /**
+   * Enhance this command codec with additional commands.
+   */
+  void defineCommand(String name, HttpMethod method, String pathPattern);
 }
