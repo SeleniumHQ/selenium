@@ -27,7 +27,6 @@ java_library(name = 'classes',
   deps = [
     '//java/client/src/org/openqa/selenium:selenium',
     '//java/client/src/org/openqa/selenium:client-combined',
-    '//java/server/src/com/thoughtworks/selenium:leg-rc',
     '//java/server/src/org/openqa/grid:grid',
     '//java/server/src/org/openqa/selenium/remote/server/log:log',
     '//java/server/src/org/openqa/selenium/remote/server:standalone-server-lib',
