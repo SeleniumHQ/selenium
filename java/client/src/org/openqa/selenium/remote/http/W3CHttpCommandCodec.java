@@ -21,25 +21,36 @@ import static org.openqa.selenium.remote.DriverCommand.ACCEPT_ALERT;
 import static org.openqa.selenium.remote.DriverCommand.DISMISS_ALERT;
 import static org.openqa.selenium.remote.DriverCommand.EXECUTE_ASYNC_SCRIPT;
 import static org.openqa.selenium.remote.DriverCommand.EXECUTE_SCRIPT;
+import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENTS;
+import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENTS;
 import static org.openqa.selenium.remote.DriverCommand.GET_ALERT_TEXT;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_HANDLE;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_POSITION;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_SIZE;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_ATTRIBUTE;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW;
 import static org.openqa.selenium.remote.DriverCommand.GET_PAGE_SOURCE;
 import static org.openqa.selenium.remote.DriverCommand.GET_WINDOW_HANDLES;
 import static org.openqa.selenium.remote.DriverCommand.MAXIMIZE_CURRENT_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_VALUE;
 import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_POSITION;
 import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_SIZE;
+import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.io.Resources;
 
-import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 
 import java.util.HashMap;
+import java.io.IOException;
+import java.net.URL;
 import java.util.Map;
 
 /**
@@ -50,6 +61,9 @@ import java.util.Map;
 public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
   public W3CHttpCommandCodec() {
+    defineCommand(GET_ELEMENT_ATTRIBUTE, post("/session/:sessionId/execute/sync"));
+    defineCommand(GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW, post("/session/:sessionId/execute/sync"));
+    defineCommand(SUBMIT_ELEMENT, post("/session/:sessionId/execute/sync"));
 
     defineCommand(EXECUTE_SCRIPT, post("/session/:sessionId/execute/sync"));
     defineCommand(EXECUTE_ASYNC_SCRIPT, post("/session/:sessionId/execute/async"));
@@ -73,10 +87,10 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
   @Override
   protected Map<String, ?> amendParameters(String name, Map<String, ?> parameters) {
     switch (name) {
-      case DriverCommand.FIND_CHILD_ELEMENT:
-      case DriverCommand.FIND_CHILD_ELEMENTS:
-      case DriverCommand.FIND_ELEMENT:
-      case DriverCommand.FIND_ELEMENTS:
+      case FIND_CHILD_ELEMENT:
+      case FIND_CHILD_ELEMENTS:
+      case FIND_ELEMENT:
+      case FIND_ELEMENTS:
         String using = (String) parameters.get("using");
         String value = (String) parameters.get("value");
 
@@ -118,6 +132,24 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
         }
         return toReturn;
 
+      case GET_ELEMENT_ATTRIBUTE:
+        // Read the atom, wrap it, execute it.
+        try {
+          String scriptName = "/org/openqa/selenium/remote/getAttribute.js";
+          URL url = getClass().getResource(scriptName);
+
+          String rawFunction = Resources.toString(url, Charsets.UTF_8);
+          String script = String.format(
+            "function() { return (%s).apply(null, arguments);}",
+            rawFunction);
+          return toScript(script, parameters.get("id"), parameters.get("name"));
+
+        } catch (IOException | NullPointerException e) {
+          throw new WebDriverException(e);
+        }
+
+      case GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW:
+        return toScript("return arguments[0].getBoundingClientRect()", parameters);
 
       case GET_PAGE_SOURCE:
         return toScript(
@@ -125,14 +157,26 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
           "if (!source) { source = new XMLSerializer().serializeToString(document); }\n" +
           "return source;");
 
-      case DriverCommand.GET_CURRENT_WINDOW_POSITION:
+      case GET_CURRENT_WINDOW_POSITION:
         return toScript("return {x: window.screenX, y: window.screenY}");
 
-      case DriverCommand.SET_CURRENT_WINDOW_POSITION:
+      case SET_CURRENT_WINDOW_POSITION:
         return toScript(
           "window.screenX = arguments[0]; window.screenY = arguments[1]",
           parameters.get("x"),
           parameters.get("y"));
+
+      case SUBMIT_ELEMENT:
+        return toScript(
+          "var form = arguments[0];\n" +
+          "while (form.nodeName != \"FORM\" && form.parentNode) {\n" +
+          "  form = form.parentNode;\n" +
+          "}\n" +
+          "if (form == null) { throw Error('Unable to find containing form element'); }\n" +
+          "var e = form.ownerDocument.createEvent('Event');\n" +
+          "e.initEvent('submit', true, true);\n" +
+          "if (form.dispatchEvent(e)) { form.submit() }\n",
+          parameters);
 
       default:
         return parameters;

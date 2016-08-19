@@ -17,9 +17,7 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.io.Resources;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
@@ -48,7 +46,6 @@ import org.openqa.selenium.io.Zip;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
@@ -88,14 +85,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public void submit() {
-    if (parent.getW3CStandardComplianceLevel() == 0) {
-      execute(DriverCommand.SUBMIT_ELEMENT, ImmutableMap.of("id", id));
-    } else {
-      WebElement form = findElement(By.xpath("./ancestor-or-self::form"));
-      parent.executeScript("var e = arguments[0].ownerDocument.createEvent('Event');" +
-                           "e.initEvent('submit', true, true);" +
-                           "if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }", form);
-    }
+    execute(DriverCommand.SUBMIT_ELEMENT, ImmutableMap.of("id", id));
   }
 
   public void sendKeys(CharSequence... keysToSend) {
@@ -105,20 +95,14 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
       keysToSend = new CharSequence[]{remotePath};
     }
 
-    CharSequence[] keys;
+    StringBuilder sb = new StringBuilder();
+    for (CharSequence s : keysToSend) {
+      sb.append(s);
+    }
 
-    if (parent.getW3CStandardComplianceLevel() == 0) {
-      keys = keysToSend;
-    } else {
-      StringBuilder sb = new StringBuilder();
-      for (CharSequence s : keysToSend) {
-        sb.append(s);
-      }
-
-      keys = new CharSequence[sb.length()];
-      for (int i = 0; i < sb.length(); i++) {
-        keys[i] = Character.toString(sb.charAt(i));
-      }
+    CharSequence[] keys = new CharSequence[sb.length()];
+    for (int i = 0; i < sb.length(); i++) {
+      keys[i] = Character.toString(sb.charAt(i));
     }
 
     execute(DriverCommand.SEND_KEYS_TO_ELEMENT, ImmutableMap.of("id", id, "value", keys));
@@ -148,26 +132,9 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public String getAttribute(String name) {
-    if (parent.getW3CStandardComplianceLevel() == 0) {
-      return stringValueOf(
-          execute(DriverCommand.GET_ELEMENT_ATTRIBUTE, ImmutableMap.of("id", id, "name", name))
-          .getValue());
-    }
-
-    // Read the atom, wrap it, execute it.
-    try {
-      String scriptName = "getAttribute.js";
-      URL url = getClass().getResource(scriptName);
-
-      String rawFunction = Resources.toString(url, Charsets.UTF_8);
-      String script = String.format(
-        "function() { return (%s).apply(null, arguments);}",
-        rawFunction);
-      return (String) parent.executeScript(script, this, name);
-
-    } catch (IOException | NullPointerException e) {
-      throw new WebDriverException(e);
-    }
+    return stringValueOf(
+        execute(DriverCommand.GET_ELEMENT_ATTRIBUTE, ImmutableMap.of("id", id, "name", name))
+        .getValue());
   }
 
   private static String stringValueOf(Object o) {
@@ -366,9 +333,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
   @SuppressWarnings({"unchecked"})
   public Point getLocation() {
-    Response response = parent.getW3CStandardComplianceLevel() == 0
-                      ? execute(DriverCommand.GET_ELEMENT_LOCATION, ImmutableMap.of("id", id))
-                      : execute(DriverCommand.GET_ELEMENT_RECT, ImmutableMap.of("id", id));
+    Response response = execute(DriverCommand.GET_ELEMENT_RECT, ImmutableMap.of("id", id));
     Map<String, Object> rawPoint = (Map<String, Object>) response.getValue();
     int x = ((Number) rawPoint.get("x")).intValue();
     int y = ((Number) rawPoint.get("y")).intValue();
@@ -377,9 +342,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
   @SuppressWarnings({"unchecked"})
   public Dimension getSize() {
-    Response response = parent.getW3CStandardComplianceLevel() == 0
-                        ? execute(DriverCommand.GET_ELEMENT_SIZE, ImmutableMap.of("id", id))
-                        : execute(DriverCommand.GET_ELEMENT_RECT, ImmutableMap.of("id", id));
+    Response response = execute(DriverCommand.GET_ELEMENT_RECT, ImmutableMap.of("id", id));
     Map<String, Object> rawSize = (Map<String, Object>) response.getValue();
     int width = ((Number) rawSize.get("width")).intValue();
     int height = ((Number) rawSize.get("height")).intValue();
@@ -404,18 +367,11 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
       }
 
       public Point inViewPort() {
-        if (parent.getW3CStandardComplianceLevel() == 0) {
-          Response response = execute(DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW,
-                                      ImmutableMap.of("id", getId()));
+        Response response = execute(DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW,
+                                    ImmutableMap.of("id", getId()));
 
-          @SuppressWarnings("unchecked")
-          Map<String, Number> mapped = (Map<String, Number>) response.getValue();
-          return new Point(mapped.get("x").intValue(), mapped.get("y").intValue());
-        }
         @SuppressWarnings("unchecked")
-        Map<String, Number> mapped = (Map<String, Number>) parent.executeScript(
-            "return arguments[0].getBoundingClientRect()", RemoteWebElement.this);
-
+        Map<String, Number> mapped = (Map<String, Number>) response.getValue();
         return new Point(mapped.get("x").intValue(), mapped.get("y").intValue());
       }
 

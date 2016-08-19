@@ -98,8 +98,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   private Logs remoteLogs;
   private LocalLogs localLogs;
 
-  private int w3cComplianceLevel = 0;
-
   // For cglib
   protected RemoteWebDriver() {
     init(new DesiredCapabilities(), null);
@@ -156,10 +154,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   public RemoteWebDriver(URL remoteAddress, Capabilities desiredCapabilities) {
     this(new HttpCommandExecutor(remoteAddress), desiredCapabilities, null);
-  }
-
-  public int getW3CStandardComplianceLevel() {
-    return w3cComplianceLevel;
   }
 
   private void init(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
@@ -273,9 +267,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     capabilities = returnedCapabilities;
     sessionId = new SessionId(response.getSessionId());
-    if (response.getStatus() == null) {
-      w3cComplianceLevel = 1;
-    }
   }
 
   /**
