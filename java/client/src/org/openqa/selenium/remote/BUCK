@@ -115,6 +115,9 @@ java_library(name = 'remote-lib',
   ] + glob([
     'service/*.java',
   ]),
+  resources = [
+    ':get-attribute',
+  ],
   deps = [
     ':api',
     ':capabilities',
@@ -124,4 +127,10 @@ java_library(name = 'remote-lib',
     '//third_party/java/guava:guava',
     '//third_party/java/gson:gson',
   ],
+)
+
+export_file(
+  name = 'get-attribute',
+  src = '//javascript/webdriver/atoms:getAttribute',
+  out = 'getAttribute.js',
 )
