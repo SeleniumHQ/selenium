@@ -74,8 +74,6 @@ public interface DriverCommand {
 
   String EXECUTE_SCRIPT = "executeScript";
   String EXECUTE_ASYNC_SCRIPT = "executeAsyncScript";
-  String EXECUTE_SCRIPT_W3C = "executeScriptW3C";
-  String EXECUTE_ASYNC_SCRIPT_W3C = "executeAsyncScriptW3C";
 
   String GET_ELEMENT_TEXT = "getElementText";
   String GET_ELEMENT_TAG_NAME = "getElementTagName";

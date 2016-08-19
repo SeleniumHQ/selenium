@@ -569,9 +569,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
         "script", script,
         "args", Lists.newArrayList(convertedArgs));
 
-    if (getW3CStandardComplianceLevel() > 0) {
-      return execute(DriverCommand.EXECUTE_SCRIPT_W3C, params).getValue();
-    }
     return execute(DriverCommand.EXECUTE_SCRIPT, params).getValue();
   }
 
@@ -590,9 +587,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     Map<String, ?> params = ImmutableMap.of(
         "script", script, "args", Lists.newArrayList(convertedArgs));
 
-    if (getW3CStandardComplianceLevel() > 0) {
-      return execute(DriverCommand.EXECUTE_ASYNC_SCRIPT_W3C, params).getValue();
-    }
     return execute(DriverCommand.EXECUTE_ASYNC_SCRIPT, params).getValue();
   }
 

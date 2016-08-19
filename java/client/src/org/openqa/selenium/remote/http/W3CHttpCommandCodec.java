@@ -105,10 +105,8 @@ public class W3CHttpCommandCodec implements CommandCodec<HttpRequest> {
     defineCommand(SET_ALERT_VALUE, post("/session/:sessionId/alert/text"));
     defineCommand(SET_ALERT_CREDENTIALS, post("/session/:sessionId/alert/credentials"));
 
-    defineCommand(EXECUTE_SCRIPT, post("/session/:sessionId/execute"));
-    defineCommand(EXECUTE_ASYNC_SCRIPT, post("/session/:sessionId/execute_async"));
-    defineCommand(EXECUTE_SCRIPT_W3C, post("/session/:sessionId/execute/sync"));
-    defineCommand(EXECUTE_ASYNC_SCRIPT_W3C, post("/session/:sessionId/execute/async"));
+    defineCommand(EXECUTE_SCRIPT, post("/session/:sessionId/execute/sync"));
+    defineCommand(EXECUTE_ASYNC_SCRIPT, post("/session/:sessionId/execute/async"));
 
     defineCommand(UPLOAD_FILE, post("/session/:sessionId/file"));
     defineCommand(SCREENSHOT, get("/session/:sessionId/screenshot"));
