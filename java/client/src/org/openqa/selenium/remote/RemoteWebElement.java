@@ -163,7 +163,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
       String script = String.format(
         "function() { return (%s).apply(null, arguments);}",
         rawFunction);
-      return (String) parent.executeScript(script, this);
+      return (String) parent.executeScript(script, this, name);
 
     } catch (IOException | NullPointerException e) {
       throw new WebDriverException(e);
