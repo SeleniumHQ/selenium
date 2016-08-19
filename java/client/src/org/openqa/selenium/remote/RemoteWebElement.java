@@ -250,17 +250,11 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public WebElement findElementById(String using) {
-    if (parent.getW3CStandardComplianceLevel() == 0) {
-      return findElement("id", using);
-    }
-    return findElementByCssSelector("#" + RemoteWebDriver.cssEscape(using));
+    return findElement("id", using);
   }
 
   public List<WebElement> findElementsById(String using) {
-    if (parent.getW3CStandardComplianceLevel() == 0) {
-      return findElements("id", using);
-    }
-    return findElementsByCssSelector("#" + RemoteWebDriver.cssEscape(using));
+    return findElements("id", using);
   }
 
   public WebElement findElementByLinkText(String using) {
@@ -272,31 +266,19 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public WebElement findElementByName(String using) {
-    if (parent.getW3CStandardComplianceLevel() == 0) {
-      return findElement("name", using);
-    }
-    return findElementByCssSelector("*[name='" + using + "']");
+    return findElement("name", using);
   }
 
   public List<WebElement> findElementsByName(String using) {
-    if (parent.getW3CStandardComplianceLevel() == 0) {
-      return findElements("name", using);
-    }
-    return findElementsByCssSelector("*[name='" + using + "']");
+    return findElements("name", using);
   }
 
   public WebElement findElementByClassName(String using) {
-    if (parent.getW3CStandardComplianceLevel() == 0) {
-      return findElement("class name", using);
-    }
-    return findElementByCssSelector("." + RemoteWebDriver.cssEscape(using));
+    return findElement("class name", using);
   }
 
   public List<WebElement> findElementsByClassName(String using) {
-    if (parent.getW3CStandardComplianceLevel() == 0) {
-      return findElements("class name", using);
-    }
-    return findElementsByCssSelector("." + RemoteWebDriver.cssEscape(using));
+    return findElements("class name", using);
   }
 
   public WebElement findElementByCssSelector(String using) {
@@ -324,17 +306,11 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public WebElement findElementByTagName(String using) {
-    if (parent.getW3CStandardComplianceLevel() == 0) {
-      return findElement("tag name", using);
-    }
-    return findElementByCssSelector(using);
+    return findElement("tag name", using);
   }
 
   public List<WebElement> findElementsByTagName(String using) {
-    if (parent.getW3CStandardComplianceLevel() == 0) {
-      return findElements("tag name", using);
-    }
-    return findElementsByCssSelector(using);
+    return findElements("tag name", using);
   }
 
   protected Response execute(String command, Map<String, ?> parameters) {

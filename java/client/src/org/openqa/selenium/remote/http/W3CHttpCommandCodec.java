@@ -27,8 +27,8 @@ import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.GET_WINDOW_HANDLES;
 import static org.openqa.selenium.remote.DriverCommand.MAXIMIZE_CURRENT_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_VALUE;
-import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_POSITION;
+import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_SIZE;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
@@ -37,6 +37,7 @@ import com.google.common.collect.Lists;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -67,6 +68,52 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
   @Override
   protected Map<String, ?> amendParameters(String name, Map<String, ?> parameters) {
     switch (name) {
+      case DriverCommand.FIND_CHILD_ELEMENT:
+      case DriverCommand.FIND_CHILD_ELEMENTS:
+      case DriverCommand.FIND_ELEMENT:
+      case DriverCommand.FIND_ELEMENTS:
+        String using = (String) parameters.get("using");
+        String value = (String) parameters.get("value");
+
+        Map<String, Object> toReturn = new HashMap<>();
+        toReturn.putAll(parameters);
+
+        switch (using) {
+          case "class name":
+            toReturn.put("using", "css selector");
+            toReturn.put("value", "." + cssEscape(value));
+            break;
+
+          case "id":
+            toReturn.put("using", "css selector");
+            toReturn.put("value", "#" + cssEscape(value));
+            break;
+
+          case "link text":
+            // Do nothing
+            break;
+
+          case "name":
+            toReturn.put("using", "css selector");
+            toReturn.put("value", "*[name='" + value + "']");
+            break;
+
+          case "partial link text":
+            // Do nothing
+            break;
+
+          case "tag name":
+            toReturn.put("using", "css selector");
+            toReturn.put("value", "#" + cssEscape(value));
+            break;
+
+          case "xpath":
+            // Do nothing
+            break;
+        }
+        return toReturn;
+
+
       case DriverCommand.SET_CURRENT_WINDOW_POSITION:
         return toScript(
           "window.screenX = arguments[0]; window.screenY = arguments[1]",
@@ -88,5 +135,13 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     return ImmutableMap.of(
       "script", script,
       "args", Lists.newArrayList(convertedArgs));
+  }
+
+  private String cssEscape(String using) {
+    using = using.replaceAll("(['\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-\\/\\[\\]\\(\\)])", "\\\\$1");
+    if (using.length() > 0 && Character.isDigit(using.charAt(0))) {
+      using = "\\" + Integer.toString(30 + Integer.parseInt(using.substring(0,1))) + " " + using.substring(1);
+    }
+    return using;
   }
 }
