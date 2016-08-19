@@ -28,9 +28,9 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.common.primitives.Booleans;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
@@ -51,7 +51,6 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.SessionNotFoundException;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 import java.io.File;
@@ -429,7 +428,7 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
         if (command.getName().equals(DriverCommand.QUIT)) {
           return new Response();
         }
-        throw new SessionNotFoundException(
+        throw new NoSuchSessionException(
             "The FirefoxDriver cannot be used after quit() was called.");
       }
       return connection.execute(command);

@@ -24,6 +24,7 @@ import static org.openqa.selenium.remote.DriverCommand.QUIT;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.logging.LocalLogs;
@@ -131,7 +132,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       }
       if (!GET_ALL_SESSIONS.equals(command.getName())
           && !NEW_SESSION.equals(command.getName())) {
-        throw new SessionNotFoundException(
+        throw new NoSuchSessionException(
             "Session ID is null. Using WebDriver after calling quit()?");
       }
     }
