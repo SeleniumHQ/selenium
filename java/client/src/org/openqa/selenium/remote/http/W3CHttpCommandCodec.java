@@ -80,21 +80,18 @@ public class W3CHttpCommandCodec implements CommandCodec<HttpRequest> {
     defineCommand(CLOSE, delete("/session/:sessionId/window"));
     defineCommand(SWITCH_TO_WINDOW, post("/session/:sessionId/window"));
 
-    defineCommand(GET_WINDOW_HANDLES, get("/session/:sessionId/window_handles"));
+    defineCommand(GET_WINDOW_HANDLES, get("/session/:sessionId/window/handles"));
     defineCommand(MAXIMIZE_WINDOW, post("/session/:sessionId/window/:windowHandle/maximize"));
     defineCommand(GET_WINDOW_SIZE, get("/session/:sessionId/window/:windowHandle/size"));
     defineCommand(SET_WINDOW_SIZE, post("/session/:sessionId/window/:windowHandle/size"));
     defineCommand(GET_WINDOW_POSITION, get("/session/:sessionId/window/:windowHandle/position"));
     defineCommand(SET_WINDOW_POSITION, post("/session/:sessionId/window/:windowHandle/position"));
-    defineCommand(GET_CURRENT_WINDOW_HANDLE, get("/session/:sessionId/window_handle"));
+    defineCommand(GET_CURRENT_WINDOW_HANDLE, get("/session/:sessionId/window"));
 
     defineCommand(MAXIMIZE_CURRENT_WINDOW, post("/session/:sessionId/window/maximize"));
     defineCommand(FULLSCREEN_CURRENT_WINDOW, post("/session/:sessionId/window/fullscreen"));
     defineCommand(GET_CURRENT_WINDOW_SIZE, get("/session/:sessionId/window/size"));
     defineCommand(SET_CURRENT_WINDOW_SIZE, post("/session/:sessionId/window/size"));
-
-    defineCommand(GET_WINDOW_HANDLES_W3C, get("/session/:sessionId/window/handles"));
-    defineCommand(GET_CURRENT_WINDOW_HANDLE_W3C, get("/session/:sessionId/window"));
 
     defineCommand(GET_CURRENT_URL, get("/session/:sessionId/url"));
     defineCommand(GET, post("/session/:sessionId/url"));
@@ -102,14 +99,10 @@ public class W3CHttpCommandCodec implements CommandCodec<HttpRequest> {
     defineCommand(GO_FORWARD, post("/session/:sessionId/forward"));
     defineCommand(REFRESH, post("/session/:sessionId/refresh"));
 
-    defineCommand(ACCEPT_ALERT, post("/session/:sessionId/accept_alert"));
-    defineCommand(DISMISS_ALERT, post("/session/:sessionId/dismiss_alert"));
-    defineCommand(GET_ALERT_TEXT, get("/session/:sessionId/alert_text"));
-    defineCommand(SET_ALERT_VALUE, post("/session/:sessionId/alert_text"));
-    defineCommand(ACCEPT_ALERT_W3C, post("/session/:sessionId/alert/accept"));
-    defineCommand(DISMISS_ALERT_W3C, post("/session/:sessionId/alert/dismiss"));
-    defineCommand(GET_ALERT_TEXT_W3C, get("/session/:sessionId/alert/text"));
-    defineCommand(SET_ALERT_VALUE_W3C, post("/session/:sessionId/alert/text"));
+    defineCommand(ACCEPT_ALERT, post("/session/:sessionId/alert/accept"));
+    defineCommand(DISMISS_ALERT, post("/session/:sessionId/alert/dismiss"));
+    defineCommand(GET_ALERT_TEXT, get("/session/:sessionId/alert/text"));
+    defineCommand(SET_ALERT_VALUE, post("/session/:sessionId/alert/text"));
     defineCommand(SET_ALERT_CREDENTIALS, post("/session/:sessionId/alert/credentials"));
 
     defineCommand(EXECUTE_SCRIPT, post("/session/:sessionId/execute"));

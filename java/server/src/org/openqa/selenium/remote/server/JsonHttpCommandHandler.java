@@ -103,18 +103,12 @@ public class JsonHttpCommandHandler {
     addNewMapping(QUIT, DeleteSession.class);
 
     addNewMapping(GET_CURRENT_WINDOW_HANDLE, GetCurrentWindowHandle.class);
-    addNewMapping(GET_CURRENT_WINDOW_HANDLE_W3C, GetCurrentWindowHandle.class);
     addNewMapping(GET_WINDOW_HANDLES, GetAllWindowHandles.class);
-    addNewMapping(GET_WINDOW_HANDLES_W3C, GetAllWindowHandles.class);
 
     addNewMapping(DISMISS_ALERT, DismissAlert.class);
-    addNewMapping(DISMISS_ALERT_W3C, DismissAlert.class);
     addNewMapping(ACCEPT_ALERT, AcceptAlert.class);
-    addNewMapping(ACCEPT_ALERT_W3C, AcceptAlert.class);
     addNewMapping(GET_ALERT_TEXT, GetAlertText.class);
-    addNewMapping(GET_ALERT_TEXT_W3C, GetAlertText.class);
     addNewMapping(SET_ALERT_VALUE, SetAlertText.class);
-    addNewMapping(SET_ALERT_VALUE_W3C, SetAlertText.class);
     addNewMapping(SET_ALERT_CREDENTIALS, SetAlertCredentials.class);
 
     addNewMapping(GET, ChangeUrl.class);

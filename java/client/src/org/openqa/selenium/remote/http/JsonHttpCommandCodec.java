@@ -94,9 +94,6 @@ public class JsonHttpCommandCodec implements CommandCodec<HttpRequest> {
     defineCommand(GET_CURRENT_WINDOW_SIZE, get("/session/:sessionId/window/size"));
     defineCommand(SET_CURRENT_WINDOW_SIZE, post("/session/:sessionId/window/size"));
 
-    defineCommand(GET_WINDOW_HANDLES_W3C, get("/session/:sessionId/window/handles"));
-    defineCommand(GET_CURRENT_WINDOW_HANDLE_W3C, get("/session/:sessionId/window"));
-
     defineCommand(GET_CURRENT_URL, get("/session/:sessionId/url"));
     defineCommand(GET, post("/session/:sessionId/url"));
     defineCommand(GO_BACK, post("/session/:sessionId/back"));
@@ -107,10 +104,6 @@ public class JsonHttpCommandCodec implements CommandCodec<HttpRequest> {
     defineCommand(DISMISS_ALERT, post("/session/:sessionId/dismiss_alert"));
     defineCommand(GET_ALERT_TEXT, get("/session/:sessionId/alert_text"));
     defineCommand(SET_ALERT_VALUE, post("/session/:sessionId/alert_text"));
-    defineCommand(ACCEPT_ALERT_W3C, post("/session/:sessionId/alert/accept"));
-    defineCommand(DISMISS_ALERT_W3C, post("/session/:sessionId/alert/dismiss"));
-    defineCommand(GET_ALERT_TEXT_W3C, get("/session/:sessionId/alert/text"));
-    defineCommand(SET_ALERT_VALUE_W3C, post("/session/:sessionId/alert/text"));
     defineCommand(SET_ALERT_CREDENTIALS, post("/session/:sessionId/alert/credentials"));
 
     defineCommand(EXECUTE_SCRIPT, post("/session/:sessionId/execute"));

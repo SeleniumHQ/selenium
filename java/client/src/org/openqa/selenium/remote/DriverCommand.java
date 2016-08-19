@@ -58,8 +58,6 @@ public interface DriverCommand {
 
   String GET_CURRENT_WINDOW_HANDLE = "getCurrentWindowHandle";
   String GET_WINDOW_HANDLES = "getWindowHandles";
-  String GET_WINDOW_HANDLES_W3C = "getWindowHandlesW3C";
-  String GET_CURRENT_WINDOW_HANDLE_W3C = "getCurrentWindowHandleW3C";
 
   String GET_CURRENT_CONTEXT_HANDLE = "getCurrentContextHandle";
   String GET_CONTEXT_HANDLES = "getContextHandles";
@@ -101,11 +99,6 @@ public interface DriverCommand {
   String GET_ALERT_TEXT = "getAlertText";
   String SET_ALERT_VALUE = "setAlertValue";
   String SET_ALERT_CREDENTIALS = "setAlertCredentials";
-
-  String ACCEPT_ALERT_W3C = "acceptAlertW3C";
-  String DISMISS_ALERT_W3C = "dimissAlertW3C";
-  String GET_ALERT_TEXT_W3C = "getAlertTextW3C";
-  String SET_ALERT_VALUE_W3C = "setAlertValueW3C";
 
   String SET_TIMEOUT = "setTimeout";
   String IMPLICITLY_WAIT = "implicitlyWait";

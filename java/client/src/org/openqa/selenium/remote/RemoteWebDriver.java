@@ -538,12 +538,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   @SuppressWarnings({"unchecked"})
   public Set<String> getWindowHandles() {
-    Response response;
-    if (getW3CStandardComplianceLevel() > 0) {
-      response = execute(DriverCommand.GET_WINDOW_HANDLES_W3C);
-    } else {
-      response = execute(DriverCommand.GET_WINDOW_HANDLES);
-    }
+    Response response = execute(DriverCommand.GET_WINDOW_HANDLES);
     Object value = response.getValue();
     try {
       List<String> returnedValues = (List<String>) value;
@@ -555,9 +550,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   public String getWindowHandle() {
-    if (getW3CStandardComplianceLevel() > 0) {
-      return String.valueOf(execute(DriverCommand.GET_CURRENT_WINDOW_HANDLE_W3C).getValue());
-    }
     return String.valueOf(execute(DriverCommand.GET_CURRENT_WINDOW_HANDLE).getValue());
   }
 
@@ -1062,34 +1054,19 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
 
     public void dismiss() {
-      if (getW3CStandardComplianceLevel() > 0) {
-        execute(DriverCommand.DISMISS_ALERT_W3C);
-      } else {
-        execute(DriverCommand.DISMISS_ALERT);
-      }
+      execute(DriverCommand.DISMISS_ALERT);
     }
 
     public void accept() {
-      if (getW3CStandardComplianceLevel() > 0) {
-        execute(DriverCommand.ACCEPT_ALERT_W3C);
-      } else {
-        execute(DriverCommand.ACCEPT_ALERT);
-      }
+      execute(DriverCommand.ACCEPT_ALERT);
     }
 
     public String getText() {
-      if (getW3CStandardComplianceLevel() > 0) {
-        return (String) execute(DriverCommand.GET_ALERT_TEXT_W3C).getValue();
-      }
       return (String) execute(DriverCommand.GET_ALERT_TEXT).getValue();
     }
 
     public void sendKeys(String keysToSend) {
-      if (getW3CStandardComplianceLevel() > 0) {
-        execute(DriverCommand.SET_ALERT_VALUE_W3C, ImmutableMap.of("text", keysToSend));
-      } else {
-        execute(DriverCommand.SET_ALERT_VALUE, ImmutableMap.of("text", keysToSend));
-      }
+      execute(DriverCommand.SET_ALERT_VALUE, ImmutableMap.of("text", keysToSend));
     }
 
     @Beta
