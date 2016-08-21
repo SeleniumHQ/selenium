@@ -78,9 +78,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     defineCommand(CLOSE, delete("/session/:sessionId/window"));
     defineCommand(SWITCH_TO_WINDOW, post("/session/:sessionId/window"));
 
-    defineCommand(GET_WINDOW_HANDLES, get("/session/:sessionId/window/handles"));
     defineCommand(GET_WINDOW_POSITION, get("/session/:sessionId/window/:windowHandle/position"));
-    defineCommand(GET_CURRENT_WINDOW_HANDLE, get("/session/:sessionId/window"));
     defineCommand(FULLSCREEN_CURRENT_WINDOW, post("/session/:sessionId/window/fullscreen"));
 
     defineCommand(GET_CURRENT_URL, get("/session/:sessionId/url"));

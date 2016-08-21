@@ -22,7 +22,9 @@ import static org.openqa.selenium.remote.DriverCommand.DISMISS_ALERT;
 import static org.openqa.selenium.remote.DriverCommand.EXECUTE_ASYNC_SCRIPT;
 import static org.openqa.selenium.remote.DriverCommand.EXECUTE_SCRIPT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ALERT_TEXT;
+import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_HANDLE;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_SIZE;
+import static org.openqa.selenium.remote.DriverCommand.GET_WINDOW_HANDLES;
 import static org.openqa.selenium.remote.DriverCommand.MAXIMIZE_CURRENT_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_VALUE;
 import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_SIZE;
@@ -45,11 +47,13 @@ import java.util.Map;
 public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
   public W3CHttpCommandCodec() {
+
+    defineCommand(GET_WINDOW_HANDLES, get("/session/:sessionId/window/handles"));
     defineCommand(MAXIMIZE_CURRENT_WINDOW, post("/session/:sessionId/window/maximize"));
     defineCommand(SET_CURRENT_WINDOW_POSITION, post("/session/:sessionId/execute/sync"));
     defineCommand(GET_CURRENT_WINDOW_SIZE, get("/session/:sessionId/window/size"));
     defineCommand(SET_CURRENT_WINDOW_SIZE, post("/session/:sessionId/window/size"));
-
+    defineCommand(GET_CURRENT_WINDOW_HANDLE, get("/session/:sessionId/window"));
 
     defineCommand(ACCEPT_ALERT, post("/session/:sessionId/alert/accept"));
     defineCommand(DISMISS_ALERT, post("/session/:sessionId/alert/dismiss"));
