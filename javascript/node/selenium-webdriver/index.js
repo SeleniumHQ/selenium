@@ -534,7 +534,7 @@ class Builder {
 
       if (browser === Browser.FIREFOX) {
         const driver = ensureFileDetectorsAreEnabled(firefox.Driver);
-        return new driver(capabilities, this.flow_, executor);
+        return new driver(capabilities, executor, this.flow_);
       }
 
       return WebDriver.createSession(executor, capabilities, this.flow_);
@@ -546,7 +546,7 @@ class Builder {
         return new chrome.Driver(capabilities, null, this.flow_);
 
       case Browser.FIREFOX:
-        return new firefox.Driver(capabilities, this.flow_);
+        return new firefox.Driver(capabilities, null, this.flow_);
 
       case Browser.INTERNET_EXPLORER:
         return new ie.Driver(capabilities, this.flow_);

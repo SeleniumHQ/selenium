@@ -2,6 +2,8 @@
 
 * Fixed a bug where the promise manager would silently drop callbacks after
   recovering from an unhandled promise rejection.
+* Added the `firefox.ServiceBuilder` class, which may be used to customize the
+  geckodriver used for `firefox.Driver` instances.
 
 ### API Changes
 
@@ -12,6 +14,8 @@
 * For each of the ServiceBuilder clases, renamed `usingPort` and
   `withEnvironment` to `setPort` and `setEnvironment`, respectively.
 * Renamed `chrome.ServiceBuilder#setUrlBasePath` to `#setPath`
+* Changed the signature of the `firefox.Driver` from `(config, flow, executor)`
+  to `(config, executor, flow)`.
 
 
 ### Changes for W3C WebDriver Spec Compliance

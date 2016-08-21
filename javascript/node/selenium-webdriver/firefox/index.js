@@ -421,6 +421,154 @@ function configureExecutor(executor) {
 
 
 /**
+ * Creates {@link selenium-webdriver/remote.DriverService} instances that manage
+ * a [geckodriver](https://github.com/mozilla/geckodriver) server in a child
+ * process.
+ */
+class ServiceBuilder extends remote.DriverService.Builder {
+  /**
+   * @param {string=} opt_exe Path to the server executable to use. If omitted,
+   *     the builder will attempt to locate the geckodriver on the system PATH.
+   */
+  constructor(opt_exe) {
+    super(opt_exe || findGeckoDriver());
+    this.setLoopback(true);  // Required.
+  }
+
+  /**
+   * Enables verbose logging.
+   *
+   * @param {boolean=} opt_trace Whether to enable trace-level logging. By
+   *     default, only debug logging is enabled.
+   * @return {!ServiceBuilder} A self reference.
+   */
+  enableVerboseLogging(opt_trace) {
+    return this.addArguments(opt_trace ? '-vv' : '-v');
+  }
+
+  /**
+   * Sets the path to the executable Firefox binary that the geckodriver should
+   * use. If this method is not called, this builder will attempt to locate
+   * Firefox in the default installation location for the current platform.
+   *
+   * @param {(string|!Binary)} binary Path to the executable Firefox binary to use.
+   * @return {!ServiceBuilder} A self reference.
+   * @see Binary#locate()
+   */
+  setFirefoxBinary(binary) {
+    let exe = typeof binary === 'string'
+        ? Promise.resolve(binary) : binary.locate();
+    return this.addArguments('-b', exe);
+  }
+}
+
+
+/**
+ * @typedef {{driver: !webdriver.WebDriver, onQuit: function()}}
+ */
+var DriverSpec;
+
+
+/**
+ * @param {(http.Executor|remote.DriverService|undefined)} executor
+ * @param {!capabilities.Capabilities} caps
+ * @param {Profile} profile
+ * @param {Binary} binary
+ * @param {(promise.ControlFlow|undefined)} flow
+ * @return {DriverSpec}
+ */
+function createGeckoDriver(
+    executor, caps, profile, binary, flow) {
+  if (profile) {
+    caps.set(Capability.PROFILE, profile.encode());
+  }
+
+  let sessionCaps = caps;
+  if (caps.has(capabilities.Capability.PROXY)) {
+    let proxy = normalizeProxyConfiguration(
+        caps.get(capabilities.Capability.PROXY));
+
+    // Marionette requires proxy settings to be specified as required
+    // capabilities. See mozilla/geckodriver#97
+    let required = new capabilities.Capabilities()
+        .set(capabilities.Capability.PROXY, proxy);
+
+    caps.delete(capabilities.Capability.PROXY);
+    sessionCaps = {required, desired: caps};
+  }
+
+  /** @type {(command.Executor|undefined)} */
+  let cmdExecutor;
+  let onQuit = function() {};
+
+  if (executor instanceof http.Executor) {
+    configureExecutor(executor);
+    cmdExecutor = executor;
+  } else if (executor instanceof remote.DriverService) {
+    cmdExecutor = createExecutor(executor.start());
+    onQuit = () => executor.kill();
+  } else {
+    let builder = new ServiceBuilder();
+    if (binary) {
+      builder.setFirefoxBinary(binary);
+    }
+    let service = builder.build();
+    cmdExecutor = createExecutor(service.start());
+    onQuit = () => service.kill();
+  }
+
+  let driver =
+      webdriver.WebDriver.createSession(
+          /** @type {!http.Executor} */(cmdExecutor),
+          sessionCaps,
+          flow);
+  return {driver, onQuit};
+}
+
+
+/**
+ * @param {!capabilities.Capabilities} caps
+ * @param {Profile} profile
+ * @param {!Binary} binary
+ * @param {(promise.ControlFlow|undefined)} flow
+ * @return {DriverSpec}
+ */
+function createLegacyDriver(caps, profile, binary, flow) {
+  profile = profile || new Profile;
+
+  let freePort = portprober.findFreePort();
+  let preparedProfile =
+      freePort.then(port => prepareProfile(profile, port));
+  let command = preparedProfile.then(dir => binary.launch(dir));
+
+  let serverUrl = command.then(() => freePort)
+      .then(function(/** number */port) {
+        let serverUrl = url.format({
+          protocol: 'http',
+          hostname: net.getLoopbackAddress(),
+          port: port + '',
+          pathname: '/hub'
+        });
+        let ready = httpUtil.waitForServer(serverUrl, 45 * 1000);
+        return ready.then(() => serverUrl);
+      });
+
+  let onQuit = function() {
+    return command.then(command => {
+      command.kill();
+      return preparedProfile.then(io.rmDir)
+          .then(() => command.result(),
+                () => command.result());
+    });
+  };
+
+  let executor = createExecutor(serverUrl);
+  let driver = webdriver.WebDriver.createSession(executor, caps, flow);
+  return {driver, onQuit};
+}
+
+
+/**
  * A WebDriver client for Firefox.
  */
 class Driver extends webdriver.WebDriver {
@@ -429,20 +577,24 @@ class Driver extends webdriver.WebDriver {
    *    configuration options for this driver, specified as either an
    *    {@link Options} or {@link capabilities.Capabilities}, or as a raw hash
    *    object.
+   * @param {(http.Executor|remote.DriverService)=} opt_executor Either a
+   *   pre-configured command executor to use for communicating with an
+   *   externally managed remote end (which is assumed to already be running),
+   *   or the `DriverService` to use to start the geckodriver in a child
+   *   process.
+   *
+   *   If an executor is provided, care should e taken not to use reuse it with
+   *   other clients as its internal command mappings will be updated to support
+   *   Firefox-specific commands.
+   *
+   *   _This parameter may only be used with Mozilla's GeckoDriver._
+   *
    * @param {promise.ControlFlow=} opt_flow The flow to
    *     schedule commands through. Defaults to the active flow object.
-   * @param {http.Executor=} opt_executor A pre-configured command executor to
-   *     use for communicating with an externally managed remoted end (which is
-   *     assumed to already be running). The provided executor should not be
-   *     reused with other clients as its internal command mappings will be
-   *     updated to support Firefox-specific commands.
-   *
-   * _This parameter may only be used with Mozilla's GeckoDriver._
-   *
    * @throws {Error} If a custom command executor is provided and the driver is
    *     configured to use the legacy FirefoxDriver from the Selenium project.
    */
-  constructor(opt_config, opt_flow, opt_executor) {
+  constructor(opt_config, opt_executor, opt_flow) {
     let caps;
     if (opt_config instanceof Options) {
       caps = opt_config.toCapabilities();
@@ -450,6 +602,7 @@ class Driver extends webdriver.WebDriver {
       caps = new capabilities.Capabilities(opt_config);
     }
 
+    let hasBinary = caps.has(Capability.BINARY);
     let binary = caps.get(Capability.BINARY) || new Binary();
     caps.delete(Capability.BINARY);
     if (typeof binary === 'string') {
@@ -471,77 +624,29 @@ class Driver extends webdriver.WebDriver {
             || /^0|false$/i.test(process.env['SELENIUM_MARIONETTE']);
     let useMarionette = !noMarionette;
 
+    let spec;
     if (useMarionette) {
-      if (opt_executor) {
-        configureExecutor(opt_executor);
-        serverUrl = Promise.reject(Error('unexpected variable use'));
-        onQuit = function noop() {};
-      } else {
-        let service = createGeckoDriverService(binary);
-        serverUrl = service.start();
-        onQuit = () => service.kill();
-      }
-
-      if (profile) {
-        caps.set(Capability.PROFILE, profile.encode());
-      }
-
-      if (caps.has(capabilities.Capability.PROXY)) {
-        let proxy = normalizeProxyConfiguration(
-            caps.get(capabilities.Capability.PROXY));
-
-        // Marionette requires proxy settings to be specified as required
-        // capabilities. See mozilla/geckodriver#97
-        let required = new capabilities.Capabilities()
-            .set(capabilities.Capability.PROXY, proxy);
-
-        caps.delete(capabilities.Capability.PROXY);
-        caps = {required, desired: caps};
-      }
+      spec = createGeckoDriver(
+          opt_executor,
+          caps,
+          profile,
+          hasBinary ? binary : null,
+          opt_flow);
     } else {
       if (opt_executor) {
         throw Error('You may not use a custom command executor with the legacy'
             + ' FirefoxDriver');
       }
-
-      profile = profile || new Profile;
-
-      let freePort = portprober.findFreePort();
-      let preparedProfile =
-          freePort.then(port => prepareProfile(profile, port));
-      let command = preparedProfile.then(dir => binary.launch(dir));
-
-      serverUrl = command.then(() => freePort)
-          .then(function(/** number */port) {
-            let serverUrl = url.format({
-              protocol: 'http',
-              hostname: net.getLoopbackAddress(),
-              port: port + '',
-              pathname: '/hub'
-            });
-            let ready = httpUtil.waitForServer(serverUrl, 45 * 1000);
-            return ready.then(() => serverUrl);
-          });
-
-      onQuit = function() {
-        return command.then(command => {
-          command.kill();
-          return preparedProfile.then(io.rmDir)
-              .then(() => command.result(),
-                    () => command.result());
-        });
-      };
+      spec = createLegacyDriver(caps, profile, binary, opt_flow);
     }
 
-    let executor = opt_executor || createExecutor(serverUrl);
-    let driver = webdriver.WebDriver.createSession(executor, caps, opt_flow);
-    super(driver.getSession(), executor, driver.controlFlow());
-
-    let boundQuit = this.quit.bind(this);
+    super(spec.driver.getSession(),
+          spec.driver.getExecutor(),
+          spec.driver.controlFlow());
 
     /** @override */
-    this.quit = function() {
-      return boundQuit().finally(onQuit);
+    this.quit = () => {
+      return super.quit().finally(spec.onQuit);
     };
   }
 
@@ -595,3 +700,4 @@ exports.Context = Context;
 exports.Driver = Driver;
 exports.Options = Options;
 exports.Profile = Profile;
+exports.ServiceBuilder = ServiceBuilder;

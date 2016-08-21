@@ -41,6 +41,12 @@ var StdIoOptions;
 
 
 /**
+ * @typedef {(string|!IThenable<string>)}
+ */
+var CommandLineFlag;
+
+
+/**
  * A record object that defines the configuration options for a DriverService
  * instance.
  *
@@ -75,7 +81,7 @@ ServiceOptions.prototype.port;
  * The arguments to pass to the service. If a promise is provided, the service
  * will wait for it to resolve before starting.
  *
- * @type {!(Array<string>|IThenable<!Array<string>>)}
+ * @type {!(Array<CommandLineFlag>|IThenable<!Array<CommandLineFlag>>)}
  */
 ServiceOptions.prototype.args;
 
@@ -132,7 +138,8 @@ class DriverService {
     this.port_ = options.port;
 
     /**
-     * @private {!(Array<string>|IThenable<!Array<string>>)}
+     * @private {!(Array<CommandLineFlag>|
+     *             IThenable<!Array<CommandLineFlag>>)}
      */
     this.args_ = options.args;
 
@@ -203,11 +210,12 @@ class DriverService {
     this.command_ = new Promise(resolve => resolveCommand = resolve);
 
     this.address_ = new Promise((resolveAddress, rejectAddress) => {
-      resolveAddress(Promise.resolve(this.port_).then(function(port) {
+      resolveAddress(Promise.resolve(this.port_).then(port => {
         if (port <= 0) {
           throw Error('Port must be > 0: ' + port);
         }
-        return Promise.resolve(self.args_).then(function(args) {
+
+        return resolveCommandLineFlags(this.args_).then(args => {
           var command = exec(self.executable_, {
             args: args,
             env: self.env_,
@@ -285,6 +293,16 @@ class DriverService {
 
 
 /**
+ * @param {!(Array<CommandLineFlag>|IThenable<!Array<CommandLineFlag>>)} args
+ * @return {!Promise<!Array<string>>}
+ */
+function resolveCommandLineFlags(args) {
+  return Promise.resolve(args)           // Resolve the outer array.
+      .then(args => Promise.all(args));  // Then resolve the individual flags.
+}
+
+
+/**
  * The default amount of time, in milliseconds, to wait for the server to
  * start.
  * @const {number}
@@ -322,7 +340,7 @@ DriverService.Builder = class {
   /**
    * Define additional command line arguments to use when starting the server.
    *
-   * @param {...string} var_args The arguments to include.
+   * @param {...CommandLineFlag} var_args The arguments to include.
    * @return {!THIS} A self reference.
    * @this {THIS}
    * @template THIS
