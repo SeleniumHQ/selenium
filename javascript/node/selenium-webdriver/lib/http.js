@@ -197,9 +197,11 @@ const COMMAND_MAP = new Map([
 
 /** @const {!Map<string, {method: string, path: string}>} */
 const W3C_COMMAND_MAP = new Map([
+  [cmd.Name.MAXIMIZE_WINDOW, post('/session/:sessionId/window/maximize')],
+  [cmd.Name.GET_WINDOW_POSITION, get('/session/:sessionId/window/position')],
+  [cmd.Name.SET_WINDOW_POSITION, post('/session/:sessionId/window/position')],
   [cmd.Name.GET_WINDOW_SIZE, get('/session/:sessionId/window/size')],
   [cmd.Name.SET_WINDOW_SIZE, post('/session/:sessionId/window/size')],
-  [cmd.Name.MAXIMIZE_WINDOW, post('/session/:sessionId/window/maximize')],
 ]);
 
 

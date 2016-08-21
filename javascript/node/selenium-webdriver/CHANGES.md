@@ -3,6 +3,12 @@
 * Fixed a bug where the promise manager would silently drop callbacks after
   recovering from an unhandled promise rejection.
 
+### Changes for W3C WebDriver Spec Compliance
+
+* Updated command mappings for [getting](https://w3c.github.io/webdriver/webdriver-spec.html#get-window-position)
+  and [setting](https://w3c.github.io/webdriver/webdriver-spec.html#set-window-position)
+  the window position.
+
 
 ## v3.0.0-beta-2
 
