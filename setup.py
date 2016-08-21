@@ -32,6 +32,7 @@ setup_args = {
     'version': "3.0.0.b2",
     'description': 'Python bindings for Selenium',
     'long_description':open(join(abspath(dirname(__file__)), "py", "README.rst")).read(),
+    'license':"ASL 2.0",
     'url': 'https://github.com/SeleniumHQ/selenium/',
     'classifiers': ['Development Status :: 5 - Production/Stable',
                     'Intended Audience :: Developers',
