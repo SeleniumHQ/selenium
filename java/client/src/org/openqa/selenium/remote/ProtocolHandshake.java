@@ -71,7 +71,9 @@ public class ProtocolHandshake {
     }
 
     if (result.isPresent()) {
-      return result.get();
+      Result toReturn = result.get();
+      LOG.info(String.format("Detected dialect: %s", toReturn.dialect));
+      return toReturn;
     }
 
     throw new SessionNotCreatedException(
