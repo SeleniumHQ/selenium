@@ -2670,6 +2670,12 @@ class TaskQueue extends events.EventEmitter {
       this.tasks_ = [];
     }
 
+    // Now that all of the remaining tasks have been silently cancelled (e.g. no
+    // exisitng callbacks on those tasks will fire), clear the silence bit on
+    // the cancellation error. This ensures additional callbacks registered in
+    // the future will actually execute.
+    cancellation.silent_ = false;
+
     if (this.pending_) {
       vlog(2, () => this + '.abort(); cancelling pending task', this);
       this.pending_.task.promise.cancel(
