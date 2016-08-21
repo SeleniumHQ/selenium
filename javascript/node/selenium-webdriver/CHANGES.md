@@ -3,6 +3,17 @@
 * Fixed a bug where the promise manager would silently drop callbacks after
   recovering from an unhandled promise rejection.
 
+### API Changes
+
+* Added `remote.DriverService.Builder` as a base class for configuring
+  DriverService instances that run in a child-process. The
+  `chrome.ServiceBuilder`, `edge.ServiceBuilder`, and `opera.ServiceBuilder`
+  classes now all extend this base class with browser-specific options.
+* For each of the ServiceBuilder clases, renamed `usingPort` and
+  `withEnvironment` to `setPort` and `setEnvironment`, respectively.
+* Renamed `chrome.ServiceBuilder#setUrlBasePath` to `#setPath`
+
+
 ### Changes for W3C WebDriver Spec Compliance
 
 * Updated command mappings for [getting](https://w3c.github.io/webdriver/webdriver-spec.html#get-window-position)

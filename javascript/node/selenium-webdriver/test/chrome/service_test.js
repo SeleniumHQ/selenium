@@ -35,7 +35,7 @@ test.suite(function(env) {
 
     test.it('can be started on a custom path', function() {
       service = new chrome.ServiceBuilder()
-          .setUrlBasePath('/foo/bar/baz')
+          .setPath('/foo/bar/baz')
           .build();
       return service.start().then(function(url) {
         assert(url).endsWith('/foo/bar/baz');

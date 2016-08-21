@@ -178,7 +178,7 @@ function configureExecutor(executor) {
  * a [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/)
  * server in a child process.
  */
-class ServiceBuilder {
+class ServiceBuilder extends remote.DriverService.Builder {
   /**
    * @param {string=} opt_exe Path to the server executable to use. If omitted,
    *     the builder will attempt to locate the chromedriver on the current
@@ -196,42 +196,8 @@ class ServiceBuilder {
           'it can be found on your PATH.');
     }
 
-    if (!fs.existsSync(exe)) {
-      throw Error('File does not exist: ' + exe);
-    }
-    /** @private {string} */
-    this.exe_ = exe;
-
-    /** @private {!Array<string>} */
-    this.args_ = [];
-
-    /**
-     * @private {(string|!Array<string|number|!stream.Stream|null|undefined>)}
-     */
-    this.stdio_ = 'ignore';
-
-    /** @private {?string} */
-    this.path_ = null;
-
-    /** @private {number} */
-    this.port_ = 0;
-
-    /** @private {Object<string, string>} */
-    this.env_ = null;
-  }
-
-  /**
-   * Sets the port to start the ChromeDriver on.
-   * @param {number} port The port to use, or 0 for any free port.
-   * @return {!ServiceBuilder} A self reference.
-   * @throws {Error} If the port is invalid.
-   */
-  usingPort(port) {
-    if (port < 0) {
-      throw Error('port must be >= 0: ' + port);
-    }
-    this.port_ = port;
-    return this;
+    super(exe);
+    this.setLoopback(true);  // Required
   }
 
   /**
@@ -243,8 +209,7 @@ class ServiceBuilder {
    * @return {!ServiceBuilder} A self reference.
    */
   setAdbPort(port) {
-    this.args_.push('--adb-port=' + port);
-    return this;
+    return this.addArguments('--adb-port=' + port);
   }
 
   /**
@@ -254,8 +219,7 @@ class ServiceBuilder {
    * @return {!ServiceBuilder} A self reference.
    */
   loggingTo(path) {
-    this.args_.push('--log-path=' + path);
-    return this;
+    return this.addArguments('--log-path=' + path);
   }
 
   /**
@@ -263,8 +227,7 @@ class ServiceBuilder {
    * @return {!ServiceBuilder} A self reference.
    */
   enableVerboseLogging() {
-    this.args_.push('--verbose');
-    return this;
+    return this.addArguments('--verbose');
   }
 
   /**
@@ -274,66 +237,15 @@ class ServiceBuilder {
    * @return {!ServiceBuilder} A self reference.
    */
   setNumHttpThreads(n) {
-    this.args_.push('--http-threads=' + n);
-    return this;
+    return this.addArguments('--http-threads=' + n);
   }
 
   /**
-   * Sets the base path for WebDriver REST commands (e.g. "/wd/hub").
-   * By default, the driver will accept commands relative to "/".
-   * @param {string} path The base path to use.
-   * @return {!ServiceBuilder} A self reference.
+   * @override
    */
-  setUrlBasePath(path) {
-    this.args_.push('--url-base=' + path);
-    this.path_ = path;
-    return this;
-  }
-
-  /**
-   * Defines the stdio configuration for the driver service. See
-   * {@code child_process.spawn} for more information.
-   * @param {(string|!Array<string|number|!stream.Stream|null|undefined>)}
-   *     config The configuration to use.
-   * @return {!ServiceBuilder} A self reference.
-   */
-  setStdio(config) {
-    this.stdio_ = config;
-    return this;
-  }
-
-  /**
-   * Defines the environment to start the server under. This settings will be
-   * inherited by every browser session started by the server.
-   * @param {!Object<string, string>} env The environment to use.
-   * @return {!ServiceBuilder} A self reference.
-   */
-  withEnvironment(env) {
-    this.env_ = env;
-    return this;
-  }
-
-  /**
-   * Creates a new DriverService using this instance's current configuration.
-   * @return {!remote.DriverService} A new driver service using this instance's
-   *     current configuration.
-   * @throws {Error} If the driver exectuable was not specified and a default
-   *     could not be found on the current PATH.
-   */
-  build() {
-    let port = this.port_ || portprober.findFreePort();
-    let args = this.args_.concat();  // Defensive copy.
-
-    return new remote.DriverService(this.exe_, {
-      loopback: true,
-      path: this.path_,
-      port: port,
-      args: Promise.resolve(port).then(function(port) {
-        return args.concat('--port=' + port);
-      }),
-      env: this.env_,
-      stdio: this.stdio_
-    });
+  setPath(path) {
+    super.setPath(path);
+    return this.addArguments('--url-base=' + path);
   }
 }
 
