@@ -61,18 +61,18 @@ import java.util.Map;
 public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
   public W3CHttpCommandCodec() {
-    defineCommand(GET_ELEMENT_ATTRIBUTE, post("/session/:sessionId/execute/sync"));
-    defineCommand(GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW, post("/session/:sessionId/execute/sync"));
-    defineCommand(SUBMIT_ELEMENT, post("/session/:sessionId/execute/sync"));
+    alias(GET_ELEMENT_ATTRIBUTE, EXECUTE_SCRIPT);
+    alias(GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW, EXECUTE_SCRIPT);
+    alias(SUBMIT_ELEMENT, EXECUTE_SCRIPT);
 
     defineCommand(EXECUTE_SCRIPT, post("/session/:sessionId/execute/sync"));
     defineCommand(EXECUTE_ASYNC_SCRIPT, post("/session/:sessionId/execute/async"));
 
-    defineCommand(GET_PAGE_SOURCE, post("/session/:sessionId/execute/sync"));
+    alias(GET_PAGE_SOURCE, EXECUTE_SCRIPT);
 
     defineCommand(MAXIMIZE_CURRENT_WINDOW, post("/session/:sessionId/window/maximize"));
-    defineCommand(GET_CURRENT_WINDOW_POSITION, get("/session/:sessionId/execute/sync"));
-    defineCommand(SET_CURRENT_WINDOW_POSITION, post("/session/:sessionId/execute/sync"));
+    alias(GET_CURRENT_WINDOW_POSITION, EXECUTE_SCRIPT);
+    alias(SET_CURRENT_WINDOW_POSITION, EXECUTE_SCRIPT);
     defineCommand(GET_CURRENT_WINDOW_SIZE, get("/session/:sessionId/window/size"));
     defineCommand(SET_CURRENT_WINDOW_SIZE, post("/session/:sessionId/window/size"));
     defineCommand(GET_CURRENT_WINDOW_HANDLE, get("/session/:sessionId/window"));

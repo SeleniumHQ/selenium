@@ -151,6 +151,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
   private static final String SESSION_ID_PARAM = "sessionId";
 
   private final BiMap<String, CommandSpec> nameToSpec = HashBiMap.create();
+  private final Map<String, String> aliases = new HashMap<>();
   private final BeanToJsonConverter beanToJsonConverter = new BeanToJsonConverter();
   private final JsonToBeanConverter jsonToBeanConverter = new JsonToBeanConverter();
 
@@ -277,12 +278,13 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
 
   @Override
   public HttpRequest encode(Command command) {
-    CommandSpec spec = nameToSpec.get(command.getName());
+    String name = aliases.getOrDefault(command.getName(), command.getName());
+    CommandSpec spec = nameToSpec.get(name);
     if (spec == null) {
       throw new UnsupportedCommandException(command.getName());
     }
     Map<String, ?> parameters = amendParameters(command.getName(), command.getParameters());
-    String uri = buildUri(command.getName(), command.getSessionId(), parameters, spec);
+    String uri = buildUri(name, command.getSessionId(), parameters, spec);
 
     HttpRequest request = new HttpRequest(spec.method, uri);
 
@@ -355,6 +357,11 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
    */
   public void defineCommand(String name, HttpMethod method, String pathPattern) {
     defineCommand(name, new CommandSpec(method, pathPattern));
+  }
+
+  @Override
+  public void alias(String commandName, String isAnAliasFor) {
+    aliases.put(commandName, isAnAliasFor);
   }
 
   protected void defineCommand(String name, CommandSpec spec) {
