@@ -81,7 +81,6 @@ import static org.openqa.selenium.remote.DriverCommand.IME_GET_AVAILABLE_ENGINES
 import static org.openqa.selenium.remote.DriverCommand.IME_IS_ACTIVATED;
 import static org.openqa.selenium.remote.DriverCommand.IMPLICITLY_WAIT;
 import static org.openqa.selenium.remote.DriverCommand.IS_BROWSER_ONLINE;
-import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_DISPLAYED;
 import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_ENABLED;
 import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_SELECTED;
 import static org.openqa.selenium.remote.DriverCommand.MOUSE_DOWN;
@@ -197,7 +196,6 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     defineCommand(
         GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
         get("/session/:sessionId/element/:id/css/:propertyName"));
-    defineCommand(IS_ELEMENT_DISPLAYED, get("/session/:sessionId/element/:id/displayed"));
     defineCommand(FIND_CHILD_ELEMENT, post("/session/:sessionId/element/:id/element"));
     defineCommand(FIND_CHILD_ELEMENTS, post("/session/:sessionId/element/:id/elements"));
     defineCommand(IS_ELEMENT_ENABLED, get("/session/:sessionId/element/:id/enabled"));

@@ -33,6 +33,7 @@ import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_ATTRIBUTE;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW;
 import static org.openqa.selenium.remote.DriverCommand.GET_PAGE_SOURCE;
 import static org.openqa.selenium.remote.DriverCommand.GET_WINDOW_HANDLES;
+import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_DISPLAYED;
 import static org.openqa.selenium.remote.DriverCommand.MAXIMIZE_CURRENT_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_VALUE;
 import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_POSITION;
@@ -63,6 +64,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
   public W3CHttpCommandCodec() {
     alias(GET_ELEMENT_ATTRIBUTE, EXECUTE_SCRIPT);
     alias(GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW, EXECUTE_SCRIPT);
+    alias(IS_ELEMENT_DISPLAYED, EXECUTE_SCRIPT);
     alias(SUBMIT_ELEMENT, EXECUTE_SCRIPT);
 
     defineCommand(EXECUTE_SCRIPT, post("/session/:sessionId/execute/sync"));
@@ -134,18 +136,10 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
       case GET_ELEMENT_ATTRIBUTE:
         // Read the atom, wrap it, execute it.
-        try {
-          String scriptName = "/org/openqa/selenium/remote/getAttribute.js";
-          URL url = getClass().getResource(scriptName);
-
-          String rawFunction = Resources.toString(url, Charsets.UTF_8);
-          String script = String.format(
-            "return (%s).apply(null, arguments);",
-            rawFunction);
-          return toScript(script, asElement(parameters.get("id")), parameters.get("name"));
-        } catch (IOException | NullPointerException e) {
-          throw new WebDriverException(e);
-        }
+        return executeAtom(
+          "getAttribute.js",
+          asElement(parameters.get("id")),
+          parameters.get("name"));
 
       case GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW:
         return toScript(
@@ -160,6 +154,9 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
       case GET_CURRENT_WINDOW_POSITION:
         return toScript("return {x: window.screenX, y: window.screenY}");
+
+      case IS_ELEMENT_DISPLAYED:
+        return executeAtom("isDisplayed.js", asElement(parameters.get("id")));
 
       case SET_CURRENT_WINDOW_POSITION:
         return toScript(
@@ -181,6 +178,21 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
       default:
         return parameters;
+    }
+  }
+
+  private Map<String, ?> executeAtom(String atomFileName, Object... args) {
+    try {
+      String scriptName = "/org/openqa/selenium/remote/" + atomFileName;
+      URL url = getClass().getResource(scriptName);
+
+      String rawFunction = Resources.toString(url, Charsets.UTF_8);
+      String script = String.format(
+        "return (%s).apply(null, arguments);",
+        rawFunction);
+      return toScript(script, args);
+    } catch (IOException | NullPointerException e) {
+      throw new WebDriverException(e);
     }
   }
 

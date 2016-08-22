@@ -29,6 +29,7 @@ import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_ATTRIBUTE;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW;
 import static org.openqa.selenium.remote.DriverCommand.GET_PAGE_SOURCE;
 import static org.openqa.selenium.remote.DriverCommand.GET_WINDOW_HANDLES;
+import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_DISPLAYED;
 import static org.openqa.selenium.remote.DriverCommand.MAXIMIZE_CURRENT_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_VALUE;
 import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_POSITION;
@@ -52,6 +53,7 @@ public class JsonHttpCommandCodec extends AbstractHttpCommandCodec {
   public JsonHttpCommandCodec() {
     defineCommand(GET_ELEMENT_ATTRIBUTE, get("/session/:sessionId/element/:id/attribute/:name"));
     defineCommand(GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW, get("/session/:sessionId/element/:id/location_in_view"));
+    defineCommand(IS_ELEMENT_DISPLAYED, get("/session/:sessionId/element/:id/displayed"));
     defineCommand(SUBMIT_ELEMENT, post("/session/:sessionId/element/:id/submit"));
 
     defineCommand(EXECUTE_SCRIPT, post("/session/:sessionId/execute"));
