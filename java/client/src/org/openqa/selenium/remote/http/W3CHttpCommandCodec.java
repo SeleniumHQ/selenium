@@ -48,9 +48,9 @@ import com.google.common.io.Resources;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 
-import java.util.HashMap;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -140,16 +140,17 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
           String rawFunction = Resources.toString(url, Charsets.UTF_8);
           String script = String.format(
-            "function() { return (%s).apply(null, arguments);}",
+            "return (%s).apply(null, arguments);",
             rawFunction);
-          return toScript(script, parameters.get("id"), parameters.get("name"));
-
+          return toScript(script, asElement(parameters.get("id")), parameters.get("name"));
         } catch (IOException | NullPointerException e) {
           throw new WebDriverException(e);
         }
 
       case GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW:
-        return toScript("return arguments[0].getBoundingClientRect()", parameters);
+        return toScript(
+          "return arguments[0].getBoundingClientRect()",
+          asElement(parameters.get("id")));
 
       case GET_PAGE_SOURCE:
         return toScript(
@@ -176,7 +177,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
           "var e = form.ownerDocument.createEvent('Event');\n" +
           "e.initEvent('submit', true, true);\n" +
           "if (form.dispatchEvent(e)) { form.submit() }\n",
-          parameters);
+          asElement(parameters.get("id")));
 
       default:
         return parameters;
@@ -193,6 +194,10 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     return ImmutableMap.of(
       "script", script,
       "args", Lists.newArrayList(convertedArgs));
+  }
+
+  private Map<String, String> asElement(Object id) {
+    return ImmutableMap.of("element-6066-11e4-a52e-4f735466cecf", (String) id);
   }
 
   private String cssEscape(String using) {
