@@ -538,7 +538,7 @@ module Selenium
           end
 
           property_value = execute :getElementProperty, id: element.values.first, name: name
-g          return property_value if name == :value
+          return property_value if name == :value
           return property_value if property_value &&
             !(property_value.respond_to?(:empty?) && property_value.empty?)
 
