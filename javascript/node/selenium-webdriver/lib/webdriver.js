@@ -1218,7 +1218,7 @@ class Options {
    *        for (let cookie in loadedCookies) {
    *            console.log('printing Cookies loaded : '+cookie);
    *            }
-   * });
+   *    });
    * 
    * @return {!promise.Promise<!Array<!Options.Cookie>>} A promise that will be
    *     resolved with the cookies visible to the current browsing context.
