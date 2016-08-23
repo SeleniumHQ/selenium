@@ -1,3 +1,19 @@
+v3.0.0-beta3
+============
+
+* leg-rc jar is no longer bundled into the main selenium jar. Instead,
+  it needs to be downloaded separately.
+* Removed deprecated SessionNotFoundException in favour of the
+  NoSuchSessionException.
+* Added a "protocol handshake" on starting a remote webdriver. We now
+  log the wire dialect spoken (original as "OSS" and the version
+  tracking the W3C spec as "W3C"). This may result in multiple calls
+  to the new session endpoint on local end start up.
+* Removed command names ending with "*w3c" and instead handle this
+  with different codecs.
+* Switch to using atoms for 'getAttribute' and 'isDisplayed' when
+  communicating with a W3C remote end.
+
 v3.0.0-beta2
 ============
 
