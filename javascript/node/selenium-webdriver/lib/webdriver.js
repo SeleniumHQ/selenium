@@ -1102,14 +1102,14 @@ class Options {
    * __Sample Usage:__
    *
    *     // Set a basic cookie.
-   *     driver.options().addCookie({name: 'foo', value: 'bar'});
+   *     driver.manage().addCookie({name: 'foo', value: 'bar'});
    *
    *     // Set a cookie that expires in 10 minutes.
    *     let expiry = new Date(Date.now() + (10 * 60 * 1000));
-   *     driver.options().addCookie({name: 'foo', value: 'bar', expiry});
+   *     driver.manage().addCookie({name: 'foo', value: 'bar', expiry});
    *
    *     // The cookie expiration may also be specified in seconds since epoch.
-   *     driver.options().addCookie({
+   *     driver.manage().addCookie({
    *       name: 'foo',
    *       value: 'bar',
    *       expiry: Math.floor(Date.now() / 1000)
@@ -1170,6 +1170,11 @@ class Options {
   }
 
   /**
+   * __Sample Usage:__
+   * 
+   * //delete all the cookies
+   * driver.manage().deleteAllCookies();
+   * 
    * Schedules a command to delete all cookies visible to the current page.
    * @return {!promise.Promise<void>} A promise that will be resolved
    *     when all cookies have been deleted.
@@ -1184,6 +1189,12 @@ class Options {
    * Schedules a command to delete the cookie with the given name. This command
    * is a no-op if there is no cookie with the given name visible to the current
    * page.
+   * 
+   * __Sample Usage:__
+   * 
+   * //delete cookie by name
+   * driver.manage().deleteCookie('cookie-name');
+   * 
    * @param {string} name The name of the cookie to delete.
    * @return {!promise.Promise<void>} A promise that will be resolved
    *     when the cookie has been deleted.
@@ -1199,6 +1210,16 @@ class Options {
    * Schedules a command to retrieve all cookies visible to the current page.
    * Each cookie will be returned as a JSON object as described by the WebDriver
    * wire protocol.
+   * 
+   * __Sample Usage:__
+   * 
+   * //get all the available cookies for the current URL
+   *    driver.manage().getCookies().then( (loadedCookies) =>{
+   *        for (let cookie in loadedCookies) {
+   *            console.log('printing Cookies loaded : '+cookie);
+   *            }
+   * });
+   * 
    * @return {!promise.Promise<!Array<!Options.Cookie>>} A promise that will be
    *     resolved with the cookies visible to the current browsing context.
    */
