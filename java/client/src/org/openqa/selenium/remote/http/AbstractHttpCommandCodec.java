@@ -24,7 +24,100 @@ import static com.google.common.net.HttpHeaders.CACHE_CONTROL;
 import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JSON_UTF_8;
-import static org.openqa.selenium.remote.DriverCommand.*;
+import static org.openqa.selenium.remote.DriverCommand.ADD_COOKIE;
+import static org.openqa.selenium.remote.DriverCommand.CLEAR_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.CLEAR_LOCAL_STORAGE;
+import static org.openqa.selenium.remote.DriverCommand.CLEAR_SESSION_STORAGE;
+import static org.openqa.selenium.remote.DriverCommand.CLICK;
+import static org.openqa.selenium.remote.DriverCommand.CLICK_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.CLOSE;
+import static org.openqa.selenium.remote.DriverCommand.DELETE_ALL_COOKIES;
+import static org.openqa.selenium.remote.DriverCommand.DELETE_COOKIE;
+import static org.openqa.selenium.remote.DriverCommand.DOUBLE_CLICK;
+import static org.openqa.selenium.remote.DriverCommand.ELEMENT_EQUALS;
+import static org.openqa.selenium.remote.DriverCommand.ELEMENT_SCREENSHOT;
+import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENTS;
+import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENTS;
+import static org.openqa.selenium.remote.DriverCommand.FULLSCREEN_CURRENT_WINDOW;
+import static org.openqa.selenium.remote.DriverCommand.GET;
+import static org.openqa.selenium.remote.DriverCommand.GET_ACTIVE_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.GET_ALL_COOKIES;
+import static org.openqa.selenium.remote.DriverCommand.GET_ALL_SESSIONS;
+import static org.openqa.selenium.remote.DriverCommand.GET_APP_CACHE_STATUS;
+import static org.openqa.selenium.remote.DriverCommand.GET_AVAILABLE_LOG_TYPES;
+import static org.openqa.selenium.remote.DriverCommand.GET_CAPABILITIES;
+import static org.openqa.selenium.remote.DriverCommand.GET_CONTEXT_HANDLES;
+import static org.openqa.selenium.remote.DriverCommand.GET_COOKIE;
+import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_CONTEXT_HANDLE;
+import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_URL;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_PROPERTY;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_RECT;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_SIZE;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TAG_NAME;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TEXT;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_VALUE_OF_CSS_PROPERTY;
+import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_ITEM;
+import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_KEYS;
+import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_SIZE;
+import static org.openqa.selenium.remote.DriverCommand.GET_LOCATION;
+import static org.openqa.selenium.remote.DriverCommand.GET_LOG;
+import static org.openqa.selenium.remote.DriverCommand.GET_NETWORK_CONNECTION;
+import static org.openqa.selenium.remote.DriverCommand.GET_SCREEN_ORIENTATION;
+import static org.openqa.selenium.remote.DriverCommand.GET_SCREEN_ROTATION;
+import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_LOGS;
+import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_STORAGE_ITEM;
+import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_STORAGE_KEYS;
+import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_STORAGE_SIZE;
+import static org.openqa.selenium.remote.DriverCommand.GET_TITLE;
+import static org.openqa.selenium.remote.DriverCommand.GO_BACK;
+import static org.openqa.selenium.remote.DriverCommand.GO_FORWARD;
+import static org.openqa.selenium.remote.DriverCommand.IME_ACTIVATE_ENGINE;
+import static org.openqa.selenium.remote.DriverCommand.IME_DEACTIVATE;
+import static org.openqa.selenium.remote.DriverCommand.IME_GET_ACTIVE_ENGINE;
+import static org.openqa.selenium.remote.DriverCommand.IME_GET_AVAILABLE_ENGINES;
+import static org.openqa.selenium.remote.DriverCommand.IME_IS_ACTIVATED;
+import static org.openqa.selenium.remote.DriverCommand.IMPLICITLY_WAIT;
+import static org.openqa.selenium.remote.DriverCommand.IS_BROWSER_ONLINE;
+import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_ENABLED;
+import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_SELECTED;
+import static org.openqa.selenium.remote.DriverCommand.MOUSE_DOWN;
+import static org.openqa.selenium.remote.DriverCommand.MOUSE_UP;
+import static org.openqa.selenium.remote.DriverCommand.MOVE_TO;
+import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
+import static org.openqa.selenium.remote.DriverCommand.QUIT;
+import static org.openqa.selenium.remote.DriverCommand.REFRESH;
+import static org.openqa.selenium.remote.DriverCommand.REMOVE_LOCAL_STORAGE_ITEM;
+import static org.openqa.selenium.remote.DriverCommand.REMOVE_SESSION_STORAGE_ITEM;
+import static org.openqa.selenium.remote.DriverCommand.SCREENSHOT;
+import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ACTIVE_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_CREDENTIALS;
+import static org.openqa.selenium.remote.DriverCommand.SET_BROWSER_ONLINE;
+import static org.openqa.selenium.remote.DriverCommand.SET_LOCAL_STORAGE_ITEM;
+import static org.openqa.selenium.remote.DriverCommand.SET_LOCATION;
+import static org.openqa.selenium.remote.DriverCommand.SET_NETWORK_CONNECTION;
+import static org.openqa.selenium.remote.DriverCommand.SET_SCREEN_ORIENTATION;
+import static org.openqa.selenium.remote.DriverCommand.SET_SCREEN_ROTATION;
+import static org.openqa.selenium.remote.DriverCommand.SET_SCRIPT_TIMEOUT;
+import static org.openqa.selenium.remote.DriverCommand.SET_SESSION_STORAGE_ITEM;
+import static org.openqa.selenium.remote.DriverCommand.SET_TIMEOUT;
+import static org.openqa.selenium.remote.DriverCommand.STATUS;
+import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_CONTEXT;
+import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_FRAME;
+import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_PARENT_FRAME;
+import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_WINDOW;
+import static org.openqa.selenium.remote.DriverCommand.TOUCH_DOUBLE_TAP;
+import static org.openqa.selenium.remote.DriverCommand.TOUCH_DOWN;
+import static org.openqa.selenium.remote.DriverCommand.TOUCH_FLICK;
+import static org.openqa.selenium.remote.DriverCommand.TOUCH_LONG_PRESS;
+import static org.openqa.selenium.remote.DriverCommand.TOUCH_MOVE;
+import static org.openqa.selenium.remote.DriverCommand.TOUCH_SCROLL;
+import static org.openqa.selenium.remote.DriverCommand.TOUCH_SINGLE_TAP;
+import static org.openqa.selenium.remote.DriverCommand.TOUCH_UP;
+import static org.openqa.selenium.remote.DriverCommand.UPLOAD_FILE;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
@@ -57,6 +150,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
   private static final String SESSION_ID_PARAM = "sessionId";
 
   private final BiMap<String, CommandSpec> nameToSpec = HashBiMap.create();
+  private final Map<String, String> aliases = new HashMap<>();
   private final BeanToJsonConverter beanToJsonConverter = new BeanToJsonConverter();
   private final JsonToBeanConverter jsonToBeanConverter = new JsonToBeanConverter();
 
@@ -78,7 +172,6 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     defineCommand(CLOSE, delete("/session/:sessionId/window"));
     defineCommand(SWITCH_TO_WINDOW, post("/session/:sessionId/window"));
 
-    defineCommand(GET_WINDOW_POSITION, get("/session/:sessionId/window/:windowHandle/position"));
     defineCommand(FULLSCREEN_CURRENT_WINDOW, post("/session/:sessionId/window/fullscreen"));
 
     defineCommand(GET_CURRENT_URL, get("/session/:sessionId/url"));
@@ -92,33 +185,26 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     defineCommand(UPLOAD_FILE, post("/session/:sessionId/file"));
     defineCommand(SCREENSHOT, get("/session/:sessionId/screenshot"));
     defineCommand(ELEMENT_SCREENSHOT, get("/session/:sessionId/screenshot/:id"));
-    defineCommand(GET_PAGE_SOURCE, get("/session/:sessionId/source"));
     defineCommand(GET_TITLE, get("/session/:sessionId/title"));
 
     defineCommand(FIND_ELEMENT, post("/session/:sessionId/element"));
     defineCommand(FIND_ELEMENTS, post("/session/:sessionId/elements"));
     defineCommand(GET_ACTIVE_ELEMENT, post("/session/:sessionId/element/active"));
-    defineCommand(GET_ELEMENT_ATTRIBUTE, get("/session/:sessionId/element/:id/attribute/:name"));
     defineCommand(GET_ELEMENT_PROPERTY, get("/session/:sessionId/element/:id/property/:name"));
     defineCommand(CLICK_ELEMENT, post("/session/:sessionId/element/:id/click"));
     defineCommand(CLEAR_ELEMENT, post("/session/:sessionId/element/:id/clear"));
     defineCommand(
         GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
         get("/session/:sessionId/element/:id/css/:propertyName"));
-    defineCommand(IS_ELEMENT_DISPLAYED, get("/session/:sessionId/element/:id/displayed"));
     defineCommand(FIND_CHILD_ELEMENT, post("/session/:sessionId/element/:id/element"));
     defineCommand(FIND_CHILD_ELEMENTS, post("/session/:sessionId/element/:id/elements"));
     defineCommand(IS_ELEMENT_ENABLED, get("/session/:sessionId/element/:id/enabled"));
     defineCommand(ELEMENT_EQUALS, get("/session/:sessionId/element/:id/equals/:other"));
     defineCommand(GET_ELEMENT_RECT, get("/session/:sessionId/element/:id/rect"));
     defineCommand(GET_ELEMENT_LOCATION, get("/session/:sessionId/element/:id/location"));
-    defineCommand(
-        GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW,
-        get("/session/:sessionId/element/:id/location_in_view"));
     defineCommand(GET_ELEMENT_TAG_NAME, get("/session/:sessionId/element/:id/name"));
     defineCommand(IS_ELEMENT_SELECTED, get("/session/:sessionId/element/:id/selected"));
     defineCommand(GET_ELEMENT_SIZE, get("/session/:sessionId/element/:id/size"));
-    defineCommand(SUBMIT_ELEMENT, post("/session/:sessionId/element/:id/submit"));
     defineCommand(GET_ELEMENT_TEXT, get("/session/:sessionId/element/:id/text"));
     defineCommand(SEND_KEYS_TO_ELEMENT, post("/session/:sessionId/element/:id/value"));
 
@@ -190,12 +276,13 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
 
   @Override
   public HttpRequest encode(Command command) {
-    CommandSpec spec = nameToSpec.get(command.getName());
+    String name = aliases.getOrDefault(command.getName(), command.getName());
+    CommandSpec spec = nameToSpec.get(name);
     if (spec == null) {
       throw new UnsupportedCommandException(command.getName());
     }
     Map<String, ?> parameters = amendParameters(command.getName(), command.getParameters());
-    String uri = buildUri(command.getName(), command.getSessionId(), parameters, spec);
+    String uri = buildUri(name, command.getSessionId(), parameters, spec);
 
     HttpRequest request = new HttpRequest(spec.method, uri);
 
@@ -268,6 +355,11 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
    */
   public void defineCommand(String name, HttpMethod method, String pathPattern) {
     defineCommand(name, new CommandSpec(method, pathPattern));
+  }
+
+  @Override
+  public void alias(String commandName, String isAnAliasFor) {
+    aliases.put(commandName, isAnAliasFor);
   }
 
   protected void defineCommand(String name, CommandSpec spec) {

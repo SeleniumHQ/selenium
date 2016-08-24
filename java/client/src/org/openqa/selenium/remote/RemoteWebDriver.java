@@ -98,8 +98,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   private Logs remoteLogs;
   private LocalLogs localLogs;
 
-  private int w3cComplianceLevel = 0;
-
   // For cglib
   protected RemoteWebDriver() {
     init(new DesiredCapabilities(), null);
@@ -156,10 +154,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   public RemoteWebDriver(URL remoteAddress, Capabilities desiredCapabilities) {
     this(new HttpCommandExecutor(remoteAddress), desiredCapabilities, null);
-  }
-
-  public int getW3CStandardComplianceLevel() {
-    return w3cComplianceLevel;
   }
 
   private void init(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
@@ -273,9 +267,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     capabilities = returnedCapabilities;
     sessionId = new SessionId(response.getSessionId());
-    if (response.getStatus() == null) {
-      w3cComplianceLevel = 1;
-    }
   }
 
   /**
@@ -424,17 +415,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   public WebElement findElementById(String using) {
-    if (getW3CStandardComplianceLevel() == 0) {
-      return findElement("id", using);
-    }
-    return findElementByCssSelector("#" + cssEscape(using));
+    return findElement("id", using);
   }
 
   public List<WebElement> findElementsById(String using) {
-    if (getW3CStandardComplianceLevel() == 0) {
-      return findElements("id", using);
-    }
-    return findElementsByCssSelector("#" + cssEscape(using));
+    return findElements("id", using);
   }
 
   public WebElement findElementByLinkText(String using) {
@@ -454,45 +439,27 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   public WebElement findElementByTagName(String using) {
-    if (getW3CStandardComplianceLevel() == 0) {
-      return findElement("tag name", using);
-    }
-    return findElementByCssSelector(using);
+    return findElement("tag name", using);
   }
 
   public List<WebElement> findElementsByTagName(String using) {
-    if (getW3CStandardComplianceLevel() == 0) {
-      return findElements("tag name", using);
-    }
-    return findElementsByCssSelector(using);
+    return findElements("tag name", using);
   }
 
   public WebElement findElementByName(String using) {
-    if (getW3CStandardComplianceLevel() == 0) {
-      return findElement("name", using);
-    }
-    return findElementByCssSelector("*[name='" + using + "']");
+    return findElement("name", using);
   }
 
   public List<WebElement> findElementsByName(String using) {
-    if (getW3CStandardComplianceLevel() == 0) {
-      return findElements("name", using);
-    }
-    return findElementsByCssSelector("*[name='" + using + "']");
+    return findElements("name", using);
   }
 
   public WebElement findElementByClassName(String using) {
-    if (getW3CStandardComplianceLevel() == 0) {
-      return findElement("class name", using);
-    }
-    return findElementByCssSelector("." + cssEscape(using));
+    return findElement("class name", using);
   }
 
   public List<WebElement> findElementsByClassName(String using) {
-    if (getW3CStandardComplianceLevel() == 0) {
-      return findElements("class name", using);
-    }
-    return findElementsByCssSelector("." + cssEscape(using));
+    return findElements("class name", using);
   }
 
   public WebElement findElementByCssSelector(String using) {
@@ -514,13 +481,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   // Misc
 
   public String getPageSource() {
-    if (getW3CStandardComplianceLevel() == 0) {
-      return (String) execute(DriverCommand.GET_PAGE_SOURCE).getValue();
-    }
-    String script = "var source = document.documentElement.outerHTML; \n"
-                    + "if (!source) { source = new XMLSerializer().serializeToString(document); }\n"
-                    + "return source;";
-    return (String) executeScript(script);
+    return (String) execute(DriverCommand.GET_PAGE_SOURCE).getValue();
   }
 
   public void close() {
@@ -903,14 +864,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       @SuppressWarnings({"unchecked"})
       Map<String, Object> rawPoint;
       public Point getPosition() {
-        if (getW3CStandardComplianceLevel() == 0) {
-          Response response = execute(DriverCommand.GET_WINDOW_POSITION,
-                                      ImmutableMap.of("windowHandle", "current"));
-          rawPoint = (Map<String, Object>) response.getValue();
-        } else {
-          rawPoint = (Map<String, Object>) executeScript(
-              "return {x: window.screenX, y: window.screenY}");
-        }
+        Response response = execute(DriverCommand.GET_CURRENT_WINDOW_POSITION,
+                                    ImmutableMap.of("windowHandle", "current"));
+        rawPoint = (Map<String, Object>) response.getValue();
 
         int x = ((Number) rawPoint.get("x")).intValue();
         int y = ((Number) rawPoint.get("y")).intValue();
@@ -984,10 +940,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
 
     public WebDriver window(String windowHandleOrName) {
-      if (getW3CStandardComplianceLevel() == 0) {
-        execute(DriverCommand.SWITCH_TO_WINDOW, ImmutableMap.of("name", windowHandleOrName));
-        return RemoteWebDriver.this;
-      }
       try {
         execute(DriverCommand.SWITCH_TO_WINDOW, ImmutableMap.of("handle", windowHandleOrName));
         return RemoteWebDriver.this;

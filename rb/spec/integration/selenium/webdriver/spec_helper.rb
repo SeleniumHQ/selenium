@@ -36,7 +36,7 @@ end
 RSpec.configure do |c|
   c.include(WebDriver::SpecSupport::Helpers)
   c.before(:suite) do
-    $DEBUG = ENV['DEBUG'] == 'true'
+    $DEBUG ||= ENV['DEBUG'] == 'true'
     GlobalTestEnv.remote_server.start if GlobalTestEnv.driver == :remote
   end
 

@@ -266,7 +266,7 @@ public class JsonHttpCommandHandler {
 
     addNewMapping(GET_CURRENT_WINDOW_SIZE, GetWindowSize.class);
     addNewMapping(SET_CURRENT_WINDOW_SIZE, SetWindowSize.class);
-    addNewMapping(GET_WINDOW_POSITION, GetWindowPosition.class);
+    addNewMapping(GET_CURRENT_WINDOW_POSITION, GetWindowPosition.class);
     addNewMapping(SET_CURRENT_WINDOW_POSITION, SetWindowPosition.class);
     addNewMapping(MAXIMIZE_CURRENT_WINDOW, MaximizeWindow.class);
     addNewMapping(FULLSCREEN_CURRENT_WINDOW, FullscreenWindow.class);
@@ -326,5 +326,19 @@ public class JsonHttpCommandHandler {
 
     addNewMapping(GET_NETWORK_CONNECTION, GetNetworkConnection.class);
     addNewMapping(SET_NETWORK_CONNECTION, SetNetworkConnection.class);
-  }
+
+    // Deprecated end points. Will be removed.
+    addNewMapping("getCurrentWindowHandleW3C", GetCurrentWindowHandle.class);
+    addNewMapping("getWindowHandlesW3C", GetAllWindowHandles.class);
+
+    addNewMapping("dimissAlertW3C", DismissAlert.class);
+    addNewMapping("acceptAlertW3C", AcceptAlert.class);
+    addNewMapping("getAlertTextW3C", GetAlertText.class);
+    addNewMapping("setAlertValueW3C", SetAlertText.class);
+    addNewMapping("executeScriptW3C", ExecuteScript.class);
+    addNewMapping("executeAsyncScriptW3C", ExecuteAsyncScript.class);
+    addNewMapping("getWindowSize", GetWindowSize.class);
+    addNewMapping("setWindowSize", SetWindowSize.class);
+    addNewMapping("maximizeWindow", MaximizeWindow.class);
+    }
 }

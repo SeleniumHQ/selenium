@@ -117,6 +117,7 @@ java_library(name = 'remote-lib',
   ]),
   resources = [
     ':get-attribute',
+    ':is-displayed',
   ],
   deps = [
     ':api',
@@ -133,4 +134,10 @@ export_file(
   name = 'get-attribute',
   src = '//javascript/webdriver/atoms:getAttribute',
   out = 'getAttribute.js',
+)
+
+export_file(
+  name = 'is-displayed',
+  src = '//javascript/atoms/fragments:is-displayed',
+  out = 'isDisplayed.js',
 )

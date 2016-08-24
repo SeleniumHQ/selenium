@@ -23,12 +23,18 @@ import static org.openqa.selenium.remote.DriverCommand.EXECUTE_ASYNC_SCRIPT;
 import static org.openqa.selenium.remote.DriverCommand.EXECUTE_SCRIPT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ALERT_TEXT;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_HANDLE;
+import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_POSITION;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_SIZE;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_ATTRIBUTE;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW;
+import static org.openqa.selenium.remote.DriverCommand.GET_PAGE_SOURCE;
 import static org.openqa.selenium.remote.DriverCommand.GET_WINDOW_HANDLES;
+import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_DISPLAYED;
 import static org.openqa.selenium.remote.DriverCommand.MAXIMIZE_CURRENT_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_VALUE;
 import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_POSITION;
 import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_SIZE;
+import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -45,20 +51,28 @@ import java.util.Map;
 public class JsonHttpCommandCodec extends AbstractHttpCommandCodec {
 
   public JsonHttpCommandCodec() {
-    defineCommand(GET_WINDOW_HANDLES, get("/session/:sessionId/window_handles"));
+    defineCommand(GET_ELEMENT_ATTRIBUTE, get("/session/:sessionId/element/:id/attribute/:name"));
+    defineCommand(GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW, get("/session/:sessionId/element/:id/location_in_view"));
+    defineCommand(IS_ELEMENT_DISPLAYED, get("/session/:sessionId/element/:id/displayed"));
+    defineCommand(SUBMIT_ELEMENT, post("/session/:sessionId/element/:id/submit"));
+
+    defineCommand(EXECUTE_SCRIPT, post("/session/:sessionId/execute"));
+    defineCommand(EXECUTE_ASYNC_SCRIPT, post("/session/:sessionId/execute_async"));
+
+    defineCommand(GET_PAGE_SOURCE, get("/session/:sessionId/source"));
+
     defineCommand(MAXIMIZE_CURRENT_WINDOW, post("/session/:sessionId/window/:windowHandle/maximize"));
+    defineCommand(GET_CURRENT_WINDOW_POSITION, get("/session/:sessionId/window/:windowHandle/position"));
     defineCommand(SET_CURRENT_WINDOW_POSITION, post("/session/:sessionId/window/:windowHandle/position"));
     defineCommand(GET_CURRENT_WINDOW_SIZE, get("/session/:sessionId/window/:windowHandle/size"));
     defineCommand(SET_CURRENT_WINDOW_SIZE, post("/session/:sessionId/window/:windowHandle/size"));
     defineCommand(GET_CURRENT_WINDOW_HANDLE, get("/session/:sessionId/window_handle"));
+    defineCommand(GET_WINDOW_HANDLES, get("/session/:sessionId/window_handles"));
 
     defineCommand(ACCEPT_ALERT, post("/session/:sessionId/accept_alert"));
     defineCommand(DISMISS_ALERT, post("/session/:sessionId/dismiss_alert"));
     defineCommand(GET_ALERT_TEXT, get("/session/:sessionId/alert_text"));
     defineCommand(SET_ALERT_VALUE, post("/session/:sessionId/alert_text"));
-
-    defineCommand(EXECUTE_SCRIPT, post("/session/:sessionId/execute"));
-    defineCommand(EXECUTE_ASYNC_SCRIPT, post("/session/:sessionId/execute_async"));
   }
 
   @Override
@@ -72,6 +86,11 @@ public class JsonHttpCommandCodec extends AbstractHttpCommandCodec {
           .putAll(parameters)
           .put("windowHandle", "current")
           .put("handle", "current")
+          .build();
+
+      case DriverCommand.SWITCH_TO_WINDOW:
+        return ImmutableMap.<String, Object>builder()
+          .put("name", parameters.get("handle"))
           .build();
 
       default:
