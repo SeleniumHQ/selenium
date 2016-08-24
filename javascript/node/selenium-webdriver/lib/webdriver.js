@@ -1170,12 +1170,13 @@ class Options {
   }
 
   /**
+   * Schedules a command to delete all cookies visible to the current page.
+   * 
    * __Sample Usage:__
    * 
    * //delete all the cookies
    * driver.manage().deleteAllCookies();
    * 
-   * Schedules a command to delete all cookies visible to the current page.
    * @return {!promise.Promise<void>} A promise that will be resolved
    *     when all cookies have been deleted.
    */
