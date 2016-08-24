@@ -92,9 +92,9 @@ limitations under the License.
 		        context="treeContextMenu" onselect="window.editor.treeView.selectCommand()"
 		        ondblclick="goDoCommand('cmd_selenium_exec_command')" disableKeyNavigation="true">
 	            <treecols>
-		          <treecol id="command" label="&command.label;" width="80"/>
+		          <treecol id="command" label="&command.label;" width="80" overflow="true"/>
 		          <splitter class="tree-splitter" />
-		          <treecol id="target" label="&target.label;" flex="3" width="80"/>
+		          <treecol id="target" label="&target.label;" flex="3" width="80" overflow="true"/>
 		          <splitter class="tree-splitter" />
 		          <treecol id="value" label="&value.label;" flex="3" width="80"/>
 	            </treecols>

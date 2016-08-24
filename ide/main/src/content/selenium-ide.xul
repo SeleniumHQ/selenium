@@ -109,7 +109,7 @@ limitations under the License.
                     <treecols>
                       <treecol id="command" label="&command.label;" width="120" overflow="true"/>
                       <splitter class="tree-splitter" />
-                      <treecol id="target" label="&target.label;" flex="3" width="120"/>
+                      <treecol id="target" label="&target.label;" flex="3" width="120" overflow="true"/>
                       <splitter class="tree-splitter" />
                       <treecol id="value" label="&value.label;" flex="3" width="120"/>
                     </treecols>
