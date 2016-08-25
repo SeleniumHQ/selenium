@@ -99,7 +99,15 @@ public class GridLauncherV3 {
 
     for (int i = 0; i < args.length; i++) {
       if (args[i].equals("-htmlSuite")) {
-        GridItemLauncher launcher = LAUNCHERS.get("corerunner").get();
+        Supplier<GridItemLauncher> launcherSupplier = LAUNCHERS.get("corerunner");
+        if (launcherSupplier == null) {
+          System.err.println(
+            "Unable to find the HTML runner. This is normally because you have not downloaded " +
+            "or made available the 'selenium-leg-rc' jar on the CLASSPATH. Your test will " +
+            "not be run.");
+          return null;
+        }
+        GridItemLauncher launcher = launcherSupplier.get();
         launcher.setConfiguration(args);
         return launcher;
       }
