@@ -441,6 +441,14 @@ class Builder {
   }
 
   /**
+   * @return {safari.Options} the Safari specific options currently configured
+   *     for this instance.
+   */
+  getSafariOptions() {
+    return this.safariOptions_;
+  }
+
+  /**
    * Sets the control flow that created drivers should execute actions in. If
    * the flow is never set, or is set to {@code null}, it will use the active
    * flow at the time {@link #build()} is called.

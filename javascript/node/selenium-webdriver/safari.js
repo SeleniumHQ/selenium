@@ -16,12 +16,26 @@
 // under the License.
 
 /**
- * @fileoverview Defines a WebDriver client for Safari. Before using this
- * module, you must install the
+ * @fileoverview Defines a WebDriver client for Safari.
+ *
+ *
+ * __Testing Older Versions of Safari__
+ *
+ * To test versions of Safari prior to Safari 10.0, you must install the
  * [latest version](http://selenium-release.storage.googleapis.com/index.html)
  * of the SafariDriver browser extension; using Safari for normal browsing is
  * not recommended once the extension has been installed. You can, and should,
  * disable the extension when the browser is not being used with WebDriver.
+ *
+ * You must also enable the use of legacy driver using the {@link Options} class.
+ *
+ *     let options = new safari.Options()
+ *       .useLegacyDriver(true);
+ *
+ *     let driver = new (require('selenium-webdriver')).Builder()
+ *       .forBrowser('safari')
+ *       .setSafariOptions(options)
+ *       .build();
  */
 
 'use strict';
@@ -47,6 +61,8 @@ const Session = require('./lib/session').Session;
 const Symbols = require('./lib/symbols');
 const webdriver = require('./lib/webdriver');
 const portprober = require('./net/portprober');
+const remote = require('./remote');
+const http_ = require('./http');
 
 
 /** @const */
@@ -106,7 +122,7 @@ var Host;
 
 
 /**
- * A basic HTTP/WebSocket server used to communicate with the SafariDriver
+ * A basic HTTP/WebSocket server used to communicate with the legacy SafariDriver
  * browser extension.
  */
 class Server extends events.EventEmitter {
@@ -449,9 +465,42 @@ class CommandExecutor {
 }
 
 
+/**
+ * @return {string} .
+ * @throws {Error}
+ */
+function findSafariDriver() {
+  let exe = io.findInPath('safaridriver', true);
+  if (!exe) {
+    throw Error(
+      `The safaridriver executable could not be found on the current PATH.
+      Please ensure you are using Safari 10.0 or above.`);
+  }
+  return exe;
+}
+
+
+/**
+ * Creates {@link selenium-webdriver/remote.DriverService} instances that manage
+ * a [safaridriver] server in a child process.
+ *
+ * [safaridriver]: https://developer.apple.com/library/prerelease/content/releasenotes/General/WhatsNewInSafari/Articles/Safari_10_0.html#//apple_ref/doc/uid/TP40014305-CH11-DontLinkElementID_28
+ */
+class ServiceBuilder extends remote.DriverService.Builder {
+  /**
+   * @param {string=} opt_exe Path to the server executable to use. If omitted,
+   *     the builder will attempt to locate the safaridriver on the system PATH.
+   */
+  constructor(opt_exe) {
+    super(opt_exe || findSafariDriver());
+    this.setLoopback(true);  // Required.
+  }
+}
+
 
 /** @const */
 const OPTIONS_CAPABILITY_KEY = 'safari.options';
+const LEGACY_DRIVER_CAPABILITY_KEY = 'legacyDriver'
 
 
 
@@ -465,6 +514,12 @@ class Options {
 
     /** @private {./lib/logging.Preferences} */
     this.logPrefs_ = null;
+
+    /** @private {?./lib/capabilities.ProxyConfig} */
+    this.proxy_ = null;
+
+    /** @private {boolean} */
+    this.legacyDriver_ = false;
   }
 
   /**
@@ -483,8 +538,16 @@ class Options {
       options.setCleanSession(o.cleanSession);
     }
 
+    if (capabilities.has(Capability.PROXY)) {
+      options.setProxy(capabilities.get(Capability.PROXY));
+    }
+
     if (capabilities.has(Capability.LOGGING_PREFS)) {
       options.setLoggingPrefs(capabilities.get(Capability.LOGGING_PREFS));
+    }
+
+    if (capabilities.has(LEGACY_DRIVER_CAPABILITY_KEY)) {
+      options.useLegacyDriver(capabilities.get(LEGACY_DRIVER_CAPABILITY_KEY));
     }
 
     return options;
@@ -506,12 +569,35 @@ class Options {
   }
 
   /**
+   * Sets whether to use the legacy driver from the Selenium project. This option
+   * is disabled by default.
+   *
+   * @param {boolean} enable Whether to enable the legacy driver.
+   * @return {!Options} A self reference.
+   */
+  useLegacyDriver(enable) {
+    this.legacyDriver_ = enable;
+    return this;
+  }
+
+  /**
    * Sets the logging preferences for the new session.
    * @param {!./lib/logging.Preferences} prefs The logging preferences.
    * @return {!Options} A self reference.
    */
   setLoggingPrefs(prefs) {
     this.logPrefs_ = prefs;
+    return this;
+  }
+
+  /**
+   * Sets the proxy to use.
+   *
+   * @param {./lib/capabilities.ProxyConfig} proxy The proxy configuration to use.
+   * @return {!Options} A self reference.
+   */
+  setProxy(proxy) {
+    this.proxy_ = proxy;
     return this;
   }
 
@@ -526,9 +612,13 @@ class Options {
     if (this.logPrefs_) {
       caps.set(Capability.LOGGING_PREFS, this.logPrefs_);
     }
+    if (this.proxy_) {
+      caps.set(Capability.PROXY, this.proxy_);
+    }
     if (this.options_) {
       caps.set(OPTIONS_CAPABILITY_KEY, this);
     }
+    caps.set(LEGACY_DRIVER_CAPABILITY_KEY, this.legacyDriver_);
     return caps;
   }
 
@@ -561,13 +651,43 @@ class Driver extends webdriver.WebDriver {
    *     the driver under.
    */
   constructor(opt_config, opt_flow) {
-    var executor = new CommandExecutor();
-    var caps =
-        opt_config instanceof Options ? opt_config.toCapabilities() :
-        (opt_config || Capabilities.safari());
+    let caps,
+      executor,
+      useLegacyDriver = false,
+      onQuit = () => {};
 
-    var driver = webdriver.WebDriver.createSession(executor, caps, opt_flow);
+    if (opt_config instanceof Options) {
+      caps = opt_config.toCapabilities();
+    } else {
+      caps = opt_config || Capabilities.safari()
+    }
+
+    if (caps.has(LEGACY_DRIVER_CAPABILITY_KEY)) {
+      useLegacyDriver = caps.get(LEGACY_DRIVER_CAPABILITY_KEY);
+      caps.delete(LEGACY_DRIVER_CAPABILITY_KEY);
+    }
+
+    if (useLegacyDriver) {
+      executor = new CommandExecutor();
+    } else {
+      let service = new ServiceBuilder().build();
+
+      executor = new http_.Executor(
+        service.start()
+          .then(url => new http_.HttpClient(url))
+      );
+
+      onQuit = () => service.kill();
+    }
+
+    let driver = webdriver.WebDriver.createSession(executor, caps, opt_flow);
+
     super(driver.getSession(), executor, driver.controlFlow());
+
+    /** @override */
+    this.quit = () => {
+      return super.quit().finally(onQuit);
+    };
   }
 }
 
@@ -577,3 +697,4 @@ class Driver extends webdriver.WebDriver {
 
 exports.Driver = Driver;
 exports.Options = Options;
+exports.ServiceBuilder = ServiceBuilder;
