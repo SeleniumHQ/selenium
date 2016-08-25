@@ -1,18 +1,12 @@
 java_library(
   name = 'jetty',
-  maven_coords = 'org.seleniumhq.selenium:jetty-repacked:9.2.13.v20150730',
+  maven_coords = 'org.seleniumhq.selenium:jetty-repacked:9.2.13.v20160825',
+  maven_pom_template = 'jetty.pom',
   exported_deps = [
-    ':jetty-http-repacked',
-    ':jetty-security-repacked',
-    ':jetty-server-repacked',
-    ':jetty-servlet-repacked',
-    ':jetty-servlets-repacked',
-    ':jetty-util-repacked',
+    ':repackage',
   ],
   deps = [
-    ':jetty-continuation-repacked',
-    ':jetty-io-repacked',
-    ':jetty-jmx-repacked',
+     '//third_party/java/servlet:servlet-api',
   ],
   visibility = [
     '//java/client/test/com/thoughtworks/selenium:tests',
@@ -27,7 +21,29 @@ java_library(
     '//java/server/test/org/openqa/selenium/remote/server/auth:lib',
   ],
 )
- 
+
+# We want the deployable 'jetty-repacked' artifact to not require each of the
+# individual jars (we did, after all, repackage everything). By introducing a
+# prebuilt_jar we avoid that problem.
+prebuilt_jar(name = 'repackage',
+  binary_jar = ':bundle-jars',
+)
+
+java_binary(
+  name = 'bundle-jars',
+  deps = [
+    ':jetty-http-repacked',
+    ':jetty-security-repacked',
+    ':jetty-server-repacked',
+    ':jetty-servlet-repacked',
+    ':jetty-servlets-repacked',
+    ':jetty-util-repacked',
+    ':jetty-continuation-repacked',
+    ':jetty-io-repacked',
+    ':jetty-jmx-repacked',
+  ],
+)
+
 REPACK = [
   'jetty-continuation',
   'jetty-http',
@@ -52,13 +68,14 @@ for i in REPACK:
   prebuilt_jar(
     name = out,
     maven_coords = 'org.seleniumhq.selenium:%s:9.2.13.v20150730' % out,
-    binary_jar = ':%s' % name
+    binary_jar = ':%s' % name,
+    deps = [ '//third_party/java/servlet:servlet-api', ],
   )
 
 export_file(
   name = 'jarjar-rules',
   src = 'jetty-repack-rules',
-)  
+)
 
 prebuilt_jar(
   name = 'jetty-continuation',
@@ -76,7 +93,8 @@ prebuilt_jar(
   binary_jar = 'jetty-http-9.2.13.v20150730.jar',
   source_jar = 'jetty-http-9.2.13.v20150730-sources.jar',
   deps = [
-    ':jetty-util'
+    ':jetty-util',
+    '//third_party/java/servlet:servlet-api',
   ],
 )
 
