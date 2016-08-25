@@ -518,7 +518,6 @@ end
 task :'maven-install' do
   JAVA_RELEASE_TARGETS.each do |p|
     if JAVA_RELEASE_TARGETS.include?(p)
-      Buck::buck_cmd.call('build', [p])
       Buck::buck_cmd.call('publish', ['--remote-repo', "file://#{ENV['HOME']}/.m2/repository", '--include-source', '--include-javadoc', p])
     end
   end
