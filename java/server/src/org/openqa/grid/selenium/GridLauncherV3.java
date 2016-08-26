@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableMap;
 import com.beust.jcommander.JCommander;
 
 import org.openqa.grid.common.GridRole;
+import org.openqa.grid.common.JSONConfigurationUtils;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.internal.utils.configuration.CoreRunnerConfiguration;
@@ -220,8 +221,14 @@ public class GridLauncherV3 {
         })
         .put(GridRole.HUB.toString(), () -> new GridItemLauncher() {
           public void setConfiguration(String[] args) {
-            configuration = new GridHubConfiguration();
-            new JCommander(configuration, args);
+            GridHubConfiguration pending = new GridHubConfiguration();
+            new JCommander(pending, args);
+            configuration = pending;
+            //re-parse the args using any -hubConfig specified to init
+            if (pending.hubConfig != null) {
+              configuration = GridHubConfiguration.loadFromJSON(pending.hubConfig);
+            }
+            new JCommander(configuration, args); //args take precedence
             helpRequested = configuration.help;
           }
 
@@ -235,8 +242,14 @@ public class GridLauncherV3 {
         })
         .put(GridRole.NODE.toString(), () -> new GridItemLauncher() {
           public void setConfiguration(String[] args) {
-            configuration = new GridNodeConfiguration();
-            new JCommander(configuration, args);
+            GridNodeConfiguration pending = new GridNodeConfiguration();
+            new JCommander(pending, args);
+            configuration = pending;
+            //re-parse the args using any -nodeConfig specified to init
+            if (pending.nodeConfigFile != null) {
+              configuration = GridNodeConfiguration.loadFromJSON(pending.nodeConfigFile);
+            }
+            new JCommander(configuration, args); //args take precedence
             helpRequested = configuration.help;
             if (configuration.port == null) {
               configuration.port = 5555;
