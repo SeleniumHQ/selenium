@@ -1,6 +1,7 @@
 v3.0.0-beta3
 ============
 
+* The HTML table runner can be downloaded as selenium-html-runner.jar.
 * leg-rc jar is no longer bundled into the main selenium jar. Instead,
   it needs to be downloaded separately.
 * Removed deprecated SessionNotFoundException in favour of the
