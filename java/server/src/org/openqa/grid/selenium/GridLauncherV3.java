@@ -220,8 +220,11 @@ public class GridLauncherV3 {
         })
         .put(GridRole.HUB.toString(), () -> new GridItemLauncher() {
           public void setConfiguration(String[] args) {
-            configuration = new GridHubConfiguration();
-            new JCommander(configuration, args);
+            GridHubConfiguration pending = new GridHubConfiguration();
+            new JCommander(pending, args);
+            //re-parse the args using any -hubConfig specified to init
+            configuration = new GridHubConfiguration(pending.hubConfig);
+            new JCommander(configuration, args); //args take precedence
             helpRequested = configuration.help;
           }
 
@@ -235,8 +238,11 @@ public class GridLauncherV3 {
         })
         .put(GridRole.NODE.toString(), () -> new GridItemLauncher() {
           public void setConfiguration(String[] args) {
-            configuration = new GridNodeConfiguration();
-            new JCommander(configuration, args);
+            GridNodeConfiguration pending = new GridNodeConfiguration();
+            new JCommander(pending, args);
+            //re-parse the args using any -nodeConfig specified to init
+            configuration = new GridNodeConfiguration(pending.nodeConfigFile);
+            new JCommander(configuration, args); //args take precedence
             helpRequested = configuration.help;
             if (configuration.port == null) {
               configuration.port = 5555;

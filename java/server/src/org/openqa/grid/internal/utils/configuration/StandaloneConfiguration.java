@@ -85,9 +85,30 @@ public class StandaloneConfiguration {
 
   @Parameter(
     names = {"-avoidProxy"},
-    description = "DO NOT USE. Hack to allow selenium 3.0 server run in SauceLabs"
+    description = "DO NOT USE. Hack to allow selenium 3.0 server run in SauceLabs",
+    hidden = true
   )
   private Boolean avoidProxy;
+
+  /**
+   * Initialize from another configuration's values when they are set.
+   * @param other
+   */
+  protected void initFrom(StandaloneConfiguration other) {
+    merge(other);
+    help = other.help;
+    debug = other.debug;
+    logLongForm = other.logLongForm;
+    if (other.port != null) {
+      port = other.port;
+    }
+    if (other.role != null) {
+      role = other.role;
+    }
+    if (other.log != null) {
+      log = other.log;
+    }
+  }
 
   /**
    * copy another configuration's values into this one if they are set.

@@ -7,7 +7,6 @@
   "capabilityMatcher": "org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
   "throwOnCapabilityNotPresent": true,
   "nodePolling": 5000,
-
   "cleanUpCycle": 5000,
   "browserTimeout": 0,
   "jettyMaxThreads":-1

@@ -26,9 +26,11 @@ import com.google.gson.stream.JsonWriter;
 
 import com.beust.jcommander.Parameter;
 
+import org.openqa.grid.common.JSONConfigurationUtils;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.utils.configuration.converters.BrowserDesiredCapabilityConverter;
 import org.openqa.grid.internal.utils.configuration.converters.NoOpParameterSplitter;
+import org.openqa.grid.internal.utils.configuration.validators.FileExistsValueValidator;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -86,7 +88,8 @@ public class GridNodeConfiguration extends GridConfiguration {
 
   @Parameter(
     names = "-nodeConfig",
-    description = "<String> filename : JSON configuration file for the node. Overrides default values"
+    description = "<String> filename : JSON configuration file for the node. Overrides default values",
+    validateValueWith = FileExistsValueValidator.class
   )
   public String nodeConfigFile;
 
@@ -125,6 +128,46 @@ public class GridNodeConfiguration extends GridConfiguration {
     description = "<Integer> in ms : if the node remains down for more than [unregisterIfStillDownAfter] ms, it will step attempting to re-register from the hub. Default is 6000 (1 minute)"
   )
   public Integer unregisterIfStillDownAfter;
+
+  /**
+   * Init with built-in defaults
+   */
+  public GridNodeConfiguration() {
+    // declared default values only.
+  }
+
+  /**
+   * Init with supplied default configuration
+   * @param defaults {@link GridNodeConfiguration} to init from
+   */
+  public GridNodeConfiguration(GridNodeConfiguration defaults) {
+    this();
+    if (defaults != null) {
+      initFrom(defaults);
+    }
+  }
+
+  /**
+   * Init with the supplied default configuration
+   * @param defaults {@link JsonObject} to init from
+   */
+  public GridNodeConfiguration(JsonObject defaults) {
+    this();
+    if (defaults != null) {
+      initFrom(loadFromJSON(defaults));
+    }
+  }
+
+  /**
+   * Init with the supplied default configuration
+   * @param nodeConfig node config (grid2 formatted) JSON file to init from
+   */
+  public GridNodeConfiguration(String nodeConfig) {
+    this();
+    if (nodeConfig != null && !nodeConfig.isEmpty() && !nodeConfig.trim().isEmpty()) {
+      initFrom(loadFromJSON(JSONConfigurationUtils.loadJSON(nodeConfig)));
+    }
+  }
 
   public String getHubHost() {
     if (hubHost == null) {
@@ -167,6 +210,15 @@ public class GridNodeConfiguration extends GridConfiguration {
     } catch (MalformedURLException mURLe) {
       throw new RuntimeException("-hub must be a valid url: " + hub, mURLe);
     }
+  }
+
+  /**
+   * Initialize from another configuration's values when they are set.
+   * @param other
+   */
+  protected void initFrom(GridNodeConfiguration other) {
+    super.initFrom(other);
+    merge(other);
   }
 
   public void merge(GridNodeConfiguration other) {
