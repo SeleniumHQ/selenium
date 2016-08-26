@@ -31,6 +31,7 @@ import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
+import org.openqa.grid.internal.utils.configuration.validators.FileExistsValueValidator;
 
 import java.io.IOException;
 
@@ -38,7 +39,8 @@ public class GridHubConfiguration extends GridConfiguration {
 
   @Parameter(
     names = "-hubConfig",
-    description =  "<String> filename: a JSON file (following grid2 format), which defines the hub properties"
+    description =  "<String> filename: a JSON file (following grid2 format), which defines the hub properties",
+    validateValueWith = FileExistsValueValidator.class
   )
   public String hubConfig;
 
@@ -74,12 +76,22 @@ public class GridHubConfiguration extends GridConfiguration {
   )
   public Boolean throwOnCapabilityNotPresent = true;
 
-  private static final GridHubConfiguration DEFAULT_CONFIG = loadFromJSON(JSONConfigurationUtils.loadJSON("defaults/DefaultHub.json"));
+  private static final GridHubConfiguration DEFAULT_CONFIG = loadFromJSON("defaults/DefaultHub.json");
 
+  /**
+   * Init with built-in defaults
+   */
   public GridHubConfiguration() {
     if (DEFAULT_CONFIG != null) {
       merge(DEFAULT_CONFIG);
     }
+  }
+
+  /**
+   * @param filePath hub config json file to load configuration from
+   */
+  public static GridHubConfiguration loadFromJSON(String filePath) {
+    return loadFromJSON(JSONConfigurationUtils.loadJSON(filePath));
   }
 
   /**
@@ -120,7 +132,6 @@ public class GridHubConfiguration extends GridConfiguration {
       }
     }
   }
-
 
   public void merge(GridNodeConfiguration other) {
     super.merge(other);

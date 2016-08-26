@@ -85,7 +85,8 @@ public class StandaloneConfiguration {
 
   @Parameter(
     names = {"-avoidProxy"},
-    description = "DO NOT USE. Hack to allow selenium 3.0 server run in SauceLabs"
+    description = "DO NOT USE. Hack to allow selenium 3.0 server run in SauceLabs",
+    hidden = true
   )
   private Boolean avoidProxy;
 

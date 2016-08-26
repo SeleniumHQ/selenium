@@ -26,9 +26,11 @@ import com.google.gson.stream.JsonWriter;
 
 import com.beust.jcommander.Parameter;
 
+import org.openqa.grid.common.JSONConfigurationUtils;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.utils.configuration.converters.BrowserDesiredCapabilityConverter;
 import org.openqa.grid.internal.utils.configuration.converters.NoOpParameterSplitter;
+import org.openqa.grid.internal.utils.configuration.validators.FileExistsValueValidator;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -86,7 +88,8 @@ public class GridNodeConfiguration extends GridConfiguration {
 
   @Parameter(
     names = "-nodeConfig",
-    description = "<String> filename : JSON configuration file for the node. Overrides default values"
+    description = "<String> filename : JSON configuration file for the node. Overrides default values",
+    validateValueWith = FileExistsValueValidator.class
   )
   public String nodeConfigFile;
 
@@ -231,6 +234,13 @@ public class GridNodeConfiguration extends GridConfiguration {
     sb.append(toString(format, "remoteHost", remoteHost));
     sb.append(toString(format, "unregisterIfStillDownAfter", unregisterIfStillDownAfter));
     return sb.toString();
+  }
+
+  /**
+   * @param filePath node config json file to load configuration from
+   */
+  public static GridNodeConfiguration loadFromJSON(String filePath) {
+    return loadFromJSON(JSONConfigurationUtils.loadJSON(filePath));
   }
 
   /**
