@@ -31,6 +31,7 @@ import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
+import org.openqa.grid.internal.utils.configuration.validators.FileExistsValueValidator;
 
 import java.io.IOException;
 
@@ -38,7 +39,8 @@ public class GridHubConfiguration extends GridConfiguration {
 
   @Parameter(
     names = "-hubConfig",
-    description =  "<String> filename: a JSON file (following grid2 format), which defines the hub properties"
+    description =  "<String> filename: a JSON file (following grid2 format), which defines the hub properties",
+    validateValueWith = FileExistsValueValidator.class
   )
   public String hubConfig;
 
@@ -76,9 +78,45 @@ public class GridHubConfiguration extends GridConfiguration {
 
   private static final GridHubConfiguration DEFAULT_CONFIG = loadFromJSON(JSONConfigurationUtils.loadJSON("defaults/DefaultHub.json"));
 
+  /**
+   * Init with built-in defaults
+   */
   public GridHubConfiguration() {
     if (DEFAULT_CONFIG != null) {
-      merge(DEFAULT_CONFIG);
+      initFrom(DEFAULT_CONFIG);
+    }
+  }
+
+  /**
+   * Init with supplied default configuration.
+   * @param defaults {@link GridHubConfiguration} to init from
+   */
+  public GridHubConfiguration(GridHubConfiguration defaults) {
+    this();
+    if (defaults != null) {
+      initFrom(defaults);
+    }
+  }
+
+  /**
+   * Init with the supplied default configuration.
+   * @param defaults {@link JsonObject} to init from
+   */
+  public GridHubConfiguration(JsonObject defaults) {
+    this();
+    if (defaults != null) {
+      initFrom(loadFromJSON(defaults));
+    }
+  }
+
+  /**
+   * Init with the supplied default configuration.
+   * @param hubConfig hub config (grid2 formatted) JSON file to init from
+   */
+  public GridHubConfiguration(String hubConfig) {
+    this();
+    if (hubConfig != null && !hubConfig.isEmpty() && !hubConfig.trim().isEmpty()) {
+      initFrom(loadFromJSON(JSONConfigurationUtils.loadJSON(hubConfig)));
     }
   }
 
@@ -121,6 +159,22 @@ public class GridHubConfiguration extends GridConfiguration {
     }
   }
 
+  /**
+   * Initialize from another configuration's values when they are set.
+   * @param other
+   */
+  protected void initFrom(GridHubConfiguration other) {
+    super.initFrom(other);
+    merge(other);
+  }
+
+  /**
+   * Initialize from another configuration's values when they are set.
+   * @param other
+   */
+  protected void initFrom(GridNodeConfiguration other) {
+    super.initFrom(other);
+  }
 
   public void merge(GridNodeConfiguration other) {
     super.merge(other);
