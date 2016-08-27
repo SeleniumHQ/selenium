@@ -83,7 +83,7 @@ ruby_test(name = "edge",
   deps = [ ":edge"  ]
 )
 
-ruby_library(name = "firefox",
+ruby_library(name = "ff-legacy",
   srcs = [
     "lib/selenium/webdriver/firefox/**/*.rb",
     "lib/selenium/webdriver/firefox.rb"
@@ -93,6 +93,23 @@ ruby_library(name = "firefox",
     { "//javascript/firefox-driver:webdriver_prefs" : "rb/lib/selenium/webdriver/firefox/extension/prefs.json" },
     { "//cpp:noblur"    : "rb/lib/selenium/webdriver/firefox/native/linux/x86/x_ignore_nofocus.so" },
     { "//cpp:noblur64"  : "rb/lib/selenium/webdriver/firefox/native/linux/amd64/x_ignore_nofocus.so" }
+  ],
+  deps = [":common"]
+)
+
+ruby_test(name = "ff-legacy",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/firefox/**/*_spec.rb"
+  ],
+  include = ["rb/spec/integration", "build/rb/lib"],
+  deps = [":ff-legacy"]
+)
+
+ruby_library(name = "firefox",
+  srcs = [
+    "lib/selenium/webdriver/firefox/**/*.rb",
+    "lib/selenium/webdriver/firefox.rb"
   ],
   deps = [":common"]
 )
