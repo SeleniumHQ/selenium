@@ -42,6 +42,15 @@ ruby_library(name = "common",
   ]
 )
 
+ruby_library(name = "w3c",
+  srcs = [
+    "lib/selenium/webdriver/atoms.rb",
+  ],
+  resources = [
+    { "//javascript/webdriver/atoms:getAttribute": "rb/lib/selenium/webdriver/atoms/getAttribute.js"}
+  ]
+)
+
 ruby_library(name = "support",
   srcs = [
     "lib/selenium/webdriver/support/**/*.rb",
@@ -80,7 +89,7 @@ ruby_test(name = "edge",
     "spec/integration/selenium/webdriver/edge/**/*_spec.rb"
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [ ":edge"  ]
+  deps = [ ":edge", ":w3c" ]
 )
 
 ruby_library(name = "ff-legacy",
@@ -95,6 +104,23 @@ ruby_library(name = "ff-legacy",
     { "//cpp:noblur64"  : "rb/lib/selenium/webdriver/firefox/native/linux/amd64/x_ignore_nofocus.so" }
   ],
   deps = [":common"]
+)
+
+ruby_test(name = "ff-legacy",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/firefox/**/*_spec.rb"
+  ],
+  include = ["rb/spec/integration", "build/rb/lib"],
+  deps = [":ff-legacy"]
+)
+
+ruby_library(name = "firefox",
+  srcs = [
+    "lib/selenium/webdriver/firefox/**/*.rb",
+    "lib/selenium/webdriver/firefox.rb"
+  ],
+  deps = [":common", ":w3c"]
 )
 
 ruby_test(name = "ff-legacy",

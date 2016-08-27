@@ -537,7 +537,7 @@ module Selenium
         end
 
         def element_attribute(element, name)
-          execute :getElementAttribute, id: element, name: name
+          execute :getElementAttribute, id: element.ref, name: name
         end
 
         def element_value(element)
