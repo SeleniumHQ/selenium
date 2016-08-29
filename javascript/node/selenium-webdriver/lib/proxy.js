@@ -77,6 +77,34 @@ exports.manual = function(options) {
 
 
 /**
+ * Creates a proxy configuration for a socks proxy.
+ *
+ * __Example:__
+ *
+ *     const {Capabilities} = require('selenium-webdriver');
+ *     const proxy = require('selenium-webdriver/lib/proxy');
+ *
+ *     let capabilities = new Capabilities();
+ *     capabilities.setProxy(proxy.socks('localhost:1234', 'bob', 'password'));
+ *
+ *
+ * @param {string} host The proxy host, in the form `hostname:port`.
+ * @param {string} username The user name to authenticate as.
+ * @param {string} password The password to authenticate with.
+ * @return {!ProxyConfig} A new proxy configuration object.
+ * @see https://en.wikipedia.org/wiki/SOCKS
+ */
+exports.socks = function(host, username, password) {
+  return /** @type {!ProxyConfig} */({
+    proxyType: 'manual',
+    socksProxy: host,
+    socksUsername: username,
+    socksPassword: password
+  });
+};
+
+
+/**
  * Configures WebDriver to configure the browser proxy using the PAC file at
  * the given URL.
  * @param {string} url URL for the PAC proxy to use.

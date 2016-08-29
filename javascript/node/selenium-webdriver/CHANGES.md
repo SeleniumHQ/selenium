@@ -7,6 +7,7 @@
 * Added support for Safari 10 safaridriver. safaridriver may be disabled
   via tha API, `safari.Options#useLegacyDriver`, to use the safari
   extension driver.
+* Updated the `lib/proxy` module to support configuring a SOCKS proxy.
 
 ### API Changes
 
