@@ -21,53 +21,46 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
+
+import com.beust.jcommander.JCommander;
 
 import org.junit.Test;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.BrowserType;
-import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.net.URL;
 
 public class RegistrationRequestTest {
 
   @Test
-  public void getConfigAsTests() {
+  public void getConfigAsTests() throws Exception {
     RegistrationRequest req = new RegistrationRequest();
-    String url = "http://a.c:2";
+    URL url = new URL("http://a.c:2");
 
-    Map<String, Object> config = new HashMap<>();
-    config.put(CLEAN_UP_CYCLE, 1);
-    config.put(REMOTE_HOST, url);
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    config.cleanUpCycle = 1;
+    config.host = url.getHost();
+    config.port = url.getPort();
 
     req.setConfiguration(config);
 
-    int c = req.getConfigAsInt(CLEAN_UP_CYCLE, -1);
+    int c = req.getConfiguration().cleanUpCycle;
     assertTrue(c == 1);
 
-    int e = req.getConfigAsInt("doesn't exist", 20);
-    assertTrue(e == 20);
-
-    String url2 = req.getConfigAsString(REMOTE_HOST);
-    assertEquals(url2, url);
+    String url2 = req.getConfiguration().getRemoteHost();
+    assertEquals(url2, url.toString());
   }
 
   @Test
   public void json() {
     RegistrationRequest req = new RegistrationRequest();
-    req.setId("id");
     req.setName("Franзois");
     req.setDescription("a\nb\nc");
 
-    String name = "%super !";
-    String value = "%з // \\";
-
-    Map<String, Object> config = new HashMap<>();
-    config.put(name, value);
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    config.role = "node";
 
     req.setConfiguration(config);
 
@@ -80,96 +73,72 @@ public class RegistrationRequestTest {
 
     RegistrationRequest req2 = RegistrationRequest.getNewInstance(json);
 
-    assertEquals(req2.getId(), req.getId());
     assertEquals(req2.getName(), req.getName());
     assertEquals(req2.getDescription(), req.getDescription());
 
-    assertEquals(req2.getConfigAsString(name), req.getConfigAsString(name));
+    assertEquals(req2.getConfiguration().role, req.getConfiguration().role);
     assertEquals(req2.getCapabilities().size(), req.getCapabilities().size());
-
-  }
-
-  @Test
-  public void seleniumGrid1Request() {
-    RegistrationRequest request =
-        RegistrationRequest
-            .getNewInstance("host=localhost&port=5000&environment=Firefox%3A+4%3B+MacOS+X%3A+10.6.7");
-
-    assertEquals(null, request.getId());
-    assertEquals(null, request.getName());
-    assertEquals(null, request.getDescription());
-
-    // Verify the capabilities were set up properly.
-    assertEquals(1, request.getCapabilities().size());
-    DesiredCapabilities caps = request.getCapabilities().get(0);
-
-//    Assert.assertEquals(Platform.LINUX.toString(), caps.get(CapabilityType.PLATFORM));
-    assertEquals("Firefox: 4; MacOS X: 10.6.7",
-                 caps.getCapability(CapabilityType.BROWSER_NAME));
-
-    // Verify the configuration was set up properly.
-   assertEquals("http://localhost:5000", request.getConfiguration()
-       .get(RegistrationRequest.REMOTE_HOST));
-    assertEquals(SeleniumProtocol.Selenium.toString(), request.getConfiguration()
-        .get(RegistrationRequest.SELENIUM_PROTOCOL));
 
   }
 
 
   @Test
   public void basicCommandLineParam() {
-    String hubHost = "-" + RegistrationRequest.HUB_HOST;
-    String hubPort = "-" + RegistrationRequest.HUB_PORT;
-    RegistrationRequest req =
-        RegistrationRequest.build("-role", "rc", hubHost, "ABC", hubPort, "1234","-host","localhost");
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-hubPort", "1234","-host","localhost");
+    RegistrationRequest req = RegistrationRequest.build(config);
 
     assertEquals(GridRole.NODE, req.getRole());
-    assertEquals("ABC", req.getConfiguration().get(RegistrationRequest.HUB_HOST));
-    assertEquals(1234, req.getConfiguration().get(RegistrationRequest.HUB_PORT));
+    assertEquals("ABC", req.getConfiguration().getHubHost());
+    assertEquals(1234, req.getConfiguration().getHubPort().longValue());
 
   }
 
   @Test
   public void commandLineParamDefault() {
-    RegistrationRequest req = RegistrationRequest.build("-role", "rc");
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    new JCommander(config, "-role", "wd");
+    RegistrationRequest req = RegistrationRequest.build(config);
     // the hub defaults to current IP.
-    assertNotNull(req.getConfiguration().get(RegistrationRequest.HUB_HOST));
-    assertEquals(4444, req.getConfiguration().get(RegistrationRequest.HUB_PORT));
+    assertNotNull(req.getConfiguration().getHubHost());
+    assertEquals(4444, req.getConfiguration().getHubPort().longValue());
     // the node defaults to current IP.
-    assertNotNull(req.getConfiguration().get(RegistrationRequest.HOST));
-    assertEquals(5555, req.getConfiguration().get(RegistrationRequest.PORT));
+    assertNotNull(req.getConfiguration().host);
+    assertEquals(5555, req.getConfiguration().port.longValue());
   }
 
   @Test
   public void commandLineParamDefaultCapabilities() {
-    String hubHost = "-" + RegistrationRequest.HUB_HOST;
-    RegistrationRequest req = RegistrationRequest.build("-role", "rc", hubHost, "ABC","-host","localhost");
-    assertEquals("ABC", req.getConfiguration().get(RegistrationRequest.HUB_HOST));
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-host","localhost");
+    RegistrationRequest req = RegistrationRequest.build(config);
+    assertEquals("ABC", req.getConfiguration().getHubHost());
     assertNotSame(0, req.getCapabilities().size());
-
   }
 
   @Test
   public void registerParam() {
-    String hubHost = "-" + RegistrationRequest.HUB_HOST;
-    RegistrationRequest req = RegistrationRequest.build("-role", "rc", hubHost, "ABC","-host","localhost");
-    assertEquals(true, req.getConfiguration().get(RegistrationRequest.AUTO_REGISTER));
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-host","localhost");
+    RegistrationRequest req = RegistrationRequest.build(config);
+    assertEquals(true, req.getConfiguration().register);
 
-    RegistrationRequest req2 =
-        RegistrationRequest.build("-role", "rc", hubHost, "ABC", "-" +
-            RegistrationRequest.AUTO_REGISTER, "false","-host","localhost");
-    assertEquals(false, req2.getConfiguration().get(RegistrationRequest.AUTO_REGISTER));
+
+    config = new GridNodeConfiguration();
+    // TODO allow one to set a boolean command line arg to false explicitly
+    new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-hubPort", "1234","-host","localhost"/*,"-register","false"*/);
+    config.register = false;
+    RegistrationRequest req2 = RegistrationRequest.build(config);
+    assertEquals(false, req2.getConfiguration().register);
 
   }
 
   @Test
   public void ensurePre2_9HubCompatibility() {
-    RegistrationRequest req = RegistrationRequest.build("-role", "rc", "-host", "example.com", "-port", "5555");
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    new JCommander(config, "-role", "wd", "-host","example.com", "-port", "5555");
+    RegistrationRequest req = RegistrationRequest.build(config);
 
-    // This is the configuration value for >= v2.9 hubs.
-    assertEquals("http://example.com:5555", req.getConfigAsString(RegistrationRequest.REMOTE_HOST));
-
-    // This is the configuration value for < v2.9 hubs.
-    assertEquals("http://example.com:5555", req.getConfigAsString("url"));
+    assertEquals("http://example.com:5555", req.getConfiguration().getRemoteHost());
   }
 }

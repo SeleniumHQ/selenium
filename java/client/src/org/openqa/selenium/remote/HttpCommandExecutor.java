@@ -24,6 +24,8 @@ import static org.openqa.selenium.remote.DriverCommand.QUIT;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.logging.LocalLogs;
@@ -34,8 +36,6 @@ import org.openqa.selenium.logging.profiler.HttpProfilerLogEntry;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.http.JsonHttpCommandCodec;
-import org.openqa.selenium.remote.http.JsonHttpResponseCodec;
 import org.openqa.selenium.remote.internal.ApacheHttpClient;
 
 import java.io.IOException;
@@ -49,8 +49,9 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
   private final URL remoteServer;
   private final HttpClient client;
-  private final JsonHttpCommandCodec commandCodec;
-  private final JsonHttpResponseCodec responseCodec;
+  private final Map<String, CommandInfo> additionalCommands;
+  private CommandCodec<HttpRequest> commandCodec;
+  private ResponseCodec<HttpResponse> responseCodec;
 
   private LocalLogs logs = LocalLogs.getNullLogger();
 
@@ -82,13 +83,8 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       throw new WebDriverException(e);
     }
 
-    commandCodec = new JsonHttpCommandCodec();
-    responseCodec = new JsonHttpResponseCodec();
-    client = httpClientFactory.createClient(remoteServer);
-
-    for (Map.Entry<String, CommandInfo> entry : additionalCommands.entrySet()) {
-      defineCommand(entry.getKey(), entry.getValue());
-    }
+    this.additionalCommands = additionalCommands;
+    this.client = httpClientFactory.createClient(remoteServer);
   }
 
   private static synchronized HttpClient.Factory getDefaultClientFactory() {
@@ -131,9 +127,31 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       }
       if (!GET_ALL_SESSIONS.equals(command.getName())
           && !NEW_SESSION.equals(command.getName())) {
-        throw new SessionNotFoundException(
+        throw new NoSuchSessionException(
             "Session ID is null. Using WebDriver after calling quit()?");
       }
+    }
+
+    if (NEW_SESSION.equals(command.getName())) {
+      if (commandCodec != null) {
+        throw new SessionNotCreatedException("Session already exists");
+      }
+      ProtocolHandshake handshake = new ProtocolHandshake();
+      log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), true));
+      ProtocolHandshake.Result result = handshake.createSession(client, command);
+      Dialect dialect = result.getDialect();
+      commandCodec = dialect.getCommandCodec();
+      for (Map.Entry<String, CommandInfo> entry : additionalCommands.entrySet()) {
+        defineCommand(entry.getKey(), entry.getValue());
+      }
+      responseCodec = dialect.getResponseCodec();
+      log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), false));
+      return result.createResponse();
+    }
+
+    if (commandCodec == null || responseCodec == null) {
+      throw new WebDriverException(
+        "No command or response codec has been defined. Unable to proceed");
     }
 
     HttpRequest httpRequest = commandCodec.encode(command);

@@ -20,10 +20,12 @@ package org.openqa.selenium.safari;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 import java.io.IOException;
 
@@ -34,6 +36,20 @@ import java.io.IOException;
  * This driver can be configured using the {@link SafariOptions} class.
  */
 public class SafariDriver extends RemoteWebDriver {
+
+  /**
+   * Capability to force usage of the deprecated SafariDriver extension while running
+   * on macOS Sierra.
+   *
+   * <pre>
+   *   DesiredCapabilities safariCap = DesiredCapabilities.Safari();
+   *   safariCap.setCapability(SafariDriver.USE_LEGACY_DRIVER_CAPABILITY, true);
+   *   WebDriver driver = new SafariDriver(safariCap);
+   * </pre>
+   */
+  public static final String USE_LEGACY_DRIVER_CAPABILITY = "useLegacyDriver";
+
+  private SafariDriverService service;
 
   /**
    * Initializes a new SafariDriver} class with default {@link SafariOptions}.
@@ -59,7 +75,16 @@ public class SafariDriver extends RemoteWebDriver {
    * @param safariOptions safari specific options / capabilities for the driver
    */
   public SafariDriver(SafariOptions safariOptions) {
-    super(new SafariDriverCommandExecutor(safariOptions), safariOptions.toCapabilities());
+    super(getExecutor(safariOptions), safariOptions.toCapabilities());
+  }
+
+  private static CommandExecutor getExecutor(SafariOptions options) {
+    Object useLegacy = options.toCapabilities().getCapability(USE_LEGACY_DRIVER_CAPABILITY);
+    SafariDriverService service = SafariDriverService.createDefaultService(options);
+    if ((useLegacy == null || !(Boolean)useLegacy) && service != null) {
+      return new DriverCommandExecutor(service);
+    }
+    return new SafariDriverCommandExecutor(options);
   }
 
   @Override
@@ -71,18 +96,26 @@ public class SafariDriver extends RemoteWebDriver {
 
   @Override
   protected void startClient() {
-    SafariDriverCommandExecutor executor = (SafariDriverCommandExecutor) this.getCommandExecutor();
-    try {
-      executor.start();
-    } catch (IOException e) {
-      throw new WebDriverException(e);
+    CommandExecutor commandExecutor = this.getCommandExecutor();
+    if (commandExecutor instanceof SafariDriverCommandExecutor) {
+      try {
+        ((SafariDriverCommandExecutor)commandExecutor).start();
+      } catch (IOException e) {
+        throw new WebDriverException(e);
+      }
+    } else {
+      super.startClient();
     }
   }
 
   @Override
   protected void stopClient() {
-    SafariDriverCommandExecutor executor = (SafariDriverCommandExecutor) this.getCommandExecutor();
-    executor.stop();
+    CommandExecutor commandExecutor = this.getCommandExecutor();
+    if (commandExecutor instanceof SafariDriverCommandExecutor) {
+      ((SafariDriverCommandExecutor)commandExecutor).stop();
+    } else {
+      super.stopClient();
+    }
   }
 
   @Override

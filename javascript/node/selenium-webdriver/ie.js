@@ -30,7 +30,7 @@
 const fs = require('fs'),
     util = require('util');
 
-const executors = require('./executors'),
+const http = require('./http'),
     io = require('./io'),
     capabilities = require('./lib/capabilities'),
     promise = require('./lib/promise'),
@@ -414,7 +414,8 @@ class Driver extends webdriver.WebDriver {
         (opt_config || capabilities.Capabilities.ie());
 
     var service = createServiceFromCapabilities(caps);
-    var executor = executors.createExecutor(service.start());
+    var client = service.start().then(url => new http.HttpClient(url));
+    var executor = new http.Executor(client);
     var driver = webdriver.WebDriver.createSession(executor, caps, opt_flow);
 
     super(driver.getSession(), executor, driver.controlFlow());
@@ -423,7 +424,7 @@ class Driver extends webdriver.WebDriver {
 
     /** @override */
     this.quit = function() {
-      return boundQuit().thenFinally(service.kill.bind(service));
+      return boundQuit().finally(service.kill.bind(service));
     };
   }
 

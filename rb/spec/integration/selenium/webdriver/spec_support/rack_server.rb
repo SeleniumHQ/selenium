@@ -24,7 +24,6 @@ module Selenium
   module WebDriver
     module SpecSupport
       class RackServer
-
         START_TIMEOUT = 30
 
         def initialize(path, port = nil)
@@ -44,13 +43,12 @@ module Selenium
             start_forked
           end
 
-          unless SocketPoller.new(@host, @port, START_TIMEOUT).connected?
-            raise "rack server not launched in #{START_TIMEOUT} seconds"
-          end
+          return if SocketPoller.new(@host, @port, START_TIMEOUT).connected?
+          raise "rack server not launched in #{START_TIMEOUT} seconds"
         end
 
         def run
-          handler.run @app, :Host => @host, :Port => @port
+          handler.run @app, Host: @host, Port: @port
         end
 
         def where_is(file)
@@ -72,14 +70,14 @@ module Selenium
 
         def handler
           # can't use Platform here since it's being run as a file on Windows + IE.
-          if RUBY_PLATFORM =~ /mswin|msys|mingw32/
-            handlers = %w[mongrel webrick]
-          else
-            handlers = %w[thin mongrel webrick]
-          end
+          handlers = if RUBY_PLATFORM =~ /mswin|msys|mingw32/
+                       %w[mongrel webrick]
+                     else
+                       %w[thin mongrel webrick]
+                     end
 
           handler = handlers.find { |h| load_handler h }
-          constant = handler == 'webrick' ? "WEBrick" : handler.capitalize
+          constant = handler == 'webrick' ? 'WEBrick' : handler.capitalize
           Rack::Handler.const_get constant
         end
 
@@ -105,7 +103,7 @@ module Selenium
             # For IE, the combination of Windows + FFI + MRI seems to cause a
             # deadlock with the get() call and the server thread.
             # Workaround by running this file in a subprocess.
-            @process = ChildProcess.build("ruby", "-r", "rubygems", __FILE__, @path, @port.to_s).start
+            @process = ChildProcess.build('ruby', '-r', 'rubygems', __FILE__, @path, @port.to_s).start
           else
             start_threaded
           end
@@ -120,20 +118,20 @@ module Selenium
 
           def call(env)
             case env['PATH_INFO']
-            when "/common/upload"
+            when '/common/upload'
               req = Rack::Request.new(env)
               body = req['upload'][:tempfile].read
 
-              [200, {"Content-Type" => "text/html"}, [body]]
-            when "/basicAuth"
+              [200, {'Content-Type' => 'text/html'}, [body]]
+            when '/basicAuth'
               if authorized?(env)
                 status = 200
-                header = {"Content-Type" => "text/html"}
-                body = "<h1>authorized</h1>"
+                header = {'Content-Type' => 'text/html'}
+                body = '<h1>authorized</h1>'
               else
                 status = 401
-                header = {"WWW-Authenticate" => 'Basic realm="basic-auth-test"'}
-                body = "Login please"
+                header = {'WWW-Authenticate' => 'Basic realm="basic-auth-test"'}
+                body = 'Login please'
               end
 
               [status, header, [body]]
@@ -149,12 +147,11 @@ module Selenium
             auth.provided? && auth.basic? && auth.credentials && auth.credentials == BASIC_AUTH_CREDENTIALS
           end
         end
-
       end # RackServer
     end # SpecSupport
   end # WebDriver
 end # Selenium
 
-if __FILE__ == $0
+if __FILE__ == $PROGRAM_NAME
   Selenium::WebDriver::SpecSupport::RackServer.new(ARGV[0], ARGV[1]).run
 end

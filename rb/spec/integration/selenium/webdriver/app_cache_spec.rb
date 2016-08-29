@@ -19,47 +19,49 @@
 
 require_relative 'spec_helper'
 
-module Selenium::WebDriver::DriverExtensions
+module Selenium
+  module WebDriver
+    module DriverExtensions
+      compliant_on browser: nil do
+        describe 'HasApplicationCache' do
+          it 'gets the app cache status' do
+            expect(driver.application_cache.status).to eq(:uncached)
 
-  compliant_on :browser => nil do
-    describe "HasApplicationCache" do
+            driver.online = false
+            driver.navigate.to url_for('html5Page.html')
 
-      it "gets the app cache status" do
-        expect(driver.application_cache.status).to eq(:uncached)
+            expect(browser.application_cache.status).to eq(:idle)
+          end
 
-        driver.online = false
-        driver.navigate.to url_for("html5Page.html")
+          it 'loads from cache when offline' do
+            driver.get url_for('html5Page.html')
+            driver.get url_for('formPage.html')
 
-        expect(browser.application_cache.status).to eq(:idle)
-      end
+            driver.online = false
 
-      it "loads from cache when offline" do
-        driver.get url_for("html5Page.html")
-        driver.get url_for("formPage.html")
+            driver.get url_for('html5Page.html')
+            expect(driver.title).to eq('HTML5')
+          end
 
-        driver.online = false
+          it 'gets the app cache entries' do
+            # dependant on spec above?!
 
-        driver.get url_for("html5Page.html")
-        expect(driver.title).to eq("HTML5")
-      end
+            driver.get url_for('html5Page')
 
-      it "gets the app cache entries" do
-        # dependant on spec above?!
+            entries = driver.application_cache.to_a
+            expect(entries.size).to be > 2
 
-        driver.get url_for("html5Page")
-
-        entries = driver.application_cache.to_a
-        expect(entries.size).to be > 2
-
-        entries.each do |e|
-          case e.url
-          when /red\.jpg/
-            expect(e.type.value).to eq(:master)
-          when /yellow\.jpg/
-            expect(e.type.value).to eq(:explicit)
+            entries.each do |e|
+              case e.url
+              when /red\.jpg/
+                expect(e.type.value).to eq(:master)
+              when /yellow\.jpg/
+                expect(e.type.value).to eq(:explicit)
+              end
+            end
           end
         end
       end
-    end
-  end
-end
+    end # DriverExtensions
+  end # WebDriver
+end # Selenium

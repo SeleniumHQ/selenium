@@ -1,4 +1,6 @@
-java_library(name = 'webdriver-api',
+include_defs('//SELENIUM_VERSION')
+
+java_library(name = 'selenium',
   exported_deps = [
     ':beta',
     ':core',
@@ -6,23 +8,19 @@ java_library(name = 'webdriver-api',
     ':platform',
     ':primitives',
     '//java/client/src/org/openqa/selenium/interactions:interactions',
-    '//java/client/src/org/openqa/selenium/interactions:exceptions',
+    '//java/client/src/org/openqa/selenium/io:io',
     '//java/client/src/org/openqa/selenium/logging:api',
+    '//java/client/src/org/openqa/selenium/logging:logging',
+    '//java/client/src/org/openqa/selenium/net:net',
+    '//java/client/src/org/openqa/selenium/os:os',
     '//java/client/src/org/openqa/selenium/security:security',
   ],
   visibility = ['PUBLIC'],
 )
 
-java_library(
-  name = 'codecs',
-  srcs = [
-    'internal/Base64Encoder.java',
-  ],
-  visibility = ['PUBLIC'],
-)
-
 java_library(name = 'core',
-  maven_coords = "org.seleniumhq.selenium:selenium-api:2.49.0",
+  maven_coords = 'org.seleniumhq.selenium:selenium-api:' + SE_VERSION,
+  maven_pom_template = ':template-pom',
   srcs = [
     'Alert.java',
     'By.java',
@@ -31,6 +29,7 @@ java_library(name = 'core',
     'ContextAware.java',
     'HasCapabilities.java',
     'JavascriptExecutor.java',
+    'DeviceRotation.java',
     'Keys.java',
     'OutputType.java',
     'Proxy.java',
@@ -55,7 +54,6 @@ java_library(name = 'core',
   ]),
   deps = [
     ':beta',
-    ':codecs',
     ':exceptions',
     ':platform',
     ':primitives',
@@ -71,7 +69,12 @@ java_library(name = 'core',
 
 java_library(name = 'beta',
   srcs = [ 'Beta.java' ],
-  visibility = [ 'PUBLIC' ],
+  visibility = [
+    '//java/client/src/org/openqa/selenium/logging:api',
+    '//java/client/src/org/openqa/selenium/logging:logging',
+    '//java/client/src/org/openqa/selenium/os:os',
+    '//java/client/src/org/openqa/selenium/security:security',
+  ],
 )
 
 java_library(name = 'exceptions',
@@ -100,6 +103,8 @@ java_library(name = 'exceptions',
   visibility = [
     '//java/client/src/org/openqa/selenium/interactions:exceptions',
     '//java/client/src/org/openqa/selenium/io:io',
+    '//java/client/src/org/openqa/selenium/net:net',
+    '//java/client/src/org/openqa/selenium/os:os',
     '//java/client/test/org/openqa/selenium/testing:helpers',
   ],
 )
@@ -113,7 +118,11 @@ java_library(
   deps = [
     ':exceptions',
   ],
-  visibility = ['PUBLIC'],
+  visibility = [
+    '//java/client/src/org/openqa/selenium/io:io',
+    '//java/client/src/org/openqa/selenium/net:net',
+    '//java/client/src/org/openqa/selenium/os:os',
+  ],
 )
 
 java_library(name = 'primitives',
@@ -127,15 +136,30 @@ java_library(name = 'primitives',
   ],
 )
 
-java_binary(name = 'selenium-java',
-  deps = [
-    ':webdriver-api',
-    '//java/client/src/org/openqa/selenium/ie:ie',
-    '//java/client/src/org/openqa/selenium/chrome:chrome',
-    '//java/client/src/org/openqa/selenium/firefox:firefox',
-    '//java/client/src/org/openqa/selenium/lift:lift',
-    '//java/client/src/org/openqa/selenium/remote:remote',
-    '//java/client/src/org/openqa/selenium/safari:safari',
-    '//java/client/src/org/openqa/selenium/support:support',
+java_library(
+  name = 'client-combined',
+  maven_coords = 'org.seleniumhq.selenium:selenium-java:' + SE_VERSION,
+  maven_pom_template = ':template-pom',
+  exported_deps = [
+    ":selenium",
+    "//java/client/src/org/openqa/selenium/chrome:chrome",
+    "//java/client/src/org/openqa/selenium/firefox:firefox",
+    "//java/client/src/org/openqa/selenium/edge:edge",
+    "//java/client/src/org/openqa/selenium/ie:ie",
+    "//java/client/src/org/openqa/selenium/opera:opera",
+    "//java/client/src/org/openqa/selenium/remote:remote",
+    "//java/client/src/org/openqa/selenium/safari:safari",
+    "//java/client/src/org/openqa/selenium/support:support",
+    "//third_party/java/phantomjs-driver:phantomjs-driver",
   ],
+  visibility = [
+    '//java/server/src/org/openqa/grid/selenium:classes',
+  ],
+)
+
+export_file(
+  name = 'template-pom',
+  src = 'pom.xml',
+  out = 'pom.xml',
+  visibility = ['PUBLIC'],
 )

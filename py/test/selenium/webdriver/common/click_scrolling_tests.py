@@ -3,7 +3,7 @@
 # distributed with this work for additional information
 # regarding copyright ownership.  The SFC licenses this file
 # to you under the Apache License, Version 2.0 (the
-# "License") you may not use this file except in compliance
+# "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
 #
 #   http://www.apache.org/licenses/LICENSE-2.0
@@ -52,7 +52,7 @@ class ClickScrollingTest(unittest.TestCase):
         url = self.webserver.where_is("click_out_of_bounds_overflow.html")
         self.driver.get(url)
 
-        link =self.driver.find_element(By.ID,"link")
+        link = self.driver.find_element(By.ID, "link")
         try:
             link.click()
         except MoveTargetOutOfBoundsException as e:
@@ -61,22 +61,21 @@ class ClickScrollingTest(unittest.TestCase):
     def testShouldBeAbleToClickOnAnElementHiddenByOverflow(self):
         self.driver.get(self.webserver.where_is("scroll.html"))
 
-        link =self.driver.find_element(By.ID,"line8")
+        link = self.driver.find_element(By.ID, "line8")
         # This used to throw a MoveTargetOutOfBoundsException - we don't expect it to
         link.click()
-        self.assertEquals("line8", self.driver.find_element(By.ID,"clicked").text)
-
+        self.assertEquals("line8", self.driver.find_element(By.ID, "clicked").text)
 
     def testShouldBeAbleToClickOnAnElementHiddenByDoubleOverflow(self):
         self.driver.get(self.webserver.where_is("scrolling_tests/page_with_double_overflow_auto.html"))
 
-        self.driver.find_element(By.ID,"link").click()
+        self.driver.find_element(By.ID, "link").click()
         WebDriverWait(self.driver, 3).until(EC.title_is("Clicked Successfully!"))
 
     def testShouldBeAbleToClickOnAnElementHiddenByYOverflow(self):
         self.driver.get(self.webserver.where_is("scrolling_tests/page_with_y_overflow_auto.html"))
 
-        self.driver.find_element(By.ID,"link").click()
+        self.driver.find_element(By.ID, "link").click()
         WebDriverWait(self.driver, 3).until(EC.title_is("Clicked Successfully!"))
 
     def testShouldNotScrollOverflowElementsWhichAreVisible(self):
@@ -96,13 +95,13 @@ class ClickScrollingTest(unittest.TestCase):
 
     def testShouldBeAbleToClickRadioButtonScrolledIntoView(self):
         self.driver.get(self.webserver.where_is("scroll4.html"))
-        self.driver.find_element(By.ID,"radio").click()
+        self.driver.find_element(By.ID, "radio").click()
         # If we don't throw, we're good
 
     def testShouldScrollOverflowElementsIfClickPointIsOutOfViewButElementIsInView(self):
         self.driver.get(self.webserver.where_is("scroll5.html"))
-        self.driver.find_element(By.ID,"inner").click()
-        self.assertEquals("clicked",self.driver.find_element(By.ID,"clicked").text)
+        self.driver.find_element(By.ID, "inner").click()
+        self.assertEquals("clicked", self.driver.find_element(By.ID, "clicked").text)
 
     def testShouldBeAbleToClickElementInAFrameThatIsOutOfView(self):
         self.driver.get(self.webserver.where_is("scrolling_tests/page_with_frame_out_of_view.html"))
@@ -154,7 +153,7 @@ class ClickScrollingTest(unittest.TestCase):
     def testShouldNotScrollWhenGettingElementSize(self):
         self.driver.get(self.webserver.where_is("scroll3.html"))
         scrollTop = self.getScrollTop()
-        self.driver.find_element(By.ID,"button1").size
+        self.driver.find_element(By.ID, "button1").size
         self.assertEquals(scrollTop, self.getScrollTop())
 
     def getScrollTop(self):

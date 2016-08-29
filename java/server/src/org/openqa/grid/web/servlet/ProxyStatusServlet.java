@@ -110,9 +110,8 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
         res.addProperty("msg",
                         "you need to specify at least an id when call the node  status service.");
         return res;
-      } else {
-        id = requestJSON.get("id").getAsString();
       }
+      id = requestJSON.get("id").getAsString();
     }
 
     // see RegistrationRequest.ensureBackwardCompatibility()
@@ -126,35 +125,33 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
     if (proxy == null) {
       res.addProperty("msg", "Cannot find proxy with ID =" + id + " in the registry.");
       return res;
-    } else {
-      res.addProperty("msg", "proxy found !");
-      res.addProperty("success", true);
-      res.addProperty("id", proxy.getId());
-      res.add("request", proxy.getOriginalRegistrationRequest().getAssociatedJSON());
+    } 
+    res.addProperty("msg", "proxy found !");
+    res.addProperty("success", true);
+    res.addProperty("id", proxy.getId());
+    res.add("request", proxy.getOriginalRegistrationRequest().getAssociatedJSON());
 
-      // maybe the request was for more info
-      if (requestJSON != null) {
-        // use basic (= no objects ) reflexion to get the extra stuff
-        // requested.
-        List<String> methods = getExtraMethodsRequested(requestJSON);
+    // maybe the request was for more info
+    if (requestJSON != null) {
+      // use basic (= no objects ) reflexion to get the extra stuff
+      // requested.
+      List<String> methods = getExtraMethodsRequested(requestJSON);
 
-        List<String> errors = new ArrayList<>();
-        for (String method : methods) {
-          try {
-            Object o = getValueByReflection(proxy, method);
-            res.add(method, new Gson().toJsonTree(o));
-          } catch (Throwable t) {
-            errors.add(t.getMessage());
-          }
-        }
-        if (!errors.isEmpty()) {
-          res.addProperty("success", false);
-          res.addProperty("errors", errors.toString());
+      List<String> errors = new ArrayList<>();
+      for (String method : methods) {
+        try {
+          Object o = getValueByReflection(proxy, method);
+          res.add(method, new Gson().toJsonTree(o));
+        } catch (Throwable t) {
+          errors.add(t.getMessage());
         }
       }
-      return res;
+      if (!errors.isEmpty()) {
+        res.addProperty("success", false);
+        res.addProperty("errors", errors.toString());
+      }
     }
-
+    return res;
   }
 
   private Object getValueByReflection(RemoteProxy proxy, String method) {

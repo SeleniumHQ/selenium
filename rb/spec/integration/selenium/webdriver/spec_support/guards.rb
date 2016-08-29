@@ -21,12 +21,11 @@ module Selenium
   module WebDriver
     module SpecSupport
       module Guards
-
         class << self
           def print_env
             puts "\nRunning Ruby specs:\n\n"
 
-            env = current_env.merge(:ruby => defined?(RUBY_DESCRIPTION) ? RUBY_DESCRIPTION : "ruby-#{RUBY_VERSION}")
+            env = current_env.merge(ruby: defined?(RUBY_DESCRIPTION) ? RUBY_DESCRIPTION : "ruby-#{RUBY_VERSION}")
 
             just = current_env.keys.map { |e| e.to_s.size }.max
             env.each do |key, value|
@@ -54,14 +53,14 @@ module Selenium
               GlobalTestEnv.driver,
               Platform.os,
               GlobalTestEnv.native_events?
-            ].join(".")
+            ].join('.')
 
             gs = guards[key]
 
             print "\n\nSpec guards for this implementation: "
 
             if gs.empty?
-             puts "none."
+              puts 'none.'
             else
               puts
               gs.each do |guard_name, data|
@@ -72,11 +71,11 @@ module Selenium
 
           def current_env
             {
-              :browser        => GlobalTestEnv.browser,
-              :driver         => GlobalTestEnv.driver,
-              :platform       => Platform.os,
-              :native         => GlobalTestEnv.native_events?,
-              :window_manager => !!ENV['DESKTOP_SESSION']
+              browser: GlobalTestEnv.browser,
+              driver: GlobalTestEnv.driver,
+              platform: Platform.os,
+              native: GlobalTestEnv.native_events?,
+              ci: Platform.ci
             }
           end
 
@@ -88,41 +87,40 @@ module Selenium
           #   - guard this spec for Chrome on OSX and Firefox on any OS
 
           def env_matches?(opts)
-            res = opts.any? { |env|
-              env.all? { |key, value|
-                if value.kind_of?(Array)
+            res = opts.any? do |env|
+              env.all? do |key, value|
+                if value.is_a?(Array)
                   value.include? current_env[key]
                 else
                   value == current_env[key]
                 end
-              }
-            }
+              end
+            end
 
             p res => [opts, current_env] if @debug_guard
             res
           end
         end
 
-        def debug_guard(&blk)
+        def debug_guard
           @debug_guard = true
           yield
         ensure
           @debug_guard = false
         end
 
-        def not_compliant_on(*opts, &blk)
-          Guards.record(:not_compliant, opts, :file => caller.first)
+        def not_compliant_on(*opts)
+          Guards.record(:not_compliant, opts, file: caller.first)
           yield if GlobalTestEnv.unguarded? || !Guards.env_matches?(opts)
         end
 
-        def compliant_on(*opts, &blk)
-          Guards.record(:compliant_on, opts, :file => caller.first)
+        def compliant_on(*opts)
+          Guards.record(:compliant_on, opts, file: caller.first)
           yield if GlobalTestEnv.unguarded? || Guards.env_matches?(opts)
         end
 
         alias_method :not_compliant_when, :not_compliant_on
         alias_method :compliant_when,     :compliant_on
-
       end # Guards
     end # SpecSupport
   end # WebDriver

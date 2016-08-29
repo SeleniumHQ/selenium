@@ -19,19 +19,17 @@
 
 module Selenium
   module WebDriver
-
     #
     # @api private
     # @see ActionBuilder
 
     class Keyboard
-
       def initialize(bridge)
         @bridge = bridge
       end
 
       def send_keys(*keys)
-        @bridge.sendKeysToActiveElement Keys.encode(keys)
+        @bridge.send_keys_to_active_element Keys.encode(keys)
       end
 
       #
@@ -43,7 +41,7 @@ module Selenium
       def press(key)
         assert_modifier key
 
-        @bridge.sendKeysToActiveElement Keys.encode([key])
+        @bridge.send_keys_to_active_element Keys.encode([key])
       end
 
       #
@@ -55,20 +53,17 @@ module Selenium
       def release(key)
         assert_modifier key
 
-        @bridge.sendKeysToActiveElement Keys.encode([key])
+        @bridge.send_keys_to_active_element Keys.encode([key])
       end
 
       private
 
-      MODIFIERS = [:control, :shift, :alt, :command, :meta]
+      MODIFIERS = [:control, :shift, :alt, :command, :meta].freeze
 
       def assert_modifier(key)
-        unless MODIFIERS.include? key
-          raise ArgumentError,
-            "#{key.inspect} is not a modifier key, expected one of #{MODIFIERS.inspect}"
-        end
+        return if MODIFIERS.include? key
+        raise ArgumentError, "#{key.inspect} is not a modifier key, expected one of #{MODIFIERS.inspect}"
       end
-
     end # Keyboard
   end # WebDriver
-end  # Selenium
+end # Selenium

@@ -196,9 +196,8 @@ public class WaitingConditions {
         if (currentWindowHandles.size() > originalHandles.size()) {
           currentWindowHandles.removeAll(originalHandles);
           return currentWindowHandles.iterator().next();
-        } else {
-          return null;
         }
+        return null;
       }
     };
 

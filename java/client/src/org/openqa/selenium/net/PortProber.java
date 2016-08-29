@@ -25,6 +25,7 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.net.SocketTimeoutException;
 import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -42,7 +43,7 @@ public class PortProber {
 
     if (current.is(Platform.LINUX)) {
        ephemeralRangeDetector = LinuxEphemeralPortRangeDetector.getInstance();
-     } else if (current.is(Platform.XP)){
+     } else if (current.is(Platform.XP)) {
        ephemeralRangeDetector = new OlderWindowsVersionEphemeralPortDetector();
     } else {
        ephemeralRangeDetector = new FixedIANAPortRange();
@@ -155,5 +156,23 @@ public class PortProber {
     }
 
     return false;
+  }
+
+  public static void waitForPortUp(int port, int timeout, TimeUnit unit) {
+    long end = System.currentTimeMillis() + unit.toMillis(timeout);
+    while (System.currentTimeMillis() < end) {
+      try {
+        Socket socket = new Socket();
+        socket.connect(new InetSocketAddress("localhost", port), 1000);
+        socket.close();
+        return;
+      } catch (ConnectException e) {
+        // Ignore this
+      } catch (SocketTimeoutException e) {
+        // Ignore this
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
   }
 }

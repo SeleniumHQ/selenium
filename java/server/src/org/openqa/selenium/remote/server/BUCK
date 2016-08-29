@@ -5,16 +5,14 @@ java_library(name = 'sessions',
     'Session.java',
   ],
   deps = [
-    '//java/client/src/org/openqa/selenium:webdriver-api',
-    '//java/client/src/org/openqa/selenium/io:io',
-    '//java/client/src/org/openqa/selenium/remote:api',
+    '//java/client/src/org/openqa/selenium:selenium',
+    '//java/client/src/org/openqa/selenium/remote:remote',
     '//third_party/java/commons-logging:commons-logging',
     '//third_party/java/guava:guava',
   ],
   visibility = [
     '//java/server/src/com/thoughtworks/selenium/webdriven:rc-emulation-servlet',
-    '//java/server/src/org/openqa/selenium/server:server',
-    '//java/server/test/com/thoughtworks/selenium/webdriven:webdriven',
+    '//java/server/test/...',
   ],
 )
 
@@ -47,10 +45,7 @@ java_library(name = 'server',
   ],
   deps = [
     ':sessions',
-    '//java/client/src/org/openqa/selenium:codecs',
-    '//java/client/src/org/openqa/selenium:webdriver-api',
-    '//java/client/src/org/openqa/selenium/io:io',
-    '//java/client/src/org/openqa/selenium/logging:logging',
+    '//java/client/src/org/openqa/selenium:selenium',
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//java/client/src/org/openqa/selenium/support/events:events',
     '//java/server/src/org/openqa/selenium/remote/server/log:log',
@@ -60,9 +55,9 @@ java_library(name = 'server',
   ],
   visibility = [
     '//java/server/src/org/openqa/grid:grid',
+    '//java/server/src/org/openqa/grid/selenium:classes',
     '//java/server/src/com/thoughtworks/selenium/webdriven:rc-emulation-servlet',
-    '//java/server/src/org/openqa/selenium/server:server',
-    '//java/server/test/com/thoughtworks/selenium/webdriven:webdriven',
+    '//java/server/test/...',
   ],
 )
 
@@ -83,33 +78,27 @@ export_file(name = 'style',
 
 java_library(name = 'standalone-server-lib',
   srcs = [
-    'CommandLineArgs.java',
     'SeleniumServer.java',
   ],
   deps = [
     ':server',
     ':sessions',
-    '//java/client/src/org/openqa/selenium/remote:api',
-    '//java/server/src/org/openqa/grid/shared:interfaces',
-    '//third_party/java/beust:jcommander',
-    '//third_party/java/jetty:jetty',
-    '//third_party/java/servlet:servlet-api',
-  ],
-  visibility = [
-    '//java/server/src/org/openqa/grid/selenium:classes',
-  ],
-)
-
-java_binary(name = 'standalone-server',
-  main_class = 'org.openqa.selenium.remote.server.SeleniumServer',
-  deps = [
-    ':standalone-server-lib',
     '//java/client/src/org/openqa/selenium/chrome:chrome',
     '//java/client/src/org/openqa/selenium/edge:edge',
     '//java/client/src/org/openqa/selenium/firefox:firefox',
     '//java/client/src/org/openqa/selenium/ie:ie',
     '//java/client/src/org/openqa/selenium/opera:opera',
+    '//java/client/src/org/openqa/selenium/remote:remote',
     '//java/client/src/org/openqa/selenium/safari:safari',
-    '//java/server/src/com/thoughtworks/selenium/webdriven:rc-emulation-servlet',
+    '//java/server/src/org/openqa/grid:grid',
+    '//third_party/java/beust:jcommander',
+    '//third_party/java/htmlunit:htmlunit-driver',
+    '//third_party/java/jetty:jetty',
+    '//third_party/java/phantomjs-driver:phantomjs-driver',
+    '//third_party/java/servlet:servlet-api',
+  ],
+  visibility = [
+    '//java/server/src/org/openqa/grid/selenium:classes',
+    '//java/server/test/org/openqa/grid/e2e:tests',
   ],
 )

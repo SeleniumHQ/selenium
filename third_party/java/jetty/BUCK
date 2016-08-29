@@ -1,42 +1,49 @@
 java_library(
   name = 'jetty',
+  maven_coords = 'org.seleniumhq.selenium:jetty-repacked:9.2.13.v20160825',
+  maven_pom_template = 'jetty.pom',
   exported_deps = [
+    ':repackage',
+  ],
+  deps = [
+     '//third_party/java/servlet:servlet-api',
+  ],
+  visibility = [
+    '//java/client/test/com/thoughtworks/selenium:tests',
+    '//java/client/test/org/openqa/selenium:tests',
+    '//java/client/test/org/openqa/selenium/environment:environment',
+    '//java/server/src/org/openqa/grid:grid',
+    '//java/server/src/org/openqa/selenium/remote/server:standalone-server-lib',
+    '//java/server/src/org/openqa/selenium/server/htmlrunner:htmlrunner',
+    '//java/server/test/org/openqa/selenium:lib',
+    '//java/server/test/com/thoughtworks/selenium/webdriven:webdriven',
+    '//java/server/test/org/openqa/selenium/remote/server:tests',
+    '//java/server/test/org/openqa/selenium/remote/server/auth:lib',
+  ],
+)
+
+# We want the deployable 'jetty-repacked' artifact to not require each of the
+# individual jars (we did, after all, repackage everything). By introducing a
+# prebuilt_jar we avoid that problem.
+prebuilt_jar(name = 'repackage',
+  binary_jar = ':bundle-jars',
+)
+
+java_binary(
+  name = 'bundle-jars',
+  deps = [
     ':jetty-http-repacked',
+    ':jetty-security-repacked',
     ':jetty-server-repacked',
     ':jetty-servlet-repacked',
     ':jetty-servlets-repacked',
     ':jetty-util-repacked',
-  ],
-  deps = [
     ':jetty-continuation-repacked',
     ':jetty-io-repacked',
     ':jetty-jmx-repacked',
-    ':jetty-security-repacked',
-  ],
-  visibility = [
-    '//java/client/test/org/openqa/selenium:tests',
-    '//java/client/test/org/openqa/selenium/environment:environment',
-    '//java/server/src/org/openqa/selenium/remote/server:standalone-server-lib',
-    '//java/server/src/org/openqa/grid:grid',
-    '//java/server/test/com/thoughtworks/selenium/webdriven:webdriven',
   ],
 )
 
-prebuilt_jar(name = 'jetty-for-rc',
-  binary_jar = 'jetty-repacked-5.jar',
-   deps = [
-    '//third_party/java/commons-logging:commons-logging',
-    '//third_party/java/jasper:jasper',
-    '//third_party/java/mx4j:mx4j',
-    '//third_party/java/servlet:servlet-api',
-  ],
-  visibility = [
-    '//java/server/src/org/openqa/selenium/server:server',
-    '//java/server/src/org/openqa/grid:grid',
-    '//third_party/java/servlet:servlet-api'
-   ],
- )
- 
 REPACK = [
   'jetty-continuation',
   'jetty-http',
@@ -60,13 +67,15 @@ for i in REPACK:
 
   prebuilt_jar(
     name = out,
-    binary_jar = ':%s' % name
+    maven_coords = 'org.seleniumhq.selenium:%s:9.2.13.v20150730' % out,
+    binary_jar = ':%s' % name,
+    deps = [ '//third_party/java/servlet:servlet-api', ],
   )
 
 export_file(
   name = 'jarjar-rules',
   src = 'jetty-repack-rules',
-)  
+)
 
 prebuilt_jar(
   name = 'jetty-continuation',
@@ -84,7 +93,8 @@ prebuilt_jar(
   binary_jar = 'jetty-http-9.2.13.v20150730.jar',
   source_jar = 'jetty-http-9.2.13.v20150730-sources.jar',
   deps = [
-    ':jetty-util'
+    ':jetty-util',
+    '//third_party/java/servlet:servlet-api',
   ],
 )
 

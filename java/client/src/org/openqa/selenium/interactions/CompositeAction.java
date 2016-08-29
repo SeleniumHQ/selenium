@@ -63,7 +63,7 @@ public class CompositeAction implements Action {
   }
 
   public List<Action> asList() {
-    ImmutableList.Builder<Action> builder = new ImmutableList.Builder<Action>();
+    ImmutableList.Builder<Action> builder = new ImmutableList.Builder<>();
     for (Action action : actionsList) {
       if (action instanceof MultiAction) {
         builder.addAll(((MultiAction) action).getActions());

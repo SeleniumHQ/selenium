@@ -29,7 +29,6 @@ from .switch_to import SwitchTo
 from .mobile import Mobile
 from .file_detector import FileDetector, LocalFileDetector
 from selenium.common.exceptions import WebDriverException
-from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 
@@ -55,8 +54,8 @@ class WebDriver(object):
     """
 
     def __init__(self, command_executor='http://127.0.0.1:4444/wd/hub',
-            desired_capabilities=None, browser_profile=None, proxy=None, keep_alive=False,
-            file_detector=None):
+                 desired_capabilities=None, browser_profile=None, proxy=None,
+                 keep_alive=False, file_detector=None):
         """
         Create a new driver that will issue commands using the wire protocol.
 
@@ -167,16 +166,20 @@ class WebDriver(object):
          - javascript_enabled - Whether the new session should support JavaScript.
          - browser_profile - A selenium.webdriver.firefox.firefox_profile.FirefoxProfile object. Only used if Firefox is requested.
         """
+        capabilities = {'desiredCapabilities': {}, 'requiredCapabilities': {}}
+        for k, v in desired_capabilities.items():
+            if k not in ('desiredCapabilities', 'requiredCapabilities'):
+                capabilities['desiredCapabilities'][k] = v
+            else:
+                capabilities[k].update(v)
         if browser_profile:
-            desired_capabilities['firefox_profile'] = browser_profile.encoded
-        response = self.execute(Command.NEW_SESSION, {
-            'desiredCapabilities': desired_capabilities,
-        })
+            capabilities['desiredCapabilities']['firefox_profile'] = browser_profile.encoded
+        response = self.execute(Command.NEW_SESSION, capabilities)
         self.session_id = response['sessionId']
         self.capabilities = response['value']
 
         # Quick check to see if we have a W3C Compliant browser
-        self.w3c = "specificationLevel" in self.capabilities
+        self.w3c = response.get('status') is None
 
     def _wrap_value(self, value):
         if isinstance(value, dict):
@@ -457,8 +460,9 @@ class WebDriver(object):
             driver.execute_script('document.title')
         """
         converted_args = list(args)
-        return self.execute(Command.EXECUTE_SCRIPT,
-            {'script': script, 'args':converted_args})['value']
+        return self.execute(Command.EXECUTE_SCRIPT, {
+            'script': script,
+            'args': converted_args})['value']
 
     def execute_async_script(self, script, *args):
         """
@@ -472,8 +476,9 @@ class WebDriver(object):
             driver.execute_async_script('document.title')
         """
         converted_args = list(args)
-        return self.execute(Command.EXECUTE_ASYNC_SCRIPT,
-            {'script': script, 'args':converted_args})['value']
+        return self.execute(Command.EXECUTE_ASYNC_SCRIPT, {
+            'script': script,
+            'args': converted_args})['value']
 
     @property
     def current_url(self):
@@ -549,7 +554,7 @@ class WebDriver(object):
     def switch_to(self):
         return self._switch_to
 
-    #Target Locators
+    # Target Locators
     def switch_to_active_element(self):
         """ Deprecated use driver.switch_to.active_element
         """
@@ -580,7 +585,7 @@ class WebDriver(object):
         warnings.warn("use driver.switch_to.alert instead", DeprecationWarning)
         return self._switch_to.alert
 
-    #Navigation
+    # Navigation
     def back(self):
         """
         Goes one step backward in the browser history.
@@ -680,10 +685,12 @@ class WebDriver(object):
             driver.implicitly_wait(30)
         """
         if self.w3c:
-            self.execute(Command.SET_TIMEOUTS,
-                         {'ms': float(time_to_wait) * 1000, 'type':'implicit'})
+            self.execute(Command.SET_TIMEOUTS, {
+                'ms': float(time_to_wait) * 1000,
+                'type': 'implicit'})
         else:
-            self.execute(Command.IMPLICIT_WAIT, {'ms': float(time_to_wait) * 1000})
+            self.execute(Command.IMPLICIT_WAIT, {
+                'ms': float(time_to_wait) * 1000})
 
     def set_script_timeout(self, time_to_wait):
         """
@@ -697,11 +704,12 @@ class WebDriver(object):
             driver.set_script_timeout(30)
         """
         if self.w3c:
-            self.execute(Command.SET_TIMEOUTS,
-                         {'ms': float(time_to_wait) * 1000, 'type':'script'})
+            self.execute(Command.SET_TIMEOUTS, {
+                'ms': float(time_to_wait) * 1000,
+                'type': 'script'})
         else:
-            self.execute(Command.SET_SCRIPT_TIMEOUT,
-                         {'ms': float(time_to_wait) * 1000})
+            self.execute(Command.SET_SCRIPT_TIMEOUT, {
+                'ms': float(time_to_wait) * 1000})
 
     def set_page_load_timeout(self, time_to_wait):
         """
@@ -714,8 +722,9 @@ class WebDriver(object):
         :Usage:
             driver.set_page_load_timeout(30)
         """
-        self.execute(Command.SET_TIMEOUTS,
-            {'ms': float(time_to_wait) * 1000, 'type':'page load'})
+        self.execute(Command.SET_TIMEOUTS, {
+            'ms': float(time_to_wait) * 1000,
+            'type': 'page load'})
 
     def find_element(self, by=By.ID, value=None):
         """
@@ -726,8 +735,6 @@ class WebDriver(object):
 
         :rtype: WebElement
         """
-        if not By.is_valid(by) or not isinstance(value, str):
-            raise InvalidSelectorException("Invalid locator values passed in")
         if self.w3c:
             if by == By.ID:
                 by = By.CSS_SELECTOR
@@ -740,8 +747,9 @@ class WebDriver(object):
             elif by == By.NAME:
                 by = By.CSS_SELECTOR
                 value = '[name="%s"]' % value
-        return self.execute(Command.FIND_ELEMENT,
-                             {'using': by, 'value': value})['value']
+        return self.execute(Command.FIND_ELEMENT, {
+            'using': by,
+            'value': value})['value']
 
     def find_elements(self, by=By.ID, value=None):
         """
@@ -752,8 +760,6 @@ class WebDriver(object):
 
         :rtype: list of WebElement
         """
-        if not By.is_valid(by) or not isinstance(value, str):
-            raise InvalidSelectorException("Invalid locator values passed in")
         if self.w3c:
             if by == By.ID:
                 by = By.CSS_SELECTOR
@@ -767,8 +773,10 @@ class WebDriver(object):
                 by = By.CSS_SELECTOR
                 value = '[name="%s"]' % value
 
-        return self.execute(Command.FIND_ELEMENTS,
-                             {'using': by, 'value': value})['value']
+        return self.execute(Command.FIND_ELEMENTS, {
+            'using': by,
+            'value': value})['value']
+
     @property
     def desired_capabilities(self):
         """
@@ -832,8 +840,10 @@ class WebDriver(object):
         command = Command.SET_WINDOW_SIZE
         if self.w3c:
             command = Command.W3C_SET_WINDOW_SIZE
-        self.execute(command, {'width': int(width), 'height': int(height),
-          'windowHandle': windowHandle})
+        self.execute(command, {
+            'width': int(width),
+            'height': int(height),
+            'windowHandle': windowHandle})
 
     def get_window_size(self, windowHandle='current'):
         """
@@ -845,10 +855,9 @@ class WebDriver(object):
         command = Command.GET_WINDOW_SIZE
         if self.w3c:
             command = Command.W3C_GET_WINDOW_SIZE
-        size = self.execute(command,
-            {'windowHandle': windowHandle})
+        size = self.execute(command, {'windowHandle': windowHandle})
 
-        if size.get('value', None) != None:
+        if size.get('value', None) is not None:
             return size['value']
         else:
             return size
@@ -864,8 +873,10 @@ class WebDriver(object):
         :Usage:
             driver.set_window_position(0,0)
         """
-        self.execute(Command.SET_WINDOW_POSITION, {'x': int(x), 'y': int(y),
-          'windowHandle': windowHandle})
+        self.execute(Command.SET_WINDOW_POSITION, {
+            'x': int(x),
+            'y': int(y),
+            'windowHandle': windowHandle})
 
     def get_window_position(self, windowHandle='current'):
         """
@@ -874,8 +885,8 @@ class WebDriver(object):
         :Usage:
             driver.get_window_position()
         """
-        return self.execute(Command.GET_WINDOW_POSITION,
-            {'windowHandle': windowHandle})['value']
+        return self.execute(Command.GET_WINDOW_POSITION, {
+            'windowHandle': windowHandle})['value']
 
     @property
     def file_detector(self):
@@ -894,11 +905,11 @@ class WebDriver(object):
         :Args:
          - detector: The detector to use. Must not be None.
         """
-        if detector == None:
+        if detector is None:
             raise WebDriverException("You may not set a file detector that is null")
         if not isinstance(detector, FileDetector):
             raise WebDriverException("Detector has to be instance of FileDetector")
-        self._file_detector = detector;
+        self._file_detector = detector
 
     @property
     def orientation(self):

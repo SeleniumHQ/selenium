@@ -39,9 +39,8 @@ public abstract class BaseFinder<S, T> implements Finder<S, T> {
 
     if (matchers.isEmpty()) {
       return found;
-    } else {
-      return allMatching(matchers, found);
     }
+    return allMatching(matchers, found);
   }
 
   public Finder<S, T> with(Matcher<S> matcher) {

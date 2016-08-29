@@ -30,12 +30,12 @@ module Selenium
         end
 
         def clean_session?
-          !!@clean_session
+          @clean_session == true
         end
 
         def to_capabilities
           caps = Remote::Capabilities.safari
-          caps.merge!('safari.options' => as_json)
+          caps['safari.options'] = as_json
 
           caps
         end
@@ -44,7 +44,7 @@ module Selenium
           {
             'port'         => port,
             'dataDir'      => data_dir,
-            'cleanSession' => clean_session?,
+            'cleanSession' => clean_session?
           }
         end
 
@@ -55,7 +55,6 @@ module Selenium
           @data_dir      = opts[:custom_data_dir] || opts[:data_dir]
           @clean_session = opts[:clean_session]
         end
-
       end # Options
     end # Safari
   end # WebDriver

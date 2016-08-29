@@ -23,15 +23,15 @@ module Selenium
       class Profile
         include ProfileHelper
 
-        VALID_PREFERENCE_TYPES   = [TrueClass, FalseClass, Integer, Float, String]
+        VALID_PREFERENCE_TYPES   = [TrueClass, FalseClass, Integer, Float, String].freeze
         WEBDRIVER_EXTENSION_PATH = File.expand_path("#{WebDriver.root}/selenium/webdriver/firefox/extension/webdriver.xpi")
         WEBDRIVER_PREFS          = {
-          :native_events    => 'webdriver_enable_native_events',
-          :untrusted_certs  => 'webdriver_accept_untrusted_certs',
-          :untrusted_issuer => 'webdriver_assume_untrusted_issuer',
-          :port             => 'webdriver_firefox_port',
-          :log_file         => 'webdriver.log.file'
-        }
+          native_events: 'webdriver_enable_native_events',
+          untrusted_certs: 'webdriver_accept_untrusted_certs',
+          untrusted_issuer: 'webdriver_assume_untrusted_issuer',
+          port: 'webdriver_firefox_port',
+          log_file: 'webdriver.log.file'
+        }.freeze
 
         attr_reader   :name, :log_file
         attr_writer   :secure_ssl, :native_events, :load_no_focus_lib
@@ -78,18 +78,19 @@ module Selenium
             @additional_prefs  = {}
           else
             # TODO: clean this up
-            @native_events     = model_prefs.delete(WEBDRIVER_PREFS[:native_events]) == "true"
-            @secure_ssl        = model_prefs.delete(WEBDRIVER_PREFS[:untrusted_certs]) != "true"
-            @untrusted_issuer  = model_prefs.delete(WEBDRIVER_PREFS[:untrusted_issuer]) == "true"
-            @load_no_focus_lib = model_prefs.delete(WEBDRIVER_PREFS[:load_no_focus_lib]) == "true" # not stored in profile atm, so will always be false.
+            @native_events     = model_prefs.delete(WEBDRIVER_PREFS[:native_events]) == 'true'
+            @secure_ssl        = model_prefs.delete(WEBDRIVER_PREFS[:untrusted_certs]) != 'true'
+            @untrusted_issuer  = model_prefs.delete(WEBDRIVER_PREFS[:untrusted_issuer]) == 'true'
+            # not stored in profile atm, so will always be false.
+            @load_no_focus_lib = model_prefs.delete(WEBDRIVER_PREFS[:load_no_focus_lib]) == 'true'
             @additional_prefs  = model_prefs
           end
 
-          @extensions        = {}
+          @extensions = {}
         end
 
         def layout_on_disk
-          profile_dir = @model ? create_tmp_copy(@model) : Dir.mktmpdir("webdriver-profile")
+          profile_dir = @model ? create_tmp_copy(@model) : Dir.mktmpdir('webdriver-profile')
           FileReaper << profile_dir
 
           install_extensions(profile_dir)
@@ -100,7 +101,6 @@ module Selenium
           profile_dir
         end
 
-
         #
         # Set a preference for this particular profile.
         #
@@ -109,11 +109,11 @@ module Selenium
         #
 
         def []=(key, value)
-          unless VALID_PREFERENCE_TYPES.any? { |e| value.kind_of? e }
+          unless VALID_PREFERENCE_TYPES.any? { |e| value.is_a? e }
             raise TypeError, "expected one of #{VALID_PREFERENCE_TYPES.inspect}, got #{value.inspect}:#{value.class}"
           end
 
-          if value.kind_of?(String) && Util.stringified?(value)
+          if value.is_a?(String) && Util.stringified?(value)
             raise ArgumentError, "preference values must be plain strings: #{key.inspect} => #{value.inspect}"
           end
 
@@ -130,9 +130,8 @@ module Selenium
         end
 
         def add_webdriver_extension
-          unless @extensions.has_key?(:webdriver)
-            add_extension(WEBDRIVER_EXTENSION_PATH, :webdriver)
-          end
+          return if @extensions.key?(:webdriver)
+          add_extension(WEBDRIVER_EXTENSION_PATH, :webdriver)
         end
 
         #
@@ -164,7 +163,7 @@ module Selenium
         end
 
         def proxy=(proxy)
-          unless proxy.kind_of? Proxy
+          unless proxy.is_a? Proxy
             raise TypeError, "expected #{Proxy.name}, got #{proxy.inspect}:#{proxy.class}"
           end
 
@@ -172,16 +171,16 @@ module Selenium
           when :manual
             self['network.proxy.type'] = 1
 
-            set_manual_proxy_preference "ftp", proxy.ftp
-            set_manual_proxy_preference "http", proxy.http
-            set_manual_proxy_preference "ssl", proxy.ssl
-            set_manual_proxy_preference "socks", proxy.socks
+            set_manual_proxy_preference 'ftp', proxy.ftp
+            set_manual_proxy_preference 'http', proxy.http
+            set_manual_proxy_preference 'ssl', proxy.ssl
+            set_manual_proxy_preference 'socks', proxy.socks
 
-            if proxy.no_proxy
-              self["network.proxy.no_proxies_on"] = proxy.no_proxy
-            else
-              self["network.proxy.no_proxies_on"] = ""
-            end
+            self['network.proxy.no_proxies_on'] = if proxy.no_proxy
+                                                    proxy.no_proxy
+                                                  else
+                                                    ''
+                                                  end
           when :pac
             self['network.proxy.type'] = 2
             self['network.proxy.autoconfig_url'] = proxy.pac
@@ -199,17 +198,17 @@ module Selenium
         def set_manual_proxy_preference(key, value)
           return unless value
 
-          host, port = value.to_s.split(":", 2)
+          host, port = value.to_s.split(':', 2)
 
           self["network.proxy.#{key}"] = host
           self["network.proxy.#{key}_port"] = Integer(port) if port
         end
 
         def install_extensions(directory)
-          destination = File.join(directory, "extensions")
+          destination = File.join(directory, 'extensions')
 
           @extensions.each do |name, extension|
-            p :extension => name if $DEBUG
+            p extension: name if $DEBUG
             extension.write_to(destination)
           end
         end
@@ -221,7 +220,7 @@ module Selenium
         end
 
         def delete_extensions_cache(directory)
-          FileUtils.rm_f File.join(directory, "extensions.cache")
+          FileUtils.rm_f File.join(directory, 'extensions.cache')
         end
 
         def delete_lock_files(directory)
@@ -247,7 +246,7 @@ module Selenium
           prefs[WEBDRIVER_PREFS[:untrusted_issuer]] = assume_untrusted_certificate_issuer?
 
           # If the user sets the home page, we should also start up there
-          prefs["startup.homepage_welcome_url"] = prefs["browser.startup.homepage"]
+          prefs['startup.homepage_welcome_url'] = prefs['browser.startup.homepage']
 
           write_prefs prefs, path
         end
@@ -257,25 +256,24 @@ module Selenium
           return prefs unless File.exist?(path)
 
           File.read(path).split("\n").each do |line|
-            if line =~ /user_pref\("([^"]+)"\s*,\s*(.+?)\);/
-              key, value = $1.strip, $2.strip
+            next unless line =~ /user_pref\("([^"]+)"\s*,\s*(.+?)\);/
+            key = Regexp.last_match(1).strip
+            value = Regexp.last_match(2).strip
 
-              # wrap the value in an array to make it a valid JSON string.
-              prefs[key] = JSON.parse("[#{value}]").first
-            end
+            # wrap the value in an array to make it a valid JSON string.
+            prefs[key] = JSON.parse("[#{value}]").first
           end
 
           prefs
         end
 
         def write_prefs(prefs, path)
-          File.open(path, "w") { |file|
+          File.open(path, 'w') do |file|
             prefs.each do |key, value|
               file.puts %{user_pref("#{key}", #{value.to_json});}
             end
-          }
+          end
         end
-
       end # Profile
     end # Firefox
   end # WebDriver

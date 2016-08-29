@@ -17,49 +17,47 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path("../../spec_helper", __FILE__)
-
+require File.expand_path('../../spec_helper', __FILE__)
 
 module Selenium
   module WebDriver
     module Chrome
-
       describe Profile do
         let(:profile) { Profile.new }
-        let(:model) { "/some/path" }
+        let(:model) { '/some/path' }
         let(:model_profile) { Profile.new(model) }
 
         before do
           allow(File).to receive(:exist?).with(model).and_return true
           allow(File).to receive(:directory?).with(model).and_return true
 
-          Dir.stub(:mktmpdir => "/tmp/some/path")
+          Dir.stub(mktmpdir: '/tmp/some/path')
           allow(FileUtils).to receive(:rm_rf)
           allow(FileUtils).to receive(:mkdir_p)
           allow(FileUtils).to receive(:cp_r)
         end
 
-        it "should set and get preference paths" do
+        it 'should set and get preference paths' do
           profile['foo.bar.baz'] = true
           expect(profile['foo.bar.baz']).to eq(true)
         end
 
-        it "reads existing prefs" do
-          expect(File).to receive(:read).with("/some/path/Default/Preferences").
-                                     and_return('{"autofill": {"enabled": false}}')
+        it 'reads existing prefs' do
+          expect(File).to receive(:read).with('/some/path/Default/Preferences')
+            .and_return('{"autofill": {"enabled": false}}')
 
           expect(model_profile['autofill.enabled']).to eq(false)
         end
 
-        it "writes out prefs" do
-          expect(File).to receive(:read).with("/some/path/Default/Preferences").
-                                     and_return('{"autofill": {"enabled": false}}')
+        it 'writes out prefs' do
+          expect(File).to receive(:read).with('/some/path/Default/Preferences')
+            .and_return('{"autofill": {"enabled": false}}')
 
           model_profile['some.other.pref'] = 123
 
           mock_io = StringIO.new
-          expect(FileUtils).to receive(:mkdir_p).with("/tmp/some/path/Default")
-          expect(File).to receive(:open).with("/tmp/some/path/Default/Preferences", "w").and_yield(mock_io)
+          expect(FileUtils).to receive(:mkdir_p).with('/tmp/some/path/Default')
+          expect(File).to receive(:open).with('/tmp/some/path/Default/Preferences', 'w').and_yield(mock_io)
 
           model_profile.layout_on_disk
 
@@ -69,8 +67,6 @@ module Selenium
           expect(result['some']['other']['pref']).to eq(123)
         end
       end
-
     end # Chrome
   end # WebDriver
 end # Selenium
-

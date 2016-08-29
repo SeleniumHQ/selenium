@@ -17,11 +17,15 @@
 
 package org.openqa.selenium.firefox;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.firefox.internal.Executable;
+import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
@@ -66,7 +70,7 @@ public class GeckoDriverService extends DriverService {
 
   @Override
   protected void waitUntilAvailable() throws MalformedURLException {
-    return;
+    PortProber.waitForPortUp(getUrl().getPort(), 20, SECONDS);
   }
 
   /**
@@ -77,15 +81,23 @@ public class GeckoDriverService extends DriverService {
 
     @Override
     protected File findDefaultExecutable() {
-      return findExecutable("wires", GECKO_DRIVER_EXE_PROPERTY,
-          "https://github.com/jgraham/wires",
-          "https://github.com/jgraham/wires");
+      // We should really look for geckodriver, but the old name was wires. Look for both.
+      try {
+        return findExecutable("geckodriver", GECKO_DRIVER_EXE_PROPERTY,
+                              "https://github.com/mozilla/geckodriver",
+                              "https://github.com/mozilla/geckodriver/releases");
+      } catch (IllegalStateException e) {
+        // Geckodriver not found. Fall back to wires
+        return findExecutable("wires", GECKO_DRIVER_EXE_PROPERTY,
+                              "https://github.com/mozilla/geckodriver",
+                              "https://github.com/mozilla/geckodriver/releases");
+      }
     }
 
     @Override
     protected ImmutableList<String> createArgs() {
       ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
-      argsBuilder.add(String.format("--webdriver-port=%d", getPort()));
+      argsBuilder.add(String.format("--port=%d", getPort()));
       if (getLogFile() != null) {
         argsBuilder.add(String.format("--log-file=\"%s\"", getLogFile().getAbsolutePath()));
       }

@@ -1,3 +1,5 @@
+include_defs('//SELENIUM_VERSION')
+
 java_library(name = 'api',
   srcs = [
     'CommandProcessor.java',
@@ -5,7 +7,9 @@ java_library(name = 'api',
     'SeleniumException.java',
     'Wait.java',
   ],
-  visibility = ['PUBLIC'],
+  visibility = [
+    '//java/client/src/com/thoughtworks/selenium/condition:condition',
+  ]
 )
 
 java_library(name = 'selenium',
@@ -23,22 +27,28 @@ java_library(name = 'selenium',
   ],
   exported_deps = [
     ':api',
-    '//java/client/src/com/thoughtworks/selenium/condition:condition',
   ],
   deps = [
-    '//java/client/src/org/openqa/selenium:webdriver-api',
-    '//java/client/src/org/openqa/selenium/net:net',
+    '//java/client/src/org/openqa/selenium:selenium',
     '//third_party/java/guava:guava',
     '//third_party/java/junit:junit',
     '//third_party/java/testng:testng',
   ],
-  visibility = ['PUBLIC'],
+  visibility = [
+    '//java/client/src/com/thoughtworks/selenium/...',
+    '//java/client/test/com/thoughtworks/selenium/...',
+    '//java/server/src/com/thoughtworks/selenium:leg-rc',
+  ]
 )
 
-
-java_binary(name = "legacy-selenium-client",
-  deps = [
+java_library(name = "leg-rc",
+  exported_deps = [
+    ':api',
     ':selenium',
+    '//java/client/src/com/thoughtworks/selenium/condition:condition',
     '//java/client/src/com/thoughtworks/selenium/webdriven:webdriven',
   ],
+  visibility = [
+    'PUBLIC',
+  ]
 )

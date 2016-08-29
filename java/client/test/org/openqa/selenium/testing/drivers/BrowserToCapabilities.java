@@ -19,6 +19,7 @@ package org.openqa.selenium.testing.drivers;
 
 import static org.openqa.selenium.remote.CapabilityType.HAS_NATIVE_EVENTS;
 
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class BrowserToCapabilities {
@@ -36,6 +37,8 @@ public class BrowserToCapabilities {
 
       case ff:
         caps = DesiredCapabilities.firefox();
+        caps.setCapability(FirefoxDriver.MARIONETTE,
+                           Boolean.getBoolean(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE));
         break;
 
       case htmlunit:

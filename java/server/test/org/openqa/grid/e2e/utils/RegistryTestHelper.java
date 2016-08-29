@@ -41,9 +41,8 @@ public class RegistryTestHelper {
         Integer i = r.getAllProxies().size();
         if (i != nodeNumber) {
           return null;
-        } else {
-          return i;
         }
+        return i;
       }
     });
   }
@@ -56,9 +55,8 @@ public class RegistryTestHelper {
         Integer i = r.getActiveSessions().size();
         if (i != activeTestSessions) {
           return null;
-        } else {
-          return i;
         }
+        return i;
       }
     });
   }
@@ -70,9 +68,8 @@ public class RegistryTestHelper {
         Integer i = r.getNewSessionRequestCount();
         if (i != newSessionRequestCount) {
           return null;
-        } else {
-          return i;
         }
+        return i;
       }
     });
   }

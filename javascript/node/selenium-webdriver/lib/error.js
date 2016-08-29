@@ -29,22 +29,6 @@ class WebDriverError extends Error {
     /** @override */
     this.name = this.constructor.name;
   }
-
-  /**
-   * @return {number} the legacy numeric code for this class of error.
-   * @deprecated
-   */
-  static get code() {
-    return ErrorCode.UNKNOWN_ERROR;
-  }
-
-  /**
-   * @return {number} the legacy numeric code for this class of error.
-   * @deprecated
-   */
-  get code() {
-    return this.constructor.code;
-  }
 }
 
 
@@ -55,11 +39,6 @@ class ElementNotSelectableError extends WebDriverError {
   /** @param {string=} opt_error the error message, if any. */
   constructor(opt_error) {
     super(opt_error);
-  }
-
-  /** @override */
-  static get code() {
-    return ErrorCode.ELEMENT_NOT_SELECTABLE;
   }
 }
 
@@ -72,11 +51,6 @@ class ElementNotVisibleError extends WebDriverError {
   /** @param {string=} opt_error the error message, if any. */
   constructor(opt_error) {
     super(opt_error);
-  }
-
-  /** @override */
-  static get code() {
-    return ErrorCode.ELEMENT_NOT_VISIBLE;
   }
 }
 
@@ -101,11 +75,6 @@ class InvalidCookieDomainError extends WebDriverError {
   constructor(opt_error) {
     super(opt_error);
   }
-
-  /** @override */
-  static get code() {
-    return ErrorCode.INVALID_COOKIE_DOMAIN;
-  }
 }
 
 
@@ -116,11 +85,6 @@ class InvalidElementCoordinatesError extends WebDriverError {
   /** @param {string=} opt_error the error message, if any. */
   constructor(opt_error) {
     super(opt_error);
-  }
-
-  /** @override */
-  static get code() {
-    return ErrorCode.INVALID_ELEMENT_COORDINATES;
   }
 }
 
@@ -135,11 +99,6 @@ class InvalidElementStateError extends WebDriverError {
   constructor(opt_error) {
     super(opt_error);
   }
-
-  /** @override */
-  static get code() {
-    return ErrorCode.INVALID_ELEMENT_STATE;
-  }
 }
 
 
@@ -150,11 +109,6 @@ class InvalidSelectorError extends WebDriverError {
   /** @param {string=} opt_error the error message, if any. */
   constructor(opt_error) {
     super(opt_error);
-  }
-
-  /** @override */
-  static get code() {
-    return ErrorCode.INVALID_SELECTOR_ERROR;
   }
 }
 
@@ -171,28 +125,12 @@ class NoSuchSessionError extends WebDriverError {
 
 
 /**
- * @deprecated Use {@link NoSuchSessionError} instead.
- */
-class InvalidSessionIdError extends NoSuchSessionError {
-  /** @param {string=} opt_error the error message, if any. */
-  constructor(opt_error) {
-    super(opt_error);
-  }
-}
-
-
-/**
  * An error occurred while executing JavaScript supplied by the user.
  */
 class JavascriptError extends WebDriverError {
   /** @param {string=} opt_error the error message, if any. */
   constructor(opt_error) {
     super(opt_error);
-  }
-
-  /** @override */
-  static get code() {
-    return ErrorCode.JAVASCRIPT_ERROR;
   }
 }
 
@@ -206,11 +144,6 @@ class MoveTargetOutOfBoundsError extends WebDriverError {
   constructor(opt_error) {
     super(opt_error);
   }
-
-  /** @override */
-  static get code() {
-    return ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS;
-  }
 }
 
 
@@ -221,11 +154,6 @@ class NoSuchAlertError extends WebDriverError {
   /** @param {string=} opt_error the error message, if any. */
   constructor(opt_error) {
     super(opt_error);
-  }
-
-  /** @override */
-  static get code() {
-    return ErrorCode.NO_SUCH_ALERT;
   }
 }
 
@@ -239,11 +167,6 @@ class NoSuchElementError extends WebDriverError {
   constructor(opt_error) {
     super(opt_error);
   }
-
-  /** @override */
-  static get code() {
-    return ErrorCode.NO_SUCH_ELEMENT;
-  }
 }
 
 
@@ -255,11 +178,6 @@ class NoSuchFrameError extends WebDriverError {
   /** @param {string=} opt_error the error message, if any. */
   constructor(opt_error) {
     super(opt_error);
-  }
-
-  /** @override */
-  static get code() {
-    return ErrorCode.NO_SUCH_FRAME;
   }
 }
 
@@ -273,11 +191,6 @@ class NoSuchWindowError extends WebDriverError {
   constructor(opt_error) {
     super(opt_error);
   }
-
-  /** @override */
-  static get code() {
-    return ErrorCode.NO_SUCH_WINDOW;
-  }
 }
 
 
@@ -289,11 +202,6 @@ class ScriptTimeoutError extends WebDriverError {
   constructor(opt_error) {
     super(opt_error);
   }
-
-  /** @override */
-  static get code() {
-    return ErrorCode.SCRIPT_TIMEOUT;
-  }
 }
 
 
@@ -304,11 +212,6 @@ class SessionNotCreatedError extends WebDriverError {
   /** @param {string=} opt_error the error message, if any. */
   constructor(opt_error) {
     super(opt_error);
-  }
-
-  /** @override */
-  static get code() {
-    return ErrorCode.SESSION_NOT_CREATED;
   }
 }
 
@@ -323,11 +226,6 @@ class StaleElementReferenceError extends WebDriverError {
   constructor(opt_error) {
     super(opt_error);
   }
-
-  /** @override */
-  static get code() {
-    return ErrorCode.STALE_ELEMENT_REFERENCE;
-  }
 }
 
 
@@ -339,11 +237,6 @@ class TimeoutError extends WebDriverError {
   constructor(opt_error) {
     super(opt_error);
   }
-
-  /** @override */
-  static get code() {
-    return ErrorCode.TIMEOUT;
-  }
 }
 
 
@@ -354,11 +247,6 @@ class UnableToSetCookieError extends WebDriverError {
   /** @param {string=} opt_error the error message, if any. */
   constructor(opt_error) {
     super(opt_error);
-  }
-
-  /** @override */
-  static get code() {
-    return ErrorCode.UNABLE_TO_SET_COOKIE;
   }
 }
 
@@ -389,11 +277,6 @@ class UnexpectedAlertOpenError extends WebDriverError {
     this.text_ = opt_text;
   }
 
-  /** @override */
-  static get code() {
-    return ErrorCode.UNEXPECTED_ALERT_OPEN;
-  }
-
   /**
    * @return {(string|undefined)} The text displayed with the unhandled alert,
    *     if available.
@@ -412,11 +295,6 @@ class UnknownCommandError extends WebDriverError {
   constructor(opt_error) {
     super(opt_error);
   }
-
-  /** @override */
-  static get code() {
-    return ErrorCode.UNSUPPORTED_OPERATION;
-  }
 }
 
 
@@ -429,11 +307,6 @@ class UnknownMethodError extends WebDriverError {
   constructor(opt_error) {
     super(opt_error);
   }
-
-  /** @override */
-  static get code() {
-    return ErrorCode.UNSUPPORTED_OPERATION;
-  }
 }
 
 
@@ -444,11 +317,6 @@ class UnsupportedOperationError extends WebDriverError {
   /** @param {string=} opt_error the error message, if any. */
   constructor(opt_error) {
     super(opt_error);
-  }
-
-  /** @override */
-  static get code() {
-    return ErrorCode.UNSUPPORTED_OPERATION;
   }
 }
 
@@ -550,6 +418,33 @@ const ERROR_CODE_TO_TYPE = new Map([
     ['unsupported operation', UnsupportedOperationError]]);
 
 
+const TYPE_TO_ERROR_CODE = new Map;
+ERROR_CODE_TO_TYPE.forEach((value, key) => {
+  TYPE_TO_ERROR_CODE.set(value, key);
+});
+
+
+
+/**
+ * @param {*} err The error to encode.
+ * @return {{error: string, message: string}} the encoded error.
+ */
+function encodeError(err) {
+  let type = WebDriverError;
+  if (err instanceof WebDriverError
+      && TYPE_TO_ERROR_CODE.has(err.constructor)) {
+    type = err.constructor;
+  }
+
+  let message = err instanceof Error
+      ? err.message
+      : err + '';
+
+  let code = /** @type {string} */(TYPE_TO_ERROR_CODE.get(type));
+  return {'error': code, 'message': message};
+}
+
+
 /**
  * Checks a response object from a server that adheres to the W3C WebDriver
  * protocol.
@@ -624,35 +519,37 @@ function checkLegacyResponse(responseObj) {
 // PUBLIC API
 
 
-exports.ErrorCode = ErrorCode;
+module.exports = {
+  ErrorCode: ErrorCode,
 
-exports.WebDriverError = WebDriverError;
-exports.ElementNotSelectableError = ElementNotSelectableError;
-exports.ElementNotVisibleError = ElementNotVisibleError;
-exports.InvalidArgumentError = InvalidArgumentError;
-exports.InvalidCookieDomainError = InvalidCookieDomainError;
-exports.InvalidElementCoordinatesError = InvalidElementCoordinatesError;
-exports.InvalidElementStateError = InvalidElementStateError;
-exports.InvalidSelectorError = InvalidSelectorError;
-exports.InvalidSessionIdError = InvalidSessionIdError;
-exports.JavascriptError = JavascriptError;
-exports.MoveTargetOutOfBoundsError = MoveTargetOutOfBoundsError;
-exports.NoSuchAlertError = NoSuchAlertError;
-exports.NoSuchElementError = NoSuchElementError;
-exports.NoSuchFrameError = NoSuchFrameError;
-exports.NoSuchSessionError = NoSuchSessionError;
-exports.NoSuchWindowError = NoSuchWindowError;
-exports.ScriptTimeoutError = ScriptTimeoutError;
-exports.SessionNotCreatedError = SessionNotCreatedError;
-exports.StaleElementReferenceError = StaleElementReferenceError;
-exports.TimeoutError = TimeoutError;
-exports.UnableToSetCookieError = UnableToSetCookieError;
-exports.UnableToCaptureScreenError = UnableToCaptureScreenError;
-exports.UnexpectedAlertOpenError = UnexpectedAlertOpenError;
-exports.UnknownCommandError = UnknownCommandError;
-exports.UnknownMethodError = UnknownMethodError;
-exports.UnsupportedOperationError = UnsupportedOperationError;
+  WebDriverError: WebDriverError,
+  ElementNotSelectableError: ElementNotSelectableError,
+  ElementNotVisibleError: ElementNotVisibleError,
+  InvalidArgumentError: InvalidArgumentError,
+  InvalidCookieDomainError: InvalidCookieDomainError,
+  InvalidElementCoordinatesError: InvalidElementCoordinatesError,
+  InvalidElementStateError: InvalidElementStateError,
+  InvalidSelectorError: InvalidSelectorError,
+  JavascriptError: JavascriptError,
+  MoveTargetOutOfBoundsError: MoveTargetOutOfBoundsError,
+  NoSuchAlertError: NoSuchAlertError,
+  NoSuchElementError: NoSuchElementError,
+  NoSuchFrameError: NoSuchFrameError,
+  NoSuchSessionError: NoSuchSessionError,
+  NoSuchWindowError: NoSuchWindowError,
+  ScriptTimeoutError: ScriptTimeoutError,
+  SessionNotCreatedError: SessionNotCreatedError,
+  StaleElementReferenceError: StaleElementReferenceError,
+  TimeoutError: TimeoutError,
+  UnableToSetCookieError: UnableToSetCookieError,
+  UnableToCaptureScreenError: UnableToCaptureScreenError,
+  UnexpectedAlertOpenError: UnexpectedAlertOpenError,
+  UnknownCommandError: UnknownCommandError,
+  UnknownMethodError: UnknownMethodError,
+  UnsupportedOperationError: UnsupportedOperationError,
 
-exports.checkResponse = checkResponse;
-exports.checkLegacyResponse = checkLegacyResponse;
-exports.throwDecodedError = throwDecodedError;
+  checkResponse: checkResponse,
+  checkLegacyResponse: checkLegacyResponse,
+  encodeError: encodeError,
+  throwDecodedError: throwDecodedError,
+};

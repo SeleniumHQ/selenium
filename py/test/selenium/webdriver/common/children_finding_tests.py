@@ -15,11 +15,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 import unittest
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import InvalidSelectorException
-from selenium.webdriver.common.by import By
+
+import pytest
+from selenium.common.exceptions import (
+    WebDriverException,
+    NoSuchElementException)
+
 
 class ChildrenFindingTests(unittest.TestCase):
 
@@ -32,11 +34,8 @@ class ChildrenFindingTests(unittest.TestCase):
     def test_should_not_find_element_by_xpath(self):
         self._load_page("nestedElements")
         element = self.driver.find_element_by_name("form2")
-        try:
+        with pytest.raises(NoSuchElementException):
             element.find_element_by_xpath("select/x")
-            self.fail("Expected NoSuchElementException to have been thrown")
-        except NoSuchElementException as e:
-            pass
 
     def test_finding_dot_slash_elements_on_element_by_xpath_should_find_not_top_level_elements(self):
         self._load_simple_page()
@@ -49,7 +48,7 @@ class ChildrenFindingTests(unittest.TestCase):
         self._load_page("nestedElements")
         element = self.driver.find_element_by_name("form2")
         children = element.find_elements_by_xpath("select/option")
-        self.assertEqual(len(children), 8);
+        self.assertEqual(len(children), 8)
         self.assertEqual(children[0].text, "One")
         self.assertEqual(children[1].text, "Two")
 
@@ -99,11 +98,8 @@ class ChildrenFindingTests(unittest.TestCase):
     def test_should_find_element_by_id_when_no_match_in_context(self):
         self._load_page("nestedElements")
         element = self.driver.find_element_by_id("test_id_div")
-        try:
+        with pytest.raises(NoSuchElementException):
             element.find_element_by_id("test_id_out")
-            self.fail("Expected NoSuchElementException to have been thrown")
-        except NoSuchElementException as e:
-            pass
 
     def test_should_find_element_by_link_text(self):
         self._load_page("nestedElements")
@@ -156,77 +152,17 @@ class ChildrenFindingTests(unittest.TestCase):
             '*[name="selectomatic"]')
         self.assertEqual(2, len(elements))
 
-    def test_should_throw_an_error_if_user_passes_in_integer(self):
-        self._load_page("nestedElements")
-        element = self.driver.find_element_by_name("form2")
-        try:
-           element.find_element(By.ID, 333333)
-           self.fail("_should have thrown _web_driver Exception")
-        except InvalidSelectorException:
-            pass #_this is expected
-
-    def test_should_throw_an_error_if_user_passes_in_tuple(self):
-        self._load_page("nestedElements")
-        element = self.driver.find_element_by_name("form2")
-        try:
-           element.find_element((By.ID, 333333))
-           self.fail("_should have thrown _web_driver Exception")
-        except InvalidSelectorException:
-            pass #_this is expected
-
-    def test_should_throw_an_error_if_user_passes_inNone(self):
-        self._load_page("nestedElements")
-        element = self.driver.find_element_by_name("form2")
-        try:
-           element.find_element(By.ID, None)
-           self.fail("_should have thrown _web_driver Exception")
-        except InvalidSelectorException:
-            pass #_this is expected
-
     def test_should_throw_an_error_if_user_passes_in_invalid_by(self):
         self._load_page("nestedElements")
         element = self.driver.find_element_by_name("form2")
-        try:
-           element.find_element("css", "body")
-           self.fail("_should have thrown _web_driver Exception")
-        except InvalidSelectorException:
-            pass #_this is expected
-
-    def test_should_throw_an_error_if_user_passes_in_integer_when_find_elements(self):
-        self._load_page("nestedElements")
-        element = self.driver.find_element_by_name("form2")
-        try:
-           element.find_elements(By.ID, 333333)
-           self.fail("_should have thrown _web_driver Exception")
-        except InvalidSelectorException:
-            pass #_this is expected
-
-    def test_should_throw_an_error_if_user_passes_in_tuple_when_find_elements(self):
-        self._load_page("nestedElements")
-        element = self.driver.find_element_by_name("form2")
-        try:
-           element.find_elements((By.ID, 333333))
-           self.fail("_should have thrown _web_driver Exception")
-        except InvalidSelectorException:
-            pass #_this is expected
-
-    def test_should_throw_an_error_if_user_passes_inNone_when_find_elements(self):
-        self._load_page("nestedElements")
-        element = self.driver.find_element_by_name("form2")
-        try:
-           element.find_elements(By.ID, None)
-           self.fail("should have thrown webdriver Exception")
-        except InvalidSelectorException:
-            pass #_this is expected
+        with pytest.raises(WebDriverException):
+            element.find_element("foo", "bar")
 
     def test_should_throw_an_error_if_user_passes_in_invalid_by_when_find_elements(self):
         self._load_page("nestedElements")
         element = self.driver.find_element_by_name("form2")
-        try:
-           element.find_elements("css", "body")
-           self.fail("Should have thrown WebDriver Exception")
-        except InvalidSelectorException:
-            pass #_this is expected
+        with pytest.raises(WebDriverException):
+            element.find_elements("foo", "bar")
 
     def _page_url(self, name):
         return self.webserver.where_is(name + '.html')

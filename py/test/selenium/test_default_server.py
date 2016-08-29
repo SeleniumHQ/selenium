@@ -17,13 +17,13 @@
 
 from selenium import selenium
 import unittest
-import sys, time
+
 
 class TestDefaultServer(unittest.TestCase):
 
     seleniumHost = 'localhost'
     seleniumPort = str(4444)
-    #browserStartCommand = "c:\\program files\\internet explorer\\iexplore.exe"
+    # browserStartCommand = "c:\\program files\\internet explorer\\iexplore.exe"
     browserStartCommand = "*firefox"
     browserURL = "http://localhost:4444"
 

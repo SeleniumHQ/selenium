@@ -133,5 +133,15 @@ namespace OpenQA.Selenium.Support.Extensions
 
             Assert.That(() => driver.ExecuteJavaScript<int>(JavaScript, JavaScriptParameters), Throws.InstanceOf<WebDriverException>());
         }
+
+        [Test]
+        public void ShouldAllowExecutingJavaScriptWithoutReturningResult()
+        {
+            Expect.Once.On(driver)
+                .Method("ExecuteScript")
+                .With(JavaScript, JavaScriptParameters);
+
+            Assert.That(() => driver.ExecuteJavaScript(JavaScript, JavaScriptParameters), Throws.Nothing);
+        }
     }
 }

@@ -3,21 +3,23 @@ java_library(name = 'interactions',
     'ActionChainExecutor.java',
     'Actions.java',
     'CanPerformActionChain.java',
-  ] + glob(['*Action.java', 'internal/*Action.java', 'touch/*.java']),
+  ] + glob(['*Action.java', 'internal/*Action.java', 'touch/*.java'], excludes = ['Action.java']),
   exported_deps = [
     ':core',
     ':exceptions',
     '//java/client/src/org/openqa/selenium:core',
   ],
   deps = [
-    ':core',
     '//third_party/java/guava:guava',
   ],
-  visibility = ['PUBLIC'],
+  visibility = [
+    '//java/client/src/org/openqa/selenium:selenium',
+  ],
 )
 
 java_library(name = 'core',
   srcs = [
+    'Action.java',
     'HasInputDevices.java',
     'HasTouchScreen.java',
     'Keyboard.java',
@@ -42,7 +44,6 @@ java_library(name = 'exceptions',
     '//java/client/src/org/openqa/selenium:exceptions',
   ],
   visibility = [
-    '//java/client/src/org/openqa/selenium:webdriver-api',
     '//java/client/src/org/openqa/selenium:core',
     '//java/client/src/org/openqa/selenium/remote:remote',
   ],

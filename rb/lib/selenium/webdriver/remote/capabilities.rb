@@ -25,19 +25,18 @@ module Selenium
       # server is being asked to create.
       #
       class Capabilities
-
         DEFAULTS = {
-          :browser_name          => "",
-          :version               => "",
-          :platform              => :any,
-          :javascript_enabled    => false,
-          :css_selectors_enabled => false,
-          :takes_screenshot      => false,
-          :native_events         => false,
-          :rotatable             => false,
-          :firefox_profile       => nil,
-          :proxy                 => nil
-        }
+          browser_name: '',
+          version: '',
+          platform: :any,
+          javascript_enabled: false,
+          css_selectors_enabled: false,
+          takes_screenshot: false,
+          native_events: false,
+          rotatable: false,
+          firefox_profile: nil,
+          proxy: nil
+        }.freeze
 
         DEFAULTS.each_key do |key|
           define_method key do
@@ -50,34 +49,24 @@ module Selenium
         end
 
         alias_method :css_selectors_enabled?, :css_selectors_enabled
-        alias_method :javascript_enabled?   , :javascript_enabled
-        alias_method :native_events?        , :native_events
-        alias_method :takes_screenshot?     , :takes_screenshot
-        alias_method :rotatable?            , :rotatable
+        alias_method :javascript_enabled?, :javascript_enabled
+        alias_method :native_events?, :native_events
+        alias_method :takes_screenshot?, :takes_screenshot
+        alias_method :rotatable?, :rotatable
 
         #
         # Convenience methods for the common choices.
         #
 
         class << self
-          def android(opts = {})
-            new({
-              :browser_name       => "android",
-              :platform           => :android,
-              :javascript_enabled => true,
-              :rotatable          => true,
-              :takes_screenshot   => true
-            }.merge(opts))
-          end
-
           def chrome(opts = {})
             new({
-              :browser_name          => "chrome",
-              :javascript_enabled    => true,
-              :css_selectors_enabled => true,
-              :loggingPrefs => {:browser => "ALL",
-                                :driver => "ALL"}
-                }.merge(opts))
+              browser_name: 'chrome',
+              javascript_enabled: true,
+              css_selectors_enabled: true,
+              loggingPrefs: {browser: 'ALL',
+                             driver: 'ALL'}
+            }.merge(opts))
           end
 
           def edge(opts = {})
@@ -85,72 +74,56 @@ module Selenium
           end
 
           def firefox(opts = {})
-            return W3CCapabilities.firefox(opts) if opts[:marionette]
+            return W3CCapabilities.firefox(opts) unless opts[:marionette] == false
 
             new({
-              :browser_name          => "firefox",
-              :javascript_enabled    => true,
-              :takes_screenshot      => true,
-              :css_selectors_enabled => true
+              browser_name: 'firefox',
+              javascript_enabled: true,
+              takes_screenshot: true,
+              css_selectors_enabled: true
             }.merge(opts))
           end
 
           def htmlunit(opts = {})
             new({
-              :browser_name => "htmlunit"
+              browser_name: 'htmlunit'
             }.merge(opts))
           end
 
           def htmlunitwithjs(opts = {})
             new({
-              :browser_name => "htmlunit",
-              :javascript_enabled => true
+              browser_name: 'htmlunit',
+              javascript_enabled: true
             }.merge(opts))
           end
 
           def internet_explorer(opts = {})
             new({
-              :browser_name          => "internet explorer",
-              :platform              => :windows,
-              :takes_screenshot      => true,
-              :css_selectors_enabled => true,
-              :native_events         => true
+              browser_name: 'internet explorer',
+              platform: :windows,
+              takes_screenshot: true,
+              css_selectors_enabled: true,
+              native_events: true
             }.merge(opts))
           end
           alias_method :ie, :internet_explorer
 
-          def iphone(opts = {})
-            new({
-              :browser_name       => "iPhone",
-              :platform           => :mac,
-              :javascript_enabled => true
-            }.merge(opts))
-          end
-
-          def ipad(opts = {})
-            new({
-              :browser_name       => "iPad",
-              :platform           => :mac,
-              :javascript_enabled => true
-            }.merge(opts))
-          end
-
           def phantomjs(opts = {})
             new({
-              :browser_name          => "phantomjs",
-              :javascript_enabled    => true,
-              :takes_screenshot      => true,
-              :css_selectors_enabled => true
+              browser_name: 'phantomjs',
+              javascript_enabled: true,
+              takes_screenshot: true,
+              css_selectors_enabled: true
             }.merge(opts))
           end
 
           def safari(opts = {})
             new({
-              :browser_name          => "safari",
-              :platform              => :mac,
-              :javascript_enabled    => true,
-              :takes_screenshot      => true,
-              :css_selectors_enabled => true
+              browser_name: 'safari',
+              platform: :mac,
+              javascript_enabled: true,
+              takes_screenshot: true,
+              css_selectors_enabled: true
             }.merge(opts))
           end
 
@@ -162,15 +135,15 @@ module Selenium
             data = data.dup
 
             caps = new
-            caps.browser_name          = data.delete("browserName")
-            caps.version               = data.delete("version")
-            caps.platform              = data.delete("platform").downcase.to_sym if data.has_key?('platform')
-            caps.javascript_enabled    = data.delete("javascriptEnabled")
-            caps.css_selectors_enabled = data.delete("cssSelectorsEnabled")
-            caps.takes_screenshot      = data.delete("takesScreenshot")
-            caps.native_events         = data.delete("nativeEvents")
-            caps.rotatable             = data.delete("rotatable")
-            caps.proxy                 = Proxy.json_create(data['proxy']) if data.has_key?('proxy')
+            caps.browser_name          = data.delete('browserName')
+            caps.version               = data.delete('version')
+            caps.platform              = data.delete('platform').downcase.to_sym if data.key?('platform')
+            caps.javascript_enabled    = data.delete('javascriptEnabled')
+            caps.css_selectors_enabled = data.delete('cssSelectorsEnabled')
+            caps.takes_screenshot      = data.delete('takesScreenshot')
+            caps.native_events         = data.delete('nativeEvents')
+            caps.rotatable             = data.delete('rotatable')
+            caps.proxy                 = Proxy.json_create(data['proxy']) if data.key?('proxy') && !data['proxy'].empty?
 
             # any remaining pairs will be added as is, with no conversion
             caps.merge!(data)
@@ -213,12 +186,12 @@ module Selenium
         end
 
         def merge!(other)
-          if other.respond_to?(:capabilities, true) && other.capabilities.kind_of?(Hash)
+          if other.respond_to?(:capabilities, true) && other.capabilities.is_a?(Hash)
             @capabilities.merge! other.capabilities
-          elsif other.kind_of? Hash
+          elsif other.is_a? Hash
             @capabilities.merge! other
           else
-            raise ArgumentError, "argument should be a Hash or implement #capabilities"
+            raise ArgumentError, 'argument should be a Hash or implement #capabilities'
           end
         end
 
@@ -236,7 +209,7 @@ module Selenium
         # @api private
         #
 
-        def as_json(opts = nil)
+        def as_json(*)
           hash = {}
 
           @capabilities.each do |key, value|
@@ -259,28 +232,25 @@ module Selenium
           hash
         end
 
-        def to_json(*args)
+        def to_json(*)
           JSON.generate as_json
         end
 
         def ==(other)
-          return false unless other.kind_of? self.class
+          return false unless other.is_a? self.class
           as_json == other.as_json
         end
         alias_method :eql?, :==
 
         protected
 
-        def capabilities
-          @capabilities
-        end
+        attr_reader :capabilities
 
         private
 
         def camel_case(str)
-          str.gsub(/_([a-z])/) { $1.upcase }
+          str.gsub(/_([a-z])/) { Regexp.last_match(1).upcase }
         end
-
       end # Capabilities
     end # Remote
   end # WebDriver

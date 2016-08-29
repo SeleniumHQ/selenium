@@ -239,6 +239,16 @@
     <span id="hideMe" onclick="this.style.display = 'none';">Click to hide me.</span>
 </div>
 
+<div id="hideOnBlur" tabindex="0"
+     style="width: 100px; height: 100px; border: 1px solid red"
+     onblur="appendMessage('blur'); this.style.display = 'none';">
+  <div id="hideOnBlurChild"
+       style="width: 30px; height: 30px; border: 1px solid blue">
+    x
+  </div>
+  Focusable. Will hide when focus is lost.
+</div>
+
 <div style="margin-top: 10px;">
   Click actions delayed by 3000ms:
   <div id="clickToShow" onclick="delayedShowHide(3000, true);"

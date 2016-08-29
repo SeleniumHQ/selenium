@@ -29,7 +29,8 @@ test.suite(function(env) {
   test.beforeEach(function() { driver = env.builder().build(); });
   test.afterEach(function() { driver.quit(); });
 
-  test.ignore(env.browsers(Browser.PHANTOM_JS, Browser.SAFARI)).
+  test.ignore(
+      env.browsers(Browser.FIREFOX, Browser.PHANTOM_JS, Browser.SAFARI)).
   describe('WebDriver.actions()', function() {
 
     test.it('can move to and click element in an iframe', function() {

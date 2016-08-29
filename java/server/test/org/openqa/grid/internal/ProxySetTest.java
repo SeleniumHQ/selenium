@@ -23,6 +23,7 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -33,7 +34,7 @@ import java.util.Map;
 public class ProxySetTest {
 
   @Test
-  public void removeIfPresent() {
+  public void removeIfPresent() throws Exception {
     Registry registry = Registry.newInstance();
     try {
       ProxySet set = registry.getAllProxies();
@@ -93,17 +94,17 @@ public class ProxySetTest {
 
   }
 
-  public StubbedRemoteProxy buildStubbedRemoteProxy(Registry registry, int totalUsed){
-    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-host","localhost");
+  public StubbedRemoteProxy buildStubbedRemoteProxy(Registry registry, int totalUsed) {
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    config.host = "remote_host";
+    config.port = totalUsed;
+    config.role = "webdriver";
+    RegistrationRequest req = RegistrationRequest.build(config);
     req.getCapabilities().clear();
 
     DesiredCapabilities capability = new DesiredCapabilities();
     capability.setBrowserName(BrowserType.CHROME);
     req.addDesiredCapability(capability);
-
-    Map<String, Object> config = new HashMap<>();
-    config.put(RegistrationRequest.REMOTE_HOST, "http://remote_host:" + totalUsed);
-    req.setConfiguration(config);
 
     StubbedRemoteProxy tempProxy = new StubbedRemoteProxy(req, registry);
     tempProxy.setTotalUsed(totalUsed);
@@ -122,7 +123,7 @@ public class ProxySetTest {
     }
 
 
-    public void setTotalUsed(int count){
+    public void setTotalUsed(int count) {
       this.testsRunning = count;
     }
 

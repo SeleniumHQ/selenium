@@ -17,23 +17,21 @@
 
 package org.openqa.selenium.firefox;
 
-import com.google.common.base.Throwables;
-
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
-import java.util.List;
-
 /**
  * An implementation of the {#link WebDriver} interface that drives Firefox using Marionette interface.
+ *
+ * @deprecated One should use FirefoxDriver with capability marionette = true or false respectively.
  */
 @Beta
+@Deprecated
 public class MarionetteDriver extends RemoteWebDriver {
 
   /**
@@ -87,14 +85,9 @@ public class MarionetteDriver extends RemoteWebDriver {
   }
 
   private GeckoDriverService setupService(int port) {
-    try {
-      GeckoDriverService.Builder builder = new GeckoDriverService.Builder();
-      builder.usingPort(port);
+    GeckoDriverService.Builder builder = new GeckoDriverService.Builder();
+    builder.usingPort(port);
 
-      return builder.build();
-
-    } catch (IllegalStateException ex) {
-      throw Throwables.propagate(ex);
-    }
+    return builder.build();
   }
 }

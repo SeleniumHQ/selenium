@@ -17,6 +17,7 @@ cpp/iedriver/IEReturnTypes.h
 java/client/src/org/openqa/selenium/ie/IeReturnTypes.java
 javascript/deps.js
 javascript/node/selenium-webdriver/node_modules/
+javascript/safari-driver/node_modules/
 .idea/vcs.xml
 .idea/workspace.xml
 .idea/dictionaries/
@@ -61,6 +62,7 @@ obj/
 *.sdf
 *.vs
 *.opendb
+*.VC.db
 *.aps
 Generated/
 ipch/
@@ -75,6 +77,7 @@ GSYMS
 GTAGS
 Gemfile.lock
 /rb/.bundle
+/rb/.idea
 .sonar/
 .idea/sonarIssues.xml
 .idea/inspectionProfiles/profiles_settings.xml

@@ -1,6 +1,9 @@
 language: java
 sudo: false
 
+jdk:
+  - oraclejdk8
+
 notifications:
   email: false
   irc:
@@ -11,10 +14,32 @@ notifications:
     use_notice: true
     skip_join: true
 
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+
 script:
+  - export CHROME_REVISION=`curl -s http://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/LAST_CHANGE`
+  - export CHROMEDRIVER_VERSION=`curl -s http://chromedriver.storage.googleapis.com/LATEST_RELEASE`
+
+  - curl -L -O "http://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/${CHROME_REVISION}/chrome-linux.zip"
+  - unzip chrome-linux.zip
+
+  - curl -L -O "http://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip"
+  - unzip chromedriver_linux64.zip
+
+  - chmod +x chromedriver
+  - mv chromedriver chrome-linux/chromedriver
+  - export PATH=$PATH:$PWD/chrome-linux
+
+  - export CHROME_BINARY=$PWD/chrome-linux/chrome
+  - export CHROMEDRIVER=$PWD/chrome-linux/chromedriver
+
+  - export PY_FILES_CHANGED=`git diff --name-only $TRAVIS_COMMIT_RANGE | grep ^py/`
+  - export RB_FILES_CHANGED=`git diff --name-only $TRAVIS_COMMIT_RANGE | grep ^rb/`
+
   - ./go clean build
   - |
-    export PY_FILES_CHANGED=`git diff --name-only $TRAVIS_COMMIT_RANGE | grep ^py/`
     if [[ $PY_FILES_CHANGED == py/* ]]; then
       pip install --user virtualenv
       export PATH=$PATH:$HOME/.local/bin
@@ -23,9 +48,16 @@ script:
       echo 'no Python files changed - skipping Python test suite'
     fi
   - |
-    export RB_FILES_CHANGED=`git diff --name-only $TRAVIS_COMMIT_RANGE | grep ^rb/`
     if [[ $RB_FILES_CHANGED == rb/* ]]; then
-      ./go //rb:unit-test //rb:phantomjs-test
+      export PHANTOMJS_NAME=phantomjs-2.1.1-linux-x86_64
+      curl -L -O "https://cnpmjs.org/mirrors/phantomjs/${PHANTOMJS_NAME}.tar.bz2"
+      tar -xvjf $PHANTOMJS_NAME.tar.bz2
+      chmod +x $PHANTOMJS_NAME/bin/phantomjs
+      mv $PHANTOMJS_NAME/bin/phantomjs chrome-linux/phantomjs
+      export PHANTOMJS_BINARY=$PWD/chrome-linux/phantomjs
+      rvm install 2.2.3
+      rvm use 2.2.3
+      ./go //rb:unit-test //rb:firefox-test //rb:phantomjs-test //rb:chrome-test
     else
       echo 'no Ruby files changed - skipping Ruby test suite'
     fi

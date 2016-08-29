@@ -1,0 +1,16 @@
+include_defs('//SELENIUM_VERSION')
+
+java_library(
+  name = 'leg-rc',
+  maven_coords = 'org.seleniumhq.selenium:selenium-leg-rc:' + SE_VERSION,
+  maven_pom_template = '//java/client/src/org/openqa/selenium:template-pom',
+  deps = [
+    '//java/client/src/com/thoughtworks/selenium:selenium',
+    '//java/server/src/org/openqa/selenium/server/htmlrunner:htmlrunner',
+    '//java/server/src/com/thoughtworks/selenium/webdriven:rc-emulation-servlet',
+  ],
+  visibility = [
+    '//java/server/src/org/openqa/grid/selenium:classes',
+  ],
+)
+

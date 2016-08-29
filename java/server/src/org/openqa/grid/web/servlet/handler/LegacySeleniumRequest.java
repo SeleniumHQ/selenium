@@ -17,16 +17,15 @@
 
 package org.openqa.grid.web.servlet.handler;
 
-import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.exception.NewSessionException;
 import org.openqa.grid.web.utils.BrowserNameUtils;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -85,19 +84,7 @@ public class LegacySeleniumRequest extends SeleniumBasedRequest {
         Map<String, Object> cap = new HashMap<>();
         // TODO freynaud : more splitting, like trying to guess the
         // platform or version ?
-
-        // We don't want to process Grid 1.0 environment names because
-        // they use an explicit mapping
-        // to a browser launcher string.
-        if (getRegistry().getConfiguration().getGrid1Mapping().containsKey(envt)) {
-          cap.put(RegistrationRequest.BROWSER, envt);
-        }
-
-        // Otherwise, process the environment string to extract the
-        // target browser and platform.
-        else {
-          cap.putAll(BrowserNameUtils.parseGrid2Environment(envt));
-        }
+        cap.putAll(BrowserNameUtils.parseGrid2Environment(envt));
 
         return cap;
       }
@@ -117,25 +104,8 @@ public class LegacySeleniumRequest extends SeleniumBasedRequest {
         if (piece.startsWith("1=")) {
           piece = URLDecoder.decode(piece, "UTF-8");
           String parts[] = piece.split("1=");
-
-          // We don't want to process Grid 1.0 environment names
-          // because they use an explicit mapping
-          // to a browser launcher string.
-          if (getRegistry().getConfiguration().getGrid1Mapping().containsKey(parts[1])) {
-            piece =
-                String.format(
-                    "1=%s",
-                    URLEncoder.encode(
-                        BrowserNameUtils.lookupGrid1Environment(parts[1], getRegistry()), "UTF-8"));
-          }
-
-          // Otherwise, the requested environment includes the browser
-          // name before the space.
-          else {
-            piece =
-                (String) BrowserNameUtils.parseGrid2Environment(piece).get(
-                    RegistrationRequest.BROWSER);
-          }
+          piece =
+            (String) BrowserNameUtils.parseGrid2Environment(piece).get(CapabilityType.BROWSER_NAME);
         }
         builder.append(piece).append("&");
       }

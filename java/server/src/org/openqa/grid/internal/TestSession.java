@@ -59,6 +59,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -140,10 +141,8 @@ public class TestSession {
   public long getInactivityTime() {
     if (ignoreTimeout) {
       return 0;
-    } else {
-      return timeSource.currentTimeInMillis() - lastActivity;
     }
-
+    return timeSource.currentTimeInMillis() - lastActivity;
   }
 
   public boolean isOrphaned() {
@@ -195,13 +194,13 @@ public class TestSession {
 
   private HttpClient getClient() {
     Registry reg = slot.getProxy().getRegistry();
-    int browserTimeout = reg.getConfiguration().getBrowserTimeout();
-    if (browserTimeout > 0){
-      final int selenium_server_cleanup_cycle = browserTimeout / 10;
+    long browserTimeout = TimeUnit.SECONDS.toMillis(reg.getConfiguration().browserTimeout);
+    if (browserTimeout > 0) {
+      final long selenium_server_cleanup_cycle = browserTimeout / 10;
       browserTimeout += (selenium_server_cleanup_cycle + MAX_NETWORK_LATENCY);
       browserTimeout *=2; // Lets not let this happen too often
     }
-    return slot.getProxy().getHttpClientFactory().getGridHttpClient(browserTimeout, browserTimeout);
+    return slot.getProxy().getHttpClientFactory().getGridHttpClient((int)browserTimeout, (int)browserTimeout);
   }
 
   /*
@@ -330,11 +329,10 @@ public class TestSession {
           }
           setExternalKey(key);
           return consumedData;
-        } else {
-          throw new GridException(
-              "new session request for webdriver should contain a location header "
-              + "or an 'application/json;charset=UTF-8' response body with the session ID.");
         }
+        throw new GridException(
+            "new session request for webdriver should contain a location header "
+            + "or an 'application/json;charset=UTF-8' response body with the session ID.");
       }
       ExternalSessionKey key = ExternalSessionKey.fromWebDriverRequest(h.getValue());
       setExternalKey(key);
@@ -364,7 +362,7 @@ public class TestSession {
                                                                           IOException {
     HttpClient client = getClient();
     URL remoteURL = slot.getRemoteURL();
-    HttpHost host = new HttpHost(remoteURL.getHost(), remoteURL.getPort());
+    HttpHost host = new HttpHost(remoteURL.getHost(), remoteURL.getPort(), remoteURL.getProtocol());
 
     return client.execute(host, proxyRequest);
   }
@@ -495,8 +493,7 @@ public class TestSession {
         String wrongPath = returnedLocation.getPath();
         String correctPath = wrongPath.replace(driverPath, "");
         Hub hub = slot.getProxy().getRegistry().getHub();
-        String location = "http://" + hub.getHost() + ":" + hub.getPort() + pathSpec + correctPath;
-        response.setHeader(name, location);
+        response.setHeader(name, hub.getUrl(pathSpec + correctPath).toString());
       } else {
         response.setHeader(name, value);
       }

@@ -23,6 +23,7 @@ export_file(name = 'nsINativeIME.xpt',
 )
 
 export_file(name = "imehandler-dll",
-  src = "Win32/Release/imehandler.dll",
+  out = 'imehandler.dll',
+  src = 'Win32/Release/imehandler.dll',
   visibility = [ '//javascript/firefox-driver:win-components' ],
 )

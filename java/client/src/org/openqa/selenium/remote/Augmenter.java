@@ -18,7 +18,6 @@
 package org.openqa.selenium.remote;
 
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 
@@ -68,11 +67,10 @@ public class Augmenter extends BaseAugmenter {
             "org.openqa.selenium.remote.RemoteWebDriver$$EnhancerByCGLIB")) {
       return (RemoteWebDriver) driver;
 
-    } else {
-      logger.warning("Augmenter should be applied to the instances of @Augmentable classes " +
-                     "or previously augmented instances only");
-      return null;
     }
+    logger.warning("Augmenter should be applied to the instances of @Augmentable classes " +
+        "or previously augmented instances only");
+    return null;
   }
 
   private void copyFields(Class<?> clazz, Object source, Object target) {
@@ -102,7 +100,7 @@ public class Augmenter extends BaseAugmenter {
       Object value = field.get(source);
       field.set(target, value);
     } catch (IllegalAccessException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 

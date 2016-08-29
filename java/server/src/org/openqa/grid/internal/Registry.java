@@ -21,11 +21,9 @@ import com.google.common.base.Predicate;
 
 import net.jcip.annotations.ThreadSafe;
 
-import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.listeners.RegistrationListener;
 import org.openqa.grid.internal.listeners.SelfHealingProxy;
-import org.openqa.grid.internal.utils.CapabilityMatcher;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -61,24 +59,18 @@ public class Registry {
   private final HttpClientFactory httpClientFactory;
   private final NewSessionRequestQueue newSessionQueue;
   private final Matcher matcherThread = new Matcher();
-  private final List<RemoteProxy> registeringProxies = new CopyOnWriteArrayList<RemoteProxy>();
-  private final CapabilityMatcher capabilityMatcher;
+  private final List<RemoteProxy> registeringProxies = new CopyOnWriteArrayList<>();
 
   private volatile boolean stop = false;
   // The following three variables need to be volatile because we expose a public setters
-  private volatile int newSessionWaitTimeout;
-  private volatile Prioritizer prioritizer;
   private volatile Hub hub;
 
   private Registry(Hub hub, GridHubConfiguration config) {
     this.hub = hub;
-    this.capabilityMatcher = config.getCapabilityMatcher();
-    this.newSessionWaitTimeout = config.getNewSessionWaitTimeout();
-    this.prioritizer = config.getPrioritizer();
     this.newSessionQueue = new NewSessionRequestQueue();
     this.configuration = config;
     this.httpClientFactory = new HttpClientFactory();
-    proxies = new ProxySet(config.isThrowOnCapabilityNotPresent());
+    proxies = new ProxySet(config.throwOnCapabilityNotPresent);
     this.matcherThread.setUncaughtExceptionHandler(new UncaughtExceptionHandler());
   }
 
@@ -105,19 +97,6 @@ public class Registry {
 
   public GridHubConfiguration getConfiguration() {
     return configuration;
-  }
-
-  /**
-   * How long a session can remain in the newSession queue before being evicted.
-   *
-   * @return the new session wait timeout
-   */
-  public int getNewSessionWaitTimeout() {
-    return newSessionWaitTimeout;
-  }
-
-  public void setNewSessionWaitTimeout(int newSessionWaitTimeout) {
-    this.newSessionWaitTimeout = newSessionWaitTimeout;
   }
 
   /**
@@ -268,7 +247,7 @@ public class Registry {
           public boolean apply(RequestHandler input) {
             return takeRequestHandler(input);
           }
-        }, prioritizer);
+        }, configuration.prioritizer);
         // Just make sure we delete anything that is logged on this thread from memory
         LoggingManager.perSessionLogHandler().clearThreadTempLogs();
       } catch (InterruptedException e) {
@@ -448,14 +427,6 @@ public class Registry {
     return activeTestSessions.unmodifiableSet();
   }
 
-  public void setPrioritizer(Prioritizer prioritizer) {
-    this.prioritizer = prioritizer;
-  }
-
-  public Prioritizer getPrioritizer() {
-    return prioritizer;
-  }
-
   public RemoteProxy getProxyById(String id) {
     return proxies.getProxyById(id);
   }
@@ -469,9 +440,6 @@ public class Registry {
     public void uncaughtException(Thread t, Throwable e) {
       LOG.log(Level.SEVERE, "Matcher thread dying due to unhandled exception.", e);
     }
-  }
-  public CapabilityMatcher getCapabilityMatcher() {
-    return capabilityMatcher;
   }
 
 }

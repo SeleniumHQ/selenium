@@ -17,34 +17,39 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
 import static org.openqa.selenium.testing.DevMode.isInDevMode;
-import static org.openqa.selenium.testing.InProject.locate;
 
 import com.google.common.base.Throwables;
-import com.google.common.io.Files;
+import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.Build;
+import org.openqa.selenium.BuckBuild;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.testing.DevMode;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class SynthesizedFirefoxDriver extends FirefoxDriver {
 
   private static boolean runBuild = true;
+  private static File cachedExt = null;
 
   public SynthesizedFirefoxDriver() {
-    super(createTemporaryProfile());
+    this(new DesiredCapabilities(), new DesiredCapabilities());
   }
 
   public SynthesizedFirefoxDriver(FirefoxProfile profile) throws IOException {
-    super(copyExtensionTo(profile));
+    this(new DesiredCapabilities(ImmutableMap.of(PROFILE, profile)), new DesiredCapabilities());
   }
 
   public SynthesizedFirefoxDriver(Capabilities desiredCapabilities) {
@@ -52,7 +57,7 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
   }
 
   public SynthesizedFirefoxDriver(Capabilities desiredCapabilities,
-      Capabilities requiredCapabilities) {
+                                  Capabilities requiredCapabilities) {
     super(tweakCapabilities(desiredCapabilities), requiredCapabilities);
   }
 
@@ -61,6 +66,11 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
       return null;
     }
     DesiredCapabilities tweaked = new DesiredCapabilities(desiredCaps);
+
+    if (!Boolean.TRUE.equals(tweaked.getCapability(MARIONETTE))) {
+      tweaked.setCapability(MARIONETTE, false);
+    }
+
     if (tweaked.getCapability(PROFILE) == null) {
       tweaked.setCapability(PROFILE, createTemporaryProfile());
     } else {
@@ -83,13 +93,13 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
 
   private static FirefoxProfile createTemporaryProfile() {
     if (!isInDevMode()) {
-      FirefoxProfile profile = new FirefoxProfile();
+      FirefoxProfile profile = new CustomProfile();
 
       if (Boolean.getBoolean("webdriver.debug")) {
         try {
           Firebug.addTo(profile);
         } catch (IOException e) {
-          throw Throwables.propagate(e);
+          throw new RuntimeException(e);
         }
       }
 
@@ -99,31 +109,9 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
     }
 
     try {
-      File prefs = locate("build/javascript/firefox-driver/webdriver_prefs.json");
-      File noFocus = locate("build/cpp/i386/libnoblur.so");
-      File ime = locate("build/cpp/i386/libimehandler.so");
-      File noFocus64 = locate("build/cpp/amd64/libnoblur64.so");
-      File ime64 = locate("build/cpp/amd64/libimehandler64.so");
-      File dest = locate("java/client/build/production/org/openqa/selenium/firefox");
-      Files.copy(prefs, new File(dest, "webdriver_prefs.json"));
-
-      File libDir = new File(dest, "x86");
-      if (!libDir.exists()) {
-        assertTrue("Cannot create x86 library directory", libDir.mkdir());
-      }
-      Files.copy(noFocus, new File(libDir, "x_ignore_nofocus.so"));
-      Files.copy(ime, new File(libDir, "libibushandler.so"));
-
-      libDir = new File(dest, "amd64");
-      if (!libDir.exists()) {
-        assertTrue("Cannot create x86 library directory", libDir.mkdir());
-      }
-      Files.copy(noFocus64, new File(libDir, "x_ignore_nofocus.so"));
-      Files.copy(ime64, new File(libDir, "libibushandler.so"));
-
-      FirefoxProfile profile = new FirefoxProfile();
-
+      FirefoxProfile profile = new CustomProfile();
       if (Boolean.getBoolean("webdriver.debug")) {
+
         Firebug.addTo(profile);
       }
 
@@ -131,24 +119,81 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
       profile.setPreference("webdriver.log.file", "/dev/stdout");
 
       return copyExtensionTo(profile);
-    } catch (Exception e) {
+    } catch (IOException e) {
       e.printStackTrace();
-      fail(e.getMessage());
+      throw new RuntimeException(e);
     }
-    return null;
   }
 
   private static FirefoxProfile copyExtensionTo(FirefoxProfile profile) throws IOException {
-    File topDir = locate("Rakefile").getParentFile();
-    File ext = new File(topDir,
-        "build/javascript/firefox-driver/webdriver.xpi");
-    if (!ext.exists() || runBuild) {
-      ext.delete();
-      new Build().of("//javascript/firefox-driver:webdriver").go();
+    // Look for the xpi as a resource first.
+    URL resource = FirefoxDriver.class.getResource("/org/openqa/selenium/firefox/webdriver.xpi");
+    File ext;
+    if (resource != null || !DevMode.isInDevMode()) {
+      Path path = Files.createTempFile("syn-firefox", ".xpi");
+      ext = path.toFile();
+      ext.deleteOnExit();
+      try (InputStream is = resource.openStream()) {
+        Files.copy(is, path);
+      }
+    } else if (runBuild) {
+      Path output = new BuckBuild().of("//javascript/firefox-driver:webdriver").go();
+      ext = output.toFile();
+      cachedExt = ext;
       runBuild = false;
+    } else {
+      ext = cachedExt;
     }
+
+    if (ext == null) {
+      throw new RuntimeException("Cannot compile firefox extension");
+    }
+
     profile.addExtension(ext);
     return profile;
+  }
+
+  private static class CustomProfile extends FirefoxProfile {
+
+    private static Path prefs;
+
+    @Override
+    protected Reader onlyOverrideThisIfYouKnowWhatYouAreDoing() {
+      try {
+        return super.onlyOverrideThisIfYouKnowWhatYouAreDoing();
+      } catch (RuntimeException e) {
+        if (!DevMode.isInDevMode()) {
+          throw e;
+        }
+      }
+
+      prefs = actuallyGetPrefsPath();
+
+      try {
+        return Files.newBufferedReader(prefs);
+      } catch (IOException e) {
+        fail(Throwables.getStackTraceAsString(e));
+        throw new RuntimeException(e);
+      }
+    }
+
+    private Path actuallyGetPrefsPath() {
+      if (prefs != null) {
+        return prefs;
+      }
+
+      synchronized (CustomProfile.class) {
+        if (prefs == null) {
+          try {
+            prefs = new BuckBuild().of("//javascript/firefox-driver:webdriver_prefs").go();
+          } catch (IOException ioe) {
+            throw new WebDriverException(ioe);
+          }
+        }
+      }
+
+      return prefs;
+    }
   }
 }
 

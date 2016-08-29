@@ -27,11 +27,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
 import java.util.List;
 
 /**
@@ -185,20 +187,12 @@ public class FileHandler {
       return;
     }
 
-    FileChannel out = null;
-    FileChannel in = null;
-    try {
-      in = new FileInputStream(from).getChannel();
-      out = new FileOutputStream(to).getChannel();
-      final long length = in.size();
-
-      final long copied = in.transferTo(0, in.size(), out);
+    try (OutputStream out = new FileOutputStream(to)) {
+      final long copied = Files.copy(from.toPath(), out);
+      final long length = from.length();
       if (copied != length) {
-        throw new IOException("Could not transfer all bytes.");
+        throw new IOException("Could not transfer all bytes from " + from + " to " + to);
       }
-    } finally {
-      Closeables.close(out, false);
-      Closeables.close(in, false);
     }
   }
 

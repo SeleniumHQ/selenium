@@ -30,8 +30,7 @@ class WindowTests(unittest.TestCase):
         old_size = self.driver.get_window_size()
         self.driver.set_window_size(200, 200)
         wait.until(
-            lambda dr: dr.get_window_size() != old_size if old_size["width"] != 200 and old_size["height"] != 200 \
-                else True)
+            lambda dr: dr.get_window_size() != old_size if old_size["width"] != 200 and old_size["height"] != 200 else True)
         size = self.driver.get_window_size()
         self.driver.maximize_window()
         wait.until(lambda dr: dr.get_window_size() != size)

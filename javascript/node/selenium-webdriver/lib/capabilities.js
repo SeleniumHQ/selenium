@@ -141,18 +141,48 @@ const Capability = {
 
 /**
  * Describes how a proxy should be configured for a WebDriver session.
- * Proxy configuration object, as defined by the WebDriver wire protocol.
- * @typedef {(
- *     {proxyType: string}|
- *     {proxyType: string,
- *      proxyAutoconfigUrl: string}|
- *     {proxyType: string,
- *      ftpProxy: string,
- *      httpProxy: string,
- *      sslProxy: string,
- *      noProxy: string})}
+ * @record
  */
-var ProxyConfig;
+function ProxyConfig() {}
+
+/**
+ * The proxy type. Must be one of {"manual", "pac", "system"}.
+ * @type {string}
+ */
+ProxyConfig.prototype.proxyType;
+
+/**
+ * URL for the PAC file to use. Only used if {@link #proxyType} is "pac".
+ * @type {(string|undefined)}
+ */
+ProxyConfig.prototype.proxyAutoconfigUrl;
+
+/**
+ * The proxy host for FTP requests. Only used if {@link #proxyType} is "manual".
+ * @type {(string|undefined)}
+ */
+ProxyConfig.prototype.ftpProxy;
+
+/**
+ * The proxy host for HTTP requests. Only used if {@link #proxyType} is
+ * "manual".
+ * @type {(string|undefined)}
+ */
+ProxyConfig.prototype.httpProxy;
+
+/**
+ * The proxy host for HTTPS requests. Only used if {@link #proxyType} is
+ * "manual".
+ * @type {(string|undefined)}
+ */
+ProxyConfig.prototype.sslProxy;
+
+/**
+ * A comma delimited list of hosts which should bypass all proxies. Only used if
+ * {@link #proxyType} is "manual".
+ * @type {(string|undefined)}
+ */
+ProxyConfig.prototype.noProxy;
 
 
 /**
@@ -291,16 +321,11 @@ class Capabilities extends Map {
   /**
    * @return {!Object<string, ?>} The JSON representation of this instance.
    *     Note, the returned object may contain nested promised values.
+   * @suppress {checkTypes} Suppress [] access on a struct (state inherited from
+   *     Map).
    */
   [Symbols.serialize]() {
-    let ret = {};
-    for (let key of this.keys()) {
-      let cap = this.get(key);
-      if (cap) {
-        ret[key] = cap;
-      }
-    }
-    return ret;
+    return serialize(this);
   }
 
   /**
@@ -393,12 +418,33 @@ class Capabilities extends Map {
 }
 
 
+/**
+ * Serializes a capabilities object. This is defined as a standalone function
+ * so it may be type checked (where Capabilities[Symbols.serialize] has type
+ * checking disabled since it is defined with [] access on a struct).
+ *
+ * @param {!Capabilities} caps The capabilities to serialize.
+ * @return {!Object<string, ?>} The JSON representation of this instance.
+ *     Note, the returned object may contain nested promised values.
+ */
+function serialize(caps) {
+  let ret = {};
+  for (let key of caps.keys()) {
+    let cap = caps.get(key);
+    if (cap !== undefined && cap !== null) {
+      ret[key] = cap;
+    }
+  }
+  return ret;
+}
+
+
 // PUBLIC API
 
 
-exports.Browser = Browser;
-exports.Capabilities = Capabilities;
-exports.Capability = Capability;
-
-/** @typedef {ProxyConfig} */
-exports.ProxyConfig = ProxyConfig;
+module.exports = {
+  Browser: Browser,
+  Capabilities: Capabilities,
+  Capability: Capability,
+  ProxyConfig: ProxyConfig
+};

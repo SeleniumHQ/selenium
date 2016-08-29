@@ -22,12 +22,10 @@ require 'curb'
 module Selenium
   module WebDriver
     module Remote
-
       # added for rescue
       Bridge::QUIT_ERRORS << Curl::Err::RecvError
 
       module Http
-
         #
         # An alternative to the default Net::HTTP client.
         #
@@ -42,15 +40,14 @@ module Selenium
         #
 
         class Curb < Common
-
           private
 
           def request(verb, url, headers, payload)
-            client.url     = url.to_s
+            client.url = url.to_s
 
             # workaround for http://github.com/taf2/curb/issues/issue/40
             # curb will handle this for us anyway
-            headers.delete "Content-Length"
+            headers.delete 'Content-Length'
 
             client.headers = headers
 
@@ -62,10 +59,10 @@ module Selenium
             when :get
               client.http_get
             when :post
-              client.post_body = payload || ""
+              client.post_body = payload || ''
               client.http_post
             when :put
-              client.put_data = payload || ""
+              client.put_data = payload || ''
               client.http_put
             when :delete
               client.http_delete
@@ -85,12 +82,11 @@ module Selenium
               c.max_redirects   = MAX_REDIRECTS
               c.follow_location = true
               c.timeout         = @timeout if @timeout
-              c.verbose         = !!$DEBUG
+              c.verbose         = $DEBUG
 
               c
             )
           end
-
         end # Curb
       end # Http
     end # Remote

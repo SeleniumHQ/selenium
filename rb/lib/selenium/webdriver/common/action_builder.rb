@@ -19,7 +19,6 @@
 
 module Selenium
   module WebDriver
-
     #
     # The ActionBuilder provides the user a way to set up and perform
     # complex user interactions.
@@ -39,18 +38,17 @@ module Selenium
     #
 
     class ActionBuilder
-
       #
       # @api private
       #
 
       def initialize(mouse, keyboard)
-        @devices    = {
-          :mouse    => mouse,
-          :keyboard => keyboard
+        @devices = {
+          mouse: mouse,
+          keyboard: keyboard
         }
 
-        @actions  = []
+        @actions = []
       end
 
       #
@@ -70,7 +68,7 @@ module Selenium
       #
       # @example Press a key on an element
       #
-      #    el = driver.find_element(:id, "some_id")
+      #    el = driver.find_element(id: "some_id")
       #    driver.action.key_down(el, :shift).perform
       #
       # @param [:shift, :alt, :control, :command, :meta] The key to press.
@@ -80,9 +78,7 @@ module Selenium
       #
 
       def key_down(*args)
-        if args.first.kind_of? Element
-          @actions << [:mouse, :click, [args.shift]]
-        end
+        @actions << [:mouse, :click, [args.shift]] if args.first.is_a? Element
 
         @actions << [:keyboard, :press, args]
         self
@@ -98,7 +94,7 @@ module Selenium
       #
       # @example Release a key from an element
       #
-      #   el = driver.find_element(:id, "some_id")
+      #   el = driver.find_element(id: "some_id")
       #   driver.action.key_up(el, :alt).perform
       #
       # @param [:shift, :alt, :control, :command, :meta] The modifier key to release.
@@ -108,9 +104,7 @@ module Selenium
       #
 
       def key_up(*args)
-        if args.first.kind_of? Element
-          @actions << [:mouse, :click, [args.shift]]
-        end
+        @actions << [:mouse, :click, [args.shift]] if args.first.is_a? Element
 
         @actions << [:keyboard, :release, args]
         self
@@ -125,7 +119,7 @@ module Selenium
       #
       # @example Send the text "help" to an element
       #
-      #   el = driver.find_element(:id, "some_id")
+      #   el = driver.find_element(id: "some_id")
       #   driver.action.send_keys(el, "help").perform
       #
       # @example Send the text "help" to the currently focused element
@@ -138,9 +132,7 @@ module Selenium
       #
 
       def send_keys(*args)
-        if args.first.kind_of? Element
-          @actions << [:mouse, :click, [args.shift]]
-        end
+        @actions << [:mouse, :click, [args.shift]] if args.first.is_a? Element
 
         @actions << [:keyboard, :send_keys, args]
         self
@@ -154,7 +146,7 @@ module Selenium
       #
       # @example Clicking and holding on some element
       #
-      #    el = driver.find_element(:id, "some_id")
+      #    el = driver.find_element(id: "some_id")
       #    driver.action.click_and_hold(el).perform
       #
       # @param [Selenium::WebDriver::Element] element the element to move to and click.
@@ -171,7 +163,7 @@ module Selenium
       #
       # @example Releasing an element after clicking and holding it
       #
-      #    el = driver.find_element(:id, "some_id")
+      #    el = driver.find_element(id: "some_id")
       #    driver.action.click_and_hold(el).release.perform
       #
       # @return [ActionBuilder] A self reference.
@@ -191,7 +183,7 @@ module Selenium
       #
       # @example Clicking on an element
       #
-      #    el = driver.find_element(:id, "some_id")
+      #    el = driver.find_element(id: "some_id")
       #    driver.action.click(el).perform
       #
       # @example Clicking at the current mouse position
@@ -214,7 +206,7 @@ module Selenium
       #
       # @example Double click an element
       #
-      #    el = driver.find_element(:id, "some_id")
+      #    el = driver.find_element(id: "some_id")
       #    driver.action.double_click(el).perform
       #
       # @param [Selenium::WebDriver::Element] element An optional element to move to.
@@ -235,12 +227,12 @@ module Selenium
       #
       # @example Scroll element into view and move the mouse to it
       #
-      #   el = driver.find_element(:id, "some_id")
+      #   el = driver.find_element(id: "some_id")
       #   driver.action.move_to(el).perform
       #
       # @example
       #
-      #   el = driver.find_element(:id, "some_id")
+      #   el = driver.find_element(id: "some_id")
       #   driver.action.move_to(el, 100, 100).perform
       #
       # @param [Selenium::WebDriver::Element] element to move to.
@@ -252,11 +244,11 @@ module Selenium
       #
 
       def move_to(element, right_by = nil, down_by = nil)
-        if right_by && down_by
-          @actions << [:mouse, :move_to, [element, right_by, down_by]]
-        else
-          @actions << [:mouse, :move_to, [element]]
-        end
+        @actions << if right_by && down_by
+                      [:mouse, :move_to, [element, Integer(right_by), Integer(down_by)]]
+                    else
+                      [:mouse, :move_to, [element]]
+                    end
 
         self
       end
@@ -281,7 +273,7 @@ module Selenium
       #
 
       def move_by(right_by, down_by)
-        @actions << [:mouse, :move_by, [right_by, down_by]]
+        @actions << [:mouse, :move_by, [Integer(right_by), Integer(down_by)]]
         self
       end
 
@@ -291,7 +283,7 @@ module Selenium
       #
       # @example Context-click at middle of given element
       #
-      #   el = driver.find_element(:id, "some_id")
+      #   el = driver.find_element(id: "some_id")
       #   driver.action.context_click(el).perform
       #
       # @param [Selenium::WebDriver::Element] element An element to context click.
@@ -310,8 +302,8 @@ module Selenium
       #
       # @example Drag and drop one element onto another
       #
-      #   el1 = driver.find_element(:id, "some_id1")
-      #   el2 = driver.find_element(:id, "some_id2")
+      #   el1 = driver.find_element(id: "some_id1")
+      #   el2 = driver.find_element(id: "some_id2")
       #   driver.action.drag_and_drop(el1, el2).perform
       #
       # @param [Selenium::WebDriver::Element] source element to emulate button down at.
@@ -334,7 +326,7 @@ module Selenium
       #
       # @example Drag and drop an element by offset
       #
-      #   el = driver.find_element(:id, "some_id1")
+      #   el = driver.find_element(id: "some_id1")
       #   driver.action.drag_and_drop_by(el, 100, 100).perform
       #
       # @param [Selenium::WebDriver::Element] source Element to emulate button down at.
@@ -353,19 +345,17 @@ module Selenium
         self
       end
 
-
       #
       # Executes the actions added to the builder.
       #
 
       def perform
-        @actions.each { |receiver, method, args|
+        @actions.each do |receiver, method, args|
           @devices.fetch(receiver).__send__(method, *args)
-        }
+        end
 
         nil
       end
-
     end # ActionBuilder
   end # WebDriver
 end # Selenium

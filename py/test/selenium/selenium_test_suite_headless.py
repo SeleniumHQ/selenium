@@ -16,16 +16,14 @@
 # under the License.
 
 import unittest
-from . import test_ajax_jsf
-from . import test_default_server
-from . import test_google
 from . import test_i18n
 import sys
 
+
 def suite():
-    return unittest.TestSuite((\
+    return unittest.TestSuite((
         unittest.makeSuite(test_i18n.TestI18n),
-        ))
+    ))
 
 if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite())

@@ -79,7 +79,7 @@ describe('promise.consume()', function() {
     });
     return promise.delayed(75).then(function() {
       p.cancel();
-      return p.thenCatch(function() {
+      return p.catch(function() {
         return promise.delayed(300);
       });
     }).then(function() {
@@ -122,7 +122,7 @@ describe('promise.consume()', function() {
       values.push(1);
       yield promise.rejected(e);
       values.push(2);
-    }).thenCatch(function() {
+    }).catch(function() {
       assert.deepEqual([1], values);
     });
   });
@@ -227,7 +227,7 @@ describe('promise.consume()', function() {
           values.push(i++);
         });
       }
-    }, 75).thenCatch(function() {
+    }, 75).catch(function() {
       assert.deepEqual(
           [0, 1, 2], values, 'Should complete one loop of wait condition');
     });

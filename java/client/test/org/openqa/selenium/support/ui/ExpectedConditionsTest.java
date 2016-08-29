@@ -100,7 +100,7 @@ public class ExpectedConditionsTest {
   public void setUpMocks() {
     MockitoAnnotations.initMocks(this);
 
-    wait = new FluentWait<WebDriver>(mockDriver, mockClock, mockSleeper)
+    wait = new FluentWait<>(mockDriver, mockClock, mockSleeper)
       .withTimeout(1, TimeUnit.SECONDS)
       .pollingEvery(250, TimeUnit.MILLISECONDS);
   }

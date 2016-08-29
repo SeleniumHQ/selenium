@@ -21,7 +21,8 @@ import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.BaseRemoteProxy;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -76,13 +77,13 @@ public class RegistrationServlet extends RegistryBasedServlet {
 
     // for non specified param, use what is on the hub.
     GridHubConfiguration hubConfig = getRegistry().getConfiguration();
-    for (String key : hubConfig.getAllParams().keySet()) {
-      if (!server.getConfiguration().containsKey(key)) {
-        server.getConfiguration().put(key, hubConfig.getAllParams().get(key));
-      }
-    }
+    GridNodeConfiguration nodeConfig = new GridNodeConfiguration();
+    nodeConfig.merge(hubConfig);
+    nodeConfig.merge(server.getConfiguration());
+    nodeConfig.host = server.getConfiguration().host;
+    nodeConfig.port = server.getConfiguration().port;
+    server.setConfiguration(nodeConfig);
 
-    // TODO freynaud : load template desiredCapability from the hub. Is that useful?
     final RemoteProxy proxy = BaseRemoteProxy.getNewInstance(server, getRegistry());
 
     reply(response, "ok");

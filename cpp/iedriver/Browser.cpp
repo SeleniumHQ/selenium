@@ -460,17 +460,22 @@ bool Browser::Wait(const std::string& page_load_strategy) {
     return false;
   }
 
-  // Waiting for browser.ReadyState == READYSTATE_COMPLETE...;
+  READYSTATE expected_ready_state = READYSTATE_COMPLETE;
+  if (page_load_strategy == "eager") {
+    expected_ready_state = READYSTATE_INTERACTIVE;
+  }
+
+  // Waiting for browser.ReadyState >= expected ready state
   is_navigating = this->is_navigation_started_;
   READYSTATE ready_state;
   HRESULT hr = this->browser_->get_ReadyState(&ready_state);
-  if (is_navigating || FAILED(hr) || ready_state != READYSTATE_COMPLETE) {
+  if (is_navigating || FAILED(hr) || ready_state < expected_ready_state) {
     if (is_navigating) {
       LOG(DEBUG) << "DocumentComplete event fired, indicating a new navigation.";
     } else if (FAILED(hr)) {
       LOGHR(DEBUG, hr) << "IWebBrowser2::get_ReadyState failed.";
     } else {
-      LOG(DEBUG) << "Browser ReadyState is not '4', indicating 'Complete'; it was " << ready_state;
+      LOG(DEBUG) << "Browser ReadyState is not at least '" << expected_ready_state << "'; it was " << ready_state;
     }
     return false;
   }

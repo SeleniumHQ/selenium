@@ -90,16 +90,7 @@ public class WebProxyHtmlRendererBeta implements HtmlRenderer {
   private String tabConfig() {
     StringBuilder builder = new StringBuilder();
     builder.append("<div type='config' class='content_detail'>");
-    Map<String, Object> config = proxy.getConfig();
-
-    for (String key : config.keySet()) {
-      builder.append("<p>");
-      builder.append(key);
-      builder.append(":");
-      builder.append(config.get(key));
-      builder.append("</p>");
-    }
-
+    builder.append(proxy.getConfig().toString("<p>%1$s: %2$s</p>"));
     builder.append("</div>");
     return builder.toString();
   }
@@ -203,38 +194,33 @@ public class WebProxyHtmlRendererBeta implements HtmlRenderer {
     Platform res = null;
     if (proxy.getTestSlots().size() == 0) {
       return "Unknown";
-    } else {
-      res = getPlatform(proxy.getTestSlots().get(0));
-
     }
+    res = getPlatform(proxy.getTestSlots().get(0));
 
     for (TestSlot slot : proxy.getTestSlots()) {
       Platform tmp = getPlatform(slot);
       if (tmp != res) {
         return "mixed OS";
-      } else {
-        res = tmp;
       }
+      res = tmp;
     }
     if (res == null) {
       return "not specified";
-    } else {
-      return res.toString();
     }
+    return res.toString();
   }
 
   private static Platform getPlatform(TestSlot slot) {
     Object o = slot.getCapabilities().get(CapabilityType.PLATFORM);
     if (o == null) {
       return Platform.ANY;
+    }
+    if (o instanceof String) {
+      return Platform.valueOf((String) o);
+    } else if (o instanceof Platform) {
+      return (Platform) o;
     } else {
-      if (o instanceof String) {
-        return Platform.valueOf((String) o);
-      } else if (o instanceof Platform) {
-        return (Platform) o;
-      } else {
-        throw new GridException("Cannot cast " + o + " to org.openqa.selenium.Platform");
-      }
+      throw new GridException("Cannot cast " + o + " to org.openqa.selenium.Platform");
     }
   }
 }

@@ -29,10 +29,15 @@ namespace OpenQA.Selenium.Firefox
     /// </summary>
     public sealed class FirefoxDriverService : DriverService
     {
-        private const string FirefoxDriverServiceFileName = "wires.exe";
-        private static readonly Uri FirefoxDriverDownloadUrl = new Uri("https://github.com/jgraham/wires/releases");
-        private string browserBinaryPath = @"C:\Program Files (x86)\Nightly\firefox.exe";
+        private const string DefaultFirefoxDriverServiceFileName = "geckodriver";
+        private static readonly Uri FirefoxDriverDownloadUrl = new Uri("https://github.com/mozilla/geckodriver/releases");
+
+        private bool connectToRunningBrowser;
+        private bool disableBrowserMultiprocessSupport;
         private int browserCommunicationPort = -1;
+        private string browserBinaryPath = string.Empty;
+        private string host = string.Empty;
+        private FirefoxDriverLogLevel loggingLevel = FirefoxDriverLogLevel.Fatal;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FirefoxDriverService"/> class.
@@ -61,6 +66,36 @@ namespace OpenQA.Selenium.Firefox
         {
             get { return this.browserCommunicationPort; }
             set { this.browserCommunicationPort = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to disable multiprocess support
+        /// (otherwise known as "electrolysis" or "e10s") for Firefox.
+        /// </summary>
+        public bool DisableBrowserMultiprocessSupport
+        {
+            get { return this.disableBrowserMultiprocessSupport; }
+            set { this.disableBrowserMultiprocessSupport = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the value of the IP address of the host adapter on which the
+        /// service should listen for connections.
+        /// </summary>
+        public string Host
+        {
+            get { return this.host; }
+            set { this.host = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to connect to an already-running
+        /// instance of Firefox.
+        /// </summary>
+        public bool ConnectToRunningBrowser
+        {
+            get { return this.connectToRunningBrowser; }
+            set { this.connectToRunningBrowser = value; }
         }
 
         /// <summary>
@@ -147,6 +182,16 @@ namespace OpenQA.Selenium.Firefox
             get
             {
                 StringBuilder argsBuilder = new StringBuilder();
+                if (this.disableBrowserMultiprocessSupport)
+                {
+                    argsBuilder.Append(" --no-e10s");
+                }
+
+                if (this.connectToRunningBrowser)
+                {
+                    argsBuilder.Append(" --connect-existing");
+                }
+
                 if (this.browserCommunicationPort > 0)
                 {
                     argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --marionette-port {0}", this.browserCommunicationPort);
@@ -154,12 +199,22 @@ namespace OpenQA.Selenium.Firefox
 
                 if (this.Port > 0)
                 {
-                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --webdriver-port {0}", this.Port);
+                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --port {0}", this.Port);
                 }
 
                 if (!string.IsNullOrEmpty(this.browserBinaryPath))
                 {
                     argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --binary \"{0}\"", this.browserBinaryPath);
+                }
+
+                if (!string.IsNullOrEmpty(this.host))
+                {
+                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --host \"{0}\"", this.host);
+                }
+
+                if (this.loggingLevel != FirefoxDriverLogLevel.Fatal)
+                {
+                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --log {0}", this.loggingLevel.ToString().ToLowerInvariant()));
                 }
 
                 return argsBuilder.ToString().Trim();
@@ -172,7 +227,7 @@ namespace OpenQA.Selenium.Firefox
         /// <returns>A FirefoxDriverService that implements default settings.</returns>
         public static FirefoxDriverService CreateDefaultService()
         {
-            string serviceDirectory = DriverService.FindDriverServiceExecutable(FirefoxDriverServiceFileName, FirefoxDriverDownloadUrl);
+            string serviceDirectory = DriverService.FindDriverServiceExecutable(FirefoxDriverServiceFileName(), FirefoxDriverDownloadUrl);
             return CreateDefaultService(serviceDirectory);
         }
 
@@ -183,11 +238,11 @@ namespace OpenQA.Selenium.Firefox
         /// <returns>A FirefoxDriverService using a random port.</returns>
         public static FirefoxDriverService CreateDefaultService(string driverPath)
         {
-            return CreateDefaultService(driverPath, FirefoxDriverServiceFileName);
+            return CreateDefaultService(driverPath, FirefoxDriverServiceFileName());
         }
 
         /// <summary>
-        /// Creates a default instance of the FirefoxDriverService using a specified path to the ChromeDriver executable with the given name.
+        /// Creates a default instance of the FirefoxDriverService using a specified path to the Firefox driver executable with the given name.
         /// </summary>
         /// <param name="driverPath">The directory containing the Firefox driver executable.</param>
         /// <param name="driverExecutableFileName">The name of th  Firefox driver executable file.</param>
@@ -195,6 +250,48 @@ namespace OpenQA.Selenium.Firefox
         public static FirefoxDriverService CreateDefaultService(string driverPath, string driverExecutableFileName)
         {
             return new FirefoxDriverService(driverPath, driverExecutableFileName, PortUtilities.FindFreePort());
+        }
+
+        /// <summary>
+        /// Returns the Firefox driver filename for the currently running platform
+        /// </summary>
+        /// <returns>The file name of the Chrome driver service executable.</returns>
+        private static string FirefoxDriverServiceFileName()
+        {
+            string fileName = DefaultFirefoxDriverServiceFileName;
+
+            // Unfortunately, detecting the currently running platform isn't as
+            // straightforward as you might hope.
+            // See: http://mono.wikia.com/wiki/Detecting_the_execution_platform
+            // and https://msdn.microsoft.com/en-us/library/3a8hyw88(v=vs.110).aspx
+            const int PlatformMonoUnixValue = 128;
+
+            switch (Environment.OSVersion.Platform)
+            {
+                case PlatformID.Win32NT:
+                case PlatformID.Win32S:
+                case PlatformID.Win32Windows:
+                case PlatformID.WinCE:
+                    fileName += ".exe";
+                    break;
+
+                case PlatformID.MacOSX:
+                case PlatformID.Unix:
+                    break;
+
+                // Don't handle the Xbox case. Let default handle it.
+                // case PlatformID.Xbox:
+                //     break;
+                default:
+                    if ((int)Environment.OSVersion.Platform == PlatformMonoUnixValue)
+                    {
+                        break;
+                    }
+
+                    throw new WebDriverException("Unsupported platform: " + Environment.OSVersion.Platform);
+            }
+
+            return fileName;
         }
     }
 }

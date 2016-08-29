@@ -133,7 +133,7 @@ public interface WebDriverEventListener {
    * @param driver WebDriver
    * @param element the WebElement being used for the action
    */
-  void beforeChangeValueOf(WebElement element, WebDriver driver);
+  void beforeChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysToSend);
 
   /**
    * Called after {@link WebElement#clear WebElement.clear()}, {@link WebElement#sendKeys
@@ -142,7 +142,7 @@ public interface WebDriverEventListener {
    * @param driver WebDriver
    * @param element the WebElement being used for the action
    */
-  void afterChangeValueOf(WebElement element, WebDriver driver);
+  void afterChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysToSend);
 
   /**
    * Called before {@link org.openqa.selenium.remote.RemoteWebDriver#executeScript(java.lang.String, java.lang.Object[]) }

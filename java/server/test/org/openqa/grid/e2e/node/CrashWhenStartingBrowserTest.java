@@ -40,12 +40,11 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.remote.server.SeleniumServer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 
 
 public class CrashWhenStartingBrowserTest {
@@ -92,7 +91,7 @@ public class CrashWhenStartingBrowserTest {
     WebDriverException exception = null;
     try {
       DesiredCapabilities ff = DesiredCapabilities.firefox();
-      new RemoteWebDriver(new URL(hub.getUrl() + "/wd/hub"), ff);
+      new RemoteWebDriver(hub.getWebDriverHubRequestURL(), ff);
     } catch (WebDriverException expected) {
       exception = expected;
     }

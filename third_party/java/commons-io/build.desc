@@ -1,2 +1,0 @@
-java_library(name = "commons-io",
-  deps = [ "commons-io-2.4.jar" ])

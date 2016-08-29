@@ -21,9 +21,6 @@
 
 'use strict';
 
-const promise = require('./promise');
-
-
 /**
  * Describes a command to execute.
  * @final
@@ -159,6 +156,7 @@ const Name = {
   DISMISS_ALERT: 'dismissAlert',
   GET_ALERT_TEXT: 'getAlertText',
   SET_ALERT_TEXT: 'setAlertValue',
+  SET_ALERT_CREDENTIALS: 'setAlertCredentials',
 
   EXECUTE_SQL: 'executeSQL',
   GET_LOCATION: 'getLocation',
@@ -227,29 +225,10 @@ class Executor {
    * response object.
    *
    * @param {!Command} command The command to execute.
-   * @return {!promise.Promise<?>} A promise that will be fulfilled with
-   *     the command result.
+   * @return {!Promise<?>} A promise that will be fulfilled with the command
+   *     result.
    */
   execute(command) {}
-}
-
-
-/**
- * Wraps a promised {@link Executor}, ensuring no commands are executed until
- * the wrapped executor has been fully resolved.
- * @implements {Executor}
- */
-class DeferredExecutor {
-  /**
-   * @param {!promise.Promise<Executor>} delegate The promised delegate, which
-   *     may be provided by any promise-like thenable object.
-   */
-  constructor(delegate) {
-    /** @override */
-    this.execute = function(command) {
-      return delegate.then(executor => executor.execute(command));
-    };
-  }
 }
 
 
@@ -257,7 +236,8 @@ class DeferredExecutor {
 // PUBLIC API
 
 
-exports.Command = Command;
-exports.Name = Name;
-exports.Executor = Executor;
-exports.DeferredExecutor = DeferredExecutor;
+module.exports = {
+  Command: Command,
+  Name: Name,
+  Executor: Executor
+};

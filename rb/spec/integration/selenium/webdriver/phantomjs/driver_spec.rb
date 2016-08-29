@@ -22,10 +22,9 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module PhantomJS
-
-      compliant_on :browser => :phantomjs do
+      compliant_on browser: :phantomjs do
         describe Driver do
-          it_behaves_like "driver that can be started concurrently", :phantomjs
+          it_behaves_like 'driver that can be started concurrently', :phantomjs
         end
       end
     end # PhantomJS

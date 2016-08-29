@@ -336,6 +336,26 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
+  @Ignore(value = {SAFARI, HTMLUNIT})
+  @Test
+  public void testClickingAnUnfocusableChildShouldNotBlurTheParent() {
+    assumeFalse(isOldIe(driver));
+    driver.get(pages.javascriptPage);
+    // Click on parent, giving it the focus.
+    WebElement parent = driver.findElement(By.id("hideOnBlur"));
+    parent.click();
+    assertEventNotFired("blur");
+    // Click on child. It is not focusable, so focus should stay on the parent.
+    driver.findElement(By.id("hideOnBlurChild")).click();
+    assertTrue("#hideOnBlur should still be displayed after click",
+               parent.isDisplayed());
+    assertEventNotFired("blur");
+    // Click elsewhere, and let the element disappear.
+    driver.findElement(By.id("result")).click();
+    assertEventFired("blur");
+  }
+
+  @JavascriptEnabled
   @Test
   public void testSubmittingFormFromFormElementShouldFireOnSubmitForThatForm() {
     driver.get(pages.javascriptPage);

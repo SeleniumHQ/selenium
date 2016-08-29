@@ -20,20 +20,19 @@
 module Selenium
   module WebDriver
     module SearchContext
-
       # @api private
       FINDERS = {
-        :class             => 'class name',
-        :class_name        => 'class name',
-        :css               => 'css selector',
-        :id                => 'id',
-        :link              => 'link text',
-        :link_text         => 'link text',
-        :name              => 'name',
-        :partial_link_text => 'partial link text',
-        :tag_name          => 'tag name',
-        :xpath             => 'xpath',
-      }
+        class: 'class name',
+        class_name: 'class name',
+        css: 'css selector',
+        id: 'id',
+        link: 'link text',
+        link_text: 'link text',
+        name: 'name',
+        partial_link_text: 'partial link text',
+        tag_name: 'tag name',
+        xpath: 'xpath'
+      }.freeze
 
       #
       # Find the first element matching the given arguments.
@@ -54,9 +53,8 @@ module Selenium
       def find_element(*args)
         how, what = extract_args(args)
 
-        unless by = FINDERS[how.to_sym]
-          raise ArgumentError, "cannot find element by #{how.inspect}"
-        end
+        by = FINDERS[how.to_sym]
+        raise ArgumentError, "cannot find element by #{how.inspect}" unless by
 
         bridge.find_element_by by, what.to_s, ref
       rescue Selenium::WebDriver::Error::TimeOutError
@@ -77,9 +75,8 @@ module Selenium
       def find_elements(*args)
         how, what = extract_args(args)
 
-        unless by = FINDERS[how.to_sym]
-          raise ArgumentError, "cannot find elements by #{how.inspect}"
-        end
+        by = FINDERS[how.to_sym]
+        raise ArgumentError, "cannot find elements by #{how.inspect}" unless by
 
         bridge.find_elements_by by, what.to_s, ref
       rescue Selenium::WebDriver::Error::TimeOutError
@@ -111,7 +108,6 @@ module Selenium
           raise ArgumentError, "wrong number of arguments (#{args.size} for 2)"
         end
       end
-
     end # SearchContext
   end # WebDriver
 end # Selenium

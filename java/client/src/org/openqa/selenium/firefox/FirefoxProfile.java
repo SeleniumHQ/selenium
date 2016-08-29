@@ -148,7 +148,7 @@ public class FirefoxProfile {
 
   public String getStringPreference(String key, String defaultValue) {
     Object preference = additionalPrefs.getPreference(key);
-    if(preference != null && preference instanceof String){
+    if(preference != null && preference instanceof String) {
       return (String) preference;
     }
     return defaultValue;
@@ -156,7 +156,7 @@ public class FirefoxProfile {
 
   public int getIntegerPreference(String key, int defaultValue) {
     Object preference = additionalPrefs.getPreference(key);
-    if(preference != null && preference instanceof Integer){
+    if(preference != null && preference instanceof Integer) {
       return (Integer) preference;
     }
     return defaultValue;
@@ -164,7 +164,7 @@ public class FirefoxProfile {
 
   public boolean getBooleanPreference(String key, boolean defaultValue) {
     Object preference = additionalPrefs.getPreference(key);
-    if(preference != null && preference instanceof Boolean){
+    if(preference != null && preference instanceof Boolean) {
       return (Boolean) preference;
     }
     return defaultValue;
@@ -190,7 +190,7 @@ public class FirefoxProfile {
     return extensions.containsKey("webdriver");
   }
 
-  public void addExtension(Class<?> loadResourcesUsing, String loadFrom) throws IOException {
+  public void addExtension(Class<?> loadResourcesUsing, String loadFrom) {
     // Is loadFrom a file?
     File file = new File(loadFrom);
     if (file.exists()) {
@@ -205,9 +205,8 @@ public class FirefoxProfile {
    * Attempt to add an extension to install into this instance.
    *
    * @param extensionToInstall File pointing to the extension
-   * @throws IOException IO Exception if can't read the extension to install
    */
-  public void addExtension(File extensionToInstall) throws IOException {
+  public void addExtension(File extensionToInstall) {
     addExtension(extensionToInstall.getName(), new FileExtension(extensionToInstall));
   }
 

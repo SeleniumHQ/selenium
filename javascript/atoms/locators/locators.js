@@ -31,13 +31,12 @@ goog.require('bot.locators.name');
 goog.require('bot.locators.partialLinkText');
 goog.require('bot.locators.tagName');
 goog.require('bot.locators.xpath');
-goog.require('goog.array');  // for the goog.array.ArrayLike typedef
 goog.require('goog.object');
 
 
 /**
  * @typedef {{single:function(string,!(Document|Element)):Element,
- *     many:function(string,!(Document|Element)):!goog.array.ArrayLike}}
+ *     many:function(string,!(Document|Element)):!IArrayLike}}
  */
 bot.locators.strategy;
 
@@ -142,7 +141,7 @@ bot.locators.findElement = function(target, opt_root) {
  * @param {!Object} target The selector to search for.
  * @param {(Document|Element)=} opt_root The node from which to start the
  *     search. If not specified, will use {@code document} as the root.
- * @return {!goog.array.ArrayLike.<Element>} All matching elements found in the
+ * @return {!IArrayLike.<Element>} All matching elements found in the
  *     DOM.
  */
 bot.locators.findElements = function(target, opt_root) {

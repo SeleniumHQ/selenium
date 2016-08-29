@@ -312,7 +312,7 @@ SyntheticMouse.prototype.click = function(target) {
     }
 
     if (parent && parent.tagName.toLowerCase() == 'select' && !parent.multiple) {
-      goog.log.info(SyntheticMouse.LOG_, 'About to do a bot.action.click on ' + element);
+      goog.log.info(SyntheticMouse.LOG_, 'About to do a bot.action.click on ' + parent);
       bot.action.click(parent, undefined /* coords */);
     }
 

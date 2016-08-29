@@ -1,11 +1,13 @@
-js_library(name = "base_lib",
+js_library(name = "http",
   srcs = [
+    "capabilities.js",
     "command.js",
-    "events.js",
-    "promise.js",
-    "stacktrace.js",
+    "http/*.js",
+    "logging.js",
+    "session.js",
   ],
   deps = [
+    ":logging",
     "//javascript/atoms:error_lib",
   ])
 
@@ -15,39 +17,6 @@ js_library(
 
 js_library(name = "key_lib",
   srcs = [ "key.js" ])
-
-js_library(name = "webdriver_lib",
-  srcs = [
-    "*.js",
-    "http/*.js",
-  ],
-  deps = [
-    "//javascript/atoms:error_lib",
-    "//javascript/atoms:json",
-  ])
-
-js_library(name = "asserts_lib",
-  srcs = ["testing/asserts.js"],
-  deps = [":webdriver_lib"])
-
-js_library(name = "test_support_lib",
-  srcs = [
-    "testing/*.js",
-  ],
-  deps = [
-    ":webdriver_lib"
-  ])
-
-js_library(name = "unit_test_lib",
-  srcs = [
-    "test/*.js",
-    "test/http/*.js",
-    "test/testing/*.js",
-  ],
-  deps = [
-    ":webdriver_lib",
-    ":test_support_lib",
-  ])
 
 js_library(name = "all_js",
   srcs = [
@@ -61,73 +30,27 @@ js_library(name = "all_js",
     "//javascript/atoms:all_js",
   ])
 
-js_binary(name = "webdriver",
-  srcs = [
-    "*.js",
-    "http/*.js",
-    "exports/exports.js",
-    "externs/deps.js",
-  ],
-  deps = [
-    ":asserts_lib",
-    "//javascript/atoms:error_lib",
-    "//javascript/atoms:json",
-  ],
-  externs = [
-    "externs/externs.js",
-  ],
-  flags = [
-    "--jscomp_error=accessControls",
-    "--jscomp_error=ambiguousFunctionDecl",
-    "--jscomp_error=checkRegExp",
-    "--jscomp_error=checkTypes",
-    "--jscomp_error=checkVars",
-    "--jscomp_error=constantProperty",
-    "--jscomp_error=deprecated",
-    "--jscomp_error=duplicateMessage",
-    "--jscomp_error=es5Strict",
-    "--jscomp_error=externsValidation",
-    "--jscomp_error=fileoverviewTags",
-    "--jscomp_error=globalThis",
-    "--jscomp_error=invalidCasts",
-    "--jscomp_error=missingProperties",
-    "--jscomp_error=nonStandardJsDocs",
-    "--jscomp_error=strictModuleDepCheck",
-    "--jscomp_error=typeInvalidation",
-    "--jscomp_error=undefinedVars",
-    "--jscomp_error=unknownDefines",
-    "--jscomp_error=uselessCode",
-    "--jscomp_error=useOfGoogBase",
-    "--jscomp_error=visibility",
-    "--language_in=ECMASCRIPT6_STRICT",
-    "--language_out=ECMASCRIPT5_STRICT",
-    "--output_wrapper='(function(exports){%output%})(typeof exports===typeof {}&&exports===this?exports:this.webdriver=this.webdriver||{})'",
-    "--third_party=false",
-  ])
-
 js_test(name = "test",
   srcs = [
     "test/atoms/**/*_test.html",
   ],
   test_dir = "test/atoms",
   deps = [
-    ":test_support_lib",
+    ":all_js",
     "//java/client/test/org/openqa/selenium/javascript",
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+    "//java/server/test/org/openqa/selenium:server-with-tests",
   ])
 
 # Tests that should only run in browsers with ES6 support.
 js_test(name = "es6_test",
   srcs = [
     "test/*.js",
-    "test/e2e/**/*.js",
     "test/http/**/*.js",
-    "test/testing/**/*.js",
   ],
   deps = [
-    ":test_support_lib",
+    ":http",
     "//java/client/test/org/openqa/selenium/javascript",
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+    "//java/server/test/org/openqa/selenium:server-with-tests",
   ],
   browsers = [
     "chrome",

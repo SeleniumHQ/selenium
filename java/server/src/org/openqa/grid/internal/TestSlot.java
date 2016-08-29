@@ -22,8 +22,7 @@ import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
-import org.openqa.selenium.remote.server.SystemClock;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -107,17 +106,15 @@ public class TestSlot {
       lock.lock();
       if (currentSession != null) {
         return null;
-      } else {
-        if (matches(desiredCapabilities)) {
-          log.info("Trying to create a new session on test slot " + this.capabilities);
-          TestSession session = new TestSession(this, desiredCapabilities, new DefaultTimeSource());
-          currentSession = session;
-          lastSessionStart = System.currentTimeMillis();
-          return session;
-        } else {
-          return null;
-        }
       }
+      if (matches(desiredCapabilities)) {
+        log.info("Trying to create a new session on test slot " + this.capabilities);
+        TestSession session = new TestSession(this, desiredCapabilities, new DefaultTimeSource());
+        currentSession = session;
+        lastSessionStart = System.currentTimeMillis();
+        return session;
+      }
+      return null;
     } finally {
       lock.unlock();
     }
@@ -183,10 +180,9 @@ public class TestSlot {
       lock.lock();
       if (beingReleased) {
         return false;
-      } else {
-        beingReleased = true;
-        return true;
       }
+      beingReleased = true;
+      return true;
     } finally {
       lock.unlock();
     }

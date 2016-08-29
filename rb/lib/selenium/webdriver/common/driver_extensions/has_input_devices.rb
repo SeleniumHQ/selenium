@@ -19,14 +19,12 @@
 
 module Selenium
   module WebDriver
-
     #
     # @api private
     #
 
     module DriverExtensions
       module HasInputDevices
-
         #
         # @return [ActionBuilder]
         # @api public
@@ -51,7 +49,6 @@ module Selenium
         def keyboard
           Keyboard.new @bridge
         end
-
       end # HasInputDevices
     end # DriverExtensions
   end # WebDriver

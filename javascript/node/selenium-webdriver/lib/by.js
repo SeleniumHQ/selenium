@@ -84,7 +84,7 @@ function escapeCss(css) {
         || (i == 0 && c >= 0x0030 && c <= 0x0039)
         || (i == 1 && c >= 0x0030 && c <= 0x0039
             && css.charCodeAt(0) == 0x002D)) {
-      ret += '\\' + c.toString(16);
+      ret += '\\' + c.toString(16) + ' ';
       continue;
     }
 
@@ -271,6 +271,7 @@ function check(locator) {
 
 // PUBLIC API
 
-
-exports.By = By;
-exports.checkedLocator = check;
+module.exports = {
+  By: By,
+  checkedLocator: check,
+};

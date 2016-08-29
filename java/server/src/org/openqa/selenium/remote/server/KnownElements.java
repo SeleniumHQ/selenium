@@ -62,7 +62,7 @@ public class KnownElements {
         } else {
           try {
           return method.invoke(element, objects);
-          } catch (InvocationTargetException e){
+          } catch (InvocationTargetException e) {
             throw e.getTargetException();
           }
         }

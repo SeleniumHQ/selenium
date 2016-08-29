@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Safari
-
       class Server
         SOCKET_LOCK_TIMEOUT = 45
 
@@ -47,16 +46,17 @@ module Selenium
           json = JSON.generate(command)
           puts ">>> #{json}" if $DEBUG
 
-          frame = WebSocket::Frame::Outgoing::Server.new(:version => @version, :data => json, :type => :text)
+          frame = WebSocket::Frame::Outgoing::Server.new(version: @version, data: json, type: :text)
 
           @ws.write frame.to_s
           @ws.flush
         end
 
         def receive
-          @frame ||= WebSocket::Frame::Incoming::Server.new(:version => @version)
+          @frame ||= WebSocket::Frame::Incoming::Server.new(version: @version)
 
-          until msg = @frame.next
+          msg = nil
+          until msg
             end_time = Time.now + @command_timeout
 
             begin
@@ -64,7 +64,7 @@ module Selenium
             rescue Errno::EWOULDBLOCK, Errno::EAGAIN
               now = Time.now
               if now >= end_time
-                raise Error::TimeOutError, "timed out waiting for Safari to respond"
+                raise Error::TimeOutError, 'timed out waiting for Safari to respond'
               end
 
               IO.select([@ws], nil, nil, end_time - now)
@@ -72,6 +72,7 @@ module Selenium
             end
 
             @frame << data
+            msg = @frame.next
           end
 
           puts "<<< #{msg}" if $DEBUG
@@ -93,42 +94,43 @@ module Selenium
           process_handshake
         end
 
-        HEADERS = <<-HEADERS
+        def headers
+          headers = <<-headers
 HTTP/1.1 %d %s
 Content-Type: text/html; charset=utf-8
 Server: safaridriver-ruby
-        HEADERS
+          headers
+          headers.gsub!("\n", "\r\n")
+        end
 
-        HEADERS.gsub!("\n", "\r\n")
-
-        HTML = "<!DOCTYPE html><script>#{Safari.resource_path.join('client.js').read}</script>"
+        def html
+          "<!DOCTYPE html><script>#{Safari.resource_path.join('client.js').read}</script>"
+        end
 
         def process_initial_http_request
           http = @server.accept
 
           req = ''
-          until req.include?("\r\n\r\n")
-            req << http.read(1)
-          end
+          req << http.read(1) until req.include?("\r\n\r\n")
 
-          if !req.include?("?url=")
-            http << HEADERS % [302, 'Moved Temporarily']
+          if !req.include?('?url=')
+            http << format(headers, 302, 'Moved Temporarily')
             http << "Location: #{uri}?url=#{encode_form_component ws_uri}\r\n"
             http << "\r\n\r\n"
             http.close
 
             process_initial_http_request
           else
-            http << HEADERS % [200, 'OK']
+            http << format(headers, 200, 'OK')
             http << "\r\n\r\n"
-            http << HTML
+            http << html
             http.close
           end
         end
 
         def process_handshake
           @ws = @server.accept
-          hs  = WebSocket::Handshake::Server.new
+          hs = WebSocket::Handshake::Server.new
 
           req = ''
           until hs.finished?
@@ -139,7 +141,7 @@ Server: safaridriver-ruby
           end
 
           unless hs.valid?
-            if req.include? "favicon.ico"
+            if req.include? 'favicon.ico'
               @ws.close
               process_handshake
               return
@@ -157,12 +159,7 @@ Server: safaridriver-ruby
         end
 
         def encode_form_component(str)
-          if URI.respond_to?(:encode_www_form_component) # >= 1.9
-            URI.encode_www_form_component(str)
-          else
-            # best effort for 1.8
-            str.gsub(":", '%3A').gsub('/', '%2F')
-          end
+          URI.encode_www_form_component(str)
         end
 
         private
@@ -178,7 +175,6 @@ Server: safaridriver-ruby
         def socket_lock
           @socket_lock ||= SocketLock.new(@port - 1, SOCKET_LOCK_TIMEOUT)
         end
-
       end # Server
     end # Safari
   end # WebDriver

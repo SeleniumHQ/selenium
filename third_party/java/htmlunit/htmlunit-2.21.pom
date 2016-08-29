@@ -1,0 +1,930 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.sourceforge.htmlunit</groupId>
+    <artifactId>htmlunit</artifactId>
+    <version>2.21</version>
+    <name>HtmlUnit</name>
+    <organization>
+        <name>Gargoyle Software Inc.</name>
+        <url>http://www.GargoyleSoftware.com/</url>
+    </organization>
+    <packaging>jar</packaging>
+    <description>A headless browser intended for use in testing web-based applications.</description>
+    <url>http://htmlunit.sourceforge.net</url>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <!-- Update the links reference in PDM and clover plugins when this changes -->
+                    <source>1.7</source>
+                    <target>1.7</target>
+                    <testExcludes>
+                        <exclude>**/CodeChecker.java</exclude>
+                    </testExcludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.17</version>
+                <configuration>
+                    <configLocation>checkstyle.xml</configLocation>
+                    <suppressionsLocation>checkstyle_suppressions.xml</suppressionsLocation>
+                    <headerLocation>${project.build.directory}/../LICENSE.txt</headerLocation>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <consoleOutput>true</consoleOutput>
+                    <failsOnError>true</failsOnError>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>6.17</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <Url>${project.url}</Url>
+                            <Build-Time>${maven.build.timestamp}</Build-Time>
+
+                            <!-- Following entries should be passed by CruiseControl on the CI server -->
+                            <SVN-Revision>${svnrevision}</SVN-Revision>
+                            <Build-Number>${label}</Build-Number>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.5</version>
+                <configuration>
+                    <templateFile>${basedir}/src/site/maven-site.vm</templateFile>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <attach>false</attach>
+                    <descriptors>
+                        <descriptor>${basedir}/src/assembly/bin-distribution.xml</descriptor>
+                        <descriptor>${basedir}/src/assembly/src-distribution.xml</descriptor>
+                    </descriptors>
+                    <recompressZippedFiles>true</recompressZippedFiles>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.10</version>
+                <configuration>
+                    <downloadSources>true</downloadSources>
+                    <downloadJavadocs>true</downloadJavadocs>
+                    <additionalBuildcommands>
+                        <buildcommand>net.sf.eclipsecs.core.CheckstyleBuilder</buildcommand>
+                    </additionalBuildcommands>
+                    <additionalProjectnatures>
+                        <projectnature>net.sf.eclipsecs.core.CheckstyleNature</projectnature>
+                    </additionalProjectnatures>
+                    <useProjectReferences>false</useProjectReferences>
+                    <additionalConfig>
+                        <file>
+                            <name>.checkstyle</name>
+                            <content>
+<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<fileset-config file-format-version="1.2.0" simple-config="true" sync-formatter="false">
+    <local-check-config name="HtmlUnit" location="checkstyle.xml" type="project" description="HtmlUnit">
+        <property name="checkstyle.suppressions.file" value="$${project_loc}/checkstyle_suppressions.xml"/>
+        <property name="checkstyle.header.file" value="$${project_loc}/LICENSE.txt"/>
+        <additional-data name="protect-config-file" value="false"/>
+    </local-check-config>
+    <fileset name="all" enabled="true" check-config-name="HtmlUnit" local="true">
+        <file-match-pattern match-pattern="^src/.*\.java$" include-pattern="true"/>
+    </fileset>
+    <filter name="NonSrcDirs" enabled="true"/>
+</fileset-config>
+]]>
+                            </content>
+                        </file>
+                    </additionalConfig>
+                    <additionalConfig>
+                        <file>
+                            <name>.settings/org.eclipse.core.resources.prefs</name>
+                            <content>
+                                <![CDATA[eclipse.preferences.version=1${line.separator}encoding/<project>=${project.build.sourceEncoding}${line.separator}]]>
+                            </content>
+                        </file>
+                    </additionalConfig>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-plugin</artifactId>
+                <version>1.9.4</version>
+                <configuration>
+                    <tag>${project.name}-${project.version}</tag>
+                    <message>Release ${project.version}</message>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>3.0.1</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>com.gargoylesoftware.htmlunit.*</Export-Package>
+                        <Embed-Transitive>true</Embed-Transitive>
+                        <Embed-Dependency>*;scope=compile;inline=**</Embed-Dependency>
+                        <Import-Package>*;resolution:=optional</Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>2.10</version>
+            </extension>
+        </extensions>
+    </build>
+    <profiles>
+        <profile>
+            <id>without-huge-tests</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.19.1</version>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/huge/*.java</exclude>
+                            </excludes>
+                            <argLine>-Xms256m -Xmx1024m</argLine>
+                            <systemPropertyVariables>
+                                <htmlunit.maven>maven</htmlunit.maven>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>without-library-and-huge-tests</id>
+            <activation>
+                <property>
+                    <name>withoutLibsHuge</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.19.1</version>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/libraries/*.java</exclude>
+                                <exclude>**/huge/*.java</exclude>
+                            </excludes>
+                            <argLine>-Xms128m -Xmx512m</argLine>
+                            <systemPropertyVariables>
+                                <htmlunit.maven>maven</htmlunit.maven>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>only-library-tests</id>
+            <activation>
+                <property>
+                    <name>onlyLibs</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.19.1</version>
+                        <configuration>
+                            <includes>
+                                <include>**/libraries/*.java</include>
+                            </includes>
+                            <argLine>-Xms128m -Xmx512m</argLine>
+                            <systemPropertyVariables>
+                                <htmlunit.maven>maven</htmlunit.maven>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>only-huge-tests</id>
+            <activation>
+                <property>
+                    <name>onlyHuge</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.19.1</version>
+                        <configuration>
+                            <includes>
+                                <include>**/huge/*.java</include>
+                            </includes>
+                            <argLine>-Xms1024m -Xmx2048m</argLine>
+                            <systemPropertyVariables>
+                                <htmlunit.maven>maven</htmlunit.maven>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.3</version>
+                <configuration>
+                    <excludePackageNames>com.gargoylesoftware.htmlunit.javascript:com.gargoylesoftware.htmlunit.protocol:com.gargoylesoftware.htmlunit.ssl:com.gargoylesoftware.htmlunit.html.xpath:com.gargoylesoftware.htmlunit.html.applets:com.gargoylesoftware.htmlunit.html.impl:com.gargoylesoftware.htmlunit.activex</excludePackageNames>
+                    <links>
+                        <link>http://docs.oracle.com/javase/7/docs/api/</link>
+                        <link>http://commons.apache.org/logging/apidocs/</link>
+                        <link>http://commons.apache.org/codec/apidocs/</link>
+                        <link>http://hc.apache.org/httpcomponents-client-ga/httpclient/apidocs/</link>
+                    </links>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.9</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.5</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.6</version>
+                <configuration>
+                    <targetJdk>1.7</targetJdk>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-changes-plugin</artifactId>
+                <version>2.12</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>changes-report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+                <configuration>
+                    <issueLinkTemplatePerSystem>
+                        <features>http://sourceforge.net/p/htmlunit/feature-requests/%ISSUE%</features>
+                    </issueLinkTemplatePerSystem>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jdepend-maven-plugin</artifactId>
+                <version>2.0</version>
+            </plugin>
+        </plugins>
+    </reporting>
+    <issueManagement>
+        <system>SourceForge2</system>
+        <url>http://sourceforge.net/p/htmlunit/bugs/</url>
+    </issueManagement>
+    <inceptionYear>2002</inceptionYear>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:svn:https://svn.code.sf.net/p/htmlunit/code/trunk/htmlunit</connection>
+        <developerConnection>scm:svn:https://svn.code.sf.net/p/htmlunit/code/trunk/htmlunit</developerConnection>
+        <url>https://sourceforge.net/p/htmlunit/code</url>
+    </scm>
+    <ciManagement>
+        <system>TeamCity</system>
+        <url>https://ci.canoo.com/teamcity/viewLog.html?buildTypeId=Htmlunit_CheckInBuild&amp;buildId=lastSuccessful&amp;tab=artifacts</url>
+    </ciManagement>
+    <mailingLists>
+        <mailingList>
+            <name>HtmlUnit Users</name>
+            <subscribe>https://lists.sourceforge.net/lists/listinfo/htmlunit-user</subscribe>
+            <unsubscribe>https://lists.sourceforge.net/lists/listinfo/htmlunit-user</unsubscribe>
+            <archive>https://sourceforge.net/p/htmlunit/mailman/htmlunit-user/</archive>
+            <post>htmlunit-user@lists.sourceforge.net</post>
+            <otherArchives>
+                <otherArchive>http://htmlunit.10904.n7.nabble.com/HtmlUnit-General-f20847.html</otherArchive>
+                <otherArchive>http://htmlunit.markmail.org/</otherArchive>
+                <otherArchive>http://marc.info/?l=htmlunit-user</otherArchive>
+            </otherArchives>
+        </mailingList>
+        <mailingList>
+            <name>HtmlUnit Developers</name>
+            <subscribe>https://lists.sourceforge.net/lists/listinfo/htmlunit-develop</subscribe>
+            <unsubscribe>https://lists.sourceforge.net/lists/listinfo/htmlunit-develop</unsubscribe>
+            <archive>https://sourceforge.net/p/htmlunit/mailman/htmlunit-develop/</archive>
+            <post>htmlunit-develop@lists.sourceforge.net</post>
+            <otherArchives>
+                <otherArchive>http://htmlunit.10904.n7.nabble.com/HtmlUnit-Dev-f3.html</otherArchive>
+                <otherArchive>http://htmlunit.markmail.org/</otherArchive>
+                <otherArchive>http://marc.info/?l=htmlunit-develop</otherArchive>
+            </otherArchives>
+        </mailingList>
+    </mailingLists>
+    <developers>
+        <developer>
+            <name>Mike Bowler</name>
+            <id>mbowler</id>
+            <email>mbowler@GargoyleSoftware.com</email>
+            <organization>Gargoyle Software Inc.</organization>
+            <url>http://www.sphericalimprovement.com/blogs/mbowler/</url>
+            <timezone>-5</timezone>
+        </developer>
+        <developer>
+            <name>David K. Taylor</name>
+            <id>dktaylor</id>
+        </developer>
+        <developer>
+            <name>Brad Clarke</name>
+            <id>bradclarke</id>
+            <email>bradclarke@users.sourceforge.net</email>
+            <url>http://www.bradclarke.com/</url>
+            <timezone>-6</timezone>
+        </developer>
+        <developer>
+            <name>Marc Guillemot</name>
+            <id>mguillem</id>
+            <email>mguillem@users.sourceforge.net</email>
+            <url>http://mguillem.wordpress.com/</url>
+            <timezone>+1</timezone>
+        </developer>
+        <developer>
+            <name>Chris Erskine</name>
+            <id>cerskine</id>
+            <email>cerskine@users.sourceforge.net</email>
+            <timezone>-7</timezone>
+        </developer>
+        <developer>
+            <name>Daniel Gredler</name>
+            <id>sdanig</id>
+            <email>sdanig@users.sourceforge.net</email>
+            <url>http://daniel.gredler.net/</url>
+            <timezone>-5</timezone>
+        </developer>
+        <developer>
+            <name>Ahmed Ashour</name>
+            <id>asashour</id>
+            <email>asashour@users.sourceforge.net</email>
+            <url>http://asashour.blogspot.com/</url>
+            <timezone>+3</timezone>
+        </developer>
+        <developer>
+            <name>Sudhan Moghe</name>
+            <id>sudhan_moghe</id>
+            <email>sudhan_moghe@users.sourceforge.net</email>
+            <timezone>+5.5</timezone>
+        </developer>
+        <developer>
+            <name>Ronald Brill</name>
+            <id>rbri</id>
+            <email>rbri@rbri.de</email>
+            <url>http://www.wetator.org/</url>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
+    <contributors>
+        <contributor>
+            <name>Noboru Sinohara</name>
+        </contributor>
+        <contributor>
+            <name>Mike J. Bresnahan</name>
+            <email>gudujarlson@sf.net</email>
+        </contributor>
+        <contributor>
+            <name>Dominique Broeglin</name>
+        </contributor>
+        <contributor>
+            <name>Alex Nikiforoff</name>
+        </contributor>
+        <contributor>
+            <name>Barnaby Court</name>
+        </contributor>
+        <contributor>
+            <name>Andreas Hangler</name>
+        </contributor>
+        <contributor>
+            <name>Jun Chen</name>
+            <email>chen_jun@users.sourceforge.net</email>
+        </contributor>
+        <contributor>
+            <name>Christian Sell</name>
+            <email>cse@dynabean.de</email>
+        </contributor>
+        <contributor>
+            <name>Darrell DeBoer</name>
+        </contributor>
+        <contributor>
+            <name>David D. Kilzer</name>
+        </contributor>
+        <contributor>
+            <name>Ben Curren</name>
+            <email>bcurren@esomnie.com</email>
+        </contributor>
+        <contributor>
+            <name>Mike Williams</name>
+        </contributor>
+        <contributor>
+            <name>Mike Gallaher</name>
+        </contributor>
+        <contributor>
+            <name>Dierk Koenig</name>
+        </contributor>
+        <contributor>
+            <name>Mike Bresnahan</name>
+        </contributor>
+        <contributor>
+            <name>Sergey Gorelkin</name>
+        </contributor>
+        <contributor>
+            <name>Chris Eldredge</name>
+        </contributor>
+        <contributor>
+            <name>Hans Donner</name>
+        </contributor>
+        <contributor>
+            <name>Michael Ottati</name>
+        </contributor>
+        <contributor>
+            <name>George Murnock</name>
+        </contributor>
+        <contributor>
+            <name>Kent Tong</name>
+        </contributor>
+        <contributor>
+            <name>Alfred Nathaniel</name>
+        </contributor>
+        <contributor>
+            <name>Bruce Faulkner</name>
+        </contributor>
+        <contributor>
+            <name>Ray Suliteanu</name>
+        </contributor>
+        <contributor>
+            <name>Denis N. Antonioli</name>
+        </contributor>
+        <contributor>
+            <name>Stefan Anzinger</name>
+        </contributor>
+        <contributor>
+            <name>Lothar Märkle</name>
+        </contributor>
+        <contributor>
+            <name>Ian Lovejoy</name>
+        </contributor>
+        <contributor>
+            <name>Paul King</name>
+        </contributor>
+        <contributor>
+            <name>Vikram Shitole</name>
+        </contributor>
+        <contributor>
+            <name>Mark van Leeuwen</name>
+        </contributor>
+        <contributor>
+            <name>Brad Murray</name>
+        </contributor>
+        <contributor>
+            <name>Julien Henry</name>
+        </contributor>
+        <contributor>
+            <name>Andre Soereng</name>
+        </contributor>
+        <contributor>
+            <name>Karel Kolman</name>
+        </contributor>
+        <contributor>
+            <name>Bruce Chapman</name>
+        </contributor>
+        <contributor>
+            <name>Kristian Muntau</name>
+        </contributor>
+        <contributor>
+            <name>Sam Hough</name>
+        </contributor>
+        <contributor>
+            <name>Deryk Sinotte</name>
+        </contributor>
+        <contributor>
+            <name>Martin Tamme</name>
+        </contributor>
+        <contributor>
+            <name>Philip Graf</name>
+        </contributor>
+        <contributor>
+            <name>Rodney Gitzel</name>
+        </contributor>
+        <contributor>
+            <name>Matt Ryall</name>
+        </contributor>
+        <contributor>
+            <name>Rob Di Marco</name>
+        </contributor>
+        <contributor>
+            <name>Gareth Davis</name>
+        </contributor>
+        <contributor>
+            <name>David Bylsma</name>
+        </contributor>
+        <contributor>
+            <name>Dmitri Zoubkov</name>
+        </contributor>
+        <contributor>
+            <name>Stuart Begg</name>
+        </contributor>
+        <contributor>
+            <name>Rene Schwietzke</name>
+        </contributor>
+        <contributor>
+            <name>Ethan Glasser-Camp</name>
+        </contributor>
+        <contributor>
+            <name>Marco Cova</name>
+        </contributor>
+        <contributor>
+            <name>Mike Dirolf</name>
+        </contributor>
+        <contributor>
+            <name>Mirko Friedenhagen</name>
+        </contributor>
+        <contributor>
+            <name>Richard Eggert</name>
+        </contributor>
+        <contributor>
+            <name>Tomasz Kalkosinski</name>
+        </contributor>
+        <contributor>
+            <name>Peter Faller</name>
+        </contributor>
+        <contributor>
+            <name>Benoit Heinrich</name>
+        </contributor>
+        <contributor>
+            <name>Amit Manjhi</name>
+        </contributor>
+        <contributor>
+            <name>Nicolas Belisle</name>
+        </contributor>
+        <contributor>
+            <name>Amit Khanna</name>
+        </contributor>
+        <contributor>
+            <name>Nikolai Avteniev</name>
+        </contributor>
+        <contributor>
+            <name>Kostadin Chikov</name>
+        </contributor>
+        <contributor>
+            <name>Adam Doupe</name>
+        </contributor>
+        <contributor>
+            <name>Daniel Wagner-Hall</name>
+        </contributor>
+        <contributor>
+            <name>James Phillpotts</name>
+        </contributor>
+        <contributor>
+            <name>Benson Margulies</name>
+        </contributor>
+        <contributor>
+            <name>Pieter Herroelen</name>
+        </contributor>
+        <contributor>
+            <name>David Gileadi</name>
+        </contributor>
+        <contributor>
+            <name>Martin Huber</name>
+        </contributor>
+        <contributor>
+            <name>Frank Danek</name>
+        </contributor>
+        <contributor>
+            <name>Andrea Martino</name>
+        </contributor>
+        <contributor>
+            <name>John J Murdoch</name>
+        </contributor>
+        <contributor>
+            <name>Guy Burton</name>
+        </contributor>
+        <contributor>
+            <name>Chuck Dumont</name>
+        </contributor>
+        <contributor>
+            <name>Sebastian Cato</name>
+        </contributor>
+        <contributor>
+            <name>Carsten Steul</name>
+        </contributor>
+        <contributor>
+            <name>Jake Cobb</name>
+        </contributor>
+        <contributor>
+            <name>David Ostrovsky</name>
+        </contributor>
+        <contributor>
+            <name>Matthias Brandt</name>
+        </contributor>
+        <contributor>
+            <name>Jacob Childress</name>
+        </contributor>
+        <contributor>
+            <name>Joerg Werner</name>
+        </contributor>
+        <contributor>
+            <name>Adam Afeltowicz</name>
+        </contributor>
+        <contributor>
+            <name>Madis P&#x00e4;rn</name>
+        </contributor>
+    </contributors>
+    <dependencies>
+        <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <version>2.7.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>xerces</groupId>
+                    <artifactId>xercesImpl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.2</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+            <version>4.5.2</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.10</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.htmlunit</groupId>
+            <artifactId>htmlunit-core-js</artifactId>
+            <version>2.17</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.htmlunit</groupId>
+            <artifactId>neko-htmlunit</artifactId>
+            <version>2.21</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.cssparser</groupId>
+            <artifactId>cssparser</artifactId>
+            <version>0.9.18</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <!-- Jetty -->
+        <dependency>
+            <groupId>org.eclipse.jetty.websocket</groupId>
+            <artifactId>websocket-client</artifactId>
+            <version>9.2.15.v20160210</version>
+        </dependency>
+        <!-- Test dependencies. -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>gsbase</groupId>
+            <artifactId>gsbase</artifactId>
+            <version>2.0.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <version>3.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.3.1</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- The presence of slf4j on the classpath during the unit tests triggers correct logging in Jetty. -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.21</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.21</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.0.19</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Jetty -->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-webapp</artifactId>
+            <version>9.2.15.v20160210</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty.websocket</groupId>
+            <artifactId>websocket-server</artifactId>
+            <version>9.2.15.v20160210</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- WebDriver -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-htmlunit-driver</artifactId>
+            <version>2.52.0</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.sourceforge.htmlunit</groupId>
+                    <artifactId>htmlunit</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-ie-driver</artifactId>
+            <version>2.53.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-firefox-driver</artifactId>
+            <version>2.53.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-chrome-driver</artifactId>
+            <version>2.53.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-edge-driver</artifactId>
+            <version>2.53.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.tmatesoft.svnkit</groupId>
+            <artifactId>svnkit</artifactId>
+            <version>1.8.11</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <distributionManagement>
+        <site>
+            <id>htmlunit-website</id>
+            <name>HtmlUnit WebSite - Sourceforge</name>
+            <url>scp://shell.sourceforge.net/home/project-web/htmlunit/htdocs/</url>
+        </site>
+    </distributionManagement>
+</project>

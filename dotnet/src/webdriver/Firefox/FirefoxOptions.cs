@@ -17,6 +17,8 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Firefox
@@ -46,15 +48,77 @@ namespace OpenQA.Selenium.Firefox
     /// </example>
     public class FirefoxOptions : DriverOptions
     {
+        private const string IsMarionetteCapability = "marionette";
+        private const string FirefoxProfileCapability = "firefox_profile";
+        private const string FirefoxBinaryCapability = "firefox_binary";
+
         private bool isMarionette = true;
+        private string browserBinaryLocation;
+        private FirefoxProfile profile;
+        private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FirefoxOptions"/> class.
+        /// </summary>
+        public FirefoxOptions()
+            : base()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FirefoxOptions"/> class for the given profile and binary.
+        /// </summary>
+        /// <param name="profile">The <see cref="FirefoxProfile"/> to use in the options.</param>
+        /// <param name="binary">The <see cref="FirefoxBinary"/> to use in the options.</param>
+        internal FirefoxOptions(FirefoxProfile profile, FirefoxBinary binary)
+        {
+            if (profile != null)
+            {
+                this.profile = profile;
+            }
+
+            if (binary != null)
+            {
+                this.browserBinaryLocation = binary.BinaryExecutable.ExecutablePath;
+            }
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether or not to use the Mozilla-provided Marionette implementation.
+        /// Defaults to <see langword="true"/>.
         /// </summary>
+        [Obsolete("Use the UseLegacyImplementation property instead. This property will be removed before the 3.0 release.")]
         public bool IsMarionette
         {
             get { return this.isMarionette; }
             set { this.isMarionette = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to use the legacy driver implementation.
+        /// </summary>
+        public bool UseLegacyImplementation
+        {
+            get { return !this.isMarionette; }
+            set { this.isMarionette = !value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="FirefoxProfile"/> object to be used with this instance.
+        /// </summary>
+        public FirefoxProfile Profile
+        {
+            get { return this.profile; }
+            set { this.profile = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the path and file name of the Firefox browser executable.
+        /// </summary>
+        public string BrowserExecutableLocation
+        {
+            get { return this.browserBinaryLocation; }
+            set { this.browserBinaryLocation = value; }
         }
 
         /// <summary>
@@ -72,6 +136,20 @@ namespace OpenQA.Selenium.Firefox
         /// change in the future.</remarks>
         public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
         {
+            if (capabilityName == IsMarionetteCapability ||
+                capabilityName == FirefoxProfileCapability ||
+                capabilityName == FirefoxBinaryCapability)
+            {
+                string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use that instead.", capabilityName);
+                throw new ArgumentException(message, "capabilityName");
+            }
+
+            if (string.IsNullOrEmpty(capabilityName))
+            {
+                throw new ArgumentException("Capability name may not be null an empty string.", "capabilityName");
+            }
+
+            this.additionalCapabilities[capabilityName] = capabilityValue;
         }
 
         /// <summary>
@@ -83,7 +161,27 @@ namespace OpenQA.Selenium.Firefox
         public override ICapabilities ToCapabilities()
         {
             DesiredCapabilities capabilities = DesiredCapabilities.Firefox();
-            capabilities.SetCapability("marionette", this.isMarionette);
+            capabilities.SetCapability(IsMarionetteCapability, this.isMarionette);
+
+            if (this.profile != null)
+            {
+                capabilities.SetCapability(FirefoxProfileCapability, this.profile.ToBase64String());
+            }
+
+            if (!string.IsNullOrEmpty(this.browserBinaryLocation))
+            {
+                capabilities.SetCapability(FirefoxBinaryCapability, this.browserBinaryLocation);
+            }
+            else
+            {
+                capabilities.SetCapability(FirefoxBinaryCapability, new FirefoxBinary().BinaryExecutable.ExecutablePath);
+            }
+
+            foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
+            {
+                capabilities.SetCapability(pair.Key, pair.Value);
+            }
+
             return capabilities;
         }
     }

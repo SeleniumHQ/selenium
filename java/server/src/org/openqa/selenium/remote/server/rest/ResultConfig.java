@@ -20,13 +20,13 @@ package org.openqa.selenium.remote.server.rest;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.SessionNotFoundException;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
@@ -152,12 +152,12 @@ public class ResultConfig {
     return response;
   }
 
-  private void throwUpIfSessionTerminated(SessionId sessId) throws SessionNotFoundException {
+  private void throwUpIfSessionTerminated(SessionId sessId) throws NoSuchSessionException {
     if (sessId == null) return;
     Session session = sessions.get(sessId);
     final boolean isTerminated = session == null;
-    if (isTerminated){
-      throw new SessionNotFoundException();
+    if (isTerminated) {
+      throw new NoSuchSessionException();
     }
   }
 

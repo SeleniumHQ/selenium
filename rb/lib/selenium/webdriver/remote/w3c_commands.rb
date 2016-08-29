@@ -17,116 +17,119 @@
 # specific language governing permissions and limitations
 # under the License.
 
-class Selenium::WebDriver::Remote::W3CBridge
+module Selenium
+  module WebDriver
+    module Remote
+      class W3CBridge
+        #
+        # http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints
+        #
 
-  #
-  # http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints
-  #
+        #
+        # session handling
+        #
 
-  #
-  # session handling
-  #
+        command :newSession, :post, 'session'
+        command :deleteSession, :delete, 'session/:session_id'
 
-  command :newSession,                 :post,    "session"
-  command :deleteSession,              :delete,  "session/:session_id"
+        #
+        # basic driver
+        #
 
+        command :get, :post, 'session/:session_id/url'
+        command :getCurrentUrl, :get, 'session/:session_id/url'
+        command :back, :post, 'session/:session_id/back'
+        command :forward, :post, 'session/:session_id/forward'
+        command :refresh, :post, 'session/:session_id/refresh'
+        command :getTitle, :get, 'session/:session_id/title'
 
-  #
-  # basic driver
-  #
+        #
+        # window and Frame handling
+        #
 
-  command :get,                        :post,    "session/:session_id/url"
-  command :getCurrentUrl,              :get,     "session/:session_id/url"
-  command :back,                       :post,    "session/:session_id/back"
-  command :forward,                    :post,    "session/:session_id/forward"
-  command :refresh,                    :post,    "session/:session_id/refresh"
-  command :getTitle,                   :get,     "session/:session_id/title"
+        command :getWindowHandle, :get, 'session/:session_id/window'
+        command :closeWindow, :delete, 'session/:session_id/window'
+        command :switchToWindow, :post, 'session/:session_id/window'
+        command :getWindowHandles, :get, 'session/:session_id/window/handles'
+        command :fullscreenWindow, :post, 'session/:session_id/window/fullscreen'
+        command :maximizeWindow, :post, 'session/:session_id/window/maximize'
+        command :setWindowSize, :post, 'session/:session_id/window/size'
+        command :getWindowSize, :get, 'session/:session_id/window/size'
+        command :switchToFrame, :post, 'session/:session_id/frame'
+        command :switchToParentFrame, :post, 'session/:session_id/frame/parent'
 
-  #
-  # window and Frame handling
-  #
+        #
+        # element
+        #
 
-  command :getWindowHandle,            :get,     "session/:session_id/window"
-  command :closeWindow,                :delete,  "session/:session_id/window"
-  command :switchToWindow,             :post,    "session/:session_id/window"
-  command :getWindowHandles,           :get,     "session/:session_id/window/handles"
-  command :fullscreenWindow,           :post,    "session/:session_id/window/fullscreen"
-  command :maximizeWindow,             :post,    "session/:session_id/window/maximize"
-  command :setWindowSize,              :post,    "session/:session_id/window/size"
-  command :getWindowSize,              :get,     "session/:session_id/window/size"
-  command :switchToFrame,              :post,    "session/:session_id/frame"
-  command :switchToParentFrame,        :post,    "session/:session_id/frame/parent"
+        command :findElement, :post, 'session/:session_id/element'
+        command :findElements, :post, 'session/:session_id/elements'
+        command :findChildElement, :post, 'session/:session_id/element/:id/element'
+        command :findChildElements, :post, 'session/:session_id/element/:id/elements'
+        command :getActiveElement, :get, 'session/:session_id/element/active'
+        command :isElementSelected, :get, 'session/:session_id/element/:id/selected'
+        command :getElementAttribute, :get, 'session/:session_id/element/:id/attribute/:name'
+        command :getElementProperty, :get, 'session/:session_id/element/:id/property/:name'
+        command :getElementCssValue, :get, 'session/:session_id/element/:id/css/:property_name'
+        command :getElementText, :get, 'session/:session_id/element/:id/text'
+        command :getElementTagName, :get, 'session/:session_id/element/:id/name'
+        command :getElementRect, :get, 'session/:session_id/element/:id/rect'
+        command :isElementEnabled, :get, 'session/:session_id/element/:id/enabled'
 
-  #
-  # element
-  #
+        #
+        # document handling
+        #
 
-  command :findElement,                :post,    "session/:session_id/element"
-  command :findElements,               :post,    "session/:session_id/elements"
-  command :findChildElement,           :post,    "session/:session_id/element/:id/element"
-  command :findChildElements,          :post,    "session/:session_id/element/:id/elements"
-  command :getActiveElement,           :post,    "session/:session_id/element/active"
-  command :isElementSelected,          :get,     "session/:session_id/element/:id/selected"
-  command :getElementAttribute,        :get,     "session/:session_id/element/:id/attribute/:name"
-  command :getElementProperty,         :get,     "session/:session_id/element/:id/property/:name"
-  command :getElementCssValue,         :get,     "session/:session_id/element/:id/css/:property_name"
-  command :getElementText,             :get,     "session/:session_id/element/:id/text"
-  command :getElementTagName,          :get,     "session/:session_id/element/:id/name"
-  command :getElementRect,             :get,     "session/:session_id/element/:id/rect"
-  command :isElementEnabled,           :get,     "session/:session_id/element/:id/enabled"
+        command :getPageSource, :get, '/session/:session_id/source'
+        command :executeScript, :post, 'session/:session_id/execute/sync'
+        command :executeAsyncScript, :post, 'session/:session_id/execute/async'
 
-  #
-  # script execution
-  #
+        #
+        # cookies
+        #
 
-  command :executeScript,              :post,    "session/:session_id/execute/sync"
-  command :executeAsyncScript,         :post,    "session/:session_id/execute/async"
+        command :getAllCookies, :get, 'session/:session_id/cookie'
+        command :getCookie, :get, 'session/:session_id/cookie/:name'
+        command :addCookie, :post, 'session/:session_id/cookie'
+        command :deleteCookie, :delete, 'session/:session_id/cookie/:name'
 
-  #
-  # cookies
-  #
+        #
+        # timeouts
+        #
 
-  command :getAllCookies,              :get,     "session/:session_id/cookie"
-  command :getCookie,                  :get,     "session/:session_id/cookie/:name"
-  command :addCookie,                  :post,    "session/:session_id/cookie"
-  command :deleteCookie,               :delete,  "session/:session_id/cookie/:name"
+        command :setTimeout, :post, 'session/:session_id/timeouts'
 
-  #
-  # timeouts
-  #
+        #
+        # actions
+        #
 
-  command :setTimeout,                 :post,    "session/:session_id/timeouts"
+        command :actions, :post, 'session/:session_id/actions'
 
-  #
-  # actions
-  #
+        #
+        # Element Operations
+        #
 
-  command :actions,                    :post,    "session/:session_id/actions"
+        command :elementClick, :post, 'session/:session_id/element/:id/click'
+        command :elementTap, :post, 'session/:session_id/element/:id/tap'
+        command :elementClear, :post, 'session/:session_id/element/:id/clear'
+        command :elementSendKeys, :post, 'session/:session_id/element/:id/value'
 
+        #
+        # alerts
+        #
 
-  #
-  # Element Operations
-  #
+        command :dismissAlert, :post, 'session/:session_id/alert/dismiss'
+        command :acceptAlert, :post, 'session/:session_id/alert/accept'
+        command :getAlertText, :get, 'session/:session_id/alert/text'
+        command :sendAlertText, :post, 'session/:session_id/alert/text'
 
-  command :elementClick,               :post,    "session/:session_id/element/:id/click"
-  command :elementTap,                 :post,    "session/:session_id/element/:id/tap"
-  command :elementClear,               :post,    "session/:session_id/element/:id/clear"
-  command :elementSendKeys,            :post,    "session/:session_id/element/:id/value"
+        #
+        # screenshot
+        #
 
-  #
-  # alerts
-  #
-
-  command :dismissAlert,               :post,    "session/:session_id/alert/dismiss"
-  command :acceptAlert,                :post,    "session/:session_id/alert/accept"
-  command :getAlertText,               :get,     "session/:session_id/alert/text"
-  command :sendAlertText,              :post,    "session/:session_id/alert/text"
-
-  #
-  # screenshot
-  #
-
-  command :takeScreenshot,             :get,     "session/:session_id/screenshot"
-  command :takeElementScreenshot,      :get,     "session/:session_id/element/:id/screenshot"
-
-end
+        command :takeScreenshot, :get, 'session/:session_id/screenshot'
+        command :takeElementScreenshot, :get, 'session/:session_id/element/:id/screenshot'
+      end
+    end # Remote
+  end # WebDriver
+end # Selenium

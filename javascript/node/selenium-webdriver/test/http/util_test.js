@@ -20,7 +20,7 @@
 var assert = require('assert'),
     http = require('http');
 
-var error = require('../../error');
+var error = require('../../lib/error');
 var util = require('../../http/util');
 
 describe('selenium-webdriver/http/util', function() {
@@ -140,30 +140,30 @@ describe('selenium-webdriver/http/util', function() {
   });
 
   describe('#waitForUrl', function() {
-    it('succeeds when URL returns 2xx', function(done) {
+    it('succeeds when URL returns 2xx', function() {
       responseCode = 404;
       setTimeout(function() { responseCode = 200; }, 50);
 
-      util.waitForUrl(baseUrl, 200).
-          then(function() {}).  // done needs no argument to pass.
-          thenFinally(done);
+      return util.waitForUrl(baseUrl, 200);
     });
 
-    it('fails if URL always returns 4xx', function(done) {
+    it('fails if URL always returns 4xx', function() {
       responseCode = 404;
 
-      util.waitForUrl(baseUrl, 50).
-          then(function() { done('Expected to time out'); },
-               function() { done(); });
+      return util.waitForUrl(baseUrl, 50)
+          .then(() => assert.fail('Expected to time out'),
+                () => true);
     });
 
-    it('fails if cannot connect to server', function(done) {
-      killServer(function(e) {
-        if (e) return done(e);
+    it('fails if cannot connect to server', function() {
+      return new Promise((resolve, reject) => {
+        killServer(function(e) {
+          if (e) return reject(e);
 
-      util.waitForUrl(baseUrl, 50).
-          then(function() { done('Expected to time out'); },
-               function() { done(); });
+          util.waitForUrl(baseUrl, 50).
+              then(function() { reject(Error('Expected to time out')); },
+                   function() { resolve(); });
+        });
       });
     });
 

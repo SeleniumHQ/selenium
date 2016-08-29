@@ -19,7 +19,6 @@ require 'rake-tasks/crazy_fun'
 require 'rake-tasks/crazy_fun/mappings/export'
 require 'rake-tasks/crazy_fun/mappings/folder'
 require 'rake-tasks/crazy_fun/mappings/gcc'
-require 'rake-tasks/crazy_fun/mappings/java'
 require 'rake-tasks/crazy_fun/mappings/javascript'
 require 'rake-tasks/crazy_fun/mappings/mozilla'
 require 'rake-tasks/crazy_fun/mappings/python'
@@ -34,14 +33,11 @@ require 'rake-tasks/checks'
 require 'rake-tasks/dotnet'
 require 'rake-tasks/zip'
 require 'rake-tasks/c'
-require 'rake-tasks/java'
 require 'rake-tasks/selenium'
 require 'rake-tasks/se-ide'
 require 'rake-tasks/ie_code_generator'
 require 'rake-tasks/ci'
 require 'rake-tasks/copyright'
-
-require 'rake-tasks/gecko_sdks'
 
 $DEBUG = orig_verbose != :default ? true : false
 if (ENV['debug'] == 'true')
@@ -50,11 +46,11 @@ end
 verbose($DEBUG)
 
 def release_version
-  "2.53"
+  "3.0"
 end
 
 def version
-  "#{release_version}.0"
+  "#{release_version}.0-beta3"
 end
 
 ide_version = "2.8.0"
@@ -79,7 +75,6 @@ crazy_fun = CrazyFun.new
 ExportMappings.new.add_all(crazy_fun)
 FolderMappings.new.add_all(crazy_fun)
 GccMappings.new.add_all(crazy_fun)
-JavaMappings.new.add_all(crazy_fun)
 JavascriptMappings.new.add_all(crazy_fun)
 MozillaMappings.new.add_all(crazy_fun)
 PythonMappings.new.add_all(crazy_fun)
@@ -87,6 +82,8 @@ RakeMappings.new.add_all(crazy_fun)
 RenameMappings.new.add_all(crazy_fun)
 RubyMappings.new.add_all(crazy_fun)
 VisualStudioMappings.new.add_all(crazy_fun)
+
+# Allow old crazy fun targets to continue to exist
 
 # Not every platform supports building every binary needed, so we sometimes
 # need to fall back to prebuilt binaries. The prebuilt binaries are stored in
@@ -101,32 +98,58 @@ end
 # from rake.
 crazy_fun.create_tasks(Dir["**/build.desc"])
 
+# Buck integration. Loaded after CrazyFun has initialized all the tasks it'll handle.
+# This is because the buck integration creates a rule for "//.*"
+require 'rake-tasks/buck'
+
+# Spoof tasks to get CI working with buck
+task '//java/client/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
+  '//java/client/test/org/openqa/selenium/environment:webserver'
+]
+
+# Java targets required for release. These should all have the correct maven_coords set.
+JAVA_RELEASE_TARGETS = [
+  '//java/client/src/org/openqa/selenium:core',
+  '//java/client/src/org/openqa/selenium/support:support',
+  '//java/client/src/org/openqa/selenium/chrome:chrome',
+  '//java/client/src/org/openqa/selenium/edge:edge',
+  '//java/client/src/org/openqa/selenium/firefox:firefox',
+  '//java/client/src/org/openqa/selenium/ie:ie',
+  '//java/client/src/org/openqa/selenium/opera:opera',
+  '//java/client/src/org/openqa/selenium/remote:remote',
+  '//java/client/src/org/openqa/selenium/safari:safari',
+  '//java/client/src/org/openqa/selenium:client-combined',
+  '//java/server/src/com/thoughtworks/selenium:leg-rc',
+  '//java/server/src/org/openqa/grid/selenium:classes',
+  '//third_party/java/jetty:jetty'
+]
+
+
 # Notice that because we're using rake, anything you can do in a normal rake
 # build can also be done here. For example, here we set the default task
 task :default => [:test]
 
 task :all => [
   :"selenium-java",
-  "//java/client/test/org/openqa/selenium/environment/webserver:webserver:uber"
+  "//java/client/test/org/openqa/selenium/environment:webserver"
 ]
 task :all_zip => [:'selenium-java_zip']
 task :tests => [
-  "//java/client/test/org/openqa/selenium/htmlunit:test_basic",
-  "//java/client/test/org/openqa/selenium/htmlunit:test_js",
-  "//java/client/test/org/openqa/selenium/firefox:test_synthesized",
-  "//java/client/test/org/openqa/selenium/ie:test",
-  "//java/client/test/org/openqa/selenium/chrome:test",
-  "//java/client/test/org/openqa/selenium/opera:test_blink",
-  "//java/client/test/org/openqa/selenium/lift:test",
-  "//java/client/test/org/openqa/selenium/support:SmallTests",
-  "//java/client/test/org/openqa/selenium/support:LargeTests",
+  "//java/client/test/org/openqa/selenium/htmlunit:htmlunit",
+  "//java/client/test/org/openqa/selenium/htmlunit:htmlunit-no-js",
+  "//java/client/test/org/openqa/selenium/firefox:test-synthesized",
+  "//java/client/test/org/openqa/selenium/ie:ie",
+  "//java/client/test/org/openqa/selenium/chrome:chrome",
+  "//java/client/test/org/openqa/selenium/opera:opera",
+#  "//java/client/test/org/openqa/selenium/lift:test",
+  "//java/client/test/org/openqa/selenium/support:small-tests",
+  "//java/client/test/org/openqa/selenium/support:large-tests",
   "//java/client/test/org/openqa/selenium/remote:common-tests",
   "//java/client/test/org/openqa/selenium/remote:client-tests",
   "//java/server/test/org/openqa/selenium/remote/server/log:test",
   "//java/server/test/org/openqa/selenium/remote/server:small-tests",
 ]
 task :chrome => [ "//java/client/src/org/openqa/selenium/chrome" ]
-task :common_core => [ "//common:core" ]
 task :grid => [ "//java/server/src/org/openqa/grid/selenium" ]
 task :ie => [ "//java/client/src/org/openqa/selenium/ie" ]
 task :firefox => [
@@ -136,16 +159,13 @@ task :firefox => [
   "//cpp:imehandler64",
   "//java/client/src/org/openqa/selenium/firefox"
 ]
-task :'debug-server' => "//java/client/test/org/openqa/selenium/environment/webserver:WebServer:run"
-task :remote => [:remote_common, :remote_server, :remote_client]
-task :remote_common => ["//java/client/src/org/openqa/selenium/remote:common"]
+task :'debug-server' => "//java/client/test/org/openqa/selenium/environment:webserver:run"
+task :remote => [:remote_server, :remote_client]
 task :remote_client => ["//java/client/src/org/openqa/selenium/remote"]
 task :remote_server => ["//java/server/src/org/openqa/selenium/remote/server"]
 task :safari => [
-  "//javascript/safari-driver:SafariDriver",
   "//java/client/src/org/openqa/selenium/safari",
 ]
-task :server_lite => ["//java/server/src/org/openqa/selenium/server:server_lite"]
 task :selenium => [ "//java/client/src/org/openqa/selenium" ]
 task :support => [
   "//java/client/src/org/openqa/selenium/lift",
@@ -153,9 +173,7 @@ task :support => [
 ]
 
 desc 'Build the standalone server'
-task 'selenium-server-standalone' => '//java/server/src/org/openqa/grid/selenium:selenium:uber'
-
-task 'selenium-server-standalone-v3' => '//java/server/src/org/openqa/grid/selenium:selenium-v3:uber'
+task 'selenium-server-standalone' => '//java/server/src/org/openqa/grid/selenium:selenium'
 
 task :ide => [ "//ide:selenium-ide-multi" ]
 task :ide_proxy_setup => [ "//javascript/selenium-atoms", "se_ide:setup_proxy" ]
@@ -168,24 +186,24 @@ task :test_javascript => [
   '//javascript/webdriver:es6_test:run',
   '//javascript/selenium-atoms:test:run',
   '//javascript/selenium-core:test:run']
-task :test_chrome => [ "//java/client/test/org/openqa/selenium/chrome:test:run" ]
+task :test_chrome => [ "//java/client/test/org/openqa/selenium/chrome:chrome:run" ]
 task :test_chrome_atoms => [
   '//javascript/atoms:test_chrome:run',
   '//javascript/chrome-driver:test:run',
   '//javascript/webdriver:test_chrome:run']
 task :test_htmlunit => [
-  "//java/client/test/org/openqa/selenium/htmlunit:test_basic:run",
-  "//java/client/test/org/openqa/selenium/htmlunit:test_js:run"
+  "//java/client/test/org/openqa/selenium/htmlunit:htmlunit-no-js:run",
+  "//java/client/test/org/openqa/selenium/htmlunit:htmlunit:run"
 ]
 task :test_grid => [
-  "//java/server/test/org/openqa/grid/common:test:run",
-  "//java/server/test/org/openqa/grid:test:run",
-  "//java/server/test/org/openqa/grid/e2e:test:run"
+  "//java/server/test/org/openqa/grid/common:common:run",
+  "//java/server/test/org/openqa/grid:grid:run",
+  "//java/server/test/org/openqa/grid/e2e:e2e:run"
 ]
-task :test_ie => [ "//java/client/test/org/openqa/selenium/ie:test:run" ]
+task :test_ie => [ "//java/client/test/org/openqa/selenium/ie:ie:run" ]
 task :test_jobbie => [ :test_ie ]
-task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test_synthesized:run" ]
-task :test_opera => [ "//java/client/test/org/openqa/selenium/opera:test_blink:run" ]
+task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test-synthesized:run" ]
+task :test_opera => [ "//java/client/test/org/openqa/selenium/opera:opera:run" ]
 task :test_remote_server => [ '//java/server/test/org/openqa/selenium/remote/server:small-tests:run' ]
 task :test_remote => [
   '//java/client/test/org/openqa/selenium/remote:common-tests:run',
@@ -193,37 +211,21 @@ task :test_remote => [
   '//java/client/test/org/openqa/selenium/remote:remote-driver-tests:run',
   :test_remote_server
 ]
-task :test_safari => [ "//java/client/test/org/openqa/selenium/safari:test:run" ]
-task :test_phantomjs => [ "//java/client/test/org/openqa/selenium/phantomjs:test:run" ]
+task :test_safari => [ "//java/client/test/org/openqa/selenium/safari:safari:run" ]
+task :test_phantomjs => [ "//java/client/test/org/openqa/selenium/phantomjs:phantomjs:run" ]
 task :test_support => [
-  "//java/client/test/org/openqa/selenium/lift:test:run",
-  "//java/client/test/org/openqa/selenium/support:SmallTests:run",
-  "//java/client/test/org/openqa/selenium/support:LargeTests:run"
+  "//java/client/test/org/openqa/selenium/lift:lift:run",
+  "//java/client/test/org/openqa/selenium/support:small-tests:run",
+  "//java/client/test/org/openqa/selenium/support:large-tests:run"
 ]
 
 # TODO(simon): test-core should go first, but it's changing the least for now.
-task :test_selenium => [ :'test-rc', :'test-v1-emulation', :'test-core']
+task :test_selenium => [ :'test-rc']
 
-task :'test-v1-emulation' => [ '//java/client/test/com/thoughtworks/selenium:firefox-emulation-test:run' ]
-task :'test-rc' => ['//java/client/test/org/openqa/selenium:RcBrowserLauncherTests:run',
-                    '//java/server/test/org/openqa/selenium/server:RcServerUnitTests:run',
-                    '//java/server/test/org/openqa/selenium/server:RcServerLargeTests:run',
-                    '//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run',
-                    '//java/client/test/com/thoughtworks/selenium:firefox-proxy-rc-test:run',
-                    '//java/client/test/com/thoughtworks/selenium:firefox-singlewindow-rc-test:run']
-task :'test-core' => [:'test-core-firefox']
+task :'test-rc' => ['//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run']
 
 if (windows?)
-  task :'test-v1-emulation' => ['//java/client/test/com/thoughtworks/selenium:ie-emulation-test:run']
-  task :'test-rc' => ['//java/client/test/com/thoughtworks/selenium:ie-rc-test:run',
-                      '//java/client/test/com/thoughtworks/selenium:ie-proxy-rc-test:run',
-                      '//java/client/test/com/thoughtworks/selenium:ie-singlewindow-rc-test:run']
-  task :'test-core' => [:'test-core-ie']
-# TODO(santi): why are these disabled?
-#elsif (mac?)
-#  task :'test-rc' => ['//java/client/test/com/thoughtworks/selenium:safari-rc-test:run',
-#                       '//java/client/test/com/thoughtworks/selenium:safari-proxy-rc-test:run']
-#  task :'test-core' => [:'test-core-safari']
+  task :'test-rc' => ['//java/client/test/com/thoughtworks/selenium:ie-rc-test:run']
 end
 
 task :test_java_webdriver => [
@@ -243,7 +245,7 @@ end
 
 task :test_java => [
   "//java/client/test/org/openqa/selenium/atoms:test:run",
-  "//java/client/test/org/openqa/selenium:SmallTests:run",
+  "//java/client/test/org/openqa/selenium:small-tests:run",
   :test_support,
   :test_java_webdriver,
   :test_selenium,
@@ -252,16 +254,14 @@ task :test_java => [
 
 task :test_rb => [
   "//rb:unit-test",
-  "//rb:rc-client-unit-test",
-  "//rb:rc-client-integration-test",
   "//rb:chrome-test",
   "//rb:firefox-test",
   "//rb:phantomjs-test",
   "//rb:remote-chrome-test",
   "//rb:remote-firefox-test",
   "//rb:remote-phantomjs-test",
-  ("//rb:marionette-test" if ENV['MARIONETTE_PATH']),
-  ("//rb:remote-marionette-test" if ENV['MARIONETTE_PATH']),
+  ("//rb:ff-legacy-test" if ENV['FF_LEGACY_BINARY']),
+  ("//rb:remote-ff-legacy-test" if ENV['FF_LEGACY_BINARY']),
   ("//rb:safari-test" if mac?),
   ("//rb:remote-safari-test" if mac?),
   ("//rb:ie-test" if windows?),
@@ -309,42 +309,6 @@ ie_generate_type_mapping(:name => "ie_result_type_java",
                          :type => "java",
                          :out => "java/client/src/org/openqa/selenium/ie/IeReturnTypes.java")
 
-
-GeckoSDKs.new do |sdks|
-  sdks.add 'third_party/gecko-31/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/31.0/sdk/xulrunner-31.0.en-US.linux-i686.sdk.tar.bz2',
-           'e20ce46e69ed36e20aa4faefe3022698'
-
-  sdks.add 'third_party/gecko-31/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/31.0/sdk/xulrunner-31.0.en-US.linux-x86_64.sdk.tar.bz2',
-           '548ff61bb3a45d0bf645eee7f46e8024'
-
-  sdks.add 'third_party/gecko-31/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/31.0/sdk/xulrunner-31.0.en-US.win32.sdk.zip',
-           'e8d7d9bd67b957bb627de7d3269d240b'
-end
-
-task :'selenium-server_zip' do
-  temp = "build/selenium-server_zip"
-  mkdir_p temp
-  sh "cd #{temp} && jar xf ../selenium-server.zip"
-  rm_f "build/selenium-server.zip"
-  Dir["#{temp}/webdriver-*.jar"].each { |file| rm_rf file }
-  mv "#{temp}/selenium-server.jar", "#{temp}/selenium-server-#{version}.jar"
-  sh "cd #{temp} && jar cMf ../selenium-server.zip *"
-end
-
-{"firefox" => "*chrome",
- "ie" => "*iexploreproxy",
- "opera" => "*opera",
- "safari" => "*safari"}.each_pair do |k,v|
-  selenium_test(:name => "test-core-#{k}",
-                :srcs => [ "common/test/js/core/*.js" ],
-                :deps => [
-                  "//java/server/test/org/openqa/selenium:server-with-tests:uber",
-                ],
-                :browser => v )
-end
 
 task :javadocs => [:common, :firefox, :ie, :remote, :support, :chrome, :selenium] do
   mkdir_p "build/javadoc"
@@ -442,13 +406,6 @@ end
 desc "Calculate dependencies required for testing the automation atoms"
 task :calcdeps => "build/javascript/deps.js"
 
-task :test_webdriverjs => [
-  "//javascript/webdriver:es6_test:run"
-]
-
-desc "Generate a single file with WebDriverJS' public API"
-task :webdriverjs => [ "//javascript/webdriver:webdriver" ]
-
 desc "Repack jetty"
 task "repack-jetty" => "build/third_party/java/jetty/jetty-repacked.jar"
 
@@ -490,104 +447,81 @@ file "build/third_party/java/jetty/jetty-repacked.jar" => [
    cp "build/third_party/java/jetty/jetty-repacked.jar", "third_party/java/jetty/jetty-repacked.jar"
 end
 
-task
 
-task :release => [
-    :clean,
-    :build,
-    '//java/server/src/org/openqa/selenium/server:server:zip',
-    '//java/server/src/org/openqa/grid/selenium:selenium:zip',
-    '//java/client/src/org/openqa/selenium:client-combined:zip',
-  ] do |t|
-  # Unzip each of the deps and rename the pieces that need renaming
-  renames = {
-    "client-combined-nodeps-srcs.jar" => "selenium-java-#{version}-srcs.jar",
-    "client-combined-nodeps.jar" => "selenium-java-#{version}.jar",
-    "selenium-nodeps-srcs.jar" => "selenium-server-#{version}-srcs.jar",
-    "selenium-nodeps.jar" => "selenium-server-#{version}.jar",
-    "selenium-standalone.jar" => "selenium-server-standalone-#{version}.jar",
-  }
-
-  t.prerequisites.each do |pre|
-    zip = Rake::Task[pre].out
-
-    next unless zip =~ /\.zip$/
-
-    temp =  zip + "rename"
-    rm_rf temp
-    deep = File.join(temp, "/selenium-#{version}")
-    mkdir_p deep
-    cp "java/CHANGELOG", deep
-    cp "NOTICE", deep
-    cp "LICENSE", deep
-
-    sh "cd #{deep} && jar xf ../../#{File.basename(zip)}"
-    renames.each do |from, to|
-      src = File.join(deep, from)
-            next unless File.exists?(src)
-
-      mv src, File.join(deep, to)
+task :'maven-dry-run' => JAVA_RELEASE_TARGETS do |t|
+  t.prerequisites.each do |p|
+    if JAVA_RELEASE_TARGETS.include?(p)
+      Buck::buck_cmd.call('publish', ['--dry-run', '--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', p])
     end
-    rm_f File.join(deep, "client-combined-standalone.jar")
-    rm zip
-    sh "cd #{temp} && jar cMf ../#{File.basename(zip)} *"
-
-    rm_rf temp
   end
-
-  mkdir_p "build/dist"
-  cp "build/java/server/src/org/openqa/grid/selenium/selenium-standalone.jar", "build/dist/selenium-server-standalone-#{version}.jar"
-  cp "build/java/server/src/org/openqa/grid/selenium/selenium.zip", "build/dist/selenium-server-#{version}.zip"
-  cp "build/java/client/src/org/openqa/selenium/client-combined.zip", "build/dist/selenium-java-#{version}.zip"
 end
 
-task "release-v3" => [
-    :clean,
-    :build,
-    '//java/server/src/org/openqa/selenium/remote/server:server:zip',
-    '//java/server/src/org/openqa/grid/selenium:selenium-v3:zip',
-    '//java/client/src/org/openqa/selenium:client-combined-v3:zip',
-  ] do |t|
-  # Unzip each of the deps and rename the pieces that need renaming
-  renames = {
-    "client-combined-v3-nodeps-srcs.jar" => "selenium-java-v3-#{version}-srcs.jar",
-    "client-combined-v3-nodeps.jar" => "selenium-java-v3-#{version}.jar",
-    "selenium-v3-nodeps-srcs.jar" => "selenium-server-v3-#{version}-srcs.jar",
-    "selenium-v3-nodeps.jar" => "selenium-server-v3-#{version}.jar",
-    "selenium-v3-standalone.jar" => "selenium-server-v3-standalone-#{version}.jar",
-  }
 
-  t.prerequisites.each do |pre|
-    zip = Rake::Task[pre].out
-
-    next unless zip =~ /\.zip$/
-
-    temp =  zip + "rename"
-    rm_rf temp
-    deep = File.join(temp, "/selenium-#{version}")
-    mkdir_p deep
-    cp "java/CHANGELOG", deep
-    cp "NOTICE", deep
-    cp "LICENSE", deep
-
-    sh "cd #{deep} && jar xf ../../#{File.basename(zip)}"
-    renames.each do |from, to|
-      src = File.join(deep, from)
-      next unless File.exists?(src)
-
-      mv src, File.join(deep, to)
-    end
-    rm_f File.join(deep, "client-combined-v3-standalone.jar")
-    rm zip
-    sh "cd #{temp} && jar cMf ../#{File.basename(zip)} *"
-
-    rm_rf temp
-  end
+task :'prep-release-zip' => [
+  '//java/client/src/org/openqa/selenium:client-combined:zip',
+  '//java/server/src/org/openqa/grid/selenium:selenium:zip',
+  '//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner'] do |t|
 
   mkdir_p "build/dist"
-  cp "build/java/server/src/org/openqa/grid/selenium/selenium-v3-standalone.jar", "build/dist/selenium-server-v3-standalone-#{version}.jar"
-  cp "build/java/server/src/org/openqa/grid/selenium/selenium-v3.zip", "build/dist/selenium-server-v3-#{version}.zip"
-  cp "build/java/client/src/org/openqa/selenium/client-combined-v3.zip", "build/dist/selenium-java-v3-#{version}.zip"
+  cp Rake::Task['//java/server/src/org/openqa/grid/selenium:selenium'].out, "build/dist/selenium-server-standalone-#{version}.jar"
+  cp Rake::Task['//java/server/src/org/openqa/grid/selenium:selenium:zip'].out, "build/dist/selenium-server-#{version}.zip"
+  `jar uf build/dist/selenium-server-#{version}.zip NOTICE LICENSE`
+  `cd java && jar uf ../build/dist/selenium-server-#{version}.zip CHANGELOG`
+  cp Rake::Task['//java/client/src/org/openqa/selenium:client-combined:zip'].out, "build/dist/selenium-java-#{version}.zip"
+  `jar uf build/dist/selenium-java-#{version}.zip NOTICE LICENSE`
+  `cd java && jar uf ../build/dist/selenium-server-#{version}.zip CHANGELOG`
+  cp Rake::Task['//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner'].out, "build/dist/selenium-html-runner-#{version}.jar"
+end
+
+
+task :release => JAVA_RELEASE_TARGETS + ['prep-release-zip'] do |t|
+  puts t.prerequisites.join(', ')
+
+ t.prerequisites.each do |p|
+   if JAVA_RELEASE_TARGETS.include?(p)
+     Buck::buck_cmd.call('publish', ['--dry-run', '--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', p])
+   end
+ end
+end
+
+def read_user_pass_from_m2_settings
+    settings = File.read(ENV['HOME'] + "/.m2/settings.xml")
+    found_section = false
+    user = nil
+    pass = nil
+    settings.each_line do |line|
+        if !found_section
+            found_section = line.include? "<id>sonatype-nexus-staging</id>"
+        else
+            if user == nil and line.include? "<username>"
+              user = line.split("<username>")[1].split("</")[0]
+            elsif pass == nil and line.include? "<password>"
+              pass = line.split("<password>")[1].split("</")[0]
+            end
+        end
+    end
+
+    return [user, pass]
+end
+
+task :'publish-maven' do
+  puts "\n Enter Passphrase:"
+  passphrase = STDIN.gets.chomp
+
+  creds = read_user_pass_from_m2_settings()
+  JAVA_RELEASE_TARGETS.each do |p|
+    if JAVA_RELEASE_TARGETS.include?(p)
+      Buck::buck_cmd.call('publish', ['--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', '--include-source', '--include-javadoc', '-u', creds[0], '-p', creds[1], '--signing-passphrase', passphrase, p])
+    end
+  end
+end
+
+task :'maven-install' do
+  JAVA_RELEASE_TARGETS.each do |p|
+    if JAVA_RELEASE_TARGETS.include?(p)
+      Buck::buck_cmd.call('publish', ['--remote-repo', "file://#{ENV['HOME']}/.m2/repository", '--include-source', '--include-javadoc', p])
+    end
+  end
 end
 
 task :push_release => [:release] do
@@ -596,32 +530,15 @@ task :push_release => [:release] do
     py = "python"
   end
 
-  sh "#{py} third_party/py/googlestorage/publish_release.py --project_id google.com:webdriver --bucket selenium-release --acl public-read --publish_version #{release_version} --publish build/dist/selenium-server-standalone-#{version}.jar build/dist/selenium-server-#{version}.zip build/dist/selenium-java-#{version}.zip"
+  sh "#{py} third_party/py/googlestorage/publish_release.py --project_id google.com:webdriver --bucket selenium-release --acl public-read --publish_version #{release_version} --publish build/dist/selenium-server-standalone-#{version}.jar --publish build/dist/selenium-server-#{version}.zip --publish build/dist/selenium-java-#{version}.zip"
 end
 
 desc 'Build the selenium client jars'
-task 'selenium-java' => '//java/client/src/org/openqa/selenium:client-combined:project'
+task 'selenium-java' => '//java/client/src/org/openqa/selenium:selenium'
 
 desc 'Build and package Selenium IDE'
 task :release_ide  => [:ide] do
   cp 'build/ide/selenium-ide.xpi', "build/ide/selenium-ide-#{ide_version}.xpi"
-end
-
-# TODO: do this properly
-namespace :docs do
-  task :mime_types do
-    sh "svn propset svn:mime-type text/html #{Dir['docs/api/**/*.html'].join ' '}"
-    sh "svn propset svn:mime-type application/javascript #{Dir['docs/api/**/*.js'].join ' '}"
-    sh "svn propset svn:mime-type text/css #{Dir['docs/api/**/*.css'].join ' '}"
-  end
-
-  task :js => [ "//javascript/node:selenium-webdriver" ] do
-    # First, delete the old docs.
-    rm_rf "docs/api/javascript"
-
-    mkdir_p "docs/api/javascript"
-    cp_r "build/javascript/node/selenium-webdriver/docs/.", "docs/api/javascript"
-  end
 end
 
 namespace :node do
@@ -639,7 +556,7 @@ namespace :node do
         " --resource=build/cpp/amd64/libnoblur64.so:firefox/amd64/libnoblur64.so" <<
         " --resource=build/cpp/i386/libnoblur.so:firefox/i386/libnoblur.so" <<
         " --resource=build/javascript/firefox-driver/webdriver.xpi:firefox/webdriver.xpi" <<
-        " --resource=build/javascript/safari-driver/client.js:safari/client.js" <<
+        " --resource=buck-out/gen/javascript/safari-driver/client.js:safari/client.js" <<
         " --resource=common/src/web/:test/data/" <<
         " --exclude_resource=common/src/web/Bin" <<
         " --exclude_resource=.gitignore" <<
@@ -654,39 +571,10 @@ namespace :node do
 end
 
 namespace :safari do
-  desc "Build the SafariDriver extension"
-  task :extension => [ "//javascript/safari-driver:SafariDriver" ]
-
-  desc "Build the SafariDriver extension and java client"
+  desc "Build the SafariDriver java client"
   task :build => [
-    :extension,
     "//java/client/src/org/openqa/selenium/safari"
   ]
-
-  desc "Run JavaScript tests for Safari"
-  task :testjs => [
-      "//javascript/atoms:test_safari:run",
-      "//javascript/safari-driver:test:run",
-      "//javascript/selenium-atoms:test_safari:run",
-      "//javascript/webdriver:test_safari:run"
-  ]
-
-  desc "Run Java tests for Safari"
-  task :testjava => [
-      "//java/client/test/org/openqa/selenium/safari:test:run"
-  ]
-
-  desc "Run all SafariDriver tests"
-  task :test => [
-      "safari:testjs",
-      "safari:testjava"
-  ]
-
-  desc "Re-install the SafariDriver extension; OSX only"
-  task :reinstall => [ :extension ] do |t|
-    raise StandardError, "Task #{t.name} is only available on OSX" unless mac?
-    sh "osascript javascript/safari-driver/reinstall.scpt"
-  end
 end
 
 namespace :marionette do

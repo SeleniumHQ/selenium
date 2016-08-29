@@ -29,7 +29,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.remote.server.SeleniumServer;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -60,7 +60,7 @@ public class Issue1586 {
   public void test() throws MalformedURLException {
     WebDriver driver = null;
     try {
-      driver = new RemoteWebDriver(new URL(hub.getUrl() + "/grid/driver"), GridTestHelper.getDefaultBrowserCapability());
+      driver = new RemoteWebDriver(hub.getWebDriverHubRequestURL(), GridTestHelper.getDefaultBrowserCapability());
       for (int i = 0; i < 20; i++) {
         driver.get("https://github.com/SeleniumHQ/selenium");
         WebElement keywordInput = driver.findElement(By.name("q"));

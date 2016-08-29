@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Error
-
       class WebDriverError < StandardError; end
       class UnsupportedOperationError < WebDriverError; end
 
@@ -36,7 +35,7 @@ module Selenium
       # parameters.
       #
 
-      class NoSuchElementError < WebDriverError; end             # 7
+      class NoSuchElementError < WebDriverError; end # 7
 
       #
       # A request to switch to a frame could not be satisfied because the
@@ -46,27 +45,26 @@ module Selenium
       class NoSuchFrameError < WebDriverError; end               # 8
       class UnknownCommandError < WebDriverError; end            # 9
 
-
       #
       # Indicates that a reference to an element is now "stale" - the element
       # no longer appears in the DOM of the page.
       #
 
-      class StaleElementReferenceError < WebDriverError; end     # 10
+      class StaleElementReferenceError < WebDriverError; end # 10
 
       #
       # Raised to indicate that although an element is present on the DOM,
       # it is not visible, and so is not able to be interacted with.
       #
 
-      class ElementNotVisibleError < WebDriverError; end         # 11
+      class ElementNotVisibleError < WebDriverError; end # 11
 
       #
       # Raised when an interaction could not be performed because the element
       # is in an invalid state (e.g. attempting to click a disabled element).
       #
 
-      class InvalidElementStateError < WebDriverError; end       # 12
+      class InvalidElementStateError < WebDriverError; end # 12
 
       #
       # An unknown server-side error occurred while processing the command.
@@ -109,30 +107,30 @@ module Selenium
       # the current URL.
       #
 
-      class InvalidCookieDomainError < WebDriverError; end       # 24
+      class InvalidCookieDomainError < WebDriverError; end # 24
 
       #
       # Raised when a driver fails to set a cookie.
       #
 
-      class UnableToSetCookieError < WebDriverError; end         # 25
+      class UnableToSetCookieError < WebDriverError; end # 25
 
       #
       # Raised when an alert dialog is present that has not been dealt with.
       #
-      class UnhandledAlertError < WebDriverError; end            # 26
+      class UnhandledAlertError < WebDriverError; end # 26
 
       #
       # Indicates that a user has tried to access an alert when one is not present.
       #
 
-      class NoAlertPresentError < WebDriverError; end            # 27
+      class NoAlertPresentError < WebDriverError; end # 27
 
       #
       # A script did not complete before its timeout expired.
       #
 
-      class ScriptTimeOutError < WebDriverError; end             # 28
+      class ScriptTimeOutError < WebDriverError; end # 28
 
       #
       # The coordinates provided to an interactions operation are invalid.
@@ -146,7 +144,7 @@ module Selenium
       # the machine.
       #
 
-      class IMENotAvailableError < WebDriverError; end           # 30
+      class IMENotAvailableError < WebDriverError; end # 30
 
       #
       # Indicates that activating an IME engine has failed.
@@ -158,23 +156,23 @@ module Selenium
       # Argument was an invalid selector (e.g. XPath/CSS).
       #
 
-      class InvalidSelectorError < WebDriverError; end           # 32
+      class InvalidSelectorError < WebDriverError; end # 32
 
       #
       # A new session could not be created.
       #
 
-      class SessionNotCreatedError < WebDriverError; end         # 33
+      class SessionNotCreatedError < WebDriverError; end # 33
 
       #
       # Indicates that the target provided to the actions #move method is
       # invalid, e.g. outside of the bounds of the window.
       #
 
-      class MoveTargetOutOfBoundsError < WebDriverError; end     # 34
+      class MoveTargetOutOfBoundsError < WebDriverError; end # 34
 
       # @api private
-      Errors = [
+      ERRORS = [
         IndexOutOfBoundsError,          # 1
         NoCollectionError,              # 2
         NoStringError,                  # 3
@@ -209,20 +207,19 @@ module Selenium
         InvalidSelectorError,           # 32
         SessionNotCreatedError,         # 33
         MoveTargetOutOfBoundsError      # 34
-      ]
+      ].freeze
 
       class << self
         def for_code(code)
           return if [nil, 0].include? code
-          return Errors[code - 1] if code.is_a? Fixnum
+          return ERRORS[code - 1] if code.is_a? Fixnum
 
           klass_name = code.split(' ').map(&:capitalize).join
-          Error.const_get("#{klass_name}Error")
+          Error.const_get("#{klass_name.gsub('Error', '')}Error")
         rescue NameError
           WebDriverError
         end
       end
-
     end # Error
   end # WebDriver
 end # Selenium

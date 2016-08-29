@@ -9,7 +9,7 @@ dotnet_test(name = "phantomjs",
     "//dotnet/src/webdriver:webdriver",
     "//dotnet/test/common:common",
     "third_party/dotnet/json-net-4.5r11/Net40/Newtonsoft.Json.dll",
-    "third_party/dotnet/nunit-3.0.1/net-4.0/nunit.framework.dll"
+    "third_party/dotnet/nunit-3.2.1/net-4.0/nunit.framework.dll"
   ],
   out = "WebDriver.PhantomJS.Tests.dll",
   files = [

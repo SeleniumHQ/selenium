@@ -23,6 +23,7 @@ goog.provide('core.text');
 
 
 goog.require('bot');
+goog.require('bot.events');
 goog.require('bot.userAgent');
 goog.require('core.patternMatcher');
 goog.require('goog.dom');
@@ -220,3 +221,29 @@ core.text.linkLocator = function(locator, opt_doc) {
   }
   return null;
 };
+
+
+/**
+ * Set a new caret position within an element.
+ *
+ * @param {!Element} element The element to use.
+ * @param {number} position The new caret position.
+ */
+core.text.setCursorPosition = function(element, position) {
+  if (position == -1) {
+    position = element.value.length;
+  }
+
+  if (element.setSelectionRange) {
+    element.focus();
+    element.setSelectionRange(/*start*/ position, /*end*/ position);
+  } else if (element.createTextRange) {
+    bot.events.fire(element, bot.events.EventType.FOCUS);
+    var range = element.createTextRange();
+    range.collapse(true);
+    range.moveEnd('character', position);
+    range.moveStart('character', position);
+    range.select();
+  }
+};
+

@@ -21,29 +21,26 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-
     describe Options do
-
-      not_compliant_on :browser => [:marionette, :ie, :edge] do
+      not_compliant_on browser: [:firefox, :ie, :edge] do
         describe 'logs' do
-
-          compliant_on :driver => :remote do
+          compliant_on driver: :remote do
             it 'can fetch remote log types' do
               expect(driver.manage.logs.available_types).to include(:server, :client)
             end
           end
 
           # Phantomjs Returns har instead of driver
-          not_compliant_on :browser => :phantomjs do
+          not_compliant_on browser: :phantomjs do
             it 'can fetch available log types' do
               expect(driver.manage.logs.available_types).to include(:browser, :driver)
             end
           end
 
           # All other browsers show empty
-          compliant_on :browser => :firefox do
+          compliant_on browser: [:firefox, :ff_legacy] do
             it 'can get the browser log' do
-              driver.navigate.to url_for("simpleTest.html")
+              driver.navigate.to url_for('simpleTest.html')
 
               entries = driver.manage.logs.get(:browser)
               expect(entries).not_to be_empty
@@ -52,9 +49,9 @@ module Selenium
           end
 
           # Phantomjs Returns har instead of driver
-          not_compliant_on :browser => :phantomjs do
+          not_compliant_on browser: :phantomjs do
             it 'can get the driver log' do
-              driver.navigate.to url_for("simpleTest.html")
+              driver.navigate.to url_for('simpleTest.html')
 
               entries = driver.manage.logs.get(:driver)
               expect(entries).not_to be_empty
@@ -64,56 +61,57 @@ module Selenium
         end
       end
 
-      describe "cookie management" do
+      not_compliant_on browser: :phantomjs do
+        describe 'cookie management' do
+          it 'should get all' do
+            driver.navigate.to url_for('xhtmlTest.html')
+            driver.manage.add_cookie name: 'foo', value: 'bar'
 
-        it "should get all" do
-          driver.navigate.to url_for("xhtmlTest.html")
-          driver.manage.add_cookie :name => "foo", :value => "bar"
+            cookies = driver.manage.all_cookies
 
-          cookies = driver.manage.all_cookies
-
-          expect(cookies.size).to eq(1)
-          expect(cookies.first[:name]).to eq("foo")
-          expect(cookies.first[:value]).to eq("bar")
-        end
-
-        # Edge BUG - https://connect.microsoft.com/IE/feedbackdetail/view/1864122
-        not_compliant_on :browser => :edge do
-          it "should delete one" do
-            driver.navigate.to url_for("xhtmlTest.html")
-            driver.manage.add_cookie :name => "foo", :value => "bar"
-
-            driver.manage.delete_cookie("foo")
+            expect(cookies.size).to eq(1)
+            expect(cookies.first[:name]).to eq('foo')
+            expect(cookies.first[:value]).to eq('bar')
           end
-        end
 
-        # This is not a w3c supported spec
-        not_compliant_on :browser => :edge do
-          it "should delete all" do
-            driver.navigate.to url_for("xhtmlTest.html")
+          # Edge BUG - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/5751773/
+          not_compliant_on browser: :edge do
+            it 'should delete one' do
+              driver.navigate.to url_for('xhtmlTest.html')
+              driver.manage.add_cookie name: 'foo', value: 'bar'
 
-            driver.manage.add_cookie :name => "foo", :value => "bar"
-            driver.manage.delete_all_cookies
-            expect(driver.manage.all_cookies).to be_empty
+              driver.manage.delete_cookie('foo')
+            end
           end
-        end
 
-        # Marionette BUG - Failed to convert expiry to Date
-        not_compliant_on :browser => [:android, :iphone, :safari, :marionette] do
-          it "should use DateTime for expires" do
-            driver.navigate.to url_for("xhtmlTest.html")
+          # Edge BUG - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/5751773/
+          not_compliant_on browser: :edge do
+            it 'should delete all' do
+              driver.navigate.to url_for('xhtmlTest.html')
 
-            expected = DateTime.new(2039)
-            driver.manage.add_cookie :name => "foo",
-                                     :value => "bar",
-                                     :expires => expected
+              driver.manage.add_cookie name: 'foo', value: 'bar'
+              driver.manage.delete_all_cookies
+              expect(driver.manage.all_cookies).to be_empty
+            end
+          end
 
-            actual = driver.manage.cookie_named("foo")[:expires]
-            expect(actual).to be_kind_of(DateTime)
-            expect(actual).to eq(expected)
+          # Firefox - https://bugzilla.mozilla.org/show_bug.cgi?id=1256007
+          not_compliant_on browser: [:safari, :firefox] do
+            it 'should use DateTime for expires' do
+              driver.navigate.to url_for('xhtmlTest.html')
+
+              expected = DateTime.new(2039)
+              driver.manage.add_cookie name: 'foo',
+                                       value: 'bar',
+                                       expires: expected
+
+              actual = driver.manage.cookie_named('foo')[:expires]
+              expect(actual).to be_kind_of(DateTime)
+              expect(actual).to eq(expected)
+            end
           end
         end
       end
     end
-  end
-end
+  end # WebDriver
+end # Selenium

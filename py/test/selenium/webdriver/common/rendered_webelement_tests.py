@@ -48,11 +48,10 @@ class RenderedWebElementTests(unittest.TestCase):
 
         self.assertEqual("transparent", backgroundColour)
 
-
     def testShouldCorrectlyIdentifyThatAnElementHasWidth(self):
         self._loadPage("xhtmlTest")
 
-        shrinko =  self.driver.find_element(by=By.ID, value="linkId")
+        shrinko = self.driver.find_element(by=By.ID, value="linkId")
         size = shrinko.size
         self.assertTrue(size["width"] > 0, "Width expected to be greater than 0")
         self.assertTrue(size["height"] > 0, "Height expected to be greater than 0")
@@ -78,4 +77,3 @@ class RenderedWebElementTests(unittest.TestCase):
 
     def _loadPage(self, name):
         self.driver.get(self._pageURL(name))
-

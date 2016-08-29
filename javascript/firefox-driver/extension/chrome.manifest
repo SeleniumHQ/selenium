@@ -2,8 +2,7 @@ resource fxdriver resource/
 
 content fxdriver content/
 
-overlay chrome://browser/content/browser.xul chrome://fxdriver/content/fxdriver.xul application={ec8030f7-c20a-464f-9b0e-13a3a9e97384} appversion<4.0
-overlay chrome://browser/content/browser.xul chrome://fxdriver/content/fx4driver.xul application={ec8030f7-c20a-464f-9b0e-13a3a9e97384} appversion>=4.0
+overlay chrome://browser/content/browser.xul chrome://fxdriver/content/fxdriver.xul application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}
 
 interfaces components/nsICommandProcessor.xpt
 interfaces components/nsIHttpServer.xpt

@@ -21,6 +21,7 @@ package org.openqa.selenium.environment;
 import org.openqa.selenium.environment.webserver.AppServer;
 
 import com.google.common.base.Preconditions;
+import com.google.common.net.InetAddresses;
 
 public class DomainHelper {
 
@@ -91,12 +92,13 @@ public class DomainHelper {
     return hostname.split("\\.").length >= 3;
   }
 
-  private boolean isIpv4Address(String string) {
-    return string.matches("\\d{1,3}(?:\\.\\d{1,3}){3}");
-  }
-
   public boolean isValidHostname(String hostname) {
-    return !isIpv4Address(hostname) && !"localhost".equals(hostname);
+    // Strip the IPv6 zone index, if present. For example, "fe80::1%eth0" becomes "fe80::1".
+    int zoneIndexStart = hostname.indexOf('%');
+    if (zoneIndexStart >= 0) {
+      hostname = hostname.substring(0, zoneIndexStart);
+    }
+    return !InetAddresses.isInetAddress(hostname) && !"localhost".equals(hostname);
   }
 
   public String getHostName() {

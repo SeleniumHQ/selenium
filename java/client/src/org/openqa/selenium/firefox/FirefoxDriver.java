@@ -30,6 +30,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
@@ -50,7 +51,7 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.SessionNotFoundException;
+import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 import java.io.File;
 import java.io.IOException;
@@ -95,13 +96,15 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     public static final String DRIVER_XPI_PROPERTY = "webdriver.firefox.driver";
 
     /**
-     * Boolean system property that instructs FirefoxDriver to use Marionette backend.
+     * Boolean system property that instructs FirefoxDriver to use Marionette backend,
+     * overrides any capabilities specified by the user
      */
     public static final String DRIVER_USE_MARIONETTE = "webdriver.firefox.marionette";
   }
 
   public static final String BINARY = "firefox_binary";
   public static final String PROFILE = "firefox_profile";
+  public static final String MARIONETTE = "marionette";
 
   // For now, only enable native events on Windows
   public static final boolean DEFAULT_ENABLE_NATIVE_EVENTS = Platform.getCurrent().is(WINDOWS);
@@ -213,10 +216,32 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
 
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile,
       Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
-    super(new LazyCommandExecutor(binary, profile),
-          dropCapabilities(desiredCapabilities, BINARY, PROFILE),
-          dropCapabilities(requiredCapabilities, BINARY, PROFILE));
+    this(createCommandExecutor(desiredCapabilities, binary, profile),
+         desiredCapabilities, requiredCapabilities);
     this.binary = binary;
+  }
+
+  public FirefoxDriver(GeckoDriverService driverService, Capabilities desiredCapabilities,
+      Capabilities requiredCapabilities) {
+    this(new DriverCommandExecutor(driverService), desiredCapabilities, requiredCapabilities);
+  }
+
+  private FirefoxDriver(CommandExecutor executor, Capabilities desiredCapabilities,
+      Capabilities requiredCapabilities) {
+    super(executor,
+          dropCapabilities(desiredCapabilities),
+          dropCapabilities(requiredCapabilities));
+  }
+
+  private static final CommandExecutor createCommandExecutor(Capabilities desiredCapabilities,
+                                                             FirefoxBinary binary,
+                                                             FirefoxProfile profile) {
+    if (isLegacy(desiredCapabilities)) {
+      return new LazyCommandExecutor(binary, profile);
+    }
+    GeckoDriverService.Builder builder = new GeckoDriverService.Builder();
+    builder.usingPort(0);
+    return new DriverCommandExecutor(builder.build());
   }
 
   @Override
@@ -258,19 +283,39 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     };
   }
 
+  private static boolean isLegacy(Capabilities desiredCapabilities) {
+    Boolean forceMarionette = forceMarionetteFromSystemProperty();
+    if (forceMarionette != null) {
+      return !forceMarionette;
+    }
+    Object marionette = desiredCapabilities.getCapability(MARIONETTE);
+    return marionette instanceof Boolean && ! (Boolean) marionette;
+  }
+
+  private static Boolean forceMarionetteFromSystemProperty() {
+    String useMarionette = System.getProperty(SystemProperty.DRIVER_USE_MARIONETTE);
+    if (useMarionette == null) {
+      return null;
+    }
+    return Boolean.valueOf(useMarionette);
+  }
+
   @Override
-  protected void startClient() {
-    LazyCommandExecutor exe = (LazyCommandExecutor) getCommandExecutor();
-    FirefoxProfile profileToUse = getProfile(exe.profile);
+  protected void startClient(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
+    if (isLegacy(desiredCapabilities)) {
+      LazyCommandExecutor exe = (LazyCommandExecutor) getCommandExecutor();
+      FirefoxProfile profileToUse = getProfile(exe.profile);
 
-    // TODO(simon): Make this not sinfully ugly
-    ExtensionConnection connection = connectTo(exe.binary, profileToUse, "localhost");
-    exe.setConnection(connection);
+      // TODO(simon): Make this not sinfully ugly
+      ExtensionConnection connection = connectTo(exe.binary, profileToUse, "localhost");
+      exe.setConnection(connection);
 
-    try {
-      connection.start();
-    } catch (IOException e) {
-      throw new WebDriverException("An error occurred while connecting to Firefox", e);
+      try {
+        connection.start();
+      } catch (IOException e) {
+        throw new WebDriverException("An error occurred while connecting to Firefox", e);
+      }
+
     }
   }
 
@@ -306,8 +351,10 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   }
 
   @Override
-  protected void stopClient() {
-    ((LazyCommandExecutor) this.getCommandExecutor()).quit();
+  protected void stopClient(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
+    if (isLegacy(desiredCapabilities)) {
+      ((LazyCommandExecutor) this.getCommandExecutor()).quit();
+    }
   }
 
   /**
@@ -316,16 +363,23 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
    * Used for capabilities which aren't BeanToJson-convertable, and are only used by the local
    * launcher.
    */
-  private static Capabilities dropCapabilities(Capabilities capabilities, String... keysToRemove) {
+  private static Capabilities dropCapabilities(Capabilities capabilities) {
     if (capabilities == null) {
       return new DesiredCapabilities();
     }
-    final Set<String> toRemove = Sets.newHashSet(keysToRemove);
-    DesiredCapabilities caps = new DesiredCapabilities(Maps.filterKeys(capabilities.asMap(), new Predicate<String>() {
-      public boolean apply(String key) {
-        return !toRemove.contains(key);
-      }
-    }));
+
+    DesiredCapabilities caps;
+
+    if (isLegacy(capabilities)) {
+      final Set<String> toRemove = Sets.newHashSet(BINARY, PROFILE);
+      caps = new DesiredCapabilities(Maps.filterKeys(capabilities.asMap(), new Predicate<String>() {
+        public boolean apply(String key) {
+          return !toRemove.contains(key);
+        }
+      }));
+    } else {
+      caps = new DesiredCapabilities(capabilities);
+    }
 
     // Ensure that the proxy is in a state fit to be sent to the extension
     Proxy proxy = Proxy.extractFrom(capabilities);
@@ -374,7 +428,7 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
         if (command.getName().equals(DriverCommand.QUIT)) {
           return new Response();
         }
-        throw new SessionNotFoundException(
+        throw new NoSuchSessionException(
             "The FirefoxDriver cannot be used after quit() was called.");
       }
       return connection.execute(command);

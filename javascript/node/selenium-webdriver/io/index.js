@@ -23,6 +23,28 @@ var fs = require('fs'),
     tmp = require('tmp');
 
 
+/**
+ * @param {!Function} fn .
+ * @return {!Promise<T>} .
+ * @template T
+ */
+function checkedCall(fn) {
+  return new Promise((resolve, reject) => {
+    try {
+      fn((err, value) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(value);
+        }
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+
 
 // PUBLIC API
 
@@ -43,7 +65,7 @@ exports.rmDir = function(dirPath) {
       numAttempts += 1;
       rimraf(dirPath, function(err) {
         if (err) {
-          if (err.code === 'ENOTEMPTY' && numAttempts < 2) {
+          if (err.code && err.code === 'ENOTEMPTY' && numAttempts < 2) {
             attemptRm();
             return;
           }
@@ -134,9 +156,24 @@ exports.copyDir = function(src, dst, opt_exclude) {
  * @return {!Promise<boolean>} A promise for whether the file exists.
  */
 exports.exists = function(aPath) {
-  return new Promise(function(fulfill) {
-    fs.exists(aPath, fulfill);
+  return new Promise(function(fulfill, reject) {
+    let type = typeof aPath;
+    if (type !== 'string') {
+      reject(TypeError(`expected string path, but got ${type}`));
+    } else {
+      fs.exists(aPath, fulfill);
+    }
   });
+};
+
+
+/**
+ * Calls `stat(2)`.
+ * @param {string} aPath The path to stat.
+ * @return {!Promise<!fs.Stats>} A promise for the file stats.
+ */
+exports.stat = function stat(aPath) {
+  return checkedCall(callback => fs.stat(aPath, callback));
 };
 
 
@@ -166,11 +203,7 @@ exports.unlink = function(aPath) {
  * @see https://www.npmjs.org/package/tmp
  */
 exports.tmpDir = function() {
-  return new Promise(function(fulfill, reject) {
-    tmp.dir(function(error, value) {
-      error ? reject(error) : fulfill(value);
-    });
-  });
+  return checkedCall(tmp.dir);
 };
 
 
@@ -180,13 +213,7 @@ exports.tmpDir = function() {
  * @see https://www.npmjs.org/package/tmp
  */
 exports.tmpFile = function(opt_options) {
-  return new Promise(function(fulfill, reject) {
-    let callback = function(
-        /** Error */err,
-        /** (string|undefined) */value) {
-      err ? reject(err) : fulfill(value);
-    };
-
+  return checkedCall(callback => {
     // |tmp.file| checks arguments length to detect options rather than doing a
     // truthy check, so we must only pass options if there are some to pass.
     if (opt_options) {
@@ -208,20 +235,66 @@ exports.tmpFile = function(opt_options) {
  *     not be found.
  */
 exports.findInPath = function(file, opt_checkCwd) {
+  let dirs = [];
   if (opt_checkCwd) {
-    var tmp = path.join(process.cwd(), file);
-    if (fs.existsSync(tmp)) {
-      return tmp;
-    }
+    dirs.push(process.cwd());
   }
+  dirs.push.apply(dirs, process.env['PATH'].split(path.delimiter));
 
-  var dirs = process.env['PATH'].split(path.delimiter);
-  var found = null;
-  dirs.forEach(function(dir) {
-    var tmp = path.join(dir, file);
-    if (!found && fs.existsSync(tmp)) {
-      found = tmp;
+  let foundInDir = dirs.find(dir => {
+    let tmp = path.join(dir, file);
+    try {
+      let stats = fs.statSync(tmp);
+      return stats.isFile() && !stats.isDirectory();
+    } catch (ex) {
+      return false;
     }
   });
-  return found;
+
+  return foundInDir ? path.join(foundInDir, file) : null;
+};
+
+
+/**
+ * Reads the contents of the given file.
+ *
+ * @param {string} aPath Path to the file to read.
+ * @return {!Promise<!Buffer>} A promise that will resolve with a buffer of the
+ *     file contents.
+ */
+exports.read = function(aPath) {
+  return checkedCall(callback => fs.readFile(aPath, callback));
+};
+
+
+/**
+ * Writes to a file.
+ *
+ * @param {string} aPath Path to the file to write to.
+ * @param {(string|!Buffer)} data The data to write.
+ * @return {!Promise} A promise that will resolve when the operation has
+ *     completed.
+ */
+exports.write = function(aPath, data) {
+  return checkedCall(callback => fs.writeFile(aPath, data, callback));
+};
+
+
+/**
+ * Creates a directory.
+ *
+ * @param {string} aPath The directory path.
+ * @return {!Promise<string>} A promise that will resolve with the path of the
+ *     created directory.
+ */
+exports.mkdir = function(aPath) {
+  return checkedCall(callback => {
+    fs.mkdir(aPath, undefined, err => {
+      if (err && err.code !== 'EEXIST') {
+        callback(err);
+      } else {
+        callback(null, aPath);
+      }
+    });
+  });
 };

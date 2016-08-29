@@ -362,11 +362,11 @@ describe('promise error handling', function() {
     it('start with normal promise', function() {
       var error = Error('an error');
       return promise.rejected(error).
-          thenCatch(function(e) {
+          catch(function(e) {
             assert.equal(e, error);
             throw new StubError;
           }).
-          thenCatch(assertIsStubError);
+          catch(assertIsStubError);
     });
 
     it('start with task result', function() {
@@ -374,17 +374,17 @@ describe('promise error handling', function() {
       return flow.execute(function() {
         throw error;
       }).
-      thenCatch(function(e) {
+      catch(function(e) {
         assert.equal(e, error);
         throw new StubError;
       }).
-      thenCatch(assertIsStubError);
+      catch(assertIsStubError);
     });
 
     it('start with normal promise; uncaught error', function() {
       var error = Error('an error');
       promise.rejected(error).
-          thenCatch(function(e) {
+          catch(function(e) {
             assert.equal(e, error);
             throw new StubError;
           });
@@ -396,7 +396,7 @@ describe('promise error handling', function() {
       flow.execute(function() {
         throw error;
       }).
-      thenCatch(function(e) {
+      catch(function(e) {
         assert.equal(e, error);
         throw new StubError;
       });
@@ -429,7 +429,7 @@ describe('promise error handling', function() {
 
     it('promise was rejected', function() {
       var toThrow = promise.rejected(new StubError);
-      toThrow.thenCatch(function() {});  // For tearDown.
+      toThrow.catch(function() {});  // For tearDown.
       flow.execute(function() {
         throw toThrow;
       }).then(assert.fail, function(e) {
@@ -564,25 +564,97 @@ describe('promise error handling', function() {
     });
   });
 
-  it('testFrameCancelsRemainingTasks_onUnhandledTaskFailure', function() {
-    var run = false;
-    return flow.execute(function() {
-      flow.execute(throwStubError);
-      flow.execute(function() { run = true; });
-    }).then(assert.fail, function(e) {
-      assertIsStubError(e);
-      assert.ok(!run);
+  describe('frame cancels remaining tasks', function() {
+    it('on unhandled task failure', function() {
+      var run = false;
+      return flow.execute(function() {
+        flow.execute(throwStubError);
+        flow.execute(function() { run = true; });
+      }).then(assert.fail, function(e) {
+        assertIsStubError(e);
+        assert.ok(!run);
+      });
     });
-  });
 
-  it('testFrameCancelsRemainingTasks_onUnhandledPromiseRejection', function() {
-    var run = false;
-    return flow.execute(function() {
-      promise.rejected(new StubError);
-      flow.execute(function() { run = true; });
-    }).then(assert.fail, function(e) {
-      assertIsStubError(e);
-      assert.ok(!run);
+    it('on unhandled promise rejection', function() {
+      var run = false;
+      return flow.execute(function() {
+        promise.rejected(new StubError);
+        flow.execute(function() { run = true; });
+      }).then(assert.fail, function(e) {
+        assertIsStubError(e);
+        assert.ok(!run);
+      });
+    });
+
+    it('if task throws', function() {
+      var run = false;
+      return flow.execute(function() {
+        flow.execute(function() { run = true; });
+        throw new StubError;
+      }).then(assert.fail, function(e) {
+        assertIsStubError(e);
+        assert.ok(!run);
+      });
+    });
+
+    describe('task callbacks scheduled in another frame', function() {
+      flow = promise.controlFlow();
+      function noop() {}
+
+      let subTask;
+
+      before(function() {
+        flow.execute(function() {
+          // This task will be discarded and never run because of the error below.
+          subTask = flow.execute(() => 'abc');
+          throw new StubError('stub');
+        }).catch(noop);
+      });
+
+      function assertCancellation(e) {
+        assert.ok(e instanceof promise.CancellationError);
+        assert.equal(
+          'Task was discarded due to a previous failure: stub', e.message);
+      }
+
+      it('are rejected with cancellation error', function() {
+        let result;
+        return Promise.resolve().then(function() {
+          return flow.execute(function() {
+            result = subTask.then(assert.fail);
+          });
+        })
+        .then(() => result)
+        .then(assert.fail, assertCancellation);
+      });
+
+      it('cancellation errors propagate through callbacks (1)', function() {
+        let result;
+        return Promise.resolve().then(function() {
+          return flow.execute(function() {
+            result = subTask
+                .then(assert.fail, assertCancellation)
+                .then(() => 'abc123');
+          });
+        })
+        .then(() => result)
+        .then(value => assert.equal('abc123', value));
+      });
+
+      it('cancellation errors propagate through callbacks (2)', function() {
+        let result;
+        return Promise.resolve().then(function() {
+          return flow.execute(function() {
+            result = subTask.then(assert.fail)
+                .then(noop, assertCancellation)
+                .then(() => 'fin');
+          });
+        })
+        // Verify result actually computed successfully all the way through.
+        .then(() => result)
+        .then(value => assert.equal('fin', value));
+      });
     });
   });
 
@@ -635,7 +707,7 @@ describe('promise error handling', function() {
         return flow.execute(function() {
           seen.push(2);
         });
-      }).thenFinally(function() {
+      }).finally(function() {
         seen.push(3);
       });
 
@@ -756,7 +828,7 @@ describe('promise error handling', function() {
     }).then(function(error) {
       assert.ok(error instanceof promise.CancellationError);
       assert.ok(!task.isPending());
-      return task.thenCatch(function(error) {
+      return task.catch(function(error) {
         assert.ok(error instanceof promise.CancellationError);
       });
     });
@@ -776,7 +848,7 @@ describe('promise error handling', function() {
     it('(b)', function() {
       var p1 = promise.fulfilled();
       var reason = promise.rejected('should not see me');
-      reason.thenCatch(function() {});  // For tearDown.
+      reason.catch(function() {});  // For tearDown.
       return p1.then(function() {
         throw reason;
       }).then(assert.fail, function(e) {

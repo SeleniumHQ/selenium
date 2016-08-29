@@ -17,14 +17,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/common/core_ext/dir'
-require 'selenium/webdriver/common/core_ext/base64'
 require 'selenium/webdriver/common/w3c_error'
 require 'selenium/webdriver/common/error'
 require 'selenium/webdriver/common/platform'
 require 'selenium/webdriver/common/proxy'
 require 'selenium/webdriver/common/log_entry'
 require 'selenium/webdriver/common/file_reaper'
+require 'selenium/webdriver/common/service'
 require 'selenium/webdriver/common/socket_lock'
 require 'selenium/webdriver/common/socket_poller'
 require 'selenium/webdriver/common/port_prober'

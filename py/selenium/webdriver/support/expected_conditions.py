@@ -25,6 +25,8 @@ from selenium.common.exceptions import NoAlertPresentException
  * Canned "Expected Conditions" which are generally useful within webdriver
  * tests.
 """
+
+
 class title_is(object):
     """An expectation for checking the title of a page.
     title is the expected title, which must be an exact match
@@ -34,6 +36,7 @@ class title_is(object):
 
     def __call__(self, driver):
         return self.title == driver.title
+
 
 class title_contains(object):
     """ An expectation for checking that the title contains a case-sensitive
@@ -46,6 +49,7 @@ class title_contains(object):
     def __call__(self, driver):
         return self.title in driver.title
 
+
 class presence_of_element_located(object):
     """ An expectation for checking that an element is present on the DOM
     of a page. This does not necessarily mean that the element is visible.
@@ -57,6 +61,7 @@ class presence_of_element_located(object):
 
     def __call__(self, driver):
         return _find_element(driver, self.locator)
+
 
 class visibility_of_element_located(object):
     """ An expectation for checking that an element is present on the DOM of a
@@ -74,6 +79,7 @@ class visibility_of_element_located(object):
         except StaleElementReferenceException:
             return False
 
+
 class visibility_of(object):
     """ An expectation for checking that an element, known to be present on the
     DOM of a page, is visible. Visibility means that the element is not only
@@ -87,8 +93,10 @@ class visibility_of(object):
     def __call__(self, ignored):
         return _element_if_visible(self.element)
 
+
 def _element_if_visible(element, visibility=True):
     return element if element.is_displayed() == visibility else False
+
 
 class presence_of_all_elements_located(object):
     """ An expectation for checking that there is at least one element present
@@ -102,6 +110,20 @@ class presence_of_all_elements_located(object):
     def __call__(self, driver):
         return _find_elements(driver, self.locator)
 
+
+class visibility_of_any_elements_located(object):
+    """ An expectation for checking that there is at least one element visible
+    on a web page.
+    locator is used to find the element
+    returns the list of WebElements once they are located
+    """
+    def __init__(self, locator):
+        self.locator = locator
+
+    def __call__(self, driver):
+        return [element for element in _find_elements(driver, self.locator) if _element_if_visible(element)]
+
+
 class text_to_be_present_in_element(object):
     """ An expectation for checking if the given text is present in the
     specified element.
@@ -112,11 +134,12 @@ class text_to_be_present_in_element(object):
         self.text = text_
 
     def __call__(self, driver):
-        try :
+        try:
             element_text = _find_element(driver, self.locator).text
             return self.text in element_text
         except StaleElementReferenceException:
             return False
+
 
 class text_to_be_present_in_element_value(object):
     """
@@ -138,6 +161,7 @@ class text_to_be_present_in_element_value(object):
         except StaleElementReferenceException:
                 return False
 
+
 class frame_to_be_available_and_switch_to_it(object):
     """ An expectation for checking whether the given frame is available to
     switch to.  If the frame is available it switches the given driver to the
@@ -156,6 +180,7 @@ class frame_to_be_available_and_switch_to_it(object):
             return True
         except NoSuchFrameException:
             return False
+
 
 class invisibility_of_element_located(object):
     """ An Expectation for checking that an element is either invisible or not
@@ -177,6 +202,7 @@ class invisibility_of_element_located(object):
             # element reference implies that element is no longer visible.
             return True
 
+
 class element_to_be_clickable(object):
     """ An Expectation for checking an element is visible and enabled such that
     you can click it."""
@@ -189,6 +215,7 @@ class element_to_be_clickable(object):
             return element
         else:
             return False
+
 
 class staleness_of(object):
     """ Wait until an element is no longer attached to the DOM.
@@ -203,8 +230,9 @@ class staleness_of(object):
             # Calling any method forces a staleness check
             self.element.is_enabled()
             return False
-        except StaleElementReferenceException as expected:
+        except StaleElementReferenceException:
             return True
+
 
 class element_to_be_selected(object):
     """ An expectation for checking the selection is selected.
@@ -216,6 +244,7 @@ class element_to_be_selected(object):
     def __call__(self, ignored):
         return self.element.is_selected()
 
+
 class element_located_to_be_selected(object):
     """An expectation for the element to be located is selected.
     locator is a tuple of (by, path)"""
@@ -224,6 +253,7 @@ class element_located_to_be_selected(object):
 
     def __call__(self, driver):
         return _find_element(driver, self.locator).is_selected()
+
 
 class element_selection_state_to_be(object):
     """ An expectation for checking if the given element is selected.
@@ -236,6 +266,7 @@ class element_selection_state_to_be(object):
 
     def __call__(self, ignored):
         return self.element.is_selected() == self.is_selected
+
 
 class element_located_selection_state_to_be(object):
     """ An expectation to locate an element and check if the selection state
@@ -254,6 +285,7 @@ class element_located_selection_state_to_be(object):
         except StaleElementReferenceException:
             return False
 
+
 class alert_is_present(object):
     """ Expect an alert to be present."""
     def __init__(self):
@@ -267,19 +299,20 @@ class alert_is_present(object):
         except NoAlertPresentException:
             return False
 
+
 def _find_element(driver, by):
     """Looks up an element. Logs and re-raises ``WebDriverException``
     if thrown."""
-    try :
+    try:
         return driver.find_element(*by)
     except NoSuchElementException as e:
         raise e
     except WebDriverException as e:
         raise e
 
+
 def _find_elements(driver, by):
-    try :
+    try:
         return driver.find_elements(*by)
     except WebDriverException as e:
         raise e
-

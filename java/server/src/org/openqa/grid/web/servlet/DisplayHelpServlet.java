@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class DisplayHelpServlet extends HttpServlet {
   private static final long serialVersionUID = 8484071790930378855L;
-  private static final Logger log = Logger.getLogger(ConsoleServlet.class.getName());
+  private static final Logger log = Logger.getLogger(DisplayHelpServlet.class.getName());
   private static String coreVersion;
   private static String coreRevision;
 

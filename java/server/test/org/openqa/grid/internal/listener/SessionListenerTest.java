@@ -21,11 +21,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.openqa.grid.common.RegistrationRequest.APP;
-import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
-import static org.openqa.grid.common.RegistrationRequest.ID;
-import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
-import static org.openqa.grid.common.RegistrationRequest.TIME_OUT;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -37,7 +32,9 @@ import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.mock.GridHelper;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,9 +64,8 @@ public class SessionListenerTest {
 
   @BeforeClass
   public static void prepare() {
-    app1.put(APP, "app1");
-    Map<String, Object> config = new HashMap<>();
-    config.put(ID, "abc");
+    app1.put(CapabilityType.APPLICATION_NAME, "app1");
+    GridNodeConfiguration config = new GridNodeConfiguration();
     req = new RegistrationRequest();
     req.addDesiredCapability(app1);
     req.setConfiguration(config);
@@ -254,19 +250,18 @@ public class SessionListenerTest {
   public void doubleRelease() throws InterruptedException {
     RegistrationRequest req = new RegistrationRequest();
     Map<String, Object> cap = new HashMap<>();
-    cap.put(APP, "app1");
+    cap.put(CapabilityType.APPLICATION_NAME, "app1");
 
-    Map<String, Object> config = new HashMap<>();
-    config.put(TIME_OUT, 1);
-    config.put(CLEAN_UP_CYCLE, 1);
-    config.put(MAX_SESSION, 2);
-    config.put(ID, "abc");
-
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    config.timeout = 1;
+    config.cleanUpCycle = 1;
+    config.maxSession = 2;
 
     req.addDesiredCapability(cap);
     req.setConfiguration(config);
 
     Registry registry = Registry.newInstance();
+    registry.getConfiguration().cleanUpCycle = config.cleanUpCycle;
     try {
       final SlowAfterSession proxy = new SlowAfterSession(req, registry);
       proxy.setupTimeoutListener();
@@ -276,7 +271,7 @@ public class SessionListenerTest {
       r.process();
       TestSession session = r.getSession();
 
-      Thread.sleep(150);
+      Thread.sleep(1005);
       // the session has timed out -> doing the long after method.
       assertEquals(session.get("after"), true);
 

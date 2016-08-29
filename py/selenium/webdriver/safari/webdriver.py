@@ -15,8 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import base64
-
 try:
     import http.client as http_client
 except ImportError:
@@ -27,6 +25,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from .service import Service
 
+
 class WebDriver(RemoteWebDriver):
     """
     Controls the SafariDriver and allows you to drive the browser.
@@ -34,7 +33,7 @@ class WebDriver(RemoteWebDriver):
     """
 
     def __init__(self, executable_path=None, port=0,
-                 desired_capabilities=DesiredCapabilities.SAFARI, quiet=False):
+                 desired_capabilities=DesiredCapabilities.SAFARI, quiet=False, use_legacy_driver=False):
         """
         Creates a new instance of the Safari driver.
 
@@ -46,16 +45,13 @@ class WebDriver(RemoteWebDriver):
          - port - port you would like the service to run, if left as 0, a free port will be found.
          - desired_capabilities: Dictionary object with desired capabilities (Can be used to provide various Safari switches).
         """
-        if executable_path is None:
-            try:
-                executable_path = os.environ["SELENIUM_SERVER_JAR"]
-            except:
-                raise Exception("No executable path given, please add one to Environment Variable \
-                'SELENIUM_SERVER_JAR'")
-        self.service = Service(executable_path, port=port, quiet=quiet)
+        if not executable_path is None:
+            executable_path = os.environ.get("SELENIUM_SERVER_JAR")
+        self.service = Service(executable_path, port=port, quiet=quiet, use_legacy=use_legacy_driver)
         self.service.start()
 
-        RemoteWebDriver.__init__(self,
+        RemoteWebDriver.__init__(
+            self,
             command_executor=self.service.service_url,
             desired_capabilities=desired_capabilities)
         self._is_remote = False

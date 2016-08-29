@@ -58,11 +58,10 @@ public class DefaultDriverFactory implements DriverFactory {
     DriverProvider provider = getProviderMatching(capabilities);
     if (provider.canCreateDriverInstanceFor(capabilities)) {
       return getProviderMatching(capabilities).newInstance(capabilities);
-    } else {
-      throw new WebDriverException(String.format(
-        "The best matching driver provider %s can't create a new driver instance for %s",
-        provider, capabilities));
     }
+    throw new WebDriverException(String.format(
+      "The best matching driver provider %s can't create a new driver instance for %s",
+      provider, capabilities));
   }
 
   public boolean hasMappingFor(Capabilities capabilities) {

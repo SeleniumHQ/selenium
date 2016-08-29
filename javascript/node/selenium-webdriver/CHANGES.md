@@ -1,4 +1,120 @@
-## v2.53.0-dev
+## v.next
+
+* Fixed a bug where the promise manager would silently drop callbacks after
+  recovering from an unhandled promise rejection.
+* Added the `firefox.ServiceBuilder` class, which may be used to customize the
+  geckodriver used for `firefox.Driver` instances.
+
+### API Changes
+
+* Added `remote.DriverService.Builder` as a base class for configuring
+  DriverService instances that run in a child-process. The
+  `chrome.ServiceBuilder`, `edge.ServiceBuilder`, and `opera.ServiceBuilder`
+  classes now all extend this base class with browser-specific options.
+* For each of the ServiceBuilder clases, renamed `usingPort` and
+  `withEnvironment` to `setPort` and `setEnvironment`, respectively.
+* Renamed `chrome.ServiceBuilder#setUrlBasePath` to `#setPath`
+* Changed the signature of the `firefox.Driver` from `(config, flow, executor)`
+  to `(config, executor, flow)`.
+
+
+### Changes for W3C WebDriver Spec Compliance
+
+* Updated command mappings for [getting](https://w3c.github.io/webdriver/webdriver-spec.html#get-window-position)
+  and [setting](https://w3c.github.io/webdriver/webdriver-spec.html#set-window-position)
+  the window position.
+
+
+## v3.0.0-beta-2
+
+### API Changes
+
+* Moved the `builder.Builder` class into the main module (`selenium-webdriver`).
+* Removed the `builder` module.
+* Fix `webdriver.WebDriver#setFileDetector` when driving Chrome or Firefox on a
+  remote machine.
+
+
+## v3.0.0-beta-1
+
+* Allow users to set the agent used for HTTP connections through
+   `builder.Builder#usingHttpAgent()`
+* Added new wait conditions: `until.urlIs()`, `until.urlContains()`,
+   `until.urlMatches()`
+* Added work around for [GeckoDriver bug](https://bugzilla.mozilla.org/show_bug.cgi?id=1274924)
+   raising a type conversion error
+* Internal cleanup replacing uses of managed promises with native promises
+* Removed the mandatory use of Firefox Dev Edition, when using Marionette driver
+* Fixed timeouts' URL
+* Properly send HTTP requests when using a WebDriver server proxy
+* Properly configure proxies when using the geckodriver
+* `http.Executor` now accepts a promised client. The `builder.Builder` class
+  will now use this instead of a `command.DeferredExecutor` when creating
+  WebDriver instances.
+* For Chrome and Firefox, the `builder.Builder` class will always return an
+  instanceof `chrome.Driver` and `firefox.Driver`, respectively, even when
+  configured to use a remote server (from `builder.Builder#usingServer(url)`,
+  `SELENIUM_REMOTE_URL`, etc).
+
+### API Changes
+
+* `promise.Deferred` is no longer a thenable object.
+* `Options#addCookie()` now takes a record object instead of 7 individual
+  parameters. A TypeError will be thrown if addCookie() is called with invalid
+  arguments.
+* When adding cookies, the desired expiry must be provided as a Date or in
+  _seconds_ since epoch. When retrieving cookies, the expiration is always
+  returned in seconds.
+* Renamed `firefox.Options#useMarionette` to `firefox.Options#useGeckoDriver`
+* Removed deprecated modules:
+   - `selenium-webdriver/error` (use `selenium-webdriver/lib/error`,\
+     or the `error` property exported by `selenium-webdriver`)
+   - `selenium-webdriver/executors` — this was not previously deprecated, but
+     is no longer used.
+* Removed deprecated types:
+   - `command.DeferredExecutor` — this was not previously deprecated, but is no
+     longer used. It can be trivially implemented by clients should it be
+     needed.
+   - `error.InvalidSessionIdError` (use `error.NoSuchSessionError`)
+   - `executors.DeferredExecutor`
+   - `until.Condition` (use `webdriver.Condition`)
+   - `until.WebElementCondition` (use `webdriver.WebElementCondition`)
+   - `webdriver.UnhandledAlertError` (use `error.UnexpectedAlertOpenError`)
+* Removed deprecated functions:
+   - `Deferred#cancel()`
+   - `Deferred#catch()`
+   - `Deferred#finally()`
+   - `Deferred#isPending()`
+   - `Deferred#then()`
+   - `Promise#thenCatch()`
+   - `Promise#thenFinally()`
+   - `WebDriver#isElementPresent()`
+   - `WebElement#getInnerHtml()`
+   - `WebElement#getOuterHtml()`
+   - `WebElement#getRawId()`
+   - `WebElement#isElementPresent()`
+* Removed deprecated properties:
+   - `WebDriverError#code`
+
+
+## v2.53.2
+
+* Changed `io.exists()` to return a rejected promise if the input path is not
+   a string
+* Deprecated `Promise#thenFinally()` - use `Promise#finally()`. The thenFinally
+   shim added to the promise module in v2.53.0 will be removed in v3.0
+   Sorry for the churn!
+* FIXED: capabilities serialization now properly handles undefined vs.
+   false-like values.
+* FIXED: properly handle responses from the remote end in
+   `WebDriver.attachToSession`
+
+## v2.53.1
+
+* FIXED: for consistency with the other language bindings, `remote.FileDetector`
+    will ignore paths that refer to a directory.
+
+## v2.53.0
 
 ### Change Summary
 
@@ -21,6 +137,16 @@
    The top-level `error` module will be removed in v3.0.
 * Moved `until.Condition` and `until.WebElementCondition` to the webdriver
    module to break a circular dependency.
+* Added support for setting the username and password in basic auth pop-up
+   dialogs (currently IE only).
+* Deprecated `WebElement#getInnerHtml()` and `WebEleemnt#getOuterHtml()`
+* Deprecated `Promise#thenCatch()` - use `Promise#catch()` instead
+* Deprecated `Promise#thenFinally()` - use `promise.thenFinally()` instead
+* FIXED: `io.findInPath()` will no longer match against directories that have
+   the same basename as the target file.
+* FIXED: `phantomjs.Driver` now takes a third argument that defines the path to
+   a log file to use for the phantomjs executable's output. This may be quickly
+   set at runtime with the `SELENIUM_PHANTOMJS_LOG` environment variable.
 
 ### Changes for W3C WebDriver Spec Compliance
 

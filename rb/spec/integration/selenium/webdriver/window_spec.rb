@@ -21,11 +21,10 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-
     describe Window do
       let(:window) { driver.manage.window }
 
-      it "gets the size of the current window" do
+      it 'gets the size of the current window' do
         size = window.size
 
         expect(size).to be_kind_of(Dimension)
@@ -34,7 +33,7 @@ module Selenium
         expect(size.height).to be > 0
       end
 
-      it "sets the size of the current window" do
+      it 'sets the size of the current window' do
         size = window.size
 
         target_width = size.width - 20
@@ -47,8 +46,8 @@ module Selenium
         expect(new_size.height).to eq(target_height)
       end
 
-      not_compliant_on :browser => :marionette do
-        it "gets the position of the current window" do
+      not_compliant_on browser: :firefox do
+        it 'gets the position of the current window' do
           pos = driver.manage.window.position
 
           expect(pos).to be_kind_of(Point)
@@ -58,8 +57,8 @@ module Selenium
         end
       end
 
-      not_compliant_on :browser => [:phantomjs, :marionette, :safari] do
-        it "sets the position of the current window" do
+      not_compliant_on browser: [:phantomjs, :firefox, :safari] do
+        it 'sets the position of the current window' do
           pos = window.position
 
           target_x = pos.x + 10
@@ -67,7 +66,7 @@ module Selenium
 
           window.position = Point.new(target_x, target_y)
 
-          wait.until {window.position.x != pos.x && window.position.y != pos.y}
+          wait.until { window.position.x != pos.x && window.position.y != pos.y }
 
           new_pos = window.position
           expect(new_pos.x).to eq(target_x)
@@ -75,9 +74,9 @@ module Selenium
         end
       end
 
-      # TODO - Create Window Manager guard
-      not_compliant_on :platform => :linux do
-        it "can maximize the current window" do
+      # TODO: - Create Window Manager guard
+      not_compliant_on platform: :linux do
+        it 'can maximize the current window' do
           window.size = old_size = Dimension.new(200, 200)
 
           window.maximize
@@ -90,9 +89,11 @@ module Selenium
         end
       end
 
-      compliant_on :browser => [:marionette, :edge] do
-        not_compliant_on :browser => [:marionette, :edge] do
-          it "can make window full screen" do
+      compliant_on browser: [:firefox, :edge] do
+        # Firefox - https://bugzilla.mozilla.org/show_bug.cgi?id=1189749
+        # Edge: Not Yet - https://dev.windows.com/en-us/microsoft-edge/platform/status/webdriver/details/
+        not_compliant_on browser: [:firefox, :edge] do
+          it 'can make window full screen' do
             window.maximize
             old_size = window.size
 
@@ -104,5 +105,5 @@ module Selenium
         end
       end
     end
-  end
-end
+  end # WebDriver
+end # Selenium

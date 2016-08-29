@@ -41,7 +41,7 @@ import java.util.logging.Logger;
 @ThreadSafe
 public class ProxySet implements Iterable<RemoteProxy> {
 
-  private final Set<RemoteProxy> proxies = new CopyOnWriteArraySet<RemoteProxy>();
+  private final Set<RemoteProxy> proxies = new CopyOnWriteArraySet<>();
 
   private static final Logger log = Logger.getLogger(ProxySet.class.getName());
   private volatile boolean throwOnCapabilityNotPresent = true;
@@ -148,7 +148,7 @@ public class ProxySet implements Iterable<RemoteProxy> {
     // test running, to avoid putting all the load of the first
     // proxies.
     List<RemoteProxy> sorted = getSorted();
-    log.info("Available nodes: " + sorted);
+    log.fine("Available nodes: " + sorted);
 
     for (RemoteProxy proxy : sorted) {
       TestSession session = proxy.getNewSession(desiredCapabilities);
@@ -172,19 +172,15 @@ public class ProxySet implements Iterable<RemoteProxy> {
       if (throwOnCapabilityNotPresent) {
         throw new GridException("Empty pool of VM for setup "
                                 + new DesiredCapabilities(desiredCapabilities));
-      } else {
-        log.warning("Empty pool of nodes.");
       }
-
+      log.warning("Empty pool of nodes.");
     }
     if (!hasCapability(desiredCapabilities)) {
       if (throwOnCapabilityNotPresent) {
         throw new CapabilityNotPresentOnTheGridException(desiredCapabilities);
-      } else {
-        log.warning("grid doesn't contain " + new DesiredCapabilities(desiredCapabilities) +
-                    " at the moment.");
       }
-
+      log.warning("grid doesn't contain " + new DesiredCapabilities(desiredCapabilities) +
+          " at the moment.");
     }
   }
 

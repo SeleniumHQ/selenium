@@ -48,6 +48,10 @@ function getAddress(loopback, opt_family) {
   }
   interfaces = interfaces || os.networkInterfaces();
   for (var key in interfaces) {
+    if (!interfaces.hasOwnProperty(key)) {
+      continue;
+    }
+
     interfaces[key].forEach(function(ipAddress) {
       if (ipAddress.family === family &&
           ipAddress.internal === loopback) {
@@ -79,4 +83,35 @@ exports.getAddress = function(opt_family) {
  */
 exports.getLoopbackAddress = function(opt_family) {
   return getAddress(true, opt_family);
+};
+
+
+/**
+ * Splits a hostport string, e.g. "www.example.com:80", into its component
+ * parts.
+ *
+ * @param {string} hostport The string to split.
+ * @return {{host: string, port: ?number}} A host and port. If no port is
+ *     present in the argument `hostport`, port is null.
+ */
+exports.splitHostAndPort = function(hostport) {
+  let lastIndex = hostport.lastIndexOf(':');
+  if (lastIndex < 0) {
+    return {host: hostport, port: null};
+  }
+
+  let firstIndex = hostport.indexOf(':');
+  if (firstIndex != lastIndex && !hostport.includes('[')) {
+    // Multiple colons but no brackets, so assume the string is an IPv6 address
+    // with no port (e.g. "1234:5678:9:0:1234:5678:9:0").
+    return {host: hostport, port: null};
+  }
+
+  let host = hostport.slice(0, lastIndex);
+  if (host.startsWith('[') && host.endsWith(']')) {
+    host = host.slice(1, -1);
+  }
+
+  let port = parseInt(hostport.slice(lastIndex + 1), 10);
+  return {host, port};
 };

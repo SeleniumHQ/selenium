@@ -48,7 +48,6 @@ class OpacityTests(unittest.TestCase):
         self.assertFalse(apples.is_selected())
         self.assertTrue(oranges.is_selected())
 
-
     def _pageURL(self, name):
         return self.webserver.where_is(name + '.html')
 

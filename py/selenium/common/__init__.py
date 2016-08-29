@@ -15,4 +15,4 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from . import exceptions
+from . import exceptions  # noqa

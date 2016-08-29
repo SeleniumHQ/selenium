@@ -19,6 +19,7 @@ import unittest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
+
 class TypingTests(unittest.TestCase):
 
     def testShouldFireKeyPressEvents(self):
@@ -78,6 +79,12 @@ class TypingTests(unittest.TestCase):
         keyReporter.send_keys(Keys.ARROW_LEFT)
         self.assertEqual(keyReporter.get_attribute("value"), "")
 
+    def testListOfArrowKeysShouldNotBePrintable(self):
+        self._loadPage("javascriptPage")
+        keyReporter = self.driver.find_element(by=By.ID, value="keyReporter")
+        keyReporter.send_keys([Keys.ARROW_LEFT])
+        self.assertEqual(keyReporter.get_attribute("value"), "")
+
     def testShouldBeAbleToUseArrowKeys(self):
         self._loadPage("javascriptPage")
         keyReporter = self.driver.find_element(by=By.ID, value="keyReporter")
@@ -134,7 +141,7 @@ class TypingTests(unittest.TestCase):
         #  filled, we're a letter short here
         self.assertEqual(result.text, "I like chees")
 
-    #@Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS, SELENESE, ANDROID},
+    # @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS, SELENESE, ANDROID},
     #      reason = "untested user agents")
     def testShouldReportKeyCodeOfArrowKeysUpDownEvents(self):
         self._loadPage("javascriptPage")
@@ -145,7 +152,7 @@ class TypingTests(unittest.TestCase):
         self.assertTrue("up: 40" in result.text.strip(), "Expected: {0} . Result is {1}".format("up: 40", result.text))
 
         element.send_keys(Keys.ARROW_UP)
-        self.assertTrue("down: 38" in  result.text.strip(), "Expected: {0} . Result is {1}".format("down: 38", result.text))
+        self.assertTrue("down: 38" in result.text.strip(), "Expected: {0} . Result is {1}".format("down: 38", result.text))
         self.assertTrue("up: 38" in result.text.strip(), "Expected: {0} . Result is {1}".format("up: 38", result.text))
 
         element.send_keys(Keys.ARROW_LEFT)
@@ -166,8 +173,8 @@ class TypingTests(unittest.TestCase):
         element.send_keys(numericLineCharsNonShifted)
         self.assertEqual(element.get_attribute("value"), numericLineCharsNonShifted)
 
-    #@Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS, SELENESE, ANDROID},
-    #reason = "untested user agent")
+    # @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS, SELENESE, ANDROID},
+    # reason = "untested user agent")
     def testNumericShiftKeys(self):
         self._loadPage("javascriptPage")
         result = self.driver.find_element(by=By.ID, value="result")
@@ -206,11 +213,12 @@ class TypingTests(unittest.TestCase):
     def testArrowKeysAndPageUpAndDown(self):
         self._loadPage("javascriptPage")
         element = self.driver.find_element(by=By.ID, value="keyReporter")
-        element.send_keys("a" + Keys.LEFT + "b" + Keys.RIGHT +
-                     Keys.UP + Keys.DOWN + Keys.PAGE_UP + Keys.PAGE_DOWN + "1")
+        element.send_keys(
+            "a" + Keys.LEFT + "b" + Keys.RIGHT +
+            Keys.UP + Keys.DOWN + Keys.PAGE_UP + Keys.PAGE_DOWN + "1")
         self.assertEqual(element.get_attribute("value"), "ba1")
 
-    #def testHomeAndEndAndPageUpAndPageDownKeys(self):
+    # def testHomeAndEndAndPageUpAndPageDownKeys(self):
     #  // FIXME: macs don't have HOME keys, would PGUP work?
     #  if (Platform.getCurrent().is(Platform.MAC)) {
     #    return
@@ -225,7 +233,7 @@ class TypingTests(unittest.TestCase):
     #                   "0" + Keys.PAGE_UP + Keys.END + "111" + Keys.HOME + "00")
     #  self.assertThat(element.get_attribute("value"), is("0000abc1111"))
 
-    #@Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS, SELENESE, ANDROID},
+    # @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS, SELENESE, ANDROID},
     #      reason = "untested user agents")
     def testDeleteAndBackspaceKeys(self):
         self._loadPage("javascriptPage")
@@ -239,7 +247,7 @@ class TypingTests(unittest.TestCase):
         element.send_keys(Keys.LEFT, Keys.LEFT, Keys.BACK_SPACE)
         self.assertEqual(element.get_attribute("value"), "abcdfgi")
 
-    #@Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS, SELENESE}, reason = "untested user agents")
+    # @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS, SELENESE}, reason = "untested user agents")
     def testSpecialSpaceKeys(self):
         self._loadPage("javascriptPage")
         element = self.driver.find_element(by=By.ID, value="keyReporter")
@@ -249,10 +257,11 @@ class TypingTests(unittest.TestCase):
     def testNumberpadAndFunctionKeys(self):
         self._loadPage("javascriptPage")
         element = self.driver.find_element(by=By.ID, value="keyReporter")
-        element.send_keys("abcd" + Keys.MULTIPLY + Keys.SUBTRACT + Keys.ADD +
-                     Keys.DECIMAL + Keys.SEPARATOR + Keys.NUMPAD0 + Keys.NUMPAD9 +
-                     Keys.ADD + Keys.SEMICOLON + Keys.EQUALS + Keys.DIVIDE +
-                     Keys.NUMPAD3 + "abcd")
+        element.send_keys(
+            "abcd" + Keys.MULTIPLY + Keys.SUBTRACT + Keys.ADD +
+            Keys.DECIMAL + Keys.SEPARATOR + Keys.NUMPAD0 + Keys.NUMPAD9 +
+            Keys.ADD + Keys.SEMICOLON + Keys.EQUALS + Keys.DIVIDE +
+            Keys.NUMPAD3 + "abcd")
         self.assertEqual(element.get_attribute("value"), "abcd*-+.,09+;=/3abcd")
 
         element.clear()
@@ -282,7 +291,6 @@ class TypingTests(unittest.TestCase):
         element = self.driver.find_element(by=By.ID, value="keyReporter")
         element.send_keys(1234)
         self.assertEqual(element.get_attribute("value"), "1234")
-
 
     def _pageURL(self, name):
         return self.webserver.where_is(name + '.html')

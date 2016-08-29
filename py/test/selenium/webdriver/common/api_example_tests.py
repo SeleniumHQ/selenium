@@ -32,7 +32,6 @@
 
 
 import pytest
-import time
 import unittest
 
 from selenium.common.exceptions import NoSuchElementException, NoSuchWindowException
@@ -260,7 +259,7 @@ class ApiExampleTest (unittest.TestCase):
     def testChangeWindowSize(self):
         self._loadPage("blank")
         size = self.driver.get_window_size()
-        newSize = [600,600]
+        newSize = [600, 600]
         if size['width'] == 600:
             newSize[0] = 500
         if size['height'] == 600:

@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+
 class Command(object):
     """
     Defines constants for the standard WebDriver commands.
@@ -82,6 +83,7 @@ class Command(object):
     GET_ELEMENT_SIZE = "getElementSize"
     GET_ELEMENT_RECT = "getElementRect"
     GET_ELEMENT_ATTRIBUTE = "getElementAttribute"
+    GET_ELEMENT_PROPERTY = "getElementProperty"
     GET_ELEMENT_VALUE_OF_CSS_PROPERTY = "getElementValueOfCssProperty"
     ELEMENT_EQUALS = "elementEquals"
     SCREENSHOT = "screenshot"
@@ -95,7 +97,7 @@ class Command(object):
     GET_LOG = "getLog"
     GET_AVAILABLE_LOG_TYPES = "getAvailableLogTypes"
 
-    #Alerts
+    # Alerts
     DISMISS_ALERT = "dismissAlert"
     ACCEPT_ALERT = "acceptAlert"
     SET_ALERT_VALUE = "setAlertValue"
@@ -123,7 +125,7 @@ class Command(object):
     LONG_PRESS = "touchLongPress"
     FLICK = "touchFlick"
 
-    #HTML 5
+    # HTML 5
     EXECUTE_SQL = "executeSql"
 
     GET_LOCATION = "getLocation"

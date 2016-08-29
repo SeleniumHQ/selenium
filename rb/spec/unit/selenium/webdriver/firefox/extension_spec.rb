@@ -17,23 +17,24 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path("../../spec_helper", __FILE__)
+require File.expand_path('../../spec_helper', __FILE__)
 
 module Selenium
   module WebDriver
     module Firefox
-
       describe Extension do
         before do
-          File.stub(:exist? => true)
+          File.stub(exist?: true)
         end
 
-        let(:extension) {
+        let(:extension) do
           ext = Extension.new('/foo')
-          def ext.read_id(dir); read_id_from_install_rdf(dir); end
+          def ext.read_id(dir)
+            read_id_from_install_rdf(dir)
+          end
 
           ext
-        }
+        end
 
         it 'finds the rdf extension id as attribute' do
           allow(File).to receive(:read).with('/foo/install.rdf').and_return <<-XML
@@ -60,6 +61,19 @@ module Selenium
           expect(extension.read_id('/foo')).to eq('{f5198635-4eb3-47a5-b6a5-366b15cd2107}')
         end
 
+        it 'finds the rdf extension id regardless of namespace' do
+          allow(File).to receive(:read).with('/foo/install.rdf').and_return <<-XML
+            <?xml version="1.0"?>
+            <r:RDF xmlns:r="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.mozilla.org/2004/em-rdf#">
+                <r:Description about="urn:mozilla:install-manifest">
+                    <id>{f5198635-4eb3-47a5-b6a5-366b15cd2107}</id>
+                </r:Description>
+            </r:RDF>
+          XML
+
+          expect(extension.read_id('/foo')).to eq('{f5198635-4eb3-47a5-b6a5-366b15cd2107}')
+        end
+
         it 'raises if the node id is not found' do
           allow(File).to receive(:read).with('/foo/install.rdf').and_return <<-XML
             <?xml version="1.0"?>
@@ -68,10 +82,7 @@ module Selenium
 
           expect { extension.read_id('/foo') }.to raise_error(Error::WebDriverError)
         end
-
       end
-
     end # Firefox
   end # WebDriver
 end # Selenium
-

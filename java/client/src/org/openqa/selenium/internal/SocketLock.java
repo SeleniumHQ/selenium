@@ -19,6 +19,7 @@ package org.openqa.selenium.internal;
 
 import org.openqa.selenium.WebDriverException;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.BindException;
 import java.net.InetSocketAddress;
@@ -31,7 +32,7 @@ import java.net.SocketException;
  *
  * @author gregory.block@gmail.com (Gregory Block)
  */
-public class SocketLock implements Lock {
+public class SocketLock implements Closeable, Lock {
   public static final int DEFAULT_PORT = 7055;
   private static final long DELAY_BETWEEN_SOCKET_CHECKS = 2000;
 
@@ -102,9 +103,11 @@ public class SocketLock implements Lock {
     }
   }
 
-  /**
-   *
-   */
+  @Override
+  public void close() throws IOException {
+    unlock();
+  }
+
   public void unlock() {
     try {
       if (lockSocket.isBound()) lockSocket.close();
@@ -135,7 +138,7 @@ public class SocketLock implements Lock {
    * Gets the port number that is being-locked.
    * @return port locked
    */
-  public int getLockPort(){
+  public int getLockPort() {
     return this.address.getPort();
   }
 }

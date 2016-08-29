@@ -68,6 +68,19 @@ namespace OpenQA.Selenium.Support.Extensions
         /// <summary>
         /// Executes JavaScript in the context of the currently selected frame or window
         /// </summary>
+        /// <param name="driver">The driver instance to extend.</param>
+        /// <param name="script">The JavaScript code to execute.</param>
+        /// <param name="args">The arguments to the script.</param>
+        /// <exception cref="WebDriverException">Thrown if this <see cref="IWebDriver"/> instance
+        /// does not implement <see cref="IJavaScriptExecutor"/></exception>
+        public static void ExecuteJavaScript(this IWebDriver driver, string script, params object[] args)
+        {
+            ExecuteJavaScriptInternal(driver, script, args);
+        }
+
+        /// <summary>
+        /// Executes JavaScript in the context of the currently selected frame or window
+        /// </summary>
         /// <typeparam name="T">Expected return type of the JavaScript execution.</typeparam>
         /// <param name="driver">The driver instance to extend.</param>
         /// <param name="script">The JavaScript code to execute.</param>
@@ -78,17 +91,9 @@ namespace OpenQA.Selenium.Support.Extensions
         /// of the JavaScript execution does not match the expected type.</exception>
         public static T ExecuteJavaScript<T>(this IWebDriver driver, string script, params object[] args)
         {
-            IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
-            if (executor == null)
-            {
-                throw new WebDriverException("Driver does not implement IJavaScriptExecutor");
-            }
-
-            Type type = typeof(T);
-
+            var value = ExecuteJavaScriptInternal(driver, script, args);
             var result = default(T);
-
-            object value = executor.ExecuteScript(script, args);
+            Type type = typeof(T);
             if (value == null)
             {
                 if (type.IsValueType && (Nullable.GetUnderlyingType(type) == null))
@@ -106,6 +111,17 @@ namespace OpenQA.Selenium.Support.Extensions
             }
 
             return result;
+        }
+
+        private static object ExecuteJavaScriptInternal(IWebDriver driver, string script, object[] args)
+        {
+            IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
+            if (executor == null)
+            {
+                throw new WebDriverException("Driver does not implement IJavaScriptExecutor");
+            }
+
+            return executor.ExecuteScript(script, args);
         }
     }
 }

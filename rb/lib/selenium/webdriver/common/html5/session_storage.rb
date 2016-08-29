@@ -20,33 +20,32 @@
 module Selenium
   module WebDriver
     module HTML5
-
       class SessionStorage
         include Enumerable
         include SharedWebStorage
 
         def [](key)
-          @bridge.getSessionStorageItem key
+          @bridge.session_storage_item key
         end
 
         def []=(key, value)
-          @bridge.setSessionStorageItem key, value
+          @bridge.session_storage_item key, value
         end
 
         def delete(key)
-          @bridge.removeSessionStorageItem key
+          @bridge.remove_session_storage_item key
         end
 
         def clear
-          @bridge.clearSessionStorage
+          @bridge.clear_session_storage
         end
 
         def size
-          @bridge.getSessionStorageSize
+          @bridge.session_storage_size
         end
 
         def keys
-          @bridge.getSessionStorageKeys.reverse
+          @bridge.session_storage_keys.reverse
         end
 
         #
@@ -56,7 +55,6 @@ module Selenium
         def initialize(bridge)
           @bridge = bridge
         end
-
       end # SessionStorage
     end # HTML5
   end # WebDriver

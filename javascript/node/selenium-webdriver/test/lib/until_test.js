@@ -19,9 +19,9 @@
 
 const assert = require('assert');
 
-const error = require('../../error');
 const By = require('../../lib/by').By;
 const CommandName = require('../../lib/command').Name;
+const error = require('../../lib/error');
 const promise = require('../../lib/promise');
 const until = require('../../lib/until');
 const webdriver = require('../../lib/webdriver'),
@@ -145,6 +145,40 @@ describe('until', function() {
         return alert.dismiss();
       });
     });
+
+    // TODO: Remove once GeckoDriver doesn't throw this unwanted error.
+    // See https://github.com/SeleniumHQ/selenium/pull/2137
+    describe('workaround for GeckoDriver', function() {
+      it('doesNotFailWhenCannotConvertNullToObject', function() {
+        var count = 0;
+        executor.on(CommandName.GET_ALERT_TEXT, function() {
+          if (count++ < 3) {
+            throw new error.WebDriverError(`can't convert null to object`);
+          } else {
+            return true;
+          }
+        }).on(CommandName.DISMISS_ALERT, () => true);
+
+        return driver.wait(until.alertIsPresent(), 1000).then(function(alert) {
+          assert.equal(count, 4);
+          return alert.dismiss();
+        });
+      });
+
+      it('keepsRaisingRegularWebdriverError', function() {
+        var webDriverError = new error.WebDriverError;
+
+        executor.on(CommandName.GET_ALERT_TEXT, function() {
+          throw webDriverError;
+        });
+
+        return driver.wait(until.alertIsPresent(), 1000).then(function() {
+          throw new Error('driver did not fail against WebDriverError');
+        }, function(error) {
+          assert.equal(error, webDriverError);
+        });
+      })
+    });
   });
 
   it('testUntilTitleIs', function() {
@@ -172,6 +206,35 @@ describe('until', function() {
     return driver.wait(until.titleMatches(/^a{2,3}b+c$/), 3000)
         .then(function() {
           assert.deepStrictEqual(titles, ['google']);
+        });
+  });
+
+  it('testUntilUrlIs', function() {
+    var urls = ['http://www.foo.com', 'https://boo.com', 'http://docs.yes.com'];
+    executor.on(CommandName.GET_CURRENT_URL, () => urls.shift());
+
+    return driver.wait(until.urlIs('https://boo.com'), 3000).then(function() {
+      assert.deepStrictEqual(urls, ['http://docs.yes.com']);
+    });
+  });
+
+  it('testUntilUrlContains', function() {
+    var urls =
+        ['http://foo.com', 'https://groups.froogle.com', 'http://google.com'];
+    executor.on(CommandName.GET_CURRENT_URL, () => urls.shift());
+
+    return driver.wait(until.urlContains('oogle.com'), 3000).then(function() {
+      assert.deepStrictEqual(urls, ['http://google.com']);
+    });
+  });
+
+  it('testUntilUrlMatches', function() {
+    var urls = ['foo', 'froogle', 'aaaabc', 'aabbbc', 'google'];
+    executor.on(CommandName.GET_CURRENT_URL, () => urls.shift());
+
+    return driver.wait(until.urlMatches(/^a{2,3}b+c$/), 3000)
+        .then(function() {
+          assert.deepStrictEqual(urls, ['google']);
         });
   });
 
@@ -384,7 +447,7 @@ describe('until', function() {
   describe('WebElementCondition', function() {
     it('fails if wait completes with a non-WebElement value', function() {
       let result = driver.wait(
-          new until.WebElementCondition('testing', () => 123), 1000);
+          new webdriver.WebElementCondition('testing', () => 123), 1000);
 
       return result.then(
           () => assert.fail('expected to fail'),

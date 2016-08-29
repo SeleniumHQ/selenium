@@ -15,12 +15,38 @@
 // specific language governing permissions and limitations
 // under the License.
 
+/**
+ * @fileoverview Defines a {@linkplain Driver WebDriver} client for the
+ * PhantomJS web browser. By default, it is expected that the PhantomJS
+ * executable can be located on your
+ * [PATH](https://en.wikipedia.org/wiki/PATH_(variable))
+ *
+ *  __Using a Custom PhantomJS Binary__
+ *
+ * If you have PhantomJS.exe placed somewhere other than the root of your
+ * working directory, you can build a custom Capability and attach the
+ * executable's location to the Capability
+ *
+ * For example, if you're using the
+ * [phantomjs-prebuilt](https://www.npmjs.com/package/phantomjs-prebuilt) module
+ * from npm:
+ *
+ *     //setup custom phantomJS capability
+ *     var phantomjs_exe = require('phantomjs-prebuilt').path;
+ *     var customPhantom = selenium.Capabilities.phantomjs();
+ *     customPhantom.set("phantomjs.binary.path", phantomjs_exe);
+ *     //build custom phantomJS driver
+ *     var driver = new selenium.Builder().
+ *            withCapabilities(customPhantom).
+ *            build();
+ *
+ */
+
 'use strict';
 
 const fs = require('fs');
 
-const executors = require('./executors'),
-    http = require('./http'),
+const http = require('./http'),
     io = require('./io'),
     capabilities = require('./lib/capabilities'),
     command = require('./lib/command'),
@@ -54,14 +80,6 @@ const BINARY_PATH_CAPABILITY = 'phantomjs.binary.path';
  * @const
  */
 const CLI_ARGS_CAPABILITY = 'phantomjs.cli.args';
-
-
-/**
- * Default log file to use if one is not specified through CLI args.
- * @type {string}
- * @const
- */
-const DEFAULT_LOG_FILE = 'phantomjsdriver.log';
 
 
 /**
@@ -111,20 +129,18 @@ const WEBDRIVER_TO_PHANTOMJS_LEVEL = new Map([
 
 /**
  * Creates a command executor with support for PhantomJS' custom commands.
- * @param {!promise.Promise<string>} url The server's URL.
+ * @param {!Promise<string>} url The server's URL.
  * @return {!command.Executor} The new command executor.
  */
 function createExecutor(url) {
-  return new executors.DeferredExecutor(url.then(function(url) {
-    var client = new http.HttpClient(url);
-    var executor = new http.Executor(client);
+  let client = url.then(url => new http.HttpClient(url));
+  let executor = new http.Executor(client);
 
-    executor.defineCommand(
-        Command.EXECUTE_PHANTOM_SCRIPT,
-        'POST', '/session/:sessionId/phantom/execute');
+  executor.defineCommand(
+      Command.EXECUTE_PHANTOM_SCRIPT,
+      'POST', '/session/:sessionId/phantom/execute');
 
-    return executor;
-  }));
+  return executor;
 }
 
 /**
@@ -136,11 +152,16 @@ class Driver extends webdriver.WebDriver {
    *     capabilities.
    * @param {promise.ControlFlow=} opt_flow The control flow to use,
    *     or {@code null} to use the currently active flow.
+   * @param {string=} opt_logFile Path to the log file for the phantomjs
+   *     executable's output. For convenience, this may be set at runtime with
+   *     the `SELENIUM_PHANTOMJS_LOG` environment variable.
    */
-  constructor(opt_capabilities, opt_flow) {
+  constructor(opt_capabilities, opt_flow, opt_logFile) {
+    // TODO: add an Options class for consistency with the other driver types.
+
     var caps = opt_capabilities || capabilities.Capabilities.phantomjs();
     var exe = findExecutable(caps.get(BINARY_PATH_CAPABILITY));
-    var args = ['--webdriver-logfile=' + DEFAULT_LOG_FILE];
+    var args = [];
 
     var logPrefs = caps.get(capabilities.Capability.LOGGING_PREFS);
     if (logPrefs instanceof logging.Preferences) {
@@ -155,6 +176,11 @@ class Driver extends webdriver.WebDriver {
       }
     }
 
+    opt_logFile = process.env['SELENIUM_PHANTOMJS_LOG'] || opt_logFile;
+    if (typeof opt_logFile === 'string') {
+      args.push('--webdriver-logfile=' + opt_logFile);
+    }
+
     var proxy = caps.get(capabilities.Capability.PROXY);
     if (proxy) {
       switch (proxy.proxyType) {
@@ -162,7 +188,8 @@ class Driver extends webdriver.WebDriver {
           if (proxy.httpProxy) {
             args.push(
                 '--proxy-type=http',
-                '--proxy=http://' + proxy.httpProxy);
+                '--proxy=' + proxy.httpProxy);
+            console.log(args);
           }
           break;
         case 'pac':
@@ -180,7 +207,8 @@ class Driver extends webdriver.WebDriver {
     var port = portprober.findFreePort();
     var service = new remote.DriverService(exe, {
       port: port,
-      args: promise.when(port, function(port) {
+      stdio: 'inherit',
+      args: Promise.resolve(port).then(function(port) {
         args.push('--webdriver=' + port);
         return args;
       })
@@ -195,7 +223,8 @@ class Driver extends webdriver.WebDriver {
 
     /** @override */
     this.quit = function() {
-      return boundQuit().thenFinally(service.kill.bind(service));
+      let killService = () => service.kill();
+      return boundQuit().then(killService, killService);
     };
   }
 

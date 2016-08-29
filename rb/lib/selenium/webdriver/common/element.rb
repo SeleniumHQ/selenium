@@ -29,15 +29,16 @@ module Selenium
       #
 
       def initialize(bridge, id)
-        @bridge, @id = bridge, id
+        @bridge = bridge
+        @id = id
       end
 
       def inspect
-        '#<%s:0x%x id=%s>' % [self.class, hash*2, @id.inspect]
+        format '#<%s:0x%x id=%s>', self.class, hash * 2, @id.inspect
       end
 
       def ==(other)
-        other.kind_of?(self.class) && ref == other.ref
+        other.is_a?(self.class) && ref == other.ref
       end
       alias_method :eql?, :==
 
@@ -63,14 +64,14 @@ module Selenium
       #
       # @example Click on a button
       #
-      #    driver.find_element(:tag_name, "button").click
+      #    driver.find_element(tag_name: "button").click
       #
       # @raise [StaleElementReferenceError] if the element no longer exists as
       #  defined
       #
 
       def click
-        bridge.clickElement @id
+        bridge.click_element @id
       end
 
       #
@@ -78,13 +79,13 @@ module Selenium
       #
       # @example Get the tagname of an INPUT element(returns "input")
       #
-      #    driver.find_element(:xpath, "//input").tag_name
+      #    driver.find_element(xpath: "//input").tag_name
       #
       # @return [String] The tag name of this element.
       #
 
       def tag_name
-        bridge.getElementTagName @id
+        bridge.element_tag_name @id
       end
 
       #
@@ -114,7 +115,7 @@ module Selenium
       #
 
       def attribute(name)
-        bridge.getElementAttribute @id, name
+        bridge.element_attribute @id, name
       end
 
       #
@@ -124,7 +125,7 @@ module Selenium
       #
 
       def text
-        bridge.getElementText @id
+        bridge.element_text @id
       end
 
       #
@@ -142,7 +143,7 @@ module Selenium
       #
 
       def send_keys(*args)
-        bridge.sendKeysToElement @id, Keys.encode(args)
+        bridge.send_keys_to_element @id, Keys.encode(args)
       end
       alias_method :send_key, :send_keys
 
@@ -157,7 +158,7 @@ module Selenium
       #
 
       def clear
-        bridge.clearElement @id
+        bridge.clear_element @id
       end
 
       #
@@ -167,7 +168,7 @@ module Selenium
       #
 
       def enabled?
-        bridge.isElementEnabled @id
+        bridge.element_enabled? @id
       end
 
       #
@@ -177,7 +178,7 @@ module Selenium
       #
 
       def selected?
-        bridge.isElementSelected @id
+        bridge.element_selected? @id
       end
 
       #
@@ -187,7 +188,7 @@ module Selenium
       #
 
       def displayed?
-        bridge.isElementDisplayed @id
+        bridge.element_displayed? @id
       end
 
       #
@@ -195,7 +196,7 @@ module Selenium
       #
 
       def submit
-        bridge.submitElement @id
+        bridge.submit_element @id
       end
 
       #
@@ -210,7 +211,7 @@ module Selenium
       #
 
       def css_value(prop)
-        bridge.getElementValueOfCssProperty @id, prop
+        bridge.element_value_of_css_property @id, prop
       end
       alias_method :style, :css_value
 
@@ -221,7 +222,7 @@ module Selenium
       #
 
       def location
-        bridge.getElementLocation @id
+        bridge.element_location @id
       end
 
       #
@@ -231,7 +232,7 @@ module Selenium
       #
 
       def location_once_scrolled_into_view
-        bridge.getElementLocationOnceScrolledIntoView @id
+        bridge.element_location_once_scrolled_into_view @id
       end
 
       #
@@ -241,19 +242,19 @@ module Selenium
       #
 
       def size
-        bridge.getElementSize @id
+        bridge.element_size @id
       end
 
       #-------------------------------- sugar  --------------------------------
 
       #
-      #   element.first(:id, 'foo')
+      #   element.first(id: 'foo')
       #
 
       alias_method :first, :find_element
 
       #
-      #   element.all(:class, 'bar')
+      #   element.all(class: 'bar')
       #
 
       alias_method :all, :find_elements
@@ -280,7 +281,7 @@ module Selenium
       # @api private
       #
 
-      def to_json(*args)
+      def to_json(*)
         JSON.generate as_json
       end
 
@@ -290,26 +291,20 @@ module Selenium
       # @api private
       #
 
-      def as_json(opts = nil)
-        {
-          :ELEMENT => @id,
-          "element-6066-11e4-a52e-4f735466cecf" => @id
-        }
+      def as_json(*)
+        @id.is_a?(Hash) ? @id : {:ELEMENT => @id}
       end
 
       private
 
-      def bridge
-        @bridge
-      end
+      attr_reader :bridge
 
       def selectable?
         tn = tag_name.downcase
         type = attribute(:type).to_s.downcase
 
-        tn == "option" || (tn == "input" && %w[radio checkbox].include?(type))
+        tn == 'option' || (tn == 'input' && %w[radio checkbox].include?(type))
       end
-
     end # Element
   end # WebDriver
 end # Selenium

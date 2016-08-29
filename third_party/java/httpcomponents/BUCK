@@ -6,7 +6,6 @@ java_library(
     ':mime',
   ],
   deps = [
-    '//third_party/java/apache-mime4j:apache-mime4j',
     '//third_party/java/commons-logging:commons-logging'
   ],
   visibility = ['PUBLIC'],
@@ -14,9 +13,9 @@ java_library(
 
 prebuilt_jar(
   name = 'client',
-  maven_coords = 'org.apache.httpcomponents:httpclient:jar:4.5.1',
-  binary_jar = 'httpclient-4.5.1.jar',
-  source_jar = 'httpclient-4.5.1-sources.jar',
+  maven_coords = 'org.apache.httpcomponents:httpclient:jar:4.5.2',
+  binary_jar = 'httpclient-4.5.2.jar',
+  source_jar = 'httpclient-4.5.2-sources.jar',
   deps = [
     ':core',
     '//third_party/java/commons-codec:commons-codec',
@@ -26,15 +25,15 @@ prebuilt_jar(
 
 prebuilt_jar(
   name = 'core',
-  maven_coords = 'org.apache.httpcomponents:httpcore:jar:4.4.3',
-  binary_jar = 'httpcore-4.4.3.jar',
-  source_jar = 'httpcore-4.4.3-sources.jar',
+  maven_coords = 'org.apache.httpcomponents:httpcore:jar:4.4.4',
+  binary_jar = 'httpcore-4.4.4.jar',
+  source_jar = 'httpcore-4.4.4-sources.jar',
 )
 
 prebuilt_jar(
   name = 'mime',
-  maven_coords = 'org.apache.httpcomponents:httpmime:jar:4.5',
-  binary_jar = 'httpmime-4.5.jar',
-  source_jar = 'httpmime-4.5-sources.jar',
+  maven_coords = 'org.apache.httpcomponents:httpmime:jar:4.5.2',
+  binary_jar = 'httpmime-4.5.2.jar',
+  source_jar = 'httpmime-4.5.2-sources.jar',
 )
 

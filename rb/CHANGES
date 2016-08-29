@@ -1,8 +1,53 @@
-2.53.0 (Unreleased)
+3.0.0.beta2.1 (2016-08-03)
+===================
+
+Ruby:
+  * Fixed bug in collections
+
+3.0.0.beta2 (2016-08-02)
+===================
+
+Firefox:
+  * Fixed bug with form submission
+  * Improved w3c element handling
+
+3.0.0.beta1 (2016-07-28)
+===================
+
+Ruby:
+  * Remove support for RC client
+  * Remove support for Ruby < 2.0
+  * Update code to support designated style guidelines
+  * Chrome/GeckoDriver/PhantomJS/IE/Edge drivers are refactored to use standard
+    service class (issue 1797)
+  * Option `:timeout` was removed from IE server (issue 1797)
+
+Chrome:
+  * Remove override of default chromedriver behavior for chrome.detach (issue 2418)
+
+Firefox:
+  * Rename wires to geckodriver
+  * Change default usage from FirefoxDriver to geckodriver
+
+Safari:
+  * Initial support for Apple's Safari Driver in Sierra (issue #2475)
+
+Android and iPhone:
+  * Remove support for deprecated classes (Issue #2476)
+
+2.53.0 (2016-03-15)
 ===================
 
 Ruby:
   * Removed dependency on "multi_json" (issue 1632)
+  * Properly handle namespaces in install manifest of Firefox add-ons (issue 1143)
+  * Improve error handling when stopping browsers (thanks bsedat)
+  * Fix deselecting options in select lists (thanks glib-briia)
+  * Fix w3c error handling
+  * Update w3c Capabilities support
+
+IE:
+  * support for alert credentials (issue #1698, thanks Alan Baird & trabulmonkee)
 
 2.52.0 (2016-02-12)
 ===================

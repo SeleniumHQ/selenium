@@ -47,8 +47,8 @@ li {
 }
 
 #header {
-	background: url("/grid/resources/org/openqa/grid/images/header_bl.png") repeat-x
-		scroll left bottom #455372;
+	background-color: #455372;
+  border-radius: 10px;
 	height: 3em;
 	min-height: 39px;
 	padding: 15px 0;
@@ -56,8 +56,6 @@ li {
 }
 
 #header div {
-	background: url("/grid/resources/org/openqa/grid/images/header_br.gif") no-repeat
-		scroll right bottom transparent;
 	bottom: 0;
 	list-style: none outside none;
 	margin: 0;
@@ -69,8 +67,6 @@ li {
 }
 
 #header h1 {
-	background: url("/grid/resources/org/openqa/grid/images/header_tl.gif") no-repeat
-		scroll 0 0 transparent;
 	border: none;
 	font-size: 2px;
 	height: 8px;
@@ -82,8 +78,8 @@ li {
 }
 
 #header h1 a {
-	background: url("/grid/resources/org/openqa/grid/images/selenium.png")
-		no-repeat scroll 0 0 transparent;
+  background: url("/grid/resources/org/openqa/grid/images/selenium.png")
+              no-repeat scroll 0 0 transparent;
 	display: block;
 	height: 64px;
 	text-decoration: none;
@@ -211,7 +207,7 @@ ul a {
 }
 
 #hubConfig{
-	min-width:55%;} 
+	min-width:55%;}
 
 a#helplink {
 	text-decoration: none;

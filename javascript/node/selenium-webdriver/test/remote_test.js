@@ -15,10 +15,16 @@
 // specific language governing permissions and limitations
 // under the License.
 
-var assert = require('assert');
+'use strict';
 
-var promise = require('../').promise;
-var remote = require('../remote');
+var assert = require('assert'),
+    fs = require('fs'),
+    path = require('path');
+
+var promise = require('../').promise,
+    io = require('../io'),
+    cmd = require('../lib/command'),
+    remote = require('../remote');
 
 describe('DriverService', function() {
   describe('start()', function() {
@@ -31,10 +37,8 @@ describe('DriverService', function() {
       });
     });
 
-    afterEach(function(done) {
-      service.kill().thenFinally(function() {
-        done();
-      });
+    afterEach(function() {
+      return service.kill();
     });
 
     it('fails if child-process dies', function(done) {
@@ -68,5 +72,46 @@ describe('DriverService', function() {
     function expectFailure(done) {
       done(Error('expected to fail'));
     }
+  });
+});
+
+describe('FileDetector', function() {
+  class ExplodingDriver {
+    schedule() {
+      throw Error('unexpected call');
+    }
+  }
+
+  it('returns the original path if the file does not exist', function() {
+    return io.tmpDir(dir => {
+      let theFile = path.join(dir, 'not-there');
+      return (new remote.FileDetector)
+          .handleFile(new ExplodingDriver, theFile)
+          .then(f => assert.equal(f, theFile));
+    });
+  });
+
+  it('returns the original path if it is a directory', function() {
+    return io.tmpDir(dir => {
+      return (new remote.FileDetector)
+          .handleFile(new ExplodingDriver, dir)
+          .then(f => assert.equal(f, dir));
+    });
+  });
+
+  it('attempts to upload valid files', function() {
+    return io.tmpFile(theFile => {
+      return (new remote.FileDetector)
+          .handleFile(
+              new (class FakeDriver {
+                schedule(command) {
+                  assert.equal(command.getName(), cmd.Name.UPLOAD_FILE);
+                  assert.equal(typeof command.getParameters()['file'], 'string');
+                  return Promise.resolve('success!');
+                }
+              }),
+              theFile)
+          .then(f => assert.equal(f, 'success!'));
+    });
   });
 });

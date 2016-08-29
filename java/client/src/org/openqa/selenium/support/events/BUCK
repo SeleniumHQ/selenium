@@ -1,8 +1,7 @@
 java_library(name = 'events',
   srcs = glob(['**/*.java']),
   deps = [
-    '//java/client/src/org/openqa/selenium:webdriver-api',
-    '//java/client/src/org/openqa/selenium/interactions:interactions',
+    '//java/client/src/org/openqa/selenium:selenium',
   ],
   visibility = ['PUBLIC'],
 )

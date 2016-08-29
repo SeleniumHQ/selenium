@@ -1,4 +1,5 @@
 prebuilt_jar(name = 'jcip_annotations',
+  maven_coords = 'net.jcip:jcip-annotations:1.0',
   binary_jar = 'jcip-annotations-1.0.jar',
   visibility = [
     '//java/server/src/org/openqa/grid:grid',

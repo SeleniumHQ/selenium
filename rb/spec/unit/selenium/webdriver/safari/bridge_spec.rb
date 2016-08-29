@@ -17,13 +17,12 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path("../../spec_helper", __FILE__)
+require File.expand_path('../../spec_helper', __FILE__)
 
 module Selenium
   module WebDriver
     module Safari
       describe Bridge do
-        let(:caps)    { {} }
         let(:server)  { double(Server, receive: response).as_null_object }
         let(:browser) { double(Browser).as_null_object }
 
@@ -31,20 +30,18 @@ module Selenium
           {
             'id' => '1',
             'response' => {
-              'sessionId' => 'opaque', "value" => @default_capabilities ,
+              'sessionId' => 'opaque', 'value' => @default_capabilities,
               'status'    => 0
-            },
+            }
           }
         end
 
         before do
           @default_capabilities = Remote::Capabilities.safari.as_json
 
-          allow(Remote::Capabilities).to receive(:safari).and_return(caps)
           allow(Server).to receive(:new).and_return(server)
           allow(Browser).to receive(:new).and_return(browser)
         end
-
 
         it 'takes desired capabilities' do
           custom_caps = Remote::Capabilities.new
@@ -65,10 +62,9 @@ module Selenium
             expect(payload[:command][:parameters][:desiredCapabilities]['safari.options']['cleanSession']).to eq(true)
           end
 
-          Bridge.new(:clean_session => true)
+          Bridge.new(clean_session: true)
         end
-
       end
-    end
-  end
-end
+    end # Safari
+  end # WebDriver
+end # Selenium

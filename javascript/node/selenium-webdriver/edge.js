@@ -52,7 +52,7 @@
  *     var edge = require('selenium-webdriver/edge');
  *
  *     var service = new edge.ServiceBuilder()
- *         .usingPort(55555)
+ *         .setPort(55555)
  *         .build();
  *
  *     var options = new edge.Options();
@@ -73,7 +73,7 @@
 const fs = require('fs'),
     util = require('util');
 
-const executors = require('./executors'),
+const http = require('./http'),
     io = require('./io'),
     capabilities = require('./lib/capabilities'),
     promise = require('./lib/promise'),
@@ -193,7 +193,7 @@ class Options {
  * Creates {@link remote.DriverService} instances that manage a
  * MicrosoftEdgeDriver server in a child process.
  */
-class ServiceBuilder {
+class ServiceBuilder extends remote.DriverService.Builder {
   /**
    * @param {string=} opt_exe Path to the server executable to use. If omitted,
    *   the builder will attempt to locate the MicrosoftEdgeDriver on the current
@@ -209,88 +209,14 @@ class ServiceBuilder {
         'Please download the latest version of the MicrosoftEdgeDriver from ' +
         'https://www.microsoft.com/en-us/download/details.aspx?id=48212 and ' +
         'ensure it can be found on your PATH.');
-    } else if (!fs.existsSync(exe)) {
-      throw Error('File does not exist: ' + exe);
     }
 
-    /** @private {string} */
-    this.exe_ = /** @type {string} */(exe);
+    super(exe);
 
-    /** @private {!Array.<string>} */
-    this.args_ = [];
-
-    /** @private {number} */
-    this.port_ = 0;
-
-    /**
-     * @private {(string|!Array.<string|number|!stream.Stream|null|undefined>)}
-     */
-    this.stdio_ = 'ignore';
-
-    /** @private {Object.<string, string>} */
-    this.env_ = null;
-  }
-
-  /**
-   * Defines the stdio configuration for the driver service. See
-   * {@code child_process.spawn} for more information.
-   * @param {(string|!Array.<string|number|!stream.Stream|null|undefined>)}
-   *     config The configuration to use.
-   * @return {!ServiceBuilder} A self reference.
-   */
-  setStdio(config) {
-    this.stdio_ = config;
-    return this;
-  }
-
-  /**
-   * Sets the port to start the MicrosoftEdgeDriver on.
-   * @param {number} port The port to use, or 0 for any free port.
-   * @return {!ServiceBuilder} A self reference.
-   * @throws {Error} If the port is invalid.
-   */
-  usingPort(port) {
-    if (port < 0) {
-      throw Error('port must be >= 0: ' + port);
-    }
-    this.port_ = port;
-    return this;
-  }
-
-  /**
-   * Defines the environment to start the server under. This settings will be
-   * inherited by every browser session started by the server.
-   * @param {!Object.<string, string>} env The environment to use.
-   * @return {!ServiceBuilder} A self reference.
-   */
-  withEnvironment(env) {
-    this.env_ = env;
-    return this;
-  }
-
-  /**
-   * Creates a new DriverService using this instance's current configuration.
-   * @return {!remote.DriverService} A new driver service using this instance's
-   *     current configuration.
-   * @throws {Error} If the driver exectuable was not specified and a default
-   *     could not be found on the current PATH.
-   */
-  build() {
-    var port = this.port_ || portprober.findFreePort();
-    var args = this.args_.concat();  // Defensive copy.
-
-    return new remote.DriverService(this.exe_, {
-      // Binding to the loopback address will fail if not running with
-      // administrator privileges. Since we cannot test for that in script
-      // (or can we?), force the DriverService to use "localhost".
-      hostname: 'localhost',
-      port: port,
-      args: promise.fulfilled(port).then(function(port) {
-        return args.concat('--port=' + port);
-      }),
-      env: this.env_,
-      stdio: this.stdio_
-    });
+    // Binding to the loopback address will fail if not running with
+    // administrator privileges. Since we cannot test for that in script
+    // (or can we?), force the DriverService to use "localhost".
+    this.setHostname('localhost');
   }
 }
 
@@ -342,7 +268,8 @@ class Driver extends webdriver.WebDriver {
    */
   constructor(opt_config, opt_service, opt_flow) {
     var service = opt_service || getDefaultService();
-    var executor = executors.createExecutor(service.start());
+    var client = service.start().then(url => new http.HttpClient(url));
+    var executor = new http.Executor(client);
 
     var caps =
         opt_config instanceof Options ? opt_config.toCapabilities() :
@@ -355,7 +282,7 @@ class Driver extends webdriver.WebDriver {
 
     /** @override */
     this.quit = function() {
-      return boundQuit().thenFinally(service.kill.bind(service));
+      return boundQuit().finally(service.kill.bind(service));
     };
   }
 

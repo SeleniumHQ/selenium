@@ -1,9 +1,0 @@
-
-java_test(name = "test",
-  srcs = [ "*.java" ],
-  deps = [
-    "//java/client/src/org/openqa/selenium:base",
-    "//java/client/src/org/openqa/selenium/remote:base",
-    "//java/server/src/org/openqa/grid/common",
-    "//third_party/java/junit",
-  ])

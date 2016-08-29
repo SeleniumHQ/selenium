@@ -79,17 +79,17 @@ public class BuildInfo {
 
   /** @return The embedded release label or "unknown". */
   public String getReleaseLabel() {
-    return BUILD_PROPERTIES.getProperty("Selenium-Version", "unknown");
+    return BUILD_PROPERTIES.getProperty("Selenium-Version", "unknown").trim();
   }
 
   /** @return The embedded build revision or "unknown". */
   public String getBuildRevision() {
-    return BUILD_PROPERTIES.getProperty("Selenium-Revision", "unknown");
+    return BUILD_PROPERTIES.getProperty("Build-Revision", "unknown");
   }
 
   /** @return The embedded build time or "unknown". */
   public String getBuildTime() {
-    return BUILD_PROPERTIES.getProperty("Selenium-Build-Time", "unknown");
+    return BUILD_PROPERTIES.getProperty("Build-Time", "unknown");
   }
 
   @Override

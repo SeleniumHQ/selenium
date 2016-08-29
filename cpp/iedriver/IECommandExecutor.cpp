@@ -297,9 +297,23 @@ LRESULT IECommandExecutor::OnBrowserQuit(UINT uMsg,
   delete[] str;
   BrowserMap::iterator found_iterator = this->managed_browsers_.find(browser_id);
   if (found_iterator != this->managed_browsers_.end()) {
-    this->managed_browsers_.erase(browser_id);
-    if (this->managed_browsers_.size() == 0) {
-      this->current_browser_id_ = "";
+    // If there's still an alert window active, repost this message to
+    // ourselves, since the alert will be handled either automatically or
+    // manually by the user.
+    HWND alert_handle;
+    if (this->IsAlertActive(found_iterator->second, &alert_handle)) {
+      LOG(DEBUG) << "Alert is active on closing browser window. Reposting message.";
+      LPSTR message_payload = new CHAR[browser_id.size() + 1];
+      strcpy_s(message_payload, browser_id.size() + 1, browser_id.c_str());
+      ::PostMessage(this->m_hWnd,
+                    WD_BROWSER_QUIT,
+                    NULL,
+                    reinterpret_cast<LPARAM>(message_payload));
+    } else {
+      this->managed_browsers_.erase(browser_id);
+      if (this->managed_browsers_.size() == 0) {
+        this->current_browser_id_ = "";
+      }
     }
   } else {
     LOG(WARN) << "Unable to find browser to quit with ID " << browser_id;

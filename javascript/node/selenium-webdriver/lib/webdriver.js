@@ -88,36 +88,11 @@ class WebElementCondition extends Condition {
 
 
 /**
- * Sends a command to the server that is expected to return the details for a
- * {@link Session}. This may either be an existing session, or a newly created
- * one.
- *
- * @param {!command.Executor} executor Command executor to use when
- *     querying for session details.
- * @param {!command.Command} command The command to send to fetch the session
- *     details.
- * @param {string} description A descriptive debug label for this action.
- * @param {promise.ControlFlow=} opt_flow The control flow all driver
- *     commands should execute under. Defaults to the
- *     {@link promise.controlFlow() currently active} control flow.
- * @return {!WebDriver} A new WebDriver client for the session.
- */
-function acquireSession(executor, command, description, opt_flow) {
-  let flow = opt_flow || promise.controlFlow();
-  let session = flow.execute(function() {
-    return executeCommand(executor, command);
-  }, description);
-  return new WebDriver(session, executor, flow);
-}
-
-
-/**
  * Translates a command to its wire-protocol representation before passing it
  * to the given `executor` for execution.
  * @param {!command.Executor} executor The executor to use.
  * @param {!command.Command} command The command to execute.
- * @return {!promise.Promise} A promise that will resolve with the
- *     command response.
+ * @return {!Promise} A promise that will resolve with the command response.
  */
 function executeCommand(executor, command) {
   return toWireValue(command.getParameters()).
@@ -143,14 +118,14 @@ function executeCommand(executor, command) {
  * </ol>
  *
  * @param {*} obj The object to convert.
- * @return {!promise.Promise<?>} A promise that will resolve to the
- *     input value's JSON representation.
+ * @return {!Promise<?>} A promise that will resolve to the input value's JSON
+ *     representation.
  */
 function toWireValue(obj) {
   if (promise.isPromise(obj)) {
-    return obj.then(toWireValue);
+    return Promise.resolve(obj).then(toWireValue);
   }
-  return promise.fulfilled(convertValue(obj));
+  return Promise.resolve(convertValue(obj));
 }
 
 
@@ -187,7 +162,7 @@ function convertKeys(obj) {
   const numKeys = isArray ? obj.length : Object.keys(obj).length;
   const ret = isArray ? new Array(numKeys) : {};
   if (!numKeys) {
-    return promise.fulfilled(ret);
+    return Promise.resolve(ret);
   }
 
   let numResolved = 0;
@@ -204,7 +179,7 @@ function convertKeys(obj) {
     }
   }
 
-  return new promise.Promise(function(done, reject) {
+  return new Promise(function(done, reject) {
     forEachKey(obj, function(value, key) {
       if (promise.isPromise(value)) {
         value.then(toWireValue).then(setValue, reject);
@@ -291,7 +266,7 @@ class WebDriver {
    */
   constructor(session, executor, opt_flow) {
     /** @private {!promise.Promise<!Session>} */
-    this.session_ = promise.fulfilled(session);;
+    this.session_ = promise.fulfilled(session);
 
     /** @private {!command.Executor} */
     this.executor_ = executor;
@@ -314,18 +289,62 @@ class WebDriver {
    * @return {!WebDriver} A new client for the specified session.
    */
   static attachToSession(executor, sessionId, opt_flow) {
-    return acquireSession(executor,
-        new command.Command(command.Name.DESCRIBE_SESSION).
-            setParameter('sessionId', sessionId),
-        'WebDriver.attachToSession()',
-        opt_flow);
+    let flow = opt_flow || promise.controlFlow();
+    let cmd = new command.Command(command.Name.DESCRIBE_SESSION)
+        .setParameter('sessionId', sessionId);
+    let session = flow.execute(
+        () => executeCommand(executor, cmd).catch(err => {
+          // The DESCRIBE_SESSION command is not supported by the W3C spec, so
+          // if we get back an unknown command, just return a session with
+          // unknown capabilities.
+          if (err instanceof error.UnknownCommandError) {
+            return new Session(sessionId, new Capabilities);
+          }
+          throw err;
+        }),
+        'WebDriver.attachToSession()');
+    return new WebDriver(session, executor, flow);
   }
 
   /**
    * Creates a new WebDriver session.
+   *
+   * By default, the requested session `capabilities` are merely "desired" and
+   * the remote end will still create a new session even if it cannot satisfy
+   * all of the requested capabilities. You can query which capabilities a
+   * session actually has using the
+   * {@linkplain #getCapabilities() getCapabilities()} method on the returned
+   * WebDriver instance.
+   *
+   * To define _required capabilities_, provide the `capabilities` as an object
+   * literal with `required` and `desired` keys. The `desired` key may be
+   * omitted if all capabilities are required, and vice versa. If the server
+   * cannot create a session with all of the required capabilities, it will
+   * return an {@linkplain error.SessionNotCreatedError}.
+   *
+   *     let required = new Capabilities().set('browserName', 'firefox');
+   *     let desired = new Capabilities().set('version', '45');
+   *     let driver = WebDriver.createSession(executor, {required, desired});
+   *
+   * This function will always return a WebDriver instance. If there is an error
+   * creating the session, such as the aforementioned SessionNotCreatedError,
+   * the driver will have a rejected {@linkplain #getSession session} promise.
+   * It is recommended that this promise is left _unhandled_ so it will
+   * propagate through the {@linkplain promise.ControlFlow control flow} and
+   * cause subsequent commands to fail.
+   *
+   *     let required = Capabilities.firefox();
+   *     let driver = WebDriver.createSession(executor, {required});
+   *
+   *     // If the createSession operation failed, then this command will also
+   *     // also fail, propagating the creation failure.
+   *     driver.get('http://www.google.com').catch(e => console.log(e));
+   *
    * @param {!command.Executor} executor The executor to create the new session
    *     with.
-   * @param {!./capabilities.Capabilities} desiredCapabilities The desired
+   * @param {(!Capabilities|
+   *          {desired: (Capabilities|undefined),
+   *           required: (Capabilities|undefined)})} capabilities The desired
    *     capabilities for the new session.
    * @param {promise.ControlFlow=} opt_flow The control flow all driver
    *     commands should execute under, including the initial session creation.
@@ -333,12 +352,21 @@ class WebDriver {
    *     control flow.
    * @return {!WebDriver} The driver for the newly created session.
    */
-  static createSession(executor, desiredCapabilities, opt_flow) {
-    return acquireSession(executor,
-        new command.Command(command.Name.NEW_SESSION).
-            setParameter('desiredCapabilities', desiredCapabilities),
-        'WebDriver.createSession()',
-        opt_flow);
+  static createSession(executor, capabilities, opt_flow) {
+    let flow = opt_flow || promise.controlFlow();
+    let cmd = new command.Command(command.Name.NEW_SESSION);
+
+    if (capabilities && (capabilities.desired || capabilities.required)) {
+      cmd.setParameter('desiredCapabilities', capabilities.desired);
+      cmd.setParameter('requiredCapabilities', capabilities.required);
+    } else {
+      cmd.setParameter('desiredCapabilities', capabilities);
+    }
+
+    let session = flow.execute(
+        () => executeCommand(executor, cmd),
+        'WebDriver.createSession()');
+    return new WebDriver(session, executor, flow);
   }
 
   /**
@@ -373,13 +401,13 @@ class WebDriver {
     // actually executes the command. This addresses scenarios like catching
     // an element not found error in:
     //
-    //     driver.findElement(By.id('foo')).click().thenCatch(function(e) {
+    //     driver.findElement(By.id('foo')).click().catch(function(e) {
     //       if (e instanceof NoSuchElementError) {
     //         // Do something.
     //       }
     //     });
     var prepCommand = toWireValue(command.getParameters());
-    prepCommand.thenCatch(function() {});
+    prepCommand.catch(function() {});
 
     var flow = this.flow_;
     var executor = this.executor_;
@@ -419,6 +447,13 @@ class WebDriver {
   }
 
   /**
+   * @return {!command.Executor} The command executor used by this instance.
+   */
+  getExecutor() {
+    return this.executor_;
+  }
+
+  /**
    * @return {!promise.Promise<!Session>} A promise for this client's
    *     session.
    */
@@ -445,9 +480,9 @@ class WebDriver {
     var result = this.schedule(
         new command.Command(command.Name.QUIT),
         'WebDriver.quit()');
-    // Delete our session ID when the quit command finishes; this will allow us to
-    // throw an error when attemnpting to use a driver post-quit.
-    return result.thenFinally(() => delete this.session_);
+    // Delete our session ID when the quit command finishes; this will allow us
+    // to throw an error when attemnpting to use a driver post-quit.
+    return result.finally(() => delete this.session_);
   }
 
   /**
@@ -742,7 +777,7 @@ class WebDriver {
   }
 
   /**
-   * Schedules a command to retrieve they current window handle.
+   * Schedules a command to retrieve the current window handle.
    * @return {!promise.Promise<string>} A promise that will be
    *     resolved with the current window handle.
    */
@@ -889,28 +924,6 @@ class WebDriver {
   }
 
   /**
-   * Schedules a command to test if an element is present on the page.
-   *
-   * If given a DOM element, this function will check if it belongs to the
-   * document the driver is currently focused on. Otherwise, the function will
-   * test if at least one element can be found with the given search criteria.
-   *
-   * @param {!(by.By|Function)} locator The locator to use.
-   * @return {!promise.Promise<boolean>} A promise that will resolve
-   *     with whether the element is present on the page.
-   * @deprecated This method will be removed in Selenium 3.0 for consistency
-   *     with the other Selenium language bindings. This method is equivalent
-   *     to
-   *
-   *      driver.findElements(locator).then(e => !!e.length);
-   */
-  isElementPresent(locator) {
-    return this.findElements.apply(this, arguments).then(function(result) {
-      return !!result.length;
-    });
-  }
-
-  /**
    * Schedule a command to search for multiple elements on the page.
    *
    * @param {!(by.By|Function)} locator The locator to use.
@@ -926,7 +939,7 @@ class WebDriver {
           setParameter('using', locator.using).
           setParameter('value', locator.value);
       let res = this.schedule(cmd, 'WebDriver.findElements(' + locator + ')');
-      return res.thenCatch(function(e) {
+      return res.catch(function(e) {
         if (e instanceof error.NoSuchElementError) {
           return [];
         }
@@ -1071,11 +1084,7 @@ class Navigation {
  * Provides methods for managing browser and driver state.
  *
  * This class should never be instantiated directly. Insead, obtain an instance
- * with
- *
- *    webdriver.manage()
- *
- * @see WebDriver#manage()
+ * with {@linkplain WebDriver#manage() webdriver.manage()}.
  */
 class Options {
   /**
@@ -1089,47 +1098,62 @@ class Options {
 
   /**
    * Schedules a command to add a cookie.
-   * @param {string} name The cookie name.
-   * @param {string} value The cookie value.
-   * @param {string=} opt_path The cookie path.
-   * @param {string=} opt_domain The cookie domain.
-   * @param {boolean=} opt_isSecure Whether the cookie is secure.
-   * @param {(number|!Date)=} opt_expiry When the cookie expires. If specified
-   *     as a number, should be in milliseconds since midnight,
-   *     January 1, 1970 UTC.
+   *
+   * __Sample Usage:__
+   *
+   *     // Set a basic cookie.
+   *     driver.options().addCookie({name: 'foo', value: 'bar'});
+   *
+   *     // Set a cookie that expires in 10 minutes.
+   *     let expiry = new Date(Date.now() + (10 * 60 * 1000));
+   *     driver.options().addCookie({name: 'foo', value: 'bar', expiry});
+   *
+   *     // The cookie expiration may also be specified in seconds since epoch.
+   *     driver.options().addCookie({
+   *       name: 'foo',
+   *       value: 'bar',
+   *       expiry: Math.floor(Date.now() / 1000)
+   *     });
+   *
+   * @param {!Options.Cookie} spec Defines the cookie to add.
    * @return {!promise.Promise<void>} A promise that will be resolved
    *     when the cookie has been added to the page.
+   * @throws {error.InvalidArgumentError} if any of the cookie parameters are
+   *     invalid.
+   * @throws {TypeError} if `spec` is not a cookie object.
    */
-  addCookie(name, value, opt_path, opt_domain, opt_isSecure, opt_expiry) {
+  addCookie(spec) {
+    if (!spec || typeof spec !== 'object') {
+      throw TypeError('addCookie called with non-cookie parameter');
+    }
+
     // We do not allow '=' or ';' in the name.
+    let name = spec.name;
     if (/[;=]/.test(name)) {
       throw new error.InvalidArgumentError(
           'Invalid cookie name "' + name + '"');
     }
 
     // We do not allow ';' in value.
+    let value = spec.value;
     if (/;/.test(value)) {
       throw new error.InvalidArgumentError(
           'Invalid cookie value "' + value + '"');
     }
 
-    var cookieString = name + '=' + value +
-        (opt_domain ? ';domain=' + opt_domain : '') +
-        (opt_path ? ';path=' + opt_path : '') +
-        (opt_isSecure ? ';secure' : '');
+    let cookieString = name + '=' + value +
+        (spec.domain ? ';domain=' + spec.domain : '') +
+        (spec.path ? ';path=' + spec.path : '') +
+        (spec.secure ? ';secure' : '');
 
-    var expiry;
-    if (opt_expiry !== void(0)) {
-      var expiryDate;
-      if (typeof opt_expiry === 'number') {
-        expiryDate = new Date(opt_expiry);
-      } else {
-        expiryDate = /** @type {!Date} */ (opt_expiry);
-        opt_expiry = expiryDate.getTime();
-      }
-      cookieString += ';expires=' + expiryDate.toUTCString();
-      // Convert from milliseconds to seconds.
-      expiry = Math.floor(/** @type {number} */ (opt_expiry) / 1000);
+    let expiry;
+    if (typeof spec.expiry === 'number') {
+      expiry = Math.floor(spec.expiry);
+      cookieString += ';expires=' + new Date(spec.expiry * 1000).toUTCString();
+    } else if (spec.expiry instanceof Date) {
+      let date = /** @type {!Date} */(spec.expiry);
+      expiry = Math.floor(date.getTime() / 1000);
+      cookieString += ';expires=' + date.toUTCString();
     }
 
     return this.driver_.schedule(
@@ -1137,9 +1161,9 @@ class Options {
             setParameter('cookie', {
               'name': name,
               'value': value,
-              'path': opt_path,
-              'domain': opt_domain,
-              'secure': !!opt_isSecure,
+              'path': spec.path,
+              'domain': spec.domain,
+              'secure': !!spec.secure,
               'expiry': expiry
             }),
         'WebDriver.manage().addCookie(' + cookieString + ')');
@@ -1157,8 +1181,8 @@ class Options {
   }
 
   /**
-   * Schedules a command to delete the cookie with the given name. This command is
-   * a no-op if there is no cookie with the given name visible to the current
+   * Schedules a command to delete the cookie with the given name. This command
+   * is a no-op if there is no cookie with the given name visible to the current
    * page.
    * @param {string} name The name of the cookie to delete.
    * @return {!promise.Promise<void>} A promise that will be resolved
@@ -1175,8 +1199,8 @@ class Options {
    * Schedules a command to retrieve all cookies visible to the current page.
    * Each cookie will be returned as a JSON object as described by the WebDriver
    * wire protocol.
-   * @return {!promise.Promise<!Array<WebDriver.Options.Cookie>>} A
-   *     promise that will be resolved with the cookies visible to the current page.
+   * @return {!promise.Promise<!Array<!Options.Cookie>>} A promise that will be
+   *     resolved with the cookies visible to the current browsing context.
    */
   getCookies() {
     return this.driver_.schedule(
@@ -1190,9 +1214,8 @@ class Options {
    * described by the WebDriver wire protocol.
    *
    * @param {string} name The name of the cookie to retrieve.
-   * @return {!promise.Promise<?WebDriver.Options.Cookie>} A promise
-   *     that will be resolved with the named cookie, or `null` if there is no
-   *     such cookie.
+   * @return {!promise.Promise<?Options.Cookie>} A promise that will be resolved
+   *     with the named cookie, or `null` if there is no such cookie.
    */
   getCookie(name) {
     return this.getCookies().then(function(cookies) {
@@ -1230,17 +1253,77 @@ class Options {
 
 
 /**
- * A JSON description of a browser cookie.
- * @typedef {{
- *     name: string,
- *     value: string,
- *     path: (string|undefined),
- *     domain: (string|undefined),
- *     secure: (boolean|undefined),
- *     expiry: (number|undefined)
- * }}
+ * A record object describing a browser cookie.
+ *
+ * @record
  */
-Options.Cookie;
+Options.Cookie = function() {};
+
+
+/**
+ * The name of the cookie.
+ *
+ * @type {string}
+ */
+Options.Cookie.prototype.name;
+
+
+/**
+ * The cookie value.
+ *
+ * @type {string}
+ */
+Options.Cookie.prototype.value;
+
+
+/**
+ * The cookie path. Defaults to "/" when adding a cookie.
+ *
+ * @type {(string|undefined)}
+ */
+Options.Cookie.prototype.path;
+
+
+/**
+ * The domain the cookie is visible to. Defaults to the current browsing
+ * context's document's URL when adding a cookie.
+ *
+ * @type {(string|undefined)}
+ */
+Options.Cookie.prototype.domain;
+
+
+/**
+ * Whether the cookie is a secure cookie. Defaults to false when adding a new
+ * cookie.
+ *
+ * @type {(boolean|undefined)}
+ */
+Options.Cookie.prototype.secure;
+
+
+/**
+ * Whether the cookie is an HTTP only cookie. Defaults to false when adding a
+ * new cookie.
+ *
+ * @type {(boolean|undefined)}
+ */
+Options.Cookie.prototype.httpOnly;
+
+
+/**
+ * When the cookie expires.
+ *
+ * When {@linkplain Options#addCookie() adding a cookie}, this may be specified
+ * in _seconds_ since Unix epoch (January 1, 1970). The expiry will default to
+ * 20 years in the future if omitted.
+ *
+ * The expiry is always returned in seconds since epoch when
+ * {@linkplain Options#getCookies() retrieving cookies} from the browser.
+ *
+ * @type {(!Date|number|undefined)}
+ */
+Options.Cookie.prototype.expiry;
 
 
 /**
@@ -1286,10 +1369,7 @@ class Timeouts {
    *     when the implicit wait timeout has been set.
    */
   implicitlyWait(ms) {
-    return this.driver_.schedule(
-        new command.Command(command.Name.IMPLICITLY_WAIT).
-            setParameter('ms', ms < 0 ? 0 : ms),
-        'WebDriver.manage().timeouts().implicitlyWait(' + ms + ')');
+    return this._scheduleCommand(ms, 'implicit', 'implicitlyWait');
   }
 
   /**
@@ -1302,10 +1382,7 @@ class Timeouts {
    *     when the script timeout has been set.
    */
   setScriptTimeout(ms) {
-    return this.driver_.schedule(
-        new command.Command(command.Name.SET_SCRIPT_TIMEOUT).
-            setParameter('ms', ms < 0 ? 0 : ms),
-        'WebDriver.manage().timeouts().setScriptTimeout(' + ms + ')');
+    return this._scheduleCommand(ms, 'script', 'setScriptTimeout');
   }
 
   /**
@@ -1318,11 +1395,15 @@ class Timeouts {
    *     when the timeout has been set.
    */
   pageLoadTimeout(ms) {
+    return this._scheduleCommand(ms, 'page load', 'pageLoadTimeout');
+  }
+
+  _scheduleCommand(ms, timeoutIdentifier, timeoutName) {
     return this.driver_.schedule(
         new command.Command(command.Name.SET_TIMEOUT).
-            setParameter('type', 'page load').
+            setParameter('type', timeoutIdentifier).
             setParameter('ms', ms),
-        'WebDriver.manage().timeouts().pageLoadTimeout(' + ms + ')');
+        `WebDriver.manage().timeouts().${timeoutName}(${ms})`);
   }
 }
 
@@ -1636,10 +1717,13 @@ class WebElement {
 
   /**
    * @param {string} id The raw ID.
+   * @param {boolean=} opt_noLegacy Whether to exclude the legacy element key.
    * @return {!Object} The element ID for use with WebDriver's wire protocol.
    */
-  static buildId(id) {
-    return {[ELEMENT_ID_KEY]: id, [LEGACY_ELEMENT_ID_KEY]: id};
+  static buildId(id, opt_noLegacy) {
+    return opt_noLegacy
+        ? {[ELEMENT_ID_KEY]: id}
+        : {[ELEMENT_ID_KEY]: id, [LEGACY_ELEMENT_ID_KEY]: id};
   }
 
   /**
@@ -1709,13 +1793,6 @@ class WebElement {
    */
   getId() {
     return this.id_;
-  }
-
-  /**
-   * @deprecated Use {@link #getId()} instead.
-   */
-  getRawId() {
-    return this.getId();
   }
 
   /**
@@ -1790,26 +1867,6 @@ class WebElement {
       id = this.schedule_(cmd, 'WebElement.findElement(' + locator + ')');
     }
     return new WebElementPromise(this.driver_, id);
-  }
-
-  /**
-   * Schedules a command to test if there is at least one descendant of this
-   * element that matches the given search criteria.
-   *
-   * @param {!(by.By|Function)} locator The locator strategy to use when
-   *     searching for the element.
-   * @return {!promise.Promise<boolean>} A promise that will be
-   *     resolved with whether an element could be located on the page.
-   * @deprecated This method will be removed in Selenium 3.0 for consistency
-   *     with the other Selenium language bindings. This method is equivalent
-   *     to
-   *
-   *      element.findElements(locator).then(e => !!e.length);
-   */
-  isElementPresent(locator) {
-    return this.findElements(locator).then(function(result) {
-      return !!result.length;
-    });
   }
 
   /**
@@ -1895,22 +1952,24 @@ class WebElement {
    * punctionation keys will be synthesized according to a standard QWERTY en-us
    * keyboard layout.
    *
-   * @param {...(string|!promise.Promise<string>)} var_args The
-   *     sequence of keys to type. All arguments will be joined into a single
+   * @param {...(number|string|!IThenable<(number|string)>)} var_args The
+   *     sequence of keys to type. Number keys may be referenced numerically or
+   *     by string (1 or '1'). All arguments will be joined into a single
    *     sequence.
    * @return {!promise.Promise<void>} A promise that will be resolved
    *     when all keys have been typed.
    */
   sendKeys(var_args) {
-    // Coerce every argument to a string. This protects us from users that
-    // ignore the jsdoc and give us a number (which ends up causing problems on
-    // the server, which requires strings).
-    let keys = promise.all(Array.prototype.slice.call(arguments, 0)).
+    let keys = Promise.all(Array.prototype.slice.call(arguments, 0)).
         then(keys => {
           let ret = [];
           keys.forEach(key => {
-            if (typeof key !== 'string') {
+            let type = typeof key;
+            if (type === 'number') {
               key = String(key);
+            } else if (type !== 'string') {
+              throw TypeError(
+                  'each key must be a number of string; got ' + type);
             }
 
             // The W3C protocol requires keys to be specified as an array where
@@ -1919,6 +1978,7 @@ class WebElement {
           });
           return ret;
         });
+
     if (!this.driver_.fileDetector_) {
       return this.schedule_(
           new command.Command(command.Name.SEND_KEYS_TO_ELEMENT).
@@ -1927,7 +1987,7 @@ class WebElement {
     }
 
     // Suppress unhandled rejection errors until the flow executes the command.
-    keys.thenCatch(function() {});
+    keys.catch(function() {});
 
     var element = this;
     return this.driver_.flow_.execute(function() {
@@ -1937,7 +1997,7 @@ class WebElement {
       }).then(function(keys) {
         return element.schedule_(
             new command.Command(command.Name.SEND_KEYS_TO_ELEMENT).
-                setParameter('value', [keys]),
+                setParameter('value', keys.split('')),
             'WebElement.sendKeys()');
       });
     }, 'WebElement.sendKeys()');
@@ -1958,8 +2018,8 @@ class WebElement {
    * Schedules a command to query for the computed style of the element
    * represented by this instance. If the element inherits the named style from
    * its parent, the parent will be queried for its value.  Where possible, color
-   * values will be converted to their hex representation (e.g. #00ff00 instead of
-   * rgb(0, 255, 0)).
+   * values will be converted to their hex representation (e.g. #00ff00 instead
+   * of rgb(0, 255, 0)).
    *
    * _Warning:_ the value returned will be as the browser interprets it, so
    * it may be tricky to form a proper assertion.
@@ -1980,10 +2040,10 @@ class WebElement {
   /**
    * Schedules a command to query for the value of the given attribute of the
    * element. Will return the current value, even if it has been modified after
-   * the page has been loaded. More exactly, this method will return the value of
-   * the given attribute, unless that attribute is not present, in which case the
-   * value of the property with the same name is returned. If neither value is
-   * set, null is returned (for example, the "value" property of a textarea
+   * the page has been loaded. More exactly, this method will return the value
+   * of the given attribute, unless that attribute is not present, in which case
+   * the value of the property with the same name is returned. If neither value
+   * is set, null is returned (for example, the "value" property of a textarea
    * element). The "style" attribute is converted as best can be to a
    * text representation with a trailing semi-colon. The following are deemed to
    * be "boolean" attributes and will return either "true" or null:
@@ -2014,8 +2074,9 @@ class WebElement {
   }
 
   /**
-   * Get the visible (i.e. not hidden by CSS) innerText of this element, including
-   * sub-elements, without any leading or trailing whitespace.
+   * Get the visible (i.e. not hidden by CSS) innerText of this element,
+   * including sub-elements, without any leading or trailing whitespace.
+   *
    * @return {!promise.Promise<string>} A promise that will be
    *     resolved with the element's visible text.
    */
@@ -2127,33 +2188,6 @@ class WebElement {
             .setParameter('scroll', scroll),
         'WebElement.takeScreenshot(' + scroll + ')');
   }
-
-  /**
-   * Schedules a command to retrieve the outer HTML of this element.
-   * @return {!promise.Promise<string>} A promise that will be
-   *     resolved with the element's outer HTML.
-   */
-  getOuterHtml() {
-    return this.driver_.executeScript(function() {
-      var element = arguments[0];
-      if ('outerHTML' in element) {
-        return element.outerHTML;
-      } else {
-        var div = element.ownerDocument.createElement('div');
-        div.appendChild(element.cloneNode(true));
-        return div.innerHTML;
-      }
-    }, this);
-  }
-
-  /**
-   * Schedules a command to retrieve the inner HTML of this element.
-   * @return {!promise.Promise<string>} A promise that will be
-   *     resolved with the element's inner HTML.
-   */
-  getInnerHtml() {
-    return this.driver_.executeScript('return arguments[0].innerHTML', this);
-  }
 }
 
 
@@ -2195,10 +2229,7 @@ class WebElementPromise extends WebElement {
     this.catch = el.catch.bind(el);
 
     /** @override */
-    this.thenCatch = el.thenCatch.bind(el);
-
-    /** @override */
-    this.thenFinally = el.thenFinally.bind(el);
+    this.finally = el.finally.bind(el);
 
     /**
      * Defers returning the element ID until the wrapped WebElement has been
@@ -2251,6 +2282,23 @@ class Alert {
    */
   getText() {
     return this.text_;
+  }
+
+  /**
+   * Sets the username and password in an alert prompting for credentials (such
+   * as a Basic HTTP Auth prompt). This method will implicitly
+   * {@linkplain #accept() submit} the dialog.
+   *
+   * @param {string} username The username to send.
+   * @param {string} password The password to send.
+   * @return {!promise.Promise<void>} A promise that will be resolved when this
+   *     command has completed.
+   */
+  authenticateAs(username, password) {
+    return this.driver_.schedule(
+        new command.Command(command.Name.SET_ALERT_CREDENTIALS),
+        'WebDriver.switchTo().alert()'
+            + `.authenticateAs("${username}", "${password}")`);
   }
 
   /**
@@ -2332,10 +2380,7 @@ class AlertPromise extends Alert {
     this.catch = alert.catch.bind(alert);
 
     /** @override */
-    this.thenCatch = alert.thenCatch.bind(alert);
-
-    /** @override */
-    this.thenFinally = alert.thenFinally.bind(alert);
+    this.finally = alert.finally.bind(alert);
 
     /**
      * Defer returning text until the promised alert has been resolved.
@@ -2344,6 +2389,16 @@ class AlertPromise extends Alert {
     this.getText = function() {
       return alert.then(function(alert) {
         return alert.getText();
+      });
+    };
+
+    /**
+     * Defers action until the alert has been located.
+     * @override
+     */
+    this.authenticateAs = function(username, password) {
+      return alert.then(function(alert) {
+        return alert.authenticateAs(username, password);
       });
     };
 
@@ -2384,18 +2439,18 @@ promise.Thenable.addImplementation(AlertPromise);
 // PUBLIC API
 
 
-exports.Alert = Alert;
-exports.AlertPromise = AlertPromise;
-exports.Condition = Condition;
-exports.Logs = Logs;
-exports.Navigation = Navigation;
-exports.Options = Options;
-exports.TargetLocator = TargetLocator;
-exports.Timeouts = Timeouts;
-/** @deprecated Use {@link error.UnexpectedAlertOpenError} instead. */
-exports.UnhandledAlertError = error.UnexpectedAlertOpenError;
-exports.WebDriver = WebDriver;
-exports.WebElement = WebElement;
-exports.WebElementCondition = WebElementCondition;
-exports.WebElementPromise = WebElementPromise;
-exports.Window = Window;
+module.exports = {
+  Alert: Alert,
+  AlertPromise: AlertPromise,
+  Condition: Condition,
+  Logs: Logs,
+  Navigation: Navigation,
+  Options: Options,
+  TargetLocator: TargetLocator,
+  Timeouts: Timeouts,
+  WebDriver: WebDriver,
+  WebElement: WebElement,
+  WebElementCondition: WebElementCondition,
+  WebElementPromise: WebElementPromise,
+  Window: Window
+};

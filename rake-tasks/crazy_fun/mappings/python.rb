@@ -156,9 +156,11 @@ module Python
           # Test file pattern has been specified in the pytest.ini file at project root dir
           test_dir = ["#{Python::lib_dir}/selenium/test/selenium/webdriver/#{browser_data[:dir]}/"]
           pytest_args = [pytest_path] + test_dir
-          ignores = "-ignore_#{browser_data[:ignore]}" if browser_data[:ignore]
-          ignores += " and " + ENV['method'] if ENV['method']
-          pytest_args += ["-k=\"" + ignores + "\""]
+          mark_filter = "-m=\"not ignore_#{browser_data[:ignore]}\"" if browser_data[:ignore]
+          pytest_args += [mark_filter]
+          keyword_filter = "-k=" + ENV['method'] if ENV['method']
+          traceback_level = "--tb=" + ENV['traceback'] if ENV['traceback']
+          pytest_args += [keyword_filter, traceback_level]
           pytest_args += ["--junitxml=build/test_logs/python-#{browser}-#{Time.now.to_i}.xml"]
           mkdir_p "build/test_logs"
           sh pytest_args.join(' '), :verbose => true

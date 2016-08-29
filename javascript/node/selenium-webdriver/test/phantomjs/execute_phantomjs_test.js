@@ -57,7 +57,7 @@ test.suite(function(env) {
       });
 
       test.it('can manipulate the current page', function() {
-        driver.manage().addCookie('foo', 'bar');
+        driver.manage().addCookie({name: 'foo', value: 'bar'});
         driver.manage().getCookie('foo').then(function(cookie) {
           assert.equal('bar', cookie.value);
         });

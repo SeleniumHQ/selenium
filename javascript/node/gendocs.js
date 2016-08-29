@@ -196,6 +196,7 @@ function buildConfig(modules) {
     ],
     externs: [path.join(externs, 'global.js')],
     externModules: [
+        path.join(externs, 'adm-zip.js'),
         path.join(externs, 'mocha.js'),
         path.join(externs, 'rimraf.js'),
         path.join(externs, 'tmp.js'),
@@ -204,7 +205,8 @@ function buildConfig(modules) {
     ],
     sourceUrlTemplate:
         'https://github.com/SeleniumHQ/selenium/tree/master/'
-            + 'javascript/node/selenium-webdriver/${path}#L${line}'
+            + 'javascript/node/selenium-webdriver/%path%#L%line%',
+    strict: true
   }
 }
 

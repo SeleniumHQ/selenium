@@ -22,8 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Chrome
-
-      compliant_on :browser => :chrome do
+      compliant_on browser: :chrome do
         describe Profile do
           let(:profile) { Profile.new }
 
@@ -39,47 +38,44 @@ module Selenium
           #   end
           # end
 
-          it "should be serializable to JSON" do
+          it 'should be serializable to JSON' do
             profile['foo.boolean'] = true
 
             new_profile = Profile.from_json(profile.to_json)
             expect(new_profile['foo.boolean']).to be true
           end
 
-          it "adds an extension" do
-            ext_path = "/some/path.crx"
+          it 'adds an extension' do
+            ext_path = '/some/path.crx'
 
             expect(File).to receive(:file?).with(ext_path).and_return true
             expect(profile.add_extension(ext_path)).to eq([ext_path])
           end
 
-          it "reads an extension as binary data" do
-            ext_path = "/some/path.crx"
+          it 'reads an extension as binary data' do
+            ext_path = '/some/path.crx'
             expect(File).to receive(:file?).with(ext_path).and_return true
 
             profile.add_extension(ext_path)
 
             ext_file = double('file')
-            expect(File).to receive(:open).with(ext_path, "rb").and_yield ext_file
-            expect(ext_file).to receive(:read).and_return "test"
+            expect(File).to receive(:open).with(ext_path, 'rb').and_yield ext_file
+            expect(ext_file).to receive(:read).and_return 'test'
 
-            expect(profile).to receive(:layout_on_disk).and_return "ignored"
-            expect(Zipper).to receive(:zip).and_return "ignored"
+            expect(profile).to receive(:layout_on_disk).and_return 'ignored'
+            expect(Zipper).to receive(:zip).and_return 'ignored'
 
-            expect(profile.as_json()).to eq({
-              'zip' => "ignored",
-              'extensions' => [Base64.strict_encode64("test")]
-            })
+            expect(profile.as_json).to eq('zip' => 'ignored',
+                                          'extensions' => [Base64.strict_encode64('test')])
           end
 
           it "raises an error if the extension doesn't exist" do
-            expect {
-              profile.add_extension("/not/likely/to/exist.crx")
-            }.to raise_error
+            expect do
+              profile.add_extension('/not/likely/to/exist.crx')
+            end.to raise_error
           end
         end
       end
     end # Chrome
   end # WebDriver
 end # Selenium
-

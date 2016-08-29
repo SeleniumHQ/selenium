@@ -1,0 +1,7 @@
+folder(
+  name = 'tests',
+  srcs = glob(['**/*.html']),
+  visibility = [
+    '//java/server/test/org/openqa/selenium:tests',
+  ],
+)

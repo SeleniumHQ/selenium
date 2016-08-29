@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.base.Throwables;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -62,7 +60,7 @@ public class HttpRequest {
         httpClientFactory.close();
       }
     } catch (IOException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 

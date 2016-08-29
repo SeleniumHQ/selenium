@@ -1,9 +1,12 @@
 prebuilt_jar(name = 'phantomjs-driver',
-  binary_jar = 'phantomjsdriver-1.2.1.jar',
+  maven_coords = 'com.codeborne:phantomjsdriver:1.3.0',
+  binary_jar = 'phantomjsdriver-1.3.0.jar',
   deps = [
     '//java/client/src/org/openqa/selenium/remote:remote',
   ],
   visibility = [
+    '//java/client/src/org/openqa/selenium:client-combined',
     '//java/client/test/org/openqa/selenium/testing/drivers:drivers',
+    '//java/server/src/org/openqa/selenium/remote/server:standalone-server-lib',
   ],
 )

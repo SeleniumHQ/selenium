@@ -1,3 +1,78 @@
+v3.0.0-beta3
+============
+
+* The HTML table runner can be downloaded as selenium-html-runner.jar.
+* leg-rc jar is no longer bundled into the main selenium jar. Instead,
+  it needs to be downloaded separately.
+* Removed deprecated SessionNotFoundException in favour of the
+  NoSuchSessionException.
+* Added a "protocol handshake" on starting a remote webdriver. We now
+  log the wire dialect spoken (original as "OSS" and the version
+  tracking the W3C spec as "W3C"). This may result in multiple calls
+  to the new session endpoint on local end start up.
+* Removed command names ending with "*w3c" and instead handle this
+  with different codecs.
+* Switch to using atoms for 'getAttribute' and 'isDisplayed' when
+  communicating with a W3C remote end.
+
+v3.0.0-beta2
+============
+
+* maven packaging fixes
+* Update GeckoDriver --port argument in all bindings
+* System property webdriver.firefox.marionette now forces the server in marionette or legacy firefox driver mode, ignoring any related Desired Capability
+* Grid fix NPE's on registration when -browser not specified
+
+v3.0.0-beta1
+============
+
+IMPORTANT CHANGES
+
+* Minimum java version is now 8+
+* The original RC APIs are only available via the leg-rc package.
+* To run exported IDE tests, ensure that the leg-rc package is on the
+  classpath.
+* Support for Firefox is via Mozilla's geckodriver. You may download
+  this from https://github.com/mozilla/geckodriver/releases
+* Support for Safari is provided on macOS (Sierra or later) via
+  Apple's own safaridriver.
+* Support for Edge is provided by MS:
+  https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/
+* Official support for IE requires version 9 or above. Earlier
+  versions may work, but are no longer supported as MS has
+  end-of-lifed them.
+
+Other major changes:
+
+* New html-table runner backed by WebDriver.
+* Unused command line arguments are now no longer parsed.
+
+
+v2.53.0
+=======
+
+FINAL 2.X RELEASE.
+
+No more HtmlUnitDriver... Moved to a subproject https://github.com/SeleniumHQ/htmlunit-driver
+
+Java:
+    * Query Selenium Server to retrieve actual running port.  Fixes #1299
+    * Upgrading HtmlUnit to 2.20
+    * Java: Introducing NoSuchSessionException in the core API
+    * Fixing memory leak in TemporaryFileSystem Fixes #1679
+    * Fixing rectangle dimension, and adding equals and hashCode
+    * Java: Adding a new W3C-compatible string error code
+    * Add support to listen "refresh" events. Fixes #1584
+    * extended ExpectedConditions with a list of new ones. New logic operators + conditions for css and html attributes
+    * Java: Deleting webbit a test server
+Grid:
+    * cleanup cycle needs to be persisted to allMap, since that's where it's read from in other places. this stuff needs some cleanup...
+    * adding grid e2e distribution test
+    * fix mixed content issue
+    * when sorting nodes for consideration, also take into account last time accessed for a more even distribution across nodes over the lifetime of the grid.
+    * Also fix using the RemoteProxy's getResourceUsageInPercent instead of calculating it in the sort.  Fixes #1673
+    * make HttpClientFactory private methods protected to allow one to extend / override.
+
 v2.52.0
 =======
 

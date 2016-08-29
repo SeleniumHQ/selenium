@@ -33,22 +33,29 @@ test.suite(function(env) {
   });
 
   test.it('can set size of the current window', function() {
+    driver.get(test.Pages.echoPage);
     changeSizeBy(-20, -20);
   });
 
   test.it('can set size of the current window from frame', function() {
     driver.get(test.Pages.framesetPage);
-    driver.switchTo().frame('fourth');
+
+    var frame = driver.findElement({css: 'frame[name="fourth"]'});
+    driver.switchTo().frame(frame);
     changeSizeBy(-20, -20);
   });
 
   test.it('can set size of the current window from iframe', function() {
     driver.get(test.Pages.iframePage);
-    driver.switchTo().frame('iframe1-name');
+
+    var frame = driver.findElement({css: 'iframe[name="iframe1-name"]'});
+    driver.switchTo().frame(frame);
     changeSizeBy(-20, -20);
   });
 
-  test.it('can set the window position of the current window', function() {
+  // See https://github.com/mozilla/geckodriver/issues/113
+  test.ignore(env.browsers(Browser.FIREFOX)).
+  it('can set the window position of the current window', function() {
     driver.manage().window().getPosition().then(function(position) {
       driver.manage().window().setSize(640, 480);
       driver.manage().window().setPosition(position.x + 10, position.y + 10);
@@ -72,7 +79,9 @@ test.suite(function(env) {
     });
   });
 
-  test.it('can set the window position from a frame', function() {
+  // See https://github.com/mozilla/geckodriver/issues/113
+  test.ignore(env.browsers(Browser.FIREFOX)).
+  it('can set the window position from a frame', function() {
     driver.get(test.Pages.iframePage);
     driver.switchTo().frame('iframe1-name');
     driver.manage().window().getPosition().then(function(position) {

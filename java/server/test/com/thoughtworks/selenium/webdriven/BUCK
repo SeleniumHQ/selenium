@@ -2,9 +2,9 @@
 java_test(name = 'webdriven',
   srcs = glob(['*.java']),
   deps = [
-    '//java/client/src/com/thoughtworks/selenium:selenium',
+    '//java/client/src/com/thoughtworks/selenium:leg-rc',
     '//java/client/src/org/openqa/selenium/firefox:firefox',
-    '//java/client/src/org/openqa/selenium/net:net',
+    '//java/client/src/org/openqa/selenium/remote:remote',
     '//java/client/test/org/openqa/selenium:helpers',
     '//java/client/test/org/openqa/selenium/environment:environment',
     '//java/server/src/com/thoughtworks/selenium/webdriven:rc-emulation-servlet',

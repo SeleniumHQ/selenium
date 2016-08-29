@@ -20,6 +20,7 @@ import pytest
 
 from selenium.webdriver.common.by import By
 
+
 @pytest.mark.ignore_marionette
 class PageLoadingTests(unittest.TestCase):
 
@@ -29,12 +30,12 @@ class PageLoadingTests(unittest.TestCase):
         self.assertEqual(self.driver.title, "Hello WebDriver")
 
     # Disabled till Java WebServer is used
-    #def testShouldFollowRedirectsSentInTheHttpResponseHeaders(self):
+    # def testShouldFollowRedirectsSentInTheHttpResponseHeaders(self):
     #    self.driver.get(pages.redirectPage);
     #    self.assertEqual(self.driver.title, "We Arrive Here")
 
     # Disabled till the Java WebServer is used
-    #def testShouldFollowMetaRedirects(self):
+    # def testShouldFollowMetaRedirects(self):
     #    self._loadPage("metaRedirect")
     #    self.assertEqual(self.driver.title, "We Arrive Here")
 
@@ -47,37 +48,36 @@ class PageLoadingTests(unittest.TestCase):
     @pytest.mark.ignore_safari
     def testShouldReturnWhenGettingAUrlThatDoesNotResolve(self):
         try:
-          # Of course, we're up the creek if this ever does get registered
-          self.driver.get("http://www.thisurldoesnotexist.comx/")
+            #  Of course, we're up the creek if this ever does get registered
+            self.driver.get("http://www.thisurldoesnotexist.comx/")
         except ValueError:
             pass
 
     @pytest.mark.ignore_safari
     def testShouldReturnWhenGettingAUrlThatDoesNotConnect(self):
-        # Here's hoping that there's nothing here. There shouldn't be
+        #  Here's hoping that there's nothing here. There shouldn't be
         self.driver.get("http://localhost:3001")
 
-      #@Ignore({IE, IPHONE, SELENESE})
-      #def testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
-      #  self.driver.get(pages.framesetPage);
+    # @Ignore({IE, IPHONE, SELENESE})
+    # def testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
+    #     self.driver.get(pages.framesetPage)
+    #
+    #     self.driver.switchTo().frame(0)
+    #     WebElement pageNumber = self.driver.findElement(By.xpath("#span[@id='pageNumber']"))
+    #     self.assertEqual((pageNumber.getText().trim(), equalTo("1"))
+    #
+    #     self.driver.switchTo().defaultContent().switchTo().frame(1)
+    #     pageNumber = self.driver.findElement(By.xpath("#span[@id='pageNumber']"))
+    #     self.assertEqual((pageNumber.getText().trim(), equalTo("2"))
 
-      #  self.driver.switchTo().frame(0);
-      #  WebElement pageNumber = self.driver.findElement(By.xpath("#span[@id='pageNumber']"));
-      #  self.assertEqual((pageNumber.getText().trim(), equalTo("1"));
-
-      #  self.driver.switchTo().defaultContent().switchTo().frame(1);
-      #  pageNumber = self.driver.findElement(By.xpath("#span[@id='pageNumber']"));
-      #  self.assertEqual((pageNumber.getText().trim(), equalTo("2"));
-
-    #Need to implement this decorator
-      #@NeedsFreshDriver
-      #def testSouldDoNothingIfThereIsNothingToGoBackTo() {
-      #  String originalTitle = self.driver.getTitle();
-      #  self.driver.get(pages.formPage);
-
-       # self.driver.back();
-        # We may have returned to the browser's home page
-      #  self.assertEqual(self.driver.title, anyOf(equalTo(originalTitle), equalTo("We Leave From Here")));
+    # Need to implement this decorator
+    # @NeedsFreshDriver
+    # def testSouldDoNothingIfThereIsNothingToGoBackTo() {
+    #     originalTitle = self.driver.getTitle();
+    #     self.driver.get(pages.formPage);
+    #     self.driver.back();
+    #     # We may have returned to the browser's home page
+    #     self.assertEqual(self.driver.title, anyOf(equalTo(originalTitle), equalTo("We Leave From Here")));
 
     def testShouldBeAbleToNavigateBackInTheBrowserHistory(self):
         self._loadPage("formPage")
@@ -91,7 +91,7 @@ class PageLoadingTests(unittest.TestCase):
     def testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes(self):
         self._loadPage("xhtmlTest")
 
-        self.driver.find_element(by=By.NAME,value="sameWindow").click()
+        self.driver.find_element(by=By.NAME, value="sameWindow").click()
 
         self.assertEqual(self.driver.title, "This page has iframes")
 

@@ -165,6 +165,12 @@ describe('io', function() {
       });
     });
 
+    it('returns a rejected promise if input value is invalid', function() {
+      return io.exists(undefined).then(
+          () => assert.fail('should have failed'),
+          e => assert.ok(e instanceof TypeError));
+    });
+
     it('works for directories', function() {
       return io.exists(dir).then(assert.ok);
     });
@@ -227,6 +233,92 @@ describe('io', function() {
           assert.ok(!fs.existsSync(path.join(dir, 'sub/folder/file2')));
         });
       });
+    });
+  });
+
+  describe('findInPath', function() {
+    const savedPathEnv = process.env['PATH'];
+    afterEach(() => process.env['PATH'] = savedPathEnv);
+
+    const cwd = process.cwd;
+    afterEach(() => process.cwd = cwd);
+
+    let dirs;
+    beforeEach(() => {
+      return Promise.all([io.tmpDir(), io.tmpDir(), io.tmpDir()]).then(arr => {
+        dirs = arr;
+        process.env['PATH'] = arr.join(path.delimiter);
+      });
+    });
+
+    it('returns null if file cannot be found', () => {
+      assert.strictEqual(io.findInPath('foo.txt'), null);
+    });
+
+    it('can find file on path', () => {
+      let filePath = path.join(dirs[1], 'foo.txt');
+      fs.writeFileSync(filePath, 'hi');
+
+      assert.strictEqual(io.findInPath('foo.txt'), filePath);
+    });
+
+    it('returns null if file is in a subdir of a directory on the path', () => {
+      let subDir = path.join(dirs[2], 'sub');
+      fs.mkdirSync(subDir);
+
+      let filePath = path.join(subDir, 'foo.txt');
+      fs.writeFileSync(filePath, 'hi');
+
+      assert.strictEqual(io.findInPath('foo.txt'), null);
+    });
+
+    it('does not match on directories', () => {
+      fs.mkdirSync(path.join(dirs[2], 'sub'));
+      assert.strictEqual(io.findInPath('sub'), null);
+    });
+
+    it('will look in cwd first if requested', () => {
+      return io.tmpDir().then(fakeCwd => {
+        process.cwd = () => fakeCwd;
+
+        let theFile = path.join(fakeCwd, 'foo.txt');
+
+        fs.writeFileSync(path.join(dirs[1], 'foo.txt'), 'hi');
+        fs.writeFileSync(theFile, 'bye');
+
+        assert.strictEqual(io.findInPath('foo.txt', true), theFile);
+      });
+    });
+  });
+
+  describe('read', function() {
+    var tmpDir;
+
+    before(function() {
+      return io.tmpDir().then(function(d) {
+        tmpDir = d;
+
+        fs.writeFileSync(path.join(d, 'foo'), 'Hello, world');
+      });
+    });
+
+    it('can read a file', function() {
+      return io.read(path.join(tmpDir, 'foo')).then(buff => {
+        assert.ok(buff instanceof Buffer);
+        assert.equal('Hello, world', buff.toString());
+      });
+    });
+
+    it('catches errors from invalid input', function() {
+      return io.read(1234)
+          .then(() => assert.fail('should have failed'),
+                (e) => assert.ok(e instanceof TypeError));
+    });
+
+    it('rejects returned promise if file does not exist', function() {
+      return io.read(path.join(tmpDir, 'not-there'))
+          .then(() => assert.fail('should have failed'),
+                (e) => assert.equal('ENOENT', e.code));
     });
   });
 });

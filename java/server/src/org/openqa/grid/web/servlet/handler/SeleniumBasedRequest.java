@@ -65,8 +65,8 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
 
   private static List<SeleniumBasedRequestFactory> requestFactories =
     new ImmutableList.Builder<SeleniumBasedRequestFactory>()
-      .add(new LegacySeleniumRequestFactory())
       .add(new WebDriverRequestFactory())
+      .add(new LegacySeleniumRequestFactory())
       .build();
 
   public static SeleniumBasedRequest createFromRequest(HttpServletRequest request, Registry registry) {
@@ -151,11 +151,10 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
 
   @Override
   public int getContentLength() {
-    if (body == null){
+    if (body == null) {
       return 0;
-    }else {
-      return body.length;
     }
+    return body.length;
   }
 
   public String getBody() {
@@ -179,7 +178,7 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
     setAttribute("Content-Length", content.length);
   }
 
-  public long getCreationTime(){
+  public long getCreationTime() {
     return timestamp;
   }
 

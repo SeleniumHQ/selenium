@@ -48,11 +48,11 @@ public class SleepingServlet extends HttpServlet {
         String.format(RESPONSE_STRING_FORMAT, duration));
   }
 
-  private void reallySleep(long timeout){
+  private void reallySleep(long timeout) {
       long start = System.currentTimeMillis();
       try {
-          Thread.sleep( timeout);
-          while ( (System.currentTimeMillis() - start) < timeout){
+          Thread.sleep(timeout);
+          while ( (System.currentTimeMillis() - start) < timeout) {
               Thread.sleep( 20);
           }
       } catch (InterruptedException ignore) {

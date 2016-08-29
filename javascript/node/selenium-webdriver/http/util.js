@@ -34,7 +34,7 @@ const Executor = require('./index').Executor,
 /**
  * Queries a WebDriver server for its current status.
  * @param {string} url Base URL of the server to query.
- * @return {!promise.Promise.<!Object>} A promise that resolves with
+ * @return {!Promise<!Object>} A promise that resolves with
  *     a hash of the server status.
  */
 function getStatus(url) {
@@ -51,7 +51,7 @@ function getStatus(url) {
 /**
  * Queries a WebDriver server for its current status.
  * @param {string} url Base URL of the server to query.
- * @return {!promise.Promise.<!Object>} A promise that resolves with
+ * @return {!Promise<!Object>} A promise that resolves with
  *     a hash of the server status.
  */
 exports.getStatus = getStatus;
@@ -71,7 +71,7 @@ exports.waitForServer = function(url, timeout) {
   return ready.promise;
 
   function checkServerStatus() {
-    return getStatus(url).then(ready.fulfill, onError);
+    return getStatus(url).then(status => ready.fulfill(status), onError);
   }
 
   function onError(e) {
@@ -87,7 +87,7 @@ exports.waitForServer = function(url, timeout) {
           Error('Timed out waiting for the WebDriver server at ' + url));
     } else {
       setTimeout(function() {
-        if (ready.isPending()) {
+        if (ready.promise.isPending()) {
           checkServerStatus();
         }
       }, 50);
@@ -122,7 +122,7 @@ exports.waitForUrl = function(url, timeout) {
           'Timed out waiting for the URL to return 2xx: ' + url));
     } else {
       setTimeout(function() {
-        if (ready.isPending()) {
+        if (ready.promise.isPending()) {
           testUrl();
         }
       }, 50);
@@ -130,7 +130,7 @@ exports.waitForUrl = function(url, timeout) {
   }
 
   function onResponse(response) {
-    if (!ready.isPending()) return;
+    if (!ready.promise.isPending()) return;
     if (response.status > 199 && response.status < 300) {
       return ready.fulfill();
     }

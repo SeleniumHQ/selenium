@@ -6,8 +6,8 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/client"/>
 	<classpathentry kind="lib" path="/third-party/java/gson/gson-2.3.1.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/servlet/javax.servlet-api-3.1.0.jar" sourcepath="/third-party/java/servlet/javax.servlet-api-3.1.0-sources.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/httpcomponents/httpclient-4.5.1.jar" sourcepath="/third-party/java/httpcomponents/httpclient-4.5.1-sources.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/httpcomponents/httpcore-4.4.3.jar" sourcepath="/third-party/java/httpcomponents/httpcore-4.4.3-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/httpcomponents/httpclient-4.5.2.jar" sourcepath="/third-party/java/httpcomponents/httpclient-4.5.2-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/httpcomponents/httpcore-4.4.4.jar" sourcepath="/third-party/java/httpcomponents/httpcore-4.4.4-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/hamcrest/hamcrest-core-1.3.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/hamcrest/hamcrest-library-1.3.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/junit/junit-4.12.jar" sourcepath="/third-party/java/junit/junit-4.12-sources.jar"/>

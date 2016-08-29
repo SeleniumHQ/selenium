@@ -5,7 +5,7 @@ js_binary(name = "clientbin",
   ],
   deps = [
     "//javascript/atoms:all_js",
-    "//javascript/webdriver:webdriver_lib",
+    "//javascript/webdriver:http",
   ],
   flags = [
     "--jscomp_error=accessControls",
@@ -52,7 +52,7 @@ js_test(name = "test",
   deps = [
     "./**/*.js",
     "//javascript/atoms:all_js",
-    "//javascript/webdriver:all_js",
+    "//javascript/webdriver:http",
     "//java/client/test/org/openqa/selenium/javascript",
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+    "//java/server/test/org/openqa/selenium:server-with-tests",
   ])

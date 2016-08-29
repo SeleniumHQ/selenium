@@ -25,6 +25,7 @@ import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 class SessionCleaner extends Thread {   // Thread safety reviewed
@@ -48,16 +49,18 @@ class SessionCleaner extends Thread {   // Thread safety reviewed
     this.clientGoneTimeout = clientGoneTimeout;
     this.insideBrowserTimeout = insideBrowserTimeout;
     this.driverSessions = driverSessions;
-    if (clientGoneTimeout == 0 && insideBrowserTimeout == 0){
+    if (clientGoneTimeout == 0 && insideBrowserTimeout == 0) {
       throw new IllegalStateException("SessionCleaner not supposed to start when no timeouts specified");
     }
-    if (insideBrowserTimeout > 0 && insideBrowserTimeout < 60000){
+    if (insideBrowserTimeout > 0 && insideBrowserTimeout < 60000) {
       log.warning("The specified browser timeout is TOO LOW for safe operations and may have " +
                   "other side-effects\n. Please specify a slightly higher browserTimeout.");
     }
     long lowestNonZero = Math.min((insideBrowserTimeout > 0) ? insideBrowserTimeout : clientGoneTimeout,
                                   clientGoneTimeout > 0 ? clientGoneTimeout : insideBrowserTimeout);
     this.sleepInterval = lowestNonZero / 10;
+
+    log.info(String.format("SessionCleaner initialized with insideBrowserTimeout %d and clientGoneTimeout %d polling every %d", this.insideBrowserTimeout, this.clientGoneTimeout, sleepInterval));
   }
 
 
@@ -92,7 +95,7 @@ class SessionCleaner extends Thread {   // Thread safety reviewed
         }
         if (inUse && session.isTimedOut(insideBrowserTimeout)) {
           WebDriver driver = session.getDriver();
-          if (driver instanceof EventFiringWebDriver){
+          if (driver instanceof EventFiringWebDriver) {
             driver = ((EventFiringWebDriver)driver).getWrappedDriver();
           }
           if (driver instanceof Killable) {
@@ -113,7 +116,8 @@ class SessionCleaner extends Thread {   // Thread safety reviewed
           try {
             deleteSession.call();
           } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.log(Level.WARNING, "Could not delete session " + session.getSessionId(), e);
+            continue;
           }
         }
 

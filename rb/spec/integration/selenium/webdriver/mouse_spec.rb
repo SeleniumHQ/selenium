@@ -21,60 +21,55 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-
-    # Marionette BUG - Interactions Not Supported
-    not_compliant_on :browser => [:android, :iphone, :safari, :marionette] do
+    # Firefox - "Actions Endpoint Not Yet Implemented"
+    not_compliant_on browser: [:safari, :firefox] do
       describe Mouse do
-
-        it "clicks an element" do
-          driver.navigate.to url_for("formPage.html")
-          driver.mouse.click driver.find_element(:id, "imageButton")
+        it 'clicks an element' do
+          driver.navigate.to url_for('formPage.html')
+          driver.mouse.click driver.find_element(id: 'imageButton')
         end
 
-        it "can drag and drop" do
-          driver.navigate.to url_for("droppableItems.html")
+        it 'can drag and drop' do
+          driver.navigate.to url_for('droppableItems.html')
 
-          draggable = long_wait.until {
-            driver.find_element(:id => "draggable")
-          }
+          draggable = long_wait.until do
+            driver.find_element(id: 'draggable')
+          end
 
-          droppable = driver.find_element(:id => "droppable")
+          droppable = driver.find_element(id: 'droppable')
 
           driver.mouse.down draggable
           driver.mouse.move_to droppable
           driver.mouse.up droppable
 
-          text = droppable.find_element(:tag_name => "p").text
-          expect(text).to eq("Dropped!")
+          text = droppable.find_element(tag_name: 'p').text
+          expect(text).to eq('Dropped!')
         end
 
-        # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1850023
-        not_compliant_on :browser => :edge do
-          it "double clicks an element" do
-            driver.navigate.to url_for("javascriptPage.html")
-            element = driver.find_element(:id, 'doubleClickField')
+        it 'double clicks an element' do
+          driver.navigate.to url_for('javascriptPage.html')
+          element = driver.find_element(id: 'doubleClickField')
 
-            driver.mouse.double_click element
+          driver.mouse.double_click element
 
-            wait(5).until {
-              element.attribute(:value) == 'DoubleClicked'
-            }
+          wait(5).until do
+            element.attribute(:value) == 'DoubleClicked'
           end
         end
 
-        not_compliant_on :browser => :phantomjs do
-          it "context clicks an element" do
-            driver.navigate.to url_for("javascriptPage.html")
-            element = driver.find_element(:id, 'doubleClickField')
+        not_compliant_on browser: :phantomjs do
+          it 'context clicks an element' do
+            driver.navigate.to url_for('javascriptPage.html')
+            element = driver.find_element(id: 'doubleClickField')
 
             driver.mouse.context_click element
 
-            wait(5).until {
+            wait(5).until do
               element.attribute(:value) == 'ContextClicked'
-            }
+            end
           end
         end
       end
     end
-  end
-end
+  end # WebDriver
+end # Selenium

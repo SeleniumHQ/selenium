@@ -1,17 +1,14 @@
+include_defs('//SELENIUM_VERSION')
+
 java_library(name = 'safari',
+  maven_coords = 'org.seleniumhq.selenium:selenium-safari-driver:' + SE_VERSION,
+  maven_pom_template = '//java/client/src/org/openqa/selenium:template-pom',
   srcs = glob(['*.java']),
   resources = [
     ':client',
-    '//javascript/safari-driver:safari-driver',
   ],
   deps = [
-    '//java/client/src/org/openqa/selenium:codecs',
-    '//java/client/src/org/openqa/selenium:webdriver-api',
-    '//java/client/src/org/openqa/selenium/io:io',
-    '//java/client/src/org/openqa/selenium/browserlaunchers/locators:locators',
-    '//java/client/src/org/openqa/selenium/net:net',
-    '//java/client/src/org/openqa/selenium/os:os',
-    '//java/client/src/org/openqa/selenium/remote:capabilities',
+    '//java/client/src/org/openqa/selenium:selenium',
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//third_party/java/guava:guava',
     '//third_party/java/gson:gson',

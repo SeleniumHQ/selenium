@@ -92,7 +92,7 @@ class Color(object):
             g = r
             b = r
         else:
-            luminocity2 = l * (1 + s) if  l < 0.5 else  l + s - l * s
+            luminocity2 = l * (1 + s) if l < 0.5 else l + s - l * s
             luminocity1 = 2 * l - luminocity2
 
             def hue_to_rgb(lum1, lum2, hue):
@@ -103,7 +103,7 @@ class Color(object):
 
                 if hue < 1.0 / 6.0:
                     return (lum1 + (lum2 - lum1) * 6.0 * hue)
-                elif  hue < 1.0 / 2.0:
+                elif hue < 1.0 / 2.0:
                     return lum2
                 elif hue < 2.0 / 3.0:
                     return lum1 + (lum2 - lum1) * ((2.0 / 3.0) - hue) * 6.0

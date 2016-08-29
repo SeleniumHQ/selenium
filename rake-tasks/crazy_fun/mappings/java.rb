@@ -1,5 +1,6 @@
-require 'rake-tasks/crazy_fun/mappings/common'
+require 'rake-tasks/buck.rb'
 require 'rake-tasks/checks.rb'
+require 'rake-tasks/crazy_fun/mappings/common'
 
 class JavaMappings
   def add_all(fun)
@@ -721,8 +722,12 @@ module CrazyFunJava
         next unless Rake::Task.task_defined? prereq
 
         t = Rake::Task[prereq]
-        if (t.respond_to?(:out))
-          ret.push(t.out) if t.out.to_s =~ /\.jar$/
+        if (t.respond_to?(:out) and t.out.to_s =~ /\.jar$/)
+          Buck::buck_cmd.call('audit', ['classpath', prereq]) do |output|
+            output.split.each do |line|
+              ret.push(line) if line =~ /\.jar$/
+            end
+          end
         end
 
         ret += build_classpath(cp, Rake::Task[prereq])

@@ -1,28 +1,40 @@
+include_defs('//SELENIUM_VERSION')
+
+# Force a rebuild every time we're parsed.
+
 java_binary(name = 'selenium',
-  main_class = 'org.openqa.grid.selenium.GridLauncher',
+  main_class = 'org.openqa.grid.selenium.GridLauncherV3',
+  manifest_file = ':manifest',
+  merge_manifests = True,
   deps = [
     ':classes',
   ],
 )
 
+genrule(name = 'manifest',
+  out = 'build-info.mf',
+  cmd = "$(exe :generate-build-info) %s > $OUT" % (SE_VERSION),
+)
+
+python_binary(name = 'generate-build-info',
+  main = 'generate-build-info.py',
+)
+
 java_library(name = 'classes',
+  maven_coords = 'org.seleniumhq.selenium:selenium-server:' + SE_VERSION,
+  maven_pom_template = '//java/client/src/org/openqa/selenium:template-pom',
   srcs = glob(['**/*.java']),
   deps = [
-    '//java/client/src/com/thoughtworks/selenium/webdriven:webdriven',
-    '//java/client/src/org/openqa/selenium:webdriver-api',
-    '//java/client/src/org/openqa/selenium/chrome:chrome',
-    '//java/client/src/org/openqa/selenium/firefox:firefox',
-    '//java/client/src/org/openqa/selenium/remote:capabilities',
-    '//java/server/src/org/openqa/grid/common:common',
+    '//java/client/src/org/openqa/selenium:selenium',
+    '//java/client/src/org/openqa/selenium:client-combined',
     '//java/server/src/org/openqa/grid:grid',
-    '//java/server/src/org/openqa/grid/shared:cli',
-    '//java/server/src/org/openqa/grid/shared:interfaces',
     '//java/server/src/org/openqa/selenium/remote/server/log:log',
     '//java/server/src/org/openqa/selenium/remote/server:standalone-server-lib',
-    '//java/server/src/org/openqa/selenium/server:server',
+    '//java/server/src/org/openqa/selenium/remote/server:server',
     '//third_party/java/gson:gson',
     '//third_party/java/guava:guava',
     '//third_party/java/servlet:servlet-api',
+    '//third_party/java/beust:jcommander',
   ],
   visibility = [
     '//java/server/test/org/openqa/grid/e2e:tests',

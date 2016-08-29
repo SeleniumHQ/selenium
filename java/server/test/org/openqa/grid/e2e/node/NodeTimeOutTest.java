@@ -37,7 +37,7 @@ import org.openqa.grid.web.Hub;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.remote.server.SeleniumServer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
@@ -62,7 +62,7 @@ public class NodeTimeOutTest {
     node = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
     node.addBrowser(GridTestHelper.getSelenium1FirefoxCapability(), 1);
     node.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
-    node.setTimeout(5000, 2000);
+    node.setTimeout(1, 100);
     node.setRemoteServer(new SeleniumServer(node.getConfiguration()));
     node.startRemoteServer();
     node.sendRegistrationRequest();
@@ -70,45 +70,21 @@ public class NodeTimeOutTest {
     RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
   }
 
-  @Ignore
-  @Test
-  public void selenium1TimesOut() throws InterruptedException {
-    String url = "http://" + hub.getHost() + ":" + hub.getPort() + "/grid/console";
-    Selenium selenium = new DefaultSelenium(hub.getHost(), hub.getPort(), "*firefox", url);
-    selenium.start();
-    selenium.open(url);
-
-    wait.until(new Function<Object, Integer>() {
-      @Override
-      public Integer apply(Object input) {
-        Integer i = hub.getRegistry().getActiveSessions().size();
-        if (i != 0) {
-          return null;
-        } else {
-          return i;
-        }
-      }
-    });
-    assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
-
-  }
-
   @Test
   public void webDriverTimesOut() throws InterruptedException, MalformedURLException {
-    String url = "http://" + hub.getHost() + ":" + hub.getPort() + "/grid/old/console";
+    String url = hub.getConsoleURL().toString();
     DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
-    WebDriver driver = new RemoteWebDriver(new URL(hub.getUrl() + "/wd/hub"), caps);
+    WebDriver driver = new RemoteWebDriver(hub.getWebDriverHubRequestURL(), caps);
     driver.get(url);
-    assertEquals(driver.getTitle(), "Grid overview");
+    assertEquals(driver.getTitle(), "Grid Console");
     wait.until(new Function<Object, Integer>() {
       @Override
       public Integer apply(Object input) {
         Integer i = hub.getRegistry().getActiveSessions().size();
         if (i != 0) {
           return null;
-        } else {
-          return i;
         }
+        return i;
       }
     });
     assertEquals(hub.getRegistry().getActiveSessions().size(), 0);

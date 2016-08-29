@@ -17,21 +17,31 @@
 # specific language governing permissions and limitations
 # under the License.
 
-shared_examples_for "driver that can be started concurrently" do |browser_name|
-  it "is started sequentially" do
-    expect {
-      # start 5 drivers concurrently
-      threads, drivers = [], []
+shared_examples_for 'driver that can be started concurrently' do |browser_name|
+  it 'is started sequentially' do
+    marionette = browser_name == :ff_legacy ? {marionette: false} : {}
+    browser_name = :firefox if browser_name == :ff_legacy
 
-      opt = GlobalTestEnv.remote_server? ? {:url => GlobalTestEnv.remote_server.webdriver_url} : {}
-      if browser_name == :marionette
-        caps = Selenium::WebDriver::Remote::Capabilities.firefox(:marionette => true, :firefox_binary => ENV['MARIONETTE_PATH'])
-        opt.merge!(:desired_capabilities => caps)
+    expect do
+      # start 5 drivers concurrently
+      threads = []
+      drivers = []
+
+      opt = {}
+      if GlobalTestEnv.remote_server?
+        opt[:url] = GlobalTestEnv.remote_server.webdriver_url
       end
+
+      caps = if browser_name == :firefox
+               WebDriver::Remote::Capabilities.firefox(marionette)
+             else
+               WebDriver::Remote::Capabilities.send(browser_name)
+             end
+      opt[:desired_capabilities] = caps
 
       5.times do
         threads << Thread.new do
-          drivers << Selenium::WebDriver.for(GlobalTestEnv.driver, opt)
+          drivers << Selenium::WebDriver.for(GlobalTestEnv.driver, opt.dup)
         end
       end
 
@@ -44,6 +54,6 @@ shared_examples_for "driver that can be started concurrently" do |browser_name|
         driver.title # make any wire call
         driver.quit
       end
-    }.not_to raise_error
+    end.not_to raise_error
   end
 end

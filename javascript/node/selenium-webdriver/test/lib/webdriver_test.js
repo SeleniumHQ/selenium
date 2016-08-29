@@ -19,12 +19,11 @@
 
 const testutil = require('./testutil');
 
-const error = require('../../error');
-
 const By = require('../../lib/by').By;
 const Capabilities = require('../../lib/capabilities').Capabilities;
 const Executor = require('../../lib/command').Executor;
 const CName = require('../../lib/command').Name;
+const error = require('../../lib/error');
 const Button = require('../../lib/input').Button;
 const Key = require('../../lib/input').Key;
 const logging = require('../../lib/logging');
@@ -272,6 +271,22 @@ describe('WebDriver', function() {
                 (actual) => assert.strictEqual(actual, e));
     });
 
+    it('remote end does not recognize DESCRIBE_SESSION command', function() {
+      let e = new error.UnknownCommandError;
+      let executor = new FakeExecutor().
+          expect(CName.DESCRIBE_SESSION).
+          withParameters({'sessionId': SESSION_ID}).
+          andReturnError(e).
+          end();
+
+      let driver = WebDriver.attachToSession(executor, SESSION_ID);
+      return driver.getSession().then(session => {
+        assert.ok(session instanceof Session);
+        assert.strictEqual(session.getId(), SESSION_ID);
+        assert.equal(session.getCapabilities().size, 0);
+      });
+    });
+
     it('usesActiveFlowByDefault', function() {
       let executor = new FakeExecutor().
           expect(CName.DESCRIBE_SESSION).
@@ -327,6 +342,23 @@ describe('WebDriver', function() {
           end();
 
       var driver = WebDriver.createSession(executor, Capabilities.firefox());
+      return driver.getSession().then(v => assert.strictEqual(v, aSession));
+    });
+
+    it('handles desired and requried capabilities', function() {
+      let aSession = new Session(SESSION_ID, {'browserName': 'firefox'});
+      let executor = new FakeExecutor().
+          expect(CName.NEW_SESSION).
+          withParameters({
+            'desiredCapabilities': {'foo': 'bar'},
+            'requiredCapabilities': {'bim': 'baz'}
+          }).
+          andReturnSuccess(aSession).
+          end();
+
+      let desired = new Capabilities().set('foo', 'bar');
+      let required = new Capabilities().set('bim', 'baz');
+      var driver = WebDriver.createSession(executor, {desired, required});
       return driver.getSession().then(v => assert.strictEqual(v, aSession));
     });
 
@@ -415,7 +447,7 @@ describe('WebDriver', function() {
 
     var driver = executor.createDriver();
     driver.switchTo().window('foo')
-        .thenCatch(v => assert.strictEqual(v, e));
+        .catch(v => assert.strictEqual(v, e));
     driver.getTitle();
     return waitForIdle();
   });
@@ -441,7 +473,7 @@ describe('WebDriver', function() {
 
     var driver = executor.createDriver();
     return driver.switchTo().window('foo').
-        thenCatch(function() { return new StubError; });
+        catch(function() { return new StubError; });
         then(assertIsStubError);
   });
 
@@ -452,7 +484,7 @@ describe('WebDriver', function() {
         end();
 
     var driver = executor.createDriver();
-    driver.switchTo().window('foo').thenCatch(throwStubError);
+    driver.switchTo().window('foo').catch(throwStubError);
 
     return waitForAbort().then(assertIsStubError);
   });
@@ -562,7 +594,7 @@ describe('WebDriver', function() {
 
       var driver = executor.createDriver();
       driver.getTitle().then(function() {
-        driver.switchTo().window('foo').thenCatch(function() {});
+        driver.switchTo().window('foo').catch(function() {});
       });
       driver.close();
 
@@ -582,7 +614,7 @@ describe('WebDriver', function() {
           then(function() {
             return driver.switchTo().window('foo');
           }).
-          thenCatch(v => assert.strictEqual(v, e));
+          catch(v => assert.strictEqual(v, e));
 
       return waitForIdle();
     });
@@ -602,7 +634,7 @@ describe('WebDriver', function() {
             then(function() {
               return driver.switchTo().window('foo');
             }).
-            thenCatch(function() {});
+            catch(function() {});
         driver.close();
       });
 
@@ -640,7 +672,7 @@ describe('WebDriver', function() {
 
       var driver = executor.createDriver();
       driver.switchTo().window('foo').
-          thenCatch(function(e) {
+          catch(function(e) {
             assertIsStubError(e);
             count += 1;
             return driver.getCurrentUrl();
@@ -1143,7 +1175,7 @@ describe('WebDriver', function() {
       let executor = new FakeExecutor();
 
       var arg = promise.rejected(new StubError);
-      arg.thenCatch(function() {});  // Suppress default handler.
+      arg.catch(function() {});  // Suppress default handler.
 
       var driver = executor.createDriver();
       return driver.executeScript(function() {}, arg).
@@ -1154,7 +1186,7 @@ describe('WebDriver', function() {
   describe('executeAsyncScript', function() {
     it('failsIfArgumentIsARejectedPromise', function() {
       var arg = promise.rejected(new StubError);
-      arg.thenCatch(function() {});  // Suppress default handler.
+      arg.catch(function() {});  // Suppress default handler.
 
       var driver = new FakeExecutor().createDriver();
       return driver.executeAsyncScript(function() {}, arg).
@@ -1295,68 +1327,6 @@ describe('WebDriver', function() {
         assertIsInstance(TypeError, e);
         assert.equal('Custom locator did not return a WebElement', e.message);
       });
-    });
-  });
-
-  describe('isElementPresent', function() {
-    it('elementNotFound', function() {
-      let executor = new FakeExecutor().
-          expect(CName.FIND_ELEMENTS,
-                 {using: 'css selector', value: '*[id="foo"]'}).
-          andReturnSuccess([]).
-          end();
-
-      var driver = executor.createDriver();
-      return driver.isElementPresent(By.id('foo'))
-          .then((found) => assert.ok(!found));
-    });
-
-    it('elementFound', function() {
-      let executor = new FakeExecutor().
-          expect(CName.FIND_ELEMENTS,
-                 {using: 'css selector', value: '*[id="foo"]'}).
-          andReturnSuccess([WebElement.buildId('bar')]).
-          end();
-
-      var driver = executor.createDriver();
-      return driver.isElementPresent(By.id('foo')).then(assert.ok);
-    });
-
-    it('letsErrorsPropagate', function() {
-      let executor = new FakeExecutor().
-          expect(CName.FIND_ELEMENTS,
-                 {using: 'css selector', value: '*[id="foo"]'}).
-          andReturnError(new StubError).
-          end();
-
-      var driver = executor.createDriver();
-      driver.isElementPresent(By.id('foo'));
-      return waitForAbort().then(assertIsStubError);
-    });
-
-    it('byJs', function() {
-      let executor = new FakeExecutor().
-          expect(CName.EXECUTE_SCRIPT, {'script': 'return 123', 'args': []}).
-          andReturnSuccess([WebElement.buildId('bar')]).
-          end();
-
-      var driver = executor.createDriver();
-      return driver.isElementPresent(By.js('return 123')).then(assert.ok);
-    });
-
-    it('byJs_canPassScriptArguments', function() {
-      var script = 'return document.getElementsByTagName(arguments[0]);';
-      let executor = new FakeExecutor().
-          expect(CName.EXECUTE_SCRIPT, {
-            'script': script,
-            'args': ['div']
-          }).
-          andReturnSuccess([WebElement.buildId('one')]).
-          end();
-
-      var driver = executor.createDriver();
-      driver.isElementPresent(By.js(script, 'div')).then(assert.ok);
-      return waitForIdle();
     });
   });
 
@@ -1516,8 +1486,8 @@ describe('WebDriver', function() {
           expect(CName.FIND_ELEMENT,
                  {'using':'css selector', 'value':'*[id="foo"]'}).
               andReturnSuccess(WebElement.buildId('one')).
-          expect(CName.SEND_KEYS_TO_ELEMENT, {'id': 'one',
-                                              'value':['modified/path']}).
+          expect(CName.SEND_KEYS_TO_ELEMENT,
+                 {'id': 'one', 'value':'modified/path'.split('')}).
               andReturnSuccess().
           end();
 
@@ -1543,7 +1513,7 @@ describe('WebDriver', function() {
 
     it('failsIfAnInputElementCouldNotBeFound', function() {
       var id = promise.rejected(new StubError);
-      id.thenCatch(function() {});  // Suppress default handler.
+      id.catch(function() {});  // Suppress default handler.
 
       var driver = new FakeExecutor().createDriver();
       var a = new WebElement(driver, 'foo');
@@ -1567,7 +1537,7 @@ describe('WebDriver', function() {
 
       var driver = executor.createDriver();
       driver.wait(function() {
-        return driver.isElementPresent(By.id('foo'));
+        return driver.findElements(By.id('foo')).then(els => els.length > 0);
       }, 200);
       return waitForIdle();
     });
@@ -1582,7 +1552,7 @@ describe('WebDriver', function() {
 
       var driver = executor.createDriver();
       return driver.wait(function() {
-        return driver.isElementPresent(By.id('foo'));
+        return driver.findElements(By.id('foo')).then(els => els.length > 0);
       }, 25).then(fail, function(e) {
         assert.equal('Wait timed out after ',
             e.message.substring(0, 'Wait timed out after '.length));
@@ -1599,7 +1569,7 @@ describe('WebDriver', function() {
 
       var driver = executor.createDriver();
       driver.wait(function() {
-        return driver.isElementPresent(By.id('foo'));
+        return driver.findElements(By.id('foo')).then(els => els.length > 0);
       }, 25);
       return waitForAbort().then(function(e) {
         assert.equal('Wait timed out after ',
@@ -1610,12 +1580,12 @@ describe('WebDriver', function() {
 
   describe('alert handling', function() {
     it('alertResolvesWhenPromisedTextResolves', function() {
-      var textPromise = new promise.Deferred();
+      var deferredText = new promise.Deferred();
 
-      var alert = new AlertPromise({}, textPromise);
+      var alert = new AlertPromise({}, deferredText.promise);
       assert.ok(alert.isPending());
 
-      textPromise.fulfill(new Alert({}, 'foo'));
+      deferredText.fulfill(new Alert({}, 'foo'));
       return alert.getText().then(function(text) {
         assert.equal('foo', text);
       });
@@ -1783,7 +1753,7 @@ describe('WebDriver', function() {
           mouseDown().
           mouseUp().
           perform().
-          thenCatch(assertIsStubError);
+          catch(assertIsStubError);
     });
 
     describe('mouseMove', function() {
@@ -1871,7 +1841,7 @@ describe('WebDriver', function() {
           touchActions().
           scroll({x: 3, y: 4}).
           perform().
-          thenCatch(assertIsStubError);
+          catch(assertIsStubError);
     });
 
     it('testTouchActionSequence', function() {

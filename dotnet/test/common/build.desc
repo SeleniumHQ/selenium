@@ -1,6 +1,6 @@
 dotnet_library(name = "common",
   deps = [
-    "//java/client/test/org/openqa/selenium:tests:uber"
+    "//java/client/test/org/openqa/selenium/environment:webserver"
   ],
   srcs = "**/*.cs",
   refs = [
@@ -11,9 +11,9 @@ dotnet_library(name = "common",
     "System.Drawing.dll",
     "System.Xml.dll",
     "//dotnet/src/webdriver:webdriver",
-    "third_party/dotnet/nunit-3.0.1/addins/nunit.core.dll",
-    "third_party/dotnet/nunit-3.0.1/addins/nunit.core.interfaces.dll",
-    "third_party/dotnet/nunit-3.0.1/net-4.0/nunit.framework.dll",
+    "third_party/dotnet/nunit-3.2.1/addins/nunit.core.dll",
+    "third_party/dotnet/nunit-3.2.1/addins/nunit.core.interfaces.dll",
+    "third_party/dotnet/nunit-3.2.1/net-4.0/nunit.framework.dll",
     "third_party/dotnet/nmock-2.0.0.44/NMock2.dll"
   ],
   out = "WebDriver.Common.Tests.dll",

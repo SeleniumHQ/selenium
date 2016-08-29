@@ -1,51 +1,12 @@
-
-js_library(name = 'base',
-  srcs = [
-    'command.js',
-    'events.js',
-    'promise.js',
-    'stacktrace.js',
-  ],
-  deps = [
-    '//third_party/closure:closure',
-  ],
-  visibility = [
-    '//javascript/remote:client',
-    '//javascript/safari-driver/...',
-  ],
-)
-
-js_library(name = 'button',
-  srcs = [
-    'button.js',
-  ],
-)
-
-js_library(name = 'capabilities',
-  srcs = [
-    'capabilities.js',
-  ],
-  deps = [
-    ':logging',
-    ':serializable',
-  ],
-  visibility = [
-    '//javascript/safari-driver/...'
-  ],
-)
-
-js_library(name = 'events',
-  srcs = [
-    'events.js',
-  ],
-)
-
 js_library(name = 'http',
-  srcs = glob(['http/*.js']),
+  srcs = glob([
+    'capabilities.js',
+    'command.js',
+    'http/*.js',
+    'logging.js',
+    'session.js',
+  ]),
   deps = [
-    ':base',
-    ':logging',
-    ':promise',
     '//javascript/atoms:errors',
     '//third_party/closure:closure',
   ],
@@ -63,15 +24,6 @@ js_library(name = 'key',
   ],
 )
 
-js_library(name = 'locators',
-  srcs = [
-    'locators.js',
-  ],
-  deps = [
-    '//third_party/closure:closure',
-  ],
-)
-
 js_library(name = 'logging',
   srcs = [
     'logging.js',
@@ -84,87 +36,11 @@ js_library(name = 'logging',
   ],
 )
 
-js_library(name = 'promise',
-  srcs = [
-    'promise.js',
-  ],
-  deps = [
-    ':events',
-    ':stacktrace',
-    '//third_party/closure:closure',
-  ],
-)
-
-js_library(name = 'sequence',
-  srcs = [
-    'actionsequence.js',
-    'touchsequence.js',
-  ],
-  deps = [
-    ':base',
-    ':button',
-    ':key',
-    '//third_party/closure:closure',
-  ],
-)
-
-js_library(name = 'serializable',
-  srcs = [
-    'serializable.js',
-  ],
-  deps = [
-  ],
-)
-
-js_library(name = 'session',
-  srcs = [
-    'session.js',
-  ],
-  deps = [
-    ':capabilities',
-  ],
-  visibility = [
-    '//javascript/remote:client',
-    '//javascript/safari-driver/...'
-  ],
-)
-
 js_library(name = 'stacktrace',
   srcs = [
     'stacktrace.js',
   ],
   deps = [
     '//third_party/closure:closure',
-  ],
-)
-
-js_library(name = 'until',
-  srcs = [
-    'until.js',
-  ],
-  deps = [
-    ':locators',
-    '//javascript/atoms:errors',
-    '//third_party/closure:closure',
-  ],
-)
-
-js_library(name = 'webdriver',
-  srcs = [
-    'webdriver.js',
-  ],
-  deps = [
-    ':base',
-    ':key',
-    ':locators',
-    ':logging',
-    ':sequence',
-    ':session',
-    ':until',
-    '//javascript/atoms:errors',
-    '//third_party/closure:closure',
-  ],
-  visibility = [
-    '//javascript/safari-driver/...'
   ],
 )

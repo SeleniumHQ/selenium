@@ -276,7 +276,7 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
   public synchronized List<SessionId> getLoggedSessions() {
     // TODO: Find a solution that can handle large numbers of sessions, maybe by
     // reading them from disc.
-    ImmutableList.Builder<SessionId> builder = new ImmutableList.Builder<SessionId>();
+    ImmutableList.Builder<SessionId> builder = new ImmutableList.Builder<>();
     builder.addAll(perSessionDriverEntries.keySet());
     return builder.build();
   }

@@ -21,7 +21,7 @@ dotnet_release(name = "release",
     "//dotnet/src/support:package",
     "//dotnet/src/core:package",
     "//dotnet/src/webdriverbackedselenium:package",
-	"//dotnet/docs:docs"
+    "//dotnet/docs:docs"
   ],
   desc = ".NET bindings for Selenium, including the RC and WebDriver APIs.",
   featured = "true",

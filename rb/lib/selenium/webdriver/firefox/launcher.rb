@@ -20,10 +20,8 @@
 module Selenium
   module WebDriver
     module Firefox
-
       # @api private
       class Launcher
-
         SOCKET_LOCK_TIMEOUT       = 45
         STABLE_CONNECTION_TIMEOUT = 60
 
@@ -33,14 +31,14 @@ module Selenium
 
           raise Error::WebDriverError, "invalid port: #{@port}" if @port < 1
 
-          if profile.kind_of? Profile
+          if profile.is_a? Profile
             @profile = profile
           else
             @profile_name = profile
             @profile = nil
           end
 
-          @host = "127.0.0.1"
+          @host = '127.0.0.1'
         end
 
         def url
@@ -79,16 +77,16 @@ module Selenium
 
         def start
           assert_profile
-          @binary.start_with @profile, @profile_dir, "-foreground"
+          @binary.start_with @profile, @profile_dir, '-foreground'
         end
 
         def connect_until_stable
           poller = SocketPoller.new(@host, @port, STABLE_CONNECTION_TIMEOUT)
 
-          unless poller.connected?
-            @binary.quit
-            raise Error::WebDriverError, "unable to obtain stable firefox connection in #{STABLE_CONNECTION_TIMEOUT} seconds (#{@host}:#{@port})"
-          end
+          return if poller.connected?
+          @binary.quit
+          error = "unable to obtain stable firefox connection in #{STABLE_CONNECTION_TIMEOUT} seconds (#{@host}:#{@port})"
+          raise Error::WebDriverError, error
         end
 
         def fetch_profile
@@ -104,13 +102,12 @@ module Selenium
         end
 
         def assert_profile
-          raise Error::WebDriverError, "must create_profile first" unless @profile && @profile_dir
+          raise Error::WebDriverError, 'must create_profile first' unless @profile && @profile_dir
         end
 
         def socket_lock
           @socket_lock ||= SocketLock.new(@port - 1, SOCKET_LOCK_TIMEOUT)
         end
-
       end # Launcher
     end # Firefox
   end # WebDriver

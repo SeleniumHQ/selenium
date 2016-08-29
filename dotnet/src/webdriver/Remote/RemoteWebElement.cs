@@ -400,11 +400,39 @@ namespace OpenQA.Selenium.Remote
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         public string GetAttribute(string attributeName)
         {
+            Response commandResponse = null;
+            string attributeValue = string.Empty;
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", this.elementId);
             parameters.Add("name", attributeName);
-            Response commandResponse = this.Execute(DriverCommand.GetElementAttribute, parameters);
-            string attributeValue = string.Empty;
+            if (this.driver.IsSpecificationCompliant)
+            {
+                List<string> booleanAttributes = new List<string>()
+                {
+                    "default", "typemustmatch", "checked", "defer", "async", "muted",
+                    "reversed", "required", "controls", "ismap", "disabled", "novalidate",
+                    "readonly", "allowfullscreen", "selected", "formnovalidate",
+                    "multiple", "autofocus", "open", "loop", "autoplay"
+                };
+
+                if (attributeName == "style")
+                {
+                    return this.driver.ExecuteScript("return arguments[0].style.cssText", this).ToString();
+                }
+
+                commandResponse = this.Execute(DriverCommand.GetElementProperty, parameters);
+                if ((commandResponse.Value == null ||
+                    ((commandResponse.Value.ToString() == string.Empty || commandResponse.Value.ToString() == bool.FalseString) && attributeName != "value")) ||
+                    booleanAttributes.Contains(attributeName))
+                {
+                    commandResponse = this.Execute(DriverCommand.GetElementAttribute, parameters);
+                }
+            }
+            else
+            {
+                commandResponse = this.Execute(DriverCommand.GetElementAttribute, parameters);
+            }
+
             if (commandResponse.Value == null)
             {
                 attributeValue = null;

@@ -1,0 +1,33 @@
+java_binary(
+  name = 'server-with-tests',
+  main_class = 'org.openqa.selenium.Main',
+  deps = [
+    ':lib',
+  ],
+  visibility = [
+    '//java/client/test/com/thoughtworks/selenium:tests',
+  ],
+)
+
+java_library(
+  name = 'lib',
+  srcs = glob(['*.java']),
+  deps = [
+    ':core-scripts',
+    ':tests',
+    '//third_party/java/beust:jcommander',
+    '//third_party/java/jetty:jetty',
+    '//third_party/java/servlet:servlet-api',
+  ],
+)
+
+prebuilt_jar(
+  name = 'tests',
+  binary_jar = '//java/server/test/org/openqa/selenium/tests:tests',
+)
+
+prebuilt_jar(
+  name = 'core-scripts',
+  binary_jar = '//javascript/selenium-core:selenium-core',
+)
+

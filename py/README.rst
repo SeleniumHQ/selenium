@@ -7,12 +7,12 @@ Introduction
 
 Python language bindings for Selenium WebDriver.
 
-The `selenium` package is used automate web browser interaction from Python.
+The `selenium` package is used to automate web browser interaction from Python.
 
 +-----------+-----------------------------------------------------------------------------------+
 | **Home**: | http://www.seleniumhq.org                                                         |
 +-----------+-----------------------------------------------------------------------------------+
-| **Docs**: | `selenium package API <http://selenium.googlecode.com/git/docs/api/py/api.html>`_ |
+| **Docs**: | https://seleniumhq.github.io/selenium/docs/api/py/api.html                        |
 +-----------+-----------------------------------------------------------------------------------+
 | **Dev**:  | https://github.com/SeleniumHQ/selenium                                            |
 +-----------+-----------------------------------------------------------------------------------+
@@ -27,7 +27,7 @@ Supported Python Versions
 =========================
 
 * Python 2.6, 2.7
-* Python 3.2+
+* Python 3.3+
 
 Installing
 ==========
@@ -36,11 +36,11 @@ If you have `pip <http://www.pip-installer.org>`_ on your system, you can simply
 
     pip install -U selenium
 
-Alternately, you can download the source distribution from `PyPI <http://pypi.python.org/pypi/selenium>`_ (e.g. selenium-2.52.0.tar.gz), unarchive it, and run::
+Alternately, you can download the source distribution from `PyPI <http://pypi.python.org/pypi/selenium>`_ (e.g. selenium-3.0.0.b2.tar.gz), unarchive it, and run::
 
     python setup.py install
 
-Note: both of the methods described above install `selenium` as a system-wide package  That will require administrative/root access to ther machine.  You may consider using a `virtualenv <http://www.virtualenv.org/>`_ to create isolated Python environments instead.
+Note: both of the methods described above install `selenium` as a system-wide package  That will require administrative/root access to their machine.  You may consider using a `virtualenv <http://www.virtualenv.org/>`_ to create isolated Python environments instead.
 
 Example 0:
 ==========
@@ -107,11 +107,11 @@ For normal WebDriver scripts (non-Remote), the Java server is not needed.
 
 However, to use Selenium Webdriver Remote or the legacy Selenium API (Selenium-RC), you need to also run the Selenium server.  The server requires a Java Runtime Environment (JRE).
 
-Download the server separately, from: http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar
+Download the server separately, from: http://selenium-release.storage.googleapis.com/3.0-beta2/selenium-server-standalone-3.0.0-beta2.jar
 
 Run the server from the command line::
 
-    java -jar selenium-server-standalone-2.52.0.jar
+    java -jar selenium-server-standalone-3.0.0-beta2.jar
 
 Then run your Python client scripts.
 

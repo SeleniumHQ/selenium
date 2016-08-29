@@ -18,7 +18,6 @@
 package org.openqa.selenium.testing.drivers;
 
 import com.google.common.base.Supplier;
-import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 
 import org.openqa.selenium.Capabilities;
@@ -74,9 +73,9 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
     } catch (NoSuchMethodException e) {
       return;
     } catch (InvocationTargetException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     } catch (IllegalAccessException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 

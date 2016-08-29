@@ -20,23 +20,19 @@
 module Selenium
   module WebDriver
     module Edge
-
+      #
       # @api private
+      #
+
       class Bridge < Remote::W3CBridge
-
         def initialize(opts = {})
-
           http_client = opts.delete(:http_client)
 
-          if opts.has_key?(:url)
+          if opts.key?(:url)
             url = opts.delete(:url)
           else
-            @service = Service.default_service(*extract_service_args(opts))
-
-            if @service.instance_variable_get("@host") == "127.0.0.1"
-              @service.instance_variable_set("@host", 'localhost')
-            end
-
+            @service = Service.new(Edge.driver_path, Service::DEFAULT_PORT, *extract_service_args(opts))
+            @service.host = 'localhost' if @service.host == '127.0.0.1'
             @service.start
 
             url = @service.uri
@@ -45,11 +41,11 @@ module Selenium
           caps = create_capabilities(opts)
 
           remote_opts = {
-            :url                  => url,
-            :desired_capabilities => caps
+            url: url,
+            desired_capabilities: caps
           }
 
-          remote_opts.merge!(:http_client => http_client) if http_client
+          remote_opts[:http_client] = http_client if http_client
           super(remote_opts)
         end
 
@@ -78,7 +74,7 @@ module Selenium
 
         def create_capabilities(opts)
           caps               = opts.delete(:desired_capabilities) { Remote::W3CCapabilities.edge }
-          page_load_strategy = opts.delete(:page_load_strategy) || "normal"
+          page_load_strategy = opts.delete(:page_load_strategy) || 'normal'
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
@@ -92,13 +88,12 @@ module Selenium
         def extract_service_args(opts)
           args = []
 
-          if opts.has_key?(:service_log_path)
+          if opts.key?(:service_log_path)
             args << "--log-path=#{opts.delete(:service_log_path)}"
           end
 
           args
         end
-
       end # Bridge
     end # Edge
   end # WebDriver

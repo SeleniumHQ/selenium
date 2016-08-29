@@ -65,47 +65,6 @@ class VisualStudioMappings
   end
 end
 
-module CrazyFunVisualStudio
-  class UploadFile < Tasks
-    def handle(fun, dir, args)
-      # Empty handle method as this will be a base class for tasks
-      # requiring upload of their outputs.
-    end
-
-    def upload_file(file_name, file_description, featured_file)
-      py = "java -jar third_party/py/jython.jar"
-      if (python?)
-        py = "python"
-      end
-
-      if ENV["googlecodeusername"].nil?
-        print "Enter your googlecode username (or <Enter> to avoid upload):"
-        googlecode_username = STDIN.gets.chomp
-      else
-        googlecode_username = ENV["googlecodeusername"]
-      end
-      if googlecode_username == ""
-        print "googlecode user name not specified; not uploading file"
-        return
-      end
-      if ENV["googlecodepassword"].nil?
-        print "Enter your googlecode password (NOT your gmail password, the one you use for svn, available at https://code.google.com/hosting/settings):" 
-        googlecode_password = STDIN.gets.chomp
-      else
-        googlecode_password = ENV["googlecodepassword"]
-      end
-      featured = ""
-      if featured_file
-        featured = " -l Featured"
-      end
-      puts "Uploading file #{file_name}..."
-      platform_file_name = file_name.gsub("/", Platform.dir_separator)
-      command_line = "#{py} third_party/py/googlecode/googlecode_upload.py -s \"#{file_description}\"#{featured} -p selenium #{platform_file_name} -u #{googlecode_username} -w #{googlecode_password}"
-      sh command_line
-    end
-  end
-end
-
 module CrazyFunDotNet
   class DotNetTasks < Tasks
     def get_reference_assemblies_dir()
@@ -151,6 +110,33 @@ module CrazyFunDotNet
       end
       return ENV[var_name]
     end
+
+    def get_version(dir)
+      found_version = version
+      version_tag = ""
+      list = FileList.new(dir + "/**/AssemblyInfo.cs").to_a
+      if list.length > 0
+        version_regexp = /^.*AssemblyVersion\(\"(.*)\"\).*$/
+        version_tag_regexp = /^.*AssemblyInformationalVersion\(\".*-(.*)\"\).*$/
+        assembly_info = File.open list[0]
+        assembly_info.each do |line|
+          version_match = line.match version_regexp
+          if (not version_match.nil?)
+            found_version = version_match[1]
+            found_version = found_version[0..found_version.rindex(".") - 1]
+          end
+          version_tag_match = line.match version_tag_regexp
+          if (not version_tag_match.nil?)
+            version_tag = version_tag_match[1]
+          end
+        end
+        assembly_info.close
+      end
+      if version_tag != ""
+        found_version = found_version + "-" + version_tag
+      end
+      found_version
+    end
   end
 
   class DotNetLibrary < DotNetTasks
@@ -167,7 +153,7 @@ module CrazyFunDotNet
         base_dir = File.join(base_dir, "dist")
       end
 
-	  output_dir = base_dir
+      output_dir = base_dir
       unless args[:merge_refs].nil?
         output_dir = File.join(output_dir, "unmerged")
       end
@@ -384,13 +370,11 @@ module CrazyFunDotNet
       target = nunit "#{task_name}:run" do |nunit_task|
         mkdir_p test_log_dir
         puts "Testing: #{task_name}"
-        nunit_task.command = "third_party/dotnet/nunit-2.6.2/nunit-console.exe"
+        nunit_task.command = "third_party/dotnet/nunit-3.2.1/nunit3-console.exe"
         nunit_task.assemblies << [output_dir, args[:project]].join(File::SEPARATOR)
-        nunit_task.options << "/nologo"
-        nunit_task.options << "/nodots"
-        nunit_task.options << "/xml=#{[test_log_dir, args[:project]].join(File::SEPARATOR)}.xml"
-        nunit_task.output_redirect = "#{[test_log_dir, args[:project]].join(File::SEPARATOR)}.log"
-        nunit_task.ignore_test_fail = !([nil, 'true'].include? ENV['haltonfailure'])
+        nunit_task.options << "--agents=1"
+        nunit_task.options << "--noheader"
+        nunit_task.options << "--result=#{[test_log_dir, args[:project]].join(File::SEPARATOR)}.xml"
       end
 
       add_dependencies(target, dir, args[:deps])
@@ -469,18 +453,19 @@ module CrazyFunDotNet
     end
   end
 
-  class CreateNuSpec < Tasks
+  class CreateNuSpec < DotNetTasks
     def handle(fun, dir, args)
       output_dir = "build/dotnet/dist"
       spec_file = "#{output_dir}/nuget/#{args[:packageid]}.nuspec"
       task_name = task_name(dir, args[:name])
+      package_version = get_version(dir)
       desc "Creates and optionally publishes the NuGet package for #{args[:out]}"
       target = nuspec "#{task_name}" do |nuspec_task|
         mkdir_p "#{output_dir}/nuget"
         puts "Creating .nuspec for: #{task_name}"
         nuspec_task.output_file = spec_file
         nuspec_task.id = args[:packageid]
-        nuspec_task.version = get_version(dir)
+        nuspec_task.version = package_version
         nuspec_task.authors = "Selenium Committers"
         nuspec_task.description = args[:description]
         nuspec_task.owners = "Software Freedom Conservancy"
@@ -508,15 +493,15 @@ module CrazyFunDotNet
 
         unless args[:packagedeps].nil?
           args[:packagedeps].each do |dep|
-            package_id = dep.keys[0]
-            package_version = version
-            package_dependency_task = task_name(dir, package_id)
+            package_dependency_id = dep.keys[0]
+            package_dependency_version = package_version
+            package_dependency_task = task_name(dir, package_dependency_id)
             if Rake::Task.task_defined? package_dependency_task
-              package_id = Rake::Task[package_dependency_task].out
+              package_dependency_id = Rake::Task[package_dependency_task].out
             else
-              package_version = "#{dep.fetch(package_id)}"
+              package_version = "#{dep.fetch(package_dependency_id)}"
             end
-            nuspec_task.dependency package_id, package_version
+            nuspec_task.dependency package_dependency_id, package_dependency_version
           end
         end
 
@@ -531,24 +516,6 @@ module CrazyFunDotNet
 
       target.out = args[:packageid]
       add_dependencies(target, dir, args[:deps])
-    end
-
-    def get_version(dir)
-      found_version = version
-      list = FileList.new(dir + "/**/AssemblyInfo.cs").to_a
-      if list.length > 0
-        regexp = /^.*AssemblyVersion\(\"(.*)\"\).*$/
-        assembly_info = File.open list[0]
-        assembly_info.each do |line|
-          match = line.match regexp
-          if (not match.nil?)
-            found_version = match[1]
-            found_version = found_version[0..found_version.rindex(".") - 1]
-          end
-        end
-        assembly_info.close
-      end
-      found_version
     end
   end
 
@@ -567,10 +534,11 @@ module CrazyFunDotNet
     end
   end
 
-  class PublishNuGetPackage < Tasks
+  class PublishNuGetPackage < DotNetTasks
     def handle(fun, dir, args)
       output_dir = "build/dotnet/dist"
-      package_file = "#{output_dir}/nuget/#{args[:packageid]}.#{version}.nupkg".gsub("/", Platform.dir_separator)
+      package_version = get_version(dir)
+      package_file = "#{output_dir}/nuget/#{args[:packageid]}.#{package_version}.nupkg".gsub("/", Platform.dir_separator)
       task_name = task_name(dir, args[:name])
       desc "Publishes NuGet package for #{task_name} to NuGet Gallery"
       target = task "#{task_name}" do
@@ -590,7 +558,7 @@ module CrazyFunDotNet
     end
   end
 
-  class DotNetRelease < CrazyFunVisualStudio::UploadFile
+  class DotNetRelease < DotNetTasks
     def handle(fun, dir, args)
       output_dir = 'build/dotnet'
       unless args[:signed].nil?
@@ -616,29 +584,10 @@ module CrazyFunDotNet
         cp_r lst, tmp_dir
         zip(tmp_dir, output_file)
         rm_rf tmp_dir
-        upload_file output_file, args[:desc], args.has_key?(:featured)
       end
       
       add_dependencies(target, dir, args[:deps])
       target.out = output_file
-    end
-
-    def get_version(dir)
-      found_version = version
-      list = FileList.new(dir + "/**/AssemblyInfo.cs").to_a
-      if list.length > 0
-        regexp = /^.*AssemblyVersion\(\"(.*)\"\).*$/
-        assembly_info = File.open list[0], 'rb'
-        assembly_info.each do |line|
-          match = line.match regexp
-          if (not match.nil?)
-            found_version = match[1]
-            found_version = found_version[0..found_version.rindex(".") - 1]
-          end
-        end
-        assembly_info.close
-      end
-      found_version
     end
   end
 end
@@ -689,7 +638,7 @@ module CrazyFunVisualC
     end
   end
 
-  class VisualCRelease < CrazyFunVisualStudio::UploadFile
+  class VisualCRelease < Tasks
     def handle(fun, dir, args)
       output_dir = 'build/cpp'
       file_name = args[:out].chomp(File.extname(args[:out])) + "_" + args[:platform] + "_" + get_version(dir) + ".zip"
@@ -708,7 +657,6 @@ module CrazyFunVisualC
         if Rake::Task.task_defined? task_name
           dependency_output_file = Rake::Task[task_name].out
           do_zip(dependency_output_file, output_file)
-          upload_file output_file, args[:desc], args.has_key?(:featured)
         end
       end
       

@@ -22,6 +22,29 @@
 /** @const */
 var global = this;
 
+// DOM type references. Dossier removes DOM externs when type-checking Node
+// modules.
+
+/** @constructor */
+function Document() {};
+/**
+ * @param {string} tagName .
+ * @return {!Element} .
+ */
+Document.prototype.createElement = function(tagName) {};
+
+/** @constructor */
+function Element() {}
+
+/** @type {!Document} */Element.prototype.ownerDocument;
+/** @type {string} */Element.prototype.innerHTML;
+/** @type {string} */Element.prototype.outerHTML;
+/** @param {!Element} child . */
+Element.prototype.appendChild = function(child) {};
+/** @param {boolean} deep . */
+Element.prototype.cloneNode = function(deep) {};
+
+
 // The following will only actually be defined if running with mocha.
 
 /**

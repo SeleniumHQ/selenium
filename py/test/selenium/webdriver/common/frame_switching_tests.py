@@ -3,10 +3,10 @@
 # distributed with this work for additional information
 # regarding copyright ownership.  The SFC licenses this file
 # to you under the Apache License, Version 2.0 (the
-# "License") you may not use this file except in compliance
+# "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
 #
-#   http:#www.apache.org/licenses/LICENSE-2.0
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
@@ -16,11 +16,10 @@
 # under the License.
 
 import pytest
-# import time
 import unittest
 
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import WebDriverException, NoSuchElementException, NoSuchElementException, NoSuchFrameException
+from selenium.common.exceptions import WebDriverException, NoSuchElementException, NoSuchFrameException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -33,6 +32,7 @@ def not_available_on_remote(func):
         else:
             return func(self)
     return testMethod
+
 
 class FrameSwitchingTest(unittest.TestCase):
 
@@ -51,7 +51,7 @@ class FrameSwitchingTest(unittest.TestCase):
 
     def testShouldAlwaysFocusOnTheTopMostFrameAfterANavigationEvent(self):
         self._load_page("frameset")
-        self.driver.find_element(By.TAG_NAME, "frameset") # Test passes if this does not throw.
+        self.driver.find_element(By.TAG_NAME, "frameset")  # Test passes if this does not throw.
 
     def testShouldNotAutomaticallySwitchFocusToAnIFrameWhenAPageContainingThemIsLoaded(self):
         self._load_page("iframes")
@@ -250,7 +250,7 @@ class FrameSwitchingTest(unittest.TestCase):
         self.driver.switch_to.frame(2)
         checkbox = self.driver.find_element(By.XPATH, "//input[@name='checky']")
         checkbox.click()
-        #checkbox.submit()
+        # checkbox.submit()
 
         # TODO(simon): this should not be needed, and is only here because IE's submit returns too
         # soon.
@@ -280,7 +280,6 @@ class FrameSwitchingTest(unittest.TestCase):
         except Exception:
             self.fail("Should have switched back to main content")
 
-
     def testShouldAllowTheUserToSwitchToAnIFrameAndRemainFocusedOnIt(self):
         self._load_page("iframes")
         self.driver.switch_to.frame(0)
@@ -303,7 +302,7 @@ class FrameSwitchingTest(unittest.TestCase):
         # driver should still be focused on frame "third" ...
         self.assertEqual(self.getTextOfGreetingElement(), "Success!")
         # Make sure it was really frame "third" which was replaced ...
-        third = WebDriverWait(self.driver, 3).until(EC.presence_of_element_located((By.ID, "third")))
+        WebDriverWait(self.driver, 3).until(EC.presence_of_element_located((By.ID, "third")))
         self.driver.switch_to.frame()
         self.assertEqual(self.getTextOfGreetingElement(), "Success!")
 
@@ -460,7 +459,7 @@ class FrameSwitchingTest(unittest.TestCase):
                 url = self.driver.execute_script("return window.location.href")
             # IE6 and Chrome add "?"-symbol to the end of the URL
         if (url.endswith("?")):
-            url = url.substring(0, url.length()-1)
+            url = url.substring(0, url.length() - 1)
 
         self.assertEquals(baseUrl + "bug4876_iframe.html", url)
 
@@ -472,11 +471,11 @@ class FrameSwitchingTest(unittest.TestCase):
             self.fail("Expected to be on iframes.html, but %s" % e.msg())
         self.driver.switch_to.frame(self.driver.find_element(By.ID, "iframe1"))
         try:
-            self.driver.find_element(By.ID, "cheese") # Found on formPage.html but not on iframes.html.
+            self.driver.find_element(By.ID, "cheese")  # Found on formPage.html but not on iframes.html.
         except NoSuchElementException as e:
             self.fail("Expected to be on formPage.html, but %s" % e.msg())
 
-        self._load_page("iframes") # This must effectively switch_to.default_content(), too.
+        self._load_page("iframes")  # This must effectively switch_to.default_content(), too.
         try:
             self.driver.find_element(By.ID, "iframe1")
         except NoSuchElementException as e:

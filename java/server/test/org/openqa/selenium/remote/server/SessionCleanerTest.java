@@ -86,10 +86,10 @@ public class SessionCleanerTest {
   private Runnable getRunnableThatMakesSessionBusy(final Session session,
                                                    final CountDownLatch started,
                                                    final CountDownLatch testDone) {
-    return new Runnable(){
-      public void run(){
+    return new Runnable() {
+      public void run() {
         try {
-          session.execute(new FutureTask<Object>(new Callable<Object>()
+          session.execute(new FutureTask<>(new Callable<Object>()
          {
           public Object call() {
             try {

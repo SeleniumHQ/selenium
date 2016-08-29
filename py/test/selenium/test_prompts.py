@@ -17,12 +17,12 @@
 
 from selenium import selenium
 import unittest
-import time
+
 
 class TestPrompts(unittest.TestCase):
+
     def setUp(self):
-        self.selenium = selenium("localhost", \
-            4444, "*firefoxproxy", "http://www.w3schools.com")
+        self.selenium = selenium("localhost", 4444, "*firefoxproxy", "http://www.w3schools.com")
         self.selenium.start()
 
     def test_alert(self):

@@ -21,8 +21,6 @@ var exec = require('child_process').exec,
     fs = require('fs'),
     net = require('net');
 
-var promise = require('../lib/promise');
-
 
 /**
  * The IANA suggested ephemeral port range.
@@ -30,13 +28,13 @@ var promise = require('../lib/promise');
  * @const
  * @see http://en.wikipedia.org/wiki/Ephemeral_ports
  */
-var DEFAULT_IANA_RANGE = {min: 49152, max: 65535};
+const DEFAULT_IANA_RANGE = {min: 49152, max: 65535};
 
 
 /**
  * The epheremal port range for the current system. Lazily computed on first
  * access.
- * @type {promise.Promise.<{min: number, max: number}>}
+ * @type {Promise.<{min: number, max: number}>}
  */
 var systemRange = null;
 
@@ -44,8 +42,8 @@ var systemRange = null;
 /**
  * Computes the ephemeral port range for the current system. This is based on
  * http://stackoverflow.com/a/924337.
- * @return {promise.Promise.<{min: number, max: number}>} A promise
- *     that will resolve to the ephemeral port range of the current system.
+ * @return {!Promise<{min: number, max: number}>} A promise that will resolve to
+ *     the ephemeral port range of the current system.
  */
 function findSystemPortRange() {
   if (systemRange) {
@@ -53,7 +51,7 @@ function findSystemPortRange() {
   }
   var range = process.platform === 'win32' ?
       findWindowsPortRange() : findUnixPortRange();
-  return systemRange = range.thenCatch(function() {
+  return systemRange = range.catch(function() {
     return DEFAULT_IANA_RANGE;
   });
 }
@@ -62,26 +60,26 @@ function findSystemPortRange() {
 /**
  * Executes a command and returns its output if it succeeds.
  * @param {string} cmd The command to execute.
- * @return {!promise.Promise.<string>} A promise that will resolve
- *     with the command's stdout data.
+ * @return {!Promise<string>} A promise that will resolve with the command's
+ *     stdout data.
  */
 function execute(cmd) {
-  var result = promise.defer();
-  exec(cmd, function(err, stdout) {
-    if (err) {
-      result.reject(err);
-    } else {
-      result.fulfill(stdout);
-    }
+  return new Promise((resolve, reject) => {
+    exec(cmd, function(err, stdout) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(stdout);
+      }
+    });
   });
-  return result.promise;
 }
 
 
 /**
  * Computes the ephemeral port range for a Unix-like system.
- * @return {!promise.Promise.<{min: number, max: number}>} A promise
- *     that will resolve with the ephemeral port range on the current system.
+ * @return {!Promise<{min: number, max: number}>} A promise that will resolve
+ *     with the ephemeral port range on the current system.
  */
 function findUnixPortRange() {
   var cmd;
@@ -107,11 +105,10 @@ function findUnixPortRange() {
 
 /**
  * Computes the ephemeral port range for a Windows system.
- * @return {!promise.Promise.<{min: number, max: number}>} A promise
- *     that will resolve with the ephemeral port range on the current system.
+ * @return {!Promise<{min: number, max: number}>} A promise that will resolve
+ *     with the ephemeral port range on the current system.
  */
 function findWindowsPortRange() {
-  var deferredRange = promise.defer();
   // First, check if we're running on XP.  If this initial command fails,
   // we just fallback on the default IANA range.
   return execute('cmd.exe /c ver').then(function(stdout) {
@@ -148,66 +145,55 @@ function findWindowsPortRange() {
  * @param {number} port The port to test.
  * @param {string=} opt_host The bound host to test the {@code port} against.
  *     Defaults to {@code INADDR_ANY}.
- * @return {!promise.Promise.<boolean>} A promise that will resolve
- *     with whether the port is free.
+ * @return {!Promise<boolean>} A promise that will resolve with whether the port
+ *     is free.
  */
 function isFree(port, opt_host) {
-  var result = promise.defer();
+  return new Promise((resolve, reject) => {
+    let server = net.createServer().on('error', function(e) {
+      if (e.code === 'EADDRINUSE') {
+        resolve(false);
+      } else {
+        reject(e);
+      }
+    });
 
-  result.promise.thenCatch(function(e) {
-    if (e instanceof promise.CancellationError) {
-      server.close();
-    }
-  });
-
-  var server = net.createServer().on('error', function(e) {
-    if (e.code === 'EADDRINUSE') {
-      result.fulfill(false);
-    } else {
-      result.reject(e);
-    }
-  });
-
-  server.listen(port, opt_host, function() {
-    server.close(function() {
-      result.fulfill(true);
+    server.listen(port, opt_host, function() {
+      server.close(() => resolve(true));
     });
   });
-
-  return result.promise;
 }
 
 
 /**
  * @param {string=} opt_host The bound host to test the {@code port} against.
  *     Defaults to {@code INADDR_ANY}.
- * @return {!promise.Promise.<number>} A promise that will resolve
- *     to a free port. If a port cannot be found, the promise will be
- *     rejected.
+ * @return {!Promise<number>} A promise that will resolve to a free port. If a
+ *     port cannot be found, the promise will be rejected.
  */
 function findFreePort(opt_host) {
   return findSystemPortRange().then(function(range) {
     var attempts = 0;
-    var deferredPort = promise.defer();
-    findPort();
-    return deferredPort.promise;
+    return new Promise((resolve, reject) => {
+      findPort();
 
-    function findPort() {
-      attempts += 1;
-      if (attempts > 10) {
-        deferredPort.reject(Error('Unable to find a free port'));
-      }
-
-      var port = Math.floor(
-          Math.random() * (range.max - range.min) + range.min);
-      isFree(port, opt_host).then(function(isFree) {
-        if (isFree) {
-          deferredPort.fulfill(port);
-        } else {
-          findPort();
+      function findPort() {
+        attempts += 1;
+        if (attempts > 10) {
+          reject(Error('Unable to find a free port'));
         }
-      });
-    }
+
+        var port = Math.floor(
+            Math.random() * (range.max - range.min) + range.min);
+        isFree(port, opt_host).then(function(isFree) {
+          if (isFree) {
+            resolve(port);
+          } else {
+            findPort();
+          }
+        });
+      }
+    });
   });
 }
 

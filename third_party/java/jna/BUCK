@@ -11,10 +11,12 @@ java_library(
 
 prebuilt_jar(
   name = 'core',
+  maven_coords = 'net.java.dev.jna:jna:4.1.0',
   binary_jar = 'jna-4.1.0.jar',
 )
 
 prebuilt_jar(
   name = 'platform',
+  maven_coords = 'net.java.dev.jna:jna-platform:4.1.0',
   binary_jar = 'jna-platform-4.1.0.jar',
 )

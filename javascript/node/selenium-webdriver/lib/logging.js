@@ -655,14 +655,16 @@ class Preferences {
 // PUBLIC API
 
 
-exports.Entry = Entry;
-exports.Level = Level;
-exports.LogManager = LogManager;
-exports.Logger = Logger;
-exports.Preferences = Preferences;
-exports.Type = Type;
-exports.addConsoleHandler = addConsoleHandler;
-exports.getLevel = getLevel;
-exports.getLogger = getLogger;
-exports.installConsoleHandler = installConsoleHandler;
-exports.removeConsoleHandler = removeConsoleHandler;
+module.exports = {
+  Entry: Entry,
+  Level: Level,
+  LogManager: LogManager,
+  Logger: Logger,
+  Preferences: Preferences,
+  Type: Type,
+  addConsoleHandler: addConsoleHandler,
+  getLevel: getLevel,
+  getLogger: getLogger,
+  installConsoleHandler: installConsoleHandler,
+  removeConsoleHandler: removeConsoleHandler
+};

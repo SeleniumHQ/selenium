@@ -6,6 +6,6 @@ java_library(name = 'condition',
     '//third_party/java/junit:junit',
   ],
   visibility = [
-    '//java/client/src/com/thoughtworks/selenium:selenium',
+    '//java/client/src/com/thoughtworks/selenium:leg-rc',
   ],
 )

@@ -19,7 +19,6 @@
 
 module Selenium
   module WebDriver
-
     #
     # The main class through which you control the browser.
     #
@@ -33,7 +32,6 @@ module Selenium
       include SearchContext
 
       class << self
-
         #
         # @api private
         #
@@ -64,14 +62,14 @@ module Selenium
                      Chrome::Bridge.new(opts)
                    when :edge
                      Edge::Bridge.new(opts)
-                   when :android
-                     Android::Bridge.new(opts)
-                   when :iphone
-                     IPhone::Bridge.new(opts)
                    when :phantomjs
                      PhantomJS::Bridge.new(opts)
                    when :safari
-                     Safari::Bridge.new(opts)
+                     if Safari::LegacyBridge.legacy?
+                       Safari::LegacyBridge.new(opts)
+                     else
+                       Safari::AppleBridge.new(opts)
+                     end
                    else
                      raise ArgumentError, "unknown driver: #{browser.inspect}"
                    end
@@ -93,13 +91,12 @@ module Selenium
         @bridge = bridge
 
         # TODO: refactor this away
-        unless bridge.driver_extensions.empty?
-          extend(*bridge.driver_extensions)
-        end
+        return if bridge.driver_extensions.empty?
+        extend(*bridge.driver_extensions)
       end
 
       def inspect
-        '#<%s:0x%x browser=%s>' % [self.class, hash*2, bridge.browser.inspect]
+        format '#<%s:0x%x browser=%s>', self.class, hash * 2, bridge.browser.inspect
       end
 
       #
@@ -144,7 +141,7 @@ module Selenium
       #
 
       def current_url
-        bridge.getCurrentUrl
+        bridge.url
       end
 
       #
@@ -154,7 +151,7 @@ module Selenium
       #
 
       def title
-        bridge.getTitle
+        bridge.title
       end
 
       #
@@ -164,7 +161,7 @@ module Selenium
       #
 
       def page_source
-        bridge.getPageSource
+        bridge.page_source
       end
 
       #
@@ -191,7 +188,7 @@ module Selenium
       #
 
       def window_handles
-        bridge.getWindowHandles
+        bridge.window_handles
       end
 
       #
@@ -201,7 +198,7 @@ module Selenium
       #
 
       def window_handle
-        bridge.getCurrentWindowHandle
+        bridge.window_handle
       end
 
       #
@@ -217,7 +214,7 @@ module Selenium
       #
 
       def execute_script(script, *args)
-        bridge.executeScript(script, *args)
+        bridge.execute_script(script, *args)
       end
 
       # Execute an asynchronous piece of JavaScript in the context of the
@@ -236,20 +233,19 @@ module Selenium
       #
 
       def execute_async_script(script, *args)
-        bridge.executeAsyncScript(script, *args)
+        bridge.execute_async_script(script, *args)
       end
-
 
       #-------------------------------- sugar  --------------------------------
 
       #
-      #   driver.first(:id, 'foo')
+      #   driver.first(id: 'foo')
       #
 
       alias_method :first, :find_element
 
       #
-      #   driver.all(:class, 'bar') #=> [#<WebDriver::Element:0x1011c3b88, ...]
+      #   driver.all(class: 'bar') #=> [#<WebDriver::Element:0x1011c3b88, ...]
       #
 
       alias_method :all, :find_elements
@@ -273,9 +269,7 @@ module Selenium
       #
 
       def [](sel)
-        if sel.kind_of?(String) || sel.kind_of?(Symbol)
-          sel = { :id => sel }
-        end
+        sel = {id: sel} if sel.is_a?(String) || sel.is_a?(Symbol)
 
         find_element sel
       end
@@ -299,10 +293,7 @@ module Selenium
 
       private
 
-      def bridge
-        @bridge
-      end
-
+      attr_reader :bridge
     end # Driver
   end # WebDriver
 end # Selenium

@@ -19,10 +19,7 @@ package org.openqa.grid.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.openqa.grid.common.RegistrationRequest.APP;
 import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
-import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -30,6 +27,8 @@ import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -152,7 +151,7 @@ public class LoadBalancedTests {
 
 
     //release and check the resource are freed.
-    for (TestSession session : sessions){
+    for (TestSession session : sessions) {
       registry.terminateSynchronousFOR_TEST_ONLY(session);
     }
     assertEquals(50, proxy1.getResourceUsageInPercent(), 0f);
@@ -165,16 +164,17 @@ public class LoadBalancedTests {
 
   private static Map<String, Object> firefox() {
     Map<String, Object> ff = new HashMap<>();
-    ff.put(APP, "firefox");
+    ff.put(CapabilityType.APPLICATION_NAME, "firefox");
     return ff;
   }
 
   private static RegistrationRequest getRequestOfNSlots(int n, String name) {
     RegistrationRequest request = new RegistrationRequest();
 
-    Map<String, Object> config = new HashMap<>();
-    config.put(MAX_SESSION, n);
-    config.put(REMOTE_HOST, "http://" + name + ":4444");
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    config.maxSession = n;
+    config.host = name;
+    config.port = 4444;
     request.setConfiguration(config);
 
     Map<String, Object> ff = firefox();

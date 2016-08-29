@@ -1,4 +1,0 @@
-java_library(name = "commons-collections",
-  deps = [
-    "commons-collections-3.2.2.jar"
-  ])

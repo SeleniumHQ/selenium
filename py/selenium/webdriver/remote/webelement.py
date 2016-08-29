@@ -26,7 +26,6 @@ import base64
 
 from .command import Command
 from selenium.common.exceptions import WebDriverException
-from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
 
@@ -49,6 +48,11 @@ class WebElement(object):
     ``StaleElementReferenceException`` is thrown, and all future calls to this
     instance will fail."""
 
+    boolean_attributes = ['default', 'typemustmatch', 'checked', 'defer', 'async', 'muted',
+                          'reversed', 'required', 'controls', 'ismap', 'disabled', 'novalidate',
+                          'readonly', 'allowfullscreen', 'selected', 'formnovalidate',
+                          'multiple', 'autofocus', 'open', 'loop', 'autoplay']
+
     def __init__(self, parent, id_, w3c=False):
         self._parent = parent
         self._id = id_
@@ -57,7 +61,6 @@ class WebElement(object):
     def __repr__(self):
         return '<{0.__module__}.{0.__name__} (session="{1}", element="{2}")>'.format(
             type(self), self._parent.session_id, self._id)
-
 
     @property
     def tag_name(self):
@@ -77,15 +80,34 @@ class WebElement(object):
         """Submits a form."""
         if self._w3c:
             form = self.find_element(By.XPATH, "./ancestor-or-self::form")
-            self._parent.execute_script("var e = arguments[0].ownerDocument.createEvent('Event');"
-                                       "e.initEvent('submit', true, true);"
-                                       "if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }", form)
+            self._parent.execute_script(
+                "var e = arguments[0].ownerDocument.createEvent('Event');"
+                "e.initEvent('submit', true, true);"
+                "if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }", form)
         else:
             self._execute(Command.SUBMIT_ELEMENT)
 
     def clear(self):
         """Clears the text if it's a text entry element."""
         self._execute(Command.CLEAR_ELEMENT)
+
+    def get_property(self, name):
+        """
+        Gets the given property of the element.
+
+        :Args:
+            - name - Name of the property to retrieve.
+
+        Example::
+
+            # Check if the "active" CSS class is applied to an element.
+            text_length = target_element.get_property("text_length")
+        """
+        try:
+            return self._execute(Command.GET_ELEMENT_PROPERTY, {"name": name})["value"]
+        except WebDriverException:
+            # if we hit an end point that doesnt understand getElementProperty lets fake it
+            self.parent.execute_script('return arguments[0][arguments[1]]', self, name)
 
     def get_attribute(self, name):
         """Gets the given attribute or property of the element.
@@ -109,14 +131,36 @@ class WebElement(object):
             is_active = "active" in target_element.get_attribute("class")
 
         """
-        resp = self._execute(Command.GET_ELEMENT_ATTRIBUTE, {'name': name})
+
         attributeValue = ''
-        if resp['value'] is None:
-            attributeValue = None
+        if self._w3c :
+            if name == 'style':
+                return self.parent.execute_script("return arguments[0].style.cssText", self)
+            attributeValue = self.get_property(name)
+            if (attributeValue in [None, '', False] and name != 'value') or name in self.boolean_attributes:
+                # We need to check the attribute before we really set it to None
+                resp = self._execute(Command.GET_ELEMENT_ATTRIBUTE, {'name': name})
+                attributeValue = resp.get('value')
+
+                # Even though we have a value, we could be getting the browser default,
+                # We now need check it's there in the DOM...
+                resp = self.parent.execute_script("return arguments[0].hasAttribute(arguments[1])",
+                                                  self, name)
+                if resp is False:
+                    attributeValue = None
+            else:
+                attributeValue = "{0}".format(attributeValue)
+
+            if attributeValue is not None:
+                if name != 'value' and attributeValue.lower() in ('true', 'false'):
+                    attributeValue = attributeValue.lower()
+
         else:
-            attributeValue = resp['value']
-            if name != 'value' and attributeValue.lower() in ('true', 'false'):
-                attributeValue = attributeValue.lower()
+            resp = self._execute(Command.GET_ELEMENT_ATTRIBUTE, {'name': name})
+            attributeValue = resp.get('value')
+            if attributeValue is not None:
+                if name != 'value' and attributeValue.lower() in ('true', 'false'):
+                    attributeValue = attributeValue.lower()
         return attributeValue
 
     def is_selected(self):
@@ -264,7 +308,6 @@ class WebElement(object):
         """
         return self.find_element(by=By.CLASS_NAME, value=name)
 
-
     def find_elements_by_class_name(self, name):
         """Finds a list of elements within this element's children by class name.
 
@@ -336,7 +379,14 @@ class WebElement(object):
         the element is not visible.
 
         """
-        return self._execute(Command.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW)['value']
+        if self._w3c:
+            old_loc = self._execute(Command.EXECUTE_SCRIPT, {
+                'script': "arguments[0].scrollIntoView(true); return arguments[0].getBoundingClientRect()",
+                'args': [self]})['value']
+            return {"x": round(old_loc['x']),
+                    "y": round(old_loc['y'])}
+        else:
+            return self._execute(Command.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW)['value']
 
     @property
     def size(self):
@@ -352,8 +402,8 @@ class WebElement(object):
 
     def value_of_css_property(self, property_name):
         """The value of a CSS property."""
-        return self._execute(Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
-                        {'propertyName': property_name})['value']
+        return self._execute(Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY, {
+            'propertyName': property_name})['value']
 
     @property
     def location(self):
@@ -362,8 +412,8 @@ class WebElement(object):
             old_loc = self._execute(Command.GET_ELEMENT_RECT)
         else:
             old_loc = self._execute(Command.GET_ELEMENT_LOCATION)['value']
-        new_loc = {"x": old_loc['x'],
-                   "y": old_loc['y']}
+        new_loc = {"x": round(old_loc['x']),
+                   "y": round(old_loc['y'])}
         return new_loc
 
     @property
@@ -415,7 +465,6 @@ class WebElement(object):
             del png
         return True
 
-
     @property
     def parent(self):
         """Internal reference to the WebDriver instance this element was found from."""
@@ -457,9 +506,6 @@ class WebElement(object):
         return self._parent.execute(command, params)
 
     def find_element(self, by=By.ID, value=None):
-        if not By.is_valid(by) or not isinstance(value, str):
-            raise InvalidSelectorException("Invalid locator values passed in")
-
         if self._w3c:
             if by == By.ID:
                 by = By.CSS_SELECTOR
@@ -477,9 +523,6 @@ class WebElement(object):
                              {"using": by, "value": value})['value']
 
     def find_elements(self, by=By.ID, value=None):
-        if not By.is_valid(by) or not isinstance(value, str):
-            raise InvalidSelectorException("Invalid locator values passed in")
-
         if self._w3c:
             if by == By.ID:
                 by = By.CSS_SELECTOR
@@ -508,8 +551,7 @@ class WebElement(object):
         if not isinstance(content, str):
             content = content.decode('utf-8')
         try:
-            return self._execute(Command.UPLOAD_FILE,
-                            {'file': content})['value']
+            return self._execute(Command.UPLOAD_FILE, {'file': content})['value']
         except WebDriverException as e:
             if "Unrecognized command: POST" in e.__str__():
                 return filename

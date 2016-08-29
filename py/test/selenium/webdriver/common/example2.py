@@ -19,9 +19,10 @@ import unittest
 from google_one_box import GoogleOneBox
 from selenium.webdriver.firefox.webdriver import WebDriver
 
+
 class ExampleTest2(unittest.TestCase):
     """This example shows how to use the page object pattern.
-    
+
     For more information about this pattern, see:
     https://github.com/SeleniumHQ/selenium/wiki/PageObjects"""
     def setUp(self):

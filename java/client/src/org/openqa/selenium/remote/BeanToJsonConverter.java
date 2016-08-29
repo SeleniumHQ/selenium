@@ -218,12 +218,11 @@ public class BeanToJsonConverter {
         Object res = toJson.invoke(toConvert);
         if (res instanceof JsonElement) {
           return (JsonElement) res;
-        } else {
-          try {
-            return new JsonParser().parse((String) res);
-          } catch (JsonParseException e) {
-            return new JsonPrimitive((String) res);
-          }
+        }
+        try {
+          return new JsonParser().parse((String) res);
+        } catch (JsonParseException e) {
+          return new JsonPrimitive((String) res);
         }
       } catch (IllegalArgumentException e) {
         throw new WebDriverException(e);

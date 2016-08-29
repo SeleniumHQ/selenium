@@ -331,6 +331,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
       value = {SAFARI, MARIONETTE},
       issues = {4136})
   @Test
+  @NotYetImplemented(HTMLUNIT) // broken in 2.20
   public void testShouldAllowUsersToHoverOverElements() {
     driver.get(pages.javascriptPage);
 
@@ -351,6 +352,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
       value = {SAFARI, MARIONETTE},
       issues = {4136})
   @Test
+  @NotYetImplemented(HTMLUNIT) // broken in 2.20
   public void testHoverPersists() throws Exception {
     driver.get(pages.javascriptPage);
     // Move to a different element to make sure the mouse is not over the

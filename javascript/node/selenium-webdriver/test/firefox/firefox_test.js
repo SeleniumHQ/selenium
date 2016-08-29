@@ -22,7 +22,9 @@ var path = require('path');
 var firefox = require('../../firefox'),
     io = require('../../io'),
     test = require('../../lib/test'),
-    assert = require('../../testing/assert');
+    assert = require('../../testing/assert'),
+    Context = require('../../firefox').Context,
+    error = require('../..').error;
 
 
 var JETPACK_EXTENSION = path.join(__dirname,
@@ -119,41 +121,10 @@ test.suite(function(env) {
         // refresh doesn't appear to work).
         driver.wait(function() {
           driver.get(url);
-          return driver.isElementPresent({id: 'jetpack-sample-banner'});
+          return driver.findElements({id: 'jetpack-sample-banner'})
+              .then(found => found.length > 0);
         }, 3000);
       }
-    });
-
-    describe('profile management', function() {
-      var driver;
-
-      test.beforeEach(function() {
-        driver = null;
-      });
-
-      test.afterEach(function() {
-        if (driver) {
-          driver.quit();
-        }
-      });
-
-      test.ignore(env.isRemote).
-      it('deletes the temp profile on quit', function() {
-        driver = env.builder().build();
-
-        var profilePath = driver.call(function() {
-          var path = driver.profilePath_;
-          assert(io.exists(path)).isTrue();
-          return path;
-        });
-
-        return driver.quit().then(function() {
-          driver = null;
-          return profilePath;
-        }).then(function(path) {
-          assert(io.exists(path)).isFalse();
-        });
-      });
     });
 
     describe('binary management', function() {
@@ -176,6 +147,40 @@ test.suite(function(env) {
         if (driver2) {
           driver2.quit();
         }
+      });
+    });
+
+    describe('context switching', function() {
+      var driver;
+
+      test.beforeEach(function() {
+        driver = env.builder().build();
+      });
+
+      test.afterEach(function() {
+        if (driver) {
+          driver.quit();
+        }
+      });
+
+      test.ignore(() => !env.isMarionette).
+      it('can get context', function() {
+        assert(driver.getContext()).equalTo(Context.CONTENT);
+      });
+
+      test.ignore(() => !env.isMarionette).
+      it('can set context', function() {
+        driver.setContext(Context.CHROME);
+        assert(driver.getContext()).equalTo(Context.CHROME);
+        driver.setContext(Context.CONTENT);
+        assert(driver.getContext()).equalTo(Context.CONTENT);
+      });
+
+      test.ignore(() => !env.isMarionette).
+      it('throws on unknown context', function() {
+        driver.setContext("foo").then(assert.fail, function(e) {
+          assert(e).instanceOf(error.InvalidArgumentError);
+        });
       });
     });
 

@@ -20,17 +20,15 @@
 module Selenium
   module WebDriver
     module Chrome
-
       # @api private
       class Bridge < Remote::Bridge
-
         def initialize(opts = {})
           http_client = opts.delete(:http_client)
 
-          if opts.has_key?(:url)
+          if opts.key?(:url)
             url = opts.delete(:url)
           else
-            @service = Service.default_service(*extract_service_args(opts))
+            @service = Service.new(Chrome.driver_path, Service::DEFAULT_PORT, *extract_service_args(opts))
             @service.start
 
             url = @service.uri
@@ -39,11 +37,11 @@ module Selenium
           caps = create_capabilities(opts)
 
           remote_opts = {
-            :url                  => url,
-            :desired_capabilities => caps
+            url: url,
+            desired_capabilities: caps
           }
 
-          remote_opts.merge!(:http_client => http_client) if http_client
+          remote_opts[:http_client] = http_client if http_client
 
           super(remote_opts)
         end
@@ -90,24 +88,24 @@ module Selenium
           chrome_options = caps['chromeOptions'] || {}
 
           if args
-            unless args.kind_of? Array
-              raise ArgumentError, ":args must be an Array of Strings"
+            unless args.is_a? Array
+              raise ArgumentError, ':args must be an Array of Strings'
             end
 
-            chrome_options['args'] = args.map { |e| e.to_s }
+            chrome_options['args'] = args.map(&:to_s)
           end
 
           if profile
             data = profile.as_json
 
-            chrome_options.merge! 'profile'    => data['zip'],
-                                  'extensions' => data['extensions']
+            chrome_options['profile'] = data['zip']
+            chrome_options['extensions'] = data['extensions']
           end
 
           chrome_options['binary']                   = Chrome.path if Chrome.path
           chrome_options['nativeEvents']             = true if native_events
           chrome_options['verbose']                  = true if verbose
-          chrome_options['detach']                   = detach.nil? || !!detach
+          chrome_options['detach']                   = true if detach
           chrome_options['noWebsiteTestingDefaults'] = true if no_website_testing_defaults
           chrome_options['prefs']                    = prefs if prefs
 
@@ -115,7 +113,7 @@ module Selenium
           caps['proxy'] = proxy if proxy
 
           # legacy options - for chromedriver < 17.0.963.0
-          caps["chrome.switches"] = chrome_options['args'] if chrome_options.member?('args')
+          caps['chrome.switches'] = chrome_options['args'] if chrome_options.member?('args')
           %w[binary detach extensions nativeEvents noWebsiteTestingDefaults prefs profile verbose].each do |key|
             caps["chrome.#{key}"] = chrome_options[key] if chrome_options.member?(key)
           end
@@ -126,13 +124,12 @@ module Selenium
         def extract_service_args(opts)
           args = []
 
-          if opts.has_key?(:service_log_path)
+          if opts.key?(:service_log_path)
             args << "--log-path=#{opts.delete(:service_log_path)}"
           end
 
           args
         end
-
       end # Bridge
     end # Chrome
   end # WebDriver

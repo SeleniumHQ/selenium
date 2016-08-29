@@ -1,4 +1,5 @@
 java_library(name = 'hamcrest',
+  maven_coords = 'org.hamcrest:hamcrest-all:1.3',
   exported_deps = [
     ':core',
     ':library',
@@ -8,8 +9,10 @@ java_library(name = 'hamcrest',
 
 prebuilt_jar(name = 'core',
   binary_jar = 'hamcrest-core-1.3.jar',
+  source_jar = 'hamcrest-core-1.3-sources.jar',
 )
 
 prebuilt_jar(name = 'library',
   binary_jar = 'hamcrest-library-1.3.jar',
+  source_jar = 'hamcrest-library-1.3-sources.jar',
 )

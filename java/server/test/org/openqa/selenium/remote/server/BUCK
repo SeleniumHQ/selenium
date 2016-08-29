@@ -1,0 +1,39 @@
+java_test(name = 'small-tests',
+  srcs = [
+    'RemoteServerTests.java',
+  ],
+  vm_args = [
+    '-Dselenium.browser=htmlunit',
+    '-Dselenium.browser.remote=true',
+  ],
+  deps = [
+    ':tests',
+    '//third_party/java/junit:junit',
+  ],
+)
+
+java_library(name = 'tests',
+  srcs = glob([
+    '*.java',
+    'handler/**/*.java',
+    'rest/*.java',
+    'testing/*.java',
+    'xdrpc/*.java',
+  ]),
+  deps = [
+    '//java/client/src/org/openqa/selenium:selenium',
+    '//java/client/src/org/openqa/selenium/remote:remote',
+    '//java/client/test/org/openqa/selenium/testing:test-base',
+    '//java/client/test/org/openqa/selenium/testing/drivers:drivers',
+    '//java/server/src/org/openqa/selenium/remote/server:server',
+    '//java/server/src/org/openqa/selenium/remote/server:sessions',
+    '//third_party/java/hamcrest:hamcrest',
+    '//third_party/java/httpcomponents:httpclient',
+    '//third_party/java/gson:gson',
+    '//third_party/java/guava:guava',
+    '//third_party/java/jetty:jetty',
+    '//third_party/java/junit:junit',
+    '//third_party/java/mockito:mockito',
+    '//third_party/java/servlet:servlet-api',
+  ],
+)

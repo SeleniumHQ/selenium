@@ -17,13 +17,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import sys
-
 from distutils.command.install import INSTALL_SCHEMES
-from os.path import dirname, join, isfile, abspath
+from os.path import dirname, join, abspath
 from setuptools import setup
 from setuptools.command.install import install
-from shutil import copy
 
 
 for scheme in INSTALL_SCHEMES.values():
@@ -32,12 +29,12 @@ for scheme in INSTALL_SCHEMES.values():
 setup_args = {
     'cmdclass': {'install': install},
     'name': 'selenium',
-    'version': "2.52.0",
+    'version': "3.0.0.b2",
     'description': 'Python bindings for Selenium',
-    'long_description': open(join(abspath(dirname(__file__)), "py", "README.rst")).read(),
+    'long_description':open(join(abspath(dirname(__file__)), "py", "README.rst")).read(),
     'url': 'https://github.com/SeleniumHQ/selenium/',
     'classifiers': ['Development Status :: 5 - Production/Stable',
-                   'Intended Audience :: Developers',
+                    'Intended Audience :: Developers',
                     'License :: OSI Approved :: Apache Software License',
                     'Operating System :: POSIX',
                     'Operating System :: Microsoft :: Windows',
@@ -47,9 +44,9 @@ setup_args = {
                     'Programming Language :: Python',
                     'Programming Language :: Python :: 2.6',
                     'Programming Language :: Python :: 2.7',
-                    'Programming Language :: Python :: 3.2',
                     'Programming Language :: Python :: 3.3',
-                    'Programming Language :: Python :: 3.4'],
+                    'Programming Language :: Python :: 3.4',
+                    'Programming Language :: Python :: 3.5'],
     'package_dir': {
         'selenium': 'py/selenium',
         'selenium.common': 'py/selenium/common',

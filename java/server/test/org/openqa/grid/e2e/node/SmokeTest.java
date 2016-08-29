@@ -38,7 +38,7 @@ import org.openqa.grid.web.Hub;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.remote.server.SeleniumServer;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -56,51 +56,30 @@ public class SmokeTest {
         GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
     remote.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
 
-    DesiredCapabilities firefoxOnSeleniumCapability = new DesiredCapabilities();
-    firefoxOnSeleniumCapability.setBrowserName("*firefox");
-    firefoxOnSeleniumCapability.setCapability(RegistrationRequest.SELENIUM_PROTOCOL,SeleniumProtocol.Selenium);
+    DesiredCapabilities chromeOnSeleniumCapability = DesiredCapabilities.chrome();
+    chromeOnSeleniumCapability.setCapability(RegistrationRequest.SELENIUM_PROTOCOL,SeleniumProtocol.WebDriver);
 
-    remote.addBrowser(firefoxOnSeleniumCapability, 1);
+    remote.addBrowser(chromeOnSeleniumCapability, 1);
 
     remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
     remote.startRemoteServer();
 
-    remote.getConfiguration().put(RegistrationRequest.TIME_OUT, -1);
+    remote.getConfiguration().timeout = -1;
     remote.sendRegistrationRequest();
     RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
   }
 
   @Test
-  public void firefoxOnWebDriver() throws MalformedURLException {
+  public void chromeOnWebDriver() throws MalformedURLException {
     WebDriver driver = null;
     try {
-      DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
-      driver = new RemoteWebDriver(new URL(hub.getUrl() + "/wd/hub"), caps);
-      driver.get(hub.getUrl() + "/grid/old/console");
-      assertEquals(driver.getTitle(), "Grid overview");
+      DesiredCapabilities caps = DesiredCapabilities.chrome();
+      driver = new RemoteWebDriver(hub.getWebDriverHubRequestURL(), caps);
+      driver.get(hub.getConsoleURL().toString());
+      assertEquals(driver.getTitle(), "Grid Console");
     } finally {
       if (driver != null) {
         driver.quit();
-      }
-    }
-  }
-
-
-  @Ignore
-  @Test
-  public void firefoxOnSelenium() throws MalformedURLException {
-    Selenium selenium = null;
-    try {
-      selenium = new DefaultSelenium(hub.getHost(), hub.getPort(), "*firefox", hub.getUrl() + "");
-      assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
-      selenium.start();
-      assertEquals(hub.getRegistry().getActiveSessions().size(), 1);
-      selenium.open(hub.getUrl() + "/grid/console");
-      assertEquals(selenium.getTitle(), "Grid Console");
-
-    } finally {
-      if (selenium != null) {
-        selenium.stop();
       }
     }
   }

@@ -15,7 +15,5 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from selenium import selenium
 
-
-__version__ = "2.51.0"
+__version__ = "3.0.0.b2"

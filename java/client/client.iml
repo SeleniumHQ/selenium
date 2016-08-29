@@ -5,14 +5,14 @@
     <output-test url="file://$MODULE_DIR$/build/test" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../build/javascript/selenium-atoms">
-      <sourceFolder url="file://$MODULE_DIR$/../../build/javascript/selenium-atoms" type="java-resource" relativeOutputPath="com/thoughtworks/selenium/webdriven" />
+      <sourceFolder url="file://$MODULE_DIR$/../../build/javascript/selenium-atoms" type="java-resource" />
     </content>
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
     </content>
     <content url="file://$MODULE_DIR$/../../third_party/js/sizzle">
-      <sourceFolder url="file://$MODULE_DIR$/../../third_party/js/sizzle" type="java-resource" relativeOutputPath="com/thoughtworks/selenium/webdriven" />
+      <sourceFolder url="file://$MODULE_DIR$/../../third_party/js/sizzle" type="java-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -36,7 +36,6 @@
     <orderEntry type="library" name="servlet-api" level="project" />
     <orderEntry type="library" name="testng" level="project" />
     <orderEntry type="library" name="xml-apis" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="nekohtml" level="project" />
     <orderEntry type="library" name="sac" level="project" />
     <orderEntry type="library" scope="TEST" name="dnsjava" level="project" />
     <orderEntry type="library" scope="TEST" name="dnssec4j" level="project" />
@@ -46,6 +45,8 @@
     <orderEntry type="library" name="mockito-core-1.9.5-srcs" level="project" />
     <orderEntry type="library" name="objenesis-1.0" level="project" />
     <orderEntry type="library" name="commons-httpclient" level="project" />
+    <orderEntry type="library" scope="TEST" name="websocket-9.2.15.v20160210" level="project" />
+    <orderEntry type="library" scope="TEST" name="jetty-util-9.2.13.v20150730" level="project" />
   </component>
   <component name="sonarModuleSettings">
     <option name="alternativeWorkingDirPath" value="" />

@@ -20,85 +20,84 @@
 module Selenium
   module WebDriver
     module Keys
-
       #
       # @see Element#send_keys
       # @see http://www.google.com.au/search?&q=unicode+pua&btnG=Search
       #
 
       KEYS = {
-      # \x works on both 1.8.6/1.9
-        :null         => "\xEE\x80\x80",
-        :cancel       => "\xEE\x80\x81",
-        :help         => "\xEE\x80\x82",
-        :backspace    => "\xEE\x80\x83",
-        :tab          => "\xEE\x80\x84",
-        :clear        => "\xEE\x80\x85",
-        :return       => "\xEE\x80\x86",
-        :enter        => "\xEE\x80\x87",
-        :shift        => "\xEE\x80\x88",
-        :left_shift   => "\xEE\x80\x88",
-        :control      => "\xEE\x80\x89",
-        :left_control => "\xEE\x80\x89",
-        :alt          => "\xEE\x80\x8A",
-        :left_alt     => "\xEE\x80\x8A",
-        :pause        => "\xEE\x80\x8B",
-        :escape       => "\xEE\x80\x8C",
-        :space        => "\xEE\x80\x8D",
-        :page_up      => "\xEE\x80\x8E",
-        :page_down    => "\xEE\x80\x8F",
-        :end          => "\xEE\x80\x90",
-        :home         => "\xEE\x80\x91",
-        :left         => "\xEE\x80\x92",
-        :arrow_left   => "\xEE\x80\x92",
-        :up           => "\xEE\x80\x93",
-        :arrow_up     => "\xEE\x80\x93",
-        :right        => "\xEE\x80\x94",
-        :arrow_right  => "\xEE\x80\x94",
-        :down         => "\xEE\x80\x95",
-        :arrow_down   => "\xEE\x80\x95",
-        :insert       => "\xEE\x80\x96",
-        :delete       => "\xEE\x80\x97",
-        :semicolon    => "\xEE\x80\x98",
-        :equals       => "\xEE\x80\x99",
-        :numpad0      => "\xEE\x80\x9A",
-        :numpad1      => "\xEE\x80\x9B",
-        :numpad2      => "\xEE\x80\x9C",
-        :numpad3      => "\xEE\x80\x9D",
-        :numpad4      => "\xEE\x80\x9E",
-        :numpad5      => "\xEE\x80\x9F",
-        :numpad6      => "\xEE\x80\xA0",
-        :numpad7      => "\xEE\x80\xA1",
-        :numpad8      => "\xEE\x80\xA2",
-        :numpad9      => "\xEE\x80\xA3",
-        :multiply     => "\xEE\x80\xA4",
-        :add          => "\xEE\x80\xA5",
-        :separator    => "\xEE\x80\xA6",
-        :subtract     => "\xEE\x80\xA7",
-        :decimal      => "\xEE\x80\xA8",
-        :divide       => "\xEE\x80\xA9",
-        :f1           => "\xEE\x80\xB1",
-        :f2           => "\xEE\x80\xB2",
-        :f3           => "\xEE\x80\xB3",
-        :f4           => "\xEE\x80\xB4",
-        :f5           => "\xEE\x80\xB5",
-        :f6           => "\xEE\x80\xB6",
-        :f7           => "\xEE\x80\xB7",
-        :f8           => "\xEE\x80\xB8",
-        :f9           => "\xEE\x80\xB9",
-        :f10          => "\xEE\x80\xBA",
-        :f11          => "\xEE\x80\xBB",
-        :f12          => "\xEE\x80\xBC",
-        :meta         => "\xEE\x80\xBD",
-        :command      => "\xEE\x80\xBD" # alias
-      }
+        null: "\ue000",
+        cancel: "\ue001",
+        help: "\ue002",
+        backspace: "\ue003",
+        tab: "\ue004",
+        clear: "\ue005",
+        return: "\ue006",
+        enter: "\ue007",
+        shift: "\ue008",
+        left_shift: "\ue008",
+        control: "\ue009",
+        left_control: "\ue009",
+        alt: "\ue00A",
+        left_alt: "\ue00A",
+        pause: "\ue00B",
+        escape: "\ue00C",
+        space: "\ue00D",
+        page_up: "\ue00E",
+        page_down: "\ue00F",
+        end: "\ue010",
+        home: "\ue011",
+        left: "\ue012",
+        arrow_left: "\ue012",
+        up: "\ue013",
+        arrow_up: "\ue013",
+        right: "\ue014",
+        arrow_right: "\ue014",
+        down: "\ue015",
+        arrow_down: "\ue015",
+        insert: "\ue016",
+        delete: "\ue017",
+        semicolon: "\ue018",
+        equals: "\ue019",
+        numpad0: "\ue01A",
+        numpad1: "\ue01B",
+        numpad2: "\ue01C",
+        numpad3: "\ue01D",
+        numpad4: "\ue01E",
+        numpad5: "\ue01F",
+        numpad6: "\ue020",
+        numpad7: "\ue021",
+        numpad8: "\ue022",
+        numpad9: "\ue023",
+        multiply: "\ue024",
+        add: "\ue025",
+        separator: "\ue026",
+        subtract: "\ue027",
+        decimal: "\ue028",
+        divide: "\ue029",
+        f1: "\ue031",
+        f2: "\ue032",
+        f3: "\ue033",
+        f4: "\ue034",
+        f5: "\ue035",
+        f6: "\ue036",
+        f7: "\ue037",
+        f8: "\ue038",
+        f9: "\ue039",
+        f10: "\ue03A",
+        f11: "\ue03B",
+        f12: "\ue03C",
+        meta: "\ue03D",
+        command: "\ue03D" # alias
+      }.freeze
 
       #
       # @api private
       #
 
       def self.[](key)
-        KEYS[key] or raise Error::UnsupportedOperationError, "no such key #{key.inspect}"
+        return KEYS[key] if KEYS[key]
+        raise Error::UnsupportedOperationError, "no such key #{key.inspect}"
       end
 
       #
@@ -111,7 +110,7 @@ module Selenium
           when Symbol
             Keys[arg]
           when Array
-            arg = arg.map { |e| e.kind_of?(Symbol) ? Keys[e] : e }.join
+            arg = arg.map { |e| e.is_a?(Symbol) ? Keys[e] : e }.join
             arg << Keys[:null]
 
             arg
@@ -120,7 +119,6 @@ module Selenium
           end
         end
       end
-
     end # Keys
   end # WebDriver
 end # Selenium

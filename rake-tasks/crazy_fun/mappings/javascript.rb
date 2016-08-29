@@ -1315,6 +1315,7 @@ module Javascript
               (ENV['log'] == 'true' ? 'Log: build/test_logs/TEST-' + browser_task_name.gsub(/[\/:]+/, '-') : '')
 
           cp = CrazyFunJava::ClassPath.new("#{browser_task_name}:run")
+          puts cp
           mkdir_p 'build/test_logs'
 
           CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(2) if ENV['log']

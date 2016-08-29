@@ -20,30 +20,33 @@
 module Selenium
   module WebDriver
     class Alert
-
       def initialize(bridge)
         @bridge = bridge
 
         # fail fast if the alert doesn't exist
-        bridge.getAlertText
+        bridge.alert_text
       end
 
       def accept
-        @bridge.acceptAlert
+        @bridge.accept_alert
       end
 
       def dismiss
-        @bridge.dismissAlert
+        @bridge.dismiss_alert
       end
 
       def send_keys(keys)
-        @bridge.setAlertValue keys
+        @bridge.alert = keys
       end
 
       def text
-        @bridge.getAlertText
+        @bridge.alert_text
       end
 
+      def authenticate(username, password)
+        @bridge.authentication(username: username, password: password)
+        accept
+      end
     end # Alert
   end # WebDriver
 end # Selenium

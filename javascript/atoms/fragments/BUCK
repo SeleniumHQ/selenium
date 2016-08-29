@@ -1,7 +1,29 @@
 js_fragment(name = 'clear',
   function = 'bot.action.clear',
   module = 'bot.action',
-  deps = [ 
+  deps = [
     '//javascript/atoms:action',
+  ],
+)
+
+js_fragment(name = 'execute_script',
+  function = 'bot.inject.executeScript',
+  module = 'bot.inject',
+  deps = [
+    '//javascript/atoms:inject',
+  ],
+  visibility = [
+    '//java/client/test/org/openqa/selenium/atoms:',
+  ],
+)
+
+js_fragment(name = 'is-displayed',
+  function = 'bot.dom.isShown',
+  module = 'bot.dom',
+  deps = [
+    '//javascript/atoms:dom',
+  ],
+  visibility = [
+    '//java/client/src/org/openqa/selenium/remote:is-displayed',
   ],
 )

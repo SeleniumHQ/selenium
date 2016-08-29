@@ -607,7 +607,7 @@ const NativePromise = Promise;
  * Whether to append traces of `then` to rejection errors.
  * @type {boolean}
  */
-exports.LONG_STACK_TRACES = false;  // TODO: this should not be CONSTANT_CASE
+var LONG_STACK_TRACES = false;  // TODO: this should not be CONSTANT_CASE
 
 
 /** @const */
@@ -911,18 +911,6 @@ class Thenable {
   catch(errback) {}
 
   /**
-   * An alias for {@link #catch()}
-   *
-   * @param {function(*): (R|IThenable<R>)} errback The
-   *     function to call if this promise is rejected. The function should
-   *     expect a single argument: the rejection reason.
-   * @return {!ManagedPromise<R>} A new promise which will be
-   *     resolved wdith the result of the invoked callback.
-   * @template R
-   */
-  thenCatch(errback) {}
-
-  /**
    * Registers a listener to invoke when this promise is resolved, regardless
    * of whether the promise's value was successfully computed. This function
    * is synonymous with the {@code finally} clause in a synchronous API:
@@ -935,7 +923,7 @@ class Thenable {
    *     }
    *
    *     // Asynchronous promise API:
-   *     doAsynchronousWork().thenFinally(cleanUp);
+   *     doAsynchronousWork().finally(cleanUp);
    *
    * __Note:__ similar to the {@code finally} clause, if the registered
    * callback returns a rejected promise or throws an error, it will silently
@@ -948,17 +936,17 @@ class Thenable {
    *     }
    *
    *     promise.rejected(Error('one'))
-   *         .thenFinally(function() {
+   *         .finally(function() {
    *           throw Error('two');  // Hides Error: one
    *         });
    *
-   * @param {function(): (R|IThenable<R>)} callback The function
-   *     to call when this promise is resolved.
+   * @param {function(): (R|IThenable<R>)} callback The function to call when
+   *     this promise is resolved.
    * @return {!ManagedPromise<R>} A promise that will be fulfilled
    *     with the callback result.
    * @template R
    */
-  thenFinally(callback) {}
+  finally(callback) {}
 }
 
 
@@ -974,12 +962,14 @@ const PromiseState = {
 
 
 /**
- * Internal symbol used to store a cancellation handler for
- * {@link ManagedPromise} objects. This is an internal implementation detail
- * used by the {@link TaskQueue} class to monitor for when a promise is
- * cancelled without generating an extra promise via then().
+ * Internal map used to store cancellation handlers for {@link ManagedPromise}
+ * objects. This is an internal implementation detail used by the
+ * {@link TaskQueue} class to monitor for when a promise is cancelled without
+ * generating an extra promise via then().
+ *
+ * @const {!WeakMap<!ManagedPromise, function(!CancellationError)>}
  */
-const CANCEL_HANDLER_SYMBOL = Symbol('on cancel');
+const ON_CANCEL_HANDLER = new WeakMap;
 
 
 /**
@@ -990,11 +980,10 @@ const CANCEL_HANDLER_SYMBOL = Symbol('on cancel');
  * resolved.
  *
  * @implements {Thenable<T>}
- * @unrestricted
  * @template T
  * @see http://promises-aplus.github.io/promises-spec/
  */
-const ManagedPromise = class Promise {
+class ManagedPromise {
   /**
    * @param {function(
    *           function((T|IThenable<T>|Thenable)=),
@@ -1013,11 +1002,11 @@ const ManagedPromise = class Promise {
 
     /** @private {Error} */
     this.stack_ = null;
-    if (exports.LONG_STACK_TRACES) {
-      this.stack_ = captureStackTrace('Promise', 'new', this.constructor);
+    if (LONG_STACK_TRACES) {
+      this.stack_ = captureStackTrace('ManagedPromise', 'new', this.constructor);
     }
 
-    /** @private {ManagedPromise<?>} */
+    /** @private {Thenable<?>} */
     this.parent_ = null;
 
     /** @private {Array<!Task>} */
@@ -1034,9 +1023,6 @@ const ManagedPromise = class Promise {
 
     /** @private {TaskQueue} */
     this.queue_ = null;
-
-    /** @private {(function(CancellationError)|null)} */
-    this[CANCEL_HANDLER_SYMBOL] = null;
 
     try {
       var self = this;
@@ -1083,6 +1069,7 @@ const ManagedPromise = class Promise {
       if (Thenable.isImplementation(newValue)) {
         // 2.3.2
         newValue = /** @type {!Thenable} */(newValue);
+        this.parent_ = newValue;
         newValue.then(
             this.unblockAndResolve_.bind(this, PromiseState.FULFILLED),
             this.unblockAndResolve_.bind(this, PromiseState.REJECTED));
@@ -1176,7 +1163,7 @@ const ManagedPromise = class Promise {
   scheduleNotifications_() {
     vlog(2, () => this + ' scheduling notifications', this);
 
-    this[CANCEL_HANDLER_SYMBOL] = null;
+    ON_CANCEL_HANDLER.delete(this);
     if (this.value_ instanceof CancellationError
         && this.value_.silent_) {
       this.callbacks_ = null;
@@ -1204,9 +1191,10 @@ const ManagedPromise = class Promise {
       this.parent_.cancel(opt_reason);
     } else {
       var reason = CancellationError.wrap(opt_reason);
-      if (this[CANCEL_HANDLER_SYMBOL]) {
-        this[CANCEL_HANDLER_SYMBOL](reason);
-        this[CANCEL_HANDLER_SYMBOL] = null;
+      let onCancel = ON_CANCEL_HANDLER.get(this);
+      if (onCancel) {
+        onCancel(reason);
+        ON_CANCEL_HANDLER.delete(this);
       }
 
       if (this.state_ === PromiseState.BLOCKED) {
@@ -1217,6 +1205,9 @@ const ManagedPromise = class Promise {
     }
 
     function canCancel(promise) {
+      if (!(promise instanceof ManagedPromise)) {
+        return Thenable.isImplementation(promise);
+      }
       return promise.state_ === PromiseState.PENDING
           || promise.state_ === PromiseState.BLOCKED;
     }
@@ -1240,12 +1231,7 @@ const ManagedPromise = class Promise {
   }
 
   /** @override */
-  thenCatch(errback) {
-    return this.catch(errback);
-  }
-
-  /** @override */
-  thenFinally(callback) {
+  finally(callback) {
     var error;
     var mustThrow = false;
     return this.then(function() {
@@ -1289,7 +1275,7 @@ const ManagedPromise = class Promise {
         this.flow_,
         this.invokeCallback_.bind(this, callback, errback),
         name,
-        exports.LONG_STACK_TRACES ? {name: 'Promise', top: fn} : undefined);
+        LONG_STACK_TRACES ? {name: 'Promise', top: fn} : undefined);
     cb.promise.parent_ = this;
 
     if (this.state_ !== PromiseState.PENDING &&
@@ -1348,7 +1334,6 @@ Thenable.addImplementation(ManagedPromise);
  * the next turn of the event loop, the rejection will be passed to the
  * {@link ControlFlow} as an unhandled failure.
  *
- * @implements {Thenable<T>}
  * @template T
  */
 class Deferred {
@@ -1392,50 +1377,7 @@ class Deferred {
       reject(opt_reason);
     };
   }
-
-  /** @override */
-  isPending() {
-    return this.promise.isPending();
-  }
-
-  /** @override */
-  cancel(opt_reason) {
-    this.promise.cancel(opt_reason);
-  }
-
-  /**
-   * @override
-   * @deprecated Use {@code then} from the promise property directly.
-   */
-  then(opt_cb, opt_eb) {
-    return this.promise.then(opt_cb, opt_eb);
-  }
-
-  /**
-   * @override
-   * @deprecated Use {@lcode catch} from the promise property directly.
-   */
-  catch(opt_eb) {
-    return this.promise.catch(opt_eb);
-  }
-
-  /**
-   * @override
-   * @deprecated Use {@code thenCatch} from the promise property directly.
-   */
-  thenCatch(opt_eb) {
-    return this.promise.thenCatch(opt_eb);
-  }
-
-  /**
-   * @override
-   * @deprecated Use {@code thenFinally} from the promise property directly.
-   */
-  thenFinally(opt_cb) {
-    return this.promise.thenFinally(opt_cb);
-  }
 }
-Thenable.addImplementation(Deferred);
 
 
 /**
@@ -2627,8 +2569,9 @@ class TaskQueue extends events.EventEmitter {
 
     this.tasks_.push(task);
     task.queue = this;
-    task.promise[CANCEL_HANDLER_SYMBOL] =
-        this.onTaskCancelled_.bind(this, task);
+    ON_CANCEL_HANDLER.set(
+        task.promise,
+        (e) => this.onTaskCancelled_(task, e));
 
     vlog(1, () => this + '.enqueue(' + task + ')', this);
     vlog(2, () => this.flow_.toString(), this);
@@ -2661,7 +2604,9 @@ class TaskQueue extends events.EventEmitter {
         return;
       }
 
-      cb.promise[CANCEL_HANDLER_SYMBOL] = this.onTaskCancelled_.bind(this, cb);
+      ON_CANCEL_HANDLER.set(
+          cb.promise,
+          (e) => this.onTaskCancelled_(cb, e));
 
       if (cb.queue === this && this.tasks_.indexOf(cb) !== -1) {
         return;
@@ -2725,9 +2670,16 @@ class TaskQueue extends events.EventEmitter {
       this.tasks_ = [];
     }
 
+    // Now that all of the remaining tasks have been silently cancelled (e.g. no
+    // exisitng callbacks on those tasks will fire), clear the silence bit on
+    // the cancellation error. This ensures additional callbacks registered in
+    // the future will actually execute.
+    cancellation.silent_ = false;
+
     if (this.pending_) {
       vlog(2, () => this + '.abort(); cancelling pending task', this);
-      this.pending_.task.cancel(/** @type {!CancellationError} */(error));
+      this.pending_.task.promise.cancel(
+          /** @type {!CancellationError} */(error));
 
     } else {
       vlog(2, () => this + '.abort(); emitting error event', this);
@@ -2742,7 +2694,7 @@ class TaskQueue extends events.EventEmitter {
     }
     this.state_ = TaskQueueState.STARTED;
 
-    if (this.pending_ != null || this.processUnhandledRejections_()) {
+    if (this.pending_ !== null || this.processUnhandledRejections_()) {
       return;
     }
 
@@ -3043,7 +2995,7 @@ function consume(generatorFn, opt_self, var_args) {
   }
 
   function pump(fn, opt_arg) {
-    if (!deferred.isPending()) {
+    if (!deferred.promise.isPending()) {
       return;  // Defererd was cancelled; silently abort.
     }
 
@@ -3067,27 +3019,32 @@ function consume(generatorFn, opt_self, var_args) {
 // PUBLIC API
 
 
-exports.CancellationError = CancellationError;
-exports.ControlFlow = ControlFlow;
-exports.Deferred = Deferred;
-exports.MultipleUnhandledRejectionError = MultipleUnhandledRejectionError;
-exports.Thenable = Thenable;
-exports.Promise = ManagedPromise;
-exports.all = all;
-exports.asap = asap;
-exports.captureStackTrace = captureStackTrace;
-exports.checkedNodeCall = checkedNodeCall;
-exports.consume = consume;
-exports.controlFlow = controlFlow;
-exports.createFlow = createFlow;
-exports.defer = defer;
-exports.delayed = delayed;
-exports.filter = filter;
-exports.fulfilled = fulfilled;
-exports.fullyResolved = fullyResolved;
-exports.isGenerator = isGenerator;
-exports.isPromise = isPromise;
-exports.map = map;
-exports.rejected = rejected;
-exports.setDefaultFlow = setDefaultFlow;
-exports.when = when;
+module.exports = {
+  CancellationError: CancellationError,
+  ControlFlow: ControlFlow,
+  Deferred: Deferred,
+  MultipleUnhandledRejectionError: MultipleUnhandledRejectionError,
+  Thenable: Thenable,
+  Promise: ManagedPromise,
+  all: all,
+  asap: asap,
+  captureStackTrace: captureStackTrace,
+  checkedNodeCall: checkedNodeCall,
+  consume: consume,
+  controlFlow: controlFlow,
+  createFlow: createFlow,
+  defer: defer,
+  delayed: delayed,
+  filter: filter,
+  fulfilled: fulfilled,
+  fullyResolved: fullyResolved,
+  isGenerator: isGenerator,
+  isPromise: isPromise,
+  map: map,
+  rejected: rejected,
+  setDefaultFlow: setDefaultFlow,
+  when: when,
+
+  get LONG_STACK_TRACES() { return LONG_STACK_TRACES; },
+  set LONG_STACK_TRACES(v) { LONG_STACK_TRACES = v; },
+};

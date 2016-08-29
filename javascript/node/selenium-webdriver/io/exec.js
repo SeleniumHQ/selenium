@@ -18,7 +18,6 @@
 'use strict';
 
 const childProcess = require('child_process');
-const promise = require('../lib/promise');
 
 
 /**
@@ -65,8 +64,7 @@ class Result {
 }
 
 
-const COMMAND_RESULT =
-    /** !WeakMap<!Command, !promise.Promise<!Result>> */new WeakMap;
+const COMMAND_RESULT = /** !WeakMap<!Command, !Promise<!Result>> */new WeakMap;
 const KILL_HOOK = /** !WeakMap<!Command, function(string)> */new WeakMap;
 
 /**
@@ -74,7 +72,7 @@ const KILL_HOOK = /** !WeakMap<!Command, function(string)> */new WeakMap;
  */
 class Command {
   /**
-   * @param {!promise.Promise<!Result>} result The command result.
+   * @param {!Promise<!Result>} result The command result.
    * @param {function(string)} onKill The function to call when {@link #kill()}
    *     is called.
    */
@@ -83,17 +81,12 @@ class Command {
     KILL_HOOK.set(this, onKill);
   }
 
-  /** @return {boolean} Whether this command is still running. */
-  isRunning() {
-    return COMMAND_RESULT.get(this).isPending();
-  }
-
   /**
-   * @return {!promise.Promise<!Result>} A promise for the result of this
+   * @return {!Promise<!Result>} A promise for the result of this
    *     command.
    */
   result() {
-    return /** @type {!promise.Promise<!Result>} */(COMMAND_RESULT.get(this));
+    return /** @type {!Promise<!Result>} */(COMMAND_RESULT.get(this));
   }
 
   /**
@@ -123,31 +116,32 @@ module.exports = function exec(command, opt_options) {
   var proc = childProcess.spawn(command, options.args || [], {
     env: options.env || process.env,
     stdio: options.stdio || 'ignore'
-  }).once('exit', onExit);
+  });
 
   // This process should not wait on the spawned child, however, we do
   // want to ensure the child is killed when this process exits.
   proc.unref();
-  process.once('exit', killCommand);
+  process.once('exit', onProcessExit);
 
-  var result = promise.defer();
-  var cmd = new Command(result.promise, function(signal) {
-    if (!result.isPending() || !proc) {
-      return;  // No longer running.
-    }
-    proc.kill(signal);
+  let result = new Promise(resolve => {
+    proc.once('exit', (code, signal) => {
+      proc = null;
+      process.removeListener('exit', onProcessExit);
+      resolve(new Result(code, signal));
+    });
   });
-  return cmd;
+  return new Command(result, killCommand);
 
-  function onExit(code, signal) {
-    proc = null;
-    process.removeListener('exit', killCommand);
-    result.fulfill(new Result(code, signal));
+  function onProcessExit() {
+    killCommand('SIGTERM');
   }
 
-  function killCommand() {
-    process.removeListener('exit', killCommand);
-    proc && proc.kill('SIGTERM');
+  function killCommand(signal) {
+    process.removeListener('exit', onProcessExit);
+    if (proc) {
+      proc.kill(signal);
+      proc = null;
+    }
   }
 };
 

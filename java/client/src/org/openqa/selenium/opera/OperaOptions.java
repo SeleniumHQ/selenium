@@ -28,11 +28,11 @@ import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
-import org.openqa.selenium.internal.Base64Encoder;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -213,7 +213,7 @@ public class OperaOptions {
     List<String> encoded_extensions = Lists.newArrayListWithExpectedSize(
         extensionFiles.size() + extensions.size());
     for (File path : extensionFiles) {
-      String encoded = new Base64Encoder().encode(Files.toByteArray(path));
+      String encoded = Base64.getEncoder().encodeToString(Files.toByteArray(path));
       encoded_extensions.add(encoded);
     }
     encoded_extensions.addAll(extensions);

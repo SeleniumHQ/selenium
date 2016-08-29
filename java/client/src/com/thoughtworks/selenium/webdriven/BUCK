@@ -23,28 +23,26 @@ java_library(name = 'webdriven',
     ':isSomethingSelected',
     ':isTextPresent',
     ':isVisible',
+    ':setCursorPosition',
     ':type',
     # TODO(simons): remove sizzle. There are no longer any browsers that need it.
     ':sizzle',
   ],
   exported_deps = [
     ':emulation-api',
+    '//java/client/src/com/thoughtworks/selenium/webdriven/commands:commands',
   ],
   deps = [
     '//java/client/src/com/thoughtworks/selenium:selenium',
-    '//java/client/src/com/thoughtworks/selenium/webdriven/commands:commands',
-    '//java/client/src/org/openqa/selenium:webdriver-api',
+    '//java/client/src/org/openqa/selenium:selenium',
     '//third_party/java/guava:guava',
   ],
   visibility = [
     '//java/client/src/com/thoughtworks/selenium/...',
     '//java/client/test/com/thoughtworks/selenium/...',
-    '//java/client/test/org/openqa/selenium/v1:tests',
-    '//java/client/test/org/openqa/selenium/v1/internal/seleniumemulation:LargeTests',
-    '//java/client/test/org/openqa/selenium/v1/internal/seleniumemulation:tests',
     '//java/server/src/com/thoughtworks/selenium/webdriven:rc-emulation-servlet',
     '//java/server/src/org/openqa/grid/selenium:classes',
-    '//java/server/src/org/openqa/selenium/server:server',
+    '//java/server/src/org/openqa/selenium/server/htmlrunner:htmlrunner',
   ],
 )
 
@@ -58,20 +56,19 @@ java_library(name = 'emulation-api',
     'Windows.java',
   ],
   deps = [
-    '//java/client/src/com/thoughtworks/selenium:api',
-    '//java/client/src/org/openqa/selenium:webdriver-api',
+    '//java/client/src/com/thoughtworks/selenium:selenium',
+    '//java/client/src/org/openqa/selenium:selenium',
     '//third_party/java/guava:guava',
   ],
   visibility = [
     '//java/client/src/com/thoughtworks/selenium/...',
     '//java/client/test/com/thoughtworks/selenium/...',
-    '//java/client/test/org/openqa/selenium/v1/internal/seleniumemulation:tests',
   ],
 )
 
 for name in ['findElement', 'findOption', 'fireEvent', 'fireEventAt', 'getAttribute', 'getText',
              'linkLocator', 'isElementPresent', 'isSomethingSelected', 'isTextPresent',
-             'isVisible', 'type',]:
+             'isVisible', 'setCursorPosition', 'type',]:
   export_file(name = name,
     out = '%s.js' % name,
     src = '//javascript/selenium-atoms:%s' % name,

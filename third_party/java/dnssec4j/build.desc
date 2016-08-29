@@ -1,3 +1,0 @@
-
-java_library(name = "dnssec4j",
-  deps = [ "dnssec4j-0.1-SNAPSHOT.jar" ])

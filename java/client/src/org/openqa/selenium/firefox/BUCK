@@ -1,5 +1,8 @@
+include_defs('//SELENIUM_VERSION')
+
 java_library(name = 'firefox',
-  maven_coords = 'org.seleniumhq.selenium:selenium-firefox-driver:jar:2.49.0',
+  maven_coords = 'org.seleniumhq.selenium:selenium-firefox-driver:jar:' + SE_VERSION,
+  maven_pom_template = '//java/client/src/org/openqa/selenium:template-pom',
   srcs = glob(['*.java', 'internal/*.java']),
   resources = [
     ':prefs',
@@ -7,12 +10,8 @@ java_library(name = 'firefox',
   ],
   deps = [
     ':prefs',
-    '//java/client/src/org/openqa/selenium:webdriver-api',
-    '//java/client/src/org/openqa/selenium/io:io',
-    '//java/client/src/org/openqa/selenium/net:net',
-    '//java/client/src/org/openqa/selenium/os:os',
+    '//java/client/src/org/openqa/selenium:selenium',
     '//java/client/src/org/openqa/selenium/remote:remote',
-    '//java/client/src/org/openqa/selenium/remote/service:service',
     '//third_party/java/guava:guava',
   ],
   visibility = [ 'PUBLIC' ],

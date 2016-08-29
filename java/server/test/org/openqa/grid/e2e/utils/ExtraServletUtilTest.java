@@ -41,4 +41,10 @@ public class ExtraServletUtilTest {
     Class<? extends Servlet> servlet = ExtraServletUtil.createServlet(s);
     assertNull(servlet);
   }
+
+  @Test(expected = ClassCastException.class)
+  public void doesntExtendServlet() {
+    String s = this.getClass().getCanonicalName();
+    Class<? extends Servlet> servlet = ExtraServletUtil.createServlet(s);
+  }
 }

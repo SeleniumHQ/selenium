@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     class Options
-
       #
       # @api private
       #
@@ -43,17 +42,16 @@ module Selenium
       #
 
       def add_cookie(opts = {})
-        raise ArgumentError, "name is required" unless opts[:name]
-        raise ArgumentError, "value is required" unless opts[:value]
+        raise ArgumentError, 'name is required' unless opts[:name]
+        raise ArgumentError, 'value is required' unless opts[:value]
 
-        opts[:path] ||= "/"
+        opts[:path] ||= '/'
         opts[:secure] ||= false
 
-        if obj = opts.delete(:expires)
-          opts[:expiry] = seconds_from(obj).to_i
-        end
+        obj = opts.delete(:expires)
+        opts[:expiry] = seconds_from(obj).to_i if obj
 
-        @bridge.addCookie opts
+        @bridge.add_cookie opts
       end
 
       #
@@ -74,7 +72,7 @@ module Selenium
       #
 
       def delete_cookie(name)
-        @bridge.deleteCookie name
+        @bridge.delete_cookie name
       end
 
       #
@@ -82,7 +80,7 @@ module Selenium
       #
 
       def delete_all_cookies
-        @bridge.deleteAllCookies
+        @bridge.delete_all_cookies
       end
 
       #
@@ -92,14 +90,14 @@ module Selenium
       #
 
       def all_cookies
-        @bridge.getAllCookies.map do |cookie|
+        @bridge.cookies.map do |cookie|
           {
-            :name    => cookie["name"],
-            :value   => cookie["value"],
-            :path    => cookie["path"],
-            :domain  => cookie["domain"] && strip_port(cookie["domain"]),
-            :expires => cookie["expiry"] && datetime_at(cookie['expiry']),
-            :secure  => cookie["secure"]
+            name: cookie['name'],
+            value: cookie['value'],
+            path: cookie['path'],
+            domain: cookie['domain'] && strip_port(cookie['domain']),
+            expires: cookie['expiry'] && datetime_at(cookie['expiry']),
+            secure: cookie['secure']
           }
         end
       end
@@ -146,9 +144,8 @@ module Selenium
       end
 
       def strip_port(str)
-        str.split(":", 2).first
+        str.split(':', 2).first
       end
-
     end # Options
   end # WebDriver
 end # Selenium

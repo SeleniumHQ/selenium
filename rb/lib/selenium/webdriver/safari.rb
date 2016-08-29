@@ -23,6 +23,11 @@ require 'pathname'
 module Selenium
   module WebDriver
     module Safari
+      MISSING_TEXT = <<-ERROR.tr("\n", '').freeze
+        Unable to find safari extension. Please download the file from
+        http://www.seleniumhq.org/download/ and place it
+        somewhere on your PATH. More info at https://github.com/SeleniumHQ/selenium/wiki/SafariDriver.
+      ERROR
 
       class << self
         def path=(path)
@@ -34,15 +39,15 @@ module Selenium
           @path ||= (
             path = case Platform.os
                    when :windows
-                     Platform.find_in_program_files("Safari\\Safari.exe")
+                     Platform.find_in_program_files('Safari\\Safari.exe')
                    when :macosx
-                     "/Applications/Safari.app/Contents/MacOS/Safari"
+                     '/Applications/Safari.app/Contents/MacOS/Safari'
                    else
-                     Platform.find_binary("Safari")
+                     Platform.find_binary('Safari')
                    end
 
             unless File.file?(path) && File.executable?(path)
-              raise Error::WebDriverError, "unable to find the Safari executable, please set Selenium::WebDriver::Safari.path= or add it to your PATH."
+              raise Error::WebDriverError, MISSING_TEXT
             end
 
             path
@@ -50,10 +55,18 @@ module Selenium
         end
 
         def resource_path
-          @resource_path ||= Pathname.new(File.expand_path("../safari/resources", __FILE__))
+          @resource_path ||= Pathname.new(File.expand_path('../safari/resources', __FILE__))
+        end
+
+        def driver_path=(path)
+          Platform.assert_executable path
+          @driver_path = path
+        end
+
+        def driver_path
+          @driver_path || '/usr/bin/safaridriver'
         end
       end
-
     end # Safari
   end # WebDriver
 end # Selenium
@@ -61,5 +74,8 @@ end # Selenium
 require 'selenium/webdriver/safari/browser'
 require 'selenium/webdriver/safari/server'
 require 'selenium/webdriver/safari/options'
-require 'selenium/webdriver/safari/bridge'
+require 'selenium/webdriver/safari/legacy_bridge'
+require 'selenium/webdriver/safari/apple_bridge'
+require 'selenium/webdriver/safari/service'
 
+Selenium::WebDriver::Safari::Bridge = Selenium::WebDriver::Safari::LegacyBridge

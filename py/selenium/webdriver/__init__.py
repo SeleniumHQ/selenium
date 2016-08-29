@@ -15,21 +15,21 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from .firefox.webdriver import WebDriver as Firefox
-from .firefox.firefox_profile import FirefoxProfile
-from .chrome.webdriver import WebDriver as Chrome
-from .chrome.options import Options as ChromeOptions
-from .ie.webdriver import WebDriver as Ie
-from .edge.webdriver import WebDriver as Edge
-from .opera.webdriver import WebDriver as Opera
-from .safari.webdriver import WebDriver as Safari
-from .blackberry.webdriver import WebDriver as BlackBerry
-from .phantomjs.webdriver import WebDriver as PhantomJS
-from .android.webdriver import WebDriver as Android
-from .remote.webdriver import WebDriver as Remote
-from .common.desired_capabilities import DesiredCapabilities
-from .common.action_chains import ActionChains
-from .common.touch_actions import TouchActions
-from .common.proxy import Proxy
+from .firefox.webdriver import WebDriver as Firefox  # noqa
+from .firefox.firefox_profile import FirefoxProfile  # noqa
+from .chrome.webdriver import WebDriver as Chrome  # noqa
+from .chrome.options import Options as ChromeOptions  # noqa
+from .ie.webdriver import WebDriver as Ie  # noqa
+from .edge.webdriver import WebDriver as Edge  # noqa
+from .opera.webdriver import WebDriver as Opera  # noqa
+from .safari.webdriver import WebDriver as Safari  # noqa
+from .blackberry.webdriver import WebDriver as BlackBerry  # noqa
+from .phantomjs.webdriver import WebDriver as PhantomJS  # noqa
+from .android.webdriver import WebDriver as Android  # noqa
+from .remote.webdriver import WebDriver as Remote  # noqa
+from .common.desired_capabilities import DesiredCapabilities  # noqa
+from .common.action_chains import ActionChains  # noqa
+from .common.touch_actions import TouchActions  # noqa
+from .common.proxy import Proxy  # noqa
 
-__version__ = '2.51.0'
+__version__ = '3.0.0.b2'

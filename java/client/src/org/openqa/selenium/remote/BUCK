@@ -1,3 +1,5 @@
+include_defs('//SELENIUM_VERSION')
+
 java_library(
   name = 'api',
   srcs = [
@@ -7,7 +9,6 @@ java_library(
     'Response.java',
     'SessionId.java',
   ],
-  visibility = ['PUBLIC'],
 )
 
 java_library(
@@ -18,11 +19,9 @@ java_library(
     'DesiredCapabilities.java',
   ],
   deps = [
-    '//java/client/src/org/openqa/selenium:webdriver-api',
-    '//java/client/src/org/openqa/selenium/logging:logging',
+    '//java/client/src/org/openqa/selenium:selenium',
     '//third_party/java/guava:guava',
   ],
-  visibility = ['PUBLIC'],
 )
 
 java_library(
@@ -30,8 +29,11 @@ java_library(
   srcs = [ 'HttpSessionId.java' ],
 )
 
-java_library(name = 'augmenter',
+java_library(name = 'remote',
+  maven_coords = 'org.seleniumhq.selenium:selenium-remote-driver:' + SE_VERSION,
+  maven_pom_template = '//java/client/src/org/openqa/selenium:template-pom',
   srcs = [
+    'Augmenter.java',
     'AugmenterProvider.java',
     'AddFindsByCss.java',
     'AddFindsChildByCss.java',
@@ -39,24 +41,32 @@ java_library(name = 'augmenter',
     'AddRotatable.java',
     'BaseAugmenter.java',
     'InterfaceImplementation.java',
+    'JdkAugmenter.java',
     'html5/AddApplicationCache.java',
     'html5/AddLocationContext.java',
     'html5/AddWebStorage.java',
     'mobile/AddNetworkConnection.java',
   ],
-  deps = [
+  exported_deps = [
+    ':api',
     ':capabilities',
-    ':remote',
+    ':remote-lib',
+    '//java/client/src/org/openqa/selenium:selenium',
+  ],
+  deps = [
+    '//third_party/java/cglib:cglib',
     '//third_party/java/guava:guava',
   ],
+  visibility = ['PUBLIC'],
 )
 
-java_library(name = 'remote',
+java_library(name = 'remote-lib',
   srcs = [
     'BeanToJsonConverter.java',
     'CommandCodec.java',
     'CommandInfo.java',
     'CoordinatesUtils.java',
+    'Dialect.java',
     'DriverCommand.java',
     'ErrorCodes.java',
     'ErrorHandler.java',
@@ -66,6 +76,7 @@ java_library(name = 'remote',
     'JsonException.java',
     'JsonToBeanConverter.java',
     'LocalFileDetector.java',
+    'ProtocolHandshake.java',
     'RemoteActionChainExecutor.java',
     'RemoteExecuteMethod.java',
     'RemoteKeyboard.java',
@@ -77,7 +88,6 @@ java_library(name = 'remote',
     'RemoteWebElement.java',
     'ResponseCodec.java',
     'ScreenshotException.java',
-    'SessionNotFoundException.java',
     'SimplePropertyDescriptor.java',
     'UnreachableBrowserException.java',
     'UselessFileDetector.java',
@@ -91,28 +101,43 @@ java_library(name = 'remote',
     'http/HttpMethod.java',
     'http/HttpRequest.java',
     'http/HttpResponse.java',
+    'http/AbstractHttpCommandCodec.java',
+    'http/AbstractHttpResponseCodec.java',
     'http/JsonHttpCommandCodec.java',
     'http/JsonHttpResponseCodec.java',
+    'http/W3CHttpCommandCodec.java',
+    'http/W3CHttpResponseCodec.java',
     'internal/ApacheHttpClient.java',
     'internal/HttpClientFactory.java',
     'internal/JsonToWebElementConverter.java',
     'internal/WebElementToJsonConverter.java',
     'mobile/RemoteNetworkConnection.java',
-  ],
-  exported_deps = [
-    ':api',
-    ':capabilities',
-    '//java/client/src/org/openqa/selenium:webdriver-api',
-    '//java/client/src/org/openqa/selenium/interactions:exceptions',
-    '//java/client/src/org/openqa/selenium/logging:logging',
+  ] + glob([
+    'service/*.java',
+  ]),
+  resources = [
+    ':get-attribute',
+    ':is-displayed',
   ],
   deps = [
+    ':api',
+    ':capabilities',
     ':http-session-id',
-    '//java/client/src/org/openqa/selenium/io:io',
-    '//java/client/src/org/openqa/selenium/net:net',
+    '//java/client/src/org/openqa/selenium:selenium',
     '//third_party/java/httpcomponents:httpclient',
     '//third_party/java/guava:guava',
     '//third_party/java/gson:gson',
   ],
-  visibility = ['PUBLIC'],
+)
+
+export_file(
+  name = 'get-attribute',
+  src = '//javascript/webdriver/atoms:getAttribute',
+  out = 'getAttribute.js',
+)
+
+export_file(
+  name = 'is-displayed',
+  src = '//javascript/atoms/fragments:is-displayed',
+  out = 'isDisplayed.js',
 )

@@ -32,10 +32,8 @@ require 'selenium/webdriver/remote/http/default'
 
 module Selenium
   module WebDriver
-
     # @api private
     module Remote
-
     end # Remote
   end # WebDriver
 end # Selenium

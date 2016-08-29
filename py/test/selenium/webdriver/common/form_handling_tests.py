@@ -137,19 +137,16 @@ class FormHandlingTests(unittest.TestCase):
         radioButton = self.driver.find_element_by_id("cheese")
         self.assertEqual(radioButton.is_selected(), False)
 
-     #   [ExpectedException(typeof(NotImplementedException))]
-    #def testShouldThrowAnExceptionWhenTogglingTheStateOfARadioButton(self):
+    # [ExpectedException(typeof(NotImplementedException))]
+    # def testShouldThrowAnExceptionWhenTogglingTheStateOfARadioButton(self):
     #    self._loadPage("formPage")
     #    radioButton = self.driver.find_element_by_id("cheese"))
     #    radioButton.click()
 
-
-
-    #    [IgnoreBrowser(Browser.IE, "IE allows toggling of an option not in a multiselect")]
-    #    [ExpectedException(typeof(NotImplementedException))]
-    #def testTogglingAnOptionShouldThrowAnExceptionIfTheOptionIsNotInAMultiSelect(self):
+    # [IgnoreBrowser(Browser.IE, "IE allows toggling of an option not in a multiselect")]
+    # [ExpectedException(typeof(NotImplementedException))]
+    # def testTogglingAnOptionShouldThrowAnExceptionIfTheOptionIsNotInAMultiSelect(self):
     #    self._loadPage("formPage")
-    #
     #    select = self.driver.find_element_by_name("selectomatic"))
     #    option = select.find_elements_by_tag_name("option"))[0]
     #    option.click()
@@ -210,7 +207,7 @@ class FormHandlingTests(unittest.TestCase):
         self.assertEqual(emptyTextBox.get_attribute("value"), "")
 
         emptyTextArea = self.driver.find_element_by_id("emptyTextArea")
-        self.assertEqual(emptyTextBox.get_attribute("value"), "")
+        self.assertEqual(emptyTextArea.get_attribute("value"), "")
 
     def testShouldBeAbleToClearTextFromTextAreas(self):
         self._loadPage("formPage")

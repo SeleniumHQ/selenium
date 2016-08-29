@@ -20,48 +20,33 @@
 module Selenium
   module WebDriver
     module IE
-
       #
       # @api private
       #
 
       class Bridge < Remote::Bridge
-
-        HOST            = Platform.localhost
-        DEFAULT_PORT    = 5555
-        DEFAULT_TIMEOUT = 30
-
         def initialize(opts = {})
           caps           = opts.delete(:desired_capabilities) { Remote::Capabilities.internet_explorer }
-          timeout        = opts.delete(:timeout) { DEFAULT_TIMEOUT }
-          port           = opts.delete(:port) { DEFAULT_PORT }
+          port           = opts.delete(:port) { Service::DEFAULT_PORT }
           http_client    = opts.delete(:http_client)
           ignore_mode    = opts.delete(:introduce_flakiness_by_ignoring_security_domains)
           native_events  = opts.delete(:native_events) != false
-          implementation = opts.delete(:implementation)
 
-          @server = Server.get(:implementation => implementation)
-
-          @server.log_level = opts.delete(:log_level) if opts[:log_level]
-          @server.log_file  = opts.delete(:log_file) if opts[:log_file]
+          @service = Service.new(IE.driver_path, port, *extract_service_args(opts))
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
           end
 
-          @port = @server.start Integer(port), timeout
+          @service.start
 
-          if ignore_mode
-            caps['ignoreProtectedModeSettings'] = true
-          end
-
+          caps['ignoreProtectedModeSettings'] = true if ignore_mode
           caps['nativeEvents'] = native_events
 
           remote_opts = {
-            :url => @server.uri,
-            :desired_capabilities => caps
+            url: @service.uri,
+            desired_capabilities: caps
           }
-
           remote_opts[:http_client] = http_client if http_client
 
           super(remote_opts)
@@ -77,11 +62,19 @@ module Selenium
 
         def quit
           super
-          nil
         ensure
-          @server.stop
+          @service.stop if @service
         end
 
+        private
+
+        def extract_service_args(opts)
+          args = []
+          args << "--log-level=#{opts.delete(:log_level).to_s.upcase}" if opts[:log_level]
+          args << "--log-file=#{opts.delete(:log_file)}" if opts[:log_file]
+          args << "--implementation=#{opts.delete(:implementation).to_s.upcase}" if opts[:implementation]
+          args
+        end
       end # Bridge
     end # IE
   end # WebDriver

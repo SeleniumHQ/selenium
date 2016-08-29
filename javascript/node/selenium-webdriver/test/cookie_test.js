@@ -49,7 +49,7 @@ test.suite(function(env) {
     test.it('can add new cookies', function() {
       var cookie = createCookieSpec();
 
-      driver.manage().addCookie(cookie.name, cookie.value);
+      driver.manage().addCookie(cookie);
       driver.manage().getCookie(cookie.name).then(function(actual) {
         assert.equal(actual.value, cookie.value);
       });
@@ -59,8 +59,8 @@ test.suite(function(env) {
       var cookie1 = createCookieSpec();
       var cookie2 = createCookieSpec();
 
-      driver.manage().addCookie(cookie1.name, cookie1.value);
-      driver.manage().addCookie(cookie2.name, cookie2.value);
+      driver.manage().addCookie(cookie1);
+      driver.manage().addCookie(cookie2);
 
       assertHasCookies(cookie1, cookie2);
     });
@@ -68,14 +68,15 @@ test.suite(function(env) {
     test.ignore(env.browsers(Browser.IE)).
     it('only returns cookies visible to the current page', function() {
       var cookie1 = createCookieSpec();
-      var cookie2 = createCookieSpec();
 
-      driver.manage().addCookie(cookie1.name, cookie1.value);
+      driver.manage().addCookie(cookie1);
 
       var pageUrl = fileserver.whereIs('page/1');
+      var cookie2 = createCookieSpec({
+        path: url.parse(pageUrl).pathname
+      });
       driver.get(pageUrl);
-      driver.manage().addCookie(
-          cookie2.name, cookie2.value, url.parse(pageUrl).pathname);
+      driver.manage().addCookie(cookie2);
       assertHasCookies(cookie1, cookie2);
 
       driver.get(fileserver.Pages.ajaxyPage);
@@ -137,7 +138,7 @@ test.suite(function(env) {
           'child/grandchild/grandchildPage.html');
 
       driver.get(childUrl);
-      driver.manage().addCookie(cookie.name, cookie.value);
+      driver.manage().addCookie(cookie);
       assertHasCookies(cookie);
 
       driver.get(grandchildUrl);
@@ -150,18 +151,21 @@ test.suite(function(env) {
       assertHasCookies();
     });
 
-    test.ignore(env.browsers(Browser.ANDROID, Browser.FIREFOX, Browser.IE)).
+    test.ignore(env.browsers(
+        Browser.ANDROID,
+        Browser.FIREFOX,
+        'legacy-' + Browser.FIREFOX,
+        Browser.IE)).
     it('should retain cookie expiry', function() {
-      var cookie = createCookieSpec();
-      var expirationDelay = 5 * 1000;
-      var futureTime = Date.now() + expirationDelay;
+      let expirationDelay = 5 * 1000;
+      let expiry = new Date(Date.now() + expirationDelay);
+      let cookie = createCookieSpec({expiry});
 
-      driver.manage().addCookie(
-          cookie.name, cookie.value, null, null, false, futureTime);
+      driver.manage().addCookie(cookie);
       driver.manage().getCookie(cookie.name).then(function(actual) {
         assert.equal(actual.value, cookie.value);
         // expiry times are exchanged in seconds since January 1, 1970 UTC.
-        assert.equal(actual.expiry, Math.floor(futureTime / 1000));
+        assert.equal(actual.expiry, Math.floor(expiry.getTime() / 1000));
       });
 
       driver.sleep(expirationDelay);
@@ -169,11 +173,15 @@ test.suite(function(env) {
     });
   });
 
-  function createCookieSpec() {
-    return {
+  function createCookieSpec(opt_options) {
+    let spec = {
       name: getRandomString(),
       value: getRandomString()
     };
+    if (opt_options) {
+      spec = Object.assign(spec, opt_options);
+    }
+    return spec;
   }
 
   function buildCookieMap(cookies) {

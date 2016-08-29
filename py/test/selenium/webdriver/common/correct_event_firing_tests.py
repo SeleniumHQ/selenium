@@ -27,6 +27,7 @@ def not_available_on_remote(func):
             return func(self)
     return testMethod
 
+
 class CorrectEventFiringTests(unittest.TestCase):
 
     def testShouldFireClickEventWhenClicking(self):
@@ -34,12 +35,10 @@ class CorrectEventFiringTests(unittest.TestCase):
         self._clickOnElementWhichRecordsEvents()
         self._assertEventFired("click")
 
-
     def testShouldFireMouseDownEventWhenClicking(self):
         self._loadPage("javascriptPage")
         self._clickOnElementWhichRecordsEvents()
         self._assertEventFired("mousedown")
-
 
     def testShouldFireMouseUpEventWhenClicking(self):
         self._loadPage("javascriptPage")
@@ -90,7 +89,6 @@ class CorrectEventFiringTests(unittest.TestCase):
         checkbox.click()
         self.assertEqual(self.driver.find_element_by_id("result").text, "checkbox thing")
 
-
     def testShouldEmitClickEventWhenClickingOnATextInputElement(self):
         self._loadPage("javascriptPage")
         clicker = self.driver.find_element_by_id("clickField")
@@ -103,10 +101,10 @@ class CorrectEventFiringTests(unittest.TestCase):
         element = self.driver.find_element_by_id("clearMe")
         element.clear()
         result = self.driver.find_element_by_id("result")
-        self.assertEqual(result.text, "Cleared");
+        self.assertEqual(result.text, "Cleared")
 
     # TODO Currently Failing and needs fixing
-    #def testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire(self):
+    # def testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire(self):
     #    self._loadPage("javascriptPage")
     #    element = self.driver.find_element_by_id("theworks")
     #    element.send_keys("foo")
@@ -115,7 +113,7 @@ class CorrectEventFiringTests(unittest.TestCase):
     #    self._assertEventFired("blur")
 
     # TODO Currently Failing and needs fixing
-    #def testSendingKeysToAnElementShouldCauseTheFocusEventToFire(self):
+    # def testSendingKeysToAnElementShouldCauseTheFocusEventToFire(self):
     #    self._loadPage("javascriptPage")
     #    element = self.driver.find_element_by_id("theworks")
     #    element.send_keys("foo")

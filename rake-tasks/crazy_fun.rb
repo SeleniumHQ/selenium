@@ -6,9 +6,18 @@ module Rake
   end
 end
 
+class DetonatingHandler
+  def handle(fun, dir, args)
+#    raise "No longer handling: //#{dir}:#{args[:name]}"
+  end
+end
+
 class CrazyFun
   def initialize
     @mappings = {}
+    add_mapping('java_binary', DetonatingHandler.new)
+    add_mapping('java_library', DetonatingHandler.new)
+    add_mapping('java_test', DetonatingHandler.new)
   end
 
   def add_mapping(type_name, handler)

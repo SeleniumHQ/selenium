@@ -31,12 +31,13 @@ def not_available_on_remote(func):
             return func(self)
     return testMethod
 
-disabledSelect = { 'name': 'no-select', 'values': ['Foo']}
-singleSelectValues1 = { 'name': 'selectomatic', 'values': ['One', 'Two', 'Four', 'Still learning how to count, apparently']}
-singleSelectValues2 = { 'name': 'redirect', 'values': ['One', 'Two']}
-singleSelectValuesWithSpaces = { 'name': 'select_with_spaces', 'values': ['One', 'Two', 'Four', 'Still learning how to count, apparently']}
-multiSelectValues1  = { 'name': 'multi', 'values': ['Eggs', 'Ham', 'Sausages', 'Onion gravy']}
-multiSelectValues2  = { 'name': 'select_empty_multiple', 'values': ['select_1', 'select_2', 'select_3', 'select_4']}
+disabledSelect = {'name': 'no-select', 'values': ['Foo']}
+singleSelectValues1 = {'name': 'selectomatic', 'values': ['One', 'Two', 'Four', 'Still learning how to count, apparently']}
+singleSelectValues2 = {'name': 'redirect', 'values': ['One', 'Two']}
+singleSelectValuesWithSpaces = {'name': 'select_with_spaces', 'values': ['One', 'Two', 'Four', 'Still learning how to count, apparently']}
+multiSelectValues1 = {'name': 'multi', 'values': ['Eggs', 'Ham', 'Sausages', 'Onion gravy']}
+multiSelectValues2 = {'name': 'select_empty_multiple', 'values': ['select_1', 'select_2', 'select_3', 'select_4']}
+
 
 @pytest.mark.ignore_marionette
 class WebDriverSelectSupportTests(unittest.TestCase):
@@ -60,11 +61,11 @@ class WebDriverSelectSupportTests(unittest.TestCase):
             sel.select_by_index(0)
             raise Exception("Didn't get an expected ElementNotSelectableException exception.")
         except ElementNotSelectableException:
-            pass # should get this exception
+            pass  # should get this exception
 
     def testSelectByValueSingle(self):
         if self.driver.capabilities['browserName'] == 'chrome':
-            pytest.xfail("chrome currently doesn't allow css selectors with comma's in them that are not compound");
+            pytest.xfail("chrome currently doesn't allow css selectors with comma's in them that are not compound")
         self._loadPage("formPage")
 
         for select in [singleSelectValues1]:
@@ -97,7 +98,7 @@ class WebDriverSelectSupportTests(unittest.TestCase):
 
     def testSelectByVisibleTextShouldNormalizeSpaces(self):
         if self.driver.capabilities['browserName'] == 'phantomjs':
-            pytest.xfail("phantomjs does not normalize spaces in text");
+            pytest.xfail("phantomjs does not normalize spaces in text")
         self._loadPage("formPage")
 
         for select in [singleSelectValuesWithSpaces]:
@@ -130,7 +131,7 @@ class WebDriverSelectSupportTests(unittest.TestCase):
             for x in range(len(select['values'])):
                 sel.select_by_index(x)
                 selected = sel.all_selected_options
-                self.assertEqual(len(selected), x+1)
+                self.assertEqual(len(selected), x + 1)
                 for j in range(len(selected)):
                     self.assertEqual(selected[j].text, select['values'][j])
 
@@ -145,7 +146,7 @@ class WebDriverSelectSupportTests(unittest.TestCase):
             for x in range(len(select['values'])):
                 sel.select_by_value(select['values'][x].lower())
                 selected = sel.all_selected_options
-                self.assertEqual(len(selected), x+1)
+                self.assertEqual(len(selected), x + 1)
                 for j in range(len(selected)):
                     self.assertEqual(selected[j].text, select['values'][j])
 
@@ -160,7 +161,7 @@ class WebDriverSelectSupportTests(unittest.TestCase):
             for x in range(len(select['values'])):
                 sel.select_by_visible_text(select['values'][x])
                 selected = sel.all_selected_options
-                self.assertEqual(len(selected), x+1)
+                self.assertEqual(len(selected), x + 1)
                 for j in range(len(selected)):
                     self.assertEqual(selected[j].text, select['values'][j])
 
@@ -171,7 +172,7 @@ class WebDriverSelectSupportTests(unittest.TestCase):
                 Select(self.driver.find_element(By.NAME, select['name'])).deselect_all()
                 raise Exception("Didn't get an expected NotImplementedError.")
             except NotImplementedError:
-                pass # should get this exception
+                pass  # should get this exception
 
     def testDeselectAllMultiple(self):
         if self.driver.capabilities['browserName'] == 'chrome' and int(self.driver.capabilities['version'].split('.')[0]) < 16:
@@ -189,7 +190,7 @@ class WebDriverSelectSupportTests(unittest.TestCase):
                 Select(self.driver.find_element(By.NAME, select['name'])).deselect_by_index(0)
                 raise Exception("Didn't get an expected NotImplementedError.")
             except NotImplementedError:
-                pass # should get this exception
+                pass  # should get this exception
 
     def testDeselectByValueSingle(self):
         self._loadPage("formPage")
@@ -198,7 +199,7 @@ class WebDriverSelectSupportTests(unittest.TestCase):
                 Select(self.driver.find_element(By.NAME, select['name'])).deselect_by_value(select['values'][0].lower())
                 raise Exception("Didn't get an expected NotImplementedError.")
             except NotImplementedError:
-                pass # should get this exception
+                pass  # should get this exception
 
     def testDeselectByVisibleTextSingle(self):
         self._loadPage("formPage")
@@ -207,7 +208,7 @@ class WebDriverSelectSupportTests(unittest.TestCase):
                 Select(self.driver.find_element(By.NAME, select['name'])).deselect_by_visible_text(select['values'][0])
                 raise Exception("Didn't get an expected NotImplementedError.")
             except NotImplementedError:
-                pass # should get this exception
+                pass  # should get this exception
 
     def testDeselectByIndexMultiple(self):
         if self.driver.capabilities['browserName'] == 'chrome' and int(self.driver.capabilities['version'].split('.')[0]) < 16:
@@ -303,10 +304,10 @@ class WebDriverSelectSupportTests(unittest.TestCase):
     def testRaisesExceptionForInvalidTagName(self):
         self._loadPage("formPage")
         try:
-          Select(self.driver.find_element(By.TAG_NAME, "div"))
-          raise Exception("Should have gotten an UnexpectedTagNameException to be raised")
+            Select(self.driver.find_element(By.TAG_NAME, "div"))
+            raise Exception("Should have gotten an UnexpectedTagNameException to be raised")
         except UnexpectedTagNameException:
-          pass
+            pass
 
     def testDeselectByIndexNonExistent(self):
         self._loadPage("formPage")
@@ -315,7 +316,7 @@ class WebDriverSelectSupportTests(unittest.TestCase):
                 Select(self.driver.find_element(By.NAME, select['name'])).deselect_by_index(10)
                 raise Exception("Should have gotten an NoSuchElementException to be raised.")
             except NoSuchElementException:
-                pass # should get this exception
+                pass  # should get this exception
 
     def testDeselectByValueNonExistent(self):
         self._loadPage("formPage")
@@ -324,7 +325,7 @@ class WebDriverSelectSupportTests(unittest.TestCase):
                 Select(self.driver.find_element(By.NAME, select['name'])).deselect_by_value('not there')
                 raise Exception("Should have gotten an NoSuchElementException to be raised.")
             except NoSuchElementException:
-                pass # should get this exception
+                pass  # should get this exception
 
     def testDeselectByTextNonExistent(self):
         self._loadPage("formPage")
@@ -333,7 +334,7 @@ class WebDriverSelectSupportTests(unittest.TestCase):
                 Select(self.driver.find_element(By.NAME, select['name'])).deselect_by_visible_text('not there')
                 raise Exception("Should have gotten an NoSuchElementException to be raised.")
             except NoSuchElementException:
-                pass # should get this exception
+                pass  # should get this exception
 
     def _pageURL(self, name):
         return self.webserver.where_is(name + '.html')

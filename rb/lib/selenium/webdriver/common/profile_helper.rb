@@ -19,7 +19,6 @@
 
 module Selenium
   module WebDriver
-
     #
     # @api private
     #
@@ -28,27 +27,26 @@ module Selenium
     #
 
     module ProfileHelper
-
       def self.included(base)
         base.extend ClassMethods
       end
 
-      def as_json(opts = nil)
+      def as_json(*)
         {'zip' => Zipper.zip(layout_on_disk)}
       end
 
-      def to_json(*args)
+      def to_json(*)
         JSON.generate as_json
       end
 
       private
 
       def create_tmp_copy(directory)
-        tmp_directory = Dir.mktmpdir("webdriver-rb-profilecopy")
+        tmp_directory = Dir.mktmpdir('webdriver-rb-profilecopy')
 
         # TODO: must be a better way..
         FileUtils.rm_rf tmp_directory
-        FileUtils.mkdir_p File.dirname(tmp_directory), :mode => 0700
+        FileUtils.mkdir_p File.dirname(tmp_directory), mode: 0700
         FileUtils.cp_r directory, tmp_directory
 
         tmp_directory
@@ -72,7 +70,7 @@ module Selenium
           tmp_dir = Dir.mktmpdir
           begin
             zip_path = File.join(tmp_dir, "webdriver-profile-duplicate-#{json.hash}.zip")
-            File.open(zip_path, "wb") { |zip_file| zip_file << Base64.decode64(data) }
+            File.open(zip_path, 'wb') { |zip_file| zip_file << Base64.decode64(data) }
 
             new Zipper.unzip(zip_path)
           ensure
@@ -80,7 +78,6 @@ module Selenium
           end
         end
       end # ClassMethods
-
     end # ProfileHelper
   end # WebDriver
 end # Selenium

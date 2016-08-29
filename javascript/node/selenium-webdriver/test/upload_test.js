@@ -71,14 +71,15 @@ test.suite(function(env) {
     });
 
     driver.findElement(By.id('upload')).sendKeys(fp);
-    driver.findElement(By.id('go')).submit();
+    driver.findElement(By.id('go')).click();
 
     // Uploading files across a network may take a while, even if they're small.
     var label = driver.findElement(By.id('upload_label'));
     driver.wait(until.elementIsNotVisible(label),
         10 * 1000, 'File took longer than 10 seconds to upload!');
 
-    driver.switchTo().frame('upload_target');
+    var frame = driver.findElement(By.id('upload_target'));
+    driver.switchTo().frame(frame);
     assert(driver.findElement(By.css('body')).getText())
         .equalTo(LOREM_IPSUM_TEXT);
   });

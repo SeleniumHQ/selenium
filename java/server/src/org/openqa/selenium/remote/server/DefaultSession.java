@@ -110,7 +110,7 @@ public class DefaultSession implements Session {
     this.clock = clock;
     final BrowserCreator browserCreator = new BrowserCreator(factory, capabilities);
     final FutureTask<EventFiringWebDriver> webDriverFutureTask =
-        new FutureTask<EventFiringWebDriver>(browserCreator);
+        new FutureTask<>(browserCreator);
     executor = new ThreadPoolExecutor(1, 1,
                                       600L, TimeUnit.SECONDS,
                                       new LinkedBlockingQueue<Runnable>());
@@ -165,7 +165,7 @@ public class DefaultSession implements Session {
 
 
   public <X> X execute(final FutureTask<X> future) throws Exception {
-/*    if (executor.isShutdown()){
+/*    if (executor.isShutdown()) {
          throw new WebDriverException(sessionId + " is closed for further execution");
     } */
     executor.execute(new Runnable() {

@@ -1,3 +1,39 @@
+V3.0.0-beta2
+============
+ * Updated GetAttribute shim for GetAttribute method for W3C protocol remote
+   ends.
+ * Modified parameter name in SendKeys to alert for W3C protocol remote
+   ends.
+
+V3.0.0-beta1
+============
+ * The Mozilla-provided Marionette-based FirefoxDriver is now the default
+   implementation for automating Firefox. Additionally, this aligns the
+   FirefoxDriver class with other browser-specific implementations, using
+   a FirefoxOptions class for setting options for the browser session. 
+   Constructors of FirefoxDriver directly referencing FirefoxProfile or
+   FirefoxBinary have been marked as deprecated, and will be removed in a 
+   future release.
+
+v2.53.0
+=======
+ * This will be the final full release in the 2.x series. There may be
+   small point releases going forward, but future development will 
+   concentrate on 3.0.
+ * (on behalf of arnonaxelrod) Added an overload of ExecuteJavaScript
+   extension method that doesn't accept a generic argument and doesn't
+   return a value.
+ * (on behalf of mohammadsavadkuhi) Corrected argument name in
+   exceptions thrown by DefaultWait<T>.
+ * Corrected trace categories for Chrome perf logging prefs in .NET.
+ * Added device metrics to Chrome options for mobile emulation.
+ * Removed .NET type-safe option for setting IE cookie capability. The
+   'ie.validateCookieDocumentType' has been obsolete since 2.47 of WebDriver.
+   This commit marks the 'ValidateCookieDocumentType' property of the
+   'InternetExplorerOptions' object as obsolete, and no longer sends that
+   capability to the driver. This property will be removed in a future
+   version of the .NET bindings.
+
 v2.52.0
 =======
  * Updated Firefox driver to include ability to disable overlapping element

@@ -32,7 +32,7 @@ import org.openqa.grid.web.Hub;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.remote.server.SeleniumServer;
 
 import java.net.URL;
 import java.util.Map;
@@ -67,11 +67,11 @@ public class WebDriverPriorityDemo {
     registry = hub.getRegistry();
 
     hubURL = hub.getUrl();
-    driverURL = new URL(hubURL + "/grid/driver");
-    consoleURL = new URL(hubURL + "/grid/old/console");
+    driverURL = hub.getWebDriverHubRequestURL();
+    consoleURL = hub.getConsoleURL();
 
     // assigning a priority rule where requests with the flag "important" go first.
-    registry.setPrioritizer(new Prioritizer() {
+    registry.getConfiguration().prioritizer = new Prioritizer() {
       public int compareTo(Map<String, Object> a, Map<String, Object> b) {
         boolean aImportant =
             a.get("_important") == null ? false : Boolean.parseBoolean(a.get("_important")
@@ -84,11 +84,10 @@ public class WebDriverPriorityDemo {
         }
         if (aImportant && !bImportant) {
           return -1;
-        } else {
-          return 1;
         }
+        return 1;
       }
-    });
+    };
 
     // initialize node
 
@@ -209,7 +208,7 @@ public class WebDriverPriorityDemo {
   // simple helper
   static private void visitHubConsole(WebDriver driver) {
     driver.get(consoleURL.toString());
-    assertEquals(driver.getTitle(), "Grid overview");
+    assertEquals(driver.getTitle(), "Grid Console");
   }
 
   @AfterClass

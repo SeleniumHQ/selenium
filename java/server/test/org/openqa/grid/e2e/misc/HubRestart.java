@@ -23,15 +23,14 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.GridRole;
-import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.remote.server.SeleniumServer;
 
 /**
  * A node will try to contact the hub it's registered to every RegistrationRequest.REGISTER_CYCLE
@@ -49,14 +48,14 @@ public class HubRestart {
 
   @BeforeClass
   public static void prepare() throws Exception {
-    config.setHost("localhost");
-    config.setPort(PortProber.findFreePort());
+    config.host = "localhost";
+    config.port = PortProber.findFreePort();
     hub = GridTestHelper.getHub(config);
     registry = hub.getRegistry();
 
     remote = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
 
-    remote.getConfiguration().put(RegistrationRequest.REGISTER_CYCLE, 250);
+    remote.getConfiguration().registerCycle = 250;
 
     remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
     remote.startRemoteServer();
@@ -67,7 +66,7 @@ public class HubRestart {
   public void nodeRegisterAgain() throws Exception {
 
     // every 5 sec, the node register themselves again.
-    assertEquals(remote.getConfiguration().get(RegistrationRequest.REGISTER_CYCLE), 250);
+    assertEquals(remote.getConfiguration().registerCycle.longValue(), 250);
     remote.startRegistrationProcess();
 
     // should be up

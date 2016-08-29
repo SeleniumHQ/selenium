@@ -21,6 +21,7 @@ import pytest
 
 from selenium.common.exceptions import InvalidElementStateException
 
+
 @pytest.mark.ignore_chrome
 class ClearTests(unittest.TestCase):
 

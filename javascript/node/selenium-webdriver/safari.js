@@ -34,14 +34,16 @@ const url = require('url');
 const util = require('util');
 const ws = require('ws');
 
-const error = require('./error');
 const io = require('./io');
 const exec = require('./io/exec');
 const isDevMode = require('./lib/devmode');
 const Capabilities = require('./lib/capabilities').Capabilities;
 const Capability = require('./lib/capabilities').Capability;
 const command = require('./lib/command');
+const error = require('./lib/error');
+const logging = require('./lib/logging');
 const promise = require('./lib/promise');
+const Session = require('./lib/session').Session;
 const Symbols = require('./lib/symbols');
 const webdriver = require('./lib/webdriver');
 const portprober = require('./net/portprober');
@@ -50,7 +52,7 @@ const portprober = require('./net/portprober');
 /** @const */
 const CLIENT_PATH = isDevMode
     ? path.join(__dirname,
-        '../../../build/javascript/safari-driver/client.js')
+        '../../../buck-out/gen/javascript/safari-driver/client.js')
     : path.join(__dirname, 'lib/safari/client.js');
 
 
@@ -146,12 +148,12 @@ class Server extends events.EventEmitter {
 
     /**
      * Starts the server on a random port.
-     * @return {!promise.Promise<Host>} A promise that will resolve
-     *     with the server host when it has fully started.
+     * @return {!Promise<Host>} A promise that will resolve with the server host
+     *     when it has fully started.
      */
     this.start = function() {
       if (server.address()) {
-        return promise.fulfilled(server.address());
+        return Promise.resolve(server.address());
       }
       return portprober.findFreePort('localhost').then(function(port) {
         return promise.checkedNodeCall(
@@ -163,13 +165,11 @@ class Server extends events.EventEmitter {
 
     /**
      * Stops the server.
-     * @return {!promise.Promise} A promise that will resolve when
-     *     the server has closed all connections.
+     * @return {!Promise} A promise that will resolve when the server has closed
+     *     all connections.
      */
     this.stop = function() {
-      return new promise.Promise(function(fulfill) {
-        server.close(fulfill);
-      });
+      return new Promise(fulfill => server.close(fulfill));
     };
 
     /**
@@ -227,13 +227,9 @@ function findSafariExecutable() {
  */
 function createConnectFile(serverUrl) {
   return io.tmpFile({postfix: '.html'}).then(function(f) {
-    var writeFile =  promise.checkedNodeCall(fs.writeFile,
-        f,
-        '<!DOCTYPE html><script>window.location = "' + serverUrl + '";</script>',
-        {encoding: 'utf8'});
-    return writeFile.then(function() {
-      return f;
-    });
+    let contents =
+        `<!DOCTYPE html><script>window.location = "${serverUrl}";</script>`;
+    return io.write(f, contents).then(() => f);
   });
 }
 
@@ -241,7 +237,7 @@ function createConnectFile(serverUrl) {
 /**
  * Deletes all session data files if so desired.
  * @param {!Object} desiredCapabilities .
- * @return {!Array<promise.Promise>} A list of promises for the deleted files.
+ * @return {!Array<!Promise>} A list of promises for the deleted files.
  */
 function cleanSession(desiredCapabilities) {
   if (!desiredCapabilities) {
@@ -278,8 +274,14 @@ class CommandExecutor {
     /** @private {ws.WebSocket} */
     this.socket_ = null;
 
-    /** @private {promise.Promise.<!exec.Command>} */
+    /** @private {?string} 8*/
+    this.sessionId_ = null;
+
+    /** @private {Promise<!exec.Command>} */
     this.safari_ = null;
+
+    /** @private {!logging.Logger} */
+    this.log_ = logging.getLogger('webdriver.safari');
   }
 
   /** @override */
@@ -300,6 +302,13 @@ class CommandExecutor {
         case command.Name.NEW_SESSION:
           self.startSafari_(cmd)
               .then(() => self.sendCommand_(safariCommand))
+              .then(caps => new Session(self.sessionId(), caps))
+              .then(fulfill, reject);
+          break;
+
+        case command.Name.DESCRIBE_SESSION:
+          self.sendCommand_(safariCommand)
+              .then(caps => new Session(self.sessionId(), caps))
               .then(fulfill, reject);
           break;
 
@@ -315,6 +324,17 @@ class CommandExecutor {
   }
 
   /**
+   * @return {string} The static session ID for this executor's current
+   *     connection.
+   */
+  sessionId() {
+    if (!this.sessionId_) {
+      throw Error('not currently connected')
+    }
+    return this.sessionId_;
+  }
+
+  /**
    * @param {string} data .
    * @return {!promise.Promise} .
    * @private
@@ -324,12 +344,13 @@ class CommandExecutor {
     return new promise.Promise(function(fulfill, reject) {
       // TODO: support reconnecting with the extension.
       if (!self.socket_) {
-        self.destroySession_().thenFinally(function() {
+        self.destroySession_().finally(function() {
           reject(Error('The connection to the SafariDriver was closed'));
         });
         return;
       }
 
+      self.log_.fine(() => '>>> ' + data);
       self.socket_.send(data, function(err) {
         if (err) {
           reject(err);
@@ -339,6 +360,7 @@ class CommandExecutor {
 
       self.socket_.once('message', function(data) {
         try {
+          self.log_.fine(() => '<<< ' + data);
           data = JSON.parse(data);
         } catch (ex) {
           reject(Error('Failed to parse driver message: ' + data));
@@ -370,31 +392,35 @@ class CommandExecutor {
         findSafariExecutable(),
         createConnectFile(
             'http://' + address.address + ':' + address.port));
-      return promise.all(tasks).then(function(tasks) {
+
+      return Promise.all(tasks).then(function(/** !Array<string> */tasks) {
         var exe = tasks[tasks.length - 2];
         var html = tasks[tasks.length - 1];
         return exec(exe, {args: [html]});
       });
     });
 
-    var connected = promise.defer();
-    var self = this;
-    var start = Date.now();
-    var timer = setTimeout(function() {
-      connected.reject(Error(
-        'Failed to connect to the SafariDriver after ' + (Date.now() - start) +
-        ' ms; Have you installed the latest extension from ' +
-        'http://selenium-release.storage.googleapis.com/index.html?'));
-    }, 10 * 1000);
-    this.server_.once('connection', function(socket) {
-      clearTimeout(timer);
-      self.socket_ = socket;
-      socket.once('close', function() {
-        self.socket_ = null;
+    return new Promise((resolve, reject) => {
+      let start = Date.now();
+      let timer = setTimeout(function() {
+        let elapsed = Date.now() - start;
+        reject(Error(
+          'Failed to connect to the SafariDriver after ' + elapsed +
+          ' ms; Have you installed the latest extension from ' +
+          'http://selenium-release.storage.googleapis.com/index.html?'));
+      }, 10 * 1000);
+
+      this.server_.once('connection', socket => {
+        clearTimeout(timer);
+        this.socket_ = socket;
+        this.sessionId_ = getRandomString();
+        socket.once('close', () => {
+          this.socket_ = null;
+          this.sessionId_ = null;
+        });
+        resolve();
       });
-      connected.fulfill();
     });
-    return connected.promise;
   }
 
   /**
@@ -414,7 +440,7 @@ class CommandExecutor {
       }));
     }
     var self = this;
-    return promise.all(tasks).thenFinally(function() {
+    return promise.all(tasks).finally(function() {
       self.server_ = null;
       self.socket_ = null;
       self.safari_ = null;

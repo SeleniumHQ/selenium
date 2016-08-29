@@ -60,8 +60,9 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
       }
 
       if (DesiredCapabilities.firefox().getBrowserName().equals(desiredCapsToUse.getBrowserName())) {
-        boolean isMarionette = Boolean.getBoolean("webdriver.firefox.marionette");
+        boolean isMarionette = Boolean.getBoolean(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE);
         if (!isMarionette) {
+          desiredCapsToUse.setCapability(FirefoxDriver.MARIONETTE, false);
           if (isInDevMode()) {
             copyFirefoxDriverDefaultsToOutputDir();
           }
@@ -114,7 +115,12 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
     } else if (DesiredCapabilities.operaBlink().getBrowserName().equals(name)) {
       className = "org.openqa.selenium.testing.drivers.TestOperaBlinkDriver";
     } else if (DesiredCapabilities.firefox().getBrowserName().equals(name)) {
-      className = getFirefoxClassName();
+      Object marionette = caps.getCapability(FirefoxDriver.MARIONETTE);
+      if (isInDevMode() && marionette != null && !(Boolean) marionette) {
+        className = "org.openqa.selenium.testing.drivers.SynthesizedFirefoxDriver";
+      } else {
+        className = "org.openqa.selenium.firefox.FirefoxDriver";
+      }
     } else if (DesiredCapabilities.htmlUnit().getBrowserName().equals(name)) {
       if (caps.isJavascriptEnabled()) {
         className = "org.openqa.selenium.htmlunit.JavascriptEnabledHtmlUnitDriverTests$HtmlUnitDriverForTest";
@@ -138,17 +144,7 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
     try {
       return Class.forName(className).asSubclass(WebDriver.class);
     } catch (ClassNotFoundException e) {
-      throw Throwables.propagate(e);
-    }
-  }
-
-  private String getFirefoxClassName() {
-    if (Boolean.parseBoolean(System.getProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE))) {
-      return "org.openqa.selenium.firefox.MarionetteDriver";
-    } else if (isInDevMode()) {
-      return "org.openqa.selenium.testing.drivers.SynthesizedFirefoxDriver";
-    } else {
-      return "org.openqa.selenium.firefox.FirefoxDriver";
+      throw new RuntimeException(e);
     }
   }
 }

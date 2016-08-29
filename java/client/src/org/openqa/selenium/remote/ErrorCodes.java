@@ -29,6 +29,7 @@ import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.StaleElementReferenceException;
@@ -142,7 +143,7 @@ public class ErrorCodes {
       case SUCCESS:
         return null;
       case NO_SUCH_SESSION:
-        return SessionNotFoundException.class;
+        return NoSuchSessionException.class;
       case INVALID_COOKIE_DOMAIN:
         return InvalidCookieDomainException.class;
       case UNABLE_TO_SET_COOKIE:

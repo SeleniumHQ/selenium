@@ -28,13 +28,14 @@ def not_available_on_remote(func):
             return func(self)
     return testMethod
 
+
 class ImplicitWaitTest(unittest.TestCase):
 
     def testShouldImplicitlyWaitForASingleElement(self):
         self._loadPage("dynamic")
         add = self.driver.find_element_by_id("adder")
         self.driver.implicitly_wait(3)
-        add.click();
+        add.click()
         self.driver.find_element_by_id("box0")  # All is well if this doesn't throw.
 
     def testShouldStillFailToFindAnElementWhenImplicitWaitsAreEnabled(self):
@@ -65,8 +66,8 @@ class ImplicitWaitTest(unittest.TestCase):
         add = self.driver.find_element_by_id("adder")
 
         self.driver.implicitly_wait(2)
-        add.click();
-        add.click();
+        add.click()
+        add.click()
 
         elements = self.driver.find_elements_by_class_name("redbox")
         self.assertTrue(len(elements) >= 1)

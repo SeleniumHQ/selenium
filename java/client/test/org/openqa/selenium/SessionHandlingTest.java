@@ -19,7 +19,6 @@ package org.openqa.selenium;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openqa.selenium.remote.SessionNotFoundException;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.SeleniumTestRunner;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
@@ -63,7 +62,7 @@ public class SessionHandlingTest {
     }
   }
 
-  @Test(expected = SessionNotFoundException.class)
+  @Test(expected = NoSuchSessionException.class)
   @Ignore(value = {SAFARI}, reason = "Safari: throws UnreachableBrowserException")
   public void callingAnyOperationAfterQuitShouldThrowAnException() {
     WebDriver driver = new WebDriverBuilder().get();
@@ -71,7 +70,7 @@ public class SessionHandlingTest {
     driver.getCurrentUrl();
   }
 
-  @Test(expected = SessionNotFoundException.class)
+  @Test(expected = NoSuchSessionException.class)
   @Ignore(value = {FIREFOX, PHANTOMJS, SAFARI, MARIONETTE}, reason =
       "Firefox: can perform an operation after closing the last window,"
       + "PhantomJS: throws NoSuchWindowException,"

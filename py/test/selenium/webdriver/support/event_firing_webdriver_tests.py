@@ -23,8 +23,7 @@ except ImportError:
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.events import EventFiringWebDriver, \
-                                                    AbstractEventListener
+from selenium.webdriver.support.events import EventFiringWebDriver, AbstractEventListener
 
 
 class EventFiringWebDriverTests(unittest.TestCase):
@@ -36,16 +35,22 @@ class EventFiringWebDriverTests(unittest.TestCase):
         log = self.log
 
         class TestListener(AbstractEventListener):
+
             def before_navigate_to(self, url, driver):
                 log.write(("before_navigate_to %s" % url.split("/")[-1]).encode())
+
             def after_navigate_to(self, url, driver):
                 log.write(("after_navigate_to %s" % url.split("/")[-1]).encode())
+
             def before_navigate_back(self, driver):
                 log.write(b"before_navigate_back")
+
             def after_navigate_back(self, driver):
                 log.write(b"after_navigate_back")
+
             def before_navigate_forward(self, driver):
                 log.write(b"before_navigate_forward")
+
             def after_navigate_forward(self, driver):
                 log.write(b"after_navigate_forward")
 
@@ -60,19 +65,22 @@ class EventFiringWebDriverTests(unittest.TestCase):
         ef_driver.forward()
         self.assertEqual(ef_driver.title, "We Arrive Here")
 
-        self.assertEqual(b"before_navigate_to formPage.html" \
-                + b"after_navigate_to formPage.html" \
-                + b"before_navigate_back" \
-                + b"after_navigate_back" \
-                + b"before_navigate_forward" \
-                + b"after_navigate_forward", log.getvalue())
+        self.assertEqual(
+            b"before_navigate_to formPage.html"
+            b"after_navigate_to formPage.html"
+            b"before_navigate_back"
+            b"after_navigate_back"
+            b"before_navigate_forward"
+            b"after_navigate_forward", log.getvalue())
 
     def test_should_fire_click_event(self):
         log = self.log
 
         class TestListener(AbstractEventListener):
+
             def before_click(self, element, driver):
                 log.write(b"before_click")
+
             def after_click(self, element, driver):
                 log.write(b"after_click")
 
@@ -87,8 +95,10 @@ class EventFiringWebDriverTests(unittest.TestCase):
         log = self.log
 
         class TestListener(AbstractEventListener):
+
             def before_change_value_of(self, element, driver):
                 log.write(b"before_change_value_of")
+
             def after_change_value_of(self, element, driver):
                 log.write(b"after_change_value_of")
 
@@ -103,17 +113,20 @@ class EventFiringWebDriverTests(unittest.TestCase):
         keyReporter.send_keys("abc def")
         self.assertEqual(keyReporter.get_attribute("value"), "abc def")
 
-        self.assertEqual(b"before_change_value_of" \
-                         + b"after_change_value_of" \
-                         + b"before_change_value_of" \
-                         + b"after_change_value_of", log.getvalue())
+        self.assertEqual(
+            b"before_change_value_of"
+            b"after_change_value_of"
+            b"before_change_value_of"
+            b"after_change_value_of", log.getvalue())
 
     def test_should_fire_find_event(self):
         log = self.log
 
         class TestListener(AbstractEventListener):
+
             def before_find(self, by, value, driver):
                 log.write(("before_find by %s %s" % (by, value)).encode())
+
             def after_find(self, by, value, driver):
                 log.write(("after_find by %s %s" % (by, value)).encode())
 
@@ -131,12 +144,13 @@ class EventFiringWebDriverTests(unittest.TestCase):
         self.assertEqual("frame", elements[0].tag_name.lower())
         self.assertEqual("sixth", elements[0].get_attribute("id"))
 
-        self.assertEqual(b"before_find by id oneline" \
-                         + b"after_find by id oneline" \
-                         + b"before_find by xpath /html/body/p[1]" \
-                         + b"after_find by xpath /html/body/p[1]" \
-                         + b"before_find by css selector frame#sixth" \
-                         + b"after_find by css selector frame#sixth" , log.getvalue())
+        self.assertEqual(
+            b"before_find by id oneline"
+            b"after_find by id oneline"
+            b"before_find by xpath /html/body/p[1]"
+            b"after_find by xpath /html/body/p[1]"
+            b"before_find by css selector frame#sixth"
+            b"after_find by css selector frame#sixth", log.getvalue())
 
     def test_should_call_listener_when_an_exception_is_thrown(self):
         log = self.log
@@ -163,7 +177,7 @@ class EventFiringWebDriverTests(unittest.TestCase):
             "arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble']",
             button)
         self.assertEqual("plainButton", value)
-    
+
     def test_should_unwrap_element_args_when_switching_frames(self):
         ef_driver = EventFiringWebDriver(self.driver, AbstractEventListener())
         ef_driver.get(self._pageURL("iframes"))

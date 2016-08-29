@@ -153,7 +153,9 @@ test.suite(function(env) {
                 });
           });
 
-      test.it('works on XHTML pages', function() {
+      // See https://github.com/mozilla/geckodriver/issues/137
+      test.ignore(browsers(Browser.FIREFOX)).
+      it('works on XHTML pages', function() {
         driver.get(test.whereIs('actualXhtmlPage.xhtml'));
 
         var el = driver.findElement(By.linkText('Foo'));
@@ -232,6 +234,22 @@ test.suite(function(env) {
         driver.findElement(By.className('nameB')).
             then(fail, function(e) {
               assert(e).instanceOf(error.NoSuchElementError);
+            });
+      });
+
+      test.it('should implicitly wait', function() {
+        var TIMEOUT_IN_MS = 1000;
+        var EPSILON = TIMEOUT_IN_MS / 2;
+
+        driver.manage().timeouts().implicitlyWait(TIMEOUT_IN_MS);
+        driver.get(Pages.formPage);
+
+        var start = new Date();
+        driver.findElement(By.id('nonExistantButton')).
+            then(fail, function(e) {
+              var end = new Date();
+              assert(e).instanceOf(error.NoSuchElementError);
+              assert(end - start).closeTo(TIMEOUT_IN_MS, EPSILON);
             });
       });
 

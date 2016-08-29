@@ -24,7 +24,6 @@ module Selenium
   module WebDriver
     module Remote
       module Http
-
         # @api private
         class Default < Common
           attr_accessor :proxy
@@ -33,18 +32,18 @@ module Selenium
 
           def http
             @http ||= (
-              http = new_http_client
-              if server_url.scheme == "https"
-                http.use_ssl = true
-                http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-              end
+            http = new_http_client
+            if server_url.scheme == 'https'
+              http.use_ssl = true
+              http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+            end
 
-              if @timeout
-                http.open_timeout = @timeout
-                http.read_timeout = @timeout
-              end
+            if @timeout
+              http.open_timeout = @timeout
+              http.read_timeout = @timeout
+            end
 
-              http
+            http
             )
           end
 
@@ -76,15 +75,12 @@ module Selenium
               retry
 
             rescue Errno::ECONNREFUSED => ex
-              if use_proxy?
-                raise ex.class, "using proxy: #{proxy.http}"
-              else
-                raise
-              end
+              raise ex.class, "using proxy: #{proxy.http}" if use_proxy?
+              raise
             end
 
-            if response.kind_of? Net::HTTPRedirection
-              raise Error::WebDriverError, "too many redirects" if redirects >= MAX_REDIRECTS
+            if response.is_a? Net::HTTPRedirection
+              raise Error::WebDriverError, 'too many redirects' if redirects >= MAX_REDIRECTS
               request(:get, URI.parse(response['Location']), DEFAULT_HEADERS.dup, nil, redirects + 1)
             else
               create_response response.code, response.body, response.content_type
@@ -109,7 +105,8 @@ module Selenium
 
           def new_http_client
             if use_proxy?
-              unless proxy.respond_to?(:http) && url = @proxy.http
+              url = @proxy.http
+              unless proxy.respond_to?(:http) && url
                 raise Error::WebDriverError, "expected HTTP proxy, got #{@proxy.inspect}"
               end
 
@@ -124,13 +121,13 @@ module Selenium
 
           def proxy
             @proxy ||= (
-              proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
-              no_proxy = ENV['no_proxy'] || ENV['NO_PROXY']
+            proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
+            no_proxy = ENV['no_proxy'] || ENV['NO_PROXY']
 
-              if proxy
-                proxy = "http://#{proxy}" unless proxy.start_with?("http://")
-                Proxy.new(:http => proxy, :no_proxy => no_proxy)
-              end
+            if proxy
+              proxy = "http://#{proxy}" unless proxy.start_with?('http://')
+              Proxy.new(http: proxy, no_proxy: no_proxy)
+            end
             )
           end
 
@@ -138,24 +135,22 @@ module Selenium
             return false if proxy.nil?
 
             if proxy.no_proxy
-              ignored = proxy.no_proxy.split(",").any? do |host|
-                host == "*" ||
-                host == server_url.host || (
-                  begin
-                    IPAddr.new(host).include?(server_url.host)
-                  rescue ArgumentError
-                    false
-                  end
-                )
-
+              ignored = proxy.no_proxy.split(',').any? do |host|
+                host == '*' ||
+                  host == server_url.host || (
+                begin
+                  IPAddr.new(host).include?(server_url.host)
+                rescue ArgumentError
+                  false
+                end
+                  )
               end
 
-              not ignored
+              !ignored
             else
               true
             end
           end
-
         end # Default
       end # Http
     end # Remote

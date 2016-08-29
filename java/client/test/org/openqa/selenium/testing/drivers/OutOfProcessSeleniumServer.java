@@ -17,9 +17,10 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import com.google.common.base.Throwables;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.google.common.io.Files;
+
 import org.openqa.selenium.Build;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.net.NetworkUtils;
@@ -37,8 +38,6 @@ import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class OutOfProcessSeleniumServer {
 
@@ -70,7 +69,7 @@ public class OutOfProcessSeleniumServer {
     String localAddress = new NetworkUtils().getPrivateLocalAddress();
     baseUrl = String.format("http://%s:%d", localAddress, port);
 
-    List<String> cmdLine = new LinkedList<String>();
+    List<String> cmdLine = new LinkedList<>();
     cmdLine.add("java");
     cmdLine.add("-cp");
     cmdLine.add(classPath);
@@ -97,9 +96,9 @@ public class OutOfProcessSeleniumServer {
       log.info("Server is ready");
     } catch (UrlChecker.TimeoutException e) {
       log.severe("Server failed to start: " + e.getMessage());
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     } catch (MalformedURLException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
 
     return this;
@@ -133,17 +132,15 @@ public class OutOfProcessSeleniumServer {
     try {
       return Files.readFirstLine(new File(classpathFile), Charset.defaultCharset());
     } catch (IOException e) {
-      Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
-
-    return "";
   }
 
   public URL getWebDriverUrl() {
     try {
       return new URL(baseUrl + "/wd/hub");
     } catch (MalformedURLException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 }

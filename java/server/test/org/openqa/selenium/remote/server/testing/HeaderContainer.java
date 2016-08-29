@@ -18,7 +18,6 @@
 package org.openqa.selenium.remote.server.testing;
 
 import com.google.common.base.Supplier;
-import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
@@ -27,9 +26,7 @@ import com.google.common.collect.Multimaps;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
@@ -73,7 +70,7 @@ class HeaderContainer {
       return value == null ? -1 :
           DateFormat.getDateInstance().parse(value).getTime();
     } catch (ParseException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 

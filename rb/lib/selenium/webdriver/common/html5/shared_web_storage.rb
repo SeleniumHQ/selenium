@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module HTML5
-
       module SharedWebStorage
         include Enumerable
 
@@ -30,31 +29,23 @@ module Selenium
         alias_method :member?, :key?
         alias_method :has_key?, :key?
 
-        def fetch(key, &blk)
-          if self.key? key
-            return self[key]
-          end
-
-          if block_given?
-            yield key
-          else
-            # should be KeyError, but it's 1.9-specific
-            raise IndexError, "missing key #{key.inspect}"
-          end
+        def fetch(key)
+          return self[key] if key? key
+          return yield(key) if block_given?
+          raise KeyError, "missing key #{key.inspect}"
         end
 
         def empty?
-          size == 0
+          to_a.empty?
         end
 
-        def each(&blk)
+        def each
           return enum_for(:each) unless block_given?
 
           keys.each do |k|
             yield k, self[k]
           end
         end
-
       end # SharedWebStorage
     end # HTML5
   end # WebDriver

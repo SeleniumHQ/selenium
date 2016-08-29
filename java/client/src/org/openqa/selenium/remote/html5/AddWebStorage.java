@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.remote.html5;
 
-import com.google.common.base.Throwables;
-
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.remote.AugmenterProvider;
@@ -47,7 +45,7 @@ public class AddWebStorage implements AugmenterProvider {
         } catch (IllegalAccessException e) {
           throw new WebDriverException(e);
         } catch (InvocationTargetException e) {
-          throw Throwables.propagate(e.getCause());
+          throw new RuntimeException(e.getCause());
         }
       }
     };

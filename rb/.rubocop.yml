@@ -1,0 +1,83 @@
+AllCops:
+  TargetRubyVersion: 2.0
+
+Style/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
+
+Style/BracesAroundHashParameters:
+  EnforcedStyle: context_dependent
+
+Style/Alias:
+  EnforcedStyle: prefer_alias_method
+
+Lint/HandleExceptions:
+  Enabled: false
+
+Style/PercentLiteralDelimiters:
+  PreferredDelimiters:
+    '%i': '[]'
+    '%w': '[]'
+
+Style/RegexpLiteral:
+  EnforcedStyle: mixed
+
+# Consider documenting all top-level classes and modules
+Style/Documentation:
+  Enabled: false
+
+# Port Integers do not need underscores
+Style/NumericLiterals:
+  Enabled: false
+
+# Bug
+Style/FileName:
+  Exclude:
+    - 'lib/selenium-webdriver.rb'
+
+# These need to be fixed
+Style/MutableConstant:
+  Exclude:
+    - 'lib/selenium/webdriver/common/socket_poller.rb'
+    - 'lib/selenium/webdriver/remote/legacy_bridge.rb'
+    - 'lib/selenium/webdriver/remote/w3c_bridge.rb'
+
+# TODO: Refactor Chrome::Bridge#create_capabilities
+Metrics/PerceivedComplexity:
+  Max: 11
+  Exclude:
+    - 'lib/selenium/webdriver/chrome/legacy_bridge.rb'
+
+Metrics/CyclomaticComplexity:
+  Max: 9
+  Exclude:
+    - 'lib/selenium/webdriver/chrome/legacy_bridge.rb'
+    - 'lib/selenium/webdriver/common/driver.rb'
+    - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
+
+Metrics/ClassLength:
+  Max: 140
+  Exclude:
+    - 'lib/selenium/webdriver/firefox/profile.rb'
+    - 'lib/selenium/webdriver/remote/legacy_bridge.rb'
+    - 'lib/selenium/webdriver/remote/capabilities.rb'
+    - 'lib/selenium/webdriver/remote/w3c_bridge.rb'
+    - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
+
+Metrics/AbcSize:
+  Max: 33
+  Exclude:
+    - 'lib/selenium/webdriver/chrome/legacy_bridge.rb'
+    - 'lib/selenium/webdriver/support/color.rb'
+
+Metrics/LineLength:
+  Max: 130
+
+Metrics/ModuleLength:
+  Exclude:
+    - 'lib/selenium/webdriver/common/platform.rb'
+    - 'spec/**/*'
+
+Metrics/MethodLength:
+  Max: 33
+  Exclude:
+    - 'lib/selenium/webdriver/chrome/legacy_bridge.rb'

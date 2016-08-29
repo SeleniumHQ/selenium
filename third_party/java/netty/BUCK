@@ -1,5 +1,6 @@
 prebuilt_jar(name = 'netty',
   binary_jar = 'netty-3.5.7.Final.jar',
+  maven_coords = 'io.netty:netty:3.5.7.Final',
   visibility = [
     '//java/client/src/org/openqa/selenium/safari:safari',
     '//java/client/test/org/openqa/selenium/safari:tests',

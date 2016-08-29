@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.ie;
 
-import com.google.common.base.Throwables;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
@@ -207,51 +205,46 @@ public class InternetExplorerDriver extends RemoteWebDriver {
   }
 
   private InternetExplorerDriverService setupService(Capabilities caps, int port) {
-    try {
-      InternetExplorerDriverService.Builder builder = new InternetExplorerDriverService.Builder();
-      builder.usingPort(port);
+    InternetExplorerDriverService.Builder builder = new InternetExplorerDriverService.Builder();
+    builder.usingPort(port);
 
-      if (caps != null) {
-        if (caps.getCapability(LOG_FILE) != null) {
-          String value = (String) caps.getCapability(LOG_FILE);
-          if (value != null) {
-            builder.withLogFile(new File(value));
-          }
-        }
-
-        if (caps.getCapability(LOG_LEVEL) != null) {
-          String value = (String) caps.getCapability(LOG_LEVEL);
-          if (value != null) {
-            builder.withLogLevel(InternetExplorerDriverLogLevel.valueOf(value));
-          }
-        }
-
-        if (caps.getCapability(HOST) != null) {
-          String value = (String) caps.getCapability(HOST);
-          if (value != null) {
-            builder.withHost(value);
-          }
-        }
-
-        if (caps.getCapability(EXTRACT_PATH) != null) {
-          String value = (String) caps.getCapability(EXTRACT_PATH);
-          if (value != null) {
-            builder.withExtractPath(new File(value));
-          }
-        }
-
-        if (caps.getCapability(SILENT) != null) {
-          Boolean value = (Boolean) caps.getCapability(SILENT);
-          if (value != null) {
-            builder.withSilent(value);
-          }
+    if (caps != null) {
+      if (caps.getCapability(LOG_FILE) != null) {
+        String value = (String) caps.getCapability(LOG_FILE);
+        if (value != null) {
+          builder.withLogFile(new File(value));
         }
       }
 
-      return builder.build();
+      if (caps.getCapability(LOG_LEVEL) != null) {
+        String value = (String) caps.getCapability(LOG_LEVEL);
+        if (value != null) {
+          builder.withLogLevel(InternetExplorerDriverLogLevel.valueOf(value));
+        }
+      }
 
-    } catch (IllegalStateException ex) {
-      throw Throwables.propagate(ex);
+      if (caps.getCapability(HOST) != null) {
+        String value = (String) caps.getCapability(HOST);
+        if (value != null) {
+          builder.withHost(value);
+        }
+      }
+
+      if (caps.getCapability(EXTRACT_PATH) != null) {
+        String value = (String) caps.getCapability(EXTRACT_PATH);
+        if (value != null) {
+          builder.withExtractPath(new File(value));
+        }
+      }
+
+      if (caps.getCapability(SILENT) != null) {
+        Boolean value = (Boolean) caps.getCapability(SILENT);
+        if (value != null) {
+          builder.withSilent(value);
+        }
+      }
     }
+
+    return builder.build();
   }
 }

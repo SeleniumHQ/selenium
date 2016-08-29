@@ -7,7 +7,7 @@ dotnet_test(name = "core",
     "System.Xml.dll",
     "System.Web.dll",
     "//dotnet/src/core:core",
-    "third_party/dotnet/nunit-3.0.1/net-4.0/nunit.framework.dll",
+    "third_party/dotnet/nunit-3.2.1/net-4.0/nunit.framework.dll",
     "third_party/nmock/nmock.dll"
   ],
   out = "Selenium.Core.Tests.dll",

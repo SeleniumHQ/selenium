@@ -9,6 +9,7 @@ BROWSERS = {
       :dir => "firefox", # Directory to put tests in/read tests from
       :file_string => "ff", # Browser-string to use in test filenames
       :class => "Firefox", # As per py/selenium/webdriver/__init__.py
+      :constructor_args => "capabilities={'marionette': False}",
       :resources => [
         { "//javascript/firefox-driver:webdriver" => "selenium/webdriver/firefox/" },
         { "//cpp:noblur" => "selenium/webdriver/firefox/x86/x_ignore_nofocus.so" },
@@ -27,6 +28,7 @@ BROWSERS = {
       :dir => "firefox", # Directory to put tests in/read tests from
       :file_string => "marionette", # Browser-string to use in test filenames
       :class => "Firefox", # As per py/selenium/webdriver/__init__.py
+      :constructor_args => "capabilities={'marionette': True}"
     },
     :java => {
       :class => "org.openqa.selenium.firefox.SynthesizedFirefoxDriver",
@@ -95,7 +97,7 @@ BROWSERS = {
     :python => {
       :dir => "remote",
       :file_string => "remote",
-      :deps => [:remote_client, :'selenium-server-standalone', '//java/server/test/org/openqa/selenium/remote/server/auth:server:uber'],
+      :deps => [:remote_client, :'selenium-server-standalone', '//java/server/test/org/openqa/selenium/remote/server/auth:server'],
       :custom_test_import => "from selenium.test.selenium.common import utils",
       :custom_test_setup => "utils.start_server(module)",
       :custom_test_teardown => "utils.stop_server(module)",

@@ -49,14 +49,6 @@ const webdriver = require('./webdriver'),
     WebElementCondition = webdriver.WebElementCondition;
 
 
-/** @deprecated Use {@link webdriver.Condition} instead. */
-exports.Condition = Condition;
-
-
-/** @deprecated Use {@link webdriver.WebElementCondition} instead. */
-exports.WebElementCondition = WebElementCondition;
-
-
 /**
  * Creates a condition that will wait until the input driver is able to switch
  * to the designated frame. The target frame may be specified as
@@ -114,8 +106,14 @@ exports.ableToSwitchToFrame = function ableToSwitchToFrame(frame) {
  */
 exports.alertIsPresent = function alertIsPresent() {
   return new Condition('for alert to be present', function(driver) {
-    return driver.switchTo().alert().thenCatch(function(e) {
-      if (!(e instanceof error.NoSuchAlertError)) {
+    return driver.switchTo().alert().catch(function(e) {
+      if (!(e instanceof error.NoSuchAlertError
+        // XXX: Workaround for GeckoDriver error `TypeError: can't convert null
+        // to object`. For more details, see
+        // https://github.com/SeleniumHQ/selenium/pull/2137
+        || (e instanceof error.WebDriverError
+          && e.message === `can't convert null to object`)
+        )) {
         throw e;
       }
     });
@@ -171,6 +169,59 @@ exports.titleMatches = function titleMatches(regex) {
   return new Condition('for title to match ' + regex, function(driver) {
     return driver.getTitle().then(function(title) {
       return regex.test(title);
+    });
+  });
+};
+
+
+/**
+ * Creates a condition that will wait for the current page's url to match the
+ * given value.
+ *
+ * @param {string} url The expected page url.
+ * @return {!Condition<boolean>} The new condition.
+ */
+exports.urlIs = function urlIs(url) {
+  return new Condition(
+      'for URL to be ' + JSON.stringify(url),
+      function(driver) {
+        return driver.getCurrentUrl().then(function(u) {
+          return u === url;
+        });
+      });
+};
+
+
+/**
+ * Creates a condition that will wait for the current page's url to contain
+ * the given substring.
+ *
+ * @param {string} substrUrl The substring that should be present in the current
+ *     URL.
+ * @return {!Condition<boolean>} The new condition.
+ */
+exports.urlContains = function urlContains(substrUrl) {
+  return new Condition(
+      'for URL to contain ' + JSON.stringify(substrUrl),
+      function(driver) {
+        return driver.getCurrentUrl().then(function(url) {
+          return url.indexOf(substrUrl) !== -1;
+        });
+      });
+};
+
+
+/**
+ * Creates a condition that will wait for the current page's url to match the
+ * given regular expression.
+ *
+ * @param {!RegExp} regex The regular expression to test against.
+ * @return {!Condition<boolean>} The new condition.
+ */
+exports.urlMatches = function urlMatches(regex) {
+  return new Condition('for URL to match ' + regex, function(driver) {
+    return driver.getCurrentUrl().then(function(url) {
+      return regex.test(url);
     });
   });
 };

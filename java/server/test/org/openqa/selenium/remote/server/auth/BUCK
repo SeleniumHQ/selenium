@@ -1,0 +1,19 @@
+java_binary(
+  name = 'server',
+  deps = [
+    ':lib',
+  ],
+)
+
+java_library(
+  name = 'lib',
+  srcs = glob(['*.java']),
+  deps = [
+    '//java/server/src/org/openqa/selenium/remote/server:server',
+    '//third_party/java/httpcomponents:httpclient',
+    '//third_party/java/guava:guava',
+    '//third_party/java/jetty:jetty',
+    '//third_party/java/servlet:servlet-api',
+  ],
+)
+

@@ -26,5 +26,5 @@ module Selenium
         skip
       end
     end
-  end
-end
+  end # WebDriver
+end # Selenium

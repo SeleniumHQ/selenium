@@ -19,8 +19,7 @@
 package org.openqa.grid.web.servlet;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonNull;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
@@ -33,9 +32,9 @@ import org.openqa.grid.internal.TestSlot;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -101,41 +100,24 @@ public class HubStatusServlet extends RegistryBasedServlet {
     try {
       if (request.getInputStream() != null) {
         JsonObject requestJSON = getRequestJSON(request);
-        JsonArray keys = requestJSON != null
-                         ? requestJSON.get("configuration").getAsJsonArray()
-                         : null;
+        List<String> keysToReturn = null;
+        if (requestJSON != null && requestJSON.has("configuration")) {
+          keysToReturn = new Gson().fromJson(requestJSON.getAsJsonArray("configuration"), ArrayList.class);
+        }
 
-        Set<String> paramsToReturn;
         Registry registry = getRegistry();
-        Map<String,Object> allParams = registry.getConfiguration().getAllParams();
-
-        if (requestJSON == null || keys.size() == 0) {
-          paramsToReturn = allParams.keySet();
-        } else {
-          paramsToReturn = new HashSet<>();
-          for (int i = 0; i < keys.size(); i++) {
-            paramsToReturn.add(keys.get(i).getAsString());
+        JsonElement config = registry.getConfiguration().toJson();
+        for (Map.Entry<String, JsonElement> entry : config.getAsJsonObject().entrySet()) {
+          if (keysToReturn == null || keysToReturn.isEmpty() || keysToReturn.contains(entry.getKey())) {
+            res.add(entry.getKey(), entry.getValue());
           }
         }
-
-        if (paramsToReturn.contains("newSessionRequestCount")) {
+        if (keysToReturn == null || keysToReturn.isEmpty() || keysToReturn.contains("newSessionRequestCount")) {
           res.addProperty("newSessionRequestCount", registry.getNewSessionRequestCount());
-          paramsToReturn.remove("newSessionRequestCount");
         }
 
-        if (paramsToReturn.contains("slotCounts")) {
+        if (keysToReturn == null || keysToReturn.isEmpty() || keysToReturn.contains("slotCounts")) {
           res.add("slotCounts", getSlotCounts());
-          paramsToReturn.remove("slotCounts");
-        }
-
-        for (String key : paramsToReturn) {
-          Object value = allParams.get(key);
-          if (value == null) {
-            res.add(key, JsonNull.INSTANCE);
-          } else {
-            res.add(key, new Gson().toJsonTree(value));
-          }
-
         }
       }
     } catch (Exception e) {
