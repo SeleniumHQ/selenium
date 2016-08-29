@@ -4,6 +4,9 @@
   recovering from an unhandled promise rejection.
 * Added the `firefox.ServiceBuilder` class, which may be used to customize the
   geckodriver used for `firefox.Driver` instances.
+* Added support for Safari 10 safaridriver. safaridriver may be disabled
+  via tha API, `safari.Options#useLegacyDriver`, to use the safari
+  extension driver.
 
 ### API Changes
 

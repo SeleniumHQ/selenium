@@ -24,12 +24,14 @@ var build = require('./build'),
     webdriver = require('../../'),
     flow = webdriver.promise.controlFlow(),
     firefox = require('../../firefox'),
+    safari = require('../../safari'),
     remote = require('../../remote'),
     testing = require('../../testing'),
     fileserver = require('./fileserver');
 
 
 const LEGACY_FIREFOX = 'legacy-' + webdriver.Browser.FIREFOX;
+const LEGACY_SAFARI = 'legacy-' + webdriver.Browser.SAFARI;
 
 
 /**
@@ -44,7 +46,8 @@ var NATIVE_BROWSERS = [
   webdriver.Browser.IE,
   webdriver.Browser.OPERA,
   webdriver.Browser.PHANTOM_JS,
-  webdriver.Browser.SAFARI
+  webdriver.Browser.SAFARI,
+  LEGACY_SAFARI
 ];
 
 
@@ -80,7 +83,8 @@ var browsersToTest = (function() {
       parts[0] = webdriver.Browser.IE;
     }
 
-    if (parts[0] === LEGACY_FIREFOX) {
+    if (parts[0] === LEGACY_FIREFOX ||
+      parts[0] === LEGACY_SAFARI) {
       return;
     }
 
@@ -171,6 +175,14 @@ function TestEnvironment(browserName, server) {
         parts[0] = webdriver.Browser.FIREFOX;
       }
 
+      if (parts[0] === LEGACY_SAFARI) {
+        var options = builder.getSafariOptions() || new safari.Options();
+        options.useLegacyDriver(true);
+        builder.setSafariOptions(options);
+
+        parts[0] = webdriver.Browser.SAFARI;
+      }
+
       builder.forBrowser(parts[0], parts[1], parts[2]);
       if (server) {
         builder.usingServer(server.address());
@@ -231,7 +243,7 @@ function suite(fn, opt_options) {
               return build.of('//javascript/firefox-driver:webdriver')
                   .onlyOnce().go();
             });
-          } else if (browser === webdriver.Browser.SAFARI) {
+          } else if (browser === LEGACY_SAFARI) {
             testing.before(function() {
               return build.of('//javascript/safari-driver:client')
                   .onlyOnce().go();
