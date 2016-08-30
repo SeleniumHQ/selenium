@@ -75,16 +75,30 @@ public class SafariDriver extends RemoteWebDriver {
    * @param safariOptions safari specific options / capabilities for the driver
    */
   public SafariDriver(SafariOptions safariOptions) {
-    super(getExecutor(safariOptions), safariOptions.toCapabilities());
+    super(getExecutor(safariOptions), safariOptions.toCapabilities(), requiredCapabilities(safariOptions));
+  }
+
+  /**
+   * Ensure the new safaridriver receives non null required capabilities.
+   */
+  private static Capabilities requiredCapabilities(SafariOptions options) {
+    if (isLegacy(options)) {
+      return null;
+    }
+    return new DesiredCapabilities();
   }
 
   private static CommandExecutor getExecutor(SafariOptions options) {
-    Object useLegacy = options.toCapabilities().getCapability(USE_LEGACY_DRIVER_CAPABILITY);
     SafariDriverService service = SafariDriverService.createDefaultService(options);
-    if ((useLegacy == null || !(Boolean)useLegacy) && service != null) {
+    if (isLegacy(options) && service != null) {
       return new DriverCommandExecutor(service);
     }
     return new SafariDriverCommandExecutor(options);
+  }
+
+  private static boolean isLegacy(SafariOptions options) {
+    Object useLegacy = options.toCapabilities().getCapability(USE_LEGACY_DRIVER_CAPABILITY);
+    return useLegacy != null && (Boolean)useLegacy;
   }
 
   @Override

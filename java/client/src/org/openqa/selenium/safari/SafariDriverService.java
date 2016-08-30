@@ -17,14 +17,19 @@
 
 package org.openqa.selenium.safari;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.concurrent.ExecutionException;
 
 public class SafariDriverService extends DriverService {
 
@@ -40,6 +45,15 @@ public class SafariDriverService extends DriverService {
       return new Builder().usingPort(options.getPort()).build();
     }
     return null;
+  }
+
+  @Override
+  protected void waitUntilAvailable() throws MalformedURLException {
+    try {
+      PortProber.waitForPortUp(getUrl().getPort(), 20, SECONDS);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   public static class Builder extends DriverService.Builder<
