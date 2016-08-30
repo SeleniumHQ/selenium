@@ -32,6 +32,8 @@ import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.shared.GridNodeServer;
+import org.openqa.grid.web.servlet.ResourceServlet;
+import org.openqa.grid.web.utils.ExtraServletUtil;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
@@ -43,19 +45,27 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidParameterException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
+
+import javax.servlet.Servlet;
 
 public class SelfRegisteringRemote {
 
   private static final Logger LOG = Logger.getLogger(SelfRegisteringRemote.class.getName());
 
-  private RegistrationRequest nodeConfig;
+  private final RegistrationRequest nodeConfig;
 
   private final HttpClientFactory httpClientFactory;
+
+  private final Map<String, Class<? extends Servlet>> nodeServlets;
 
   public SelfRegisteringRemote(RegistrationRequest config) {
     this.nodeConfig = config;
     this.httpClientFactory = new HttpClientFactory();
+    this.nodeServlets = new HashMap<>();
 
     nodeConfig.validate();
 
@@ -72,6 +82,13 @@ public class SelfRegisteringRemote {
         "error getting the parameters from the hub. The node may end up with wrong timeouts." + e
           .getMessage());
     }
+
+    // add the resource servlet for nodes
+    nodeServlets.put("/resources/*", ResourceServlet.class);
+
+    // add the user supplied servlet(s) for nodes
+    addExtraServlets(nodeConfig.getConfiguration().servlets);
+
   }
 
   public URL getRemoteURL() {
@@ -96,6 +113,7 @@ public class SelfRegisteringRemote {
     if (server == null) {
       throw new GridConfigurationException("no server set to register to the hub");
     }
+    server.setExtraServlets(nodeServlets);
     server.boot();
   }
 
@@ -200,6 +218,20 @@ public class SelfRegisteringRemote {
     return nodeConfig.getConfiguration();
   }
 
+  /**
+   * @return the {@link GridNodeServer} for this remote
+   */
+  protected GridNodeServer getServer() {
+    return server;
+  }
+
+  /**
+   * @return the list of {@link Servlet}s that this remote will bind
+   */
+  protected Map<String, Class <? extends Servlet>> getNodeServlets() {
+    return nodeServlets;
+  }
+
   private void registerToHub(boolean checkPresenceFirst) {
     if (!checkPresenceFirst || !isAlreadyRegistered(nodeConfig)) {
       String tmp =
@@ -232,6 +264,21 @@ public class SelfRegisteringRemote {
       LOG.fine("The node is already present on the hub. Skipping registration.");
     }
 
+  }
+
+  private void addExtraServlets(List<String> servlets) {
+    if (servlets == null || servlets.size() == 0) {
+      return;
+    }
+
+    for (String s : servlets) {
+      Class<? extends Servlet> servletClass = ExtraServletUtil.createServlet(s);
+      if (servletClass != null) {
+        String path = "/extra/" + servletClass.getSimpleName() + "/*";
+        LOG.info("binding " + servletClass.getCanonicalName() + " to " + path);
+        nodeServlets.put(path, servletClass);
+      }
+    }
   }
 
   void updateConfigWithRealPort() throws MalformedURLException {

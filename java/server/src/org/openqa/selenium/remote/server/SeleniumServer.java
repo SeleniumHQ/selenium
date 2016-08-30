@@ -31,6 +31,8 @@ import org.seleniumhq.jetty9.server.ServerConnector;
 import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 import org.seleniumhq.jetty9.util.thread.QueuedThreadPool;
 
+import java.util.Map;
+
 import javax.servlet.Servlet;
 
 /**
@@ -41,6 +43,7 @@ public class SeleniumServer implements GridNodeServer {
   private Server server;
   private DefaultDriverSessions driverSessions;
   private StandaloneConfiguration configuration;
+  private Map<String, Class<? extends Servlet>> extraServlets;
 
   private Thread shutDownHook;
   /**
@@ -79,8 +82,20 @@ public class SeleniumServer implements GridNodeServer {
     }
   }
 
+  private void addExtraServlets(ServletContextHandler handler) {
+    if (extraServlets != null && extraServlets.size() > 0) {
+      for (String path : extraServlets.keySet()) {
+        handler.addServlet(extraServlets.get(path), path);
+      }
+    }
+  }
+
   public void setConfiguration(StandaloneConfiguration configuration) {
     this.configuration = configuration;
+  }
+
+  public void setExtraServlets(Map<String, Class<? extends Servlet>> extraServlets) {
+    this.extraServlets = extraServlets;
   }
 
   public void boot() {
@@ -107,6 +122,7 @@ public class SeleniumServer implements GridNodeServer {
     }
 
     addRcSupport(handler);
+    addExtraServlets(handler);
 
     server.setHandler(handler);
 
