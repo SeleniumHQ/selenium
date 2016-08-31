@@ -103,6 +103,41 @@ public class Hub {
     }
   }
 
+  private void addDefaultServlets(ServletContextHandler handler) {
+    // add mandatory default servlets
+    handler.addServlet(RegistrationServlet.class.getName(), "/grid/register/*");
+
+    handler.addServlet(DriverServlet.class.getName(), "/wd/hub/*");
+    handler.addServlet(DriverServlet.class.getName(), "/selenium-server/driver/*");
+
+    handler.addServlet(ProxyStatusServlet.class.getName(), "/grid/api/proxy/*");
+
+    handler.addServlet(HubStatusServlet.class.getName(), "/grid/api/hub/*");
+
+    handler.addServlet(TestSessionStatusServlet.class.getName(), "/grid/api/testsession/*");
+
+    // add optional default servlets
+    if (!config.isWithOutServlet(ResourceServlet.class)) {
+      handler.addServlet(ResourceServlet.class.getName(), "/grid/resources/*");
+    }
+
+    if (!config.isWithOutServlet(DisplayHelpServlet.class)) {
+      handler.addServlet(DisplayHelpServlet.class.getName(), "/*");
+    }
+
+    if (!config.isWithOutServlet(ConsoleServlet.class)) {
+      handler.addServlet(ConsoleServlet.class.getName(), "/grid/console/*");
+    }
+
+    if (!config.isWithOutServlet(LifecycleServlet.class)) {
+      handler.addServlet(LifecycleServlet.class.getName(), "/lifecycle-manager/*");
+    }
+
+    if (!config.isWithOutServlet(Grid1HeartbeatServlet.class)) {
+      handler.addServlet(Grid1HeartbeatServlet.class.getName(), "/heartbeat");
+    }
+  }
+
   private void initServer() {
     try {
       if (config.jettyMaxThreads>0) {
@@ -144,26 +179,7 @@ public class Hub {
 
       root.setAttribute(Registry.KEY, registry);
 
-      root.addServlet(DisplayHelpServlet.class.getName(), "/*");
-
-      root.addServlet(ConsoleServlet.class.getName(), "/grid/console/*");
-
-      root.addServlet(RegistrationServlet.class.getName(), "/grid/register/*");
-
-      root.addServlet(DriverServlet.class.getName(), "/wd/hub/*");
-      root.addServlet(DriverServlet.class.getName(), "/selenium-server/driver/*");
-
-      root.addServlet(ResourceServlet.class.getName(), "/grid/resources/*");
-
-      root.addServlet(ProxyStatusServlet.class.getName(), "/grid/api/proxy/*");
-
-      root.addServlet(HubStatusServlet.class.getName(), "/grid/api/hub/*");
-
-      root.addServlet(TestSessionStatusServlet.class.getName(), "/grid/api/testsession/*");
-
-      root.addServlet(LifecycleServlet.class.getName(), "/lifecycle-manager/*");
-
-      root.addServlet(Grid1HeartbeatServlet.class.getName(), "/heartbeat");
+      addDefaultServlets(root);
 
       // Load any additional servlets provided by the user.
       for (Map.Entry<String, Class<? extends Servlet>> entry : extraServlet.entrySet()) {
