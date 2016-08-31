@@ -22,7 +22,8 @@ import com.google.common.io.ByteStreams;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
+import java.net.URL;
+import java.util.jar.Manifest;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -34,7 +35,6 @@ public class DisplayHelpServlet extends HttpServlet {
   private static final long serialVersionUID = 8484071790930378855L;
   private static final Logger log = Logger.getLogger(DisplayHelpServlet.class.getName());
   private static String coreVersion;
-  private static String coreRevision;
 
   public DisplayHelpServlet() {
     getVersion();
@@ -64,16 +64,16 @@ public class DisplayHelpServlet extends HttpServlet {
     builder.append("<html>");
     builder.append("<head>");
 
-    builder.append("<title>Selenium Grid2.0 help</title>");
+    builder.append("<title>Selenium Grid ").append(coreVersion).append(" help</title>");
 
 
     builder.append("</head>");
 
     builder.append("<body>");
-    builder.append("You are using grid ").append(coreVersion).append(coreRevision);
+    builder.append("You are using grid ").append(coreVersion);
     builder
-        .append("<br>Find help on the official selenium wiki : <a href='https://github.com/SeleniumHQ/selenium/wiki/Grid2' >more help here</a>");
-    builder.append("<br>default monitoring page : <a href='/grid/console' >console</a>");
+        .append("<br>Find help on the official selenium wiki : <a href='https://github.com/SeleniumHQ/selenium/wiki/Grid2'>more help here</a>");
+    builder.append("<br>default monitoring page : <a href='/grid/console'>console</a>");
 
     builder.append("</body>");
     builder.append("</html>");
@@ -88,23 +88,23 @@ public class DisplayHelpServlet extends HttpServlet {
   }
 
   private void getVersion() {
-    final Properties p = new Properties();
-
-    InputStream stream =
-        Thread.currentThread().getContextClassLoader().getResourceAsStream("VERSION.txt");
+    InputStream stream = null;
+    try {
+      String classPath = this.getClass().getResource(this.getClass().getSimpleName() + ".class").toString();
+      String manifest = classPath.substring(0, classPath.lastIndexOf("!") + 1) + "/META-INF/MANIFEST.MF";
+      stream = new URL(manifest).openStream();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     if (stream == null) {
       log.severe("Couldn't determine version number");
       return;
     }
     try {
-      p.load(stream);
+      Manifest manifest = new Manifest(stream);
+      coreVersion = manifest.getEntries().get("Build-Info").getValue("Selenium-Version").trim();
     } catch (IOException e) {
       log.severe("Cannot load version from VERSION.txt" + e.getMessage());
-    }
-    coreVersion = p.getProperty("selenium.core.version");
-    coreRevision = p.getProperty("selenium.core.revision");
-    if (coreVersion == null) {
-      log.severe("Cannot load selenium.core.version from VERSION.txt");
     }
   }
 }
