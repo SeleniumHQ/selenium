@@ -24,6 +24,7 @@ require 'date'
 require 'json'
 
 require 'selenium/webdriver/common'
+require 'selenium/webdriver/atoms'
 
 module Selenium
   module WebDriver

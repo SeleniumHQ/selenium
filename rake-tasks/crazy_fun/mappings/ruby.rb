@@ -96,7 +96,7 @@ class RubyMappings
           ENV['WD_REMOTE_BROWSER'] = $1
           ENV['WD_SPEC_DRIVER'] = 'remote'
         else
-          ENV['WD_SPEC_DRIVER'] = args[:name]
+          ENV['WD_SPEC_DRIVER'] = args[:name].tr('-', '_')
         end
 
         ENV['CI_REPORTS']     = "build/test_logs"

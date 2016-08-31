@@ -30,13 +30,7 @@ module Selenium
 
       class W3CBridge
         include BridgeHelper
-
-        BOOLEAN_ATTRIBUTES = %i[async autofocus autoplay checked compact complete controls
-            declare defaultchecked defaultselected defer disabled draggable ended
-            formnovalidate hidden indeterminate iscontenteditable ismap itemscope
-            loop multiple muted nohref noresize noshade novalidate nowrap open
-            paused pubdate readonly required reversed scoped seamless seeking
-            selected truespeed willvalidate].freeze
+        include Atoms
 
         # TODO: constant shouldn't be modified in class
         COMMANDS = {}
@@ -525,29 +519,8 @@ module Selenium
           execute :getElementTagName, id: element.values.first
         end
 
-        # TODO - Replace implementation with atom
         def element_attribute(element, name)
-          name = name.to_sym
-
-          if name == :style
-            return execute_script("return arguments[0].style.cssText", element)
-          end
-
-          if BOOLEAN_ATTRIBUTES.include? name
-            return execute :getElementAttribute, id: element.values.first, name: name
-          end
-
-          property_value = execute :getElementProperty, id: element.values.first, name: name
-          return property_value if name == :value
-          return property_value if property_value &&
-            !(property_value.respond_to?(:empty?) && property_value.empty?)
-
-          attribute_value = execute :getElementAttribute, id: element.values.first, name: name
-          return nil if attribute_value.nil?
-
-          # Verify attribute not the browser default
-          has_attribute = execute_script("return arguments[0].hasAttribute(arguments[1])", element, name)
-          attribute_value if has_attribute
+          execute_atom :getAttribute, element, name
         end
 
         def element_property(element, name)

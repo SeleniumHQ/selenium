@@ -22,7 +22,6 @@ import com.google.common.collect.ImmutableMap;
 import com.beust.jcommander.JCommander;
 
 import org.openqa.grid.common.GridRole;
-import org.openqa.grid.common.JSONConfigurationUtils;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.internal.utils.configuration.CoreRunnerConfiguration;
@@ -227,8 +226,8 @@ public class GridLauncherV3 {
             //re-parse the args using any -hubConfig specified to init
             if (pending.hubConfig != null) {
               configuration = GridHubConfiguration.loadFromJSON(pending.hubConfig);
+              new JCommander(configuration, args); //args take precedence
             }
-            new JCommander(configuration, args); //args take precedence
             helpRequested = configuration.help;
           }
 
@@ -248,8 +247,8 @@ public class GridLauncherV3 {
             //re-parse the args using any -nodeConfig specified to init
             if (pending.nodeConfigFile != null) {
               configuration = GridNodeConfiguration.loadFromJSON(pending.nodeConfigFile);
+              new JCommander(configuration, args); //args take precedence
             }
-            new JCommander(configuration, args); //args take precedence
             helpRequested = configuration.help;
             if (configuration.port == null) {
               configuration.port = 5555;

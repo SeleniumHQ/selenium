@@ -115,7 +115,7 @@ module Selenium
       #
 
       def attribute(name)
-        bridge.element_attribute @id, name
+        bridge.element_attribute self, name
       end
 
       #
