@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.Servlet;
+
 public class GridConfiguration extends StandaloneConfiguration {
 
   @Parameter(
@@ -54,9 +56,15 @@ public class GridConfiguration extends StandaloneConfiguration {
 
   @Parameter(
     names = {"-servlet", "-servlets"},
-    description = "<String> : list of extra servlets this hub will display. Allows to present custom view of the hub for monitoring and management purposes. Specify multiple on the command line: -servlet tld.company.ServletA -servlet tld.company.ServletB. The servlet must exist in the path: /grid/admin/ServletA /grid/admin/ServletB"
+    description = "<String> : list of extra servlets the grid (hub or node) will make available. Specify multiple on the command line: -servlet tld.company.ServletA -servlet tld.company.ServletB. The servlet must exist in the path: /grid/admin/ServletA /grid/admin/ServletB"
   )
   public List<String> servlets;
+
+  @Parameter(
+    names = {"-withoutServlet", "-withoutServlets"},
+    description = "<String> : list of default (hub or node) servlets to disable. Advanced use cases only. Not all default servlets can be disabled. Specify multiple on the command line: -withoutServlet tld.company.ServletA -withoutServlet tld.company.ServletB"
+  )
+  public List<String> withoutServlets;
 
   /**
    * replaces this instance of configuration value with the 'other' value if it's set.
@@ -75,6 +83,19 @@ public class GridConfiguration extends StandaloneConfiguration {
     if (other.servlets != null) {
       servlets = other.servlets;
     }
+    if (other.withoutServlets != null) {
+      withoutServlets = other.withoutServlets;
+    }
+  }
+
+  /**
+   * @param servlet the {@link Servlet} to look for
+   * @return whether this configuration requests a 'default' servlet to be omitted
+   */
+  public boolean isWithOutServlet(Class <? extends Servlet> servlet) {
+    return withoutServlets != null &&
+           servlet != null &&
+           withoutServlets.contains(servlet.getCanonicalName());
   }
 
   @Override
@@ -86,6 +107,7 @@ public class GridConfiguration extends StandaloneConfiguration {
     sb.append(toString(format, "host", host));
     sb.append(toString(format, "maxSession", maxSession));
     sb.append(toString(format, "servlets", servlets));
+    sb.append(toString(format, "withoutServlets", withoutServlets));
     return sb.toString();
   }
 }

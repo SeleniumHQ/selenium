@@ -84,7 +84,9 @@ public class SelfRegisteringRemote {
     }
 
     // add the resource servlet for nodes
-    nodeServlets.put("/resources/*", ResourceServlet.class);
+    if (!nodeConfig.getConfiguration().isWithOutServlet(ResourceServlet.class)) {
+      nodeServlets.put("/resources/*", ResourceServlet.class);
+    }
 
     // add the user supplied servlet(s) for nodes
     addExtraServlets(nodeConfig.getConfiguration().servlets);

@@ -18,19 +18,23 @@
 package org.openqa.grid.internal.utils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import com.beust.jcommander.JCommander;
 
 import org.junit.Test;
-import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
+import org.openqa.grid.web.servlet.ResourceServlet;
+
+import java.util.ArrayList;
 
 public class GridHubConfigurationTest {
 
   @Test
   public void testGetTimeout() throws Exception {
     GridHubConfiguration gridHubConfiguration = new GridHubConfiguration();
-    assertEquals(300000, gridHubConfiguration.timeout.longValue()); // From DefaultHub.json file
+    assertEquals(1800, gridHubConfiguration.timeout.longValue()); // From the configuration default value
     gridHubConfiguration.timeout = 123;
     assertEquals(123, gridHubConfiguration.timeout.longValue());
   }
@@ -48,7 +52,17 @@ public class GridHubConfigurationTest {
     GridHubConfiguration gridHubConfiguration = new GridHubConfiguration();
     String[] args = "-timeout 32123 -browserTimeout 456".split(" ");
     new JCommander(gridHubConfiguration, args);
-    assertEquals(32123000, gridHubConfiguration.timeout.longValue());
-    assertEquals(456000, gridHubConfiguration.browserTimeout.longValue());
+    assertEquals(32123L, gridHubConfiguration.timeout.longValue());
+    assertEquals(456L, gridHubConfiguration.browserTimeout.longValue());
+  }
+
+  @Test
+  public void testWithOutServlets() {
+    GridHubConfiguration ghc = new GridHubConfiguration();
+    assertFalse(ghc.isWithOutServlet(ResourceServlet.class));
+
+    ghc.withoutServlets = new ArrayList<>();
+    ghc.withoutServlets.add(ResourceServlet.class.getCanonicalName());
+    assertTrue(ghc.isWithOutServlet(ResourceServlet.class));
   }
 }
