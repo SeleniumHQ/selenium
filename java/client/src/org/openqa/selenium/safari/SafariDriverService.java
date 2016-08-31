@@ -51,8 +51,8 @@ public class SafariDriverService extends DriverService {
   protected void waitUntilAvailable() throws MalformedURLException {
     try {
       PortProber.waitForPortUp(getUrl().getPort(), 20, SECONDS);
-    } catch (Exception e) {
-      e.printStackTrace();
+    } catch (RuntimeException e) {
+      throw new WebDriverException(e);
     }
   }
 
