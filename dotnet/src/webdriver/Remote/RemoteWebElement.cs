@@ -187,9 +187,21 @@ namespace OpenQA.Selenium.Remote
         {
             get
             {
+                Response commandResponse = null;
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("id", this.Id);
-                Response commandResponse = this.Execute(DriverCommand.IsElementDisplayed, parameters);
+                if (this.driver.IsSpecificationCompliant)
+                {
+                    string atom = this.GetAtom("isDisplayed.js");
+                    parameters.Add("script", atom);
+                    parameters.Add("args", new object[] { this.ToElementReference() });
+                    commandResponse = this.Execute(DriverCommand.ExecuteScript, parameters);
+                }
+                else
+                {
+                    parameters.Add("id", this.Id);
+                    commandResponse = this.Execute(DriverCommand.IsElementDisplayed, parameters);
+                }
+
                 return (bool)commandResponse.Value;
             }
         }
@@ -403,33 +415,17 @@ namespace OpenQA.Selenium.Remote
             Response commandResponse = null;
             string attributeValue = string.Empty;
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", this.elementId);
-            parameters.Add("name", attributeName);
             if (this.driver.IsSpecificationCompliant)
             {
-                List<string> booleanAttributes = new List<string>()
-                {
-                    "default", "typemustmatch", "checked", "defer", "async", "muted",
-                    "reversed", "required", "controls", "ismap", "disabled", "novalidate",
-                    "readonly", "allowfullscreen", "selected", "formnovalidate",
-                    "multiple", "autofocus", "open", "loop", "autoplay"
-                };
-
-                if (attributeName == "style")
-                {
-                    return this.driver.ExecuteScript("return arguments[0].style.cssText", this).ToString();
-                }
-
-                commandResponse = this.Execute(DriverCommand.GetElementProperty, parameters);
-                if ((commandResponse.Value == null ||
-                    ((commandResponse.Value.ToString() == string.Empty || commandResponse.Value.ToString() == bool.FalseString) && attributeName != "value")) ||
-                    booleanAttributes.Contains(attributeName))
-                {
-                    commandResponse = this.Execute(DriverCommand.GetElementAttribute, parameters);
-                }
+                string atom = this.GetAtom("getAttribute.js");
+                parameters.Add("script", atom);
+                parameters.Add("args", new object[] { this.ToElementReference(), attributeName });
+                commandResponse = this.Execute(DriverCommand.ExecuteScript, parameters);
             }
             else
             {
+                parameters.Add("id", this.elementId);
+                parameters.Add("name", attributeName);
                 commandResponse = this.Execute(DriverCommand.GetElementAttribute, parameters);
             }
 
@@ -968,6 +964,28 @@ namespace OpenQA.Selenium.Remote
             {
                 throw new WebDriverException("Cannot upload " + localFile, e);
             }
+        }
+
+        private Dictionary<string, object> ToElementReference()
+        {
+            Dictionary<string, object> elementDictionary = new Dictionary<string, object>();
+            elementDictionary["element-6066-11e4-a52e-4f735466cecf"] = this.elementId;
+            return elementDictionary;
+        }
+
+        private string GetAtom(string atomResourceName)
+        {
+            string atom = string.Empty;
+            using (Stream atomStream = ResourceUtilities.GetResourceStream(atomResourceName, atomResourceName))
+            {
+                using (StreamReader atomReader = new StreamReader(atomStream))
+                {
+                    atom = atomReader.ReadToEnd();
+                }
+            }
+
+            string wrappedAtom = string.Format(CultureInfo.InvariantCulture, "return ({0}).apply(null, arguments);", atom);
+            return wrappedAtom;
         }
     }
 }

@@ -13,6 +13,8 @@ dotnet_library(name = "webdriver",
   resources = [
     {"//javascript/firefox-driver:webdriver" : "WebDriver.FirefoxExt.zip"},
     {"//javascript/firefox-driver:webdriver_prefs" : "WebDriver.FirefoxPreferences"},
+    {"//javascript/webdriver/atoms:getAttribute" : "getAttribute.js" },
+    {"//javascript/atoms/fragments:is-displayed" : "isDisplayed.js" },
     {"//cpp:noblur" : "WebDriver.FirefoxNoFocus.x86.dll"},
     {"//cpp:noblur64" : "WebDriver.FirefoxNoFocus.x64.dll"}
   ],

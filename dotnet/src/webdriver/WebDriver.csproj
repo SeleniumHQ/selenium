@@ -374,6 +374,13 @@ if exist "$(ProjectDir)..\..\..\build\javascript\firefox-driver\webdriver.xpi" (
 echo Copying Firefox preferences file from $(ProjectDir)..\..\..\javascript\firefox-driver\webdriver.json
 copy /y "$(ProjectDir)..\..\..\javascript\firefox-driver\webdriver.json" "$(TargetDir)" &gt; NUL
 
-</PostBuildEvent>
+if not exist "$(TargetDir)getAttribute.js" (
+  echo Building and copying needed atoms
+  pushd "$(ProjectDir)..\..\.."
+  call "go.bat" //javascript/webdriver/atoms:getAttribute //javascript/atoms/fragments:is-displayed
+  popd
+  copy /y "$(ProjectDir)..\..\..\buck-out\gen\javascript\webdriver\atoms\getAttribute.js" "$(TargetDir)" &gt; NUL
+  copy /y "$(ProjectDir)..\..\..\buck-out\gen\javascript\atoms\fragments\is-displayed.js" "$(TargetDir)isDisplayed.js" &gt; NUL
+)</PostBuildEvent>
   </PropertyGroup>
 </Project>
