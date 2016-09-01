@@ -1,3 +1,8 @@
+Selenium 3.0.0.b3
+* Use atoms for get_attribute and is_displayed when communicating with
+  a w3c compliant remote end.
+* Make it possible to specialise web element
+
 Selenium 3.0.0.b2
 * Updated Marionette port argument to match other drivers.
 
