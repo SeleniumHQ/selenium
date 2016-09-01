@@ -41,7 +41,7 @@ class WebDriver(RemoteWebDriver):
     NATIVE_EVENTS_ALLOWED = sys.platform != "darwin"
 
     def __init__(self, firefox_profile=None, firefox_binary=None, timeout=30,
-                 capabilities=None, proxy=None, executable_path="wires", firefox_options=None):
+                 capabilities=None, proxy=None, executable_path="wires", firefox_options=None, log_path="geckodriver.log"):
         self.profile = firefox_profile
         self.binary = firefox_binary
         if firefox_options is None:
@@ -73,7 +73,7 @@ class WebDriver(RemoteWebDriver):
             if isinstance(firefox_options.binary_location, FirefoxBinary):
                 self.binary = firefox_options.binary_location._get_firefox_start_cmd()
 
-            self.service = Service(executable_path, firefox_binary=self.binary)
+            self.service = Service(executable_path, firefox_binary=self.binary, log_path=log_path)
             self.service.start()
 
             executor = FirefoxRemoteConnection(
