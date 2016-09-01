@@ -62,20 +62,16 @@ module Selenium
         driver.find_element(id: 'working').send_keys('foo', 'bar')
       end
 
-      # Firefox - https://bugzilla.mozilla.org/show_bug.cgi?id=1260233
-      not_compliant_on browser: :firefox do
-        it 'should send key presses' do
-          driver.navigate.to url_for('javascriptPage.html')
-          key_reporter = driver.find_element(id: 'keyReporter')
+      it 'should send key presses' do
+        driver.navigate.to url_for('javascriptPage.html')
+        key_reporter = driver.find_element(id: 'keyReporter')
 
-          key_reporter.send_keys('Tet', :arrow_left, 's')
-          expect(key_reporter.attribute('value')).to eq('Test')
-        end
+        key_reporter.send_keys('Tet', :arrow_left, 's')
+        expect(key_reporter.attribute('value')).to eq('Test')
       end
 
       # PhantomJS on windows issue: https://github.com/ariya/phantomjs/issues/10993
-      # Firefox - https://bugzilla.mozilla.org/show_bug.cgi?id=1260233
-      not_compliant_on browser: [:safari, :edge, :firefox, :phantomjs] do
+      not_compliant_on browser: [:safari, :edge, :phantomjs] do
         it 'should handle file uploads' do
           driver.navigate.to url_for('formPage.html')
 
