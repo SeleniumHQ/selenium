@@ -20,6 +20,7 @@ package org.openqa.grid.internal.utils;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 
 import com.beust.jcommander.JCommander;
 
@@ -32,17 +33,15 @@ import java.util.ArrayList;
 public class GridHubConfigurationTest {
 
   @Test
-  public void testGetTimeout() throws Exception {
+  public void testSetTimeout() throws Exception {
     GridHubConfiguration gridHubConfiguration = new GridHubConfiguration();
-    assertEquals(1800, gridHubConfiguration.timeout.longValue()); // From the configuration default value
     gridHubConfiguration.timeout = 123;
     assertEquals(123, gridHubConfiguration.timeout.longValue());
   }
 
   @Test
-  public void testGetBrowserTimeout() throws Exception {
+  public void testSetBrowserTimeout() throws Exception {
     GridHubConfiguration gridHubConfiguration = new GridHubConfiguration();
-    assertEquals(0, gridHubConfiguration.browserTimeout.longValue());// From DefaultHub.json file
     gridHubConfiguration.browserTimeout = 1233;
     assertEquals(1233, gridHubConfiguration.browserTimeout.longValue());
   }
@@ -64,5 +63,51 @@ public class GridHubConfigurationTest {
     ghc.withoutServlets = new ArrayList<>();
     ghc.withoutServlets.add(ResourceServlet.class.getCanonicalName());
     assertTrue(ghc.isWithOutServlet(ResourceServlet.class));
+  }
+
+  @Test
+  public void testDefaults() {
+    GridHubConfiguration ghc = new GridHubConfiguration();
+    assertEquals("standalone", ghc.role);
+    assertEquals(0L, ghc.browserTimeout.longValue());
+    assertEquals(false, ghc.debug);
+    assertEquals(false, ghc.help);
+    assertEquals(false, ghc.logLongForm);
+    assertEquals(1800L, ghc.timeout.longValue());
+    assertEquals(5000L, ghc.cleanUpCycle.longValue());
+    assertEquals(1L, ghc.maxSession.longValue());
+    assertEquals(-1L, ghc.jettyMaxThreads.longValue());
+    assertEquals("org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
+                    ghc.capabilityMatcher.getClass().getCanonicalName());
+    assertEquals(-1L, ghc.newSessionWaitTimeout.longValue());
+    assertEquals(true, ghc.throwOnCapabilityNotPresent);
+    assertTrue(ghc.servlets.isEmpty());
+    assertTrue(ghc.custom.isEmpty());
+    assertNull(ghc.withoutServlets);
+    assertNull(ghc.hubConfig);
+    assertNull(ghc.log);
+    assertNull(ghc.prioritizer);
+    assertNull(ghc.host);
+    assertNull(ghc.port);
+  }
+
+  @Test
+  public void testToString() {
+    GridHubConfiguration ghc = new GridHubConfiguration();
+
+    assertTrue(ghc.toString().contains("-role standalone "));
+    assertFalse(ghc.toString().contains("-servlets"));
+    assertFalse(ghc.toString().contains("custom"));
+
+    ghc = new GridHubConfiguration();
+    String[] args = ("-servlet com.foo.bar.ServletA -servlet com.foo.bar.ServletB"
+                     + " -custom foo=bar,bar=baz").split(" ");
+    new JCommander(ghc, args);
+    
+    assertTrue(ghc.toString().contains("-servlets com.foo.bar.ServletA"
+                                       + " -servlets com.foo.bar.ServletB"));
+    assertTrue(ghc.toString().contains("custom {"));
+    assertTrue(ghc.toString().contains("bar=baz"));
+    assertTrue(ghc.toString().contains("foo=bar"));
   }
 }
