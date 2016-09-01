@@ -1,3 +1,9 @@
+V3.0.0-beta3
+============
+ * Modified to use automation atoms for getAttribute and isDisplayed in .NET
+   for W3C remote ends
+ * Added ability to set additional command line arguments for geckodriver
+
 V3.0.0-beta2
 ============
  * Updated GetAttribute shim for GetAttribute method for W3C protocol remote
