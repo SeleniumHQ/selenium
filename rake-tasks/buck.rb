@@ -229,7 +229,9 @@ rule /\/\/.*/ do |task|
   # cases where the rule was not created by CrazyFun. Rules created by the "rule" method will
   # be a FileTask, whereas those created by CrazyFun are normal rake Tasks.
 
-  if task.class == Rake::FileTask && !task.out
+  buck_file = task.name[/\/\/([^:]+)/, 1] + "/BUCK"
+
+  if task.class == Rake::FileTask && !task.out && File.exists?(buck_file)
     task.enhance do
       Buck::buck_cmd.call('build', ['--deep', task.name])
     end

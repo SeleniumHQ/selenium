@@ -334,9 +334,7 @@ task :javadocs => [:common, :firefox, :ie, :remote, :support, :chrome, :selenium
 end
 
 task :py_prep_for_install_release => [
-  "//javascript/firefox-driver:webdriver",
   :chrome,
-  "//javascript/firefox-driver:webdriver_prefs",
   "//py:prep"
 ]
 

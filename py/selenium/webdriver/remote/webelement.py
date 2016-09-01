@@ -16,6 +16,7 @@
 # under the License.
 
 import hashlib
+import pkgutil
 import os
 import zipfile
 try:
@@ -47,11 +48,6 @@ class WebElement(object):
     element is still attached to the DOM.  If this test fails, then an
     ``StaleElementReferenceException`` is thrown, and all future calls to this
     instance will fail."""
-
-    boolean_attributes = ['default', 'typemustmatch', 'checked', 'defer', 'async', 'muted',
-                          'reversed', 'required', 'controls', 'ismap', 'disabled', 'novalidate',
-                          'readonly', 'allowfullscreen', 'selected', 'formnovalidate',
-                          'multiple', 'autofocus', 'open', 'loop', 'autoplay']
 
     def __init__(self, parent, id_, w3c=False):
         self._parent = parent
@@ -134,27 +130,10 @@ class WebElement(object):
 
         attributeValue = ''
         if self._w3c :
-            if name == 'style':
-                return self.parent.execute_script("return arguments[0].style.cssText", self)
-            attributeValue = self.get_property(name)
-            if (attributeValue in [None, '', False] and name != 'value') or name in self.boolean_attributes:
-                # We need to check the attribute before we really set it to None
-                resp = self._execute(Command.GET_ELEMENT_ATTRIBUTE, {'name': name})
-                attributeValue = resp.get('value')
-
-                # Even though we have a value, we could be getting the browser default,
-                # We now need check it's there in the DOM...
-                resp = self.parent.execute_script("return arguments[0].hasAttribute(arguments[1])",
-                                                  self, name)
-                if resp is False:
-                    attributeValue = None
-            else:
-                attributeValue = "{0}".format(attributeValue)
-
-            if attributeValue is not None:
-                if name != 'value' and attributeValue.lower() in ('true', 'false'):
-                    attributeValue = attributeValue.lower()
-
+            raw = pkgutil.get_data(__package__, 'getAttribute.js')
+            attributeValue = self.parent.execute_script(
+                "return (%s).apply(null, arguments);" % raw,
+                self, name)
         else:
             resp = self._execute(Command.GET_ELEMENT_ATTRIBUTE, {'name': name})
             attributeValue = resp.get('value')
@@ -367,7 +346,13 @@ class WebElement(object):
     # RenderedWebElement Items
     def is_displayed(self):
         """Whether the element is visible to a user."""
-        return self._execute(Command.IS_ELEMENT_DISPLAYED)['value']
+        if self._w3c :
+            raw = pkgutil.get_data(__package__, 'isDisplayed.js')
+            return self.parent.execute_script(
+                "return (%s).apply(null, arguments);" % raw,
+                self)
+        else:
+            return self._execute(Command.IS_ELEMENT_DISPLAYED)['value']
 
     @property
     def location_once_scrolled_into_view(self):
