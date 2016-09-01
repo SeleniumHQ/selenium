@@ -30,7 +30,10 @@ import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_HANDLE
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_POSITION;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_ATTRIBUTE;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_RECT;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.GET_PAGE_SOURCE;
 import static org.openqa.selenium.remote.DriverCommand.GET_WINDOW_HANDLES;
 import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_DISPLAYED;
@@ -63,7 +66,9 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
   public W3CHttpCommandCodec() {
     alias(GET_ELEMENT_ATTRIBUTE, EXECUTE_SCRIPT);
+    alias(GET_ELEMENT_LOCATION, GET_ELEMENT_RECT);
     alias(GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW, EXECUTE_SCRIPT);
+    alias(GET_ELEMENT_SIZE, GET_ELEMENT_RECT);
     alias(IS_ELEMENT_DISPLAYED, EXECUTE_SCRIPT);
     alias(SUBMIT_ELEMENT, EXECUTE_SCRIPT);
 
