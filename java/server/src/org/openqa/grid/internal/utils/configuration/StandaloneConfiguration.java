@@ -23,7 +23,9 @@ import com.google.gson.JsonElement;
 import com.beust.jcommander.Parameter;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class StandaloneConfiguration {
 
@@ -135,8 +137,10 @@ public class StandaloneConfiguration {
       iterator = Arrays.asList(value);
     }
     for (Object v : iterator) {
-      if (value != null) {
-        sb.append(String.format(format, name, value));
+      if (v != null &&
+          !(v instanceof Map && ((Map) v).isEmpty()) &&
+          !(v instanceof Collection && ((Collection) v).isEmpty())) {
+        sb.append(String.format(format, name, v));
       }
     }
     return sb;

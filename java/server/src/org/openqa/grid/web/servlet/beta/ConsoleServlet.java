@@ -261,7 +261,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
     }
     try {
       Manifest manifest = new Manifest(stream);
-      coreVersion = manifest.getEntries().get("Build-Info").getValue("Selenium-Version");
+      coreVersion = manifest.getEntries().get("Build-Info").getValue("Selenium-Version").trim();
     } catch (IOException e) {
       log.severe("Cannot load version from VERSION.txt" + e.getMessage());
     }
