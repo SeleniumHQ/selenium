@@ -1,3 +1,9 @@
+3.0.0.beta3 (2016-09-01)
+===================
+
+Firefox:
+  * Implemented w3c getAttribute with javascript atom
+
 3.0.0.beta2.1 (2016-08-03)
 ===================
 
