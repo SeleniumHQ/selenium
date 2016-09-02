@@ -30,6 +30,7 @@ goog.require('goog.dom.TagName');
 goog.require('goog.math.Coordinate');
 goog.require('goog.style');
 goog.require('webdriver.Key');
+goog.require('webdriver.atoms.element.attribute');
 
 
 /**
@@ -47,168 +48,12 @@ webdriver.atoms.element.isSelected = function(element) {
 };
 
 
+
 /**
- * Common aliases for properties. This maps names that users use to the correct
- * property name.
- *
  * @const
- * @private {!Object.<string, string>}
+ * @deprecated Use webdriver.atoms.element.attribute.get() instead.
  */
-webdriver.atoms.element.PROPERTY_ALIASES_ = {
-  'class': 'className',
-  'readonly': 'readOnly'
-};
-
-
-/**
- * Used to determine whether we should return a boolean value from getAttribute.
- * These are all extracted from the WHATWG spec:
- *
- *   http://www.whatwg.org/specs/web-apps/current-work/
- *
- * These must all be lower-case.
- *
- * @const
- * @private {!Array.<string>}
- */
-webdriver.atoms.element.BOOLEAN_PROPERTIES_ = [
-  'async',
-  'autofocus',
-  'autoplay',
-  'checked',
-  'compact',
-  'complete',
-  'controls',
-  'declare',
-  'defaultchecked',
-  'defaultselected',
-  'defer',
-  'disabled',
-  'draggable',
-  'ended',
-  'formnovalidate',
-  'hidden',
-  'indeterminate',
-  'iscontenteditable',
-  'ismap',
-  'itemscope',
-  'loop',
-  'multiple',
-  'muted',
-  'nohref',
-  'noresize',
-  'noshade',
-  'novalidate',
-  'nowrap',
-  'open',
-  'paused',
-  'pubdate',
-  'readonly',
-  'required',
-  'reversed',
-  'scoped',
-  'seamless',
-  'seeking',
-  'selected',
-  'spellcheck',
-  'truespeed',
-  'willvalidate'
-];
-
-
-/**
- * Get the value of the given property or attribute. If the "attribute" is for
- * a boolean property, we return null in the case where the value is false. If
- * the attribute name is "style" an attempt to convert that style into a string
- * is done.
- *
- * @param {!Element} element The element to use.
- * @param {string} attribute The name of the attribute to look up.
- * @return {?string} The string value of the attribute or property, or null.
- */
-webdriver.atoms.element.getAttribute = function(element, attribute) {
-  var value = null;
-  var name = attribute.toLowerCase();
-
-  if ('style' == name) {
-    value = element.style;
-
-    if (value && !goog.isString(value)) {
-      value = value.cssText;
-    }
-
-    return /** @type {?string} */ (value);
-  }
-
-  if (('selected' == name || 'checked' == name) &&
-      bot.dom.isSelectable(element)) {
-    return bot.dom.isSelected(element) ? 'true' : null;
-  }
-
-  // Our tests suggest that returning the attribute is desirable for
-  // the href attribute of <a> tags and the src attribute of <img> tags,
-  // but we normally attempt to get the property value before the attribute.
-  var isLink = bot.dom.isElement(element, goog.dom.TagName.A);
-  var isImg = bot.dom.isElement(element, goog.dom.TagName.IMG);
-
-  // Although the attribute matters, the property is consistent. Return that in
-  // preference to the attribute for links and images.
-  if ((isImg && name == 'src') || (isLink && name == 'href')) {
-    value = bot.dom.getAttribute(element, name);
-    if (value) {
-      // We want the full URL if present
-      value = bot.dom.getProperty(element, name);
-    }
-    return /** @type {?string} */ (value);
-  }
-
-  if ('spellcheck' == name) {
-    value = bot.dom.getAttribute(element, name);
-    if (!goog.isNull(value)) {
-      if (value.toLowerCase() == 'false') {
-        return 'false';
-      } else if (value.toLowerCase() == 'true') {
-        return 'true';
-      }
-    }
-    // coerce the property value to a string
-    return bot.dom.getProperty(element, name) + '';
-  }
-
-  var propName = webdriver.atoms.element.PROPERTY_ALIASES_[attribute] ||
-      attribute;
-  if (goog.array.contains(webdriver.atoms.element.BOOLEAN_PROPERTIES_, name)) {
-    value = !goog.isNull(bot.dom.getAttribute(element, attribute)) ||
-        bot.dom.getProperty(element, propName);
-    return value ? 'true' : null;
-  }
-
-  var property;
-  try {
-    property = bot.dom.getProperty(element, propName);
-  } catch (e) {
-    // Leaves property undefined or null
-  }
-
-  // 1- Call getAttribute if getProperty fails,
-  // i.e. property is null or undefined.
-  // This happens for event handlers in Firefox.
-  // For example, calling getProperty for 'onclick' would
-  // fail while getAttribute for 'onclick' will succeed and
-  // return the JS code of the handler.
-  //
-  // 2- When property is an object we fall back to the
-  // actual attribute instead.
-  // See issue http://code.google.com/p/selenium/issues/detail?id=966
-  if (!goog.isDefAndNotNull(property) || goog.isObject(property)) {
-    value = bot.dom.getAttribute(element, attribute);
-  } else {
-    value = property;
-  }
-
-  // The empty string is a valid return value.
-  return goog.isDefAndNotNull(value) ? value.toString() : null;
-};
+webdriver.atoms.element.getAttribute = webdriver.atoms.element.attribute.get;
 
 
 /**

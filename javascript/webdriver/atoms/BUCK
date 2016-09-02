@@ -31,10 +31,18 @@ js_binary(name = 'inputs',
   ],
 )
 
+js_library(name = 'attribute-lib',
+  srcs = ['attribute.js'],
+  deps = [
+    '//javascript/atoms:domcore',
+    '//third_party/closure:closure',
+  ],
+)
+
 js_fragment(name = 'getAttribute',
-  module = 'webdriver.atoms.element',
-  function = 'webdriver.atoms.element.getAttribute',
-  deps = [ ':atoms-lib' ],
+  module = 'webdriver.atoms.element.attribute',
+  function = 'webdriver.atoms.element.attribute.get',
+  deps = [ ':attribute-lib' ],
   visibility = [
     '//java/client/src/org/openqa/selenium/remote:get-attribute',
   ],

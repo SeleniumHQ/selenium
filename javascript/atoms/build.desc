@@ -17,6 +17,7 @@ js_library(name = "all_js",
 js_library(name = "dom",
   srcs = [
     "dom.js",
+    "domcore.js",
   ])
 
 js_library(name = "error_lib",

@@ -56,12 +56,28 @@ js_library(name = 'devices',
 )
 
 
+js_library(name = 'domcore',
+  srcs = [
+    "domcore.js",
+  ],
+  deps = [
+    ':errors',
+    ':useragent',
+    '//third_party/closure:closure',
+  ],
+  visibility = [
+    '//javascript/...',
+  ],
+)
+
+
 js_library(name = 'dom',
   srcs = [
     "dom.js",
   ],
   deps = [
     ':bot',
+    ':domcore',
     ':color',
     ':json',
     ':xpath',
@@ -152,6 +168,19 @@ js_library(name = 'locators',
     ':dom',
     ':json',
     ':xpath',
+    '//third_party/closure:closure',
+  ],
+  visibility = [
+    '//javascript/...',
+  ],
+)
+
+
+js_library(name = 'useragent',
+  srcs = [
+    'userAgent.js',
+  ],
+  deps = [
     '//third_party/closure:closure',
   ],
   visibility = [
