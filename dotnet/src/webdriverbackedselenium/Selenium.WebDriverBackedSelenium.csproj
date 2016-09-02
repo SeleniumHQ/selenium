@@ -240,7 +240,6 @@ if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\findElement.js co
 if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\findOption.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\findOption.js $(TargetDir)
 if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\fireEvent.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\fireEvent.js $(TargetDir)
 if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\fireEventAt.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\fireEventAt.js $(TargetDir)
-if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\getAttribute.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\getAttribute.js $(TargetDir)
 if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\getText.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\getText.js $(TargetDir)
 if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\linkLocator.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\linkLocator.js $(TargetDir)
 if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\isElementPresent.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\isElementPresent.js $(TargetDir)
