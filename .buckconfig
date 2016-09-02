@@ -11,6 +11,9 @@
       java/client/build, \
       java/server/build
 
+[cache]
+  mode = dir
+
 [test]
   # Maximum timeout of 10 minutes per test (since each suite counts as a test)
   timeout = 600000
