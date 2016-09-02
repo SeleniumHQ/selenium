@@ -618,3 +618,4 @@ exports.error = error;
 exports.logging = logging;
 exports.promise = promise;
 exports.until = until;
+exports.TouchSequence = actions.TouchSequence;
