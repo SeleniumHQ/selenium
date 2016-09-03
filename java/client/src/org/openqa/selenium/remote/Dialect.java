@@ -35,6 +35,11 @@ public enum Dialect {
     public ResponseCodec<HttpResponse> getResponseCodec() {
       return new JsonHttpResponseCodec();
     }
+
+    @Override
+    public String getEncodedElementKey() {
+      return "ELEMENT";
+    }
   },
   W3C {
     @Override
@@ -46,8 +51,14 @@ public enum Dialect {
     public ResponseCodec<HttpResponse> getResponseCodec() {
       return new W3CHttpResponseCodec();
     }
+
+    @Override
+    public String getEncodedElementKey() {
+      return "element-6066-11e4-a52e-4f735466cecf";
+    }
   };
 
   public abstract CommandCodec<HttpRequest> getCommandCodec();
   public abstract ResponseCodec<HttpResponse> getResponseCodec();
+  public abstract String getEncodedElementKey();
 }
