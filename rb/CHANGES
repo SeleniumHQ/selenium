@@ -1,3 +1,9 @@
+3.0.0.beta3.1 (2016-09-03)
+===================
+
+Firefox:
+  * Fixed bug - legacy firefox extension included in gem
+
 3.0.0.beta3 (2016-09-01)
 ===================
 
