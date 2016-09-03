@@ -64,7 +64,7 @@ module Selenium
           expect(driver.find_elements(class_name: 'redbox')).to be_empty
         end
 
-        not_compliant_on browser: :marionette, platform: :windows do
+        not_compliant_on browser: :firefox, platform: :windows do
           it 'should return after first attempt to find many after disabling implicit waits' do
             add = driver.find_element(id: 'adder')
 

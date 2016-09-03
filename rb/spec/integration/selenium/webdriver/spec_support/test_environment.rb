@@ -146,8 +146,17 @@ module Selenium
 
         def remote_capabilities
           opt = {}
-          browser_name = browser == :ff_legacy ? :firefox : browser
-          opt[:marionette] = false if browser == :ff_legacy
+          browser_name = if browser == :ff_legacy
+                           unless ENV['FF_LEGACY_BINARY']
+                             raise DriverInstantiationError, "ENV['FF_LEGACY_BINARY'] must be set to test legacy firefox"
+                           end
+
+                           opt[:firefox_binary] = ENV['FF_LEGACY_BINARY']
+                           opt[:marionette] = false
+                           :firefox
+                         else
+                           browser
+                         end
 
           caps = WebDriver::Remote::Capabilities.send(browser_name, opt)
 
@@ -182,22 +191,20 @@ module Selenium
           )
         end
 
-        def create_firefox_driver(marionette = true)
-          WebDriver::Firefox.path = ENV['FIREFOX_BINARY'] if ENV['FIREFOX_BINARY']
-
-          opt = if marionette
-            {}
-          else
-            WebDriver::Firefox.path = ENV['FF_LEGACY_BINARY'] if ENV['FF_LEGACY_BINARY']
-            {marionette: false}
-          end
-          caps = WebDriver::Remote::Capabilities.firefox(opt)
-
-          WebDriver::Driver.for :firefox, desired_capabilities: caps
+        def create_firefox_driver
+          WebDriver::Firefox::Binary.path = ENV['FIREFOX_BINARY'] if ENV['FIREFOX_BINARY']
+          WebDriver::Driver.for :firefox
         end
 
         def create_ff_legacy_driver
-          create_firefox_driver(false)
+          unless ENV['FF_LEGACY_BINARY']
+            raise StandardError, "ENV['FF_LEGACY_BINARY'] must be set to test legacy firefox"
+          end
+          WebDriver::Firefox::Binary.path = ENV['FF_LEGACY_BINARY']
+
+          caps = WebDriver::Remote::Capabilities.firefox(marionette: false)
+
+          WebDriver::Driver.for :firefox, desired_capabilities: caps
         end
 
         def create_chrome_driver
