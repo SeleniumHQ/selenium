@@ -24,7 +24,23 @@ Note: The Closure Compiler requires [Java 7 or higher](http://www.java.com/).
 
 1. Download [Maven](http://maven.apache.org/download.cgi).
 
-2. Run `mvn -DskipTests` (omit the `-DskipTests` if you want to run all the
+2. Add sonatype snapshots repository to `~/.m2/settings.xml`:
+   ```
+   <profile>
+     <id>allow-snapshots</id>
+        <activation><activeByDefault>true</activeByDefault></activation>
+     <repositories>
+       <repository>
+         <id>snapshots-repo</id>
+         <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+         <releases><enabled>false</enabled></releases>
+         <snapshots><enabled>true</enabled></snapshots>
+       </repository>
+     </repositories>
+   </profile>
+   ```
+
+3. Run `mvn -DskipTests` (omit the `-DskipTests` if you want to run all the
 unit tests too).
 
     This will produce a jar file called `target/closure-compiler-1.0-SNAPSHOT.jar`.
@@ -32,20 +48,20 @@ unit tests too).
 ### Using [Eclipse](http://www.eclipse.org/)
 
 1. Download and open the [Eclipse IDE](http://www.eclipse.org/).
-2. Navigate to ```File > New > Project ...``` and create a Java Project. Give
+2. Navigate to `File > New > Project ...` and create a Java Project. Give
    the project a name.
-3. Select ```Create project from existing source``` and choose the root of the
+3. Select `Create project from existing source` and choose the root of the
    checked-out source tree as the existing directory.
-3. Navigate to the ```build.xml``` file. You will see all the build rules in
-   the Outline pane. Run the ```jar``` rule to build the compiler in
-   ```build/compiler.jar```.
+3. Navigate to the `build.xml` file. You will see all the build rules in
+   the Outline pane. Run the `jar` rule to build the compiler in
+   `build/compiler.jar`.
 
 ## Running
 
 On the command line, at the root of this project, type
 
 ```
-java -jar build/compiler.jar
+java -jar target/closure-compiler-1.0-SNAPSHOT.jar
 ```
 
 This starts the compiler in interactive mode. Type
