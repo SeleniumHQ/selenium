@@ -6,6 +6,7 @@ rubygem(
     "//rb:support",
     "//rb:edge",
     "//rb:firefox",
+    "//rb:ff-legacy",
     "//rb:ie",
     "//rb:phantomjs",
     "//rb:remote",
@@ -29,6 +30,7 @@ ruby_library(name = "common",
     "lib/selenium/webdriver/common.rb",
     "lib/selenium/webdriver/remote/**/*.rb",
     "lib/selenium/webdriver/remote.rb",
+    "lib/selenium/webdriver/atoms.rb",
     "lib/selenium/webdriver.rb",
     "lib/selenium/server.rb",
     "lib/selenium-webdriver.rb",
@@ -39,15 +41,6 @@ ruby_library(name = "common",
   ],
   resources = [
     { "../LICENSE" : "rb/LICENSE" }
-  ]
-)
-
-ruby_library(name = "w3c",
-  srcs = [
-    "lib/selenium/webdriver/atoms.rb",
-  ],
-  resources = [
-    { "//javascript/webdriver/atoms:getAttribute": "rb/lib/selenium/webdriver/atoms/getAttribute.js"}
   ]
 )
 
@@ -89,7 +82,7 @@ ruby_test(name = "edge",
     "spec/integration/selenium/webdriver/edge/**/*_spec.rb"
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [ ":edge", ":w3c" ]
+  deps = [ ":edge" ]
 )
 
 ruby_library(name = "ff-legacy",
@@ -120,22 +113,8 @@ ruby_library(name = "firefox",
     "lib/selenium/webdriver/firefox/**/*.rb",
     "lib/selenium/webdriver/firefox.rb"
   ],
-  deps = [":common", ":w3c"]
-)
-
-ruby_test(name = "ff-legacy",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/firefox/**/*_spec.rb"
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [":ff-legacy"]
-)
-
-ruby_library(name = "firefox",
-  srcs = [
-    "lib/selenium/webdriver/firefox/**/*.rb",
-    "lib/selenium/webdriver/firefox.rb"
+  resources = [
+    { "//javascript/webdriver/atoms:getAttribute": "rb/lib/selenium/webdriver/atoms/getAttribute.js"}
   ],
   deps = [":common"]
 )
@@ -164,23 +143,6 @@ ruby_test(name = "ie",
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [ ":ie" ]
-)
-
-ruby_library(name = "marionette",
-  srcs = [
-    "lib/selenium/webdriver/firefox/**/*.rb",
-    "lib/selenium/webdriver/firefox.rb"
-  ],
-  deps = [":common"]
-)
-
-ruby_test(name = "marionette",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/firefox/**/*_spec.rb"
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [":marionette"]
 )
 
 ruby_library(name = "phantomjs",
@@ -229,6 +191,19 @@ ruby_test(name = "remote-chrome",
   deps = [
     ":remote",
     ":chrome"]
+)
+
+ruby_test(name = "remote-ff-legacy",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/firefox/**/*_spec.rb",
+    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
+  ],
+  include = ["rb/spec/integration", "build/rb/lib"],
+  deps = [
+    ":remote",
+    ":ff-legacy"
+  ]
 )
 
 ruby_test(name = "remote-firefox",
@@ -294,19 +269,6 @@ ruby_test(name = "remote-edge",
     ":remote",
     ":edge"
   ]
-)
-
-ruby_test(name = "remote-marionette",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/firefox/**/*_spec.rb",
-    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [
-    ":remote",
-    ":marionette"
-    ]
 )
 
 ruby_library(name = "safari",
