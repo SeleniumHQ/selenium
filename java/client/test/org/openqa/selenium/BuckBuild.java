@@ -31,7 +31,6 @@ import com.google.common.hash.Hashing;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.testing.InProject;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
