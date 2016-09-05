@@ -96,7 +96,7 @@ class ElementAttributeTests(unittest.TestCase):
         try:
             disabledTextElement1.send_keys("foo")
             self.fail("Should have thrown exception")
-        except:
+        except Exception:
             pass
 
         self.assertEqual("", disabledTextElement1.text)
@@ -105,7 +105,7 @@ class ElementAttributeTests(unittest.TestCase):
         try:
             disabledTextElement2.send_keys("bar")
             self.fail("Should have thrown exception")
-        except:
+        except Exception:
             pass
         self.assertEqual("", disabledTextElement2.text)
 

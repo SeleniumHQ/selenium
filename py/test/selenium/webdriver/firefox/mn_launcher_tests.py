@@ -30,12 +30,12 @@ class TestMarionetteLauncher:
     def teardown_method(self, method):
         try:
             self.driver.quit()
-        except:
+        except Exception:
             pass
 
 
 def teardown_module(module):
     try:
         TestMarionetteLauncher.driver.quit()
-    except:
+    except Exception:
         pass

@@ -232,10 +232,10 @@ class FirefoxProfile(object):
                     matches = re.search(PREF_RE, usr)
                     try:
                         self.default_preferences[matches.group(1)] = json.loads(matches.group(2))
-                    except:
+                    except Exception:
                         warnings.warn("(skipping) failed to json.loads existing preference: " +
                                       matches.group(1) + matches.group(2))
-        except:
+        except Exception:
             # The profile given hasn't had any changes made, i.e no users.js
             pass
 

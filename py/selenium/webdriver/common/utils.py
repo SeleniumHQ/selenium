@@ -132,7 +132,7 @@ def is_url_connectable(port):
             return True
         else:
             return False
-    except:
+    except Exception:
         return False
 
 
