@@ -36,12 +36,12 @@ class TestMarionetteSpecific:
         try:
             self.driver.set_context(self.CONTENT)
             self.driver.quit()
-        except:
+        except Exception:
             pass  # Don't care since we may have killed the browser above
 
 
 def teardown_module(module):
     try:
         TestMarionetteSpecific.driver.quit()
-    except:
+    except Exception:
         pass  # Don't Care since we may have killed the browser above

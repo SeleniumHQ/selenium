@@ -42,5 +42,5 @@ class TestMarionetteBinary:
     def teardown_method(self, method):
         try:
             self.driver.quit()
-        except:
+        except Exception:
             pass

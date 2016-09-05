@@ -36,7 +36,7 @@ def start_server(module):
         _socket.connect((SERVER_ADDR, DEFAULT_PORT))
         print("The remote driver server is already running or something else"
               "is using port %d, continuing..." % DEFAULT_PORT)
-    except:
+    except Exception:
         print("Starting the remote driver server")
         module.server_proc = subprocess.Popen(
             "java -jar %s" % SERVER_PATH,
@@ -63,5 +63,5 @@ def stop_server(module):
     try:
         os.kill(module.server_proc.pid, signal.SIGTERM)
         time.sleep(5)
-    except:
+    except Exception:
         pass

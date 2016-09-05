@@ -67,7 +67,7 @@ class WebDriver(RemoteWebDriver):
                 command_executor=ChromeRemoteConnection(
                     remote_server_addr=self.service.service_url),
                 desired_capabilities=desired_capabilities)
-        except:
+        except Exception:
             self.quit()
             raise
         self._is_remote = False
@@ -83,7 +83,7 @@ class WebDriver(RemoteWebDriver):
         """
         try:
             RemoteWebDriver.quit(self)
-        except:
+        except Exception:
             # We don't care about the message because something probably has gone wrong
             pass
         finally:

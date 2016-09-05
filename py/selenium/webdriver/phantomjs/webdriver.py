@@ -56,7 +56,7 @@ class WebDriver(RemoteWebDriver):
                 self,
                 command_executor=self.service.service_url,
                 desired_capabilities=desired_capabilities)
-        except:
+        except Exception:
             self.quit()
             raise
 
@@ -69,7 +69,7 @@ class WebDriver(RemoteWebDriver):
         """
         try:
             RemoteWebDriver.quit(self)
-        except:
+        except Exception:
             # We don't care about the message because something probably has gone wrong
             pass
         finally:

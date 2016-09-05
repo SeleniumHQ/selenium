@@ -280,6 +280,6 @@ class AlertsTest(unittest.TestCase):
         try:
             # just in case a previous test left open an alert
             self.driver.switch_to.alert().dismiss()
-        except:
+        except Exception:
             pass
         self.driver.get(self._pageURL(name))

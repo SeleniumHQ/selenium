@@ -40,7 +40,7 @@ class TestOptions:
     def teardown_method(self, method):
         try:
             self.driver.quit()
-        except:
+        except Exception:
             pass  # Don't care since we may have killed the browser above
         self.webserver.stop()
 
@@ -48,5 +48,5 @@ class TestOptions:
 def teardown_module(module):
     try:
         TestOptions.driver.quit()
-    except:
+    except Exception:
         pass  # Don't Care since we may have killed the browser above

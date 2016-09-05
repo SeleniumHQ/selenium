@@ -209,7 +209,7 @@ class TestFirefoxProfile:
     def teardown_method(self, method):
         try:
             self.driver.quit()
-        except:
+        except Exception:
             pass  # don't care since we may have killed the browser above
         self.webserver.stop()
 
@@ -226,5 +226,5 @@ class TestFirefoxProfile:
 def teardown_module(module):
     try:
         TestFirefoxProfile.driver.quit()
-    except:
+    except Exception:
         pass  # Don't Care since we may have killed the browser above

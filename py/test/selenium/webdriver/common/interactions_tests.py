@@ -71,7 +71,7 @@ class AdvancedUserInteractionTest(unittest.TestCase):
         try:
             self.driver.find_element_by_id(id)
             return True
-        except:
+        except Exception:
             return False
 
     def testDragAndDrop(self):
