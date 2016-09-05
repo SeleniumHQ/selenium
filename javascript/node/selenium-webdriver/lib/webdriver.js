@@ -1656,7 +1656,7 @@ class TargetLocator {
   window(nameOrHandle) {
     return this.driver_.schedule(
         new command.Command(command.Name.SWITCH_TO_WINDOW).
-            setParameter('name', nameOrHandle),
+            setParameter('handle', nameOrHandle),
         'WebDriver.switchTo().window(' + nameOrHandle + ')');
   }
 

@@ -424,7 +424,7 @@ describe('WebDriver', function() {
     let e = new error.NoSuchWindowError('window not found');
     let executor = new FakeExecutor().
         expect(CName.SWITCH_TO_WINDOW).
-        withParameters({'name': 'foo'}).
+        withParameters({'handle': 'foo'}).
         andReturnError(e).
         end();
 
@@ -439,7 +439,7 @@ describe('WebDriver', function() {
     let e = new error.NoSuchWindowError('window not found');
     let executor = new FakeExecutor().
         expect(CName.SWITCH_TO_WINDOW).
-            withParameters({'name': 'foo'}).
+            withParameters({'handle': 'foo'}).
             andReturnError(e).
         expect(CName.GET_TITLE).
             andReturnSuccess('Google Search').
@@ -456,7 +456,7 @@ describe('WebDriver', function() {
     let e = new error.NoSuchWindowError('window not found');
     let executor = new FakeExecutor().
         expect(CName.SWITCH_TO_WINDOW).
-            withParameters({'name':'foo'}).
+            withParameters({'handle':'foo'}).
             andReturnError(e).
         end();
 
@@ -467,7 +467,7 @@ describe('WebDriver', function() {
   it('testErrbacksThatReturnErrorsStillSwitchToCallbackChain', function() {
     let executor = new FakeExecutor().
         expect(CName.SWITCH_TO_WINDOW).
-            withParameters({'name':'foo'}).
+            withParameters({'handle':'foo'}).
             andReturnError(new error.NoSuchWindowError('window not found')).
         end();
 
@@ -479,7 +479,7 @@ describe('WebDriver', function() {
 
   it('testErrbacksThrownCanOverrideOriginalError', function() {
     let executor = new FakeExecutor().
-        expect(CName.SWITCH_TO_WINDOW, {'name': 'foo'}).
+        expect(CName.SWITCH_TO_WINDOW, {'handle': 'foo'}).
         andReturnError(new error.NoSuchWindowError('window not found')).
         end();
 
@@ -572,7 +572,7 @@ describe('WebDriver', function() {
       let e = new error.NoSuchWindowError('window not found');
       let executor = new FakeExecutor().
           expect(CName.GET_TITLE).
-          expect(CName.SWITCH_TO_WINDOW, {'name': 'foo'}).
+          expect(CName.SWITCH_TO_WINDOW, {'handle': 'foo'}).
           andReturnError(e).
           end();
 
@@ -587,7 +587,7 @@ describe('WebDriver', function() {
     it('canBeSuppressWhenTheyOccur', function() {
       let executor = new FakeExecutor().
           expect(CName.GET_TITLE).
-          expect(CName.SWITCH_TO_WINDOW, {'name':'foo'}).
+          expect(CName.SWITCH_TO_WINDOW, {'handle':'foo'}).
               andReturnError(new error.NoSuchWindowError('window not found')).
           expect(CName.CLOSE).
           end();
@@ -605,7 +605,7 @@ describe('WebDriver', function() {
       let e = new error.NoSuchWindowError('window not found');
       let executor = new FakeExecutor().
           expect(CName.GET_TITLE).
-          expect(CName.SWITCH_TO_WINDOW, {'name':'foo'}).
+          expect(CName.SWITCH_TO_WINDOW, {'handle':'foo'}).
           andReturnError(e).
           end();
 
@@ -623,7 +623,7 @@ describe('WebDriver', function() {
       let executor = new FakeExecutor().
           expect(CName.GET_TITLE).
           expect(CName.GET_CURRENT_URL).
-          expect(CName.SWITCH_TO_WINDOW, {'name':'foo'}).
+          expect(CName.SWITCH_TO_WINDOW, {'handle':'foo'}).
               andReturnError(new StubError()).
           expect(CName.CLOSE).
           end();
@@ -664,7 +664,7 @@ describe('WebDriver', function() {
     it('fromAnErrbackSuppressesTheError', function() {
       var count = 0;
       let executor = new FakeExecutor().
-          expect(CName.SWITCH_TO_WINDOW, {'name':'foo'}).
+          expect(CName.SWITCH_TO_WINDOW, {'handle':'foo'}).
               andReturnError(new StubError()).
           expect(CName.GET_CURRENT_URL).
               andReturnSuccess('http://www.google.com').
@@ -791,7 +791,7 @@ describe('WebDriver', function() {
 
     it('hasANestedCommandThatFails', function() {
       let executor = new FakeExecutor().
-          expect(CName.SWITCH_TO_WINDOW, {'name': 'foo'}).
+          expect(CName.SWITCH_TO_WINDOW, {'handle': 'foo'}).
               andReturnError(new StubError()).
           end();
 

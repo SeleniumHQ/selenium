@@ -533,13 +533,13 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
  * Changes the context of the caller to the specified window.
  * @param {fxdriver.CommandResponse} response The response object to send the
  *     command response in.
- * @param {{name: string}} parameters The command parameters.
+ * @param {{handle: string}} parameters The command parameters.
  * @param {number} opt_searchAttempt Which attempt this is at finding the
  *     window to switch to.
  */
 nsCommandProcessor.prototype.switchToWindow = function(response, parameters,
                                                        opt_searchAttempt) {
-  var lookFor = parameters.name;
+  var lookFor = parameters.handle;
   var matches = function(win, lookFor) {
     return !win.closed &&
            (win.top && win.top.fxdriver) &&
