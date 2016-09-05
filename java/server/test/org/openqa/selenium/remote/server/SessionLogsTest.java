@@ -49,6 +49,7 @@ import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.BrowserToCapabilities;
 import org.openqa.selenium.testing.drivers.OutOfProcessSeleniumServer;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Map;
@@ -61,7 +62,7 @@ public class SessionLogsTest extends JUnit4TestBase {
   private RemoteWebDriver localDriver;
 
   @BeforeClass
-  public static void startUpServer() {
+  public static void startUpServer() throws IOException {
     server = new OutOfProcessSeleniumServer();
     server.enableLogCapture();
     server.start();

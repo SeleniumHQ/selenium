@@ -24,6 +24,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import java.io.IOException;
+
 public class RemoteSupplier implements Supplier<WebDriver> {
 
   private static OutOfProcessSeleniumServer server = new OutOfProcessSeleniumServer();
@@ -57,7 +59,11 @@ public class RemoteSupplier implements Supplier<WebDriver> {
       return;
     }
 
-    server.start();
+    try {
+      server.start();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
     started = true;
   }
 }

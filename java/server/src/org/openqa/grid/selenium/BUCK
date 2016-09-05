@@ -9,6 +9,9 @@ java_binary(name = 'selenium',
   deps = [
     ':classes',
   ],
+  visibility = [
+    '//java/client/test/org/openqa/selenium/testing/drivers:drivers',
+  ]
 )
 
 genrule(name = 'manifest',
