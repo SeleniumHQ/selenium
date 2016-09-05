@@ -36,6 +36,18 @@ public class StandaloneConfiguration {
   public Integer browserTimeout;
 
   @Parameter(
+    names = "-browserSideLog",
+    description = "DO NOT USE: Provided for compatibility with 2.0",
+    hidden = true)
+  public boolean browserSideLog;
+
+  @Parameter(
+    names = "-captureLogsOnQuit",
+    description = "DO NOT USE: Provided for compatibility with 2.0",
+    hidden = true)
+  public boolean captureLogsOnQuit;
+
+  @Parameter(
     names = "-debug",
     description = "<Boolean> : enables LogLevel.FINE. Default is false (if omitted)"
   )
