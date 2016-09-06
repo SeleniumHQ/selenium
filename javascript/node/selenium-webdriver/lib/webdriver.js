@@ -1654,9 +1654,10 @@ class TargetLocator {
    *     when the driver has changed focus to the specified window.
    */
   window(nameOrHandle) {
+    let paramName = this.driver_.getExecutor().w3c ? 'handle' : 'name';
     return this.driver_.schedule(
         new command.Command(command.Name.SWITCH_TO_WINDOW).
-            setParameter('handle', nameOrHandle),
+            setParameter(paramName, nameOrHandle),
         'WebDriver.switchTo().window(' + nameOrHandle + ')');
   }
 
