@@ -37,18 +37,6 @@ import java.io.IOException;
  */
 public class SafariDriver extends RemoteWebDriver {
 
-  /**
-   * Capability to force usage of the deprecated SafariDriver extension while running
-   * on macOS Sierra.
-   *
-   * <pre>
-   *   DesiredCapabilities safariCap = DesiredCapabilities.Safari();
-   *   safariCap.setCapability(SafariDriver.USE_LEGACY_DRIVER_CAPABILITY, true);
-   *   WebDriver driver = new SafariDriver(safariCap);
-   * </pre>
-   */
-  public static final String USE_LEGACY_DRIVER_CAPABILITY = "useLegacyDriver";
-
   private SafariDriverService service;
 
   /**
@@ -90,15 +78,14 @@ public class SafariDriver extends RemoteWebDriver {
 
   private static CommandExecutor getExecutor(SafariOptions options) {
     SafariDriverService service = SafariDriverService.createDefaultService(options);
-    if (isLegacy(options) && service != null) {
+    if (! isLegacy(options) && service != null) {
       return new DriverCommandExecutor(service);
     }
     return new SafariDriverCommandExecutor(options);
   }
 
   private static boolean isLegacy(SafariOptions options) {
-    Object useLegacy = options.toCapabilities().getCapability(USE_LEGACY_DRIVER_CAPABILITY);
-    return useLegacy != null && (Boolean)useLegacy;
+    return options.getUseLegacyDriver();
   }
 
   @Override
