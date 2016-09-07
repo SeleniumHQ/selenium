@@ -45,12 +45,6 @@ public class GridHubConfiguration extends GridConfiguration {
   public String hubConfig;
 
   @Parameter(
-    names = "-jettyMaxThreads",
-    description = "<Integer> : max number of thread for Jetty. Default is 255"
-  )
-  public Integer jettyMaxThreads;
-
-  @Parameter(
     names = {"-matcher", "-capabilityMatcher"},
     description = "<String> class name : a class implementing the CapabilityMatcher interface. Specifies the logic the hub will follow to define whether a request can be assigned to a node. For example, if you want to have the matching process use regular expressions instead of exact match when specifying browser version. ALL nodes of a grid ecosystem would then use the same capabilityMatcher, as defined here. Default is org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
     converter = CapabilityMatcherString.class
@@ -82,6 +76,7 @@ public class GridHubConfiguration extends GridConfiguration {
    * Init with built-in defaults
    */
   public GridHubConfiguration() {
+    role = "hub";
     if (DEFAULT_CONFIG != null) {
       merge(DEFAULT_CONFIG);
     }
@@ -139,17 +134,17 @@ public class GridHubConfiguration extends GridConfiguration {
 
   public void merge(GridHubConfiguration other) {
     super.merge(other);
-    if (other.jettyMaxThreads != null) {
-      jettyMaxThreads = other.jettyMaxThreads;
+
+    if (isMergeAble(other.capabilityMatcher, capabilityMatcher)) {
+      capabilityMatcher = other.capabilityMatcher;
     }
-    capabilityMatcher = other.capabilityMatcher;
-    if (other.newSessionWaitTimeout != null) {
+    if (isMergeAble(other.newSessionWaitTimeout, newSessionWaitTimeout)) {
       newSessionWaitTimeout = other.newSessionWaitTimeout;
     }
-    if (other.prioritizer != null) {
+    if (isMergeAble(other.prioritizer, prioritizer)) {
       prioritizer = other.prioritizer;
     }
-    if (other.throwOnCapabilityNotPresent != throwOnCapabilityNotPresent) {
+    if (isMergeAble(other.throwOnCapabilityNotPresent, throwOnCapabilityNotPresent)) {
       throwOnCapabilityNotPresent = other.throwOnCapabilityNotPresent;
     }
   }
@@ -159,7 +154,6 @@ public class GridHubConfiguration extends GridConfiguration {
     StringBuilder sb = new StringBuilder();
     sb.append(super.toString(format));
     sb.append(toString(format, "hubConfig", hubConfig));
-    sb.append(toString(format, "jettyMaxThreads", jettyMaxThreads));
     sb.append(toString(format, "capabilityMatcher", capabilityMatcher.getClass().getCanonicalName()));
     sb.append(toString(format, "newSessionWaitTimeout", newSessionWaitTimeout));
     sb.append(toString(format, "prioritizer", prioritizer != null? prioritizer.getClass().getCanonicalName(): null));

@@ -140,8 +140,11 @@ public class RegistrationRequest {
     GridNodeConfiguration configuration = GridNodeConfiguration.loadFromJSON(config);
     request.setConfiguration(configuration);
 
+    // make sure 'id' has a value
     if (o.has("id")) {
       request.configuration.id = o.get("id").getAsString();
+    } else {
+      request.configuration.id = request.configuration.getRemoteHost();
     }
 
     JsonArray capabilities = o.get("capabilities").getAsJsonArray();

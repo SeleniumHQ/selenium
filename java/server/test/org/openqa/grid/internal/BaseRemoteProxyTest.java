@@ -89,17 +89,37 @@ public class BaseRemoteProxyTest {
   public void proxyConfigIsInheritedFromRegistry() {
     Registry registry = Registry.newInstance();
     registry.getConfiguration().cleanUpCycle = 42;
-    registry.getConfiguration().timeout = 4200;
 
     GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
-    new JCommander(nodeConfiguration, "-role", "webdriver", "-timeout", "100", "-cleanUpCycle", "100");
+    new JCommander(nodeConfiguration, "-role", "webdriver");
     RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
     req.getConfiguration().proxy = null;
 
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 
-    assertEquals(42, p.getConfig().cleanUpCycle.longValue());
-    assertEquals(4200, p.getConfig().timeout.longValue());
+    // values which are not present in the registration request need to come
+    // from the registry
+    assertEquals(registry.getConfiguration().cleanUpCycle.longValue(),
+                 p.getConfig().cleanUpCycle.longValue());
+  }
+
+  @Test
+  public void proxyConfigOverwritesRegistryConfig() {
+    Registry registry = Registry.newInstance();
+    registry.getConfiguration().cleanUpCycle = 42;
+    registry.getConfiguration().maxSession = 1;
+
+    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
+    new JCommander(nodeConfiguration, "-role", "webdriver", "-cleanUpCycle", "100", "-maxSession", "50");
+    RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
+    req.getConfiguration().proxy = null;
+
+    RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
+
+    // values which are present in both the registration request and the registry need to
+    // come from the registration request
+    assertEquals(100L, p.getConfig().cleanUpCycle.longValue());
+    assertEquals(50L, p.getConfig().maxSession.longValue());
   }
 
   @Test
