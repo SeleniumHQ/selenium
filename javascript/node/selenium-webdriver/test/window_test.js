@@ -18,6 +18,7 @@
 'use strict';
 
 var Browser = require('..').Browser,
+    By = require('..').By,
     assert = require('../testing/assert'),
     test = require('../lib/test');
 
@@ -51,6 +52,26 @@ test.suite(function(env) {
     var frame = driver.findElement({css: 'iframe[name="iframe1-name"]'});
     driver.switchTo().frame(frame);
     changeSizeBy(-20, -20);
+  });
+
+  test.it('can switch to a new window', function() {
+    driver.get(test.Pages.xhtmlTestPage);
+
+    driver.getWindowHandle().then(function(handle) {
+      driver.getAllWindowHandles().then(function(originalHandles) {
+        driver.findElement(By.linkText("Open new window")).click();
+
+        driver.wait(forNewWindowToBeOpened(originalHandles), 2000);
+
+        assert(driver.getTitle()).equalTo("XHTML Test Page");
+
+        getNewWindowHandle(originalHandles).then(function(newHandle) {
+          driver.switchTo().window(newHandle);
+
+          assert(driver.getTitle()).equalTo("We Arrive Here")
+        });
+      });
+    });
   });
 
   // See https://github.com/mozilla/geckodriver/issues/113
@@ -133,5 +154,22 @@ test.suite(function(env) {
            (position.y >= y && position.y <= (y + 28));
       });
     };
+  }
+
+  function forNewWindowToBeOpened(originalHandles) {
+    return function() {
+      return driver.getAllWindowHandles().then(function(currentHandles) {
+        return currentHandles.length > originalHandles.length;
+      });
+    };
+  }
+
+  function getNewWindowHandle(originalHandles) {
+    // Note: this assumes there's just one new window.
+    return driver.getAllWindowHandles().then(function(currentHandles) {
+      return currentHandles.filter(function(i) {
+        return originalHandles.indexOf(i) < 0;
+      })[0];
+    });
   }
 });
