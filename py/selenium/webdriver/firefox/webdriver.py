@@ -29,6 +29,8 @@ import shutil
 import socket
 import sys
 
+from contextlib import contextmanager
+
 from .firefox_binary import FirefoxBinary
 from .options import Options
 from .remote_connection import FirefoxRemoteConnection
@@ -114,3 +116,25 @@ class WebDriver(RemoteWebDriver):
 
     def set_context(self, context):
         self.execute("SET_CONTEXT", {"context": context})
+
+    @contextmanager
+    def using_context(self, context):
+        """Sets the context that Selenium commands are running in using
+        a `with` statement. The state of the context on the server is
+        saved before entering the block, and restored upon exiting it.
+
+        :param context: Context, may be one of the class properties
+            `CONTEXT_CHROME` or `CONTEXT_CONTENT`.
+
+        Usage example::
+
+            with self.selenium.using_context(self.selenium.CONTEXT_CHROME):
+                # chrome scope
+                ... do stuff ...
+        """
+        current_context = self.execute('GET_CONTEXT').pop('value')
+        self.set_context(context)
+        try:
+            yield
+        finally:
+            self.set_context(current_context)
