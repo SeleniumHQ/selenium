@@ -38,13 +38,15 @@ public class StandaloneConfiguration {
   @Parameter(
     names = "-browserSideLog",
     description = "DO NOT USE: Provided for compatibility with 2.0",
-    hidden = true)
+    hidden = true
+  )
   public boolean browserSideLog;
 
   @Parameter(
     names = "-captureLogsOnQuit",
     description = "DO NOT USE: Provided for compatibility with 2.0",
-    hidden = true)
+    hidden = true
+  )
   public boolean captureLogsOnQuit;
 
   @Parameter(
@@ -62,10 +64,10 @@ public class StandaloneConfiguration {
   public boolean help;
 
   @Parameter(
-    names = "-jettyThreads",
-    hidden = true
+    names = {"-jettyThreads", "-jettyMaxThreads"},
+    description = "<Integer> : max number of threads for Jetty. Default is 200"
   )
-  public Integer jettyThreads;
+  public Integer jettyMaxThreads;
 
   @Parameter(
     names = "-log",
@@ -93,32 +95,70 @@ public class StandaloneConfiguration {
 
   @Parameter(
     names = {"-timeout", "-sessionTimeout"},
-    description = "<Integer> in seconds : Specifies the timeout before the hub automatically kills a session that hasn't had any activity in the last X seconds. The test slot will then be released for another test to use. This is typically used to take care of client crashes. For grid hub/node roles, cleanUpCycle must also be set. Default is 1800 (30 minutes)"
+    description = "<Integer> in seconds : Specifies the timeout before the server automatically kills a session that hasn't had any activity in the last X seconds. The test slot will then be released for another test to use. This is typically used to take care of client crashes. For grid hub/node roles, cleanUpCycle must also be set. Default is 1800 (30 minutes)"
   )
   public Integer timeout = 1800;
 
   @Parameter(
     names = {"-avoidProxy"},
-    description = "DO NOT USE. Hack to allow selenium 3.0 server run in SauceLabs",
+    description = "DO NOT USE: Hack to allow selenium 3.0 server run in SauceLabs",
     hidden = true
   )
-  private Boolean avoidProxy;
+  private boolean avoidProxy;
 
   /**
    * copy another configuration's values into this one if they are set.
    * @param other
    */
   public void merge(StandaloneConfiguration other) {
-    if (other.browserTimeout != null) {
+    if (isMergeAble(other.browserTimeout, browserTimeout)) {
       browserTimeout = other.browserTimeout;
     }
-    if (other.jettyThreads != null) {
-      jettyThreads = other.jettyThreads;
+    if (isMergeAble(other.jettyMaxThreads, jettyMaxThreads)) {
+      jettyMaxThreads = other.jettyMaxThreads;
     }
-    if (other.timeout != 1800) {
+    if (isMergeAble(other.timeout, timeout)) {
       timeout = other.timeout;
     }
     // role, port, log, debug and help are not merged, they are only consumed by the immediately running node and can't affect a remote
+  }
+
+  /**
+   * Determines if one object can be merged onto another object. Checks for {@code null},
+   * and empty (Collections & Maps) to make decision.
+   *
+   * @param other the object to merge. must be the same type as the 'target'
+   * @param target the object to merge on to. must be the same type as the 'other'
+   * @return whether the 'other' can be merged onto the 'target'
+   */
+  protected boolean isMergeAble(Object other, Object target) {
+    // don't merge a null value
+    if (other == null) {
+      return false;
+    } else {
+      // allow any non-null value to merge over a null target.
+      if (target == null) {
+        return true;
+      }
+    }
+
+    // we know we have two objects with value.. Make sure the types are the same and
+    // perform additional checks.
+
+    if (! target.getClass().getSuperclass().getTypeName()
+        .equals(other.getClass().getSuperclass().getTypeName())) {
+      return false;
+    }
+
+    if (target instanceof Collection) {
+      return !((Collection) other).isEmpty();
+    }
+
+    if (target instanceof Map) {
+      return !((Map) other).isEmpty();
+    }
+
+    return true;
   }
 
   public String toString(String format) {
@@ -126,7 +166,7 @@ public class StandaloneConfiguration {
     sb.append(toString(format, "browserTimeout", browserTimeout));
     sb.append(toString(format, "debug", debug));
     sb.append(toString(format, "help", help));
-    sb.append(toString(format, "jettyThreads", jettyThreads));
+    sb.append(toString(format, "jettyMaxThreads", jettyMaxThreads));
     sb.append(toString(format, "log", log));
     sb.append(toString(format, "logLongForm", logLongForm));
     sb.append(toString(format, "port", port));

@@ -49,7 +49,7 @@ public class GridNodeConfiguration extends GridConfiguration {
 
   @Parameter(
     names = "-id",
-    description = "<String> : unique identifier for the node. Not required--by default, grid will use the url of the remoteHost"
+    description = "<String> : optional unique identifier for the node. Defaults to the url of the remoteHost"
   )
   public String id;
 
@@ -125,9 +125,16 @@ public class GridNodeConfiguration extends GridConfiguration {
 
   @Parameter(
     names = "-unregisterIfStillDownAfter",
-    description = "<Integer> in ms : if the node remains down for more than [unregisterIfStillDownAfter] ms, it will step attempting to re-register from the hub. Default is 6000 (1 minute)"
+    description = "<Integer> in ms : if the node remains down for more than [unregisterIfStillDownAfter] ms, it will stop attempting to re-register from the hub. Default is 6000 (1 minute)"
   )
   public Integer unregisterIfStillDownAfter;
+
+  /**
+   * Init with built-in defaults
+   */
+  public GridNodeConfiguration() {
+    role = "node";
+  }
 
   public String getHubHost() {
     if (hubHost == null) {
@@ -174,43 +181,43 @@ public class GridNodeConfiguration extends GridConfiguration {
 
   public void merge(GridNodeConfiguration other) {
     super.merge(other);
-    if (other.browser != null) {
+    if (isMergeAble(other.browser, browser)) {
       browser = other.browser;
     }
-    if (other.downPollingLimit != null) {
+    if (isMergeAble(other.downPollingLimit, downPollingLimit)) {
       downPollingLimit = other.downPollingLimit;
     }
-    if (other.hub != null) {
+    if (isMergeAble(other.hub, hub)) {
       hub = other.hub;
     }
-    if (other.hubHost != null) {
+    if (isMergeAble(other.hubHost, hubHost)) {
       hubHost = other.hubHost;
     }
-    if (other.hubPort != null) {
+    if (isMergeAble(other.hubPort, hubPort)) {
       hubPort = other.hubPort;
     }
-    if (other.id != null) {
+    if (isMergeAble(other.id, id)) {
       id = other.id;
     }
-    if (other.nodePolling != null) {
+    if (isMergeAble(other.nodePolling, nodePolling)) {
       nodePolling = other.nodePolling;
     }
-    if (other.nodeStatusCheckTimeout != null) {
+    if (isMergeAble(other.nodeStatusCheckTimeout, nodeStatusCheckTimeout)) {
       nodeStatusCheckTimeout = other.nodeStatusCheckTimeout;
     }
-    if (other.proxy != null) {
+    if (isMergeAble(other.proxy, proxy)) {
       proxy = other.proxy;
     }
-    if (other.register != null) {
+    if (isMergeAble(other.register, register)) {
       register = other.register;
     }
-    if (other.registerCycle != null) {
+    if (isMergeAble(other.registerCycle, registerCycle)) {
       registerCycle = other.registerCycle;
     }
-    if (other.remoteHost != null) {
+    if (isMergeAble(other.remoteHost, remoteHost)) {
       remoteHost = other.remoteHost;
     }
-    if (other.unregisterIfStillDownAfter != null) {
+    if (isMergeAble(other.unregisterIfStillDownAfter, unregisterIfStillDownAfter)) {
       unregisterIfStillDownAfter = other.unregisterIfStillDownAfter;
     }
   }

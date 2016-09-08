@@ -99,8 +99,8 @@ public class SeleniumServer implements GridNodeServer {
   }
 
   public void boot() {
-    if (configuration.jettyThreads != null && configuration.jettyThreads > 0) {
-      server = new Server(new QueuedThreadPool(configuration.jettyThreads));
+    if (configuration.jettyMaxThreads != null && configuration.jettyMaxThreads > 0) {
+      server = new Server(new QueuedThreadPool(configuration.jettyMaxThreads));
     } else {
       server = new Server();
     }

@@ -73,17 +73,20 @@ public class GridConfiguration extends StandaloneConfiguration {
   public void merge(GridConfiguration other) {
     super.merge(other);
     // don't merge 'host'
-    if (other.cleanUpCycle != null) {
+    if (isMergeAble(other.cleanUpCycle, cleanUpCycle)) {
       cleanUpCycle = other.cleanUpCycle;
     }
-    custom.putAll(other.custom);
-    if (other.maxSession != 1) {
+    if (isMergeAble(other.custom, custom)) {
+      custom.putAll(other.custom);
+    }
+    if (isMergeAble(other.maxSession, maxSession) &&
+        other.maxSession.intValue() > 0) {
       maxSession = other.maxSession;
     }
-    if (other.servlets != null) {
+    if (isMergeAble(other.servlets, servlets)) {
       servlets = other.servlets;
     }
-    if (other.withoutServlets != null) {
+    if (isMergeAble(other.withoutServlets, withoutServlets)) {
       withoutServlets = other.withoutServlets;
     }
   }
