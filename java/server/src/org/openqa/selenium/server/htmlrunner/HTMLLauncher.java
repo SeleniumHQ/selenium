@@ -170,13 +170,13 @@ public class HTMLLauncher {
 
         ResourceHandler handler = new ResourceHandler();
         handler.setDirectoriesListed(true);
-        handler.setWelcomeFiles(new String[]{"index.html"});
-        handler.setBaseResource(Resource.newResource(path.toFile()));
+        handler.setWelcomeFiles(new String[]{path.getFileName().toString(), "index.html"});
+        handler.setBaseResource(Resource.newResource(path.getParent().toFile()));
 
         ContextHandler context = new ContextHandler("/tests");
         context.setHandler(handler);
 
-        server.setHandler(handler);
+        server.setHandler(context);
         server.start();
 
         PortProber.pollPort(port);
@@ -211,7 +211,7 @@ public class HTMLLauncher {
  }
 
   public static int mainInt(String... args) throws Exception {
-    if (args.length != 5 && args.length != 4) {
+    if (args.length != 5) {
       throw new IllegalAccessException(
           "Usage: HTMLLauncher outputDir testSuite startUrl multiWindow browser");
     }
