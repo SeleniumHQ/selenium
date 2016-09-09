@@ -15,16 +15,30 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from selenium.webdriver.remote.remote_connection import RemoteConnection
+from selenium import webdriver
 
 
-class FirefoxRemoteConnection(RemoteConnection):
-    def __init__(self, remote_server_addr, keep_alive=True):
-        RemoteConnection.__init__(self, remote_server_addr, keep_alive)
-        self._commands["GET_CONTEXT"] = ('GET', '/session/$sessionId/moz/context')
+class TestUsingContext:
 
-        self._commands["SET_CONTEXT"] = ("POST", "/session/$sessionId/moz/context")
-        self._commands["ELEMENT_GET_ANONYMOUS_CHILDREN"] = \
-            ("POST", "/session/$sessionId/moz/xbl/$id/anonymous_children")
-        self._commands["ELEMENT_FIND_ANONYMOUS_ELEMENTS_BY_ATTRIBUTE"] = \
-            ("POST", "/session/$sessionId/moz/xbl/$id/anonymous_by_attribute")
+    def setup_method(self, method):
+
+        capabilities = {'marionette': True}
+        self.driver = webdriver.Firefox(capabilities=capabilities)
+
+        self.CHROME = 'chrome'
+        self.CONTENT = 'content'
+
+    def test_using_context_sets_correct_context_and_returns(self):
+        def get_context():
+            return self.driver.execute('GET_CONTEXT').pop('value')
+
+        assert get_context() == self.CONTENT
+        with self.driver.using_context(self.CHROME):
+            assert get_context() == self.CHROME
+        assert get_context() == self.CONTENT
+
+    def teardown_method(self, method):
+        try:
+            self.driver.quit()
+        except:
+            pass
