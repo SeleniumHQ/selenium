@@ -36,7 +36,7 @@ public class TestAlerts extends InternalSelenseTestBase {
       if (second >= 60) fail("timeout");
       try {
         if (selenium.isAlertPresent()) break;
-      } catch (Exception e) {
+      } catch (Exception ignored) {
       }
       Thread.sleep(1000);
     }

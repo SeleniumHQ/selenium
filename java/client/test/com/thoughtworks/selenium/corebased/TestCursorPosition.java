@@ -30,7 +30,7 @@ public class TestCursorPosition extends InternalSelenseTestBase {
     try {
       assertEquals(selenium.getCursorPosition("username"), "8");
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     selenium.windowFocus();
     verifyEquals(selenium.getValue("username"), "");
@@ -53,7 +53,7 @@ public class TestCursorPosition extends InternalSelenseTestBase {
     try {
       assertEquals(selenium.getCursorPosition("username"), "8");
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
   }
 

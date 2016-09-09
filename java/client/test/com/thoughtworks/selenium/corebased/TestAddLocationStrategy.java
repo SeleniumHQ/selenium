@@ -34,13 +34,13 @@ public class TestAddLocationStrategy extends InternalSelenseTestBase {
     try {
       selenium.addLocationStrategy("bar", "[[[;");
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     selenium.addLocationStrategy("bar", "thisVariableDoesNotExist;");
     try {
       assertTrue(selenium.isElementPresent("bar=link"));
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
   }
 }

@@ -55,17 +55,17 @@ public class TestSelect extends InternalSelenseTestBase {
     try {
       selenium.select("theSelect", "Not an option");
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     try {
       selenium.addSelection("theSelect", "Fourth Option");
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     try {
       selenium.removeSelection("theSelect", "Fourth Option");
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     verifyEquals(
         join(selenium.getSelectOptions("theSelect"), ','),

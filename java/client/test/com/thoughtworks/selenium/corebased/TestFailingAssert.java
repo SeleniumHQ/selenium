@@ -29,17 +29,17 @@ public class TestFailingAssert extends InternalSelenseTestBase {
     try {
       assertEquals(selenium.getValue("theText"), "not the text value");
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     try {
       assertNotEquals("the text value", selenium.getValue("theText"));
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     try {
       assertEquals(selenium.getValue("theTable"), "x");
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
   }
 }

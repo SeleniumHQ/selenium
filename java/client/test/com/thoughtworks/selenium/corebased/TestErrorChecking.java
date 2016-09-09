@@ -30,32 +30,32 @@ public class TestErrorChecking extends InternalSelenseTestBase {
     try {
       assertEquals(selenium.getText("link"), "Click here for next page");
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     try {
       System.out.println("foo");
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     try {
       assertEquals(selenium.getText("link"), "foo");
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     try {
       assertEquals(selenium.getText("link"), "Click here for next page");
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     try {
       assertEquals(selenium.getText("link"), "foo");
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     try {
       assertEquals(selenium.getText("notAlink"), "foo");
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
   }
 }

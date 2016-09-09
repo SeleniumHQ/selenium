@@ -36,7 +36,7 @@ public class TestWaitFor extends InternalSelenseTestBase {
       if (second >= 60) fail("timeout");
       try {
         if (Pattern.compile("n[aeiou]wValue").matcher(selenium.getValue("theField")).find()) break;
-      } catch (Exception e) {
+      } catch (Exception ignored) {
       }
       Thread.sleep(1000);
     }
@@ -50,7 +50,7 @@ public class TestWaitFor extends InternalSelenseTestBase {
       try {
         if (Pattern.compile("Some n[aeiou]w text").matcher(selenium.getText("theSpan")).find())
           break;
-      } catch (Exception e) {
+      } catch (Exception ignored) {
       }
       Thread.sleep(1000);
     }
@@ -61,7 +61,7 @@ public class TestWaitFor extends InternalSelenseTestBase {
       if (second >= 60) fail("timeout");
       try {
         if (Pattern.compile("An [aeiou]lert").matcher(selenium.getAlert()).find()) break;
-      } catch (Exception e) {
+      } catch (Exception ignored) {
       }
       Thread.sleep(1000);
     }
@@ -72,7 +72,7 @@ public class TestWaitFor extends InternalSelenseTestBase {
       if (second >= 60) fail("timeout");
       try {
         if ("Slow Loading Page".equals(selenium.getTitle())) break;
-      } catch (Exception e) {
+      } catch (Exception ignored) {
       }
       Thread.sleep(1000);
     }
@@ -84,12 +84,12 @@ public class TestWaitFor extends InternalSelenseTestBase {
         if (second >= 60) fail("timeout");
         try {
           if (selenium.isTextPresent("thisTextIsNotPresent")) break;
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         Thread.sleep(1000);
       }
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
   }
 

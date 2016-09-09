@@ -84,7 +84,7 @@ public class TestClickAt extends InternalSelenseTestBase {
     try {
       selenium.waitForPageToLoad("500");
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     selenium.setTimeout("30000");
     selenium.clickAt("linkWithOnclickReturnsFalse", "0,0");

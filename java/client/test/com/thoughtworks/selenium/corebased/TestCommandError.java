@@ -29,22 +29,22 @@ public class TestCommandError extends InternalSelenseTestBase {
     try {
       selenium.click("notALink");
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     try {
       selenium.select("noSuchSelect", "somelabel");
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     try {
       selenium.select("theSelect", "label=noSuchLabel");
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     try {
       selenium.select("theText", "label=noSuchLabel");
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
   }
 }

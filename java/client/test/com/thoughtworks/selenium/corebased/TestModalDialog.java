@@ -32,7 +32,6 @@ public class TestModalDialog extends InternalSelenseTestBase {
     verifyEquals(selenium.getText("changeText"), "before modal dialog");
 
     // TODO(simon): re-enable this test
-    return;
 
     // selenium.click("modal");
     // // selenium.waitForPopup("Modal Dialog Popup", "5000");

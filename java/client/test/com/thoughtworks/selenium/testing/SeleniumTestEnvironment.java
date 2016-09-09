@@ -37,7 +37,7 @@ public class SeleniumTestEnvironment implements TestEnvironment {
   private AppServer appServer;
   private String seleniumServerUrl;
 
-  public SeleniumTestEnvironment(int port, String... extraArgs) {
+  private SeleniumTestEnvironment(int port, String... extraArgs) {
     try {
       Path serverJar = new BuckBuild()
         .of("//java/server/test/org/openqa/selenium:server-with-tests").go();
