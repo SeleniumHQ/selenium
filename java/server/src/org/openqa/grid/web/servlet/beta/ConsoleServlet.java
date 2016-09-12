@@ -25,17 +25,14 @@ import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
+import org.openqa.selenium.internal.BuildInfo;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
-import java.util.jar.Manifest;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -54,7 +51,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
 
   public ConsoleServlet(Registry registry) {
     super(registry);
-    getVersion();
+    coreVersion = new BuildInfo().getReleaseLabel();
   }
 
   @Override
@@ -244,26 +241,5 @@ public class ConsoleServlet extends RegistryBasedServlet {
 
   private String prettyHtmlPrint(GridHubConfiguration config) {
     return config.toString("<abbr title='%1$s'>%1$s : </abbr>%2$s</br>");
-  }
-
-  private void getVersion() {
-    InputStream stream = null;
-    try {
-      String classPath = this.getClass().getResource(this.getClass().getSimpleName() + ".class").toString();
-      String manifest = classPath.substring(0, classPath.lastIndexOf("!") + 1) + "/META-INF/MANIFEST.MF";
-      stream = new URL(manifest).openStream();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    if (stream == null) {
-      log.severe("Couldn't determine version number");
-      return;
-    }
-    try {
-      Manifest manifest = new Manifest(stream);
-      coreVersion = manifest.getEntries().get("Build-Info").getValue("Selenium-Version").trim();
-    } catch (IOException e) {
-      log.severe("Cannot load version from VERSION.txt" + e.getMessage());
-    }
   }
 }
