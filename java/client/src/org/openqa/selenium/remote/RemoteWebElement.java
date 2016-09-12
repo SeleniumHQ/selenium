@@ -349,13 +349,16 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     return new Dimension(width, height);
   }
 
+  @SuppressWarnings({"unchecked"})
   public Rectangle getRect() {
     Response response = execute(DriverCommand.GET_ELEMENT_RECT, ImmutableMap.of("id", id));
     Map<String, Object> rawRect = (Map<String, Object>) response.getValue();
-    int x = ((Number) rawRect.get("x")).intValue();
-    int y = ((Number) rawRect.get("y")).intValue();
-    int width = ((Number) rawRect.get("width")).intValue();
-    int height = ((Number) rawRect.get("height")).intValue();
+    Map<String, Object> origin = (Map<String, Object>) rawRect.get("origin");
+    Map<String, Object> size = (Map<String, Object>) rawRect.get("size");
+    int x = ((Number) origin.get("x")).intValue();
+    int y = ((Number) origin.get("y")).intValue();
+    int width = ((Number) size.get("width")).intValue();
+    int height = ((Number) size.get("height")).intValue();
     return new Rectangle(x, y, height, width);
   }
 
