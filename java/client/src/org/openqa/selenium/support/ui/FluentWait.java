@@ -243,6 +243,11 @@ public class FluentWait<T> implements Wait<T> {
         } else if (value != null) {
           return value;
         }
+
+        // Clear the last exception; if another retry or timeout exception would
+        // be caused by a false or null value, the last exception is not the
+        // cause of the timeout.
+        lastException = null;
       } catch (Throwable e) {
         lastException = propagateIfNotIgnored(e);
       }
