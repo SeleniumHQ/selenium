@@ -98,6 +98,7 @@ class WebDriver(RemoteWebDriver):
         :param firefox_options: Instance of ``options.Options``.
         :param log_path: Where to log information from the driver.
 
+<<<<<<< 6bb01d6fb21694fbd74c24c6cb4529fd4b5536e5
         """
         self.binary = None
         self.profile = None
@@ -132,6 +133,23 @@ class WebDriver(RemoteWebDriver):
 
         # W3C remote
         # TODO(ato): Perform conformance negotiation
+
+        self.profile = firefox_profile or FirefoxProfile()
+        self.profile.native_events_enabled = (
+            self.NATIVE_EVENTS_ALLOWED and self.profile.native_events_enabled)
+
+        self.binary = firefox_binary or capabilities.get("binary", FirefoxBinary())
+
+        self.options = firefox_options or Options()
+        self.options.binary_location = self.binary if isinstance(self.binary, basestring) else self.binary._start_cmd
+        self.options.profile = self.profile
+        capabilities.update(self.options.to_capabilities())
+
+        self.CONTEXT_CHROME = 'chrome'
+        self.CONTEXT_CONTENT = 'content'
+
+        # marionette
+
         if capabilities.get("marionette"):
             self.service = Service(executable_path, log_path=log_path)
             self.service.start()
@@ -209,13 +227,13 @@ class WebDriver(RemoteWebDriver):
 
         Usage example::
 
-            with self.selenium.using_context(self.selenium.CONTEXT_CHROME):
+            with selenium.using_context(selenium.CONTEXT_CHROME):
                 # chrome scope
                 ... do stuff ...
         """
-        current_context = self.execute('GET_CONTEXT').pop('value')
+        initial_context = self.execute('GET_CONTEXT').pop('value')
         self.set_context(context)
         try:
             yield
         finally:
-            self.set_context(current_context)
+            self.set_context(initial_context)

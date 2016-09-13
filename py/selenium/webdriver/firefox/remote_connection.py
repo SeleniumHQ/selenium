@@ -21,8 +21,8 @@ from selenium.webdriver.remote.remote_connection import RemoteConnection
 class FirefoxRemoteConnection(RemoteConnection):
     def __init__(self, remote_server_addr, keep_alive=True):
         RemoteConnection.__init__(self, remote_server_addr, keep_alive)
-        self._commands["GET_CONTEXT"] = ('GET', '/session/$sessionId/moz/context')
 
+        self._commands["GET_CONTEXT"] = ('GET', '/session/$sessionId/moz/context')
         self._commands["SET_CONTEXT"] = ("POST", "/session/$sessionId/moz/context")
         self._commands["ELEMENT_GET_ANONYMOUS_CHILDREN"] = \
             ("POST", "/session/$sessionId/moz/xbl/$id/anonymous_children")

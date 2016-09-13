@@ -25,17 +25,14 @@ class TestUsingContext:
         capabilities = {'marionette': True}
         self.driver = webdriver.Firefox(capabilities=capabilities)
 
-        self.CHROME = 'chrome'
-        self.CONTENT = 'content'
-
     def test_using_context_sets_correct_context_and_returns(self):
         def get_context():
             return self.driver.execute('GET_CONTEXT').pop('value')
 
-        assert get_context() == self.CONTENT
-        with self.driver.using_context(self.CHROME):
-            assert get_context() == self.CHROME
-        assert get_context() == self.CONTENT
+        assert get_context() == self.driver.CONTEXT_CONTENT
+        with self.driver.using_context(self.driver.CONTEXT_CHROME):
+            assert get_context() == self.driver.CONTEXT_CHROME
+        assert get_context() == self.driver.CONTEXT_CONTENT
 
     def teardown_method(self, method):
         try:
