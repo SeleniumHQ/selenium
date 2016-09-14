@@ -22,10 +22,7 @@ var assert = require('assert'),
     path = require('path'),
     tmp = require('tmp');
 
-var io = require('../io'),
-    before = require('../testing').before,
-    beforeEach = require('../testing').beforeEach,
-    it = require('../testing').it;
+var io = require('../io');
 
 
 describe('io', function() {

@@ -26,8 +26,7 @@ var promise = require('../..').promise,
     Profile = require('../../firefox/profile').Profile,
     decode = require('../../firefox/profile').decode,
     loadUserPrefs = require('../../firefox/profile').loadUserPrefs,
-    io = require('../../io'),
-    it = require('../../testing').it;
+    io = require('../../io');
 
 
 var JETPACK_EXTENSION = path.join(__dirname,
