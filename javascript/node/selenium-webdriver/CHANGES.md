@@ -20,6 +20,9 @@
 * Renamed `chrome.ServiceBuilder#setUrlBasePath` to `#setPath`
 * Changed the signature of the `firefox.Driver` from `(config, flow, executor)`
   to `(config, executor, flow)`.
+* Exposed the `Condition` and `WebElementCondition` classes from the top-level
+  `selenium-webdriver` module (these were previously only available from
+  `lib/webdriver`).
 
 
 ### Changes for W3C WebDriver Spec Compliance
