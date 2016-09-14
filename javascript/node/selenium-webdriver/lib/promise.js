@@ -645,18 +645,6 @@ function asyncRun(fn) {
 
 
 /**
- * Throws an error asynchronously so it is reported to the global error handler.
- *
- * @param {!Error} error The error to throw.
- */
-function asyncThrow(error) {
-  setTimeout(function() {
-    throw error;
-  }, 0);
-}
-
-
-/**
  * @param {number} level What level of verbosity to log with.
  * @param {(string|function(this: T): string)} loggable The message to log.
  * @param {T=} opt_self The object in whose context to run the loggable
@@ -2297,13 +2285,14 @@ class ControlFlow extends events.EventEmitter {
     this.cancelShutdown_();
     this.cancelHold_();
 
-    var listeners = this.listeners(
-        ControlFlow.EventType.UNCAUGHT_EXCEPTION);
-    if (!listeners.size) {
-      asyncThrow(/** @type {!Error} */(error));
-    } else {
-      this.reportUncaughtException_(error);
-    }
+    setTimeout(() => {
+      let listeners = this.listeners(ControlFlow.EventType.UNCAUGHT_EXCEPTION);
+      if (!listeners.size) {
+        throw error;
+      } else {
+        this.reportUncaughtException_(error);
+      }
+    }, 0);
   }
 
   /**

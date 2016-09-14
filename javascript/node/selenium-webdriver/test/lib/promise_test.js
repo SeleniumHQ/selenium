@@ -96,7 +96,10 @@ describe('promise', function() {
       // so tearDown() doesn't throw
       app.removeAllListeners();
       app.on(promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION, handler);
-      return NativePromise.resolve().then(() => handler.assertCalled());
+      return NativePromise.resolve()
+          // Macro yield so the uncaught exception has a chance to trigger.
+          .then(() => new NativePromise(resolve => setTimeout(resolve, 0)))
+          .then(() => handler.assertCalled());
     });
   });
 
@@ -312,7 +315,10 @@ describe('promise', function() {
     app.removeAllListeners();
     app.on(promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION, handler);
 
-    return NativePromise.resolve().then(handler.assertCalled);
+    return NativePromise.resolve()
+        // Macro yield so the uncaught exception has a chance to trigger.
+        .then(() => new NativePromise(resolve => setTimeout(resolve, 0)))
+        .then(handler.assertCalled);
   });
 
   it('cannotResolveADeferredWithItself', function() {

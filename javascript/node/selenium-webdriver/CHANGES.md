@@ -8,6 +8,11 @@
   via tha API, `safari.Options#useLegacyDriver`, to use the safari
   extension driver.
 * Updated the `lib/proxy` module to support configuring a SOCKS proxy.
+* For the `promise.ControlFlow`, fire the "uncaughtException" event in a new
+  turn of the JS event loop. As a result of this change, any errors thrown by
+  an event listener will propagate to the global error handler. Previously,
+  this event was fired with in the context of a (native) promise callback,
+  causing errors to be silently suppressed in the promise chain.
 
 ### API Changes
 
