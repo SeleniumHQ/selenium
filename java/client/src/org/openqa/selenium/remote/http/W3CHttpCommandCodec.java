@@ -130,7 +130,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
           case "tag name":
             toReturn.put("using", "css selector");
-            toReturn.put("value", "#" + cssEscape(value));
+            toReturn.put("value", cssEscape(value));
             break;
 
           case "xpath":
