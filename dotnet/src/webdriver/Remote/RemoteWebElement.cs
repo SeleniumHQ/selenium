@@ -191,7 +191,7 @@ namespace OpenQA.Selenium.Remote
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 if (this.driver.IsSpecificationCompliant)
                 {
-                    string atom = this.GetAtom("isDisplayed.js");
+                    string atom = GetAtom("isDisplayed.js");
                     parameters.Add("script", atom);
                     parameters.Add("args", new object[] { this.ToElementReference() });
                     commandResponse = this.Execute(DriverCommand.ExecuteScript, parameters);
@@ -417,7 +417,7 @@ namespace OpenQA.Selenium.Remote
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             if (this.driver.IsSpecificationCompliant)
             {
-                string atom = this.GetAtom("getAttribute.js");
+                string atom = GetAtom("getAttribute.js");
                 parameters.Add("script", atom);
                 parameters.Add("args", new object[] { this.ToElementReference(), attributeName });
                 commandResponse = this.Execute(DriverCommand.ExecuteScript, parameters);
@@ -940,6 +940,21 @@ namespace OpenQA.Selenium.Remote
             return this.driver.InternalExecute(commandToExecute, parameters);
         }
 
+        private static string GetAtom(string atomResourceName)
+        {
+            string atom = string.Empty;
+            using (Stream atomStream = ResourceUtilities.GetResourceStream(atomResourceName, atomResourceName))
+            {
+                using (StreamReader atomReader = new StreamReader(atomStream))
+                {
+                    atom = atomReader.ReadToEnd();
+                }
+            }
+
+            string wrappedAtom = string.Format(CultureInfo.InvariantCulture, "return ({0}).apply(null, arguments);", atom);
+            return wrappedAtom;
+        }
+
         private string UploadFile(string localFile)
         {
             string base64zip = string.Empty;
@@ -971,21 +986,6 @@ namespace OpenQA.Selenium.Remote
             Dictionary<string, object> elementDictionary = new Dictionary<string, object>();
             elementDictionary["element-6066-11e4-a52e-4f735466cecf"] = this.elementId;
             return elementDictionary;
-        }
-
-        private string GetAtom(string atomResourceName)
-        {
-            string atom = string.Empty;
-            using (Stream atomStream = ResourceUtilities.GetResourceStream(atomResourceName, atomResourceName))
-            {
-                using (StreamReader atomReader = new StreamReader(atomStream))
-                {
-                    atom = atomReader.ReadToEnd();
-                }
-            }
-
-            string wrappedAtom = string.Format(CultureInfo.InvariantCulture, "return ({0}).apply(null, arguments);", atom);
-            return wrappedAtom;
         }
     }
 }

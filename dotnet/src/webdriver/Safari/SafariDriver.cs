@@ -160,12 +160,12 @@ namespace OpenQA.Selenium.Safari
 
         private static ICapabilities ConvertOptionsToCapabilities(SafariOptions options)
         {
-            if (options == null) 
+            if (options == null)
             {
-                throw new ArgumentNullException ("options", "options must not be null");
+                throw new ArgumentNullException("options", "options must not be null");
             }
 
-            return options.ToCapabilities ();
+            return options.ToCapabilities();
         }
     }
 }
