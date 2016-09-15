@@ -138,7 +138,7 @@ public class BaseRemoteProxy implements RemoteProxy {
       this.id = remoteHost.toExternalForm();
     }
 
-    List<DesiredCapabilities> capabilities = request.getCapabilities();
+    List<DesiredCapabilities> capabilities = request.getConfiguration().capabilities;
 
     List<TestSlot> slots = new ArrayList<>();
     for (DesiredCapabilities capability : capabilities) {
@@ -391,7 +391,7 @@ public class BaseRemoteProxy implements RemoteProxy {
   public static <T extends RemoteProxy> T getNewInstance(
       RegistrationRequest request, Registry registry) {
     try {
-      String proxyClass = request.getRemoteProxyClass();
+      String proxyClass = request.getConfiguration().proxy;
       if (proxyClass == null) {
         log.fine("No proxy class. Using default");
         proxyClass = BaseRemoteProxy.class.getCanonicalName();

@@ -29,6 +29,7 @@ import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -169,17 +170,17 @@ public class LoadBalancedTests {
   }
 
   private static RegistrationRequest getRequestOfNSlots(int n, String name) {
-    RegistrationRequest request = new RegistrationRequest();
+
+    Map<String, Object> ff = firefox();
+    ff.put(MAX_INSTANCES, n);
 
     GridNodeConfiguration config = new GridNodeConfiguration();
     config.maxSession = n;
     config.host = name;
     config.port = 4444;
-    request.setConfiguration(config);
+    config.capabilities.add(new DesiredCapabilities(ff));
 
-    Map<String, Object> ff = firefox();
-    ff.put(MAX_INSTANCES, n);
-    request.addDesiredCapability(ff);
+    RegistrationRequest request = new RegistrationRequest(config);
 
     return request;
   }

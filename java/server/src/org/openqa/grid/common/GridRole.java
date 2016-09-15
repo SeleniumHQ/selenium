@@ -20,24 +20,46 @@ package org.openqa.grid.common;
 public enum GridRole {
   NOT_GRID, HUB, NODE;
 
+  private static final String WD_S = "wd";
+  private static final String WEBDRIVER_S = "webdriver";
+  private static final String NODE_S = "node";
+  private static final String HUB_S = "hub";
+  private static final String STANDALONE_S = "standalone";
+
   public static GridRole get(String role) {
     if (role == null || role.equals("")) {
       return NOT_GRID;
     }
     switch (role) {
-      case "wd":
-      case "webdriver":
-      case "node":
+      case WD_S:
+      case WEBDRIVER_S:
+      case NODE_S:
         return NODE;
 
-      case "hub":
+      case HUB_S:
         return HUB;
 
-      case "standalone":
+      case STANDALONE_S:
         return NOT_GRID;
 
       default:
         return null;
+    }
+  }
+
+  public String toString() {
+    switch (this) {
+      case NODE:
+        return NODE_S;
+
+      case HUB:
+        return HUB_S;
+
+      case NOT_GRID:
+        return STANDALONE_S;
+
+      default:
+        throw new IllegalStateException("Unrecognized GridRole");
     }
   }
 }

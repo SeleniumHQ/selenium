@@ -32,9 +32,9 @@ import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.mock.GridHelper;
-import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -65,11 +65,8 @@ public class SessionListenerTest {
   @BeforeClass
   public static void prepare() {
     app1.put(CapabilityType.APPLICATION_NAME, "app1");
-    GridNodeConfiguration config = new GridNodeConfiguration();
     req = new RegistrationRequest();
-    req.addDesiredCapability(app1);
-    req.setConfiguration(config);
-
+    req.getConfiguration().capabilities.add(new DesiredCapabilities(app1));
   }
 
   @Test
@@ -251,17 +248,12 @@ public class SessionListenerTest {
     RegistrationRequest req = new RegistrationRequest();
     Map<String, Object> cap = new HashMap<>();
     cap.put(CapabilityType.APPLICATION_NAME, "app1");
-
-    GridNodeConfiguration config = new GridNodeConfiguration();
-    config.timeout = 1;
-    config.cleanUpCycle = 1;
-    config.maxSession = 2;
-
-    req.addDesiredCapability(cap);
-    req.setConfiguration(config);
+    req.getConfiguration().timeout = 1;
+    req.getConfiguration().cleanUpCycle = 1;
+    req.getConfiguration().maxSession = 2;
+    req.getConfiguration().capabilities.add(new DesiredCapabilities(cap));
 
     Registry registry = Registry.newInstance();
-    registry.getConfiguration().cleanUpCycle = config.cleanUpCycle;
     try {
       final SlowAfterSession proxy = new SlowAfterSession(req, registry);
       proxy.setupTimeoutListener();

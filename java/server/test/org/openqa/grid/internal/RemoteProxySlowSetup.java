@@ -40,14 +40,12 @@ public class RemoteProxySlowSetup {
     registry = Registry.newInstance();
     // create 2 proxy that are equal and have a slow onRegistration
     // p1.equals(p2) = true
-    RegistrationRequest req1 = new RegistrationRequest();
     GridNodeConfiguration config1 = new GridNodeConfiguration();
-    req1.setConfiguration(config1);
+    RegistrationRequest req1 = new RegistrationRequest(config1);
     p1 = new SlowRemoteSetup(req1,registry);
 
-    RegistrationRequest req2 = new RegistrationRequest();
     GridNodeConfiguration config2 = new GridNodeConfiguration();
-    req2.setConfiguration(config2);
+    RegistrationRequest req2 = new RegistrationRequest(config2);
     p2 = new SlowRemoteSetup(req2,registry);
   }
 

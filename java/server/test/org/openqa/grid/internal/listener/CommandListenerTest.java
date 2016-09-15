@@ -45,6 +45,7 @@ import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedRequest;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedResponse;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 
 import java.io.IOException;
@@ -140,9 +141,8 @@ public class CommandListenerTest {
   public static void prepare() {
     app1.put(CapabilityType.APPLICATION_NAME, "app1");
     GridNodeConfiguration config = new GridNodeConfiguration();
-    req = new RegistrationRequest();
-    req.addDesiredCapability(app1);
-    req.setConfiguration(config);
+    config.capabilities.add(new DesiredCapabilities(app1));
+    req = new RegistrationRequest(config);
   }
 
   @Test

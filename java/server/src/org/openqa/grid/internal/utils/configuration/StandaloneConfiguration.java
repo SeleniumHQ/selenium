@@ -19,6 +19,7 @@ package org.openqa.grid.internal.utils.configuration;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import com.google.gson.annotations.Expose;
 
 import com.beust.jcommander.Parameter;
 
@@ -29,32 +30,35 @@ import java.util.Map;
 
 public class StandaloneConfiguration {
 
-  @Parameter(
-    names = "-browserTimeout",
-    description = "<Integer> in seconds : number of seconds a browser session is allowed to hang (0 means indefinite) while a WebDriver command is running (example: driver.get(url)). If the timeout is reached while a WebDriver command is still processing, the session will quit. Minimum value is 60. Default is 0"
-  )
-  public Integer browserTimeout;
+  /*
+   * config parameters which do not serialize to json
+   */
 
+  @Expose( serialize = false )
+  @Parameter(
+    names = {"-avoidProxy"},
+    description = "DO NOT USE: Hack to allow selenium 3.0 server run in SauceLabs",
+    hidden = true
+  )
+  private boolean avoidProxy;
+
+  @Expose( serialize = false )
   @Parameter(
     names = "-browserSideLog",
     description = "DO NOT USE: Provided for compatibility with 2.0",
     hidden = true
   )
-  public boolean browserSideLog;
+  private boolean browserSideLog;
 
+  @Expose( serialize = false )
   @Parameter(
     names = "-captureLogsOnQuit",
     description = "DO NOT USE: Provided for compatibility with 2.0",
     hidden = true
   )
-  public boolean captureLogsOnQuit;
+  private boolean captureLogsOnQuit;
 
-  @Parameter(
-    names = "-debug",
-    description = "<Boolean> : enables LogLevel.FINE. Default is false (if omitted)"
-  )
-  public boolean debug;
-
+  @Expose( serialize = false )
   @Parameter(
     names = {"--help", "-help", "-h"},
     help = true,
@@ -63,48 +67,65 @@ public class StandaloneConfiguration {
   )
   public boolean help;
 
+  /*
+   * config parameters which serialize and deserialize to/from json
+   */
+
+  @Expose
+  @Parameter(
+    names = "-browserTimeout",
+    description = "<Integer> in seconds : number of seconds a browser session is allowed to hang (0 means indefinite) while a WebDriver command is running (example: driver.get(url)). If the timeout is reached while a WebDriver command is still processing, the session will quit. Minimum value is 60. Default is 0"
+  )
+  public Integer browserTimeout;
+
+  @Expose
+  @Parameter(
+    names = "-debug",
+    description = "<Boolean> : enables LogLevel.FINE. Default is false (if omitted)"
+  )
+  public boolean debug;
+
+  @Expose
   @Parameter(
     names = {"-jettyThreads", "-jettyMaxThreads"},
     description = "<Integer> : max number of threads for Jetty. Default is 200"
   )
   public Integer jettyMaxThreads;
 
+  @Expose
   @Parameter(
     names = "-log",
     description = "<String> filename : the filename to use for logging. If omitted, will log to STDOUT"
   )
   public String log;
 
+  @Expose
   @Parameter(
     names = "-logLongForm",
     description = "<Boolean> : if specified, all log statements (including to log file from \"log\" parameter) will include the Thread ID"
   )
   public boolean logLongForm;
 
+  @Expose
   @Parameter(
     names = {"-port"},
     description = "<Integer> : the port number the server will use. Defaults to [4444]. When \"role\" is a set to [node], default is [5555]"
   )
   public Integer port;
 
+  @Expose
   @Parameter(
     names = "-role",
     description = "<String> options are [hub], [node], or [standalone] : Default is [standalone]"
   )
   public String role = "standalone";
 
+  @Expose
   @Parameter(
     names = {"-timeout", "-sessionTimeout"},
     description = "<Integer> in seconds : Specifies the timeout before the server automatically kills a session that hasn't had any activity in the last X seconds. The test slot will then be released for another test to use. This is typically used to take care of client crashes. For grid hub/node roles, cleanUpCycle must also be set. Default is 1800 (30 minutes)"
   )
   public Integer timeout = 1800;
-
-  @Parameter(
-    names = {"-avoidProxy"},
-    description = "DO NOT USE: Hack to allow selenium 3.0 server run in SauceLabs",
-    hidden = true
-  )
-  private boolean avoidProxy;
 
   /**
    * copy another configuration's values into this one if they are set.
@@ -201,9 +222,10 @@ public class StandaloneConfiguration {
   public JsonElement toJson() {
     GsonBuilder builder = new GsonBuilder();
     addJsonTypeAdapter(builder);
-    return builder.create().toJsonTree(this);
+    return builder.excludeFieldsWithoutExposeAnnotation().create().toJsonTree(this);
   }
 
   protected void addJsonTypeAdapter(GsonBuilder builder) {
+    // no default implementation
   }
 }

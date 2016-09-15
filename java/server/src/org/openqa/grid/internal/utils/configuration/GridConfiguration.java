@@ -17,6 +17,8 @@
 
 package org.openqa.grid.internal.utils.configuration;
 
+import com.google.gson.annotations.Expose;
+
 import com.beust.jcommander.Parameter;
 
 import org.openqa.grid.internal.utils.configuration.converters.CustomConverter;
@@ -29,12 +31,18 @@ import javax.servlet.Servlet;
 
 public class GridConfiguration extends StandaloneConfiguration {
 
+  /*
+   * config parameters which serialize and deserialize to/from json
+   */
+
+  @Expose
   @Parameter(
     names = "-cleanUpCycle",
     description = "<Integer> in ms : specifies how often the hub will poll running proxies for timed-out (i.e. hung) threads. Must also specify \"timeout\" option"
   )
   public Integer cleanUpCycle;
 
+  @Expose
   @Parameter(
     names = "-custom",
     description = "<String> : NOT RECOMMENDED--may be deprecated to encourage proper servlet customization. Comma separated key=value pairs for custom grid extensions. example: -custom myParamA=Value1,myParamB=Value2",
@@ -42,24 +50,28 @@ public class GridConfiguration extends StandaloneConfiguration {
   )
   public Map<String, String> custom = new HashMap<>();
 
+  @Expose
   @Parameter(
     names = "-host",
     description =  "<String> IP or hostname : usually determined automatically. Most commonly useful in exotic network configurations (e.g. network with VPN)"
   )
   public String host;
 
+  @Expose
   @Parameter(
     names = "-maxSession",
     description = "<Integer> max number of tests that can run at the same time on the node, irrespective of the browser used"
   )
   public Integer maxSession = 1;
 
+  @Expose
   @Parameter(
     names = {"-servlet", "-servlets"},
     description = "<String> : list of extra servlets the grid (hub or node) will make available. Specify multiple on the command line: -servlet tld.company.ServletA -servlet tld.company.ServletB. The servlet must exist in the path: /grid/admin/ServletA /grid/admin/ServletB"
   )
   public List<String> servlets;
 
+  @Expose
   @Parameter(
     names = {"-withoutServlet", "-withoutServlets"},
     description = "<String> : list of default (hub or node) servlets to disable. Advanced use cases only. Not all default servlets can be disabled. Specify multiple on the command line: -withoutServlet tld.company.ServletA -withoutServlet tld.company.ServletB"

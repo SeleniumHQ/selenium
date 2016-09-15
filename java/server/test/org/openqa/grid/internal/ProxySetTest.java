@@ -29,7 +29,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ProxySetTest {
 
@@ -100,11 +99,11 @@ public class ProxySetTest {
     config.port = totalUsed;
     config.role = "webdriver";
     RegistrationRequest req = RegistrationRequest.build(config);
-    req.getCapabilities().clear();
+    req.getConfiguration().capabilities.clear();
 
     DesiredCapabilities capability = new DesiredCapabilities();
     capability.setBrowserName(BrowserType.CHROME);
-    req.addDesiredCapability(capability);
+    req.getConfiguration().capabilities.add(capability);
 
     StubbedRemoteProxy tempProxy = new StubbedRemoteProxy(req, registry);
     tempProxy.setTotalUsed(totalUsed);
