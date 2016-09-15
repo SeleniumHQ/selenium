@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 namespace OpenQA.Selenium
 {
     [TestFixture]
+    [IgnoreBrowser(Browser.Safari)]
     public class ExecutingAsyncJavascriptTest : DriverTestFixture
     {
         private IJavaScriptExecutor executor;
@@ -339,6 +340,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IE, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.IPhone, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.Safari, "Does not handle async alerts")]
         public void IncludesAlertTextInUnhandledAlertException()
         {
             driver.Manage().Timeouts().SetScriptTimeout(TimeSpan.FromSeconds(5));

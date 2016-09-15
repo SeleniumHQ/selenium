@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -142,7 +142,6 @@
     <Compile Include="Remote\RemoteSessionStorage.cs" />
     <Compile Include="Remote\RemoteTouchScreen.cs" />
     <Compile Include="Remote\RemoteWebStorage.cs" />
-    <Compile Include="Safari\SafariOptions.cs" />
     <Compile Include="WebDriverTimeoutException.cs" />
     <Compile Include="IE\InternetExplorerDriverLogLevel.cs" />
     <Compile Include="IE\InternetExplorerOptions.cs" />
@@ -261,42 +260,9 @@
     <Compile Include="Remote\Response.cs" />
     <Compile Include="Remote\SessionId.cs" />
     <Compile Include="Remote\StackTraceElement.cs" />
-    <Compile Include="Safari\Internal\AcceptEventArgs.cs" />
-    <Compile Include="Safari\Internal\BinaryMessageHandledEventArgs.cs" />
-    <Compile Include="Safari\Internal\ConnectionEventArgs.cs" />
-    <Compile Include="Safari\Internal\ErrorEventArgs.cs" />
-    <Compile Include="Safari\Internal\FrameType.cs" />
-    <Compile Include="Safari\Internal\HandlerFactory.cs" />
-    <Compile Include="Safari\Internal\Handlers\Hybi00Handler.cs" />
-    <Compile Include="Safari\Internal\Handlers\RequestHandler.cs" />
-    <Compile Include="Safari\Internal\Handlers\Rfc6455Handler.cs" />
-    <Compile Include="Safari\Internal\HandshakeException.cs" />
-    <Compile Include="Safari\Internal\IHandler.cs" />
-    <Compile Include="Safari\Internal\IntExtensions.cs" />
-    <Compile Include="Safari\Internal\IRequestParser.cs" />
-    <Compile Include="Safari\Internal\ISocket.cs" />
-    <Compile Include="Safari\Internal\IWebSocketConnection.cs" />
-    <Compile Include="Safari\Internal\IWebSocketConnectionInfo.cs" />
-    <Compile Include="Safari\Internal\IWebSocketServer.cs" />
-    <Compile Include="Safari\Internal\ReadState.cs" />
-    <Compile Include="Safari\Internal\ReceivedEventArgs.cs" />
-    <Compile Include="Safari\Internal\RequestParser.cs" />
-    <Compile Include="Safari\Internal\SocketWrapper.cs" />
-    <Compile Include="Safari\Internal\StandardHttpRequestReceivedEventArgs.cs" />
-    <Compile Include="Safari\Internal\TextMessageHandledEventArgs.cs" />
-    <Compile Include="Safari\Internal\WebSocketConnection.cs" />
-    <Compile Include="Safari\Internal\WebSocketConnectionInfo.cs" />
-    <Compile Include="Safari\Internal\WebSocketException.cs" />
-    <Compile Include="Safari\Internal\WebSocketHttpRequest.cs" />
-    <Compile Include="Safari\Internal\WebSocketServer.cs" />
-    <Compile Include="Safari\Internal\WebSocketStatusCodes.cs" />
-    <Compile Include="Safari\SafariCommand.cs" />
-    <Compile Include="Safari\SafariCommandMessage.cs" />
     <Compile Include="Safari\SafariDriver.cs" />
-    <Compile Include="Safari\SafariDriverCommandExecutor.cs" />
-    <Compile Include="Safari\SafariDriverConnection.cs" />
-    <Compile Include="Safari\SafariDriverServer.cs" />
-    <Compile Include="Safari\SafariResponseMessage.cs" />
+    <Compile Include="Safari\SafariDriverService.cs" />
+    <Compile Include="Safari\SafariOptions.cs" />
     <Compile Include="ScreenOrientation.cs" />
     <Compile Include="Screenshot.cs" />
     <Compile Include="StaleElementReferenceException.cs" />

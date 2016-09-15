@@ -9,6 +9,7 @@ using OpenQA.Selenium.Internal;
 namespace OpenQA.Selenium
 {
     [TestFixture]
+    [IgnoreBrowser(Browser.Safari)]
     public class CookieImplementationTest : DriverTestFixture
     {
         private Random random = new Random();
