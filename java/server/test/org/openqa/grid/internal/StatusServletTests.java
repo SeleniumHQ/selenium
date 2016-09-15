@@ -52,6 +52,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -273,6 +274,34 @@ public class StatusServletTests {
 
   }
 
+  /**
+   * if a certain set of parameters are requested to the hub, only those params are returned.
+   * @throws IOException
+   */
+  @Test
+  public void testHubGetSpecifiedConfigWithQueryString() throws IOException {
+
+    HttpClient client = httpClientFactory.getHttpClient();
+
+    ArrayList<String> keys = new ArrayList<>();
+    keys.add(URLEncoder.encode("timeout", "UTF-8"));
+    keys.add(URLEncoder.encode("I'm not a valid key", "UTF-8"));
+    keys.add(URLEncoder.encode("servlets", "UTF-8"));
+
+    String query = "?configuration=" + String.join(",",keys);
+    String url = hubApi.toExternalForm() + query ;
+    BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("GET", url);
+
+    HttpResponse response = client.execute(host, r);
+    assertEquals(200, response.getStatusLine().getStatusCode());
+    JsonObject o = extractObject(response);
+
+    assertTrue(o.get("success").getAsBoolean());
+    assertEquals(12345, o.get("timeout").getAsInt());
+    assertNull(o.get("I'm not a valid key"));
+    assertTrue(o.getAsJsonArray("servlets").size() == 0);
+    assertFalse(o.has("capabilityMatcher"));
+  }
 
   /**
    * when no param is specified, a call to the hub API returns all the config params the hub
