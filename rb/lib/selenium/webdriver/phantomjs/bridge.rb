@@ -26,28 +26,16 @@ module Selenium
 
       class Bridge < Remote::Bridge
         def initialize(opts = {})
-          http_client = opts.delete(:http_client)
-          caps        = opts.delete(:desired_capabilities) { Remote::Capabilities.phantomjs }
+          opts[:desired_capabilities] ||= Remote::Capabilities.phantomjs
 
-          if opts.key?(:url)
-            url = opts.delete(:url)
-          else
-            args = opts.delete(:args) || caps['phantomjs.cli.args']
-
+          unless opts.key?(:url)
+            args = opts.delete(:args) || opts[:desired_capabilities]['phantomjs.cli.args']
             @service = Service.new(PhantomJS.path, Service::DEFAULT_PORT, *args)
             @service.start
-
-            url = @service.uri
+            opts[:url] = @service.uri
           end
 
-          remote_opts = {
-            url: url,
-            desired_capabilities: caps
-          }
-
-          remote_opts[:http_client] = http_client if http_client
-
-          super(remote_opts)
+          super(opts)
         end
 
         def browser

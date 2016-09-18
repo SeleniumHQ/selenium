@@ -27,10 +27,9 @@ module Selenium
 
           @service = Service.new(Safari.driver_path, Service::DEFAULT_PORT, *extract_service_args(opts))
           @service.start
-
           opts[:url] = @service.uri
 
-          super
+          super(opts)
         end
 
         def quit

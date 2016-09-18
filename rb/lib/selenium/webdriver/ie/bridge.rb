@@ -26,30 +26,17 @@ module Selenium
 
       class Bridge < Remote::Bridge
         def initialize(opts = {})
-          caps           = opts.delete(:desired_capabilities) { Remote::Capabilities.internet_explorer }
-          port           = opts.delete(:port) { Service::DEFAULT_PORT }
-          http_client    = opts.delete(:http_client)
-          ignore_mode    = opts.delete(:introduce_flakiness_by_ignoring_security_domains)
-          native_events  = opts.delete(:native_events) != false
+          port = opts.delete(:port) { Service::DEFAULT_PORT }
 
           @service = Service.new(IE.driver_path, port, *extract_service_args(opts))
-
-          unless opts.empty?
-            raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
-          end
-
           @service.start
+          opts[:url] = @service.uri
 
-          caps['ignoreProtectedModeSettings'] = true if ignore_mode
-          caps['nativeEvents'] = native_events
+          caps = opts[:desired_capabilities] ||= Remote::Capabilities.internet_explorer
+          caps[:ignore_protected_mode_settings] = true if opts.delete(:introduce_flakiness_by_ignoring_security_domains)
+          caps[:native_events] = opts.delete(:native_events) != false
 
-          remote_opts = {
-            url: @service.uri,
-            desired_capabilities: caps
-          }
-          remote_opts[:http_client] = http_client if http_client
-
-          super(remote_opts)
+          super(opts)
         end
 
         def browser

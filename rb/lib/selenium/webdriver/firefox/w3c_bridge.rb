@@ -31,7 +31,7 @@ module Selenium
 
           opts[:url] = @service.uri
 
-          super
+          super(opts)
         end
 
         def browser

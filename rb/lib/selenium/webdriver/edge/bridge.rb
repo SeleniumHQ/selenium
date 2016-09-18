@@ -26,27 +26,16 @@ module Selenium
 
       class Bridge < Remote::W3CBridge
         def initialize(opts = {})
-          http_client = opts.delete(:http_client)
-
-          if opts.key?(:url)
-            url = opts.delete(:url)
-          else
+          unless opts.key?(:url)
             @service = Service.new(Edge.driver_path, Service::DEFAULT_PORT)
             @service.host = 'localhost' if @service.host == '127.0.0.1'
             @service.start
-
-            url = @service.uri
+            opts[:url] = @service.uri
           end
 
-          caps ||= Remote::W3CCapabilities.edge
+          opts[:desired_capabilities] ||= Remote::W3CCapabilities.edge
 
-          remote_opts = {
-            url: url,
-            desired_capabilities: caps
-          }
-
-          remote_opts[:http_client] = http_client if http_client
-          super(remote_opts)
+          super(opts)
         end
 
         def browser
