@@ -57,7 +57,7 @@ module Selenium
         end
       end
 
-      not_compliant_on browser: [:phantomjs, :firefox, :safari] do
+      not_compliant_on browser: [:phantomjs, :firefox] do
         it 'sets the position of the current window' do
           pos = window.position
 

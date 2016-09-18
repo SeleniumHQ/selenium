@@ -62,12 +62,14 @@ module Selenium
         driver.find_element(id: 'working').send_keys('foo', 'bar')
       end
 
-      it 'should send key presses' do
-        driver.navigate.to url_for('javascriptPage.html')
-        key_reporter = driver.find_element(id: 'keyReporter')
+      not_compliant_on browser: :safari do
+        it 'should send key presses' do
+          driver.navigate.to url_for('javascriptPage.html')
+          key_reporter = driver.find_element(id: 'keyReporter')
 
-        key_reporter.send_keys('Tet', :arrow_left, 's')
-        expect(key_reporter.attribute('value')).to eq('Test')
+          key_reporter.send_keys('Tet', :arrow_left, 's')
+          expect(key_reporter.attribute('value')).to eq('Test')
+        end
       end
 
       # PhantomJS on windows issue: https://github.com/ariya/phantomjs/issues/10993
@@ -130,9 +132,11 @@ module Selenium
         expect(driver.find_element(class: 'header').text).to eq('XHTML Might Be The Future')
       end
 
-      it 'should get displayed' do
-        driver.navigate.to url_for('xhtmlTest.html')
-        expect(driver.find_element(class: 'header')).to be_displayed
+      not_compliant_on browser: :safari do
+        it 'should get displayed' do
+          driver.navigate.to url_for('xhtmlTest.html')
+          expect(driver.find_element(class: 'header')).to be_displayed
+        end
       end
 
       it 'should get location' do

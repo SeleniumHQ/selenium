@@ -20,31 +20,29 @@
 require_relative 'spec_helper'
 
 describe 'Navigation' do
-  not_compliant_on browser: :safari do
-    it 'should navigate back and forward' do
-      form_title   = 'We Leave From Here'
-      result_title = 'We Arrive Here'
-      form_url     = url_for 'formPage.html'
-      result_url   = url_for 'resultPage.html'
+  it 'should navigate back and forward' do
+    form_title   = 'We Leave From Here'
+    result_title = 'We Arrive Here'
+    form_url     = url_for 'formPage.html'
+    result_url   = url_for 'resultPage.html'
 
-      driver.navigate.to form_url
-      expect(driver.title).to eq(form_title)
+    driver.navigate.to form_url
+    expect(driver.title).to eq(form_title)
 
-      driver.find_element(id: 'imageButton').click
-      wait.until { driver.title != form_title }
+    driver.find_element(id: 'imageButton').click
+    wait.until { driver.title != form_title }
 
-      expect(driver.current_url).to include(result_url)
-      expect(driver.title).to eq(result_title)
+    expect(driver.current_url).to include(result_url)
+    expect(driver.title).to eq(result_title)
 
-      driver.navigate.back
+    driver.navigate.back
 
-      expect(driver.current_url).to include(form_url)
-      expect(driver.title).to eq(form_title)
+    expect(driver.current_url).to include(form_url)
+    expect(driver.title).to eq(form_title)
 
-      driver.navigate.forward
-      expect(driver.current_url).to include(result_url)
-      expect(driver.title).to eq(result_title)
-    end
+    driver.navigate.forward
+    expect(driver.current_url).to include(result_url)
+    expect(driver.title).to eq(result_title)
   end
 
   it 'should refresh the page' do

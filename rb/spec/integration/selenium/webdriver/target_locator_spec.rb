@@ -30,18 +30,23 @@ module Selenium
 
       # Server - https://github.com/SeleniumHQ/selenium/issues/2555
       # Server - https://github.com/SeleniumHQ/selenium/issues/1795
-      not_compliant_on driver: :remote, browser: [:edge, :firefox] do
-        it 'should find the active element' do
-          driver.navigate.to url_for('xhtmlTest.html')
-          expect(driver.switch_to.active_element).to be_an_instance_of(WebDriver::Element)
+      not_compliant_on browser: :safari do
+        not_compliant_on driver: :remote, browser: [:edge, :firefox] do
+          it 'should find the active element' do
+            driver.navigate.to url_for('xhtmlTest.html')
+            expect(driver.switch_to.active_element).to be_an_instance_of(WebDriver::Element)
+          end
         end
       end
 
-      it 'should switch to a frame directly' do
-        driver.navigate.to url_for('iframes.html')
-        driver.switch_to.frame('iframe1')
+      # Doesn't switch to frame by id directly
+      not_compliant_on browser: :safari do
+        it 'should switch to a frame directly' do
+          driver.navigate.to url_for('iframes.html')
+          driver.switch_to.frame('iframe1')
 
-        expect(driver.find_element(name: 'login')).to be_kind_of(WebDriver::Element)
+          expect(driver.find_element(name: 'login')).to be_kind_of(WebDriver::Element)
+        end
       end
 
       it 'should switch to a frame by Element' do
@@ -53,7 +58,7 @@ module Selenium
         expect(driver.find_element(name: 'login')).to be_kind_of(WebDriver::Element)
       end
 
-      not_compliant_on browser: [:safari, :phantomjs] do
+      not_compliant_on browser: :phantomjs do
         it 'should switch to parent frame' do
           driver.navigate.to url_for('iframes.html')
 
@@ -82,7 +87,7 @@ module Selenium
         wait.until { driver.title == 'XHTML Test Page' }
       end
 
-      it 'should handle exceptions inside the block' do
+      xit 'should handle exceptions inside the block' do
         driver.navigate.to url_for('xhtmlTest.html')
 
         driver.find_element(link: 'Open new window').click
@@ -107,24 +112,26 @@ module Selenium
         expect(driver.title).to eq('We Arrive Here')
       end
 
-      it 'should use the original window if the block closes the popup' do
-        driver.navigate.to url_for('xhtmlTest.html')
+      not_compliant_on browser: :safari do
+        it 'should use the original window if the block closes the popup' do
+          driver.navigate.to url_for('xhtmlTest.html')
 
-        driver.find_element(link: 'Open new window').click
-        wait.until { driver.window_handles.size == 2 }
-        expect(driver.title).to eq('XHTML Test Page')
+          driver.find_element(link: 'Open new window').click
+          wait.until { driver.window_handles.size == 2 }
+          expect(driver.title).to eq('XHTML Test Page')
 
-        driver.switch_to.window(new_window) do
-          wait.until { driver.title == 'We Arrive Here' }
-          driver.close
+          driver.switch_to.window(new_window) do
+            wait.until { driver.title == 'We Arrive Here' }
+            driver.close
+          end
+
+          expect(driver.current_url).to include('xhtmlTest.html')
+          expect(driver.title).to eq('XHTML Test Page')
         end
-
-        expect(driver.current_url).to include('xhtmlTest.html')
-        expect(driver.title).to eq('XHTML Test Page')
       end
 
       # Firefox - https://bugzilla.mozilla.org/show_bug.cgi?id=1280517
-      not_compliant_on browser: [:firefox, :ie] do
+      not_compliant_on browser: [:firefox, :ie, :safari] do
         context 'with more than two windows' do
           it 'should close current window when more than two windows exist' do
             driver.navigate.to url_for('xhtmlTest.html')
@@ -188,36 +195,36 @@ module Selenium
         end
       end
 
-      it 'should switch to a window and execute a block when current window is closed' do
-        driver.navigate.to url_for('xhtmlTest.html')
-        driver.find_element(link: 'Open new window').click
-        wait.until { driver.window_handles.size == 2 }
+      not_compliant_on browser: :safari do
+        it 'should switch to a window and execute a block when current window is closed' do
+          driver.navigate.to url_for('xhtmlTest.html')
+          driver.find_element(link: 'Open new window').click
+          wait.until { driver.window_handles.size == 2 }
 
-        driver.switch_to.window(new_window)
-        wait.until { driver.title == 'We Arrive Here' }
+          driver.switch_to.window(new_window)
+          wait.until { driver.title == 'We Arrive Here' }
 
-        driver.close
+          driver.close
 
-        driver.switch_to.window(driver.window_handles.first) do
-          wait.until { driver.title == 'XHTML Test Page' }
+          driver.switch_to.window(driver.window_handles.first) do
+            wait.until { driver.title == 'XHTML Test Page' }
+          end
         end
 
         expect(driver.title).to eq('XHTML Test Page')
       end
 
-      not_compliant_on browser: :safari do
-        it 'should switch to default content' do
-          driver.navigate.to url_for('iframes.html')
+      it 'should switch to default content' do
+        driver.navigate.to url_for('iframes.html')
 
-          driver.switch_to.frame 0
-          driver.switch_to.default_content
+        driver.switch_to.frame 0
+        driver.switch_to.default_content
 
-          driver.find_element(id: 'iframe_page_heading')
-        end
+        driver.find_element(id: 'iframe_page_heading')
       end
 
       # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1850030
-      not_compliant_on browser: [:safari, :phantomjs] do
+      not_compliant_on browser: :phantomjs do
         describe 'alerts' do
           it 'allows the user to accept an alert' do
             driver.navigate.to url_for('alerts.html')
@@ -268,19 +275,23 @@ module Selenium
             alert.accept
 
             expect(text).to eq('cheese')
+            wait_for_no_alert
           end
 
-          it 'raises when calling #text on a closed alert' do
-            driver.navigate.to url_for('alerts.html')
-            wait_for_element(id: 'alert')
+          # Safari - Raises wrong error
+          not_compliant_on browser: :safari do
+            it 'raises when calling #text on a closed alert' do
+              driver.navigate.to url_for('alerts.html')
+              wait_for_element(id: 'alert')
 
-            driver.find_element(id: 'alert').click
+              driver.find_element(id: 'alert').click
 
-            alert = wait_for_alert
-            alert.accept
+              alert = wait_for_alert
+              alert.accept
 
-            wait_for_no_alert
-            expect { alert.text }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError)
+              wait_for_no_alert
+              expect { alert.text }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError)
+            end
           end
 
           not_compliant_on browser: :ie do
@@ -289,8 +300,9 @@ module Selenium
             end
           end
 
+          # Safari - Raises wrong error
           # Firefox - https://bugzilla.mozilla.org/show_bug.cgi?id=1279211
-          not_compliant_on browser: :firefox do
+          not_compliant_on browser: [:firefox, :safari] do
             it 'raises an UnhandledAlertError if an alert has not been dealt with' do
               driver.navigate.to url_for('alerts.html')
               driver.find_element(id: 'alert').click
