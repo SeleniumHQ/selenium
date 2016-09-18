@@ -247,12 +247,6 @@ class DriverElementFindingTests(unittest.TestCase):
             self.driver.find_element(By.CLASS_NAME, "a b")
 
     @pytest.mark.ignore_phantomjs
-    def test_Finding_Multiple_Elements_By_Compound_Class_Name_Should_Throw(self):
-        self._load_page("xhtmlTest")
-        with pytest.raises(NoSuchElementException):
-            self.driver.find_elements(By.CLASS_NAME, "a b")
-
-    @pytest.mark.ignore_phantomjs
     def test_Finding_ASingle_Element_By_Invalid_Class_Name_Should_Throw(self):
         self._load_page("xhtmlTest")
         with pytest.raises(NoSuchElementException):
