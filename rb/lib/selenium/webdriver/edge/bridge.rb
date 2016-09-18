@@ -31,14 +31,14 @@ module Selenium
           if opts.key?(:url)
             url = opts.delete(:url)
           else
-            @service = Service.new(Edge.driver_path, Service::DEFAULT_PORT, *extract_service_args(opts))
+            @service = Service.new(Edge.driver_path, Service::DEFAULT_PORT)
             @service.host = 'localhost' if @service.host == '127.0.0.1'
             @service.start
 
             url = @service.uri
           end
 
-          caps = create_capabilities(opts)
+          caps ||= Remote::W3CCapabilities.edge
 
           remote_opts = {
             url: url,
@@ -70,30 +70,6 @@ module Selenium
           @service.stop if @service
         end
 
-        private
-
-        def create_capabilities(opts)
-          caps               = opts.delete(:desired_capabilities) { Remote::W3CCapabilities.edge }
-          page_load_strategy = opts.delete(:page_load_strategy) || 'normal'
-
-          unless opts.empty?
-            raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
-          end
-
-          caps['page_load_strategy'] = page_load_strategy
-
-          caps
-        end
-
-        def extract_service_args(opts)
-          args = []
-
-          if opts.key?(:service_log_path)
-            args << "--log-path=#{opts.delete(:service_log_path)}"
-          end
-
-          args
-        end
       end # Bridge
     end # Edge
   end # WebDriver

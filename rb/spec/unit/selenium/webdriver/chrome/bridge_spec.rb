@@ -36,13 +36,6 @@ module Selenium
           allow(Service).to receive(:new).and_return(service)
         end
 
-        it 'sets the nativeEvents capability' do
-          Bridge.new(http_client: http, native_events: true)
-
-          expect(caps['chromeOptions']['nativeEvents']).to be true
-          expect(caps['chrome.nativeEvents']).to be true
-        end
-
         it 'sets the args capability' do
           Bridge.new(http_client: http, args: %w[--foo=bar])
 
@@ -55,13 +48,6 @@ module Selenium
           Bridge.new(http_client: http, proxy: proxy)
 
           expect(caps['proxy']).to eq(proxy)
-        end
-
-        it 'sets the chrome.verbose capability' do
-          Bridge.new(http_client: http, verbose: true)
-
-          expect(caps['chromeOptions']['verbose']).to be true
-          expect(caps['chrome.verbose']).to be true
         end
 
         it 'does not set the chrome.detach capability by default' do
@@ -83,13 +69,6 @@ module Selenium
 
           expect(caps['chromeOptions']['detach']).to be true
           expect(caps['chrome.detach']).to be true
-        end
-
-        it 'lets the user override chrome.noWebsiteTestingDefaults' do
-          Bridge.new(http_client: http, no_website_testing_defaults: true)
-
-          expect(caps['chromeOptions']['noWebsiteTestingDefaults']).to be true
-          expect(caps['chrome.noWebsiteTestingDefaults']).to be true
         end
 
         it 'uses the user-provided server URL if given' do

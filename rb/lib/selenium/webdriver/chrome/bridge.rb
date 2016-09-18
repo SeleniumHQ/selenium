@@ -71,15 +71,12 @@ module Selenium
         private
 
         def create_capabilities(opts)
-          caps                        = opts.delete(:desired_capabilities) { Remote::Capabilities.chrome }
-          args                        = opts.delete(:args) || opts.delete(:switches)
-          native_events               = opts.delete(:native_events)
-          verbose                     = opts.delete(:verbose)
-          profile                     = opts.delete(:profile)
-          detach                      = opts.delete(:detach)
-          proxy                       = opts.delete(:proxy)
-          no_website_testing_defaults = opts.delete(:no_website_testing_defaults)
-          prefs                       = opts.delete(:prefs)
+          caps    = opts.delete(:desired_capabilities) { Remote::Capabilities.chrome }
+          args    = opts.delete(:args) || opts.delete(:switches)
+          profile = opts.delete(:profile)
+          detach  = opts.delete(:detach)
+          proxy   = opts.delete(:proxy)
+          prefs   = opts.delete(:prefs)
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
@@ -91,43 +88,23 @@ module Selenium
             unless args.is_a? Array
               raise ArgumentError, ':args must be an Array of Strings'
             end
-
             chrome_options['args'] = args.map(&:to_s)
           end
 
-          if profile
-            data = profile.as_json
-
-            chrome_options['profile'] = data['zip']
-            chrome_options['extensions'] = data['extensions']
-          end
-
-          chrome_options['binary']                   = Chrome.path if Chrome.path
-          chrome_options['nativeEvents']             = true if native_events
-          chrome_options['verbose']                  = true if verbose
-          chrome_options['detach']                   = true if detach
-          chrome_options['noWebsiteTestingDefaults'] = true if no_website_testing_defaults
-          chrome_options['prefs']                    = prefs if prefs
+          chrome_options['extensions'] = profile.as_json['extensions'] if profile
+          chrome_options['binary']     = Chrome.path if Chrome.path
+          chrome_options['detach']     = true if detach
+          chrome_options['prefs']      = prefs if prefs
 
           caps['chromeOptions'] = chrome_options
           caps['proxy'] = proxy if proxy
-
-          # legacy options - for chromedriver < 17.0.963.0
-          caps['chrome.switches'] = chrome_options['args'] if chrome_options.member?('args')
-          %w[binary detach extensions nativeEvents noWebsiteTestingDefaults prefs profile verbose].each do |key|
-            caps["chrome.#{key}"] = chrome_options[key] if chrome_options.member?(key)
-          end
 
           caps
         end
 
         def extract_service_args(opts)
           args = []
-
-          if opts.key?(:service_log_path)
-            args << "--log-path=#{opts.delete(:service_log_path)}"
-          end
-
+          args << "--log-path=#{opts.delete(:service_log_path)}" if opts.key?(:service_log_path)
           args
         end
       end # Bridge
