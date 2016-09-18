@@ -315,10 +315,9 @@ class DriverElementFindingTests(unittest.TestCase):
         self.assertEqual(element.text, "Test Chart")
 
     @pytest.mark.ignore_firefox
-    @pytest.mark.ignore_marionette
     @pytest.mark.ignore_phantomjs
     def test_Should_Be_Able_To_Find_Element_By_XPath_In_Xml_Document(self):
-        self._load_page("simpleXmlDocument")
+        self.driver.get(self.webserver.where_is("simple.xml"))
         element = self.driver.find_element(By.XPATH, "//foo")
         self.assertEqual(element.text, "baz")
 
