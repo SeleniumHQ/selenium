@@ -81,7 +81,6 @@ module Selenium
 
           opts = {directory: @directory || layout_on_disk}
           opts[:extensions] = extensions if extensions
-          opts[:zip] = Zipper.zip(@directory)
           opts
         end
 

@@ -43,13 +43,6 @@ module Selenium
             driver.quit
           end
 
-          it 'should be serializable to JSON' do
-            profile['foo.boolean'] = true
-
-            new_profile = Profile.from_json(profile.to_json)
-            expect(new_profile['foo.boolean']).to be true
-          end
-
           it 'adds an extension' do
             ext_path = '/some/path.crx'
 
@@ -68,10 +61,8 @@ module Selenium
             expect(ext_file).to receive(:read).and_return 'test'
 
             expect(profile).to receive(:layout_on_disk).and_return 'ignored'
-            expect(Zipper).to receive(:zip).and_return 'ignored'
 
-            expect(profile.as_json).to eq(zip: 'ignored',
-                                          directory: 'ignored',
+            expect(profile.as_json).to eq(directory: 'ignored',
                                           extensions: [Base64.strict_encode64('test')])
           end
 
