@@ -39,7 +39,6 @@ multiSelectValues1 = {'name': 'multi', 'values': ['Eggs', 'Ham', 'Sausages', 'On
 multiSelectValues2 = {'name': 'select_empty_multiple', 'values': ['select_1', 'select_2', 'select_3', 'select_4']}
 
 
-@pytest.mark.ignore_marionette
 class WebDriverSelectSupportTests(unittest.TestCase):
 
     def testSelectByIndexSingle(self):
