@@ -24,8 +24,13 @@ module Selenium
       class Bridge < Remote::Bridge
         def initialize(opts = {})
           port = opts.delete(:port) || Service::DEFAULT_PORT
+          service_args = opts.delete(:service_args) || {}
+          if opts[:service_log_path]
+            service_args.merge!(service_log_path: opts.delete(:service_log_path))
+          end
+
           unless opts.key?(:url)
-            @service = Service.new(Chrome.driver_path, port, *extract_service_args(opts))
+            @service = Service.new(Chrome.driver_path, port, *extract_service_args(service_args))
             @service.start
             opts[:url] = @service.uri
           end
@@ -83,10 +88,15 @@ module Selenium
           caps
         end
 
-        def extract_service_args(opts)
-          args = []
-          args << "--log-path=#{opts.delete(:service_log_path)}" if opts.key?(:service_log_path)
-          args
+        def extract_service_args(args)
+          service_args = []
+          service_args << "--log-path=#{args.delete(:service_log_path)}" if args.key?(:service_log_path)
+          service_args << "--url-base=#{args.delete(:url_base)}" if args.key?(:url_base)
+          service_args << "--port-server=#{args.delete(:port_server)}" if args.key?(:port_server)
+          service_args << "--whitelisted-ips=#{args.delete(:whitelisted_ips)}" if args.key?(:whitelisted_ips)
+          service_args << "--verbose=#{args.delete(:verbose)}" if args.key?(:whitelisted_ips)
+          service_args << "--silent=#{args.delete(:silent)}" if args.key?(:whitelisted_ips)
+          service_args
         end
       end # Bridge
     end # Chrome

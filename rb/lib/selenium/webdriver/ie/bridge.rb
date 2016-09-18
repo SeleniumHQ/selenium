@@ -27,8 +27,9 @@ module Selenium
       class Bridge < Remote::Bridge
         def initialize(opts = {})
           port = opts.delete(:port) || Service::DEFAULT_PORT
-
-          @service = Service.new(IE.driver_path, port, *extract_service_args(opts))
+          service_args = opts.delete(:service_args) || {}
+          service_args = match_legacy(opts, service_args)
+          @service = Service.new(IE.driver_path, port, *extract_service_args(service_args))
           @service.start
           opts[:url] = @service.uri
 
@@ -55,12 +56,19 @@ module Selenium
 
         private
 
-        def extract_service_args(opts)
-          args = []
-          args << "--log-level=#{opts.delete(:log_level).to_s.upcase}" if opts[:log_level]
-          args << "--log-file=#{opts.delete(:log_file)}" if opts[:log_file]
-          args << "--implementation=#{opts.delete(:implementation).to_s.upcase}" if opts[:implementation]
+        def match_legacy(opts, args)
+          args[:log_level] = opts.delete(:log_level) if opts.key?(:log_level)
+          args[:log_file] = opts.delete(:log_file) if opts.key?(:log_file)
+          args[:implementation] = opts.delete(:implementation) if opts.key?(:implementation)
           args
+        end
+
+        def extract_service_args(args)
+          service_args = []
+          service_args << "--log-level=#{args.delete(:log_level).to_s.upcase}" if args.key?(:log_level)
+          service_args << "--log-file=#{args.delete(:log_file)}" if args.key?(:log_file)
+          service_args << "--implementation=#{args.delete(:implementation).to_s.upcase}" if args.key?(:implementation)
+          service_args
         end
       end # Bridge
     end # IE

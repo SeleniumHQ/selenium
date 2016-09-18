@@ -63,25 +63,52 @@ module Selenium
           end
         end
 
-        it 'takes a binary path as an argument' do
-          pending "Set ENV['ALT_FIREFOX_BINARY'] to test this" unless ENV['ALT_FIREFOX_BINARY']
-          begin
-            driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt.dup
+        # Remote needs to implement firefox options
+        not_compliant_on driver: :remote do
+          it 'takes a binary path as an argument' do
+            pending "Set ENV['ALT_FIREFOX_BINARY'] to test this" unless ENV['ALT_FIREFOX_BINARY']
+            begin
+              driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt.dup
 
-            default_version = driver1.capabilities.version
-            expect { driver1.capabilities.browser_version }.to_not raise_exception NoMethodError
-            driver1.quit
+              default_version = driver1.capabilities.version
+              expect { driver1.capabilities.browser_version }.to_not raise_exception NoMethodError
+              driver1.quit
 
-            caps = Remote::Capabilities.firefox(firefox_options: {binary: ENV['ALT_FIREFOX_BINARY']})
-            @opt[:desired_capabilities] = caps
-            driver2 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
+              caps = Remote::Capabilities.firefox(firefox_options: {binary: ENV['ALT_FIREFOX_BINARY']})
+              @opt[:desired_capabilities] = caps
+              driver2 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
 
-            expect(driver2.capabilities.version).to_not eql(default_version)
-            expect { driver2.capabilities.browser_version }.to_not raise_exception NoMethodError
-            driver2.quit
-          ensure
-            Firefox::Binary.reset_path!
+              expect(driver2.capabilities.version).to_not eql(default_version)
+              expect { driver2.capabilities.browser_version }.to_not raise_exception NoMethodError
+              driver2.quit
+            ensure
+              Firefox::Binary.reset_path!
+            end
           end
+
+          it 'gives precedence to firefox options versus argument switch' do
+            pending "Set ENV['ALT_FIREFOX_BINARY'] to test this" unless ENV['ALT_FIREFOX_BINARY']
+            begin
+              driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt.dup
+
+              default_path = Firefox::Binary.path
+              default_version = driver1.capabilities.version
+              driver1.quit
+
+              caps = Remote::Capabilities.firefox(firefox_options: {binary: ENV['ALT_FIREFOX_BINARY']},
+                                                  service_args: {binary: default_path})
+              @opt[:desired_capabilities] = caps
+              driver2 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
+
+              expect(driver2.capabilities.version).to_not eql(default_version)
+              expect { driver2.capabilities.browser_version }.to_not raise_exception NoMethodError
+              driver2.quit
+            ensure
+              Firefox::Binary.reset_path!
+            end
+
+          end
+
         end
 
         # https://github.com/mozilla/geckodriver/issues/58

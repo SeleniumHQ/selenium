@@ -73,6 +73,9 @@ ruby_library(name = "edge",
     "lib/selenium/webdriver/edge/**/*.rb",
     "lib/selenium/webdriver/edge.rb"
   ],
+  resources = [
+    { "//javascript/webdriver/atoms:getAttribute": "rb/lib/selenium/webdriver/atoms/getAttribute.js"}
+  ],
   deps = [":common"]
 )
 

@@ -27,8 +27,9 @@ module Selenium
       class Bridge < Remote::W3CBridge
         def initialize(opts = {})
           port = opts.delete(:port) || Service::DEFAULT_PORT
+          service_args = opts.delete(:service_args) || {}
           unless opts.key?(:url)
-            @service = Service.new(Edge.driver_path, port)
+            @service = Service.new(Edge.driver_path, port, *extract_service_args(service_args))
             @service.host = 'localhost' if @service.host == '127.0.0.1'
             @service.start
             opts[:url] = @service.uri
@@ -60,6 +61,15 @@ module Selenium
           @service.stop if @service
         end
 
+        private
+
+        def extract_service_args(args = {})
+          service_args = []
+          service_args << "–host=#{args[:host]}" if args.key? :host
+          service_args << "–package=#{args[:package]}" if args.key? :package
+          service_args << "-verbose" if args[:verbose] == true
+          service_args
+        end
       end # Bridge
     end # Edge
   end # WebDriver

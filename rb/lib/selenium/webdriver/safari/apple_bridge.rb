@@ -23,10 +23,11 @@ module Selenium
       # @api private
       class AppleBridge < Remote::Bridge
         def initialize(opts = {})
-          port = opts.delete(:port) || Service::DEFAULT_PORT
           opts[:desired_capabilities] ||= Remote::Capabilities.safari
+          port = opts.delete(:port) || Service::DEFAULT_PORT
+          service_args = opts.delete(:service_args) || {}
 
-          @service = Service.new(Safari.driver_path, port, *extract_service_args(opts))
+          @service = Service.new(Safari.driver_path, port, *extract_service_args(service_args))
           @service.start
           opts[:url] = @service.uri
 
@@ -37,6 +38,12 @@ module Selenium
           super
         ensure
           @service.stop if @service
+        end
+
+        private
+
+        def extract_service_args(args = {})
+          ["–host=#{args[:port]}"] if args.key? :port
         end
       end # AppleBridge
     end # Safari

@@ -25,8 +25,9 @@ module Selenium
         def initialize(opts = {})
           port = opts.delete(:port) || Service::DEFAULT_PORT
           opts[:desired_capabilities] = create_capabilities(opts)
+          service_args = opts.delete(:service_args) || {}
 
-          @service = Service.new(Firefox.driver_path, port)
+          @service = Service.new(Firefox.driver_path, port, *extract_service_args(service_args))
           @service.start
           opts[:url] = @service.uri
 
@@ -61,6 +62,17 @@ module Selenium
           Binary.path = caps[:firefox_options][:binary] if caps[:firefox_options].key?(:binary)
           caps
         end
+
+        def extract_service_args(args = {})
+          service_args = []
+          service_args << "--binary=#{args[:binary]}" if args.key?(:binary)
+          service_args << "–-log=#{args[:log]}" if args.key?(:log)
+          service_args << "–-marionette-port=#{args[:marionette_port]}" if args.key?(:marionette_port)
+          service_args << "–-host=#{args[:host]}" if args.key?(:host)
+          service_args << "–-port=#{args[:port]}" if args.key?(:port)
+          service_args
+        end
+
       end # W3CBridge
     end # Firefox
   end # WebDriver
