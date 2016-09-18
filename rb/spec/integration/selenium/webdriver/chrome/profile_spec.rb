@@ -26,17 +26,22 @@ module Selenium
         describe Profile do
           let(:profile) { Profile.new }
 
-          # Won't work on ChromeDriver 2.0
-          #
-          # it "launches Chrome with a custom profile" do
-          #   profile['autofill.disabled'] = true
-          #
-          #   begin
-          #     driver = WebDriver.for :chrome, :profile => profile
-          #   ensure
-          #     driver.quit if driver
-          #   end
-          # end
+          it 'can be manually verified without mocks' do
+            # Example for command line in mac to create a new data directory
+            # /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --user-data-dir=/path/to/data
+            # directory = File.expand_path('../', __FILE__)
+            # profile = Profile.new(directory)
+            profile = Profile.new
+            profile['browser.show_home_button'] = true
+            file = File.expand_path('../sample.crx', __FILE__)
+            profile.add_extension(file)
+
+            driver = Selenium::WebDriver.for :chrome, profile: profile
+            driver.navigate.to url_for('xhtmlTest.html')
+            expect('verify manually - home button displayed')
+            expect('verify manually - make page red extension properly installed')
+            driver.quit
+          end
 
           it 'should be serializable to JSON' do
             profile['foo.boolean'] = true
@@ -65,8 +70,9 @@ module Selenium
             expect(profile).to receive(:layout_on_disk).and_return 'ignored'
             expect(Zipper).to receive(:zip).and_return 'ignored'
 
-            expect(profile.as_json).to eq('zip' => 'ignored',
-                                          'extensions' => [Base64.strict_encode64('test')])
+            expect(profile.as_json).to eq(zip: 'ignored',
+                                          directory: 'ignored',
+                                          extensions: [Base64.strict_encode64('test')])
           end
 
           it "raises an error if the extension doesn't exist" do

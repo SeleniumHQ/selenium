@@ -27,8 +27,10 @@ module Selenium
       class Profile
         include ProfileHelper
 
+        attr_reader :directory
+
         def initialize(model = nil)
-          @model      = verify_model(model)
+          @model = verify_model(model)
           @extensions = []
           @encoded_extensions = []
         end
@@ -62,22 +64,25 @@ module Selenium
         end
 
         def layout_on_disk
-          dir = @model ? create_tmp_copy(@model) : Dir.mktmpdir('webdriver-chrome-profile')
-          FileReaper << dir
+          @directory = @model ? create_tmp_copy(@model) : Dir.mktmpdir('webdriver-chrome-profile')
+          FileReaper << @directory
 
-          write_prefs_to dir
+          write_prefs_to @directory
 
-          dir
+          @directory
         end
 
-        def as_json(opts = nil)
+        def as_json(*)
           extensions = @extensions.map do |crx_path|
             File.open(crx_path, 'rb') { |crx_file| Base64.strict_encode64 crx_file.read }
           end
 
           extensions.concat(@encoded_extensions)
 
-          super.merge('extensions' => extensions)
+          opts = {directory: @directory || layout_on_disk}
+          opts[:extensions] = extensions if extensions
+          opts[:zip] = Zipper.zip(@directory)
+          opts
         end
 
         private

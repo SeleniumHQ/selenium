@@ -72,7 +72,7 @@ module Selenium
 
         def create_capabilities(opts)
           caps    = opts.delete(:desired_capabilities) { Remote::Capabilities.chrome }
-          args    = opts.delete(:args) || opts.delete(:switches)
+          args    = opts.delete(:args) || []
           profile = opts.delete(:profile)
           detach  = opts.delete(:detach)
           proxy   = opts.delete(:proxy)
@@ -84,14 +84,15 @@ module Selenium
 
           chrome_options = caps['chromeOptions'] || {}
 
-          if args
-            unless args.is_a? Array
-              raise ArgumentError, ':args must be an Array of Strings'
-            end
-            chrome_options['args'] = args.map(&:to_s)
+          unless args.is_a? Array
+            raise ArgumentError, ':args must be an Array of Strings'
           end
-
-          chrome_options['extensions'] = profile.as_json['extensions'] if profile
+          chrome_options['args'] = args.map(&:to_s)
+          profile = profile.as_json if profile
+          if profile && chrome_options['args'].none? { |arg| arg =~ /user-data-dir/}
+            chrome_options['args'] << "--user-data-dir=#{profile[:directory]}"
+          end
+          chrome_options['extensions'] = profile[:extensions] if profile && profile[:extensions]
           chrome_options['binary']     = Chrome.path if Chrome.path
           chrome_options['detach']     = true if detach
           chrome_options['prefs']      = prefs if prefs

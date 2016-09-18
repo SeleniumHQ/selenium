@@ -217,7 +217,6 @@ module Selenium
           args = ENV['TRAVIS'] ? ['--no-sandbox'] : []
 
           WebDriver::Driver.for :chrome,
-                                native_events: native_events?,
                                 args: args
         end
 
