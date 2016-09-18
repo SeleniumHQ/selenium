@@ -26,7 +26,7 @@ module Selenium
 
       class Bridge < Remote::Bridge
         def initialize(opts = {})
-          port = opts.delete(:port) { Service::DEFAULT_PORT }
+          port = opts.delete(:port) || Service::DEFAULT_PORT
 
           @service = Service.new(IE.driver_path, port, *extract_service_args(opts))
           @service.start

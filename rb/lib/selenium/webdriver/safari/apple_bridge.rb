@@ -23,9 +23,10 @@ module Selenium
       # @api private
       class AppleBridge < Remote::Bridge
         def initialize(opts = {})
+          port = opts.delete(:port) || Service::DEFAULT_PORT
           opts[:desired_capabilities] ||= Remote::Capabilities.safari
 
-          @service = Service.new(Safari.driver_path, Service::DEFAULT_PORT, *extract_service_args(opts))
+          @service = Service.new(Safari.driver_path, port, *extract_service_args(opts))
           @service.start
           opts[:url] = @service.uri
 

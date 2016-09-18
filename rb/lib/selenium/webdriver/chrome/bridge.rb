@@ -23,8 +23,9 @@ module Selenium
       # @api private
       class Bridge < Remote::Bridge
         def initialize(opts = {})
+          port = opts.delete(:port) || Service::DEFAULT_PORT
           unless opts.key?(:url)
-            @service = Service.new(Chrome.driver_path, Service::DEFAULT_PORT, *extract_service_args(opts))
+            @service = Service.new(Chrome.driver_path, port, *extract_service_args(opts))
             @service.start
             opts[:url] = @service.uri
           end

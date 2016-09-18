@@ -23,9 +23,10 @@ module Selenium
       # @api private
       class W3CBridge < Remote::W3CBridge
         def initialize(opts = {})
+          port = opts.delete(:port) || Service::DEFAULT_PORT
           opts[:desired_capabilities] = create_capabilities(opts)
 
-          @service = Service.new(Firefox.driver_path, Service::DEFAULT_PORT)
+          @service = Service.new(Firefox.driver_path, port)
           @service.start
           opts[:url] = @service.uri
 

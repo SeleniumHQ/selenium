@@ -26,8 +26,9 @@ module Selenium
 
       class Bridge < Remote::W3CBridge
         def initialize(opts = {})
+          port = opts.delete(:port) || Service::DEFAULT_PORT
           unless opts.key?(:url)
-            @service = Service.new(Edge.driver_path, Service::DEFAULT_PORT)
+            @service = Service.new(Edge.driver_path, port)
             @service.host = 'localhost' if @service.host == '127.0.0.1'
             @service.start
             opts[:url] = @service.uri
