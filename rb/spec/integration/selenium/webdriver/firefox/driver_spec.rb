@@ -63,28 +63,24 @@ module Selenium
           end
         end
 
-        # Test this in isolation; Firefox doesn't like to switch between binaries in same session
-        not_compliant_on driver: :remote do
-          it 'takes a binary path as an argument' do
-            pending "Set ENV['ALT_FIREFOX_BINARY'] to test this" unless ENV['ALT_FIREFOX_BINARY']
+        it 'takes a binary path as an argument' do
+          pending "Set ENV['ALT_FIREFOX_BINARY'] to test this" unless ENV['ALT_FIREFOX_BINARY']
+          begin
+            driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt.dup
 
-            begin
-              driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
+            default_version = driver1.capabilities.version
+            expect { driver1.capabilities.browser_version }.to_not raise_exception NoMethodError
+            driver1.quit
 
-              default_version = driver1.capabilities.version
-              expect { driver1.capabilities.browser_version }.to_not raise_exception NoMethodError
-              driver1.quit
+            caps = Remote::Capabilities.firefox(firefox_options: {binary: ENV['ALT_FIREFOX_BINARY']})
+            @opt[:desired_capabilities] = caps
+            driver2 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
 
-              caps = Remote::Capabilities.firefox(firefox_binary: ENV['ALT_FIREFOX_BINARY'])
-              @opt[:desired_capabilities] = caps
-              driver2 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
-
-              expect(driver2.capabilities.version).to_not eql(default_version)
-              expect { driver2.capabilities.browser_version }.to_not raise_exception NoMethodError
-              driver2.quit
-            ensure
-              Firefox::Binary.reset_path!
-            end
+            expect(driver2.capabilities.version).to_not eql(default_version)
+            expect { driver2.capabilities.browser_version }.to_not raise_exception NoMethodError
+            driver2.quit
+          ensure
+            Firefox::Binary.reset_path!
           end
         end
 
