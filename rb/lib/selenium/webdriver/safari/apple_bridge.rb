@@ -43,7 +43,7 @@ module Selenium
         private
 
         def extract_service_args(args = {})
-          ["–host=#{args[:port]}"] if args.key? :port
+          args.key?(:port) ? ["--port=#{args[:port]}"] : []
         end
       end # AppleBridge
     end # Safari

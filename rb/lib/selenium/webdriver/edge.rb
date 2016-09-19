@@ -45,15 +45,6 @@ module Selenium
           path
         end
       end
-
-      def self.path=(path)
-        Platform.assert_executable path
-        @path = path
-      end
-
-      def self.path
-        @path ||= nil
-      end
     end # Edge
   end # WebDriver
 end # Selenium

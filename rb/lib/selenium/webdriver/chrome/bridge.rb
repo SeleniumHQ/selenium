@@ -84,6 +84,7 @@ module Selenium
 
           caps[:chrome_options] = chrome_options
           caps[:proxy] = opts.delete(:proxy) if opts.key?(:proxy)
+          caps[:proxy] ||= opts.delete('proxy') if opts.key?('proxy')
 
           caps
         end
