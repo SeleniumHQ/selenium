@@ -186,9 +186,9 @@ public class ProcessUtils {
   static int getProcessId(Process p) {
     if (thisIsWindows()) {
       try {
-        Field f = process.getClass().getDeclaredField("handle");
+        Field f = p.getClass().getDeclaredField("handle");
         f.setAccessible(true);
-        long hndl = f.getLong(process);
+        long hndl = f.getLong(p);
 
         Kernel32 kernel = Kernel32.INSTANCE;
         WinNT.HANDLE handle = new WinNT.HANDLE();
