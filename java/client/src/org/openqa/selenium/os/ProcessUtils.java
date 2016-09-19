@@ -194,7 +194,7 @@ public class ProcessUtils {
         WinNT.HANDLE handle = new WinNT.HANDLE();
         handle.setPointer(Pointer.createConstant(hndl));
         int pid = kernel.GetProcessId(handle);
-        return pid
+        return pid;
       } catch (Exception e) {
         throw new RuntimeException("Couldn't detect pid", e);
       }
