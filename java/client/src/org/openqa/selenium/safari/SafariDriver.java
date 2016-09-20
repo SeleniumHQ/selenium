@@ -50,11 +50,11 @@ public class SafariDriver extends RemoteWebDriver {
   private SafariDriverService service;
 
   // Legacy Window API
-  protected final static String SET_WINDOW_SIZE = "setWindowSize";
-  protected final static String SET_WINDOW_POSITION = "setWindowPosition";
-  protected final static String GET_WINDOW_SIZE = "getWindowSize";
-  protected final static String GET_WINDOW_POSITION = "getWindowPosition";
-  protected final static String MAXIMIZE_WINDOW = "maximizeWindow";
+  private final static String SET_WINDOW_SIZE = "setWindowSize";
+  private final static String SET_WINDOW_POSITION = "setWindowPosition";
+  private final static String GET_WINDOW_SIZE = "getWindowSize";
+  private final static String GET_WINDOW_POSITION = "getWindowPosition";
+  private final static String MAXIMIZE_WINDOW = "maximizeWindow";
 
   /**
    * Initializes a new SafariDriver} class with default {@link SafariOptions}.
@@ -167,7 +167,7 @@ public class SafariDriver extends RemoteWebDriver {
   }
 
 
-  protected class LegacyRemoteTargetLocator extends RemoteTargetLocator {
+  private final class LegacyRemoteTargetLocator extends RemoteTargetLocator {
 
     @Override
     public WebDriver window(String windowHandleOrName) {
@@ -177,14 +177,14 @@ public class SafariDriver extends RemoteWebDriver {
 
   }
 
-  protected class LegacyRemoteWebDriverOptions extends RemoteWebDriverOptions {
+  private final class LegacyRemoteWebDriverOptions extends RemoteWebDriverOptions {
 
     @Override
     public Window window() {
       return new LegacyRemoteWindow();
     }
 
-    protected class LegacyRemoteWindow extends RemoteWindow {
+    private final class LegacyRemoteWindow extends RemoteWindow {
 
       @Override
       public void setSize(Dimension targetSize) {
@@ -236,7 +236,7 @@ public class SafariDriver extends RemoteWebDriver {
 
   }
 
-  protected static class LegacyJsonToWebElementConverter extends JsonToWebElementConverter {
+  private final static class LegacyJsonToWebElementConverter extends JsonToWebElementConverter {
 
     RemoteWebDriver driver;
 
@@ -256,7 +256,7 @@ public class SafariDriver extends RemoteWebDriver {
 
   }
 
-  protected static class LegacyRemoteWebElement extends RemoteWebElement {
+  private final static class LegacyRemoteWebElement extends RemoteWebElement {
 
     @SuppressWarnings("unchecked")
     @Override
