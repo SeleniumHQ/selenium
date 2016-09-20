@@ -33,6 +33,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -55,9 +56,9 @@ import javax.servlet.http.HttpServletResponse;
  *      ]
  * }
  *
- * if no param is specified, all params known to the hub are returned.
+ * alternatively you can use a query string ?configuration=timeout,servlets
  *
- * {"configuration": []  }
+ * if no param is specified, all params known to the hub are returned.
  *
  */
 public class HubStatusServlet extends RegistryBasedServlet {
@@ -101,7 +102,10 @@ public class HubStatusServlet extends RegistryBasedServlet {
       if (request.getInputStream() != null) {
         JsonObject requestJSON = getRequestJSON(request);
         List<String> keysToReturn = null;
-        if (requestJSON != null && requestJSON.has("configuration")) {
+
+        if (request.getParameter("configuration") != null && !"".equals(request.getParameter("configuration"))) {
+          keysToReturn = Arrays.asList(request.getParameter("configuration").split(","));
+        } else if (requestJSON != null && requestJSON.has("configuration")) {
           keysToReturn = new Gson().fromJson(requestJSON.getAsJsonArray("configuration"), ArrayList.class);
         }
 
