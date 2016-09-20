@@ -206,7 +206,11 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   public static DesiredCapabilities firefox() {
-    return new DesiredCapabilities(BrowserType.FIREFOX, "", Platform.ANY);
+    DesiredCapabilities
+      caps = new DesiredCapabilities(BrowserType.FIREFOX, "", Platform.ANY);
+    // Avoid a circular reference between the firefox driver and the remote driver
+    caps.setCapability("marionette", true);
+    return caps;
   }
 
   public static DesiredCapabilities htmlUnit() {

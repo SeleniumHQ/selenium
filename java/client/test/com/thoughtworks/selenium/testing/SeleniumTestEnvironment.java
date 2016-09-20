@@ -26,6 +26,7 @@ import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -75,8 +76,63 @@ public class SeleniumTestEnvironment implements TestEnvironment {
       throw new RuntimeException(e);
     }
 
-    appServer = new SeleniumAppServer();
-    appServer.start();
+//    appServer = new SeleniumAppServer();
+//    appServer.start();
+    appServer = new AppServer() {
+      @Override
+      public String getHostName() {
+        return "localhost";
+      }
+
+      @Override
+      public String getAlternateHostName() {
+        throw new UnsupportedOperationException("getAlternateHostName");
+      }
+
+      @Override
+      public String whereIs(String relativeUrl) {
+        try {
+          return new URL(seleniumServerUrl + "/" + relativeUrl).toString();
+        } catch (MalformedURLException e) {
+          throw new RuntimeException(e);
+        }
+      }
+
+      @Override
+      public String whereElseIs(String relativeUrl) {
+        throw new UnsupportedOperationException("whereElseIs");
+      }
+
+      @Override
+      public String whereIsSecure(String relativeUrl) {
+        throw new UnsupportedOperationException("whereIsSecure");
+      }
+
+      @Override
+      public String whereIsWithCredentials(String relativeUrl, String user, String password) {
+        throw new UnsupportedOperationException("whereIsWithCredentials");
+      }
+
+      @Override
+      public void start() {
+        // no-op
+      }
+
+      @Override
+      public void stop() {
+        command.destroy();
+      }
+
+      @Override
+      public void listenOn(int port) {
+        throw new UnsupportedOperationException("listenOn");
+      }
+
+      @Override
+      public void listenSecurelyOn(int port) {
+        throw new UnsupportedOperationException("listenSecurelyOn");
+      }
+    };
   }
 
   public SeleniumTestEnvironment(String... extraArgs) {

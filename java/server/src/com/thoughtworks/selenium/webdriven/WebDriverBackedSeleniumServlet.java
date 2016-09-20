@@ -20,6 +20,7 @@ package com.thoughtworks.selenium.webdriven;
 import static org.openqa.selenium.remote.server.DriverServlet.SESSIONS_KEY;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.base.Supplier;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -124,22 +125,11 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
       String.format("Command request: %s%s on session %s", cmd, printableArgs, sessionId));
 
     if ("getNewBrowserSession".equals(cmd)) {
-      // We wait until we see the start command before actually getting the webdriver instance. For
-      // now, pre-allocate a session id we can use to refer to the session properly.
-
-      // browserStartCommand, browserURL, extensionJs, optionsString
-      final DesiredCapabilities capabilities = new DesiredCapabilities(drivers.get(args[0]));
-
-      try {
-        sessionId = sessionsSupplier.get().newSession(capabilities);
-        Session session = sessionsSupplier.get().get(sessionId);
-        WebDriver driver = session.getDriver();
-        CommandProcessor commandProcessor = new WebDriverCommandProcessor(args[1], driver);
-        SESSIONS.put(sessionId, commandProcessor);
-        sendResponse(resp, sessionId.toString());
-      } catch (Exception e) {
-        sendError(resp, "Unable to create session: " + e.getMessage());
-      }
+      // Figure out what to do. If the first arg is "*webdriver", check for a session id and use
+      // that existing session if present. Otherwise, start a new session with whatever comes to
+      // hand. If, however, the first parameter specifies something else, then create a session
+      // using a webdriver-backed instance of that.
+      startNewSession(resp, args[0], args[1], args.length == 4 ? args[3] : "");
       return;
     } else if ("testComplete".equals(cmd)) {
       sessionsSupplier.get().deleteSession(sessionId);
@@ -166,6 +156,108 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
       } catch (SeleniumException e) {
         sendError(resp, e.getMessage());
     }
+  }
+
+  private void startNewSession(
+    HttpServletResponse resp,
+    String browserString,
+    String baseUrl,
+    String options) throws IOException {
+    SessionId sessionId = null;
+
+    if (options.startsWith("webdriver.remote.sessionid")) {
+      // We may have a hit
+      List<String> split = Splitter.on("=")
+        .omitEmptyStrings()
+        .trimResults()
+        .limit(2)
+        .splitToList(options);
+      if (!"webdriver.remote.sessionid".equals(split.get(0))) {
+        getServletContext().log(
+          "Unable to find existing webdriver session. Wrong parameter name: " + options);
+        sendError(
+          resp,
+          "Unable to find existing webdriver session. Wrong parameter name: " + options);
+        return;
+      }
+      if (split.size() != 2) {
+        getServletContext().log("Attempted to find webdriver id, but none specified. Bailing");
+        sendError(resp, "Unable to find existing webdriver session. No ID specified");
+        return;
+      }
+      sessionId = new SessionId(split.get(1));
+    }
+
+    if (sessionId != null) {
+      Session session = sessionsSupplier.get().get(sessionId);
+      // Let's assume the person knew what they're doing... Skip to the end
+    } else {
+      // Fine. Let's see if the user chose "webdriver" or something specific.
+      DesiredCapabilities caps;
+      switch (browserString) {
+        case "*webdriver":
+          caps = new DesiredCapabilities();
+          break;
+
+        case "*chrome":
+        case "*firefox":
+        case "*firefoxproxy":
+        case "*firefoxchrome":
+        case "*pifirefox":
+          caps = DesiredCapabilities.firefox();
+          break;
+
+        case "*iehta":
+        case "*iexplore":
+        case "*iexploreproxy":
+        case "*piiexplore":
+          caps = DesiredCapabilities.internetExplorer();
+          break;
+
+        case "*googlechrome":
+          caps = DesiredCapabilities.chrome();
+          break;
+
+        case "*MicrosoftEdge":
+          caps = DesiredCapabilities.edge();
+          break;
+
+        case "*opera":
+        case "*operablink":
+          caps = DesiredCapabilities.operaBlink();
+          break;
+
+        case "*safari":
+        case "*safariproxy":
+          caps = DesiredCapabilities.safari();
+          break;
+
+        default:
+          sendError(resp, "Unable to match browser string: " + browserString);
+          return;
+      }
+
+      try {
+        sessionId = sessionsSupplier.get().newSession(caps);
+      } catch (Exception e) {
+        getServletContext().log("Unable to start session", e);
+        sendError(
+          resp,
+          "Unable to start session. Cause can be found in logs. Message is: " + e.getMessage());
+        return;
+      }
+    }
+
+    Session session = sessionsSupplier.get().get(sessionId);
+    if (session == null) {
+      getServletContext().log("Attempt to use non-existant session: " + sessionId);
+      sendError(resp, "Attempt to use non-existant session: " + sessionId);
+      return;
+    }
+    WebDriver driver = session.getDriver();
+    CommandProcessor commandProcessor = new WebDriverCommandProcessor(baseUrl, driver);
+    SESSIONS.put(sessionId, commandProcessor);
+    sendResponse(resp, sessionId.toString());
   }
 
   private void sendResponse(HttpServletResponse resp, String result) throws IOException {

@@ -89,6 +89,7 @@ import com.thoughtworks.selenium.corebased.TestXPathLocators;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     SeleniumMouseTest.class,
+    StartTest.class,
     TestAddLocationStrategy.class,
     TestAddSelection.class,
     TestAlerts.class,

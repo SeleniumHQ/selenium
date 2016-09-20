@@ -19,14 +19,21 @@ package org.openqa.selenium;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import com.thoughtworks.selenium.webdriven.WebDriverBackedSeleniumServlet;
 
+import org.openqa.selenium.remote.server.DefaultDriverSessions;
+import org.openqa.selenium.remote.server.DriverServlet;
+import org.openqa.selenium.remote.server.DriverSessions;
 import org.seleniumhq.jetty9.server.Connector;
 import org.seleniumhq.jetty9.server.Server;
 import org.seleniumhq.jetty9.server.ServerConnector;
 import org.seleniumhq.jetty9.server.handler.ContextHandler;
 import org.seleniumhq.jetty9.server.handler.HandlerList;
 import org.seleniumhq.jetty9.server.handler.ResourceHandler;
+import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 import org.seleniumhq.jetty9.util.resource.Resource;
+
+import javax.servlet.Servlet;
 
 public class Main {
 
@@ -55,6 +62,14 @@ public class Main {
     coreHandler.setBaseResource(Resource.newClassPathResource("/core"));
     coreContext.setHandler(coreHandler);
     handlers.addHandler(coreContext);
+
+    ServletContextHandler driverContext = new ServletContextHandler();
+    DriverSessions driverSessions = new DefaultDriverSessions();
+    driverContext.setAttribute(DriverServlet.SESSIONS_KEY, driverSessions);
+    driverContext.setContextPath("/");
+    driverContext.addServlet(DriverServlet.class, "/wd/hub/*");
+    driverContext.addServlet(WebDriverBackedSeleniumServlet.class, "/selenium-server/driver/");
+    handlers.addHandler(driverContext);
 
     server.setHandler(handlers);
     server.start();

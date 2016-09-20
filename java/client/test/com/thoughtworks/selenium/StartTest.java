@@ -18,6 +18,8 @@
 package com.thoughtworks.selenium;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import com.thoughtworks.selenium.testing.SeleniumTestEnvironment;
 
@@ -57,8 +59,20 @@ public class StartTest {
         url.getHost(), url.getPort(), "*firefox", root);
 
     try {
-      selenium.start(DesiredCapabilities.firefox());
-      // No exception is a good thing
+      selenium.start();
+      String eval = selenium.getEval("navigator.userAgent");
+      // Sophisticated...
+      assertTrue(eval, eval.contains("Firefox"));
+    } finally {
+      selenium.stop();
+    }
+
+    selenium = new DefaultSelenium(url.getHost(), url.getPort(), "*googlechrome", root);
+    try {
+      selenium.start();
+      String eval = selenium.getEval("navigator.userAgent");
+      // Equally sophisticated...
+      assertTrue(eval, eval.contains("Chrome"));
     } finally {
       selenium.stop();
     }
@@ -71,7 +85,10 @@ public class StartTest {
     Capabilities capabilities = ((HasCapabilities) driver).getCapabilities();
 
     DefaultSelenium selenium = new DefaultSelenium(
-        url.getHost(), url.getPort(), "*webdriver", root);
+      url.getHost(),
+      url.getPort(),
+      "*webdriver",
+      root);
 
     try {
       selenium.start(capabilities);
@@ -83,8 +100,6 @@ public class StartTest {
       assertEquals(title, seleniumTitle);
     } finally {
       selenium.stop();
-      // This isn't handled elegantly yet
-//      driver.quit();
     }
   }
 }

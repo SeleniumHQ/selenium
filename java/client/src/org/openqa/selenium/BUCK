@@ -161,6 +161,7 @@ java_library(
   ],
   visibility = [
     '//java/server/src/org/openqa/grid/selenium:classes',
+    '//java/server/test/org/openqa/selenium:lib',
   ],
 )
 
