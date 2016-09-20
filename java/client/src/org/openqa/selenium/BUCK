@@ -52,6 +52,7 @@ java_library(name = 'core',
      'internal/FindsBy*.java',
      'mobile/*.java',
   ]),
+  manifest_file = ':manifest',
   deps = [
     ':beta',
     ':exceptions',
@@ -65,6 +66,12 @@ java_library(name = 'core',
   visibility = [
     '//java/client/src/org/openqa/selenium/interactions:interactions',
   ],
+)
+
+genrule(name = 'manifest',
+  out = 'manifest.mf',
+  bash = 'printf "\nName: Build-Info\nSelenium-Version: {}\n" > $OUT'.format(SE_VERSION),
+  cmd_exe = "(echo.\necho Name: Build-Info\necho Selenium-Version: {}\n) > %OUT%".format(SE_VERSION),
 )
 
 java_library(name = 'beta',
