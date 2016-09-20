@@ -488,7 +488,7 @@ public class TestSession {
       // the location needs to point to the hub that will proxy
       // everything.
       if (name.equalsIgnoreCase("Location")) {
-        URL returnedLocation = new URL(value);
+        URL returnedLocation = new URL(remoteURL, value);
         String driverPath = remoteURL.getPath();
         String wrongPath = returnedLocation.getPath();
         String correctPath = wrongPath.replace(driverPath, "");
