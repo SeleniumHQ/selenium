@@ -20,11 +20,12 @@ import pytest
 from selenium.common.exceptions import NoSuchWindowException
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 class WindowSwitchingTests(unittest.TestCase):
 
-    @pytest.mark.ignore_marionette
     def testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations(self):
         self._loadPage("xhtmlTest")
         current = self.driver.current_window_handle
@@ -62,7 +63,10 @@ class WindowSwitchingTests(unittest.TestCase):
     def testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle(self):
         self._loadPage("xhtmlTest")
         current = self.driver.current_window_handle
+        handles = self.driver.window_handles
         self.driver.find_element(By.LINK_TEXT, "Open new window").click()
+
+        WebDriverWait(self.driver, 3).until(EC.new_window_is_opened(handles))
         handles = self.driver.window_handles
         handles.remove(current)
         self.driver.switch_to.window(handles[0])
@@ -78,12 +82,13 @@ class WindowSwitchingTests(unittest.TestCase):
 
     @pytest.mark.ignore_chrome
     @pytest.mark.ignore_ie
-    @pytest.mark.ignore_marionette
     def testShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed(self):
         self._loadPage("xhtmlTest")
         current = self.driver.current_window_handle
-
+        handles = self.driver.window_handles
         self.driver.find_element(By.LINK_TEXT, "Open new window").click()
+
+        WebDriverWait(self.driver, 3).until(EC.new_window_is_opened(handles))
         handles = self.driver.window_handles
         handles.remove(current)
         self.driver.switch_to.window(handles[0])
@@ -105,12 +110,13 @@ class WindowSwitchingTests(unittest.TestCase):
 
     @pytest.mark.ignore_chrome
     @pytest.mark.ignore_ie
-    @pytest.mark.ignore_marionette
     def testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed(self):
         self._loadPage("xhtmlTest")
         current = self.driver.current_window_handle
+        handles = self.driver.window_handles
         self.driver.find_element(By.LINK_TEXT, "Open new window").click()
 
+        WebDriverWait(self.driver, 3).until(EC.new_window_is_opened(handles))
         handles = self.driver.window_handles
         handles.remove(current)
         self.driver.switch_to.window(handles[0])
@@ -130,10 +136,12 @@ class WindowSwitchingTests(unittest.TestCase):
         self._loadPage("xhtmlTest")
 
         current = self.driver.current_window_handle
-
+        handles = self.driver.window_handles
         self.driver.find_element_by_name("windowThree").click()
 
+        WebDriverWait(self.driver, 3).until(EC.new_window_is_opened(handles))
         handles = self.driver.window_handles
+
         handles.remove(current)
         self.driver.switch_to.window(handles[0])
 
@@ -148,9 +156,10 @@ class WindowSwitchingTests(unittest.TestCase):
         self._loadPage("xhtmlTest")
 
         current = self.driver.current_window_handle
-
+        handles = self.driver.window_handles
         self.driver.find_element_by_name("windowThree").click()
 
+        WebDriverWait(self.driver, 3).until(EC.new_window_is_opened(handles))
         handles = self.driver.window_handles
         handles.remove(current)
         self.driver.switch_to.window(handles[0])
@@ -187,9 +196,10 @@ class WindowSwitchingTests(unittest.TestCase):
         self._loadPage("xhtmlTest")
 
         current = self.driver.current_window_handle
-
+        handles = self.driver.window_handles
         self.driver.find_element_by_name("windowThree").click()
 
+        WebDriverWait(self.driver, 3).until(EC.new_window_is_opened(handles))
         handles = self.driver.window_handles
         handles.remove(current)
         self.driver.switch_to.window(handles[0])
