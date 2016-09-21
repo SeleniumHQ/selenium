@@ -242,7 +242,6 @@ class FrameSwitchingTest(unittest.TestCase):
     #
     # ----------------------------------------------------------------------------------------------
 
-    @pytest.mark.ignore_marionette
     @pytest.mark.ignore_phantomjs
     @pytest.mark.ignore_firefox
     def testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected(self):
@@ -250,7 +249,7 @@ class FrameSwitchingTest(unittest.TestCase):
         self.driver.switch_to.frame(2)
         checkbox = self.driver.find_element(By.XPATH, "//input[@name='checky']")
         checkbox.click()
-        # checkbox.submit()
+        checkbox.submit()
 
         # TODO(simon): this should not be needed, and is only here because IE's submit returns too
         # soon.
@@ -290,20 +289,19 @@ class FrameSwitchingTest(unittest.TestCase):
     def getTextOfGreetingElement(self):
         return WebDriverWait(self.driver, 3).until(EC.presence_of_element_located((By.ID, "greeting"))).text
 
-    @pytest.mark.ignore_marionette
     @pytest.mark.ignore_phantomjs
     @pytest.mark.ignore_firefox
     def testShouldBeAbleToClickInAFrame(self):
         self._load_page("frameset")
-        self.driver.switch_to.frame(self.driver.find_element_by_name("third"))
+        self.driver.switch_to.frame("third")
 
         # This should replace frame "third" ...
         self.driver.find_element(By.ID, "submitButton").click()
         # driver should still be focused on frame "third" ...
         self.assertEqual(self.getTextOfGreetingElement(), "Success!")
         # Make sure it was really frame "third" which was replaced ...
-        WebDriverWait(self.driver, 3).until(EC.presence_of_element_located((By.ID, "third")))
-        self.driver.switch_to.frame()
+        self.driver.switch_to.default_content()
+        self.driver.switch_to.frame("third")
         self.assertEqual(self.getTextOfGreetingElement(), "Success!")
 
     def testShouldBeAbleToClickInAFrameThatRewritesTopWindowLocation(self):
