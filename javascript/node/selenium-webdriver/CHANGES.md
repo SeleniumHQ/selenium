@@ -1,4 +1,4 @@
-## v.next
+## v3.0.0-beta-3
 
 * Fixed a bug where the promise manager would silently drop callbacks after
   recovering from an unhandled promise rejection.
