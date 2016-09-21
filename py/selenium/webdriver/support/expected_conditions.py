@@ -286,6 +286,27 @@ class element_located_selection_state_to_be(object):
             return False
 
 
+class number_of_windows_to_be(object):
+    """ An expectation for the number of windows to be a certain value."""
+
+    def __init__(self, num_windows):
+        self.num_windows = num_windows
+
+    def __call__(self, driver):
+        return driver.window_handles == self.num_windows
+
+
+class new_window_is_opened(object):
+    """ An expectation that a new window will be opened and have the number of
+    windows handles increase"""
+
+    def __init__(self, current_handles):
+        self.current_handles = current_handles
+
+    def __call__(self, driver):
+        return len(driver.window_handles) > len(self.current_handles)
+
+
 class alert_is_present(object):
     """ Expect an alert to be present."""
     def __init__(self):
