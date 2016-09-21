@@ -90,12 +90,7 @@ test.suite(function(env) {
       } else {
         var dx = position.x + 10;
         var dy = position.y + 10;
-        // On OSX, Safari position's the window relative to below the menubar
-        // at the top of the screen, which is 23 pixels tall.
-        if (env.currentBrowser() === Browser.SAFARI &&
-            process.platform === 'darwin') {
-          dy += 23;
-        }
+        return driver.wait(forPositionToBe(dx, dy), 1000);
       }
     });
   });
@@ -111,20 +106,14 @@ test.suite(function(env) {
 
       // For phantomjs, setPosition is a no-op and the "window" stays at (0, 0)
       if (env.currentBrowser() === Browser.PHANTOM_JS) {
-        driver.manage().window().getPosition().then(function(position) {
+        return driver.manage().window().getPosition().then(function(position) {
           assert(position.x).equalTo(0);
           assert(position.y).equalTo(0);
         });
       } else {
         var dx = position.x + 10;
         var dy = position.y + 10;
-        // On OSX, Safari position's the window relative to below the menubar
-        // at the top of the screen, which is 23 pixels tall.
-        if (env.currentBrowser() === Browser.SAFARI &&
-            process.platform === 'darwin') {
-          dy += 23;
-        }
-        driver.wait(forPositionToBe(dx, dy), 1000);
+        return driver.wait(forPositionToBe(dx, dy), 1000);
       }
     });
   });

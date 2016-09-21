@@ -1,3 +1,24 @@
+## v.next
+
+* Removed native support for Safari 9 and older. Apple's safaridriver
+  is now used for Safari 10 (available on El Capitan and macOS Sierra).
+
+  To use Safari 9, the builder should be configured to use an instance of the
+  Selenium standalone server and `safari.Options` should be configured to
+  enable the legacy driver. For instance:
+
+  ```
+  const webdriver = require('selenium-webdriver');
+  const safari = require('selenium-webdriver/safari');
+
+  let driver = new webdriver.Builder()
+      .forBrowser('safari')
+      .usingServer('http://localhost:4444/wd/hub')
+      .setSafariOptions(new safari.Options().useLegacyDriver(true))
+      .build();
+  ```
+
+
 ## v3.0.0-beta-3
 
 * Fixed a bug where the promise manager would silently drop callbacks after

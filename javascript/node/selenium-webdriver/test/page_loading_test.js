@@ -34,8 +34,16 @@ test.suite(function(env) {
     driver = env.builder().build();
   });
 
+  test.beforeEach(function() {
+    if (!driver) {
+      driver = env.builder().build();
+    }
+  });
+
   test.after(function() {
-    driver.quit();
+    if (driver) {
+      driver.quit();
+    }
   });
 
   test.it('should wait for document to be loaded', function() {
@@ -49,7 +57,8 @@ test.suite(function(env) {
     assert(driver.getTitle()).equalTo('We Arrive Here');
   });
 
-  test.it('should follow meta redirects', function() {
+  test.ignore(browsers(Browser.SAFARI)).
+  it('should follow meta redirects', function() {
     driver.get(Pages.metaRedirectPage);
     assert(driver.getTitle()).equalTo('We Arrive Here');
   });
@@ -132,35 +141,33 @@ test.suite(function(env) {
     assert(driver.getTitle()).equalTo('Hello WebDriver');
   });
 
-  // Only implemented in Firefox.
-  test.ignore(browsers(
-      Browser.CHROME,
-      Browser.IE,
-      Browser.IPAD,
-      Browser.IPHONE,
-      Browser.OPERA,
-      Browser.PHANTOM_JS,
-      Browser.SAFARI)).
-  it('should timeout if page load timeout is set', function() {
-    driver.call(function() {
-      driver.manage().timeouts().pageLoadTimeout(1);
-      driver.get(Pages.sleepingPage + '?time=3').
-          then(function() {
-            throw Error('Should have timed out on page load');
-          }, function(e) {
-            if (!(e instanceof error.ScriptTimeoutError)
-                && !(e instanceof error.TimeoutError)) {
-              throw Error('Unexpected error response: ' + e);
-            }
-          });
-    }).then(resetPageLoad, function(err) {
-      resetPageLoad().finally(function() {
-        throw err;
-      });
+  describe('timeouts', function() {
+    test.afterEach(function() {
+      let nullDriver = () => driver = null;
+      return driver.quit().then(nullDriver, nullDriver);
     });
 
-    function resetPageLoad() {
-      return driver.manage().timeouts().pageLoadTimeout(-1);
-    }
+    // Only implemented in Firefox.
+    test.ignore(browsers(
+        Browser.CHROME,
+        Browser.IE,
+        Browser.IPAD,
+        Browser.IPHONE,
+        Browser.OPERA,
+        Browser.PHANTOM_JS)).
+    it('should timeout if page load timeout is set', function() {
+      driver.call(function() {
+        driver.manage().timeouts().pageLoadTimeout(1);
+        driver.get(Pages.sleepingPage + '?time=3').
+            then(function() {
+              throw Error('Should have timed out on page load');
+            }, function(e) {
+              if (!(e instanceof error.ScriptTimeoutError)
+                  && !(e instanceof error.TimeoutError)) {
+                throw Error('Unexpected error response: ' + e);
+              }
+            });
+      });
+    });
   });
 });

@@ -40,17 +40,8 @@
 
 'use strict';
 
-const events = require('events');
-const fs = require('fs');
-const http = require('http');
-const path = require('path');
-const url = require('url');
-const util = require('util');
-const ws = require('ws');
-
+const http = require('./http');
 const io = require('./io');
-const exec = require('./io/exec');
-const isDevMode = require('./lib/devmode');
 const Capabilities = require('./lib/capabilities').Capabilities;
 const Capability = require('./lib/capabilities').Capability;
 const command = require('./lib/command');
@@ -62,407 +53,6 @@ const Symbols = require('./lib/symbols');
 const webdriver = require('./lib/webdriver');
 const portprober = require('./net/portprober');
 const remote = require('./remote');
-const http_ = require('./http');
-
-
-/** @const */
-const CLIENT_PATH = isDevMode
-    ? path.join(__dirname,
-        '../../../buck-out/gen/javascript/safari-driver/client.js')
-    : path.join(__dirname, 'lib/safari/client.js');
-
-
-/** @const */
-const LIBRARY_DIR = (function() {
-  if (process.platform === 'darwin') {
-    return path.join('/Users', process.env['USER'], 'Library/Safari');
-  } else if (process.platform === 'win32') {
-    return path.join(process.env['APPDATA'], 'Apple Computer', 'Safari');
-  } else {
-    return '/dev/null';
-  }
-})();
-
-
-/** @const */
-const SESSION_DATA_FILES = (function() {
-  if (process.platform === 'darwin') {
-    var libraryDir = path.join('/Users', process.env['USER'], 'Library');
-    return [
-      path.join(libraryDir, 'Caches/com.apple.Safari/Cache.db'),
-      path.join(libraryDir, 'Cookies/Cookies.binarycookies'),
-      path.join(libraryDir, 'Cookies/Cookies.plist'),
-      path.join(libraryDir, 'Safari/History.plist'),
-      path.join(libraryDir, 'Safari/LastSession.plist'),
-      path.join(libraryDir, 'Safari/LocalStorage'),
-      path.join(libraryDir, 'Safari/Databases')
-    ];
-  } else if (process.platform === 'win32') {
-    var appDataDir = path.join(process.env['APPDATA'],
-        'Apple Computer', 'Safari');
-    var localDataDir = path.join(process.env['LOCALAPPDATA'],
-        'Apple Computer', 'Safari');
-    return [
-      path.join(appDataDir, 'History.plist'),
-      path.join(appDataDir, 'LastSession.plist'),
-      path.join(appDataDir, 'Cookies/Cookies.plist'),
-      path.join(appDataDir, 'Cookies/Cookies.binarycookies'),
-      path.join(localDataDir, 'Cache.db'),
-      path.join(localDataDir, 'Databases'),
-      path.join(localDataDir, 'LocalStorage')
-    ];
-  } else {
-    return [];
-  }
-})();
-
-
-/** @typedef {{port: number, address: string, family: string}} */
-var Host;
-
-
-/**
- * A basic HTTP/WebSocket server used to communicate with the legacy SafariDriver
- * browser extension.
- */
-class Server extends events.EventEmitter {
-  constructor() {
-    super();
-    var server = http.createServer(function(req, res) {
-      if (req.url === '/favicon.ico') {
-        res.writeHead(204);
-        res.end();
-        return;
-      }
-
-      var query = url.parse(/** @type {string} */(req.url)).query || '';
-      if (query.indexOf('url=') == -1) {
-        var address = server.address()
-        var host = address.address + ':' + address.port;
-        res.writeHead(
-            302, {'Location': 'http://' + host + '?url=ws://' + host});
-        res.end();
-      }
-
-      fs.readFile(CLIENT_PATH, 'utf8', function(err, data) {
-        if (err) {
-          res.writeHead(500, {'Content-Type': 'text/plain'});
-          res.end(err.stack);
-          return;
-        }
-        var content = '<!DOCTYPE html><body><script>' + data + '</script>';
-        res.writeHead(200, {
-          'Content-Type': 'text/html; charset=utf-8',
-          'Content-Length': Buffer.byteLength(content, 'utf8'),
-        });
-        res.end(content);
-      });
-    });
-
-    var wss = new ws.Server({server: server});
-    wss.on('connection', this.emit.bind(this, 'connection'));
-
-    /**
-     * Starts the server on a random port.
-     * @return {!Promise<Host>} A promise that will resolve with the server host
-     *     when it has fully started.
-     */
-    this.start = function() {
-      if (server.address()) {
-        return Promise.resolve(server.address());
-      }
-      return portprober.findFreePort('localhost').then(function(port) {
-        return promise.checkedNodeCall(
-            server.listen.bind(server, port, 'localhost'));
-      }).then(function() {
-        return server.address();
-      });
-    };
-
-    /**
-     * Stops the server.
-     * @return {!Promise} A promise that will resolve when the server has closed
-     *     all connections.
-     */
-    this.stop = function() {
-      return new Promise(fulfill => server.close(fulfill));
-    };
-
-    /**
-     * @return {Host} This server's host info.
-     * @throws {Error} If the server is not running.
-     */
-    this.address = function() {
-      var addr = server.address();
-      if (!addr) {
-        throw Error('There server is not running!');
-      }
-      return addr;
-    };
-  }
-}
-
-
-/**
- * @return {!Promise<string>} A promise that will resolve with the path
- *     to Safari on the current system.
- */
-function findSafariExecutable() {
-  switch (process.platform) {
-    case 'darwin':
-      return Promise.resolve('/Applications/Safari.app/Contents/MacOS/Safari');
-
-    case 'win32':
-      var files = [
-        process.env['PROGRAMFILES'] || '\\Program Files',
-        process.env['PROGRAMFILES(X86)'] || '\\Program Files (x86)'
-      ].map(function(prefix) {
-        return path.join(prefix, 'Safari\\Safari.exe');
-      });
-      return io.exists(files[0]).then(function(exists) {
-        return exists ? files[0] : io.exists(files[1]).then(function(exists) {
-          if (exists) {
-            return files[1];
-          }
-          throw Error('Unable to find Safari on the current system');
-        });
-      });
-
-    default:
-      return Promise.reject(
-          Error('Safari is not supported on the current platform: ' +
-              process.platform));
-  }
-}
-
-
-/**
- * @param {string} serverUrl The URL to connect to.
- * @return {!Promise<string>} A promise for the path to a file that Safari can
- *     open on start-up to trigger a new connection to the WebSocket server.
- */
-function createConnectFile(serverUrl) {
-  return io.tmpFile({postfix: '.html'}).then(function(f) {
-    let contents =
-        `<!DOCTYPE html><script>window.location = "${serverUrl}";</script>`;
-    return io.write(f, contents).then(() => f);
-  });
-}
-
-
-/**
- * Deletes all session data files if so desired.
- * @param {!Object} desiredCapabilities .
- * @return {!Array<!Promise>} A list of promises for the deleted files.
- */
-function cleanSession(desiredCapabilities) {
-  if (!desiredCapabilities) {
-    return [];
-  }
-  var options = desiredCapabilities[OPTIONS_CAPABILITY_KEY];
-  if (!options) {
-    return [];
-  }
-  if (!options['cleanSession']) {
-    return [];
-  }
-  return SESSION_DATA_FILES.map(function(file) {
-    return io.unlink(file);
-  });
-}
-
-
-/** @return {string} . */
-function getRandomString() {
-  let seed = Date.now();
-  return Math.floor(Math.random() * seed).toString(36)
-      + Math.abs(Math.floor(Math.random() * seed) ^ Date.now()).toString(36);
-}
-
-
-/**
- * @implements {command.Executor}
- */
-class CommandExecutor {
-  constructor() {
-    this.server_ = null;
-
-    /** @private {ws.WebSocket} */
-    this.socket_ = null;
-
-    /** @private {?string} 8*/
-    this.sessionId_ = null;
-
-    /** @private {Promise<!exec.Command>} */
-    this.safari_ = null;
-
-    /** @private {!logging.Logger} */
-    this.log_ = logging.getLogger('webdriver.safari');
-  }
-
-  /** @override */
-  execute(cmd) {
-    var self = this;
-    return new promise.Promise(function(fulfill, reject) {
-      var safariCommand = JSON.stringify({
-        'origin': 'webdriver',
-        'type': 'command',
-        'command': {
-          'id': getRandomString(),
-          'name': cmd.getName(),
-          'parameters': cmd.getParameters()
-        }
-      });
-
-      switch (cmd.getName()) {
-        case command.Name.NEW_SESSION:
-          self.startSafari_(cmd)
-              .then(() => self.sendCommand_(safariCommand))
-              .then(caps => new Session(self.sessionId(), caps))
-              .then(fulfill, reject);
-          break;
-
-        case command.Name.DESCRIBE_SESSION:
-          self.sendCommand_(safariCommand)
-              .then(caps => new Session(self.sessionId(), caps))
-              .then(fulfill, reject);
-          break;
-
-        case command.Name.QUIT:
-          self.destroySession_().then(() => fulfill(null), reject);
-          break;
-
-        default:
-          self.sendCommand_(safariCommand).then(fulfill, reject);
-          break;
-      }
-    });
-  }
-
-  /**
-   * @return {string} The static session ID for this executor's current
-   *     connection.
-   */
-  sessionId() {
-    if (!this.sessionId_) {
-      throw Error('not currently connected')
-    }
-    return this.sessionId_;
-  }
-
-  /**
-   * @param {string} data .
-   * @return {!promise.Promise} .
-   * @private
-   */
-  sendCommand_(data) {
-    let self = this;
-    return new promise.Promise(function(fulfill, reject) {
-      // TODO: support reconnecting with the extension.
-      if (!self.socket_) {
-        self.destroySession_().finally(function() {
-          reject(Error('The connection to the SafariDriver was closed'));
-        });
-        return;
-      }
-
-      self.log_.fine(() => '>>> ' + data);
-      self.socket_.send(data, function(err) {
-        if (err) {
-          reject(err);
-          return;
-        }
-      });
-
-      self.socket_.once('message', function(data) {
-        try {
-          self.log_.fine(() => '<<< ' + data);
-          data = JSON.parse(data);
-        } catch (ex) {
-          reject(Error('Failed to parse driver message: ' + data));
-          return;
-        }
-
-        try {
-          error.checkLegacyResponse(data['response']);
-          fulfill(data['response']['value']);
-        } catch (ex) {
-          reject(ex);
-        }
-      });
-    });
-  }
-
-  /**
-   * @param {!command.Command} command .
-   * @private
-   */
-  startSafari_(command) {
-    this.server_ = new Server();
-
-    this.safari_ = this.server_.start().then(function(address) {
-      var tasks = cleanSession(
-          /** @type {!Object} */(
-                command.getParameters()['desiredCapabilities']));
-      tasks.push(
-        findSafariExecutable(),
-        createConnectFile(
-            'http://' + address.address + ':' + address.port));
-
-      return Promise.all(tasks).then(function(/** !Array<string> */tasks) {
-        var exe = tasks[tasks.length - 2];
-        var html = tasks[tasks.length - 1];
-        return exec(exe, {args: [html]});
-      });
-    });
-
-    return new Promise((resolve, reject) => {
-      let start = Date.now();
-      let timer = setTimeout(function() {
-        let elapsed = Date.now() - start;
-        reject(Error(
-          'Failed to connect to the SafariDriver after ' + elapsed +
-          ' ms; Have you installed the latest extension from ' +
-          'http://selenium-release.storage.googleapis.com/index.html?'));
-      }, 10 * 1000);
-
-      this.server_.once('connection', socket => {
-        clearTimeout(timer);
-        this.socket_ = socket;
-        this.sessionId_ = getRandomString();
-        socket.once('close', () => {
-          this.socket_ = null;
-          this.sessionId_ = null;
-        });
-        resolve();
-      });
-    });
-  }
-
-  /**
-   * Destroys the active session by stopping the WebSocket server and killing the
-   * Safari subprocess.
-   * @private
-   */
-  destroySession_() {
-    var tasks = [];
-    if (this.server_) {
-      tasks.push(this.server_.stop());
-    }
-    if (this.safari_) {
-      tasks.push(this.safari_.then(function(safari) {
-        safari.kill();
-        return safari.result();
-      }));
-    }
-    var self = this;
-    return promise.all(tasks).finally(function() {
-      self.server_ = null;
-      self.socket_ = null;
-      self.safari_ = null;
-    });
-  }
-}
 
 
 /**
@@ -498,10 +88,8 @@ class ServiceBuilder extends remote.DriverService.Builder {
 }
 
 
-/** @const */
 const OPTIONS_CAPABILITY_KEY = 'safari.options';
-const LEGACY_DRIVER_CAPABILITY_KEY = 'legacyDriver'
-
+const LEGACY_DRIVER_CAPABILITY_KEY = 'useLegacyDriver';
 
 
 /**
@@ -651,37 +239,25 @@ class Driver extends webdriver.WebDriver {
    *     the driver under.
    */
   constructor(opt_config, opt_flow) {
-    let caps,
-      executor,
-      useLegacyDriver = false,
-      onQuit = () => {};
-
+    let caps;
     if (opt_config instanceof Options) {
       caps = opt_config.toCapabilities();
     } else {
       caps = opt_config || Capabilities.safari()
     }
 
-    if (caps.has(LEGACY_DRIVER_CAPABILITY_KEY)) {
-      useLegacyDriver = caps.get(LEGACY_DRIVER_CAPABILITY_KEY);
-      caps.delete(LEGACY_DRIVER_CAPABILITY_KEY);
+    if (caps.get(LEGACY_DRIVER_CAPABILITY_KEY)) {
+      throw Error(
+          'The legacy SafariDriver may only be used with the Selenium ' +
+          'standalone server: http://www.seleniumhq.org/download/');
     }
 
-    if (useLegacyDriver) {
-      executor = new CommandExecutor();
-    } else {
-      let service = new ServiceBuilder().build();
-
-      executor = new http_.Executor(
-        service.start()
-          .then(url => new http_.HttpClient(url))
-      );
-
-      onQuit = () => service.kill();
-    }
+    let service = new ServiceBuilder().build();
+    let executor = new http.Executor(
+        service.start().then(url => new http.HttpClient(url)));
+    let onQuit = () => service.kill();
 
     let driver = webdriver.WebDriver.createSession(executor, caps, opt_flow);
-
     super(driver.getSession(), executor, driver.controlFlow());
 
     /** @override */

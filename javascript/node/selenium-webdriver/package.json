@@ -26,7 +26,6 @@
     "adm-zip": "0.4.4",
     "rimraf": "^2.2.8",
     "tmp": "0.0.24",
-    "ws": "^1.0.1",
     "xml2js": "0.4.4"
   },
   "devDependencies": {

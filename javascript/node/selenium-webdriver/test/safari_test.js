@@ -44,7 +44,7 @@ describe('safari.Options', function() {
         caps = webdriver.Capabilities.chrome()
           .set(webdriver.Capability.PROXY, proxyPrefs)
           .set(webdriver.Capability.LOGGING_PREFS, logPrefs)
-          .set('legacyDriver', true);
+          .set('useLegacyDriver', true);
 
       let options = safari.Options.fromCapabilities(caps);
       assert(options.proxy_).equalTo(proxyPrefs);
@@ -86,7 +86,7 @@ describe('safari.Options', function() {
       let caps = options.toCapabilities();
       assert(caps.get('proxy')).equalTo(proxyPrefs);
       assert(caps.get('loggingPrefs')).equalTo(loggingPrefs);
-      assert(caps.get('legacyDriver')).equalTo(true);
+      assert(caps.get('useLegacyDriver')).equalTo(true);
     });
   });
 });

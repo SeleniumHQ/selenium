@@ -114,7 +114,7 @@ test.suite(function(env) {
             .then(verifyJson([[1, 2, [3]]]));
       });
 
-      test.ignore(env.browsers(Browser.IE, Browser.SAFARI)).
+      test.ignore(env.browsers(Browser.IE)).
       it('can return empty object literal', function() {
         execute('return {}').then(verifyJson({}));
       });
@@ -206,7 +206,7 @@ test.suite(function(env) {
         assert(execute('return arguments.length', 1, 'a', false)).equalTo(3);
       });
 
-      test.ignore(env.browsers(Browser.FIREFOX)).
+      test.ignore(env.browsers(Browser.FIREFOX, Browser.SAFARI)).
       it('can return arguments object as array', function() {
         execute('return arguments', 1, 'a', false).then(function(val) {
           assert(val.length).equalTo(3);

@@ -381,7 +381,7 @@ test.suite(function(env) {
           }).then(links => links[0]);
         });
 
-        assert(link.getText()).isEqualTo('Update a div');
+        assert(link.getText()).matches(/Update\s+a\s+div/);
       });
 
       test.it('uses first element if locator resolves to list', function() {

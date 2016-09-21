@@ -11,21 +11,14 @@ Selenium may be installed via npm with
     npm install selenium-webdriver
 
 You will need to download additional components to work with each of the major
-browsers. The drivers for Chrome, Firefox, Safari, PhantomJS, Opera, and
+browsers. The drivers for Chrome, Firefox, PhantomJS, Opera, and
 Microsoft's IE and Edge web browsers are all standalone executables that should
 be placed on your system [PATH]. Apple's safaridriver is shipped with
-Safari 10 in macOS Sierra. You will need to enable Remote Automation in
-the Develop menu of Safari 10 before testing.
+Safari 10 for OS X El Capitan and macOS Sierra. You will need to enable Remote
+Automation in the Develop menu of Safari 10 before testing.
 
 > **NOTE:**  Mozilla's [geckodriver] is only required for Firefox 47+.
 > Everything you need for Firefox 38-46 is included with this package.
-
-> **NOTE:**  Apple's [safaridriver] is preferred for testing Safari 10+.
-> To test versions of Safari prior to Safari 10, The
-> [SafariDriver.safariextz][release] browser extension should be
-> installed in your browser before using Selenium. We recommend
-> disabling the extension when using the browser without Selenium
-> or installing the extension in a profile only used for testing.
 
 
 | Browser           | Component                          |
