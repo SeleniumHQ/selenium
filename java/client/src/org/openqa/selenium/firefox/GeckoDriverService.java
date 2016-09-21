@@ -101,8 +101,14 @@ public class GeckoDriverService extends DriverService {
       if (getLogFile() != null) {
         argsBuilder.add(String.format("--log-file=\"%s\"", getLogFile().getAbsolutePath()));
       }
-      argsBuilder.add("-b");
-      argsBuilder.add(new Executable(null).getPath());
+      try {
+        Executable firefoxExe = new Executable(null);
+        argsBuilder.add("-b");
+        argsBuilder.add(firefoxExe.getPath());
+      } catch (WebDriverException e) {
+        // Unable to find Firefox. GeckoDriver will be responsible for finding 
+        // Firefox on the PATH or via a capability.
+      }
       return argsBuilder.build();
     }
 
