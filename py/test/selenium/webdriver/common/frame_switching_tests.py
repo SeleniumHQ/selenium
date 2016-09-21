@@ -92,30 +92,30 @@ class FrameSwitchingTest(unittest.TestCase):
 
     def testShouldBeAbleToSwitchToAFrameByItsName(self):
         self._load_page("frameset")
-        self.driver.switch_to.frame(self.driver.find_element_by_name("fourth"))
+        self.driver.switch_to.frame("fourth")
 
         self.assertEqual(self.driver.find_element(By.TAG_NAME, "frame").get_attribute("name"), "child1")
 
     def testShouldBeAbleToSwitchToAnIframeByItsName(self):
         self._load_page("iframes")
-        self.driver.switch_to.frame(self.driver.find_element_by_name("iframe1-name"))
+        self.driver.switch_to.frame("iframe1-name")
 
         self.assertEqual(self.driver.find_element(By.NAME, "id-name1").get_attribute("value"), "name")
 
     def testShouldBeAbleToSwitchToAFrameByItsID(self):
         self._load_page("frameset")
-        self.driver.switch_to.frame(self.driver.find_element(By.ID, "fifth"))
+        self.driver.switch_to.frame("fifth")
         self.assertEqual(self.driver.find_element(By.NAME, "windowOne").text, "Open new window")
 
     def testShouldBeAbleToSwitchToAnIframeByItsID(self):
         self._load_page("iframes")
-        self.driver.switch_to.frame(self.driver.find_element_by_id("iframe1"))
+        self.driver.switch_to.frame("iframe1")
 
         self.assertEqual(self.driver.find_element(By.NAME, "id-name1").get_attribute("value"), "name")
 
     def testShouldBeAbleToSwitchToFrameWithNameContainingDot(self):
         self._load_page("frameset")
-        self.driver.switch_to.frame(self.driver.find_element_by_id("sixth.iframe1"))
+        self.driver.switch_to.frame("sixth.iframe1")
         self.assertTrue("Page number 3" in self.driver.find_element(By.TAG_NAME, "body").text)
 
     def testShouldBeAbleToSwitchToAFrameUsingAPreviouslyLocatedWebElement(self):
@@ -146,7 +146,7 @@ class FrameSwitchingTest(unittest.TestCase):
 
     def testFrameSearchesShouldBeRelativeToTheCurrentlySelectedFrame(self):
         self._load_page("frameset")
-        self.driver.switch_to.frame(self.driver.find_element_by_name("second"))
+        self.driver.switch_to.frame("second")
         self.assertEqual(self.driver.find_element(By.ID, "pageNumber").text, "2")
 
         try:
@@ -159,7 +159,7 @@ class FrameSwitchingTest(unittest.TestCase):
         self.driver.switch_to.frame(self.driver.find_element_by_name("third"))
 
         try:
-            self.driver.switch_to.frame(self.driver.find_element_by_name("second"))
+            self.driver.switch_to.frame("second")
             self.fail("Should have thrown NoSuchElementException")
         except NoSuchElementException:
             # Do nothing

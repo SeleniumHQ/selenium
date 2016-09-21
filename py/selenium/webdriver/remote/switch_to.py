@@ -17,6 +17,13 @@
 
 from .command import Command
 from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException
+
+try:
+    str = basestring
+except NameError:
+    pass
 
 
 class SwitchTo:
@@ -65,6 +72,12 @@ class SwitchTo:
             driver.switch_to.frame(1)
             driver.switch_to.frame(driver.find_elements_by_tag_name("iframe")[0])
         """
+        if isinstance(frame_reference, basestring) and self._driver.w3c:
+            try:
+                frame_reference = self._driver.find_element(By.ID, frame_reference)
+            except NoSuchElementException:
+                frame_reference = self._driver.find_element(By.NAME, frame_reference)
+
         self._driver.execute(Command.SWITCH_TO_FRAME, {'id': frame_reference})
 
     def parent_frame(self):
