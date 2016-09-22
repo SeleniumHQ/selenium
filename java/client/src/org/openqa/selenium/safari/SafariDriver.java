@@ -18,16 +18,26 @@
 package org.openqa.selenium.safari;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.RemoteWebElement;
+import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 import java.io.IOException;
+
+import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
 
 /**
  * A WebDriver implementation that controls Safari using a browser extension
@@ -37,19 +47,14 @@ import java.io.IOException;
  */
 public class SafariDriver extends RemoteWebDriver {
 
-  /**
-   * Capability to force usage of the deprecated SafariDriver extension while running
-   * on macOS Sierra.
-   *
-   * <pre>
-   *   DesiredCapabilities safariCap = DesiredCapabilities.Safari();
-   *   safariCap.setCapability(SafariDriver.USE_LEGACY_DRIVER_CAPABILITY, true);
-   *   WebDriver driver = new SafariDriver(safariCap);
-   * </pre>
-   */
-  public static final String USE_LEGACY_DRIVER_CAPABILITY = "useLegacyDriver";
-
   private SafariDriverService service;
+
+  // Legacy Window API
+  private final static String SET_WINDOW_SIZE = "setWindowSize";
+  private final static String SET_WINDOW_POSITION = "setWindowPosition";
+  private final static String GET_WINDOW_SIZE = "getWindowSize";
+  private final static String GET_WINDOW_POSITION = "getWindowPosition";
+  private final static String MAXIMIZE_WINDOW = "maximizeWindow";
 
   /**
    * Initializes a new SafariDriver} class with default {@link SafariOptions}.
@@ -76,6 +81,10 @@ public class SafariDriver extends RemoteWebDriver {
    */
   public SafariDriver(SafariOptions safariOptions) {
     super(getExecutor(safariOptions), safariOptions.toCapabilities(), requiredCapabilities(safariOptions));
+
+    if (this.getCommandExecutor() instanceof SafariDriverCommandExecutor) {
+      this.setElementConverter(new LegacyJsonToWebElementConverter(this));
+    }
   }
 
   /**
@@ -90,15 +99,14 @@ public class SafariDriver extends RemoteWebDriver {
 
   private static CommandExecutor getExecutor(SafariOptions options) {
     SafariDriverService service = SafariDriverService.createDefaultService(options);
-    if (isLegacy(options) && service != null) {
+    if (! isLegacy(options) && service != null) {
       return new DriverCommandExecutor(service);
     }
     return new SafariDriverCommandExecutor(options);
   }
 
   private static boolean isLegacy(SafariOptions options) {
-    Object useLegacy = options.toCapabilities().getCapability(USE_LEGACY_DRIVER_CAPABILITY);
-    return useLegacy != null && (Boolean)useLegacy;
+    return options.getUseLegacyDriver();
   }
 
   @Override
@@ -138,5 +146,139 @@ public class SafariDriver extends RemoteWebDriver {
     String base64 = (String) execute(DriverCommand.SCREENSHOT).getValue();
     // ... and convert it.
     return target.convertFromBase64Png(base64);
+  }
+
+  @Override
+  public TargetLocator switchTo() {
+    if (this.getCommandExecutor() instanceof SafariDriverCommandExecutor) {
+      return new LegacyRemoteTargetLocator();
+    }
+
+    return super.switchTo();
+  }
+
+  @Override
+  public Options manage() {
+    if (this.getCommandExecutor() instanceof SafariDriverCommandExecutor) {
+      return new LegacyRemoteWebDriverOptions();
+    }
+
+    return super.manage();
+  }
+
+
+  private final class LegacyRemoteTargetLocator extends RemoteTargetLocator {
+
+    @Override
+    public WebDriver window(String windowHandleOrName) {
+      execute(DriverCommand.SWITCH_TO_WINDOW, ImmutableMap.of("name", windowHandleOrName));
+      return SafariDriver.this;
+    }
+
+  }
+
+  private final class LegacyRemoteWebDriverOptions extends RemoteWebDriverOptions {
+
+    @Override
+    public Window window() {
+      return new LegacyRemoteWindow();
+    }
+
+    private final class LegacyRemoteWindow extends RemoteWindow {
+
+      @Override
+      public void setSize(Dimension targetSize) {
+        execute(SET_WINDOW_SIZE,
+            ImmutableMap.of("windowHandle", "current",
+                "width", targetSize.width, "height", targetSize.height));
+      }
+
+      @Override
+      public void setPosition(Point targetPosition) {
+        execute(SET_WINDOW_POSITION,
+            ImmutableMap.of("windowHandle", "current",
+                "x", targetPosition.x, "y", targetPosition.y));
+      }
+
+      @SuppressWarnings("unchecked")
+      @Override
+      public Dimension getSize()
+      {
+        Response response =  execute(GET_WINDOW_SIZE, ImmutableMap.of("windowHandle", "current"));
+
+        Map<String, Object> rawSize = (Map<String, Object>) response.getValue();
+        int width = ((Number) rawSize.get("width")).intValue();
+        int height = ((Number) rawSize.get("height")).intValue();
+
+        return new Dimension(width, height);
+      }
+
+      @SuppressWarnings("unchecked")
+      @Override
+      public Point getPosition()
+      {
+        Response response = execute(GET_WINDOW_POSITION, ImmutableMap.of("windowHandle", "current"));
+        Map<String, Object> rawPoint = (Map<String, Object>) response.getValue();
+
+        int x = ((Number) rawPoint.get("x")).intValue();
+        int y = ((Number) rawPoint.get("y")).intValue();
+
+        return new Point(x, y);
+      }
+
+      @Override
+      public void maximize()
+      {
+        execute(MAXIMIZE_WINDOW, ImmutableMap.of("windowHandle", "current"));
+      }
+
+    }
+
+  }
+
+  private final static class LegacyJsonToWebElementConverter extends JsonToWebElementConverter {
+
+    RemoteWebDriver driver;
+
+    public LegacyJsonToWebElementConverter(RemoteWebDriver driver)
+    {
+      super(driver);
+      this.driver = driver;
+    }
+
+    @Override
+    protected RemoteWebElement newRemoteWebElement()
+    {
+      RemoteWebElement toReturn = new LegacyRemoteWebElement();
+      toReturn.setParent(driver);
+      return toReturn;
+    }
+
+  }
+
+  private final static class LegacyRemoteWebElement extends RemoteWebElement {
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Point getLocation() {
+      Response response = execute(DriverCommand.GET_ELEMENT_LOCATION, ImmutableMap.of("id", id));
+
+      Map<String, Object> rawPoint = (Map<String, Object>) response.getValue();
+      int x = ((Number) rawPoint.get("x")).intValue();
+      int y = ((Number) rawPoint.get("y")).intValue();
+      return new Point(x, y);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Dimension getSize() {
+      Response response = execute(DriverCommand.GET_ELEMENT_SIZE, ImmutableMap.of("id", id));
+
+      Map<String, Object> rawSize = (Map<String, Object>) response.getValue();
+      int width = ((Number) rawSize.get("width")).intValue();
+      int height = ((Number) rawSize.get("height")).intValue();
+      return new Dimension(width, height);
+    }
+
   }
 }

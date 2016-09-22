@@ -56,6 +56,7 @@ public class SafariOptions {
     private Option() {}  // Utility class.
 
     private static final String CLEAN_SESSION = "cleanSession";
+    private static final String LEGACY_DRIVER = "legacyDriver";
     private static final String PORT = "port";
   }
 
@@ -68,6 +69,11 @@ public class SafariOptions {
    * @see #setUseCleanSession(boolean)
    */
   private boolean useCleanSession = false;
+
+  /**
+   * @see #setUseLegacyDriver(boolean)
+   */
+  private boolean useLegacyDriver = false;
 
   /**
    * Construct a {@link SafariOptions} instance from given capabilites.
@@ -120,6 +126,22 @@ public class SafariOptions {
     this.useCleanSession = useCleanSession;
   }
 
+  /**
+   * Capability to force usage of the deprecated SafariDriver extension while running
+   * on macOS Sierra.
+   *
+   * <pre>
+   *   SafariOptions safariOptions = new SafariOptions();
+   *   safariOptions.setUseLegacyDriver(true);
+   *   WebDriver driver = new SafariDriver(safariOptions);
+   * </pre>
+   *
+   * @param useLegacyDriver If true, the legacy SafariDriver Extension will be used.
+   */
+  public void setUseLegacyDriver(boolean useLegacyDriver) {
+    this.useLegacyDriver = useLegacyDriver;
+  }
+
   // Getters
 
   /**
@@ -139,6 +161,14 @@ public class SafariOptions {
     return useCleanSession;
   }
 
+  /**
+   * @return Whether the old SafariDriver extension.
+   * @see #setUseLegacyDriver(boolean)
+   */
+  public boolean getUseLegacyDriver() {
+    return useLegacyDriver;
+  }
+
   // (De)serialization of the options
 
   /**
@@ -151,6 +181,7 @@ public class SafariOptions {
     JsonObject options = new JsonObject();
     options.addProperty(Option.PORT, port);
     options.addProperty(Option.CLEAN_SESSION, useCleanSession);
+    options.addProperty(Option.LEGACY_DRIVER, useLegacyDriver);
     return options;
   }
 
@@ -175,6 +206,11 @@ public class SafariOptions {
     if (useCleanSession != null) {
       safariOptions.setUseCleanSession(useCleanSession);
     }
+
+    Boolean useLegacyDriver = (Boolean) options.get(Option.LEGACY_DRIVER);
+    if (useLegacyDriver != null) {
+      safariOptions.setUseLegacyDriver(useLegacyDriver);
+    }
     return safariOptions;
   }
 
@@ -198,11 +234,12 @@ public class SafariOptions {
     }
     SafariOptions that = (SafariOptions) other;
     return this.port == that.port
-        && this.useCleanSession == that.useCleanSession;
+        && this.useCleanSession == that.useCleanSession
+        && this.useLegacyDriver == that.useLegacyDriver;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(this.port, this.useCleanSession);
+    return Objects.hashCode(this.port, this.useCleanSession, this.useLegacyDriver);
   }
 }
