@@ -20,7 +20,6 @@ package org.openqa.grid.internal.utils;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
@@ -38,7 +37,7 @@ public class SelfRegisteringRemoteTest {
 
   private final class DummyGridNodeServer implements GridNodeServer {
     public Map<String, Class<? extends Servlet>> extraServlets;
- 
+
     @Override
     public void boot() throws Exception { }
 
@@ -63,16 +62,15 @@ public class SelfRegisteringRemoteTest {
   @Test
   public void testHubRegistrationWhenPortExplicitlyZeroedOut() throws MalformedURLException {
     GridNodeServer server = new DummyGridNodeServer();
-    RegistrationRequest config = new RegistrationRequest();
-    config.setRole(GridRole.NODE);
-    config.getConfiguration().port = 0;
-    config.getConfiguration().hub = "http://locahost:4444";
-    SelfRegisteringRemote remote = new SelfRegisteringRemote(config);
+    RegistrationRequest request = new RegistrationRequest();
+    request.getConfiguration().port = 0;
+    request.getConfiguration().hub = "http://locahost:4444";
+    SelfRegisteringRemote remote = new SelfRegisteringRemote(request);
     remote.setRemoteServer(server);
     remote.updateConfigWithRealPort();
-    String host = remote.getConfiguration().getRemoteHost();
+    String remoteHost = remote.getConfiguration().getRemoteHost();
     assertEquals("Ensure that the remote host is updated properly",
-                 "http://localhost:" + server.getRealPort(), host);
+                 "http://" + request.getConfiguration().host + ":" + server.getRealPort(), remoteHost);
 
   }
 

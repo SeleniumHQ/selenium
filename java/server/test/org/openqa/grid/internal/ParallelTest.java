@@ -29,6 +29,7 @@ import org.openqa.grid.internal.mock.MockedRequestHandler;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,21 +50,18 @@ public class ParallelTest {
   @Before
   public void prepareReqRequest() {
 
-    GridNodeConfiguration config = new GridNodeConfiguration();
     app1.put(CapabilityType.APPLICATION_NAME, "app1");
     app1.put(MAX_INSTANCES, 5);
 
     app2.put(CapabilityType.APPLICATION_NAME, "app2");
     app2.put(MAX_INSTANCES, 1);
 
-    config.host = "machine1";
-    config.port = 4444;
-    config.maxSession = 5;
-
     req = new RegistrationRequest();
-    req.addDesiredCapability(app1);
-    req.addDesiredCapability(app2);
-    req.setConfiguration(config);
+    req.getConfiguration().host = "machine1";
+    req.getConfiguration().port = 4444;
+    req.getConfiguration().maxSession = 5;
+    req.getConfiguration().capabilities.add(new DesiredCapabilities(app1));
+    req.getConfiguration().capabilities.add(new DesiredCapabilities(app2));
   }
 
   @Test
@@ -221,14 +219,12 @@ public class ParallelTest {
     app2.put(CapabilityType.APPLICATION_NAME, "app2");
     app2.put(MAX_INSTANCES, 1);
 
-    config.host = "machine1";
-    config.port = 4444;
-    config.maxSession = 5;
-
     req = new RegistrationRequest();
-    req.addDesiredCapability(app1);
-    req.addDesiredCapability(app2);
-    req.setConfiguration(config);
+    req.getConfiguration().host = "machine1";
+    req.getConfiguration().port = 4444;
+    req.getConfiguration().maxSession = 5;
+    req.getConfiguration().capabilities.add(new DesiredCapabilities(app1));
+    req.getConfiguration().capabilities.add(new DesiredCapabilities(app2));
     req.getConfiguration().proxy = DetachedRemoteProxy.class.getCanonicalName();
 
     p1 = BaseRemoteProxy.getNewInstance(req, registry);

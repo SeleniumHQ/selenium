@@ -26,21 +26,41 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import com.beust.jcommander.JCommander;
+
 import org.junit.Test;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.Arrays;
 
 public class GridNodeConfigurationTest {
+
   @Test
   public void testLoadFromJson() {
-    JsonObject json = new JsonParser()
-      .parse("{ \"host\": \"dummyhost\", \"port\": 1234 }").getAsJsonObject();
+    final String configJson = "{"
+                              + "\"capabilities\":"
+                              + " ["
+                              + "   {"
+                              + "    \"browserName\": \"firefox\","
+                              + "    \"maxInstances\": 5,"
+                              + "    \"javascriptEnabled\": true"
+                              + "   }"
+                              + " ],"
+                              + "\"host\": \"dummyhost\","
+                              + "\"maxSession\": 5,"
+                              + "\"port\": 1234"
+                              + "}";
+
+    JsonObject json = new JsonParser().parse(configJson).getAsJsonObject();
     GridNodeConfiguration gnc = GridNodeConfiguration.loadFromJSON(json);
 
     assertEquals("node", gnc.role);
     assertEquals(1234, gnc.port.intValue());
+    assertEquals(5, gnc.maxSession.intValue());
     assertEquals("dummyhost", gnc.host);
+    assertTrue(gnc.capabilities.size() == 1);
+    assertEquals("firefox", gnc.capabilities.get(0).getBrowserName());
+    assertEquals(5L, gnc.capabilities.get(0).getCapability("maxInstances"));
   }
 
   @Test
@@ -48,7 +68,7 @@ public class GridNodeConfigurationTest {
     GridNodeConfiguration gnc = new GridNodeConfiguration();
     assertEquals("node", gnc.role);
     assertEquals(5000, gnc.nodeStatusCheckTimeout.intValue());
-    assertTrue(gnc.browser.isEmpty());
+    assertTrue(gnc.capabilities.isEmpty());
     assertNull(gnc.id);
     assertNull(gnc.downPollingLimit);
     assertNull(gnc.hub);
@@ -63,6 +83,34 @@ public class GridNodeConfigurationTest {
 
     //not a @Parameter
     assertNull(gnc.remoteHost);
+  }
+
+  @Test
+  public void testAsJson() {
+    final String[] args = new String[] { "-capabilities", "browserName=chrome,platform=linux" };
+    GridNodeConfiguration gnc = new GridNodeConfiguration();
+    new JCommander(gnc, args);
+
+    assertEquals("{\"capabilities\":[{\"browserName\":\"chrome\",\"platform\":\"LINUX\"}],"
+               + "\"nodeStatusCheckTimeout\":5000,"
+               + "\"custom\":{},"
+               + "\"maxSession\":1,"
+               + "\"debug\":false,"
+               + "\"logLongForm\":false,"
+               + "\"role\":\"node\","
+               + "\"timeout\":1800}", gnc.toJson().toString());
+  }
+
+  @Test
+  public void testWithCapabilitiesArgs() {
+    final String[] args = new String[] { "-capabilities",
+                                       "browserName=chrome,platform=linux,maxInstances=10,boolean=false" };
+    GridNodeConfiguration gnc = new GridNodeConfiguration();
+    new JCommander(gnc, args);
+    assertTrue(gnc.capabilities.size() == 1);
+    assertEquals("chrome", gnc.capabilities.get(0).getBrowserName());
+    assertEquals(10L, gnc.capabilities.get(0).getCapability("maxInstances"));
+    assertEquals(false, gnc.capabilities.get(0).getCapability("boolean"));
   }
 
   @Test
@@ -112,7 +160,7 @@ public class GridNodeConfigurationTest {
     other.id = "myid";
     DesiredCapabilities dc =
       new DesiredCapabilities(new ImmutableMap.Builder().put("chrome", "foo").build());
-    other.browser = Arrays.asList(dc);
+    other.capabilities = Arrays.asList(dc);
     other.downPollingLimit = 50;
     other.hub = "http://dummyhost";
     other.hubHost = "dummyhost";
@@ -128,7 +176,7 @@ public class GridNodeConfigurationTest {
     other.remoteHost = "mylocalhost";
     gnc.merge(other);
 
-    assertSame(other.browser, gnc.browser);
+    assertSame(other.capabilities, gnc.capabilities);
     assertEquals(other.id, gnc.id);
     assertEquals(other.downPollingLimit, gnc.downPollingLimit);
     assertEquals(other.hub, gnc.hub);

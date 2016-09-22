@@ -19,8 +19,6 @@ package org.openqa.grid.plugin;
 
 import static org.junit.Assert.assertEquals;
 
-import com.beust.jcommander.JCommander;
-
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
@@ -29,6 +27,7 @@ import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.security.InvalidParameterException;
 import java.util.HashMap;
@@ -39,21 +38,12 @@ public class RemoteProxyInheritanceTest {
 
   @Test
   public void defaultToRemoteProxy() {
-    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
-    new JCommander(nodeConfiguration, "-role", "webdriver", "-host", "localhost");
-    RegistrationRequest res = RegistrationRequest.build(nodeConfiguration);
-    res.getCapabilities().clear();
-    RegistrationRequest req = res;
-
     Map<String, Object> app1 = new HashMap<>();
-    GridNodeConfiguration config = new GridNodeConfiguration();
     app1.put(CapabilityType.APPLICATION_NAME, "app1");
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    config.capabilities.add(new DesiredCapabilities(app1));
 
-    req.addDesiredCapability(app1);
-    req.setConfiguration(config);
-
-    // requires Custom1 & Custom1 set in config to work.
-    RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
+    RemoteProxy p = BaseRemoteProxy.getNewInstance(new RegistrationRequest(config), registry);
     assertEquals(BaseRemoteProxy.class, p.getClass());
   }
 
@@ -63,13 +53,11 @@ public class RemoteProxyInheritanceTest {
     GridNodeConfiguration config = new GridNodeConfiguration();
     app1.put(CapabilityType.APPLICATION_NAME, "app1");
     config.proxy = "org.openqa.grid.plugin.MyRemoteProxy";
-
+    config.capabilities.add(new DesiredCapabilities(app1));
     config.custom.put("Custom1", "A");
     config.custom.put("Custom2", "B");
 
-    RegistrationRequest req = new RegistrationRequest();
-    req.addDesiredCapability(app1);
-    req.setConfiguration(config);
+    RegistrationRequest req = new RegistrationRequest(config);
 
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 
@@ -87,10 +75,9 @@ public class RemoteProxyInheritanceTest {
     GridNodeConfiguration config = new GridNodeConfiguration();
     app1.put(CapabilityType.APPLICATION_NAME, "app1");
     config.proxy = "I Don't exist";
+    config.capabilities.add(new DesiredCapabilities(app1));
 
-    RegistrationRequest req = new RegistrationRequest();
-    req.addDesiredCapability(app1);
-    req.setConfiguration(config);
+    RegistrationRequest req = new RegistrationRequest(config);
 
     BaseRemoteProxy.getNewInstance(req, registry);
   }
@@ -101,10 +88,9 @@ public class RemoteProxyInheritanceTest {
     GridNodeConfiguration config = new GridNodeConfiguration();
     app1.put(CapabilityType.APPLICATION_NAME, "app1");
     config.proxy = "java.lang.String";
+    config.capabilities.add(new DesiredCapabilities(app1));
 
-    RegistrationRequest req = new RegistrationRequest();
-    req.addDesiredCapability(app1);
-    req.setConfiguration(config);
+    RegistrationRequest req = new RegistrationRequest(config);
 
     BaseRemoteProxy.getNewInstance(req, registry);
   }
@@ -116,10 +102,9 @@ public class RemoteProxyInheritanceTest {
     GridNodeConfiguration config = new GridNodeConfiguration();
     app1.put(CapabilityType.APPLICATION_NAME, "app1");
     config.proxy = "I Don't exist";
+    config.capabilities.add(new DesiredCapabilities(app1));
 
-    RegistrationRequest req = new RegistrationRequest();
-    req.addDesiredCapability(app1);
-    req.setConfiguration(config);
+    RegistrationRequest req = new RegistrationRequest(config);
 
     // requires Custom1 & Custom1 set in config to work.
     BaseRemoteProxy.getNewInstance(req, registry);

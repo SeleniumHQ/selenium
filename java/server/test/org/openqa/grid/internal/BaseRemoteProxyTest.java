@@ -32,7 +32,7 @@ import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.JsonToBeanConverter;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,10 +77,8 @@ public class BaseRemoteProxyTest {
     cap.put(CapabilityType.APPLICATION_NAME, "corrupted");
 
     GridNodeConfiguration config = new Gson().fromJson("{\"remoteHost\":\"ebay.com\"}", GridNodeConfiguration.class);
-
-    RegistrationRequest request = new RegistrationRequest();
-    request.addDesiredCapability(cap);
-    request.setConfiguration(config);
+    config.capabilities.add(new DesiredCapabilities(cap));
+    RegistrationRequest request = new RegistrationRequest(config);
 
     new BaseRemoteProxy(request, registry);
   }

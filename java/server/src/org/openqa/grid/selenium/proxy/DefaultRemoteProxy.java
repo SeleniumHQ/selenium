@@ -246,8 +246,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
   }
 
   public void afterSession(TestSession session) {
-    // TODO Auto-generated method stub
-
+    // nothing to do here in this default implementation
   }
 
   @Override

@@ -30,6 +30,7 @@ import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -100,9 +101,8 @@ public class RegistryTest {
     config.host = "machine1";
     config.port = 4444;
     config.maxSession = 5;
-    req = new RegistrationRequest();
-    req.addDesiredCapability(app1);
-    req.setConfiguration(config);
+    config.capabilities.add(new DesiredCapabilities(app1));
+    req = new RegistrationRequest(config);
   }
 
   @Test

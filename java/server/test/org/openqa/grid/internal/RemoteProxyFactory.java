@@ -46,11 +46,11 @@ public class RemoteProxyFactory {
     config.port = u.getPort();
     config.role = "webdriver";
     RegistrationRequest req = RegistrationRequest.build(config);
-    req.getCapabilities().clear();
+    req.getConfiguration().capabilities.clear();
 
     DesiredCapabilities capability = new DesiredCapabilities();
     capability.setBrowserName(browser);
-    req.addDesiredCapability(capability);
+    req.getConfiguration().capabilities.add(capability);
 
     return createProxy(registry, req);
 
@@ -74,8 +74,8 @@ public class RemoteProxyFactory {
     configuration.port = u.getPort();
     configuration.hub = "http://localhost:4444";
     RegistrationRequest req = RegistrationRequest.build(configuration);
-    req.getCapabilities().clear();
-    req.addDesiredCapability(cap);
+    req.getConfiguration().capabilities.clear();
+    req.getConfiguration().capabilities.add(new DesiredCapabilities(cap));
     return createProxy(registry, req);
 
   }
@@ -99,9 +99,9 @@ public class RemoteProxyFactory {
     configuration.port = u.getPort();
     configuration.hub = "http://localhost:4444";
     RegistrationRequest req = RegistrationRequest.build(configuration);
-    req.getCapabilities().clear();
+    req.getConfiguration().capabilities.clear();
     for (Map<String, Object> c : caps) {
-      req.addDesiredCapability(c);
+      req.getConfiguration().capabilities.add(new DesiredCapabilities(c));
     }
     return createProxy(registry, req);
 

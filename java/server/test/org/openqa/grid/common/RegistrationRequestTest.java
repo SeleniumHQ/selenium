@@ -19,12 +19,12 @@ package org.openqa.grid.common;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import com.beust.jcommander.JCommander;
 
 import org.junit.Test;
+import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.BrowserType;
@@ -36,7 +36,6 @@ public class RegistrationRequestTest {
 
   @Test
   public void getConfigAsTests() throws Exception {
-    RegistrationRequest req = new RegistrationRequest();
     URL url = new URL("http://a.c:2");
 
     GridNodeConfiguration config = new GridNodeConfiguration();
@@ -44,7 +43,7 @@ public class RegistrationRequestTest {
     config.host = url.getHost();
     config.port = url.getPort();
 
-    req.setConfiguration(config);
+    RegistrationRequest req = new RegistrationRequest(config);
 
     int c = req.getConfiguration().cleanUpCycle;
     assertTrue(c == 1);
@@ -55,30 +54,28 @@ public class RegistrationRequestTest {
 
   @Test
   public void json() {
-    RegistrationRequest req = new RegistrationRequest();
-    req.setName("Franзois");
-    req.setDescription("a\nb\nc");
-
-    GridNodeConfiguration config = new GridNodeConfiguration();
-    config.role = "node";
-
-    req.setConfiguration(config);
+    RegistrationRequest req =
+      new RegistrationRequest(new GridNodeConfiguration(), "Franзois", "a\nb\nc");
 
     for (int i = 0; i < 5; i++) {
       DesiredCapabilities cap = new DesiredCapabilities(BrowserType.FIREFOX, "" + i, Platform.LINUX);
-      req.addDesiredCapability(cap);
+      req.getConfiguration().capabilities.add(cap);
     }
 
-    String json = req.toJSON();
+    String json = req.toJson().toString();
 
-    RegistrationRequest req2 = RegistrationRequest.getNewInstance(json);
+    RegistrationRequest req2 = RegistrationRequest.fromJson(json);
 
-    assertEquals(req2.getName(), req.getName());
-    assertEquals(req2.getDescription(), req.getDescription());
+    assertEquals(req.getName(), req2.getName());
+    assertEquals(req.getDescription(), req2.getDescription());
 
-    assertEquals(req2.getConfiguration().role, req.getConfiguration().role);
-    assertEquals(req2.getCapabilities().size(), req.getCapabilities().size());
-
+    assertEquals(req.getConfiguration().role, req2.getConfiguration().role);
+    assertEquals(req.getConfiguration().capabilities.size(),
+                 req2.getConfiguration().capabilities.size());
+    assertEquals(req.getConfiguration().capabilities.get(0).getBrowserName(),
+                 req2.getConfiguration().capabilities.get(0).getBrowserName());
+    assertEquals(req.getConfiguration().capabilities.get(0).getPlatform(),
+                 req2.getConfiguration().capabilities.get(0).getPlatform());
   }
 
 
@@ -88,7 +85,7 @@ public class RegistrationRequestTest {
     new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-hubPort", "1234","-host","localhost");
     RegistrationRequest req = RegistrationRequest.build(config);
 
-    assertEquals(GridRole.NODE, req.getRole());
+    assertEquals(GridRole.NODE, GridRole.get(req.getConfiguration().role));
     assertEquals("ABC", req.getConfiguration().getHubHost());
     assertEquals(1234, req.getConfiguration().getHubPort().longValue());
 
@@ -113,7 +110,8 @@ public class RegistrationRequestTest {
     new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-host","localhost");
     RegistrationRequest req = RegistrationRequest.build(config);
     assertEquals("ABC", req.getConfiguration().getHubHost());
-    assertNotSame(0, req.getCapabilities().size());
+    // should be 3, we a building from the DefaultNodeWebDriver.json
+    assertEquals(3, req.getConfiguration().capabilities.size());
   }
 
   @Test
@@ -140,5 +138,14 @@ public class RegistrationRequestTest {
     RegistrationRequest req = RegistrationRequest.build(config);
 
     assertEquals("http://example.com:5555", req.getConfiguration().getRemoteHost());
+  }
+
+  @Test(expected = GridConfigurationException.class)
+  public void validateWithException() {
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    new JCommander(config, "-role", "node", "-hubHost", "localhost", "-hub", "localhost:4444");
+    RegistrationRequest req = new RegistrationRequest(config);
+
+    req.validate();
   }
 }

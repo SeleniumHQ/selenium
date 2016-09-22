@@ -20,6 +20,7 @@ package org.openqa.grid.internal.utils.configuration;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.TypeAdapter;
+import com.google.gson.annotations.Expose;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
@@ -36,6 +37,12 @@ import org.openqa.grid.internal.utils.configuration.validators.FileExistsValueVa
 import java.io.IOException;
 
 public class GridHubConfiguration extends GridConfiguration {
+  public static final String DEFUALT_HUB_CONFIG_FILE = "defaults/DefaultHub.json";
+  private static final GridHubConfiguration DEFAULT_CONFIG = loadFromJSON(DEFUALT_HUB_CONFIG_FILE);
+
+  /*
+   * config parameters which do not serialize or de-serialize
+   */
 
   @Parameter(
     names = "-hubConfig",
@@ -44,19 +51,26 @@ public class GridHubConfiguration extends GridConfiguration {
   )
   public String hubConfig;
 
+  /*
+   * config parameters which serialize and deserialize to/from json
+   */
+
+  @Expose
   @Parameter(
-    names = {"-matcher", "-capabilityMatcher"},
+    names = { "-matcher", "-capabilityMatcher" },
     description = "<String> class name : a class implementing the CapabilityMatcher interface. Specifies the logic the hub will follow to define whether a request can be assigned to a node. For example, if you want to have the matching process use regular expressions instead of exact match when specifying browser version. ALL nodes of a grid ecosystem would then use the same capabilityMatcher, as defined here. Default is org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
     converter = CapabilityMatcherString.class
   )
   public CapabilityMatcher capabilityMatcher = new DefaultCapabilityMatcher();
 
+  @Expose
   @Parameter(
     names = "-newSessionWaitTimeout",
     description = "<Integer> in ms : The time after which a new test waiting for a node to become available will time out. When that happens, the test will throw an exception before attempting to start a browser. Defaults to no timeout ( -1 )"
   )
   public Integer newSessionWaitTimeout = -1;
 
+  @Expose
   @Parameter(
     names = "-prioritizer",
     description = "<String> class name : a class implementing the Prioritizer interface. Specify a custom Prioritizer if you want to sort the order in which new session requests are processed when there is a queue. Default to null ( no priority = FIFO )",
@@ -64,13 +78,12 @@ public class GridHubConfiguration extends GridConfiguration {
   )
   public Prioritizer prioritizer = null;
 
+  @Expose
   @Parameter(
     names = "-throwOnCapabilityNotPresent",
     description = "<Boolean> true or false : If true, the hub will reject all test requests if no compatible proxy is currently registered. If set to false, the request will queue until a node supporting the capability is registered with the grid. Default is true"
   )
   public Boolean throwOnCapabilityNotPresent = true;
-
-  private static final GridHubConfiguration DEFAULT_CONFIG = loadFromJSON("defaults/DefaultHub.json");
 
   /**
    * Init with built-in defaults
@@ -97,7 +110,8 @@ public class GridHubConfiguration extends GridConfiguration {
     try {
       GsonBuilder builder = new GsonBuilder();
       GridHubConfiguration.staticAddJsonTypeAdapter(builder);
-      return builder.create().fromJson(json, GridHubConfiguration.class);
+      return builder.excludeFieldsWithoutExposeAnnotation().create()
+        .fromJson(json, GridHubConfiguration.class);
     } catch (Throwable e) {
       throw new GridConfigurationException("Error with the JSON of the config : " + e.getMessage(),
                                            e);
@@ -189,6 +203,7 @@ public class GridHubConfiguration extends GridConfiguration {
 
   protected static class CapabilityMatcherAdapter extends SimpleClassNameAdapter<CapabilityMatcher> {
   }
+
   protected static class PrioritizerAdapter extends SimpleClassNameAdapter<Prioritizer> {
   }
 }

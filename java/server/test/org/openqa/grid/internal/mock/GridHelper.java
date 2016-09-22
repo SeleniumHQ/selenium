@@ -68,13 +68,11 @@ public class GridHelper {
 
       @Override
       public ExternalSessionKey extractSession() {
-        // TODO Auto-generated method stub
         return null;
       }
 
       @Override
       public RequestType extractRequestType() {
-        // TODO Auto-generated method stub
         return null;
       }
 
