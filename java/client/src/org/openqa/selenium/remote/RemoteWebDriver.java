@@ -489,6 +489,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   public void quit() {
+    // no-op if session id is null. We're only going to make ourselves unhappy
+    if (sessionId == null) {
+      return;
+    }
+
     try {
       execute(DriverCommand.QUIT);
     } finally {
