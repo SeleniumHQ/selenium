@@ -153,6 +153,8 @@ class UnixProcess implements OsProcess {
       throw new InterruptedException(
           String.format("Process timed out after waiting for %d ms.", timeout));
     }
+
+    // Wait until syserr and sysout have been read
   }
 
   public boolean isRunning() {
@@ -177,6 +179,11 @@ class UnixProcess implements OsProcess {
     if (isRunning()) {
       throw new IllegalStateException(
           "Cannot get output before executing command line: " + cl);
+    }
+    try {
+      inputOut.flush();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
     return inputOut.toString();
   }
