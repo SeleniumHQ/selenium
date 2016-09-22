@@ -34,7 +34,7 @@ module Selenium
     class Service
       START_TIMEOUT       = 20
       SOCKET_LOCK_TIMEOUT = 45
-      STOP_TIMEOUT        = 5
+      STOP_TIMEOUT        = 20
 
       attr_accessor :host
 
