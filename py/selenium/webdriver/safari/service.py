@@ -25,7 +25,7 @@ class Service(service.Service):
     Object that manages the starting and stopping of the SafariDriver
     """
 
-    def __init__(self, executable_path=None, port=0, quiet=False, use_legacy=False):
+    def __init__(self, port=0, quiet=False):
         """
         Creates a new instance of the Service
 
@@ -33,13 +33,9 @@ class Service(service.Service):
          - executable_path : Path to the SafariDriver
          - port : Port the service is running on """
 
-        if not use_legacy and os.path.exists('/usr/bin/safaridriver'):
-            path = '/usr/bin/safaridriver'
-            self.legacy_driver = False
-        else:
-            path = 'java'
-            self.standalone_jar = executable_path
-            self.legacy_driver = True
+        path = '/usr/bin/safaridriver'
+        if not os.path.exists(path):
+            raise Exception("SafariDriver requires Safari 10 on OSX El Capitan or greater")
 
         if port == 0:
             port = utils.free_port()
@@ -51,8 +47,6 @@ class Service(service.Service):
         service.Service.__init__(self, path, port, log)
 
     def command_line_args(self):
-        if self.legacy_driver:
-            return ["-jar", self.standalone_jar, "-port", "%s" % self.port]
         return ["-p", "%s" % self.port]
 
     @property
@@ -60,7 +54,4 @@ class Service(service.Service):
         """
         Gets the url of the SafariDriver Service
         """
-        if not self.legacy_driver:
-            return "http://localhost:%d" % self.port
-        else:
-            return "http://localhost:%d/wd/hub" % self.port
+        return "http://localhost:%d" % self.port

@@ -32,22 +32,18 @@ class WebDriver(RemoteWebDriver):
 
     """
 
-    def __init__(self, executable_path=None, port=0,
-                 desired_capabilities=DesiredCapabilities.SAFARI, quiet=False, use_legacy_driver=False):
+    def __init__(self, port=0, desired_capabilities=DesiredCapabilities.SAFARI, quiet=False):
         """
         Creates a new instance of the Safari driver.
 
         Starts the service and then creates new instance of Safari Driver.
 
         :Args:
-         - executable_path - path to the executable. If the default is used it assumes the executable is in the
-           Environment Variable SELENIUM_SERVER_JAR
          - port - port you would like the service to run, if left as 0, a free port will be found.
          - desired_capabilities: Dictionary object with desired capabilities (Can be used to provide various Safari switches).
+         - quiet - set to True to suppress stdout and stderr of the driver
         """
-        if not executable_path is None:
-            executable_path = os.environ.get("SELENIUM_SERVER_JAR")
-        self.service = Service(executable_path, port=port, quiet=quiet, use_legacy=use_legacy_driver)
+        self.service = Service(port=port, quiet=quiet)
         self.service.start()
 
         RemoteWebDriver.__init__(
