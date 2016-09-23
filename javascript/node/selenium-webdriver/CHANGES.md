@@ -1,22 +1,15 @@
 ## v.next
 
-* Removed native support for Safari 9 and older. Apple's safaridriver
-  is now used for Safari 10 (available on El Capitan and macOS Sierra).
+* Removed support for the SafariDriver browser extension. This has been
+  replaced by Apple's safaridriver, which is included wtih Safari 10
+  (available on OS X El Capitan and macOS Sierra).
 
-  To use Safari 9, the builder should be configured to use an instance of the
-  Selenium standalone server and `safari.Options` should be configured to
-  enable the legacy driver. For instance:
+  To use Safari 9 or older, users will have to use an older version of Selenium.
 
-  ```
-  const webdriver = require('selenium-webdriver');
-  const safari = require('selenium-webdriver/safari');
 
-  let driver = new webdriver.Builder()
-      .forBrowser('safari')
-      .usingServer('http://localhost:4444/wd/hub')
-      .setSafariOptions(new safari.Options().useLegacyDriver(true))
-      .build();
-  ```
+### API Changes
+
+ * Removed `safari.Options#useLegacyDriver()`
 
 
 ## v3.0.0-beta-3

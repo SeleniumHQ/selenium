@@ -17,25 +17,6 @@
 
 /**
  * @fileoverview Defines a WebDriver client for Safari.
- *
- *
- * __Testing Older Versions of Safari__
- *
- * To test versions of Safari prior to Safari 10.0, you must install the
- * [latest version](http://selenium-release.storage.googleapis.com/index.html)
- * of the SafariDriver browser extension; using Safari for normal browsing is
- * not recommended once the extension has been installed. You can, and should,
- * disable the extension when the browser is not being used with WebDriver.
- *
- * You must also enable the use of legacy driver using the {@link Options} class.
- *
- *     let options = new safari.Options()
- *       .useLegacyDriver(true);
- *
- *     let driver = new (require('selenium-webdriver')).Builder()
- *       .forBrowser('safari')
- *       .setSafariOptions(options)
- *       .build();
  */
 
 'use strict';
@@ -89,7 +70,6 @@ class ServiceBuilder extends remote.DriverService.Builder {
 
 
 const OPTIONS_CAPABILITY_KEY = 'safari.options';
-const LEGACY_DRIVER_CAPABILITY_KEY = 'useLegacyDriver';
 
 
 /**
@@ -105,9 +85,6 @@ class Options {
 
     /** @private {?./lib/capabilities.ProxyConfig} */
     this.proxy_ = null;
-
-    /** @private {boolean} */
-    this.legacyDriver_ = false;
   }
 
   /**
@@ -134,10 +111,6 @@ class Options {
       options.setLoggingPrefs(capabilities.get(Capability.LOGGING_PREFS));
     }
 
-    if (capabilities.has(LEGACY_DRIVER_CAPABILITY_KEY)) {
-      options.useLegacyDriver(capabilities.get(LEGACY_DRIVER_CAPABILITY_KEY));
-    }
-
     return options;
   }
 
@@ -153,18 +126,6 @@ class Options {
       this.options_ = {};
     }
     this.options_['cleanSession'] = clean;
-    return this;
-  }
-
-  /**
-   * Sets whether to use the legacy driver from the Selenium project. This option
-   * is disabled by default.
-   *
-   * @param {boolean} enable Whether to enable the legacy driver.
-   * @return {!Options} A self reference.
-   */
-  useLegacyDriver(enable) {
-    this.legacyDriver_ = enable;
     return this;
   }
 
@@ -206,7 +167,6 @@ class Options {
     if (this.options_) {
       caps.set(OPTIONS_CAPABILITY_KEY, this);
     }
-    caps.set(LEGACY_DRIVER_CAPABILITY_KEY, this.legacyDriver_);
     return caps;
   }
 
@@ -244,12 +204,6 @@ class Driver extends webdriver.WebDriver {
       caps = opt_config.toCapabilities();
     } else {
       caps = opt_config || Capabilities.safari()
-    }
-
-    if (caps.get(LEGACY_DRIVER_CAPABILITY_KEY)) {
-      throw Error(
-          'The legacy SafariDriver may only be used with the Selenium ' +
-          'standalone server: http://www.seleniumhq.org/download/');
     }
 
     let service = new ServiceBuilder().build();
