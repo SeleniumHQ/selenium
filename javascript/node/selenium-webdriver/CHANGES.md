@@ -6,6 +6,9 @@
 
   To use Safari 9 or older, users will have to use an older version of Selenium.
 
+* Fixed potential reference errors in `selenium-webdriver/testing` when users
+  create a cycle with mocha by running with mocha's `--hook` flag.
+
 
 ### API Changes
 
