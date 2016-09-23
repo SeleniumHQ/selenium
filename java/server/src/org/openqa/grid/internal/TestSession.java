@@ -234,10 +234,15 @@ public class TestSession {
 
         byte[] consumedNewWebDriverSessionBody = null;
         if (statusCode != HttpServletResponse.SC_INTERNAL_SERVER_ERROR &&
-            statusCode != HttpServletResponse.SC_NOT_FOUND) {
+            statusCode != HttpServletResponse.SC_NOT_FOUND &&
+            statusCode != HttpServletResponse.SC_BAD_REQUEST &&
+            statusCode != HttpServletResponse.SC_UNAUTHORIZED) {
           consumedNewWebDriverSessionBody = updateHubIfNewWebDriverSession(request, proxyResponse);
         }
-        if (newSessionRequest && statusCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR) {
+        if (newSessionRequest &&
+            (statusCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR ||
+            statusCode == HttpServletResponse.SC_BAD_REQUEST ||
+            statusCode == HttpServletResponse.SC_UNAUTHORIZED)) {
           removeIncompleteNewSessionRequest();
         }
         if (statusCode == HttpServletResponse.SC_NOT_FOUND) {
