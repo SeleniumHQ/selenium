@@ -17,6 +17,7 @@
 
 package org.openqa.grid.selenium;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 
 import com.beust.jcommander.JCommander;
@@ -101,10 +102,13 @@ public class GridLauncherV3 {
       if (args[i].equals("-htmlSuite")) {
         Supplier<GridItemLauncher> launcherSupplier = LAUNCHERS.get("corerunner");
         if (launcherSupplier == null) {
-          System.err.println(
-            "Unable to find the HTML runner. This is normally because you have not downloaded " +
-            "or made available the 'selenium-leg-rc' jar on the CLASSPATH. Your test will " +
-            "not be run.");
+          System.err.println(Joiner.on("\n").join(
+            "Unable to find the HTML runner. This is normally because you have not downloaded",
+            "or made available the 'selenium-leg-rc' jar on the CLASSPATH. Your test will",
+            "not be run.",
+            "Download the Selenium HTML Runner from http://www.seleniumhq.org/download/ and",
+            "use that in place of the selenium-server-standalone.jar for the simplest way of",
+            "running your HTML suite."));
           return null;
         }
         GridItemLauncher launcher = launcherSupplier.get();

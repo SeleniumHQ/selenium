@@ -211,9 +211,9 @@ public class HTMLLauncher {
  }
 
   public static int mainInt(String... args) throws Exception {
-    if (args.length != 5) {
+    if (args.length != 4) {
       throw new IllegalAccessException(
-          "Usage: HTMLLauncher outputDir testSuite startUrl multiWindow browser");
+          "Usage: HTMLLauncher outputDir testSuite startUrl browser");
     }
 
     File dir = new File(args[0]);
@@ -223,9 +223,8 @@ public class HTMLLauncher {
 
     String suite = args[1];
     String startURL = args[2];
-    boolean multiWindow = Boolean.parseBoolean(args[3]);
     String[] browsers;
-    browsers = new String[] {args[4]};
+    browsers = new String[] {args[3]};
 
     HTMLLauncher launcher = new HTMLLauncher();
 
@@ -236,7 +235,7 @@ public class HTMLLauncher {
       String result = "FAILED";
 
       try {
-        result = launcher.runHTMLSuite(browser, startURL, suite, results, 600, multiWindow);
+        result = launcher.runHTMLSuite(browser, startURL, suite, results, 600, true);
         passed &= "PASSED".equals(result);
       } catch (Throwable e) {
         log.log(Level.WARNING, "Test of browser failed: " + browser, e);
