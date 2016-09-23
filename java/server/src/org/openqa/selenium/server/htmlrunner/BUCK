@@ -21,6 +21,7 @@ java_library(
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//java/client/src/org/openqa/selenium/safari:safari',
     '//third_party/java/guava:guava',
+    '//third_party/java/beust:jcommander',
     '//third_party/java/jetty:jetty',
   ],
   visibility = [

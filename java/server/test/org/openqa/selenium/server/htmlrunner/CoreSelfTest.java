@@ -79,8 +79,8 @@ public class CoreSelfTest {
         testBase + "/TestSuite.html",
         testBase + "/TestSuite.html",
         outputFile.toFile(),
-        TimeUnit.MINUTES.toMillis(5),
-        true);
+        TimeUnit.MINUTES.toSeconds(5),
+        null);
 
     assertEquals("PASSED", result);
   }
