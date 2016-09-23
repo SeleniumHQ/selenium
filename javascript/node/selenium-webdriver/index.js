@@ -612,6 +612,7 @@ exports.EventEmitter = events.EventEmitter;
 exports.FileDetector = input.FileDetector;
 exports.Key = input.Key;
 exports.Session = session.Session;
+exports.TouchSequence = actions.TouchSequence;
 exports.WebDriver = webdriver.WebDriver;
 exports.WebElement = webdriver.WebElement;
 exports.WebElementCondition = webdriver.WebElementCondition;
