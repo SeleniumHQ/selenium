@@ -65,9 +65,12 @@ function checkModifierKey(key) {
  * Class for defining sequences of complex user interactions. Each sequence
  * will not be executed until {@link #perform} is called.
  *
- * Example:
+ * This class should not be instantiated directly. Instead, obtain an instance
+ * using {@link ./webdriver.WebDriver#actions() WebDriver.actions()}.
  *
- *     new ActionSequence(driver).
+ * Sample usage:
+ *
+ *     driver.actions().
  *         keyDown(Key.SHIFT).
  *         click(element1).
  *         click(element2).
@@ -377,9 +380,12 @@ class ActionSequence {
  * Class for defining sequences of user touch interactions. Each sequence
  * will not be executed until {@link #perform} is called.
  *
- * Example:
+ * This class should not be instantiated directly. Instead, obtain an instance
+ * using {@link ./webdriver.WebDriver#touchActions() WebDriver.touchActions()}.
  *
- *     new TouchSequence(driver).
+ * Sample usage:
+ *
+ *     driver.touchActions().
  *         tapAndHold({x: 0, y: 0}).
  *         move({x: 3, y: 4}).
  *         release({x: 10, y: 10}).
