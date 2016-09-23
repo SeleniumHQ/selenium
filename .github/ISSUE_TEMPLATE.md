@@ -17,6 +17,9 @@ https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/
 If the issue is with Firefox GeckoDriver (aka Marionette) consider logging an issue with Mozilla:
 https://bugzilla.mozilla.org/buglist.cgi?product=Testing&component=Marionette
 
+If the issue is with Safari, only Safari 10+ is supported. Please log any Safari issue with Apple:
+https://bugreport.apple.com/
+
 If the issue is with PhantomJS consider logging an issue with Ghostdriver:
 https://github.com/detro/ghostdriver
 
