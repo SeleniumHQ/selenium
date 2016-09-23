@@ -107,7 +107,7 @@ class ActionSequence {
   /**
    * Executes this action sequence.
    *
-   * @return {!./promise.Promise} A promise that will be resolved once
+   * @return {!./promise.Thenable} A promise that will be resolved once
    *     this sequence has completed.
    */
   perform() {
@@ -415,7 +415,7 @@ class TouchSequence {
 
   /**
    * Executes this action sequence.
-   * @return {!./promise.Promise} A promise that will be resolved once
+   * @return {!./promise.Thenable} A promise that will be resolved once
    *     this sequence has completed.
    */
   perform() {

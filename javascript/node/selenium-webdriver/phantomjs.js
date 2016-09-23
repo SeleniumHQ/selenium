@@ -265,7 +265,7 @@ class Driver extends webdriver.WebDriver {
    *
    * @param {(string|!Function)} script The script to execute.
    * @param {...*} var_args The arguments to pass to the script.
-   * @return {!promise.Promise<T>} A promise that resolve to the
+   * @return {!promise.Thenable<T>} A promise that resolve to the
    *     script's return value.
    * @template T
    */

@@ -2030,12 +2030,12 @@ class ControlFlow extends events.EventEmitter {
    * the task function is a generator, the task will be executed using
    * {@link ./promise.consume consume()}.
    *
-   * @param {function(): (T|ManagedPromise<T>)} fn The function to
-   *     call to start the task. If the function returns a
-   *     {@link ManagedPromise}, this instance will wait for it to be
-   *     resolved before starting the next task.
+   * @param {function(): (T|IThenable<T>)} fn The function to
+   *     call to start the task. If the function returns a promise,
+   *     this instance will wait for it to be resolved before starting the
+   *     next task.
    * @param {string=} opt_description A description of the task.
-   * @return {!ManagedPromise<T>} A promise that will be resolved
+   * @return {!Thenable<T>} A promise that will be resolved
    *     with the result of the action.
    * @template T
    */
@@ -2066,7 +2066,7 @@ class ControlFlow extends events.EventEmitter {
    *
    * @param {number} ms The timeout delay, in milliseconds.
    * @param {string=} opt_description A description to accompany the timeout.
-   * @return {!ManagedPromise} A promise that will be resolved with
+   * @return {!Thenable} A promise that will be resolved with
    *     the result of the action.
    */
   timeout(ms, opt_description) {
@@ -2098,14 +2098,14 @@ class ControlFlow extends events.EventEmitter {
    * If this function is invoked with `timeout === 0`, or the timeout is
    * omitted, the flow will wait indefinitely for the condition to be satisfied.
    *
-   * @param {(!ManagedPromise<T>|function())} condition The condition to poll,
+   * @param {(!IThenable<T>|function())} condition The condition to poll,
    *     or a promise to wait on.
    * @param {number=} opt_timeout How long to wait, in milliseconds, for the
    *     condition to hold before timing out. If omitted, the flow will wait
    *     indefinitely.
    * @param {string=} opt_message An optional error message to include if the
    *     wait times out; defaults to the empty string.
-   * @return {!ManagedPromise<T>} A promise that will be fulfilled
+   * @return {!Thenable<T>} A promise that will be fulfilled
    *     when the condition has been satisified. The promise shall be rejected
    *     if the wait times out waiting for the condition.
    * @throws {TypeError} If condition is not a function or promise or if timeout
@@ -2900,8 +2900,7 @@ function controlFlow() {
  * a promise that resolves to the callback result.
  * @param {function(!ControlFlow)} callback The entry point
  *     to the newly created flow.
- * @return {!ManagedPromise} A promise that resolves to the callback
- *     result.
+ * @return {!Thenable} A promise that resolves to the callback result.
  */
 function createFlow(callback) {
   var flow = new ControlFlow;

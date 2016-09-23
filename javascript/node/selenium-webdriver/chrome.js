@@ -728,7 +728,7 @@ class Driver extends webdriver.WebDriver {
   /**
    * Schedules a command to launch Chrome App with given ID.
    * @param {string} id ID of the App to launch.
-   * @return {!promise.Promise<void>} A promise that will be resolved
+   * @return {!promise.Thenable<void>} A promise that will be resolved
    *     when app is launched.
    */
   launchApp(id) {

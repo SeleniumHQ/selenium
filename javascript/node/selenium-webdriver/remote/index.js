@@ -283,7 +283,7 @@ class DriverService {
   /**
    * Schedules a task in the current control flow to stop the server if it is
    * currently running.
-   * @return {!promise.Promise} A promise that will be resolved when
+   * @return {!promise.Thenable} A promise that will be resolved when
    *     the server has been stopped.
    */
   stop() {

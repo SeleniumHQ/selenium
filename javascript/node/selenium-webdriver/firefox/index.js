@@ -637,7 +637,7 @@ class Driver extends webdriver.WebDriver {
   /**
    * Get the context that is currently in effect.
    *
-   * @return {!promise.Promise<Context>} Current context.
+   * @return {!promise.Thenable<Context>} Current context.
    */
   getContext() {
     return this.schedule(
@@ -657,7 +657,7 @@ class Driver extends webdriver.WebDriver {
    *
    * Use your powers wisely.
    *
-   * @param {!promise.Promise<void>} ctx The context to switch to.
+   * @param {!promise.Thenable<void>} ctx The context to switch to.
    */
   setContext(ctx) {
     return this.schedule(
