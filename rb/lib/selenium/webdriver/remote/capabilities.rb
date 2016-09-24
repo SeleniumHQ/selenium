@@ -63,9 +63,7 @@ module Selenium
             new({
               browser_name: 'chrome',
               javascript_enabled: true,
-              css_selectors_enabled: true,
-              loggingPrefs: {browser: 'ALL',
-                             driver: 'ALL'}
+              css_selectors_enabled: true
             }.merge(opts))
           end
 

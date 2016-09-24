@@ -51,7 +51,8 @@ module Selenium
             end
 
             # Phantomjs Returns har instead of driver
-            not_compliant_on browser: :phantomjs do
+            # Chrome - turned off by default
+            not_compliant_on browser: [:phantomjs, :chrome] do
               it 'can get the driver log' do
                 driver.navigate.to url_for('simpleTest.html')
 
