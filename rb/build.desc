@@ -279,10 +279,7 @@ ruby_library(name = "safari",
     "lib/selenium/webdriver/safari/**/*.rb",
     "lib/selenium/webdriver/safari.rb"
   ],
-  deps = [":common"],
-  resources = [
-    { "//javascript/safari-driver:client": "rb/lib/selenium/webdriver/safari/resources/client.js"}
-  ]
+  deps = [":common"]
 )
 
 ruby_test(name = "safari",

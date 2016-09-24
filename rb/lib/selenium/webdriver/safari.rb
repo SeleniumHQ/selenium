@@ -71,11 +71,5 @@ module Selenium
   end # WebDriver
 end # Selenium
 
-require 'selenium/webdriver/safari/browser'
-require 'selenium/webdriver/safari/server'
-require 'selenium/webdriver/safari/options'
-require 'selenium/webdriver/safari/legacy_bridge'
-require 'selenium/webdriver/safari/apple_bridge'
+require 'selenium/webdriver/safari/bridge'
 require 'selenium/webdriver/safari/service'
-
-Selenium::WebDriver::Safari::Bridge = Selenium::WebDriver::Safari::LegacyBridge

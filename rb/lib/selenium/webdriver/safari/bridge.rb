@@ -20,19 +20,32 @@
 module Selenium
   module WebDriver
     module Safari
-      class Browser
-        def start(*args)
-          Platform.exit_hook { stop } # make sure we don't leave the browser running
+      # @api private
+      class Bridge < Remote::Bridge
+        def initialize(opts = {})
+          opts[:desired_capabilities] ||= Remote::Capabilities.safari
+          port = opts.delete(:port) || Service::DEFAULT_PORT
+          service_args = opts.delete(:service_args) || {}
 
-          @process = ChildProcess.new(Safari.path, *args)
-          @process.io.inherit! if $DEBUG
-          @process.start
+          @service = Service.new(Safari.driver_path, port, *extract_service_args(service_args))
+          @service.start
+          opts[:url] = @service.uri
+
+          super(opts)
         end
 
-        def stop
-          @process.stop if @process
+        def quit
+          super
+        ensure
+          @service.stop if @service
         end
-      end # Browser
+
+        private
+
+        def extract_service_args(args = {})
+          args.key?(:port) ? ["--port=#{args[:port]}"] : []
+        end
+      end # Bridge
     end # Safari
   end # WebDriver
 end # Selenium

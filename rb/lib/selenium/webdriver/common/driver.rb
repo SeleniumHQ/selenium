@@ -65,11 +65,7 @@ module Selenium
                    when :phantomjs
                      PhantomJS::Bridge.new(opts)
                    when :safari
-                     if Safari::LegacyBridge.legacy?
-                       Safari::LegacyBridge.new(opts)
-                     else
-                       Safari::AppleBridge.new(opts)
-                     end
+                     Safari::Bridge.new(opts)
                    else
                      raise ArgumentError, "unknown driver: #{browser.inspect}"
                    end

@@ -87,18 +87,20 @@ module Selenium
         wait.until { driver.title == 'XHTML Test Page' }
       end
 
-      xit 'should handle exceptions inside the block' do
-        driver.navigate.to url_for('xhtmlTest.html')
+      not_compliant_on browser: :safari do
+        it 'should handle exceptions inside the block' do
+          driver.navigate.to url_for('xhtmlTest.html')
 
-        driver.find_element(link: 'Open new window').click
-        wait.until { driver.window_handles.size == 2 }
-        expect(driver.title).to eq('XHTML Test Page')
+          driver.find_element(link: 'Open new window').click
+          wait.until { driver.window_handles.size == 2 }
+          expect(driver.title).to eq('XHTML Test Page')
 
-        expect do
-          driver.switch_to.window(new_window) { raise 'foo' }
-        end.to raise_error(RuntimeError, 'foo')
+          expect do
+            driver.switch_to.window(new_window) { raise 'foo' }
+          end.to raise_error(RuntimeError, 'foo')
 
-        expect(driver.title).to eq('XHTML Test Page')
+          expect(driver.title).to eq('XHTML Test Page')
+        end
       end
 
       it 'should switch to a window without a block' do
