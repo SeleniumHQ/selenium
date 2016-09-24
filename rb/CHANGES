@@ -1,3 +1,22 @@
+3.0.0.beta4 (unreleased)
+===================
+
+Ruby:
+  * Remove support for deprecated driver options
+  * Add support for latest driver options
+  * Add support for :port parameter for launching driver
+  * Add support for :service_args parameter for driver command line switches
+  * Improve reliability by increasing service shutdown timeout (#2815; thanks John Barbuto ) 
+
+Firefox:
+  * Add support for :firefox_options in geckodriver
+
+Safari:
+  * Remove support for legacy Safari driver (use Apple's driver built in to Safari 10+)
+
+Chrome:
+  * Set chromedriver to not log by default
+
 3.0.0.beta3.1 (2016-09-03)
 ===================
 
