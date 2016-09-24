@@ -67,9 +67,10 @@ module Selenium
 
           opts = opts.dup
 
+          port = opts.delete(:port) || 4444
           http_client = opts.delete(:http_client) { Http::Default.new }
           desired_capabilities = opts.delete(:desired_capabilities) { W3CCapabilities.firefox }
-          url = opts.delete(:url) { "http://#{Platform.localhost}:4444/wd/hub" }
+          url = opts.delete(:url) { "http://#{Platform.localhost}:#{port}/wd/hub" }
 
           desired_capabilities = W3CCapabilities.send(desired_capabilities) if desired_capabilities.is_a? Symbol
 
