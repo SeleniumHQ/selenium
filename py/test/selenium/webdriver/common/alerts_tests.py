@@ -121,6 +121,8 @@ class AlertsTest(unittest.TestCase):
     def testShouldAllowAUserToSetTheValueOfAPrompt(self):
         if self.driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs driver does not support alerts")
+        if self.driver.capabilities['browserName'] == 'firefox':
+            pytest.xfail("Known Marionette failure: https://github.com/mozilla/geckodriver/issues/17")
         self._loadPage("alerts")
         self.driver.find_element(by=By.ID, value="prompt").click()
         alert = self._waitForAlert()
@@ -133,6 +135,8 @@ class AlertsTest(unittest.TestCase):
     def testSettingTheValueOfAnAlertThrows(self):
         if self.driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs driver does not support alerts")
+        if self.driver.capabilities['browserName'] == 'firefox':
+            pytest.xfail("Known Marionette failure: https://github.com/mozilla/geckodriver/issues/17")
         self._loadPage("alerts")
         self.driver.find_element(By.ID, "alert").click()
 
@@ -177,6 +181,8 @@ class AlertsTest(unittest.TestCase):
     def testShouldAllowUsersToAcceptAnAlertInANestedFrame(self):
         if self.driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs driver does not support alerts")
+        if self.driver.capabilities['browserName'] == 'firefox':
+            pytest.xfail("Known Marionette failure")
         self._loadPage("alerts")
         self.driver.switch_to.frame(self.driver.find_element(By.NAME, "iframeWithIframe"))
         self.driver.switch_to.frame(self.driver.find_element(By.NAME, "iframeWithAlert"))
@@ -217,6 +223,8 @@ class AlertsTest(unittest.TestCase):
     def testHandlesTwoAlertsFromOneInteraction(self):
         if self.driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs driver does not support alerts")
+        if self.driver.capabilities['browserName'] == 'firefox':
+            pytest.xfail("Known Marionette failure: https://github.com/mozilla/geckodriver/issues/17")
         self._loadPage("alerts")
 
         self.driver.find_element(By.ID, "double-prompt").click()
@@ -316,6 +324,8 @@ class AlertsTest(unittest.TestCase):
     def testUnexpectedAlertPresentExceptionContainsAlertText(self):
         if self.driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs driver does not support alerts")
+        if self.driver.capabilities['browserName'] == 'firefox':
+            pytest.xfail("Known Marionette Failure")
         self._loadPage("alerts")
         self.driver.find_element(by=By.ID, value="alert").click()
         alert = self._waitForAlert()
