@@ -165,6 +165,10 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
         String sessionId = HttpSessionId.getSessionId(httpResponse.getTargetHost());
         response.setSessionId(sessionId);
       }
+      if (response.getSessionId() == null) {
+        // Spam in the session id from the request
+        response.setSessionId(command.getSessionId().toString());
+      }
       if (QUIT.equals(command.getName())) {
     	  client.close();
       }
