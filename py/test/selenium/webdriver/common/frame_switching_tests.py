@@ -139,7 +139,7 @@ class FrameSwitchingTest(unittest.TestCase):
 
         try:
             self.driver.switch_to.frame(frame)
-            self.fail("Should have thrown NoSuchElementException")
+            self.fail("Should have thrown NoSuchFrameException")
         except NoSuchFrameException:
             # Do nothing.
             pass
@@ -160,7 +160,7 @@ class FrameSwitchingTest(unittest.TestCase):
 
         try:
             self.driver.switch_to.frame("second")
-            self.fail("Should have thrown NoSuchElementException")
+            self.fail("Should have thrown NoSuchFrameException")
         except NoSuchFrameException:
             # Do nothing
             pass
