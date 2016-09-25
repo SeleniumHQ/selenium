@@ -18,7 +18,7 @@
 from .command import Command
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, NoSuchFrameException
 
 try:
     basestring
@@ -76,7 +76,10 @@ class SwitchTo:
             try:
                 frame_reference = self._driver.find_element(By.ID, frame_reference)
             except NoSuchElementException:
-                frame_reference = self._driver.find_element(By.NAME, frame_reference)
+                try:
+                    frame_reference = self._driver.find_element(By.NAME, frame_reference)
+                except NoSuchElementException:
+                    raise NoSuchFrameException(frame_reference)
 
         self._driver.execute(Command.SWITCH_TO_FRAME, {'id': frame_reference})
 

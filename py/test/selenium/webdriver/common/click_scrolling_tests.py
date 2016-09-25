@@ -30,13 +30,13 @@ class ClickScrollingTest(unittest.TestCase):
         self.driver.switch_to.default_content()
 
     def testClickingOnAnchorScrollsPage(self):
-        scrollScript = "var pageY"
-        "if (typeof(window.pageYOffset) == 'number') {"
-        "  pageY = window.pageYOffset"
-        " else {"
-        "  pageY = document.documentElement.scrollTop"
-        "}"
-        "return pageY"
+        scrollScript = """var pageY;
+        if (typeof(window.pageYOffset) == 'number') {
+          pageY = window.pageYOffset;
+        } else {
+          pageY = document.documentElement.scrollTop;
+        }
+        return pageY;"""
 
         self._loadPage("macbeth")
 
@@ -46,7 +46,7 @@ class ClickScrollingTest(unittest.TestCase):
 
         # Focusing on to click, but not actually following,
         # the link will scroll it in to view, which is a few pixels further than 0
-        self.assertGreater(300, yOffset)
+        self.assertGreater(yOffset, 300)
 
     def testShouldScrollToClickOnAnElementHiddenByOverflow(self):
         url = self.webserver.where_is("click_out_of_bounds_overflow.html")

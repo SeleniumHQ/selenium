@@ -161,7 +161,7 @@ class FrameSwitchingTest(unittest.TestCase):
         try:
             self.driver.switch_to.frame("second")
             self.fail("Should have thrown NoSuchElementException")
-        except NoSuchElementException:
+        except NoSuchFrameException:
             # Do nothing
             pass
         self.driver.switch_to.default_content()

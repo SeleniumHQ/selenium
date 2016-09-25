@@ -31,26 +31,36 @@ class PositionAndSizeTest(unittest.TestCase):
         self.assertGreater(location["y"], 0)
 
     def testShouldGetCoordinatesOfAnElement(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs calculates coordinates differently")
         self.driver.get(self.webserver.where_is("coordinates_tests/simple_page.html"))
         self.assertEqual(self._get_location_in_viewport(By.ID, "box"), {"x": 10, "y": 10})
         self.assertEqual(self._get_location_on_page(By.ID, "box"), {"x": 10, "y": 10})
 
     def testShouldGetCoordinatesOfAnEmptyElement(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs calculates coordinates differently")
         self.driver.get(self.webserver.where_is("coordinates_tests/page_with_empty_element.html"))
         self.assertEqual(self._get_location_in_viewport(By.ID, "box"), {"x": 10, "y": 10})
         self.assertEqual(self._get_location_on_page(By.ID, "box"), {"x": 10, "y": 10})
 
     def testShouldGetCoordinatesOfATransparentElement(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs calculates coordinates differently")
         self.driver.get(self.webserver.where_is("coordinates_tests/page_with_transparent_element.html"))
         self.assertEqual(self._get_location_in_viewport(By.ID, "box"), {"x": 10, "y": 10})
         self.assertEqual(self._get_location_on_page(By.ID, "box"), {"x": 10, "y": 10})
 
     def testShouldGetCoordinatesOfAHiddenElement(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs calculates coordinates differently")
         self.driver.get(self.webserver.where_is("coordinates_tests/page_with_hidden_element.html"))
         self.assertEqual(self._get_location_in_viewport(By.ID, "box"), {"x": 10, "y": 10})
         self.assertEqual(self._get_location_on_page(By.ID, "box"), {"x": 10, "y": 10})
 
     def testShouldGetCoordinatesOfAnInvisibleElement(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs calculates coordinates differently")
         self.driver.get(self.webserver.where_is("coordinates_tests/page_with_invisible_element.html"))
         self.assertEqual(self._get_location_in_viewport(By.ID, "box"), {"x": 0, "y": 0})
         self.assertEqual(self._get_location_on_page(By.ID, "box"), {"x": 0, "y": 0})
@@ -73,6 +83,8 @@ class PositionAndSizeTest(unittest.TestCase):
 
     @pytest.mark.ignore_marionette
     def testShouldGetCoordinatesInViewPortOfAnElementInAFrame(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs calculates coordinates differently")
         self.driver.get(self.webserver.where_is("coordinates_tests/element_in_frame.html"))
         self.driver.switch_to_frame(self.driver.find_element(By.NAME, "ifr"))
         self.assertEqual(self._get_location_in_viewport(By.ID, "box"), {"x": 25, "y": 25})
@@ -80,6 +92,8 @@ class PositionAndSizeTest(unittest.TestCase):
 
     @pytest.mark.ignore_marionette
     def testShouldGetCoordinatesInViewPortOfAnElementInANestedFrame(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs calculates coordinates differently")
         self.driver.get(self.webserver.where_is("coordinates_tests/element_in_nested_frame.html"))
         self.driver.switch_to_frame(self.driver.find_element(By.NAME, "ifr"))
         self.driver.switch_to_frame(self.driver.find_element(By.NAME, "ifr"))
