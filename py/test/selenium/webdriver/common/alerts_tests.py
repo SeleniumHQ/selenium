@@ -243,6 +243,42 @@ class AlertsTest(unittest.TestCase):
 
         self.assertEquals("onload", value)
 
+    def testShouldHandleAlertOnPageLoadUsingGet(self):
+        self.driver.get(self._pageURL("pageWithOnLoad"))
+
+        alert = self._waitForAlert()
+        value = alert.text
+        alert.accept()
+
+        self.assertEquals("onload", value)
+        WebDriverWait(self.driver, 3).until(EC.text_to_be_present_in_element((By.TAG_NAME, "p"), "Page with onload event handler"))
+
+    def testShouldHandleAlertOnPageBeforeUnload(self):
+        self.driver.get(self._pageURL("pageWithOnBeforeUnloadMessage"))
+
+        element = self.driver.find_element(By.ID, "navigate")
+        element.click()
+
+        alert = self._waitForAlert()
+        alert.dismiss()
+        self.assertTrue("pageWithOnBeforeUnloadMessage.html" in self.driver.current_url)
+
+        element.click()
+        alert = self._waitForAlert()
+        alert.accept()
+        WebDriverWait(self.driver, 3).until(EC.title_is("Testing Alerts"))
+
+    def _testShouldHandleAlertOnPageBeforeUnloadAtQuit(self):
+        # TODO: Add the ability to get a new session
+        self.driver.get(self._pageURL("pageWithOnBeforeUnloadMessage"))
+
+        element = self.driver.find_element(By.ID, "navigate")
+        element.click()
+
+        self._waitForAlert()
+
+        self.driver.quit()
+
     def testShouldAllowTheUserToGetTheTextOfAnAlert(self):
         if self.driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs driver does not support alerts")
@@ -252,6 +288,30 @@ class AlertsTest(unittest.TestCase):
         value = alert.text
         alert.accept()
         self.assertEqual("cheese", value)
+
+    def testShouldAllowTheUserToGetTheTextOfAPrompt(self):
+        self._loadPage("alerts")
+        self.driver.find_element(By.ID, "prompt").click()
+
+        alert = self._waitForAlert()
+        value = alert.text
+        alert.accept()
+
+        self.assertEquals("Enter something", value)
+
+    def testAlertShouldNotAllowAdditionalCommandsIfDismissed(self):
+        self._loadPage("alerts")
+        self.driver.find_element(By.ID, "alert").click()
+
+        alert = self._waitForAlert()
+        alert.accept()
+
+        try:
+            alert.text
+        except NoAlertPresentException:
+            return
+
+        self.fail("Expected NoAlertPresentException")
 
     def testUnexpectedAlertPresentExceptionContainsAlertText(self):
         if self.driver.capabilities['browserName'] == 'phantomjs':
