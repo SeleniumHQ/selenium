@@ -21,9 +21,9 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 
 try:
-    str = basestring
+    basestring
 except NameError:
-    pass
+    basestring = str
 
 
 class SwitchTo:
