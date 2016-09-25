@@ -34,8 +34,10 @@ import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.ResponseCodec;
 
+import java.util.Optional;
+
 /**
- * A response codec that adheres to the W3C WebDriver wire protocol.
+ * A response codec usable as a base for both the JSON and W3C wire protocols.
  *
  * @see <a href="https://w3.org/tr/webdriver">W3C WebDriver spec</a>
  */
@@ -115,6 +117,18 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
       // turn this into \r\r\n, which would be Bad!
       response.setValue(((String) response.getValue()).replace("\r\n", "\n"));
     }
+
+    if (response.getStatus() != null && response.getState() == null) {
+      response.setState(errorCodes.toState(response.getStatus()));
+    } else if (response.getStatus() == null && response.getState() != null) {
+      response.setStatus(
+        errorCodes.toStatus(response.getState(),
+                            Optional.of(encodedResponse.getStatus())));
+    } else if (statusCode == 200) {
+      response.setStatus(ErrorCodes.SUCCESS);
+      response.setState(errorCodes.toState(ErrorCodes.SUCCESS));
+    }
+
     if (response.getStatus() != null) {
       response.setState(errorCodes.toState(response.getStatus()));
     } else if (statusCode == 200) {

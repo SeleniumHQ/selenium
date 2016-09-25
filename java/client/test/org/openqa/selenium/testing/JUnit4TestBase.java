@@ -219,7 +219,7 @@ public abstract class JUnit4TestBase implements WrapsDriver {
 
   private void createDriver() {
     driver = actuallyCreateDriver();
-    wait = new WebDriverWait(driver, 30);
+    wait = new WebDriverWait(driver, 15);
     shortWait = new WebDriverWait(driver, 5);
   }
 
