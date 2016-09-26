@@ -37,6 +37,8 @@ try:
 except ImportError:  # 3+
     from io import BytesIO as IOStream
 
+getAttribute_js = pkgutil.get_data(__package__, 'getAttribute.js').decode('utf8')
+
 
 class WebElement(object):
     """Represents a DOM element.
@@ -131,9 +133,8 @@ class WebElement(object):
 
         attributeValue = ''
         if self._w3c:
-            raw = pkgutil.get_data(__package__, 'getAttribute.js')
             attributeValue = self.parent.execute_script(
-                "return (%s).apply(null, arguments);" % raw,
+                "return (%s).apply(null, arguments);" % getAttribute_js,
                 self, name)
         else:
             resp = self._execute(Command.GET_ELEMENT_ATTRIBUTE, {'name': name})
