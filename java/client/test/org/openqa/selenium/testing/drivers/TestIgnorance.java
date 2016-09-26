@@ -22,6 +22,7 @@ import static org.openqa.selenium.Platform.LINUX;
 import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.testing.Driver.ALL;
 import static org.openqa.selenium.testing.Driver.CHROME;
+import static org.openqa.selenium.testing.Driver.EDGE;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
@@ -180,9 +181,8 @@ public class TestIgnorance {
         comparator.addDriver(CHROME);
         break;
 
-      // TODO(simon): Get the build working again
       case edge:
-        comparator.addDriver(IE);
+        comparator.addDriver(EDGE);
         break;
 
       case ff:
