@@ -184,15 +184,28 @@ public class ProcessUtils {
   }
 
   static int getProcessId(Process p) {
-    if (Platform.getCurrent().is(WINDOWS)) {
-      throw new IllegalStateException("UnixUtils may not be used on Windows");
-    }
-    try {
-      Field f = p.getClass().getDeclaredField("pid");
-      f.setAccessible(true);
-      return (Integer) f.get(p);
-    } catch (Exception e) {
-      throw new RuntimeException("Couldn't detect pid", e);
+    if (thisIsWindows()) {
+      try {
+        Field f = p.getClass().getDeclaredField("handle");
+        f.setAccessible(true);
+        long hndl = f.getLong(p);
+
+        Kernel32 kernel = Kernel32.INSTANCE;
+        WinNT.HANDLE handle = new WinNT.HANDLE();
+        handle.setPointer(Pointer.createConstant(hndl));
+        int pid = kernel.GetProcessId(handle);
+        return pid;
+      } catch (Exception e) {
+        throw new RuntimeException("Couldn't detect pid", e);
+      }
+    } else {
+      try {
+        Field f = p.getClass().getDeclaredField("pid");
+        f.setAccessible(true);
+        return (Integer) f.get(p);
+      } catch (Exception e) {
+        throw new RuntimeException("Couldn't detect pid", e);
+      }
     }
   }
 
