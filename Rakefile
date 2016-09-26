@@ -270,7 +270,7 @@ task :test_rb => [
   ("//rb:remote-edge-test" if windows?)
 ].compact
 
-task :test_py => [ :py_prep_for_install_release, "//py:firefox_test:run" ]
+task :test_py => [ :py_prep_for_install_release, "//py:marionette_test:run" ]
 
 task :test_dotnet => [
   "//dotnet/test:firefox:run"
