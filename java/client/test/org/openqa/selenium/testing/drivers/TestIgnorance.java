@@ -180,6 +180,11 @@ public class TestIgnorance {
         comparator.addDriver(CHROME);
         break;
 
+      // TODO(simon): Get the build working again
+      case edge:
+        comparator.addDriver(IE);
+        break;
+
       case ff:
         if (Boolean.getBoolean("webdriver.firefox.marionette")) {
           comparator.addDriver(MARIONETTE);
