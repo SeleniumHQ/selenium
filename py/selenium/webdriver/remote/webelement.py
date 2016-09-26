@@ -15,26 +15,27 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import base64
 import hashlib
 import pkgutil
 import os
 import zipfile
-try:
-    from StringIO import StringIO as IOStream
-except ImportError:  # 3+
-    from io import BytesIO as IOStream
-import base64
 
 from .command import Command
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
 
-
+# Python 3 imports
 try:
     str = basestring
 except NameError:
     pass
+
+try:
+    from StringIO import StringIO as IOStream
+except ImportError:  # 3+
+    from io import BytesIO as IOStream
 
 
 class WebElement(object):
@@ -129,7 +130,7 @@ class WebElement(object):
         """
 
         attributeValue = ''
-        if self._w3c :
+        if self._w3c:
             raw = pkgutil.get_data(__package__, 'getAttribute.js')
             attributeValue = self.parent.execute_script(
                 "return (%s).apply(null, arguments);" % raw,
