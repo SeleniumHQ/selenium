@@ -25,6 +25,7 @@ import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENTS;
 import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENTS;
+import static org.openqa.selenium.remote.DriverCommand.GET_ACTIVE_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ALERT_TEXT;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_HANDLE;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_POSITION;
@@ -89,6 +90,8 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     defineCommand(DISMISS_ALERT, post("/session/:sessionId/alert/dismiss"));
     defineCommand(GET_ALERT_TEXT, get("/session/:sessionId/alert/text"));
     defineCommand(SET_ALERT_VALUE, post("/session/:sessionId/alert/text"));
+
+    defineCommand(GET_ACTIVE_ELEMENT, get("/session/:sessionId/element/active"));
   }
 
   @Override

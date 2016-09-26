@@ -21,6 +21,7 @@ import static org.openqa.selenium.remote.DriverCommand.ACCEPT_ALERT;
 import static org.openqa.selenium.remote.DriverCommand.DISMISS_ALERT;
 import static org.openqa.selenium.remote.DriverCommand.EXECUTE_ASYNC_SCRIPT;
 import static org.openqa.selenium.remote.DriverCommand.EXECUTE_SCRIPT;
+import static org.openqa.selenium.remote.DriverCommand.GET_ACTIVE_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ALERT_TEXT;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_HANDLE;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_POSITION;
@@ -73,6 +74,8 @@ public class JsonHttpCommandCodec extends AbstractHttpCommandCodec {
     defineCommand(DISMISS_ALERT, post("/session/:sessionId/dismiss_alert"));
     defineCommand(GET_ALERT_TEXT, get("/session/:sessionId/alert_text"));
     defineCommand(SET_ALERT_VALUE, post("/session/:sessionId/alert_text"));
+
+    defineCommand(GET_ACTIVE_ELEMENT, post("/session/:sessionId/element/active"));
   }
 
   @Override

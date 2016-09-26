@@ -42,7 +42,6 @@ import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENTS;
 import static org.openqa.selenium.remote.DriverCommand.FULLSCREEN_CURRENT_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.GET;
-import static org.openqa.selenium.remote.DriverCommand.GET_ACTIVE_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ALL_COOKIES;
 import static org.openqa.selenium.remote.DriverCommand.GET_ALL_SESSIONS;
 import static org.openqa.selenium.remote.DriverCommand.GET_APP_CACHE_STATUS;
@@ -189,7 +188,6 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
 
     defineCommand(FIND_ELEMENT, post("/session/:sessionId/element"));
     defineCommand(FIND_ELEMENTS, post("/session/:sessionId/elements"));
-    defineCommand(GET_ACTIVE_ELEMENT, post("/session/:sessionId/element/active"));
     defineCommand(GET_ELEMENT_PROPERTY, get("/session/:sessionId/element/:id/property/:name"));
     defineCommand(CLICK_ELEMENT, post("/session/:sessionId/element/:id/click"));
     defineCommand(CLEAR_ELEMENT, post("/session/:sessionId/element/:id/clear"));
