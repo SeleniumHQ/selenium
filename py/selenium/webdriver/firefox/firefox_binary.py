@@ -102,7 +102,8 @@ class FirefoxBinary(object):
             if count >= timeout:
                 self.kill()
                 raise WebDriverException(
-                    "Can't load the profile. Profile "
+                    "Can't load the profile. Possible firefox version mismatch. "
+                    "You must use GeckoDriver instead for Firefox 48+. Profile "
                     "Dir: %s If you specified a log_file in the "
                     "FirefoxBinary constructor, check it for details."
                     % (self.profile.path))
