@@ -38,6 +38,7 @@ except ImportError:  # 3+
     from io import BytesIO as IOStream
 
 getAttribute_js = pkgutil.get_data(__package__, 'getAttribute.js').decode('utf8')
+isDisplayed_js = pkgutil.get_data(__package__, 'isDisplayed.js').decode('utf8')
 
 
 class WebElement(object):
@@ -348,10 +349,10 @@ class WebElement(object):
     # RenderedWebElement Items
     def is_displayed(self):
         """Whether the element is visible to a user."""
-        if self._w3c :
-            raw = pkgutil.get_data(__package__, 'isDisplayed.js')
+        # Only go into this conditional for browsers that don't use the atom themselves
+        if self._w3c and self.parent.capabilities['browserName'] == 'safari':
             return self.parent.execute_script(
-                "return (%s).apply(null, arguments);" % raw,
+                "return (%s).apply(null, arguments);" % isDisplayed_js,
                 self)
         else:
             return self._execute(Command.IS_ELEMENT_DISPLAYED)['value']
