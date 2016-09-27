@@ -34,7 +34,8 @@ script:
 
   - export CHROME_BINARY=$PWD/chrome-linux/chrome
   - export CHROMEDRIVER=$PWD/chrome-linux/chromedriver
-
+  - echo "${TRAVIS_COMMIT_RANGE} -> ${TRAVIS_COMMIT_RANGE/.../..} (travis-ci/travis-ci#4596)"
+  - git diff --name-only ${TRAVIS_COMMIT_RANGE/.../..}
   - export PY_FILES_CHANGED=`git diff --name-only ${TRAVIS_COMMIT_RANGE/.../..} | grep ^py/`
   - echo "PY_FILES_CHANGED: $PY_FILES_CHANGED"
   - export RB_FILES_CHANGED=`git diff --name-only ${TRAVIS_COMMIT_RANGE/.../..} | grep ^rb/`
