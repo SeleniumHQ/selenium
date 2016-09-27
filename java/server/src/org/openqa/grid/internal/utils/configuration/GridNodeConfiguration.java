@@ -68,6 +68,11 @@ public class GridNodeConfiguration extends GridConfiguration {
   @Expose( serialize = false )
   String remoteHost;
 
+  // used to read a Selenium 2.x nodeConfig.json file and throw a friendly exception
+  @Expose( serialize = false )
+  @Deprecated
+  private Object configuration;
+
   /*
    * config parameters which serialize and deserialize to/from json
    */
@@ -292,6 +297,14 @@ public class GridNodeConfiguration extends GridConfiguration {
       GridNodeConfiguration.staticAddJsonTypeAdapter(builder);
       GridNodeConfiguration config =
         builder.excludeFieldsWithoutExposeAnnotation().create().fromJson(json, GridNodeConfiguration.class);
+
+      if (config.configuration != null) {
+        // caught below
+        throw new GridConfigurationException("Deprecated -nodeConfig file encountered. Please update"
+                                             + " the file to work with Selenium 3. See https://github.com"
+                                             + "/SeleniumHQ/selenium/wiki/Grid2#configuring-the-nodes-by-json"
+                                             + " for more details.");
+}
 
       return config;
     } catch (Throwable e) {
