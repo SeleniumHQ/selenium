@@ -252,6 +252,8 @@ class AlertsTest(unittest.TestCase):
         self.assertEquals("onload", value)
 
     def testShouldHandleAlertOnPageLoadUsingGet(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support alerts")
         self.driver.get(self._pageURL("pageWithOnLoad"))
 
         alert = self._waitForAlert()
@@ -262,6 +264,8 @@ class AlertsTest(unittest.TestCase):
         WebDriverWait(self.driver, 3).until(EC.text_to_be_present_in_element((By.TAG_NAME, "p"), "Page with onload event handler"))
 
     def testShouldHandleAlertOnPageBeforeUnload(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support alerts")
         self.driver.get(self._pageURL("pageWithOnBeforeUnloadMessage"))
 
         element = self.driver.find_element(By.ID, "navigate")
@@ -277,6 +281,8 @@ class AlertsTest(unittest.TestCase):
         WebDriverWait(self.driver, 3).until(EC.title_is("Testing Alerts"))
 
     def _testShouldHandleAlertOnPageBeforeUnloadAtQuit(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support alerts")
         # TODO: Add the ability to get a new session
         self.driver.get(self._pageURL("pageWithOnBeforeUnloadMessage"))
 
@@ -298,6 +304,8 @@ class AlertsTest(unittest.TestCase):
         self.assertEqual("cheese", value)
 
     def testShouldAllowTheUserToGetTheTextOfAPrompt(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support alerts")
         self._loadPage("alerts")
         self.driver.find_element(By.ID, "prompt").click()
 
@@ -308,6 +316,8 @@ class AlertsTest(unittest.TestCase):
         self.assertEquals("Enter something", value)
 
     def testAlertShouldNotAllowAdditionalCommandsIfDismissed(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support alerts")
         self._loadPage("alerts")
         self.driver.find_element(By.ID, "alert").click()
 
