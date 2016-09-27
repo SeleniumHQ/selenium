@@ -45,13 +45,8 @@ import java.util.Map;
 
 /**
  * Defines common error codes for the wire protocol.
- *
- * @author jmleyba@gmail.com (Jason Leyba)
  */
 public class ErrorCodes {
-
-  // These codes were all pulled from ChromeCommandExecutor and seem all over the place.
-  // TODO(jmleyba): Clean up error codes?
 
   @Beta
   public static final String SUCCESS_STRING = "success";
@@ -250,11 +245,11 @@ public class ErrorCodes {
     return statusCode != SUCCESS && statusCode != UNHANDLED_ERROR;
   }
 
-  public static String toState(Integer status) {
+  public String toState(Integer status) {
     return statusToState.get(status);
   }
 
-  public static int toStatus(String state) {
+  public int toStatus(String state) {
     Integer status = stateToStatus.get(state);
     return status != null ? status : UNHANDLED_ERROR;
   }

@@ -17,23 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.logging.LogType;
-import org.openqa.selenium.logging.LoggingPreferences;
-
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.instanceOf;
@@ -50,6 +33,23 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingPreferences;
+
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 @RunWith(JUnit4.class)
 public class JsonToBeanConverterTest {
@@ -386,7 +386,7 @@ public class JsonToBeanConverterTest {
       .convert(Response.class, "{\"status\":0,\"value\":\"cheese\"}");
 
     assertEquals(0, response.getStatus().intValue());
-    assertEquals(ErrorCodes.toState(0), response.getState());
+    assertEquals(new ErrorCodes().toState(0), response.getState());
     @SuppressWarnings("unchecked")
     String value = (String) response.getValue();
     assertEquals("cheese", value);
@@ -398,7 +398,7 @@ public class JsonToBeanConverterTest {
       .convert(Response.class, "{\"status\":\"success\",\"value\":\"cheese\"}");
 
     assertEquals(0, response.getStatus().intValue());
-    assertEquals(ErrorCodes.toState(0), response.getState());
+    assertEquals(new ErrorCodes().toState(0), response.getState());
     @SuppressWarnings("unchecked")
     String value = (String) response.getValue();
     assertEquals("cheese", value);
