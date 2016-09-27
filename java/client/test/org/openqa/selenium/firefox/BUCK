@@ -14,6 +14,23 @@ java_test(name = 'test-synthesized',
   ],
 )
 
+java_test(name = 'marionette',
+  srcs = [
+    'SynthesizedFirefoxDriverTests.java'
+  ],
+  vm_args = [
+    '-Dselenium.browser=ff',
+    '-Dwebdriver.firefox.marionette=true',
+  ],
+  deps = [
+    ':tests',
+    '//java/client/src/org/openqa/selenium:selenium',
+    '//java/client/test/org/openqa/selenium/testing:test-base',
+    '//java/client/test/org/openqa/selenium:large-tests',
+    '//third_party/java/junit:junit',
+  ],
+)
+
 java_library(name = 'tests',
   srcs = glob(['*Test.java', 'internal/*.java']) + [
     'FirefoxSpecificTests.java',
