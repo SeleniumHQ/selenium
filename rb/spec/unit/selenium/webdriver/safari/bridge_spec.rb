@@ -23,47 +23,31 @@ module Selenium
   module WebDriver
     module Safari
       describe Bridge do
-        let(:server)  { double(Server, receive: response).as_null_object }
-        let(:browser) { double(Browser).as_null_object }
-
-        let :response do
-          {
-            'id' => '1',
-            'response' => {
-              'sessionId' => 'opaque', 'value' => @default_capabilities,
-              'status'    => 0
-            }
-          }
-        end
+        let(:http)    { double(Remote::Http::Default, call: resp).as_null_object }
+        let(:resp)    { {'sessionId' => 'foo', 'value' => @default_capabilities} }
+        let(:service) { double(Service, start: true, uri: 'http://example.com') }
+        let(:caps)    { {} }
 
         before do
           @default_capabilities = Remote::Capabilities.safari.as_json
 
-          allow(Server).to receive(:new).and_return(server)
-          allow(Browser).to receive(:new).and_return(browser)
+          allow(Safari).to receive(:driver_path).and_return('/foo')
+          allow(Remote::Capabilities).to receive(:safari).and_return(caps)
+          allow(Service).to receive(:new).and_return(service)
         end
 
         it 'takes desired capabilities' do
           custom_caps = Remote::Capabilities.new
           custom_caps['foo'] = 'bar'
 
-          expect(server).to receive(:send) do |payload|
-            expect(payload[:command][:parameters][:desiredCapabilities]['foo']).to eq('bar')
+          expect(http).to receive(:call) do |_, _, payload|
+            expect(payload[:desiredCapabilities]['foo']).to eq 'bar'
+            resp
           end
 
-          Bridge.new(desired_capabilities: custom_caps)
+          Bridge.new(http_client: http, desired_capabilities: custom_caps)
         end
 
-        it 'lets direct arguments take presedence over capabilities' do
-          custom_caps = Remote::Capabilities.new
-          custom_caps['cleanSession'] = false
-
-          expect(server).to receive(:send) do |payload|
-            expect(payload[:command][:parameters][:desiredCapabilities]['safari.options']['cleanSession']).to eq(true)
-          end
-
-          Bridge.new(clean_session: true)
-        end
       end
     end # Safari
   end # WebDriver

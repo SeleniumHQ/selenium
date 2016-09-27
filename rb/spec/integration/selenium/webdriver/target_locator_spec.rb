@@ -211,9 +211,9 @@ module Selenium
           driver.switch_to.window(driver.window_handles.first) do
             wait.until { driver.title == 'XHTML Test Page' }
           end
-        end
 
-        expect(driver.title).to eq('XHTML Test Page')
+          expect(driver.title).to eq('XHTML Test Page')
+        end
       end
 
       it 'should switch to default content' do
