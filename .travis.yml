@@ -35,9 +35,9 @@ script:
   - export CHROME_BINARY=$PWD/chrome-linux/chrome
   - export CHROMEDRIVER=$PWD/chrome-linux/chromedriver
 
-  - export PY_FILES_CHANGED=`git diff --name-only $TRAVIS_COMMIT_RANGE | grep ^py/`
+  - export PY_FILES_CHANGED=`git diff --name-only ${TRAVIS_COMMIT_RANGE/.../..} | grep ^py/`
   - echo "PY_FILES_CHANGED: $PY_FILES_CHANGED"
-  - export RB_FILES_CHANGED=`git diff --name-only $TRAVIS_COMMIT_RANGE | grep ^rb/`
+  - export RB_FILES_CHANGED=`git diff --name-only ${TRAVIS_COMMIT_RANGE/.../..} | grep ^rb/`
   - echo "RB_FILES_CHANGED: $RB_FILES_CHANGED"
 
   - ./go clean build
