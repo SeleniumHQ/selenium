@@ -29,6 +29,7 @@ import com.google.gson.JsonParser;
 import com.beust.jcommander.JCommander;
 
 import org.junit.Test;
+import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.Arrays;
@@ -61,6 +62,20 @@ public class GridNodeConfigurationTest {
     assertTrue(gnc.capabilities.size() == 1);
     assertEquals("firefox", gnc.capabilities.get(0).getBrowserName());
     assertEquals(5L, gnc.capabilities.get(0).getCapability("maxInstances"));
+  }
+
+  @Test(expected = GridConfigurationException.class)
+  public void testLoadFromOldJson() {
+    final String configJson = "{"
+                            + "\"configuration\":"
+                            + " {"
+                            + "\"host\": \"dummyhost\","
+                            + "\"maxSession\": 5,"
+                            + "\"port\": 1234"
+                            + " }"
+                            + "}";
+    JsonObject json = new JsonParser().parse(configJson).getAsJsonObject();
+    GridNodeConfiguration gnc = GridNodeConfiguration.loadFromJSON(json);
   }
 
   @Test
