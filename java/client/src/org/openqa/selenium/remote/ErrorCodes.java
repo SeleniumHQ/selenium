@@ -18,15 +18,24 @@
 
 package org.openqa.selenium.remote;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.Iterables;
+
 import org.openqa.selenium.Beta;
-import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.ElementNotInteractableException;
+import org.openqa.selenium.ElementNotSelectableException;
 import org.openqa.selenium.ImeActivationFailedException;
 import org.openqa.selenium.ImeNotAvailableException;
+import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.InvalidCookieDomainException;
 import org.openqa.selenium.InvalidElementStateException;
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.NoAlertPresentException;
+import org.openqa.selenium.NoSuchCookieException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchSessionException;
@@ -41,7 +50,12 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 
+import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * Defines common error codes for the wire protocol.
@@ -80,49 +94,114 @@ public class ErrorCodes {
   // The following error codes are derived straight from HTTP return codes.
   public static final int METHOD_NOT_ALLOWED = 405;
 
-  // TODO(simon): Convert the strings to constants. Sadly the constant names
-  // will be the ones used by the ints now. *sigh*
-  private static Map<Integer, String> statusToState = ImmutableMap.<Integer, String>builder()
-      .put(ASYNC_SCRIPT_TIMEOUT, "async script timeout")
-      .put(ELEMENT_NOT_SELECTABLE, "element not selectable")
-      .put(ELEMENT_NOT_VISIBLE, "element not visible")
-      .put(IME_ENGINE_ACTIVATION_FAILED, "ime engine activation failed")
-      .put(IME_NOT_AVAILABLE, "ime not available")
-      .put(INVALID_COOKIE_DOMAIN, "invalid cookie domain")
-      .put(INVALID_ELEMENT_COORDINATES, "invalid element coordinates")
-      .put(INVALID_ELEMENT_STATE, "invalid element state")
-      .put(INVALID_SELECTOR_ERROR, "invalid selector")
-      .put(INVALID_XPATH_SELECTOR, "invalid selector")
-      .put(INVALID_XPATH_SELECTOR_RETURN_TYPER, "invalid selector")
-      .put(JAVASCRIPT_ERROR, "javascript error")
-      .put(METHOD_NOT_ALLOWED, "method not allowed")
-      .put(MOVE_TARGET_OUT_OF_BOUNDS, "move target out of bounds")
-      .put(NO_SUCH_ELEMENT, "no such element")
-      .put(NO_SUCH_FRAME, "no such frame")
-      .put(NO_SUCH_SESSION, "no such session")
-      .put(NO_SUCH_WINDOW, "no such window")
-      .put(SESSION_NOT_CREATED, "session not created")
-      .put(STALE_ELEMENT_REFERENCE, "stale element reference")
-      .put(SUCCESS, "success")
-      .put(TIMEOUT, "timeout")
-      .put(UNABLE_TO_SET_COOKIE, "unable to set cookie")
-      .put(NO_ALERT_PRESENT, "no such alert")
-      .put(UNHANDLED_ERROR, "unhandled error")
-      .put(UNKNOWN_COMMAND, "unknown command")
-      .put(XPATH_LOOKUP_ERROR, "invalid selector")
+  private static final Logger log = Logger.getLogger(ErrorCodes.class.getName());
+
+  private static final ImmutableMap<Integer, ImmutableSet<StatusTuple>>
+    ALL_CODES =
+    ImmutableMap.<Integer, ImmutableSet<StatusTuple>>builder()
+      .put(200,
+           ImmutableSortedSet.<StatusTuple>naturalOrder()
+             .add(new StatusTuple("success", SUCCESS, null))
+           .build())
+      .put(400,
+           ImmutableSortedSet.<StatusTuple>naturalOrder()
+             .add(new StatusTuple("element not selectable", ELEMENT_NOT_SELECTABLE, ElementNotSelectableException.class))
+             .add(new StatusTuple("element not interactable", INVALID_ELEMENT_STATE, ElementNotInteractableException.class))
+             .add(new StatusTuple("invalid argument", UNHANDLED_ERROR, InvalidArgumentException.class))
+             .add(new StatusTuple("invalid cookie domain", INVALID_COOKIE_DOMAIN, InvalidCookieDomainException.class))
+             .add(new StatusTuple("invalid element coordinates", INVALID_ELEMENT_COORDINATES, InvalidCoordinatesException.class))
+             .add(new StatusTuple("invalid element state", INVALID_ELEMENT_STATE, InvalidElementStateException.class))
+             .add(new StatusTuple("invalid selector", INVALID_SELECTOR_ERROR, InvalidSelectorException.class, INVALID_SELECTOR_ERROR))
+             .add(new StatusTuple("invalid selector", INVALID_XPATH_SELECTOR, InvalidSelectorException.class, INVALID_SELECTOR_ERROR))
+             .add(new StatusTuple("invalid selector", INVALID_XPATH_SELECTOR_RETURN_TYPER, InvalidSelectorException.class, INVALID_SELECTOR_ERROR))
+             .add(new StatusTuple("invalid selector", XPATH_LOOKUP_ERROR, InvalidSelectorException.class, INVALID_SELECTOR_ERROR))
+             .add(new StatusTuple("no such alert", NO_ALERT_PRESENT, NoAlertPresentException.class))
+             .add(new StatusTuple("no such frame", NO_SUCH_FRAME, NoSuchFrameException.class))
+             .add(new StatusTuple("no such window", NO_SUCH_WINDOW, NoSuchWindowException.class))
+             .add(new StatusTuple("stale element reference", STALE_ELEMENT_REFERENCE, StaleElementReferenceException.class))
+             .build())
+      .put(404,
+           ImmutableSortedSet.<StatusTuple>naturalOrder()
+             .add(new StatusTuple("invalid session id", NO_SUCH_SESSION, NoSuchSessionException.class))
+             .add(new StatusTuple("no such cookie", UNHANDLED_ERROR, NoSuchCookieException.class))
+             .add(new StatusTuple("no such element", NO_SUCH_ELEMENT, NoSuchElementException.class))
+             .add(new StatusTuple("unknown command", UNKNOWN_COMMAND, UnsupportedCommandException.class, UNHANDLED_ERROR))
+             .build())
+      .put(405,
+           ImmutableSortedSet.<StatusTuple>naturalOrder()
+             .add(new StatusTuple("unknown method", METHOD_NOT_ALLOWED, UnsupportedCommandException.class, UNHANDLED_ERROR))
+             .build())
+      .put(408,
+           ImmutableSortedSet.<StatusTuple>naturalOrder()
+             .add(new StatusTuple("script timeout", ASYNC_SCRIPT_TIMEOUT, TimeoutException.class, TIMEOUT))
+             .add(new StatusTuple("timeout", TIMEOUT, TimeoutException.class, TIMEOUT))
+             .build())
+  .put(500,
+       ImmutableSortedSet.<StatusTuple>naturalOrder()
+         .add(new StatusTuple("javascript error", JAVASCRIPT_ERROR, WebDriverException.class, UNHANDLED_ERROR))
+         .add(new StatusTuple("move target out of bounds", MOVE_TARGET_OUT_OF_BOUNDS, MoveTargetOutOfBoundsException.class))
+         .add(new StatusTuple("session not created", SESSION_NOT_CREATED, SessionNotCreatedException.class))
+         .add(new StatusTuple("unable to set cookie", UNABLE_TO_SET_COOKIE, UnableToSetCookieException.class))
+         .add(new StatusTuple("unable to capture screen", UNHANDLED_ERROR, ScreenshotException.class))
+         .add(new StatusTuple("unexpected alert open", UNEXPECTED_ALERT_PRESENT, UnhandledAlertException.class))
+         .add(new StatusTuple("unknown error", UNHANDLED_ERROR, WebDriverException.class, UNHANDLED_ERROR))
+         .add(new StatusTuple("unsupported operation", METHOD_NOT_ALLOWED, UnsupportedCommandException.class, UNHANDLED_ERROR))
+         .add(new StatusTuple("unsupported operation", IME_NOT_AVAILABLE, ImeNotAvailableException.class))
+         .add(new StatusTuple("unsupported operation", IME_ENGINE_ACTIVATION_FAILED, ImeActivationFailedException.class))
+         .build())
       .build();
 
-  private static Map<String, Integer> stateToStatus;
-  static {
-    ImmutableMap.Builder<String, Integer> builder = ImmutableMap.<String, Integer>builder();
-    for (Map.Entry<Integer, String> pair : statusToState.entrySet()) {
-      // Ignore duplicate "invalid selector" codes
-      if (! pair.getValue().equals("invalid selector") || pair.getKey() == INVALID_SELECTOR_ERROR) {
-        builder.put(pair.getValue(), pair.getKey());
+  // A single JSON status code can map to many w3c codes. The exceptions thrown are the same. It'll
+  // be fine.
+  private static final Map<Integer, String> JSON_TO_W3C = ALL_CODES.values().stream()
+    .flatMap(Collection::stream)
+    .collect(Collectors.toMap(StatusTuple::asStatus, StatusTuple::asState, (key1, key2) -> key1));
+
+  private static final Map<String, Integer> W3C_TO_JSON = ALL_CODES.values().stream()
+    .flatMap(Collection::stream)
+    .collect(Collectors.toMap(StatusTuple::asState, StatusTuple::asStatus, (key1, key2) -> key1));
+
+  private static final Map<Integer, Map<String, Integer>> HTTP_TO_STATE_AND_STATUS =
+    ALL_CODES.entrySet().stream()
+      .collect(Collectors.toMap(
+        Map.Entry::getKey,
+        entry -> entry.getValue()
+          .stream()
+          .collect(Collectors.toMap(StatusTuple::asState, StatusTuple::asStatus, (key1, key2) -> key1))));
+
+  private static final Map<String, Class<? extends WebDriverException>> STATE_TO_EXCEPTION =
+    ALL_CODES.values().stream()
+      .flatMap(Collection::stream)
+      .filter(tuple -> tuple.getException() != null)
+      .collect(Collectors.toMap(StatusTuple::asState, StatusTuple::getException, (key1, key2) -> key1));
+
+  public String toState(Integer status) {
+    return JSON_TO_W3C.getOrDefault(status, "unknown error");
+  }
+
+  public int toStatus(String webdriverState, Optional<Integer> httpStatus) {
+    // Look it up in the map if the http status code has been provided
+    if (httpStatus.isPresent()) {
+      Map<String, Integer> tuples = HTTP_TO_STATE_AND_STATUS.get(httpStatus.get());
+      if (tuples != null) {
+        Integer value = tuples.get(webdriverState);
+        if (value != null) {
+          return value;
+        }
+        log.info(String.format(
+          "HTTP Status: '%d' -> no JSON status mapping for '%s'",
+          httpStatus.get(),
+          webdriverState));
+      } else {
+        log.info(String.format(
+          "No JSON status codes found for HTTP status: '%d' -> ",
+          httpStatus.get()));
       }
+
     }
-    builder.put("invalid session id", NO_SUCH_SESSION); // for W3C compatibility
-    stateToStatus = builder.build();
+
+    // Fall through to just doing a straight look up
+    return W3C_TO_JSON.getOrDefault(webdriverState, UNHANDLED_ERROR);
   }
 
   /**
@@ -134,123 +213,97 @@ public class ErrorCodes {
    *         {@code statusCode == 0}.
    */
   public Class<? extends WebDriverException> getExceptionType(int statusCode) {
-    switch (statusCode) {
-      case SUCCESS:
-        return null;
-      case NO_SUCH_SESSION:
-        return NoSuchSessionException.class;
-      case INVALID_COOKIE_DOMAIN:
-        return InvalidCookieDomainException.class;
-      case UNABLE_TO_SET_COOKIE:
-        return UnableToSetCookieException.class;
-      case NO_SUCH_WINDOW:
-        return NoSuchWindowException.class;
-      case NO_SUCH_ELEMENT:
-        return NoSuchElementException.class;
-      case INVALID_SELECTOR_ERROR:
-      case INVALID_XPATH_SELECTOR:
-      case INVALID_XPATH_SELECTOR_RETURN_TYPER:
-      case XPATH_LOOKUP_ERROR:
-        return InvalidSelectorException.class;
-      case MOVE_TARGET_OUT_OF_BOUNDS:
-        return MoveTargetOutOfBoundsException.class;
-      case NO_SUCH_FRAME:
-        return NoSuchFrameException.class;
-      case UNKNOWN_COMMAND:
-      case METHOD_NOT_ALLOWED:
-        return UnsupportedCommandException.class;
-      case STALE_ELEMENT_REFERENCE:
-        return StaleElementReferenceException.class;
-      case ELEMENT_NOT_VISIBLE:
-        return ElementNotVisibleException.class;
-      case ELEMENT_NOT_SELECTABLE:
-      case INVALID_ELEMENT_STATE:
-        return InvalidElementStateException.class;
-      case ASYNC_SCRIPT_TIMEOUT:
-      case TIMEOUT:
-        return TimeoutException.class;
-      case INVALID_ELEMENT_COORDINATES:
-        return InvalidCoordinatesException.class;
-      case IME_NOT_AVAILABLE:
-        return ImeNotAvailableException.class;
-      case IME_ENGINE_ACTIVATION_FAILED:
-        return ImeActivationFailedException.class;
-      case NO_ALERT_PRESENT:
-        return NoAlertPresentException.class;
-      case SESSION_NOT_CREATED:
-        return SessionNotCreatedException.class;
-      case UNEXPECTED_ALERT_PRESENT:
-        return UnhandledAlertException.class;
-      default:
-        return WebDriverException.class;
-    }
+    return getExceptionType(toState(statusCode));
   }
 
-  /**
-   * Converts a thrown error into the corresponding status code.
-   *
-   * @param thrown The thrown error.
-   * @return The corresponding status code for the given thrown error.
-   */
-  public int toStatusCode(Throwable thrown) {
-    if (thrown == null) {
+  public Class<? extends WebDriverException> getExceptionType(String webdriverState) {
+    return STATE_TO_EXCEPTION.getOrDefault(webdriverState, WebDriverException.class);
+  }
+
+  public int toStatusCode(Throwable e) {
+    if (e == null) {
       return SUCCESS;
-    } else if (thrown instanceof TimeoutException) {
-      return ASYNC_SCRIPT_TIMEOUT;
-    } else if (thrown instanceof ElementNotVisibleException) {
-      return ELEMENT_NOT_VISIBLE;
-    } else if (thrown instanceof InvalidCookieDomainException) {
-      return INVALID_COOKIE_DOMAIN;
-    } else if (thrown instanceof InvalidCoordinatesException) {
-      return INVALID_ELEMENT_COORDINATES;
-    } else if (thrown instanceof InvalidElementStateException) {
-      return INVALID_ELEMENT_STATE;
-    } else if (thrown instanceof InvalidSelectorException) {
-      return INVALID_SELECTOR_ERROR;
-    } else if (thrown instanceof ImeNotAvailableException) {
-      return IME_NOT_AVAILABLE;
-    } else if (thrown instanceof ImeActivationFailedException) {
-      return IME_ENGINE_ACTIVATION_FAILED;
-    } else if (thrown instanceof NoAlertPresentException) {
-      return NO_ALERT_PRESENT;
-    } else if (thrown instanceof NoSuchElementException) {
-      return NO_SUCH_ELEMENT;
-    } else if (thrown instanceof NoSuchFrameException) {
-      return NO_SUCH_FRAME;
-    } else if (thrown instanceof NoSuchWindowException) {
-      return NO_SUCH_WINDOW;
-    } else if (thrown instanceof MoveTargetOutOfBoundsException) {
-      return MOVE_TARGET_OUT_OF_BOUNDS;
-    } else if (thrown instanceof SessionNotCreatedException) {
-      return SESSION_NOT_CREATED;
-    } else if (thrown instanceof StaleElementReferenceException) {
-      return STALE_ELEMENT_REFERENCE;
-    } else if (thrown instanceof UnableToSetCookieException) {
-      return UNABLE_TO_SET_COOKIE;
-    } else if (thrown instanceof UnhandledAlertException) {
-      return UNEXPECTED_ALERT_PRESENT;
-    } else {
-      return UNHANDLED_ERROR;
     }
+
+    // Handle the cases where the JSON wire protocol was more specific than the W3C one
+    if (ImeNotAvailableException.class.equals(e.getClass())) {
+      return IME_NOT_AVAILABLE;
+    }
+    if (ImeActivationFailedException.class.equals(e.getClass())) {
+      return IME_ENGINE_ACTIVATION_FAILED;
+    }
+
+    // And then handle the other cases
+    Set<Integer> possibleMatches = ALL_CODES.values().stream()
+      .flatMap(Collection::stream)
+      .filter(tuple -> tuple.getException() != null)
+      .filter(tuple -> tuple.associatedException.isAssignableFrom(e.getClass()))
+      .map(StatusTuple::getStatusFromException)
+      .collect(Collectors.toSet());
+
+    return Preconditions.checkNotNull(Iterables.getFirst(possibleMatches, UNHANDLED_ERROR));
   }
 
-  /**
-   * Tests if the {@code thrown} error can be mapped to one of WebDriver's well defined error codes.
-   *
-   * @param thrown The error to test.
-   * @return Whether the error can be mapped to a status code.
-   */
-  public boolean isMappableError(Throwable thrown) {
-    int statusCode = toStatusCode(thrown);
-    return statusCode != SUCCESS && statusCode != UNHANDLED_ERROR;
+  public boolean isMappableError(Throwable rootCause) {
+    if (rootCause == null) {
+      return false;
+    }
+
+    Set<Integer> possibleMatches = ALL_CODES.values().stream()
+      .flatMap(Collection::stream)
+      .filter(tuple -> tuple.getException() != null)
+      .filter(tuple -> tuple.associatedException.isAssignableFrom(rootCause.getClass()))
+      .map(StatusTuple::asStatus)
+      .collect(Collectors.toSet());
+
+    return !possibleMatches.isEmpty();
   }
 
-  public String toState(Integer status) {
-    return statusToState.get(status);
-  }
+  private static class StatusTuple implements Comparable<StatusTuple> {
+    private final String w3cState;
+    private final int jsonStatus;
+    private final Class<? extends WebDriverException> associatedException;
+    // Mapping from the original error codes implementation.
+    private final int seleniumExceptionToResponseCode;
 
-  public int toStatus(String state) {
-    Integer status = stateToStatus.get(state);
-    return status != null ? status : UNHANDLED_ERROR;
+    public StatusTuple(String w3cState, int jsonStatus, Class<? extends WebDriverException> ex) {
+      this(w3cState, jsonStatus, ex, jsonStatus);
+    }
+
+    public StatusTuple(
+      String w3cState,
+      int jsonStatus,
+      Class<? extends WebDriverException> ex,
+      int seleniumExceptionToResponseCode) {
+      this.w3cState = w3cState;
+      this.jsonStatus = jsonStatus;
+      this.associatedException = ex;
+      // This field is derived from the original implementation of ErrorCodes. Also used when
+      this.seleniumExceptionToResponseCode = seleniumExceptionToResponseCode;
+    }
+
+    public int asStatus() {
+      return jsonStatus;
+    }
+
+    public String asState() {
+      return w3cState;
+    }
+
+    public int getStatusFromException() {
+      return seleniumExceptionToResponseCode;
+    }
+
+    @Override
+    public int compareTo(StatusTuple that) {
+      return ComparisonChain.start()
+        .compare(this.w3cState, that.w3cState)
+        .compare(this.jsonStatus, that.jsonStatus)
+        .result();
+    }
+
+    public Class<? extends WebDriverException> getException() {
+      return associatedException;
+    }
   }
 }
