@@ -97,9 +97,12 @@ public class ProtocolHandshake {
     HttpResponse response = client.execute(request, true);
 
     Map<?, ?> jsonBlob = null;
+    String resultString = response.getContentString();
     try {
-      String resultString = response.getContentString();
       jsonBlob = new JsonToBeanConverter().convert(Map.class, resultString);
+    } catch (ClassCastException e) {
+      LOG.info("Unable to parse response from server: " + resultString);
+      return Optional.empty();
     } catch (JsonException e) {
       // Fine. Handle that below
     }
