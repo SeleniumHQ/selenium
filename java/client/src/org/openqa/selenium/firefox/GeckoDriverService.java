@@ -81,17 +81,10 @@ public class GeckoDriverService extends DriverService {
 
     @Override
     protected File findDefaultExecutable() {
-      // We should really look for geckodriver, but the old name was wires. Look for both.
-      try {
-        return findExecutable("geckodriver", GECKO_DRIVER_EXE_PROPERTY,
-                              "https://github.com/mozilla/geckodriver",
-                              "https://github.com/mozilla/geckodriver/releases");
-      } catch (IllegalStateException e) {
-        // Geckodriver not found. Fall back to wires
-        return findExecutable("wires", GECKO_DRIVER_EXE_PROPERTY,
-                              "https://github.com/mozilla/geckodriver",
-                              "https://github.com/mozilla/geckodriver/releases");
-      }
+      return findExecutable(
+        "geckodriver", GECKO_DRIVER_EXE_PROPERTY,
+        "https://github.com/mozilla/geckodriver",
+        "https://github.com/mozilla/geckodriver/releases");
     }
 
     @Override
@@ -106,7 +99,7 @@ public class GeckoDriverService extends DriverService {
         argsBuilder.add("-b");
         argsBuilder.add(firefoxExe.getPath());
       } catch (WebDriverException e) {
-        // Unable to find Firefox. GeckoDriver will be responsible for finding 
+        // Unable to find Firefox. GeckoDriver will be responsible for finding
         // Firefox on the PATH or via a capability.
       }
       return argsBuilder.build();
