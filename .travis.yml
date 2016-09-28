@@ -47,10 +47,11 @@ script:
       fi
   - |
       if [[ $TOXENV == *"firefox"* ]]; then
-        sudo apt-get -y purge firefox
         pip install --user mozdownload mozinstall
         mozdownload --version 47.0.1 --destination firefox.tar.bz2
         mozinstall firefox.tar.bz2
+        sudo ln -sf $PWD/firefox/firefox /usr/local/bin/firefox
+        firefox --version
       fi
   - |
       if [[ $TARGET == *"firefox"* ]] || [[ $TOXENV == *"marionette"* ]]; then
@@ -58,10 +59,11 @@ script:
         curl -L -o geckodriver.tar.gz https://github.com/mozilla/geckodriver/releases/download/${GECKODRIVER_VERSION}/geckodriver-${GECKODRIVER_VERSION}-linux64.tar.gz
         gunzip -c geckodriver.tar.gz | tar xopf -
         chmod +x geckodriver && sudo mv geckodriver /usr/local/bin
-        sudo apt-get -y purge firefox
         pip install --user mozdownload mozinstall
         mozdownload --version latest --destination firefox.tar.bz2
         mozinstall firefox.tar.bz2
+        sudo ln -sf $PWD/firefox/firefox /usr/local/bin/firefox
+        firefox --version
       fi
   - |
       if [[ $TARGET+$TOXENV == *"phantomjs"* ]]; then
