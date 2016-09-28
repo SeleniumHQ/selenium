@@ -26,7 +26,6 @@ env:
 matrix:
   fast_finish: true
   allow_failures:
-    - env: TASK=rb TARGET=firefox-test
     - env: TASK=rb TARGET=phantomjs-test
     - env: TASK=py TOXENV=py27-chrome
     - env: TASK=py TOXENV=py27-firefox
