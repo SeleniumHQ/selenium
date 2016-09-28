@@ -37,6 +37,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+/**
+ * Manage firefox specific settings in a way that geckodriver can understand. Use {@link
+ * #addTo(DesiredCapabilities)} to also add settings to a {@link DesiredCapabilities} object.
+ * <p>
+ * An example of usage:
+ * <pre>
+ *    DesiredCapabilities caps = new FirefoxOptions()
+ *      .addPreference("browser.startup.page", 1)
+ *      .addPreference("browser.startup.homepage", "https://www.google.co.uk")
+ *      .addTo(DesiredCapabilities.firefox());
+ *    WebDriver driver = new FirefoxDriver(caps);
+ * </pre>
+ */
 public class FirefoxOptions {
 
   private String binary;
