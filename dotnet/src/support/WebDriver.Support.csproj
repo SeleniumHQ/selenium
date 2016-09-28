@@ -109,6 +109,9 @@
     <Compile Include="UI\SelectElement.cs" />
     <Compile Include="UI\SlowLoadableComponent{T}.cs" />
     <Compile Include="UI\SystemClock.cs" />
+    <Compile Include="UI\TableCellElement.cs" />
+    <Compile Include="UI\TableElement.cs" />
+    <Compile Include="UI\TableRowElement.cs" />
     <Compile Include="UI\UnexpectedTagNameException.cs" />
     <Compile Include="UI\WebDriverWait.cs" />
   </ItemGroup>
