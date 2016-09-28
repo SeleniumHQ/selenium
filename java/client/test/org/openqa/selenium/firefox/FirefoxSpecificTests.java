@@ -31,6 +31,7 @@ import org.openqa.selenium.firefox.internal.StreamsTest;
     FirefoxCapabilitiesTest.class,
     FirefoxDriverTest.class,
     FirefoxProfileTest.class,
+    MarionetteTest.class,
     NewProfileExtensionConnectionTest.class,
     PreferencesTest.class,
     SocketLockTest.class,
