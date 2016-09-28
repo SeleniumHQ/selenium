@@ -96,6 +96,7 @@
     <Compile Include="UI\PopupWindowFinderTest.cs" />
     <Compile Include="UI\SelectTests.cs" />
     <Compile Include="UI\SlowLoadableComponentTest.cs" />
+    <Compile Include="UI\TableTests.cs" />
     <Compile Include="UI\WebDriverWaitTest.cs" />
   </ItemGroup>
   <ItemGroup>
