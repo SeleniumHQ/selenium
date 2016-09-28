@@ -24,9 +24,8 @@ module Selenium
   module WebDriver
     module Safari
       MISSING_TEXT = <<-ERROR.tr("\n", '').freeze
-        Unable to find safari extension. Please download the file from
-        http://www.seleniumhq.org/download/ and place it
-        somewhere on your PATH. More info at https://github.com/SeleniumHQ/selenium/wiki/SafariDriver.
+        Unable to find Apple's safaridriver which comes with Safari 10.
+        More info at https://webkit.org/blog/6900/webdriver-support-in-safari-10/
       ERROR
 
       class << self
@@ -36,22 +35,10 @@ module Selenium
         end
 
         def path
-          @path ||= (
-            path = case Platform.os
-                   when :windows
-                     Platform.find_in_program_files('Safari\\Safari.exe')
-                   when :macosx
-                     '/Applications/Safari.app/Contents/MacOS/Safari'
-                   else
-                     Platform.find_binary('Safari')
-                   end
-
-            unless File.file?(path) && File.executable?(path)
-              raise Error::WebDriverError, MISSING_TEXT
-            end
-
-            path
-          )
+          @path ||= '/Applications/Safari.app/Contents/MacOS/Safari'
+          return @path if File.file?(@path) && File.executable?(@path)
+          raise Error::WebDriverError, 'Safari is only supported on Mac' unless Platform.os == :macosx
+          raise Error::WebDriverError, 'Unable to find Safari'
         end
 
         def resource_path
@@ -64,7 +51,9 @@ module Selenium
         end
 
         def driver_path
-          @driver_path || '/usr/bin/safaridriver'
+          @driver_path ||= '/usr/bin/safaridriver'
+          return @driver_path if File.file?(@driver_path) && File.executable?(@driver_path)
+          raise Error::WebDriverError, MISSING_TEXT
         end
       end
     end # Safari
