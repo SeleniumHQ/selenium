@@ -75,7 +75,7 @@ public class GridNodeConfigurationTest {
                             + " }"
                             + "}";
     JsonObject json = new JsonParser().parse(configJson).getAsJsonObject();
-    GridNodeConfiguration gnc = GridNodeConfiguration.loadFromJSON(json);
+    GridNodeConfiguration.loadFromJSON(json);
   }
 
   @Test

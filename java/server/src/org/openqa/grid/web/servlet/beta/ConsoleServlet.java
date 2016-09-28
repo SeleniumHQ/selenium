@@ -89,7 +89,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
     builder.append("<html>");
     builder.append("<head>");
     builder
-        .append("<script src='//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js'></script>");
+        .append("<script src='/grid/resources/org/openqa/grid/images/jquery-1.6.1.min.js'></script>");
 
     builder.append("<script src='/grid/resources/org/openqa/grid/images/console-beta.js'></script>");
 
