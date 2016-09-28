@@ -21,6 +21,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static org.openqa.selenium.firefox.FirefoxDriver.BINARY;
 import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -53,6 +54,8 @@ import java.util.Map;
  */
 public class FirefoxOptions {
 
+  public final static String FIREFOX_OPTIONS = "firefoxOptions";
+
   private String binary;
   private FirefoxProfile profile;
   private List<String> args = new ArrayList<>();
@@ -72,6 +75,14 @@ public class FirefoxOptions {
   public FirefoxOptions setProfile(FirefoxProfile profile) {
     this.profile = checkNotNull(profile);
     return this;
+  }
+
+  // Confusing API. Keeping package visible only
+  FirefoxOptions setProfileSafely(FirefoxProfile profile) {
+    Preconditions.checkState(
+      this.profile == null || this.profile.equals(profile),
+      "Profile passed to options is different from existing profile that has been set.");
+    return setProfile(profile);
   }
 
   public FirefoxOptions addArguments(String... arguments) {
@@ -120,7 +131,7 @@ public class FirefoxOptions {
       }
     }
 
-    capabilities.setCapability("firefoxOptions", this);
+    capabilities.setCapability(FIREFOX_OPTIONS, this);
 
     if (binary != null) {
       FirefoxBinary actualBinary = new FirefoxBinary(new File(binary));
