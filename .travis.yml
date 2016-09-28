@@ -34,12 +34,16 @@ script:
 
   - export CHROME_BINARY=$PWD/chrome-linux/chrome
   - export CHROMEDRIVER=$PWD/chrome-linux/chromedriver
-  - echo "${TRAVIS_COMMIT_RANGE} -> ${TRAVIS_COMMIT_RANGE/.../..} (travis-ci/travis-ci#4596)"
-  - git diff --name-only ${TRAVIS_COMMIT_RANGE/.../..}
-  - export PY_FILES_CHANGED=`git diff --name-only ${TRAVIS_COMMIT_RANGE/.../..} | grep ^py/`
-  - echo "PY_FILES_CHANGED: $PY_FILES_CHANGED"
-  - export RB_FILES_CHANGED=`git diff --name-only ${TRAVIS_COMMIT_RANGE/.../..} | grep ^rb/`
-  - echo "RB_FILES_CHANGED: $RB_FILES_CHANGED"
+  - export PR_BASE=`git merge-base ${TRAVIS_COMMIT_RANGE/.../ }`
+  - echo "PR_BASE ${PR_BASE}"
+  - export PR_COMMITS=`git rev-list ${PR_BASE}..${TRAVIS_COMMIT}`
+  - export PR_COMMITS=${PR_COMMITS/\n/ }
+  - echo "PR_COMMITS ${PR_COMMITS}"
+  - git diff-tree --no-commit-id --name-only -r $PR_COMMITS
+  - export PY_FILES_CHANGED=`git diff-tree --no-commit-id --name-only -r $PR_COMMITS | grep ^py/`
+  - echo "PY_FILES_CHANGED \n $PY_FILES_CHANGED"
+  - export RB_FILES_CHANGED=`git diff-tree --no-commit-id --name-only -r $PR_COMMITS | grep ^rb/`
+  - echo "RB_FILES_CHANGED\n $RB_FILES_CHANGED"
 
   - ./go clean build
   - |
