@@ -41,6 +41,6 @@ public class SafariDriverTests {
   @BeforeClass
   public static void isSupportedPlatform() {
     Platform current = TestUtilities.getEffectivePlatform();
-    assumeTrue(current.is(Platform.MAC) || current.is(Platform.WINDOWS));
+    assumeTrue(current.is(Platform.MAC));
   }
 }
