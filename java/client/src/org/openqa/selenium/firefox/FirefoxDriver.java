@@ -255,7 +255,12 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     if (isLegacy(desiredCapabilities)) {
       return new LazyCommandExecutor(binary, profile);
     }
-    GeckoDriverService.Builder builder = new GeckoDriverService.Builder();
+    GeckoDriverService.Builder builder;
+    if (binary == null) {
+      builder = new GeckoDriverService.Builder();
+    } else {
+      builder = new GeckoDriverService.Builder(binary);
+    }
     builder.usingPort(0);
     return new DriverCommandExecutor(builder.build());
   }
