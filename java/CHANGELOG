@@ -1,11 +1,22 @@
 v3.0.0-beta4
 ============
 
+IMPORTANT CHANGES
+
+* Firefox is only fully supported at version 47.0.1 or earlier. Support
+  for later versions of firefox is provided by geckodriver, which is
+  based on the evolving W3C WebDriver spec, and uses the wire protocol
+  in that spec, which is liable to change without notice.
+* You may wish to choose an ESR release such as 45.4.0esr or earlier.
+* Firefox 47.0.0 is not supported at all.
+
+Other major changes:
+
+* Remove OSS safaridriver in preference for Apple's own SafariDriver
+  that ships as part of Safari 10.
 * [Grid] -nodeConfig (json) files have a new flatter format (#2789)
 * [Grid] Fix #2721, -nodeConfig (json) settings were not always 
   applied
-* Remove OSS safaridriver in preference for Apple's own SafariDriver
-  that ships as part of Safari 10.
 * [Grid] Cleanup the api for RegistrationRequest -- will break
   compilation for people moving from 2.x -- removed the ability to
   change the GridNodeConfiguration reference via the
