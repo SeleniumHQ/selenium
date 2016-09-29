@@ -255,33 +255,33 @@ module Selenium
         end
       end
 
-      describe 'execute async script' do
-        before do
-          driver.manage.timeouts.script_timeout = 0
-          driver.navigate.to url_for('ajaxy_page.html')
-        end
+      not_compliant_on browser: :phantomjs do
+        describe 'execute async script' do
+          before do
+            driver.manage.timeouts.script_timeout = 0
+            driver.navigate.to url_for('ajaxy_page.html')
+          end
 
-        it 'should be able to return arrays of primitives from async scripts' do
-          result = driver.execute_async_script "arguments[arguments.length - 1]([null, 123, 'abc', true, false]);"
-          expect(result).to eq([nil, 123, 'abc', true, false])
-        end
+          it 'should be able to return arrays of primitives from async scripts' do
+            result = driver.execute_async_script "arguments[arguments.length - 1]([null, 123, 'abc', true, false]);"
+            expect(result).to eq([nil, 123, 'abc', true, false])
+          end
 
-        not_compliant_on driver: :phantomjs do
           it 'should be able to pass multiple arguments to async scripts' do
             result = driver.execute_async_script 'arguments[arguments.length - 1](arguments[0] + arguments[1]);', 1, 2
             expect(result).to eq(3)
           end
-        end
 
-        # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1849991/
-        # Firefox - https://github.com/SeleniumHQ/selenium/issues/2554
-        not_compliant_on({driver: :remote, browser: [:firefox, :phantomjs]},
-                         {browser: :edge}) do
-          it 'times out if the callback is not invoked' do
-            expect do
-              # Script is expected to be async and explicitly callback, so this should timeout.
-              driver.execute_async_script 'return 1 + 2;'
-            end.to raise_error(Selenium::WebDriver::Error::ScriptTimeoutError)
+          # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1849991/
+          # Firefox - https://github.com/SeleniumHQ/selenium/issues/2554
+          not_compliant_on({driver: :remote, browser: :firefox},
+                           {browser: :edge}) do
+            it 'times out if the callback is not invoked' do
+              expect do
+                # Script is expected to be async and explicitly callback, so this should timeout.
+                driver.execute_async_script 'return 1 + 2;'
+              end.to raise_error(Selenium::WebDriver::Error::ScriptTimeoutError)
+            end
           end
         end
       end
