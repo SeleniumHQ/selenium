@@ -25,7 +25,6 @@ import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.firefox.internal.Executable;
-import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
@@ -79,6 +78,18 @@ public class GeckoDriverService extends DriverService {
   public static class Builder extends DriverService.Builder<
     GeckoDriverService, GeckoDriverService.Builder> {
 
+    private Executable binary;
+    public Builder() {
+      this(new FirefoxBinary());
+    }
+
+    /**
+     * @param binary - A custom location where the Firefox binary is available.
+     */
+    public Builder(FirefoxBinary binary) {
+      this.binary = binary.getExecutable();
+    }
+
     @Override
     protected File findDefaultExecutable() {
       return findExecutable(
@@ -95,9 +106,8 @@ public class GeckoDriverService extends DriverService {
         argsBuilder.add(String.format("--log-file=\"%s\"", getLogFile().getAbsolutePath()));
       }
       try {
-        Executable firefoxExe = new Executable(null);
         argsBuilder.add("-b");
-        argsBuilder.add(firefoxExe.getPath());
+        argsBuilder.add(binary.getPath());
       } catch (WebDriverException e) {
         // Unable to find Firefox. GeckoDriver will be responsible for finding
         // Firefox on the PATH or via a capability.
