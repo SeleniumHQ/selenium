@@ -18,16 +18,12 @@
 package org.openqa.selenium.safari;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
-
-import java.io.IOException;
 
 /**
  * A WebDriver implementation that controls Safari using a browser extension
