@@ -266,9 +266,11 @@ module Selenium
           expect(result).to eq([nil, 123, 'abc', true, false])
         end
 
-        it 'should be able to pass multiple arguments to async scripts' do
-          result = driver.execute_async_script 'arguments[arguments.length - 1](arguments[0] + arguments[1]);', 1, 2
-          expect(result).to eq(3)
+        not_compliant_on driver: :phantomjs do
+          it 'should be able to pass multiple arguments to async scripts' do
+            result = driver.execute_async_script 'arguments[arguments.length - 1](arguments[0] + arguments[1]);', 1, 2
+            expect(result).to eq(3)
+          end
         end
 
         # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1849991/

@@ -18,6 +18,7 @@ env:
     - TASK=rb TARGET=unit-test
     - TASK=rb TARGET=chrome-test
     - TASK=rb TARGET=firefox-test
+    - TASK=rb TARGET=ff-legacy-test
     - TASK=rb TARGET=phantomjs-test
     - TASK=py TOXENV=py27-chrome
     - TASK=py TOXENV=py27-firefox
@@ -26,7 +27,6 @@ env:
 matrix:
   fast_finish: true
   allow_failures:
-    - env: TASK=rb TARGET=phantomjs-test
     - env: TASK=py TOXENV=py27-chrome
     - env: TASK=py TOXENV=py27-firefox
     - env: TASK=py TOXENV=py27-marionette
@@ -45,12 +45,13 @@ script:
         unzip chromedriver_linux64.zip && chmod +x chromedriver && sudo mv chromedriver /usr/local/bin
       fi
   - |
-      if [[ $TOXENV == *"firefox"* ]]; then
+      if [[ $TARGET == *"ff-legacy"* ]] || [ $TOXENV == *"firefox"* ]]; then
         pip install --user mozdownload mozinstall
         mozdownload --version 47.0.1 --destination firefox.tar.bz2
         mozinstall firefox.tar.bz2
         sudo ln -sf $PWD/firefox/firefox /usr/local/bin/firefox
         firefox --version
+        export FF_LEGACY_BINARY=$PWD/firefox/firefox
       fi
   - |
       if [[ $TARGET == *"firefox"* ]] || [[ $TOXENV == *"marionette"* ]]; then
