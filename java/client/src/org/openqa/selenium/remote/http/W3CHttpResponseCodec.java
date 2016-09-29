@@ -41,6 +41,21 @@ import java.util.logging.Logger;
  */
 public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
 
+  // Commands that need special handling:
+  // * Get Window Size
+  // * Set Window Size
+  // * Get Window Position
+  // * Set Window Position
+  // * Maximise Window
+  // * Full screen window
+  // * Get Active Element
+  // * Possibly find element
+  // * Get Element Rect
+  // * Get Page Source
+  // * Get All Cookies
+  // * Get Named Cookie
+  // I've not checked the actions apis yet
+
   private static final Logger log = Logger.getLogger(W3CHttpResponseCodec.class.getName());
 
   private final ErrorCodes errorCodes = new ErrorCodes();
