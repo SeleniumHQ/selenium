@@ -1,9 +1,12 @@
 v3.0.0-beta4
 ============
 
+* [Grid] -nodeConfig (json) files have a new flatter format (#2789)
+* [Grid] Fix #2721, -nodeConfig (json) settings were not always 
+  applied
 * Remove OSS safaridriver in preference for Apple's own SafariDriver
   that ships as part of Safari 10.
-* [Grid] Cleanup the api for RegistraionRequest -- will break
+* [Grid] Cleanup the api for RegistrationRequest -- will break
   compilation for people moving from 2.x -- removed the ability to
   change the GridNodeConfiguration reference via the
   RegistrationRequest object and removed all other setters
