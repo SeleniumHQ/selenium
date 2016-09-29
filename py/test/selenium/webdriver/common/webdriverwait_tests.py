@@ -69,7 +69,14 @@ class TestWebDriverWait(object):
         add_visible.click()
         add_hidden.click()
 
-        elements = WebDriverWait(driver, 2).until(EC.visibility_of_any_elements_located((By.CLASS_NAME, "redbox")))
+        class wait_for_two_elements(object):
+          def __init__(self, locator):
+            self.locator = locator
+          def __call__(self, driver):
+            elements = [element for element in EC._find_elements(driver, self.locator) if EC._element_if_visible(element)]
+            return elements if len(elements) == 2 else False
+
+        elements = WebDriverWait(driver, 2).until(wait_for_two_elements((By.CLASS_NAME, "redbox")))
         assert len(elements) == 2
 
     def testShouldFailToFindVisibleElementsWhenExplicitWaiting(self, driver, pages):
