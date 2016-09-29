@@ -13,6 +13,11 @@ v3.0.0-beta4
 * Fix #2727, combine -jettyThreads and -jettyMaxThreads (#2735)
 * [atoms] Cleaning up getAttribute dependencies, reducing size from
   36K to 7K
+* Better support for the W3C webdriver wire codec.
+* Added ability to use FirefoxOptions when starting firefox.
+* Fixed a bug where the firefox profile was not being passed to the
+  geckodriver.
+* SafariDriver's Technology Preview can be used if installed.
 
 v3.0.0-beta3
 ============
