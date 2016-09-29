@@ -33,6 +33,7 @@ import org.openqa.selenium.testing.TestUtilities;
     AlertsTest.class,
     CleanSessionTest.class,
     CrossDomainTest.class,
+    TechnologyPreviewTest.class,
     WebSocketConnectionTest.class
 })
 public class SafariDriverTests {
