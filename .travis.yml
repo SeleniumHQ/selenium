@@ -5,7 +5,7 @@ notifications:
   email: false
   irc:
     channels:
-      - "chat.freenode.org#selenium"
+      - secure: K+Wuro8Y/66zt9truTZuZzFmPqiGrFsH/sPzOBDK3+57mL6/vg2NoQCXOTq3U5RLdVKavlvZcm6+9nsNncVPRgzL7ORuW3BgLaBJis3lTA13AqlOnAbXcYytQEulVeWmvPipHFFFqaHs/z77lxm4fKwAAuBnK1f+mXKZDZR2hLo=
     on_success: never
     on_failure: always
     use_notice: true
