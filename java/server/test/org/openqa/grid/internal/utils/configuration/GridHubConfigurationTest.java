@@ -139,4 +139,13 @@ public class GridHubConfigurationTest {
     assertTrue(ghc.toString().contains("bar=baz"));
     assertTrue(ghc.toString().contains("foo=bar"));
   }
+
+  @Test
+  public void testJcommanderConverterCapabilityMatcher() {
+    String[] hubArgs = {"-role", "hub", "-capabilityMatcher", "org.openqa.grid.internal.utils.DefaultCapabilityMatcher"};
+    GridHubConfiguration ghc = new GridHubConfiguration();
+    new JCommander(ghc, hubArgs);
+    assertEquals("org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
+                 ghc.capabilityMatcher.getClass().getCanonicalName());
+  }
 }
