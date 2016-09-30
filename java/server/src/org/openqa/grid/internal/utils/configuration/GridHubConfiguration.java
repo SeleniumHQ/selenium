@@ -32,6 +32,7 @@ import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
+import org.openqa.grid.internal.utils.configuration.converters.CapabilityMatcherStringConverter;
 import org.openqa.grid.internal.utils.configuration.validators.FileExistsValueValidator;
 
 import java.io.IOException;
@@ -59,7 +60,7 @@ public class GridHubConfiguration extends GridConfiguration {
   @Parameter(
     names = { "-matcher", "-capabilityMatcher" },
     description = "<String> class name : a class implementing the CapabilityMatcher interface. Specifies the logic the hub will follow to define whether a request can be assigned to a node. For example, if you want to have the matching process use regular expressions instead of exact match when specifying browser version. ALL nodes of a grid ecosystem would then use the same capabilityMatcher, as defined here. Default is org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
-    converter = CapabilityMatcherString.class
+    converter = CapabilityMatcherStringConverter.class
   )
   public CapabilityMatcher capabilityMatcher = new DefaultCapabilityMatcher();
 
@@ -126,18 +127,6 @@ public class GridHubConfiguration extends GridConfiguration {
       } catch (Throwable e) {
         throw new GridConfigurationException("Error creating Prioritizer from class " +
                                              prioritizerClass + " : " + e.getMessage(), e);
-      }
-    }
-  }
-
-  private class CapabilityMatcherString implements IStringConverter<CapabilityMatcher> {
-    @Override
-    public CapabilityMatcher convert(String capabilityMatcherClass) {
-      try {
-        return (CapabilityMatcher) Class.forName(capabilityMatcherClass).newInstance();
-      } catch (Throwable e) {
-        throw new GridConfigurationException("Error creating Prioritizer from class " +
-                                             capabilityMatcherClass + " : " + e.getMessage(), e);
       }
     }
   }
