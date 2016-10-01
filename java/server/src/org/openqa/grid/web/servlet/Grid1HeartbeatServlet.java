@@ -52,8 +52,7 @@ public class Grid1HeartbeatServlet extends RegistryBasedServlet {
     // Build up the proxy URL based upon the params the Grid 1.0 node will pass as query params.
     Map<String, String[]> queryParams = request.getParameterMap();
     String nodeUrl =
-        String.format("http://%s:%s", queryParams.get("host")[0],
-            queryParams.get("port")[0]);
+        String.format("http://%s:%s", queryParams.get("host")[0], queryParams.get("port")[0]);
 
     // Check each registered node and see if the pinging node is in the list.
     boolean alreadyRegistered = false;

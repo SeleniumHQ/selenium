@@ -24,7 +24,6 @@ import org.openqa.selenium.internal.BuildInfo;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -33,27 +32,25 @@ import javax.servlet.http.HttpServletResponse;
 
 public class DisplayHelpServlet extends HttpServlet {
   private static final long serialVersionUID = 8484071790930378855L;
-  private static final Logger log = Logger.getLogger(DisplayHelpServlet.class.getName());
   private static String coreVersion;
 
   public DisplayHelpServlet() {
     coreVersion = new BuildInfo().getReleaseLabel();
   }
 
-
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    process(request, response);
+    process(response);
   }
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    process(request, response);
+    process(response);
   }
 
-  protected void process(HttpServletRequest request, HttpServletResponse response)
+  protected void process(HttpServletResponse response)
       throws IOException {
     response.setContentType("text/html");
     response.setCharacterEncoding("UTF-8");
@@ -63,19 +60,16 @@ public class DisplayHelpServlet extends HttpServlet {
 
     builder.append("<html>");
     builder.append("<head>");
-
     builder.append("<title>Selenium Grid ").append(coreVersion).append(" help</title>");
-
-
     builder.append("</head>");
 
     builder.append("<body>");
     builder.append("You are using grid ").append(coreVersion);
-    builder
-        .append("<br>Find help on the official selenium wiki : <a href='https://github.com/SeleniumHQ/selenium/wiki/Grid2'>more help here</a>");
+    builder.append("<br>Find help on the official selenium wiki : "
+                   + "<a href='https://github.com/SeleniumHQ/selenium/wiki/Grid2'>more help here</a>");
     builder.append("<br>default monitoring page : <a href='/grid/console'>console</a>");
-
     builder.append("</body>");
+
     builder.append("</html>");
 
     InputStream in = new ByteArrayInputStream(builder.toString().getBytes("UTF-8"));

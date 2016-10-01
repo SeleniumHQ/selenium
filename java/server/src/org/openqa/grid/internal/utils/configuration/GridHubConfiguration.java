@@ -24,7 +24,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
-import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.Parameter;
 
 import org.openqa.grid.common.JSONConfigurationUtils;
