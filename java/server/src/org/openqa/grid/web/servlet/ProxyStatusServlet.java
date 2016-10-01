@@ -78,7 +78,6 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
     } catch (JsonSyntaxException e) {
       throw new GridException(e.getMessage());
     }
-
   }
 
   private JsonObject getResponse(HttpServletRequest request) throws IOException {
@@ -95,7 +94,6 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
       if (!"".equals(json)) {
         requestJSON = new JsonParser().parse(json).getAsJsonObject();
       }
-
     }
 
     JsonObject res = new JsonObject();
