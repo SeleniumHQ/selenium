@@ -168,9 +168,9 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     return profile;
   }
 
-  static void populateProfile(FirefoxProfile profile, Capabilities capabilities) {
+  static Capabilities populateProfile(FirefoxProfile profile, Capabilities capabilities) {
     if (capabilities == null) {
-      return;
+      return capabilities;
     }
     if (capabilities.getCapability(SUPPORTS_WEB_STORAGE) != null) {
       Boolean supportsWebStorage = (Boolean) capabilities.getCapability(SUPPORTS_WEB_STORAGE);
@@ -208,6 +208,7 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
                                    (DesiredCapabilities) capabilities :
                                    new DesiredCapabilities(capabilities);
     toReturn.setCapability(FIREFOX_OPTIONS, options);
+    return toReturn;
   }
 
   private static FirefoxBinary getBinary(Capabilities capabilities) {
@@ -223,17 +224,17 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   }
 
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile) {
-    this(binary, profile, DesiredCapabilities.firefox());
+    this(binary, profile, populateProfile(profile, DesiredCapabilities.firefox()));
   }
 
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, Capabilities capabilities) {
-    this(binary, profile, capabilities, null);
+    this(binary, profile, populateProfile(profile, capabilities), null);
   }
 
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile,
       Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
-    this(createCommandExecutor(desiredCapabilities, binary, profile),
-         desiredCapabilities, requiredCapabilities);
+    this(createCommandExecutor(populateProfile(profile, desiredCapabilities), binary, profile),
+         populateProfile(profile, desiredCapabilities), requiredCapabilities);
     this.binary = binary;
   }
 
