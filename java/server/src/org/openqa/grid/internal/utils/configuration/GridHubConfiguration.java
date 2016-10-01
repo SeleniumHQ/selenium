@@ -32,7 +32,7 @@ import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
-import org.openqa.grid.internal.utils.configuration.converters.CapabilityMatcherStringConverter;
+import org.openqa.grid.internal.utils.configuration.converters.StringToClassConverter;
 import org.openqa.grid.internal.utils.configuration.validators.FileExistsValueValidator;
 
 import java.io.IOException;
@@ -60,7 +60,7 @@ public class GridHubConfiguration extends GridConfiguration {
   @Parameter(
     names = { "-matcher", "-capabilityMatcher" },
     description = "<String> class name : a class implementing the CapabilityMatcher interface. Specifies the logic the hub will follow to define whether a request can be assigned to a node. For example, if you want to have the matching process use regular expressions instead of exact match when specifying browser version. ALL nodes of a grid ecosystem would then use the same capabilityMatcher, as defined here. Default is org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
-    converter = CapabilityMatcherStringConverter.class
+    converter = StringToClassConverter.CapabilityMatcherStringConverter.class
   )
   public CapabilityMatcher capabilityMatcher = new DefaultCapabilityMatcher();
 
@@ -75,7 +75,7 @@ public class GridHubConfiguration extends GridConfiguration {
   @Parameter(
     names = "-prioritizer",
     description = "<String> class name : a class implementing the Prioritizer interface. Specify a custom Prioritizer if you want to sort the order in which new session requests are processed when there is a queue. Default to null ( no priority = FIFO )",
-    converter = PrioritizerString.class
+    converter = StringToClassConverter.PrioritizerStringConverter.class
   )
   public Prioritizer prioritizer = null;
 
@@ -116,18 +116,6 @@ public class GridHubConfiguration extends GridConfiguration {
     } catch (Throwable e) {
       throw new GridConfigurationException("Error with the JSON of the config : " + e.getMessage(),
                                            e);
-    }
-  }
-
-  private class PrioritizerString implements IStringConverter<Prioritizer> {
-    @Override
-    public Prioritizer convert(String prioritizerClass) {
-      try {
-        return (Prioritizer) Class.forName(prioritizerClass).newInstance();
-      } catch (Throwable e) {
-        throw new GridConfigurationException("Error creating Prioritizer from class " +
-                                             prioritizerClass + " : " + e.getMessage(), e);
-      }
     }
   }
 

@@ -15,21 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.grid.internal.utils.configuration.converters;
+package org.openqa.grid.internal.utils.configuration;
 
-import com.beust.jcommander.IStringConverter;
+import org.openqa.grid.internal.listeners.Prioritizer;
 
-import org.openqa.grid.common.exception.GridConfigurationException;
-import org.openqa.grid.internal.utils.CapabilityMatcher;
+import java.util.Map;
 
-public class CapabilityMatcherStringConverter implements IStringConverter<CapabilityMatcher> {
+public class PlaceHolderTestingPrioritizer implements Prioritizer {
   @Override
-  public CapabilityMatcher convert(String capabilityMatcherClass) {
-    try {
-      return (CapabilityMatcher) Class.forName(capabilityMatcherClass).newInstance();
-    } catch (Throwable e) {
-      throw new GridConfigurationException("Error creating Prioritizer from class " +
-                                           capabilityMatcherClass + " : " + e.getMessage(), e);
-    }
+  public int compareTo(Map<String, Object> a, Map<String, Object> b) {
+    return 0;
   }
 }
