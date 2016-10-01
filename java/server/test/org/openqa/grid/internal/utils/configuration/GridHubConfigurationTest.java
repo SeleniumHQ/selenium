@@ -142,10 +142,13 @@ public class GridHubConfigurationTest {
 
   @Test
   public void testJcommanderConverterCapabilityMatcher() {
-    String[] hubArgs = {"-role", "hub", "-capabilityMatcher", "org.openqa.grid.internal.utils.DefaultCapabilityMatcher"};
+    String[] hubArgs = {"-capabilityMatcher", "org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
+                        "-prioritizer", "org.openqa.grid.internal.utils.configuration.PlaceHolderTestingPrioritizer"};
     GridHubConfiguration ghc = new GridHubConfiguration();
     new JCommander(ghc, hubArgs);
     assertEquals("org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
                  ghc.capabilityMatcher.getClass().getCanonicalName());
+    assertEquals("org.openqa.grid.internal.utils.configuration.PlaceHolderTestingPrioritizer",
+                 ghc.prioritizer.getClass().getCanonicalName());
   }
 }
