@@ -233,8 +233,16 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile,
       Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
     this(createCommandExecutor(desiredCapabilities, binary, profile),
-         desiredCapabilities, requiredCapabilities);
+         addProfileInfoToCapabilities(desiredCapabilities, profile),
+         addProfileInfoToCapabilities(requiredCapabilities, profile));
     this.binary = binary;
+  }
+
+  private static Capabilities addProfileInfoToCapabilities(Capabilities capabilities, FirefoxProfile profile) {
+    if (capabilities == null) {
+      return capabilities;
+    }
+    return new FirefoxOptions().setProfile(profile).addTo((DesiredCapabilities) capabilities);
   }
 
   public FirefoxDriver(GeckoDriverService driverService, Capabilities desiredCapabilities,
