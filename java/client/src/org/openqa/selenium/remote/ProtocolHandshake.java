@@ -44,29 +44,40 @@ public class ProtocolHandshake {
 
   public Result createSession(HttpClient client, Command command)
     throws IOException {
+    // Avoid serialising the capabilities too many times. Things like profiles are expensive.
+
     Capabilities desired = (Capabilities) command.getParameters().get("desiredCapabilities");
+    desired = desired == null ? new DesiredCapabilities() : desired;
     Capabilities required = (Capabilities) command.getParameters().get("requiredCapabilities");
+    required = required == null ? new DesiredCapabilities() : required;
+
+    String des = new BeanToJsonConverter().convert(desired);
+    String req = new BeanToJsonConverter().convert(required);
 
     // Assume the remote end obeys the robustness principle.
-    Map<String, Object> parameters = new HashMap<>();
-    amendW3CParameters(parameters, desired, required);
-    amendOssParamters(parameters, desired, required);
+    StringBuilder parameters = new StringBuilder("{");
+    amendW3CParameters(parameters, des, req);
+    parameters.append(",");
+    amendOssParamters(parameters, des, req);
+    parameters.append("}");
     LOG.info("Attempting bi-dialect session, assuming Postel's Law holds true on the remote end");
     Optional<Result> result = createSession(client, parameters);
 
-    // Assume a fragile w3c implementation
+    // Assume a fragile OSS webdriver implementation
     if (!result.isPresent()) {
-      parameters = new HashMap<>();
-      amendW3CParameters(parameters, desired, required);
-      LOG.info("Falling back to straight W3C remote end connection");
+      parameters = new StringBuilder("{");
+      amendOssParamters(parameters, des, req);
+      parameters.append("}");
+      LOG.info("Falling back to original OSS JSON Wire Protocol.");
       result = createSession(client, parameters);
     }
 
-    // Assume a fragile OSS webdriver implementation
+    // Assume a fragile w3c implementation
     if (!result.isPresent()) {
-      parameters = new HashMap<>();
-      amendOssParamters(parameters, desired, required);
-      LOG.info("Falling back to original OSS JSON Wire Protocol.");
+      parameters = new StringBuilder("{");
+      amendW3CParameters(parameters, des, req);
+      parameters.append("}");
+      LOG.info("Falling back to straight W3C remote end connection");
       result = createSession(client, parameters);
     }
 
@@ -84,11 +95,11 @@ public class ProtocolHandshake {
         required));
   }
 
-  private Optional<Result> createSession(HttpClient client, Map<String, Object> parameters)
+  private Optional<Result> createSession(HttpClient client, StringBuilder params)
     throws IOException {
     // Create the http request and send it
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session");
-    String content = new BeanToJsonConverter().convert(parameters);
+    String content = params.toString();
     byte[] data = content.getBytes(UTF_8);
 
     request.setHeader(CONTENT_LENGTH, String.valueOf(data.length));
@@ -155,22 +166,23 @@ public class ProtocolHandshake {
   }
 
   private void amendW3CParameters(
-    Map<String, Object> params,
-    Capabilities desired,
-    Capabilities required) {
-    HashMap<String, Object> caps = new HashMap<>();
-    caps.put("desiredCapabilities", desired);
-    caps.put("requiredCapabilities", required);
-
-    params.put("capabilities", caps);
+    StringBuilder params,
+    String desired,
+    String required) {
+    params.append("\"capabilities\": {");
+    params.append("\"desiredCapabilities\": ").append(desired);
+    params.append(",");
+    params.append("\"requiredCapabilities\": ").append(required);
+    params.append("}");
   }
 
   private void amendOssParamters(
-    Map<String, Object> params,
-    Capabilities desired,
-    Capabilities required) {
-    params.put("desiredCapabilities", desired);
-    params.put("requiredCapabilities", required);
+    StringBuilder params,
+    String desired,
+    String required) {
+    params.append("\"desiredCapabilities\": ").append(desired);
+    params.append(",");
+    params.append("\"requiredCapabilities\": ").append(required);
   }
 
 
