@@ -68,6 +68,7 @@ module Selenium
           it 'takes a binary path as an argument' do
             pending "Set ENV['ALT_FIREFOX_BINARY'] to test this" unless ENV['ALT_FIREFOX_BINARY']
             begin
+              @path = Firefox::Binary.path
               driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt.dup
 
               default_version = driver1.capabilities.version
@@ -82,13 +83,14 @@ module Selenium
               expect { driver2.capabilities.browser_version }.to_not raise_exception NoMethodError
               driver2.quit
             ensure
-              Firefox::Binary.reset_path!
+              Firefox::Binary.path = @path
             end
           end
 
           it 'gives precedence to firefox options versus argument switch' do
             pending "Set ENV['ALT_FIREFOX_BINARY'] to test this" unless ENV['ALT_FIREFOX_BINARY']
             begin
+              @path = Firefox::Binary.path
               driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt.dup
 
               default_path = Firefox::Binary.path
@@ -104,11 +106,9 @@ module Selenium
               expect { driver2.capabilities.browser_version }.to_not raise_exception NoMethodError
               driver2.quit
             ensure
-              Firefox::Binary.reset_path!
+              Firefox::Binary.path = @path
             end
-
           end
-
         end
 
         # https://github.com/mozilla/geckodriver/issues/58
