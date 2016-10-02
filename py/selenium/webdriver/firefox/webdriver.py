@@ -48,7 +48,7 @@ class WebDriver(RemoteWebDriver):
     _web_element_cls = FirefoxWebElement
 
     def __init__(self, firefox_profile=None, firefox_binary=None, timeout=30,
-                 capabilities=None, proxy=None, executable_path="geckodriver", firefox_options=None):
+                 capabilities=None, proxy=None, executable_path="geckodriver", firefox_options=None, log_path="geckodriver.log"):
         capabilities = capabilities or DesiredCapabilities.FIREFOX.copy()
 
         self.profile = firefox_profile or FirefoxProfile()
@@ -64,7 +64,7 @@ class WebDriver(RemoteWebDriver):
 
         # marionette
         if capabilities.get("marionette"):
-            self.service = Service(executable_path, firefox_binary=self.options.binary_location)
+            self.service = Service(executable_path, firefox_binary=self.options.binary_location, log_path=log_path)
             self.service.start()
 
             executor = FirefoxRemoteConnection(
