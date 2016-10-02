@@ -168,6 +168,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertTrue("Took too long to refresh page: " + duration, duration < 5 * 1000);
   }
 
+  @Ignore(value = {CHROME})
   @Test
   public void testEagerStrategyShouldWaitForDocumentToBeLoaded() {
     initLocalDriver("eager");

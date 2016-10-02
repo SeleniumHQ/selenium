@@ -15,6 +15,7 @@ env:
     - DISPLAY=:99.0
   matrix:
     - TASK=build
+    - TASK=java TARGET=chrome
     - TASK=rb TARGET=unit-test
     - TASK=rb TARGET=chrome-test
     - TASK=rb TARGET=firefox-test
@@ -75,6 +76,10 @@ script:
   - |
       if [[ $TASK == "build" ]]; then
         ./go build
+      fi
+  - |
+      if [[ $TASK == "java" ]]; then
+        ./go test_$TARGET
       fi
   - |
       if [[ $TASK == "py" ]]; then
