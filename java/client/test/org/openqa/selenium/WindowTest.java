@@ -143,6 +143,7 @@ public class WindowTest extends JUnit4TestBase {
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     assumeNotLinuxAtSauce();
+    assumeNotLinuxOnTravis();
 
     changeSizeTo(new Dimension(450, 273));
     maximize();
@@ -156,6 +157,7 @@ public class WindowTest extends JUnit4TestBase {
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     assumeNotLinuxAtSauce();
+    assumeNotLinuxOnTravis();
 
     driver.get(pages.framesetPage);
     changeSizeTo(new Dimension(450, 274));
@@ -172,6 +174,7 @@ public class WindowTest extends JUnit4TestBase {
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     assumeNotLinuxAtSauce();
+    assumeNotLinuxOnTravis();
 
     driver.get(pages.iframePage);
     changeSizeTo(new Dimension(450, 275));
@@ -277,6 +280,10 @@ public class WindowTest extends JUnit4TestBase {
     // Firefox/Linux: FirefoxDriver finally report a changed window size 22 seconds after replying
     // the maximize command, but video never shows the maximized window.
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(LINUX) && SauceDriver.shouldUseSauce());
+  }
+
+  private void assumeNotLinuxOnTravis() {
+    assumeFalse(TestUtilities.getEffectivePlatform(driver).is(LINUX) && Boolean.valueOf(System.getProperty("TRAVIS", "false")));
   }
 
 }
