@@ -41,6 +41,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.NoSuchWindowException;
+import org.openqa.selenium.ScriptTimeoutException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
@@ -135,8 +136,8 @@ public class ErrorCodes {
              .build())
       .put(408,
            ImmutableSortedSet.<StatusTuple>naturalOrder()
-             .add(new StatusTuple("script timeout", ASYNC_SCRIPT_TIMEOUT, TimeoutException.class, TIMEOUT))
-             .add(new StatusTuple("timeout", TIMEOUT, TimeoutException.class, TIMEOUT))
+             .add(new StatusTuple("script timeout", ASYNC_SCRIPT_TIMEOUT, ScriptTimeoutException.class))
+             .add(new StatusTuple("timeout", TIMEOUT, TimeoutException.class))
              .build())
   .put(500,
        ImmutableSortedSet.<StatusTuple>naturalOrder()

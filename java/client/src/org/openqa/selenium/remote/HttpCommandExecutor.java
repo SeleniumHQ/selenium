@@ -161,13 +161,13 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), false));
 
       Response response = responseCodec.decode(httpResponse);
-      if (response.getSessionId() == null && httpResponse.getTargetHost() != null) {
-        String sessionId = HttpSessionId.getSessionId(httpResponse.getTargetHost());
-        response.setSessionId(sessionId);
-      }
       if (response.getSessionId() == null) {
-        // Spam in the session id from the request
-        response.setSessionId(command.getSessionId().toString());
+        if (httpResponse.getTargetHost() != null) {
+          response.setSessionId(HttpSessionId.getSessionId(httpResponse.getTargetHost()));
+        } else {
+          // Spam in the session id from the request
+          response.setSessionId(command.getSessionId().toString());
+        }
       }
       if (QUIT.equals(command.getName())) {
     	  client.close();
