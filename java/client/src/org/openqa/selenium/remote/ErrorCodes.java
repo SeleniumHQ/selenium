@@ -28,6 +28,7 @@ import com.google.common.collect.Iterables;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.ElementNotSelectableException;
+import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.ImeActivationFailedException;
 import org.openqa.selenium.ImeNotAvailableException;
 import org.openqa.selenium.InvalidArgumentException;
@@ -107,6 +108,7 @@ public class ErrorCodes {
            ImmutableSortedSet.<StatusTuple>naturalOrder()
              .add(new StatusTuple("element not selectable", ELEMENT_NOT_SELECTABLE, ElementNotSelectableException.class))
              .add(new StatusTuple("element not interactable", INVALID_ELEMENT_STATE, ElementNotInteractableException.class))
+             .add(new StatusTuple("element not interactable", ELEMENT_NOT_VISIBLE, ElementNotVisibleException.class))
              .add(new StatusTuple("invalid argument", UNHANDLED_ERROR, InvalidArgumentException.class))
              .add(new StatusTuple("invalid cookie domain", INVALID_COOKIE_DOMAIN, InvalidCookieDomainException.class))
              .add(new StatusTuple("invalid element coordinates", INVALID_ELEMENT_COORDINATES, InvalidCoordinatesException.class))

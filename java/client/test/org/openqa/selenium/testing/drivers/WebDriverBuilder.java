@@ -39,7 +39,11 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
   }
 
   public WebDriverBuilder(Browser browser) {
-    this.browser = browser;
+    if (browser == null) {
+      this.browser = Browser.chrome;
+    } else {
+      this.browser = browser;
+    }
   }
 
   public WebDriver get() {
