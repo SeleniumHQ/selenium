@@ -283,7 +283,7 @@ public class WindowTest extends JUnit4TestBase {
   }
 
   private void assumeNotLinuxOnTravis() {
-    assumeFalse(TestUtilities.getEffectivePlatform(driver).is(LINUX) && Boolean.valueOf(System.getProperty("TRAVIS", "false")));
+    assumeFalse(TestUtilities.getEffectivePlatform(driver).is(LINUX) && Boolean.valueOf(System.getenv().getOrDefault("TRAVIS", "false")));
   }
 
 }
