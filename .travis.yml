@@ -21,6 +21,10 @@ env:
     - TASK=rb TARGET=firefox-test
     - TASK=rb TARGET=ff-legacy-test
     - TASK=rb TARGET=phantomjs-test
+    - TASK=rb TARGET=remote-chrome-test
+    - TASK=rb TARGET=remote-firefox-test
+    - TASK=rb TARGET=remote-ff-legacy-test
+    - TASK=rb TARGET=remote-phantomjs-test
     - TASK=py TOXENV=py27-chrome
     - TASK=py TOXENV=py27-firefox
     - TASK=py TOXENV=py27-marionette
@@ -31,6 +35,7 @@ matrix:
     - env: TASK=py TOXENV=py27-chrome
     - env: TASK=py TOXENV=py27-firefox
     - env: TASK=py TOXENV=py27-marionette
+    - env: TASK=rb TARGET=remote-firefox-test
 before_script:
   - sh -e /etc/init.d/xvfb start
 script:

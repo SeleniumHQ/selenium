@@ -227,8 +227,8 @@ module Selenium
         end
 
         def create_safari_driver
-          return WebDriver::Driver.for :safari unless ENV['timeout']
-          WebDriver::Driver.for :safari, timeout: Integer(ENV['timeout'])
+          WebDriver::Safari.driver_path = ENV['SAFARIDRIVER'] if ENV['SAFARIDRIVER']
+          WebDriver::Driver.for :safari
         end
 
         def keep_alive_client

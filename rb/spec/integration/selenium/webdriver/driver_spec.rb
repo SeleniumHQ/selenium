@@ -273,9 +273,7 @@ module Selenium
           end
 
           # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1849991/
-          # Firefox - https://github.com/SeleniumHQ/selenium/issues/2554
-          not_compliant_on({driver: :remote, browser: :firefox},
-                           {browser: :edge}) do
+          not_compliant_on browser: :edge do
             it 'times out if the callback is not invoked' do
               expect do
                 # Script is expected to be async and explicitly callback, so this should timeout.

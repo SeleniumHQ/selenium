@@ -133,28 +133,33 @@ module Selenium
         end
       end
 
-      it 'should get location' do
-        driver.navigate.to url_for('xhtmlTest.html')
-        loc = driver.find_element(class: 'header').location
+      # Remote w3c bug: https://github.com/SeleniumHQ/selenium/issues/2857
+      not_compliant_on driver: :remote, browser: :firefox do
+        context 'size and location' do
+          it 'should get current location' do
+            driver.navigate.to url_for('xhtmlTest.html')
+            loc = driver.find_element(class: 'header').location
 
-        expect(loc.x).to be >= 1
-        expect(loc.y).to be >= 1
-      end
+            expect(loc.x).to be >= 1
+            expect(loc.y).to be >= 1
+          end
 
-      it 'should get location once scrolled into view' do
-        driver.navigate.to url_for('javascriptPage.html')
-        loc = driver.find_element(id: 'keyUp').location_once_scrolled_into_view
+          it 'should get location once scrolled into view' do
+            driver.navigate.to url_for('javascriptPage.html')
+            loc = driver.find_element(id: 'keyUp').location_once_scrolled_into_view
 
-        expect(loc.x).to be >= 1
-        expect(loc.y).to be >= 0 # can be 0 if scrolled to the top
-      end
+            expect(loc.x).to be >= 1
+            expect(loc.y).to be >= 0 # can be 0 if scrolled to the top
+          end
 
-      it 'should get size' do
-        driver.navigate.to url_for('xhtmlTest.html')
-        size = driver.find_element(class: 'header').size
+          it 'should get size' do
+            driver.navigate.to url_for('xhtmlTest.html')
+            size = driver.find_element(class: 'header').size
 
-        expect(size.width).to be > 0
-        expect(size.height).to be > 0
+            expect(size.width).to be > 0
+            expect(size.height).to be > 0
+          end
+        end
       end
 
       # Firefox - "Actions Endpoint Not Yet Implemented"
