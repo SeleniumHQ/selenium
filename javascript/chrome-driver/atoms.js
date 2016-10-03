@@ -259,9 +259,17 @@ webdriver.chrome.isElementClickable = function(elem, coord) {
     }
     parentElemIter = parentElemIter.parentNode;
   }
+  var elemHTML = elem.outerHTML;
+  if (elem.hasChildNodes()) {
+    var inner = elem.innerHTML;
+    var closingTag = '</' + elem.tagName + '>';
+    var innerStart = elem.length - inner.length - closingTag.length;
+    elemHTML = elemHTML.substring(0, innerStart) + '...' +
+        elemHTML.substring(innerStart + inner.length);
+  }
   return makeResult(
       false,
-      'Element is not clickable at point ' + coordStr + '. Other element ' +
+      'Element ' + elemHTML + 'is not clickable at point ' + coordStr + '. Other element ' +
           'would receive the click: ' + elemAtPointHTML);
 };
 
