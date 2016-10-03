@@ -199,9 +199,13 @@ SyntheticMouse.prototype.isElementClickable = function(element) {
 
   var elementAtPointHTML =
     elementAtPoint.outerHTML.replace(elementAtPoint.innerHTML, '');
+  
+  var elementHTML =
+    element.outerHTML.replace(element.innerHTML, '');
 
   return SyntheticMouse.newResponse(bot.ErrorCode.UNKNOWN_ERROR,
-      'Element is not clickable at point (' + coords.x + ', ' + coords.y + '). ' +
+      'Element ' + elementHTML + ' is not clickable at point (' 
+       + coords.x + ', ' + coords.y + '). ' +
       'Other element would receive the click: ' + elementAtPointHTML);
 };
 
