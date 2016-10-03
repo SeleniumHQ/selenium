@@ -269,7 +269,7 @@ webdriver.chrome.isElementClickable = function(elem, coord) {
   }
   return makeResult(
       false,
-      'Element ' + elemHTML + 'is not clickable at point ' + coordStr + '. Other element ' +
+      'Element ' + elemHTML + ' is not clickable at point ' + coordStr + '. Other element ' +
           'would receive the click: ' + elemAtPointHTML);
 };
 
