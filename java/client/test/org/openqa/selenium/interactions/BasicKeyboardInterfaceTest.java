@@ -34,6 +34,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.Color;
 import org.openqa.selenium.support.Colors;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
@@ -226,7 +227,8 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     WebElement keyReporter = driver.findElement(By.id("keyReporter"));
 
     getBuilder(driver).click(keyReporter).sendKeys("abc def").perform();
-    assertThat(keyReporter.getAttribute("value"), is("abc def"));
+    wait.until(
+      ExpectedConditions.attributeToBe(keyReporter, "value", "abc def"));
 
     getBuilder(driver).click(keyReporter)
         .keyDown(Keys.SHIFT)
@@ -237,7 +239,8 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
         .sendKeys(Keys.DELETE)
         .perform();
 
-    assertThat(keyReporter.getAttribute("value"), is("abc "));
+    wait.until(
+      ExpectedConditions.attributeToBe(keyReporter, "value", "abc "));
   }
 
   @Test

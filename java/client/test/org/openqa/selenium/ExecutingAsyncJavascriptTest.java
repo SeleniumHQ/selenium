@@ -168,7 +168,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
       // Script is expected to be async and explicitly callback, so this should timeout.
       executor.executeAsyncScript("return 1 + 2;");
       fail("Should have thrown a TimeOutException!");
-    } catch (TimeoutException exception) {
+    } catch (ScriptTimeoutException exception) {
       // Do nothing.
     }
   }
@@ -181,7 +181,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     try {
       executor.executeAsyncScript("window.setTimeout(function() {}, 0);");
       fail("Should have thrown a TimeOutException!");
-    } catch (TimeoutException exception) {
+    } catch (ScriptTimeoutException exception) {
       // Do nothing.
     }
   }
@@ -207,7 +207,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
           "var callback = arguments[arguments.length - 1];" +
           "window.setTimeout(callback, 1500);");
       fail("Should have thrown a TimeOutException!");
-    } catch (TimeoutException exception) {
+    } catch (ScriptTimeoutException exception) {
       // Do nothing.
     }
   }
