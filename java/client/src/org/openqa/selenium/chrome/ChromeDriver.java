@@ -108,6 +108,7 @@ public class ChromeDriver extends RemoteWebDriver
 
   private RemoteLocationContext locationContext;
   private RemoteWebStorage webStorage;
+  private TouchScreen touchScreen;
 
   /**
    * Creates a new ChromeDriver using the {@link ChromeDriverService#createDefaultService default}
@@ -173,6 +174,7 @@ public class ChromeDriver extends RemoteWebDriver
     super(new ChromeDriverCommandExecutor(service), capabilities);
     locationContext = new RemoteLocationContext(getExecuteMethod());
     webStorage = new  RemoteWebStorage(getExecuteMethod());
+    touchScreen = new RemoteTouchScreen(getExecuteMethod());
   }
 
   @Override
@@ -202,6 +204,11 @@ public class ChromeDriver extends RemoteWebDriver
     locationContext.setLocation(location);
   }
 
+  @Override
+  public TouchScreen getTouch() {
+    return touchScreen;
+  }
+  
   /**
    * Launches Chrome app specified by id.
    *
@@ -210,9 +217,5 @@ public class ChromeDriver extends RemoteWebDriver
   public void launchApp(String id) {
     execute(ChromeDriverCommand.LAUNCH_APP, ImmutableMap.of("id", id));
   }
-
-  @Override
-  public TouchScreen getTouch() {
-	return new RemoteTouchScreen(this.getExecuteMethod());
-  }
+  
 }
