@@ -240,14 +240,9 @@ webdriver.chrome.isElementClickable = function(elem, coord) {
     return makeResult(
         false, 'Element is not clickable at point ' + coordStr);
   }
-  var elemAtPointHTML = elemAtPoint.outerHTML;
-  if (elemAtPoint.hasChildNodes()) {
-    var inner = elemAtPoint.innerHTML;
-    var closingTag = '</' + elemAtPoint.tagName + '>';
-    var innerStart = elemAtPointHTML.length - inner.length - closingTag.length;
-    elemAtPointHTML = elemAtPointHTML.substring(0, innerStart) + '...' +
-        elemAtPointHTML.substring(innerStart + inner.length);
-  }
+  var elemAtPointHTML = elemAtPoint.outerHTML.replace(elemAtPoint.innerHTML, 
+                                                      elemAtPoint.hasChildNodes() 
+                                                      ? '...' : '');
   var parentElemIter = elemAtPoint.parentNode;
   while (parentElemIter) {
     if (parentElemIter == elem) {
@@ -259,10 +254,13 @@ webdriver.chrome.isElementClickable = function(elem, coord) {
     }
     parentElemIter = parentElemIter.parentNode;
   }
+  var elemHTML = elem.outerHTML.replace(elem.innerHTML, 
+                                        elem.hasChildNodes() ? '...' : '');
   return makeResult(
       false,
-      'Element is not clickable at point ' + coordStr + '. Other element ' +
-          'would receive the click: ' + elemAtPointHTML);
+      'Element ' + elemHTML + ' is not clickable at point '
+      + coordStr + '. Other element ' +
+      'would receive the click: ' + elemAtPointHTML);
 };
 
 
