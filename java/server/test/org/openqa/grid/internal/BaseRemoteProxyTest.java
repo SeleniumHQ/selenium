@@ -25,8 +25,8 @@ import com.google.gson.Gson;
 
 import com.beust.jcommander.JCommander;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridException;
@@ -41,15 +41,15 @@ import java.util.Map;
 
 public class BaseRemoteProxyTest {
 
-  private static RemoteProxy p1 = null;
-  private static RemoteProxy p2 = null;
+  private RemoteProxy p1 = null;
+  private RemoteProxy p2 = null;
 
-  private static Map<String, Object> app1Capability = new HashMap<>();
-  private static Map<String, Object> app2Capability = new HashMap<>();
-  private static Registry registry = Registry.newInstance();
+  private Map<String, Object> app1Capability = new HashMap<>();
+  private Map<String, Object> app2Capability = new HashMap<>();
+  private Registry registry = Registry.newInstance();
 
-  @BeforeClass
-  public static void setup() throws Exception {
+  @Before
+  public void setup() throws Exception {
 
     app1Capability.put(CapabilityType.APPLICATION_NAME, "app1");
     app2Capability.put(CapabilityType.APPLICATION_NAME, "app2");
@@ -63,7 +63,6 @@ public class BaseRemoteProxyTest {
     p2 = RemoteProxyFactory.getNewBasicRemoteProxy(caps, "http://machine4:4444/", registry);
 
   }
-
 
   @Test
   public void testEqual() {
@@ -160,8 +159,8 @@ public class BaseRemoteProxyTest {
   }
 
 
-  @AfterClass
-  public static void teardown() {
+  @After
+  public void teardown() {
     registry.stop();
   }
 

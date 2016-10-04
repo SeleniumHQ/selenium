@@ -21,8 +21,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.mock.GridHelper;
@@ -41,15 +41,15 @@ import java.util.Map;
  */
 public class LoadBalancedTests {
 
-  private static Registry registry;
-  private static Registry registry2;
+  private Registry registry;
+  private Registry registry2;
 
-  private static BaseRemoteProxy proxy1;
-  private static BaseRemoteProxy proxy2;
-  private static BaseRemoteProxy proxy3;
+  private BaseRemoteProxy proxy1;
+  private BaseRemoteProxy proxy2;
+  private BaseRemoteProxy proxy3;
 
-  @BeforeClass
-  public static void setup() {
+  @Before
+  public void setup() {
     registry = Registry.newInstance();
     registry2 = Registry.newInstance();
 
@@ -59,7 +59,7 @@ public class LoadBalancedTests {
 
   // registry :
   // add 5 proxies. Total = 5 proxies * 5 slots each = 25 firefox.
-  private static void register5ProxiesOf5Slots() {
+  private void register5ProxiesOf5Slots() {
     // add 5 proxies. Total = 5 proxies * 5 slots each = 25 firefox.
     for (int i = 0; i < 5; i++) {
       registry.add(new DetachedRemoteProxy(getRequestOfNSlots(5, "name" + i), registry));
@@ -70,7 +70,7 @@ public class LoadBalancedTests {
   // proxy 1 -> 2 slots
   // proxy 2 -> 4 slots
   // proxy 3 -> 6 slots
-  private static void register3ProxiesVariableSlotSize() {
+  private void register3ProxiesVariableSlotSize() {
     proxy1 = new DetachedRemoteProxy(getRequestOfNSlots(2, "proxy1"), registry2);
     proxy2 = new DetachedRemoteProxy(getRequestOfNSlots(4, "proxy2"), registry2);
     proxy3 = new DetachedRemoteProxy(getRequestOfNSlots(6, "proxy3"), registry2);
@@ -163,13 +163,13 @@ public class LoadBalancedTests {
 
 
 
-  private static Map<String, Object> firefox() {
+  private Map<String, Object> firefox() {
     Map<String, Object> ff = new HashMap<>();
     ff.put(CapabilityType.APPLICATION_NAME, "firefox");
     return ff;
   }
 
-  private static RegistrationRequest getRequestOfNSlots(int n, String name) {
+  private RegistrationRequest getRequestOfNSlots(int n, String name) {
 
     Map<String, Object> ff = firefox();
     ff.put(MAX_INSTANCES, n);
@@ -185,8 +185,8 @@ public class LoadBalancedTests {
     return request;
   }
 
-  @AfterClass
-  public static void teardown() {
+  @After
+  public void teardown() {
     registry.stop();
     registry2.stop();
   }
