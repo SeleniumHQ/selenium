@@ -188,11 +188,8 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
       sessionId = new SessionId(split.get(1));
     }
 
-    if (sessionId != null) {
-      Session session = sessionsSupplier.get().get(sessionId);
-      // Let's assume the person knew what they're doing... Skip to the end
-    } else {
-      // Fine. Let's see if the user chose "webdriver" or something specific.
+    if (sessionId == null) {
+      // Let's see if the user chose "webdriver" or something specific.
       DesiredCapabilities caps;
       switch (browserString) {
         case "*webdriver":
