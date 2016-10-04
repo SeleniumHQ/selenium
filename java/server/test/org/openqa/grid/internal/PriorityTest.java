@@ -19,8 +19,8 @@ package org.openqa.grid.internal;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.mock.GridHelper;
@@ -35,7 +35,7 @@ import java.util.Map;
 
 public class PriorityTest {
 
-  private static Registry registry;
+  private Registry registry;
 
   // priority rule : the request with the highest priority goes first.
   private static Prioritizer highestNumberHasPriority = new Prioritizer() {
@@ -46,24 +46,24 @@ public class PriorityTest {
     }
   };
 
-  static Map<String, Object> ff = new HashMap<>();
-  static RemoteProxy p1;
+  private Map<String, Object> ff = new HashMap<>();
+  private RemoteProxy p1;
 
-  static RequestHandler newSessionRequest1;
-  static RequestHandler newSessionRequest2;
-  static RequestHandler newSessionRequest3;
-  static RequestHandler newSessionRequest4;
-  static RequestHandler newSessionRequest5;
+  private RequestHandler newSessionRequest1;
+  private RequestHandler newSessionRequest2;
+  private RequestHandler newSessionRequest3;
+  private RequestHandler newSessionRequest4;
+  private RequestHandler newSessionRequest5;
 
-  static List<RequestHandler> requests = new ArrayList<>();
+  private List<RequestHandler> requests = new ArrayList<>();
 
   /**
    * create a hub with 1 FF
    *
    * @throws InterruptedException
    */
-  @BeforeClass
-  public static void setup() throws Exception {
+  @Before
+  public void setup() throws Exception {
     registry = Registry.newInstance();
     registry.getConfiguration().prioritizer = highestNumberHasPriority;
     ff.put(CapabilityType.APPLICATION_NAME, "FF");
@@ -136,8 +136,8 @@ public class PriorityTest {
   }
 
 
-  @AfterClass
-  public static void teardown() {
+  @After
+  public void teardown() {
     registry.stop();
   }
 

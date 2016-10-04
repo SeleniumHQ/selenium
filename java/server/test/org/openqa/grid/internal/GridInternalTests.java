@@ -19,6 +19,7 @@ package org.openqa.grid.internal;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.openqa.grid.internal.listener.CommandListenerTest;
 import org.openqa.grid.internal.listener.RegistrationListenerTest;
 import org.openqa.grid.internal.listener.SessionListenerTest;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcherTest;
@@ -31,32 +32,34 @@ import org.openqa.grid.plugin.RemoteProxyInheritanceTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    RemoteProxyInheritanceTest.class,
-    SmokeTest.class,
-    SessionTimesOutTest.class,
-    BaseRemoteProxyTest.class,
-    RemoteProxySlowSetup.class,
-    RegistryTest.class,
-    RegistryStateTest.class,
-    PriorityTestLoad.class,
-    PriorityTest.class,
-// ParallelTests fail when run via command line with buck
-//    ParallelTest.class,
-    LoadBalancedTests.class,
-    ConcurrencyLockTest.class,
     AddingProxyAgainFreesResources.class,
+    BaseRemoteProxyTest.class,
+    CommandListenerTest.class,
+    ConcurrencyLockTest.class,
     DefaultCapabilityMatcherTest.class,
-    SessionListenerTest.class,
-    RegistrationListenerTest.class,
-    StatusServletTests.class,
-    UserDefinedCapabilityMatcherTests.class,
-    GridShutdownTest.class,
-    SelfRegisteringRemoteTest.class,
-    StandaloneConfigurationTest.class,
     GridConfigurationTest.class,
     GridNodeConfigurationTest.class,
     GridHubConfigurationTest.class,
-
+    GridShutdownTest.class,
+    LoadBalancedTests.class,
+    NewRequestCrashesDuringNewSessionTest.class,
+    NewSessionRequestTimeout.class,
+// ParallelTests fail when run via command line with buck
+    ParallelTest.class,
+    PriorityTest.class,
+    PriorityTestLoad.class,
+    RegistrationListenerTest.class,
+    RegistryStateTest.class,
+    RegistryTest.class,
+    RemoteProxyInheritanceTest.class,
+    RemoteProxySlowSetup.class,
+    SelfRegisteringRemoteTest.class,
+    SessionTimesOutTest.class,
+    SessionListenerTest.class,
+    SmokeTest.class,
+    StandaloneConfigurationTest.class,
+    StatusServletTests.class,
+    UserDefinedCapabilityMatcherTests.class,
 })
 public class GridInternalTests {
 }

@@ -20,8 +20,8 @@ package org.openqa.grid.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
@@ -38,21 +38,21 @@ import java.util.Map;
  */
 public class AddingProxyAgainFreesResources {
 
-  private static Registry registry;
+  private Registry registry;
 
-  private static Map<String, Object> ff = new HashMap<>();
-  private static RemoteProxy p1;
-  private static RequestHandler handler;
-  private static RequestHandler handler2;
-  private static TestSession session = null;
+  private Map<String, Object> ff = new HashMap<>();
+  private RemoteProxy p1;
+  private RequestHandler handler;
+  private RequestHandler handler2;
+  private TestSession session = null;
 
   /**
    * create a hub with 1 node accepting 1 FF
    *
    * @throws InterruptedException
    */
-  @BeforeClass
-  public static void setup() throws Exception {
+  @Before
+  public void setup() throws Exception {
     registry = Registry.newInstance();
     ff.put(CapabilityType.APPLICATION_NAME, "FF");
     p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);
@@ -93,8 +93,8 @@ public class AddingProxyAgainFreesResources {
     assertNotNull(handler2.getSession());
   }
 
-  @AfterClass
-  public static void teardown() {
+  @After
+  public void teardown() {
     registry.stop();
   }
 }

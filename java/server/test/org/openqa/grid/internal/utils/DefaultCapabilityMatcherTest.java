@@ -20,7 +20,7 @@ package org.openqa.grid.internal.utils;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.BrowserType;
@@ -33,19 +33,19 @@ import java.util.Map;
 public class DefaultCapabilityMatcherTest {
 
 
-  static Map<String, Object> firefox = new HashMap<>();
-  static Map<String, Object> tl = new HashMap<>();
+  private Map<String, Object> firefox = new HashMap<>();
+  private Map<String, Object> tl = new HashMap<>();
 
-  static Map<String, Object> firefox2 = new HashMap<>();
-  static Map<String, Object> tl2 = new HashMap<>();
+  private Map<String, Object> firefox2 = new HashMap<>();
+  private Map<String, Object> tl2 = new HashMap<>();
 
-  static Map<String, Object> exotic = new HashMap<>();
+  private Map<String, Object> exotic = new HashMap<>();
 
 
-  CapabilityMatcher helper = new DefaultCapabilityMatcher();
+  private CapabilityMatcher helper = new DefaultCapabilityMatcher();
 
-  @BeforeClass
-  public static void build() {
+  @Before
+  public void build() {
     tl.put(CapabilityType.APPLICATION_NAME, "A");
     tl.put(CapabilityType.VERSION, null);
     firefox.put(CapabilityType.BROWSER_NAME, "B");
@@ -109,6 +109,4 @@ public class DefaultCapabilityMatcherTest {
 
 
   }
-
-
 }
