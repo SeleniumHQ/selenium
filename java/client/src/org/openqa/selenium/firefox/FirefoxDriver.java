@@ -35,6 +35,8 @@ import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.NewProfileExtensionConnection;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
@@ -218,7 +220,11 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
         return (FirefoxBinary) raw;
       }
       File file = new File((String) raw);
-      return new FirefoxBinary(file);
+      try {
+        return new FirefoxBinary(file);
+      } catch (WebDriverException wde) {
+        throw new SessionNotCreatedException(wde.getMessage());
+      }
     }
     return new FirefoxBinary();
   }

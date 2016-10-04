@@ -16,6 +16,7 @@ env:
   matrix:
     - TASK=build
     - TASK=java TARGET=chrome
+    - TASK=java TARGET=grid TOXENV=chrome
     - TASK=rb TARGET=unit-test
     - TASK=rb TARGET=chrome-test
     - TASK=rb TARGET=firefox-test
