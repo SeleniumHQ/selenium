@@ -22,7 +22,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.DetachedRemoteProxy;
@@ -43,7 +43,17 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class SessionListenerTest {
 
-  static class MyRemoteProxy extends DetachedRemoteProxy implements TestSessionListener {
+  private RegistrationRequest req = null;
+  private Map<String, Object> app1 = new HashMap<>();
+
+  @Before
+  public void prepare() {
+    app1.put(CapabilityType.APPLICATION_NAME, "app1");
+    req = new RegistrationRequest();
+    req.getConfiguration().capabilities.add(new DesiredCapabilities(app1));
+  }
+
+  private static class MyRemoteProxy extends DetachedRemoteProxy implements TestSessionListener {
 
     public MyRemoteProxy(RegistrationRequest request, Registry registry) {
       super(request, registry);
@@ -57,16 +67,6 @@ public class SessionListenerTest {
     public void beforeSession(TestSession session) {
       session.put("FLAG", true);
     }
-  }
-
-  static RegistrationRequest req = null;
-  static Map<String, Object> app1 = new HashMap<>();
-
-  @BeforeClass
-  public static void prepare() {
-    app1.put(CapabilityType.APPLICATION_NAME, "app1");
-    req = new RegistrationRequest();
-    req.getConfiguration().capabilities.add(new DesiredCapabilities(app1));
   }
 
   @Test
@@ -278,5 +278,4 @@ public class SessionListenerTest {
     }
 
   }
-
 }
