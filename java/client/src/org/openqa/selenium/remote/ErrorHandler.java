@@ -34,6 +34,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -110,6 +111,11 @@ public class ErrorHandler {
 
     if (value instanceof Map) {
       Map<String, Object> rawErrorData = (Map<String, Object>) value;
+      if (!rawErrorData.containsKey(MESSAGE) && rawErrorData.containsKey("value")) {
+        try {
+          rawErrorData = (Map<String, Object>) rawErrorData.get("value");
+        } catch (ClassCastException cce) {}
+      }
       try {
         message = (String) rawErrorData.get(MESSAGE);
       } catch (ClassCastException e) {
