@@ -82,6 +82,9 @@ public class FirefoxOptions {
     Preconditions.checkState(
       this.profile == null || this.profile.equals(profile),
       "Profile passed to options is different from existing profile that has been set.");
+    if (profile == null) {
+      return this;
+    }
     return setProfile(profile);
   }
 
