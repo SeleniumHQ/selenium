@@ -203,6 +203,29 @@ class invisibility_of_element_located(object):
             return True
 
 
+class invisibility_of(object):
+    """ An expectation for checking that an element that is either invisible
+    or not present in the DOM.
+
+    element is the WebElement
+    returns the (same) WebElement once it is invisible
+    """
+
+    def __init__(self, element):
+        self.element = element
+
+    def __call__(self, driver):
+        try:
+            return _element_if_visible(self.element, False)
+        except (NoSuchElementException, StaleElementReferenceException):
+            # In the case of NoSuchElement, returns true because the element is
+            # not present in DOM. The try block checks if the element is present
+            # but is invisible.
+            # In the case of StaleElementReference, returns true because stale
+            # element reference implies that element is no longer visible.
+            return True
+
+
 class element_to_be_clickable(object):
     """ An Expectation for checking an element is visible and enabled such that
     you can click it."""
