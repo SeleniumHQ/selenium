@@ -9,6 +9,17 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.53.1.1
+=========
+ * Updates to JavaScript automation atoms.
+ * Fall back to using browser instead of document to get current URL. To 
+   maintain compatibility with other WebDriver implementations, the IE
+   driver uses the IHTMLDocument2 interface to get the current URL, so
+   that the proper URL is returned even when an embedded frame has the
+   focus. However, when browsing a non-HTML document (like a PDF), the
+   driver cannot get an IHTMLDocument2. In that case, fall back to the
+   IWebBrowser2 interface.
+
 v2.53.1.0
 =========
  * Updates to JavaScript automation atoms, including update to wgxpath.
