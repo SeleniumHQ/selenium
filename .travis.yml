@@ -30,13 +30,15 @@ env:
     - TASK=py TOXENV=py27-firefox
     - TASK=py TOXENV=py27-marionette
     - TASK=py TOXENV=py27-phantomjs
+    - TASK=py TOXENV=py27-remote
 matrix:
   fast_finish: true
   allow_failures:
+    - env: TASK=rb TARGET=remote-firefox-test
     - env: TASK=py TOXENV=py27-chrome
     - env: TASK=py TOXENV=py27-firefox
     - env: TASK=py TOXENV=py27-marionette
-    - env: TASK=rb TARGET=remote-firefox-test
+    - env: TASK=py TOXENV=py27-remote
 before_script:
   - sh -e /etc/init.d/xvfb start
 script:
@@ -61,7 +63,7 @@ script:
         export FF_LEGACY_BINARY=$PWD/firefox/firefox
       fi
   - |
-      if [[ $TARGET == *"firefox"* ]] || [[ $TOXENV == *"marionette"* ]]; then
+      if [[ $TARGET == *"firefox"* ]] || [[ $TOXENV == *"marionette"* ]] || [[ $TOXENV == *"remote"* ]]; then
         export GECKODRIVER_VERSION=v0.10.0
         curl -L -o geckodriver.tar.gz https://github.com/mozilla/geckodriver/releases/download/${GECKODRIVER_VERSION}/geckodriver-${GECKODRIVER_VERSION}-linux64.tar.gz
         gunzip -c geckodriver.tar.gz | tar xopf -
@@ -78,6 +80,10 @@ script:
         curl -L -O "https://cnpmjs.org/mirrors/phantomjs/${PHANTOMJS_NAME}.tar.bz2"
         tar -xvjf $PHANTOMJS_NAME.tar.bz2
         chmod +x $PHANTOMJS_NAME/bin/phantomjs
+      fi
+  - |
+      if [[ $TOXENV == *"remote"* ]]; then
+        ./go selenium-server-standalone
       fi
   - |
       if [[ $TASK == "build" ]]; then
