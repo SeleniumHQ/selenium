@@ -59,7 +59,7 @@ public class RemoteLogs implements Logs {
 
   public LogEntries get(String logType) {
     if (LogType.PROFILER.equals(logType)) {
-      LogEntries remoteEntries = new LogEntries(new ArrayList<LogEntry>());
+      LogEntries remoteEntries = new LogEntries(new ArrayList<>());
       try {
         remoteEntries = getRemoteEntries(logType);
       } catch (WebDriverException e) {

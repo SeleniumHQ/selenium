@@ -101,13 +101,6 @@ public class StandaloneConfiguration {
 
   @Expose
   @Parameter(
-    names = "-logLongForm",
-    description = "<Boolean> : if specified, all log statements (including to log file from \"log\" parameter) will include the Thread ID"
-  )
-  public boolean logLongForm;
-
-  @Expose
-  @Parameter(
     names = {"-port"},
     description = "<Integer> : the port number the server will use. Defaults to [4444]. When \"role\" is a set to [node], default is [5555]"
   )
@@ -189,7 +182,6 @@ public class StandaloneConfiguration {
     sb.append(toString(format, "help", help));
     sb.append(toString(format, "jettyMaxThreads", jettyMaxThreads));
     sb.append(toString(format, "log", log));
-    sb.append(toString(format, "logLongForm", logLongForm));
     sb.append(toString(format, "port", port));
     sb.append(toString(format, "role", role));
     sb.append(toString(format, "timeout", timeout));

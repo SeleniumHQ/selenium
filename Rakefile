@@ -204,7 +204,10 @@ task :test_ie => [ "//java/client/test/org/openqa/selenium/ie:ie:run" ]
 task :test_jobbie => [ :test_ie ]
 task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test-synthesized:run" ]
 task :test_opera => [ "//java/client/test/org/openqa/selenium/opera:opera:run" ]
-task :test_remote_server => [ '//java/server/test/org/openqa/selenium/remote/server:small-tests:run' ]
+task :test_remote_server => [
+   '//java/server/test/org/openqa/selenium/remote/server:small-tests:run',
+   '//java/server/test/org/openqa/selenium/remote/server/log:test:run',
+]
 task :test_remote => [
   '//java/client/test/org/openqa/selenium/remote:common-tests:run',
   '//java/client/test/org/openqa/selenium/remote:client-tests:run',

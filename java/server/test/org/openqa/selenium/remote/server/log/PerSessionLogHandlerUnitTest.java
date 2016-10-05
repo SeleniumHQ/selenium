@@ -34,11 +34,8 @@ import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-/**
- * {@link org.openqa.selenium.remote.server.log.PerSessionLogHandler} unit test class.
- */
 @RunWith(JUnit4.class)
-public class DefaultPerSessionLogHandlerUnitTest {
+public class PerSessionLogHandlerUnitTest {
 
   private static final int CAPACITY = 1;
 
@@ -198,8 +195,7 @@ public class DefaultPerSessionLogHandlerUnitTest {
   }
 
   private PerSessionLogHandler createPerSessionLogHandler() {
-    return new DefaultPerSessionLogHandler(CAPACITY, Level.INFO,
-                                    new FormatterStub(), false);
+    return  new PerSessionLogHandler(CAPACITY, new FormatterStub(), false);
   }
 
   static class FormatterStub extends Formatter {

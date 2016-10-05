@@ -23,50 +23,6 @@ import java.util.logging.Level;
 
 public class LoggingOptions {
 
-  /**
-   * useful for situations where Selenium is being invoked programatically and the outside container
-   * wants to own logging
-   */
-  private boolean dontTouchLogging;
-  private boolean captureLogsOnQuit;
-  private String logOutFileName = getDefaultLogOutFile();
-
-  public boolean dontTouchLogging() {
-    return dontTouchLogging;
-  }
-
-  public void setDontTouchLogging(boolean newValue) {
-    this.dontTouchLogging = newValue;
-  }
-
-  public int shortTermMemoryLoggerCapacity() {
-    return 30;
-  }
-
-  public boolean isCaptureOfLogsOnQuitEnabled() {
-    return captureLogsOnQuit;
-  }
-
-  public void setCaptureLogsOnQuit(boolean captureLogs) {
-    this.captureLogsOnQuit = captureLogs;
-  }
-
-  public File getLogOutFile() {
-    return (null == logOutFileName) ? null : new File(logOutFileName);
-  }
-
-  public void setLogOutFileName(String newLogOutFileName) {
-    logOutFileName = newLogOutFileName;
-  }
-
-  public String getLogOutFileName() {
-    return logOutFileName;
-  }
-
-  public void setLogOutFile(File newLogOutFile) {
-    logOutFileName = (null == newLogOutFile) ? null : newLogOutFile.getAbsolutePath();
-  }
-
   public static String getDefaultLogOutFile() {
     final String logOutFileProperty;
 

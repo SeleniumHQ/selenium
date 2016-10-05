@@ -18,12 +18,7 @@
 
 package org.openqa.selenium.remote.server.log;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -35,94 +30,29 @@ import java.util.logging.SimpleFormatter;
  */
 public class LoggingManager {
 
-  private static Handler[] originalHandlers;
-  private static Map<Handler, Formatter> originalFormatters;
-  private static Map<Handler, Level> originalLogLevels;
-  private static Map<File, FileHandler> seleniumFileHandlers = new HashMap<>();
-  private static ShortTermMemoryHandler shortTermMemoryHandler;
-  private static PerSessionLogHandler perSessionLogHandler = new NoOpSessionLogHandler();
+  private static PerSessionLogHandler perSessionLogHandler =
+    new PerSessionLogHandler(4000, new TerseFormatter(), false);
 
-
-  public static synchronized void configureLogging(LoggingOptions options,
-      boolean debugMode) {
+  public static synchronized void configureLogging(boolean debugMode) {
     final Logger currentLogger;
 
-    if (options.dontTouchLogging()) {
-      return;
-    }
-
     currentLogger = Logger.getLogger("");
-    resetLoggerToOriginalState();
     overrideSimpleFormatterWithTerseOneForConsoleHandler(currentLogger, debugMode);
-    addInMemoryLogger(currentLogger, options);
-    //addPerSessionLogger(currentLogger, options, debugMode);
     if (debugMode) {
       currentLogger.setLevel(Level.FINE);
     }
   }
 
-  public static synchronized ShortTermMemoryHandler shortTermMemoryHandler() {
-    return shortTermMemoryHandler;
-  }
-
   /**
    * Provides a PerSessionLogHandler
-   * @return a PerSessionLogHandler, never null. May be a NoOpSessionLogHandler
    */
   public static synchronized PerSessionLogHandler perSessionLogHandler() {
     return perSessionLogHandler;
   }
 
-  private static void addInMemoryLogger(Logger logger, LoggingOptions options) {
-    shortTermMemoryHandler = new ShortTermMemoryHandler(
-        options.shortTermMemoryLoggerCapacity(), Level.INFO, new TerseFormatter(true));
-    logger.addHandler(shortTermMemoryHandler);
-  }
-
-  private static void addPerSessionLogger(Logger logger,
-      LoggingOptions options, boolean debugMode) {
-    if (debugMode) {
-      perSessionLogHandler =
-          new DefaultPerSessionLogHandler(options.shortTermMemoryLoggerCapacity(),
-              Level.FINE, new TerseFormatter(true), options.isCaptureOfLogsOnQuitEnabled());
-    } else {
-      perSessionLogHandler =
-          new DefaultPerSessionLogHandler(options.shortTermMemoryLoggerCapacity(),
-              Level.INFO, new TerseFormatter(true), options.isCaptureOfLogsOnQuitEnabled());
-    }
-    logger.addHandler(perSessionLogHandler);
-  }
-
-  private static File addNewSeleniumFileHandler(Logger currentLogger,
-      LoggingOptions options) {
-    try {
-      FileHandler fileHandler;
-      final File logFile;
-
-      logFile = options.getLogOutFile();
-      fileHandler = seleniumFileHandlers.get(logFile);
-      if (fileHandler == null) {
-        fileHandler = registerNewSeleniumFileHandler(logFile);
-      }
-      fileHandler.setFormatter(new TerseFormatter(true));
-      currentLogger.setLevel(Level.FINE);
-      fileHandler.setLevel(Level.FINE);
-      currentLogger.addHandler(fileHandler);
-      return logFile;
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private static FileHandler registerNewSeleniumFileHandler(File logFile) throws IOException {
-    FileHandler fileHandler;
-    fileHandler = new FileHandler(logFile.getAbsolutePath());
-    seleniumFileHandlers.put(logFile, fileHandler);
-    return fileHandler;
-  }
-
-  public static void overrideSimpleFormatterWithTerseOneForConsoleHandler(Logger logger,
-      boolean debugMode) {
+  public static void overrideSimpleFormatterWithTerseOneForConsoleHandler(
+    Logger logger,
+    boolean debugMode) {
     for (Handler handler : logger.getHandlers()) {
       if (handler instanceof ConsoleHandler) {
         final Formatter formatter;
@@ -136,14 +66,14 @@ public class LoggingManager {
            * DGF - Nobody likes the SimpleFormatter; surely they wanted our terse formatter instead.
            */
           originalLevel = handler.getLevel();
-          handler.setFormatter(new TerseFormatter(false));
+          handler.setFormatter(new TerseFormatter());
           handler.setLevel(Level.WARNING);
 
           /*
            * Furthermore, we all want DEBUG/INFO on stdout and WARN/ERROR on stderr
            */
           stdOutHandler = new StdOutHandler();
-          stdOutHandler.setFormatter(new TerseFormatter(false));
+          stdOutHandler.setFormatter(new TerseFormatter());
           stdOutHandler.setFilter(new MaxLevelFilter(Level.INFO));
           stdOutHandler.setLevel(originalLevel);
           logger.addHandler(stdOutHandler);
@@ -156,43 +86,4 @@ public class LoggingManager {
       }
     }
   }
-
-
-  protected static void resetLoggerToOriginalState() {
-    final Logger logger;
-
-    logger = Logger.getLogger("");
-    if (originalHandlers == null) {
-      saveOriginalHandlersFormattersAndLevels(logger);
-    } else {
-      restoreOriginalHandlersFormattersAndLevels(logger);
-    }
-  }
-
-
-  protected static void restoreOriginalHandlersFormattersAndLevels(Logger logger) {
-    for (Handler handler : logger.getHandlers()) {
-      logger.removeHandler(handler);
-    }
-    for (Handler handler : originalHandlers) {
-      logger.addHandler(handler);
-      // jbevan: java.util.logging.RestishHandler.setFormatter(null) throws an NPE
-      if (originalFormatters.get(handler) != null) {
-        handler.setFormatter(originalFormatters.get(handler));
-      }
-      handler.setLevel(originalLogLevels.get(handler));
-    }
-  }
-
-
-  protected static void saveOriginalHandlersFormattersAndLevels(Logger logger) {
-    originalHandlers = logger.getHandlers();
-    originalFormatters = new HashMap<>();
-    originalLogLevels = new HashMap<>();
-    for (Handler handler : originalHandlers) {
-      originalFormatters.put(handler, handler.getFormatter());
-      originalLogLevels.put(handler, handler.getLevel());
-    }
-  }
-
 }

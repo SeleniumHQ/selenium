@@ -45,7 +45,6 @@ public class StandaloneConfigurationTest {
     assertFalse(sc.debug);
     assertFalse(sc.help);
     assertNull(sc.jettyMaxThreads);
-    assertFalse(sc.logLongForm);
     assertNull(sc.log);
     assertEquals(1800, sc.timeout.intValue());
   }
@@ -140,7 +139,6 @@ public class StandaloneConfigurationTest {
     other.help = true;
     other.jettyMaxThreads = 1000;
     other.log = "foo.log";
-    other.logLongForm = true;
     other.port = 4321;
     other.role = "wd";
     other.timeout = 4200;
@@ -154,7 +152,6 @@ public class StandaloneConfigurationTest {
     assertNotEquals(other.port, sc.port);
     assertNotEquals(other.log, sc.log);
     assertNotEquals(other.help, sc.help);
-    assertNotEquals(other.logLongForm, sc.logLongForm);
     assertNotEquals(other.role, sc.role);
   }
 
