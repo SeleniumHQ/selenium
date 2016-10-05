@@ -24,24 +24,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * @author Kristian Rosenvold
- */
 @RunWith(JUnit4.class)
 public class LoggingManagerUnitTest {
 
   @Test
   public void checkInit() {
-    LoggingOptions remoteControlConfiguration = new LoggingOptions();
-    LoggingManager.configureLogging(remoteControlConfiguration, true);
-    assertNotNull(LoggingManager.perSessionLogHandler());
-  }
-
-  @Test
-  public void testWithDontTouchLogging() {
-    LoggingOptions remoteControlConfiguration = new LoggingOptions();
-    remoteControlConfiguration.setDontTouchLogging(true);
-    LoggingManager.configureLogging(remoteControlConfiguration, true);
+    LoggingManager.configureLogging(true);
     assertNotNull(LoggingManager.perSessionLogHandler());
   }
 }

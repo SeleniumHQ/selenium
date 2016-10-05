@@ -68,7 +68,7 @@ public class NewSession implements RestishHandler<Response>, JsonParametersAware
 
     if (desiredCapabilities != null) {
       LoggingManager.perSessionLogHandler().configureLogging(
-          (LoggingPreferences)desiredCapabilities.getCapability(CapabilityType.LOGGING_PREFS));
+          (LoggingPreferences) desiredCapabilities.getCapability(CapabilityType.LOGGING_PREFS));
     }
     LoggingManager.perSessionLogHandler().attachToCurrentThread(sessionId);
 

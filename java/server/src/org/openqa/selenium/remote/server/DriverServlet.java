@@ -34,6 +34,8 @@ import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.server.log.LoggingManager;
+import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpc;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoader;
 
@@ -43,6 +45,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Handler;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -77,8 +80,7 @@ public class DriverServlet extends HttpServlet {
   public void init() throws ServletException {
     super.init();
 
-    Logger logger = getLogger();
-    logger.addHandler(LoggingHandler.getInstance());
+    Logger logger = configureLogging();
 
     DriverSessions driverSessions = sessionsSupplier.get();
     commandHandler = new JsonHttpCommandHandler(driverSessions, logger);
@@ -89,6 +91,22 @@ public class DriverServlet extends HttpServlet {
     if (sessionTimeOutInMs > 0 || browserTimeoutInMs > 0) {
       createSessionCleaner(logger, driverSessions, sessionTimeOutInMs, browserTimeoutInMs);
     }
+  }
+
+  private synchronized Logger configureLogging() {
+    Logger logger = getLogger();
+    logger.addHandler(LoggingHandler.getInstance());
+
+    Logger rootLogger = Logger.getLogger("");
+    boolean sessionLoggerAttached = false;
+    for (Handler handler : rootLogger.getHandlers()) {
+      sessionLoggerAttached |= handler instanceof PerSessionLogHandler;
+    }
+    if (!sessionLoggerAttached) {
+      rootLogger.addHandler(LoggingManager.perSessionLogHandler());
+    }
+
+    return logger;
   }
 
   @VisibleForTesting

@@ -189,7 +189,7 @@ public class GridLauncherV3 {
       }
       try {
         Handler logFile = new FileHandler(new File(logFilename).getAbsolutePath(), true);
-        logFile.setFormatter(new TerseFormatter(true));
+        logFile.setFormatter(new TerseFormatter());
         logFile.setLevel(logLevel);
         Logger.getLogger("").addHandler(logFile);
       } catch (IOException e) {
@@ -199,7 +199,7 @@ public class GridLauncherV3 {
       for (Handler handler : Logger.getLogger("").getHandlers()) {
         if (handler instanceof ConsoleHandler) {
           handler.setLevel(logLevel);
-          handler.setFormatter(new TerseFormatter(configuration.logLongForm));
+          handler.setFormatter(new TerseFormatter());
         }
       }
     }

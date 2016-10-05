@@ -26,6 +26,7 @@ import org.openqa.selenium.remote.CommandCodec;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.ResponseCodec;
+import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.JsonHttpCommandCodec;
@@ -135,6 +136,8 @@ import org.openqa.selenium.remote.server.handler.interactions.touch.SingleTapOnE
 import org.openqa.selenium.remote.server.handler.interactions.touch.Up;
 import org.openqa.selenium.remote.server.handler.mobile.GetNetworkConnection;
 import org.openqa.selenium.remote.server.handler.mobile.SetNetworkConnection;
+import org.openqa.selenium.remote.server.log.LoggingManager;
+import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.ResultConfig;
 
@@ -172,6 +175,7 @@ public class JsonHttpCommandHandler {
   }
 
   public HttpResponse handleRequest(HttpRequest request) {
+    LoggingManager.perSessionLogHandler().clearThreadTempLogs();
     log.fine(String.format("Handling: %s %s", request.getMethod(), request.getUri()));
 
     Command command = null;
@@ -195,7 +199,16 @@ public class JsonHttpCommandHandler {
         response.setSessionId(command.getSessionId().toString());
       }
     }
-    return responseCodec.encode(response);
+
+    PerSessionLogHandler handler = LoggingManager.perSessionLogHandler();
+    if (response.getSessionId() != null) {
+      handler.attachToCurrentThread(new SessionId(response.getSessionId()));
+    }
+    try {
+      return responseCodec.encode(response);
+    } finally {
+      handler.detachFromCurrentThread();
+    }
   }
 
   private Command decode(HttpRequest request) {

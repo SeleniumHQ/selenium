@@ -111,7 +111,6 @@ public class GridNodeConfigurationTest {
                + "\"custom\":{},"
                + "\"maxSession\":1,"
                + "\"debug\":false,"
-               + "\"logLongForm\":false,"
                + "\"role\":\"node\","
                + "\"timeout\":1800}", gnc.toJson().toString());
   }

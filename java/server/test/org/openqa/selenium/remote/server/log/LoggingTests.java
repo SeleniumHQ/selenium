@@ -22,7 +22,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    DefaultPerSessionLogHandlerUnitTest.class,
+    PerSessionLogHandlerUnitTest.class,
     LoggingManagerUnitTest.class,
     ShortTermMemoryHandlerUnitTest.class
 })
