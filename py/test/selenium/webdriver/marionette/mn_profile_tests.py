@@ -22,7 +22,7 @@ import pytest
 from selenium.webdriver import Firefox, FirefoxProfile
 
 
-@pytest.yield_fixture
+@pytest.fixture
 def driver(capabilities, profile):
     driver = Firefox(
         capabilities=capabilities,

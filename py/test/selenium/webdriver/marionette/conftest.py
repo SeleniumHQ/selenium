@@ -26,7 +26,7 @@ def capabilities():
     return capabilities
 
 
-@pytest.yield_fixture
+@pytest.fixture
 def driver(capabilities):
     driver = Firefox(capabilities=capabilities)
     yield driver

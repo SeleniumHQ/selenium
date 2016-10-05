@@ -22,7 +22,7 @@ from selenium.webdriver import Firefox
 from selenium.webdriver.firefox.options import Options
 
 
-@pytest.yield_fixture
+@pytest.fixture
 def driver(capabilities):
     options = Options()
     driver = Firefox(

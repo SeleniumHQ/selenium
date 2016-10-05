@@ -21,7 +21,7 @@ from test.selenium.webdriver.common.webserver import SimpleWebServer
 from test.selenium.webdriver.common.network import get_lan_ip
 
 
-@pytest.yield_fixture(autouse=True, scope='session')
+@pytest.fixture(autouse=True, scope='session')
 def webserver():
     webserver = SimpleWebServer(host=get_lan_ip())
     webserver.start()
