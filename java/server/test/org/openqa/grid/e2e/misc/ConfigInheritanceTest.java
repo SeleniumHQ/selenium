@@ -19,25 +19,25 @@ package org.openqa.grid.e2e.misc;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.server.SeleniumServer;
 
 
 public class ConfigInheritanceTest {
-  private static Hub hub;
+  private Hub hub;
 
-  @BeforeClass
-  public static void prepare() throws Exception {
+  @Before
+  public void prepare() throws Exception {
     GridHubConfiguration config = new GridHubConfiguration();
     config.port = PortProber.findFreePort();
     config.custom.put("A", "valueA");
@@ -74,8 +74,8 @@ public class ConfigInheritanceTest {
 
   }
 
-  @AfterClass
-  public static void stop() throws Exception {
+  @After
+  public void stop() throws Exception {
     hub.stop();
   }
 }

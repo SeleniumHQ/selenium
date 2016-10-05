@@ -19,16 +19,15 @@ package org.openqa.grid.e2e.misc;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.GridRole;
-import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.server.SeleniumServer;
@@ -42,13 +41,13 @@ import org.openqa.selenium.remote.server.SeleniumServer;
  *
  */
 public class HubRestartNeg {
-  private static Hub hub;
-  private static Registry registry;
-  private static SelfRegisteringRemote remote;
-  private static GridHubConfiguration config = new GridHubConfiguration();
+  private Hub hub;
+  private Registry registry;
+  private SelfRegisteringRemote remote;
+  private GridHubConfiguration config = new GridHubConfiguration();
 
-  @BeforeClass
-  public static void prepare() throws Exception {
+  @Before
+  public void prepare() throws Exception {
     config.host = "localhost";
     config.port = PortProber.findFreePort();
     hub = new Hub(config);
@@ -61,7 +60,6 @@ public class HubRestartNeg {
 
     remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
     remote.startRemoteServer();
-
   }
 
   @Test(timeout = 5000)
@@ -92,10 +90,9 @@ public class HubRestartNeg {
 
   }
 
-  @AfterClass
-  public static void stop() throws Exception {
+  @After
+  public void stop() throws Exception {
     hub.stop();
     remote.stopRemoteServer();
-
   }
 }

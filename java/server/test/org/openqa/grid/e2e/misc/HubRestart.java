@@ -19,8 +19,8 @@ package org.openqa.grid.e2e.misc;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
@@ -41,13 +41,13 @@ import org.openqa.selenium.remote.server.SeleniumServer;
  */
 public class HubRestart {
 
-  private static Hub hub;
-  private static Registry registry;
-  private static SelfRegisteringRemote remote;
-  private static GridHubConfiguration config = new GridHubConfiguration();
+  private Hub hub;
+  private Registry registry;
+  private SelfRegisteringRemote remote;
+  private GridHubConfiguration config = new GridHubConfiguration();
 
-  @BeforeClass
-  public static void prepare() throws Exception {
+  @Before
+  public void prepare() throws Exception {
     config.host = "localhost";
     config.port = PortProber.findFreePort();
     hub = GridTestHelper.getHub(config);
@@ -90,10 +90,9 @@ public class HubRestart {
 
   }
 
-  @AfterClass
-  public static void stop() throws Exception {
+  @After
+  public void stop() throws Exception {
     hub.stop();
     remote.stopRemoteServer();
-
   }
 }
