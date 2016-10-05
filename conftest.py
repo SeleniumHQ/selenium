@@ -15,6 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import socket
+import subprocess
+import time
+import urllib
+
 import pytest
 
 from selenium import webdriver
@@ -65,14 +70,55 @@ def driver(request):
     if driver_class == 'BlackBerry':
         kwargs.update({'device_password': 'password'})
     if driver_class == 'Firefox':
-        kwargs.update({'capabilities': {'marionette': False}})
+        from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+        binary = FirefoxBinary('/Applications/Firefox 47.app/Contents/MacOS/firefox-bin')
+        kwargs.update({'capabilities': {
+            'marionette': False,
+            'binary': binary}})
     if driver_class == 'Marionette':
         driver_class = 'Firefox'
         kwargs.update({'capabilities': {'marionette': True}})
     if driver_class == 'Remote':
-        # TODO start remote server
-        # request.getfuncargvalue('server')
-        kwargs.update({'desired_capabilities': DesiredCapabilities.FIREFOX})
+        capabilities = DesiredCapabilities.FIREFOX.copy()
+        kwargs.update({'desired_capabilities': capabilities})
     driver = getattr(webdriver, driver_class)(**kwargs)
     yield driver
     driver.quit()
+
+
+@pytest.fixture(autouse=True, scope='session')
+def server(request):
+    if 'Remote' not in request.config.getoption('drivers'):
+        yield None
+        return
+
+    _host = 'localhost'
+    _port = 4444
+    _path = 'buck-out/gen/java/server/src/org/openqa/grid/selenium/selenium.jar'
+
+    def wait_for_server(url, timeout):
+        start = time.time()
+        while time.time() - start < timeout:
+            try:
+                urllib.urlopen(url)
+                return 1
+            except IOError:
+                time.sleep(0.2)
+        return 0
+
+    _socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    url = 'http://{}:{}/wd/hub'.format(_host, _port)
+    try:
+        _socket.connect((_host, _port))
+        print('The remote driver server is already running or something else'
+              'is using port {}, continuing...'.format(_port))
+    except Exception:
+        print('Starting the Selenium server')
+        process = subprocess.Popen(['java', '-jar', _path])
+        print('Selenium server running as process: {}'.format(process.pid))
+        assert wait_for_server(url, 10), 'Timed out waiting for Selenium server at {}'.format(url)
+        print('Selenium server is ready')
+        yield process
+        process.terminate()
+        process.wait()
+        print('Selenium server has been terminated')
