@@ -19,14 +19,8 @@ package org.openqa.grid.e2e.node;
 
 import static org.junit.Assert.assertEquals;
 
-import com.thoughtworks.selenium.DefaultSelenium;
-import com.thoughtworks.selenium.Selenium;
-
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
@@ -41,7 +35,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.server.SeleniumServer;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 
 public class SmokeTest {
 
