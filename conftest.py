@@ -48,7 +48,7 @@ def pytest_ignore_collect(path, config):
     return len([d for d in _drivers if d.lower() in str(path)]) > 0
 
 
-@pytest.yield_fixture(scope='function')
+@pytest.fixture(scope='function')
 def driver(request):
     kwargs = {}
 

@@ -35,7 +35,7 @@ def capabilities():
     return DesiredCapabilities.FIREFOX.copy()
 
 
-@pytest.yield_fixture
+@pytest.fixture
 def driver(capabilities, profile):
     driver = webdriver.Remote(
         desired_capabilities=capabilities,

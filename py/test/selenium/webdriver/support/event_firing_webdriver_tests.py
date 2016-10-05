@@ -27,7 +27,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.events import EventFiringWebDriver, AbstractEventListener
 
 
-@pytest.yield_fixture
+@pytest.fixture
 def log():
     log = BytesIO()
     yield log
