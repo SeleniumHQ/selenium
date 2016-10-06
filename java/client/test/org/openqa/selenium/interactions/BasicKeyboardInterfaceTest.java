@@ -155,6 +155,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testBasicKeyboardInputOnActiveElement() {
     driver.get(pages.javascriptPage);
 
@@ -169,7 +170,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     assertThat(keyReporter.getAttribute("value"), is("abc def"));
   }
 
-  @Ignore(value = {IE, SAFARI}, reason = "untested")
+  @Ignore(value = {HTMLUNIT, IE, SAFARI}, reason = "untested")
   @NotYetImplemented(HTMLUNIT)
   @JavascriptEnabled
   @Test
@@ -195,6 +196,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(HTMLUNIT)
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testSelectionSelectBySymbol() {
     driver.get(pages.javascriptPage);
 

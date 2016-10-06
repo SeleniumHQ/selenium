@@ -329,7 +329,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {SAFARI, MARIONETTE},
+      value = {SAFARI, MARIONETTE, HTMLUNIT},
       issues = {4136})
   @Test
   @NotYetImplemented(HTMLUNIT) // broken in 2.20
@@ -350,7 +350,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {SAFARI, MARIONETTE},
+      value = {SAFARI, MARIONETTE, HTMLUNIT},
       issues = {4136})
   @Test
   @NotYetImplemented(HTMLUNIT) // broken in 2.20

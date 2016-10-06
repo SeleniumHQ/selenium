@@ -161,7 +161,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {MARIONETTE})
+  @Ignore(value = {HTMLUNIT, MARIONETTE})
   public void shouldTimeoutIfScriptDoesNotInvokeCallback() {
     driver.get(pages.ajaxyPage);
     try {
@@ -175,7 +175,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {MARIONETTE})
+  @Ignore(value = {HTMLUNIT, MARIONETTE})
   public void shouldTimeoutIfScriptDoesNotInvokeCallbackWithAZeroTimeout() {
     driver.get(pages.ajaxyPage);
     try {
@@ -198,7 +198,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {MARIONETTE})
+  @Ignore(value = {HTMLUNIT, MARIONETTE})
   public void shouldTimeoutIfScriptDoesNotInvokeCallbackWithLongTimeout() {
     driver.manage().timeouts().setScriptTimeout(500, TimeUnit.MILLISECONDS);
     driver.get(pages.ajaxyPage);

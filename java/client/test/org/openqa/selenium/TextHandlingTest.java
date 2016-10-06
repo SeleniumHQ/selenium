@@ -17,6 +17,12 @@
 
 package org.openqa.selenium;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
@@ -26,18 +32,10 @@ import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.startsWith;
-
-import org.junit.Test;
-
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
@@ -189,7 +187,7 @@ public class TextHandlingTest extends JUnit4TestBase {
         "after pre"));
   }
 
-  @Ignore(value = {IE}, reason = "IE: inserts \r\n instead of \n")
+  @Ignore(value = {HTMLUNIT, IE}, reason = "IE: inserts \r\n instead of \n")
   @Test
   public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
     driver.get(pages.formPage);
@@ -207,6 +205,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testShouldBeAbleToEnterDatesAfterFillingInOtherValuesFirst() {
     driver.get(pages.formPage);
     WebElement input = driver.findElement(By.id("working"));
@@ -351,7 +350,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {IE})
+  @Ignore(value = {HTMLUNIT, IE})
   @NotYetImplemented(HTMLUNIT)
   public void testTextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterTyping() {
     driver.get(pages.formPage);
@@ -363,7 +362,7 @@ public class TextHandlingTest extends JUnit4TestBase {
 
   @Test
   @JavascriptEnabled
-  @Ignore(value = {IE})
+  @Ignore(value = {HTMLUNIT, IE})
   @NotYetImplemented(HTMLUNIT)
   public void testTextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterChangingTheValue() {
     driver.get(pages.formPage);

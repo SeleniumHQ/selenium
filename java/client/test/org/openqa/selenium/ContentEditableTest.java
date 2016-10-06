@@ -69,7 +69,7 @@ public class ContentEditableTest extends JUnit4TestBase {
   @JavascriptEnabled
   @NotYetImplemented(HTMLUNIT)
   @Test
-  @Ignore(MARIONETTE)
+  @Ignore({HTMLUNIT, MARIONETTE})
   public void testNonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet() {
     assumeFalse("FIXME: Fails in Firefox on Linux with synthesized events",
                 isFirefox(driver) &&
