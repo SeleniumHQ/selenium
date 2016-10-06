@@ -70,11 +70,7 @@ def driver(request):
     if driver_class == 'BlackBerry':
         kwargs.update({'device_password': 'password'})
     if driver_class == 'Firefox':
-        from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
-        binary = FirefoxBinary('/Applications/Firefox 47.app/Contents/MacOS/firefox-bin')
-        kwargs.update({'capabilities': {
-            'marionette': False,
-            'binary': binary}})
+        kwargs.update({'capabilities': {'marionette': False}})
     if driver_class == 'Marionette':
         driver_class = 'Firefox'
         kwargs.update({'capabilities': {'marionette': True}})
