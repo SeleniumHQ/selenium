@@ -5,12 +5,19 @@ java_library(name = 'xml',
     ':apis',
   ],
   visibility = [
-    '//java/client/src/org/openqa/selenium/htmlunit:htmlunit',
-    '//third_party/java/...',
+    '//third_party/java/htmlunit:htmlunit-jar',
+    '//third_party/java/htmlunit:neko-htmlunit',
   ],
 )
 
-prebuilt_jar(name = 'apis',
+prebuilt_jar(
+  name = 'apis',
+  maven_coords = 'xml-apis:xml-apis:jar:1.4.01',
   binary_jar = 'xml-apis-1.4.01.jar',
   source_jar = 'xml-apis-1.4.01-sources.jar',
+  visibility = [
+    '//third_party/java/xalan:serializer',
+    '//third_party/java/xerces:xerces'
+  ],
 )
+

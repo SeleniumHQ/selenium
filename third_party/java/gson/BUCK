@@ -1,5 +1,10 @@
-prebuilt_jar(name = 'gson',
-  maven_coords = 'com.google.code.gson:gson:2.3.1',
+prebuilt_jar(
+  name = 'gson',
+  maven_coords = 'com.google.code.gson:gson:jar:2.3.1',
   binary_jar = 'gson-2.3.1.jar',
-  visibility = [ 'PUBLIC' ],
+  source_jar = 'gson-2.3.1-sources.jar',
+  visibility = [
+    'PUBLIC',
+  ],
 )
+

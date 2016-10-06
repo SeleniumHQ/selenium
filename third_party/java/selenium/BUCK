@@ -1,0 +1,14 @@
+prebuilt_jar(
+  name = 'htmlunit-driver',
+  maven_coords = 'org.seleniumhq.selenium:htmlunit-driver:jar:2.23',
+  binary_jar = 'htmlunit-driver-2.23.jar',
+  source_jar = 'htmlunit-driver-2.23-sources.jar',
+  deps = [
+    '//java/client/src/org/openqa/selenium:selenium',
+    '//third_party/java/htmlunit:htmlunit',
+  ],
+  visibility = [
+    'PUBLIC',
+  ],
+)
+

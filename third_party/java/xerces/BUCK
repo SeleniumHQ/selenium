@@ -1,8 +1,15 @@
 prebuilt_jar(
   name = 'xerces',
+  maven_coords = 'xerces:xercesImpl:jar:2.11.0',
   binary_jar = 'xercesImpl-2.11.0.jar',
   source_jar = 'xercesImpl-2.11.0-sources.jar',
+  deps = [
+    '//third_party/java/xml:apis',
+  ],
   visibility = [
+    '//third_party/java/xalan:serializer',
+    '//third_party/java/xalan:xalan',
     '//third_party/java/xml:xml',
   ],
 )
+

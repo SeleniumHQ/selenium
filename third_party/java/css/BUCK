@@ -1,7 +1,10 @@
-prebuilt_jar(name = 'sac',
+prebuilt_jar(
+  name = 'sac',
+  maven_coords = 'org.w3c.css:sac:jar:1.3',
   binary_jar = 'sac-1.3.jar',
+  source_jar = 'sac-1.3-sources.jar',
   visibility = [
-    '//third_party/java/...',
+    '//third_party/java/cssparser:cssparser'
   ],
 )
 

@@ -1,17 +1,17 @@
 <component name="libraryTable">
   <library name="htmlunit">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-core-js-2.17.jar!/" />
-      <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/neko-htmlunit-2.21.jar!/" />
-      <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-driver-2.21.jar!/" />
-      <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-2.21.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-2.23.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-core-js-2.23.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/neko-htmlunit-2.23.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/selenium/htmlunit-driver-2.23.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/neko-htmlunit-2.21-sources.jar!/" />
-      <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-driver-2.21-sources.jar!/" />
-      <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-core-js-2.17-sources.jar!/" />
-      <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-2.21-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-2.23-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-core-js-2.23-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/neko-htmlunit-2.23-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/selenium/htmlunit-driver-2.23-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

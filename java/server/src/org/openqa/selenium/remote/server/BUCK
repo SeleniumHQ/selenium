@@ -7,7 +7,6 @@ java_library(name = 'sessions',
   deps = [
     '//java/client/src/org/openqa/selenium:selenium',
     '//java/client/src/org/openqa/selenium/remote:remote',
-    '//third_party/java/commons-logging:commons-logging',
     '//third_party/java/guava:guava',
   ],
   visibility = [
@@ -92,9 +91,9 @@ java_library(name = 'standalone-server-lib',
     '//java/client/src/org/openqa/selenium/safari:safari',
     '//java/server/src/org/openqa/grid:grid',
     '//third_party/java/beust:jcommander',
-    '//third_party/java/htmlunit:htmlunit-driver',
     '//third_party/java/jetty:jetty',
     '//third_party/java/phantomjs-driver:phantomjs-driver',
+    '//third_party/java/selenium:htmlunit-driver',
     '//third_party/java/servlet:servlet-api',
   ],
   visibility = [
