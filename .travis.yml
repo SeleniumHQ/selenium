@@ -82,7 +82,7 @@ script:
       if [[ $TASK == "py" ]]; then
         ./go py_prep_for_install_release
         pip install --user tox-travis
-        tox -- --verbose --instafail -n0 -x
+        tox -- --verbose --instafail -x
         echo "============ GECKODRIVER.LOG ============"
         cat geckodriver.log
       fi
