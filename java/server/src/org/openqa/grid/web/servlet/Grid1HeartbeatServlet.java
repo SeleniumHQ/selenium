@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
  * Provided for compatibility with Selenium Grid 1.0 clients. Responds to heartbeat requests and
  * indicates whether or not a node is registered with the hub.
  */
+@Deprecated
 public class Grid1HeartbeatServlet extends RegistryBasedServlet {
   private static final long serialVersionUID = 7653463271803124556L;
 
