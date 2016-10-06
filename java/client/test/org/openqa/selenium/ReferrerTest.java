@@ -120,6 +120,7 @@ public class ReferrerTest extends JUnit4TestBase {
    */
   @Test
   @NotYetImplemented(HTMLUNIT)
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @NeedsLocalEnvironment
   public void basicHistoryNavigationWithoutAProxy() {
     testServer1.start();
@@ -143,6 +144,7 @@ public class ReferrerTest extends JUnit4TestBase {
    */
   @Test
   @NotYetImplemented(HTMLUNIT)
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWithoutAProxy() {
 
@@ -174,6 +176,7 @@ public class ReferrerTest extends JUnit4TestBase {
    */
   @Test
   @NotYetImplemented(HTMLUNIT)
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @NeedsLocalEnvironment
   public void basicHistoryNavigationWithADirectProxy() {
     testServer1.start();
@@ -203,6 +206,7 @@ public class ReferrerTest extends JUnit4TestBase {
    */
   @Test
   @NotYetImplemented(HTMLUNIT)
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWithADirectProxy() {
     testServer1.start();
@@ -236,7 +240,7 @@ public class ReferrerTest extends JUnit4TestBase {
    * Tests navigation across multiple domains when the browser is configured to use a proxy that
    * redirects the second domain to another host.
    */
-  @Ignore(MARIONETTE)
+  @Ignore({HTMLUNIT, MARIONETTE})
   @NotYetImplemented(HTMLUNIT)
   @Test
   @NeedsLocalEnvironment
@@ -277,7 +281,7 @@ public class ReferrerTest extends JUnit4TestBase {
    * intercepts requests to a specific host (www.example.com) - all other requests are permitted
    * to connect directly to the target server.
    */
-  @Ignore(MARIONETTE)
+  @Ignore({HTMLUNIT, MARIONETTE})
   @NotYetImplemented(HTMLUNIT)
   @Test
   @NeedsLocalEnvironment
@@ -316,7 +320,7 @@ public class ReferrerTest extends JUnit4TestBase {
    * intercepts requests for page 2.
    */
   @Ignore(
-      value = {IE, MARIONETTE},
+      value = {HTMLUNIT, IE, MARIONETTE},
       reason = "IEDriver does not disable automatic proxy caching, causing this test to fail.",
       issues = 6629)
   @NotYetImplemented(HTMLUNIT)

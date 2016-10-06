@@ -83,6 +83,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testShouldTypeLowerCaseLetters() {
     driver.get(pages.javascriptPage);
 
@@ -93,6 +94,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testShouldBeAbleToTypeCapitalLetters() {
     driver.get(pages.javascriptPage);
 
@@ -103,6 +105,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testShouldBeAbleToTypeQuoteMarks() {
     driver.get(pages.javascriptPage);
 
@@ -113,6 +116,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testShouldBeAbleToTypeTheAtCharacter() {
     // simon: I tend to use a US/UK or AUS keyboard layout with English
     // as my primary language. There are consistent reports that we're
@@ -129,6 +133,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testShouldBeAbleToMixUpperAndLowerCaseLetters() {
     driver.get(pages.javascriptPage);
 
@@ -150,6 +155,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @NotYetImplemented(HTMLUNIT)
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @Test
   public void testShouldBeAbleToUseArrowKeys() {
     driver.get(pages.javascriptPage);
@@ -260,7 +266,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, PHANTOMJS})
+  @Ignore(value = {HTMLUNIT, IE, PHANTOMJS})
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldReportKeyCodeOfArrowKeys() {
@@ -290,6 +296,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @NotYetImplemented(HTMLUNIT)
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @Test
   public void testShouldReportKeyCodeOfArrowKeysUpDownEvents() {
     assumeFalse(Browser.detect() == Browser.opera &&
@@ -397,6 +404,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @NotYetImplemented(HTMLUNIT)
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @Test
   public void testArrowKeysAndPageUpAndDown() {
     driver.get(pages.javascriptPage);
@@ -427,6 +435,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @NotYetImplemented(HTMLUNIT)
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @Test
   public void testDeleteAndBackspaceKeys() {
     driver.get(pages.javascriptPage);
@@ -446,7 +455,7 @@ public class TypingTest extends JUnit4TestBase {
   @JavascriptEnabled
   @NotYetImplemented(HTMLUNIT)
   @Test
-  @Ignore(MARIONETTE)
+  @Ignore({HTMLUNIT, MARIONETTE})
   public void testSpecialSpaceKeys() {
     driver.get(pages.javascriptPage);
 
@@ -459,7 +468,7 @@ public class TypingTest extends JUnit4TestBase {
   @JavascriptEnabled
   @NotYetImplemented(HTMLUNIT)
   @Test
-  @Ignore(MARIONETTE)
+  @Ignore({HTMLUNIT, MARIONETTE})
   public void testNumberpadKeys() {
     driver.get(pages.javascriptPage);
 
@@ -486,7 +495,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SAFARI}, reason = "Safari: issue 4221", issues = {4221})
+  @Ignore(value = {HTMLUNIT, SAFARI}, reason = "Safari: issue 4221", issues = {4221})
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShiftSelectionDeletes() {
@@ -631,7 +640,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {PHANTOMJS, MARIONETTE})
+  @Ignore(value = {PHANTOMJS, MARIONETTE, HTMLUNIT})
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testGenerateKeyPressEventEvenWhenElementPreventsDefault() {

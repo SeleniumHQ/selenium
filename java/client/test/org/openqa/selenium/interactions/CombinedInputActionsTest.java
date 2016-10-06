@@ -352,7 +352,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {SAFARI, MARIONETTE}, issues = {4136})
+  @Ignore(value = {SAFARI, MARIONETTE, HTMLUNIT}, issues = {4136})
   @NotYetImplemented(HTMLUNIT) // broken in 2.20
   public void canClickOnASuckerFishStyleMenu() throws InterruptedException {
     driver.get(pages.javascriptPage);
@@ -380,7 +380,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {SAFARI, MARIONETTE}, issues = {4136})
+  @Ignore(value = {SAFARI, MARIONETTE, HTMLUNIT}, issues = {4136})
   @NotYetImplemented(HTMLUNIT) // broken in 2.20
   public void testCanClickOnSuckerFishMenuItem() throws Exception {
     driver.get(pages.javascriptPage);
