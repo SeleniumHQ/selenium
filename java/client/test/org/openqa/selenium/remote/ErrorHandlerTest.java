@@ -34,6 +34,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.InvalidElementStateException;
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.NoSuchElementException;
@@ -127,7 +128,7 @@ public class ErrorHandlerTest {
       handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, "boom"), 123);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertEquals(WebDriverException.class, expected.getClass());
+      assertEquals(InvalidArgumentException.class, expected.getClass());
       assertDoesNotHaveACause(expected);
       assertThat(expected.getMessage(), containsString("boom"));
       assertThat(expected.getMessage(), containsString(new WebDriverException().getMessage()));
@@ -265,7 +266,7 @@ public class ErrorHandlerTest {
 
       Throwable cause = expected.getCause();
       assertNotNull(cause);
-      assertEquals(WebDriverException.class, cause.getClass());
+      assertEquals(InvalidArgumentException.class, cause.getClass());
       assertEquals(new WebDriverException(serverError.getMessage()).getMessage(),
           cause.getMessage());
       assertStackTracesEqual(serverError.getStackTrace(), cause.getStackTrace());
@@ -298,7 +299,7 @@ public class ErrorHandlerTest {
 
       Throwable cause = expected.getCause();
       assertNotNull(cause);
-      assertEquals(WebDriverException.class, cause.getClass());
+      assertEquals(InvalidArgumentException.class, cause.getClass());
       assertEquals(helper.getMessage(),
           cause.getMessage());
 
@@ -332,14 +333,14 @@ public class ErrorHandlerTest {
 
       Throwable cause = expected.getCause();
       assertNotNull(cause);
-      assertEquals(WebDriverException.class, cause.getClass());
+      assertEquals(InvalidArgumentException.class, cause.getClass());
       assertEquals(helper.getMessage(),
           cause.getMessage());
 
       assertStackTracesEqual(expectedTrace, cause.getStackTrace());
     }
   }
-  
+
   @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
   @Test
   public void testToleratesNumericLineNumberAsString() {
@@ -366,14 +367,14 @@ public class ErrorHandlerTest {
 
       Throwable cause = expected.getCause();
       assertNotNull(cause);
-      assertEquals(WebDriverException.class, cause.getClass());
+      assertEquals(InvalidArgumentException.class, cause.getClass());
       assertEquals(helper.getMessage(),
           cause.getMessage());
 
       assertStackTracesEqual(expectedTrace, cause.getStackTrace());
     }
   }
-  
+
   @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
   @Test
   public void testShouldIndicateWhenTheServerReturnedAnExceptionThatWasSuppressed()
