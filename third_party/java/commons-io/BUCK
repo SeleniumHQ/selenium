@@ -1,7 +1,11 @@
-prebuilt_jar(name = 'commons-io',
-  binary_jar = 'commons-io-2.4.jar',
-  source_jar = 'commons-io-2.4-sources.jar',
+prebuilt_jar(
+  name = 'commons-io',
+  maven_coords = 'commons-io:commons-io:jar:2.5',
+  binary_jar = 'commons-io-2.5.jar',
+  source_jar = 'commons-io-2.5-sources.jar',
   visibility = [
-    '//third_party/java/...',
+    '//third_party/java/htmlunit:htmlunit-jar',
+    '//third_party/java/little_proxy:little_proxy',
   ],
 )
+

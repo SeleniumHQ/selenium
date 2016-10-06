@@ -5,9 +5,6 @@ java_library(
     ':core',
     ':mime',
   ],
-  deps = [
-    '//third_party/java/commons-logging:commons-logging'
-  ],
   visibility = ['PUBLIC'],
 )
 
@@ -35,5 +32,8 @@ prebuilt_jar(
   maven_coords = 'org.apache.httpcomponents:httpmime:jar:4.5.2',
   binary_jar = 'httpmime-4.5.2.jar',
   source_jar = 'httpmime-4.5.2-sources.jar',
+  deps = [
+    ':client'
+  ],
 )
 

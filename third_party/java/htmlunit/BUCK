@@ -1,44 +1,48 @@
-prebuilt_jar(name = 'htmlunit-driver',
-  maven_coords = 'org.seleniumhq.selenium:htmlunit-driver:2.21',
-  binary_jar = 'htmlunit-driver-2.21.jar',
-  deps = [
-    ':htmlunit',
-  ],
-  visibility = ['PUBLIC'],
-)
-
-java_library(name = 'htmlunit',
+java_library(
+  name = 'htmlunit',
   exported_deps = [
     ':htmlunit-jar',
-    ':js-core',
+    ':htmlunit-core-js',
   ],
   deps = [
-    ':neko-htmlunit',
-    '//third_party/java/httpcomponents:httpclient',
-    '//third_party/java/commons-io:commons-io',
-    '//third_party/java/commons:commons-lang',
-    '//third_party/java/cssparser:cssparser',
     '//third_party/java/websocket:websocket-client',
-    '//third_party/java/xml:xml',
   ],
   visibility = [
-    '//java/client/test/org/openqa/selenium/atoms:tests',
-    '//java/client/test/org/openqa/selenium/htmlunit:',
-    '//java/client/test/org/openqa/selenium/testing:test-base',
+    'PUBLIC',
   ],
 )
 
-prebuilt_jar(name = 'htmlunit-jar',
-  binary_jar = 'htmlunit-2.21.jar',
-  source_jar = 'htmlunit-2.21-sources.jar',
+prebuilt_jar(
+  name = 'htmlunit-jar',
+  maven_coords = 'net.sourceforge.htmlunit:htmlunit:jar:2.23',
+  binary_jar = 'htmlunit-2.23.jar',
+  source_jar = 'htmlunit-2.23-sources.jar',
+  deps = [
+    ':htmlunit-core-js',
+    ':neko-htmlunit',
+    '//third_party/java/commons:commons-lang',
+    '//third_party/java/commons-io:commons-io',
+    '//third_party/java/commons-logging:commons-logging',
+    '//third_party/java/cssparser:cssparser',
+    '//third_party/java/httpcomponents:httpclient',
+    '//third_party/java/xml:xml'
+  ],
 )
 
-prebuilt_jar(name = 'js-core',
-  binary_jar = 'htmlunit-core-js-2.17.jar',
-  source_jar = 'htmlunit-core-js-2.17-sources.jar',
+prebuilt_jar(
+  name = 'htmlunit-core-js',
+  maven_coords = 'net.sourceforge.htmlunit:htmlunit-core-js:jar:2.23',
+  binary_jar = 'htmlunit-core-js-2.23.jar',
+  source_jar = 'htmlunit-core-js-2.23-sources.jar',
 )
 
-prebuilt_jar(name = 'neko-htmlunit',
-  binary_jar = 'neko-htmlunit-2.21.jar',
-  source_jar = 'neko-htmlunit-2.21-sources.jar',
+prebuilt_jar(
+  name = 'neko-htmlunit',
+  maven_coords = 'net.sourceforge.htmlunit:neko-htmlunit:jar:2.23',
+  binary_jar = 'neko-htmlunit-2.23.jar',
+  source_jar = 'neko-htmlunit-2.23-sources.jar',
+  deps = [
+    '//third_party/java/xml:xml'
+  ],
 )
+

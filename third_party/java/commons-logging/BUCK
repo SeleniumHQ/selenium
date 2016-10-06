@@ -4,9 +4,8 @@ prebuilt_jar(
   binary_jar = 'commons-logging-1.2.jar',
   source_jar = 'commons-logging-1.2-sources.jar',
   visibility = [
-    '//java/server/src/org/openqa/selenium/remote/server:sessions',
-    '//java/server/src/org/openqa/selenium/server:server',
-    '//third_party/java/...',
+    '//third_party/java/htmlunit:',
+    '//third_party/java/httpcomponents:client',
   ],
 )
 

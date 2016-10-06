@@ -1,6 +1,8 @@
-prebuilt_jar(name = 'cglib',
-  maven_coords = 'cglib:cglib-nodep:3.2.4',
+prebuilt_jar(
+  name = 'cglib',
+  maven_coords = 'cglib:cglib-nodep:jar:3.2.4',
   binary_jar = 'cglib-nodep-3.2.4.jar',
+  source_jar = 'cglib-nodep-3.2.4-sources.jar',
   visibility = [
     '//java/client/src/org/openqa/selenium/remote:remote',
   ],
