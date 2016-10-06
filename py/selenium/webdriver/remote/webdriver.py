@@ -873,10 +873,18 @@ class WebDriver(object):
         :Usage:
             driver.set_window_position(0,0)
         """
-        self.execute(Command.SET_WINDOW_POSITION, {
-            'x': int(x),
-            'y': int(y),
-            'windowHandle': windowHandle})
+        if self.w3c:
+            return self.execute(Command.W3C_SET_WINDOW_POSITION, {
+                                'x': int(x),
+                                'y': int(y)
+                                })
+        else:
+            self.execute(Command.SET_WINDOW_POSITION,
+                         {
+                             'x': int(x),
+                             'y': int(y),
+                             'windowHandle': windowHandle
+                         })
 
     def get_window_position(self, windowHandle='current'):
         """
@@ -885,8 +893,11 @@ class WebDriver(object):
         :Usage:
             driver.get_window_position()
         """
-        return self.execute(Command.GET_WINDOW_POSITION, {
-            'windowHandle': windowHandle})['value']
+        if self.w3c:
+            return self.execute(Command.W3C_GET_WINDOW_POSITION)
+        else:
+            return self.execute(Command.GET_WINDOW_POSITION, {
+                'windowHandle': windowHandle})['value']
 
     @property
     def file_detector(self):
