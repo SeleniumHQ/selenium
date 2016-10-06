@@ -16,81 +16,98 @@
 # under the License.
 
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 
 
+class Log(object):
+    def __init__(self):
+        self.level = None
+
+    def to_capabilities(self):
+        if self.level is not None:
+            return {"log": {"level": self.level}}
+        return {}
+
+
 class Options(object):
+    KEY = "moz:firefoxOptions"
 
     def __init__(self):
-        self._binary_location = ''
+        self._binary = None
         self._profile = None
         self._arguments = []
-        self._extension_files = []
-        self._extensions = []
-        self._firefox_options = {}
+        self.log = Log()
+
+    @property
+    def binary(self):
+        """Returns the location of the binary."""
+        return self._binary
+
+    @binary.setter
+    def binary(self, new_binary):
+        """Sets location of the browser binary, either by string or
+        ``FirefoxBinary`` instance.
+
+        """
+        if not isinstance(new_binary, FirefoxBinary):
+            new_binary = FirefoxBinary(new_binary)
+        self._binary = new_binary
 
     @property
     def binary_location(self):
-        """
-        Returns the location of the binary otherwise an empty string
-        """
-        return self._binary_location
+        return self.binary
 
-    @binary_location.setter
+    @binary.setter
     def binary_location(self, value):
-        """
-        Allows you to set where the firefox binary lives
-
-        :Args:
-         - value: path to the firefox binary
-        """
-        self._binary_location = value
-
-    @property
-    def arguments(self):
-        """
-        Returns a list of arguments needed for the browser
-        """
-        return self._arguments
-
-    def add_argument(self, argument):
-        """
-        Adds an argument to the list
-
-        :Args:
-         - Sets the arguments
-        """
-        if argument:
-            self._arguments.append(argument)
-        else:
-            raise ValueError("argument can not be null")
+        self.binary = value
 
     @property
     def profile(self):
-        """
-            Returns a FirefoxProfile object if one has been set before else None
-
-        """
+        """Returns the Firefox profile to use."""
         return self._profile
 
     @profile.setter
-    def profile(self, value):
-        if not isinstance(value, FirefoxProfile):
-            raise WebDriverException("When passing in a value to profile,"
-                                     " please pass in a FirefoxProfile object.")
-        self._profile = value
+    def profile(self, new_profile):
+        """Sets location of the browser profile to use, either by string
+        or ``FirefoxProfile``.
+
+        """
+        if not isinstance(new_profile, FirefoxProfile):
+            new_profile = FirefoxProfile(new_profile)
+        self._profile = new_profile
+
+    @property
+    def arguments(self):
+        """Returns a list of browser process arguments."""
+        return self._arguments
+
+    def add_argument(self, argument):
+        """Add argument to be used for the browser process."""
+        if argument is None:
+            raise ValueError()
+        self._arguments.append(argument)
 
     def to_capabilities(self):
-        """
-            Creates a capabilities with all the options that have been set and
+        """Marshals the Firefox options to a `moz:firefoxOptions`
+        object.
 
-            returns a dictionary with everything
         """
-        desired = {}
-        if self.binary_location:
-            desired["binary"] = self.binary_location
-        if self._profile:
-            desired["firefox_profile"] = self._profile.encoded
-        desired["args"] = self.arguments
-        capabilities = {"desiredCapabilities": desired}
-        return capabilities
+        # This intentionally looks at the internal properties
+        # so if a binary or profile has _not_ been set,
+        # it will defer to geckodriver to find the system Firefox
+        # and generate a fresh profile.
+        opts = {}
+
+        if self._binary is not None:
+            opts["binary"] = self._binary._start_cmd
+        if self._profile is not None:
+            opts["profile"] = self._profile.encoded
+        if len(self._arguments) > 0:
+            opts["args"] = self._arguments
+
+        opts.update(self.log.to_capabilities())
+
+        if len(opts) > 0:
+            return {Options.KEY: opts}
+        return {}
