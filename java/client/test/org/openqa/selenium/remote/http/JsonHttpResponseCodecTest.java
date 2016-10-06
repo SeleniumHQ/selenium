@@ -104,7 +104,7 @@ public class JsonHttpResponseCodecTest {
     response.setContent("{\"foobar\"}".getBytes(UTF_8));
 
     Response decoded = codec.decode(response);
-    assertNull(decoded.getStatus());
+    assertEquals(0, decoded.getStatus().longValue());
     assertEquals("{\"foobar\"}", decoded.getValue());
   }
 
