@@ -21,6 +21,8 @@ import com.beust.jcommander.JCommander;
 
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.grid.shared.GridNodeServer;
+import org.openqa.grid.web.servlet.DisplayHelpServlet;
+import org.openqa.grid.web.servlet.beta.ConsoleServlet;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
 import org.seleniumhq.jetty9.server.Connector;
@@ -111,6 +113,9 @@ public class SeleniumServer implements GridNodeServer {
     handler.setAttribute(DriverServlet.SESSIONS_KEY, driverSessions);
     handler.setContextPath("/");
     handler.addServlet(DriverServlet.class, "/wd/hub/*");
+    handler.setInitParameter(ConsoleServlet.CONSOLE_PATH_PARAMETER, "/wd/hub");
+
+    handler.setInitParameter(DisplayHelpServlet.HELPER_TYPE_PARAMETER, configuration.role);
 
     if (configuration.browserTimeout != null) {
       handler.setInitParameter(DriverServlet.BROWSER_TIMEOUT_PARAMETER,

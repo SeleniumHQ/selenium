@@ -59,7 +59,7 @@ import org.openqa.grid.plugin.RemoteProxyInheritanceTest;
     SmokeTest.class,
     StandaloneConfigurationTest.class,
     StatusServletTests.class,
-    UserDefinedCapabilityMatcherTests.class,
+    UserDefinedCapabilityMatcherTests.class
 })
 public class GridInternalTests {
 }

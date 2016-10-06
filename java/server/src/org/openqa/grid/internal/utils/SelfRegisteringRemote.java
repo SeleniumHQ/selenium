@@ -32,6 +32,7 @@ import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.shared.GridNodeServer;
+import org.openqa.grid.web.servlet.DisplayHelpServlet;
 import org.openqa.grid.web.servlet.ResourceServlet;
 import org.openqa.grid.web.utils.ExtraServletUtil;
 import org.openqa.selenium.Platform;
@@ -89,6 +90,11 @@ public class SelfRegisteringRemote {
     // add the resource servlet for nodes
     if (!registrationRequest.getConfiguration().isWithOutServlet(ResourceServlet.class)) {
       nodeServlets.put("/resources/*", ResourceServlet.class);
+    }
+
+    // add the display help servlet for nodes
+    if (!registrationRequest.getConfiguration().isWithOutServlet(DisplayHelpServlet.class)) {
+      nodeServlets.put("/*", DisplayHelpServlet.class);
     }
 
     // add the user supplied servlet(s) for nodes

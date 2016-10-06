@@ -8,6 +8,7 @@ java_library(name = 'grid',
   resources = glob([
     'images/*.css',
     'images/*.gif',
+    'images/*.html',
     'images/*.ico',
     'images/*.js',
     'images/*.png',
