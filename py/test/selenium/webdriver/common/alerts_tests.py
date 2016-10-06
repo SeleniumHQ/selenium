@@ -238,11 +238,6 @@ class TestAlerts(object):
         alert.accept()
         assert "onload" == value
 
-    def testShouldHandleAlertOnPageLoadUsingGet(self):
-        if self.driver.capabilities['browserName'] == 'phantomjs':
-            pytest.xfail("phantomjs driver does not support alerts")
-        self.driver.get(self._pageURL("pageWithOnLoad"))
-
     def testShouldHandleAlertOnPageLoadUsingGet(self, driver, pages):
         if driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs driver does not support alerts")
