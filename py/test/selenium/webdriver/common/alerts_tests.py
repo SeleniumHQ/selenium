@@ -322,8 +322,8 @@ class TestAlerts(object):
         value = alert.text
         with pytest.raises(UnexpectedAlertPresentException) as e:
             pages.load("simpleTest.html")
-            assert value == e.alert_text
-            assert str(e).startswith("Alert Text: %s" % value)
+        assert value == e.value.alert_text
+        assert "Alert Text: {}".format(value) in str(e)
 
     def _waitForAlert(self, driver):
         return WebDriverWait(driver, 3).until(EC.alert_is_present())
