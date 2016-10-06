@@ -56,7 +56,6 @@ public class Hub {
   private static final Logger log = Logger.getLogger(Hub.class.getName());
 
   private GridHubConfiguration config;
-  private final boolean isHostRestricted;
   private final Registry registry;
   private final Map<String, Class<? extends Servlet>> extraServlet = Maps.newHashMap();
 
@@ -79,12 +78,9 @@ public class Hub {
     registry = Registry.newInstance(this, gridHubConfiguration);
 
     config = gridHubConfiguration;
-    if (config.host != null) {
-      isHostRestricted = true;
-    } else {
+    if (config.host == null) {
       NetworkUtils utils = new NetworkUtils();
       config.host = utils.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
-      isHostRestricted = false;
     }
 
     if (config.port == null) {
@@ -158,20 +154,6 @@ public class Hub {
       http.setPort(config.port);
 
       server.addConnector(http);
-//      if (isHostRestricted) {
-////        httpConfig.
-//      }
-//      httpConfig.setL
-
-
-//      SocketConnector socketListener = new SocketConnector();
-//      socketListener.setMaxIdleTime(60000);
-//      if (isHostRestricted) {
-//        socketListener.setHost(host);
-//      }
-//      socketListener.setPort(port);
-//      socketListener.setLowResourcesMaxIdleTime(6000);
-//      server.addConnector(socketListener);
 
       ServletContextHandler root = new ServletContextHandler(ServletContextHandler.SESSIONS);
       root.setContextPath("/");
