@@ -15,6 +15,7 @@ env:
     - DISPLAY=:99.0
   matrix:
     - TASK=build
+    - TASK=atoms
     - TASK=java TARGET=chrome
     - TASK=java TARGET=grid TOXENV=chrome
     - TASK=rb TARGET=unit-test
@@ -88,6 +89,12 @@ script:
   - |
       if [[ $TASK == "build" ]]; then
         ./go build
+      fi
+  - |
+      if [[ $TASK == "atoms" ]]; then
+        ./go //javascript/atoms:atoms
+        ./go //javascript:calcdeps
+        ./go //javascript/android-atoms:atoms ios_driver
       fi
   - |
       if [[ $TASK == "java" ]]; then
