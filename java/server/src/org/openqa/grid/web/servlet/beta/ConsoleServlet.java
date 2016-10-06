@@ -45,6 +45,8 @@ public class ConsoleServlet extends RegistryBasedServlet {
   private static final Logger log = Logger.getLogger(ConsoleServlet.class.getName());
   private static String coreVersion;
 
+  public static final String CONSOLE_PATH_PARAMETER = "webdriver.server.consoleservlet.path";
+
   public ConsoleServlet() {
     this(null);
   }

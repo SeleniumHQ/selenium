@@ -85,9 +85,9 @@ public class SelfRegisteringRemoteTest {
     RegistrationRequest registrationRequest = RegistrationRequest.build(configuration);
     SelfRegisteringRemote remote = new SelfRegisteringRemote(registrationRequest);
 
-    // there should be two servlets on the remote's map -- The resource servlet, and the one
-    // we added above.
-    assertEquals(2, remote.getNodeServlets().size());
+    // there should be three servlets on the remote's map -- The resource servlet, the
+    // help servlet, and the one we added above.
+    assertEquals(3, remote.getNodeServlets().size());
     assertEquals(ResourceServlet.class, remote.getNodeServlets().get("/resources/*"));
     assertEquals(DisplayHelpServlet.class,
                  remote.getNodeServlets().get("/extra/DisplayHelpServlet/*"));
@@ -97,7 +97,7 @@ public class SelfRegisteringRemoteTest {
     remote.startRemoteServer(); // does not actually start anything.
 
     // verify the expected extra servlets also made it to the server instance
-    assertEquals(2, ((DummyGridNodeServer) server).extraServlets.size());
+    assertEquals(3, ((DummyGridNodeServer) server).extraServlets.size());
     assertEquals(ResourceServlet.class,
                  ((DummyGridNodeServer) server).extraServlets.get("/resources/*"));
     assertEquals(DisplayHelpServlet.class,
