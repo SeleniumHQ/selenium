@@ -31,6 +31,7 @@ import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.grid.shared.CliUtils;
 import org.openqa.grid.web.Hub;
+import org.openqa.grid.web.servlet.DisplayHelpServlet;
 import org.openqa.selenium.internal.BuildInfo;
 import org.openqa.selenium.remote.server.SeleniumServer;
 import org.openqa.selenium.remote.server.log.LoggingOptions;
@@ -39,12 +40,16 @@ import org.openqa.selenium.remote.server.log.TerseFormatter;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.servlet.Servlet;
 
 public class GridLauncherV3 {
 
@@ -218,6 +223,9 @@ public class GridLauncherV3 {
           public void launch() throws Exception {
             log.info("Launching a standalone Selenium Server");
             SeleniumServer server = new SeleniumServer(configuration);
+            Map<String, Class<? extends Servlet >> servlets = new HashMap<>();
+            servlets.put("/*", DisplayHelpServlet.class);
+            server.setExtraServlets(servlets);
             server.boot();
             log.info("Selenium Server is up and running");
           }

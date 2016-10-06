@@ -119,10 +119,12 @@ public class Hub {
 
     if (!config.isWithOutServlet(DisplayHelpServlet.class)) {
       handler.addServlet(DisplayHelpServlet.class.getName(), "/*");
+      handler.setInitParameter(DisplayHelpServlet.HELPER_TYPE_PARAMETER, config.role);
     }
 
     if (!config.isWithOutServlet(ConsoleServlet.class)) {
       handler.addServlet(ConsoleServlet.class.getName(), "/grid/console/*");
+      handler.setInitParameter(ConsoleServlet.CONSOLE_PATH_PARAMETER, "/grid/console");
     }
 
     if (!config.isWithOutServlet(LifecycleServlet.class)) {
