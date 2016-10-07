@@ -1,3 +1,24 @@
+v3.0.0
+======
+
+IMPORTANT CHANGES
+
+* Firefox is only fully supported at version 47.0.1 or earlier. Support
+  for later versions of firefox is provided by geckodriver, which is
+  based on the evolving W3C WebDriver spec, and uses the wire protocol
+  in that spec, which is liable to change without notice.
+* You may wish to choose an ESR release such as 45.4.0esr or earlier.
+* Firefox 47.0.0 is not supported at all.
+
+Other major changes:
+
+* Stability fixes in Grid.
+* All Grid nodes can now offer help
+* Updated to the latest version of HtmlUnitDriver
+* Re-enabled log gathering for the standalone server.
+* Firefox profile is passed to both the legacy FirefoxDriver and
+  geckodriver
+
 v3.0.0-beta4
 ============
 
