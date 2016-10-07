@@ -69,7 +69,7 @@ module Selenium
 
           chrome_options = caps['chromeOptions'] || caps[:chrome_options] || {}
           chrome_options['binary'] = Chrome.path if Chrome.path
-          args = opts.delete(:args) || []
+          args = opts.delete(:args) || opts.delete(:switches) || []
           unless args.is_a? Array
             raise ArgumentError, ':args must be an Array of Strings'
           end
