@@ -1848,7 +1848,7 @@ function fullyResolveKeys(obj) {
  * If there are no listeners registered with the flow, the error will be
  * rethrown to the global error handler.
  *
- * Refer to the {@link ./promise} module documentation fora  detailed
+ * Refer to the {@link ./promise} module documentation for a  detailed
  * explanation of how the ControlFlow coordinates task execution.
  *
  * @final
