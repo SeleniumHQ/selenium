@@ -181,11 +181,12 @@ task :ide_proxy_remove => [ "se_ide:remove_proxy" ]
 task :ide_bamboo => ["se_ide:assemble_ide_in_bamboo"]
 
 task :test_javascript => [
-  '//javascript/atoms:test:run',
-  '//javascript/webdriver:test:run',
-  '//javascript/webdriver:es6_test:run',
-  '//javascript/selenium-atoms:test:run',
-  '//javascript/selenium-core:test:run']
+  'calcdeps',
+  '//javascript/atoms:atoms-chrome:run',
+  '//javascript/webdriver:webdriver-chrome:run',
+  '//javascript/webdriver:es6_test_chrome:run',
+  '//javascript/selenium-atoms:selenium-atoms:run',
+  '//javascript/selenium-core:selenium-core-chrome:run']
 task :test_chrome => [ "//java/client/test/org/openqa/selenium/chrome:chrome:run" ]
 task :test_chrome_atoms => [
   '//javascript/atoms:test_chrome:run',

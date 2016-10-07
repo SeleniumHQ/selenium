@@ -59,13 +59,8 @@ public class JavaScriptTestSuite extends ParentRunner<Runner> {
 
     long timeout = Math.max(0, Long.getLong("js.test.timeout", 0));
 
-    Supplier<WebDriver> driverSupplier = new Supplier<WebDriver>() {
-      @Override
-      public WebDriver get() {
-        checkNotNull(webDriver, "WebDriver has not been started yet!");
-        return webDriver;
-      }
-    };
+    Supplier<WebDriver> driverSupplier =
+      () -> checkNotNull(webDriver, "WebDriver has not been started yet!");
 
     children = createChildren(driverSupplier, timeout);
   }
