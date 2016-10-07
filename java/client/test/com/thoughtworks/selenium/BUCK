@@ -69,6 +69,6 @@ java_library(
     '//third_party/java/servlet:servlet-api',
   ],
   visibility = [
-    '//java/server/test/org/openqa/selenium/server/htmlrunner:htmlrunner',
+    '//java/server/test/org/openqa/selenium/server/htmlrunner:',
   ],
 )
