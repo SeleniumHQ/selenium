@@ -77,7 +77,8 @@ public class OutOfProcessSeleniumServer {
     if (Boolean.getBoolean("webdriver.development")) {
       command.copyOutputTo(System.err);
     }
-    command.setWorkingDirectory(InProject.locate("Rakefile").getParentFile().getAbsolutePath());
+    command.setWorkingDirectory(
+      InProject.locate("Rakefile").getParent().toAbsolutePath().toString());
     log.info("Starting selenium server: " + command.toString());
     command.executeAsync();
 

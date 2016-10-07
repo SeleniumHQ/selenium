@@ -91,18 +91,18 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
     log.info("In dev mode. Copying required files in case we're using a WebDriver-backed Selenium");
 
     Path dir =
-      InProject.locate("java/client/build/production/com/thoughtworks/selenium/webdriven").toPath();
+      InProject.locate("java/client/build/production/com/thoughtworks/selenium/webdriven");
     Files.createDirectories(dir);
     for (String target : ATOM_TARGETS) {
       Path atom = new BuckBuild().of("//javascript/selenium-atoms:" + target).go();
       Files.copy(atom, dir.resolve(atom.getFileName()), REPLACE_EXISTING);
     }
-    Path sizzle = InProject.locate("third_party/js/sizzle/sizzle.js").toPath();
+    Path sizzle = InProject.locate("third_party/js/sizzle/sizzle.js");
     Files.copy(sizzle, dir.resolve("sizzle.js"), REPLACE_EXISTING);
 
-    Path seDir = InProject.locate("java/client/test/com/thoughtworks/selenium").toPath();
+    Path seDir = InProject.locate("java/client/test/com/thoughtworks/selenium");
     Path destDir =
-      InProject.locate("java/client/build/production/com/thoughtworks/selenium").toPath();
+      InProject.locate("java/client/build/production/com/thoughtworks/selenium");
     Files.list(seDir)
       .filter(path -> path.getFileName().toString().endsWith(".js"))
       .forEach(path -> {

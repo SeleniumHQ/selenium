@@ -22,12 +22,13 @@ import org.openqa.selenium.testing.InProject;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 public class Firebug {
 
   public static void addTo(FirefoxProfile profile) throws IOException {
-    File firebug = InProject.locate("third_party/firebug/firebug-1.5.0-fx.xpi");
-    profile.addExtension(firebug);
+    Path firebug = InProject.locate("third_party/firebug/firebug-1.5.0-fx.xpi");
+    profile.addExtension(firebug.toFile());
     profile.setPreference("extensions.firebug.addonBarOpened", true);
     profile.setPreference("extensions.firebug.allPagesActivation", "on");
     profile.setPreference("extensions.firebug.console.enableSites", true);

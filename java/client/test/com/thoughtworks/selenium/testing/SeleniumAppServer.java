@@ -21,7 +21,7 @@ import org.openqa.selenium.environment.webserver.JettyAppServer;
 import org.openqa.selenium.testing.InProject;
 import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 
-import java.io.File;
+import java.nio.file.Path;
 
 public class SeleniumAppServer extends JettyAppServer {
 
@@ -33,7 +33,7 @@ public class SeleniumAppServer extends JettyAppServer {
     addServlet(context, "/cachedContentTest", CachedContentServlet.class);
   }
 
-  protected File findRootOfRcTestPages() {
+  protected Path findRootOfRcTestPages() {
     return InProject.locate("java/server/test/org/openqa/selenium");
   }
 

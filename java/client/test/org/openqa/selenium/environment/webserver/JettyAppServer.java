@@ -42,8 +42,9 @@ import org.seleniumhq.jetty9.servlet.ServletHolder;
 import org.seleniumhq.jetty9.util.resource.Resource;
 import org.seleniumhq.jetty9.util.ssl.SslContextFactory;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.EnumSet;
 
 import javax.servlet.DispatcherType;
@@ -186,14 +187,14 @@ public class JettyAppServer implements AppServer {
     http.setPort(port);
     http.setIdleTimeout(500000);
 
-    File keystore = getKeyStore();
-    if (!keystore.exists()) {
+    Path keystore = getKeyStore();
+    if (!Files.exists(keystore)) {
       throw new RuntimeException(
-        "Cannot find keystore for SSL cert: " + keystore.getAbsolutePath());
+        "Cannot find keystore for SSL cert: " + keystore.toAbsolutePath());
     }
 
     SslContextFactory sslContextFactory = new SslContextFactory();
-    sslContextFactory.setKeyStorePath(keystore.getAbsolutePath());
+    sslContextFactory.setKeyStorePath(keystore.toAbsolutePath().toString());
     sslContextFactory.setKeyStorePassword("password");
     sslContextFactory.setKeyManagerPassword("password");
 
@@ -216,7 +217,7 @@ public class JettyAppServer implements AppServer {
     }
   }
 
-  protected File getKeyStore() {
+  protected Path getKeyStore() {
     return InProject.locate("java/client/test/org/openqa/selenium/environment/webserver/keystore");
   }
 
@@ -268,13 +269,13 @@ public class JettyAppServer implements AppServer {
 
   }
 
-  protected ServletContextHandler addResourceHandler(String contextPath, File resourceBase) {
+  protected ServletContextHandler addResourceHandler(String contextPath, Path resourceBase) {
     ServletContextHandler context = new ServletContextHandler();
 
     ResourceHandler staticResource = new ResourceHandler2();
     staticResource.setDirectoriesListed(true);
     staticResource.setWelcomeFiles(new String[] { "index.html" });
-    staticResource.setResourceBase(resourceBase.getAbsolutePath());
+    staticResource.setResourceBase(resourceBase.toAbsolutePath().toString());
     MimeTypes mimeTypes = new MimeTypes();
     mimeTypes.addMimeMapping("appcache", "text/cache-manifest");
     staticResource.setMimeTypes(mimeTypes);
