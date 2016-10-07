@@ -70,8 +70,8 @@ public class WebDriverRequest extends SeleniumBasedRequest {
       JsonObject dc = map.get("desiredCapabilities").getAsJsonObject();
       return new JsonToBeanConverter().convert(Map.class, dc);
 
-    } catch (JsonSyntaxException e) {
-      throw new GridException("Cannot extract a capabilities from the request " + json);
+    } catch (Exception e) {
+      throw new GridException("Cannot extract a capabilities from the request: " + json, e);
     }
   }
 
